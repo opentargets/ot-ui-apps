@@ -9,6 +9,9 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "dev:platform": "turbo run dev --scope=platform",
+    "dev:platform-app": "turbo run dev --scope=platform-app",
+    "dev:platform-app-save": "turbo run dev --scope=platform-app-save",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
