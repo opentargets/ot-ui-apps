@@ -1,1 +1,0 @@
-import{j as e,b as i,a as t,T as o,ad as s}from"./index.ec2996a9.js";import{L as r}from"./ErrorBoundary.830e98b1.js";function m({children:a,loading:n=!1}){return e(i,{children:[t(o,{variant:"subtitle2",children:"Description"}),n?t(s,{}):a?t(r,{lineLimit:3,children:a}):"No description available"]})}export{m as D};
