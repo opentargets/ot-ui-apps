@@ -1,48 +1,51 @@
-import { useState } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import { Button, Contianer } from "ui";
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { ApolloProvider } from '@apollo/client';
 
-function App() {
-  const [count, setCount] = useState(0);
+import OtUiThemeProvider from './components/OtUiThemeProvider';
+import client from './client';
+// import initLocalStorage from './utils/initLocalStorage';
+import theme from './theme';
+import HomePage from './pages/HomePage';
+import SearchPage from './pages/SearchPage';
+import DiseasePage from './pages/DiseasePage';
+import DownloadsPage from './pages/DownloadsPage';
+import DrugPage from './pages/DrugPage';
+import TargetPage from './pages/TargetPage';
+import EvidencePage from './pages/EvidencePage';
+import VariantsPage from './pages/VariantsPage';
+import APIPage from './pages/APIPage';
+import NotFoundPage from './pages/NotFoundPage';
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <Contianer />
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <Button />
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {" | "}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
-  );
+// const TestCom = () => <div>Hola</div>;
+
+class App extends Component {
+  componentDidMount() {
+    // initLocalStorage();
+  }
+
+  render() {
+    return (
+      <ApolloProvider client={client}>
+        <OtUiThemeProvider theme={theme}>
+          <Router>
+            <Switch>
+              <Route exact path="/" component={HomePage} />
+              <Route path="/search" component={SearchPage} />
+              <Route path="/downloads" component={DownloadsPage} />
+              <Route path="/disease/:efoId" component={DiseasePage} />
+              <Route path="/target/:ensgId" component={TargetPage} />
+              <Route path="/drug/:chemblId" component={DrugPage} />
+              <Route path="/evidence/:ensgId/:efoId" component={EvidencePage} />
+              <Route path="/variants" component={VariantsPage} />
+              <Route path="/api" component={APIPage} />
+              <Route component={NotFoundPage} />
+            </Switch>
+          </Router>
+        </OtUiThemeProvider>
+      </ApolloProvider>
+    );
+  }
 }
 
 export default App;

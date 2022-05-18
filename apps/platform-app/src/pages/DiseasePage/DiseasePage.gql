@@ -1,7 +1,0 @@
-query DiseasePageQuery($efoId: String!) {
-  disease(efoId: $efoId) {
-    id
-    name
-    dbXRefs
-  }
-}
