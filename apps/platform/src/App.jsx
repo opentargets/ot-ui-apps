@@ -17,8 +17,6 @@ import VariantsPage from './pages/VariantsPage';
 import APIPage from './pages/APIPage';
 import NotFoundPage from './pages/NotFoundPage';
 
-// const TestCom = () => <div>Hola</div>;
-
 class App extends Component {
   componentDidMount() {
     // initLocalStorage();
