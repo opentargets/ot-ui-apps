@@ -5,6 +5,9 @@ import graphql from '@rollup/plugin-graphql';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    outDir: './bundle-platform',
+  },
   plugins: [
     graphql(),
     svgrPlugin({
