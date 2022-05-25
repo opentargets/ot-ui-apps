@@ -1,13 +1,13 @@
 language: node_js
 node_js:
-  - lts
+  - 16
 cache: yarn
 install:
   - yarn
 script:
   - yarn build
 after_success:
-  - cd build
+  - cd dist-platform
   - tar czvf ../bundle.tgz *
   - cd ..
 deploy:
