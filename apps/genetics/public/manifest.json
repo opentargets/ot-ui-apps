@@ -1,0 +1,15 @@
+{
+  "short_name": "Open Target Genetics",
+  "name": "Open Target Genetics",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "32x32 24x24 16x16",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#0091eb",
+  "background_color": "#ffffff"
+}

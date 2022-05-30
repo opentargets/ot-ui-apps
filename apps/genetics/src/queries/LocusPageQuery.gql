@@ -1,0 +1,70 @@
+query LocusPageQuery(
+  $optionalVariantId: String
+  $optionalGeneId: String
+  $optionalStudyId: String
+  $chromosome: String!
+  $start: Long!
+  $end: Long!
+) {
+  genes(chromosome: $chromosome, start: $start, end: $end) {
+    id
+    symbol
+    tss
+    start
+    end
+    exons
+  }
+  regionPlot(
+    optionalVariantId: $optionalVariantId
+    optionalGeneId: $optionalGeneId
+    optionalStudyId: $optionalStudyId
+  ) {
+    genes {
+      id
+      symbol
+      tss
+      start
+      end
+      exons
+    }
+    tagVariants {
+      id
+      rsId
+      position
+    }
+    indexVariants {
+      id
+      rsId
+      position
+    }
+    studies {
+      studyId
+      traitReported
+      pubAuthor
+      pubDate
+      pubJournal
+      pmid
+      hasSumstats
+    }
+    geneTagVariants {
+      geneId
+      tagVariantId
+      overallScore
+    }
+    tagVariantIndexVariantStudies {
+      tagVariantId
+      indexVariantId
+      studyId
+      r2
+      pval
+      posteriorProbability
+      oddsRatio
+      oddsRatioCILower
+      oddsRatioCIUpper
+      beta
+      betaCILower
+      betaCIUpper
+      direction
+    }
+  }
+}
