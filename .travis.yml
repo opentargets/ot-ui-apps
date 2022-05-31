@@ -7,9 +7,12 @@ install:
 script:
   - yarn build
 after_success:
-  - cd dist-platform
-  - tar czvf ../bundle.tgz *
-  - cd ..
+  - |
+    if [$TRAVIS_TAG && $TRAVIS_TAG =~ ^platform.*$ ]; then
+      cd dist-platform
+      tar czvf ../bundle.tgz *
+      cd ..
+    fi
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
