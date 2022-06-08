@@ -5,8 +5,10 @@ cache: yarn
 install:
   - yarn
 script:
+  - pwd
   - yarn build
 after_success:
+  - pwd
   - cd bundle-platform
   - tar czvf ../bundle-platform.tgz *
   - cd ..
