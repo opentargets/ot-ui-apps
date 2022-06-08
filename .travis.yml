@@ -6,7 +6,6 @@ install:
   - yarn
 script:
   - yarn build
-  - ls -a
   - cd bundle-platform
   - tar czvf ../bundle-platform.tgz *
   - cd ..
