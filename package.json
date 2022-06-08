@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:no-cache": "turbo run build --parallel --no-cache",
     "dev": "turbo run dev --parallel",
     "dev:genetics": "turbo run dev --filter=genetics",
     "build:genetics": "turbo run build --filter=genetics",

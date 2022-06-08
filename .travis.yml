@@ -6,10 +6,11 @@ install:
   - yarn
 script:
   - yarn build
-  - cd dist-platform
+  - ls -a
+  - cd bundle-platform
   - tar czvf ../bundle-platform.tgz *
   - cd ..
-  - cd dist-genetics
+  - cd bundle-genetics
   - tar czvf ../bundle-genetics.tgz *
   - cd ..
 deploy:
