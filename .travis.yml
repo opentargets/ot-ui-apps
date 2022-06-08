@@ -7,16 +7,18 @@ install:
 script:
   - yarn build
 after_success:
-  - |
-    if [$TRAVIS_TAG && $TRAVIS_TAG =~ ^platform.*$ ]; then
-      cd dist-platform
-      tar czvf ../bundle.tgz *
-      cd ..
-    fi
+  - cd build-platform
+  - tar czvf ../bundle-platform.tgz *
+  - cd ..
+  - cd build-genetics
+  - tar czvf ../bundle-genetics.tgz *
+  - cd ..
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file: "bundle.tgz"
+  file:
+    - "bundle-platform.tgz"
+    - "bundle-genetics.tgz"
   skip_cleanup: true
   on:
     tags: true
