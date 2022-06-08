@@ -7,10 +7,10 @@ install:
 script:
   - yarn build
 after_success:
-  - cd build-platform
+  - cd dist-platform
   - tar czvf ../bundle-platform.tgz *
   - cd ..
-  - cd build-genetics
+  - cd dist-genetics
   - tar czvf ../bundle-genetics.tgz *
   - cd ..
 deploy:
