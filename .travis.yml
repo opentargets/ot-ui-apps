@@ -7,13 +7,22 @@ install:
 script:
   - yarn build
 after_success:
-  - cd build
-  - tar czvf ../bundle.tgz *
+  - cd apps/platform/bundle-platform
+  - tar czvf ../bundle-platform.tgz *
   - cd ..
+  - mv bundle-platform.tgz ../../bundle-platform.tgz
+  - cd ../..
+  - cd apps/genetics/bundle-genetics
+  - tar czvf ../bundle-genetics.tgz *
+  - cd ..
+  - mv bundle-genetics.tgz ../../bundle-genetics.tgz
+  - cd ../..
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file: "bundle.tgz"
+  file:
+    - "bundle-platform.tgz"
+    - "bundle-genetics.tgz"
   skip_cleanup: true
   on:
     tags: true

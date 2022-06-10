@@ -1,1 +1,0 @@
-function t(l,r){var f=l.length,n=-1,i,h;if(r==null){for(;++n<f;)if((i=l[n])!=null&&i>=i)for(h=i;++n<f;)(i=l[n])!=null&&i>h&&(h=i)}else for(;++n<f;)if((i=r(l[n],n,l))!=null&&i>=i)for(h=i;++n<f;)(i=r(l[n],n,l))!=null&&i>h&&(h=i);return h}export{t as m};
