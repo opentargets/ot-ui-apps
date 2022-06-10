@@ -1,0 +1,48 @@
+query StudyPageQuery($studyId: String!) {
+  manhattan(studyId: $studyId) {
+    associations {
+      variant {
+        id
+        rsId
+        chromosome
+        position
+        nearestCodingGene {
+          id
+          symbol
+        }
+        nearestCodingGeneDistance
+      }
+      pval
+      credibleSetSize
+      ldSetSize
+      oddsRatio
+      oddsRatioCILower
+      oddsRatioCIUpper
+      beta
+      betaCILower
+      betaCIUpper
+      direction
+      bestGenes {
+        score
+        gene {
+          id
+          symbol
+        }
+      }
+      bestColocGenes {
+        score
+        gene {
+          id
+          symbol
+        }
+      }
+      bestLocus2Genes {
+        score
+        gene {
+          id
+          symbol
+        }
+      }
+    }
+  }
+}

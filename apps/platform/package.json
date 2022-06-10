@@ -51,7 +51,7 @@
     "vite-plugin-graphql": "^0.1.0"
   },
   "scripts": {
-    "dev": "vite --port 3001 --clearScreen false",
+    "dev": "vite --clearScreen false",
     "build": "vite build",
     "preview": "vite preview",
     "_build": "tsc && vite build",

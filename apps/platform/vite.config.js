@@ -5,6 +5,12 @@ import graphql from '@rollup/plugin-graphql';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  preview: {
+    port: 3001,
+  },
+  build: {
+    outDir: './bundle-platform',
+  },
   plugins: [
     graphql(),
     svgrPlugin({

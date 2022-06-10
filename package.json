@@ -1,6 +1,6 @@
 {
-  "name": "turborepo-basic-shared",
-  "version": "0.0.0",
+  "name": "ot-ui-apps",
+  "version": "0.0.1",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -8,11 +8,12 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:no-cache": "turbo run build --parallel --no-cache",
     "dev": "turbo run dev --parallel",
-    "dev:platform": "turbo run dev --scope=platform",
-    "build:platform": "turbo run build --scope=platform",
-    "dev:platform-app": "turbo run dev --scope=platform-app",
-    "build:platform-app": "turbo run build --scope=platform-app",
+    "dev:genetics": "turbo run dev --filter=genetics",
+    "build:genetics": "turbo run build --filter=genetics",
+    "dev:platform": "turbo run dev --filter=platform",
+    "build:platform": "turbo run build --filter=platform",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
