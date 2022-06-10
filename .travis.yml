@@ -5,16 +5,18 @@ cache: yarn
 install:
   - yarn
 script:
-  - pwd
   - yarn build
 after_success:
-  - pwd
-  - cd bundle-platform
+  - cd apps/platform/bundle-platform
   - tar czvf ../bundle-platform.tgz *
   - cd ..
-  - cd bundle-genetics
+  - mv bundle-platform.tgz ../../bundle-platform.tgz
+  - cd ../..
+  - cd apps/genetics/bundle-genetics
   - tar czvf ../bundle-genetics.tgz *
   - cd ..
+  - mv bundle-genetics.tgz ../../bundle-genetics.tgz
+  - cd ../..
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN

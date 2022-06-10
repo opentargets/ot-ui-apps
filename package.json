@@ -1,7 +1,6 @@
 {
-  "name": "turborepo-basic-shared",
-  "version": "0.0.0",
-  "private": true,
+  "name": "ot-ui-apps",
+  "version": "0.0.1",
   "workspaces": [
     "apps/*",
     "packages/*"

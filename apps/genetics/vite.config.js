@@ -6,7 +6,7 @@ import graphql from "@rollup/plugin-graphql";
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
-    outDir: "../../bundle-genetics",
+    outDir: "./bundle-genetics",
   },
   plugins: [
     graphql(),
