@@ -1,8 +1,0 @@
-[build]
-  publish = "bundle-genetics"
-
-# redirect to ensure longer urls still fetch index.html
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
