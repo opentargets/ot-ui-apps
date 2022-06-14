@@ -47,22 +47,16 @@
     "react-sticky": "^6.0.3",
     "recoil": "^0.3.0",
     "smiles-drawer": "^1.1.22",
-    "typeface-inter": "^3.3.0",
-    "vite-plugin-graphql": "^0.1.0"
+    "typeface-inter": "^3.3.0"
   },
   "scripts": {
     "dev": "vite --clearScreen false",
     "build": "vite build",
     "preview": "vite preview",
-    "_build": "tsc && vite build",
     "serve": "vite preview",
-    "build:sourcemap": "REACT_APP_BUILD_ID=\"$(nanoid)\" GENERATE_SOURCEMAP=true REACT_APP_REVISION=\"${REACT_APP_REVISION:-$(git describe --abbrev=0)}\" react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "prettier": "prettier --write",
     "prettier:all": "prettier --write 'src/**/*.js'",
-    "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "test:nightwatch": "node ./test/end-to-end-test-runner.js -c nightwatch.conf.js -e chrome,firefox,safari,ie"
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -87,7 +81,6 @@
     "sass": "^1.49.10",
     "source-map-explorer": "^2.0.0",
     "vite": "^2.3.2",
-    "vite-plugin-graphql": "^0.1.0",
     "vite-plugin-svgr": "^0.3.0"
   },
   "husky": {
