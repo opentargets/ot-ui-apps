@@ -47,8 +47,7 @@
     "react-sticky": "^6.0.3",
     "recoil": "^0.3.0",
     "smiles-drawer": "^1.1.22",
-    "typeface-inter": "^3.3.0",
-    "vite-plugin-graphql": "^0.1.0"
+    "typeface-inter": "^3.3.0"
   },
   "scripts": {
     "dev": "vite --clearScreen false",
@@ -87,7 +86,6 @@
     "sass": "^1.49.10",
     "source-map-explorer": "^2.0.0",
     "vite": "^2.3.2",
-    "vite-plugin-graphql": "^0.1.0",
     "vite-plugin-svgr": "^0.3.0"
   },
   "husky": {
