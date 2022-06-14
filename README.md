@@ -2,6 +2,14 @@
 
 This repository holds the Open Targets web applications.
 
+Platform netlify preview
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0170074c-4d8d-4882-90e5-775a4222dc6c/deploy-status)](https://app.netlify.com/sites/ot-platform/deploys)
+
+Genetics netlify preview
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e00eea73-d8b7-4f88-9d16-7265144b54e1/deploy-status)](https://app.netlify.com/sites/ot-genetics/deploys)
+
 ## Copyright
 
 Copyright 2014-2018 Biogen, Celgene Corporation, EMBL - European Bioinformatics Institute, GlaxoSmithKline, Takeda Pharmaceutical Company and Wellcome Sanger Institute
