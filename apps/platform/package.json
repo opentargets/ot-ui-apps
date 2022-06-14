@@ -53,15 +53,10 @@
     "dev": "vite --clearScreen false",
     "build": "vite build",
     "preview": "vite preview",
-    "_build": "tsc && vite build",
     "serve": "vite preview",
-    "build:sourcemap": "REACT_APP_BUILD_ID=\"$(nanoid)\" GENERATE_SOURCEMAP=true REACT_APP_REVISION=\"${REACT_APP_REVISION:-$(git describe --abbrev=0)}\" react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "prettier": "prettier --write",
     "prettier:all": "prettier --write 'src/**/*.js'",
-    "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "test:nightwatch": "node ./test/end-to-end-test-runner.js -c nightwatch.conf.js -e chrome,firefox,safari,ie"
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"
