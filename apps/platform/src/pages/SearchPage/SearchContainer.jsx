@@ -22,21 +22,21 @@ import ErrorBoundary from '../../components/ErrorBoundary';
 import TargetDetail from './TargetDetail';
 import TargetResult from './TargetResult';
 
-const getCounts = entities => {
+const getCounts = (entities) => {
   const counts = {
     target: 0,
     disease: 0,
     drug: 0,
   };
 
-  entities.forEach(entity => {
+  entities.forEach((entity) => {
     counts[entity.name] = entity.total;
   });
 
   return counts;
 };
 
-const styles = theme => ({
+const styles = (theme) => ({
   label: {
     marginLeft: '-6px',
   },
@@ -120,7 +120,7 @@ const SearchFilters = withStyles(styles)(
   }
 );
 
-const SearchResults = ({ results, page, onChangePage }) => {
+const SearchResults = ({ results, page, onPageChange }) => {
   return (
     <>
       <TablePagination
@@ -129,7 +129,7 @@ const SearchResults = ({ results, page, onChangePage }) => {
         rowsPerPage={10}
         count={results.total}
         page={page - 1}
-        onChangePage={onChangePage}
+        onPageChange={onPageChange}
       />
       {results.hits.map(({ highlights, object }) => {
         return object.__typename === 'Target' ? (
@@ -150,7 +150,7 @@ const SearchResults = ({ results, page, onChangePage }) => {
         rowsPerPage={10}
         count={results.total}
         page={page - 1}
-        onChangePage={onChangePage}
+        onPageChange={onPageChange}
       />
     </>
   );
@@ -177,7 +177,7 @@ const SearchContainer = ({
   page,
   entities,
   data,
-  onChangePage,
+  onPageChange,
   onSetEntity,
 }) => {
   const { entities: entitiesCount } = data.search.aggregations;
@@ -204,7 +204,7 @@ const SearchContainer = ({
             <SearchResults
               page={page}
               results={data.search}
-              onChangePage={onChangePage}
+              onPageChange={onPageChange}
             />
           ) : null}
         </Grid>

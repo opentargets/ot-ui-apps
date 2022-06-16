@@ -55,7 +55,7 @@ const Table = ({
   const [selectedRow, setSelectedRow] = useState(0);
   const defaultClasses = tableStyles();
 
-  const handleGlobalFilterChange = newGlobalFilter => {
+  const handleGlobalFilterChange = (newGlobalFilter) => {
     if (newGlobalFilter !== globalFilter) {
       onGlobalFilterChange(newGlobalFilter);
     }
@@ -65,7 +65,7 @@ const Table = ({
     onSortBy(sortBy);
   };
 
-  const handleChangeRowsPerPage = event => {
+  const handleChangeRowsPerPage = (event) => {
     onRowsPerPageChange(event.target.value);
   };
   const handleChangePage = (_, page) => {
@@ -130,7 +130,7 @@ const Table = ({
                 key={i}
                 row={row}
                 noWrap={noWrap}
-                onClick={event => handleClick(event, row, i)}
+                onClick={(event) => handleClick(event, row, i)}
                 selected={rowIsSelectable && selectedRow === i}
               />
             ))}
@@ -149,7 +149,7 @@ const Table = ({
           </TableBody>
         </MuiTable>
       </TableContainer>
-      <Grid item container justify="flex-end">
+      <Grid item container justifyContent="flex-end">
         {loading && (
           <CircularProgress className={defaultClasses.progress} size={22} />
         )}
@@ -162,8 +162,8 @@ const Table = ({
             }}
             component="div"
             count={rowCount}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
             page={page}
             rowsPerPage={pageSize}
             rowsPerPageOptions={rowsPerPageOptions}
