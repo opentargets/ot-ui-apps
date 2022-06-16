@@ -10,18 +10,18 @@ const UNEXPECTED_FORMAT =
   'Unexpected format. Supported options are csv, tsv and json.';
 
 const pick = (object, keys) => {
-  return keys.reduce(function(o, k) {
+  return keys.reduce(function (o, k) {
     // take into account optional export() function, which takes precedence as per other download formats
     o[k.id] = k.export ? k.export(object) : object[k.id];
     return o;
   }, {});
 };
 
-const quoteIfString = d => (typeof d === 'string' ? `"${d}"` : d);
+const quoteIfString = (d) => (typeof d === 'string' ? `"${d}"` : d);
 
 const asJSONString = ({ rows, headerMap }) => {
   // use the full headerMap which contain optional export() function for each header
-  const rowsHeadersOnly = rows.map(row => pick(row, headerMap));
+  const rowsHeadersOnly = rows.map((row) => pick(row, headerMap));
   return JSON.stringify(rowsHeadersOnly);
 };
 
@@ -29,11 +29,11 @@ const asCSVString = ({ rows, headerMap }) => {
   const separator = ',';
   const lineSeparator = '\n';
   const headersString = headerMap
-    .map(d => quoteIfString(d.label))
+    .map((d) => quoteIfString(d.label))
     .join(separator);
-  const rowsArray = rows.map(row => {
+  const rowsArray = rows.map((row) => {
     return headerMap
-      .map(header => {
+      .map((header) => {
         return quoteIfString(
           header.export ? header.export(row) : row[header.id]
         );
@@ -46,10 +46,10 @@ const asCSVString = ({ rows, headerMap }) => {
 const asTSVString = ({ rows, headerMap }) => {
   const separator = '\t';
   const lineSeparator = '\n';
-  const headersString = headerMap.map(d => d.label).join(separator);
-  const rowsArray = rows.map(row => {
+  const headersString = headerMap.map((d) => d.label).join(separator);
+  const rowsArray = rows.map((row) => {
     return headerMap
-      .map(header => {
+      .map((header) => {
         return header.export ? header.export(row) : row[header.id];
       })
       .join(separator);
@@ -70,7 +70,7 @@ const asContentString = ({ rows, headerMap, format }) => {
   }
 };
 
-const asMimeType = format => {
+const asMimeType = (format) => {
   switch (format) {
     case 'json':
       return 'application/json;charset=utf-8';
@@ -126,7 +126,7 @@ function DataDownloader({ tableHeaders, rows, classes, fileStem }) {
   return (
     <Grid
       container
-      justify="flex-end"
+      justifyContent="flex-end"
       spacing={1}
       className={classes.container}
     >

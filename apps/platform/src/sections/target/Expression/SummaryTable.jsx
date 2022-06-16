@@ -16,8 +16,8 @@ import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 
 import SummaryRow from './SummaryRow';
 
-const getMaxRnaValue = expressions => {
-  return _.maxBy(expressions, expression => expression.rna.value).rna.value;
+const getMaxRnaValue = (expressions) => {
+  return _.maxBy(expressions, (expression) => expression.rna.value).rna.value;
 };
 
 // function that transforms tissue data into an array of objects
@@ -33,9 +33,9 @@ const getMaxRnaValue = expressions => {
 const groupTissues = (expressions, groupBy) => {
   const groupedTissues = {};
 
-  expressions.forEach(expression => {
+  expressions.forEach((expression) => {
     const parentLabels = expression.tissue[groupBy];
-    parentLabels.forEach(label => {
+    parentLabels.forEach((label) => {
       if (!groupedTissues[label]) {
         groupedTissues[label] = {
           parentLabel: label,
@@ -61,7 +61,7 @@ const groupTissues = (expressions, groupBy) => {
   return Object.values(groupedTissues);
 };
 
-const tissueComparator = sortBy => {
+const tissueComparator = (sortBy) => {
   if (sortBy === 'rna') {
     return (a, b) => {
       return b.rna.value - a.rna.value;
@@ -73,7 +73,7 @@ const tissueComparator = sortBy => {
   };
 };
 
-const parentComparator = sortBy => {
+const parentComparator = (sortBy) => {
   if (sortBy === 'rna') {
     return (a, b) => {
       return b.maxRnaValue - a.maxRnaValue;
@@ -86,7 +86,7 @@ const parentComparator = sortBy => {
 };
 
 const sort = (parents, sortBy) => {
-  parents.forEach(parent => {
+  parents.forEach((parent) => {
     parent.tissues.sort(tissueComparator(sortBy));
   });
   return parents.sort(parentComparator(sortBy));
@@ -123,7 +123,7 @@ class SummaryTable extends Component {
     }
   };
 
-  handleSort = sortBy => {
+  handleSort = (sortBy) => {
     this.setState({ sortBy });
   };
 
@@ -139,7 +139,7 @@ class SummaryTable extends Component {
         <Grid
           className={classes.groupBy}
           container
-          justify="center"
+          justifyContent="center"
           alignItems="center"
         >
           <Typography className={classes.groupByText} variant="body2">
@@ -157,7 +157,7 @@ class SummaryTable extends Component {
             </ToggleButton>
           </ToggleButtonGroup>
         </Grid>
-        <Grid container justify="center">
+        <Grid container justifyContent="center">
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -187,7 +187,7 @@ class SummaryTable extends Component {
                 <TableCell
                   className={classNames(classes.highLow, classes.rnaCell)}
                 >
-                  <Grid container justify="space-between">
+                  <Grid container justifyContent="space-between">
                     <Grid item>High</Grid>
                     <Grid item>Low</Grid>
                   </Grid>
@@ -195,7 +195,7 @@ class SummaryTable extends Component {
                 <TableCell
                   className={classNames(classes.highLow, classes.proteinCell)}
                 >
-                  <Grid container justify="space-between">
+                  <Grid container justifyContent="space-between">
                     <Grid item>Low</Grid>
                     <Grid item>High</Grid>
                   </Grid>
@@ -203,7 +203,7 @@ class SummaryTable extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {parents.map(parent => {
+              {parents.map((parent) => {
                 return (
                   <SummaryRow
                     key={parent.parentLabel}

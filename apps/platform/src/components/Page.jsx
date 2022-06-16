@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 
-const styles = theme => ({
+const styles = (theme) => ({
   page: {
     background: theme.palette.grey['50'],
     minHeight: '100vh',
@@ -28,7 +28,7 @@ class Page extends Component {
         {header}
         <Grid
           container
-          justify={'center'}
+          justifyContent={'center'}
           spacing={3}
           className={classes.gridContainer}
         >
