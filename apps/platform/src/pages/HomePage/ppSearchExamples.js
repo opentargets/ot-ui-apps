@@ -2,6 +2,9 @@ const searchExamples = {
   targets: [
     { label: 'WRN', id: 'ENSG00000165392' },
     { label: 'KRAS', id: 'ENSG00000133703' },
+    { label: 'WDR7', id: 'ENSG00000091157' },
+    { label: 'PAK2', id: 'ENSG00000180370' },
+    { label: 'WDR7', id: 'ENSG00000091157' },
   ],
   diseases: [
     { label: 'Atopic Eczema', id: 'EFO_0000274' },
