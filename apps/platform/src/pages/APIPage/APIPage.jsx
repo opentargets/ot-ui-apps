@@ -23,7 +23,7 @@ import DRUG_ANNOTATION from './DrugAnnotation.gql';
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
-  import('graphiql').then(module => {
+  import('graphiql').then((module) => {
     module.default.Logo = () => null;
     module.default.Toolbar = () => null;
     return module;
@@ -41,7 +41,7 @@ const useStyles = makeStyles({
 
 function APIPage() {
   const classes = useStyles();
-  const [query, setQuery] = useState(null);
+  const [query, setQuery] = useState('');
 
   return (
     <>
