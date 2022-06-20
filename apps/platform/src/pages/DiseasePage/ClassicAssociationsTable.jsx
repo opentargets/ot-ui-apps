@@ -9,6 +9,7 @@ import useBatchDownloader from '../../hooks/useBatchDownloader';
 import dataTypes from '../../dataTypes';
 import client from '../../client';
 import config from '../../config';
+import PartnerLockIcon from '../../components/PartnerLockIcon';
 
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociations.gql';
 
@@ -28,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     display: 'inline-block',
     transformOrigin: '0 0',
     bottom: 0,
-    transform: 'rotate(315deg)',
+    transform: 'rotate(310deg)',
     marginBottom: '5px',
   },
   symbolHeaderCell: {
@@ -152,7 +153,11 @@ function getColumns(efoId, classes) {
     .forEach(dt => {
       columns.push({
         id: dt.id,
-        label: dt.label,
+        label: (
+          <>
+            {dt.label} {dt.isPrivate ? <PartnerLockIcon /> : null}
+          </>
+        ),
         classes: {
           headerCell: classes.headerCell,
           innerLabel: classes.innerLabel,
