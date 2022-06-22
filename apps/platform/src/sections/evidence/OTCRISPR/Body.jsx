@@ -94,6 +94,11 @@ const getColumns = classes => [
     label: 'Significance',
     filterValue: row => row.resourceScore + '; ' + row.statisticalTestTail,
   },
+  {
+    id: 'releaseVersion',
+    label: 'Release version',
+  },
+  
 ];
 
 const exportColumns = [
