@@ -40,6 +40,13 @@ const columns = [
     },
   },
   {
+    id: 'allelicRequirements',
+    label: 'Allelic Requirement',
+    renderCell: ({ allelicRequirements }) => {
+      return allelicRequirements ? allelicRequirements[0] : naLabel;
+    },
+  },
+  {
     id: 'studyId',
     label: 'Study',
     renderCell: ({ studyId }) => {
@@ -55,15 +62,47 @@ const columns = [
   {
     id: 'cohortId',
     label: 'Source',
-    renderCell: ({ cohortId, projectId }) => {
+    renderCell: ({ cohortId, projectId, target }) => {
+      if (!cohortId && !projectId) return naLabel;
       const source = `${cohortId} (${projectId})`;
-      return projectId === 'AstraZeneca PheWAS Portal' ? (
-        <Link to="https://azphewas.com" external>
-          {source}
-        </Link>
-      ) : (
-        source
-      );
+      if (projectId === 'Epi25 collaborative') {
+        return (
+          <Link
+            to={`https://epi25.broadinstitute.org/gene/${target.id}`}
+            external
+          >
+            {source}
+          </Link>
+        );
+      }
+      if (projectId === 'Autism Sequencing Consortiuml') {
+        return (
+          <Link
+            to={`https://asc.broadinstitute.org/gene/${target.id}`}
+            external
+          >
+            {source}
+          </Link>
+        );
+      }
+      if (projectId === 'Genebass') {
+        return (
+          <Link
+            to={`https://app.genebass.org/gene/${target.id}?burdenSet=pLoF&phewasOpts=1&resultLayout=full`}
+            external
+          >
+            {source}
+          </Link>
+        );
+      }
+      if (projectId === 'AstraZeneca PheWAS Portal') {
+        return (
+          <Link to="https://azphewas.com" external>
+            {source}
+          </Link>
+        );
+      }
+      return source;
     },
     filterValue: ({ cohortId, projectId }) => {
       return `${cohortId} ${projectId}`;
@@ -204,7 +243,7 @@ const columns = [
     label: 'Literature',
     renderCell: ({ literature }) => {
       const entries = literature
-        ? literature.map(id => {
+        ? literature.map((id) => {
             return { name: id, url: epmcUrl(id), group: 'literature' };
           })
         : [];

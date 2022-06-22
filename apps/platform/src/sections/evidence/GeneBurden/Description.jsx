@@ -13,6 +13,10 @@ function Description({ symbol, diseaseName }) {
       <Link external to="https://azphewas.com">
         AstraZeneca PheWAS Portal
       </Link>
+      ,{' '}
+      <Link external to="https://app.genebass.org">
+        Genebass
+      </Link>
       .
     </>
   );
