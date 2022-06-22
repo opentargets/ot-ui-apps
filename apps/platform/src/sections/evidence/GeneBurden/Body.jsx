@@ -66,15 +66,8 @@ const columns = [
     },
   },
   {
-    id: 'allelicRequirements',
-    label: 'Allelic Requirement',
-    renderCell: ({ allelicRequirements }) => {
-      return allelicRequirements ? allelicRequirements[0] : naLabel;
-    },
-  },
-  {
     id: 'studyId',
-    label: 'Study',
+    label: 'Study ID',
     renderCell: ({ studyId }) => {
       return studyId ? (
         <Link to={`https://www.ebi.ac.uk/gwas/studies/${studyId}`} external>
@@ -87,7 +80,7 @@ const columns = [
   },
   {
     id: 'cohortId',
-    label: 'Source',
+    label: 'Cohort (Project)',
     renderCell: ({ cohortId, projectId, target }) => {
       if (!cohortId && !projectId) return naLabel;
       if (sources.indexOf(projectId) < 0) return `${cohortId} (${projectId})`;
@@ -122,6 +115,13 @@ const columns = [
           {statisticalMethod}
         </Tooltip>
       );
+    },
+  },
+  {
+    id: 'allelicRequirements',
+    label: 'Allelic Requirement',
+    renderCell: ({ allelicRequirements }) => {
+      return allelicRequirements ? allelicRequirements[0] : naLabel;
     },
   },
   {
