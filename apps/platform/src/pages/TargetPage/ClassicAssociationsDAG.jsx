@@ -44,14 +44,14 @@ function getParentIds(diseaseId, idToDisease, assocSet) {
 function buildDagData(idToDisease, associations, assocSet) {
   const dag = [];
   const tas = new Set();
-  associations.forEach(association => {
+  associations.forEach((association) => {
     const parentIds = getParentIds(
       association.disease.id,
       idToDisease,
       assocSet
     );
 
-    parentIds.forEach(parentId => {
+    parentIds.forEach((parentId) => {
       const node = idToDisease[parentId];
       if (node.parentIds.length === 0 && !assocSet[parentId]) {
         tas.add(parentId);
@@ -66,7 +66,7 @@ function buildDagData(idToDisease, associations, assocSet) {
     });
   });
 
-  tas.forEach(id => {
+  tas.forEach((id) => {
     dag.push({
       id,
       name: idToDisease[id].name,
@@ -92,7 +92,7 @@ function getMaxLayerCount(dag) {
   const counts = {};
   let maxCount = Number.NEGATIVE_INFINITY;
 
-  dag.descendants().forEach(node => {
+  dag.descendants().forEach((node) => {
     const { layer } = node;
 
     if (counts[layer]) {
@@ -125,51 +125,48 @@ function ClassicAssociationsDAG({
   const [minCommittedScore, setMinCommittedScore] = useState(0.1);
   const { width } = contentRect.bounds;
 
-  const { assocs, height, nodes, xOffset, links, textLimit } = useMemo(
-    () => {
-      const assocs = associations.filter(
-        assoc => assoc.score >= minCommittedScore
-      );
-      const assocSet = assocs.reduce((acc, assoc) => {
-        acc[assoc.disease.id] = assoc;
-        return acc;
-      }, {});
+  const { assocs, height, nodes, xOffset, links, textLimit } = useMemo(() => {
+    const assocs = associations.filter(
+      (assoc) => assoc.score >= minCommittedScore
+    );
+    const assocSet = assocs.reduce((acc, assoc) => {
+      acc[assoc.disease.id] = assoc;
+      return acc;
+    }, {});
 
-      const dagData = buildDagData(idToDisease, assocs, assocSet);
-      let dag, maxLayerCount, height, layout, nodes, links, xOffset, textLimit;
+    const dagData = buildDagData(idToDisease, assocs, assocSet);
+    let dag, maxLayerCount, height, layout, nodes, links, xOffset, textLimit;
 
-      if (dagData.length > 0) {
-        dag = dagStratify()(dagData);
-        maxLayerCount = getMaxLayerCount(dag);
-        height = maxLayerCount * 10;
-        layout = sugiyama()
-          .layering(layering)
-          .decross(decross)
-          .coord(coord)
-          .size([height, width]);
+    if (dagData.length > 0) {
+      dag = dagStratify()(dagData);
+      maxLayerCount = getMaxLayerCount(dag);
+      height = maxLayerCount * 10;
+      layout = sugiyama()
+        .layering(layering)
+        .decross(decross)
+        .coord(coord)
+        .size([height, width]);
 
-        layout(dag);
+      layout(dag);
 
-        nodes = dag.descendants();
-        links = dag.links();
+      nodes = dag.descendants();
+      links = dag.links();
 
-        const separation = width / (max(nodes, d => d.layer) + 1);
-        xOffset = separation / 2 - radius;
-        textLimit = separation / 8;
-      }
+      const separation = width / (max(nodes, (d) => d.layer) + 1);
+      xOffset = separation / 2 - radius;
+      textLimit = separation / 8;
+    }
 
-      return {
-        assocs,
-        dag,
-        height,
-        nodes,
-        xOffset,
-        links,
-        textLimit,
-      };
-    },
-    [associations, idToDisease, minCommittedScore, width]
-  );
+    return {
+      assocs,
+      dag,
+      height,
+      nodes,
+      xOffset,
+      links,
+      textLimit,
+    };
+  }, [associations, idToDisease, minCommittedScore, width]);
 
   return (
     <>
@@ -186,7 +183,7 @@ function ClassicAssociationsDAG({
           ref={measureRef}
           item
           container
-          justify="center"
+          justifyContent="center"
           alignItems="center"
           style={{ margin: '0 auto', minHeight: '340px' }}
         >

@@ -4,7 +4,7 @@ import { Skeleton } from '@material-ui/lab';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   externalLinks: {
     '& > :not(:first-child):before': {
       content: '" | "',
@@ -12,11 +12,12 @@ const useStyles = makeStyles(theme => ({
   },
   mainIconContainer: {
     width: '56px',
-    textAlign: 'center',
     marginRight: '4px',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
   },
   mainIcon: {
-    height: '65px',
     color: theme.palette.primary.main,
   },
   subtitle: {

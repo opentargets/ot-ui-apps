@@ -38,10 +38,10 @@ const searchExamples = {
     { label: 'Schizophrenia', id: 'MONDO_0005090' },
     { label: 'Alzheimers Disease', id: 'MONDO_0004975' },
     { label: 'Dementia', id: 'MONDO_0001627' },
-    { label: 'Noonan Syndrome', id: 'Orphanet_648' },
+    { label: 'Noonan Syndrome', id: 'MONDO_0018997' },
     { label: 'Melanoma', id: 'EFO_0000756' },
     { label: 'Leukemia', id: 'EFO_0000565' },
-    { label: 'Cowden Syndrome', id: 'Orphanet_201' },
+    { label: 'Cowden Syndrome', id: 'MONDO_0016063' },
   ],
   drugs: [
     { label: 'ROFECOXIB', id: 'CHEMBL122' },

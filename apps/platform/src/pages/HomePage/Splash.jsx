@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core';
 
-// import 'particles.js';
+import Particles from 'react-tsparticles';
+import { loadFull } from 'tsparticles';
 
 import { particlesConfig } from '../../constants';
 
-const styles = theme => ({
+const styles = (theme) => ({
   splashContainer: {
     height: '100vh',
   },
@@ -21,13 +22,18 @@ const styles = theme => ({
 });
 
 const Splash = ({ classes }) => {
-  useEffect(() => {
-    // window.particlesJS('splash', particlesConfig);
-  }, []);
+  const particlesInit = async (main) => {
+    await loadFull(main);
+  };
 
   return (
     <div className={classes.splashContainer}>
-      <div id="splash" className={classes.splash} />
+      <Particles
+        className={classes.splash}
+        id="tsparticles"
+        init={particlesInit}
+        options={particlesConfig}
+      />
     </div>
   );
 };

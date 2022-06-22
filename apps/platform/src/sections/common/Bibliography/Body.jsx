@@ -27,7 +27,7 @@ const aggtype = [
   // {value: 'pub_date_histogram', label: 'publication date'}
 ];
 
-const styles = theme => ({
+const styles = (theme) => ({
   aggtypeAutocomplete: {
     width: '15rem',
     '& .MuiFormControl-root': { marginTop: 0 },
@@ -81,13 +81,13 @@ class Section extends Component {
 
   // Parse the aggregation data based on defined aggtypes
   // and filter out all entries that are already selected
-  filterAggregations = aggs => {
+  filterAggregations = (aggs) => {
     const { selected } = this.state;
     return aggtype.reduce((newaggs, agg) => {
       newaggs[agg.value] = {
-        buckets: aggs[agg.value].buckets.filter(function(b) {
+        buckets: aggs[agg.value].buckets.filter(function (b) {
           return (
-            selected.filter(function(a) {
+            selected.filter(function (a) {
               a.label = a.label || a.key;
               return (
                 a.key.toString().toLowerCase() ===
@@ -106,7 +106,7 @@ class Section extends Component {
   // Get the data for the chips
   getAggregations = () => {
     getAggregationsData(this.state.selected).then(
-      resp => {
+      (resp) => {
         if (this.mounted) {
           this.setState({
             bibliographyCount: resp.hits.total,
@@ -115,7 +115,7 @@ class Section extends Component {
           });
         }
       },
-      error => {
+      (error) => {
         if (this.mounted) {
           this.setState({
             aggregations: {},
@@ -127,14 +127,14 @@ class Section extends Component {
   };
 
   // Get the data for the publications
-  getPublications = append => {
+  getPublications = (append) => {
     this.setState({ isLoading: true });
     const { hits } = this.state;
     const last = hits[hits.length - 1];
     const after = append ? last.sort[0] : undefined;
     const afterId = append ? last._id : undefined;
     getPublicationsData(this.state.selected, after, afterId).then(
-      resp => {
+      (resp) => {
         // if loading more data (after & afterId) append that, if not just reset hits
         const hits =
           after && afterId
@@ -144,7 +144,7 @@ class Section extends Component {
           this.setState({ hits: hits, isLoading: false });
         }
       },
-      error => {
+      (error) => {
         if (this.mounted) {
           this.setState({ hits: [], hasError: true, isLoading: false });
         }
@@ -153,7 +153,7 @@ class Section extends Component {
   };
 
   // Handler for when a chip is deselected
-  deselectChip = index => {
+  deselectChip = (index) => {
     const { selected } = this.state;
     if (index < selected.length) {
       this.setState({ selected: selected.filter((sel, i) => i !== index) });
@@ -161,7 +161,7 @@ class Section extends Component {
   };
 
   // Handler for when a chip is selected
-  selectChip = chip => {
+  selectChip = (chip) => {
     const selected = this.state.selected.concat([chip]);
     this.setState({ selected: selected });
   };
@@ -214,7 +214,7 @@ class Section extends Component {
           <Grid
             container
             direction="column"
-            justify="flex-start"
+            justifyContent="flex-start"
             alignItems="stretch"
             spacing={2}
           >
@@ -225,11 +225,11 @@ class Section extends Component {
                 <Autocomplete
                   classes={{ root: classes.aggtypeAutocomplete }}
                   disableClearable
-                  getOptionLabel={option => option.label}
-                  getOptionSelected={option => option.value}
+                  getOptionLabel={(option) => option.label}
+                  getOptionSelected={(option) => option.value}
                   onChange={this.aggtypeFilterHandler}
                   options={aggtype}
-                  renderInput={params => (
+                  renderInput={(params) => (
                     <TextField
                       {...params}
                       // label=""
@@ -287,7 +287,7 @@ class Section extends Component {
               <Grid
                 container
                 direction="column"
-                justify="flex-start"
+                justifyContent="flex-start"
                 alignItems="stretch"
                 spacing={2}
               >
@@ -298,7 +298,7 @@ class Section extends Component {
                         pmId={hit._source.pub_id}
                         title={hit._source.title}
                         authors={
-                          (hit._source.authors || []).map(a => ({
+                          (hit._source.authors || []).map((a) => ({
                             lastName: a.LastName,
                             initials: a.Initials,
                           })) || []

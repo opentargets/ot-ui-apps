@@ -16,7 +16,7 @@ const QS_OPTIONS = {
   skipNull: true,
 };
 
-const parseQueryString = qs => {
+const parseQueryString = (qs) => {
   const params = queryString.parse(qs, QS_OPTIONS);
   if (!params.entities) {
     params.entities = [];
@@ -30,30 +30,27 @@ const SearchPage = ({ location, history }) => {
   const { q, page, entities } = parseQueryString(location.search);
   const [data, setData] = useState(null);
 
-  useEffect(
-    () => {
-      let isCurrent = true;
-      client
-        .query({
-          query: SEARCH_PAGE_QUERY,
-          variables: {
-            queryString: q,
-            index: page - 1,
-            entityNames: entities,
-          },
-        })
-        .then(res => {
-          if (isCurrent) {
-            setData(res.data);
-          }
-        });
+  useEffect(() => {
+    let isCurrent = true;
+    client
+      .query({
+        query: SEARCH_PAGE_QUERY,
+        variables: {
+          queryString: q,
+          index: page - 1,
+          entityNames: entities,
+        },
+      })
+      .then((res) => {
+        if (isCurrent) {
+          setData(res.data);
+        }
+      });
 
-      return () => {
-        isCurrent = false;
-      };
-    },
-    [q, page, entities]
-  );
+    return () => {
+      isCurrent = false;
+    };
+  }, [q, page, entities]);
 
   const handleChangePage = (event, page) => {
     const params = { q, page: page + 1, entities };
@@ -61,13 +58,13 @@ const SearchPage = ({ location, history }) => {
     history.push(`/search?${qs}`);
   };
 
-  const handleSetEntity = entity => (event, checked) => {
+  const handleSetEntity = (entity) => (event, checked) => {
     const params = {
       q,
       page: 1, // reset to page 1
       entities: checked
         ? [...entities, entity]
-        : entities.filter(e => e !== entity),
+        : entities.filter((e) => e !== entity),
     };
     const qs = queryString.stringify(params, QS_OPTIONS);
     history.push(`/search?${qs}`);
@@ -90,7 +87,7 @@ const SearchPage = ({ location, history }) => {
               page={page}
               entities={entities}
               onSetEntity={handleSetEntity}
-              onChangePage={handleChangePage}
+              onPageChange={handleChangePage}
               data={data}
             />
           )
