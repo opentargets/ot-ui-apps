@@ -45,6 +45,10 @@ const useStyles = makeStyles(theme => {
     hsLegendChip: {
       width: '32px',
     },
+    hsGreen: {
+      backgroundColor: '#407253', // same as PPP green
+      border: `1px solid ${theme.palette.grey[600]}`,
+    },
     hsRed: {
       backgroundColor: '#9e1316',
       border: `1px solid ${theme.palette.grey[600]}`,
@@ -98,13 +102,13 @@ const hypothesesStatus = [
     status: 'observed and expected',
     expected: true,
     observed: true,
-    styles: 'hsBlack',
+    styles: 'hsGreen',
   },
   {
     status: 'not expected and not observed',
     expected: false,
     observed: false,
-    styles: 'hsWhite',
+    styles: 'hsBlack',
   },
   {
     status: 'observed but not expected',
@@ -181,6 +185,7 @@ const getColumns = classes => [
           items={row.biomarkerList.map(bm => ({
             label: bm.name,
             tooltip: bm.description,
+            customClass: classes['hsWhite'],
           }))}
         />
       );
