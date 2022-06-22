@@ -20,7 +20,7 @@ import * as UniProtLiterature from '../../sections/evidence/UniProtLiterature';
 import * as UniProtVariants from '../../sections/evidence/UniProtVariants';
 import * as Orphanet from '../../sections/evidence/Orphanet';
 import * as OTCRISPR from '../../sections/evidence/OTCRISPR';
-import * as OTEncore from '../../sections/evidence/OTEncore';
+// import * as OTEncore from '../../sections/evidence/OTEncore';
 import * as CancerBiomarkers from '../../sections/evidence/CancerBiomarkers';
 import * as OTValidation from '../../sections/evidence/OTValidation';
 import * as GeneBurden from '../../sections/evidence/GeneBurden';
@@ -51,7 +51,7 @@ const sections = [
   ExpressionAtlas,
   Impc,
   OTCRISPR,
-  OTEncore,
+  // OTEncore TODO: will comment back in when appropriate (and data will be available)
   OTValidation,
 ].filter(
   // select sections to show based on:
@@ -60,7 +60,7 @@ const sections = [
   // AND
   // 2. only include public section (i.e. not partner sections),
   //    OR also private sections if it's a partner preview
-  section =>
+  (section) =>
     (config.profile.hideEvidenceSectionIds.length === 0 ||
       !config.profile.hideEvidenceSectionIds.includes(section.definition.id)) &&
     (!section.definition.isPrivate ||
