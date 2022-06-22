@@ -192,6 +192,7 @@ const getColumns = classes => [
     },
     filterValue: row =>
       row.biomarkerList.map(bm => bm.name + ', ' + bm.description).join(', '),
+    width: '16%',
   },
   {
     id: 'resourceScore',
