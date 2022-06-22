@@ -217,6 +217,11 @@ const getColumns = classes => [
     ),
     width: '8%',
   },
+  {
+    id: 'releaseVersion',
+    label: 'Release version',
+    width: '8%',
+  },
 ];
 
 const exportColumns = [
