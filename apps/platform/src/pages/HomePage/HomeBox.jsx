@@ -1,7 +1,9 @@
 import React from 'react';
 import { Grid, Paper, makeStyles } from '@material-ui/core';
+import config from '../../config.js';
 
 import OTLogo from '../../assets/OTLogo';
+import PPOTLogo from '../../assets/PPPOTLogo';
 
 const useStyles = makeStyles(theme => ({
   homeboxContainer: {
@@ -41,7 +43,11 @@ const HomeBox = ({ children }) => {
     <Grid item xs={12} sm={8} md={8} lg={8}>
       <Paper className={classes.homeboxContainer}>
         <div className={classes.homeboxHeader}>
-          <OTLogo className={classes.logo} />
+          {config.profile.isPartnerPreview ? (
+            <PPOTLogo className={classes.logo} />
+          ) : (
+            <OTLogo className={classes.logo} />
+          )}
         </div>
         {children}
       </Paper>
