@@ -15,6 +15,32 @@ import ScientificNotation from '../../../components/ScientificNotation';
 
 import GENE_BURDEN_QUERY from './GeneBurdenQuery.gql';
 
+const sources = [
+  'Epi25 collaborative',
+  'Autism Sequencing Consortiuml',
+  'SCHEMA consortium',
+  'Genebass',
+  'AstraZeneca PheWAS Portal',
+];
+
+const getSource = (cohort, project) => {
+  if (!cohort) return project;
+  return `${cohort} (${project})`;
+};
+
+const getSourceLink = (project, targetId) => {
+  if (project === 'Epi25 collaborative')
+    return `https://epi25.broadinstitute.org/gene/${targetId}`;
+  if (project === 'Autism Sequencing Consortiuml')
+    return `https://asc.broadinstitute.org/gene/${targetId}`;
+  if (project === 'SCHEMA consortium')
+    return `https://schema.broadinstitute.org/gene/${targetId}`;
+  if (project === 'Genebass')
+    return `https://app.genebass.org/gene/${targetId}?burdenSet=pLoF&phewasOpts=1&resultLayout=full`;
+  if (project === 'AstraZeneca PheWAS Portal') return `https://azphewas.com`;
+  return '';
+};
+
 const columns = [
   {
     id: 'disease.name',
@@ -41,7 +67,7 @@ const columns = [
   },
   {
     id: 'studyId',
-    label: 'Study',
+    label: 'Study ID',
     renderCell: ({ studyId }) => {
       return studyId ? (
         <Link to={`https://www.ebi.ac.uk/gwas/studies/${studyId}`} external>
@@ -54,15 +80,14 @@ const columns = [
   },
   {
     id: 'cohortId',
-    label: 'Source',
-    renderCell: ({ cohortId, projectId }) => {
-      const source = `${cohortId} (${projectId})`;
-      return projectId === 'AstraZeneca PheWAS Portal' ? (
-        <Link to="https://azphewas.com" external>
-          {source}
+    label: 'Cohort/Project',
+    renderCell: ({ cohortId, projectId, target }) => {
+      if (!cohortId && !projectId) return naLabel;
+      if (sources.indexOf(projectId) < 0) return `${cohortId} (${projectId})`;
+      return (
+        <Link to={getSourceLink(projectId, target.id)} external>
+          {getSource(cohortId, projectId)}
         </Link>
-      ) : (
-        source
       );
     },
     filterValue: ({ cohortId, projectId }) => {
@@ -73,6 +98,7 @@ const columns = [
     id: 'ancestry',
     label: 'Ancestry',
     renderCell: ({ ancestry, ancestryId }) => {
+      if (!ancestry) return naLabel;
       return (
         <Link to={`http://purl.obolibrary.org/obo/${ancestryId}`} external>
           {ancestry}
@@ -89,6 +115,13 @@ const columns = [
           {statisticalMethod}
         </Tooltip>
       );
+    },
+  },
+  {
+    id: 'allelicRequirements',
+    label: 'Allelic Requirement',
+    renderCell: ({ allelicRequirements }) => {
+      return allelicRequirements ? allelicRequirements[0] : naLabel;
     },
   },
   {
