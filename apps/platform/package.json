@@ -49,7 +49,8 @@
     "recoil": "^0.3.0",
     "smiles-drawer": "^1.1.22",
     "tsparticles": "^2.0.6",
-    "typeface-inter": "^3.3.0"
+    "typeface-inter": "^3.3.0",
+    "ui": "*"
   },
   "scripts": {
     "dev": "vite --clearScreen false",
