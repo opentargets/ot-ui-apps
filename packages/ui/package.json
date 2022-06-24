@@ -3,6 +3,12 @@
   "version": "0.0.0",
   "main": "./index.js",
   "license": "MIT",
+  "dependencies": {
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.50",
+    "polished": "^2.3.0"
+  },
   "devDependencies": {
     "config": "*"
   }
