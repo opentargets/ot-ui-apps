@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 
-import OtUiThemeProvider from './components/OtUiThemeProvider';
+import { ThemeProvider } from 'ui';
 import client from './client';
 // import initLocalStorage from './utils/initLocalStorage';
 import theme from './theme';
@@ -25,7 +25,7 @@ class App extends Component {
   render() {
     return (
       <ApolloProvider client={client}>
-        <OtUiThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
           <Router>
             <Switch>
               <Route exact path="/" component={HomePage} />
@@ -40,7 +40,7 @@ class App extends Component {
               <Route component={NotFoundPage} />
             </Switch>
           </Router>
-        </OtUiThemeProvider>
+        </ThemeProvider>
       </ApolloProvider>
     );
   }
