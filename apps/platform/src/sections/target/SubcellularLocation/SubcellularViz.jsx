@@ -15,7 +15,9 @@ import Link from '../../../components/Link';
 import { identifiersOrgLink, getUniprotIds } from '../../../utils/global';
 import LoadingBackdrop from '../../../components/LoadingBackdrop';
 
-const SwissbioViz = lazy(() => import('./SwissbioViz'));
+const SwissbioViz = 'customElements' in window
+ ? lazy(() => import('./SwissbioViz')) 
+ : ({ children }) => <>{children}</>;
 
 const useStyles = makeStyles(theme => ({
   locationIcon: {
