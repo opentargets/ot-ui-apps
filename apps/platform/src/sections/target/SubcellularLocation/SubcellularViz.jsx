@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useRef } from 'react';
+import React, { lazy, useEffect, useRef, Suspense } from 'react';
 import {
   Typography,
   List,
@@ -13,6 +13,7 @@ import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
 import Link from '../../../components/Link';
 import { identifiersOrgLink, getUniprotIds } from '../../../utils/global';
+import LoadingBackdrop from '../../../components/LoadingBackdrop';
 
 const SwissbioViz = lazy(() => import('./SwissbioViz'));
 
@@ -171,23 +172,25 @@ function SubcellularViz({ data: target }) {
             key={i}
             className={classes.tabPanel}
           >
-            <SwissbioViz
-              taxonId="9606"
-              locationIds={sourcesLocations[s.id]
-                .map(l => parseLocationTerm(l.termSL))
-                .join()}
-              sourceId={s.id.toLowerCase()}
-            >
-              <Box ml={4} key={s.id}>
-                <Typography variant="h6">{s.label}</Typography>
-                Location for{' '}
-                <LocationLink
-                  sourceId={s.id}
-                  id={s.id === 'uniprot' ? uniprotId : target.id}
-                />
-                <LocationsList sls={sourcesLocations[s.id]} />
-              </Box>
-            </SwissbioViz>
+            <Suspense fallback={<LoadingBackdrop />}>
+              <SwissbioViz
+                taxonId="9606"
+                locationIds={sourcesLocations[s.id]
+                  .map(l => parseLocationTerm(l.termSL))
+                  .join()}
+                sourceId={s.id.toLowerCase()}
+              >
+                <Box ml={4} key={s.id}>
+                  <Typography variant="h6">{s.label}</Typography>
+                  Location for{' '}
+                  <LocationLink
+                    sourceId={s.id}
+                    id={s.id === 'uniprot' ? uniprotId : target.id}
+                  />
+                  <LocationsList sls={sourcesLocations[s.id]} />
+                </Box>
+              </SwissbioViz>
+            </Suspense>
           </div>
         ))}
       </SubcellularVizTabs>
