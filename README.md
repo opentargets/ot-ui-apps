@@ -2,13 +2,24 @@
 
 This repository holds the Open Targets web applications.
 
-Platform netlify preview
+## Required stack
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/0170074c-4d8d-4882-90e5-775a4222dc6c/deploy-status)](https://app.netlify.com/sites/ot-platform/deploys)
+- [NodeJS >= v14](https://nodejs.org/en/)
+- [Yarn package manager](https://yarnpkg.com/)
 
-Genetics netlify preview
+## Running development
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/e00eea73-d8b7-4f88-9d16-7265144b54e1/deploy-status)](https://app.netlify.com/sites/ot-genetics/deploys)
+This project contains the [Platform](https://platform.opentargets.org/) and [Genetics](https://genetics.opentargets.org/) web applications. To run both in development mode, you can run: `yarn dev` in the root directory.
+
+To run only Platform `yarn run:platfrom`
+
+To run only Genetics `yarn run:genetics`
+
+## Building production-ready bundle
+
+From the root directory run: `yarn build`. This will generate on each application a production-ready bundle.
+
+As same as development, you can run `yarn build:platform` or `yarn build:genetics` to scope the build only for one of the applications.
 
 ## Copyright
 
