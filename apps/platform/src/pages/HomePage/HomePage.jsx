@@ -18,7 +18,6 @@ import {
   mainMenuItems,
 } from '../../constants';
 import { Footer } from 'ui';
-// import Footer from '../../components/Footer';
 import HomeBox from './HomeBox';
 import Link from '../../components/Link';
 import NavBar from '../../components/NavBar';
