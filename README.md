@@ -11,9 +11,9 @@ This repository holds the Open Targets web applications.
 
 This project contains the [Platform](https://platform.opentargets.org/) and [Genetics](https://genetics.opentargets.org/) web applications. To run both in development mode, you can run: `yarn dev` in the root directory.
 
-To run only Platform `yarn run:platfrom`
+To run only Platform `yarn dev:platfrom`
 
-To run only Genetics `yarn run:genetics`
+To run only Genetics `yarn dev:genetics`
 
 ## Building production-ready bundle
 
