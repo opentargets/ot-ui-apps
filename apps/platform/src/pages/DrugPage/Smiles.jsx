@@ -6,7 +6,7 @@ import SmilesDrawer from 'smiles-drawer';
 
 const styles = theme => ({
   container: {
-    border: `1px solid ${theme.palette.grey[300]}`,
+    background: 'none',
     cursor: 'pointer',
     height: '240px',
     marginLeft: 'auto',
