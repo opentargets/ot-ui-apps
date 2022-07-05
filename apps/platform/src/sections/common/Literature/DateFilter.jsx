@@ -17,7 +17,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 const monthsBtwnDates = (startDate, endDate) => {
   return Math.max(
     (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-      (endDate.getMonth() - startDate.getMonth()),
+    (endDate.getMonth() - startDate.getMonth()),
     0
   );
 };
@@ -49,12 +49,17 @@ export const DateFilter = () => {
         new Date(`${earliestPubYear}-01-01`),
         new Date()
       );
-      console.log('limit' + limit);
       setNumberOfMonths(limit);
-      setFilterDate(prev => [prev[0], limit]);
+      if (filterDate[0] == 0 && filterDate[1] == limit) {
+        setFilterDate([0, limit]);
+      }
     },
     [earliestPubYear]
   );
+
+  useEffect(() => {
+    setFilterDate([0, numberOfMonths]);
+  }, []);
 
   const handleChange = async values => {
     setLoadingEntities(true);
@@ -106,12 +111,10 @@ export const DateFilter = () => {
   }
 
   const handleDateRangeChange = (event, newValue) => {
-    console.log('date changed!!!');
     setFilterDate(newValue);
   };
 
   const handleDateRangeChangeCommited = (event, newValue) => {
-    console.log('date commited!!!');
     const startDate = selectedDate(newValue[0]);
     const endDate = selectedDate(newValue[1]);
     handleChange({
