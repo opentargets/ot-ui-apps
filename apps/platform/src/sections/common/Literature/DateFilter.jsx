@@ -50,9 +50,7 @@ export const DateFilter = () => {
         new Date()
       );
       setNumberOfMonths(limit);
-      if (filterDate[0] == 0 && filterDate[1] == limit) {
-        setFilterDate([0, limit]);
-      }
+      setFilterDate([0, limit]);
     },
     [earliestPubYear]
   );
