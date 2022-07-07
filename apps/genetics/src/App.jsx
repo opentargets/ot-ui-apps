@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
-import { OtUiThemeProvider } from './ot-ui-components';
+import { ThemeProvider } from 'ui';
 
 import client from './client';
 import HomePage from './pages/HomePage/index';
@@ -15,7 +15,7 @@ import ImmunobasePage from './pages/ImmunobasePage';
 
 const App = () => (
   <ApolloProvider client={client}>
-    <OtUiThemeProvider>
+    <ThemeProvider>
       <Router>
         <React.Fragment>
           <Route exact path="/" component={HomePage} />
@@ -31,7 +31,7 @@ const App = () => (
           <Route path="/immunobase" component={ImmunobasePage} />
         </React.Fragment>
       </Router>
-    </OtUiThemeProvider>
+    </ThemeProvider>
   </ApolloProvider>
 );
 

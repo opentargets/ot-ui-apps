@@ -1,8 +1,4 @@
-import {
-  // faQuestionCircle,
-  faBook,
-  faEnvelope,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBook, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import {
   faDiscourse,
   faTwitterSquare,
@@ -14,11 +10,6 @@ import config from './config';
 
 export const externalLinks = {
   about: [
-    // {
-    //   label: `Platform version ${process.env.REACT_APP_REVISION ?? 'dev'}`,
-    //   url: `https://github.com/opentargets/platform-app/releases/tag/${process
-    //     .env.REACT_APP_REVISION ?? 'v0.1.1'}`,
-    // },
     {
       label: 'Community forum',
       url: 'https://community.opentargets.org',
@@ -69,7 +60,6 @@ export const externalLinks = {
     },
   ],
   social: [
-    // { icon: faDiscourse, url: 'https://community.opentargets.org' },
     { icon: faTwitterSquare, url: 'https://twitter.com/opentargets' },
     { icon: faLinkedin, url: 'https://www.linkedin.com/company/open-targets' },
     { icon: faYoutubeSquare, url: 'https://www.youtube.com/opentargets' },

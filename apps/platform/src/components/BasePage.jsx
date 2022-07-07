@@ -1,10 +1,10 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import { Footer } from 'ui';
 
 import Search from './Search';
 import Page from './Page';
 import NavBar from './NavBar';
-import Footer from './Footer';
 import {
   appTitle,
   appDescription,

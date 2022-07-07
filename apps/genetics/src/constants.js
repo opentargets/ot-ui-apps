@@ -1,3 +1,12 @@
+import { faBook, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDiscourse,
+  faTwitterSquare,
+  faLinkedin,
+  faGithubSquare,
+  faYoutubeSquare,
+} from '@fortawesome/free-brands-svg-icons';
+
 import { contactUrl as contactUrlConfig } from './configuration';
 import config from './config';
 
@@ -73,36 +82,26 @@ export const externalLinks = {
   help: [
     {
       label: 'Documentation',
-      iconClasses: 'fa fa-book',
+      icon: faBook,
       url: 'https://genetics-docs.opentargets.org',
     },
     {
       label: 'Community',
-      iconClasses: 'fab fa-discourse',
-      url: 'https://community.opentargets.org/',
+      icon: faDiscourse,
+      url: 'https://community.opentargets.org',
+      external: true,
     },
     {
       label: 'helpdesk@opentargets.org',
-      iconClasses: 'fa fa-envelope',
-      url: 'mailto:helpdesk@opentargets.org',
+      icon: faEnvelope,
+      url: `mailto:helpdesk@opentargets.org`,
+      external: true,
     },
   ],
   social: [
-    {
-      iconClasses: 'fab fa-twitter-square',
-      url: 'http://twitter.com/opentargets',
-    },
-    {
-      iconClasses: 'fab fa-linkedin',
-      url: 'https://www.linkedin.com/company/open-targets/',
-    },
-    {
-      iconClasses: 'fab fa-youtube-square',
-      url: 'https://www.youtube.com/opentargets',
-    },
-    {
-      iconClasses: 'fab fa-github-square',
-      url: 'https://github.com/opentargets',
-    },
+    { icon: faTwitterSquare, url: 'https://twitter.com/opentargets' },
+    { icon: faLinkedin, url: 'https://www.linkedin.com/company/open-targets' },
+    { icon: faYoutubeSquare, url: 'https://www.youtube.com/opentargets' },
+    { icon: faGithubSquare, url: 'https://github.com/opentargets' },
   ],
 };

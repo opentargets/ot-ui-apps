@@ -13,11 +13,14 @@ const styles = theme => ({
     position: 'absolute',
     zIndex: -1,
   },
+  svg: {
+    position: 'fixed',
+  },
 });
 
 const DATA = [];
 const uniformGenerator = d3.randomUniform();
-for (let i = 0; i < 500; i++) {
+for (let i = 0; i < 250; i++) {
   DATA.push([uniformGenerator(), uniformGenerator()]);
 }
 
@@ -36,7 +39,7 @@ class Splash extends React.Component {
     const { classes, measureRef } = this.props;
     return (
       <div className={classes.splash} ref={measureRef}>
-        <svg ref={node => (this.svgRef = node)} />
+        <svg className={classes.svg} ref={node => (this.svgRef = node)} />
       </div>
     );
   }
@@ -62,7 +65,7 @@ class Splash extends React.Component {
     pointsVoronoi
       .enter()
       .append('path')
-      .attr('stroke', 'white')
+      .attr('stroke', 'rgba(232, 232, 232, 0.6)')
       .attr('stroke-opacity', 0.3)
       .attr('fill', 'none')
       .merge(pointsVoronoi)
