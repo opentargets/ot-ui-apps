@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import { Helmet } from 'react-helmet';
+import { Footer } from 'ui';
 
 import {
   appTitle,
@@ -17,7 +18,6 @@ import {
   externalLinks,
   mainMenuItems,
 } from '../../constants';
-import Footer from '../../components/Footer';
 import HomeBox from './HomeBox';
 import Link from '../../components/Link';
 import NavBar from '../../components/NavBar';
@@ -39,7 +39,7 @@ import {
 
 import config from '../../config';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   links: {
     marginTop: '12px',
   },
