@@ -9,6 +9,7 @@ import {
 
 import PmidOrBiobankLink from './PmidOrBiobankLink';
 import { pvalThreshold } from '../constants';
+import { generateComparator } from '../utils';
 
 export const tableColumns = ({
   traitFilterValue,
@@ -95,6 +96,13 @@ export const tableColumns = ({
     id: 'nTotal',
     label: 'N Overall',
     renderCell: rowData => commaSeparate(rowData.nTotal),
+  },
+  {
+    id: 'hasSumstats',
+    label: 'Has sumstats',
+    comparator: generateComparator(d => d.study?.hasSumstats),
+    renderCell: rowData => {console.log(rowData); return rowData.study?.hasSumstats ? <>yes</> : <>no</>},
+    export: rowData => rowData.study?.hasSumstats ? true : false,
   },
 ];
 
