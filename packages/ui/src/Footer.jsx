@@ -126,7 +126,7 @@ const FooterSection = ({ heading, links, social }) => {
   );
 };
 
-const FooterComponent = ({ classes, externalLinks }) => (
+const Footer = ({ classes, externalLinks }) => (
   <Grid
     className={classes.footer}
     container
@@ -149,4 +149,4 @@ const FooterComponent = ({ classes, externalLinks }) => (
   </Grid>
 );
 
-export const Footer = withStyles(styles)(FooterComponent);
+export default withStyles(styles)(Footer);
