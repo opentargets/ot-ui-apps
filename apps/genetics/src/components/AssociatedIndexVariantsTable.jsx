@@ -9,6 +9,7 @@ import {
 import { pvalThreshold } from '../constants';
 import PmidOrBiobankLink from './PmidOrBiobankLink';
 import StudyLocusLink from './StudyLocusLink';
+import { generateComparator } from '../utils';
 
 const tableColumns = variantId => [
   {
@@ -116,6 +117,13 @@ const tableColumns = variantId => [
     label: 'Is in 95% Credible Set',
     renderCell: rowData =>
       rowData.posteriorProbability !== null ? 'True' : '',
+  },
+  {
+    id: 'hasSumstats',
+    label: 'Has sumstats',
+    comparator: generateComparator(d => d.study?.hasSumstats),
+    renderCell: rowData => rowData.hasSumstats ? <>yes</> : <>no</>,
+    export: rowData => rowData.hasSumstats ? true : false,
   },
   {
     id: 'studyLocus',

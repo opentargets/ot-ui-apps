@@ -39,6 +39,7 @@ export function variantTransformAssociatedIndexVariants(data) {
         pmid: study.pmid,
         pubDate: study.pubDate,
         pubAuthor: study.pubAuthor,
+        hasSumstats: study.hasSumstats,
         ...rest,
       };
     }
