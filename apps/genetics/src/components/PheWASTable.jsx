@@ -101,7 +101,7 @@ export const tableColumns = ({
     id: 'hasSumstats',
     label: 'Has sumstats',
     comparator: generateComparator(d => d.study?.hasSumstats),
-    renderCell: rowData => {console.log(rowData); return rowData.study?.hasSumstats ? <>yes</> : <>no</>},
+    renderCell: rowData => rowData.study?.hasSumstats ? <>yes</> : <>no</>,
     export: rowData => rowData.study?.hasSumstats ? true : false,
   },
 ];
