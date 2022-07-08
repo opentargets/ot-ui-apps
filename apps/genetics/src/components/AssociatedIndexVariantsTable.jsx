@@ -121,7 +121,7 @@ const tableColumns = variantId => [
   {
     id: 'hasSumstats',
     label: 'Has sumstats',
-    comparator: generateComparator(d => d.study?.hasSumstats),
+    comparator: generateComparator(d => d.hasSumstats),
     renderCell: rowData => rowData.hasSumstats ? <>yes</> : <>no</>,
     export: rowData => rowData.hasSumstats ? true : false,
   },
