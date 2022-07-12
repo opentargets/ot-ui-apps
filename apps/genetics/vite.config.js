@@ -1,7 +1,7 @@
-import { defineConfig } from "vite";
-import svgrPlugin from "vite-plugin-svgr";
-import react from "@vitejs/plugin-react";
-import graphql from "@rollup/plugin-graphql";
+import { defineConfig } from 'vite';
+import svgrPlugin from 'vite-plugin-svgr';
+import react from '@vitejs/plugin-react';
+import graphql from '@rollup/plugin-graphql';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,7 +9,7 @@ export default defineConfig({
     port: 3000,
   },
   build: {
-    outDir: "./bundle-genetics",
+    outDir: './bundle-genetics',
   },
   plugins: [
     graphql(),
