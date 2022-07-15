@@ -1,13 +1,12 @@
 const config = {
   apiUrl:
-    window.configApiUrl ??
-    // 'https://open-targets-genetics-dev.ew.r.appspot.com/graphql',
-    // TODO: production API to be used for testing/preview purposes only; revert before merging
-    'https://api.genetics.opentargets.org/graphql',
+    window.configApiUrl ?? 'https://api.genetics.dev.opentargets.xyz/graphql',
   googleTagManagerID: window.configGoogleTagManagerID ?? null,
   helpdeskEmail: window.configHelpdeskEmail ?? 'helpdesk@opentargets.org',
   profile: window.configProfile ?? {},
-  platformUrl: window.configPlatformUrl ?? 'https://genetics.opentargets.org',
+  platformUrl: window.configPlatformUrl
+    ? window.configPlatformUrl.replace(/\/$/, '')
+    : 'https://platform.opentargets.org',
 };
 
 export default config;
