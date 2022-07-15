@@ -4,7 +4,9 @@ const config = {
   googleTagManagerID: window.configGoogleTagManagerID ?? null,
   helpdeskEmail: window.configHelpdeskEmail ?? 'helpdesk@opentargets.org',
   profile: window.configProfile ?? {},
-  platformUrl: window.configPlatformUrl ?? 'https://genetics.opentargets.org',
+  platformUrl: window.configPlatformUrl
+    ? window.configPlatformUrl.replace(/\/$/, '')
+    : 'https://platform.opentargets.org',
 };
 
 export default config;
