@@ -16,30 +16,30 @@ import ClinvarStars from '../../../components/ClinvarStars';
 import CHEMICAL_PROBES_QUERY from './ChemicalProbes.gql';
 
 const scores = [
-  {
-    field: 'probeMinerScore',
-    label: 'Probe Miner',
-    description:
-      'The Probe Miner score is the sum of 6 parameters: target potency, target selectivity, cell potency, structure-activity relationships (SAR), inactive analogs and pan-assay interference (PAINS).',
-  },
+  // {
+  //   field: 'probeMinerScore',
+  //   label: 'Probe Miner',
+  //   description:
+  //     'The Probe Miner score is the sum of 6 parameters: target potency, target selectivity, cell potency, structure-activity relationships (SAR), inactive analogs and pan-assay interference (PAINS).',
+  // },
   {
     field: 'probesDrugScore',
     label: 'Drugs',
     description:
       'The P&D probe-likeness score is the sum of 6 parameters: target potency, target selectivity, cell potency, potency-selectivity synergy, presence of a control compound and presence of an orthogonal probe.',
   },
-  {
-    field: 'scoreInCells',
-    label: 'Cells',
-    description:
-      'The organism score ranks the chemical probe for its use in model cells.',
-  },
-  {
-    field: 'scoreInOrganisms',
-    label: 'Organisms',
-    description:
-      'The organism score ranks the chemical probe for its use in model organisms.',
-  },
+  // {
+  //   field: 'scoreInCells',
+  //   label: 'Cells',
+  //   description:
+  //     'The organism score ranks the chemical probe for its use in model cells.',
+  // },
+  // {
+  //   field: 'scoreInOrganisms',
+  //   label: 'Organisms',
+  //   description:
+  //     'The organism score ranks the chemical probe for its use in model organisms.',
+  // },
 ];
 
 /**
