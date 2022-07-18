@@ -9,7 +9,7 @@ import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
 import { naLabel } from '../../../constants';
 import ChipList from '../../../components/ChipList';
-import { DataTable, TableDrawer } from '../../../components/Table';
+import { DataTable } from '../../../components/Table';
 import { defaultRowsPerPageOptions } from '../../../constants';
 import ClinvarStars from '../../../components/ClinvarStars';
 
