@@ -15,7 +15,7 @@ Genetics netlify preview
 A Docker image hosting either the Open Targets Platform or Open Targets Genetics web application can be built using the following command:
 
 ```sh
-docker build --tag {name:tag} --build-arg app={platform,genetics}
+docker build --tag {name:tag} --build-arg app={platform,genetics} .
 ```
 
 The `app` variable can be set to either `platform` or `genetics`, depending on which application should be built.
