@@ -77,7 +77,7 @@ const columns = [
     },
     exportValue: row => row.id,
     filterValue: row => row.id,
-    width: '16%',
+    width: '19%',
   },
   {
     id: 'isHighQuality',
@@ -101,7 +101,7 @@ const columns = [
     renderCell: row => row.mechanismOfAction?.join(', ') || naLabel,
     exportValue: row => row.mechanismOfAction?.join(', '),
     filterValue: row => row.mechanismOfAction?.join(', ') || naLabel,
-    width: '16%',
+    width: '19%',
   },
   {
     id: 'origin',
@@ -109,7 +109,7 @@ const columns = [
     renderCell: row => row.origin?.join(', ') || naLabel,
     exportValue: row => row.origin?.join(', '),
     filterValue: row => row.origin?.join(', ') || naLabel,
-    width: '16%',
+    width: '19%',
   },
   {
     id: 'score',
@@ -142,32 +142,32 @@ const columns = [
         .filter(s => row[s.field] !== null)
         .map(s => s.label + ': ' + row[s.field])
         .join(', ') || naLabel,
-    width: '26%',
+    width: '33%',
   },
-  {
-    id: 'sources',
-    label: 'Reference',
-    renderCell: row => {
-      return row.urls ? (
-        <TableDrawer
-          entries={row.urls.map(u => ({
-            name: u.niceName,
-            url: u.url,
-            group: 'literature',
-          }))}
-        />
-      ) : (
-        naLabel
-      );
-    },
-    exportValue: row => row.urls.map(u => u.niceName + ': ' + u.url).join(', '),
-    filterValue: row =>
-      row.urls
-        .map(u => u.niceName + ': ' + u.url)
-        .concat(row.urls.length > 1 ? [`${row.urls.length} entries`] : [])
-        .join(', '),
-    width: '16%',
-  },
+  // {
+  //   id: 'sources',
+  //   label: 'Reference',
+  //   renderCell: row => {
+  //     return row.urls ? (
+  //       <TableDrawer
+  //         entries={row.urls.map(u => ({
+  //           name: u.niceName,
+  //           url: u.url,
+  //           group: 'literature',
+  //         }))}
+  //       />
+  //     ) : (
+  //       naLabel
+  //     );
+  //   },
+  //   exportValue: row => row.urls.map(u => u.niceName + ': ' + u.url).join(', '),
+  //   filterValue: row =>
+  //     row.urls
+  //       .map(u => u.niceName + ': ' + u.url)
+  //       .concat(row.urls.length > 1 ? [`${row.urls.length} entries`] : [])
+  //       .join(', '),
+  //   width: '16%',
+  // },
 ];
 
 function Body({ definition, id, label: symbol }) {
