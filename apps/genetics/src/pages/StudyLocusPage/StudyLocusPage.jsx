@@ -36,9 +36,14 @@ import CredibleSetsIntersectionTable from '../../components/CredibleSetsIntersec
 import Slider from '../../components/Slider';
 import { 
   commaSeparate,
-  generateComparator, 
   filterGwasColocalisation, 
   filterQtlColocalisation,
+  filterPageCredibleSet,
+  buildCredibleGwasColocalisation,
+  buildCredibleQtlColocalisation,
+  filterCredibleSets,
+  getCheckedCredibleSets,
+  getVariantByCredibleSetsIntersection,
 } from '../../utils';
 
 import Header from './Header';
@@ -49,8 +54,6 @@ import GWAS_REGIONAL_QUERY from '../../queries/GWASRegionalQuery.gql';
 import QTL_REGIONAL_QUERY from '../../queries/QTLRegionalQuery.gql';
 
 const HALF_WINDOW = 250000;
-
-// const log2h4h3Comparator = generateComparator((d) => d.log2h4h3);
 
 const gwasCredibleSetQueryAliasedFragment = ({ study, indexVariant }) => `
 gwasCredibleSet__${study.studyId}__${indexVariant.id}: gwasCredibleSet(studyId: "${study.studyId}", variantId: "${indexVariant.id}") {
@@ -101,22 +104,12 @@ const qtlCredibleSetQueryAliasedFragment = ({
   `;
 };
 
-// TODO: add to utils
 const createCredibleSetsQuery = ({ gwasColocalisation, qtlColocalisation }) => {
   return gql(`query CredibleSetsQuery {
     ${gwasColocalisation.map(gwasCredibleSetQueryAliasedFragment).join('')}
     ${qtlColocalisation.map(qtlCredibleSetQueryAliasedFragment).join('')}
   }`);
 };
-
-const flattenPosition = ({ tagVariant, postProb, is95, is99, ...rest }) => ({
-  tagVariant,
-  position: tagVariant.position,
-  posteriorProbability: postProb,
-  is95CredibleSet: is95,
-  is99CredibleSet: is99,
-  ...rest,
-});
 
 const traitAuthorYear = (s) =>
   `${s.traitReported} (${s.pubAuthor}, ${new Date(s.pubDate).getFullYear()})`;
@@ -209,15 +202,6 @@ const getDownloadData = (data) => {
     h4: d.h4,
     log2h4h3: d.log2h4h3,
   }));
-};
-
-const buildCredibleSet = (data, study, indexVariant, credSet95Value) => {
-  const selection =
-    data[`gwasCredibleSet__${study.studyId}__${indexVariant.id}`];
-  if (selection === undefined) return [];
-  return selection
-    .map(flattenPosition)
-    .filter((d) => (credSet95Value === '95' ? d.is95CredibleSet : true));
 };
 
 class StudyLocusPage extends React.Component {
@@ -359,20 +343,15 @@ class StudyLocusPage extends React.Component {
                       qtlColocalisation,
                     })
                   : null;
-
-              // TODO: add to utils
               
-              const gwasColocalisationFiltered = filterGwasColocalisation(gwasColocalisation);
+              const gwasColocalisationFiltered = filterGwasColocalisation(gwasColocalisation, this.state);
               const qtlColocalisationFiltered = filterQtlColocalisation(qtlColocalisation, this.state);
 
-              const pageCredibleSetAdjusted = pageCredibleSet
-                .map(flattenPosition)
-                .filter((d) =>
-                  credSet95Value === '95' ? d.is95CredibleSet : true
-                );
+              const pageCredibleSetAdjusted = filterPageCredibleSet(pageCredibleSet, credSet95Value);
+                
               const pageCredibleSetKey = `gwasCredibleSet__${studyId}__${indexVariantId}`;
               const qtlColocDownloadData = getDownloadData(qtlColocalisation);
-              // TODO: till here
+
               return (
                 <React.Fragment>
                   <SectionHeading heading="Association summary" />
@@ -661,51 +640,8 @@ class StudyLocusPage extends React.Component {
 
                         // de-alias
 
-                        // TODO: add to utils
-                        const gwasColocalisationCredibleSetsFiltered =
-                          gwasColocalisationFiltered.map(
-                            ({ study, indexVariant, ...rest }) => ({
-                              key: `gwasCredibleSet__${study.studyId}__${indexVariant.id}`,
-                              study,
-                              indexVariant,
-                              credibleSet: buildCredibleSet(
-                                data2,
-                                study,
-                                indexVariant,
-                                credSet95Value
-                              ),
-                              ...rest,
-                            })
-                          );
-                        const qtlColocalisationCredibleSetsFiltered =
-                          qtlColocalisationFiltered.map(
-                            ({
-                              qtlStudyName,
-                              phenotypeId,
-                              tissue,
-                              indexVariant,
-                              ...rest
-                            }) => {
-                              const key = `qtlCredibleSet__${qtlStudyName}__${phenotypeId}__${tissue.id}__${indexVariant.id}`;
-                              return {
-                                key,
-                                qtlStudyName,
-                                phenotypeId,
-                                tissue,
-                                indexVariant,
-                                credibleSet: data2[key]
-                                  ? data2[key]
-                                      .map(flattenPosition)
-                                      .filter((d) =>
-                                        credSet95Value === '95'
-                                          ? d.is95CredibleSet
-                                          : true
-                                      )
-                                  : [],
-                                ...rest,
-                              };
-                            }
-                          );
+                        const gwasColocalisationCredibleSetsFiltered = buildCredibleGwasColocalisation(gwasColocalisationFiltered, data2, credSet95Value);
+                        const qtlColocalisationCredibleSetsFiltered = buildCredibleQtlColocalisation(qtlColocalisationFiltered, data2, credSet95Value);
 
                         // get the intersecting variants
                         const credibleSetsAll = [
@@ -721,53 +657,10 @@ class StudyLocusPage extends React.Component {
                           ),
                         ];
                         const { credibleSetIntersectionKeys } = this.state;
-                        const credibleSetsChecked = credibleSetsAll.filter(
-                          (d) => credibleSetIntersectionKeys.indexOf(d.key) >= 0
-                        );
-                        const variantsByCredibleSets = credibleSetsChecked.map(
-                          (d) =>
-                            d.credibleSet.map(({ tagVariant, ...rest }) => ({
-                              statsFields: rest,
-                              ...tagVariant,
-                            }))
-                        );
-                         
-                        const variantIdsInCredibleSetsIntersection =
-                          variantsByCredibleSets.reduce((acc, vs, i) => {
-                            vs.forEach((v) => {
-                              const { statsFields, ...variantFields } = v;
-                              if (acc[v.id]) {
-                                acc[v.id].posteriorProbabilityProd *=
-                                  statsFields.posteriorProbability;
-                                acc[v.id].posteriorProbabilityMax = Math.max(
-                                  acc[v.id].posteriorProbabilityMax,
-                                  statsFields.posteriorProbability
-                                );
-                                acc[v.id].appearsInCount += 1;
-                              } else {
-                                acc[v.id] = {
-                                  ...variantFields,
-                                  posteriorProbabilityMax:
-                                    statsFields.posteriorProbability,
-                                  posteriorProbabilityProd:
-                                    statsFields.posteriorProbability,
-                                  appearsInCount: 1,
-                                };
-                              }
-                            });
-                            return acc;
-                          }, {});
-                        const variantsByCredibleSetsIntersection =
-                          Object.values(variantIdsInCredibleSetsIntersection)
-                            .filter(
-                              (v) =>
-                                v.appearsInCount ===
-                                variantsByCredibleSets.length
-                            )
-                            .map((v) => ({
-                              ...v,
-                              posteriorProbability: v.posteriorProbabilityProd, // aliased for colouring on plot
-                            }));
+                        const credibleSetsChecked = filterCredibleSets(credibleSetsAll, credibleSetIntersectionKeys);
+                        const variantsByCredibleSets = getCheckedCredibleSets(credibleSetsChecked);   
+                        const variantsByCredibleSetsIntersection = getVariantByCredibleSetsIntersection(variantsByCredibleSets);
+                    
 
                         return (
                           <React.Fragment>
