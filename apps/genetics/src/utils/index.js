@@ -26,3 +26,4 @@ export * from './chromosome';
 export * from './gene';
 export * from './variant';
 export * from './study';
+export * from './studyLocus';

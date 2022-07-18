@@ -34,7 +34,12 @@ import ColocL2GTable from '../../components/ColocL2GTable';
 import CredibleSetWithRegional from '../../components/CredibleSetWithRegional';
 import CredibleSetsIntersectionTable from '../../components/CredibleSetsIntersectionTable';
 import Slider from '../../components/Slider';
-import { commaSeparate } from '../../utils';
+import { 
+  commaSeparate,
+  generateComparator, 
+  filterGwasColocalisation, 
+  filterQtlColocalisation,
+} from '../../utils';
 
 import Header from './Header';
 
@@ -45,12 +50,7 @@ import QTL_REGIONAL_QUERY from '../../queries/QTLRegionalQuery.gql';
 
 const HALF_WINDOW = 250000;
 
-const generateComparatorFromAccessor = (accessor) => (a, b) => {
-  const aValue = accessor(a);
-  const bValue = accessor(b);
-  return aValue > bValue ? 1 : aValue === bValue ? 0 : -1;
-};
-const log2h4h3Comparator = generateComparatorFromAccessor((d) => d.log2h4h3);
+// const log2h4h3Comparator = generateComparator((d) => d.log2h4h3);
 
 const gwasCredibleSetQueryAliasedFragment = ({ study, indexVariant }) => `
 gwasCredibleSet__${study.studyId}__${indexVariant.id}: gwasCredibleSet(studyId: "${study.studyId}", variantId: "${indexVariant.id}") {
@@ -101,6 +101,7 @@ const qtlCredibleSetQueryAliasedFragment = ({
   `;
 };
 
+// TODO: add to utils
 const createCredibleSetsQuery = ({ gwasColocalisation, qtlColocalisation }) => {
   return gql(`query CredibleSetsQuery {
     ${gwasColocalisation.map(gwasCredibleSetQueryAliasedFragment).join('')}
@@ -337,6 +338,8 @@ class StudyLocusPage extends React.Component {
                 variantInfo,
               } = data;
 
+              const associationSummary = pageSummary;
+
               const maxQTLLog2h4h3 = d3.max(
                 qtlColocalisation,
                 (d) => d.log2h4h3
@@ -357,18 +360,10 @@ class StudyLocusPage extends React.Component {
                     })
                   : null;
 
-              const gwasColocalisationFiltered = gwasColocalisation
-                .filter((d) => d.log2h4h3 >= this.state.log2h4h3SliderValue)
-                .filter((d) => d.h4 >= this.state.h4SliderValue)
-                .sort(log2h4h3Comparator)
-                .reverse();
-
-              const qtlColocalisationFiltered = qtlColocalisation
-                .filter((d) => d.log2h4h3 >= this.state.log2h4h3SliderValue)
-                .filter((d) => d.h4 >= this.state.h4SliderValue)
-                .sort(log2h4h3Comparator)
-                .reverse();
-              const associationSummary = pageSummary;
+              // TODO: add to utils
+              
+              const gwasColocalisationFiltered = filterGwasColocalisation(gwasColocalisation);
+              const qtlColocalisationFiltered = filterQtlColocalisation(qtlColocalisation, this.state);
 
               const pageCredibleSetAdjusted = pageCredibleSet
                 .map(flattenPosition)
@@ -377,10 +372,11 @@ class StudyLocusPage extends React.Component {
                 );
               const pageCredibleSetKey = `gwasCredibleSet__${studyId}__${indexVariantId}`;
               const qtlColocDownloadData = getDownloadData(qtlColocalisation);
-
+              // TODO: till here
               return (
                 <React.Fragment>
                   <SectionHeading heading="Association summary" />
+                  // TODO : summary component
                   <Grid container>
                     <Grid xs={4}>
                       <Typography variant="subtitle1">
@@ -664,6 +660,8 @@ class StudyLocusPage extends React.Component {
                         }
 
                         // de-alias
+
+                        // TODO: add to utils
                         const gwasColocalisationCredibleSetsFiltered =
                           gwasColocalisationFiltered.map(
                             ({ study, indexVariant, ...rest }) => ({
@@ -733,6 +731,7 @@ class StudyLocusPage extends React.Component {
                               ...tagVariant,
                             }))
                         );
+                         
                         const variantIdsInCredibleSetsIntersection =
                           variantsByCredibleSets.reduce((acc, vs, i) => {
                             vs.forEach((v) => {
