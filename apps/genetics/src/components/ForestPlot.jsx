@@ -85,9 +85,10 @@ const ForestPlot = ({
   // draw the plot
   React.useEffect(() => {
     // color scale
+    let all_categories = _.sortBy(_.uniq(data.map(d => d.traitCategory)), d => d);
     let colorScale = d3
       .scaleOrdinal()
-      .domain(selectedCategories)
+      .domain(all_categories)
       .range(d3.schemeCategory10);
 
     // box size scale
