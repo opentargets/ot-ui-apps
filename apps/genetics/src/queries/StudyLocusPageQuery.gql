@@ -6,19 +6,6 @@ query StudyLocusPageQuery(
   $end: Long!
 ) {
 
-  # TODO: part of summary component
-  variantInfo(variantId: $variantId) {
-    # id # TODO: investigate; bizarrely, if id is requested, rsId is null in the cache (but valid in the response)
-    rsId
-    chromosome
-    position
-    refAllele
-    altAllele
-    chromosomeB37
-    positionB37
-  }
-
-  # TODO: part of summary component
   studyInfo(studyId: $studyId) {
     studyId
     traitReported
@@ -138,27 +125,6 @@ query StudyLocusPageQuery(
     logABF
     is95
     is99
-  }
-  # TODO: part of summary component
-  pageSummary: studyAndLeadVariantInfo(
-    studyId: $studyId
-    variantId: $variantId
-  ) {
-    indexVariant {
-      rsId
-    }
-    study {
-      traitReported
-    }
-    pvalMantissa
-    pvalExponent
-    oddsRatio
-    oddsRatioCILower
-    oddsRatioCIUpper
-    beta
-    direction
-    betaCILower
-    betaCIUpper
   }
 
   genes(chromosome: $chromosome, start: $start, end: $end) {
