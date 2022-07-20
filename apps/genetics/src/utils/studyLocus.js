@@ -125,11 +125,13 @@ const buildCredibleSet = (data, study, indexVariant, credSet95Value) => {
     .filter(d => (credSet95Value === '95' ? d.is95CredibleSet : true));
 };
 
-const flattenPosition = ({ tagVariant, postProb, is95, is99, ...rest }) => ({
-  tagVariant,
-  position: tagVariant.position,
-  posteriorProbability: postProb,
-  is95CredibleSet: is95,
-  is99CredibleSet: is99,
-  ...rest,
-});
+const flattenPosition = ({ tagVariant, postProb, is95, is99, ...rest }) => {
+  return {
+    tagVariant,
+    position: tagVariant.position,
+    posteriorProbability: postProb,
+    is95CredibleSet: is95,
+    is99CredibleSet: is99,
+    ...rest,
+  };
+};
