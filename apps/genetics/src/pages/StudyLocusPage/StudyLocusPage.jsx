@@ -11,6 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import Link from '../../components/Link';
 import { sanitize } from '../../utils';
 import ScrollToTop from '../../components/ScrollToTop';
+import Summary from '../../sections/studyLocus/Summary';
 
 import {
   Tab,
@@ -295,6 +296,8 @@ class StudyLocusPage extends React.Component {
               <Header loading={headerLoading} data={dataHeader} />
             )}
           </Query>
+          <Summary variantId={indexVariantId} studyId={studyId} />
+
           <Query
             query={STUDY_LOCUS_PAGE_QUERY}
             variables={{
@@ -314,15 +317,10 @@ class StudyLocusPage extends React.Component {
                 studyInfo,
                 gwasColocalisation,
                 qtlColocalisation,
-                // gwasColocalisationForRegion,
                 pageCredibleSet,
-                pageSummary,
                 genes,
                 studyLocus2GeneTable,
-                variantInfo,
               } = data;
-
-              const associationSummary = pageSummary;
 
               const maxQTLLog2h4h3 = d3.max(
                 qtlColocalisation,
@@ -354,104 +352,6 @@ class StudyLocusPage extends React.Component {
 
               return (
                 <React.Fragment>
-                  <SectionHeading heading="Association summary" />
-                  // TODO : summary component
-                  <Grid container>
-                    <Grid xs={4}>
-                      <Typography variant="subtitle1">
-                        Study-variant association
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        <strong>P-value:</strong>{' '}
-                        {significantFigures(associationSummary.pvalMantissa) +
-                          'e' +
-                          associationSummary.pvalExponent}
-                      </Typography>
-
-                      {associationSummary.beta ? (
-                        <>
-                          <Typography variant="subtitle2">
-                            <strong>Beta:</strong>{' '}
-                            {significantFigures(associationSummary.beta)}
-                          </Typography>
-
-                          <Typography variant="subtitle2">
-                            <strong>Beta 95% Confidence Interval:</strong> (
-                            {significantFigures(associationSummary.betaCILower)}
-                            ,{' '}
-                            {significantFigures(associationSummary.betaCIUpper)}
-                            )
-                          </Typography>
-                        </>
-                      ) : associationSummary.oddsRatio ? (
-                        <>
-                          <Typography variant="subtitle2">
-                            <strong>Odds ratio:</strong>{' '}
-                            {significantFigures(associationSummary.oddsRatio)}
-                          </Typography>
-
-                          <Typography variant="subtitle2">
-                            <strong>Odds ratio Confidence Interval:</strong> (
-                            {significantFigures(
-                              associationSummary.oddsRatioCILower
-                            )}
-                            ,{' '}
-                            {significantFigures(
-                              associationSummary.oddsRatioCIUpper
-                            )}
-                            )
-                          </Typography>
-                        </>
-                      ) : (
-                        <Typography variant="subtitle2">
-                          <strong>Beta:</strong> N/A
-                        </Typography>
-                      )}
-                    </Grid>
-                    <Grid xs={4}>
-                      <Typography variant="subtitle1">Study details</Typography>
-                      <Typography variant="subtitle2">
-                        <strong>Author:</strong> {studyInfo.pubAuthor}
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        <strong>Year:</strong>{' '}
-                        {new Date(studyInfo.pubDate).getFullYear()}
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        <strong>PubMed:</strong>{' '}
-                        {studyInfo.pmid ? (
-                          <Link
-                            external
-                            to={`https://europepmc.org/abstract/med/${studyInfo.pmid.replace(
-                              'PMID:',
-                              ''
-                            )}`}
-                          >
-                            {studyInfo.pmid.replace('PMID:', '')}
-                          </Link>
-                        ) : (
-                          'NA'
-                        )}
-                      </Typography>
-                    </Grid>
-                    <Grid xs={4}>
-                      <Typography variant="subtitle1">
-                        Variant details
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        <strong>GRCh38:</strong> {variantInfo.chromosome}:
-                        {commaSeparate(variantInfo.position)}
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        <strong>GRCh37:</strong> {variantInfo.chromosomeB37}:
-                        {commaSeparate(variantInfo.positionB37)}
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        <strong>RSID:</strong>{' '}
-                        {variantInfo.rsId ? variantInfo.rsId : ' NA'}
-                      </Typography>
-                    </Grid>
-                  </Grid>
 
                   <SectionHeading
                     heading="Gene prioritisation using locus-to-gene pipeline"
