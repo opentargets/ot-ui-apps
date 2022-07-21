@@ -1,13 +1,19 @@
 import React from 'react';
 import * as d3 from 'd3';
+import { useQuery } from '@apollo/client';
+import { Skeleton } from '@material-ui/lab';
+import { commaSeparate, getData } from '../../../utils';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core';
 
 import {
   Link,
   OtTableRF,
   DataDownloader,
   significantFigures,
-  commaSeparate,
-} from '../ot-ui-components';
+} from '../../../ot-ui-components';
+
+import STUDY_LOCUS_COLOCL2GTABLE from './StudyLocusColocL2GTable.gql';
 
 const tableColumns = [
   {
@@ -110,19 +116,35 @@ const getDownloadRows = data => {
   }));
 };
 
-const ColocL2GTable = ({ loading, error, fileStem, data }) => {
+const ColocL2GTable = ({ variantId, studyId }) => {
+  const fileStem = `l2g-assignment-${studyId}-${variantId}`;
+  let tableData = [];
+
+  const { loading, error, data: queryResult } = useQuery(
+    STUDY_LOCUS_COLOCL2GTABLE,
+    {
+      variables: { variantId, studyId },
+    }
+  );
+
+  if (queryResult && queryResult.studyLocus2GeneTable.rows) {
+    tableData = getData(queryResult.studyLocus2GeneTable.rows);
+  }
+
   return (
     <React.Fragment>
       <DataDownloader
         tableHeaders={getDownloadColumns()}
-        rows={getDownloadRows(data)}
+        rows={getDownloadRows(tableData)}
         fileStem={fileStem}
+        loading={loading}
       />
+
       <OtTableRF
         loading={loading}
         error={error}
         columns={tableColumns}
-        data={data}
+        data={tableData}
         sortBy="yProbaModel"
         order="desc"
         headerGroups={[
@@ -134,6 +156,7 @@ const ColocL2GTable = ({ loading, error, fileStem, data }) => {
           { colspan: 3, label: '' },
         ]}
       />
+
     </React.Fragment>
   );
 };
