@@ -305,10 +305,6 @@ class StudyLocusPage extends React.Component {
             )}
           </Query>
           <Summary variantId={indexVariantId} studyId={studyId} />
-          <SectionHeading
-            heading="Gene prioritisation using locus-to-gene pipeline"
-            subheading="Which genes were prioritised by L2G pipeline at this locus?"
-          />
           <ColocL2GTable variantId={indexVariantId} studyId={studyId} />
 
           <Query
@@ -332,7 +328,6 @@ class StudyLocusPage extends React.Component {
                 qtlColocalisation,
                 pageCredibleSet,
                 genes,
-                studyLocus2GeneTable,
               } = data;
 
               const maxQTLLog2h4h3 = d3.max(qtlColocalisation, d => d.log2h4h3);

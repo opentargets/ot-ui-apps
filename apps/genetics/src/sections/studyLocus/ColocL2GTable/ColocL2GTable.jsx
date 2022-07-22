@@ -8,6 +8,7 @@ import {
   OtTableRF,
   DataDownloader,
   significantFigures,
+  SectionHeading,
 } from '../../../ot-ui-components';
 
 import STUDY_LOCUS_COLOCL2GTABLE from './StudyLocusColocL2GTable.gql';
@@ -130,6 +131,10 @@ const ColocL2GTable = ({ variantId, studyId }) => {
 
   return (
     <React.Fragment>
+      <SectionHeading
+        heading="Gene prioritisation using locus-to-gene pipeline"
+        subheading="Which genes were prioritised by L2G pipeline at this locus?"
+      />
       <DataDownloader
         tableHeaders={getDownloadColumns()}
         rows={getDownloadRows(tableData)}
@@ -153,7 +158,6 @@ const ColocL2GTable = ({ variantId, studyId }) => {
           { colspan: 3, label: '' },
         ]}
       />
-
     </React.Fragment>
   );
 };
