@@ -1,10 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
 import { useQuery } from '@apollo/client';
-import { Skeleton } from '@material-ui/lab';
 import { commaSeparate, getData } from '../../../utils';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core';
 
 import {
   Link,
