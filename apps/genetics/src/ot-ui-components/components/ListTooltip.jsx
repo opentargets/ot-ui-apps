@@ -31,6 +31,9 @@ const ListTooltip = ({ classes, dataList, open, anchorEl, container }) => (
         boundariesElement: 'window',
       },
     }}
+    style={{
+      zIndex: 2,
+    }}
   >
     {({ TransitionProps }) => (
       <Fade {...TransitionProps} timeout={350}>
