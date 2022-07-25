@@ -12,10 +12,11 @@ import Help from '@material-ui/icons/Help';
 import { pvalThreshold } from '../constants';
 
 function traitFilterOptions(data, selectedCategories) {
+  let all_categories = _.sortBy(_.uniq(data.map(d => d.traitCategory)), d => d);
   // color scale
   let colorScale = d3
     .scaleOrdinal()
-    .domain(selectedCategories)
+    .domain(all_categories)
     .range(d3.schemeCategory10);
   return _.sortBy(
     _.uniq(data.map((d) => d.traitCategory)).map((d) => {
@@ -42,7 +43,8 @@ const cfg = {
   minBoxSize: 5,
   maxBoxSize: 20,
   maxPlotHeight: 800,
-  plotMargin: 100,
+  top_axis: 27,
+  bottom_axis:52,
   treeColor: '#5A5F5F',
   evenRowColor: '#fff',
   unevenRowColor: '#f2f1f1',
@@ -75,16 +77,18 @@ const ForestPlot = ({
   }, [data, selectedCategories]);
 
   const plot_height =
-    cfg.plotMargin + traits.length * cfg.rowHeight < cfg.maxPlotHeight
-      ? cfg.plotMargin + traits.length * cfg.rowHeight
+    traits.length * cfg.rowHeight + cfg.top_axis + cfg.bottom_axis <
+    cfg.maxPlotHeight
+      ? traits.length * cfg.rowHeight + cfg.top_axis + cfg.bottom_axis
       : cfg.maxPlotHeight;
 
   // draw the plot
   React.useEffect(() => {
     // color scale
+    let all_categories = _.sortBy(_.uniq(data.map(d => d.traitCategory)), d => d);
     let colorScale = d3
       .scaleOrdinal()
-      .domain(selectedCategories)
+      .domain(all_categories)
       .range(d3.schemeCategory10);
 
     // box size scale
@@ -96,7 +100,9 @@ const ForestPlot = ({
     // clear svg
     d3.select(refs.current).selectAll('*').remove();
     d3.select('#topRow').selectAll('*').remove();
+    d3.select('#topRowTable').selectAll('*').remove();
     d3.select('#bottomRow').selectAll('*').remove();
+    d3.select('#table').selectAll('*').remove();
 
     // get component width
     cfg.component_width = d3
@@ -121,17 +127,32 @@ const ForestPlot = ({
     const svg = d3
       .select(refs.current)
       .attr('width', cfg.svgW)
-      .attr('height', traits.length * cfg.rowHeight + 3 * cfg.rowHeight)
+      .attr('height', traits.length * cfg.rowHeight + 2 * cfg.rowHeight)
       .style('position', 'absolute')
+      .style('top', cfg.top_axis)
       .append('g');
 
     // set top row svg size and sticky
     const topRowSvg = d3
       .select('#topRow')
       .attr('width', cfg.svgW - 45)
-      .attr('height', cfg.rowHeight + 5)
+      .attr('height', cfg.top_axis)
+      .style('position', 'absolute')
+      .style('flex-shrink', 0)
+      .style('flex-grow', 0)
+      .style('top', '0')
+      .style('z-index', '2');
+
+    // set top row table size and sticky
+    const topRowTable = d3
+      .select('#topRowTable')
+      .attr('width', cfg.tableW)
+      .attr('height', cfg.top_axis)
       .style('position', 'sticky')
-      .style('top', '0');
+      .style('flex-shrink', 0)
+      .style('flex-grow', 0)
+      .style('left', '0')
+      .style('z-index', '3');
 
     // set bottom row svg size and sticky
     const bottomRowSvg = d3
@@ -139,12 +160,9 @@ const ForestPlot = ({
       .attr('width', cfg.svgW)
       .attr('height', 2 * cfg.rowHeight)
       .style('position', 'sticky')
-      .style(
-        'top',
-        plot_height <= 800
-          ? plot_height - 3 * cfg.rowHeight
-          : plot_height - 2 * cfg.rowHeight
-      )
+      .style('flex-shrink', 0)
+      .style('flex-grow', 0)
+      .style('top', plot_height - 2 * cfg.rowHeight)
       .style('background-color', 'white');
 
     // clip trait name text (row width)
@@ -156,17 +174,17 @@ const ForestPlot = ({
       .attr('width', cfg.traitnameW);
 
     // add top row of table
-    topRowSvg
+    topRowTable
       .append('g')
-      .classed('topRow', true)
+      .classed('topRowTable', true)
       .append('rect')
       .attr('height', cfg.rowHeight)
       .attr('width', cfg.tableW)
       .attr('fill', cfg.unevenRowColor);
 
     // trait
-    topRowSvg
-      .select('.topRow')
+    topRowTable
+      .select('.topRowTable')
       .append('text')
       .text('Trait')
       .attr('clip-path', 'url(#clip1)')
@@ -177,8 +195,8 @@ const ForestPlot = ({
       .attr('dx', 8);
 
     // pval
-    topRowSvg
-      .select('.topRow')
+    topRowTable
+      .select('.topRowTable')
       .append('text')
       .text('P-value')
       .style('font-size', '17px')
@@ -188,7 +206,7 @@ const ForestPlot = ({
       .attr('dx', cfg.traitnameW + 8);
 
     // add horizontal line to separate top row from other rows
-    topRowSvg
+    topRowTable
       .append('line')
       .attr('x2', cfg.tableW)
       .attr('y1', cfg.rowHeight)
@@ -196,7 +214,7 @@ const ForestPlot = ({
       .attr('stroke', 'black');
 
     // add vertical line to separate trait and pval columns
-    topRowSvg
+    topRowTable
       .append('line')
       .attr('x1', cfg.traitnameW)
       .attr('x2', cfg.traitnameW)
@@ -204,14 +222,20 @@ const ForestPlot = ({
       .attr('stroke', 'black');
 
     // create table
-    let table = svg.append('g').attr('id', 'forestTable');
+    const table = d3
+    .select('#table')
+    .attr('width', 500)
+    .attr('height', traits.length === 0 ? 0 : cfg.rowHeight)
+    .style('position', 'sticky')
+    .style('left', '0')
+    .style('overflow', 'visible');
 
     // add vertical line to separate trait and pval columns
     table
       .append('line')
       .attr('x1', cfg.traitnameW)
       .attr('x2', cfg.traitnameW)
-      .attr('y2', traits.length * cfg.rowHeight + cfg.rowHeight)
+      .attr('y2', traits.length * cfg.rowHeight)
       .attr('stroke', 'black');
 
     // add rows to table
@@ -221,10 +245,7 @@ const ForestPlot = ({
       .enter()
       .append('g')
       .classed('row', true)
-      .attr(
-        'transform',
-        (d, i) => 'translate(0,' + cfg.rowHeight * (i + 1) + ')'
-      );
+      .attr('transform', (d, i) => 'translate(0,' + cfg.rowHeight * i + ')');
 
     rows
       .append('rect')
@@ -381,10 +402,7 @@ const ForestPlot = ({
       .enter()
       .append('g')
       .classed('tree', true)
-      .attr(
-        'transform',
-        (d, i) => 'translate(0,' + (i + 1) * cfg.rowHeight + ')'
-      )
+      .attr('transform', (d, i) => 'translate(0,' + i * cfg.rowHeight + ')')
       .attr('id', (d, i) => i);
 
     // create confidence intervals
@@ -449,6 +467,8 @@ const ForestPlot = ({
           width: cfg.component_width,
           height: plot_height,
           margin: 'none',
+          display: 'flex',
+          'flex-direction': 'column',
         }}
       >
         <svg ref={refs} />
@@ -467,7 +487,20 @@ const ForestPlot = ({
             transform={`translate(${cfg.svgW - 40},0)`}
           />
         </Tooltip>
-        <svg id="topRow" />
+        <div
+          style={{
+            position: 'sticky',
+            top: '0px',
+            display: 'flex',
+            flexDirection: 'row',
+            zIndex: 2,
+            width: cfg.svgW - 45,
+          }}
+        >
+          <svg id="topRowTable" />
+          <svg id="topRow" />
+        </div>
+        <svg id="table" />
         <svg id="bottomRow" />
         <ListTooltip open={open} anchorEl={anchor} dataList={dataList} />
       </div>
