@@ -30,7 +30,7 @@ import CredibleSet from '../../components/CredibleSet';
 import BasePage from '../BasePage';
 import ColocQTLTable from '../../components/ColocQTLTable';
 import ColocQTLGeneTissueTable from '../../components/ColocQTLGeneTissueTable';
-import ColocGWASTable from '../../components/ColocGWASTable';
+import ColocGWASTable from '../../sections/studyLocus/ColocGWASTable';
 import ColocL2GTable from '../../sections/studyLocus/ColocL2GTable';
 import CredibleSetWithRegional from '../../components/CredibleSetWithRegional';
 import CredibleSetsIntersectionTable from '../../components/CredibleSetsIntersectionTable';
@@ -306,6 +306,7 @@ class StudyLocusPage extends React.Component {
           </Query>
           <Summary variantId={indexVariantId} studyId={studyId} />
           <ColocL2GTable variantId={indexVariantId} studyId={studyId} />
+          <ColocGWASTable variantId={indexVariantId} studyId={studyId} />
 
           <Query
             query={STUDY_LOCUS_PAGE_QUERY}
@@ -409,24 +410,6 @@ class StudyLocusPage extends React.Component {
                       tableColumns={tableColumns}
                     />
                   ) : null}
-
-                  <SectionHeading
-                    heading="GWAS Study Colocalisation"
-                    subheading={
-                      <React.Fragment>
-                        Which GWAS studies colocalise with{' '}
-                        <strong>{traitAuthorYear(studyInfo)}</strong> at this
-                        locus?
-                      </React.Fragment>
-                    }
-                  />
-                  <ColocGWASTable
-                    loading={false}
-                    error={false}
-                    data={gwasColocalisation}
-                    handleToggleRegional={this.handleToggleRegional}
-                    fileStem={`gwas-coloc-${studyId}-${indexVariantId}`}
-                  />
 
                   <SectionHeading
                     heading={`Credible Set Overlap`}

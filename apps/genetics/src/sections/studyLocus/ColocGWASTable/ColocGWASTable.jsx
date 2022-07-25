@@ -1,15 +1,19 @@
 import React from 'react';
 import * as d3 from 'd3';
+import { useQuery } from '@apollo/client';
 
 import {
   Link,
   OtTableRF,
   DataDownloader,
   significantFigures,
-} from '../ot-ui-components';
+  SectionHeading
+} from '../../../ot-ui-components';
 
-import StudyLocusLink from './StudyLocusLink';
-import { naLabel } from '../constants';
+import STUDY_LOCUS_COLOCGWASTABLE from './StudyLocusColocGWASTable.gql';
+import { getData, traitAuthorYear } from '../../../utils';
+import StudyLocusLink from '../../../components/StudyLocusLink';
+import { naLabel } from '../../../constants';
 
 const tableColumns = [
   {
@@ -98,20 +102,47 @@ const getDownloadData = data => {
   }));
 };
 
-const ColocGWASTable = ({ loading, error, fileStem, data }) => {
-  const downloadData = getDownloadData(data);
+const ColocGWASTable = ({ studyId, variantId }) => {
+  const fileStem = `gwas-coloc-${studyId}-${variantId}`;
+  let tableData = [];
+  let downloadData;
+  let studyInfo;
+
+  const { loading, error, data: queryResult } = useQuery(
+    STUDY_LOCUS_COLOCGWASTABLE,
+    {
+      variables: { variantId, studyId },
+    }
+  );
+
+  if (queryResult) {
+    downloadData = getDownloadData(queryResult.gwasColocalisation);
+    tableData = getData(queryResult.gwasColocalisation);
+    studyInfo = queryResult.studyInfo
+  }
+
   return (
     <React.Fragment>
+      <SectionHeading
+        heading="GWAS Study Colocalisation"
+        subheading={
+          <React.Fragment>
+            Which GWAS studies colocalise with{' '}
+            <strong>{studyInfo ? traitAuthorYear(studyInfo) : ''}</strong> at this locus?
+          </React.Fragment>
+        }
+      />
       <DataDownloader
         tableHeaders={tableColumns}
         rows={downloadData}
         fileStem={fileStem}
+        loading={loading}
       />
       <OtTableRF
         loading={loading}
         error={error}
         columns={tableColumns}
-        data={data}
+        data={tableData}
         sortBy="log2h4h3"
         order="desc"
       />
