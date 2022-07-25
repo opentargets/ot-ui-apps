@@ -9,7 +9,7 @@ import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
 import { naLabel } from '../../../constants';
 import ChipList from '../../../components/ChipList';
-import { DataTable, TableDrawer } from '../../../components/Table';
+import { DataTable } from '../../../components/Table';
 import { defaultRowsPerPageOptions } from '../../../constants';
 import ClinvarStars from '../../../components/ClinvarStars';
 
@@ -17,28 +17,10 @@ import CHEMICAL_PROBES_QUERY from './ChemicalProbes.gql';
 
 const scores = [
   {
-    field: 'probeMinerScore',
-    label: 'Probe Miner',
-    description:
-      'The Probe Miner score is the sum of 6 parameters: target potency, target selectivity, cell potency, structure-activity relationships (SAR), inactive analogs and pan-assay interference (PAINS).',
-  },
-  {
     field: 'probesDrugScore',
     label: 'Drugs',
     description:
       'The P&D probe-likeness score is the sum of 6 parameters: target potency, target selectivity, cell potency, potency-selectivity synergy, presence of a control compound and presence of an orthogonal probe.',
-  },
-  {
-    field: 'scoreInCells',
-    label: 'Cells',
-    description:
-      'The organism score ranks the chemical probe for its use in model cells.',
-  },
-  {
-    field: 'scoreInOrganisms',
-    label: 'Organisms',
-    description:
-      'The organism score ranks the chemical probe for its use in model organisms.',
   },
 ];
 
@@ -77,7 +59,7 @@ const columns = [
     },
     exportValue: row => row.id,
     filterValue: row => row.id,
-    width: '16%',
+    width: '19%',
   },
   {
     id: 'isHighQuality',
@@ -101,7 +83,7 @@ const columns = [
     renderCell: row => row.mechanismOfAction?.join(', ') || naLabel,
     exportValue: row => row.mechanismOfAction?.join(', '),
     filterValue: row => row.mechanismOfAction?.join(', ') || naLabel,
-    width: '16%',
+    width: '19%',
   },
   {
     id: 'origin',
@@ -109,7 +91,7 @@ const columns = [
     renderCell: row => row.origin?.join(', ') || naLabel,
     exportValue: row => row.origin?.join(', '),
     filterValue: row => row.origin?.join(', ') || naLabel,
-    width: '16%',
+    width: '19%',
   },
   {
     id: 'score',
@@ -142,31 +124,7 @@ const columns = [
         .filter(s => row[s.field] !== null)
         .map(s => s.label + ': ' + row[s.field])
         .join(', ') || naLabel,
-    width: '26%',
-  },
-  {
-    id: 'sources',
-    label: 'Reference',
-    renderCell: row => {
-      return row.urls ? (
-        <TableDrawer
-          entries={row.urls.map(u => ({
-            name: u.niceName,
-            url: u.url,
-            group: 'literature',
-          }))}
-        />
-      ) : (
-        naLabel
-      );
-    },
-    exportValue: row => row.urls.map(u => u.niceName + ': ' + u.url).join(', '),
-    filterValue: row =>
-      row.urls
-        .map(u => u.niceName + ': ' + u.url)
-        .concat(row.urls.length > 1 ? [`${row.urls.length} entries`] : [])
-        .join(', '),
-    width: '16%',
+    width: '33%',
   },
 ];
 
