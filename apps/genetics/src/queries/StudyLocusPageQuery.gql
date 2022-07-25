@@ -111,13 +111,4 @@ query StudyLocusPageQuery(
     is95
     is99
   }
-
-  genes(chromosome: $chromosome, start: $start, end: $end) {
-    id
-    symbol
-    tss
-    start
-    end
-    exons
-  }
 }

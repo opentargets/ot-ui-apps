@@ -53,6 +53,7 @@ import STUDY_LOCUS_HEADER_QUERY from './StudyLocusHeaderQuery.gql';
 import STUDY_LOCUS_PAGE_QUERY from '../../queries/StudyLocusPageQuery.gql';
 import GWAS_REGIONAL_QUERY from '../../queries/GWASRegionalQuery.gql';
 import QTL_REGIONAL_QUERY from '../../queries/QTLRegionalQuery.gql';
+import StudyLocusGenes from '../../sections/studyLocus/Genes/StuidyLocusGenes';
 
 const HALF_WINDOW = 250000;
 
@@ -123,19 +124,6 @@ const createCredibleSetsQuery = ({ gwasColocalisation, qtlColocalisation }) => {
 const traitAuthorYear = s =>
   `${s.traitReported} (${s.pubAuthor}, ${new Date(s.pubDate).getFullYear()})`;
 
-// gene exons come as flat list, rendering expects list of pairs
-const flatExonsToPairedExons = genes => {
-  const paired = genes.map(d => ({
-    ...d,
-    exons: d.exons.reduce((result, value, index, array) => {
-      if (index % 2 === 0) {
-        result.push(array.slice(index, index + 2));
-      }
-      return result;
-    }, []),
-  }));
-  return paired;
-};
 
 const tableColumns = [
   {
@@ -687,24 +675,11 @@ class StudyLocusPage extends React.Component {
                     </Query>
                   ) : null}
 
-                  <Typography style={{ paddingTop: '10px' }}>
-                    <strong>Genes</strong>
-                  </Typography>
-                  <PlotContainer>
-                    <PlotContainerSection>
-                      <div style={{ paddingRight: '32px' }}>
-                        <GeneTrack
-                          data={{ genes: flatExonsToPairedExons(genes) }}
-                          start={start}
-                          end={end}
-                        />
-                      </div>
-                    </PlotContainerSection>
-                  </PlotContainer>
                 </React.Fragment>
               );
             }}
           </Query>
+          <StudyLocusGenes chromosome={chromosome} start={start} end={end} />
         </ErrorBoundary>
       </BasePage>
     );
