@@ -1,9 +1,6 @@
 query StudyLocusPageQuery(
   $studyId: String!
   $variantId: String!
-  $chromosome: String!
-  $start: Long!
-  $end: Long!
 ) {
 
   studyInfo(studyId: $studyId) {
