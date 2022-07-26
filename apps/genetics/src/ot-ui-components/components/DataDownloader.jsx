@@ -28,59 +28,54 @@ function handleDownload(headers, rows, fileStem, format) {
 }
 
 function DataDownloader({ tableHeaders, rows, classes, fileStem, loading }) {
+  if (loading) {
+    return (
+      <Grid container justifyContent="flex-end" spacing={1}>
+        <Skeleton width="15vw" />
+        <Skeleton className={classes['ml-1']} width="6vw" height="6vh" />
+        <Skeleton className={classes['ml-1']} width="6vw" height="6vh" />
+        <Skeleton className={classes['ml-1']} width="6vw" height="6vh" />
+      </Grid>
+    );
+  }
   return (
     <>
-      {loading ? (
-        <Grid container justifyContent="flex-end" spacing={1}>
-          <Skeleton width="15vw" />
-          <Skeleton className={classes['ml-1']} width="6vw" height="6vh" />
-          <Skeleton className={classes['ml-1']} width="6vw" height="6vh" />
-          <Skeleton className={classes['ml-1']} width="6vw" height="6vh" />
+      <Grid
+        container
+        justifyContent="flex-end"
+        spacing={1}
+        className={classes.container}
+      >
+        <Grid item>
+          <Typography variant="caption" className={classes.downloadHeader}>
+            Download table as
+          </Typography>
         </Grid>
-      ) : (
-        <Grid
-          container
-          justifyContent="flex-end"
-          spacing={1}
-          className={classes.container}
-        >
-          <Grid item>
-            <Typography variant="caption" className={classes.downloadHeader}>
-              Download table as
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handleDownload(tableHeaders, rows, fileStem, 'json')
-              }
-            >
-              JSON
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handleDownload(tableHeaders, rows, fileStem, 'csv')
-              }
-            >
-              CSV
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="outlined"
-              onClick={() =>
-                handleDownload(tableHeaders, rows, fileStem, 'tsv')
-              }
-            >
-              TSV
-            </Button>
-          </Grid>
+        <Grid item>
+          <Button
+            variant="outlined"
+            onClick={() => handleDownload(tableHeaders, rows, fileStem, 'json')}
+          >
+            JSON
+          </Button>
         </Grid>
-      )}
+        <Grid item>
+          <Button
+            variant="outlined"
+            onClick={() => handleDownload(tableHeaders, rows, fileStem, 'csv')}
+          >
+            CSV
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button
+            variant="outlined"
+            onClick={() => handleDownload(tableHeaders, rows, fileStem, 'tsv')}
+          >
+            TSV
+          </Button>
+        </Grid>
+      </Grid>
     </>
   );
 }
