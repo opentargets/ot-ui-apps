@@ -53,7 +53,7 @@ import STUDY_LOCUS_HEADER_QUERY from './StudyLocusHeaderQuery.gql';
 import STUDY_LOCUS_PAGE_QUERY from '../../queries/StudyLocusPageQuery.gql';
 import GWAS_REGIONAL_QUERY from '../../queries/GWASRegionalQuery.gql';
 import QTL_REGIONAL_QUERY from '../../queries/QTLRegionalQuery.gql';
-import StudyLocusGenes from '../../sections/studyLocus/Genes/StuidyLocusGenes';
+import StudyLocusGenes from '../../sections/studyLocus/Genes/StudyLocusGenes';
 
 const HALF_WINDOW = 250000;
 
