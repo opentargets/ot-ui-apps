@@ -1,7 +1,7 @@
 import React from 'react';
 import { Query } from '@apollo/client/react/components';
 import gql from 'graphql-tag';
-import * as d3 from 'd3';
+import {ascending, max} from 'd3';
 
 import Typography from '@material-ui/core/Typography';
 import Radio from '@material-ui/core/Radio';
@@ -141,7 +141,7 @@ const tableColumns = [
   {
     id: 'gene.symbol',
     label: 'Gene',
-    comparator: (a, b) => d3.ascending(a.gene.symbol, b.gene.symbol),
+    comparator: (a, b) => ascending(a.gene.symbol, b.gene.symbol),
     renderCell: d => <Link to={`/gene/${d.gene.id}`}>{d.gene.symbol}</Link>,
   },
   {
@@ -152,7 +152,7 @@ const tableColumns = [
   {
     id: 'tissue.name',
     label: 'Tissue',
-    comparator: (a, b) => d3.ascending(a.tissue.name, b.tissue.name),
+    comparator: (a, b) => ascending(a.tissue.name, b.tissue.name),
     renderCell: d => d.tissue.name,
   },
   {
@@ -162,7 +162,7 @@ const tableColumns = [
   {
     id: 'indexVariant',
     label: 'Lead variant',
-    comparator: (a, b) => d3.ascending(a.indexVariant.id, b.indexVariant.id),
+    comparator: (a, b) => ascending(a.indexVariant.id, b.indexVariant.id),
     renderCell: d => (
       <Link to={`/variant/${d.indexVariant.id}`}>{d.indexVariant.id}</Link>
     ),
@@ -330,12 +330,12 @@ class StudyLocusPage extends React.Component {
                 genes,
               } = data;
 
-              const maxQTLLog2h4h3 = d3.max(qtlColocalisation, d => d.log2h4h3);
-              const maxGWASLog2h4h3 = d3.max(
+              const maxQTLLog2h4h3 = max(qtlColocalisation, d => d.log2h4h3);
+              const maxGWASLog2h4h3 = max(
                 gwasColocalisation,
                 d => d.log2h4h3
               );
-              const maxLog2h4h3 = d3.max([maxQTLLog2h4h3, maxGWASLog2h4h3]);
+              const maxLog2h4h3 = max([maxQTLLog2h4h3, maxGWASLog2h4h3]);
 
               const shouldMakeColocalisationCredibleSetQuery =
                 gwasColocalisation.length > 0 || qtlColocalisation.length > 0;
