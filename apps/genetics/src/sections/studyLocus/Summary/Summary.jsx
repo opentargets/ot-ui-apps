@@ -124,8 +124,14 @@ function Summary({ variantId, studyId }) {
             )}
           </Typography>
           <Typography variant="subtitle2">
-            <strong>Has sumstats:</strong>{' '}
-            {studyInfo.hasSumstats ? 'yes' : 'no'}
+            {loading ? (
+              <Skeleton width="20vw" />
+            ) : (
+              <>
+                <strong>Has sumstats:</strong>{' '}
+                {studyInfo.hasSumstats ? 'yes' : 'no'}
+              </>
+            )}
           </Typography>
         </Grid>
         <Grid xs={4}>
