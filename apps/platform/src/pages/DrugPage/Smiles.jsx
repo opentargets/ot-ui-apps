@@ -3,14 +3,22 @@ import CloseIcon from '@material-ui/icons/Close';
 import { Modal, Paper, withStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import SmilesDrawer from 'smiles-drawer';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearchPlus } from '@fortawesome/free-solid-svg-icons';
 
 const styles = theme => ({
   container: {
-    border: `1px solid ${theme.palette.grey[300]}`,
+    background: 'none',
     cursor: 'pointer',
     height: '240px',
     marginLeft: 'auto',
     width: 'fit-content',
+    '& .seeDetailsIcon': {
+      visibility: 'hidden'
+    },
+    '&:hover .seeDetailsIcon': {
+      visibility: 'visible'
+    } 
   },
   modal: {
     width: '800px',
@@ -88,6 +96,7 @@ let SmilesHelper = class extends Component {
           onClick={this.toggleModal}
         >
           <canvas id={chemblId} />
+          <FontAwesomeIcon icon={faSearchPlus} className='seeDetailsIcon' />
         </Paper>
         <Modal open={open} onClose={this.toggleModal} keepMounted>
           <Paper className={classes.modal}>
