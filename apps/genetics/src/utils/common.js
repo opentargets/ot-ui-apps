@@ -18,9 +18,10 @@ export const getData = data => {
 
 export const commaSeparate = format(',');
 
-export function sanitize(str) {
-  return str.replace(/[^a-zA-Z0-9]/g, '');
-}
+export const sanitize = str => str.replace(/[^a-zA-Z0-9]/g, '');
+
+export const traitAuthorYear = s =>
+  `${s.traitReported} (${s.pubAuthor}, ${new Date(s.pubDate).getFullYear()})`;
 
 // Consants
 export const SIGNIFICANCE = -Math.log10(5e-8);

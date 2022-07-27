@@ -1,9 +1,6 @@
 query StudyLocusPageQuery(
   $studyId: String!
   $variantId: String!
-  $chromosome: String!
-  $start: Long!
-  $end: Long!
 ) {
 
   studyInfo(studyId: $studyId) {
@@ -14,22 +11,7 @@ query StudyLocusPageQuery(
     pubJournal
     pmid
   }
-  studyLocus2GeneTable(studyId: $studyId, variantId: $variantId) {
-    rows {
-      gene {
-        symbol
-        id
-      }
-      yProbaModel
-      yProbaDistance
-      # yProbaInterlocus
-      yProbaInteraction
-      yProbaMolecularQTL
-      yProbaPathogenicity
-      hasColoc
-      distanceToLocus
-    }
-  }
+
   gwasColocalisation(studyId: $studyId, variantId: $variantId) {
     indexVariant {
       id
@@ -125,14 +107,5 @@ query StudyLocusPageQuery(
     logABF
     is95
     is99
-  }
-
-  genes(chromosome: $chromosome, start: $start, end: $end) {
-    id
-    symbol
-    tss
-    start
-    end
-    exons
   }
 }

@@ -1,19 +1,23 @@
 import React from 'react';
-import * as d3 from 'd3';
+import { ascending } from 'd3';
+import { useQuery } from '@apollo/client';
+import { commaSeparate, getData } from '../../../utils';
 
 import {
   Link,
   OtTableRF,
   DataDownloader,
   significantFigures,
-  commaSeparate,
-} from '../ot-ui-components';
+  SectionHeading,
+} from '../../../ot-ui-components';
+
+import STUDY_LOCUS_COLOCL2GTABLE from './StudyLocusColocL2GTable.gql';
 
 const tableColumns = [
   {
     id: 'gene.symbol',
     label: 'Gene',
-    comparator: (a, b) => d3.ascending(a.gene.symbol, b.gene.symbol),
+    comparator: (a, b) => ascending(a.gene.symbol, b.gene.symbol),
     renderCell: d => <Link to={`/gene/${d.gene.id}`}>{d.gene.symbol}</Link>,
   },
   {
@@ -21,7 +25,7 @@ const tableColumns = [
     label: 'Overall L2G score',
     tooltip:
       'Overall evidence linking gene to this study using all features. Score range [0, 1].',
-    comparator: (a, b) => d3.ascending(a.yProbaModel, b.yProbaModel),
+    comparator: (a, b) => ascending(a.yProbaModel, b.yProbaModel),
     renderCell: d => significantFigures(d.yProbaModel),
   },
   {
@@ -30,7 +34,7 @@ const tableColumns = [
     tooltip:
       'Evidence linking gene to this study including variant pathogenicity features only. Score range [0, 1].',
     comparator: (a, b) =>
-      d3.ascending(a.yProbaPathogenicity, b.yProbaPathogenicity),
+      ascending(a.yProbaPathogenicity, b.yProbaPathogenicity),
     renderCell: d => significantFigures(d.yProbaPathogenicity),
   },
   {
@@ -38,7 +42,7 @@ const tableColumns = [
     label: 'Distance',
     tooltip:
       'Evidence linking gene to this study including distance features only. Score range [0, 1].',
-    comparator: (a, b) => d3.ascending(a.yProbaDistance, b.yProbaDistance),
+    comparator: (a, b) => ascending(a.yProbaDistance, b.yProbaDistance),
     renderCell: d => significantFigures(d.yProbaDistance),
   },
   {
@@ -47,7 +51,7 @@ const tableColumns = [
     tooltip:
       'Evidence linking gene to this study including molecular trait colocalisation features only. Score range [0, 1].',
     comparator: (a, b) =>
-      d3.ascending(a.yProbaMolecularQTL, b.yProbaMolecularQTL),
+      ascending(a.yProbaMolecularQTL, b.yProbaMolecularQTL),
     renderCell: d => significantFigures(d.yProbaMolecularQTL),
   },
   {
@@ -56,13 +60,13 @@ const tableColumns = [
     tooltip:
       'Evidence linking gene to this study including chromatin interaction features only. Score range [0, 1].',
     comparator: (a, b) =>
-      d3.ascending(a.yProbaInteraction, b.yProbaInteraction),
+      ascending(a.yProbaInteraction, b.yProbaInteraction),
     renderCell: d => significantFigures(d.yProbaInteraction),
   },
   {
     id: 'distanceToLocus',
     label: 'Distance to locus (bp)',
-    comparator: (a, b) => d3.ascending(a.distanceToLocus, b.distanceToLocus),
+    comparator: (a, b) => ascending(a.distanceToLocus, b.distanceToLocus),
     renderCell: d =>
       d.distanceToLocus ? commaSeparate(d.distanceToLocus) : '',
   },
@@ -110,19 +114,39 @@ const getDownloadRows = data => {
   }));
 };
 
-const ColocL2GTable = ({ loading, error, fileStem, data }) => {
+const ColocL2GTable = ({ variantId, studyId }) => {
+  const fileStem = `l2g-assignment-${studyId}-${variantId}`;
+  let tableData = [];
+
+  const { loading, error, data: queryResult } = useQuery(
+    STUDY_LOCUS_COLOCL2GTABLE,
+    {
+      variables: { variantId, studyId },
+    }
+  );
+
+  if (queryResult && queryResult.studyLocus2GeneTable.rows) {
+    tableData = getData(queryResult.studyLocus2GeneTable.rows);
+  }
+
   return (
     <React.Fragment>
+      <SectionHeading
+        heading="Gene prioritisation using locus-to-gene pipeline"
+        subheading="Which genes were prioritised by L2G pipeline at this locus?"
+      />
       <DataDownloader
         tableHeaders={getDownloadColumns()}
-        rows={getDownloadRows(data)}
+        rows={getDownloadRows(tableData)}
         fileStem={fileStem}
+        loading={loading}
       />
+
       <OtTableRF
         loading={loading}
         error={error}
         columns={tableColumns}
-        data={data}
+        data={tableData}
         sortBy="yProbaModel"
         order="desc"
         headerGroups={[

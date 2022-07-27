@@ -1,43 +1,36 @@
 import React from 'react';
 import { Query } from '@apollo/client/react/components';
 import gql from 'graphql-tag';
-import * as d3 from 'd3';
+import { max} from 'd3';
 
 import Typography from '@material-ui/core/Typography';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-import Link from '../../components/Link';
 import { sanitize } from '../../utils';
 import ScrollToTop from '../../components/ScrollToTop';
 import Summary from '../../sections/studyLocus/Summary';
 
 import {
-  Tab,
-  Tabs,
   SectionHeading,
   PlotContainer,
   PlotContainerSection,
   significantFigures,
-  DataDownloader,
 } from '../../ot-ui-components';
 
 import ErrorBoundary from '../../components/ErrorBoundary';
-import GeneTrack from '../../components/GeneTrack';
 import CredibleSet from '../../components/CredibleSet';
 
 import BasePage from '../BasePage';
-import ColocQTLTable from '../../components/ColocQTLTable';
-import ColocQTLGeneTissueTable from '../../components/ColocQTLGeneTissueTable';
-import ColocGWASTable from '../../components/ColocGWASTable';
-import ColocL2GTable from '../../components/ColocL2GTable';
+import ColocGWASTable from '../../sections/studyLocus/ColocGWASTable';
+import GenePrioritisationTabs from '../../sections/studyLocus/GenePrioritisationTabs';
+import ColocL2GTable from '../../sections/studyLocus/ColocL2GTable';
 import CredibleSetWithRegional from '../../components/CredibleSetWithRegional';
 import CredibleSetsIntersectionTable from '../../components/CredibleSetsIntersectionTable';
 import Slider from '../../components/Slider';
-import { 
-  commaSeparate,
-  filterGwasColocalisation, 
+import {
+  filterGwasColocalisation,
   filterQtlColocalisation,
   filterPageCredibleSet,
   buildCredibleGwasColocalisation,
@@ -53,11 +46,16 @@ import STUDY_LOCUS_HEADER_QUERY from './StudyLocusHeaderQuery.gql';
 import STUDY_LOCUS_PAGE_QUERY from '../../queries/StudyLocusPageQuery.gql';
 import GWAS_REGIONAL_QUERY from '../../queries/GWASRegionalQuery.gql';
 import QTL_REGIONAL_QUERY from '../../queries/QTLRegionalQuery.gql';
+import StudyLocusGenes from '../../sections/studyLocus/Genes/StudyLocusGenes';
 
 const HALF_WINDOW = 250000;
 
 const gwasCredibleSetQueryAliasedFragment = ({ study, indexVariant }) => `
-gwasCredibleSet__${study.studyId}__${indexVariant.id}: gwasCredibleSet(studyId: "${study.studyId}", variantId: "${indexVariant.id}") {
+gwasCredibleSet__${study.studyId}__${
+  indexVariant.id
+}: gwasCredibleSet(studyId: "${study.studyId}", variantId: "${
+  indexVariant.id
+}") {
   tagVariant {
     id
     rsId
@@ -87,7 +85,11 @@ const qtlCredibleSetQueryAliasedFragment = ({
   const sanitizedPhenotypeId = sanitize(parsePhenotypeId);
   const sanitizedParseQTLStudyName = sanitize(parseQTLStudyName);
   return `
-  qtlCredibleSet__${sanitizedParseQTLStudyName}__${sanitizedPhenotypeId}__${sanitizedTissueId}__${indexVariant.id}: qtlCredibleSet(studyId: "${parseQTLStudyName}", variantId: "${indexVariant.id}", phenotypeId: "${parsePhenotypeId}", bioFeature: "${tissueId}") {
+  qtlCredibleSet__${sanitizedParseQTLStudyName}__${sanitizedPhenotypeId}__${sanitizedTissueId}__${
+    indexVariant.id
+  }: qtlCredibleSet(studyId: "${parseQTLStudyName}", variantId: "${
+    indexVariant.id
+  }", phenotypeId: "${parsePhenotypeId}", bioFeature: "${tissueId}") {
     tagVariant {
       id
       rsId
@@ -112,115 +114,22 @@ const createCredibleSetsQuery = ({ gwasColocalisation, qtlColocalisation }) => {
   }`);
 };
 
-const traitAuthorYear = (s) =>
+const traitAuthorYear = s =>
   `${s.traitReported} (${s.pubAuthor}, ${new Date(s.pubDate).getFullYear()})`;
 
-// gene exons come as flat list, rendering expects list of pairs
-const flatExonsToPairedExons = (genes) => {
-  const paired = genes.map((d) => ({
-    ...d,
-    exons: d.exons.reduce((result, value, index, array) => {
-      if (index % 2 === 0) {
-        result.push(array.slice(index, index + 2));
-      }
-      return result;
-    }, []),
-  }));
-  return paired;
-};
-
-const tableColumns = [
-  {
-    id: 'gene.symbol',
-    label: 'Gene',
-    comparator: (a, b) => d3.ascending(a.gene.symbol, b.gene.symbol),
-    renderCell: (d) => <Link to={`/gene/${d.gene.id}`}>{d.gene.symbol}</Link>,
-  },
-  {
-    id: 'phenotypeId',
-    label: 'Molecular trait',
-    // renderCell: d => (d.phenotypeId !== d.gene.id ? d.phenotypeId : null),
-  },
-  {
-    id: 'tissue.name',
-    label: 'Tissue',
-    comparator: (a, b) => d3.ascending(a.tissue.name, b.tissue.name),
-    renderCell: (d) => d.tissue.name,
-  },
-  {
-    id: 'qtlStudyName',
-    label: 'Source',
-  },
-  {
-    id: 'indexVariant',
-    label: 'Lead variant',
-    comparator: (a, b) => d3.ascending(a.indexVariant.id, b.indexVariant.id),
-    renderCell: (d) => (
-      <Link to={`/variant/${d.indexVariant.id}`}>{d.indexVariant.id}</Link>
-    ),
-  },
-  {
-    id: 'beta',
-    label: 'QTL beta',
-    tooltip:
-      'QTL effect with respect to the alternative allele of the page variant',
-    renderCell: (d) => significantFigures(d.beta),
-  },
-  {
-    id: 'h3',
-    label: 'H3',
-    tooltip: (
-      <React.Fragment>
-        Posterior probability that the signals <strong>do not</strong>{' '}
-        colocalise
-      </React.Fragment>
-    ),
-    renderCell: (d) => significantFigures(d.h3),
-  },
-  {
-    id: 'h4',
-    label: 'H4',
-    tooltip: 'Posterior probability that the signals colocalise',
-    renderCell: (d) => significantFigures(d.h4),
-  },
-  {
-    id: 'log2h4h3',
-    label: 'log2(H4/H3)',
-    tooltip: 'Log-likelihood that the signals colocalise',
-    renderCell: (d) => significantFigures(d.log2h4h3),
-  },
-];
-
-const getDownloadData = (data) => {
-  return data.map((d) => ({
-    'gene.symbol': d.gene.symbol,
-    phenotypeId: d.phenotypeId,
-    'tissue.name': d.tissue.name,
-    qtlStudyName: d.qtlStudyName,
-    indexVariant: d.indexVariant.id,
-    beta: d.beta,
-    h3: d.h3,
-    h4: d.h4,
-    log2h4h3: d.log2h4h3,
-  }));
-};
 
 class StudyLocusPage extends React.Component {
   state = {
-    qtlTabsValue: 'heatmap',
     gwasTabsValue: 'heatmap',
     credSet95Value: 'all',
     log2h4h3SliderValue: 1, // equivalent to H4 being double H3; suggested by Ed
     h4SliderValue: 0.95, // 95% default; suggested by Ed
     credibleSetIntersectionKeys: [],
   };
-  handleQtlTabsChange = (_, qtlTabsValue) => {
-    this.setState({ qtlTabsValue });
-  };
   handleGWASTabsChange = (_, gwasTabsValue) => {
     this.setState({ gwasTabsValue });
   };
-  handleCredSet95Change = (event) => {
+  handleCredSet95Change = event => {
     this.setState({ credSet95Value: event.target.value });
   };
   handleLog2h4h3SliderChange = (_, log2h4h3SliderValue) => {
@@ -229,7 +138,7 @@ class StudyLocusPage extends React.Component {
   handleH4SliderChange = (_, h4SliderValue) => {
     this.setState({ h4SliderValue });
   };
-  handleCredibleSetIntersectionKeysCheckboxClick = (key) => (event) => {
+  handleCredibleSetIntersectionKeysCheckboxClick = key => event => {
     const { credibleSetIntersectionKeys } = this.state;
     if (event.target.checked) {
       this.setState({
@@ -238,7 +147,7 @@ class StudyLocusPage extends React.Component {
     } else {
       this.setState({
         credibleSetIntersectionKeys: credibleSetIntersectionKeys.filter(
-          (d) => d !== key
+          d => d !== key
         ),
       });
     }
@@ -296,7 +205,11 @@ class StudyLocusPage extends React.Component {
               <Header loading={headerLoading} data={dataHeader} />
             )}
           </Query>
+
           <Summary variantId={indexVariantId} studyId={studyId} />
+          <ColocL2GTable variantId={indexVariantId} studyId={studyId} />
+          <ColocGWASTable variantId={indexVariantId} studyId={studyId} />
+          <GenePrioritisationTabs variantId={indexVariantId} studyId={studyId} />
 
           <Query
             query={STUDY_LOCUS_PAGE_QUERY}
@@ -318,115 +231,42 @@ class StudyLocusPage extends React.Component {
                 gwasColocalisation,
                 qtlColocalisation,
                 pageCredibleSet,
-                genes,
-                studyLocus2GeneTable,
               } = data;
 
-              const maxQTLLog2h4h3 = d3.max(
-                qtlColocalisation,
-                (d) => d.log2h4h3
-              );
-              const maxGWASLog2h4h3 = d3.max(
+              const maxQTLLog2h4h3 = max(qtlColocalisation, d => d.log2h4h3);
+              const maxGWASLog2h4h3 = max(
                 gwasColocalisation,
-                (d) => d.log2h4h3
+                d => d.log2h4h3
               );
-              const maxLog2h4h3 = d3.max([maxQTLLog2h4h3, maxGWASLog2h4h3]);
+              const maxLog2h4h3 = max([maxQTLLog2h4h3, maxGWASLog2h4h3]);
 
               const shouldMakeColocalisationCredibleSetQuery =
                 gwasColocalisation.length > 0 || qtlColocalisation.length > 0;
-              const colocalisationCredibleSetQuery =
-                shouldMakeColocalisationCredibleSetQuery
-                  ? createCredibleSetsQuery({
-                      gwasColocalisation,
-                      qtlColocalisation,
-                    })
-                  : null;
-              
-              const gwasColocalisationFiltered = filterGwasColocalisation(gwasColocalisation, this.state);
-              const qtlColocalisationFiltered = filterQtlColocalisation(qtlColocalisation, this.state);
+              const colocalisationCredibleSetQuery = shouldMakeColocalisationCredibleSetQuery
+                ? createCredibleSetsQuery({
+                    gwasColocalisation,
+                    qtlColocalisation,
+                  })
+                : null;
 
-              const pageCredibleSetAdjusted = filterPageCredibleSet(pageCredibleSet, credSet95Value);
-                
+              const gwasColocalisationFiltered = filterGwasColocalisation(
+                gwasColocalisation,
+                this.state
+              );
+              const qtlColocalisationFiltered = filterQtlColocalisation(
+                qtlColocalisation,
+                this.state
+              );
+
+              const pageCredibleSetAdjusted = filterPageCredibleSet(
+                pageCredibleSet,
+                credSet95Value
+              );
+
               const pageCredibleSetKey = `gwasCredibleSet__${studyId}__${indexVariantId}`;
-              const qtlColocDownloadData = getDownloadData(qtlColocalisation);
 
               return (
                 <React.Fragment>
-
-                  <SectionHeading
-                    heading="Gene prioritisation using locus-to-gene pipeline"
-                    subheading="Which genes were prioritised by L2G pipeline at this locus?"
-                  />
-                  <ColocL2GTable
-                    loading={false}
-                    error={false}
-                    data={studyLocus2GeneTable.rows}
-                    handleToggleRegional={this.handleToggleRegional}
-                    fileStem={`l2g-assignment-${studyId}-${indexVariantId}`}
-                  />
-
-                  <SectionHeading
-                    heading={
-                      <div id="coloc">
-                        Gene prioritisation using colocalisation analysis
-                      </div>
-                    }
-                    subheading={
-                      <React.Fragment>
-                        Which molecular traits colocalise with{' '}
-                        <strong>{traitAuthorYear(studyInfo)}</strong> at this
-                        locus?
-                      </React.Fragment>
-                    }
-                  />
-                  <DataDownloader
-                    tableHeaders={tableColumns}
-                    rows={qtlColocDownloadData}
-                    fileStem={`qtl-coloc-${studyId}-${indexVariantId}`}
-                  />
-
-                  <Tabs
-                    variant="scrollable"
-                    value={this.state.qtlTabsValue}
-                    onChange={this.handleQtlTabsChange}
-                  >
-                    <Tab label="Heatmap" value="heatmap" />
-                    <Tab label="Table" value="table" />
-                  </Tabs>
-                  {this.state.qtlTabsValue === 'heatmap' ? (
-                    <ColocQTLGeneTissueTable
-                      loading={false}
-                      error={false}
-                      data={qtlColocalisation}
-                      fileStem="qtl-coloc-heatmap"
-                    />
-                  ) : null}
-                  {this.state.qtlTabsValue === 'table' ? (
-                    <ColocQTLTable
-                      loading={false}
-                      error={false}
-                      data={qtlColocalisation}
-                      tableColumns={tableColumns}
-                    />
-                  ) : null}
-
-                  <SectionHeading
-                    heading="GWAS Study Colocalisation"
-                    subheading={
-                      <React.Fragment>
-                        Which GWAS studies colocalise with{' '}
-                        <strong>{traitAuthorYear(studyInfo)}</strong> at this
-                        locus?
-                      </React.Fragment>
-                    }
-                  />
-                  <ColocGWASTable
-                    loading={false}
-                    error={false}
-                    data={gwasColocalisation}
-                    handleToggleRegional={this.handleToggleRegional}
-                    fileStem={`gwas-coloc-${studyId}-${indexVariantId}`}
-                  />
 
                   <SectionHeading
                     heading={`Credible Set Overlap`}
@@ -502,10 +342,9 @@ class StudyLocusPage extends React.Component {
                         this.state.credibleSetIntersectionKeys.indexOf(
                           pageCredibleSetKey
                         ) >= 0,
-                      onChange:
-                        this.handleCredibleSetIntersectionKeysCheckboxClick(
-                          pageCredibleSetKey
-                        ),
+                      onChange: this.handleCredibleSetIntersectionKeysCheckboxClick(
+                        pageCredibleSetKey
+                      ),
                       value: pageCredibleSetKey,
                     }}
                     credibleSetProps={{
@@ -540,8 +379,16 @@ class StudyLocusPage extends React.Component {
 
                         // de-alias
 
-                        const gwasColocalisationCredibleSetsFiltered = buildCredibleGwasColocalisation(gwasColocalisationFiltered, data2, credSet95Value);
-                        const qtlColocalisationCredibleSetsFiltered = buildCredibleQtlColocalisation(qtlColocalisationFiltered, data2, credSet95Value);
+                        const gwasColocalisationCredibleSetsFiltered = buildCredibleGwasColocalisation(
+                          gwasColocalisationFiltered,
+                          data2,
+                          credSet95Value
+                        );
+                        const qtlColocalisationCredibleSetsFiltered = buildCredibleQtlColocalisation(
+                          qtlColocalisationFiltered,
+                          data2,
+                          credSet95Value
+                        );
 
                         // get the intersecting variants
                         const credibleSetsAll = [
@@ -557,10 +404,16 @@ class StudyLocusPage extends React.Component {
                           ),
                         ];
                         const { credibleSetIntersectionKeys } = this.state;
-                        const credibleSetsChecked = filterCredibleSets(credibleSetsAll, credibleSetIntersectionKeys);
-                        const variantsByCredibleSets = getCheckedCredibleSets(credibleSetsChecked);   
-                        const variantsByCredibleSetsIntersection = getVariantByCredibleSetsIntersection(variantsByCredibleSets);
-                    
+                        const credibleSetsChecked = filterCredibleSets(
+                          credibleSetsAll,
+                          credibleSetIntersectionKeys
+                        );
+                        const variantsByCredibleSets = getCheckedCredibleSets(
+                          credibleSetsChecked
+                        );
+                        const variantsByCredibleSetsIntersection = getVariantByCredibleSetsIntersection(
+                          variantsByCredibleSets
+                        );
 
                         return (
                           <React.Fragment>
@@ -569,46 +422,43 @@ class StudyLocusPage extends React.Component {
                             </Typography>
                             {gwasColocalisationCredibleSetsFiltered.length >
                             0 ? (
-                              gwasColocalisationCredibleSetsFiltered.map(
-                                (d) => {
-                                  return (
-                                    <CredibleSetWithRegional
-                                      key={d.key}
-                                      checkboxProps={{
-                                        checked:
-                                          this.state.credibleSetIntersectionKeys.indexOf(
-                                            d.key
-                                          ) >= 0,
-                                        onChange:
-                                          this.handleCredibleSetIntersectionKeysCheckboxClick(
-                                            d.key
-                                          ),
-                                        value: d.key,
-                                      }}
-                                      credibleSetProps={{
-                                        label: traitAuthorYear(d.study),
+                              gwasColocalisationCredibleSetsFiltered.map(d => {
+                                return (
+                                  <CredibleSetWithRegional
+                                    key={d.key}
+                                    checkboxProps={{
+                                      checked:
+                                        this.state.credibleSetIntersectionKeys.indexOf(
+                                          d.key
+                                        ) >= 0,
+                                      onChange: this.handleCredibleSetIntersectionKeysCheckboxClick(
+                                        d.key
+                                      ),
+                                      value: d.key,
+                                    }}
+                                    credibleSetProps={{
+                                      label: traitAuthorYear(d.study),
+                                      start,
+                                      end,
+                                      h4: d.h4,
+                                      logH4H3: d.log2h4h3,
+                                      data: d.credibleSet,
+                                    }}
+                                    regionalProps={{
+                                      title: null,
+                                      query: GWAS_REGIONAL_QUERY,
+                                      variables: {
+                                        studyId: d.study.studyId,
+                                        chromosome,
                                         start,
                                         end,
-                                        h4: d.h4,
-                                        logH4H3: d.log2h4h3,
-                                        data: d.credibleSet,
-                                      }}
-                                      regionalProps={{
-                                        title: null,
-                                        query: GWAS_REGIONAL_QUERY,
-                                        variables: {
-                                          studyId: d.study.studyId,
-                                          chromosome,
-                                          start,
-                                          end,
-                                        },
-                                        start,
-                                        end,
-                                      }}
-                                    />
-                                  );
-                                }
-                              )
+                                      },
+                                      start,
+                                      end,
+                                    }}
+                                  />
+                                );
+                              })
                             ) : (
                               <Typography align="center">
                                 No GWAS studies satisfying the applied filters.
@@ -620,7 +470,7 @@ class StudyLocusPage extends React.Component {
                             </Typography>
                             {qtlColocalisationCredibleSetsFiltered.length >
                             0 ? (
-                              qtlColocalisationCredibleSetsFiltered.map((d) => {
+                              qtlColocalisationCredibleSetsFiltered.map(d => {
                                 return (
                                   <CredibleSetWithRegional
                                     key={d.key}
@@ -629,14 +479,15 @@ class StudyLocusPage extends React.Component {
                                         this.state.credibleSetIntersectionKeys.indexOf(
                                           d.key
                                         ) >= 0,
-                                      onChange:
-                                        this.handleCredibleSetIntersectionKeysCheckboxClick(
-                                          d.key
-                                        ),
+                                      onChange: this.handleCredibleSetIntersectionKeysCheckboxClick(
+                                        d.key
+                                      ),
                                       value: d.key,
                                     }}
                                     credibleSetProps={{
-                                      label: `${d.qtlStudyName}: ${d.gene.symbol} in ${d.tissue.name}`,
+                                      label: `${d.qtlStudyName}: ${
+                                        d.gene.symbol
+                                      } in ${d.tissue.name}`,
                                       start,
                                       end,
                                       h4: d.h4,
@@ -693,24 +544,11 @@ class StudyLocusPage extends React.Component {
                     </Query>
                   ) : null}
 
-                  <Typography style={{ paddingTop: '10px' }}>
-                    <strong>Genes</strong>
-                  </Typography>
-                  <PlotContainer>
-                    <PlotContainerSection>
-                      <div style={{ paddingRight: '32px' }}>
-                        <GeneTrack
-                          data={{ genes: flatExonsToPairedExons(genes) }}
-                          start={start}
-                          end={end}
-                        />
-                      </div>
-                    </PlotContainerSection>
-                  </PlotContainer>
                 </React.Fragment>
               );
             }}
           </Query>
+          <StudyLocusGenes chromosome={chromosome} start={start} end={end} />
         </ErrorBoundary>
       </BasePage>
     );
