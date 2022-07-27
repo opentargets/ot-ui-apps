@@ -27,7 +27,7 @@ function Summary({ variantId, studyId }) {
     <>
       <SectionHeading heading="Association summary" />
       <Grid container>
-        <Grid xs={4}>
+        <Grid item xs={4}>
           <Typography variant="subtitle1">Study-variant association</Typography>
           <Typography variant="subtitle2">
             {loading ? (
@@ -78,7 +78,7 @@ function Summary({ variantId, studyId }) {
             </>
           )}
         </Grid>
-        <Grid xs={4}>
+        <Grid item xs={4}>
           <Typography variant="subtitle1">Study details</Typography>
           <Typography variant="subtitle2">
             {loading ? (
@@ -134,7 +134,7 @@ function Summary({ variantId, studyId }) {
             )}
           </Typography>
         </Grid>
-        <Grid xs={4}>
+        <Grid item xs={4}>
           <Typography variant="subtitle1">Variant details</Typography>
           <Typography variant="subtitle2">
             {loading ? (
