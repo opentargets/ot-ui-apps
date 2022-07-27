@@ -29,7 +29,7 @@ const StudyLocusGenes = ({ chromosome, start, end }) => {
   });
 
   return (
-    <React.Fragment>
+    <>
       <Typography style={{ paddingTop: '10px' }}>
         <strong>Genes</strong>
       </Typography>
@@ -48,7 +48,7 @@ const StudyLocusGenes = ({ chromosome, start, end }) => {
           </div>
         </PlotContainerSection>
       </PlotContainer>
-    </React.Fragment>
+    </>
   );
 };
 
