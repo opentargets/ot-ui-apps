@@ -1,42 +1,35 @@
 import React from 'react';
 import { Query } from '@apollo/client/react/components';
 import gql from 'graphql-tag';
-import {ascending, max} from 'd3';
+import { max} from 'd3';
 
 import Typography from '@material-ui/core/Typography';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-import Link from '../../components/Link';
 import { sanitize } from '../../utils';
 import ScrollToTop from '../../components/ScrollToTop';
 import Summary from '../../sections/studyLocus/Summary';
 
 import {
-  Tab,
-  Tabs,
   SectionHeading,
   PlotContainer,
   PlotContainerSection,
   significantFigures,
-  DataDownloader,
 } from '../../ot-ui-components';
 
 import ErrorBoundary from '../../components/ErrorBoundary';
-import GeneTrack from '../../components/GeneTrack';
 import CredibleSet from '../../components/CredibleSet';
 
 import BasePage from '../BasePage';
-import ColocQTLTable from '../../components/ColocQTLTable';
-import ColocQTLGeneTissueTable from '../../components/ColocQTLGeneTissueTable';
-import ColocGWASTable from '../../components/ColocGWASTable';
+import ColocGWASTable from '../../sections/studyLocus/ColocGWASTable';
+import GenePrioritisationTabs from '../../sections/studyLocus/GenePrioritisationTabs';
 import ColocL2GTable from '../../sections/studyLocus/ColocL2GTable';
 import CredibleSetWithRegional from '../../components/CredibleSetWithRegional';
 import CredibleSetsIntersectionTable from '../../components/CredibleSetsIntersectionTable';
 import Slider from '../../components/Slider';
 import {
-  commaSeparate,
   filterGwasColocalisation,
   filterQtlColocalisation,
   filterPageCredibleSet,
@@ -53,6 +46,7 @@ import STUDY_LOCUS_HEADER_QUERY from './StudyLocusHeaderQuery.gql';
 import STUDY_LOCUS_PAGE_QUERY from '../../queries/StudyLocusPageQuery.gql';
 import GWAS_REGIONAL_QUERY from '../../queries/GWASRegionalQuery.gql';
 import QTL_REGIONAL_QUERY from '../../queries/QTLRegionalQuery.gql';
+import StudyLocusGenes from '../../sections/studyLocus/Genes/StudyLocusGenes';
 
 const HALF_WINDOW = 250000;
 
@@ -123,107 +117,14 @@ const createCredibleSetsQuery = ({ gwasColocalisation, qtlColocalisation }) => {
 const traitAuthorYear = s =>
   `${s.traitReported} (${s.pubAuthor}, ${new Date(s.pubDate).getFullYear()})`;
 
-// gene exons come as flat list, rendering expects list of pairs
-const flatExonsToPairedExons = genes => {
-  const paired = genes.map(d => ({
-    ...d,
-    exons: d.exons.reduce((result, value, index, array) => {
-      if (index % 2 === 0) {
-        result.push(array.slice(index, index + 2));
-      }
-      return result;
-    }, []),
-  }));
-  return paired;
-};
-
-const tableColumns = [
-  {
-    id: 'gene.symbol',
-    label: 'Gene',
-    comparator: (a, b) => ascending(a.gene.symbol, b.gene.symbol),
-    renderCell: d => <Link to={`/gene/${d.gene.id}`}>{d.gene.symbol}</Link>,
-  },
-  {
-    id: 'phenotypeId',
-    label: 'Molecular trait',
-    // renderCell: d => (d.phenotypeId !== d.gene.id ? d.phenotypeId : null),
-  },
-  {
-    id: 'tissue.name',
-    label: 'Tissue',
-    comparator: (a, b) => ascending(a.tissue.name, b.tissue.name),
-    renderCell: d => d.tissue.name,
-  },
-  {
-    id: 'qtlStudyName',
-    label: 'Source',
-  },
-  {
-    id: 'indexVariant',
-    label: 'Lead variant',
-    comparator: (a, b) => ascending(a.indexVariant.id, b.indexVariant.id),
-    renderCell: d => (
-      <Link to={`/variant/${d.indexVariant.id}`}>{d.indexVariant.id}</Link>
-    ),
-  },
-  {
-    id: 'beta',
-    label: 'QTL beta',
-    tooltip:
-      'QTL effect with respect to the alternative allele of the page variant',
-    renderCell: d => significantFigures(d.beta),
-  },
-  {
-    id: 'h3',
-    label: 'H3',
-    tooltip: (
-      <React.Fragment>
-        Posterior probability that the signals <strong>do not</strong>{' '}
-        colocalise
-      </React.Fragment>
-    ),
-    renderCell: d => significantFigures(d.h3),
-  },
-  {
-    id: 'h4',
-    label: 'H4',
-    tooltip: 'Posterior probability that the signals colocalise',
-    renderCell: d => significantFigures(d.h4),
-  },
-  {
-    id: 'log2h4h3',
-    label: 'log2(H4/H3)',
-    tooltip: 'Log-likelihood that the signals colocalise',
-    renderCell: d => significantFigures(d.log2h4h3),
-  },
-];
-
-const getDownloadData = data => {
-  return data.map(d => ({
-    'gene.symbol': d.gene.symbol,
-    phenotypeId: d.phenotypeId,
-    'tissue.name': d.tissue.name,
-    qtlStudyName: d.qtlStudyName,
-    indexVariant: d.indexVariant.id,
-    beta: d.beta,
-    h3: d.h3,
-    h4: d.h4,
-    log2h4h3: d.log2h4h3,
-  }));
-};
 
 class StudyLocusPage extends React.Component {
   state = {
-    qtlTabsValue: 'heatmap',
     gwasTabsValue: 'heatmap',
     credSet95Value: 'all',
     log2h4h3SliderValue: 1, // equivalent to H4 being double H3; suggested by Ed
     h4SliderValue: 0.95, // 95% default; suggested by Ed
     credibleSetIntersectionKeys: [],
-  };
-  handleQtlTabsChange = (_, qtlTabsValue) => {
-    this.setState({ qtlTabsValue });
   };
   handleGWASTabsChange = (_, gwasTabsValue) => {
     this.setState({ gwasTabsValue });
@@ -304,8 +205,11 @@ class StudyLocusPage extends React.Component {
               <Header loading={headerLoading} data={dataHeader} />
             )}
           </Query>
+
           <Summary variantId={indexVariantId} studyId={studyId} />
           <ColocL2GTable variantId={indexVariantId} studyId={studyId} />
+          <ColocGWASTable variantId={indexVariantId} studyId={studyId} />
+          <GenePrioritisationTabs variantId={indexVariantId} studyId={studyId} />
 
           <Query
             query={STUDY_LOCUS_PAGE_QUERY}
@@ -327,7 +231,6 @@ class StudyLocusPage extends React.Component {
                 gwasColocalisation,
                 qtlColocalisation,
                 pageCredibleSet,
-                genes,
               } = data;
 
               const maxQTLLog2h4h3 = max(qtlColocalisation, d => d.log2h4h3);
@@ -361,72 +264,9 @@ class StudyLocusPage extends React.Component {
               );
 
               const pageCredibleSetKey = `gwasCredibleSet__${studyId}__${indexVariantId}`;
-              const qtlColocDownloadData = getDownloadData(qtlColocalisation);
 
               return (
                 <React.Fragment>
-                  <SectionHeading
-                    heading={
-                      <div id="coloc">
-                        Gene prioritisation using colocalisation analysis
-                      </div>
-                    }
-                    subheading={
-                      <React.Fragment>
-                        Which molecular traits colocalise with{' '}
-                        <strong>{traitAuthorYear(studyInfo)}</strong> at this
-                        locus?
-                      </React.Fragment>
-                    }
-                  />
-                  <DataDownloader
-                    tableHeaders={tableColumns}
-                    rows={qtlColocDownloadData}
-                    fileStem={`qtl-coloc-${studyId}-${indexVariantId}`}
-                  />
-
-                  <Tabs
-                    variant="scrollable"
-                    value={this.state.qtlTabsValue}
-                    onChange={this.handleQtlTabsChange}
-                  >
-                    <Tab label="Heatmap" value="heatmap" />
-                    <Tab label="Table" value="table" />
-                  </Tabs>
-                  {this.state.qtlTabsValue === 'heatmap' ? (
-                    <ColocQTLGeneTissueTable
-                      loading={false}
-                      error={false}
-                      data={qtlColocalisation}
-                      fileStem="qtl-coloc-heatmap"
-                    />
-                  ) : null}
-                  {this.state.qtlTabsValue === 'table' ? (
-                    <ColocQTLTable
-                      loading={false}
-                      error={false}
-                      data={qtlColocalisation}
-                      tableColumns={tableColumns}
-                    />
-                  ) : null}
-
-                  <SectionHeading
-                    heading="GWAS Study Colocalisation"
-                    subheading={
-                      <React.Fragment>
-                        Which GWAS studies colocalise with{' '}
-                        <strong>{traitAuthorYear(studyInfo)}</strong> at this
-                        locus?
-                      </React.Fragment>
-                    }
-                  />
-                  <ColocGWASTable
-                    loading={false}
-                    error={false}
-                    data={gwasColocalisation}
-                    handleToggleRegional={this.handleToggleRegional}
-                    fileStem={`gwas-coloc-${studyId}-${indexVariantId}`}
-                  />
 
                   <SectionHeading
                     heading={`Credible Set Overlap`}
@@ -704,24 +544,11 @@ class StudyLocusPage extends React.Component {
                     </Query>
                   ) : null}
 
-                  <Typography style={{ paddingTop: '10px' }}>
-                    <strong>Genes</strong>
-                  </Typography>
-                  <PlotContainer>
-                    <PlotContainerSection>
-                      <div style={{ paddingRight: '32px' }}>
-                        <GeneTrack
-                          data={{ genes: flatExonsToPairedExons(genes) }}
-                          start={start}
-                          end={end}
-                        />
-                      </div>
-                    </PlotContainerSection>
-                  </PlotContainer>
                 </React.Fragment>
               );
             }}
           </Query>
+          <StudyLocusGenes chromosome={chromosome} start={start} end={end} />
         </ErrorBoundary>
       </BasePage>
     );
