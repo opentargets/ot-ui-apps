@@ -1,20 +1,8 @@
 query StudyLocusPageQuery(
   $studyId: String!
   $variantId: String!
-  $chromosome: String!
-  $start: Long!
-  $end: Long!
 ) {
-  variantInfo(variantId: $variantId) {
-    # id # TODO: investigate; bizarrely, if id is requested, rsId is null in the cache (but valid in the response)
-    rsId
-    chromosome
-    position
-    refAllele
-    altAllele
-    chromosomeB37
-    positionB37
-  }
+
   studyInfo(studyId: $studyId) {
     studyId
     traitReported
@@ -22,24 +10,8 @@ query StudyLocusPageQuery(
     pubDate
     pubJournal
     pmid
-    hasSumstats
   }
-  studyLocus2GeneTable(studyId: $studyId, variantId: $variantId) {
-    rows {
-      gene {
-        symbol
-        id
-      }
-      yProbaModel
-      yProbaDistance
-      # yProbaInterlocus
-      yProbaInteraction
-      yProbaMolecularQTL
-      yProbaPathogenicity
-      hasColoc
-      distanceToLocus
-    }
-  }
+
   gwasColocalisation(studyId: $studyId, variantId: $variantId) {
     indexVariant {
       id
@@ -135,35 +107,5 @@ query StudyLocusPageQuery(
     logABF
     is95
     is99
-  }
-
-  pageSummary: studyAndLeadVariantInfo(
-    studyId: $studyId
-    variantId: $variantId
-  ) {
-    indexVariant {
-      rsId
-    }
-    study {
-      traitReported
-    }
-    pvalMantissa
-    pvalExponent
-    oddsRatio
-    oddsRatioCILower
-    oddsRatioCIUpper
-    beta
-    direction
-    betaCILower
-    betaCIUpper
-  }
-
-  genes(chromosome: $chromosome, start: $start, end: $end) {
-    id
-    symbol
-    tss
-    start
-    end
-    exons
   }
 }
