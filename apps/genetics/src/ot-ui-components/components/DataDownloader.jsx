@@ -39,44 +39,42 @@ function DataDownloader({ tableHeaders, rows, classes, fileStem, loading }) {
     );
   }
   return (
-    <>
-      <Grid
-        container
-        justifyContent="flex-end"
-        spacing={1}
-        className={classes.container}
-      >
-        <Grid item>
-          <Typography variant="caption" className={classes.downloadHeader}>
-            Download table as
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="outlined"
-            onClick={() => handleDownload(tableHeaders, rows, fileStem, 'json')}
-          >
-            JSON
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="outlined"
-            onClick={() => handleDownload(tableHeaders, rows, fileStem, 'csv')}
-          >
-            CSV
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="outlined"
-            onClick={() => handleDownload(tableHeaders, rows, fileStem, 'tsv')}
-          >
-            TSV
-          </Button>
-        </Grid>
+    <Grid
+      container
+      justifyContent="flex-end"
+      spacing={1}
+      className={classes.container}
+    >
+      <Grid item>
+        <Typography variant="caption" className={classes.downloadHeader}>
+          Download table as
+        </Typography>
       </Grid>
-    </>
+      <Grid item>
+        <Button
+          variant="outlined"
+          onClick={() => handleDownload(tableHeaders, rows, fileStem, 'json')}
+        >
+          JSON
+        </Button>
+      </Grid>
+      <Grid item>
+        <Button
+          variant="outlined"
+          onClick={() => handleDownload(tableHeaders, rows, fileStem, 'csv')}
+        >
+          CSV
+        </Button>
+      </Grid>
+      <Grid item>
+        <Button
+          variant="outlined"
+          onClick={() => handleDownload(tableHeaders, rows, fileStem, 'tsv')}
+        >
+          TSV
+        </Button>
+      </Grid>
+    </Grid>
   );
 }
 
