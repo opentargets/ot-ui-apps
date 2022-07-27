@@ -10,6 +10,7 @@ query StudyLocusPageQuery(
     pubDate
     pubJournal
     pmid
+    hasSumstats
   }
 
   gwasColocalisation(studyId: $studyId, variantId: $variantId) {
