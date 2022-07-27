@@ -17,6 +17,7 @@ import {
 import Entities from './Entities';
 import Category from './Category';
 import CountInfo from './CountInfo';
+import { DateFilter } from './DateFilter';
 
 const useStyles = makeStyles(() => ({
   controlsContainer: {
@@ -33,7 +34,13 @@ function LiteratureList({ id, name, entity, BODY_QUERY }) {
   const resetLiteratureState = useResetRecoilState(literatureState);
 
   const bibliographyState = useRecoilValue(literatureState);
-  const { category } = bibliographyState;
+  const {
+    category,
+    startYear,
+    startMonth,
+    endYear,
+    endMonth,
+  } = bibliographyState;
 
   useEffect(
     () => {
@@ -42,6 +49,10 @@ function LiteratureList({ id, name, entity, BODY_QUERY }) {
           id,
           query: BODY_QUERY,
           category,
+          startYear,
+          startMonth,
+          endYear,
+          endMonth,
         });
         const data = inintRequest.data[entity];
         const update = {
@@ -52,6 +63,7 @@ function LiteratureList({ id, name, entity, BODY_QUERY }) {
             publication: null,
           })),
           litsCount: data.literatureOcurrences?.count,
+          earliestPubYear: data.literatureOcurrences?.earliestPubYear,
           cursor: data.literatureOcurrences?.cursor,
           id,
           query: BODY_QUERY,
@@ -71,6 +83,7 @@ function LiteratureList({ id, name, entity, BODY_QUERY }) {
     <div>
       <Box className={classes.controlsContainer}>
         <Category />
+        <DateFilter />
         <CountInfo />
       </Box>
       <Entities id={id} name={name} />

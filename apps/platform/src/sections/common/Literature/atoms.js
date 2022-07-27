@@ -37,6 +37,11 @@ export const literatureState = atom({
     globalEntity: null,
     entities: [],
     selectedEntities: [],
+    startYear: null,
+    startMonth: null,
+    endYear: null,
+    endMonth: null,
+    earliestPubYear: 2000,
     litsIds: [],
     page: 0,
     pageSize: 5,
@@ -195,6 +200,10 @@ export const fetchSimilarEntities = ({
   cursor = null,
   category = [],
   entities = [],
+  startYear = null,
+  startMonth = null,
+  endYear = null,
+  endMonth = null,
 }) => {
   const entityNames = category.length === 0 ? null : category;
   const ids = entities.map(c => c.object.id);
@@ -204,6 +213,10 @@ export const fetchSimilarEntities = ({
       cursor,
       id,
       ids,
+      startYear,
+      startMonth,
+      endYear,
+      endMonth,
       threshold,
       size,
       entityNames,
