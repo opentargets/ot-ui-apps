@@ -24,6 +24,7 @@ import CredibleSet from '../../components/CredibleSet';
 
 import BasePage from '../BasePage';
 import ColocGWASTable from '../../sections/studyLocus/ColocGWASTable';
+import GenePrioritisationTabs from '../../sections/studyLocus/GenePrioritisationTabs';
 import ColocL2GTable from '../../sections/studyLocus/ColocL2GTable';
 import CredibleSetWithRegional from '../../components/CredibleSetWithRegional';
 import CredibleSetsIntersectionTable from '../../components/CredibleSetsIntersectionTable';
