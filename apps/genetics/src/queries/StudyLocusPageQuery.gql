@@ -22,6 +22,7 @@ query StudyLocusPageQuery(
     pubDate
     pubJournal
     pmid
+    hasSumstats
   }
   studyLocus2GeneTable(studyId: $studyId, variantId: $variantId) {
     rows {

@@ -36,9 +36,11 @@ function transformPheWAS(data) {
       pubAuthor,
       pmid,
       source,
+      hasSumstats,
     } = study ?? {};
     return {
       studyId,
+      hasSumstats,
       source,
       traitReported,
       traitCategory,

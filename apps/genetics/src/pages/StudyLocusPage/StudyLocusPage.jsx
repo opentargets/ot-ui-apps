@@ -433,6 +433,7 @@ class StudyLocusPage extends React.Component {
                         </Typography>
                       )}
                     </Grid>
+
                     <Grid xs={4}>
                       <Typography variant="subtitle1">Study details</Typography>
                       <Typography variant="subtitle2">
@@ -458,7 +459,12 @@ class StudyLocusPage extends React.Component {
                           'NA'
                         )}
                       </Typography>
+                      <Typography variant="subtitle2">
+                        <strong>Has sumstats:</strong>{' '}
+                        {studyInfo.hasSumstats ? 'yes' : 'no'}
+                      </Typography>
                     </Grid>
+
                     <Grid xs={4}>
                       <Typography variant="subtitle1">
                         Variant details

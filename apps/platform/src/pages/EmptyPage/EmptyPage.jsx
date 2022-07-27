@@ -12,7 +12,7 @@ import Link from '../../components/Link';
 import Search from '../../components/Search';
 import config from '../../config';
 
-const styles = (theme) => ({
+const styles = theme => ({
   icon: {
     color: theme.palette.primary.main,
     marginBottom: '12px',

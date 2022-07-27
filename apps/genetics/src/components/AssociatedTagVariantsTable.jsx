@@ -8,6 +8,7 @@ import {
 
 import { pvalThreshold } from '../constants';
 import PmidOrBiobankLink from './PmidOrBiobankLink';
+import { generateComparator } from '../utils';
 
 const tableColumns = variantId => [
   {
@@ -78,6 +79,13 @@ const tableColumns = variantId => [
       rowData.posteriorProbability !== null
         ? rowData.posteriorProbability.toPrecision(3)
         : '',
+  },
+  {
+    id: 'hasSumstats',
+    label: 'Has sumstats',
+    comparator: generateComparator(d => d.hasSumstats),
+    renderCell: rowData => rowData.hasSumstats ? <>yes</> : <>no</>,
+    export: rowData => rowData.hasSumstats ? true : false,
   },
 ];
 
