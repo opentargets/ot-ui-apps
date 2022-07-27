@@ -26,8 +26,7 @@ const tableColumns = [
   },
   {
     id: 'phenotypeId',
-    label: 'Molecular trait',
-    // renderCell: d => (d.phenotypeId !== d.gene.id ? d.phenotypeId : null),
+    label: 'Molecular trait'
   },
   {
     id: 'tissue.name',
@@ -58,10 +57,10 @@ const tableColumns = [
     id: 'h3',
     label: 'H3',
     tooltip: (
-      <React.Fragment>
+      <>
         Posterior probability that the signals <strong>do not</strong>{' '}
         colocalise
-      </React.Fragment>
+      </>
     ),
     renderCell: d => significantFigures(d.h3),
   },
@@ -112,7 +111,7 @@ const GenePrioritisationTabs = ({ variantId, studyId }) => {
   }
 
   return (
-    <React.Fragment>
+    <>
       <SectionHeading
         heading={
           <div id="coloc">
@@ -120,11 +119,11 @@ const GenePrioritisationTabs = ({ variantId, studyId }) => {
           </div>
         }
         subheading={
-          <React.Fragment>
+          <>
             Which molecular traits colocalise with{' '}
             <strong>{studyInfo ? traitAuthorYear(studyInfo) : ''}</strong> at
             this locus?
-          </React.Fragment>
+          </>
         }
       />
       <DataDownloader
@@ -160,7 +159,7 @@ const GenePrioritisationTabs = ({ variantId, studyId }) => {
           tableColumns={tableColumns}
         />
       ) : null}
-    </React.Fragment>
+    </>
   );
 };
 
