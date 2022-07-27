@@ -20,6 +20,7 @@ query StudyLocusSummaryQuery(
     pubDate
     pubJournal
     pmid
+    hasSumstats
   }
 
   pageSummary: studyAndLeadVariantInfo(
