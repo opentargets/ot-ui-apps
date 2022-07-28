@@ -11,7 +11,7 @@ import SearchPage from './pages/SearchPage';
 import DiseasePage from './pages/DiseasePage';
 import DownloadsPage from './pages/DownloadsPage';
 import DrugPage from './pages/DrugPage';
-import TargetPage from './pages/TargetPage';
+import TargetPage from './pages/NewTargetPage';
 import EvidencePage from './pages/EvidencePage';
 import VariantsPage from './pages/VariantsPage';
 import APIPage from './pages/APIPage';
