@@ -12,6 +12,7 @@ import VariantPage from './pages/VariantPage';
 import LocusPage from './pages/LocusPage';
 import StudyLocusPage from './pages/StudyLocusPage';
 import ImmunobasePage from './pages/ImmunobasePage';
+import NotFoundPage from './pages/NotFoundPage';
 
 const App = () => (
   <ApolloProvider client={client}>
@@ -29,6 +30,9 @@ const App = () => (
             component={StudyLocusPage}
           />
           <Route path="/immunobase" component={ImmunobasePage} />
+          <Route>
+            <NotFoundPage />
+          </Route>
         </Switch>
       </Router>
     </ThemeProvider>
