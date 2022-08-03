@@ -1,4 +1,5 @@
-import { generateComparator } from './common';
+import { generateComparator, sanitize } from './common';
+import gql from 'graphql-tag';
 
 export function filterGwasColocalisation(data, state) {
   return data
@@ -114,6 +115,16 @@ export function getVariantByCredibleSetsIntersection(variantsByCredibleSets) {
   return variantsByCredibleSetsIntersection;
 }
 
+export function createCredibleSetsQuery({
+  gwasColocalisation,
+  qtlColocalisation,
+}) {
+  return gql(`query CredibleSetsQuery {
+    ${gwasColocalisation.map(gwasCredibleSetQueryAliasedFragment).join('')}
+    ${qtlColocalisation.map(qtlCredibleSetQueryAliasedFragment).join('')}
+  }`);
+}
+
 const log2h4h3Comparator = generateComparator(d => d.log2h4h3);
 
 const buildCredibleSet = (data, study, indexVariant, credSet95Value) => {
@@ -134,4 +145,61 @@ const flattenPosition = ({ tagVariant, postProb, is95, is99, ...rest }) => {
     is99CredibleSet: is99,
     ...rest,
   };
+};
+
+const gwasCredibleSetQueryAliasedFragment = ({ study, indexVariant }) => `
+gwasCredibleSet__${study.studyId}__${
+  indexVariant.id
+}: gwasCredibleSet(studyId: "${study.studyId}", variantId: "${
+  indexVariant.id
+}") {
+  tagVariant {
+    id
+    rsId
+    position
+  }
+  pval
+  se
+  beta
+  postProb
+  MultisignalMethod
+  logABF
+  is95
+  is99
+}
+`;
+
+const qtlCredibleSetQueryAliasedFragment = ({
+  qtlStudyName,
+  phenotypeId,
+  tissue,
+  indexVariant,
+}) => {
+  const tissueId = tissue.id.replaceAll('-', '_');
+  const parseQTLStudyName = qtlStudyName.replaceAll('-', '_');
+  const parsePhenotypeId = phenotypeId.replaceAll('-', '_');
+  const sanitizedTissueId = sanitize(tissueId);
+  const sanitizedPhenotypeId = sanitize(parsePhenotypeId);
+  const sanitizedParseQTLStudyName = sanitize(parseQTLStudyName);
+  return `
+  qtlCredibleSet__${sanitizedParseQTLStudyName}__${sanitizedPhenotypeId}__${sanitizedTissueId}__${
+    indexVariant.id
+  }: qtlCredibleSet(studyId: "${parseQTLStudyName}", variantId: "${
+    indexVariant.id
+  }", phenotypeId: "${parsePhenotypeId}", bioFeature: "${tissueId}") {
+    tagVariant {
+      id
+      rsId
+      position
+    }
+    pval
+    se
+    beta
+    postProb
+    MultisignalMethod
+    logABF
+    is95
+    is99
+  }
+  `;
 };

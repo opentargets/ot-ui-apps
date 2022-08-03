@@ -23,5 +23,9 @@ export const sanitize = str => str.replace(/[^a-zA-Z0-9]/g, '');
 export const traitAuthorYear = s =>
   `${s.traitReported} (${s.pubAuthor}, ${new Date(s.pubDate).getFullYear()})`;
 
+export const isGreaterThanZero = (arrayLength) => {
+  return arrayLength > 0;
+}
+
 // Consants
 export const SIGNIFICANCE = -Math.log10(5e-8);

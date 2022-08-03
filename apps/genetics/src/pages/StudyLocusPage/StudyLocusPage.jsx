@@ -3,14 +3,14 @@ import { Query } from '@apollo/client/react/components';
 import gql from 'graphql-tag';
 import { max} from 'd3';
 
-import Typography from '@material-ui/core/Typography';
+import Header from './Header';
+import BasePage from '../BasePage';
+
+import Grid from '@material-ui/core/Grid';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
+import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Grid from '@material-ui/core/Grid';
-import { sanitize } from '../../utils';
-import ScrollToTop from '../../components/ScrollToTop';
-import Summary from '../../sections/studyLocus/Summary';
 
 import {
   SectionHeading,
@@ -19,16 +19,13 @@ import {
   significantFigures,
 } from '../../ot-ui-components';
 
+import ScrollToTop from '../../components/ScrollToTop';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import CredibleSet from '../../components/CredibleSet';
-
-import BasePage from '../BasePage';
-import ColocGWASTable from '../../sections/studyLocus/ColocGWASTable';
-import GenePrioritisationTabs from '../../sections/studyLocus/GenePrioritisationTabs';
-import ColocL2GTable from '../../sections/studyLocus/ColocL2GTable';
 import CredibleSetWithRegional from '../../components/CredibleSetWithRegional';
 import CredibleSetsIntersectionTable from '../../components/CredibleSetsIntersectionTable';
 import Slider from '../../components/Slider';
+
 import {
   filterGwasColocalisation,
   filterQtlColocalisation,
@@ -38,15 +35,20 @@ import {
   filterCredibleSets,
   getCheckedCredibleSets,
   getVariantByCredibleSetsIntersection,
+  sanitize
 } from '../../utils';
 
-import Header from './Header';
+import StudyLocusGenes from '../../sections/studyLocus/Genes/StudyLocusGenes';
+import CredibleSetsGroup from '../../sections/studyLocus/CredibleSetsGroup';
+import ColocGWASTable from '../../sections/studyLocus/ColocGWASTable';
+import GenePrioritisationTabs from '../../sections/studyLocus/GenePrioritisationTabs';
+import ColocL2GTable from '../../sections/studyLocus/ColocL2GTable';
+import Summary from '../../sections/studyLocus/Summary';
 
 import STUDY_LOCUS_HEADER_QUERY from './StudyLocusHeaderQuery.gql';
 import STUDY_LOCUS_PAGE_QUERY from '../../queries/StudyLocusPageQuery.gql';
 import GWAS_REGIONAL_QUERY from '../../queries/GWASRegionalQuery.gql';
 import QTL_REGIONAL_QUERY from '../../queries/QTLRegionalQuery.gql';
-import StudyLocusGenes from '../../sections/studyLocus/Genes/StudyLocusGenes';
 
 const HALF_WINDOW = 250000;
 
@@ -210,6 +212,8 @@ class StudyLocusPage extends React.Component {
           <ColocL2GTable variantId={indexVariantId} studyId={studyId} />
           <ColocGWASTable variantId={indexVariantId} studyId={studyId} />
           <GenePrioritisationTabs variantId={indexVariantId} studyId={studyId} />
+          {/* TODO: separate unfinished component */}
+          {/* <CredibleSetsGroup variantId={indexVariantId} studyId={studyId} start={start} end={end} chromosome={chromosome}/> */}
 
           <Query
             query={STUDY_LOCUS_PAGE_QUERY}
