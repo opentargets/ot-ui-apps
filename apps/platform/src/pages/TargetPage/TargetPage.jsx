@@ -11,7 +11,7 @@ import { getUniprotIds } from '../../utils/global';
 import LoadingBackdrop from '../../components/LoadingBackdrop';
 import TARGET_PAGE_QUERY from './TargetPage.gql';
 
-import { RoutingTab, RoutingTabs } from '../../components/RoutingTabs';
+// import { RoutingTab, RoutingTabs } from '../../components/RoutingTabs';
 
 const Profile = lazy(() => import('../TargetPage/Profile'));
 const ClassicAssociations = lazy(() =>
