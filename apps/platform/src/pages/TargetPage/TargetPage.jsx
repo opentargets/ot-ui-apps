@@ -11,7 +11,6 @@ import { getUniprotIds } from '../../utils/global';
 import LoadingBackdrop from '../../components/LoadingBackdrop';
 import TARGET_PAGE_QUERY from './TargetPage.gql';
 
-// import { RoutingTab, RoutingTabs } from '../../components/RoutingTabs';
 
 const Profile = lazy(() => import('../TargetPage/Profile'));
 const ClassicAssociations = lazy(() =>
@@ -92,53 +91,6 @@ function TargetPage({ location, match }) {
       </Suspense>
     </BasePage>
   );
-  
-  /*
-  return (
-    <BasePage
-      title={
-        location.pathname.includes('associations')
-          ? `Diseases associated with ${symbol}`
-          : `${symbol} profile page`
-      }
-      description={
-        location.pathname.includes('associations')
-          ? `Ranked list of diseases and phenotypes associated with ${symbol}`
-          : `Annotation information for ${symbol}`
-      }
-      location={location}
-    >
-      
-      <ScrollToTop />
-      <Header
-        loading={loading}
-        ensgId={ensgId}
-        uniprotIds={uniprotIds}
-        symbol={symbol}
-        name={approvedName}
-        crisprId={crisprId}
-      />
-
-      <RoutingTabs value={
-          location.pathname.includes('associations')
-            ? `${match.url}/associations`
-            : location.pathname
-        }>
-        <RoutingTab
-          label="Associated diseases"
-          path="/target/:ensgId/associations"
-          value={`${match.url}/associations`}
-          component={() => <ClassicAssociations ensgId={ensgId} symbol={symbol} /> }
-        />
-        <RoutingTab
-          label="Profile"
-          path="/target/:ensgId "
-          component={() => <Profile ensgId={ensgId} symbol={symbol} /> }
-        />
-      </RoutingTabs>
-    </BasePage>
-  );
-        */
 }
 
 export default TargetPage;
