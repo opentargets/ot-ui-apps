@@ -1,5 +1,5 @@
 import React from "react";
-import { extent, ascending, scaleSqrt, descending } from "d3";
+import { extent, ascending, scaleSqrt, descending }  from "d3";
 
 import { Link, OtTableRF, DataCircle, Tooltip } from "../ot-ui-components";
 
@@ -19,10 +19,20 @@ const tissueComparator = (t) => (a, b) => {
   }
 };
 
+const getPhenotypeId = (phenotypeId) =>
+  phenotypeId.includes("^")
+    ? phenotypeId.slice(phenotypeId.lastIndexOf("^") + 1)
+    : phenotypeId;
+const getSpliceId = (phenotypeId) =>
+  phenotypeId.includes("^")
+    ? phenotypeId.slice(0, phenotypeId.lastIndexOf("^"))
+    : null;
+
 const ColocTable = ({ loading, error, fileStem, data }) => {
   const uniqueStudyGenePhenotypes = data.reduce((acc, d) => {
-    const { gene, qtlStudyName } = d;
-    acc[`${qtlStudyName}__${gene.id}`] = {
+    const { phenotypeId, gene, qtlStudyName } = d;
+    acc[`${qtlStudyName}__${gene.id}__${phenotypeId}`] = {
+      phenotypeId: getPhenotypeId(phenotypeId),
       gene,
       qtlStudyName,
     };
@@ -41,9 +51,7 @@ const ColocTable = ({ loading, error, fileStem, data }) => {
     tissueThresholdValue,
     Math.max(Math.abs(minVal), maxVal)
   );
-  const radiusScale = scaleSqrt()
-    .domain([0, absMax])
-    .range([0, 6]);
+  const radiusScale = scaleSqrt().domain([0, absMax]).range([0, 6]);
   const tissueColumns = uniqueTissues
     .sort((a, b) => ascending(a.name, b.name))
     .map((t) => ({
@@ -57,7 +65,7 @@ const ColocTable = ({ loading, error, fileStem, data }) => {
           return null;
         }
 
-        const { h3, h4, log2h4h3, beta, phenotypeId } = row[t.id];
+        const { h3, h4, log2h4h3, beta, splice } = row[t.id];
         const qtlRadius = radiusScale(
           Math.min(tissueThresholdValue, Math.abs(log2h4h3))
         );
@@ -68,7 +76,7 @@ const ColocTable = ({ loading, error, fileStem, data }) => {
               3
             )}, H3: ${h3.toPrecision(3)}, H4: ${h4.toPrecision(3)}, QTL beta: ${
               beta ? beta.toPrecision(3) : "N/A"
-            }, phenotypeId: ${phenotypeId}`}
+            }${splice ? `, splice: ${splice}` : ""}`}
           >
             <span>
               <DataCircle radius={qtlRadius} colorScheme={qtlColor} />
@@ -77,15 +85,16 @@ const ColocTable = ({ loading, error, fileStem, data }) => {
         );
       },
     }));
-    
   const dataByPhenotypeId = uniquePhenotypeIds.map(
-    ({ gene, qtlStudyName }) => ({
+    ({ phenotypeId, gene, qtlStudyName }) => ({
+      phenotypeId,
       gene,
       qtlStudyName,
       ...uniqueTissues.reduce((acc, t) => {
         const items = data
           .filter(
             (d) =>
+              getPhenotypeId(d.phenotypeId) === phenotypeId &&
               d.gene.id === gene.id &&
               d.qtlStudyName === qtlStudyName &&
               d.tissue.id === t.id
@@ -95,7 +104,7 @@ const ColocTable = ({ loading, error, fileStem, data }) => {
             h4: d.h4,
             log2h4h3: d.log2h4h3,
             beta: d.beta,
-            phenotypeId: d.phenotypeId.replace(`^${d.gene.id}`, '')
+            splice: getSpliceId(d.phenotypeId),
           }))
           .sort((a, b) => descending(a.log2h4h3, b.log2h4h3));
 
@@ -104,7 +113,7 @@ const ColocTable = ({ loading, error, fileStem, data }) => {
         // to deduplication on index variants)
         if (items.length > 1) {
           console.info(
-            `Multiple entries found: ${gene.symbol}, ${qtlStudyName}`,
+            `Multiple entries found: ${gene.symbol}, ${qtlStudyName}, ${phenotypeId}`,
             items
           );
         }
@@ -120,10 +129,8 @@ const ColocTable = ({ loading, error, fileStem, data }) => {
     renderCell: (d) => <Link to={`/gene/${d.gene.id}`}>{d.gene.symbol}</Link>,
   };
   const phenotypeIdColumn = {
-    id: "gene.id",
+    id: "phenotypeId",
     label: "Molecular trait",
-    comparator: (a, b) => ascending(a.gene.id, b.gene.id),
-    renderCell: (d) => <>{d.gene.id}</>,
   };
   const studyColumn = {
     id: "qtlStudyName",
