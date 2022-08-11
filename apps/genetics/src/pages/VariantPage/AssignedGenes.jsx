@@ -8,7 +8,6 @@ import { PlotContainer } from "../../ot-ui-components";
 import AssociatedGenes from "../../components/AssociatedGenes";
 
 import {
-  variantHasAssociatedGenes,
   variantParseGenesForVariantSchema,
 } from "../../utils";
 
