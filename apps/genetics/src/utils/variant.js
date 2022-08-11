@@ -1,30 +1,8 @@
 export function variantHasInfo(data) {
   return data && data.variantInfo;
 }
-export function variantHasAssociatedGenes(data) {
-  return data && data.genesForVariantSchema;
-}
-
 export function variantGetInfo(data) {
   return data.variantInfo;
-}
-
-export function variantHasAssociatedIndexVariants(data) {
-  return (
-    data &&
-    data.indexVariantsAndStudiesForTagVariant &&
-    data.indexVariantsAndStudiesForTagVariant.associations &&
-    data.indexVariantsAndStudiesForTagVariant.associations.length > 0
-  );
-}
-
-export function variantHasAssociatedTagVariants(data) {
-  return (
-    data &&
-    data.tagVariantsAndStudiesForIndexVariant &&
-    data.tagVariantsAndStudiesForIndexVariant.associations &&
-    data.tagVariantsAndStudiesForIndexVariant.associations.length > 0
-  );
 }
 
 export function variantTransformAssociatedIndexVariants(data) {
