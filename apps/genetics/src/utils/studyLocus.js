@@ -9,20 +9,6 @@ export function filterGwasColocalisation(data, state) {
     .reverse();
 }
 
-export function filterQtlColocalisation(data, state) {
-  return data
-    .filter(d => d.log2h4h3 >= state.log2h4h3SliderValue)
-    .filter(d => d.h4 >= state.h4SliderValue)
-    .sort(log2h4h3Comparator)
-    .reverse();
-}
-
-export function filterPageCredibleSet(data, credSet95Value) {
-  return data
-    .map(flattenPosition)
-    .filter(d => (credSet95Value === '95' ? d.is95CredibleSet : true));
-}
-
 export function buildCredibleGwasColocalisation(
   gwasColocalisationFiltered,
   data,
@@ -35,6 +21,45 @@ export function buildCredibleGwasColocalisation(
     credibleSet: buildCredibleSet(data, study, indexVariant, credSet95Value),
     ...rest,
   }));
+}
+
+export function buildFilteredCredibleGwasColocalisation(
+  gwasColocalisationResult,
+  credibleSetSingleQueryResult,
+  state
+) {
+  const filteredGwasColoc = gwasColocalisationResult
+    .filter(d => d.log2h4h3 >= state.log2h4h3SliderValue)
+    .filter(d => d.h4 >= state.h4SliderValue)
+    .sort(log2h4h3Comparator)
+    .reverse();
+
+  return filteredGwasColoc.map(({ study, indexVariant, ...rest }) => ({
+    key: `gwasCredibleSet__${study.studyId}__${indexVariant.id}`,
+    study,
+    indexVariant,
+    credibleSet: buildCredibleSet(
+      credibleSetSingleQueryResult,
+      study,
+      indexVariant,
+      state.credSet95Value
+    ),
+    ...rest,
+  }));
+}
+
+export function filterQtlColocalisation(data, state) {
+  return data
+    .filter(d => d.log2h4h3 >= state.log2h4h3SliderValue)
+    .filter(d => d.h4 >= state.h4SliderValue)
+    .sort(log2h4h3Comparator)
+    .reverse();
+}
+
+export function filterPageCredibleSet(data, credSet95Value) {
+  return data
+    .map(flattenPosition)
+    .filter(d => (credSet95Value === '95' ? d.is95CredibleSet : true));
 }
 
 export function buildCredibleQtlColocalisation(

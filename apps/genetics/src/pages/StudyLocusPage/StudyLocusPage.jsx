@@ -213,7 +213,7 @@ class StudyLocusPage extends React.Component {
           <ColocGWASTable variantId={indexVariantId} studyId={studyId} />
           <GenePrioritisationTabs variantId={indexVariantId} studyId={studyId} />
           {/* TODO: separate unfinished component */}
-          {/* <CredibleSetsGroup variantId={indexVariantId} studyId={studyId} start={start} end={end} chromosome={chromosome}/> */}
+          <CredibleSetsGroup variantId={indexVariantId} studyId={studyId} start={start} end={end} chromosome={chromosome}/>
 
           <Query
             query={STUDY_LOCUS_PAGE_QUERY}

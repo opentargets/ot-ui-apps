@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -16,6 +16,9 @@ import {
   filterPageCredibleSet,
   createCredibleSetsQuery,
   isGreaterThanZero,
+  buildCredibleGwasColocalisation,
+  buildCredibleQtlColocalisation,
+  buildFilteredCredibleGwasColocalisation,
 } from '../../../utils';
 
 import CREDIBLE_SETS_GROUP_QUERY from './CredibleSetsGroupQuery.gql';
@@ -49,15 +52,12 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
   const handleCredSet95Change = event => {
     setCredSet95Value(event.target.value);
   };
-
   const handleLog2h4h3SliderChange = (_, value) => {
     setLog2h4h3SliderValue(value);
   };
-
   const handleH4SliderChange = (_, value) => {
     setH4SliderValue(value);
   };
-
   const handleCredibleSetIntersectionKeysCheckboxClick = key => event => {
     if (event.target.checked) {
       setCredibleSetIntersectionKeys([key, ...credibleSetIntersectionKeys]);
@@ -80,15 +80,11 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
 
   const {
     loading: credibleSetsGroupLoading,
-    error,
+    error: credibleSetsGroupError,
     data: credibleSetsGroupQueryResult,
   } = useQuery(CREDIBLE_SETS_GROUP_QUERY, {
     variables: { studyId, variantId },
   });
-
-  if (credibleSetsGroupLoading) {
-    return <Skeleton height="20vh" width="80vw" />;
-  }
 
   if (credibleSetsGroupQueryResult) {
     ({
@@ -98,11 +94,12 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
       qtlColocalisation,
     } = credibleSetsGroupQueryResult);
 
-    // TODO: check this util function for optimisation
     pageCredibleSetAdjusted = filterPageCredibleSet(
       pageCredibleSet,
       credSet95Value
     );
+  } else if (credibleSetsGroupLoading) {
+    return <Skeleton height="20vh" width="80vw" />;
   }
 
   const shouldMakeColocalisationCredibleSetQuery =
@@ -112,6 +109,41 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
   const colocalisationCredibleSetQuery = shouldMakeColocalisationCredibleSetQuery
     ? createCredibleSetsQuery({ gwasColocalisation, qtlColocalisation })
     : null;
+
+  console.log(`query fetched-------------`, colocalisationCredibleSetQuery);
+
+  
+  // if(colocalisationCredibleSetQuery) {
+    // console.log('in here')
+    // const [credibleSetSingleQuery, {
+    //   loading: credibleSetSingleLoading,
+    //   error: credibleSetSingleError,
+    //   data: credibleSetSingleQueryResult
+    // }] = useLazyQuery(colocalisationCredibleSetQuery);
+    // credibleSetSingleQuery({variables: {}});
+  // }
+
+  // const {
+  //   loading: credibleSetSingleLoading,
+  //   error: credibleSetSingleError,
+  //   data: credibleSetSingleQueryResult
+  // } = useQuery(colocalisationCredibleSetQuery, {
+  //   skip: colocalisationCredibleSetQuery === null,
+  // });
+
+  
+  //   console.log(`👻 ~ file: CredibleSetsGroup.jsx ~ line 123 ~ CredibleSetsGroup ~ credibleSetSingleQueryResult`, credibleSetSingleQueryResult);
+
+  
+
+  // const gwasColocalisationCredibleSetsFiltered = buildFilteredCredibleGwasColocalisation(
+  //   gwasColocalisation,
+  //   credibleSetSingleQueryResult,
+  //   { log2h4h3SliderValue, h4SliderValue, credSet95Value }
+  // );
+  // console.log(`👻 ------------------------------------------------------------------------------------------------------------------------------------------------👻`);
+  // console.log(`👻 ~ file: CredibleSetsGroup.jsx ~ line 131 ~ CredibleSetsGroup ~ gwasColocalisationCredibleSetsFiltered`, JSON.stringify(gwasColocalisationCredibleSetsFiltered));
+  // console.log(`👻 ------------------------------------------------------------------------------------------------------------------------------------------------👻`);
 
   return (
     <>
