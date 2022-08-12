@@ -1,28 +1,8 @@
 import { generateComparator, sanitize } from './common';
 import gql from 'graphql-tag';
 
-export function filterGwasColocalisation(data, state) {
-  return data
-    .filter(d => d.log2h4h3 >= state.log2h4h3SliderValue)
-    .filter(d => d.h4 >= state.h4SliderValue)
-    .sort(log2h4h3Comparator)
-    .reverse();
-}
 
-export function buildCredibleGwasColocalisation(
-  gwasColocalisationFiltered,
-  data,
-  credSet95Value
-) {
-  return gwasColocalisationFiltered.map(({ study, indexVariant, ...rest }) => ({
-    key: `gwasCredibleSet__${study.studyId}__${indexVariant.id}`,
-    study,
-    indexVariant,
-    credibleSet: buildCredibleSet(data, study, indexVariant, credSet95Value),
-    ...rest,
-  }));
-}
-
+// keep and optimise
 export function buildFilteredCredibleGwasColocalisation(
   gwasColocalisationResult,
   credibleSetSingleQueryResult,
@@ -48,26 +28,19 @@ export function buildFilteredCredibleGwasColocalisation(
   }));
 }
 
-export function filterQtlColocalisation(data, state) {
-  return data
-    .filter(d => d.log2h4h3 >= state.log2h4h3SliderValue)
-    .filter(d => d.h4 >= state.h4SliderValue)
-    .sort(log2h4h3Comparator)
-    .reverse();
-}
-
-export function filterPageCredibleSet(data, credSet95Value) {
-  return data
-    .map(flattenPosition)
-    .filter(d => (credSet95Value === '95' ? d.is95CredibleSet : true));
-}
-
-export function buildCredibleQtlColocalisation(
-  qtlColocalisationFiltered,
-  data,
-  credSet95Value
+// keep and optimise
+export function buildFilteredCredibleQtlColocalisation(
+  qtlColocalisationResult,
+  credibleSetSingleQueryResult,
+  state
 ) {
-  return qtlColocalisationFiltered.map(
+  const filteredQtlColoc = qtlColocalisationResult
+  .filter(d => d.log2h4h3 >= state.log2h4h3SliderValue)
+  .filter(d => d.h4 >= state.h4SliderValue)
+  .sort(log2h4h3Comparator)
+  .reverse();
+
+  return filteredQtlColoc.map(
     ({ qtlStudyName, phenotypeId, tissue, indexVariant, ...rest }) => {
       const key = `qtlCredibleSet__${qtlStudyName}__${phenotypeId}__${
         tissue.id
@@ -78,15 +51,21 @@ export function buildCredibleQtlColocalisation(
         phenotypeId,
         tissue,
         indexVariant,
-        credibleSet: data[key]
-          ? data[key]
+        credibleSet: credibleSetSingleQueryResult[key]
+          ? credibleSetSingleQueryResult[key]
               .map(flattenPosition)
-              .filter(d => (credSet95Value === '95' ? d.is95CredibleSet : true))
+              .filter(d => (state.credSet95Value === '95' ? d.is95CredibleSet : true))
           : [],
         ...rest,
       };
     }
   );
+}
+
+export function filterPageCredibleSet(data, credSet95Value) {
+  return data
+    .map(flattenPosition)
+    .filter(d => (credSet95Value === '95' ? d.is95CredibleSet : true));
 }
 
 export function filterCredibleSets(data, credibleSetIntersectionKeys) {

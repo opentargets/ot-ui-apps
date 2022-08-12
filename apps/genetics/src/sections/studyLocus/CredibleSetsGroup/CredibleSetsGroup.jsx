@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -7,18 +7,18 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { Skeleton } from '@material-ui/lab';
+import { max } from 'd3';
 
 import Slider from '../../../components/Slider';
 import CredibleSetWithRegional from '../../../components/CredibleSetWithRegional';
+
+import CredibleSetsGwasQtlList from '../CredibleSetsGwasQtlList';
 
 import {
   traitAuthorYear,
   filterPageCredibleSet,
   createCredibleSetsQuery,
   isGreaterThanZero,
-  buildCredibleGwasColocalisation,
-  buildCredibleQtlColocalisation,
-  buildFilteredCredibleGwasColocalisation,
 } from '../../../utils';
 
 import CREDIBLE_SETS_GROUP_QUERY from './CredibleSetsGroupQuery.gql';
@@ -33,8 +33,6 @@ import {
 
 const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
   const PAGE_CREDIBLE_SET_KEY = `gwasCredibleSet__${studyId}__${variantId}`;
-  //   TODO: dummy contstants for displaying data, update with real data
-  const maxLog2h4h3 = 10.708147088082905;
 
   let pageCredibleSet;
   let studyInfo;
@@ -70,7 +68,6 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
 
   useEffect(
     () => {
-      // TODO check component did update / component did mount for more code
       setCredibleSetIntersectionKeys([
         `gwasCredibleSet__${studyId}__${variantId}`,
       ]);
@@ -86,21 +83,26 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
     variables: { studyId, variantId },
   });
 
-  if (credibleSetsGroupQueryResult) {
-    ({
-      pageCredibleSet,
-      studyInfo,
-      gwasColocalisation,
-      qtlColocalisation,
-    } = credibleSetsGroupQueryResult);
-
-    pageCredibleSetAdjusted = filterPageCredibleSet(
-      pageCredibleSet,
-      credSet95Value
-    );
-  } else if (credibleSetsGroupLoading) {
+  if (credibleSetsGroupLoading) {
     return <Skeleton height="20vh" width="80vw" />;
   }
+
+  ({
+    pageCredibleSet,
+    studyInfo,
+    gwasColocalisation,
+    qtlColocalisation,
+  } = credibleSetsGroupQueryResult);
+
+  pageCredibleSetAdjusted = filterPageCredibleSet(
+    pageCredibleSet,
+    credSet95Value
+  );
+
+  const maxLog2h4h3 = max([
+    max(qtlColocalisation, d => d.log2h4h3),
+    max(gwasColocalisation, d => d.log2h4h3),
+  ]);
 
   const shouldMakeColocalisationCredibleSetQuery =
     isGreaterThanZero(gwasColocalisation.length) ||
@@ -110,46 +112,8 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
     ? createCredibleSetsQuery({ gwasColocalisation, qtlColocalisation })
     : null;
 
-  console.log(`query fetched-------------`, colocalisationCredibleSetQuery);
-
-  
-  // if(colocalisationCredibleSetQuery) {
-    // console.log('in here')
-    // const [credibleSetSingleQuery, {
-    //   loading: credibleSetSingleLoading,
-    //   error: credibleSetSingleError,
-    //   data: credibleSetSingleQueryResult
-    // }] = useLazyQuery(colocalisationCredibleSetQuery);
-    // credibleSetSingleQuery({variables: {}});
-  // }
-
-  // const {
-  //   loading: credibleSetSingleLoading,
-  //   error: credibleSetSingleError,
-  //   data: credibleSetSingleQueryResult
-  // } = useQuery(colocalisationCredibleSetQuery, {
-  //   skip: colocalisationCredibleSetQuery === null,
-  // });
-
-  
-  //   console.log(`👻 ~ file: CredibleSetsGroup.jsx ~ line 123 ~ CredibleSetsGroup ~ credibleSetSingleQueryResult`, credibleSetSingleQueryResult);
-
-  
-
-  // const gwasColocalisationCredibleSetsFiltered = buildFilteredCredibleGwasColocalisation(
-  //   gwasColocalisation,
-  //   credibleSetSingleQueryResult,
-  //   { log2h4h3SliderValue, h4SliderValue, credSet95Value }
-  // );
-  // console.log(`👻 ------------------------------------------------------------------------------------------------------------------------------------------------👻`);
-  // console.log(`👻 ~ file: CredibleSetsGroup.jsx ~ line 131 ~ CredibleSetsGroup ~ gwasColocalisationCredibleSetsFiltered`, JSON.stringify(gwasColocalisationCredibleSetsFiltered));
-  // console.log(`👻 ------------------------------------------------------------------------------------------------------------------------------------------------👻`);
-
   return (
     <>
-      <div>
-        -----------------------------CredibleSetGroup--------------------------------------
-      </div>
       <SectionHeading
         heading={`Credible Set Overlap`}
         subheading={`Which variants at this locus are most likely causal?`}
@@ -245,9 +209,28 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
           end,
         }}
       />
-      <div>
-        -----------------------------CredibleSetGroupEND-----------------------------------
-      </div>
+
+      {shouldMakeColocalisationCredibleSetQuery &&
+      colocalisationCredibleSetQuery ? (
+        <CredibleSetsGwasQtlList
+          query={colocalisationCredibleSetQuery}
+          gwasColocalisation={gwasColocalisation}
+          qtlColocalisation={qtlColocalisation}
+          log2h4h3SliderValue={log2h4h3SliderValue}
+          h4SliderValue={h4SliderValue}
+          credSet95Value={credSet95Value}
+          variantId={variantId}
+          studyId={studyId}
+          pageCredibleSetAdjusted={pageCredibleSetAdjusted}
+          credibleSetIntersectionKeys={credibleSetIntersectionKeys}
+          start={start}
+          end={end}
+          chromosome={chromosome}
+          handleCredibleSetIntersectionKeysCheckboxClick={
+            handleCredibleSetIntersectionKeysCheckboxClick
+          }
+        />
+      ) : null}
     </>
   );
 };
