@@ -1,19 +1,13 @@
-import React, { Fragment } from "react";
-import { GenesTabs, TabOverview, TabIssues, useAssociatedGenes } from ".";
+import React, { Fragment } from 'react';
+import { GenesTabs, TabOverview, TabIssues, useAssociatedGenes } from '.';
 
 const AssociatedGenes = ({
   variantId,
   genesForVariantSchema,
   genesForVariant,
 }) => {
-  const {
-    value,
-    schemas,
-    columnsAll,
-    dataAll,
-    dataAllDownload,
-    handleChange,
-  } = useAssociatedGenes(genesForVariantSchema, genesForVariant);
+  const { value, schemas, columnsAll, dataAll, dataAllDownload, handleChange } =
+    useAssociatedGenes(genesForVariantSchema, genesForVariant);
 
   return (
     <Fragment>

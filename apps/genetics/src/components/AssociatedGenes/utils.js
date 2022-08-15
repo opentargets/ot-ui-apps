@@ -1,10 +1,8 @@
-import { scaleSqrt } from "d3";
+import { scaleSqrt } from 'd3';
 
-export const OVERVIEW = "overview";
+export const OVERVIEW = 'overview';
 
-export const radiusScale = scaleSqrt()
-  .domain([0, 1])
-  .range([0, 6]);
+export const radiusScale = scaleSqrt().domain([0, 1]).range([0, 6]);
 
 export const getDataAll = (genesForVariant) => {
   const data = [];

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment } from 'react';
 import {
   DataDownloader,
   OtTableRF,
@@ -6,28 +6,28 @@ import {
   Tooltip,
   DataCircle,
   significantFigures,
-} from "../../ot-ui-components";
+} from '../../ot-ui-components';
 
 import {
   createDistanceAggregateCellRenderer,
   createAggregateCellRenderer,
   createFPAggregateCellRenderer,
-} from "./Renderes";
+} from './Renderes';
 
-import { radiusScale } from "./utils";
-import { generateComparator } from "../../utils";
-import { pvalThreshold } from "../../constants";
+import { radiusScale } from './utils';
+import { generateComparator } from '../../utils';
+import { pvalThreshold } from '../../constants';
 
 const getTissueColumns = (schema, genesForVariantSchema, genesForVariant) => {
   let tissueColumns = [];
   let aggregateColumns = [];
-  
+
   switch (schema.type) {
-    case "distances":
+    case 'distances':
       aggregateColumns = genesForVariantSchema.distances
         .filter((distance) => distance.sourceId === schema.sourceId)
         .map((schema) => ({
-          id: "aggregated",
+          id: 'aggregated',
           label: `${schema.sourceLabel}`,
           renderCell: createDistanceAggregateCellRenderer(schema),
           comparator: generateComparator((d) =>
@@ -35,11 +35,11 @@ const getTissueColumns = (schema, genesForVariantSchema, genesForVariant) => {
           ),
         }));
       break;
-    case "qtls":
+    case 'qtls':
       aggregateColumns = genesForVariantSchema.qtls
         .filter((qtl) => qtl.sourceId === schema.sourceId)
         .map((schema) => ({
-          id: "aggregated",
+          id: 'aggregated',
           label: `${schema.sourceLabel} aggregated`,
           renderCell: createAggregateCellRenderer(schema),
           comparator: generateComparator((d) =>
@@ -56,7 +56,7 @@ const getTissueColumns = (schema, genesForVariantSchema, genesForVariant) => {
               if (rowData[tissue.id]) {
                 const { quantile, beta, pval } = rowData[tissue.id];
                 const qtlRadius = radiusScale(quantile);
-                const qtlColor = beta < 0 ? "red" : "blue";
+                const qtlColor = beta < 0 ? 'red' : 'blue';
                 return (
                   <Tooltip
                     title={`Beta: ${beta.toPrecision(3)} pval: ${
@@ -76,11 +76,11 @@ const getTissueColumns = (schema, genesForVariantSchema, genesForVariant) => {
         })
         .sort(tissueColumnComparator);
       break;
-    case "intervals":
+    case 'intervals':
       aggregateColumns = genesForVariantSchema.intervals
         .filter((interval) => interval.sourceId === schema.sourceId)
         .map((schema) => ({
-          id: "aggregated",
+          id: 'aggregated',
           label: `${schema.sourceLabel} aggregated`,
           renderCell: createAggregateCellRenderer(schema),
           comparator: generateComparator((d) =>
@@ -112,14 +112,14 @@ const getTissueColumns = (schema, genesForVariantSchema, genesForVariant) => {
         })
         .sort(tissueColumnComparator);
       break;
-    case "functionalPredictions":
+    case 'functionalPredictions':
       aggregateColumns = genesForVariantSchema.functionalPredictions
         .filter(
           (functionalPrediction) =>
             functionalPrediction.sourceId === schema.sourceId
         )
         .map((schema) => ({
-          id: "aggregated",
+          id: 'aggregated',
           label: `${schema.sourceLabel}`,
           // tooltip: schema.sourceDescriptionOverview,
           renderCell: createFPAggregateCellRenderer(schema),
@@ -133,8 +133,8 @@ const getTissueColumns = (schema, genesForVariantSchema, genesForVariant) => {
   }
   const columns = [
     {
-      id: "geneSymbol",
-      label: "Gene",
+      id: 'geneSymbol',
+      label: 'Gene',
       renderCell: (rowData) => {
         return <Link to={`/gene/${rowData.geneId}`}>{rowData.geneSymbol}</Link>;
       },
@@ -152,7 +152,7 @@ const getTissueData = (schema, genesForVariantSchema, genesForVariant) => {
     let aggregated = null;
 
     switch (schema.type) {
-      case "distances":
+      case 'distances':
         const distances = geneForVariant.distances.filter(
           (distance) => distance.sourceId === schema.sourceId
         );
@@ -160,7 +160,7 @@ const getTissueData = (schema, genesForVariantSchema, genesForVariant) => {
           aggregated = distances[0].tissues[0];
         }
         break;
-      case "qtls":
+      case 'qtls':
         const qtls = geneForVariant.qtls.filter(
           (qtl) => qtl.sourceId === schema.sourceId
         );
@@ -168,7 +168,7 @@ const getTissueData = (schema, genesForVariantSchema, genesForVariant) => {
           aggregated = qtls[0];
         }
         break;
-      case "intervals":
+      case 'intervals':
         const intervals = geneForVariant.intervals.filter(
           (interval) => interval.sourceId === schema.sourceId
         );
@@ -176,11 +176,12 @@ const getTissueData = (schema, genesForVariantSchema, genesForVariant) => {
           aggregated = intervals[0];
         }
         break;
-      case "functionalPredictions":
-        const functionalPredictions = geneForVariant.functionalPredictions.filter(
-          (functionalPrediction) =>
-            functionalPrediction.sourceId === schema.sourceId
-        );
+      case 'functionalPredictions':
+        const functionalPredictions =
+          geneForVariant.functionalPredictions.filter(
+            (functionalPrediction) =>
+              functionalPrediction.sourceId === schema.sourceId
+          );
         if (functionalPredictions.length === 1) {
           aggregated = functionalPredictions[0];
         }
@@ -202,16 +203,16 @@ const getTissueData = (schema, genesForVariantSchema, genesForVariant) => {
 
     if (element) {
       element.tissues.forEach((elementTissue) => {
-        if (elementTissue.__typename === "DistanceTissue") {
+        if (elementTissue.__typename === 'DistanceTissue') {
           row[elementTissue.tissue.id] = {
             quantile: elementTissue.quantile,
             distance: elementTissue.distance,
           };
-        } else if (elementTissue.__typename === "FPredTissue") {
+        } else if (elementTissue.__typename === 'FPredTissue') {
           row[elementTissue.tissue.id] = elementTissue.maxEffectLabel;
-        } else if (elementTissue.__typename === "IntervalTissue") {
+        } else if (elementTissue.__typename === 'IntervalTissue') {
           row[elementTissue.tissue.id] = elementTissue.quantile;
-        } else if (elementTissue.__typename === "QTLTissue") {
+        } else if (elementTissue.__typename === 'QTLTissue') {
           row[elementTissue.tissue.id] = {
             quantile: elementTissue.quantile,
             beta: elementTissue.beta,
@@ -227,7 +228,7 @@ const getTissueData = (schema, genesForVariantSchema, genesForVariant) => {
 };
 
 const getTissueDataDownload = (schema, tableData) => {
-  if (schema.type === "distances") {
+  if (schema.type === 'distances') {
     return tableData.map((row) => {
       const newRow = { geneSymbol: row.geneSymbol };
       if (row.aggregated) {
@@ -237,7 +238,7 @@ const getTissueDataDownload = (schema, tableData) => {
     });
   }
 
-  if (schema.type === "qtls" || schema.type === "intervals") {
+  if (schema.type === 'qtls' || schema.type === 'intervals') {
     return tableData.map((row) => {
       const newRow = { geneSymbol: row.geneSymbol };
       if (row.aggregated) {
@@ -298,8 +299,8 @@ export const TabIssues = ({
           />
           <OtTableRF
             message={schema.sourceDescriptionBreakdown}
-            sortBy={"aggregated"}
-            order={schema.type === "distances" ? "asc" : "desc"}
+            sortBy={'aggregated'}
+            order={schema.type === 'distances' ? 'asc' : 'desc'}
             verticalHeaders
             columns={tableColumns}
             data={tableData}

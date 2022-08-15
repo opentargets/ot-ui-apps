@@ -1,8 +1,8 @@
-import React, { Fragment } from "react";
+import React, { Fragment } from 'react';
 
-import { DataDownloader, OtTableRF } from "../../ot-ui-components";
+import { DataDownloader, OtTableRF } from '../../ot-ui-components';
 
-import { OVERVIEW } from "./utils";
+import { OVERVIEW } from './utils';
 
 export const TabOverview = ({
   value,

@@ -1,25 +1,20 @@
-import React, { Fragment } from "react";
+import React, { Fragment } from 'react';
 
-import { useQuery } from "@apollo/client";
+import { useQuery } from '@apollo/client';
 
-import { SectionHeading, Typography } from "../../ot-ui-components";
-import { PlotContainer } from "../../ot-ui-components";
+import { SectionHeading, Typography } from '../../ot-ui-components';
+import { PlotContainer } from '../../ot-ui-components';
 
-import AssociatedGenes from "../../components/AssociatedGenes";
+import AssociatedGenes from '../../components/AssociatedGenes';
 
-import {
-  variantParseGenesForVariantSchema,
-} from "../../utils";
+import { variantParseGenesForVariantSchema } from '../../utils';
 
-import GENES_VARIANT_QUERY from "./GenesForVariantQuery.gql";
+import GENES_VARIANT_QUERY from './GenesForVariantQuery.gql';
 
-export const AssignedGenes = ({variantId}) => {
-  const { loading, error, data } = useQuery(
-    GENES_VARIANT_QUERY,
-    {
-      variables: { variantId },
-    }
-  );
+export const AssignedGenes = ({ variantId }) => {
+  const { loading, error, data } = useQuery(GENES_VARIANT_QUERY, {
+    variables: { variantId },
+  });
 
   const genesForVariantSchema = data?.genesForVariantSchema
     ? variantParseGenesForVariantSchema(data)
@@ -32,11 +27,11 @@ export const AssignedGenes = ({variantId}) => {
         subheading="Which genes are functionally implicated by this variant?"
         entities={[
           {
-            type: "variant",
+            type: 'variant',
             fixed: true,
           },
           {
-            type: "gene",
+            type: 'gene',
             fixed: false,
           },
         ]}
@@ -53,7 +48,7 @@ export const AssignedGenes = ({variantId}) => {
           error={error}
           center={
             <Typography variant="subtitle1">
-              {loading ? "..." : "(no data)"}
+              {loading ? '...' : '(no data)'}
             </Typography>
           }
         />

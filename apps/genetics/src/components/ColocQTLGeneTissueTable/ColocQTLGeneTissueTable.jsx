@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import { OtTableRF } from "../../ot-ui-components";
-import { useColocTable, getTableColumns } from ".";
+import { OtTableRF } from '../../ot-ui-components';
+import { useColocTable, getTableColumns } from '.';
 
 const ColocTable = ({ loading, error, fileStem, data }) => {
   const { uniqueTissues, dataByPhenotypeId } = useColocTable(data);

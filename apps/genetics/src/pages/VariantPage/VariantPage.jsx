@@ -1,17 +1,17 @@
-import React, { Fragment } from "react";
-import { Helmet } from "react-helmet";
-import { useQuery } from "@apollo/client";
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import { useQuery } from '@apollo/client';
 
-import BasePage from "../BasePage";
-import ScrollToTop from "../../components/ScrollToTop";
+import BasePage from '../BasePage';
+import ScrollToTop from '../../components/ScrollToTop';
 
-import NotFoundPage from "../NotFoundPage";
-import Header from "./Header";
-import Summary from "../../sections/variant/Summary";
-import VARIANT_HEADER_QUERY from "./VariantHeader.gql";
-import { AssignedGenes } from "./AssignedGenes";
-import { GWASLeadVariants } from "./GWASLeadVariants";
-import { TagVariantPage } from "./TagVariantPage";
+import NotFoundPage from '../NotFoundPage';
+import Header from './Header';
+import Summary from '../../sections/variant/Summary';
+import VARIANT_HEADER_QUERY from './VariantHeader.gql';
+import { AssignedGenes } from './AssignedGenes';
+import { GWASLeadVariants } from './GWASLeadVariants';
+import { TagVariantPage } from './TagVariantPage';
 
 function VariantPage(props) {
   const { match } = props;

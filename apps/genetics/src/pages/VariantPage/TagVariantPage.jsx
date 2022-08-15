@@ -1,25 +1,20 @@
-import React, { Fragment } from "react";
+import React, { Fragment } from 'react';
 
-import { useQuery } from "@apollo/client";
-import { SectionHeading } from "../../ot-ui-components";
-import AssociatedTagVariantsTable from "../../components/AssociatedTagVariantsTable";
+import { useQuery } from '@apollo/client';
+import { SectionHeading } from '../../ot-ui-components';
+import AssociatedTagVariantsTable from '../../components/AssociatedTagVariantsTable';
 
-import {
-  variantTransformAssociatedTagVariants,
-} from "../../utils";
+import { variantTransformAssociatedTagVariants } from '../../utils';
 
-import TAG_VARIANT_PAGE_QUERY from "./TagVariantPageQuery.gql";
+import TAG_VARIANT_PAGE_QUERY from './TagVariantPageQuery.gql';
 
 export const TagVariantPage = ({ variantId }) => {
-  const {
-    loading: loading,
-    error: error,
-    data: data,
-  } = useQuery(TAG_VARIANT_PAGE_QUERY, {
+  const { loading, error, data } = useQuery(TAG_VARIANT_PAGE_QUERY, {
     variables: { variantId },
   });
 
-  const hasData = data?.tagVariantsAndStudiesForIndexVariant?.associations?.length > 0;
+  const hasData =
+    data?.tagVariantsAndStudiesForIndexVariant?.associations?.length > 0;
   const associatedTagVariants = hasData
     ? variantTransformAssociatedTagVariants(data)
     : [];
@@ -31,15 +26,15 @@ export const TagVariantPage = ({ variantId }) => {
         subheading="Which variants tag (through LD or fine-mapping) this lead variant?"
         entities={[
           {
-            type: "study",
+            type: 'study',
             fixed: false,
           },
           {
-            type: "indexVariant",
+            type: 'indexVariant',
             fixed: true,
           },
           {
-            type: "tagVariant",
+            type: 'tagVariant',
             fixed: false,
           },
         ]}

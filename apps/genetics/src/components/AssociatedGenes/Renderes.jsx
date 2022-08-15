@@ -1,11 +1,11 @@
-import React from "react";
-import { max, scaleSqrt } from "d3";
-import { DataCircle, commaSeparate, Link } from "../../ot-ui-components";
-import LabelHML from "../LabelHML";
+import React from 'react';
+import { max, scaleSqrt } from 'd3';
+import { DataCircle, commaSeparate, Link } from '../../ot-ui-components';
+import LabelHML from '../LabelHML';
 
-import { generateComparator } from "../../utils";
+import { generateComparator } from '../../utils';
 
-import { radiusScale } from "./utils";
+import { radiusScale } from './utils';
 
 export const createDistanceCellRenderer = (schema) => {
   return (rowData) => {
@@ -69,10 +69,10 @@ export const createFPCellRenderer = (schema) => {
       const { maxEffectLabel, maxEffectScore } = fpData.tissues[0];
       const level =
         0 <= maxEffectScore && maxEffectScore <= 1 / 3
-          ? "L"
+          ? 'L'
           : 1 / 3 < maxEffectScore && maxEffectScore <= 2 / 3
-          ? "M"
-          : "H";
+          ? 'M'
+          : 'H';
       return <LabelHML level={level}>{maxEffectLabel}</LabelHML>;
     }
   };
@@ -86,10 +86,10 @@ export const createFPAggregateCellRenderer = (schema) => {
       const { maxEffectLabel, maxEffectScore } = fpData.tissues[0];
       const level =
         0 <= maxEffectScore && maxEffectScore <= 1 / 3
-          ? "L"
+          ? 'L'
           : 1 / 3 < maxEffectScore && maxEffectScore <= 2 / 3
-          ? "M"
-          : "H";
+          ? 'M'
+          : 'H';
       return <LabelHML level={level}>{maxEffectLabel}</LabelHML>;
     }
   };
@@ -104,15 +104,15 @@ export const getColumnsAll = (genesForVariantSchema, genesForVariant) => {
     .range([0, 6]);
   const columns = [
     {
-      id: "geneSymbol",
-      label: "Gene",
+      id: 'geneSymbol',
+      label: 'Gene',
       renderCell: (rowData) => {
         return <Link to={`/gene/${rowData.geneId}`}>{rowData.geneSymbol}</Link>;
       },
     },
     {
-      id: "overallScore",
-      label: "Overall V2G",
+      id: 'overallScore',
+      label: 'Overall V2G',
       renderCell: (rowData) => {
         const circleRadius = overallScoreScale(rowData.overallScore);
         return <DataCircle radius={circleRadius} colorScheme="bold" />;
