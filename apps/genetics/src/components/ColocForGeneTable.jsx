@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { ascending } from "d3";
+import React, { Fragment } from 'react';
+import { ascending } from 'd3';
 
 import {
   Link,
@@ -7,51 +7,51 @@ import {
   Autocomplete,
   significantFigures,
   DataDownloader,
-} from "../ot-ui-components";
+} from '../ot-ui-components';
 
-import StudyLocusLink from "./StudyLocusLink";
+import StudyLocusLink from './StudyLocusLink';
 
 const getDownloadColumns = () => {
   return [
     {
-      id: "study",
-      label: "Study",
+      id: 'study',
+      label: 'Study',
     },
     {
-      id: "traitReported",
-      label: "Trait reported",
+      id: 'traitReported',
+      label: 'Trait reported',
     },
     {
-      id: "pubAuthor",
-      label: "Author",
+      id: 'pubAuthor',
+      label: 'Author',
     },
     {
-      id: "indexVariant",
-      label: "Lead variant",
+      id: 'indexVariant',
+      label: 'Lead variant',
     },
     {
-      id: "phenotypeId",
-      label: "Phenotype",
+      id: 'phenotypeId',
+      label: 'Phenotype',
     },
     {
-      id: "tissueName",
-      label: "Tissue",
+      id: 'tissueName',
+      label: 'Tissue',
     },
     {
-      id: "qtlStudyId",
-      label: "Source",
+      id: 'qtlStudyId',
+      label: 'Source',
     },
     {
-      id: "h3",
-      label: "H3",
+      id: 'h3',
+      label: 'H3',
     },
     {
-      id: "h4",
-      label: "H4",
+      id: 'h4',
+      label: 'H4',
     },
     {
-      id: "log2h4h3",
-      label: "log2(H4/H3)",
+      id: 'log2h4h3',
+      label: 'log2(H4/H3)',
     },
   ];
 };
@@ -77,16 +77,16 @@ const tableColumns = ({
   colocTraitFilterHandler,
 }) => [
   {
-    id: "study",
-    label: "Study",
+    id: 'study',
+    label: 'Study',
     comparator: (a, b) => ascending(a.study.studyId, b.study.studyId),
     renderCell: (d) => (
       <Link to={`/study/${d.study.studyId}`}>{d.study.studyId}</Link>
     ),
   },
   {
-    id: "traitReported",
-    label: "Trait reported",
+    id: 'traitReported',
+    label: 'Trait reported',
     comparator: (a, b) =>
       ascending(a.study.traitReported, b.study.traitReported),
     renderCell: (d) => d.study.traitReported,
@@ -101,32 +101,32 @@ const tableColumns = ({
     ),
   },
   {
-    id: "pubAuthor",
-    label: "Author",
+    id: 'pubAuthor',
+    label: 'Author',
     comparator: (a, b) => ascending(a.study.pubAuthor, b.study.pubAuthor),
     renderCell: (d) => d.study.pubAuthor,
   },
   {
-    id: "indexVariant",
-    label: "Lead variant",
+    id: 'indexVariant',
+    label: 'Lead variant',
     comparator: (a, b) => ascending(a.leftVariant.id, b.leftVariant.id),
     renderCell: (d) => (
       <Link to={`/variant/${d.leftVariant.id}`}>{d.leftVariant.id}</Link>
     ),
   },
   {
-    id: "phenotypeId",
-    label: "Phenotype",
+    id: 'phenotypeId',
+    label: 'Phenotype',
   },
   {
-    id: "tissue.name",
-    label: "Tissue",
+    id: 'tissue.name',
+    label: 'Tissue',
     comparator: (a, b) => ascending(a.tissue.name, b.tissue.name),
     renderCell: (d) => d.tissue.name,
   },
   {
-    id: "qtlStudyId",
-    label: "Source",
+    id: 'qtlStudyId',
+    label: 'Source',
   },
   // {
   //   id: 'beta',
@@ -134,23 +134,23 @@ const tableColumns = ({
   //   renderCell: d => significantFigures(d.beta),
   // },
   {
-    id: "h3",
-    label: "H3",
+    id: 'h3',
+    label: 'H3',
     renderCell: (d) => significantFigures(d.h3),
   },
   {
-    id: "h4",
-    label: "H4",
+    id: 'h4',
+    label: 'H4',
     renderCell: (d) => significantFigures(d.h4),
   },
   {
-    id: "log2h4h3",
-    label: "log2(H4/H3)",
+    id: 'log2h4h3',
+    label: 'log2(H4/H3)',
     renderCell: (d) => significantFigures(d.log2h4h3),
   },
   {
-    id: "studyLocus",
-    label: "View",
+    id: 'studyLocus',
+    label: 'View',
     renderCell: (d) => (
       <StudyLocusLink
         indexVariantId={d.leftVariant.id}
