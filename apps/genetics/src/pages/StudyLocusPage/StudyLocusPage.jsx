@@ -1,5 +1,5 @@
 import React from 'react';
-import { Query } from '@apollo/client/react/components';
+import { useQuery } from '@apollo/client';
 
 import Header from './Header';
 import BasePage from '../BasePage';
@@ -26,6 +26,10 @@ function StudyLocusPage({ match }) {
   const start = position - HALF_WINDOW;
   const end = position + HALF_WINDOW;
 
+  const { loading, data: dataHeader } = useQuery(STUDY_LOCUS_HEADER_QUERY, {
+    variables: { studyId, variantId: indexVariantId },
+  });
+
   return (
     <BasePage>
       {/* TODO: rescue Page title
@@ -34,18 +38,7 @@ function StudyLocusPage({ match }) {
         </Helmet> */}
       <ScrollToTop />
       <ErrorBoundary>
-        <Query
-          query={STUDY_LOCUS_HEADER_QUERY}
-          variables={{
-            studyId,
-            variantId: indexVariantId,
-          }}
-        >
-          {({ loading: headerLoading, data: dataHeader }) => (
-            <Header loading={headerLoading} data={dataHeader} />
-          )}
-        </Query>
-
+        <Header loading={loading} data={dataHeader} />
         <Summary variantId={indexVariantId} studyId={studyId} />
         <ColocL2GTable variantId={indexVariantId} studyId={studyId} />
         <ColocGWASTable variantId={indexVariantId} studyId={studyId} />
