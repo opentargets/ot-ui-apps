@@ -1,9 +1,9 @@
 import React from 'react';
 import { max, scaleSqrt } from 'd3';
-import { DataCircle, commaSeparate, Link } from '../../ot-ui-components';
+import { DataCircle, Link } from '../../ot-ui-components';
 import LabelHML from '../LabelHML';
 
-import { generateComparator } from '../../utils';
+import { generateComparator, commaSeparate } from '../../utils';
 
 import { radiusScale } from './utils';
 
