@@ -121,7 +121,6 @@ const getTissueColumns = (schema, genesForVariantSchema, genesForVariant) => {
         .map((schema) => ({
           id: 'aggregated',
           label: `${schema.sourceLabel}`,
-          // tooltip: schema.sourceDescriptionOverview,
           renderCell: createFPAggregateCellRenderer(schema),
           comparator: generateComparator((d) =>
             d.aggregated ? d.aggregated.aggregatedScore : null
