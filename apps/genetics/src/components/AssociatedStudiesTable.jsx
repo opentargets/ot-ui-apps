@@ -31,6 +31,7 @@ const getDownloadColumns = () => {
     { id: 'oddsRatioCILower', label: 'Odds Ratio CI Lower' },
     { id: 'oddsRatioCIUpper', label: 'Odds Ratio CI Upper' },
     { id: 'yProbaModel', label: 'L2G Pipeline Score' },
+    { id: 'hasSumstats', label: 'Has sumstats' },
   ];
 };
 
@@ -54,6 +55,7 @@ const getDownloadRows = (rows) => {
     oddsRatioCILower: row.odds.oddsCILower,
     oddsRatioCIUpper: row.odds.oddsCIUpper,
     yProbaModel: row.yProbaModel,
+    hasSumstats: row.study.hasSumstats,
   }));
 };
 
@@ -214,6 +216,14 @@ const tableColumns = ({
     tooltip: `Evidence linking ${geneSymbol} to this study via our locus-to-gene pipeline. Score range [0, 1].`,
     renderCell: (rowData) =>
       rowData.yProbaModel ? significantFigures(rowData.yProbaModel) : null,
+  },
+
+  {
+    id: 'hasSumstats',
+    label: 'Has sumstats',
+    comparator: generateComparator(d => d.study.hasSumstats),
+    renderCell: rowData =>
+      rowData.study.hasSumstats ? <>yes</> : <>no</>
   },
 
   {

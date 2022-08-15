@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
-
+import config from '../../config';
 import { Button } from '../../ot-ui-components';
 
 const useStyles = makeStyles(() => ({
@@ -18,10 +18,7 @@ const OTButtonLink = ({ id, symbol }) => {
   const classes = useStyles();
   const btnLabel = `View ${symbol} in the Open Targets Platform`;
   return (
-    <a
-      href={`https://platform.opentargets.org/target/${id}`}
-      className={classes.link}
-    >
+    <a href={`${config.platformUrl}/target/${id}`} className={classes.link}>
       <Button className={classes.button}>{btnLabel}</Button>
     </a>
   );

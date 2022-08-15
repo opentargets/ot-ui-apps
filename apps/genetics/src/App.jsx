@@ -1,7 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
-import { OtUiThemeProvider } from './ot-ui-components';
+import { ThemeProvider } from 'ui';
 
 import client from './client';
 import HomePage from './pages/HomePage/index';
@@ -12,12 +12,13 @@ import VariantPage from './pages/VariantPage';
 import LocusPage from './pages/LocusPage';
 import StudyLocusPage from './pages/StudyLocusPage';
 import ImmunobasePage from './pages/ImmunobasePage';
+import NotFoundPage from './pages/NotFoundPage';
 
 const App = () => (
   <ApolloProvider client={client}>
-    <OtUiThemeProvider>
+    <ThemeProvider>
       <Router>
-        <React.Fragment>
+        <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/study/:studyId" component={StudyPage} />
           <Route path="/study-comparison/:studyId" component={StudiesPage} />
@@ -29,9 +30,12 @@ const App = () => (
             component={StudyLocusPage}
           />
           <Route path="/immunobase" component={ImmunobasePage} />
-        </React.Fragment>
+          <Route>
+            <NotFoundPage />
+          </Route>
+        </Switch>
       </Router>
-    </OtUiThemeProvider>
+    </ThemeProvider>
   </ApolloProvider>
 );
 

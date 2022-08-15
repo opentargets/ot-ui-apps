@@ -5,7 +5,6 @@ export { default as Tab } from '@material-ui/core/Tab';
 
 export { default as Splash } from './components/Splash';
 export { default as Autocomplete } from './components/search/Autocomplete';
-export { default as OtUiThemeProvider } from './components/OtUiThemeProvider';
 export { default as downloadSVG } from './helpers/downloadSVG';
 export { default as downloadPNG } from './helpers/downloadPNG';
 export { default as downloadTable } from './helpers/downloadTable';
@@ -20,9 +19,7 @@ export { default as ModelSchematic } from './components/ModelSchematic';
 export { default as SectionHeading } from './components/SectionHeading';
 export { default as Button } from './components/Button';
 export { default as PlotContainer } from './components/PlotContainer';
-export {
-  default as PlotContainerSection,
-} from './components/PlotContainerSection';
+export { default as PlotContainerSection } from './components/PlotContainerSection';
 export { default as DataCircle } from './components/DataCircle';
 export { default as Tooltip } from '@material-ui/core/Tooltip';
 export { default as Typography } from '@material-ui/core/Typography';
@@ -33,4 +30,3 @@ export { default as PathwaysIcon } from './icons/PathwaysIcon';
 export { default as ExpressionIcon } from './icons/ExpressionIcon';
 export { default as LocusIcon } from './icons/LocusIcon';
 export { default as OverlapIcon } from './icons/OverlapIcon';
-export { default as defaultTheme } from './theme';

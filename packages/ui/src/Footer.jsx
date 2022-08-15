@@ -1,34 +1,34 @@
-import React, { Fragment } from 'react';
-import { Grid, makeStyles, Typography } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { withStyles } from '@material-ui/core/styles';
+import React, { Fragment } from "react";
+import { Grid, makeStyles, Typography } from "@material-ui/core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { withStyles } from "@material-ui/core/styles";
 
-import Link from './Link';
-import EmailLink from './EmailLink';
+import { Link } from "./Link";
+import { EmailLink } from "./EmailLink";
 
 const styles = (theme) => ({
   footer: {
     backgroundColor: theme.palette.footer,
-    color: '#fff',
+    color: "#fff",
     margin: 0,
-    width: '100%',
+    width: "100%",
     padding: 24,
   },
 });
 
 const linkStyles = () => ({
   iconClass: {
-    marginRight: '10px',
+    marginRight: "10px",
   },
   linkContainer: {
-    marginBottom: '8px',
+    marginBottom: "8px",
   },
 });
 
 let FooterLink = ({ label, url, classes, icon }) => (
   <Grid item xs={12} className={classes.linkContainer}>
     <Typography color="inherit">
-      {url.startsWith('mailto') ? (
+      {url.startsWith("mailto") ? (
         <EmailLink href={url} label={label} icon={icon} />
       ) : (
         <Link external footer to={url}>
@@ -58,11 +58,11 @@ const FooterSectionHeading = ({ children }) => (
 
 const socialLinkStyle = () => ({
   iconsContainer: {
-    maxWidth: '235px',
+    maxWidth: "235px",
   },
   socialIcon: {
-    fontSize: '30px',
-    color: 'white',
+    fontSize: "30px",
+    color: "white",
   },
 });
 
@@ -89,7 +89,7 @@ FooterSocial = withStyles(socialLinkStyle)(FooterSocial);
 
 const useSectionStyles = makeStyles({
   section: {
-    width: '100%',
+    width: "100%",
   },
 });
 

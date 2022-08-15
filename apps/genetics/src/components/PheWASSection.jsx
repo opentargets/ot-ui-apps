@@ -36,9 +36,11 @@ function transformPheWAS(data) {
       pubAuthor,
       pmid,
       source,
+      hasSumstats,
     } = study ?? {};
     return {
       studyId,
+      hasSumstats,
       source,
       traitReported,
       traitCategory,
@@ -191,6 +193,7 @@ function PheWASSection({
                     ref={pheWASPlot}
                   />
                 </DownloadSVGPlot>
+                <SectionHeading subheading="Forest Plot" />
                 <ForestPlot
                   refs={forestPlot}
                   data={pheWASAssociationsFiltered}

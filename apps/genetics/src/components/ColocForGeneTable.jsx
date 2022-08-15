@@ -10,6 +10,7 @@ import {
 } from '../ot-ui-components';
 
 import StudyLocusLink from './StudyLocusLink';
+import { generateComparator } from '../utils';
 
 const getDownloadColumns = () => {
   return [
@@ -53,6 +54,10 @@ const getDownloadColumns = () => {
       id: 'log2h4h3',
       label: 'log2(H4/H3)',
     },
+    {
+      id: 'hasSumstats',
+      label: 'Has sumstats',
+    },
   ];
 };
 
@@ -68,6 +73,7 @@ const getDownloadRows = (rows) => {
     h3: row.h3,
     h4: row.h4,
     log2h4h3: row.log2h4h3,
+    hasSumstats: row.study.hasSumstats,
   }));
 };
 
@@ -147,6 +153,12 @@ const tableColumns = ({
     id: 'log2h4h3',
     label: 'log2(H4/H3)',
     renderCell: (d) => significantFigures(d.log2h4h3),
+  },
+  {
+    id: 'hasSumstats',
+    label: 'Has sumstats',
+    comparator: generateComparator(d => d.study.hasSumstats),
+    renderCell: d => d.study.hasSumstats ? <>yes</> : <>no</>,
   },
   {
     id: 'studyLocus',

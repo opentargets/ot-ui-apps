@@ -10,6 +10,7 @@ query PheWASQuery($variantId: String!) {
         pubDate
         pubAuthor
         source
+        hasSumstats
       }
       pval
       beta
