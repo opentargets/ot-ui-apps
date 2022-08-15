@@ -123,7 +123,7 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
         center={
           <Typography>
             Showing credible sets for{' '}
-            {/* <strong>{traitAuthorYear(studyInfo)}</strong> and GWAS studies/QTLs */}
+            <strong>{traitAuthorYear(studyInfo)}</strong> and GWAS studies/QTLs
             in colocalisation. Expand the section to see the underlying regional
             plot.
           </Typography>
