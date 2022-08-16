@@ -10,10 +10,16 @@ export const generateComparator = accessor => (a, b) => {
   return aValue > bValue ? 1 : aValue === bValue ? 0 : -1;
 };
 
-export const getData = data => {
-  if (data && data != '') {
-    return data;
-  } else return {};
+export const getData = (data, property) => {
+  if (!data || Object.keys(data).length === 0) return false;
+  if (!property) return data;
+  if (hasData(data, property)) return data[property];
+  return false;
+};
+
+export const hasData = (data, property) => {
+  if (data && data[property]) return true;
+  return false;
 };
 
 export const commaSeparate = format(',');
@@ -22,6 +28,10 @@ export const sanitize = str => str.replace(/[^a-zA-Z0-9]/g, '');
 
 export const traitAuthorYear = s =>
   `${s.traitReported} (${s.pubAuthor}, ${new Date(s.pubDate).getFullYear()})`;
+
+export const isGreaterThanZero = arrayLength => {
+  return arrayLength > 0;
+};
 
 // Consants
 export const SIGNIFICANCE = -Math.log10(5e-8);

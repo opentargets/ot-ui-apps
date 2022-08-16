@@ -1,47 +1,46 @@
-import { generateComparator } from './common';
+import { generateComparator, sanitize } from './common';
+import gql from 'graphql-tag';
 
-export function filterGwasColocalisation(data, state) {
-  return data
-    .filter(d => d.log2h4h3 >= state.log2h4h3SliderValue)
-    .filter(d => d.h4 >= state.h4SliderValue)
-    .sort(log2h4h3Comparator)
-    .reverse();
-}
 
-export function filterQtlColocalisation(data, state) {
-  return data
-    .filter(d => d.log2h4h3 >= state.log2h4h3SliderValue)
-    .filter(d => d.h4 >= state.h4SliderValue)
-    .sort(log2h4h3Comparator)
-    .reverse();
-}
-
-export function filterPageCredibleSet(data, credSet95Value) {
-  return data
-    .map(flattenPosition)
-    .filter(d => (credSet95Value === '95' ? d.is95CredibleSet : true));
-}
-
-export function buildCredibleGwasColocalisation(
-  gwasColocalisationFiltered,
-  data,
-  credSet95Value
+// keep and optimise
+export function buildFilteredCredibleGwasColocalisation(
+  gwasColocalisationResult,
+  credibleSetSingleQueryResult,
+  state
 ) {
-  return gwasColocalisationFiltered.map(({ study, indexVariant, ...rest }) => ({
+  const filteredGwasColoc = gwasColocalisationResult
+    .filter(d => d.log2h4h3 >= state.log2h4h3SliderValue)
+    .filter(d => d.h4 >= state.h4SliderValue)
+    .sort(log2h4h3Comparator)
+    .reverse();
+
+  return filteredGwasColoc.map(({ study, indexVariant, ...rest }) => ({
     key: `gwasCredibleSet__${study.studyId}__${indexVariant.id}`,
     study,
     indexVariant,
-    credibleSet: buildCredibleSet(data, study, indexVariant, credSet95Value),
+    credibleSet: buildCredibleSet(
+      credibleSetSingleQueryResult,
+      study,
+      indexVariant,
+      state.credSet95Value
+    ),
     ...rest,
   }));
 }
 
-export function buildCredibleQtlColocalisation(
-  qtlColocalisationFiltered,
-  data,
-  credSet95Value
+// keep and optimise
+export function buildFilteredCredibleQtlColocalisation(
+  qtlColocalisationResult,
+  credibleSetSingleQueryResult,
+  state
 ) {
-  return qtlColocalisationFiltered.map(
+  const filteredQtlColoc = qtlColocalisationResult
+  .filter(d => d.log2h4h3 >= state.log2h4h3SliderValue)
+  .filter(d => d.h4 >= state.h4SliderValue)
+  .sort(log2h4h3Comparator)
+  .reverse();
+
+  return filteredQtlColoc.map(
     ({ qtlStudyName, phenotypeId, tissue, indexVariant, ...rest }) => {
       const key = `qtlCredibleSet__${qtlStudyName}__${phenotypeId}__${
         tissue.id
@@ -52,15 +51,21 @@ export function buildCredibleQtlColocalisation(
         phenotypeId,
         tissue,
         indexVariant,
-        credibleSet: data[key]
-          ? data[key]
+        credibleSet: credibleSetSingleQueryResult[key]
+          ? credibleSetSingleQueryResult[key]
               .map(flattenPosition)
-              .filter(d => (credSet95Value === '95' ? d.is95CredibleSet : true))
+              .filter(d => (state.credSet95Value === '95' ? d.is95CredibleSet : true))
           : [],
         ...rest,
       };
     }
   );
+}
+
+export function filterPageCredibleSet(data, credSet95Value) {
+  return data
+    .map(flattenPosition)
+    .filter(d => (credSet95Value === '95' ? d.is95CredibleSet : true));
 }
 
 export function filterCredibleSets(data, credibleSetIntersectionKeys) {
@@ -114,6 +119,16 @@ export function getVariantByCredibleSetsIntersection(variantsByCredibleSets) {
   return variantsByCredibleSetsIntersection;
 }
 
+export function createCredibleSetsQuery({
+  gwasColocalisation,
+  qtlColocalisation,
+}) {
+  return gql(`query CredibleSetsQuery {
+    ${gwasColocalisation.map(gwasCredibleSetQueryAliasedFragment).join('')}
+    ${qtlColocalisation.map(qtlCredibleSetQueryAliasedFragment).join('')}
+  }`);
+}
+
 const log2h4h3Comparator = generateComparator(d => d.log2h4h3);
 
 const buildCredibleSet = (data, study, indexVariant, credSet95Value) => {
@@ -134,4 +149,61 @@ const flattenPosition = ({ tagVariant, postProb, is95, is99, ...rest }) => {
     is99CredibleSet: is99,
     ...rest,
   };
+};
+
+const gwasCredibleSetQueryAliasedFragment = ({ study, indexVariant }) => `
+gwasCredibleSet__${study.studyId}__${
+  indexVariant.id
+}: gwasCredibleSet(studyId: "${study.studyId}", variantId: "${
+  indexVariant.id
+}") {
+  tagVariant {
+    id
+    rsId
+    position
+  }
+  pval
+  se
+  beta
+  postProb
+  MultisignalMethod
+  logABF
+  is95
+  is99
+}
+`;
+
+const qtlCredibleSetQueryAliasedFragment = ({
+  qtlStudyName,
+  phenotypeId,
+  tissue,
+  indexVariant,
+}) => {
+  const tissueId = tissue.id.replaceAll('-', '_');
+  const parseQTLStudyName = qtlStudyName.replaceAll('-', '_');
+  const parsePhenotypeId = phenotypeId.replaceAll('-', '_');
+  const sanitizedTissueId = sanitize(tissueId);
+  const sanitizedPhenotypeId = sanitize(parsePhenotypeId);
+  const sanitizedParseQTLStudyName = sanitize(parseQTLStudyName);
+  return `
+  qtlCredibleSet__${sanitizedParseQTLStudyName}__${sanitizedPhenotypeId}__${sanitizedTissueId}__${
+    indexVariant.id
+  }: qtlCredibleSet(studyId: "${parseQTLStudyName}", variantId: "${
+    indexVariant.id
+  }", phenotypeId: "${parsePhenotypeId}", bioFeature: "${tissueId}") {
+    tagVariant {
+      id
+      rsId
+      position
+    }
+    pval
+    se
+    beta
+    postProb
+    MultisignalMethod
+    logABF
+    is95
+    is99
+  }
+  `;
 };

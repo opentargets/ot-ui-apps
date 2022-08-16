@@ -117,9 +117,13 @@ const ColocGWASTable = ({ studyId, variantId }) => {
 
   if (queryResult) {
     downloadData = getDownloadData(queryResult.gwasColocalisation);
-    tableData = getData(queryResult.gwasColocalisation);
+    tableData = getData(queryResult, 'gwasColocalisation');
     studyInfo = queryResult.studyInfo
-  }
+  };
+
+  if (!tableData) {
+    return <></>;
+  };
 
   return (
     <React.Fragment>
