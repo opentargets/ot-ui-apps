@@ -1,14 +1,14 @@
 query QTLRegionalQuery(
   $studyId: String!
   $bioFeature: String!
-  $phenotypeId: String!
+  $geneId: String!
   $chromosome: String!
   $start: Long!
   $end: Long!
 ) {
   regional: qtlRegional(
     studyId: $studyId
-    phenotypeId: $phenotypeId
+    geneId: $geneId
     bioFeature: $bioFeature
     chromosome: $chromosome
     start: $start
