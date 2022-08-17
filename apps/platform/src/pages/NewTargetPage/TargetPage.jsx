@@ -12,7 +12,8 @@ import LoadingBackdrop from '../../components/LoadingBackdrop';
 import TARGET_PAGE_QUERY from './TargetPage.gql';
 
 const Profile = lazy(() => import('./Profile'));
-const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
+// const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
+const TargetAssociations = lazy(() => import('./TargetAssociations'));
 
 function TargetPage({ location, match }) {
   const { ensgId } = match.params;
@@ -77,7 +78,7 @@ function TargetPage({ location, match }) {
       <Suspense fallback={<LoadingBackdrop />}>
         <Switch>
           <Route path={`${match.path}/associations`}>
-            <ClassicAssociations ensgId={ensgId} symbol={symbol} />
+            <TargetAssociations ensgId={ensgId} symbol={symbol} />
           </Route>
           <Route path={match.path}>
             <Profile ensgId={ensgId} symbol={symbol} />

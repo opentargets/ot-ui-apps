@@ -13,11 +13,6 @@ const dataSources = [
     isPrivate: isPrivateDataSource('cancer_biomarkers'),
   },
   {
-    id: 'uniprot',
-    label: 'UniProt curated variants',
-    isPrivate: isPrivateDataSource('uniprot'),
-  },
-  {
     id: 'genomics_england',
     label: 'GEL PanelApp',
     isPrivate: isPrivateDataSource('genomics_england'),
@@ -51,11 +46,6 @@ const dataSources = [
     id: 'eva_somatic',
     label: 'ClinVar (somatic)',
     isPrivate: isPrivateDataSource('eva_somatic'),
-  },
-  {
-    id: 'uniprot_somatic',
-    label: 'UniProt (somatic)',
-    isPrivate: isPrivateDataSource('uniprot_somatic'),
   },
   { id: 'chembl', label: 'ChEMBL', isPrivate: isPrivateDataSource('chembl') },
   {
@@ -108,16 +98,19 @@ const dataSources = [
     label: 'Orphanet',
     isPrivate: isPrivateDataSource('orphanet'),
   },
+  // Private
   {
     id: 'ot_crispr',
     label: 'OTAR CRISPR',
     isPrivate: isPrivateDataSource('ot_crispr'),
   },
+  // Private
   {
     id: 'ot_crispr_validation',
     label: 'OT CRISPR Validation',
     isPrivate: isPrivateDataSource('ot_crispr_validation'),
   },
+  // Private
   {
     id: 'encore',
     label: 'ENCORE',

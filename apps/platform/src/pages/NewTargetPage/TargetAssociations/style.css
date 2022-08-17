@@ -1,0 +1,62 @@
+.TAssociations table {
+  /* border: 1px solid lightgray; */
+  width: 100%;
+  padding: 0;
+}
+
+.TAssociations tbody {
+  border-bottom: 1px solid lightgray;
+}
+
+.TAssociations th.rotate {
+  /* Something you can count on */
+  height: 140px;
+  white-space: nowrap;
+}
+
+.TAssociations th.rotate > div {
+  transform: 
+    /* Magic Numbers */ translate(0px, 51px)
+    /* 45 is really 360 - 45 */ rotate(315deg);
+  width: 30px;
+}
+.TAssociations th.rotate > div > span {
+  /* border-bottom: 1px solid #ccc; */
+  padding: 5px 10px;
+}
+.TAssociations tfoot {
+  color: gray;
+}
+
+.TAssociations td {
+  display: table-cell;
+}
+
+.TAssociations .nameCell {
+  width: 20%;
+  display: table-cell;
+  vertical-align: inherit;
+  white-space: nowrap;
+  /* text-overflow: ellipsis;
+  overflow: hidden;
+  border: 0;*/
+  padding: 0 0.5rem 0 0;
+  text-align: left;
+}
+
+.TAssociations td .data-score {
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all ease 300ms;
+}
+
+.TAssociations td .data-score:hover,
+.TAssociations td .data-score:focus {
+  /* border: 2px solid #454545 !important; */
+  -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+}
+
+/* .TAssociations tfoot th {
+  font-weight: normal;
+} */
