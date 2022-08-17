@@ -12,7 +12,7 @@ import {
 import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
 import dataSources from '../../../dataSources';
 import './style.css';
-import Switch from '@material-ui/core/Switch';
+import Checkbox from '@material-ui/core/Checkbox';
 import { Button, Drawer, FormGroup, FormControlLabel } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 
@@ -207,7 +207,7 @@ function Table({ data }) {
             <FormGroup>
               <FormControlLabel
                 control={
-                  <Switch
+                  <Checkbox
                     checked={gScoreRect}
                     onChange={() => setGScoreRect(!gScoreRect)}
                   />
@@ -216,7 +216,7 @@ function Table({ data }) {
               />
               <FormControlLabel
                 control={
-                  <Switch
+                  <Checkbox
                     checked={scoreRect}
                     onChange={() => setScoreRect(!scoreRect)}
                   />
