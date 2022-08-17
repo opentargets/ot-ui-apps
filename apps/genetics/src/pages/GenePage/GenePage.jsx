@@ -9,10 +9,10 @@ import { SectionHeading } from '../../ot-ui-components';
 
 import BasePage from '../BasePage';
 import AssociatedStudiesTable from '../../components/AssociatedStudiesTable';
-import ColocForGeneTable from '../../components/ColocForGeneTable';
 import Header from './Header';
 
 import GENE_PAGE_QUERY from '../../queries/GenePageQuery.gql';
+import ColocAnalysis from '../../sections/gene/ColocAnalysis/ColocAnalysis';
 
 function hasGeneData(data) {
   return data && data.geneInfo;
@@ -144,18 +144,6 @@ class GenePage extends React.Component {
             const isValidGene = hasGeneData(data, geneId);
             const gene = isValidGene ? geneData(data) : {};
 
-            const colocalisationsForGene = data
-              ? data.colocalisationsForGene
-              : null;
-
-            const colocalisationsForGeneFiltered = (
-              colocalisationsForGene || []
-            ).filter((d) =>
-              colocTraitFilterUrl
-                ? colocTraitFilterUrl.indexOf(d.study.traitReported) >= 0
-                : true
-            );
-
             // all
             const associatedStudies =
               isValidGene && hasAssociatedStudies(data)
@@ -174,22 +162,6 @@ class GenePage extends React.Component {
               );
             });
 
-            // filters
-            const colocTraitFilterOptions = _.sortBy(
-              _.uniq(
-                colocalisationsForGeneFiltered.map((d) => d.study.traitReported)
-              ).map((d) => ({
-                label: d,
-                value: d,
-                selected: colocTraitFilterUrl
-                  ? colocTraitFilterUrl.indexOf(d) >= 0
-                  : false,
-              })),
-              [(d) => !d.selected, 'value']
-            );
-            const colocTraitFilterValue = colocTraitFilterOptions.filter(
-              (d) => d.selected
-            );
             const traitFilterOptions = _.sortBy(
               _.uniq(
                 associatedStudiesFiltered.map((d) => d.study.traitReported)
@@ -257,19 +229,7 @@ class GenePage extends React.Component {
                   authorFilterHandler={this.handleAuthorFilter}
                   filenameStem={`${geneId}-associated-studies`}
                 />
-                <SectionHeading
-                  heading="Associated studies: Colocalisation analysis"
-                  subheading={`Which studies have evidence of colocalisation with molecular QTLs for ${symbol}?`}
-                />
-                <ColocForGeneTable
-                  loading={loading}
-                  error={error}
-                  data={colocalisationsForGeneFiltered}
-                  colocTraitFilterValue={colocTraitFilterValue}
-                  colocTraitFilterOptions={colocTraitFilterOptions}
-                  colocTraitFilterHandler={this.handleColocTraitFilter}
-                  filenameStem={`${geneId}-colocalising-studies`}
-                />
+                <ColocAnalysis geneId={geneId} handleColocTraitFilter={this.handleColocTraitFilter} colocTraitFilterUrl={colocTraitFilterUrl}/>
               </React.Fragment>
             );
           }}

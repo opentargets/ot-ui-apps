@@ -2,9 +2,6 @@ query GenePageQuery($geneId: String!) {
   geneInfo(geneId: $geneId) {
     id
     symbol
-    chromosome
-    start
-    end
     bioType
   }
   colocalisationsForGene(geneId: $geneId) {
