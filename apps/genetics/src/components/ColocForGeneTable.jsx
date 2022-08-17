@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import * as d3 from 'd3';
+import { ascending } from 'd3';
 
 import {
   Link,
@@ -61,8 +61,8 @@ const getDownloadColumns = () => {
   ];
 };
 
-const getDownloadRows = rows => {
-  return rows.map(row => ({
+const getDownloadRows = (rows) => {
+  return rows.map((row) => ({
     study: row.study.studyId,
     traitReported: row.study.traitReported,
     pubAuthor: row.study.pubAuthor,
@@ -85,8 +85,8 @@ const tableColumns = ({
   {
     id: 'study',
     label: 'Study',
-    comparator: (a, b) => d3.ascending(a.study.studyId, b.study.studyId),
-    renderCell: d => (
+    comparator: (a, b) => ascending(a.study.studyId, b.study.studyId),
+    renderCell: (d) => (
       <Link to={`/study/${d.study.studyId}`}>{d.study.studyId}</Link>
     ),
   },
@@ -94,8 +94,8 @@ const tableColumns = ({
     id: 'traitReported',
     label: 'Trait reported',
     comparator: (a, b) =>
-      d3.ascending(a.study.traitReported, b.study.traitReported),
-    renderCell: d => d.study.traitReported,
+      ascending(a.study.traitReported, b.study.traitReported),
+    renderCell: (d) => d.study.traitReported,
     renderFilter: () => (
       <Autocomplete
         options={colocTraitFilterOptions}
@@ -109,14 +109,14 @@ const tableColumns = ({
   {
     id: 'pubAuthor',
     label: 'Author',
-    comparator: (a, b) => d3.ascending(a.study.pubAuthor, b.study.pubAuthor),
-    renderCell: d => d.study.pubAuthor,
+    comparator: (a, b) => ascending(a.study.pubAuthor, b.study.pubAuthor),
+    renderCell: (d) => d.study.pubAuthor,
   },
   {
     id: 'indexVariant',
     label: 'Lead variant',
-    comparator: (a, b) => d3.ascending(a.leftVariant.id, b.leftVariant.id),
-    renderCell: d => (
+    comparator: (a, b) => ascending(a.leftVariant.id, b.leftVariant.id),
+    renderCell: (d) => (
       <Link to={`/variant/${d.leftVariant.id}`}>{d.leftVariant.id}</Link>
     ),
   },
@@ -127,8 +127,8 @@ const tableColumns = ({
   {
     id: 'tissue.name',
     label: 'Tissue',
-    comparator: (a, b) => d3.ascending(a.tissue.name, b.tissue.name),
-    renderCell: d => d.tissue.name,
+    comparator: (a, b) => ascending(a.tissue.name, b.tissue.name),
+    renderCell: (d) => d.tissue.name,
   },
   {
     id: 'qtlStudyId',
@@ -142,17 +142,17 @@ const tableColumns = ({
   {
     id: 'h3',
     label: 'H3',
-    renderCell: d => significantFigures(d.h3),
+    renderCell: (d) => significantFigures(d.h3),
   },
   {
     id: 'h4',
     label: 'H4',
-    renderCell: d => significantFigures(d.h4),
+    renderCell: (d) => significantFigures(d.h4),
   },
   {
     id: 'log2h4h3',
     label: 'log2(H4/H3)',
-    renderCell: d => significantFigures(d.log2h4h3),
+    renderCell: (d) => significantFigures(d.log2h4h3),
   },
   {
     id: 'hasSumstats',
@@ -163,7 +163,7 @@ const tableColumns = ({
   {
     id: 'studyLocus',
     label: 'View',
-    renderCell: d => (
+    renderCell: (d) => (
       <StudyLocusLink
         indexVariantId={d.leftVariant.id}
         studyId={d.study.studyId}
