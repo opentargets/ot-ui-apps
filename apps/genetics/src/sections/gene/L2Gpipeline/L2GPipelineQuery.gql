@@ -1,4 +1,4 @@
-query GenePageQuery($geneId: String!) {
+query GenePageL2GPipelineQuery($geneId: String!) {
   geneInfo(geneId: $geneId) {
     id
     symbol
