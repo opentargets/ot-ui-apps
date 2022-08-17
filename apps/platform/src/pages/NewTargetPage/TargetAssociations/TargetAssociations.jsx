@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
 import { scaleQuantize } from 'd3';
 
 import {
@@ -10,16 +10,51 @@ import {
 } from '@tanstack/react-table';
 
 import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
-import dataSources from '../../../dataSources';
+import dataSources from './dataSourcesAssoc';
 import './style.css';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Button, Drawer, FormGroup, FormControlLabel } from '@material-ui/core';
+import {
+  Button,
+  Drawer,
+  FormGroup,
+  FormControlLabel,
+  Grid,
+} from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 
+import PlatformApiProvider from '../../../contexts/PlatformApiProvider';
+
+import sections from '../../EvidencePage/sections';
+// const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
+//   sections,
+//   'Disease',
+//   'EvidenceProfileSummaryFragment'
+// );
+
+const EVIDENCE_PROFILE_QUERY = gql`
+  query EvidenceProfileQuery($ensgId: String!) {
+    target(ensemblId: $ensgId) {
+      id
+      approvedSymbol
+      approvedName
+      functionDescriptions
+      synonyms {
+        label
+        source
+      }
+    }
+  }
+`;
+
+console.log({ sections });
+
 const ControllsBtnContainer = styled('div')({
-  margin: '40px',
-  width: '100%',
+  margin: '40px 60px',
   textAlign: 'right',
+});
+
+const SectionWrapper = styled('div')({
+  margin: '40px 60px',
 });
 
 const ControllsContainer = styled('div')({
@@ -28,9 +63,10 @@ const ControllsContainer = styled('div')({
 });
 
 const TableElement = styled('table')({
-  maxWidth: '1500px',
-  minWidth: ' 1000px',
+  maxWidth: '1400px',
+  // minWidth: '1000px',
   margin: '0 auto',
+  tableLayout: 'fixed',
 });
 
 const NameContainer = styled('div')({
@@ -88,13 +124,13 @@ function TargetAssociations({ ensgId, symbol }) {
 
   return (
     <>
-      <Table data={_data} />
+      <Table data={_data} ensgId={ensgId} />
     </>
   );
 }
 
-function Table({ data }) {
-  const [expanded, setExpanded] = useState(null);
+function Table({ data, ensgId }) {
+  const [expanded, setExpanded] = useState([]);
   const [tableExpanded, setTableExpanded] = useState({});
 
   // Controls
@@ -102,12 +138,24 @@ function Table({ data }) {
   const [scoreRect, setScoreRect] = useState(true);
   const [open, setOpen] = useState(false);
 
+  const getCellId = cell => {
+    const sourceId = cell.column.id;
+    const diseaseId = cell.row.original.disease.id;
+    return [sourceId, diseaseId];
+  };
+
   /* Expander handler for data-score elements */
-  const expanderHandler = tableExpanderController => scoreId => {
+  const expanderHandler = tableExpanderController => cell => {
+    const expandedId = getCellId(cell);
+    if (expanded === expandedId.join('-')) {
+      setTableExpanded({});
+      setExpanded(null);
+      return;
+    }
     /* Validate that only one row can be expanded */
     if (Object.keys(tableExpanded).length > 0) setTableExpanded({});
     /* Set the ID of the section expanded element */
-    setExpanded(scoreId);
+    setExpanded(expandedId);
     /* Open the expandable section */
     tableExpanderController();
   };
@@ -121,15 +169,28 @@ function Table({ data }) {
         row.getValue() ? (
           <ColoredCell
             scoreId={id}
-            score={row.getValue()}
+            scoreValue={row.getValue()}
             onClick={expanderHandler(row.row.getToggleExpandedHandler())}
             rounded={!scoreRect}
+            cell={row}
           />
         ) : (
           <ColoredCell rounded={!scoreRect} />
         ),
     }));
   }
+
+  const getHeaderClassName = ({ id }) => {
+    if (id === 'name') return 'header-name';
+    if (id === 'score') return 'rotate header-score';
+    return 'rotate';
+  };
+  const getCellClassName = cell => {
+    if (cell.column.id === 'name') return 'name-cell';
+    const expandedId = getCellId(cell).join('-');
+    if (expandedId === expanded.join('-')) return 'active data-cell';
+    return 'data-cell';
+  };
 
   const columns = [
     // {
@@ -176,7 +237,11 @@ function Table({ data }) {
       accessorFn: row => row.score,
       id: 'score',
       cell: row => (
-        <ColoredCell score={row.getValue()} globalScore rounded={!gScoreRect} />
+        <ColoredCell
+          scoreValue={row.getValue()}
+          globalScore
+          rounded={!gScoreRect}
+        />
       ),
       header: () => <span>Score</span>,
       footer: props => props.column.id,
@@ -227,94 +292,126 @@ function Table({ data }) {
           </ControllsContainer>
         </Drawer>
       </ControllsBtnContainer>
-      <div className="TAssociations">
-        <TableElement>
-          <thead>
-            {table.getHeaderGroups().map(headerGroup => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
-                  return (
-                    <th
-                      className={header.id !== 'name' ? 'rotate' : ''}
-                      key={header.id}
-                      colSpan={header.colSpan}
-                    >
-                      {header.isPlaceholder ? null : (
-                        <div>
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                        </div>
-                      )}
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map(row => {
-              return (
-                <Fragment key={row.id}>
-                  <tr>
-                    {/* first row is a normal row */}
-                    {row.getVisibleCells().map(cell => {
-                      return (
-                        <td
-                          key={cell.id}
-                          className={
-                            cell.column.id === 'name' ? 'nameCell' : ''
-                          }
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                  {row.getIsExpanded() && (
+      <PlatformApiProvider
+        lsSectionsField="evidence"
+        entity="disease"
+        query={EVIDENCE_PROFILE_QUERY}
+        variables={{ ensgId }}
+      >
+        <div className="TAssociations">
+          <TableElement>
+            <thead>
+              {table.getHeaderGroups().map(headerGroup => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map(header => {
+                    return (
+                      <th
+                        className={getHeaderClassName(header)}
+                        key={header.id}
+                        colSpan={header.colSpan}
+                      >
+                        {header.isPlaceholder ? null : (
+                          <div>
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                          </div>
+                        )}
+                      </th>
+                    );
+                  })}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map(row => {
+                return (
+                  <Fragment key={row.id}>
                     <tr>
-                      {/* 2nd row is a custom 1 cell row */}
-                      <td colSpan={row.getVisibleCells().length}>
-                        Inner row = {row.original.disease.name}{' '}
-                        <b>{expanded}</b>
-                        {/* {renderSubComponent({ row })} */}
-                      </td>
+                      {/* first row is a normal row */}
+                      {row.getVisibleCells().map(cell => {
+                        return (
+                          <td key={cell.id} className={getCellClassName(cell)}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        );
+                      })}
                     </tr>
-                  )}
-                </Fragment>
-              );
-            })}
-          </tbody>
-        </TableElement>
-      </div>
+                    {row.getIsExpanded() && (
+                      <tr>
+                        {/* 2nd row is a custom 1 cell row */}
+                        <td colSpan={row.getVisibleCells().length}>
+                          <SecctionRenderer
+                            ensgId={ensgId}
+                            efoId={row.original.disease.id}
+                            activeSection={expanded}
+                          />
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                );
+              })}
+            </tbody>
+          </TableElement>
+        </div>
+      </PlatformApiProvider>
     </>
   );
 }
 
-function ColoredCell({ score, scoreId, onClick, rounded, globalScore }) {
-  const onClickHabdler = onClick ? () => onClick(scoreId) : () => {};
+function ColoredCell({
+  scoreValue,
+  scoreId,
+  onClick,
+  rounded,
+  globalScore,
+  cell,
+}) {
+  const onClickHabdler = onClick ? () => onClick(cell) : () => {};
 
-  const color = score ? linearScale(score) : '#fafafa';
-  const borderColor = score ? linearScale(score) : '#e0dede';
+  const backgroundColor = scoreValue ? linearScale(scoreValue) : '#fafafa';
+  const borderColor = scoreValue ? linearScale(scoreValue) : '#e0dede';
   const className = globalScore
     ? 'data-global-score'
-    : score
+    : scoreValue
     ? 'data-score'
     : 'data-empty';
 
   const style = {
-    width: rounded ? '25px' : '30px',
     height: '25px',
-    backgroundColor: color,
-    borderRadius: rounded ? '12.5px' : 0,
+    width: rounded ? '26px' : '30px',
+    borderRadius: rounded ? '13px' : 0,
+    backgroundColor,
     border: `1px solid ${borderColor}`,
   };
   return (
     <div className={className} onClick={onClickHabdler} style={style}></div>
+  );
+}
+
+function SecctionRenderer({ ensgId, efoId, label, activeSection }) {
+  console.log(activeSection);
+  const toSearch = dataSources.filter(el => el.id === activeSection[0])[0]
+    .sectionId;
+  const { Body, definition } = sections.filter(
+    el => el.definition.id === toSearch
+  )[0];
+
+  return (
+    <SectionWrapper>
+      <Grid id="summary-section" container spacing={1}>
+        <Body
+          definition={definition}
+          id={{ ensgId, efoId }}
+          label={{ symbol: definition.shortName, name: definition.name }}
+        />
+      </Grid>
+    </SectionWrapper>
   );
 }
 

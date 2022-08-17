@@ -167,13 +167,13 @@ const useStyles = makeStyles({
 
 function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
   const classes = useStyles();
-  const {
-    data: {
-      intOgen: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.IntOgenSummaryFragment);
+  // const {
+  //   data: {
+  //     intOgen: { count: size },
+  //   },
+  // } = usePlatformApi(Summary.fragments.IntOgenSummaryFragment);
 
-  const variables = { ensemblId: ensgId, efoId, size };
+  const variables = { ensemblId: ensgId, efoId, size: 10 };
 
   const request = useQuery(INTOGEN_QUERY, {
     variables,

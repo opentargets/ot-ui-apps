@@ -132,14 +132,15 @@ const useStyles = makeStyles({
 function Body({ definition, id, label }) {
   const classes = useStyles();
   const { ensgId: ensemblId, efoId } = id;
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.CancerGeneCensusSummary
-  );
+  // const { data: summaryData } = usePlatformApi(
+  //   Summary.fragments.CancerGeneCensusSummary
+  // );
 
   const variables = {
     ensemblId,
     efoId,
-    size: summaryData.cancerGeneCensusSummary.count,
+    // size: summaryData.cancerGeneCensusSummary.count,
+    size: 200,
   };
 
   const request = useQuery(CANCER_GENE_CENSUS_QUERY, {
