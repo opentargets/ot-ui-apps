@@ -58,8 +58,10 @@ export const getTableColumns = (data, uniqueTissues) => {
     renderCell: d => <Link to={`/gene/${d.gene.id}`}>{d.gene.symbol}</Link>,
   };
   const phenotypeIdColumn = {
-    id: 'phenotypeId',
+    id: 'gene.id',
     label: 'Molecular trait',
+    comparator: (a, b) => ascending(a.gene.id, b.gene.id),
+    renderCell: d => <span>{d.gene.id}</span>,
   };
   const studyColumn = {
     id: 'qtlStudyName',
