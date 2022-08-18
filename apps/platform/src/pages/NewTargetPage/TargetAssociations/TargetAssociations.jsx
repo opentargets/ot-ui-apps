@@ -46,15 +46,13 @@ const EVIDENCE_PROFILE_QUERY = gql`
   }
 `;
 
-console.log({ sections });
-
 const ControllsBtnContainer = styled('div')({
   margin: '40px 60px',
   textAlign: 'right',
 });
 
 const SectionWrapper = styled('div')({
-  margin: '40px 60px',
+  margin: '40px 0',
 });
 
 const ControllsContainer = styled('div')({
@@ -63,7 +61,7 @@ const ControllsContainer = styled('div')({
 });
 
 const TableElement = styled('table')({
-  maxWidth: '1400px',
+  width: '1400px',
   // minWidth: '1000px',
   margin: '0 auto',
   tableLayout: 'fixed',
@@ -111,8 +109,6 @@ function TargetAssociations({ ensgId, symbol }) {
   if (loading) return <>Loading component ...</>;
   if (error) return <>Error in request</>;
 
-  console.table(data.target.associatedDiseases.rows);
-
   const _data = data.target.associatedDiseases.rows.map(d => {
     const sources = d.datasourceScores.reduce(
       (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
@@ -147,9 +143,9 @@ function Table({ data, ensgId }) {
   /* Expander handler for data-score elements */
   const expanderHandler = tableExpanderController => cell => {
     const expandedId = getCellId(cell);
-    if (expanded === expandedId.join('-')) {
+    if (expanded.join('-') === expandedId.join('-')) {
       setTableExpanded({});
-      setExpanded(null);
+      setExpanded([]);
       return;
     }
     /* Validate that only one row can be expanded */
@@ -299,7 +295,7 @@ function Table({ data, ensgId }) {
         variables={{ ensgId }}
       >
         <div className="TAssociations">
-          <TableElement>
+          <TableElement cellSpacing="0">
             <thead>
               {table.getHeaderGroups().map(headerGroup => (
                 <tr key={headerGroup.id}>
@@ -342,9 +338,12 @@ function Table({ data, ensgId }) {
                       })}
                     </tr>
                     {row.getIsExpanded() && (
-                      <tr>
+                      <tr className="expanded-row">
                         {/* 2nd row is a custom 1 cell row */}
-                        <td colSpan={row.getVisibleCells().length}>
+                        <td
+                          className="expanded-td"
+                          colSpan={row.getVisibleCells().length}
+                        >
                           <SecctionRenderer
                             ensgId={ensgId}
                             efoId={row.original.disease.id}
@@ -395,7 +394,6 @@ function ColoredCell({
 }
 
 function SecctionRenderer({ ensgId, efoId, label, activeSection }) {
-  console.log(activeSection);
   const toSearch = dataSources.filter(el => el.id === activeSection[0])[0]
     .sectionId;
   const { Body, definition } = sections.filter(

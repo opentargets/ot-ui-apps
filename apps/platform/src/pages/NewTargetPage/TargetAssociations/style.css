@@ -33,8 +33,24 @@
   padding-right: 20px;
 }
 
+.TAssociations .header-name {
+  width: 250px;
+}
+
+.TAssociations th {
+  /* background-color: #ffffff; */
+  padding: 0;
+  border: #fafafa;
+}
+
+.TAssociations > table > thead {
+  position: sticky;
+  top: 0;
+  background-color: #fafafa;
+  z-index: 100;
+}
+
 .TAssociations .name-cell {
-  width: 20%;
   display: table-cell;
   vertical-align: inherit;
   white-space: nowrap;
@@ -49,6 +65,12 @@
   -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
   box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
   border: 1px solid #084081 !important;
+}
+
+.TAssociations .expanded-td {
+  /* -webkit-box-shadow: inset 0px 5px 6px 0px rgba(0, 0, 0, 0.58);
+  box-shadow: inset 0px 5px 6px 0px rgba(0, 0, 0, 0.58);
+  padding: 0 40px; */
 }
 
 .TAssociations td .data-score {
