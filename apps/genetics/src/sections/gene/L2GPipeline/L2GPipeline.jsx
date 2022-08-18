@@ -11,7 +11,7 @@ import AssociatedStudiesTable from '../../../components/AssociatedStudiesTable';
 
 // import { getData } from '../../../utils';
 
-// TODO: rempve after study locus PR merge
+// TODO: remove after study locus PR merge
 const getData = (data, property) => {
   if (!data || Object.keys(data).length === 0) return false;
   if (!property) return data;
@@ -24,7 +24,7 @@ const hasData = (data, property) => {
   return false;
 };
 
-function L2Gpipeline({
+function L2GPipeline({
   geneId,
   traitFilterUrl,
   authorFilterUrl,
@@ -41,7 +41,7 @@ function L2Gpipeline({
 
   const geneData = getData(data, 'geneInfo');
   const associatedStudies = getData(data, 'studiesAndLeadVariantsForGeneByL2G');
-  const { chromosome, start, end, symbol } = geneData ? geneData : '';
+  const { chromosome, start, end, symbol } = geneData ? geneData : null;
 
   // filtered
   const associatedStudiesFiltered = associatedStudies.filter(d => {
@@ -113,4 +113,4 @@ function L2Gpipeline({
   );
 }
 
-export default L2Gpipeline;
+export default L2GPipeline;

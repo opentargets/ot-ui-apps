@@ -6,8 +6,8 @@ import { withStyles } from '@material-ui/core/styles';
 import BasePage from '../BasePage';
 import Header from './Header';
 
+import L2GPipeline from '../../sections/gene/L2GPipeline/L2GPipeline';
 import ColocAnalysis from '../../sections/gene/ColocAnalysis/ColocAnalysis';
-import L2Gpipeline from '../../sections/gene/L2Gpipeline/L2Gpipeline';
 
 const styles = theme => {
   return {
@@ -121,7 +121,7 @@ function GenePage({ history, match }) {
   return (
     <BasePage>
       <Header geneId={geneId} />
-      <L2Gpipeline
+      <L2GPipeline
         geneId={geneId}
         traitFilterUrl={traitFilterUrl}
         authorFilterUrl={authorFilterUrl}
