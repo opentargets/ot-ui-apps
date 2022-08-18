@@ -1,10 +1,10 @@
 import { descending } from 'd3';
 import { getPhenotypeId, getSpliceId } from './utils';
 
-export const useColocTable = (data) => {
+export const useColocTable = data => {
   const uniqueStudyGenePhenotypes = data.reduce((acc, d) => {
     const { phenotypeId, gene, qtlStudyName } = d;
-    acc[`${qtlStudyName}__${gene.id}__${phenotypeId}`] = {
+    acc[`${qtlStudyName}__${gene.id}`] = {
       phenotypeId: getPhenotypeId(phenotypeId),
       gene,
       qtlStudyName,
@@ -29,13 +29,12 @@ export const useColocTable = (data) => {
       ...uniqueTissues.reduce((acc, t) => {
         const items = data
           .filter(
-            (d) =>
-              getPhenotypeId(d.phenotypeId) === phenotypeId &&
+            d =>
               d.gene.id === gene.id &&
               d.qtlStudyName === qtlStudyName &&
               d.tissue.id === t.id
           )
-          .map((d) => ({
+          .map(d => ({
             h3: d.h3,
             h4: d.h4,
             log2h4h3: d.log2h4h3,

@@ -6,7 +6,7 @@ import { tissueComparator } from './utils';
 
 const getTissueColumns = (data, uniqueTissues) => {
   const tissueThresholdValue = 7;
-  const [minVal, maxVal] = extent(data, (d) => d.log2h4h3);
+  const [minVal, maxVal] = extent(data, d => d.log2h4h3);
   const absMax = Math.min(
     tissueThresholdValue,
     Math.max(Math.abs(minVal), maxVal)
@@ -14,12 +14,12 @@ const getTissueColumns = (data, uniqueTissues) => {
   const radiusScale = scaleSqrt().domain([0, absMax]).range([0, 6]);
   return uniqueTissues
     .sort((a, b) => ascending(a.name, b.name))
-    .map((t) => ({
+    .map(t => ({
       id: t.id,
       label: t.name,
       verticalHeader: true,
       comparator: tissueComparator(t.id),
-      renderCell: (row) => {
+      renderCell: row => {
         if (!row[t.id]) {
           // no comparison made for this gene-tissue pair
           return null;
@@ -55,11 +55,13 @@ export const getTableColumns = (data, uniqueTissues) => {
     id: 'gene.symbol',
     label: 'Gene',
     comparator: (a, b) => ascending(a.gene.symbol, b.gene.symbol),
-    renderCell: (d) => <Link to={`/gene/${d.gene.id}`}>{d.gene.symbol}</Link>,
+    renderCell: d => <Link to={`/gene/${d.gene.id}`}>{d.gene.symbol}</Link>,
   };
   const phenotypeIdColumn = {
-    id: 'phenotypeId',
+    id: 'gene.id',
     label: 'Molecular trait',
+    comparator: (a, b) => ascending(a.gene.id, b.gene.id),
+    renderCell: d => <span>{d.gene.id}</span>,
   };
   const studyColumn = {
     id: 'qtlStudyName',
