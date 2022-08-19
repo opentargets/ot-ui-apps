@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/client';
 import { SectionHeading, Typography } from '../../ot-ui-components';
 import { PlotContainer } from '../../ot-ui-components';
 
-import AssociatedGenes from '../../components/AssociatedGenes';
+import AssociatedGenes from '../../sections/variant/AssociatedGenes';
 
 import { variantParseGenesForVariantSchema } from '../../utils';
 

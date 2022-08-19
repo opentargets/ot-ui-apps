@@ -12,8 +12,11 @@ import VARIANT_HEADER_QUERY from './VariantHeader.gql';
 import { AssignedGenes } from './AssignedGenes';
 import { GWASLeadVariants } from './GWASLeadVariants';
 import { TagVariantPage } from './TagVariantPage';
+import PheWASSection from '../../sections/variant/PheWASSection';
 
 function VariantPage(props) {
+  const { history } = props;
+
   const { match } = props;
   const { variantId } = match.params;
   const { loading, data: headerData } = useQuery(VARIANT_HEADER_QUERY, {
@@ -32,6 +35,7 @@ function VariantPage(props) {
       <Header loading={loading} data={headerData} />
       <Summary variantId={variantId} />
       <AssignedGenes variantId={variantId} />
+      <PheWASSection variantId={variantId} history={history} />
       <GWASLeadVariants variantId={variantId} />
       <TagVariantPage variantId={variantId} />
     </BasePage>
