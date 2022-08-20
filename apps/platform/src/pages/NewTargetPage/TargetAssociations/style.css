@@ -50,12 +50,16 @@
 /* ROW */
 .TAssociations .TRow {
   display: flex;
+  flex-direction: column;
+}
+.TAssociations .data-row {
+  display: flex;
   margin-bottom: 3px;
   justify-content: space-evenly;
   background-color: #fafafa;
 }
 
-.TAssociations .TRow.active {
+.TAssociations .data-row.active {
   position: sticky;
   top: 140px;
   padding-top: 10px;
@@ -67,9 +71,6 @@
 .TAssociations .name-cell {
   width: 230px;
   white-space: nowrap;
-  /* text-overflow: ellipsis;
-  overflow: hidden;
-  border: 0;*/
   padding: 0 0.5rem 0 0;
   text-align: left;
 }

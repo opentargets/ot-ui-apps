@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 
-import { Reorder } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import PlatformApiProvider from '../../../contexts/PlatformApiProvider';
 
@@ -185,7 +185,7 @@ function Table({ data, ensgId }) {
 
   const getRowClassName = ({ getIsExpanded }) => {
     let activeClass = getIsExpanded() ? 'active' : '';
-    return `TRow ${activeClass}`;
+    return `data-row ${activeClass}`;
   };
   const getCellClassName = cell => {
     if (cell.column.id === 'name') return 'name-cell';
@@ -263,6 +263,15 @@ function Table({ data, ensgId }) {
     getExpandedRowModel: getExpandedRowModel(),
   });
 
+  const spring = React.useMemo(
+    () => ({
+      type: 'spring',
+      damping: 0,
+      stiffness: 0,
+    }),
+    []
+  );
+
   return (
     <>
       <ControllsBtnContainer>
@@ -324,41 +333,40 @@ function Table({ data, ensgId }) {
                 })}
               </div>
             ))}
+
+            {/* <AnimatePresence></AnimatePresence> */}
+
             <div className="TBody">
-              {table.getRowModel().rows.map(row => {
-                return (
-                  <Fragment key={row.id}>
-                    <div className={getRowClassName(row)}>
-                      {/* first row is a normal row */}
-                      {row.getVisibleCells().map(cell => {
-                        return (
-                          <div key={cell.id} className={getCellClassName(cell)}>
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    {row.getIsExpanded() && (
-                      <div className="expanded-row">
-                        {/* 2nd row is a custom 1 cell row */}
-                        <div
-                          className="expanded-td"
-                          colSpan={row.getVisibleCells().length}
-                        >
-                          <SecctionRenderer
-                            ensgId={ensgId}
-                            efoId={row.original.disease.id}
-                            activeSection={expanded}
-                          />
-                        </div>
+              <AnimatePresence>
+                {table.getRowModel().rows.map(row => {
+                  return (
+                    <motion.div key={row.id} layout="position" className="TRow">
+                      <div className={getRowClassName(row)}>
+                        {row.getVisibleCells().map(cell => {
+                          return (
+                            <div
+                              key={cell.id}
+                              className={getCellClassName(cell)}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
-                    )}
-                  </Fragment>
-                );
-              })}
+                      {row.getIsExpanded() && (
+                        <SecctionRenderer
+                          ensgId={ensgId}
+                          efoId={row.original.disease.id}
+                          activeSection={expanded}
+                        />
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
             </div>
           </TableElement>
         </div>
