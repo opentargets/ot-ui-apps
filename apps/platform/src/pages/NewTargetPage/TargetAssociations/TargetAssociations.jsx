@@ -22,6 +22,8 @@ import {
 } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 
+import { Reorder } from 'framer-motion';
+
 import PlatformApiProvider from '../../../contexts/PlatformApiProvider';
 
 import sections from '../../EvidencePage/sections';
@@ -61,8 +63,8 @@ const ControllsContainer = styled('div')({
 });
 
 const TableElement = styled('div')({
-  width: '1400px',
-  // minWidth: '1000px',
+  minWidth: '1250px',
+  maxWidth: '1500px',
   margin: '0 auto',
 });
 
@@ -388,7 +390,7 @@ function ColoredCell({
     width: rounded ? '26px' : '30px',
     borderRadius: rounded ? '13px' : 0,
     backgroundColor,
-    border: `1px solid ${borderColor}`,
+    border: `1.5px solid ${borderColor}`,
   };
   return (
     <div className={className} onClick={onClickHabdler} style={style}></div>
