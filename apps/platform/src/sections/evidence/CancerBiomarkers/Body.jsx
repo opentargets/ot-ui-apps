@@ -108,16 +108,10 @@ const columns = [
 function Body(props) {
   const { definition, id, label } = props;
   const { ensgId: ensemblId, efoId } = id;
-  const {
-    data: {
-      disease: { cancerBiomarkersSummary },
-    },
-  } = usePlatformApi();
 
   const variables = {
     ensemblId,
     efoId,
-    size: cancerBiomarkersSummary.count,
   };
 
   const request = useQuery(CANCER_BIOMARKERS_EVIDENCE_QUERY, {

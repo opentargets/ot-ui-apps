@@ -5,19 +5,19 @@
   border-bottom: 1px solid lightgray;
 }
 
-.TAssociations th.rotate {
+.TAssociations .rotate {
   /* Something you can count on */
   height: 140px;
   white-space: nowrap;
 }
 
-.TAssociations th.rotate > div {
+.TAssociations .rotate > div {
   transform: 
     /* Magic Numbers */ translate(0px, 51px)
     /* 45 is really 360 - 45 */ rotate(315deg);
   width: 30px;
 }
-.TAssociations th.rotate > div > span {
+.TAssociations .rotate > div > span {
   /* border-bottom: 1px solid #ccc; */
   padding: 5px 10px;
 }
@@ -43,16 +43,8 @@
   border: #fafafa;
 }
 
-.TAssociations > table > thead {
-  position: sticky;
-  top: 0;
-  background-color: #fafafa;
-  z-index: 100;
-}
-
 .TAssociations .name-cell {
-  display: table-cell;
-  vertical-align: inherit;
+  width: 230px;
   white-space: nowrap;
   /* text-overflow: ellipsis;
   overflow: hidden;
@@ -61,26 +53,57 @@
   text-align: left;
 }
 
-.TAssociations td.active .data-score {
-  -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+.TAssociations .data-cell.active .data-score {
+  -webkit-box-shadow: 0px 0px 3px 1px rgba(92, 19, 19, 0.35);
   box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
-  border: 1px solid #084081 !important;
+  border: 2px solid rgb(0, 0, 0) !important;
+  position: sticky;
+  top: 0;
 }
 
-.TAssociations .expanded-td {
-  /* -webkit-box-shadow: inset 0px 5px 6px 0px rgba(0, 0, 0, 0.58);
-  box-shadow: inset 0px 5px 6px 0px rgba(0, 0, 0, 0.58);
-  padding: 0 40px; */
+/* HEADER STYLES */
+.TAssociations .Theader {
+  display: flex;
+  position: sticky;
+  top: 0;
+  background-color: #fafafa;
+  z-index: 100;
 }
 
-.TAssociations td .data-score {
+/* BODY */
+.TAssociations .TBody {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ROW */
+.TAssociations .TRow {
+  display: flex;
+  margin-bottom: 3px;
+  justify-content: space-evenly;
+  background-color: #fafafa;
+}
+
+.TAssociations .TRow.active {
+  position: sticky;
+  top: 140px;
+  padding: 20px 0;
+  z-index: 100;
+}
+
+/* CELL */
+.TAssociations .data-cell .data-score {
   cursor: pointer;
   box-sizing: border-box;
   /* transition: all ease-in-out 300ms; */
 }
 
-.TAssociations td .data-score:hover,
-.TAssociations td .data-score:focus {
+.TAssociations .data-cell .data-global-score {
+  margin-right: 20px;
+}
+
+.TAssociations .data-cell .data-score:hover,
+.TAssociations .data-cell .data-score:focus {
   /* border: 2px solid #454545 !important; */
   -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
   box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);

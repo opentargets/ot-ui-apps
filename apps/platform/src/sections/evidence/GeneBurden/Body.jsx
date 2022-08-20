@@ -250,16 +250,10 @@ const columns = [
 function Body(props) {
   const { definition, id, label } = props;
   const { ensgId: ensemblId, efoId } = id;
-  const {
-    data: {
-      disease: { geneBurdenSummary },
-    },
-  } = usePlatformApi();
 
   const variables = {
     ensemblId,
     efoId,
-    size: geneBurdenSummary.count,
   };
 
   const request = useQuery(GENE_BURDEN_QUERY, {

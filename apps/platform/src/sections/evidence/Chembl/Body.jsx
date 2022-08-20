@@ -215,11 +215,8 @@ function getColumns(classes) {
 
 function Body({ definition, id, label }) {
   const { ensgId: ensemblId, efoId } = id;
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.ChemblSummaryFragment
-  );
 
-  const variables = { ensemblId, efoId, size: summaryData.chemblSummary.count };
+  const variables = { ensemblId, efoId };
 
   const request = useQuery(CHEMBL_QUERY, {
     variables,

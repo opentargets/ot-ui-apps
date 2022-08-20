@@ -55,12 +55,10 @@ const columns = [
 
 function Body({ definition, id, label }) {
   const { ensgId: ensemblId, efoId } = id;
-  const { data: summaryData } = usePlatformApi(Summary.fragments.crisprSummary);
 
   const variables = {
     ensemblId,
     efoId,
-    size: summaryData.crisprSummary.count,
   };
 
   const request = useQuery(CRISPR_QUERY, {

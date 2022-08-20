@@ -52,7 +52,7 @@ const ControllsBtnContainer = styled('div')({
 });
 
 const SectionWrapper = styled('div')({
-  margin: '40px 0',
+  marginBottom: '40px',
 });
 
 const ControllsContainer = styled('div')({
@@ -60,11 +60,10 @@ const ControllsContainer = styled('div')({
   minWidth: '400px',
 });
 
-const TableElement = styled('table')({
+const TableElement = styled('div')({
   width: '1400px',
   // minWidth: '1000px',
   margin: '0 auto',
-  tableLayout: 'fixed',
 });
 
 const NameContainer = styled('div')({
@@ -181,6 +180,11 @@ function Table({ data, ensgId }) {
     if (id === 'score') return 'rotate header-score';
     return 'rotate';
   };
+
+  const getRowClassName = ({ getIsExpanded }) => {
+    let activeClass = getIsExpanded() ? 'active' : '';
+    return `TRow ${activeClass}`;
+  };
   const getCellClassName = cell => {
     if (cell.column.id === 'name') return 'name-cell';
     const expandedId = getCellId(cell).join('-');
@@ -296,51 +300,49 @@ function Table({ data, ensgId }) {
       >
         <div className="TAssociations">
           <TableElement cellSpacing="0">
-            <thead>
-              {table.getHeaderGroups().map(headerGroup => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map(header => {
-                    return (
-                      <th
-                        className={getHeaderClassName(header)}
-                        key={header.id}
-                        colSpan={header.colSpan}
-                      >
-                        {header.isPlaceholder ? null : (
-                          <div>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                          </div>
-                        )}
-                      </th>
-                    );
-                  })}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
+            {table.getHeaderGroups().map(headerGroup => (
+              <div className="Theader" key={headerGroup.id}>
+                {headerGroup.headers.map(header => {
+                  return (
+                    <div
+                      className={getHeaderClassName(header)}
+                      key={header.id}
+                      colSpan={header.colSpan}
+                    >
+                      {header.isPlaceholder ? null : (
+                        <div>
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+            <div className="TBody">
               {table.getRowModel().rows.map(row => {
                 return (
                   <Fragment key={row.id}>
-                    <tr>
+                    <div className={getRowClassName(row)}>
                       {/* first row is a normal row */}
                       {row.getVisibleCells().map(cell => {
                         return (
-                          <td key={cell.id} className={getCellClassName(cell)}>
+                          <div key={cell.id} className={getCellClassName(cell)}>
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext()
                             )}
-                          </td>
+                          </div>
                         );
                       })}
-                    </tr>
+                    </div>
                     {row.getIsExpanded() && (
-                      <tr className="expanded-row">
+                      <div className="expanded-row">
                         {/* 2nd row is a custom 1 cell row */}
-                        <td
+                        <div
                           className="expanded-td"
                           colSpan={row.getVisibleCells().length}
                         >
@@ -349,13 +351,13 @@ function Table({ data, ensgId }) {
                             efoId={row.original.disease.id}
                             activeSection={expanded}
                           />
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     )}
                   </Fragment>
                 );
               })}
-            </tbody>
+            </div>
           </TableElement>
         </div>
       </PlatformApiProvider>

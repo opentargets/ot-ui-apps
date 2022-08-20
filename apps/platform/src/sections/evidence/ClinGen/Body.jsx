@@ -99,14 +99,10 @@ const columns = [
 function Body(props) {
   const { definition, id, label } = props;
   const { ensgId: ensemblId, efoId } = id;
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.ClinGenSummaryFragment
-  );
 
   const variables = {
     ensemblId,
     efoId,
-    size: summaryData.clingenSummary.count,
   };
 
   const request = useQuery(CLINGEN_QUERY, {
