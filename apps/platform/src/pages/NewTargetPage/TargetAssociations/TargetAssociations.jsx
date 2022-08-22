@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 
 import PlatformApiProvider from '../../../contexts/PlatformApiProvider';
 
@@ -263,14 +263,14 @@ function Table({ data, ensgId }) {
     getExpandedRowModel: getExpandedRowModel(),
   });
 
-  const spring = React.useMemo(
-    () => ({
-      type: 'spring',
-      damping: 0,
-      stiffness: 0,
-    }),
-    []
-  );
+  // const spring = React.useMemo(
+  //   () => ({
+  //     type: 'spring',
+  //     damping: 0,
+  //     stiffness: 0,
+  //   }),
+  //   []
+  // );
 
   return (
     <>
@@ -310,7 +310,7 @@ function Table({ data, ensgId }) {
         variables={{ ensgId }}
       >
         <div className="TAssociations">
-          <TableElement cellSpacing="0">
+          <TableElement>
             {table.getHeaderGroups().map(headerGroup => (
               <div className="Theader" key={headerGroup.id}>
                 {headerGroup.headers.map(header => {
@@ -334,13 +334,11 @@ function Table({ data, ensgId }) {
               </div>
             ))}
 
-            {/* <AnimatePresence></AnimatePresence> */}
-
             <div className="TBody">
-              <AnimatePresence>
+              <div>
                 {table.getRowModel().rows.map(row => {
                   return (
-                    <motion.div key={row.id} layout="position" className="TRow">
+                    <>
                       <div className={getRowClassName(row)}>
                         {row.getVisibleCells().map(cell => {
                           return (
@@ -356,17 +354,31 @@ function Table({ data, ensgId }) {
                           );
                         })}
                       </div>
-                      {row.getIsExpanded() && (
-                        <SecctionRenderer
-                          ensgId={ensgId}
-                          efoId={row.original.disease.id}
-                          activeSection={expanded}
-                        />
-                      )}
-                    </motion.div>
+                      <div>
+                        {row.getIsExpanded() && (
+                          <div
+                            key={`${row.original.disease.id}-${expanded[0]}`}
+                            initial="collapsed"
+                            animate="open"
+                            exit="exit"
+                            variants={{
+                              open: { opacity: 1, height: 'auto' },
+                              collapsed: { height: 0 },
+                              exit: { opacity: 0, height: 0 },
+                            }}
+                          >
+                            <SecctionRenderer
+                              ensgId={ensgId}
+                              efoId={row.original.disease.id}
+                              activeSection={expanded}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </>
                   );
                 })}
-              </AnimatePresence>
+              </div>
             </div>
           </TableElement>
         </div>
