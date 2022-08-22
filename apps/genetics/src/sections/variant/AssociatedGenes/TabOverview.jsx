@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-import { DataDownloader, OtTableRF } from '../../ot-ui-components';
+import { DataDownloader, OtTableRF } from '../../../ot-ui-components';
 
 import { OVERVIEW } from './utils';
 

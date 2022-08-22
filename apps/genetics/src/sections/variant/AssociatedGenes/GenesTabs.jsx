@@ -1,7 +1,7 @@
 import React from 'react';
-import { Tabs, Tab } from '../../ot-ui-components';
+import { Tabs, Tab } from '../../../ot-ui-components';
 import { OVERVIEW, isDisabledColumn } from './utils';
-import theme from '../theme';
+import theme from '../../../components/theme';
 
 export const GenesTabs = ({ schemas, value, dataAll, handleChange }) => {
   return (
