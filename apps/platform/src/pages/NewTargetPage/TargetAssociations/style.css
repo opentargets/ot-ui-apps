@@ -1,5 +1,6 @@
 /* --- HEADER ---  */
 .TAssociations .Theader {
+  padding-top: 15px;
   display: flex;
   position: sticky;
   top: 0;
@@ -7,6 +8,8 @@
   z-index: 100;
   justify-content: space-evenly;
   font-weight: 800;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ececec;
 }
 
 .TAssociations .Theader .header-score {
@@ -59,9 +62,9 @@
 
 .TAssociations .data-row.active {
   position: sticky;
-  top: 140px;
-  padding-top: 10px;
-  padding-bottom: 20px;
+  top: 155px;
+  padding-top: 15px;
+  padding-bottom: 15px;
   z-index: 90;
 }
 

@@ -218,10 +218,7 @@ function TargetAssociations({ ensgId }) {
     manualPagination: true,
   });
 
-  if (loading) return <>Loading component ...</>;
   if (error) return <>Error in request</>;
-
-  // return <Table data={parsedData} loading={loading} ensgId={ensgId} />;
 
   const getCellId = cell => {
     const sourceId = cell.column.id;
