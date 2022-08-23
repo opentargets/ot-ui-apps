@@ -5,6 +5,7 @@ query TargetAssociationsQuery(
   $filter: String
   $sortBy: String!
   $aggregationFilters: [AggregationFilter!]
+  $enableIndirect: Boolean!
 ) {
   target(ensemblId: $ensemblId) {
     id
@@ -13,6 +14,7 @@ query TargetAssociationsQuery(
       orderByScore: $sortBy
       BFilter: $filter
       aggregationFilters: $aggregationFilters
+      enableIndirect: $enableIndirect
     ) {
       count
       rows {

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useMemo } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { scaleQuantize } from 'd3';
 
@@ -22,16 +22,9 @@ import {
 } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 
-import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
-
 import PlatformApiProvider from '../../../contexts/PlatformApiProvider';
 
 import sections from '../../EvidencePage/sections';
-// const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
-//   sections,
-//   'Disease',
-//   'EvidenceProfileSummaryFragment'
-// );
 
 const EVIDENCE_PROFILE_QUERY = gql`
   query EvidenceProfileQuery($ensgId: String!) {
@@ -48,6 +41,7 @@ const EVIDENCE_PROFILE_QUERY = gql`
   }
 `;
 
+/* Styled component */
 const ControllsBtnContainer = styled('div')({
   margin: '40px 60px',
   textAlign: 'right',
@@ -82,6 +76,8 @@ const Name = styled('span')({
   textOverflow: 'ellipsis',
 });
 
+/* UTILS */
+/* Color scale */
 const COLORS = [
   // '#f7fbff',
   '#deebf7',
@@ -93,47 +89,139 @@ const COLORS = [
   '#08519c',
   // '#08306b',
 ];
+const linearScale = scaleQuantize().domain([0, 1]).range(COLORS);
 
-let linearScale = scaleQuantize().domain([0, 1]).range(COLORS);
-
-function TargetAssociations({ ensgId, symbol }) {
-  const { data, loading, error } = useQuery(TARGET_ASSOCIATIONS_QUERY, {
-    variables: {
-      ensemblId: ensgId,
-      index: 1,
-      size: 50,
-      filter: '',
-      sortBy: 'score',
-    },
-  });
-
-  if (loading) return <>Loading component ...</>;
-  if (error) return <>Error in request</>;
-
-  const _data = data.target.associatedDiseases.rows.map(d => {
+// Select and parsed data from API response
+const getAssociatedDiseasesData = data => {
+  if (!data) return [];
+  return data.target.associatedDiseases.rows.map(d => {
     const sources = d.datasourceScores.reduce(
       (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
       {}
     );
     return { ...d, ...sources };
   });
-  console.log(_data);
+};
 
-  return (
-    <>
-      <Table data={_data} ensgId={ensgId} />
-    </>
+/* TARGET ASSOCIATION PAGE */
+function TargetAssociations({ ensgId }) {
+  const [{ pageIndex, pageSize }, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 50,
+  });
+
+  const {
+    data: associationData,
+    loading,
+    error,
+  } = useQuery(TARGET_ASSOCIATIONS_QUERY, {
+    variables: {
+      ensemblId: ensgId,
+      index: pageIndex,
+      size: pageSize,
+      filter: '',
+      sortBy: 'score',
+      aggregationFilters: [],
+      enableIndirect: false,
+    },
+  });
+
+  const pagination = useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
   );
-}
 
-function Table({ data, ensgId }) {
+  // Table Controls
   const [expanded, setExpanded] = useState([]);
   const [tableExpanded, setTableExpanded] = useState({});
 
-  // Controls
+  // Viz Controls
   const [gScoreRect, setGScoreRect] = useState(true);
   const [scoreRect, setScoreRect] = useState(true);
   const [open, setOpen] = useState(false);
+
+  const columns = [
+    // {
+    //   id: 'expander',
+    //   header: () => 'Expander',
+    //   cell: row => {
+    //     return row.row.getCanExpand() ? (
+    //       <button
+    //         {...{
+    //           onClick: () => {
+    //             // console.log(row);
+    //             row.row.getToggleExpandedHandler();
+    //           },
+    //           style: { cursor: 'pointer' },
+    //         }}
+    //       >
+    //         {row.row.getIsExpanded() ? '👇' : '👉'}
+    //       </button>
+    //     ) : (
+    //       '🔵'
+    //     );
+    //   },
+    // },
+    {
+      accessorFn: row => row.disease.name,
+      id: 'name',
+      cell: row => (
+        <NameContainer>
+          <Name>{row.getValue()}</Name>
+        </NameContainer>
+      ),
+      // <NameContainer>
+      //   <span
+      //     onClick={() => {
+      //       console.log(row);
+      //     }}
+      //   >
+      //   </span>
+      // </NameContainer>
+      header: () => <span>Disease</span>,
+      footer: props => props.column.id,
+    },
+    {
+      accessorFn: row => row.score,
+      id: 'score',
+      cell: row => (
+        <ColoredCell
+          scoreValue={row.getValue()}
+          globalScore
+          rounded={!gScoreRect}
+        />
+      ),
+      header: () => <span>Score</span>,
+      footer: props => props.column.id,
+    },
+    ...getDatasources(),
+  ];
+
+  const parsedData = getAssociatedDiseasesData(associationData);
+
+  const table = useReactTable({
+    data: parsedData,
+    columns,
+    state: {
+      expanded: tableExpanded,
+      pagination,
+    },
+    pageCount: associationData?.target?.associatedDiseases?.count ?? -1,
+    onPaginationChange: setPagination,
+    onExpandedChange: setTableExpanded,
+    getRowCanExpand: () => true,
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    manualPagination: true,
+  });
+
+  if (loading) return <>Loading component ...</>;
+  if (error) return <>Error in request</>;
+
+  // return <Table data={parsedData} loading={loading} ensgId={ensgId} />;
 
   const getCellId = cell => {
     const sourceId = cell.column.id;
@@ -193,84 +281,6 @@ function Table({ data, ensgId }) {
     if (expandedId === expanded.join('-')) return 'active data-cell';
     return 'data-cell';
   };
-
-  const columns = [
-    // {
-    //   id: 'expander',
-    //   header: () => 'Expander',
-    //   cell: row => {
-    //     return row.row.getCanExpand() ? (
-    //       <button
-    //         {...{
-    //           onClick: () => {
-    //             // console.log(row);
-    //             row.row.getToggleExpandedHandler();
-    //           },
-    //           style: { cursor: 'pointer' },
-    //         }}
-    //       >
-    //         {row.row.getIsExpanded() ? '👇' : '👉'}
-    //       </button>
-    //     ) : (
-    //       '🔵'
-    //     );
-    //   },
-    // },
-    {
-      accessorFn: row => row.disease.name,
-      id: 'name',
-      cell: row => (
-        <NameContainer>
-          <Name>{row.getValue()}</Name>
-        </NameContainer>
-      ),
-      // <NameContainer>
-      //   <span
-      //     onClick={() => {
-      //       console.log(row);
-      //     }}
-      //   >
-      //   </span>
-      // </NameContainer>
-      header: () => <span>Disease</span>,
-      footer: props => props.column.id,
-    },
-    {
-      accessorFn: row => row.score,
-      id: 'score',
-      cell: row => (
-        <ColoredCell
-          scoreValue={row.getValue()}
-          globalScore
-          rounded={!gScoreRect}
-        />
-      ),
-      header: () => <span>Score</span>,
-      footer: props => props.column.id,
-    },
-    ...getDatasources(),
-  ];
-
-  const table = useReactTable({
-    data,
-    columns,
-    state: {
-      expanded: tableExpanded,
-    },
-    onExpandedChange: setTableExpanded,
-    getRowCanExpand: () => true,
-    getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-  });
-
-  // const spring = React.useMemo(
-  //   () => ({
-  //     type: 'spring',
-  //     damping: 0,
-  //     stiffness: 0,
-  //   }),
-  //   []
-  // );
 
   return (
     <>
@@ -338,7 +348,7 @@ function Table({ data, ensgId }) {
               <div>
                 {table.getRowModel().rows.map(row => {
                   return (
-                    <>
+                    <Fragment key={row.id}>
                       <div className={getRowClassName(row)}>
                         {row.getVisibleCells().map(cell => {
                           return (
@@ -375,28 +385,46 @@ function Table({ data, ensgId }) {
                           </div>
                         )}
                       </div>
-                    </>
+                    </Fragment>
                   );
                 })}
               </div>
             </div>
           </TableElement>
+          <select
+            value={table.getState().pagination.pageSize}
+            onChange={e => {
+              table.setPageSize(Number(e.target.value));
+            }}
+          >
+            {[10, 50, 200, 500].map(pageSize => (
+              <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+              </option>
+            ))}
+          </select>
+          <button
+            className="border rounded p-1"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {'<'}
+          </button>
+          <button
+            className="border rounded p-1"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            {'>'}
+          </button>
         </div>
       </PlatformApiProvider>
     </>
   );
 }
 
-function ColoredCell({
-  scoreValue,
-  scoreId,
-  onClick,
-  rounded,
-  globalScore,
-  cell,
-}) {
+function ColoredCell({ scoreValue, onClick, rounded, globalScore, cell }) {
   const onClickHabdler = onClick ? () => onClick(cell) : () => {};
-
   const backgroundColor = scoreValue ? linearScale(scoreValue) : '#fafafa';
   const borderColor = scoreValue ? linearScale(scoreValue) : '#e0dede';
   const className = globalScore
@@ -412,11 +440,13 @@ function ColoredCell({
     backgroundColor,
     border: `1.5px solid ${borderColor}`,
   };
+
   return (
     <div className={className} onClick={onClickHabdler} style={style}></div>
   );
 }
 
+// Wrapper of the sections
 function SecctionRenderer({ ensgId, efoId, label, activeSection }) {
   const toSearch = dataSources.filter(el => el.id === activeSection[0])[0]
     .sectionId;
