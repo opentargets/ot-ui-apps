@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useMemo } from 'react';
+import React, { Fragment, useState, useMemo, useEffect } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { scaleQuantize } from 'd3';
 
@@ -19,12 +19,15 @@ import {
   FormGroup,
   FormControlLabel,
   Grid,
+  Collapse,
 } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 
 import PlatformApiProvider from '../../../contexts/PlatformApiProvider';
 
 import sections from '../../EvidencePage/sections';
+
+import { Reorder, AnimatePresence, motion } from 'framer-motion';
 
 const EVIDENCE_PROFILE_QUERY = gql`
   query EvidenceProfileQuery($ensgId: String!) {
@@ -109,6 +112,8 @@ function TargetAssociations({ ensgId }) {
     pageIndex: 0,
     pageSize: 50,
   });
+  const [_data, setData] = useState([]);
+  const [_loading, setLoading] = useState([]);
 
   const {
     data: associationData,
@@ -140,7 +145,7 @@ function TargetAssociations({ ensgId }) {
 
   // Viz Controls
   const [gScoreRect, setGScoreRect] = useState(true);
-  const [scoreRect, setScoreRect] = useState(true);
+  const [scoreRect, setScoreRect] = useState(false);
   const [open, setOpen] = useState(false);
 
   const columns = [
@@ -236,10 +241,10 @@ function TargetAssociations({ ensgId }) {
     }
     /* Validate that only one row can be expanded */
     if (Object.keys(tableExpanded).length > 0) setTableExpanded({});
-    /* Set the ID of the section expanded element */
-    setExpanded(expandedId);
     /* Open the expandable section */
     tableExpanderController();
+    /* Set the ID of the section expanded element */
+    setExpanded(expandedId);
   };
 
   function getDatasources() {
@@ -317,77 +322,77 @@ function TargetAssociations({ ensgId }) {
         variables={{ ensgId }}
       >
         <div className="TAssociations">
-          <TableElement>
-            {table.getHeaderGroups().map(headerGroup => (
-              <div className="Theader" key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
-                  return (
-                    <div
-                      className={getHeaderClassName(header)}
-                      key={header.id}
-                      colSpan={header.colSpan}
-                    >
-                      {header.isPlaceholder ? null : (
-                        <div>
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-
-            <div className="TBody">
-              <div>
-                {table.getRowModel().rows.map(row => {
-                  return (
-                    <Fragment key={row.id}>
-                      <div className={getRowClassName(row)}>
-                        {row.getVisibleCells().map(cell => {
-                          return (
-                            <div
-                              key={cell.id}
-                              className={getCellClassName(cell)}
-                            >
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
-                            </div>
-                          );
-                        })}
+          <Reorder.Group values={table.getRowModel().rows} onReorder={() => {}}>
+            <TableElement>
+              {table.getHeaderGroups().map(headerGroup => (
+                <div className="Theader" key={headerGroup.id}>
+                  {headerGroup.headers.map(header => {
+                    return (
+                      <div
+                        className={getHeaderClassName(header)}
+                        key={header.id}
+                        colSpan={header.colSpan}
+                      >
+                        {header.isPlaceholder ? null : (
+                          <div>
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <div>
+                    );
+                  })}
+                </div>
+              ))}
+
+              <div className="TBody">
+                <div>
+                  {table.getRowModel().rows.map(row => {
+                    return (
+                      <Fragment key={row.id}>
+                        <Reorder.Item
+                          as="div"
+                          key={row.id}
+                          value={row}
+                          className={getRowClassName(row)}
+                        >
+                          {row.getVisibleCells().map(cell => {
+                            return (
+                              <div
+                                key={cell.id}
+                                className={getCellClassName(cell)}
+                              >
+                                {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext()
+                                )}
+                              </div>
+                            );
+                          })}
+                        </Reorder.Item>
                         {row.getIsExpanded() && (
-                          <div
+                          <motion.div
                             key={`${row.original.disease.id}-${expanded[0]}`}
-                            initial="collapsed"
-                            animate="open"
-                            exit="exit"
-                            variants={{
-                              open: { opacity: 1, height: 'auto' },
-                              collapsed: { height: 0 },
-                              exit: { opacity: 0, height: 0 },
-                            }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                           >
                             <SecctionRenderer
                               ensgId={ensgId}
                               efoId={row.original.disease.id}
                               activeSection={expanded}
                             />
-                          </div>
+                          </motion.div>
                         )}
-                      </div>
-                    </Fragment>
-                  );
-                })}
+                      </Fragment>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          </TableElement>
+            </TableElement>
+          </Reorder.Group>
           <select
             value={table.getState().pagination.pageSize}
             onChange={e => {

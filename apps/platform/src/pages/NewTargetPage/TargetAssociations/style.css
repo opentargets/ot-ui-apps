@@ -38,7 +38,6 @@
 }
 
 .TAssociations .rotate > div > span {
-  /* border-bottom: 1px solid #ccc; */
   padding: 5px 10px;
 }
 
@@ -63,9 +62,8 @@
 .TAssociations .data-row.active {
   position: sticky;
   top: 155px;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  z-index: 90;
+  padding: 0.5em 0 0.5em 0;
+  z-index: 90 !important;
 }
 
 /*  CELL  */
