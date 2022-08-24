@@ -1,9 +1,57 @@
-import React from 'react'
+import { React, useState, Suspense, lazy } from 'react';
+
+import { Grid, makeStyles } from '@material-ui/core';
+import 'graphiql/graphiql.min.css';
+
+// lazy load GraphiQL and remove Logo and Toolbar
+const GraphiQL = lazy(() =>
+  import('graphiql').then((module) => {
+    module.default.Logo = () => null;
+    module.default.Toolbar = () => null;
+    return module;
+  })
+);
+
+const useStyles = makeStyles({
+    container: {
+      minHeight: '600px',
+    },
+    buttonMargin: {
+      marginBottom: '12px',
+    },
+  });
+
+  // TODO: move to util file
+async function fetcher(graphQLParams) {
+    // const data = await fetch(config.urlApi, {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(graphQLParams),
+    // });
+    // return data.json();
+  }
 
 function APIPage() {
+    const classes = useStyles();
+  const [query, setQuery] = useState('');
+
   return (
-    <div>APIPage</div>
-  )
+    <>
+      <Grid className={classes.container} container spacing={3}>
+        <Grid item md={3} xl={2}>
+          sample query accordians here
+        </Grid>
+        <Grid item md={9} xl={10}>
+          <Suspense fallback={<div>Loading...</div>}>
+            <GraphiQL fetcher={fetcher} query={query} />
+          </Suspense>
+        </Grid>
+      </Grid>
+    </>
+  );
 }
 
-export default APIPage
+export default APIPage;
