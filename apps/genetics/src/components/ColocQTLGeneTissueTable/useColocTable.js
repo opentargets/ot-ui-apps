@@ -1,5 +1,5 @@
 import { descending } from 'd3';
-import { getPhenotypeId, getSpliceId } from './utils';
+import { getPhenotypeId, getSpliceId } from '../../utils';
 
 export const useColocTable = data => {
   const uniqueStudyGenePhenotypes = data.reduce((acc, d) => {

@@ -1,4 +1,4 @@
-export const tissueComparator = (t) => (a, b) => {
+export const tissueComparator = t => (a, b) => {
   if (a[t] && b[t]) {
     return a[t].log2h4h3 > b[t].log2h4h3
       ? 1
@@ -13,13 +13,3 @@ export const tissueComparator = (t) => (a, b) => {
     return 0;
   }
 };
-
-export const getPhenotypeId = (phenotypeId) =>
-  phenotypeId.includes('^')
-    ? phenotypeId.slice(phenotypeId.lastIndexOf('^') + 1)
-    : phenotypeId;
-
-export const getSpliceId = (phenotypeId) =>
-  phenotypeId.includes('^')
-    ? phenotypeId.slice(0, phenotypeId.lastIndexOf('^'))
-    : null;
