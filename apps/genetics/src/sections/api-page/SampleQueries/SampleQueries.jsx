@@ -9,12 +9,7 @@ import {
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import TARGET_ASSOCS from './TargetAssocs.gql';
-import DISEASE_ASSOCS from './DiseaseAssocs.gql';
-import TARGET_DISEASE_EVIDENCE from './TargetDiseaseEvidence.gql';
-import TARGET_ANNOTATION from './TargetAnnotation.gql';
-import DISEASE_ANNOTATION from './DiseaseAnnotation.gql';
-import DRUG_ANNOTATION from './DrugAnnotation.gql';
+import STUDY_INFO from './StudyInfo.gql';
 
 const useStyles = makeStyles({
   buttonMargin: {
@@ -44,7 +39,7 @@ function SampleQueries({ setQuery }) {
               className={classes.buttonMargin}
               variant="contained"
               color="primary"
-              onClick={() => setQuery(DISEASE_ASSOCS.loc.source.body)}
+              onClick={() => setQuery(STUDY_INFO.loc.source.body)}
             >
               Run sample query
             </Button>
@@ -54,7 +49,7 @@ function SampleQueries({ setQuery }) {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => setQuery(TARGET_ASSOCS.loc.source.body)}
+              onClick={() => setQuery(STUDY_INFO.loc.source.body)}
             >
               Run sample query
             </Button>
@@ -75,7 +70,7 @@ function SampleQueries({ setQuery }) {
               className={classes.buttonMargin}
               variant="contained"
               color="primary"
-              onClick={() => setQuery(TARGET_DISEASE_EVIDENCE.loc.source.body)}
+              onClick={() => setQuery(STUDY_INFO.loc.source.body)}
             >
               Run sample query
             </Button>
@@ -95,7 +90,7 @@ function SampleQueries({ setQuery }) {
               className={classes.buttonMargin}
               variant="contained"
               color="primary"
-              onClick={() => setQuery(TARGET_ANNOTATION.loc.source.body)}
+              onClick={() => setQuery(STUDY_INFO.loc.source.body)}
             >
               Run sample query
             </Button>
@@ -115,7 +110,7 @@ function SampleQueries({ setQuery }) {
               className={classes.buttonMargin}
               variant="contained"
               color="primary"
-              onClick={() => setQuery(DISEASE_ANNOTATION.loc.source.body)}
+              onClick={() => setQuery(STUDY_INFO.loc.source.body)}
             >
               Run sample query
             </Button>
@@ -136,7 +131,7 @@ function SampleQueries({ setQuery }) {
               className={classes.buttonMargin}
               variant="contained"
               color="primary"
-              onClick={() => setQuery(DRUG_ANNOTATION.loc.source.body)}
+              onClick={() => setQuery(STUDY_INFO.loc.source.body)}
             >
               Run sample query
             </Button>
