@@ -13,11 +13,12 @@ import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
 import Link from '../../../components/Link';
 import { identifiersOrgLink, getUniprotIds } from '../../../utils/global';
-import LoadingBackdrop from '../../../components/LoadingBackdrop';
+import { LoadingBackdrop } from 'ui';
 
-const SwissbioViz = 'customElements' in window
- ? lazy(() => import('./SwissbioViz')) 
- : ({ children }) => <>{children}</>;
+const SwissbioViz =
+  'customElements' in window
+    ? lazy(() => import('./SwissbioViz'))
+    : ({ children }) => <>{children}</>;
 
 const useStyles = makeStyles(theme => ({
   locationIcon: {

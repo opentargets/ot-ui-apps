@@ -7,7 +7,7 @@ import ScrollToTop from '../../components/ScrollToTop';
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
 
-import LoadingBackdrop from '../../components/LoadingBackdrop';
+import { LoadingBackdrop } from 'ui';
 import EVIDENCE_PAGE_QUERY from './EvidencePageQuery.gql';
 
 const Profile = lazy(() => import('./Profile'));
