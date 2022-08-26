@@ -10,11 +10,22 @@ export function sanitize(str) {
 Example usage:
 const comparatorDiseaseName = generateComparator(d => d.disease.name);
  */
-export const generateComparator = (accessor) => (a, b) => {
+export const generateComparator = accessor => (a, b) => {
   const aValue = accessor(a);
   const bValue = accessor(b);
   return aValue > bValue ? 1 : aValue === bValue ? 0 : -1;
 };
+
+//phenotype ids
+export const getPhenotypeId = phenotypeId =>
+  phenotypeId.includes('^')
+    ? phenotypeId.slice(phenotypeId.lastIndexOf('^') + 1)
+    : phenotypeId;
+
+export const getSpliceId = phenotypeId =>
+  phenotypeId.includes('^')
+    ? phenotypeId.slice(0, phenotypeId.lastIndexOf('^'))
+    : null;
 
 // Consants
 export const SIGNIFICANCE = -Math.log10(5e-8);

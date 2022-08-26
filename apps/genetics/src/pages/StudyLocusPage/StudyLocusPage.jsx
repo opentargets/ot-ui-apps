@@ -9,7 +9,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import Link from '../../components/Link';
-import { sanitize } from '../../utils';
+import { getPhenotypeId, sanitize } from '../../utils';
 import ScrollToTop from '../../components/ScrollToTop';
 
 import {
@@ -144,7 +144,12 @@ const tableColumns = [
   {
     id: 'phenotypeId',
     label: 'Molecular trait',
-    // renderCell: d => (d.phenotypeId !== d.gene.id ? d.phenotypeId : null),
+    comparator: (a, b) =>
+      d3.ascending(
+        getPhenotypeId(a.phenotypeId),
+        getPhenotypeId(b.phenotypeId)
+      ),
+    renderCell: d => getPhenotypeId(d.phenotypeId),
   },
   {
     id: 'tissue.name',
@@ -199,7 +204,7 @@ const tableColumns = [
 const getDownloadData = data => {
   return data.map(d => ({
     'gene.symbol': d.gene.symbol,
-    phenotypeId: d.phenotypeId,
+    phenotypeId: getPhenotypeId(d.phenotypeId),
     'tissue.name': d.tissue.name,
     qtlStudyName: d.qtlStudyName,
     indexVariant: d.indexVariant.id,
