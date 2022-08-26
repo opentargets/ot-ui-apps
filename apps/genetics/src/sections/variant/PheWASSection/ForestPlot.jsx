@@ -1,25 +1,36 @@
 import React, { useState } from 'react';
 import _ from 'lodash';
-import * as d3 from 'd3';
+import {
+  scaleOrdinal,
+  scaleLinear,
+  scaleLog,
+  schemeCategory10,
+  extent,
+  select,
+  timer,
+  min,
+  max,
+  axisBottom,
+  axisTop,
+} from 'd3';
 import {
   Autocomplete,
   DownloadSVGPlot,
   significantFigures,
   ListTooltip,
-} from '../ot-ui-components';
+} from '../../../ot-ui-components';
 import { Tooltip } from '@material-ui/core';
 import Help from '@material-ui/icons/Help';
-import { pvalThreshold } from '../constants';
+import { pvalThreshold } from '../../../constants';
 
 function traitFilterOptions(data, selectedCategories) {
   let all_categories = _.sortBy(_.uniq(data.map(d => d.traitCategory)), d => d);
   // color scale
-  let colorScale = d3
-    .scaleOrdinal()
+  let colorScale = scaleOrdinal()
     .domain(all_categories)
-    .range(d3.schemeCategory10);
+    .range(schemeCategory10);
   return _.sortBy(
-    _.uniq(data.map((d) => d.traitCategory)).map((d) => {
+    _.uniq(data.map(d => d.traitCategory)).map(d => {
       return {
         label: d,
         value: d,
@@ -28,7 +39,7 @@ function traitFilterOptions(data, selectedCategories) {
         chipcolor: colorScale(d),
       };
     }),
-    [(d) => !d.selected, 'index']
+    [d => !d.selected, 'index']
   );
 }
 
@@ -44,7 +55,7 @@ const cfg = {
   maxBoxSize: 20,
   maxPlotHeight: 800,
   top_axis: 27,
-  bottom_axis:52,
+  bottom_axis: 52,
   treeColor: '#5A5F5F',
   evenRowColor: '#fff',
   unevenRowColor: '#f2f1f1',
@@ -71,7 +82,7 @@ const ForestPlot = ({
   // update the plot if a new trait category is selected
   React.useEffect(() => {
     let selectedTraits = data.filter(
-      (d) => selectedCategories.indexOf(d.traitCategory) >= 0
+      d => selectedCategories.indexOf(d.traitCategory) >= 0
     );
     return setTraits(_.sortBy(selectedTraits, ['traitCategory', 'beta']));
   }, [data, selectedCategories]);
@@ -85,47 +96,46 @@ const ForestPlot = ({
   // draw the plot
   React.useEffect(() => {
     // color scale
-    let all_categories = _.sortBy(_.uniq(data.map(d => d.traitCategory)), d => d);
-    let colorScale = d3
-      .scaleOrdinal()
+    let all_categories = _.sortBy(
+      _.uniq(data.map(d => d.traitCategory)),
+      d => d
+    );
+    let colorScale = scaleOrdinal()
       .domain(all_categories)
-      .range(d3.schemeCategory10);
+      .range(schemeCategory10);
 
     // box size scale
-    let boxSizeScale = d3
-      .scaleLog()
-      .domain(d3.extent(traits, (d) => d.nTotal))
+    let boxSizeScale = scaleLog()
+      .domain(extent(traits, d => d.nTotal))
       .range([cfg.minBoxSize, cfg.maxBoxSize]);
 
     // clear svg
-    d3.select(refs.current).selectAll('*').remove();
-    d3.select('#topRow').selectAll('*').remove();
-    d3.select('#topRowTable').selectAll('*').remove();
-    d3.select('#bottomRow').selectAll('*').remove();
-    d3.select('#table').selectAll('*').remove();
+    select(refs.current).selectAll('*').remove();
+    select('#topRow').selectAll('*').remove();
+    select('#topRowTable').selectAll('*').remove();
+    select('#bottomRow').selectAll('*').remove();
+    select('#table').selectAll('*').remove();
 
     // get component width
-    cfg.component_width = d3
-      .select(refs.current)
+    cfg.component_width = select(refs.current)
       .node()
       .parentNode.parentNode.getBoundingClientRect().width;
 
     // make plot scrollable
-    d3.select(refs.current.parentNode)
+    select(refs.current.parentNode)
       .attr('width', cfg.component_width)
       .style('overflow', 'auto')
       .style('position', 'relative');
 
     // timer is needed to make sure the right component width is taken (and not the width just a few frames before resizing is finished
-    d3.select(window).on('resize', (d) => {
-      d3.timer((d) => {
+    select(window).on('resize', d => {
+      timer(d => {
         setUpdate(!update);
       }, 5);
     });
 
     // set svg size and create group element
-    const svg = d3
-      .select(refs.current)
+    const svg = select(refs.current)
       .attr('width', cfg.svgW)
       .attr('height', traits.length * cfg.rowHeight + 2 * cfg.rowHeight)
       .style('position', 'absolute')
@@ -133,8 +143,7 @@ const ForestPlot = ({
       .append('g');
 
     // set top row svg size and sticky
-    const topRowSvg = d3
-      .select('#topRow')
+    const topRowSvg = select('#topRow')
       .attr('width', cfg.svgW - 45)
       .attr('height', cfg.top_axis)
       .style('position', 'absolute')
@@ -144,8 +153,7 @@ const ForestPlot = ({
       .style('z-index', '2');
 
     // set top row table size and sticky
-    const topRowTable = d3
-      .select('#topRowTable')
+    const topRowTable = select('#topRowTable')
       .attr('width', cfg.tableW)
       .attr('height', cfg.top_axis)
       .style('position', 'sticky')
@@ -155,8 +163,7 @@ const ForestPlot = ({
       .style('z-index', '3');
 
     // set bottom row svg size and sticky
-    const bottomRowSvg = d3
-      .select('#bottomRow')
+    const bottomRowSvg = select('#bottomRow')
       .attr('width', cfg.svgW)
       .attr('height', 2 * cfg.rowHeight)
       .style('position', 'sticky')
@@ -222,13 +229,12 @@ const ForestPlot = ({
       .attr('stroke', 'black');
 
     // create table
-    const table = d3
-    .select('#table')
-    .attr('width', 500)
-    .attr('height', traits.length === 0 ? 0 : cfg.rowHeight)
-    .style('position', 'sticky')
-    .style('left', '0')
-    .style('overflow', 'visible');
+    const table = select('#table')
+      .attr('width', 500)
+      .attr('height', traits.length === 0 ? 0 : cfg.rowHeight)
+      .style('position', 'sticky')
+      .style('left', '0')
+      .style('overflow', 'visible');
 
     // add vertical line to separate trait and pval columns
     table
@@ -258,20 +264,20 @@ const ForestPlot = ({
     // trait name
     rows
       .append('text')
-      .text((d) => d.traitReported)
+      .text(d => d.traitReported)
       .attr('clip-path', 'url(#clip1)')
       .style('font-size', '13px')
       .style('font-family', 'sans-serif')
       .attr('dy', (cfg.rowHeight - 15) / 2 + 11)
       .attr('dx', 8)
-      .style('fill', (d) => colorScale(d.traitCategory))
+      .style('fill', d => colorScale(d.traitCategory))
       .append('title')
-      .text((d) => d.traitReported);
+      .text(d => d.traitReported);
 
     // pval
     rows
       .append('text')
-      .text((d) =>
+      .text(d =>
         d.pval < pvalThreshold
           ? `<${pvalThreshold}`
           : significantFigures(d.pval)
@@ -288,14 +294,13 @@ const ForestPlot = ({
       .attr('transform', 'translate(' + cfg.tableW + ',0)');
 
     // set scale and axis
-    const lowX = d3.min(traits, (d) => d.beta - 1.959964 * d.se);
-    const highX = d3.max(traits, (d) => d.beta + 1.959964 * d.se);
-    let x = d3
-      .scaleLinear()
+    const lowX = min(traits, d => d.beta - 1.959964 * d.se);
+    const highX = max(traits, d => d.beta + 1.959964 * d.se);
+    let x = scaleLinear()
       .domain([lowX - Math.abs(0.1 * lowX), highX + Math.abs(0.1 * highX)])
       .range([0, cfg.plotW]);
-    let xAxisBottom = d3.axisBottom(x).ticks(cfg.nTicks);
-    let xAxisTop = d3.axisTop(x).ticks(cfg.nTicks);
+    let xAxisBottom = axisBottom(x).ticks(cfg.nTicks);
+    let xAxisTop = axisTop(x).ticks(cfg.nTicks);
 
     // add top row of plot
     let plotTop = topRowSvg
@@ -322,8 +327,8 @@ const ForestPlot = ({
       .selectAll('.tick')
       .select('line')
       .style('stroke', cfg.treeColor)
-      .style('stroke-opacity', (d) => (d === 0 ? '100%' : '50%'))
-      .style('stroke-dasharray', (d) => (d === 0 ? 0 : 2));
+      .style('stroke-opacity', d => (d === 0 ? '100%' : '50%'))
+      .style('stroke-dasharray', d => (d === 0 ? 0 : 2));
 
     // axis tick text color
     topRowSvg
@@ -385,8 +390,8 @@ const ForestPlot = ({
       .selectAll('.tick')
       .select('line')
       .style('stroke', cfg.treeColor)
-      .style('stroke-opacity', (d) => (d === 0 ? '100%' : '50%'))
-      .style('stroke-dasharray', (d) => (d === 0 ? 0 : 2));
+      .style('stroke-opacity', d => (d === 0 ? '100%' : '50%'))
+      .style('stroke-dasharray', d => (d === 0 ? 0 : 2));
 
     // axis tick text color
     bottomRowSvg
@@ -408,21 +413,21 @@ const ForestPlot = ({
     // create confidence intervals
     trees
       .append('line')
-      .attr('x1', (d) => x(d.beta - 1.959964 * d.se))
-      .attr('x2', (d) => x(d.beta + 1.959964 * d.se))
+      .attr('x1', d => x(d.beta - 1.959964 * d.se))
+      .attr('x2', d => x(d.beta + 1.959964 * d.se))
       .attr('y1', cfg.rowHeight / 2)
       .attr('y2', cfg.rowHeight / 2)
       .attr('stroke-width', 1)
-      .attr('stroke', (d) => colorScale(d.traitCategory));
+      .attr('stroke', d => colorScale(d.traitCategory));
 
     // create boxes
     trees
       .append('rect')
-      .attr('x', (d) => x(d.beta) - boxSizeScale(d.nTotal) / 2)
-      .attr('y', (d) => cfg.rowHeight / 2 - boxSizeScale(d.nTotal) / 2)
-      .attr('fill', (d) => colorScale(d.traitCategory))
-      .attr('width', (d) => boxSizeScale(d.nTotal))
-      .attr('height', (d) => boxSizeScale(d.nTotal))
+      .attr('x', d => x(d.beta) - boxSizeScale(d.nTotal) / 2)
+      .attr('y', d => cfg.rowHeight / 2 - boxSizeScale(d.nTotal) / 2)
+      .attr('fill', d => colorScale(d.traitCategory))
+      .attr('width', d => boxSizeScale(d.nTotal))
+      .attr('height', d => boxSizeScale(d.nTotal))
       .on('mouseover', (d, i, n) => {
         setAnchor(n[i]);
         setOpen(true);
@@ -438,7 +443,7 @@ const ForestPlot = ({
     <Autocomplete
       options={traitFilterOptions(data, selectedCategories)}
       value={traitFilterOptions(data, selectedCategories).filter(
-        (d) => d.selected
+        d => d.selected
       )}
       handleSelectOption={selectionHandler}
       placeholder="Add a trait category to compare..."

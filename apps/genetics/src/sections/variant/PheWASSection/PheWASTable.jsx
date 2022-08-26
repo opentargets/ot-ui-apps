@@ -5,11 +5,11 @@ import {
   commaSeparate,
   significantFigures,
   Autocomplete,
-} from '../ot-ui-components';
+} from '../../../ot-ui-components';
 
-import PmidOrBiobankLink from './PmidOrBiobankLink';
-import { pvalThreshold } from '../constants';
-import { generateComparator } from '../utils';
+import PmidOrBiobankLink from '../../../components/PmidOrBiobankLink';
+import { pvalThreshold } from '../../../constants';
+import { generateComparator } from '../../../utils';
 
 export const tableColumns = ({
   traitFilterValue,
@@ -101,8 +101,8 @@ export const tableColumns = ({
     id: 'hasSumstats',
     label: 'Has sumstats',
     comparator: generateComparator(d => d.hasSumstats),
-    renderCell: rowData => rowData.hasSumstats ? <>yes</> : <>no</>,
-    export: rowData => rowData.hasSumstats ? true : false,
+    renderCell: rowData => (rowData.hasSumstats ? <>yes</> : <>no</>),
+    export: rowData => (rowData.hasSumstats ? true : false),
   },
 ];
 
