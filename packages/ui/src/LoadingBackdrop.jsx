@@ -6,7 +6,7 @@ const styles = theme => ({
     background: theme.palette.grey['50'],
     zIndex: 999,
     width: 'auto',
-    minHeight: '100vh',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     display: 'flex',
