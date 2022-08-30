@@ -5,20 +5,21 @@ import 'graphiql/graphiql.min.css';
 import APIHeader from '../../sections/api-page/Header/APIHeader';
 import SampleQueries from '../../sections/api-page/SampleQueries';
 
+import { LoadingBackdrop } from 'ui';
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
-import('graphiql').then(module => {
+  import('graphiql').then(module => {
     module.default.Logo = () => null;
     module.default.Toolbar = () => null;
     return module;
-})
+  })
 );
 
 const useStyles = makeStyles({
-    container: {
-        minHeight: '600px',
-    }
+  container: {
+    minHeight: '600px',
+  },
 });
 
 import config from '../../config';
@@ -44,10 +45,10 @@ function APIPage() {
       <APIHeader />
       <Grid className={classes.container} container spacing={3}>
         <Grid item md={3} xl={2}>
-          <SampleQueries setQuery={setQuery}/>
+          <SampleQueries setQuery={setQuery} />
         </Grid>
         <Grid item md={9} xl={10}>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<LoadingBackdrop />}>
             <GraphiQL fetcher={fetcher} query={query} />
           </Suspense>
         </Grid>
