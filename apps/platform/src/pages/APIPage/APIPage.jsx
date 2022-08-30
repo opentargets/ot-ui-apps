@@ -1,4 +1,5 @@
 import { Suspense, useState, lazy } from 'react';
+import { LoadingBackdrop } from 'ui';
 import {
   Accordion,
   AccordionSummary,
@@ -207,7 +208,7 @@ function APIPage() {
           </Accordion>
         </Grid>
         <Grid item md={9} xl={10}>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<LoadingBackdrop/>}>
             <GraphiQL fetcher={fetcher} query={query} />
           </Suspense>
         </Grid>
