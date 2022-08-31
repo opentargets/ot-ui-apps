@@ -5,9 +5,10 @@ import { ExternalLink } from '../../components/ExternalLink';
 import LocusLink from '../../components/LocusLink';
 
 const VariantHeader = ({ loading, data }) => {
-  const id = data?.variantInfo?.id;
-  const idLink = id ? id.replaceAll('_', '-') : null;
-  const rsId = data?.variantInfo.rsId;
+  const variant = data?.variantInfo || null;
+  const id = variant?.id;
+  const idLink = `${variant?.chromosomeB37}-${variant?.positionB37}-${variant?.refAllele}-${variant?.altAllele}`;
+  const rsId = variant?.rsId;
   const chromosome = !loading ? id.split('_')[0] : null;
   const positionString = !loading ? id.split('_')[1] : '';
   const position = parseInt(positionString, 10);
@@ -26,7 +27,7 @@ const VariantHeader = ({ loading, data }) => {
           />
           <ExternalLink
             title="gnomAD"
-            url={`https://gnomad.broadinstitute.org/variant/${idLink}`}
+            url={`https://gnomad.broadinstitute.org/variant/${idLink}?dataset=gnomad_r2_1`}
             id={idLink}
           />
         </>
