@@ -189,6 +189,10 @@ const getColumns = classes => [
       );
     },
   },
+  {
+    id: 'releaseVersion',
+    label: 'Release version',
+  },
 ];
 
 const exportColumns = [
