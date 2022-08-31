@@ -26,7 +26,7 @@ const VariantHeader = ({ loading, data }) => {
             id={rsId}
           />
           <ExternalLink
-            title="gnomAD"
+            title="gnomAD 2.1"
             url={`https://gnomad.broadinstitute.org/variant/${idLink}?dataset=gnomad_r2_1`}
             id={idLink}
           />
