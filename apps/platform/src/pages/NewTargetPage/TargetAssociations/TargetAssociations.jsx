@@ -1,5 +1,5 @@
-import React, { Fragment, useState, useMemo, useEffect } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import React, { Fragment, useState, useMemo } from 'react';
+import { gql } from '@apollo/client';
 import { scaleQuantize } from 'd3';
 
 import {
@@ -9,7 +9,6 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 
-import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
 import dataSources from './dataSourcesAssoc';
 import './style.css';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -19,15 +18,15 @@ import {
   FormGroup,
   FormControlLabel,
   Grid,
-  Collapse,
 } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 
 import PlatformApiProvider from '../../../contexts/PlatformApiProvider';
 
 import sections from '../../EvidencePage/sections';
+import useTargetAssociations from './useAssociationsData';
 
-import { Reorder, AnimatePresence, motion } from 'framer-motion';
+import { Reorder, motion } from 'framer-motion';
 
 const EVIDENCE_PROFILE_QUERY = gql`
   query EvidenceProfileQuery($ensgId: String!) {
@@ -94,41 +93,11 @@ const COLORS = [
 ];
 const linearScale = scaleQuantize().domain([0, 1]).range(COLORS);
 
-// Select and parsed data from API response
-const getAssociatedDiseasesData = data => {
-  if (!data) return [];
-  return data.target.associatedDiseases.rows.map(d => {
-    const sources = d.datasourceScores.reduce(
-      (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
-      {}
-    );
-    return { ...d, ...sources };
-  });
-};
-
-/* TARGET ASSOCIATION PAGE */
+/* TARGET ASSOCIATION TABLE */
 function TargetAssociations({ ensgId }) {
   const [{ pageIndex, pageSize }, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 50,
-  });
-  const [_data, setData] = useState([]);
-  const [_loading, setLoading] = useState([]);
-
-  const {
-    data: associationData,
-    loading,
-    error,
-  } = useQuery(TARGET_ASSOCIATIONS_QUERY, {
-    variables: {
-      ensemblId: ensgId,
-      index: pageIndex,
-      size: pageSize,
-      filter: '',
-      sortBy: 'score',
-      aggregationFilters: [],
-      enableIndirect: false,
-    },
+    pageSize: 40,
   });
 
   const pagination = useMemo(
@@ -143,10 +112,22 @@ function TargetAssociations({ ensgId }) {
   const [expanded, setExpanded] = useState([]);
   const [tableExpanded, setTableExpanded] = useState({});
 
+  // Data controls
+  const [enableIndirect, setEnableIndirect] = useState(false);
+
   // Viz Controls
   const [gScoreRect, setGScoreRect] = useState(true);
   const [scoreRect, setScoreRect] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const { data, initialLoading, loading } = useTargetAssociations({
+    ensemblId: ensgId,
+    index: pageIndex,
+    size: pageSize,
+    filter: '',
+    sortBy: 'score',
+    enableIndirect,
+  });
 
   const columns = [
     // {
@@ -205,25 +186,31 @@ function TargetAssociations({ ensgId }) {
     ...getDatasources(),
   ];
 
-  const parsedData = getAssociatedDiseasesData(associationData);
+  const handlePaginationChange = pagination => {
+    setTableExpanded({});
+    setExpanded([]);
+    setPagination(pagination);
+  };
 
   const table = useReactTable({
-    data: parsedData,
+    data,
     columns,
     state: {
       expanded: tableExpanded,
       pagination,
     },
-    pageCount: associationData?.target?.associatedDiseases?.count ?? -1,
-    onPaginationChange: setPagination,
+    pageCount: data?.target?.associatedDiseases?.count ?? -1,
+    onPaginationChange: handlePaginationChange,
     onExpandedChange: setTableExpanded,
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
+    getRowId: row => row.disease.id,
     manualPagination: true,
   });
 
-  if (error) return <>Error in request</>;
+  if (initialLoading) return <>Initial loading</>;
+  // if (error) return <>Error in request</>;
 
   const getCellId = cell => {
     const sourceId = cell.column.id;
@@ -290,6 +277,17 @@ function TargetAssociations({ ensgId }) {
         <Button variant="contained" onClick={() => setOpen(true)}>
           Viz Controlls
         </Button>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={enableIndirect}
+                onChange={() => setEnableIndirect(!enableIndirect)}
+              />
+            }
+            label="Enable Indirect"
+          />
+        </FormGroup>
         <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
           <ControllsContainer>
             <FormGroup>
