@@ -355,6 +355,7 @@ function TargetAssociations({ ensgId }) {
                           key={row.id}
                           value={row}
                           className={getRowClassName(row)}
+                          transition={{ duration: 1.3 }}
                         >
                           {row.getVisibleCells().map(cell => {
                             return (
