@@ -5,8 +5,9 @@ import { ExternalLink } from '../../components/ExternalLink';
 import LocusLink from '../../components/LocusLink';
 
 const VariantHeader = ({ loading, data }) => {
-  const id = data?.variantInfo.id;
-  const rsId = data?.variantInfo.rsId;
+  const { id, chromosomeB37, positionB37, refAllele, altAllele, rsId } =
+    data?.variantInfo || {};
+  const gnomadId = `${chromosomeB37}-${positionB37}-${refAllele}-${altAllele}`;
   const chromosome = !loading ? id.split('_')[0] : null;
   const positionString = !loading ? id.split('_')[1] : '';
   const position = parseInt(positionString, 10);
@@ -20,13 +21,13 @@ const VariantHeader = ({ loading, data }) => {
         <>
           <ExternalLink
             title="Ensembl"
-            url={`https://identifiers.org/ensembl:${id}`}
-            id={id}
+            url={`https://identifiers.org/ensembl:${rsId}`}
+            id={rsId}
           />
           <ExternalLink
-            title="gnomAD"
-            url={`https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${rsId}`}
-            id={rsId}
+            title="gnomAD 2.1"
+            url={`https://gnomad.broadinstitute.org/variant/${gnomadId}?dataset=gnomad_r2_1`}
+            id={gnomadId}
           />
         </>
       }
