@@ -12,21 +12,14 @@ import {
 import dataSources from './dataSourcesAssoc';
 import './style.css';
 import Checkbox from '@material-ui/core/Checkbox';
-import {
-  Button,
-  Drawer,
-  FormGroup,
-  FormControlLabel,
-  Grid,
-} from '@material-ui/core';
+import { Button, Drawer, FormGroup, FormControlLabel } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 
 import PlatformApiProvider from '../../../contexts/PlatformApiProvider';
-
-import sections from '../../EvidencePage/sections';
 import useTargetAssociations from './useAssociationsData';
 
 import { Reorder, motion } from 'framer-motion';
+import SecctionRender from './SectionRender';
 
 const EVIDENCE_PROFILE_QUERY = gql`
   query EvidenceProfileQuery($ensgId: String!) {
@@ -47,10 +40,6 @@ const EVIDENCE_PROFILE_QUERY = gql`
 const ControllsBtnContainer = styled('div')({
   margin: '40px 60px',
   textAlign: 'right',
-});
-
-const SectionWrapper = styled('div')({
-  marginBottom: '40px',
 });
 
 const ControllsContainer = styled('div')({
@@ -97,7 +86,7 @@ const linearScale = scaleQuantize().domain([0, 1]).range(COLORS);
 function TargetAssociations({ ensgId }) {
   const [{ pageIndex, pageSize }, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 40,
+    pageSize: 50,
   });
 
   const pagination = useMemo(
@@ -320,7 +309,11 @@ function TargetAssociations({ ensgId }) {
         variables={{ ensgId }}
       >
         <div className="TAssociations">
-          <Reorder.Group values={table.getRowModel().rows} onReorder={() => {}}>
+          <Reorder.Group
+            as="div"
+            values={table.getRowModel().rows}
+            onReorder={() => {}}
+          >
             <TableElement>
               {table.getHeaderGroups().map(headerGroup => (
                 <div className="Theader" key={headerGroup.id}>
@@ -355,7 +348,8 @@ function TargetAssociations({ ensgId }) {
                           key={row.id}
                           value={row}
                           className={getRowClassName(row)}
-                          transition={{ duration: 1.3 }}
+                          transition={{ duration: 0.5 }}
+                          drag={false}
                         >
                           {row.getVisibleCells().map(cell => {
                             return (
@@ -377,8 +371,9 @@ function TargetAssociations({ ensgId }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5 }}
                           >
-                            <SecctionRenderer
+                            <SecctionRender
                               ensgId={ensgId}
                               efoId={row.original.disease.id}
                               activeSection={expanded}
@@ -398,7 +393,7 @@ function TargetAssociations({ ensgId }) {
               table.setPageSize(Number(e.target.value));
             }}
           >
-            {[10, 50, 200, 500].map(pageSize => (
+            {[10, 25, 50, 200, 500].map(pageSize => (
               <option key={pageSize} value={pageSize}>
                 Show {pageSize}
               </option>
@@ -444,27 +439,6 @@ function ColoredCell({ scoreValue, onClick, rounded, globalScore, cell }) {
 
   return (
     <div className={className} onClick={onClickHabdler} style={style}></div>
-  );
-}
-
-// Wrapper of the sections
-function SecctionRenderer({ ensgId, efoId, label, activeSection }) {
-  const toSearch = dataSources.filter(el => el.id === activeSection[0])[0]
-    .sectionId;
-  const { Body, definition } = sections.filter(
-    el => el.definition.id === toSearch
-  )[0];
-
-  return (
-    <SectionWrapper>
-      <Grid id="summary-section" container spacing={1}>
-        <Body
-          definition={definition}
-          id={{ ensgId, efoId }}
-          label={{ symbol: definition.shortName, name: definition.name }}
-        />
-      </Grid>
-    </SectionWrapper>
   );
 }
 
