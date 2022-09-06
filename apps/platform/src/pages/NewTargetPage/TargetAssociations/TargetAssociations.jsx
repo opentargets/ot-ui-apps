@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useMemo } from 'react';
 import { gql } from '@apollo/client';
-import { scaleQuantize } from 'd3';
 
 import {
   useReactTable,
@@ -8,6 +7,7 @@ import {
   getExpandedRowModel,
   flexRender,
 } from '@tanstack/react-table';
+import { Reorder, motion } from 'framer-motion';
 
 import dataSources from './dataSourcesAssoc';
 import './style.css';
@@ -18,8 +18,8 @@ import { styled } from '@material-ui/styles';
 import PlatformApiProvider from '../../../contexts/PlatformApiProvider';
 import useTargetAssociations from './useAssociationsData';
 
-import { Reorder, motion } from 'framer-motion';
 import SecctionRender from './SectionRender';
+import ColoredCell from './ColoredCell';
 
 const EVIDENCE_PROFILE_QUERY = gql`
   query EvidenceProfileQuery($ensgId: String!) {
@@ -67,21 +67,6 @@ const Name = styled('span')({
   textOverflow: 'ellipsis',
 });
 
-/* UTILS */
-/* Color scale */
-const COLORS = [
-  // '#f7fbff',
-  '#deebf7',
-  '#c6dbef',
-  '#9ecae1',
-  '#6baed6',
-  '#4292c6',
-  '#2171b5',
-  '#08519c',
-  // '#08306b',
-];
-const linearScale = scaleQuantize().domain([0, 1]).range(COLORS);
-
 /* TARGET ASSOCIATION TABLE */
 function TargetAssociations({ ensgId }) {
   const [{ pageIndex, pageSize }, setPagination] = useState({
@@ -119,27 +104,6 @@ function TargetAssociations({ ensgId }) {
   });
 
   const columns = [
-    // {
-    //   id: 'expander',
-    //   header: () => 'Expander',
-    //   cell: row => {
-    //     return row.row.getCanExpand() ? (
-    //       <button
-    //         {...{
-    //           onClick: () => {
-    //             // console.log(row);
-    //             row.row.getToggleExpandedHandler();
-    //           },
-    //           style: { cursor: 'pointer' },
-    //         }}
-    //       >
-    //         {row.row.getIsExpanded() ? '👇' : '👉'}
-    //       </button>
-    //     ) : (
-    //       '🔵'
-    //     );
-    //   },
-    // },
     {
       accessorFn: row => row.disease.name,
       id: 'name',
@@ -148,14 +112,6 @@ function TargetAssociations({ ensgId }) {
           <Name>{row.getValue()}</Name>
         </NameContainer>
       ),
-      // <NameContainer>
-      //   <span
-      //     onClick={() => {
-      //       console.log(row);
-      //     }}
-      //   >
-      //   </span>
-      // </NameContainer>
       header: () => <span>Disease</span>,
       footer: props => props.column.id,
     },
@@ -416,29 +372,6 @@ function TargetAssociations({ ensgId }) {
         </div>
       </PlatformApiProvider>
     </>
-  );
-}
-
-function ColoredCell({ scoreValue, onClick, rounded, globalScore, cell }) {
-  const onClickHabdler = onClick ? () => onClick(cell) : () => {};
-  const backgroundColor = scoreValue ? linearScale(scoreValue) : '#fafafa';
-  const borderColor = scoreValue ? linearScale(scoreValue) : '#e0dede';
-  const className = globalScore
-    ? 'data-global-score'
-    : scoreValue
-    ? 'data-score'
-    : 'data-empty';
-
-  const style = {
-    height: '25px',
-    width: rounded ? '26px' : '30px',
-    borderRadius: rounded ? '13px' : 0,
-    backgroundColor,
-    border: `1.5px solid ${borderColor}`,
-  };
-
-  return (
-    <div className={className} onClick={onClickHabdler} style={style}></div>
   );
 }
 
