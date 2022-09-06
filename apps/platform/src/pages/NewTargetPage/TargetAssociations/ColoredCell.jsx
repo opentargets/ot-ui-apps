@@ -25,6 +25,7 @@ function ColoredCell({ scoreValue, onClick, rounded, globalScore, cell }) {
     : scoreValue
     ? 'data-score'
     : 'data-empty';
+  const scoreText = scoreValue ? `Score: ${scoreValue.toFixed(2)}` : 'No data';
 
   const style = {
     height: '25px',
@@ -35,10 +36,7 @@ function ColoredCell({ scoreValue, onClick, rounded, globalScore, cell }) {
   };
 
   return (
-    <Tooltip
-      title={scoreValue ? `Score: ${scoreValue.toFixed(2)}` : 'No data'}
-      arrow
-    >
+    <Tooltip title={scoreText} arrow>
       <div className={className} onClick={onClickHabdler} style={style}></div>
     </Tooltip>
   );
