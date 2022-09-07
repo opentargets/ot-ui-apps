@@ -20,6 +20,7 @@ import useTargetAssociations from './useAssociationsData';
 
 import SecctionRender from './SectionRender';
 import ColoredCell from './ColoredCell';
+import WeightsControlls from './WeightsControlls';
 
 const EVIDENCE_PROFILE_QUERY = gql`
   query EvidenceProfileQuery($ensgId: String!) {
@@ -88,6 +89,8 @@ function TargetAssociations({ ensgId }) {
 
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(false);
+  // Data controls UI
+  const [activeWeightsControlls, setActiveWeightsControlls] = useState(true);
 
   // Viz Controls
   const [gScoreRect, setGScoreRect] = useState(true);
@@ -233,6 +236,19 @@ function TargetAssociations({ ensgId }) {
             label="Enable Indirect"
           />
         </FormGroup>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={activeWeightsControlls}
+                onChange={() =>
+                  setActiveWeightsControlls(!activeWeightsControlls)
+                }
+              />
+            }
+            label="Show weights controlls"
+          />
+        </FormGroup>
         <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
           <ControllsContainer>
             <FormGroup>
@@ -271,6 +287,7 @@ function TargetAssociations({ ensgId }) {
             onReorder={() => {}}
           >
             <TableElement>
+              {/* HEADER */}
               {table.getHeaderGroups().map(headerGroup => (
                 <div className="Theader" key={headerGroup.id}>
                   {headerGroup.headers.map(header => {
@@ -278,7 +295,6 @@ function TargetAssociations({ ensgId }) {
                       <div
                         className={getHeaderClassName(header)}
                         key={header.id}
-                        colSpan={header.colSpan}
                       >
                         {header.isPlaceholder ? null : (
                           <div>
@@ -294,6 +310,13 @@ function TargetAssociations({ ensgId }) {
                 </div>
               ))}
 
+              {/* Weights controlls */}
+              <WeightsControlls
+                active={activeWeightsControlls}
+                cols={table.getHeaderGroups()}
+              />
+
+              {/* CONTENT */}
               <div className="TBody">
                 <div>
                   {table.getRowModel().rows.map(row => {
@@ -304,7 +327,6 @@ function TargetAssociations({ ensgId }) {
                           key={row.id}
                           value={row}
                           className={getRowClassName(row)}
-                          transition={{ duration: 0.5 }}
                           drag={false}
                         >
                           {row.getVisibleCells().map(cell => {
@@ -327,7 +349,6 @@ function TargetAssociations({ ensgId }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            transition={{ duration: 0.5 }}
                           >
                             <SecctionRender
                               ensgId={ensgId}

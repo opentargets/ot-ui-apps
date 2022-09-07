@@ -8,7 +8,7 @@
   z-index: 100;
   justify-content: space-evenly;
   font-weight: 800;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   border-bottom: 1px solid #ececec;
 }
 
@@ -45,6 +45,7 @@
 .TAssociations .TBody {
   display: flex;
   flex-direction: column;
+  margin-top: 10px;
   /* overflow: hidden; */
 }
 
@@ -84,7 +85,7 @@
 }
 
 .TAssociations .data-row .data-cell div {
-  transition: all ease 3000ms;
+  /* transition: all ease 3000ms; */
 }
 
 .TAssociations .data-row .data-cell .data-score {
@@ -110,4 +111,42 @@
   /* border: 2px solid #454545 !important; */
   -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
   box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+}
+
+/* Weights controlls */
+.TAssociations .weights-controlls {
+  background-color: #f6f6f6;
+  position: relative;
+  box-sizing: content-box;
+  padding: 15px 0;
+}
+
+.TAssociations .weights-controlls .controlls-container {
+  display: flex;
+  flex-direction: row;
+  height: 100px;
+  justify-content: space-evenly;
+}
+
+.TAssociations .weights-controlls .name-empty-controll {
+  width: 230px;
+  content: ' ';
+}
+
+.TAssociations .weights-controlls .score-empty-controll {
+  height: 25px;
+  width: 30px;
+  content: ' ';
+  margin-right: 20px;
+}
+
+.TAssociations .weights-controlls .controll-container {
+  width: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.TAssociations .weights-controlls .controll-container span {
+  font-size: 11px;
 }

@@ -51,6 +51,9 @@ function useTargetAssociations({
         },
       })
       .then(({ data: resData, error }) => {
+        if (error) {
+          return;
+        }
         if (isCurrent) {
           let parsedData = getAssociatedDiseasesData(resData);
           setData(parsedData);
