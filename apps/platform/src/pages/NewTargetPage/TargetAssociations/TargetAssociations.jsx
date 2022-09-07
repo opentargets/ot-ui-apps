@@ -92,7 +92,7 @@ function TargetAssociations({ ensgId }) {
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(false);
   // Data controls UI
-  const [activeWeightsControlls, setActiveWeightsControlls] = useState(true);
+  const [activeWeightsControlls, setActiveWeightsControlls] = useState(false);
   const [activeAdvanceControlls, setActiveAdvanceControlls] = useState(false);
 
   // Viz Controls
