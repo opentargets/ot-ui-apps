@@ -11,8 +11,6 @@ import { Reorder, motion } from 'framer-motion';
 
 import dataSources from './dataSourcesAssoc';
 import './style.css';
-import Checkbox from '@material-ui/core/Checkbox';
-import { Button, Drawer, FormGroup, FormControlLabel } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 
 import PlatformApiProvider from '../../../contexts/PlatformApiProvider';
@@ -22,6 +20,8 @@ import SecctionRender from './SectionRender';
 import ColoredCell from './ColoredCell';
 import WeightsControlls from './WeightsControlls';
 import DataMenu from './DataMenu';
+
+import LoadingBackdrop from '../../../components/LoadingBackdrop';
 
 const EVIDENCE_PROFILE_QUERY = gql`
   query EvidenceProfileQuery($ensgId: String!) {
@@ -41,13 +41,8 @@ const EVIDENCE_PROFILE_QUERY = gql`
 /* Styled component */
 const ControllsBtnContainer = styled('div')({
   marginTop: '30px',
-  marginBottom: '15px',
+  marginBottom: '20px',
   textAlign: 'right',
-});
-
-const ControllsContainer = styled('div')({
-  margin: '40px',
-  minWidth: '400px',
 });
 
 const TableElement = styled('div')({
@@ -93,12 +88,11 @@ function TargetAssociations({ ensgId }) {
   const [enableIndirect, setEnableIndirect] = useState(false);
   // Data controls UI
   const [activeWeightsControlls, setActiveWeightsControlls] = useState(false);
-  const [activeAdvanceControlls, setActiveAdvanceControlls] = useState(false);
 
   // Viz Controls
   const [gScoreRect, setGScoreRect] = useState(true);
   const [scoreRect, setScoreRect] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [vizControllsopen, setVizControllsOpen] = useState(false);
 
   const { data, initialLoading, loading } = useTargetAssociations({
     ensemblId: ensgId,
@@ -160,7 +154,7 @@ function TargetAssociations({ ensgId }) {
     manualPagination: true,
   });
 
-  if (initialLoading) return <>Initial loading</>;
+  if (initialLoading) return <LoadingBackdrop />;
 
   const getCellId = cell => {
     const sourceId = cell.column.id;
@@ -225,46 +219,17 @@ function TargetAssociations({ ensgId }) {
     <>
       <ControllsBtnContainer>
         <DataMenu
-          active={activeAdvanceControlls}
-          setActive={setActiveAdvanceControlls}
           enableIndirect={enableIndirect}
           setEnableIndirect={setEnableIndirect}
           activeWeightsControlls={activeWeightsControlls}
           setActiveWeightsControlls={setActiveWeightsControlls}
+          vizControllsopen={vizControllsopen}
+          setVizControllsOpen={setVizControllsOpen}
+          gScoreRect={gScoreRect}
+          setGScoreRect={setGScoreRect}
+          scoreRect={scoreRect}
+          setScoreRect={setScoreRect}
         />
-        <br />
-        <Button
-          variant="contained"
-          onClick={() => setOpen(true)}
-          disableElevation
-        >
-          Viz Controlls
-        </Button>
-
-        <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
-          <ControllsContainer>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={gScoreRect}
-                    onChange={() => setGScoreRect(!gScoreRect)}
-                  />
-                }
-                label="Global score rect"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={scoreRect}
-                    onChange={() => setScoreRect(!scoreRect)}
-                  />
-                }
-                label="Score rect"
-              />
-            </FormGroup>
-          </ControllsContainer>
-        </Drawer>
       </ControllsBtnContainer>
       <PlatformApiProvider
         lsSectionsField="evidence"
@@ -305,6 +270,7 @@ function TargetAssociations({ ensgId }) {
               {/* Weights controlls */}
               <WeightsControlls
                 active={activeWeightsControlls}
+                setActive={setActiveWeightsControlls}
                 cols={table.getHeaderGroups()}
               />
 

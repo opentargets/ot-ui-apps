@@ -4,6 +4,7 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
+  Drawer,
 } from '@material-ui/core';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,11 +20,26 @@ const PopoverContent = styled('div')({
   padding: '15px',
 });
 
+const ControllsContainer = styled('div')({
+  margin: '40px',
+  minWidth: '400px',
+});
+
+const VizControllsContainer = styled('div')({
+  marginTop: '20px',
+});
+
 function DataMenu({
   enableIndirect,
   setEnableIndirect,
   activeWeightsControlls,
   setActiveWeightsControlls,
+  vizControllsopen,
+  setVizControllsOpen,
+  gScoreRect,
+  setGScoreRect,
+  scoreRect,
+  setScoreRect,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -47,13 +63,12 @@ function DataMenu({
         disableElevation
       >
         <FontAwesomeIcon icon={faGear} size="lg" />
-        <TextContent>Advance filter options</TextContent>
+        <TextContent>Advance options</TextContent>
       </Button>
       <Popover
         id={id}
         anchorEl={anchorEl}
         onClose={handleClose}
-        // onClose={() => setActive(false)}
         open={open}
         anchorOrigin={{
           vertical: 'bottom',
@@ -91,6 +106,46 @@ function DataMenu({
               label="Show weights controlls"
             />
           </FormGroup>
+          {/* Viz controlls */}
+          <VizControllsContainer>
+            <Button
+              variant="contained"
+              onClick={() => setVizControllsOpen(true)}
+              disableElevation
+            >
+              Open Viz controlls
+            </Button>
+          </VizControllsContainer>
+          <Drawer
+            anchor="right"
+            open={vizControllsopen}
+            onClose={() => setVizControllsOpen(false)}
+          >
+            <ControllsContainer>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={gScoreRect}
+                      onChange={() => setGScoreRect(!gScoreRect)}
+                      color="primary"
+                    />
+                  }
+                  label="Global score rect"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={scoreRect}
+                      onChange={() => setScoreRect(!scoreRect)}
+                      color="primary"
+                    />
+                  }
+                  label="Score rect"
+                />
+              </FormGroup>
+            </ControllsContainer>
+          </Drawer>
         </PopoverContent>
       </Popover>
     </div>
