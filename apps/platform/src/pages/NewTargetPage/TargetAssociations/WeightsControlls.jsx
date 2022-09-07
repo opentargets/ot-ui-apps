@@ -9,9 +9,9 @@ function WeightsControlls({ active, cols }) {
             headerGroup.headers.map(({ id }) => {
               // Exclude name and
               if (id === 'name')
-                return <div className="name-empty-controll"></div>;
+                return <div key={id} className="name-empty-controll"></div>;
               if (id === 'score')
-                return <div className="score-empty-controll"></div>;
+                return <div key={id} className="score-empty-controll"></div>;
               return (
                 <div className="controll-container" key={id}>
                   <Slider

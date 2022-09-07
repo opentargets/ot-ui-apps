@@ -21,6 +21,7 @@ import useTargetAssociations from './useAssociationsData';
 import SecctionRender from './SectionRender';
 import ColoredCell from './ColoredCell';
 import WeightsControlls from './WeightsControlls';
+import DataMenu from './DataMenu';
 
 const EVIDENCE_PROFILE_QUERY = gql`
   query EvidenceProfileQuery($ensgId: String!) {
@@ -39,7 +40,8 @@ const EVIDENCE_PROFILE_QUERY = gql`
 
 /* Styled component */
 const ControllsBtnContainer = styled('div')({
-  margin: '40px 60px',
+  marginTop: '30px',
+  marginBottom: '15px',
   textAlign: 'right',
 });
 
@@ -91,6 +93,7 @@ function TargetAssociations({ ensgId }) {
   const [enableIndirect, setEnableIndirect] = useState(false);
   // Data controls UI
   const [activeWeightsControlls, setActiveWeightsControlls] = useState(true);
+  const [activeAdvanceControlls, setActiveAdvanceControlls] = useState(false);
 
   // Viz Controls
   const [gScoreRect, setGScoreRect] = useState(true);
@@ -158,7 +161,6 @@ function TargetAssociations({ ensgId }) {
   });
 
   if (initialLoading) return <>Initial loading</>;
-  // if (error) return <>Error in request</>;
 
   const getCellId = cell => {
     const sourceId = cell.column.id;
@@ -222,33 +224,23 @@ function TargetAssociations({ ensgId }) {
   return (
     <>
       <ControllsBtnContainer>
-        <Button variant="contained" onClick={() => setOpen(true)}>
+        <DataMenu
+          active={activeAdvanceControlls}
+          setActive={setActiveAdvanceControlls}
+          enableIndirect={enableIndirect}
+          setEnableIndirect={setEnableIndirect}
+          activeWeightsControlls={activeWeightsControlls}
+          setActiveWeightsControlls={setActiveWeightsControlls}
+        />
+        <br />
+        <Button
+          variant="contained"
+          onClick={() => setOpen(true)}
+          disableElevation
+        >
           Viz Controlls
         </Button>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={enableIndirect}
-                onChange={() => setEnableIndirect(!enableIndirect)}
-              />
-            }
-            label="Enable Indirect"
-          />
-        </FormGroup>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={activeWeightsControlls}
-                onChange={() =>
-                  setActiveWeightsControlls(!activeWeightsControlls)
-                }
-              />
-            }
-            label="Show weights controlls"
-          />
-        </FormGroup>
+
         <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
           <ControllsContainer>
             <FormGroup>
