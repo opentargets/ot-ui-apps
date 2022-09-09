@@ -127,7 +127,7 @@ function Body(props) {
   return (
     <SectionItem
       definition={definition}
-      chipText={dataTypesMap.affected_pathway}
+      chipText={definition.dataType}
       request={request}
       renderDescription={() => (
         <Description symbol={label.symbol} diseaseName={label.name} />
