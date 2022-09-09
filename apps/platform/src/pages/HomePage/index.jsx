@@ -1,10 +1,10 @@
 import PublicHome from './HomePage';
 import PPHome from './PPHomePage';
 
-import config from '../../config';
+import usePermissions from '../../hooks/usePermissions';
 
 function GetHomePage() {
-  if (config.profile.isPartnerPreview) return <PPHome />;
+  if (usePermissions()) return <PPHome />;
   return <PublicHome />;
 }
 
