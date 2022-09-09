@@ -105,6 +105,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function getColumns(efoId, classes) {
+  const { isPartnerPreview } = usePermissions();
   const columns = [
     {
       id: 'symbol',
@@ -149,7 +150,7 @@ function getColumns(efoId, classes) {
       dt =>
         (config.profile.hideDataTypes.length === 0 ||
           !config.profile.hideDataTypes.includes(dt.id)) &&
-        (!dt.isPrivate || (dt.isPrivate && usePermissions()))
+        (!dt.isPrivate || (dt.isPrivate && isPartnerPreview))
     )
     .forEach(dt => {
       columns.push({

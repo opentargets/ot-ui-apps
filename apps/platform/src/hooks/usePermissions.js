@@ -1,7 +1,8 @@
 import config from '../config';
 
 function usePermissions() {
-  return config.profile.isPartnerPreview;
+  const isPartnerPreview = config.profile.isPartnerPreview;
+  return { isPartnerPreview };
 }
 
 export default usePermissions;

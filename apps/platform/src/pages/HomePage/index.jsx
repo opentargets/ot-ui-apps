@@ -4,7 +4,8 @@ import PPHome from './PPHomePage';
 import usePermissions from '../../hooks/usePermissions';
 
 function GetHomePage() {
-  if (usePermissions()) return <PPHome />;
+  const { isPartnerPreview } = usePermissions();
+  if (isPartnerPreview) return <PPHome />;
   return <PublicHome />;
 }
 
