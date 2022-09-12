@@ -41,14 +41,14 @@ export function buildFilteredCredibleQtlColocalisation(
   .reverse();
 
   return filteredQtlColoc.map(
-    ({ qtlStudyName, phenotypeId, tissue, indexVariant, ...rest }) => {
-      const key = `qtlCredibleSet__${qtlStudyName}__${phenotypeId}__${
+    ({ qtlStudyName, gene, tissue, indexVariant, ...rest }) => {
+      const key = `qtlCredibleSet__${qtlStudyName}__${gene.id}__${
         tissue.id
       }__${indexVariant.id}`;
       return {
         key,
         qtlStudyName,
-        phenotypeId,
+        gene,
         tissue,
         indexVariant,
         credibleSet: credibleSetSingleQueryResult[key]
@@ -175,22 +175,22 @@ gwasCredibleSet__${study.studyId}__${
 
 const qtlCredibleSetQueryAliasedFragment = ({
   qtlStudyName,
-  phenotypeId,
+  gene,
   tissue,
   indexVariant,
 }) => {
   const tissueId = tissue.id.replaceAll('-', '_');
   const parseQTLStudyName = qtlStudyName.replaceAll('-', '_');
-  const parsePhenotypeId = phenotypeId.replaceAll('-', '_');
+  const geneId = gene.id;
   const sanitizedTissueId = sanitize(tissueId);
-  const sanitizedPhenotypeId = sanitize(parsePhenotypeId);
+  const sanitizedGeneId = sanitize(geneId);
   const sanitizedParseQTLStudyName = sanitize(parseQTLStudyName);
   return `
-  qtlCredibleSet__${sanitizedParseQTLStudyName}__${sanitizedPhenotypeId}__${sanitizedTissueId}__${
+  qtlCredibleSet__${sanitizedParseQTLStudyName}__${sanitizedGeneId}__${sanitizedTissueId}__${
     indexVariant.id
   }: qtlCredibleSet(studyId: "${parseQTLStudyName}", variantId: "${
     indexVariant.id
-  }", phenotypeId: "${parsePhenotypeId}", bioFeature: "${tissueId}") {
+  }", geneId: "${geneId}", bioFeature: "${tissueId}") {
     tagVariant {
       id
       rsId

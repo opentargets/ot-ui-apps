@@ -159,7 +159,7 @@ export default function CredibleSetsGwasQtlList({
                 query: QTL_REGIONAL_QUERY,
                 variables: {
                   studyId: d.qtlStudyName,
-                  phenotypeId: d.phenotypeId,
+                  geneId: d.gene.id,
                   bioFeature: d.tissue.id,
                   chromosome,
                   start,
