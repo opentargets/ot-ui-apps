@@ -1,5 +1,6 @@
+const id = 'expression_atlas';
 export const definition = {
-  id: 'expression',
+  id: id,
   name: 'Expression Atlas',
   shortName: 'EA',
   hasData: ({ expressionAtlasSummary }) => expressionAtlasSummary.count > 0,
