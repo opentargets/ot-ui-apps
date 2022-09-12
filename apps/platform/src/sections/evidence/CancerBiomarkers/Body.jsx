@@ -7,7 +7,7 @@ import SectionItem from '../../../components/Section/SectionItem';
 import Tooltip from '../../../components/Tooltip';
 import { DataTable, TableDrawer } from '../../../components/Table';
 import { defaultRowsPerPageOptions } from '../../../constants';
-import { dataTypesMap } from '../../../dataTypes';
+// import { dataTypesMap } from '../../../dataTypes';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { epmcUrl } from '../../../utils/urls';
 import Description from './Description';
