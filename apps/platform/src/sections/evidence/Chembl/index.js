@@ -1,5 +1,6 @@
+const id = 'chembl';
 export const definition = {
-  id: 'chembl',
+  id: id,
   name: 'ChEMBL',
   shortName: 'CE',
   hasData: data => data.chemblSummary.count > 0,
