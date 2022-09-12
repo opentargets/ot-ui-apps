@@ -1,5 +1,6 @@
+const id = 'eva';
 export const definition = {
-  id: 'eva',
+  id: id,
   name: 'ClinVar',
   shortName: 'CV',
   hasData: ({ evaSummary }) => evaSummary.count > 0,
