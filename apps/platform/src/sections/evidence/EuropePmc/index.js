@@ -1,5 +1,6 @@
+const id = 'europepmc';
 export const definition = {
-  id: 'europePmc',
+  id: id,
   name: 'Europe PMC',
   shortName: 'EP',
   hasData: data => data.europePmc.count > 0,
