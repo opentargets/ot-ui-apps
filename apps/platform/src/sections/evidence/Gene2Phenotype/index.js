@@ -1,5 +1,6 @@
+const id = 'gene2phenotype';
 export const definition = {
-  id: 'gene2Phenotype',
+  id: id,
   name: 'Gene2Phenotype',
   shortName: 'GP',
   hasData: data => data.gene2Phenotype.count > 0,
