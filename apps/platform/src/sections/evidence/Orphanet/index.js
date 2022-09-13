@@ -1,5 +1,6 @@
+const id = 'orphanet';
 export const definition = {
-  id: 'orphanet',
+  id: id,
   name: 'Orphanet',
   shortName: 'ON',
   hasData: data => data.orphanetSummary.count > 0,
