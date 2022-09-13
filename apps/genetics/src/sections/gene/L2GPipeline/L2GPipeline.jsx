@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Skeleton } from '@material-ui/lab';
 import { Helmet } from 'react-helmet';
-import _ from 'lodash';
+import { sortBy, uniq } from 'lodash';
 
 import L2G_PIPELINE_QUERY from './L2GPipelineQuery.gql';
 
@@ -53,19 +53,17 @@ function L2GPipeline({
     );
   });
 
-  const traitFilterOptions = _.sortBy(
-    _.uniq(associatedStudiesFiltered.map(d => d.study.traitReported)).map(
-      d => ({
-        label: d,
-        value: d,
-        selected: traitFilterUrl ? traitFilterUrl.indexOf(d) >= 0 : false,
-      })
-    ),
+  const traitFilterOptions = sortBy(
+    uniq(associatedStudiesFiltered.map(d => d.study.traitReported)).map(d => ({
+      label: d,
+      value: d,
+      selected: traitFilterUrl ? traitFilterUrl.indexOf(d) >= 0 : false,
+    })),
     [d => !d.selected, 'value']
   );
   const traitFilterValue = traitFilterOptions.filter(d => d.selected);
-  const authorFilterOptions = _.sortBy(
-    _.uniq(associatedStudiesFiltered.map(d => d.study.pubAuthor)).map(d => ({
+  const authorFilterOptions = sortBy(
+    uniq(associatedStudiesFiltered.map(d => d.study.pubAuthor)).map(d => ({
       label: d,
       value: d,
       selected: authorFilterUrl ? authorFilterUrl.indexOf(d) >= 0 : false,
