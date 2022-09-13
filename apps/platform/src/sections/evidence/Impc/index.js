@@ -1,5 +1,6 @@
+const id = 'impc';
 export const definition = {
-  id: 'impc',
+  id: id,
   name: 'IMPC',
   shortName: 'IM',
   hasData: data => data.impc.count > 0,
