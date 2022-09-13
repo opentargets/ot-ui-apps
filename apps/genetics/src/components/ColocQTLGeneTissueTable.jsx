@@ -126,6 +126,12 @@ const ColocTable = ({ loading, error, fileStem, data }) => {
   const phenotypeIdColumn = {
     id: 'phenotypeId',
     label: 'Molecular trait',
+    comparator: (a, b) =>
+      d3.ascending(
+        getPhenotypeId(a.phenotypeId),
+        getPhenotypeId(b.phenotypeId)
+      ),
+    renderCell: d => getPhenotypeId(d.phenotypeId),
   };
   const studyColumn = {
     id: 'qtlStudyName',

@@ -33,5 +33,15 @@ export const isGreaterThanZero = arrayLength => {
   return arrayLength > 0;
 };
 
+export const getPhenotypeId = phenotypeId =>
+  phenotypeId.includes('^')
+    ? phenotypeId.slice(phenotypeId.lastIndexOf('^') + 1)
+    : phenotypeId;
+
+export const getSpliceId = phenotypeId =>
+  phenotypeId.includes('^')
+    ? phenotypeId.slice(0, phenotypeId.lastIndexOf('^'))
+    : null;
+
 // Consants
 export const SIGNIFICANCE = -Math.log10(5e-8);

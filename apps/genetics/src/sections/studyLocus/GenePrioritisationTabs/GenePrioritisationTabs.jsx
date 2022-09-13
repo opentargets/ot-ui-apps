@@ -10,7 +10,7 @@ import {
   SectionHeading,
   significantFigures,
 } from '../../../ot-ui-components';
-import { traitAuthorYear } from '../../../utils';
+import { traitAuthorYear, getPhenotypeId } from '../../../utils';
 import Link from '../../../components/Link';
 import ColocQTLTable from '../../../components/ColocQTLTable';
 import ColocQTLGeneTissueTable from '../../../components/ColocQTLGeneTissueTable';
@@ -81,7 +81,7 @@ const tableColumns = [
 const getDownloadData = data => {
   return data.map(d => ({
     'gene.symbol': d.gene.symbol,
-    phenotypeId: d.phenotypeId,
+    phenotypeId: getPhenotypeId(d.phenotypeId),
     'tissue.name': d.tissue.name,
     qtlStudyName: d.qtlStudyName,
     indexVariant: d.indexVariant.id,
