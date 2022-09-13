@@ -1,4 +1,4 @@
-query GenePageQuery($geneId: String!) {
+query GenePageColocAnalysisQuery($geneId: String!) {
   geneInfo(geneId: $geneId) {
     id
     symbol
