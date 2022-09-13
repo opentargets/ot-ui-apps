@@ -21,6 +21,8 @@ import TARGET_DISEASE_EVIDENCE from './TargetDiseaseEvidence.gql';
 import TARGET_ANNOTATION from './TargetAnnotation.gql';
 import DISEASE_ANNOTATION from './DiseaseAnnotation.gql';
 import DRUG_ANNOTATION from './DrugAnnotation.gql';
+import SEARCH_ANNOTATION from './SearchAnnotation.gql';
+import SEARCH_ASSOCS from './SearchAssocs.gql';
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
@@ -200,6 +202,37 @@ function APIPage() {
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(DRUG_ANNOTATION.loc.source.body)}
+                >
+                  Run sample query
+                </Button>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="subtitle2">Search page</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div>
+                <Typography variant="subtitle2" display="block" paragraph>
+                  Example query for insulin
+                </Typography>
+                <Button
+                  className={classes.buttonMargin}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setQuery(SEARCH_ANNOTATION.loc.source.body)}
+                >
+                  Run sample query
+                </Button>
+                <Typography variant="subtitle2" display="block" paragraph>
+                  Example query to get how many entries there are in each entity category for Insulin
+                </Typography>
+                <Button
+                  className={classes.buttonMargin}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setQuery(SEARCH_ASSOCS.loc.source.body)}
                 >
                   Run sample query
                 </Button>

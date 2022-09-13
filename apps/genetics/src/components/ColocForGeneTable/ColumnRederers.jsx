@@ -115,7 +115,8 @@ export const tableColumns = ({
   },
   {
     id: 'phenotypeId',
-    label: 'Phenotype',
+    label: 'Molecular trait',
+    tooltip: 'Entity that colocalises with the QTL in a given GWAS study',
     comparator: (a, b) =>
       ascending(getPhenotypeId(a.phenotypeId), getPhenotypeId(b.phenotypeId)),
     renderCell: d => getPhenotypeId(d.phenotypeId),

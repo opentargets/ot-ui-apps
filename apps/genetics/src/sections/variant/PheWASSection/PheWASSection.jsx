@@ -71,7 +71,6 @@ function isFromSource(study, studySource) {
 
 function PheWASSection({ variantId, history }) {
   const _parseQueryProps = () => {
-    debugger;
     const queryProps = queryString.parse(history.location.search);
 
     // single values need to be put in lists
@@ -91,7 +90,6 @@ function PheWASSection({ variantId, history }) {
   };
 
   const handlePhewasTraitFilter = newPhewasTraitFilterValue => {
-    debugger;
     const { phewasTraitFilter, ...rest } = _parseQueryProps();
     const newQueryParams = {
       ...rest,
@@ -105,7 +103,6 @@ function PheWASSection({ variantId, history }) {
   };
 
   const handlePhewasCategoryFilter = newPhewasCategoryFilterValue => {
-    debugger;
     const { phewasCategoryFilter, ...rest } = _parseQueryProps();
     const newQueryParams = {
       ...rest,
@@ -122,7 +119,6 @@ function PheWASSection({ variantId, history }) {
   };
 
   const _stringifyQueryProps = newQueryParams => {
-    debugger;
     history.replace({
       ...history.location,
       search: queryString.stringify(newQueryParams),
