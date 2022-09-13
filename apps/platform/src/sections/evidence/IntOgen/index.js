@@ -1,5 +1,6 @@
+const id = 'intogen';
 export const definition = {
-  id: 'intOgen',
+  id: id,
   name: 'IntOGen',
   shortName: 'IO',
   hasData: data => data.intOgen.count > 0,
