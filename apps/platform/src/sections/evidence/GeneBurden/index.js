@@ -1,3 +1,5 @@
+import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
+
 const id = 'gene_burden';
 export const definition = {
   id: id,
@@ -6,6 +8,7 @@ export const definition = {
   hasData: data => {
     return data.geneBurdenSummary.count > 0;
   },
+  isPrivate: isPrivateEvidenceSection(id),
 };
 
 export { default as Summary } from './Summary';
