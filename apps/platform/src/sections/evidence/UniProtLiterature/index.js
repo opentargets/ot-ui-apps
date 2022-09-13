@@ -1,5 +1,6 @@
+const id = 'uniprot_literature';
 export const definition = {
-  id: 'uniprotLiterature',
+  id: id,
   name: 'UniProt literature',
   shortName: 'UL',
   hasData: ({ uniprotLiteratureSummary }) => uniprotLiteratureSummary.count > 0,
