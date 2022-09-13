@@ -1,5 +1,6 @@
+const id = 'progeny';
 export const definition = {
-  id: 'progeny',
+  id: id,
   name: 'PROGENy',
   shortName: 'PY',
   hasData: data => data.progeny.count > 0,
