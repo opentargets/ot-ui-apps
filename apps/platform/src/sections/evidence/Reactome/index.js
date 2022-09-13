@@ -1,5 +1,6 @@
+const id = 'reactome';
 export const definition = {
-  id: 'reactome',
+  id: id,
   name: 'Reactome',
   shortName: 'RT',
   hasData: ({ reactomeSummary }) => reactomeSummary.count > 0,
