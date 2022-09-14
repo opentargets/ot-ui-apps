@@ -7,14 +7,18 @@ import {
   DownloadSVGPlot,
   ListTooltip,
   SectionHeading,
-} from '../ot-ui-components';
-import withTooltip from './withTooltip';
-import PheWAS from './PheWAS';
+} from '../../../ot-ui-components';
+import withTooltip from '../../../components/withTooltip';
 
-import PheWASTable, { tableColumns } from '../components/PheWASTable';
+import PheWAS from './PheWAS';
+import PheWASTable, { tableColumns } from './PheWASTable';
 import ForestPlot from './ForestPlot';
 
-import PHEWAS_QUERY from '../queries/PheWASQuery.gql';
+import PHEWAS_QUERY from '../../../queries/PheWASQuery.gql';
+import GWAS_VARIANT_QUERY from './GWASLeadVariantsQuery.gql';
+import TAG_VARIANT_QUERY from './TagVariantPageQuery.gql';
+import { useQuery } from '@apollo/client';
+import queryString from 'query-string';
 
 function hasAssociations(data) {
   return (
@@ -26,7 +30,7 @@ function hasAssociations(data) {
 }
 
 function transformPheWAS(data) {
-  return data.pheWAS.associations.map((d) => {
+  return data.pheWAS.associations.map(d => {
     const { study, ...rest } = d;
     const {
       studyId,
@@ -65,15 +69,67 @@ function isFromSource(study, studySource) {
   }
 }
 
-function PheWASSection({
-  variantId,
-  phewasTraitFilterUrl,
-  phewasCategoryFilterUrl,
-  handlePhewasTraitFilter,
-  handlePhewasCategoryFilter,
-  isIndexVariant,
-  isTagVariant,
-}) {
+function PheWASSection({ variantId, history }) {
+  const _parseQueryProps = () => {
+    const queryProps = queryString.parse(history.location.search);
+
+    // single values need to be put in lists
+    if (queryProps.phewasTraitFilter) {
+      queryProps.phewasTraitFilter = Array.isArray(queryProps.phewasTraitFilter)
+        ? queryProps.phewasTraitFilter
+        : [queryProps.phewasTraitFilter];
+    }
+    if (queryProps.phewasCategoryFilter) {
+      queryProps.phewasCategoryFilter = Array.isArray(
+        queryProps.phewasCategoryFilter
+      )
+        ? queryProps.phewasCategoryFilter
+        : [queryProps.phewasCategoryFilter];
+    }
+    return queryProps;
+  };
+
+  const handlePhewasTraitFilter = newPhewasTraitFilterValue => {
+    const { phewasTraitFilter, ...rest } = _parseQueryProps();
+    const newQueryParams = {
+      ...rest,
+    };
+    if (newPhewasTraitFilterValue && newPhewasTraitFilterValue.length > 0) {
+      newQueryParams.phewasTraitFilter = newPhewasTraitFilterValue.map(
+        d => d.value
+      );
+    }
+    _stringifyQueryProps(newQueryParams);
+  };
+
+  const handlePhewasCategoryFilter = newPhewasCategoryFilterValue => {
+    const { phewasCategoryFilter, ...rest } = _parseQueryProps();
+    const newQueryParams = {
+      ...rest,
+    };
+    if (
+      newPhewasCategoryFilterValue &&
+      newPhewasCategoryFilterValue.length > 0
+    ) {
+      newQueryParams.phewasCategoryFilter = newPhewasCategoryFilterValue.map(
+        d => d.value
+      );
+    }
+    _stringifyQueryProps(newQueryParams);
+  };
+
+  const _stringifyQueryProps = newQueryParams => {
+    history.replace({
+      ...history.location,
+      search: queryString.stringify(newQueryParams),
+    });
+  };
+
+  const {
+    phewasTraitFilter: phewasTraitFilterUrl,
+    phewasCategoryFilter: phewasCategoryFilterUrl,
+  } = _parseQueryProps();
+
   const [studySource, setStudySource] = useState('all');
   const [selectedCategories, setSelectedCategories] = useState([]);
   let pheWASPlot = React.createRef();
@@ -87,8 +143,28 @@ function PheWASSection({
   }
 
   function handleTraitSelection(newDropdownValue) {
-    setSelectedCategories((_) => newDropdownValue.map((d) => d.value));
+    setSelectedCategories(_ => newDropdownValue.map(d => d.value));
   }
+
+  const { loading: loading_gwas_variant, data: gwas_variant } = useQuery(
+    GWAS_VARIANT_QUERY,
+    {
+      variables: { variantId },
+    }
+  );
+
+  const { loading: loading_tag_variant, data: tag_variant } = useQuery(
+    TAG_VARIANT_QUERY,
+    {
+      variables: { variantId },
+    }
+  );
+
+  const isTagVariant =
+    gwas_variant?.indexVariantsAndStudiesForTagVariant !== undefined;
+
+  const isIndexVariant =
+    tag_variant?.tagVariantsAndStudiesForIndexVariant !== undefined;
 
   return (
     <Query query={PHEWAS_QUERY} variables={{ variantId }}>
@@ -109,7 +185,7 @@ function PheWASSection({
         );
         const pheWASAssociations = isPheWASVariant ? transformPheWAS(data) : [];
         // phewas - filtered
-        const pheWASAssociationsFiltered = pheWASAssociations.filter((d) => {
+        const pheWASAssociationsFiltered = pheWASAssociations.filter(d => {
           return (
             (phewasTraitFilterUrl
               ? phewasTraitFilterUrl.indexOf(d.traitReported) >= 0
@@ -122,8 +198,8 @@ function PheWASSection({
         });
         // phewas - filters
         const phewasTraitFilterOptions = _.sortBy(
-          _.uniq(pheWASAssociationsFiltered.map((d) => d.traitReported)).map(
-            (d) => ({
+          _.uniq(pheWASAssociationsFiltered.map(d => d.traitReported)).map(
+            d => ({
               label: d,
               value: d,
               selected: phewasTraitFilterUrl
@@ -131,14 +207,14 @@ function PheWASSection({
                 : false,
             })
           ),
-          [(d) => !d.selected, 'value']
+          [d => !d.selected, 'value']
         );
         const phewasTraitFilterValue = phewasTraitFilterOptions.filter(
-          (d) => d.selected
+          d => d.selected
         );
         const phewasCategoryFilterOptions = _.sortBy(
-          _.uniq(pheWASAssociationsFiltered.map((d) => d.traitCategory)).map(
-            (d) => ({
+          _.uniq(pheWASAssociationsFiltered.map(d => d.traitCategory)).map(
+            d => ({
               label: d,
               value: d,
               selected: phewasCategoryFilterUrl
@@ -146,10 +222,10 @@ function PheWASSection({
                 : false,
             })
           ),
-          [(d) => !d.selected, 'value']
+          [d => !d.selected, 'value']
         );
         const phewasCategoryFilterValue = phewasCategoryFilterOptions.filter(
-          (d) => d.selected
+          d => d.selected
         );
 
         return (

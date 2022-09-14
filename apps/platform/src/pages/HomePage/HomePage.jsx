@@ -38,6 +38,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import config from '../../config';
+import PrivateWrapper from '../../components/PrivateWrapper';
 
 const useStyles = makeStyles(theme => ({
   links: {
@@ -171,7 +172,7 @@ const HomePage = () => {
             </Hidden>
           </Grid>
           <Version />
-          {config.profile.isPartnerPreview ? (
+          <PrivateWrapper>
             <div className={classes.dataPolicy}>
               <Typography
                 variant="body2"
@@ -201,7 +202,7 @@ const HomePage = () => {
                 </strong>
               </Typography>
             </div>
-          ) : null}
+          </PrivateWrapper>
         </HomeBox>
 
         {/* scroll down button */}
