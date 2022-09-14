@@ -1,6 +1,8 @@
 import React from 'react';
 import * as d3 from 'd3';
 
+import { getPhenotypeId } from '../utils';
+
 import { Link, OtTableRF, DataCircle, Tooltip } from '../ot-ui-components';
 
 const tissueComparator = t => (a, b) => {
