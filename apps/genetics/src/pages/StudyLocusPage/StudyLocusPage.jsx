@@ -41,8 +41,8 @@ function StudyLocusPage({ match }) {
         <Header loading={loading} data={dataHeader} />
         <Summary variantId={indexVariantId} studyId={studyId} />
         <ColocL2GTable variantId={indexVariantId} studyId={studyId} />
-        <ColocGWASTable variantId={indexVariantId} studyId={studyId} />
         <GenePrioritisationTabs variantId={indexVariantId} studyId={studyId} />
+        <ColocGWASTable variantId={indexVariantId} studyId={studyId} />
         <CredibleSetsGroup
           variantId={indexVariantId}
           studyId={studyId}
