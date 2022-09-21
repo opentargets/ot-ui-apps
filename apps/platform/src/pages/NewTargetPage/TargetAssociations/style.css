@@ -2,14 +2,19 @@
 .TAssociations .Theader {
   padding-top: 15px;
   display: flex;
+  flex-direction: column;
   position: sticky;
   top: 0;
   background-color: #fafafa;
   z-index: 100;
-  justify-content: space-evenly;
   font-weight: 800;
   /* margin-bottom: 10px; */
   border-bottom: 1px solid #ececec;
+}
+
+.TAssociations .Theader .cols-container {
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .TAssociations .Theader .header-score {
@@ -33,7 +38,7 @@
 }
 
 .TAssociations .Theader .rotate > div {
-  transform: translate(10px, 100px) rotate(315deg);
+  transform: translate(10px, 110px) rotate(315deg);
   width: 30px;
 }
 
@@ -111,6 +116,43 @@
   /* border: 2px solid #454545 !important; */
   -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
   box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+}
+
+/* Agregations indicators */
+
+.TAssociations .aggregations-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-left: 325px;
+}
+
+.TAssociations .aggregations-container .name-empty-controll {
+  width: 230px;
+  content: ' ';
+}
+
+.TAssociations .aggregations-container .score-empty-controll {
+  height: 25px;
+  width: 30px;
+  content: ' ';
+  margin-right: 20px;
+}
+
+.TAssociations .aggregations-container .aggregation-indicator {
+  width: calc(100% / 24);
+  position: relative;
+}
+
+.TAssociations .aggregations-container .aggregation-indicator div {
+  width: 100%;
+  height: 4px;
+  content: ' ';
+  transition: all ease 300ms;
+}
+
+.TAssociations .aggregations-container:hover .aggregation-indicator div {
+  height: 15px;
 }
 
 /* Weights controlls */

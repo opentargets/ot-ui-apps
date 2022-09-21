@@ -34,6 +34,8 @@ function DataMenu({
   setEnableIndirect,
   activeWeightsControlls,
   setActiveWeightsControlls,
+  activeAggregationsLabels,
+  setActiveAggregationsLabels,
   vizControllsopen,
   setVizControllsOpen,
   gScoreRect,
@@ -85,18 +87,6 @@ function DataMenu({
               control={
                 <Checkbox
                   color="primary"
-                  checked={enableIndirect}
-                  onChange={() => setEnableIndirect(!enableIndirect)}
-                />
-              }
-              label="Enable Indirect"
-            />
-          </FormGroup>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  color="primary"
                   checked={activeWeightsControlls}
                   onChange={() =>
                     setActiveWeightsControlls(!activeWeightsControlls)
@@ -106,7 +96,34 @@ function DataMenu({
               label="Show weights controlls"
             />
           </FormGroup>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={activeAggregationsLabels}
+                  onChange={() =>
+                    setActiveAggregationsLabels(!activeAggregationsLabels)
+                  }
+                />
+              }
+              label="Show aggegation labels"
+            />
+          </FormGroup>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={enableIndirect}
+                  onChange={() => setEnableIndirect(!enableIndirect)}
+                />
+              }
+              label="Enable Indirect"
+            />
+          </FormGroup>
           {/* Viz controlls */}
+          <hr />
           <VizControllsContainer>
             <Button
               variant="contained"

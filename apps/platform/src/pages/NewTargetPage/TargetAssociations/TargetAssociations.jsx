@@ -19,7 +19,8 @@ import useTargetAssociations from './useAssociationsData';
 import SecctionRender from './SectionRender';
 import ColoredCell from './ColoredCell';
 import WeightsControlls from './WeightsControlls';
-import DataMenu from './DataMenu';
+import AdvanceOptionsMenu from './AdvanceOptionsMenu';
+import AggregationsRow from './AggregationsRow';
 
 import LoadingBackdrop from '../../../components/LoadingBackdrop';
 
@@ -88,6 +89,8 @@ function TargetAssociations({ ensgId }) {
   const [enableIndirect, setEnableIndirect] = useState(false);
   // Data controls UI
   const [activeWeightsControlls, setActiveWeightsControlls] = useState(false);
+  const [activeAggregationsLabels, setActiveAggregationsLabels] =
+    useState(true);
 
   // Viz Controls
   const [gScoreRect, setGScoreRect] = useState(true);
@@ -218,11 +221,13 @@ function TargetAssociations({ ensgId }) {
   return (
     <>
       <ControllsBtnContainer>
-        <DataMenu
+        <AdvanceOptionsMenu
           enableIndirect={enableIndirect}
           setEnableIndirect={setEnableIndirect}
           activeWeightsControlls={activeWeightsControlls}
           setActiveWeightsControlls={setActiveWeightsControlls}
+          activeAggregationsLabels={activeAggregationsLabels}
+          setActiveAggregationsLabels={setActiveAggregationsLabels}
           vizControllsopen={vizControllsopen}
           setVizControllsOpen={setVizControllsOpen}
           gScoreRect={gScoreRect}
@@ -245,27 +250,34 @@ function TargetAssociations({ ensgId }) {
           >
             <TableElement>
               {/* HEADER */}
-              {table.getHeaderGroups().map(headerGroup => (
-                <div className="Theader" key={headerGroup.id}>
-                  {headerGroup.headers.map(header => {
-                    return (
-                      <div
-                        className={getHeaderClassName(header)}
-                        key={header.id}
-                      >
-                        {header.isPlaceholder ? null : (
-                          <div>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
+              {table.getHeaderGroups().map(headerGroup => {
+                return (
+                  <div className="Theader" key={headerGroup.id}>
+                    <div className="cols-container">
+                      {headerGroup.headers.map(header => {
+                        return (
+                          <div
+                            className={getHeaderClassName(header)}
+                            key={header.id}
+                          >
+                            {header.isPlaceholder ? null : (
+                              <div>
+                                {flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                              </div>
                             )}
                           </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              ))}
+                        );
+                      })}
+                    </div>
+                    {activeAggregationsLabels && (
+                      <AggregationsRow cols={headerGroup.headers} />
+                    )}
+                  </div>
+                );
+              })}
 
               {/* Weights controlls */}
               <WeightsControlls
