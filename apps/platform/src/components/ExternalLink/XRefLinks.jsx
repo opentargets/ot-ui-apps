@@ -1,50 +1,20 @@
-import React, { Fragment, useState } from 'react';
-import { withStyles } from '@material-ui/core';
-
+import React, { Fragment } from 'react';
 import Link from '../Link';
 
-const styles = theme => ({
-  showMore: {
-    color: theme.palette.primary.main,
-    cursor: 'pointer',
-  }
-});
-
-function XRefLinks({ classes, label, urlStem, ids, limit }) {
-  const [showMore, setShowMore] = useState(false);
-
-  const displayNone= {
-    display: "none"
-  }
-  
+function XRefLinks({ label, urlStem, ids }) {
   return (
     <span>
       {label}:{' '}
       {ids.map((id, i) => (
-        <span key={id} style={(i > limit - 1 && !showMore) ? displayNone : {}}>
-          <Link
-            external
-            to={`${urlStem}${id}`}
-          >
+        <Fragment key={id}>
+          <Link external to={`${urlStem}${id}`}>
             {id}
-          {i < ids.length - 1 ? ', ' : ''}
           </Link>
-        </span>
+          {i < ids.length - 1 ? ', ' : ''}
+        </Fragment>
       ))}
-      {ids.length > limit ? (
-        <span>
-          {showMore ? '' : '... '}[{' '}
-          <span
-            className={classes.showMore}
-            onClick={() => setShowMore(!showMore)}
-          >
-            {showMore ? ' hide' : ' show more'}
-          </span>{' '}
-          ]
-        </span>
-      ) : null}
     </span>
   );
 }
 
-export default withStyles(styles)(XRefLinks);
+export default XRefLinks;
