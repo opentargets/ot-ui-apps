@@ -27,18 +27,18 @@ function APIHeader() {
         for more how-to guides and tutorials.
       </Typography>
       <Typography paragraph>
-        Please note that ur API is optimised for a single query. For more
+        Please note that our API is optimised for a single query. For more
         programmatic or systematic analyses, please use{' '}
         <Link
           external
-          to="https://platform-docs.opentargets.org/data-access/datasets"
+          to="https://genetics-docs.opentargets.org/data-access/data-download"
         >
           our dataset downloads
         </Link>{' '}
         or{' '}
         <Link
           external
-          to="https://platform-docs.opentargets.org/data-access/google-bigquery"
+          to="https://genetics-docs.opentargets.org/data-access/graphql-api"
         >
           Google BigQuery instance
         </Link>

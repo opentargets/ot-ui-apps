@@ -68,7 +68,7 @@ function APIPage() {
         for more how-to guides and tutorials.
       </Typography>
       <Typography paragraph>
-        Please note that ur API is optimised for a single query. For more
+        Please note that our API is optimised for a single query. For more
         programmatic or systematic analyses, please use{' '}
         <Link
           external
