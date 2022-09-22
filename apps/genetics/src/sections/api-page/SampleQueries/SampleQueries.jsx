@@ -10,6 +10,11 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import STUDY_INFO from './StudyInfo.gql';
+import STUDY_AND_LEAD_VARIANT from './StudiesAndLeadVariantsForGene.gql';
+import STUDY_LOCUS_GENE_TABLE from './StudyLocus2GeneTable.gql';
+import TAG_VARIANTS from './TagVariantsAndStudiesForIndexVariant.gql';
+import COLOCALISATION_FOR_GENE from './ColocalisationsForGene.gql';
+import MANHATTAN from './Manhattan.gql';
 
 const useStyles = makeStyles({
   buttonMargin: {
@@ -26,9 +31,7 @@ function SampleQueries({ setQuery }) {
       </Typography>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2">
-            Target-disease association
-          </Typography>
+          <Typography variant="subtitle2">Study info query</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -43,13 +46,25 @@ function SampleQueries({ setQuery }) {
             >
               Run sample query
             </Button>
+          </div>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="subtitle2">
+            Study and Lead Variants for Gene
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <div>
             <Typography variant="subtitle2" display="block" paragraph>
-              Find diseases and phenotypes associated with a specific target
+              Which studies and lead variants are associated with Jak2?
             </Typography>
             <Button
+              className={classes.buttonMargin}
               variant="contained"
               color="primary"
-              onClick={() => setQuery(STUDY_INFO.loc.source.body)}
+              onClick={() => setQuery(STUDY_AND_LEAD_VARIANT.loc.source.body)}
             >
               Run sample query
             </Button>
@@ -58,19 +73,19 @@ function SampleQueries({ setQuery }) {
       </Accordion>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2">Target-disease evidence</Typography>
+          <Typography variant="subtitle2">Colocalisations For Gene</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
             <Typography variant="subtitle2" display="block" paragraph>
-              Explore evidence that supports a specific target-disease
-              association
+              Which studies have evidence of colocalisation with molecular QTLs
+              for Jak2?
             </Typography>
             <Button
               className={classes.buttonMargin}
               variant="contained"
               color="primary"
-              onClick={() => setQuery(STUDY_INFO.loc.source.body)}
+              onClick={() => setQuery(COLOCALISATION_FOR_GENE.loc.source.body)}
             >
               Run sample query
             </Button>
@@ -79,18 +94,19 @@ function SampleQueries({ setQuery }) {
       </Accordion>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2">Target annotation</Typography>
+          <Typography variant="subtitle2">StudyLocus2GeneTable</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
             <Typography variant="subtitle2" display="block" paragraph>
-              Find tractability and safety information for a specific target
+              Which genes were prioritised by L2G pipeline at this locus from a
+              given study?
             </Typography>
             <Button
               className={classes.buttonMargin}
               variant="contained"
               color="primary"
-              onClick={() => setQuery(STUDY_INFO.loc.source.body)}
+              onClick={() => setQuery(STUDY_LOCUS_GENE_TABLE.loc.source.body)}
             >
               Run sample query
             </Button>
@@ -99,18 +115,18 @@ function SampleQueries({ setQuery }) {
       </Accordion>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2">Disease annotation</Typography>
+          <Typography variant="subtitle2">Manhattan Study Variants</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
             <Typography variant="subtitle2" display="block" paragraph>
-              Find clinical signs and symptoms for a specific disease
+              Independent associated loci from a given study
             </Typography>
             <Button
               className={classes.buttonMargin}
               variant="contained"
               color="primary"
-              onClick={() => setQuery(STUDY_INFO.loc.source.body)}
+              onClick={() => setQuery(MANHATTAN.loc.source.body)}
             >
               Run sample query
             </Button>
@@ -119,19 +135,19 @@ function SampleQueries({ setQuery }) {
       </Accordion>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2">Drug annotation</Typography>
+          <Typography variant="subtitle2">Variants Tag</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
             <Typography variant="subtitle2" display="block" paragraph>
-              Find approval status and withdrawn and black-box warning for a
-              specific drug
+              Which variants tag (through LD or fine-mapping) a given lead
+              variant?
             </Typography>
             <Button
               className={classes.buttonMargin}
               variant="contained"
               color="primary"
-              onClick={() => setQuery(STUDY_INFO.loc.source.body)}
+              onClick={() => setQuery(TAG_VARIANTS.loc.source.body)}
             >
               Run sample query
             </Button>
