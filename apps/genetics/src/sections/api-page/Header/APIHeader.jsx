@@ -11,9 +11,7 @@ function APIHeader() {
         API
       </Typography>
       <Typography paragraph>
-        The Open Targets Genetics is powered by a GraphQL API that supports
-        graphical queries for a single entity or target-disease association
-        across our knowledge graph. Read our{' '}
+        The Open Targets Genetics is powered by a GraphQL API. Read our{' '}
         <Link
           external
           to="https://genetics-docs.opentargets.org/data-access/graphql-api"

@@ -36,7 +36,7 @@ function SampleQueries({ setQuery }) {
         <AccordionDetails>
           <div>
             <Typography variant="subtitle2" display="block" paragraph>
-              Find targets associated with a specific disease or phenotype
+              Find details on a specific study.
             </Typography>
             <Button
               className={classes.buttonMargin}
@@ -52,7 +52,7 @@ function SampleQueries({ setQuery }) {
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle2">
-            Study and Lead Variants for Gene
+            Studies and lead variants query
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -73,7 +73,7 @@ function SampleQueries({ setQuery }) {
       </Accordion>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2">Colocalisations For Gene</Typography>
+          <Typography variant="subtitle2">Colocalisation query</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -94,7 +94,9 @@ function SampleQueries({ setQuery }) {
       </Accordion>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2">StudyLocus2GeneTable</Typography>
+          <Typography variant="subtitle2">
+            Prioritised genes from study locus
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -115,12 +117,12 @@ function SampleQueries({ setQuery }) {
       </Accordion>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2">Manhattan Study Variants</Typography>
+          <Typography variant="subtitle2">Study variants query</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
             <Typography variant="subtitle2" display="block" paragraph>
-              Independent associated loci from a given study
+              Independent loci associated to a given study.
             </Typography>
             <Button
               className={classes.buttonMargin}
@@ -135,7 +137,7 @@ function SampleQueries({ setQuery }) {
       </Accordion>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2">Variants Tag</Typography>
+          <Typography variant="subtitle2">Tag variants query</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
