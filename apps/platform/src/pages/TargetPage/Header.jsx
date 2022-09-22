@@ -30,7 +30,6 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId }) {
             label="UniProt"
             urlStem="https://identifiers.org/uniprot:"
             ids={uniprotIds}
-            limit="3"
           />
           <ExternalLink title="GeneCards" id={symbol} url={genecardsUrl} />
           <ExternalLink title="HGNC" id={symbol} url={hgncUrl} />
