@@ -12,6 +12,7 @@ import config from '../../config';
 import PartnerLockIcon from '../../components/PartnerLockIcon';
 
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociations.gql';
+import usePermissions from '../../hooks/usePermissions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -104,6 +105,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function getColumns(efoId, classes) {
+  const { isPartnerPreview } = usePermissions();
   const columns = [
     {
       id: 'symbol',
@@ -148,7 +150,7 @@ function getColumns(efoId, classes) {
       dt =>
         (config.profile.hideDataTypes.length === 0 ||
           !config.profile.hideDataTypes.includes(dt.id)) &&
-        (!dt.isPrivate || (dt.isPrivate && config.profile.isPartnerPreview))
+        (!dt.isPrivate || (dt.isPrivate && isPartnerPreview))
     )
     .forEach(dt => {
       columns.push({
