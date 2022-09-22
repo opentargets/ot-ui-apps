@@ -16,7 +16,7 @@ function APIHeader() {
         across our knowledge graph. Read our{' '}
         <Link
           external
-          to="https://platform-docs.opentargets.org/data-access/graphql-api"
+          to="https://genetics-docs.opentargets.org/data-access/graphql-api"
         >
           GraphQL API documentation
         </Link>{' '}
@@ -34,13 +34,6 @@ function APIHeader() {
           to="https://genetics-docs.opentargets.org/data-access/data-download"
         >
           our dataset downloads
-        </Link>{' '}
-        or{' '}
-        <Link
-          external
-          to="https://genetics-docs.opentargets.org/data-access/graphql-api"
-        >
-          Google BigQuery instance
         </Link>
         .
       </Typography>
