@@ -1,35 +1,13 @@
 export function variantHasInfo(data) {
   return data && data.variantInfo;
 }
-export function variantHasAssociatedGenes(data) {
-  return data && data.genesForVariantSchema;
-}
-
 export function variantGetInfo(data) {
   return data.variantInfo;
 }
 
-export function variantHasAssociatedIndexVariants(data) {
-  return (
-    data &&
-    data.indexVariantsAndStudiesForTagVariant &&
-    data.indexVariantsAndStudiesForTagVariant.associations &&
-    data.indexVariantsAndStudiesForTagVariant.associations.length > 0
-  );
-}
-
-export function variantHasAssociatedTagVariants(data) {
-  return (
-    data &&
-    data.tagVariantsAndStudiesForIndexVariant &&
-    data.tagVariantsAndStudiesForIndexVariant.associations &&
-    data.tagVariantsAndStudiesForIndexVariant.associations.length > 0
-  );
-}
-
 export function variantTransformAssociatedIndexVariants(data) {
-  const associationsFlattened = data.indexVariantsAndStudiesForTagVariant.associations.map(
-    d => {
+  const associationsFlattened =
+    data.indexVariantsAndStudiesForTagVariant.associations.map((d) => {
       const { indexVariant, study, ...rest } = d;
       return {
         indexVariantId: indexVariant.id,
@@ -39,16 +17,16 @@ export function variantTransformAssociatedIndexVariants(data) {
         pmid: study.pmid,
         pubDate: study.pubDate,
         pubAuthor: study.pubAuthor,
+        hasSumstats: study.hasSumstats,
         ...rest,
       };
-    }
-  );
+    });
   return associationsFlattened;
 }
 
 export function variantTransformAssociatedTagVariants(data) {
-  const associationsFlattened = data.tagVariantsAndStudiesForIndexVariant.associations.map(
-    d => {
+  const associationsFlattened =
+    data.tagVariantsAndStudiesForIndexVariant.associations.map((d) => {
       const { tagVariant, study, ...rest } = d;
       return {
         tagVariantId: tagVariant.id,
@@ -58,10 +36,10 @@ export function variantTransformAssociatedTagVariants(data) {
         pmid: study.pmid,
         pubDate: study.pubDate,
         pubAuthor: study.pubAuthor,
+        hasSumstats: study.hasSumstats,
         ...rest,
       };
-    }
-  );
+    });
   return associationsFlattened;
 }
 
@@ -85,6 +63,7 @@ export function variantParseGenesForVariantSchema(data) {
   const genesForVariantSchema = data.genesForVariantSchema;
   const currentQtls = genesForVariantSchema.qtls;
   if (currentQtls.length === 0) return genesForVariantSchema;
+  //possibly add new fields
   if (currentQtls[0].id === 'pqtl') {
     const pqtl = currentQtls[0];
     const restQtls = currentQtls.slice(1, pqtl.length);

@@ -1,9 +1,23 @@
 import React, { Component } from 'react';
-import * as d3 from 'd3';
+import {
+  scaleBand,
+  scaleLinear,
+  scaleOrdinal,
+  voronoi,
+  select,
+  extent,
+  axisBottom,
+  axisLeft,
+  schemeCategory10,
+  symbol,
+  symbolTriangle,
+  polygonArea,
+  polygonCentroid,
+} from 'd3';
 import _ from 'lodash';
 import { withContentRect } from 'react-measure';
 
-import theme from './theme';
+import theme from '../../../components/theme';
 
 const getTraitCategoryRanges = (assocs, x) => {
   return assocs.reduce((acc, assoc) => {
@@ -29,31 +43,22 @@ const getTraitCategoryRanges = (assocs, x) => {
 const orient = {
   top: text => text.attr('text-anchor', 'middle').attr('y', -6),
   right: text =>
-    text
-      .attr('text-anchor', 'start')
-      .attr('dy', '0.35em')
-      .attr('x', 6),
+    text.attr('text-anchor', 'start').attr('dy', '0.35em').attr('x', 6),
   bottom: text =>
-    text
-      .attr('text-anchor', 'middle')
-      .attr('dy', '0.71em')
-      .attr('y', 6),
+    text.attr('text-anchor', 'middle').attr('dy', '0.71em').attr('y', 6),
   left: text =>
-    text
-      .attr('text-anchor', 'end')
-      .attr('dy', '0.35em')
-      .attr('x', -6),
+    text.attr('text-anchor', 'end').attr('dy', '0.35em').attr('x', -6),
 };
 
 class PheWAS extends Component {
   constructor(props) {
     super(props);
     this.svgRef = React.createRef();
-    this.x = d3.scaleBand();
-    this.y = d3.scaleLinear();
-    this.colourScale = d3.scaleOrdinal();
-    this.categoryScale = d3.scaleOrdinal();
-    this.voronoi = d3.voronoi();
+    this.x = scaleBand();
+    this.y = scaleLinear();
+    this.colourScale = scaleOrdinal();
+    this.categoryScale = scaleOrdinal();
+    this.voronoi = voronoi();
   }
 
   componentDidMount() {
@@ -76,9 +81,7 @@ class PheWAS extends Component {
           ref={node => (this.svgRef = node)}
         >
           <g
-            transform={`translate(${theme.margin.left},${
-              theme.margin.phewasTop
-            })`}
+            transform={`translate(${theme.margin.left},${theme.margin.phewasTop})`}
           />
         </svg>
       </div>
@@ -106,13 +109,13 @@ class PheWAS extends Component {
 
     const assocs = _.sortBy(associations, ['traitCategory']);
 
-    const svg = d3.select(this.svgRef);
+    const svg = select(this.svgRef);
     const chart = svg.select('g');
 
     const significance = -Math.log10(
       significancePVal ? significancePVal : 0.05 / assocs.length
     );
-    const [minLogPval, maxLogPval] = d3.extent(
+    const [minLogPval, maxLogPval] = extent(
       assocs,
       assoc => -Math.log10(assoc.pval)
     );
@@ -126,7 +129,10 @@ class PheWAS extends Component {
     const polygons = voronoi
       .x(d => x(d.studyId))
       .y(d => y(-Math.log10(d.pval)))
-      .extent([[-1, -1], [width + 1, height + 1]])
+      .extent([
+        [-1, -1],
+        [width + 1, height + 1],
+      ])
       .polygons(assocs);
 
     const traitCategoryRanges = getTraitCategoryRanges(assocs, x);
@@ -137,10 +143,10 @@ class PheWAS extends Component {
       category => category.traitCategory
     );
     categoryScale.domain(traitCategories).range(traitPositions);
-    colourScale.domain(traitCategories).range(d3.schemeCategory10);
+    colourScale.domain(traitCategories).range(schemeCategory10);
 
-    const xAxis = d3.axisBottom(categoryScale);
-    const yAxis = d3.axisLeft(y);
+    const xAxis = axisBottom(categoryScale);
+    const yAxis = axisLeft(y);
 
     this._renderLegend(svg, outerWidth);
     this._renderLogPValueAxis(chart, yAxis);
@@ -155,10 +161,7 @@ class PheWAS extends Component {
     let rect = svg.select('.legend rect');
 
     if (g.empty()) {
-      const trianglePath = d3
-        .symbol()
-        .size(32)
-        .type(d3.symbolTriangle);
+      const trianglePath = symbol().size(32).type(symbolTriangle);
 
       g = svg
         .append('g')
@@ -207,7 +210,7 @@ class PheWAS extends Component {
       .attr('y', 0)
       .attr('dx', '.4em')
       .attr('dy', '1.5em')
-      .attr('fill', function(d) {
+      .attr('fill', function (d) {
         return colourScale(d);
       })
       .style('text-anchor', 'start');
@@ -255,10 +258,7 @@ class PheWAS extends Component {
 
   _renderDataPoints(chart, assocs, colourScale, handleMouseover) {
     const { x, y } = this;
-    const trianglePath = d3
-      .symbol()
-      .size(32)
-      .type(d3.symbolTriangle);
+    const trianglePath = symbol().size(32).type(symbolTriangle);
 
     const dataPoints = chart
       .selectAll('path.point')
@@ -267,18 +267,18 @@ class PheWAS extends Component {
     dataPoints
       .enter()
       .append('path')
-      .attr('class', function(assoc) {
+      .attr('class', function (assoc) {
         return `point loci-${assoc.studyId}`;
       })
-      .attr('fill', function(assoc) {
+      .attr('fill', function (assoc) {
         return colourScale(assoc.traitCategory);
       })
-      .attr('data-colour', function(assoc) {
+      .attr('data-colour', function (assoc) {
         return colourScale(assoc.traitCategory);
       })
       .attr('d', trianglePath)
       .merge(dataPoints)
-      .attr('transform', function(assoc) {
+      .attr('transform', function (assoc) {
         const xPos = x(assoc.studyId);
         const yPos = y(-Math.log10(assoc.pval));
         const rotation = assoc.beta < 0 ? ',rotate(180)' : '';
@@ -290,7 +290,7 @@ class PheWAS extends Component {
   }
 
   _renderTraitLabels(chart, polygons, x, y, significance) {
-    let g = d3.select('.trait-labels');
+    let g = select('.trait-labels');
 
     if (g.empty()) {
       g = chart
@@ -301,9 +301,7 @@ class PheWAS extends Component {
 
     const traitLabels = g.selectAll('text').data(
       polygons.filter(d => {
-        return (
-          d3.polygonArea(d) > 2000 && -Math.log10(d.data.pval) > significance
-        );
+        return polygonArea(d) > 2000 && -Math.log10(d.data.pval) > significance;
       })
     );
 
@@ -311,8 +309,8 @@ class PheWAS extends Component {
       .enter()
       .append('text')
       .merge(traitLabels)
-      .each(function(d) {
-        const [cx, cy] = d3.polygonCentroid(d);
+      .each(function (d) {
+        const [cx, cy] = polygonCentroid(d);
         const xPos = x(d.data.studyId);
         const yPos = y(-Math.log10(d.data.pval));
         // find angle between vector, going from the point that generates
@@ -320,14 +318,14 @@ class PheWAS extends Component {
         const angle = Math.round(
           (Math.atan2(cy - yPos, cx - xPos) / Math.PI) * 2
         );
-        d3.select(this).call(
+        select(this).call(
           angle === 0
             ? orient.right
             : angle === -1
-              ? orient.top
-              : angle === 1
-                ? orient.bottom
-                : orient.left
+            ? orient.top
+            : angle === 1
+            ? orient.bottom
+            : orient.left
         );
       })
       .attr('fill', theme.axis.color)

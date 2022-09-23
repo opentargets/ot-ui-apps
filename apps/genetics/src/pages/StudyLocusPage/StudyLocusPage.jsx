@@ -9,7 +9,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import Link from '../../components/Link';
-import { sanitize } from '../../utils';
+import { getPhenotypeId, sanitize } from '../../utils';
 import ScrollToTop from '../../components/ScrollToTop';
 
 import {
@@ -45,12 +45,12 @@ import QTL_REGIONAL_QUERY from '../../queries/QTLRegionalQuery.gql';
 
 const HALF_WINDOW = 250000;
 
-const generateComparatorFromAccessor = (accessor) => (a, b) => {
+const generateComparatorFromAccessor = accessor => (a, b) => {
   const aValue = accessor(a);
   const bValue = accessor(b);
   return aValue > bValue ? 1 : aValue === bValue ? 0 : -1;
 };
-const log2h4h3Comparator = generateComparatorFromAccessor((d) => d.log2h4h3);
+const log2h4h3Comparator = generateComparatorFromAccessor(d => d.log2h4h3);
 
 const gwasCredibleSetQueryAliasedFragment = ({ study, indexVariant }) => `
 gwasCredibleSet__${study.studyId}__${indexVariant.id}: gwasCredibleSet(studyId: "${study.studyId}", variantId: "${indexVariant.id}") {
@@ -72,18 +72,18 @@ gwasCredibleSet__${study.studyId}__${indexVariant.id}: gwasCredibleSet(studyId: 
 
 const qtlCredibleSetQueryAliasedFragment = ({
   qtlStudyName,
-  phenotypeId,
+  gene,
   tissue,
   indexVariant,
 }) => {
   const tissueId = tissue.id.replaceAll('-', '_');
   const parseQTLStudyName = qtlStudyName.replaceAll('-', '_');
-  const parsePhenotypeId = phenotypeId.replaceAll('-', '_');
+  const geneId = gene.id;
   const sanitizedTissueId = sanitize(tissueId);
-  const sanitizedPhenotypeId = sanitize(parsePhenotypeId);
+  const sanitizedGeneId = sanitize(geneId);
   const sanitizedParseQTLStudyName = sanitize(parseQTLStudyName);
   return `
-  qtlCredibleSet__${sanitizedParseQTLStudyName}__${sanitizedPhenotypeId}__${sanitizedTissueId}__${indexVariant.id}: qtlCredibleSet(studyId: "${parseQTLStudyName}", variantId: "${indexVariant.id}", phenotypeId: "${parsePhenotypeId}", bioFeature: "${tissueId}") {
+  qtlCredibleSet__${sanitizedParseQTLStudyName}__${sanitizedGeneId}__${sanitizedTissueId}__${indexVariant.id}: qtlCredibleSet(studyId: "${parseQTLStudyName}", variantId: "${indexVariant.id}", geneId: "${geneId}", bioFeature: "${tissueId}") {
     tagVariant {
       id
       rsId
@@ -117,12 +117,12 @@ const flattenPosition = ({ tagVariant, postProb, is95, is99, ...rest }) => ({
   ...rest,
 });
 
-const traitAuthorYear = (s) =>
+const traitAuthorYear = s =>
   `${s.traitReported} (${s.pubAuthor}, ${new Date(s.pubDate).getFullYear()})`;
 
 // gene exons come as flat list, rendering expects list of pairs
-const flatExonsToPairedExons = (genes) => {
-  const paired = genes.map((d) => ({
+const flatExonsToPairedExons = genes => {
+  const paired = genes.map(d => ({
     ...d,
     exons: d.exons.reduce((result, value, index, array) => {
       if (index % 2 === 0) {
@@ -139,18 +139,23 @@ const tableColumns = [
     id: 'gene.symbol',
     label: 'Gene',
     comparator: (a, b) => d3.ascending(a.gene.symbol, b.gene.symbol),
-    renderCell: (d) => <Link to={`/gene/${d.gene.id}`}>{d.gene.symbol}</Link>,
+    renderCell: d => <Link to={`/gene/${d.gene.id}`}>{d.gene.symbol}</Link>,
   },
   {
     id: 'phenotypeId',
     label: 'Molecular trait',
-    // renderCell: d => (d.phenotypeId !== d.gene.id ? d.phenotypeId : null),
+    comparator: (a, b) =>
+      d3.ascending(
+        getPhenotypeId(a.phenotypeId),
+        getPhenotypeId(b.phenotypeId)
+      ),
+    renderCell: d => getPhenotypeId(d.phenotypeId),
   },
   {
     id: 'tissue.name',
     label: 'Tissue',
     comparator: (a, b) => d3.ascending(a.tissue.name, b.tissue.name),
-    renderCell: (d) => d.tissue.name,
+    renderCell: d => d.tissue.name,
   },
   {
     id: 'qtlStudyName',
@@ -160,7 +165,7 @@ const tableColumns = [
     id: 'indexVariant',
     label: 'Lead variant',
     comparator: (a, b) => d3.ascending(a.indexVariant.id, b.indexVariant.id),
-    renderCell: (d) => (
+    renderCell: d => (
       <Link to={`/variant/${d.indexVariant.id}`}>{d.indexVariant.id}</Link>
     ),
   },
@@ -169,7 +174,7 @@ const tableColumns = [
     label: 'QTL beta',
     tooltip:
       'QTL effect with respect to the alternative allele of the page variant',
-    renderCell: (d) => significantFigures(d.beta),
+    renderCell: d => significantFigures(d.beta),
   },
   {
     id: 'h3',
@@ -180,26 +185,26 @@ const tableColumns = [
         colocalise
       </React.Fragment>
     ),
-    renderCell: (d) => significantFigures(d.h3),
+    renderCell: d => significantFigures(d.h3),
   },
   {
     id: 'h4',
     label: 'H4',
     tooltip: 'Posterior probability that the signals colocalise',
-    renderCell: (d) => significantFigures(d.h4),
+    renderCell: d => significantFigures(d.h4),
   },
   {
     id: 'log2h4h3',
     label: 'log2(H4/H3)',
     tooltip: 'Log-likelihood that the signals colocalise',
-    renderCell: (d) => significantFigures(d.log2h4h3),
+    renderCell: d => significantFigures(d.log2h4h3),
   },
 ];
 
-const getDownloadData = (data) => {
-  return data.map((d) => ({
+const getDownloadData = data => {
+  return data.map(d => ({
     'gene.symbol': d.gene.symbol,
-    phenotypeId: d.phenotypeId,
+    phenotypeId: getPhenotypeId(d.phenotypeId),
     'tissue.name': d.tissue.name,
     qtlStudyName: d.qtlStudyName,
     indexVariant: d.indexVariant.id,
@@ -216,7 +221,7 @@ const buildCredibleSet = (data, study, indexVariant, credSet95Value) => {
   if (selection === undefined) return [];
   return selection
     .map(flattenPosition)
-    .filter((d) => (credSet95Value === '95' ? d.is95CredibleSet : true));
+    .filter(d => (credSet95Value === '95' ? d.is95CredibleSet : true));
 };
 
 class StudyLocusPage extends React.Component {
@@ -234,7 +239,7 @@ class StudyLocusPage extends React.Component {
   handleGWASTabsChange = (_, gwasTabsValue) => {
     this.setState({ gwasTabsValue });
   };
-  handleCredSet95Change = (event) => {
+  handleCredSet95Change = event => {
     this.setState({ credSet95Value: event.target.value });
   };
   handleLog2h4h3SliderChange = (_, log2h4h3SliderValue) => {
@@ -243,7 +248,7 @@ class StudyLocusPage extends React.Component {
   handleH4SliderChange = (_, h4SliderValue) => {
     this.setState({ h4SliderValue });
   };
-  handleCredibleSetIntersectionKeysCheckboxClick = (key) => (event) => {
+  handleCredibleSetIntersectionKeysCheckboxClick = key => event => {
     const { credibleSetIntersectionKeys } = this.state;
     if (event.target.checked) {
       this.setState({
@@ -252,7 +257,7 @@ class StudyLocusPage extends React.Component {
     } else {
       this.setState({
         credibleSetIntersectionKeys: credibleSetIntersectionKeys.filter(
-          (d) => d !== key
+          d => d !== key
         ),
       });
     }
@@ -337,13 +342,10 @@ class StudyLocusPage extends React.Component {
                 variantInfo,
               } = data;
 
-              const maxQTLLog2h4h3 = d3.max(
-                qtlColocalisation,
-                (d) => d.log2h4h3
-              );
+              const maxQTLLog2h4h3 = d3.max(qtlColocalisation, d => d.log2h4h3);
               const maxGWASLog2h4h3 = d3.max(
                 gwasColocalisation,
-                (d) => d.log2h4h3
+                d => d.log2h4h3
               );
               const maxLog2h4h3 = d3.max([maxQTLLog2h4h3, maxGWASLog2h4h3]);
 
@@ -358,21 +360,21 @@ class StudyLocusPage extends React.Component {
                   : null;
 
               const gwasColocalisationFiltered = gwasColocalisation
-                .filter((d) => d.log2h4h3 >= this.state.log2h4h3SliderValue)
-                .filter((d) => d.h4 >= this.state.h4SliderValue)
+                .filter(d => d.log2h4h3 >= this.state.log2h4h3SliderValue)
+                .filter(d => d.h4 >= this.state.h4SliderValue)
                 .sort(log2h4h3Comparator)
                 .reverse();
 
               const qtlColocalisationFiltered = qtlColocalisation
-                .filter((d) => d.log2h4h3 >= this.state.log2h4h3SliderValue)
-                .filter((d) => d.h4 >= this.state.h4SliderValue)
+                .filter(d => d.log2h4h3 >= this.state.log2h4h3SliderValue)
+                .filter(d => d.h4 >= this.state.h4SliderValue)
                 .sort(log2h4h3Comparator)
                 .reverse();
               const associationSummary = pageSummary;
 
               const pageCredibleSetAdjusted = pageCredibleSet
                 .map(flattenPosition)
-                .filter((d) =>
+                .filter(d =>
                   credSet95Value === '95' ? d.is95CredibleSet : true
                 );
               const pageCredibleSetKey = `gwasCredibleSet__${studyId}__${indexVariantId}`;
@@ -433,6 +435,7 @@ class StudyLocusPage extends React.Component {
                         </Typography>
                       )}
                     </Grid>
+
                     <Grid xs={4}>
                       <Typography variant="subtitle1">Study details</Typography>
                       <Typography variant="subtitle2">
@@ -458,7 +461,12 @@ class StudyLocusPage extends React.Component {
                           'NA'
                         )}
                       </Typography>
+                      <Typography variant="subtitle2">
+                        <strong>Has sumstats:</strong>{' '}
+                        {studyInfo.hasSumstats ? 'yes' : 'no'}
+                      </Typography>
                     </Grid>
+
                     <Grid xs={4}>
                       <Typography variant="subtitle1">
                         Variant details
@@ -683,22 +691,22 @@ class StudyLocusPage extends React.Component {
                           qtlColocalisationFiltered.map(
                             ({
                               qtlStudyName,
-                              phenotypeId,
+                              gene,
                               tissue,
                               indexVariant,
                               ...rest
                             }) => {
-                              const key = `qtlCredibleSet__${qtlStudyName}__${phenotypeId}__${tissue.id}__${indexVariant.id}`;
+                              const key = `qtlCredibleSet__${qtlStudyName}__${gene.id}__${tissue.id}__${indexVariant.id}`;
                               return {
                                 key,
                                 qtlStudyName,
-                                phenotypeId,
+                                gene,
                                 tissue,
                                 indexVariant,
                                 credibleSet: data2[key]
                                   ? data2[key]
                                       .map(flattenPosition)
-                                      .filter((d) =>
+                                      .filter(d =>
                                         credSet95Value === '95'
                                           ? d.is95CredibleSet
                                           : true
@@ -724,10 +732,10 @@ class StudyLocusPage extends React.Component {
                         ];
                         const { credibleSetIntersectionKeys } = this.state;
                         const credibleSetsChecked = credibleSetsAll.filter(
-                          (d) => credibleSetIntersectionKeys.indexOf(d.key) >= 0
+                          d => credibleSetIntersectionKeys.indexOf(d.key) >= 0
                         );
                         const variantsByCredibleSets = credibleSetsChecked.map(
-                          (d) =>
+                          d =>
                             d.credibleSet.map(({ tagVariant, ...rest }) => ({
                               statsFields: rest,
                               ...tagVariant,
@@ -735,7 +743,7 @@ class StudyLocusPage extends React.Component {
                         );
                         const variantIdsInCredibleSetsIntersection =
                           variantsByCredibleSets.reduce((acc, vs, i) => {
-                            vs.forEach((v) => {
+                            vs.forEach(v => {
                               const { statsFields, ...variantFields } = v;
                               if (acc[v.id]) {
                                 acc[v.id].posteriorProbabilityProd *=
@@ -761,11 +769,11 @@ class StudyLocusPage extends React.Component {
                         const variantsByCredibleSetsIntersection =
                           Object.values(variantIdsInCredibleSetsIntersection)
                             .filter(
-                              (v) =>
+                              v =>
                                 v.appearsInCount ===
                                 variantsByCredibleSets.length
                             )
-                            .map((v) => ({
+                            .map(v => ({
                               ...v,
                               posteriorProbability: v.posteriorProbabilityProd, // aliased for colouring on plot
                             }));
@@ -777,46 +785,44 @@ class StudyLocusPage extends React.Component {
                             </Typography>
                             {gwasColocalisationCredibleSetsFiltered.length >
                             0 ? (
-                              gwasColocalisationCredibleSetsFiltered.map(
-                                (d) => {
-                                  return (
-                                    <CredibleSetWithRegional
-                                      key={d.key}
-                                      checkboxProps={{
-                                        checked:
-                                          this.state.credibleSetIntersectionKeys.indexOf(
-                                            d.key
-                                          ) >= 0,
-                                        onChange:
-                                          this.handleCredibleSetIntersectionKeysCheckboxClick(
-                                            d.key
-                                          ),
-                                        value: d.key,
-                                      }}
-                                      credibleSetProps={{
-                                        label: traitAuthorYear(d.study),
+                              gwasColocalisationCredibleSetsFiltered.map(d => {
+                                return (
+                                  <CredibleSetWithRegional
+                                    key={d.key}
+                                    checkboxProps={{
+                                      checked:
+                                        this.state.credibleSetIntersectionKeys.indexOf(
+                                          d.key
+                                        ) >= 0,
+                                      onChange:
+                                        this.handleCredibleSetIntersectionKeysCheckboxClick(
+                                          d.key
+                                        ),
+                                      value: d.key,
+                                    }}
+                                    credibleSetProps={{
+                                      label: traitAuthorYear(d.study),
+                                      start,
+                                      end,
+                                      h4: d.h4,
+                                      logH4H3: d.log2h4h3,
+                                      data: d.credibleSet,
+                                    }}
+                                    regionalProps={{
+                                      title: null,
+                                      query: GWAS_REGIONAL_QUERY,
+                                      variables: {
+                                        studyId: d.study.studyId,
+                                        chromosome,
                                         start,
                                         end,
-                                        h4: d.h4,
-                                        logH4H3: d.log2h4h3,
-                                        data: d.credibleSet,
-                                      }}
-                                      regionalProps={{
-                                        title: null,
-                                        query: GWAS_REGIONAL_QUERY,
-                                        variables: {
-                                          studyId: d.study.studyId,
-                                          chromosome,
-                                          start,
-                                          end,
-                                        },
-                                        start,
-                                        end,
-                                      }}
-                                    />
-                                  );
-                                }
-                              )
+                                      },
+                                      start,
+                                      end,
+                                    }}
+                                  />
+                                );
+                              })
                             ) : (
                               <Typography align="center">
                                 No GWAS studies satisfying the applied filters.
@@ -828,7 +834,7 @@ class StudyLocusPage extends React.Component {
                             </Typography>
                             {qtlColocalisationCredibleSetsFiltered.length >
                             0 ? (
-                              qtlColocalisationCredibleSetsFiltered.map((d) => {
+                              qtlColocalisationCredibleSetsFiltered.map(d => {
                                 return (
                                   <CredibleSetWithRegional
                                     key={d.key}
@@ -856,7 +862,7 @@ class StudyLocusPage extends React.Component {
                                       query: QTL_REGIONAL_QUERY,
                                       variables: {
                                         studyId: d.qtlStudyName,
-                                        phenotypeId: d.phenotypeId,
+                                        geneId: d.gene.id,
                                         bioFeature: d.tissue.id,
                                         chromosome,
                                         start,

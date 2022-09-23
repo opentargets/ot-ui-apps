@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from 'ui';
 
@@ -12,12 +12,14 @@ import VariantPage from './pages/VariantPage';
 import LocusPage from './pages/LocusPage';
 import StudyLocusPage from './pages/StudyLocusPage';
 import ImmunobasePage from './pages/ImmunobasePage';
+import NotFoundPage from './pages/NotFoundPage';
+import APIPage from './pages/APIPage';
 
 const App = () => (
   <ApolloProvider client={client}>
     <ThemeProvider>
       <Router>
-        <React.Fragment>
+        <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/study/:studyId" component={StudyPage} />
           <Route path="/study-comparison/:studyId" component={StudiesPage} />
@@ -29,7 +31,11 @@ const App = () => (
             component={StudyLocusPage}
           />
           <Route path="/immunobase" component={ImmunobasePage} />
-        </React.Fragment>
+          <Route path="/api" component={APIPage} />
+          <Route>
+            <NotFoundPage />
+          </Route>
+        </Switch>
       </Router>
     </ThemeProvider>
   </ApolloProvider>

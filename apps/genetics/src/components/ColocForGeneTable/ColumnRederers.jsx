@@ -1,17 +1,11 @@
-import React, { Fragment } from 'react';
-import * as d3 from 'd3';
+import { ascending } from 'd3';
 
-import {
-  Link,
-  OtTableRF,
-  Autocomplete,
-  significantFigures,
-  DataDownloader,
-} from '../ot-ui-components';
+import { Link, Autocomplete, significantFigures } from '../../ot-ui-components';
 
-import StudyLocusLink from './StudyLocusLink';
+import StudyLocusLink from '../StudyLocusLink';
+import { generateComparator, getPhenotypeId } from '../../utils';
 
-const getDownloadColumns = () => {
+export const getDownloadColumns = () => {
   return [
     {
       id: 'study',
@@ -53,25 +47,30 @@ const getDownloadColumns = () => {
       id: 'log2h4h3',
       label: 'log2(H4/H3)',
     },
+    {
+      id: 'hasSumstats',
+      label: 'Has sumstats',
+    },
   ];
 };
 
-const getDownloadRows = rows => {
+export const getDownloadRows = rows => {
   return rows.map(row => ({
     study: row.study.studyId,
     traitReported: row.study.traitReported,
     pubAuthor: row.study.pubAuthor,
     indexVariant: row.leftVariant.id,
-    phenotypeId: row.phenotypeId,
+    phenotypeId: getPhenotypeId(row.phenotypeId),
     tissueName: row.tissue.name,
     qtlStudyId: row.qtlStudyId,
     h3: row.h3,
     h4: row.h4,
     log2h4h3: row.log2h4h3,
+    hasSumstats: row.study.hasSumstats,
   }));
 };
 
-const tableColumns = ({
+export const tableColumns = ({
   colocTraitFilterValue,
   colocTraitFilterOptions,
   colocTraitFilterHandler,
@@ -79,7 +78,7 @@ const tableColumns = ({
   {
     id: 'study',
     label: 'Study',
-    comparator: (a, b) => d3.ascending(a.study.studyId, b.study.studyId),
+    comparator: (a, b) => ascending(a.study.studyId, b.study.studyId),
     renderCell: d => (
       <Link to={`/study/${d.study.studyId}`}>{d.study.studyId}</Link>
     ),
@@ -88,7 +87,7 @@ const tableColumns = ({
     id: 'traitReported',
     label: 'Trait reported',
     comparator: (a, b) =>
-      d3.ascending(a.study.traitReported, b.study.traitReported),
+      ascending(a.study.traitReported, b.study.traitReported),
     renderCell: d => d.study.traitReported,
     renderFilter: () => (
       <Autocomplete
@@ -103,36 +102,35 @@ const tableColumns = ({
   {
     id: 'pubAuthor',
     label: 'Author',
-    comparator: (a, b) => d3.ascending(a.study.pubAuthor, b.study.pubAuthor),
+    comparator: (a, b) => ascending(a.study.pubAuthor, b.study.pubAuthor),
     renderCell: d => d.study.pubAuthor,
   },
   {
     id: 'indexVariant',
     label: 'Lead variant',
-    comparator: (a, b) => d3.ascending(a.leftVariant.id, b.leftVariant.id),
+    comparator: (a, b) => ascending(a.leftVariant.id, b.leftVariant.id),
     renderCell: d => (
       <Link to={`/variant/${d.leftVariant.id}`}>{d.leftVariant.id}</Link>
     ),
   },
   {
     id: 'phenotypeId',
-    label: 'Phenotype',
+    label: 'Molecular trait',
+    tooltip: 'Entity that colocalises with the QTL in a given GWAS study',
+    comparator: (a, b) =>
+      ascending(getPhenotypeId(a.phenotypeId), getPhenotypeId(b.phenotypeId)),
+    renderCell: d => getPhenotypeId(d.phenotypeId),
   },
   {
     id: 'tissue.name',
     label: 'Tissue',
-    comparator: (a, b) => d3.ascending(a.tissue.name, b.tissue.name),
+    comparator: (a, b) => ascending(a.tissue.name, b.tissue.name),
     renderCell: d => d.tissue.name,
   },
   {
     id: 'qtlStudyId',
     label: 'Source',
   },
-  // {
-  //   id: 'beta',
-  //   label: 'QTL beta',
-  //   renderCell: d => significantFigures(d.beta),
-  // },
   {
     id: 'h3',
     label: 'H3',
@@ -149,6 +147,12 @@ const tableColumns = ({
     renderCell: d => significantFigures(d.log2h4h3),
   },
   {
+    id: 'hasSumstats',
+    label: 'Has sumstats',
+    comparator: generateComparator(d => d.study.hasSumstats),
+    renderCell: d => (d.study.hasSumstats ? <>yes</> : <>no</>),
+  },
+  {
     id: 'studyLocus',
     label: 'View',
     renderCell: d => (
@@ -159,37 +163,3 @@ const tableColumns = ({
     ),
   },
 ];
-
-const ColocTable = ({
-  loading,
-  error,
-  filenameStem,
-  data,
-  colocTraitFilterValue,
-  colocTraitFilterOptions,
-  colocTraitFilterHandler,
-}) => (
-  <Fragment>
-    <DataDownloader
-      tableHeaders={getDownloadColumns()}
-      rows={getDownloadRows(data)}
-      fileStem={filenameStem}
-    />
-    <OtTableRF
-      loading={loading}
-      error={error}
-      columns={tableColumns({
-        colocTraitFilterValue,
-        colocTraitFilterOptions,
-        colocTraitFilterHandler,
-      })}
-      filters
-      data={data}
-      sortBy="log2h4h3"
-      order="desc"
-      downloadFileStem={filenameStem}
-    />
-  </Fragment>
-);
-
-export default ColocTable;
