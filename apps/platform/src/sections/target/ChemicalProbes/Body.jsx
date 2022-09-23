@@ -17,7 +17,7 @@ import CHEMICAL_PROBES_QUERY from './ChemicalProbes.gql';
 
 const scores = [
   {
-    field: 'probesDrugScore',
+    field: 'probesDrugsScore',
     label: 'Drugs',
     description:
       'The P&D probe-likeness score is the sum of 6 parameters: target potency, target selectivity, cell potency, potency-selectivity synergy, presence of a control compound and presence of an orthogonal probe.',
