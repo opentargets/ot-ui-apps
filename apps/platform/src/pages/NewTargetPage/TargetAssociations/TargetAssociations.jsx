@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useMemo } from 'react';
 import { gql } from '@apollo/client';
-
+import Skeleton from '@material-ui/lab/Skeleton';
 import {
   useReactTable,
   getCoreRowModel,
@@ -121,13 +121,16 @@ function TargetAssociations({ ensgId }) {
     {
       accessorFn: row => row.score,
       id: 'score',
-      cell: row => (
-        <ColoredCell
-          scoreValue={row.getValue()}
-          globalScore
-          rounded={!gScoreRect}
-        />
-      ),
+      cell: row => {
+        if (loading) return <Skeleton variant="rect" width={30} height={25} />;
+        return (
+          <ColoredCell
+            scoreValue={row.getValue()}
+            globalScore
+            rounded={!gScoreRect}
+          />
+        );
+      },
       header: () => <span>Score</span>,
       footer: props => props.column.id,
     },
@@ -186,18 +189,22 @@ function TargetAssociations({ ensgId }) {
       id,
       header: label,
       accessorFn: row => row[id],
-      cell: row =>
-        row.getValue() ? (
+      cell: row => {
+        if (loading)
+          return <Skeleton variant="circle" width={26} height={25} />;
+        return row.getValue() ? (
           <ColoredCell
             scoreId={id}
             scoreValue={row.getValue()}
             onClick={expanderHandler(row.row.getToggleExpandedHandler())}
             rounded={!scoreRect}
             cell={row}
+            loading={loading}
           />
         ) : (
           <ColoredCell rounded={!scoreRect} />
-        ),
+        );
+      },
     }));
   }
 
