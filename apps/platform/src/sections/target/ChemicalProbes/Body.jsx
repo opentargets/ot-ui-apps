@@ -59,7 +59,7 @@ const columns = [
     },
     exportValue: row => row.id,
     filterValue: row => row.id,
-    width: '19%',
+    width: '25%',
   },
   {
     id: 'isHighQuality',
@@ -75,7 +75,7 @@ const columns = [
     filterValue: row => (row.isHighQuality ? 1 : 0),
     tooltip:
       'Chemical probes selection based on the union of following criteria: compound belongs to one of the high-quality probe sets; use in Cells or Organisms rating ≥ 75%; P&D approved experimental probe; not labelled as obsolete.',
-    width: '10%',
+    width: '12%',
   },
   {
     id: 'mechanismOfAction',
@@ -83,7 +83,7 @@ const columns = [
     renderCell: row => row.mechanismOfAction?.join(', ') || naLabel,
     exportValue: row => row.mechanismOfAction?.join(', '),
     filterValue: row => row.mechanismOfAction?.join(', ') || naLabel,
-    width: '19%',
+    width: '25%',
   },
   {
     id: 'origin',
@@ -91,7 +91,7 @@ const columns = [
     renderCell: row => row.origin?.join(', ') || naLabel,
     exportValue: row => row.origin?.join(', '),
     filterValue: row => row.origin?.join(', ') || naLabel,
-    width: '19%',
+    width: '25%',
   },
   {
     id: 'probesDrugsScore',
