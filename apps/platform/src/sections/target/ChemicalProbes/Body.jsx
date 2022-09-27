@@ -1,28 +1,18 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-import _ from 'lodash';
 
 import Link from '../../../components/Link';
 import SectionItem from '../../../components/Section/SectionItem';
 import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
 import { naLabel } from '../../../constants';
-import ChipList from '../../../components/ChipList';
 import { DataTable } from '../../../components/Table';
 import { defaultRowsPerPageOptions } from '../../../constants';
 import ClinvarStars from '../../../components/ClinvarStars';
 
 import CHEMICAL_PROBES_QUERY from './ChemicalProbes.gql';
 
-const scores = [
-  {
-    field: 'probesDrugsScore',
-    label: 'Drugs',
-    description:
-      'The P&D probe-likeness score is the sum of 6 parameters: target potency, target selectivity, cell potency, potency-selectivity synergy, presence of a control compound and presence of an orthogonal probe.',
-  },
-];
 
 /**
  * Style the tooltips as "label: value" with a bold label
@@ -115,11 +105,6 @@ function Body({ definition, id, label: symbol }) {
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={data => {
-        // sort probes manually as we need a double custom sort based on quality and origin
-        // const sortedProbes = _.sortBy(data.target.chemicalProbes, [
-        //   p => !p.isHighQuality,
-        //   p => !p.origin?.map(o => o.toLowerCase()).includes('experimental'),
-        // ]);
         return data.target.chemicalProbes?.length > 0 ? (
           <DataTable
             columns={columns}
