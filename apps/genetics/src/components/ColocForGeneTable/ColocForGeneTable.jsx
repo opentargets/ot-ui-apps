@@ -33,7 +33,7 @@ const ColocTable = ({
       })}
       filters
       data={data}
-      sortBy="log2h4h3"
+      sortBy="h4"
       order="desc"
       downloadFileStem={filenameStem}
     />

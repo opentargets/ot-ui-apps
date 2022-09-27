@@ -30,10 +30,12 @@ export const mainMenuItems = [
     external: true,
   },
   // API
+  // TODO: update config
   {
     name: 'API',
-    url: config.apiUrl.split('/graphql')[0],
-    external: true,
+    url: '/api',
+    // url: config.apiUrl.split('/graphql')[0],
+    external: false,
   },
   // Community
   {

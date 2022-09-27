@@ -13,6 +13,7 @@ import LocusPage from './pages/LocusPage';
 import StudyLocusPage from './pages/StudyLocusPage';
 import ImmunobasePage from './pages/ImmunobasePage';
 import NotFoundPage from './pages/NotFoundPage';
+import APIPage from './pages/APIPage';
 
 const App = () => (
   <ApolloProvider client={client}>
@@ -30,6 +31,7 @@ const App = () => (
             component={StudyLocusPage}
           />
           <Route path="/immunobase" component={ImmunobasePage} />
+          <Route path="/api" component={APIPage} />
           <Route>
             <NotFoundPage />
           </Route>

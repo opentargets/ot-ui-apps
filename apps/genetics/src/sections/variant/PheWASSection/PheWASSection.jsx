@@ -269,7 +269,10 @@ function PheWASSection({ variantId, history }) {
                     ref={pheWASPlot}
                   />
                 </DownloadSVGPlot>
-                <SectionHeading subheading="Forest Plot" />
+                <SectionHeading heading="Forest Plot"/>
+                <Typography style={{ display: 'inline' }}>
+                  Add a trait category to compare:
+                </Typography>{' '}
                 <ForestPlot
                   refs={forestPlot}
                   data={pheWASAssociationsFiltered}
