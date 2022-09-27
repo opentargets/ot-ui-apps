@@ -94,37 +94,14 @@ const columns = [
     width: '19%',
   },
   {
-    id: 'score',
+    id: 'probesDrugsScore',
     label: 'Score',
-    renderCell: row => {
-      const rowScores = scores.filter(s => row[s.field] !== null);
-      return rowScores?.length > 0 ? (
-        <ChipList
-          items={rowScores.map(s => ({
-            label: s.label + ': ' + Number(row[s.field]).toPrecision(),
-            tooltip: (
-              <>
-                <TooltipStyledLabel label="Score" value={row[s.field]} />
-                <TooltipStyledLabel label="Description" value={s.description} />
-              </>
-            ),
-          }))}
-        />
-      ) : (
-        <ChipList items={[{ label: 'Not available' }]} />
-      );
-    },
-    exportValue: row =>
-      scores
-        .filter(s => row[s.field] !== null)
-        .map(s => s.label + ': ' + row[s.field])
-        .join(', '),
-    filterValue: row =>
-      scores
-        .filter(s => row[s.field] !== null)
-        .map(s => s.label + ': ' + row[s.field])
-        .join(', ') || naLabel,
-    width: '33%',
+    renderCell: row => (
+        row.probesDrugsScore || naLabel
+    ),
+    exportValue: row => row.probesDrugsScore || naLabel,
+    filterValue: row => row.probesDrugsScore,
+    width: '13%',
   },
 ];
 
