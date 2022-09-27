@@ -116,18 +116,20 @@ function Body({ definition, id, label: symbol }) {
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={data => {
         // sort probes manually as we need a double custom sort based on quality and origin
-        const sortedProbes = _.sortBy(data.target.chemicalProbes, [
-          p => !p.isHighQuality,
-          p => !p.origin?.map(o => o.toLowerCase()).includes('experimental'),
-        ]);
+        // const sortedProbes = _.sortBy(data.target.chemicalProbes, [
+        //   p => !p.isHighQuality,
+        //   p => !p.origin?.map(o => o.toLowerCase()).includes('experimental'),
+        // ]);
         return data.target.chemicalProbes?.length > 0 ? (
           <DataTable
             columns={columns}
-            rows={sortedProbes}
+            rows={data.target.chemicalProbes}
             showGlobalFilter
             dataDownloader
             dataDownloaderFileStem={`${symbol}-chemical-probes`}
             fixed
+            sortBy = "probesDrugsScore"
+            order = "desc"
             rowsPerPageOptions={defaultRowsPerPageOptions}
             noWrap={false}
             noWrapHeader={false}
