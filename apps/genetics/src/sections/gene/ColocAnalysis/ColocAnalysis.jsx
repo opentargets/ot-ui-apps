@@ -6,20 +6,7 @@ import _ from 'lodash';
 import GENE_COLOC_ANALYSIS_QUERY from './ColocAnalysisQuery.gql';
 import { SectionHeading } from '../../../ot-ui-components';
 import ColocForGeneTable from '../../../components/ColocForGeneTable';
-// import { getData } from '../../../utils';
-
-// TODO: rempve after study locus PR merge
-const getData = (data, property) => {
-  if (!data || Object.keys(data).length === 0) return false;
-  if (!property) return data;
-  if (hasData(data, property)) return data[property];
-  return false;
-};
-
-const hasData = (data, property) => {
-  if (data && data[property]) return true;
-  return false;
-};
+import { getData } from '../../../utils';
 
 function ColocAnalysis({
   geneId,
