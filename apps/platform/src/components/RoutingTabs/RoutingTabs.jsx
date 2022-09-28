@@ -7,7 +7,7 @@ import {
   useRouteMatch,
 } from 'react-router-dom';
 import { Tabs } from '@material-ui/core';
-import LoadingBackdrop from '../LoadingBackdrop';
+import { LoadingBackdrop } from 'ui';
 
 function RoutingTabs({ children }) {
   const match = useRouteMatch();
