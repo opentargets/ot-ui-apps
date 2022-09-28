@@ -1,21 +1,25 @@
 import React from 'react';
-import * as d3 from 'd3';
+import { ascending } from 'd3';
+import { useQuery } from '@apollo/client';
 
 import {
   Link,
   OtTableRF,
   DataDownloader,
   significantFigures,
-} from '../ot-ui-components';
+  SectionHeading
+} from '../../../ot-ui-components';
 
-import StudyLocusLink from './StudyLocusLink';
-import { naLabel } from '../constants';
+import STUDY_LOCUS_COLOCGWASTABLE from './StudyLocusColocGWASTable.gql';
+import { getData, traitAuthorYear } from '../../../utils';
+import StudyLocusLink from '../../../components/StudyLocusLink';
+import { naLabel } from '../../../constants';
 
 const tableColumns = [
   {
     id: 'study',
     label: 'Study',
-    comparator: (a, b) => d3.ascending(a.study.studyId, b.study.studyId),
+    comparator: (a, b) => ascending(a.study.studyId, b.study.studyId),
     renderCell: d => (
       <Link to={`/study/${d.study.studyId}`}>{d.study.studyId}</Link>
     ),
@@ -24,19 +28,19 @@ const tableColumns = [
     id: 'traitReported',
     label: 'Trait reported',
     comparator: (a, b) =>
-      d3.ascending(a.study.traitReported, b.study.traitReported),
+      ascending(a.study.traitReported, b.study.traitReported),
     renderCell: d => d.study.traitReported,
   },
   {
     id: 'pubAuthor',
     label: 'Author',
-    comparator: (a, b) => d3.ascending(a.study.pubAuthor, b.study.pubAuthor),
+    comparator: (a, b) => ascending(a.study.pubAuthor, b.study.pubAuthor),
     renderCell: d => d.study.pubAuthor,
   },
   {
     id: 'indexVariant',
     label: 'Lead variant',
-    comparator: (a, b) => d3.ascending(a.indexVariant.id, b.indexVariant.id),
+    comparator: (a, b) => ascending(a.indexVariant.id, b.indexVariant.id),
     renderCell: d => (
       <Link to={`/variant/${d.indexVariant.id}`}>{d.indexVariant.id}</Link>
     ),
@@ -75,7 +79,7 @@ const tableColumns = [
     id: 'locus',
     label: 'View',
     comparator: (a, b) =>
-      d3.ascending(a.study.hasSumstats, b.study.hasSumstats),
+      ascending(a.study.hasSumstats, b.study.hasSumstats),
     renderCell: d => (
       <StudyLocusLink
         indexVariantId={d.indexVariant.id}
@@ -98,20 +102,51 @@ const getDownloadData = data => {
   }));
 };
 
-const ColocGWASTable = ({ loading, error, fileStem, data }) => {
-  const downloadData = getDownloadData(data);
+const ColocGWASTable = ({ studyId, variantId }) => {
+  const fileStem = `gwas-coloc-${studyId}-${variantId}`;
+  let tableData = [];
+  let downloadData;
+  let studyInfo;
+
+  const { loading, error, data: queryResult } = useQuery(
+    STUDY_LOCUS_COLOCGWASTABLE,
+    {
+      variables: { variantId, studyId },
+    }
+  );
+
+  if (queryResult) {
+    downloadData = getDownloadData(queryResult.gwasColocalisation);
+    tableData = getData(queryResult, 'gwasColocalisation');
+    studyInfo = queryResult.studyInfo
+  };
+
+  if (!tableData) {
+    return <></>;
+  };
+
   return (
     <React.Fragment>
+      <SectionHeading
+        heading="GWAS Study Colocalisation"
+        subheading={
+          <React.Fragment>
+            Which GWAS studies colocalise with{' '}
+            <strong>{studyInfo ? traitAuthorYear(studyInfo) : ''}</strong> at this locus?
+          </React.Fragment>
+        }
+      />
       <DataDownloader
         tableHeaders={tableColumns}
         rows={downloadData}
         fileStem={fileStem}
+        loading={loading}
       />
       <OtTableRF
         loading={loading}
         error={error}
         columns={tableColumns}
-        data={data}
+        data={tableData}
         sortBy="log2h4h3"
         order="desc"
       />
