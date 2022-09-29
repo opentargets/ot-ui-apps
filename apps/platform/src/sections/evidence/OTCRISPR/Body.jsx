@@ -93,6 +93,10 @@ const getColumns = classes => [
     id: 'resourceScore',
     label: 'Significance',
     filterValue: row => row.resourceScore + '; ' + row.statisticalTestTail,
+    renderCell: row =>
+      row.resourceScore
+        ? parseFloat(row.log2FoldChangeValue.toFixed(6))
+        : 'N/A',
   },
   {
     id: 'releaseVersion',
