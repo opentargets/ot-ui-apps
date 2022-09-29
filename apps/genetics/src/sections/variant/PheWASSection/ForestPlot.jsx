@@ -195,9 +195,9 @@ const ForestPlot = ({
       .append('text')
       .text('Trait')
       .attr('clip-path', 'url(#clip1)')
-      .style('font-size', '17px')
-      .style('font-family', 'sans-serif')
-      .style('font-weight', 'bold')
+      .style('font-size', '1rem')
+      .style('font-family', '"Inter", sans-serif')
+      .style('fill', '#5A5F5F')
       .attr('dy', (cfg.rowHeight - 15) / 2 + 11)
       .attr('dx', 8);
 
@@ -206,9 +206,9 @@ const ForestPlot = ({
       .select('.topRowTable')
       .append('text')
       .text('P-value')
-      .style('font-size', '17px')
-      .style('font-family', 'sans-serif')
-      .style('font-weight', 'bold')
+      .style('font-size', '1rem')
+      .style('font-family', '"Inter", sans-serif')
+      .style('fill', '#5A5F5F')
       .attr('dy', (cfg.rowHeight - 15) / 2 + 11)
       .attr('dx', cfg.traitnameW + 8);
 
@@ -375,8 +375,8 @@ const ForestPlot = ({
       .attr('fill', cfg.treeColor)
       .attr('text-anchor', 'middle')
       .attr('x', cfg.plotW / 2)
-      .style('font-weight', 'bold')
-      .style('font-size', 15);
+      .style('font-size', 15)
+      .style('font-family', '"Inter", sans-serif');
 
     // axis color
     bottomRowSvg
@@ -446,7 +446,7 @@ const ForestPlot = ({
         d => d.selected
       )}
       handleSelectOption={selectionHandler}
-      placeholder="Add a trait category to compare..."
+      // placeholder="Add a trait category to compare..."
       multiple
       wide
     />
