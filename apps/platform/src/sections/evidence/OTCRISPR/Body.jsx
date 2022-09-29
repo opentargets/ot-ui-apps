@@ -94,9 +94,7 @@ const getColumns = classes => [
     label: 'Significance',
     filterValue: row => row.resourceScore + '; ' + row.statisticalTestTail,
     renderCell: row =>
-      row.resourceScore
-        ? parseFloat(row.log2FoldChangeValue.toFixed(6))
-        : 'N/A',
+      row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : 'N/A',
   },
   {
     id: 'releaseVersion',
