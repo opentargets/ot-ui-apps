@@ -155,13 +155,11 @@ const getColumns = classes => [
     id: 'geneticInteractionScore',
     label: 'BLISS score',
     renderCell: row => ((row.geneticInteractionScore).toFixed(3)),
-    numeric:true,
   },
   {
     id: 'geneticInteractionPValue',
     label: 'P-value',
     renderCell: row => (<ScientificNotation number={row.geneticInteractionPValue} />),
-    numeric: true,
   },
   {
     id: 'releaseVersion',
