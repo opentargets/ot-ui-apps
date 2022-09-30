@@ -204,18 +204,30 @@ const exportColumns = [
     label: 'disease id',
     exportValue: row => row.disease.id,
   },
+  // genes
   {
-    label: 'target A',
+    label: 'library gene',
     exportValue: row => row.target.approvedSymbol,
   },
   {
-    label: 'target A id',
+    label: 'libarary gene id',
     exportValue: row => row.target.id,
   },
   {
-    label: 'target B',
+    label: 'anchor gene',
     exportValue: row => row.interactingTargetFromSourceId,
   },
+  // cell lines and biomarkers
+  {
+    label: 'cell line',
+    exportValue: row => row.cellType,
+  },
+  {
+    label: 'cell line biomarkers',
+    exportValue: row => row.biomarkerList.map(bm => bm.name
+    ).join(','),
+  },
+  // cell count logFC and values in tooltip
   {
     label: 'direction of effect',
     exportValue: row =>
@@ -233,34 +245,22 @@ const exportColumns = [
     label: 'phenotypicConsequenceFDR',
     exportValue: row => row.phenotypicConsequenceFDR,
   },
+  // type of effect
   {
-    label: 'Cooperativity',
-    exportValue: row =>
-      row.geneticInteractionPValue >= 0.05 ? 'Additive' : 'Synergistic',
+    label: 'type of effect',
+    exportValue: row => row.geneInteractionType,
   },
   {
-    label: 'geneticInteractionMethod',
-    exportValue: row => row.geneticInteractionMethod,
+    label: 'BLISS score',
+    exportValue: row => ((row.geneticInteractionScore).toFixed(3)),
   },
   {
-    label: 'geneticInteractionScore',
-    exportValue: row => row.geneticInteractionScore,
-  },
-  {
-    label: 'geneticInteractionPValue',
+    label: 'p value',
     exportValue: row => row.geneticInteractionPValue,
   },
   {
-    label: 'geneticInteractionFDR',
-    exportValue: row => row.geneticInteractionFDR,
-  },
-  {
-    label: 'cell line',
-    exportValue: row => row.cellType,
-  },
-  {
-    label: 'cell line biomarkers',
-    exportValue: row => row.biomarkerList.join(','),
+    label: 'release version',
+    exportValue: row => row.releaseVersion,
   },
 ];
 
