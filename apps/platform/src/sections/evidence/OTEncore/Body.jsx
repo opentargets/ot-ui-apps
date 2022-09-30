@@ -18,6 +18,7 @@ import Link from '../../../components/Link';
 import ChipList from '../../../components/ChipList';
 import { defaultRowsPerPageOptions } from '../../../constants';
 import classNames from 'classnames';
+import ScientificNotation from '../../../components/ScientificNotation';
 
 import ENCORE_QUERY from './OTEncoreQuery.gql';
 
@@ -47,35 +48,53 @@ const getColumns = classes => [
   },
   {
     id: 'target',
-    label: 'Target A',
+    label: 'Library gene',
     renderCell: row => (
-      <Tooltip title={row.targetRole}>
-        <span>
-          <Link to={`/target/${row.target.id}`}>
-            {row.target.approvedSymbol}
-          </Link>
-        </span>
-      </Tooltip>
+      <Link to={`/target/${row.target.id}`}>
+        {row.target.approvedSymbol}
+      </Link>
     ),
     filterValue: row => row.target.approvedSymbol + ', ' + row.target.id,
   },
   {
     id: 'interactingTargetFromSourceId',
-    label: 'Target B',
-    renderCell: row => (
-      <Tooltip title={row.interactingTargetRole}>
-        <span>
-          <Link to={`/target/${row.target.id}`}>
-            {row.interactingTargetFromSourceId}
-          </Link>
-        </span>
-      </Tooltip>
-    ),
+    label: 'Anchor gene',
     sortable: true,
   },
   {
+    id: 'cellType',
+    label: 'Cell line',
+    renderCell: row =>
+      row.diseaseCellLines.map(diseaseCellLine => (
+        <Link
+          external
+          to={`https://cellmodelpassports.sanger.ac.uk/passports/${
+            diseaseCellLine.id
+          }`}
+          key={diseaseCellLine.id}
+        >
+          {diseaseCellLine.name}
+        </Link>
+      )),
+  },
+  {
+    id: 'biomarkerList',
+    label: 'Cell line biomarkers',
+    renderCell: row => {
+      return (
+        <ChipList
+          small
+          items={row.biomarkerList.map(bm => ({
+            label: bm.name,
+            tooltip: bm.description,
+          }))}
+        />
+      );
+    },
+  },
+  {
     id: 'phenotypicConsequenceLogFoldChange',
-    label: 'Cell count log fold change',
+    label: 'Cell count logFC',
     tooltip: (
       <>
         When a negative log fold change is measured, it means there is an excess
@@ -128,66 +147,21 @@ const getColumns = classes => [
     ),
   },
   {
-    id: 'geneticInteractionPValue',
+    id: 'geneInteractionType',
     label: 'Type of effect',
-    renderCell: row => (
-      <Tooltip
-        title={
-          <>
-            <TooltipStyledLabel
-              label={'Method'}
-              description={row.geneticInteractionMethod}
-            />
-            <TooltipStyledLabel
-              label={'Score'}
-              description={row.geneticInteractionScore}
-            />
-            <TooltipStyledLabel
-              label={'P-value'}
-              description={row.geneticInteractionPValue}
-            />
-            <TooltipStyledLabel
-              label={'FDR'}
-              description={row.geneticInteractionFDR}
-            />
-          </>
-        }
-      >
-        <span className={classes.primaryColor}>{row.geneInteractionType}</span>
-      </Tooltip>
-    ),
     filterValue: row => row.geneInteractionType,
   },
   {
-    id: 'cellType',
-    label: 'Cell line',
-    renderCell: row =>
-      row.diseaseCellLines.map(diseaseCellLine => (
-        <Link
-          external
-          to={`https://cellmodelpassports.sanger.ac.uk/passports/${
-            diseaseCellLine.id
-          }`}
-          key={diseaseCellLine.id}
-        >
-          {diseaseCellLine.name}
-        </Link>
-      )),
+    id: 'geneticInteractionScore',
+    label: 'BLISS score',
+    renderCell: row => ((row.geneticInteractionScore).toFixed(3)),
+    numeric:true,
   },
   {
-    id: 'biomarkerList',
-    label: 'Cell line biomarkers',
-    renderCell: row => {
-      return (
-        <ChipList
-          small
-          items={row.biomarkerList.map(bm => ({
-            label: bm.name,
-            tooltip: bm.description,
-          }))}
-        />
-      );
-    },
+    id: 'geneticInteractionPValue',
+    label: 'P-value',
+    renderCell: row => (<ScientificNotation number={row.geneticInteractionPValue} />),
+    numeric: true,
   },
   {
     id: 'releaseVersion',
