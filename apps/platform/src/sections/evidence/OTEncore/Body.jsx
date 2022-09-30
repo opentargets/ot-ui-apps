@@ -194,7 +194,11 @@ const exportColumns = [
   // cell lines and biomarkers
   {
     label: 'cell line',
-    exportValue: row => row.cellType,
+    exportValue: row => row.diseaseCellLines.map(diseaseCellLine => diseaseCellLine.name).join(', '),
+  },
+  {
+    label: 'cell line id',
+    exportValue: row => row.diseaseCellLines.map(diseaseCellLine => diseaseCellLine.id).join(', '),
   },
   {
     label: 'cell line biomarkers',
