@@ -93,6 +93,10 @@ const getColumns = classes => [
     },
   },
   {
+    id: 'releaseVersion',
+    label: 'Release version',
+  },
+  {
     id: 'phenotypicConsequenceLogFoldChange',
     label: 'Cell count logFC',
     tooltip: (
@@ -155,15 +159,13 @@ const getColumns = classes => [
     id: 'geneticInteractionScore',
     label: 'BLISS score',
     renderCell: row => ((row.geneticInteractionScore).toFixed(3)),
+    numeric: true,
   },
   {
     id: 'geneticInteractionPValue',
     label: 'P-value',
     renderCell: row => (<ScientificNotation number={row.geneticInteractionPValue} />),
-  },
-  {
-    id: 'releaseVersion',
-    label: 'Release version',
+    numeric: true,
   },
 ];
 
