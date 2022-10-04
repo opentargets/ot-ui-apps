@@ -7,7 +7,7 @@ import SectionItem from '../../../components/Section/SectionItem';
 import Tooltip from '../../../components/Tooltip';
 import { DataTable, TableDrawer } from '../../../components/Table';
 import { defaultRowsPerPageOptions } from '../../../constants';
-import { dataTypesMap } from '../../../dataTypes';
+// import { dataTypesMap } from '../../../dataTypes';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { epmcUrl } from '../../../utils/urls';
 import Description from './Description';
@@ -121,7 +121,7 @@ function Body(props) {
   return (
     <SectionItem
       definition={definition}
-      chipText={dataTypesMap.affected_pathway}
+      chipText={definition.dataType}
       request={request}
       renderDescription={() => (
         <Description symbol={label.symbol} diseaseName={label.name} />

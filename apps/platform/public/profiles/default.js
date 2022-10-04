@@ -20,7 +20,7 @@ var configProfile = {
   isPartnerPreview: false,
 
   // Page specific sections:
-  // hide[Page]SectionsIds: hide the specified sections (comma separated ids, no spaecs, e.g. 'bibliography,otProjects')
+  // hide[Page]SectionsIds: hide the specified sections (comma separated ids, no spaces, e.g. 'bibliography,otProjects')
   // or leave as empty string to show all sections (all public sections, private sections depending on settings)
   //
   // partner[Page]SectionIds: specify the private widget on this page
@@ -39,7 +39,7 @@ var configProfile = {
 
   // evidence page
   hideEvidenceSectionIds: [''],
-  partnerEvidenceSectionIds: ['encore', 'otCrispr', 'validationlab'],
+  partnerEvidenceSectionIds: ['encore', 'ot_crispr', 'ot_crispr_validation'],
 
   // datatypes
   hideDataTypes: [''],
