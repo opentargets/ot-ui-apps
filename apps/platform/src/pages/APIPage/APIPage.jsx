@@ -1,4 +1,5 @@
 import { Suspense, useState, lazy } from 'react';
+import { LoadingBackdrop } from 'ui';
 import {
   Accordion,
   AccordionSummary,
@@ -20,6 +21,8 @@ import TARGET_DISEASE_EVIDENCE from './TargetDiseaseEvidence.gql';
 import TARGET_ANNOTATION from './TargetAnnotation.gql';
 import DISEASE_ANNOTATION from './DiseaseAnnotation.gql';
 import DRUG_ANNOTATION from './DrugAnnotation.gql';
+import SEARCH_ANNOTATION from './SearchAnnotation.gql';
+import SEARCH_ASSOCS from './SearchAssocs.gql';
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
@@ -65,7 +68,7 @@ function APIPage() {
         for more how-to guides and tutorials.
       </Typography>
       <Typography paragraph>
-        Please note that ur API is optimised for a single query. For more
+        Please note that our API is optimised for a single query. For more
         programmatic or systematic analyses, please use{' '}
         <Link
           external
@@ -205,9 +208,40 @@ function APIPage() {
               </div>
             </AccordionDetails>
           </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="subtitle2">Search page</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div>
+                <Typography variant="subtitle2" display="block" paragraph>
+                  Example query for insulin
+                </Typography>
+                <Button
+                  className={classes.buttonMargin}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setQuery(SEARCH_ANNOTATION.loc.source.body)}
+                >
+                  Run sample query
+                </Button>
+                <Typography variant="subtitle2" display="block" paragraph>
+                  Example query to get how many entries there are in each entity category for Insulin
+                </Typography>
+                <Button
+                  className={classes.buttonMargin}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setQuery(SEARCH_ASSOCS.loc.source.body)}
+                >
+                  Run sample query
+                </Button>
+              </div>
+            </AccordionDetails>
+          </Accordion>
         </Grid>
         <Grid item md={9} xl={10}>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<LoadingBackdrop/>}>
             <GraphiQL fetcher={fetcher} query={query} />
           </Suspense>
         </Grid>

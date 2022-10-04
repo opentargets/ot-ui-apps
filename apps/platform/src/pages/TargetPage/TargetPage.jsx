@@ -8,7 +8,7 @@ import ScrollToTop from '../../components/ScrollToTop';
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
 import { getUniprotIds } from '../../utils/global';
-import LoadingBackdrop from '../../components/LoadingBackdrop';
+import { LoadingBackdrop } from 'ui';
 import TARGET_PAGE_QUERY from './TargetPage.gql';
 
 const Profile = lazy(() => import('../TargetPage/Profile'));
