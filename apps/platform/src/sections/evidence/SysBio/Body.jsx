@@ -60,13 +60,7 @@ const columns = [
 ];
 
 function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const {
-    data: {
-      sysBio: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.SysBioSummaryFragment);
-
-  const variables = { ensemblId: ensgId, efoId, size };
+  const variables = { ensemblId: ensgId, efoId };
 
   const request = useQuery(SYSBIO_QUERY, {
     variables,

@@ -115,15 +115,7 @@ const columns = [
 ];
 
 function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const {
-    data: {
-      disease: {
-        impc: { count: size },
-      },
-    },
-  } = usePlatformApi(Summary.fragments.PhenodigmSummaryFragment);
-
-  const variables = { ensemblId: ensgId, efoId, size };
+  const variables = { ensemblId: ensgId, efoId };
 
   const request = useQuery(INTOGEN_QUERY, {
     variables,

@@ -147,14 +147,11 @@ const exportColumns = [
 
 function Body({ definition, id, label }) {
   const { ensgId: ensemblId, efoId } = id;
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.OtCrisprSummary
-  );
+
   const request = useQuery(CRISPR_QUERY, {
     variables: {
       ensemblId,
       efoId,
-      size: summaryData.OtCrisprSummary.count,
     },
   });
   const classes = useStyles();

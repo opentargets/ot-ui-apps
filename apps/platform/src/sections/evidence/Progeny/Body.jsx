@@ -69,13 +69,7 @@ const columns = [
 ];
 
 function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const {
-    data: {
-      progeny: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.ProgenySummaryFragment);
-
-  const variables = { ensemblId: ensgId, efoId, size };
+  const variables = { ensemblId: ensgId, efoId };
 
   const request = useQuery(PROGENY_QUERY, {
     variables,

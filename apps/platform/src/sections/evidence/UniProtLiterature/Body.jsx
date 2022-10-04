@@ -81,14 +81,10 @@ const columns = [
 
 function Body({ definition, id, label }) {
   const { ensgId: ensemblId, efoId } = id;
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.UniprotLiteratureSummary
-  );
 
   const variables = {
     ensemblId,
     efoId,
-    size: summaryData.uniprotLiteratureSummary.count,
   };
 
   const request = useQuery(UNIPROT_LITERATURE_QUERY, {

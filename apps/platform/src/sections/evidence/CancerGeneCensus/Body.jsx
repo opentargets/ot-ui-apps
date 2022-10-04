@@ -140,7 +140,6 @@ function Body({ definition, id, label }) {
     ensemblId,
     efoId,
     // size: summaryData.cancerGeneCensusSummary.count,
-    size: 200,
   };
 
   const request = useQuery(CANCER_GENE_CENSUS_QUERY, {

@@ -22,7 +22,7 @@ import WeightsControlls from './WeightsControlls';
 import AdvanceOptionsMenu from './AdvanceOptionsMenu';
 import AggregationsRow from './AggregationsRow';
 
-import LoadingBackdrop from '../../../components/LoadingBackdrop';
+import { LoadingBackdrop } from 'ui';
 
 const EVIDENCE_PROFILE_QUERY = gql`
   query EvidenceProfileQuery($ensgId: String!) {

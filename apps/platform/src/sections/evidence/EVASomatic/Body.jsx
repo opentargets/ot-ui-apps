@@ -226,14 +226,10 @@ const useStyles = makeStyles({
 function Body({ definition, id, label }) {
   const classes = useStyles();
   const { ensgId: ensemblId, efoId } = id;
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.evaSomaticSummary
-  );
 
   const variables = {
     ensemblId,
     efoId,
-    size: summaryData.evaSomaticSummary.count,
   };
 
   const request = useQuery(EVA_SOMATIC_QUERY, {

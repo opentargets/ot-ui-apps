@@ -116,14 +116,10 @@ const columns = [
 
 function Body({ definition, id, label }) {
   const { ensgId: ensemblId, efoId } = id;
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.expressionAtlasSummary
-  );
 
   const variables = {
     ensemblId,
     efoId,
-    size: summaryData.expressionAtlasSummary.count,
   };
 
   const request = useQuery(EXPRESSION_ATLAS_QUERY, {

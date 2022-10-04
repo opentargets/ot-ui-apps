@@ -51,10 +51,8 @@ const allelicRequirementsCaption = allelicRequirements => {
     allelicRequirements.split(' ', 1)[0].replace(/[;:,]*/g, '')
   );
   const description =
-    allelicRequirements
-      .split(' ')
-      .slice(1)
-      .join(' ') || 'No more information available';
+    allelicRequirements.split(' ').slice(1).join(' ') ||
+    'No more information available';
 
   return [caption, description];
 };
@@ -187,12 +185,7 @@ const columns = [
 ];
 
 function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const {
-    data: {
-      genomicsEngland: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.GenomicsEnglandSummaryFragment);
-  const variables = { ensemblId: ensgId, efoId, size };
+  const variables = { ensemblId: ensgId, efoId };
 
   const request = useQuery(GENOMICS_ENGLAND_QUERY, {
     variables,

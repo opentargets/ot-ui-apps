@@ -9,11 +9,11 @@ const SectionWrapper = styled('div')({
 
 // Wrapper of the sections
 function SecctionRenderer({ ensgId, efoId, label, activeSection }) {
-  const toSearch = dataSources.filter(el => el.id === activeSection[0])[0]
-    .sectionId;
-  const { Body, definition } = sections.filter(
+  // const toSearch = dataSources.find(el => el.id === activeSection[0]).sectionId;
+  const toSearch = activeSection[0];
+  const { Body, definition } = sections.find(
     el => el.definition.id === toSearch
-  )[0];
+  );
 
   return (
     <SectionWrapper>

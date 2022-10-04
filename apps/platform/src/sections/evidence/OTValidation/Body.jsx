@@ -274,12 +274,7 @@ const exportColumns = [
 ];
 
 function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const {
-    data: {
-      otValidationSummary: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.otValidationSummary);
-  const variables = { ensemblId: ensgId, efoId, size };
+  const variables = { ensemblId: ensgId, efoId };
   const request = useQuery(VALIDATION_QUERY, {
     variables,
   });
@@ -312,7 +307,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
           'label'
           // sort alphabetically but move 'PAN-CO' at the end of the list
         ).sort((a, b) =>
-          b.label === 'PAN-CO' ? -1 : (a.label < b.label ? -1 : 1)
+          b.label === 'PAN-CO' ? -1 : a.label < b.label ? -1 : 1
         );
 
         return (
@@ -381,7 +376,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
                   ))}
                 </Grid>
               </div>
-              
+
               {/** CHIPLIST */}
               <ChipList items={hypothesis} />
             </Box>

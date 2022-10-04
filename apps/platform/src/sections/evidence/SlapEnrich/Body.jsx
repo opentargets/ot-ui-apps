@@ -70,13 +70,7 @@ const columns = [
 ];
 
 function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const {
-    data: {
-      slapEnrich: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.SlapEnrichSummaryFragment);
-
-  const variables = { ensemblId: ensgId, efoId, size };
+  const variables = { ensemblId: ensgId, efoId };
 
   const request = useQuery(SLAPENRICH_QUERY, {
     variables,

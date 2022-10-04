@@ -154,14 +154,10 @@ const columns = [
 
 function Body({ definition, id, label }) {
   const { ensgId: ensemblId, efoId } = id;
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.reactomeSummary
-  );
 
   const variables = {
     ensemblId,
     efoId,
-    size: summaryData.reactomeSummary.count,
   };
 
   const request = useQuery(REACTOME_QUERY, {

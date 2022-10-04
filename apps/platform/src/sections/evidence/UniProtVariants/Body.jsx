@@ -91,14 +91,10 @@ const columns = [
 
 function Body({ definition, id, label }) {
   const { ensgId: ensemblId, efoId } = id;
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.UniprotVariantsSummary
-  );
 
   const variables = {
     ensemblId,
     efoId,
-    size: summaryData.uniprotVariantsSummary.count,
   };
 
   const request = useQuery(UNIPROT_VARIANTS_QUERY, {

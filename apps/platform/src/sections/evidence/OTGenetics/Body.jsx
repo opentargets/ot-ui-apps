@@ -199,12 +199,7 @@ const columns = [
 ];
 
 function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const {
-    data: {
-      openTargetsGenetics: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.OpenTargetsGeneticsSummaryFragment);
-  const variables = { ensemblId: ensgId, efoId, size };
+  const variables = { ensemblId: ensgId, efoId };
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,

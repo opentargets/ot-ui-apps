@@ -1,10 +1,9 @@
-query impcQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
+query impcQuery($ensemblId: String!, $efoId: String!) {
   disease(efoId: $efoId) {
     id
     evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
-      size: $size
       datasourceIds: ["impc"]
     ) {
       rows {

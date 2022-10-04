@@ -122,16 +122,10 @@ const exportColumns = [
 
 function Body({ definition, id, label }) {
   const { ensgId: ensemblId, efoId } = id;
-  const {
-    data: {
-      orphanetSummary: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.OrphanetSummaryFragment);
 
   const variables = {
     ensemblId,
     efoId,
-    size,
   };
 
   const request = useQuery(ORPHANET_QUERY, {
