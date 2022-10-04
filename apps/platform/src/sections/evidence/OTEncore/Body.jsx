@@ -18,6 +18,7 @@ import Link from '../../../components/Link';
 import ChipList from '../../../components/ChipList';
 import { defaultRowsPerPageOptions } from '../../../constants';
 import classNames from 'classnames';
+import ScientificNotation from '../../../components/ScientificNotation';
 
 import ENCORE_QUERY from './OTEncoreQuery.gql';
 
@@ -47,35 +48,57 @@ const getColumns = classes => [
   },
   {
     id: 'target',
-    label: 'Target A',
+    label: 'Library gene',
     renderCell: row => (
-      <Tooltip title={row.targetRole}>
-        <span>
-          <Link to={`/target/${row.target.id}`}>
-            {row.target.approvedSymbol}
-          </Link>
-        </span>
-      </Tooltip>
+      <Link to={`/target/${row.target.id}`}>
+        {row.target.approvedSymbol}
+      </Link>
     ),
     filterValue: row => row.target.approvedSymbol + ', ' + row.target.id,
   },
   {
     id: 'interactingTargetFromSourceId',
-    label: 'Target B',
-    renderCell: row => (
-      <Tooltip title={row.interactingTargetRole}>
-        <span>
-          <Link to={`/target/${row.target.id}`}>
-            {row.interactingTargetFromSourceId}
-          </Link>
-        </span>
-      </Tooltip>
-    ),
+    label: 'Anchor gene',
     sortable: true,
   },
   {
+    id: 'cellType',
+    label: 'Cell line',
+    renderCell: row =>
+      row.diseaseCellLines.map(diseaseCellLine => (
+        <Link
+          external
+          to={`https://cellmodelpassports.sanger.ac.uk/passports/${
+            diseaseCellLine.id
+          }`}
+          key={diseaseCellLine.id}
+        >
+          {diseaseCellLine.name}
+        </Link>
+      )),
+  },
+  {
+    id: 'biomarkerList',
+    label: 'Cell line biomarkers',
+    renderCell: row => {
+      return (
+        <ChipList
+          small
+          items={row.biomarkerList.map(bm => ({
+            label: bm.name,
+            tooltip: bm.description,
+          }))}
+        />
+      );
+    },
+  },
+  {
+    id: 'releaseVersion',
+    label: 'Release version',
+  },
+  {
     id: 'phenotypicConsequenceLogFoldChange',
-    label: 'Cell count log fold change',
+    label: 'Cell count logFC',
     tooltip: (
       <>
         When a negative log fold change is measured, it means there is an excess
@@ -128,66 +151,21 @@ const getColumns = classes => [
     ),
   },
   {
-    id: 'geneticInteractionPValue',
+    id: 'geneInteractionType',
     label: 'Type of effect',
-    renderCell: row => (
-      <Tooltip
-        title={
-          <>
-            <TooltipStyledLabel
-              label={'Method'}
-              description={row.geneticInteractionMethod}
-            />
-            <TooltipStyledLabel
-              label={'Score'}
-              description={row.geneticInteractionScore}
-            />
-            <TooltipStyledLabel
-              label={'P-value'}
-              description={row.geneticInteractionPValue}
-            />
-            <TooltipStyledLabel
-              label={'FDR'}
-              description={row.geneticInteractionFDR}
-            />
-          </>
-        }
-      >
-        <span className={classes.primaryColor}>{row.geneInteractionType}</span>
-      </Tooltip>
-    ),
     filterValue: row => row.geneInteractionType,
   },
   {
-    id: 'cellType',
-    label: 'Cell line',
-    renderCell: row =>
-      row.diseaseCellLines.map(diseaseCellLine => (
-        <Link
-          external
-          to={`https://cellmodelpassports.sanger.ac.uk/passports/${
-            diseaseCellLine.id
-          }`}
-          key={diseaseCellLine.id}
-        >
-          {diseaseCellLine.name}
-        </Link>
-      )),
+    id: 'geneticInteractionScore',
+    label: 'BLISS score',
+    renderCell: row => ((row.geneticInteractionScore).toFixed(3)),
+    numeric: true,
   },
   {
-    id: 'biomarkerList',
-    label: 'Cell line biomarkers',
-    renderCell: row => {
-      return (
-        <ChipList
-          small
-          items={row.biomarkerList.map(bm => ({
-            label: bm.name,
-            tooltip: bm.description,
-          }))}
-        />
-      );
-    },
+    id: 'geneticInteractionPValue',
+    label: 'P-value',
+    renderCell: row => (<ScientificNotation number={row.geneticInteractionPValue} />),
+    numeric: true,
   },
 ];
 
@@ -200,18 +178,34 @@ const exportColumns = [
     label: 'disease id',
     exportValue: row => row.disease.id,
   },
+  // genes
   {
-    label: 'target A',
+    label: 'library gene',
     exportValue: row => row.target.approvedSymbol,
   },
   {
-    label: 'target A id',
+    label: 'libarary gene id',
     exportValue: row => row.target.id,
   },
   {
-    label: 'target B',
+    label: 'anchor gene',
     exportValue: row => row.interactingTargetFromSourceId,
   },
+  // cell lines and biomarkers
+  {
+    label: 'cell line',
+    exportValue: row => row.diseaseCellLines.map(diseaseCellLine => diseaseCellLine.name).join(', '),
+  },
+  {
+    label: 'cell line id',
+    exportValue: row => row.diseaseCellLines.map(diseaseCellLine => diseaseCellLine.id).join(', '),
+  },
+  {
+    label: 'cell line biomarkers',
+    exportValue: row => row.biomarkerList.map(bm => bm.name
+    ).join(','),
+  },
+  // cell count logFC and values in tooltip
   {
     label: 'direction of effect',
     exportValue: row =>
@@ -229,34 +223,22 @@ const exportColumns = [
     label: 'phenotypicConsequenceFDR',
     exportValue: row => row.phenotypicConsequenceFDR,
   },
+  // type of effect
   {
-    label: 'Cooperativity',
-    exportValue: row =>
-      row.geneticInteractionPValue >= 0.05 ? 'Additive' : 'Synergistic',
+    label: 'type of effect',
+    exportValue: row => row.geneInteractionType,
   },
   {
-    label: 'geneticInteractionMethod',
-    exportValue: row => row.geneticInteractionMethod,
+    label: 'BLISS score',
+    exportValue: row => ((row.geneticInteractionScore).toFixed(3)),
   },
   {
-    label: 'geneticInteractionScore',
-    exportValue: row => row.geneticInteractionScore,
-  },
-  {
-    label: 'geneticInteractionPValue',
+    label: 'p value',
     exportValue: row => row.geneticInteractionPValue,
   },
   {
-    label: 'geneticInteractionFDR',
-    exportValue: row => row.geneticInteractionFDR,
-  },
-  {
-    label: 'cell line',
-    exportValue: row => row.cellType,
-  },
-  {
-    label: 'cell line biomarkers',
-    exportValue: row => row.biomarkerList.join(','),
+    label: 'release version',
+    exportValue: row => row.releaseVersion,
   },
 ];
 
