@@ -40,7 +40,7 @@ function AssociationsProvider({ ensgId, children }) {
   const [scoreRect, setScoreRect] = useState(false);
   const [vizControllsopen, setVizControllsOpen] = useState(false);
 
-  const { data, initialLoading, loading } = useAssociationsData({
+  const { data, initialLoading, loading, error } = useAssociationsData({
     ensemblId: ensgId,
     index: pageIndex,
     size: pageSize,
@@ -71,20 +71,32 @@ function AssociationsProvider({ ensgId, children }) {
     setExpanded(expandedId);
   };
 
-  const updateSectionOrder = newSectionOrder => {
-    // ls.set(`${lsSectionsField || entity}SectionsOrder`, newSectionOrder);
-  };
-
-  const shouldRender = section => {};
-
   return (
     <AssociationsContext.Provider
       value={{
+        id: ensgId,
         data,
         loading,
         initialLoading,
-        updateSectionOrder,
-        shouldRender,
+        gScoreRect,
+        scoreRect,
+        tableExpanded,
+        pagination,
+        expanded,
+        activeWeightsControlls,
+        activeAggregationsLabels,
+        vizControllsopen,
+        enableIndirect,
+        error,
+        handlePaginationChange,
+        expanderHandler,
+        setTableExpanded,
+        setEnableIndirect,
+        setActiveWeightsControlls,
+        setActiveAggregationsLabels,
+        setGScoreRect,
+        setScoreRect,
+        setVizControllsOpen,
       }}
     >
       {children}

@@ -1,3 +1,4 @@
+import { useState, useContext } from 'react';
 import {
   Popover,
   FormGroup,
@@ -10,7 +11,13 @@ import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { styled } from '@material-ui/styles';
 
-import { useState } from 'react';
+import { AssociationsContext } from './AssociationsProvider';
+
+const ControllsBtnContainer = styled('div')({
+  marginTop: '30px',
+  marginBottom: '20px',
+  textAlign: 'right',
+});
 
 const TextContent = styled('div')({
   marginLeft: '5px',
@@ -29,21 +36,23 @@ const VizControllsContainer = styled('div')({
   marginTop: '20px',
 });
 
-function DataMenu({
-  enableIndirect,
-  setEnableIndirect,
-  activeWeightsControlls,
-  setActiveWeightsControlls,
-  activeAggregationsLabels,
-  setActiveAggregationsLabels,
-  vizControllsopen,
-  setVizControllsOpen,
-  gScoreRect,
-  setGScoreRect,
-  scoreRect,
-  setScoreRect,
-}) {
+function DataMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const {
+    enableIndirect,
+    setEnableIndirect,
+    activeWeightsControlls,
+    setActiveWeightsControlls,
+    activeAggregationsLabels,
+    setActiveAggregationsLabels,
+    vizControllsopen,
+    setVizControllsOpen,
+    gScoreRect,
+    setGScoreRect,
+    scoreRect,
+    setScoreRect,
+  } = useContext(AssociationsContext);
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -57,7 +66,7 @@ function DataMenu({
   const id = open ? 'simple-popover' : undefined;
 
   return (
-    <div>
+    <ControllsBtnContainer>
       <Button
         aria-describedby={id}
         onClick={handleClick}
@@ -165,7 +174,7 @@ function DataMenu({
           </Drawer>
         </PopoverContent>
       </Popover>
-    </div>
+    </ControllsBtnContainer>
   );
 }
 

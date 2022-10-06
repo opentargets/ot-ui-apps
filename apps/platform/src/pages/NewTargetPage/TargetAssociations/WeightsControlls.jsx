@@ -1,8 +1,11 @@
+import { useContext } from 'react';
 import { Collapse, Button } from '@material-ui/core';
 import { faXmark, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import Slider from './SliderControll';
 import sources from './dataSourcesAssoc';
+import { AssociationsContext } from './AssociationsProvider';
 
 import { styled } from '@material-ui/styles';
 
@@ -33,9 +36,12 @@ const ResetContainer = styled('div')({
   },
 });
 
-function WeightsControlls({ active, cols, setActive }) {
+function WeightsControlls({ cols }) {
+  const { activeWeightsControlls, setActiveWeightsControlls } =
+    useContext(AssociationsContext);
+
   const handleClose = () => {
-    setActive(false);
+    setActiveWeightsControlls(false);
   };
 
   const getWightSourceDefault = source => {
@@ -44,7 +50,7 @@ function WeightsControlls({ active, cols, setActive }) {
   };
 
   return (
-    <Collapse in={active}>
+    <Collapse in={activeWeightsControlls}>
       <div className="weights-controlls">
         <div className="controlls-container">
           <CloseContainer onClick={handleClose}>

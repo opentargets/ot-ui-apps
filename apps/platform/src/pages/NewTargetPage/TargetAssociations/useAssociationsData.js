@@ -45,8 +45,11 @@ function useTargetAssociations({
           datasources,
         },
       })
-      .then(({ data: resData, error }) => {
-        if (error) {
+      .then(({ data: resData, errors }) => {
+        if (errors) {
+          setError(errors[0]);
+          setInitialLoading(false);
+          setLoading(false);
           return;
         }
         if (isCurrent) {
