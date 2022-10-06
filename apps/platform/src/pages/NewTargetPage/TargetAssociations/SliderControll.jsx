@@ -1,9 +1,40 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Slider } from '@material-ui/core';
+import { AssociationsContext } from './AssociationsProvider';
+
+const sliderPayload = (id, value) => ({
+  id,
+  weight: value,
+  propagate: true,
+});
+
+const getSliderValue = (values, id) => {
+  const value = values.find(val => val.id === id).weight;
+  return value;
+};
 
 function SliderControll({ def, id }) {
+  const { dataSourcesWeights, setDataSourcesWeights } =
+    useContext(AssociationsContext);
+
   const [value, setValue] = useState(def);
   const [displayValue, setDisplayValue] = useState(def);
+
+  useEffect(() => {
+    const newDataValue = sliderPayload(id, value);
+    const newDataSources = dataSourcesWeights.map(src => {
+      if (src.id === id) {
+        return newDataValue;
+      }
+      return src;
+    });
+    setDataSourcesWeights(newDataSources);
+  }, [value, id, setDataSourcesWeights]);
+
+  useEffect(() => {
+    const newValue = getSliderValue(dataSourcesWeights, id);
+    setDisplayValue(newValue);
+  }, [dataSourcesWeights, id]);
 
   const handleChange = (event, newValue) => {
     setDisplayValue(newValue);

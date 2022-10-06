@@ -1,4 +1,5 @@
 import { createContext, useState, useMemo } from 'react';
+import dataSources from '../dataSourcesAssoc';
 
 import useAssociationsData from '../useAssociationsData';
 
@@ -9,6 +10,12 @@ const getCellId = cell => {
   const diseaseId = cell.row.original.disease.id;
   return [sourceId, diseaseId];
 };
+
+const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
+  id,
+  weight,
+  propagate: true,
+}));
 
 function AssociationsProvider({ ensgId, children }) {
   const [{ pageIndex, pageSize }, setPagination] = useState({
@@ -30,8 +37,11 @@ function AssociationsProvider({ ensgId, children }) {
 
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(false);
+  const [dataSourcesWeights, setDataSourcesWeights] = useState(
+    defaulDatasourcesWeigths
+  );
   // Data controls UI
-  const [activeWeightsControlls, setActiveWeightsControlls] = useState(true);
+  const [activeWeightsControlls, setActiveWeightsControlls] = useState(false);
   const [activeAggregationsLabels, setActiveAggregationsLabels] =
     useState(true);
 
@@ -47,7 +57,7 @@ function AssociationsProvider({ ensgId, children }) {
     filter: '',
     sortBy: 'score',
     enableIndirect,
-    dataSources: [],
+    datasources: dataSourcesWeights,
   });
 
   const handlePaginationChange = pagination => {
@@ -88,6 +98,9 @@ function AssociationsProvider({ ensgId, children }) {
         vizControllsopen,
         enableIndirect,
         error,
+        dataSourcesWeights,
+        defaulDatasourcesWeigths,
+        setDataSourcesWeights,
         handlePaginationChange,
         expanderHandler,
         setTableExpanded,

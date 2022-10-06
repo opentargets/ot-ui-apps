@@ -4,7 +4,6 @@ import { faXmark, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Slider from './SliderControll';
-import sources from './dataSourcesAssoc';
 import { AssociationsContext } from './AssociationsProvider';
 
 import { styled } from '@material-ui/styles';
@@ -37,15 +36,20 @@ const ResetContainer = styled('div')({
 });
 
 function WeightsControlls({ cols }) {
-  const { activeWeightsControlls, setActiveWeightsControlls } =
-    useContext(AssociationsContext);
+  const {
+    activeWeightsControlls,
+    setActiveWeightsControlls,
+    dataSourcesWeights,
+    defaulDatasourcesWeigths,
+    setDataSourcesWeights,
+  } = useContext(AssociationsContext);
 
   const handleClose = () => {
     setActiveWeightsControlls(false);
   };
 
   const getWightSourceDefault = source => {
-    const sourcesDetails = sources.find(src => src.id === source);
+    const sourcesDetails = dataSourcesWeights.find(src => src.id === source);
     return sourcesDetails.weight;
   };
 
@@ -59,7 +63,7 @@ function WeightsControlls({ cols }) {
           <ActionsControlls>
             <ResetContainer>
               <Button
-                // onClick={() => setVizControllsOpen(true)}
+                onClick={() => setDataSourcesWeights(defaulDatasourcesWeigths)}
                 disableElevation
               >
                 <FontAwesomeIcon icon={faRotateLeft} />
