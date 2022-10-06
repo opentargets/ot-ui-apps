@@ -151,46 +151,43 @@ function TableAssociations() {
 
   return (
     <div className="TAssociations">
-      <Reorder.Group
-        as="div"
-        values={table.getRowModel().rows}
-        onReorder={() => {}}
-      >
-        <TableElement>
-          {/* HEADER */}
-          {table.getHeaderGroups().map(headerGroup => {
-            return (
-              <div className="Theader" key={headerGroup.id}>
-                <div className="cols-container">
-                  {headerGroup.headers.map(header => {
-                    return (
-                      <div
-                        className={getHeaderClassName(header)}
-                        key={header.id}
-                      >
-                        {header.isPlaceholder ? null : (
-                          <div>
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-                {activeAggregationsLabels && (
-                  <AggregationsRow cols={headerGroup.headers} />
-                )}
+      <TableElement>
+        {/* HEADER */}
+        {table.getHeaderGroups().map(headerGroup => {
+          return (
+            <div className="Theader" key={headerGroup.id}>
+              <div className="cols-container">
+                {headerGroup.headers.map(header => {
+                  return (
+                    <div className={getHeaderClassName(header)} key={header.id}>
+                      {header.isPlaceholder ? null : (
+                        <div>
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
+              {activeAggregationsLabels && (
+                <AggregationsRow cols={headerGroup.headers} />
+              )}
+            </div>
+          );
+        })}
 
-          {/* Weights controlls */}
-          <WeightsControlls cols={table.getHeaderGroups()} />
+        {/* Weights controlls */}
+        <WeightsControlls cols={table.getHeaderGroups()} />
 
-          {/* CONTENT */}
+        {/* CONTENT */}
+        <Reorder.Group
+          as="div"
+          values={table.getRowModel().rows}
+          onReorder={() => {}}
+        >
           <div className="TBody">
             <div>
               {table.getRowModel().rows.map(row => {
@@ -233,8 +230,8 @@ function TableAssociations() {
               })}
             </div>
           </div>
-        </TableElement>
-      </Reorder.Group>
+        </Reorder.Group>
+      </TableElement>
       <select
         value={table.getState().pagination.pageSize}
         onChange={e => {
