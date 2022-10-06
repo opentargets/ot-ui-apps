@@ -160,7 +160,7 @@
   background-color: #f6f6f6;
   position: relative;
   box-sizing: content-box;
-  padding: 15px 0;
+  padding: 15px 0 15px;
 }
 
 .TAssociations .weights-controlls .controlls-container {

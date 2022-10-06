@@ -1,6 +1,8 @@
-import { Collapse, Slider, Button } from '@material-ui/core';
+import { Collapse, Button } from '@material-ui/core';
 import { faXmark, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Slider from './SliderControll';
+import sources from './dataSourcesAssoc';
 
 import { styled } from '@material-ui/styles';
 
@@ -35,6 +37,12 @@ function WeightsControlls({ active, cols, setActive }) {
   const handleClose = () => {
     setActive(false);
   };
+
+  const getWightSourceDefault = source => {
+    const sourcesDetails = sources.find(src => src.id === source);
+    return sourcesDetails.weight;
+  };
+
   return (
     <Collapse in={active}>
       <div className="weights-controlls">
@@ -62,12 +70,7 @@ function WeightsControlls({ active, cols, setActive }) {
                 return <div key={id} className="score-empty-controll"></div>;
               return (
                 <div className="controll-container" key={id}>
-                  <Slider
-                    orientation="vertical"
-                    defaultValue={30}
-                    aria-labelledby="vertical-slider"
-                  />
-                  <span>{0.4}</span>
+                  <Slider def={getWightSourceDefault(id)} id={id} />
                 </div>
               );
             })

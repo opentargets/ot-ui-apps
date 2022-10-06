@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
 import client from '../../../client';
 import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
 
@@ -23,17 +22,12 @@ function useTargetAssociations({
   sortBy = 'score',
   aggregationFilters = [],
   enableIndirect = false,
+  datasources = null,
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
-
-  // let {
-  //   data: resData,
-  //   loading: resLoading,
-  //   error: resError,
-  // } = useQuery(TARGET_ASSOCIATIONS_QUERY, variables);
 
   useEffect(() => {
     let isCurrent = true;
@@ -48,6 +42,7 @@ function useTargetAssociations({
           filter,
           sortBy,
           enableIndirect,
+          datasources,
         },
       })
       .then(({ data: resData, error }) => {
@@ -62,7 +57,7 @@ function useTargetAssociations({
         }
       });
     return () => (isCurrent = false);
-  }, [ensemblId, index, size, filter, sortBy, enableIndirect]);
+  }, [ensemblId, index, size, filter, sortBy, enableIndirect, datasources]);
 
   return { loading, error, data, initialLoading };
 }

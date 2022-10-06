@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useMemo } from 'react';
-import { gql } from '@apollo/client';
 import Skeleton from '@material-ui/lab/Skeleton';
 import {
   useReactTable,
@@ -13,7 +12,6 @@ import dataSources from './dataSourcesAssoc';
 import './style.css';
 import { styled } from '@material-ui/styles';
 
-import PlatformApiProvider from '../../../contexts/PlatformApiProvider';
 import useTargetAssociations from './useAssociationsData';
 
 import SecctionRender from './SectionRender';
@@ -23,21 +21,6 @@ import AdvanceOptionsMenu from './AdvanceOptionsMenu';
 import AggregationsRow from './AggregationsRow';
 
 import { LoadingBackdrop } from 'ui';
-
-const EVIDENCE_PROFILE_QUERY = gql`
-  query EvidenceProfileQuery($ensgId: String!) {
-    target(ensemblId: $ensgId) {
-      id
-      approvedSymbol
-      approvedName
-      functionDescriptions
-      synonyms {
-        label
-        source
-      }
-    }
-  }
-`;
 
 /* Styled component */
 const ControllsBtnContainer = styled('div')({
@@ -88,7 +71,7 @@ function TargetAssociations({ ensgId }) {
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(false);
   // Data controls UI
-  const [activeWeightsControlls, setActiveWeightsControlls] = useState(false);
+  const [activeWeightsControlls, setActiveWeightsControlls] = useState(true);
   const [activeAggregationsLabels, setActiveAggregationsLabels] =
     useState(true);
 
@@ -104,6 +87,7 @@ function TargetAssociations({ ensgId }) {
     filter: '',
     sortBy: 'score',
     enableIndirect,
+    dataSources: [],
   });
 
   const columns = [
@@ -243,132 +227,126 @@ function TargetAssociations({ ensgId }) {
           setScoreRect={setScoreRect}
         />
       </ControllsBtnContainer>
-      <PlatformApiProvider
-        lsSectionsField="evidence"
-        entity="disease"
-        query={EVIDENCE_PROFILE_QUERY}
-        variables={{ ensgId }}
-      >
-        <div className="TAssociations">
-          <Reorder.Group
-            as="div"
-            values={table.getRowModel().rows}
-            onReorder={() => {}}
-          >
-            <TableElement>
-              {/* HEADER */}
-              {table.getHeaderGroups().map(headerGroup => {
-                return (
-                  <div className="Theader" key={headerGroup.id}>
-                    <div className="cols-container">
-                      {headerGroup.headers.map(header => {
-                        return (
-                          <div
-                            className={getHeaderClassName(header)}
-                            key={header.id}
-                          >
-                            {header.isPlaceholder ? null : (
-                              <div>
-                                {flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    {activeAggregationsLabels && (
-                      <AggregationsRow cols={headerGroup.headers} />
-                    )}
-                  </div>
-                );
-              })}
 
-              {/* Weights controlls */}
-              <WeightsControlls
-                active={activeWeightsControlls}
-                setActive={setActiveWeightsControlls}
-                cols={table.getHeaderGroups()}
-              />
-
-              {/* CONTENT */}
-              <div className="TBody">
-                <div>
-                  {table.getRowModel().rows.map(row => {
-                    return (
-                      <Fragment key={row.id}>
-                        <Reorder.Item
-                          as="div"
-                          key={row.id}
-                          value={row}
-                          className={getRowClassName(row)}
-                          drag={false}
+      <div className="TAssociations">
+        <Reorder.Group
+          as="div"
+          values={table.getRowModel().rows}
+          onReorder={() => {}}
+        >
+          <TableElement>
+            {/* HEADER */}
+            {table.getHeaderGroups().map(headerGroup => {
+              return (
+                <div className="Theader" key={headerGroup.id}>
+                  <div className="cols-container">
+                    {headerGroup.headers.map(header => {
+                      return (
+                        <div
+                          className={getHeaderClassName(header)}
+                          key={header.id}
                         >
-                          {row.getVisibleCells().map(cell => {
-                            return (
-                              <div
-                                key={cell.id}
-                                className={getCellClassName(cell)}
-                              >
-                                {flexRender(
-                                  cell.column.columnDef.cell,
-                                  cell.getContext()
-                                )}
-                              </div>
-                            );
-                          })}
-                        </Reorder.Item>
-                        {row.getIsExpanded() && (
-                          <motion.div
-                            key={`${row.original.disease.id}-${expanded[0]}`}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                          >
-                            <SecctionRender
-                              ensgId={ensgId}
-                              efoId={row.original.disease.id}
-                              activeSection={expanded}
-                            />
-                          </motion.div>
-                        )}
-                      </Fragment>
-                    );
-                  })}
+                          {header.isPlaceholder ? null : (
+                            <div>
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {activeAggregationsLabels && (
+                    <AggregationsRow cols={headerGroup.headers} />
+                  )}
                 </div>
+              );
+            })}
+
+            {/* Weights controlls */}
+            <WeightsControlls
+              active={activeWeightsControlls}
+              setActive={setActiveWeightsControlls}
+              cols={table.getHeaderGroups()}
+            />
+
+            {/* CONTENT */}
+            <div className="TBody">
+              <div>
+                {table.getRowModel().rows.map(row => {
+                  return (
+                    <Fragment key={row.id}>
+                      <Reorder.Item
+                        as="div"
+                        key={row.id}
+                        value={row}
+                        className={getRowClassName(row)}
+                        drag={false}
+                      >
+                        {row.getVisibleCells().map(cell => {
+                          return (
+                            <div
+                              key={cell.id}
+                              className={getCellClassName(cell)}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </div>
+                          );
+                        })}
+                      </Reorder.Item>
+                      {row.getIsExpanded() && (
+                        <motion.div
+                          key={`${row.original.disease.id}-${expanded[0]}`}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                        >
+                          <SecctionRender
+                            ensgId={ensgId}
+                            efoId={row.original.disease.id}
+                            activeSection={expanded}
+                          />
+                        </motion.div>
+                      )}
+                    </Fragment>
+                  );
+                })}
               </div>
-            </TableElement>
-          </Reorder.Group>
-          <select
-            value={table.getState().pagination.pageSize}
-            onChange={e => {
-              table.setPageSize(Number(e.target.value));
-            }}
-          >
-            {[10, 25, 50, 200, 500].map(pageSize => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
-          <button
-            className="border rounded p-1"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            {'<'}
-          </button>
-          <button
-            className="border rounded p-1"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            {'>'}
-          </button>
-        </div>
-      </PlatformApiProvider>
+            </div>
+          </TableElement>
+        </Reorder.Group>
+        <select
+          value={table.getState().pagination.pageSize}
+          onChange={e => {
+            table.setPageSize(Number(e.target.value));
+          }}
+        >
+          {[10, 25, 50, 200, 500].map(pageSize => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
+        <button
+          className="border rounded p-1"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          {'<'}
+        </button>
+        <button
+          className="border rounded p-1"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          {'>'}
+        </button>
+      </div>
     </>
   );
 }
