@@ -273,7 +273,7 @@ class HomePage extends Component {
                 <HelpBoxPanel
                   fai={faQuestionCircle}
                   url="https://genetics-docs.opentargets.org/"
-                  label="Check out our Platform documentation"
+                  label="Check out our Genetics documentation"
                   external
                 />
               </Grid>
@@ -282,7 +282,7 @@ class HomePage extends Component {
                 <HelpBoxPanel
                   fai={faFileAlt}
                   url="https://genetics-docs.opentargets.org/citation"
-                  label="Read our latest Platform publications"
+                  label="Read our latest Genetics publications"
                   external
                 />
               </Grid>
