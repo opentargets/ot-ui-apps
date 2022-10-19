@@ -230,7 +230,7 @@ class HomePage extends Component {
               both literature and newly-derived loci from UK Biobank and FinnGen
               and also contains functional genomics data (e.g. chromatin
               conformation, chromatin interactions) and quantitative trait loci
-              (eQTLs and pQTLs). Large-scale pipelines apply statistical
+              (eQTLs, pQTLs and sQTLs). Large-scale pipelines apply statistical
               fine-mapping across thousands of trait-associated loci to resolve
               association signals and link each variant to its proximal and
               distal target gene(s) using a Locus2Gene assessment. Integrated
