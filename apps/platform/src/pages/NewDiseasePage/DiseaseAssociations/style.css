@@ -1,0 +1,198 @@
+.TAssociations.loading-container {
+  height: 1000px;
+}
+
+/* --- HEADER ---  */
+.TAssociations .Theader {
+  padding-top: 15px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  background-color: #fafafa;
+  z-index: 100;
+  font-weight: 800;
+  /* margin-bottom: 10px; */
+  border-bottom: 1px solid #ececec;
+}
+
+.TAssociations .Theader .cols-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.TAssociations .Theader .header-score {
+  padding-right: 20px;
+}
+
+.TAssociations .Theader .header-name {
+  width: 230px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.TAssociations .Theader .header-name div {
+  margin-bottom: 20px;
+}
+
+.TAssociations .Theader .rotate {
+  height: 140px;
+  white-space: nowrap;
+}
+
+.TAssociations .Theader .rotate > div {
+  transform: translate(10px, 110px) rotate(315deg);
+  width: 30px;
+}
+
+.TAssociations .rotate > div > span {
+  padding: 5px 10px;
+}
+
+/* --- BODY --- */
+.TAssociations .TBody {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  /* overflow: hidden; */
+}
+
+/* ROW */
+.TAssociations .TRow {
+  display: flex;
+  flex-direction: column;
+}
+.TAssociations .data-row {
+  display: flex;
+  margin-bottom: 3px;
+  justify-content: space-evenly;
+}
+
+.TAssociations .data-row.active {
+  position: sticky;
+  top: 160px;
+  padding: 0.5em 0 0.5em 0;
+  z-index: 90 !important;
+  background-color: #fafafa;
+}
+
+/*  CELL  */
+.TAssociations .data-row .name-cell {
+  width: 230px;
+  white-space: nowrap;
+  padding: 0 0.5rem 0 0;
+  text-align: left;
+}
+
+.TAssociations .data-row .data-cell .data-score.loading {
+  background: #eee;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  border-radius: 5px;
+  background-size: 200% 100%;
+  animation: 1.5s shine linear infinite;
+}
+
+.TAssociations .data-row .data-cell div {
+  /* transition: all ease 3000ms; */
+}
+
+.TAssociations .data-row .data-cell .data-score {
+  cursor: pointer;
+  box-sizing: border-box;
+  /* transition: all ease 3000ms; */
+}
+
+.TAssociations .data-row .data-cell.active .data-score {
+  -webkit-box-shadow: 0px 0px 3px 1px rgba(92, 19, 19, 0.35);
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+  border: 2px solid rgb(0, 0, 0) !important;
+  position: sticky;
+  top: 0;
+}
+
+.TAssociations .data-row .data-cell .data-global-score {
+  margin-right: 20px;
+}
+
+.TAssociations .data-row .data-cell .data-score:hover,
+.TAssociations .data-row .data-cell .data-score:focus {
+  /* border: 2px solid #454545 !important; */
+  -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+}
+
+/* Agregations indicators */
+
+.TAssociations .aggregations-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-left: 325px;
+}
+
+.TAssociations .aggregations-container .name-empty-controll {
+  width: 230px;
+  content: ' ';
+}
+
+.TAssociations .aggregations-container .score-empty-controll {
+  height: 25px;
+  width: 30px;
+  content: ' ';
+  margin-right: 20px;
+}
+
+.TAssociations .aggregations-container .aggregation-indicator {
+  width: calc(100% / 24);
+  position: relative;
+}
+
+.TAssociations .aggregations-container .aggregation-indicator div {
+  width: 100%;
+  height: 4px;
+  content: ' ';
+  transition: all ease 300ms;
+}
+
+.TAssociations .aggregations-container:hover .aggregation-indicator div {
+  height: 15px;
+}
+
+/* Weights controlls */
+.TAssociations .weights-controlls {
+  background-color: #f6f6f6;
+  position: relative;
+  box-sizing: content-box;
+  padding: 15px 0 15px;
+}
+
+.TAssociations .weights-controlls .controlls-container {
+  display: flex;
+  flex-direction: row;
+  height: 100px;
+  justify-content: space-evenly;
+}
+
+.TAssociations .weights-controlls .name-empty-controll {
+  width: 230px;
+  content: ' ';
+}
+
+.TAssociations .weights-controlls .score-empty-controll {
+  height: 25px;
+  width: 30px;
+  content: ' ';
+  margin-right: 20px;
+}
+
+.TAssociations .weights-controlls .controll-container {
+  width: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.TAssociations .weights-controlls .controll-container span {
+  font-size: 11px;
+}

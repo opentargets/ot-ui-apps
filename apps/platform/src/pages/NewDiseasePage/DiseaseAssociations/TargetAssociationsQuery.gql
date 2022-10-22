@@ -1,0 +1,35 @@
+query TargetAssociationsQuery(
+  $ensemblId: String!
+  $index: Int!
+  $size: Int!
+  $filter: String
+  $sortBy: String!
+  $aggregationFilters: [AggregationFilter!]
+  $enableIndirect: Boolean!
+  $datasources: [DatasourceSettingsInput!]
+) {
+  target(ensemblId: $ensemblId) {
+    id
+    associatedDiseases(
+      page: { index: $index, size: $size }
+      orderByScore: $sortBy
+      BFilter: $filter
+      aggregationFilters: $aggregationFilters
+      enableIndirect: $enableIndirect
+      datasources: $datasources
+    ) {
+      count
+      rows {
+        disease {
+          id
+          name
+        }
+        score
+        datasourceScores {
+          componentId: id
+          score
+        }
+      }
+    }
+  }
+}
