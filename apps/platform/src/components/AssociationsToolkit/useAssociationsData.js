@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import client from '../../../client';
-import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
+import client from '../../client';
+// import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
 
 // Select and parsed data from API response
 const getAssociatedDiseasesData = data => {
@@ -15,14 +15,17 @@ const getAssociatedDiseasesData = data => {
 };
 
 function useTargetAssociations({
-  ensemblId = '',
-  index = 0,
-  size = 50,
-  filter = '',
-  sortBy = 'score',
-  aggregationFilters = [],
-  enableIndirect = false,
-  datasources = null,
+  query,
+  options: {
+    id = '',
+    index = 0,
+    size = 50,
+    filter = '',
+    sortBy = 'score',
+    aggregationFilters = [],
+    enableIndirect = false,
+    datasources = null,
+  },
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -34,9 +37,9 @@ function useTargetAssociations({
     setLoading(true);
     client
       .query({
-        query: TARGET_ASSOCIATIONS_QUERY,
+        query,
         variables: {
-          ensemblId,
+          id,
           index,
           size,
           filter,
@@ -60,7 +63,7 @@ function useTargetAssociations({
         }
       });
     return () => (isCurrent = false);
-  }, [ensemblId, index, size, filter, sortBy, enableIndirect, datasources]);
+  }, [id, index, size, filter, sortBy, enableIndirect, datasources]);
 
   return { loading, error, data, initialLoading };
 }

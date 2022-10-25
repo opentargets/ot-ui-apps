@@ -1,5 +1,5 @@
 query TargetAssociationsQuery(
-  $ensemblId: String!
+  $id: String!
   $index: Int!
   $size: Int!
   $filter: String
@@ -8,7 +8,7 @@ query TargetAssociationsQuery(
   $enableIndirect: Boolean!
   $datasources: [DatasourceSettingsInput!]
 ) {
-  target(ensemblId: $ensemblId) {
+  target(ensemblId: $id) {
     id
     associatedDiseases(
       page: { index: $index, size: $size }

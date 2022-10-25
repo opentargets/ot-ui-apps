@@ -1,11 +1,11 @@
-import TableAssociations from './TableAssociations';
-import AdvanceOptionsMenu from './AdvanceOptionsMenu';
+import TableAssociations from '../../../components/AssociationsToolkit/TableAssociations';
+import AdvanceOptionsMenu from '../../../components/AssociationsToolkit/AdvanceOptionsMenu';
 import AssociationsProvider, {
   AssociationsContext,
-} from './AssociationsProvider';
+} from '../../../components/AssociationsToolkit/AssociationsProvider';
 import { LoadingBackdrop } from 'ui';
-import './style.css';
 import { useContext } from 'react';
+import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
 
 function AssociationsWrapper() {
   const { initialLoading } = useContext(AssociationsContext);
@@ -27,7 +27,11 @@ function AssociationsWrapper() {
 /* TARGET ASSOCIATION  */
 function TargetAssociations({ ensgId }) {
   return (
-    <AssociationsProvider ensgId={ensgId}>
+    <AssociationsProvider
+      id={ensgId}
+      entity="target"
+      query={TARGET_ASSOCIATIONS_QUERY}
+    >
       <AssociationsWrapper />
     </AssociationsProvider>
   );

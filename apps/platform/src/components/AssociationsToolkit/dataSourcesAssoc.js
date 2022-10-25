@@ -1,4 +1,4 @@
-import { isPrivateDataSource } from '../../../utils/partnerPreviewUtils';
+import { isPrivateDataSource } from '../../utils/partnerPreviewUtils';
 
 const dataSources = [
   {

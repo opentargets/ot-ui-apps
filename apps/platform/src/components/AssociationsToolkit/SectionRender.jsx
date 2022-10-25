@@ -1,5 +1,6 @@
 import dataSources from './dataSourcesAssoc';
-import sections from '../../EvidencePage/sections';
+// import sections from '../../EvidencePage/sections';
+import sections from '../../pages/EvidencePage/sections';
 import { Grid } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 

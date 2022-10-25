@@ -1,5 +1,6 @@
 import { createContext, useState, useMemo } from 'react';
 import dataSources from '../dataSourcesAssoc';
+import '../style.css';
 
 import useAssociationsData from '../useAssociationsData';
 
@@ -17,7 +18,7 @@ const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
   propagate: true,
 }));
 
-function AssociationsProvider({ ensgId, children }) {
+function AssociationsProvider({ children, entity, id, query }) {
   const [{ pageIndex, pageSize }, setPagination] = useState({
     pageIndex: 0,
     pageSize: 50,
@@ -51,13 +52,16 @@ function AssociationsProvider({ ensgId, children }) {
   const [vizControllsopen, setVizControllsOpen] = useState(false);
 
   const { data, initialLoading, loading, error } = useAssociationsData({
-    ensemblId: ensgId,
-    index: pageIndex,
-    size: pageSize,
-    filter: '',
-    sortBy: 'score',
-    enableIndirect,
-    datasources: dataSourcesWeights,
+    query,
+    options: {
+      id,
+      index: pageIndex,
+      size: pageSize,
+      filter: '',
+      sortBy: 'score',
+      enableIndirect,
+      datasources: dataSourcesWeights,
+    },
   });
 
   const handlePaginationChange = pagination => {
@@ -84,7 +88,8 @@ function AssociationsProvider({ ensgId, children }) {
   return (
     <AssociationsContext.Provider
       value={{
-        id: ensgId,
+        id,
+        entity,
         data,
         loading,
         initialLoading,
