@@ -38,15 +38,17 @@ const Name = styled('span')({
   textOverflow: 'ellipsis',
 });
 
-const getCellId = cell => {
+const getCellId = (cell, entityToGet) => {
   const sourceId = cell.column.id;
-  const diseaseId = cell.row.original.disease.id;
-  return [sourceId, diseaseId];
+  const rowId = cell.row.original[entityToGet].id;
+  return [sourceId, rowId];
 };
 
 function TableAssociations() {
   const {
     id,
+    entity,
+    entityToGet,
     data,
     loading,
     expanded,
@@ -59,6 +61,8 @@ function TableAssociations() {
     setTableExpanded,
     activeAggregationsLabels,
   } = useContext(AssociationsContext);
+
+  const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
 
   function getDatasources() {
     return dataSources.map(({ id, label }) => ({
@@ -86,14 +90,14 @@ function TableAssociations() {
 
   const columns = [
     {
-      accessorFn: row => row.disease.name,
+      accessorFn: row => row[entityToGet][rowNameEntity],
       id: 'name',
       cell: row => (
         <NameContainer>
           <Name>{row.getValue()}</Name>
         </NameContainer>
       ),
-      header: () => <span>Disease</span>,
+      header: () => <span>{entityToGet}</span>,
       footer: props => props.column.id,
     },
     {
@@ -122,13 +126,14 @@ function TableAssociations() {
       expanded: tableExpanded,
       pagination,
     },
-    pageCount: data?.target?.associatedDiseases?.count ?? -1,
+    // pageCount: data?.target?.associatedDiseases?.count ?? -1,
+    pageCount: 0,
     onPaginationChange: handlePaginationChange,
     onExpandedChange: setTableExpanded,
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    getRowId: row => row.disease.id,
+    getRowId: row => row[entityToGet].id,
     manualPagination: true,
   });
 
@@ -144,7 +149,7 @@ function TableAssociations() {
   };
   const getCellClassName = cell => {
     if (cell.column.id === 'name') return 'name-cell';
-    const expandedId = getCellId(cell).join('-');
+    const expandedId = getCellId(cell, entityToGet).join('-');
     if (expandedId === expanded.join('-')) return 'active data-cell';
     return 'data-cell';
   };
@@ -213,15 +218,16 @@ function TableAssociations() {
                     </Reorder.Item>
                     {row.getIsExpanded() && (
                       <motion.div
-                        key={`${row.original.disease.id}-${expanded[0]}`}
+                        key={`${row.original[entityToGet].id}-${expanded[0]}`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                       >
                         <SecctionRender
-                          ensgId={id}
-                          efoId={row.original.disease.id}
+                          id={id}
+                          rowId={row.original[entityToGet].id}
                           activeSection={expanded}
+                          entity={entity}
                         />
                       </motion.div>
                     )}

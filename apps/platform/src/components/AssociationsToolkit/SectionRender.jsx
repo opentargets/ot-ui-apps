@@ -9,12 +9,15 @@ const SectionWrapper = styled('div')({
 });
 
 // Wrapper of the sections
-function SecctionRenderer({ ensgId, efoId, label, activeSection }) {
+function SecctionRenderer({ activeSection, entity, rowId, id }) {
   // const toSearch = dataSources.find(el => el.id === activeSection[0]).sectionId;
   const toSearch = activeSection[0];
   const { Body, definition } = sections.find(
     el => el.definition.id === toSearch
   );
+
+  const ensgId = entity === 'disease' ? rowId : id;
+  const efoId = entity === 'disease' ? id : rowId;
 
   return (
     <SectionWrapper>

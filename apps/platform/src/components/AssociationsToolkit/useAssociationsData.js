@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import client from '../../client';
-// import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
 
-// Select and parsed data from API response
+// Select and parsed data from API response from fixed Target
 const getAssociatedDiseasesData = data => {
   if (!data) return [];
   return data.target.associatedDiseases.rows.map(d => {
@@ -12,6 +11,23 @@ const getAssociatedDiseasesData = data => {
     );
     return { ...d, ...sources };
   });
+};
+
+// Select and parsed data from API response from fixed Disease
+const getAssociatedTargetsData = data => {
+  if (!data) return [];
+  return data.disease.associatedTargets.rows.map(d => {
+    const sources = d.datasourceScores.reduce(
+      (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
+      {}
+    );
+    return { ...d, ...sources };
+  });
+};
+
+const getParsedData = (entity, apiResponse) => {
+  if (entity === 'target') return getAssociatedDiseasesData(apiResponse);
+  if (entity === 'disease') return getAssociatedTargetsData(apiResponse);
 };
 
 function useTargetAssociations({
@@ -25,6 +41,7 @@ function useTargetAssociations({
     aggregationFilters = [],
     enableIndirect = false,
     datasources = null,
+    entity,
   },
 }) {
   const [loading, setLoading] = useState(false);
@@ -56,7 +73,7 @@ function useTargetAssociations({
           return;
         }
         if (isCurrent) {
-          let parsedData = getAssociatedDiseasesData(resData);
+          let parsedData = getParsedData(entity, resData);
           setData(parsedData);
           setInitialLoading(false);
           setLoading(false);

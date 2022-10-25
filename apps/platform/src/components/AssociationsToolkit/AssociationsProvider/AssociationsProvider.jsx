@@ -6,10 +6,10 @@ import useAssociationsData from '../useAssociationsData';
 
 const AssociationsContext = createContext();
 
-const getCellId = cell => {
+const getCellId = (cell, entityToGet) => {
   const sourceId = cell.column.id;
-  const diseaseId = cell.row.original.disease.id;
-  return [sourceId, diseaseId];
+  const rowId = cell.row.original[entityToGet].id;
+  return [sourceId, rowId];
 };
 
 const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
@@ -61,8 +61,11 @@ function AssociationsProvider({ children, entity, id, query }) {
       sortBy: 'score',
       enableIndirect,
       datasources: dataSourcesWeights,
+      entity,
     },
   });
+
+  const entityToGet = entity === 'target' ? 'disease' : 'target';
 
   const handlePaginationChange = pagination => {
     setTableExpanded({});
@@ -71,7 +74,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   };
 
   const expanderHandler = tableExpanderController => cell => {
-    const expandedId = getCellId(cell);
+    const expandedId = getCellId(cell, entityToGet);
     if (expanded.join('-') === expandedId.join('-')) {
       setTableExpanded({});
       setExpanded([]);
@@ -90,6 +93,7 @@ function AssociationsProvider({ children, entity, id, query }) {
       value={{
         id,
         entity,
+        entityToGet,
         data,
         loading,
         initialLoading,

@@ -1,5 +1,5 @@
-query TargetAssociationsQuery(
-  $ensemblId: String!
+query DiseaseAssociationsQuery(
+  $id: String!
   $index: Int!
   $size: Int!
   $filter: String
@@ -8,9 +8,9 @@ query TargetAssociationsQuery(
   $enableIndirect: Boolean!
   $datasources: [DatasourceSettingsInput!]
 ) {
-  target(ensemblId: $ensemblId) {
+  disease(efoId: $id) {
     id
-    associatedDiseases(
+    associatedTargets(
       page: { index: $index, size: $size }
       orderByScore: $sortBy
       BFilter: $filter
@@ -20,9 +20,10 @@ query TargetAssociationsQuery(
     ) {
       count
       rows {
-        disease {
+        target {
           id
-          name
+          approvedSymbol
+          approvedName
         }
         score
         datasourceScores {

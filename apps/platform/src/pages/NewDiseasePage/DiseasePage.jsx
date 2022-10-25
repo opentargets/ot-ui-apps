@@ -8,7 +8,8 @@ import { RoutingTab, RoutingTabs } from '../../components/RoutingTabs';
 import DISEASE_PAGE_QUERY from './DiseasePage.gql';
 
 const Profile = lazy(() => import('./Profile'));
-const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
+// const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
+const DiseaseAssociations = lazy(() => import('./DiseaseAssociations'));
 
 function DiseasePage({ location, match }) {
   const { efoId } = match.params;
@@ -42,7 +43,7 @@ function DiseasePage({ location, match }) {
         <RoutingTab
           label="Associated targets"
           path="/disease/:efoId/associations"
-          component={() => <ClassicAssociations efoId={efoId} name={name} />}
+          component={() => <DiseaseAssociations efoId={efoId} name={name} />}
         />
         <RoutingTab
           label="Profile"
