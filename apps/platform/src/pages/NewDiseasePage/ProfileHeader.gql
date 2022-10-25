@@ -1,7 +1,0 @@
-fragment DiseaseProfileHeaderFragment on Disease {
-  description
-  synonyms {
-    relation
-    terms
-  }
-}
