@@ -18,6 +18,8 @@ const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
   propagate: true,
 }));
 
+const initialIndirect = entity => (entity === 'target' ? false : true);
+
 function AssociationsProvider({ children, entity, id, query }) {
   const [{ pageIndex, pageSize }, setPagination] = useState({
     pageIndex: 0,
@@ -37,7 +39,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [tableExpanded, setTableExpanded] = useState({});
 
   // Data controls
-  const [enableIndirect, setEnableIndirect] = useState(false);
+  const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
   const [dataSourcesWeights, setDataSourcesWeights] = useState(
     defaulDatasourcesWeigths
   );
@@ -51,7 +53,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [scoreRect, setScoreRect] = useState(false);
   const [vizControllsopen, setVizControllsOpen] = useState(false);
 
-  const { data, initialLoading, loading, error } = useAssociationsData({
+  const { data, initialLoading, loading, error, count } = useAssociationsData({
     query,
     options: {
       id,
@@ -94,6 +96,7 @@ function AssociationsProvider({ children, entity, id, query }) {
         id,
         entity,
         entityToGet,
+        count,
         data,
         loading,
         initialLoading,

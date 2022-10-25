@@ -30,6 +30,11 @@ const getParsedData = (entity, apiResponse) => {
   if (entity === 'disease') return getAssociatedTargetsData(apiResponse);
 };
 
+const getAllDataCount = (entity, apiResponse) => {
+  if (entity === 'target') return apiResponse.target.associatedDiseases.count;
+  if (entity === 'disease') return apiResponse.disease.associatedTargets.count;
+};
+
 function useTargetAssociations({
   query,
   options: {
@@ -47,6 +52,7 @@ function useTargetAssociations({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState([]);
+  const [count, setCount] = useState(0);
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
@@ -74,6 +80,8 @@ function useTargetAssociations({
         }
         if (isCurrent) {
           let parsedData = getParsedData(entity, resData);
+          let dataCount = getAllDataCount(entity, resData);
+          setCount(dataCount);
           setData(parsedData);
           setInitialLoading(false);
           setLoading(false);
@@ -82,7 +90,7 @@ function useTargetAssociations({
     return () => (isCurrent = false);
   }, [id, index, size, filter, sortBy, enableIndirect, datasources]);
 
-  return { loading, error, data, initialLoading };
+  return { loading, error, data, initialLoading, count };
 }
 
 export default useTargetAssociations;
