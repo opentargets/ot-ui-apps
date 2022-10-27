@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import Link from './Link';
 import OpenTargetsTitle from './OpenTargetsTitle';
 import HeaderMenu from './HeaderMenu';
+import PrivateWrapper from './PrivateWrapper';
 
 const styles = theme => ({
   navbar: {
@@ -129,17 +130,35 @@ const NavBar = ({
 
         {isHomePageRegular && (
           <MenuList className={classes.menuList}>
-            {items.map((item, i) => (
-              <MenuItem key={i} dense={true} className={classes.menuItem}>
-                <Link
-                  external={item.external}
-                  to={item.url}
-                  className={classes.menuLink}
-                >
-                  {item.name}
-                </Link>
-              </MenuItem>
-            ))}
+            {items.map((item, i) => {
+              if (item.showOnlyPartner) {
+                return (
+                  <PrivateWrapper>
+                    <MenuItem key={i} dense={true} className={classes.menuItem}>
+                      <Link
+                        external={item.external}
+                        to={item.url}
+                        className={classes.menuLink}
+                      >
+                        {item.name}
+                      </Link>
+                    </MenuItem>
+                  </PrivateWrapper>
+                );
+              } else {
+                return (
+                  <MenuItem key={i} dense={true} className={classes.menuItem}>
+                    <Link
+                      external={item.external}
+                      to={item.url}
+                      className={classes.menuLink}
+                    >
+                      {item.name}
+                    </Link>
+                  </MenuItem>
+                );
+              }
+            })}
           </MenuList>
         )}
       </Toolbar>

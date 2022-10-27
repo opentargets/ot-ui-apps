@@ -11,6 +11,7 @@ import {
 import { Menu as MenuIcon, Close as CloseIcon } from '@material-ui/icons';
 import { withStyles } from '@material-ui/core/styles';
 import Link from './Link';
+import PrivateWrapper from './PrivateWrapper';
 
 const styles = () => ({
   icon: {
@@ -89,22 +90,44 @@ class HeaderMenu extends Component {
               <Paper>
                 <ClickAwayListener onClickAway={this.handleMenuClose}>
                   <MenuList onKeyDown={this.handleListKeyDown}>
-                    {items.map((item, i) => (
-                      <MenuItem
-                        onClick={this.handleMenuClose}
-                        key={i}
-                        dense={true}
-                        className={classes.menuItem}
-                      >
-                        <Link
-                          external={item.external}
-                          to={item.url}
-                          className={classes.menuLink}
-                        >
-                          {item.name}
-                        </Link>
-                      </MenuItem>
-                    ))}
+                    {items.map((item, i) => {
+                      if (item.showOnlyPartner) {
+                        return (
+                        <PrivateWrapper>
+                          <MenuItem
+                            onClick={this.handleMenuClose}
+                            key={i}
+                            dense={true}
+                            className={classes.menuItem}
+                          >
+                            <Link
+                              external={item.external}
+                              to={item.url}
+                              className={classes.menuLink}
+                            >
+                              {item.name}
+                            </Link>
+                          </MenuItem>
+                        </PrivateWrapper>);
+                      } else {
+                        return (
+                          <MenuItem
+                            onClick={this.handleMenuClose}
+                            key={i}
+                            dense={true}
+                            className={classes.menuItem}
+                          >
+                            <Link
+                              external={item.external}
+                              to={item.url}
+                              className={classes.menuLink}
+                            >
+                              {item.name}
+                            </Link>
+                          </MenuItem>
+                        );
+                      }
+                    })}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

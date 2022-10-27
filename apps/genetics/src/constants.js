@@ -43,12 +43,6 @@ export const mainMenuItems = [
     url: 'https://community.opentargets.org/',
     external: true,
   },
-  // Contact
-  {
-    name: 'Contact us',
-    url: `mailto:helpdesk@opentargets.org`,
-    external: true,
-  },
 ];
 
 export const externalLinks = {
@@ -76,6 +70,7 @@ export const externalLinks = {
   partners: [
     { label: 'Bristol Myers Squibb', url: 'https://www.bms.com' },
     { label: 'EMBL-EBI', url: 'http://www.ebi.ac.uk' },
+    { label: 'Genentech', url: 'https://www.gene.com' },
     { label: 'GSK', url: 'http://www.gsk.com' },
     { label: 'Pfizer', url: 'https://pfizer.com/' },
     { label: 'Sanofi', url: 'https://www.sanofi.com' },
@@ -92,13 +87,7 @@ export const externalLinks = {
       icon: faDiscourse,
       url: 'https://community.opentargets.org',
       external: true,
-    },
-    {
-      label: 'helpdesk@opentargets.org',
-      icon: faEnvelope,
-      url: `mailto:helpdesk@opentargets.org`,
-      external: true,
-    },
+    }
   ],
   social: [
     { icon: faTwitterSquare, url: 'https://twitter.com/opentargets' },

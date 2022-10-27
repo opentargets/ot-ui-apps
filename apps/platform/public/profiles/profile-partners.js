@@ -2,7 +2,7 @@
 var configProfile = {
   /* general items */
 
-  helpdeskEmail: 'helpdesk@opentargets.org',
+  helpdeskEmail: 'partner-support@opentargets.org',
   // config navbar main menu (hamburger)
   // mainMenuItems: [],
   // homepage logo subtitle (tagline)
