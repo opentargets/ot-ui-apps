@@ -41,6 +41,24 @@ const columns = [
     },
   },
   {
+    id: 'variantFunctionalConsequence',
+    label: 'Functional consequence',
+    renderCell: ({ variantFunctionalConsequence }) => (
+      variantFunctionalConsequence ? (
+        <Link
+          external
+          to={`http://www.sequenceontology.org/browser/current_svn/term/${
+            variantFunctionalConsequence.id
+          }`}
+        >
+          {sentenceCase(variantFunctionalConsequence.label)}
+        </Link>
+      ) 
+      : 
+        (naLabel)
+    ),
+  },
+  {
     id: 'allelicRequirements',
     label: 'Allelic requirement',
     renderCell: ({ allelicRequirements }) =>
