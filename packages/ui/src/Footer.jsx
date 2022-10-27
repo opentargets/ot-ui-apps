@@ -6,6 +6,8 @@ import { withStyles } from "@material-ui/core/styles";
 import { Link } from "./Link";
 import { EmailLink } from "./EmailLink";
 
+import PrivateWrapper from "../../../apps/platform/src/components/PrivateWrapper";
+
 const styles = (theme) => ({
   footer: {
     backgroundColor: theme.palette.footer,
@@ -107,14 +109,29 @@ const FooterSection = ({ heading, links, social }) => {
     >
       <Grid item className={classes.section}>
         <FooterSectionHeading>{heading}</FooterSectionHeading>
-        {links.map((link, i) => (
-          <FooterLink
-            key={i}
-            label={link.label}
-            url={link.url}
-            icon={link.icon}
-          />
-        ))}
+        {links.map((link, i) => {
+          if (link.showOnlyPartner) {
+            return (
+              <PrivateWrapper>
+                <FooterLink
+                  key={i}
+                  label={link.label}
+                  url={link.url}
+                  icon={link.icon}
+                />
+              </PrivateWrapper>
+            );
+          } else {
+            return (
+              <FooterLink
+                key={i}
+                label={link.label}
+                url={link.url}
+                icon={link.icon}
+              />
+            );
+          }
+        })}
       </Grid>
 
       {social ? (
