@@ -53,7 +53,6 @@ const columns = [
     filterValue: ({ targetFromSource, targetFromSourceId }) =>
       `${targetFromSource} ${targetFromSourceId}`,
   },
-
   {
     id: 'variantFunctionalConsequence',
     label: 'Functional consequence',
@@ -71,8 +70,9 @@ const columns = [
       : 
         (naLabel)
     ),
+    filterValue: ({ variantFunctionalConsequence }) =>
+      sentenceCase(variantFunctionalConsequence.label),
   },
-
   {
     id: 'alleleOrigins',
     label: 'Allele origin',
