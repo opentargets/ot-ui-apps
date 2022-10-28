@@ -57,6 +57,8 @@ const columns = [
       : 
         (naLabel)
     ),
+    filterValue: ({ variantFunctionalConsequence }) =>
+      sentenceCase(variantFunctionalConsequence.label),
   },
   {
     id: 'allelicRequirements',
