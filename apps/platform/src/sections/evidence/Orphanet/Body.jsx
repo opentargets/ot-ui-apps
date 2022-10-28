@@ -7,11 +7,12 @@ import Tooltip from '../../../components/Tooltip';
 import SectionItem from '../../../components/Section/SectionItem';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { DataTable } from '../../../components/Table';
-import { defaultRowsPerPageOptions } from '../../../constants';
+import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
 import { epmcUrl } from '../../../utils/urls';
 import Summary from './Summary';
 import Description from './Description';
 import { dataTypesMap } from '../../../dataTypes';
+import { sentenceCase } from '../../../utils/global';
 
 import ORPHANET_QUERY from './OrphanetQuery.gql';
 
@@ -52,6 +53,26 @@ const columns = [
     filterValue: ({ targetFromSource, targetFromSourceId }) =>
       `${targetFromSource} ${targetFromSourceId}`,
   },
+
+  {
+    id: 'variantFunctionalConsequence',
+    label: 'Functional consequence',
+    renderCell: ({ variantFunctionalConsequence }) => (
+      variantFunctionalConsequence ? (
+        <Link
+          external
+          to={`http://www.sequenceontology.org/browser/current_svn/term/${
+            variantFunctionalConsequence.id
+          }`}
+        >
+          {sentenceCase(variantFunctionalConsequence.label)}
+        </Link>
+      ) 
+      : 
+        (naLabel)
+    ),
+  },
+
   {
     id: 'alleleOrigins',
     label: 'Allele origin',
