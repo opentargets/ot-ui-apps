@@ -25,6 +25,10 @@ query OrphanetQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
         alleleOrigins
         confidence
         literature
+        variantFunctionalConsequence{
+          id
+          label
+        }
       }
     }
   }
