@@ -132,6 +132,14 @@ const exportColumns = [
     exportValue: row => row.alleleOrigins.join('; '),
   },
   {
+    label: 'Functional consequence',
+    exportValue: row => sentenceCase(row.variantFunctionalConsequence.label),
+  },
+  {
+    label: 'Functional consequence ID',
+    exportValue: row => row.variantFunctionalConsequence.id,
+  },
+  {
     label: 'Confidence',
     exportValue: row => row.confidence,
   },
