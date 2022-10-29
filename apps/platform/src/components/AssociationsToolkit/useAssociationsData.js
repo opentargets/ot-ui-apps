@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import client from '../../client';
+import targetPropritization from './target_prioritisation.json';
 
 // Select and parsed data from API response from fixed Target
 const getAssociatedDiseasesData = data => {
@@ -33,6 +34,15 @@ const getParsedData = (entity, apiResponse) => {
 const getAllDataCount = (entity, apiResponse) => {
   if (entity === 'target') return apiResponse.target.associatedDiseases.count;
   if (entity === 'disease') return apiResponse.disease.associatedTargets.count;
+};
+
+const ADD_PRIORITIZATION = data => {
+  return data.map(targetRow => {
+    let { prioritisations } = targetPropritization.find(
+      el => el.targetid === targetRow.target.id
+    );
+    return { ...targetRow, prioritisations };
+  });
 };
 
 function useTargetAssociations({
@@ -80,6 +90,12 @@ function useTargetAssociations({
         }
         if (isCurrent) {
           let parsedData = getParsedData(entity, resData);
+          // THIS SHOULD BE REMOVED WHEN ADDED PRIORITIZATION API
+          if (entity === 'disease') {
+            let withPrioritization = ADD_PRIORITIZATION(parsedData);
+            parsedData = withPrioritization;
+          }
+          console.log({ parsedData });
           let dataCount = getAllDataCount(entity, resData);
           setCount(dataCount);
           setData(parsedData);
