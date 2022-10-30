@@ -13,12 +13,6 @@ import { styled } from '@material-ui/styles';
 
 import { AssociationsContext } from './AssociationsProvider';
 
-const ControllsBtnContainer = styled('div')({
-  marginTop: '30px',
-  marginBottom: '20px',
-  textAlign: 'right',
-});
-
 const TextContent = styled('div')({
   marginLeft: '5px',
 });
@@ -66,11 +60,11 @@ function DataMenu() {
   const id = open ? 'simple-popover' : undefined;
 
   return (
-    <ControllsBtnContainer>
+    <>
       <Button
         aria-describedby={id}
         onClick={handleClick}
-        variant="contained"
+        variant="outlined"
         disableElevation
       >
         <FontAwesomeIcon icon={faGear} size="lg" />
@@ -174,7 +168,7 @@ function DataMenu() {
           </Drawer>
         </PopoverContent>
       </Popover>
-    </ControllsBtnContainer>
+    </>
   );
 }
 

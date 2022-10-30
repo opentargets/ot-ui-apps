@@ -52,6 +52,8 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [gScoreRect, setGScoreRect] = useState(true);
   const [scoreRect, setScoreRect] = useState(false);
   const [vizControllsopen, setVizControllsOpen] = useState(false);
+  // only two posible (associations || prioritizations)
+  const [displayedTable, setDisplayedTable] = useState('associations');
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
     query,
@@ -112,6 +114,8 @@ function AssociationsProvider({ children, entity, id, query }) {
         error,
         dataSourcesWeights,
         defaulDatasourcesWeigths,
+        displayedTable,
+        setDisplayedTable,
         setDataSourcesWeights,
         handlePaginationChange,
         expanderHandler,

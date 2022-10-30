@@ -18,7 +18,9 @@ function AssociationsWrapper() {
 
   return (
     <>
-      <AdvanceOptionsMenu />
+      <div className="ControlsSection">
+        <AdvanceOptionsMenu />
+      </div>
       <TableAssociations />
     </>
   );
