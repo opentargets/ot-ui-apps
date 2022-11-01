@@ -134,7 +134,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
         <DataTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+          dataDownloaderFileStem={`${ensgId}-${efoId}-gene2phenotype`}
           rows={data.disease.evidences.rows}
           pageSize={10}
           rowsPerPageOptions={defaultRowsPerPageOptions}
