@@ -79,6 +79,7 @@ function TableTargetPrioritization() {
             rounded={!scoreRect}
             cell={row}
             loading={loading}
+            isAssociations={false}
           />
         ) : (
           <ColoredCell rounded={!scoreRect} />

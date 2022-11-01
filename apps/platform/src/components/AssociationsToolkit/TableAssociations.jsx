@@ -81,6 +81,7 @@ function TableAssociations() {
             rounded={!scoreRect}
             cell={row}
             loading={loading}
+            isAssociations
           />
         ) : (
           <ColoredCell rounded={!scoreRect} />
@@ -111,6 +112,7 @@ function TableAssociations() {
             scoreValue={row.getValue()}
             globalScore
             rounded={!gScoreRect}
+            isAssociations
           />
         );
       },

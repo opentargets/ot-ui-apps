@@ -1,6 +1,9 @@
 import { useContext } from 'react';
 import { Button } from '@material-ui/core';
-import { faCheckDouble } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheckDouble,
+  faDiagramProject,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { styled } from '@material-ui/styles';
 
@@ -13,16 +16,21 @@ const TextContent = styled('div')({
 function TargetPrioritizationSwitch() {
   const { displayedTable, setDisplayedTable } = useContext(AssociationsContext);
 
+  let isAssociations = displayedTable === 'associations';
+
   const handleClick = () => {
     if (displayedTable === 'associations') setDisplayedTable('prioritizations');
     if (displayedTable === 'prioritizations') setDisplayedTable('associations');
   };
 
   const getButtonLabel = () => {
-    if (displayedTable === 'associations')
-      return 'Show targets prioritizations';
-    if (displayedTable === 'prioritizations')
-      return 'Show disease-target associations';
+    if (isAssociations) return 'Show targets prioritizations';
+    return 'Show disease-target associations';
+  };
+
+  const getIcon = () => {
+    if (isAssociations) return faCheckDouble;
+    return faDiagramProject;
   };
 
   const buttonLabel = getButtonLabel();
@@ -34,7 +42,7 @@ function TargetPrioritizationSwitch() {
       color="primary"
       disableElevation
     >
-      <FontAwesomeIcon icon={faCheckDouble} size="lg" />
+      <FontAwesomeIcon icon={getIcon()} size="lg" />
       <TextContent>{buttonLabel}</TextContent>
     </Button>
   );

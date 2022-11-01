@@ -1,4 +1,4 @@
-import { scaleQuantize } from 'd3';
+import { scaleQuantize, scaleLinear, interpolateLab, rgb } from 'd3';
 import Tooltip from '@material-ui/core/Tooltip';
 
 /* UTILS */
@@ -14,12 +14,30 @@ const COLORS = [
   '#08519c',
   // '#08306b',
 ];
-const linearScale = scaleQuantize().domain([0, 1]).range(COLORS);
+const assocScale = scaleQuantize().domain([0, 1]).range(COLORS);
 
-function ColoredCell({ scoreValue, onClick, rounded, globalScore, cell }) {
+const prioritizationScale = scaleLinear()
+  .domain([-1, 0, 1])
+  .interpolate(interpolateLab)
+  .range([rgb('#AA0F45'), rgb('#FCF7AF'), rgb('#76C6A7')]);
+// .range([rgb('#d7191c'), rgb('#ffffbf'), rgb('#a6d96a')]);
+// .range([rgb('#BF616A'), rgb('#EBCB8B'), rgb('#A3BE8C')]);
+
+const getScale = isAssoc => (isAssoc ? assocScale : prioritizationScale);
+
+function ColoredCell({
+  scoreValue,
+  onClick,
+  rounded,
+  globalScore,
+  cell,
+  isAssociations = true,
+}) {
+  const colorScale = getScale(isAssociations);
+
   const onClickHabdler = onClick ? () => onClick(cell) : () => {};
-  const backgroundColor = scoreValue ? linearScale(scoreValue) : '#fafafa';
-  const borderColor = scoreValue ? linearScale(scoreValue) : '#e0dede';
+  const backgroundColor = scoreValue ? colorScale(scoreValue) : '#fafafa';
+  const borderColor = scoreValue ? colorScale(scoreValue) : '#e0dede';
   const className = globalScore
     ? 'data-global-score'
     : scoreValue
