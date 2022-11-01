@@ -41,7 +41,11 @@ const ADD_PRIORITIZATION = data => {
     let { prioritisations } = targetPropritization.find(
       el => el.targetid === targetRow.target.id
     );
-    return { ...targetRow, prioritisations };
+    const objectPrioritization = prioritisations.reduce(
+      (acc, curr) => ((acc[curr.id] = curr.value), acc),
+      {}
+    );
+    return { ...targetRow, prioritisations: objectPrioritization };
   });
 };
 
