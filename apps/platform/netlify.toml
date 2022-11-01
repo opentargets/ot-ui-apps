@@ -1,4 +1,5 @@
 # redirect to ensure longer urls still fetch index.html
+NODE_OPTIONS="--max-old-space-size=4096"
 [[redirects]]
   from = "/*"
   to = "/index.html"
