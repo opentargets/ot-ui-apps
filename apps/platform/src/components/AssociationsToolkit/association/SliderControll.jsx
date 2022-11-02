@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import { Slider } from '@material-ui/core';
-import { AssociationsContext } from './AssociationsProvider';
+import { AssociationsContext } from '../provider';
 
 const sliderPayload = (id, value) => ({
   id,

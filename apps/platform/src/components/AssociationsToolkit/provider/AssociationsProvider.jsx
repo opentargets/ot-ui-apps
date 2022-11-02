@@ -1,5 +1,5 @@
 import { createContext, useState, useMemo } from 'react';
-import dataSources from '../dataSourcesAssoc';
+import dataSources from '../association/dataSourcesAssoc';
 import '../style.css';
 
 import useAssociationsData from '../useAssociationsData';
@@ -51,8 +51,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   // Viz Controls
   const [gScoreRect, setGScoreRect] = useState(true);
   const [scoreRect, setScoreRect] = useState(false);
-  const [vizControllsopen, setVizControllsOpen] = useState(false);
-  // only two posible (associations || prioritizations)
+  // only two posible (associations || prioritisations)
   const [displayedTable, setDisplayedTable] = useState('associations');
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
@@ -109,7 +108,6 @@ function AssociationsProvider({ children, entity, id, query }) {
         expanded,
         activeWeightsControlls,
         activeAggregationsLabels,
-        vizControllsopen,
         enableIndirect,
         error,
         dataSourcesWeights,
@@ -125,7 +123,6 @@ function AssociationsProvider({ children, entity, id, query }) {
         setActiveAggregationsLabels,
         setGScoreRect,
         setScoreRect,
-        setVizControllsOpen,
       }}
     >
       {children}

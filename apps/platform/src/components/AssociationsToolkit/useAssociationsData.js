@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import client from '../../client';
-import targetPropritization from './target_prioritisation.json';
+import targetPropritisation from './prioritisation/target_prioritisation.json';
 
 // Select and parsed data from API response from fixed Target
 const getAssociatedDiseasesData = data => {
@@ -38,7 +38,7 @@ const getAllDataCount = (entity, apiResponse) => {
 
 const ADD_PRIORITIZATION = data => {
   return data.map(targetRow => {
-    let { prioritisations } = targetPropritization.find(
+    let { prioritisations } = targetPropritisation.find(
       el => el.targetid === targetRow.target.id
     );
     const objectPrioritization = prioritisations.reduce(
@@ -99,7 +99,6 @@ function useTargetAssociations({
             let withPrioritization = ADD_PRIORITIZATION(parsedData);
             parsedData = withPrioritization;
           }
-          console.log({ parsedData });
           let dataCount = getAllDataCount(entity, resData);
           setCount(dataCount);
           setData(parsedData);

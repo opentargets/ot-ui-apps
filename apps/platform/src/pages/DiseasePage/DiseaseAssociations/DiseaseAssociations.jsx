@@ -1,10 +1,12 @@
-import TableAssociations from '../../../components/AssociationsToolkit/TableAssociations';
-import AdvanceOptionsMenu from '../../../components/AssociationsToolkit/AdvanceOptionsMenu';
-import TargetPrioritizarionSwitch from '../../../components/AssociationsToolkit/TargetPrioritizationSwitch';
-import TableTargetPrioritization from '../../../components/AssociationsToolkit/TableTargetPrioritization';
+import {
+  TableAssociations,
+  AdvanceOptionsMenu,
+  TargetPrioritisationSwitch,
+  TableTargetPrioritisation,
+} from '../../../components/AssociationsToolkit';
 import AssociationsProvider, {
   AssociationsContext,
-} from '../../../components/AssociationsToolkit/AssociationsProvider';
+} from '../../../components/AssociationsToolkit/provider';
 import { LoadingBackdrop } from 'ui';
 import { useContext } from 'react';
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociationsQuery.gql';
@@ -14,8 +16,8 @@ function AssociationsWrapper() {
 
   const tableToDisplay = () => {
     if (displayedTable === 'associations') return <TableAssociations />;
-    if (displayedTable === 'prioritizations')
-      return <TableTargetPrioritization />;
+    if (displayedTable === 'prioritisations')
+      return <TableTargetPrioritisation />;
   };
 
   if (initialLoading)
@@ -28,7 +30,7 @@ function AssociationsWrapper() {
   return (
     <>
       <div className="ControlsSection">
-        <TargetPrioritizarionSwitch />
+        <TargetPrioritisationSwitch />
         <AdvanceOptionsMenu />
       </div>
       {tableToDisplay()}

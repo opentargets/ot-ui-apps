@@ -1,4 +1,4 @@
-import { useContext, Fragment } from 'react';
+import { useContext, Fragment, useEffect } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -12,11 +12,17 @@ import { styled } from '@material-ui/styles';
 
 import dataSources from './dataSourcesAssoc';
 
-import { AssociationsContext } from './AssociationsProvider';
-import ColoredCell from './ColoredCell';
-import SecctionRender from './SectionRender';
+import { AssociationsContext } from '../provider';
+import ColoredCell from '../ColoredCell';
 import AggregationsRow from './AggregationsRow';
+import SecctionRender from './SectionRender';
 import WeightsControlls from './WeightsControlls';
+import { Legend, assocScale } from '../utils';
+
+const AssociationsLegend = Legend(assocScale, {
+  title: 'Association score',
+  tickFormat: '.1f',
+});
 
 const TableElement = styled('div')({
   minWidth: '1250px',
@@ -156,8 +162,14 @@ function TableAssociations() {
     return 'data-cell';
   };
 
+  useEffect(() => {
+    // DomRender(AssociationsLegend, document.getElementById('legend'))
+    document.getElementById('legend').appendChild(AssociationsLegend);
+  }, []);
+
   return (
     <div className="TAssociations">
+      <div id="legend" />
       <TableElement>
         {/* HEADER */}
         {table.getHeaderGroups().map(headerGroup => {

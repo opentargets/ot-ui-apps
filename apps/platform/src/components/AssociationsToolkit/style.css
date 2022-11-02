@@ -1,6 +1,11 @@
 .TAssociations.loading-container {
   height: 1000px;
 }
+/* --- LEGEND --- */
+.TAssociations #legend {
+  display: flex;
+  justify-content: flex-end;
+}
 
 /* --- CONTROLS --- */
 .ControlsSection {
@@ -13,7 +18,6 @@
 
 /* --- HEADER ---  */
 .TAssociations .Theader {
-  padding-top: 15px;
   display: flex;
   flex-direction: column;
   position: sticky;
@@ -84,7 +88,7 @@
 
 .TAssociations .data-row.active {
   position: sticky;
-  top: 160px;
+  top: 145px;
   padding: 0.5em 0 0.5em 0;
   z-index: 90 !important;
   background-color: #efefef;
@@ -169,6 +173,30 @@
 }
 
 .TAssociations .aggregations-container:hover .aggregation-indicator div {
+  height: 15px;
+}
+
+/* Category indicators */
+.TAssociations .category-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-left: 400px;
+}
+
+.TAssociations .category-container .category-indicator {
+  width: calc(100% / 14);
+  position: relative;
+}
+
+.TAssociations .category-container .category-indicator div {
+  width: 100%;
+  height: 4px;
+  content: ' ';
+  transition: all ease 300ms;
+}
+
+.TAssociations .category-container:hover .category-indicator div {
   height: 15px;
 }
 

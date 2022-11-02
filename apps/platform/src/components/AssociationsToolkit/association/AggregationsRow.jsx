@@ -1,6 +1,4 @@
 import Tooltip from '@material-ui/core/Tooltip';
-import { styled } from '@material-ui/styles';
-
 import dataSources from './dataSourcesAssoc';
 
 const colors = {

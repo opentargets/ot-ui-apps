@@ -7,24 +7,24 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { styled } from '@material-ui/styles';
 
-import { AssociationsContext } from './AssociationsProvider';
+import { AssociationsContext } from '../provider';
 
 const TextContent = styled('div')({
   marginLeft: '5px',
 });
 
-function TargetPrioritizationSwitch() {
+function TargetPrioritisationSwitch() {
   const { displayedTable, setDisplayedTable } = useContext(AssociationsContext);
 
   let isAssociations = displayedTable === 'associations';
 
   const handleClick = () => {
-    if (displayedTable === 'associations') setDisplayedTable('prioritizations');
-    if (displayedTable === 'prioritizations') setDisplayedTable('associations');
+    if (displayedTable === 'associations') setDisplayedTable('prioritisations');
+    if (displayedTable === 'prioritisations') setDisplayedTable('associations');
   };
 
   const getButtonLabel = () => {
-    if (isAssociations) return 'Show targets prioritizations';
+    if (isAssociations) return 'Show targets prioritisations';
     return 'Show disease-target associations';
   };
 
@@ -48,4 +48,4 @@ function TargetPrioritizationSwitch() {
   );
 }
 
-export default TargetPrioritizationSwitch;
+export default TargetPrioritisationSwitch;

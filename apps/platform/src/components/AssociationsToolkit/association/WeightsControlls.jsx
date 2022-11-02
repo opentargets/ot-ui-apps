@@ -4,7 +4,7 @@ import { faXmark, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Slider from './SliderControll';
-import { AssociationsContext } from './AssociationsProvider';
+import { AssociationsContext } from '../provider';
 
 import { styled } from '@material-ui/styles';
 

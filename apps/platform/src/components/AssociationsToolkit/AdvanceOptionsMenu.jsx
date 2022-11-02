@@ -5,13 +5,12 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
-  Drawer,
 } from '@material-ui/core';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { styled } from '@material-ui/styles';
 
-import { AssociationsContext } from './AssociationsProvider';
+import { AssociationsContext } from './provider';
 
 const TextContent = styled('div')({
   marginLeft: '5px',
@@ -19,15 +18,6 @@ const TextContent = styled('div')({
 
 const PopoverContent = styled('div')({
   padding: '15px',
-});
-
-const ControllsContainer = styled('div')({
-  margin: '40px',
-  minWidth: '400px',
-});
-
-const VizControllsContainer = styled('div')({
-  marginTop: '20px',
 });
 
 function DataMenu() {
@@ -40,12 +30,6 @@ function DataMenu() {
     setActiveWeightsControlls,
     activeAggregationsLabels,
     setActiveAggregationsLabels,
-    vizControllsopen,
-    setVizControllsOpen,
-    gScoreRect,
-    setGScoreRect,
-    scoreRect,
-    setScoreRect,
   } = useContext(AssociationsContext);
 
   const handleClick = event => {
@@ -68,7 +52,7 @@ function DataMenu() {
         disableElevation
       >
         <FontAwesomeIcon icon={faGear} size="lg" />
-        <TextContent>Advance options</TextContent>
+        <TextContent>Advanced options</TextContent>
       </Button>
       <Popover
         id={id}
@@ -96,7 +80,7 @@ function DataMenu() {
                   }
                 />
               }
-              label="Show weights controlls"
+              label="Show weights controls"
             />
           </FormGroup>
           <FormGroup>
@@ -125,47 +109,6 @@ function DataMenu() {
               label="Enable Indirect"
             />
           </FormGroup>
-          {/* Viz controlls */}
-          <hr />
-          <VizControllsContainer>
-            <Button
-              variant="contained"
-              onClick={() => setVizControllsOpen(true)}
-              disableElevation
-            >
-              Open Viz controlls
-            </Button>
-          </VizControllsContainer>
-          <Drawer
-            anchor="right"
-            open={vizControllsopen}
-            onClose={() => setVizControllsOpen(false)}
-          >
-            <ControllsContainer>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={gScoreRect}
-                      onChange={() => setGScoreRect(!gScoreRect)}
-                      color="primary"
-                    />
-                  }
-                  label="Global score rect"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={scoreRect}
-                      onChange={() => setScoreRect(!scoreRect)}
-                      color="primary"
-                    />
-                  }
-                  label="Score rect"
-                />
-              </FormGroup>
-            </ControllsContainer>
-          </Drawer>
         </PopoverContent>
       </Popover>
     </>

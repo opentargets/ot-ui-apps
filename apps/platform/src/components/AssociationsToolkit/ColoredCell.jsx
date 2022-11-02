@@ -1,29 +1,5 @@
-import { scaleQuantize, scaleLinear, interpolateLab, rgb } from 'd3';
 import Tooltip from '@material-ui/core/Tooltip';
-
-/* UTILS */
-/* Color scale */
-const COLORS = [
-  // '#f7fbff',
-  '#deebf7',
-  '#c6dbef',
-  '#9ecae1',
-  '#6baed6',
-  '#4292c6',
-  '#2171b5',
-  '#08519c',
-  // '#08306b',
-];
-const assocScale = scaleQuantize().domain([0, 1]).range(COLORS);
-
-const prioritizationScale = scaleLinear()
-  .domain([-1, 0, 1])
-  .interpolate(interpolateLab)
-  .range([rgb('#AA0F45'), rgb('#FCF7AF'), rgb('#76C6A7')]);
-// .range([rgb('#d7191c'), rgb('#ffffbf'), rgb('#a6d96a')]);
-// .range([rgb('#BF616A'), rgb('#EBCB8B'), rgb('#A3BE8C')]);
-
-const getScale = isAssoc => (isAssoc ? assocScale : prioritizationScale);
+import { getScale } from './utils';
 
 function ColoredCell({
   scoreValue,

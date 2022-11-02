@@ -1,4 +1,4 @@
-import { useContext, Fragment } from 'react';
+import { useContext, Fragment, useEffect } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -6,15 +6,21 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { Reorder, motion } from 'framer-motion';
+import { Reorder } from 'framer-motion';
 import { styled } from '@material-ui/styles';
 
 import priorityCols from './prioritizationCols';
 
-import { AssociationsContext } from './AssociationsProvider';
-import ColoredCell from './ColoredCell';
-import SecctionRender from './SectionRender';
-import WeightsControlls from './WeightsControlls';
+import { AssociationsContext } from '../provider';
+import ColoredCell from '../ColoredCell';
+import CategoryRow from './AggregationsRow';
+
+import { Legend, prioritizationScale } from '../utils';
+
+const PrioritisationLegend = Legend(prioritizationScale, {
+  title: 'Prioritisation indicator',
+  tickFormat: (d, i) => ['Bad', ' ', ' ', ' ', ' ', 'Good'][i],
+});
 
 const TableElement = styled('div')({
   minWidth: '1250px',
@@ -153,8 +159,14 @@ function TableTargetPrioritization() {
     return 'data-cell';
   };
 
+  useEffect(() => {
+    // DomRender(AssociationsLegend, document.getElementById('legend'))
+    document.getElementById('legend').appendChild(PrioritisationLegend);
+  }, []);
+
   return (
     <div className="TAssociations">
+      <div id="legend" />
       <TableElement>
         {/* HEADER */}
         {table.getHeaderGroups().map(headerGroup => {
@@ -176,12 +188,12 @@ function TableTargetPrioritization() {
                   );
                 })}
               </div>
+              {activeAggregationsLabels && (
+                <CategoryRow cols={headerGroup.headers} />
+              )}
             </div>
           );
         })}
-
-        {/* Weights controlls */}
-        {/* <WeightsControlls cols={table.getHeaderGroups()} /> */}
 
         {/* CONTENT */}
         <Reorder.Group
