@@ -170,7 +170,6 @@ function TableAssociations() {
 
   return (
     <div className="TAssociations">
-      <div id="legend" />
       <TableElement>
         {/* HEADER */}
         {table.getHeaderGroups().map(headerGroup => {
@@ -253,23 +252,26 @@ function TableAssociations() {
             </div>
           </div>
         </Reorder.Group>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50, 200, 500]}
-          component="div"
-          count={count}
-          rowsPerPage={table.getState().pagination.pageSize}
-          page={pagination.pageIndex}
-          onPageChange={(e, index) => {
-            if (!loading) {
-              table.setPageIndex(index);
-            }
-          }}
-          onRowsPerPageChange={e => {
-            if (!loading) {
-              return table.setPageSize(Number(e.target.value));
-            }
-          }}
-        />
+        <div className="table-footer">
+          <div id="legend" />
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50, 200, 500]}
+            component="div"
+            count={count}
+            rowsPerPage={table.getState().pagination.pageSize}
+            page={pagination.pageIndex}
+            onPageChange={(e, index) => {
+              if (!loading) {
+                table.setPageIndex(index);
+              }
+            }}
+            onRowsPerPageChange={e => {
+              if (!loading) {
+                return table.setPageSize(Number(e.target.value));
+              }
+            }}
+          />
+        </div>
       </TableElement>
     </div>
   );

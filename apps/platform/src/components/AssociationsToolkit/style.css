@@ -1,11 +1,6 @@
 .TAssociations.loading-container {
   height: 1000px;
 }
-/* --- LEGEND --- */
-.TAssociations #legend {
-  display: flex;
-  justify-content: flex-end;
-}
 
 /* --- CONTROLS --- */
 .ControlsSection {
@@ -72,9 +67,25 @@
 }
 
 .TAssociations .table-body {
-  margin-bottom: 20px;
-  border-bottom: 1px solid #ececec;
   padding-bottom: 10px;
+}
+
+/* Table footer */
+.TAssociations .table-footer {
+  position: sticky;
+  border-top: 1px solid #ececec;
+  bottom: 0;
+  background-color: #fafafa;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* --- LEGEND --- */
+.TAssociations #legend {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 /* ROW */
