@@ -97,6 +97,7 @@
   display: flex;
   margin-bottom: 3px;
   justify-content: space-evenly;
+  align-items: center;
 }
 
 .TAssociations .data-row:hover {
