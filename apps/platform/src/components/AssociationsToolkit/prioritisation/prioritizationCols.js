@@ -44,7 +44,7 @@ const cols = [
   },
   {
     id: 'isSecreted',
-    label: 'Secreted',
+    label: 'Secreted protein',
     category: 'Tractability',
     sectionId: '',
     description: 'Target is annotated to be secreted',
@@ -89,7 +89,8 @@ const cols = [
     label: 'Genetic constraint',
     category: 'Safety',
     sectionId: '',
-    description: 'Relative genetic constraint in natural populations derived from GnomAD',
+    description:
+      'Relative genetic constraint in natural populations derived from GnomAD',
   },
   {
     id: 'hasSafetyEvent',
@@ -103,7 +104,8 @@ const cols = [
     label: 'Cancer driver gene',
     category: 'Safety',
     sectionId: '',
-    description: 'Target is classified as an Oncogene and/or Tumor Suppressor Gene',
+    description:
+      'Target is classified as an Oncogene and/or Tumor Suppressor Gene',
   },
   {
     id: 'mouseOrthologIdentityPercentage',
