@@ -2,10 +2,10 @@ import Tooltip from '@material-ui/core/Tooltip';
 import priorityCols from './prioritizationCols';
 
 const colors = {
-  precedence: '#bebada',
-  tractability: '#fb9a99',
-  doability: '#6a3d9a',
-  safety: '#e31a1c',
+  Precedence: '#bebada',
+  Tractability: '#fb9a99',
+  Doability: '#6a3d9a',
+  Safety: '#e31a1c',
 };
 
 function AggregationsRow({ cols }) {
