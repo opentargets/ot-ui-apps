@@ -3,7 +3,7 @@ import client from '../../../client';
 import { withTheme, makeStyles } from '@material-ui/core';
 
 import DataTable from '../../../components/Table/DataTable';
-// import Legend from '../../../components/Legend';
+import Legend from '../../../components/Legend';
 import { colorRange } from '../../../constants';
 
 import Grid from '@material-ui/core/Grid';
@@ -343,7 +343,7 @@ function StringTab({ ensgId, symbol }) {
           rowsPerPageOptions={[10, 25, 50, 100]}
           loading={loading}
         />
-        {/* <Legend /> */}
+        <Legend url={"https://string-db.org/cgi/info"}   />
       </Grid>
     </Grid>
   );
