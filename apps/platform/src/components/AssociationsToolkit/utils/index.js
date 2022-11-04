@@ -1,9 +1,21 @@
-import { scaleQuantize, schemeSpectral, rgb, scaleOrdinal } from 'd3';
+import { scaleQuantize, rgb } from 'd3';
 
 /* Exoport Legend */
 export { default as Legend } from './Legend';
 
-console.log(schemeSpectral[9]);
+/* --- TABLE SHARED HELPERS --- */
+export const getPriorisationSectionId = (columnDef, colCellId) =>
+  columnDef.sectionId;
+
+export const getCellId = (cell, entityToGet, displayedTable) => {
+  const colId = cell.column.id;
+  const rowId = cell.row.original[entityToGet].id;
+  const sectionId =
+    displayedTable === 'associations'
+      ? cell.column.id
+      : cell.column.columnDef.sectionId;
+  return [colId, rowId, sectionId];
+};
 
 /* --- CONSTANTS --- */
 /* Associations colors */

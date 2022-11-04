@@ -1,7 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Grid, Typography, makeStyles } from '@material-ui/core';
+import { useQuery } from '@apollo/client';
 
+import TRACTABILITY_QUERY from './TractabilityQuery.gql';
 import Summary from './Summary';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import SectionItem from '../../../components/Section/SectionItem';
@@ -91,8 +93,12 @@ const ModalityList = ({ modality, data }) => {
   );
 };
 
-function Body({ definition, label: symbol }) {
-  const request = usePlatformApi(Summary.fragments.TractabilitySummaryFragment);
+function Body({ definition, label: symbol, id: ensemblId }) {
+  // const request = usePlatformApi(Summary.fragments.TractabilitySummaryFragment);
+
+  const request = useQuery(TRACTABILITY_QUERY, {
+    variables: { ensemblId },
+  });
 
   return (
     <SectionItem
@@ -110,7 +116,7 @@ function Body({ definition, label: symbol }) {
                   </Typography>
                   <ModalityList
                     modality={m.modality}
-                    data={data.tractability}
+                    data={data.target.tractability}
                   />
                 </Grid>
               ))}

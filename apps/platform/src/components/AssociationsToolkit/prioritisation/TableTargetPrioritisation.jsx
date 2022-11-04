@@ -6,17 +6,18 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { Reorder } from 'framer-motion';
+import { Reorder, motion } from 'framer-motion';
 import { styled } from '@material-ui/styles';
-import { TablePagination } from '@material-ui/core';
+import { TablePagination, ClickAwayListener } from '@material-ui/core';
 
 import priorityCols from './prioritizationCols';
 
 import { AssociationsContext } from '../provider';
 import ColoredCell from '../ColoredCell';
 import CategoryRow from './AggregationsRow';
+import SectionRender from './SectionRender';
 
-import { Legend, prioritizationScale } from '../utils';
+import { Legend, prioritizationScale, getCellId } from '../utils';
 
 const PrioritisationLegend = Legend(prioritizationScale, {
   title: 'Prioritisation indicator',
@@ -43,12 +44,6 @@ const Name = styled('span')({
   textOverflow: 'ellipsis',
 });
 
-const getCellId = (cell, entityToGet) => {
-  const sourceId = cell.column.id;
-  const rowId = cell.row.original[entityToGet].id;
-  return [sourceId, rowId];
-};
-
 function TableTargetPrioritization() {
   const {
     id,
@@ -66,13 +61,16 @@ function TableTargetPrioritization() {
     handlePaginationChange,
     setTableExpanded,
     activeAggregationsLabels,
+    displayedTable,
+    resetExpandler,
   } = useContext(AssociationsContext);
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
 
   function getPrioritization() {
-    return priorityCols.map(({ id, label }) => ({
+    return priorityCols.map(({ id, label, sectionId }) => ({
       id,
+      sectionId,
       header: label,
       accessorFn: row => row.prioritisations[id],
       cell: row => {
@@ -141,6 +139,7 @@ function TableTargetPrioritization() {
     getExpandedRowModel: getExpandedRowModel(),
     getRowId: row => row[entityToGet].id,
     manualPagination: true,
+    meta: { priorityCols },
   });
 
   const getHeaderClassName = ({ id }) => {
@@ -155,9 +154,13 @@ function TableTargetPrioritization() {
   };
   const getCellClassName = cell => {
     if (cell.column.id === 'name') return 'name-cell';
-    const expandedId = getCellId(cell, entityToGet).join('-');
+    const expandedId = getCellId(cell, entityToGet, displayedTable).join('-');
     if (expandedId === expanded.join('-')) return 'active data-cell';
     return 'data-cell';
+  };
+
+  const handleClickAway = cell => {
+    resetExpandler();
   };
 
   useEffect(() => {
@@ -225,21 +228,25 @@ function TableTargetPrioritization() {
                         );
                       })}
                     </Reorder.Item>
-                    {/* {row.getIsExpanded() && (
+                    {row.getIsExpanded() && (
                       <motion.div
                         key={`${row.original[entityToGet].id}-${expanded[0]}`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                       >
-                        <SecctionRender
-                          id={id}
-                          rowId={row.original[entityToGet].id}
-                          activeSection={expanded}
-                          entity={entity}
-                        />
+                        <ClickAwayListener onClickAway={handleClickAway}>
+                          <div>
+                            <SectionRender
+                              id={id}
+                              rowId={row.original[entityToGet].id}
+                              activeSection={expanded}
+                              entity={entity}
+                            />
+                          </div>
+                        </ClickAwayListener>
                       </motion.div>
-                    )} */}
+                    )}
                   </Fragment>
                 );
               })}

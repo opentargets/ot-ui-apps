@@ -1,94 +1,72 @@
-// 'isProteinCoding'	Protein = 1/ other = 0
-// 'isInMembrane'	Yes=1, No= 0
-// // ### TRACTABILITY
-// 'isSecreted'	Yes=1, No= 0
-// 'hasPocket'	Yes = 1, No = 0
-// 'hasLigand'	Yes = 1, No = 0
-
-// // ### SAFETY
-// 'hasSafetyEvent' Yes = -1 , No =0
-// 'geneticConstraint'	Continuous [-1,1]
-// 'hasParalogs'	[has paralogs = 1 / No = 0]
-// 'mouseOrthologIdentityPercentage'	Continuous (0,1)
-// 'isCancerDriverGene'	Yes = -1 / no =0
-
-// // ### DOABILITY
-// 'hasTEP'	Yes=1, No=0
-// 'hasMouseKO'	Yes=1, No=0
-// 'hasHighQualityChemicalProbes'	Yes =1, No =0
-
-// // ### PRECEDENCE
-// 'inClinicalTrials'
-
 const cols = [
   {
     id: 'inClinicalTrials',
     label: 'Target in clinic',
     category: 'Precedence',
-    sectionId: '',
+    sectionId: 'knownDrugs',
     description: 'Target is in clinical trials for any indication',
   },
   {
     id: 'isProteinCoding',
     label: 'Protein coding',
     category: 'Tractability',
-    sectionId: '',
+    sectionId: 'knownDrugs',
     description: 'Target is a protein coding gene',
   },
   {
     id: 'isInMembrane',
     label: 'Membrane protein',
     category: 'Tractability',
-    sectionId: '',
+    sectionId: 'subcellularLocation',
     description: 'Target is annotated to be located in the cell membrane',
   },
   {
     id: 'isSecreted',
     label: 'Secreted protein',
     category: 'Tractability',
-    sectionId: '',
+    sectionId: 'subcellularLocation',
     description: 'Target is annotated to be secreted',
   },
   {
     id: 'hasLigand',
     label: 'Ligand binder',
     category: 'Tractability',
-    sectionId: '',
+    sectionId: 'tractability',
     description: 'Target binds a specific ligand',
   },
   {
     id: 'hasPocket',
     label: 'Predicted pockets',
     category: 'Tractability',
-    sectionId: '',
+    sectionId: 'tractability',
     description: 'Target has predicted pockets',
   },
   {
     id: 'hasMouseKO',
     label: 'Mouse KO',
     category: 'Doability',
-    sectionId: '',
+    sectionId: 'mousePhenotypes',
     description: 'Availability of mouse knockout models for the target',
   },
   {
     id: 'hasHighQualityChemicalProbes',
     label: 'Chemical probes',
     category: 'Doability',
-    sectionId: '',
+    sectionId: 'chemicalProbes',
     description: 'Availability of high quality chemical probes for the target',
   },
   {
     id: 'hasTEP',
     label: 'TEP',
     category: 'Doability',
-    sectionId: '',
+    sectionId: 'tractability',
     description: 'Availability of Target Enabling Package for the target',
   },
   {
     id: 'geneticConstraint',
     label: 'Genetic constraint',
     category: 'Safety',
-    sectionId: '',
+    sectionId: 'geneticConstraint',
     description:
       'Relative genetic constraint in natural populations derived from GnomAD',
   },
@@ -96,14 +74,14 @@ const cols = [
     id: 'hasSafetyEvent',
     label: 'Known adverse events',
     category: 'Safety',
-    sectionId: '',
+    sectionId: 'safety',
     description: 'Target associated with a curated adverse event',
   },
   {
     id: 'isCancerDriverGene',
     label: 'Cancer driver gene',
     category: 'Safety',
-    sectionId: '',
+    sectionId: 'cancerHallmarks', // Safety
     description:
       'Target is classified as an Oncogene and/or Tumor Suppressor Gene',
   },
@@ -111,14 +89,14 @@ const cols = [
     id: 'mouseOrthologIdentityPercentage',
     label: 'Mouse ortholog identity',
     category: 'Safety',
-    sectionId: '',
+    sectionId: 'compGenomics',
     description: 'Mouse ortholog identity percentage',
   },
   {
     id: 'hasParalogs',
     label: 'Paralogues',
     category: 'Safety',
-    sectionId: '',
+    sectionId: 'compGenomics',
     description: 'Target has human paralogues',
   },
 ];

@@ -9,7 +9,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { Reorder, motion } from 'framer-motion';
 
 import { styled } from '@material-ui/styles';
-import { TablePagination } from '@material-ui/core';
+import { TablePagination, ClickAwayListener } from '@material-ui/core';
 
 import dataSources from './dataSourcesAssoc';
 
@@ -18,7 +18,7 @@ import ColoredCell from '../ColoredCell';
 import AggregationsRow from './AggregationsRow';
 import SecctionRender from './SectionRender';
 import WeightsControlls from './WeightsControlls';
-import { Legend, assocScale } from '../utils';
+import { Legend, assocScale, getCellId } from '../utils';
 
 const AssociationsLegend = Legend(assocScale, {
   title: 'Association score',
@@ -45,12 +45,6 @@ const Name = styled('span')({
   textOverflow: 'ellipsis',
 });
 
-const getCellId = (cell, entityToGet) => {
-  const sourceId = cell.column.id;
-  const rowId = cell.row.original[entityToGet].id;
-  return [sourceId, rowId];
-};
-
 function TableAssociations() {
   const {
     id,
@@ -68,6 +62,8 @@ function TableAssociations() {
     handlePaginationChange,
     setTableExpanded,
     activeAggregationsLabels,
+    displayedTable,
+    resetExpandler,
   } = useContext(AssociationsContext);
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
@@ -158,9 +154,13 @@ function TableAssociations() {
   };
   const getCellClassName = cell => {
     if (cell.column.id === 'name') return 'name-cell';
-    const expandedId = getCellId(cell, entityToGet).join('-');
+    const expandedId = getCellId(cell, entityToGet, displayedTable).join('-');
     if (expandedId === expanded.join('-')) return 'active data-cell';
     return 'data-cell';
+  };
+
+  const handleClickAway = cell => {
+    resetExpandler();
   };
 
   useEffect(() => {
@@ -238,12 +238,16 @@ function TableAssociations() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                       >
-                        <SecctionRender
-                          id={id}
-                          rowId={row.original[entityToGet].id}
-                          activeSection={expanded}
-                          entity={entity}
-                        />
+                        <ClickAwayListener onClickAway={handleClickAway}>
+                          <div>
+                            <SecctionRender
+                              id={id}
+                              rowId={row.original[entityToGet].id}
+                              activeSection={expanded}
+                              entity={entity}
+                            />
+                          </div>
+                        </ClickAwayListener>
                       </motion.div>
                     )}
                   </Fragment>

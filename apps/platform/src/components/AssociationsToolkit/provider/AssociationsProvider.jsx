@@ -4,13 +4,9 @@ import '../style.css';
 
 import useAssociationsData from '../useAssociationsData';
 
-const AssociationsContext = createContext();
+import { getCellId } from '../utils';
 
-const getCellId = (cell, entityToGet) => {
-  const sourceId = cell.column.id;
-  const rowId = cell.row.original[entityToGet].id;
-  return [sourceId, rowId];
-};
+const AssociationsContext = createContext();
 
 const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
   id,
@@ -77,7 +73,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   };
 
   const expanderHandler = tableExpanderController => cell => {
-    const expandedId = getCellId(cell, entityToGet);
+    const expandedId = getCellId(cell, entityToGet, displayedTable);
     if (expanded.join('-') === expandedId.join('-')) {
       setTableExpanded({});
       setExpanded([]);
@@ -89,6 +85,11 @@ function AssociationsProvider({ children, entity, id, query }) {
     tableExpanderController();
     /* Set the ID of the section expanded element */
     setExpanded(expandedId);
+  };
+
+  const resetExpandler = () => {
+    setExpanded([]);
+    setTableExpanded({});
   };
 
   return (
@@ -123,6 +124,7 @@ function AssociationsProvider({ children, entity, id, query }) {
         setActiveAggregationsLabels,
         setGScoreRect,
         setScoreRect,
+        resetExpandler,
       }}
     >
       {children}
