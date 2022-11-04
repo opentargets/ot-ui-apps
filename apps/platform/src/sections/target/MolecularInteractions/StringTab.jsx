@@ -3,7 +3,7 @@ import client from '../../../client';
 import { withTheme, makeStyles } from '@material-ui/core';
 
 import DataTable from '../../../components/Table/DataTable';
-import Legend from '../../../components/Legend';
+// import Legend from '../../../components/Legend';
 import { colorRange } from '../../../constants';
 
 import Grid from '@material-ui/core/Grid';
