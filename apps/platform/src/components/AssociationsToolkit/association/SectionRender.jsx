@@ -7,7 +7,7 @@ const SectionWrapper = styled('div')({
 });
 
 // Wrapper of the sections
-function SecctionRenderer({ activeSection, entity, rowId, id }) {
+function SecctionRenderer({ activeSection, entity, rowId, id, label }) {
   const toSearch = activeSection[0];
   const section = sections.find(el => el.definition.id === toSearch);
 
@@ -25,7 +25,7 @@ function SecctionRenderer({ activeSection, entity, rowId, id }) {
         <Body
           definition={definition}
           id={{ ensgId, efoId }}
-          label={{ symbol: definition.shortName, name: definition.name }}
+          label={{ symbol: label, name: definition.name }}
         />
       </Grid>
     </SectionWrapper>

@@ -245,6 +245,7 @@ function TableAssociations() {
                               rowId={row.original[entityToGet].id}
                               activeSection={expanded}
                               entity={entity}
+                              label={row.original[entityToGet][rowNameEntity]}
                             />
                           </div>
                         </ClickAwayListener>
