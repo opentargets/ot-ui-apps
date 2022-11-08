@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Footer } from 'ui';
+import { Footer, GlobalSearch } from 'ui';
 
 import Search from './Search';
 import Page from './Page';
@@ -13,6 +13,8 @@ import {
   mainMenuItems,
 } from '../constants';
 
+import SEARCH_QUERY from './Search/SearchQuery.gql';
+
 const BasePage = ({ title, children, description, location }) => {
   const composedTitle = `${title ? title + ' | ' : ''} ${appTitle}`;
 
@@ -21,7 +23,7 @@ const BasePage = ({ title, children, description, location }) => {
       header={
         <NavBar
           name="Platform"
-          search={<Search embedded />}
+          search={<GlobalSearch searchQuery={SEARCH_QUERY} />}
           items={mainMenuItems}
         />
       }

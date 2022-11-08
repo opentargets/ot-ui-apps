@@ -1,19 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
-import { Modal, Box, makeStyles, colors, Typography } from "@material-ui/core";
+import { makeStyles, Typography } from "@material-ui/core";
 import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
+
 import SearchModalContent from "./ChildComponents/SearchModalContent";
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    position: "absolute",
-    width: "30vw",
-    height: 400,
-    background: "white",
-    top: `30%`,
-    left: `50%`,
-    transform: `translate(-30%, -50%)`,
-  },
   searchButton: {
     background: "white",
     width: "10vw",
@@ -31,15 +23,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GlobalSearch() {
-  const [open, setOpen] = useState(false);
+function GlobalSearch({ searchQuery }) {
   const classes = useStyles();
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const modalRef = useRef(null);
 
   const handleKeyPress = useCallback((event) => {
-    if (event.metaKey === true && event.keyCode === 75) setOpen(true);
+    if (event.metaKey === true && event.keyCode === 75) modalRef.current.handleOpen();
   }, []);
 
   useEffect(() => {
@@ -55,22 +44,14 @@ function GlobalSearch() {
       <button
         type="button"
         className={classes.searchButton}
-        onClick={handleOpen}
+        onClick={()=>modalRef.current.handleOpen()}
       >
         <SearchIcon className={classes.searchIcon} />
         <Typography>Search...</Typography>
-        <Typography variant="subtitle2">cmd+k</Typography>
+        {/* <Typography variant="subtitle2">cmd+k</Typography> */}
       </button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <div className={classes.paper}>
-          <SearchModalContent/>
-        </div>
-      </Modal>
+
+      <SearchModalContent searchQuery={searchQuery} ref={modalRef} />
     </>
   );
 }

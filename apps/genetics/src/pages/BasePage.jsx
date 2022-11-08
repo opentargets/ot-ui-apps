@@ -9,13 +9,15 @@ import Search from '../components/Search';
 import NavBar from '../components/NavBar/NavBar';
 import { externalLinks, mainMenuItems } from '../constants';
 
+import SEARCH_QUERY from '../components/Search/SearchQuery.gql';
+
 const BasePage = ({ children }) => (
   <Page
     header={
       <NavBar
         name="Genetics"
         items={mainMenuItems}
-        search={<GlobalSearch/>}
+        search={<GlobalSearch searchQuery={SEARCH_QUERY} />}
       />
     }
     footer={<Footer externalLinks={externalLinks} />}
