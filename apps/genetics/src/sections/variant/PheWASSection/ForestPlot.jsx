@@ -169,7 +169,7 @@ const ForestPlot = ({
       .style('position', 'sticky')
       .style('flex-shrink', 0)
       .style('flex-grow', 0)
-      .style('top', plot_height - 2 * cfg.rowHeight)
+      .style('top', `${plot_height -2 * cfg.rowHeight}px`)
       .style('background-color', 'white');
 
     // clip trait name text (row width)
