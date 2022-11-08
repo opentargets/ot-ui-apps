@@ -125,7 +125,11 @@ const ColocL2GTable = ({ variantId, studyId }) => {
     }
   );
 
-  if (queryResult && queryResult.studyLocus2GeneTable.rows) {
+  if (
+    queryResult &&
+    queryResult.studyLocus2GeneTable.rows &&
+    queryResult.studyLocus2GeneTable.rows.length > 0
+  ) {
     tableData = getData(queryResult.studyLocus2GeneTable.rows);
   }
 
