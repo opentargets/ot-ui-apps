@@ -375,7 +375,7 @@ const ForestPlot = ({
       .attr('fill', cfg.treeColor)
       .attr('text-anchor', 'middle')
       .attr('x', cfg.plotW / 2)
-      .style('font-size', 15)
+      .style('font-size', '15px')
       .style('font-family', '"Inter", sans-serif');
 
     // axis color
