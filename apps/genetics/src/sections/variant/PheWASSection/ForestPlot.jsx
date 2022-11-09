@@ -139,7 +139,7 @@ const ForestPlot = ({
       .attr('width', cfg.svgW)
       .attr('height', traits.length * cfg.rowHeight + 2 * cfg.rowHeight)
       .style('position', 'absolute')
-      .style('top', cfg.top_axis)
+      .style('top', `${cfg.top_axis}px`)
       .append('g');
 
     // set top row svg size and sticky
