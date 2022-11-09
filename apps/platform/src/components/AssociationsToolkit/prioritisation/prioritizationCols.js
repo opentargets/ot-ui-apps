@@ -1,17 +1,10 @@
 const cols = [
   {
-    id: 'inClinicalTrials',
+    id: 'maxClinicalTrialPhase',
     label: 'Target in clinic',
     category: 'Precedence',
     sectionId: 'knownDrugs',
     description: 'Target is in clinical trials for any indication',
-  },
-  {
-    id: 'isProteinCoding',
-    label: 'Protein coding',
-    category: 'Tractability',
-    sectionId: 'knownDrugs',
-    description: 'Target is a protein coding gene',
   },
   {
     id: 'isInMembrane',
@@ -86,18 +79,32 @@ const cols = [
       'Target is classified as an Oncogene and/or Tumor Suppressor Gene',
   },
   {
-    id: 'mouseOrthologIdentityPercentage',
+    id: 'mouseOrthologMaxIdentityPercentage',
     label: 'Mouse ortholog identity',
     category: 'Safety',
     sectionId: 'compGenomics',
-    description: 'Mouse ortholog identity percentage',
+    description: 'Mouse ortholog maximum identity percentage',
   },
   {
-    id: 'hasParalogs',
+    id: 'paralogMaxIdentityPercentage',
     label: 'Paralogues',
     category: 'Safety',
     sectionId: 'compGenomics',
-    description: 'Target has human paralogues',
+    description: 'Paralog maximum identity percentage',
+  },
+  {
+    id: 'tissueSpecificity',
+    label: 'Tissue specificity',
+    category: 'Safety',
+    sectionId: 'baselineExpression',
+    description: 'HPA category types of elevated expression across tissues for the target',
+  },
+  {
+    id: 'tissueDistribution',
+    label: 'Tissue distribution',
+    category: 'Safety',
+    sectionId: 'baselineExpression',
+    description: 'HPA category types of detectable expression across tissues for the target',
   },
 ];
 
