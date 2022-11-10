@@ -50,6 +50,8 @@ function AssociationsProvider({ children, entity, id, query }) {
   // only two posible (associations || prioritisations)
   const [displayedTable, setDisplayedTable] = useState('associations');
 
+  const [pinnedData, setPinnedData] = useState([]);
+
   const { data, initialLoading, loading, error, count } = useAssociationsData({
     query,
     options: {
@@ -114,6 +116,8 @@ function AssociationsProvider({ children, entity, id, query }) {
         dataSourcesWeights,
         defaulDatasourcesWeigths,
         displayedTable,
+        pinnedData,
+        setPinnedData,
         setDisplayedTable,
         setDataSourcesWeights,
         handlePaginationChange,

@@ -18,6 +18,8 @@ import ColoredCell from '../ColoredCell';
 import AggregationsRow from './AggregationsRow';
 import SecctionRender from './SectionRender';
 import WeightsControlls from './WeightsControlls';
+import CellName from './CellName';
+
 import { Legend, assocScale, getCellId } from '../utils';
 
 const AssociationsLegend = Legend(assocScale, {
@@ -29,20 +31,6 @@ const TableElement = styled('div')({
   minWidth: '1250px',
   maxWidth: '1500px',
   margin: '0 auto',
-});
-
-const NameContainer = styled('div')({
-  display: 'block',
-  overflow: 'hidden',
-  textAlign: 'end',
-  textOverflow: 'ellipsis',
-  maxWidth: '300px',
-});
-
-const Name = styled('span')({
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  textOverflow: 'ellipsis',
 });
 
 function TableAssociations() {
@@ -97,11 +85,7 @@ function TableAssociations() {
     {
       accessorFn: row => row[entityToGet][rowNameEntity],
       id: 'name',
-      cell: row => (
-        <NameContainer>
-          <Name>{row.getValue()}</Name>
-        </NameContainer>
-      ),
+      cell: row => <CellName name={row.getValue()} rowId={row.row.id} />,
       header: () => <span>{entityToGet}</span>,
       footer: props => props.column.id,
     },
