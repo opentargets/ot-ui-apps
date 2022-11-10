@@ -96,15 +96,17 @@ const cols = [
     id: 'tissueSpecificity',
     label: 'Tissue specificity',
     category: 'Safety',
-    sectionId: 'baselineExpression',
-    description: 'HPA category types of elevated expression across tissues for the target',
+    sectionId: 'expressions',
+    description:
+      'HPA category types of elevated expression across tissues for the target',
   },
   {
     id: 'tissueDistribution',
     label: 'Tissue distribution',
     category: 'Safety',
-    sectionId: 'baselineExpression',
-    description: 'HPA category types of detectable expression across tissues for the target',
+    sectionId: 'expressions',
+    description:
+      'HPA category types of detectable expression across tissues for the target',
   },
 ];
 
