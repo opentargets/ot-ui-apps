@@ -230,7 +230,7 @@ class HomePage extends Component {
               both literature and newly-derived loci from UK Biobank and FinnGen
               and also contains functional genomics data (e.g. chromatin
               conformation, chromatin interactions) and quantitative trait loci
-              (eQTLs and pQTLs). Large-scale pipelines apply statistical
+              (eQTLs, pQTLs and sQTLs). Large-scale pipelines apply statistical
               fine-mapping across thousands of trait-associated loci to resolve
               association signals and link each variant to its proximal and
               distal target gene(s) using a Locus2Gene assessment. Integrated
@@ -273,7 +273,7 @@ class HomePage extends Component {
                 <HelpBoxPanel
                   fai={faQuestionCircle}
                   url="https://genetics-docs.opentargets.org/"
-                  label="Check out our Platform documentation"
+                  label="Check out our Genetics documentation"
                   external
                 />
               </Grid>
@@ -282,7 +282,7 @@ class HomePage extends Component {
                 <HelpBoxPanel
                   fai={faFileAlt}
                   url="https://genetics-docs.opentargets.org/citation"
-                  label="Read our latest Platform publications"
+                  label="Read our latest Genetics publications"
                   external
                 />
               </Grid>

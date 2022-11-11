@@ -28,13 +28,14 @@ export const externalLinks = {
   network: [
     { label: 'Science', url: 'https://www.opentargets.org/science' },
     { label: 'Publications', url: 'https://www.opentargets.org/publications' },
-    { label: 'Genetics Portal', url: 'https://genetics.opentargets.org' },
+    { label: 'Open Targets Genetics', url: 'https://genetics.opentargets.org' },
     { label: 'Jobs', url: 'https://www.opentargets.org/jobs' },
     { label: 'Blog', url: 'https://blog.opentargets.org' },
   ],
   partners: [
     { label: 'Bristol Myers Squibb', url: 'https://www.bms.com' },
     { label: 'EMBL-EBI', url: 'https://www.ebi.ac.uk' },
+    { label: 'Genentech', url: 'https://www.gene.com' },
     { label: 'GSK', url: 'https://www.gsk.com' },
     { label: 'Pfizer', url: 'https://pfizer.com' },
     { label: 'Sanofi', url: 'https://www.sanofi.com' },
@@ -53,10 +54,11 @@ export const externalLinks = {
       external: true,
     },
     {
-      label: config.profile.helpdeskEmail,
+      label: 'Contact us',
       icon: faEnvelope,
       url: `mailto: ${config.profile.helpdeskEmail}`,
       external: true,
+      showOnlyPartner: true,
     },
   ],
   social: [
@@ -93,11 +95,12 @@ export const mainMenuItems = config.profile.mainMenuItems ?? [
     url: 'https://community.opentargets.org/',
     external: true,
   },
-  // Contact
+  // Contact - ppp
   {
     name: 'Contact us',
     url: `mailto:${config.profile.helpdeskEmail}`,
     external: true,
+    showOnlyPartner: true
   },
 ];
 
