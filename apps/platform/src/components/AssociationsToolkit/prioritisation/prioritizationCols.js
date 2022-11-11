@@ -42,6 +42,13 @@ const cols = [
     description: 'Availability of mouse knockout models for the target',
   },
   {
+    id: 'mouseOrthologMaxIdentityPercentage',
+    label: 'Mouse ortholog identity',
+    category: 'Doability',
+    sectionId: 'compGenomics',
+    description: 'Mouse ortholog maximum identity percentage',
+  },
+  {
     id: 'hasHighQualityChemicalProbes',
     label: 'Chemical probes',
     category: 'Doability',
@@ -77,13 +84,6 @@ const cols = [
     sectionId: 'cancerHallmarks', // Safety
     description:
       'Target is classified as an Oncogene and/or Tumor Suppressor Gene',
-  },
-  {
-    id: 'mouseOrthologMaxIdentityPercentage',
-    label: 'Mouse ortholog identity',
-    category: 'Safety',
-    sectionId: 'compGenomics',
-    description: 'Mouse ortholog maximum identity percentage',
   },
   {
     id: 'paralogMaxIdentityPercentage',
