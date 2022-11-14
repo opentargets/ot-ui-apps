@@ -12,13 +12,13 @@ import {
   faFileAlt,
   faCommentDots,
 } from '@fortawesome/free-solid-svg-icons';
-import { Footer } from 'ui';
+import { Footer, UseAutocomplete } from 'ui';
 import Link from '../../components/Link';
-import Search from '../../components/Search';
 import ScrollDownButton from '../../components/ScrollDownButton';
 import NavBar from '../../components/NavBar/NavBar';
 import Version from '../../components/Version';
 import { Splash } from '../../ot-ui-components';
+import SEARCH_QUERY from '../../components/Search/SearchQuery.gql';
 
 import HomeBox from './HomeBox';
 
@@ -159,7 +159,7 @@ class HomePage extends Component {
               homepage
             />
             <HomeBox name="Genetics">
-              <Search />
+            <UseAutocomplete searchQuery={SEARCH_QUERY}/>
               <Grid
                 container
                 className={classes.examples}

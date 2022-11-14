@@ -9,12 +9,29 @@ import {
 
 import useDebounce from "../hooks/useDebounce";
 
-import GlobalSearchModalInput from "./GlobalSearchModalInput";
+import SearchInput from "./SearchInput";
 import LoadingBackdrop from "../LoadingBackdrop";
 import { formatSearchData } from "../utils/SearchUtil";
 import SearchListItem from "./SearchListItem";
 
+const useStyles = makeStyles((theme) => ({
+  modal: {
+    "& .MuiDialog-scrollPaper": {
+      justifyContent: "end",
+      alignItems: "start",
+      "& .MuiDialog-paperWidthSm": {
+        width: "40vw",
+        maxWidth: "700px",
+        margin: " 0.5rem 0.968rem",
+        borderRadius: "12px",
+      },
+    },
+  },
+}));
+
 const SearchModalContent = forwardRef(({ searchQuery }, ref) => {
+  const classes = useStyles();
+
   const [open, setOpen] = useState(false);
   const [searchResults, setSearchResults] = useState(null);
   const [inputValue, setInputValue] = useState(null);
@@ -38,6 +55,7 @@ const SearchModalContent = forwardRef(({ searchQuery }, ref) => {
   );
 
   const searchQueryInput = (searchInput) => {
+    console.log(`👻 ~ file: SearchModalContent.jsx ~ line 58 ~ searchQueryInput ~ searchInput`, searchInput);
     if (!searchInput) {
       // TODO: display recent and suggested
     }
@@ -57,6 +75,11 @@ const SearchModalContent = forwardRef(({ searchQuery }, ref) => {
     }
   }, [searchResultData, loading]);
 
+  useEffect(() => {
+    if (!open) {
+      setSearchResults([]);
+    }
+  }, [open]);
 
   return (
     <>
@@ -66,9 +89,10 @@ const SearchModalContent = forwardRef(({ searchQuery }, ref) => {
         scroll={"paper"}
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
+        className={classes.modal}
       >
         <DialogTitle id="scroll-dialog-title">
-          <GlobalSearchModalInput
+          <SearchInput
             searchQueryInput={searchQueryInput}
             onClose={handleClose}
           />

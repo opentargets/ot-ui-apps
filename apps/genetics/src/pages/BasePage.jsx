@@ -5,7 +5,6 @@ import { Footer, GlobalSearch } from 'ui';
 
 import { Page } from '../ot-ui-components';
 
-import Search from '../components/Search';
 import NavBar from '../components/NavBar/NavBar';
 import { externalLinks, mainMenuItems } from '../constants';
 

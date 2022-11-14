@@ -1,9 +1,15 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { makeStyles, Typography } from "@material-ui/core";
+import {
+  makeStyles,
+  Typography,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@material-ui/core";
 import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
 
-import SearchModalContent from "./ChildComponents/SearchModalContent";
+import UseAutocomplete from "./UseAutocomplete";
 
 const useStyles = makeStyles((theme) => ({
   searchButton: {
@@ -21,19 +27,33 @@ const useStyles = makeStyles((theme) => ({
     color: "#3489ca",
     marginRight: "1rem",
   },
+  modal: {
+    "& .MuiDialog-scrollPaper": {
+      justifyContent: "end",
+      alignItems: "start",
+      "& .MuiDialog-paperWidthSm": {
+        width: "40vw",
+        maxWidth: "700px",
+        margin: " 0.5rem 0.968rem",
+        borderRadius: "12px",
+      },
+    },
+  },
 }));
 
 function GlobalSearch({ searchQuery }) {
   const classes = useStyles();
-  const modalRef = useRef(null);
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true);
 
   const handleKeyPress = useCallback((event) => {
-    if (event.metaKey === true && event.keyCode === 75) modalRef.current.handleOpen();
+    if (event.metaKey === true && event.keyCode === 75) handleOpen();
   }, []);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
-
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
@@ -44,14 +64,25 @@ function GlobalSearch({ searchQuery }) {
       <button
         type="button"
         className={classes.searchButton}
-        onClick={()=>modalRef.current.handleOpen()}
+        onClick={handleOpen}
       >
         <SearchIcon className={classes.searchIcon} />
         <Typography>Search...</Typography>
         {/* <Typography variant="subtitle2">cmd+k</Typography> */}
       </button>
 
-      <SearchModalContent searchQuery={searchQuery} ref={modalRef} />
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        scroll={"paper"}
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
+        className={classes.modal}
+      >
+        <DialogContent>
+          <UseAutocomplete searchQuery={searchQuery} />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

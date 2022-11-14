@@ -1,34 +1,28 @@
-export const formatSearchData = (unformattedData = []) => {
+export const formatSearchData = (unformattedData) => {
   const allTypes = [];
 
   for (const key in unformattedData) {
     if (Object.hasOwnProperty.call(unformattedData, key)) {
       let element = unformattedData[key];
       if (isArray(element)) {
-        const flatArray = [];
-        for (let index = 0; index < element.length; index++) {
-          flatArray.push(flattenObj(element[index]));
-        }
-        const data = {
-          type: key,
-          data: flatArray,
-        };
-        allTypes.push(data);
+        element.map((i) =>
+          allTypes.push({
+            type: key === "topHit" ? "topHit" : "normal",
+            entity: i.__typename,
+            ...flattenObj(i),
+          })
+        );
       } else if (isArray(element["hits"])) {
-        const flatArray = [];
-        for (let index = 0; index < element["hits"].length; index++) {
-          flatArray.push(flattenObj(element["hits"][index]));
-        }
-
-        const data = {
-          type: key,
-          data: flatArray,
-        };
-        allTypes.push(data);
+        element["hits"].map((i) =>
+          allTypes.push({
+            type: key === "topHit" ? "topHit" : "normal",
+            entity: i.entity,
+            ...flattenObj(i.object),
+          })
+        );
       }
     }
   }
-  console.log(`👻 ~ file: SearchUtil.js ~ line 34 ~ formatSearchData ~ allTypes`, allTypes);
 
   return allTypes;
 };

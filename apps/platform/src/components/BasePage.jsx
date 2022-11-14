@@ -2,7 +2,6 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Footer, GlobalSearch } from 'ui';
 
-import Search from './Search';
 import Page from './Page';
 import NavBar from './NavBar';
 import {

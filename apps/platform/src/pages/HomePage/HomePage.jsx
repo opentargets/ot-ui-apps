@@ -17,11 +17,10 @@ import {
   externalLinks,
   mainMenuItems,
 } from '../../constants';
-import { Footer } from 'ui';
+import { Footer, UseAutocomplete } from 'ui';
 import HomeBox from './HomeBox';
 import Link from '../../components/Link';
 import NavBar from '../../components/NavBar';
-import Search from '../../components/Search';
 import searchExamples from './searchExamples';
 import Splash from './Splash';
 import Version from './Version';
@@ -39,6 +38,7 @@ import {
 
 import config from '../../config';
 import PrivateWrapper from '../../components/PrivateWrapper';
+import SEARCH_QUERY from '../../components/Search/SearchQuery.gql';
 
 const useStyles = makeStyles(theme => ({
   links: {
@@ -141,7 +141,7 @@ const HomePage = () => {
           placement="bottom-end"
         />
         <HomeBox>
-          <Search autoFocus />
+          <UseAutocomplete searchQuery={SEARCH_QUERY}/>
           {/* Search examples */}
           <Grid
             className={classes.links}

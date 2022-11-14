@@ -1,32 +1,32 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-  h3: {},
-  sectionHeader: {
-    textTransform: "capitalize",
-    color: theme.palette.primary.main,
-  },
+
   justifyBetween: {
     display: "flex",
     justifyContent: "space-between",
   },
   symbol: {
-    fontSize: "1.1rem",
-    fontWeight: "700",
+    // fontSize: "1.1rem",
+    // fontWeight: "700",
     // "&:hover": {
     //   color: theme.palette.primary.main,
     // },
   },
+  topHitItem: {
+    // fontSize: "1.5rem",
+    color: "#3489ca",
+  },
   id: {
     padding: "0.3rem 0 0 1rem ",
-    fontSize: "0.7rem",
+    // fontSize: "0.7rem",
     fontStyle: "italic",
   },
   pubDate: {
     fontStyle: "italic",
-    fontWeight: "700",
-    fontSize: "0.8rem",
+    // fontWeight: "700",
+    // fontSize: "0.8rem",
   },
   listItem: {
     padding: "11px",
@@ -35,45 +35,53 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "capitalize",
     "&:hover": {
       border: "0.3px solid" + theme.palette.primary.main,
-      borderRadius: "5px",
+      borderRadius: "4px",
       background: "#3489ca29",
-      symbol: {
-        color: "#fff"
-      }
+      // TODO: add blue color to name and symbol on hover of item
+      // symbol: {
+      //   color: "#fff"
+      // }
     },
   },
 }));
 
-function SearchListItem({ allListItems }) {
+function SearchListItem({ item, isTopHit = "false" }) {
   const classes = useStyles();
   return (
     <>
-      <h3 className={classes.sectionHeader}>{allListItems.type}</h3>
-      {allListItems.data.map((item, index) => (
-        <div className={classes.listItem} key={index}>
+        <div className={classes.listItem}>
           <div className={classes.justifyBetween}>
-            <span className={classes.symbol}>
-              {item.symbol} {item.symbol && item.name && `-`} {item.name}
+            <span
+              className={`${classes.symbol} ${
+                isTopHit && classes.topHitItem
+              }`}
+            >
+              <Typography variant="h5">{item.symbol} {item.symbol && item.name && `-`} {item.name}</Typography>
             </span>
             <span className={classes.id}>{item.id}</span>
           </div>
+          {/* {isTopHit && (
+            <div className="functionDescription">
+              <Typography variant="subtitle1">{item.functionDescriptions[0]} </Typography>
+            </div>
+          )} */}
           {/* <div className="loci">{item.numAssocLoci} associated loci</div> */}
-          <div className="numbers">
-            {item.nInitial && `N Study: ` + item.nInitial}
-          </div>
-          <div className="author">
-            {item.pubAuthor && `Author: ` + item.pubAuthor}
-            <span className={classes.pubDate}>
-              {item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}
+          <Typography variant="body2">{item.nInitial && `N Study: ` + item.nInitial}</Typography>
+          <div className={classes.justifyBetween}>
+            <span>
+            <Typography variant="body2">{item.pubAuthor && `Author: ` + item.pubAuthor}</Typography>
+              <span className={classes.pubDate}>
+              <Typography variant="body2">{item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}</Typography>
+              </span>
             </span>
-            {item.pubJournal && `Journal:` + item.pubJournal}
+            <Typography variant="body2">{item.pubJournal && `Journal:` + item.pubJournal}</Typography>
           </div>
           <div className="numbers">
-            {item.start} {item.start && item.end && `-`} {item.end}
+          <Typography variant="body2">{item.start} {item.start && item.end && `-`} {item.end}</Typography>
           </div>
-          {item.hasSumstats}
+          <Typography variant="body2">{item.hasSumstats}</Typography>
         </div>
-      ))}
+
     </>
   );
 }
