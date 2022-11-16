@@ -8,7 +8,7 @@ export const formatSearchData = (unformattedData) => {
         element.map((i) =>
           allTypes.push({
             type: key === "topHit" ? "topHit" : "normal",
-            entity: i.__typename,
+            entity:  key === "topHit" ? "topHit" : i.__typename,
             ...flattenObj(i),
           })
         );
@@ -16,7 +16,7 @@ export const formatSearchData = (unformattedData) => {
         element["hits"].map((i) =>
           allTypes.push({
             type: key === "topHit" ? "topHit" : "normal",
-            entity: i.entity,
+            entity:  key === "topHit" ? "topHit" : i.entity,
             ...flattenObj(i.object),
           })
         );

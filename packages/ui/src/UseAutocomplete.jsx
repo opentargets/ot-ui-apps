@@ -31,6 +31,7 @@ export default function UseAutocomplete({ searchQuery }) {
   };
 
   useEffect(() => {
+    console.log(searchResult);
     setSearchResult([...data]);
     setSearchLoading(loading);
   }, [data]);
@@ -43,7 +44,6 @@ export default function UseAutocomplete({ searchQuery }) {
     <>
       {/* {searchResult && } */}
       <Autocomplete
-        id="grouped-demo"
         options={searchResult}
         groupBy={(option) => option.entity}
         onOpen={() => {
@@ -60,8 +60,8 @@ export default function UseAutocomplete({ searchQuery }) {
           />
         )}
         open={open}
-        getOptionLabel={(option) => option.id || ""}
-        renderOption={(option) => <SearchListItem item={option} />}
+        getOptionLabel={(option) => option.id || option.name || option.symbol}
+        renderOption={(option) => <SearchListItem item={option} isTopHit={option.type === 'topHit'}/>}
         getOptionSelected={(option, value) => option.id === value}
         filterOptions={(o, s) => searchResult}
         // renderInput={(params) => (

@@ -10,15 +10,17 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     gap: "1rem",
+    margin: "0.5rem 2rem",
   },
 }));
 
-function SearchListHeader({ listHeader, children, isTopHit = "false" }) {
+function SearchListHeader({ listHeader, children }) {
   const classes = useStyles();
+  const isTopHit = "topHit";
   return (
     <>
       <div className={classes.sectionHeader}>
-        {isTopHit ? <Star /> : <Label />}
+        {listHeader === isTopHit ? <Star /> : <Label />}
         <Typography variant="h6">{listHeader}</Typography>
       </div>
       {children}

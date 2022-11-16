@@ -1,8 +1,7 @@
 import React from "react";
-import { makeStyles, Typography } from "@material-ui/core";
+import { makeStyles, Typography, Chip } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-
   justifyBetween: {
     display: "flex",
     justifyContent: "space-between",
@@ -33,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     border: "0.3px solid transparent",
     textTransform: "capitalize",
+    width: "100%",
+    margin: "0 1rem",
     "&:hover": {
       border: "0.3px solid" + theme.palette.primary.main,
       borderRadius: "4px",
@@ -43,45 +44,75 @@ const useStyles = makeStyles((theme) => ({
       // }
     },
   },
+  author: {
+    display: "flex",
+  },
 }));
 
 function SearchListItem({ item, isTopHit = "false" }) {
   const classes = useStyles();
   return (
     <>
-        <div className={classes.listItem}>
-          <div className={classes.justifyBetween}>
-            <span
-              className={`${classes.symbol} ${
-                isTopHit && classes.topHitItem
-              }`}
-            >
-              <Typography variant="h5">{item.symbol} {item.symbol && item.name && `-`} {item.name}</Typography>
-            </span>
-            <span className={classes.id}>{item.id}</span>
+      <div className={classes.listItem}>
+        <div className={classes.justifyBetween}>
+          <span
+            className={`${classes.symbol} ${isTopHit && classes.topHitItem}`}
+          >
+            <Typography variant="h6">
+              <strong>{item.symbol} {item.symbol && item.name && `-`} {item.name} </strong>
+            </Typography>
+          </span>
+          <Typography variant="subtitle2"><span className={classes.id}>{item.id}</span></Typography>
+        </div>
+        {isTopHit && (
+          <div className="functionDescription">
+            <Typography variant="subtitle1">
+              {item.functionDescriptions[0].substring(0, 180)} ...{" "}
+            </Typography>
           </div>
-          {/* {isTopHit && (
-            <div className="functionDescription">
-              <Typography variant="subtitle1">{item.functionDescriptions[0]} </Typography>
-            </div>
-          )} */}
-          {/* <div className="loci">{item.numAssocLoci} associated loci</div> */}
-          <Typography variant="body2">{item.nInitial && `N Study: ` + item.nInitial}</Typography>
-          <div className={classes.justifyBetween}>
-            <span>
-            <Typography variant="body2">{item.pubAuthor && `Author: ` + item.pubAuthor}</Typography>
-              <span className={classes.pubDate}>
-              <Typography variant="body2">{item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}</Typography>
-              </span>
-            </span>
-            <Typography variant="body2">{item.pubJournal && `Journal:` + item.pubJournal}</Typography>
-          </div>
-          <div className="numbers">
-          <Typography variant="body2">{item.start} {item.start && item.end && `-`} {item.end}</Typography>
-          </div>
-          <Typography variant="body2">{item.hasSumstats}</Typography>
+        )}
+        {item.numAssocLoci && (
+          <Typography variant="subtitle2">
+            <div className="loci">{item.numAssocLoci} associated loci</div>
+          </Typography>
+        )}
+        <div className={classes.justifyBetween}>
+          <Typography variant="subtitle2">
+            <strong>{item.nInitial && `N Study: ` + item.nInitial } </strong>
+          </Typography>
+
+          {item.hasSumstats && (
+            <Chip
+              style={{
+                height: "16px",
+                fontSize: "0.8rem",
+                margin: "0",
+              }}
+              color="primary"
+              label="summary statistics"
+            />
+          )}
         </div>
 
+        <div className={classes.justifyBetween}>
+          <Typography variant="subtitle2">
+            <span className={classes.author}>
+              {item.pubAuthor && `Author: ` + item.pubAuthor}
+              <span className={classes.pubDate}>
+                {item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}
+              </span>
+            </span>
+          </Typography>
+          <Typography variant="subtitle2">
+            {item.pubJournal && `Journal:` + item.pubJournal}
+          </Typography>
+        </div>
+        <div className="numbers">
+          <Typography variant="subtitle2">
+            {item.start} {item.start && item.end && `-`} {item.end}
+          </Typography>
+        </div>
+      </div>
     </>
   );
 }
