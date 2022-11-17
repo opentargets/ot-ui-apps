@@ -63,6 +63,7 @@ function Body({ definition, label, id: efoId }) {
           <DataTable
             showGlobalFilter
             dataDownloader
+            dataDownloaderFileStem={`${efoId}-otprojects`}
             columns={getColumns(classes)}
             rows={otarProjects}
             rowsPerPageOptions={defaultRowsPerPageOptions}
