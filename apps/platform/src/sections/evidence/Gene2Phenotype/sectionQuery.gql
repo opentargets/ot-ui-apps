@@ -19,6 +19,7 @@ query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!) {
         target {
           approvedSymbol
         }
+        literature
       }
     }
   }
