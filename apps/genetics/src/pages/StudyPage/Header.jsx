@@ -44,7 +44,7 @@ const StudyHeader = ({ loading, data }) => {
           {studyId && studyId.startsWith('FINNGEN') ? (
             <ExternalLink
               title="FinnGen"
-              url={`https://r5.finngen.fi/pheno/${studyId.slice(11)}`}
+              url={`https://r6.finngen.fi/pheno/${studyId.slice(11)}`}
               id={studyId.slice(11)}
             />
           ) : null}

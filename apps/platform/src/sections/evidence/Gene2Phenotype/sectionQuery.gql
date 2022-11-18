@@ -23,6 +23,7 @@ query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!) {
           id
           label
         }
+        literature
       }
     }
   }
