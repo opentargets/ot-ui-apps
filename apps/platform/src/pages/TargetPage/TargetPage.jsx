@@ -11,10 +11,9 @@ import { getUniprotIds } from '../../utils/global';
 import { LoadingBackdrop } from 'ui';
 import TARGET_PAGE_QUERY from './TargetPage.gql';
 
-const Profile = lazy(() => import('../TargetPage/Profile'));
-const ClassicAssociations = lazy(() =>
-  import('../TargetPage/ClassicAssociations')
-);
+const Profile = lazy(() => import('./Profile'));
+
+const Associations = lazy(() => import('./TargetAssociations'));
 
 function TargetPage({ location, match }) {
   const { ensgId } = match.params;
@@ -28,8 +27,9 @@ function TargetPage({ location, match }) {
 
   const { approvedSymbol: symbol, approvedName } = data?.target || {};
   const uniprotIds = loading ? null : getUniprotIds(data.target.proteinIds);
-  const crisprId = data?.target.dbXrefs.find(p => p.source === 'ProjectScore')
-    ?.id;
+  const crisprId = data?.target.dbXrefs.find(
+    p => p.source === 'ProjectScore'
+  )?.id;
 
   return (
     <BasePage
@@ -78,7 +78,7 @@ function TargetPage({ location, match }) {
       <Suspense fallback={<LoadingBackdrop />}>
         <Switch>
           <Route path={`${match.path}/associations`}>
-            <ClassicAssociations ensgId={ensgId} symbol={symbol} />
+            <Associations ensgId={ensgId} symbol={symbol} />
           </Route>
           <Route path={match.path}>
             <Profile ensgId={ensgId} symbol={symbol} />
