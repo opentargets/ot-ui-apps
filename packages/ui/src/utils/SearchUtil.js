@@ -7,16 +7,16 @@ export const formatSearchData = (unformattedData) => {
       if (isArray(element)) {
         element.map((i) =>
           allTypes.push({
-            type: key === "topHit" ? "topHit" : "normal",
-            entity:  key === "topHit" ? "topHit" : i.__typename,
+            type: key === "topHit" ? "topHit" : i.__typename,
+            entity: i.__typename,
             ...flattenObj(i),
           })
         );
       } else if (isArray(element["hits"])) {
         element["hits"].map((i) =>
           allTypes.push({
-            type: key === "topHit" ? "topHit" : "normal",
-            entity:  key === "topHit" ? "topHit" : i.entity,
+            type: key === "topHit" ? "topHit" : i.entity,
+            entity: i.entity,
             ...flattenObj(i.object),
           })
         );

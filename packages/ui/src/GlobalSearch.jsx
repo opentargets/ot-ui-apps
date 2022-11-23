@@ -10,30 +10,36 @@ import {
 import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
 
 import UseAutocomplete from "./UseAutocomplete";
+import SearchRecentItem from "./ChildComponents/SearchRecentItem";
 
 const useStyles = makeStyles((theme) => ({
   searchButton: {
-    background: "white",
-    width: "10vw",
+    background: "#ffffff6e",
+    width: "80%",
     display: "flex",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     alignItems: "center",
     border: 0,
+    borderRadius: "0.3rem",
     "&:hover": {
       cursor: "pointer",
     },
   },
   searchIcon: {
-    color: "#3489ca",
-    marginRight: "1rem",
+    color: "white",
+    marginLeft: "1rem",
+  },
+  searchButtonText: {
+    color: "white",
   },
   modal: {
     "& .MuiDialog-scrollPaper": {
-      justifyContent: "end",
       alignItems: "start",
       "& .MuiDialog-paperWidthSm": {
-        width: "40vw",
+        width: "80vw",
         maxWidth: "700px",
+        height: "50vh",
+        maxHeight: "80vh",
         margin: " 0.5rem 0.968rem",
         borderRadius: "12px",
       },
@@ -67,8 +73,8 @@ function GlobalSearch({ searchQuery }) {
         onClick={handleOpen}
       >
         <SearchIcon className={classes.searchIcon} />
-        <Typography>Search...</Typography>
-        {/* <Typography variant="subtitle2">cmd+k</Typography> */}
+        <Typography className={classes.searchButtonText} variant="body1"><strong> Search... </strong></Typography>
+        <Typography className={classes.searchButtonText} variant="subtitle2"> (cmd+k)</Typography>
       </button>
 
       <Dialog
@@ -81,6 +87,7 @@ function GlobalSearch({ searchQuery }) {
       >
         <DialogContent>
           <UseAutocomplete searchQuery={searchQuery} />
+          <SearchRecentItem/>
         </DialogContent>
       </Dialog>
     </>

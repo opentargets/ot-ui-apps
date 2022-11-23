@@ -53,7 +53,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     fontSize: "1.2rem",
-    alignItems: "center"
+    alignItems: "center",
+    paddingBottom: "0.4rem",
+    borderBottom: "0.1px solid #00000061",
   },
 }));
 

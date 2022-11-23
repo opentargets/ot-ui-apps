@@ -59,12 +59,12 @@ function SearchListItem({ item, isTopHit = "false" }) {
             className={`${classes.symbol} ${isTopHit && classes.topHitItem}`}
           >
             <Typography variant="h6">
-              <strong>{item.symbol} {item.symbol && item.name && `-`} {item.name} </strong>
+              {item.symbol} {item.symbol && item.name && `-`} {item.name} 
             </Typography>
           </span>
           <Typography variant="subtitle2"><span className={classes.id}>{item.id}</span></Typography>
         </div>
-        {isTopHit && (
+        {isTopHit && item.functionDescriptions > 0 && (
           <div className="functionDescription">
             <Typography variant="subtitle1">
               {item.functionDescriptions[0].substring(0, 180)} ...{" "}
