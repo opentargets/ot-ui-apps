@@ -2,7 +2,7 @@ import React from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 
-import { DataTable, TableDrawer } from '../../../components/Table';
+import { DataTable } from '../../../components/Table';
 import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
 import Description from './Description';
 import { epmcUrl } from '../../../utils/urls';
@@ -11,6 +11,7 @@ import Link from '../../../components/Link';
 import SectionItem from '../../../components/Section/SectionItem';
 import { sentenceCase } from '../../../utils/global';
 import Tooltip from '../../../components/Tooltip';
+import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
 
 const g2pUrl = (studyId, symbol) =>
@@ -39,6 +40,26 @@ const columns = [
         </Tooltip>
       );
     },
+  },
+  {
+    id: 'variantFunctionalConsequence',
+    label: 'Functional consequence',
+    renderCell: ({ variantFunctionalConsequence }) => (
+      variantFunctionalConsequence ? (
+        <Link
+          external
+          to={`http://www.sequenceontology.org/browser/current_svn/term/${
+            variantFunctionalConsequence.id
+          }`}
+        >
+          {sentenceCase(variantFunctionalConsequence.label)}
+        </Link>
+      ) 
+      : 
+        (naLabel)
+    ),
+    filterValue: ({ variantFunctionalConsequence }) =>
+      sentenceCase(variantFunctionalConsequence.label),
   },
   {
     id: 'allelicRequirements',
@@ -97,22 +118,14 @@ const columns = [
   },
   {
     id: 'literature',
+    label: 'Literature',
     renderCell: ({ literature }) => {
-      const literatureList =
-        literature?.reduce((acc, id) => {
-          if (id === 'NA') return acc;
-
-          return [
-            ...acc,
-            {
-              name: id,
-              url: epmcUrl(id),
-              group: 'literature',
-            },
-          ];
-        }, []) || [];
-
-      return <TableDrawer entries={literatureList} />;
+      const entries = literature
+        ? literature.map(id => {
+            return { name: id, url: epmcUrl(id), group: 'literature' };
+          })
+        : [];
+      return <PublicationsDrawer entries={entries} />;
     },
   },
 ];
@@ -134,7 +147,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
         <DataTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+          dataDownloaderFileStem={`${ensgId}-${efoId}-gene2phenotype`}
           rows={data.disease.evidences.rows}
           pageSize={10}
           rowsPerPageOptions={defaultRowsPerPageOptions}

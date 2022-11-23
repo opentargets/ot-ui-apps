@@ -83,7 +83,8 @@ const columns = [
     label: 'Cohort/Project',
     renderCell: ({ cohortId, projectId, target }) => {
       if (!cohortId && !projectId) return naLabel;
-      if (sources.indexOf(projectId) < 0) return `${cohortId} (${projectId})`;
+      // the getSource() function takes care of case where cohortId==null
+      if (sources.indexOf(projectId) < 0) return getSource(cohortId, projectId);
       return (
         <Link to={getSourceLink(projectId, target.id)} external>
           {getSource(cohortId, projectId)}

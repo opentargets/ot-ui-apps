@@ -343,7 +343,7 @@ function StringTab({ ensgId, symbol }) {
           rowsPerPageOptions={[10, 25, 50, 100]}
           loading={loading}
         />
-        <Legend />
+        <Legend url={"https://string-db.org/cgi/info"}   />
       </Grid>
     </Grid>
   );
