@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
-import { formatSearchData } from "../utils/SearchUtil";
+import { formatSearchData } from "../utils/searchUtil";
 
 function useSearchQueryData(SEARCH_QUERY) {
   const [data, setData] = useState([]);

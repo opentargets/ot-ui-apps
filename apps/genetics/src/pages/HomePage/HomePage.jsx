@@ -12,7 +12,7 @@ import {
   faFileAlt,
   faCommentDots,
 } from '@fortawesome/free-solid-svg-icons';
-import { Footer, UseAutocomplete } from 'ui';
+import { Footer, AutocompleteSearch } from 'ui';
 import Link from '../../components/Link';
 import ScrollDownButton from '../../components/ScrollDownButton';
 import NavBar from '../../components/NavBar/NavBar';
@@ -159,7 +159,7 @@ class HomePage extends Component {
               homepage
             />
             <HomeBox name="Genetics">
-            <UseAutocomplete searchQuery={SEARCH_QUERY}/>
+            <AutocompleteSearch searchQuery={SEARCH_QUERY}/>
               <Grid
                 container
                 className={classes.examples}

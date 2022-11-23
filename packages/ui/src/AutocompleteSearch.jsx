@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import SearchInput from "./ChildComponents/SearchInput";
+import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "./hooks/useSearchQueryData";
-import SearchListItem from "./ChildComponents/SearchListItem";
-import SearchListHeader from "./ChildComponents/SearchListHeader";
+import SearchListItem from "./Search/SearchListItem";
+import SearchListHeader from "./Search/SearchListHeader";
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function UseAutocomplete({ searchQuery }) {
+export default function AutocompleteSearch({ searchQuery }) {
   const [open, setOpen] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);

@@ -9,8 +9,8 @@ import {
 } from "@material-ui/core";
 import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
 
-import UseAutocomplete from "./UseAutocomplete";
-import SearchRecentItem from "./ChildComponents/SearchRecentItem";
+import AutocompleteSearch from "./AutocompleteSearch";
+import SearchRecentItem from "./Search/SearchRecentItem";
 
 const useStyles = makeStyles((theme) => ({
   searchButton: {
@@ -86,7 +86,7 @@ function GlobalSearch({ searchQuery }) {
         className={classes.modal}
       >
         <DialogContent>
-          <UseAutocomplete searchQuery={searchQuery} />
+          <AutocompleteSearch searchQuery={searchQuery} />
           <SearchRecentItem/>
         </DialogContent>
       </Dialog>

@@ -17,7 +17,7 @@ import {
   externalLinks,
   mainMenuItems,
 } from '../../constants';
-import { Footer, UseAutocomplete } from 'ui';
+import { Footer, AutocompleteSearch } from 'ui';
 import HomeBox from './HomeBox';
 import Link from '../../components/Link';
 import NavBar from '../../components/NavBar';
@@ -141,7 +141,7 @@ const HomePage = () => {
           placement="bottom-end"
         />
         <HomeBox>
-          <UseAutocomplete searchQuery={SEARCH_QUERY}/>
+          <AutocompleteSearch searchQuery={SEARCH_QUERY}/>
           {/* Search examples */}
           <Grid
             className={classes.links}
