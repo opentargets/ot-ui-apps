@@ -30,9 +30,11 @@ function SearchRecentItem() {
 
   return (
     <>
-      <Typography variant="subtitle1">
-        <strong>Recent</strong>
-      </Typography>
+      {recentItems && recentItems.length > 0 && (
+        <Typography variant="subtitle1">
+          <strong>Recent</strong>
+        </Typography>
+      )}
       {recentItems &&
         recentItems.length > 0 &&
         recentItems.map((item, index) => (
@@ -40,7 +42,7 @@ function SearchRecentItem() {
             <div className={classes.recentIcon}>
               <History />
               <Typography variant="subtitle2">
-                {item.symbol || item.id}
+                {item.symbol || item.name || item.id}
               </Typography>
             </div>
 

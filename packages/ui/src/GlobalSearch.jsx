@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
   searchButton: {
     background: "#ffffff6e",
     width: "80%",
+    maxWidth: "60vw",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -38,8 +39,9 @@ const useStyles = makeStyles((theme) => ({
       "& .MuiDialog-paperWidthSm": {
         width: "80vw",
         maxWidth: "700px",
-        height: "50vh",
-        maxHeight: "80vh",
+        minHeight: "30vh",
+        height: "fit-content",
+        maxHeight: "70vh",
         margin: " 0.5rem 0.968rem",
         borderRadius: "12px",
       },

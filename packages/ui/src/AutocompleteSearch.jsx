@@ -5,16 +5,44 @@ import useSearchQueryData from "./hooks/useSearchQueryData";
 import SearchListItem from "./Search/SearchListItem";
 import SearchListHeader from "./Search/SearchListHeader";
 import { useHistory } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 
-import {
-  makeStyles,
-} from "@material-ui/core";
-
-const useStyles = makeStyles((theme) => ({
-    "MuiAutocomplete-popper": {
-      background: "red",
+const theme = createTheme({
+  overrides: {
+    MuiAutocomplete: {
+      popper: {
+        color: "red",
+        width: "79vw !important",
+        maxWidth: "680px !important",
+        maxHeight: "80vh !important",
+        left: "1% !important",
+      },
+      paper: {
+        height: "inherit !important",
+        maxHeight: "80vh !important"
+      },
+      listbox: {
+        maxHeight: "80vh !important"
+      },
+      option: {
+        margin: "0 1rem",
+        padding: "11px",
+        border: "0.3px solid transparent",
+        "&[data-focus='true']": {
+          border: "0.3px solid #3489ca",
+          borderRadius: "4px",
+          background: "#3489ca29",
+        }
+      }
     },
-}));
+  },
+  palette: {
+    primary: {
+      main: '#3489ca',
+
+    },
+  },
+});
 
 export default function AutocompleteSearch({ searchQuery }) {
   const [open, setOpen] = useState(false);
@@ -22,7 +50,6 @@ export default function AutocompleteSearch({ searchQuery }) {
   const [searchResult, setSearchResult] = useState([]);
   const [inputValue, setInputValue] = useState("");
   let history = useHistory();
-  const classes = useStyles();
 
   const [getSearchData, { data, loading }] = useSearchQueryData(searchQuery);
 
@@ -79,6 +106,7 @@ export default function AutocompleteSearch({ searchQuery }) {
   return (
     <>
       {/* {searchResult && } */}
+      <ThemeProvider theme={theme}>
       <Autocomplete
       freeSolo
         options={searchResult}
@@ -115,6 +143,7 @@ export default function AutocompleteSearch({ searchQuery }) {
         //   </div>
         // )}
       />
+      </ThemeProvider>
     </>
   );
 }

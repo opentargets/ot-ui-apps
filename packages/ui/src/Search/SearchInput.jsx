@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
-import { makeStyles, TextField } from "@material-ui/core";
+import { makeStyles, TextField, InputBase } from "@material-ui/core";
 import useDebounce from "../hooks/useDebounce";
 
 const useStyles = makeStyles((theme) => ({

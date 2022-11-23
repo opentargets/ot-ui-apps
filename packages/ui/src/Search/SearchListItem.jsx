@@ -28,21 +28,9 @@ const useStyles = makeStyles((theme) => ({
     // fontSize: "0.8rem",
   },
   listItem: {
-    padding: "11px",
     cursor: "pointer",
-    border: "0.3px solid transparent",
     textTransform: "capitalize",
     width: "100%",
-    margin: "0 1rem",
-    "&:hover": {
-      border: "0.3px solid" + theme.palette.primary.main,
-      borderRadius: "4px",
-      background: "#3489ca29",
-      // TODO: add blue color to name and symbol on hover of item
-      // symbol: {
-      //   color: "#fff"
-      // }
-    },
   },
   author: {
     display: "flex",
