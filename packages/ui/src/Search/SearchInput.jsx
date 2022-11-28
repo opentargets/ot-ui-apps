@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
-import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
-import { makeStyles, TextField, InputBase } from "@material-ui/core";
+import { Search } from "@material-ui/icons";
+import {
+  makeStyles,
+  TextField,
+  InputBase,
+  InputAdornment,
+} from "@material-ui/core";
 import useDebounce from "../hooks/useDebounce";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,27 +32,8 @@ const useStyles = makeStyles((theme) => ({
     border: "0 !important",
     color: "grey",
     font: "inherit",
-    
     height: "100%",
     outline: "none",
-    padding: "0 0 0 8px",
-    
-    "& .MuiFormControl-root": {
-      border: "0 !important",
-      '&:hover': {
-        border: "0 !important",
-      },
-    },
-    "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
-    border: "0 !important",
-    },
-    "& .MuiInput-underline:after": {
-      border: "0 !important",
-      },
-      "& .MuiInput-underline:before": {
-      border: "0 !important",
-
-      }
   },
   searchContainer: {
     display: "flex",
@@ -55,7 +41,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.2rem",
     alignItems: "center",
     paddingBottom: "0.4rem",
-    borderBottom: "0.1px solid #00000061",
+  },
+  inputPadding: {
+    padding: "0 1rem 0.5rem 1rem",
   },
 }));
 
@@ -71,26 +59,34 @@ function SearchInput({ params, searchQueryInput, onClose }) {
   useEffect(() => {
     searchQueryInput(debouncedInputValue);
     console.log(inputValue);
-  }, [debouncedInputValue])
-  
+  }, [debouncedInputValue]);
 
   return (
-    <div className={classes.searchContainer} >
-      <SearchIcon className={classes.searchIcon} />
+    <div className={classes.searchContainer}>
       <TextField
-            autoFocus
-            className={classes.searchInput}
-            onChange={handleChangeInputValue}
-            value={inputValue}
-            placeholder="Search..."
-            fullWidth
-            variant="standard"
-            // InputProps={{ ...params.InputProps, type: 'search' }}
-            {...params}
-          />
-      <button className={classes.escButton} onClick={onClose}>
-        esc
-      </button>
+        autoFocus
+        className={classes.searchInput}
+        {...params}
+        InputProps={{
+          ...params.InputProps,
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search className={classes.searchIcon} />
+            </InputAdornment>
+          ),
+          endAdornment: (
+            <InputAdornment position="end">
+              <button className={classes.escButton} onClick={onClose}>
+                esc
+              </button>
+            </InputAdornment>
+          ),
+          className: classes.inputPadding,
+        }}
+        onChange={handleChangeInputValue}
+        value={inputValue}
+        placeholder="Search..."
+      />
     </div>
   );
 }

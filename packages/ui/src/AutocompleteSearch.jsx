@@ -11,15 +11,16 @@ const theme = createTheme({
   overrides: {
     MuiAutocomplete: {
       popper: {
-        color: "red",
-        width: "79vw !important",
-        maxWidth: "680px !important",
-        maxHeight: "80vh !important",
-        left: "1% !important",
+        borderRadius: "0 0 12px 12px !important",
+        // width: "79vw !important",
+        // maxWidth: "680px !important",
+        // maxHeight: "80vh !important",
+        // left: "1% !important",
       },
       paper: {
         height: "inherit !important",
-        maxHeight: "80vh !important"
+        maxHeight: "80vh !important",
+        boxShadow: "none",
       },
       listbox: {
         maxHeight: "80vh !important"
@@ -73,7 +74,6 @@ export default function AutocompleteSearch({ searchQuery }) {
   useEffect(() => {
     setSearchResult([...data]);
     setSearchLoading(loading);
-    console.log(searchResult);
   }, [data]);
 
   const onClose = (param) => {
@@ -127,7 +127,7 @@ export default function AutocompleteSearch({ searchQuery }) {
         )}
         open={open}
         getOptionLabel={(option) => option.symbol || option.name || option.id}
-        renderOption={(option) => <SearchListItem item={option} isTopHit={option.type === 'topHit'}/>}
+        renderOption={(option) => <SearchListItem item={option} isTopHit={option.type === 'topHit'} loading={searchLoading}/>}
         getOptionSelected={(option, value) => option.name === value}
         filterOptions={(o, s) => searchResult}
         renderInput={(params) => (

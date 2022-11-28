@@ -1,5 +1,6 @@
-import { Typography } from "@material-ui/core";
+import {useState } from "react";
 
+import { Typography } from "@material-ui/core";
 import { History, Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core";
 
@@ -9,7 +10,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "space-between",
     cursor: "pointer",
-    padding: "0.8rem 0.3rem",
+    padding: "0.8rem",
+    margin: "0 1rem",
     border: "0.3px solid transparent",
     "&:hover": {
       border: "0.3px solid" + theme.palette.primary.main,
@@ -22,33 +24,46 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     gap: "10px",
   },
+  px2: {
+    padding: "0 1rem",
+  },
 }));
 
 function SearchRecentItem() {
   const classes = useStyles();
-  const recentItems = JSON.parse(localStorage.getItem("search-history"));
+  const [recentItems, setRecentValue] = useState(JSON.parse(localStorage.getItem("search-history"))) ;
+
+  const clearItem = (index) => {
+    const removedItems = recentItems;
+    removedItems.splice(index, 1);
+    setRecentValue([...removedItems]);
+    localStorage.setItem("search-history", JSON.stringify(recentItems));
+  };
 
   return (
     <>
       {recentItems && recentItems.length > 0 && (
-        <Typography variant="subtitle1">
+        <Typography variant="subtitle1" className={classes.px2}>
           <strong>Recent</strong>
         </Typography>
       )}
       {recentItems &&
         recentItems.length > 0 &&
-        recentItems.map((item, index) => (
-          <div className={classes.recentItemContainer} key={index}>
-            <div className={classes.recentIcon}>
-              <History />
-              <Typography variant="subtitle2">
-                {item.symbol || item.name || item.id}
-              </Typography>
-            </div>
+        recentItems.map(
+          (item, index) =>
+            index < 5 && (
+              <div className={classes.recentItemContainer} key={index}>
+                <div className={classes.recentIcon}>
+                  <History />
+                  <Typography variant="subtitle2">
+                    {item.symbol || item.name || item.id}
+                  </Typography>
+                </div>
 
-            <Clear />
-          </div>
-        ))}
+                <Clear onClick={() => clearItem(index)} />
+              </div>
+            )
+        )}
     </>
   );
 }

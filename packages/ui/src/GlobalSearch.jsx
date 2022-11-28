@@ -11,6 +11,7 @@ import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
 
 import AutocompleteSearch from "./AutocompleteSearch";
 import SearchRecentItem from "./Search/SearchRecentItem";
+import SearchLoadingState from "./Search/SearchLoadingState";
 
 const useStyles = makeStyles((theme) => ({
   searchButton: {
@@ -43,7 +44,10 @@ const useStyles = makeStyles((theme) => ({
         height: "fit-content",
         maxHeight: "70vh",
         margin: " 0.5rem 0.968rem",
-        borderRadius: "12px",
+        borderRadius: "5px",
+        "& .MuiDialogContent-root" : {
+          padding: "8px 0 !important",
+        }
       },
     },
   },
@@ -90,6 +94,7 @@ function GlobalSearch({ searchQuery }) {
         <DialogContent>
           <AutocompleteSearch searchQuery={searchQuery} />
           <SearchRecentItem/>
+          <SearchLoadingState/>
         </DialogContent>
       </Dialog>
     </>
