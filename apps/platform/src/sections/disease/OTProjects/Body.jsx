@@ -42,6 +42,7 @@ const getColumns = (classes) => ([
       <FontAwesomeIcon
         icon={faCheckCircle}
         className={classes.primaryColor}
+        size='lg'
       />
     : null
     ),
