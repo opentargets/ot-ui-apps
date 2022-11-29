@@ -3,7 +3,6 @@ const config = {
   urlApi:
     window.configUrlApi ??
     'https://api.platform.dev.opentargets.xyz/api/v4/graphql',
-
   googleTagManagerID: window.configGoogleTagManagerID ?? null,
   efoURL: window.configEFOURL ?? '/data/ontology/efo_json/diseases_efo.jsonl',
 
