@@ -160,6 +160,7 @@ function getColumns(efoId, classes) {
             {dt.label} {dt.isPrivate ? <PartnerLockIcon /> : null}
           </>
         ),
+        exportLabel: `${dt.label} ${dt.isPrivate ? 'Private' : ''}`,
         classes: {
           headerCell: classes.headerCell,
           innerLabel: classes.innerLabel,
