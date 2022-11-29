@@ -159,7 +159,7 @@ class HomePage extends Component {
               homepage
             />
             <HomeBox name="Genetics">
-            <AutocompleteSearch searchQuery={SEARCH_QUERY}/>
+            <AutocompleteSearch searchQuery={SEARCH_QUERY} />
               <Grid
                 container
                 className={classes.examples}

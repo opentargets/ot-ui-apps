@@ -3,6 +3,8 @@ import {useState } from "react";
 import { Typography } from "@material-ui/core";
 import { History, Clear } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core";
+import useListOption from "../hooks/useListOption";
+// import { openSelectOption } from "../utils/searchUtil";
 
 const useStyles = makeStyles((theme) => ({
   recentItemContainer: {
@@ -32,12 +34,18 @@ const useStyles = makeStyles((theme) => ({
 function SearchRecentItem() {
   const classes = useStyles();
   const [recentItems, setRecentValue] = useState(JSON.parse(localStorage.getItem("search-history"))) ;
+  const [openListItem] = useListOption();
 
-  const clearItem = (index) => {
+  const clearItem = (e, index) => {
+    e.stopPropagation();
     const removedItems = recentItems;
     removedItems.splice(index, 1);
     setRecentValue([...removedItems]);
     localStorage.setItem("search-history", JSON.stringify(recentItems));
+  };
+
+  const handleSelectOption = (e) => {
+    openListItem(e);
   };
 
   return (
@@ -52,7 +60,7 @@ function SearchRecentItem() {
         recentItems.map(
           (item, index) =>
             index < 5 && (
-              <div className={classes.recentItemContainer} key={index}>
+              <div className={classes.recentItemContainer} key={index} onClick={() => {handleSelectOption(item)}}>
                 <div className={classes.recentIcon}>
                   <History />
                   <Typography variant="subtitle2">
@@ -60,7 +68,7 @@ function SearchRecentItem() {
                   </Typography>
                 </div>
 
-                <Clear onClick={() => clearItem(index)} />
+                <Clear onClick={(event) => clearItem(event, index)} />
               </div>
             )
         )}

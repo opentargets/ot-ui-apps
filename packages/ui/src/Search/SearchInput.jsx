@@ -47,18 +47,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SearchInput({ params, searchQueryInput, onClose }) {
+function SearchInput({ params, debounceValue, onClose, changeInputValue }) {
   const classes = useStyles();
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 300);
 
   const handleChangeInputValue = (e) => {
     setInputValue(e.target.value || "");
+    changeInputValue(e.target.value || "");
   };
 
   useEffect(() => {
-    searchQueryInput(debouncedInputValue);
-    console.log(inputValue);
+    debounceValue(debouncedInputValue);
   }, [debouncedInputValue]);
 
   return (

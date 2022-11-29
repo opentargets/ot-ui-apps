@@ -40,14 +40,14 @@ const useStyles = makeStyles((theme) => ({
       "& .MuiDialog-paperWidthSm": {
         width: "80vw",
         maxWidth: "700px",
-        minHeight: "30vh",
+        // minHeight: "30vh",
         height: "fit-content",
         maxHeight: "70vh",
         margin: " 0.5rem 0.968rem",
         borderRadius: "5px",
-        "& .MuiDialogContent-root" : {
+        "& .MuiDialogContent-root": {
           padding: "8px 0 !important",
-        }
+        },
       },
     },
   },
@@ -56,8 +56,14 @@ const useStyles = makeStyles((theme) => ({
 function GlobalSearch({ searchQuery }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setLoading(false);
+    setInputValue("");
+  }
   const handleOpen = () => setOpen(true);
 
   const handleKeyPress = useCallback((event) => {
@@ -71,6 +77,14 @@ function GlobalSearch({ searchQuery }) {
     };
   }, [handleKeyPress]);
 
+  const isQueryLoading = (e) => {
+    setLoading(e);
+  };
+
+  const inputValueUpdate = (iv) => {
+    setInputValue(iv);
+  };
+
   return (
     <>
       <button
@@ -79,8 +93,13 @@ function GlobalSearch({ searchQuery }) {
         onClick={handleOpen}
       >
         <SearchIcon className={classes.searchIcon} />
-        <Typography className={classes.searchButtonText} variant="body1"><strong> Search... </strong></Typography>
-        <Typography className={classes.searchButtonText} variant="subtitle2"> (cmd+k)</Typography>
+        <Typography className={classes.searchButtonText} variant="body1">
+          <strong> Search... </strong>
+        </Typography>
+        <Typography className={classes.searchButtonText} variant="subtitle2">
+          {" "}
+          (cmd+k)
+        </Typography>
       </button>
 
       <Dialog
@@ -92,9 +111,14 @@ function GlobalSearch({ searchQuery }) {
         className={classes.modal}
       >
         <DialogContent>
-          <AutocompleteSearch searchQuery={searchQuery} />
-          <SearchRecentItem/>
-          <SearchLoadingState/>
+          <AutocompleteSearch
+            searchQuery={searchQuery}
+            isQueryLoading={(e) => setLoading(e)}
+            inputValueUpdate={(e) => setInputValue(e)}
+            closeModal={handleClose}
+          />
+          {!inputValue && <SearchRecentItem />}
+          {inputValue && loading && <SearchLoadingState />}
         </DialogContent>
       </Dialog>
     </>

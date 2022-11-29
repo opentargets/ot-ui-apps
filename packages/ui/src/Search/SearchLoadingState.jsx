@@ -7,11 +7,11 @@ function SearchLoadingState() {
   return (
     <Grid
       container
-      justifyContent="start"
+      justifyContent="flex-start"
       alignItems="center"
       style={{ padding: 20 }}
     >
-      <Grid container justifyContent="start" alignItems="center" style={{
+      <Grid container justifyContent="flex-start" alignItems="center" style={{
             marginBottom: "1rem"
           }}>
         <Skeleton
@@ -24,7 +24,7 @@ function SearchLoadingState() {
       </Grid>
       {listItemsToShow.map((item, index) => {
         return (
-          <Grid container justifyContent="start" alignItems="center" style={{
+          <Grid key={index} container justifyContent="flex-start" alignItems="center" style={{
             borderTop: "0.1px solid #60606033",
             padding: "1rem",
           }}>

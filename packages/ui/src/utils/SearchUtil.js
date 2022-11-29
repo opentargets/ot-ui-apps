@@ -1,3 +1,5 @@
+import { useHistory } from "react-router-dom";
+
 export const formatSearchData = (unformattedData) => {
   const allTypes = [];
 
@@ -25,6 +27,30 @@ export const formatSearchData = (unformattedData) => {
   }
 
   return allTypes;
+};
+
+export const addSearchToLocalStorage = (item) => {
+  const recentItems = JSON.parse(localStorage.getItem("search-history")) || [];
+  const existingIndex = containsObject(item, recentItems);
+  
+  if (existingIndex >= 0) {
+    recentItems.splice(existingIndex, 1);
+  }
+  const recentItemsDeepCopy = [...recentItems];
+
+  item && recentItemsDeepCopy.unshift(item);
+  item && localStorage.setItem("search-history", JSON.stringify(recentItemsDeepCopy));
+};
+
+const containsObject = (obj, list) => {
+  let i;
+  for (i = 0; i < list.length; i++) {
+    if (JSON.stringify(list[i]) === JSON.stringify(obj)) {
+      return i;
+    }
+  }
+
+  return -1;
 };
 
 const mapStandardKeys = (origionalKey) => {

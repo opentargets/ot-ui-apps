@@ -4,8 +4,8 @@ import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "./hooks/useSearchQueryData";
 import SearchListItem from "./Search/SearchListItem";
 import SearchListHeader from "./Search/SearchListHeader";
-import { useHistory } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import useListOption from "./hooks/useListOption";
 
 const theme = createTheme({
   overrides: {
@@ -45,62 +45,48 @@ const theme = createTheme({
   },
 });
 
-export default function AutocompleteSearch({ searchQuery }) {
+export default function AutocompleteSearch({ searchQuery, isQueryLoading, inputValueUpdate, closeModal }) {
   const [open, setOpen] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  let history = useHistory();
+  const [openListItem] = useListOption();
+
 
   const [getSearchData, { data, loading }] = useSearchQueryData(searchQuery);
+
+
+  useEffect(() => {
+    setSearchResult([...data]);
+    setSearchLoading(loading);
+    isQueryLoading(loading);
+    if(loading) {
+      setOpen(false);
+      setSearchResult([]);
+    }
+    else setOpen(true);
+  }, [data, loading]);
 
   const searchQueryInput = (param) => {
     if (!param) {
       setOpen(false);
     } else {
       setOpen(true);
+      setInputValue(param);
+      getSearchData(param);
     }
-    setInputValue(param);
-    getSearchData(param);
-    // if (!param.target.value) {
-    //   setOpen(false);
-    // } else {
-    //   setOpen(true);
-    // }
-    // setInputValue(param.target.value);
-    // getSearchData(param.target.value);
   };
 
-  useEffect(() => {
-    setSearchResult([...data]);
-    setSearchLoading(loading);
-  }, [data]);
+  const changeInputValue = (param) => {
+    inputValueUpdate(param);
+  }
 
   const onClose = (param) => {
-    console.log(`close`);
-  };
-
-  const setLocalStorageItems = (item) => {
-    const recentItems = JSON.parse(localStorage.getItem('search-history')) || [];
-    item && recentItems.unshift(item)
-    item && localStorage.setItem("search-history", JSON.stringify(recentItems));
+    closeModal();
   };
 
   const handleSelectOption = (e, option) => {
-    setLocalStorageItems(option)
-
-    if (!option) return;
-
-    if (option.entity === 'study') {
-      history.push(`/${option.entity}/${option.studyId}`);
-    }  else {
-      history.push(
-        `/${option.entity}/${option.id}${
-          option.entity !== 'drug' ? '/associations' : ''
-        }`
-      );
-    }
-    
+    openListItem(option);
   };
 
   return (
@@ -133,8 +119,9 @@ export default function AutocompleteSearch({ searchQuery }) {
         renderInput={(params) => (
           <SearchInput
             params={params}
-            searchQueryInput={searchQueryInput}
+            debounceValue={searchQueryInput}
             onClose={onClose}
+            changeInputValue={changeInputValue}
           />
         )}
         // renderInput={(params) => (
