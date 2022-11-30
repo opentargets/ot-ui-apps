@@ -89,6 +89,7 @@ export default function AutocompleteSearch({
   };
 
   const handleSelectOption = (e, option) => {
+    closeModal();
     openListItem(option);
   };
 
@@ -115,7 +116,7 @@ export default function AutocompleteSearch({
               children={group.children}
             />
           )}
-          open={true}
+          open={open}
           getOptionLabel={(option) => option.symbol || option.name || option.id}
           renderOption={(option) => (
             <SearchListItem

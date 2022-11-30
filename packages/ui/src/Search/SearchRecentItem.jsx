@@ -1,4 +1,4 @@
-import {useState } from "react";
+import { useState } from "react";
 
 import { Typography } from "@material-ui/core";
 import { History, Clear } from "@material-ui/icons";
@@ -31,9 +31,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SearchRecentItem() {
+function SearchRecentItem({ closeModal }) {
   const classes = useStyles();
-  const [recentItems, setRecentValue] = useState(JSON.parse(localStorage.getItem("search-history"))) ;
+  const [recentItems, setRecentValue] = useState(
+    JSON.parse(localStorage.getItem("search-history"))
+  );
   const [openListItem] = useListOption();
 
   const clearItem = (e, index) => {
@@ -45,6 +47,7 @@ function SearchRecentItem() {
   };
 
   const handleSelectOption = (e) => {
+    closeModal();
     openListItem(e);
   };
 
@@ -60,7 +63,13 @@ function SearchRecentItem() {
         recentItems.map(
           (item, index) =>
             index < 5 && (
-              <div className={classes.recentItemContainer} key={index} onClick={() => {handleSelectOption(item)}}>
+              <div
+                className={classes.recentItemContainer}
+                key={index}
+                onClick={() => {
+                  handleSelectOption(item);
+                }}
+              >
                 <div className={classes.recentIcon}>
                   <History />
                   <Typography variant="subtitle2">

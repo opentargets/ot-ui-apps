@@ -15,7 +15,7 @@ import { SearchContext } from "./Search/SearchContext";
 
 const useStyles = makeStyles((theme) => ({
   searchButton: {
-    background: "#ffffff6e",
+    background: "#ffffff4e",
     width: "80%",
     maxWidth: "60vw",
     display: "flex",
@@ -26,13 +26,31 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       cursor: "pointer",
     },
+    position: "relative",
   },
   searchIcon: {
     color: "white",
-    marginLeft: "1rem",
+    margin: "0 0.8rem",
+    opacity: 0.8,
+    width: "20px",
   },
   searchButtonText: {
     color: "white",
+    opacity: 0.8,
+  },
+  command: {
+    fontSize: "0.7rem",
+    fontWeight: 700,
+    color: "#fff",
+    marginLeft: "4px",
+    // border: "1px solid rgba(224, 227, 231, 0.8)",
+    border: "1px solid #ffffff49",
+    // backgroundColor: "rgba(255, 255, 255, 0.6)",
+    backgroundColor: theme.palette.primary.main,
+    padding: "2px 4px",
+    borderRadius: "5px",
+    position: "absolute",
+    right: "10px",
   },
   modal: {
     "& .MuiDialog-scrollPaper": {
@@ -89,12 +107,10 @@ function GlobalSearch() {
       >
         <SearchIcon className={classes.searchIcon} />
         <Typography className={classes.searchButtonText} variant="body1">
-          <strong> Search... </strong>
+          {/* <strong> Search... </strong> */}
+          Search...
         </Typography>
-        <Typography className={classes.searchButtonText} variant="subtitle2">
-          {" "}
-          (cmd+k)
-        </Typography>
+        <div className={classes.command}>⌘ K</div>
       </button>
 
       <Dialog
@@ -107,7 +123,7 @@ function GlobalSearch() {
       >
         <DialogContent>
           <AutocompleteSearch closeModal={handleClose} />
-          {!inputValue && <SearchRecentItem />}
+          {!inputValue && <SearchRecentItem closeModal={handleClose} />}
           {/* <SearchRecentItem /> */}
           {inputValue && loading && <SearchLoadingState />}
         </DialogContent>
