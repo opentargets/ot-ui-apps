@@ -8,16 +8,10 @@ import { Page } from '../ot-ui-components';
 import NavBar from '../components/NavBar/NavBar';
 import { externalLinks, mainMenuItems } from '../constants';
 
-import SEARCH_QUERY from '../components/Search/SearchQuery.gql';
-
 const BasePage = ({ children }) => (
   <Page
     header={
-      <NavBar
-        name="Genetics"
-        items={mainMenuItems}
-        search={<GlobalSearch searchQuery={SEARCH_QUERY} />}
-      />
+      <NavBar name="Genetics" items={mainMenuItems} search={<GlobalSearch />} />
     }
     footer={<Footer externalLinks={externalLinks} />}
   >

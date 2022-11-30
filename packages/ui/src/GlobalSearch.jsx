@@ -39,10 +39,12 @@ const useStyles = makeStyles((theme) => ({
       alignItems: "start",
       "& .MuiDialog-paperWidthSm": {
         width: "80vw",
-        maxWidth: "700px",
+        height: "inherit",
+        // maxWidth: "700px",
         // minHeight: "30vh",
-        height: "fit-content",
-        maxHeight: "70vh",
+        // height: "fit-content",
+        // height: "500px",
+        // maxHeight: "70vh",
         margin: " 0.5rem 0.968rem",
         borderRadius: "5px",
         "& .MuiDialogContent-root": {
@@ -63,7 +65,7 @@ function GlobalSearch({ searchQuery }) {
     setOpen(false);
     setLoading(false);
     setInputValue("");
-  }
+  };
   const handleOpen = () => setOpen(true);
 
   const handleKeyPress = useCallback((event) => {

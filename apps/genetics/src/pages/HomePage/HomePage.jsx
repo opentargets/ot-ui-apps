@@ -18,7 +18,6 @@ import ScrollDownButton from '../../components/ScrollDownButton';
 import NavBar from '../../components/NavBar/NavBar';
 import Version from '../../components/Version';
 import { Splash } from '../../ot-ui-components';
-import SEARCH_QUERY from '../../components/Search/SearchQuery.gql';
 
 import HomeBox from './HomeBox';
 
@@ -159,7 +158,9 @@ class HomePage extends Component {
               homepage
             />
             <HomeBox name="Genetics">
-            <AutocompleteSearch searchQuery={SEARCH_QUERY} />
+              <div style={{ position: 'relative' }}>
+                <AutocompleteSearch isHomePage />
+              </div>
               <Grid
                 container
                 className={classes.examples}

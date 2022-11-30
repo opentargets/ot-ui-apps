@@ -47,7 +47,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SearchInput({ params, debounceValue, onClose, changeInputValue }) {
+function SearchInput({
+  params,
+  debounceValue,
+  onClose,
+  changeInputValue,
+  isHomePage,
+}) {
   const classes = useStyles();
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 300);
@@ -74,7 +80,7 @@ function SearchInput({ params, debounceValue, onClose, changeInputValue }) {
               <Search className={classes.searchIcon} />
             </InputAdornment>
           ),
-          endAdornment: (
+          endAdornment: !isHomePage && (
             <InputAdornment position="end">
               <button className={classes.escButton} onClick={onClose}>
                 esc
