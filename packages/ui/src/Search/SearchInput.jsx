@@ -70,7 +70,7 @@ function SearchInput({
   return (
     <div className={classes.searchContainer}>
       <TextField
-        autoFocus
+        autoFocus={!isHomePage}
         className={classes.searchInput}
         {...params}
         InputProps={{

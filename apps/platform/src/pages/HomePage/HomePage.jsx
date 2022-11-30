@@ -38,7 +38,6 @@ import {
 
 import config from '../../config';
 import PrivateWrapper from '../../components/PrivateWrapper';
-import SEARCH_QUERY from '../../components/Search/SearchQuery.gql';
 
 const useStyles = makeStyles(theme => ({
   links: {
@@ -141,7 +140,7 @@ const HomePage = () => {
           placement="bottom-end"
         />
         <HomeBox>
-          <AutocompleteSearch searchQuery={SEARCH_QUERY}/>
+          <AutocompleteSearch isHomePage/>
           {/* Search examples */}
           <Grid
             className={classes.links}

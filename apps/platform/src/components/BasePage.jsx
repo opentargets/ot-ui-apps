@@ -12,8 +12,6 @@ import {
   mainMenuItems,
 } from '../constants';
 
-import SEARCH_QUERY from './Search/SearchQuery.gql';
-
 const BasePage = ({ title, children, description, location }) => {
   const composedTitle = `${title ? title + ' | ' : ''} ${appTitle}`;
 
@@ -22,7 +20,7 @@ const BasePage = ({ title, children, description, location }) => {
       header={
         <NavBar
           name="Platform"
-          search={<GlobalSearch searchQuery={SEARCH_QUERY} />}
+          search={<GlobalSearch />}
           items={mainMenuItems}
         />
       }

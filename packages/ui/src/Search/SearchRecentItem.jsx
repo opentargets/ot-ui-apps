@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "space-between",
     cursor: "pointer",
-    padding: "0.8rem",
+    padding: "0.5rem 1rem",
     margin: "0 1rem",
     border: "0.3px solid transparent",
     "&:hover": {

@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useContext } from "react";
 
 import {
   makeStyles,
   Typography,
   Dialog,
   DialogContent,
-  DialogTitle,
 } from "@material-ui/core";
 import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
 
 import AutocompleteSearch from "./AutocompleteSearch";
 import SearchRecentItem from "./Search/SearchRecentItem";
 import SearchLoadingState from "./Search/SearchLoadingState";
+import { SearchContext } from "./Search/SearchContext";
 
 const useStyles = makeStyles((theme) => ({
   searchButton: {
@@ -39,12 +39,13 @@ const useStyles = makeStyles((theme) => ({
       alignItems: "start",
       "& .MuiDialog-paperWidthSm": {
         width: "80vw",
-        height: "inherit",
-        // maxWidth: "700px",
-        // minHeight: "30vh",
+        maxWidth: "800px",
+        // height: "inherit",
+        // height: "min-content",
+        height: "40vh",
+        maxHeight: "80vh",
         // height: "fit-content",
         // height: "500px",
-        // maxHeight: "70vh",
         margin: " 0.5rem 0.968rem",
         borderRadius: "5px",
         "& .MuiDialogContent-root": {
@@ -55,12 +56,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GlobalSearch({ searchQuery }) {
+function GlobalSearch() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-
   const handleClose = () => {
     setOpen(false);
     setLoading(false);
@@ -79,13 +77,8 @@ function GlobalSearch({ searchQuery }) {
     };
   }, [handleKeyPress]);
 
-  const isQueryLoading = (e) => {
-    setLoading(e);
-  };
-
-  const inputValueUpdate = (iv) => {
-    setInputValue(iv);
-  };
+  const { loading, inputValue, setLoading, setInputValue } =
+    useContext(SearchContext);
 
   return (
     <>
@@ -113,13 +106,9 @@ function GlobalSearch({ searchQuery }) {
         className={classes.modal}
       >
         <DialogContent>
-          <AutocompleteSearch
-            searchQuery={searchQuery}
-            isQueryLoading={(e) => setLoading(e)}
-            inputValueUpdate={(e) => setInputValue(e)}
-            closeModal={handleClose}
-          />
+          <AutocompleteSearch closeModal={handleClose} />
           {!inputValue && <SearchRecentItem />}
+          {/* <SearchRecentItem /> */}
           {inputValue && loading && <SearchLoadingState />}
         </DialogContent>
       </Dialog>
