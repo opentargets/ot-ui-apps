@@ -54,10 +54,6 @@
   width: 30px;
 }
 
-.TAssociations .rotate > div > span {
-  padding: 5px 10px;
-}
-
 /* --- BODY --- */
 .TAssociations .TBody {
   display: flex;
@@ -96,7 +92,6 @@
 .TAssociations .data-row {
   display: flex;
   margin-bottom: 3px;
-  /* justify-content: space-evenly; */
   align-items: center;
 }
 

@@ -22,7 +22,7 @@ import CellName from './CellName';
 
 import useAotfContext from '../hooks/useAotfContext';
 
-import { getLegend, assocScale, getCellId, getScale } from '../utils';
+import { getLegend, getCellId, cellHasValue } from '../utils';
 
 const TableElement = styled('div')({
   minWidth: '1250px',
@@ -41,8 +41,10 @@ function getDatasources(expanderHandler, loading, displayedTable) {
     accessorFn: row => row[dataProp][id],
     cell: row => {
       if (loading) return <Skeleton variant="circle" width={26} height={25} />;
-      return row.getValue() ? (
+      const hasValue = cellHasValue(row.getValue());
+      return hasValue ? (
         <ColoredCell
+          hasValue
           scoreId={id}
           scoreValue={row.getValue()}
           onClick={expanderHandler(row.row.getToggleExpandedHandler())}
@@ -96,6 +98,7 @@ function TableAssociations() {
             globalScore
             rounded={false}
             isAssociations
+            hasValue
           />
         );
       },

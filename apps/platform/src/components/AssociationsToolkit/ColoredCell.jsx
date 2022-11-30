@@ -8,18 +8,19 @@ function ColoredCell({
   globalScore,
   cell,
   isAssociations = true,
+  hasValue = false,
 }) {
   const colorScale = getScale(isAssociations);
 
   const onClickHabdler = onClick ? () => onClick(cell) : () => {};
-  const backgroundColor = scoreValue ? colorScale(scoreValue) : '#fafafa';
-  const borderColor = scoreValue ? colorScale(scoreValue) : '#e0dede';
+  const backgroundColor = hasValue ? colorScale(scoreValue) : '#fafafa';
+  const borderColor = hasValue ? colorScale(scoreValue) : '#e0dede';
   const className = globalScore
     ? 'data-global-score'
-    : scoreValue
+    : hasValue
     ? 'data-score'
     : 'data-empty';
-  const scoreText = scoreValue ? `Score: ${scoreValue.toFixed(2)}` : 'No data';
+  const scoreText = hasValue ? `Score: ${scoreValue.toFixed(2)}` : 'No data';
 
   const style = {
     height: '25px',

@@ -15,6 +15,10 @@ export const getCellId = (cell, entityToGet, displayedTable) => {
   return [colId, rowId, sectionId];
 };
 
+export const cellHasValue = score => {
+  return typeof score === 'number';
+};
+
 /* --- CONSTANTS --- */
 /* Associations colors */
 
