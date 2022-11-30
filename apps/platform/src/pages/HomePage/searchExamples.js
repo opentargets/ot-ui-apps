@@ -26,7 +26,7 @@ const searchExamples = {
     { label: 'Lung Disease', id: 'EFO_0003818' },
     { label: 'Childhood Onset Asthma', id: 'MONDO_0005405' },
     { label: 'Pneumonia', id: 'EFO_0003106' },
-    { label: 'Cystic Fibrosis', id: 'Orphanet_586' },
+    { label: 'Cystic Fibrosis', id: 'MONDO_0009061' },
     { label: 'Eczema', id: 'HP_0000964' },
     { label: 'Inflammatory Bowel Disease', id: 'EFO_0003767' },
     { label: "Crohn's Disease", id: 'EFO_0000384' },

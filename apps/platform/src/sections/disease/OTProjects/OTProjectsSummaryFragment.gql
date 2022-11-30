@@ -4,5 +4,6 @@ fragment OTProjectsSummaryFragment on Disease {
     status
     projectName
     reference
+    integratesInPPP
   }
 }

@@ -1,5 +1,8 @@
 import React from 'react';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { makeStyles } from '@material-ui/core';
 import Description from './Description';
 import Link from '../../../components/Link';
 import { DataTable } from '../../../components/Table';
@@ -8,7 +11,18 @@ import { defaultRowsPerPageOptions } from '../../../constants';
 import Summary from './Summary';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 
-const columns = [
+const useStyles = makeStyles(theme => {
+  return {
+    primaryColor: {
+      color: theme.palette.primary.main,
+    },
+  }});
+
+const getColumns = (classes) => ([
+  {
+    id: 'projectName',
+    label: 'Project name',
+  },
   {
     id: 'otarCode',
     label: 'Project Code',
@@ -21,13 +35,24 @@ const columns = [
     },
   },
   {
-    id: 'projectName',
-    label: 'Project name',
+    id: 'integratesInPPP',
+    label: 'Integrates in PPP',
+    renderCell: ({integratesInPPP}) => (
+      integratesInPPP ? 
+      <FontAwesomeIcon
+        icon={faCheckCircle}
+        className={classes.primaryColor}
+        size='lg'
+      />
+    : null
+    ),
+    exportValue: ({integratesInPPP}) => (integratesInPPP ? 'yes' : 'no'),
   },
-];
+]);
 
-function Body({ definition, label }) {
+function Body({ definition, label, id: efoId }) {
   const request = usePlatformApi(Summary.fragments.OTProjectsSummaryFragment);
+  const classes = useStyles();
 
   return (
     <SectionItem
@@ -39,7 +64,8 @@ function Body({ definition, label }) {
           <DataTable
             showGlobalFilter
             dataDownloader
-            columns={columns}
+            dataDownloaderFileStem={`${efoId}-otprojects`}
+            columns={getColumns(classes)}
             rows={otarProjects}
             rowsPerPageOptions={defaultRowsPerPageOptions}
             sortBy="status"
