@@ -88,15 +88,18 @@ function GlobalSearch() {
     if (event.metaKey === true && event.keyCode === 75) handleOpen();
   }, []);
 
+  const { loading, inputValue, setLoading, setInputValue } =
+    useContext(SearchContext);
+
+  const shortcutText =
+    navigator?.platform.indexOf("Mac") > -1 ? "⌘ K" : "Ctrl+K";
+
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, [handleKeyPress]);
-
-  const { loading, inputValue, setLoading, setInputValue } =
-    useContext(SearchContext);
 
   return (
     <>
@@ -110,7 +113,7 @@ function GlobalSearch() {
           {/* <strong> Search... </strong> */}
           Search...
         </Typography>
-        <div className={classes.command}>⌘ K</div>
+        <div className={classes.command}>{shortcutText}</div>
       </button>
 
       <Dialog

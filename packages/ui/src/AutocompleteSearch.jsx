@@ -24,7 +24,7 @@ const theme = createTheme({
         boxShadow: "none",
       },
       listbox: {
-        maxHeight: "950px !important",
+        maxHeight: "40% !important",
       },
       option: {
         margin: "0 1rem",
