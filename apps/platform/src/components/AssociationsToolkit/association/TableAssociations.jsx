@@ -1,9 +1,10 @@
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useMemo } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
   getExpandedRowModel,
   flexRender,
+  createColumnHelper,
 } from '@tanstack/react-table';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Reorder, motion } from 'framer-motion';
@@ -79,34 +80,67 @@ function TableAssociations() {
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
 
-  const columns = [
-    {
-      accessorFn: row => row[entityToGet][rowNameEntity],
-      id: 'name',
-      cell: row => <CellName name={row.getValue()} rowId={row.row.id} />,
-      header: () => <span>{entityToGet}</span>,
-      footer: props => props.column.id,
-    },
-    {
-      accessorFn: row => row.score,
-      id: 'score',
-      cell: row => {
-        if (loading) return <Skeleton variant="rect" width={30} height={25} />;
-        return (
-          <ColoredCell
-            scoreValue={row.getValue()}
-            globalScore
-            rounded={false}
-            isAssociations
-            hasValue
-          />
-        );
+  const columns = useMemo(
+    () => [
+      {
+        accessorFn: row => row[entityToGet][rowNameEntity],
+        id: 'name',
+        cell: row => <CellName name={row.getValue()} rowId={row.row.id} />,
+        header: () => <span>{entityToGet}</span>,
+        footer: props => props.column.id,
       },
-      header: () => <span>Score</span>,
-      footer: props => props.column.id,
-    },
-    ...getDatasources(expanderHandler, loading, displayedTable),
-  ];
+      {
+        accessorFn: row => row.score,
+        id: 'score',
+        cell: row => {
+          if (loading)
+            return <Skeleton variant="rect" width={30} height={25} />;
+          return (
+            <ColoredCell
+              scoreValue={row.getValue()}
+              globalScore
+              rounded={false}
+              isAssociations
+              hasValue
+            />
+          );
+        },
+        header: () => <span>Score</span>,
+        footer: props => props.column.id,
+      },
+      ...getDatasources(expanderHandler, loading, displayedTable),
+    ],
+    [expanderHandler, loading, displayedTable, entityToGet, rowNameEntity]
+  );
+
+  // const columns = [
+  //   {
+  //     accessorFn: row => row[entityToGet][rowNameEntity],
+  //     id: 'name',
+  //     cell: row => <CellName name={row.getValue()} rowId={row.row.id} />,
+  //     header: () => <span>{entityToGet}</span>,
+  //     footer: props => props.column.id,
+  //   },
+  //   {
+  //     accessorFn: row => row.score,
+  //     id: 'score',
+  //     cell: row => {
+  //       if (loading) return <Skeleton variant="rect" width={30} height={25} />;
+  //       return (
+  //         <ColoredCell
+  //           scoreValue={row.getValue()}
+  //           globalScore
+  //           rounded={false}
+  //           isAssociations
+  //           hasValue
+  //         />
+  //       );
+  //     },
+  //     header: () => <span>Score</span>,
+  //     footer: props => props.column.id,
+  //   },
+  //   ...getDatasources(expanderHandler, loading, displayedTable),
+  // ];
 
   const table = useReactTable({
     data,
@@ -152,11 +186,13 @@ function TableAssociations() {
     document.getElementById('legend').appendChild(Legend);
   }, [displayedTable]);
 
+  console.log({ table: table.getHeaderGroups() });
   return (
     <div className="TAssociations">
       <TableElement>
         {/* HEADER */}
         {table.getHeaderGroups().map(headerGroup => {
+          // console.log({ headerGroup });
           return (
             <div className="Theader" key={headerGroup.id}>
               <div className="cols-container">

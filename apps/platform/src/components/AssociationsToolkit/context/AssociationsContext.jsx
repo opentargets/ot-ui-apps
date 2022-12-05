@@ -89,25 +89,25 @@ function AssociationsProvider({ children, entity, id, query }) {
     setTableExpanded({});
   };
 
-  console.log('RERENDER', {
-    id,
-    entity,
-    entityToGet,
-    count,
-    data,
-    loading,
-    initialLoading,
-    tableExpanded,
-    pagination,
-    expanded,
-    activeWeightsControlls,
-    enableIndirect,
-    error,
-    dataSourcesWeights,
-    defaulDatasourcesWeigths,
-    displayedTable,
-    pinnedData,
-  });
+  // console.log('RERENDER', {
+  //   id,
+  //   entity,
+  //   entityToGet,
+  //   count,
+  //   data,
+  //   loading,
+  //   initialLoading,
+  //   tableExpanded,
+  //   pagination,
+  //   expanded,
+  //   activeWeightsControlls,
+  //   enableIndirect,
+  //   error,
+  //   dataSourcesWeights,
+  //   defaulDatasourcesWeigths,
+  //   displayedTable,
+  //   pinnedData,
+  // });
 
   return (
     <AssociationsContext.Provider
