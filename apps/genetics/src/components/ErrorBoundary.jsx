@@ -13,8 +13,8 @@ class ErrorBoundary extends Component {
 
   render() {
     const {
-      message = `Something went wrong. Please contact Open Targets at ${
-        config.helpdeskEmail
+      message = `Something went wrong. Please see our Open Targets Community at ${
+        config.profile.communityUrl
       }`,
     } = this.props;
 

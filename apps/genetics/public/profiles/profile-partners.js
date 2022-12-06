@@ -3,6 +3,7 @@ var configProfile = {
   /* general items */
 
   helpdeskEmail: 'helpdesk@opentargets.org',
+  communityUrl: 'https://community.opentargets.org',
   // config navbar main menu (hamburger)
   // mainMenuItems: [],
 
