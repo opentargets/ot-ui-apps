@@ -4,6 +4,7 @@ var configProfile = {
 
   helpdeskEmail: 'helpdesk@opentargets.org',
   communityUrl: 'https://community.opentargets.org',
+  communityTicketUrl: 'https://community.opentargets.org/c/community-feedback/bug-reports/34',
   // config navbar main menu (hamburger)
   // mainMenuItems: [],
   // homepage logo subtitle (tagline)
