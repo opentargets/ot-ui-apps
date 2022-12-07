@@ -55,10 +55,9 @@ export default function AutocompleteSearch({
   const [open, setOpen] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
-  const [inputValue, setInputValue] = useState("");
   const [openListItem] = useListOption();
 
-  const { searchQuery, isQueryLoading, inputValueUpdate } =
+  const { searchQuery, isQueryLoading, inputValueUpdate, setLoading, inputValue, setInputValue } =
     useContext(SearchContext);
 
   const [getSearchData, { data, loading }] = useSearchQueryData(searchQuery);
@@ -87,12 +86,15 @@ export default function AutocompleteSearch({
     inputValueUpdate(param);
   };
 
-  const onClose = (param) => {
+  const onClose = () => {
+    setOpen(false);
+    setLoading(false);
+    setInputValue("");
     closeModal();
   };
 
   const handleSelectOption = (e, option) => {
-    closeModal();
+    onClose();
     openListItem(option);
   };
 
