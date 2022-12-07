@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
         // height: "inherit",
         // height: "min-content",
         height: "inherit",
-        maxHeight: "45vh",
+        maxHeight: "55vh",
         // height: "fit-content",
         // height: "500px",
         margin: " 0.5rem 0.968rem",
