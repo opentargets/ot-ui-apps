@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Typography } from '@material-ui/core';
 import config from '../config';
 import Link from './Link';
+import usePermissions from '../hooks/usePermissions';
 
 class ErrorBoundary extends Component {
   state = {
@@ -13,8 +14,9 @@ class ErrorBoundary extends Component {
   }
 
   render() {
+    const { isPartnerPreview } = usePermissions();
     const {
-      message = config.profile.isPartnerPreview ? (
+      message = isPartnerPreview ? (
         // PPP error message
         <div>
           Something went wrong. Please contact Open Targets at{' '}
