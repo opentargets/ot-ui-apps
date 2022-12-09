@@ -14,14 +14,29 @@ class ErrorBoundary extends Component {
 
   render() {
     const {
-      message = 
-        config.profile.isPartnerPreview ? 
-          // PPP error message
-          (<div>Something went wrong. Please contact Open Targets at <Link to={`mailto: ${config.profile.helpdeskEmail}`} external>{config.profile.helpdeskEmail}</Link>, or <Link to={config.profile.communityTicketUrl} external>submit a bug report</Link> on the Open Targets Community.</div>)
-          :
-          // public platform error message
-          (<div>Something went wrong. Please <Link to={config.profile.communityTicketUrl} external>submit a bug report</Link> on the Open Targets Community ({config.profile.communityUrl})</div>)
-      
+      message = config.profile.isPartnerPreview ? (
+        // PPP error message
+        <div>
+          Something went wrong. Please contact Open Targets at{' '}
+          <Link to={`mailto: ${config.profile.helpdeskEmail}`} external>
+            {config.profile.helpdeskEmail}
+          </Link>
+          , or{' '}
+          <Link to={config.profile.communityTicketUrl} external>
+            submit a bug report
+          </Link>{' '}
+          on the Open Targets Community.
+        </div>
+      ) : (
+        // public platform error message
+        <div>
+          Something went wrong. Please{' '}
+          <Link to={config.profile.communityTicketUrl} external>
+            submit a bug report
+          </Link>{' '}
+          on the Open Targets Community ({config.profile.communityUrl})
+        </div>
+      ),
     } = this.props;
 
     return this.state.hasError ? (
