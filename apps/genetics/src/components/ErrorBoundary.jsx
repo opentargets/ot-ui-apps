@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Typography } from '@material-ui/core';
 import config from '../config';
+import Link from './Link';
 
 class ErrorBoundary extends Component {
   state = {
@@ -13,9 +14,16 @@ class ErrorBoundary extends Component {
 
   render() {
     const {
-      message = `Something went wrong. Please see our Open Targets Community at ${
-        config.profile.communityUrl
-      }`,
+      // public platform error message
+      message = (
+        <div>
+          Something went wrong. Please{' '}
+          <Link to={config.profile.communityTicketUrl} external>
+            submit a bug report
+          </Link>{' '}
+          on the Open Targets Community ({config.profile.communityUrl})
+        </div>
+      ),
     } = this.props;
 
     return this.state.hasError ? (
