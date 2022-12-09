@@ -90,7 +90,7 @@ function getColumns(ensemblId, symbol) {
       renderCell: ({ score, oe, oeLower, oeUpper, upperBin6 }) => {
         return (
           <>
-            <div>Z = {score}</div>
+            <div>{upperBin6===null ? 'Z' : 'pLI'} = {score}</div>
             <div>
               o/e = {oe} ({oeLower} - {oeUpper})
             </div>
