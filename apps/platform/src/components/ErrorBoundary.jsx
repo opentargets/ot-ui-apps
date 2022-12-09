@@ -23,11 +23,6 @@ class ErrorBoundary extends Component {
           <Link to={`mailto: ${config.profile.helpdeskEmail}`} external>
             {config.profile.helpdeskEmail}
           </Link>
-          , or{' '}
-          <Link to={config.profile.communityTicketUrl} external>
-            submit a bug report
-          </Link>{' '}
-          on the Open Targets Community.
         </div>
       ) : (
         // public platform error message
