@@ -120,18 +120,28 @@ const exportColumns = [
   },
 ];
 
-function Body({ definition, id, label }) {
-  const { ensgId: ensemblId, efoId } = id;
-  const {
-    data: {
-      orphanetSummary: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.OrphanetSummaryFragment);
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.OrphanetSummaryFragment
+  );
+  const count = summaryData.orphanetSummary.count;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
 
   const variables = {
-    ensemblId,
+    ensemblId: ensgId,
     efoId,
-    size,
+    size: count,
   };
 
   const request = useQuery(ORPHANET_QUERY, {
@@ -153,7 +163,7 @@ function Body({ definition, id, label }) {
             columns={columns}
             rows={rows}
             dataDownloader
-            dataDownloaderFileStem={`orphanet-${ensemblId}-${efoId}`}
+            dataDownloaderFileStem={`${definition.id}-${ensgId}-${efoId}`}
             dataDownloaderColumns={exportColumns}
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
@@ -165,5 +175,3 @@ function Body({ definition, id, label }) {
     />
   );
 }
-
-export default Body;
