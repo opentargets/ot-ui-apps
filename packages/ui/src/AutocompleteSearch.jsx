@@ -43,7 +43,7 @@ const theme = createTheme({
       main: "#3489ca",
     },
     text: {
-      primary: '#5A5F5F',
+      primary: "#5A5F5F",
     },
   },
 });
@@ -57,8 +57,14 @@ export default function AutocompleteSearch({
   const [searchResult, setSearchResult] = useState([]);
   const [openListItem] = useListOption();
 
-  const { searchQuery, isQueryLoading, inputValueUpdate, setLoading, inputValue, setInputValue } =
-    useContext(SearchContext);
+  const {
+    searchQuery,
+    isQueryLoading,
+    inputValueUpdate,
+    setLoading,
+    inputValue,
+    setInputValue,
+  } = useContext(SearchContext);
 
   const [getSearchData, { data, loading }] = useSearchQueryData(searchQuery);
 
@@ -94,8 +100,10 @@ export default function AutocompleteSearch({
   };
 
   const handleSelectOption = (e, option) => {
-    onClose();
-    openListItem(option);
+    if (typeof option === "object") {
+      onClose();
+      openListItem(option);
+    }
   };
 
   return (
@@ -104,6 +112,7 @@ export default function AutocompleteSearch({
       <ThemeProvider theme={theme}>
         <Autocomplete
           disablePortal
+          clearOnBlur
           freeSolo
           options={searchResult}
           onChange={handleSelectOption}

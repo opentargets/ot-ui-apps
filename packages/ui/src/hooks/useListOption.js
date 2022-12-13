@@ -5,9 +5,9 @@ function useListOption() {
   let history = useHistory();
 
   const openListItem = (option) => {
-    addSearchToLocalStorage(option);
-
+    
     if (!option) return;
+    addSearchToLocalStorage(option);
 
     if (option.entity === "study") {
       history.push(`/${option.entity}/${option.studyId}`);
