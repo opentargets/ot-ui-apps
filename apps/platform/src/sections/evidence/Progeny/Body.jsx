@@ -68,14 +68,24 @@ const columns = [
   },
 ];
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const {
-    data: {
-      progeny: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.ProgenySummaryFragment);
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.ProgenySummaryFragment
+  );
+  const count = summaryData.progeny.count;
 
-  const variables = { ensemblId: ensgId, efoId, size };
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
+  const variables = { ensemblId: ensgId, efoId, size: count };
 
   const request = useQuery(PROGENY_QUERY, {
     variables,
@@ -86,12 +96,14 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.affected_pathway}
       request={request}
-      renderDescription={() => <Description symbol={symbol} name={name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={data => (
         <DataTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+          dataDownloaderFileStem={`${definition.id}-${ensgId}-${efoId}`}
           order="asc"
           rows={data.disease.evidences.rows}
           pageSize={10}
@@ -105,5 +117,3 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
     />
   );
 }
-
-export default Body;
