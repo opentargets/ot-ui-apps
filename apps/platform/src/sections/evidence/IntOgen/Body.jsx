@@ -165,15 +165,26 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: '.5rem' },
 });
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const classes = useStyles();
-  const {
-    data: {
-      intOgen: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.IntOgenSummaryFragment);
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.IntOgenSummaryFragment
+  );
+  const count = summaryData.intOgen.count;
 
-  const variables = { ensemblId: ensgId, efoId, size };
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
+  const classes = useStyles();
+
+  const variables = { ensemblId: ensgId, efoId, size: count };
 
   const request = useQuery(INTOGEN_QUERY, {
     variables,
@@ -184,7 +195,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.somatic_mutation}
       request={request}
-      renderDescription={() => <Description symbol={symbol} name={name} />}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={({
         disease: {
           evidences: { rows },
@@ -205,14 +216,14 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
           <>
             <Box className={classes.roleInCancerBox}>
               <Typography className={classes.roleInCancerTitle}>
-                <b>{symbol}</b> role in cancer:
+                <b>{label.symbol}</b> role in cancer:
               </Typography>
               <ChipList items={roleInCancerItems} />
             </Box>
             <DataTable
               columns={columns}
               dataDownloader
-              dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+              dataDownloaderFileStem={`${definition.id}-${ensgId}-${efoId}`}
               order="asc"
               rows={rows}
               sortBy="resourceScore"
@@ -228,5 +239,3 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
     />
   );
 }
-
-export default Body;
