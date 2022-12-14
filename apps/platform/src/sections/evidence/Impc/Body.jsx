@@ -14,7 +14,7 @@ import Tooltip from '../../../components/Tooltip';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import { dataTypesMap } from '../../../dataTypes';
 
-import INTOGEN_QUERY from './sectionQuery.gql';
+import SECTION_QUERY from './sectionQuery.gql';
 
 const columns = [
   {
@@ -114,18 +114,27 @@ const columns = [
   },
 ];
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const {
-    data: {
-      disease: {
-        impc: { count: size },
-      },
-    },
-  } = usePlatformApi(Summary.fragments.PhenodigmSummaryFragment);
+// TODO: note spelling mistake in fragment name - will need to be updated
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.IMCPSummaryFragment
+  );
+  const count = summaryData.impc.count;
 
-  const variables = { ensemblId: ensgId, efoId, size };
+  if (!count || count < 1) {
+    return null;
+  }
 
-  const request = useQuery(INTOGEN_QUERY, {
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
+  const variables = { ensemblId: ensgId, efoId, size: count };
+
+  const request = useQuery(SECTION_QUERY, {
     variables,
   });
 
@@ -134,22 +143,20 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.animal_model}
       request={request}
-      renderDescription={() => <Description symbol={symbol} name={name} />}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={data => (
         <DataTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+          dataDownloaderFileStem={`${definition.id}-${ensgId}-${efoId}`}
           rows={data.disease.evidences.rows}
           pageSize={5}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rowsPerPageOptions={[5, 10, 25, 100]}
           showGlobalFilter
-          query={INTOGEN_QUERY.loc.source.body}
+          query={SECTION_QUERY.loc.source.body}
           variables={variables}
         />
       )}
     />
   );
 }
-
-export default Body;
