@@ -7,6 +7,7 @@ import SearchListHeader from "./Search/SearchListHeader";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import useListOption from "./hooks/useListOption";
 import { SearchContext } from "./Search/SearchContext";
+import SearchLoadingState from "./Search/SearchLoadingState";
 
 const theme = createTheme({
   overrides: {
@@ -21,7 +22,8 @@ const theme = createTheme({
       paper: {
         height: "inherit !important",
         // maxHeight: "80vh !important",
-        boxShadow: "none",
+        // boxShadow: "none",
+        boxShadow: "6px 0 4px -4px #999, -6px 0 4px -4px #999",
       },
       listbox: {
         maxHeight: "47vh !important",
@@ -52,10 +54,13 @@ export default function AutocompleteSearch({
   closeModal = () => {},
   isHomePage,
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const [openListItem] = useListOption();
+  const [recentItems, setRecentValue] = useState(
+    JSON.parse(localStorage.getItem("search-history")) || []
+  );
 
   const {
     searchQuery,
@@ -69,31 +74,38 @@ export default function AutocompleteSearch({
   const [getSearchData, { data, loading }] = useSearchQueryData(searchQuery);
 
   useEffect(() => {
-    setSearchResult([...data]);
+    (data.length > 0 && inputValue.trim()) ? setSearchResult(data) : setSearchResult(recentItems);
     setSearchLoading(loading);
     isQueryLoading(loading);
     if (loading) {
-      setOpen(false);
+      // setOpen(true);
       setSearchResult([]);
-    } else setOpen(true);
+    }
+    // else setOpen(true);
   }, [data, loading]);
 
   const searchQueryInput = (param) => {
     if (!param) {
-      setOpen(false);
+      // setOpen(true);
+      setSearchResult(recentItems);
     } else {
-      setOpen(true);
+      // setOpen(true);
       setInputValue(param);
       getSearchData(param);
     }
   };
 
   const changeInputValue = (param) => {
+    if (!param) {
+      // setOpen(true);
+      setSearchResult(recentItems);
+    }
+    setInputValue(param);
     inputValueUpdate(param);
   };
 
   const onClose = () => {
-    setOpen(false);
+    // setOpen(false);
     setLoading(false);
     setInputValue("");
     closeModal();
@@ -112,17 +124,21 @@ export default function AutocompleteSearch({
       <ThemeProvider theme={theme}>
         <Autocomplete
           disablePortal
-          clearOnBlur
-          freeSolo
+          openOnFocus
+          autoHighlight
+          clearOnEscape
+          // clearOnBlur
+          // freeSolo
           options={searchResult}
           onChange={handleSelectOption}
           groupBy={(option) => option.type}
-          onOpen={() => {
-            if (inputValue) setOpen(true);
-          }}
-          onClose={() => {
-            setOpen(false);
-          }}
+          // onOpen={() => {
+          //   if (inputValue) setOpen(true);
+          // }}
+          // onClose={() => {
+          //   setOpen(false);
+          // }}
+          noOptionsText={<SearchLoadingState/> }
           renderGroup={(group) => (
             <SearchListHeader
               key={group.key}
@@ -130,7 +146,7 @@ export default function AutocompleteSearch({
               children={group.children}
             />
           )}
-          open={open}
+          // open={true}
           getOptionLabel={(option) => option.symbol || option.name || option.id}
           renderOption={(option) => (
             <SearchListItem

@@ -126,7 +126,7 @@ function GlobalSearch() {
       >
         <DialogContent>
           <AutocompleteSearch closeModal={handleClose} />
-          {!inputValue && <SearchRecentItem closeModal={handleClose} />}
+          {/* {!inputValue && <SearchRecentItem closeModal={handleClose} />} */}
           {/* <SearchRecentItem /> */}
           {inputValue && loading && <SearchLoadingState />}
         </DialogContent>

@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles, Typography, Chip } from "@material-ui/core";
+import SearchRecentListItem from "./SearchRecentListItem";
 
 const useStyles = makeStyles((theme) => ({
   justifyBetween: {
@@ -39,6 +40,12 @@ const useStyles = makeStyles((theme) => ({
 
 function SearchListItem({ item, isTopHit = "false" }) {
   const classes = useStyles();
+
+  if(item.type === "recent") {
+    return <SearchRecentListItem item={item} index={0} handleSelectOption={()=>{}} clearItem={()=>{}} />
+  }
+
+
   return (
     <>
       <div className={classes.listItem}>

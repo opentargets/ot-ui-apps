@@ -7,6 +7,7 @@ function useListOption() {
   const openListItem = (option) => {
     
     if (!option) return;
+    option.type= "recent";
     addSearchToLocalStorage(option);
 
     if (option.entity === "study") {
