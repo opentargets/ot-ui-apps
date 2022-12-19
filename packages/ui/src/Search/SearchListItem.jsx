@@ -38,11 +38,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SearchListItem({ item, isTopHit = "false" }) {
+function SearchListItem({ item, isTopHit = "false", clearItem }) {
   const classes = useStyles();
 
   if(item.type === "recent") {
-    return <SearchRecentListItem item={item} index={0} handleSelectOption={()=>{}} clearItem={()=>{}} />
+    return <SearchRecentListItem item={item} clearItem={clearItem} />
   }
 
 

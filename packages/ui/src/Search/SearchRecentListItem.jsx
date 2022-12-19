@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { Typography } from "@material-ui/core";
 import { History, Clear } from "@material-ui/icons";
 
@@ -30,15 +30,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SearchRecentListItem({item, index, handleSelectOption, clearItem}) {
+function SearchRecentListItem({ item, clearItem }) {
   const classes = useStyles();
+  
+  const stopEvent = (event, item) => {
+    event.stopPropagation();
+    clearItem(item);
+  };
 
   return (
     <div
       className={classes.recentItemContainer}
-      onClick={() => {
-        handleSelectOption(item);
-      }}
+      //   onClick={() => {
+      //     handleSelectOption(item);
+      //   }}
     >
       <div className={classes.recentIcon}>
         <History />
@@ -47,7 +52,7 @@ function SearchRecentListItem({item, index, handleSelectOption, clearItem}) {
         </Typography>
       </div>
 
-      <Clear onClick={(event) => clearItem(event, index)} />
+      <Clear onClick={(event) => stopEvent(event, item)} />
     </div>
   );
 }

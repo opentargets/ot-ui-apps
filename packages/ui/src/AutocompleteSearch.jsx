@@ -8,6 +8,7 @@ import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import useListOption from "./hooks/useListOption";
 import { SearchContext } from "./Search/SearchContext";
 import SearchLoadingState from "./Search/SearchLoadingState";
+import { containsObject } from "./utils/searchUtils";
 
 const theme = createTheme({
   overrides: {
@@ -82,7 +83,7 @@ export default function AutocompleteSearch({
       setSearchResult([]);
     }
     // else setOpen(true);
-  }, [data, loading]);
+  }, [data, loading, recentItems]);
 
   const searchQueryInput = (param) => {
     if (!param) {
@@ -118,6 +119,15 @@ export default function AutocompleteSearch({
     }
   };
 
+  const clearItem = (item) => {
+    const removedItems = [...recentItems];
+    const existingIndex = containsObject(item, removedItems);
+    removedItems.splice(existingIndex, 1);
+    setRecentValue(removedItems);
+    localStorage.setItem("search-history", JSON.stringify(removedItems));
+  };
+
+  
   return (
     <>
       {/* {searchResult && } */}
@@ -153,6 +163,7 @@ export default function AutocompleteSearch({
               item={option}
               isTopHit={option.type === "topHit"}
               loading={searchLoading}
+              clearItem={clearItem}
             />
           )}
           getOptionSelected={(option, value) => option.name === value}

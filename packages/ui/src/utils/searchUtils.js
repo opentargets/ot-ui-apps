@@ -42,7 +42,7 @@ export const addSearchToLocalStorage = (item) => {
   item && localStorage.setItem("search-history", JSON.stringify(recentItemsDeepCopy));
 };
 
-const containsObject = (obj, list) => {
+export const containsObject = (obj, list) => {
   let i;
   for (i = 0; i < list.length; i++) {
     if (JSON.stringify(list[i]) === JSON.stringify(obj)) {
