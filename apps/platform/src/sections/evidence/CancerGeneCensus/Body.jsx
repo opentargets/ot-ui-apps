@@ -147,9 +147,6 @@ export function Body({ definition, id, label }) {
 export function BodyCore({ definition, id, label, count }) {
   const classes = useStyles();
   const { ensgId, efoId } = id;
-  // const { data: summaryData } = usePlatformApi(
-  //   Summary.fragments.CancerGeneCensusSummary
-  // );
 
   const variables = {
     ensemblId: ensgId,

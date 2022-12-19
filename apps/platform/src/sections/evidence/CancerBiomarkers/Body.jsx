@@ -7,11 +7,11 @@ import SectionItem from '../../../components/Section/SectionItem';
 import Tooltip from '../../../components/Tooltip';
 import { DataTable, TableDrawer } from '../../../components/Table';
 import { defaultRowsPerPageOptions } from '../../../constants';
-// import { dataTypesMap } from '../../../dataTypes';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { epmcUrl } from '../../../utils/urls';
 import Description from './Description';
 import BiomarkersDrawer from './BiomarkersDrawer';
+import Summary from './Summary';
 
 import CANCER_BIOMARKERS_EVIDENCE_QUERY from './CancerBiomarkersEvidence.gql';
 
@@ -105,19 +105,28 @@ const columns = [
   },
 ];
 
-function Body(props) {
-  const { definition, id, label } = props;
-  const { ensgId: ensemblId, efoId } = id;
-  const {
-    data: {
-      disease: { cancerBiomarkersSummary },
-    },
-  } = usePlatformApi();
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.CancerBiomarkersEvidenceFragment
+  );
+  const count = summaryData.cancerBiomarkersSummary.count;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
 
   const variables = {
-    ensemblId,
+    ensemblId: ensgId,
     efoId,
-    size: cancerBiomarkersSummary.count,
+    size: count,
   };
 
   const request = useQuery(CANCER_BIOMARKERS_EVIDENCE_QUERY, {
@@ -139,6 +148,7 @@ function Body(props) {
             columns={columns}
             rows={rows}
             dataDownloader
+            dataDownloaderFileStem={`${definition.id}-${ensgId}-${efoId}`}
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={CANCER_BIOMARKERS_EVIDENCE_QUERY.loc.source.body}
@@ -149,5 +159,3 @@ function Body(props) {
     />
   );
 }
-
-export default Body;
