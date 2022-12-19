@@ -96,17 +96,28 @@ const columns = [
   },
 ];
 
-function Body(props) {
-  const { definition, id, label } = props;
-  const { ensgId: ensemblId, efoId } = id;
+export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(
     Summary.fragments.ClinGenSummaryFragment
   );
+  const count = summaryData.clingenSummary.count;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
 
   const variables = {
-    ensemblId,
+    ensemblId: ensgId,
     efoId,
-    size: summaryData.clingenSummary.count,
+    size: count,
   };
 
   const request = useQuery(CLINGEN_QUERY, {
@@ -128,6 +139,7 @@ function Body(props) {
             columns={columns}
             rows={rows}
             dataDownloader
+            dataDownloaderFileStem={`${definition.id}-${ensgId}-${efoId}`}
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={CLINGEN_QUERY.loc.source.body}
@@ -138,5 +150,3 @@ function Body(props) {
     />
   );
 }
-
-export default Body;
