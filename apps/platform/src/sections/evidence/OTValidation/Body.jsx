@@ -273,13 +273,24 @@ const exportColumns = [
   },
 ];
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const {
-    data: {
-      otValidationSummary: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.otValidationSummary);
-  const variables = { ensemblId: ensgId, efoId, size };
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.otValidationSummary
+  );
+  const count = summaryData.otValidationSummary.count;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
+  const variables = { ensemblId: ensgId, efoId, size: count };
   const request = useQuery(VALIDATION_QUERY, {
     variables,
   });
@@ -290,7 +301,9 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.ot_validation_lab}
       request={request}
-      renderDescription={() => <Description symbol={symbol} name={name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={({ disease }) => {
         const { rows } = disease.evidences;
         const hypothesis = _.uniqBy(
@@ -312,7 +325,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
           'label'
           // sort alphabetically but move 'PAN-CO' at the end of the list
         ).sort((a, b) =>
-          b.label === 'PAN-CO' ? -1 : (a.label < b.label ? -1 : 1)
+          b.label === 'PAN-CO' ? -1 : a.label < b.label ? -1 : 1
         );
 
         return (
@@ -344,7 +357,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
                   }
                   showHelpIcon
                 >
-                  OTVL biomarker assessment for {symbol}
+                  OTVL biomarker assessment for {label.symbol}
                 </Tooltip>
               </Typography>
 
@@ -381,7 +394,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
                   ))}
                 </Grid>
               </div>
-              
+
               {/** CHIPLIST */}
               <ChipList items={hypothesis} />
             </Box>
@@ -391,7 +404,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
               rows={rows}
               dataDownloader
               dataDownloaderColumns={exportColumns}
-              dataDownloaderFileStem={`${ensgId}-${efoId}-otvalidation`}
+              dataDownloaderFileStem={`${definition.id}-${ensgId}-${efoId}`}
               showGlobalFilter
               sortBy="resourceScore"
               order="des"
@@ -408,5 +421,3 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
     />
   );
 }
-
-export default Body;
