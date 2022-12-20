@@ -79,18 +79,14 @@ export default function AutocompleteSearch({
     setSearchLoading(loading);
     isQueryLoading(loading);
     if (loading) {
-      // setOpen(true);
       setSearchResult([]);
     }
-    // else setOpen(true);
   }, [data, loading, recentItems]);
 
   const searchQueryInput = (param) => {
     if (!param) {
-      // setOpen(true);
       setSearchResult(recentItems);
     } else {
-      // setOpen(true);
       setInputValue(param);
       getSearchData(param);
     }
@@ -98,7 +94,6 @@ export default function AutocompleteSearch({
 
   const changeInputValue = (param) => {
     if (!param) {
-      // setOpen(true);
       setSearchResult(recentItems);
     }
     setInputValue(param);
@@ -106,7 +101,6 @@ export default function AutocompleteSearch({
   };
 
   const onClose = () => {
-    // setOpen(false);
     setLoading(false);
     setInputValue("");
     closeModal();
@@ -132,23 +126,18 @@ export default function AutocompleteSearch({
     <>
       {/* {searchResult && } */}
       <ThemeProvider theme={theme}>
+        {searchLoading}
         <Autocomplete
           disablePortal
           openOnFocus
           autoHighlight
           clearOnEscape
-          // clearOnBlur
-          // freeSolo
+          freeSolo
           options={searchResult}
           onChange={handleSelectOption}
           groupBy={(option) => option.type}
-          // onOpen={() => {
-          //   if (inputValue) setOpen(true);
-          // }}
-          // onClose={() => {
-          //   setOpen(false);
-          // }}
-          noOptionsText={<SearchLoadingState/> }
+          loading={searchLoading}
+          loadingText={<SearchLoadingState/>}
           renderGroup={(group) => (
             <SearchListHeader
               key={group.key}
@@ -156,7 +145,6 @@ export default function AutocompleteSearch({
               children={group.children}
             />
           )}
-          // open={true}
           getOptionLabel={(option) => option.symbol || option.name || option.id}
           renderOption={(option) => (
             <SearchListItem
@@ -177,11 +165,6 @@ export default function AutocompleteSearch({
               isHomePage={isHomePage}
             />
           )}
-          // renderInput={(params) => (
-          //   <div ref={params.InputProps.ref}>
-          //     <input style={{ width: 500 }} type="text" {...params.inputProps} onChange={searchQueryInput} value={inputValue}/>
-          //   </div>
-          // )}
         />
       </ThemeProvider>
     </>
