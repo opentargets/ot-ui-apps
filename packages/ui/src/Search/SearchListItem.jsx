@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles, Typography, Chip } from "@material-ui/core";
 import SearchRecentListItem from "./SearchRecentListItem";
+import { commaSeparate } from "../utils/searchUtils";
 
 const useStyles = makeStyles((theme) => ({
   justifyBetween: {
@@ -76,7 +77,9 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
 
         {item.rsId && (
           <Typography variant="subtitle2">
-            <strong> <div className="loci"> RsId: {item.rsId}</div></strong>
+            <strong>
+              <div className="loci"> Ensembl: {item.rsId}</div>
+            </strong>
           </Typography>
         )}
 
@@ -105,6 +108,14 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
               <span className={classes.pubDate}>
                 {item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}
               </span>
+            </span>
+            <span className={classes.author}>
+              {item.position &&
+                item.chromosome &&
+                `GRCh38:` +
+                  item.chromosome +
+                  `:` +
+                  commaSeparate(item.position)}
             </span>
           </Typography>
           <Typography variant="subtitle2">

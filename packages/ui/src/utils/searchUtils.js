@@ -1,4 +1,4 @@
-import { useHistory } from "react-router-dom";
+import { format } from 'd3-format';
 
 export const formatSearchData = (unformattedData) => {
   const allTypes = [];
@@ -52,6 +52,8 @@ export const containsObject = (obj, list) => {
 
   return -1;
 };
+
+export const commaSeparate = format(',');
 
 const mapStandardKeys = (origionalKey) => {
   switch (origionalKey) {
