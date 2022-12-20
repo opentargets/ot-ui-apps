@@ -11,14 +11,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     cursor: "pointer",
     width: "100%",
-    // padding: "0.5rem 1rem",
-    // margin: "0 1rem",
-    // border: "0.3px solid transparent",
-    // "&:hover": {
-    //   border: "0.3px solid" + theme.palette.primary.main,
-    //   borderRadius: "4px",
-    //   background: "#3489ca29",
-    // },
   },
   recentIcon: {
     display: "flex",

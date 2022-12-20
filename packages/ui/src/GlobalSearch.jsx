@@ -9,7 +9,6 @@ import {
 import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
 
 import AutocompleteSearch from "./AutocompleteSearch";
-import SearchLoadingState from "./Search/SearchLoadingState";
 import { SearchContext } from "./Search/SearchContext";
 
 const useStyles = makeStyles((theme) => ({
@@ -42,9 +41,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
     color: "#fff",
     marginLeft: "4px",
-    // border: "1px solid rgba(224, 227, 231, 0.8)",
     border: "1px solid #ffffff49",
-    // backgroundColor: "rgba(255, 255, 255, 0.6)",
     backgroundColor: theme.palette.primary.main,
     padding: "2px 4px",
     borderRadius: "5px",
@@ -57,12 +54,8 @@ const useStyles = makeStyles((theme) => ({
       "& .MuiDialog-paperWidthSm": {
         width: "80vw",
         maxWidth: "800px",
-        // height: "inherit",
-        // height: "min-content",
         height: "inherit",
         maxHeight: "55vh",
-        // height: "fit-content",
-        // height: "500px",
         margin: " 0.5rem 0.968rem",
         borderRadius: "5px",
         "& .MuiDialogContent-root": {
@@ -100,7 +93,7 @@ function GlobalSearch() {
     }
   }, []);
 
-  const { loading, inputValue, setLoading, setInputValue } =
+  const { setLoading, setInputValue } =
     useContext(SearchContext);
 
   const shortcutText =
@@ -122,7 +115,6 @@ function GlobalSearch() {
       >
         <SearchIcon className={classes.searchIcon} />
         <Typography className={classes.searchButtonText} variant="body1">
-          {/* <strong> Search... </strong> */}
           Search...
         </Typography>
         <div className={classes.command}>{shortcutText}</div>
@@ -138,9 +130,6 @@ function GlobalSearch() {
       >
         <DialogContent>
           <AutocompleteSearch closeModal={handleClose} />
-          {/* {!inputValue && <SearchRecentItem closeModal={handleClose} />} */}
-          {/* <SearchRecentItem /> */}
-          {inputValue && loading && <SearchLoadingState />}
         </DialogContent>
       </Dialog>
     </>

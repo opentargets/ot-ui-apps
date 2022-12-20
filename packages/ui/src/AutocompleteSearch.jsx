@@ -15,15 +15,9 @@ const theme = createTheme({
     MuiAutocomplete: {
       popper: {
         borderRadius: "0 0 12px 12px !important",
-        // width: "79vw !important",
-        // maxWidth: "680px !important",
-        // maxHeight: "80vh !important",
-        // left: "1% !important",
       },
       paper: {
         height: "inherit !important",
-        // maxHeight: "80vh !important",
-        // boxShadow: "none",
         boxShadow: "6px 0 4px -4px #999, -6px 0 4px -4px #999",
       },
       listbox: {
@@ -55,7 +49,6 @@ export default function AutocompleteSearch({
   closeModal = () => {},
   isHomePage,
 }) {
-  const [open, setOpen] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const [openListItem] = useListOption();
@@ -75,7 +68,9 @@ export default function AutocompleteSearch({
   const [getSearchData, { data, loading }] = useSearchQueryData(searchQuery);
 
   useEffect(() => {
-    (data.length > 0 && inputValue.trim()) ? setSearchResult(data) : setSearchResult(recentItems);
+    data.length > 0 && inputValue.trim()
+      ? setSearchResult(data)
+      : setSearchResult(recentItems);
     setSearchLoading(loading);
     isQueryLoading(loading);
     if (loading) {
@@ -121,7 +116,6 @@ export default function AutocompleteSearch({
     localStorage.setItem("search-history", JSON.stringify(removedItems));
   };
 
-  
   return (
     <>
       {/* {searchResult && } */}
@@ -137,7 +131,7 @@ export default function AutocompleteSearch({
           onChange={handleSelectOption}
           groupBy={(option) => option.type}
           loading={searchLoading}
-          loadingText={<SearchLoadingState/>}
+          loadingText={<SearchLoadingState />}
           renderGroup={(group) => (
             <SearchListHeader
               key={group.key}

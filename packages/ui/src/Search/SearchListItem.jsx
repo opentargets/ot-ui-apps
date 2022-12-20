@@ -8,20 +8,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
   },
-  symbol: {
-    // fontSize: "1.1rem",
-    // fontWeight: "700",
-    // "&:hover": {
-    //   color: theme.palette.primary.main,
-    // },
-  },
   topHitItem: {
-    // fontSize: "1.5rem",
-    color: "#3489ca",
+    color: theme.palette.primary.main,
   },
   id: {
     padding: "0.3rem 0 0 1rem ",
-    // fontSize: "0.7rem",
     fontStyle: "italic",
   },
   listItem: {
