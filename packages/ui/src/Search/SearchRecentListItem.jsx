@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 function SearchRecentListItem({ item, clearItem }) {
   const classes = useStyles();
-  
+
   const stopEvent = (event, item) => {
     event.stopPropagation();
     clearItem(item);
@@ -41,9 +41,6 @@ function SearchRecentListItem({ item, clearItem }) {
   return (
     <div
       className={classes.recentItemContainer}
-      //   onClick={() => {
-      //     handleSelectOption(item);
-      //   }}
     >
       <div className={classes.recentIcon}>
         <History />
