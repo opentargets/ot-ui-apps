@@ -9,7 +9,6 @@ import {
 import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
 
 import AutocompleteSearch from "./AutocompleteSearch";
-import SearchRecentItem from "./Search/SearchRecentItem";
 import SearchLoadingState from "./Search/SearchLoadingState";
 import { SearchContext } from "./Search/SearchContext";
 
@@ -85,7 +84,20 @@ function GlobalSearch() {
   const handleOpen = () => setOpen(true);
 
   const handleKeyPress = useCallback((event) => {
-    if (event.metaKey === true && event.keyCode === 75) handleOpen();
+    // open on cmd + k
+    if (event.metaKey === true && event.keyCode === 75) {
+      event.stopPropagation();
+      event.preventDefault();
+      handleOpen();
+      return false;
+    }
+    // close on esc
+    if (event.keyCode === 27) {
+      event.stopPropagation();
+      event.preventDefault();
+      handleClose();
+      return false;
+    }
   }, []);
 
   const { loading, inputValue, setLoading, setInputValue } =
