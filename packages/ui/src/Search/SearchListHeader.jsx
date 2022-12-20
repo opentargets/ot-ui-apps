@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles, Typography } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPrescriptionBottleAlt, faStethoscope, faDna, faChartBar } from '@fortawesome/free-solid-svg-icons';
+import { faPrescriptionBottleAlt, faStethoscope, faDna, faChartBar, faMapPin } from '@fortawesome/free-solid-svg-icons';
 
 import { Star, Label } from "@material-ui/icons";
 
@@ -67,6 +67,14 @@ function SearchListHeader({ listHeader, children }) {
             className={classes.labelIcon}
           />
         );
+        case "Variant":
+          return (
+            <FontAwesomeIcon
+            icon={faMapPin}
+            fixedWidth
+            className={classes.labelIcon}
+          />
+          )
       default:
         return <Label />;
     }

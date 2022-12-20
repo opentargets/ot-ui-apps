@@ -55,6 +55,7 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
           >
             <Typography variant="h6">
               {item.symbol} {item.symbol && item.name && `-`} {item.name} 
+              {!(item.symbol && item.name) && item.id}
             </Typography>
           </span>
           <Typography variant="subtitle2"><span className={classes.id}>{item.id}</span></Typography>
