@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles, Typography } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPrescriptionBottleAlt, faStethoscope, faDna, faNotesMedical } from '@fortawesome/free-solid-svg-icons';
+import { faPrescriptionBottleAlt, faStethoscope, faDna, faChartBar } from '@fortawesome/free-solid-svg-icons';
 
 import { Star, Label } from "@material-ui/icons";
 
@@ -54,7 +54,7 @@ function SearchListHeader({ listHeader, children }) {
         case "Study":
         return (
           <FontAwesomeIcon
-            icon={faNotesMedical}
+            icon={faChartBar}
             fixedWidth
             className={classes.labelIcon}
           />
