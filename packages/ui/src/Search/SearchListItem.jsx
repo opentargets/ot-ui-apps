@@ -41,10 +41,9 @@ const useStyles = makeStyles((theme) => ({
 function SearchListItem({ item, isTopHit = "false", clearItem }) {
   const classes = useStyles();
 
-  if(item.type === "recent") {
-    return <SearchRecentListItem item={item} clearItem={clearItem} />
+  if (item.type === "recent") {
+    return <SearchRecentListItem item={item} clearItem={clearItem} />;
   }
-
 
   return (
     <>
@@ -54,11 +53,13 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
             className={`${classes.symbol} ${isTopHit && classes.topHitItem}`}
           >
             <Typography variant="h6">
-              {item.symbol} {item.symbol && item.name && `-`} {item.name} 
+              {item.symbol} {item.symbol && item.name && `-`} {item.name}
               {!(item.symbol && item.name) && item.id}
             </Typography>
           </span>
-          <Typography variant="subtitle2"><span className={classes.id}>{item.id}</span></Typography>
+          <Typography variant="subtitle2">
+            <span className={classes.id}>{item.id}</span>
+          </Typography>
         </div>
         {isTopHit && item.functionDescriptions > 0 && (
           <div className="functionDescription">
@@ -72,9 +73,16 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
             <div className="loci">{item.numAssocLoci} associated loci</div>
           </Typography>
         )}
+
+        {item.rsId && (
+          <Typography variant="subtitle2">
+            <strong> <div className="loci"> RsId: {item.rsId}</div></strong>
+          </Typography>
+        )}
+
         <div className={classes.justifyBetween}>
           <Typography variant="subtitle2">
-            <strong>{item.nInitial && `N Study: ` + item.nInitial } </strong>
+            <strong>{item.nInitial && `N Study: ` + item.nInitial} </strong>
           </Typography>
 
           {item.hasSumstats && (
