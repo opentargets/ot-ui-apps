@@ -24,11 +24,6 @@ const useStyles = makeStyles((theme) => ({
     // fontSize: "0.7rem",
     fontStyle: "italic",
   },
-  pubDate: {
-    fontStyle: "italic",
-    // fontWeight: "700",
-    // fontSize: "0.8rem",
-  },
   listItem: {
     cursor: "pointer",
     textTransform: "capitalize",
@@ -105,9 +100,7 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
           <Typography variant="subtitle2">
             <span className={classes.author}>
               {item.pubAuthor && `Author: ` + item.pubAuthor}
-              <span className={classes.pubDate}>
-                {item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}
-              </span>
+              {item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}
             </span>
             <span className={classes.author}>
               {item.position &&
