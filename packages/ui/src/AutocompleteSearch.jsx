@@ -18,7 +18,7 @@ const theme = createTheme({
       },
       paper: {
         height: "inherit !important",
-        boxShadow: "6px 0 4px -4px #999, -6px 0 4px -4px #999",
+        boxShadow: "none",
       },
       listbox: {
         maxHeight: "47vh !important",
