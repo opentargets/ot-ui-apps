@@ -49,7 +49,8 @@ function SampleQueries({ setQuery }) {
           </div>
         </AccordionDetails>
       </Accordion>
-      <Accordion>
+      {/* No Response in production for this query, issue #2791 */}
+      {/* <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle2">
             Studies and lead variants query
@@ -70,7 +71,7 @@ function SampleQueries({ setQuery }) {
             </Button>
           </div>
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle2">Colocalisation query</Typography>
