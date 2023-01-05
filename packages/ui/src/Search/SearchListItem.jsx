@@ -18,12 +18,14 @@ const useStyles = makeStyles((theme) => ({
   },
   listItem: {
     cursor: "pointer",
-    textTransform: "capitalize",
     width: "100%",
   },
   author: {
     display: "flex",
   },
+  symbol: {
+    textTransform: "capitalize",
+  }
 }));
 
 function SearchListItem({ item, isTopHit = "false", clearItem }) {
