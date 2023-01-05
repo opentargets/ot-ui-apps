@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
   id: {
     padding: "0.3rem 0 0 1rem ",
     fontStyle: "italic",
+    overflowWrap: "break-word",
   },
   listItem: {
     cursor: "pointer",
@@ -41,7 +42,7 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
           >
             <Typography variant="h6">
               {item.symbol} {item.symbol && item.name && `-`} {item.name}
-              {!(item.symbol && item.name) && item.id}
+              {!item.symbol && !item.name && item.id}
             </Typography>
           </span>
           <Typography variant="subtitle2">
@@ -55,11 +56,26 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
             </Typography>
           </div>
         )}
-        {item.numAssocLoci && (
+
+        <div className={classes.justifyBetween}>
           <Typography variant="subtitle2">
-            <div className="loci">{item.numAssocLoci} associated loci</div>
+            <span className={classes.author}>
+              {item.pubAuthor && `Author: ` + item.pubAuthor}
+              {item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}
+            </span>
+            <span className={classes.author}>
+              {item.position &&
+                item.chromosome &&
+                `GRCh38:` +
+                  item.chromosome +
+                  `:` +
+                  commaSeparate(item.position)}
+            </span>
           </Typography>
-        )}
+          <Typography variant="subtitle2">
+            {item.pubJournal && `Journal:` + item.pubJournal}
+          </Typography>
+        </div>
 
         {item.rsId && (
           <Typography variant="subtitle2">
@@ -87,25 +103,12 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
           )}
         </div>
 
-        <div className={classes.justifyBetween}>
+        {item.numAssocLoci && (
           <Typography variant="subtitle2">
-            <span className={classes.author}>
-              {item.pubAuthor && `Author: ` + item.pubAuthor}
-              {item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}
-            </span>
-            <span className={classes.author}>
-              {item.position &&
-                item.chromosome &&
-                `GRCh38:` +
-                  item.chromosome +
-                  `:` +
-                  commaSeparate(item.position)}
-            </span>
+            <div className="loci">{item.numAssocLoci} associated loci</div>
           </Typography>
-          <Typography variant="subtitle2">
-            {item.pubJournal && `Journal:` + item.pubJournal}
-          </Typography>
-        </div>
+        )}
+
         <div className="numbers">
           <Typography variant="subtitle2">
             {item.start} {item.start && item.end && `-`} {item.end}
