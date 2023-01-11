@@ -42,6 +42,13 @@ const cols = [
     description: 'Availability of mouse knockout models for the target',
   },
   {
+    id: 'mouseOrthologMaxIdentityPercentage',
+    label: 'Mouse ortholog identity',
+    category: 'Doability',
+    sectionId: 'compGenomics',
+    description: 'Mouse ortholog maximum identity percentage',
+  },
+  {
     id: 'hasHighQualityChemicalProbes',
     label: 'Chemical probes',
     category: 'Doability',
@@ -79,13 +86,6 @@ const cols = [
       'Target is classified as an Oncogene and/or Tumor Suppressor Gene',
   },
   {
-    id: 'mouseOrthologMaxIdentityPercentage',
-    label: 'Mouse ortholog identity',
-    category: 'Safety',
-    sectionId: 'compGenomics',
-    description: 'Mouse ortholog maximum identity percentage',
-  },
-  {
     id: 'paralogMaxIdentityPercentage',
     label: 'Paralogues',
     category: 'Safety',
@@ -96,15 +96,17 @@ const cols = [
     id: 'tissueSpecificity',
     label: 'Tissue specificity',
     category: 'Safety',
-    sectionId: 'baselineExpression',
-    description: 'HPA category types of elevated expression across tissues for the target',
+    sectionId: 'expressions',
+    description:
+      'HPA category types of elevated expression across tissues for the target',
   },
   {
     id: 'tissueDistribution',
     label: 'Tissue distribution',
     category: 'Safety',
-    sectionId: 'baselineExpression',
-    description: 'HPA category types of detectable expression across tissues for the target',
+    sectionId: 'expressions',
+    description:
+      'HPA category types of detectable expression across tissues for the target',
   },
 ];
 
