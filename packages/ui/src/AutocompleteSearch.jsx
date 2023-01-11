@@ -125,7 +125,6 @@ export default function AutocompleteSearch({
       <ThemeProvider theme={theme}>
         {searchLoading}
         <Autocomplete
-          open
           disablePortal
           openOnFocus
           autoHighlight
