@@ -51,7 +51,7 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
             <span className={classes.id}>{item.id}</span>
           </Typography>
         </div>
-        {isTopHit && item.functionDescriptions > 0 && (
+        {isTopHit && item.functionDescriptions && item.functionDescriptions.length > 0 && (
           <div className="functionDescription">
             <Typography variant="subtitle1">
               {item.functionDescriptions[0].substring(0, 180)} ...{" "}
