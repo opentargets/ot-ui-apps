@@ -27,9 +27,9 @@ const theme = createTheme({
         margin: "0 1rem",
         padding: "11px",
         border: "0.3px solid transparent",
-        borderTopWidth: "1px",
+        borderTopWidth: "0.3px",
         borderStyle: "solid",
-        borderImage: "linear-gradient(to right, white, #80808054, white)90 0 0",
+        borderImage: "linear-gradient(to right, white, #00000063, white)90 0 0",
         "&[data-focus='true']": {
           border: "0.3px solid #3489ca",
           borderRadius: "4px",

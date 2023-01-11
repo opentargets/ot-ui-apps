@@ -25,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
   },
   symbol: {
     textTransform: "capitalize",
+    display: "flex",
+    alignItems: "center"
   },
 }));
 
@@ -42,22 +44,32 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
           <span
             className={`${classes.symbol} ${isTopHit && classes.topHitItem}`}
           >
-            <Typography variant="h6">
-              {item.symbol} {item.symbol && item.name && `-`} {item.name}
-              {!item.symbol && !item.name && item.id}
-            </Typography>
+            {item.symbol && item.name ? (
+              <>
+                <Typography variant={isTopHit ? "h6" : "subtitle1"}>{item.symbol} - </Typography>
+                <Typography variant={isTopHit ? "subtitle1" : "subtitle2"}> {item.name} </Typography>
+              </>
+            ) : (
+              <>
+                <Typography variant="subtitle1">
+                  {item.symbol || item.name || item.id}
+                </Typography>
+              </>
+            )}
           </span>
-          <Typography variant="subtitle2">
+          <Typography variant="caption">
             <span className={classes.id}>{item.id}</span>
           </Typography>
         </div>
-        {isTopHit && item.functionDescriptions && item.functionDescriptions.length > 0 && (
-          <div className="functionDescription">
-            <Typography variant="subtitle1">
-              {item.functionDescriptions[0].substring(0, 180)} ...{" "}
-            </Typography>
-          </div>
-        )}
+        {isTopHit &&
+          item.functionDescriptions &&
+          item.functionDescriptions.length > 0 && (
+            <div className="functionDescription">
+              <Typography variant="subtitle1">
+                {item.functionDescriptions[0].substring(0, 180)} ...{" "}
+              </Typography>
+            </div>
+          )}
 
         <div className={classes.justifyBetween}>
           <Typography variant="subtitle2">
@@ -89,7 +101,7 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
 
         <div className={classes.justifyBetween}>
           <Typography variant="subtitle2">
-            {item.numAssocLoci>-1 && (
+            {item.numAssocLoci > -1 && (
               <strong>{item.numAssocLoci} associated loci</strong>
             )}
           </Typography>
