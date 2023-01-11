@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
   symbol: {
     textTransform: "capitalize",
-  }
+  },
 }));
 
 function SearchListItem({ item, isTopHit = "false", clearItem }) {
@@ -62,7 +62,7 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
         <div className={classes.justifyBetween}>
           <Typography variant="subtitle2">
             <span className={classes.author}>
-              {item.pubAuthor && `Author: ` + item.pubAuthor}
+              {item.pubAuthor && item.pubAuthor}
               {item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}
             </span>
             <span className={classes.author}>
@@ -75,7 +75,7 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
             </span>
           </Typography>
           <Typography variant="subtitle2">
-            {item.pubJournal && `Journal:` + item.pubJournal}
+            {item.pubJournal && item.pubJournal}
           </Typography>
         </div>
 
@@ -89,7 +89,9 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
 
         <div className={classes.justifyBetween}>
           <Typography variant="subtitle2">
-            <strong>{item.nInitial && `N Study: ` + item.nInitial} </strong>
+            {item.numAssocLoci>-1 && (
+              <strong>{item.numAssocLoci} associated loci</strong>
+            )}
           </Typography>
 
           {item.hasSumstats && (
@@ -105,10 +107,8 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
           )}
         </div>
 
-        {item.numAssocLoci && (
-          <Typography variant="subtitle2">
-            <div className="loci">{item.numAssocLoci} associated loci</div>
-          </Typography>
+        {item.nInitial && (
+          <Typography variant="subtitle2">N Study: {item.nInitial}</Typography>
         )}
 
         <div className="numbers">

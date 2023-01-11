@@ -27,6 +27,9 @@ const theme = createTheme({
         margin: "0 1rem",
         padding: "11px",
         border: "0.3px solid transparent",
+        borderBottomWidth: "1px",
+        borderStyle: "solid",
+        borderImage: "linear-gradient(to right, white, #80808054, white)0 0 90",
         "&[data-focus='true']": {
           border: "0.3px solid #3489ca",
           borderRadius: "4px",
@@ -122,6 +125,7 @@ export default function AutocompleteSearch({
       <ThemeProvider theme={theme}>
         {searchLoading}
         <Autocomplete
+          open
           disablePortal
           openOnFocus
           autoHighlight
