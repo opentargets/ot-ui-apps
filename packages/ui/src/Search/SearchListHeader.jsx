@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
 function SearchListHeader({ listHeader, children }) {
   const classes = useStyles();
 
+  if(listHeader === "") return (<>{children}</>);
+
   const getIcon = () => {
     switch (listHeader) {
       case "topHit":

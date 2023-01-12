@@ -27,9 +27,9 @@ const theme = createTheme({
         margin: "0 1rem",
         padding: "11px",
         border: "0.3px solid transparent",
-        borderTopWidth: "0.3px",
+        borderBottomWidth: "0.3px",
         borderStyle: "solid",
-        borderImage: "linear-gradient(to right, white, #00000063, white)90 0 0",
+        borderImage: "linear-gradient(to right, white, #00000063, white)0 0 90",
         "&[data-focus='true']": {
           border: "0.3px solid #3489ca",
           borderRadius: "4px",
@@ -71,8 +71,14 @@ export default function AutocompleteSearch({
   const [getSearchData, { data, loading }] = useSearchQueryData(searchQuery);
 
   useEffect(() => {
-    data.length > 0 && inputValue.trim()
-      ? setSearchResult(data)
+    data.length > 0 && inputValue
+      ? (data.unshift({
+          symbol: "Search For: "+inputValue,
+          name: inputValue,
+          entity: "search",
+          type: "",
+        }),
+        setSearchResult(data))
       : setSearchResult(recentItems);
     setSearchLoading(loading);
     isQueryLoading(loading);

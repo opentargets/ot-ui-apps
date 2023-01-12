@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   symbol: {
     textTransform: "capitalize",
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
   },
 }));
 
@@ -37,6 +37,29 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
     return <SearchRecentListItem item={item} clearItem={clearItem} />;
   }
 
+  const getSymbolHeader = () => {
+    if (!(item.entity === "search") && item.symbol && item.name)
+      return (
+        <>
+          <Typography variant={isTopHit ? "h6" : "subtitle1"}>
+            {item.symbol}
+          </Typography>
+          -
+          <Typography variant={isTopHit ? "subtitle1" : "subtitle2"}>
+            {item.name}
+          </Typography>
+        </>
+      );
+    else
+      return (
+        <>
+          <Typography variant="subtitle1">
+            {item.symbol || item.name || item.id}
+          </Typography>
+        </>
+      );
+  };
+
   return (
     <>
       <div className={classes.listItem}>
@@ -44,18 +67,7 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
           <span
             className={`${classes.symbol} ${isTopHit && classes.topHitItem}`}
           >
-            {item.symbol && item.name ? (
-              <>
-                <Typography variant={isTopHit ? "h6" : "subtitle1"}>{item.symbol} - </Typography>
-                <Typography variant={isTopHit ? "subtitle1" : "subtitle2"}> {item.name} </Typography>
-              </>
-            ) : (
-              <>
-                <Typography variant="subtitle1">
-                  {item.symbol || item.name || item.id}
-                </Typography>
-              </>
-            )}
+            {getSymbolHeader()}
           </span>
           <Typography variant="caption">
             <span className={classes.id}>{item.id}</span>
@@ -72,7 +84,7 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
           )}
 
         <div className={classes.justifyBetween}>
-          <Typography variant="subtitle2">
+          <Typography variant="caption">
             <span className={classes.author}>
               {item.pubAuthor && item.pubAuthor}
               {item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}
@@ -86,13 +98,13 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
                   commaSeparate(item.position)}
             </span>
           </Typography>
-          <Typography variant="subtitle2">
+          <Typography variant="caption">
             {item.pubJournal && item.pubJournal}
           </Typography>
         </div>
 
         {item.rsId && (
-          <Typography variant="subtitle2">
+          <Typography variant="caption">
             <strong>
               <div className="loci"> Ensembl: {item.rsId}</div>
             </strong>
@@ -100,7 +112,7 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
         )}
 
         <div className={classes.justifyBetween}>
-          <Typography variant="subtitle2">
+          <Typography variant="caption">
             {item.numAssocLoci > -1 && (
               <strong>{item.numAssocLoci} associated loci</strong>
             )}
@@ -120,11 +132,11 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
         </div>
 
         {item.nInitial && (
-          <Typography variant="subtitle2">N Study: {item.nInitial}</Typography>
+          <Typography variant="caption">N Study: {item.nInitial}</Typography>
         )}
 
         <div className="numbers">
-          <Typography variant="subtitle2">
+          <Typography variant="caption">
             {item.start} {item.start && item.end && `-`} {item.end}
           </Typography>
         </div>

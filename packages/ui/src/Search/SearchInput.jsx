@@ -59,8 +59,8 @@ function SearchInput({
   const debouncedInputValue = useDebounce(inputValue, 300);
 
   const handleChangeInputValue = (e) => {
-    setInputValue(e.target.value || "");
-    changeInputValue(e.target.value || "");
+    setInputValue(e.target.value.trim() || "");
+    changeInputValue(e.target.value.trim() || "");
   };
 
   useEffect(() => {

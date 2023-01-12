@@ -10,7 +10,9 @@ function useListOption() {
     option.type= "recent";
     addSearchToLocalStorage(option);
 
-    if (option.entity === "study") {
+    if (option.entity === "search") {
+      history.push(`/search?q=${option.name}&page=1`);
+    }else if (option.entity === "study") {
       history.push(`/${option.entity}/${option.studyId}`);
     } else {
       history.push(
