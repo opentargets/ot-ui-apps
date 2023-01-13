@@ -1,10 +1,11 @@
-query OrphanetQuery($ensemblId: String!, $efoId: String!) {
+query OrphanetQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
   disease(efoId: $efoId) {
     id
     evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["orphanet"]
+      size: $size
     ) {
       count
       rows {
