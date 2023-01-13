@@ -106,5 +106,3 @@ export function BodyCore({ definition, id, label, count }) {
     />
   );
 }
-
-export default Body;
