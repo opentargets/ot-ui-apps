@@ -165,15 +165,28 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: '.5rem' },
 });
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const classes = useStyles();
-  // const {
-  //   data: {
-  //     intOgen: { count: size },
-  //   },
-  // } = usePlatformApi(Summary.fragments.IntOgenSummaryFragment);
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.IntOgenSummaryFragment
+  );
+  const count = summaryData.intOgen.count;
+  
+  if(!count || count < 1) {
+    return null
+  }
 
-  const variables = { ensemblId: ensgId, efoId, size: 10 };
+  return <BodyCore definition={definition} id={id} label={label} count={count} />
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const classes = useStyles();
+  
+  const { ensgId, efoId } = id;
+  const variables = {
+    ensemblId: ensgId,
+    efoId,
+    size: count,
+  };
 
   const request = useQuery(INTOGEN_QUERY, {
     variables,
@@ -184,7 +197,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.somatic_mutation}
       request={request}
-      renderDescription={() => <Description symbol={symbol} name={name} />}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={({
         disease: {
           evidences: { rows },
