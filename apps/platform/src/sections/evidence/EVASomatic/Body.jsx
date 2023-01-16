@@ -223,13 +223,26 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: '.5rem' },
 });
 
-function Body({ definition, id, label }) {
-  const classes = useStyles();
-  const { ensgId: ensemblId, efoId } = id;
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.evaSomaticSummary
+  );
+  const count = summaryData.evaSomaticSummary.count;
+  
+  if(!count || count < 1) {
+    return null
+  }
 
+  return <BodyCore definition={definition} id={id} label={label} count={count} />
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const classes = useStyles();
+  const { ensgId, efoId } = id;
   const variables = {
-    ensemblId,
+    ensemblId: ensgId,
     efoId,
+    size: count,
   };
 
   const request = useQuery(EVA_SOMATIC_QUERY, {
@@ -281,5 +294,3 @@ function Body({ definition, id, label }) {
     />
   );
 }
-
-export default Body;
