@@ -218,7 +218,7 @@ export function BodyCore({ definition, id, label, count }) {
           <>
             <Box className={classes.roleInCancerBox}>
               <Typography className={classes.roleInCancerTitle}>
-                <b>{symbol}</b> role in cancer:
+                <b>{label.symbol}</b> role in cancer:
               </Typography>
               <ChipList items={roleInCancerItems} />
             </Box>
