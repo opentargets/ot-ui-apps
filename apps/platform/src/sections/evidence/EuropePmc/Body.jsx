@@ -9,7 +9,8 @@ import Link from '../../../components/Link';
 import { naLabel } from '../../../constants';
 import Publication from './Publication';
 import SectionItem from '../../../components/Section/SectionItem';
-
+import Summary from './Summary';
+import usePlatformApi from '../../../hooks/usePlatformApi';
 import EUROPE_PMC_QUERY from './sectionQuery.gql';
 
 const columns = [
@@ -85,24 +86,45 @@ function mergeData(rows, literatureData) {
   return mergedRows;
 }
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.EuropePmcSummaryFragment
+  );
+  const count = summaryData.europePmc.count;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  // Note that EuropePMC widget, unlike others, does not require count
+  return (
+    <BodyCore definition={definition} id={id} label={label} />
+  );
+}
+
+/*
+ * EuropePMC widget does NOT require the count prop
+ */
+export function BodyCore({ definition, id, label }) {
+  const { ensgId, efoId } = id;
   const pagesToFetch = 10;
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
   const [literatureData, setLiteratureData] = useState([]);
   const [newIds, setNewIds] = useState([]);
   const variables = { ensemblId: ensgId, efoId, size: pageSize * pagesToFetch };
-  const { loading: isLoading, error, data, fetchMore, refetch } = useQuery(
-    EUROPE_PMC_QUERY,
-    {
-      variables,
-      onCompleted: data => {
-        setNewIds(
-          data.disease.evidences.rows.map(entry => entry.literature[0])
-        );
-      },
-    }
-  );
+  const {
+    loading: isLoading,
+    error,
+    data,
+    fetchMore,
+    refetch,
+  } = useQuery(EUROPE_PMC_QUERY, {
+    variables,
+    onCompleted: data => {
+      setNewIds(data.disease.evidences.rows.map(entry => entry.literature[0]));
+    },
+  });
   const [loading, setLoading] = useState(isLoading);
 
   const handlePageChange = page => {
@@ -193,7 +215,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.literature}
       request={{ loading, error, data }}
-      renderDescription={() => <Description symbol={symbol} name={name} />}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={data => {
         const rows = mergeData(
           getPage(data.disease.evidences.rows, page, pageSize),
@@ -221,5 +243,3 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
     />
   );
 }
-
-export default Body;
