@@ -114,12 +114,25 @@ const columns = [
   },
 ];
 
-function Body({ definition, id, label }) {
-  const { ensgId: ensemblId, efoId } = id;
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.expressionAtlasSummary
+  );
+  const count = summaryData.expressionAtlasSummary.count;
+  
+  if(!count || count < 1) {
+    return null
+  }
 
+  return <BodyCore definition={definition} id={id} label={label} count={count} />
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
   const variables = {
-    ensemblId,
+    ensemblId: ensgId,
     efoId,
+    size: count,
   };
 
   const request = useQuery(EXPRESSION_ATLAS_QUERY, {
@@ -152,5 +165,3 @@ function Body({ definition, id, label }) {
     />
   );
 }
-
-export default Body;
