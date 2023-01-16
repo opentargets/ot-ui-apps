@@ -114,9 +114,26 @@ const columns = [
   },
 ];
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const variables = { ensemblId: ensgId, efoId };
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.IMCPSummaryFragment
+  );
+  const count = summaryData.impc.count;
+  
+  if(!count || count < 1) {
+    return null
+  }
 
+  return <BodyCore definition={definition} id={id} label={label} count={count} />
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
+  const variables = {
+    ensemblId: ensgId,
+    efoId,
+    size: count,
+  };
   const request = useQuery(INTOGEN_QUERY, {
     variables,
   });
@@ -126,7 +143,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.animal_model}
       request={request}
-      renderDescription={() => <Description symbol={symbol} name={name} />}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={data => (
         <DataTable
           columns={columns}
@@ -134,7 +151,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           rows={data.disease.evidences.rows}
           pageSize={5}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rowsPerPageOptions={[5].concat(defaultRowsPerPageOptions)}  // custom page size of 5 is not included in defaultRowsPerPageOptions
           showGlobalFilter
           query={INTOGEN_QUERY.loc.source.body}
           variables={variables}
@@ -143,5 +160,3 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
     />
   );
 }
-
-export default Body;
