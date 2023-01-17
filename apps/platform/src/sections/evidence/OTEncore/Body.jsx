@@ -245,12 +245,29 @@ const exportColumns = [
   },
 ];
 
-function Body({ definition, id, label }) {
-  const { ensgId: ensemblId, efoId } = id;
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.otEncoreSummary
+  );
+  const count = summaryData.otEncoreSummary.count;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
+
   const request = useQuery(ENCORE_QUERY, {
     variables: {
-      ensemblId,
+      ensemblId: ensgId,
       efoId,
+      size: count,
     },
   });
   const classes = useStyles();
@@ -271,7 +288,7 @@ function Body({ definition, id, label }) {
             rows={rows}
             dataDownloader
             dataDownloaderColumns={exportColumns}
-            dataDownloaderFileStem={`${ensemblId}-${efoId}-otencore`}
+            dataDownloaderFileStem={`${ensgId}-${efoId}-otencore`}
             showGlobalFilter
             sortBy="geneticInteractionPValue"
             order="asc"
@@ -285,5 +302,3 @@ function Body({ definition, id, label }) {
     />
   );
 }
-
-export default Body;
