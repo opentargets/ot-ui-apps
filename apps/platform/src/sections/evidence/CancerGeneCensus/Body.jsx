@@ -129,17 +129,29 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: '.5rem' },
 });
 
-function Body({ definition, id, label }) {
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.CancerGeneCensusSummary
+  );
+  const count = summaryData.cancerGeneCensusSummary.count;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
   const classes = useStyles();
-  const { ensgId: ensemblId, efoId } = id;
-  // const { data: summaryData } = usePlatformApi(
-  //   Summary.fragments.CancerGeneCensusSummary
-  // );
+  const { ensgId, efoId } = id;
 
   const variables = {
-    ensemblId,
+    ensemblId: ensgId,
     efoId,
-    // size: summaryData.cancerGeneCensusSummary.count,
+    size: count,
   };
 
   const request = useQuery(CANCER_GENE_CENSUS_QUERY, {
@@ -195,5 +207,3 @@ function Body({ definition, id, label }) {
     />
   );
 }
-
-export default Body;
