@@ -113,35 +113,10 @@ function TableAssociations() {
     [expanderHandler, loading, displayedTable, entityToGet, rowNameEntity]
   );
 
-  // const columns = [
-  //   {
-  //     accessorFn: row => row[entityToGet][rowNameEntity],
-  //     id: 'name',
-  //     cell: row => <CellName name={row.getValue()} rowId={row.row.id} />,
-  //     header: () => <span>{entityToGet}</span>,
-  //     footer: props => props.column.id,
-  //   },
-  //   {
-  //     accessorFn: row => row.score,
-  //     id: 'score',
-  //     cell: row => {
-  //       if (loading) return <Skeleton variant="rect" width={30} height={25} />;
-  //       return (
-  //         <ColoredCell
-  //           scoreValue={row.getValue()}
-  //           globalScore
-  //           rounded={false}
-  //           isAssociations
-  //           hasValue
-  //         />
-  //       );
-  //     },
-  //     header: () => <span>Score</span>,
-  //     footer: props => props.column.id,
-  //   },
-  //   ...getDatasources(expanderHandler, loading, displayedTable),
-  // ];
-
+  /**
+   * TABLE HOOK
+   * @description tanstack/react-table
+   */
   const table = useReactTable({
     data,
     columns,
@@ -180,6 +155,9 @@ function TableAssociations() {
     resetExpandler();
   };
 
+  /**
+   * LEGEND EFECT
+   */
   useEffect(() => {
     const Legend = getLegend(displayedTable === 'associations');
     document.getElementById('legend').innerHTML = '';
@@ -191,30 +169,25 @@ function TableAssociations() {
     <div className="TAssociations">
       <TableElement>
         {/* HEADER */}
-        {table.getHeaderGroups().map(headerGroup => {
-          // console.log({ headerGroup });
-          return (
-            <div className="Theader" key={headerGroup.id}>
-              <div className="cols-container">
-                {headerGroup.headers.map(header => {
-                  return (
-                    <div className={getHeaderClassName(header)} key={header.id}>
-                      {header.isPlaceholder ? null : (
-                        <div>
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                        </div>
+        {table.getHeaderGroups().map(headerGroup => (
+          <div className="Theader" key={headerGroup.id}>
+            <div className="cols-container">
+              {headerGroup.headers.map(header => (
+                <div className={getHeaderClassName(header)} key={header.id}>
+                  {header.isPlaceholder ? null : (
+                    <div>
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
                     </div>
-                  );
-                })}
-              </div>
-              {/* <AggregationsRow cols={headerGroup.headers} /> */}
+                  )}
+                </div>
+              ))}
             </div>
-          );
-        })}
+            {/* <AggregationsRow cols={headerGroup.headers} /> */}
+          </div>
+        ))}
 
         {/* Weights controlls */}
         <WeightsControlls cols={table.getHeaderGroups()} />
@@ -227,7 +200,7 @@ function TableAssociations() {
           onReorder={() => {}}
         >
           <div className="TBody">
-            <div>
+            <div className="TRow">
               {table.getRowModel().rows.map(row => {
                 return (
                   <Fragment key={row.id}>
@@ -238,16 +211,21 @@ function TableAssociations() {
                       className={getRowClassName(row)}
                       drag={false}
                     >
-                      {row.getVisibleCells().map(cell => {
-                        return (
-                          <div key={cell.id} className={getCellClassName(cell)}>
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </div>
-                        );
-                      })}
+                      <div className="data-row-content">
+                        {row.getVisibleCells().map(cell => {
+                          return (
+                            <div
+                              key={cell.id}
+                              className={getCellClassName(cell)}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </Reorder.Item>
                     {row.getIsExpanded() && (
                       <motion.div

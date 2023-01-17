@@ -91,8 +91,14 @@
 }
 .TAssociations .data-row {
   display: flex;
-  margin-bottom: 3px;
   align-items: center;
+}
+
+.TAssociations .data-row .data-row-content {
+  display: flex;
+  align-items: center;
+  margin-bottom: 3px;
+  width: 100%;
 }
 
 .TAssociations .data-row:hover {
