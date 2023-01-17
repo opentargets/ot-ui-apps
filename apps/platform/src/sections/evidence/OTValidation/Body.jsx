@@ -273,8 +273,24 @@ const exportColumns = [
   },
 ];
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const variables = { ensemblId: ensgId, efoId };
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.otValidationSummary
+  );
+  const count = summaryData.otValidationSummary.count;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
+  const variables = { ensemblId: ensgId, efoId, size: count };
   const request = useQuery(VALIDATION_QUERY, {
     variables,
   });
@@ -285,7 +301,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.ot_validation_lab}
       request={request}
-      renderDescription={() => <Description symbol={symbol} name={name} />}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={({ disease }) => {
         const { rows } = disease.evidences;
         const hypothesis = _.uniqBy(
@@ -339,7 +355,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
                   }
                   showHelpIcon
                 >
-                  OTVL biomarker assessment for {symbol}
+                  OTVL biomarker assessment for {label.symbol}
                 </Tooltip>
               </Typography>
 
@@ -403,5 +419,3 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
     />
   );
 }
-
-export default Body;
