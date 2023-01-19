@@ -112,9 +112,8 @@ const FooterSection = ({ heading, links, social }) => {
         {links.map((link, i) => {
           if (link.showOnlyPartner) {
             return (
-              <PrivateWrapper>
+              <PrivateWrapper key={i}>
                 <FooterLink
-                  key={i}
                   label={link.label}
                   url={link.url}
                   icon={link.icon}

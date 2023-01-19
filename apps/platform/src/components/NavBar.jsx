@@ -153,9 +153,8 @@ const NavBar = ({
               {items.map((item, i) => {
                 if (item.showOnlyPartner) {
                   return (
-                    <PrivateWrapper>
+                    <PrivateWrapper key={i}>
                       <MenuItem
-                        key={i}
                         dense={true}
                         className={classes.menuItem}
                       >
