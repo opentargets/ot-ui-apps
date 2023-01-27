@@ -27,7 +27,7 @@ class App extends Component {
     return (
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
-          <SearchProvider searchQuery={SEARCH_QUERY}>
+          <SearchProvider searchQuery={SEARCH_QUERY} searchPlaceholder="Search for a target, drug, disease, or phenotype...">
           <Router>
             <Switch>
               <Route exact path="/" component={HomePage} />

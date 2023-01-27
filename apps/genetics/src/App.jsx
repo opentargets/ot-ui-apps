@@ -19,7 +19,7 @@ import APIPage from './pages/APIPage';
 const App = () => (
   <ApolloProvider client={client}>
     <ThemeProvider>
-      <SearchProvider searchQuery={SEARCH_QUERY}>
+      <SearchProvider searchQuery={SEARCH_QUERY} searchPlaceholder="Search for a gene, variant, study, or trait...">
         <Router>
           <Switch>
             <Route exact path="/" component={HomePage} />

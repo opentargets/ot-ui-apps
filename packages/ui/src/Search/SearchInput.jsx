@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Search } from "@material-ui/icons";
 import {
   makeStyles,
@@ -7,6 +7,7 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import useDebounce from "../hooks/useDebounce";
+import { SearchContext } from "./SearchContext";
 
 const useStyles = makeStyles((theme) => ({
   searchIcon: {
@@ -57,6 +58,9 @@ function SearchInput({
   const classes = useStyles();
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 300);
+  const {
+    searchPlaceholder
+  } = useContext(SearchContext);
 
   const handleChangeInputValue = (e) => {
     setInputValue(e.target.value.trim() || "");
@@ -91,7 +95,7 @@ function SearchInput({
         }}
         onChange={handleChangeInputValue}
         value={inputValue}
-        placeholder="Search..."
+        placeholder={searchPlaceholder}
       />
     </div>
   );

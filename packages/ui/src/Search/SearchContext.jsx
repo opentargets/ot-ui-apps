@@ -3,7 +3,7 @@ import { createContext, useState } from "react";
 // COMPONENT CONTEXT
 export const SearchContext = createContext();
 
-function SearchProvider({ children, searchQuery }) {
+function SearchProvider({ children, searchQuery, searchPlaceholder = "Search..." }) {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
@@ -16,6 +16,7 @@ function SearchProvider({ children, searchQuery }) {
         searchQuery,
         loading,
         inputValue,
+        searchPlaceholder,
         setLoading,
         setInputValue,
         isQueryLoading,
