@@ -26,14 +26,14 @@ const StudyLocusHeader = ({ loading, data }) => {
           {studyId ? (
             <ExternalLink
               title="Study ID"
-              url={`https://genetics.opentargets.org/study/${studyId}`}
+              url={`/study/${studyId}`}
               id={studyId}
             />
           ) : null}
           {variantId ? (
             <ExternalLink
               title="Variant ID"
-              url={`https://genetics.opentargets.org/variant/${variantId}`}
+              url={`/variant/${variantId}`}
               id={variantId}
             />
           ) : null}
