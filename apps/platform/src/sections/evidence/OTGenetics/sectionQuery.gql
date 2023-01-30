@@ -37,6 +37,10 @@ query OpenTargetsGeneticsQuery(
           id
           label
         }
+        variantFunctionalConsequenceFromQtlId{
+          id
+          label
+        }
         resourceScore
         projectId
       }
