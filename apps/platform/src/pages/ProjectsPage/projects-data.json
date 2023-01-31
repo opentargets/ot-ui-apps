@@ -1,0 +1,422 @@
+[
+ {
+   "otar_code": "OTAR001",
+   "project_name": "Open Targets Platform",
+   "project_lead": "Ian Dunham",
+   "generates_data": "Platform evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR007",
+   "project_name": "COSMIC/ Cancer Gene Census",
+   "project_lead": "Simon Forbes",
+   "generates_data": "Platform evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR031",
+   "project_name": "NK Cell receptors",
+   "project_lead": "Dave Adams",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Oncology"
+ },
+ {
+   "otar_code": "OTAR033",
+   "project_name": "Keratinocytes",
+   "project_lead": "Phil Jones",
+   "generates_data": "Y",
+   "integrates_in_PPP": "Y",
+   "data_available": "Available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Immunology / Inflammation"
+ },
+ {
+   "otar_code": "OTAR034",
+   "project_name": "Genetics Core",
+   "project_lead": "Maya",
+   "generates_data": "Genetics Portal evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR036",
+   "project_name": "iPSC neuron CRISPR",
+   "project_lead": "Rick Livesey",
+   "generates_data": "Y",
+   "integrates_in_PPP": "Y",
+   "data_available": "Available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Neurodegeneration"
+ },
+ {
+   "otar_code": "OTAR042",
+   "project_name": "Tractability",
+   "project_lead": "Andrew Leach",
+   "generates_data": "Platform evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR2045",
+   "project_name": "GWAS Catalog",
+   "project_lead": "Laura Harris, Helen Parkinson, James Hayhurst",
+   "generates_data": "Platform evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR2047",
+   "project_name": "Enhanced Molecular and Clinical Data",
+   "project_lead": "Andrew Leach",
+   "generates_data": "Platform evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR2048",
+   "project_name": "Protein Function",
+   "project_lead": "Maria Martin",
+   "generates_data": "Platform evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR2049",
+   "project_name": "T Cell Survival and Function",
+   "project_lead": "Dave Adams",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Oncology"
+ },
+ {
+   "otar_code": "OTAR2051",
+   "project_name": "NASH",
+   "project_lead": "Ludovic Vallier",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Other"
+ },
+ {
+   "otar_code": "OTAR2052",
+   "project_name": "Identification and Validation of Novel Pain Targets",
+   "project_lead": "Manos Metzakopian / Andrew Bassett",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Neurodegeneration"
+ },
+ {
+   "otar_code": "OTAR2053",
+   "project_name": "100 Chromatin-Related Disorders",
+   "project_lead": "Matt Hurles",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Neurodegeneration"
+ },
+ {
+   "otar_code": "OTAR2054",
+   "project_name": "Stress Response Modulators in iNeurons",
+   "project_lead": "Manos Metzakopian / Andrew Bassett",
+   "generates_data": "Y",
+   "integrates_in_PPP": "Y",
+   "data_available": "Available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Neurodegeneration"
+ },
+ {
+   "otar_code": "OTAR2055",
+   "project_name": "Prediction of Oncology Targets and in Silico Drug Prescriptions",
+   "project_lead": "Francesco Iorio",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Oncology"
+ },
+ {
+   "otar_code": "OTAR2056",
+   "project_name": "Literature",
+   "project_lead": "Jo McIntyre",
+   "generates_data": "Platform evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR2057",
+   "project_name": "IBD eQTL Mapping and Database",
+   "project_lead": "Carl Anderson",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Immunology / Inflammation"
+ },
+ {
+   "otar_code": "OTAR2058",
+   "project_name": "IBD Functional Characterisation",
+   "project_lead": "Gosia Trynka",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Immunology / Inflammation"
+ },
+ {
+   "otar_code": "OTAR2059",
+   "project_name": "Experimental Platform Pilot",
+   "project_lead": "Panos Zalmas/Mathew Garnett",
+   "generates_data": "Y",
+   "integrates_in_PPP": "Y",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Oncology"
+ },
+ {
+   "otar_code": "OTAR2060",
+   "project_name": "NSCLC",
+   "project_lead": "Ana Cvejic",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Oncology"
+ },
+ {
+   "otar_code": "OTAR2061",
+   "project_name": "iFuncOnc",
+   "project_lead": "Mathew Garnett",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Oncology"
+ },
+ {
+   "otar_code": "OTAR2062",
+   "project_name": "ENCORE",
+   "project_lead": "Mathew Garnett",
+   "generates_data": "Y",
+   "integrates_in_PPP": "Y",
+   "data_available": "Available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Oncology"
+ },
+ {
+   "otar_code": "OTAR2063",
+   "project_name": "Immune Variants and T-Cell Function",
+   "project_lead": "Gosia Trynka",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Immunology / Inflammation"
+ },
+ {
+   "otar_code": "OTAR2064",
+   "project_name": "SLE eQTL Map",
+   "project_lead": "Emma Davenport",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Immunology / Inflammation"
+ },
+ {
+   "otar_code": "OTAR2065",
+   "project_name": "Neuroinflammation",
+   "project_lead": "Andrew Bassett",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Neurodegeneration"
+ },
+ {
+   "otar_code": "OTAR2066",
+   "project_name": "Context specific networks",
+   "project_lead": "Pedro Beltrao",
+   "generates_data": "Platform evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR2067",
+   "project_name": "Cell type deconvolution",
+   "project_lead": "Irene Papatheodorou",
+   "generates_data": "Platform evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR2068",
+   "project_name": "Target safety",
+   "project_lead": "Andrew Leach",
+   "generates_data": "Platform evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR2069",
+   "project_name": "Genetic dose-response modelling",
+   "project_lead": "Gosia Trynka",
+   "generates_data": "Platform / GP evidence",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Immunology / Inflammation"
+ },
+ {
+   "otar_code": "OTAR2070",
+   "project_name": "IO Target ID",
+   "project_lead": "Moritz Gerstung",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Oncology"
+ },
+ {
+   "otar_code": "OTAR2071",
+   "project_name": "NeuroID",
+   "project_lead": "Andrew Bassett",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Neurodegeneration"
+ },
+ {
+   "otar_code": "OTAR2072",
+   "project_name": "DNA Damage",
+   "project_lead": "Gabriel Balmus",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Neurodegeneration"
+ },
+ {
+   "otar_code": "OTAR2073",
+   "project_name": "NeuroFlux",
+   "project_lead": "Rick Livesey",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Neurodegeneration"
+ },
+ {
+   "otar_code": "OTAR2074",
+   "project_name": "Genome Screen Database",
+   "project_lead": "Peter Harrison",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Does not generate data",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": ""
+ },
+ {
+   "otar_code": "OTAR2076",
+   "project_name": "Phenotypic mapping of gene functions in immune cells",
+   "project_lead": "Gosia Trynka",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Immunology / Inflammation"
+ },
+ {
+   "otar_code": "OTAR2079",
+   "project_name": "Saturation Genome Editing in Immune Genes",
+   "project_lead": "Gosia Trynka/Dave Adams",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Immunology / Inflammation"
+ },
+ {
+   "otar_code": "OTAR2080",
+   "project_name": "Natural Killer cell evasion and exhaustion mediators",
+   "project_lead": "Annie Speak",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Oncology"
+ },
+ {
+   "otar_code": "OTAR2075",
+   "project_name": "Loss-of-function",
+   "project_lead": "Maya Ghoussaini/Gosya Trynka",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Informatics"
+ },
+ {
+   "otar_code": "OTAR2077",
+   "project_name": "eQTL Catalogue expansion",
+   "project_lead": "Kaur Alasoo",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Informatics"
+ },
+ {
+   "otar_code": "OTAR2078",
+   "project_name": "Target Engine",
+   "project_lead": "Ian Dunham",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Informatics"
+ },
+ {
+   "otar_code": "OTAR2081",
+   "project_name": "Sequence variation",
+   "project_lead": "Pedro Beltrao",
+   "generates_data": "Y",
+   "integrates_in_PPP": "N",
+   "data_available": "Not yet available",
+   "project_status": "Active",
+   "open_targets_therapeutic_area": "Informatics"
+ }
+]

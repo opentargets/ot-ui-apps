@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 
 import { ThemeProvider } from 'ui';
+import PrivateRoute from './components/PrivateRoute';
 import client from './client';
 // import initLocalStorage from './utils/initLocalStorage';
 import theme from './theme';
@@ -16,6 +17,7 @@ import EvidencePage from './pages/EvidencePage';
 import VariantsPage from './pages/VariantsPage';
 import APIPage from './pages/APIPage';
 import NotFoundPage from './pages/NotFoundPage';
+import ProjectsPage from './pages/ProjectsPage';
 
 class App extends Component {
   componentDidMount() {
@@ -37,6 +39,11 @@ class App extends Component {
               <Route path="/evidence/:ensgId/:efoId" component={EvidencePage} />
               <Route path="/variants" component={VariantsPage} />
               <Route path="/api" component={APIPage} />
+              <Route path="/projects">
+                <PrivateRoute>
+                  <ProjectsPage />
+                </PrivateRoute>
+              </Route>
               <Route component={NotFoundPage} />
             </Switch>
           </Router>
