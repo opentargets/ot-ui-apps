@@ -39,6 +39,7 @@ export const addSearchToLocalStorage = (item) => {
   const recentItemsDeepCopy = [...recentItems];
 
   item && recentItemsDeepCopy.unshift(item);
+  exceedsArrayLengthLimit(recentItemsDeepCopy) && recentItemsDeepCopy.pop();
   item && localStorage.setItem("search-history", JSON.stringify(recentItemsDeepCopy));
 };
 
@@ -57,7 +58,6 @@ export const commaSeparate = format(',');
 
 const mapStandardKeys = (origionalKey) => {
   switch (origionalKey) {
-    // TODO: check for PMID
     case "studyId":
       return "id";
     case "traitReported":
@@ -90,3 +90,13 @@ const flattenObj = (ob) => {
 const isArray = (value) => {
   return Array.isArray(value) && value.length > 0;
 };
+
+const exceedsArrayLengthLimit = (array) => {
+  const limitLength = 10;
+  let exceedsLimit = false;
+
+  if(array.length > limitLength) {
+      exceedsLimit = true;
+  }
+  return exceedsLimit;
+}
