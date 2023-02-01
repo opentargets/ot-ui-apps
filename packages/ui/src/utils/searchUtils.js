@@ -54,6 +54,10 @@ export const containsObject = (obj, list) => {
   return -1;
 };
 
+export const clearAllRecent =()=> {
+  localStorage.removeItem("search-history");
+}
+
 export const commaSeparate = format(',');
 
 const mapStandardKeys = (origionalKey) => {

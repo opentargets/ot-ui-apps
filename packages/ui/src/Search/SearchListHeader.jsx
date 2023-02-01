@@ -1,9 +1,16 @@
 import React from "react";
-import { makeStyles, Typography } from "@material-ui/core";
+import { Button, makeStyles, Typography } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPrescriptionBottleAlt, faStethoscope, faDna, faChartBar, faMapPin } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPrescriptionBottleAlt,
+  faStethoscope,
+  faDna,
+  faChartBar,
+  faMapPin,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { Star, Label } from "@material-ui/icons";
+import { clearAllRecent } from "../utils/searchUtils";
 
 const useStyles = makeStyles((theme) => ({
   sectionHeader: {
@@ -12,7 +19,13 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     gap: "1rem",
-    margin: "0.5rem 2rem",
+    margin: "0.5rem 1rem 0.5rem 2rem",
+    justifyContent: "space-between"
+  },
+  label: {
+    display: "flex",
+    alignItems: "center",
+    gap: "1rem",
   },
   labelIcon: {
     color: theme.palette.primary.main,
@@ -23,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 function SearchListHeader({ listHeader, children }) {
   const classes = useStyles();
 
-  if(listHeader === "") return (<>{children}</>);
+  if (listHeader === "") return <>{children}</>;
 
   const getIcon = () => {
     switch (listHeader) {
@@ -37,7 +50,7 @@ function SearchListHeader({ listHeader, children }) {
             className={classes.labelIcon}
           />
         );
-        case "disease":
+      case "disease":
         return (
           <FontAwesomeIcon
             icon={faStethoscope}
@@ -45,7 +58,7 @@ function SearchListHeader({ listHeader, children }) {
             className={classes.labelIcon}
           />
         );
-        case "target":
+      case "target":
         return (
           <FontAwesomeIcon
             icon={faDna}
@@ -53,7 +66,7 @@ function SearchListHeader({ listHeader, children }) {
             className={classes.labelIcon}
           />
         );
-        case "Study":
+      case "Study":
         return (
           <FontAwesomeIcon
             icon={faChartBar}
@@ -61,7 +74,7 @@ function SearchListHeader({ listHeader, children }) {
             className={classes.labelIcon}
           />
         );
-        case "Gene":
+      case "Gene":
         return (
           <FontAwesomeIcon
             icon={faDna}
@@ -69,14 +82,14 @@ function SearchListHeader({ listHeader, children }) {
             className={classes.labelIcon}
           />
         );
-        case "Variant":
-          return (
-            <FontAwesomeIcon
+      case "Variant":
+        return (
+          <FontAwesomeIcon
             icon={faMapPin}
             fixedWidth
             className={classes.labelIcon}
           />
-          )
+        );
       default:
         return <Label />;
     }
@@ -85,8 +98,13 @@ function SearchListHeader({ listHeader, children }) {
   return (
     <>
       <div className={classes.sectionHeader}>
-        {getIcon()}
-        <Typography variant="h6">{listHeader}</Typography>
+        <div className={classes.label}>
+          {getIcon()}
+          <Typography variant="h6">{listHeader}</Typography>
+        </div>
+        {listHeader === "recent" && (
+          <Button onClick={clearAllRecent }><Typography variant="caption">clear all</Typography></Button> 
+        )}
       </div>
       {children}
     </>
