@@ -3,6 +3,7 @@ import { Paper, Box, Typography } from '@material-ui/core';
 // import Link from '../../components/Link';
 import projectsData from './projects-data.json';
 import { DataTable } from '../../components/Table';
+import Link from '../../components/Link';
 
 const columns = [
   { id: 'otar_code', label: 'Project Code' },
@@ -21,8 +22,19 @@ function ProjectPage() {
         Open Targets Projects Table
       </Typography>
       <Typography paragraph>
-        The table below contains key information on the active OTAR projects,
-        their status and data availability into the PPP.
+        The table below contains key information on the OTAR projects, their
+        status and data availability into the PPP.
+      </Typography>
+      <Typography paragraph>
+        For further information, please see{' '}
+        <Link to="http://home.opentargets.org/data-available" external newTab>
+          here
+        </Link>{' '}
+        or contact us at{' '}
+        <Link to={`mailto: datarequests@opentargets.org`} external>
+          datarequests@opentargets.org
+        </Link>
+        .
       </Typography>
 
       <Paper variant="outlined" elevation={0}>
