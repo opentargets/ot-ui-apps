@@ -6,7 +6,19 @@ import { DataTable } from '../../components/Table';
 import Link from '../../components/Link';
 
 const columns = [
-  { id: 'otar_code', label: 'Project Code' },
+  {
+    id: 'otar_code',
+    label: 'Project Code',
+    renderCell: ({ otar_code }) => {
+      return otar_code ? (
+        <Link to={`http://home.opentargets.org/${otar_code}`} external newTab>
+          {otar_code}
+        </Link>
+      ) : (
+        null
+      );
+    },
+  },
   { id: 'project_name', label: 'Project Name' },
   { id: 'project_lead', label: 'Project Lead' },
   { id: 'generates_data', label: 'Generates Data' },
