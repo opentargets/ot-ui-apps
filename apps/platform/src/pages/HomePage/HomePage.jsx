@@ -17,11 +17,10 @@ import {
   externalLinks,
   mainMenuItems,
 } from '../../constants';
-import { Footer } from 'ui';
+import { Footer, AutocompleteSearch } from 'ui';
 import HomeBox from './HomeBox';
 import Link from '../../components/Link';
 import NavBar from '../../components/NavBar';
-import Search from '../../components/Search';
 import searchExamples from './searchExamples';
 import Splash from './Splash';
 import Version from './Version';
@@ -141,7 +140,7 @@ const HomePage = () => {
           placement="bottom-end"
         />
         <HomeBox>
-          <Search autoFocus />
+          <AutocompleteSearch isHomePage/>
           {/* Search examples */}
           <Grid
             className={classes.links}

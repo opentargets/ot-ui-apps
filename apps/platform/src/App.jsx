@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
+import SEARCH_QUERY from './components/Search/SearchQuery.gql';
 
-import { ThemeProvider } from 'ui';
+import { ThemeProvider, SearchProvider } from 'ui';
 import client from './client';
 // import initLocalStorage from './utils/initLocalStorage';
 import theme from './theme';
@@ -26,6 +27,7 @@ class App extends Component {
     return (
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
+          <SearchProvider searchQuery={SEARCH_QUERY} searchPlaceholder="Search for a target, drug, disease, or phenotype...">
           <Router>
             <Switch>
               <Route exact path="/" component={HomePage} />
@@ -40,6 +42,7 @@ class App extends Component {
               <Route component={NotFoundPage} />
             </Switch>
           </Router>
+          </SearchProvider>
         </ThemeProvider>
       </ApolloProvider>
     );
