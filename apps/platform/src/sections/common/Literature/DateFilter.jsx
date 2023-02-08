@@ -83,7 +83,7 @@ export default function DateFilter() {
         status: 'ready',
         publication: null,
       })),
-      litsCount: data.literatureOcurrences?.count,
+      litsCount: data.literatureOcurrences?.filteredCount,
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,
       ...values,
     };

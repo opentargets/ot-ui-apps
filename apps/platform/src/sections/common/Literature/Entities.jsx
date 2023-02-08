@@ -31,9 +31,8 @@ function EntitiesToSelect({ id }) {
   const [selectedChips, setSelectedChips] = useRecoilState(
     selectedEntitiesState
   );
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
 
   const handleSelectChip = async e => {
     const { query, id, category, globalEntity } = bibliographyState;
@@ -63,7 +62,7 @@ function EntitiesToSelect({ id }) {
         status: 'ready',
         publication: null,
       })),
-      litsCount: data.literatureOcurrences?.count,
+      litsCount: data.literatureOcurrences?.filteredCount,
       cursor: data.literatureOcurrences?.cursor,
       loadingEntities: false,
       page: 0,
@@ -115,9 +114,8 @@ export default function Entities({ name, id }) {
 
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
   const bibliographyState = useRecoilValue(literatureState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
   const [selectedChips, setSelectedChips] = useRecoilState(
     selectedEntitiesState
   );
@@ -144,7 +142,7 @@ export default function Entities({ name, id }) {
         status: 'ready',
         publication: null,
       })),
-      litsCount: data.literatureOcurrences?.count,
+      litsCount: data.literatureOcurrences?.filteredCount,
       cursor: data.literatureOcurrences?.cursor,
       loadingEntities: false,
       page: 0,
