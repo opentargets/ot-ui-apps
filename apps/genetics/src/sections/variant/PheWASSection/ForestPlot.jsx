@@ -139,7 +139,7 @@ const ForestPlot = ({
       .attr('width', cfg.svgW)
       .attr('height', traits.length * cfg.rowHeight + 2 * cfg.rowHeight)
       .style('position', 'absolute')
-      .style('top', cfg.top_axis)
+      .style('top', `${cfg.top_axis}px`)
       .append('g');
 
     // set top row svg size and sticky
@@ -169,7 +169,7 @@ const ForestPlot = ({
       .style('position', 'sticky')
       .style('flex-shrink', 0)
       .style('flex-grow', 0)
-      .style('top', plot_height - 2 * cfg.rowHeight)
+      .style('top', `${plot_height -2 * cfg.rowHeight}px`)
       .style('background-color', 'white');
 
     // clip trait name text (row width)
@@ -375,7 +375,7 @@ const ForestPlot = ({
       .attr('fill', cfg.treeColor)
       .attr('text-anchor', 'middle')
       .attr('x', cfg.plotW / 2)
-      .style('font-size', 15)
+      .style('font-size', '15px')
       .style('font-family', '"Inter", sans-serif');
 
     // axis color
