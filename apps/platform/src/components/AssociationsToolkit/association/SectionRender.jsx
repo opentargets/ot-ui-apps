@@ -14,7 +14,9 @@ function SecctionRenderer({ activeSection, entity, rowId, id, label }) {
   // Validate if the active section is not in Evidence sections
   if (typeof section === 'undefined') return null;
 
-  const { Body, definition } = section;
+  const { BodyCore, definition, Summary } = section;
+
+  // console.log({ Summary: Summary.fragments })
 
   const ensgId = entity === 'disease' ? rowId : id;
   const efoId = entity === 'disease' ? id : rowId;
@@ -22,7 +24,7 @@ function SecctionRenderer({ activeSection, entity, rowId, id, label }) {
   return (
     <SectionWrapper>
       <Grid id="summary-section" container spacing={1}>
-        <Body
+        <BodyCore
           definition={definition}
           id={{ ensgId, efoId }}
           label={{ symbol: label, name: definition.name }}
