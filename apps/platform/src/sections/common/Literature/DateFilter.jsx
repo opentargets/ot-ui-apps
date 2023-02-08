@@ -17,18 +17,17 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 const monthsBtwnDates = (startDate, endDate) => {
   return Math.max(
     (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-    (endDate.getMonth() - startDate.getMonth()),
+      (endDate.getMonth() - startDate.getMonth()),
     0
   );
 };
 
-export const DateFilter = () => {
+export default function DateFilter() {
   const [filterDate, setFilterDate] = useState([0, 100]);
   const [numberOfMonths, setNumberOfMonths] = useState(0);
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
   const {
     query,
     id,
@@ -43,17 +42,14 @@ export const DateFilter = () => {
     cursor,
   } = useRecoilValue(literatureState);
 
-  useEffect(
-    () => {
-      let limit = monthsBtwnDates(
-        new Date(`${earliestPubYear}-01-01`),
-        new Date()
-      );
-      setNumberOfMonths(limit);
-      setFilterDate([0, limit]);
-    },
-    [earliestPubYear]
-  );
+  useEffect(() => {
+    let limit = monthsBtwnDates(
+      new Date(`${earliestPubYear}-01-01`),
+      new Date()
+    );
+    setNumberOfMonths(limit);
+    setFilterDate([0, limit]);
+  }, [earliestPubYear]);
 
   useEffect(() => {
     setFilterDate([0, numberOfMonths]);
@@ -149,7 +145,7 @@ export const DateFilter = () => {
       </FormGroup>
     </div>
   );
-};
+}
 
 const iOSBoxShadow =
   '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)';
