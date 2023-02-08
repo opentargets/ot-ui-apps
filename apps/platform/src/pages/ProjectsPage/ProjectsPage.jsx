@@ -1,9 +1,14 @@
 import React, { Fragment } from 'react';
 import { Paper, Box, Typography } from '@material-ui/core';
-// import Link from '../../components/Link';
 import projectsData from './projects-data.json';
 import { DataTable } from '../../components/Table';
 import Link from '../../components/Link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCheck,
+  faXmark,
+  faCircleCheck,
+} from '@fortawesome/free-solid-svg-icons';
 
 const columns = [
   {
@@ -14,15 +19,20 @@ const columns = [
         <Link to={`http://home.opentargets.org/${otar_code}`} external newTab>
           {otar_code}
         </Link>
-      ) : (
-        null
-      );
+      ) : null;
     },
   },
   { id: 'project_name', label: 'Project Name' },
   { id: 'project_lead', label: 'Project Lead' },
   { id: 'generates_data', label: 'Generates Data' },
-  { id: 'integrates_in_PPP', label: 'Integrates into PPP' },
+  {
+    id: 'integrates_in_PPP',
+    label: 'Integrates into PPP',
+    renderCell: ({ integrates_in_PPP }) => {
+      const icon = integrates_in_PPP === 'Y' ? faCheck : faXmark;
+      return <FontAwesomeIcon size="lg" icon={icon} />;
+    },
+  },
   { id: 'project_status', label: 'Project Status' },
   { id: 'open_targets_therapeutic_area', label: 'Therapeutic Area' },
 ];
