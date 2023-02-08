@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import SEARCH_QUERY from './components/Search/SearchQuery.gql';
-
+import PrivateRoute from './components/PrivateRoute';
 import { ThemeProvider, SearchProvider } from 'ui';
 import client from './client';
 // import initLocalStorage from './utils/initLocalStorage';
@@ -17,6 +17,7 @@ import EvidencePage from './pages/EvidencePage';
 import VariantsPage from './pages/VariantsPage';
 import APIPage from './pages/APIPage';
 import NotFoundPage from './pages/NotFoundPage';
+import ProjectsPage from './pages/ProjectsPage';
 
 class App extends Component {
   componentDidMount() {
@@ -39,6 +40,11 @@ class App extends Component {
               <Route path="/evidence/:ensgId/:efoId" component={EvidencePage} />
               <Route path="/variants" component={VariantsPage} />
               <Route path="/api" component={APIPage} />
+              <Route path="/projects">
+                <PrivateRoute>
+                  <ProjectsPage />
+                </PrivateRoute>
+              </Route>
               <Route component={NotFoundPage} />
             </Switch>
           </Router>

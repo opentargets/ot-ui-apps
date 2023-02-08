@@ -71,6 +71,13 @@ export const externalLinks = {
 
 // Configuration for the main hamburger menu
 export const mainMenuItems = config.profile.mainMenuItems ?? [
+  // Projects - ppp
+  {
+    name: 'Projects',
+    url: '/projects',
+    external: false,
+    showOnlyPartner: true,
+  },
   // Documentation
   {
     name: 'Documentation',
@@ -100,7 +107,7 @@ export const mainMenuItems = config.profile.mainMenuItems ?? [
     name: 'Contact us',
     url: `mailto:${config.profile.helpdeskEmail}`,
     external: true,
-    showOnlyPartner: true
+    showOnlyPartner: true,
   },
 ];
 
