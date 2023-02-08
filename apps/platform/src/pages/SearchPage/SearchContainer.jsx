@@ -186,7 +186,7 @@ const SearchContainer = ({
   return (
     <>
       <Typography variant="h5" gutterBottom>
-        Search results for {q}
+        {data.search.total} results for "<strong>{q}</strong>"
       </Typography>
       <Grid container spacing={2}>
         <Grid item md={2}>

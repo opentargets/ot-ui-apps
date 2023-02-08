@@ -1,22 +1,17 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
-import { Footer } from 'ui';
+import { Footer, GlobalSearch } from 'ui';
 
 import { Page } from '../ot-ui-components';
 
-import Search from '../components/Search';
 import NavBar from '../components/NavBar/NavBar';
 import { externalLinks, mainMenuItems } from '../constants';
 
 const BasePage = ({ children }) => (
   <Page
     header={
-      <NavBar
-        name="Genetics"
-        items={mainMenuItems}
-        search={<Search embedded />}
-      />
+      <NavBar name="Genetics" items={mainMenuItems} search={<GlobalSearch />} />
     }
     footer={<Footer externalLinks={externalLinks} />}
   >
