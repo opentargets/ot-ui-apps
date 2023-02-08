@@ -8,17 +8,12 @@ const dataSources = [
   },
   { id: 'eva', label: 'ClinVar', isPrivate: isPrivateDataSource('eva') }, // eva
   {
-    id: 'gene_burden',  // gene_burden
+    id: 'gene_burden', // gene_burden
     label: 'Gene Burden',
     isPrivate: isPrivateDataSource('cancer_biomarkers'),
   },
   {
-    id: 'uniprot',
-    label: 'UniProt curated variants',
-    isPrivate: isPrivateDataSource('uniprot'),
-  },
-  {
-    id: 'genomics_england', // genomics_england
+    id: 'genomics_england',
     label: 'GEL PanelApp',
     isPrivate: isPrivateDataSource('genomics_england'),
   },
@@ -33,7 +28,7 @@ const dataSources = [
     isPrivate: isPrivateDataSource('uniprot_literature'),
   },
   {
-    id: 'clingen',  // clingen
+    id: 'clingen', // clingen
     label: 'Clingen',
     isPrivate: isPrivateDataSource('clingen'),
   },
@@ -43,21 +38,16 @@ const dataSources = [
     isPrivate: isPrivateDataSource('cancer_gene_census'),
   },
   {
-    id: 'intogen',  // intogen
+    id: 'intogen', // intogen
     label: 'IntOGen',
     isPrivate: isPrivateDataSource('intogen'),
   },
   {
-    id: 'eva_somatic',  // eva_somatic
+    id: 'eva_somatic', // eva_somatic
     label: 'ClinVar (somatic)',
     isPrivate: isPrivateDataSource('eva_somatic'),
   },
-  {
-    id: 'uniprot_somatic',
-    label: 'UniProt (somatic)',
-    isPrivate: isPrivateDataSource('uniprot_somatic'),
-  },
-  { id: 'chembl', label: 'ChEMBL', isPrivate: isPrivateDataSource('chembl') },  // chembl
+  { id: 'chembl', label: 'ChEMBL', isPrivate: isPrivateDataSource('chembl') },
   {
     id: 'crispr', // crispr
     label: 'Project Score',
@@ -69,7 +59,7 @@ const dataSources = [
     isPrivate: isPrivateDataSource('slapenrich'),
   },
   {
-    id: 'progeny',  // progeny
+    id: 'progeny', // progeny
     label: 'PROGENy',
     isPrivate: isPrivateDataSource('progeny'),
   },
@@ -84,7 +74,7 @@ const dataSources = [
     isPrivate: isPrivateDataSource('sysbio'),
   },
   {
-    id: 'europepmc',  // europepmc
+    id: 'europepmc', // europepmc
     label: 'Europe PMC',
     isPrivate: isPrivateDataSource('europepmc'),
   },
@@ -108,23 +98,26 @@ const dataSources = [
     label: 'Orphanet',
     isPrivate: isPrivateDataSource('orphanet'),
   },
+  // Private
   {
-    id: 'ot_crispr',  // ot_crispr
+    id: 'ot_crispr', // ot_crispr
     label: 'OTAR CRISPR',
     isPrivate: isPrivateDataSource('ot_crispr'),
   },
+  // Private
   {
     id: 'ot_crispr_validation', // ot_crispr_validation
     label: 'OT CRISPR Validation',
     isPrivate: isPrivateDataSource('ot_crispr_validation'),
   },
+  // Private
   {
     id: 'encore',
     label: 'ENCORE',
     isPrivate: isPrivateDataSource('encore'),
   },
   {
-    id: 'cancer_biomarkers',  // cancer_biomarkers
+    id: 'cancer_biomarkers', // cancer_biomarkers
     label: 'Cancer Biomarkers',
     isPrivate: isPrivateDataSource('cancer_biomarkers'),
     dataType: 'affected_pathway',

@@ -128,9 +128,7 @@ const columns = [
       return (
         <Link
           external
-          to={`http://www.sequenceontology.org/browser/current_svn/term/${
-            variantFunctionalConsequence.id
-          }`}
+          to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
         >
           {sentenceCase(variantFunctionalConsequence.label)}
         </Link>
@@ -245,44 +243,50 @@ function fetchClinvar(ensemblId, efoId, cursor, size) {
   });
 }
 
-function Body({ definition, id, label }) {
-  const { ensgId: ensemblId, efoId } = id;
+export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(Summary.fragments.evaSummary);
   const count = summaryData.evaSummary.count; // reuse the count that was fetched in the summary query
+  
+  if(!count || count < 1) {
+    return null
+  }
+
+  return <BodyCore definition={definition} id={id} label={label} count={count} />
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId: ensemblId, efoId } = id;
+  const countCutoff = 1000;
   const [initialLoading, setInitialLoading] = useState(true); // state variable to keep track of initial loading of rows
   const [loading, setLoading] = useState(false); // state variable to keep track of loading state on page chage
   const [cursor, setCursor] = useState('');
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const variables = { ensemblId, efoId, size: count > 1000 ? 100 : count };
+  const getSize = () => (count > countCutoff ? 100 : count);
+  const variables = { ensemblId, efoId, size: getSize() };
 
-  useEffect(
-    () => {
-      let isCurrent = true;
-      // Depending on count, make a decision for how many rows to fetch.
-      // For more than 1000 rows, we want to use server side paging
-      // so just fetch 100 rows for the initial page. If there's less
-      // than 1000 rows, just fetch all rows at once and do client side
-      // paging
-      fetchClinvar(ensemblId, efoId, '', count > 1000 ? 100 : count).then(
-        res => {
-          const { cursor, rows } = res.data.disease.evidences;
+  useEffect(() => {
+    let isCurrent = true;
+    // Depending on count, make a decision for how many rows to fetch.
+    // For more than [countCutoff] rows, we want to use server side paging
+    // so just fetch 100 rows for the initial page. If there's less
+    // than [countCutoff] rows, just fetch all rows at once and do client side
+    // paging
+    fetchClinvar(ensemblId, efoId, '', getSize()).then(res => {
+      const { cursor, rows } = res.data.disease.evidences;
 
-          if (isCurrent) {
-            setInitialLoading(false);
-            setCursor(cursor);
-            setRows(rows);
-          }
-        }
-      );
+      if (isCurrent) {
+        setInitialLoading(false);
+        setCursor(cursor);
+        setRows(rows);
+      }
+    });
 
-      return () => {
-        isCurrent = false;
-      };
-    },
-    [ensemblId, efoId, count]
-  );
+    return () => {
+      isCurrent = false;
+    };
+  }, [ensemblId, efoId, count]);
 
   function handlePageChange(newPage) {
     if (pageSize * newPage + pageSize > rows.length && cursor !== null) {
@@ -327,7 +331,7 @@ function Body({ definition, id, label }) {
       renderBody={() => {
         // depending on count, decide whether to use the server side paging
         // Table component or the client side paging DataTable component
-        return count > 1000 ? (
+        return count > countCutoff ? (
           <Table
             loading={loading}
             columns={columns}
@@ -353,5 +357,3 @@ function Body({ definition, id, label }) {
     />
   );
 }
-
-export default Body;

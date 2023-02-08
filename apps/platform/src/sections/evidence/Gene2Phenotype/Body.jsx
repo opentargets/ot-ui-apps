@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-
+import usePlatformApi from '../../../hooks/usePlatformApi';
 import { DataTable, TableDrawer } from '../../../components/Table';
 import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
 import Description from './Description';
@@ -12,6 +12,7 @@ import SectionItem from '../../../components/Section/SectionItem';
 import { sentenceCase } from '../../../utils/global';
 import Tooltip from '../../../components/Tooltip';
 import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
+import Summary from './Summary';
 
 const g2pUrl = (studyId, symbol) =>
   `https://www.ebi.ac.uk/gene2phenotype/search?panel=${studyId}&search_term=${symbol}`;
@@ -117,8 +118,26 @@ const columns = [
   },
 ];
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const variables = { ensemblId: ensgId, efoId };
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.Gene2PhenotypeSummaryFragment
+  );
+  const count = summaryData.gene2Phenotype.count;
+  
+  if(!count || count < 1) {
+    return null
+  }
+
+  return <BodyCore definition={definition} id={id} label={label} count={count} />
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
+  const variables = {
+    ensemblId: ensgId,
+    efoId,
+    size: count,
+  };
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,
@@ -129,7 +148,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       request={request}
-      renderDescription={() => <Description symbol={symbol} name={name} />}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={data => (
         <DataTable
           columns={columns}
@@ -146,5 +165,3 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
     />
   );
 }
-
-export default Body;

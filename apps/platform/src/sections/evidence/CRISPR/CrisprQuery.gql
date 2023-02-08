@@ -12,7 +12,7 @@ query CrisprQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
           id
           name
         }
-        diseaseCellLines{
+        diseaseCellLines {
           name
           id
         }

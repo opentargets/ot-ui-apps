@@ -51,10 +51,8 @@ const allelicRequirementsCaption = allelicRequirements => {
     allelicRequirements.split(' ', 1)[0].replace(/[;:,]*/g, '')
   );
   const description =
-    allelicRequirements
-      .split(' ')
-      .slice(1)
-      .join(' ') || 'No more information available';
+    allelicRequirements.split(' ').slice(1).join(' ') ||
+    'No more information available';
 
   return [caption, description];
 };
@@ -186,13 +184,26 @@ const columns = [
   },
 ];
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const {
-    data: {
-      genomicsEngland: { count: size },
-    },
-  } = usePlatformApi(Summary.fragments.GenomicsEnglandSummaryFragment);
-  const variables = { ensemblId: ensgId, efoId, size };
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.GenomicsEnglandSummaryFragment
+  );
+  const count = summaryData.genomicsEngland.count;
+  
+  if(!count || count < 1) {
+    return null
+  }
+
+  return <BodyCore definition={definition} id={id} label={label} count={count} />
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
+  const variables = {
+    ensemblId: ensgId,
+    efoId,
+    size: count,
+  };
 
   const request = useQuery(GENOMICS_ENGLAND_QUERY, {
     variables,
@@ -203,7 +214,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       request={request}
-      renderDescription={() => <Description symbol={symbol} name={name} />}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={data => (
         <DataTable
           columns={columns}
@@ -222,5 +233,3 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
     />
   );
 }
-
-export default Body;

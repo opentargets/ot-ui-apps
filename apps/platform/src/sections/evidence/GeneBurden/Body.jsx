@@ -12,6 +12,7 @@ import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { epmcUrl } from '../../../utils/urls';
 import Description from './Description';
 import ScientificNotation from '../../../components/ScientificNotation';
+import Summary from './Summary';
 
 import GENE_BURDEN_QUERY from './GeneBurdenQuery.gql';
 
@@ -247,19 +248,25 @@ const columns = [
   },
 ];
 
-function Body(props) {
-  const { definition, id, label } = props;
-  const { ensgId: ensemblId, efoId } = id;
-  const {
-    data: {
-      disease: { geneBurdenSummary },
-    },
-  } = usePlatformApi();
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.geneBurdenSummary
+  );
+  const count = summaryData.geneBurdenSummary.count;
+  
+  if(!count || count < 1) {
+    return null
+  }
 
+  return <BodyCore definition={definition} id={id} label={label} count={count} />
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
   const variables = {
-    ensemblId,
+    ensemblId: ensgId,
     efoId,
-    size: geneBurdenSummary.count,
+    size: count,
   };
 
   const request = useQuery(GENE_BURDEN_QUERY, {
@@ -283,7 +290,7 @@ function Body(props) {
             order="asc"
             sortBy="pValue"
             dataDownloader
-            dataDownloaderFileStem={`geneburden-${ensemblId}-${efoId}`}
+            dataDownloaderFileStem={`geneburden-${ensgId}-${efoId}`}
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={GENE_BURDEN_QUERY.loc.source.body}
@@ -294,5 +301,3 @@ function Body(props) {
     />
   );
 }
-
-export default Body;
