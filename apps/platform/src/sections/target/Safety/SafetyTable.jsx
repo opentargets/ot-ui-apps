@@ -53,19 +53,19 @@ function getColumns(classes) {
       },
     },
     {
-      id: 'biosample',
+      id: 'biosamples',
       label: 'Biosystems',
-      filterValue: ({ biosample }) => {
-        if (biosample.length === 1) {
-          const sample = biosample[0];
-          return `${sample.cellFormat} ${sample.cellLabel} ${
-            sample.tissueLabel
-          }`.trim();
+      filterValue: ({ biosamples }) => {
+        if (biosamples.length === 1) {
+          const sample = biosamples[0];
+          return `${sample.cellFormat} ${sample.cellLabel} ${sample.tissueLabel}`.trim();
         }
         return 'biosamples';
       },
-      renderCell: ({ biosample }) => {
-        const entries = biosample.map(
+      renderCell: ({ biosamples }) => {
+        /* TODO: remove to handle only arrays */
+        if (!biosamples) return 'N/A';
+        const entries = biosamples.map(
           ({ cellFormat, cellLabel, tissueLabel, tissueId }) => {
             return {
               name: cellFormat
@@ -157,8 +157,10 @@ function getColumns(classes) {
     {
       id: 'studies',
       label: 'Experimental studies',
-      renderCell: ({ study }) => {
-        return <SafetyStudiesDrawer studies={study} />;
+      renderCell: ({ studies }) => {
+        /* TODO: remove to handle only arrays */
+        if (!studies) return 'N/A';
+        return <SafetyStudiesDrawer studies={studies} />;
       },
     },
     {
