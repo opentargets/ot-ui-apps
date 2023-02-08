@@ -56,6 +56,23 @@ const styles = theme => ({
       color: '#fff',
     },
   },
+  spaceBetween: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  navLogo: {
+    flex: 1,
+  },
+  navSearch: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  navMenu: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'end',
+  },
 });
 
 const MenuExternalLink = ({ classes, href, children }) => (
@@ -94,58 +111,60 @@ const NavBar = ({
       color="primary"
       elevation={0}
     >
-      <Toolbar variant="dense">
-        {homepage ? null : (
-          <Button component={ReactRouterLink} to="/" color="inherit">
-            <OpenTargetsTitle name={name} />
-          </Button>
-        )}
-        <div className={classes.flex} />
-        {search ? search : null}
+      <Toolbar variant="dense" className={classes.spaceBetween}>
+        <div className={classes.navLogo}>
+          {homepage ? null : (
+            <Button component={ReactRouterLink} to="/" color="inherit">
+              <OpenTargetsTitle name={name} />
+            </Button>
+          )}
+        </div>
+        <div className={classes.navSearch}>{search ? search : null}</div>
+        <div className={classes.navMenu}>
+          {docs ? (
+            <MenuExternalLink classes={classes} href={docs}>
+              Docs
+            </MenuExternalLink>
+          ) : null}
 
-        {docs ? (
-          <MenuExternalLink classes={classes} href={docs}>
-            Docs
-          </MenuExternalLink>
-        ) : null}
+          {api ? (
+            <MenuExternalLink classes={classes} href={api}>
+              API
+            </MenuExternalLink>
+          ) : null}
 
-        {api ? (
-          <MenuExternalLink classes={classes} href={api}>
-            API
-          </MenuExternalLink>
-        ) : null}
+          {downloads ? (
+            <MenuExternalLink classes={classes} href={downloads}>
+              Downloads
+            </MenuExternalLink>
+          ) : null}
 
-        {downloads ? (
-          <MenuExternalLink classes={classes} href={downloads}>
-            Downloads
-          </MenuExternalLink>
-        ) : null}
+          {contact ? (
+            <MenuExternalLink classes={classes} href={contact}>
+              Contact
+            </MenuExternalLink>
+          ) : null}
 
-        {contact ? (
-          <MenuExternalLink classes={classes} href={contact}>
-            Contact
-          </MenuExternalLink>
-        ) : null}
+          {items && !isHomePageRegular ? (
+            <HeaderMenu items={items} placement={placement} />
+          ) : null}
 
-        {items && !isHomePageRegular ? (
-          <HeaderMenu items={items} placement={placement} />
-        ) : null}
-
-        {isHomePageRegular && (
-          <MenuList className={classes.menuList}>
-            {items.map((item, i) => (
-              <MenuItem key={i} dense={true} className={classes.menuItem}>
-                <Link
-                  external={item.external}
-                  to={item.url}
-                  className={classes.menuLink}
-                >
-                  {item.name}
-                </Link>
-              </MenuItem>
-            ))}
-          </MenuList>
-        )}
+          {isHomePageRegular && (
+            <MenuList className={classes.menuList}>
+              {items.map((item, i) => (
+                <MenuItem key={i} dense={true} className={classes.menuItem}>
+                  <Link
+                    external={item.external}
+                    to={item.url}
+                    className={classes.menuLink}
+                  >
+                    {item.name}
+                  </Link>
+                </MenuItem>
+              ))}
+            </MenuList>
+          )}
+        </div>
       </Toolbar>
     </AppBar>
   );

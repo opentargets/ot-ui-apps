@@ -12,9 +12,8 @@ import {
   faFileAlt,
   faCommentDots,
 } from '@fortawesome/free-solid-svg-icons';
-import { Footer } from 'ui';
+import { Footer, AutocompleteSearch } from 'ui';
 import Link from '../../components/Link';
-import Search from '../../components/Search';
 import ScrollDownButton from '../../components/ScrollDownButton';
 import NavBar from '../../components/NavBar/NavBar';
 import Version from '../../components/Version';
@@ -159,7 +158,9 @@ class HomePage extends Component {
               homepage
             />
             <HomeBox name="Genetics">
-              <Search />
+              <div style={{ position: 'relative' }}>
+                <AutocompleteSearch isHomePage />
+              </div>
               <Grid
                 container
                 className={classes.examples}
