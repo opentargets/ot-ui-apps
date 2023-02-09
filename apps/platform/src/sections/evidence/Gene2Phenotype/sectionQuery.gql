@@ -20,6 +20,11 @@ query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!, $size: Int!
         target {
           approvedSymbol
         }
+        variantFunctionalConsequence{
+          id
+          label
+        }
+        literature
       }
     }
   }

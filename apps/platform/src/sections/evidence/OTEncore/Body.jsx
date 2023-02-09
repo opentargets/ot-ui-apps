@@ -154,6 +154,12 @@ const getColumns = classes => [
   {
     id: 'geneticInteractionScore',
     label: 'BLISS score',
+    tooltip: (
+      <>
+        We used the Bliss independence model to define synergy between gRNA
+        pairs.
+      </>
+    ),
     renderCell: row => row.geneticInteractionScore.toFixed(3),
     numeric: true,
   },
