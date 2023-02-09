@@ -95,13 +95,24 @@ export default function DateFilter() {
     return new Date(from.setMonth(from.getMonth() + value));
   };
 
-  function valueLabelFormat(value) {
-    if (earliestPubYear) {
-      const labelDate = selectedDate(value);
-      return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;
-    } else {
-      return value;
-    }
+  function getLabel(value) {
+    const labelDate = selectedDate(value);
+    return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;
+  }
+
+  function valueLabelFormat(value, index) {
+    const labelText = earliestPubYear ? getLabel(value) : value;
+    return (
+      <span
+        style={{
+          position: 'absolute',
+          top: index === 0 ? 45 : -5,
+          left: index === 0 ? -20 : -15,
+        }}
+      >
+        {labelText}
+      </span>
+    );
   }
 
   const handleDateRangeChange = (event, newValue) => {
