@@ -62,7 +62,7 @@ export default function DateFilter() {
       id,
       category,
       entities: selectedEntities,
-      cursor,
+      cursor: null,
       startYear,
       startMonth,
       endYear,
