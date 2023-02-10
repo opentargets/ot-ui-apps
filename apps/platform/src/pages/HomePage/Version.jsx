@@ -4,7 +4,7 @@ import Link from '../../components/Link';
 
 // HELPERS
 function getVersion({ month, year }) {
-  return `${year}.${month < 10 ? '0' : ''}${month}`;
+  return `${year}.${month}`;
 }
 
 function getFullMonth({ month, year }) {
