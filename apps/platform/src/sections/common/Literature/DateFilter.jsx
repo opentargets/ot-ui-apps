@@ -78,6 +78,7 @@ export default function DateFilter() {
       startMonth,
       endYear,
       endMonth,
+      page: 0,
       litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => ({
         id: pmid,
         status: 'ready',
