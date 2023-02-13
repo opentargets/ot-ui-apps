@@ -1,7 +1,8 @@
 import React from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-
+import Summary from './Summary';
+import usePlatformApi from '../../../hooks/usePlatformApi';
 import { DataTable } from '../../../components/Table';
 import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
 import Description from './Description';
@@ -44,20 +45,17 @@ const columns = [
   {
     id: 'variantFunctionalConsequence',
     label: 'Functional consequence',
-    renderCell: ({ variantFunctionalConsequence }) => (
+    renderCell: ({ variantFunctionalConsequence }) =>
       variantFunctionalConsequence ? (
         <Link
           external
-          to={`http://www.sequenceontology.org/browser/current_svn/term/${
-            variantFunctionalConsequence.id
-          }`}
+          to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
         >
           {sentenceCase(variantFunctionalConsequence.label)}
         </Link>
-      ) 
-      : 
-        (naLabel)
-    ),
+      ) : (
+        naLabel
+      ),
     filterValue: ({ variantFunctionalConsequence }) =>
       sentenceCase(variantFunctionalConsequence.label),
   },
@@ -131,7 +129,12 @@ const columns = [
 ];
 
 function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
-  const variables = { ensemblId: ensgId, efoId };
+  const {
+    data: {
+      gene2Phenotype: { count: size },
+    },
+  } = usePlatformApi(Summary.fragments.Gene2PhenotypeSummaryFragment);
+  const variables = { ensemblId: ensgId, efoId, size };
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,

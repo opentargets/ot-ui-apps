@@ -51,10 +51,8 @@ const allelicRequirementsCaption = allelicRequirements => {
     allelicRequirements.split(' ', 1)[0].replace(/[;:,]*/g, '')
   );
   const description =
-    allelicRequirements
-      .split(' ')
-      .slice(1)
-      .join(' ') || 'No more information available';
+    allelicRequirements.split(' ').slice(1).join(' ') ||
+    'No more information available';
 
   return [caption, description];
 };
