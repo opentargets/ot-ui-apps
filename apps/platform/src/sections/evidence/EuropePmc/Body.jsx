@@ -33,6 +33,8 @@ const columns = [
       textMiningSentences,
       authors,
       journal,
+      source,
+      patentDetails,
     }) => {
       return (
         <Publication
@@ -42,6 +44,8 @@ const columns = [
           textMiningSentences={textMiningSentences}
           authors={authors}
           journal={journal}
+          source={source}
+          patentDetails={patentDetails}
         />
       );
     },
@@ -68,6 +72,8 @@ function mergeData(rows, literatureData) {
       return {
         ...row,
         europePmcId: relevantEntry.id,
+        source: relevantEntry.source,
+        patentDetails: relevantEntry?.patentDetails,
         title: relevantEntry.title,
         year: relevantEntry.pubYear,
         abstract: relevantEntry.abstractText,
@@ -92,17 +98,18 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
   const [literatureData, setLiteratureData] = useState([]);
   const [newIds, setNewIds] = useState([]);
   const variables = { ensemblId: ensgId, efoId, size: pageSize * pagesToFetch };
-  const { loading: isLoading, error, data, fetchMore, refetch } = useQuery(
-    EUROPE_PMC_QUERY,
-    {
-      variables,
-      onCompleted: data => {
-        setNewIds(
-          data.disease.evidences.rows.map(entry => entry.literature[0])
-        );
-      },
-    }
-  );
+  const {
+    loading: isLoading,
+    error,
+    data,
+    fetchMore,
+    refetch,
+  } = useQuery(EUROPE_PMC_QUERY, {
+    variables,
+    onCompleted: data => {
+      setNewIds(data.disease.evidences.rows.map(entry => entry.literature[0]));
+    },
+  });
   const [loading, setLoading] = useState(isLoading);
 
   const handlePageChange = page => {
@@ -158,35 +165,32 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
     setPageSize(newPageSize);
   };
 
-  useEffect(
-    () => {
-      let isCurrent = true;
+  useEffect(() => {
+    let isCurrent = true;
 
-      async function fetchLiterature() {
-        setLoading(true);
+    async function fetchLiterature() {
+      setLoading(true);
 
-        if (newIds.length) {
-          const queryUrl = europePmcLiteratureQuery(newIds);
-          const res = await fetch(queryUrl);
-          const resJson = await res.json();
-          const newLiteratureData = resJson.resultList.result;
+      if (newIds.length) {
+        const queryUrl = europePmcLiteratureQuery(newIds);
+        const res = await fetch(queryUrl);
+        const resJson = await res.json();
+        const newLiteratureData = resJson.resultList.result;
 
-          setLiteratureData(literatureData => [
-            ...literatureData,
-            ...newLiteratureData,
-          ]);
-          setLoading(false);
-        }
+        setLiteratureData(literatureData => [
+          ...literatureData,
+          ...newLiteratureData,
+        ]);
+        setLoading(false);
       }
+    }
 
-      if (isCurrent) fetchLiterature();
+    if (isCurrent) fetchLiterature();
 
-      return () => {
-        isCurrent = false;
-      };
-    },
-    [newIds]
-  );
+    return () => {
+      isCurrent = false;
+    };
+  }, [newIds]);
 
   return (
     <SectionItem

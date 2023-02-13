@@ -33,6 +33,8 @@ function Publication({
   textMiningSentences,
   authors,
   journal,
+  source = 'MED',
+  patentDetails = null,
 }) {
   const classes = useStyles();
   const [showAbstract, setShowAbstract] = useState(false);
@@ -56,9 +58,11 @@ function Publication({
         pmId={europePmcId}
         titleHtml={title}
         authors={authors}
+        source={source}
+        patentDetails={patentDetails}
         journal={{
-          title: journal.journal.title,
-          date: journal.yearOfPublication.toString(),
+          title: journal?.journal?.title,
+          date: journal?.yearOfPublication?.toString(),
           ref: {
             volume: journal.volume,
             issue: journal.issue,

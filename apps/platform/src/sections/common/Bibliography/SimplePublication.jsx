@@ -14,6 +14,8 @@ const pmTitleUrl = 'abstract/med/';
  *  - title
  *  - titleHtml
  *  - authors
+ *  - source
+ *  - patentDetails
  *  - journal: {
  *      title
  *      date
@@ -23,13 +25,25 @@ const pmTitleUrl = 'abstract/med/';
  */
 class SimplePublication extends Component {
   render = () => {
-    const { pmId, title, titleHtml, authors, journal, variant } = this.props;
+    const {
+      pmId,
+      title,
+      titleHtml,
+      authors,
+      journal,
+      variant,
+      source,
+      patentDetails,
+    } = this.props;
+    const isSourcePAT = source === 'PAT';
+    const sourceScope = isSourcePAT ? 'abstract/pat/' : 'abstract/med/';
+    const pubURL = pmUrl + sourceScope + pmId;
 
     return (
       <Fragment>
         {/* paper title */}
         <Typography variant={variant === 'small' ? 'subtitle2' : 'subtitle1'}>
-          <Link external to={pmUrl + pmTitleUrl + pmId}>
+          <Link external to={pubURL}>
             {titleHtml ? (
               <span
                 dangerouslySetInnerHTML={{ __html: titleHtml }}
@@ -58,18 +72,26 @@ class SimplePublication extends Component {
               .join(', ')}
           </LongText>
         </Box>
-        {/* </Typography> */}
 
-        <Typography variant={variant === 'small' ? 'caption' : 'body2'}>
-          {/* journal, year, reference */}
-          {journal.title}{' '}
-          <span>
-            <b>{journal.date.substring(0, 4)}</b>
-          </span>{' '}
-          <span>{journal.ref.volume}</span>
-          <span>({journal.ref.issue})</span>
-          <span>:{journal.ref.pgn}</span>
-        </Typography>
+        {isSourcePAT ? (
+          <Typography variant={variant === 'small' ? 'caption' : 'body2'}>
+            {/* journal, year, reference */}
+            {patentDetails.typeDescription}
+            {' - '}
+            <span>{patentDetails.country}</span>
+          </Typography>
+        ) : (
+          <Typography variant={variant === 'small' ? 'caption' : 'body2'}>
+            {/* journal, year, reference */}
+            {journal.title}{' '}
+            <span>
+              <b>{journal?.date?.substring(0, 4)}</b>
+            </span>{' '}
+            <span>{journal.ref.volume}</span>
+            <span>({journal.ref.issue})</span>
+            <span>:{journal.ref.pgn}</span>
+          </Typography>
+        )}
       </Fragment>
     );
   };
