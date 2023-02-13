@@ -60,6 +60,39 @@ function getDatasources(expanderHandler, loading, displayedTable) {
   }));
 }
 
+const columnHelper = createColumnHelper();
+
+function _getDatasources(expanderHandler, loading, displayedTable) {
+  const isAssociations = displayedTable === 'associations';
+  const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
+  const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
+
+  return baseCols.map(({ id, label }) => {
+    return columnHelper.accessor(row => row[dataProp][id], {
+      id,
+      header: label,
+      cell: row => {
+        if (loading)
+          return <Skeleton variant="circle" width={26} height={25} />;
+        const hasValue = cellHasValue(row.getValue());
+        return hasValue ? (
+          <ColoredCell
+            hasValue
+            scoreId={id}
+            scoreValue={row.getValue()}
+            onClick={expanderHandler(row.row.getToggleExpandedHandler())}
+            cell={row}
+            loading={loading}
+            isAssociations={isAssociations}
+          />
+        ) : (
+          <ColoredCell />
+        );
+      },
+    });
+  });
+}
+
 function TableAssociations() {
   const {
     id,
@@ -80,38 +113,71 @@ function TableAssociations() {
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
 
-  const columns = useMemo(
-    () => [
-      {
-        accessorFn: row => row[entityToGet][rowNameEntity],
-        id: 'name',
-        cell: row => <CellName name={row.getValue()} rowId={row.row.id} />,
-        header: () => <span>{entityToGet}</span>,
-        footer: props => props.column.id,
-      },
-      {
-        accessorFn: row => row.score,
-        id: 'score',
-        cell: row => {
-          if (loading)
-            return <Skeleton variant="rect" width={30} height={25} />;
-          return (
-            <ColoredCell
-              scoreValue={row.getValue()}
-              globalScore
-              rounded={false}
-              isAssociations
-              hasValue
-            />
-          );
-        },
-        header: () => <span>Score</span>,
-        footer: props => props.column.id,
-      },
-      ...getDatasources(expanderHandler, loading, displayedTable),
-    ],
-    [expanderHandler, loading, displayedTable, entityToGet, rowNameEntity]
-  );
+  // const columns = useMemo(
+  //   () => [
+  //     {
+  //       accessorFn: row => row[entityToGet][rowNameEntity],
+  //       id: 'name',
+  //       cell: row => <CellName name={row.getValue()} rowId={row.row.id} />,
+  //       header: () => <span>{entityToGet}</span>,
+  //       footer: props => props.column.id,
+  //     },
+  //     {
+  //       accessorFn: row => row.score,
+  //       id: 'score',
+  //       cell: row => {
+  //         if (loading)
+  //           return <Skeleton variant="rect" width={30} height={25} />;
+  //         return (
+  //           <ColoredCell
+  //             scoreValue={row.getValue()}
+  //             globalScore
+  //             rounded={false}
+  //             isAssociations
+  //             hasValue
+  //           />
+  //         );
+  //       },
+  //       header: () => <span>Score</span>,
+  //       footer: props => props.column.id,
+  //     },
+  //     ...getDatasources(expanderHandler, loading, displayedTable),
+  //   ],
+  //   [expanderHandler, loading, displayedTable, entityToGet, rowNameEntity]
+  // );
+
+  const columns = [
+    columnHelper.group({
+      header: 'Header',
+      columns: [
+        columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
+          id: 'name',
+          cell: row => <CellName name={row.getValue()} rowId={row.row.id} />,
+          header: () => <span>{entityToGet}</span>,
+        }),
+        columnHelper.accessor(row => row.score, {
+          id: 'score',
+          cell: row => {
+            if (loading)
+              return <Skeleton variant="rect" width={30} height={25} />;
+            return (
+              <ColoredCell
+                scoreValue={row.getValue()}
+                globalScore
+                rounded={false}
+                isAssociations
+                hasValue
+              />
+            );
+          },
+        }),
+      ],
+    }),
+    columnHelper.group({
+      header: 'entities',
+      columns: [..._getDatasources(expanderHandler, loading, displayedTable)],
+    }),
+  ];
 
   /**
    * TABLE HOOK
@@ -164,7 +230,7 @@ function TableAssociations() {
     document.getElementById('legend').appendChild(Legend);
   }, [displayedTable]);
 
-  console.log({ table: table.getHeaderGroups() });
+  console.log({ table: table.getAllColumns(), rows: table.getRowModel() });
   return (
     <div className="TAssociations">
       <TableElement>
@@ -212,7 +278,7 @@ function TableAssociations() {
                       drag={false}
                     >
                       <div className="data-row-content">
-                        {row.getVisibleCells().map(cell => {
+                        {row.getVisibleCells().map((cell, i) => {
                           return (
                             <div
                               key={cell.id}
