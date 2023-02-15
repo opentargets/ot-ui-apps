@@ -3,6 +3,7 @@
   /* COLORS */
   --grey-light: #ececec;
   --grey-mid: #b8b8b8;
+  --primary-blue: #3489ca;
 
   /* VIZ ELEMENTS */
   --header-border-color: var(--grey-light);
@@ -215,7 +216,8 @@
 }
 
 .TAssociations .aggregations-container .aggregation-indicator:hover {
-  /* height: 8px; */
+  transform: scale(1, 1.8);
+  background-color: var(--primary-blue);
 }
 
 /* Category indicators */
@@ -247,7 +249,7 @@
   background-color: #f6f6f6;
   position: relative;
   box-sizing: content-box;
-  padding: 20px 0 10px;
+  padding: 20px 0 15px;
 }
 
 .TAssociations .weights-controlls .controlls-container {

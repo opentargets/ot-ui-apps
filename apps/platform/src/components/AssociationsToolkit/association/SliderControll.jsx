@@ -9,6 +9,9 @@ const OTSlider = withStyles({
     height: 1,
     marginLeft: -4,
   },
+  valueLabel: {
+    zIndex: '9999',
+  },
 })(Slider);
 
 const sliderPayload = (id, value) => ({
@@ -53,25 +56,19 @@ function SliderControll({ def, id }) {
     setValue(newValue);
   };
 
-  function valuetext(value) {
-    return parseFloat(value).toFixed(1);
-  }
-
   return (
-    <>
-      <OTSlider
-        orientation="vertical"
-        value={displayValue}
-        aria-labelledby="vertical-slider"
-        min={0}
-        max={1.0}
-        step={0.1}
-        onChange={handleChange}
-        onChangeCommitted={handleChangeCommitted}
-        marks={[{ value: def }]}
-      />
-      <span>{valuetext(displayValue)}</span>
-    </>
+    <OTSlider
+      orientation="vertical"
+      value={displayValue}
+      aria-labelledby="vertical-slider"
+      min={0}
+      max={1.0}
+      step={0.1}
+      onChange={handleChange}
+      onChangeCommitted={handleChangeCommitted}
+      marks={[{ value: def }]}
+      valueLabelDisplay="auto"
+    />
   );
 }
 

@@ -134,7 +134,7 @@ function TableAssociations() {
           }),
           columnHelper.accessor(row => row.score, {
             id: 'score',
-            header: 'Score',
+            header: 'Associations Score',
             cell: row => {
               if (loading)
                 return <Skeleton variant="rect" width={30} height={25} />;
@@ -301,6 +301,7 @@ function TableAssociations() {
             count={count}
             rowsPerPage={table.getState().pagination.pageSize}
             page={pagination.pageIndex}
+            labelRowsPerPage="Associations per page"
             onPageChange={(e, index) => {
               if (!loading) {
                 table.setPageIndex(index);
