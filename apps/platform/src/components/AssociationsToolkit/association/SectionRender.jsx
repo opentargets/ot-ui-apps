@@ -3,6 +3,7 @@ import { Grid } from '@material-ui/core';
 import { styled } from '@material-ui/styles';
 
 const SectionWrapper = styled('div')({
+  marginTop: '10px',
   marginBottom: '40px',
 });
 

@@ -1,10 +1,9 @@
 import {
   TableAssociations,
   AdvanceOptionsMenu,
-} from '../../../components/AssociationsToolkit';
-import AssociationsProvider, {
   AssociationsContext,
-} from '../../../components/AssociationsToolkit/provider';
+  AssociationsProvider,
+} from '../../../components/AssociationsToolkit';
 import { LoadingBackdrop } from 'ui';
 import { useContext } from 'react';
 import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';

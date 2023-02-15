@@ -112,15 +112,15 @@ function useTargetAssociations({
     fetchData();
     return () => (isCurrent = false);
   }, [
-    // id,
+    id,
     index,
     size,
-    // filter,
-    // sortBy,
+    filter,
+    sortBy,
     enableIndirect,
-    // datasources,
-    // query,
-    // entity,
+    datasources,
+    query,
+    entity,
   ]);
 
   return { loading, error, data, initialLoading, count };

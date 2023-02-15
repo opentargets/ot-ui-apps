@@ -1,3 +1,4 @@
+/* HELPERS */
 .TAssociations {
   /* COLORS */
   --grey-light: #ececec;
@@ -9,6 +10,15 @@
   --entities-border-color: var(--grey-light);
   --table-footer-border-color: var(--grey-light);
   --row-hover-color: var(--grey-light);
+}
+
+/* ENTITIES GRID */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 2px;
+  grid-row-gap: 0px;
 }
 
 .TAssociations.loading-container {
@@ -237,14 +247,17 @@
   background-color: #f6f6f6;
   position: relative;
   box-sizing: content-box;
-  padding: 15px 0 15px;
+  padding: 20px 0 10px;
 }
 
 .TAssociations .weights-controlls .controlls-container {
   display: flex;
-  flex-direction: row;
   height: 100px;
-  justify-content: space-evenly;
+}
+
+.TAssociations .weights-controlls .controlls-wrapper {
+  width: 100%;
+  margin-left: 180px;
 }
 
 .TAssociations .weights-controlls .name-empty-controll {
@@ -260,7 +273,6 @@
 }
 
 .TAssociations .weights-controlls .controll-container {
-  width: 26px;
   display: flex;
   flex-direction: column;
   align-items: center;

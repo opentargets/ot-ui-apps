@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Slider } from '@material-ui/core';
+import { Slider, withStyles } from '@material-ui/core';
 import useAotfContext from '../hooks/useAotfContext';
+
+const OTSlider = withStyles({
+  mark: {
+    backgroundColor: '#b8b8b8',
+    width: 10,
+    height: 1,
+    marginLeft: -4,
+  },
+})(Slider);
 
 const sliderPayload = (id, value) => ({
   id,
@@ -50,7 +59,7 @@ function SliderControll({ def, id }) {
 
   return (
     <>
-      <Slider
+      <OTSlider
         orientation="vertical"
         value={displayValue}
         aria-labelledby="vertical-slider"
@@ -59,6 +68,7 @@ function SliderControll({ def, id }) {
         step={0.1}
         onChange={handleChange}
         onChangeCommitted={handleChangeCommitted}
+        marks={[{ value: def }]}
       />
       <span>{valuetext(displayValue)}</span>
     </>

@@ -41,14 +41,19 @@ function WeightsControlls({ cols }) {
     dataSourcesWeights,
     defaulDatasourcesWeigths,
     setDataSourcesWeights,
+    displayedTable,
   } = useAotfContext();
+
+  if (displayedTable === 'prioritisations') return null;
 
   const handleClose = () => {
     setActiveWeightsControlls(false);
   };
 
   const getWightSourceDefault = source => {
-    const sourcesDetails = dataSourcesWeights.find(src => src.id === source);
+    const sourcesDetails = defaulDatasourcesWeigths.find(
+      src => src.id === source
+    );
     return sourcesDetails.weight;
   };
 
@@ -59,7 +64,7 @@ function WeightsControlls({ cols }) {
           <CloseContainer onClick={handleClose}>
             <FontAwesomeIcon icon={faXmark} size="lg" />
           </CloseContainer>
-          <ActionsControlls>
+          {/* <ActionsControlls>
             <ResetContainer>
               <Button
                 onClick={() => {
@@ -71,21 +76,14 @@ function WeightsControlls({ cols }) {
                 <span>Reset controlls</span>
               </Button>
             </ResetContainer>
-          </ActionsControlls>
-          {cols.map(headerGroup =>
-            headerGroup.headers.map(({ id }) => {
-              // Exclude name and
-              if (id === 'name')
-                return <div key={id} className="name-empty-controll"></div>;
-              if (id === 'score')
-                return <div key={id} className="score-empty-controll"></div>;
-              return (
-                <div className="controll-container" key={id}>
-                  {/* <Slider def={getWightSourceDefault(id)} id={id} /> */}
-                </div>
-              );
-            })
-          )}
+          </ActionsControlls> */}
+          <div className="grid-container controlls-wrapper">
+            {cols.map(({ id }) => (
+              <div className="controll-container" key={id}>
+                <Slider def={getWightSourceDefault(id)} id={id} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </Collapse>

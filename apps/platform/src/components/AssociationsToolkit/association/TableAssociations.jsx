@@ -7,7 +7,7 @@ import {
   createColumnHelper,
 } from '@tanstack/react-table';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { Reorder, motion } from 'framer-motion';
+// import { Reorder, motion } from 'framer-motion';
 
 import { styled } from '@material-ui/styles';
 import { TablePagination, ClickAwayListener } from '@material-ui/core';
@@ -26,13 +26,44 @@ import useAotfContext from '../hooks/useAotfContext';
 import { getLegend, getCellId, cellHasValue } from '../utils';
 
 const TableElement = styled('div')({
-  minWidth: '1250px',
-  maxWidth: '1500px',
+  minWidth: '1000px',
+  maxWidth: '1800px',
   margin: '0 auto',
 });
 
+/* HELPERS */
+/* Columns classnames helpters */
+const getHeaderContainerClassName = ({ id }) => {
+  if (id === '1_naiming-cols_name') return 'naiming-cols';
+  return 'entity-cols';
+};
+
+const getColContainerClassName = ({ id }) => {
+  if (id === '1_naiming-cols_name') return 'group-naiming-cols';
+  return 'group-entity-cols';
+};
+
+const getHeaderClassName = ({ id }) => {
+  if (id === 'name') return 'header-name';
+  if (id === 'score') return 'rotate header-score';
+  return 'rotate';
+};
+
+const getRowClassName = ({ getIsExpanded }) => {
+  let activeClass = getIsExpanded() ? 'active' : '';
+  return `data-row ${activeClass}`;
+};
+
+const getCellClassName = (cell, entityToGet, displayedTable, expanded) => {
+  if (cell.column.id === 'name') return 'name-cell';
+  const expandedId = getCellId(cell, entityToGet, displayedTable).join('-');
+  if (expandedId === expanded.join('-')) return 'active data-cell';
+  return 'data-cell';
+};
+
 const columnHelper = createColumnHelper();
 
+/* Build table columns bases on displayed table */
 function getDatasources(expanderHandler, loading, displayedTable) {
   const isAssociations = displayedTable === 'associations';
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
@@ -93,7 +124,9 @@ function TableAssociations() {
           columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
             id: 'name',
             cell: row => {
-              return <CellName name={row.getValue()} rowId={row.row.id} />;
+              return !loading ? (
+                <CellName name={row.getValue()} rowId={row.row.id} />
+              ) : null;
             },
             header: () => {
               const label = entityToGet === 'target' ? 'Target' : 'Disease';
@@ -149,32 +182,8 @@ function TableAssociations() {
     manualPagination: true,
   });
 
-  const getHeaderContainerClassName = ({ id }) => {
-    if (id === '1_naiming-cols_name') return 'naiming-cols';
-    return 'entity-cols';
-  };
-
-  const getColContainerClassName = ({ id }) => {
-    if (id === '1_naiming-cols_name') return 'group-naiming-cols';
-    return 'group-entity-cols';
-  };
-
-  const getHeaderClassName = ({ id }) => {
-    if (id === 'name') return 'header-name';
-    if (id === 'score') return 'rotate header-score';
-    return 'rotate';
-  };
-
-  const getRowClassName = ({ getIsExpanded }) => {
-    let activeClass = getIsExpanded() ? 'active' : '';
-    return `data-row ${activeClass}`;
-  };
-  const getCellClassName = cell => {
-    if (cell.column.id === 'name') return 'name-cell';
-    const expandedId = getCellId(cell, entityToGet, displayedTable).join('-');
-    if (expandedId === expanded.join('-')) return 'active data-cell';
-    return 'data-cell';
-  };
+  const highLevelHeaders = table.getHeaderGroups()[0].headers;
+  const entitesHeaders = table.getHeaderGroups()[0].headers[1].subHeaders;
 
   const handleClickAway = cell => {
     resetExpandler();
@@ -188,9 +197,6 @@ function TableAssociations() {
     document.getElementById('legend').innerHTML = '';
     document.getElementById('legend').appendChild(Legend);
   }, [displayedTable]);
-
-  const highLevelHeaders = table.getHeaderGroups()[0].headers;
-  const entitesHeaders = table.getHeaderGroups()[0].headers[1].subHeaders;
 
   return (
     <div className="TAssociations">
@@ -222,27 +228,29 @@ function TableAssociations() {
         </div>
 
         {/* Weights controlls */}
-        <WeightsControlls cols={table.getHeaderGroups()} />
+        <WeightsControlls cols={entitesHeaders} />
 
         {/* CONTENT */}
-        <Reorder.Group
+        {/* <Reorder.Group
           as="div"
           className="table-body"
           values={table.getRowModel().rows}
           onReorder={() => {}}
-        >
+        > */}
+        <div>
           <div className="TBody">
             <div className="TRow">
               {table.getRowModel().rows.map(row => {
                 return (
                   <Fragment key={row.id}>
-                    <Reorder.Item
+                    {/* <Reorder.Item
                       as="div"
                       key={row.id}
                       value={row}
                       className={getRowClassName(row)}
                       drag={false}
-                    >
+                    > */}
+                    <div className={getRowClassName(row)}>
                       <div className="data-row-content">
                         {highLevelHeaders.map(columnGroup => {
                           return (
@@ -257,7 +265,12 @@ function TableAssociations() {
                                 return (
                                   <div
                                     key={cell.id}
-                                    className={getCellClassName(cell)}
+                                    className={getCellClassName(
+                                      cell,
+                                      entityToGet,
+                                      displayedTable,
+                                      expanded
+                                    )}
                                   >
                                     {flexRender(
                                       cell.column.columnDef.cell,
@@ -270,13 +283,17 @@ function TableAssociations() {
                           );
                         })}
                       </div>
-                    </Reorder.Item>
+                    </div>
+                    {/* </Reorder.Item> */}
                     {row.getIsExpanded() && (
-                      <motion.div
+                      // <motion.div
+                      //   key={`${row.original[entityToGet].id}-${expanded[0]}`}
+                      //   initial={{ opacity: 0 }}
+                      //   animate={{ opacity: 1 }}
+                      //   exit={{ opacity: 0 }}
+                      // >
+                      <div
                         key={`${row.original[entityToGet].id}-${expanded[0]}`}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
                       >
                         <ClickAwayListener onClickAway={handleClickAway}>
                           <div>
@@ -289,14 +306,16 @@ function TableAssociations() {
                             />
                           </div>
                         </ClickAwayListener>
-                      </motion.div>
+                      </div>
+                      // </motion.div>
                     )}
                   </Fragment>
                 );
               })}
             </div>
           </div>
-        </Reorder.Group>
+        </div>
+        {/* </Reorder.Group> */}
         <div className="table-footer">
           <div id="legend" />
           <TablePagination
