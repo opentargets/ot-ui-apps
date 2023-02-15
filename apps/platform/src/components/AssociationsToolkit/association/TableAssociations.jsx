@@ -31,38 +31,9 @@ const TableElement = styled('div')({
   margin: '0 auto',
 });
 
-function getDatasources(expanderHandler, loading, displayedTable) {
-  const isAssociations = displayedTable === 'associations';
-  const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
-  const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
-
-  return baseCols.map(({ id, label }) => ({
-    id,
-    header: label,
-    accessorFn: row => row[dataProp][id],
-    cell: row => {
-      if (loading) return <Skeleton variant="circle" width={26} height={25} />;
-      const hasValue = cellHasValue(row.getValue());
-      return hasValue ? (
-        <ColoredCell
-          hasValue
-          scoreId={id}
-          scoreValue={row.getValue()}
-          onClick={expanderHandler(row.row.getToggleExpandedHandler())}
-          cell={row}
-          loading={loading}
-          isAssociations={isAssociations}
-        />
-      ) : (
-        <ColoredCell />
-      );
-    },
-  }));
-}
-
 const columnHelper = createColumnHelper();
 
-function _getDatasources(expanderHandler, loading, displayedTable) {
+function getDatasources(expanderHandler, loading, displayedTable) {
   const isAssociations = displayedTable === 'associations';
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
@@ -113,71 +84,49 @@ function TableAssociations() {
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
 
-  // const columns = useMemo(
-  //   () => [
-  //     {
-  //       accessorFn: row => row[entityToGet][rowNameEntity],
-  //       id: 'name',
-  //       cell: row => <CellName name={row.getValue()} rowId={row.row.id} />,
-  //       header: () => <span>{entityToGet}</span>,
-  //       footer: props => props.column.id,
-  //     },
-  //     {
-  //       accessorFn: row => row.score,
-  //       id: 'score',
-  //       cell: row => {
-  //         if (loading)
-  //           return <Skeleton variant="rect" width={30} height={25} />;
-  //         return (
-  //           <ColoredCell
-  //             scoreValue={row.getValue()}
-  //             globalScore
-  //             rounded={false}
-  //             isAssociations
-  //             hasValue
-  //           />
-  //         );
-  //       },
-  //       header: () => <span>Score</span>,
-  //       footer: props => props.column.id,
-  //     },
-  //     ...getDatasources(expanderHandler, loading, displayedTable),
-  //   ],
-  //   [expanderHandler, loading, displayedTable, entityToGet, rowNameEntity]
-  // );
-
-  const columns = [
-    columnHelper.group({
-      header: 'Header',
-      columns: [
-        columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
-          id: 'name',
-          cell: row => <CellName name={row.getValue()} rowId={row.row.id} />,
-          header: () => <span>{entityToGet}</span>,
-        }),
-        columnHelper.accessor(row => row.score, {
-          id: 'score',
-          cell: row => {
-            if (loading)
-              return <Skeleton variant="rect" width={30} height={25} />;
-            return (
-              <ColoredCell
-                scoreValue={row.getValue()}
-                globalScore
-                rounded={false}
-                isAssociations
-                hasValue
-              />
-            );
-          },
-        }),
-      ],
-    }),
-    columnHelper.group({
-      header: 'entities',
-      columns: [..._getDatasources(expanderHandler, loading, displayedTable)],
-    }),
-  ];
+  const columns = useMemo(
+    () => [
+      columnHelper.group({
+        header: 'header',
+        id: 'naiming-cols',
+        columns: [
+          columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
+            id: 'name',
+            cell: row => {
+              return <CellName name={row.getValue()} rowId={row.row.id} />;
+            },
+            header: () => {
+              const label = entityToGet === 'target' ? 'Target' : 'Disease';
+              return <span>{label}</span>;
+            },
+          }),
+          columnHelper.accessor(row => row.score, {
+            id: 'score',
+            header: 'Score',
+            cell: row => {
+              if (loading)
+                return <Skeleton variant="rect" width={30} height={25} />;
+              return (
+                <ColoredCell
+                  scoreValue={row.getValue()}
+                  globalScore
+                  rounded={false}
+                  isAssociations
+                  hasValue
+                />
+              );
+            },
+          }),
+        ],
+      }),
+      columnHelper.group({
+        header: 'entities',
+        id: 'entity-cols',
+        columns: [...getDatasources(expanderHandler, loading, displayedTable)],
+      }),
+    ],
+    [expanderHandler, loading, displayedTable, entityToGet, rowNameEntity]
+  );
 
   /**
    * TABLE HOOK
@@ -199,6 +148,16 @@ function TableAssociations() {
     getRowId: row => row[entityToGet].id,
     manualPagination: true,
   });
+
+  const getHeaderContainerClassName = ({ id }) => {
+    if (id === '1_naiming-cols_name') return 'naiming-cols';
+    return 'entity-cols';
+  };
+
+  const getColContainerClassName = ({ id }) => {
+    if (id === '1_naiming-cols_name') return 'group-naiming-cols';
+    return 'group-entity-cols';
+  };
 
   const getHeaderClassName = ({ id }) => {
     if (id === 'name') return 'header-name';
@@ -230,30 +189,37 @@ function TableAssociations() {
     document.getElementById('legend').appendChild(Legend);
   }, [displayedTable]);
 
-  console.log({ table: table.getAllColumns(), rows: table.getRowModel() });
+  const highLevelHeaders = table.getHeaderGroups()[0].headers;
+  const entitesHeaders = table.getHeaderGroups()[0].headers[1].subHeaders;
+
   return (
     <div className="TAssociations">
       <TableElement>
         {/* HEADER */}
-        {table.getHeaderGroups().map(headerGroup => (
-          <div className="Theader" key={headerGroup.id}>
-            <div className="cols-container">
-              {headerGroup.headers.map(header => (
-                <div className={getHeaderClassName(header)} key={header.id}>
-                  {header.isPlaceholder ? null : (
-                    <div>
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-            {/* <AggregationsRow cols={headerGroup.headers} /> */}
+        <div className="Theader">
+          <div className="cols-container">
+            {highLevelHeaders.map(highLevelHeader => (
+              <div
+                className={getHeaderContainerClassName(highLevelHeader)}
+                key={highLevelHeader.id}
+              >
+                {highLevelHeader.subHeaders.map(header => (
+                  <div className={getHeaderClassName(header)} key={header.id}>
+                    {header.isPlaceholder ? null : (
+                      <div>
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
-        ))}
+          <AggregationsRow cols={entitesHeaders} table={displayedTable} />
+        </div>
 
         {/* Weights controlls */}
         <WeightsControlls cols={table.getHeaderGroups()} />
@@ -278,16 +244,28 @@ function TableAssociations() {
                       drag={false}
                     >
                       <div className="data-row-content">
-                        {row.getVisibleCells().map((cell, i) => {
+                        {highLevelHeaders.map(columnGroup => {
                           return (
                             <div
-                              key={cell.id}
-                              className={getCellClassName(cell)}
+                              className={getColContainerClassName(columnGroup)}
+                              key={columnGroup.id}
                             >
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
+                              {columnGroup.subHeaders.map(column => {
+                                const cell = row
+                                  .getVisibleCells()
+                                  .find(el => el.column.id === column.id);
+                                return (
+                                  <div
+                                    key={cell.id}
+                                    className={getCellClassName(cell)}
+                                  >
+                                    {flexRender(
+                                      cell.column.columnDef.cell,
+                                      cell.getContext()
+                                    )}
+                                  </div>
+                                );
+                              })}
                             </div>
                           );
                         })}

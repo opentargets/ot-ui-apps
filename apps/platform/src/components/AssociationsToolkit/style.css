@@ -1,3 +1,16 @@
+.TAssociations {
+  /* COLORS */
+  --grey-light: #ececec;
+  --grey-mid: #b8b8b8;
+
+  /* VIZ ELEMENTS */
+  --header-border-color: var(--grey-light);
+  --aggregations-color: var(--grey-mid);
+  --entities-border-color: var(--grey-light);
+  --table-footer-border-color: var(--grey-light);
+  --row-hover-color: var(--grey-light);
+}
+
 .TAssociations.loading-container {
   height: 1000px;
 }
@@ -20,33 +33,39 @@
   background-color: #fafafa;
   z-index: 100;
   font-weight: 800;
-  /* margin-bottom: 10px; */
-  border-bottom: 1px solid #ececec;
+  /* border-bottom: 1px solid var(--header-border-color); */
 }
 
 .TAssociations .Theader .cols-container {
   display: flex;
-  /* justify-content: space-evenly; */
 }
 
-.TAssociations .Theader .header-score {
-  /* padding-right: 20px; */
+.TAssociations .Theader .naiming-cols {
+  display: flex;
+}
+.TAssociations .Theader .entity-cols {
+  display: flex;
+  padding-left: 5px;
+  margin-left: 30px;
+  width: 100%;
+  gap: 4px;
 }
 
 .TAssociations .Theader .header-name {
-  width: 230px;
+  width: 120px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
 
 .TAssociations .Theader .header-name div {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 .TAssociations .Theader .rotate {
   height: 140px;
   white-space: nowrap;
+  flex-grow: 1;
 }
 
 .TAssociations .Theader .rotate > div {
@@ -58,7 +77,6 @@
 .TAssociations .TBody {
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
   /* overflow: hidden; */
 }
 
@@ -69,7 +87,7 @@
 /* Table footer */
 .TAssociations .table-footer {
   position: sticky;
-  border-top: 1px solid #ececec;
+  border-top: 1px solid var(--table-footer-border-color);
   bottom: 0;
   background-color: #fafafa;
   padding: 10px 0;
@@ -97,12 +115,11 @@
 .TAssociations .data-row .data-row-content {
   display: flex;
   align-items: center;
-  margin-bottom: 3px;
   width: 100%;
 }
 
 .TAssociations .data-row:hover {
-  background-color: #efefef;
+  background-color: var(--row-hover-color);
 }
 
 .TAssociations .data-row.active {
@@ -110,7 +127,22 @@
   top: 145px;
   padding: 0.5em 0 0.5em 0;
   z-index: 90 !important;
-  background-color: #efefef;
+  background-color: var(--row-hover-color);
+}
+
+.TAssociations .data-row .data-row-content .group-naiming-cols {
+  display: flex;
+  align-items: center;
+}
+
+.TAssociations .data-row .data-row-content .group-entity-cols {
+  display: flex;
+  align-items: center;
+  height: 35px;
+  margin-left: 20px;
+  width: 100%;
+  border-left: 1px solid var(--entities-border-color);
+  /* border-left: 1px solid #aeaeae; */
 }
 
 /*  CELL  */
@@ -118,10 +150,11 @@
   width: 30px;
   display: flex;
   justify-content: center;
+  flex-grow: 1;
 }
 
 .TAssociations .data-row .name-cell {
-  width: 230px;
+  width: 120px;
   white-space: nowrap;
   padding: 0 0.5rem 0 0;
   text-align: left;
@@ -135,14 +168,9 @@
   animation: 1.5s shine linear infinite;
 }
 
-.TAssociations .data-row .data-cell div {
-  /* transition: all ease 3000ms; */
-}
-
 .TAssociations .data-row .data-cell .data-score {
   cursor: pointer;
   box-sizing: border-box;
-  /* transition: all ease 3000ms; */
 }
 
 .TAssociations .data-row .data-cell.active .data-score {
@@ -153,13 +181,8 @@
   top: 0;
 }
 
-.TAssociations .data-row .data-cell .data-global-score {
-  /* margin-right: 20px; */
-}
-
 .TAssociations .data-row .data-cell .data-score:hover,
 .TAssociations .data-row .data-cell .data-score:focus {
-  /* border: 2px solid #454545 !important; */
   -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
   box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
 }
@@ -169,36 +192,20 @@
 .TAssociations .aggregations-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  margin-left: 325px;
-}
-
-.TAssociations .aggregations-container .name-empty-controll {
-  width: 230px;
-  content: ' ';
-}
-
-.TAssociations .aggregations-container .score-empty-controll {
-  height: 25px;
-  width: 30px;
-  content: ' ';
-  margin-right: 20px;
+  margin-left: 170px;
+  gap: 4px;
+  align-items: center;
 }
 
 .TAssociations .aggregations-container .aggregation-indicator {
-  width: calc(100% / 24);
   position: relative;
-}
-
-.TAssociations .aggregations-container .aggregation-indicator div {
-  width: 100%;
-  height: 4px;
-  content: ' ';
+  background-color: var(--aggregations-color);
+  height: 5px;
   transition: all ease 300ms;
 }
 
-.TAssociations .aggregations-container:hover .aggregation-indicator div {
-  height: 15px;
+.TAssociations .aggregations-container .aggregation-indicator:hover {
+  /* height: 8px; */
 }
 
 /* Category indicators */

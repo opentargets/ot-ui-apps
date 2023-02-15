@@ -23,7 +23,7 @@ function ColoredCell({
   const scoreText = hasValue ? `Score: ${scoreValue.toFixed(2)}` : 'No data';
 
   const style = {
-    height: '25px',
+    height: '26px',
     width: rounded ? '26px' : '30px',
     borderRadius: rounded ? '13px' : 0,
     backgroundColor,

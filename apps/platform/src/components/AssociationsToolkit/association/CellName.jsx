@@ -19,7 +19,7 @@ const TextContainer = styled('div')({
   overflow: 'hidden',
   textAlign: 'end',
   textOverflow: 'ellipsis',
-  maxWidth: '300px',
+  maxWidth: '120px',
 });
 
 const Name = styled('span')({
