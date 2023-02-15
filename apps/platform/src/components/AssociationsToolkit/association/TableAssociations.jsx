@@ -7,7 +7,6 @@ import {
   createColumnHelper,
 } from '@tanstack/react-table';
 import Skeleton from '@material-ui/lab/Skeleton';
-// import { Reorder, motion } from 'framer-motion';
 
 import { styled } from '@material-ui/styles';
 import { TablePagination, ClickAwayListener } from '@material-ui/core';
@@ -27,7 +26,7 @@ import { getLegend, getCellId, cellHasValue } from '../utils';
 
 const TableElement = styled('div')({
   minWidth: '1000px',
-  maxWidth: '1800px',
+  maxWidth: '1200px',
   margin: '0 auto',
 });
 
@@ -230,26 +229,13 @@ function TableAssociations() {
         {/* Weights controlls */}
         <WeightsControlls cols={entitesHeaders} />
 
-        {/* CONTENT */}
-        {/* <Reorder.Group
-          as="div"
-          className="table-body"
-          values={table.getRowModel().rows}
-          onReorder={() => {}}
-        > */}
+        {/* BODY CONTENT */}
         <div>
           <div className="TBody">
             <div className="TRow">
               {table.getRowModel().rows.map(row => {
                 return (
                   <Fragment key={row.id}>
-                    {/* <Reorder.Item
-                      as="div"
-                      key={row.id}
-                      value={row}
-                      className={getRowClassName(row)}
-                      drag={false}
-                    > */}
                     <div className={getRowClassName(row)}>
                       <div className="data-row-content">
                         {highLevelHeaders.map(columnGroup => {
@@ -284,14 +270,7 @@ function TableAssociations() {
                         })}
                       </div>
                     </div>
-                    {/* </Reorder.Item> */}
                     {row.getIsExpanded() && (
-                      // <motion.div
-                      //   key={`${row.original[entityToGet].id}-${expanded[0]}`}
-                      //   initial={{ opacity: 0 }}
-                      //   animate={{ opacity: 1 }}
-                      //   exit={{ opacity: 0 }}
-                      // >
                       <div
                         key={`${row.original[entityToGet].id}-${expanded[0]}`}
                       >
@@ -307,7 +286,6 @@ function TableAssociations() {
                           </div>
                         </ClickAwayListener>
                       </div>
-                      // </motion.div>
                     )}
                   </Fragment>
                 );
@@ -315,7 +293,6 @@ function TableAssociations() {
             </div>
           </div>
         </div>
-        {/* </Reorder.Group> */}
         <div className="table-footer">
           <div id="legend" />
           <TablePagination
