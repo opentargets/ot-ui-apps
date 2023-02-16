@@ -1,18 +1,3 @@
-/* HELPERS */
-.TAssociations {
-  /* COLORS */
-  --grey-light: #ececec;
-  --grey-mid: #b8b8b8;
-  --primary-blue: #3489ca;
-
-  /* VIZ ELEMENTS */
-  --header-border-color: var(--grey-light);
-  --aggregations-color: var(--grey-mid);
-  --entities-border-color: var(--grey-light);
-  --table-footer-border-color: var(--grey-light);
-  --row-hover-color: var(--grey-light);
-}
-
 /* ENTITIES GRID */
 .grid-container {
   display: grid;
@@ -217,7 +202,7 @@
 
 .TAssociations .aggregations-container .aggregation-indicator:hover {
   transform: scale(1, 1.8);
-  background-color: var(--primary-blue);
+  background-color: var(--primary-color);
 }
 
 /* Category indicators */

@@ -22,7 +22,12 @@ import CellName from './CellName';
 
 import useAotfContext from '../hooks/useAotfContext';
 
-import { getLegend, getCellId, cellHasValue } from '../utils';
+import {
+  getLegend,
+  getCellId,
+  cellHasValue,
+  tableCSSVariables,
+} from '../utils';
 
 const TableElement = styled('div')({
   minWidth: '1000px',
@@ -198,7 +203,7 @@ function TableAssociations() {
   }, [displayedTable]);
 
   return (
-    <div className="TAssociations">
+    <div className="TAssociations" style={tableCSSVariables}>
       <TableElement>
         {/* HEADER */}
         <div className="Theader">
