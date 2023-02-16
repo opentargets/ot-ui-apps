@@ -18,7 +18,7 @@ const theme = createTheme({
       },
       paper: {
         height: "inherit !important",
-        boxShadow: "2px 0 4px -4px #999, -2px 0 4px -4px #999"
+        boxShadow: "2px 0 4px -4px #999, -2px 0 4px -4px #999",
       },
       listbox: {
         maxHeight: "47vh !important",
@@ -73,7 +73,7 @@ export default function AutocompleteSearch({
   useEffect(() => {
     data.length > 0 && inputValue
       ? (data.unshift({
-          symbol: "Search For: "+inputValue,
+          symbol: "Search For: " + inputValue,
           name: inputValue,
           entity: "search",
           type: "",
@@ -125,6 +125,11 @@ export default function AutocompleteSearch({
     localStorage.setItem("search-history", JSON.stringify(removedItems));
   };
 
+  const clearAll = () => {
+    setRecentValue([]);
+    localStorage.removeItem("search-history");
+  };
+
   return (
     <>
       {/* {searchResult && } */}
@@ -146,6 +151,7 @@ export default function AutocompleteSearch({
               key={group.key}
               listHeader={group.group}
               children={group.children}
+              clearAll={clearAll}
             />
           )}
           getOptionLabel={(option) => option.symbol || option.name || option.id}
