@@ -10,7 +10,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { Star, Label } from "@material-ui/icons";
-import { clearAllRecent } from "../utils/searchUtils";
 
 const useStyles = makeStyles((theme) => ({
   sectionHeader: {
@@ -20,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     gap: "1rem",
     margin: "0.5rem 1rem 0.5rem 2rem",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   label: {
     display: "flex",
@@ -33,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SearchListHeader({ listHeader, children }) {
+function SearchListHeader({ listHeader, children, clearAll }) {
   const classes = useStyles();
 
   if (listHeader === "") return <>{children}</>;
@@ -103,7 +102,9 @@ function SearchListHeader({ listHeader, children }) {
           <Typography variant="h6">{listHeader}</Typography>
         </div>
         {listHeader === "recent" && (
-          <Button onClick={clearAllRecent }><Typography variant="caption">clear all</Typography></Button> 
+          <Button onClick={clearAll}>
+            <Typography variant="caption">clear all</Typography>
+          </Button>
         )}
       </div>
       {children}

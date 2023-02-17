@@ -1,4 +1,4 @@
-import { format } from 'd3-format';
+import { format } from "d3-format";
 
 export const formatSearchData = (unformattedData) => {
   const allTypes = [];
@@ -32,7 +32,7 @@ export const formatSearchData = (unformattedData) => {
 export const addSearchToLocalStorage = (item) => {
   const recentItems = JSON.parse(localStorage.getItem("search-history")) || [];
   const existingIndex = containsObject(item, recentItems);
-  
+
   if (existingIndex >= 0) {
     recentItems.splice(existingIndex, 1);
   }
@@ -40,7 +40,8 @@ export const addSearchToLocalStorage = (item) => {
 
   item && recentItemsDeepCopy.unshift(item);
   exceedsArrayLengthLimit(recentItemsDeepCopy) && recentItemsDeepCopy.pop();
-  item && localStorage.setItem("search-history", JSON.stringify(recentItemsDeepCopy));
+  item &&
+    localStorage.setItem("search-history", JSON.stringify(recentItemsDeepCopy));
 };
 
 export const containsObject = (obj, list) => {
@@ -54,11 +55,11 @@ export const containsObject = (obj, list) => {
   return -1;
 };
 
-export const clearAllRecent =()=> {
+export const clearAllRecent = () => {
   localStorage.removeItem("search-history");
-}
+};
 
-export const commaSeparate = format(',');
+export const commaSeparate = format(",");
 
 const mapStandardKeys = (origionalKey) => {
   switch (origionalKey) {
@@ -99,8 +100,8 @@ const exceedsArrayLengthLimit = (array) => {
   const limitLength = 10;
   let exceedsLimit = false;
 
-  if(array.length > limitLength) {
-      exceedsLimit = true;
+  if (array.length > limitLength) {
+    exceedsLimit = true;
   }
   return exceedsLimit;
-}
+};
