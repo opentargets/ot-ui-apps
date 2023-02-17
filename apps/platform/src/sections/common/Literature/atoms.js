@@ -10,6 +10,8 @@ import { europePmcBiblioSearchPOSTQuery } from '../../../utils/urls';
 export const parsePublications = publications =>
   publications.map(pub => {
     const row = {};
+    row.source = pub.source;
+    row.patentDetails = pub.patentDetails;
     row.europePmcId = pub.id;
     row.fullTextOpen = pub.inEPMC === 'Y' || pub.inPMC === 'Y' ? true : false;
     row.title = pub.title;
@@ -176,17 +178,21 @@ export const updateLiteratureState = selector({
 // ------------------------------------------
 export const literaturesEuropePMCQuery = selectorFamily({
   key: 'literaturesEuropePMCQuery',
-  get: ({ literaturesIds }) => async () => {
-    if (literaturesIds.length === 0) return [];
-    const { baseUrl, requestOptions } = europePmcBiblioSearchPOSTQuery(
-      literaturesIds
-    );
-    const response = await fetchLiteraturesFromPMC({ baseUrl, requestOptions });
-    if (response.error) {
-      throw response.error;
-    }
-    return response.resultList?.result;
-  },
+  get:
+    ({ literaturesIds }) =>
+    async () => {
+      if (literaturesIds.length === 0) return [];
+      const { baseUrl, requestOptions } =
+        europePmcBiblioSearchPOSTQuery(literaturesIds);
+      const response = await fetchLiteraturesFromPMC({
+        baseUrl,
+        requestOptions,
+      });
+      if (response.error) {
+        throw response.error;
+      }
+      return response.resultList?.result;
+    },
 });
 
 const fetchLiteraturesFromPMC = async ({ baseUrl, requestOptions }) =>

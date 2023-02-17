@@ -11,7 +11,8 @@ import Link from '../Link';
 import LongText from '../LongText';
 
 const pmUrl = 'https://europepmc.org/';
-const pmTitleUrl = 'abstract/med/';
+const pmTitleUrlMED = 'abstract/med/';
+const pmTitleUrlPAT = 'abstract/pat/';
 
 const useStyles = makeStyles(theme => ({
   abstractSpan: {
@@ -46,6 +47,8 @@ function PublicationWrapper({
   variant = 'regular',
   abstract,
   fullTextOpen,
+  source = 'MED',
+  patentDetails,
 }) {
   const [showAbstract, setShowAbstract] = useState(false);
 
@@ -53,21 +56,22 @@ function PublicationWrapper({
     setShowAbstract(showAbstract => !showAbstract);
   };
 
-  useEffect(
-    () => {
-      setShowAbstract(false);
-    },
-    [europePmcId]
-  );
+  useEffect(() => {
+    setShowAbstract(false);
+  }, [europePmcId]);
 
   const classes = useStyles();
+
+  const isSourcePAT = source === 'PAT';
+  const sourceScope = isSourcePAT ? pmTitleUrlPAT : pmTitleUrlMED;
+  const externalURL = pmUrl + sourceScope + europePmcId;
 
   return (
     <Box mb={2}>
       {/* paper title */}
       <Box style={{ whiteSpace: 'normal' }}>
         <Typography variant={variant === 'small' ? 'subtitle2' : 'subtitle1'}>
-          <Link external to={pmUrl + pmTitleUrl + europePmcId}>
+          <Link external to={externalURL}>
             {titleHtml ? (
               <span
                 dangerouslySetInnerHTML={{ __html: titleHtml }}
@@ -98,21 +102,31 @@ function PublicationWrapper({
         </LongText>
       </Box>
 
-      <Box style={{ whiteSpace: 'normal' }}>
-        <Typography variant={variant === 'small' ? 'caption' : 'body2'}>
-          {/* journal, year, reference */}
-          {journal.journal?.title || ''}{' '}
-          <span>
-            <b>
-              {journal.dateOfPublication &&
-                (journal.dateOfPublication.substring(0, 4) || '')}
-            </b>
-          </span>{' '}
-          <span>{journal.volume || ''}</span>
-          <span>{journal.issue && `(${journal.issue})`}</span>
-          <span>{journal.page && `:${journal.page}`}</span>
-        </Typography>
-      </Box>
+      {isSourcePAT ? (
+        <Box style={{ whiteSpace: 'normal' }}>
+          <Typography variant={variant === 'small' ? 'caption' : 'body2'}>
+            {patentDetails.typeDescription}
+            {' - '}
+            <span>{patentDetails.country}</span>
+          </Typography>
+        </Box>
+      ) : (
+        <Box style={{ whiteSpace: 'normal' }}>
+          <Typography variant={variant === 'small' ? 'caption' : 'body2'}>
+            {/* journal, year, reference */}
+            {journal.journal?.title || ''}{' '}
+            <span>
+              <b>
+                {journal.dateOfPublication &&
+                  (journal.dateOfPublication.substring(0, 4) || '')}
+              </b>
+            </span>{' '}
+            <span>{journal.volume || ''}</span>
+            <span>{journal.issue && `(${journal.issue})`}</span>
+            <span>{journal.page && `:${journal.page}`}</span>
+          </Typography>
+        </Box>
+      )}
 
       <Box style={{ display: 'flex', alignItems: 'center' }}>
         <Button
