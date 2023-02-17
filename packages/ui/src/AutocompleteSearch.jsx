@@ -76,7 +76,7 @@ export default function AutocompleteSearch({
   const [getSearchData, { data, loading }] = useSearchQueryData(searchQuery);
 
   useEffect(() => {
-    data.length > 0 && inputValue
+    inputValue
       ? (data.unshift({
           symbol: "Search For: " + inputValue,
           name: inputValue,
@@ -137,7 +137,6 @@ export default function AutocompleteSearch({
 
   return (
     <ThemeProvider theme={theme}>
-      {searchLoading}
       <Autocomplete
         disablePortal
         openOnFocus
