@@ -13,9 +13,7 @@ export function otgVariantUrl(id) {
 }
 
 export function europePmcLiteratureQuery(ids) {
-  const baseUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?&format=json&resultType=core&pageSize=${
-    ids.length
-  }&query=ext_id:`;
+  const baseUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?&format=json&resultType=core&pageSize=${ids.length}&query=ext_id:`;
 
   return encodeURI(baseUrl + ids.join(' OR ext_id:'));
 }
@@ -52,7 +50,7 @@ export function europePmcBiblioSearchPOSTQuery(ids, size = 25) {
     resultType: 'core',
     format: 'json',
     pageSize: size,
-    query: `SRC:MED AND (ext_id:${query})`,
+    query: `ext_id:${query}`,
   };
   const formBody = encodeParams(bodyOptions);
   const requestOptions = {

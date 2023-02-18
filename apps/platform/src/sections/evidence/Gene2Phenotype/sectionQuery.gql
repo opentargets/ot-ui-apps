@@ -1,4 +1,8 @@
-query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
+query OpenTargetsGeneticsQuery(
+  $ensemblId: String!
+  $efoId: String!
+  $size: Int!
+) {
   disease(efoId: $efoId) {
     id
     evidences(
@@ -20,7 +24,7 @@ query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!, $size: Int!
         target {
           approvedSymbol
         }
-        variantFunctionalConsequence{
+        variantFunctionalConsequence {
           id
           label
         }

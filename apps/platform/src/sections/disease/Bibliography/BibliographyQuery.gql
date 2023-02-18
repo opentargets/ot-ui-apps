@@ -51,17 +51,6 @@ query SimilarEntitiesQuery(
         pmid
         pmcid
         publicationDate
-        sentences {
-          section
-          matches {
-            mappedId
-            matchedLabel
-            sectionStart
-            sectionEnd
-            startInSentence
-            endInSentence
-          }
-        }
       }
     }
   }

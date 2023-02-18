@@ -3,7 +3,12 @@ import { createContext, useState } from "react";
 // COMPONENT CONTEXT
 export const SearchContext = createContext();
 
-function SearchProvider({ children, searchQuery, searchPlaceholder = "Search..." }) {
+function SearchProvider({
+  children,
+  searchQuery,
+  searchPlaceholder = "Search...",
+  primaryColor = "#3489ca",
+}) {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
@@ -13,6 +18,7 @@ function SearchProvider({ children, searchQuery, searchPlaceholder = "Search..."
   return (
     <SearchContext.Provider
       value={{
+        primaryColor,
         searchQuery,
         loading,
         inputValue,

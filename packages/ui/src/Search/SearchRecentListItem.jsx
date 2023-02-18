@@ -31,9 +31,7 @@ function SearchRecentListItem({ item, clearItem }) {
   };
 
   return (
-    <div
-      className={classes.recentItemContainer}
-    >
+    <div className={classes.recentItemContainer}>
       <div className={classes.recentIcon}>
         <History />
         <Typography variant="subtitle2">

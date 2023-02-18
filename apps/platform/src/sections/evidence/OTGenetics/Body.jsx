@@ -118,6 +118,32 @@ const columns = [
       }`,
   },
   {
+    id: 'variantFunctionalConsequenceFromQtlId',
+    label: 'QTL effect',
+    tooltip:
+      'The direction is inferred from the strongest effect across all the co-localising QTLs',
+    renderCell: ({ variantFunctionalConsequenceFromQtlId }) =>
+      variantFunctionalConsequenceFromQtlId ? (
+        <Link
+          external
+          to={identifiersOrgLink(
+            'SO',
+            variantFunctionalConsequenceFromQtlId.id.slice(3)
+          )}
+        >
+          {sentenceCase(variantFunctionalConsequenceFromQtlId.label)}
+        </Link>
+      ) : (
+        naLabel
+      ),
+    filterValue: ({ variantFunctionalConsequenceFromQtlId }) =>
+      variantFunctionalConsequenceFromQtlId
+        ? `${sentenceCase(variantFunctionalConsequenceFromQtlId.label)} ${
+            variantFunctionalConsequenceFromQtlId.id
+          }`
+        : naLabel,
+  },
+  {
     id: 'pValueMantissa',
     label: (
       <>

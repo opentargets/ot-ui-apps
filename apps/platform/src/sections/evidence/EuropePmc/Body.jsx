@@ -34,6 +34,8 @@ const columns = [
       textMiningSentences,
       authors,
       journal,
+      source,
+      patentDetails,
     }) => {
       return (
         <Publication
@@ -43,6 +45,8 @@ const columns = [
           textMiningSentences={textMiningSentences}
           authors={authors}
           journal={journal}
+          source={source}
+          patentDetails={patentDetails}
         />
       );
     },
@@ -69,6 +73,8 @@ function mergeData(rows, literatureData) {
       return {
         ...row,
         europePmcId: relevantEntry.id,
+        source: relevantEntry.source,
+        patentDetails: relevantEntry?.patentDetails,
         title: relevantEntry.title,
         year: relevantEntry.pubYear,
         abstract: relevantEntry.abstractText,
@@ -180,35 +186,32 @@ export function BodyCore({ definition, id, label }) {
     setPageSize(newPageSize);
   };
 
-  useEffect(
-    () => {
-      let isCurrent = true;
+  useEffect(() => {
+    let isCurrent = true;
 
-      async function fetchLiterature() {
-        setLoading(true);
+    async function fetchLiterature() {
+      setLoading(true);
 
-        if (newIds.length) {
-          const queryUrl = europePmcLiteratureQuery(newIds);
-          const res = await fetch(queryUrl);
-          const resJson = await res.json();
-          const newLiteratureData = resJson.resultList.result;
+      if (newIds.length) {
+        const queryUrl = europePmcLiteratureQuery(newIds);
+        const res = await fetch(queryUrl);
+        const resJson = await res.json();
+        const newLiteratureData = resJson.resultList.result;
 
-          setLiteratureData(literatureData => [
-            ...literatureData,
-            ...newLiteratureData,
-          ]);
-          setLoading(false);
-        }
+        setLiteratureData(literatureData => [
+          ...literatureData,
+          ...newLiteratureData,
+        ]);
+        setLoading(false);
       }
+    }
 
-      if (isCurrent) fetchLiterature();
+    if (isCurrent) fetchLiterature();
 
-      return () => {
-        isCurrent = false;
-      };
-    },
-    [newIds]
-  );
+    return () => {
+      isCurrent = false;
+    };
+  }, [newIds]);
 
   return (
     <SectionItem

@@ -1,7 +1,8 @@
 import React from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-
+import Summary from './Summary';
+import usePlatformApi from '../../../hooks/usePlatformApi';
 import { DataTable } from '../../../components/Table';
 import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
 import Description from './Description';
@@ -128,28 +129,13 @@ const columns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.Gene2PhenotypeSummaryFragment
-  );
-  const count = summaryData.gene2Phenotype.count;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
-export function BodyCore({ definition, id, label, count }) {
-  const { ensgId, efoId } = id;
-  const variables = {
-    ensemblId: ensgId,
-    efoId,
-    size: count,
-  };
+function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
+  const {
+    data: {
+      gene2Phenotype: { count: size },
+    },
+  } = usePlatformApi(Summary.fragments.Gene2PhenotypeSummaryFragment);
+  const variables = { ensemblId: ensgId, efoId, size };
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,

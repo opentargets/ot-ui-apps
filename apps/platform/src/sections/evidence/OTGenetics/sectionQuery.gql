@@ -33,6 +33,10 @@ query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!, $size: Int!
           id
           label
         }
+        variantFunctionalConsequenceFromQtlId{
+          id
+          label
+        }
         resourceScore
         projectId
       }
