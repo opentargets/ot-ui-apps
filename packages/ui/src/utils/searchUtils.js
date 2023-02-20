@@ -71,6 +71,8 @@ const mapStandardKeys = (origionalKey) => {
       return "name";
     case "approvedSymbol":
       return "symbol";
+    case "functionDescriptions":
+      return "description";
     default:
       return origionalKey;
   }
@@ -86,7 +88,11 @@ const flattenObj = (ob) => {
         result[j] = temp[j];
       }
     } else {
-      result[mapStandardKeys(i)] = ob[i];
+      if(i === "functionDescriptions") {
+        result[mapStandardKeys(i)] = ob[i][0];
+      } else {
+        result[mapStandardKeys(i)] = ob[i];
+      }
     }
   }
   return result;
