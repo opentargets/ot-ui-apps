@@ -1,7 +1,6 @@
 import React from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-import Summary from './Summary';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import { DataTable } from '../../../components/Table';
 import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
@@ -14,7 +13,7 @@ import { sentenceCase } from '../../../utils/global';
 import Tooltip from '../../../components/Tooltip';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
-import Summary from './Summary';
+import Summary from './Gene2PhenotypeSummaryFragment.gql';
 
 const g2pUrl = (studyId, symbol) =>
   `https://www.ebi.ac.uk/gene2phenotype/search?panel=${studyId}&search_term=${symbol}`;

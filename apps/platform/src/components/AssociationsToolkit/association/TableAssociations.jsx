@@ -16,7 +16,11 @@ import prioritizationCols from '../static_datasets/prioritizationCols';
 
 import ColoredCell from '../ColoredCell';
 import AggregationsRow from './AggregationsRow';
-import SecctionRender from './SectionRender';
+import {
+  EvidenceSecctionRenderer,
+  SecctionRendererWrapper,
+  TargetSecctionRenderer,
+} from './SectionRender';
 import WeightsControlls from './WeightsControlls';
 import CellName from './CellName';
 
@@ -73,10 +77,11 @@ function getDatasources(expanderHandler, loading, displayedTable) {
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
 
-  return baseCols.map(({ id, label }) => {
+  return baseCols.map(({ id, label, sectionId }) => {
     return columnHelper.accessor(row => row[dataProp][id], {
       id,
       header: label,
+      sectionId: sectionId,
       cell: row => {
         if (loading)
           return <Skeleton variant="circle" width={26} height={25} />;
@@ -117,6 +122,8 @@ function TableAssociations() {
     resetExpandler,
   } = useAotfContext();
 
+  const isAssociations = displayedTable === 'associations';
+
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
 
   const columns = useMemo(
@@ -139,7 +146,7 @@ function TableAssociations() {
           }),
           columnHelper.accessor(row => row.score, {
             id: 'score',
-            header: 'Associations Score',
+            header: 'Association Score',
             cell: row => {
               if (loading)
                 return <Skeleton variant="rect" width={30} height={25} />;
@@ -281,13 +288,30 @@ function TableAssociations() {
                       >
                         <ClickAwayListener onClickAway={handleClickAway}>
                           <div>
-                            <SecctionRender
-                              id={id}
-                              rowId={row.original[entityToGet].id}
+                            <SecctionRendererWrapper
                               activeSection={expanded}
-                              entity={entity}
-                              label={row.original[entityToGet][rowNameEntity]}
-                            />
+                              table={displayedTable}
+                            >
+                              {isAssociations ? (
+                                <EvidenceSecctionRenderer
+                                  id={id}
+                                  rowId={row.original[entityToGet].id}
+                                  entity={entity}
+                                  label={
+                                    row.original[entityToGet][rowNameEntity]
+                                  }
+                                />
+                              ) : (
+                                <TargetSecctionRenderer
+                                  id={id}
+                                  rowId={row.original[entityToGet].id}
+                                  entity={entity}
+                                  label={
+                                    row.original[entityToGet][rowNameEntity]
+                                  }
+                                />
+                              )}
+                            </SecctionRendererWrapper>
                           </div>
                         </ClickAwayListener>
                       </div>
