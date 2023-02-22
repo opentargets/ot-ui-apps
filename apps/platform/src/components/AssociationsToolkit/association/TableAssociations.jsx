@@ -10,6 +10,8 @@ import Skeleton from '@material-ui/lab/Skeleton';
 
 import { styled } from '@material-ui/styles';
 import { TablePagination, ClickAwayListener } from '@material-ui/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
 import prioritizationCols from '../static_datasets/prioritizationCols';
@@ -242,12 +244,14 @@ function TableAssociations() {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {isAssociations
-                          ? {
-                              asc: ' 🔼',
-                              desc: ' 🔽',
-                            }[header.column.getIsSorted()] ?? null
-                          : null}
+                        {{
+                          desc: (
+                            <FontAwesomeIcon
+                              className="header-desc-icon"
+                              icon={faCaretDown}
+                            />
+                          ),
+                        }[header.column.getIsSorted()] ?? null}
                       </div>
                     )}
                   </div>

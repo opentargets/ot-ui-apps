@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import client from '../../../client';
-import targetPropritisation from '../static_datasets/prototype20230217.json';
+import targetPropritisation from '../static_datasets/prototype20230222.json';
 
 // Select and parsed data from API response from fixed Target
 const getAssociatedDiseasesData = data => {
