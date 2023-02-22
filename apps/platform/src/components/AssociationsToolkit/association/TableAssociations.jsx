@@ -137,6 +137,7 @@ function TableAssociations() {
         columns: [
           columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
             id: 'name',
+            enableSorting: false,
             cell: row => {
               return !loading ? (
                 <CellName name={row.getValue()} rowId={row.row.id} />
