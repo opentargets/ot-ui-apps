@@ -14,10 +14,18 @@
 /* --- CONTROLS --- */
 .ControlsSection {
   margin-top: 30px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  align-items: center;
+}
+
+.ControlsSection .global-controls-container {
+  display: flex;
+}
+
+.ControlsSection .global-controls-container input {
+  /* width: 200px; */
 }
 
 /* --- HEADER ---  */

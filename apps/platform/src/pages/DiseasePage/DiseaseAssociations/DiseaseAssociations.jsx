@@ -4,6 +4,7 @@ import {
   TargetPrioritisationSwitch,
   AssociationsContext,
   AssociationsProvider,
+  SearhInput,
 } from '../../../components/AssociationsToolkit';
 import { LoadingBackdrop } from 'ui';
 import { useContext } from 'react';
@@ -22,7 +23,10 @@ function AssociationsWrapper() {
   return (
     <>
       <div className="ControlsSection">
-        <AdvanceOptionsMenu />
+        <div className="global-controls-container">
+          <SearhInput />
+          <AdvanceOptionsMenu />
+        </div>
         <TargetPrioritisationSwitch />
       </div>
       <TableAssociations />

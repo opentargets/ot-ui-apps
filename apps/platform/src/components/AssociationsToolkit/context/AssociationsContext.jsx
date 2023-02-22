@@ -39,6 +39,8 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [dataSourcesWeights, setDataSourcesWeights] = useState(
     defaulDatasourcesWeigths
   );
+
+  const [searhFilter, setSearhFilter] = useState('');
   // Data controls UI
   const [activeWeightsControlls, setActiveWeightsControlls] = useState(false);
 
@@ -53,7 +55,7 @@ function AssociationsProvider({ children, entity, id, query }) {
       id,
       index: pageIndex,
       size: pageSize,
-      filter: '',
+      filter: searhFilter,
       sortBy: 'score',
       enableIndirect,
       datasources: dataSourcesWeights,
@@ -67,6 +69,12 @@ function AssociationsProvider({ children, entity, id, query }) {
     setTableExpanded({});
     setExpanded([]);
     setPagination(pagination);
+  };
+
+  const handleSearchInputChange = newSearchFilter => {
+    if (newSearchFilter !== searhFilter) {
+      setSearhFilter(newSearchFilter);
+    }
   };
 
   const expanderHandler = tableExpanderController => cell => {
@@ -89,26 +97,6 @@ function AssociationsProvider({ children, entity, id, query }) {
     setTableExpanded({});
   };
 
-  // console.log('RERENDER', {
-  //   id,
-  //   entity,
-  //   entityToGet,
-  //   count,
-  //   data,
-  //   loading,
-  //   initialLoading,
-  //   tableExpanded,
-  //   pagination,
-  //   expanded,
-  //   activeWeightsControlls,
-  //   enableIndirect,
-  //   error,
-  //   dataSourcesWeights,
-  //   defaulDatasourcesWeigths,
-  //   displayedTable,
-  //   pinnedData,
-  // });
-
   return (
     <AssociationsContext.Provider
       value={{
@@ -129,6 +117,8 @@ function AssociationsProvider({ children, entity, id, query }) {
         defaulDatasourcesWeigths,
         displayedTable,
         pinnedData,
+        searhFilter,
+        handleSearchInputChange,
         setPinnedData,
         setDisplayedTable,
         setDataSourcesWeights,
