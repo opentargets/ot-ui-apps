@@ -76,6 +76,10 @@
   cursor: pointer;
 }
 
+.TAssociations .Theader .cursor-help {
+  cursor: help;
+}
+
 .TAssociations .Theader .header-desc-icon {
   margin-left: 5px;
 }
@@ -83,6 +87,8 @@
 .TAssociations .Theader .rotate > div {
   transform: translate(0, 110px) rotate(315deg);
   width: 30px;
+  display: flex;
+  align-items: center;
 }
 
 /* --- BODY --- */

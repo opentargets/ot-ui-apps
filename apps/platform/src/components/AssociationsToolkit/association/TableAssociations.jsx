@@ -16,6 +16,7 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
 import prioritizationCols from '../static_datasets/prioritizationCols';
 
+import AggregationsTooltip from './AggregationsTooltip';
 import ColoredCell from '../ColoredCell';
 import AggregationsRow from './AggregationsRow';
 import {
@@ -79,10 +80,18 @@ function getDatasources(expanderHandler, loading, displayedTable) {
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
 
-  return baseCols.map(({ id, label, sectionId }) => {
+  return baseCols.map(({ id, label, sectionId, description }) => {
     return columnHelper.accessor(row => row[dataProp][id], {
       id,
-      header: label,
+      header: isAssociations ? (
+        <div className="">{label}</div>
+      ) : (
+        <AggregationsTooltip title={description} placement="bottom">
+          <div className="cursor-help">
+            <span>{label}</span>
+          </div>
+        </AggregationsTooltip>
+      ),
       sectionId: sectionId,
       enableSorting: isAssociations,
       cell: row => {
