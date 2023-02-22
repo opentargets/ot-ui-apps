@@ -25,7 +25,7 @@
 }
 
 .ControlsSection .global-controls-container input {
-  /* width: 200px; */
+  width: 200px;
 }
 
 /* --- HEADER ---  */
@@ -70,6 +70,10 @@
   height: 140px;
   white-space: nowrap;
   flex-grow: 1;
+}
+
+.TAssociations .Theader .cursor-pointer {
+  cursor: pointer;
 }
 
 .TAssociations .Theader .rotate > div {

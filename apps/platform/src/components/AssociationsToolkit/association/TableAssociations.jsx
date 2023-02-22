@@ -82,6 +82,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
       id,
       header: label,
       sectionId: sectionId,
+      enableSorting: isAssociations,
       cell: row => {
         if (loading)
           return <Skeleton variant="circle" width={26} height={25} />;
@@ -120,6 +121,8 @@ function TableAssociations() {
     setTableExpanded,
     displayedTable,
     resetExpandler,
+    sorting,
+    handleSortingChange,
   } = useAotfContext();
 
   const isAssociations = displayedTable === 'associations';
@@ -182,15 +185,18 @@ function TableAssociations() {
     state: {
       expanded: tableExpanded,
       pagination,
+      sorting,
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
     onExpandedChange: setTableExpanded,
+    onSortingChange: handleSortingChange,
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getRowId: row => row[entityToGet].id,
     manualPagination: true,
+    manualSorting: true,
   });
 
   const highLevelHeaders = table.getHeaderGroups()[0].headers;
@@ -223,11 +229,24 @@ function TableAssociations() {
                 {highLevelHeader.subHeaders.map(header => (
                   <div className={getHeaderClassName(header)} key={header.id}>
                     {header.isPlaceholder ? null : (
-                      <div>
+                      <div
+                        {...{
+                          className: header.column.getCanSort()
+                            ? 'cursor-pointer select-none'
+                            : '',
+                          onClick: header.column.getToggleSortingHandler(),
+                        }}
+                      >
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
+                        {isAssociations
+                          ? {
+                              asc: ' 🔼',
+                              desc: ' 🔽',
+                            }[header.column.getIsSorted()] ?? null
+                          : null}
                       </div>
                     )}
                   </div>
