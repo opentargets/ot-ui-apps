@@ -26,6 +26,7 @@ import {
 } from './SectionRender';
 import WeightsControlls from './WeightsControlls';
 import CellName from './CellName';
+import DataDownloader from '../DataDownloader';
 
 import useAotfContext from '../hooks/useAotfContext';
 
@@ -229,6 +230,7 @@ function TableAssociations() {
 
   return (
     <div className="TAssociations" style={tableCSSVariables}>
+      <DataDownloader columns={columns} fileStem={`${id}-associated-targets`} />
       <TableElement>
         {/* HEADER */}
         <div className="Theader">

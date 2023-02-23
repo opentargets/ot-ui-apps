@@ -107,6 +107,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   return (
     <AssociationsContext.Provider
       value={{
+        query,
         id,
         entity,
         entityToGet,

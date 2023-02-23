@@ -27,7 +27,9 @@ function AssociationsWrapper() {
           <SearhInput />
           <AdvanceOptionsMenu />
         </div>
-        <TargetPrioritisationSwitch />
+        <div>
+          <TargetPrioritisationSwitch />
+        </div>
       </div>
       <TableAssociations />
     </>
