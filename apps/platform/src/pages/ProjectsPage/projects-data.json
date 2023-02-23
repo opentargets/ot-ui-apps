@@ -6,9 +6,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "Y",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Other Therapy Area",
-    "Disease Mapping n1": "EFO_0000676",
-    "Disease Mapping n2": "EFO_0000274"
+    "open_targets_therapeutic_area": "Other Therapy Area"
   },
   {
     "otar_code": "OTAR2072",
@@ -17,9 +15,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "Y",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "MONDO_0004976",
-    "Disease Mapping n2": "MONDO_0004975"
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR036",
@@ -28,9 +24,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "Y",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "MONDO_0004975",
-    "Disease Mapping n2": "MONDO_0005180"
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR2054",
@@ -39,20 +33,16 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "Y",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "MONDO_0004975",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR2059",
     "project_name": "Open Targets Validation Lab (Experimental Platform Pilot)",
-    "project_lead": "Panos Zalmas/Mathew Garnett",
+    "project_lead": "Panos Zalmas/ Mathew Garnett",
     "generates_data": "Yes",
     "integrates_in_PPP": "Y",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Other Therapy Area",
-    "Disease Mapping n1": "EFO_1001951",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Other Therapy Area"
   },
   {
     "otar_code": "OTAR2062",
@@ -61,9 +51,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "Y",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "EFO_1001951",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR035",
@@ -72,9 +60,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "Y",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR031",
@@ -83,20 +69,16 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR034",
     "project_name": "Genetics Core",
-    "project_lead": "Maya Ghoussaini/Gosya Trynka",
+    "project_lead": "Maya Ghoussaini/ Gosia Trynka",
     "generates_data": "Genetics/ Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR042",
@@ -105,20 +87,16 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2045",
     "project_name": "GWAS Catalog",
-    "project_lead": "Laura Harris, Helen Parkinson, James Hayhurst",
+    "project_lead": "Laura Harris / Helen Parkinson",
     "generates_data": "Genetics evidence",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2047",
@@ -127,9 +105,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2048",
@@ -138,9 +114,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2049",
@@ -149,9 +123,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR2051",
@@ -160,9 +132,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Other Therapy Area",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Other Therapy Area"
   },
   {
     "otar_code": "OTAR2052",
@@ -171,9 +141,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR2053",
@@ -182,9 +150,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR2055",
@@ -193,9 +159,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR2056",
@@ -204,9 +168,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2057",
@@ -215,9 +177,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR2058",
@@ -226,9 +186,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR2060",
@@ -237,9 +195,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR2061",
@@ -248,9 +204,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR2063",
@@ -259,9 +213,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR2064",
@@ -270,9 +222,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR2065",
@@ -281,9 +231,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR2066",
@@ -292,9 +240,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2067",
@@ -303,9 +249,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2068",
@@ -314,9 +258,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2069",
@@ -325,9 +267,7 @@
     "generates_data": "Platform / GP evidence",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2070",
@@ -336,9 +276,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR2071",
@@ -347,9 +285,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR2073",
@@ -358,20 +294,16 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR2075",
     "project_name": "Integration of Loss-of-Function variants into Open Targets Genetics",
-    "project_lead": "Maya Ghoussaini/Gosya Trynka",
+    "project_lead": "Maya Ghoussaini/ Gosia Trynka",
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2076",
@@ -380,9 +312,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR2077",
@@ -391,9 +321,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2078",
@@ -402,20 +330,16 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2079",
     "project_name": "Saturation Genome Editing in Immune Genes",
-    "project_lead": "Gosia Trynka/Dave Adams",
+    "project_lead": "Gosia Trynka/ Dave Adams",
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR2080",
@@ -424,9 +348,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR2081",
@@ -435,9 +357,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR3083",
@@ -446,9 +366,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR3084",
@@ -457,9 +375,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR3086",
@@ -468,9 +384,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR3087",
@@ -479,9 +393,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR005",
@@ -490,9 +402,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR006",
@@ -501,9 +411,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR007",
@@ -512,9 +420,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR008",
@@ -523,9 +429,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR009",
@@ -534,9 +438,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR010",
@@ -545,9 +447,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR011",
@@ -556,9 +456,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR012",
@@ -567,9 +465,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR013",
@@ -578,9 +474,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR014",
@@ -589,9 +483,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR015",
@@ -600,9 +492,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR016",
@@ -611,9 +501,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR017",
@@ -622,9 +510,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR020",
@@ -633,9 +519,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Other Therapy Area",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Other Therapy Area"
   },
   {
     "otar_code": "OTAR021",
@@ -644,9 +528,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Other Therapy Area",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Other Therapy Area"
   },
   {
     "otar_code": "OTAR022",
@@ -655,9 +537,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Other Therapy Area",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Other Therapy Area"
   },
   {
     "otar_code": "OTAR023",
@@ -666,9 +546,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR024",
@@ -677,9 +555,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR025",
@@ -688,9 +564,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR026",
@@ -699,9 +573,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR027",
@@ -710,9 +582,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR028",
@@ -721,9 +591,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Other Therapy Area",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Other Therapy Area"
   },
   {
     "otar_code": "OTAR032",
@@ -732,9 +600,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR037",
@@ -743,9 +609,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR038",
@@ -754,9 +618,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR039",
@@ -765,9 +627,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR040",
@@ -776,9 +636,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Immunology and Inflammation"
   },
   {
     "otar_code": "OTAR041",
@@ -787,9 +645,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Oncology",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Oncology"
   },
   {
     "otar_code": "OTAR043",
@@ -798,9 +654,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR044",
@@ -809,9 +663,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR050",
@@ -820,9 +672,7 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Neurodegenerative Disease"
   },
   {
     "otar_code": "OTAR2046",
@@ -831,9 +681,7 @@
     "generates_data": "Platform evidence",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   },
   {
     "otar_code": "OTAR2074",
@@ -842,8 +690,6 @@
     "generates_data": "Yes",
     "integrates_in_PPP": "N",
     "project_status": "Closed",
-    "open_targets_therapeutic_area": "Informatics",
-    "Disease Mapping n1": "",
-    "Disease Mapping n2": ""
+    "open_targets_therapeutic_area": "Informatics"
   }
 ]

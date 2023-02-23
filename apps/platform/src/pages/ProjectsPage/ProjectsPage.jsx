@@ -58,6 +58,12 @@ function ProjectPage() {
         </Link>
         .
       </Typography>
+      <Typography paragraph>
+        PPP specific documentation can be found{' '}
+        <Link to="https://platform-docs.opentargets.org/partner-preview-platform" external newTab>
+          here
+        </Link>
+      </Typography>
 
       <Paper variant="outlined" elevation={0}>
         <Box m={2}>
