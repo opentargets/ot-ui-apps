@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheck,
   faXmark,
-  faCircleCheck,
 } from '@fortawesome/free-solid-svg-icons';
 
 const columns = [
