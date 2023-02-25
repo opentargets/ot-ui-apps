@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, makeStyles, Typography } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -32,7 +31,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SearchListHeader({ listHeader, children, clearAll }) {
+function SearchListHeader({
+  listHeader,
+  children,
+  clearAll
+}: {
+  listHeader: React.ReactNode;
+  children: React.ReactNode;
+  clearAll: () => void
+}) {
   const classes = useStyles();
 
   if (listHeader === "") return <>{children}</>;

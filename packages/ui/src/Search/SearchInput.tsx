@@ -1,11 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Search } from "@material-ui/icons";
-import {
-  makeStyles,
-  TextField,
-  InputBase,
-  InputAdornment,
-} from "@material-ui/core";
+import { makeStyles, TextField, InputAdornment } from "@material-ui/core";
 import useDebounce from "../hooks/useDebounce";
 import { SearchContext } from "./SearchContext";
 
@@ -58,9 +53,7 @@ function SearchInput({
   const classes = useStyles();
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 300);
-  const {
-    searchPlaceholder
-  } = useContext(SearchContext);
+  const { searchPlaceholder } = useContext(SearchContext);
 
   const handleChangeInputValue = (e) => {
     setInputValue(e.target.value.trim() || "");
