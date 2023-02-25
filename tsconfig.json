@@ -8,7 +8,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "noImplicitAny":false,
+    "noImplicitAny": false,
     "declaration": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -18,17 +18,5 @@
     "downlevelIteration": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
-  },
-  "exclude": [
-    "**/build/",
-    "**/dist/",
-    "**/lib/",
-    "**/umd/",
-    "**/tmp/",
-    "**/embedded_demos/",
-    "**/component_tests/",
-    "**/plugin-development-tools/",
-    "**/webpack.config.js",
-    "**/website"
-  ]
+  }
 }

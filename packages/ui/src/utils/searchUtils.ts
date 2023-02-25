@@ -1,11 +1,8 @@
 import { format } from "d3-format";
+import { SearchResult } from "../Search/SearchListItem";
 
 export const formatSearchData = (unformattedData) => {
-  const allTypes = [] as {
-    type: string;
-    entity: unknown;
-    [key: string]: unknown;
-  }[];
+  const allTypes = [] as SearchResult[];
 
   for (const key in unformattedData) {
     if (Object.hasOwnProperty.call(unformattedData, key)) {
@@ -16,7 +13,7 @@ export const formatSearchData = (unformattedData) => {
             type: key === "topHit" ? "topHit" : i.__typename,
             entity: i.__typename,
             ...flattenObj(i),
-          })
+          } as SearchResult)
         );
       } else if (isArray(element["hits"])) {
         element["hits"].map((i) =>
@@ -24,7 +21,7 @@ export const formatSearchData = (unformattedData) => {
             type: key === "topHit" ? "topHit" : i.entity,
             entity: i.entity,
             ...flattenObj(i.object),
-          })
+          } as SearchResult)
         );
       }
     }
@@ -35,7 +32,7 @@ export const formatSearchData = (unformattedData) => {
 
 export const addSearchToLocalStorage = (item) => {
   const recentItems =
-    JSON.parse(localStorage.getItem("search-history") || "{}") || [];
+    JSON.parse(localStorage.getItem("search-history") || "[]") || [];
   const existingIndex = containsObject(item, recentItems);
 
   if (existingIndex >= 0) {

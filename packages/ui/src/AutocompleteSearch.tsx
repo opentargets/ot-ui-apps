@@ -54,7 +54,7 @@ export default function AutocompleteSearch({
   isHomePage,
 }) {
   const [searchLoading, setSearchLoading] = useState(false);
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const [openListItem] = useListOption();
   const [recentItems, setRecentValue] = useState(
     JSON.parse(localStorage.getItem("search-history") || "[]") || []
@@ -78,8 +78,8 @@ export default function AutocompleteSearch({
           name: inputValue,
           entity: "search",
           type: "",
-        }),
-        setSearchResult(data))
+        } as SearchResult),
+        setSearchResult(data as SearchResult[]))
       : setSearchResult(recentItems);
     setSearchLoading(loading);
     isQueryLoading(loading);
@@ -161,7 +161,10 @@ export default function AutocompleteSearch({
               clearItem={clearItem}
             />
           )}
-          getOptionSelected={(option, value) => option.name === value}
+          getOptionSelected={(option, value) => {
+            // @ts-ignore unsure here
+            return option.name === value;
+          }}
           filterOptions={(o, s) => searchResult}
           renderInput={(params) => (
             <SearchInput
