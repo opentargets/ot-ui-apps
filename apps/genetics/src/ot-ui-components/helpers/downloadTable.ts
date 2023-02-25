@@ -4,7 +4,7 @@ const UNEXPECTED_FORMAT =
   'Unexpected format. Supported options are csv, tsv and json.';
 
 const pick = (object, keys) => {
-  return keys.reduce(function(o, k) {
+  return keys.reduce(function (o, k) {
     // take into account optional export() function, which takes precedence as per other download formats
     o[k.id] = k.export ? k.export(object) : object[k.id];
     return o;
@@ -77,7 +77,17 @@ const asMimeType = format => {
   }
 };
 
-const downloadTable = ({ rows, headerMap, format, filenameStem }) => {
+const downloadTable = ({
+  rows,
+  headerMap,
+  format,
+  filenameStem,
+}: {
+  rows: unknown[];
+  headerMap: unknown;
+  format: unknown;
+  filenameStem: string;
+}) => {
   if (!rows || rows.length === 0) {
     console.info('Nothing to download.');
     return;
