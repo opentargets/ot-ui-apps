@@ -57,7 +57,7 @@ function Link({
   external: boolean;
   footer: unknown;
   tooltip: unknown;
-  className: string;
+  className?: string;
 }) {
   const classes = useStyles();
   return external ? (

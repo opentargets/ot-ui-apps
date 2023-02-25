@@ -97,7 +97,7 @@ const downloadTable = ({
   const blob = new Blob([contentString], {
     type: asMimeType(format),
   });
-  FileSaver.saveAs(blob, `${filenameStem}.${format}`, { autoBOM: false });
+  FileSaver.saveAs(blob, `${filenameStem}.${format}`, { autoBom: false });
 };
 
 export default downloadTable;
