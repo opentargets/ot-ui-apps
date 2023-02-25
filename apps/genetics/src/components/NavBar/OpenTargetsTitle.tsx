@@ -1,9 +1,9 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: 'inline',
   },
@@ -15,9 +15,16 @@ const styles = () => ({
     fontWeight: 300,
     textTransform: 'capitalize',
   },
-});
+}));
 
-const OpenTargetsTitle = ({ classes, className, name }) => {
+const OpenTargetsTitle = ({
+  className,
+  name,
+}: {
+  className?: string;
+  name: string;
+}) => {
+  const classes = useStyles();
   const titleClasses = classNames(classes.root, className);
   return (
     <Typography className={titleClasses} variant="h6" color="inherit">
@@ -27,4 +34,4 @@ const OpenTargetsTitle = ({ classes, className, name }) => {
   );
 };
 
-export default withStyles(styles)(OpenTargetsTitle);
+export default OpenTargetsTitle;

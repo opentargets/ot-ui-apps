@@ -42,13 +42,13 @@ function Link({
   tooltip,
   className,
 }: {
-  className: string;
+  className?: string;
   to: string;
-  onClick: () => void;
+  onClick?: () => void;
   external: boolean;
-  newTab: boolean;
+  newTab?: boolean;
   footer: boolean;
-  tooltip: unknown;
+  tooltip?: unknown;
   children: React.ReactNode;
 }) {
   const classes = useStyles();

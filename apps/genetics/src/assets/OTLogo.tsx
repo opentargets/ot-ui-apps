@@ -1,13 +1,14 @@
 import React from 'react';
-import { SvgIcon, withStyles } from '@material-ui/core';
+import { makeStyles, SvgIcon, SvgIconProps } from '@material-ui/core';
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   root: {
     height: 'unset',
   },
-});
+}));
 
-const OTLogo = ({ classes, ...rest }) => {
+const OTLogo = ({ ...rest }: SvgIconProps) => {
+  const classes = useStyles();
   return (
     <SvgIcon
       id="prefix__Layer_1"
@@ -52,4 +53,4 @@ const OTLogo = ({ classes, ...rest }) => {
   );
 };
 
-export default withStyles(styles)(OTLogo);
+export default OTLogo;

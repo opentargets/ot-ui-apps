@@ -1,9 +1,9 @@
 import React from 'react';
-import { Grid, Paper, withStyles } from '@material-ui/core';
+import { Grid, makeStyles, Paper } from '@material-ui/core';
 
 import OTLogo from '../../assets/OTLogo';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   homeboxContainer: {
     overflow: 'visible',
     padding: '30px 60px',
@@ -33,9 +33,16 @@ const styles = theme => ({
   important: {
     marginBottom: '10px',
   },
-});
+}));
 
-const HomeBox = ({ children, classes }) => {
+const HomeBox = ({
+  name,
+  children,
+}: {
+  name?: string;
+  children: React.ReactNode;
+}) => {
+  const classes = useStyles();
   return (
     <Grid item xs={12} sm={8} md={8} lg={8}>
       <Paper className={classes.homeboxContainer}>
@@ -48,4 +55,4 @@ const HomeBox = ({ children, classes }) => {
   );
 };
 
-export default withStyles(styles)(HomeBox);
+export default HomeBox;
