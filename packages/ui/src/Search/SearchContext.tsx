@@ -6,6 +6,7 @@ export const SearchContext = createContext<{
   inputValue: string;
   loading: boolean;
   searchPlaceholder: string;
+  primaryColor: string;
   inputValueUpdate: (arg: string) => void;
   isQueryLoading: (arg: boolean) => void;
   setInputValue: (arg: string) => void;
@@ -16,10 +17,12 @@ function SearchProvider({
   children,
   searchQuery,
   searchPlaceholder = "Search...",
+  primaryColor = "#3489ca",
 }: {
   children: React.ReactNode;
   searchQuery: string;
   searchPlaceholder: string;
+  primaryColor: string;
 }) {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -30,6 +33,7 @@ function SearchProvider({
   return (
     <SearchContext.Provider
       value={{
+        primaryColor,
         searchQuery,
         loading,
         inputValue,

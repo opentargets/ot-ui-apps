@@ -9,7 +9,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { Star, Label } from "@material-ui/icons";
-import { clearAllRecent } from "../utils/searchUtils";
 
 const useStyles = makeStyles((theme) => ({
   sectionHeader: {
@@ -35,9 +34,11 @@ const useStyles = makeStyles((theme) => ({
 function SearchListHeader({
   listHeader,
   children,
+  clearAll
 }: {
   listHeader: React.ReactNode;
   children: React.ReactNode;
+  clearAll: () => void
 }) {
   const classes = useStyles();
 
@@ -108,7 +109,7 @@ function SearchListHeader({
           <Typography variant="h6">{listHeader}</Typography>
         </div>
         {listHeader === "recent" && (
-          <Button onClick={clearAllRecent}>
+          <Button onClick={clearAll}>
             <Typography variant="caption">clear all</Typography>
           </Button>
         )}
