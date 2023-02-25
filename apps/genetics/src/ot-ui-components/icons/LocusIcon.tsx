@@ -1,9 +1,9 @@
 import React from 'react';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import { withStyles } from '@material-ui/core/styles';
+import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
 import classNames from 'classnames';
+import { makeStyles } from '@material-ui/core';
 
-const styles = theme => {
+const useStyles = makeStyles(theme => {
   return {
     root: {
       display: 'block',
@@ -11,9 +11,10 @@ const styles = theme => {
       fill: theme.palette.primary.main,
     },
   };
-};
+});
 
-const LocusIcon = ({ className, classes, ...rest }) => {
+const LocusIcon = ({ className, ...rest }: SvgIconProps) => {
+  const classes = useStyles();
   const iconClasses = classNames(className, classes.root);
   return (
     <SvgIcon
@@ -44,4 +45,4 @@ const LocusIcon = ({ className, classes, ...rest }) => {
   );
 };
 
-export default withStyles(styles)(LocusIcon);
+export default LocusIcon;

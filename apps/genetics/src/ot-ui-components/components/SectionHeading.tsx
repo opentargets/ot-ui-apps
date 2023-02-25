@@ -1,11 +1,11 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import ModelSchematic from './ModelSchematic';
 
-const styles = theme => ({
+const useStyles = makeStyles({
   container: {
     width: '100%',
     display: 'flex',
@@ -24,7 +24,16 @@ const styles = theme => ({
   },
 });
 
-const SectionHeading = ({ classes, heading, subheading, entities }) => {
+const SectionHeading = ({
+  heading,
+  subheading,
+  entities,
+}: {
+  heading: React.ReactNode;
+  subheading: React.ReactNode;
+  entities: { type: string; fixed: { type: string } }[];
+}) => {
+  const classes = useStyles();
   return (
     <React.Fragment>
       <hr className={classes.hr} />
@@ -46,4 +55,4 @@ const SectionHeading = ({ classes, heading, subheading, entities }) => {
   );
 };
 
-export default withStyles(styles)(SectionHeading);
+export default SectionHeading;

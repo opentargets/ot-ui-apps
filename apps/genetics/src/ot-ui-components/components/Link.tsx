@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link as RouterLink } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Icon from '@material-ui/core/Icon';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   base: {
     fontFamily: 'Inter',
     fontSize: 'inherit',
@@ -41,65 +41,70 @@ const styles = theme => ({
     height: 'auto',
     display: 'inline',
   },
-});
+}));
 
-class Link extends React.Component {
-  render() {
-    const {
-      classes = {},
-      children,
-      to,
-      onClick,
-      external,
-      footer,
-      tooltip,
-      className,
-    } = this.props;
-    return external ? (
-      <a
-        className={classNames(
-          classes.base,
-          {
-            [classes.baseDefault]: !footer && !tooltip,
-            [classes.baseFooter]: footer,
-            [classes.baseTooltip]: tooltip,
-          },
-          className
-        )}
-        target="_blank"
-        rel="noopener noreferrer"
-        href={to}
-        onClick={onClick}
-      >
-        {children}
-        {footer ? null : (
-          <Icon
-            className={classNames(
-              'fa',
-              'fa-external-link-alt',
-              classes.externalIcon
-            )}
-          />
-        )}
-      </a>
-    ) : (
-      <RouterLink
-        className={classNames(
-          classes.base,
-          {
-            [classes.baseDefault]: !footer && !tooltip,
-            [classes.baseFooter]: footer,
-            [classes.basetooltip]: tooltip,
-          },
-          className
-        )}
-        to={to}
-        onClick={onClick}
-      >
-        {children}
-      </RouterLink>
-    );
-  }
+function Link({
+  children,
+  to,
+  onClick,
+  external,
+  footer,
+  tooltip,
+  className,
+}: {
+  onClick: () => void;
+  tooltip: string;
+  className?: string;
+  footer: boolean;
+  external: boolean;
+  to: string;
+  children: React.ReactNode;
+}) {
+  const classes = useStyles();
+  return external ? (
+    <a
+      className={classNames(
+        classes.base,
+        {
+          [classes.baseDefault]: !footer && !tooltip,
+          [classes.baseFooter]: footer,
+          [classes.baseTooltip]: tooltip,
+        },
+        className
+      )}
+      target="_blank"
+      rel="noopener noreferrer"
+      href={to}
+      onClick={onClick}
+    >
+      {children}
+      {footer ? null : (
+        <Icon
+          className={classNames(
+            'fa',
+            'fa-external-link-alt',
+            classes.externalIcon
+          )}
+        />
+      )}
+    </a>
+  ) : (
+    <RouterLink
+      className={classNames(
+        classes.base,
+        {
+          [classes.baseDefault]: !footer && !tooltip,
+          [classes.baseFooter]: footer,
+          [classes.baseTooltip]: tooltip,
+        },
+        className
+      )}
+      to={to}
+      onClick={onClick}
+    >
+      {children}
+    </RouterLink>
+  );
 }
 
 Link.propTypes = {
@@ -125,4 +130,4 @@ Link.defaultProps = {
 
 export { Link };
 
-export default withStyles(styles)(Link);
+export default Link;

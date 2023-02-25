@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   page: {
     background: theme.palette.grey['50'],
     minHeight: '100vh',
@@ -18,28 +18,34 @@ const styles = theme => ({
     width: '100%',
     flex: '1 0 auto',
   },
-});
+}));
 
-class Page extends React.Component {
-  render() {
-    const { classes, header, footer, children } = this.props;
-    return (
-      <div className={classes.page}>
-        {header}
-        <Grid
-          container
-          justifyContent={'center'}
-          spacing={4}
-          className={classes.gridContainer}
-        >
-          <Grid item xs={12} md={11}>
-            {children}
-          </Grid>
+function Page({
+  header,
+  footer,
+  children,
+}: {
+  header: React.ReactNode,
+  footer: React.ReactNode,
+  children: React.ReactNode,
+}) {
+  const classes = useStyles();
+  return (
+    <div className={classes.page}>
+      {header}
+      <Grid
+        container
+        justifyContent={'center'}
+        spacing={4}
+        className={classes.gridContainer}
+      >
+        <Grid item xs={12} md={11}>
+          {children}
         </Grid>
-        {footer}
-      </div>
-    );
-  }
+      </Grid>
+      {footer}
+    </div>
+  );
 }
 
 Page.propTypes = {
@@ -62,4 +68,4 @@ Page.defaultProps = {
 
 export { Page };
 
-export default withStyles(styles)(Page);
+export default Page;

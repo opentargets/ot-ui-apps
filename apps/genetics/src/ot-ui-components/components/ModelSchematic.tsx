@@ -1,9 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 import Tooltip from '@material-ui/core/Tooltip';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   modelSchematic: {
     fontFamily: 'sans-serif',
   },
@@ -33,7 +33,7 @@ const styles = theme => ({
     strokeWidth: 2,
     stroke: theme.palette.grey[500],
   },
-});
+}));
 
 const ENTITY_WIDTH = 30;
 const ENTITY_RADIUS = ENTITY_WIDTH / 2 - 2;
@@ -62,7 +62,12 @@ const ICON_LABEL_MAP = {
   ),
 };
 
-const ModelSchematic = ({ classes, entities }) => {
+const ModelSchematic = ({
+  entities,
+}: {
+  entities: { type: string; fixed: { type: string } }[];
+}) => {
+  const classes = useStyles();
   const totalWidth =
     ENTITY_WIDTH * entities.length + CONNECTOR_WIDTH * (entities.length - 1);
 
@@ -85,8 +90,9 @@ const ModelSchematic = ({ classes, entities }) => {
             return (
               <g
                 key={i}
-                transform={`translate(${ENTITY_WIDTH / 2 +
-                  i * (ENTITY_WIDTH + CONNECTOR_WIDTH)},${TOTAL_HEIGHT / 2})`}
+                transform={`translate(${
+                  ENTITY_WIDTH / 2 + i * (ENTITY_WIDTH + CONNECTOR_WIDTH)
+                },${TOTAL_HEIGHT / 2})`}
               >
                 <circle
                   cx={0}
@@ -132,4 +138,4 @@ const ModelSchematic = ({ classes, entities }) => {
   );
 };
 
-export default withStyles(styles)(ModelSchematic);
+export default ModelSchematic;
