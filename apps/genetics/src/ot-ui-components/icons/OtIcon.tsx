@@ -1,9 +1,9 @@
 import React from 'react';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import { withStyles } from '@material-ui/core/styles';
+import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
+import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 
-const styles = theme => {
+const useStyles = makeStyles(theme => {
   return {
     root: {
       width: '100px',
@@ -11,9 +11,10 @@ const styles = theme => {
       fill: theme.palette.primary.main,
     },
   };
-};
+});
 
-const OtIcon = ({ className, classes, ...rest }) => {
+const OtIcon = ({ className, ...rest }: SvgIconProps) => {
+  const classes = useStyles();
   const iconClasses = classNames(className, classes.root);
   return (
     <SvgIcon
@@ -43,4 +44,4 @@ const OtIcon = ({ className, classes, ...rest }) => {
   );
 };
 
-export default withStyles(styles)(OtIcon);
+export default OtIcon;

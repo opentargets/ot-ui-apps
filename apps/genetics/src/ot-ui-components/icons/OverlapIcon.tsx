@@ -1,9 +1,9 @@
 import React from 'react';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import { withStyles } from '@material-ui/core/styles';
+import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon';
+import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 
-const styles = theme => {
+const useStyles = makeStyles(theme => {
   return {
     root: {
       display: 'block',
@@ -13,9 +13,10 @@ const styles = theme => {
       fill: 'none',
     },
   };
-};
+});
 
-const OverlapIcon = ({ className, classes, ...rest }) => {
+const OverlapIcon = ({ className, ...rest }: SvgIconProps) => {
+  const classes = useStyles();
   const iconClasses = classNames(className, classes.root);
   return (
     <SvgIcon
@@ -30,4 +31,4 @@ const OverlapIcon = ({ className, classes, ...rest }) => {
   );
 };
 
-export default withStyles(styles)(OverlapIcon);
+export default OverlapIcon;

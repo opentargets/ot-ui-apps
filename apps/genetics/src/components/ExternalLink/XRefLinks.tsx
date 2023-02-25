@@ -10,7 +10,6 @@ function XRefLinks({
   urlStem: string;
   ids: string[];
 }) {
-  console.log('t1');
   return (
     <span>
       {label}:{' '}

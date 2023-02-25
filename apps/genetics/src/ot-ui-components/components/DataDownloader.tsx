@@ -40,7 +40,6 @@ function DataDownloader({
   loading: boolean;
   fileStem: string;
 }) {
-  console.log('t2');
   if (loading) {
     return (
       <Grid container justifyContent="flex-end" spacing={1}>
