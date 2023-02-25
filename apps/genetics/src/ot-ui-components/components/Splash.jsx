@@ -57,7 +57,10 @@ class Splash extends React.Component {
     svg.attr('width', width).attr('height', height);
 
     // create voronoi generator
-    const voronoi = d3.voronoi().extent([[-1, -1], [width, height]]);
+    const voronoi = d3.voronoi().extent([
+      [-1, -1],
+      [width, height],
+    ]);
 
     // join
     const pointsVoronoi = svg.selectAll('path').data(voronoi.polygons(data));
@@ -69,7 +72,7 @@ class Splash extends React.Component {
       .attr('stroke-opacity', 0.3)
       .attr('fill', 'none')
       .merge(pointsVoronoi)
-      .attr('d', function(d) {
+      .attr('d', function (d) {
         return d ? 'M' + d.join('L') + 'Z' : null;
       });
 
@@ -77,6 +80,4 @@ class Splash extends React.Component {
   }
 }
 
-Splash = withContentRect('bounds')(Splash);
-
-export default withStyles(styles)(Splash);
+export default withContentRect(withStyles(styles)(Splash));

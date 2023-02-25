@@ -1,12 +1,13 @@
 import React from 'react';
 import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import MuiChip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   chip: {
+    // @ts-ignore
     margin: theme.spacing.unit / 2,
     color: 'white',
   },
@@ -17,18 +18,22 @@ const styles = theme => ({
     border: '2px solid white',
   },
   gene: {
+    // @ts-ignore
     backgroundColor: theme.palette.gene,
   },
   tagVariant: {
+    // @ts-ignore
     backgroundColor: theme.palette.tagVariant,
   },
   indexVariant: {
+    // @ts-ignore
     backgroundColor: theme.palette.indexVariant,
   },
   study: {
+    // @ts-ignore
     backgroundColor: theme.palette.study,
   },
-});
+}));
 
 const AVATAR_MAP = {
   gene: 'G',
@@ -50,13 +55,16 @@ const AVATAR_MAP = {
   study: 'S',
 };
 
-const Chip = ({ classes, type, label, onDelete }) => (
-  <MuiChip
-    avatar={<Avatar className={classes.avatar}>{AVATAR_MAP[type]}</Avatar>}
-    className={classNames(classes.chip, classes[type])}
-    label={label}
-    // onDelete={onDelete}
-  />
-);
+const Chip = ({ type, label, onDelete: _onDelete }) => {
+  const classes = useStyles();
+  return (
+    <MuiChip
+      avatar={<Avatar className={classes.avatar}>{AVATAR_MAP[type]}</Avatar>}
+      className={classNames(classes.chip, classes[type])}
+      label={label}
+      // onDelete={onDelete}
+    />
+  );
+};
 
-export default withStyles(styles)(Chip);
+export default Chip;

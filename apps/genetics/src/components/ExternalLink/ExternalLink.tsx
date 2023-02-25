@@ -2,7 +2,15 @@ import React from 'react';
 
 import Link from '../Link';
 
-function ExternalLink({ title, id, url }) {
+function ExternalLink({
+  title,
+  id,
+  url,
+}: {
+  title: string,
+  id: string,
+  url: string,
+}) {
   if (!id) return null;
 
   return (

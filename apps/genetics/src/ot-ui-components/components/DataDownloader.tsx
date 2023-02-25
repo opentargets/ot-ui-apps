@@ -27,7 +27,20 @@ function handleDownload(headers, rows, fileStem, format) {
   });
 }
 
-function DataDownloader({ tableHeaders, rows, classes, fileStem, loading }) {
+function DataDownloader({
+  tableHeaders,
+  rows,
+  classes,
+  fileStem,
+  loading,
+}: {
+  tableHeaders: string;
+  rows: any[];
+  classes: Record<string, string>;
+  loading: boolean;
+  fileStem: string;
+}) {
+  console.log('t2');
   if (loading) {
     return (
       <Grid container justifyContent="flex-end" spacing={1}>

@@ -4,15 +4,14 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { MenuItem, MenuList } from '@material-ui/core';
+import { makeStyles, MenuItem, MenuList, PopperProps } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Link from '../Link';
 import OpenTargetsTitle from './OpenTargetsTitle';
 import HeaderMenu from './HeaderMenu';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   navbar: {
     backgroundColor: theme.palette.primary.main,
     margin: 0,
@@ -73,23 +72,24 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'end',
   },
-});
+}));
 
-const MenuExternalLink = ({ classes, href, children }) => (
-  <Typography color="inherit" className={classes.menuExternalLinkContainer}>
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      href={href}
-      className={classes.menuExternalLink}
-    >
-      {children}
-    </a>
-  </Typography>
-);
-
+const MenuExternalLink = ({ href, children }) => {
+  const classes = useStyles();
+  return (
+    <Typography color="inherit" className={classes.menuExternalLinkContainer}>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href={href}
+        className={classes.menuExternalLink}
+      >
+        {children}
+      </a>
+    </Typography>
+  );
+};
 const NavBar = ({
-  classes,
   name,
   search,
   api,
@@ -99,7 +99,18 @@ const NavBar = ({
   homepage,
   items,
   placement,
+}: {
+  name: string;
+  search: React.ReactNode;
+  api?: string;
+  docs?: string;
+  downloads?: string;
+  contact?: string;
+  items: { external: boolean; name: string; url: string }[];
+  homepage: boolean;
+  placement?: PopperProps['placement'];
 }) => {
+  const classes = useStyles();
   const smMQ = useMediaQuery('(max-width:800px)');
   const isHomePageRegular = homepage && !smMQ;
   return (
@@ -121,28 +132,16 @@ const NavBar = ({
         </div>
         <div className={classes.navSearch}>{search ? search : null}</div>
         <div className={classes.navMenu}>
-          {docs ? (
-            <MenuExternalLink classes={classes} href={docs}>
-              Docs
-            </MenuExternalLink>
-          ) : null}
+          {docs ? <MenuExternalLink href={docs}>Docs</MenuExternalLink> : null}
 
-          {api ? (
-            <MenuExternalLink classes={classes} href={api}>
-              API
-            </MenuExternalLink>
-          ) : null}
+          {api ? <MenuExternalLink href={api}>API</MenuExternalLink> : null}
 
           {downloads ? (
-            <MenuExternalLink classes={classes} href={downloads}>
-              Downloads
-            </MenuExternalLink>
+            <MenuExternalLink href={downloads}>Downloads</MenuExternalLink>
           ) : null}
 
           {contact ? (
-            <MenuExternalLink classes={classes} href={contact}>
-              Contact
-            </MenuExternalLink>
+            <MenuExternalLink href={contact}>Contact</MenuExternalLink>
           ) : null}
 
           {items && !isHomePageRegular ? (
@@ -170,4 +169,4 @@ const NavBar = ({
   );
 };
 
-export default withStyles(styles)(NavBar);
+export default NavBar;

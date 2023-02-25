@@ -1,7 +1,16 @@
 import React, { Fragment } from 'react';
 import Link from '../Link';
 
-function XRefLinks({ label, urlStem, ids }) {
+function XRefLinks({
+  label,
+  urlStem,
+  ids,
+}: {
+  label: string;
+  urlStem: string;
+  ids: string[];
+}) {
+  console.log('t1');
   return (
     <span>
       {label}:{' '}

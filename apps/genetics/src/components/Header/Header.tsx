@@ -3,6 +3,7 @@ import { Grid, makeStyles, Typography } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 const useStyles = makeStyles(theme => ({
   externalLinks: {
@@ -42,6 +43,13 @@ function Header({
   subtitle = null,
   externalLinks,
   children = null,
+}: {
+  loading: boolean;
+  Icon: IconProp;
+  title: string;
+  subtitle?: React.ReactNode;
+  externalLinks?: string[];
+  children?: React.ReactNode;
 }) {
   const classes = useStyles();
 

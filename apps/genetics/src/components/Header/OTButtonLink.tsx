@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const OTButtonLink = ({ id, symbol }) => {
+const OTButtonLink = ({ id, symbol }: { id: string; symbol: string }) => {
   const classes = useStyles();
   const btnLabel = `View ${symbol} in the Open Targets Platform`;
   return (
