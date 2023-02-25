@@ -29,32 +29,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export interface SearchResult {
+  type: string;
+  symbol: string;
+  name: string;
+  entity: string;
+  id: string;
+  rsId: string;
+  hasSumstats: boolean;
+  nInitial: number;
+  pubJournal: string;
+  chromosome: string;
+  functionDescriptions: string[];
+  position: string;
+  pubAuthor: string;
+  pubDate: string;
+  numAssocLoci: number;
+  end: number;
+  start: number;
+}
+
 function SearchListItem({
   item,
-  isTopHit = "false",
+  isTopHit = false,
   clearItem,
 }: {
-  item: {
-    type: string;
-    symbol: string;
-    name: string;
-    entity: string;
-    id: string;
-    rsId: string;
-    hasSumstats: boolean;
-    nInitial: number;
-    pubJournal: string;
-    chromosome: string;
-    functionDescriptions: string[];
-    position: string;
-    pubAuthor: string;
-    pubDate: string;
-    numAssocLoci: number;
-    end: number;
-    start: number;
-  };
-  isTopHit: string;
-  clearItem: () => void;
+  item: SearchResult;
+  isTopHit: boolean;
+  clearItem: (item: any) => void;
 }) {
   const classes = useStyles();
 

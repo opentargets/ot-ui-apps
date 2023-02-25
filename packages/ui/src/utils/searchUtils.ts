@@ -1,7 +1,11 @@
-import { format } from 'd3-format';
+import { format } from "d3-format";
 
 export const formatSearchData = (unformattedData) => {
-  const allTypes = [];
+  const allTypes = [] as {
+    type: string;
+    entity: unknown;
+    [key: string]: unknown;
+  }[];
 
   for (const key in unformattedData) {
     if (Object.hasOwnProperty.call(unformattedData, key)) {
@@ -30,9 +34,10 @@ export const formatSearchData = (unformattedData) => {
 };
 
 export const addSearchToLocalStorage = (item) => {
-  const recentItems = JSON.parse(localStorage.getItem("search-history")) || [];
+  const recentItems =
+    JSON.parse(localStorage.getItem("search-history") || "{}") || [];
   const existingIndex = containsObject(item, recentItems);
-  
+
   if (existingIndex >= 0) {
     recentItems.splice(existingIndex, 1);
   }
@@ -40,12 +45,12 @@ export const addSearchToLocalStorage = (item) => {
 
   item && recentItemsDeepCopy.unshift(item);
   exceedsArrayLengthLimit(recentItemsDeepCopy) && recentItemsDeepCopy.pop();
-  item && localStorage.setItem("search-history", JSON.stringify(recentItemsDeepCopy));
+  item &&
+    localStorage.setItem("search-history", JSON.stringify(recentItemsDeepCopy));
 };
 
 export const containsObject = (obj, list) => {
-  let i;
-  for (i = 0; i < list.length; i++) {
+  for (let i = 0; i < list.length; i++) {
     if (JSON.stringify(list[i]) === JSON.stringify(obj)) {
       return i;
     }
@@ -54,13 +59,13 @@ export const containsObject = (obj, list) => {
   return -1;
 };
 
-export const clearAllRecent =()=> {
+export const clearAllRecent = () => {
   localStorage.removeItem("search-history");
-}
+};
 
-export const commaSeparate = format(',');
+export const commaSeparate = format(",");
 
-const mapStandardKeys = (origionalKey) => {
+const mapStandardKeys = (origionalKey: string) => {
   switch (origionalKey) {
     case "studyId":
       return "id";
@@ -99,8 +104,8 @@ const exceedsArrayLengthLimit = (array) => {
   const limitLength = 10;
   let exceedsLimit = false;
 
-  if(array.length > limitLength) {
-      exceedsLimit = true;
+  if (array.length > limitLength) {
+    exceedsLimit = true;
   }
   return exceedsLimit;
-}
+};

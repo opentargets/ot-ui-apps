@@ -1,7 +1,16 @@
 import React, { createContext, useState } from "react";
 
 // COMPONENT CONTEXT
-export const SearchContext = createContext({} as Record<string, unknown>);
+export const SearchContext = createContext<{
+  searchQuery: string;
+  inputValue: string;
+  loading: boolean;
+  searchPlaceholder: string;
+  inputValueUpdate: (arg: string) => void;
+  isQueryLoading: (arg: boolean) => void;
+  setInputValue: (arg: string) => void;
+  setLoading: (arg: boolean) => void;
+}>(null!); // xref https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/context/#type-assertion-as-an-alternative
 
 function SearchProvider({
   children,
@@ -15,8 +24,8 @@ function SearchProvider({
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
-  const isQueryLoading = (e) => setLoading(e);
-  const inputValueUpdate = (e) => setInputValue(e);
+  const isQueryLoading = (e: boolean) => setLoading(e);
+  const inputValueUpdate = (e: string) => setInputValue(e);
 
   return (
     <SearchContext.Provider

@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "./hooks/useSearchQueryData";
-import SearchListItem from "./Search/SearchListItem";
+import SearchListItem, { SearchResult } from "./Search/SearchListItem";
 import SearchListHeader from "./Search/SearchListHeader";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import useListOption from "./hooks/useListOption";
@@ -12,13 +12,14 @@ import { containsObject } from "./utils/searchUtils";
 
 const theme = createTheme({
   overrides: {
+    // @ts-ignore
     MuiAutocomplete: {
       popper: {
         borderRadius: "0 0 12px 12px !important",
       },
       paper: {
         height: "inherit !important",
-        boxShadow: "2px 0 4px -4px #999, -2px 0 4px -4px #999"
+        boxShadow: "2px 0 4px -4px #999, -2px 0 4px -4px #999",
       },
       listbox: {
         maxHeight: "47vh !important",
@@ -56,7 +57,7 @@ export default function AutocompleteSearch({
   const [searchResult, setSearchResult] = useState([]);
   const [openListItem] = useListOption();
   const [recentItems, setRecentValue] = useState(
-    JSON.parse(localStorage.getItem("search-history")) || []
+    JSON.parse(localStorage.getItem("search-history") || "[]") || []
   );
 
   const {
@@ -73,7 +74,7 @@ export default function AutocompleteSearch({
   useEffect(() => {
     data.length > 0 && inputValue
       ? (data.unshift({
-          symbol: "Search For: "+inputValue,
+          symbol: "Search For: " + inputValue,
           name: inputValue,
           entity: "search",
           type: "",
@@ -148,12 +149,15 @@ export default function AutocompleteSearch({
               children={group.children}
             />
           )}
-          getOptionLabel={(option) => option.symbol || option.name || option.id}
-          renderOption={(option) => (
+          getOptionLabel={(option: {
+            symbol: string;
+            name: string;
+            id: string;
+          }) => option.symbol || option.name || option.id}
+          renderOption={(option: SearchResult) => (
             <SearchListItem
               item={option}
               isTopHit={option.type === "topHit"}
-              loading={searchLoading}
               clearItem={clearItem}
             />
           )}
