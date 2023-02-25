@@ -1,9 +1,17 @@
-import { createContext, useState } from "react";
+import React, { createContext, useState } from "react";
 
 // COMPONENT CONTEXT
-export const SearchContext = createContext();
+export const SearchContext = createContext({} as Record<string, unknown>);
 
-function SearchProvider({ children, searchQuery, searchPlaceholder = "Search..." }) {
+function SearchProvider({
+  children,
+  searchQuery,
+  searchPlaceholder = "Search...",
+}: {
+  children: React.ReactNode;
+  searchQuery: string;
+  searchPlaceholder: string;
+}) {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
 

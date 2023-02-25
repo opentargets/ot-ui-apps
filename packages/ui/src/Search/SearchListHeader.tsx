@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, makeStyles, Typography } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     gap: "1rem",
     margin: "0.5rem 1rem 0.5rem 2rem",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   label: {
     display: "flex",
@@ -33,7 +32,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SearchListHeader({ listHeader, children }) {
+function SearchListHeader({
+  listHeader,
+  children,
+}: {
+  listHeader: React.ReactNode;
+  children: React.ReactNode;
+}) {
   const classes = useStyles();
 
   if (listHeader === "") return <>{children}</>;
@@ -103,7 +108,9 @@ function SearchListHeader({ listHeader, children }) {
           <Typography variant="h6">{listHeader}</Typography>
         </div>
         {listHeader === "recent" && (
-          <Button onClick={clearAllRecent }><Typography variant="caption">clear all</Typography></Button> 
+          <Button onClick={clearAllRecent}>
+            <Typography variant="caption">clear all</Typography>
+          </Button>
         )}
       </div>
       {children}
