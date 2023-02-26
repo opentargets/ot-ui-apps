@@ -74,7 +74,10 @@ function AssociationsProvider({ children, entity, id, query }) {
 
   const handleSortingChange = newSortingFunc => {
     const newSorting = newSortingFunc();
-    if (newSorting[0].id === sorting[0].id) return;
+    if (newSorting[0].id === sorting[0].id) {
+      setSorting([{ id: 'score', desc: true }]);
+      return;
+    }
     setSorting(newSorting);
   };
 
