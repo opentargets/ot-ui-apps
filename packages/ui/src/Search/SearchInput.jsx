@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { Search } from "@material-ui/icons";
 import {
   makeStyles,
@@ -54,16 +54,16 @@ function SearchInput({
   onClose,
   changeInputValue,
   isHomePage,
+  focus,
 }) {
   const classes = useStyles();
-  const [inputValue, setInputValue] = useState("");
-  const debouncedInputValue = useDebounce(inputValue, 300);
-  const {
-    searchPlaceholder
-  } = useContext(SearchContext);
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const debouncedInputValue = useDebounce(searchInputValue, 300);
+  const { searchPlaceholder, inputValue } = useContext(SearchContext);
+  const inputRef = useRef(null);
 
   const handleChangeInputValue = (e) => {
-    setInputValue(e.target.value.trim() || "");
+    setSearchInputValue(e.target.value.trim() || "");
     changeInputValue(e.target.value.trim() || "");
   };
 
@@ -71,10 +71,19 @@ function SearchInput({
     debounceValue(debouncedInputValue);
   }, [debouncedInputValue]);
 
+  useEffect(() => {
+    (!isHomePage || focus) && inputRef.current.focus();
+    // (isHomePage && !focus) && inputRef.current.blur();
+  }, [focus, isHomePage]);
+
+  useEffect(() => {
+    inputRef.current.value = inputValue;
+  }, [inputValue]);
+
   return (
     <div className={classes.searchContainer}>
       <TextField
-        autoFocus={!isHomePage}
+        inputRef={inputRef}
         className={classes.searchInput}
         {...params}
         InputProps={{
@@ -94,7 +103,7 @@ function SearchInput({
           className: classes.inputPadding,
         }}
         onChange={handleChangeInputValue}
-        value={inputValue}
+        value={searchInputValue}
         placeholder={searchPlaceholder}
       />
     </div>

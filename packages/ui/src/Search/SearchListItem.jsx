@@ -74,11 +74,10 @@ function SearchListItem({ item, isTopHit = "false", clearItem }) {
           </Typography>
         </div>
         {isTopHit &&
-          item.functionDescriptions &&
-          item.functionDescriptions.length > 0 && (
+          item.description && (
             <div className="functionDescription">
               <Typography variant="subtitle1">
-                {item.functionDescriptions[0].substring(0, 180)} ...{" "}
+                {item.description.substring(0, 180)} ...{" "}
               </Typography>
             </div>
           )}
