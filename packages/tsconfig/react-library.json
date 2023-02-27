@@ -8,6 +8,7 @@
     "target": "ES6",
     "jsx": "react-jsx",
     "noImplicitAny": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowJs": true
   }
 }
