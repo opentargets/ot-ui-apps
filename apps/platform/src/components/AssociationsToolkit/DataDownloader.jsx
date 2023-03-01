@@ -1,5 +1,5 @@
 import FileSaver from 'file-saver';
-import React, { useState } from 'react';
+import { useState, useMemo } from 'react';
 import _ from 'lodash';
 import {
   Button,
@@ -9,11 +9,64 @@ import {
   makeStyles,
   Snackbar,
   Slide,
+  Popover,
+  styled,
 } from '@material-ui/core';
-import 'graphiql/graphiql.min.css';
+import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAotfContext from './hooks/useAotfContext';
 import useBatchDownloader from '../../hooks/useBatchDownloader';
 import dataSources from './static_datasets/dataSourcesAssoc';
+
+const PopoverContent = styled('div')({
+  padding: '20px 25px',
+});
+
+const LabelContainer = styled('div')({
+  marginBottom: 12,
+});
+
+const targetName = {
+  id: 'symbol',
+  label: 'Symbol',
+  exportValue: data => data.target.approvedSymbol,
+};
+
+const diseaseName = {
+  id: 'symbol',
+  label: 'Symbol',
+  exportValue: data => data.disease.name,
+};
+
+const getRowsQuerySelector = entityToGet =>
+  entityToGet === 'target'
+    ? 'data.disease.associatedTargets'
+    : 'data.target.associatedDiseases';
+
+const getExportedColumns = entityToGet => {
+  const nameColumn = entityToGet === 'target' ? targetName : diseaseName;
+  const sources = dataSources.map(({ id }) => {
+    return {
+      id,
+      exportValue: data => {
+        const datatypeScore = data.datasourceScores.find(
+          datasourceScore => datasourceScore.componentId === id
+        );
+        return datatypeScore ? datatypeScore.score : 'No data';
+      },
+    };
+  });
+
+  return [
+    nameColumn,
+    {
+      id: 'score',
+      label: 'Score',
+      exportValue: data => data.score,
+    },
+    ...sources,
+  ];
+};
 
 const asJSON = (columns, rows) => {
   const rowStrings = rows.map(row => {
@@ -141,8 +194,15 @@ const styles = makeStyles(theme => ({
 function DataDownloader({ fileStem }) {
   const [downloading, setDownloading] = useState(false);
   const classes = styles();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { id, query, searhFilter, sorting, enableIndirect, entityToGet } =
+    useAotfContext();
 
-  const { id, query, searhFilter, sorting, enableIndirect } = useAotfContext();
+  const columns = useMemo(() => getExportedColumns(entityToGet), [entityToGet]);
+  const queryResponseSelector = useMemo(
+    () => getRowsQuerySelector(entityToGet),
+    [entityToGet]
+  );
 
   const getAllAssociations = useBatchDownloader(
     query,
@@ -152,62 +212,92 @@ function DataDownloader({ fileStem }) {
       sortBy: sorting[0].id,
       enableIndirect,
     },
-    'data.disease.associatedTargets'
+    queryResponseSelector
   );
+
+  const open = Boolean(anchorEl);
+  const popoverId = open ? 'dowloader-popover' : undefined;
 
   const downloadData = async (format, columns, rows, fileStem) => {
     let allRows = rows;
-
     if (typeof rows === 'function') {
       setDownloading(true);
       allRows = await rows();
       setDownloading(false);
     }
-
     if (!allRows || allRows.length === 0) {
       return;
     }
-
-    console.log({ columns, allRows });
-
     const blob = createBlob(format)(columns, allRows);
-
     FileSaver.saveAs(blob, `${fileStem}.${format}`, { autoBOM: false });
   };
 
+  const handleClickBTN = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+  };
+
   const handleClickDownloadJSON = async () => {
-    downloadData('json', dataSources, getAllAssociations, fileStem);
+    downloadData('json', columns, getAllAssociations, fileStem);
   };
 
   const handleClickDownloadTSV = async () => {
-    downloadData('tsv', dataSources, getAllAssociations, fileStem);
+    downloadData('tsv', columns, getAllAssociations, fileStem);
   };
 
   return (
-    <>
-      <Grid container alignItems="center" justifyContent="flex-end" spacing={1}>
-        <Grid item>
-          <Typography variant="caption">Download table as</Typography>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="outlined"
-            onClick={handleClickDownloadJSON}
-            size="small"
-          >
-            JSON
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="outlined"
-            onClick={handleClickDownloadTSV}
-            size="small"
-          >
-            TSV
-          </Button>
-        </Grid>
-      </Grid>
+    <div>
+      <Button
+        aria-describedby={popoverId}
+        onClick={handleClickBTN}
+        variant="outlined"
+        disableElevation
+      >
+        <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
+      </Button>
+      <Popover
+        id={popoverId}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClosePopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <PopoverContent>
+          <LabelContainer>
+            <Typography variant="caption">Download data as</Typography>
+          </LabelContainer>
+          <Grid container alignItems="center" spacing={3}>
+            <Grid item>
+              <Button
+                variant="outlined"
+                onClick={handleClickDownloadJSON}
+                size="small"
+              >
+                JSON
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="outlined"
+                onClick={handleClickDownloadTSV}
+                size="small"
+              >
+                TSV
+              </Button>
+            </Grid>
+          </Grid>
+        </PopoverContent>
+      </Popover>
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         open={downloading}
@@ -225,7 +315,7 @@ function DataDownloader({ fileStem }) {
           </>
         }
       />
-    </>
+    </div>
   );
 }
 

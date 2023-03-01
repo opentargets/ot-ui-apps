@@ -28,6 +28,12 @@
   width: 200px;
 }
 
+.ControlsSection .global-controls-container .options-controls {
+  display: flex;
+  width: 240px;
+  justify-content: space-between;
+}
+
 /* --- HEADER ---  */
 .TAssociations .Theader {
   display: flex;

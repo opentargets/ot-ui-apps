@@ -230,7 +230,6 @@ function TableAssociations() {
 
   return (
     <div className="TAssociations" style={tableCSSVariables}>
-      <DataDownloader columns={columns} fileStem={`${id}-associated-targets`} />
       <TableElement>
         {/* HEADER */}
         <div className="Theader">

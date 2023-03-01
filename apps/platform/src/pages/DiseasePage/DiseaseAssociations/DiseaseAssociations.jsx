@@ -5,13 +5,14 @@ import {
   AssociationsContext,
   AssociationsProvider,
   SearhInput,
+  DataDownloader,
 } from '../../../components/AssociationsToolkit';
 import { LoadingBackdrop } from 'ui';
 import { useContext } from 'react';
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociationsQuery.gql';
 
 function AssociationsWrapper() {
-  const { initialLoading } = useContext(AssociationsContext);
+  const { initialLoading, id } = useContext(AssociationsContext);
 
   if (initialLoading)
     return (
@@ -25,7 +26,10 @@ function AssociationsWrapper() {
       <div className="ControlsSection">
         <div className="global-controls-container">
           <SearhInput />
-          <AdvanceOptionsMenu />
+          <div className="options-controls">
+            <AdvanceOptionsMenu />
+            <DataDownloader fileStem={`${id}-associated-targets`} />
+          </div>
         </div>
         <div>
           <TargetPrioritisationSwitch />
