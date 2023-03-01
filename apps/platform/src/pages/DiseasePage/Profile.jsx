@@ -9,6 +9,7 @@ import SectionOrderProvider from '../../contexts/SectionOrderProvider';
 import SummaryContainer from '../../components/Summary/SummaryContainer';
 
 import sections from './sections';
+import { OtTable } from 'ui';
 
 const DISEASE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
   sections,
@@ -46,6 +47,8 @@ function Profile({ efoId, name }) {
             />
           ))}
         </SummaryContainer>
+
+        {/* <OtTable/> */}
 
         <SectionContainer>
           {sections.map(({ Body, definition }) => (
