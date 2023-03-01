@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheck,
   faXmark,
-  faCircleCheck,
 } from '@fortawesome/free-solid-svg-icons';
 
 const columns = [
@@ -57,6 +56,12 @@ function ProjectPage() {
           datarequests@opentargets.org
         </Link>
         .
+      </Typography>
+      <Typography paragraph>
+        PPP specific documentation can be found{' '}
+        <Link to="https://platform-docs.opentargets.org/partner-preview-platform" external newTab>
+          here
+        </Link>
       </Typography>
 
       <Paper variant="outlined" elevation={0}>
