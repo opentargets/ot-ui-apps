@@ -48,7 +48,7 @@ function Profile({ efoId, name }) {
           ))}
         </SummaryContainer>
 
-        {/* <OtTable/> */}
+        <OtTable/>
 
         <SectionContainer>
           {sections.map(({ Body, definition }) => (
