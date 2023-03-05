@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useMemo, useCallback } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "./hooks/useSearchQueryData";
@@ -61,6 +61,7 @@ export default function AutocompleteSearch({
   const [recentItems, setRecentValue] = useState(
     JSON.parse(localStorage.getItem("search-history") || "[]") || []
   );
+  const [open, setOpen] = useState(isHomePage ? false : true);
 
   const {
     searchQuery,
@@ -75,6 +76,24 @@ export default function AutocompleteSearch({
   const theme = useMemo(() => getTheme(primaryColor), [primaryColor]);
 
   const [getSearchData, { data, loading }] = useSearchQueryData(searchQuery);
+
+  const handleKeyPress = useCallback((event) => {
+    // open on cmd + k
+    if (event.metaKey === true && event.keyCode === 75) {
+      event.stopPropagation();
+      event.preventDefault();
+      setOpen(true);
+      return false;
+    }
+    // close on esc
+    if (event.keyCode === 27) {
+      event.stopPropagation();
+      setOpen(false);
+      event.preventDefault();
+      inputValueUpdate("");
+      // return false;
+    }
+  }, []);
 
   useEffect(() => {
     inputValue
@@ -93,10 +112,18 @@ export default function AutocompleteSearch({
     }
   }, [data, loading, recentItems]);
 
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyPress);
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [handleKeyPress]);
+
   const searchQueryInput = (param) => {
     if (!param) {
       setSearchResult(recentItems);
     } else {
+      setOpen(true);
       setInputValue(param);
       getSearchData(param);
     }
@@ -139,6 +166,7 @@ export default function AutocompleteSearch({
   return (
     <ThemeProvider theme={theme}>
       <Autocomplete
+        open={open}
         disablePortal
         openOnFocus
         autoHighlight
@@ -175,6 +203,7 @@ export default function AutocompleteSearch({
             onClose={onClose}
             changeInputValue={changeInputValue}
             isHomePage={isHomePage}
+            focus={open}
           />
         )}
       />
