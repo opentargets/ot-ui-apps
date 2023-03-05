@@ -3,8 +3,8 @@ import { Search } from "@material-ui/icons";
 import {
   makeStyles,
   TextField,
-  InputBase,
   InputAdornment,
+  TextFieldProps,
 } from "@material-ui/core";
 import useDebounce from "../hooks/useDebounce";
 import { SearchContext } from "./SearchContext";
@@ -55,29 +55,35 @@ function SearchInput({
   changeInputValue,
   isHomePage,
   focus,
+}: {
+  params: TextFieldProps;
+  debounceValue: (str: string) => void;
+  changeInputValue: (str: string) => void;
+  onClose: () => void;
+  isHomePage: boolean;
+  focus: boolean;
 }) {
   const classes = useStyles();
   const [searchInputValue, setSearchInputValue] = useState("");
   const debouncedInputValue = useDebounce(searchInputValue, 300);
   const { searchPlaceholder, inputValue } = useContext(SearchContext);
-  const inputRef = useRef(null);
-
-  const handleChangeInputValue = (e) => {
-    setSearchInputValue(e.target.value.trim() || "");
-    changeInputValue(e.target.value.trim() || "");
-  };
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     debounceValue(debouncedInputValue);
   }, [debouncedInputValue]);
 
   useEffect(() => {
-    (!isHomePage || focus) && inputRef.current.focus();
-    // (isHomePage && !focus) && inputRef.current.blur();
+    if (inputRef.current) {
+      (!isHomePage || focus) && inputRef.current.focus();
+      // (isHomePage && !focus) && inputRef.current.blur();
+    }
   }, [focus, isHomePage]);
 
   useEffect(() => {
-    inputRef.current.value = inputValue;
+    if (inputRef.current) {
+      inputRef.current.value = inputValue;
+    }
   }, [inputValue]);
 
   return (
@@ -102,7 +108,10 @@ function SearchInput({
           ),
           className: classes.inputPadding,
         }}
-        onChange={handleChangeInputValue}
+        onChange={(e) => {
+          setSearchInputValue(e.target.value.trim() || "");
+          changeInputValue(e.target.value.trim() || "");
+        }}
         value={searchInputValue}
         placeholder={searchPlaceholder}
       />
