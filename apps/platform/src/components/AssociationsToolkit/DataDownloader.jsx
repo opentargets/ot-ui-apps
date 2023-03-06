@@ -195,8 +195,15 @@ function DataDownloader({ fileStem }) {
   const [downloading, setDownloading] = useState(false);
   const classes = styles();
   const [anchorEl, setAnchorEl] = useState(null);
-  const { id, query, searhFilter, sorting, enableIndirect, entityToGet } =
-    useAotfContext();
+  const {
+    id,
+    query,
+    searhFilter,
+    sorting,
+    enableIndirect,
+    entityToGet,
+    displayedTable,
+  } = useAotfContext();
 
   const columns = useMemo(() => getExportedColumns(entityToGet), [entityToGet]);
   const queryResponseSelector = useMemo(
@@ -214,6 +221,8 @@ function DataDownloader({ fileStem }) {
     },
     queryResponseSelector
   );
+
+  const isPrioritisation = displayedTable === 'prioritisations';
 
   const open = Boolean(anchorEl);
   const popoverId = open ? 'dowloader-popover' : undefined;
@@ -248,6 +257,8 @@ function DataDownloader({ fileStem }) {
     downloadData('tsv', columns, getAllAssociations, fileStem);
   };
 
+  if (isPrioritisation) return null;
+
   return (
     <div>
       <Button
@@ -255,6 +266,7 @@ function DataDownloader({ fileStem }) {
         onClick={handleClickBTN}
         variant="outlined"
         disableElevation
+        disabled={isPrioritisation}
       >
         <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
       </Button>

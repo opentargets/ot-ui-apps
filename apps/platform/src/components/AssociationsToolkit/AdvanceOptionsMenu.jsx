@@ -28,7 +28,10 @@ function DataMenu() {
     setEnableIndirect,
     activeWeightsControlls,
     setActiveWeightsControlls,
+    displayedTable,
   } = useAotfContext();
+
+  const isPrioritisation = displayedTable === 'prioritisations';
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -69,6 +72,7 @@ function DataMenu() {
         <PopoverContent>
           <FormGroup>
             <FormControlLabel
+              disabled={isPrioritisation}
               control={
                 <Checkbox
                   color="primary"
@@ -83,6 +87,7 @@ function DataMenu() {
           </FormGroup>
           <FormGroup>
             <FormControlLabel
+              disabled={isPrioritisation}
               control={
                 <Checkbox
                   color="primary"
