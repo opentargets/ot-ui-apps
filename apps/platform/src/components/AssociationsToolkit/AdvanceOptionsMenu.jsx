@@ -51,6 +51,7 @@ function DataMenu() {
         onClick={handleClick}
         variant="outlined"
         disableElevation
+        disabled={isPrioritisation}
       >
         <FontAwesomeIcon icon={faGear} size="lg" />
         <TextContent>Advanced options</TextContent>

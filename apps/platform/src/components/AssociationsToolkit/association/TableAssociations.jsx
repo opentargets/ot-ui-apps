@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -26,8 +26,6 @@ import {
 } from './SectionRender';
 import WeightsControlls from './WeightsControlls';
 import CellName from './CellName';
-import DataDownloader from '../DataDownloader';
-
 import useAotfContext from '../hooks/useAotfContext';
 
 import {
@@ -81,13 +79,13 @@ function getDatasources(expanderHandler, loading, displayedTable) {
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
 
-  return baseCols.map(({ id, label, sectionId, description }) => {
+  return baseCols.map(({ id, label, sectionId, description, aggregation }) => {
     return columnHelper.accessor(row => row[dataProp][id], {
       id,
       header: isAssociations ? (
         <div className="">{label}</div>
       ) : (
-        <AggregationsTooltip title={description} placement="bottom">
+        <AggregationsTooltip title={description} placement="right">
           <div className="cursor-help">
             <span>{label}</span>
           </div>
@@ -95,6 +93,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
       ),
       sectionId: sectionId,
       enableSorting: isAssociations,
+      aggregation,
       cell: row => {
         if (loading)
           return <Skeleton variant="circle" width={26} height={25} />;
@@ -136,6 +135,8 @@ function TableAssociations() {
     sorting,
     handleSortingChange,
   } = useAotfContext();
+
+  const [activeAggregation, setActiveAggegation] = useState(null);
 
   const isAssociations = displayedTable === 'associations';
 
@@ -219,6 +220,17 @@ function TableAssociations() {
     resetExpandler();
   };
 
+  const onEnterHoverHeader = ({ id, column }) => {
+    if (id === 'score' || id === 'name') return;
+    const aggregation = column.columnDef.aggregation;
+    setActiveAggegation(aggregation);
+  };
+
+  const onLeaveHoverHeader = () => {
+    if (id === 'score' || id === 'name') return;
+    setActiveAggegation(null);
+  };
+
   /**
    * LEGEND EFECT
    */
@@ -249,6 +261,8 @@ function TableAssociations() {
                             : '',
                           onClick: header.column.getToggleSortingHandler(),
                         }}
+                        onMouseEnter={e => onEnterHoverHeader(header)}
+                        onMouseLeave={e => onLeaveHoverHeader()}
                       >
                         {flexRender(
                           header.column.columnDef.header,
@@ -269,7 +283,11 @@ function TableAssociations() {
               </div>
             ))}
           </div>
-          <AggregationsRow cols={entitesHeaders} table={displayedTable} />
+          <AggregationsRow
+            cols={entitesHeaders}
+            table={displayedTable}
+            active={activeAggregation}
+          />
         </div>
 
         {/* Weights controlls */}

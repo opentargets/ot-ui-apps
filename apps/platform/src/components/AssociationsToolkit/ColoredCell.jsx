@@ -31,7 +31,7 @@ function ColoredCell({
   };
 
   return (
-    <Tooltip title={scoreText} arrow>
+    <Tooltip title={scoreText} arrow disableHoverListener={!isAssociations}>
       <div className={className} onClick={onClickHabdler} style={style}></div>
     </Tooltip>
   );

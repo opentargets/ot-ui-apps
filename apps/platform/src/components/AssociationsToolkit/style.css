@@ -228,6 +228,11 @@
   transition: all ease 300ms;
 }
 
+.TAssociations .aggregations-container .aggregation-indicator.active {
+  transform: scale(1, 1.8);
+  background-color: var(--primary-color);
+}
+
 .TAssociations .aggregations-container .aggregation-indicator:hover {
   transform: scale(1, 1.8);
   background-color: var(--primary-color);
