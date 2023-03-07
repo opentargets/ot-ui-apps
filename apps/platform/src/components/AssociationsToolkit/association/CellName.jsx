@@ -1,8 +1,8 @@
-import { useContext } from 'react';
-import { faStar as faStartSolid } from '@fortawesome/free-solid-svg-icons';
-import { faStar as faStartRegular } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { styled } from '@material-ui/styles';
+import { useState } from 'react';
+import Tooltip from '../AotFTooltip';
+import Link from '../../Link';
+import useAotfContext from '../hooks/useAotfContext';
 
 const NameContainer = styled('div')({
   position: 'relative',
@@ -20,6 +20,12 @@ const TextContainer = styled('div')({
   textAlign: 'end',
   textOverflow: 'ellipsis',
   maxWidth: '120px',
+  '&:hover': {
+    cursor: 'pointer',
+  },
+  '&:hover span': {
+    textDecoration: 'underline',
+  },
 });
 
 const Name = styled('span')({
@@ -28,29 +34,40 @@ const Name = styled('span')({
   textOverflow: 'ellipsis',
 });
 
-const IconContainer = styled('div')({
-  position: 'absolute',
-  left: '-20px',
+const LinksTooltipContent = styled('span')({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '5px',
 });
 
+function TooltipContent({ id, entity }) {
+  const profileURL = `/${entity}/${id}`;
+  const associationsURL = `/${entity}/${id}/associations`;
+  return (
+    <LinksTooltipContent>
+      <Link to={profileURL}>Profile</Link>
+      <Link to={associationsURL}>Associations</Link>
+    </LinksTooltipContent>
+  );
+}
+
 function CellName({ name, rowId }) {
-  // const { pinnedData, setPinnedData } = useContext(AssociationsContext);
+  const [open, setOpen] = useState(false);
+  const { entityToGet } = useAotfContext();
 
-  // const isPinned = pinnedData.indexOf(rowId) > -1;
-  // const icon = isPinned ? faStartSolid : faStartRegular;
-
-  // const handleClickPin = () => {
-  //   setPinnedData([...pinnedData, rowId]);
-  // };
+  const rowEntity = entityToGet === 'target' ? 'target' : 'disease';
 
   return (
     <NameContainer>
-      {/* <IconContainer className="pinnedIcon" onClick={handleClickPin}>
-        <FontAwesomeIcon icon={icon} size="lg" />
-      </IconContainer> */}
-      <TextContainer>
-        <Name>{name}</Name>
-      </TextContainer>
+      <Tooltip
+        open={open}
+        onClose={() => setOpen(false)}
+        content={<TooltipContent name={name} entity={rowEntity} id={rowId} />}
+      >
+        <TextContainer onClick={() => setOpen(true)}>
+          <Name>{name}</Name>
+        </TextContainer>
+      </Tooltip>
     </NameContainer>
   );
 }
