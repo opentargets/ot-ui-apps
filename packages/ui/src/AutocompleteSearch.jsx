@@ -95,21 +95,24 @@ export default function AutocompleteSearch({
   }, []);
 
   useEffect(() => {
-    inputValue
-      ? (data.unshift({
-          symbol: "Search For: " + inputValue,
-          name: inputValue,
-          entity: "search",
-          type: "",
-        }),
-        setSearchResult(data))
-      : setSearchResult(recentItems);
+    if (inputValue) {
+      const RESULT_DATA = JSON.parse(JSON.stringify(data));
+      RESULT_DATA.unshift({
+        symbol: "Search For: " + inputValue,
+        name: inputValue,
+        entity: "search",
+        type: "",
+      }),
+        setSearchResult(RESULT_DATA);
+    } else {
+      setSearchResult(recentItems);
+    }
     setSearchLoading(loading);
     isQueryLoading(loading);
     if (loading) {
       setSearchResult([]);
     }
-  }, [data, loading, recentItems]);
+  }, [data, loading, recentItems, inputValue]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
