@@ -102,8 +102,8 @@ export default function AutocompleteSearch({
         name: inputValue,
         entity: "search",
         type: "",
-      }),
-        setSearchResult(RESULT_DATA);
+      });
+      setSearchResult(RESULT_DATA);
     } else {
       setSearchResult(recentItems);
     }
