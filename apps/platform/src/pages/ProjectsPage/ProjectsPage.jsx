@@ -4,8 +4,7 @@ import projectsData from './projects-data.json';
 import { DataTable } from '../../components/Table';
 import Link from '../../components/Link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faMinus } from '@fortawesome/free-solid-svg-icons';
-import { faCircleDot, faCircle  } from '@fortawesome/free-regular-svg-icons';
+import { faCircleCheck, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -34,7 +33,7 @@ function ProjectPage() {
       id: 'integrates_in_PPP',
       label: 'Currently integrates into PPP',
       renderCell: ({ integrates_in_PPP }) => {
-        const icon = integrates_in_PPP === 'Y' ? faCircleCheck : faCircle;
+        const icon = integrates_in_PPP === 'Y' ? faCircleCheck : faCircleNotch;
         return (
           <FontAwesomeIcon size="lg" icon={icon} className={classes.icon} />
         );
