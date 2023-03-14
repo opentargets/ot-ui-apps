@@ -1,14 +1,31 @@
 import React, { Fragment } from 'react';
-import { Paper, Box, Typography, makeStyles } from '@material-ui/core';
+import {
+  Paper,
+  Box,
+  Typography,
+  makeStyles,
+  Avatar,
+  Chip,
+} from '@material-ui/core';
 import projectsData from './projects-data.json';
 import { DataTable } from '../../components/Table';
 import Link from '../../components/Link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircleCheck,
+  faCircleNotch,
+} from '@fortawesome/free-solid-svg-icons';
+import ChipList from '../../components/ChipList';
 
 const useStyles = makeStyles(theme => ({
   icon: {
     color: theme.palette.primary.main,
+  },
+  diseaseContainer: {
+    display: 'flex',
+  },
+  disease: {
+    marginRight: '0.2rem',
   },
 }));
 
@@ -30,10 +47,11 @@ function ProjectPage() {
     { id: 'project_lead', label: 'Project Lead' },
     { id: 'generates_data', label: 'Generates Data' },
     {
-      id: 'integrates_in_PPP',
+      id: 'currently_integrates_in_PPP',
       label: 'Currently integrates into PPP',
-      renderCell: ({ integrates_in_PPP }) => {
-        const icon = integrates_in_PPP === 'Y' ? faCircleCheck : faCircleNotch;
+      renderCell: ({ currently_integrates_in_PPP }) => {
+        const icon =
+          currently_integrates_in_PPP === 'Y' ? faCircleCheck : faCircleNotch;
         return (
           <FontAwesomeIcon size="lg" icon={icon} className={classes.icon} />
         );
@@ -41,6 +59,32 @@ function ProjectPage() {
     },
     { id: 'project_status', label: 'Project Status' },
     { id: 'open_targets_therapeutic_area', label: 'Therapeutic Area' },
+    {
+      id: 'disease_mapping',
+      label: 'Diseases Mapped',
+      renderCell: ({ disease_mapping }) => {
+        let ALL_AVATARS = [];
+        disease_mapping.map((disease, index) => {
+          disease &&
+            disease.label &&
+            ALL_AVATARS.push(
+              <Link
+                to={'disease/' + disease.disease_id}
+                key={index}
+              >
+                <Chip
+                  size="small"
+                  label={disease.label}
+                  clickable
+                  color="primary"
+                  className={classes.disease}
+                />
+              </Link>
+            );
+        });
+        return <div className={classes.diseaseContainer}>{ALL_AVATARS}</div>;
+      },
+    },
   ];
   return (
     <Fragment>
