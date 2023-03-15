@@ -39,8 +39,8 @@ function OtTable() {
         header: "Disease Information",
         columns: [
           {
-            accessorKey: "disease.name",
-            cell: (info) => info.getValue(),
+            header: "Disease Name",
+            accessorFn: (row) => row.disease.name,
           },
         ],
       },
@@ -53,16 +53,14 @@ function OtTable() {
           },
           {
             accessorKey: "drugType",
-            cell: (info) => info.getValue(),
           },
           {
             accessorKey: "mechanismOfAction",
-            cell: (info) => info.getValue(),
           },
-          // {
-          //   accessorKey: "actionType",
-          //   cell: (info) => info.getValue(),
-          // },
+          {
+            id: "actionType",
+            accessorFn: (row) => row.drug.mechanismsOfAction.rows[0].actionType,
+          },
         ],
       },
       {
@@ -70,20 +68,17 @@ function OtTable() {
         columns: [
           {
             accessorKey: "target.approvedSymbol",
-            cell: (info) => info.getValue(),
           },
         ],
       },
       {
         header: "Clinical trials information",
         columns: [
-          {
-            accessorKey: "phase",
-            cell: (info) => info.getValue(),
-          },
+          // {
+          //   accessorKey: "phase",
+          // },
           {
             accessorKey: "status",
-            cell: (info) => info.getValue(),
           },
         ],
       },
@@ -128,7 +123,9 @@ function OtTable() {
       <div className="globalSearchContainer">
         <input
           value={globalFilter ?? ""}
-          onChange={(value) => setGlobalFilter(String(value))}
+          onChange={(e) => {
+            setGlobalFilter(e.target.value);
+          }}
           placeholder="Search all columns..."
         />
       </div>
@@ -194,68 +191,67 @@ function OtTable() {
         </table>
       </div>
       <div className="tableControlls">
-      <div className="flex items-center gap-2">
-        <button
-          className="border rounded p-1"
-          onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {'<<'}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {'<'}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          {'>'}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
-        >
-          {'>>'}
-        </button>
-        <span className="flex items-center gap-1">
-          <div>Page</div>
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of{' '}
-            {table.getPageCount()}
-          </strong>
-        </span>
-        <span className="flex items-center gap-1">
-          | Go to page:
-          <input
-            type="number"
-            defaultValue={table.getState().pagination.pageIndex + 1}
-            onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              table.setPageIndex(page)
+        <div className="flex items-center gap-2">
+          <button
+            className="border rounded p-1"
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"<<"}
+          </button>
+          <button
+            className="border rounded p-1"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"<"}
+          </button>
+          <button
+            className="border rounded p-1"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            {">"}
+          </button>
+          <button
+            className="border rounded p-1"
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+          >
+            {">>"}
+          </button>
+          <span className="flex items-center gap-1">
+            <div>Page</div>
+            <strong>
+              {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </strong>
+          </span>
+          <span className="flex items-center gap-1">
+            | Go to page:
+            <input
+              type="number"
+              defaultValue={table.getState().pagination.pageIndex + 1}
+              onChange={(e) => {
+                const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                table.setPageIndex(page);
+              }}
+              className="border p-1 rounded w-16"
+            />
+          </span>
+          <select
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => {
+              table.setPageSize(Number(e.target.value));
             }}
-            className="border p-1 rounded w-16"
-          />
-        </span>
-        <select
-          value={table.getState().pagination.pageSize}
-          onChange={e => {
-            table.setPageSize(Number(e.target.value))
-          }}
-        >
-          {[5, 10, 20, 30, 40, 50].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>
-      
+          >
+            {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </>
   );
