@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Column,
-  Table,
   useReactTable,
   ColumnFiltersState,
   getCoreRowModel,
@@ -10,13 +9,10 @@ import {
   getFacetedUniqueValues,
   getFacetedMinMaxValues,
   getPaginationRowModel,
-  sortingFns,
   getSortedRowModel,
   FilterFn,
-  SortingFn,
   ColumnDef,
   flexRender,
-  FilterFns,
 } from "@tanstack/react-table";
 
 import {
@@ -26,6 +22,29 @@ import {
 } from "@tanstack/match-sorter-utils";
 
 import { ALL_DATA } from "./data";
+import OtTableFilter from "./OtTableFilter";
+
+declare module "@tanstack/table-core" {
+  interface FilterFns {
+    searchFilterFn: FilterFn<unknown>;
+  }
+  interface FilterMeta {
+    itemRank: RankingInfo;
+  }
+}
+
+const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  // Rank the item
+  const itemRank = rankItem(row.getValue(columnId), value);
+
+  // Store the itemRank info
+  addMeta({
+    itemRank,
+  });
+
+  // Return if the item should be filtered in/out
+  return itemRank.passed;
+};
 
 function OtTable() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -49,7 +68,7 @@ function OtTable() {
         columns: [
           {
             accessorKey: "drug.name",
-            cell: (info) => info.getValue(),
+            enableColumnFilter: false,
           },
           {
             accessorKey: "drugType",
@@ -74,9 +93,9 @@ function OtTable() {
       {
         header: "Clinical trials information",
         columns: [
-          // {
-          //   accessorKey: "phase",
-          // },
+          {
+            accessorKey: "phase",
+          },
           {
             accessorKey: "status",
           },
@@ -91,12 +110,16 @@ function OtTable() {
   const table = useReactTable({
     data,
     columns,
+    filterFns: {
+      searchFilterFn: searchFilter,
+    },
     state: {
       columnFilters,
       globalFilter,
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: searchFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -157,11 +180,11 @@ function OtTable() {
                               desc: " 🔽",
                             }[header.column.getIsSorted() as string] ?? null}
                           </div>
-                          {/* {header.column.getCanFilter() ? (
+                          {header.column.getCanFilter() ? (
                             <div>
-                              <Filter column={header.column} table={table} />
+                              <OtTableFilter column={header.column} />
                             </div>
-                          ) : null} */}
+                          ) : null}
                         </>
                       )}
                     </th>

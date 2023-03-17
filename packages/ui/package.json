@@ -10,6 +10,7 @@
     "@material-ui/lab": "^4.0.0-alpha.50",
     "@tanstack/match-sorter-utils": "^8.7.6",
     "@tanstack/react-table": "^8.7.9",
+    "@tanstack/table-core": "^8.7.9",
     "polished": "^2.3.0",
     "typescript": "^4.9.5"
   },
