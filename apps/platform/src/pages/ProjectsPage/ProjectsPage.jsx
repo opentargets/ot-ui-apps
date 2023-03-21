@@ -15,7 +15,6 @@ import {
   faCircleCheck,
   faCircleNotch,
 } from '@fortawesome/free-solid-svg-icons';
-import ChipList from '../../components/ChipList';
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -61,7 +60,7 @@ function ProjectPage() {
     { id: 'open_targets_therapeutic_area', label: 'Therapeutic Area' },
     {
       id: 'disease_mapping',
-      label: 'Diseases Mapped',
+      label: 'Disease Mapped in the PPP',
       renderCell: ({ disease_mapping }) => {
         let ALL_AVATARS = [];
         disease_mapping.map((disease, index) => {
