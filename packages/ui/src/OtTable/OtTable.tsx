@@ -34,7 +34,7 @@ import {
   faAnglesRight,
   faMagnifyingGlass,
   faArrowUp,
-  faArrowDown
+  faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   Button,
@@ -45,6 +45,7 @@ import {
   Paper,
   Select,
 } from "@material-ui/core";
+import OtTableLoader from "./OtTableLoader";
 
 const useStyles = makeStyles((theme) => ({
   OtTableContainer: {
@@ -97,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
   },
   searchAllColumn: {
     width: "40%",
-  }
+  },
 }));
 
 declare module "@tanstack/table-core" {
@@ -122,7 +123,14 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-function OtTable({ showGlobalFilter = true, allColumns, allData }) {
+function OtTable({
+  showGlobalFilter = true,
+  tableDataLoading = false,
+  allColumns,
+  allData,
+}) {
+  if (tableDataLoading) return <OtTableLoader />;
+
   const classes = useStyles();
 
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -199,14 +207,14 @@ function OtTable({ showGlobalFilter = true, allColumns, allData }) {
       searchFilterFn: searchFilter,
     },
     state: {
-      // columnFilters,
+      columnFilters,
       globalFilter,
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    // globalFilterFn: searchFilter,
+    globalFilterFn: searchFilter,
     getCoreRowModel: getCoreRowModel(),
-    // getFilteredRowModel: getFilteredRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
@@ -231,7 +239,7 @@ function OtTable({ showGlobalFilter = true, allColumns, allData }) {
       {showGlobalFilter && (
         <div className="globalSearchContainer">
           <Input
-          className={classes.searchAllColumn}
+            className={classes.searchAllColumn}
             value={globalFilter ?? ""}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Search all columns..."
@@ -271,10 +279,7 @@ function OtTable({ showGlobalFilter = true, allColumns, allData }) {
                                 <FontAwesomeIcon size="sm" icon={faArrowUp} />
                               ),
                               desc: (
-                                <FontAwesomeIcon
-                                  size="sm"
-                                  icon={faArrowDown}
-                                />
+                                <FontAwesomeIcon size="sm" icon={faArrowDown} />
                               ),
                             }[header.column.getIsSorted() as string] ?? null}
                           </div>
