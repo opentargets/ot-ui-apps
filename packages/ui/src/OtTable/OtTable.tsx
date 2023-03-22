@@ -32,8 +32,19 @@ import {
   faAngleRight,
   faAnglesLeft,
   faAnglesRight,
+  faMagnifyingGlass,
+  faArrowUp,
+  faArrowDown
 } from "@fortawesome/free-solid-svg-icons";
-import { Button, makeStyles, MenuItem, Paper, Select } from "@material-ui/core";
+import {
+  Button,
+  Input,
+  InputAdornment,
+  makeStyles,
+  MenuItem,
+  Paper,
+  Select,
+} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   OtTableContainer: {
@@ -41,18 +52,19 @@ const useStyles = makeStyles((theme) => ({
   },
   tableContainer: {
     width: "100%",
-    overflow: "scroll",
-    padding: "0 2rem",
+    overflowX: "auto",
+    marginTop: "2rem",
   },
   table: {
     borderCollapse: "collapse",
+    minWidth: "100%",
     "& thead": {
       "& tr": {
         "&:hover": {
-          backgroundColor: "white",
+          backgroundColor: "transparent",
         },
         "&:first-child:not(:last-child)": {
-          "& th": {
+          "& th:not(:last-child)": {
             borderRight: "1px solid lightgrey",
           },
         },
@@ -76,13 +88,16 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "1rem 2rem",
+    padding: "0.5rem 1rem",
   },
   rowsControls: {
     display: "flex",
     alignItems: "center",
     gap: "2rem",
   },
+  searchAllColumn: {
+    width: "40%",
+  }
 }));
 
 declare module "@tanstack/table-core" {
@@ -130,16 +145,20 @@ function OtTable({ showGlobalFilter = true, allColumns, allData }) {
         header: "Drug Information",
         columns: [
           {
+            header: "Drug Name",
             accessorKey: "drug.name",
             enableColumnFilter: false,
           },
           {
+            header: "Drug Type",
             accessorKey: "drugType",
           },
           {
+            header: "Mechanism Of Action",
             accessorKey: "mechanismOfAction",
           },
           {
+            header: "Action Type",
             id: "actionType",
             accessorFn: (row) => row.drug.mechanismsOfAction.rows[0].actionType,
           },
@@ -149,17 +168,20 @@ function OtTable({ showGlobalFilter = true, allColumns, allData }) {
         header: "Target Information",
         columns: [
           {
+            header: "Approved Symbol",
             accessorKey: "target.approvedSymbol",
           },
         ],
       },
       {
-        header: "Clinical trials information",
+        header: "Clinical Trials Information",
         columns: [
           {
+            header: "Phase",
             accessorKey: "phase",
           },
           {
+            header: "Status",
             accessorKey: "status",
           },
         ],
@@ -177,14 +199,14 @@ function OtTable({ showGlobalFilter = true, allColumns, allData }) {
       searchFilterFn: searchFilter,
     },
     state: {
-      columnFilters,
-      // globalFilter,
+      // columnFilters,
+      globalFilter,
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: searchFilter,
+    // globalFilterFn: searchFilter,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    // getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
@@ -204,108 +226,107 @@ function OtTable({ showGlobalFilter = true, allColumns, allData }) {
   }, [table.getState().columnFilters[0]?.id]);
 
   return (
-    <Paper variant="outlined" square>
-      <div className={classes.OtTableContainer}>
-        {/* Global Search */}
-        {showGlobalFilter && (
-          <div className="globalSearchContainer">
-            <input
-              value={globalFilter ?? ""}
-              onChange={(e) => {
-                setGlobalFilter(e.target.value);
-              }}
-              placeholder="Search all columns..."
-            />
-          </div>
-        )}
-        {/* Table component */}
-        <div className={classes.tableContainer}>
-          <table className={classes.table}>
-            <thead>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <th key={header.id} colSpan={header.colSpan}>
-                        {header.isPlaceholder ? null : (
-                          <>
-                            <div
-                              {...{
-                                className: header.column.getCanSort()
-                                  ? "cursor-pointer select-none"
-                                  : "",
-                                onClick:
-                                  header.column.getToggleSortingHandler(),
-                              }}
-                            >
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                              {{
-                                asc: (
-                                  <FontAwesomeIcon
-                                    size="sm"
-                                    icon={faArrowUpAZ}
-                                  />
-                                ),
-                                desc: (
-                                  <FontAwesomeIcon
-                                    size="sm"
-                                    icon={faArrowDownZA}
-                                  />
-                                ),
-                              }[header.column.getIsSorted() as string] ?? null}
+    <div className={classes.OtTableContainer}>
+      {/* Global Search */}
+      {showGlobalFilter && (
+        <div className="globalSearchContainer">
+          <Input
+          className={classes.searchAllColumn}
+            value={globalFilter ?? ""}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            placeholder="Search all columns..."
+            startAdornment={
+              <InputAdornment position="start">
+                <FontAwesomeIcon icon={faMagnifyingGlass} />
+              </InputAdornment>
+            }
+          />
+        </div>
+      )}
+      {/* Table component */}
+      <div className={classes.tableContainer}>
+        <table className={classes.table}>
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <th key={header.id} colSpan={header.colSpan}>
+                      {header.isPlaceholder ? null : (
+                        <>
+                          <div
+                            {...{
+                              className: header.column.getCanSort()
+                                ? "cursor-pointer select-none"
+                                : "",
+                              onClick: header.column.getToggleSortingHandler(),
+                            }}
+                          >
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                            {{
+                              asc: (
+                                <FontAwesomeIcon size="sm" icon={faArrowUp} />
+                              ),
+                              desc: (
+                                <FontAwesomeIcon
+                                  size="sm"
+                                  icon={faArrowDown}
+                                />
+                              ),
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </div>
+                          {header.column.getCanFilter() ? (
+                            <div>
+                              {/* <OtTableFilter column={header.column} /> */}
                             </div>
-                            {header.column.getCanFilter() ? (
-                              <div>
-                                <OtTableFilter column={header.column} />
-                              </div>
-                            ) : null}
-                          </>
+                          ) : null}
+                        </>
+                      )}
+                    </th>
+                  );
+                })}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => {
+              return (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => {
+                    return (
+                      <td key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
                         )}
-                      </th>
+                      </td>
                     );
                   })}
                 </tr>
-              ))}
-            </thead>
-            <tbody>
-              {table.getRowModel().rows.map((row) => {
-                return (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => {
-                      return (
-                        <td key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        <div className={classes.tableControls}>
-          <div className="rowsPerPage">
-            <span>Rows per page: {"    "}</span>
-            <Select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-            >
-              {[10, 25, 100].map((pageSize) => (
-                <MenuItem key={pageSize} value={pageSize}>
-                  {pageSize}
-                </MenuItem>
-              ))}
-            </Select>
-            {/* <span className="flex items-center gap-1">
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div className={classes.tableControls}>
+        <div className="rowsPerPage">
+          <span>Rows per page: {"    "}</span>
+          <Select
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => {
+              table.setPageSize(Number(e.target.value));
+            }}
+          >
+            {[10, 25, 100].map((pageSize) => (
+              <MenuItem key={pageSize} value={pageSize}>
+                {pageSize}
+              </MenuItem>
+            ))}
+          </Select>
+          {/* <span className="flex items-center gap-1">
             | Go to page:
             <input
               type="number"
@@ -317,54 +338,53 @@ function OtTable({ showGlobalFilter = true, allColumns, allData }) {
               className="border p-1 rounded w-16"
             />
           </span> */}
+        </div>
+
+        <div className={classes.rowsControls}>
+          <div className="pageInfo">
+            <span>Page </span>
+            <span>
+              <strong>
+                {table.getState().pagination.pageIndex + 1} of{" "}
+                {table.getPageCount()}
+              </strong>
+            </span>
           </div>
 
-          <div className={classes.rowsControls}>
-            <div className="pageInfo">
-              <span>Page </span>
-              <span>
-                <strong>
-                  {table.getState().pagination.pageIndex + 1} of{" "}
-                  {table.getPageCount()}
-                </strong>
-              </span>
-            </div>
+          <div className="paginationAction">
+            <Button
+              color="primary"
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <FontAwesomeIcon size="lg" icon={faAnglesLeft} />
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <FontAwesomeIcon size="lg" icon={faAngleLeft} />
+            </Button>
 
-            <div className="paginationAction">
-              <Button
-                color="primary"
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <FontAwesomeIcon size="lg" icon={faAnglesLeft} />
-              </Button>
-              <Button
-                color="primary"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <FontAwesomeIcon size="lg" icon={faAngleLeft} />
-              </Button>
-
-              <Button
-                color="primary"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                <FontAwesomeIcon size="lg" icon={faAngleRight} />
-              </Button>
-              <Button
-                color="primary"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-              >
-                <FontAwesomeIcon size="lg" icon={faAnglesRight} />
-              </Button>
-            </div>
+            <Button
+              color="primary"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <FontAwesomeIcon size="lg" icon={faAngleRight} />
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage()}
+            >
+              <FontAwesomeIcon size="lg" icon={faAnglesRight} />
+            </Button>
           </div>
         </div>
       </div>
-    </Paper>
+    </div>
   );
 }
 

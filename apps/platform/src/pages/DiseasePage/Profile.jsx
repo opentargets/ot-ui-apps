@@ -10,6 +10,7 @@ import SummaryContainer from '../../components/Summary/SummaryContainer';
 
 import sections from './sections';
 import { OtTable } from 'ui';
+import { Box, Paper } from '@material-ui/core';
 
 const DISEASE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
   sections,
@@ -48,7 +49,11 @@ function Profile({ efoId, name }) {
           ))}
         </SummaryContainer>
 
-        <OtTable/>
+        <Paper variant="outlined" elevation={0}>
+          <Box m={2}>
+            <OtTable />
+          </Box>
+        </Paper>
 
         <SectionContainer>
           {sections.map(({ Body, definition }) => (
