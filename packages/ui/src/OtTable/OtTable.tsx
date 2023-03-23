@@ -35,15 +35,18 @@ import {
   faMagnifyingGlass,
   faArrowUp,
   faArrowDown,
+  faFilter,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   Button,
+  Grid,
   Input,
   InputAdornment,
   makeStyles,
   MenuItem,
   Paper,
   Select,
+  Typography,
 } from "@material-ui/core";
 import OtTableLoader from "./OtTableLoader";
 
@@ -75,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
       // update broder color
       borderBottom: "1px solid lightgrey",
       "&:hover": {
-        backgroundColor: "lightgrey",
+        backgroundColor: "#f6f6f6",
       },
       "& td": {
         padding: "0.25rem 0.5rem",
@@ -97,7 +100,14 @@ const useStyles = makeStyles((theme) => ({
     gap: "2rem",
   },
   searchAllColumn: {
-    width: "40%",
+    width: "100%",
+  },
+  tableColumnHeader: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    cursor: "pointer"
   },
 }));
 
@@ -126,8 +136,8 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 function OtTable({
   showGlobalFilter = true,
   tableDataLoading = false,
-  allColumns,
-  allData,
+  allColumns = [],
+  allData = [],
 }) {
   if (tableDataLoading) return <OtTableLoader />;
 
@@ -139,66 +149,11 @@ function OtTable({
   const [globalFilter, setGlobalFilter] = React.useState("");
 
   const columns = React.useMemo<ColumnDef<any, any>[]>(
-    () => [
-      {
-        header: "Disease Information",
-        columns: [
-          {
-            header: "Disease Name",
-            accessorFn: (row) => row.disease.name,
-          },
-        ],
-      },
-      {
-        header: "Drug Information",
-        columns: [
-          {
-            header: "Drug Name",
-            accessorKey: "drug.name",
-            enableColumnFilter: false,
-          },
-          {
-            header: "Drug Type",
-            accessorKey: "drugType",
-          },
-          {
-            header: "Mechanism Of Action",
-            accessorKey: "mechanismOfAction",
-          },
-          {
-            header: "Action Type",
-            id: "actionType",
-            accessorFn: (row) => row.drug.mechanismsOfAction.rows[0].actionType,
-          },
-        ],
-      },
-      {
-        header: "Target Information",
-        columns: [
-          {
-            header: "Approved Symbol",
-            accessorKey: "target.approvedSymbol",
-          },
-        ],
-      },
-      {
-        header: "Clinical Trials Information",
-        columns: [
-          {
-            header: "Phase",
-            accessorKey: "phase",
-          },
-          {
-            header: "Status",
-            accessorKey: "status",
-          },
-        ],
-      },
-    ],
+    () => [...allColumns],
     []
   );
 
-  const [data, setData] = React.useState<any[]>(ALL_DATA.knownDrugs.rows);
+  const [data, setData] = React.useState<any[]>([...allData]);
 
   const table = useReactTable({
     data,
@@ -233,23 +188,29 @@ function OtTable({
     }
   }, [table.getState().columnFilters[0]?.id]);
 
+  React.useEffect(() => {
+    setData(allData);
+  }, [allData]);
+
   return (
     <div className={classes.OtTableContainer}>
       {/* Global Search */}
       {showGlobalFilter && (
-        <div className="globalSearchContainer">
-          <Input
-            className={classes.searchAllColumn}
-            value={globalFilter ?? ""}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            placeholder="Search all columns..."
-            startAdornment={
-              <InputAdornment position="start">
-                <FontAwesomeIcon icon={faMagnifyingGlass} />
-              </InputAdornment>
-            }
-          />
-        </div>
+        <Grid container>
+          <Grid item xs={12} lg={4}>
+            <Input
+              className={classes.searchAllColumn}
+              value={globalFilter ?? ""}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              placeholder="Search all columns..."
+              startAdornment={
+                <InputAdornment position="start">
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
+                </InputAdornment>
+              }
+            />
+          </Grid>
+        </Grid>
       )}
       {/* Table component */}
       <div className={classes.tableContainer}>
@@ -262,32 +223,40 @@ function OtTable({
                     <th key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder ? null : (
                         <>
-                          <div
-                            {...{
-                              className: header.column.getCanSort()
-                                ? "cursor-pointer select-none"
-                                : "",
-                              onClick: header.column.getToggleSortingHandler(),
-                            }}
-                          >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            {{
-                              asc: (
-                                <FontAwesomeIcon size="sm" icon={faArrowUp} />
-                              ),
-                              desc: (
-                                <FontAwesomeIcon size="sm" icon={faArrowDown} />
-                              ),
-                            }[header.column.getIsSorted() as string] ?? null}
+                          <div className={classes.tableColumnHeader}>
+                            <Typography
+                              {...{
+                                className: header.column.getCanSort()
+                                  ? "cursor-pointer select-none"
+                                  : "",
+                                onClick:
+                                  header.column.getToggleSortingHandler(),
+                              }}
+                              variant="subtitle2"
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                              {{
+                                asc: (
+                                  <FontAwesomeIcon size="sm" icon={faArrowUp} />
+                                ),
+                                desc: (
+                                  <FontAwesomeIcon
+                                    size="sm"
+                                    icon={faArrowDown}
+                                  />
+                                ),
+                              }[header.column.getIsSorted() as string] ?? null}
+                            </Typography>
+                            {header.column.getCanFilter() ? (
+                              <OtTableFilter
+                                column={header.column}
+                                table={table}
+                              />
+                            ) : null}
                           </div>
-                          {header.column.getCanFilter() ? (
-                            <div>
-                              {/* <OtTableFilter column={header.column} /> */}
-                            </div>
-                          ) : null}
                         </>
                       )}
                     </th>
@@ -303,10 +272,12 @@ function OtTable({
                   {row.getVisibleCells().map((cell) => {
                     return (
                       <td key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
+                        <Typography variant="body2">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </Typography>
                       </td>
                     );
                   })}

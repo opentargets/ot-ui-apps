@@ -8,6 +8,8 @@ import SectionItem from '../../../components/Section/SectionItem';
 import SourceDrawer from './SourceDrawer';
 import { Table, getPage } from '../../../components/Table';
 import useCursorBatchDownloader from '../../../hooks/useCursorBatchDownloader';
+import { OtTable } from 'ui';
+import { TramRounded } from '@material-ui/icons';
 
 function getColumnPool(id, entity) {
   return {
@@ -127,6 +129,110 @@ function getColumnPool(id, entity) {
   };
 }
 
+function getOtTableColumns() {
+  return [
+    {
+      header: 'Disease Information',
+      columns: [
+        {
+          header: 'Disease Name',
+          accessorFn: row => row.disease.id,
+          cell: d => (
+            <Link to={`/disease/${d.row.original.disease.id}`}>
+              {d.row.original.disease.id}
+            </Link>
+          ),
+          // enableSorting: false,
+          enableColumnFilter: false,
+        },
+      ],
+    },
+    {
+      header: 'Drug Information',
+      columns: [
+        {
+          header: 'Drug',
+          accessorKey: 'drug.id',
+          cell: d => {
+            return d.row.original.drug ? (
+              <Link to={`/drug/${d.row.original.drug.id}`}>
+                {d.row.original.drug.name}
+              </Link>
+            ) : (
+              naLabel
+            );
+          },
+          enableSorting: false,
+          enableColumnFilter: false,
+        },
+        {
+          header: 'Drug Type',
+          accessorKey: 'drugType',
+          // enableSorting: false,
+          // enableColumnFilter: false,
+        },
+        {
+          header: 'Mechanism Of Action',
+          accessorKey: 'mechanismOfAction',
+          // enableSorting: false,
+          enableColumnFilter: false,
+        },
+        {
+          header: 'Action Type',
+          id: 'actionType',
+          accessorFn: row => row.drug.mechanismsOfAction.rows[0].actionType,
+          // enableSorting: false,
+          enableColumnFilter: false,
+        },
+      ],
+    },
+    {
+      header: 'Target Information',
+      columns: [
+        {
+          header: 'Symbol',
+          accessorKey: 'target.approvedSymbol',
+          cell: d => (
+            <Link to={`/target/${d.row.original.target.id}`}>
+              {d.row.original.target.approvedSymbol}
+            </Link>
+          ),
+        },
+        {
+          header: 'Name',
+          accessorKey: 'target.approvedName',
+          // enableSorting: false,
+          enableColumnFilter: false,
+        },
+      ],
+    },
+    {
+      header: 'Clinical Trials Information',
+      columns: [
+        {
+          header: 'Phase',
+          accessorKey: 'phase',
+          cell: info => phaseMap[info.getValue()],
+          // enableSorting: false,
+          enableColumnFilter: false,
+        },
+        {
+          header: 'Status',
+          accessorKey: 'status',
+          cell: d => (d.row.original.status ? d.row.original.status : naLabel),
+        },
+        {
+          accessorKey: 'sources',
+          header: 'Source',
+          cell: d => <SourceDrawer references={d.row.original.urls} />,
+          // enableSorting: false,
+          enableColumnFilter: false,
+        },
+      ],
+    },
+  ];
+}
+
 const INIT_PAGE_SIZE = 10;
 
 function Body({
@@ -140,7 +246,7 @@ function Body({
   exportColumns,
 }) {
   const [initialLoading, setInitialLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
   const [cursor, setCursor] = useState('');
   const [rows, setRows] = useState([]);
@@ -188,6 +294,7 @@ function Body({
 
         if (isCurrent) {
           setInitialLoading(false);
+          setLoading(false);
           setCursor(cursor);
           setCount(count);
           setRows(rows);
@@ -243,8 +350,11 @@ function Body({
   const handleGlobalFilterChange = newGlobalFilter => {
     setLoading(true);
     fetchDrugs(variables, null, pageSize, newGlobalFilter).then(res => {
-      const { cursor, count, rows: newRows = [] } =
-        res.data[entity].knownDrugs ?? {};
+      const {
+        cursor,
+        count,
+        rows: newRows = [],
+      } = res.data[entity].knownDrugs ?? {};
       setLoading(false);
       setPage(0);
       setCursor(cursor);
@@ -255,35 +365,50 @@ function Body({
   };
 
   return (
-    <SectionItem
-      definition={definition}
-      request={{ loading: initialLoading, error: false, data: rows }}
-      renderDescription={Description}
-      renderBody={() => (
-        <Table
-          loading={loading}
-          stickyHeader
-          showGlobalFilter
-          globalFilter={globalFilter}
-          dataDownloader
-          dataDownloaderRows={getWholeDataset}
-          dataDownloaderFileStem={`${id}-known-drugs`}
-          headerGroups={headerGroups}
-          columns={columns}
-          rows={getPage(rows, page, pageSize)}
-          rowCount={count}
-          rowsPerPageOptions={[10, 25, 100]}
-          page={page}
-          pageSize={pageSize}
-          onGlobalFilterChange={handleGlobalFilterChange}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          dataDownloaderColumns={exportColumns}
-          query={BODY_QUERY.loc.source.body}
-          variables={variables}
-        />
-      )}
-    />
+    <>
+      <SectionItem
+        definition={definition}
+        request={{ loading: initialLoading, error: false, data: rows }}
+        renderDescription={Description}
+        renderBody={() => (
+          <Table
+            loading={loading}
+            stickyHeader
+            showGlobalFilter
+            globalFilter={globalFilter}
+            dataDownloader
+            dataDownloaderRows={getWholeDataset}
+            dataDownloaderFileStem={`${id}-known-drugs`}
+            headerGroups={headerGroups}
+            columns={columns}
+            rows={getPage(rows, page, pageSize)}
+            rowCount={count}
+            rowsPerPageOptions={[10, 25, 100]}
+            page={page}
+            pageSize={pageSize}
+            onGlobalFilterChange={handleGlobalFilterChange}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            dataDownloaderColumns={exportColumns}
+            query={BODY_QUERY.loc.source.body}
+            variables={variables}
+          />
+        )}
+      />
+      <SectionItem
+        definition={definition}
+        request={{ loading: initialLoading, error: false, data: rows }}
+        renderDescription={Description}
+        renderBody={() => (
+          <OtTable
+            showGlobalFilter
+            tableDataLoading={loading}
+            allColumns={getOtTableColumns()}
+            allData={rows}
+          />
+        )}
+      />
+    </>
   );
 }
 

@@ -49,11 +49,11 @@ function Profile({ efoId, name }) {
           ))}
         </SummaryContainer>
 
-        <Paper variant="outlined" elevation={0}>
+        {/* <Paper variant="outlined" elevation={0}>
           <Box m={2}>
             <OtTable />
           </Box>
-        </Paper>
+        </Paper> */}
 
         <SectionContainer>
           {sections.map(({ Body, definition }) => (
