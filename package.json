@@ -23,8 +23,10 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.5",
     "prettier": "^2.5.1",
-    "turbo": "latest"
+    "turbo": "latest",
+    "typescript": "^4.9.5"
   },
   "engines": {
     "npm": ">=7.0.0",
