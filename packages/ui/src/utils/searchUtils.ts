@@ -1,7 +1,8 @@
 import { format } from "d3-format";
+import { SearchResult } from "../Search/SearchListItem";
 
 export const formatSearchData = (unformattedData) => {
-  const allTypes = [];
+  const allTypes = [] as SearchResult[];
 
   for (const key in unformattedData) {
     if (Object.hasOwnProperty.call(unformattedData, key)) {
@@ -12,7 +13,7 @@ export const formatSearchData = (unformattedData) => {
             type: key === "topHit" ? "topHit" : i.__typename,
             entity: i.__typename,
             ...flattenObj(i),
-          })
+          } as SearchResult)
         );
       } else if (isArray(element["hits"])) {
         element["hits"].map((i) =>
@@ -20,7 +21,7 @@ export const formatSearchData = (unformattedData) => {
             type: key === "topHit" ? "topHit" : i.entity,
             entity: i.entity,
             ...flattenObj(i.object),
-          })
+          } as SearchResult)
         );
       }
     }
@@ -30,7 +31,8 @@ export const formatSearchData = (unformattedData) => {
 };
 
 export const addSearchToLocalStorage = (item) => {
-  const recentItems = JSON.parse(localStorage.getItem("search-history")) || [];
+  const recentItems =
+    JSON.parse(localStorage.getItem("search-history") || "[]") || [];
   const existingIndex = containsObject(item, recentItems);
 
   if (existingIndex >= 0) {
@@ -45,8 +47,7 @@ export const addSearchToLocalStorage = (item) => {
 };
 
 export const containsObject = (obj, list) => {
-  let i;
-  for (i = 0; i < list.length; i++) {
+  for (let i = 0; i < list.length; i++) {
     if (JSON.stringify(list[i]) === JSON.stringify(obj)) {
       return i;
     }
@@ -61,7 +62,7 @@ export const clearAllRecent = () => {
 
 export const commaSeparate = format(",");
 
-const mapStandardKeys = (origionalKey) => {
+const mapStandardKeys = (origionalKey: string) => {
   switch (origionalKey) {
     case "studyId":
       return "id";

@@ -1,4 +1,3 @@
-import React from "react";
 import { makeStyles, Typography, Chip } from "@material-ui/core";
 import SearchRecentListItem from "./SearchRecentListItem";
 import { commaSeparate } from "../utils/searchUtils";
@@ -30,7 +29,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SearchListItem({ item, isTopHit = "false", clearItem }) {
+export interface SearchResult {
+  type: string;
+  symbol: string;
+  name: string;
+  entity: string;
+  id: string;
+  rsId: string;
+  hasSumstats: boolean;
+  nInitial: number;
+  pubJournal: string;
+  chromosome: string;
+  functionDescriptions: string[];
+  position: string;
+  pubAuthor: string;
+  pubDate: string;
+  numAssocLoci: number;
+  end: number;
+  start: number;
+}
+
+function SearchListItem({
+  item,
+  isTopHit = false,
+  clearItem,
+}: {
+  item: SearchResult;
+  isTopHit: boolean;
+  clearItem: (item: any) => void;
+}) {
   const classes = useStyles();
 
   if (item.type === "recent") {

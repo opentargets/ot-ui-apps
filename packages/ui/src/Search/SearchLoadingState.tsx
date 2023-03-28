@@ -1,4 +1,3 @@
-import React from "react";
 import { Skeleton } from "@material-ui/lab";
 import Grid from "@material-ui/core/Grid";
 
@@ -11,9 +10,14 @@ function SearchLoadingState() {
       alignItems="center"
       style={{ padding: 20 }}
     >
-      <Grid container justifyContent="flex-start" alignItems="center" style={{
-            marginBottom: "1rem"
-          }}>
+      <Grid
+        container
+        justifyContent="flex-start"
+        alignItems="center"
+        style={{
+          marginBottom: "1rem",
+        }}
+      >
         <Skeleton
           animation="wave"
           variant="circle"
@@ -22,12 +26,18 @@ function SearchLoadingState() {
         />
         <Skeleton variant="text" animation="wave" width="10vw" height="3vh" />
       </Grid>
-      {listItemsToShow.map((item, index) => {
+      {listItemsToShow.map((_item, index) => {
         return (
-          <Grid key={index} container justifyContent="flex-start" alignItems="center" style={{
-            borderTop: "0.1px solid #60606033",
-            padding: "1rem",
-          }}>
+          <Grid
+            key={index}
+            container
+            justifyContent="flex-start"
+            alignItems="center"
+            style={{
+              borderTop: "0.1px solid #60606033",
+              padding: "1rem",
+            }}
+          >
             <Grid
               container
               justifyContent="space-between"
@@ -36,7 +46,7 @@ function SearchLoadingState() {
               <Skeleton animation="wave" width="20vw" height="2vh" />
               <Skeleton animation="wave" width="6vw" height="1vh" />
             </Grid>
-            <Grid className="author-container" >
+            <Grid className="author-container">
               <Skeleton animation="wave" width="15vw" height="2vh" />
             </Grid>
           </Grid>

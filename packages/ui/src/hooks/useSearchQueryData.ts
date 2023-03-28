@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { formatSearchData } from "../utils/searchUtils";
+import { SearchResult } from "../Search/SearchListItem";
 
 function useSearchQueryData(SEARCH_QUERY) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<SearchResult[]>([]);
 
   const [getData, { loading, data: searchResult }] = useLazyQuery(SEARCH_QUERY);
 
@@ -19,7 +20,7 @@ function useSearchQueryData(SEARCH_QUERY) {
     }
   }, [searchResult]);
 
-  return [getSearchData, { data, loading }];
+  return [getSearchData, { data, loading }] as const;
 }
 
 export default useSearchQueryData;

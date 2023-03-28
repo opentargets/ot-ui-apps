@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useMemo, useCallback } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "./hooks/useSearchQueryData";
-import SearchListItem from "./Search/SearchListItem";
+import SearchListItem, { SearchResult } from "./Search/SearchListItem";
 import SearchListHeader from "./Search/SearchListHeader";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import useListOption from "./hooks/useListOption";
@@ -10,9 +10,10 @@ import { SearchContext } from "./Search/SearchContext";
 import SearchLoadingState from "./Search/SearchLoadingState";
 import { containsObject } from "./utils/searchUtils";
 
-const getTheme = (primaryColor) =>
+const getTheme = (primaryColor: string) =>
   createTheme({
     overrides: {
+      // @ts-ignore
       MuiAutocomplete: {
         popper: {
           borderRadius: "0 0 12px 12px !important",
@@ -55,10 +56,10 @@ export default function AutocompleteSearch({
   isHomePage,
 }) {
   const [searchLoading, setSearchLoading] = useState(false);
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const [openListItem] = useListOption();
   const [recentItems, setRecentValue] = useState(
-    JSON.parse(localStorage.getItem("search-history")) || []
+    JSON.parse(localStorage.getItem("search-history") || "[]") || []
   );
   const [open, setOpen] = useState(isHomePage ? false : true);
 
@@ -101,7 +102,7 @@ export default function AutocompleteSearch({
           name: inputValue,
           entity: "search",
           type: "",
-        }),
+        } as SearchResult),
         setSearchResult(data))
       : setSearchResult(recentItems);
     setSearchLoading(loading);
@@ -189,10 +190,10 @@ export default function AutocompleteSearch({
           <SearchListItem
             item={option}
             isTopHit={option.type === "topHit"}
-            loading={searchLoading}
             clearItem={clearItem}
           />
         )}
+        // @ts-ignore
         getOptionSelected={(option, value) => option.name === value}
         filterOptions={(o, s) => searchResult}
         renderInput={(params) => (

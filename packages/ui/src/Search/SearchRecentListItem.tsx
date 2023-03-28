@@ -1,10 +1,9 @@
-import { useState } from "react";
 import { Typography } from "@material-ui/core";
 import { History, Clear } from "@material-ui/icons";
 
 import { makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   recentItemContainer: {
     display: "flex",
     alignItems: "center",
@@ -20,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   px2: {
     padding: "0 1rem",
   },
-}));
+});
 
 function SearchRecentListItem({ item, clearItem }) {
   const classes = useStyles();
