@@ -24,11 +24,11 @@ import HomeBox from './HomeBox';
 import { externalLinks, mainMenuItems } from '../../constants';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
-interface Example {
+type Example = {
   label: string;
   url: string;
   type: string;
-}
+};
 
 const EXAMPLES: Example[] = [
   { label: 'PCSK9', url: '/gene/ENSG00000169174', type: 'gene' },
