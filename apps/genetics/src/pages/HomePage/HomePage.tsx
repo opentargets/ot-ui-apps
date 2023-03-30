@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { Grid, Box, Typography, useMediaQuery } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
@@ -24,7 +24,13 @@ import HomeBox from './HomeBox';
 import { externalLinks, mainMenuItems } from '../../constants';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
-const EXAMPLES = [
+interface Example {
+  label: string;
+  url: string;
+  type: string;
+}
+
+const EXAMPLES: Example[] = [
   { label: 'PCSK9', url: '/gene/ENSG00000169174', type: 'gene' },
   {
     label: '1_154453788_C_T',
@@ -121,7 +127,6 @@ const HelpBoxPanel = ({
     );
   }
   return (
-    //@ts-ignore not sure why this errors
     <Box className={classes.helpBoxes}>
       <Link to={url} external={external} className={classes.baseLink}>
         <div className="fa-layers fa-fw fa-6x">
@@ -157,8 +162,6 @@ function HomePage() {
           justifyContent="center"
           alignItems="center"
         >
-          {/*
-// @ts-ignore */}
           <Splash />
           <NavBar
             name="Genetics"
@@ -305,8 +308,6 @@ function HomePage() {
           </Grid>
         </Grid>
       </Grid>
-      {/*
-      //@ts-ignore can remove once UI PR is merged separately*/}
       <Footer externalLinks={externalLinks} />
     </>
   );

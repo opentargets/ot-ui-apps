@@ -80,4 +80,4 @@ class Splash extends React.Component {
   }
 }
 
-export default withContentRect(withStyles(styles)(Splash));
+export default withStyles(styles)(withContentRect('bounds')(Splash));
