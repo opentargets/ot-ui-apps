@@ -142,6 +142,56 @@ const FooterSection = ({ heading, links, social }) => {
   );
 };
 
+// Creative Commons License
+const useLicenseStyles = makeStyles({
+  icon: {
+    height: "22px !important",
+    marginLeft: "3px",
+    verticalAlign: "middle",
+  },
+  link: {
+    display: "inline-block",
+  },
+});
+
+const LicenseCC0 = () => {
+  const classes = useLicenseStyles();
+  return (
+    <div>
+      <Typography color="inherit" variant="caption">
+        <Link
+          to="https://platform.opentargets.org/"
+          external
+          footer
+          className={classes.link}
+          property="dct:title"
+          rel="cc:attributionURL"
+        >
+          Open Targets Platform
+        </Link>{" "}
+        is marked with{" "}
+        <Link
+          rel="license noopener noreferrer"
+          to="http://creativecommons.org/publicdomain/zero/1.0?ref=chooser-v1"
+          external
+          footer
+          className={classes.link}
+        >
+          CC0 1.0
+          <img
+            className={classes.icon}
+            src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
+          />
+          <img
+            className={classes.icon}
+            src="https://mirrors.creativecommons.org/presskit/icons/zero.svg?ref=chooser-v1"
+          />
+        </Link>
+      </Typography>
+    </div>
+  );
+};
+
 const Footer = ({ classes, externalLinks }) => (
   <Grid
     className={classes.footer}
