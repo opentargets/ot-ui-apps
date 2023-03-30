@@ -95,7 +95,7 @@ const useSectionStyles = makeStyles({
   },
 });
 
-const FooterSection = ({ heading, links, social }) => {
+const FooterSection = ({ heading, links, social, children }) => {
   const classes = useSectionStyles();
   return (
     <Grid
@@ -138,6 +138,7 @@ const FooterSection = ({ heading, links, social }) => {
           <FooterSocial social={social} />
         </Grid>
       ) : null}
+      {children}
     </Grid>
   );
 };
@@ -200,7 +201,9 @@ const Footer = ({ classes, externalLinks }) => (
     spacing={3}
   >
     <Grid item container xs={12} md={10} spacing={2}>
-      <FooterSection heading="About" links={externalLinks.about} />
+      <FooterSection heading="About" links={externalLinks.about}>
+        <LicenseCC0 />
+      </FooterSection>
       <FooterSection
         heading="Help"
         links={externalLinks.help}
