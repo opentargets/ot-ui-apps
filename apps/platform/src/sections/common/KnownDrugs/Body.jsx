@@ -8,7 +8,7 @@ import SectionItem from '../../../components/Section/SectionItem';
 import SourceDrawer from './SourceDrawer';
 import { Table, getPage } from '../../../components/Table';
 import useCursorBatchDownloader from '../../../hooks/useCursorBatchDownloader';
-import { OtTable } from 'ui';
+import { OtTable, OtTableData } from 'ui';
 import { TramRounded } from '@material-ui/icons';
 
 function getColumnPool(id, entity) {
@@ -135,11 +135,11 @@ function getOtTableColumns() {
       header: 'Disease Information',
       columns: [
         {
-          header: 'Disease Name',
+          header: 'Disease',
           accessorFn: row => row.disease.id,
           cell: d => (
             <Link to={`/disease/${d.row.original.disease.id}`}>
-              {d.row.original.disease.id}
+              {d.row.original.disease.name}
             </Link>
           ),
           // enableSorting: false,
@@ -152,7 +152,7 @@ function getOtTableColumns() {
       columns: [
         {
           header: 'Drug',
-          accessorKey: 'drug.id',
+          accessorKey: 'drug.name',
           cell: d => {
             return d.row.original.drug ? (
               <Link to={`/drug/${d.row.original.drug.id}`}>
@@ -166,7 +166,7 @@ function getOtTableColumns() {
           enableColumnFilter: false,
         },
         {
-          header: 'Drug Type',
+          header: 'Type',
           accessorKey: 'drugType',
           // enableSorting: false,
           // enableColumnFilter: false,
@@ -198,12 +198,12 @@ function getOtTableColumns() {
             </Link>
           ),
         },
-        {
-          header: 'Name',
-          accessorKey: 'target.approvedName',
-          // enableSorting: false,
-          enableColumnFilter: false,
-        },
+        // {
+        //   header: 'Name',
+        //   accessorKey: 'target.approvedName',
+        //   // enableSorting: false,
+        //   enableColumnFilter: false,
+        // },
       ],
     },
     {
@@ -392,6 +392,21 @@ function Body({
             dataDownloaderColumns={exportColumns}
             query={BODY_QUERY.loc.source.body}
             variables={variables}
+          />
+        )}
+      />
+
+      <SectionItem
+        definition={definition}
+        request={{ loading: initialLoading, error: false, data: rows }}
+        renderDescription={Description}
+        renderBody={() => (
+          <OtTableData
+            showGlobalFilter
+            allColumns={getOtTableColumns()}
+            TABLE_DATA_QUERY={BODY_QUERY}
+            QUERY_VARIABLES={variables}
+            entity={entity}
           />
         )}
       />

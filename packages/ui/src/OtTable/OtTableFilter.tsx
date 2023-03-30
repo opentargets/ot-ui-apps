@@ -1,10 +1,12 @@
 import React from "react";
 import { Column, Table } from "@tanstack/react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import {
   Grid,
   IconButton,
+  Input,
+  InputAdornment,
   List,
   ListItem,
   ListItemText,
@@ -15,7 +17,9 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   filterInput: {
-    padding: "0.7rem",
+    padding: "0.3rem 0.5rem",
+    width: "min-content",
+    minWidth: "7rem",
   },
 }));
 
@@ -59,7 +63,7 @@ function OtTableFilter({
   );
   return (
     <>
-      <IconButton aria-label="filter" onClick={handleClick}>
+      <IconButton size="small" aria-label="filter" onClick={handleClick}>
         <FontAwesomeIcon icon={faFilter} size="xs" />
       </IconButton>
 
@@ -85,7 +89,20 @@ function OtTableFilter({
           spacing={2}
         >
           <Grid item>
-            <TextField
+            <Input
+              className={classes.filterInput}
+              value={(columnFilterValue ?? "") as string}
+              onChange={(e) => column.setFilterValue(e.target.value)}
+              placeholder={`Search..`}
+              // size="small"
+              startAdornment={
+                <InputAdornment position="start">
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
+                </InputAdornment>
+              }
+            />
+
+            {/* <TextField
               className={classes.filterInput}
               autoFocus
               type="text"
@@ -93,7 +110,7 @@ function OtTableFilter({
               onChange={(e) => column.setFilterValue(e.target.value)}
               placeholder={`Search..`}
               variant="outlined"
-            />
+            /> */}
           </Grid>
           <Grid item>
             {/* <datalist id={column.id + "list"}>
@@ -104,6 +121,7 @@ function OtTableFilter({
             <List aria-label="filter-list">
               {sortedUniqueValues.slice(0, 5000).map((value: any) => (
                 <ListItem
+                  key={value}
                   button
                   onClick={() => {
                     handleClose();

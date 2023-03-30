@@ -8,7 +8,7 @@ function OtTableLoader() {
       <Grid container>
         <Skeleton animation="wave" width="40%" height="3rem" />
       </Grid>
-      <Grid alignItems="flex-start" >
+      <Grid container alignItems="flex-start" >
         <Skeleton animation="wave" variant="rect" width="100%" height="30rem" />
       </Grid>
       <Grid container justifyContent="space-between">
