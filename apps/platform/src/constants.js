@@ -25,6 +25,10 @@ export const externalLinks = {
       url: 'https://platform-docs.opentargets.org/terms-of-use',
     },
   ],
+  license: {
+    label: 'Open Targets Platform',
+    url: 'https://platform.opentargets.org/',
+  },
   network: [
     { label: 'Science', url: 'https://www.opentargets.org/science' },
     { label: 'Publications', url: 'https://www.opentargets.org/publications' },

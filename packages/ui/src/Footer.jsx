@@ -155,20 +155,20 @@ const useLicenseStyles = makeStyles({
   },
 });
 
-const LicenseCC0 = () => {
+const LicenseCC0 = ({links}) => {
   const classes = useLicenseStyles();
   return (
     <div>
       <Typography color="inherit" variant="caption">
         <Link
-          to="https://platform.opentargets.org/"
+          to={links.url}
           external
           footer
           className={classes.link}
           property="dct:title"
           rel="cc:attributionURL"
         >
-          Open Targets Platform
+          {links.label}
         </Link>{" "}
         is marked with{" "}
         <Link
@@ -202,7 +202,7 @@ const Footer = ({ classes, externalLinks }) => (
   >
     <Grid item container xs={12} md={10} spacing={2}>
       <FooterSection heading="About" links={externalLinks.about}>
-        <LicenseCC0 />
+        <LicenseCC0 links={externalLinks.license} />
       </FooterSection>
       <FooterSection
         heading="Help"
