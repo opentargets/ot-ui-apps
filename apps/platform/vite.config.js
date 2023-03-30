@@ -1,24 +1,19 @@
 import { defineConfig } from 'vite';
-import svgrPlugin from 'vite-plugin-svgr';
 import react from '@vitejs/plugin-react';
-import graphql from '@rollup/plugin-graphql';
+import gql from 'vite-plugin-simple-gql';
+import svgrPlugin from 'vite-plugin-svgr';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  preview: {
-    port: 3001,
-  },
   build: {
     outDir: './bundle-platform',
   },
   plugins: [
-    graphql(),
+    react(),
+    gql(),
     svgrPlugin({
       svgrOptions: {
         icon: true,
-        // ...svgr options (https://react-svgr.com/docs/options/)
       },
     }),
-    react(),
   ],
 });
