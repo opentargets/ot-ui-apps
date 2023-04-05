@@ -169,7 +169,7 @@ const ForestPlot = ({
       .style('position', 'sticky')
       .style('flex-shrink', 0)
       .style('flex-grow', 0)
-      .style('top', `${plot_height -2 * cfg.rowHeight}px`)
+      .style('top', `${plot_height - 2 * cfg.rowHeight}px`)
       .style('background-color', 'white');
 
     // clip trait name text (row width)
@@ -473,7 +473,7 @@ const ForestPlot = ({
           height: plot_height,
           margin: 'none',
           display: 'flex',
-          'flex-direction': 'column',
+          flexDirection: 'column',
         }}
       >
         <svg ref={refs} />

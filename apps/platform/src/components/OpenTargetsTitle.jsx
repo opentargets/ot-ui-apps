@@ -3,8 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 
-import config from '../config';
-import PartnerLockIcon from './PartnerLockIcon';
+import usePermissions from '../hooks/usePermissions';
 
 const styles = () => ({
   root: {
@@ -22,16 +21,12 @@ const styles = () => ({
 
 const OpenTargetsTitle = ({ classes, className, name }) => {
   const titleClasses = classNames(classes.root, className);
+  const { isPartnerPreview } = usePermissions();
+  const displayedAppName = isPartnerPreview ? 'Partner Preview Platform' : name;
   return (
     <Typography className={titleClasses} variant="h6" color="inherit">
       <span className={classes.fat}>Open Targets </span>
-      <span className={classes.thin}>{name}</span>
-      {config.isPartnerPreview ? (
-        <>
-          <span className={classes.thin}> - Partner Preview </span>
-          <PartnerLockIcon />
-        </>
-      ) : null}
+      <span className={classes.thin}>{displayedAppName}</span>
     </Typography>
   );
 };

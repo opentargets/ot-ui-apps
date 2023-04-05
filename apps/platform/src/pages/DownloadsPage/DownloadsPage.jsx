@@ -55,9 +55,9 @@ function getColumns(date) {
       id: 'formats',
       label: 'Format(s)',
       renderCell: ({ niceName, formats }) => {
-        return formats.map(format => {
+        return formats.map((format, index) => {
           return (
-            <Fragment key={format.format}>
+            <Fragment key={index}>
               <DownloadsDrawer
                 title={niceName}
                 format={format.format}
@@ -90,7 +90,7 @@ const DATA_VERSION_QUERY = gql`
 function getVersion(data) {
   if (!data) return null;
   const { month, year } = data.meta.dataVersion;
-  return `${year}.${month < 10 ? '0' : ''}${month}`;
+  return `${year}.${month}`;
 }
 
 function DownloadsPage() {
@@ -106,10 +106,7 @@ function DownloadsPage() {
       .then(res => res.text())
       .then(lines => {
         if (isCurrent) {
-          const nodes = lines
-            .trim()
-            .split('\n')
-            .map(JSON.parse);
+          const nodes = lines.trim().split('\n').map(JSON.parse);
           setDownloadsData(nodes);
         }
       });
