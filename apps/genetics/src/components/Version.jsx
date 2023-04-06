@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
-import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
+import { makeStyles } from '@material-ui/core';
 
 // HELPERS
 function getVersion({ month, year }) {
@@ -25,17 +25,18 @@ const DATA_VERSION_QUERY = gql`
   }
 `;
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   container: {
     display: 'flex',
     marginTop: 5,
     justifyContent: 'center',
     alignContent: 'center',
   },
-});
+}));
 
 // MAIN COMPONENT
-function Version({ classes }) {
+function Version() {
+  const classes = useStyles();
   const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
   if (error) {
     return null;
@@ -69,4 +70,4 @@ function Version({ classes }) {
   );
 }
 
-export default withStyles(styles)(Version);
+export default Version;
