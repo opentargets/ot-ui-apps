@@ -16,6 +16,10 @@
     "dev-ppp": {
       "cache": false,
       "persistent": true
+    },
+    "build-ppp": {
+      "dependsOn": ["^build"],
+      "outputs": ["bundle-platform/**"]
     }
   }
 }
