@@ -102,6 +102,7 @@ const FooterSection = ({
   heading,
   links,
   social,
+  children
 }: {
   heading: React.ReactNode;
   links: {
@@ -154,7 +155,58 @@ const FooterSection = ({
           <FooterSocial social={social} />
         </Grid>
       ) : null}
+      {children}
     </Grid>
+  );
+};
+
+// Creative Commons License
+const useLicenseStyles = makeStyles({
+  icon: {
+    height: "22px !important",
+    marginLeft: "3px",
+    verticalAlign: "middle",
+  },
+  link: {
+    display: "inline-block",
+  },
+});
+
+const LicenseCC0 = ({links}) => {
+  const classes = useLicenseStyles();
+  return (
+    <div>
+      <Typography color="inherit" variant="caption">
+        <Link
+          to={links.url}
+          external
+          footer
+          className={classes.link}
+          property="dct:title"
+          rel="cc:attributionURL"
+        >
+          {links.label}
+        </Link>{" "}
+        is marked with{" "}
+        <Link
+          rel="license noopener noreferrer"
+          to="http://creativecommons.org/publicdomain/zero/1.0?ref=chooser-v1"
+          external
+          footer
+          className={classes.link}
+        >
+          CC0 1.0
+          <img
+            className={classes.icon}
+            src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
+          />
+          <img
+            className={classes.icon}
+            src="https://mirrors.creativecommons.org/presskit/icons/zero.svg?ref=chooser-v1"
+          />
+        </Link>
+      </Typography>
+    </div>
   );
 };
 
@@ -168,7 +220,9 @@ const Footer = ({ externalLinks }) => {
       spacing={3}
     >
       <Grid item container xs={12} md={10} spacing={2}>
-        <FooterSection heading="About" links={externalLinks.about} />
+        <FooterSection heading="About" links={externalLinks.about}>
+          <LicenseCC0 links={externalLinks.license} />
+        </FooterSection>
         <FooterSection
           heading="Help"
           links={externalLinks.help}
