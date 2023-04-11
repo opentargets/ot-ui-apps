@@ -55,9 +55,9 @@ function getColumns(date) {
       id: 'formats',
       label: 'Format(s)',
       renderCell: ({ niceName, formats }) => {
-        return formats.map(format => {
+        return formats.map((format, index) => {
           return (
-            <Fragment key={format.format}>
+            <Fragment key={index}>
               <DownloadsDrawer
                 title={niceName}
                 format={format.format}
