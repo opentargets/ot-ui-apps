@@ -19,6 +19,8 @@
     "build:genetics": "turbo run build --filter=genetics",
     "dev:platform": "turbo run dev --filter=platform",
     "build:platform": "turbo run build --filter=platform",
+    "dev:platform:ppp": "turbo run dev-ppp --filter=platform",
+    "build:platform:ppp": "turbo run build-ppp --filter=platform",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

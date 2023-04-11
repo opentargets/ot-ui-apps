@@ -52,6 +52,8 @@
     "ui": "*"
   },
   "scripts": {
+    "dev-ppp": "vite --host 0.0.0.0 --port 3000 --clearScreen false --mode ppp",
+    "build-ppp": "vite build --mode ppp",
     "dev": "vite --host 0.0.0.0 --port 3000 --clearScreen false",
     "build": "vite build",
     "preview": "vite preview",
