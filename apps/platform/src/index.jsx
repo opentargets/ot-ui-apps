@@ -1,5 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as ReactDOMClient from 'react-dom/client';
 import TagManager from 'react-gtm-module';
 
 import App from './App';
@@ -12,4 +11,5 @@ if (config.googleTagManagerID) {
   TagManager.initialize({ gtmId: config.googleTagManagerID });
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const root = ReactDOMClient.createRoot(document.getElementById('root'));
+root.render(<App />);
