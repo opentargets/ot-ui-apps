@@ -33,6 +33,7 @@ export interface SearchResult {
   type: string;
   symbol: string;
   name: string;
+  description: string;
   entity: string;
   id: string;
   rsId: string;

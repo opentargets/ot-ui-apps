@@ -1,5 +1,15 @@
-import { useState, useEffect, useContext, useMemo, useCallback } from "react";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import {
+  useState,
+  useEffect,
+  useContext,
+  useMemo,
+  useCallback,
+  KeyboardEvent,
+} from "react";
+import Autocomplete, {
+  AutocompleteChangeDetails,
+  AutocompleteChangeReason,
+} from "@material-ui/lab/Autocomplete";
 import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "./hooks/useSearchQueryData";
 import SearchListItem, { SearchResult } from "./Search/SearchListItem";
@@ -54,6 +64,9 @@ const getTheme = (primaryColor: string) =>
 export default function AutocompleteSearch({
   closeModal = () => {},
   isHomePage,
+}: {
+  closeModal: () => void;
+  isHomePage: boolean;
 }) {
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
@@ -63,15 +76,8 @@ export default function AutocompleteSearch({
   );
   const [open, setOpen] = useState(isHomePage ? false : true);
 
-  const {
-    searchQuery,
-    isQueryLoading,
-    inputValueUpdate,
-    setLoading,
-    inputValue,
-    setInputValue,
-    primaryColor,
-  } = useContext(SearchContext);
+  const { searchQuery, setLoading, inputValue, setInputValue, primaryColor } =
+    useContext(SearchContext);
 
   const theme = useMemo(() => getTheme(primaryColor), [primaryColor]);
 
@@ -90,39 +96,44 @@ export default function AutocompleteSearch({
       event.stopPropagation();
       setOpen(false);
       event.preventDefault();
-      inputValueUpdate("");
-      // return false;
+      setInputValue("");
     }
   }, []);
 
   useEffect(() => {
+    let searchForTermObject;
     if (inputValue) {
-      const RESULT_DATA = JSON.parse(JSON.stringify(data));
-      RESULT_DATA.unshift({
+      searchForTermObject = {
         symbol: "Search For: " + inputValue,
         name: inputValue,
         entity: "search",
         type: "",
-      });
+      };
+      setSearchResult([searchForTermObject, ...recentItems]);
+    }
+    if (data.length) {
+      const RESULT_DATA = JSON.parse(JSON.stringify(data));
+      RESULT_DATA.unshift(searchForTermObject);
       setSearchResult(RESULT_DATA);
-    } else {
-      setSearchResult(recentItems);
     }
     setSearchLoading(loading);
-    isQueryLoading(loading);
-    if (loading) {
-      setSearchResult([]);
-    }
+    setLoading(loading);
   }, [data, loading, recentItems, inputValue]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
+    // document.addEventListener("keydown", (e: KeyboardEvent) =>
+    //   handleKeyPress(e)
+    // );
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
+      // document.addEventListener("keydown", (e: KeyboardEvent) =>
+      //   handleKeyPress(e)
+      // );
     };
   }, [handleKeyPress]);
 
-  const searchQueryInput = (param) => {
+  const searchQueryInput = (param: string) => {
     if (!param) {
       setSearchResult(recentItems);
     } else {
@@ -132,28 +143,23 @@ export default function AutocompleteSearch({
     }
   };
 
-  const changeInputValue = (param) => {
-    if (!param) {
-      setSearchResult(recentItems);
-    }
-    setInputValue(param);
-    inputValueUpdate(param);
-  };
-
   const onClose = () => {
     setLoading(false);
     setInputValue("");
     closeModal();
   };
 
-  const handleSelectOption = (e, option) => {
+  const handleSelectOption = (
+    event: React.ChangeEvent<{}>,
+    option: string | SearchResult | null,
+  ) => {
     if (typeof option === "object") {
       onClose();
       openListItem(option);
     }
   };
 
-  const clearItem = (item) => {
+  const clearItem = (item: SearchResult) => {
     const removedItems = [...recentItems];
     const existingIndex = containsObject(item, removedItems);
     removedItems.splice(existingIndex, 1);
@@ -204,7 +210,6 @@ export default function AutocompleteSearch({
             params={params}
             debounceValue={searchQueryInput}
             onClose={onClose}
-            changeInputValue={changeInputValue}
             isHomePage={isHomePage}
             focus={open}
           />
