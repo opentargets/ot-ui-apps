@@ -102,6 +102,7 @@ export default function AutocompleteSearch({
 
   useEffect(() => {
     let searchForTermObject;
+    setSearchResult(recentItems);
     if (inputValue) {
       searchForTermObject = {
         symbol: "Search For: " + inputValue,
@@ -109,7 +110,7 @@ export default function AutocompleteSearch({
         entity: "search",
         type: "",
       };
-      setSearchResult([searchForTermObject, ...recentItems]);
+    setSearchResult([searchForTermObject, ...recentItems]);
     }
     if (data.length) {
       const RESULT_DATA = JSON.parse(JSON.stringify(data));
@@ -175,7 +176,6 @@ export default function AutocompleteSearch({
   return (
     <ThemeProvider theme={theme}>
       <Autocomplete
-        open={open}
         disablePortal
         openOnFocus
         autoHighlight
