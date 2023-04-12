@@ -1,9 +1,9 @@
 import React from 'react';
 import DownArrowIcon from '@material-ui/icons/KeyboardArrowDown';
-import withStyles from '@material-ui/core/styles/withStyles';
 import classNames from 'classnames';
+import { makeStyles } from '@material-ui/core';
 
-const styles = theme => {
+const useStyles = makeStyles(theme => {
   return {
     root: {
       cursor: 'pointer',
@@ -19,9 +19,10 @@ const styles = theme => {
       fill: theme.palette.primary.main,
     },
   };
-};
+});
 
-const ScrollDownButton = ({ classes, className, onClick }) => {
+const ScrollDownButton = ({ className, onClick }) => {
+  const classes = useStyles();
   const iconClasses = classNames(classes.root, className);
   return (
     <div className={iconClasses} onClick={onClick}>
@@ -30,4 +31,4 @@ const ScrollDownButton = ({ classes, className, onClick }) => {
   );
 };
 
-export default withStyles(styles)(ScrollDownButton);
+export default ScrollDownButton;

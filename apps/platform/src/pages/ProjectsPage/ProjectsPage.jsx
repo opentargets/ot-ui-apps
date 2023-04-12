@@ -1,42 +1,90 @@
 import React, { Fragment } from 'react';
-import { Paper, Box, Typography } from '@material-ui/core';
+import {
+  Paper,
+  Box,
+  Typography,
+  makeStyles,
+  Avatar,
+  Chip,
+} from '@material-ui/core';
 import projectsData from './projects-data.json';
 import { DataTable } from '../../components/Table';
 import Link from '../../components/Link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCheck,
-  faXmark,
+  faCircleCheck,
+  faCircleNotch,
 } from '@fortawesome/free-solid-svg-icons';
 
-const columns = [
-  {
-    id: 'otar_code',
-    label: 'Project Code',
-    renderCell: ({ otar_code }) => {
-      return otar_code ? (
-        <Link to={`http://home.opentargets.org/${otar_code}`} external newTab>
-          {otar_code}
-        </Link>
-      ) : null;
-    },
+const useStyles = makeStyles(theme => ({
+  icon: {
+    color: theme.palette.primary.main,
   },
-  { id: 'project_name', label: 'Project Name' },
-  { id: 'project_lead', label: 'Project Lead' },
-  { id: 'generates_data', label: 'Generates Data' },
-  {
-    id: 'integrates_in_PPP',
-    label: 'Integrates into PPP',
-    renderCell: ({ integrates_in_PPP }) => {
-      const icon = integrates_in_PPP === 'Y' ? faCheck : faXmark;
-      return <FontAwesomeIcon size="lg" icon={icon} />;
-    },
+  diseaseContainer: {
+    display: 'flex',
   },
-  { id: 'project_status', label: 'Project Status' },
-  { id: 'open_targets_therapeutic_area', label: 'Therapeutic Area' },
-];
+  disease: {
+    marginRight: '0.2rem',
+  },
+}));
 
 function ProjectPage() {
+  const classes = useStyles();
+  const columns = [
+    {
+      id: 'otar_code',
+      label: 'Project Code',
+      renderCell: ({ otar_code }) => {
+        return otar_code ? (
+          <Link to={`http://home.opentargets.org/${otar_code}`} external newTab>
+            {otar_code}
+          </Link>
+        ) : null;
+      },
+    },
+    { id: 'project_name', label: 'Project Name' },
+    { id: 'project_lead', label: 'Project Lead' },
+    { id: 'generates_data', label: 'Generates Data' },
+    {
+      id: 'currently_integrates_in_PPP',
+      label: 'Currently integrates into PPP',
+      renderCell: ({ currently_integrates_in_PPP }) => {
+        const icon =
+          currently_integrates_in_PPP === 'Y' ? faCircleCheck : faCircleNotch;
+        return (
+          <FontAwesomeIcon size="lg" icon={icon} className={classes.icon} />
+        );
+      },
+    },
+    { id: 'project_status', label: 'Project Status' },
+    { id: 'open_targets_therapeutic_area', label: 'Therapeutic Area' },
+    {
+      id: 'disease_mapping',
+      label: 'Disease Mapped in the PPP',
+      renderCell: ({ disease_mapping }) => {
+        let ALL_AVATARS = [];
+        disease_mapping.map((disease, index) => {
+          disease &&
+            disease.label &&
+            ALL_AVATARS.push(
+              <Link
+                to={'disease/' + disease.disease_id}
+                key={index}
+              >
+                <Chip
+                  size="small"
+                  label={disease.label}
+                  clickable
+                  color="primary"
+                  className={classes.disease}
+                />
+              </Link>
+            );
+        });
+        return <div className={classes.diseaseContainer}>{ALL_AVATARS}</div>;
+      },
+    },
+  ];
   return (
     <Fragment>
       <Typography variant="h4" component="h1" paragraph>
@@ -59,7 +107,11 @@ function ProjectPage() {
       </Typography>
       <Typography paragraph>
         PPP specific documentation can be found{' '}
-        <Link to="https://platform-docs.opentargets.org/partner-preview-platform" external newTab>
+        <Link
+          to="http://home.opentargets.org/ppp-documentation"
+          external
+          newTab
+        >
           here
         </Link>
       </Typography>

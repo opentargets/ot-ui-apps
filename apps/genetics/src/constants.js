@@ -60,6 +60,10 @@ export const externalLinks = {
       url: `https://genetics-docs.opentargets.org/terms-of-use`,
     },
   ],
+  license: {
+    label: 'Open Targets Genetics',
+    url: 'https://genetics.opentargets.org/',
+  },
   network: [
     { label: 'Science', url: 'https://www.opentargets.org/science' },
     { label: 'Publications', url: 'https://www.opentargets.org/publications' },

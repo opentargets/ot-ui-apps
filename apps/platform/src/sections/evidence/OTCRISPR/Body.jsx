@@ -43,22 +43,27 @@ const getColumns = classes => [
   {
     id: 'contrast',
     label: 'Contrast / Study overview',
-    renderCell: row =>
-      row.contrast ? (
-        <Tooltip
-          showHelpIcon
-          title={
-            <TooltipStyledLabel
-              label={'Study overview'}
-              description={row.studyOverview}
-            />
-          }
-        >
-          <span>{row.contrast}</span>
-        </Tooltip>
-      ) : (
-        row.studyOverview
-      ),
+    renderCell: row => {
+      if (row.contrast && row.studyOverview) {
+        return (
+          <Tooltip
+            showHelpIcon
+            title={
+              <TooltipStyledLabel
+                label={'Study overview'}
+                description={row.studyOverview}
+              />
+            }
+          >
+            <span>{row.contrast}</span>
+          </Tooltip>
+        );
+      } else if (row.contrast) {
+        return <span>{row.contrast}</span>;
+      } else if (row.studyOverview) {
+        return <span>{row.studyOverview}</span>;
+      }
+    },
     width: '25%',
     filterValue: row => row.contrast + '; ' + row.studyOverview,
   },
