@@ -68,7 +68,7 @@ export default function AutocompleteSearch({
   closeModal: () => void;
   isHomePage: boolean;
 }) {
-  const [searchLoading, setSearchLoading] = useState(false);
+
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const [openListItem] = useListOption();
   const [recentItems, setRecentValue] = useState(
@@ -76,12 +76,12 @@ export default function AutocompleteSearch({
   );
   const [open, setOpen] = useState(isHomePage ? false : true);
 
-  const { searchQuery, setLoading, inputValue, setInputValue, primaryColor } =
+  const { searchQuery, setLoading, inputValue, setInputValue, primaryColor, loading } =
     useContext(SearchContext);
 
   const theme = useMemo(() => getTheme(primaryColor), [primaryColor]);
 
-  const [getSearchData, { data, loading }] = useSearchQueryData(searchQuery);
+  const [getSearchData, { data, loading: searchQueryLoading }] = useSearchQueryData(searchQuery);
 
   const handleKeyPress = useCallback((event) => {
     // open on cmd + k
@@ -101,8 +101,15 @@ export default function AutocompleteSearch({
   }, []);
 
   useEffect(() => {
+    setLoading(searchQueryLoading);
+    if(searchQueryLoading) setSearchResult([]);
+  }, [searchQueryLoading])
+  
+
+  useEffect(() => {
     let searchForTermObject;
     setSearchResult(recentItems);
+    setLoading(searchQueryLoading);
     if (inputValue) {
       searchForTermObject = {
         symbol: "Search For: " + inputValue,
@@ -112,25 +119,18 @@ export default function AutocompleteSearch({
       };
     setSearchResult([searchForTermObject, ...recentItems]);
     }
-    if (data.length) {
+    if (!loading && inputValue && data.length) {
       const RESULT_DATA = JSON.parse(JSON.stringify(data));
       RESULT_DATA.unshift(searchForTermObject);
       setSearchResult(RESULT_DATA);
+      setLoading(false);
     }
-    setSearchLoading(loading);
-    setLoading(loading);
-  }, [data, loading, recentItems, inputValue]);
+  }, [data, inputValue]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
-    // document.addEventListener("keydown", (e: KeyboardEvent) =>
-    //   handleKeyPress(e)
-    // );
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
-      // document.addEventListener("keydown", (e: KeyboardEvent) =>
-      //   handleKeyPress(e)
-      // );
     };
   }, [handleKeyPress]);
 
@@ -184,7 +184,7 @@ export default function AutocompleteSearch({
         options={searchResult}
         onChange={handleSelectOption}
         groupBy={(option) => option.type}
-        loading={searchLoading}
+        loading={searchQueryLoading}
         loadingText={<SearchLoadingState />}
         renderGroup={(group) => (
           <SearchListHeader
