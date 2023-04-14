@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
 
 import Link from '../../components/Link';
-import LongText from '../../components/LongText';
+import { LongText } from 'ui';
 
 const styles = () => ({
   link: {

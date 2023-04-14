@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import LongText from '../LongText';
+import { LongText } from 'ui';
 
 function Description({ children, loading = false }) {
   const content = children ? (

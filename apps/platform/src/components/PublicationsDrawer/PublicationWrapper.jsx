@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 
 import Link from '../Link';
-import LongText from '../LongText';
+import { LongText } from 'ui';
 
 const pmUrl = 'https://europepmc.org/';
 const pmTitleUrlMED = 'abstract/med/';

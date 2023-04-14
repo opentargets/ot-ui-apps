@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Box, Typography } from '@material-ui/core';
 
 import Link from '../../../components/Link';
-import LongText from '../../../components/LongText';
+import { LongText } from 'ui';
 
 const pmUrl = 'https://europepmc.org/';
 const pmTitleUrl = 'abstract/med/';
