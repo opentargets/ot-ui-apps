@@ -112,6 +112,7 @@ const FooterSection = ({
     url: string;
   }[];
   social?: unknown;
+  children: React.ReactNode;
 }) => {
   const classes = useSectionStyles();
   return (
