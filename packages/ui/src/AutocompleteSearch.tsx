@@ -125,7 +125,7 @@ export default function AutocompleteSearch({
       setSearchResult(RESULT_DATA);
       setLoading(false);
     }
-  }, [data, inputValue]);
+  }, [data, inputValue, recentItems]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
