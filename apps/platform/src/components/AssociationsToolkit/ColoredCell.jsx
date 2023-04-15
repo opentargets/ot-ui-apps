@@ -10,6 +10,7 @@ function ColoredCell({
   isAssociations = true,
   hasValue = false,
 }) {
+  // if(!hasValue) return null
   const colorScale = getScale(isAssociations);
 
   const onClickHabdler = onClick ? () => onClick(cell) : () => {};
@@ -27,11 +28,11 @@ function ColoredCell({
     width: rounded ? '26px' : '30px',
     borderRadius: rounded ? '13px' : 0,
     backgroundColor,
-    border: `1.5px solid ${borderColor}`,
+    border: `1px solid ${borderColor}`,
   };
 
   return (
-    <Tooltip title={scoreText} arrow disableHoverListener={!isAssociations}>
+    <Tooltip title={scoreText} arrow disableHoverListener={false}>
       <div className={className} onClick={onClickHabdler} style={style}></div>
     </Tooltip>
   );

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import client from '../../../client';
-import targetPropritisation from '../static_datasets/prototype20230222.json';
 
 // Select and parsed data from API response from fixed Target
 const getAssociatedDiseasesData = data => {
@@ -27,11 +26,16 @@ const getAssociatedTargetsData = data => {
       (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
       {}
     );
+    const targetPrioritisation = d.target.priorisations.items.reduce(
+      (acc, curr) => ((acc[curr.key] = parseInt(curr.value)), acc),
+      {}
+    );
     return {
       id: d.target.id,
       score: d.score,
       target: d.target,
       dataSources: sources,
+      prioritisations: targetPrioritisation,
     };
   });
 };
@@ -44,20 +48,6 @@ const getParsedData = (entity, apiResponse) => {
 const getAllDataCount = (entity, apiResponse) => {
   if (entity === 'target') return apiResponse.target.associatedDiseases.count;
   if (entity === 'disease') return apiResponse.disease.associatedTargets.count;
-};
-
-const ADD_PRIORITIZATION = async data => {
-  const dataWithPrioritization = await data.map(targetRow => {
-    let { prioritisations } = targetPropritisation.find(
-      el => el.targetid === targetRow.target.id
-    );
-    const objectPrioritization = prioritisations.reduce(
-      (acc, curr) => ((acc[curr.id] = curr.value), acc),
-      {}
-    );
-    return { ...targetRow, prioritisations: objectPrioritization };
-  });
-  return dataWithPrioritization;
 };
 
 function useTargetAssociations({
@@ -97,11 +87,12 @@ function useTargetAssociations({
         },
       });
       let parsedData = getParsedData(entity, resData.data);
+      console.log({ parsedData });
       //  THIS SHOULD BE REMOVED WHEN ADDED PRIORITIZATION API
-      if (entity === 'disease') {
-        let withPrioritization = await ADD_PRIORITIZATION(parsedData);
-        parsedData = withPrioritization;
-      }
+      // if (entity === 'disease') {
+      //   let withPrioritization = await ADD_PRIORITIZATION(parsedData);
+      //   parsedData = withPrioritization;
+      // }
       let dataCount = getAllDataCount(entity, resData.data);
       console.log('TRIGGERED REQUEST', { resData });
       setCount(dataCount);

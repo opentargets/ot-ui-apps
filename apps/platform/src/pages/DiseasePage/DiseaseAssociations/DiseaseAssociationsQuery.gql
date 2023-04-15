@@ -24,6 +24,12 @@ query DiseaseAssociationsQuery(
           id
           approvedSymbol
           approvedName
+          priorisations {
+            items {
+              key
+              value
+            }
+          }
         }
         score
         datasourceScores {

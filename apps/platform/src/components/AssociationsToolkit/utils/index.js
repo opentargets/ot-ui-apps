@@ -46,6 +46,15 @@ const PPP_ASSOCIATION_COLORS = [
   rgb('#5d876d'),
   rgb('#407253'),
 ];
+const _PPP_ASSOCIATION_COLORS = [
+  rgb('#deebf7'),
+  rgb('#c6dbef'),
+  rgb('#9ecae1'),
+  rgb('#6baed6'),
+  rgb('#4292c6'),
+  rgb('#2171b5'),
+  rgb('#08519c'),
+];
 
 export const ASSOCIATION_COLORS = isPartnerPreview
   ? PPP_ASSOCIATION_COLORS
@@ -53,7 +62,7 @@ export const ASSOCIATION_COLORS = isPartnerPreview
 
 /* PRIORITIZATION */
 // Red to blue
-const PUBLIC_PRIORITISATION_COLORS = [
+const _PUBLIC_PRIORITISATION_COLORS = [
   rgb('#b2172b'),
   rgb('#c15e6f'),
   rgb('#cfa4b3'),
@@ -62,9 +71,18 @@ const PUBLIC_PRIORITISATION_COLORS = [
   rgb('#4f84ba'),
   rgb('#08519c'),
 ];
+const PUBLIC_PRIORITISATION_COLORS = [
+  rgb('#ec2746'),
+  rgb('#f16d47'),
+  rgb('#f19d5c'),
+  rgb('#f0c584'),
+  rgb('#c8b95f'),
+  rgb('#95ae43'),
+  rgb('#52a237'),
+];
 
 // PPP red to green
-const PPP_PRIORITISATION_COLORS = [
+const _PPP_PRIORITISATION_COLORS = [
   rgb('#b2172b'),
   rgb('#bc5863'),
   rgb('#c59a9b'),
@@ -72,6 +90,16 @@ const PPP_PRIORITISATION_COLORS = [
   rgb('#9fb8a8'),
   rgb('#70957e'),
   rgb('#407253'),
+];
+
+const PPP_PRIORITISATION_COLORS = [
+  rgb('#ec2746'),
+  rgb('#f16d47'),
+  rgb('#f19d5c'),
+  rgb('#f0c584'),
+  rgb('#c8b95f'),
+  rgb('#95ae43'),
+  rgb('#52a237'),
 ];
 
 export const PRIORITISATION_COLORS = isPartnerPreview
