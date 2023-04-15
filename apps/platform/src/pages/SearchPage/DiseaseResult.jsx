@@ -1,8 +1,9 @@
 import React from 'react';
 import { Typography, withStyles } from '@material-ui/core';
-import Clampy from '@clampy-js/react-clampy';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
+
+import { LongText } from 'ui';
 
 import Highlights from '../../components/Highlights';
 import Link from '../../components/Link';
@@ -32,7 +33,7 @@ const DiseaseResult = ({ classes, data, highlights }) => {
       </Link>
       {data.description && (
         <Typography variant="body2" component="div">
-          <Clampy clampSize="4">{data.description}</Clampy>
+          <LongText lineLimit="4">{data.description}</LongText>
         </Typography>
       )}
       <Highlights highlights={highlights} />
