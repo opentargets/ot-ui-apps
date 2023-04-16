@@ -1,13 +1,8 @@
 import React from 'react';
-import {
-  Grid,
-  makeStyles,
-  Typography,
-  Hidden,
-  Box,
-  useMediaQuery,
-} from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
+import { Grid, Typography, Hidden, Box, useMediaQuery } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
+import { useTheme } from '@mui/styles';
 import { Helmet } from 'react-helmet';
 import { Footer, AutocompleteSearch } from 'ui';
 

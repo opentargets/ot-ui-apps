@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import client from '../../../client';
 import ClinvarStars from '../../../components/ClinvarStars';
 import {
@@ -246,12 +246,14 @@ function fetchClinvar(ensemblId, efoId, cursor, size) {
 export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(Summary.fragments.evaSummary);
   const count = summaryData.evaSummary.count; // reuse the count that was fetched in the summary query
-  
-  if(!count || count < 1) {
-    return null
+
+  if (!count || count < 1) {
+    return null;
   }
 
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
 }
 
 export function BodyCore({ definition, id, label, count }) {

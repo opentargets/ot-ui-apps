@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import { findDOMNode } from 'react-dom';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 
 import downloadSvg from './DownloadSvg';
 import PlotContainer from '../PlotContainer';

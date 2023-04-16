@@ -6,13 +6,14 @@ import {
   Grid,
   Typography,
   CircularProgress,
-  makeStyles,
   Snackbar,
   Slide,
   Drawer,
   Paper,
   IconButton,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import CloseIcon from '@material-ui/icons/Close';
 import 'graphiql/graphiql.min.css';
 import { fetcher } from '../../utils/global';
@@ -20,7 +21,7 @@ import Link from '../Link';
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
-  import('graphiql').then((module) => {
+  import('graphiql').then(module => {
     module.default.Logo = () => null;
     module.default.Toolbar = () => null;
     return module;
@@ -28,7 +29,7 @@ const GraphiQL = lazy(() =>
 );
 
 const asJSON = (columns, rows) => {
-  const rowStrings = rows.map((row) => {
+  const rowStrings = rows.map(row => {
     return columns.reduce((accumulator, newKey) => {
       if (newKey.exportValue === false) return accumulator;
 
@@ -49,7 +50,7 @@ const asJSON = (columns, rows) => {
 };
 
 const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
-  const quoteString = (d) => {
+  const quoteString = d => {
     // converts arrays to strings
     if (Array.isArray(d)) {
       d = d.join(',');
@@ -72,7 +73,7 @@ const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
     .join(separator);
 
   const rowStrings = rows
-    .map((row) =>
+    .map(row =>
       columns
         .reduce((rowString, column) => {
           if (column.exportValue === false) return rowString;
@@ -92,7 +93,7 @@ const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
   return [headerString, rowStrings].join(lineSeparator);
 };
 
-const createBlob = (format) =>
+const createBlob = format =>
   ({
     json: (columns, rows) =>
       new Blob([asJSON(columns, rows)], {
@@ -108,7 +109,7 @@ const createBlob = (format) =>
       }),
   }[format]);
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles(theme => ({
   messageProgress: {
     marginRight: '1rem',
   },

@@ -6,10 +6,10 @@ import {
   flexRender,
   createColumnHelper,
 } from '@tanstack/react-table';
-import Skeleton from '@material-ui/lab/Skeleton';
+import Skeleton from '@mui/lab/Skeleton';
 
 import { styled } from '@material-ui/styles';
-import { TablePagination, ClickAwayListener } from '@material-ui/core';
+import { TablePagination, ClickAwayListener } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 

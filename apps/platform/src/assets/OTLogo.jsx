@@ -1,5 +1,6 @@
 import React from 'react';
-import { SvgIcon, makeStyles } from '@material-ui/core';
+import { SvgIcon } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import config from '../config';
 
 const useStyles = makeStyles({

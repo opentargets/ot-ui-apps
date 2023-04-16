@@ -1,4 +1,5 @@
-import { Box, CircularProgress, makeStyles } from "@material-ui/core";
+import { Box, CircularProgress } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
   container: {

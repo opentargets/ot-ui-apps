@@ -1,5 +1,5 @@
-import { Skeleton } from "@material-ui/lab";
-import Grid from "@material-ui/core/Grid";
+import { Skeleton } from "@mui/lab";
+import Grid from "@mui/material/Grid";
 
 function SearchLoadingState() {
   const listItemsToShow = new Array(4).fill(0);

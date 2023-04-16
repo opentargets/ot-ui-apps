@@ -1,7 +1,7 @@
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { History, Clear } from "@material-ui/icons";
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({
   recentItemContainer: {

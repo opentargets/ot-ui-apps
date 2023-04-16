@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, ListItem, ListItemText } from '@material-ui/core';
+import { Avatar, ListItem, ListItemText } from '@mui/material';
 import classNames from 'classnames';
 import { Draggable } from 'react-beautiful-dnd';
 import { DragIndicator } from '@material-ui/icons';

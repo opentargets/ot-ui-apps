@@ -15,7 +15,7 @@ import Summary from './Summary';
 import Tooltip from '../../../components/Tooltip';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import ChipList from '../../../components/ChipList';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 
 import CHEMBL_QUERY from './ChemblQuery.gql';
 

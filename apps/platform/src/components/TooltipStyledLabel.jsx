@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 /**
  * Styled label for use in the tooltip for consistent look'n'feel.

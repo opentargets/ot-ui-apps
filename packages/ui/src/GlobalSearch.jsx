@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useState, useContext } from "react";
+import { makeStyles } from "@mui/styles";
 
-import {
-  makeStyles,
-  Typography,
-  Dialog,
-  DialogContent,
-} from "@material-ui/core";
+import { Typography, Dialog, DialogContent } from "@mui/material";
 import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
 
 import AutocompleteSearch from "./AutocompleteSearch";

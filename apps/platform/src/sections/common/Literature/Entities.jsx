@@ -1,5 +1,6 @@
 import React from 'react';
-import { Chip, makeStyles, Grow } from '@material-ui/core';
+import { Chip, Grow } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import {
   entitiesState,
@@ -31,9 +32,8 @@ function EntitiesToSelect({ id }) {
   const [selectedChips, setSelectedChips] = useRecoilState(
     selectedEntitiesState
   );
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
 
   const handleSelectChip = async e => {
     const { query, id, category, globalEntity } = bibliographyState;
@@ -115,9 +115,8 @@ export default function Entities({ name, id }) {
 
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
   const bibliographyState = useRecoilValue(literatureState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
   const [selectedChips, setSelectedChips] = useRecoilState(
     selectedEntitiesState
   );

@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
-import {
-  Drawer,
-  IconButton,
-  Paper,
-  Typography,
-  makeStyles,
-} from '@material-ui/core';
+import { Drawer, IconButton, Paper, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import CloseIcon from '@material-ui/icons/Close';
 import { formatMap } from '../../constants';
 

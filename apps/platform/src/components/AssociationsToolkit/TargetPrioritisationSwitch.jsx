@@ -1,8 +1,8 @@
-import { ButtonGroup, Button } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { ButtonGroup, Button } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import useAotfContext from './hooks/useAotfContext';
 
-import { colors } from '@material-ui/core';
+import { colors } from '@mui/material';
 
 const { grey } = colors;
 

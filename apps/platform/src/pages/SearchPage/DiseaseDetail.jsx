@@ -1,5 +1,6 @@
 import React from 'react';
-import { CardContent, Typography, withStyles } from '@material-ui/core';
+import { CardContent, Typography } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
 

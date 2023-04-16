@@ -4,11 +4,12 @@ import {
   AccordionDetails,
   AccordionSummary,
   IconButton,
-  makeStyles,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import { ChevronRight, Clear, ExpandMore } from '@material-ui/icons';
-import { TreeView } from '@material-ui/lab';
+import { TreeView } from '@mui/lab';
 
 import { hasAnyDescendantChecked } from './utils';
 import TreeLevel from './TreeLevel';

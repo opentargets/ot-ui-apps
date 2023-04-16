@@ -1,10 +1,11 @@
 import { useState, useEffect, useContext, useMemo, useCallback } from "react";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import { Autocomplete } from "@mui/material";
 import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "./hooks/useSearchQueryData";
 import SearchListItem, { SearchResult } from "./Search/SearchListItem";
 import SearchListHeader from "./Search/SearchListHeader";
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import { ThemeProvider } from "@mui/styles";
+import { createTheme } from "@mui/material/styles";
 import useListOption from "./hooks/useListOption";
 import { SearchContext } from "./Search/SearchContext";
 import SearchLoadingState from "./Search/SearchLoadingState";

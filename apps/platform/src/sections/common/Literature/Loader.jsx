@@ -1,10 +1,6 @@
 import React from 'react';
-import {
-  makeStyles,
-  Box,
-  Typography,
-  CircularProgress,
-} from '@material-ui/core';
+import { Box, Typography, CircularProgress } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const listComponetStyles = makeStyles(() => ({
   loader: {

@@ -7,8 +7,8 @@ import {
   TableRow,
   TableCell,
   TableSortLabel,
-  withWidth,
-} from '@material-ui/core';
+} from '@mui/material';
+import { useWidth } from 'ui';
 
 import { getHiddenBreakpoints } from './utils';
 import { tableStyles } from './tableStyles';
@@ -29,9 +29,9 @@ function HeaderCell({
   sticky = false,
   tooltip,
   tooltipStyle = {},
-  width,
 }) {
   const headerClasses = tableStyles();
+  const width = useWidth();
 
   const style = {
     minWidth,
@@ -147,4 +147,4 @@ function TableHeader({
   );
 }
 
-export default withWidth()(TableHeader);
+export default TableHeader;

@@ -1,7 +1,7 @@
 import React from "react";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 
 import { Link } from "./Link";
 import { EmailLink } from "./EmailLink";
@@ -102,7 +102,7 @@ const FooterSection = ({
   heading,
   links,
   social,
-  children
+  children,
 }: {
   heading: React.ReactNode;
   links: {
@@ -172,7 +172,7 @@ const useLicenseStyles = makeStyles({
   },
 });
 
-const LicenseCC0 = ({links}) => {
+const LicenseCC0 = ({ links }) => {
   const classes = useLicenseStyles();
   return (
     <div>

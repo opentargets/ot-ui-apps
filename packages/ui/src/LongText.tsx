@@ -1,5 +1,6 @@
 import { useState, useLayoutEffect, useRef, PropsWithChildren } from "react";
-import { Typography, makeStyles, Theme } from "@material-ui/core";
+import { Typography, Theme } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme: Theme) => ({
   textContainer: {

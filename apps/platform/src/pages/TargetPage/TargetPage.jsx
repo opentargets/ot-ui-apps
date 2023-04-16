@@ -1,7 +1,8 @@
 import React, { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
 import { Switch, Route, Link } from 'react-router-dom';
-import { Tab, Tabs } from '@material-ui/core';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 import BasePage from '../../components/BasePage';
 import ScrollToTop from '../../components/ScrollToTop';

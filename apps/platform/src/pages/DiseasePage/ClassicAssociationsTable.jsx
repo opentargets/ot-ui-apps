@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { makeStyles } from '@mui/styles';
+import { Skeleton } from '@mui/lab';
 import Link from '../../components/Link';
 import { Table } from '../../components/Table';
 import AssocCell from '../../components/AssocCell';
@@ -240,35 +240,32 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
 
-  useEffect(
-    () => {
-      let isCurrent = true;
-      setLoading(true);
-      client
-        .query({
-          query: DISEASE_ASSOCIATIONS_QUERY,
-          variables: {
-            efoId,
-            index: 0,
-            size: pageSize,
-            sortBy,
-            filter,
-            aggregationFilters,
-          },
-        })
-        .then(({ data }) => {
-          if (isCurrent) {
-            setRows(data.disease.associatedTargets.rows);
-            setCount(data.disease.associatedTargets.count);
-            setPage(0);
-            setInitialLoading(false);
-            setLoading(false);
-          }
-        });
-      return () => (isCurrent = false);
-    },
-    [efoId, pageSize, sortBy, filter, aggregationFilters]
-  );
+  useEffect(() => {
+    let isCurrent = true;
+    setLoading(true);
+    client
+      .query({
+        query: DISEASE_ASSOCIATIONS_QUERY,
+        variables: {
+          efoId,
+          index: 0,
+          size: pageSize,
+          sortBy,
+          filter,
+          aggregationFilters,
+        },
+      })
+      .then(({ data }) => {
+        if (isCurrent) {
+          setRows(data.disease.associatedTargets.rows);
+          setCount(data.disease.associatedTargets.count);
+          setPage(0);
+          setInitialLoading(false);
+          setLoading(false);
+        }
+      });
+    return () => (isCurrent = false);
+  }, [efoId, pageSize, sortBy, filter, aggregationFilters]);
 
   const getAllAssociations = useBatchDownloader(
     DISEASE_ASSOCIATIONS_QUERY,

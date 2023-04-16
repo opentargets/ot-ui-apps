@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { makeStyles } from '@mui/styles';
+import { Skeleton } from '@mui/lab';
 import Link from '../../components/Link';
 import { Table } from '../../components/Table';
 import AssocCell from '../../components/AssocCell';
@@ -92,7 +92,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function getColumns(ensemblId, classes) {
-  const {isPartnerPreview} = usePermissions();
+  const { isPartnerPreview } = usePermissions();
   const columns = [
     {
       id: 'name',
@@ -205,35 +205,32 @@ function ClassicAssociationsTable({ ensgId, aggregationFilters }) {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
 
-  useEffect(
-    () => {
-      let isCurrent = true;
-      setLoading(true);
-      client
-        .query({
-          query: TARGET_ASSOCIATIONS_QUERY,
-          variables: {
-            ensemblId: ensgId,
-            index: 0,
-            size: pageSize,
-            sortBy,
-            filter,
-            aggregationFilters,
-          },
-        })
-        .then(({ data }) => {
-          if (isCurrent) {
-            setRows(data.target.associatedDiseases.rows);
-            setCount(data.target.associatedDiseases.count);
-            setPage(0);
-            setInitialLoading(false);
-            setLoading(false);
-          }
-        });
-      return () => (isCurrent = false);
-    },
-    [ensgId, pageSize, sortBy, filter, aggregationFilters]
-  );
+  useEffect(() => {
+    let isCurrent = true;
+    setLoading(true);
+    client
+      .query({
+        query: TARGET_ASSOCIATIONS_QUERY,
+        variables: {
+          ensemblId: ensgId,
+          index: 0,
+          size: pageSize,
+          sortBy,
+          filter,
+          aggregationFilters,
+        },
+      })
+      .then(({ data }) => {
+        if (isCurrent) {
+          setRows(data.target.associatedDiseases.rows);
+          setCount(data.target.associatedDiseases.count);
+          setPage(0);
+          setInitialLoading(false);
+          setLoading(false);
+        }
+      });
+    return () => (isCurrent = false);
+  }, [ensgId, pageSize, sortBy, filter, aggregationFilters]);
 
   const getAllAssociations = useBatchDownloader(
     TARGET_ASSOCIATIONS_QUERY,

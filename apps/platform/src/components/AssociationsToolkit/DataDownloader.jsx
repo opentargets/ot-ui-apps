@@ -6,12 +6,11 @@ import {
   Grid,
   Typography,
   CircularProgress,
-  makeStyles,
   Snackbar,
   Slide,
   Popover,
-  styled,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles, styled } from '@mui/styles';
 import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAotfContext from './hooks/useAotfContext';

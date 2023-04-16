@@ -7,8 +7,9 @@ import {
   Button,
   Grid,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import 'graphiql/graphiql.min.css';
 
@@ -26,7 +27,7 @@ import SEARCH_ASSOCS from './SearchAssocs.gql';
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
-  import('graphiql').then((module) => {
+  import('graphiql').then(module => {
     module.default.Logo = () => null;
     module.default.Toolbar = () => null;
     return module;
@@ -226,7 +227,8 @@ function APIPage() {
                   Run sample query
                 </Button>
                 <Typography variant="subtitle2" display="block" paragraph>
-                  Example query to get how many entries there are in each entity category for Insulin
+                  Example query to get how many entries there are in each entity
+                  category for Insulin
                 </Typography>
                 <Button
                   className={classes.buttonMargin}
@@ -241,7 +243,7 @@ function APIPage() {
           </Accordion>
         </Grid>
         <Grid item md={9} xl={10}>
-          <Suspense fallback={<LoadingBackdrop/>}>
+          <Suspense fallback={<LoadingBackdrop />}>
             <GraphiQL fetcher={fetcher} query={query} />
           </Suspense>
         </Grid>

@@ -5,9 +5,10 @@ import {
   CircularProgress,
   Input,
   InputBase,
-  makeStyles,
-} from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+  Autocomplete,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import { Search as SearchIcon, ArrowDropDown } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 
@@ -79,45 +80,39 @@ function Search({ autoFocus = false, embedded = false }) {
     }
   };
 
-  useEffect(
-    () => {
-      if (debouncedInputValue) {
-        getData({ variables: { queryString: debouncedInputValue } });
-      } else {
-        setSearchResults([]);
-      }
-    },
-    [debouncedInputValue, getData]
-  );
+  useEffect(() => {
+    if (debouncedInputValue) {
+      getData({ variables: { queryString: debouncedInputValue } });
+    } else {
+      setSearchResults([]);
+    }
+  }, [debouncedInputValue, getData]);
 
-  useEffect(
-    () => {
-      const res = [];
+  useEffect(() => {
+    const res = [];
 
-      if (inputValue) {
-        res.push({
-          type: 'search',
-          entity: 'any',
-          id: inputValue,
-          name: inputValue,
-        });
-      }
+    if (inputValue) {
+      res.push({
+        type: 'search',
+        entity: 'any',
+        id: inputValue,
+        name: inputValue,
+      });
+    }
 
-      if (data) {
-        Object.keys(data).forEach(key =>
-          data[key].hits.map(i =>
-            res.push({
-              type: key === 'topHit' ? 'topHit' : 'normal',
-              entity: i.entity,
-              ...i.object,
-            })
-          )
-        );
-      }
-      setSearchResults(res);
-    },
-    [data, inputValue]
-  );
+    if (data) {
+      Object.keys(data).forEach(key =>
+        data[key].hits.map(i =>
+          res.push({
+            type: key === 'topHit' ? 'topHit' : 'normal',
+            entity: i.entity,
+            ...i.object,
+          })
+        )
+      );
+    }
+    setSearchResults(res);
+  }, [data, inputValue]);
 
   const classes = useStyles();
 

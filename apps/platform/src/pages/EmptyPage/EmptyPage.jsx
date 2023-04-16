@@ -1,5 +1,6 @@
 import React from 'react';
-import { Grid, Typography, withStyles } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import {
   faEnvelope,
   faExclamationTriangle,

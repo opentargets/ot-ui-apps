@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, Typography } from '@mui/material';
 
 import Abstract from './Abstract';
 import BibliographyDetailPanel from './BibliographyDetailPanel';
@@ -68,7 +68,7 @@ class Publication extends Component {
                 pmId={hit._source.pub_id}
                 title={hit._source.title}
                 authors={
-                  (hit._source.authors || []).map((a) => ({
+                  (hit._source.authors || []).map(a => ({
                     lastName: a.LastName,
                     initials: a.Initials,
                   })) || []
@@ -89,12 +89,12 @@ class Publication extends Component {
   // Get the abstract data from API
   getAbstract = () => {
     getPublicationAbstract(this.props.pmId).then(
-      (resp) => {
+      resp => {
         this.setState({
           abstract: resp.abstract,
         });
       },
-      (error) => {
+      error => {
         this.setState({
           abstract: '',
           hasError: true,
@@ -106,12 +106,12 @@ class Publication extends Component {
   // Get the abstract data from API
   getSimilar = () => {
     getSimilarPublications(this.props.pmId).then(
-      (resp) => {
+      resp => {
         this.setState({
           similar: resp.hits.hits,
         });
       },
-      (error) => {
+      error => {
         this.setState({
           similar: null,
           hasError: true,

@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import classNames from 'classnames';
-import { TableCell, TableRow, withStyles } from '@material-ui/core';
+import { TableCell, TableRow } from '@mui/material';
+import { withStyles } from '@mui/styles';
 
 const proteinLevel = level => {
   if (level === 0) {

@@ -6,7 +6,7 @@ import {
 } from '../../components/ProfileHeader';
 import usePlatformApi from '../../hooks/usePlatformApi';
 import { clearDescriptionCodes } from '../../utils/global';
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@mui/styles';
 
 import TARGET_PROFILE_HEADER_FRAGMENT from './TargetProfileHeader.gql';
 

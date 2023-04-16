@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
-import {
-  Drawer,
-  Link,
-  IconButton,
-  Paper,
-  Typography,
-  makeStyles,
-} from '@material-ui/core';
+import { Drawer, Link, IconButton, Paper, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles(theme => ({

@@ -1,8 +1,8 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { Paper, Box, Chip, Typography } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/core/styles';
+import { Paper, Box, Chip, Typography } from '@mui/material';
+import { Alert, AlertTitle } from '@mui/lab';
+import { makeStyles } from '@mui/styles';
 import Link from '../../components/Link';
 import { defaultRowsPerPageOptions, formatMap } from '../../constants';
 import { DataTable } from '../../components/Table';

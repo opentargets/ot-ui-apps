@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 
 import Link from '../../../components/Link';
 import Tooltip from '../../../components/Tooltip';
@@ -90,7 +90,9 @@ function getColumns(ensemblId, symbol) {
       renderCell: ({ score, oe, oeLower, oeUpper, upperBin6 }) => {
         return (
           <>
-            <div>{upperBin6===null ? 'Z' : 'pLI'} = {score}</div>
+            <div>
+              {upperBin6 === null ? 'Z' : 'pLI'} = {score}
+            </div>
             <div>
               o/e = {oe} ({oeLower} - {oeUpper})
             </div>

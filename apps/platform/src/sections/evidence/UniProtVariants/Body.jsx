@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import { identifiersOrgLink } from '../../../utils/global';
 import Link from '../../../components/Link';
@@ -94,12 +94,14 @@ export function Body({ definition, id, label }) {
     Summary.fragments.UniprotVariantsSummary
   );
   const count = summaryData.uniprotVariantsSummary.count;
-  
-  if(!count || count < 1) {
-    return null
+
+  if (!count || count < 1) {
+    return null;
   }
 
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
 }
 
 export function BodyCore({ definition, id, label, count }) {

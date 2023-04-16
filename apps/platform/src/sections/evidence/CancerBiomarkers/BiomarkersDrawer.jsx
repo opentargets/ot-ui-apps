@@ -5,8 +5,9 @@ import {
   IconButton,
   Paper,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import CloseIcon from '@material-ui/icons/Close';
 
 import Tooltip from '../../../components/Tooltip';
@@ -101,9 +102,7 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
                   {variant.functionalConsequenceId ? (
                     <Link
                       external
-                      to={`https://identifiers.org/${
-                        variant.functionalConsequenceId.id
-                      }`}
+                      to={`https://identifiers.org/${variant.functionalConsequenceId.id}`}
                     >
                       {sentenceCase(variant.functionalConsequenceId.label)}
                     </Link>

@@ -1,12 +1,7 @@
 import React, { Fragment } from 'react';
-import {
-  Paper,
-  Box,
-  Typography,
-  makeStyles,
-  Avatar,
-  Chip,
-} from '@material-ui/core';
+import { Paper, Box, Typography, Chip } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import projectsData from './projects-data.json';
 import { DataTable } from '../../components/Table';
 import Link from '../../components/Link';
@@ -67,10 +62,7 @@ function ProjectPage() {
           disease &&
             disease.label &&
             ALL_AVATARS.push(
-              <Link
-                to={'disease/' + disease.disease_id}
-                key={index}
-              >
+              <Link to={'disease/' + disease.disease_id} key={index}>
                 <Chip
                   size="small"
                   label={disease.label}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import client from '../../../client';
 
 import DataDownloader from '../../../components/DataDownloader';
@@ -22,8 +22,8 @@ const headers = [
   { id: 'protein', label: 'Protein' },
 ];
 
-const getDownloadRows = (expressions) => {
-  return expressions.map((expression) => ({
+const getDownloadRows = expressions => {
+  return expressions.map(expression => ({
     label: expression.tissue.label,
     organs: expression.tissue.organs.join(','),
     anatomicalSystems: expression.tissue.anatomicalSystems.join(','),

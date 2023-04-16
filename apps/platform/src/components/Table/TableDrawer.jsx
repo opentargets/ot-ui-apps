@@ -9,10 +9,11 @@ import {
   ListItem,
   Drawer,
   Link as MUILink,
-  makeStyles,
   Typography,
   Paper,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { naLabel } from '../../constants';

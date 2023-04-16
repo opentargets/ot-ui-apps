@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
+import { withStyles } from '@mui/styles';
 import {
   Typography,
-  withStyles,
   Table,
   TableHead,
   TableSortLabel,
@@ -11,13 +11,13 @@ import {
   TableRow,
   TableCell,
   Grid,
-} from '@material-ui/core';
-import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
+} from '@mui/material';
+import { ToggleButtonGroup, ToggleButton } from '@mui/lab';
 
 import SummaryRow from './SummaryRow';
 
-const getMaxRnaValue = (expressions) => {
-  return _.maxBy(expressions, (expression) => expression.rna.value).rna.value;
+const getMaxRnaValue = expressions => {
+  return _.maxBy(expressions, expression => expression.rna.value).rna.value;
 };
 
 // function that transforms tissue data into an array of objects
@@ -33,9 +33,9 @@ const getMaxRnaValue = (expressions) => {
 const groupTissues = (expressions, groupBy) => {
   const groupedTissues = {};
 
-  expressions.forEach((expression) => {
+  expressions.forEach(expression => {
     const parentLabels = expression.tissue[groupBy];
-    parentLabels.forEach((label) => {
+    parentLabels.forEach(label => {
       if (!groupedTissues[label]) {
         groupedTissues[label] = {
           parentLabel: label,
@@ -61,7 +61,7 @@ const groupTissues = (expressions, groupBy) => {
   return Object.values(groupedTissues);
 };
 
-const tissueComparator = (sortBy) => {
+const tissueComparator = sortBy => {
   if (sortBy === 'rna') {
     return (a, b) => {
       return b.rna.value - a.rna.value;
@@ -73,7 +73,7 @@ const tissueComparator = (sortBy) => {
   };
 };
 
-const parentComparator = (sortBy) => {
+const parentComparator = sortBy => {
   if (sortBy === 'rna') {
     return (a, b) => {
       return b.maxRnaValue - a.maxRnaValue;
@@ -86,7 +86,7 @@ const parentComparator = (sortBy) => {
 };
 
 const sort = (parents, sortBy) => {
-  parents.forEach((parent) => {
+  parents.forEach(parent => {
     parent.tissues.sort(tissueComparator(sortBy));
   });
   return parents.sort(parentComparator(sortBy));
@@ -123,7 +123,7 @@ class SummaryTable extends Component {
     }
   };
 
-  handleSort = (sortBy) => {
+  handleSort = sortBy => {
     this.setState({ sortBy });
   };
 
@@ -203,7 +203,7 @@ class SummaryTable extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {parents.map((parent) => {
+              {parents.map(parent => {
                 return (
                   <SummaryRow
                     key={parent.parentLabel}

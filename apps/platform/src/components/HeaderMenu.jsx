@@ -7,9 +7,9 @@ import {
   Fade,
   Paper,
   ClickAwayListener,
-} from '@material-ui/core';
+} from '@mui/material';
 import { Menu as MenuIcon, Close as CloseIcon } from '@material-ui/icons';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import Link from './Link';
 import PrivateWrapper from './PrivateWrapper';
 
@@ -93,22 +93,23 @@ class HeaderMenu extends Component {
                     {items.map((item, i) => {
                       if (item.showOnlyPartner) {
                         return (
-                        <PrivateWrapper>
-                          <MenuItem
-                            onClick={this.handleMenuClose}
-                            key={i}
-                            dense={true}
-                            className={classes.menuItem}
-                          >
-                            <Link
-                              external={item.external}
-                              to={item.url}
-                              className={classes.menuLink}
+                          <PrivateWrapper>
+                            <MenuItem
+                              onClick={this.handleMenuClose}
+                              key={i}
+                              dense={true}
+                              className={classes.menuItem}
                             >
-                              {item.name}
-                            </Link>
-                          </MenuItem>
-                        </PrivateWrapper>);
+                              <Link
+                                external={item.external}
+                                to={item.url}
+                                className={classes.menuLink}
+                              >
+                                {item.name}
+                              </Link>
+                            </MenuItem>
+                          </PrivateWrapper>
+                        );
                       } else {
                         return (
                           <MenuItem

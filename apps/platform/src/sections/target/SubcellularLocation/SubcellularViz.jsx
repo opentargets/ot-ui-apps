@@ -1,13 +1,7 @@
 import React, { lazy, useEffect, useRef, Suspense } from 'react';
-import {
-  Typography,
-  List,
-  ListItem,
-  Box,
-  makeStyles,
-  Tabs,
-  Tab,
-} from '@material-ui/core';
+import { Typography, List, ListItem, Box, Tabs, Tab } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 

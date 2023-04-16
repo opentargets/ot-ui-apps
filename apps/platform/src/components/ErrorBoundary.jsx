@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import config from '../config';
 import Link from './Link';
 import usePermissions from '../hooks/usePermissions';

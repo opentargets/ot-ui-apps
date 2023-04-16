@@ -1,15 +1,16 @@
 import React from "react";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import { MuiThemeProvider, createTheme } from "@material-ui/core/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider as MuiTheme } from "@mui/styles";
+import { createTheme } from "@mui/material/styles";
 
 import defaultTheme from "./defaultTheme";
 
 function ThemeProvider({ children, theme = defaultTheme }) {
   return (
-    <MuiThemeProvider theme={createTheme(theme)}>
+    <MuiTheme theme={createTheme(theme)}>
       <CssBaseline />
       {children}
-    </MuiThemeProvider>
+    </MuiTheme>
   );
 }
 

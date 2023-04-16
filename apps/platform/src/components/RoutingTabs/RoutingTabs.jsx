@@ -6,7 +6,7 @@ import {
   useHistory,
   useRouteMatch,
 } from 'react-router-dom';
-import { Tabs } from '@material-ui/core';
+import { Tabs } from '@mui/material';
 import { LoadingBackdrop } from 'ui';
 
 function RoutingTabs({ children }) {

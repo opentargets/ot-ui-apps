@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, List, ListItem, makeStyles, Typography } from '@material-ui/core';
+import { Box, List, ListItem, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import { useQuery } from '@apollo/client';
 
 import ChipList from '../../../components/ChipList';
@@ -170,17 +172,19 @@ export function Body({ definition, id, label }) {
     Summary.fragments.IntOgenSummaryFragment
   );
   const count = summaryData.intOgen.count;
-  
-  if(!count || count < 1) {
-    return null
+
+  if (!count || count < 1) {
+    return null;
   }
 
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
 }
 
 export function BodyCore({ definition, id, label, count }) {
   const classes = useStyles();
-  
+
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
@@ -197,7 +201,9 @@ export function BodyCore({ definition, id, label, count }) {
       definition={definition}
       chipText={dataTypesMap.somatic_mutation}
       request={request}
-      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={({
         disease: {
           evidences: { rows },

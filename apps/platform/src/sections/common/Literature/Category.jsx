@@ -4,7 +4,7 @@ import {
   FormGroup,
   Checkbox,
   FormControlLabel,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   selectedCategoriesState,
@@ -29,21 +29,14 @@ const categories = [
 export default function Category() {
   const category = useRecoilValue(selectedCategoriesState);
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
 
   const bibliographyState = useRecoilValue(literatureState);
 
   const handleChange = async event => {
-    const {
-      query,
-      id,
-      category,
-      selectedEntities,
-      globalEntity,
-      cursor,
-    } = bibliographyState;
+    const { query, id, category, selectedEntities, globalEntity, cursor } =
+      bibliographyState;
     const {
       target: { name: clicked },
     } = event;

@@ -1,6 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Grid, Typography, makeStyles } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import { useQuery } from '@apollo/client';
 
 import TRACTABILITY_QUERY from './TractabilityQuery.gql';

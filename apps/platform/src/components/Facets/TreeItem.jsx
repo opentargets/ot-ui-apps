@@ -1,11 +1,8 @@
 import React from 'react';
-import {
-  Checkbox,
-  FormControlLabel,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { TreeItem as MUITreeItem } from '@material-ui/lab';
+import { Checkbox, FormControlLabel, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
+import { TreeItem as MUITreeItem } from '@mui/lab';
 import PartnerLockIcon from '../PartnerLockIcon';
 
 const useStyles = makeStyles(theme => ({

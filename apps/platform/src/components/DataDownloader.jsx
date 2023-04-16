@@ -1,8 +1,8 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import { withStyles } from '@mui/styles';
 
 import FileSaver from 'file-saver';
 
@@ -17,11 +17,11 @@ const pick = (object, keys) => {
   }, {});
 };
 
-const quoteIfString = (d) => (typeof d === 'string' ? `"${d}"` : d);
+const quoteIfString = d => (typeof d === 'string' ? `"${d}"` : d);
 
 const asJSONString = ({ rows, headerMap }) => {
   // use the full headerMap which contain optional export() function for each header
-  const rowsHeadersOnly = rows.map((row) => pick(row, headerMap));
+  const rowsHeadersOnly = rows.map(row => pick(row, headerMap));
   return JSON.stringify(rowsHeadersOnly);
 };
 
@@ -29,11 +29,11 @@ const asCSVString = ({ rows, headerMap }) => {
   const separator = ',';
   const lineSeparator = '\n';
   const headersString = headerMap
-    .map((d) => quoteIfString(d.label))
+    .map(d => quoteIfString(d.label))
     .join(separator);
-  const rowsArray = rows.map((row) => {
+  const rowsArray = rows.map(row => {
     return headerMap
-      .map((header) => {
+      .map(header => {
         return quoteIfString(
           header.export ? header.export(row) : row[header.id]
         );
@@ -46,10 +46,10 @@ const asCSVString = ({ rows, headerMap }) => {
 const asTSVString = ({ rows, headerMap }) => {
   const separator = '\t';
   const lineSeparator = '\n';
-  const headersString = headerMap.map((d) => d.label).join(separator);
-  const rowsArray = rows.map((row) => {
+  const headersString = headerMap.map(d => d.label).join(separator);
+  const rowsArray = rows.map(row => {
     return headerMap
-      .map((header) => {
+      .map(header => {
         return header.export ? header.export(row) : row[header.id];
       })
       .join(separator);
@@ -70,7 +70,7 @@ const asContentString = ({ rows, headerMap, format }) => {
   }
 };
 
-const asMimeType = (format) => {
+const asMimeType = format => {
   switch (format) {
     case 'json':
       return 'application/json;charset=utf-8';

@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import PublicationsList from './PublicationsList';
-import { makeStyles, Box } from '@material-ui/core';
+import { Box } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import Description from './Description';
 import SectionItem from '../../../components/Section/SectionItem';
 import {

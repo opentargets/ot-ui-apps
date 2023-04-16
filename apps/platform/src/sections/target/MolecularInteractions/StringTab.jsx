@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import client from '../../../client';
-import { withTheme, makeStyles } from '@material-ui/core';
+import { makeStyles, withTheme } from '@mui/styles';
 
 import DataTable from '../../../components/Table/DataTable';
 import Legend from '../../../components/Legend';
 import { colorRange } from '../../../constants';
 
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import Link from '../../../components/Link';
 
 import { scaleQuantize } from 'd3';
@@ -304,9 +304,7 @@ const getHeatmapCell = (score, classes) => {
 const id = 'string';
 const index = 0;
 const size = 10000;
-const color = scaleQuantize()
-  .domain([0, 1])
-  .range(colorRange);
+const color = scaleQuantize().domain([0, 1]).range(colorRange);
 
 function StringTab({ ensgId, symbol }) {
   const [data, setData] = useState([]);
@@ -315,18 +313,15 @@ function StringTab({ ensgId, symbol }) {
   const columns = getColumns(classes);
 
   // load tab data when new tab selected (also on first load)
-  useEffect(
-    () => {
-      setLoading(true);
-      getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
-        if (res.data.target.interactions) {
-          setLoading(false);
-          setData(res.data.target.interactions.rows);
-        }
-      });
-    },
-    [ensgId]
-  );
+  useEffect(() => {
+    setLoading(true);
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
+      if (res.data.target.interactions) {
+        setLoading(false);
+        setData(res.data.target.interactions.rows);
+      }
+    });
+  }, [ensgId]);
 
   return (
     <Grid container spacing={4}>
@@ -343,7 +338,7 @@ function StringTab({ ensgId, symbol }) {
           rowsPerPageOptions={[10, 25, 50, 100]}
           loading={loading}
         />
-        <Legend url={"https://string-db.org/cgi/info"}   />
+        <Legend url={'https://string-db.org/cgi/info'} />
       </Grid>
     </Grid>
   );

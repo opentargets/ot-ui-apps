@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import client from '../../../client';
 
 import DataTable from '../../../components/Table/DataTable';
@@ -10,7 +10,7 @@ import {
 } from './custom/MethodIcons';
 import Tooltip from '../../../components/Tooltip';
 
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import Link from '../../../components/Link';
@@ -31,7 +31,7 @@ const getData = (query, ensgId, sourceDatabase, index, size) => {
   });
 };
 
-const onLinkClick = function(e) {
+const onLinkClick = function (e) {
   // handler to stop propagation of clicks on links in table rows
   // to avoid selection of a different row
   e.stopPropagation();
@@ -117,9 +117,7 @@ const columns = {
       label: 'ID',
       renderCell: row => (
         <Link
-          to={`https://reactome.org/content/detail/${
-            row.interactionIdentifier
-          }`}
+          to={`https://reactome.org/content/detail/${row.interactionIdentifier}`}
           onClick={onLinkClick}
           external
         >
@@ -242,23 +240,20 @@ function ReactomeTab({ ensgId, symbol }) {
   const [loading, setLoading] = useState(false);
   const variables = { ensgId, sourceDatabase: id };
   // load tab data when new tab selected (also on first load)
-  useEffect(
-    () => {
-      setLoading(true);
-      getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
-        if (res.data.target.interactions) {
-          setLoading(false);
-          setData(res.data.target.interactions.rows);
-          setEvidence(res.data.target.interactions.rows[0].evidences);
-          setSelectedIntB(
-            res.data.target.interactions.rows[0].targetB?.approvedSymbol ||
-              res.data.target.interactions.rows[0].intB
-          );
-        }
-      });
-    },
-    [ensgId]
-  );
+  useEffect(() => {
+    setLoading(true);
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
+      if (res.data.target.interactions) {
+        setLoading(false);
+        setData(res.data.target.interactions.rows);
+        setEvidence(res.data.target.interactions.rows[0].evidences);
+        setSelectedIntB(
+          res.data.target.interactions.rows[0].targetB?.approvedSymbol ||
+            res.data.target.interactions.rows[0].intB
+        );
+      }
+    });
+  }, [ensgId]);
   return (
     <Grid container spacing={10}>
       <Grid item xs={12} md={5}>

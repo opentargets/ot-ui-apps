@@ -9,7 +9,7 @@ import {
   Grid,
   LinearProgress,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { Element } from 'react-scroll';
 
 import ErrorBoundary from '../ErrorBoundary';

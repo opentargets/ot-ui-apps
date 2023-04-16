@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { Link } from '@material-ui/core';
+import { Link } from '@mui/material';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import SectionItem from '../../../components/Section/SectionItem';
 import { DataTable, TableDrawer } from '../../../components/Table';
@@ -54,9 +54,7 @@ const columns = [
 ];
 
 export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.crisprSummary
-  );
+  const { data: summaryData } = usePlatformApi(Summary.fragments.crisprSummary);
   const count = summaryData.crisprSummary.count;
 
   if (!count || count < 1) {

@@ -13,7 +13,7 @@ import {
   faArrowAltCircleUp,
   faArrowAltCircleDown,
 } from '@fortawesome/free-solid-svg-icons';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 import Link from '../../../components/Link';
 import ChipList from '../../../components/ChipList';
 import { defaultRowsPerPageOptions } from '../../../constants';

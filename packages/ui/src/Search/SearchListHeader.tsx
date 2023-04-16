@@ -1,4 +1,6 @@
-import { Button, makeStyles, Typography } from "@material-ui/core";
+import { Button, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPrescriptionBottleAlt,
@@ -34,11 +36,11 @@ const useStyles = makeStyles((theme) => ({
 function SearchListHeader({
   listHeader,
   children,
-  clearAll
+  clearAll,
 }: {
   listHeader: React.ReactNode;
   children: React.ReactNode;
-  clearAll: () => void
+  clearAll: () => void;
 }) {
   const classes = useStyles();
 

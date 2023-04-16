@@ -1,5 +1,7 @@
 import React from 'react';
-import { Grid, Paper, makeStyles } from '@material-ui/core';
+import { Grid, Paper } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import config from '../../config.js';
 
 import OTLogo from '../../assets/OTLogo';

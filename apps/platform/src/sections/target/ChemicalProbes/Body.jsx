@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { useQuery } from '@apollo/client';
 
 import Link from '../../../components/Link';
@@ -12,7 +12,6 @@ import { defaultRowsPerPageOptions } from '../../../constants';
 import ClinvarStars from '../../../components/ClinvarStars';
 
 import CHEMICAL_PROBES_QUERY from './ChemicalProbes.gql';
-
 
 /**
  * Style the tooltips as "label: value" with a bold label
@@ -86,9 +85,7 @@ const columns = [
   {
     id: 'probesDrugsScore',
     label: 'Score',
-    renderCell: row => (
-        row.probesDrugsScore || naLabel
-    ),
+    renderCell: row => row.probesDrugsScore || naLabel,
     exportValue: row => row.probesDrugsScore || naLabel,
     filterValue: row => row.probesDrugsScore,
     width: '13%',
@@ -113,8 +110,8 @@ function Body({ definition, id, label: symbol }) {
             dataDownloader
             dataDownloaderFileStem={`${symbol}-chemical-probes`}
             fixed
-            sortBy = "probesDrugsScore"
-            order = "desc"
+            sortBy="probesDrugsScore"
+            order="desc"
             rowsPerPageOptions={defaultRowsPerPageOptions}
             noWrap={false}
             noWrapHeader={false}

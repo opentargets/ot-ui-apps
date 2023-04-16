@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import Link from '../../../components/Link';
 import Tooltip from '../../../components/Tooltip';
@@ -56,20 +56,17 @@ const columns = [
   {
     id: 'variantFunctionalConsequence',
     label: 'Functional consequence',
-    renderCell: ({ variantFunctionalConsequence }) => (
+    renderCell: ({ variantFunctionalConsequence }) =>
       variantFunctionalConsequence ? (
         <Link
           external
-          to={`http://www.sequenceontology.org/browser/current_svn/term/${
-            variantFunctionalConsequence.id
-          }`}
+          to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
         >
           {sentenceCase(variantFunctionalConsequence.label)}
         </Link>
-      ) 
-      : 
-        (naLabel)
-    ),
+      ) : (
+        naLabel
+      ),
     filterValue: ({ variantFunctionalConsequence }) =>
       sentenceCase(variantFunctionalConsequence.label),
   },
@@ -154,12 +151,14 @@ export function Body({ definition, id, label }) {
     Summary.fragments.OrphanetSummaryFragment
   );
   const count = summaryData.orphanetSummary.count;
-  
-  if(!count || count < 1) {
-    return null
+
+  if (!count || count < 1) {
+    return null;
   }
 
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
 }
 
 export function BodyCore({ definition, id, label, count }) {

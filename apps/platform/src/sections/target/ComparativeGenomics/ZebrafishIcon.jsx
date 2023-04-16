@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
 
 function ZebrafishIcon() {
   const theme = useTheme();

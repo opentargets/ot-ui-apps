@@ -1,6 +1,7 @@
 import React, { useState, useLayoutEffect, useRef } from 'react';
-import { Typography, withStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Typography } from '@mui/material';
+import { withStyles } from '@mui/styles';
+import { Skeleton } from '@mui/lab';
 
 const styles = theme => ({
   textContainer: {
@@ -27,30 +28,27 @@ const LongText = ({
   const [showMore, setShowMore] = useState(false);
   const [numberOfLines, setNumberOfLines] = useState();
 
-  useLayoutEffect(
-    () => {
-      const container = containerRef.current;
-      const el = containerRef.current;
-      const height = el.offsetHeight;
-      const lineHeight = Number.parseInt(
-        document.defaultView
-          .getComputedStyle(el, null)
-          .getPropertyValue('line-height'),
-        10
-      );
-      const numberOfLines = Math.round(height / lineHeight);
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    const el = containerRef.current;
+    const height = el.offsetHeight;
+    const lineHeight = Number.parseInt(
+      document.defaultView
+        .getComputedStyle(el, null)
+        .getPropertyValue('line-height'),
+      10
+    );
+    const numberOfLines = Math.round(height / lineHeight);
 
-      container.style.height =
-        numberOfLines <= lineLimit
-          ? 'auto'
-          : showMore
-          ? 'auto'
-          : `${lineLimit * lineHeight}px`;
+    container.style.height =
+      numberOfLines <= lineLimit
+        ? 'auto'
+        : showMore
+        ? 'auto'
+        : `${lineLimit * lineHeight}px`;
 
-      setNumberOfLines(numberOfLines);
-    },
-    [lineLimit, showMore, children]
-  );
+    setNumberOfLines(numberOfLines);
+  }, [lineLimit, showMore, children]);
 
   function createDescriptionMarkup(desc) {
     return { __html: desc };

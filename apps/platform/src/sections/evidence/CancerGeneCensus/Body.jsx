@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { Box, List, ListItem, makeStyles, Typography } from '@material-ui/core';
+import { Box, List, ListItem, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import ChipList from '../../../components/ChipList';
 import { DataTable } from '../../../components/Table';

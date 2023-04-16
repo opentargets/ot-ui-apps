@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  List,
-  ListItem,
-  Drawer,
-  Box,
-  Link as MUILink,
-} from '@material-ui/core';
+import { List, ListItem, Drawer, Box, Link as MUILink } from '@mui/material';
 import { useRecoilSnapshot, useGotoRecoilSnapshot } from 'recoil';
 
 export default function TimeTravelObserver() {

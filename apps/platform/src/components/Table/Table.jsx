@@ -10,7 +10,7 @@ import {
   TablePagination,
   TableRow as MUITableRow,
   Box,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import DataDownloader from './DataDownloader';
 import GlobalFilter from './GlobalFilter';

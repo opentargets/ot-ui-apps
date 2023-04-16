@@ -1,6 +1,6 @@
 import React from 'react';
 import { animateScroll } from 'react-scroll';
-import { Avatar, List, ListItem, ListItemText } from '@material-ui/core';
+import { Avatar, List, ListItem, ListItemText } from '@mui/material';
 import { Home } from '@material-ui/icons';
 
 import navPanelStyles from './navPanelStyles';

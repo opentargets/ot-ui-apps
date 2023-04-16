@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, ListItem, Typography } from '@material-ui/core';
+import { List, ListItem, Typography } from '@mui/material';
 import { useQuery } from '@apollo/client';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import { DataTable } from '../../../components/Table';

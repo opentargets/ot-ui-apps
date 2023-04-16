@@ -9,7 +9,7 @@ import {
   axisTop,
   axisLeft,
 } from 'd3';
-import { withTheme } from '@material-ui/core';
+import { withTheme } from '@mui/styles';
 
 const width = 900;
 const boxHeight = 20;
@@ -172,10 +172,7 @@ class GtexVariability extends Component {
 
     const boxPlot = select(this.boxPlotRef.current);
 
-    const boxContainer = boxPlot
-      .selectAll('g')
-      .data(data)
-      .join('g');
+    const boxContainer = boxPlot.selectAll('g').data(data).join('g');
 
     boxContainer
       .append('line')
@@ -195,7 +192,7 @@ class GtexVariability extends Component {
       .attr('width', d => x(d.q3) - x(d.q1))
       .attr('height', rectHeight)
       .attr('fill', d => colour(d.tissueSiteDetailId))
-      .on('mouseover', function(d) {
+      .on('mouseover', function (d) {
         var X =
           parseFloat(select(this).attr('x')) +
           parseFloat(select(this).attr('width')) +
@@ -213,10 +210,7 @@ class GtexVariability extends Component {
           )
           .style('visibility', 'visible');
 
-        const bbox = tooltip
-          .select('text')
-          .node()
-          .getBBox();
+        const bbox = tooltip.select('text').node().getBBox();
 
         // keep tooltip box within SVG (X axis)
         if (margin.left + X + bbox.width + margin.right > width) {
@@ -245,7 +239,7 @@ class GtexVariability extends Component {
           .attr('height', bbox.height + 10)
           .style('visibility', 'visible');
       })
-      .on('mouseout', function() {
+      .on('mouseout', function () {
         tooltipRect.style('visibility', 'hidden');
         tooltipText.style('visibility', 'hidden');
       });

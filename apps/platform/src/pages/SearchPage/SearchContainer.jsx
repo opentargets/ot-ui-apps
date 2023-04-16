@@ -1,6 +1,6 @@
 import React from 'react';
+import { withStyles } from '@mui/styles';
 import {
-  withStyles,
   Grid,
   Card,
   Typography,
@@ -8,7 +8,7 @@ import {
   FormGroup,
   FormControlLabel,
   TablePagination,
-} from '@material-ui/core';
+} from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDna } from '@fortawesome/free-solid-svg-icons';
 import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
@@ -22,21 +22,21 @@ import ErrorBoundary from '../../components/ErrorBoundary';
 import TargetDetail from './TargetDetail';
 import TargetResult from './TargetResult';
 
-const getCounts = (entities) => {
+const getCounts = entities => {
   const counts = {
     target: 0,
     disease: 0,
     drug: 0,
   };
 
-  entities.forEach((entity) => {
+  entities.forEach(entity => {
     counts[entity.name] = entity.total;
   });
 
   return counts;
 };
 
-const styles = (theme) => ({
+const styles = theme => ({
   label: {
     marginLeft: '-6px',
   },

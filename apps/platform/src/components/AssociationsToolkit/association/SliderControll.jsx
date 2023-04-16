@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Slider, withStyles } from '@material-ui/core';
+import { Slider } from '@mui/material';
+import { withStyles } from '@mui/styles';
+
 import useAotfContext from '../hooks/useAotfContext';
 
 const OTSlider = withStyles({

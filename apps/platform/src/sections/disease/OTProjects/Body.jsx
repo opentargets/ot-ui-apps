@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 import Description from './Description';
 import Link from '../../../components/Link';
 import { DataTable } from '../../../components/Table';
@@ -16,9 +16,10 @@ const useStyles = makeStyles(theme => {
     primaryColor: {
       color: theme.palette.primary.main,
     },
-  }});
+  };
+});
 
-const getColumns = (classes) => ([
+const getColumns = classes => [
   {
     id: 'projectName',
     label: 'Project name',
@@ -37,18 +38,17 @@ const getColumns = (classes) => ([
   {
     id: 'integratesInPPP',
     label: 'Integrates in PPP',
-    renderCell: ({integratesInPPP}) => (
-      integratesInPPP ? 
-      <FontAwesomeIcon
-        icon={faCheckCircle}
-        className={classes.primaryColor}
-        size='lg'
-      />
-    : null
-    ),
-    exportValue: ({integratesInPPP}) => (integratesInPPP ? 'yes' : 'no'),
+    renderCell: ({ integratesInPPP }) =>
+      integratesInPPP ? (
+        <FontAwesomeIcon
+          icon={faCheckCircle}
+          className={classes.primaryColor}
+          size="lg"
+        />
+      ) : null,
+    exportValue: ({ integratesInPPP }) => (integratesInPPP ? 'yes' : 'no'),
   },
-]);
+];
 
 function Body({ definition, label, id: efoId }) {
   const request = usePlatformApi(Summary.fragments.OTProjectsSummaryFragment);

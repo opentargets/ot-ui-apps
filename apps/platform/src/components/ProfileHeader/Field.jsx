@@ -1,6 +1,6 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Typography } from '@mui/material';
+import { Skeleton } from '@mui/lab';
 
 function Field({ title, loading, children }) {
   if (loading) return <Skeleton />;

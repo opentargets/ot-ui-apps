@@ -8,7 +8,7 @@ import Summary from './Summary';
 import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
 import TooltipStyledLabel from '../../../components/TooltipStyledLabel';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 import Link from '../../../components/Link';
 import { defaultRowsPerPageOptions } from '../../../constants';
 

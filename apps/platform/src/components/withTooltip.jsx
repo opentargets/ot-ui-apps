@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Fade, Popper } from '@material-ui/core';
+import { Fade, Popper } from '@mui/material';
 
 const Tooltip = ({
   classes,

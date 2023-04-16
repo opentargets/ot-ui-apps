@@ -4,11 +4,11 @@ import {
   IconButton,
   Drawer,
   Link as MUILink,
-  makeStyles,
   Typography,
   Paper,
   CircularProgress,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { naLabel } from '../../constants';
 import { europePmcSearchPOSTQuery } from '../../utils/urls';
@@ -85,25 +85,22 @@ export const PublicationsList = ({ entriesIds, hideSearch = false }) => {
   const [publications, setPublications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(
-    () => {
-      const { baseUrl, formBody } = europePmcSearchPOSTQuery(entriesIds);
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        },
-        body: formBody,
-      };
-      fetch(baseUrl, requestOptions)
-        .then(response => response.json())
-        .then(data => {
-          setLoading(false);
-          setPublications(data.resultList.result);
-        });
-    },
-    [entriesIds]
-  );
+  useEffect(() => {
+    const { baseUrl, formBody } = europePmcSearchPOSTQuery(entriesIds);
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: formBody,
+    };
+    fetch(baseUrl, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        setLoading(false);
+        setPublications(data.resultList.result);
+      });
+  }, [entriesIds]);
 
   if (loading)
     return (

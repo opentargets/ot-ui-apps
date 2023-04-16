@@ -1,5 +1,6 @@
 import React from 'react';
-import { Typography, withStyles } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
 

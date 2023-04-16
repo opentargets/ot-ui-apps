@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import client from '../../../client';
-import Typography from '@material-ui/core/Typography';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import Typography from '@mui/material/Typography';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 import SectionItem from '../../../components/Section/SectionItem';
 import usePlatformApi from '../../../hooks/usePlatformApi';
@@ -58,36 +58,33 @@ function Body({ definition, label: symbol, id }) {
   };
 
   // load tabs summary counts
-  useEffect(
-    () => {
-      getSummaryCounts(id).then(res => {
-        // when there is no data, interactions object is null, so there is no count
-        setCounts(
-          Object.assign(
-            {},
-            ...sources.map(k => ({
-              [k.id]: res.data.target[k.id] ? res.data.target[k.id].count : 0,
-            }))
-          )
-        );
-        // set the sources database versions
-        setVersions(
-          res.data.interactionResources.reduce((a, v) => {
-            a[v.sourceDatabase] = v.databaseVersion;
-            return a;
-          }, {})
-        );
-        // find first source (tab) with data and set that as the initially selected tab
-        const initialTab = sources.find(
-          s => res.data.target[s.id] && res.data.target[s.id].count > 0
-        );
-        if (initialTab) {
-          setSource(initialTab.id);
-        }
-      });
-    },
-    [id]
-  );
+  useEffect(() => {
+    getSummaryCounts(id).then(res => {
+      // when there is no data, interactions object is null, so there is no count
+      setCounts(
+        Object.assign(
+          {},
+          ...sources.map(k => ({
+            [k.id]: res.data.target[k.id] ? res.data.target[k.id].count : 0,
+          }))
+        )
+      );
+      // set the sources database versions
+      setVersions(
+        res.data.interactionResources.reduce((a, v) => {
+          a[v.sourceDatabase] = v.databaseVersion;
+          return a;
+        }, {})
+      );
+      // find first source (tab) with data and set that as the initially selected tab
+      const initialTab = sources.find(
+        s => res.data.target[s.id] && res.data.target[s.id].count > 0
+      );
+      if (initialTab) {
+        setSource(initialTab.id);
+      }
+    });
+  }, [id]);
 
   return (
     <SectionItem

@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Typography,
-  Box,
-  CircularProgress,
-  IconButton,
-  makeStyles,
-} from '@material-ui/core';
+import { Typography, Box, CircularProgress, IconButton } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import { Clear } from '@material-ui/icons';
-import { Skeleton } from '@material-ui/lab';
+import { Skeleton } from '@mui/lab';
 
 import Facet from './Facet';
 import {
@@ -49,18 +45,15 @@ function Facets({ loading, data, onChange, type }) {
   const [facets, setFacets] = useState([]);
   const classes = useStyles();
 
-  useEffect(
-    () => {
-      if (!data) return;
+  useEffect(() => {
+    if (!data) return;
 
-      if (!facets.length) {
-        setFacets(prepareFacetData(data));
-      } else {
-        setFacets(facets => updateFacetCounts(facets, data));
-      }
-    },
-    [data, facets.length]
-  );
+    if (!facets.length) {
+      setFacets(prepareFacetData(data));
+    } else {
+      setFacets(facets => updateFacetCounts(facets, data));
+    }
+  }, [data, facets.length]);
 
   const handleFilterChange = (changePath, value) => {
     const newFacets = [...facets];

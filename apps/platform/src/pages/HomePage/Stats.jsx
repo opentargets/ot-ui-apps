@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, withStyles } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDna, faStethoscope } from '@fortawesome/free-solid-svg-icons';
 
-const styles = (theme) => {
+const styles = theme => {
   return {
     container: {
       backgroundColor: theme.palette.grey[300],
@@ -27,8 +28,8 @@ const Stats = ({ classes }) => {
     // TODO: design GraphQL schema from stats and get this data from the
     // GraphQL API
     fetch('https://platform-api.opentargets.io/v3/platform/public/utils/stats')
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         if (isCurrent) {
           const numDataSources = Object.values(
             data.associations.datatypes

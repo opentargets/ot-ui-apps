@@ -1,4 +1,4 @@
-import { Collapse, Button } from '@material-ui/core';
+import { Collapse, Button } from '@mui/material';
 import { faXmark, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 

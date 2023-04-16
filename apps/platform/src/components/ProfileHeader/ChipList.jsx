@@ -1,6 +1,7 @@
 import React from 'react';
-import { Skeleton } from '@material-ui/lab';
-import { Box, Typography, Tooltip, makeStyles } from '@material-ui/core';
+import { Skeleton } from '@mui/lab';
+import { Box, Typography, Tooltip } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import Chip from '../Chip';
 import LongList from '../LongList';

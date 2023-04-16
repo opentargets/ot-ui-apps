@@ -11,7 +11,8 @@ import ChipList from '../../../components/ChipList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faTimesCircle } from '@fortawesome/free-regular-svg-icons';
-import { Box, makeStyles, Typography, Chip, Grid } from '@material-ui/core';
+import { Box, Typography, Chip, Grid } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import Link from '../../../components/Link';
 import { defaultRowsPerPageOptions } from '../../../constants';
 import classNames from 'classnames';
@@ -301,7 +302,9 @@ export function BodyCore({ definition, id, label, count }) {
       definition={definition}
       chipText={dataTypesMap.ot_validation_lab}
       request={request}
-      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={({ disease }) => {
         const { rows } = disease.evidences;
         const hypothesis = _.uniqBy(

@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {
-  FormControl,
-  FormGroup,
-  InputLabel,
-  Slider,
-  withStyles,
-} from '@material-ui/core';
+import { FormControl, FormGroup, InputLabel, Slider } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import {
   fetchSimilarEntities,
   literatureState,
@@ -17,7 +12,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 const monthsBtwnDates = (startDate, endDate) => {
   return Math.max(
     (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-    (endDate.getMonth() - startDate.getMonth()),
+      (endDate.getMonth() - startDate.getMonth()),
     0
   );
 };
@@ -26,9 +21,8 @@ export const DateFilter = () => {
   const [filterDate, setFilterDate] = useState([0, 100]);
   const [numberOfMonths, setNumberOfMonths] = useState(0);
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
   const {
     query,
     id,
@@ -43,17 +37,14 @@ export const DateFilter = () => {
     cursor,
   } = useRecoilValue(literatureState);
 
-  useEffect(
-    () => {
-      let limit = monthsBtwnDates(
-        new Date(`${earliestPubYear}-01-01`),
-        new Date()
-      );
-      setNumberOfMonths(limit);
-      setFilterDate([0, limit]);
-    },
-    [earliestPubYear]
-  );
+  useEffect(() => {
+    let limit = monthsBtwnDates(
+      new Date(`${earliestPubYear}-01-01`),
+      new Date()
+    );
+    setNumberOfMonths(limit);
+    setFilterDate([0, limit]);
+  }, [earliestPubYear]);
 
   useEffect(() => {
     setFilterDate([0, numberOfMonths]);

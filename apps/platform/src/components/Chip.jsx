@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Chip as MUIChip, makeStyles } from '@material-ui/core';
+import { Chip as MUIChip } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   chip: {

@@ -6,8 +6,9 @@ import {
   IconButton,
   Paper,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
 import CloseIcon from '@material-ui/icons/Close';
 
 import Link from '../../../components/Link';
