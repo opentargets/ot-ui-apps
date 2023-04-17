@@ -74,15 +74,8 @@ function SearchInput({
   useEffect(() => {
     if (inputRef.current) {
       (!isHomePage || focus) && inputRef.current.focus();
-      // (isHomePage && !focus) && inputRef.current.blur();
     }
   }, [focus, isHomePage]);
-
-  // useEffect(() => {
-  //   if (inputRef.current) {
-  //     inputRef.current.value = inputValue;
-  //   }
-  // }, [inputValue]);
 
   return (
     <div className={classes.searchContainer}>
@@ -112,6 +105,9 @@ function SearchInput({
         }}
         value={searchInputValue}
         placeholder={searchPlaceholder}
+        onKeyDown={(e) => {
+          if(e.code === "Escape") onClose();
+        }}
       />
     </div>
   );

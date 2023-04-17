@@ -81,17 +81,10 @@ export default function AutocompleteSearch({
 
   const handleKeyPress = (event: KeyboardEvent): void => {
     // open on cmd + k
-    if (event.metaKey === true && event.keyCode === 75) {
+    if (event.metaKey === true && event.code === "KeyK") {
       event.stopPropagation();
       event.preventDefault();
       setOpen(true);
-    }
-    // close on esc
-    if (event.keyCode === 27) {
-      event.stopPropagation();
-      setOpen(false);
-      event.preventDefault();
-      setInputValue("");
     }
   };
 
@@ -141,6 +134,7 @@ export default function AutocompleteSearch({
   const onClose = () => {
     setLoading(false);
     setInputValue("");
+    setOpen(false);
     closeModal();
   };
 
