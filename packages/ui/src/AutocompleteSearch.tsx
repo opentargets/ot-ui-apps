@@ -1,15 +1,5 @@
-import {
-  useState,
-  useEffect,
-  useContext,
-  useMemo,
-  useCallback,
-  KeyboardEvent,
-} from "react";
-import Autocomplete, {
-  AutocompleteChangeDetails,
-  AutocompleteChangeReason,
-} from "@material-ui/lab/Autocomplete";
+import { useState, useEffect, useContext, useMemo } from "react";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "./hooks/useSearchQueryData";
 import SearchListItem, { SearchResult } from "./Search/SearchListItem";
@@ -68,7 +58,6 @@ export default function AutocompleteSearch({
   closeModal: () => void;
   isHomePage: boolean;
 }) {
-
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const [openListItem] = useListOption();
   const [recentItems, setRecentValue] = useState(
@@ -76,20 +65,26 @@ export default function AutocompleteSearch({
   );
   const [open, setOpen] = useState(isHomePage ? false : true);
 
-  const { searchQuery, setLoading, inputValue, setInputValue, primaryColor, loading } =
-    useContext(SearchContext);
+  const {
+    searchQuery,
+    setLoading,
+    inputValue,
+    setInputValue,
+    primaryColor,
+    loading,
+  } = useContext(SearchContext);
 
   const theme = useMemo(() => getTheme(primaryColor), [primaryColor]);
 
-  const [getSearchData, { data, loading: searchQueryLoading }] = useSearchQueryData(searchQuery);
+  const [getSearchData, { data, loading: searchQueryLoading }] =
+    useSearchQueryData(searchQuery);
 
-  const handleKeyPress = useCallback((event) => {
+  const handleKeyPress = (event: KeyboardEvent): void => {
     // open on cmd + k
     if (event.metaKey === true && event.keyCode === 75) {
       event.stopPropagation();
       event.preventDefault();
       setOpen(true);
-      return false;
     }
     // close on esc
     if (event.keyCode === 27) {
@@ -98,13 +93,12 @@ export default function AutocompleteSearch({
       event.preventDefault();
       setInputValue("");
     }
-  }, []);
+  };
 
   useEffect(() => {
     setLoading(searchQueryLoading);
-    if(searchQueryLoading) setSearchResult([]);
-  }, [searchQueryLoading])
-  
+    if (searchQueryLoading) setSearchResult([]);
+  }, [searchQueryLoading]);
 
   useEffect(() => {
     let searchForTermObject;
@@ -117,7 +111,7 @@ export default function AutocompleteSearch({
         entity: "search",
         type: "",
       };
-    setSearchResult([searchForTermObject, ...recentItems]);
+      setSearchResult([searchForTermObject, ...recentItems]);
     }
     if (!loading && inputValue && data.length) {
       const RESULT_DATA = JSON.parse(JSON.stringify(data));
@@ -132,7 +126,7 @@ export default function AutocompleteSearch({
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [handleKeyPress]);
+  }, []);
 
   const searchQueryInput = (param: string) => {
     if (!param) {
@@ -152,7 +146,7 @@ export default function AutocompleteSearch({
 
   const handleSelectOption = (
     event: React.ChangeEvent<{}>,
-    option: string | SearchResult | null,
+    option: string | SearchResult | null
   ) => {
     if (typeof option === "object") {
       onClose();
