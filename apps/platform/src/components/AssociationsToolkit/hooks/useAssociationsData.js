@@ -27,7 +27,7 @@ const getAssociatedTargetsData = data => {
       {}
     );
     const targetPrioritisation = d.target.priorisations.items.reduce(
-      (acc, curr) => ((acc[curr.key] = parseInt(curr.value)), acc),
+      (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
       {}
     );
     return {
