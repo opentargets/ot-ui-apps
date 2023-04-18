@@ -1,7 +1,10 @@
 import { Tab } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import usePermissions from '../../hooks/usePermissions';
 
-function RoutingTab({ component, ...props }) {
+function PrivateRoutingTab({ component, ...props }) {
+  const { isPartnerPreview } = usePermissions();
+  if (!isPartnerPreview) return null;
   return component ? (
     <Tab component={Link} to={props.value} {...props} />
   ) : (
@@ -9,4 +12,4 @@ function RoutingTab({ component, ...props }) {
   );
 }
 
-export default RoutingTab;
+export default PrivateRoutingTab;

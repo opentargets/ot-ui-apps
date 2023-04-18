@@ -1,13 +1,16 @@
-import React, { lazy } from 'react';
+import { lazy } from 'react';
 import { useQuery } from '@apollo/client';
 import BasePage from '../../components/BasePage';
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
 import ScrollToTop from '../../components/ScrollToTop';
-import { RoutingTab, RoutingTabs } from '../../components/RoutingTabs';
+import {
+  RoutingTab,
+  RoutingTabs,
+  PrivateRoutingTab,
+} from '../../components/RoutingTabs';
 import DISEASE_PAGE_QUERY from './DiseasePage.gql';
-import { faFlask } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import NewChip from '../../components/NewChip';
 
 const Profile = lazy(() => import('./Profile'));
 const Associations = lazy(() => import('./DiseaseAssociations'));
@@ -47,11 +50,15 @@ function DiseasePage({ location, match }) {
           path="/disease/:efoId/associations"
           component={() => <ClassicAssociations efoId={efoId} name={name} />}
         />
-        <RoutingTab
-          label="Associated targets"
-          path="/disease/:efoId/associationsv2"
+        <PrivateRoutingTab
+          label={
+            <div>
+              <NewChip />
+              Associated targets
+            </div>
+          }
+          path="/disease/:efoId/newassociations"
           component={() => <Associations efoId={efoId} name={name} />}
-          icon={<FontAwesomeIcon icon={faFlask} size="lg" />}
         />
         <RoutingTab
           label="Profile"
