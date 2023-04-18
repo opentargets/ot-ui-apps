@@ -30,6 +30,7 @@ import {
   PlotContainerSection,
   significantFigures,
 } from '../../../ot-ui-components';
+import ErrorBoundary from '../../../components/ErrorBoundary';
 
 const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
   const PAGE_CREDIBLE_SET_KEY = `gwasCredibleSet__${studyId}__${variantId}`;
@@ -66,14 +67,11 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
     }
   };
 
-  useEffect(
-    () => {
-      setCredibleSetIntersectionKeys([
-        `gwasCredibleSet__${studyId}__${variantId}`,
-      ]);
-    },
-    [studyId, variantId]
-  );
+  useEffect(() => {
+    setCredibleSetIntersectionKeys([
+      `gwasCredibleSet__${studyId}__${variantId}`,
+    ]);
+  }, [studyId, variantId]);
 
   const {
     loading: credibleSetsGroupLoading,
@@ -87,12 +85,8 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
     return <Skeleton height="20vh" width="80vw" />;
   }
 
-  ({
-    pageCredibleSet,
-    studyInfo,
-    gwasColocalisation,
-    qtlColocalisation,
-  } = credibleSetsGroupQueryResult);
+  ({ pageCredibleSet, studyInfo, gwasColocalisation, qtlColocalisation } =
+    credibleSetsGroupQueryResult);
 
   pageCredibleSetAdjusted = filterPageCredibleSet(
     pageCredibleSet,
@@ -108,9 +102,10 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
     isGreaterThanZero(gwasColocalisation.length) ||
     isGreaterThanZero(qtlColocalisation.length);
 
-  const colocalisationCredibleSetQuery = shouldMakeColocalisationCredibleSetQuery
-    ? createCredibleSetsQuery({ gwasColocalisation, qtlColocalisation })
-    : null;
+  const colocalisationCredibleSetQuery =
+    shouldMakeColocalisationCredibleSetQuery
+      ? createCredibleSetsQuery({ gwasColocalisation, qtlColocalisation })
+      : null;
 
   return (
     <>
@@ -212,24 +207,26 @@ const CredibleSetsGroup = ({ variantId, studyId, start, end, chromosome }) => {
 
       {shouldMakeColocalisationCredibleSetQuery &&
       colocalisationCredibleSetQuery ? (
-        <CredibleSetsGwasQtlList
-          query={colocalisationCredibleSetQuery}
-          gwasColocalisation={gwasColocalisation}
-          qtlColocalisation={qtlColocalisation}
-          log2h4h3SliderValue={log2h4h3SliderValue}
-          h4SliderValue={h4SliderValue}
-          credSet95Value={credSet95Value}
-          variantId={variantId}
-          studyId={studyId}
-          pageCredibleSetAdjusted={pageCredibleSetAdjusted}
-          credibleSetIntersectionKeys={credibleSetIntersectionKeys}
-          start={start}
-          end={end}
-          chromosome={chromosome}
-          handleCredibleSetIntersectionKeysCheckboxClick={
-            handleCredibleSetIntersectionKeysCheckboxClick
-          }
-        />
+        <ErrorBoundary>
+          <CredibleSetsGwasQtlList
+            query={colocalisationCredibleSetQuery}
+            gwasColocalisation={gwasColocalisation}
+            qtlColocalisation={qtlColocalisation}
+            log2h4h3SliderValue={log2h4h3SliderValue}
+            h4SliderValue={h4SliderValue}
+            credSet95Value={credSet95Value}
+            variantId={variantId}
+            studyId={studyId}
+            pageCredibleSetAdjusted={pageCredibleSetAdjusted}
+            credibleSetIntersectionKeys={credibleSetIntersectionKeys}
+            start={start}
+            end={end}
+            chromosome={chromosome}
+            handleCredibleSetIntersectionKeysCheckboxClick={
+              handleCredibleSetIntersectionKeysCheckboxClick
+            }
+          />
+        </ErrorBoundary>
       ) : null}
     </>
   );

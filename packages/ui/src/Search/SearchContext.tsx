@@ -7,8 +7,6 @@ export const SearchContext = createContext<{
   loading: boolean;
   searchPlaceholder: string;
   primaryColor: string;
-  inputValueUpdate: (arg: string) => void;
-  isQueryLoading: (arg: boolean) => void;
   setInputValue: (arg: string) => void;
   setLoading: (arg: boolean) => void;
 }>(null!); // xref https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/context/#type-assertion-as-an-alternative
@@ -27,9 +25,6 @@ function SearchProvider({
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
-  const isQueryLoading = (e: boolean) => setLoading(e);
-  const inputValueUpdate = (e: string) => setInputValue(e);
-
   return (
     <SearchContext.Provider
       value={{
@@ -40,8 +35,6 @@ function SearchProvider({
         searchPlaceholder,
         setLoading,
         setInputValue,
-        isQueryLoading,
-        inputValueUpdate,
       }}
     >
       {children}
