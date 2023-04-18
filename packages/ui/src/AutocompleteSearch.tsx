@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useMemo, ChangeEvent } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "./hooks/useSearchQueryData";
@@ -139,7 +139,7 @@ export default function AutocompleteSearch({
   };
 
   const handleSelectOption = (
-    event: React.ChangeEvent<{}>,
+    event: ChangeEvent<{}>,
     option: string | SearchResult | null
   ) => {
     if (typeof option === "object") {
