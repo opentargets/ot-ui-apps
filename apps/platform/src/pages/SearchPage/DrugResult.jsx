@@ -1,11 +1,11 @@
 import React from 'react';
-import Clampy from '@clampy-js/react-clampy';
 import { Typography, withStyles } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
 
 import Highlights from '../../components/Highlights';
 import Link from '../../components/Link';
+import { LongText } from 'ui';
 
 const styles = theme => ({
   container: {
@@ -32,7 +32,7 @@ const DrugResult = ({ classes, data, highlights }) => {
       </Link>
       {data.description && (
         <Typography variant="body2" component="div">
-          <Clampy clampSize="4">{data.description}</Clampy>
+          <LongText lineLimit={4}>{data.description}</LongText>
         </Typography>
       )}
       <Highlights highlights={highlights} />
