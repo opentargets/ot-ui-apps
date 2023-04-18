@@ -18,6 +18,7 @@ import prioritizationCols from '../static_datasets/prioritizationCols';
 
 import AggregationsTooltip from './AggregationsTooltip';
 import ColoredCell from '../ColoredCell';
+import SquareCell from '../SquareCell';
 import AggregationsRow from './AggregationsRow';
 import {
   EvidenceSecctionRenderer,
