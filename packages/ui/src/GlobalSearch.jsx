@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GlobalSearch() {
+function GlobalSearch({showSearchResultPage}) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleClose = () => {
@@ -128,7 +128,7 @@ function GlobalSearch() {
         className={classes.modal}
       >
         <DialogContent>
-          <AutocompleteSearch closeModal={handleClose} />
+          <AutocompleteSearch closeModal={handleClose} showSearchResultPage/>
         </DialogContent>
       </Dialog>
     </>
