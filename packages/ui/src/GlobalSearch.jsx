@@ -128,7 +128,7 @@ function GlobalSearch({showSearchResultPage}) {
         className={classes.modal}
       >
         <DialogContent>
-          <AutocompleteSearch closeModal={handleClose} showSearchResultPage/>
+          <AutocompleteSearch closeModal={handleClose} showSearchResultPage={showSearchResultPage}/>
         </DialogContent>
       </Dialog>
     </>
