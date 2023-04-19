@@ -57,7 +57,7 @@ function SearchListItem({
 }: {
   item: SearchResult;
   isTopHit: boolean;
-  clearItem: (item: unknown) => void;
+  clearItem: (item: SearchResult) => void;
 }) {
   const classes = useStyles();
 

@@ -58,7 +58,7 @@ function SearchInput({
   params: TextFieldProps;
   debounceValue: (str: string) => void;
   onClose: () => void;
-  isHomePage: boolean;
+  isHomePage?: boolean;
   focus: boolean;
 }) {
   const classes = useStyles();

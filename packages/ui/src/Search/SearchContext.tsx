@@ -9,7 +9,15 @@ export const SearchContext = createContext<{
   primaryColor: string;
   setInputValue: (arg: string) => void;
   setLoading: (arg: boolean) => void;
-}>(null!); // xref https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/context/#type-assertion-as-an-alternative
+}>({
+  searchQuery: "",
+  inputValue: "",
+  loading: false,
+  searchPlaceholder: "Search...",
+  primaryColor: "#3489ca",
+  setInputValue: () => undefined,
+  setLoading: () => undefined,
+});
 
 function SearchProvider({
   children,
