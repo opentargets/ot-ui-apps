@@ -45,11 +45,6 @@ function DiseasePage({ location, match }) {
       <Header loading={loading} efoId={efoId} name={name} dbXRefs={dbXRefs} />
       <ScrollToTop />
       <RoutingTabs>
-        <RoutingTab
-          label="Associated targets"
-          path="/disease/:efoId/associations"
-          component={() => <ClassicAssociations efoId={efoId} name={name} />}
-        />
         <PrivateRoutingTab
           label={
             <div>
@@ -57,8 +52,13 @@ function DiseasePage({ location, match }) {
               Associated targets
             </div>
           }
-          path="/disease/:efoId/newassociations"
+          path="/disease/:efoId/associations"
           component={() => <Associations efoId={efoId} name={name} />}
+        />
+        <RoutingTab
+          label="Associated targets"
+          path="/disease/:efoId/classic-associations"
+          component={() => <ClassicAssociations efoId={efoId} name={name} />}
         />
         <RoutingTab
           label="Profile"

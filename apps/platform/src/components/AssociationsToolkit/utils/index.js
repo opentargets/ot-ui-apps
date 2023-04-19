@@ -23,7 +23,7 @@ export const cellHasValue = score => {
 };
 
 /* --- CONSTANTS --- */
-const primaryColor = isPartnerPreview ? '#407253' : '#3489ca';
+const primaryColor = isPartnerPreview ? '#3489ca' : '#3489ca';
 
 /* Associations colors */
 const PUBLIC_ASSOCIATION_COLORS = [
@@ -38,13 +38,13 @@ const PUBLIC_ASSOCIATION_COLORS = [
 
 // PPP Greens
 const PPP_ASSOCIATION_COLORS = [
-  rgb('#ebf0ed'),
-  rgb('#cfdbd3'),
-  rgb('#b2c6ba'),
-  rgb('#96b1a0'),
-  rgb('#799c86'),
-  rgb('#5d876d'),
-  rgb('#407253'),
+  rgb('#deebf7'),
+  rgb('#c6dbef'),
+  rgb('#9ecae1'),
+  rgb('#6baed6'),
+  rgb('#4292c6'),
+  rgb('#2171b5'),
+  rgb('#08519c'),
 ];
 const _PPP_ASSOCIATION_COLORS = [
   rgb('#deebf7'),
@@ -101,7 +101,17 @@ const PPP_PRIORITISATION_COLORS = [
   rgb('#95ae43'),
   rgb('#52a237'),
 ];
-
+// const PPP_PRIORITISATION_COLORS = [
+//   rgb('#e27c7c'),
+//   rgb('#a86464'),
+//   rgb('#6d4b4b'),
+//   rgb('#503f3f'),
+//   rgb('#333333'),
+//   rgb('#3c4e4b'),
+//   rgb('#466964'),
+//   rgb('#599e94'),
+//   rgb('#6cd4c5'),
+// ];
 export const PRIORITISATION_COLORS = isPartnerPreview
   ? PPP_PRIORITISATION_COLORS
   : PUBLIC_PRIORITISATION_COLORS;

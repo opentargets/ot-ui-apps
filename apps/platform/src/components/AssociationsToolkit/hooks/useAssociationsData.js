@@ -26,10 +26,12 @@ const getAssociatedTargetsData = data => {
       (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
       {}
     );
-    const targetPrioritisation = d.target.priorisations.items.reduce(
-      (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
-      {}
-    );
+    const targetPrioritisation = d.target.priorisations?.items
+      ? d.target.priorisations.items.reduce(
+          (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
+          {}
+        )
+      : [];
     return {
       id: d.target.id,
       score: d.score,

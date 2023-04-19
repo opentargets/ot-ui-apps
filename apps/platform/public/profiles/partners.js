@@ -4,7 +4,8 @@ var configProfile = {
 
   helpdeskEmail: 'partner-support@opentargets.org',
   communityUrl: 'https://community.opentargets.org',
-  communityTicketUrl: 'https://community.opentargets.org/c/community-feedback/bug-reports/34',
+  communityTicketUrl:
+    'https://community.opentargets.org/c/community-feedback/bug-reports/34',
   // config navbar main menu (hamburger)
   // mainMenuItems: [],
   // homepage logo subtitle (tagline)
@@ -12,19 +13,19 @@ var configProfile = {
 
   /* colors */
 
-  primaryColor: '#407253',
+  primaryColor: '#3489ca',
   // custom colour scale: override value in constants.js
   colorRange: [
-    '#ebf0ed',
-    '#d8e2dc',
-    '#c5d4cb',
-    '#b2c6ba',
-    '#9fb8a9',
-    '#8caa97',
-    '#799c86',
-    '#668e75',
-    '#538064',
-    '#407253',
+    '#e5edf4',
+    '#ccdcea',
+    '#b2cbe0',
+    '#99b9d6',
+    '#7fa8cc',
+    '#6697c1',
+    '#4c85b7',
+    '#3274ad',
+    '#1963a3',
+    '#005299',
   ],
 
   /* partner preview options */
