@@ -54,9 +54,11 @@ const getTheme = (primaryColor: string) =>
 export default function AutocompleteSearch({
   closeModal = () => {},
   isHomePage,
+  showSearchResultPage
 }: {
-  closeModal: () => void;
-  isHomePage: boolean;
+  closeModal?: () => void;
+  isHomePage?: boolean;
+  showSearchResultPage?: boolean;
 }) {
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const [openListItem] = useListOption();
@@ -97,7 +99,7 @@ export default function AutocompleteSearch({
     let searchForTermObject;
     setSearchResult(recentItems);
     setLoading(searchQueryLoading);
-    if (inputValue) {
+    if (inputValue && showSearchResultPage) {
       searchForTermObject = {
         symbol: "Search For: " + inputValue,
         name: inputValue,
@@ -108,7 +110,7 @@ export default function AutocompleteSearch({
     }
     if (!loading && inputValue && data.length) {
       const RESULT_DATA = JSON.parse(JSON.stringify(data));
-      RESULT_DATA.unshift(searchForTermObject);
+      showSearchResultPage && RESULT_DATA.unshift(searchForTermObject);
       setSearchResult(RESULT_DATA);
       setLoading(false);
     }
