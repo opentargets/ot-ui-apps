@@ -64,7 +64,7 @@ function SearchInput({
   const classes = useStyles();
   const [searchInputValue, setSearchInputValue] = useState("");
   const debouncedInputValue = useDebounce(searchInputValue, 300);
-  const { searchPlaceholder, inputValue, setInputValue } = useContext(SearchContext);
+  const { searchPlaceholder, setInputValue } = useContext(SearchContext);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
