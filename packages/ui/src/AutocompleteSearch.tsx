@@ -52,7 +52,7 @@ const getTheme = (primaryColor: string) =>
   });
 
 export default function AutocompleteSearch({
-  closeModal = () => {},
+  closeModal = () => undefined,
   isHomePage,
   showSearchResultPage
 }: {
@@ -141,7 +141,7 @@ export default function AutocompleteSearch({
   };
 
   const handleSelectOption = (
-    event: ChangeEvent<{}>,
+    event: ChangeEvent<object>,
     option: string | SearchResult | null
   ) => {
     if (typeof option === "object") {
@@ -192,9 +192,8 @@ export default function AutocompleteSearch({
             clearItem={clearItem}
           />
         )}
-        // @ts-ignore
-        getOptionSelected={(option, value) => option.name === value}
-        filterOptions={(o, s) => searchResult}
+        getOptionSelected={(option, value) => option.name === value.toString()}
+        filterOptions={() => searchResult}
         renderInput={(params) => (
           <SearchInput
             params={params}

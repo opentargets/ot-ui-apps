@@ -7,10 +7,11 @@ import { EmailLink } from "./EmailLink";
 
 import PrivateWrapper from "../../../apps/platform/src/components/PrivateWrapper";
 
-const useStyles = makeStyles((theme) => ({
+const FOOTER_BACKGROUND_COLOR = "#2e2d35";
+
+const useStyles = makeStyles(() => ({
   footer: {
-    // @ts-ignore
-    backgroundColor: theme.palette.footer,
+    backgroundColor: FOOTER_BACKGROUND_COLOR,
     color: "#fff",
     margin: 0,
     width: "100%",
@@ -27,7 +28,7 @@ const useLinkStyles = makeStyles(() => ({
   },
 }));
 
-let FooterLink = ({ label, url, icon }) => {
+const FooterLink = ({ label, url, icon }) => {
   const classes = useLinkStyles();
   return (
     <Grid item xs={12} className={classes.linkContainer}>
@@ -69,7 +70,7 @@ const useSocialLinkStyle = makeStyles(() => ({
   },
 }));
 
-let FooterSocial = ({ social }) => {
+const FooterSocial = ({ social }) => {
   const classes = useSocialLinkStyle();
   return (
     <>
@@ -101,7 +102,7 @@ const FooterSection = ({
   heading,
   links,
   social,
-  children
+  children,
 }: {
   heading: React.ReactNode;
   links: {
@@ -111,6 +112,7 @@ const FooterSection = ({
     url: string;
   }[];
   social?: unknown;
+  children: unknown;
 }) => {
   const classes = useSectionStyles();
   return (
@@ -171,7 +173,7 @@ const useLicenseStyles = makeStyles({
   },
 });
 
-const LicenseCC0 = ({links}) => {
+const LicenseCC0 = ({ links }) => {
   const classes = useLicenseStyles();
   return (
     <div>

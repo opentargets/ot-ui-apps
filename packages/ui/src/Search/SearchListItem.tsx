@@ -57,7 +57,7 @@ function SearchListItem({
 }: {
   item: SearchResult;
   isTopHit: boolean;
-  clearItem: (item: any) => void;
+  clearItem: (item: SearchResult) => void;
 }) {
   const classes = useStyles();
 
@@ -122,7 +122,7 @@ function SearchListItem({
                 `GRCh38:` +
                   item.chromosome +
                   `:` +
-                  commaSeparate(item.position)}
+                  commaSeparate(Number(item.position))}
             </span>
           </Typography>
           <Typography variant="caption">

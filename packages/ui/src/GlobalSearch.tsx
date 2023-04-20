@@ -6,7 +6,7 @@ import {
   Dialog,
   DialogContent,
 } from "@material-ui/core";
-import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
+import { Search as SearchIcon } from "@material-ui/icons";
 
 import AutocompleteSearch from "./AutocompleteSearch";
 import { SearchContext } from "./Search/SearchContext";
