@@ -89,14 +89,7 @@ function useTargetAssociations({
         },
       });
       let parsedData = getParsedData(entity, resData.data);
-      console.log({ parsedData });
-      //  THIS SHOULD BE REMOVED WHEN ADDED PRIORITIZATION API
-      // if (entity === 'disease') {
-      //   let withPrioritization = await ADD_PRIORITIZATION(parsedData);
-      //   parsedData = withPrioritization;
-      // }
       let dataCount = getAllDataCount(entity, resData.data);
-      console.log('TRIGGERED REQUEST', { resData });
       setCount(dataCount);
       setData(parsedData);
       setInitialLoading(false);
