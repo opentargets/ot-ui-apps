@@ -45,13 +45,11 @@ function SliderControll({ id }) {
       return src;
     });
     setDataSourcesWeights(newDataSources);
-    console.log('ojojoj ef 1');
   }, [value]);
 
   useEffect(() => {
     const newValue = getSliderValue(dataSourcesWeights, id);
     if (newValue === value) return;
-    console.log('ojojoj');
     setDisplayValue(newValue);
   }, [dataSourcesWeights]);
 
