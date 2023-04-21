@@ -7,7 +7,7 @@ import { Facets } from '../../components/Facets';
 
 import DISEASE_FACETS_QUERY from './DiseaseFacets.gql';
 
-function ClassicAssociations({ efoId, name }) {
+function ClassicAssociations({ efoId }) {
   const [aggregationFilters, setAggregationFilters] = useState([]);
   const { loading, data } = useQuery(DISEASE_FACETS_QUERY, {
     variables: { efoId, aggregationFilters },

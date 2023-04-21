@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '@material-ui/core';
 import { findDOMNode } from 'react-dom';
 import Grid from '@material-ui/core/Grid';

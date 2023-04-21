@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import { Component, Fragment } from 'react';
 import {
   MenuItem,
   Popper,
@@ -93,7 +93,7 @@ class HeaderMenu extends Component {
                     {items.map((item, i) => {
                       if (item.showOnlyPartner) {
                         return (
-                        <PrivateWrapper>
+                        <PrivateWrapper key={i}>
                           <MenuItem
                             onClick={this.handleMenuClose}
                             key={i}

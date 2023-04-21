@@ -1,4 +1,3 @@
-import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -7,12 +6,12 @@ import Popper from '@material-ui/core/Popper';
 import Fade from '@material-ui/core/Fade';
 import { withStyles } from '@material-ui/core/styles';
 
-const styles = theme => ({
+const styles = () => ({
   listitem: {
     padding: '0.2rem 0.6rem',
     width: '100%',
   },
-  listitemtext: {
+  listItemText: {
     fontSize: '0.75rem',
     minWidth: '100%',
   },
@@ -41,7 +40,7 @@ const ListTooltip = ({ classes, dataList, open, anchorEl, container }) => (
                 <ListItemText
                   primary={d.label}
                   secondary={d.value}
-                  className={classes.listitemtext}
+                  className={classes.listItemText}
                 />
               </ListItem>
             ))}

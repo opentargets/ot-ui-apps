@@ -63,7 +63,7 @@ function Search({ autoFocus = false, embedded = false }) {
     setInputValue(e.target.value || '');
   };
 
-  const handleSelectOption = (e, option, r) => {
+  const handleSelectOption = (e, option) => {
     handleChangeInputValue(e);
 
     if (!option) return;
@@ -79,45 +79,39 @@ function Search({ autoFocus = false, embedded = false }) {
     }
   };
 
-  useEffect(
-    () => {
-      if (debouncedInputValue) {
-        getData({ variables: { queryString: debouncedInputValue } });
-      } else {
-        setSearchResults([]);
-      }
-    },
-    [debouncedInputValue, getData]
-  );
+  useEffect(() => {
+    if (debouncedInputValue) {
+      getData({ variables: { queryString: debouncedInputValue } });
+    } else {
+      setSearchResults([]);
+    }
+  }, [debouncedInputValue, getData]);
 
-  useEffect(
-    () => {
-      const res = [];
+  useEffect(() => {
+    const res = [];
 
-      if (inputValue) {
-        res.push({
-          type: 'search',
-          entity: 'any',
-          id: inputValue,
-          name: inputValue,
-        });
-      }
+    if (inputValue) {
+      res.push({
+        type: 'search',
+        entity: 'any',
+        id: inputValue,
+        name: inputValue,
+      });
+    }
 
-      if (data) {
-        Object.keys(data).forEach(key =>
-          data[key].hits.map(i =>
-            res.push({
-              type: key === 'topHit' ? 'topHit' : 'normal',
-              entity: i.entity,
-              ...i.object,
-            })
-          )
-        );
-      }
-      setSearchResults(res);
-    },
-    [data, inputValue]
-  );
+    if (data) {
+      Object.keys(data).forEach(key =>
+        data[key].hits.map(i =>
+          res.push({
+            type: key === 'topHit' ? 'topHit' : 'normal',
+            entity: i.entity,
+            ...i.object,
+          })
+        )
+      );
+    }
+    setSearchResults(res);
+  }, [data, inputValue]);
 
   const classes = useStyles();
 
@@ -134,7 +128,7 @@ function Search({ autoFocus = false, embedded = false }) {
           option: classes.option,
           root: classes.root,
         }}
-        filterOptions={(o, s) => searchResults}
+        filterOptions={() => searchResults}
         getOptionLabel={option => (option.id ? option.id : option)}
         getOptionSelected={(option, value) => option.id === value}
         groupBy={option =>
@@ -154,7 +148,9 @@ function Search({ autoFocus = false, embedded = false }) {
         popupIcon={open ? <ArrowDropDown /> : <SearchIcon />}
         renderOption={option => <Option data={option} />}
         renderGroup={group => (
-          <Group key={group.key} name={group.group} children={group.children} />
+          <Group key={group.key} name={group.group}>
+            {group.children}
+          </Group>
         )}
         renderInput={params =>
           !embedded ? (

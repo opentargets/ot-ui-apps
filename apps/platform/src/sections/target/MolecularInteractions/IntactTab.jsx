@@ -317,7 +317,7 @@ function IntactTab({ ensgId, symbol }) {
           dataDownloaderFileStem={`${symbol}-molecular-interactions-interactors`}
           hover
           selected
-          onRowClick={(r, i) => {
+          onRowClick={(r) => {
             setEvidence(r.evidences);
             setSelectedIntB(r.targetB?.approvedSymbol || r.intB);
           }}

@@ -10,9 +10,7 @@ import {
   TablePagination,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDna } from '@fortawesome/free-solid-svg-icons';
-import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
-import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
+import { faDna, faPrescriptionBottleAlt, faStethoscope } from '@fortawesome/free-solid-svg-icons';
 
 import DiseaseDetail from './DiseaseDetail';
 import DiseaseResult from './DiseaseResult';
@@ -186,7 +184,7 @@ const SearchContainer = ({
   return (
     <>
       <Typography variant="h5" gutterBottom>
-        {data.search.total} results for "<strong>{q}</strong>"
+        {data.search.total} results for &quot;<strong>{q}</strong>&quot;
       </Typography>
       <Grid container spacing={2}>
         <Grid item md={2}>

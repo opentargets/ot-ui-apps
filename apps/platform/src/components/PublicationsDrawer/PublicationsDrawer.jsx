@@ -65,7 +65,7 @@ const sourceDrawerStyles = makeStyles(theme => ({
   },
 }));
 
-const listComponetStyles = makeStyles(theme => ({
+const listComponentStyles = makeStyles(theme => ({
   loader: {
     display: 'flex',
     justifyContent: 'center',
@@ -116,7 +116,7 @@ export const PublicationsList = ({ entriesIds, hideSearch = false }) => {
       >
         <CircularProgress size={60} />
         <Box mt={6}>
-          <Typography className={listComponetStyles.AccordionSubtitle}>
+          <Typography className={listComponentStyles.AccordionSubtitle}>
             Loading Europe PMC search results
           </Typography>
         </Box>
@@ -169,7 +169,6 @@ export const PublicationsList = ({ entriesIds, hideSearch = false }) => {
 
 function PublicationsDrawer({
   entries,
-  message,
   customLabel,
   caption = 'Publications',
   singleEntryId = true,
@@ -177,7 +176,7 @@ function PublicationsDrawer({
   const [open, setOpen] = useState(false);
   const classes = sourceDrawerStyles();
 
-  const entriesIds = entries.map(entrie => entrie.name);
+  const entriesIds = entries.map(entry => entry.name);
 
   if (entries.length === 0) {
     return naLabel;
