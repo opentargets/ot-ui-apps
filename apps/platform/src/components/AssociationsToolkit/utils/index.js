@@ -1,12 +1,12 @@
 import { scaleQuantize, rgb } from 'd3';
 import Legend from './Legend';
+import dataSources from '../static_datasets/dataSourcesAssoc';
 import config from '../../../config';
 
 export const isPartnerPreview = config.profile.isPartnerPreview;
 
 /* --- TABLE SHARED HELPERS --- */
-export const getPriorisationSectionId = (columnDef, colCellId) =>
-  columnDef.sectionId;
+export const getPriorisationSectionId = columnDef => columnDef.sectionId;
 
 export const getCellId = (cell, entityToGet, displayedTable) => {
   const colId = cell.column.id;
@@ -22,8 +22,21 @@ export const cellHasValue = score => {
   return typeof score === 'number';
 };
 
+export const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
+  id,
+  weight,
+  propagate: true,
+}));
+
+export const getWightSourceDefault = source => {
+  const sourcesDetails = defaulDatasourcesWeigths.find(
+    src => src.id === source
+  );
+  return sourcesDetails.weight;
+};
+
 /* --- CONSTANTS --- */
-const primaryColor = isPartnerPreview ? '#3489ca' : '#3489ca';
+const primaryColor = config.profile.primaryColor;
 
 /* Associations colors */
 const PUBLIC_ASSOCIATION_COLORS = [
@@ -129,7 +142,7 @@ export const prioritizationScale = prioritizationScaleDomain.range(
 /* LEGENDS */
 const PrioritisationLegend = Legend(prioritizationScale, {
   title: 'Prioritisation indicator',
-  tickFormat: (d, i) => ['Negative', ' ', ' ', ' ', ' ', 'Positive'][i],
+  tickFormat: (d, i) => ['Deprioritised', ' ', ' ', ' ', ' ', 'Prioritised'][i],
 });
 
 const AssociationsLegend = Legend(assocScale, {

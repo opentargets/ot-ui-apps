@@ -69,7 +69,7 @@ function TargetPrioritisationSwitch() {
         onClick={() => handleClickPrior()}
         disableRipple
       >
-        Targets prioritisation
+        Target prioritisation factors
       </StyledButton>
     </StyledButtonGroup>
   );

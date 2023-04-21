@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -9,36 +9,36 @@ import {
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import { styled } from '@material-ui/styles';
-import { TablePagination, ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCaretDown,
+  faArrowDownWideShort,
+  faBook,
+} from '@fortawesome/free-solid-svg-icons';
 
 import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
 import prioritizationCols from '../static_datasets/prioritizationCols';
 
 import AggregationsTooltip from './AggregationsTooltip';
-import ColoredCell from '../ColoredCell';
-import SquareCell from '../SquareCell';
+import ColoredCell from './ColoredCell';
+import SquareCell from './SquareCell';
 import AggregationsRow from './AggregationsRow';
 import {
   EvidenceSecctionRenderer,
   SecctionRendererWrapper,
   TargetSecctionRenderer,
 } from './SectionRender';
-import WeightsControlls from './WeightsControlls';
+import WeightsControl from '../WeightsControl';
 import CellName from './CellName';
+import TableFooter from './TableFooter';
 import useAotfContext from '../hooks/useAotfContext';
 
-import {
-  getLegend,
-  getCellId,
-  cellHasValue,
-  tableCSSVariables,
-} from '../utils';
+import { getCellId, cellHasValue, tableCSSVariables } from '../utils';
 
 const TableElement = styled('div')({
-  minWidth: '1000px',
-  maxWidth: '1200px',
+  minWidth: '900px',
+  maxWidth: '1400px',
   margin: '0 auto',
 });
 
@@ -232,15 +232,6 @@ function TableAssociations() {
     setActiveAggegation(null);
   };
 
-  /**
-   * LEGEND EFECT
-   */
-  useEffect(() => {
-    const Legend = getLegend(displayedTable === 'associations');
-    document.getElementById('legend').innerHTML = '';
-    document.getElementById('legend').appendChild(Legend);
-  }, [displayedTable]);
-
   return (
     <div className="TAssociations" style={tableCSSVariables}>
       <TableElement>
@@ -273,10 +264,20 @@ function TableAssociations() {
                           desc: (
                             <FontAwesomeIcon
                               className="header-desc-icon"
-                              icon={faCaretDown}
+                              icon={faArrowDownWideShort}
                             />
                           ),
                         }[header.column.getIsSorted()] ?? null}
+                        <a
+                          target="blanck"
+                          className="docs-link"
+                          href={`https://platform-docs.opentargets.org/evidence#${header.id}`}
+                        >
+                          <FontAwesomeIcon
+                            className="header-desc-icon"
+                            icon={faBook}
+                          />
+                        </a>
                       </div>
                     )}
                   </div>
@@ -292,7 +293,7 @@ function TableAssociations() {
         </div>
 
         {/* Weights controlls */}
-        <WeightsControlls cols={entitesHeaders} />
+        <WeightsControl cols={entitesHeaders} />
 
         {/* BODY CONTENT */}
         <div>
@@ -375,27 +376,7 @@ function TableAssociations() {
             </div>
           </div>
         </div>
-        <div className="table-footer">
-          <div id="legend" />
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 50, 200, 500]}
-            component="div"
-            count={count}
-            rowsPerPage={table.getState().pagination.pageSize}
-            page={pagination.pageIndex}
-            labelRowsPerPage="Associations per page"
-            onPageChange={(e, index) => {
-              if (!loading) {
-                table.setPageIndex(index);
-              }
-            }}
-            onRowsPerPageChange={e => {
-              if (!loading) {
-                return table.setPageSize(Number(e.target.value));
-              }
-            }}
-          />
-        </div>
+        <TableFooter table={table} />
       </TableElement>
     </div>
   );

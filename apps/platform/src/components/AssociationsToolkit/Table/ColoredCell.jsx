@@ -1,5 +1,5 @@
 import Tooltip from '@material-ui/core/Tooltip';
-import { getScale } from './utils';
+import { getScale } from '../utils';
 
 function ColoredCell({
   scoreValue,

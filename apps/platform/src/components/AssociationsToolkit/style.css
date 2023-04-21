@@ -78,6 +78,15 @@
   flex-grow: 1;
 }
 
+.TAssociations .Theader .docs-link {
+  display: none;
+  color: var(--primary-color);
+}
+
+.TAssociations .Theader .rotate:hover .docs-link {
+  display: block;
+}
+
 .TAssociations .Theader .cursor-pointer {
   cursor: pointer;
 }
@@ -272,12 +281,12 @@
 
 .TAssociations .weights-controlls .controlls-container {
   display: flex;
-  height: 100px;
+  height: 65px;
 }
 
 .TAssociations .weights-controlls .controlls-wrapper {
   width: 100%;
-  margin-left: 180px;
+  margin-left: 170px;
 }
 
 .TAssociations .weights-controlls .name-empty-controll {

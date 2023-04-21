@@ -1,5 +1,6 @@
-import { createContext, useState, useMemo } from 'react';
-import dataSources from '../static_datasets/dataSourcesAssoc';
+import { createContext, useState, useMemo, useEffect } from 'react';
+import { defaulDatasourcesWeigths } from '../utils';
+import { isEqual } from 'lodash';
 import '../style.css';
 
 import useAssociationsData from '../hooks/useAssociationsData';
@@ -7,12 +8,6 @@ import useAssociationsData from '../hooks/useAssociationsData';
 import { getCellId } from '../utils';
 
 const AssociationsContext = createContext();
-
-const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
-  id,
-  weight,
-  propagate: true,
-}));
 
 const initialIndirect = entity => (entity === 'target' ? false : true);
 
@@ -39,6 +34,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [dataSourcesWeights, setDataSourcesWeights] = useState(
     defaulDatasourcesWeigths
   );
+  const [modifiedSourcesWeights, setModifiedSourcesWeights] = useState(false);
   const [searhFilter, setSearhFilter] = useState('');
   const [sorting, setSorting] = useState([{ id: 'score', desc: true }]);
 
@@ -63,6 +59,12 @@ function AssociationsProvider({ children, entity, id, query }) {
       entity,
     },
   });
+
+  useEffect(() => {
+    if (isEqual(defaulDatasourcesWeigths, dataSourcesWeights))
+      setModifiedSourcesWeights(false);
+    else setModifiedSourcesWeights(true);
+  }, [dataSourcesWeights]);
 
   const entityToGet = entity === 'target' ? 'disease' : 'target';
 
@@ -125,11 +127,11 @@ function AssociationsProvider({ children, entity, id, query }) {
         enableIndirect,
         error,
         dataSourcesWeights,
-        defaulDatasourcesWeigths,
         displayedTable,
         pinnedData,
         searhFilter,
         sorting,
+        modifiedSourcesWeights,
         handleSortingChange,
         handleSearchInputChange,
         setPinnedData,

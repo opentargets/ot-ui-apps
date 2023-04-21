@@ -2,7 +2,7 @@ const dataSources = [
   {
     id: 'ot_genetics_portal',
     sectionId: 'otGenetics',
-    label: 'OT Genetics Portal',
+    label: 'OT Genetics',
     aggregation: 'Genetic association',
     weight: 1,
   },
@@ -164,7 +164,7 @@ const dataSources = [
   {
     id: 'ot_crispr',
     sectionId: 'otCrispr',
-    label: 'OTAR CRISPR',
+    label: 'OT CRISPR',
     aggregation: 'OT validation lab',
     weight: 0.5,
   },
@@ -183,7 +183,7 @@ export const grouped = {
     {
       id: 'ot_genetics_portal',
       sectionId: 'otGenetics',
-      label: 'OT Genetics Portal',
+      label: 'OT Genetics',
       aggregation: 'Genetic association',
       weight: 1,
     },
@@ -358,7 +358,7 @@ export const grouped = {
     {
       id: 'ot_crispr',
       sectionId: 'otCrispr',
-      label: 'OTAR CRISPR',
+      label: 'OT CRISPR',
       aggregation: 'OT validation lab',
       weight: 0.5,
     },

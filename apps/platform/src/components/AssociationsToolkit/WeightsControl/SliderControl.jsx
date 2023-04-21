@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Slider, withStyles } from '@material-ui/core';
 import useAotfContext from '../hooks/useAotfContext';
+import { getWightSourceDefault } from '../utils';
 
 const OTSlider = withStyles({
   mark: {
@@ -25,14 +26,17 @@ const getSliderValue = (values, id) => {
   return value;
 };
 
-/* TODO: review rerender on mount */
-function SliderControll({ def, id }) {
+function SliderControll({ id }) {
   const { dataSourcesWeights, setDataSourcesWeights } = useAotfContext();
 
-  const [value, setValue] = useState(def);
-  const [displayValue, setDisplayValue] = useState(def);
+  const defaultValue = getWightSourceDefault(id);
+  const initialValue = getSliderValue(dataSourcesWeights, id);
+
+  const [value, setValue] = useState(initialValue);
+  const [displayValue, setDisplayValue] = useState(initialValue);
 
   useEffect(() => {
+    if (initialValue === value) return;
     const newDataValue = sliderPayload(id, value);
     const newDataSources = dataSourcesWeights.map(src => {
       if (src.id === id) {
@@ -41,18 +45,21 @@ function SliderControll({ def, id }) {
       return src;
     });
     setDataSourcesWeights(newDataSources);
-  }, [value, id, setDataSourcesWeights]);
+    console.log('ojojoj ef 1');
+  }, [value]);
 
   useEffect(() => {
     const newValue = getSliderValue(dataSourcesWeights, id);
+    if (newValue === value) return;
+    console.log('ojojoj');
     setDisplayValue(newValue);
-  }, [dataSourcesWeights, id]);
+  }, [dataSourcesWeights]);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (_, newValue) => {
     setDisplayValue(newValue);
   };
 
-  const handleChangeCommitted = (event, newValue) => {
+  const handleChangeCommitted = (_, newValue) => {
     setValue(newValue);
   };
 
@@ -66,7 +73,7 @@ function SliderControll({ def, id }) {
       step={0.1}
       onChange={handleChange}
       onChangeCommitted={handleChangeCommitted}
-      marks={[{ value: def }]}
+      marks={[{ value: defaultValue }]}
       valueLabelDisplay="auto"
     />
   );
