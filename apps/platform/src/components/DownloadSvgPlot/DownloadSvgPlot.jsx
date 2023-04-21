@@ -1,12 +1,11 @@
 import { Button } from '@material-ui/core';
-import { findDOMNode } from 'react-dom';
 import Grid from '@material-ui/core/Grid';
 
 import downloadSvg from './DownloadSvg';
 import PlotContainer from '../PlotContainer';
 
 const handleSvgDownload = (svgContainer, filenameStem) => {
-  const node = findDOMNode(svgContainer.current);
+  const node = svgContainer;
   const svgNode = node.nodeName === 'svg' ? node : node.querySelector('svg');
   downloadSvg({ svgNode, filenameStem });
 };
@@ -35,7 +34,7 @@ const DownloadSvgPlot = ({
               if (reportDownloadEvent) {
                 reportDownloadEvent();
               }
-              handleSvgDownload(svgContainer, filenameStem);
+              handleSvgDownload(svgContainer.current, filenameStem);
             }}
           >
             SVG
