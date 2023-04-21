@@ -12,7 +12,6 @@ import { styled } from '@material-ui/styles';
 import { ClickAwayListener } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCaretDown,
   faArrowDownWideShort,
   faBook,
 } from '@fortawesome/free-solid-svg-icons';
@@ -251,15 +250,20 @@ function TableAssociations() {
                           className: header.column.getCanSort()
                             ? 'cursor-pointer select-none'
                             : '',
-                          onClick: header.column.getToggleSortingHandler(),
                         }}
                         onMouseEnter={e => onEnterHoverHeader(header)}
                         onMouseLeave={e => onLeaveHoverHeader()}
                       >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        <div
+                          {...{
+                            onClick: header.column.getToggleSortingHandler(),
+                          }}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                        </div>
                         {{
                           desc: (
                             <FontAwesomeIcon
@@ -269,7 +273,8 @@ function TableAssociations() {
                           ),
                         }[header.column.getIsSorted()] ?? null}
                         <a
-                          target="blanck"
+                          rel="noreferrer"
+                          target="_blank"
                           className="docs-link"
                           href={`https://platform-docs.opentargets.org/evidence#${header.id}`}
                         >

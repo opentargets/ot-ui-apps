@@ -128,13 +128,29 @@ const columns = [
   },
 ];
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
+export function Body({ definition, id, label }) {
   const {
     data: {
-      gene2Phenotype: { count: size },
+      gene2Phenotype: { count },
     },
   } = usePlatformApi(Summary.fragments.Gene2PhenotypeSummaryFragment);
-  const variables = { ensemblId: ensgId, efoId, size };
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({
+  definition,
+  id: { ensgId, efoId },
+  label: { symbol, name },
+  count,
+}) {
+  const variables = { ensemblId: ensgId, efoId, size: count };
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,
@@ -145,9 +161,7 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       request={request}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
+      renderDescription={() => <Description symbol={symbol} name={name} />}
       renderBody={data => (
         <DataTable
           columns={columns}
