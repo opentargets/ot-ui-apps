@@ -6,7 +6,7 @@ import {
   Dialog,
   DialogContent,
 } from "@material-ui/core";
-import { Search as SearchIcon, ArrowDropDown } from "@material-ui/icons";
+import { Search as SearchIcon } from "@material-ui/icons";
 
 import AutocompleteSearch from "./AutocompleteSearch";
 import { SearchContext } from "./Search/SearchContext";
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GlobalSearch() {
+function GlobalSearch({showSearchResultPage}) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleClose = () => {
@@ -128,7 +128,7 @@ function GlobalSearch() {
         className={classes.modal}
       >
         <DialogContent>
-          <AutocompleteSearch closeModal={handleClose} />
+          <AutocompleteSearch closeModal={handleClose} showSearchResultPage={showSearchResultPage}/>
         </DialogContent>
       </Dialog>
     </>

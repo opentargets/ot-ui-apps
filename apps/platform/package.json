@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.4",
+    "@babel/preset-react": "^7.18.6",
     "@ebi-gene-expression-group/expression-atlas-heatmap-highcharts": "^5.4.1-beta1",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^6.1.1",
@@ -61,11 +62,9 @@
     "preview": "vite preview",
     "serve": "vite preview",
     "prettier": "prettier --write",
+    "lint": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "prettier:all": "prettier --write 'src/**/*.js'",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": [
     ">0.2%",
@@ -74,12 +73,25 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@babel/core": "^7.21.4",
+    "@babel/eslint-parser": "^7.21.3",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-helmet": "^6.1.6",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-react": "^3.1.0",
     "browserstack-local": "^1.4.5",
     "cross-fetch": "^3.1.4",
+    "eslint": "^8.38.0",
+    "eslint-config-custom": "*",
+    "eslint-config-standard-with-typescript": "^34.0.1",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": ">=4",
     "lint-staged": ">=10",
     "nanoid-cli": "^1.1.0",
@@ -89,7 +101,7 @@
     "sass": "^1.49.10",
     "source-map-explorer": "^2.0.0",
     "tsconfig": "*",
-    "typescript": "^4.9.5",
+    "typescript": "^5.0.4",
     "vite": "^4.1.4",
     "vite-plugin-simple-gql": "^0.5.0",
     "vite-plugin-svgr": "^2.4.0"
@@ -100,6 +112,6 @@
     }
   },
   "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
+    "*.{js,ts,tsx,jsx,css,md}": "prettier --write"
   }
 }

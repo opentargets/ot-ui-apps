@@ -121,7 +121,7 @@ const columns = [
     renderCell: ({ significantDriverMethods }) =>
       significantDriverMethods ? (
         <ChipList
-          items={significantDriverMethods.map((am, index) => ({
+          items={significantDriverMethods.map((am) => ({
             label: am,
             tooltip: (methods[am] || {}).description,
           }))}

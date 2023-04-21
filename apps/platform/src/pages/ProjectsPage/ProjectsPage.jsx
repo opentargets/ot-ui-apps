@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   makeStyles,
-  Avatar,
   Chip,
 } from '@material-ui/core';
 import projectsData from './projects-data.json';

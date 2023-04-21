@@ -82,7 +82,7 @@ const SearchPage = ({ location, history }) => {
               <Typography align="center">
                 We could not find anything in the Platform database that matches
               </Typography>
-              <Typography align="center">"{q}"</Typography>
+              <Typography align="center">&quot;{q}&quot;</Typography>
             </EmptyPage>
           ) : (
             <SearchContainer

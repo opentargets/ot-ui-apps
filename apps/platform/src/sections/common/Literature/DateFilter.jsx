@@ -82,13 +82,13 @@ export const DateFilter = () => {
       startMonth,
       endYear,
       endMonth,
-      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => ({
-        id: pmid,
+      litsIds: data.literatureOccurrences?.rows?.map(({ pmId }) => ({
+        id: pmId,
         status: 'ready',
         publication: null,
       })),
-      litsCount: data.literatureOcurrences?.count,
-      earliestPubYear: data.literatureOcurrences?.earliestPubYear,
+      litsCount: data.literatureOccurrences?.count,
+      earliestPubYear: data.literatureOccurrences?.earliestPubYear,
       ...values,
     };
     setLiteratureUpdate(update);
@@ -112,7 +112,7 @@ export const DateFilter = () => {
     setFilterDate(newValue);
   };
 
-  const handleDateRangeChangeCommited = (event, newValue) => {
+  const handleDateRangeChangeCommitted = (event, newValue) => {
     const startDate = selectedDate(newValue[0]);
     const endDate = selectedDate(newValue[1]);
     handleChange({
@@ -139,7 +139,7 @@ export const DateFilter = () => {
             value={filterDate}
             valueLabelDisplay="on"
             onChange={handleDateRangeChange}
-            onChangeCommitted={handleDateRangeChangeCommited}
+            onChangeCommitted={handleDateRangeChangeCommitted}
             aria-labelledby="range-slider"
             max={numberOfMonths - 1}
             onsel

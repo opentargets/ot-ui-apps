@@ -52,21 +52,19 @@ function SearchInput({
   params,
   debounceValue,
   onClose,
-  changeInputValue,
   isHomePage,
   focus,
 }: {
   params: TextFieldProps;
   debounceValue: (str: string) => void;
-  changeInputValue: (str: string) => void;
   onClose: () => void;
-  isHomePage: boolean;
+  isHomePage?: boolean;
   focus: boolean;
 }) {
   const classes = useStyles();
   const [searchInputValue, setSearchInputValue] = useState("");
   const debouncedInputValue = useDebounce(searchInputValue, 300);
-  const { searchPlaceholder, inputValue } = useContext(SearchContext);
+  const { searchPlaceholder, setInputValue } = useContext(SearchContext);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -76,15 +74,8 @@ function SearchInput({
   useEffect(() => {
     if (inputRef.current) {
       (!isHomePage || focus) && inputRef.current.focus();
-      // (isHomePage && !focus) && inputRef.current.blur();
     }
   }, [focus, isHomePage]);
-
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.value = inputValue;
-    }
-  }, [inputValue]);
 
   return (
     <div className={classes.searchContainer}>
@@ -110,10 +101,13 @@ function SearchInput({
         }}
         onChange={(e) => {
           setSearchInputValue(e.target.value.trim() || "");
-          changeInputValue(e.target.value.trim() || "");
+          setInputValue(e.target.value.trim() || "");
         }}
         value={searchInputValue}
         placeholder={searchPlaceholder}
+        onKeyDown={(e) => {
+          if(e.code === "Escape") onClose();
+        }}
       />
     </div>
   );

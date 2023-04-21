@@ -104,8 +104,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function getColumns(efoId, classes) {
-  const { isPartnerPreview } = usePermissions();
+function getColumns(efoId, classes, isPartnerPreview) {
   const columns = [
     {
       id: 'symbol',
@@ -240,6 +239,9 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
 
+  const { isPartnerPreview } = usePermissions();
+
+
   useEffect(
     () => {
       let isCurrent = true;
@@ -316,7 +318,7 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
     }
   }
 
-  const columns = getColumns(efoId, classes);
+  const columns = getColumns(efoId, classes, isPartnerPreview);
   const processedRows = getRows(rows);
 
   if (initialLoading) return <Skeleton variant="rect" height="40vh" />;

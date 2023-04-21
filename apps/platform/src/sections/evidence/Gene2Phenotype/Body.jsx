@@ -66,8 +66,8 @@ const columns = [
       allelicRequirements ? (
         allelicRequirements.length > 1 ? (
           <List>
-            {allelicRequirements.map(item => (
-              <ListItem>{item}</ListItem>
+            {allelicRequirements.map((item, index) => (
+              <ListItem key={index}>{item}</ListItem>
             ))}
           </List>
         ) : (

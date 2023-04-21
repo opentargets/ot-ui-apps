@@ -19,7 +19,7 @@ import { makeStyles } from '@material-ui/core';
 
 import CHEMBL_QUERY from './ChemblQuery.gql';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   tooltipContainer: {
     padding: '0.3em',
   },

@@ -1,5 +1,14 @@
 {
-  "extends": "tsconfig/base.json",
+  "compilerOptions": {
+    "lib": ["dom", "ES2015"],
+    "module": "ESNext",
+    "target": "ES6",
+    "jsx": "react-jsx",
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "allowJs": true
+  },
+  "extends": "tsconfig/vite.json",
   "include": ["."],
-  "exclude": ["node_modules"]
+  "exclude": ["dist", "build", "node_modules"]
 }

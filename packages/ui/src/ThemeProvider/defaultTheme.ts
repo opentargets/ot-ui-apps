@@ -1,4 +1,5 @@
 import { colors } from "@material-ui/core";
+import { createTheme } from "@material-ui/core";
 import { lighten, darken } from "polished";
 
 const { grey } = colors;
@@ -6,7 +7,7 @@ const { grey } = colors;
 const PRIMARY = "#3489ca";
 const SECONDARY = "#ff6350";
 
-const theme = {
+const theme = createTheme({
   shape: {
     borderRadius: 0,
   },
@@ -41,7 +42,7 @@ const theme = {
     text: {
       primary: "#5A5F5F",
     },
-    footer: "#2e2d35",
+    // footer: "#2e2d35",
   },
   props: {
     MuiTab: {
@@ -137,6 +138,6 @@ const theme = {
       },
     },
   },
-};
+});
 
 export default theme;

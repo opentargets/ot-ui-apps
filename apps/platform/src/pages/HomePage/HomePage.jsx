@@ -140,7 +140,7 @@ const HomePage = () => {
           placement="bottom-end"
         />
         <HomeBox>
-          <AutocompleteSearch isHomePage />
+          <AutocompleteSearch isHomePage showSearchResultPage/>
           {/* Search examples */}
           <Grid
             className={classes.links}

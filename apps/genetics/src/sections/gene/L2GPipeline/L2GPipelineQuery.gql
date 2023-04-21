@@ -20,6 +20,7 @@ query GenePageL2GPipelineQuery($geneId: String!) {
       nInitial
       nReplication
       hasSumstats
+      nCases
     }
     variant {
       rsId

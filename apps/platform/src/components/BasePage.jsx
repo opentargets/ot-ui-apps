@@ -20,7 +20,7 @@ const BasePage = ({ title, children, description, location }) => {
       header={
         <NavBar
           name="Platform"
-          search={<GlobalSearch />}
+          search={<GlobalSearch showSearchResultPage/>}
           items={mainMenuItems}
         />
       }

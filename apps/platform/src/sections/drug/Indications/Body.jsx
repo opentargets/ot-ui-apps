@@ -52,7 +52,7 @@ const columns = [
       const referenceList = [];
 
       references.forEach(reference => {
-        reference.ids.forEach((id, i) => {
+        reference.ids.forEach((id) => {
           referenceList.push({
             name: id,
             url: referenceUrls[reference.source](id),

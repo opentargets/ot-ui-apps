@@ -1,14 +1,7 @@
 import React, { Component } from 'react';
 import { Fade, Popper } from '@material-ui/core';
 
-const Tooltip = ({
-  classes,
-  dataList,
-  open,
-  anchorEl,
-  container,
-  children,
-}) => (
+const Tooltip = ({ open, anchorEl, container, children }) => (
   <Popper
     open={open}
     anchorEl={anchorEl}
@@ -47,7 +40,7 @@ function withTooltip(WrappedComponent, TooltipContent, tooltipElementFinder) {
       });
     };
 
-    handleMouseLeave = event => {
+    handleMouseLeave = () => {
       this.setState({
         open: false,
         anchorData: null,

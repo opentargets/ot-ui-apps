@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const getColumns = classes => [
+const getColumns = () => [
   {
     id: 'disease',
     label: 'Reported disease',

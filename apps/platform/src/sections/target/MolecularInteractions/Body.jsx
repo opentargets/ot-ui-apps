@@ -94,7 +94,7 @@ function Body({ definition, label: symbol, id }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => {
+      renderBody={() => {
         return (
           <>
             {/* Interaction Resource */}

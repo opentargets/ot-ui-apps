@@ -1,4 +1,3 @@
-import React from "react";
 import { Grid, Typography } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { makeStyles } from "@material-ui/core/styles";
@@ -8,10 +7,11 @@ import { EmailLink } from "./EmailLink";
 
 import PrivateWrapper from "../../../apps/platform/src/components/PrivateWrapper";
 
-const useStyles = makeStyles((theme) => ({
+const FOOTER_BACKGROUND_COLOR = "#2e2d35";
+
+const useStyles = makeStyles(() => ({
   footer: {
-    // @ts-ignore
-    backgroundColor: theme.palette.footer,
+    backgroundColor: FOOTER_BACKGROUND_COLOR,
     color: "#fff",
     margin: 0,
     width: "100%",
@@ -28,7 +28,7 @@ const useLinkStyles = makeStyles(() => ({
   },
 }));
 
-let FooterLink = ({ label, url, icon }) => {
+const FooterLink = ({ label, url, icon }) => {
   const classes = useLinkStyles();
   return (
     <Grid item xs={12} className={classes.linkContainer}>
@@ -70,7 +70,7 @@ const useSocialLinkStyle = makeStyles(() => ({
   },
 }));
 
-let FooterSocial = ({ social }) => {
+const FooterSocial = ({ social }) => {
   const classes = useSocialLinkStyle();
   return (
     <>
@@ -102,7 +102,7 @@ const FooterSection = ({
   heading,
   links,
   social,
-  children
+  children,
 }: {
   heading: React.ReactNode;
   links: {
@@ -112,6 +112,7 @@ const FooterSection = ({
     url: string;
   }[];
   social?: unknown;
+  children?: React.ReactNode;
 }) => {
   const classes = useSectionStyles();
   return (
@@ -172,24 +173,16 @@ const useLicenseStyles = makeStyles({
   },
 });
 
-const LicenseCC0 = ({links}) => {
+const LicenseCC0 = ({ links }) => {
   const classes = useLicenseStyles();
   return (
     <div>
       <Typography color="inherit" variant="caption">
-        <Link
-          to={links.url}
-          external
-          footer
-          className={classes.link}
-          property="dct:title"
-          rel="cc:attributionURL"
-        >
+        <Link to={links.url} external footer className={classes.link}>
           {links.label}
         </Link>{" "}
         is marked with{" "}
         <Link
-          rel="license noopener noreferrer"
           to="http://creativecommons.org/publicdomain/zero/1.0?ref=chooser-v1"
           external
           footer

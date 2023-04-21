@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
 function LoadingBackdrop() {
   const classes = useStyles();
   return (
-    //@ts-ignore
     <Box className={classes.container}>
       <CircularProgress color="inherit" />
     </Box>
