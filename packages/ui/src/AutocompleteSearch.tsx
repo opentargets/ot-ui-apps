@@ -1,60 +1,45 @@
-import { useState, useEffect, useContext, useMemo, ChangeEvent } from "react";
+import { useState, useEffect, useContext, ChangeEvent } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "./hooks/useSearchQueryData";
 import SearchListItem, { SearchResult } from "./Search/SearchListItem";
 import SearchListHeader from "./Search/SearchListHeader";
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import useListOption from "./hooks/useListOption";
 import { SearchContext } from "./Search/SearchContext";
 import SearchLoadingState from "./Search/SearchLoadingState";
 import { containsObject } from "./utils/searchUtils";
 
-const getTheme = (primaryColor: string) =>
-  createTheme({
-    overrides: {
-      // @ts-ignore
-      MuiAutocomplete: {
-        popper: {
-          borderRadius: "0 0 12px 12px !important",
-        },
-        paper: {
-          height: "inherit !important",
-          boxShadow: "2px 0 4px -4px #999, -2px 0 4px -4px #999",
-        },
-        listbox: {
-          maxHeight: "47vh !important",
-        },
-        option: {
-          margin: "0 1rem",
-          padding: "11px",
-          border: "0.3px solid transparent",
-          borderBottomWidth: "0.3px",
-          borderStyle: "solid",
-          borderImage:
-            "linear-gradient(to right, white, #00000063, white)0 0 90",
-          "&[data-focus='true']": {
-            border: `0.3px solid ${primaryColor}`,
-            borderRadius: "4px",
-            background: "#3489ca29",
-          },
-        },
-      },
+const useStyles = makeStyles((theme) => ({
+  popper: {
+    borderRadius: "0 0 12px 12px !important",
+  },
+  paper: {
+    height: "inherit !important",
+    boxShadow: "2px 0 4px -4px #999, -2px 0 4px -4px #999",
+  },
+  listbox: {
+    maxHeight: "47vh !important",
+  },
+  option: {
+    margin: "0 1rem",
+    padding: "11px",
+    border: "0.3px solid transparent",
+    borderBottomWidth: "0.3px",
+    borderStyle: "solid",
+    borderImage: "linear-gradient(to right, white, #00000063, white)0 0 90",
+    "&[data-focus='true']": {
+      border: `0.3px solid ${theme.palette.primary}`,
+      borderRadius: "4px",
+      background: "#3489ca29",
     },
-    palette: {
-      primary: {
-        main: primaryColor,
-      },
-      text: {
-        primary: "#5A5F5F",
-      },
-    },
-  });
+  },
+}));
 
 export default function AutocompleteSearch({
   closeModal = () => undefined,
   isHomePage,
-  showSearchResultPage
+  showSearchResultPage,
 }: {
   closeModal?: () => void;
   isHomePage?: boolean;
@@ -67,16 +52,10 @@ export default function AutocompleteSearch({
   );
   const [open, setOpen] = useState(isHomePage ? false : true);
 
-  const {
-    searchQuery,
-    setLoading,
-    inputValue,
-    setInputValue,
-    primaryColor,
-    loading,
-  } = useContext(SearchContext);
+  const classes = useStyles();
 
-  const theme = useMemo(() => getTheme(primaryColor), [primaryColor]);
+  const { searchQuery, setLoading, inputValue, setInputValue, loading } =
+    useContext(SearchContext);
 
   const [getSearchData, { data, loading: searchQueryLoading }] =
     useSearchQueryData(searchQuery);
@@ -164,46 +143,50 @@ export default function AutocompleteSearch({
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Autocomplete
-        disablePortal
-        openOnFocus
-        autoHighlight
-        clearOnEscape
-        freeSolo
-        options={searchResult}
-        onChange={handleSelectOption}
-        groupBy={(option) => option.type}
-        loading={searchQueryLoading}
-        loadingText={<SearchLoadingState />}
-        renderGroup={(group) => (
-          <SearchListHeader
-            key={group.key}
-            listHeader={group.group}
-            children={group.children}
-            clearAll={clearAll}
-          />
-        )}
-        getOptionLabel={(option) => option.symbol || option.name || option.id}
-        renderOption={(option) => (
-          <SearchListItem
-            item={option}
-            isTopHit={option.type === "topHit"}
-            clearItem={clearItem}
-          />
-        )}
-        getOptionSelected={(option, value) => option.name === value.toString()}
-        filterOptions={() => searchResult}
-        renderInput={(params) => (
-          <SearchInput
-            params={params}
-            debounceValue={searchQueryInput}
-            onClose={onClose}
-            isHomePage={isHomePage}
-            focus={open}
-          />
-        )}
-      />
-    </ThemeProvider>
+    <Autocomplete
+      classes={{
+        paper: classes.paper,
+        popper: classes.popper,
+        listbox: classes.listbox,
+        option: classes.option,
+      }}
+      disablePortal
+      openOnFocus
+      autoHighlight
+      clearOnEscape
+      freeSolo
+      options={searchResult}
+      onChange={handleSelectOption}
+      groupBy={(option) => option.type}
+      loading={searchQueryLoading}
+      loadingText={<SearchLoadingState />}
+      renderGroup={(group) => (
+        <SearchListHeader
+          key={group.key}
+          listHeader={group.group}
+          children={group.children}
+          clearAll={clearAll}
+        />
+      )}
+      getOptionLabel={(option) => option.symbol || option.name || option.id}
+      renderOption={(option) => (
+        <SearchListItem
+          item={option}
+          isTopHit={option.type === "topHit"}
+          clearItem={clearItem}
+        />
+      )}
+      getOptionSelected={(option, value) => option.name === value.toString()}
+      filterOptions={() => searchResult}
+      renderInput={(params) => (
+        <SearchInput
+          params={params}
+          debounceValue={searchQueryInput}
+          onClose={onClose}
+          isHomePage={isHomePage}
+          focus={open}
+        />
+      )}
+    />
   );
 }
