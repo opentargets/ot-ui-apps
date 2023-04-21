@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
-import { identifiersOrgLink } from '../../../utils/global';
+import { identifiersOrgLink, sentenceCase } from '../../../utils/global';
 import Link from '../../../components/Link';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import Tooltip from '../../../components/Tooltip';
@@ -12,7 +12,6 @@ import { defaultRowsPerPageOptions } from '../../../constants';
 import { epmcUrl } from '../../../utils/urls';
 import Summary from './Summary';
 import Description from './Description';
-import { sentenceCase } from '../../../utils/global';
 import { dataTypesMap } from '../../../dataTypes';
 
 import UNIPROT_LITERATURE_QUERY from './UniprotLiteratureQuery.gql';
@@ -44,7 +43,7 @@ const columns = [
   {
     id: 'targetFromSourceId',
     label: 'Reported protein',
-    renderCell: ({ targetFromSourceId, studyId }) => {
+    renderCell: ({ targetFromSourceId }) => {
       return (
         <Link external to={identifiersOrgLink('uniprot', targetFromSourceId)}>
           {targetFromSourceId}

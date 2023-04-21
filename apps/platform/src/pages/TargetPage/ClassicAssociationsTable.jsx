@@ -91,8 +91,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function getColumns(ensemblId, classes) {
-  const {isPartnerPreview} = usePermissions();
+function getColumns(ensemblId, classes, isPartnerPreview) {
   const columns = [
     {
       id: 'name',
@@ -204,6 +203,8 @@ function ClassicAssociationsTable({ ensgId, aggregationFilters }) {
   const [sortBy, setSortBy] = useState('score');
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
+  const {isPartnerPreview} = usePermissions();
+
 
   useEffect(
     () => {
@@ -283,7 +284,7 @@ function ClassicAssociationsTable({ ensgId, aggregationFilters }) {
 
   if (initialLoading) return <Skeleton variant="rect" height="40vh" />;
 
-  const columns = getColumns(ensgId, classes);
+  const columns = getColumns(ensgId, classes, isPartnerPreview);
   const processedRows = getRows(rows);
 
   return (

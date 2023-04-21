@@ -12,7 +12,7 @@ function Summary({ definition }) {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => {
+      renderSummary={() => {
         const modalities = [];
         // The summary UI has been simplified.
         // If we want to add back the sources/modalities summary,

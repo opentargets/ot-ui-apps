@@ -5,7 +5,7 @@ import Link from '../../../components/Link';
 import { LongText } from 'ui';
 
 const pmUrl = 'https://europepmc.org/';
-const pmTitleUrl = 'abstract/med/';
+// const pmTitleUrl = 'abstract/med/';
 
 /**
  * This renders a publication block in the bibliography details.
@@ -63,7 +63,7 @@ class SimplePublication extends Component {
             variant={variant === 'small' ? 'caption' : 'body2'}
           >
             {authors
-              .map((author, i) => {
+              .map((author) => {
                 return (
                   author.lastName +
                   (author.initials ? ' ' + author.initials : '')

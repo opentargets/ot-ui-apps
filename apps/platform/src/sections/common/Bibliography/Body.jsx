@@ -115,7 +115,7 @@ class Section extends Component {
           });
         }
       },
-      (error) => {
+      () => {
         if (this.mounted) {
           this.setState({
             aggregations: {},
@@ -144,7 +144,7 @@ class Section extends Component {
           this.setState({ hits: hits, isLoading: false });
         }
       },
-      (error) => {
+      () => {
         if (this.mounted) {
           this.setState({ hits: [], hasError: true, isLoading: false });
         }

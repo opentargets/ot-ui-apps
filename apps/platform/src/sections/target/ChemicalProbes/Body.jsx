@@ -6,9 +6,8 @@ import Link from '../../../components/Link';
 import SectionItem from '../../../components/Section/SectionItem';
 import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
-import { naLabel } from '../../../constants';
+import { naLabel, defaultRowsPerPageOptions } from '../../../constants';
 import { DataTable } from '../../../components/Table';
-import { defaultRowsPerPageOptions } from '../../../constants';
 import ClinvarStars from '../../../components/ClinvarStars';
 
 import CHEMICAL_PROBES_QUERY from './ChemicalProbes.gql';

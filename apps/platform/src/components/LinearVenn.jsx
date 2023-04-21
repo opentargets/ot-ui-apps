@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useRef } from 'react';
+import { useLayoutEffect, useState, useRef } from 'react';
 import { withTheme } from '@material-ui/core';
 
 const WIDTH = 400;
@@ -70,7 +70,7 @@ const LinearVenn = ({ theme, aOnly, aAndB, bOnly, max }) => {
   );
 };
 
-function Legend({ theme, a, b, aAndB, tooltip }) {
+function Legend({ theme, a, b, aAndB }) {
   const [legendWidth, setLegendWidth] = useState(0);
   const LEGEND_SQUARE_SIZE = 15;
   const LEGEND_PADDING = 6;
