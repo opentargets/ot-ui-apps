@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Alert } from '@material-ui/lab';
-import { TablePagination } from '@material-ui/core';
+import { TablePagination, Typography } from '@material-ui/core';
 import useAotfContext from '../hooks/useAotfContext';
 import ColoredCell from './ColoredCell';
 import { getLegend, defaulDatasourcesWeigths } from '../utils';
@@ -53,9 +53,12 @@ function TableFooter({ table }) {
       <div style={{ display: 'flex' }}>
         {modifiedSourcesWeights && isAssociations && (
           <Alert severity="info">
-            Weights controls modified{' '}
+            <Typography variant="caption">
+              Weights controls modified{' '}
+            </Typography>
             <button
               onClick={() => setDataSourcesWeights(defaulDatasourcesWeigths)}
+              style={{ fontSize: '0.75rem' }}
             >
               Reset to default
             </button>{' '}
