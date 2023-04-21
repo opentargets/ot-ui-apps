@@ -112,7 +112,7 @@ const FooterSection = ({
     url: string;
   }[];
   social?: unknown;
-  children: unknown;
+  children?: React.ReactNode;
 }) => {
   const classes = useSectionStyles();
   return (
@@ -178,19 +178,11 @@ const LicenseCC0 = ({ links }) => {
   return (
     <div>
       <Typography color="inherit" variant="caption">
-        <Link
-          to={links.url}
-          external
-          footer
-          className={classes.link}
-          property="dct:title"
-          rel="cc:attributionURL"
-        >
+        <Link to={links.url} external footer className={classes.link}>
           {links.label}
         </Link>{" "}
         is marked with{" "}
         <Link
-          rel="license noopener noreferrer"
           to="http://creativecommons.org/publicdomain/zero/1.0?ref=chooser-v1"
           external
           footer
