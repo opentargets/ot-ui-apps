@@ -79,12 +79,12 @@
 }
 
 .TAssociations .Theader .docs-link {
-  display: none;
-  color: var(--primary-color);
+  color: #fafafa;
+  transition: all ease-in-out 150ms;
 }
 
 .TAssociations .Theader .rotate:hover .docs-link {
-  display: block;
+  color: var(--primary-color);
 }
 
 .TAssociations .Theader .cursor-pointer {
