@@ -7,7 +7,7 @@ function AggregationsRow({
   table,
   active,
   handleAggregationClick,
-  activeWeightsControlls,
+  activeHeadersControlls,
 }) {
   const dataset =
     table === 'associations' ? assocGrouped : prioritizationGrouped;
@@ -22,7 +22,7 @@ function AggregationsRow({
           active={active}
           dataset={dataset}
           handleAggregationClick={handleAggregationClick}
-          activeWeightsControlls={activeWeightsControlls}
+          activeHeadersControlls={activeHeadersControlls}
         />
       ))}
     </div>
@@ -34,7 +34,7 @@ function AggregationItem({
   dataset,
   active,
   handleAggregationClick,
-  activeWeightsControlls,
+  activeHeadersControlls,
 }) {
   const [open, setOpen] = useState(false);
   const onMouseEnter = () => {
@@ -51,7 +51,7 @@ function AggregationItem({
   };
   const isActive = active === aggregation;
   const className = `aggregation-indicator ${isActive && 'active'} ${
-    activeWeightsControlls && 'clickAble'
+    activeHeadersControlls && 'clickAble'
   } `;
   return (
     <div
@@ -60,7 +60,7 @@ function AggregationItem({
       onMouseEnter={e => onMouseEnter(aggregation)}
       onMouseLeave={e => onMouseLeave()}
       onClick={() => {
-        if (activeWeightsControlls) return handleAggregationClick(aggregation);
+        if (activeHeadersControlls) return handleAggregationClick(aggregation);
         return () => {};
       }}
     >

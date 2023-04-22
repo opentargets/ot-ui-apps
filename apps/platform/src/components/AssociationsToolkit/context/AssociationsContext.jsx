@@ -41,7 +41,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [sorting, setSorting] = useState([{ id: 'score', desc: true }]);
 
   // Data controls UI
-  const [activeWeightsControlls, setActiveWeightsControlls] = useState(false);
+  const [activeHeadersControlls, setActiveHeadersControlls] = useState(false);
 
   // only two posible (associations || prioritisations)
   const [displayedTable, setDisplayedTable] = useState('associations');
@@ -161,7 +161,7 @@ function AssociationsProvider({ children, entity, id, query }) {
         tableExpanded,
         pagination,
         expanded,
-        activeWeightsControlls,
+        activeHeadersControlls,
         enableIndirect,
         error,
         dataSourcesWeights,
@@ -181,7 +181,7 @@ function AssociationsProvider({ children, entity, id, query }) {
         expanderHandler,
         setTableExpanded,
         setEnableIndirect,
-        setActiveWeightsControlls,
+        setActiveHeadersControlls,
         resetExpandler,
         handleAggregationClick,
       }}

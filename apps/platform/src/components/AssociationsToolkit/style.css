@@ -290,7 +290,11 @@
 
 .TAssociations .weights-controlls .controlls-wrapper {
   width: 100%;
-  margin-left: 170px;
+}
+.TAssociations .weights-controlls .header-controls-labels {
+  padding: 6px 10px;
+  text-align: right;
+  width: 195px;
 }
 
 .TAssociations .weights-controlls .required-container {

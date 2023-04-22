@@ -26,8 +26,8 @@ function DataMenu() {
   const {
     enableIndirect,
     setEnableIndirect,
-    activeWeightsControlls,
-    setActiveWeightsControlls,
+    activeHeadersControlls,
+    setActiveHeadersControlls,
     displayedTable,
   } = useAotfContext();
 
@@ -77,13 +77,13 @@ function DataMenu() {
               control={
                 <Checkbox
                   color="primary"
-                  checked={activeWeightsControlls}
+                  checked={activeHeadersControlls}
                   onChange={() =>
-                    setActiveWeightsControlls(!activeWeightsControlls)
+                    setActiveHeadersControlls(!activeHeadersControlls)
                   }
                 />
               }
-              label="Show weights controls"
+              label="Show data sources controls"
             />
           </FormGroup>
           <FormGroup>

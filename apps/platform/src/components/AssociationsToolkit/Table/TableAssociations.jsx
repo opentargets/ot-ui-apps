@@ -15,7 +15,7 @@ import prioritizationCols from '../static_datasets/prioritizationCols';
 import AggregationsTooltip from './AggregationsTooltip';
 import ColoredCell from './ColoredCell';
 
-import WeightsControl from '../WeightsControl';
+import HeaderControls from '../HeaderControls';
 import CellName from './CellName';
 import TableHeader from './TableHeader';
 import TableFooter from './TableFooter';
@@ -174,7 +174,7 @@ function TableAssociations() {
         <TableHeader table={table} />
 
         {/* Weights controlls */}
-        <WeightsControl cols={entitesHeaders} />
+        <HeaderControls cols={entitesHeaders} />
 
         {/* BODY CONTENT */}
         <TableBody table={table} />

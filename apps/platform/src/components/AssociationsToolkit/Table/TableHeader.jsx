@@ -21,7 +21,7 @@ const getHeaderClassName = ({ id }) => {
 };
 
 function TableHeader({ table }) {
-  const { id, displayedTable, handleAggregationClick, activeWeightsControlls } =
+  const { id, displayedTable, handleAggregationClick, activeHeadersControlls } =
     useAotfContext();
   const [activeAggregation, setActiveAggegation] = useState(null);
   const onEnterHoverHeader = ({ id, column }) => {
@@ -99,7 +99,7 @@ function TableHeader({ table }) {
         cols={entitesHeaders}
         table={displayedTable}
         active={activeAggregation}
-        activeWeightsControlls={activeWeightsControlls}
+        activeHeadersControlls={activeHeadersControlls}
       />
     </div>
   );

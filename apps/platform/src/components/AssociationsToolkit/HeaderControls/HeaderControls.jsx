@@ -1,4 +1,4 @@
-import { Collapse } from '@material-ui/core';
+import { Collapse, Grid, Typography } from '@material-ui/core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -19,29 +19,50 @@ const CloseContainer = styled('div')({
   zIndex: 10,
 });
 
-function WeightsControlls({ cols }) {
-  const { activeWeightsControlls, setActiveWeightsControlls, displayedTable } =
+function HeaderControls({ cols }) {
+  const { activeHeadersControlls, setActiveHeadersControlls, displayedTable } =
     useAotfContext();
 
   if (displayedTable === 'prioritisations') return null;
 
   const handleClose = () => {
-    setActiveWeightsControlls(false);
+    setActiveHeadersControlls(false);
   };
 
   return (
-    <Collapse in={activeWeightsControlls}>
+    <Collapse in={activeHeadersControlls}>
       <div className="weights-controlls">
-        <div className="controlls-container">
+        <Grid
+          container
+          direction="row"
+          wrap="nowrap"
+          className="controlls-container"
+        >
           <CloseContainer onClick={handleClose}>
             <FontAwesomeIcon icon={faXmark} size="lg" />
           </CloseContainer>
-          <div className="grid-container controlls-wrapper">
+          <Grid
+            item
+            container
+            direction="column"
+            className="header-controls-labels"
+            justifyContent="space-between"
+          >
+            <Grid item>
+              <Typography variant="subtitle2">
+                Datasource weight control:
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="subtitle2">Required datasource:</Typography>
+            </Grid>
+          </Grid>
+          <Grid item container className="grid-container controlls-wrapper">
             {cols.map(({ id }) => (
               <div key={id} className="colum-control">
-                <div className="control-container" key={id}>
+                <Grid className="control-container" key={id}>
                   <Slider id={id} />
-                </div>
+                </Grid>
                 <div className="required-container">
                   <Required
                     id={id}
@@ -52,11 +73,11 @@ function WeightsControlls({ cols }) {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
+          </Grid>
+        </Grid>
       </div>
     </Collapse>
   );
 }
 
-export default WeightsControlls;
+export default HeaderControls;
