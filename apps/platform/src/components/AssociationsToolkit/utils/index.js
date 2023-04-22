@@ -35,6 +35,16 @@ export const getWightSourceDefault = source => {
   return sourcesDetails.weight;
 };
 
+export const checkBoxPayload = (id, aggregationId) => ({
+  id,
+  path: [aggregationId, id],
+  name: 'dataTypes',
+});
+
+export const getControlChecked = (values = [], id) => {
+  return values.filter(val => val.id == id).length > 0;
+};
+
 /* --- CONSTANTS --- */
 const primaryColor = config.profile.primaryColor;
 
@@ -160,6 +170,7 @@ export const getScale = isAssoc => (isAssoc ? assocScale : prioritizationScale);
 
 /* --- CSS VARIABLES --- */
 export const tableCSSVariables = {
+  '--grey-lighter': '#f6f6f6',
   '--grey-light': '#ececec',
   '--grey-mid': '#b8b8b8',
   '--primary-color': primaryColor,
@@ -168,4 +179,5 @@ export const tableCSSVariables = {
   '--entities-border-color': 'var(--grey-light)',
   '--table-footer-border-color': 'var(--grey-light)',
   '--row-hover-color': 'var(--grey-light)',
+  '--colums-controls-color': 'var(--grey-lighter)',
 };

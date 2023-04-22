@@ -1,11 +1,12 @@
 import { createContext, useState, useMemo, useEffect } from 'react';
-import { defaulDatasourcesWeigths } from '../utils';
+import { defaulDatasourcesWeigths, getControlChecked } from '../utils';
 import { isEqual } from 'lodash';
+import dataSources from '../static_datasets/dataSourcesAssoc';
 import '../style.css';
 
 import useAssociationsData from '../hooks/useAssociationsData';
 
-import { getCellId } from '../utils';
+import { getCellId, checkBoxPayload } from '../utils';
 
 const AssociationsContext = createContext();
 
@@ -34,6 +35,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [dataSourcesWeights, setDataSourcesWeights] = useState(
     defaulDatasourcesWeigths
   );
+  const [dataSourcesRequired, setDataSourcesRequired] = useState([]);
   const [modifiedSourcesWeights, setModifiedSourcesWeights] = useState(false);
   const [searhFilter, setSearhFilter] = useState('');
   const [sorting, setSorting] = useState([{ id: 'score', desc: true }]);
@@ -57,6 +59,7 @@ function AssociationsProvider({ children, entity, id, query }) {
       enableIndirect,
       datasources: dataSourcesWeights,
       entity,
+      aggregationFilters: dataSourcesRequired,
     },
   });
 
@@ -65,6 +68,41 @@ function AssociationsProvider({ children, entity, id, query }) {
       setModifiedSourcesWeights(false);
     else setModifiedSourcesWeights(true);
   }, [dataSourcesWeights]);
+
+  const handleAggregationClick = aggregationId => {
+    const aggregationDatasources = dataSources.filter(
+      el => el.aggregation === aggregationId
+    );
+    let isAllActive = true;
+    aggregationDatasources.forEach(e => {
+      if (getControlChecked(dataSourcesRequired, e.id) === false) {
+        isAllActive = false;
+        return;
+      }
+    });
+    if (isAllActive) {
+      let newPayload = [...dataSourcesRequired];
+      aggregationDatasources.forEach(element => {
+        const indexToRemove = newPayload.findIndex(
+          datasource => datasource.id === element.id
+        );
+        const newRequiredElement = [
+          ...newPayload.slice(0, indexToRemove),
+          ...newPayload.slice(indexToRemove + 1),
+        ];
+        newPayload = [...newRequiredElement];
+      });
+      setDataSourcesRequired(newPayload);
+    } else {
+      const payload = [];
+      aggregationDatasources.forEach(el => {
+        if (dataSourcesRequired.filter(val => val.id === el.id).length === 0) {
+          payload.push(checkBoxPayload(el.id, el.aggregationId));
+        }
+      });
+      setDataSourcesRequired([...dataSourcesRequired, ...payload]);
+    }
+  };
 
   const entityToGet = entity === 'target' ? 'disease' : 'target';
 
@@ -127,6 +165,7 @@ function AssociationsProvider({ children, entity, id, query }) {
         enableIndirect,
         error,
         dataSourcesWeights,
+        dataSourcesRequired,
         displayedTable,
         pinnedData,
         searhFilter,
@@ -137,12 +176,14 @@ function AssociationsProvider({ children, entity, id, query }) {
         setPinnedData,
         setDisplayedTable,
         setDataSourcesWeights,
+        setDataSourcesRequired,
         handlePaginationChange,
         expanderHandler,
         setTableExpanded,
         setEnableIndirect,
         setActiveWeightsControlls,
         resetExpandler,
+        handleAggregationClick,
       }}
     >
       {children}

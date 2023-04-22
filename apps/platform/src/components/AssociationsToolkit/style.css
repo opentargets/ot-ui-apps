@@ -243,8 +243,12 @@
 }
 
 .TAssociations .aggregations-container .aggregation-indicator:hover {
-  transform: scale(1, 1.8);
+  transform: scale(1, 2);
   background-color: var(--primary-color);
+}
+
+.TAssociations .aggregations-container .aggregation-indicator.clickAble:hover {
+  cursor: pointer;
 }
 
 /* Category indicators */
@@ -273,7 +277,7 @@
 
 /* Weights controlls */
 .TAssociations .weights-controlls {
-  background-color: #f6f6f6;
+  background-color: var(--colums-controls-color);
   position: relative;
   box-sizing: content-box;
   padding: 20px 0 15px;
@@ -281,12 +285,25 @@
 
 .TAssociations .weights-controlls .controlls-container {
   display: flex;
-  height: 65px;
+  /* height: 65px; */
 }
 
 .TAssociations .weights-controlls .controlls-wrapper {
   width: 100%;
   margin-left: 170px;
+}
+
+.TAssociations .weights-controlls .required-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5em;
+}
+
+.TAssociations .weights-controlls .controlls-wrapper .colum-control {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .TAssociations .weights-controlls .name-empty-controll {
@@ -301,12 +318,13 @@
   margin-right: 20px;
 }
 
-.TAssociations .weights-controlls .controll-container {
+.TAssociations .weights-controlls .control-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 65px;
 }
 
-.TAssociations .weights-controlls .controll-container span {
+.TAssociations .weights-controlls .control-container span {
   font-size: 11px;
 }

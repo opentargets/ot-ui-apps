@@ -86,6 +86,10 @@ function useTargetAssociations({
           sortBy,
           enableIndirect,
           datasources,
+          aggregationFilters: aggregationFilters.map(el => ({
+            name: el.name,
+            path: el.path,
+          })),
         },
       });
       let parsedData = getParsedData(entity, resData.data);
@@ -107,6 +111,7 @@ function useTargetAssociations({
     datasources,
     query,
     entity,
+    aggregationFilters,
   ]);
 
   return { loading, error, data, initialLoading, count };

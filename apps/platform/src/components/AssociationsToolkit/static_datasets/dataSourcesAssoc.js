@@ -4,6 +4,7 @@ const dataSources = [
     sectionId: 'otGenetics',
     label: 'OT Genetics',
     aggregation: 'Genetic association',
+    aggregationId: 'genetic_association',
     weight: 1,
   },
   {
@@ -11,6 +12,7 @@ const dataSources = [
     sectionId: 'eva',
     label: 'ClinVar',
     aggregation: 'Genetic association',
+    aggregationId: 'genetic_association',
     weight: 1,
   },
   {
@@ -18,6 +20,7 @@ const dataSources = [
     sectionId: 'geneBurden',
     label: 'Gene Burden',
     aggregation: 'Genetic association',
+    aggregationId: 'genetic_association',
     weight: 1,
   },
   {
@@ -25,6 +28,7 @@ const dataSources = [
     sectionId: 'genomicsEngland',
     label: 'GEL PanelApp',
     aggregation: 'Genetic association',
+    aggregationId: 'genetic_association',
     weight: 1,
   },
   {
@@ -32,6 +36,7 @@ const dataSources = [
     sectionId: 'gene2Phenotype',
     label: 'Gene2phenotype',
     aggregation: 'Genetic association',
+    aggregationId: 'genetic_association',
     weight: 1,
   },
   {
@@ -39,6 +44,7 @@ const dataSources = [
     sectionId: 'uniprotLiterature',
     label: 'UniProt literature',
     aggregation: 'Genetic association',
+    aggregationId: 'genetic_association',
     weight: 1,
   },
   {
@@ -46,6 +52,7 @@ const dataSources = [
     sectionId: 'uniprotVariants',
     label: 'UniProt curated variants',
     aggregation: 'Genetic association',
+    aggregationId: 'genetic_association',
     weight: 1,
   },
   {
@@ -53,6 +60,7 @@ const dataSources = [
     sectionId: 'orphanet',
     label: 'Orphanet',
     aggregation: 'Genetic association',
+    aggregationId: 'genetic_association',
     weight: 1,
   },
   {
@@ -60,6 +68,7 @@ const dataSources = [
     sectionId: 'clinGen',
     label: 'Clingen',
     aggregation: 'Genetic association',
+    aggregationId: 'genetic_association',
     weight: 1,
   },
   {
@@ -67,6 +76,7 @@ const dataSources = [
     sectionId: 'cancerGeneCensus',
     label: 'Cancer Gene Census',
     aggregation: 'Somatic mutations',
+    aggregationId: 'somatic_mutation',
     weight: 1,
   },
   {
@@ -74,6 +84,7 @@ const dataSources = [
     sectionId: 'intOgen',
     label: 'IntOGen',
     aggregation: 'Somatic mutations',
+    aggregationId: 'somatic_mutation',
     weight: 1,
   },
   {
@@ -81,6 +92,7 @@ const dataSources = [
     sectionId: 'evaSomatic',
     label: 'ClinVar (somatic)',
     aggregation: 'Somatic mutations',
+    aggregationId: 'somatic_mutation',
     weight: 1,
   },
   {
@@ -88,6 +100,7 @@ const dataSources = [
     sectionId: 'cancerBiomarkers',
     label: 'Cancer Biomarkers',
     aggregation: 'Somatic mutations',
+    aggregationId: 'somatic_mutation',
     weight: 1,
   },
   {
@@ -95,6 +108,7 @@ const dataSources = [
     sectionId: 'chembl',
     label: 'ChEMBL',
     aggregation: 'Known drug',
+    aggregationId: 'known_drug',
     weight: 1,
   },
   {
@@ -102,6 +116,7 @@ const dataSources = [
     sectionId: 'crispr',
     label: 'Project Score',
     aggregation: 'Affected pathway',
+    aggregationId: 'affected_pathway',
     weight: 1,
   },
   {
@@ -109,6 +124,7 @@ const dataSources = [
     sectionId: 'slapEnrich',
     label: 'SLAPenrich',
     aggregation: 'Affected pathway',
+    aggregationId: 'affected_pathway',
     weight: 0.5,
   },
   {
@@ -116,6 +132,7 @@ const dataSources = [
     sectionId: 'progeny',
     label: 'PROGENy',
     aggregation: 'Affected pathway',
+    aggregationId: 'affected_pathway',
     weight: 0.5,
   },
   {
@@ -123,6 +140,7 @@ const dataSources = [
     sectionId: 'reactome',
     label: 'Reactome',
     aggregation: 'Affected pathway',
+    aggregationId: 'affected_pathway',
     weight: 1,
   },
   {
@@ -130,6 +148,7 @@ const dataSources = [
     sectionId: 'sysBio',
     label: 'Gene signatures',
     aggregation: 'Affected pathway',
+    aggregationId: 'affected_pathway',
     weight: 0.5,
   },
   {
@@ -137,6 +156,7 @@ const dataSources = [
     sectionId: 'europePmc',
     label: 'Europe PMC',
     aggregation: 'Literature',
+    aggregationId: 'literature',
     weight: 0.2,
   },
   {
@@ -144,6 +164,7 @@ const dataSources = [
     sectionId: 'expression',
     label: 'Expression Atlas',
     aggregation: 'RNA expression',
+    aggregationId: 'rna_expression',
     weight: 0.2,
   },
   {
@@ -151,6 +172,7 @@ const dataSources = [
     sectionId: 'impc',
     label: 'IMPC',
     aggregation: 'Animal model',
+    aggregationId: 'animal_model',
     weight: 0.2,
   },
   {
@@ -158,6 +180,7 @@ const dataSources = [
     sectionId: 'validationlab',
     label: 'OT CRISPR Validation',
     aggregation: 'OT validation lab',
+    aggregationId: 'ot_validation_lab',
     weight: 0.5,
   },
   // Private
@@ -166,6 +189,7 @@ const dataSources = [
     sectionId: 'otCrispr',
     label: 'OT CRISPR',
     aggregation: 'OT validation lab',
+    aggregationId: 'ot_validation_lab',
     weight: 0.5,
   },
   // Private
