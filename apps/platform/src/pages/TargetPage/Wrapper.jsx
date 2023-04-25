@@ -24,10 +24,7 @@ function Wrapper({ ensemblId, symbol, Component, aggregationFilters }) {
       ];
       Promise.all(promises).then(data => {
         if (isCurrent) {
-          const nodes = data[0]
-            .trim()
-            .split('\n')
-            .map(JSON.parse);
+          const nodes = data[0].trim().split('\n').map(JSON.parse);
           setNodes(nodes);
           setAssociations(data[1]);
         }

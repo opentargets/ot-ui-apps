@@ -1,13 +1,19 @@
-import React, { lazy } from 'react';
+import { lazy } from 'react';
 import { useQuery } from '@apollo/client';
 import BasePage from '../../components/BasePage';
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
 import ScrollToTop from '../../components/ScrollToTop';
-import { RoutingTab, RoutingTabs } from '../../components/RoutingTabs';
+import {
+  RoutingTab,
+  RoutingTabs,
+  PrivateRoutingTab,
+} from '../../components/RoutingTabs';
 import DISEASE_PAGE_QUERY from './DiseasePage.gql';
+import NewChip from '../../components/NewChip';
 
 const Profile = lazy(() => import('./Profile'));
+const Associations = lazy(() => import('./DiseaseAssociations'));
 const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
 
 function DiseasePage({ location, match }) {
@@ -39,9 +45,19 @@ function DiseasePage({ location, match }) {
       <Header loading={loading} efoId={efoId} name={name} dbXRefs={dbXRefs} />
       <ScrollToTop />
       <RoutingTabs>
+        <PrivateRoutingTab
+          label={
+            <div>
+              <NewChip />
+              Associated targets
+            </div>
+          }
+          path="/disease/:efoId/associations"
+          component={() => <Associations efoId={efoId} name={name} />}
+        />
         <RoutingTab
           label="Associated targets"
-          path="/disease/:efoId/associations"
+          path="/disease/:efoId/classic-associations"
           component={() => <ClassicAssociations efoId={efoId} name={name} />}
         />
         <RoutingTab

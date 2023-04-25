@@ -78,16 +78,26 @@ const columns = [
   },
 ];
 
-function Body({ definition, id, label }) {
-  const { ensgId: ensemblId, efoId } = id;
+export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(
     Summary.fragments.UniprotLiteratureSummary
   );
+  const count = summaryData.uniprotLiteratureSummary.count;
+  
+  if(!count || count < 1) {
+    return null
+  }
+
+  return <BodyCore definition={definition} id={id} label={label} count={count} />
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId: ensemblId, efoId } = id;
 
   const variables = {
     ensemblId,
     efoId,
-    size: summaryData.uniprotLiteratureSummary.count,
+    size: count,
   };
 
   const request = useQuery(UNIPROT_LITERATURE_QUERY, {
@@ -119,4 +129,3 @@ function Body({ definition, id, label }) {
   );
 }
 
-export default Body;

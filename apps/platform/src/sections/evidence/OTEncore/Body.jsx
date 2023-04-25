@@ -50,9 +50,7 @@ const getColumns = classes => [
     id: 'target',
     label: 'Library gene',
     renderCell: row => (
-      <Link to={`/target/${row.target.id}`}>
-        {row.target.approvedSymbol}
-      </Link>
+      <Link to={`/target/${row.target.id}`}>{row.target.approvedSymbol}</Link>
     ),
     filterValue: row => row.target.approvedSymbol + ', ' + row.target.id,
   },
@@ -68,9 +66,7 @@ const getColumns = classes => [
       row.diseaseCellLines.map(diseaseCellLine => (
         <Link
           external
-          to={`https://cellmodelpassports.sanger.ac.uk/passports/${
-            diseaseCellLine.id
-          }`}
+          to={`https://cellmodelpassports.sanger.ac.uk/passports/${diseaseCellLine.id}`}
           key={diseaseCellLine.id}
         >
           {diseaseCellLine.name}
@@ -160,16 +156,19 @@ const getColumns = classes => [
     label: 'BLISS score',
     tooltip: (
       <>
-        We used the Bliss independence model to define synergy between gRNA pairs.
+        We used the Bliss independence model to define synergy between gRNA
+        pairs.
       </>
     ),
-    renderCell: row => ((row.geneticInteractionScore).toFixed(3)),
+    renderCell: row => row.geneticInteractionScore.toFixed(3),
     numeric: true,
   },
   {
     id: 'geneticInteractionPValue',
     label: 'P-value',
-    renderCell: row => (<ScientificNotation number={row.geneticInteractionPValue} />),
+    renderCell: row => (
+      <ScientificNotation number={row.geneticInteractionPValue} />
+    ),
     numeric: true,
   },
 ];
@@ -199,16 +198,21 @@ const exportColumns = [
   // cell lines and biomarkers
   {
     label: 'cell line',
-    exportValue: row => row.diseaseCellLines.map(diseaseCellLine => diseaseCellLine.name).join(', '),
+    exportValue: row =>
+      row.diseaseCellLines
+        .map(diseaseCellLine => diseaseCellLine.name)
+        .join(', '),
   },
   {
     label: 'cell line id',
-    exportValue: row => row.diseaseCellLines.map(diseaseCellLine => diseaseCellLine.id).join(', '),
+    exportValue: row =>
+      row.diseaseCellLines
+        .map(diseaseCellLine => diseaseCellLine.id)
+        .join(', '),
   },
   {
     label: 'cell line biomarkers',
-    exportValue: row => row.biomarkerList.map(bm => bm.name
-    ).join(','),
+    exportValue: row => row.biomarkerList.map(bm => bm.name).join(','),
   },
   // cell count logFC and values in tooltip
   {
@@ -235,7 +239,7 @@ const exportColumns = [
   },
   {
     label: 'BLISS score',
-    exportValue: row => ((row.geneticInteractionScore).toFixed(3)),
+    exportValue: row => row.geneticInteractionScore.toFixed(3),
   },
   {
     label: 'p value',
@@ -247,16 +251,29 @@ const exportColumns = [
   },
 ];
 
-function Body({ definition, id, label }) {
-  const { ensgId: ensemblId, efoId } = id;
+export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(
     Summary.fragments.otEncoreSummary
   );
+  const count = summaryData.otEncoreSummary.count;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
+
   const request = useQuery(ENCORE_QUERY, {
     variables: {
-      ensemblId,
+      ensemblId: ensgId,
       efoId,
-      size: summaryData.otEncoreSummary.count,
+      size: count,
     },
   });
   const classes = useStyles();
@@ -277,7 +294,7 @@ function Body({ definition, id, label }) {
             rows={rows}
             dataDownloader
             dataDownloaderColumns={exportColumns}
-            dataDownloaderFileStem={`${ensemblId}-${efoId}-otencore`}
+            dataDownloaderFileStem={`${ensgId}-${efoId}-otencore`}
             showGlobalFilter
             sortBy="geneticInteractionPValue"
             order="asc"
@@ -291,5 +308,3 @@ function Body({ definition, id, label }) {
     />
   );
 }
-
-export default Body;

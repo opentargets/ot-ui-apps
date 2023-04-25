@@ -36,13 +36,13 @@ function findTas(id, idToDisease) {
 function buildHierarchicalData(associations, idToDisease) {
   const tasMap = {};
   const tasScore = {};
-  associations.forEach((association) => {
+  associations.forEach(association => {
     const diseaseId = association.disease.id;
     if (idToDisease[diseaseId].parentIds.length === 0) {
       tasScore[diseaseId] = association.score;
     }
     const tas = findTas(diseaseId, idToDisease);
-    tas.forEach((ta) => {
+    tas.forEach(ta => {
       const assocData = {
         id: diseaseId,
         uniqueId: `${ta}-${diseaseId}`,
@@ -84,15 +84,15 @@ function ClassicAssociationsBubbles({
   const [minScore, setMinScore] = useState(0.1);
   const svgRef = useRef(null);
   const theme = useTheme();
-  const assocs = associations.filter((assoc) => assoc.score >= minScore);
+  const assocs = associations.filter(assoc => assoc.score >= minScore);
   const { width: size } = contentRect.bounds;
 
   const hierarchicalData = buildHierarchicalData(assocs, idToDisease);
   const root = hierarchy(hierarchicalData);
   const packLayout = pack()
     .size([size, size])
-    .padding((node) => (node.data.uniqueId === 'EFO_ROOT' ? 17 : 2));
-  root.sum((d) => d.score);
+    .padding(node => (node.data.uniqueId === 'EFO_ROOT' ? 17 : 2));
+  root.sum(d => d.score);
   packLayout(root);
 
   return (
@@ -120,7 +120,7 @@ function ClassicAssociationsBubbles({
                 height={size}
                 width={size}
               >
-                {root.descendants().map((d) => {
+                {root.descendants().map(d => {
                   return (
                     <g
                       key={d.data.uniqueId}

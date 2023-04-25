@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Switch,
   Route,
@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 
-import ClassicAssociationsDAG from './ClassicAssociationsDAG';
+import ClassicAssociationsDAG from './ClassicAssociationsDAG.jsx';
 import ClassicAssociationsBubbles from './ClassicAssociationsBubbles';
 import ClassicAssociationsTable from './ClassicAssociationsTable';
 import { Facets } from '../../components/Facets';

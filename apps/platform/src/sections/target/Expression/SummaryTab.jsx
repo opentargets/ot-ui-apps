@@ -22,8 +22,8 @@ const headers = [
   { id: 'protein', label: 'Protein' },
 ];
 
-const getDownloadRows = (expressions) => {
-  return expressions.map((expression) => ({
+const getDownloadRows = expressions => {
+  return expressions.map(expression => ({
     label: expression.tissue.label,
     organs: expression.tissue.organs.join(','),
     anatomicalSystems: expression.tissue.anatomicalSystems.join(','),
@@ -33,6 +33,7 @@ const getDownloadRows = (expressions) => {
 };
 
 function SummaryTab({ symbol, data }) {
+  console.log({ data });
   return (
     <Grid container justifyContent="center">
       <Grid item xs={12} lg={8}>

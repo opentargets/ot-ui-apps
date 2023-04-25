@@ -1,9 +1,13 @@
+import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
+
+const id = 'cancer_gene_census';
 export const definition = {
-  id: 'cancerGeneCensus',
+  id: id,
   name: 'Cancer Gene Census',
   shortName: 'CC',
   hasData: ({ cancerGeneCensusSummary }) => cancerGeneCensusSummary.count > 0,
+  isPrivate: isPrivateEvidenceSection(id),
 };
 
 export { default as Summary } from './Summary';
-export { default as Body } from './Body';
+export * from './Body';

@@ -1,5 +1,7 @@
-import { createTheme } from "@material-ui/core";
+import { createTheme, colors } from "@material-ui/core";
 import { lighten, darken } from "polished";
+
+const { grey } = colors;
 
 const PRIMARY = "#3489ca";
 const SECONDARY = "#ff6350";
@@ -23,6 +25,18 @@ const theme = createTheme({
       main: SECONDARY,
       dark: darken(0.2, SECONDARY),
       contrastText: "#fff",
+    },
+    btnGroupActive: {
+      light: grey[200],
+      main: grey[200],
+      dark: grey[200],
+      contrastText: "#5A5F5F",
+    },
+    btnGroupDeactive: {
+      light: grey[400],
+      main: grey[400],
+      dark: grey[400],
+      contrastText: "#5A5F5F",
     },
     text: {
       primary: "#5A5F5F",

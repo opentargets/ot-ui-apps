@@ -1,7 +1,6 @@
 import React from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-import Summary from './Summary';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import { DataTable } from '../../../components/Table';
 import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
@@ -14,6 +13,7 @@ import { sentenceCase } from '../../../utils/global';
 import Tooltip from '../../../components/Tooltip';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
+import Summary from './Gene2PhenotypeSummaryFragment.gql';
 
 const g2pUrl = (studyId, symbol) =>
   `https://www.ebi.ac.uk/gene2phenotype/search?panel=${studyId}&search_term=${symbol}`;
@@ -128,13 +128,29 @@ const columns = [
   },
 ];
 
-function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
+export function Body({ definition, id, label }) {
   const {
     data: {
-      gene2Phenotype: { count: size },
+      gene2Phenotype: { count },
     },
   } = usePlatformApi(Summary.fragments.Gene2PhenotypeSummaryFragment);
-  const variables = { ensemblId: ensgId, efoId, size };
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({
+  definition,
+  id: { ensgId, efoId },
+  label: { symbol, name },
+  count,
+}) {
+  const variables = { ensemblId: ensgId, efoId, size: count };
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,
@@ -162,5 +178,3 @@ function Body({ definition, id: { ensgId, efoId }, label: { symbol, name } }) {
     />
   );
 }
-
-export default Body;

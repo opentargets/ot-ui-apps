@@ -1,20 +1,23 @@
-import React, { Suspense, lazy } from 'react';
+import { lazy } from 'react';
 import { useQuery } from '@apollo/client';
-import { Switch, Route, Link } from 'react-router-dom';
-import { Tab, Tabs } from '@material-ui/core';
 
 import BasePage from '../../components/BasePage';
 import ScrollToTop from '../../components/ScrollToTop';
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
 import { getUniprotIds } from '../../utils/global';
-import { LoadingBackdrop } from 'ui';
 import TARGET_PAGE_QUERY from './TargetPage.gql';
+import NewChip from '../../components/NewChip';
+import {
+  RoutingTab,
+  RoutingTabs,
+  PrivateRoutingTab,
+} from '../../components/RoutingTabs';
 
-const Profile = lazy(() => import('../TargetPage/Profile'));
-const ClassicAssociations = lazy(() =>
-  import('../TargetPage/ClassicAssociations')
-);
+const Profile = lazy(() => import('./Profile'));
+
+const Associations = lazy(() => import('./TargetAssociations'));
+const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
 
 function TargetPage({ location, match }) {
   const { ensgId } = match.params;
@@ -28,8 +31,9 @@ function TargetPage({ location, match }) {
 
   const { approvedSymbol: symbol, approvedName } = data?.target || {};
   const uniprotIds = loading ? null : getUniprotIds(data.target.proteinIds);
-  const crisprId = data?.target.dbXrefs.find(p => p.source === 'ProjectScore')
-    ?.id;
+  const crisprId = data?.target.dbXrefs.find(
+    p => p.source === 'ProjectScore'
+  )?.id;
 
   return (
     <BasePage
@@ -54,37 +58,30 @@ function TargetPage({ location, match }) {
         name={approvedName}
         crisprId={crisprId}
       />
-
-      <Tabs
-        value={
-          location.pathname.includes('associations')
-            ? `${match.url}/associations`
-            : location.pathname
-        }
-      >
-        <Tab
-          value={`${match.url}/associations`}
-          component={Link}
-          to={`${match.url}/associations`}
+      <RoutingTabs>
+        <PrivateRoutingTab
+          label={
+            <div>
+              <NewChip />
+              Associated diseases
+            </div>
+          }
+          path="/target/:ensgId/associations"
+          component={() => <Associations ensgId={ensgId} symbol={symbol} />}
+        />
+        <RoutingTab
           label="Associated diseases"
-        />
-        <Tab
-          value={match.url}
-          component={Link}
-          label="Profile"
-          to={match.url}
-        />
-      </Tabs>
-      <Suspense fallback={<LoadingBackdrop />}>
-        <Switch>
-          <Route path={`${match.path}/associations`}>
+          path={`${match.path}/classic-associations`}
+          component={() => (
             <ClassicAssociations ensgId={ensgId} symbol={symbol} />
-          </Route>
-          <Route path={match.path}>
-            <Profile ensgId={ensgId} symbol={symbol} />
-          </Route>
-        </Switch>
-      </Suspense>
+          )}
+        />
+        <RoutingTab
+          label="Profile"
+          path="/target/:ensgId"
+          component={() => <Profile ensgId={ensgId} symbol={symbol} />}
+        />
+      </RoutingTabs>
     </BasePage>
   );
 }

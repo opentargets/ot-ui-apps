@@ -11,7 +11,7 @@ import { withContentRect } from 'react-measure';
 import { Grid, Typography } from '@material-ui/core';
 import { DownloadSvgPlot } from '../../components/DownloadSvgPlot';
 import Legend from '../../components/Legend';
-import Slider from './ClassicAssociationsSlider';
+import Slider from './ClassicAssociationsSlider.jsx';
 import Dag from './Dag';
 
 // find closest ancestors that are also associations
@@ -44,14 +44,14 @@ function getParentIds(diseaseId, idToDisease, assocSet) {
 function buildDagData(idToDisease, associations, assocSet) {
   const dag = [];
   const tas = new Set();
-  associations.forEach((association) => {
+  associations.forEach(association => {
     const parentIds = getParentIds(
       association.disease.id,
       idToDisease,
       assocSet
     );
 
-    parentIds.forEach((parentId) => {
+    parentIds.forEach(parentId => {
       const node = idToDisease[parentId];
       if (node.parentIds.length === 0 && !assocSet[parentId]) {
         tas.add(parentId);
@@ -66,7 +66,7 @@ function buildDagData(idToDisease, associations, assocSet) {
     });
   });
 
-  tas.forEach((id) => {
+  tas.forEach(id => {
     dag.push({
       id,
       name: idToDisease[id].name,
@@ -92,7 +92,7 @@ function getMaxLayerCount(dag) {
   const counts = {};
   let maxCount = Number.NEGATIVE_INFINITY;
 
-  dag.descendants().forEach((node) => {
+  dag.descendants().forEach(node => {
     const { layer } = node;
 
     if (counts[layer]) {
@@ -127,7 +127,7 @@ function ClassicAssociationsDAG({
 
   const { assocs, height, nodes, xOffset, links, textLimit } = useMemo(() => {
     const assocs = associations.filter(
-      (assoc) => assoc.score >= minCommittedScore
+      assoc => assoc.score >= minCommittedScore
     );
     const assocSet = assocs.reduce((acc, assoc) => {
       acc[assoc.disease.id] = assoc;
@@ -152,7 +152,7 @@ function ClassicAssociationsDAG({
       nodes = dag.descendants();
       links = dag.links();
 
-      const separation = width / (max(nodes, (d) => d.layer) + 1);
+      const separation = width / (max(nodes, d => d.layer) + 1);
       xOffset = separation / 2 - radius;
       textLimit = separation / 8;
     }

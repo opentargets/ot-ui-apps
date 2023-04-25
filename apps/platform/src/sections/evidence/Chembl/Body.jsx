@@ -213,13 +213,29 @@ function getColumns(classes) {
   ];
 }
 
-function Body({ definition, id, label }) {
-  const { ensgId: ensemblId, efoId } = id;
+export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(
     Summary.fragments.ChemblSummaryFragment
   );
+  const count = summaryData.chemblSummary.count;
 
-  const variables = { ensemblId, efoId, size: summaryData.chemblSummary.count };
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
+}
+
+export function BodyCore({ definition, id, label, count }) {
+  const { ensgId, efoId } = id;
+
+  const variables = {
+    ensemblId: ensgId,
+    efoId,
+    size: count,
+  };
 
   const request = useQuery(CHEMBL_QUERY, {
     variables,
@@ -255,5 +271,3 @@ function Body({ definition, id, label }) {
     />
   );
 }
-
-export default Body;

@@ -1,6 +1,6 @@
 import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
-const id = 'validationlab';
+const id = 'ot_crispr_validation';
 export const definition = {
   id: id,
   name: 'Open Targets Validation CRISPR',
@@ -10,4 +10,4 @@ export const definition = {
 };
 
 export { default as Summary } from './Summary';
-export { default as Body } from './Body';
+export * from './Body';

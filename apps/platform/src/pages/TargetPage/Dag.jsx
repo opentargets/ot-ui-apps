@@ -1,11 +1,9 @@
-import React, { Fragment } from 'react';
+import { Fragment, memo } from 'react';
 import { line as d3Line, curveMonotoneX, scaleQuantize } from 'd3';
 import { colorRange } from '../../constants';
 import AssociationTooltip from './AssociationTooltip';
 
-const color = scaleQuantize()
-  .domain([0, 1])
-  .range(colorRange);
+const color = scaleQuantize().domain([0, 1]).range(colorRange);
 
 const line = d3Line().curve(curveMonotoneX);
 
@@ -173,4 +171,4 @@ function Dag({
   );
 }
 
-export default React.memo(Dag);
+export default memo(Dag);
