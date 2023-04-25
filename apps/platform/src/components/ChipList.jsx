@@ -45,22 +45,25 @@ function ChipList({ items, small }) {
 
   if (!items || items.length === 0) return naLabel;
 
-  return items.map((item, index) => (
-    <ChipContainer key={index} item={item}>
-      <Chip
-        component={!!item.url ? 'a' : Box}
-        href={item.url}
-        className={classNames(classes.chip, item.customClass)}
-        clickable={!!item.url}
-        target="_blank"
-        noopener="true"
-        noreferrer="true"
-        color="primary"
-        label={item.label}
-        size={small ? 'small' : 'medium'}
-      />
-    </ChipContainer>
-  ));
+  return items.map((item, index) => {
+    const component = item.url ? 'a' : Box;
+    return (
+      <ChipContainer key={index} item={item}>
+        <Chip
+          component={component}
+          href={item.url}
+          className={classNames(classes.chip, item.customClass)}
+          clickable={!!item.url}
+          target="_blank"
+          noopener="true"
+          noreferrer="true"
+          color="primary"
+          label={item.label}
+          size={small ? 'small' : 'medium'}
+        />
+      </ChipContainer>
+    );
+  });
 }
 
 export default ChipList;

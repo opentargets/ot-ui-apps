@@ -6,7 +6,7 @@ import usePlatformApi from '../hooks/usePlatformApi';
 const SectionOrderContext = React.createContext();
 
 function SectionOrderProvider({ sections, children }) {
-  const { data, entity, lsSectionsField } = usePlatformApi();
+  const { data, entity } = usePlatformApi();
   const [sectionOrder, setSectionOrder] = useState(
     // ls.get(`${lsSectionsField || entity}SectionsOrder`) ||
     sections.map(section => section.definition.id)

@@ -80,7 +80,7 @@ export const tableStyles = makeStyles(theme => ({
   },
 }));
 
-export const globalSearchStyles = makeStyles(theme => ({
+export const globalSearchStyles = makeStyles(() => ({
   root: {
     width: '100%',
   },

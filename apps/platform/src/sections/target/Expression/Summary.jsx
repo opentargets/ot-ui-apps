@@ -12,7 +12,7 @@ function Summary({ definition }) {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => {
+      renderSummary={() => {
         const hasRNA = request.data.expressions.some(d => d.rna.level >= 0);
         const hasProtein = request.data.expressions.some(
           d => d.protein.level >= 0

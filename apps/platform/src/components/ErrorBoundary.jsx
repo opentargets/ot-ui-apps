@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Typography } from '@material-ui/core';
 import config from '../config';
 import Link from './Link';
-import usePermissions from '../hooks/usePermissions';
 
 class ErrorBoundary extends Component {
   state = {
     hasError: false,
   };
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     return { hasError: true };
   }
 
   render() {
-    const { isPartnerPreview } = usePermissions();
+    const isPartnerPreview  = config.profile.isPartnerPreview;
+
     const {
       message = isPartnerPreview ? (
         // PPP error message

@@ -94,7 +94,7 @@ class Publication extends Component {
           abstract: resp.abstract,
         });
       },
-      (error) => {
+      () => {
         this.setState({
           abstract: '',
           hasError: true,
@@ -111,7 +111,7 @@ class Publication extends Component {
           similar: resp.hits.hits,
         });
       },
-      (error) => {
+      () => {
         this.setState({
           similar: null,
           hasError: true,

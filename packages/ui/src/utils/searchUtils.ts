@@ -6,7 +6,7 @@ export const formatSearchData = (unformattedData) => {
 
   for (const key in unformattedData) {
     if (Object.hasOwnProperty.call(unformattedData, key)) {
-      let element = unformattedData[key];
+      const element = unformattedData[key];
       if (isArray(element)) {
         element.map((i) =>
           allTypes.push({
@@ -80,7 +80,7 @@ const mapStandardKeys = (origionalKey: string) => {
 };
 
 const flattenObj = (ob) => {
-  let result = {};
+  const result = {};
 
   for (const i in ob) {
     if (typeof ob[i] === "object" && !Array.isArray(ob[i])) {

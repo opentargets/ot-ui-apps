@@ -1,4 +1,3 @@
-import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -45,7 +44,7 @@ const PlotContainer = ({
     {loading ? <LinearProgress /> : null}
     {error ? (
       <PlotContainerSection>
-        <div align="center">
+        <div>
           <Typography variant="subtitle1" color="error">
             {error.graphQLErrors.map(({ message }, i) => (
               <span key={i}>{message}</span>
