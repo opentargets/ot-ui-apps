@@ -63,14 +63,14 @@ function TargetPage({ location, match }) {
           label={
             <div>
               <NewChip />
-              Associated targets
+              Associated diseases
             </div>
           }
           path="/target/:ensgId/associations"
           component={() => <Associations ensgId={ensgId} symbol={symbol} />}
         />
         <RoutingTab
-          label="Associated targets"
+          label="Associated diseases"
           path={`${match.path}/classic-associations`}
           component={() => (
             <ClassicAssociations ensgId={ensgId} symbol={symbol} />
