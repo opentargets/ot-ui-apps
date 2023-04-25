@@ -3,16 +3,16 @@ import { Alert } from '@material-ui/lab';
 import { TablePagination, Typography } from '@material-ui/core';
 import useAotfContext from '../hooks/useAotfContext';
 import ColoredCell from './ColoredCell';
-import { getLegend, defaulDatasourcesWeigths } from '../utils';
+import { getLegend } from '../utils';
 
 function TableFooter({ table }) {
   const {
     count,
     loading,
     pagination,
-    modifiedSourcesWeights,
-    setDataSourcesWeights,
+    modifiedSourcesDataControls,
     displayedTable,
+    resetDatasourceControls,
   } = useAotfContext();
   const isAssociations = displayedTable === 'associations';
 
@@ -51,17 +51,17 @@ function TableFooter({ table }) {
         </div>
       </div>
       <div style={{ display: 'flex' }}>
-        {modifiedSourcesWeights && isAssociations && (
+        {modifiedSourcesDataControls && isAssociations && (
           <Alert severity="info">
             <Typography variant="caption">
-              Weights controls modified{' '}
-            </Typography>
+              Datasource controls modified
+            </Typography>{' '}
             <button
-              onClick={() => setDataSourcesWeights(defaulDatasourcesWeigths)}
+              onClick={() => resetDatasourceControls()}
               style={{ fontSize: '0.75rem' }}
             >
               Reset to default
-            </button>{' '}
+            </button>
           </Alert>
         )}
         <TablePagination

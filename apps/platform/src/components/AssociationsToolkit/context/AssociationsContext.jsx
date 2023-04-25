@@ -1,12 +1,15 @@
 import { createContext, useState, useMemo, useEffect } from 'react';
-import { defaulDatasourcesWeigths, getControlChecked } from '../utils';
 import { isEqual } from 'lodash';
+import {
+  defaulDatasourcesWeigths,
+  getControlChecked,
+  getCellId,
+  checkBoxPayload,
+} from '../utils';
 import dataSources from '../static_datasets/dataSourcesAssoc';
 import '../style.css';
 
 import useAssociationsData from '../hooks/useAssociationsData';
-
-import { getCellId, checkBoxPayload } from '../utils';
 
 const AssociationsContext = createContext();
 
@@ -36,7 +39,8 @@ function AssociationsProvider({ children, entity, id, query }) {
     defaulDatasourcesWeigths
   );
   const [dataSourcesRequired, setDataSourcesRequired] = useState([]);
-  const [modifiedSourcesWeights, setModifiedSourcesWeights] = useState(false);
+  const [modifiedSourcesDataControls, setModifiedSourcesDataControls] =
+    useState(false);
   const [searhFilter, setSearhFilter] = useState('');
   const [sorting, setSorting] = useState([{ id: 'score', desc: true }]);
 
@@ -64,10 +68,13 @@ function AssociationsProvider({ children, entity, id, query }) {
   });
 
   useEffect(() => {
-    if (isEqual(defaulDatasourcesWeigths, dataSourcesWeights))
-      setModifiedSourcesWeights(false);
-    else setModifiedSourcesWeights(true);
-  }, [dataSourcesWeights]);
+    if (
+      isEqual(defaulDatasourcesWeigths, dataSourcesWeights) &&
+      isEqual(dataSourcesRequired, [])
+    )
+      setModifiedSourcesDataControls(false);
+    else setModifiedSourcesDataControls(true);
+  }, [dataSourcesWeights, dataSourcesRequired]);
 
   const handleAggregationClick = aggregationId => {
     const aggregationDatasources = dataSources.filter(
@@ -142,6 +149,11 @@ function AssociationsProvider({ children, entity, id, query }) {
     setExpanded(expandedId);
   };
 
+  const resetDatasourceControls = () => {
+    setDataSourcesWeights(defaulDatasourcesWeigths);
+    setDataSourcesRequired([]);
+  };
+
   const resetExpandler = () => {
     setExpanded([]);
     setTableExpanded({});
@@ -170,7 +182,8 @@ function AssociationsProvider({ children, entity, id, query }) {
         pinnedData,
         searhFilter,
         sorting,
-        modifiedSourcesWeights,
+        modifiedSourcesDataControls,
+        resetDatasourceControls,
         handleSortingChange,
         handleSearchInputChange,
         setPinnedData,
