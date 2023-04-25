@@ -1,5 +1,4 @@
-import { colors } from "@material-ui/core";
-import { createTheme } from "@material-ui/core";
+import { createTheme, colors } from "@material-ui/core";
 import { lighten, darken } from "polished";
 
 const { grey } = colors;
