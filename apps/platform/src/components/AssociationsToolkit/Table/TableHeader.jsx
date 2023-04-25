@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowDownWideShort,
   faBook,
+  faLock,
 } from '@fortawesome/free-solid-svg-icons';
 
 import AggregationsRow from './AggregationsRow';
@@ -68,6 +69,12 @@ function TableHeader({ table }) {
                         header.getContext()
                       )}
                     </div>
+                    {header.column.columnDef.isPrivate && (
+                      <FontAwesomeIcon
+                        className="header-desc-icon"
+                        icon={faLock}
+                      />
+                    )}
                     {{
                       desc: (
                         <FontAwesomeIcon
@@ -76,17 +83,20 @@ function TableHeader({ table }) {
                         />
                       ),
                     }[header.column.getIsSorted()] ?? null}
-                    <a
-                      rel="noreferrer"
-                      target="_blank"
-                      className="docs-link"
-                      href={`https://platform-docs.opentargets.org/evidence#${header.id}`}
-                    >
-                      <FontAwesomeIcon
-                        className="header-desc-icon"
-                        icon={faBook}
-                      />
-                    </a>
+
+                    {header.column.columnDef.docsLink && (
+                      <a
+                        rel="noreferrer"
+                        target="_blank"
+                        className="docs-link"
+                        href={header.column.columnDef.docsLink}
+                      >
+                        <FontAwesomeIcon
+                          className="header-desc-icon"
+                          icon={faBook}
+                        />
+                      </a>
+                    )}
                   </div>
                 )}
               </div>

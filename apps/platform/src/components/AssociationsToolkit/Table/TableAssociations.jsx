@@ -38,41 +38,53 @@ function getDatasources(expanderHandler, loading, displayedTable) {
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
 
-  return baseCols.map(({ id, label, sectionId, description, aggregation }) => {
-    return columnHelper.accessor(row => row[dataProp][id], {
+  return baseCols.map(
+    ({
       id,
-      header: isAssociations ? (
-        <div className="">{label}</div>
-      ) : (
-        <AggregationsTooltip title={description} placement="right">
-          <div className="cursor-help">
-            <span>{label}</span>
-          </div>
-        </AggregationsTooltip>
-      ),
-      sectionId: sectionId,
-      enableSorting: isAssociations,
+      label,
+      sectionId,
+      description,
       aggregation,
-      cell: row => {
-        if (loading)
-          return <Skeleton variant="circle" width={26} height={25} />;
-        const hasValue = cellHasValue(row.getValue());
-        return hasValue ? (
-          <ColoredCell
-            hasValue
-            scoreId={id}
-            scoreValue={row.getValue()}
-            onClick={expanderHandler(row.row.getToggleExpandedHandler())}
-            cell={row}
-            loading={loading}
-            isAssociations={isAssociations}
-          />
+      isPrivate,
+      docsLink,
+    }) => {
+      return columnHelper.accessor(row => row[dataProp][id], {
+        id,
+        header: isAssociations ? (
+          <div className="">{label}</div>
         ) : (
-          <ColoredCell />
-        );
-      },
-    });
-  });
+          <AggregationsTooltip title={description} placement="right">
+            <div className="cursor-help">
+              <span>{label}</span>
+            </div>
+          </AggregationsTooltip>
+        ),
+        sectionId: sectionId,
+        enableSorting: isAssociations,
+        aggregation,
+        isPrivate,
+        docsLink,
+        cell: row => {
+          if (loading)
+            return <Skeleton variant="circle" width={26} height={25} />;
+          const hasValue = cellHasValue(row.getValue());
+          return hasValue ? (
+            <ColoredCell
+              hasValue
+              scoreId={id}
+              scoreValue={row.getValue()}
+              onClick={expanderHandler(row.row.getToggleExpandedHandler())}
+              cell={row}
+              loading={loading}
+              isAssociations={isAssociations}
+            />
+          ) : (
+            <ColoredCell />
+          );
+        },
+      });
+    }
+  );
 }
 
 function TableAssociations() {

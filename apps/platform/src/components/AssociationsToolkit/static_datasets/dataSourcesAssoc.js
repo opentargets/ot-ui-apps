@@ -6,6 +6,9 @@ const dataSources = [
     aggregation: 'Genetic association',
     aggregationId: 'genetic_association',
     weight: 1,
+    isPrivate: false,
+    docsLink:
+      'https://platform-docs.opentargets.org/evidence#open-targets-genetics',
   },
   {
     id: 'eva',
@@ -14,6 +17,8 @@ const dataSources = [
     aggregation: 'Genetic association',
     aggregationId: 'genetic_association',
     weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#clinvar',
   },
   {
     id: 'gene_burden',
@@ -22,6 +27,8 @@ const dataSources = [
     aggregation: 'Genetic association',
     aggregationId: 'genetic_association',
     weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#gene-burden',
   },
   {
     id: 'genomics_england',
@@ -30,6 +37,9 @@ const dataSources = [
     aggregation: 'Genetic association',
     aggregationId: 'genetic_association',
     weight: 1,
+    isPrivate: false,
+    docsLink:
+      'https://platform-docs.opentargets.org/evidence#genomics-england-panelapp',
   },
   {
     id: 'gene2phenotype',
@@ -38,6 +48,8 @@ const dataSources = [
     aggregation: 'Genetic association',
     aggregationId: 'genetic_association',
     weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#gene2phenotype',
   },
   {
     id: 'uniprot_literature',
@@ -46,6 +58,9 @@ const dataSources = [
     aggregation: 'Genetic association',
     aggregationId: 'genetic_association',
     weight: 1,
+    isPrivate: false,
+    docsLink:
+      'https://platform-docs.opentargets.org/evidence#uniprot-literature',
   },
   {
     id: 'uniprot_variants',
@@ -54,6 +69,8 @@ const dataSources = [
     aggregation: 'Genetic association',
     aggregationId: 'genetic_association',
     weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#uniprot-variants',
   },
   {
     id: 'orphanet',
@@ -62,6 +79,8 @@ const dataSources = [
     aggregation: 'Genetic association',
     aggregationId: 'genetic_association',
     weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#orphanet',
   },
   {
     id: 'clingen',
@@ -70,6 +89,8 @@ const dataSources = [
     aggregation: 'Genetic association',
     aggregationId: 'genetic_association',
     weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#clingen',
   },
   {
     id: 'cancer_gene_census',
@@ -78,6 +99,9 @@ const dataSources = [
     aggregation: 'Somatic mutations',
     aggregationId: 'somatic_mutation',
     weight: 1,
+    isPrivate: false,
+    docsLink:
+      'https://platform-docs.opentargets.org/evidence#cancer-gene-census',
   },
   {
     id: 'intogen',
@@ -86,6 +110,8 @@ const dataSources = [
     aggregation: 'Somatic mutations',
     aggregationId: 'somatic_mutation',
     weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#intogen',
   },
   {
     id: 'eva_somatic',
@@ -94,6 +120,8 @@ const dataSources = [
     aggregation: 'Somatic mutations',
     aggregationId: 'somatic_mutation',
     weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#clinvar-somatic',
   },
   {
     id: 'cancer_biomarkers',
@@ -102,6 +130,9 @@ const dataSources = [
     aggregation: 'Somatic mutations',
     aggregationId: 'somatic_mutation',
     weight: 1,
+    isPrivate: false,
+    docsLink:
+      'https://platform-docs.opentargets.org/evidence#cancer-biomarkers',
   },
   {
     id: 'chembl',
@@ -110,6 +141,8 @@ const dataSources = [
     aggregation: 'Known drug',
     aggregationId: 'known_drug',
     weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#chembl',
   },
   {
     id: 'crispr',
@@ -118,6 +151,8 @@ const dataSources = [
     aggregation: 'Affected pathway',
     aggregationId: 'affected_pathway',
     weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#project-score',
   },
   {
     id: 'slapenrich',
@@ -126,6 +161,8 @@ const dataSources = [
     aggregation: 'Affected pathway',
     aggregationId: 'affected_pathway',
     weight: 0.5,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#slapenrich',
   },
   {
     id: 'progeny',
@@ -134,6 +171,8 @@ const dataSources = [
     aggregation: 'Affected pathway',
     aggregationId: 'affected_pathway',
     weight: 0.5,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#slapenrich',
   },
   {
     id: 'reactome',
@@ -142,6 +181,8 @@ const dataSources = [
     aggregation: 'Affected pathway',
     aggregationId: 'affected_pathway',
     weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#reactome',
   },
   {
     id: 'sysbio',
@@ -150,6 +191,8 @@ const dataSources = [
     aggregation: 'Affected pathway',
     aggregationId: 'affected_pathway',
     weight: 0.5,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#gene-signatures',
   },
   {
     id: 'europepmc',
@@ -158,6 +201,8 @@ const dataSources = [
     aggregation: 'Literature',
     aggregationId: 'literature',
     weight: 0.2,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#europe-pmc',
   },
   {
     id: 'expression_atlas',
@@ -166,6 +211,8 @@ const dataSources = [
     aggregation: 'RNA expression',
     aggregationId: 'rna_expression',
     weight: 0.2,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#expression-atlas',
   },
   {
     id: 'impc',
@@ -174,7 +221,10 @@ const dataSources = [
     aggregation: 'Animal model',
     aggregationId: 'animal_model',
     weight: 0.2,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#impc',
   },
+  // Private
   {
     id: 'ot_crispr_validation',
     sectionId: 'validationlab',
@@ -182,8 +232,9 @@ const dataSources = [
     aggregation: 'OT validation lab',
     aggregationId: 'ot_validation_lab',
     weight: 0.5,
+    isPrivate: true,
+    docsLink: 'https://partner-platform.opentargets.org/projects',
   },
-  // Private
   {
     id: 'ot_crispr',
     sectionId: 'otCrispr',
@@ -191,6 +242,8 @@ const dataSources = [
     aggregation: 'OT validation lab',
     aggregationId: 'ot_validation_lab',
     weight: 0.5,
+    isPrivate: true,
+    docsLink: 'https://partner-platform.opentargets.org/projects',
   },
   // Private
   // {

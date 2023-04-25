@@ -5,6 +5,7 @@ const cols = [
     aggregation: 'Precedence',
     sectionId: 'knownDrugs',
     description: 'Target is in clinical trials for any indication',
+    docsLink: 'http://home.opentargets.org/aotf-documentation#target-in-clinic',
   },
   {
     id: 'isInMembrane',
@@ -12,6 +13,7 @@ const cols = [
     aggregation: 'Tractability',
     sectionId: 'subcellularLocation',
     description: 'Target is annotated to be located in the cell membrane',
+    docsLink: 'http://home.opentargets.org/aotf-documentation#membrane-protein',
   },
   {
     id: 'isSecreted',
@@ -19,6 +21,7 @@ const cols = [
     aggregation: 'Tractability',
     sectionId: 'subcellularLocation',
     description: 'Target is annotated to be secreted',
+    docsLink: 'http://home.opentargets.org/aotf-documentation#secreted-protein',
   },
   {
     id: 'hasLigand',
@@ -26,6 +29,7 @@ const cols = [
     aggregation: 'Tractability',
     sectionId: 'tractability',
     description: 'Target binds a specific ligand',
+    docsLink: 'http://home.opentargets.org/aotf-documentation#ligand-binder',
   },
   {
     id: 'hasPocket',
@@ -33,6 +37,8 @@ const cols = [
     aggregation: 'Tractability',
     sectionId: 'tractability',
     description: 'Target has predicted pockets',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#predicted-pockets',
   },
   {
     id: 'hasMouseKO',
@@ -40,6 +46,7 @@ const cols = [
     aggregation: 'Doability',
     sectionId: 'mousePhenotypes',
     description: 'Availability of mouse knockout models for the target',
+    docsLink: 'http://home.opentargets.org/aotf-documentation#mouse-ko',
   },
   {
     id: 'mouseOrthologMaxIdentityPercentage',
@@ -47,6 +54,8 @@ const cols = [
     aggregation: 'Doability',
     sectionId: 'compGenomics',
     description: 'Mouse ortholog maximum identity percentage',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#mouse-ortholog-identity',
   },
   {
     id: 'hasHighQualityChemicalProbes',
@@ -54,14 +63,16 @@ const cols = [
     aggregation: 'Doability',
     sectionId: 'chemicalProbes',
     description: 'Availability of high quality chemical probes for the target',
+    docsLink: 'http://home.opentargets.org/aotf-documentation#chemical-probes',
   },
-  {
-    id: 'hasTEP',
-    label: 'TEP',
-    aggregation: 'Doability',
-    sectionId: 'tractability',
-    description: 'Availability of Target Enabling Package for the target',
-  },
+  // {
+  //   id: 'hasTEP',
+  //   label: 'TEP',
+  //   aggregation: 'Doability',
+  //   sectionId: 'tractability',
+  //   description: 'Availability of Target Enabling Package for the target',
+  //   docsLink: 'https://partner-platform.opentargets.org/projects',
+  // },
   {
     id: 'geneticConstraint',
     label: 'Genetic constraint',
@@ -69,6 +80,8 @@ const cols = [
     sectionId: 'geneticConstraint',
     description:
       'Relative genetic constraint in natural populations derived from GnomAD',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#genetic-constraint',
   },
   {
     id: 'hasSafetyEvent',
@@ -76,6 +89,8 @@ const cols = [
     aggregation: 'Safety',
     sectionId: 'safety',
     description: 'Target associated with a curated adverse event',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#known-adverse-events',
   },
   {
     id: 'isCancerDriverGene',
@@ -84,6 +99,8 @@ const cols = [
     sectionId: 'cancerHallmarks', // Safety
     description:
       'Target is classified as an Oncogene and/or Tumor Suppressor Gene',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#cancer-driver-gene',
   },
   {
     id: 'paralogMaxIdentityPercentage',
@@ -91,6 +108,7 @@ const cols = [
     aggregation: 'Safety',
     sectionId: 'compGenomics',
     description: 'Paralog maximum identity percentage',
+    docsLink: 'http://home.opentargets.org/aotf-documentation#paralogues',
   },
   {
     id: 'tissueSpecificity',
@@ -99,6 +117,8 @@ const cols = [
     sectionId: 'expressions',
     description:
       'HPA category types of elevated expression across tissues for the target',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#tissue-specificity',
   },
   {
     id: 'tissueDistribution',
@@ -107,6 +127,8 @@ const cols = [
     sectionId: 'expressions',
     description:
       'HPA category types of detectable expression across tissues for the target',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#tissue-distribution',
   },
 ];
 
