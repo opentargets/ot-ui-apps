@@ -76,10 +76,13 @@ const styles = theme => ({
   },
 });
 
-const SummaryRow = class extends Component {
-  state = {
-    collapsed: true,
-  };
+class SummaryRow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      collapsed: true,
+    };
+  }
 
   handleClick = () => {
     this.setState(state => ({ collapsed: !state.collapsed }));
@@ -197,6 +200,6 @@ const SummaryRow = class extends Component {
       </>
     );
   }
-};
+}
 
 export default withStyles(styles)(SummaryRow);

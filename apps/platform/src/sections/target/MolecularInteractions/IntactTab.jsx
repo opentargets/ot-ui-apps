@@ -26,7 +26,7 @@ const getData = (query, ensgId, sourceDatabase, index, size) =>
     },
   });
 
-const onLinkClick = function (e) {
+const onLinkClick = (e) => {
   // handler to stop propagation of clicks on links in table rows
   // to avoid selection of a different row
   e.stopPropagation();

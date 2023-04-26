@@ -1,4 +1,4 @@
-import { lazy, useEffect, useRef, Suspense } from 'react';
+import { lazy, useEffect, useRef, Suspense, useState } from 'react';
 import {
   Typography,
   List,
@@ -18,7 +18,7 @@ import { identifiersOrgLink, getUniprotIds } from '../../../utils/global';
 const SwissbioViz =
   'customElements' in window
     ? lazy(() => import('./SwissbioViz'))
-    : ({ children }) => <>{children}</>;
+    : ({ children }) => children;
 
 const useStyles = makeStyles(theme => ({
   locationIcon: {
@@ -101,7 +101,7 @@ function LocationsList({ sls }) {
  * @param {*} sources the array of source to show in the tabs (i.e. those with data)
  */
 function SubcellularVizTabs({ sources: activeSources, children }) {
-  const [activeTab, setActiveTab] = React.useState(0);
+  const [activeTab, setActiveTab] = useState(0);
   const onTabChange = (event, tabId) => {
     setActiveTab(tabId);
   };
@@ -122,7 +122,7 @@ function SubcellularVizTabs({ sources: activeSources, children }) {
         aria-label="Subcellular location sources"
       >
         {activeSources.map((s, i) => (
-          <Tab label={s.label} value={i} key={i} />
+          <Tab label={s.label} value={i} key={s.id} />
         ))}
       </Tabs>
       {children}
@@ -166,12 +166,12 @@ function SubcellularViz({ data: target }) {
   return (
     <div>
       <SubcellularVizTabs sources={activeSources}>
-        {activeSources.map((s, i) => (
+        {activeSources.map((s) => (
           <div
             value={getTabId(s.id)}
             id={getTabId(s.id)}
             ref={s.ref}
-            key={i}
+            key={s.id}
             className={classes.tabPanel}
           >
             <Suspense fallback={<LoadingBackdrop />}>

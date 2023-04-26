@@ -164,7 +164,7 @@ const columns = [
     numeric: true,
     sortable: true,
     renderCell: ({ studySampleSize }) =>
-      studySampleSize ? parseInt(studySampleSize).toLocaleString() : naLabel,
+      studySampleSize ? parseInt(studySampleSize, 10).toLocaleString() : naLabel,
   },
   {
     id: 'oddsRatio',
@@ -223,21 +223,6 @@ const columns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.OpenTargetsGeneticsSummaryFragment
-  );
-  const { count } = summaryData.openTargetsGenetics;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: count };
@@ -270,5 +255,20 @@ export function BodyCore({ definition, id, label, count }) {
         />
       )}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.OpenTargetsGeneticsSummaryFragment
+  );
+  const { count } = summaryData.openTargetsGenetics;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

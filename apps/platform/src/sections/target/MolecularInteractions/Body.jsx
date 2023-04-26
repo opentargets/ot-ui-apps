@@ -71,7 +71,8 @@ function Body({ definition, label: symbol, id }) {
       // set the sources database versions
       setVersions(
         res.data.interactionResources.reduce((a, v) => {
-          a[v.sourceDatabase] = v.databaseVersion;
+          const interactionResourceObj = a;
+          interactionResourceObj[v.sourceDatabase] = v.databaseVersion;
           return a;
         }, {})
       );
@@ -98,7 +99,7 @@ function Body({ definition, label: symbol, id }) {
             onChange={onTabChange}
             aria-label="simple tabs example"
           >
-            {sources.map((s, i) => (
+            {sources.map((s) => (
               <Tab
                 label={
                   <>
@@ -118,7 +119,7 @@ function Body({ definition, label: symbol, id }) {
                   </>
                 }
                 value={s.id}
-                key={i}
+                key={s.id}
                 disabled={counts[s.id] === 0}
               />
             ))}

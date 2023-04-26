@@ -13,16 +13,17 @@ function MethodIcon({
   notooltip,
   small = false,
 }) {
-  const title = !enabled
-    ? 'no data'
-    : Array.isArray(tooltip)
-    ? tooltip.map((m, i) => (
-        <span key={i}>
-          {m}
-          <br />
-        </span>
-      ))
-    : tooltip || 'no data';
+  let title;
+
+  if (!enabled || !tooltip) title = 'no data';
+  else if (Array.isArray(tooltip)) {
+    title = tooltip.map((m, i) => (
+      <span key={i}>
+        {m}
+        <br />
+      </span>
+    ));
+  } else title = tooltip;
   const icon = (
     <span
       className="fa-layers fa-fw"
@@ -39,30 +40,47 @@ function MethodIcon({
     </span>
   );
 
-  return notooltip ? (
-    <>{icon}</>
-  ) : (
-    <Tooltip title={<>{title}</>}>{icon}</Tooltip>
-  );
+  return notooltip ? { icon } : <Tooltip title={title}>{icon}</Tooltip>;
 }
 
-function MethodIconText(props) {
+function MethodIconText({
+  tooltip,
+  enabled = true,
+  notooltip,
+  children,
+  small = false,
+}) {
   return (
-    <MethodIcon {...props}>
+    <MethodIcon
+      tooltip={tooltip}
+      enabled={enabled}
+      notooltip={notooltip}
+      small={small}
+    >
       <span
         className="fa-layers-text fa-inverse"
         data-fa-transform="shrink-10 left-2"
         style={{ left: '80%' }}
       >
-        {props.children}
+        {children}
       </span>
     </MethodIcon>
   );
 }
 
-function MethodIconExpandArrow(props) {
+function MethodIconExpandArrow({
+  tooltip,
+  enabled = true,
+  notooltip,
+  small = false,
+}) {
   return (
-    <MethodIcon {...props}>
+    <MethodIcon
+      tooltip={tooltip}
+      enabled={enabled}
+      notooltip={notooltip}
+      small={small}
+    >
       <FontAwesomeIcon
         icon={faExpandArrowsAlt}
         size="2x"
@@ -73,9 +91,19 @@ function MethodIconExpandArrow(props) {
   );
 }
 
-function MethodIconArrow(props) {
+function MethodIconArrow({
+  tooltip,
+  enabled = true,
+  notooltip,
+  small = false,
+}) {
   return (
-    <MethodIcon {...props}>
+    <MethodIcon
+      tooltip={tooltip}
+      enabled={enabled}
+      notooltip={notooltip}
+      small={small}
+    >
       <FontAwesomeIcon
         icon={faArrowsAltH}
         size="2x"

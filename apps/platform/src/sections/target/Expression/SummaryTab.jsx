@@ -31,7 +31,6 @@ const getDownloadRows = expressions =>
   }));
 
 function SummaryTab({ symbol, data }) {
-  console.log({ data });
   return (
     <Grid container justifyContent="center">
       <Grid item xs={12} lg={8}>

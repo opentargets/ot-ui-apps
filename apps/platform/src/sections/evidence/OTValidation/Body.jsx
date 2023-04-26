@@ -79,12 +79,12 @@ const isHit = (conf, validatedConf) => {
   return conf.toLowerCase() === 'significant';
 };
 
-function HitIcon({ isHit, classes }) {
+function HitIcon({ isHitValue, classes }) {
   return (
     <FontAwesomeIcon
-      icon={isHit ? faCheckCircle : faTimesCircle}
+      icon={isHitValue ? faCheckCircle : faTimesCircle}
       size="2x"
-      className={isHit ? classes.primaryColor : classes.grey}
+      className={isHitValue ? classes.primaryColor : classes.grey}
     />
   );
 }
@@ -194,7 +194,7 @@ const getColumns = classes => [
   {
     id: 'resourceScore',
     label: 'Effect size',
-    renderCell: row => <>{row.resourceScore}</>,
+    renderCell: row => row.resourceScore,
     numeric: true,
     width: '8%',
   },
@@ -270,21 +270,6 @@ const exportColumns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.otValidationSummary
-  );
-  const { count } = summaryData.otValidationSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: count };
@@ -322,7 +307,7 @@ export function BodyCore({ definition, id, label, count }) {
           'label'
           // sort alphabetically but move 'PAN-CO' at the end of the list
         ).sort((a, b) =>
-          b.label === 'PAN-CO' ? -1 : a.label < b.label ? -1 : 1
+          (b.label === 'PAN-CO' || a.label < b.label) ? -1 : 1
         );
 
         return (
@@ -416,5 +401,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.otValidationSummary
+  );
+  const { count } = summaryData.otValidationSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }
