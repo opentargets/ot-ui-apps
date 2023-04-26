@@ -47,8 +47,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
       aggregation,
       isPrivate,
       docsLink,
-    }) => {
-      return columnHelper.accessor(row => row[dataProp][id], {
+    }) => columnHelper.accessor(row => row[dataProp][id], {
         id,
         header: isAssociations ? (
           <div className="">{label}</div>
@@ -59,7 +58,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
             </div>
           </AggregationsTooltip>
         ),
-        sectionId: sectionId,
+        sectionId,
         enableSorting: isAssociations,
         aggregation,
         isPrivate,
@@ -82,8 +81,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
             <ColoredCell />
           );
         },
-      });
-    }
+      })
   );
 }
 
@@ -115,11 +113,9 @@ function TableAssociations() {
           columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
             id: 'name',
             enableSorting: false,
-            cell: row => {
-              return !loading ? (
+            cell: row => !loading ? (
                 <CellName name={row.getValue()} rowId={row.row.id} />
-              ) : null;
-            },
+              ) : null,
             header: () => {
               const label = entityToGet === 'target' ? 'Target' : 'Disease';
               return <span>{label}</span>;

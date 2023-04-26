@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { styled } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
-import { faDna } from '@fortawesome/free-solid-svg-icons';
-import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
+import { faDna , faStethoscope } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Tooltip from '../AotFTooltip';

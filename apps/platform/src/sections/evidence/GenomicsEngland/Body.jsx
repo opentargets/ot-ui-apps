@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import {
   faCheckSquare,
@@ -142,17 +141,15 @@ const columns = [
     renderCell: ({ confidence }) => (
       <Tooltip
         title={
-          <>
-            <Typography variant="caption" display="block" align="center">
-              As defined by the{' '}
-              <Link
-                external
-                to={`https://panelapp.genomicsengland.co.uk/#!Guidelines`}
-              >
-                Panel App Guidelines
-              </Link>
-            </Typography>
-          </>
+          <Typography variant="caption" display="block" align="center">
+            As defined by the{' '}
+            <Link
+              external
+              to="https://panelapp.genomicsengland.co.uk/#!Guidelines"
+            >
+              Panel App Guidelines
+            </Link>
+          </Typography>
         }
         showHelpIcon
       >
@@ -188,13 +185,15 @@ export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(
     Summary.fragments.GenomicsEnglandSummaryFragment
   );
-  const count = summaryData.genomicsEngland.count;
-  
-  if(!count || count < 1) {
-    return null
+  const { count } = summaryData.genomicsEngland;
+
+  if (!count || count < 1) {
+    return null;
   }
 
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
 }
 
 export function BodyCore({ definition, id, label, count }) {
@@ -214,7 +213,9 @@ export function BodyCore({ definition, id, label, count }) {
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       request={request}
-      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={data => (
         <DataTable
           columns={columns}

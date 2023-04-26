@@ -1,6 +1,6 @@
 import Tooltip from '@material-ui/core/Tooltip';
-import { getScale } from '../utils';
 import { EventHandler, MouseEvent } from 'react';
+import { getScale } from '../utils';
 
 type SquareCellProps = {
   scoreValue: number;
@@ -48,7 +48,7 @@ function SquaredCell({
 
   return (
     <Tooltip title={scoreText} arrow disableHoverListener={false}>
-      <div className={className} onClick={onClickHabdler} style={style}></div>
+      <div className={className} onClick={onClickHabdler} style={style} />
     </Tooltip>
   );
 }

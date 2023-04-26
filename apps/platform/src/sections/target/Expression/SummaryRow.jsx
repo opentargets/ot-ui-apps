@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import { Component, Fragment } from 'react';
 import classNames from 'classnames';
 import { TableCell, TableRow, withStyles } from '@material-ui/core';
 
@@ -15,13 +15,9 @@ const proteinLevel = level => {
   return 'High';
 };
 
-const rnaValueToPercent = (maxRnaValue, value) => {
-  return (value * 100) / maxRnaValue;
-};
+const rnaValueToPercent = (maxRnaValue, value) => (value * 100) / maxRnaValue;
 
-const proteinLevelToPercent = level => {
-  return (level * 100) / 3;
-};
+const proteinLevelToPercent = level => (level * 100) / 3;
 
 const styles = theme => ({
   parentRow: {
@@ -80,7 +76,7 @@ const styles = theme => ({
   },
 });
 
-let SummaryRow = class extends Component {
+const SummaryRow = class extends Component {
   state = {
     collapsed: true,
   };
@@ -94,7 +90,7 @@ let SummaryRow = class extends Component {
     const { collapsed } = this.state;
 
     return (
-      <Fragment>
+      <>
         <TableRow
           className={classNames(classes.parentRow, {
             [classes.openedParentRow]: !collapsed,
@@ -198,7 +194,7 @@ let SummaryRow = class extends Component {
             </TableRow>
           );
         })}
-      </Fragment>
+      </>
     );
   }
 };

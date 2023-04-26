@@ -27,7 +27,7 @@ function TableHeader({ table }) {
   const [activeAggregation, setActiveAggegation] = useState(null);
   const onEnterHoverHeader = ({ id, column }) => {
     if (id === 'score' || id === 'name') return;
-    const aggregation = column.columnDef.aggregation;
+    const {aggregation} = column.columnDef;
     setActiveAggegation(aggregation);
   };
 

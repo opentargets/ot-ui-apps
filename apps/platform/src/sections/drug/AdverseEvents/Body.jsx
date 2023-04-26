@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { makeStyles, Typography } from '@material-ui/core';
 import _ from 'lodash';
@@ -24,56 +24,54 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const getColumns = (critVal, maxLlr, classes) => {
-  return [
-    {
-      id: 'name',
-      label: 'Adverse event (MedDRA)',
-      renderCell: d =>
-        d.meddraCode ? (
-          <Link to={`https://identifiers.org/meddra:${d.meddraCode}`} external>
-            <Typography
-              variant="caption"
-              noWrap
-              display="block"
-              title={_.upperFirst(d.name)}
-            >
-              {_.upperFirst(d.name)}
-            </Typography>
-          </Link>
-        ) : (
-          _.upperFirst(d.name)
-        ),
-      width: '30%',
+const getColumns = (critVal, maxLlr, classes) => [
+  {
+    id: 'name',
+    label: 'Adverse event (MedDRA)',
+    renderCell: d =>
+      d.meddraCode ? (
+        <Link to={`https://identifiers.org/meddra:${d.meddraCode}`} external>
+          <Typography
+            variant="caption"
+            noWrap
+            display="block"
+            title={_.upperFirst(d.name)}
+          >
+            {_.upperFirst(d.name)}
+          </Typography>
+        </Link>
+      ) : (
+        _.upperFirst(d.name)
+      ),
+    width: '30%',
+  },
+  {
+    id: 'count',
+    label: 'Number of reported events',
+    numeric: true,
+    width: '25%',
+  },
+  {
+    id: 'llr',
+    label: `Log likelihood ratio (CV = ${critVal.toFixed(2)})`,
+    renderCell: d => {
+      const w = ((d.logLR / maxLlr) * 85).toFixed(2); // scale to max 85% of the width to allows space for label
+      return (
+        <div className={classes.levelBarContainer}>
+          <div
+            className={classes.levelBar}
+            style={{
+              width: `${w}%`,
+            }}
+          />
+          <div>{d.logLR.toFixed(2)}</div>
+        </div>
+      );
     },
-    {
-      id: 'count',
-      label: 'Number of reported events',
-      numeric: true,
-      width: '25%',
-    },
-    {
-      id: 'llr',
-      label: `Log likelihood ratio (CV = ${critVal.toFixed(2)})`,
-      renderCell: d => {
-        const w = ((d.logLR / maxLlr) * 85).toFixed(2); // scale to max 85% of the width to allows space for label
-        return (
-          <div className={classes.levelBarContainer}>
-            <div
-              className={classes.levelBar}
-              style={{
-                width: `${w}%`,
-              }}
-            />
-            <div>{d.logLR.toFixed(2)}</div>
-          </div>
-        );
-      },
-      exportValue: d => d.logLR.toFixed(2),
-      width: '45%',
-    },
-  ];
-};
+    exportValue: d => d.logLR.toFixed(2),
+    width: '45%',
+  },
+];
 
 function Body({ definition, id: chemblId, label: name }) {
   const classes = useStyles();
@@ -90,11 +88,9 @@ function Body({ definition, id: chemblId, label: name }) {
     fetchMore({
       variables: {
         index: page,
-        size: size,
+        size,
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        return fetchMoreResult;
-      },
+      updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult,
     });
   }
 

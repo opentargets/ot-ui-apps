@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   InputLabel,
   FormGroup,
@@ -29,21 +28,14 @@ const categories = [
 export default function Category() {
   const category = useRecoilValue(selectedCategoriesState);
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
 
   const bibliographyState = useRecoilValue(literatureState);
 
   const handleChange = async event => {
-    const {
-      query,
-      id,
-      category,
-      selectedEntities,
-      globalEntity,
-      cursor,
-    } = bibliographyState;
+    const { query, id, category, selectedEntities, globalEntity, cursor } =
+      bibliographyState;
     const {
       target: { name: clicked },
     } = event;
@@ -78,23 +70,21 @@ export default function Category() {
         Tag category:
       </InputLabel>
       <FormGroup row>
-        {categories.map(({ name, label }) => {
-          return (
-            <FormControlLabel
-              key={name}
-              control={
-                <Checkbox
-                  checked={category.indexOf(name) !== -1}
-                  onChange={handleChange}
-                  name={name}
-                  color="primary"
-                  disabled={loadingEntities}
-                />
-              }
-              label={label}
-            />
-          );
-        })}
+        {categories.map(({ name, label }) => (
+          <FormControlLabel
+            key={name}
+            control={
+              <Checkbox
+                checked={category.indexOf(name) !== -1}
+                onChange={handleChange}
+                name={name}
+                color="primary"
+                disabled={loadingEntities}
+              />
+            }
+            label={label}
+          />
+        ))}
       </FormGroup>
     </div>
   );

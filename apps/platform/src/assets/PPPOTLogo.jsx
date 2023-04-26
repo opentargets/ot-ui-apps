@@ -1,4 +1,3 @@
-import React from 'react';
 import { SvgIcon, makeStyles } from '@material-ui/core';
 import config from '../config';
 
@@ -8,7 +7,7 @@ const useStyles = makeStyles({
   },
 });
 
-const OTLogo = props => {
+function OTLogo(props) {
   const classes = useStyles();
 
   return (
@@ -84,12 +83,12 @@ const OTLogo = props => {
               letterSpacing: 0,
             }}
           >
-            {'Partner Preview'}
+            Partner Preview
           </tspan>
         </text>
       </g>
     </SvgIcon>
   );
-};
+}
 
 export default OTLogo;

@@ -1,19 +1,13 @@
-import React, { Fragment } from 'react';
-import {
-  Paper,
-  Box,
-  Typography,
-  makeStyles,
-  Chip,
-} from '@material-ui/core';
-import projectsData from './projects-data.json';
-import { DataTable } from '../../components/Table';
-import Link from '../../components/Link';
+import { Fragment } from 'react';
+import { Paper, Box, Typography, makeStyles, Chip } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleCheck,
   faCircleNotch,
 } from '@fortawesome/free-solid-svg-icons';
+import projectsData from './projects-data.json';
+import { DataTable } from '../../components/Table';
+import Link from '../../components/Link';
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -33,13 +27,12 @@ function ProjectPage() {
     {
       id: 'otar_code',
       label: 'Project Code',
-      renderCell: ({ otar_code }) => {
-        return otar_code ? (
+      renderCell: ({ otar_code }) =>
+        otar_code ? (
           <Link to={`http://home.opentargets.org/${otar_code}`} external newTab>
             {otar_code}
           </Link>
-        ) : null;
-      },
+        ) : null,
     },
     { id: 'project_name', label: 'Project Name' },
     { id: 'project_lead', label: 'Project Lead' },
@@ -61,15 +54,12 @@ function ProjectPage() {
       id: 'disease_mapping',
       label: 'Disease Mapped in the PPP',
       renderCell: ({ disease_mapping }) => {
-        let ALL_AVATARS = [];
+        const ALL_AVATARS = [];
         disease_mapping.map((disease, index) => {
           disease &&
             disease.label &&
             ALL_AVATARS.push(
-              <Link
-                to={'disease/' + disease.disease_id}
-                key={index}
-              >
+              <Link to={`disease/${disease.disease_id}`} key={index}>
                 <Chip
                   size="small"
                   label={disease.label}
@@ -85,7 +75,7 @@ function ProjectPage() {
     },
   ];
   return (
-    <Fragment>
+    <>
       <Typography variant="h4" component="h1" paragraph>
         Open Targets Projects Table
       </Typography>
@@ -99,7 +89,7 @@ function ProjectPage() {
           here
         </Link>{' '}
         or contact us at{' '}
-        <Link to={`mailto: datarequests@opentargets.org`} external>
+        <Link to="mailto: datarequests@opentargets.org" external>
           datarequests@opentargets.org
         </Link>
         .
@@ -125,7 +115,7 @@ function ProjectPage() {
           />
         </Box>
       </Paper>
-    </Fragment>
+    </>
   );
 }
 

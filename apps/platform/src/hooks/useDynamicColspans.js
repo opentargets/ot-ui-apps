@@ -5,8 +5,7 @@ function useDynamicColspan(groups, columns, width) {
   const oldColspans = groups.map(group => parseInt(group.colspan));
   const columnGroups = oldColspans.map(colspan => colCopy.splice(0, colspan));
 
-  const newColspans = columnGroups.map(columnGroup => {
-    return columnGroup.filter(column => {
+  const newColspans = columnGroups.map(columnGroup => columnGroup.filter(column => {
       if (!column.hidden) return true;
 
       const isShown = column.hidden
@@ -14,8 +13,7 @@ function useDynamicColspan(groups, columns, width) {
         .every(e => !e);
 
       return isShown;
-    }).length;
-  });
+    }).length);
 
   return newColspans;
 }

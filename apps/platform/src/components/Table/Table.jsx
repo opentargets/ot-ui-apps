@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames';
 import {
   CircularProgress,
@@ -18,7 +18,7 @@ import TableHeader from './TableHeader';
 import TableRow from './TableRow';
 import { tableStyles } from './tableStyles';
 
-const Table = ({
+function Table({
   classes = {},
   sortBy,
   order,
@@ -50,7 +50,7 @@ const Table = ({
   rowIsSelectable = false,
   query,
   variables,
-}) => {
+}) {
   const emptyRows = pageSize - rows.length;
   const [selectedRow, setSelectedRow] = useState(0);
   const defaultClasses = tableStyles();
@@ -175,6 +175,6 @@ const Table = ({
       </Grid>
     </Grid>
   );
-};
+}
 
 export default Table;

@@ -4,8 +4,8 @@ import BasePage from '../../components/BasePage';
 
 const VariantsPage = lazy(() => import('./VariantsPage.jsx'));
 
-const VariantsWrapper = ({ location }) => (
-  <BasePage
+function VariantsWrapper({ location }) {
+  return <BasePage
     title="Variant definitions"
     description="Variant definitions, including Sequence Ontology (SO) consequence terms, descriptions, and accession IDs"
     location={location}
@@ -14,6 +14,6 @@ const VariantsWrapper = ({ location }) => (
       <VariantsPage />
     </Suspense>
   </BasePage>
-);
+}
 
 export default VariantsWrapper;

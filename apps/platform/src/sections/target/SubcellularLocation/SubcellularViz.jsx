@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useRef, Suspense } from 'react';
+import { lazy, useEffect, useRef, Suspense } from 'react';
 import {
   Typography,
   List,
@@ -11,9 +11,9 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
+import { LoadingBackdrop } from 'ui';
 import Link from '../../../components/Link';
 import { identifiersOrgLink, getUniprotIds } from '../../../utils/global';
-import { LoadingBackdrop } from 'ui';
 
 const SwissbioViz =
   'customElements' in window
@@ -59,9 +59,8 @@ const parseLocationData = subcellularLocations => {
 };
 
 // Filter the sources array to only those with data
-const filterSourcesWithData = (sources, sourcesLocations) => {
-  return sources.filter(s => sourcesLocations[s.id] !== undefined);
-};
+const filterSourcesWithData = (sources, sourcesLocations) =>
+  sources.filter(s => sourcesLocations[s.id] !== undefined);
 
 const getTabId = id => `${id}-tab`;
 

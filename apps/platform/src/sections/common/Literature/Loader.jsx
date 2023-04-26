@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   makeStyles,
   Box,
@@ -14,21 +13,23 @@ const listComponetStyles = makeStyles(() => ({
   },
 }));
 
-const Loader = ({ message = '', pageSize = 5 }) => (
-  <Box
-    height={pageSize === 5 ? '850px' : pageSize === 10 ? '1640px' : '4040px'}
-    display="flex"
-    justifyContent="center"
-    alignItems="center"
-    flexDirection="column"
-  >
-    <CircularProgress size={60} />
-    <Box mt={6}>
-      <Typography className={listComponetStyles.AccordionSubtitle}>
-        {message}
-      </Typography>
+function Loader({ message = '', pageSize = 5 }) {
+  return (
+    <Box
+      height={pageSize === 5 ? '850px' : pageSize === 10 ? '1640px' : '4040px'}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+    >
+      <CircularProgress size={60} />
+      <Box mt={6}>
+        <Typography className={listComponetStyles.AccordionSubtitle}>
+          {message}
+        </Typography>
+      </Box>
     </Box>
-  </Box>
-);
+  );
+}
 
 export default Loader;

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useTheme } from '@material-ui/core/styles';
 import TargetDescription from './TargetDescription';
 import {
   ProfileHeader as BaseProfileHeader,
@@ -6,7 +6,6 @@ import {
 } from '../../components/ProfileHeader';
 import usePlatformApi from '../../hooks/usePlatformApi';
 import { clearDescriptionCodes } from '../../utils/global';
-import { useTheme } from '@material-ui/core/styles';
 
 import TARGET_PROFILE_HEADER_FRAGMENT from './TargetProfileHeader.gql';
 
@@ -49,7 +48,7 @@ const parseSynonyms = synonyms => {
 
   parsedSynonyms.forEach(
     syn =>
-      (syn.tooltip = 'Source: ' + syn.tooltip.map(s => sources[s]).join(', '))
+      (syn.tooltip = `Source: ${syn.tooltip.map(s => sources[s]).join(', ')}`)
   );
 
   return parsedSynonyms;
@@ -59,7 +58,7 @@ function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
   const theme = useTheme();
 
-  //TODO: Errors!
+  // TODO: Errors!
   if (error) return null;
 
   const targetDescription = clearDescriptionCodes(

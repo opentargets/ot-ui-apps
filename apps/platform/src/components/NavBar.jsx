@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -71,20 +70,22 @@ const styles = theme => ({
   },
 });
 
-const MenuExternalLink = ({ classes, href, children }) => (
-  <Typography color="inherit" className={classes.menuExternalLinkContainer}>
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      href={href}
-      className={classes.menuExternalLink}
-    >
-      {children}
-    </a>
-  </Typography>
-);
+function MenuExternalLink({ classes, href, children }) {
+  return (
+    <Typography color="inherit" className={classes.menuExternalLinkContainer}>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href={href}
+        className={classes.menuExternalLink}
+      >
+        {children}
+      </a>
+    </Typography>
+  );
+}
 
-const NavBar = ({
+function NavBar({
   classes,
   name,
   search,
@@ -95,7 +96,7 @@ const NavBar = ({
   homepage,
   items,
   placement,
-}) => {
+}) {
   const theme = useTheme();
   const smMQ = useMediaQuery(theme.breakpoints.down('sm'));
   const isHomePageRegular = homepage && !smMQ;
@@ -117,7 +118,7 @@ const NavBar = ({
           )}
         </div>
 
-        <div className={classes.navSearch}>{search ? search : null}</div>
+        <div className={classes.navSearch}>{search || null}</div>
 
         <div className={classes.navMenu}>
           {docs ? (
@@ -154,10 +155,7 @@ const NavBar = ({
                 if (item.showOnlyPartner) {
                   return (
                     <PrivateWrapper key={i}>
-                      <MenuItem
-                        dense={true}
-                        className={classes.menuItem}
-                      >
+                      <MenuItem dense className={classes.menuItem}>
                         <Link
                           external={item.external}
                           to={item.url}
@@ -168,19 +166,18 @@ const NavBar = ({
                       </MenuItem>
                     </PrivateWrapper>
                   );
-                } else {
-                  return (
-                    <MenuItem key={i} dense={true} className={classes.menuItem}>
-                      <Link
-                        external={item.external}
-                        to={item.url}
-                        className={classes.menuLink}
-                      >
-                        {item.name}
-                      </Link>
-                    </MenuItem>
-                  );
                 }
+                return (
+                  <MenuItem key={i} dense className={classes.menuItem}>
+                    <Link
+                      external={item.external}
+                      to={item.url}
+                      className={classes.menuLink}
+                    >
+                      {item.name}
+                    </Link>
+                  </MenuItem>
+                );
               })}
             </MenuList>
           )}
@@ -188,6 +185,6 @@ const NavBar = ({
       </Toolbar>
     </AppBar>
   );
-};
+}
 
 export default withStyles(styles)(NavBar);

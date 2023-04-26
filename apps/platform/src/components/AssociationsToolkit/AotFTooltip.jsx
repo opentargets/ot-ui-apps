@@ -6,7 +6,6 @@ import {
   Paper,
   Popper,
 } from '@material-ui/core';
-import React from 'react';
 
 const useStyles = makeStyles(theme => {
   const color = theme.palette.background.paper;
@@ -85,14 +84,14 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const RichTooltip = ({
+function RichTooltip({
   placement = 'top',
   arrow = true,
   open,
   onClose = () => {},
   content,
   children,
-}) => {
+}) {
   const classes = useStyles();
   const [arrowRef, setArrowRef] = React.useState(null);
   const [childNode, setChildNode] = React.useState(null);
@@ -134,6 +133,6 @@ const RichTooltip = ({
       </Popper>
     </div>
   );
-};
+}
 
 export default RichTooltip;

@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import client from '../../../client';
+import { useState, useEffect } from 'react';
 import { withTheme, makeStyles } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import { scaleQuantize } from 'd3';
+import client from '../../../client';
 
 import DataTable from '../../../components/Table/DataTable';
 import Legend from '../../../components/Legend';
 import { colorRange } from '../../../constants';
 
-import Grid from '@material-ui/core/Grid';
 import Link from '../../../components/Link';
-
-import { scaleQuantize } from 'd3';
 
 import INTERACTIONS_QUERY from './InteractionsStringQuery.gql';
 
-const getData = (query, ensgId, sourceDatabase, index, size) => {
-  return client.query({
-    query: query,
+const getData = (query, ensgId, sourceDatabase, index, size) =>
+  client.query({
+    query,
     variables: {
       ensgId,
       sourceDatabase,
@@ -23,7 +22,6 @@ const getData = (query, ensgId, sourceDatabase, index, size) => {
       size,
     },
   });
-};
 
 const useStyles = makeStyles({
   root: {
@@ -121,7 +119,7 @@ function getColumns(classes) {
         </span>
       ),
       exportValue: row => row.targetB?.approvedSymbol || row.intB,
-      filterValue: row => row.targetB?.approvedSymbol + ' ' + row.intB,
+      filterValue: row => `${row.targetB?.approvedSymbol} ${row.intB}`,
     },
     {
       id: 'overallScore',
@@ -285,28 +283,22 @@ function getColumns(classes) {
   ];
 }
 
-const getScoreForColumn = (evidences, id) => {
-  return evidences
+const getScoreForColumn = (evidences, id) =>
+  evidences
     .filter(e => e.interactionDetectionMethodShortName === id)
     .map(e => e.evidenceScore)[0]; // TODO: the [0] is to catch a data error: remove when fixed.
-};
-
-const getHeatmapCell = (score, classes) => {
-  return (
-    <span
-      className={classes.colorSpan}
-      title={score || 'No data'}
-      style={{ backgroundColor: color(score) }}
-    />
-  );
-};
+const getHeatmapCell = (score, classes) => (
+  <span
+    className={classes.colorSpan}
+    title={score || 'No data'}
+    style={{ backgroundColor: color(score) }}
+  />
+);
 
 const id = 'string';
 const index = 0;
 const size = 10000;
-const color = scaleQuantize()
-  .domain([0, 1])
-  .range(colorRange);
+const color = scaleQuantize().domain([0, 1]).range(colorRange);
 
 function StringTab({ ensgId, symbol }) {
   const [data, setData] = useState([]);
@@ -315,18 +307,15 @@ function StringTab({ ensgId, symbol }) {
   const columns = getColumns(classes);
 
   // load tab data when new tab selected (also on first load)
-  useEffect(
-    () => {
-      setLoading(true);
-      getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
-        if (res.data.target.interactions) {
-          setLoading(false);
-          setData(res.data.target.interactions.rows);
-        }
-      });
-    },
-    [ensgId]
-  );
+  useEffect(() => {
+    setLoading(true);
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
+      if (res.data.target.interactions) {
+        setLoading(false);
+        setData(res.data.target.interactions.rows);
+      }
+    });
+  }, [ensgId]);
 
   return (
     <Grid container spacing={4}>
@@ -343,7 +332,7 @@ function StringTab({ ensgId, symbol }) {
           rowsPerPageOptions={[10, 25, 50, 100]}
           loading={loading}
         />
-        <Legend url={"https://string-db.org/cgi/info"}   />
+        <Legend url="https://string-db.org/cgi/info" />
       </Grid>
     </Grid>
   );

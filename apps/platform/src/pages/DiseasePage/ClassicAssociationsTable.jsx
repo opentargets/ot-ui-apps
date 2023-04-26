@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import Link from '../../components/Link';
@@ -114,16 +114,14 @@ function getColumns(efoId, classes, isPartnerPreview) {
         cell: classes.symbolCell,
       },
       exportValue: data => data.target.approvedSymbol,
-      renderCell: row => {
-        return (
-          <Link
-            to={`/evidence/${row.ensemblId}/${efoId}`}
-            className={classes.symbolContainer}
-          >
-            {row.symbol}
-          </Link>
-        );
-      },
+      renderCell: row => (
+        <Link
+          to={`/evidence/${row.ensemblId}/${efoId}`}
+          className={classes.symbolContainer}
+        >
+          {row.symbol}
+        </Link>
+      ),
     },
     {
       id: 'score',
@@ -192,16 +190,14 @@ function getColumns(efoId, classes, isPartnerPreview) {
     },
     exportValue: data => data.target.approvedName,
     hidden: ['smDown', 'lgOnly'],
-    renderCell: row => {
-      return (
-        <Link
-          to={`/evidence/${row.ensemblId}/${efoId}`}
-          className={classes.nameContainer}
-        >
-          <span title={row.name}>{row.name}</span>
-        </Link>
-      );
-    },
+    renderCell: row => (
+      <Link
+        to={`/evidence/${row.ensemblId}/${efoId}`}
+        className={classes.nameContainer}
+      >
+        <span title={row.name}>{row.name}</span>
+      </Link>
+    ),
   });
 
   return columns;
@@ -241,36 +237,32 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
 
   const { isPartnerPreview } = usePermissions();
 
-
-  useEffect(
-    () => {
-      let isCurrent = true;
-      setLoading(true);
-      client
-        .query({
-          query: DISEASE_ASSOCIATIONS_QUERY,
-          variables: {
-            efoId,
-            index: 0,
-            size: pageSize,
-            sortBy,
-            filter,
-            aggregationFilters,
-          },
-        })
-        .then(({ data }) => {
-          if (isCurrent) {
-            setRows(data.disease.associatedTargets.rows);
-            setCount(data.disease.associatedTargets.count);
-            setPage(0);
-            setInitialLoading(false);
-            setLoading(false);
-          }
-        });
-      return () => (isCurrent = false);
-    },
-    [efoId, pageSize, sortBy, filter, aggregationFilters]
-  );
+  useEffect(() => {
+    let isCurrent = true;
+    setLoading(true);
+    client
+      .query({
+        query: DISEASE_ASSOCIATIONS_QUERY,
+        variables: {
+          efoId,
+          index: 0,
+          size: pageSize,
+          sortBy,
+          filter,
+          aggregationFilters,
+        },
+      })
+      .then(({ data }) => {
+        if (isCurrent) {
+          setRows(data.disease.associatedTargets.rows);
+          setCount(data.disease.associatedTargets.count);
+          setPage(0);
+          setInitialLoading(false);
+          setLoading(false);
+        }
+      });
+    return () => (isCurrent = false);
+  }, [efoId, pageSize, sortBy, filter, aggregationFilters]);
 
   const getAllAssociations = useBatchDownloader(
     DISEASE_ASSOCIATIONS_QUERY,

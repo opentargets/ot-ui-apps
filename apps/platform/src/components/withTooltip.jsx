@@ -1,27 +1,29 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Fade, Popper } from '@material-ui/core';
 
-const Tooltip = ({ open, anchorEl, container, children }) => (
-  <Popper
-    open={open}
-    anchorEl={anchorEl}
-    container={container}
-    transition
-    placement="top"
-    modifiers={{
-      preventOverflow: {
-        enabled: true,
-        boundariesElement: 'window',
-      },
-    }}
-  >
-    {({ TransitionProps }) => (
-      <Fade {...TransitionProps} timeout={350}>
-        {children}
-      </Fade>
-    )}
-  </Popper>
-);
+function Tooltip({ open, anchorEl, container, children }) {
+  return (
+    <Popper
+      open={open}
+      anchorEl={anchorEl}
+      container={container}
+      transition
+      placement="top"
+      modifiers={{
+        preventOverflow: {
+          enabled: true,
+          boundariesElement: 'window',
+        },
+      }}
+    >
+      {({ TransitionProps }) => (
+        <Fade {...TransitionProps} timeout={350}>
+          {children}
+        </Fade>
+      )}
+    </Popper>
+  );
+}
 
 function withTooltip(WrappedComponent, TooltipContent, tooltipElementFinder) {
   return class extends Component {

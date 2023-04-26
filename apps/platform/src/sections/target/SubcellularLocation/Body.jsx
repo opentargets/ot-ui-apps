@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 
 import Description from './Description';
@@ -17,13 +16,7 @@ function Body({ definition, id: ensemblId, label: symbol }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={({ target }) => {
-        return (
-          <>
-            <SubcellularViz data={target} />
-          </>
-        );
-      }}
+      renderBody={({ target }) => <SubcellularViz data={target} />}
     />
   );
 }

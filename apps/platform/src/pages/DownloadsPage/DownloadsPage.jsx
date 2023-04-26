@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Paper, Box, Chip, Typography } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
@@ -54,23 +54,20 @@ function getColumns(date) {
     {
       id: 'formats',
       label: 'Format(s)',
-      renderCell: ({ niceName, formats }) => {
-        return formats.map((format, index) => {
-          return (
-            <Fragment key={index}>
-              <DownloadsDrawer
-                title={niceName}
-                format={format.format}
-                path={format.path}
-                month={date.month}
-                year={date.year}
-              >
-                <Chip label={formatMap[format.format]} clickable size="small" />
-              </DownloadsDrawer>{' '}
-            </Fragment>
-          );
-        });
-      },
+      renderCell: ({ niceName, formats }) =>
+        formats.map((format, index) => (
+          <Fragment key={index}>
+            <DownloadsDrawer
+              title={niceName}
+              format={format.format}
+              path={format.path}
+              month={date.month}
+              year={date.year}
+            >
+              <Chip label={formatMap[format.format]} clickable size="small" />
+            </DownloadsDrawer>{' '}
+          </Fragment>
+        )),
     },
   ];
   return columns;
@@ -117,7 +114,7 @@ function DownloadsPage() {
   }, []);
 
   return (
-    <Fragment>
+    <>
       <Typography variant="h4" component="h1" paragraph>
         Data downloads
       </Typography>
@@ -179,7 +176,7 @@ function DownloadsPage() {
           )}
         </Box>
       </Paper>
-    </Fragment>
+    </>
   );
 }
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { withContentRect } from 'react-measure';
 import { line as d3Line, max, curveMonotoneX } from 'd3';
 import {
@@ -8,9 +7,9 @@ import {
   sugiyama,
   dagStratify,
 } from 'd3-dag';
+import { makeStyles } from '@material-ui/core';
 import Link from '../../../components/Link';
 import Tooltip from '../../../components/Tooltip';
-import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles({
   labelText: {
@@ -73,7 +72,7 @@ const helperLayout = sugiyama()
   .coord(coord);
 
 function textWithEllipsis(text, threshold) {
-  return text.length <= threshold ? text : text.slice(0, threshold) + '...';
+  return text.length <= threshold ? text : `${text.slice(0, threshold)}...`;
 }
 
 function getMaxLayerCount(dag) {
@@ -172,7 +171,7 @@ function OntologySubgraph({
               <path d="M0,0 V4 L2,2 Z" fill="#5a5f5f" />
             </marker>
           </defs>
-          <g transform={`translate(0, 10)`}>
+          <g transform="translate(0, 10)">
             <rect
               x="4"
               y="11"
@@ -285,69 +284,62 @@ function OntologySubgraph({
             />
           </g>
           <g transform={`translate(0, ${yOffset})`}>
-            {links.map(({ points, source, target }) => {
-              return (
-                <path
-                  key={`${source.id}-${target.id}`}
-                  d={line(points)}
-                  fill="none"
-                  strokeWidth="2"
-                  stroke="#eeeeee"
-                />
-              );
-            })}
+            {links.map(({ points, source, target }) => (
+              <path
+                key={`${source.id}-${target.id}`}
+                d={line(points)}
+                fill="none"
+                strokeWidth="2"
+                stroke="#eeeeee"
+              />
+            ))}
           </g>
           <g transform={`translate(0, ${yOffset})`}>
-            {nodes.map(node => {
-              return (
-                <Link
-                  to={`/disease/${node.data.id}`}
-                  className={classes.labelText}
-                  key={node.id}
+            {nodes.map(node => (
+              <Link
+                to={`/disease/${node.data.id}`}
+                className={classes.labelText}
+                key={node.id}
+              >
+                <Tooltip
+                  title={`${node.data.name || 'No name'} | ID: ${node.id}`}
                 >
-                  <Tooltip
-                    title={`${node.data.name || 'No name'} | ID: ${node.id}`}
-                  >
-                    <g>
-                      <text
-                        x={node.y - xOffset}
-                        y={node.x}
-                        dx="9"
-                        fontSize="12"
-                        dominantBaseline="middle"
-                        fill="#5a5f5f"
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <title>{node.data.name}</title>
-                        {textWithEllipsis(
-                          node.data.name || 'No name',
-                          textLimit
-                        )}
-                      </text>
+                  <g>
+                    <text
+                      x={node.y - xOffset}
+                      y={node.x}
+                      dx="9"
+                      fontSize="12"
+                      dominantBaseline="middle"
+                      fill="#5a5f5f"
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <title>{node.data.name}</title>
+                      {textWithEllipsis(node.data.name || 'No name', textLimit)}
+                    </text>
 
-                      {node.data.parentIds.length === 0 ? (
-                        <rect
-                          x={node.y - radius - xOffset}
-                          y={node.x - radius}
-                          width={diameter}
-                          height={diameter}
-                          fill={colorMap[node.data.nodeType]}
-                          stroke="#e0e0e0"
-                        />
-                      ) : (
-                        <circle
-                          cx={node.y - xOffset}
-                          cy={node.x}
-                          r={radius}
-                          fill={colorMap[node.data.nodeType]}
-                          stroke="#e0e0e0"
-                        />
-                      )}
-                    </g>
-                  </Tooltip>
-                </Link>
-              );
-            })}
+                    {node.data.parentIds.length === 0 ? (
+                      <rect
+                        x={node.y - radius - xOffset}
+                        y={node.x - radius}
+                        width={diameter}
+                        height={diameter}
+                        fill={colorMap[node.data.nodeType]}
+                        stroke="#e0e0e0"
+                      />
+                    ) : (
+                      <circle
+                        cx={node.y - xOffset}
+                        cy={node.x}
+                        r={radius}
+                        fill={colorMap[node.data.nodeType]}
+                        stroke="#e0e0e0"
+                      />
+                    )}
+                  </g>
+                </Tooltip>
+              </Link>
+            ))}
           </g>
         </svg>
       ) : null}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Chip, makeStyles, Grow } from '@material-ui/core';
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -31,9 +30,8 @@ function EntitiesToSelect({ id }) {
   const [selectedChips, setSelectedChips] = useRecoilState(
     selectedEntitiesState
   );
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
 
   const handleSelectChip = async e => {
     const { query, id, category, globalEntity } = bibliographyState;
@@ -84,7 +82,7 @@ function EntitiesToSelect({ id }) {
           <Chip
             style={{ opacity: loadingEntities ? 0.5 : 1 }}
             label={e.id}
-            disabled={true}
+            disabled
             title="Missing object entity"
             color="secondary"
             variant="outlined"
@@ -115,9 +113,8 @@ export default function Entities({ name, id }) {
 
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
   const bibliographyState = useRecoilValue(literatureState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
   const [selectedChips, setSelectedChips] = useRecoilState(
     selectedEntitiesState
   );

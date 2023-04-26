@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   Description,
   ProfileHeader as BaseProfileHeader,
@@ -37,7 +35,7 @@ function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
   const diseaseSynonyms = parseSynonyms(data?.disease.synonyms || []);
 
-  //TODO: Errors!
+  // TODO: Errors!
   if (error) return null;
 
   return (

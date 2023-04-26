@@ -34,13 +34,11 @@ const fixIsPrivate = id =>
  * the datatype can be explicitly hidden, or be private and as such
  * not shown on public instance.
  */
-const filterLevel = agg => {
-  return (
+const filterLevel = agg => (
     (config.profile.hideDataTypes.length === 0 ||
       !config.profile.hideDataTypes.includes(agg.nodeId)) &&
     (!agg.isPrivate || (agg.isPrivate && config.profile.isPartnerPreview))
   );
-};
 
 const sortLevel = (a, b) => {
   const aIndex = facetData.findIndex(item => item.id === a.nodeId);
@@ -51,8 +49,7 @@ const sortLevel = (a, b) => {
     : a.nodeId.localeCompare(b.nodeId);
 };
 
-const extractLevel = level => {
-  return level
+const extractLevel = level => level
     ?.map(agg => ({
       nodeId: agg.key || agg.name,
       label: fixLabel(agg.key || agg.name),
@@ -64,7 +61,6 @@ const extractLevel = level => {
     }))
     .filter(filterLevel)
     .sort(sortLevel);
-};
 
 export const prepareFacetData = data => extractLevel(data) || [];
 

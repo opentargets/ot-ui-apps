@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Typography } from '@material-ui/core';
 import client from '../../../client';
 import ClinvarStars from '../../../components/ClinvarStars';
@@ -26,125 +26,108 @@ const columns = [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
-    renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => {
-      return (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Reported disease or phenotype:
-              </Typography>
-              <Typography
-                variant="caption"
-                display="block"
-                align="center"
-                gutterBottom
-              >
-                {diseaseFromSource}
-              </Typography>
+    renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => (
+      <Tooltip
+        title={
+          <>
+            <Typography variant="subtitle2" display="block" align="center">
+              Reported disease or phenotype:
+            </Typography>
+            <Typography
+              variant="caption"
+              display="block"
+              align="center"
+              gutterBottom
+            >
+              {diseaseFromSource}
+            </Typography>
 
-              {cohortPhenotypes?.length > 1 ? (
-                <>
-                  <Typography
-                    variant="subtitle2"
-                    display="block"
-                    align="center"
-                  >
-                    All reported phenotypes:
-                  </Typography>
-                  <Typography variant="caption" display="block">
-                    {cohortPhenotypes.map(cp => (
-                      <div key={cp}>{cp}</div>
-                    ))}
-                  </Typography>
-                </>
-              ) : (
-                ''
-              )}
-            </>
-          }
-          showHelpIcon
-        >
-          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-        </Tooltip>
-      );
-    },
+            {cohortPhenotypes?.length > 1 ? (
+              <>
+                <Typography variant="subtitle2" display="block" align="center">
+                  All reported phenotypes:
+                </Typography>
+                <Typography variant="caption" display="block">
+                  {cohortPhenotypes.map(cp => (
+                    <div key={cp}>{cp}</div>
+                  ))}
+                </Typography>
+              </>
+            ) : (
+              ''
+            )}
+          </>
+        }
+        showHelpIcon
+      >
+        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+      </Tooltip>
+    ),
   },
   {
     id: 'variantId',
     label: 'Variant ID',
-    renderCell: ({ variantId }) => {
-      return variantId ? (
+    renderCell: ({ variantId }) =>
+      variantId ? (
         <>
           {variantId.substring(0, 20)}
           {variantId.length > 20 ? '\u2026' : ''}
         </>
       ) : (
         naLabel
-      );
-    },
+      ),
   },
   {
     id: 'variantRsId',
     label: 'rsID',
-    renderCell: ({ variantRsId }) => {
-      return variantRsId ? (
-        <>
-          <Link
-            external
-            to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
-          >
-            {variantRsId}
-          </Link>
-        </>
+    renderCell: ({ variantRsId }) =>
+      variantRsId ? (
+        <Link
+          external
+          to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
+        >
+          {variantRsId}
+        </Link>
       ) : (
         naLabel
-      );
-    },
+      ),
   },
   {
     id: 'variantHgvsId',
     label: 'HGVS ID',
-    renderCell: ({ variantHgvsId }) => {
-      return variantHgvsId ? variantHgvsId : naLabel;
-    },
+    renderCell: ({ variantHgvsId }) => variantHgvsId || naLabel,
   },
   {
     id: 'studyId',
     label: 'ClinVar ID',
-    renderCell: ({ studyId }) => {
-      return studyId ? (
+    renderCell: ({ studyId }) =>
+      studyId ? (
         <Link external to={`https://www.ncbi.nlm.nih.gov/clinvar/${studyId}`}>
           {studyId}
         </Link>
       ) : (
         naLabel
-      );
-    },
+      ),
   },
   {
     label: 'Functional consequence',
-    renderCell: ({ variantFunctionalConsequence }) => {
-      return (
-        <Link
-          external
-          to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
-        >
-          {sentenceCase(variantFunctionalConsequence.label)}
-        </Link>
-      );
-    },
+    renderCell: ({ variantFunctionalConsequence }) => (
+      <Link
+        external
+        to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
+      >
+        {sentenceCase(variantFunctionalConsequence.label)}
+      </Link>
+    ),
     filterValue: ({ variantFunctionalConsequence }) =>
       sentenceCase(variantFunctionalConsequence.label),
   },
   {
     id: 'clinicalSignificances',
-    filterValue: ({ clinicalSignificances }) => {
-      return clinicalSignificances.join();
-    },
+    filterValue: ({ clinicalSignificances }) => clinicalSignificances.join(),
     label: 'Clinical significance',
-    renderCell: ({ clinicalSignificances }) => {
-      return !clinicalSignificances ? (
+    renderCell: ({ clinicalSignificances }) =>
+      !clinicalSignificances ? (
         naLabel
       ) : clinicalSignificances.length === 1 ? (
         sentenceCase(clinicalSignificances[0])
@@ -156,22 +139,19 @@ const columns = [
             listStyle: 'none',
           }}
         >
-          {clinicalSignificances.map(clinicalSignificance => {
-            return (
-              <li key={clinicalSignificance}>
-                {sentenceCase(clinicalSignificance)}
-              </li>
-            );
-          })}
+          {clinicalSignificances.map(clinicalSignificance => (
+            <li key={clinicalSignificance}>
+              {sentenceCase(clinicalSignificance)}
+            </li>
+          ))}
         </ul>
-      );
-    },
+      ),
   },
   {
     id: 'allelicRequirements',
     label: 'Allele origin',
-    renderCell: ({ alleleOrigins, allelicRequirements }) => {
-      return !alleleOrigins || alleleOrigins.length === 0 ? (
+    renderCell: ({ alleleOrigins, allelicRequirements }) =>
+      !alleleOrigins || alleleOrigins.length === 0 ? (
         naLabel
       ) : allelicRequirements ? (
         <Tooltip
@@ -193,23 +173,20 @@ const columns = [
         </Tooltip>
       ) : (
         alleleOrigins.map(a => sentenceCase(a)).join('; ')
-      );
-    },
+      ),
     filterValue: ({ alleleOrigins }) =>
       alleleOrigins ? alleleOrigins.join() : '',
   },
   {
     id: 'confidence',
     label: 'Review status',
-    renderCell: ({ confidence }) => {
-      return (
-        <Tooltip title={confidence}>
-          <span>
-            <ClinvarStars num={clinvarStarMap[confidence]} />
-          </span>
-        </Tooltip>
-      );
-    },
+    renderCell: ({ confidence }) => (
+      <Tooltip title={confidence}>
+        <span>
+          <ClinvarStars num={clinvarStarMap[confidence]} />
+        </span>
+      </Tooltip>
+    ),
   },
   {
     label: 'Literature',
@@ -245,13 +222,15 @@ function fetchClinvar(ensemblId, efoId, cursor, size) {
 
 export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(Summary.fragments.evaSummary);
-  const count = summaryData.evaSummary.count; // reuse the count that was fetched in the summary query
-  
-  if(!count || count < 1) {
-    return null
+  const { count } = summaryData.evaSummary; // reuse the count that was fetched in the summary query
+
+  if (!count || count < 1) {
+    return null;
   }
 
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
 }
 
 export function BodyCore({ definition, id, label, count }) {
@@ -328,10 +307,10 @@ export function BodyCore({ definition, id, label, count }) {
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
-      renderBody={() => {
+      renderBody={() =>
         // depending on count, decide whether to use the server side paging
         // Table component or the client side paging DataTable component
-        return count > countCutoff ? (
+        count > countCutoff ? (
           <Table
             loading={loading}
             columns={columns}
@@ -352,8 +331,8 @@ export function BodyCore({ definition, id, label, count }) {
             query={CLINVAR_QUERY.loc.source.body}
             variables={variables}
           />
-        );
-      }}
+        )
+      }
     />
   );
 }

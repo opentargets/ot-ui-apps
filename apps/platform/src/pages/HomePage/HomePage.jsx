@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Grid,
   makeStyles,
@@ -10,21 +9,7 @@ import {
 import { useTheme } from '@material-ui/core/styles';
 import { Helmet } from 'react-helmet';
 
-import {
-  appTitle,
-  appDescription,
-  appCanonicalUrl,
-  externalLinks,
-  mainMenuItems,
-} from '../../constants';
 import { Footer, AutocompleteSearch } from 'ui';
-import HomeBox from './HomeBox';
-import Link from '../../components/Link';
-import NavBar from '../../components/NavBar';
-import searchExamples from './searchExamples';
-import Splash from './Splash';
-import Version from './Version';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircle,
@@ -35,6 +20,19 @@ import {
   faFileAlt,
   faCommentDots,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  appTitle,
+  appDescription,
+  appCanonicalUrl,
+  externalLinks,
+  mainMenuItems,
+} from '../../constants';
+import HomeBox from './HomeBox';
+import Link from '../../components/Link';
+import NavBar from '../../components/NavBar';
+import searchExamples from './searchExamples';
+import Splash from './Splash';
+import Version from './Version';
 
 import config from '../../config';
 import PrivateWrapper from '../../components/PrivateWrapper';
@@ -65,7 +63,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function pickTwo(arr) {
-  let i1 = Math.floor(Math.random() * arr.length);
+  const i1 = Math.floor(Math.random() * arr.length);
   let i2 = Math.floor(Math.random() * arr.length);
 
   while (i1 === i2) {
@@ -75,7 +73,7 @@ function pickTwo(arr) {
   return [arr[i1], arr[i2]];
 }
 
-const HomePage = () => {
+function HomePage() {
   const classes = useStyles();
   const targets = pickTwo(searchExamples.targets);
   const diseases = pickTwo(searchExamples.diseases);
@@ -87,7 +85,7 @@ const HomePage = () => {
     window.scrollTo({ top: window.innerHeight, left: 0, behavior: 'smooth' });
   };
 
-  const HelpBoxPanel = ({ fai, url, label, external }) => {
+  function HelpBoxPanel({ fai, url, label, external }) {
     if (xsMQ) {
       // on xsmall screens
       return (
@@ -105,20 +103,19 @@ const HomePage = () => {
           </Grid>
         </Link>
       );
-    } else {
-      return (
-        <Box className={classes.helpBoxes}>
-          <Link to={url} external={external}>
-            <div className="fa-layers fa-fw fa-6x">
-              <FontAwesomeIcon icon={faCircle} />
-              <FontAwesomeIcon icon={fai} transform="shrink-8" inverse />
-            </div>
-            <Typography>{label}</Typography>
-          </Link>
-        </Box>
-      );
     }
-  };
+    return (
+      <Box className={classes.helpBoxes}>
+        <Link to={url} external={external}>
+          <div className="fa-layers fa-fw fa-6x">
+            <FontAwesomeIcon icon={faCircle} />
+            <FontAwesomeIcon icon={fai} transform="shrink-8" inverse />
+          </div>
+          <Typography>{label}</Typography>
+        </Link>
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -140,7 +137,7 @@ const HomePage = () => {
           placement="bottom-end"
         />
         <HomeBox>
-          <AutocompleteSearch isHomePage showSearchResultPage/>
+          <AutocompleteSearch isHomePage showSearchResultPage />
           {/* Search examples */}
           <Grid
             className={classes.links}
@@ -268,7 +265,7 @@ const HomePage = () => {
             alignItems="flex-start"
             spacing={1}
           >
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm="auto">
               <HelpBoxPanel
                 fai={faDownload}
                 url="/downloads"
@@ -276,7 +273,7 @@ const HomePage = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm="auto">
               <HelpBoxPanel
                 fai={faLaptopCode}
                 url="/api"
@@ -285,7 +282,7 @@ const HomePage = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm="auto">
               <HelpBoxPanel
                 fai={faQuestionCircle}
                 url="https://platform-docs.opentargets.org/"
@@ -294,7 +291,7 @@ const HomePage = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm="auto">
               <HelpBoxPanel
                 fai={faFileAlt}
                 url="https://platform-docs.opentargets.org/citation"
@@ -303,7 +300,7 @@ const HomePage = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm="auto">
               <HelpBoxPanel
                 fai={faCommentDots}
                 url="https://community.opentargets.org/"
@@ -320,6 +317,6 @@ const HomePage = () => {
       <Footer externalLinks={externalLinks} />
     </>
   );
-};
+}
 
 export default HomePage;

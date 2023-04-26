@@ -4,8 +4,8 @@ import BasePage from '../../components/BasePage';
 
 const ProjectPage = lazy(() => import('./ProjectsPage.jsx'));
 
-const ProjectsPageWrapper = ({ location }) => (
-  <BasePage
+function ProjectsPageWrapper({ location }) {
+  return <BasePage
     title="Projects page | Open Targets Platform"
     description="Projects page | Open Targets Platform"
     location={location}
@@ -14,6 +14,6 @@ const ProjectsPageWrapper = ({ location }) => (
       <ProjectPage />
     </Suspense>
   </BasePage>
-);
+}
 
 export default ProjectsPageWrapper;

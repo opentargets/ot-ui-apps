@@ -13,7 +13,7 @@ class ErrorBoundary extends Component {
   }
 
   render() {
-    const isPartnerPreview  = config.profile.isPartnerPreview;
+    const {isPartnerPreview} = config.profile;
 
     const {
       message = isPartnerPreview ? (

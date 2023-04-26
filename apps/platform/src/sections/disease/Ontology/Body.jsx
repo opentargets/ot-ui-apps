@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import Description from './Description';
 import OntologySubgraph from './OntologySubgraph';
@@ -14,10 +14,7 @@ function Body({ definition, id: efoId, label: name }) {
       .then(res => res.text())
       .then(lines => {
         if (isCurrent) {
-          const nodes = lines
-            .trim()
-            .split('\n')
-            .map(JSON.parse);
+          const nodes = lines.trim().split('\n').map(JSON.parse);
           setEfoNodes(nodes);
         }
       });

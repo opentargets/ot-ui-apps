@@ -1,4 +1,3 @@
-import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
@@ -77,31 +76,29 @@ function getColumns(classes) {
     {
       id: 'homologyType',
       label: 'Homology type',
-      renderCell: ({ isHighConfidence, homologyType }) => {
-        return (
-          <>
-            <span className={classes.container}>
-              {isHighConfidence === 'NULL' ? null : (
-                <Tooltip
-                  title={
-                    isHighConfidence === '1'
-                      ? 'High confidence orthologue'
-                      : 'Low confidence orthologue'
-                  }
-                >
-                  <span>
-                    <FontAwesomeIcon
-                      className={isHighConfidence === '1' ? classes.star : ''}
-                      icon={isHighConfidence === '1' ? faStarSolid : faStar}
-                    />
-                  </span>
-                </Tooltip>
-              )}
-            </span>{' '}
-            {homologyType.replaceAll('_', ' ')}
-          </>
-        );
-      },
+      renderCell: ({ isHighConfidence, homologyType }) => (
+        <>
+          <span className={classes.container}>
+            {isHighConfidence === 'NULL' ? null : (
+              <Tooltip
+                title={
+                  isHighConfidence === '1'
+                    ? 'High confidence orthologue'
+                    : 'Low confidence orthologue'
+                }
+              >
+                <span>
+                  <FontAwesomeIcon
+                    className={isHighConfidence === '1' ? classes.star : ''}
+                    icon={isHighConfidence === '1' ? faStarSolid : faStar}
+                  />
+                </span>
+              </Tooltip>
+            )}
+          </span>{' '}
+          {homologyType.replaceAll('_', ' ')}
+        </>
+      ),
     },
     {
       id: 'targetGeneSymbol',

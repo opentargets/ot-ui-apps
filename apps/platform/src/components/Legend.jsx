@@ -1,14 +1,13 @@
-import React from 'react';
 import { Link } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { colorRange } from '../constants';
 
 function Legend({ url, urlLabel, hideLink }) {
-  const linkUrl = url
-    ? url
-    : 'https://platform-docs.opentargets.org/associations#association-scores';
-  const linkLabel = urlLabel ? urlLabel : 'Score';
+  const linkUrl =
+    url ||
+    'https://platform-docs.opentargets.org/associations#association-scores';
+  const linkLabel = urlLabel || 'Score';
 
   return (
     <div>
@@ -25,18 +24,16 @@ function Legend({ url, urlLabel, hideLink }) {
         <div style={{ height: '20px', width: '20px', textAlign: 'center' }}>
           0
         </div>
-        {colorRange.map(color => {
-          return (
-            <div
-              key={color}
-              style={{
-                backgroundColor: color,
-                height: '20px',
-                width: '20px',
-              }}
-            />
-          );
-        })}
+        {colorRange.map(color => (
+          <div
+            key={color}
+            style={{
+              backgroundColor: color,
+              height: '20px',
+              width: '20px',
+            }}
+          />
+        ))}
         <div style={{ height: '20px', width: '20px', textAlign: 'center' }}>
           1
         </div>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { List, ListItem, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 import usePlatformApi from '../../../hooks/usePlatformApi';
@@ -22,25 +21,23 @@ const columns = [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
-    renderCell: ({ disease, diseaseFromSource }) => {
-      return (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Reported disease or phenotype:
-              </Typography>
-              <Typography variant="caption" display="block" align="center">
-                {sentenceCase(diseaseFromSource)}
-              </Typography>
-            </>
-          }
-          showHelpIcon
-        >
-          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-        </Tooltip>
-      );
-    },
+    renderCell: ({ disease, diseaseFromSource }) => (
+      <Tooltip
+        title={
+          <>
+            <Typography variant="subtitle2" display="block" align="center">
+              Reported disease or phenotype:
+            </Typography>
+            <Typography variant="caption" display="block" align="center">
+              {sentenceCase(diseaseFromSource)}
+            </Typography>
+          </>
+        }
+        showHelpIcon
+      >
+        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+      </Tooltip>
+    ),
   },
   {
     id: 'variantFunctionalConsequence',
@@ -94,17 +91,15 @@ const columns = [
       confidence ? (
         <Tooltip
           title={
-            <>
-              <Typography variant="caption" display="block" align="center">
-                As defined by the{' '}
-                <Link
-                  external
-                  to={`https://thegencc.org/faq.html#validity-termsdelphi-survey`}
-                >
-                  GenCC Guidelines
-                </Link>
-              </Typography>
-            </>
+            <Typography variant="caption" display="block" align="center">
+              As defined by the{' '}
+              <Link
+                external
+                to="https://thegencc.org/faq.html#validity-termsdelphi-survey"
+              >
+                GenCC Guidelines
+              </Link>
+            </Typography>
           }
           showHelpIcon
         >
@@ -119,9 +114,11 @@ const columns = [
     label: 'Literature',
     renderCell: ({ literature }) => {
       const entries = literature
-        ? literature.map(id => {
-            return { name: id, url: epmcUrl(id), group: 'literature' };
-          })
+        ? literature.map(id => ({
+            name: id,
+            url: epmcUrl(id),
+            group: 'literature',
+          }))
         : [];
       return <PublicationsDrawer entries={entries} />;
     },

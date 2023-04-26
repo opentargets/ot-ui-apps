@@ -17,8 +17,8 @@ const styles = () => ({
   },
 });
 
-const ListTooltip = ({ classes, dataList, open, anchorEl, container }) => (
-  <Popper
+function ListTooltip({ classes, dataList, open, anchorEl, container }) {
+  return <Popper
     open={open}
     anchorEl={anchorEl}
     container={container}
@@ -49,6 +49,6 @@ const ListTooltip = ({ classes, dataList, open, anchorEl, container }) => (
       </Fade>
     )}
   </Popper>
-);
+}
 
 export default withStyles(styles)(ListTooltip);

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { max } from 'd3';
 import {
   layeringLongestPath,
@@ -135,7 +135,14 @@ function ClassicAssociationsDAG({
     }, {});
 
     const dagData = buildDagData(idToDisease, assocs, assocSet);
-    let dag, maxLayerCount, height, layout, nodes, links, xOffset, textLimit;
+    let dag;
+    let maxLayerCount;
+    let height;
+    let layout;
+    let nodes;
+    let links;
+    let xOffset;
+    let textLimit;
 
     if (dagData.length > 0) {
       dag = dagStratify()(dagData);

@@ -1,4 +1,3 @@
-import React from 'react';
 import { withStyles, useTheme } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDna } from '@fortawesome/free-solid-svg-icons';
@@ -21,7 +20,7 @@ const styles = theme => ({
   },
 });
 
-const TargetResult = ({ classes, data, highlights }) => {
+function TargetResult({ classes, data, highlights }) {
   const theme = useTheme();
   const targetDescription = clearDescriptionCodes(
     data.functionDescriptions,
@@ -45,6 +44,6 @@ const TargetResult = ({ classes, data, highlights }) => {
       <Highlights highlights={highlights} />
     </div>
   );
-};
+}
 
 export default withStyles(styles)(TargetResult);

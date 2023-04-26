@@ -1,4 +1,3 @@
-import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -9,19 +8,18 @@ import FileSaver from 'file-saver';
 const UNEXPECTED_FORMAT =
   'Unexpected format. Supported options are csv, tsv and json.';
 
-const pick = (object, keys) => {
-  return keys.reduce(function (o, k) {
+const pick = (object, keys) =>
+  keys.reduce((o, k) => {
     // take into account optional export() function, which takes precedence as per other download formats
     o[k.id] = k.export ? k.export(object) : object[k.id];
     return o;
   }, {});
-};
 
-const quoteIfString = (d) => (typeof d === 'string' ? `"${d}"` : d);
+const quoteIfString = d => (typeof d === 'string' ? `"${d}"` : d);
 
 const asJSONString = ({ rows, headerMap }) => {
   // use the full headerMap which contain optional export() function for each header
-  const rowsHeadersOnly = rows.map((row) => pick(row, headerMap));
+  const rowsHeadersOnly = rows.map(row => pick(row, headerMap));
   return JSON.stringify(rowsHeadersOnly);
 };
 
@@ -29,31 +27,27 @@ const asCSVString = ({ rows, headerMap }) => {
   const separator = ',';
   const lineSeparator = '\n';
   const headersString = headerMap
-    .map((d) => quoteIfString(d.label))
+    .map(d => quoteIfString(d.label))
     .join(separator);
-  const rowsArray = rows.map((row) => {
-    return headerMap
-      .map((header) => {
-        return quoteIfString(
-          header.export ? header.export(row) : row[header.id]
-        );
-      })
-      .join(separator);
-  });
+  const rowsArray = rows.map(row =>
+    headerMap
+      .map(header =>
+        quoteIfString(header.export ? header.export(row) : row[header.id])
+      )
+      .join(separator)
+  );
   return [headersString, ...rowsArray].join(lineSeparator);
 };
 
 const asTSVString = ({ rows, headerMap }) => {
   const separator = '\t';
   const lineSeparator = '\n';
-  const headersString = headerMap.map((d) => d.label).join(separator);
-  const rowsArray = rows.map((row) => {
-    return headerMap
-      .map((header) => {
-        return header.export ? header.export(row) : row[header.id];
-      })
-      .join(separator);
-  });
+  const headersString = headerMap.map(d => d.label).join(separator);
+  const rowsArray = rows.map(row =>
+    headerMap
+      .map(header => (header.export ? header.export(row) : row[header.id]))
+      .join(separator)
+  );
   return [headersString, ...rowsArray].join(lineSeparator);
 };
 
@@ -70,7 +64,7 @@ const asContentString = ({ rows, headerMap, format }) => {
   }
 };
 
-const asMimeType = (format) => {
+const asMimeType = format => {
   switch (format) {
     case 'json':
       return 'application/json;charset=utf-8';

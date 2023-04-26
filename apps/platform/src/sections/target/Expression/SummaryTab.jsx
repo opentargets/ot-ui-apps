@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid } from '@material-ui/core';
 import client from '../../../client';
 
@@ -22,15 +21,14 @@ const headers = [
   { id: 'protein', label: 'Protein' },
 ];
 
-const getDownloadRows = expressions => {
-  return expressions.map(expression => ({
+const getDownloadRows = expressions =>
+  expressions.map(expression => ({
     label: expression.tissue.label,
     organs: expression.tissue.organs.join(','),
     anatomicalSystems: expression.tissue.anatomicalSystems.join(','),
     rna: expression.rna.value,
     protein: expression.protein.level,
   }));
-};
 
 function SummaryTab({ symbol, data }) {
   console.log({ data });

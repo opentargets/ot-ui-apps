@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, List, ListItem, makeStyles, Typography } from '@material-ui/core';
 
@@ -28,9 +27,9 @@ const columns = [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
-    renderCell: ({ disease }) => {
-      return <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
-    },
+    renderCell: ({ disease }) => (
+      <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+    ),
   },
   {
     id: 'mutationType',
@@ -133,7 +132,7 @@ export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(
     Summary.fragments.CancerGeneCensusSummary
   );
-  const count = summaryData.cancerGeneCensusSummary.count;
+  const { count } = summaryData.cancerGeneCensusSummary;
 
   if (!count || count < 1) {
     return null;

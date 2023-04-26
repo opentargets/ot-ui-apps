@@ -1,4 +1,3 @@
-import React from 'react';
 import config from '../../../config';
 import Link from '../../../components/Link';
 

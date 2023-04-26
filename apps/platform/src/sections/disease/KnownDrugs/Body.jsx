@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Body as KnownDrugsBody } from '../../common/KnownDrugs';
 import Description from './Description';
 import { sentenceCase } from '../../../utils/global';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, Grid, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 

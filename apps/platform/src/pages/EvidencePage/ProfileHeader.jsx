@@ -1,4 +1,3 @@
-import React from 'react';
 import { faDna, faStethoscope } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -9,13 +8,13 @@ import {
   Typography,
 } from '@material-ui/core';
 
+import { Skeleton } from '@material-ui/lab';
 import {
   Description,
   ProfileHeader as BaseProfileHeader,
   ChipList,
 } from '../../components/ProfileHeader';
 import Link from '../../components/Link';
-import { Skeleton } from '@material-ui/lab';
 import usePlatformApi from '../../hooks/usePlatformApi';
 
 const useStyles = makeStyles(theme => ({
@@ -53,11 +52,14 @@ function ProfileHeader() {
   const classes = useStyles();
   const { loading, error, data } = usePlatformApi();
 
-  //TODO: Errors!
+  // TODO: Errors!
   if (error) return null;
 
-  const { id: efoId, name, description: diseaseDescription } =
-    data?.disease || {};
+  const {
+    id: efoId,
+    name,
+    description: diseaseDescription,
+  } = data?.disease || {};
   const targetDescription = data?.target.functionDescriptions?.[0];
 
   const diseaseSynonyms = parseSynonyms(data?.disease.synonyms || []);

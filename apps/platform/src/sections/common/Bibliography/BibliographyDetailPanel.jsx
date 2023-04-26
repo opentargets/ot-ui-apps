@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 
 const styles = theme => ({
@@ -10,11 +10,11 @@ const styles = theme => ({
 });
 
 class BibliograhpyDetailPanel extends Component {
-  render = () => {
+  render() {
     const { classes, children } = this.props;
 
     return <div className={classes.detailPanel}>{children}</div>;
-  };
+  }
 }
 
 export default withStyles(styles)(BibliograhpyDetailPanel);

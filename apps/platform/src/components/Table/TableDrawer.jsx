@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   AccordionSummary,
   AccordionDetails,
@@ -15,8 +15,8 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { naLabel } from '../../constants';
 import _ from 'lodash';
+import { naLabel } from '../../constants';
 
 import Link from '../Link';
 
@@ -179,7 +179,7 @@ function TableDrawer({
         className={classes.drawerLink}
         underline="none"
       >
-        {message ? message : `${entries.length} entries`}
+        {message || `${entries.length} entries`}
       </MUILink>
 
       <Drawer

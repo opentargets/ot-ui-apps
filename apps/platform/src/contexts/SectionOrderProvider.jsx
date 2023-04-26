@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 // import ls from 'local-storage';
 
 import usePlatformApi from '../hooks/usePlatformApi';
@@ -20,7 +20,7 @@ function SectionOrderProvider({ sections, children }) {
   const shouldRender = section => {
     const { hasData, external } = section.props.definition;
 
-    //TODO: review this.
+    // TODO: review this.
     return external || (data && hasData(data?.[entity])) || false;
   };
 

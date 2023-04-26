@@ -1,8 +1,8 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import queryString from 'query-string';
 import { Typography } from '@material-ui/core';
-import BasePage from '../../components/BasePage';
 import { LoadingBackdrop } from 'ui';
+import BasePage from '../../components/BasePage';
 
 import client from '../../client';
 import SEARCH_PAGE_QUERY from './SearchPageQuery.gql';
@@ -26,7 +26,7 @@ const parseQueryString = qs => {
   return params;
 };
 
-const SearchPage = ({ location, history }) => {
+function SearchPage({ location, history }) {
   const { q, page, entities } = parseQueryString(location.search);
   const [data, setData] = useState(null);
 
@@ -98,6 +98,6 @@ const SearchPage = ({ location, history }) => {
       </Suspense>
     </BasePage>
   );
-};
+}
 
 export default SearchPage;

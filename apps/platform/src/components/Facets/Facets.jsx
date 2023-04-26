@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Typography,
   Box,
@@ -49,18 +49,15 @@ function Facets({ loading, data, onChange, type }) {
   const [facets, setFacets] = useState([]);
   const classes = useStyles();
 
-  useEffect(
-    () => {
-      if (!data) return;
+  useEffect(() => {
+    if (!data) return;
 
-      if (!facets.length) {
-        setFacets(prepareFacetData(data));
-      } else {
-        setFacets(facets => updateFacetCounts(facets, data));
-      }
-    },
-    [data, facets.length]
-  );
+    if (!facets.length) {
+      setFacets(prepareFacetData(data));
+    } else {
+      setFacets(facets => updateFacetCounts(facets, data));
+    }
+  }, [data, facets.length]);
 
   const handleFilterChange = (changePath, value) => {
     const newFacets = [...facets];

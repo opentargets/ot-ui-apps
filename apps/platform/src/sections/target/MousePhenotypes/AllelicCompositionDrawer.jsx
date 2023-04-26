@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import {
   Drawer,
@@ -103,13 +103,11 @@ function AllelicCompositionDrawer({ biologicalModels }) {
             <CloseIcon />
           </IconButton>
         </Typography>
-        {biologicalModels.map(model => {
-          return (
-            <Paper key={model.id} className={classes.paper} variant="outlined">
-              <Model model={model} />
-            </Paper>
-          );
-        })}
+        {biologicalModels.map(model => (
+          <Paper key={model.id} className={classes.paper} variant="outlined">
+            <Model model={model} />
+          </Paper>
+        ))}
       </Drawer>
     </>
   );

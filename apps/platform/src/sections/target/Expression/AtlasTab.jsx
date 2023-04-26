@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { Helmet } from 'react-helmet';
 
 import ErrorBoundary from '../../../components/ErrorBoundary';
@@ -7,7 +7,7 @@ const ExpressionAtlasHeatmap = lazy(() =>
   import('@ebi-gene-expression-group/expression-atlas-heatmap-highcharts')
 );
 
-const AtlasTab = ({ ensgId, symbol }) => {
+function AtlasTab({ ensgId, symbol }) {
   return (
     <ErrorBoundary
       message={`There was an error loading the Expression Atlas plugin for ${symbol}`}
@@ -17,8 +17,7 @@ const AtlasTab = ({ ensgId, symbol }) => {
           {
             rel: 'stylesheet',
             type: 'text/css',
-            href:
-              'https://www.ebi.ac.uk/gxa/resources/css/customized-bootstrap-3.3.5.css',
+            href: 'https://www.ebi.ac.uk/gxa/resources/css/customized-bootstrap-3.3.5.css',
           },
         ]}
       />
@@ -34,6 +33,6 @@ const AtlasTab = ({ ensgId, symbol }) => {
       </Suspense>
     </ErrorBoundary>
   );
-};
+}
 
 export default AtlasTab;

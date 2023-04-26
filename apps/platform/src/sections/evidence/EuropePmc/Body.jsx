@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 
 import Description from './Description';
@@ -36,24 +36,22 @@ const columns = [
       journal,
       source,
       patentDetails,
-    }) => {
-      return (
-        <Publication
-          europePmcId={europePmcId}
-          title={title}
-          abstract={abstract}
-          textMiningSentences={textMiningSentences}
-          authors={authors}
-          journal={journal}
-          source={source}
-          patentDetails={patentDetails}
-        />
-      );
-    },
+    }) => (
+      <Publication
+        europePmcId={europePmcId}
+        title={title}
+        abstract={abstract}
+        textMiningSentences={textMiningSentences}
+        authors={authors}
+        journal={journal}
+        source={source}
+        patentDetails={patentDetails}
+      />
+    ),
   },
   {
     id: 'year',
-    renderCell: ({ year }) => (year ? year : naLabel),
+    renderCell: ({ year }) => year || naLabel,
   },
   {
     id: 'resourceScore',
@@ -84,9 +82,8 @@ function mergeData(rows, literatureData) {
           page: relevantEntry.pageInfo,
         },
       };
-    } else {
-      return row;
     }
+    return row;
   });
 
   return mergedRows;
@@ -96,16 +93,14 @@ export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(
     Summary.fragments.EuropePmcSummaryFragment
   );
-  const count = summaryData.europePmc.count;
+  const { count } = summaryData.europePmc;
 
   if (!count || count < 1) {
     return null;
   }
 
   // Note that EuropePMC widget, unlike others, does not require count
-  return (
-    <BodyCore definition={definition} id={id} label={label} />
-  );
+  return <BodyCore definition={definition} id={id} label={label} />;
 }
 
 /*
@@ -218,7 +213,9 @@ export function BodyCore({ definition, id, label }) {
       definition={definition}
       chipText={dataTypesMap.literature}
       request={{ loading, error, data }}
-      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={data => {
         const rows = mergeData(
           getPage(data.disease.evidences.rows, page, pageSize),

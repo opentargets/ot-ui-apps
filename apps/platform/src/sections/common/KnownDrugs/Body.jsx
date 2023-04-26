@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import client from '../../../client';
 import Link from '../../../components/Link';
@@ -51,13 +51,12 @@ function getColumnPool(id, entity) {
         {
           id: 'drug',
           propertyPath: 'drug.id',
-          renderCell: d => {
-            return d.drug ? (
+          renderCell: d =>
+            d.drug ? (
               <Link to={`/drug/${d.drug.id}`}>{d.drug.name}</Link>
             ) : (
               naLabel
-            );
-          },
+            ),
         },
         {
           id: 'type',
@@ -167,8 +166,8 @@ function Body({
     })),
   ];
 
-  const fetchDrugs = (variables, cursor, size, freeTextQuery) => {
-    return client.query({
+  const fetchDrugs = (variables, cursor, size, freeTextQuery) =>
+    client.query({
       query: BODY_QUERY,
       variables: {
         ...variables,
@@ -177,7 +176,6 @@ function Body({
         freeTextQuery,
       },
     });
-  };
 
   useEffect(
     () => {
@@ -243,8 +241,11 @@ function Body({
   const handleGlobalFilterChange = newGlobalFilter => {
     setLoading(true);
     fetchDrugs(variables, null, pageSize, newGlobalFilter).then(res => {
-      const { cursor, count, rows: newRows = [] } =
-        res.data[entity].knownDrugs ?? {};
+      const {
+        cursor,
+        count,
+        rows: newRows = [],
+      } = res.data[entity].knownDrugs ?? {};
       setLoading(false);
       setPage(0);
       setCursor(cursor);

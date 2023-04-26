@@ -45,8 +45,7 @@ const getRowsQuerySelector = entityToGet =>
 
 const getExportedColumns = entityToGet => {
   const nameColumn = entityToGet === 'target' ? targetName : diseaseName;
-  const sources = dataSources.map(({ id }) => {
-    return {
+  const sources = dataSources.map(({ id }) => ({
       id,
       exportValue: data => {
         const datatypeScore = data.datasourceScores.find(
@@ -54,8 +53,7 @@ const getExportedColumns = entityToGet => {
         );
         return datatypeScore ? datatypeScore.score : 'No data';
       },
-    };
-  });
+    }));
 
   return [
     nameColumn,
@@ -69,8 +67,7 @@ const getExportedColumns = entityToGet => {
 };
 
 const asJSON = (columns, rows) => {
-  const rowStrings = rows.map(row => {
-    return columns.reduce((accumulator, newKey) => {
+  const rowStrings = rows.map(row => columns.reduce((accumulator, newKey) => {
       if (newKey.exportValue === false) return accumulator;
 
       const newLabel = _.camelCase(
@@ -83,8 +80,7 @@ const asJSON = (columns, rows) => {
           ? newKey.exportValue(row)
           : _.get(row, newKey.propertyPath || newKey.id, ''),
       };
-    }, {});
-  });
+    }, {}));
 
   return JSON.stringify(rowStrings);
 };

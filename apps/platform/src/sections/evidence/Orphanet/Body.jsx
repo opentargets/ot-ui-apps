@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import usePlatformApi from '../../../hooks/usePlatformApi';
@@ -20,65 +19,56 @@ const columns = [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
-    renderCell: ({ disease, diseaseFromSource }) => {
-      return (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Reported disease or phenotype:
-              </Typography>
-              <Typography variant="caption" display="block" align="center">
-                {diseaseFromSource}
-              </Typography>
-            </>
-          }
-          showHelpIcon
-        >
-          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-        </Tooltip>
-      );
-    },
+    renderCell: ({ disease, diseaseFromSource }) => (
+      <Tooltip
+        title={
+          <>
+            <Typography variant="subtitle2" display="block" align="center">
+              Reported disease or phenotype:
+            </Typography>
+            <Typography variant="caption" display="block" align="center">
+              {diseaseFromSource}
+            </Typography>
+          </>
+        }
+        showHelpIcon
+      >
+        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+      </Tooltip>
+    ),
     filterValue: ({ disease, diseaseFromSource }) =>
       `${disease.name} ${disease.id} ${diseaseFromSource}`,
   },
   {
     id: 'targetFromSourceId',
     label: 'Reported protein',
-    renderCell: ({ targetFromSource, targetFromSourceId }) => {
-      return (
-        <Link to={`/target/${targetFromSourceId}`}>{targetFromSource}</Link>
-      );
-    },
+    renderCell: ({ targetFromSource, targetFromSourceId }) => (
+      <Link to={`/target/${targetFromSourceId}`}>{targetFromSource}</Link>
+    ),
     filterValue: ({ targetFromSource, targetFromSourceId }) =>
       `${targetFromSource} ${targetFromSourceId}`,
   },
   {
     id: 'variantFunctionalConsequence',
     label: 'Functional consequence',
-    renderCell: ({ variantFunctionalConsequence }) => (
+    renderCell: ({ variantFunctionalConsequence }) =>
       variantFunctionalConsequence ? (
         <Link
           external
-          to={`http://www.sequenceontology.org/browser/current_svn/term/${
-            variantFunctionalConsequence.id
-          }`}
+          to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
         >
           {sentenceCase(variantFunctionalConsequence.label)}
         </Link>
-      ) 
-      : 
-        (naLabel)
-    ),
+      ) : (
+        naLabel
+      ),
     filterValue: ({ variantFunctionalConsequence }) =>
       sentenceCase(variantFunctionalConsequence.label),
   },
   {
     id: 'alleleOrigins',
     label: 'Allele origin',
-    renderCell: ({ alleleOrigins }) => {
-      return alleleOrigins.join('; ');
-    },
+    renderCell: ({ alleleOrigins }) => alleleOrigins.join('; '),
     filterValue: ({ alleleOrigins }) => alleleOrigins.join('; '),
   },
   {
@@ -153,13 +143,15 @@ export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(
     Summary.fragments.OrphanetSummaryFragment
   );
-  const count = summaryData.orphanetSummary.count;
-  
-  if(!count || count < 1) {
-    return null
+  const { count } = summaryData.orphanetSummary;
+
+  if (!count || count < 1) {
+    return null;
   }
 
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
 }
 
 export function BodyCore({ definition, id, label, count }) {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Chip, useTheme } from '@material-ui/core';
 
 function Tag({ type }) {

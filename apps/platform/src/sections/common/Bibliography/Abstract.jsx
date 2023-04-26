@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import { Component, Fragment } from 'react';
 import { Typography } from '@material-ui/core';
 
 import BibliographyHtmlText from './BibliographyHtmlText';
@@ -9,11 +9,11 @@ import BibliographyHtmlText from './BibliographyHtmlText';
  *  - abstract: the abstract markup (html) as returned by LINK
  */
 class Abstract extends Component {
-  render = () => {
+  render() {
     const { abstract, variant } = this.props;
 
     return (
-      <Fragment>
+      <>
         {variant === 'regular' ? (
           <Typography variant="subtitle2" gutterBottom>
             Abstract
@@ -35,9 +35,9 @@ class Abstract extends Component {
         ) : (
           ''
         )}
-      </Fragment>
+      </>
     );
-  };
+  }
 }
 
 Abstract.defaultProps = {

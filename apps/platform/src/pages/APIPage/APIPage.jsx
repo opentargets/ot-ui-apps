@@ -27,8 +27,12 @@ import SEARCH_ASSOCS from './SearchAssocs.gql';
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
   import('graphiql').then((module) => {
-    module.default.Logo = () => null;
-    module.default.Toolbar = () => null;
+    module.default.Logo = function() {
+  return null
+};
+    module.default.Toolbar = function() {
+  return null
+};
     return module;
   })
 );

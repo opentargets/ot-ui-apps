@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Grid, Typography, useTheme } from '@material-ui/core';
 import { withContentRect } from 'react-measure';
 import { scaleQuantize, pack, hierarchy } from 'd3';
@@ -59,15 +59,13 @@ function buildHierarchicalData(associations, idToDisease) {
 
   return {
     uniqueId: 'EFO_ROOT',
-    children: Object.entries(tasMap).map(([taId, descendants]) => {
-      return {
-        id: taId,
-        uniqueId: taId,
-        name: idToDisease[taId].name,
-        score: tasScore[taId],
-        children: descendants,
-      };
-    }),
+    children: Object.entries(tasMap).map(([taId, descendants]) => ({
+      id: taId,
+      uniqueId: taId,
+      name: idToDisease[taId].name,
+      score: tasScore[taId],
+      children: descendants,
+    })),
   };
 }
 
@@ -120,84 +118,80 @@ function ClassicAssociationsBubbles({
                 height={size}
                 width={size}
               >
-                {root.descendants().map(d => {
-                  return (
-                    <g
-                      key={d.data.uniqueId}
-                      transform={`translate(${d.x},${d.y})`}
+                {root.descendants().map(d => (
+                  <g
+                    key={d.data.uniqueId}
+                    transform={`translate(${d.x},${d.y})`}
+                  >
+                    <AssociationTooltip
+                      ensemblId={ensemblId}
+                      efoId={d.data.id}
+                      name={d.data.name}
+                      score={d.data.score}
                     >
-                      <AssociationTooltip
-                        ensemblId={ensemblId}
-                        efoId={d.data.id}
-                        name={d.data.name}
-                        score={d.data.score}
+                      <path
+                        id={d.data.uniqueId}
+                        d={`M 0, ${d.r} a ${d.r},${d.r} 0 1,1 0,-${2 * d.r} a ${
+                          d.r
+                        },${d.r} 0 1,1 0,${2 * d.r}`}
+                        stroke={
+                          d.data.uniqueId !== 'EFO_ROOT'
+                            ? theme.palette.grey[400]
+                            : 'none'
+                        }
+                        fill={
+                          d.data.uniqueId === 'EFO_ROOT'
+                            ? theme.palette.grey[50]
+                            : d.parent.data.uniqueId === 'EFO_ROOT'
+                            ? theme.palette.grey[50]
+                            : color(d.data.score)
+                        }
+                        pointerEvents={
+                          d.data.uniqueId === 'EFO_ROOT' ? 'none' : 'auto'
+                        }
+                      />
+                    </AssociationTooltip>
+                    {d.data.uniqueId === 'EFO_ROOT' ? null : d.parent &&
+                      d.parent.data.uniqueId === 'EFO_ROOT' ? (
+                      <text
+                        textAnchor="middle"
+                        fontSize="12"
+                        fontWeight="bold"
+                        fill={theme.palette.grey[400]}
+                        pointerEvents="none"
                       >
-                        <path
-                          id={d.data.uniqueId}
-                          d={`M 0, ${d.r} a ${d.r},${d.r} 0 1,1 0,-${
-                            2 * d.r
-                          } a ${d.r},${d.r} 0 1,1 0,${2 * d.r}`}
-                          stroke={
-                            d.data.uniqueId !== 'EFO_ROOT'
-                              ? theme.palette.grey[400]
-                              : 'none'
-                          }
-                          fill={
-                            d.data.uniqueId === 'EFO_ROOT'
-                              ? theme.palette.grey[50]
-                              : d.parent.data.uniqueId === 'EFO_ROOT'
-                              ? theme.palette.grey[50]
-                              : color(d.data.score)
-                          }
-                          pointerEvents={
-                            d.data.uniqueId === 'EFO_ROOT' ? 'none' : 'auto'
-                          }
-                        />
-                      </AssociationTooltip>
-                      {d.data.uniqueId === 'EFO_ROOT' ? null : d.parent &&
-                        d.parent.data.uniqueId === 'EFO_ROOT' ? (
+                        <textPath
+                          startOffset="50%"
+                          xlinkHref={`#${d.data.uniqueId}`}
+                        >
+                          {d.data.name}
+                        </textPath>
+                      </text>
+                    ) : d.r > 15 ? (
+                      <>
+                        <clipPath id={`clip-${d.data.uniqueId}`}>
+                          <circle cx="0" cy="0" r={d.r} />
+                        </clipPath>
                         <text
+                          clipPath={`url(#clip-${d.data.uniqueId})`}
+                          fontSize="11"
                           textAnchor="middle"
-                          fontSize="12"
-                          fontWeight="bold"
-                          fill={theme.palette.grey[400]}
                           pointerEvents="none"
                         >
-                          <textPath
-                            startOffset="50%"
-                            xlinkHref={`#${d.data.uniqueId}`}
-                          >
-                            {d.data.name}
-                          </textPath>
+                          {d.data.name.split(' ').map((word, i, words) => (
+                            <tspan
+                              key={i}
+                              x="0"
+                              y={`${i - words.length / 2 + 0.8}em`}
+                            >
+                              {word}
+                            </tspan>
+                          ))}
                         </text>
-                      ) : d.r > 15 ? (
-                        <>
-                          <clipPath id={`clip-${d.data.uniqueId}`}>
-                            <circle cx="0" cy="0" r={d.r} />
-                          </clipPath>
-                          <text
-                            clipPath={`url(#clip-${d.data.uniqueId})`}
-                            fontSize="11"
-                            textAnchor="middle"
-                            pointerEvents="none"
-                          >
-                            {d.data.name.split(' ').map((word, i, words) => {
-                              return (
-                                <tspan
-                                  key={i}
-                                  x="0"
-                                  y={`${i - words.length / 2 + 0.8}em`}
-                                >
-                                  {word}
-                                </tspan>
-                              );
-                            })}
-                          </text>
-                        </>
-                      ) : null}
-                    </g>
-                  );
-                })}
+                      </>
+                    ) : null}
+                  </g>
+                ))}
               </svg>
             ) : (
               <Typography>

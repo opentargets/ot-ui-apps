@@ -4,8 +4,8 @@ import BasePage from '../../components/BasePage';
 
 const DownloadsPage = lazy(() => import('./DownloadsPage.jsx'));
 
-const DownloadsWrapper = ({ location }) => (
-  <BasePage
+function DownloadsWrapper({ location }) {
+  return <BasePage
     title="Data downloads | Open Targets Platform"
     description="Data downloads | Open Targets Platform"
     location={location}
@@ -14,6 +14,6 @@ const DownloadsWrapper = ({ location }) => (
       <DownloadsPage />
     </Suspense>
   </BasePage>
-);
+}
 
 export default DownloadsWrapper;

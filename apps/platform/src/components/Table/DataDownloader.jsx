@@ -1,5 +1,5 @@
 import FileSaver from 'file-saver';
-import React, { Suspense, useState, lazy } from 'react';
+import { Suspense, useState, lazy } from 'react';
 import _ from 'lodash';
 import {
   Button,
@@ -20,16 +20,20 @@ import Link from '../Link';
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
-  import('graphiql').then((module) => {
-    module.default.Logo = () => null;
-    module.default.Toolbar = () => null;
+  import('graphiql').then(module => {
+    module.default.Logo = function () {
+      return null;
+    };
+    module.default.Toolbar = function () {
+      return null;
+    };
     return module;
   })
 );
 
 const asJSON = (columns, rows) => {
-  const rowStrings = rows.map((row) => {
-    return columns.reduce((accumulator, newKey) => {
+  const rowStrings = rows.map(row =>
+    columns.reduce((accumulator, newKey) => {
       if (newKey.exportValue === false) return accumulator;
 
       const newLabel = _.camelCase(
@@ -42,14 +46,14 @@ const asJSON = (columns, rows) => {
           ? newKey.exportValue(row)
           : _.get(row, newKey.propertyPath || newKey.id, ''),
       };
-    }, {});
-  });
+    }, {})
+  );
 
   return JSON.stringify(rowStrings);
 };
 
 const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
-  const quoteString = (d) => {
+  const quoteString = d => {
     // converts arrays to strings
     if (Array.isArray(d)) {
       d = d.join(',');
@@ -72,7 +76,7 @@ const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
     .join(separator);
 
   const rowStrings = rows
-    .map((row) =>
+    .map(row =>
       columns
         .reduce((rowString, column) => {
           if (column.exportValue === false) return rowString;
@@ -92,7 +96,7 @@ const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
   return [headerString, rowStrings].join(lineSeparator);
 };
 
-const createBlob = (format) =>
+const createBlob = format =>
   ({
     json: (columns, rows) =>
       new Blob([asJSON(columns, rows)], {
@@ -108,7 +112,7 @@ const createBlob = (format) =>
       }),
   }[format]);
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles(theme => ({
   messageProgress: {
     marginRight: '1rem',
   },

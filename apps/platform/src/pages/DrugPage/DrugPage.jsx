@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import { lazy } from 'react';
 import { useQuery } from '@apollo/client';
 
 import BasePage from '../../components/BasePage';
@@ -8,7 +8,7 @@ import NotFoundPage from '../NotFoundPage';
 import { RoutingTab, RoutingTabs } from '../../components/RoutingTabs';
 import DRUG_PAGE_QUERY from './DrugPage.gql';
 
-const Profile = lazy(() => import('../DrugPage/Profile'));
+const Profile = lazy(() => import('./Profile'));
 
 function DrugPage({ location, match }) {
   const { chemblId } = match.params;

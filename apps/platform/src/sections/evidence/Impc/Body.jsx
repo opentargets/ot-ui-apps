@@ -1,4 +1,3 @@
-import React from 'react';
 import { Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 
@@ -118,13 +117,15 @@ export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(
     Summary.fragments.IMCPSummaryFragment
   );
-  const count = summaryData.impc.count;
-  
-  if(!count || count < 1) {
-    return null
+  const { count } = summaryData.impc;
+
+  if (!count || count < 1) {
+    return null;
   }
 
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
 }
 
 export function BodyCore({ definition, id, label, count }) {
@@ -143,7 +144,9 @@ export function BodyCore({ definition, id, label, count }) {
       definition={definition}
       chipText={dataTypesMap.animal_model}
       request={request}
-      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={data => (
         <DataTable
           columns={columns}
@@ -151,7 +154,7 @@ export function BodyCore({ definition, id, label, count }) {
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           rows={data.disease.evidences.rows}
           pageSize={5}
-          rowsPerPageOptions={[5].concat(defaultRowsPerPageOptions)}  // custom page size of 5 is not included in defaultRowsPerPageOptions
+          rowsPerPageOptions={[5].concat(defaultRowsPerPageOptions)} // custom page size of 5 is not included in defaultRowsPerPageOptions
           showGlobalFilter
           query={INTOGEN_QUERY.loc.source.body}
           variables={variables}

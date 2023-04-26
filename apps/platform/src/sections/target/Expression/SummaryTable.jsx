@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import { Component, Fragment } from 'react';
 import maxBy from 'lodash/maxBy';
 import classNames from 'classnames';
 import {
@@ -66,26 +66,18 @@ const groupTissues = (expressions, groupBy) => {
 
 const tissueComparator = sortBy => {
   if (sortBy === 'rna') {
-    return (a, b) => {
-      return b.rna.value - a.rna.value;
-    };
+    return (a, b) => b.rna.value - a.rna.value;
   }
 
-  return (a, b) => {
-    return b.protein.level - a.protein.level;
-  };
+  return (a, b) => b.protein.level - a.protein.level;
 };
 
 const parentComparator = sortBy => {
   if (sortBy === 'rna') {
-    return (a, b) => {
-      return b.maxRnaValue - a.maxRnaValue;
-    };
+    return (a, b) => b.maxRnaValue - a.maxRnaValue;
   }
 
-  return (a, b) => {
-    return b.maxProteinLevel - a.maxProteinLevel;
-  };
+  return (a, b) => b.maxProteinLevel - a.maxProteinLevel;
 };
 
 const sort = (parents, sortBy) => {
@@ -138,7 +130,7 @@ class SummaryTable extends Component {
     const parents = sort(groupTissues(data, groupBy), sortBy);
 
     return (
-      <Fragment>
+      <>
         <Grid
           className={classes.groupBy}
           container
@@ -206,19 +198,17 @@ class SummaryTable extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {parents.map(parent => {
-                return (
-                  <SummaryRow
-                    key={parent.parentLabel}
-                    maxRnaValue={maxRnaValue}
-                    parent={parent}
-                  />
-                );
-              })}
+              {parents.map(parent => (
+                <SummaryRow
+                  key={parent.parentLabel}
+                  maxRnaValue={maxRnaValue}
+                  parent={parent}
+                />
+              ))}
             </TableBody>
           </Table>
         </Grid>
-      </Fragment>
+      </>
     );
   }
 }

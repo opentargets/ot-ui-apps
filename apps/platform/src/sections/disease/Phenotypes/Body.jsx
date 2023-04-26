@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import _ from 'lodash';
 
@@ -12,12 +11,9 @@ import { naLabel } from '../../../constants';
 import PHENOTYPES_BODY_QUERY from './PhenotypesQuery.gql';
 
 const evidenceTypeDescription = {
-  IEA:
-    'Inferred from Electronic Annotations (IEA) are extracted by parsing the Clinical Features sections of the Online Mendelian Inheritance in Man resource',
-  PCS:
-    'Published Clinical Study (PCS) are annotations extracted from articles in the medical literature with the PubMed ID of the published study (if available)',
-  TAS:
-    'Traceable Author Statement (TAS) is used for information gleaned from knowledge bases such as OMIM or Orphanet that have derived the information from a published source',
+  IEA: 'Inferred from Electronic Annotations (IEA) are extracted by parsing the Clinical Features sections of the Online Mendelian Inheritance in Man resource',
+  PCS: 'Published Clinical Study (PCS) are annotations extracted from articles in the medical literature with the PubMed ID of the published study (if available)',
+  TAS: 'Traceable Author Statement (TAS) is used for information gleaned from knowledge bases such as OMIM or Orphanet that have derived the information from a published source',
 };
 
 const aspectDescription = {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import usePlatformApi from '../../../hooks/usePlatformApi';
@@ -18,70 +17,60 @@ const columns = [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
-    renderCell: ({ disease, diseaseFromSource }) => {
-      return (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Reported disease or phenotype:
-              </Typography>
-              <Typography variant="caption" display="block" align="center">
-                {diseaseFromSource}
-              </Typography>
-            </>
-          }
-          showHelpIcon
-        >
-          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-        </Tooltip>
-      );
-    },
+    renderCell: ({ disease, diseaseFromSource }) => (
+      <Tooltip
+        title={
+          <>
+            <Typography variant="subtitle2" display="block" align="center">
+              Reported disease or phenotype:
+            </Typography>
+            <Typography variant="caption" display="block" align="center">
+              {diseaseFromSource}
+            </Typography>
+          </>
+        }
+        showHelpIcon
+      >
+        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+      </Tooltip>
+    ),
   },
   {
     id: 'studyId',
     label: 'Experiment ID',
-    renderCell: ({ studyId }) => {
-      return (
-        <Link external to={`http://www.ebi.ac.uk/gxa/experiments/${studyId}`}>
-          {studyId}
-        </Link>
-      );
-    },
+    renderCell: ({ studyId }) => (
+      <Link external to={`http://www.ebi.ac.uk/gxa/experiments/${studyId}`}>
+        {studyId}
+      </Link>
+    ),
   },
   {
     id: 'contrast',
     label: 'Experiment details',
-    renderCell: ({ contrast, studyOverview }) => {
-      return (
-        <Tooltip title={studyOverview} showHelpIcon>
-          <span>{contrast}</span>
-        </Tooltip>
-      );
-    },
+    renderCell: ({ contrast, studyOverview }) => (
+      <Tooltip title={studyOverview} showHelpIcon>
+        <span>{contrast}</span>
+      </Tooltip>
+    ),
   },
   {
     id: 'confidence',
     label: 'Experiment confidence',
-    renderCell: ({ confidence }) => {
-      return (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="caption" display="block" align="center">
-                As defined by the{' '}
-                <Link external to={`https://www.ebi.ac.uk/gxa/FAQ.html`}>
-                  Expression Atlas Guideline
-                </Link>
-              </Typography>
-            </>
-          }
-          showHelpIcon
-        >
-          {sentenceCase(confidence)}
-        </Tooltip>
-      );
-    },
+    renderCell: ({ confidence }) => (
+      <Tooltip
+        title={
+          <Typography variant="caption" display="block" align="center">
+            As defined by the{' '}
+            <Link external to="https://www.ebi.ac.uk/gxa/FAQ.html">
+              Expression Atlas Guideline
+            </Link>
+          </Typography>
+        }
+        showHelpIcon
+      >
+        {sentenceCase(confidence)}
+      </Tooltip>
+    ),
   },
   {
     id: 'log2FoldChangeValue',
@@ -106,9 +95,9 @@ const columns = [
         <i>p</i>-value
       </>
     ),
-    renderCell: ({ resourceScore }) => {
-      return <ScientificNotation number={resourceScore} />;
-    },
+    renderCell: ({ resourceScore }) => (
+      <ScientificNotation number={resourceScore} />
+    ),
     numeric: true,
     sortable: true,
   },
@@ -118,13 +107,15 @@ export function Body({ definition, id, label }) {
   const { data: summaryData } = usePlatformApi(
     Summary.fragments.expressionAtlasSummary
   );
-  const count = summaryData.expressionAtlasSummary.count;
-  
-  if(!count || count < 1) {
-    return null
+  const { count } = summaryData.expressionAtlasSummary;
+
+  if (!count || count < 1) {
+    return null;
   }
 
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
+  );
 }
 
 export function BodyCore({ definition, id, label, count }) {

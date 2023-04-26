@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import { Component, Fragment } from 'react';
 import { Box, Typography } from '@material-ui/core';
 
-import Link from '../../../components/Link';
 import { LongText } from 'ui';
+import Link from '../../../components/Link';
 
 const pmUrl = 'https://europepmc.org/';
 // const pmTitleUrl = 'abstract/med/';
@@ -24,7 +24,7 @@ const pmUrl = 'https://europepmc.org/';
  *  - variant: "regular" (default) or "small" (has smaller titles)
  */
 class SimplePublication extends Component {
-  render = () => {
+  render() {
     const {
       pmId,
       title,
@@ -40,7 +40,7 @@ class SimplePublication extends Component {
     const pubURL = pmUrl + sourceScope + pmId;
 
     return (
-      <Fragment>
+      <>
         {/* paper title */}
         <Typography variant={variant === 'small' ? 'subtitle2' : 'subtitle1'}>
           <Link external to={pubURL}>
@@ -63,12 +63,11 @@ class SimplePublication extends Component {
             variant={variant === 'small' ? 'caption' : 'body2'}
           >
             {authors
-              .map((author) => {
-                return (
+              .map(
+                author =>
                   author.lastName +
-                  (author.initials ? ' ' + author.initials : '')
-                );
-              })
+                  (author.initials ? ` ${author.initials}` : '')
+              )
               .join(', ')}
           </LongText>
         </Box>
@@ -92,9 +91,9 @@ class SimplePublication extends Component {
             <span>:{journal.ref.pgn}</span>
           </Typography>
         )}
-      </Fragment>
+      </>
     );
-  };
+  }
 }
 
 SimplePublication.defaultProps = {

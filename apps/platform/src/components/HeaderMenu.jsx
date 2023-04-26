@@ -65,7 +65,7 @@ class HeaderMenu extends Component {
     const isMenuOpen = Boolean(anchorEl);
 
     return (
-      <Fragment>
+      <>
         <IconButton
           className={classes.icon}
           size="medium"
@@ -97,7 +97,7 @@ class HeaderMenu extends Component {
                           <MenuItem
                             onClick={this.handleMenuClose}
                             key={i}
-                            dense={true}
+                            dense
                             className={classes.menuItem}
                           >
                             <Link
@@ -109,12 +109,12 @@ class HeaderMenu extends Component {
                             </Link>
                           </MenuItem>
                         </PrivateWrapper>);
-                      } else {
+                      } 
                         return (
                           <MenuItem
                             onClick={this.handleMenuClose}
                             key={i}
-                            dense={true}
+                            dense
                             className={classes.menuItem}
                           >
                             <Link
@@ -126,7 +126,7 @@ class HeaderMenu extends Component {
                             </Link>
                           </MenuItem>
                         );
-                      }
+                      
                     })}
                   </MenuList>
                 </ClickAwayListener>
@@ -134,7 +134,7 @@ class HeaderMenu extends Component {
             </Fade>
           )}
         </Popper>
-      </Fragment>
+      </>
     );
   }
 }

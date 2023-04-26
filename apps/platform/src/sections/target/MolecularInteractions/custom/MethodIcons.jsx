@@ -1,4 +1,3 @@
-import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircle,
@@ -47,7 +46,7 @@ function MethodIcon({
   );
 }
 
-const MethodIconText = props => {
+function MethodIconText(props) {
   return (
     <MethodIcon {...props}>
       <span
@@ -59,29 +58,33 @@ const MethodIconText = props => {
       </span>
     </MethodIcon>
   );
-};
+}
 
-const MethodIconExpandArrow = props => (
-  <MethodIcon {...props}>
-    <FontAwesomeIcon
-      icon={faExpandArrowsAlt}
-      size="2x"
-      inverse
-      transform="shrink-6 right-1"
-    />
-  </MethodIcon>
-);
+function MethodIconExpandArrow(props) {
+  return (
+    <MethodIcon {...props}>
+      <FontAwesomeIcon
+        icon={faExpandArrowsAlt}
+        size="2x"
+        inverse
+        transform="shrink-6 right-1"
+      />
+    </MethodIcon>
+  );
+}
 
-const MethodIconArrow = props => (
-  <MethodIcon {...props}>
-    <FontAwesomeIcon
-      icon={faArrowsAltH}
-      size="2x"
-      inverse
-      transform="shrink-6"
-    />
-  </MethodIcon>
-);
+function MethodIconArrow(props) {
+  return (
+    <MethodIcon {...props}>
+      <FontAwesomeIcon
+        icon={faArrowsAltH}
+        size="2x"
+        inverse
+        transform="shrink-6"
+      />
+    </MethodIcon>
+  );
+}
 
 export { MethodIconText };
 export { MethodIconExpandArrow };

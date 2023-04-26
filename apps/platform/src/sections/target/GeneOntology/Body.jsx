@@ -1,5 +1,5 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
+import { sortBy, filter } from 'lodash';
 import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
@@ -8,7 +8,6 @@ import DataTable from '../../../components/Table/DataTable';
 import Link from '../../../components/Link';
 import { epmcUrl } from '../../../utils/urls';
 import { defaultRowsPerPageOptions } from '../../../constants';
-import { sortBy, filter } from 'lodash';
 import GeneOntologyEvidenceCodeMap from './GeneOntologyEvidenceCodeMappings.json';
 
 import GENE_ONTOLOGY_QUERY from './GeneOntology.gql';
@@ -54,7 +53,7 @@ const sourceMapContent = source => {
     );
 };
 
-const EvidenceTooltip = ({ evidence }) => {
+function EvidenceTooltip({ evidence }) {
   const code = filter(GeneOntologyEvidenceCodeMap, {
     evidenceCode: evidence,
   })[0];
@@ -76,7 +75,7 @@ const EvidenceTooltip = ({ evidence }) => {
       </p>
     </div>
   );
-};
+}
 
 const columns = [
   {
@@ -109,9 +108,7 @@ const columns = [
       term ? (
         <Link
           external
-          to={`https://www.ebi.ac.uk/QuickGO/annotations?geneProductId=${geneProduct}&goId=${
-            term.id
-          }`}
+          to={`https://www.ebi.ac.uk/QuickGO/annotations?geneProductId=${geneProduct}&goId=${term.id}`}
         >
           {geneProduct}
         </Link>
@@ -137,9 +134,7 @@ const columns = [
     label: 'Source',
     exportLabel: 'Source',
     exportValue: row => row.source,
-    renderCell: ({ source }) => {
-      return sourceMapContent(source);
-    },
+    renderCell: ({ source }) => sourceMapContent(source),
   },
 ];
 

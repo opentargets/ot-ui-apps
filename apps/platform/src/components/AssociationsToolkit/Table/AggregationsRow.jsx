@@ -1,7 +1,7 @@
+import { useState } from 'react';
 import AggregationsTooltip from './AggregationsTooltip';
 import { grouped as assocGrouped } from '../static_datasets/dataSourcesAssoc';
 import { grouped as prioritizationGrouped } from '../static_datasets/prioritizationCols';
-import { useState } from 'react';
 
 function AggregationsRow({
   table,
@@ -68,7 +68,7 @@ function AggregationItem({
         title={aggregation}
         open={active === aggregation || open}
       >
-        <div style={{ width: '100%' }}></div>
+        <div style={{ width: '100%' }} />
       </AggregationsTooltip>
     </div>
   );

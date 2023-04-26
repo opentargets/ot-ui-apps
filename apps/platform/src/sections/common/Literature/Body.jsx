@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import PublicationsList from './PublicationsList';
+import { useEffect } from 'react';
 import { makeStyles, Box } from '@material-ui/core';
-import Description from './Description';
-import SectionItem from '../../../components/Section/SectionItem';
 import {
   useSetRecoilState,
   useRecoilValue,
   useResetRecoilState,
   RecoilRoot,
 } from 'recoil';
+import PublicationsList from './PublicationsList';
+import Description from './Description';
+import SectionItem from '../../../components/Section/SectionItem';
 import {
   literatureState,
   updateLiteratureState,
@@ -92,16 +92,14 @@ function Body({ definition, name, id, entity, BODY_QUERY }) {
         definition={definition}
         request={{ loading: false, error: null, data: true }}
         renderDescription={() => <Description name={name} />}
-        renderBody={() => {
-          return (
-            <LiteratureList
-              id={id}
-              name={name}
-              entity={entity}
-              BODY_QUERY={BODY_QUERY}
-            />
-          );
-        }}
+        renderBody={() => (
+          <LiteratureList
+            id={id}
+            name={name}
+            entity={entity}
+            BODY_QUERY={BODY_QUERY}
+          />
+        )}
       />
     </RecoilRoot>
   );

@@ -92,8 +92,8 @@ function useTargetAssociations({
           })),
         },
       });
-      let parsedData = getParsedData(entity, resData.data);
-      let dataCount = getAllDataCount(entity, resData.data);
+      const parsedData = getParsedData(entity, resData.data);
+      const dataCount = getAllDataCount(entity, resData.data);
       setCount(dataCount);
       setData(parsedData);
       setInitialLoading(false);

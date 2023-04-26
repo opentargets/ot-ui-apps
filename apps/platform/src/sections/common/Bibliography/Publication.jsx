@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import { Component, Fragment } from 'react';
 import { Button, Grid, Typography } from '@material-ui/core';
 
 import Abstract from './Abstract';
@@ -32,13 +32,14 @@ class Publication extends Component {
 
   // Fetches abstract data as needed and return component
   buildAbstract = () => {
-    if (!this.state.abstract) {
+    const { abstract } = this.state;
+    if (!abstract) {
       this.getAbstract();
       return null;
     }
     return (
       <BibliographyDetailPanel>
-        <Abstract abstract={this.state.abstract} />
+        <Abstract abstract={abstract} />
       </BibliographyDetailPanel>
     );
   };
@@ -68,7 +69,7 @@ class Publication extends Component {
                 pmId={hit._source.pub_id}
                 title={hit._source.title}
                 authors={
-                  (hit._source.authors || []).map((a) => ({
+                  (hit._source.authors || []).map(a => ({
                     lastName: a.LastName,
                     initials: a.Initials,
                   })) || []
@@ -89,7 +90,7 @@ class Publication extends Component {
   // Get the abstract data from API
   getAbstract = () => {
     getPublicationAbstract(this.props.pmId).then(
-      (resp) => {
+      resp => {
         this.setState({
           abstract: resp.abstract,
         });
@@ -106,7 +107,7 @@ class Publication extends Component {
   // Get the abstract data from API
   getSimilar = () => {
     getSimilarPublications(this.props.pmId).then(
-      (resp) => {
+      resp => {
         this.setState({
           similar: resp.hits.hits,
         });
@@ -120,12 +121,12 @@ class Publication extends Component {
     );
   };
 
-  render = () => {
+  render() {
     const { pmId, title, authors, journal, hasAbstract = true } = this.props;
     const { showAbstract, showSimilar } = this.state;
 
     return (
-      <Fragment>
+      <>
         {/* Publication basic details */}
         <SimplePublication
           pmId={pmId}
@@ -180,9 +181,9 @@ class Publication extends Component {
           {/* Similar papers details */}
           {showSimilar ? this.buildSimilar() : null}
         </div>
-      </Fragment>
+      </>
     );
-  };
+  }
 }
 
 export default Publication;

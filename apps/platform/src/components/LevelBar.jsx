@@ -1,4 +1,3 @@
-import React from 'react';
 import { withStyles } from '@material-ui/core';
 
 const styles = theme => ({
@@ -13,16 +12,18 @@ const styles = theme => ({
   },
 });
 
-const LevelBar = ({ classes, value, altTitle }) => (
-  <div className={classes.containerBar}>
-    <div
-      className={classes.levelBar}
-      style={{
-        width: `${value}%`,
-      }}
-      title={altTitle}
-    />
-  </div>
-);
+function LevelBar({ classes, value, altTitle }) {
+  return (
+    <div className={classes.containerBar}>
+      <div
+        className={classes.levelBar}
+        style={{
+          width: `${value}%`,
+        }}
+        title={altTitle}
+      />
+    </div>
+  );
+}
 
 export default withStyles(styles)(LevelBar);

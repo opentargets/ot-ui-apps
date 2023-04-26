@@ -1,10 +1,9 @@
-import React from 'react';
 import { CardContent, Typography, withStyles } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
 
-import Link from '../../components/Link';
 import { LongText } from 'ui';
+import Link from '../../components/Link';
 
 const styles = () => ({
   link: {
@@ -15,7 +14,7 @@ const styles = () => ({
   },
 });
 
-const DiseaseDetail = ({ classes, data }) => {
+function DiseaseDetail({ classes, data }) {
   const { id, name, description, therapeuticAreas } = data;
   return (
     <CardContent>
@@ -44,6 +43,6 @@ const DiseaseDetail = ({ classes, data }) => {
       )}
     </CardContent>
   );
-};
+}
 
 export default withStyles(styles)(DiseaseDetail);

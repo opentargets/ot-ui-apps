@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
-import PublicationWrapper from '../../../components/PublicationsDrawer/PublicationWrapper';
-import { Table } from '../../../components/Table';
+import { useEffect } from 'react';
 import {
   useRecoilState,
   useRecoilValue,
   useSetRecoilState,
   useRecoilCallback,
 } from 'recoil';
-import Loader from './Loader';
 import { Box, Grid, makeStyles, Fade } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+import PublicationWrapper from '../../../components/PublicationsDrawer/PublicationWrapper';
+import { Table } from '../../../components/Table';
+import Loader from './Loader';
 
 import {
   litsIdsState,
@@ -32,12 +32,11 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const PublicationsList = ({ hideSearch = false }) => {
+function PublicationsList({ hideSearch = false }) {
   const classes = useStyles();
   const lits = useRecoilValue(litsIdsState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
   const count = useRecoilValue(litsCountState);
   const cursor = useRecoilValue(litsCursorState);
   const displayedPubs = useRecoilValue(displayedPublications);
@@ -48,33 +47,34 @@ const PublicationsList = ({ hideSearch = false }) => {
 
   // function to request 'ready' literatures ids
   const syncLiteraturesState = useRecoilCallback(
-    ({ snapshot, set }) => async () => {
-      const lits = await snapshot.getPromise(litsIdsState);
-      const readyForRequest = lits
-        .filter(x => x.status === 'ready')
-        .map(x => x.id);
+    ({ snapshot, set }) =>
+      async () => {
+        const lits = await snapshot.getPromise(litsIdsState);
+        const readyForRequest = lits
+          .filter(x => x.status === 'ready')
+          .map(x => x.id);
 
-      if (readyForRequest.length === 0) return;
-      const queryResult = await snapshot.getPromise(
-        literaturesEuropePMCQuery({
-          literaturesIds: readyForRequest,
-        })
-      );
+        if (readyForRequest.length === 0) return;
+        const queryResult = await snapshot.getPromise(
+          literaturesEuropePMCQuery({
+            literaturesIds: readyForRequest,
+          })
+        );
 
-      const parsedPublications = parsePublications(queryResult);
+        const parsedPublications = parsePublications(queryResult);
 
-      const mapedResults = new Map(
-        parsedPublications.map(key => [key.europePmcId, key])
-      );
+        const mapedResults = new Map(
+          parsedPublications.map(key => [key.europePmcId, key])
+        );
 
-      const updatedPublications = lits.map(x => {
-        const publication = mapedResults.get(x.id);
-        if (x.status === 'loaded') return x;
-        const status = publication ? 'loaded' : 'missing';
-        return { ...x, status, publication };
-      });
-      set(litsIdsState, updatedPublications);
-    }
+        const updatedPublications = lits.map(x => {
+          const publication = mapedResults.get(x.id);
+          if (x.status === 'loaded') return x;
+          const status = publication ? 'loaded' : 'missing';
+          return { ...x, status, publication };
+        });
+        set(litsIdsState, updatedPublications);
+      }
   );
 
   useEffect(
@@ -86,83 +86,85 @@ const PublicationsList = ({ hideSearch = false }) => {
   );
 
   const handleRowsPerPageChange = useRecoilCallback(
-    ({ snapshot }) => async newPageSize => {
-      const expected = newPageSize * page + newPageSize;
-      if (expected > lits.length && cursor !== null) {
-        const {
-          query,
-          id,
-          category,
-          selectedEntities,
-          cursor,
-          globalEntity,
-        } = bibliographyState;
-        setLoadingEntities(true);
-        const request = await fetchSimilarEntities({
-          query,
-          id,
-          category,
-          entities: selectedEntities,
-          cursor,
-        });
-        setLoadingEntities(false);
-        const data = request.data[globalEntity];
-        const loadedPublications = await snapshot.getPromise(litsIdsState);
-        const newLits = data.literatureOcurrences?.rows?.map(({ pmid }) => ({
-          id: pmid,
-          status: 'ready',
-          publication: null,
-        }));
-        const update = {
-          litsIds: [...loadedPublications, ...newLits],
-          cursor: data.literatureOcurrences?.cursor,
-          page: 0,
-          pageSize: newPageSize,
-        };
-        setLiteratureUpdate(update);
-      } else {
-        setLiteratureUpdate({ pageSize: newPageSize });
+    ({ snapshot }) =>
+      async newPageSize => {
+        const expected = newPageSize * page + newPageSize;
+        if (expected > lits.length && cursor !== null) {
+          const {
+            query,
+            id,
+            category,
+            selectedEntities,
+            cursor,
+            globalEntity,
+          } = bibliographyState;
+          setLoadingEntities(true);
+          const request = await fetchSimilarEntities({
+            query,
+            id,
+            category,
+            entities: selectedEntities,
+            cursor,
+          });
+          setLoadingEntities(false);
+          const data = request.data[globalEntity];
+          const loadedPublications = await snapshot.getPromise(litsIdsState);
+          const newLits = data.literatureOcurrences?.rows?.map(({ pmid }) => ({
+            id: pmid,
+            status: 'ready',
+            publication: null,
+          }));
+          const update = {
+            litsIds: [...loadedPublications, ...newLits],
+            cursor: data.literatureOcurrences?.cursor,
+            page: 0,
+            pageSize: newPageSize,
+          };
+          setLiteratureUpdate(update);
+        } else {
+          setLiteratureUpdate({ pageSize: newPageSize });
+        }
       }
-    }
   );
 
   const handlePageChange = useRecoilCallback(
-    ({ snapshot }) => async newPage => {
-      if (pageSize * newPage + pageSize > lits.length && cursor !== null) {
-        const {
-          query,
-          id,
-          category,
-          selectedEntities,
-          cursor,
-          globalEntity,
-        } = bibliographyState;
-        setLoadingEntities(true);
-        const request = await fetchSimilarEntities({
-          query,
-          id,
-          category,
-          entities: selectedEntities,
-          cursor,
-        });
-        setLoadingEntities(false);
-        const data = request.data[globalEntity];
-        const loadedPublications = await snapshot.getPromise(litsIdsState);
-        const newLits = data.literatureOcurrences?.rows?.map(({ pmid }) => ({
-          id: pmid,
-          status: 'ready',
-          publication: null,
-        }));
-        const update = {
-          litsIds: [...loadedPublications, ...newLits],
-          cursor: data.literatureOcurrences?.cursor,
-          page: newPage,
-        };
-        setLiteratureUpdate(update);
-      } else {
-        setLiteratureUpdate({ page: newPage });
+    ({ snapshot }) =>
+      async newPage => {
+        if (pageSize * newPage + pageSize > lits.length && cursor !== null) {
+          const {
+            query,
+            id,
+            category,
+            selectedEntities,
+            cursor,
+            globalEntity,
+          } = bibliographyState;
+          setLoadingEntities(true);
+          const request = await fetchSimilarEntities({
+            query,
+            id,
+            category,
+            entities: selectedEntities,
+            cursor,
+          });
+          setLoadingEntities(false);
+          const data = request.data[globalEntity];
+          const loadedPublications = await snapshot.getPromise(litsIdsState);
+          const newLits = data.literatureOcurrences?.rows?.map(({ pmid }) => ({
+            id: pmid,
+            status: 'ready',
+            publication: null,
+          }));
+          const update = {
+            litsIds: [...loadedPublications, ...newLits],
+            cursor: data.literatureOcurrences?.cursor,
+            page: newPage,
+          };
+          setLiteratureUpdate(update);
+        } else {
+          setLiteratureUpdate({ page: newPage });
+        }
       }
-    }
   );
 
   const columns = [
@@ -209,9 +211,9 @@ const PublicationsList = ({ hideSearch = false }) => {
       onRowsPerPageChange={handleRowsPerPageChange}
     />
   );
-};
+}
 
-const SkeletonRow = () => {
+function SkeletonRow() {
   return (
     <Fade in>
       <Box mb={2}>
@@ -230,6 +232,6 @@ const SkeletonRow = () => {
       </Box>
     </Fade>
   );
-};
+}
 
 export default PublicationsList;

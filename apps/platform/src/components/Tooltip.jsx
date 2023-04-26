@@ -1,4 +1,3 @@
-import React from 'react';
 import { makeStyles, Tooltip as MUITooltip } from '@material-ui/core';
 import _ from 'lodash';
 

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { median as d3Median, quantile } from 'd3';
 
 import { DownloadSvgPlot } from '../../../components/DownloadSvgPlot';
@@ -21,8 +21,8 @@ export async function getData(symbol) {
   }
 }
 
-const transformData = data => {
-  return data.map(d => {
+const transformData = data =>
+  data.map(d => {
     // d3 requires for the array of values to be sorted before using median and quantile
     d.data.sort((a, b) => a - b);
     const median = d3Median(d.data);
@@ -51,7 +51,6 @@ const transformData = data => {
       outliers,
     };
   });
-};
 
 function GtexTab({ symbol, data }) {
   const gtexVariability = useRef();

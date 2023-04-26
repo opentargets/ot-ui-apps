@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Skeleton } from '@material-ui/lab';
 import config from '../../config';
 import useBatchDownloader from '../../hooks/useBatchDownloader';

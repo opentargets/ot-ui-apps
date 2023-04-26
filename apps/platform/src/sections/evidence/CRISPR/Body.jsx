@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { Link } from '@material-ui/core';
@@ -16,26 +15,22 @@ const columns = [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
-    renderCell: ({ disease }) => {
-      return (
-        <Link component={RouterLink} to={`/disease/${disease.id}`}>
-          {disease.name}
-        </Link>
-      );
-    },
+    renderCell: ({ disease }) => (
+      <Link component={RouterLink} to={`/disease/${disease.id}`}>
+        {disease.name}
+      </Link>
+    ),
   },
   {
     label: 'Reported disease/phenotype',
     renderCell: ({ diseaseCellLines, diseaseFromSource }) => {
       if (!diseaseCellLines) return naLabel;
 
-      const cellLines = diseaseCellLines.map(line => {
-        return {
-          name: line.name,
-          url: `https://cellmodelpassports.sanger.ac.uk/passports/${line.id}`,
-          group: 'Cancer Cell Lines',
-        };
-      });
+      const cellLines = diseaseCellLines.map(line => ({
+        name: line.name,
+        url: `https://cellmodelpassports.sanger.ac.uk/passports/${line.id}`,
+        group: 'Cancer Cell Lines',
+      }));
 
       return (
         <TableDrawer
@@ -54,10 +49,8 @@ const columns = [
 ];
 
 export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.crisprSummary
-  );
-  const count = summaryData.crisprSummary.count;
+  const { data: summaryData } = usePlatformApi(Summary.fragments.crisprSummary);
+  const { count } = summaryData.crisprSummary;
 
   if (!count || count < 1) {
     return null;

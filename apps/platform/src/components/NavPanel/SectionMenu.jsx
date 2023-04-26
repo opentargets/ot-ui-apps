@@ -1,4 +1,3 @@
-import React from 'react';
 import classNames from 'classnames';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { List } from '@material-ui/core';

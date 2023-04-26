@@ -1,4 +1,3 @@
-import React from 'react';
 import { Typography, withStyles } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
@@ -21,7 +20,7 @@ const styles = theme => ({
   },
 });
 
-const DiseaseResult = ({ classes, data, highlights }) => {
+function DiseaseResult({ classes, data, highlights }) {
   return (
     <div className={classes.container}>
       <Link
@@ -39,6 +38,6 @@ const DiseaseResult = ({ classes, data, highlights }) => {
       <Highlights highlights={highlights} />
     </div>
   );
-};
+}
 
 export default withStyles(styles)(DiseaseResult);

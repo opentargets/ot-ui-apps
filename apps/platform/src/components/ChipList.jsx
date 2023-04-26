@@ -1,8 +1,7 @@
-import React from 'react';
 import { Box, Chip, makeStyles, Tooltip } from '@material-ui/core';
 
-import { naLabel } from '../constants';
 import classNames from 'classnames';
+import { naLabel } from '../constants';
 
 const useContainerStyles = makeStyles(theme => ({
   tooltip: {

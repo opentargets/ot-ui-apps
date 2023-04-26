@@ -1,4 +1,3 @@
-import React from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
 import {
@@ -102,7 +101,7 @@ function TableHeader({
           {headerGroups.map((headerCell, cellIndex) => (
             <HeaderCell
               colspan={colspans[cellIndex]}
-              isHeaderGroup={true}
+              isHeaderGroup
               key={cellIndex}
               label={headerCell.label || ''}
               noWrapHeader={noWrapHeader}

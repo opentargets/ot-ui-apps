@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   withStyles,
   Grid,
@@ -10,7 +9,11 @@ import {
   TablePagination,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDna, faPrescriptionBottleAlt, faStethoscope } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDna,
+  faPrescriptionBottleAlt,
+  faStethoscope,
+} from '@fortawesome/free-solid-svg-icons';
 
 import DiseaseDetail from './DiseaseDetail';
 import DiseaseResult from './DiseaseResult';
@@ -20,21 +23,21 @@ import ErrorBoundary from '../../components/ErrorBoundary';
 import TargetDetail from './TargetDetail';
 import TargetResult from './TargetResult';
 
-const getCounts = (entities) => {
+const getCounts = entities => {
   const counts = {
     target: 0,
     disease: 0,
     drug: 0,
   };
 
-  entities.forEach((entity) => {
+  entities.forEach(entity => {
     counts[entity.name] = entity.total;
   });
 
   return counts;
 };
 
-const styles = (theme) => ({
+const styles = theme => ({
   label: {
     marginLeft: '-6px',
   },
@@ -118,7 +121,7 @@ const SearchFilters = withStyles(styles)(
   }
 );
 
-const SearchResults = ({ results, page, onPageChange }) => {
+function SearchResults({ results, page, onPageChange }) {
   return (
     <>
       <TablePagination
@@ -129,8 +132,8 @@ const SearchResults = ({ results, page, onPageChange }) => {
         page={page - 1}
         onPageChange={onPageChange}
       />
-      {results.hits.map(({ highlights, object }) => {
-        return object.__typename === 'Target' ? (
+      {results.hits.map(({ highlights, object }) =>
+        object.__typename === 'Target' ? (
           <TargetResult key={object.id} data={object} highlights={highlights} />
         ) : object.__typename === 'Disease' ? (
           <DiseaseResult
@@ -140,8 +143,8 @@ const SearchResults = ({ results, page, onPageChange }) => {
           />
         ) : (
           <DrugResult key={object.id} data={object} highlights={highlights} />
-        );
-      })}
+        )
+      )}
       <TablePagination
         component="div"
         rowsPerPageOptions={[]}
@@ -152,9 +155,9 @@ const SearchResults = ({ results, page, onPageChange }) => {
       />
     </>
   );
-};
+}
 
-const TopHitDetail = ({ topHit }) => {
+function TopHitDetail({ topHit }) {
   return (
     <Card elevation={0}>
       <ErrorBoundary>
@@ -168,16 +171,16 @@ const TopHitDetail = ({ topHit }) => {
       </ErrorBoundary>
     </Card>
   );
-};
+}
 
-const SearchContainer = ({
+function SearchContainer({
   q,
   page,
   entities,
   data,
   onPageChange,
   onSetEntity,
-}) => {
+}) {
   const { entities: entitiesCount } = data.search.aggregations;
   const topHit = data.topHit.hits[0]?.object;
 
@@ -212,6 +215,6 @@ const SearchContainer = ({
       </Grid>
     </>
   );
-};
+}
 
 export default SearchContainer;

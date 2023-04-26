@@ -1,4 +1,3 @@
-import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -44,13 +43,12 @@ function getColumns(classes) {
     {
       id: 'event',
       label: 'Safety event',
-      renderCell: ({ event, eventId }) => {
-        return eventId ? (
+      renderCell: ({ event, eventId }) =>
+        eventId ? (
           <Link to={`/disease/${eventId}`}>{event ?? naLabel}</Link>
         ) : (
           event ?? naLabel
-        );
-      },
+        ),
     },
     {
       id: 'biosamples',
@@ -66,19 +64,17 @@ function getColumns(classes) {
         /* TODO: remove to handle only arrays */
         if (!biosamples) return 'N/A';
         const entries = biosamples.map(
-          ({ cellFormat, cellLabel, tissueLabel, tissueId }) => {
-            return {
-              name: cellFormat
-                ? `${cellFormat}${cellLabel ? ` (${cellLabel})` : ''}`
-                : tissueLabel,
-              url: cellFormat
-                ? null
-                : tissueId
-                ? `https://identifiers.org/${tissueId.replace('_', ':')}`
-                : null,
-              group: cellFormat ? 'Assay' : 'Organ system',
-            };
-          }
+          ({ cellFormat, cellLabel, tissueLabel, tissueId }) => ({
+            name: cellFormat
+              ? `${cellFormat}${cellLabel ? ` (${cellLabel})` : ''}`
+              : tissueLabel,
+            url: cellFormat
+              ? null
+              : tissueId
+              ? `https://identifiers.org/${tissueId.replace('_', ':')}`
+              : null,
+            group: cellFormat ? 'Assay' : 'Organ system',
+          })
         );
 
         return (
@@ -166,8 +162,8 @@ function getColumns(classes) {
     {
       id: 'datasource',
       label: 'Source',
-      renderCell: ({ datasource, literature, url }) => {
-        return literature ? (
+      renderCell: ({ datasource, literature, url }) =>
+        literature ? (
           <PublicationsDrawer
             entries={[{ name: literature }]}
             customLabel={datasource}
@@ -176,8 +172,7 @@ function getColumns(classes) {
           <Link external to={url}>
             {datasource}
           </Link>
-        );
-      },
+        ),
     },
   ];
 }

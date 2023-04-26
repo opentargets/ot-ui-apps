@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Description from './Description';
 import SectionItem from '../../../components/Section/SectionItem';
 import usePlatformApi from '../../../hooks/usePlatformApi';

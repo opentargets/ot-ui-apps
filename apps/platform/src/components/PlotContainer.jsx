@@ -18,7 +18,7 @@ const styles = () => ({
   },
 });
 
-const PlotContainer = ({
+function PlotContainer({
   classes,
   loading,
   error,
@@ -26,8 +26,8 @@ const PlotContainer = ({
   center,
   right,
   children,
-}) => (
-  <Paper className={classes.plotContainer} elevation={0}>
+}) {
+  return <Paper className={classes.plotContainer} elevation={0}>
     {left || center || right ? (
       <PlotContainerSection>
         <Grid container justifyContent="space-between" spacing={1}>
@@ -55,6 +55,6 @@ const PlotContainer = ({
     ) : null}
     {children}
   </Paper>
-);
+}
 
 export default withStyles(styles)(PlotContainer);

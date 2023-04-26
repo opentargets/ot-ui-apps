@@ -13,7 +13,7 @@ import useAssociationsData from '../hooks/useAssociationsData';
 
 const AssociationsContext = createContext();
 
-const initialIndirect = entity => (entity === 'target' ? false : true);
+const initialIndirect = entity => (entity !== 'target');
 
 function AssociationsProvider({ children, entity, id, query }) {
   const [{ pageIndex, pageSize }, setPagination] = useState({
@@ -84,7 +84,7 @@ function AssociationsProvider({ children, entity, id, query }) {
     aggregationDatasources.forEach(e => {
       if (getControlChecked(dataSourcesRequired, e.id) === false) {
         isAllActive = false;
-        return;
+        
       }
     });
     if (isAllActive) {

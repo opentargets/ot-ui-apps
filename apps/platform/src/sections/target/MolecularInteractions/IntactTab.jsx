@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Typography } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import client from '../../../client';
 
 import DataTable from '../../../components/Table/DataTable';
 import { MethodIconText, MethodIconArrow } from './custom/MethodIcons';
 import Tooltip from '../../../components/Tooltip';
 
-import Grid from '@material-ui/core/Grid';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import Link from '../../../components/Link';
 import EllsWrapper from '../../../components/EllsWrapper';
 import { defaultRowsPerPageOptions } from '../../../constants';
 
 import INTERACTIONS_QUERY from './InteractionsQuery.gql';
 
-const getData = (query, ensgId, sourceDatabase, index, size) => {
-  return client.query({
-    query: query,
+const getData = (query, ensgId, sourceDatabase, index, size) =>
+  client.query({
+    query,
     variables: {
       ensgId,
       sourceDatabase,
@@ -25,9 +25,8 @@ const getData = (query, ensgId, sourceDatabase, index, size) => {
       size,
     },
   });
-};
 
-const onLinkClick = function(e) {
+const onLinkClick = function (e) {
   // handler to stop propagation of clicks on links in table rows
   // to avoid selection of a different row
   e.stopPropagation();
@@ -120,7 +119,7 @@ const columns = {
       renderCell: row => (
         <>
           {row.count}
-          <span className={'selected-evidence'}>
+          <span className="selected-evidence">
             <FontAwesomeIcon icon={faPlay} />
           </span>
         </>
@@ -136,9 +135,7 @@ const columns = {
       label: 'Identifier',
       renderCell: row => (
         <Link
-          to={`http://www.ebi.ac.uk/intact/interaction/${
-            row.interactionIdentifier
-          }`}
+          to={`http://www.ebi.ac.uk/intact/interaction/${row.interactionIdentifier}`}
           onClick={onLinkClick}
           external
         >
@@ -279,23 +276,20 @@ function IntactTab({ ensgId, symbol }) {
   const variables = { ensgId, sourceDatabase: id };
 
   // load tab data when new tab selected (also on first load)
-  useEffect(
-    () => {
-      setLoading(true);
-      getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
-        if (res.data.target.interactions) {
-          setLoading(false);
-          setData(res.data.target.interactions.rows);
-          setEvidence(res.data.target.interactions.rows[0].evidences);
-          setSelectedIntB(
-            res.data.target.interactions.rows[0].targetB?.approvedSymbol ||
-              res.data.target.interactions.rows[0].intB
-          );
-        }
-      });
-    },
-    [ensgId]
-  );
+  useEffect(() => {
+    setLoading(true);
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
+      if (res.data.target.interactions) {
+        setLoading(false);
+        setData(res.data.target.interactions.rows);
+        setEvidence(res.data.target.interactions.rows[0].evidences);
+        setSelectedIntB(
+          res.data.target.interactions.rows[0].targetB?.approvedSymbol ||
+            res.data.target.interactions.rows[0].intB
+        );
+      }
+    });
+  }, [ensgId]);
 
   return (
     <Grid container spacing={10}>
@@ -317,7 +311,7 @@ function IntactTab({ ensgId, symbol }) {
           dataDownloaderFileStem={`${symbol}-molecular-interactions-interactors`}
           hover
           selected
-          onRowClick={(r) => {
+          onRowClick={r => {
             setEvidence(r.evidences);
             setSelectedIntB(r.targetB?.approvedSymbol || r.intB);
           }}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Avatar, ListItem, ListItemText } from '@material-ui/core';
 import classNames from 'classnames';
 import { Draggable } from 'react-beautiful-dnd';

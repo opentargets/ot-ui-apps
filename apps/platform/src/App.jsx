@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
+import { ThemeProvider, SearchProvider } from 'ui';
 import SEARCH_QUERY from './components/Search/SearchQuery.gql';
 import PrivateRoute from './components/PrivateRoute';
-import { ThemeProvider, SearchProvider } from 'ui';
 import client from './client';
 import config from './config';
 // import initLocalStorage from './utils/initLocalStorage';

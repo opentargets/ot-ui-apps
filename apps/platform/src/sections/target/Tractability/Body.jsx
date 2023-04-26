@@ -1,19 +1,18 @@
-import React from 'react';
 import classNames from 'classnames';
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-
-import TRACTABILITY_QUERY from './TractabilityQuery.gql';
-import Summary from './Summary';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SectionItem from '../../../components/Section/SectionItem';
-import Description from './Description';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckCircle,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import TRACTABILITY_QUERY from './TractabilityQuery.gql';
+import Summary from './Summary';
+import usePlatformApi from '../../../hooks/usePlatformApi';
+import SectionItem from '../../../components/Section/SectionItem';
+import Description from './Description';
+
 import EllsWrapper from '../../../components/EllsWrapper';
 
 const useStyles = makeStyles(theme => ({
@@ -60,7 +59,7 @@ const modalities = [
  * @param {Array} data the tractability data array returned by the API {value, modality, label(id)}
  * @returns
  */
-const ModalityList = ({ modality, data }) => {
+function ModalityList({ modality, data }) {
   const classes = useStyles();
   return (
     <>
@@ -91,7 +90,7 @@ const ModalityList = ({ modality, data }) => {
         ))}
     </>
   );
-};
+}
 
 function Body({ definition, label: symbol, id: ensemblId }) {
   // const request = usePlatformApi(Summary.fragments.TractabilitySummaryFragment);
@@ -105,25 +104,21 @@ function Body({ definition, label: symbol, id: ensemblId }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => {
-        return (
-          <>
-            <Grid container spacing={3}>
-              {modalities.map(m => (
-                <Grid item xs={6} sm={3} key={m.modality}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    {m.label}
-                  </Typography>
-                  <ModalityList
-                    modality={m.modality}
-                    data={data.target.tractability}
-                  />
-                </Grid>
-              ))}
+      renderBody={data => (
+        <Grid container spacing={3}>
+          {modalities.map(m => (
+            <Grid item xs={6} sm={3} key={m.modality}>
+              <Typography variant="subtitle1" gutterBottom>
+                {m.label}
+              </Typography>
+              <ModalityList
+                modality={m.modality}
+                data={data.target.tractability}
+              />
             </Grid>
-          </>
-        );
-      }}
+          ))}
+        </Grid>
+      )}
     />
   );
 }

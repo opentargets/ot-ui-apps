@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import {
   Box,
@@ -52,7 +52,7 @@ function Search({ autoFocus = false, embedded = false }) {
     onCompleted: () => {},
   });
   const [searchResults, setSearchResults] = useState([]);
-  let history = useHistory();
+  const history = useHistory();
 
   const handleChangeInputValue = e => {
     if (!e.target.value) {
