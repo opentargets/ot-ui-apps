@@ -1,9 +1,9 @@
 import { Typography } from '@material-ui/core';
 
-function SectionError(error) {
+function SectionError({ message }) {
   return (
     <Typography color="error" align="center">
-      {error.message}
+      {message}
     </Typography>
   );
 }

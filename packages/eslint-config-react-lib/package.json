@@ -1,5 +1,5 @@
 {
-  "name": "eslint-config-custom-vite",
+  "name": "eslint-config-react-lib",
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
@@ -12,7 +12,8 @@
     "eslint-config-turbo": "latest",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "7.28.0"
+    "eslint-plugin-react": "7.28.0",
+    "eslint-plugin-turbo": "^1.9.3"
   },
   "publishConfig": {
     "access": "public"

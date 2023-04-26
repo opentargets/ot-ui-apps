@@ -8,11 +8,9 @@ module.exports = {
     "airbnb",
     "eslint:recommended",
     "plugin:import/recommended",
-    "plugin:react/jsx-runtime",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "turbo",
     "prettier",
   ],
   parser: "@typescript-eslint/parser",
@@ -37,6 +35,5 @@ module.exports = {
     "no-restricted-exports": "off",
     "react/prop-types": 0,
     "react/react-in-jsx-scope": 0,
-    "import/prefer-default-export": "warn",
   },
 };

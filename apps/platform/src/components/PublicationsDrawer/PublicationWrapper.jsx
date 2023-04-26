@@ -53,7 +53,7 @@ function PublicationWrapper({
   const [showAbstract, setShowAbstract] = useState(false);
 
   const handleShowAbstractClick = () => {
-    setShowAbstract(showAbstract => !showAbstract);
+    setShowAbstract(!showAbstract);
   };
 
   useEffect(() => {

@@ -140,7 +140,34 @@ export function PublicationsList({ entriesIds, hideSearch = false }) {
     {
       id: 'publications',
       label: ' ',
-      renderCell: publication => <PublicationWrapper {...publication} />,
+      renderCell: publication => {
+        const {
+          europePmcId,
+          title,
+          titleHtml,
+          authors,
+          journal,
+          variant,
+          abstract,
+          fullTextOpen,
+          source,
+          patentDetails,
+        } = publication;
+        return (
+          <PublicationWrapper
+            europePmcId={europePmcId}
+            title={title}
+            titleHtml={titleHtml}
+            authors={authors}
+            journal={journal}
+            variant={variant}
+            abstract={abstract}
+            fullTextOpen={fullTextOpen}
+            source={source}
+            patentDetails={patentDetails}
+          />
+        );
+      },
       filterValue: row =>
         `${row.journal.journal?.title} ${row?.title} ${row?.year}
         ${row.authors

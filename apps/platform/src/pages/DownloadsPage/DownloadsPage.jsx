@@ -7,7 +7,7 @@ import Link from '../../components/Link';
 import { defaultRowsPerPageOptions, formatMap } from '../../constants';
 import { DataTable } from '../../components/Table';
 import DownloadsDrawer from './DownloadsDrawer';
-import datasetMappings from './dataset-mappings';
+import datasetMappings from './dataset-mappings.json';
 import config from '../../config';
 
 const useStyles = makeStyles(theme => ({
