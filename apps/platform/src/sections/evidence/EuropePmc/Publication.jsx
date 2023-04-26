@@ -41,15 +41,15 @@ function Publication({
   const [showMatches, setShowMatches] = useState(false);
 
   if (!title) {
-    return <>{naLabel}</>;
+    return {naLabel};
   }
 
   const handleShowAbstractClick = () => {
-    setShowAbstract(showAbstract => !showAbstract);
+    setShowAbstract(current => !current);
   };
 
   const handleShowMatchesClick = () => {
-    setShowMatches(showMatches => !showMatches);
+    setShowMatches(current => !current);
   };
 
   return (

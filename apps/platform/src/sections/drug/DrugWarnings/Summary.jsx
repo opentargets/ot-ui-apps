@@ -18,6 +18,8 @@ function Summary({ definition }) {
         if (hasBeenWithdrawn) return 'Withdrawn';
 
         if (blackBoxWarning) return 'Black Box';
+
+        return null;
       }}
     />
   );

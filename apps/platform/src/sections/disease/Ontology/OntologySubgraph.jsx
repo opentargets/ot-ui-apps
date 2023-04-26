@@ -85,7 +85,7 @@ function getMaxLayerCount(dag) {
     const { layer } = node;
 
     if (counts[layer]) {
-      counts[layer]++;
+      counts[layer] += 1;
     } else {
       counts[layer] = 1;
     }
@@ -98,7 +98,7 @@ function getMaxLayerCount(dag) {
   dag.links().forEach(link => {
     link.points.forEach((_, i) => {
       const index = link.source.layer + i;
-      counts[index]++;
+      counts[index] += 1;
       if (counts[index] > maxCount) {
         maxCount = counts[index];
       }
@@ -126,7 +126,6 @@ function OntologySubgraph({
   measureRef,
   contentRect,
 }) {
-  line.x(d => d.y - xOffset).y(d => d.x);
   const classes = useStyles();
   const { width } = contentRect.bounds;
   const dagData = buildDagData(efoId, efo, idToDisease);
@@ -150,6 +149,8 @@ function OntologySubgraph({
   const xOffset = separation / 2 - radius;
   const textLimit = separation / 8;
 
+  line.x(d => d.y - xOffset).y(d => d.x);
+  
   return (
     <div ref={measureRef}>
       {width ? (

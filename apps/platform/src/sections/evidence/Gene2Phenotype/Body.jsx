@@ -59,20 +59,22 @@ const columns = [
   {
     id: 'allelicRequirements',
     label: 'Allelic requirement',
-    renderCell: ({ allelicRequirements }) =>
-      allelicRequirements ? (
-        allelicRequirements.length > 1 ? (
+    renderCell: ({ allelicRequirements }) => {
+      if (allelicRequirements && allelicRequirements.length > 1) {
+        return (
           <List>
             {allelicRequirements.map((item, index) => (
               <ListItem key={index}>{item}</ListItem>
             ))}
           </List>
-        ) : (
-          sentenceCase(allelicRequirements[0])
-        )
-      ) : (
-        naLabel
-      ),
+        );
+      }
+      if (allelicRequirements && allelicRequirements.length === 1) {
+        return sentenceCase(allelicRequirements[0]);
+      }
+
+      return naLabel;
+    },
     filterValue: ({ allelicRequirements }) => allelicRequirements.join(),
   },
   {
@@ -125,22 +127,6 @@ const columns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const {
-    data: {
-      gene2Phenotype: { count },
-    },
-  } = usePlatformApi(Summary.fragments.Gene2PhenotypeSummaryFragment);
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({
   definition,
   id: { ensgId, efoId },
@@ -173,5 +159,21 @@ export function BodyCore({
         />
       )}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const {
+    data: {
+      gene2Phenotype: { count },
+    },
+  } = usePlatformApi(Summary.fragments.Gene2PhenotypeSummaryFragment);
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

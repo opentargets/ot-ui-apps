@@ -110,8 +110,8 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
           }}
         >
           <List>
-            {therapeuticAreas.map((item, itemIndex) => (
-              <ListItem key={itemIndex}>
+            {therapeuticAreas.map((item) => (
+              <ListItem key={item.id}>
                 <Link to={`/disease/${item.id}`}>{item.name}</Link>
               </ListItem>
             ))}

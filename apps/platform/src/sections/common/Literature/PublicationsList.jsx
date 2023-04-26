@@ -32,6 +32,27 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+function SkeletonRow() {
+  return (
+    <Fade in>
+      <Box mb={2}>
+        <Skeleton height={60} />
+        {/* <Box pt="1px"> */}
+        <Skeleton width="60%" height={45} />
+        {/* </Box> */}
+        <Grid container wrap="nowrap">
+          <Box width={130} mr={1}>
+            <Skeleton height={45} />
+          </Box>
+          <Box width={130}>
+            <Skeleton height={45} />
+          </Box>
+        </Grid>
+      </Box>
+    </Fade>
+  );
+}
+
 function PublicationsList({ hideSearch = false }) {
   const classes = useStyles();
   const lits = useRecoilValue(litsIdsState);
@@ -49,10 +70,10 @@ function PublicationsList({ hideSearch = false }) {
   const syncLiteraturesState = useRecoilCallback(
     ({ snapshot, set }) =>
       async () => {
-        const lits = await snapshot.getPromise(litsIdsState);
-        const readyForRequest = lits
-          .filter(x => x.status === 'ready')
-          .map(x => x.id);
+        const AllLits = await snapshot.getPromise(litsIdsState);
+        const readyForRequest = AllLits.filter(x => x.status === 'ready').map(
+          x => x.id
+        );
 
         if (readyForRequest.length === 0) return;
         const queryResult = await snapshot.getPromise(
@@ -67,7 +88,7 @@ function PublicationsList({ hideSearch = false }) {
           parsedPublications.map(key => [key.europePmcId, key])
         );
 
-        const updatedPublications = lits.map(x => {
+        const updatedPublications = AllLits.map(x => {
           const publication = mapedResults.get(x.id);
           if (x.status === 'loaded') return x;
           const status = publication ? 'loaded' : 'missing';
@@ -95,7 +116,7 @@ function PublicationsList({ hideSearch = false }) {
             id,
             category,
             selectedEntities,
-            cursor,
+            cursor: newCursor,
             globalEntity,
           } = bibliographyState;
           setLoadingEntities(true);
@@ -104,7 +125,7 @@ function PublicationsList({ hideSearch = false }) {
             id,
             category,
             entities: selectedEntities,
-            cursor,
+            newCursor,
           });
           setLoadingEntities(false);
           const data = request.data[globalEntity];
@@ -136,7 +157,7 @@ function PublicationsList({ hideSearch = false }) {
             id,
             category,
             selectedEntities,
-            cursor,
+            cursor: newCursor,
             globalEntity,
           } = bibliographyState;
           setLoadingEntities(true);
@@ -145,7 +166,7 @@ function PublicationsList({ hideSearch = false }) {
             id,
             category,
             entities: selectedEntities,
-            cursor,
+            newCursor,
           });
           setLoadingEntities(false);
           const data = request.data[globalEntity];
@@ -174,7 +195,20 @@ function PublicationsList({ hideSearch = false }) {
       renderCell: ({ publication, status }) => {
         if (status === 'ready') return <SkeletonRow />;
         if (status === 'missing') return null;
-        return <PublicationWrapper {...publication} />;
+        return (
+          <PublicationWrapper
+            europePmcId={publication.europePmcId}
+            title={publication.title}
+            titleHtml={publication.titleHtml}
+            authors={publication.authors}
+            journal={publication.journal}
+            variant={publication.variant}
+            abstract={publication.abstract}
+            fullTextOpen={publication.fullTextOpen}
+            source={publication.source}
+            patentDetails={publication.patentDetails}
+          />
+        );
       },
       filterValue: ({ row: publication }) =>
         `${publication.journal.journal?.title} ${publication?.title} ${
@@ -210,27 +244,6 @@ function PublicationsList({ hideSearch = false }) {
       onPageChange={handlePageChange}
       onRowsPerPageChange={handleRowsPerPageChange}
     />
-  );
-}
-
-function SkeletonRow() {
-  return (
-    <Fade in>
-      <Box mb={2}>
-        <Skeleton height={60} />
-        {/* <Box pt="1px"> */}
-        <Skeleton width="60%" height={45} />
-        {/* </Box> */}
-        <Grid container wrap="nowrap">
-          <Box width={130} mr={1}>
-            <Skeleton height={45} />
-          </Box>
-          <Box width={130}>
-            <Skeleton height={45} />
-          </Box>
-        </Grid>
-      </Box>
-    </Fade>
   );
 }
 

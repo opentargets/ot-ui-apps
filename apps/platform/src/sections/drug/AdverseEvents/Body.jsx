@@ -84,10 +84,10 @@ function Body({ definition, id: chemblId, label: name }) {
 
   // TODO: fetchMore doesn't seem to use gql/apollo caching
   // but a new query causes flickering when rendering the table
-  function getData(page, size) {
+  function getData(newPage, size) {
     fetchMore({
       variables: {
-        index: page,
+        index: newPage,
         size,
       },
       updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult,
@@ -116,12 +116,12 @@ function Body({ definition, id: chemblId, label: name }) {
       definition={definition}
       request={{ loading, error, data }}
       renderDescription={() => <Description name={name} />}
-      renderBody={data => {
+      renderBody={res => {
         // TODO: Change GraphQL schema to have a maxLlr field instead of having
         // to get the first item of adverse events to get the largest llr since
         // items are sorted in decreasing llr order.
-        const maxLlr = data.drug.maxLlr.rows[0].logLR;
-        const { criticalValue, rows, count } = data.drug.adverseEvents;
+        const maxLlr = res.drug.maxLlr.rows[0].logLR;
+        const { criticalValue, rows, count } = res.drug.adverseEvents;
 
         return (
           <Table
@@ -138,7 +138,7 @@ function Body({ definition, id: chemblId, label: name }) {
             fixed
             pageSize={pageSize}
             rowsPerPageOptions={[10, 25, 50, 100]}
-            onRowsPerPageChange={handleRowsPerPageChange}
+            onRowsPerPageChange={()=>handleRowsPerPageChange()}
             query={ADVERSE_EVENTS_QUERY.loc.source.body}
             variables={variables}
           />

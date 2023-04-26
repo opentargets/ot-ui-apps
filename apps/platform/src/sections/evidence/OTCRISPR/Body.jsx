@@ -62,6 +62,7 @@ const getColumns = () => [
       if (row.studyOverview) {
         return <span>{row.studyOverview}</span>;
       }
+      return null
     },
     width: '25%',
     filterValue: row => `${row.contrast}; ${row.studyOverview}`,
@@ -149,21 +150,6 @@ const exportColumns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.OtCrisprSummary
-  );
-  const { count } = summaryData.OtCrisprSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const request = useQuery(CRISPR_QUERY, {
@@ -202,5 +188,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.OtCrisprSummary
+  );
+  const { count } = summaryData.OtCrisprSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

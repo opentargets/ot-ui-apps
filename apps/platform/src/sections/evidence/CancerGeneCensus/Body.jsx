@@ -42,8 +42,11 @@ const columns = [
         .sort((a, b) => samplePercent(b) - samplePercent(a));
       return (
         <List style={{ padding: 0 }}>
-          {sortedMutatedSamples.map((mutatedSample, index) => (
-            <ListItem key={index} style={{ padding: '.25rem 0' }}>
+          {sortedMutatedSamples.map(mutatedSample => (
+            <ListItem
+              key={mutatedSample.functionalConsequence.id}
+              style={{ padding: '.25rem 0' }}
+            >
               <Link
                 external
                 to={identifiersOrgLink(
@@ -128,21 +131,6 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: '.5rem' },
 });
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.CancerGeneCensusSummary
-  );
-  const { count } = summaryData.cancerGeneCensusSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const classes = useStyles();
   const { ensgId, efoId } = id;
@@ -204,5 +192,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.CancerGeneCensusSummary
+  );
+  const { count } = summaryData.cancerGeneCensusSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

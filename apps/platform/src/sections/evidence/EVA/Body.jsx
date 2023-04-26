@@ -220,19 +220,6 @@ function fetchClinvar(ensemblId, efoId, cursor, size) {
   });
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(Summary.fragments.evaSummary);
-  const { count } = summaryData.evaSummary; // reuse the count that was fetched in the summary query
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId: ensemblId, efoId } = id;
   const countCutoff = 1000;
@@ -253,12 +240,12 @@ export function BodyCore({ definition, id, label, count }) {
     // than [countCutoff] rows, just fetch all rows at once and do client side
     // paging
     fetchClinvar(ensemblId, efoId, '', getSize()).then(res => {
-      const { cursor, rows } = res.data.disease.evidences;
+      const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
 
       if (isCurrent) {
         setInitialLoading(false);
-        setCursor(cursor);
-        setRows(rows);
+        setCursor(newCursor);
+        setRows(newRows);
       }
     });
 
@@ -271,9 +258,9 @@ export function BodyCore({ definition, id, label, count }) {
     if (pageSize * newPage + pageSize > rows.length && cursor !== null) {
       setLoading(true);
       fetchClinvar(ensemblId, efoId, cursor, 100).then(res => {
-        const { cursor, rows: newRows } = res.data.disease.evidences;
+        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
         setLoading(false);
-        setCursor(cursor);
+        setCursor(newCursor);
         setPage(newPage);
         setRows([...rows, ...newRows]);
       });
@@ -286,9 +273,9 @@ export function BodyCore({ definition, id, label, count }) {
     if (newPageSize > rows.length && cursor !== null) {
       setLoading(true);
       fetchClinvar(ensemblId, efoId, cursor, 100).then(res => {
-        const { cursor, rows: newRows } = res.data.disease.evidences;
+        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
         setLoading(false);
-        setCursor(cursor);
+        setCursor(newCursor);
         setPage(0);
         setPageSize(newPageSize);
         setRows([...rows, ...newRows]);
@@ -318,8 +305,8 @@ export function BodyCore({ definition, id, label, count }) {
             rowCount={count}
             page={page}
             rowsPerPageOptions={defaultRowsPerPageOptions}
-            onPageChange={handlePageChange}
-            onRowsPerPageChange={handleRowsPerPageChange}
+            onPageChange={() => handlePageChange()}
+            onRowsPerPageChange={() => handleRowsPerPageChange()}
           />
         ) : (
           <DataTable
@@ -334,5 +321,18 @@ export function BodyCore({ definition, id, label, count }) {
         )
       }
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(Summary.fragments.evaSummary);
+  const { count } = summaryData.evaSummary; // reuse the count that was fetched in the summary query
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

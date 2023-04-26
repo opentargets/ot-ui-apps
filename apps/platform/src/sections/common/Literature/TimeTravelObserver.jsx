@@ -5,6 +5,7 @@ import {
   Drawer,
   Box,
   Link as MUILink,
+  Button,
 } from '@material-ui/core';
 import { useRecoilSnapshot, useGotoRecoilSnapshot } from 'recoil';
 
@@ -47,10 +48,10 @@ export default function TimeTravelObserver() {
       <Drawer anchor="right" open={open} onClose={closeDrawer}>
         <Box>
           <List style={{ width: '250px' }}>
-            {snapshots.map((snapshot, i) => (
-              <ListItem key={i}>
+            {snapshots.map((snapshotItem, i) => (
+              <ListItem key={snapshotItem.getID()}>
                 Snapshot {i}
-                <button onClick={() => gotoSnapshot(snapshot)}>Restore</button>
+                <Button onClick={() => gotoSnapshot(snapshotItem)}>Restore</Button>
               </ListItem>
             ))}
           </List>

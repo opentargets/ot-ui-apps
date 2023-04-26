@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import {
   scaleLinear,
   scalePoint,
@@ -59,52 +59,15 @@ class GtexVariability extends Component {
 
   yAxisRef = React.createRef();
 
-  xAxis = axisTop();
+  // xAxis = axisTop();
 
-  yAxis = axisLeft();
+  // yAxis = axisLeft();
 
   x = scaleLinear();
 
   y = scalePoint().padding(0.5);
 
   colour = scaleOrdinal();
-
-  render() {
-    const { theme, data } = this.props;
-    margin.left = getTextWidth(getLongestId(data), 12, 'Arial');
-
-    const height = data.length * boxHeight + margin.top + margin.bottom;
-
-    return (
-      <svg xmlns="http://www.w3.org/2000/svg" height={height} width={width}>
-        <text
-          x={margin.left}
-          y="15"
-          fill={theme.palette.grey[700]}
-          fontSize="14"
-        >
-          Normalised expression (RPKM)
-        </text>
-        <g
-          className="boxplot"
-          ref={this.boxPlotRef}
-          transform={`translate(${margin.left}, ${margin.top})`}
-        />
-        <g
-          ref={this.xAxisRef}
-          transform={`translate(${margin.left}, ${margin.top})`}
-        />
-        <g
-          ref={this.yAxisRef}
-          transform={`translate(${margin.left}, ${margin.top})`}
-        />
-        <g
-          ref={this.tooltipRef}
-          transform={`translate(${margin.left}, ${margin.top})`}
-        />
-      </svg>
-    );
-  }
 
   componentDidMount() {
     this._render();
@@ -312,6 +275,43 @@ class GtexVariability extends Component {
 
     select(this.xAxisRef.current).call(customAxis, xAxis);
     select(this.yAxisRef.current).call(customAxis, yAxis);
+  }
+
+  render() {
+    const { theme, data } = this.props;
+    margin.left = getTextWidth(getLongestId(data), 12, 'Arial');
+
+    const height = data.length * boxHeight + margin.top + margin.bottom;
+
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" height={height} width={width}>
+        <text
+          x={margin.left}
+          y="15"
+          fill={theme.palette.grey[700]}
+          fontSize="14"
+        >
+          Normalised expression (RPKM)
+        </text>
+        <g
+          className="boxplot"
+          ref={this.boxPlotRef}
+          transform={`translate(${margin.left}, ${margin.top})`}
+        />
+        <g
+          ref={this.xAxisRef}
+          transform={`translate(${margin.left}, ${margin.top})`}
+        />
+        <g
+          ref={this.yAxisRef}
+          transform={`translate(${margin.left}, ${margin.top})`}
+        />
+        <g
+          ref={this.tooltipRef}
+          transform={`translate(${margin.left}, ${margin.top})`}
+        />
+      </svg>
+    );
   }
 }
 

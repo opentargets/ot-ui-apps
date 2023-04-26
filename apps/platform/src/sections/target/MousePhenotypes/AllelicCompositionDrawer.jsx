@@ -85,7 +85,7 @@ function AllelicCompositionDrawer({ biologicalModels }) {
     <>
       <MuiLink
         className={classes.drawerLink}
-        onClick={toggleOpen}
+        onClick={()=>toggleOpen()}
         underline="none"
       >
         {biologicalModels.length}{' '}
@@ -94,12 +94,12 @@ function AllelicCompositionDrawer({ biologicalModels }) {
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={close}
+        onClose={()=>close()}
         anchor="right"
       >
         <Typography className={classes.title}>
           Experimental studies
-          <IconButton onClick={close}>
+          <IconButton onClick={()=>close()}>
             <CloseIcon />
           </IconButton>
         </Typography>

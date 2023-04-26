@@ -74,6 +74,23 @@ class Section extends Component {
     };
   }
 
+  componentDidMount() {
+    this.mounted = true;
+    this.getData();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // If a chip has been added or removed, fetch new data
+    const { selected } = this.state;
+    if (selected.length !== prevState.selected.length) {
+      this.getData();
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   // Handler for drop down menu
   aggtypeFilterHandler = (e, selection) => {
     this.setState({ selectedAggregation: selection });
@@ -84,27 +101,30 @@ class Section extends Component {
   filterAggregations = aggs => {
     const { selected } = this.state;
     return aggtype.reduce((newaggs, agg) => {
-      newaggs[agg.value] = {
+      const newAggregationObject = { ...newaggs };
+      newAggregationObject[agg.value] = {
         buckets: aggs[agg.value].buckets.filter(
           b =>
             selected.filter(a => {
-              a.label = a.label || a.key;
+              const selectedNewAggregationObject = a;
+              selectedNewAggregationObject.label = a.label || a.key;
               return (
-                a.key.toString().toLowerCase() ===
+                selectedNewAggregationObject.key.toString().toLowerCase() ===
                   b.key.toString().toLowerCase() ||
-                a.label.toString().toLowerCase() ===
+                selectedNewAggregationObject.label.toString().toLowerCase() ===
                   b.key.toString().toLowerCase()
               );
             }).length === 0
         ),
       };
-      return newaggs;
+      return newAggregationObject;
     }, {});
   };
 
   // Get the data for the chips
   getAggregations = () => {
-    getAggregationsData(this.state.selected).then(
+    const { selected } = this.state;
+    getAggregationsData(selected).then(
       resp => {
         if (this.mounted) {
           this.setState({
@@ -132,7 +152,8 @@ class Section extends Component {
     const last = hits[hits.length - 1];
     const after = append ? last.sort[0] : undefined;
     const afterId = append ? last._id : undefined;
-    getPublicationsData(this.state.selected, after, afterId).then(
+    const { selected } = this.state;
+    getPublicationsData(selected, after, afterId).then(
       resp => {
         // if loading more data (after & afterId) append that, if not just reset hits
         const hits =
@@ -174,22 +195,6 @@ class Section extends Component {
     // get papers
     this.getPublications();
   };
-
-  componentDidMount() {
-    this.mounted = true;
-    this.getData();
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // If a chip has been added or removed, fetch new data
-    if (this.state.selected.length !== prevState.selected.length) {
-      this.getData();
-    }
-  }
 
   render() {
     const {
@@ -290,23 +295,23 @@ class Section extends Component {
                 alignItems="stretch"
                 spacing={2}
               >
-                {hits.map((hit, i) => (
-                  <Grid item xs={12} key={i}>
+                {hits.map((hitItem, i) => (
+                  <Grid item xs={12} key={hitItem._source.pub_id}>
                     <Publication
-                      pmId={hit._source.pub_id}
-                      title={hit._source.title}
+                      pmId={hitItem._source.pub_id}
+                      title={hitItem._source.title}
                       authors={
-                        (hit._source.authors || []).map(a => ({
+                        (hitItem._source.authors || []).map(a => ({
                           lastName: a.LastName,
                           initials: a.Initials,
                         })) || []
                       }
                       journal={{
-                        title: hit._source.journal.title,
-                        date: hit._source.pub_date,
-                        ref: hit._source.journal_reference,
+                        title: hitItem._source.journal.title,
+                        date: hitItem._source.pub_date,
+                        ref: hitItem._source.journal_reference,
                       }}
-                      hasAbstract={hit._source.abstract}
+                      hasAbstract={hitItem._source.abstract}
                     />
                   </Grid>
                 ))}

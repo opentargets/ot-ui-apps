@@ -34,7 +34,7 @@ function EntitiesToSelect({ id }) {
     useRecoilState(loadingEntitiesState);
 
   const handleSelectChip = async e => {
-    const { query, id, category, globalEntity } = bibliographyState;
+    const { query, bibliographyId, category, globalEntity } = bibliographyState;
     const newChips = [
       ...selectedChips,
       {
@@ -49,7 +49,7 @@ function EntitiesToSelect({ id }) {
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
       query,
-      id,
+      bibliographyId,
       category,
       entities: newChips,
     });
@@ -75,10 +75,10 @@ function EntitiesToSelect({ id }) {
     return entity;
   };
 
-  return entities.map((e, i) => {
+  return entities.map((e) => {
     if (!e.object)
       return (
-        <Grow in key={`empty-entity-${i}`}>
+        <Grow in key={`empty-entity-${e.id}`}>
           <Chip
             style={{ opacity: loadingEntities ? 0.5 : 1 }}
             label={e.id}
@@ -120,7 +120,7 @@ export default function Entities({ name, id }) {
   );
 
   const handleDeleteChip = async index => {
-    const { query, id, category, globalEntity } = bibliographyState;
+    const { query, bibliographyId, category, globalEntity } = bibliographyState;
     const newChips = [
       ...selectedChips.slice(0, index),
       ...selectedChips.slice(index + 1),
@@ -129,7 +129,7 @@ export default function Entities({ name, id }) {
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
       query,
-      id,
+      bibliographyId,
       category,
       entities: newChips,
     });

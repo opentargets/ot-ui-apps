@@ -165,8 +165,8 @@ function SourceDrawer({ references }) {
             </AccordionSummary>
             <AccordionDetails>
               <List>
-                {groupedReferences[group].map((item, itemIndex) => (
-                  <ListItem key={itemIndex}>
+                {groupedReferences[group].map((item) => (
+                  <ListItem key={item.url}>
                     <Link external to={item.url}>
                       {drawerSourceLabel(item.name, item.url)}
                     </Link>
