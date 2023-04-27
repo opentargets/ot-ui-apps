@@ -244,7 +244,7 @@ const dataSources = [
     aggregationId: 'partner_only',
     weight: 0.5,
     isPrivate: true,
-    docLink: 'https://partner-platform.opentargets.org/projects',
+    docsLink: 'https://partner-platform.opentargets.org/projects',
   },
   // Private
   {
