@@ -250,7 +250,7 @@ const dataSources = [
   {
     id: 'ot_crispr_validation',
     sectionId: 'validationlab',
-    label: 'OT CRISPR Validation',
+    label: 'OT Validation',
     aggregation: 'Partner-only',
     aggregationId: 'partner_only',
     weight: 0.5,
@@ -446,7 +446,7 @@ export const grouped = {
     {
       id: 'ot_crispr_validation',
       sectionId: 'validationlab',
-      label: 'OT CRISPR Validation',
+      label: 'OT Validation',
       aggregation: 'Partner-only',
       weight: 0.5,
     },

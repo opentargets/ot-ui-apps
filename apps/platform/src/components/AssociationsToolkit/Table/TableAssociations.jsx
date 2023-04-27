@@ -22,7 +22,7 @@ import TableFooter from './TableFooter';
 import TableBody from './TableBody';
 import useAotfContext from '../hooks/useAotfContext';
 
-import { cellHasValue, tableCSSVariables } from '../utils';
+import { cellHasValue, isPartnerPreview, tableCSSVariables } from '../utils';
 
 const TableElement = styled('div')({
   minWidth: '900px',
@@ -37,8 +37,8 @@ function getDatasources(expanderHandler, loading, displayedTable) {
   const isAssociations = displayedTable === 'associations';
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
-
-  return baseCols.map(
+  const datasources = [];
+  baseCols.forEach(
     ({
       id,
       label,
@@ -48,7 +48,8 @@ function getDatasources(expanderHandler, loading, displayedTable) {
       isPrivate,
       docsLink,
     }) => {
-      return columnHelper.accessor(row => row[dataProp][id], {
+      if (isPrivate && isPrivate !== isPartnerPreview) return;
+      const column = columnHelper.accessor(row => row[dataProp][id], {
         id,
         header: isAssociations ? (
           <div className="">{label}</div>
@@ -83,8 +84,10 @@ function getDatasources(expanderHandler, loading, displayedTable) {
           );
         },
       });
+      datasources.push(column);
     }
   );
+  return datasources;
 }
 
 function TableAssociations() {
