@@ -31,10 +31,10 @@ function getFormats(id, downloadData) {
   return formats;
 }
 
-function getRows(downloadData, datasetMappings) {
+function getRows(downloadData, allDatasetMappings) {
   const rows = [];
 
-  datasetMappings.forEach(mapping => {
+  allDatasetMappings.forEach(mapping => {
     if (mapping.include_in_fe) {
       rows.push({
         niceName: mapping.nice_name,
@@ -55,8 +55,8 @@ function getColumns(date) {
       id: 'formats',
       label: 'Format(s)',
       renderCell: ({ niceName, formats }) =>
-        formats.map((format, index) => (
-          <Fragment key={index}>
+        formats.map((format) => (
+          <Fragment key={format.format + format.path + date.month + date.year}>
             <DownloadsDrawer
               title={niceName}
               format={format.format}

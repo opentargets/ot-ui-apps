@@ -59,16 +59,16 @@ function DownloadsDrawer({ title, format, path, month, year, children }) {
 
   return (
     <>
-      <span onClick={toggleOpen}>{children}</span>
+      <span onClick={()=>toggleOpen()}>{children}</span>
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={close}
+        onClose={()=>close()}
         anchor="right"
       >
         <Typography className={classes.title}>
           {title}
-          <IconButton onClick={close}>
+          <IconButton onClick={()=>close()}>
             <CloseIcon />
           </IconButton>
         </Typography>
