@@ -34,10 +34,10 @@ function VersionContainer({ children }) {
 }
 
 // LINK
-function VersionLink({ month, year, version }) {
+function VersionLink({ month, year, version, link }) {
   return (
     <Box ml={1}>
-      <Link external to="https://platform-docs.opentargets.org/release-notes">
+      <Link external to={link}>
         {month} 20{year} ({version})
       </Link>
     </Box>
@@ -45,7 +45,9 @@ function VersionLink({ month, year, version }) {
 }
 
 // MAIN COMPONENT
-function Version() {
+function Version({
+  releaseNotesURL = 'https://platform-docs.opentargets.org/release-notes',
+}) {
   const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
   if (error) return null;
   if (loading)
@@ -61,7 +63,12 @@ function Version() {
   return (
     <VersionContainer>
       Last update:
-      <VersionLink month={fullMonth} year={year} version={version} />
+      <VersionLink
+        link={releaseNotesURL}
+        month={fullMonth}
+        year={year}
+        version={version}
+      />
     </VersionContainer>
   );
 }
