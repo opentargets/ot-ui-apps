@@ -2,7 +2,7 @@ import { Suspense, lazy } from 'react';
 import { LoadingBackdrop } from 'ui';
 import BasePage from '../../components/BasePage';
 
-const ProjectPage = lazy(() => import('./ProjectsPage.jsx'));
+const ProjectPage = lazy(() => import('./ProjectsPage'));
 
 function ProjectsPageWrapper({ location }) {
   return <BasePage

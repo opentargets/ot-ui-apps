@@ -1,5 +1,5 @@
 import { Grid, Paper, makeStyles } from '@material-ui/core';
-import config from '../../config.js';
+import config from '../../config';
 
 import OTLogo from '../../assets/OTLogo';
 import PPOTLogo from '../../assets/PPPOTLogo';

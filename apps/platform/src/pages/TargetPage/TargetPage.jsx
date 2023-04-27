@@ -35,6 +35,14 @@ function TargetPage({ location, match }) {
     p => p.source === 'ProjectScore'
   )?.id;
 
+  const ASSOCIATIONS_COMPONENT = (
+    <Associations ensgId={ensgId} symbol={symbol} />
+  );
+  const CLASSIC_ASSOCIATIONS_COMPONENT = (
+    <ClassicAssociations ensgId={ensgId} symbol={symbol} />
+  );
+  const PROFILE_COMPONENT = <Profile ensgId={ensgId} symbol={symbol} />;
+
   return (
     <BasePage
       title={
@@ -67,19 +75,17 @@ function TargetPage({ location, match }) {
             </div>
           }
           path="/target/:ensgId/associations"
-          component={() => <Associations ensgId={ensgId} symbol={symbol} />}
+          component={ASSOCIATIONS_COMPONENT}
         />
         <RoutingTab
           label="Associated diseases"
           path={`${match.path}/classic-associations`}
-          component={() => (
-            <ClassicAssociations ensgId={ensgId} symbol={symbol} />
-          )}
+          component={CLASSIC_ASSOCIATIONS_COMPONENT}
         />
         <RoutingTab
           label="Profile"
           path="/target/:ensgId"
-          component={() => <Profile ensgId={ensgId} symbol={symbol} />}
+          component={PROFILE_COMPONENT}
         />
       </RoutingTabs>
     </BasePage>
