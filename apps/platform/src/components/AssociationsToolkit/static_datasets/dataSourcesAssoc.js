@@ -226,33 +226,37 @@ const dataSources = [
   },
   // Private
   {
-    id: 'ot_crispr_validation',
-    sectionId: 'validationlab',
-    label: 'OT CRISPR Validation',
-    aggregation: 'OT validation lab',
-    aggregationId: 'ot_validation_lab',
-    weight: 0.5,
-    isPrivate: true,
-    docsLink: 'https://partner-platform.opentargets.org/projects',
-  },
-  {
     id: 'ot_crispr',
     sectionId: 'otCrispr',
     label: 'OT CRISPR',
-    aggregation: 'OT validation lab',
-    aggregationId: 'ot_validation_lab',
+    aggregation: 'Partner-only',
+    aggregationId: 'partner_only',
     weight: 0.5,
     isPrivate: true,
     docsLink: 'https://partner-platform.opentargets.org/projects',
   },
   // Private
-  // {
-  //   id: 'encore',
-  //   sectionId: '',
-  //   label: 'ENCORE',
-  //   aggregation: 'ot_validation_lab',
-  //   weight: 0.5,
-  // },
+  {
+    id: 'encore',
+    sectionId: 'encore',
+    label: 'ENCORE',
+    aggregation: 'Partner-only',
+    aggregationId: 'partner_only',
+    weight: 0.5,
+    isPrivate: true,
+    docLink: 'https://partner-platform.opentargets.org/projects',
+  },
+  // Private
+  {
+    id: 'ot_crispr_validation',
+    sectionId: 'validationlab',
+    label: 'OT CRISPR Validation',
+    aggregation: 'Partner-only',
+    aggregationId: 'partner_only',
+    weight: 0.5,
+    isPrivate: true,
+    docsLink: 'https://partner-platform.opentargets.org/projects',
+  },
 ];
 
 export const grouped = {
@@ -424,19 +428,26 @@ export const grouped = {
       weight: 0.2,
     },
   ],
-  'OT validation lab': [
+  'partner_only': [
     {
-      id: 'ot_crispr_validation',
-      sectionId: 'validationlab',
-      label: 'OT CRISPR Validation',
-      aggregation: 'OT validation lab',
+      id: 'encore',
+      sectionId: 'encore',
+      label: 'ENCORE',
+      aggregation: 'Partner-only',
       weight: 0.5,
     },
     {
       id: 'ot_crispr',
       sectionId: 'otCrispr',
       label: 'OT CRISPR',
-      aggregation: 'OT validation lab',
+      aggregation: 'Partner-only',
+      weight: 0.5,
+    },
+    {
+      id: 'ot_crispr_validation',
+      sectionId: 'validationlab',
+      label: 'OT CRISPR Validation',
+      aggregation: 'Partner-only',
       weight: 0.5,
     },
   ],
