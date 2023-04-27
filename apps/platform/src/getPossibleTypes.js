@@ -29,7 +29,9 @@ fetch(`${API_HOST}/graphql`, {
   .then(result => {
     const possibleTypes = {};
 
-    result.data.__schema.types.forEach(supertype => {
+    const SCHEMA = "__schema";
+
+    result.data[SCHEMA].types.forEach(supertype => {
       if (supertype.possibleTypes) {
         possibleTypes[supertype.name] = supertype.possibleTypes.map(
           subtype => subtype.name
@@ -37,11 +39,5 @@ fetch(`${API_HOST}/graphql`, {
       }
     });
 
-    fs.writeFile('./possibleTypes.json', JSON.stringify(possibleTypes), err => {
-      if (err) {
-        console.error('Error writing possibleTypes.json', err);
-      } else {
-        console.log('Fragment types successfully extracted!');
-      }
-    });
+    fs.writeFile('./possibleTypes.json', JSON.stringify(possibleTypes));
   });

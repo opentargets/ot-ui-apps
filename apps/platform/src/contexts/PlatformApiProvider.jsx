@@ -1,8 +1,9 @@
+import { useContext, useMemo } from 'react';
 import { useQuery } from '@apollo/client';
 
 import productionClient from '../client';
 
-const PlatformApiContext = React.createContext();
+const PlatformApiContext = useContext();
 
 function PlatformApiProvider({
   entity,
@@ -14,10 +15,13 @@ function PlatformApiProvider({
 }) {
   const request = useQuery(query, { client, variables });
 
+  const platformApiValue = useMemo(
+    () => ({ ...request, entity, lsSectionsField }),
+    [{ ...request, entity, lsSectionsField }]
+  );
+
   return (
-    <PlatformApiContext.Provider
-      value={{ ...request, entity, lsSectionsField }}
-    >
+    <PlatformApiContext.Provider value={platformApiValue}>
       {children}
     </PlatformApiContext.Provider>
   );

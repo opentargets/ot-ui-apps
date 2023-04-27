@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext, useMemo } from 'react';
 // import ls from 'local-storage';
 
 import usePlatformApi from '../hooks/usePlatformApi';
 
-const SectionOrderContext = React.createContext();
+const SectionOrderContext = useContext();
 
 function SectionOrderProvider({ sections, children }) {
   const { data, entity } = usePlatformApi();
@@ -24,10 +24,13 @@ function SectionOrderProvider({ sections, children }) {
     return external || (data && hasData(data?.[entity])) || false;
   };
 
+  const sectionOrderValue = useMemo(
+    () => ({ sectionOrder, updateSectionOrder, shouldRender }),
+    [{ sectionOrder, updateSectionOrder, shouldRender }]
+  );
+
   return (
-    <SectionOrderContext.Provider
-      value={{ sectionOrder, updateSectionOrder, shouldRender }}
-    >
+    <SectionOrderContext.Provider value={sectionOrderValue}>
       {children}
     </SectionOrderContext.Provider>
   );

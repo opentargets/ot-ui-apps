@@ -93,6 +93,88 @@ function ClassicAssociationsBubbles({
   root.sum(d => d.score);
   packLayout(root);
 
+  let ASSOCIATION_COMPONENT = null;
+
+  if (size && assocs.length > 0) {
+    ASSOCIATION_COMPONENT = (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+        ref={svgRef}
+        height={size}
+        width={size}
+      >
+        {root.descendants().map(d => (
+          <g key={d.data.uniqueId} transform={`translate(${d.x},${d.y})`}>
+            <AssociationTooltip
+              ensemblId={ensemblId}
+              efoId={d.data.id}
+              name={d.data.name}
+              score={d.data.score}
+            >
+              <path
+                id={d.data.uniqueId}
+                d={`M 0, ${d.r} a ${d.r},${d.r} 0 1,1 0,-${2 * d.r} a ${d.r},${
+                  d.r
+                } 0 1,1 0,${2 * d.r}`}
+                stroke={
+                  d.data.uniqueId !== 'EFO_ROOT'
+                    ? theme.palette.grey[400]
+                    : 'none'
+                }
+                fill={
+                  d.data.uniqueId === 'EFO_ROOT' ||
+                  d.parent.data.uniqueId === 'EFO_ROOT'
+                    ? theme.palette.grey[50]
+                    : color(d.data.score)
+                }
+                pointerEvents={d.data.uniqueId === 'EFO_ROOT' ? 'none' : 'auto'}
+              />
+            </AssociationTooltip>
+            {d.data.uniqueId === 'EFO_ROOT' ? null : d.parent &&
+              d.parent.data.uniqueId === 'EFO_ROOT' ? (
+              <text
+                textAnchor="middle"
+                fontSize="12"
+                fontWeight="bold"
+                fill={theme.palette.grey[400]}
+                pointerEvents="none"
+              >
+                <textPath startOffset="50%" xlinkHref={`#${d.data.uniqueId}`}>
+                  {d.data.name}
+                </textPath>
+              </text>
+            ) : d.r > 15 ? (
+              <>
+                <clipPath id={`clip-${d.data.uniqueId}`}>
+                  <circle cx="0" cy="0" r={d.r} />
+                </clipPath>
+                <text
+                  clipPath={`url(#clip-${d.data.uniqueId})`}
+                  fontSize="11"
+                  textAnchor="middle"
+                  pointerEvents="none"
+                >
+                  {d.data.name.split(' ').map((word, i, words) => (
+                    <tspan key={i} x="0" y={`${i - words.length / 2 + 0.8}em`}>
+                      {word}
+                    </tspan>
+                  ))}
+                </text>
+              </>
+            ) : null}
+          </g>
+        ))}
+      </svg>
+    );
+  } else if (size) {
+    ASSOCIATION_COMPONENT = (
+      <Typography>
+        No associations with score greater than or equal to {minScore}
+      </Typography>
+    );
+  }
+
   return (
     <>
       <DownloadSvgPlot
@@ -109,96 +191,7 @@ function ClassicAssociationsBubbles({
           alignItems="center"
           style={{ margin: '0 auto', minHeight: '340px' }}
         >
-          {size ? (
-            assocs.length > 0 ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                ref={svgRef}
-                height={size}
-                width={size}
-              >
-                {root.descendants().map(d => (
-                  <g
-                    key={d.data.uniqueId}
-                    transform={`translate(${d.x},${d.y})`}
-                  >
-                    <AssociationTooltip
-                      ensemblId={ensemblId}
-                      efoId={d.data.id}
-                      name={d.data.name}
-                      score={d.data.score}
-                    >
-                      <path
-                        id={d.data.uniqueId}
-                        d={`M 0, ${d.r} a ${d.r},${d.r} 0 1,1 0,-${2 * d.r} a ${
-                          d.r
-                        },${d.r} 0 1,1 0,${2 * d.r}`}
-                        stroke={
-                          d.data.uniqueId !== 'EFO_ROOT'
-                            ? theme.palette.grey[400]
-                            : 'none'
-                        }
-                        fill={
-                          d.data.uniqueId === 'EFO_ROOT'
-                            ? theme.palette.grey[50]
-                            : d.parent.data.uniqueId === 'EFO_ROOT'
-                            ? theme.palette.grey[50]
-                            : color(d.data.score)
-                        }
-                        pointerEvents={
-                          d.data.uniqueId === 'EFO_ROOT' ? 'none' : 'auto'
-                        }
-                      />
-                    </AssociationTooltip>
-                    {d.data.uniqueId === 'EFO_ROOT' ? null : d.parent &&
-                      d.parent.data.uniqueId === 'EFO_ROOT' ? (
-                      <text
-                        textAnchor="middle"
-                        fontSize="12"
-                        fontWeight="bold"
-                        fill={theme.palette.grey[400]}
-                        pointerEvents="none"
-                      >
-                        <textPath
-                          startOffset="50%"
-                          xlinkHref={`#${d.data.uniqueId}`}
-                        >
-                          {d.data.name}
-                        </textPath>
-                      </text>
-                    ) : d.r > 15 ? (
-                      <>
-                        <clipPath id={`clip-${d.data.uniqueId}`}>
-                          <circle cx="0" cy="0" r={d.r} />
-                        </clipPath>
-                        <text
-                          clipPath={`url(#clip-${d.data.uniqueId})`}
-                          fontSize="11"
-                          textAnchor="middle"
-                          pointerEvents="none"
-                        >
-                          {d.data.name.split(' ').map((word, i, words) => (
-                            <tspan
-                              key={i}
-                              x="0"
-                              y={`${i - words.length / 2 + 0.8}em`}
-                            >
-                              {word}
-                            </tspan>
-                          ))}
-                        </text>
-                      </>
-                    ) : null}
-                  </g>
-                ))}
-              </svg>
-            ) : (
-              <Typography>
-                No associations with score greater than or equal to {minScore}
-              </Typography>
-            )
-          ) : null}
+          {ASSOCIATION_COMPONENT}
         </Grid>
       </DownloadSvgPlot>
       <Legend />

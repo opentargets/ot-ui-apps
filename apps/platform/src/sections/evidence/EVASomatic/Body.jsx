@@ -111,55 +111,62 @@ const columns = [
   {
     id: 'clinicalSignificances',
     label: 'Clinical significance',
-    renderCell: ({ clinicalSignificances }) =>
-      !clinicalSignificances ? (
-        naLabel
-      ) : clinicalSignificances.length === 1 ? (
-        sentenceCase(clinicalSignificances[0])
-      ) : (
-        <ul
-          style={{
-            margin: 0,
-            padding: 0,
-            listStyle: 'none',
-          }}
-        >
-          {clinicalSignificances.map(clinicalSignificance => (
-            <li key={clinicalSignificance}>
-              {sentenceCase(clinicalSignificance)}
-            </li>
-          ))}
-        </ul>
-      ),
+    renderCell: ({ clinicalSignificances }) => {
+      if (!clinicalSignificances) return naLabel;
+
+      if (clinicalSignificances.length === 1)
+        return sentenceCase(clinicalSignificances[0]);
+
+      if (clinicalSignificances.length > 1)
+        return (
+          <ul
+            style={{
+              margin: 0,
+              padding: 0,
+              listStyle: 'none',
+            }}
+          >
+            {clinicalSignificances.map(clinicalSignificance => (
+              <li key={clinicalSignificance}>
+                {sentenceCase(clinicalSignificance)}
+              </li>
+            ))}
+          </ul>
+        );
+
+      return naLabel;
+    },
     filterValue: ({ clinicalSignificances }) => clinicalSignificances.join(),
   },
   {
     id: 'allelicRequirements',
     label: 'Allele origin',
-    renderCell: ({ alleleOrigins, allelicRequirements }) =>
-      !alleleOrigins || alleleOrigins.length === 0 ? (
-        naLabel
-      ) : allelicRequirements ? (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Allelic requirements:
-              </Typography>
-              {allelicRequirements.map(r => (
-                <Typography variant="caption" key={r}>
-                  {r}
+    renderCell: ({ alleleOrigins, allelicRequirements }) => {
+      if (!alleleOrigins || alleleOrigins.length === 0) return naLabel;
+
+      if (allelicRequirements)
+        return (
+          <Tooltip
+            title={
+              <>
+                <Typography variant="subtitle2" display="block" align="center">
+                  Allelic requirements:
                 </Typography>
-              ))}
-            </>
-          }
-          showHelpIcon
-        >
-          {alleleOrigins.map(a => sentenceCase(a)).join('; ')}
-        </Tooltip>
-      ) : (
-        alleleOrigins.map(a => sentenceCase(a)).join('; ')
-      ),
+                {allelicRequirements.map(r => (
+                  <Typography variant="caption" key={r}>
+                    {r}
+                  </Typography>
+                ))}
+              </>
+            }
+            showHelpIcon
+          >
+            {alleleOrigins.map(a => sentenceCase(a)).join('; ')}
+          </Tooltip>
+        );
+
+      return alleleOrigins.map(a => sentenceCase(a)).join('; ');
+    },
     filterValue: ({ alleleOrigins }) =>
       alleleOrigins ? alleleOrigins.join() : '',
   },

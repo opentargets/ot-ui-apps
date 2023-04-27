@@ -150,9 +150,9 @@ function getColumns(classes) {
         studyStopReason,
         clinicalStatus,
         studyStopReasonCategories,
-      }) =>
-        clinicalStatus ? (
-          studyStopReason ? (
+      }) => {
+        if (clinicalStatus && studyStopReason)
+          return (
             <Tooltip
               showHelpIcon
               title={
@@ -175,12 +175,10 @@ function getColumns(classes) {
             >
               {clinicalStatus}
             </Tooltip>
-          ) : (
-            <>{clinicalStatus}</>
-          )
-        ) : (
-          naLabel
-        ),
+          );
+        if (clinicalStatus) return { clinicalStatus };
+        return naLabel;
+      },
     },
     {
       id: 'studyStartDate',
