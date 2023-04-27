@@ -428,7 +428,7 @@ export const grouped = {
       weight: 0.2,
     },
   ],
-  'partner_only': [
+  'Partner-only': [
     {
       id: 'encore',
       sectionId: 'encore',
