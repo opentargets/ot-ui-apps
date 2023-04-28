@@ -110,7 +110,10 @@ const styles = () => ({
 });
 
 class SummaryTable extends Component {
-  state = { groupBy: 'organs', sortBy: 'rna' };
+  constructor(props) {
+    super(props)
+    this.state = { groupBy: 'organs', sortBy: 'rna' };
+  }
 
   handleChange = (_, groupBy) => {
     if (groupBy) {

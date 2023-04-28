@@ -51,7 +51,7 @@ function useCursorBatchDownloader(
 
       cursor = _.get(newChunk, cursorPath, null);
       data.push(...getRows(newChunk, rowPath));
-      chunksFetched++;
+      chunksFetched+=1;
     }
 
     return data;

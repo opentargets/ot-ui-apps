@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Drawer,
-  Link,
+  Button,
   IconButton,
   Paper,
   Typography,
@@ -55,22 +55,16 @@ function SafetyStudiesDrawer({ studies }) {
 
   return (
     <>
-      <Link
-        className={classes.drawerLink}
-        onClick={toggleOpen}
-        underline="none"
-      >
-        {studies.length} studies
-      </Link>
+      <Button onClick={() => toggleOpen()}>{studies.length} studies</Button>
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={close}
+        onClose={() => close()}
         anchor="right"
       >
         <Typography className={classes.title}>
           Experimental studies
-          <IconButton onClick={close}>
+          <IconButton onClick={() => close()}>
             <CloseIcon />
           </IconButton>
         </Typography>

@@ -11,7 +11,7 @@ import { withContentRect } from 'react-measure';
 import { Grid, Typography } from '@material-ui/core';
 import { DownloadSvgPlot } from '../../components/DownloadSvgPlot';
 import Legend from '../../components/Legend';
-import Slider from './ClassicAssociationsSlider.jsx';
+import Slider from './ClassicAssociationsSlider';
 import Dag from './Dag';
 
 // find closest ancestors that are also associations
@@ -96,7 +96,7 @@ function getMaxLayerCount(dag) {
     const { layer } = node;
 
     if (counts[layer]) {
-      counts[layer]++;
+      counts[layer]+=1;
     } else {
       counts[layer] = 1;
     }
@@ -126,15 +126,15 @@ function ClassicAssociationsDAG({
   const { width } = contentRect.bounds;
 
   const { assocs, height, nodes, xOffset, links, textLimit } = useMemo(() => {
-    const assocs = associations.filter(
+    const filteredAssociations = associations.filter(
       assoc => assoc.score >= minCommittedScore
     );
-    const assocSet = assocs.reduce((acc, assoc) => {
+    const assocSet = filteredAssociations.reduce((acc, assoc) => {
       acc[assoc.disease.id] = assoc;
       return acc;
     }, {});
 
-    const dagData = buildDagData(idToDisease, assocs, assocSet);
+    const dagData = buildDagData(idToDisease, filteredAssociations, assocSet);
     let dag;
     let maxLayerCount;
     let height;
@@ -165,7 +165,7 @@ function ClassicAssociationsDAG({
     }
 
     return {
-      assocs,
+      assocs: filteredAssociations,
       dag,
       height,
       nodes,

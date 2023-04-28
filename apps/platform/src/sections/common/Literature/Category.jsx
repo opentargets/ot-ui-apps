@@ -34,12 +34,12 @@ export default function Category() {
   const bibliographyState = useRecoilValue(literatureState);
 
   const handleChange = async event => {
-    const { query, id, category, selectedEntities, globalEntity, cursor } =
+    const { query, id, bibliographyCategory, selectedEntities, globalEntity, cursor } =
       bibliographyState;
     const {
       target: { name: clicked },
     } = event;
-    const newCategories = toggleValue(clicked, category);
+    const newCategories = toggleValue(clicked, bibliographyCategory);
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
       query,

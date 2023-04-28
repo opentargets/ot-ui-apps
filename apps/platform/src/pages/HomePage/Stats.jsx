@@ -44,7 +44,9 @@ function Stats({ classes }) {
         }
       });
 
-    return () => (isCurrent = false);
+    return () => {
+      isCurrent = false;
+    };
   }, []);
 
   return (

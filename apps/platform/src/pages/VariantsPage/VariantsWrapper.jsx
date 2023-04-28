@@ -2,7 +2,7 @@ import { Suspense, lazy } from 'react';
 import { LoadingBackdrop } from 'ui';
 import BasePage from '../../components/BasePage';
 
-const VariantsPage = lazy(() => import('./VariantsPage.jsx'));
+const VariantsPage = lazy(() => import('./VariantsPage'));
 
 function VariantsWrapper({ location }) {
   return <BasePage

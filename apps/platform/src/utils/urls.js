@@ -20,11 +20,11 @@ export function europePmcLiteratureQuery(ids) {
 
 export const encodeParams = params => {
   const formBody = [];
-  for (const property in params) {
-    const encodedKey = encodeURIComponent(property);
-    const encodedValue = encodeURIComponent(params[property]);
-    formBody.push(`${encodedKey  }=${  encodedValue}`);
-  }
+  Object.keys(params).forEach(key => {
+    const encodedKey = encodeURIComponent(key);
+    const encodedValue = encodeURIComponent(params[key]);
+    formBody.push(`${encodedKey}=${encodedValue}`);
+  });
   const encodedParams = formBody.join('&');
   return encodedParams;
 };

@@ -68,11 +68,10 @@ function getColumns(classes) {
             name: cellFormat
               ? `${cellFormat}${cellLabel ? ` (${cellLabel})` : ''}`
               : tissueLabel,
-            url: cellFormat
-              ? null
-              : tissueId
-              ? `https://identifiers.org/${tissueId.replace('_', ':')}`
-              : null,
+            url:
+              cellFormat || !tissueId
+                ? null
+                : `https://identifiers.org/${tissueId.replace('_', ':')}`,
             group: cellFormat ? 'Assay' : 'Organ system',
           })
         );

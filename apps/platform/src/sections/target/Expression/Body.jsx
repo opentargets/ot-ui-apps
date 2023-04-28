@@ -23,8 +23,8 @@ function Section({ definition, id: ensgId, label: symbol }) {
     gtex: getGtexData,
   }[tab];
 
-  const handleChangeTab = (_, tab) => {
-    setTab(tab);
+  const handleChangeTab = (_, tabChange) => {
+    setTab(tabChange);
   };
 
   useEffect(() => {

@@ -166,7 +166,7 @@ function getColumns(efoId, classes, isPartnerPreview) {
         },
         exportValue: data => {
           const datatypeScore = data.datatypeScores.find(
-            datatypeScore => datatypeScore.componentId === dt.id
+            DTScore => DTScore.componentId === dt.id
           );
           return datatypeScore ? datatypeScore.score : 'No data';
         },
@@ -213,7 +213,7 @@ function getRows(data) {
     };
     dataTypes.forEach(dataType => {
       const dataTypeScore = d.datatypeScores.find(
-        dataTypeScore => dataTypeScore.componentId === dataType.id
+        DTScore => DTScore.componentId === dataType.id
       );
 
       if (dataTypeScore) {
@@ -261,7 +261,9 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
           setLoading(false);
         }
       });
-    return () => (isCurrent = false);
+    return () => {
+      isCurrent = false;
+    };
   }, [efoId, pageSize, sortBy, filter, aggregationFilters]);
 
   const getAllAssociations = useBatchDownloader(
@@ -275,14 +277,14 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
     'data.disease.associatedTargets'
   );
 
-  function handlePageChange(page) {
+  function handlePageChange(pageChanged) {
     setLoading(true);
     client
       .query({
         query: DISEASE_ASSOCIATIONS_QUERY,
         variables: {
           efoId,
-          index: page,
+          index: pageChanged,
           size: pageSize,
           sortBy,
           filter,
@@ -291,17 +293,17 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
       })
       .then(({ data }) => {
         setRows(data.disease.associatedTargets.rows);
-        setPage(page);
+        setPage(pageChanged);
         setLoading(false);
       });
   }
 
-  function handleRowsPerPageChange(pageSize) {
-    setPageSize(pageSize);
+  function handleRowsPerPageChange(pageSizeChanged) {
+    setPageSize(pageSizeChanged);
   }
 
-  function handleSort(sortBy) {
-    setSortBy(sortBy);
+  function handleSort(sortChanged) {
+    setSortBy(sortChanged);
   }
 
   function handleGlobalFilterChange(newFilter) {
@@ -333,10 +335,10 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
         pageSize={pageSize}
         rowCount={count}
         rowsPerPageOptions={[10, 50, 200, 500]}
-        onGlobalFilterChange={handleGlobalFilterChange}
-        onSortBy={handleSort}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowsPerPageChange}
+        onGlobalFilterChange={()=>handleGlobalFilterChange()}
+        onSortBy={()=>handleSort()}
+        onPageChange={()=>handlePageChange()}
+        onRowsPerPageChange={()=>handleRowsPerPageChange()}
       />
       <Legend />
     </>

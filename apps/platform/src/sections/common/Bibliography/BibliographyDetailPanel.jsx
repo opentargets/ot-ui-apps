@@ -1,20 +1,16 @@
-import { Component } from 'react';
-import { withStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   detailPanel: {
     background: `${theme.palette.grey[100]}`,
     marginTop: '10px',
     padding: '20px',
   },
-});
+}));
 
-class BibliograhpyDetailPanel extends Component {
-  render() {
-    const { classes, children } = this.props;
-
-    return <div className={classes.detailPanel}>{children}</div>;
-  }
+function BibliographyDetailPanel({ children }) {
+  const classes = useStyles();
+  return <div className={classes.detailPanel}>{children}</div>;
 }
 
-export default withStyles(styles)(BibliograhpyDetailPanel);
+export default BibliographyDetailPanel;

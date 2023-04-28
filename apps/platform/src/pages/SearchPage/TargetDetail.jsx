@@ -61,8 +61,8 @@ function TargetDetail({ classes, data }) {
         UniProt accession{uniprotIds.length > 1 ? 's' : ''}
       </Typography>
       <Typography component="div" variant="body2">
-        {uniprotIds.map(id => (
-          <div key={id}>{id}</div>
+        {uniprotIds.map(uniprotId => (
+          <div key={uniprotId}>{uniprotId}</div>
         ))}
       </Typography>
     </CardContent>

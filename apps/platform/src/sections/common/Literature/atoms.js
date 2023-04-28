@@ -176,6 +176,10 @@ export const updateLiteratureState = selector({
 // ------------------------------------------
 // Requests
 // ------------------------------------------
+
+const fetchLiteraturesFromPMC = async ({ baseUrl, requestOptions }) =>
+  fetch(baseUrl, requestOptions).then(response => response.json());
+
 export const literaturesEuropePMCQuery = selectorFamily({
   key: 'literaturesEuropePMCQuery',
   get:
@@ -194,9 +198,6 @@ export const literaturesEuropePMCQuery = selectorFamily({
       return response.resultList?.result;
     },
 });
-
-const fetchLiteraturesFromPMC = async ({ baseUrl, requestOptions }) =>
-  fetch(baseUrl, requestOptions).then(response => response.json());
 
 export const fetchSimilarEntities = ({
   id = '',

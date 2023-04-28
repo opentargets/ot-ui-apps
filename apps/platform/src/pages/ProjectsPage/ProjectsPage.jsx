@@ -27,10 +27,10 @@ function ProjectPage() {
     {
       id: 'otar_code',
       label: 'Project Code',
-      renderCell: ({ otar_code }) =>
-        otar_code ? (
-          <Link to={`http://home.opentargets.org/${otar_code}`} external newTab>
-            {otar_code}
+      renderCell: ({ otar_code: otarCode }) =>
+        otarCode ? (
+          <Link to={`http://home.opentargets.org/${otarCode}`} external newTab>
+            {otarCode}
           </Link>
         ) : null,
     },
@@ -40,9 +40,11 @@ function ProjectPage() {
     {
       id: 'currently_integrates_in_PPP',
       label: 'Currently integrates into PPP',
-      renderCell: ({ currently_integrates_in_PPP }) => {
+      renderCell: ({
+        currently_integrates_in_PPP: currentlyIntegratesInPPP,
+      }) => {
         const icon =
-          currently_integrates_in_PPP === 'Y' ? faCircleCheck : faCircleNotch;
+          currentlyIntegratesInPPP === 'Y' ? faCircleCheck : faCircleNotch;
         return (
           <FontAwesomeIcon size="lg" icon={icon} className={classes.icon} />
         );
@@ -53,13 +55,15 @@ function ProjectPage() {
     {
       id: 'disease_mapping',
       label: 'Disease Mapped in the PPP',
-      renderCell: ({ disease_mapping }) => {
+      renderCell: ({ disease_mapping: diseaseMapping }) => {
         const ALL_AVATARS = [];
-        disease_mapping.map((disease, index) => {
-          disease &&
-            disease.label &&
+        diseaseMapping.forEach(disease => {
+          if (disease && disease.label) {
             ALL_AVATARS.push(
-              <Link to={`disease/${disease.disease_id}`} key={index}>
+              <Link
+                to={`disease/${disease.disease_id}`}
+                key={disease.disease_id}
+              >
                 <Chip
                   size="small"
                   label={disease.label}
@@ -69,6 +73,7 @@ function ProjectPage() {
                 />
               </Link>
             );
+          }
         });
         return <div className={classes.diseaseContainer}>{ALL_AVATARS}</div>;
       },

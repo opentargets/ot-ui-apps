@@ -51,6 +51,8 @@ const sourceMapContent = source => {
         ]}
       />
     );
+
+  return null;
 };
 
 function EvidenceTooltip({ evidence }) {

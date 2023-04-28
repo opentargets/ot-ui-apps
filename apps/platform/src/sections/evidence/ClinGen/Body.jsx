@@ -37,12 +37,11 @@ const columns = [
   {
     id: 'allelicRequirements',
     label: 'Allelic requirement',
-    renderCell: ({ allelicRequirements }) =>
-      !allelicRequirements ? (
-        naLabel
-      ) : allelicRequirements.length === 1 ? (
-        allelicRequirements[0]
-      ) : (
+    renderCell: ({ allelicRequirements }) => {
+      if (!allelicRequirements) return naLabel;
+      if (allelicRequirements.length === 1) return allelicRequirements[0];
+
+      return (
         <ul
           style={{
             margin: 0,
@@ -54,7 +53,8 @@ const columns = [
             <li key={allelicRequirement}>{allelicRequirement}</li>
           ))}
         </ul>
-      ),
+      );
+    },
     filterValue: ({ allelicRequirements }) =>
       allelicRequirements ? allelicRequirements.join() : '',
   },
@@ -87,21 +87,6 @@ const columns = [
     ),
   },
 ];
-
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.ClinGenSummaryFragment
-  );
-  const { count } = summaryData.clingenSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
 
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
@@ -139,5 +124,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.ClinGenSummaryFragment
+  );
+  const { count } = summaryData.clingenSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

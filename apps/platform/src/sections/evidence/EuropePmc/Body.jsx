@@ -89,20 +89,6 @@ function mergeData(rows, literatureData) {
   return mergedRows;
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.EuropePmcSummaryFragment
-  );
-  const { count } = summaryData.europePmc;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  // Note that EuropePMC widget, unlike others, does not require count
-  return <BodyCore definition={definition} id={id} label={label} />;
-}
-
 /*
  * EuropePMC widget does NOT require the count prop
  */
@@ -122,16 +108,16 @@ export function BodyCore({ definition, id, label }) {
     refetch,
   } = useQuery(EUROPE_PMC_QUERY, {
     variables,
-    onCompleted: data => {
-      setNewIds(data.disease.evidences.rows.map(entry => entry.literature[0]));
+    onCompleted: res => {
+      setNewIds(res.disease.evidences.rows.map(entry => entry.literature[0]));
     },
   });
   const [loading, setLoading] = useState(isLoading);
 
-  const handlePageChange = page => {
+  const handlePageChange = pageChange => {
     if (
-      page * pageSize >= data.disease.evidences.rows.length - pageSize &&
-      (page + 1) * pageSize < data.disease.evidences.count
+      pageChange * pageSize >= data.disease.evidences.rows.length - pageSize &&
+      (pageChange + 1) * pageSize < data.disease.evidences.count
     ) {
       setLoading(true); // fetchMore takes too long to set loading to true.
       fetchMore({
@@ -166,7 +152,7 @@ export function BodyCore({ definition, id, label }) {
       });
     }
 
-    setPage(page);
+    setPage(pageChange);
   };
 
   const handleRowsPerPageChange = newPageSize => {
@@ -193,8 +179,8 @@ export function BodyCore({ definition, id, label }) {
         const resJson = await res.json();
         const newLiteratureData = resJson.resultList.result;
 
-        setLiteratureData(literatureData => [
-          ...literatureData,
+        setLiteratureData(litData => [
+          ...litData,
           ...newLiteratureData,
         ]);
         setLoading(false);
@@ -216,9 +202,9 @@ export function BodyCore({ definition, id, label }) {
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
-      renderBody={data => {
+      renderBody={res => {
         const rows = mergeData(
-          getPage(data.disease.evidences.rows, page, pageSize),
+          getPage(res.disease.evidences.rows, page, pageSize),
           literatureData
         );
 
@@ -242,4 +228,18 @@ export function BodyCore({ definition, id, label }) {
       }}
     />
   );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.EuropePmcSummaryFragment
+  );
+  const { count } = summaryData.europePmc;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  // Note that EuropePMC widget, unlike others, does not require count
+  return <BodyCore definition={definition} id={id} label={label} />;
 }

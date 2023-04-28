@@ -124,7 +124,7 @@ const columns = [
     sortable: true,
     renderCell: ({ studyCasesWithQualifyingVariants }) =>
       studyCasesWithQualifyingVariants
-        ? parseInt(studyCasesWithQualifyingVariants).toLocaleString()
+        ? parseInt(studyCasesWithQualifyingVariants, 10).toLocaleString()
         : naLabel,
     filterValue: ({ studyCasesWithQualifyingVariants }) =>
       `${studyCasesWithQualifyingVariants} ${naLabel}`,
@@ -135,7 +135,7 @@ const columns = [
     numeric: true,
     sortable: true,
     renderCell: ({ studyCases }) =>
-      studyCases ? parseInt(studyCases).toLocaleString() : naLabel,
+      studyCases ? parseInt(studyCases, 10).toLocaleString() : naLabel,
   },
   {
     id: 'studySampleSize',
@@ -143,7 +143,7 @@ const columns = [
     numeric: true,
     sortable: true,
     renderCell: ({ studySampleSize }) =>
-      studySampleSize ? parseInt(studySampleSize).toLocaleString() : naLabel,
+      studySampleSize ? parseInt(studySampleSize, 10).toLocaleString() : naLabel,
   },
   {
     id: 'oddsRatio',
@@ -232,21 +232,6 @@ const columns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.geneBurdenSummary
-  );
-  const { count } = summaryData.geneBurdenSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const variables = {
@@ -285,5 +270,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.geneBurdenSummary
+  );
+  const { count } = summaryData.geneBurdenSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

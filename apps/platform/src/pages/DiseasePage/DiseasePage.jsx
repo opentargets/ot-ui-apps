@@ -28,6 +28,12 @@ function DiseasePage({ location, match }) {
 
   const { name, dbXRefs } = data?.disease || {};
 
+  const ASSOCIATIONS_COMPONENT = <Associations efoId={efoId} name={name} />;
+  const CLASSIC_ASSOCIATIONS_COMPONENT = (
+    <ClassicAssociations efoId={efoId} name={name} />
+  );
+  const PROFILE_COMPONENT = <Profile efoId={efoId} name={name} />;
+
   return (
     <BasePage
       title={
@@ -53,17 +59,17 @@ function DiseasePage({ location, match }) {
             </div>
           }
           path="/disease/:efoId/associations"
-          component={() => <Associations efoId={efoId} name={name} />}
+          component={ASSOCIATIONS_COMPONENT}
         />
         <RoutingTab
           label="Associated targets"
           path="/disease/:efoId/classic-associations"
-          component={() => <ClassicAssociations efoId={efoId} name={name} />}
+          component={CLASSIC_ASSOCIATIONS_COMPONENT}
         />
         <RoutingTab
           label="Profile"
           path="/disease/:efoId"
-          component={() => <Profile efoId={efoId} name={name} />}
+          component={PROFILE_COMPONENT}
         />
       </RoutingTabs>
     </BasePage>

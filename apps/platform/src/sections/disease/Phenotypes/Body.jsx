@@ -37,11 +37,14 @@ const columns = [
     id: 'phenotypeHPO',
     label: 'Phenotype',
     renderCell: ({ phenotypeEFO, phenotypeHPO }) => {
-      const content = phenotypeEFO?.id ? (
-        <Link to={`/disease/${phenotypeEFO.id}`}>{phenotypeHPO.name}</Link>
-      ) : (
-        <>{phenotypeHPO.name || naLabel}</>
-      );
+      let content;
+      if (phenotypeEFO && phenotypeEFO.id) {
+        content = (
+          <Link to={`/disease/${phenotypeEFO.id}`}>{phenotypeHPO.name}</Link>
+        );
+      } else if (phenotypeHPO && phenotypeHPO.name) content = phenotypeHPO.name;
+      else content = naLabel;
+
       return phenotypeHPO.description ? (
         <Tooltip
           title={`Description: ${phenotypeHPO.description}`}
@@ -50,7 +53,7 @@ const columns = [
           {content}
         </Tooltip>
       ) : (
-        <>{content}</>
+        { content }
       );
     },
     filterValue: row => row.phenotypeHPO.name,
@@ -95,9 +98,13 @@ const columns = [
   {
     id: 'frequency',
     label: 'Frequency',
-    renderCell: ({ evidence }) =>
-      evidence.frequencyHPO ? (
-        evidence.frequencyHPO.id ? (
+    renderCell: ({ evidence }) => {
+      if (
+        evidence.frequencyHPO &&
+        evidence.frequencyHPO.id &&
+        evidence.frequencyHPO.name
+      )
+        return (
           <Link
             external
             to={`https://identifiers.org/ols/${evidence.frequencyHPO.id.replace(
@@ -107,12 +114,11 @@ const columns = [
           >
             {evidence.frequencyHPO.name}
           </Link>
-        ) : (
-          evidence.frequencyHPO.name
-        )
-      ) : (
-        naLabel
-      ),
+        );
+      if (evidence.frequencyHPO && evidence.frequencyHPO.name)
+        return evidence.frequencyHPO.name;
+      return naLabel;
+    },
     filterValue: row => row.evidence.frequencyHPO?.name || naLabel,
     exportValue: row => row.evidence.frequencyHPO?.name || naLabel,
     // width: '9%',
@@ -122,8 +128,8 @@ const columns = [
     label: 'Onset',
     renderCell: ({ evidence }) =>
       evidence.onset?.length > 0
-        ? evidence.onset.map((o, i) => (
-            <span key={i}>
+        ? evidence.onset.map(o => (
+            <span key={o.id}>
               <Link
                 external
                 to={`https://identifiers.org/ols/${o.id.replace('_', ':')}`}
@@ -143,8 +149,8 @@ const columns = [
     label: 'Modifier',
     renderCell: ({ evidence }) =>
       evidence.modifiers?.length > 0
-        ? evidence.modifiers.map((m, i) => (
-            <span key={i}>
+        ? evidence.modifiers.map(m => (
+            <span key={m.id}>
               <Link
                 external
                 to={`https://identifiers.org/ols/${m.id.replace('_', ':')}`}

@@ -150,9 +150,9 @@ function getColumns(classes) {
         studyStopReason,
         clinicalStatus,
         studyStopReasonCategories,
-      }) =>
-        clinicalStatus ? (
-          studyStopReason ? (
+      }) => {
+        if (clinicalStatus && studyStopReason)
+          return (
             <Tooltip
               showHelpIcon
               title={
@@ -175,12 +175,10 @@ function getColumns(classes) {
             >
               {clinicalStatus}
             </Tooltip>
-          ) : (
-            <>{clinicalStatus}</>
-          )
-        ) : (
-          naLabel
-        ),
+          );
+        if (clinicalStatus) return { clinicalStatus };
+        return naLabel;
+      },
     },
     {
       id: 'studyStartDate',
@@ -207,21 +205,6 @@ function getColumns(classes) {
       },
     },
   ];
-}
-
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.ChemblSummaryFragment
-  );
-  const { count } = summaryData.chemblSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
 }
 
 export function BodyCore({ definition, id, label, count }) {
@@ -265,5 +248,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.ChemblSummaryFragment
+  );
+  const { count } = summaryData.chemblSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

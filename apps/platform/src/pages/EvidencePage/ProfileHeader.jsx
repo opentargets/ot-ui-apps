@@ -32,7 +32,7 @@ const parseSynonyms = diseaseSynonyms => {
   const t = [];
   diseaseSynonyms.forEach(s => {
     s.terms.forEach(syn => {
-      const thisSyn = t.find(t => t.label === syn);
+      const thisSyn = t.find(tItem => tItem.label === syn);
       if (!thisSyn) {
         // if the synonyms is not already in the list, we add it
         t.push({ label: syn, tooltip: [s.relation] });
@@ -44,7 +44,11 @@ const parseSynonyms = diseaseSynonyms => {
     });
   });
   // convert the tooltip array to a string for display in the Tooltip component
-  t.forEach(syn => (syn.tooltip = syn.tooltip.join(', ')));
+  t.map(tItem => {
+    const syn = tItem;
+    syn.tooltip = tItem.tooltip.join(', ');
+    return syn;
+  });
   return t;
 };
 

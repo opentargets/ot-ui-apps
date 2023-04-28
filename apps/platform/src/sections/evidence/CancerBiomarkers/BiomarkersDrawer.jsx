@@ -68,7 +68,7 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
       <Tooltip title={biomarkerName}>
         <MuiLink
           className={classes.drawerLink}
-          onClick={toggleOpen}
+          onClick={()=>toggleOpen()}
           underline="none"
         >
           {biomarkerName}
@@ -77,12 +77,12 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={close}
+        onClose={()=>close()}
         anchor="right"
       >
         <Typography className={classes.title}>
           Biomarker
-          <IconButton onClick={close}>
+          <IconButton onClick={()=>close()}>
             <CloseIcon />
           </IconButton>
         </Typography>

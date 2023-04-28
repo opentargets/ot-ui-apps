@@ -35,8 +35,8 @@ const parseSynonyms = synonyms => {
 
   sortedSynonyms.forEach(s => {
     const thisSyn = parsedSynonyms.find(
-      parsedSynonyms =>
-        parsedSynonyms.label.toLowerCase() === s.label.toLowerCase()
+      parsedSynonym =>
+        parsedSynonym.label.toLowerCase() === s.label.toLowerCase()
     );
     if (!thisSyn) {
       parsedSynonyms.push({ label: s.label, tooltip: [s.source] });

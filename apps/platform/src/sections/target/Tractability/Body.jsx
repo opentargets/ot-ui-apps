@@ -8,8 +8,8 @@ import {
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import TRACTABILITY_QUERY from './TractabilityQuery.gql';
-import Summary from './Summary';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+// import Summary from './Summary';
+// import usePlatformApi from '../../../hooks/usePlatformApi';
 import SectionItem from '../../../components/Section/SectionItem';
 import Description from './Description';
 

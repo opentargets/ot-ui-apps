@@ -41,13 +41,13 @@ function useBatchDownloader(
 
   async function getWholeDataset() {
     const chunkPromises = [];
-    let data = [];
+    let wholeDataset = [];
     let index = 0;
 
     try {
       const firstChunk = await getDataChunk(index, downloaderChunkSize);
-      data = [...getRows(firstChunk, rowPath)];
-      index++;
+      wholeDataset = [...getRows(firstChunk, rowPath)];
+      index+=1;
 
       const count = Math.ceil(
         _.get(firstChunk, countPath) / downloaderChunkSize
@@ -55,16 +55,16 @@ function useBatchDownloader(
 
       while (index < count) {
         chunkPromises.push(getDataChunk(index, downloaderChunkSize));
-        index++;
+        index+=1;
       }
 
       const remainingChunks = await Promise.all(chunkPromises);
 
       remainingChunks.forEach(chunk => {
-        data = [...data, ...getRows(chunk, rowPath)];
+        wholeDataset = [...wholeDataset, ...getRows(chunk, rowPath)];
       });
 
-      setData(data);
+      setData(wholeDataset);
     } catch (e) {
       setError(e);
     } finally {

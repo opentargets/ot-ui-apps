@@ -159,21 +159,6 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: '.5rem' },
 });
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.IntOgenSummaryFragment
-  );
-  const { count } = summaryData.intOgen;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const classes = useStyles();
 
@@ -237,5 +222,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.IntOgenSummaryFragment
+  );
+  const { count } = summaryData.intOgen;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

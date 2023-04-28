@@ -7,14 +7,14 @@ export default function countHomologues(homologues) {
       homologyType === 'ortholog_one2many' ||
       homologyType === 'ortholog_many2many'
     ) {
-      orthologueCount++;
+      orthologueCount+=1;
     }
 
     if (
       homologyType === 'within_species_paralog' ||
       homologyType === 'other_paralog'
     ) {
-      paralogueCount++;
+      paralogueCount+=1;
     }
   });
   return { orthologueCount, paralogueCount };

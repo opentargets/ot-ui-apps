@@ -108,19 +108,22 @@ const columns = [
         .map(variantAminoacidDescription => variantAminoacidDescription)
         .join(),
     label: 'Amino acid variation',
-    renderCell: ({ variantAminoacidDescriptions }) =>
-      variantAminoacidDescriptions?.length > 1 ? (
-        <TableDrawer
-          entries={variantAminoacidDescriptions.map(d => ({
-            name: d,
-            group: 'Amino acid variation',
-          }))}
-        />
-      ) : variantAminoacidDescriptions?.length === 1 ? (
-        <EllsWrapper>{variantAminoacidDescriptions[0]}</EllsWrapper>
-      ) : (
-        naLabel
-      ),
+    renderCell: ({ variantAminoacidDescriptions }) => {
+      if (variantAminoacidDescriptions?.length === 1) {
+        return <EllsWrapper>{variantAminoacidDescriptions[0]}</EllsWrapper>;
+      }
+      if (variantAminoacidDescriptions?.length > 1) {
+        return (
+          <TableDrawer
+            entries={variantAminoacidDescriptions.map(d => ({
+              name: d,
+              group: 'Amino acid variation',
+            }))}
+          />
+        );
+      }
+      return naLabel;
+    },
     width: '12%',
   },
   {
@@ -142,21 +145,6 @@ const columns = [
     width: '12%',
   },
 ];
-
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.reactomeSummary
-  );
-  const { count } = summaryData.reactomeSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
 
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId: ensemblId, efoId } = id;
@@ -196,5 +184,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.reactomeSummary
+  );
+  const { count } = summaryData.reactomeSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

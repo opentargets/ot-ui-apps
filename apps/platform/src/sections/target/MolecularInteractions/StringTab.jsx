@@ -96,6 +96,24 @@ const useStyles = makeStyles({
   },
 });
 
+
+const id = 'string';
+const index = 0;
+const size = 10000;
+const color = scaleQuantize().domain([0, 1]).range(colorRange);
+
+const getScoreForColumn = (evidences, evidencesId) =>
+  evidences
+    .filter(e => e.interactionDetectionMethodShortName === evidencesId)
+    .map(e => e.evidenceScore)[0]; // TODO: the [0] is to catch a data error: remove when fixed.
+const getHeatmapCell = (score, classes) => (
+  <span
+    className={classes.colorSpan}
+    title={score || 'No data'}
+    style={{ backgroundColor: color(score) }}
+  />
+);
+
 function getColumns(classes) {
   return [
     {
@@ -283,22 +301,6 @@ function getColumns(classes) {
   ];
 }
 
-const getScoreForColumn = (evidences, id) =>
-  evidences
-    .filter(e => e.interactionDetectionMethodShortName === id)
-    .map(e => e.evidenceScore)[0]; // TODO: the [0] is to catch a data error: remove when fixed.
-const getHeatmapCell = (score, classes) => (
-  <span
-    className={classes.colorSpan}
-    title={score || 'No data'}
-    style={{ backgroundColor: color(score) }}
-  />
-);
-
-const id = 'string';
-const index = 0;
-const size = 10000;
-const color = scaleQuantize().domain([0, 1]).range(colorRange);
 
 function StringTab({ ensgId, symbol }) {
   const [data, setData] = useState([]);

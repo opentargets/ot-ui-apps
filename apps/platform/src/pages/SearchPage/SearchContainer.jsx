@@ -122,6 +122,7 @@ const SearchFilters = withStyles(styles)(
 );
 
 function SearchResults({ results, page, onPageChange }) {
+  const TYPE_NAME = '__typename';
   return (
     <>
       <TablePagination
@@ -132,19 +133,28 @@ function SearchResults({ results, page, onPageChange }) {
         page={page - 1}
         onPageChange={onPageChange}
       />
-      {results.hits.map(({ highlights, object }) =>
-        object.__typename === 'Target' ? (
-          <TargetResult key={object.id} data={object} highlights={highlights} />
-        ) : object.__typename === 'Disease' ? (
-          <DiseaseResult
-            key={object.id}
-            data={object}
-            highlights={highlights}
-          />
-        ) : (
+      {results.hits.map(({ highlights, object }) => {
+        if (object[TYPE_NAME] === 'Target')
+          return (
+            <TargetResult
+              key={object.id}
+              data={object}
+              highlights={highlights}
+            />
+          );
+        if (object[TYPE_NAME] === 'Disease')
+          return (
+            <DiseaseResult
+              key={object.id}
+              data={object}
+              highlights={highlights}
+            />
+          );
+        return (
           <DrugResult key={object.id} data={object} highlights={highlights} />
-        )
-      )}
+        );
+      })}
+
       <TablePagination
         component="div"
         rowsPerPageOptions={[]}
@@ -158,17 +168,17 @@ function SearchResults({ results, page, onPageChange }) {
 }
 
 function TopHitDetail({ topHit }) {
+  let COMPONENT = null;
+  const TYPE_NAME = '__typename';
+  if (topHit[TYPE_NAME] === 'Target')
+    COMPONENT = <TargetDetail data={topHit} />;
+  else if (topHit[TYPE_NAME] === 'Disease')
+    COMPONENT = <DiseaseDetail data={topHit} />;
+  else if (topHit[TYPE_NAME] === 'Drug')
+    COMPONENT = <DrugDetail data={topHit} />;
   return (
     <Card elevation={0}>
-      <ErrorBoundary>
-        {topHit.__typename === 'Target' ? (
-          <TargetDetail data={topHit} />
-        ) : topHit.__typename === 'Disease' ? (
-          <DiseaseDetail data={topHit} />
-        ) : topHit.__typename === 'Drug' ? (
-          <DrugDetail data={topHit} />
-        ) : null}
-      </ErrorBoundary>
+      <ErrorBoundary>{COMPONENT}</ErrorBoundary>
     </Card>
   );
 }
