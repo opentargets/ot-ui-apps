@@ -35,12 +35,14 @@ module.exports = {
   rules: {
     "no-plusplus": ["error", { allowForLoopAfterthoughts: true }],
     "no-restricted-exports": "off",
-
     "no-underscore-dangle": "warn",
+    "no-await-in-loop": "warn",
+
+    "import/prefer-default-export": "warn",
 
     "react/prop-types": 0,
     "react/react-in-jsx-scope": 0,
-    "import/prefer-default-export": "warn",
+    "react/jsx-filename-extension": [1, { extensions: [".tsx", ".jsx"] }],
 
     "jsx-a11y/no-static-element-interactions": "warn",
     "jsx-a11y/click-events-have-key-events": "warn",

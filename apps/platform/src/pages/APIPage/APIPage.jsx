@@ -26,13 +26,15 @@ import SEARCH_ASSOCS from './SearchAssocs.gql';
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
-  import('graphiql').then((module) => {
-    module.default.Logo = function() {
-  return null
-};
-    module.default.Toolbar = function() {
-  return null
-};
+  import('graphiql').then(module => {
+    // eslint-disable-next-line
+    module.default.Logo = function () {
+      return null;
+    };
+    // eslint-disable-next-line
+    module.default.Toolbar = function () {
+      return null;
+    };
     return module;
   })
 );
@@ -230,7 +232,8 @@ function APIPage() {
                   Run sample query
                 </Button>
                 <Typography variant="subtitle2" display="block" paragraph>
-                  Example query to get how many entries there are in each entity category for Insulin
+                  Example query to get how many entries there are in each entity
+                  category for Insulin
                 </Typography>
                 <Button
                   className={classes.buttonMargin}
@@ -245,7 +248,7 @@ function APIPage() {
           </Accordion>
         </Grid>
         <Grid item md={9} xl={10}>
-          <Suspense fallback={<LoadingBackdrop/>}>
+          <Suspense fallback={<LoadingBackdrop />}>
             <GraphiQL fetcher={fetcher} query={query} />
           </Suspense>
         </Grid>
