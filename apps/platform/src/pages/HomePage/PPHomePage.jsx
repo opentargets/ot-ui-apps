@@ -166,7 +166,7 @@ function HomePage() {
               <Link to={`/drug/${drugs[1].id}`}>{drugs[1].label}</Link>
             </Hidden>
           </Grid>
-          <Version />
+          <Version releaseNotesURL="http://home.opentargets.org/ppp-release-notes" />
           <div className={classes.dataPolicy}>
             <Typography
               variant="body2"

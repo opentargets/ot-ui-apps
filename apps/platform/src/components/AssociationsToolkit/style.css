@@ -251,26 +251,6 @@
   cursor: pointer;
 }
 
-/* Category indicators */
-.TAssociations .category-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  margin-left: 400px;
-}
-
-.TAssociations .category-container .category-indicator {
-  width: calc(100% / 14);
-  position: relative;
-}
-
-.TAssociations .category-container .category-indicator div {
-  width: 100%;
-  height: 4px;
-  content: ' ';
-  transition: all ease 300ms;
-}
-
 .TAssociations .category-container:hover .category-indicator div {
   height: 15px;
 }

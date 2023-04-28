@@ -19,7 +19,7 @@ const CloseContainer = styled('div')({
   zIndex: 10,
 });
 
-function HeaderControls({ cols }) {
+function HeaderControls({ cols = [] }) {
   const { activeHeadersControlls, setActiveHeadersControlls, displayedTable } =
     useAotfContext();
 
@@ -27,6 +27,10 @@ function HeaderControls({ cols }) {
 
   const handleClose = () => {
     setActiveHeadersControlls(false);
+  };
+
+  const columnContainerStyle = {
+    gridTemplateColumns: ` repeat(${cols.length}, 1fr)`,
   };
 
   return (
@@ -57,7 +61,12 @@ function HeaderControls({ cols }) {
               <Typography variant="subtitle2">Required datasource:</Typography>
             </Grid>
           </Grid>
-          <Grid item container className="grid-container controlls-wrapper">
+          <Grid
+            item
+            container
+            style={columnContainerStyle}
+            className="grid-container controlls-wrapper"
+          >
             {cols.map(({ id }) => (
               <div key={id} className="colum-control">
                 <Grid className="control-container" key={id}>
