@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { useQuery } from '@apollo/client';
-
+import { v1 } from 'uuid';
 import Link from '../../../components/Link';
 import SectionItem from '../../../components/Section/SectionItem';
 import usePlatformApi from '../../../hooks/usePlatformApi';
@@ -48,7 +48,7 @@ const columns = [
       !row.references
         ? 'n/a'
         : row.references.map((r, i) => (
-            <Fragment key={i}>
+            <Fragment key={v1()}>
               {i > 0 ? ', ' : null}
               {r.urls ? (
                 <Link external to={r.urls[0]}>

@@ -70,17 +70,17 @@ class GtexVariability extends Component {
   colour = scaleOrdinal();
 
   componentDidMount() {
-    this._render();
+    this.d3Render();
   }
 
   componentDidUpdate() {
-    this._render();
+    this.d3Render();
   }
 
-  _render() {
-    const { theme } = this.props;
+  d3Render() {
+    const { theme, data: propsData } = this.props;
     const { x, y, colour } = this;
-    const data = this.props.data.slice().sort((a, b) => b.median - a.median);
+    const data = propsData.slice().sort((a, b) => b.median - a.median);
 
     const height = data.length * boxHeight + margin.top + margin.bottom;
     const rectHeight = boxHeight - 2 * boxPadding;
@@ -161,7 +161,7 @@ class GtexVariability extends Component {
       .attr('width', d => x(d.q3) - x(d.q1))
       .attr('height', rectHeight)
       .attr('fill', d => colour(d.tissueSiteDetailId))
-      .on('mouseover', function (d) {
+      .on('mouseover', d => {
         let X =
           parseFloat(select(this).attr('x')) +
           parseFloat(select(this).attr('width')) +

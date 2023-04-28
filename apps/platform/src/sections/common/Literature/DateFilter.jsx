@@ -14,6 +14,9 @@ import {
   updateLiteratureState,
 } from './atoms';
 
+const iOSBoxShadow =
+  '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)';
+
 const monthsBtwnDates = (startDate, endDate) =>
   Math.max(
     (endDate.getFullYear() - startDate.getFullYear()) * 12 +
@@ -21,12 +24,63 @@ const monthsBtwnDates = (startDate, endDate) =>
     0
   );
 
+const IOSSlider = withStyles(theme => ({
+  root: {
+    color: theme.palette.primary.main,
+    height: 2,
+    padding: '15px 0',
+  },
+  thumb: {
+    height: 20,
+    width: 20,
+    backgroundColor: theme.palette.primary.main,
+    boxShadow: iOSBoxShadow,
+    marginTop: -10,
+    marginLeft: -14,
+    '&:focus, &:hover, &$active': {
+      boxShadow:
+        '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)',
+      // Reset on touch devices, it doesn't add specificity
+      '@media (hover: none)': {
+        boxShadow: iOSBoxShadow,
+      },
+    },
+  },
+  active: {},
+  valueLabel: {
+    left: 'calc(-50% + 4px)',
+    top: -22,
+    whiteSpace: 'nowrap',
+    '& *': {
+      background: 'transparent',
+      color: theme.palette.text.primary,
+    },
+  },
+  track: {
+    height: 2,
+  },
+  rail: {
+    height: 2,
+    opacity: 0.5,
+    backgroundColor: '#bfbfbf',
+  },
+  mark: {
+    backgroundColor: '#bfbfbf',
+    height: 8,
+    width: 1,
+    marginTop: -3,
+  },
+  markActive: {
+    opacity: 1,
+    backgroundColor: 'currentColor',
+  },
+}))(Slider);
+
 export function DateFilter() {
   const [filterDate, setFilterDate] = useState([0, 100]);
   const [numberOfMonths, setNumberOfMonths] = useState(0);
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const [loadingEntities, setLoadingEntities] =
-    useRecoilState(loadingEntitiesState);
+  const [_, setLoadingEntities] = useRecoilState(loadingEntitiesState);
   const {
     query,
     id,
@@ -94,13 +148,13 @@ export function DateFilter() {
     return new Date(from.setMonth(from.getMonth() + value));
   };
 
-  function valueLabelFormat(value) {
+  const valueLabelFormat = value => {
     if (earliestPubYear) {
       const labelDate = selectedDate(value);
       return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;
     }
     return value;
-  }
+  };
 
   const handleDateRangeChange = (event, newValue) => {
     setFilterDate(newValue);
@@ -144,58 +198,3 @@ export function DateFilter() {
     </div>
   );
 }
-
-const iOSBoxShadow =
-  '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)';
-
-const IOSSlider = withStyles(theme => ({
-  root: {
-    color: theme.palette.primary.main,
-    height: 2,
-    padding: '15px 0',
-  },
-  thumb: {
-    height: 20,
-    width: 20,
-    backgroundColor: theme.palette.primary.main,
-    boxShadow: iOSBoxShadow,
-    marginTop: -10,
-    marginLeft: -14,
-    '&:focus, &:hover, &$active': {
-      boxShadow:
-        '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)',
-      // Reset on touch devices, it doesn't add specificity
-      '@media (hover: none)': {
-        boxShadow: iOSBoxShadow,
-      },
-    },
-  },
-  active: {},
-  valueLabel: {
-    left: 'calc(-50% + 4px)',
-    top: -22,
-    whiteSpace: 'nowrap',
-    '& *': {
-      background: 'transparent',
-      color: theme.palette.text.primary,
-    },
-  },
-  track: {
-    height: 2,
-  },
-  rail: {
-    height: 2,
-    opacity: 0.5,
-    backgroundColor: '#bfbfbf',
-  },
-  mark: {
-    backgroundColor: '#bfbfbf',
-    height: 8,
-    width: 1,
-    marginTop: -3,
-  },
-  markActive: {
-    opacity: 1,
-    backgroundColor: 'currentColor',
-  },
-}))(Slider);

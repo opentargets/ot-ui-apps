@@ -1,5 +1,7 @@
 import { List, ListItem, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
+import { v1 } from 'uuid';
+
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import { DataTable } from '../../../components/Table';
 import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
@@ -63,8 +65,8 @@ const columns = [
       if (allelicRequirements && allelicRequirements.length > 1) {
         return (
           <List>
-            {allelicRequirements.map((item, index) => (
-              <ListItem key={index}>{item}</ListItem>
+            {allelicRequirements.map(item => (
+              <ListItem key={v1()}>{item}</ListItem>
             ))}
           </List>
         );

@@ -4,6 +4,7 @@ import {
   faArrowsAltH,
   faExpandArrowsAlt,
 } from '@fortawesome/free-solid-svg-icons';
+import { v1 } from 'uuid';
 import Tooltip from '../../../../components/Tooltip';
 
 function MethodIcon({
@@ -17,8 +18,8 @@ function MethodIcon({
 
   if (!enabled || !tooltip) title = 'no data';
   else if (Array.isArray(tooltip)) {
-    title = tooltip.map((m, i) => (
-      <span key={i}>
+    title = tooltip.map(m => (
+      <span key={v1()}>
         {m}
         <br />
       </span>

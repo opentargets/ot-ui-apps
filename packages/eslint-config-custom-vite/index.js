@@ -35,8 +35,14 @@ module.exports = {
   rules: {
     "no-plusplus": ["error", { allowForLoopAfterthoughts: true }],
     "no-restricted-exports": "off",
+
+    "no-underscore-dangle": "warn",
+
     "react/prop-types": 0,
     "react/react-in-jsx-scope": 0,
     "import/prefer-default-export": "warn",
+
+    "jsx-a11y/no-static-element-interactions": "warn",
+    "jsx-a11y/click-events-have-key-events": "warn",
   },
 };

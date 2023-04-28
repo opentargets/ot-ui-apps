@@ -1,5 +1,7 @@
-import { Component, Fragment } from 'react';
+/* eslint-disable no-underscore-dangle */
+import { Component } from 'react';
 import { Button, Grid, Typography } from '@material-ui/core';
+import { v1 } from 'uuid';
 
 import Abstract from './Abstract';
 import BibliographyDetailPanel from './BibliographyDetailPanel';
@@ -22,7 +24,6 @@ class Publication extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasError: false,
       showAbstract: false,
       showSimilar: false,
       abstract: '',
@@ -46,7 +47,8 @@ class Publication extends Component {
 
   // Fetches similar papers data as needed and return components
   buildSimilar = () => {
-    if (!this.state.similar) {
+    const { similar } = this.state;
+    if (!similar) {
       this.getSimilar();
       return null;
     }
@@ -62,8 +64,8 @@ class Publication extends Component {
           alignItems="stretch"
           spacing={2}
         >
-          {this.state.similar.map((hit, i) => (
-            <Grid item xs={12} key={i}>
+          {similar.map(hit => (
+            <Grid item xs={12} key={v1()}>
               <SimplePublication
                 variant="small"
                 pmId={hit._source.pub_id}
@@ -89,7 +91,8 @@ class Publication extends Component {
 
   // Get the abstract data from API
   getAbstract = () => {
-    getPublicationAbstract(this.props.pmId).then(
+    const { pmId } = this.props;
+    getPublicationAbstract(pmId).then(
       resp => {
         this.setState({
           abstract: resp.abstract,
@@ -98,7 +101,6 @@ class Publication extends Component {
       () => {
         this.setState({
           abstract: '',
-          hasError: true,
         });
       }
     );
@@ -106,7 +108,8 @@ class Publication extends Component {
 
   // Get the abstract data from API
   getSimilar = () => {
-    getSimilarPublications(this.props.pmId).then(
+    const { pmId } = this.props;
+    getSimilarPublications(pmId).then(
       resp => {
         this.setState({
           similar: resp.hits.hits,
@@ -115,7 +118,6 @@ class Publication extends Component {
       () => {
         this.setState({
           similar: null,
-          hasError: true,
         });
       }
     );

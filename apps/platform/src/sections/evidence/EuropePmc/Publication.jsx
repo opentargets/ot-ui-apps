@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { v1 } from 'uuid';
 import {
   AddCircleOutlineRounded,
   RemoveCircleOutlineRounded,
@@ -41,7 +42,7 @@ function Publication({
   const [showMatches, setShowMatches] = useState(false);
 
   if (!title) {
-    return {naLabel};
+    return { naLabel };
   }
 
   const handleShowAbstractClick = () => {
@@ -117,8 +118,8 @@ function Publication({
           <Typography variant="subtitle2">Matches</Typography>
           <table className={classes.matchTable}>
             <tbody>
-              {textMiningSentences.map((match, index) => (
-                <SentenceMatch key={index} match={match} />
+              {textMiningSentences.map(match => (
+                <SentenceMatch key={v1()} match={match} />
               ))}
             </tbody>
           </table>

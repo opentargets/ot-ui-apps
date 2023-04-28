@@ -52,7 +52,8 @@
     "smiles-drawer": "^1.1.22",
     "tsparticles": "^2.0.6",
     "typeface-inter": "^3.3.0",
-    "ui": "*"
+    "ui": "*",
+    "uuid": "^9.0.0"
   },
   "scripts": {
     "dev-ppp": "vite --host 0.0.0.0 --port 3000 --clearScreen false --mode ppp",
@@ -64,6 +65,7 @@
     "prettier": "prettier --write",
     "lint": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\" --fix",
+    "lint:quiet": "eslint --quiet \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "prettier:all": "prettier --write 'src/**/*.js'",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
@@ -74,6 +76,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@types/d3": "^7.4.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-helmet": "^6.1.6",

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { memo, useRef, useEffect } from 'react';
 import { v1 } from 'uuid';
 

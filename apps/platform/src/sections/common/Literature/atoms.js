@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash-es';
+import isEmpty from 'lodash/isEmpty';
 import { atom, selectorFamily, selector } from 'recoil';
 import client from '../../../client';
 import { getPage } from '../../../components/Table';

@@ -155,11 +155,10 @@ class Section extends Component {
     const { selected } = this.state;
     getPublicationsData(selected, after, afterId).then(
       resp => {
+        const { state: stateHits } = this.state;
         // if loading more data (after & afterId) append that, if not just reset hits
         const hits =
-          after && afterId
-            ? this.state.hits.concat(resp.hits.hits)
-            : resp.hits.hits;
+          after && afterId ? stateHits.concat(resp.hits.hits) : resp.hits.hits;
         if (this.mounted) {
           this.setState({ hits, isLoading: false });
         }
@@ -234,11 +233,7 @@ class Section extends Component {
                   onChange={this.aggtypeFilterHandler}
                   options={aggtype}
                   renderInput={params => (
-                    <TextField
-                      {...params}
-                      // label=""
-                      margin="normal"
-                    />
+                    <TextField {...params} margin="normal" />
                   )}
                   value={selectedAggregation}
                 />

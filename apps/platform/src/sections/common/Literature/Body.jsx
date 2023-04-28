@@ -80,7 +80,7 @@ function LiteratureList({ id, name, entity, BODY_QUERY }) {
         <CountInfo />
       </Box>
       <Entities id={id} name={name} />
-      <PublicationsList hideSearch handleRowsPerPageChange={() => {}} />
+      <PublicationsList hideSearch handleRowsPerPageChange={() => ({})} />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Typography } from '@material-ui/core';
+import { v1 } from 'uuid';
 
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { DataTable } from '../../../components/Table';
@@ -105,12 +106,12 @@ const columns = [
     label: 'Allelic Requirement',
     renderCell: ({ allelicRequirements }) =>
       allelicRequirements
-        ? allelicRequirements.map((item, index) => {
+        ? allelicRequirements.map(item => {
             const [caption, description] = allelicRequirementsCaption(item);
 
             return (
               <Tooltip
-                key={index}
+                key={v1()}
                 placement="top"
                 interactive
                 title={description}

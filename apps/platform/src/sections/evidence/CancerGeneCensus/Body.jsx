@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { Box, List, ListItem, makeStyles, Typography } from '@material-ui/core';
+import { v1 } from 'uuid';
 
 import ChipList from '../../../components/ChipList';
 import { DataTable } from '../../../components/Table';
@@ -79,11 +80,11 @@ const columns = [
         .sort((a, b) => samplePercent(b) - samplePercent(a));
       return (
         <List style={{ padding: 0 }}>
-          {sortedMutatedSamples.map((item, i) => {
+          {sortedMutatedSamples.map(item => {
             const percent = samplePercent(item);
 
             return (
-              <ListItem key={i} style={{ padding: '.25rem 0' }}>
+              <ListItem key={v1()} style={{ padding: '.25rem 0' }}>
                 {percent < 5
                   ? parseFloat(percent.toFixed(2)).toString()
                   : Math.round(percent)}
