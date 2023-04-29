@@ -46,10 +46,9 @@ const parseSynonyms = synonyms => {
     }
   });
 
-  parsedSynonyms.forEach(
-    syn =>
-      (syn.tooltip = `Source: ${syn.tooltip.map(s => sources[s]).join(', ')}`)
-  );
+  parsedSynonyms.forEach(syn => {
+    syn.tooltip = `Source: ${syn.tooltip.map(s => sources[s]).join(', ')}`;
+  });
 
   return parsedSynonyms;
 };

@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { v1 } from 'uuid';
 import { Autocomplete } from '@material-ui/lab';
 import {
   Box,
@@ -153,14 +154,15 @@ class Section extends Component {
     const after = append ? last.sort[0] : undefined;
     const afterId = append ? last._id : undefined;
     const { selected } = this.state;
+
     getPublicationsData(selected, after, afterId).then(
       resp => {
         const { state: stateHits } = this.state;
         // if loading more data (after & afterId) append that, if not just reset hits
-        const hits =
+        const newHits =
           after && afterId ? stateHits.concat(resp.hits.hits) : resp.hits.hits;
         if (this.mounted) {
-          this.setState({ hits, isLoading: false });
+          this.setState({ hits: newHits, isLoading: false });
         }
       },
       () => {
@@ -181,8 +183,9 @@ class Section extends Component {
 
   // Handler for when a chip is selected
   selectChip = chip => {
-    const selected = this.state.selected.concat([chip]);
-    this.setState({ selected });
+    const { selected } = this.state;
+    const newSelected = selected.concat([chip]);
+    this.setState({ selected: newSelected });
   };
 
   // We make 2 calls: one for chips and one for papers
@@ -233,6 +236,7 @@ class Section extends Component {
                   onChange={this.aggtypeFilterHandler}
                   options={aggtype}
                   renderInput={params => (
+                    // eslint-disable-next-line
                     <TextField {...params} margin="normal" />
                   )}
                   value={selectedAggregation}
@@ -244,7 +248,7 @@ class Section extends Component {
                   selected.map((sel, i) =>
                     i > 0 ? (
                       <Chip
-                        key={i}
+                        key={v1()}
                         color="primary"
                         label={sel.label || sel.key}
                         onDelete={() => this.deselectChip(i)}
@@ -263,7 +267,7 @@ class Section extends Component {
                   ? aggregations[selectedAggregation.value].buckets.map(
                       (agg, i) => (
                         <Chip
-                          key={i}
+                          key={v1()}
                           variant="outlined"
                           label={agg.label || agg.key}
                           onClick={() => this.selectChip(agg)}

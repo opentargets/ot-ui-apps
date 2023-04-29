@@ -1,4 +1,5 @@
 import { useState, useLayoutEffect, useRef } from 'react';
+import { v1 } from 'uuid';
 import { Typography, withStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
@@ -14,6 +15,17 @@ const styles = theme => ({
     cursor: 'pointer',
   },
 });
+
+const getStyleHeight = ({
+  newNumberOfLines,
+  lineLimit,
+  showMore,
+  lineHeight,
+}) => {
+  if (newNumberOfLines <= lineLimit) return 'auto';
+  if (showMore) return 'auto';
+  return `${lineLimit * lineHeight}px`;
+};
 
 function LongText({
   classes,
@@ -37,16 +49,16 @@ function LongText({
         .getPropertyValue('line-height'),
       10
     );
-    const numberOfLines = Math.round(height / lineHeight);
+    const newNumberOfLines = Math.round(height / lineHeight);
 
-    container.style.height =
-      numberOfLines <= lineLimit
-        ? 'auto'
-        : showMore
-        ? 'auto'
-        : `${lineLimit * lineHeight}px`;
+    container.style.height = getStyleHeight({
+      newNumberOfLines,
+      lineHeight,
+      lineLimit,
+      showMore,
+    });
 
-    setNumberOfLines(numberOfLines);
+    setNumberOfLines(newNumberOfLines);
   }, [lineLimit, showMore, children]);
 
   function createDescriptionMarkup(desc) {
@@ -58,7 +70,7 @@ function LongText({
       <span ref={containerRef} className={classes.textContainer}>
         {descriptions.map((desc, i) => (
           <span
-            key={`${targetId}-${i}`}
+            key={`${targetId}-${v1()}`}
             dangerouslySetInnerHTML={createDescriptionMarkup(desc)}
           />
         ))}
