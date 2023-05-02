@@ -13,7 +13,7 @@ import useAssociationsData from '../hooks/useAssociationsData';
 
 const AssociationsContext = createContext();
 
-const initialIndirect = entity => (entity !== 'target');
+const initialIndirect = entity => entity !== 'target';
 
 function AssociationsProvider({ children, entity, id, query }) {
   const [{ pageIndex, pageSize }, setPagination] = useState({
@@ -84,7 +84,6 @@ function AssociationsProvider({ children, entity, id, query }) {
     aggregationDatasources.forEach(e => {
       if (getControlChecked(dataSourcesRequired, e.id) === false) {
         isAllActive = false;
-        
       }
     });
     if (isAllActive) {
@@ -113,10 +112,10 @@ function AssociationsProvider({ children, entity, id, query }) {
 
   const entityToGet = entity === 'target' ? 'disease' : 'target';
 
-  const handlePaginationChange = pagination => {
+  const handlePaginationChange = newPagination => {
     setTableExpanded({});
     setExpanded([]);
-    setPagination(pagination);
+    setPagination(newPagination);
   };
 
   const handleSortingChange = newSortingFunc => {
@@ -159,46 +158,46 @@ function AssociationsProvider({ children, entity, id, query }) {
     setTableExpanded({});
   };
 
+  const contextVariables = useMemo(() => ({
+    query,
+    id,
+    entity,
+    entityToGet,
+    count,
+    data,
+    loading,
+    initialLoading,
+    tableExpanded,
+    pagination,
+    expanded,
+    activeHeadersControlls,
+    enableIndirect,
+    error,
+    dataSourcesWeights,
+    dataSourcesRequired,
+    displayedTable,
+    pinnedData,
+    searhFilter,
+    sorting,
+    modifiedSourcesDataControls,
+    resetDatasourceControls,
+    handleSortingChange,
+    handleSearchInputChange,
+    setPinnedData,
+    setDisplayedTable,
+    setDataSourcesWeights,
+    setDataSourcesRequired,
+    handlePaginationChange,
+    expanderHandler,
+    setTableExpanded,
+    setEnableIndirect,
+    setActiveHeadersControlls,
+    resetExpandler,
+    handleAggregationClick,
+  }));
+
   return (
-    <AssociationsContext.Provider
-      value={{
-        query,
-        id,
-        entity,
-        entityToGet,
-        count,
-        data,
-        loading,
-        initialLoading,
-        tableExpanded,
-        pagination,
-        expanded,
-        activeHeadersControlls,
-        enableIndirect,
-        error,
-        dataSourcesWeights,
-        dataSourcesRequired,
-        displayedTable,
-        pinnedData,
-        searhFilter,
-        sorting,
-        modifiedSourcesDataControls,
-        resetDatasourceControls,
-        handleSortingChange,
-        handleSearchInputChange,
-        setPinnedData,
-        setDisplayedTable,
-        setDataSourcesWeights,
-        setDataSourcesRequired,
-        handlePaginationChange,
-        expanderHandler,
-        setTableExpanded,
-        setEnableIndirect,
-        setActiveHeadersControlls,
-        resetExpandler,
-        handleAggregationClick,
-      }}
-    >
+    <AssociationsContext.Provider value={contextVariables}>
       {children}
     </AssociationsContext.Provider>
   );

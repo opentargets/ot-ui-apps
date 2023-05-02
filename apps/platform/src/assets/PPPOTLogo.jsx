@@ -14,6 +14,8 @@ function OTLogo(props) {
     <SvgIcon
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 1891.8 346.7"
+      // TODO: review props spreading
+      // eslint-disable-next-line
       {...props}
       classes={classes}
     >

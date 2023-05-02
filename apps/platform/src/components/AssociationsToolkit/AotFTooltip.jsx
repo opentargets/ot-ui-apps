@@ -89,7 +89,7 @@ function RichTooltip({
   placement = 'top',
   arrow = true,
   open,
-  onClose = () => {},
+  onClose = () => ({}),
   content,
   children,
 }) {
@@ -118,6 +118,8 @@ function RichTooltip({
         }}
       >
         {({ TransitionProps }) => (
+          // TODO: review props spreading
+          // eslint-disable-next-line
           <Fade {...TransitionProps} timeout={350}>
             <Paper>
               <ClickAwayListener onClickAway={onClose}>

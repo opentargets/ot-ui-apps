@@ -55,7 +55,7 @@ function Facets({ loading, data, onChange, type }) {
     if (!facets.length) {
       setFacets(prepareFacetData(data));
     } else {
-      setFacets(facets => updateFacetCounts(facets, data));
+      setFacets(newFacets => updateFacetCounts(newFacets, data));
     }
   }, [data, facets.length]);
 

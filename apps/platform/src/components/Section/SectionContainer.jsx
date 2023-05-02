@@ -1,4 +1,5 @@
 import { Grid } from '@material-ui/core';
+import { Children } from 'react';
 
 import { NavPanel } from '../NavPanel';
 import useSectionOrder from '../../hooks/useSectionOrder';
@@ -6,7 +7,7 @@ import useSectionOrder from '../../hooks/useSectionOrder';
 function SectionContainer({ children }) {
   const { sectionOrder, updateSectionOrder, shouldRender } = useSectionOrder();
   const sortedChildren = sectionOrder.map(sectionId =>
-    React.Children.toArray(children).find(
+    Children.toArray(children).find(
       child => child.props.definition.id === sectionId
     )
   );

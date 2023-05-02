@@ -22,7 +22,7 @@ function DataTable({
   rowsPerPageOptions = [],
   onRowClick,
   rowIsSelectable,
-  onPagination = () => {},
+  onPagination = () => ({}),
   dataDownloaderColumns,
   loading,
   query,
@@ -36,25 +36,30 @@ function DataTable({
   const showPagination =
     rows.length > [...rowsPerPageOptions, initialPageSize].sort()[0];
 
-  const handleGlobalFilterChange = globalFilter => {
-    setGlobalFilterVal(globalFilter);
+  function getColumnOrientation({ newSortBy }) {
+    if (sortColumn !== newSortBy) return 'asc';
+    if (sortOrder === 'asc') return 'desc';
+    return 'asc';
+  }
+
+  const handleGlobalFilterChange = newGlobalFilter => {
+    setGlobalFilterVal(newGlobalFilter);
     setPage(0);
   };
 
-  const handleSortBy = sortBy => {
-    setSortColumn(sortBy);
-    setSortOrder(
-      sortColumn === sortBy ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc'
-    );
+  const handleSortBy = newSortBy => {
+    const sortOrientation = getColumnOrientation({ newSortBy });
+    setSortColumn(newSortBy);
+    setSortOrder(sortOrientation);
   };
 
-  const handlePageChange = page => {
-    setPage(page);
-    onPagination(page, pageSize);
+  const handlePageChange = newPage => {
+    setPage(newPage);
+    onPagination(newPage, pageSize);
   };
 
-  const handleRowsPerPageChange = pageSize => {
-    setPageSize(pageSize);
+  const handleRowsPerPageChange = newPageSize => {
+    setPageSize(newPageSize);
     setPage(0);
   };
 

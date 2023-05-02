@@ -25,9 +25,9 @@ function TableHeader({ table }) {
   const { id, displayedTable, handleAggregationClick, activeHeadersControlls } =
     useAotfContext();
   const [activeAggregation, setActiveAggegation] = useState(null);
-  const onEnterHoverHeader = ({ id, column }) => {
-    if (id === 'score' || id === 'name') return;
-    const {aggregation} = column.columnDef;
+  const onEnterHoverHeader = ({ id: elementId, column }) => {
+    if (elementId === 'score' || elementId === 'name') return;
+    const { aggregation } = column.columnDef;
     setActiveAggegation(aggregation);
   };
 

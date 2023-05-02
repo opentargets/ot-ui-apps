@@ -77,9 +77,16 @@ const asMimeType = format => {
   }
 };
 
-const downloadTable = async ({ rows, headerMap, format, filenameStem }) => {
-  if (typeof rows === 'function') {
-    const data = await rows();
+const downloadTable = async ({
+  rows: getRows,
+  headerMap,
+  format,
+  filenameStem,
+}) => {
+  let data = null;
+  let rows = getRows;
+  if (typeof getRows === 'function') {
+    data = await getRows();
     rows = data;
   }
 

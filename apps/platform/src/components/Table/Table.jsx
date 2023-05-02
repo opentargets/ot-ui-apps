@@ -11,6 +11,7 @@ import {
   TableRow as MUITableRow,
   Box,
 } from '@material-ui/core';
+import { v1 } from 'uuid';
 
 import DataDownloader from './DataDownloader';
 import GlobalFilter from './GlobalFilter';
@@ -29,10 +30,10 @@ function Table({
   fixed = false,
   headerGroups = [],
   loading,
-  onGlobalFilterChange = () => {},
-  onSortBy = () => {},
-  onRowsPerPageChange = () => {},
-  onPageChange = () => {},
+  onGlobalFilterChange = () => ({}),
+  onSortBy = () => ({}),
+  onRowsPerPageChange = () => ({}),
+  onPageChange = () => ({}),
   pageSize = 10,
   dataDownloader = false,
   dataDownloaderFileStem = 'data',
@@ -46,7 +47,7 @@ function Table({
   globalFilter,
   rowsPerPageOptions = [],
   ActionsComponent,
-  onRowClick = () => {},
+  onRowClick = () => ({}),
   rowIsSelectable = false,
   query,
   variables,
@@ -61,20 +62,20 @@ function Table({
     }
   };
 
-  const handleSort = (_, sortBy) => {
-    onSortBy(sortBy);
+  const handleSort = (_, sortByColumn) => {
+    onSortBy(sortByColumn);
   };
 
   const handleChangeRowsPerPage = event => {
     onRowsPerPageChange(event.target.value);
   };
-  const handleChangePage = (_, page) => {
+  const handleChangePage = (_, newPage) => {
     // reset the selected;
     // TODO: maybe should be handled in individual implementation
     setSelectedRow(0);
-    onPageChange(page);
+    onPageChange(newPage);
   };
-  const handleClick = (event, row, i) => {
+  const handleClick = (_, row, i) => {
     setSelectedRow(i);
     onRowClick(row, i);
   };
@@ -127,7 +128,7 @@ function Table({
                 columns={columns}
                 hover={hover}
                 isFixedRow={row.isFixedRow}
-                key={i}
+                key={v1()}
                 row={row}
                 noWrap={noWrap}
                 onClick={event => handleClick(event, row, i)}

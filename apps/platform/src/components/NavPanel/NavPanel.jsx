@@ -13,6 +13,8 @@ function NavPanel({ ...props }) {
       classes={{ root: classes.drawer, paper: classes.paper }}
     >
       <GoBackButton />
+      {/* TODO: review props spreading */}
+      {/* eslint-disable-next-line */}
       <SectionMenu {...props} />
     </Drawer>
   );

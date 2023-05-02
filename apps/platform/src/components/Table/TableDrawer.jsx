@@ -16,6 +16,7 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import _ from 'lodash';
+import { v1 } from 'uuid';
 import { naLabel } from '../../constants';
 
 import Link from '../Link';
@@ -153,8 +154,8 @@ function TableDrawer({
             </AccordionSummary>
             <AccordionDetails>
               <List>
-                {groupedEntries[group].map((entry, entryIndex) => (
-                  <ListItem key={entryIndex}>
+                {groupedEntries[group].map(entry => (
+                  <ListItem key={v1()}>
                     {entry.url ? (
                       <Link external to={entry.url}>
                         {entry.name}

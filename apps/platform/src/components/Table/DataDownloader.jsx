@@ -54,24 +54,25 @@ const asJSON = (columns, rows) => {
 
 const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
   const quoteString = d => {
+    let result = d;
     // converts arrays to strings
     if (Array.isArray(d)) {
-      d = d.join(',');
+      result = d.join(',');
     }
-    return quoteStrings && typeof d === 'string' ? `"${d}"` : d;
+    return quoteStrings && typeof result === 'string' ? `"${result}"` : result;
   };
 
   const lineSeparator = '\n';
 
   const headerString = columns
-    .reduce((headerString, column) => {
-      if (column.exportValue === false) return headerString;
+    .reduce((accHeaderString, column) => {
+      if (column.exportValue === false) return accHeaderString;
 
       const newLabel = quoteString(
         _.camelCase(column.exportLabel || column.label || column.id)
       );
 
-      return [...headerString, newLabel];
+      return [...accHeaderString, newLabel];
     }, [])
     .join(separator);
 
@@ -159,12 +160,12 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
   const [open, setOpen] = useState(false);
   const classes = styles();
 
-  const downloadData = async (format, columns, rows, fileStem) => {
-    let allRows = rows;
+  const downloadData = async (format, dataColumns, dataRows, dataFileStem) => {
+    let allRows = dataRows;
 
-    if (typeof rows === 'function') {
+    if (typeof dataRows === 'function') {
       setDownloading(true);
-      allRows = await rows();
+      allRows = await dataRows();
       setDownloading(false);
     }
 
@@ -172,9 +173,9 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
       return;
     }
 
-    const blob = createBlob(format)(columns, allRows);
+    const blob = createBlob(format)(dataColumns, allRows);
 
-    FileSaver.saveAs(blob, `${fileStem}.${format}`, { autoBOM: false });
+    FileSaver.saveAs(blob, `${dataFileStem}.${format}`, { autoBOM: false });
   };
 
   const handleClickDownloadJSON = async () => {
@@ -220,7 +221,11 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
         </Grid>
         {query ? (
           <Grid item>
-            <Button variant="outlined" size="small" onClick={togglePlayground}>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => togglePlayground()}
+            >
               API query
             </Button>
           </Grid>
@@ -246,12 +251,12 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={close}
+        onClose={() => close()}
         anchor="right"
       >
         <Typography className={classes.title}>
           API query
-          <IconButton onClick={close}>
+          <IconButton onClick={() => close()}>
             <CloseIcon />
           </IconButton>
         </Typography>

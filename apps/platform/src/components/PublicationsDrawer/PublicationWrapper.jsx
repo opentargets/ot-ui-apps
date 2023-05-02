@@ -146,14 +146,14 @@ function PublicationWrapper({
           {showAbstract ? 'Hide abstract' : 'Show abstract'}
         </Button>
         {fullTextOpen && (
-          <label className={classes.fileLabel}>
+          <span className={classes.fileLabel}>
             <FontAwesomeIcon
               icon={faFileAlt}
               style={{ marginRight: '8px' }}
               size="lg"
             />
             Full text available
-          </label>
+          </span>
         )}
       </Box>
 

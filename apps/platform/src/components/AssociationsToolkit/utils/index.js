@@ -3,7 +3,7 @@ import Legend from './Legend';
 import dataSources from '../static_datasets/dataSourcesAssoc';
 import config from '../../../config';
 
-export const {isPartnerPreview} = config.profile;
+export const { isPartnerPreview } = config.profile;
 
 /* --- TABLE SHARED HELPERS --- */
 export const getPriorisationSectionId = columnDef => columnDef.sectionId;
@@ -39,10 +39,11 @@ export const checkBoxPayload = (id, aggregationId) => ({
   name: 'dataTypes',
 });
 
-export const getControlChecked = (values = [], id) => values.filter(val => val.id == id).length > 0;
+export const getControlChecked = (values, id) =>
+  values.filter(val => val.id === id).length > 0;
 
 /* --- CONSTANTS --- */
-const {primaryColor} = config.profile;
+const { primaryColor } = config.profile;
 
 /* Associations colors */
 const PUBLIC_ASSOCIATION_COLORS = [

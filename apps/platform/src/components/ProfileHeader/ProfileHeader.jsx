@@ -1,3 +1,4 @@
+import { Children } from 'react';
 import { Grid, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles({
@@ -14,7 +15,7 @@ function ProfileHeader({ children }) {
 
   return (
     <Grid className={classes.profileHeaderContainer} container spacing={2}>
-      {React.Children.map(children, child => (
+      {Children.map(children, child => (
         <Grid className={classes.profileHeaderSection} item xs={12} md={6}>
           {child}
         </Grid>

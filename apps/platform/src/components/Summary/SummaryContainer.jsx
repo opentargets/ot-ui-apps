@@ -1,3 +1,4 @@
+import { Children } from 'react';
 import { Grid } from '@material-ui/core';
 
 import summaryStyles from './summaryStyles';
@@ -15,7 +16,7 @@ function SummaryContainer({ children }) {
       spacing={1}
     >
       {sectionOrder.map(sectionId =>
-        React.Children.toArray(children).find(
+        Children.toArray(children).find(
           child => child.props.definition.id === sectionId
         )
       )}

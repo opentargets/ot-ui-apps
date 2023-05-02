@@ -1,6 +1,12 @@
 import Tooltip from '@material-ui/core/Tooltip';
 import { getScale } from '../utils';
 
+const getClassName = ({ globalScore, hasValue }) => {
+  if (globalScore) return 'data-global-score';
+  if (hasValue) return 'data-score';
+  return 'data-empty';
+};
+
 function ColoredCell({
   scoreValue,
   onClick,
@@ -13,14 +19,10 @@ function ColoredCell({
   // if(!hasValue) return null
   const colorScale = getScale(isAssociations);
 
-  const onClickHabdler = onClick ? () => onClick(cell) : () => {};
+  const onClickHabdler = onClick ? () => onClick(cell) : () => ({});
   const backgroundColor = hasValue ? colorScale(scoreValue) : '#fafafa';
   const borderColor = hasValue ? colorScale(scoreValue) : '#e0dede';
-  const className = globalScore
-    ? 'data-global-score'
-    : hasValue
-    ? 'data-score'
-    : 'data-empty';
+  const className = getClassName({ globalScore, hasValue });
   const scoreText = hasValue ? `Score: ${scoreValue.toFixed(2)}` : 'No data';
 
   const style = {

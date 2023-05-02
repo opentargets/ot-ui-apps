@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { MenuItem, MenuList, useMediaQuery } from '@material-ui/core';
 import { withStyles, useTheme } from '@material-ui/core/styles';
 import classNames from 'classnames';
+import { v1 } from 'uuid';
 
 import Link from './Link';
 import OpenTargetsTitle from './OpenTargetsTitle';
@@ -151,10 +152,10 @@ function NavBar({
 
           {isHomePageRegular && (
             <MenuList className={classes.menuList}>
-              {items.map((item, i) => {
+              {items.map(item => {
                 if (item.showOnlyPartner) {
                   return (
-                    <PrivateWrapper key={i}>
+                    <PrivateWrapper key={v1()}>
                       <MenuItem dense className={classes.menuItem}>
                         <Link
                           external={item.external}
@@ -168,7 +169,7 @@ function NavBar({
                   );
                 }
                 return (
-                  <MenuItem key={i} dense className={classes.menuItem}>
+                  <MenuItem key={v1()} dense className={classes.menuItem}>
                     <Link
                       external={item.external}
                       to={item.url}

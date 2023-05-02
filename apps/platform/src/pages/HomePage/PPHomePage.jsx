@@ -36,19 +36,12 @@ import Version from './Version';
 
 import config from '../../config';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   links: {
     marginTop: '12px',
   },
   api: {
     marginTop: '38px',
-  },
-  helpBoxes: {
-    maxWidth: '120px',
-    textAlign: 'center',
-    [theme.breakpoints.down('xs')]: {
-      textAlign: 'left',
-    },
   },
   hpSection: {
     marginBottom: '40px',
@@ -72,49 +65,62 @@ function pickTwo(arr) {
   return [arr[i1], arr[i2]];
 }
 
+const usePanelStyles = makeStyles(theme => ({
+  helpBoxes: {
+    maxWidth: '120px',
+    textAlign: 'center',
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'left',
+    },
+  },
+}));
+
+function HelpBoxPanel({ fai, url, label, external }) {
+  const theme = useTheme();
+  const xsMQ = useMediaQuery(theme.breakpoints.down('xs'));
+
+  const classes = usePanelStyles();
+
+  if (xsMQ) {
+    // on xsmall screens
+    return (
+      <Link to={url} external={external}>
+        <Grid container wrap="nowrap" alignItems="center" spacing={1}>
+          <Grid item>
+            <div className="fa-layers fa-fw fa-3x">
+              <FontAwesomeIcon icon={faCircle} />
+              <FontAwesomeIcon icon={fai} transform="shrink-8" inverse />
+            </div>
+          </Grid>
+          <Grid item>
+            <Typography display="inline">{label}</Typography>
+          </Grid>
+        </Grid>
+      </Link>
+    );
+  }
+  return (
+    <Box className={classes.helpBoxes}>
+      <Link to={url} external={external}>
+        <div className="fa-layers fa-fw fa-6x">
+          <FontAwesomeIcon icon={faCircle} />
+          <FontAwesomeIcon icon={fai} transform="shrink-8" inverse />
+        </div>
+        <Typography>{label}</Typography>
+      </Link>
+    </Box>
+  );
+}
+
 function HomePage() {
   const classes = useStyles();
   const targets = pickTwo(searchExamples.targets);
   const diseases = pickTwo(searchExamples.diseases);
   const drugs = pickTwo(searchExamples.drugs);
-  const theme = useTheme();
-  const xsMQ = useMediaQuery(theme.breakpoints.down('xs'));
 
   const handleScrollDown = () => {
     window.scrollTo({ top: window.innerHeight, left: 0, behavior: 'smooth' });
   };
-
-  function HelpBoxPanel({ fai, url, label, external }) {
-    if (xsMQ) {
-      // on xsmall screens
-      return (
-        <Link to={url} external={external}>
-          <Grid container wrap="nowrap" alignItems="center" spacing={1}>
-            <Grid item>
-              <div className="fa-layers fa-fw fa-3x">
-                <FontAwesomeIcon icon={faCircle} />
-                <FontAwesomeIcon icon={fai} transform="shrink-8" inverse />
-              </div>
-            </Grid>
-            <Grid item>
-              <Typography display="inline">{label}</Typography>
-            </Grid>
-          </Grid>
-        </Link>
-      );
-    }
-    return (
-      <Box className={classes.helpBoxes}>
-        <Link to={url} external={external}>
-          <div className="fa-layers fa-fw fa-6x">
-            <FontAwesomeIcon icon={faCircle} />
-            <FontAwesomeIcon icon={fai} transform="shrink-8" inverse />
-          </div>
-          <Typography>{label}</Typography>
-        </Link>
-      </Box>
-    );
-  }
 
   return (
     <>

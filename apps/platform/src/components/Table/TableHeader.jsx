@@ -8,6 +8,7 @@ import {
   TableSortLabel,
   withWidth,
 } from '@material-ui/core';
+import { v1 } from 'uuid';
 
 import { getHiddenBreakpoints } from './utils';
 import { tableStyles } from './tableStyles';
@@ -70,6 +71,8 @@ function HeaderCell({
       style={style}
     >
       {sortable ? (
+        // TODO: review props spreading
+        // eslint-disable-next-line
         <TableSortLabel className={classes.sortLabel} {...sortParams}>
           {labelInnerComponent}
         </TableSortLabel>
@@ -94,6 +97,12 @@ function TableHeader({
     onRequestSort(event, property);
   };
 
+  function getTableAlignment({ column }) {
+    if (column.align) return column.align;
+    if (column.numeric) return 'right';
+    return 'left';
+  }
+
   return (
     <TableHead>
       {headerGroups.length > 0 ? (
@@ -102,7 +111,7 @@ function TableHeader({
             <HeaderCell
               colspan={colspans[cellIndex]}
               isHeaderGroup
-              key={cellIndex}
+              key={v1()}
               label={headerCell.label || ''}
               noWrapHeader={noWrapHeader}
               sticky={headerCell.sticky || false}
@@ -113,12 +122,12 @@ function TableHeader({
         </TableRow>
       ) : null}
       <TableRow>
-        {columns.map((column, index) => (
-          <Hidden {...getHiddenBreakpoints(column)} key={index}>
+        {columns.map(column => (
+          // TODO: review props spreading
+          // eslint-disable-next-line
+          <Hidden {...getHiddenBreakpoints(column)} key={v1()}>
             <HeaderCell
-              align={
-                column.align ? column.align : column.numeric ? 'right' : 'left'
-              }
+              align={getTableAlignment({ column })}
               label={column.label || _.startCase(column.id)}
               noWrapHeader={noWrapHeader}
               sortable={column.sortable}

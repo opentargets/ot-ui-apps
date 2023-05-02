@@ -1,3 +1,4 @@
+/* eslint-disable */
 // For the reason for the existence of this script, you can find more info here:
 // https://www.apollographql.com/docs/react/data/fragments/#generating-possibletypes-automatically
 const fetch = require('cross-fetch');
@@ -29,7 +30,7 @@ fetch(`${API_HOST}/graphql`, {
   .then(result => {
     const possibleTypes = {};
 
-    const SCHEMA = "__schema";
+    const SCHEMA = '__schema';
 
     result.data[SCHEMA].types.forEach(supertype => {
       if (supertype.possibleTypes) {

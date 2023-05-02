@@ -122,6 +122,8 @@ function TreeItem({
       }
       nodeId={nodeId}
       onLabelClick={handleClick}
+      // TODO: review props spreading
+      // eslint-disable-next-line
       {...other}
     />
   );

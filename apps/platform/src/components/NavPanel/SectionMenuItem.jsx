@@ -24,7 +24,11 @@ function SectionMenuItem({ index, section }) {
       {provided => (
         <div
           ref={provided.innerRef}
+          // TODO: review props spreading
+          // eslint-disable-next-line
           {...provided.draggableProps}
+          // TODO: review props spreading
+          // eslint-disable-next-line
           {...provided.dragHandleProps}
         >
           <ListItem

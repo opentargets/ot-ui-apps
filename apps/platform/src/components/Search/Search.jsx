@@ -44,12 +44,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Search({ autoFocus = false, embedded = false }) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const debouncedInputValue = useDebounce(inputValue, 300);
   const [getData, { loading, data }] = useLazyQuery(SEARCH_QUERY, {
     variables: { queryString: debouncedInputValue },
-    onCompleted: () => {},
+    onCompleted: () => ({}),
   });
   const [searchResults, setSearchResults] = useState([]);
   const history = useHistory();

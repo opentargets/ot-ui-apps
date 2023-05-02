@@ -37,6 +37,8 @@ function SectionMenu({ sections, onSectionReorder }) {
           <List
             className={classNames(classes.list, classes.listOverflowClass)}
             ref={provided.innerRef}
+            // TODO: review props spreading
+            // eslint-disable-next-line
             {...provided.droppableProps}
           >
             {sections.map((section, index) => (
