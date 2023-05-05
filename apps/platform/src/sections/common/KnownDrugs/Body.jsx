@@ -8,6 +8,7 @@ import SectionItem from '../../../components/Section/SectionItem';
 import SourceDrawer from './SourceDrawer';
 import { Table, getPage } from '../../../components/Table';
 import useCursorBatchDownloader from '../../../hooks/useCursorBatchDownloader';
+import { getComparator } from '../../../components/Table/sortingAndFiltering';
 
 function getColumnPool(id, entity) {
   return {
@@ -147,6 +148,8 @@ function Body({
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(INIT_PAGE_SIZE);
   const [globalFilter, setGlobalFilter] = useState('');
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortOrder, setSortOrder] = useState('asc');
 
   const id = variables[Object.keys(variables)[0]];
   const columnPool = getColumnPool(id, entity);
@@ -243,8 +246,11 @@ function Body({
   const handleGlobalFilterChange = newGlobalFilter => {
     setLoading(true);
     fetchDrugs(variables, null, pageSize, newGlobalFilter).then(res => {
-      const { cursor, count, rows: newRows = [] } =
-        res.data[entity].knownDrugs ?? {};
+      const {
+        cursor,
+        count,
+        rows: newRows = [],
+      } = res.data[entity].knownDrugs ?? {};
       setLoading(false);
       setPage(0);
       setCursor(cursor);
@@ -253,6 +259,18 @@ function Body({
       setRows(newRows);
     });
   };
+
+  const handleSortBy = sortBy => {
+    setSortColumn(sortBy);
+    setSortOrder(
+      sortColumn === sortBy ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc'
+    );
+  };
+  let processedRows = [...rows];
+
+  if (sortColumn) {
+    processedRows.sort(getComparator(columns, sortOrder, sortColumn));
+  }
 
   return (
     <SectionItem
@@ -270,7 +288,7 @@ function Body({
           dataDownloaderFileStem={`${id}-known-drugs`}
           headerGroups={headerGroups}
           columns={columns}
-          rows={getPage(rows, page, pageSize)}
+          rows={getPage(processedRows, page, pageSize)}
           rowCount={count}
           rowsPerPageOptions={[10, 25, 100]}
           page={page}
@@ -278,6 +296,7 @@ function Body({
           onGlobalFilterChange={handleGlobalFilterChange}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}
+          onSortBy={handleSortBy}
           dataDownloaderColumns={exportColumns}
           query={BODY_QUERY.loc.source.body}
           variables={variables}
