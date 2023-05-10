@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Column,
   useReactTable,
@@ -22,7 +22,6 @@ import {
   compareItems,
 } from "@tanstack/match-sorter-utils";
 
-import { useQuery } from "@apollo/client";
 import OtTableFilter from "./OtTableFilter";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -50,7 +49,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import OtTableLoader from "./OtTableLoader";
-// import useTableQueryData from "../hooks/useTableQueryData";
+import OtTableRowsLoader from "./OtTableRowsLoader";
+import useDebounce from "../hooks/useDebounce";
 
 const useStyles = makeStyles((theme) => ({
   OtTableContainer: {
@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "2rem",
   },
   table: {
+    whiteSpace: "nowrap",
     borderCollapse: "collapse",
     minWidth: "100%",
     "& thead": {
@@ -84,10 +85,6 @@ const useStyles = makeStyles((theme) => ({
       },
       "& td": {
         padding: "0.25rem 0.5rem",
-        "& p": {
-          fontSize: "0.81rem",
-          whiteSpace: "nowrap"
-        },
       },
       "& th": {
         padding: "1rem 0.5rem",
@@ -140,47 +137,42 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 };
 
 function OtTableData({
-  showGlobalFilter = true,
+  showGlobalFilter = false,
+  tableDataLoading = false,
+  initialLoad = false,
   allColumns = [],
-  TABLE_DATA_QUERY,
-  QUERY_VARIABLES,
-  entity,
+  allData = [],
+  count = -1,
+  getMoreData = (searchQuery?) => ({}),
 }) {
-  //   const [tableData, tableDataLoading] = useTableQueryData();
-
-  //   if (tableDataLoading) return <OtTableLoader />;
+  if (initialLoad) return <OtTableLoader />;
 
   const classes = useStyles();
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
   const [globalFilter, setGlobalFilter] = useState("");
-
-  const [data, setData] = useState<unknown[]>([]);
-  // const [cursor, setCursor] = useState<any>(null);
-  const [pageCount, setPageCount] = useState<number>(0);
-  const [loader, setLoader] = useState<any[]>([]);
-  let cursor = null;
-  const columns = useMemo<ColumnDef<unknown, any>[]>(() => [...allColumns], []);
-
+  const [data, setData] = useState<any[]>([...allData]);
+  const debouncedInputValue = useDebounce(globalFilter, 300);
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
 
-  const dataQuery = useQuery(TABLE_DATA_QUERY, {
-    variables: { ...QUERY_VARIABLES, size: pageSize, cursor: cursor },
-    onCompleted: (res) => {
-      console.log(data);
-      const knownDrugs = res[entity].knownDrugs;
-      setPageCount(Math.ceil(knownDrugs.count / pageSize));
-      cursor = knownDrugs.cursor;
-      console.log(`👻 ~ file: OtTableData.tsx:178 ~ cursor:`, cursor);
-      // setCursor(knownDrugs.cursor);
-      setData([ ...data, ...knownDrugs.rows]);
-    },
-  });
+  const onPaginationChange = (e) => {
+    setPagination(e);
+    if (table.options.data.length / pageSize - 2 === pagination.pageIndex)
+      getMoreData();
+  };
 
+  const getPageCount = () => {
+    return Math.ceil(count / pageSize) || -1;
+  };
+
+  const onGlobalFilterSearch = (e) => {
+    setGlobalFilter(e.target.value);
+  };
+
+  const columns = useMemo<ColumnDef<any, any>[]>(() => [...allColumns], []);
   const pagination = useMemo(
     () => ({
       pageIndex,
@@ -188,15 +180,21 @@ function OtTableData({
     }),
     [pageIndex, pageSize]
   );
+  useEffect(() => {
+    setData(allData);
+  }, [allData]);
 
-  const isValidData = () => {
-    return dataQuery.data && dataQuery.data[entity];
-  };
+  useEffect(() => {
+    table.setPageIndex(pageIndex);
+  }, [data]);
+
+  useEffect(() => {
+    getMoreData(debouncedInputValue);
+  }, [debouncedInputValue]);
 
   const table = useReactTable({
-    data: data,
-    pageCount: isValidData() ? pageCount : -1,
-    // manualPagination: true,
+    data,
+    pageCount: getPageCount(),
     columns,
     filterFns: {
       searchFilterFn: searchFilter,
@@ -206,20 +204,14 @@ function OtTableData({
       globalFilter,
       pagination,
     },
-    globalFilterFn: searchFilter,
-    onPaginationChange: (e) => {
-      console.log(cursor);
-      dataQuery.refetch({ ...QUERY_VARIABLES, size: pageSize, cursor: cursor })
-      setPagination(e);
-    },
-    getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    getPaginationRowModel: getPaginationRowModel(), // If only doing manual pagination, you don't need this
-    // getCoreRowModel: getCoreRowModel(),
+    onPaginationChange: onPaginationChange,
+    globalFilterFn: searchFilter,
+    getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
@@ -227,29 +219,6 @@ function OtTableData({
     debugHeaders: false,
     debugColumns: false,
   });
-
-  // useEffect(() => {
-  //   if (dataQuery.data && dataQuery.data[entity]) {
-  //     const knownDrugs = dataQuery.data[entity].knownDrugs;
-  //     setPageCount(Math.ceil(knownDrugs.count / pageSize));
-  //     cursor = knownDrugs.cursor;
-  //     console.log(`👻 ~ file: OtTableData.tsx:233 ~ useEffect ~ cursor:`, cursor);
-  //     setData([ ...data, ...knownDrugs.rows]);
-  //   }
-  // }, [dataQuery]);
-
-  useEffect(() => {
-    if (table.getState().columnFilters[0]?.id === "actionType") {
-      if (table.getState().sorting[0]?.id === "actionType") {
-        table.setSorting([{ id: "actionType", desc: true }]);
-      }
-    }
-  }, [table.getState().columnFilters[0]?.id]);
-
-  //   useEffect(() => {
-  //     setData(tableData);
-  //     setLoader(tableDataLoading);
-  //   }, [tableData, tableDataLoading]);
 
   return (
     <div className={classes.OtTableContainer}>
@@ -260,7 +229,7 @@ function OtTableData({
             <Input
               className={classes.searchAllColumn}
               value={globalFilter ?? ""}
-              onChange={(e) => setGlobalFilter(e.target.value)}
+              onChange={onGlobalFilterSearch}
               placeholder="Search all columns..."
               startAdornment={
                 <InputAdornment position="start">
@@ -325,26 +294,28 @@ function OtTableData({
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row) => {
-              return (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
-                    return (
-                      <td key={cell.id}>
-                        <Typography variant="body2">
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </Typography>
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
+            {!tableDataLoading &&
+              table.getRowModel().rows.map((row) => {
+                return (
+                  <tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <td key={cell.id}>
+                          <Typography variant="body2">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </Typography>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
+        {tableDataLoading && <OtTableRowsLoader />}
       </div>
       <div className={classes.tableControls}>
         <div className="rowsPerPage">
@@ -361,18 +332,6 @@ function OtTableData({
               </MenuItem>
             ))}
           </Select>
-          {/* <span className="flex items-center gap-1">
-            | Go to page:
-            <input
-              type="number"
-              defaultValue={table.getState().pagination.pageIndex + 1}
-              onChange={(e) => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                table.setPageIndex(page);
-              }}
-              className="border p-1 rounded w-16"
-            />
-          </span> */}
         </div>
 
         <div className={classes.rowsControls}>
@@ -408,13 +367,6 @@ function OtTableData({
               disabled={!table.getCanNextPage()}
             >
               <FontAwesomeIcon size="lg" icon={faAngleRight} />
-            </Button>
-            <Button
-              color="primary"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              <FontAwesomeIcon size="lg" icon={faAnglesRight} />
             </Button>
           </div>
         </div>

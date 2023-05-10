@@ -8,7 +8,7 @@ import SectionItem from '../../../components/Section/SectionItem';
 import SourceDrawer from './SourceDrawer';
 import { Table, getPage } from '../../../components/Table';
 import useCursorBatchDownloader from '../../../hooks/useCursorBatchDownloader';
-import { OtTable, OtTableData } from 'ui';
+import { OtTable, OtTableData, OtTableWrapper } from 'ui';
 import { TramRounded } from '@material-ui/icons';
 
 function getColumnPool(id, entity) {
@@ -401,25 +401,13 @@ function Body({
         request={{ loading: initialLoading, error: false, data: rows }}
         renderDescription={Description}
         renderBody={() => (
-          <OtTableData
+          <OtTableWrapper
             showGlobalFilter
-            allColumns={getOtTableColumns()}
-            TABLE_DATA_QUERY={BODY_QUERY}
-            QUERY_VARIABLES={variables}
+            columns={getOtTableColumns()}
+            query={BODY_QUERY}
+            variables={variables}
             entity={entity}
-          />
-        )}
-      />
-      <SectionItem
-        definition={definition}
-        request={{ loading: initialLoading, error: false, data: rows }}
-        renderDescription={Description}
-        renderBody={() => (
-          <OtTable
-            showGlobalFilter
-            tableDataLoading={loading}
-            allColumns={getOtTableColumns()}
-            allData={rows}
+            client={client}
           />
         )}
       />
