@@ -1,9 +1,9 @@
-import { useContext, useMemo } from 'react';
+import { useMemo, createContext } from 'react';
 import { useQuery } from '@apollo/client';
 
 import productionClient from '../client';
 
-const PlatformApiContext = useContext();
+const PlatformApiContext = createContext();
 
 function PlatformApiProvider({
   entity,

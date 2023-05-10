@@ -1,4 +1,4 @@
-import { Suspense, Children, cloneElement } from 'react';
+import React, { Suspense } from 'react';
 import {
   generatePath,
   Route,
@@ -7,7 +7,6 @@ import {
   useRouteMatch,
 } from 'react-router-dom';
 import { Tabs } from '@material-ui/core';
-import { v1 } from 'uuid';
 import { LoadingBackdrop } from 'ui';
 
 function RoutingTabs({ children }) {
@@ -15,7 +14,7 @@ function RoutingTabs({ children }) {
   const history = useHistory();
   const routes = [];
 
-  const preparedChildren = Children.map(children, child => {
+  const preparedChildren = React.Children.map(children, child => {
     // Prepares routes for the tabs.
     if (child.props.component) {
       routes.push({
@@ -26,7 +25,7 @@ function RoutingTabs({ children }) {
     }
 
     // Adds value prop for the tab highlight.
-    return cloneElement(child, {
+    return React.cloneElement(child, {
       value: generatePath(child.props.path, match.params),
     });
   });
@@ -40,7 +39,7 @@ function RoutingTabs({ children }) {
             <Route
               // First tab will always be the root page.
               exact={index === 0}
-              key={v1()}
+              key={index}
               path={route.path}
               component={route.component}
             />

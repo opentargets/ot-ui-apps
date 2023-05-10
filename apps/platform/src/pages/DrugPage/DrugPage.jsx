@@ -22,8 +22,6 @@ function DrugPage({ location, match }) {
 
   const { name, crossReferences } = data?.drug || {};
 
-  const PROFILE_COMPONENT = <Profile chemblId={chemblId} name={name} />;
-
   return (
     <BasePage
       title={`${name || chemblId} profile page`}
@@ -42,7 +40,7 @@ function DrugPage({ location, match }) {
         <RoutingTab
           label="Profile"
           path="/drug/:chemblId"
-          component={PROFILE_COMPONENT}
+          component={() => <Profile chemblId={chemblId} name={name} />}
         />
       </RoutingTabs>
     </BasePage>

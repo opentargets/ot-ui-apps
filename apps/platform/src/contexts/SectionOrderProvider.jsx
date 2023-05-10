@@ -1,9 +1,9 @@
-import { useState, useContext, useMemo } from 'react';
+import { useState, useMemo, createContext } from 'react';
 // import ls from 'local-storage';
 
 import usePlatformApi from '../hooks/usePlatformApi';
 
-const SectionOrderContext = useContext();
+const SectionOrderContext = createContext();
 
 function SectionOrderProvider({ sections, children }) {
   const { data, entity } = usePlatformApi();

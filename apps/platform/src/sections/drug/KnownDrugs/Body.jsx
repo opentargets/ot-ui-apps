@@ -35,14 +35,13 @@ const exportColumns = [
 ];
 
 function Body({ definition, id: chemblId, label: name }) {
-  const DESCRIPTION_COMPONENT = <Description name={name} />;
   return (
     <KnownDrugsBody
       definition={definition}
       entity="drug"
       variables={{ chemblId }}
       BODY_QUERY={KNOWN_DRUGS_BODY_QUERY}
-      Description={DESCRIPTION_COMPONENT}
+      Description={() => <Description name={name} />}
       columnsToShow={['disease', 'target', 'clinicalTrials']}
       stickyColumn="disease"
       exportColumns={exportColumns}

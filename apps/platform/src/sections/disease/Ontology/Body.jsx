@@ -32,7 +32,7 @@ function Body({ definition, id: efoId, label: name }) {
         data: { efoNodes },
       }}
       renderDescription={() => <Description name={name} />}
-      renderBody={({ efoNodesArray }) => {
+      renderBody={({ efoNodes: efoNodesArray }) => {
         const idToDisease = efoNodesArray.reduce((acc, disease) => {
           acc[disease.id] = disease;
           return acc;
