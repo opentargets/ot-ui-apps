@@ -115,8 +115,8 @@ const useStyles = makeStyles((theme) => ({
   stickyColumn: {
     left: "0",
     position: "sticky",
-    // TODO: check for color in theme
-    backgroundColor: "#f5f5f5",
+    backgroundColor: theme.palette.grey[100],
+    zIndex: 1,
   }
 }));
 
