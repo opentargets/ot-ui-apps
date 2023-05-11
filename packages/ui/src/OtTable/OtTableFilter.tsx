@@ -3,6 +3,7 @@ import { Column, Table } from "@tanstack/react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import {
+  Badge,
   Grid,
   IconButton,
   Input,
@@ -63,8 +64,14 @@ function OtTableFilter({
   );
   return (
     <>
-      <IconButton size="small" aria-label="filter" onClick={handleClick}>
-        <FontAwesomeIcon icon={faFilter} size="xs" />
+      <IconButton className={classes["d-none"]} size="small" aria-label="filter" onClick={handleClick}>
+        <Badge
+          color="primary"
+          variant="dot"
+          invisible={!Boolean(columnFilterValue)}
+        >
+          <FontAwesomeIcon icon={faFilter} size="xs" />
+        </Badge>
       </IconButton>
 
       <Popover
