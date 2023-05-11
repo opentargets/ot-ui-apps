@@ -253,13 +253,12 @@ function OtTableData({
                         <>
                           <div className={classes.tableColumnHeader}>
                             <Typography
-                              {...{
-                                className: header.column.getCanSort()
+                              className={
+                                header.column.getCanSort()
                                   ? "cursor-pointer select-none"
-                                  : "",
-                                onClick:
-                                  header.column.getToggleSortingHandler(),
-                              }}
+                                  : ""
+                              }
+                              onClick={header.column.getToggleSortingHandler()}
                               variant="subtitle2"
                             >
                               {flexRender(
