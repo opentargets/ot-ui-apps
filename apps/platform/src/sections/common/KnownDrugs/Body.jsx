@@ -164,7 +164,7 @@ function getOtTableColumns() {
           },
           enableSorting: false,
           enableColumnFilter: false,
-          sticky: true,
+          sticky: true
         },
         {
           header: 'Type',
@@ -396,7 +396,6 @@ function Body({
           />
         )}
       />
-
       <SectionItem
         definition={definition}
         request={{ loading: initialLoading, error: false, data: rows }}
@@ -409,6 +408,19 @@ function Body({
             variables={variables}
             entity={entity}
             client={client}
+          />
+        )}
+      />
+      <SectionItem
+        definition={definition}
+        request={{ loading: initialLoading, error: false, data: rows }}
+        renderDescription={Description}
+        renderBody={() => (
+          <OtTable
+            showGlobalFilter
+            tableDataLoading={loading}
+            allColumns={getOtTableColumns()}
+            allData={rows}
           />
         )}
       />

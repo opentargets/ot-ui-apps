@@ -60,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "2rem",
   },
   table: {
+    whiteSpace: "nowrap",
     borderCollapse: "collapse",
     minWidth: "100%",
     "& thead": {
@@ -109,6 +110,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     cursor: "pointer"
   },
+  stickyColumn: {
+    left: "0",
+    position: "sticky",
+    backgroundColor: theme.palette.grey[100],
+    zIndex: 1,
+  }
 }));
 
 declare module "@tanstack/table-core" {
@@ -220,7 +227,7 @@ function OtTable({
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <th key={header.id} colSpan={header.colSpan}>
+                    <th key={header.id} colSpan={header.colSpan} className={header.column.columnDef.sticky ? classes.stickyColumn : ""}>
                       {header.isPlaceholder ? null : (
                         <>
                           <div className={classes.tableColumnHeader}>
@@ -271,7 +278,7 @@ function OtTable({
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <td key={cell.id}>
+                      <td key={cell.id} className={cell.column.columnDef.sticky ? classes.stickyColumn : ""}>
                         <Typography variant="body2">
                           {flexRender(
                             cell.column.columnDef.cell,
