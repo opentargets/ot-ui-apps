@@ -164,6 +164,7 @@ function getOtTableColumns() {
           },
           enableSorting: false,
           enableColumnFilter: false,
+          sticky: true,
         },
         {
           header: 'Type',
