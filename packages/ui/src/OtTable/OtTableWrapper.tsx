@@ -3,7 +3,7 @@ import OtTableData from "./OtTableData";
 
 const INIT_PAGE_SIZE = 10;
 
-function OtTableWrapper({ query, columns, client, entity, variables }) {
+function OtTableWrapper({ query, columns, client, entity, variables, showGlobalFilter }) {
   const [initialLoading, setInitialLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
@@ -67,6 +67,7 @@ function OtTableWrapper({ query, columns, client, entity, variables }) {
       allData={rows}
       count={count}
       getMoreData={getMoreData}
+      verticalHeaders={false}
     />
   );
 }

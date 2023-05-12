@@ -177,6 +177,7 @@ function getOtTableColumns() {
           accessorKey: 'mechanismOfAction',
           // enableSorting: false,
           enableColumnFilter: false,
+          verticalHeader: true,
         },
         {
           header: 'Action Type',

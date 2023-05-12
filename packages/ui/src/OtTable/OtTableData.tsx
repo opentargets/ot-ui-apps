@@ -165,8 +165,6 @@ function OtTableData({
   getMoreData = (searchQuery?) => ({}),
   verticalHeaders = false,
 }) {
-  if (initialLoad) return <OtTableLoader />;
-
   const classes = useStyles();
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -239,6 +237,8 @@ function OtTableData({
     debugHeaders: false,
     debugColumns: false,
   });
+
+  if (initialLoad) return <OtTableLoader />;
 
   return (
     <div className={classes.OtTableContainer}>
