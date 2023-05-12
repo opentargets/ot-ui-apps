@@ -1,9 +1,7 @@
-import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { Typography, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
-import ModelSchematic from './ModelSchematic';
+import { ReactNode } from 'react';
+import ModelSchematic, { ModelSchematicEntity } from './ModelSchematic';
 
 const useStyles = makeStyles({
   container: {
@@ -24,18 +22,19 @@ const useStyles = makeStyles({
   },
 });
 
+type SectionHeadingProps = {
+  heading: ReactNode;
+  subheading: ReactNode;
+  entities: ModelSchematicEntity[];
+};
 const SectionHeading = ({
   heading,
   subheading,
   entities,
-}: {
-  heading: React.ReactNode;
-  subheading: React.ReactNode;
-  entities: { type: string; fixed: { type: string } }[];
-}) => {
+}: SectionHeadingProps) => {
   const classes = useStyles();
   return (
-    <React.Fragment>
+    <>
       <hr className={classes.hr} />
       <div className={classes.container}>
         <div>
@@ -51,7 +50,7 @@ const SectionHeading = ({
         <div className={classes.flex} />
         {entities ? <ModelSchematic entities={entities} /> : null}
       </div>
-    </React.Fragment>
+    </>
   );
 };
 
