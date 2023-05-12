@@ -1,6 +1,7 @@
-import { Typography, Grid } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { ReactNode } from 'react';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 import ModelSchematic, { ModelSchematicEntity } from './ModelSchematic';
 
 const useStyles = makeStyles({
