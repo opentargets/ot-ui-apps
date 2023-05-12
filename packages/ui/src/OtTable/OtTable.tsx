@@ -261,7 +261,7 @@ function OtTable({
                           >
                             <Typography
                               className={`${
-                                verticalHeaders ? classes.verticalHeaders : ""
+                                (verticalHeaders || header.column.columnDef.verticalHeader) ? classes.verticalHeaders : ""
                               }`}
                               onClick={header.column.getToggleSortingHandler()}
                               variant="subtitle2"
