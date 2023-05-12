@@ -1,8 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import { MouseEventHandler, ReactNode } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import * as classNames from 'classnames';
 
 const useStyles = makeStyles(theme => ({
   base: {
@@ -42,23 +41,30 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+type LinkProps = {
+  children: ReactNode;
+  /** Whether the link directs to an external site. */
+  external?: boolean;
+  /** Whether the link is used within the footer section. */
+  footer?: boolean;
+  /** Whether the link is used within a tooltip. */
+  tooltip?: boolean;
+  /** The handler to call on click. */
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
+  /** The url to visit on clicking the link. */
+  to: string;
+  className?: string;
+};
+
 function Link({
   children,
   to,
   onClick,
-  external,
-  footer,
-  tooltip,
+  external = false,
+  footer = false,
+  tooltip = false,
   className,
-}: {
-  children: React.ReactNode;
-  to: string;
-  onClick: () => void;
-  external: boolean;
-  footer: unknown;
-  tooltip: unknown;
-  className?: string;
-}) {
+}: LinkProps) {
   const classes = useStyles();
   return external ? (
     <a
@@ -96,27 +102,6 @@ function Link({
     </RouterLink>
   );
 }
-
-Link.propTypes = {
-  /** Whether the link directs to an external site. */
-  external: PropTypes.bool,
-  /** Whether the link is used within the footer section. */
-  footer: PropTypes.bool,
-  /** Whether the link is used within a tooltip. */
-  tooltip: PropTypes.bool,
-  /** The handler to call on click. */
-  onClick: PropTypes.func,
-  /** The url to visit on clicking the link. */
-  to: PropTypes.string.isRequired,
-};
-
-Link.defaultProps = {
-  external: false,
-  footer: false,
-  tooltip: false,
-  onClick: null,
-  to: '/',
-};
 
 export { Link };
 
