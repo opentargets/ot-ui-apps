@@ -108,14 +108,27 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   stickyColumn: {
     left: "0",
     position: "sticky",
     backgroundColor: theme.palette.grey[100],
     zIndex: 1,
-  }
+  },
+  verticalHeaders: {
+    writingMode: "vertical-rl",
+    transform: "rotate(180deg)",
+    // TODO: TBC
+    maxHeight: "20rem",
+    height: "14rem",
+  },
+  cursorPointer: {
+    cursor: "pointer",
+  },
+  cursorAuto: {
+    cursor: "auto",
+  },
 }));
 
 declare module "@tanstack/table-core" {
@@ -145,6 +158,7 @@ function OtTable({
   tableDataLoading = false,
   allColumns = [],
   allData = [],
+  verticalHeaders = false,
 }) {
   if (tableDataLoading) return <OtTableLoader />;
 
@@ -227,18 +241,29 @@ function OtTable({
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <th key={header.id} colSpan={header.colSpan} className={header.column.columnDef.sticky ? classes.stickyColumn : ""}>
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className={`${
+                        header.column.columnDef.sticky
+                          ? classes.stickyColumn
+                          : ""
+                      }`}
+                    >
                       {header.isPlaceholder ? null : (
                         <>
-                          <div className={classes.tableColumnHeader}>
+                          <div
+                            className={`${classes.tableColumnHeader} ${
+                              header.column.getCanSort()
+                                ? classes.cursorPointer
+                                : classes.cursorAuto
+                            }`}
+                          >
                             <Typography
-                              {...{
-                                className: header.column.getCanSort()
-                                  ? "cursor-pointer select-none"
-                                  : "",
-                                onClick:
-                                  header.column.getToggleSortingHandler(),
-                              }}
+                              className={`${
+                                verticalHeaders ? classes.verticalHeaders : ""
+                              }`}
+                              onClick={header.column.getToggleSortingHandler()}
                               variant="subtitle2"
                             >
                               {flexRender(
@@ -278,7 +303,14 @@ function OtTable({
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <td key={cell.id} className={cell.column.columnDef.sticky ? classes.stickyColumn : ""}>
+                      <td
+                        key={cell.id}
+                        className={
+                          cell.column.columnDef.sticky
+                            ? classes.stickyColumn
+                            : ""
+                        }
+                      >
                         <Typography variant="body2">
                           {flexRender(
                             cell.column.columnDef.cell,

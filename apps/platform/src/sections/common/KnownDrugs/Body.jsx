@@ -142,7 +142,7 @@ function getOtTableColumns() {
               {d.row.original.disease.name}
             </Link>
           ),
-          // enableSorting: false,
+          enableSorting: false,
           enableColumnFilter: false,
         },
       ],
@@ -182,7 +182,7 @@ function getOtTableColumns() {
           header: 'Action Type',
           id: 'actionType',
           accessorFn: row => row.drug.mechanismsOfAction.rows[0].actionType,
-          // enableSorting: false,
+          enableSorting: false,
           enableColumnFilter: false,
         },
       ],
