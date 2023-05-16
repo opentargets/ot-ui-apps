@@ -72,9 +72,9 @@ const useStyles = makeStyles((theme) => ({
 type OtTableBodyProps = {
   // TODO
   table: any;
-  initialLoad: Boolean;
-  tableDataLoading: Boolean;
-  verticalHeaders: Boolean;
+  initialLoad: boolean;
+  tableDataLoading: boolean;
+  verticalHeaders: boolean;
 };
 
 function OtTableBody({

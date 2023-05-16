@@ -69,7 +69,7 @@ function OtTableColumnFilter({ column, table }: OtTableColumnFilter) {
         <Badge
           color="primary"
           variant="dot"
-          invisible={!Boolean(columnFilterValue)}
+          invisible={!columnFilterValue}
         >
           <FontAwesomeIcon icon={faFilter} size="xs" />
         </Badge>

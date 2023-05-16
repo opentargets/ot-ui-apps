@@ -15,7 +15,7 @@ type OtTableGlobalFilterProps = {
 
 function OtTableGlobalFilter({
   globalFilter = "",
-  onGlobalFilterSearch = (e) => {},
+  onGlobalFilterSearch = (e) => ({}),
 }: OtTableGlobalFilterProps) {
   const classes = useStyles();
 

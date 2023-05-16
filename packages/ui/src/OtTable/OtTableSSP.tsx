@@ -8,7 +8,7 @@ type OtTableSSPProps = {
   client;
   entity: string;
   variables;
-  showGlobalFilter: Boolean;
+  showGlobalFilter: boolean;
 };
 function OtTableSSP({
   query,
@@ -64,14 +64,10 @@ function OtTableSSP({
     setRows(ALL_ROWS);
   };
 
-  useEffect(
-    () => {
-      setInitialLoading(true);
-      fetcher(variables, null, INIT_PAGE_SIZE, null).then(assignDataValues);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  useEffect(() => {
+    setInitialLoading(true);
+    fetcher(variables, null, INIT_PAGE_SIZE, null).then(assignDataValues);
+  }, []);
 
   return <div>OtTableSSP</div>;
 }

@@ -25,8 +25,8 @@ const useStyles = makeStyles(() => ({
 type OtTableFooterProps = {
   //TODO
   table: any;
-  initialLoad: Boolean;
-  showLastPageControl: Boolean;
+  initialLoad: boolean;
+  showLastPageControl: boolean;
 };
 
 function OtTableFooter({

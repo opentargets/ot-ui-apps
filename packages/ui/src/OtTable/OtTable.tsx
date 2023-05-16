@@ -24,16 +24,16 @@ import {
 } from "@tanstack/match-sorter-utils";
 
 type OtTableProp = {
-  showGlobalFilter: Boolean;
-  tableDataLoading: Boolean;
-  initialLoad: Boolean;
+  showGlobalFilter: boolean;
+  tableDataLoading: boolean;
+  initialLoad: boolean;
   columns: Array<any>;
   data: Array<object>;
-  verticalHeaders: Boolean;
+  verticalHeaders: boolean;
   count: number;
-  getMoreData: (searchQuery?) => {};
+  getMoreData: (searchQuery?) => void;
   initPageSize: number;
-  showLastPageControl: Boolean;
+  showLastPageControl: boolean;
 };
 
 declare module "@tanstack/table-core" {
