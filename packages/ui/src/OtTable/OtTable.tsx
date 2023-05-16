@@ -3,12 +3,31 @@ import OtTableGlobalFilter from "./OtTableGlobalFilter";
 import OtTableBody from "./OtTableBody";
 import OtTableFooter from "./OtTableFooter";
 import useDebounce from "../hooks/useDebounce";
+import {
+  useReactTable,
+  ColumnFiltersState,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFacetedMinMaxValues,
+  getPaginationRowModel,
+  getSortedRowModel,
+  FilterFn,
+  ColumnDef,
+  PaginationState,
+} from "@tanstack/react-table";
+import {
+  RankingInfo,
+  rankItem,
+  compareItems,
+} from "@tanstack/match-sorter-utils";
 
 type OtTableProp = {
   showGlobalFilter: Boolean;
   tableDataLoading: Boolean;
   initialLoad: Boolean;
-  columns: Array<object>;
+  columns: Array<any>;
   data: Array<object>;
   verticalHeaders: Boolean;
   count: number;
@@ -59,6 +78,7 @@ function OtTable({
   const debouncedInputValue = useDebounce(globalFilter, 300);
 
   const tableColumns = useMemo<ColumnDef<any, any>[]>(() => [...columns], []);
+//   const tableColumns = useMemo<ColumnDef<any, any>[]>(() => [...columns];
   const pagination = useMemo(
     () => ({
       pageIndex,

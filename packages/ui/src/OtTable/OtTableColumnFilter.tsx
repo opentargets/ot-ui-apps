@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { useMemo, useState } from "react";
 import { faFilter, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { Column, Table } from "@tanstack/react-table";
 
 type OtTableColumnFilter = {
   column: Column<any, unknown>;

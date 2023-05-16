@@ -3,6 +3,7 @@ import { Typography, makeStyles } from "@material-ui/core";
 import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import OtTableColumnFilter from "./OtTableColumnFilter";
 import { Skeleton } from "@material-ui/lab";
+import { flexRender } from "@tanstack/react-table";
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
