@@ -1,4 +1,3 @@
-import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -6,6 +5,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/core/styles';
 
 import PlotContainerSection from './PlotContainerSection';
+import { ReactNode } from 'react';
+import { ApolloError } from '@apollo/client';
 
 const useStyles = makeStyles({
   plotContainer: {
@@ -19,6 +20,14 @@ const useStyles = makeStyles({
   },
 });
 
+type PlotContainerProps = {
+  loading: boolean;
+  error: ApolloError;
+  left: ReactNode;
+  center: ReactNode;
+  right: ReactNode;
+  children: ReactNode;
+};
 const PlotContainer = ({
   loading,
   error,
@@ -26,14 +35,7 @@ const PlotContainer = ({
   center,
   right,
   children,
-}: {
-  loading: boolean;
-  error: { graphQLErrors: { message: string }[] };
-  left: React.ReactNode;
-  center: React.ReactNode;
-  right: React.ReactNode;
-  children: React.ReactNode;
-}) => {
+}: PlotContainerProps) => {
   const classes = useStyles();
   return (
     <Paper className={classes.plotContainer} elevation={0}>
