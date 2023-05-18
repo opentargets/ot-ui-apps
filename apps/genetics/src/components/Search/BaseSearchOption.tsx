@@ -1,9 +1,8 @@
-import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   heading: {
     color: theme.palette.primary.main,
     fontWeight: 'bold',
@@ -33,40 +32,49 @@ const styles = theme => ({
   count: {
     float: 'right',
   },
-});
+}));
 
+type BaseSearchOptionProps = {
+  heading: string;
+  subheading: string;
+  extra?: string | JSX.Element;
+  count?: number;
+  proportion?: number;
+};
 const SearchOption = ({
-  classes,
   heading,
   subheading,
   extra,
   count,
   proportion,
-}) => (
-  <Grid container>
-    <Grid item xs={12}>
-      <Typography variant="body1">
-        <span className={classes.heading}>{heading}</span>
-        {'  '}
-        <span className={classes.subheading}>{subheading}</span>
-        {count ? <span className={classes.count}>{count}</span> : null}
-      </Typography>
+}: BaseSearchOptionProps) => {
+  const classes = useStyles();
+  return (
+    <Grid container>
+      <Grid item xs={12}>
+        <Typography variant="body1">
+          <span className={classes.heading}>{heading}</span>
+          {'  '}
+          <span className={classes.subheading}>{subheading}</span>
+          {count ? <span className={classes.count}>{count}</span> : null}
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="body1" className={classes.extra}>
+          {extra}
+        </Typography>
+        {proportion ? (
+          <div className={classes.proportionContainer}>
+            <div
+              className={classes.proportion}
+              style={{ width: `${proportion * 100}%` }}
+            />
+            <div className={classes.proportionRemainder} />
+          </div>
+        ) : null}
+      </Grid>
     </Grid>
-    <Grid item xs={12}>
-      <Typography variant="body1" className={classes.extra}>
-        {extra}
-      </Typography>
-      {proportion ? (
-        <div className={classes.proportionContainer}>
-          <div
-            className={classes.proportion}
-            style={{ width: `${proportion * 100}%` }}
-          />
-          <div className={classes.proportionRemainder} />
-        </div>
-      ) : null}
-    </Grid>
-  </Grid>
-);
+  );
+};
 
-export default withStyles(styles)(SearchOption);
+export default SearchOption;
