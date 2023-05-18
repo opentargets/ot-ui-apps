@@ -1,6 +1,6 @@
+import { ReactNode } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import { ReactNode } from 'react';
 
 const useStyles = makeStyles(theme => ({
   page: {
@@ -35,7 +35,7 @@ function Page({ header, footer, children }: PageProps) {
       <Grid
         container
         justifyContent={'center'}
-        spacing={4}
+        spacing={3}
         className={classes.gridContainer}
       >
         <Grid item xs={12} md={11}>
