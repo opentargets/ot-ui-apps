@@ -21,13 +21,25 @@ const pick = (object: TableRow, keys: HeaderMap) => {
 
 const quoteIfString = (d: any) => (typeof d === 'string' ? `"${d}"` : d);
 
-const asJSONString = (rows: TableRow[], headerMap: HeaderMap) => {
+const asJSONString = ({
+  rows,
+  headerMap,
+}: {
+  rows: TableRow[];
+  headerMap: HeaderMap;
+}) => {
   // use the full headerMap which contain optional export() function for each header
   const rowsHeadersOnly = rows.map(row => pick(row, headerMap));
   return JSON.stringify(rowsHeadersOnly);
 };
 
-const asCSVString = (rows: TableRow[], headerMap: HeaderMap) => {
+const asCSVString = ({
+  rows,
+  headerMap,
+}: {
+  rows: TableRow[];
+  headerMap: HeaderMap;
+}) => {
   const separator = ',';
   const lineSeparator = '\n';
   const headersString = headerMap
@@ -45,7 +57,13 @@ const asCSVString = (rows: TableRow[], headerMap: HeaderMap) => {
   return [headersString, ...rowsArray].join(lineSeparator);
 };
 
-const asTSVString = (rows: TableRow[], headerMap: HeaderMap) => {
+const asTSVString = ({
+  rows,
+  headerMap,
+}: {
+  rows: TableRow[];
+  headerMap: HeaderMap;
+}) => {
   const separator = '\t';
   const lineSeparator = '\n';
   const headersString = headerMap.map(d => d.label).join(separator);
@@ -59,18 +77,22 @@ const asTSVString = (rows: TableRow[], headerMap: HeaderMap) => {
   return [headersString, ...rowsArray].join(lineSeparator);
 };
 
-const asContentString = (
-  rows: TableRow[],
-  headerMap: HeaderMap,
-  format: DownloadFormat
-) => {
+const asContentString = ({
+  rows,
+  headerMap,
+  format,
+}: {
+  rows: TableRow[];
+  headerMap: HeaderMap;
+  format: DownloadFormat;
+}) => {
   switch (format) {
     case 'json':
-      return asJSONString(rows, headerMap);
+      return asJSONString({ rows, headerMap });
     case 'csv':
-      return asCSVString(rows, headerMap);
+      return asCSVString({ rows, headerMap });
     case 'tsv':
-      return asTSVString(rows, headerMap);
+      return asTSVString({ rows, headerMap });
     default:
       throw Error(UNEXPECTED_FORMAT);
   }
@@ -106,7 +128,7 @@ const downloadTable = ({
     return;
   }
 
-  const contentString = asContentString(rows, headerMap, format);
+  const contentString = asContentString({ rows, headerMap, format });
   const blob = new Blob([contentString], {
     type: asMimeType(format),
   });
