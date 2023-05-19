@@ -14,26 +14,28 @@ import * as Tractability from '../../sections/target/Tractability';
 import * as MolecularInteractions from '../../sections/target/MolecularInteractions';
 import * as SubcellularLocation from '../../sections/target/SubcellularLocation';
 import * as GeneticConstraint from '../../sections/target/GeneticConstraint';
+import * as DepMap from '../../sections/target/DepMap';
 
 import config from '../../config';
 
 const sections = [
-  KnownDrugs,
-  Tractability,
-  Safety,
-  ChemicalProbes,
-  BaselineExpression,
-  GeneOntology,
-  GeneticConstraint,
-  ProtVista,
-  MolecularInteractions,
-  Pathways,
-  // CancerBiomarkers,
-  CancerHallmarks,
-  MousePhenotypes,
-  ComparativeGenomics,
-  SubcellularLocation,
-  Bibliography,
+  // KnownDrugs,
+  // Tractability,
+  // Safety,
+  // ChemicalProbes,
+  // BaselineExpression,
+  // GeneOntology,
+  // GeneticConstraint,
+  // ProtVista,
+  // MolecularInteractions,
+  // Pathways,
+  // // CancerBiomarkers,
+  // CancerHallmarks,
+  // MousePhenotypes,
+  // ComparativeGenomics,
+  // SubcellularLocation,
+  // Bibliography,
+  DepMap,
 ].filter(
   // select sections to show based on:
   // 1. there is no specific hidden section for this page (length==0)
