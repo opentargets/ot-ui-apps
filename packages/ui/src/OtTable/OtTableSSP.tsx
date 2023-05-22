@@ -60,7 +60,7 @@ function OtTableSSP({
     setInitialLoading(false);
     setLoading(false);
     setCursor(newCursor);
-    setCount(newCount);
+    newCount ? setCount(newCount) : setCount(ALL_ROWS.length);
     setRows(ALL_ROWS);
   };
 
