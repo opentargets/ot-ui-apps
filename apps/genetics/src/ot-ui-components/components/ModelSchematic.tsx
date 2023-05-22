@@ -1,5 +1,4 @@
-import React from 'react';
-import classNames from 'classnames';
+import * as classNames from 'classnames';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -51,22 +50,25 @@ const ICON_LABEL_MAP = {
   variant: 'V',
   study: 'S',
   indexVariant: (
-    <React.Fragment>
+    <>
       V<tspan dy="6">L</tspan>
-    </React.Fragment>
+    </>
   ),
   tagVariant: (
-    <React.Fragment>
+    <>
       V<tspan dy="6">T</tspan>
-    </React.Fragment>
+    </>
   ),
 };
 
-const ModelSchematic = ({
-  entities,
-}: {
-  entities: { type: string; fixed: { type: string } }[];
-}) => {
+export type ModelSchematicEntity = {
+  type: keyof typeof NICENAME_MAP;
+  fixed: boolean;
+};
+type ModelSchematicProps = {
+  entities: ModelSchematicEntity[];
+};
+const ModelSchematic = ({ entities }: ModelSchematicProps) => {
   const classes = useStyles();
   const totalWidth =
     ENTITY_WIDTH * entities.length + CONNECTOR_WIDTH * (entities.length - 1);
