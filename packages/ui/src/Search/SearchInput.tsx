@@ -54,17 +54,19 @@ function SearchInput({
   onClose,
   isHomePage,
   focus,
+  setOpen,
 }: {
   params: TextFieldProps;
   debounceValue: (str: string) => void;
   onClose: () => void;
   isHomePage?: boolean;
   focus: boolean;
+  setOpen: (value: boolean) => void;
 }) {
   const classes = useStyles();
-  const [searchInputValue, setSearchInputValue] = useState("");
-  const debouncedInputValue = useDebounce(searchInputValue, 300);
-  const { searchPlaceholder, setInputValue } = useContext(SearchContext);
+  const { searchPlaceholder, setInputValue, inputValue } =
+    useContext(SearchContext);
+  const debouncedInputValue = useDebounce(inputValue, 300);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -100,13 +102,18 @@ function SearchInput({
           className: classes.inputPadding,
         }}
         onChange={(e) => {
-          setSearchInputValue(e.target.value.trim() || "");
           setInputValue(e.target.value.trim() || "");
         }}
-        value={searchInputValue}
+        value={inputValue}
         placeholder={searchPlaceholder}
         onKeyDown={(e) => {
-          if(e.code === "Escape") onClose();
+          if (e.code === "Escape") onClose();
+        }}
+        onBlur={() => {
+          onClose();
+        }}
+        onFocus={() => {
+          setOpen(true);
         }}
       />
     </div>
