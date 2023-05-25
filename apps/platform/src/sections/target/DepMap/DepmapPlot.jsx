@@ -28,7 +28,7 @@ function DepmapPlot({ data }) {
         color: 'rgba(0,0,0,0.4)',
         width: 1.5,
     },
-    fillcolor: 'rgba(0,0,0,0)',
+    fillcolor: 'rgba(0,0,0,0)', // transparent fill
 
     // legend (facets) settings:
     legendgrouptitle: {
@@ -58,8 +58,8 @@ function DepmapPlot({ data }) {
         y1: depMapEssentiality.length - 0.5,
         line: {
           color: '#rgba(255,0,0,.5)',
-          width: 1.5,
-          dash: '40px,4px',
+          width: 1,
+          dash: '36px,7.5px',
         },
       },
     ],
@@ -67,7 +67,7 @@ function DepmapPlot({ data }) {
       bgcolor: '#f5f5f5',
       entrywidth: 300,
     },
-    boxgap: 0.4,
+    boxgap: 0.5,
     font: {
       family: "Inter",
     },
