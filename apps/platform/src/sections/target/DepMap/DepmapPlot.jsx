@@ -43,40 +43,47 @@ function DepmapPlot({ data }) {
     // legendwidth: 900, // not working?
   }));
 
-  return (
-    <Plot
-      data={depMapEssentiality}
-      layout={{
-        width: 1000, //window.innerWidth,
-        height: 28 * 50,
-        title: 'DepMapEssentiality',
+  // plot layout options
+  const layoutOptions = {
+    width: 1000, //window.innerWidth,
+    height: 28 * 50,
+    title: 'DepMapEssentiality',
         // annotations: data.map(d => ({
         //     text: 'alse',
         // })),
-        autosize: true,
-        yaxis: {
-          automargin: 'width',
+    autosize: true,
+    yaxis: {
+      automargin: 'width',
+    },
+    shapes: [
+      {
+        // draw the reference line at -1
+        type: 'line',
+        x0: -1,
+        y0: -0.5,
+        x1: -1,
+        y1: depMapEssentiality.length - 0.5,
+        line: {
+          color: '#rgba(255,0,0,.5)',
+          width: 1.5,
+          dash: '40px,4px',
         },
-        shapes: [
-          {
-            // draw the reference line at -1
-            type: 'line',
-            x0: -1,
-            y0: -0.5,
-            x1: -1,
-            y1: depMapEssentiality.length - 0.5,
-            line: {
-              color: '#f00',
-              width: 1,
-              //   'dash': 'dashdot'
-            },
-          },
-        ],
-        legend: {
-          bgcolor: '#0f0',
-          entrywidth: 300,
-        },
-      }}
+      },
+    ],
+    legend: {
+      bgcolor: '#0f0',
+      entrywidth: 300,
+    },
+    boxgap: 0.4,
+    font: {
+      family: "Inter",
+    },
+  }
+
+  return (
+    <Plot
+      data={depMapEssentiality}
+      layout={layoutOptions}
     />
   );
   // }
