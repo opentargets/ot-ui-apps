@@ -13,7 +13,6 @@ import DEPMAP_QUERY from './Depmap.gql';
 
 import data0 from "./data/data.json";
 // import BarChart from './BarChart';
-import PlotlyTest from './PlotlyTest';
 import DepmapPlot from './DepmapPlot';
 
 // const useStyles = makeStyles({
