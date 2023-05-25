@@ -64,7 +64,7 @@ function DepmapPlot({ data }) {
       },
     ],
     legend: {
-      bgcolor: '#0f0',
+      bgcolor: '#f5f5f5',
       entrywidth: 300,
     },
     boxgap: 0.4,
