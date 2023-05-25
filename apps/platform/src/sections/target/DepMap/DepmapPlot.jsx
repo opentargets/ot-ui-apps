@@ -3,44 +3,40 @@ import Plot from 'react-plotly.js';
 
 function DepmapPlot({ data }) {
   console.log('test data new:', data);
-  // const trace1 = {
-  //     x: [0.75, 5.25, 5.5, 6, 6.2, 6.6, 6.80, 7.0, 7.2, 7.5, 7.5, 7.75, 8.15, 8.15, 8.65, 8.93, 9.2, 9.5, 10, 10.25, 11.5, 12, 16, 20.90, 22.3, 23.25],
-  //     type: 'box',
-  //     name: 'All Points',
-  //     jitter: 0.3,
-  //     pointpos: -1.8,
-  //     marker: {
-  //       color: 'rgb(7,40,89)'
-  //     },
-  //     boxpoints: 'all'
-  //   };
 
+  // plot data
   const depMapEssentiality = data.map(d => ({
+    type: 'box',
+    name: `${d.tissueName} (${d.screens.length})`,
+
+    // dots/points settings:
     x: d.screens.map(s => s.geneEffect),
-    // x0: -1,
     hovertext: d.screens.map(
       s => `id:${s.diseaseCellLineId} exp:${s.expression}`
     ),
-    type: 'box',
-    name: d.tissueName,
-    mode: 'markers',
-    // jitter: 0.3,
-    // pointpos: -1.8,
+    jitter: .3,
     marker: {
       color: '#3589CA',
       size: d.screens.map(s => (s.expression + 1) * 2), //not working for boxplot
       opacity: 0.5,
       showscale: true,
     },
+
+    // box settings:
     boxpoints: 'all',
-    // line: {
-    //     color: '#F00',
-    // },
+    line: {
+        color: 'rgba(0,0,0,0.4)',
+        width: 1.5,
+    },
+    fillcolor: 'rgba(0,0,0,0)',
+
+    // legend (facets) settings:
     legendgrouptitle: {
       text: 'legend title',
     },
     showlegend: true,
-    // legendwidth: 900, // not working?
+    
+    // opacity: 0.2,
   }));
 
   // plot layout options
@@ -48,9 +44,6 @@ function DepmapPlot({ data }) {
     width: 1000, //window.innerWidth,
     height: 28 * 50,
     title: 'DepMapEssentiality',
-        // annotations: data.map(d => ({
-        //     text: 'alse',
-        // })),
     autosize: true,
     yaxis: {
       automargin: 'width',
@@ -86,6 +79,7 @@ function DepmapPlot({ data }) {
       layout={layoutOptions}
     />
   );
-  // }
 }
+
+
 export default DepmapPlot;
