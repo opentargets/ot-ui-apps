@@ -4,6 +4,8 @@ import Plot from 'react-plotly.js';
 function DepmapPlot({ data }) {
   console.log('test data new:', data);
 
+  const trackHeight = 63.6;
+
   // plot data
   const depMapEssentiality = data.map(d => ({
     type: 'box',
@@ -42,7 +44,7 @@ function DepmapPlot({ data }) {
   // plot layout options
   const layoutOptions = {
     width: 1000, //window.innerWidth,
-    height: 28 * 50,
+    height: (data.length * trackHeight) + 180, // plotly adds 180px at the bottom after tracks
     title: 'DepMapEssentiality',
     autosize: true,
     yaxis: {
@@ -59,7 +61,7 @@ function DepmapPlot({ data }) {
         line: {
           color: '#rgba(255,0,0,.5)',
           width: 1,
-          dash: '36px,7.5px',
+          dash: `0px, ${trackHeight*.1}px, ${trackHeight*.8}px, ${trackHeight*.1}px`,
         },
       },
     ],
