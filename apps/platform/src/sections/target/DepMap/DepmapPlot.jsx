@@ -6,6 +6,15 @@ function DepmapPlot({ data }) {
 
   const trackHeight = 60;
 
+  const onPointClick = (evt) => {
+    const { points } = evt;
+    const id = points[0]?.id;
+    if(id){
+      const url = `https://depmap.org/portal/cell_line/${id}?tab=overview`;
+      window.open(url, '_blank');
+    }
+  };
+
   // plot data
   const depMapEssentiality = data.map(d => ({
     type: 'box',
@@ -80,6 +89,7 @@ function DepmapPlot({ data }) {
     <Plot
       data={depMapEssentiality}
       layout={layoutOptions}
+      onClick={onPointClick}
     />
   );
 }
