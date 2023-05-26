@@ -39,6 +39,8 @@ function DepmapPlot({ data }) {
     showlegend: true,
     
     // opacity: 0.2,
+    hovertext: d.screens.map(s => `<b>${s.cellLineName}</b><br />Disease: ${s.diseaseFromSource}<br />Gene Effect: ${s.geneEffect}<br />Expression: ${s.expression}`),
+    hoverinfo: 'text',
   }));
 
   // plot layout options
