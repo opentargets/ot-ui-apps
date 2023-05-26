@@ -20,11 +20,16 @@ function DepmapPlot({ data }) {
     type: 'box',
     name: `${d.tissueName} (${d.screens.length})`,
 
-    // dots/points settings:
+    // points data:
     x: d.screens.map(s => s.geneEffect),
-    hovertext: d.screens.map(
-      s => `id:${s.diseaseCellLineId} exp:${s.expression}`
-    ),
+    ids: d.screens.map(s => s.depmapId),
+
+    // tooltip settings
+    hoveron: "points",  // enable tooltip only for points, not boxes
+    hovertext: d.screens.map(s => `<b>${s.cellLineName}</b><br />Disease: ${s.diseaseFromSource}<br />Gene Effect: ${s.geneEffect}<br />Expression: ${s.expression}`),
+    hoverinfo: 'text',
+
+    // points appearance
     jitter: .3,
     pointpos: 0,
     marker: {
@@ -42,14 +47,10 @@ function DepmapPlot({ data }) {
     fillcolor: 'rgba(0,0,0,0)', // transparent fill
 
     // legend (facets) settings:
-    legendgrouptitle: {
-      text: 'legend title',
-    },
+    // legendgrouptitle: {
+    //   text: '',
+    // },
     showlegend: true,
-    
-    // opacity: 0.2,
-    hovertext: d.screens.map(s => `<b>${s.cellLineName}</b><br />Disease: ${s.diseaseFromSource}<br />Gene Effect: ${s.geneEffect}<br />Expression: ${s.expression}`),
-    hoverinfo: 'text',
   }));
 
   // plot layout options
