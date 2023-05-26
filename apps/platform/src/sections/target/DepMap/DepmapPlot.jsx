@@ -4,7 +4,7 @@ import Plot from 'react-plotly.js';
 function DepmapPlot({ data }) {
   console.log('test data new:', data);
 
-  const trackHeight = 63.6;
+  const trackHeight = 60;
 
   // plot data
   const depMapEssentiality = data.map(d => ({
@@ -19,9 +19,8 @@ function DepmapPlot({ data }) {
     jitter: .3,
     marker: {
       color: '#3589CA',
-      size: d.screens.map(s => (s.expression + 1) * 2), //not working for boxplot
-      opacity: 0.5,
-      showscale: true,
+      size: 7, 
+      opacity: 0.6,
     },
 
     // box settings:
@@ -47,7 +46,7 @@ function DepmapPlot({ data }) {
   const layoutOptions = {
     width: 1000, //window.innerWidth,
     height: (data.length * trackHeight) + 180, // plotly adds 180px at the bottom after tracks
-    title: 'DepMapEssentiality',
+    title: '',
     autosize: true,
     yaxis: {
       automargin: 'width',
@@ -73,7 +72,7 @@ function DepmapPlot({ data }) {
     },
     boxgap: 0.5,
     font: {
-      family: "Inter",
+      family: 'Inter',
     },
   }
 
