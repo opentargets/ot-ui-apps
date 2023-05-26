@@ -26,6 +26,7 @@ function DepmapPlot({ data }) {
       s => `id:${s.diseaseCellLineId} exp:${s.expression}`
     ),
     jitter: .3,
+    pointpos: 0,
     marker: {
       color: '#3589CA',
       size: 7, 
