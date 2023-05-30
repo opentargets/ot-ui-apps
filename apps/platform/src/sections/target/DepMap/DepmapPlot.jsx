@@ -53,7 +53,18 @@ function DepmapPlot({ data }) {
     //   text: '',
     // },
     showlegend: true,
-  }));
+  }))
+  .sort((a,b)=>{
+    if (a.tissueName.toUpperCase() < b.tissueName.toUpperCase()) {
+      return 1;
+    }
+    if (a.tissueName.toUpperCase() > b.tissueName.toUpperCase()) {
+      return -1;
+    }
+    return 0;
+  });
+
+  console.log(depMapEssentiality.map(d=>d.name));
 
   // plot layout options
   const layoutOptions = {
@@ -82,6 +93,7 @@ function DepmapPlot({ data }) {
     legend: {
       bgcolor: '#f5f5f5',
       entrywidth: 300,
+      traceorder: 'reversed',
     },
     boxgap: 0.5,
     font: {
