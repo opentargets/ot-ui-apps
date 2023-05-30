@@ -1,5 +1,6 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
+import _ from 'lodash';
 
 function DepmapPlot({ data }) {
   console.log('test data new:', data);
@@ -18,7 +19,8 @@ function DepmapPlot({ data }) {
   // plot data
   const depMapEssentiality = data.map(d => ({
     type: 'box',
-    name: `${d.tissueName} (${d.screens.length})`,
+    tissueName: d.tissueName,
+    name: `${_.capitalize(d.tissueName)} (${d.screens.length})`,
 
     // points data:
     x: d.screens.map(s => s.geneEffect),
