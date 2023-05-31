@@ -19,6 +19,20 @@ const useStyles = makeStyles(() => ({
     padding: '1em 1em 2em',
     borderRadius: '12px',
   },
+  actions: {
+    '@media (max-width: 767px)': {
+      flexDirection: 'column',
+    },
+  },
+  button: {
+    '@media (max-width: 767px)': {
+      minHeight: 'auto',
+      height: '100%',
+      width: '100%',
+      margin: '0 !important',
+      marginTop: '0.3em !important',
+    },
+  },
 }));
 
 function ShouldAccessPPP() {
@@ -83,16 +97,25 @@ function ShouldAccessPPP() {
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           We are pleased to inform you that you have access to our exclusive
-          Partner Preview Platform. This will have early access to
-          the latest features, updates, and innovations before they are made
-          available to the public.
+          Partner Preview Platform. This will have early access to the latest
+          features, updates, and innovations before they are made available to
+          the public.
         </DialogContentText>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} variant="outlined">
+      <DialogActions className={classes.actions}>
+        <Button
+          className={classes.button}
+          onClick={handleClose}
+          variant="outlined"
+        >
           Continue to Public Version
         </Button>
-        <Button onClick={goToPPP} variant="contained" color="primary">
+        <Button
+          className={classes.button}
+          onClick={goToPPP}
+          variant="contained"
+          color="primary"
+        >
           Continue on Partner Preview Platform
         </Button>
       </DialogActions>
