@@ -1,9 +1,17 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 import _ from 'lodash';
+import {useLayoutEffect, useRef, useState} from 'react';
 
 function DepmapPlot({ data }) {
-  console.log('test data new:', data);
+  const ref = useRef(null);
+  const [width, setWidth] = useState(0);
+
+  useLayoutEffect(() => {
+    setWidth(ref.current.offsetWidth);
+    // setWidth(ref.current.clientWidth);
+    // console.log('width: ', ref.current.offsetWidth, ref.current.clientWidth);
+  }, 0);
 
   const trackHeight = 60;
 
@@ -51,6 +59,7 @@ function DepmapPlot({ data }) {
     // legend settings
     showlegend: false,
   }))
+  // sort in reverse alphabetical order so it displays from top to bottom
   .sort((a,b)=>{
     if (a.tissueName.toUpperCase() < b.tissueName.toUpperCase()) {
       return 1;
@@ -61,11 +70,9 @@ function DepmapPlot({ data }) {
     return 0;
   });
 
-  console.log(depMapEssentiality.map(d=>d.name));
-
   // plot layout options
   const layoutOptions = {
-    width: 1000, //window.innerWidth,
+    width: width,
     height: (data.length * trackHeight) + 180, // plotly adds 180px at the bottom after tracks
     title: '',
     autosize: true,
@@ -95,11 +102,13 @@ function DepmapPlot({ data }) {
   }
 
   return (
-    <Plot
-      data={depMapEssentiality}
-      layout={layoutOptions}
-      onClick={onPointClick}
-    />
+    <div ref={ref}>
+      <Plot
+        data={depMapEssentiality}
+        layout={layoutOptions}
+        onClick={onPointClick}
+      />
+    </div>
   );
 }
 
