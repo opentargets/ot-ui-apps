@@ -185,6 +185,7 @@ export default function AutocompleteSearch({
           onClose={onClose}
           isHomePage={isHomePage}
           focus={open}
+          setOpen={setOpen}
         />
       )}
     />

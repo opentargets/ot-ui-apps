@@ -28,7 +28,7 @@ function SearchProvider({
   children: React.ReactNode;
   searchQuery: string;
   searchPlaceholder: string;
-  primaryColor: string;
+  primaryColor?: string;
 }) {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
