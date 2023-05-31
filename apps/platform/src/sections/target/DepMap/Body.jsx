@@ -10,15 +10,14 @@ import SectionItem from '../../../components/Section/SectionItem';
 
 import DEPMAP_QUERY from './Depmap.gql';
 
-import data0 from "./data/data.json";
+import data0 from './data/data.json';
 import DepmapPlot from './DepmapPlot';
-
 
 function Section({ definition, id, label: symbol }) {
   const variables = { ensemblId: id };
   const request = useQuery(DEPMAP_QUERY, { variables });
 
-  const {depMapEssentiality} = data0;
+  const { depMapEssentiality } = data0;
 
   return (
     <SectionItem
@@ -29,7 +28,7 @@ function Section({ definition, id, label: symbol }) {
         // TODO: depMapEssentiality will come from data
         return (
           <>
-            <DepmapPlot data={depMapEssentiality}/>
+            <DepmapPlot data={depMapEssentiality} />
           </>
         );
       }}
