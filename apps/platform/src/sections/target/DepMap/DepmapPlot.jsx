@@ -48,11 +48,8 @@ function DepmapPlot({ data }) {
     },
     fillcolor: 'rgba(0,0,0,0)', // transparent fill
 
-    // legend (facets) settings:
-    // legendgrouptitle: {
-    //   text: '',
-    // },
-    showlegend: true,
+    // legend settings
+    showlegend: false,
   }))
   .sort((a,b)=>{
     if (a.tissueName.toUpperCase() < b.tissueName.toUpperCase()) {
@@ -90,11 +87,7 @@ function DepmapPlot({ data }) {
         },
       },
     ],
-    legend: {
-      bgcolor: '#f5f5f5',
-      entrywidth: 300,
-      traceorder: 'reversed',
-    },
+
     boxgap: 0.5,
     font: {
       family: 'Inter',
