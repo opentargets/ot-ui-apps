@@ -52,19 +52,9 @@ function DiseasePageTabs({ efoId }) {
 
   return (
     <Tabs value={activeTabIndex}>
-      {routes.map(route => {
-        if (route.private && !isPartnerPreview) {
-          return null;
-        }
-        return (
-          <Tab
-            key={v1()}
-            label={route.label}
-            component={Link}
-            to={route.path}
-          />
-        );
-      })}
+      {ableRoutes.map(route => (
+        <Tab key={v1()} label={route.label} component={Link} to={route.path} />
+      ))}
     </Tabs>
   );
 }
@@ -148,28 +138,6 @@ function DiseasePage({ location, match }) {
           />
         </Switch>
       </Suspense>
-      {/* <RoutingTabs>
-        <PrivateRoutingTab
-          label={
-            <div>
-              <NewChip />
-              Associated targets
-            </div>
-          }
-          path="/disease/:efoId/associations"
-          component={() => <Associations efoId={efoId} name={name} />}
-        />
-        <RoutingTab
-          label="Associated targets"
-          path="/disease/:efoId/classic-associations"
-          component={() => <ClassicAssociations efoId={efoId} name={name} />}
-        />
-        <RoutingTab
-          label="Profile"
-          path="/disease/:efoId"
-          component={() => <Profile efoId={efoId} name={name} />}
-        />
-      </RoutingTabs> */}
     </BasePage>
   );
 }

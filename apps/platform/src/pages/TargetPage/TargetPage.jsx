@@ -52,19 +52,9 @@ function TargetPageTabs({ ensgId }) {
 
   return (
     <Tabs value={activeTabIndex}>
-      {routes.map(route => {
-        if (route.private && !isPartnerPreview) {
-          return null;
-        }
-        return (
-          <Tab
-            key={v1()}
-            label={route.label}
-            component={Link}
-            to={route.path}
-          />
-        );
-      })}
+      {routes.map(route => (
+        <Tab key={v1()} label={route.label} component={Link} to={route.path} />
+      ))}
     </Tabs>
   );
 }
