@@ -72,10 +72,10 @@ const columns = [
 ];
 
 export function BodyCore({ definition, id, label, count }) {
-  const { ensgId: ensemblId, efoId } = id;
+  const { ensgId, efoId } = id;
 
   const variables = {
-    ensemblId,
+    ensemblId: ensgId,
     efoId,
     size: count,
   };

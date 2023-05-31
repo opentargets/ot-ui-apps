@@ -60,9 +60,10 @@ const columns = [
 ];
 
 export function BodyCore({ definition, id, label, count }) {
-  const { ensgId: ensemblId, efoId } = id;
+  const { ensgId, efoId } = id;
+
   const variables = {
-    ensemblId,
+    ensemblId: ensgId,
     efoId,
     size: count,
   };
@@ -83,7 +84,7 @@ export function BodyCore({ definition, id, label, count }) {
         <DataTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensemblId}-${efoId}`}
+          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           rows={data.disease.evidences.rows}
           pageSize={10}
           rowsPerPageOptions={defaultRowsPerPageOptions}

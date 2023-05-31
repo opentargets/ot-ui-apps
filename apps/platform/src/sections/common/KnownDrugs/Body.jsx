@@ -8,6 +8,7 @@ import SectionItem from '../../../components/Section/SectionItem';
 import SourceDrawer from './SourceDrawer';
 import { Table, getPage } from '../../../components/Table';
 import useCursorBatchDownloader from '../../../hooks/useCursorBatchDownloader';
+import { getComparator } from '../../../components/Table/sortingAndFiltering';
 
 function getColumnPool(id, entity) {
   return {
@@ -146,6 +147,8 @@ function Body({
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(INIT_PAGE_SIZE);
   const [globalFilter, setGlobalFilter] = useState('');
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortOrder, setSortOrder] = useState('asc');
 
   const id = variables[Object.keys(variables)[0]];
   const columnPool = getColumnPool(id, entity);
@@ -261,6 +264,19 @@ function Body({
     });
   };
 
+  const handleSortBy = sortBy => {
+    setSortColumn(sortBy);
+    setSortOrder(
+      // eslint-disable-next-line
+      sortColumn === sortBy ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc'
+    );
+  };
+  const processedRows = [...rows];
+
+  if (sortColumn) {
+    processedRows.sort(getComparator(columns, sortOrder, sortColumn));
+  }
+
   return (
     <SectionItem
       definition={definition}
@@ -277,7 +293,7 @@ function Body({
           dataDownloaderFileStem={`${id}-known-drugs`}
           headerGroups={headerGroups}
           columns={columns}
-          rows={getPage(rows, page, pageSize)}
+          rows={getPage(processedRows, page, pageSize)}
           rowCount={count}
           rowsPerPageOptions={[10, 25, 100]}
           page={page}
@@ -285,6 +301,7 @@ function Body({
           onGlobalFilterChange={handleGlobalFilterChange}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}
+          onSortBy={handleSortBy}
           dataDownloaderColumns={exportColumns}
           query={BODY_QUERY.loc.source.body}
           variables={variables}
