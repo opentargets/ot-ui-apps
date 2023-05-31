@@ -83,7 +83,7 @@ function DepmapPlot({ data }) {
         line: {
           color: '#rgba(255,0,0,.5)',
           width: 1,
-          dash: `0px, ${trackHeight*.1}px, ${trackHeight*.8}px, ${trackHeight*.1}px`,
+          dash: `0px, ${trackHeight*.15}px, ${trackHeight*.7}px, ${trackHeight*.15}px`,
         },
       },
     ],
