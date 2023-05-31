@@ -256,7 +256,7 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
       >
         <Typography className={classes.title}>
           API query
-          <IconButton onClick={() => close()}>
+          <IconButton onClick={e => close(e)}>
             <CloseIcon />
           </IconButton>
         </Typography>
