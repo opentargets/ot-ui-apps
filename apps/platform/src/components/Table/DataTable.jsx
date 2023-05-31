@@ -1,4 +1,5 @@
-import { useState } from 'react';
+/* eslint-disable */
+import React, { useState } from 'react';
 
 import Table from './Table';
 import { getPage } from './utils';
@@ -22,7 +23,7 @@ function DataTable({
   rowsPerPageOptions = [],
   onRowClick,
   rowIsSelectable,
-  onPagination = () => ({}),
+  onPagination = () => {},
   dataDownloaderColumns,
   loading,
   query,
@@ -36,30 +37,25 @@ function DataTable({
   const showPagination =
     rows.length > [...rowsPerPageOptions, initialPageSize].sort()[0];
 
-  function getColumnOrientation({ newSortBy }) {
-    if (sortColumn !== newSortBy) return 'asc';
-    if (sortOrder === 'asc') return 'desc';
-    return 'asc';
-  }
-
-  const handleGlobalFilterChange = newGlobalFilter => {
-    setGlobalFilterVal(newGlobalFilter);
+  const handleGlobalFilterChange = globalFilter => {
+    setGlobalFilterVal(globalFilter);
     setPage(0);
   };
 
-  const handleSortBy = newSortBy => {
-    const sortOrientation = getColumnOrientation({ newSortBy });
-    setSortColumn(newSortBy);
-    setSortOrder(sortOrientation);
+  const handleSortBy = sortBy => {
+    setSortColumn(sortBy);
+    setSortOrder(
+      sortColumn === sortBy ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc'
+    );
   };
 
-  const handlePageChange = newPage => {
-    setPage(newPage);
-    onPagination(newPage, pageSize);
+  const handlePageChange = page => {
+    setPage(page);
+    onPagination(page, pageSize);
   };
 
-  const handleRowsPerPageChange = newPageSize => {
-    setPageSize(newPageSize);
+  const handleRowsPerPageChange = pageSize => {
+    setPageSize(pageSize);
     setPage(0);
   };
 

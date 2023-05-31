@@ -1,4 +1,5 @@
-import { useState } from 'react';
+/* eslint-disable */
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import {
   CircularProgress,
@@ -11,7 +12,6 @@ import {
   TableRow as MUITableRow,
   Box,
 } from '@material-ui/core';
-import { v1 } from 'uuid';
 
 import DataDownloader from './DataDownloader';
 import GlobalFilter from './GlobalFilter';
@@ -19,7 +19,7 @@ import TableHeader from './TableHeader';
 import TableRow from './TableRow';
 import { tableStyles } from './tableStyles';
 
-function Table({
+const Table = ({
   classes = {},
   sortBy,
   order,
@@ -30,10 +30,10 @@ function Table({
   fixed = false,
   headerGroups = [],
   loading,
-  onGlobalFilterChange = () => ({}),
-  onSortBy = () => ({}),
-  onRowsPerPageChange = () => ({}),
-  onPageChange = () => ({}),
+  onGlobalFilterChange = () => {},
+  onSortBy = () => {},
+  onRowsPerPageChange = () => {},
+  onPageChange = () => {},
   pageSize = 10,
   dataDownloader = false,
   dataDownloaderFileStem = 'data',
@@ -47,11 +47,11 @@ function Table({
   globalFilter,
   rowsPerPageOptions = [],
   ActionsComponent,
-  onRowClick = () => ({}),
+  onRowClick = () => {},
   rowIsSelectable = false,
   query,
   variables,
-}) {
+}) => {
   const emptyRows = pageSize - rows.length;
   const [selectedRow, setSelectedRow] = useState(0);
   const defaultClasses = tableStyles();
@@ -62,20 +62,20 @@ function Table({
     }
   };
 
-  const handleSort = (_, sortByColumn) => {
-    onSortBy(sortByColumn);
+  const handleSort = (_, sortBy) => {
+    onSortBy(sortBy);
   };
 
   const handleChangeRowsPerPage = event => {
     onRowsPerPageChange(event.target.value);
   };
-  const handleChangePage = (_, newPage) => {
+  const handleChangePage = (_, page) => {
     // reset the selected;
     // TODO: maybe should be handled in individual implementation
     setSelectedRow(0);
-    onPageChange(newPage);
+    onPageChange(page);
   };
-  const handleClick = (_, row, i) => {
+  const handleClick = (event, row, i) => {
     setSelectedRow(i);
     onRowClick(row, i);
   };
@@ -128,7 +128,7 @@ function Table({
                 columns={columns}
                 hover={hover}
                 isFixedRow={row.isFixedRow}
-                key={v1()}
+                key={i}
                 row={row}
                 noWrap={noWrap}
                 onClick={event => handleClick(event, row, i)}
@@ -176,6 +176,6 @@ function Table({
       </Grid>
     </Grid>
   );
-}
+};
 
 export default Table;

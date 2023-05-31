@@ -251,7 +251,7 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={() => close()}
+        onClose={e => close(e)}
         anchor="right"
       >
         <Typography className={classes.title}>

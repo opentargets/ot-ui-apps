@@ -1,3 +1,5 @@
+/* eslint-disable */
+import React from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
 import {
@@ -8,7 +10,6 @@ import {
   TableSortLabel,
   withWidth,
 } from '@material-ui/core';
-import { v1 } from 'uuid';
 
 import { getHiddenBreakpoints } from './utils';
 import { tableStyles } from './tableStyles';
@@ -71,8 +72,6 @@ function HeaderCell({
       style={style}
     >
       {sortable ? (
-        // TODO: review props spreading
-        // eslint-disable-next-line
         <TableSortLabel className={classes.sortLabel} {...sortParams}>
           {labelInnerComponent}
         </TableSortLabel>
@@ -97,12 +96,6 @@ function TableHeader({
     onRequestSort(event, property);
   };
 
-  function getTableAlignment({ column }) {
-    if (column.align) return column.align;
-    if (column.numeric) return 'right';
-    return 'left';
-  }
-
   return (
     <TableHead>
       {headerGroups.length > 0 ? (
@@ -110,8 +103,8 @@ function TableHeader({
           {headerGroups.map((headerCell, cellIndex) => (
             <HeaderCell
               colspan={colspans[cellIndex]}
-              isHeaderGroup
-              key={v1()}
+              isHeaderGroup={true}
+              key={cellIndex}
               label={headerCell.label || ''}
               noWrapHeader={noWrapHeader}
               sticky={headerCell.sticky || false}
@@ -122,12 +115,12 @@ function TableHeader({
         </TableRow>
       ) : null}
       <TableRow>
-        {columns.map(column => (
-          // TODO: review props spreading
-          // eslint-disable-next-line
-          <Hidden {...getHiddenBreakpoints(column)} key={v1()}>
+        {columns.map((column, index) => (
+          <Hidden {...getHiddenBreakpoints(column)} key={index}>
             <HeaderCell
-              align={getTableAlignment({ column })}
+              align={
+                column.align ? column.align : column.numeric ? 'right' : 'left'
+              }
               label={column.label || _.startCase(column.id)}
               noWrapHeader={noWrapHeader}
               sortable={column.sortable}

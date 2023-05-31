@@ -1,7 +1,8 @@
+/* eslint-disable */
+import React from 'react';
 import classNames from 'classnames';
 import { Hidden, TableCell, TableRow as MUITableRow } from '@material-ui/core';
 import _ from 'lodash';
-import { v1 } from 'uuid';
 
 import { getHiddenBreakpoints } from './utils';
 import { tableStyles } from './tableStyles';
@@ -18,12 +19,6 @@ function TableRow({
 }) {
   const classes = tableStyles();
 
-  function getTableAlignment({ column }) {
-    if (column.align) return column.align;
-    if (column.numeric) return 'right';
-    return 'left';
-  }
-
   return (
     <MUITableRow
       classes={{ root: isFixedRow ? classes.rowFixed : '' }}
@@ -31,12 +26,12 @@ function TableRow({
       onClick={onClick}
       selected={selected}
     >
-      {columns.map(column => (
-        // TODO: review props spreading
-        // eslint-disable-next-line
-        <Hidden {...getHiddenBreakpoints(column)} key={v1()}>
+      {columns.map((column, index) => (
+        <Hidden {...getHiddenBreakpoints(column)} key={index}>
           <TableCell
-            align={getTableAlignment({ column })}
+            align={
+              column.align ? column.align : column.numeric ? 'right' : 'left'
+            }
             classes={{
               root: classNames(
                 classes.cell,
@@ -50,6 +45,7 @@ function TableRow({
               ),
             }}
             component={column.sticky ? 'th' : 'td'}
+            key={index}
             style={{ ...column.style, ...row.rowStyle, ...style }}
           >
             {column.renderCell
