@@ -1,5 +1,4 @@
 import React from 'react';
-// import { makeStyles } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 
 // import ChipList from '../../../components/ChipList';
@@ -12,17 +11,8 @@ import SectionItem from '../../../components/Section/SectionItem';
 import DEPMAP_QUERY from './Depmap.gql';
 
 import data0 from "./data/data.json";
-// import BarChart from './BarChart';
 import DepmapPlot from './DepmapPlot';
 
-// const useStyles = makeStyles({
-//   roleInCancerBox: {
-//     display: 'flex',
-//     alignItems: 'center',
-//     marginBottom: '2rem',
-//   },
-//   roleInCancerTitle: { marginRight: '.5rem' },
-// });
 
 function Section({ definition, id, label: symbol }) {
   const variables = { ensemblId: id };
@@ -36,8 +26,7 @@ function Section({ definition, id, label: symbol }) {
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={data => {
-        console.log('target data: ', data);
-        console.log('data0: ', data0);
+        // TODO: depMapEssentiality will come from data
         return (
           <>
             <DepmapPlot data={depMapEssentiality}/>
