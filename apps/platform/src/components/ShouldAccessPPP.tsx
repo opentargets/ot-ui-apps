@@ -105,7 +105,7 @@ function ShouldAccessPPP() {
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           We are pleased to inform you that you have access to our exclusive
-          Partner Preview Platform (PPP). This will have pre-publication data
+          Partner Preview Platform &#40;PPP&#41;. This will have pre-publication data
           from OTAR projects and early access to the latest features, updates,
           and innovations before they are made available to the public.
         </DialogContentText>
