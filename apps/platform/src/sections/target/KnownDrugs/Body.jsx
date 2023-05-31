@@ -66,6 +66,7 @@ function Body({ definition, id: ensgId, label: symbol }) {
       entity="target"
       variables={{ ensgId }}
       BODY_QUERY={KNOWN_DRUGS_BODY_QUERY}
+      // eslint-disable-next-line
       Description={() => <Description symbol={symbol} />}
       columnsToShow={['drug', 'disease', 'clinicalTrials']}
       stickyColumn="drug"

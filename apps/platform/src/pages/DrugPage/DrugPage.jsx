@@ -40,6 +40,7 @@ function DrugPage({ location, match }) {
         <RoutingTab
           label="Profile"
           path="/drug/:chemblId"
+          // eslint-disable-next-line
           component={() => <Profile chemblId={chemblId} name={name} />}
         />
       </RoutingTabs>

@@ -85,3 +85,23 @@ export const referenceUrls = {
   ATC: atcUrl,
   DailyMed: dailyMedUrl,
 };
+
+// Associations and URL PPP
+export const getClassicAssociationsURL = ({ baseURL, isPartnerPreview }) => {
+  const path = isPartnerPreview ? 'classic-associations' : 'associations';
+  const fullURL = `${baseURL}${path}`;
+  return { fullURL, path };
+};
+
+export const getAbleRoutes = ({ routes = [], isPartnerPreview = false }) => {
+  const ableRouter = routes.reduce((accumulator, currentValue) => {
+    if (currentValue.private) {
+      if (isPartnerPreview) {
+        return [...accumulator, currentValue];
+      }
+      return [...accumulator];
+    }
+    return [...accumulator, currentValue];
+  }, []);
+  return ableRouter;
+};
