@@ -65,7 +65,7 @@ function ShouldAccessPPP() {
       }),
     })
       .then(response => {
-        if (response.status === 200) handleOpen();
+        if (response.status === 200 && isOnPublic()) handleOpen();
       })
       .catch(() => {
         console.log('Does not have access to Partner Preview Platform');
@@ -81,7 +81,13 @@ function ShouldAccessPPP() {
   };
 
   const goToPPP = () => {
+    console.log(window.location.hostname);
     window.location.href = `${PPP_WEB_URL}${location.pathname}`;
+  };
+
+  const isOnPublic = () => {
+    const location = window.location.href;
+    return !location.includes('partner');
   };
 
   return (
@@ -93,13 +99,15 @@ function ShouldAccessPPP() {
         paper: classes.paper,
       }}
     >
-      <DialogTitle>Looks like you are a Partner!</DialogTitle>
+      <DialogTitle>
+        Looks like you are part of the Open Targets Consortium!
+      </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           We are pleased to inform you that you have access to our exclusive
-          Partner Preview Platform. This will have early access to the latest
-          features, updates, and innovations before they are made available to
-          the public.
+          Partner Preview Platform (PPP). This will have pre-publication data
+          from OTAR projects and early access to the latest features, updates,
+          and innovations before they are made available to the public.
         </DialogContentText>
       </DialogContent>
       <DialogActions className={classes.actions}>
