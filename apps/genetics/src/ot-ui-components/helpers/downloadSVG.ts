@@ -1,6 +1,12 @@
-import FileSaver from 'file-saver';
+import * as FileSaver from 'file-saver';
 
-const downloadSVG = ({ svgNode, filenameStem }) => {
+const downloadSVG = ({
+  svgNode,
+  filenameStem,
+}: {
+  svgNode: SVGElement;
+  filenameStem: string;
+}) => {
   if (!svgNode) {
     console.info('Nothing to download.');
     return;

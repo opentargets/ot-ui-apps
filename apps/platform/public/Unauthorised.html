@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Open Targets Partner Preview Platform</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <style>
+      * {
+        font-family: 'Inter', sans-serif;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --primary-blue: #3489ca;
+        --primary-dark: #1f5279;
+        --background-color: #fafafa;
+        --font-grey: #5a5f5f;
+        --grey-500: #9e9e9e
+      }
+      html {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background-color: var(--background-color);
+        height: 100%;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .body-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 1rem;
+        margin-bottom: 3vh;
+      }
+      .navbar {
+        background-color: var(--primary-blue);
+        display: flex;
+        justify-content: start;
+        padding: 0.5rem 2rem;
+        font-size: 1.24em;
+        line-height: 1.6em;
+        color: white;
+      }
+      .brand-name {
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        padding-right: 0.3em;
+      }
+      .app-name {
+        font-weight: 300;
+      }
+      .lock-icon {
+        width: 0.8rem;
+        margin-left: 0.7rem;
+      }
+      .divider {
+        border-right: 1px solid var(--grey-500);
+      }
+      .font-blue {
+        color: var(--primary-blue);
+      }
+      a {
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .message-container {
+        display: flex;
+        color: var(--font-grey);
+        width: 100%;
+      }
+      .message-logo-container {
+        flex-grow: 2;
+        display: flex;
+        justify-content: end;
+        width: 30%;
+        max-width: 35%;
+      }
+      .message-logo {
+        width: 12rem;
+        padding: 2rem;
+        margin-right: 2rem;
+      }
+      .message-body-container {
+        flex-grow: 3;
+        font-size: 1.1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        letter-spacing: 0.00938em;
+        padding: 1rem;
+        @media (min-width: 767px) {
+          padding-left: 4rem;
+        }
+      }
+      .message-body-header {
+        font-size: 4rem;
+        padding-bottom: 2rem;
+        word-break: break-word;
+      }
+      .message-body-description {
+        max-width: 30rem;
+        text-align: justify;
+      }
+      .message-body-top {
+        margin-bottom: 1rem;
+      }
+      .justify-center {
+        display: flex;
+        justify-content: center;
+      }
+      .platform-button {
+        background-color: var(--primary-blue);
+        color: white;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 6px 16px;
+        font-size: 0.875rem;
+        border-radius: 4px;
+        text-transform: uppercase;
+      }
+      .platform-button:hover {
+        text-decoration: none;
+      }
+      .message-body-bottom{
+        padding: 1rem;
+      }
+      .hidden-mobile {
+        @media (max-width: 767px) {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header-container">
+        <header class="navbar">
+          <span class="brand-name"
+            >Open Targets
+            <span class="app-name">
+              Partner Preview Platform
+              <span>
+                <svg
+                  class="lock-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                >
+                  <path
+                    d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"
+                    fill="#ffffff"
+                  />
+                </svg>
+              </span>
+            </span>
+          </span>
+        </header>
+      </div>
+
+      <div class="body-container">
+        <div class="message-container">
+          <div class="message-logo-container hidden-mobile">
+            <svg
+              class="message-logo"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+            >
+              <path
+                d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"
+                fill="#1f5279"
+              />
+            </svg>
+          </div>
+          <div class="divider hidden-mobile"></div>
+          <div class="message-body-container">
+            <h1 class="message-body-header font-blue">Oops 403!</h1>
+            <div class="message-body-description">
+              <div class="message-body-top">
+                You are trying to access the Open Targets Partner Preview
+                Platform outside permitted network.
+              </div>
+              <div class="message-body-middle">
+                If you are a member of the Open Targets Consortium and would
+                like to request access to this partner-only resource, please
+                contact us at
+                <a
+                  class="font-blue"
+                  href="mailto:partner-support@opentargets.org"
+                  >partner-support@opentargets.org</a
+                >
+              </div>
+              <div class="message-body-bottom justify-center">or</div>
+              <div class="justify-center">
+                <a
+                  class="platform-button"
+                  href="https://platform.opentargets.org/"
+                  >Go to Open Targets Platform</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
