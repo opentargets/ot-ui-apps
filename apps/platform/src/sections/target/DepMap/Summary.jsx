@@ -7,6 +7,9 @@ import SummaryItem from '../../../components/Summary/SummaryItem';
 // TODO: import correct fragment when available
 import DEPMAP_SUMMARY_FRAGMENT from './DepmapSummaryFragment.gql';
 
+// TODO: temporary sample data
+import data0 from './data/data.json';
+
 function Summary({ definition }) {
   // TODO: replace this
   const request = usePlatformApi(DEPMAP_SUMMARY_FRAGMENT);
@@ -16,9 +19,10 @@ function Summary({ definition }) {
       definition={definition}
       request={request}
       renderSummary={data => {
+        // TODO: use correct data
         return (
           <>
-            --TODO-- • 28 tissues
+            {data0.depMapEssentiality?.length} tissues
           </>
         );
       }}
