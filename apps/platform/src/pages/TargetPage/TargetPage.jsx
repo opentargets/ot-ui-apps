@@ -52,7 +52,7 @@ function TargetPageTabs({ ensgId }) {
 
   return (
     <Tabs value={activeTabIndex}>
-      {routes.map(route => (
+      {ableRoutes.map(route => (
         <Tab key={v1()} label={route.label} component={Link} to={route.path} />
       ))}
     </Tabs>
