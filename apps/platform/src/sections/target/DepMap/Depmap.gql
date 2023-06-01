@@ -1,0 +1,19 @@
+# TODO: update with correct query when ready
+query Hallmarks($ensemblId: String!) {
+  target(ensemblId: $ensemblId) {
+    id
+    hallmarks {
+      attributes {
+        name
+        pmid
+        description
+      }
+      cancerHallmarks {
+        pmid
+        impact
+        description
+        label
+      }
+    }
+  }
+}
