@@ -11,7 +11,7 @@ function DepmapPlot({ data }) {
     setWidth(ref.current.offsetWidth);
     // setWidth(ref.current.clientWidth);
     // console.log('width: ', ref.current.offsetWidth, ref.current.clientWidth);
-  }, 0);
+  }, []);
 
   const trackHeight = 60;
 
