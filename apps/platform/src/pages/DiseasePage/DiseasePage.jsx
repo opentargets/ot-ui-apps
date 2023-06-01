@@ -32,14 +32,14 @@ function DiseasePageTabs({ efoId }) {
       label: (
         <div>
           <NewChip />
-          Associated diseases
+          Associated targets
         </div>
       ),
       path: `/disease/${efoId}/associations`,
       private: true,
     },
     {
-      label: 'Associated diseases',
+      label: 'Associated targets',
       path: `/disease/${efoId}/${classicAssociationsPath}`,
     },
     { label: 'Profile', path: `/disease/${efoId}` },
