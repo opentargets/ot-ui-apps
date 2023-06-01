@@ -1,17 +1,13 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-
-// import ChipList from '../../../components/ChipList';
 import Description from './Description';
-// import DataTable from '../../../components/Table/DataTable';
-// import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import SectionItem from '../../../components/Section/SectionItem';
-// import { defaultRowsPerPageOptions } from '../../../constants';
+import DepmapPlot from './DepmapPlot';
 
 import DEPMAP_QUERY from './Depmap.gql';
 
+// TODO: temporary sample data
 import data0 from './data/data.json';
-import DepmapPlot from './DepmapPlot';
 
 function Section({ definition, id, label: symbol }) {
   const variables = { ensemblId: id };
