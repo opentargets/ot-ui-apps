@@ -122,6 +122,11 @@ const dataSources = [
     isPrivate: isPrivateDataSource('cancer_biomarkers'),
     dataType: 'affected_pathway',
   },
+  {
+    id: 'crispr_screen', // crispr_screen
+    label: 'CRISPR Screens',
+    isPrivate: isPrivateDataSource('crispr_screen'),
+  },
 ];
 
 const dataSourcesMap = dataSources.reduce((acc, dataSource) => {
