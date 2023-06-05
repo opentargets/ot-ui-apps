@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 import { Box } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -22,7 +22,7 @@ import DRUG_PROFILE_HEADER_FRAGMENT from './ProfileHeader.gql';
 function ProfileHeader({ chemblId }) {
   const { loading, error, data } = usePlatformApi();
 
-  //TODO: Errors!
+  // TODO: Errors!
   if (error) return null;
 
   const {

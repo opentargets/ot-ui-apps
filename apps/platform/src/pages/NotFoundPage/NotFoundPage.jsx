@@ -1,10 +1,9 @@
-import React from 'react';
 import { Typography } from '@material-ui/core';
 
 import BasePage from '../../components/BasePage';
 import EmptyPage from '../EmptyPage';
 
-const NotFoundPage = () => {
+function NotFoundPage() {
   return (
     <BasePage>
       <EmptyPage>
@@ -12,6 +11,6 @@ const NotFoundPage = () => {
       </EmptyPage>
     </BasePage>
   );
-};
+}
 
 export default NotFoundPage;

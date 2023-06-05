@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import { Fragment, useState } from 'react';
 import {
   Drawer,
   Link as MuiLink,
@@ -68,7 +68,7 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
       <Tooltip title={biomarkerName}>
         <MuiLink
           className={classes.drawerLink}
-          onClick={toggleOpen}
+          onClick={()=>toggleOpen()}
           underline="none"
         >
           {biomarkerName}
@@ -77,12 +77,12 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={close}
+        onClose={()=>close()}
         anchor="right"
       >
         <Typography className={classes.title}>
           Biomarker
-          <IconButton onClick={close}>
+          <IconButton onClick={()=>close()}>
             <CloseIcon />
           </IconButton>
         </Typography>
@@ -91,26 +91,22 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
             <Typography variant="subtitle2" paragraph>
               Variant:
             </Typography>
-            {biomarkers.variant.map(variant => {
-              return (
-                <div key={variant.name} className={classes.biomarkerItem}>
-                  <div>
-                    {variant.name}{' '}
-                    {variant.variantId ? `(ID: ${variant.variantId})` : null}
-                  </div>
-                  {variant.functionalConsequenceId ? (
-                    <Link
-                      external
-                      to={`https://identifiers.org/${
-                        variant.functionalConsequenceId.id
-                      }`}
-                    >
-                      {sentenceCase(variant.functionalConsequenceId.label)}
-                    </Link>
-                  ) : null}
+            {biomarkers.variant.map(variant => (
+              <div key={variant.name} className={classes.biomarkerItem}>
+                <div>
+                  {variant.name}{' '}
+                  {variant.variantId ? `(ID: ${variant.variantId})` : null}
                 </div>
-              );
-            })}
+                {variant.functionalConsequenceId ? (
+                  <Link
+                    external
+                    to={`https://identifiers.org/${variant.functionalConsequenceId.id}`}
+                  >
+                    {sentenceCase(variant.functionalConsequenceId.label)}
+                  </Link>
+                ) : null}
+              </div>
+            ))}
           </Paper>
         ) : null}
         {biomarkers.geneExpression ? (
@@ -118,19 +114,17 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
             <Typography variant="subtitle2" paragraph>
               Gene expression:
             </Typography>
-            {biomarkers.geneExpression.map(expression => {
-              return (
-                <div key={expression.name} className={classes.biomarkerItem}>
-                  <div>{expression.name}</div>
-                  <Link
-                    external
-                    to={`https://identifiers.org/${expression.id.id}`}
-                  >
-                    {expression.id.name}
-                  </Link>
-                </div>
-              );
-            })}
+            {biomarkers.geneExpression.map(expression => (
+              <div key={expression.name} className={classes.biomarkerItem}>
+                <div>{expression.name}</div>
+                <Link
+                  external
+                  to={`https://identifiers.org/${expression.id.id}`}
+                >
+                  {expression.id.name}
+                </Link>
+              </div>
+            ))}
           </Paper>
         ) : null}
       </Drawer>

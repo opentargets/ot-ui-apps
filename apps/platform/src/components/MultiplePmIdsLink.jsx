@@ -1,9 +1,7 @@
-import React from 'react';
-
 import Link from './Link';
 
-const MultiplePmIdsLink = ({ pmIds }) =>
-  pmIds.length > 0 ? (
+function MultiplePmIdsLink({ pmIds }) {
+  return pmIds.length > 0 ? (
     <Link
       external
       to={`https://europepmc.org/search?query=${pmIds
@@ -15,5 +13,6 @@ const MultiplePmIdsLink = ({ pmIds }) =>
   ) : (
     'N/A'
   );
+}
 
 export default MultiplePmIdsLink;

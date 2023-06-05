@@ -1,4 +1,3 @@
-import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -8,8 +7,8 @@ const styles = theme => ({
   },
 });
 
-const PlotContainerSection = ({ classes, children }) => (
-  <div className={classes.plotContainerSection}>{children}</div>
-);
+function PlotContainerSection({ classes, children }) {
+  return <div className={classes.plotContainerSection}>{children}</div>;
+}
 
 export default withStyles(styles)(PlotContainerSection);

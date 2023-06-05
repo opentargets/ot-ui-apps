@@ -1,6 +1,6 @@
-import React from 'react';
 import { Box, List, ListItem, makeStyles, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
+import { v1 } from 'uuid';
 
 import ChipList from '../../../components/ChipList';
 import { DataTable } from '../../../components/Table';
@@ -52,32 +52,27 @@ const columns = [
     id: 'mutatedSamples',
     propertyPath: 'mutatedSamples.numberMutatedSamples',
     label: 'Mutated / Total samples',
-    renderCell: ({ mutatedSamples }) => {
-      return (
-        <List style={{ padding: 0 }}>
-          {mutatedSamples
-            .sort((a, b) => samplePercent(b) - samplePercent(a))
-            .map((item, i) => {
-              const percent = samplePercent(item);
+    renderCell: ({ mutatedSamples }) => (
+      <List style={{ padding: 0 }}>
+        {mutatedSamples
+          .sort((a, b) => samplePercent(b) - samplePercent(a))
+          .map(item => {
+            const percent = samplePercent(item);
 
-              return (
-                <ListItem key={i} style={{ padding: '.25rem 0' }}>
-                  {percent < 5
-                    ? parseFloat(percent.toFixed(2)).toString()
-                    : Math.round(percent)}
-                  %
-                  <Typography
-                    variant="caption"
-                    style={{ marginLeft: '.33rem' }}
-                  >
-                    ({item.numberMutatedSamples}/{item.numberSamplesTested})
-                  </Typography>
-                </ListItem>
-              );
-            })}
-        </List>
-      );
-    },
+            return (
+              <ListItem key={v1()} style={{ padding: '.25rem 0' }}>
+                {percent < 5
+                  ? parseFloat(percent.toFixed(2)).toString()
+                  : Math.round(percent)}
+                %
+                <Typography variant="caption" style={{ marginLeft: '.33rem' }}>
+                  ({item.numberMutatedSamples}/{item.numberSamplesTested})
+                </Typography>
+              </ListItem>
+            );
+          })}
+      </List>
+    ),
   },
   {
     id: 'resourceScore',
@@ -121,7 +116,7 @@ const columns = [
     renderCell: ({ significantDriverMethods }) =>
       significantDriverMethods ? (
         <ChipList
-          items={significantDriverMethods.map((am) => ({
+          items={significantDriverMethods.map(am => ({
             label: am,
             tooltip: (methods[am] || {}).description,
           }))}
@@ -165,22 +160,9 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: '.5rem' },
 });
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.IntOgenSummaryFragment
-  );
-  const count = summaryData.intOgen.count;
-  
-  if(!count || count < 1) {
-    return null
-  }
-
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const classes = useStyles();
-  
+
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
@@ -197,7 +179,9 @@ export function BodyCore({ definition, id, label, count }) {
       definition={definition}
       chipText={dataTypesMap.somatic_mutation}
       request={request}
-      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={({
         disease: {
           evidences: { rows },
@@ -239,5 +223,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.IntOgenSummaryFragment
+  );
+  const { count } = summaryData.intOgen;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

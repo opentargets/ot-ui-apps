@@ -11,7 +11,7 @@ const useStyles = makeStyles({
   },
 });
 
-const NewChip = ({ className }) => {
+function NewChip({ className }) {
   const classes = useStyles();
   return (
     <MUIChip
@@ -21,6 +21,6 @@ const NewChip = ({ className }) => {
       size="small"
     />
   );
-};
+}
 
 export default NewChip;

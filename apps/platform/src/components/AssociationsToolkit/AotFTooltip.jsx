@@ -6,7 +6,7 @@ import {
   Paper,
   Popper,
 } from '@material-ui/core';
-import React from 'react';
+import { useState, cloneElement } from 'react';
 
 const useStyles = makeStyles(theme => {
   const color = theme.palette.background.paper;
@@ -85,21 +85,21 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const RichTooltip = ({
+function RichTooltip({
   placement = 'top',
   arrow = true,
   open,
-  onClose = () => {},
+  onClose = () => ({}),
   content,
   children,
-}) => {
+}) {
   const classes = useStyles();
-  const [arrowRef, setArrowRef] = React.useState(null);
-  const [childNode, setChildNode] = React.useState(null);
+  const [arrowRef, setArrowRef] = useState(null);
+  const [childNode, setChildNode] = useState(null);
 
   return (
     <div>
-      {React.cloneElement(children, { ...children.props, ref: setChildNode })}
+      {cloneElement(children, { ...children.props, ref: setChildNode })}
       <Popper
         open={open}
         anchorEl={childNode}
@@ -118,6 +118,8 @@ const RichTooltip = ({
         }}
       >
         {({ TransitionProps }) => (
+          // TODO: review props spreading
+          // eslint-disable-next-line
           <Fade {...TransitionProps} timeout={350}>
             <Paper>
               <ClickAwayListener onClickAway={onClose}>
@@ -134,6 +136,6 @@ const RichTooltip = ({
       </Popper>
     </div>
   );
-};
+}
 
 export default RichTooltip;

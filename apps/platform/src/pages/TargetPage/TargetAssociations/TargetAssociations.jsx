@@ -1,3 +1,5 @@
+import { LoadingBackdrop } from 'ui';
+import { useContext } from 'react';
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -6,8 +8,6 @@ import {
   SearhInput,
   DataDownloader,
 } from '../../../components/AssociationsToolkit';
-import { LoadingBackdrop } from 'ui';
-import { useContext } from 'react';
 import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
 
 function AssociationsWrapper() {

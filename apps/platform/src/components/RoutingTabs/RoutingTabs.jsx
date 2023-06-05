@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { Tabs } from '@material-ui/core';
 import { LoadingBackdrop } from 'ui';
+import { v1 } from 'uuid';
 
 function RoutingTabs({ children }) {
   const match = useRouteMatch();
@@ -39,7 +40,7 @@ function RoutingTabs({ children }) {
             <Route
               // First tab will always be the root page.
               exact={index === 0}
-              key={index}
+              key={v1()}
               path={route.path}
               component={route.component}
             />

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 
 import { sourceMap, phaseMap } from '../../../constants';
@@ -26,11 +25,9 @@ const columns = [
   },
   {
     id: 'therapeuticAreas',
-    renderCell: d => {
-      return (
-        <TherapeuticAreasDrawer therapeuticAreas={d.disease.therapeuticAreas} />
-      );
-    },
+    renderCell: d => (
+      <TherapeuticAreasDrawer therapeuticAreas={d.disease.therapeuticAreas} />
+    ),
     exportValue: d =>
       d.disease.therapeuticAreas.map(therapeuticArea => therapeuticArea.id),
     width: '38%',
@@ -52,7 +49,7 @@ const columns = [
       const referenceList = [];
 
       references.forEach(reference => {
-        reference.ids.forEach((id) => {
+        reference.ids.forEach(id => {
           referenceList.push({
             name: id,
             url: referenceUrls[reference.source](id),

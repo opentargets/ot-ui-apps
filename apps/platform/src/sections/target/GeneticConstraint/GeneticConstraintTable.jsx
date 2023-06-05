@@ -1,4 +1,3 @@
-import React from 'react';
 import { makeStyles } from '@material-ui/core';
 
 import Link from '../../../components/Link';
@@ -72,9 +71,7 @@ function getColumns(ensemblId, symbol) {
     {
       id: 'constraintType',
       label: 'Category',
-      renderCell: ({ constraintType }) => {
-        return constraintTypeMap[constraintType];
-      },
+      renderCell: ({ constraintType }) => constraintTypeMap[constraintType],
     },
     {
       id: 'exp',
@@ -87,23 +84,23 @@ function getColumns(ensemblId, symbol) {
     {
       id: 'metrics',
       label: 'Constraint metrics',
-      renderCell: ({ score, oe, oeLower, oeUpper, upperBin6 }) => {
-        return (
-          <>
-            <div>{upperBin6===null ? 'Z' : 'pLI'} = {score}</div>
-            <div>
-              o/e = {oe} ({oeLower} - {oeUpper})
-            </div>
-            {upperBin6 === null ? null : (
-              <ConstraintAssessment
-                ensemblId={ensemblId}
-                symbol={symbol}
-                upperBin6={upperBin6}
-              />
-            )}
-          </>
-        );
-      },
+      renderCell: ({ score, oe, oeLower, oeUpper, upperBin6 }) => (
+        <>
+          <div>
+            {upperBin6 === null ? 'Z' : 'pLI'} = {score}
+          </div>
+          <div>
+            o/e = {oe} ({oeLower} - {oeUpper})
+          </div>
+          {upperBin6 === null ? null : (
+            <ConstraintAssessment
+              ensemblId={ensemblId}
+              symbol={symbol}
+              upperBin6={upperBin6}
+            />
+          )}
+        </>
+      ),
     },
   ];
 }

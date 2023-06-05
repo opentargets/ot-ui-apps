@@ -1,10 +1,9 @@
-import React from 'react';
 import { Grid, makeStyles, Typography } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   externalLinks: {
     '& > :not(:first-child):before': {
       content: '" | "',

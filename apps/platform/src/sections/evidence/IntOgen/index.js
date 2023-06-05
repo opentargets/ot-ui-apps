@@ -2,7 +2,7 @@ import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
 const id = 'intogen';
 export const definition = {
-  id: id,
+  id,
   name: 'IntOGen',
   shortName: 'IO',
   hasData: data => data.intOgen.count > 0,

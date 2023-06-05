@@ -2,7 +2,7 @@ import { Suspense, lazy } from 'react';
 import { LoadingBackdrop } from 'ui';
 import BasePage from '../../components/BasePage';
 
-const APIPage = lazy(() => import('./APIPage.jsx'));
+const APIPage = lazy(() => import('./APIPage'));
 
 function APIPageWrapper() {
   return (

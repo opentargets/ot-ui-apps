@@ -1,4 +1,3 @@
-import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarker } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,13 +11,11 @@ function getColumns(symbol) {
     {
       id: 'pathway',
       label: 'Pathway',
-      renderCell: ({ pathwayId, pathway }) => {
-        return (
-          <Link external to={identifiersOrgLink('reactome', pathwayId)}>
-            {pathway}
-          </Link>
-        );
-      },
+      renderCell: ({ pathwayId, pathway }) => (
+        <Link external to={identifiersOrgLink('reactome', pathwayId)}>
+          {pathway}
+        </Link>
+      ),
     },
     {
       id: 'topLevelTerm',
@@ -27,16 +24,14 @@ function getColumns(symbol) {
     {
       id: 'pathwayId',
       label: 'View target and pathway',
-      renderCell: ({ pathwayId }) => {
-        return (
-          <Link
-            external
-            to={`https://reactome.org/PathwayBrowser/#/${pathwayId}&FLG=${symbol}`}
-          >
-            <FontAwesomeIcon icon={faMapMarker} /> Reactome pathway browser
-          </Link>
-        );
-      },
+      renderCell: ({ pathwayId }) => (
+        <Link
+          external
+          to={`https://reactome.org/PathwayBrowser/#/${pathwayId}&FLG=${symbol}`}
+        >
+          <FontAwesomeIcon icon={faMapMarker} /> Reactome pathway browser
+        </Link>
+      ),
     },
   ];
 }

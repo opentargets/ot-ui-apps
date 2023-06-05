@@ -1,4 +1,3 @@
-import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
@@ -14,15 +13,16 @@ function ClinvarStars({ num, length = 4 }) {
   const classes = useStyles();
 
   const stars = [];
+  let starNum = num;
   for (let i = 0; i < length; i++) {
     stars.push(
       <FontAwesomeIcon
         key={i}
-        className={num > 0 ? classes.star : ''}
-        icon={num > 0 ? faStarSolid : faStar}
+        className={starNum > 0 ? classes.star : ''}
+        icon={starNum > 0 ? faStarSolid : faStar}
       />
     );
-    num--;
+    starNum = -1;
   }
 
   return stars;

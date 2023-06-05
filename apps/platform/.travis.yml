@@ -6,6 +6,8 @@ install:
   - yarn
 script:
   - yarn build
+before_script:
+  - export NODE_OPTIONS=–max_old_space_size=4096
 after_success:
   - cd build
   - tar czvf ../bundle.tgz *
@@ -13,7 +15,7 @@ after_success:
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file: "bundle.tgz"
+  file: 'bundle.tgz'
   skip_cleanup: true
   on:
     tags: true

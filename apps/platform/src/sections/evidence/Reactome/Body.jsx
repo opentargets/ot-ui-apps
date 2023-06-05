@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import usePlatformApi from '../../../hooks/usePlatformApi';
@@ -21,27 +20,25 @@ const columns = [
   {
     id: 'disease.name',
     label: 'Disease / phenotype',
-    renderCell: ({ disease, diseaseFromSource }) => {
-      return (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Reported disease or phenotype:
-              </Typography>
-              <Typography variant="caption" display="block" align="center">
-                {diseaseFromSource}
-              </Typography>
-            </>
-          }
-          showHelpIcon
-        >
-          <Link to={`/disease/${disease.id}`}>
-            <EllsWrapper>{disease.name}</EllsWrapper>
-          </Link>
-        </Tooltip>
-      );
-    },
+    renderCell: ({ disease, diseaseFromSource }) => (
+      <Tooltip
+        title={
+          <>
+            <Typography variant="subtitle2" display="block" align="center">
+              Reported disease or phenotype:
+            </Typography>
+            <Typography variant="caption" display="block" align="center">
+              {diseaseFromSource}
+            </Typography>
+          </>
+        }
+        showHelpIcon
+      >
+        <Link to={`/disease/${disease.id}`}>
+          <EllsWrapper>{disease.name}</EllsWrapper>
+        </Link>
+      </Tooltip>
+    ),
     width: '18%',
   },
   {
@@ -60,16 +57,13 @@ const columns = [
             <EllsWrapper>{pathways[0].name}</EllsWrapper>
           </Link>
         );
-      } else {
-        const refs = pathways.map(p => ({
-          url: `http://www.reactome.org/PathwayBrowser/#${p.id}`,
-          name: p.name,
-          group: 'Pathways',
-        }));
-        return (
-          <TableDrawer entries={refs} message={`${refs.length} pathways`} />
-        );
       }
+      const refs = pathways.map(p => ({
+        url: `http://www.reactome.org/PathwayBrowser/#${p.id}`,
+        name: p.name,
+        group: 'Pathways',
+      }));
+      return <TableDrawer entries={refs} message={`${refs.length} pathways`} />;
     },
     width: '17%',
   },
@@ -99,36 +93,36 @@ const columns = [
   {
     id: 'targetModulation',
     label: 'Target modulation',
-    renderCell: ({ targetModulation }) => {
-      return targetModulation ? (
+    renderCell: ({ targetModulation }) =>
+      targetModulation ? (
         <EllsWrapper>{sentenceCase(targetModulation)}</EllsWrapper>
       ) : (
         naLabel
-      );
-    },
+      ),
     filterValue: ({ targetModulation }) => sentenceCase(targetModulation),
     width: '12%',
   },
   {
-    filterValue: ({ variantAminoacidDescriptions }) => {
-      return variantAminoacidDescriptions
+    filterValue: ({ variantAminoacidDescriptions }) =>
+      variantAminoacidDescriptions
         .map(variantAminoacidDescription => variantAminoacidDescription)
-        .join();
-    },
+        .join(),
     label: 'Amino acid variation',
     renderCell: ({ variantAminoacidDescriptions }) => {
-      return variantAminoacidDescriptions?.length > 1 ? (
-        <TableDrawer
-          entries={variantAminoacidDescriptions.map(d => ({
-            name: d,
-            group: 'Amino acid variation',
-          }))}
-        />
-      ) : variantAminoacidDescriptions?.length === 1 ? (
-        <EllsWrapper>{variantAminoacidDescriptions[0]}</EllsWrapper>
-      ) : (
-        naLabel
-      );
+      if (variantAminoacidDescriptions?.length === 1) {
+        return <EllsWrapper>{variantAminoacidDescriptions[0]}</EllsWrapper>;
+      }
+      if (variantAminoacidDescriptions?.length > 1) {
+        return (
+          <TableDrawer
+            entries={variantAminoacidDescriptions.map(d => ({
+              name: d,
+              group: 'Amino acid variation',
+            }))}
+          />
+        );
+      }
+      return naLabel;
     },
     width: '12%',
   },
@@ -151,19 +145,6 @@ const columns = [
     width: '12%',
   },
 ];
-
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.reactomeSummary
-  );
-  const count = summaryData.reactomeSummary.count;
-  
-  if(!count || count < 1) {
-    return null
-  }
-
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
-}
 
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
@@ -203,5 +184,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.reactomeSummary
+  );
+  const { count } = summaryData.reactomeSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

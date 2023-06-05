@@ -1,19 +1,13 @@
-import React, { Fragment } from 'react';
-import {
-  Paper,
-  Box,
-  Typography,
-  makeStyles,
-  Chip,
-} from '@material-ui/core';
-import projectsData from './projects-data.json';
-import { DataTable } from '../../components/Table';
-import Link from '../../components/Link';
+import { Fragment } from 'react';
+import { Paper, Box, Typography, makeStyles, Chip } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleCheck,
   faCircleNotch,
 } from '@fortawesome/free-solid-svg-icons';
+import projectsData from './projects-data.json';
+import { DataTable } from '../../components/Table';
+import Link from '../../components/Link';
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -33,13 +27,12 @@ function ProjectPage() {
     {
       id: 'otar_code',
       label: 'Project Code',
-      renderCell: ({ otar_code }) => {
-        return otar_code ? (
-          <Link to={`http://home.opentargets.org/${otar_code}`} external newTab>
-            {otar_code}
+      renderCell: ({ otar_code: otarCode }) =>
+        otarCode ? (
+          <Link to={`http://home.opentargets.org/${otarCode}`} external newTab>
+            {otarCode}
           </Link>
-        ) : null;
-      },
+        ) : null,
     },
     { id: 'project_name', label: 'Project Name' },
     { id: 'project_lead', label: 'Project Lead' },
@@ -47,9 +40,11 @@ function ProjectPage() {
     {
       id: 'currently_integrates_in_PPP',
       label: 'Currently integrates into PPP',
-      renderCell: ({ currently_integrates_in_PPP }) => {
+      renderCell: ({
+        currently_integrates_in_PPP: currentlyIntegratesInPPP,
+      }) => {
         const icon =
-          currently_integrates_in_PPP === 'Y' ? faCircleCheck : faCircleNotch;
+          currentlyIntegratesInPPP === 'Y' ? faCircleCheck : faCircleNotch;
         return (
           <FontAwesomeIcon size="lg" icon={icon} className={classes.icon} />
         );
@@ -60,15 +55,14 @@ function ProjectPage() {
     {
       id: 'disease_mapping',
       label: 'Disease Mapped in the PPP',
-      renderCell: ({ disease_mapping }) => {
-        let ALL_AVATARS = [];
-        disease_mapping.map((disease, index) => {
-          disease &&
-            disease.label &&
+      renderCell: ({ disease_mapping: diseaseMapping }) => {
+        const ALL_AVATARS = [];
+        diseaseMapping.forEach(disease => {
+          if (disease && disease.label) {
             ALL_AVATARS.push(
               <Link
-                to={'disease/' + disease.disease_id}
-                key={index}
+                to={`disease/${disease.disease_id}`}
+                key={disease.disease_id}
               >
                 <Chip
                   size="small"
@@ -79,13 +73,14 @@ function ProjectPage() {
                 />
               </Link>
             );
+          }
         });
         return <div className={classes.diseaseContainer}>{ALL_AVATARS}</div>;
       },
     },
   ];
   return (
-    <Fragment>
+    <>
       <Typography variant="h4" component="h1" paragraph>
         Open Targets Projects Table
       </Typography>
@@ -99,7 +94,7 @@ function ProjectPage() {
           here
         </Link>{' '}
         or contact us at{' '}
-        <Link to={`mailto: datarequests@opentargets.org`} external>
+        <Link to="mailto: datarequests@opentargets.org" external>
           datarequests@opentargets.org
         </Link>
         .
@@ -125,7 +120,7 @@ function ProjectPage() {
           />
         </Box>
       </Paper>
-    </Fragment>
+    </>
   );
 }
 

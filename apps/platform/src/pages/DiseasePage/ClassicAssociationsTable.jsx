@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import Link from '../../components/Link';
@@ -114,16 +114,14 @@ function getColumns(efoId, classes, isPartnerPreview) {
         cell: classes.symbolCell,
       },
       exportValue: data => data.target.approvedSymbol,
-      renderCell: row => {
-        return (
-          <Link
-            to={`/evidence/${row.ensemblId}/${efoId}`}
-            className={classes.symbolContainer}
-          >
-            {row.symbol}
-          </Link>
-        );
-      },
+      renderCell: row => (
+        <Link
+          to={`/evidence/${row.ensemblId}/${efoId}`}
+          className={classes.symbolContainer}
+        >
+          {row.symbol}
+        </Link>
+      ),
     },
     {
       id: 'score',
@@ -168,7 +166,7 @@ function getColumns(efoId, classes, isPartnerPreview) {
         },
         exportValue: data => {
           const datatypeScore = data.datatypeScores.find(
-            datatypeScore => datatypeScore.componentId === dt.id
+            DTScore => DTScore.componentId === dt.id
           );
           return datatypeScore ? datatypeScore.score : 'No data';
         },
@@ -192,16 +190,14 @@ function getColumns(efoId, classes, isPartnerPreview) {
     },
     exportValue: data => data.target.approvedName,
     hidden: ['smDown', 'lgOnly'],
-    renderCell: row => {
-      return (
-        <Link
-          to={`/evidence/${row.ensemblId}/${efoId}`}
-          className={classes.nameContainer}
-        >
-          <span title={row.name}>{row.name}</span>
-        </Link>
-      );
-    },
+    renderCell: row => (
+      <Link
+        to={`/evidence/${row.ensemblId}/${efoId}`}
+        className={classes.nameContainer}
+      >
+        <span title={row.name}>{row.name}</span>
+      </Link>
+    ),
   });
 
   return columns;
@@ -217,7 +213,7 @@ function getRows(data) {
     };
     dataTypes.forEach(dataType => {
       const dataTypeScore = d.datatypeScores.find(
-        dataTypeScore => dataTypeScore.componentId === dataType.id
+        DTScore => DTScore.componentId === dataType.id
       );
 
       if (dataTypeScore) {
@@ -241,36 +237,34 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
 
   const { isPartnerPreview } = usePermissions();
 
-
-  useEffect(
-    () => {
-      let isCurrent = true;
-      setLoading(true);
-      client
-        .query({
-          query: DISEASE_ASSOCIATIONS_QUERY,
-          variables: {
-            efoId,
-            index: 0,
-            size: pageSize,
-            sortBy,
-            filter,
-            aggregationFilters,
-          },
-        })
-        .then(({ data }) => {
-          if (isCurrent) {
-            setRows(data.disease.associatedTargets.rows);
-            setCount(data.disease.associatedTargets.count);
-            setPage(0);
-            setInitialLoading(false);
-            setLoading(false);
-          }
-        });
-      return () => (isCurrent = false);
-    },
-    [efoId, pageSize, sortBy, filter, aggregationFilters]
-  );
+  useEffect(() => {
+    let isCurrent = true;
+    setLoading(true);
+    client
+      .query({
+        query: DISEASE_ASSOCIATIONS_QUERY,
+        variables: {
+          efoId,
+          index: 0,
+          size: pageSize,
+          sortBy,
+          filter,
+          aggregationFilters,
+        },
+      })
+      .then(({ data }) => {
+        if (isCurrent) {
+          setRows(data.disease.associatedTargets.rows);
+          setCount(data.disease.associatedTargets.count);
+          setPage(0);
+          setInitialLoading(false);
+          setLoading(false);
+        }
+      });
+    return () => {
+      isCurrent = false;
+    };
+  }, [efoId, pageSize, sortBy, filter, aggregationFilters]);
 
   const getAllAssociations = useBatchDownloader(
     DISEASE_ASSOCIATIONS_QUERY,
@@ -283,14 +277,14 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
     'data.disease.associatedTargets'
   );
 
-  function handlePageChange(page) {
+  function handlePageChange(pageChanged) {
     setLoading(true);
     client
       .query({
         query: DISEASE_ASSOCIATIONS_QUERY,
         variables: {
           efoId,
-          index: page,
+          index: pageChanged,
           size: pageSize,
           sortBy,
           filter,
@@ -299,17 +293,17 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
       })
       .then(({ data }) => {
         setRows(data.disease.associatedTargets.rows);
-        setPage(page);
+        setPage(pageChanged);
         setLoading(false);
       });
   }
 
-  function handleRowsPerPageChange(pageSize) {
-    setPageSize(pageSize);
+  function handleRowsPerPageChange(pageSizeChanged) {
+    setPageSize(pageSizeChanged);
   }
 
-  function handleSort(sortBy) {
-    setSortBy(sortBy);
+  function handleSort(sortChanged) {
+    setSortBy(sortChanged);
   }
 
   function handleGlobalFilterChange(newFilter) {
@@ -341,10 +335,10 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
         pageSize={pageSize}
         rowCount={count}
         rowsPerPageOptions={[10, 50, 200, 500]}
-        onGlobalFilterChange={handleGlobalFilterChange}
-        onSortBy={handleSort}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowsPerPageChange}
+        onGlobalFilterChange={()=>handleGlobalFilterChange()}
+        onSortBy={()=>handleSort()}
+        onPageChange={()=>handlePageChange()}
+        onRowsPerPageChange={()=>handleRowsPerPageChange()}
       />
       <Legend />
     </>

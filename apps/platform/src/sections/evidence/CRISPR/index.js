@@ -2,7 +2,7 @@ import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
 const id = 'crispr';
 export const definition = {
-  id: id,
+  id,
   name: 'Project Score',
   shortName: 'PS',
   hasData: ({ crisprSummary }) => crisprSummary.count > 0,

@@ -1,1 +1,1 @@
-export { default } from './EvidencePage.jsx';
+export { default } from './EvidencePage';

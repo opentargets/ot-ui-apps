@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { max } from 'd3';
 import {
   layeringLongestPath,
@@ -11,7 +11,7 @@ import { withContentRect } from 'react-measure';
 import { Grid, Typography } from '@material-ui/core';
 import { DownloadSvgPlot } from '../../components/DownloadSvgPlot';
 import Legend from '../../components/Legend';
-import Slider from './ClassicAssociationsSlider.jsx';
+import Slider from './ClassicAssociationsSlider';
 import Dag from './Dag';
 
 // find closest ancestors that are also associations
@@ -96,7 +96,7 @@ function getMaxLayerCount(dag) {
     const { layer } = node;
 
     if (counts[layer]) {
-      counts[layer]++;
+      counts[layer] += 1;
     } else {
       counts[layer] = 1;
     }
@@ -112,6 +112,56 @@ function getMaxLayerCount(dag) {
 const diameter = 8;
 const radius = diameter / 2;
 
+function getDagValues({ associations, idToDisease, minCommittedScore, width }) {
+  const filteredAssociations = associations.filter(
+    assoc => assoc.score >= minCommittedScore
+  );
+  const assocSet = filteredAssociations.reduce((acc, assoc) => {
+    acc[assoc.disease.id] = assoc;
+    return acc;
+  }, {});
+
+  const dagData = buildDagData(idToDisease, filteredAssociations, assocSet);
+  let dag;
+  let maxLayerCount;
+  let height;
+  let layout;
+  let nodes;
+  let resLinks;
+  let xOffset;
+  let textLimit;
+
+  if (dagData.length > 0) {
+    dag = dagStratify()(dagData);
+    maxLayerCount = getMaxLayerCount(dag);
+    height = maxLayerCount * 10;
+    layout = sugiyama()
+      .layering(layering)
+      .decross(decross)
+      .coord(coord)
+      .size([height, width]);
+
+    layout(dag);
+
+    nodes = dag.descendants();
+    resLinks = dag.links();
+
+    const separation = width / (max(nodes, d => d.layer) + 1);
+    xOffset = separation / 2 - radius;
+    textLimit = separation / 8;
+  }
+
+  return {
+    assocs: filteredAssociations,
+    dag,
+    height,
+    nodes,
+    xOffset,
+    links: resLinks,
+    textLimit,
+  };
+}
+
 function ClassicAssociationsDAG({
   ensemblId,
   symbol,
@@ -125,49 +175,12 @@ function ClassicAssociationsDAG({
   const [minCommittedScore, setMinCommittedScore] = useState(0.1);
   const { width } = contentRect.bounds;
 
-  const { assocs, height, nodes, xOffset, links, textLimit } = useMemo(() => {
-    const assocs = associations.filter(
-      assoc => assoc.score >= minCommittedScore
-    );
-    const assocSet = assocs.reduce((acc, assoc) => {
-      acc[assoc.disease.id] = assoc;
-      return acc;
-    }, {});
+  const { assocs, height, nodes, xOffset, links, textLimit } = useMemo(
+    getDagValues({ associations, idToDisease, minCommittedScore, width }),
+    [associations, idToDisease, minCommittedScore, width]
+  );
 
-    const dagData = buildDagData(idToDisease, assocs, assocSet);
-    let dag, maxLayerCount, height, layout, nodes, links, xOffset, textLimit;
-
-    if (dagData.length > 0) {
-      dag = dagStratify()(dagData);
-      maxLayerCount = getMaxLayerCount(dag);
-      height = maxLayerCount * 10;
-      layout = sugiyama()
-        .layering(layering)
-        .decross(decross)
-        .coord(coord)
-        .size([height, width]);
-
-      layout(dag);
-
-      nodes = dag.descendants();
-      links = dag.links();
-
-      const separation = width / (max(nodes, d => d.layer) + 1);
-      xOffset = separation / 2 - radius;
-      textLimit = separation / 8;
-    }
-
-    return {
-      assocs,
-      dag,
-      height,
-      nodes,
-      xOffset,
-      links,
-      textLimit,
-    };
-  }, [associations, idToDisease, minCommittedScore, width]);
-
+  if (!width) return null;
   return (
     <>
       <DownloadSvgPlot
@@ -187,25 +200,23 @@ function ClassicAssociationsDAG({
           alignItems="center"
           style={{ margin: '0 auto', minHeight: '340px' }}
         >
-          {width ? (
-            assocs.length > 0 ? (
-              <Dag
-                ensemblId={ensemblId}
-                width={width}
-                height={height}
-                links={links}
-                nodes={nodes}
-                xOffset={xOffset}
-                textLimit={textLimit}
-                svgRef={svgRef}
-              />
-            ) : (
-              <Typography align="center">
-                No associations with score greater than or equal to{' '}
-                {minCommittedScore}
-              </Typography>
-            )
-          ) : null}
+          {assocs.length > 0 ? (
+            <Dag
+              ensemblId={ensemblId}
+              width={width}
+              height={height}
+              links={links}
+              nodes={nodes}
+              xOffset={xOffset}
+              textLimit={textLimit}
+              svgRef={svgRef}
+            />
+          ) : (
+            <Typography align="center">
+              No associations with score greater than or equal to{' '}
+              {minCommittedScore}
+            </Typography>
+          )}
         </Grid>
       </DownloadSvgPlot>
       <Legend />

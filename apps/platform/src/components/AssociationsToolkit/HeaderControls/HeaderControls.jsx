@@ -2,6 +2,7 @@ import { Collapse, Grid, Typography } from '@material-ui/core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { styled } from '@material-ui/styles';
 import dataSources from '../static_datasets/dataSourcesAssoc';
 
 import Slider from './SliderControl';
@@ -9,7 +10,6 @@ import Required from './RequiredControl';
 
 import useAotfContext from '../hooks/useAotfContext';
 
-import { styled } from '@material-ui/styles';
 
 const CloseContainer = styled('div')({
   position: 'absolute',

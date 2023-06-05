@@ -2,7 +2,7 @@ import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
 const id = 'orphanet';
 export const definition = {
-  id: id,
+  id,
   name: 'Orphanet',
   shortName: 'ON',
   hasData: data => data.orphanetSummary.count > 0,

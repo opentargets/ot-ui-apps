@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Body as KnownDrugsBody } from '../../common/KnownDrugs';
 import Description from './Description';
 import { sentenceCase } from '../../../utils/global';
@@ -68,6 +66,7 @@ function Body({ definition, id: ensgId, label: symbol }) {
       entity="target"
       variables={{ ensgId }}
       BODY_QUERY={KNOWN_DRUGS_BODY_QUERY}
+      // eslint-disable-next-line
       Description={() => <Description symbol={symbol} />}
       columnsToShow={['drug', 'disease', 'clinicalTrials']}
       stickyColumn="drug"

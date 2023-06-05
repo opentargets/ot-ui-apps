@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 
 import { DataTable } from '../../../components/Table';
@@ -27,18 +26,19 @@ const columns = [
   {
     id: 'pathwayName',
     label: 'Gene set',
-    renderCell: ({ pathways, studyOverview }) =>
-      pathways?.length >= 1 ? (
-        studyOverview ? (
+    renderCell: ({ pathways, studyOverview }) => {
+      if (pathways && pathways.length >= 1 && studyOverview) {
+        return (
           <Tooltip title={studyOverview} showHelpIcon>
             {pathways[0].name}
           </Tooltip>
-        ) : (
-          pathways[0].name
-        )
-      ) : (
-        naLabel
-      ),
+        );
+      }
+      if (pathways && pathways.length >= 1) {
+        return pathways[0].name;
+      }
+      return naLabel;
+    },
   },
   {
     id: 'literature',
@@ -58,21 +58,6 @@ const columns = [
     },
   },
 ];
-
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.SysBioSummaryFragment
-  );
-  const count = summaryData.sysBio.count;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
 
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
@@ -109,5 +94,20 @@ export function BodyCore({ definition, id, label, count }) {
         />
       )}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.SysBioSummaryFragment
+  );
+  const { count } = summaryData.sysBio;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

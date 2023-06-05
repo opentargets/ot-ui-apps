@@ -1,4 +1,3 @@
-import React from 'react';
 import { makeStyles, Tooltip as MUITooltip } from '@material-ui/core';
 import _ from 'lodash';
 
@@ -29,6 +28,8 @@ function Tooltip({ style, children, title, showHelpIcon = false, ...props }) {
         interactive
         classes={{ tooltip: classes.tooltip }}
         title={title}
+        // TODO: review props spreading
+        // eslint-disable-next-line
         {...props}
       >
         {showHelpIcon ? <sup className={classes.tooltipIcon}>?</sup> : children}

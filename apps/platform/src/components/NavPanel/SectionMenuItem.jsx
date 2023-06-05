@@ -1,4 +1,3 @@
-import React from 'react';
 import { Avatar, ListItem, ListItemText } from '@material-ui/core';
 import classNames from 'classnames';
 import { Draggable } from 'react-beautiful-dnd';
@@ -25,7 +24,11 @@ function SectionMenuItem({ index, section }) {
       {provided => (
         <div
           ref={provided.innerRef}
+          // TODO: review props spreading
+          // eslint-disable-next-line
           {...provided.draggableProps}
+          // TODO: review props spreading
+          // eslint-disable-next-line
           {...provided.dragHandleProps}
         >
           <ListItem

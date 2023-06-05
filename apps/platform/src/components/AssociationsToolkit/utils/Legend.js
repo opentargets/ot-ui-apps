@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   interpolate,
   quantize,
@@ -10,6 +11,18 @@ import {
   scaleBand,
   axisBottom,
 } from 'd3';
+
+function ramp(color, n = 256) {
+  const canvas = document.createElement('canvas');
+  canvas.width = n;
+  canvas.height = 1;
+  const context = canvas.getContext('2d');
+  for (let i = 0; i < n; ++i) {
+    context.fillStyle = color(i / (n - 1));
+    context.fillRect(i, 0, 1, 1);
+  }
+  return canvas;
+}
 
 function Legend(
   color,
@@ -27,18 +40,6 @@ function Legend(
     tickValues,
   } = {}
 ) {
-  function ramp(color, n = 256) {
-    const canvas = document.createElement('canvas');
-    canvas.width = n;
-    canvas.height = 1;
-    const context = canvas.getContext('2d');
-    for (let i = 0; i < n; ++i) {
-      context.fillStyle = color(i / (n - 1));
-      context.fillRect(i, 0, 1, 1);
-    }
-    return canvas;
-  }
-
   const svg = create('svg')
     .attr('width', width)
     .attr('height', height)

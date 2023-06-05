@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 
 import Link from '../../../components/Link';
@@ -80,19 +79,17 @@ function Body({ definition, id: chemblId, label: name }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description name={name} />}
-      renderBody={({ drug }) => {
-        return (
-          <DataTable
-            showGlobalFilter
-            dataDownloader
-            columns={columns}
-            rows={drug.drugWarnings}
-            rowsPerPageOptions={defaultRowsPerPageOptions}
-            query={DRUG_WARNINGS_QUERY.loc.source.body}
-            variables={variables}
-          />
-        );
-      }}
+      renderBody={({ drug }) => (
+        <DataTable
+          showGlobalFilter
+          dataDownloader
+          columns={columns}
+          rows={drug.drugWarnings}
+          rowsPerPageOptions={defaultRowsPerPageOptions}
+          query={DRUG_WARNINGS_QUERY.loc.source.body}
+          variables={variables}
+        />
+      )}
     />
   );
 }

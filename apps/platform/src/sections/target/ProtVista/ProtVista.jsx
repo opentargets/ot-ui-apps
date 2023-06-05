@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'litemol/dist/css/LiteMol-plugin.css';
 
 function ProtVista({ uniprotId }) {
@@ -6,9 +6,9 @@ function ProtVista({ uniprotId }) {
 
   useEffect(() => {
     async function loadProtVista() {
-      const ProtVista = await import('protvista-uniprot');
+      const ProtVistaUniprot = await import('protvista-uniprot');
 
-      window.customElements.define('protvista-uniprot', ProtVista.default);
+      window.customElements.define('protvista-uniprot', ProtVistaUniprot.default);
     }
 
     if (

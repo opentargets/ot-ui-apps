@@ -1,6 +1,6 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, List, ListItem, makeStyles, Typography } from '@material-ui/core';
+import { v1 } from 'uuid';
 
 import ChipList from '../../../components/ChipList';
 import { DataTable } from '../../../components/Table';
@@ -28,9 +28,9 @@ const columns = [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
-    renderCell: ({ disease }) => {
-      return <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
-    },
+    renderCell: ({ disease }) => (
+      <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+    ),
   },
   {
     id: 'mutationType',
@@ -43,8 +43,11 @@ const columns = [
         .sort((a, b) => samplePercent(b) - samplePercent(a));
       return (
         <List style={{ padding: 0 }}>
-          {sortedMutatedSamples.map((mutatedSample, index) => (
-            <ListItem key={index} style={{ padding: '.25rem 0' }}>
+          {sortedMutatedSamples.map(mutatedSample => (
+            <ListItem
+              key={mutatedSample.functionalConsequence.id}
+              style={{ padding: '.25rem 0' }}
+            >
               <Link
                 external
                 to={identifiersOrgLink(
@@ -77,11 +80,11 @@ const columns = [
         .sort((a, b) => samplePercent(b) - samplePercent(a));
       return (
         <List style={{ padding: 0 }}>
-          {sortedMutatedSamples.map((item, i) => {
+          {sortedMutatedSamples.map(item => {
             const percent = samplePercent(item);
 
             return (
-              <ListItem key={i} style={{ padding: '.25rem 0' }}>
+              <ListItem key={v1()} style={{ padding: '.25rem 0' }}>
                 {percent < 5
                   ? parseFloat(percent.toFixed(2)).toString()
                   : Math.round(percent)}
@@ -128,21 +131,6 @@ const useStyles = makeStyles({
   },
   roleInCancerTitle: { marginRight: '.5rem' },
 });
-
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.CancerGeneCensusSummary
-  );
-  const count = summaryData.cancerGeneCensusSummary.count;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
 
 export function BodyCore({ definition, id, label, count }) {
   const classes = useStyles();
@@ -205,5 +193,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.CancerGeneCensusSummary
+  );
+  const { count } = summaryData.cancerGeneCensusSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

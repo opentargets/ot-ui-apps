@@ -2,7 +2,7 @@ import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
 const id = 'sysbio';
 export const definition = {
-  id: id,
+  id,
   name: 'Gene signatures',
   shortName: 'GS',
   hasData: data => data.sysBio.count > 0,

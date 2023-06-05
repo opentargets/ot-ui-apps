@@ -1,1 +1,1 @@
-export { default } from './APIPageWrapper.jsx';
+export { default } from './APIPageWrapper';

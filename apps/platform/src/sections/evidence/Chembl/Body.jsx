@@ -1,5 +1,5 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
+import { makeStyles } from '@material-ui/core';
 import { DataTable, TableDrawer } from '../../../components/Table';
 import {
   defaultRowsPerPageOptions,
@@ -15,7 +15,6 @@ import Summary from './Summary';
 import Tooltip from '../../../components/Tooltip';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import ChipList from '../../../components/ChipList';
-import { makeStyles } from '@material-ui/core';
 
 import CHEMBL_QUERY from './ChemblQuery.gql';
 
@@ -37,9 +36,9 @@ function getColumns(classes) {
     {
       id: 'disease.name',
       label: 'Disease/phenotype',
-      renderCell: ({ disease }) => {
-        return <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
-      },
+      renderCell: ({ disease }) => (
+        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+      ),
     },
     {
       label: 'Targets',
@@ -95,9 +94,9 @@ function getColumns(classes) {
     {
       id: 'drug.name',
       label: 'Drug',
-      renderCell: ({ drug }) => {
-        return <Link to={`/drug/${drug.id}`}>{drug.name}</Link>;
-      },
+      renderCell: ({ drug }) => (
+        <Link to={`/drug/${drug.id}`}>{drug.name}</Link>
+      ),
     },
     {
       id: 'drug.drugType',
@@ -132,7 +131,7 @@ function getColumns(classes) {
           return acc;
         }, new Set());
 
-        return `${anchorMa ? anchorMa : naLabel}${
+        return `${anchorMa || naLabel}${
           mas.size > 0 ? ` and ${mas.size} other MoA` : ''
         }`;
       },
@@ -152,8 +151,8 @@ function getColumns(classes) {
         clinicalStatus,
         studyStopReasonCategories,
       }) => {
-        return clinicalStatus ? (
-          studyStopReason ? (
+        if (clinicalStatus && studyStopReason)
+          return (
             <Tooltip
               showHelpIcon
               title={
@@ -176,12 +175,9 @@ function getColumns(classes) {
             >
               {clinicalStatus}
             </Tooltip>
-          ) : (
-            <>{clinicalStatus}</>
-          )
-        ) : (
-          naLabel
-        );
+          );
+        if (clinicalStatus) return { clinicalStatus };
+        return naLabel;
       },
     },
     {
@@ -194,38 +190,21 @@ function getColumns(classes) {
     {
       label: 'Source',
       renderCell: ({ urls }) => {
-        const urlList = urls.map(({ niceName, url }) => {
-          return {
-            name: sourceMap[niceName] ? sourceMap[niceName] : niceName,
-            url,
-            group: 'sources',
-          };
-        });
+        const urlList = urls.map(({ niceName, url }) => ({
+          name: sourceMap[niceName] ? sourceMap[niceName] : niceName,
+          url,
+          group: 'sources',
+        }));
         return <TableDrawer entries={urlList} caption="Sources" />;
       },
       filterValue: ({ urls }) => {
-        const labels = urls.map(({ niceName }) => {
-          return sourceMap[niceName] ? sourceMap[niceName] : niceName;
-        });
+        const labels = urls.map(({ niceName }) =>
+          sourceMap[niceName] ? sourceMap[niceName] : niceName
+        );
         return labels.join();
       },
     },
   ];
-}
-
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.ChemblSummaryFragment
-  );
-  const count = summaryData.chemblSummary.count;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
 }
 
 export function BodyCore({ definition, id, label, count }) {
@@ -269,5 +248,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.ChemblSummaryFragment
+  );
+  const { count } = summaryData.chemblSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

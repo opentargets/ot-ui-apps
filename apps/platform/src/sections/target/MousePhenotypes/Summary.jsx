@@ -1,5 +1,3 @@
-import React from 'react';
-
 import SummaryItem from '../../../components/Summary/SummaryItem';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 
@@ -12,11 +10,11 @@ function Summary({ definition }) {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={({ mousePhenotypes }) => {
-        return `${mousePhenotypes.length} distinct phenotype${
+      renderSummary={({ mousePhenotypes }) =>
+        `${mousePhenotypes.length} distinct phenotype${
           mousePhenotypes.length > 1 ? 's' : ''
-        }`;
-      }}
+        }`
+      }
     />
   );
 }

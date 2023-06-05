@@ -1,11 +1,10 @@
-import React from 'react';
 import { Typography, withStyles } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
 
+import { LongText } from 'ui';
 import Highlights from '../../components/Highlights';
 import Link from '../../components/Link';
-import { LongText } from 'ui';
 
 const styles = theme => ({
   container: {
@@ -20,7 +19,7 @@ const styles = theme => ({
   },
 });
 
-const DrugResult = ({ classes, data, highlights }) => {
+function DrugResult({ classes, data, highlights }) {
   return (
     <div className={classes.container}>
       <Link to={`drug/${data.id}`} className={classes.subtitle}>
@@ -38,6 +37,6 @@ const DrugResult = ({ classes, data, highlights }) => {
       <Highlights highlights={highlights} />
     </div>
   );
-};
+}
 
 export default withStyles(styles)(DrugResult);

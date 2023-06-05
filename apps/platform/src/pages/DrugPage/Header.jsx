@@ -1,4 +1,3 @@
-import React from 'react';
 import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
 
 import { ExternalLink } from '../../components/ExternalLink';
@@ -38,9 +37,7 @@ function DrugHeader({ loading, chemblId, name, crossReferences }) {
                 <ExternalLink
                   title="DrugBank"
                   id={drugBank.reference[0]}
-                  url={`https://identifiers.org/drugbank:${
-                    drugBank.reference[0]
-                  }`}
+                  url={`https://identifiers.org/drugbank:${drugBank.reference[0]}`}
                 />
               )}
               {chEBI && (
@@ -54,27 +51,21 @@ function DrugHeader({ loading, chemblId, name, crossReferences }) {
                 <ExternalLink
                   title="DailyMed"
                   id={decodeURI(dailyMed.reference[0])}
-                  url={`https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=${
-                    dailyMed.reference[0]
-                  }`}
+                  url={`https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=${dailyMed.reference[0]}`}
                 />
               )}
               {drugCentral && (
                 <ExternalLink
                   title="DrugCentral"
                   id={drugCentral.reference[0]}
-                  url={`https://drugcentral.org/drugcard/${
-                    drugCentral.reference[0]
-                  }`}
+                  url={`https://drugcentral.org/drugcard/${drugCentral.reference[0]}`}
                 />
               )}
               {wikipedia && (
                 <ExternalLink
                   title="Wikipedia"
                   id={wikipedia.reference[0]}
-                  url={`https://en.wikipedia.org/wiki/${
-                    wikipedia.reference[0]
-                  }`}
+                  url={`https://en.wikipedia.org/wiki/${wikipedia.reference[0]}`}
                 />
               )}
             </>

@@ -2,7 +2,7 @@ import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
 const id = 'clingen';
 export const definition = {
-  id: id,
+  id,
   name: 'ClinGen',
   shortName: 'CG',
   hasData: data => data.clingenSummary.count > 0,

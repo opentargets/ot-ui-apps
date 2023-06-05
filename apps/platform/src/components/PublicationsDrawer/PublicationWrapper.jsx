@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   faPlusCircle,
   faMinusCircle,
@@ -7,8 +7,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 
-import Link from '../Link';
 import { LongText } from 'ui';
+import Link from '../Link';
 
 const pmUrl = 'https://europepmc.org/';
 const pmTitleUrlMED = 'abstract/med/';
@@ -53,7 +53,7 @@ function PublicationWrapper({
   const [showAbstract, setShowAbstract] = useState(false);
 
   const handleShowAbstractClick = () => {
-    setShowAbstract(showAbstract => !showAbstract);
+    setShowAbstract(!showAbstract);
   };
 
   useEffect(() => {
@@ -94,7 +94,7 @@ function PublicationWrapper({
               if (author.lastName)
                 acc.push(
                   author.lastName +
-                    (author.initials ? ' ' + author.initials : '')
+                    (author.initials ? ` ${author.initials}` : '')
                 );
               return acc;
             }, [])
@@ -146,14 +146,14 @@ function PublicationWrapper({
           {showAbstract ? 'Hide abstract' : 'Show abstract'}
         </Button>
         {fullTextOpen && (
-          <label className={classes.fileLabel}>
+          <span className={classes.fileLabel}>
             <FontAwesomeIcon
               icon={faFileAlt}
               style={{ marginRight: '8px' }}
               size="lg"
             />
             Full text available
-          </label>
+          </span>
         )}
       </Box>
 

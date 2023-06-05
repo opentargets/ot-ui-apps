@@ -13,7 +13,7 @@ const yOffset = 100;
 
 function textWithEllipsis(text, threshold) {
   if (!text) return '';
-  return text.length <= threshold ? text : text.slice(0, threshold) + '...';
+  return text.length <= threshold ? text : `${text.slice(0, threshold)  }...`;
 }
 
 function Dag({
@@ -48,7 +48,7 @@ function Dag({
           <path d="M0,0 V4 L2,2 Z" fill="#5a5f5f" />
         </marker>
       </defs>
-      <g transform={`translate(0, 10)`}>
+      <g transform="translate(0, 10)">
         <rect
           x="2"
           width={diameter}
@@ -112,8 +112,7 @@ function Dag({
         />
       </g>
       <g transform={`translate(0, ${yOffset})`}>
-        {links.map(({ points, source, target }) => {
-          return (
+        {links.map(({ points, source, target }) => (
             <path
               key={`${source.id}-${target.id}`}
               d={line(points)}
@@ -121,12 +120,10 @@ function Dag({
               strokeWidth="2"
               stroke="#eeeeee"
             />
-          );
-        })}
+          ))}
       </g>
       <g transform={`translate(0, ${yOffset})`}>
-        {nodes.map(node => {
-          return (
+        {nodes.map(node => (
             <Fragment key={node.id}>
               <text
                 x={node.y - xOffset}
@@ -164,8 +161,7 @@ function Dag({
                 )}
               </AssociationTooltip>
             </Fragment>
-          );
-        })}
+          ))}
       </g>
     </svg>
   );
