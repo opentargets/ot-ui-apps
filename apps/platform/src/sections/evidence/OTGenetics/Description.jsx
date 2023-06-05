@@ -8,7 +8,7 @@ function Description({ symbol, name }) {
       Genome-wide associated loci prioritisating <strong>{symbol}</strong> as
       likely causal gene for <strong>{name}</strong>. Source:{' '}
       <Link to={config.geneticsPortalUrl} external>
-        Open Targets Genetics Portal
+        Open Targets Genetics
       </Link>
     </>
   );
