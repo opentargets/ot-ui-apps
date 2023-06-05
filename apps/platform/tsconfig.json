@@ -7,18 +7,3 @@
   },
   "include": ["src"]
 }
-
-// {
-//   "compilerOptions": {
-//     "lib": ["dom", "ES2015"],
-//     "module": "ESNext",
-//     "target": "ES6",
-//     "jsx": "react-jsx",
-//     "noImplicitAny": false,
-//     "skipLibCheck": true,
-//     "allowJs": true
-//   },
-//   "extends": "tsconfig/vite.json",
-//   "include": ["."],
-//   "exclude": ["dist", "build", "node_modules"]
-// }

@@ -1,33 +1,7 @@
+import { useState } from 'react';
 import AggregationsTooltip from './AggregationsTooltip';
 import { grouped as assocGrouped } from '../static_datasets/dataSourcesAssoc';
 import { grouped as prioritizationGrouped } from '../static_datasets/prioritizationCols';
-import { useState } from 'react';
-
-function AggregationsRow({
-  table,
-  active,
-  handleAggregationClick,
-  activeHeadersControlls,
-}) {
-  const dataset =
-    table === 'associations' ? assocGrouped : prioritizationGrouped;
-  const aggregations = Object.keys(dataset);
-
-  return (
-    <div className="aggregations-container">
-      {aggregations.map(aggregation => (
-        <AggregationItem
-          key={aggregation}
-          aggregation={aggregation}
-          active={active}
-          dataset={dataset}
-          handleAggregationClick={handleAggregationClick}
-          activeHeadersControlls={activeHeadersControlls}
-        />
-      ))}
-    </div>
-  );
-}
 
 function AggregationItem({
   aggregation,
@@ -61,15 +35,41 @@ function AggregationItem({
       onMouseLeave={e => onMouseLeave()}
       onClick={() => {
         if (activeHeadersControlls) return handleAggregationClick(aggregation);
-        return () => {};
+        return () => ({});
       }}
     >
       <AggregationsTooltip
         title={aggregation}
         open={active === aggregation || open}
       >
-        <div style={{ width: '100%' }}></div>
+        <div style={{ width: '100%' }} />
       </AggregationsTooltip>
+    </div>
+  );
+}
+
+function AggregationsRow({
+  table,
+  active,
+  handleAggregationClick,
+  activeHeadersControlls,
+}) {
+  const dataset =
+    table === 'associations' ? assocGrouped : prioritizationGrouped;
+  const aggregations = Object.keys(dataset);
+
+  return (
+    <div className="aggregations-container">
+      {aggregations.map(aggregation => (
+        <AggregationItem
+          key={aggregation}
+          aggregation={aggregation}
+          active={active}
+          dataset={dataset}
+          handleAggregationClick={handleAggregationClick}
+          activeHeadersControlls={activeHeadersControlls}
+        />
+      ))}
     </div>
   );
 }

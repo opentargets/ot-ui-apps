@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 
 import Description from './Description';
@@ -18,16 +17,14 @@ function Body({ definition, id: ensemblId, label: symbol }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={({ target }) => {
-        return (
-          <PathwaysTable
-            symbol={target.approvedSymbol}
-            pathways={target.pathways}
-            query={PATHWAYS_QUERY.loc.source.body}
-            variables={variables}
-          />
-        );
-      }}
+      renderBody={({ target }) => (
+        <PathwaysTable
+          symbol={target.approvedSymbol}
+          pathways={target.pathways}
+          query={PATHWAYS_QUERY.loc.source.body}
+          variables={variables}
+        />
+      )}
     />
   );
 }

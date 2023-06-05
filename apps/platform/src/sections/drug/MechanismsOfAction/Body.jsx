@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 import { useQuery } from '@apollo/client';
-
+import { v1 } from 'uuid';
 import Link from '../../../components/Link';
 import SectionItem from '../../../components/Section/SectionItem';
 import usePlatformApi from '../../../hooks/usePlatformApi';
@@ -28,13 +28,11 @@ const columns = [
     renderCell: ({ targets }) => {
       if (!targets) return 'non-human';
 
-      const targetList = targets.map(target => {
-        return {
-          name: target.approvedSymbol,
-          url: `/target/${target.id}`,
-          group: 'Human targets',
-        };
-      });
+      const targetList = targets.map(target => ({
+        name: target.approvedSymbol,
+        url: `/target/${target.id}`,
+        group: 'Human targets',
+      }));
 
       return <TableDrawer entries={targetList} />;
     },
@@ -49,20 +47,18 @@ const columns = [
     renderCell: row =>
       !row.references
         ? 'n/a'
-        : row.references.map((r, i) => {
-            return (
-              <Fragment key={i}>
-                {i > 0 ? ', ' : null}
-                {r.urls ? (
-                  <Link external to={r.urls[0]}>
-                    {r.source}
-                  </Link>
-                ) : (
-                  r.source
-                )}
-              </Fragment>
-            );
-          }),
+        : row.references.map((r, i) => (
+            <Fragment key={v1()}>
+              {i > 0 ? ', ' : null}
+              {r.urls ? (
+                <Link external to={r.urls[0]}>
+                  {r.source}
+                </Link>
+              ) : (
+                r.source
+              )}
+            </Fragment>
+          )),
   },
 ];
 
@@ -87,7 +83,7 @@ function Body({ definition, id: chemblId, label: name }) {
         />
       )}
       renderBody={data => {
-        const rows = data.drug.mechanismsOfAction.rows;
+        const { rows } = data.drug.mechanismsOfAction;
 
         return (
           <DataTable

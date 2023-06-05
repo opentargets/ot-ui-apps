@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Grid, Typography, useTheme } from '@material-ui/core';
 import { withContentRect } from 'react-measure';
 import { scaleQuantize, pack, hierarchy } from 'd3';
+import { v1 } from 'uuid';
 
 import AssociationTooltip from './AssociationTooltip';
 import { colorRange } from '../../constants';
@@ -59,15 +60,13 @@ function buildHierarchicalData(associations, idToDisease) {
 
   return {
     uniqueId: 'EFO_ROOT',
-    children: Object.entries(tasMap).map(([taId, descendants]) => {
-      return {
-        id: taId,
-        uniqueId: taId,
-        name: idToDisease[taId].name,
-        score: tasScore[taId],
-        children: descendants,
-      };
-    }),
+    children: Object.entries(tasMap).map(([taId, descendants]) => ({
+      id: taId,
+      uniqueId: taId,
+      name: idToDisease[taId].name,
+      score: tasScore[taId],
+      children: descendants,
+    })),
   };
 }
 
@@ -95,6 +94,100 @@ function ClassicAssociationsBubbles({
   root.sum(d => d.score);
   packLayout(root);
 
+  let ASSOCIATION_COMPONENT = null;
+
+  function getText({ node }) {
+    if (node.data.uniqueId === 'EFO_ROOT') return null;
+    if (node.parent && node.parent.data.uniqueId === 'EFO_ROOT')
+      return (
+        <text
+          textAnchor="middle"
+          fontSize="12"
+          fontWeight="bold"
+          fill={theme.palette.grey[400]}
+          pointerEvents="none"
+        >
+          <textPath startOffset="50%" xlinkHref={`#${node.data.uniqueId}`}>
+            {node.data.name}
+          </textPath>
+        </text>
+      );
+    if (node.r <= 15) return null;
+    return (
+      <>
+        <clipPath id={`clip-${node.data.uniqueId}`}>
+          <circle cx="0" cy="0" r={node.r} />
+        </clipPath>
+        <text
+          clipPath={`url(#clip-${node.data.uniqueId})`}
+          fontSize="11"
+          textAnchor="middle"
+          pointerEvents="none"
+        >
+          {node.data.name.split(' ').map((word, i, words) => (
+            <tspan key={v1()} x="0" y={`${i - words.length / 2 + 0.8}em`}>
+              {word}
+            </tspan>
+          ))}
+        </text>
+      </>
+    );
+  }
+
+  if (size && assocs.length > 0) {
+    ASSOCIATION_COMPONENT = (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+        ref={svgRef}
+        height={size}
+        width={size}
+      >
+        {root.descendants().map(node => (
+          <g
+            key={node.data.uniqueId}
+            transform={`translate(${node.x},${node.y})`}
+          >
+            <AssociationTooltip
+              ensemblId={ensemblId}
+              efoId={node.data.id}
+              name={node.data.name}
+              score={node.data.score}
+            >
+              <path
+                id={node.data.uniqueId}
+                d={`M 0, ${node.r} a ${node.r},${node.r} 0 1,1 0,-${
+                  2 * node.r
+                } a ${node.r},${node.r} 0 1,1 0,${2 * node.r}`}
+                stroke={
+                  node.data.uniqueId !== 'EFO_ROOT'
+                    ? theme.palette.grey[400]
+                    : 'none'
+                }
+                fill={
+                  node.data.uniqueId === 'EFO_ROOT' ||
+                  node.parent.data.uniqueId === 'EFO_ROOT'
+                    ? theme.palette.grey[50]
+                    : color(node.data.score)
+                }
+                pointerEvents={
+                  node.data.uniqueId === 'EFO_ROOT' ? 'none' : 'auto'
+                }
+              />
+            </AssociationTooltip>
+            {getText({ node })}
+          </g>
+        ))}
+      </svg>
+    );
+  } else if (size) {
+    ASSOCIATION_COMPONENT = (
+      <Typography>
+        No associations with score greater than or equal to {minScore}
+      </Typography>
+    );
+  }
+
   return (
     <>
       <DownloadSvgPlot
@@ -111,100 +204,7 @@ function ClassicAssociationsBubbles({
           alignItems="center"
           style={{ margin: '0 auto', minHeight: '340px' }}
         >
-          {size ? (
-            assocs.length > 0 ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                ref={svgRef}
-                height={size}
-                width={size}
-              >
-                {root.descendants().map(d => {
-                  return (
-                    <g
-                      key={d.data.uniqueId}
-                      transform={`translate(${d.x},${d.y})`}
-                    >
-                      <AssociationTooltip
-                        ensemblId={ensemblId}
-                        efoId={d.data.id}
-                        name={d.data.name}
-                        score={d.data.score}
-                      >
-                        <path
-                          id={d.data.uniqueId}
-                          d={`M 0, ${d.r} a ${d.r},${d.r} 0 1,1 0,-${
-                            2 * d.r
-                          } a ${d.r},${d.r} 0 1,1 0,${2 * d.r}`}
-                          stroke={
-                            d.data.uniqueId !== 'EFO_ROOT'
-                              ? theme.palette.grey[400]
-                              : 'none'
-                          }
-                          fill={
-                            d.data.uniqueId === 'EFO_ROOT'
-                              ? theme.palette.grey[50]
-                              : d.parent.data.uniqueId === 'EFO_ROOT'
-                              ? theme.palette.grey[50]
-                              : color(d.data.score)
-                          }
-                          pointerEvents={
-                            d.data.uniqueId === 'EFO_ROOT' ? 'none' : 'auto'
-                          }
-                        />
-                      </AssociationTooltip>
-                      {d.data.uniqueId === 'EFO_ROOT' ? null : d.parent &&
-                        d.parent.data.uniqueId === 'EFO_ROOT' ? (
-                        <text
-                          textAnchor="middle"
-                          fontSize="12"
-                          fontWeight="bold"
-                          fill={theme.palette.grey[400]}
-                          pointerEvents="none"
-                        >
-                          <textPath
-                            startOffset="50%"
-                            xlinkHref={`#${d.data.uniqueId}`}
-                          >
-                            {d.data.name}
-                          </textPath>
-                        </text>
-                      ) : d.r > 15 ? (
-                        <>
-                          <clipPath id={`clip-${d.data.uniqueId}`}>
-                            <circle cx="0" cy="0" r={d.r} />
-                          </clipPath>
-                          <text
-                            clipPath={`url(#clip-${d.data.uniqueId})`}
-                            fontSize="11"
-                            textAnchor="middle"
-                            pointerEvents="none"
-                          >
-                            {d.data.name.split(' ').map((word, i, words) => {
-                              return (
-                                <tspan
-                                  key={i}
-                                  x="0"
-                                  y={`${i - words.length / 2 + 0.8}em`}
-                                >
-                                  {word}
-                                </tspan>
-                              );
-                            })}
-                          </text>
-                        </>
-                      ) : null}
-                    </g>
-                  );
-                })}
-              </svg>
-            ) : (
-              <Typography>
-                No associations with score greater than or equal to {minScore}
-              </Typography>
-            )
-          ) : null}
+          {ASSOCIATION_COMPONENT}
         </Grid>
       </DownloadSvgPlot>
       <Legend />

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import SummaryItem from '../../../components/Summary/SummaryItem';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import upperBin6Map from './upperBin6Map';

@@ -1,5 +1,10 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTimesCircle } from '@fortawesome/free-regular-svg-icons';
+import { Box, makeStyles, Typography, Chip, Grid } from '@material-ui/core';
+import classNames from 'classnames';
+import _ from 'lodash';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import SectionItem from '../../../components/Section/SectionItem';
 import { DataTable } from '../../../components/Table';
@@ -8,72 +13,64 @@ import Summary from './Summary';
 import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
 import ChipList from '../../../components/ChipList';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { faTimesCircle } from '@fortawesome/free-regular-svg-icons';
-import { Box, makeStyles, Typography, Chip, Grid } from '@material-ui/core';
 import Link from '../../../components/Link';
 import { defaultRowsPerPageOptions } from '../../../constants';
-import classNames from 'classnames';
-import _ from 'lodash';
 
 import VALIDATION_QUERY from './OTValidationQuery.gql';
 
-const useStyles = makeStyles(theme => {
-  return {
-    primaryColor: {
-      color: theme.palette.primary.main,
-    },
-    grey: {
-      color: theme.palette.grey[300],
-    },
-    circleUp: {
-      marginRight: '10px',
-    },
-    hypotesisBox: {
-      marginBottom: '2rem',
-      paddingBottom: '1rem',
-      borderBottom: `1px solid ${theme.palette.grey[300]}`,
-    },
-    hypotesisLegend: {
-      marginBottom: '1rem',
-    },
-    bold: {
-      fontWeight: 700,
-    },
-    // hypothesis status classes
-    hsLegendChip: {
-      width: '32px',
-    },
-    hsGreen: {
-      backgroundColor: '#407253', // same as PPP green
-      border: `1px solid ${theme.palette.grey[600]}`,
-    },
-    hsRed: {
-      backgroundColor: '#9e1316',
-      border: `1px solid ${theme.palette.grey[600]}`,
-    },
-    hsWhite: {
-      backgroundColor: '#ffffff',
-      color: theme.palette.grey[600],
-      border: `1px solid ${theme.palette.grey[600]}`,
-    },
-    hsBlack: {
-      backgroundColor: '#000',
-      border: `1px solid ${theme.palette.grey[600]}`,
-    },
-    hsBlue: {
-      backgroundColor: '#3489ca',
-      border: `1px solid ${theme.palette.grey[600]}`,
-    },
-    // in the unlikely case the hypothesis status is unavailable,
-    // we don't want to display the primary green (for PPP)
-    hsUndefined: {
-      backgroundColor: theme.palette.grey[500],
-      border: `1px solid ${theme.palette.grey[600]}`,
-    },
-  };
-});
+const useStyles = makeStyles(theme => ({
+  primaryColor: {
+    color: theme.palette.primary.main,
+  },
+  grey: {
+    color: theme.palette.grey[300],
+  },
+  circleUp: {
+    marginRight: '10px',
+  },
+  hypotesisBox: {
+    marginBottom: '2rem',
+    paddingBottom: '1rem',
+    borderBottom: `1px solid ${theme.palette.grey[300]}`,
+  },
+  hypotesisLegend: {
+    marginBottom: '1rem',
+  },
+  bold: {
+    fontWeight: 700,
+  },
+  // hypothesis status classes
+  hsLegendChip: {
+    width: '32px',
+  },
+  hsGreen: {
+    backgroundColor: '#407253', // same as PPP green
+    border: `1px solid ${theme.palette.grey[600]}`,
+  },
+  hsRed: {
+    backgroundColor: '#9e1316',
+    border: `1px solid ${theme.palette.grey[600]}`,
+  },
+  hsWhite: {
+    backgroundColor: '#ffffff',
+    color: theme.palette.grey[600],
+    border: `1px solid ${theme.palette.grey[600]}`,
+  },
+  hsBlack: {
+    backgroundColor: '#000',
+    border: `1px solid ${theme.palette.grey[600]}`,
+  },
+  hsBlue: {
+    backgroundColor: '#3489ca',
+    border: `1px solid ${theme.palette.grey[600]}`,
+  },
+  // in the unlikely case the hypothesis status is unavailable,
+  // we don't want to display the primary green (for PPP)
+  hsUndefined: {
+    backgroundColor: theme.palette.grey[500],
+    border: `1px solid ${theme.palette.grey[600]}`,
+  },
+}));
 
 const isHit = (conf, validatedConf) => {
   if (conf && validatedConf) {
@@ -82,13 +79,15 @@ const isHit = (conf, validatedConf) => {
   return conf.toLowerCase() === 'significant';
 };
 
-const HitIcon = ({ isHit, classes }) => (
-  <FontAwesomeIcon
-    icon={isHit ? faCheckCircle : faTimesCircle}
-    size="2x"
-    className={isHit ? classes.primaryColor : classes.grey}
-  />
-);
+function HitIcon({ isHitValue, classes }) {
+  return (
+    <FontAwesomeIcon
+      icon={isHitValue ? faCheckCircle : faTimesCircle}
+      size="2x"
+      className={isHitValue ? classes.primaryColor : classes.grey}
+    />
+  );
+}
 
 // Map response hypotheses status to style and labels
 const hypothesesStatus = [
@@ -125,7 +124,7 @@ const getColumns = classes => [
     renderCell: row => (
       <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>
     ),
-    filterValue: row => row.diseaseLabel + ', ' + row.diseaseId,
+    filterValue: row => `${row.diseaseLabel}, ${row.diseaseId}`,
   },
   {
     id: 'projectDescription',
@@ -143,7 +142,7 @@ const getColumns = classes => [
         </Typography>
       </Link>
     ),
-    filterValue: row => row.projectDescription + ', ' + row.projectId,
+    filterValue: row => `${row.projectDescription}, ${row.projectId}`,
   },
   {
     id: 'contrast',
@@ -153,7 +152,7 @@ const getColumns = classes => [
         {row.contrast}
       </Tooltip>
     ),
-    filterValue: row => row.contrast + ', ' + row.studyOverview,
+    filterValue: row => `${row.contrast}, ${row.studyOverview}`,
   },
   {
     id: 'diseaseCellLines',
@@ -172,32 +171,30 @@ const getColumns = classes => [
       </>
     ),
     filterValue: row =>
-      row.diseaseCellLines.map(line => line.name + ', ' + line.id).join(', '),
+      row.diseaseCellLines.map(line => `${line.name}, ${line.id}`).join(', '),
     width: '8%',
   },
   {
     id: 'biomarkerList',
     label: 'Cell line biomarkers',
-    renderCell: row => {
-      return (
-        <ChipList
-          small
-          items={row.biomarkerList.map(bm => ({
-            label: bm.name,
-            tooltip: bm.description,
-            customClass: classes['hsWhite'],
-          }))}
-        />
-      );
-    },
+    renderCell: row => (
+      <ChipList
+        small
+        items={row.biomarkerList.map(bm => ({
+          label: bm.name,
+          tooltip: bm.description,
+          customClass: classes.hsWhite,
+        }))}
+      />
+    ),
     filterValue: row =>
-      row.biomarkerList.map(bm => bm.name + ', ' + bm.description).join(', '),
+      row.biomarkerList.map(bm => `${bm.name}, ${bm.description}`).join(', '),
     width: '16%',
   },
   {
     id: 'resourceScore',
     label: 'Effect size',
-    renderCell: row => <>{row.resourceScore}</>,
+    renderCell: row => row.resourceScore,
     numeric: true,
     width: '8%',
   },
@@ -273,21 +270,6 @@ const exportColumns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.otValidationSummary
-  );
-  const count = summaryData.otValidationSummary.count;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: count };
@@ -301,7 +283,9 @@ export function BodyCore({ definition, id, label, count }) {
       definition={definition}
       chipText={dataTypesMap.ot_validation_lab}
       request={request}
-      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={({ disease }) => {
         const { rows } = disease.evidences;
         const hypothesis = _.uniqBy(
@@ -323,7 +307,7 @@ export function BodyCore({ definition, id, label, count }) {
           'label'
           // sort alphabetically but move 'PAN-CO' at the end of the list
         ).sort((a, b) =>
-          b.label === 'PAN-CO' ? -1 : a.label < b.label ? -1 : 1
+          (b.label === 'PAN-CO' || a.label < b.label) ? -1 : 1
         );
 
         return (
@@ -417,5 +401,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.otValidationSummary
+  );
+  const { count } = summaryData.otValidationSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

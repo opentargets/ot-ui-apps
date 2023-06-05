@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { makeStyles, Typography } from '@material-ui/core';
 import _ from 'lodash';
@@ -24,56 +24,54 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const getColumns = (critVal, maxLlr, classes) => {
-  return [
-    {
-      id: 'name',
-      label: 'Adverse event (MedDRA)',
-      renderCell: d =>
-        d.meddraCode ? (
-          <Link to={`https://identifiers.org/meddra:${d.meddraCode}`} external>
-            <Typography
-              variant="caption"
-              noWrap
-              display="block"
-              title={_.upperFirst(d.name)}
-            >
-              {_.upperFirst(d.name)}
-            </Typography>
-          </Link>
-        ) : (
-          _.upperFirst(d.name)
-        ),
-      width: '30%',
+const getColumns = (critVal, maxLlr, classes) => [
+  {
+    id: 'name',
+    label: 'Adverse event (MedDRA)',
+    renderCell: d =>
+      d.meddraCode ? (
+        <Link to={`https://identifiers.org/meddra:${d.meddraCode}`} external>
+          <Typography
+            variant="caption"
+            noWrap
+            display="block"
+            title={_.upperFirst(d.name)}
+          >
+            {_.upperFirst(d.name)}
+          </Typography>
+        </Link>
+      ) : (
+        _.upperFirst(d.name)
+      ),
+    width: '30%',
+  },
+  {
+    id: 'count',
+    label: 'Number of reported events',
+    numeric: true,
+    width: '25%',
+  },
+  {
+    id: 'llr',
+    label: `Log likelihood ratio (CV = ${critVal.toFixed(2)})`,
+    renderCell: d => {
+      const w = ((d.logLR / maxLlr) * 85).toFixed(2); // scale to max 85% of the width to allows space for label
+      return (
+        <div className={classes.levelBarContainer}>
+          <div
+            className={classes.levelBar}
+            style={{
+              width: `${w}%`,
+            }}
+          />
+          <div>{d.logLR.toFixed(2)}</div>
+        </div>
+      );
     },
-    {
-      id: 'count',
-      label: 'Number of reported events',
-      numeric: true,
-      width: '25%',
-    },
-    {
-      id: 'llr',
-      label: `Log likelihood ratio (CV = ${critVal.toFixed(2)})`,
-      renderCell: d => {
-        const w = ((d.logLR / maxLlr) * 85).toFixed(2); // scale to max 85% of the width to allows space for label
-        return (
-          <div className={classes.levelBarContainer}>
-            <div
-              className={classes.levelBar}
-              style={{
-                width: `${w}%`,
-              }}
-            />
-            <div>{d.logLR.toFixed(2)}</div>
-          </div>
-        );
-      },
-      exportValue: d => d.logLR.toFixed(2),
-      width: '45%',
-    },
-  ];
-};
+    exportValue: d => d.logLR.toFixed(2),
+    width: '45%',
+  },
+];
 
 function Body({ definition, id: chemblId, label: name }) {
   const classes = useStyles();
@@ -86,15 +84,13 @@ function Body({ definition, id: chemblId, label: name }) {
 
   // TODO: fetchMore doesn't seem to use gql/apollo caching
   // but a new query causes flickering when rendering the table
-  function getData(page, size) {
+  function getData(newPage, size) {
     fetchMore({
       variables: {
-        index: page,
-        size: size,
+        index: newPage,
+        size,
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        return fetchMoreResult;
-      },
+      updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult,
     });
   }
 
@@ -120,12 +116,12 @@ function Body({ definition, id: chemblId, label: name }) {
       definition={definition}
       request={{ loading, error, data }}
       renderDescription={() => <Description name={name} />}
-      renderBody={data => {
+      renderBody={res => {
         // TODO: Change GraphQL schema to have a maxLlr field instead of having
         // to get the first item of adverse events to get the largest llr since
         // items are sorted in decreasing llr order.
-        const maxLlr = data.drug.maxLlr.rows[0].logLR;
-        const { criticalValue, rows, count } = data.drug.adverseEvents;
+        const maxLlr = res.drug.maxLlr.rows[0].logLR;
+        const { criticalValue, rows, count } = res.drug.adverseEvents;
 
         return (
           <Table
@@ -142,7 +138,7 @@ function Body({ definition, id: chemblId, label: name }) {
             fixed
             pageSize={pageSize}
             rowsPerPageOptions={[10, 25, 50, 100]}
-            onRowsPerPageChange={handleRowsPerPageChange}
+            onRowsPerPageChange={()=>handleRowsPerPageChange()}
             query={ADVERSE_EVENTS_QUERY.loc.source.body}
             variables={variables}
           />

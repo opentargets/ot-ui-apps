@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Typography, makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => {
-  return {
-    showMore: {
-      whiteSpace: 'nowrap',
-    },
-    showMoreText: {
-      color: theme.palette.primary.main,
-      cursor: 'pointer',
-    },
-  };
-});
+const useStyles = makeStyles(theme => ({
+  showMore: {
+    whiteSpace: 'nowrap',
+  },
+  showMoreText: {
+    color: theme.palette.primary.main,
+    cursor: 'pointer',
+  },
+}));
 
-const LongList = ({ terms, render, maxTerms = 10 }) => {
+function LongList({ terms, render, maxTerms = 10 }) {
   const [showMore, setShowMore] = useState(false);
   const classes = useStyles();
 
@@ -44,6 +42,6 @@ const LongList = ({ terms, render, maxTerms = 10 }) => {
       )}
     </>
   );
-};
+}
 
 export default LongList;

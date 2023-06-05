@@ -1,4 +1,3 @@
-import React from 'react';
 import { Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 
@@ -93,39 +92,37 @@ const columns = [
       biologicalModelAllelicComposition,
       biologicalModelGeneticBackground,
       biologicalModelId,
-    }) =>
-      biologicalModelAllelicComposition && biologicalModelGeneticBackground ? (
-        biologicalModelId ? (
+    }) => {
+      if (
+        biologicalModelAllelicComposition &&
+        biologicalModelGeneticBackground &&
+        biologicalModelId
+      ) {
+        return (
           <Link external to={`https://identifiers.org/${biologicalModelId}`}>
             <MouseModelAllelicComposition
               allelicComposition={biologicalModelAllelicComposition}
               geneticBackground={biologicalModelGeneticBackground}
             />
           </Link>
-        ) : (
+        );
+      }
+      if (
+        biologicalModelAllelicComposition &&
+        biologicalModelGeneticBackground
+      ) {
+        return (
           <MouseModelAllelicComposition
             allelicComposition={biologicalModelAllelicComposition}
             geneticBackground={biologicalModelGeneticBackground}
           />
-        )
-      ) : (
-        naLabel
-      ),
+        );
+      }
+
+      return naLabel;
+    },
   },
 ];
-
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.IMCPSummaryFragment
-  );
-  const count = summaryData.impc.count;
-  
-  if(!count || count < 1) {
-    return null
-  }
-
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
-}
 
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
@@ -143,7 +140,9 @@ export function BodyCore({ definition, id, label, count }) {
       definition={definition}
       chipText={dataTypesMap.animal_model}
       request={request}
-      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={data => (
         <DataTable
           columns={columns}
@@ -151,12 +150,27 @@ export function BodyCore({ definition, id, label, count }) {
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           rows={data.disease.evidences.rows}
           pageSize={5}
-          rowsPerPageOptions={[5].concat(defaultRowsPerPageOptions)}  // custom page size of 5 is not included in defaultRowsPerPageOptions
+          rowsPerPageOptions={[5].concat(defaultRowsPerPageOptions)} // custom page size of 5 is not included in defaultRowsPerPageOptions
           showGlobalFilter
           query={INTOGEN_QUERY.loc.source.body}
           variables={variables}
         />
       )}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.IMCPSummaryFragment
+  );
+  const { count } = summaryData.impc;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

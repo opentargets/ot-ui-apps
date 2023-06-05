@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import client from '../../../client';
 import Link from '../../../components/Link';
@@ -52,13 +52,12 @@ function getColumnPool(id, entity) {
         {
           id: 'drug',
           propertyPath: 'drug.id',
-          renderCell: d => {
-            return d.drug ? (
+          renderCell: d =>
+            d.drug ? (
               <Link to={`/drug/${d.drug.id}`}>{d.drug.name}</Link>
             ) : (
               naLabel
-            );
-          },
+            ),
         },
         {
           id: 'type',
@@ -170,30 +169,33 @@ function Body({
     })),
   ];
 
-  const fetchDrugs = (variables, cursor, size, freeTextQuery) => {
-    return client.query({
+  const fetchDrugs = (newVariables, newCursor, size, freeTextQuery) =>
+    client.query({
       query: BODY_QUERY,
       variables: {
-        ...variables,
-        cursor,
+        ...newVariables,
+        newCursor,
         size: size * 10, // fetch 10 pages ahead of time
         freeTextQuery,
       },
     });
-  };
 
   useEffect(
     () => {
       let isCurrent = true;
 
       fetchDrugs(variables, null, INIT_PAGE_SIZE).then(res => {
-        const { cursor, count, rows } = res.data[entity].knownDrugs;
+        const {
+          cursor: newCursor,
+          count: newCount,
+          rows: newRows,
+        } = res.data[entity].knownDrugs;
 
         if (isCurrent) {
           setInitialLoading(false);
-          setCursor(cursor);
-          setCount(count);
-          setRows(rows);
+          setCursor(newCursor);
+          setCount(newCount);
+          setRows(newRows);
         }
       });
 
@@ -215,9 +217,10 @@ function Body({
     if (pageSize * newPage + pageSize > rows.length && cursor !== null) {
       setLoading(true);
       fetchDrugs(variables, cursor, pageSize, globalFilter).then(res => {
-        const { cursor, rows: newRows } = res.data[entity].knownDrugs;
+        const { cursor: newCursor, rows: newRows } =
+          res.data[entity].knownDrugs;
         setLoading(false);
-        setCursor(cursor);
+        setCursor(newCursor);
         setPage(newPage);
         setRows([...rows, ...newRows]);
       });
@@ -230,9 +233,10 @@ function Body({
     if (newPageSize > rows.length && cursor !== null) {
       setLoading(true);
       fetchDrugs(variables, cursor, newPageSize, globalFilter).then(res => {
-        const { cursor, rows: newRows } = res.data[entity].knownDrugs;
+        const { cursor: newCursor, rows: newRows } =
+          res.data[entity].knownDrugs;
         setLoading(false);
-        setCursor(cursor);
+        setCursor(newCursor);
         setPage(0);
         setPageSize(newPageSize);
         setRows([...rows, ...newRows]);
@@ -247,14 +251,14 @@ function Body({
     setLoading(true);
     fetchDrugs(variables, null, pageSize, newGlobalFilter).then(res => {
       const {
-        cursor,
-        count,
+        cursor: newCursor,
+        count: newCount,
         rows: newRows = [],
       } = res.data[entity].knownDrugs ?? {};
       setLoading(false);
       setPage(0);
-      setCursor(cursor);
-      setCount(count);
+      setCursor(newCursor);
+      setCount(newCount);
       setGlobalFilter(newGlobalFilter);
       setRows(newRows);
     });
@@ -263,10 +267,11 @@ function Body({
   const handleSortBy = sortBy => {
     setSortColumn(sortBy);
     setSortOrder(
+      // eslint-disable-next-line
       sortColumn === sortBy ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc'
     );
   };
-  let processedRows = [...rows];
+  const processedRows = [...rows];
 
   if (sortColumn) {
     processedRows.sort(getComparator(columns, sortOrder, sortColumn));

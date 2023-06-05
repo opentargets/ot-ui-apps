@@ -5,6 +5,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Popper from '@material-ui/core/Popper';
 import Fade from '@material-ui/core/Fade';
 import { withStyles } from '@material-ui/core/styles';
+import { v1 } from 'uuid';
 
 const styles = () => ({
   listitem: {
@@ -17,38 +18,42 @@ const styles = () => ({
   },
 });
 
-const ListTooltip = ({ classes, dataList, open, anchorEl, container }) => (
-  <Popper
-    open={open}
-    anchorEl={anchorEl}
-    container={container}
-    transition
-    placement="top"
-    modifiers={{
-      preventOverflow: {
-        enabled: true,
-        boundariesElement: 'window',
-      },
-    }}
-  >
-    {({ TransitionProps }) => (
-      <Fade {...TransitionProps} timeout={350}>
-        <Paper>
-          <List dense>
-            {dataList.map((d, i) => (
-              <ListItem key={i} className={classes.listitem}>
-                <ListItemText
-                  primary={d.label}
-                  secondary={d.value}
-                  className={classes.listItemText}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Paper>
-      </Fade>
-    )}
-  </Popper>
-);
+function ListTooltip({ classes, dataList, open, anchorEl, container }) {
+  return (
+    <Popper
+      open={open}
+      anchorEl={anchorEl}
+      container={container}
+      transition
+      placement="top"
+      modifiers={{
+        preventOverflow: {
+          enabled: true,
+          boundariesElement: 'window',
+        },
+      }}
+    >
+      {({ TransitionProps }) => (
+        // TODO: review props spreading
+        // eslint-disable-next-line
+        <Fade {...TransitionProps} timeout={350}>
+          <Paper>
+            <List dense>
+              {dataList.map(d => (
+                <ListItem key={v1()} className={classes.listitem}>
+                  <ListItemText
+                    primary={d.label}
+                    secondary={d.value}
+                    className={classes.listItemText}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        </Fade>
+      )}
+    </Popper>
+  );
+}
 
 export default withStyles(styles)(ListTooltip);

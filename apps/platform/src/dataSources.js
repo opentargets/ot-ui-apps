@@ -64,7 +64,7 @@ const dataSources = [
     isPrivate: isPrivateDataSource('progeny'),
   },
   {
-    id: 'reactome', //reactome
+    id: 'reactome', // reactome
     label: 'Reactome',
     isPrivate: isPrivateDataSource('reactome'),
   },
@@ -89,7 +89,7 @@ const dataSources = [
     isPrivate: isPrivateDataSource('impc'),
   },
   {
-    id: 'uniprot_variants', //uniprot_variants
+    id: 'uniprot_variants', // uniprot_variants
     label: 'UniProt curated variants',
     isPrivate: isPrivateDataSource('uniprot_variants'),
   },

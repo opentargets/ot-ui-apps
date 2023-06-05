@@ -1,5 +1,5 @@
-import React from 'react';
 import { Typography, makeStyles } from '@material-ui/core';
+import { ReactNode } from 'react';
 
 const useStyles = makeStyles(theme => ({
   groupHeading: {
@@ -13,13 +13,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const groupName = {
+const groupName: { [key: string]: string } = {
   variant: 'Variants',
   gene: 'Genes',
   study: 'Studies',
 };
 
-const Group = ({ children, name }) => {
+type GroupProps = {
+  children: ReactNode;
+  name: string;
+};
+function Group({ children, name }: GroupProps) {
   const classes = useStyles();
 
   return (
@@ -32,6 +36,6 @@ const Group = ({ children, name }) => {
       {children}
     </div>
   );
-};
+}
 
 export default Group;

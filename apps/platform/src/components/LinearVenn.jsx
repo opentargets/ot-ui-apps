@@ -4,7 +4,7 @@ import { withTheme } from '@material-ui/core';
 const WIDTH = 400;
 const HEIGHT = 18;
 
-const LinearVenn = ({ theme, aOnly, aAndB, bOnly, max }) => {
+function LinearVenn({ theme, aOnly, aAndB, bOnly, max }) {
   const aOnlyStart = 0;
   const aOnlyWidth = (WIDTH * aOnly) / max;
   const aAndBStart = aOnlyStart + aOnlyWidth;
@@ -47,7 +47,7 @@ const LinearVenn = ({ theme, aOnly, aAndB, bOnly, max }) => {
           width={aOnlyWidth}
           height={HEIGHT}
           fill={theme.palette.primary.main}
-          stroke={'white'}
+          stroke="white"
         />
         <rect
           x={aAndBStart}
@@ -55,7 +55,7 @@ const LinearVenn = ({ theme, aOnly, aAndB, bOnly, max }) => {
           width={aAndBWidth}
           height={HEIGHT}
           fill="url(#diagonalHatch)"
-          stroke={'white'}
+          stroke="white"
         />
         <rect
           x={bOnlyStart}
@@ -63,12 +63,12 @@ const LinearVenn = ({ theme, aOnly, aAndB, bOnly, max }) => {
           width={bOnlyWidth}
           height={HEIGHT}
           fill={theme.palette.secondary.main}
-          stroke={'white'}
+          stroke="white"
         />
       </g>
     </svg>
   );
-};
+}
 
 function Legend({ theme, a, b, aAndB }) {
   const [legendWidth, setLegendWidth] = useState(0);
@@ -126,7 +126,7 @@ function Legend({ theme, a, b, aAndB }) {
           width={LEGEND_SQUARE_SIZE}
           height={LEGEND_SQUARE_SIZE}
           fill={theme.palette.primary.main}
-          stroke={'white'}
+          stroke="white"
         />
         <text
           x={LEGEND_SQUARE_SIZE + LEGEND_PADDING}
@@ -145,7 +145,7 @@ function Legend({ theme, a, b, aAndB }) {
           width={LEGEND_SQUARE_SIZE}
           height={LEGEND_SQUARE_SIZE}
           fill="url(#diagonalHatchLegend)"
-          stroke={'white'}
+          stroke="white"
         />
         <text
           x={LEGEND_SQUARE_SIZE + LEGEND_PADDING}
@@ -167,7 +167,7 @@ function Legend({ theme, a, b, aAndB }) {
           width={LEGEND_SQUARE_SIZE}
           height={LEGEND_SQUARE_SIZE}
           fill={theme.palette.secondary.main}
-          stroke={'white'}
+          stroke="white"
         />
         <text
           x={LEGEND_SQUARE_SIZE + LEGEND_PADDING}

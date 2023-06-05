@@ -44,13 +44,13 @@ function useBatchDownloader(
 
     const firstChunk = await getDataChunk(index, downloaderChunkSize);
     data = [...getRows(firstChunk, rowPath)];
-    index++;
+    index+=1;
 
     const count = Math.ceil(_.get(firstChunk, countPath) / downloaderChunkSize);
 
     while (index < count) {
       chunkPromises.push(getDataChunk(index, downloaderChunkSize));
-      index++;
+      index+=1;
     }
 
     const remainingChunks = await Promise.all(chunkPromises);

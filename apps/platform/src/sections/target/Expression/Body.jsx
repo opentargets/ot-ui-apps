@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tab, Tabs } from '@material-ui/core';
 
 import Description from './Description';
@@ -23,30 +23,27 @@ function Section({ definition, id: ensgId, label: symbol }) {
     gtex: getGtexData,
   }[tab];
 
-  const handleChangeTab = (_, tab) => {
-    setTab(tab);
+  const handleChangeTab = (_, tabChange) => {
+    setTab(tabChange);
   };
 
-  useEffect(
-    () => {
-      let isCurrent = true;
+  useEffect(() => {
+    let isCurrent = true;
 
-      async function updateData() {
-        const newRequest = await getData(ensgId);
-        if (isCurrent) setRequest(newRequest);
-      }
+    async function updateData() {
+      const newRequest = await getData(ensgId);
+      if (isCurrent) setRequest(newRequest);
+    }
 
-      if (!request.data && getData) {
-        setRequest({ loading: true });
-        updateData();
-      }
+    if (!request.data && getData) {
+      setRequest({ loading: true });
+      updateData();
+    }
 
-      return () => {
-        isCurrent = false;
-      };
-    },
-    [tab, ensgId, request.data, getData, setRequest]
-  );
+    return () => {
+      isCurrent = false;
+    };
+  }, [tab, ensgId, request.data, getData, setRequest]);
 
   return (
     <SectionItem

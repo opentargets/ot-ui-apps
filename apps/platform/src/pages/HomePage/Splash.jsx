@@ -1,4 +1,3 @@
-import React from 'react';
 import { withStyles } from '@material-ui/core';
 
 import Particles from 'react-tsparticles';
@@ -6,7 +5,7 @@ import { loadFull } from 'tsparticles';
 
 import { particlesConfig } from '../../constants';
 
-const styles = (theme) => ({
+const styles = theme => ({
   splashContainer: {
     height: '100vh',
   },
@@ -21,8 +20,8 @@ const styles = (theme) => ({
   },
 });
 
-const Splash = ({ classes }) => {
-  const particlesInit = async (main) => {
+function Splash({ classes }) {
+  const particlesInit = async main => {
     await loadFull(main);
   };
 
@@ -36,6 +35,6 @@ const Splash = ({ classes }) => {
       />
     </div>
   );
-};
+}
 
 export default withStyles(styles)(Splash);

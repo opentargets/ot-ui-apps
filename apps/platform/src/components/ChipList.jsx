@@ -1,8 +1,7 @@
-import React from 'react';
 import { Box, Chip, makeStyles, Tooltip } from '@material-ui/core';
-
-import { naLabel } from '../constants';
 import classNames from 'classnames';
+import { v1 } from 'uuid';
+import { naLabel } from '../constants';
 
 const useContainerStyles = makeStyles(theme => ({
   tooltip: {
@@ -45,10 +44,10 @@ function ChipList({ items, small }) {
 
   if (!items || items.length === 0) return naLabel;
 
-  return items.map((item, index) => {
+  return items.map(item => {
     const component = item.url ? 'a' : Box;
     return (
-      <ChipContainer key={index} item={item}>
+      <ChipContainer key={v1()} item={item}>
         <Chip
           component={component}
           href={item.url}

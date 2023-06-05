@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import Link from '../../../components/Link';
@@ -46,38 +45,35 @@ const columns = [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
-    renderCell: ({ disease, diseaseFromSource }) => {
-      return (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Reported disease or phenotype:
-              </Typography>
-              <Typography variant="caption" display="block" align="center">
-                {diseaseFromSource}
-              </Typography>
-            </>
-          }
-          showHelpIcon
-        >
-          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-        </Tooltip>
-      );
-    },
+    renderCell: ({ disease, diseaseFromSource }) => (
+      <Tooltip
+        title={
+          <>
+            <Typography variant="subtitle2" display="block" align="center">
+              Reported disease or phenotype:
+            </Typography>
+            <Typography variant="caption" display="block" align="center">
+              {diseaseFromSource}
+            </Typography>
+          </>
+        }
+        showHelpIcon
+      >
+        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+      </Tooltip>
+    ),
   },
   {
     id: 'studyId',
     label: 'Study ID',
-    renderCell: ({ studyId }) => {
-      return studyId ? (
+    renderCell: ({ studyId }) =>
+      studyId ? (
         <Link to={`https://www.ebi.ac.uk/gwas/studies/${studyId}`} external>
           {studyId}
         </Link>
       ) : (
         naLabel
-      );
-    },
+      ),
   },
   {
     id: 'cohortId',
@@ -92,9 +88,7 @@ const columns = [
         </Link>
       );
     },
-    filterValue: ({ cohortId, projectId }) => {
-      return `${cohortId} ${projectId}`;
-    },
+    filterValue: ({ cohortId, projectId }) => `${cohortId} ${projectId}`,
   },
   {
     id: 'ancestry',
@@ -111,54 +105,45 @@ const columns = [
   {
     id: 'statisticalMethod',
     label: 'Model',
-    renderCell: ({ statisticalMethod, statisticalMethodOverview }) => {
-      return (
-        <Tooltip title={statisticalMethodOverview} showHelpIcon>
-          {statisticalMethod}
-        </Tooltip>
-      );
-    },
+    renderCell: ({ statisticalMethod, statisticalMethodOverview }) => (
+      <Tooltip title={statisticalMethodOverview} showHelpIcon>
+        {statisticalMethod}
+      </Tooltip>
+    ),
   },
   {
     id: 'allelicRequirements',
     label: 'Allelic Requirement',
-    renderCell: ({ allelicRequirements }) => {
-      return allelicRequirements ? allelicRequirements[0] : naLabel;
-    },
+    renderCell: ({ allelicRequirements }) =>
+      allelicRequirements ? allelicRequirements[0] : naLabel,
   },
   {
     id: 'studyCasesWithQualifyingVariants',
     label: 'Cases with QV',
     numeric: true,
     sortable: true,
-    renderCell: ({ studyCasesWithQualifyingVariants }) => {
-      return studyCasesWithQualifyingVariants
-        ? parseInt(studyCasesWithQualifyingVariants).toLocaleString()
-        : naLabel;
-    },
-    filterValue: ({ studyCasesWithQualifyingVariants }) => {
-      return `${studyCasesWithQualifyingVariants} ${naLabel}`;
-    },
+    renderCell: ({ studyCasesWithQualifyingVariants }) =>
+      studyCasesWithQualifyingVariants
+        ? parseInt(studyCasesWithQualifyingVariants, 10).toLocaleString()
+        : naLabel,
+    filterValue: ({ studyCasesWithQualifyingVariants }) =>
+      `${studyCasesWithQualifyingVariants} ${naLabel}`,
   },
   {
     id: 'studyCases',
     label: 'Cases',
     numeric: true,
     sortable: true,
-    renderCell: ({ studyCases }) => {
-      return studyCases ? parseInt(studyCases).toLocaleString() : naLabel;
-    },
+    renderCell: ({ studyCases }) =>
+      studyCases ? parseInt(studyCases, 10).toLocaleString() : naLabel,
   },
   {
     id: 'studySampleSize',
     label: 'Sample size',
     numeric: true,
     sortable: true,
-    renderCell: ({ studySampleSize }) => {
-      return studySampleSize
-        ? parseInt(studySampleSize).toLocaleString()
-        : naLabel;
-    },
+    renderCell: ({ studySampleSize }) =>
+      studySampleSize ? parseInt(studySampleSize, 10).toLocaleString() : naLabel,
   },
   {
     id: 'oddsRatio',
@@ -182,9 +167,8 @@ const columns = [
       oddsRatio,
       oddsRatioConfidenceIntervalLower,
       oddsRatioConfidenceIntervalUpper,
-    }) => {
-      return `${oddsRatio} ${oddsRatioConfidenceIntervalLower} ${oddsRatioConfidenceIntervalUpper} ${naLabel}`;
-    },
+    }) =>
+      `${oddsRatio} ${oddsRatioConfidenceIntervalLower} ${oddsRatioConfidenceIntervalUpper} ${naLabel}`,
   },
   {
     id: 'beta',
@@ -208,9 +192,8 @@ const columns = [
       beta,
       betaConfidenceIntervalLower,
       betaConfidenceIntervalUpper,
-    }) => {
-      return `${beta} ${betaConfidenceIntervalLower} ${betaConfidenceIntervalUpper} ${naLabel}`;
-    },
+    }) =>
+      `${beta} ${betaConfidenceIntervalLower} ${betaConfidenceIntervalUpper} ${naLabel}`,
   },
   {
     id: 'pValue',
@@ -221,15 +204,13 @@ const columns = [
     ),
     numeric: true,
     sortable: true,
-    renderCell: ({ pValueMantissa, pValueExponent }) => {
-      return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
-    },
-    filterValue: ({ pValueMantissa, pValueExponent }) => {
-      return `${pValueMantissa} ${pValueExponent}`;
-    },
-    exportValue: ({ pValueMantissa, pValueExponent }) => {
-      return `${pValueMantissa}x10${pValueExponent}`;
-    },
+    renderCell: ({ pValueMantissa, pValueExponent }) => (
+      <ScientificNotation number={[pValueMantissa, pValueExponent]} />
+    ),
+    filterValue: ({ pValueMantissa, pValueExponent }) =>
+      `${pValueMantissa} ${pValueExponent}`,
+    exportValue: ({ pValueMantissa, pValueExponent }) =>
+      `${pValueMantissa}x10${pValueExponent}`,
     comparator: (a, b) =>
       a.pValueMantissa * 10 ** a.pValueExponent -
       b.pValueMantissa * 10 ** b.pValueExponent,
@@ -239,28 +220,17 @@ const columns = [
     label: 'Literature',
     renderCell: ({ literature }) => {
       const entries = literature
-        ? literature.map(id => {
-            return { name: id, url: epmcUrl(id), group: 'literature' };
-          })
+        ? literature.map(id => ({
+            name: id,
+            url: epmcUrl(id),
+            group: 'literature',
+          }))
         : [];
 
       return <PublicationsDrawer entries={entries} />;
     },
   },
 ];
-
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.geneBurdenSummary
-  );
-  const count = summaryData.geneBurdenSummary.count;
-  
-  if(!count || count < 1) {
-    return null
-  }
-
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
-}
 
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
@@ -300,5 +270,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.geneBurdenSummary
+  );
+  const { count } = summaryData.geneBurdenSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

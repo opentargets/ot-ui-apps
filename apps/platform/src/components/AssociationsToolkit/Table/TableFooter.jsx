@@ -59,6 +59,7 @@ function TableFooter({ table }) {
             <button
               onClick={() => resetDatasourceControls()}
               style={{ fontSize: '0.75rem' }}
+              type="button"
             >
               Reset to default
             </button>
@@ -78,7 +79,7 @@ function TableFooter({ table }) {
           }}
           onRowsPerPageChange={e => {
             if (!loading) {
-              return table.setPageSize(Number(e.target.value));
+              table.setPageSize(Number(e.target.value));
             }
           }}
         />

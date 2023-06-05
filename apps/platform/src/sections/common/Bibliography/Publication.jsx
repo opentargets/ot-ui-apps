@@ -1,5 +1,7 @@
-import React, { Component, Fragment } from 'react';
+/* eslint-disable no-underscore-dangle */
+import { Component } from 'react';
 import { Button, Grid, Typography } from '@material-ui/core';
+import { v1 } from 'uuid';
 
 import Abstract from './Abstract';
 import BibliographyDetailPanel from './BibliographyDetailPanel';
@@ -22,7 +24,6 @@ class Publication extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasError: false,
       showAbstract: false,
       showSimilar: false,
       abstract: '',
@@ -32,20 +33,22 @@ class Publication extends Component {
 
   // Fetches abstract data as needed and return component
   buildAbstract = () => {
-    if (!this.state.abstract) {
+    const { abstract } = this.state;
+    if (!abstract) {
       this.getAbstract();
       return null;
     }
     return (
       <BibliographyDetailPanel>
-        <Abstract abstract={this.state.abstract} />
+        <Abstract abstract={abstract} />
       </BibliographyDetailPanel>
     );
   };
 
   // Fetches similar papers data as needed and return components
   buildSimilar = () => {
-    if (!this.state.similar) {
+    const { similar } = this.state;
+    if (!similar) {
       this.getSimilar();
       return null;
     }
@@ -61,14 +64,14 @@ class Publication extends Component {
           alignItems="stretch"
           spacing={2}
         >
-          {this.state.similar.map((hit, i) => (
-            <Grid item xs={12} key={i}>
+          {similar.map(hit => (
+            <Grid item xs={12} key={v1()}>
               <SimplePublication
                 variant="small"
                 pmId={hit._source.pub_id}
                 title={hit._source.title}
                 authors={
-                  (hit._source.authors || []).map((a) => ({
+                  (hit._source.authors || []).map(a => ({
                     lastName: a.LastName,
                     initials: a.Initials,
                   })) || []
@@ -88,8 +91,9 @@ class Publication extends Component {
 
   // Get the abstract data from API
   getAbstract = () => {
-    getPublicationAbstract(this.props.pmId).then(
-      (resp) => {
+    const { pmId } = this.props;
+    getPublicationAbstract(pmId).then(
+      resp => {
         this.setState({
           abstract: resp.abstract,
         });
@@ -97,7 +101,6 @@ class Publication extends Component {
       () => {
         this.setState({
           abstract: '',
-          hasError: true,
         });
       }
     );
@@ -105,8 +108,9 @@ class Publication extends Component {
 
   // Get the abstract data from API
   getSimilar = () => {
-    getSimilarPublications(this.props.pmId).then(
-      (resp) => {
+    const { pmId } = this.props;
+    getSimilarPublications(pmId).then(
+      resp => {
         this.setState({
           similar: resp.hits.hits,
         });
@@ -114,18 +118,17 @@ class Publication extends Component {
       () => {
         this.setState({
           similar: null,
-          hasError: true,
         });
       }
     );
   };
 
-  render = () => {
+  render() {
     const { pmId, title, authors, journal, hasAbstract = true } = this.props;
     const { showAbstract, showSimilar } = this.state;
 
     return (
-      <Fragment>
+      <>
         {/* Publication basic details */}
         <SimplePublication
           pmId={pmId}
@@ -180,9 +183,9 @@ class Publication extends Component {
           {/* Similar papers details */}
           {showSimilar ? this.buildSimilar() : null}
         </div>
-      </Fragment>
+      </>
     );
-  };
+  }
 }
 
 export default Publication;

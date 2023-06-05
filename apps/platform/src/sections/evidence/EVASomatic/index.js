@@ -2,7 +2,7 @@ import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
 const id = 'eva_somatic';
 export const definition = {
-  id: id,
+  id,
   name: 'ClinVar (somatic)',
   shortName: 'CS',
   hasData: ({ evaSomaticSummary }) => evaSomaticSummary.count > 0,

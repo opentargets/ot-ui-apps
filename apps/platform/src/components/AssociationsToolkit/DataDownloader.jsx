@@ -45,17 +45,15 @@ const getRowsQuerySelector = entityToGet =>
 
 const getExportedColumns = entityToGet => {
   const nameColumn = entityToGet === 'target' ? targetName : diseaseName;
-  const sources = dataSources.map(({ id }) => {
-    return {
-      id,
-      exportValue: data => {
-        const datatypeScore = data.datasourceScores.find(
-          datasourceScore => datasourceScore.componentId === id
-        );
-        return datatypeScore ? datatypeScore.score : 'No data';
-      },
-    };
-  });
+  const sources = dataSources.map(({ id }) => ({
+    id,
+    exportValue: data => {
+      const datatypeScore = data.datasourceScores.find(
+        datasourceScore => datasourceScore.componentId === id
+      );
+      return datatypeScore ? datatypeScore.score : 'No data';
+    },
+  }));
 
   return [
     nameColumn,
@@ -69,8 +67,8 @@ const getExportedColumns = entityToGet => {
 };
 
 const asJSON = (columns, rows) => {
-  const rowStrings = rows.map(row => {
-    return columns.reduce((accumulator, newKey) => {
+  const rowStrings = rows.map(row =>
+    columns.reduce((accumulator, newKey) => {
       if (newKey.exportValue === false) return accumulator;
 
       const newLabel = _.camelCase(
@@ -83,24 +81,14 @@ const asJSON = (columns, rows) => {
           ? newKey.exportValue(row)
           : _.get(row, newKey.propertyPath || newKey.id, ''),
       };
-    }, {});
-  });
+    }, {})
+  );
 
   return JSON.stringify(rowStrings);
 };
 
-const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
-  const quoteString = d => {
-    // converts arrays to strings
-    if (Array.isArray(d)) {
-      d = d.join(',');
-    }
-    return quoteStrings && typeof d === 'string' ? `"${d}"` : d;
-  };
-
-  const lineSeparator = '\n';
-
-  const headerString = columns
+const getHeaderString = ({ columns, quoteString, separator }) =>
+  columns
     .reduce((headerString, column) => {
       if (column.exportValue === false) return headerString;
 
@@ -111,6 +99,20 @@ const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
       return [...headerString, newLabel];
     }, [])
     .join(separator);
+
+const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
+  const quoteString = d => {
+    let result = d;
+    // converts arrays to strings
+    if (Array.isArray(d)) {
+      result = d.join(',');
+    }
+    return quoteStrings && typeof result === 'string' ? `"${result}"` : result;
+  };
+
+  const lineSeparator = '\n';
+
+  const headerString = getHeaderString({ columns, quoteString, separator });
 
   const rowStrings = rows
     .map(row =>
@@ -227,7 +229,7 @@ function DataDownloader({ fileStem }) {
   const open = Boolean(anchorEl);
   const popoverId = open ? 'dowloader-popover' : undefined;
 
-  const downloadData = async (format, columns, rows, fileStem) => {
+  const downloadData = async (format, dataColumns, rows, dataFileStem) => {
     let allRows = rows;
     if (typeof rows === 'function') {
       setDownloading(true);
@@ -237,8 +239,8 @@ function DataDownloader({ fileStem }) {
     if (!allRows || allRows.length === 0) {
       return;
     }
-    const blob = createBlob(format)(columns, allRows);
-    FileSaver.saveAs(blob, `${fileStem}.${format}`, { autoBOM: false });
+    const blob = createBlob(format)(dataColumns, allRows);
+    FileSaver.saveAs(blob, `${dataFileStem}.${format}`, { autoBOM: false });
   };
 
   const handleClickBTN = event => {

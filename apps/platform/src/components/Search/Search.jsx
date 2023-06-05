@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import {
   Box,
@@ -44,15 +44,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Search({ autoFocus = false, embedded = false }) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const debouncedInputValue = useDebounce(inputValue, 300);
   const [getData, { loading, data }] = useLazyQuery(SEARCH_QUERY, {
     variables: { queryString: debouncedInputValue },
-    onCompleted: () => {},
+    onCompleted: () => ({}),
   });
   const [searchResults, setSearchResults] = useState([]);
-  let history = useHistory();
+  const history = useHistory();
 
   const handleChangeInputValue = e => {
     if (!e.target.value) {

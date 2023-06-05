@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Typography, withStyles } from '@material-ui/core';
 
 const highlightStyles = theme => ({
@@ -11,7 +11,7 @@ const highlightStyles = theme => ({
   },
 });
 
-const Highlights = ({ classes, highlights }) => {
+function Highlights({ classes, highlights }) {
   const [showMore, setShowMore] = useState(false);
 
   if (highlights.length === 0) return null;
@@ -48,6 +48,6 @@ const Highlights = ({ classes, highlights }) => {
       )}
     </div>
   );
-};
+}
 
 export default withStyles(highlightStyles)(Highlights);

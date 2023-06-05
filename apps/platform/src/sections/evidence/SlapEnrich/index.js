@@ -2,7 +2,7 @@ import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
 const id = 'slapenrich';
 export const definition = {
-  id: id,
+  id,
   name: 'SLAPenrich',
   shortName: 'SE',
   hasData: data => data.slapEnrich.count > 0,

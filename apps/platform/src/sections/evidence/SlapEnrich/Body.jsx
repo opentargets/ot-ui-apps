@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 
@@ -69,19 +68,6 @@ const columns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.SlapEnrichSummaryFragment
-  );
-  const count = summaryData.slapEnrich.count;
-  
-  if(!count || count < 1) {
-    return null
-  }
-
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const variables = {
@@ -99,7 +85,9 @@ export function BodyCore({ definition, id, label, count }) {
       definition={definition}
       chipText={dataTypesMap.affected_pathway}
       request={request}
-      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={data => (
         <DataTable
           columns={columns}
@@ -116,5 +104,20 @@ export function BodyCore({ definition, id, label, count }) {
         />
       )}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.SlapEnrichSummaryFragment
+  );
+  const { count } = summaryData.slapEnrich;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

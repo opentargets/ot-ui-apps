@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Grid,
   makeStyles,
@@ -10,21 +9,7 @@ import {
 import { useTheme } from '@material-ui/core/styles';
 import { Helmet } from 'react-helmet';
 
-import {
-  appTitle,
-  appDescription,
-  appCanonicalUrl,
-  externalLinks,
-  mainMenuItems,
-} from '../../constants';
 import { Footer, AutocompleteSearch } from 'ui';
-import HomeBox from './HomeBox';
-import Link from '../../components/Link';
-import NavBar from '../../components/NavBar';
-import searchExamples from './searchExamples';
-import Splash from './Splash';
-import Version from './Version';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircle,
@@ -35,23 +20,29 @@ import {
   faFileAlt,
   faCommentDots,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  appTitle,
+  appDescription,
+  appCanonicalUrl,
+  externalLinks,
+  mainMenuItems,
+} from '../../constants';
+import HomeBox from './HomeBox';
+import Link from '../../components/Link';
+import NavBar from '../../components/NavBar';
+import searchExamples from './searchExamples';
+import Splash from './Splash';
+import Version from './Version';
 
 import config from '../../config';
 import PrivateWrapper from '../../components/PrivateWrapper';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   links: {
     marginTop: '12px',
   },
   api: {
     marginTop: '38px',
-  },
-  helpBoxes: {
-    maxWidth: '120px',
-    textAlign: 'center',
-    [theme.breakpoints.down('xs')]: {
-      textAlign: 'left',
-    },
   },
   hpSection: {
     marginBottom: '40px',
@@ -64,8 +55,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const usePanelStyles = makeStyles(theme => ({
+  helpBoxes: {
+    maxWidth: '120px',
+    textAlign: 'center',
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'left',
+    },
+  },
+}));
+
 function pickTwo(arr) {
-  let i1 = Math.floor(Math.random() * arr.length);
+  const i1 = Math.floor(Math.random() * arr.length);
   let i2 = Math.floor(Math.random() * arr.length);
 
   while (i1 === i2) {
@@ -75,49 +76,51 @@ function pickTwo(arr) {
   return [arr[i1], arr[i2]];
 }
 
-const HomePage = () => {
+function HelpBoxPanel({ fai, url, label, external }) {
+  const theme = useTheme();
+  const xsMQ = useMediaQuery(theme.breakpoints.down('xs'));
+
+  const classes = usePanelStyles();
+
+  if (xsMQ) {
+    // on xsmall screens
+    return (
+      <Link to={url} external={external}>
+        <Grid container wrap="nowrap" alignItems="center" spacing={1}>
+          <Grid item>
+            <div className="fa-layers fa-fw fa-3x">
+              <FontAwesomeIcon icon={faCircle} />
+              <FontAwesomeIcon icon={fai} transform="shrink-8" inverse />
+            </div>
+          </Grid>
+          <Grid item>
+            <Typography display="inline">{label}</Typography>
+          </Grid>
+        </Grid>
+      </Link>
+    );
+  }
+  return (
+    <Box className={classes.helpBoxes}>
+      <Link to={url} external={external}>
+        <div className="fa-layers fa-fw fa-6x">
+          <FontAwesomeIcon icon={faCircle} />
+          <FontAwesomeIcon icon={fai} transform="shrink-8" inverse />
+        </div>
+        <Typography>{label}</Typography>
+      </Link>
+    </Box>
+  );
+}
+
+function HomePage() {
   const classes = useStyles();
   const targets = pickTwo(searchExamples.targets);
   const diseases = pickTwo(searchExamples.diseases);
   const drugs = pickTwo(searchExamples.drugs);
-  const theme = useTheme();
-  const xsMQ = useMediaQuery(theme.breakpoints.down('xs'));
 
   const handleScrollDown = () => {
     window.scrollTo({ top: window.innerHeight, left: 0, behavior: 'smooth' });
-  };
-
-  const HelpBoxPanel = ({ fai, url, label, external }) => {
-    if (xsMQ) {
-      // on xsmall screens
-      return (
-        <Link to={url} external={external}>
-          <Grid container wrap="nowrap" alignItems="center" spacing={1}>
-            <Grid item>
-              <div className="fa-layers fa-fw fa-3x">
-                <FontAwesomeIcon icon={faCircle} />
-                <FontAwesomeIcon icon={fai} transform="shrink-8" inverse />
-              </div>
-            </Grid>
-            <Grid item>
-              <Typography display="inline">{label}</Typography>
-            </Grid>
-          </Grid>
-        </Link>
-      );
-    } else {
-      return (
-        <Box className={classes.helpBoxes}>
-          <Link to={url} external={external}>
-            <div className="fa-layers fa-fw fa-6x">
-              <FontAwesomeIcon icon={faCircle} />
-              <FontAwesomeIcon icon={fai} transform="shrink-8" inverse />
-            </div>
-            <Typography>{label}</Typography>
-          </Link>
-        </Box>
-      );
-    }
   };
 
   return (
@@ -140,7 +143,7 @@ const HomePage = () => {
           placement="bottom-end"
         />
         <HomeBox>
-          <AutocompleteSearch isHomePage showSearchResultPage/>
+          <AutocompleteSearch isHomePage showSearchResultPage />
           {/* Search examples */}
           <Grid
             className={classes.links}
@@ -206,7 +209,8 @@ const HomePage = () => {
 
         {/* scroll down button */}
         <Grid container justifyContent="center">
-          <div
+          <button
+            type="button"
             className="fa-layers fa-fw fa-3x"
             style={{
               height: '0px',
@@ -218,7 +222,7 @@ const HomePage = () => {
           >
             <FontAwesomeIcon icon={faCircle} inverse />
             <FontAwesomeIcon icon={faChevronDown} transform="shrink-4" />
-          </div>
+          </button>
         </Grid>
       </Grid>
 
@@ -268,7 +272,7 @@ const HomePage = () => {
             alignItems="flex-start"
             spacing={1}
           >
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm="auto">
               <HelpBoxPanel
                 fai={faDownload}
                 url="/downloads"
@@ -276,7 +280,7 @@ const HomePage = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm="auto">
               <HelpBoxPanel
                 fai={faLaptopCode}
                 url="/api"
@@ -285,7 +289,7 @@ const HomePage = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm="auto">
               <HelpBoxPanel
                 fai={faQuestionCircle}
                 url="https://platform-docs.opentargets.org/"
@@ -294,7 +298,7 @@ const HomePage = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm="auto">
               <HelpBoxPanel
                 fai={faFileAlt}
                 url="https://platform-docs.opentargets.org/citation"
@@ -303,7 +307,7 @@ const HomePage = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm="auto">
               <HelpBoxPanel
                 fai={faCommentDots}
                 url="https://community.opentargets.org/"
@@ -320,6 +324,6 @@ const HomePage = () => {
       <Footer externalLinks={externalLinks} />
     </>
   );
-};
+}
 
 export default HomePage;
