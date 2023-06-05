@@ -1,4 +1,3 @@
-import React from 'react';
 import classNames from 'classnames';
 import { Chip as MUIChip, makeStyles } from '@material-ui/core';
 
@@ -11,7 +10,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Chip = ({ className, label, title, disabled }) => {
+function Chip({ className, label, title, disabled }) {
   const classes = useStyles();
   return (
     <MUIChip
@@ -23,6 +22,6 @@ const Chip = ({ className, label, title, disabled }) => {
       disabled={disabled}
     />
   );
-};
+}
 
 export default Chip;

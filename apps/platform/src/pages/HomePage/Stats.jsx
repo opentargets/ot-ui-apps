@@ -1,25 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Grid, Typography, withStyles } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDna, faStethoscope } from '@fortawesome/free-solid-svg-icons';
 
-const styles = (theme) => {
-  return {
-    container: {
-      backgroundColor: theme.palette.grey[300],
-      height: '205px',
-    },
-    title: {
-      fontWeight: 600,
-    },
-    icon: {
-      fill: theme.palette.grey[700],
-      height: '56px',
-    },
-  };
-};
+const styles = theme => ({
+  container: {
+    backgroundColor: theme.palette.grey[300],
+    height: '205px',
+  },
+  title: {
+    fontWeight: 600,
+  },
+  icon: {
+    fill: theme.palette.grey[700],
+    height: '56px',
+  },
+});
 
-const Stats = ({ classes }) => {
+function Stats({ classes }) {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
@@ -27,14 +25,15 @@ const Stats = ({ classes }) => {
     // TODO: design GraphQL schema from stats and get this data from the
     // GraphQL API
     fetch('https://platform-api.opentargets.io/v3/platform/public/utils/stats')
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         if (isCurrent) {
           const numDataSources = Object.values(
             data.associations.datatypes
-          ).reduce((acc, current) => {
-            return acc + Object.keys(current.datasources).length;
-          }, 0);
+          ).reduce(
+            (acc, current) => acc + Object.keys(current.datasources).length,
+            0
+          );
 
           setStats({
             numTargets: data.targets.total,
@@ -45,7 +44,9 @@ const Stats = ({ classes }) => {
         }
       });
 
-    return () => (isCurrent = false);
+    return () => {
+      isCurrent = false;
+    };
   }, []);
 
   return (
@@ -96,6 +97,6 @@ const Stats = ({ classes }) => {
       </Grid>
     </Grid>
   );
-};
+}
 
 export default withStyles(styles)(Stats);

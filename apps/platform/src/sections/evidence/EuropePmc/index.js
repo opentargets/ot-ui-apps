@@ -2,7 +2,7 @@ import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
 const id = 'europepmc';
 export const definition = {
-  id: id,
+  id,
   name: 'Europe PMC',
   shortName: 'EP',
   hasData: data => data.europePmc.count > 0,

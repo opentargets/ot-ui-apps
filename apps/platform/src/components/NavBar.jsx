@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -7,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { MenuItem, MenuList, useMediaQuery } from '@material-ui/core';
 import { withStyles, useTheme } from '@material-ui/core/styles';
 import classNames from 'classnames';
+import { v1 } from 'uuid';
 
 import Link from './Link';
 import OpenTargetsTitle from './OpenTargetsTitle';
@@ -71,20 +71,22 @@ const styles = theme => ({
   },
 });
 
-const MenuExternalLink = ({ classes, href, children }) => (
-  <Typography color="inherit" className={classes.menuExternalLinkContainer}>
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      href={href}
-      className={classes.menuExternalLink}
-    >
-      {children}
-    </a>
-  </Typography>
-);
+function MenuExternalLink({ classes, href, children }) {
+  return (
+    <Typography color="inherit" className={classes.menuExternalLinkContainer}>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href={href}
+        className={classes.menuExternalLink}
+      >
+        {children}
+      </a>
+    </Typography>
+  );
+}
 
-const NavBar = ({
+function NavBar({
   classes,
   name,
   search,
@@ -95,7 +97,7 @@ const NavBar = ({
   homepage,
   items,
   placement,
-}) => {
+}) {
   const theme = useTheme();
   const smMQ = useMediaQuery(theme.breakpoints.down('sm'));
   const isHomePageRegular = homepage && !smMQ;
@@ -117,7 +119,7 @@ const NavBar = ({
           )}
         </div>
 
-        <div className={classes.navSearch}>{search ? search : null}</div>
+        <div className={classes.navSearch}>{search || null}</div>
 
         <div className={classes.navMenu}>
           {docs ? (
@@ -150,14 +152,11 @@ const NavBar = ({
 
           {isHomePageRegular && (
             <MenuList className={classes.menuList}>
-              {items.map((item, i) => {
+              {items.map(item => {
                 if (item.showOnlyPartner) {
                   return (
-                    <PrivateWrapper key={i}>
-                      <MenuItem
-                        dense={true}
-                        className={classes.menuItem}
-                      >
+                    <PrivateWrapper key={v1()}>
+                      <MenuItem dense className={classes.menuItem}>
                         <Link
                           external={item.external}
                           to={item.url}
@@ -168,19 +167,18 @@ const NavBar = ({
                       </MenuItem>
                     </PrivateWrapper>
                   );
-                } else {
-                  return (
-                    <MenuItem key={i} dense={true} className={classes.menuItem}>
-                      <Link
-                        external={item.external}
-                        to={item.url}
-                        className={classes.menuLink}
-                      >
-                        {item.name}
-                      </Link>
-                    </MenuItem>
-                  );
                 }
+                return (
+                  <MenuItem key={v1()} dense className={classes.menuItem}>
+                    <Link
+                      external={item.external}
+                      to={item.url}
+                      className={classes.menuLink}
+                    >
+                      {item.name}
+                    </Link>
+                  </MenuItem>
+                );
               })}
             </MenuList>
           )}
@@ -188,6 +186,6 @@ const NavBar = ({
       </Toolbar>
     </AppBar>
   );
-};
+}
 
 export default withStyles(styles)(NavBar);

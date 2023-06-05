@@ -1,13 +1,12 @@
-import React from 'react';
 import { CardContent, makeStyles, Typography } from '@material-ui/core';
 import WarningIcon from '@material-ui/icons/Warning';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
 
+import { LongText } from 'ui';
 import Chip from '../../components/Chip';
 import Link from '../../components/Link';
 import LongList from '../../components/LongList';
-import { LongText } from 'ui';
 
 const useStyles = makeStyles({
   link: {
@@ -22,7 +21,7 @@ const useStyles = makeStyles({
   },
 });
 
-const DrugDetail = ({ data }) => {
+function DrugDetail({ data }) {
   const classes = useStyles();
   return (
     <CardContent>
@@ -54,17 +53,15 @@ const DrugDetail = ({ data }) => {
           <LongList
             terms={data.indications.rows}
             maxTerms={5}
-            render={(indication, index) => {
-              return (
-                <Link
-                  key={index}
-                  className={classes.link}
-                  to={`/disease/${indication.disease.id}`}
-                >
-                  {indication.disease.name}
-                </Link>
-              );
-            }}
+            render={(indication, index) => (
+              <Link
+                key={index}
+                className={classes.link}
+                to={`/disease/${indication.disease.id}`}
+              >
+                {indication.disease.name}
+              </Link>
+            )}
           />
         </>
       )}
@@ -76,17 +73,15 @@ const DrugDetail = ({ data }) => {
           <LongList
             terms={data.linkedTargets.rows}
             maxTerms={5}
-            render={target => {
-              return (
-                <Link
-                  className={classes.link}
-                  key={target.id}
-                  to={`/target/${target.id}`}
-                >
-                  {target.approvedSymbol}
-                </Link>
-              );
-            }}
+            render={target => (
+              <Link
+                className={classes.link}
+                key={target.id}
+                to={`/target/${target.id}`}
+              >
+                {target.approvedSymbol}
+              </Link>
+            )}
           />
         </>
       )}
@@ -120,6 +115,6 @@ const DrugDetail = ({ data }) => {
       )}
     </CardContent>
   );
-};
+}
 
 export default DrugDetail;

@@ -2,7 +2,7 @@ import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
 const id = 'uniprot_literature';
 export const definition = {
-  id: id,
+  id,
   name: 'UniProt literature',
   shortName: 'UL',
   hasData: ({ uniprotLiteratureSummary }) => uniprotLiteratureSummary.count > 0,

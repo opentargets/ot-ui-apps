@@ -1,6 +1,5 @@
-import React from 'react';
 import { Grid, Paper, makeStyles } from '@material-ui/core';
-import config from '../../config.js';
+import config from '../../config';
 
 import OTLogo from '../../assets/OTLogo';
 import PPOTLogo from '../../assets/PPPOTLogo';
@@ -37,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const HomeBox = ({ children }) => {
+function HomeBox({ children }) {
   const classes = useStyles();
   return (
     <Grid item xs={12} sm={8} md={8} lg={8}>
@@ -53,6 +52,6 @@ const HomeBox = ({ children }) => {
       </Paper>
     </Grid>
   );
-};
+}
 
 export default HomeBox;

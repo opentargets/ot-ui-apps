@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 
 import Description from './Description';
@@ -18,16 +17,14 @@ function Body({ definition, id, label: symbol }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={({ target }) => {
-        return (
-          <PhenotypesTable
-            mousePhenotypes={target.mousePhenotypes}
-            query={MOUSE_PHENOTYPES_QUERY.loc.source.body}
-            variables={variables}
-            symbol={symbol}
-          />
-        );
-      }}
+      renderBody={({ target }) => (
+        <PhenotypesTable
+          mousePhenotypes={target.mousePhenotypes}
+          query={MOUSE_PHENOTYPES_QUERY.loc.source.body}
+          variables={variables}
+          symbol={symbol}
+        />
+      )}
     />
   );
 }

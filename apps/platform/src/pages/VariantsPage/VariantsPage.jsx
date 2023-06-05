@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 import { Typography } from '@material-ui/core';
 import { DataTable } from '../../components/Table';
 import Link from '../../components/Link';
@@ -318,9 +318,9 @@ const columns = [
   },
 ];
 
-const VariantsPage = () => {
+function VariantsPage() {
   return (
-    <Fragment>
+    <>
       <Typography variant="h4" component="h1" paragraph>
         Variant definitions
       </Typography>
@@ -346,8 +346,8 @@ const VariantsPage = () => {
         pageSize={100}
         showPagination={false}
       />
-    </Fragment>
+    </>
   );
-};
+}
 
 export default VariantsPage;

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import SummaryItem from '../../../components/Summary/SummaryItem';
 
@@ -20,6 +18,8 @@ function Summary({ definition }) {
         if (hasBeenWithdrawn) return 'Withdrawn';
 
         if (blackBoxWarning) return 'Black Box';
+
+        return null;
       }}
     />
   );

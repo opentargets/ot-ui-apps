@@ -1,5 +1,5 @@
 import FileSaver from 'file-saver';
-import React, { Suspense, useState, lazy } from 'react';
+import { Suspense, useState, lazy } from 'react';
 import _ from 'lodash';
 import {
   Button,
@@ -20,16 +20,20 @@ import Link from '../Link';
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
-  import('graphiql').then((module) => {
-    module.default.Logo = () => null;
-    module.default.Toolbar = () => null;
+  import('graphiql').then(module => {
+    module.default.Logo = function () {
+      return null;
+    };
+    module.default.Toolbar = function () {
+      return null;
+    };
     return module;
   })
 );
 
 const asJSON = (columns, rows) => {
-  const rowStrings = rows.map((row) => {
-    return columns.reduce((accumulator, newKey) => {
+  const rowStrings = rows.map(row =>
+    columns.reduce((accumulator, newKey) => {
       if (newKey.exportValue === false) return accumulator;
 
       const newLabel = _.camelCase(
@@ -42,37 +46,38 @@ const asJSON = (columns, rows) => {
           ? newKey.exportValue(row)
           : _.get(row, newKey.propertyPath || newKey.id, ''),
       };
-    }, {});
-  });
+    }, {})
+  );
 
   return JSON.stringify(rowStrings);
 };
 
 const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
-  const quoteString = (d) => {
+  const quoteString = d => {
+    let result = d;
     // converts arrays to strings
     if (Array.isArray(d)) {
-      d = d.join(',');
+      result = d.join(',');
     }
-    return quoteStrings && typeof d === 'string' ? `"${d}"` : d;
+    return quoteStrings && typeof result === 'string' ? `"${result}"` : result;
   };
 
   const lineSeparator = '\n';
 
   const headerString = columns
-    .reduce((headerString, column) => {
-      if (column.exportValue === false) return headerString;
+    .reduce((accHeaderString, column) => {
+      if (column.exportValue === false) return accHeaderString;
 
       const newLabel = quoteString(
         _.camelCase(column.exportLabel || column.label || column.id)
       );
 
-      return [...headerString, newLabel];
+      return [...accHeaderString, newLabel];
     }, [])
     .join(separator);
 
   const rowStrings = rows
-    .map((row) =>
+    .map(row =>
       columns
         .reduce((rowString, column) => {
           if (column.exportValue === false) return rowString;
@@ -92,7 +97,7 @@ const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
   return [headerString, rowStrings].join(lineSeparator);
 };
 
-const createBlob = (format) =>
+const createBlob = format =>
   ({
     json: (columns, rows) =>
       new Blob([asJSON(columns, rows)], {
@@ -108,7 +113,7 @@ const createBlob = (format) =>
       }),
   }[format]);
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles(theme => ({
   messageProgress: {
     marginRight: '1rem',
   },
@@ -155,12 +160,12 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
   const [open, setOpen] = useState(false);
   const classes = styles();
 
-  const downloadData = async (format, columns, rows, fileStem) => {
-    let allRows = rows;
+  const downloadData = async (format, dataColumns, dataRows, dataFileStem) => {
+    let allRows = dataRows;
 
-    if (typeof rows === 'function') {
+    if (typeof dataRows === 'function') {
       setDownloading(true);
-      allRows = await rows();
+      allRows = await dataRows();
       setDownloading(false);
     }
 
@@ -168,9 +173,9 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
       return;
     }
 
-    const blob = createBlob(format)(columns, allRows);
+    const blob = createBlob(format)(dataColumns, allRows);
 
-    FileSaver.saveAs(blob, `${fileStem}.${format}`, { autoBOM: false });
+    FileSaver.saveAs(blob, `${dataFileStem}.${format}`, { autoBOM: false });
   };
 
   const handleClickDownloadJSON = async () => {
@@ -216,7 +221,11 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
         </Grid>
         {query ? (
           <Grid item>
-            <Button variant="outlined" size="small" onClick={togglePlayground}>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => togglePlayground()}
+            >
               API query
             </Button>
           </Grid>
@@ -242,12 +251,12 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={close}
+        onClose={e => close(e)}
         anchor="right"
       >
         <Typography className={classes.title}>
           API query
-          <IconButton onClick={close}>
+          <IconButton onClick={e => close(e)}>
             <CloseIcon />
           </IconButton>
         </Typography>

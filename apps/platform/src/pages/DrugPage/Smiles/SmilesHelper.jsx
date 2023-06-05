@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import { Modal, Paper, withStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
 import SmilesDrawer from 'smiles-drawer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearchPlus } from '@fortawesome/free-solid-svg-icons';
@@ -14,11 +13,11 @@ const styles = theme => ({
     marginLeft: 'auto',
     width: 'fit-content',
     '& .seeDetailsIcon': {
-      visibility: 'hidden'
+      visibility: 'hidden',
     },
     '&:hover .seeDetailsIcon': {
-      visibility: 'visible'
-    } 
+      visibility: 'visible',
+    },
   },
   modal: {
     width: '800px',
@@ -35,14 +34,13 @@ const styles = theme => ({
   },
 });
 
-let SmilesHelper = class extends Component {
-  state = {
-    open: false,
-  };
-
-  toggleModal = () => {
-    this.setState(({ open }) => ({ open: !open }));
-  };
+class SmilesHelper extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+    };
+  }
 
   componentDidMount() {
     const { smiles, chemblId } = this.props;
@@ -85,6 +83,10 @@ let SmilesHelper = class extends Component {
     }
   }
 
+  toggleModal = () => {
+    this.setState(({ open }) => ({ open: !open }));
+  };
+
   render() {
     const { chemblId, classes } = this.props;
     const { open } = this.state;
@@ -96,7 +98,7 @@ let SmilesHelper = class extends Component {
           onClick={this.toggleModal}
         >
           <canvas id={chemblId} />
-          <FontAwesomeIcon icon={faSearchPlus} className='seeDetailsIcon' />
+          <FontAwesomeIcon icon={faSearchPlus} className="seeDetailsIcon" />
         </Paper>
         <Modal open={open} onClose={this.toggleModal} keepMounted>
           <Paper className={classes.modal}>
@@ -107,56 +109,6 @@ let SmilesHelper = class extends Component {
       </>
     );
   }
-};
-
-SmilesHelper = withStyles(styles)(SmilesHelper);
-
-class Smiles extends Component {
-  state = {
-    smiles: undefined,
-  };
-
-  componentDidMount() {
-    this.mounted = true;
-
-    const { chemblId } = this.props;
-    fetch(
-      `https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblId}?format=json`
-    )
-      .then(res => res.json())
-      .then(data => {
-        if (this.mounted) {
-          this.setState({
-            smiles:
-              data.molecule_type === 'Small molecule'
-                ? data.molecule_structures?.canonical_smiles
-                : null,
-          });
-        }
-      });
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  render() {
-    const { chemblId } = this.props;
-    const { smiles } = this.state;
-
-    if (smiles === null) return null;
-
-    return smiles ? (
-      <SmilesHelper chemblId={chemblId} smiles={smiles} />
-    ) : (
-      <Skeleton
-        style={{ marginLeft: 'auto' }}
-        height="240px"
-        variant="rect"
-        width="450px"
-      />
-    );
-  }
 }
 
-export default Smiles;
+export default withStyles(styles)(SmilesHelper);

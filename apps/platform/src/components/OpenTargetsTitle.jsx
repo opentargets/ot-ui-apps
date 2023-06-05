@@ -1,4 +1,3 @@
-import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
@@ -19,7 +18,7 @@ const styles = () => ({
   },
 });
 
-const OpenTargetsTitle = ({ classes, className, name }) => {
+function OpenTargetsTitle({ classes, className, name }) {
   const titleClasses = classNames(classes.root, className);
   const { isPartnerPreview } = usePermissions();
   const displayedAppName = isPartnerPreview ? 'Partner Preview Platform' : name;
@@ -29,6 +28,6 @@ const OpenTargetsTitle = ({ classes, className, name }) => {
       <span className={classes.thin}>{displayedAppName}</span>
     </Typography>
   );
-};
+}
 
 export default withStyles(styles)(OpenTargetsTitle);

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import SummaryItem from '../../../components/Summary/SummaryItem';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 
@@ -12,13 +10,13 @@ function Summary({ definition }) {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => {
-        return data.chemicalProbes?.length > 0
+      renderSummary={data =>
+        data.chemicalProbes?.length > 0
           ? `${data.chemicalProbes.length} chemical probe${
               data.chemicalProbes.length !== 1 ? 's' : ''
             }`
-          : null;
-      }}
+          : null
+      }
     />
   );
 }

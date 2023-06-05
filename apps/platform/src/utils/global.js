@@ -11,13 +11,13 @@ export const safeToString = x => {
     case null:
       return '';
     default:
-      return x + '';
+      return `${x  }`;
   }
 };
 
 export const identifiersOrgLink = (prefix, accession, resource) =>
   `https://identifiers.org/${
-    resource ? resource + '/' : ''
+    resource ? `${resource  }/` : ''
   }${prefix}:${accession}`;
 
 export const literatureUrl = id =>

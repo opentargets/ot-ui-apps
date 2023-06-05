@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   IconButton,
@@ -81,29 +81,26 @@ const listComponentStyles = makeStyles(theme => ({
   },
 }));
 
-export const PublicationsList = ({ entriesIds, hideSearch = false }) => {
+export function PublicationsList({ entriesIds, hideSearch = false }) {
   const [publications, setPublications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(
-    () => {
-      const { baseUrl, formBody } = europePmcSearchPOSTQuery(entriesIds);
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        },
-        body: formBody,
-      };
-      fetch(baseUrl, requestOptions)
-        .then(response => response.json())
-        .then(data => {
-          setLoading(false);
-          setPublications(data.resultList.result);
-        });
-    },
-    [entriesIds]
-  );
+  useEffect(() => {
+    const { baseUrl, formBody } = europePmcSearchPOSTQuery(entriesIds);
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: formBody,
+    };
+    fetch(baseUrl, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        setLoading(false);
+        setPublications(data.resultList.result);
+      });
+  }, [entriesIds]);
 
   if (loading)
     return (
@@ -126,11 +123,11 @@ export const PublicationsList = ({ entriesIds, hideSearch = false }) => {
   const parsedPublications = publications.map(pub => {
     const row = {};
     row.europePmcId = pub.id;
-    row.fullTextOpen = pub.inEPMC === 'Y' || pub.inPMC === 'Y' ? true : false;
+    row.fullTextOpen = !!(pub.inEPMC === 'Y' || pub.inPMC === 'Y');
     row.title = pub.title;
     row.year = pub.pubYear;
     row.abstract = pub.abstractText;
-    row.openAccess = pub.isOpenAccess === 'N' ? false : true;
+    row.openAccess = pub.isOpenAccess !== 'N';
     row.authors = pub.authorList?.author || [];
     row.journal = {
       ...pub.journalInfo,
@@ -144,7 +141,32 @@ export const PublicationsList = ({ entriesIds, hideSearch = false }) => {
       id: 'publications',
       label: ' ',
       renderCell: publication => {
-        return <PublicationWrapper {...publication} />;
+        const {
+          europePmcId,
+          title,
+          titleHtml,
+          authors,
+          journal,
+          variant,
+          abstract,
+          fullTextOpen,
+          source,
+          patentDetails,
+        } = publication;
+        return (
+          <PublicationWrapper
+            europePmcId={europePmcId}
+            title={title}
+            titleHtml={titleHtml}
+            authors={authors}
+            journal={journal}
+            variant={variant}
+            abstract={abstract}
+            fullTextOpen={fullTextOpen}
+            source={source}
+            patentDetails={patentDetails}
+          />
+        );
       },
       filterValue: row =>
         `${row.journal.journal?.title} ${row?.title} ${row?.year}
@@ -165,7 +187,7 @@ export const PublicationsList = ({ entriesIds, hideSearch = false }) => {
       rowsPerPageOptions={[5, 10, 25, 100]}
     />
   );
-};
+}
 
 function PublicationsDrawer({
   entries,
@@ -203,13 +225,12 @@ function PublicationsDrawer({
         className={classes.drawerLink}
         underline="none"
       >
-        {customLabel
-          ? customLabel
-          : entries.length === 1 && singleEntryId
-          ? entries[0].name
-          : `${entries.length} ${
-              entries.length === 1 ? 'publication' : 'publications'
-            }`}
+        {customLabel ||
+          (entries.length === 1 && singleEntryId
+            ? entries[0].name
+            : `${entries.length} ${
+                entries.length === 1 ? 'publication' : 'publications'
+              }`)}
       </MUILink>
 
       <Drawer

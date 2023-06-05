@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Body as Bibliography } from '../../common/Literature';
 
 import DRUGS_LITERATURE_OCURRENCES from './BibliographyQuery.gql';

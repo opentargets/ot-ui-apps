@@ -1,4 +1,3 @@
-import React from 'react';
 import { animateScroll } from 'react-scroll';
 import { Avatar, List, ListItem, ListItemText } from '@material-ui/core';
 import { Home } from '@material-ui/icons';

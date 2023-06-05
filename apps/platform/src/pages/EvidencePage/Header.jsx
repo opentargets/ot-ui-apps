@@ -1,4 +1,3 @@
-import React from 'react';
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 
 import HeaderBase from '../../components/Header';

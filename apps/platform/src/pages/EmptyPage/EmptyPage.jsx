@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid, Typography, withStyles } from '@material-ui/core';
 import {
   faEnvelope,
@@ -29,7 +28,7 @@ const styles = theme => ({
   },
 });
 
-const EmptyPage = ({ classes, children }) => {
+function EmptyPage({ classes, children }) {
   return (
     <Grid container direction="column" alignItems="center">
       <FontAwesomeIcon
@@ -93,6 +92,6 @@ const EmptyPage = ({ classes, children }) => {
       </Grid>
     </Grid>
   );
-};
+}
 
 export default withStyles(styles)(EmptyPage);

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import {
   Drawer,
@@ -85,7 +85,7 @@ function AllelicCompositionDrawer({ biologicalModels }) {
     <>
       <MuiLink
         className={classes.drawerLink}
-        onClick={toggleOpen}
+        onClick={()=>toggleOpen()}
         underline="none"
       >
         {biologicalModels.length}{' '}
@@ -94,22 +94,20 @@ function AllelicCompositionDrawer({ biologicalModels }) {
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={close}
+        onClose={()=>close()}
         anchor="right"
       >
         <Typography className={classes.title}>
           Experimental studies
-          <IconButton onClick={close}>
+          <IconButton onClick={()=>close()}>
             <CloseIcon />
           </IconButton>
         </Typography>
-        {biologicalModels.map(model => {
-          return (
-            <Paper key={model.id} className={classes.paper} variant="outlined">
-              <Model model={model} />
-            </Paper>
-          );
-        })}
+        {biologicalModels.map(model => (
+          <Paper key={model.id} className={classes.paper} variant="outlined">
+            <Model model={model} />
+          </Paper>
+        ))}
       </Drawer>
     </>
   );

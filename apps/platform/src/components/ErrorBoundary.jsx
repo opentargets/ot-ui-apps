@@ -4,16 +4,21 @@ import config from '../config';
 import Link from './Link';
 
 class ErrorBoundary extends Component {
-  state = {
-    hasError: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      hasError: false,
+    };
+  }
 
   static getDerivedStateFromError() {
     return { hasError: true };
   }
 
   render() {
-    const isPartnerPreview  = config.profile.isPartnerPreview;
+    const { isPartnerPreview } = config.profile;
+    const { hasError } = this.state;
+    const { children } = this.props;
 
     const {
       message = isPartnerPreview ? (
@@ -36,7 +41,7 @@ class ErrorBoundary extends Component {
       ),
     } = this.props;
 
-    return this.state.hasError ? (
+    return hasError ? (
       <Typography
         component="div"
         align="center"
@@ -46,7 +51,7 @@ class ErrorBoundary extends Component {
         {message}
       </Typography>
     ) : (
-      this.props.children
+      children
     );
   }
 }

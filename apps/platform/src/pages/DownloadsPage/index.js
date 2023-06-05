@@ -1,1 +1,1 @@
-export { default } from './DownloadsWrapper.jsx';
+export { default } from './DownloadsWrapper';

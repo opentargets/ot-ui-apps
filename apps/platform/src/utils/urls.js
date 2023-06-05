@@ -20,11 +20,11 @@ export function europePmcLiteratureQuery(ids) {
 
 export const encodeParams = params => {
   const formBody = [];
-  for (let property in params) {
-    const encodedKey = encodeURIComponent(property);
-    const encodedValue = encodeURIComponent(params[property]);
-    formBody.push(encodedKey + '=' + encodedValue);
-  }
+  Object.keys(params).forEach(key => {
+    const encodedKey = encodeURIComponent(key);
+    const encodedValue = encodeURIComponent(params[key]);
+    formBody.push(`${encodedKey}=${encodedValue}`);
+  });
   const encodedParams = formBody.join('&');
   return encodedParams;
 };
@@ -84,4 +84,24 @@ export const referenceUrls = {
   FDA: fdaUrl,
   ATC: atcUrl,
   DailyMed: dailyMedUrl,
+};
+
+// Associations and URL PPP
+export const getClassicAssociationsURL = ({ baseURL, isPartnerPreview }) => {
+  const path = isPartnerPreview ? 'classic-associations' : 'associations';
+  const fullURL = `${baseURL}${path}`;
+  return { fullURL, path };
+};
+
+export const getAbleRoutes = ({ routes = [], isPartnerPreview = false }) => {
+  const ableRouter = routes.reduce((accumulator, currentValue) => {
+    if (currentValue.private) {
+      if (isPartnerPreview) {
+        return [...accumulator, currentValue];
+      }
+      return [...accumulator];
+    }
+    return [...accumulator, currentValue];
+  }, []);
+  return ableRouter;
 };

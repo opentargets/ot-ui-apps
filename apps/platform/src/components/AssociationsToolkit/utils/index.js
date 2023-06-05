@@ -3,7 +3,7 @@ import Legend from './Legend';
 import dataSources from '../static_datasets/dataSourcesAssoc';
 import config from '../../../config';
 
-export const isPartnerPreview = config.profile.isPartnerPreview;
+export const { isPartnerPreview } = config.profile;
 
 /* --- TABLE SHARED HELPERS --- */
 export const getPriorisationSectionId = columnDef => columnDef.sectionId;
@@ -18,9 +18,7 @@ export const getCellId = (cell, entityToGet, displayedTable) => {
   return [colId, rowId, sectionId];
 };
 
-export const cellHasValue = score => {
-  return typeof score === 'number';
-};
+export const cellHasValue = score => typeof score === 'number';
 
 export const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
   id,
@@ -41,12 +39,11 @@ export const checkBoxPayload = (id, aggregationId) => ({
   name: 'dataTypes',
 });
 
-export const getControlChecked = (values = [], id) => {
-  return values.filter(val => val.id == id).length > 0;
-};
+export const getControlChecked = (values, id) =>
+  values.filter(val => val.id === id).length > 0;
 
 /* --- CONSTANTS --- */
-const primaryColor = config.profile.primaryColor;
+const { primaryColor } = config.profile;
 
 /* Associations colors */
 const PUBLIC_ASSOCIATION_COLORS = [

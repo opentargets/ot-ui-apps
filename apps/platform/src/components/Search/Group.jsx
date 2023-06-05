@@ -1,4 +1,3 @@
-import React from 'react';
 import { Typography, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -20,7 +19,7 @@ const groupName = {
   target: 'Target',
 };
 
-const Group = ({ children, name }) => {
+function Group({ children, name }) {
   const classes = useStyles();
 
   return (
@@ -33,6 +32,6 @@ const Group = ({ children, name }) => {
       {children}
     </div>
   );
-};
+}
 
 export default Group;

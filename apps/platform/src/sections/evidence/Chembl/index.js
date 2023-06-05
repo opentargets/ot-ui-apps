@@ -2,7 +2,7 @@ import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
 const id = 'chembl';
 export const definition = {
-  id: id,
+  id,
   name: 'ChEMBL',
   shortName: 'CE',
   hasData: data => data.chemblSummary.count > 0,

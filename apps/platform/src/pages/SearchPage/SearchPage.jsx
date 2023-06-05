@@ -1,8 +1,8 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import queryString from 'query-string';
 import { Typography } from '@material-ui/core';
-import BasePage from '../../components/BasePage';
 import { LoadingBackdrop } from 'ui';
+import BasePage from '../../components/BasePage';
 
 import client from '../../client';
 import SEARCH_PAGE_QUERY from './SearchPageQuery.gql';
@@ -26,37 +26,34 @@ const parseQueryString = qs => {
   return params;
 };
 
-const SearchPage = ({ location, history }) => {
+function SearchPage({ location, history }) {
   const { q, page, entities } = parseQueryString(location.search);
   const [data, setData] = useState(null);
 
-  useEffect(
-    () => {
-      let isCurrent = true;
-      client
-        .query({
-          query: SEARCH_PAGE_QUERY,
-          variables: {
-            queryString: q,
-            index: page - 1,
-            entityNames: entities,
-          },
-        })
-        .then(res => {
-          if (isCurrent) {
-            setData(res.data);
-          }
-        });
+  useEffect(() => {
+    let isCurrent = true;
+    client
+      .query({
+        query: SEARCH_PAGE_QUERY,
+        variables: {
+          queryString: q,
+          index: page - 1,
+          entityNames: entities,
+        },
+      })
+      .then(res => {
+        if (isCurrent) {
+          setData(res.data);
+        }
+      });
 
-      return () => {
-        isCurrent = false;
-      };
-    },
-    [q, page, entities]
-  );
+    return () => {
+      isCurrent = false;
+    };
+  }, [q, page, entities]);
 
-  const handleChangePage = (event, page) => {
-    const params = { q, page: page + 1, entities };
+  const handleChangePage = (event, pageChanged) => {
+    const params = { q, page: pageChanged + 1, entities };
     const qs = queryString.stringify(params, QS_OPTIONS);
     history.push(`/search?${qs}`);
   };
@@ -73,31 +70,35 @@ const SearchPage = ({ location, history }) => {
     history.push(`/search?${qs}`);
   };
 
+  let SEARCH_CONTAINER = null;
+
+  if (data && data.search.total === 0) {
+    SEARCH_CONTAINER = (
+      <EmptyPage>
+        <Typography align="center">
+          We could not find anything in the Platform database that matches
+        </Typography>
+        <Typography align="center">&quot;{q}&quot;</Typography>
+      </EmptyPage>
+    );
+  } else {
+    SEARCH_CONTAINER = (
+      <SearchContainer
+        q={q}
+        page={page}
+        entities={entities}
+        onSetEntity={handleSetEntity}
+        onPageChange={handleChangePage}
+        data={data}
+      />
+    );
+  }
+
   return (
     <BasePage>
-      <Suspense fallback={<LoadingBackdrop />}>
-        {data ? (
-          data.search.total === 0 ? (
-            <EmptyPage>
-              <Typography align="center">
-                We could not find anything in the Platform database that matches
-              </Typography>
-              <Typography align="center">&quot;{q}&quot;</Typography>
-            </EmptyPage>
-          ) : (
-            <SearchContainer
-              q={q}
-              page={page}
-              entities={entities}
-              onSetEntity={handleSetEntity}
-              onPageChange={handleChangePage}
-              data={data}
-            />
-          )
-        ) : null}
-      </Suspense>
+      <Suspense fallback={<LoadingBackdrop />}>{SEARCH_CONTAINER}</Suspense>
     </BasePage>
   );
-};
+}
 
 export default SearchPage;

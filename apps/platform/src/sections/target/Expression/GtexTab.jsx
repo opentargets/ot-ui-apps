@@ -1,8 +1,39 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { median as d3Median, quantile } from 'd3';
 
 import { DownloadSvgPlot } from '../../../components/DownloadSvgPlot';
 import GtexVariability from './GtexVariability';
+
+const transformData = data =>
+  data.map(d => {
+    // d3 requires for the array of values to be sorted before using median and quantile
+    d.data.sort((a, b) => a - b);
+    const median = d3Median(d.data);
+    const q1 = quantile(d.data, 0.25);
+    const q3 = quantile(d.data, 0.75);
+    const outliers = [];
+    const notoutliers = [];
+    const iqr = q3 - q1; // interquartile range
+
+    // find the outliers and not outliers
+    d.data.forEach(item => {
+      if (item < q1 - 1.5 * iqr || item > q3 + 1.5 * iqr) {
+        outliers.push(item);
+      } else {
+        notoutliers.push(item);
+      }
+    });
+
+    return {
+      tissueSiteDetailId: d.tissueSiteDetailId,
+      median,
+      q1,
+      q3,
+      lowerLimit: notoutliers[0],
+      upperLimit: notoutliers[notoutliers.length - 1],
+      outliers,
+    };
+  });
 
 export async function getData(symbol) {
   try {
@@ -20,38 +51,6 @@ export async function getData(symbol) {
     return { loading: false, error };
   }
 }
-
-const transformData = data => {
-  return data.map(d => {
-    // d3 requires for the array of values to be sorted before using median and quantile
-    d.data.sort((a, b) => a - b);
-    const median = d3Median(d.data);
-    const q1 = quantile(d.data, 0.25);
-    const q3 = quantile(d.data, 0.75);
-    const outliers = [];
-    const notoutliers = [];
-    const iqr = q3 - q1; // interquartile range
-
-    // find the outliers and not outliers
-    d.data.forEach(d => {
-      if (d < q1 - 1.5 * iqr || d > q3 + 1.5 * iqr) {
-        outliers.push(d);
-      } else {
-        notoutliers.push(d);
-      }
-    });
-
-    return {
-      tissueSiteDetailId: d.tissueSiteDetailId,
-      median,
-      q1,
-      q3,
-      lowerLimit: notoutliers[0],
-      upperLimit: notoutliers[notoutliers.length - 1],
-      outliers,
-    };
-  });
-};
 
 function GtexTab({ symbol, data }) {
   const gtexVariability = useRef();

@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Paper, Box, Chip, Typography } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
@@ -7,7 +7,7 @@ import Link from '../../components/Link';
 import { defaultRowsPerPageOptions, formatMap } from '../../constants';
 import { DataTable } from '../../components/Table';
 import DownloadsDrawer from './DownloadsDrawer';
-import datasetMappings from './dataset-mappings';
+import datasetMappings from './dataset-mappings.json';
 import config from '../../config';
 
 const useStyles = makeStyles(theme => ({
@@ -31,10 +31,10 @@ function getFormats(id, downloadData) {
   return formats;
 }
 
-function getRows(downloadData, datasetMappings) {
+function getRows(downloadData, allDatasetMappings) {
   const rows = [];
 
-  datasetMappings.forEach(mapping => {
+  allDatasetMappings.forEach(mapping => {
     if (mapping.include_in_fe) {
       rows.push({
         niceName: mapping.nice_name,
@@ -54,23 +54,20 @@ function getColumns(date) {
     {
       id: 'formats',
       label: 'Format(s)',
-      renderCell: ({ niceName, formats }) => {
-        return formats.map((format, index) => {
-          return (
-            <Fragment key={index}>
-              <DownloadsDrawer
-                title={niceName}
-                format={format.format}
-                path={format.path}
-                month={date.month}
-                year={date.year}
-              >
-                <Chip label={formatMap[format.format]} clickable size="small" />
-              </DownloadsDrawer>{' '}
-            </Fragment>
-          );
-        });
-      },
+      renderCell: ({ niceName, formats }) =>
+        formats.map((format) => (
+          <Fragment key={format.format + format.path + date.month + date.year}>
+            <DownloadsDrawer
+              title={niceName}
+              format={format.format}
+              path={format.path}
+              month={date.month}
+              year={date.year}
+            >
+              <Chip label={formatMap[format.format]} clickable size="small" />
+            </DownloadsDrawer>{' '}
+          </Fragment>
+        )),
     },
   ];
   return columns;
@@ -117,7 +114,7 @@ function DownloadsPage() {
   }, []);
 
   return (
-    <Fragment>
+    <>
       <Typography variant="h4" component="h1" paragraph>
         Data downloads
       </Typography>
@@ -179,7 +176,7 @@ function DownloadsPage() {
           )}
         </Box>
       </Paper>
-    </Fragment>
+    </>
   );
 }
 

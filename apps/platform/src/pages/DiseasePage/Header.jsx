@@ -1,4 +1,3 @@
-import React from 'react';
 import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
 
 import HeaderBase from '../../components/Header';

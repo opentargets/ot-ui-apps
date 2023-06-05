@@ -1,4 +1,3 @@
-import React from 'react';
 import SummaryItem from '../../../components/Summary/SummaryItem';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 
@@ -19,7 +18,8 @@ function Summary({ definition }) {
 }
 
 Summary.fragments = {
-  TargetMolecularInteractionsSummaryFragment: MOLECULAR_INTERACTIONS_SUMMARY_FRAGMENT,
+  TargetMolecularInteractionsSummaryFragment:
+    MOLECULAR_INTERACTIONS_SUMMARY_FRAGMENT,
 };
 
 export default Summary;

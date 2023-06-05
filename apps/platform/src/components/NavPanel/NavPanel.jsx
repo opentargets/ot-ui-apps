@@ -1,4 +1,3 @@
-import React from 'react';
 import { Drawer } from '@material-ui/core';
 
 import GoBackButton from './GoBackButton';
@@ -14,6 +13,8 @@ function NavPanel({ ...props }) {
       classes={{ root: classes.drawer, paper: classes.paper }}
     >
       <GoBackButton />
+      {/* TODO: review props spreading */}
+      {/* eslint-disable-next-line */}
       <SectionMenu {...props} />
     </Drawer>
   );

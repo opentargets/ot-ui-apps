@@ -10,7 +10,7 @@ const handleSvgDownload = (svgContainer, filenameStem) => {
   downloadSvg({ svgNode, filenameStem });
 };
 
-const DownloadSvgPlot = ({
+function DownloadSvgPlot({
   loading,
   error,
   left,
@@ -19,8 +19,8 @@ const DownloadSvgPlot = ({
   filenameStem,
   reportDownloadEvent,
   children,
-}) => (
-  <PlotContainer
+}) {
+  return <PlotContainer
     loading={loading}
     error={error}
     left={left}
@@ -45,6 +45,6 @@ const DownloadSvgPlot = ({
   >
     {children}
   </PlotContainer>
-);
+}
 
 export default DownloadSvgPlot;

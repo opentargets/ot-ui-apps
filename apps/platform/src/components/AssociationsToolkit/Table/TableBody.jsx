@@ -17,7 +17,7 @@ const getColContainerClassName = ({ id }) => {
 };
 
 const getRowClassName = ({ getIsExpanded }) => {
-  let activeClass = getIsExpanded() ? 'active' : '';
+  const activeClass = getIsExpanded() ? 'active' : '';
   return `data-row ${activeClass}`;
 };
 
@@ -46,13 +46,11 @@ function TableBody({ table }) {
     <div>
       <div className="TBody">
         <div className="TRow">
-          {table.getRowModel().rows.map(row => {
-            return (
+          {table.getRowModel().rows.map(row => (
               <Fragment key={row.id}>
                 <div className={getRowClassName(row)}>
                   <div className="data-row-content">
-                    {highLevelHeaders.map(columnGroup => {
-                      return (
+                    {highLevelHeaders.map(columnGroup => (
                         <div
                           className={getColContainerClassName(columnGroup)}
                           key={columnGroup.id}
@@ -79,8 +77,7 @@ function TableBody({ table }) {
                             );
                           })}
                         </div>
-                      );
-                    })}
+                      ))}
                   </div>
                 </div>
                 {row.getIsExpanded() && (
@@ -112,8 +109,7 @@ function TableBody({ table }) {
                   </div>
                 )}
               </Fragment>
-            );
-          })}
+            ))}
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 
+import { Typography } from '@material-ui/core';
 import { DataTable } from '../../../components/Table';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import {
@@ -16,7 +16,6 @@ import Link from '../../../components/Link';
 import ScientificNotation from '../../../components/ScientificNotation';
 import SectionItem from '../../../components/Section/SectionItem';
 import Summary from './Summary';
-import { Typography } from '@material-ui/core';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 
 import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
@@ -165,7 +164,7 @@ const columns = [
     numeric: true,
     sortable: true,
     renderCell: ({ studySampleSize }) =>
-      studySampleSize ? parseInt(studySampleSize).toLocaleString() : naLabel,
+      studySampleSize ? parseInt(studySampleSize, 10).toLocaleString() : naLabel,
   },
   {
     id: 'oddsRatio',
@@ -224,21 +223,6 @@ const columns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.OpenTargetsGeneticsSummaryFragment
-  );
-  const count = summaryData.openTargetsGenetics.count;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: count };
@@ -252,7 +236,9 @@ export function BodyCore({ definition, id, label, count }) {
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       request={request}
-      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={data => (
         <DataTable
           columns={columns}
@@ -269,5 +255,20 @@ export function BodyCore({ definition, id, label, count }) {
         />
       )}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.OpenTargetsGeneticsSummaryFragment
+  );
+  const { count } = summaryData.openTargetsGenetics;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }
