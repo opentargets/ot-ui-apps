@@ -112,7 +112,10 @@ const getColumns = () => [
     id: 'log2FoldChangeValue',
     label: 'log2 fold change',
     renderCell: row =>
-      row.log2FoldChangeValue ? row.log2FoldChangeValue : naLabel,
+      row.log2FoldChangeValue
+        ? parseFloat(row.log2FoldChangeValue.toFixed(6))
+        : naLabel,
+    width: '9%',
   },
   {
     id: 'resourceScore',
