@@ -73,7 +73,11 @@ const getColumns = () => [
     id: 'contrast',
     label: 'Contrast / Study overview',
     renderCell: row => {
-      if (row.contrast && row.studyOverview) {
+      // trim the last '.'
+      const overview = row.studyOverview?.endsWith('.')
+        ? row.studyOverview.slice(0, -1)
+        : row.studyOverview;
+      if (row.contrast && overview) {
         return (
           <Tooltip
             showHelpIcon
@@ -84,13 +88,15 @@ const getColumns = () => [
               />
             }
           >
-            <span>{row.contrast} / {row.studyOverview}</span>
+            <span>
+              {row.contrast} / {overview}
+            </span>
           </Tooltip>
         );
       } else if (row.contrast) {
         return <span>{row.contrast}</span>;
-      } else if (row.studyOverview) {
-        return <span>{row.studyOverview}</span>;
+      } else if (overview) {
+        return <span>{overview}</span>;
       }
     },
     width: '25%',
