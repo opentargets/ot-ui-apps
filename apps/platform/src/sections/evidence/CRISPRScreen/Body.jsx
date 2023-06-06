@@ -13,6 +13,7 @@ import Link from '../../../components/Link';
 import { defaultRowsPerPageOptions } from '../../../constants';
 import { naLabel } from '../../../constants';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
+import _ from 'lodash';
 
 import CRISPR_QUERY from './CrisprScreenQuery.gql';
 
