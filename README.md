@@ -21,7 +21,7 @@ From the root directory run: `yarn build`. This will generate on each applicatio
 
 As same as development, you can run `yarn build:platform` or `yarn build:genetics` to scope the build only for one of the applications.
 
-## Copyright
+## Copyright 
 
 Copyright 2014-2018 Biogen, Celgene Corporation, EMBL - European Bioinformatics Institute, GlaxoSmithKline, Takeda Pharmaceutical Company and Wellcome Sanger Institute
 
