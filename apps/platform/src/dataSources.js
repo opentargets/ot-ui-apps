@@ -3,7 +3,7 @@ import { isPrivateDataSource } from './utils/partnerPreviewUtils';
 const dataSources = [
   {
     id: 'ot_genetics_portal', // ot_genetics_portal
-    label: 'OT Genetics Portal',
+    label: 'Open Targets Genetics',
     isPrivate: isPrivateDataSource('ot_genetics_portal'),
   },
   { id: 'eva', label: 'ClinVar', isPrivate: isPrivateDataSource('eva') }, // eva
