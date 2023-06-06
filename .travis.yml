@@ -1,12 +1,14 @@
 language: node_js
 node_js:
   - 16
+cache: yarn
 install:
   - yarn
 before_script:
-  - export NODE_OPTIONS=–max_old_space_size=12288
+  - export NODE_OPTIONS=--max_old_space_size=4096
 script:
-  - yarn build
+  - yarn build:genetics
+  - yarn build:platform
 after_success:
   - cd apps/platform/bundle-platform
   - tar czvf ../bundle-platform.tgz *
