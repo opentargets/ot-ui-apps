@@ -8,7 +8,6 @@ import Summary from './Summary';
 import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
 import TooltipStyledLabel from '../../../components/TooltipStyledLabel';
-import { makeStyles } from '@material-ui/core';
 import Link from '../../../components/Link';
 import { defaultRowsPerPageOptions } from '../../../constants';
 import { naLabel } from '../../../constants';
@@ -24,21 +23,7 @@ const sources = {
     url: 'https://crisprbrain.org/',
   },
 };
-});
 
-/*
-
-Table
-Reported disease: "diseaseFromSource" (Link to “diseaseFromSourceMappedId” disease page - can be multiple links for multiple mappings)
-Study Identifier: “studyId" (Link link to CRISPRBrain study page: e.g. Glutamatergic Neuron-Survival-CRISPRi) - will have different identifiers from different sources when integrating more sources
-Contrast/Study overview: "contrast”/ "studyOverview" (tooltip: SCREEN LIBRARY: "crisprScreenLibrary")
-Cell type: "cellType"
-Log2 fold change: "log2FoldChangeValue"
-Significance: "resourceScore" (tooltip STATISTICAL TEST TAIL: "statisticalTestTail”)
-Source: "projectId" (link to source e.g. CRISPRBrain) - we plan to integrate data from multiple sources with time, so this link can vary depending from the source
-Publication: "literature" (link to EPMC similar to OT Genetics widget)
-
- */
 const getColumns = () => [
   {
     id: 'diseaseFromSourceMappedId',
@@ -66,7 +51,10 @@ const getColumns = () => [
     id: 'studyId',
     label: 'Study Identifier',
     renderCell: row => (
-      <Link external to={`https://crisprbrain.org/simple-screen/?screen=${row.studyId}`}>
+      <Link
+        external
+        to={`https://crisprbrain.org/simple-screen/?screen=${row.studyId}`}
+      >
         {row.studyId}
       </Link>
     ),
@@ -101,7 +89,6 @@ const getColumns = () => [
         return <span>{overview}</span>;
       }
     },
-    width: '25%',
     filterValue: row => row.contrast + '; ' + row.studyOverview,
   },
   {
@@ -109,6 +96,7 @@ const getColumns = () => [
     label: 'Cell type',
     renderCell: row => row.cellType,
     filterValue: row => row.cellType,
+    width: '12%',
   },
   {
     id: 'log2FoldChangeValue',
@@ -136,41 +124,36 @@ const getColumns = () => [
           >
             <span>{parseFloat(row.resourceScore.toFixed(6))}</span>
           </Tooltip>
-        )
+        );
       } else {
-        return row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : naLabel
+        return row.resourceScore
+          ? parseFloat(row.resourceScore.toFixed(6))
+          : naLabel;
       }
     },
     filterValue: row => row.resourceScore + '; ' + row.statisticalTestTail,
+    width: '9%',
   },
-  // Source: "projectId" (link to source e.g. CRISPRBrain)
-  // we plan to integrate data from multiple sources with time, 
-  // so this link can vary depending from the source
   {
     id: 'projectId',
     label: 'Source',
-    // TODO: the link will need a lookup based on project...
     renderCell: row => (
       <Link external to={sources[row.projectId]?.url}>
         {sources[row.projectId].name}
       </Link>
     ),
     filterValue: row => row.projectId,
+    width: '9%',
   },
-  // Publication: "literature" (link to EPMC similar to OT Genetics widget)
   {
     id: 'literature',
     label: 'Publication',
     renderCell: ({ literature }) => {
       if (!literature) return naLabel;
-      return (
-        <PublicationsDrawer
-          entries={[{ name: literature[0] }]}
-        />
-      );
+      return <PublicationsDrawer entries={[{ name: literature[0] }]} />;
     },
-    filterValue: ({ literature, publicationYear, publicationFirstAuthor }) =>
-      `${literature} ${publicationYear} ${publicationFirstAuthor}`,
+    filterValue: ({ literature }) => literature,
+    width: '9%',
   },
 ];
 
@@ -241,7 +224,6 @@ export function BodyCore({ definition, id, label, count }) {
       size: count,
     },
   });
-  const classes = useStyles();
 
   return (
     <SectionItem
@@ -255,7 +237,7 @@ export function BodyCore({ definition, id, label, count }) {
         const { rows } = disease.evidences;
         return (
           <DataTable
-            columns={getColumns(classes)}
+            columns={getColumns()}
             rows={rows}
             dataDownloader
             dataDownloaderColumns={exportColumns}
