@@ -16,12 +16,13 @@ import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 
 import CRISPR_QUERY from './CrisprScreenQuery.gql';
 
-const useStyles = makeStyles(theme => {
-  return {
-    significanceIcon: {
-      color: theme.palette.primary.main,
-    },
-  };
+// This will hold more sources in future releases
+const sources = {
+  crispr_brain: {
+    name: 'CRISPRBrain',
+    url: 'https://crisprbrain.org/',
+  },
+};
 });
 
 /*
@@ -149,8 +150,8 @@ const getColumns = () => [
     label: 'Source',
     // TODO: the link will need a lookup based on project...
     renderCell: row => (
-      <Link external to="https://crisprbrain.org/">
-        {row.projectId}
+      <Link external to={sources[row.projectId]?.url}>
+        {sources[row.projectId].name}
       </Link>
     ),
     filterValue: row => row.projectId,
