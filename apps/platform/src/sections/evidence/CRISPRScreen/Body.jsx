@@ -41,10 +41,24 @@ const getColumns = () => [
   {
     id: 'diseaseFromSourceMappedId',
     label: 'Reported disease',
-    renderCell: row => (
-      <Link to={`/disease/${row.diseaseFromSourceMappedId}`}>{row.diseaseFromSource}</Link>
-    ),
-    filterValue: row => row.diseaseFromSource + ', ' + row.diseaseFromSourceMappedId,
+    renderCell: row => {
+      // format the diseaseFromSource field;
+      // this might be sorted at data level at some point
+      const eg = 'essential genes';
+      const disease = row.diseaseFromSource
+        .toLowerCase()
+        .replace(`${eg} / `, '');
+      return (
+        <>
+          <Link to={`/disease/${row.diseaseFromSourceMappedId}`}>
+            {_.capitalize(disease)}
+          </Link>
+          {row.diseaseFromSource.startsWith(eg) ? ` (${eg})` : ''}
+        </>
+      );
+    },
+    filterValue: row =>
+      row.diseaseFromSource + ', ' + row.diseaseFromSourceMappedId,
   },
   {
     id: 'studyId',
