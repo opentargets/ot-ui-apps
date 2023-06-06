@@ -1,5 +1,3 @@
-import React from 'react';
-
 import TreeItem from './TreeItem';
 import { hasSomeChildrenChecked } from './utils';
 

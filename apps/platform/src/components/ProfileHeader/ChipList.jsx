@@ -1,10 +1,9 @@
-import React from 'react';
 import { Skeleton } from '@material-ui/lab';
 import { Box, Typography, Tooltip, makeStyles } from '@material-ui/core';
 
+import _ from 'lodash';
 import Chip from '../Chip';
 import LongList from '../LongList';
-import _ from 'lodash';
 
 const useContainerStyles = makeStyles(theme => ({
   tooltip: {
@@ -35,21 +34,20 @@ function ChipList({ children, title, loading = false, inline }) {
           render={item => {
             if (_.isString(item)) {
               return <Chip key={item} label={item} title={item} />;
-            } else {
-              return (
-                <Tooltip
-                  placement="top"
-                  interactive
-                  classes={{ tooltip: classes.tooltip }}
-                  title={item.tooltip}
-                  key={item.label}
-                >
-                  <span>
-                    <Chip label={item.label} />
-                  </span>
-                </Tooltip>
-              );
             }
+            return (
+              <Tooltip
+                placement="top"
+                interactive
+                classes={{ tooltip: classes.tooltip }}
+                title={item.tooltip}
+                key={item.label}
+              >
+                <span>
+                  <Chip label={item.label} />
+                </span>
+              </Tooltip>
+            );
           }}
           size="small"
         />

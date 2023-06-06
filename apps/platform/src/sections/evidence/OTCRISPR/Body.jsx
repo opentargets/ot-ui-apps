@@ -1,5 +1,5 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
+import { makeStyles } from '@material-ui/core';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import SectionItem from '../../../components/Section/SectionItem';
 import { DataTable } from '../../../components/Table';
@@ -8,19 +8,16 @@ import Summary from './Summary';
 import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
 import TooltipStyledLabel from '../../../components/TooltipStyledLabel';
-import { makeStyles } from '@material-ui/core';
 import Link from '../../../components/Link';
 import { defaultRowsPerPageOptions } from '../../../constants';
 
 import CRISPR_QUERY from './OTCrisprQuery.gql';
 
-const useStyles = makeStyles(theme => {
-  return {
-    significanceIcon: {
-      color: theme.palette.primary.main,
-    },
-  };
-});
+const useStyles = makeStyles(theme => ({
+  significanceIcon: {
+    color: theme.palette.primary.main,
+  },
+}));
 
 const getColumns = () => [
   {
@@ -29,7 +26,7 @@ const getColumns = () => [
     renderCell: row => (
       <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>
     ),
-    filterValue: row => row.disease.name + ', ' + row.disease.id,
+    filterValue: row => `${row.disease.name}, ${row.disease.id}`,
   },
   {
     id: 'projectId',
@@ -50,7 +47,7 @@ const getColumns = () => [
             showHelpIcon
             title={
               <TooltipStyledLabel
-                label={'Study overview'}
+                label="Study overview"
                 description={row.studyOverview}
               />
             }
@@ -58,14 +55,17 @@ const getColumns = () => [
             <span>{row.contrast}</span>
           </Tooltip>
         );
-      } else if (row.contrast) {
+      }
+      if (row.contrast) {
         return <span>{row.contrast}</span>;
-      } else if (row.studyOverview) {
+      }
+      if (row.studyOverview) {
         return <span>{row.studyOverview}</span>;
       }
+      return null
     },
     width: '25%',
-    filterValue: row => row.contrast + '; ' + row.studyOverview,
+    filterValue: row => `${row.contrast}; ${row.studyOverview}`,
   },
   {
     id: 'cellType',
@@ -76,7 +76,7 @@ const getColumns = () => [
           showHelpIcon
           title={
             <TooltipStyledLabel
-              label={'Cell line background'}
+              label="Cell line background"
               description={row.cellLineBackground}
             />
           }
@@ -86,7 +86,7 @@ const getColumns = () => [
       ) : (
         row.cellType
       ),
-    filterValue: row => row.cellType + '; ' + row.cellLineBackground,
+    filterValue: row => `${row.cellType}; ${row.cellLineBackground}`,
   },
   {
     id: 'log2FoldChangeValue',
@@ -97,7 +97,7 @@ const getColumns = () => [
   {
     id: 'resourceScore',
     label: 'Significance',
-    filterValue: row => row.resourceScore + '; ' + row.statisticalTestTail,
+    filterValue: row => `${row.resourceScore}; ${row.statisticalTestTail}`,
     renderCell: row =>
       row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : 'N/A',
   },
@@ -150,21 +150,6 @@ const exportColumns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.OtCrisprSummary
-  );
-  const count = summaryData.OtCrisprSummary.count;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const request = useQuery(CRISPR_QUERY, {
@@ -203,5 +188,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.OtCrisprSummary
+  );
+  const { count } = summaryData.OtCrisprSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

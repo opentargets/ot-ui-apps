@@ -1,4 +1,3 @@
-import React from 'react';
 import { gql } from '@apollo/client';
 
 import SummaryItem from '../../../components/Summary/SummaryItem';

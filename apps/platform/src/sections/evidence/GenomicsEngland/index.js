@@ -2,7 +2,7 @@ import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
 
 const id = 'genomics_england';
 export const definition = {
-  id: id,
+  id,
   name: 'GEL PanelApp',
   shortName: 'GE',
   hasData: data => data.genomicsEngland.count > 0,

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 
 import Link from '../../../components/Link';
 
@@ -8,19 +8,17 @@ function Description({ name, parentMolecule, childMolecules }) {
   if (parentMolecule) molecules.push(parentMolecule);
 
   return (
-    <Fragment>
+    <>
       <strong>{name}</strong>
       {molecules.length > 0 ? (
         <>
           , and related molecules{' '}
-          {molecules.map(molecule => {
-            return (
-              <Fragment key={molecule.id}>
-                <Link to={`/drug/${molecule.id}`}>{molecule.name}</Link>
-                {', '}
-              </Fragment>
-            );
-          })}
+          {molecules.map(molecule => (
+            <Fragment key={molecule.id}>
+              <Link to={`/drug/${molecule.id}`}>{molecule.name}</Link>
+              {', '}
+            </Fragment>
+          ))}
         </>
       ) : null}{' '}
       biochemical interactions to produce intended pharmacological effects.
@@ -29,7 +27,7 @@ function Description({ name, parentMolecule, childMolecules }) {
       <Link to="https://www.ebi.ac.uk/chembl/" external>
         ChEMBL
       </Link>
-    </Fragment>
+    </>
   );
 }
 

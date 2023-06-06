@@ -1,4 +1,3 @@
-import React from 'react';
 import { Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 
@@ -12,17 +11,16 @@ import ClinvarStars from '../../../components/ClinvarStars';
 
 import CHEMICAL_PROBES_QUERY from './ChemicalProbes.gql';
 
-
 /**
  * Style the tooltips as "label: value" with a bold label
  */
-const TooltipStyledLabel = ({ label, value }) => {
+function TooltipStyledLabel({ label, value }) {
   return (
     <Typography variant="body2">
       <span style={{ fontWeight: 'bold' }}>{label}:</span> {value}
     </Typography>
   );
-};
+}
 
 const columns = [
   {
@@ -85,9 +83,7 @@ const columns = [
   {
     id: 'probesDrugsScore',
     label: 'Score',
-    renderCell: row => (
-        row.probesDrugsScore || naLabel
-    ),
+    renderCell: row => row.probesDrugsScore || naLabel,
     exportValue: row => row.probesDrugsScore || naLabel,
     filterValue: row => row.probesDrugsScore,
     width: '13%',
@@ -103,8 +99,8 @@ function Body({ definition, id, label: symbol }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => {
-        return data.target.chemicalProbes?.length > 0 ? (
+      renderBody={data =>
+        data.target.chemicalProbes?.length > 0 ? (
           <DataTable
             columns={columns}
             rows={data.target.chemicalProbes}
@@ -112,16 +108,16 @@ function Body({ definition, id, label: symbol }) {
             dataDownloader
             dataDownloaderFileStem={`${symbol}-chemical-probes`}
             fixed
-            sortBy = "probesDrugsScore"
-            order = "desc"
+            sortBy="probesDrugsScore"
+            order="desc"
             rowsPerPageOptions={defaultRowsPerPageOptions}
             noWrap={false}
             noWrapHeader={false}
             query={CHEMICAL_PROBES_QUERY.loc.source.body}
             variables={variables}
           />
-        ) : null;
-      }}
+        ) : null
+      }
     />
   );
 }

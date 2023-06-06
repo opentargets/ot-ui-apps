@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   withStyles,
   Grid,
@@ -10,7 +9,11 @@ import {
   TablePagination,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDna, faPrescriptionBottleAlt, faStethoscope } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDna,
+  faPrescriptionBottleAlt,
+  faStethoscope,
+} from '@fortawesome/free-solid-svg-icons';
 
 import DiseaseDetail from './DiseaseDetail';
 import DiseaseResult from './DiseaseResult';
@@ -20,21 +23,21 @@ import ErrorBoundary from '../../components/ErrorBoundary';
 import TargetDetail from './TargetDetail';
 import TargetResult from './TargetResult';
 
-const getCounts = (entities) => {
+const getCounts = entities => {
   const counts = {
     target: 0,
     disease: 0,
     drug: 0,
   };
 
-  entities.forEach((entity) => {
+  entities.forEach(entity => {
     counts[entity.name] = entity.total;
   });
 
   return counts;
 };
 
-const styles = (theme) => ({
+const styles = theme => ({
   label: {
     marginLeft: '-6px',
   },
@@ -118,7 +121,8 @@ const SearchFilters = withStyles(styles)(
   }
 );
 
-const SearchResults = ({ results, page, onPageChange }) => {
+function SearchResults({ results, page, onPageChange }) {
+  const TYPE_NAME = '__typename';
   return (
     <>
       <TablePagination
@@ -130,18 +134,27 @@ const SearchResults = ({ results, page, onPageChange }) => {
         onPageChange={onPageChange}
       />
       {results.hits.map(({ highlights, object }) => {
-        return object.__typename === 'Target' ? (
-          <TargetResult key={object.id} data={object} highlights={highlights} />
-        ) : object.__typename === 'Disease' ? (
-          <DiseaseResult
-            key={object.id}
-            data={object}
-            highlights={highlights}
-          />
-        ) : (
+        if (object[TYPE_NAME] === 'Target')
+          return (
+            <TargetResult
+              key={object.id}
+              data={object}
+              highlights={highlights}
+            />
+          );
+        if (object[TYPE_NAME] === 'Disease')
+          return (
+            <DiseaseResult
+              key={object.id}
+              data={object}
+              highlights={highlights}
+            />
+          );
+        return (
           <DrugResult key={object.id} data={object} highlights={highlights} />
         );
       })}
+
       <TablePagination
         component="div"
         rowsPerPageOptions={[]}
@@ -152,32 +165,32 @@ const SearchResults = ({ results, page, onPageChange }) => {
       />
     </>
   );
-};
+}
 
-const TopHitDetail = ({ topHit }) => {
+function TopHitDetail({ topHit }) {
+  let COMPONENT = null;
+  const TYPE_NAME = '__typename';
+  if (topHit[TYPE_NAME] === 'Target')
+    COMPONENT = <TargetDetail data={topHit} />;
+  else if (topHit[TYPE_NAME] === 'Disease')
+    COMPONENT = <DiseaseDetail data={topHit} />;
+  else if (topHit[TYPE_NAME] === 'Drug')
+    COMPONENT = <DrugDetail data={topHit} />;
   return (
     <Card elevation={0}>
-      <ErrorBoundary>
-        {topHit.__typename === 'Target' ? (
-          <TargetDetail data={topHit} />
-        ) : topHit.__typename === 'Disease' ? (
-          <DiseaseDetail data={topHit} />
-        ) : topHit.__typename === 'Drug' ? (
-          <DrugDetail data={topHit} />
-        ) : null}
-      </ErrorBoundary>
+      <ErrorBoundary>{COMPONENT}</ErrorBoundary>
     </Card>
   );
-};
+}
 
-const SearchContainer = ({
+function SearchContainer({
   q,
   page,
   entities,
   data,
   onPageChange,
   onSetEntity,
-}) => {
+}) {
   const { entities: entitiesCount } = data.search.aggregations;
   const topHit = data.topHit.hits[0]?.object;
 
@@ -212,6 +225,6 @@ const SearchContainer = ({
       </Grid>
     </>
   );
-};
+}
 
 export default SearchContainer;

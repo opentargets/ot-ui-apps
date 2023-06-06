@@ -1,4 +1,3 @@
-import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Footer, GlobalSearch } from 'ui';
 
@@ -12,15 +11,15 @@ import {
   mainMenuItems,
 } from '../constants';
 
-const BasePage = ({ title, children, description, location }) => {
-  const composedTitle = `${title ? title + ' | ' : ''} ${appTitle}`;
+function BasePage({ title, children, description, location }) {
+  const composedTitle = `${title ? `${title} | ` : ''} ${appTitle}`;
 
   return (
     <Page
       header={
         <NavBar
           name="Platform"
-          search={<GlobalSearch showSearchResultPage/>}
+          search={<GlobalSearch showSearchResultPage />}
           items={mainMenuItems}
         />
       }
@@ -36,6 +35,6 @@ const BasePage = ({ title, children, description, location }) => {
       {children}
     </Page>
   );
-};
+}
 
 export default BasePage;

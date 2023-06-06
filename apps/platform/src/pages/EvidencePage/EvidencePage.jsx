@@ -1,13 +1,13 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
 
+import { LoadingBackdrop } from 'ui';
 import BasePage from '../../components/BasePage';
 import ScrollToTop from '../../components/ScrollToTop';
 
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
 
-import { LoadingBackdrop } from 'ui';
 import EVIDENCE_PAGE_QUERY from './EvidencePageQuery.gql';
 
 const Profile = lazy(() => import('./Profile'));

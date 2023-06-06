@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 

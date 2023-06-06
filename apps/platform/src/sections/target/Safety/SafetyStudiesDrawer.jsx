@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Drawer,
-  Link,
+  Button,
   IconButton,
   Paper,
   Typography,
@@ -55,47 +55,35 @@ function SafetyStudiesDrawer({ studies }) {
 
   return (
     <>
-      <Link
-        className={classes.drawerLink}
-        onClick={toggleOpen}
-        underline="none"
-      >
-        {studies.length} studies
-      </Link>
+      <Button onClick={() => toggleOpen()}>{studies.length} studies</Button>
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={close}
+        onClose={() => close()}
         anchor="right"
       >
         <Typography className={classes.title}>
           Experimental studies
-          <IconButton onClick={close}>
+          <IconButton onClick={() => close()}>
             <CloseIcon />
           </IconButton>
         </Typography>
-        {studies.map(study => {
-          return (
-            <Paper
-              key={study.name}
-              className={classes.paper}
-              variant="outlined"
-            >
-              <Typography variant="h6" gutterBottom>
-                Study:
-              </Typography>
-              <div>{study.name}</div>
-              <Typography variant="h6" gutterBottom>
-                Type:
-              </Typography>
-              <div>{study.type}</div>
-              <Typography variant="h6" gutterBottom>
-                Description:
-              </Typography>
-              <div>{study.description}</div>
-            </Paper>
-          );
-        })}
+        {studies.map(study => (
+          <Paper key={study.name} className={classes.paper} variant="outlined">
+            <Typography variant="h6" gutterBottom>
+              Study:
+            </Typography>
+            <div>{study.name}</div>
+            <Typography variant="h6" gutterBottom>
+              Type:
+            </Typography>
+            <div>{study.type}</div>
+            <Typography variant="h6" gutterBottom>
+              Description:
+            </Typography>
+            <div>{study.description}</div>
+          </Paper>
+        ))}
       </Drawer>
     </>
   );

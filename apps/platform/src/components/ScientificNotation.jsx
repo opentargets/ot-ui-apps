@@ -1,11 +1,10 @@
-import React from 'react';
-
 import { decimalPlaces } from '../constants';
 
 function ScientificNotation({ number }) {
   if (!number) return null;
 
-  let mantissa, exponent;
+  let mantissa;
+  let exponent;
 
   if (Array.isArray(number)) {
     [mantissa, exponent] = number;

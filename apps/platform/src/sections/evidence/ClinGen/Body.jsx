@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import Link from '../../../components/Link';
@@ -17,35 +16,32 @@ const columns = [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
-    renderCell: ({ disease, diseaseFromSource }) => {
-      return (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Reported disease or phenotype:
-              </Typography>
-              <Typography variant="caption" display="block" align="center">
-                {diseaseFromSource}
-              </Typography>
-            </>
-          }
-          showHelpIcon
-        >
-          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-        </Tooltip>
-      );
-    },
+    renderCell: ({ disease, diseaseFromSource }) => (
+      <Tooltip
+        title={
+          <>
+            <Typography variant="subtitle2" display="block" align="center">
+              Reported disease or phenotype:
+            </Typography>
+            <Typography variant="caption" display="block" align="center">
+              {diseaseFromSource}
+            </Typography>
+          </>
+        }
+        showHelpIcon
+      >
+        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+      </Tooltip>
+    ),
   },
   {
     id: 'allelicRequirements',
     label: 'Allelic requirement',
     renderCell: ({ allelicRequirements }) => {
-      return !allelicRequirements ? (
-        naLabel
-      ) : allelicRequirements.length === 1 ? (
-        allelicRequirements[0]
-      ) : (
+      if (!allelicRequirements) return naLabel;
+      if (allelicRequirements.length === 1) return allelicRequirements[0];
+
+      return (
         <ul
           style={{
             margin: 0,
@@ -53,9 +49,9 @@ const columns = [
             listStyle: 'none',
           }}
         >
-          {allelicRequirements.map(allelicRequirement => {
-            return <li key={allelicRequirement}>{allelicRequirement}</li>;
-          })}
+          {allelicRequirements.map(allelicRequirement => (
+            <li key={allelicRequirement}>{allelicRequirement}</li>
+          ))}
         </ul>
       );
     },
@@ -65,51 +61,32 @@ const columns = [
   {
     id: 'confidence',
     label: 'Classification',
-    renderCell: ({ confidence, urls }) => {
-      return (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="caption" display="block" align="center">
-                As defined by the{' '}
-                <Link
-                  external
-                  to="https://thegencc.org/faq.html#validity-termsdelphi-survey"
-                >
-                  GenCC Guidelines
-                </Link>
-              </Typography>
-            </>
-          }
-          showHelpIcon
-        >
-          {urls && urls[0]?.url ? (
-            <Link external to={urls[0].url}>
-              {confidence}
+    renderCell: ({ confidence, urls }) => (
+      <Tooltip
+        title={
+          <Typography variant="caption" display="block" align="center">
+            As defined by the{' '}
+            <Link
+              external
+              to="https://thegencc.org/faq.html#validity-termsdelphi-survey"
+            >
+              GenCC Guidelines
             </Link>
-          ) : (
-            confidence
-          )}
-        </Tooltip>
-      );
-    },
+          </Typography>
+        }
+        showHelpIcon
+      >
+        {urls && urls[0]?.url ? (
+          <Link external to={urls[0].url}>
+            {confidence}
+          </Link>
+        ) : (
+          confidence
+        )}
+      </Tooltip>
+    ),
   },
 ];
-
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.ClinGenSummaryFragment
-  );
-  const count = summaryData.clingenSummary.count;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
 
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
@@ -147,5 +124,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.ClinGenSummaryFragment
+  );
+  const { count } = summaryData.clingenSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

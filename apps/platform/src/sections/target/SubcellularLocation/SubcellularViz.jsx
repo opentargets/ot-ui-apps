@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useRef, Suspense } from 'react';
+import { lazy, useEffect, useRef, Suspense, useState } from 'react';
 import {
   Typography,
   List,
@@ -11,14 +11,14 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
+import { LoadingBackdrop } from 'ui';
 import Link from '../../../components/Link';
 import { identifiersOrgLink, getUniprotIds } from '../../../utils/global';
-import { LoadingBackdrop } from 'ui';
 
 const SwissbioViz =
   'customElements' in window
     ? lazy(() => import('./SwissbioViz'))
-    : ({ children }) => <>{children}</>;
+    : ({ children }) => children;
 
 const useStyles = makeStyles(theme => ({
   locationIcon: {
@@ -59,9 +59,8 @@ const parseLocationData = subcellularLocations => {
 };
 
 // Filter the sources array to only those with data
-const filterSourcesWithData = (sources, sourcesLocations) => {
-  return sources.filter(s => sourcesLocations[s.id] !== undefined);
-};
+const filterSourcesWithData = (sources, sourcesLocations) =>
+  sources.filter(s => sourcesLocations[s.id] !== undefined);
 
 const getTabId = id => `${id}-tab`;
 
@@ -102,7 +101,7 @@ function LocationsList({ sls }) {
  * @param {*} sources the array of source to show in the tabs (i.e. those with data)
  */
 function SubcellularVizTabs({ sources: activeSources, children }) {
-  const [activeTab, setActiveTab] = React.useState(0);
+  const [activeTab, setActiveTab] = useState(0);
   const onTabChange = (event, tabId) => {
     setActiveTab(tabId);
   };
@@ -123,7 +122,7 @@ function SubcellularVizTabs({ sources: activeSources, children }) {
         aria-label="Subcellular location sources"
       >
         {activeSources.map((s, i) => (
-          <Tab label={s.label} value={i} key={i} />
+          <Tab label={s.label} value={i} key={s.id} />
         ))}
       </Tabs>
       {children}
@@ -167,12 +166,12 @@ function SubcellularViz({ data: target }) {
   return (
     <div>
       <SubcellularVizTabs sources={activeSources}>
-        {activeSources.map((s, i) => (
+        {activeSources.map((s) => (
           <div
             value={getTabId(s.id)}
             id={getTabId(s.id)}
             ref={s.ref}
-            key={i}
+            key={s.id}
             className={classes.tabPanel}
           >
             <Suspense fallback={<LoadingBackdrop />}>

@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash-es';
+import isEmpty from 'lodash/isEmpty';
 import { atom, selectorFamily, selector } from 'recoil';
 import client from '../../../client';
 import { getPage } from '../../../components/Table';
@@ -13,11 +13,11 @@ export const parsePublications = publications =>
     row.source = pub.source;
     row.patentDetails = pub.patentDetails;
     row.europePmcId = pub.id;
-    row.fullTextOpen = pub.inEPMC === 'Y' || pub.inPMC === 'Y' ? true : false;
+    row.fullTextOpen = !!(pub.inEPMC === 'Y' || pub.inPMC === 'Y');
     row.title = pub.title;
     row.year = pub.pubYear;
     row.abstract = pub.abstractText;
-    row.openAccess = pub.isOpenAccess === 'N' ? false : true;
+    row.openAccess = pub.isOpenAccess !== 'N';
     row.authors = pub.authorList?.author || [];
     row.journal = {
       ...pub.journalInfo,
@@ -176,6 +176,10 @@ export const updateLiteratureState = selector({
 // ------------------------------------------
 // Requests
 // ------------------------------------------
+
+const fetchLiteraturesFromPMC = async ({ baseUrl, requestOptions }) =>
+  fetch(baseUrl, requestOptions).then(response => response.json());
+
 export const literaturesEuropePMCQuery = selectorFamily({
   key: 'literaturesEuropePMCQuery',
   get:
@@ -194,9 +198,6 @@ export const literaturesEuropePMCQuery = selectorFamily({
       return response.resultList?.result;
     },
 });
-
-const fetchLiteraturesFromPMC = async ({ baseUrl, requestOptions }) =>
-  fetch(baseUrl, requestOptions).then(response => response.json());
 
 export const fetchSimilarEntities = ({
   id = '',

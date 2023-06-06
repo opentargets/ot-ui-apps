@@ -1,4 +1,3 @@
-import React from 'react';
 import { Chip, makeStyles, Grow } from '@material-ui/core';
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -31,12 +30,11 @@ function EntitiesToSelect({ id }) {
   const [selectedChips, setSelectedChips] = useRecoilState(
     selectedEntitiesState
   );
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
 
   const handleSelectChip = async e => {
-    const { query, id, category, globalEntity } = bibliographyState;
+    const { query, bibliographyId, category, globalEntity } = bibliographyState;
     const newChips = [
       ...selectedChips,
       {
@@ -51,7 +49,7 @@ function EntitiesToSelect({ id }) {
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
       query,
-      id,
+      bibliographyId,
       category,
       entities: newChips,
     });
@@ -77,14 +75,14 @@ function EntitiesToSelect({ id }) {
     return entity;
   };
 
-  return entities.map((e, i) => {
+  return entities.map((e) => {
     if (!e.object)
       return (
-        <Grow in key={`empty-entity-${i}`}>
+        <Grow in key={`empty-entity-${e.id}`}>
           <Chip
             style={{ opacity: loadingEntities ? 0.5 : 1 }}
             label={e.id}
-            disabled={true}
+            disabled
             title="Missing object entity"
             color="secondary"
             variant="outlined"
@@ -115,15 +113,14 @@ export default function Entities({ name, id }) {
 
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
   const bibliographyState = useRecoilValue(literatureState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(
-    loadingEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] =
+    useRecoilState(loadingEntitiesState);
   const [selectedChips, setSelectedChips] = useRecoilState(
     selectedEntitiesState
   );
 
   const handleDeleteChip = async index => {
-    const { query, id, category, globalEntity } = bibliographyState;
+    const { query, bibliographyId, category, globalEntity } = bibliographyState;
     const newChips = [
       ...selectedChips.slice(0, index),
       ...selectedChips.slice(index + 1),
@@ -132,7 +129,7 @@ export default function Entities({ name, id }) {
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
       query,
-      id,
+      bibliographyId,
       category,
       entities: newChips,
     });

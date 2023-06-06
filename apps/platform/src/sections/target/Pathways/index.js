@@ -2,9 +2,7 @@ export const definition = {
   id: 'pathways',
   name: 'Pathways',
   shortName: 'PW',
-  hasData: data => {
-    return data.pathways.length > 0;
-  },
+  hasData: data => data.pathways.length > 0,
 };
 
 export { default as Summary } from './Summary';

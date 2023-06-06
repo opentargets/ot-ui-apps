@@ -1,4 +1,5 @@
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
+import { v1 } from 'uuid';
 import {
   MenuItem,
   Popper,
@@ -65,7 +66,7 @@ class HeaderMenu extends Component {
     const isMenuOpen = Boolean(anchorEl);
 
     return (
-      <Fragment>
+      <>
         <IconButton
           className={classes.icon}
           size="medium"
@@ -86,6 +87,8 @@ class HeaderMenu extends Component {
           placement={placement || 'bottom-start'}
         >
           {({ TransitionProps }) => (
+            // TODO: review props spreading
+            // eslint-disable-next-line
             <Fade {...TransitionProps}>
               <Paper>
                 <ClickAwayListener onClickAway={this.handleMenuClose}>
@@ -93,40 +96,39 @@ class HeaderMenu extends Component {
                     {items.map((item, i) => {
                       if (item.showOnlyPartner) {
                         return (
-                        <PrivateWrapper key={i}>
-                          <MenuItem
-                            onClick={this.handleMenuClose}
-                            key={i}
-                            dense={true}
-                            className={classes.menuItem}
-                          >
-                            <Link
-                              external={item.external}
-                              to={item.url}
-                              className={classes.menuLink}
+                          <PrivateWrapper key={v1()}>
+                            <MenuItem
+                              onClick={this.handleMenuClose}
+                              dense
+                              className={classes.menuItem}
                             >
-                              {item.name}
-                            </Link>
-                          </MenuItem>
-                        </PrivateWrapper>);
-                      } else {
-                        return (
-                          <MenuItem
-                            onClick={this.handleMenuClose}
-                            key={i}
-                            dense={true}
-                            className={classes.menuItem}
-                          >
-                            <Link
-                              external={item.external}
-                              to={item.url}
-                              className={classes.menuLink}
-                            >
-                              {item.name}
-                            </Link>
-                          </MenuItem>
+                              <Link
+                                external={item.external}
+                                to={item.url}
+                                className={classes.menuLink}
+                              >
+                                {item.name}
+                              </Link>
+                            </MenuItem>
+                          </PrivateWrapper>
                         );
                       }
+                      return (
+                        <MenuItem
+                          onClick={this.handleMenuClose}
+                          key={v1()}
+                          dense
+                          className={classes.menuItem}
+                        >
+                          <Link
+                            external={item.external}
+                            to={item.url}
+                            className={classes.menuLink}
+                          >
+                            {item.name}
+                          </Link>
+                        </MenuItem>
+                      );
                     })}
                   </MenuList>
                 </ClickAwayListener>
@@ -134,7 +136,7 @@ class HeaderMenu extends Component {
             </Fade>
           )}
         </Popper>
-      </Fragment>
+      </>
     );
   }
 }

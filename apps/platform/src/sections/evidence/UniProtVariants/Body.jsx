@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import usePlatformApi from '../../../hooks/usePlatformApi';
@@ -20,50 +19,44 @@ const columns = [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
-    renderCell: ({ disease, diseaseFromSource }) => {
-      return (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Reported disease or phenotype:
-              </Typography>
-              <Typography variant="caption" display="block" align="center">
-                {diseaseFromSource}
-              </Typography>
-            </>
-          }
-          showHelpIcon
-        >
-          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-        </Tooltip>
-      );
-    },
+    renderCell: ({ disease, diseaseFromSource }) => (
+      <Tooltip
+        title={
+          <>
+            <Typography variant="subtitle2" display="block" align="center">
+              Reported disease or phenotype:
+            </Typography>
+            <Typography variant="caption" display="block" align="center">
+              {diseaseFromSource}
+            </Typography>
+          </>
+        }
+        showHelpIcon
+      >
+        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+      </Tooltip>
+    ),
   },
   {
     id: 'targetFromSourceId',
     label: 'Reported protein',
-    renderCell: ({ targetFromSourceId }) => {
-      return (
-        <Link external to={identifiersOrgLink('uniprot', targetFromSourceId)}>
-          {targetFromSourceId}
-        </Link>
-      );
-    },
+    renderCell: ({ targetFromSourceId }) => (
+      <Link external to={identifiersOrgLink('uniprot', targetFromSourceId)}>
+        {targetFromSourceId}
+      </Link>
+    ),
   },
   {
     id: 'variantRsId',
     label: 'Variant',
-    renderCell: ({ variantRsId }) => {
-      return (
-        <Link
-          external
-          to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
-        >
-          {variantRsId}
-        </Link>
-      );
-    },
+    renderCell: ({ variantRsId }) => (
+      <Link
+        external
+        to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
+      >
+        {variantRsId}
+      </Link>
+    ),
   },
   {
     id: 'confidence',
@@ -88,19 +81,6 @@ const columns = [
     },
   },
 ];
-
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.UniprotVariantsSummary
-  );
-  const count = summaryData.uniprotVariantsSummary.count;
-  
-  if(!count || count < 1) {
-    return null
-  }
-
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
-}
 
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
@@ -138,5 +118,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.UniprotVariantsSummary
+  );
+  const { count } = summaryData.uniprotVariantsSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

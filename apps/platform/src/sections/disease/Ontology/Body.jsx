@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import Description from './Description';
 import OntologySubgraph from './OntologySubgraph';
@@ -14,10 +14,7 @@ function Body({ definition, id: efoId, label: name }) {
       .then(res => res.text())
       .then(lines => {
         if (isCurrent) {
-          const nodes = lines
-            .trim()
-            .split('\n')
-            .map(JSON.parse);
+          const nodes = lines.trim().split('\n').map(JSON.parse);
           setEfoNodes(nodes);
         }
       });
@@ -35,15 +32,15 @@ function Body({ definition, id: efoId, label: name }) {
         data: { efoNodes },
       }}
       renderDescription={() => <Description name={name} />}
-      renderBody={({ efoNodes }) => {
-        const idToDisease = efoNodes.reduce((acc, disease) => {
+      renderBody={({ efoNodes: efoNodesArray }) => {
+        const idToDisease = efoNodesArray.reduce((acc, disease) => {
           acc[disease.id] = disease;
           return acc;
         }, {});
         return (
           <OntologySubgraph
             efoId={efoId}
-            efo={efoNodes}
+            efo={efoNodesArray}
             name={name}
             idToDisease={idToDisease}
           />

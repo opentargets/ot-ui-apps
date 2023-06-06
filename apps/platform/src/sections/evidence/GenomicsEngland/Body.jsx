@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import {
   faCheckSquare,
@@ -6,6 +5,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Typography } from '@material-ui/core';
+import { v1 } from 'uuid';
 
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { DataTable } from '../../../components/Table';
@@ -106,12 +106,12 @@ const columns = [
     label: 'Allelic Requirement',
     renderCell: ({ allelicRequirements }) =>
       allelicRequirements
-        ? allelicRequirements.map((item, index) => {
+        ? allelicRequirements.map(item => {
             const [caption, description] = allelicRequirementsCaption(item);
 
             return (
               <Tooltip
-                key={index}
+                key={v1()}
                 placement="top"
                 interactive
                 title={description}
@@ -142,17 +142,15 @@ const columns = [
     renderCell: ({ confidence }) => (
       <Tooltip
         title={
-          <>
-            <Typography variant="caption" display="block" align="center">
-              As defined by the{' '}
-              <Link
-                external
-                to={`https://panelapp.genomicsengland.co.uk/#!Guidelines`}
-              >
-                Panel App Guidelines
-              </Link>
-            </Typography>
-          </>
+          <Typography variant="caption" display="block" align="center">
+            As defined by the{' '}
+            <Link
+              external
+              to="https://panelapp.genomicsengland.co.uk/#!Guidelines"
+            >
+              Panel App Guidelines
+            </Link>
+          </Typography>
         }
         showHelpIcon
       >
@@ -184,19 +182,6 @@ const columns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.GenomicsEnglandSummaryFragment
-  );
-  const count = summaryData.genomicsEngland.count;
-  
-  if(!count || count < 1) {
-    return null
-  }
-
-  return <BodyCore definition={definition} id={id} label={label} count={count} />
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const variables = {
@@ -214,7 +199,9 @@ export function BodyCore({ definition, id, label, count }) {
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       request={request}
-      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={data => (
         <DataTable
           columns={columns}
@@ -231,5 +218,20 @@ export function BodyCore({ definition, id, label, count }) {
         />
       )}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.GenomicsEnglandSummaryFragment
+  );
+  const { count } = summaryData.genomicsEngland;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

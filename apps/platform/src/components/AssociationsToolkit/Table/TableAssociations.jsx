@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useMemo } from 'react';
 import {
   useReactTable,
@@ -60,7 +61,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
             </div>
           </AggregationsTooltip>
         ),
-        sectionId: sectionId,
+        sectionId,
         enableSorting: isAssociations,
         aggregation,
         isPrivate,
@@ -118,11 +119,10 @@ function TableAssociations() {
           columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
             id: 'name',
             enableSorting: false,
-            cell: row => {
-              return !loading ? (
+            cell: row =>
+              !loading ? (
                 <CellName name={row.getValue()} rowId={row.row.id} />
-              ) : null;
-            },
+              ) : null,
             header: () => {
               const label = entityToGet === 'target' ? 'Target' : 'Disease';
               return <span>{label}</span>;

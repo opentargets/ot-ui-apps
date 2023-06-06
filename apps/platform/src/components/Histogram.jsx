@@ -1,12 +1,19 @@
-import React from 'react';
 import { max, select } from 'd3';
+import { Component } from 'react';
 
-class Histogram extends React.Component {
+class Histogram extends Component {
+  componentDidMount() {
+    this.update();
+  }
+
+  componentDidUpdate() {
+    this.update();
+  }
+
   update = () => {
     const { id, data } = this.props;
     const maxLength = max(data, d => d.length);
     const barsContainer = select(`#histogram-${id} g`);
-
     const bars = barsContainer.selectAll('rect').data(data);
 
     bars
@@ -20,12 +27,7 @@ class Histogram extends React.Component {
 
     bars.exit().remove();
   };
-  componentDidMount() {
-    this.update();
-  }
-  componentDidUpdate() {
-    this.update();
-  }
+
   render() {
     const { id, color } = this.props;
     return (

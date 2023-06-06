@@ -40,9 +40,20 @@ function ShouldAccessPPP() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const classes = useStyles();
 
-  useEffect(() => {
-    checkPPPaccess();
-  }, []);
+  const isOnPublic = () => {
+    const windowLocation = window.location.href;
+    // escape validation on dev mode
+    if (import.meta.env.DEV) return false;
+    return !windowLocation.includes('partner');
+  };
+
+  const handleOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
 
   const checkPPPaccess = () => {
     fetch(PPP_API_URL, {
@@ -65,29 +76,19 @@ function ShouldAccessPPP() {
       }),
     })
       .then(response => {
-        if (response.status === 200 && isOnPublic()) handleOpen();
+        if (response.status === 200) handleOpen();
       })
       .catch(() => {
         console.log('Does not have access to Partner Preview Platform');
       });
   };
 
-  const handleOpen = () => {
-    setDialogOpen(true);
-  };
-
-  const handleClose = () => {
-    setDialogOpen(false);
-  };
+  useEffect(() => {
+    if (isOnPublic()) checkPPPaccess();
+  }, []);
 
   const goToPPP = () => {
-    console.log(window.location.hostname);
     window.location.href = `${PPP_WEB_URL}${location.pathname}`;
-  };
-
-  const isOnPublic = () => {
-    const location = window.location.href;
-    return !location.includes('partner');
   };
 
   return (
@@ -105,9 +106,10 @@ function ShouldAccessPPP() {
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           We are pleased to inform you that you have access to our exclusive
-          Partner Preview Platform &#40;PPP&#41;. This will have pre-publication data
-          from OTAR projects and early access to the latest features, updates,
-          and innovations before they are made available to the public.
+          Partner Preview Platform &#40;PPP&#41;. This will have pre-publication
+          data from OTAR projects in addition to all the publicly available
+          data, providing early access to the latest features, updates, and
+          innovations before they are made available to the public.
         </DialogContentText>
       </DialogContent>
       <DialogActions className={classes.actions}>
