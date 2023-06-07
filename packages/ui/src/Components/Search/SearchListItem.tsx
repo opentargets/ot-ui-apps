@@ -1,6 +1,6 @@
 import { makeStyles, Typography, Chip } from "@material-ui/core";
 import SearchRecentListItem from "./SearchRecentListItem";
-import { commaSeparate } from "../utils/searchUtils";
+import { commaSeparate } from "./utils/searchUtils";
 
 const useStyles = makeStyles((theme) => ({
   justifyBetween: {

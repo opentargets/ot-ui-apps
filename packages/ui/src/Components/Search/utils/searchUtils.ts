@@ -1,5 +1,5 @@
 import { format } from "d3-format";
-import { SearchResult } from "../Search/SearchListItem";
+import { SearchResult } from "../SearchListItem";
 
 export const formatSearchData = (unformattedData) => {
   const allTypes = [] as SearchResult[];
