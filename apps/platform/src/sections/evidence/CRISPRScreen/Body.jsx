@@ -40,7 +40,14 @@ const getColumns = () => [
           <Link to={`/disease/${row.diseaseFromSourceMappedId}`}>
             {_.capitalize(disease)}
           </Link>
-          {row.diseaseFromSource.startsWith(eg) ? ` (${eg})` : ''}
+          {row.diseaseFromSource.startsWith(eg) ? (
+            <Tooltip
+              showHelpIcon
+              title={<TooltipStyledLabel description={_.capitalize(eg)} />}
+            />
+          ) : (
+            ''
+          )}
         </>
       );
     },
