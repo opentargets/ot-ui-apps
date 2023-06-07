@@ -165,46 +165,60 @@ const getColumns = () => [
 ];
 
 const exportColumns = [
-  // {
-  //   label: 'disease',
-  //   exportValue: row => row.disease.name,
-  // },
-  // {
-  //   label: 'disease id',
-  //   exportValue: row => row.disease.id,
-  // },
-  // {
-  //   label: 'OTAR project code',
-  //   exportValue: row => row.projectId,
-  // },
-  // {
-  //   label: 'contrast',
-  //   exportValue: row => row.contrast,
-  // },
-  // {
-  //   label: 'study overview',
-  //   exportValue: row => row.studyOverview,
-  // },
-  // {
-  //   label: 'cell type',
-  //   exportValue: row => row.cellType,
-  // },
-  // {
-  //   label: 'cell line background',
-  //   exportValue: row => row.cellLineBackground,
-  // },
+  {
+    label: 'disease',
+    exportValue: row => row.diseaseFromSource
+    .toLowerCase()
+    .replace('essential genes / ', ''),
+  },
+  {
+    label: 'disease id',
+    exportValue: row => row.diseaseFromSourceMappedId,
+  },
+  {
+    label: 'essential genes',
+    exportValue: row => row.diseaseFromSource.startsWith('essential genes / ') ? 'essential genes' : '',
+  },
+  {
+    label: 'study identifier',
+    exportValue: row => row.studyId,
+  },
+  {
+    label: 'contrast',
+    exportValue: row => row.contrast,
+  },
+  {
+    label: 'study overview',
+    exportValue: row => row.studyOverview,
+  },
+  {
+    label: 'cell type',
+    exportValue: row => row.cellType,
+  },
+  {
+    label: 'log2 fold change',
+    exportValue: row => row.log2FoldChangeValue,
+  },
+  {
+    label: 'significance',
+    exportValue: row => row.resourceScore,
+  },
+  {
+    label: 'statistical test tail',
+    exportValue: row => row.statisticalTestTail,
+  },
+  {
+    label: 'source',
+    exportValue: row => row.projectId,
+  },
   // {
   //   label: 'CRISPR screen library',
   //   exportValue: row => row.crisprScreenLibrary,
   // },
-  // {
-  //   label: 'resource score',
-  //   exportValue: row => row.resourceScore,
-  // },
-  // {
-  //   label: 'statistical test tail',
-  //   exportValue: row => row.statisticalTestTail,
-  // },
+  {
+    label: 'publication',
+    exportValue: row => row.literature.join(', '),
+  },
 ];
 
 export function Body({ definition, id, label }) {
@@ -248,7 +262,7 @@ export function BodyCore({ definition, id, label, count }) {
             rows={rows}
             dataDownloader
             dataDownloaderColumns={exportColumns}
-            dataDownloaderFileStem={`${ensgId}-${efoId}-otcrispr`}
+            dataDownloaderFileStem={`${ensgId}-${efoId}-crisprscreen`}
             showGlobalFilter
             sortBy="resourceScore"
             fixed
