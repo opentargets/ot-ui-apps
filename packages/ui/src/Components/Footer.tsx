@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "./Link";
 import { EmailLink } from "./EmailLink";
 
-import PrivateWrapper from "../../../apps/platform/src/components/PrivateWrapper";
+import PrivateWrapper from "../../../../apps/platform/src/components/PrivateWrapper";
 
 const FOOTER_BACKGROUND_COLOR = "#2e2d35";
 
