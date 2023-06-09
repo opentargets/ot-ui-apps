@@ -1,6 +1,5 @@
 // Configuration Object
-// TODO : update in config object
-const ENV_API_URL = "https://api.platform.mbdev.opentargets.xyz/api/v4/graphql";
+const ENV_API_URL = import.meta.env.VITE_API_URL;
 const config = {
   urlApi: window.configUrlApi ?? ENV_API_URL,
   profile: window.configProfile ?? {},
