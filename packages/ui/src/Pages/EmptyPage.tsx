@@ -1,6 +1,11 @@
-import { Button, Grid, Typography, makeStyles } from "@material-ui/core";
-import {  faSearchPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import {
+  Button,
+  Grid,
+  Typography,
+  colors,
+  makeStyles,
+} from "@material-ui/core";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactNode } from "react";
 import { Link } from "../Components/Link";
@@ -14,12 +19,14 @@ const useStyles = makeStyles((theme) => ({
   messageContainer: {
     display: "flex",
     justifyContent: "center",
-    height: "100%",
+    height: "80vh",
     alignItems: "center",
   },
   messageLogoContainer: {},
   divider: {
-    borderRight: "1px solid ",
+    borderRight: `1px solid ${theme.palette.grey[500]}`,
+    height: "65%",
+    margin: "0 4em",
   },
   messageBodyHeader: {
     color: theme.palette.primary.main,
@@ -30,7 +37,14 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   marginTop: {
-    marginTop: "1em",
+    marginTop: "2em",
+  },
+  mainIcon: {
+    fontSize: "10em",
+    color: theme.palette.primary.dark,
+  },
+  messageBodyContainer: {
+    padding: "4em 0"
   },
 }));
 
@@ -49,13 +63,19 @@ function EmptyPage({
       <div
         className={`${classes.messageLogoContainer} ${classes.hiddenMobile}`}
       >
-        logo
+        <FontAwesomeIcon
+          icon={faMagnifyingGlass}
+          size="4x"
+          className={classes.mainIcon}
+        />
       </div>
       <div className={`${classes.divider} ${classes.hiddenMobile}`}></div>
       <div className="message-body-container">
-        <Typography variant="h3" className={classes.messageBodyHeader}>404: Page not found</Typography>
-        <div className="message-body-description">
-          <div className="message-body-top">{children}</div>
+        <Typography variant="h2" className={classes.messageBodyHeader}>
+          404: Page not found
+        </Typography>
+        <div className={classes.messageBodyContainer}>
+          <div>{children}</div>
           <Typography>
             You deserve a fresh start. Maybe our
             <Link to={documentationLink}> Documentation</Link> or{" "}
@@ -64,12 +84,16 @@ function EmptyPage({
             </Link>{" "}
             can help!
           </Typography>
-          <Typography className={`${classes.messageBottom} ${classes.marginTop}`}>or</Typography>
-          <div className={`${classes.messageBottom} ${classes.marginTop}`}>
-            <Button variant="contained" color="primary">
-              Go back to Home Page
-            </Button>
-          </div>
+          <Typography
+            className={`${classes.messageBottom} ${classes.marginTop}`}
+          >
+            or
+          </Typography>
+        </div>
+        <div className={`${classes.messageBottom} `}>
+          <Button variant="contained" color="primary">
+            Go back to Home Page
+          </Button>
         </div>
       </div>
     </div>
