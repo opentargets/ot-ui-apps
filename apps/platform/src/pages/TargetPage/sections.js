@@ -44,8 +44,8 @@ const sections = [
   // 2. only include public section (i.e. not partner sections),
   //    OR also private sections if it's a partner preview
   section =>
-    (config.profile.hideTargetSectionIds.length === 0 ||
-      !config.profile.hideTargetSectionIds.includes(section.definition.id)) &&
+    // (config.profile.hideTargetSectionIds.length === 0 ||
+    //   !config.profile.hideTargetSectionIds.includes(section.definition.id)) &&
     (!section.definition.isPrivate ||
       (section.definition.isPrivate && config.profile.isPartnerPreview))
 );
