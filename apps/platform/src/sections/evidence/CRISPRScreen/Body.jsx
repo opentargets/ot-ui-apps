@@ -24,31 +24,20 @@ const sources = {
   },
 };
 
+// format the diseaseFromSource field: remove the "essential genes" info
+// this might be sorted at data level at some point
+const parseDiseaseName = d => d.toLowerCase().replace('essential genes / ', '');
+
 const getColumns = () => [
   {
     id: 'diseaseFromSourceMappedId',
     label: 'Reported disease',
     renderCell: row => {
-      // format the diseaseFromSource field;
-      // this might be sorted at data level at some point
-      const eg = 'essential genes';
-      const disease = row.diseaseFromSource
-        .toLowerCase()
-        .replace(`${eg} / `, '');
+      const disease = parseDiseaseName(row.diseaseFromSource);
       return (
-        <>
-          <Link to={`/disease/${row.diseaseFromSourceMappedId}`}>
-            {_.capitalize(disease)}
-          </Link>
-          {row.diseaseFromSource.startsWith(eg) ? (
-            <Tooltip
-              showHelpIcon
-              title={<TooltipStyledLabel description={_.capitalize(eg)} />}
-            />
-          ) : (
-            ''
-          )}
-        </>
+        <Link to={`/disease/${row.diseaseFromSourceMappedId}`}>
+          {_.capitalize(disease)}
+        </Link>
       );
     },
     filterValue: row =>
@@ -70,7 +59,7 @@ const getColumns = () => [
     id: 'contrast',
     label: 'Contrast / Study overview',
     renderCell: row => {
-      // trim the last '.'
+      // trim the last '.' - this could also be addressed at data level perhaps?
       const overview = row.studyOverview?.endsWith('.')
         ? row.studyOverview.slice(0, -1)
         : row.studyOverview;
@@ -167,17 +156,11 @@ const getColumns = () => [
 const exportColumns = [
   {
     label: 'disease',
-    exportValue: row => row.diseaseFromSource
-    .toLowerCase()
-    .replace('essential genes / ', ''),
+    exportValue: row => parseDiseaseName(row.diseaseFromSource),
   },
   {
     label: 'disease id',
     exportValue: row => row.diseaseFromSourceMappedId,
-  },
-  {
-    label: 'essential genes',
-    exportValue: row => row.diseaseFromSource.startsWith('essential genes / ') ? 'essential genes' : '',
   },
   {
     label: 'study identifier',
@@ -211,10 +194,6 @@ const exportColumns = [
     label: 'source',
     exportValue: row => row.projectId,
   },
-  // {
-  //   label: 'CRISPR screen library',
-  //   exportValue: row => row.crisprScreenLibrary,
-  // },
   {
     label: 'publication',
     exportValue: row => row.literature.join(', '),
