@@ -65,6 +65,11 @@ function ProfileHeader() {
     theme.palette.primary.main
   );
   const synonyms = parseSynonyms(data?.target.synonyms || []);
+  
+  const geneInfo = [{
+    label: 'Core essential gene',
+    tooltip: 'Source: Cancer DepMap',
+  }];
 
   return (
     <BaseProfileHeader>
@@ -72,6 +77,7 @@ function ProfileHeader() {
         loading={loading}
         descriptions={targetDescription}
         targetId={data?.target.id}
+        infoChips= {data?.target.isEssential ? geneInfo : null}
       />
       <ChipList title="Synonyms" loading={loading}>
         {synonyms}
