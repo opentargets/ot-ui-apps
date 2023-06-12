@@ -176,7 +176,7 @@ function getColumns(classes) {
               {clinicalStatus}
             </Tooltip>
           );
-        if (clinicalStatus) return { clinicalStatus };
+        if (clinicalStatus) return clinicalStatus;
         return naLabel;
       },
     },
