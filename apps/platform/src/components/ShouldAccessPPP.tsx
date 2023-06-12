@@ -166,7 +166,7 @@ function ShouldAccessPPP() {
       <Snackbar
         open={snackbarOpen}
         onClose={handleCloseSnackbar}
-        message="We will remind you in couple of days"
+        message="We will remind you in couple of weeks"
         autoHideDuration={3000}
       />
     </>
