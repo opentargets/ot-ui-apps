@@ -16,7 +16,7 @@ const PPP_API_URL =
 const PPP_WEB_URL = 'https://partner-platform.opentargets.org';
 const FOURTEEN = 14;
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     padding: '1em 1em 2em',
     borderRadius: '12px',
@@ -33,6 +33,14 @@ const useStyles = makeStyles(() => ({
       width: '100%',
       margin: '0 !important',
       marginTop: '0.3em !important',
+    },
+  },
+  anchorOriginBottomCenter: {
+    bottom: '70px',
+    '& .MuiSnackbarContent-root': {
+      borderRadius: '8px',
+      backgroundColor: 'white',
+      color: theme.palette.text.primary,
     },
   },
 }));
@@ -164,9 +172,12 @@ function ShouldAccessPPP() {
       </Dialog>
 
       <Snackbar
+        classes={{
+          anchorOriginBottomCenter: classes.anchorOriginBottomCenter,
+        }}
         open={snackbarOpen}
         onClose={handleCloseSnackbar}
-        message="We will remind you in couple of weeks"
+        message="We will remind you in a couple of weeks"
         autoHideDuration={3000}
       />
     </>
