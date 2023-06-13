@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
+import { v1 } from 'uuid';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -67,7 +68,7 @@ function ModalityList({ modality, data }) {
         .filter(d => d.modality === modality)
         .map(d => (
           <div
-            key={d.label}
+            key={v1()}
             className={classNames(
               classes.modality,
               d.value ? classes.modalityEnabled : classes.modalityDisabled
@@ -107,7 +108,7 @@ function Body({ definition, label: symbol, id: ensemblId }) {
       renderBody={data => (
         <Grid container spacing={3}>
           {modalities.map(m => (
-            <Grid item xs={6} sm={3} key={m.modality}>
+            <Grid item xs={6} sm={3} key={v1()}>
               <Typography variant="subtitle1" gutterBottom>
                 {m.label}
               </Typography>

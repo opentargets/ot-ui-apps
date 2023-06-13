@@ -14,7 +14,7 @@ import { sentenceCase } from '../../../utils/global';
 import Tooltip from '../../../components/Tooltip';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
-import Summary from './Gene2PhenotypeSummaryFragment.gql';
+import Summary from './Summary';
 
 const g2pUrl = (studyId, symbol) =>
   `https://www.ebi.ac.uk/gene2phenotype/search?panel=${studyId}&search_term=${symbol}`;

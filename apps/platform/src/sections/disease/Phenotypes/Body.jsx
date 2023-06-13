@@ -53,7 +53,7 @@ const columns = [
           {content}
         </Tooltip>
       ) : (
-        { content }
+        content
       );
     },
     filterValue: row => row.phenotypeHPO.name,
