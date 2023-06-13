@@ -24,6 +24,7 @@ import * as OTEncore from '../../sections/evidence/OTEncore';
 import * as CancerBiomarkers from '../../sections/evidence/CancerBiomarkers';
 import * as OTValidation from '../../sections/evidence/OTValidation';
 import * as GeneBurden from '../../sections/evidence/GeneBurden';
+import * as CRISPRScreen from '../../sections/evidence/CRISPRScreen';
 
 import config from '../../config';
 
@@ -42,6 +43,7 @@ const sections = [
   EVASomatic,
   Chembl,
   CRISPR,
+  CRISPRScreen,
   CancerBiomarkers,
   SlapEnrich,
   Progeny,
