@@ -81,7 +81,7 @@ function SearchPage({ location, history }) {
         </Typography>
       </EmptyPage>
     );
-  } else {
+  } else if(data) {
     SEARCH_CONTAINER = (
       <SearchContainer
         q={q}
@@ -92,6 +92,8 @@ function SearchPage({ location, history }) {
         data={data}
       />
     );
+  } else {
+    SEARCH_CONTAINER = null;
   }
 
   return (

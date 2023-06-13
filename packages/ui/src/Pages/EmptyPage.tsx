@@ -91,7 +91,7 @@ function EmptyPage({
           </Typography>
         </div>
         <div className={`${classes.messageBottom} `}>
-          <Button variant="contained" color="primary">
+          <Button href="/" variant="contained" color="primary">
             Go back to Home Page
           </Button>
         </div>

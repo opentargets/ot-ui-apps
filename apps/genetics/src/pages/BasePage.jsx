@@ -1,9 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
-import { Footer, GlobalSearch } from 'ui';
-
-import { Page } from '../ot-ui-components';
+import { Footer, GlobalSearch, Page } from 'ui';
 
 import NavBar from '../components/NavBar/NavBar';
 import { externalLinks, mainMenuItems } from '../constants';

@@ -8,3 +8,4 @@ export { default as LongText } from "./Components/LongText";
 
 export { default as EmptyPage } from "./Pages/EmptyPage";
 export { default as NotFoundPage } from "./Pages/NotFoundPage";
+export { default as Page } from "./Pages/Page";

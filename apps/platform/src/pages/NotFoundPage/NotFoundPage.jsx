@@ -8,7 +8,7 @@ function NotFoundPage() {
   return (
     <BasePage>
       <EmptyPage>
-        <Typography>This page could not be found</Typography>
+        <Typography>This page could not be found.</Typography>
       </EmptyPage>
 
     </BasePage>
