@@ -11,7 +11,7 @@ import DRUG_WARNINGS_QUERY from './DrugWarningsQuery.gql';
 
 const replaceSemicolonWithUnderscore = id => id.replace(':', '_');
 
-const EBI_UFO_URL = `http://www.ebi.ac.uk/efo/`;
+const EBI_OLS_URL = `https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=`;
 
 const columns = [
   {
@@ -31,7 +31,7 @@ const columns = [
         return (
           <Link
             external
-            to={EBI_UFO_URL + replaceSemicolonWithUnderscore(efoId)}
+            to={EBI_OLS_URL + replaceSemicolonWithUnderscore(efoId)}
           >
             {efoTerm}
           </Link>
@@ -48,7 +48,7 @@ const columns = [
           <Link
             external
             to={
-              EBI_UFO_URL + replaceSemicolonWithUnderscore(efoIdForWarningClass)
+              EBI_OLS_URL + replaceSemicolonWithUnderscore(efoIdForWarningClass)
             }
           >
             {toxicityClass}
