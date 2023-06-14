@@ -8,7 +8,6 @@ import client from '../../client';
 import SEARCH_PAGE_QUERY from './SearchPageQuery.gql';
 
 const SearchContainer = lazy(() => import('./SearchContainer'));
-// const { EmptyPage } = lazy(() => import('ui'));
 
 const QS_OPTIONS = {
   sort: false,
