@@ -49,6 +49,11 @@ const dataSources = [
   },
   { id: 'chembl', label: 'ChEMBL', isPrivate: isPrivateDataSource('chembl') },
   {
+    id: 'crispr_screen', // crispr_screen
+    label: 'CRISPR Screens',
+    isPrivate: isPrivateDataSource('crispr_screen'),
+  },
+  {
     id: 'crispr', // crispr
     label: 'Project Score',
     isPrivate: isPrivateDataSource('crispr'),
