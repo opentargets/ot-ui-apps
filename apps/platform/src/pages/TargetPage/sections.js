@@ -24,6 +24,7 @@ const sections = [
   Safety,
   ChemicalProbes,
   BaselineExpression,
+  DepMap,
   GeneOntology,
   GeneticConstraint,
   ProtVista,
@@ -35,7 +36,6 @@ const sections = [
   ComparativeGenomics,
   SubcellularLocation,
   Bibliography,
-  DepMap,
 ].filter(
   // select sections to show based on:
   // 1. there is no specific hidden section for this page (length==0)
