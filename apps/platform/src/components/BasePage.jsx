@@ -1,7 +1,6 @@
 import { Helmet } from 'react-helmet';
-import { Footer, GlobalSearch } from 'ui';
+import { Footer, GlobalSearch, Page } from 'ui';
 
-import Page from './Page';
 import NavBar from './NavBar';
 import {
   appTitle,

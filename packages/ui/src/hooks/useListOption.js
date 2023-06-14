@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import { addSearchToLocalStorage } from "../utils/searchUtils";
+import { addSearchToLocalStorage } from "../Components/Search/utils/searchUtils";
 
 function useListOption() {
   let history = useHistory();

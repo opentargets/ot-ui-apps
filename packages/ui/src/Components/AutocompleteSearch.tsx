@@ -1,14 +1,14 @@
 import { useState, useEffect, useContext, ChangeEvent } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SearchInput from "./Search/SearchInput";
-import useSearchQueryData from "./hooks/useSearchQueryData";
+import useSearchQueryData from "../hooks/useSearchQueryData";
 import SearchListItem, { SearchResult } from "./Search/SearchListItem";
 import SearchListHeader from "./Search/SearchListHeader";
 import { makeStyles } from "@material-ui/core/styles";
-import useListOption from "./hooks/useListOption";
+import useListOption from "../hooks/useListOption";
 import { SearchContext } from "./Search/SearchContext";
 import SearchLoadingState from "./Search/SearchLoadingState";
-import { containsObject } from "./utils/searchUtils";
+import { containsObject } from "./Search/utils/searchUtils";
 
 const useStyles = makeStyles((theme) => ({
   popper: {

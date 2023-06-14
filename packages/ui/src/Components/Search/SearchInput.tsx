@@ -6,7 +6,7 @@ import {
   InputAdornment,
   TextFieldProps,
 } from "@material-ui/core";
-import useDebounce from "../hooks/useDebounce";
+import useDebounce from "../../hooks/useDebounce";
 import { SearchContext } from "./SearchContext";
 
 const useStyles = makeStyles((theme) => ({
