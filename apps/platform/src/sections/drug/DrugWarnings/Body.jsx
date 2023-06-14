@@ -9,6 +9,10 @@ import { naLabel, defaultRowsPerPageOptions } from '../../../constants';
 
 import DRUG_WARNINGS_QUERY from './DrugWarningsQuery.gql';
 
+const replaceSemicolonWithUnderscore = id => id.replace(':', '_');
+
+const EBI_OLS_URL = `https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=`;
+
 const columns = [
   {
     id: 'warningType',
@@ -20,9 +24,38 @@ const columns = [
     renderCell: ({ description }) => description ?? naLabel,
   },
   {
+    id: 'efoTerm',
+    label: 'Adverse event',
+    renderCell: ({ efoTerm, efoId }) => {
+      if (efoTerm && efoId)
+        return (
+          <Link
+            external
+            to={EBI_OLS_URL + replaceSemicolonWithUnderscore(efoId)}
+          >
+            {efoTerm}
+          </Link>
+        );
+      return efoTerm || efoId || naLabel;
+    },
+  },
+  {
     id: 'toxicityClass',
     label: 'ChEMBL warning class',
-    renderCell: ({ toxicityClass }) => toxicityClass ?? naLabel,
+    renderCell: ({ toxicityClass, efoIdForWarningClass }) => {
+      if (toxicityClass && efoIdForWarningClass)
+        return (
+          <Link
+            external
+            to={
+              EBI_OLS_URL + replaceSemicolonWithUnderscore(efoIdForWarningClass)
+            }
+          >
+            {toxicityClass}
+          </Link>
+        );
+      return toxicityClass || efoIdForWarningClass || naLabel;
+    },
   },
   {
     id: 'meddraSocCode',
