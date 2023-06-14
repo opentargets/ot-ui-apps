@@ -174,8 +174,8 @@ function Body({
       query: BODY_QUERY,
       variables: {
         ...newVariables,
-        newCursor,
-        size: size * 10, // fetch 10 pages ahead of time
+        cursor: newCursor,
+        size,
         freeTextQuery,
       },
     });
@@ -184,7 +184,7 @@ function Body({
     () => {
       let isCurrent = true;
 
-      fetchDrugs(variables, null, INIT_PAGE_SIZE).then(res => {
+      fetchDrugs(variables, null, pageSize).then(res => {
         const {
           cursor: newCursor,
           count: newCount,
@@ -214,36 +214,38 @@ function Body({
   );
 
   const handlePageChange = newPage => {
-    if (pageSize * newPage + pageSize > rows.length && cursor !== null) {
+    const numNewPageSize = parseInt(newPage, 10);
+    if (pageSize * numNewPageSize + pageSize > rows.length && cursor !== null) {
       setLoading(true);
       fetchDrugs(variables, cursor, pageSize, globalFilter).then(res => {
         const { cursor: newCursor, rows: newRows } =
           res.data[entity].knownDrugs;
-        setLoading(false);
         setCursor(newCursor);
-        setPage(newPage);
+        setPage(numNewPageSize);
         setRows([...rows, ...newRows]);
+        setLoading(false);
       });
     } else {
-      setPage(newPage);
+      setPage(numNewPageSize);
     }
   };
 
   const handleRowsPerPageChange = newPageSize => {
-    if (newPageSize > rows.length && cursor !== null) {
+    const numNewPageSize = parseInt(newPageSize, 10);
+    if (numNewPageSize > rows.length && cursor !== null) {
       setLoading(true);
-      fetchDrugs(variables, cursor, newPageSize, globalFilter).then(res => {
+      fetchDrugs(variables, cursor, numNewPageSize, globalFilter).then(res => {
         const { cursor: newCursor, rows: newRows } =
           res.data[entity].knownDrugs;
-        setLoading(false);
         setCursor(newCursor);
         setPage(0);
-        setPageSize(newPageSize);
+        setPageSize(numNewPageSize);
         setRows([...rows, ...newRows]);
+        setLoading(false);
       });
     } else {
       setPage(0);
-      setPageSize(newPageSize);
+      setPageSize(numNewPageSize);
     }
   };
 
