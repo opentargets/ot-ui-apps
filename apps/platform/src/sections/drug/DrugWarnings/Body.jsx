@@ -31,7 +31,6 @@ const columns = [
         return (
           <Link
             external
-            newTab
             to={EBI_UFO_URL + replaceSemicolonWithUnderscore(efoId)}
           >
             {efoTerm}
@@ -48,7 +47,6 @@ const columns = [
         return (
           <Link
             external
-            newTab
             to={
               EBI_UFO_URL + replaceSemicolonWithUnderscore(efoIdForWarningClass)
             }
