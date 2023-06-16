@@ -9,7 +9,6 @@ function DepmapPlot({ data }) {
 
   useLayoutEffect(() => {
     setWidth(ref.current.offsetWidth);
-    // setWidth(ref.current.clientWidth);
   }, []);
 
   const trackHeight = 40;
@@ -96,9 +95,6 @@ function DepmapPlot({ data }) {
         line: {
           color: '#rgba(255,0,0,.5)',
           width: 1,
-          // dash: `0px, ${trackHeight * 0.15}px, ${trackHeight * 0.7}px, ${
-          //   trackHeight * 0.15
-          // }px`,
           dash: 'dot',
         },
       },
