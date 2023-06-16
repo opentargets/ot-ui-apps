@@ -140,8 +140,8 @@ function getColumns(classes) {
       id: 'clinicalPhase',
       label: 'Phase',
       sortable: true,
-      renderCell: ({ clinicalPhase }) => phaseMap[clinicalPhase],
-      filterValue: ({ clinicalPhase }) => phaseMap[clinicalPhase],
+      renderCell: ({ clinicalPhase }) => phaseMap(clinicalPhase),
+      filterValue: ({ clinicalPhase }) => phaseMap(clinicalPhase),
     },
     {
       id: 'clinicalStatus',

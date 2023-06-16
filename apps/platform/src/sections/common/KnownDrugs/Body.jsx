@@ -19,8 +19,8 @@ function getColumnPool(id, entity) {
           id: 'phase',
           label: 'Phase',
           sortable: true,
-          renderCell: ({ phase }) => phaseMap[phase],
-          filterValue: ({ phase }) => phaseMap[phase],
+          renderCell: ({ phase }) => phaseMap(phase),
+          filterValue: ({ phase }) => phaseMap(phase),
         },
         {
           id: 'status',
