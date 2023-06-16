@@ -8,6 +8,7 @@ import Description from './Description';
 import { naLabel, defaultRowsPerPageOptions } from '../../../constants';
 
 import DRUG_WARNINGS_QUERY from './DrugWarningsQuery.gql';
+import Tooltip from '../../../components/Tooltip';
 
 const replaceSemicolonWithUnderscore = id => id.replace(':', '_');
 
@@ -19,31 +20,28 @@ const columns = [
     label: 'Warning type',
   },
   {
-    id: 'description',
-    label: 'Description',
-    renderCell: ({ description }) => description ?? naLabel,
-  },
-  {
     id: 'efoTerm',
     label: 'Adverse event',
-    renderCell: ({ efoTerm, efoId }) => {
-      if (efoTerm && efoId)
+    renderCell: ({ efoTerm, efoId, description }) => {
+      if (efoId)
         return (
-          <Link
-            external
-            to={EBI_OLS_URL + replaceSemicolonWithUnderscore(efoId)}
-          >
-            {efoTerm}
-          </Link>
+          <Tooltip title={`Description : ${description}`} showHelpIcon>
+            <Link
+              external
+              to={EBI_OLS_URL + replaceSemicolonWithUnderscore(efoId)}
+            >
+              {efoTerm || efoId}
+            </Link>
+          </Tooltip>
         );
-      return efoTerm || efoId || naLabel;
+      return efoTerm || description || naLabel;
     },
   },
   {
     id: 'toxicityClass',
     label: 'ChEMBL warning class',
-    renderCell: ({ toxicityClass, efoIdForWarningClass }) => {
-      if (toxicityClass && efoIdForWarningClass)
+    renderCell: ({ toxicityClass, efoIdForWarningClass, description }) => {
+      if (efoIdForWarningClass)
         return (
           <Link
             external
@@ -51,10 +49,10 @@ const columns = [
               EBI_OLS_URL + replaceSemicolonWithUnderscore(efoIdForWarningClass)
             }
           >
-            {toxicityClass}
+            {toxicityClass || efoIdForWarningClass}
           </Link>
         );
-      return toxicityClass || efoIdForWarningClass || naLabel;
+      return toxicityClass || description || naLabel;
     },
   },
   {
