@@ -5,11 +5,9 @@ import {
   colors,
   makeStyles,
 } from "@material-ui/core";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactNode } from "react";
-import { Link } from "../Components/Link";
-import BrokenSearchIcon from "../Components/Icons/BrokenSearchIcon";
+import { Link } from "../components/Link";
+import BrokenSearchIcon from "../components/icons/BrokenSearchIcon";
 
 const useStyles = makeStyles((theme) => ({
   hiddenMobile: {
