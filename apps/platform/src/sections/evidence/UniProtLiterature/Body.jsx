@@ -15,7 +15,7 @@ import { dataTypesMap } from '../../../dataTypes';
 
 import UNIPROT_LITERATURE_QUERY from './UniprotLiteratureQuery.gql';
 
-const columns = [
+const getcolumns = label => [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
@@ -66,7 +66,13 @@ const columns = [
           return acc;
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -83,6 +89,8 @@ export function BodyCore({ definition, id, label, count }) {
   const request = useQuery(UNIPROT_LITERATURE_QUERY, {
     variables,
   });
+
+  const columns = getcolumns(label);
   return (
     <SectionItem
       definition={definition}
@@ -123,5 +131,3 @@ export function Body({ definition, id, label }) {
     <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }
-
-

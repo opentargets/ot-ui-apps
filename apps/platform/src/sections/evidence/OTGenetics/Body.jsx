@@ -20,7 +20,7 @@ import usePlatformApi from '../../../hooks/usePlatformApi';
 
 import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease',
     label: 'Disease/phenotype',
@@ -50,6 +50,8 @@ const columns = [
         <PublicationsDrawer
           entries={[{ name: literature[0] }]}
           customLabel={`${publicationFirstAuthor} et al, ${publicationYear}`}
+          symbol={label.symbol}
+          name={label.name}
         />
       );
     },
@@ -164,7 +166,9 @@ const columns = [
     numeric: true,
     sortable: true,
     renderCell: ({ studySampleSize }) =>
-      studySampleSize ? parseInt(studySampleSize, 10).toLocaleString() : naLabel,
+      studySampleSize
+        ? parseInt(studySampleSize, 10).toLocaleString()
+        : naLabel,
   },
   {
     id: 'oddsRatio',
@@ -241,7 +245,7 @@ export function BodyCore({ definition, id, label, count }) {
       )}
       renderBody={data => (
         <DataTable
-          columns={columns}
+          columns={getColumns(label)}
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           order="desc"

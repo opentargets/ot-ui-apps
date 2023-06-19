@@ -22,7 +22,7 @@ import { dataTypesMap } from '../../../dataTypes';
 
 import CLINVAR_QUERY from './ClinvarQuery.gql';
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
@@ -205,7 +205,13 @@ const columns = [
           return acc;
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          symbol={label.symbol}
+          name={label.name}
+          entries={literatureList}
+        />
+      );
     },
   },
 ];
@@ -233,6 +239,7 @@ export function BodyCore({ definition, id, label, count }) {
   const [pageSize, setPageSize] = useState(10);
   const getSize = () => (count > countCutoff ? 100 : count);
   const variables = { ensemblId, efoId, size: getSize() };
+  const columns = getColumns(label);
 
   useEffect(() => {
     let isCurrent = true;
