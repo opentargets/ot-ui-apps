@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography, makeStyles, Chip } from '@material-ui/core';
 import client from '../../../client';
 import ClinvarStars from '../../../components/ClinvarStars';
 import {
@@ -22,7 +22,17 @@ import { dataTypesMap } from '../../../dataTypes';
 
 import CLINVAR_QUERY from './ClinvarQuery.gql';
 
-const columns = [
+const useStyles = makeStyles({
+  xsmall: {
+    fontSize: '0.7rem',
+  },
+  chipLink: {
+    marginLeft: '5px',
+  }
+});
+
+function getColumns(classes) {
+  return [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
@@ -68,6 +78,7 @@ const columns = [
     id: 'variantId',
     label: 'Variant ID',
     renderCell: ({ variantId }) =>
+      // trim long IDs and append '...'
       variantId ? (
         <>
           {variantId.substring(0, 20)}
@@ -111,14 +122,31 @@ const columns = [
   },
   {
     label: 'Functional consequence',
-    renderCell: ({ variantFunctionalConsequence }) => (
-      <Link
-        external
-        to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
-      >
-        {sentenceCase(variantFunctionalConsequence.label)}
-      </Link>
-    ),
+    renderCell: ({ variantFunctionalConsequence, variantId }) => {
+      const pvparams = variantId?.split('_') || [];
+      return (
+      <>
+        <Link
+          external
+          to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
+        >
+          {sentenceCase(variantFunctionalConsequence.label)}
+        </Link>
+        { 
+          // could also check agains functional consequence ID, 
+          // but the "missense_variant" label is also reliable
+          (variantFunctionalConsequence.label === 'missense_variant' && pvparams.length==4) ? (
+            <Link
+              external
+              to = {`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
+              className={classes.chipLink}
+            >
+              <Chip label="ProtVar" size="small" color="primary" clickable variant="outlined" className={classes.xsmall}/>
+            </Link>
+          ) : null
+        }
+      </>
+    )},
     filterValue: ({ variantFunctionalConsequence }) =>
       sentenceCase(variantFunctionalConsequence.label),
   },
@@ -209,6 +237,7 @@ const columns = [
     },
   },
 ];
+}
 
 function fetchClinvar(ensemblId, efoId, cursor, size) {
   return client.query({
@@ -233,6 +262,9 @@ export function BodyCore({ definition, id, label, count }) {
   const [pageSize, setPageSize] = useState(10);
   const getSize = () => (count > countCutoff ? 100 : count);
   const variables = { ensemblId, efoId, size: getSize() };
+
+  const classes = useStyles();
+  const columns = getColumns(classes);
 
   useEffect(() => {
     let isCurrent = true;
