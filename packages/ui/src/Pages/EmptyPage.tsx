@@ -9,6 +9,7 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactNode } from "react";
 import { Link } from "../Components/Link";
+import BrokenSearchIcon from "../Components/Icons/BrokenSearchIcon";
 
 const useStyles = makeStyles((theme) => ({
   hiddenMobile: {
@@ -17,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   messageContainer: {
+    minHeight: "500px",
     display: "flex",
     justifyContent: "center",
     height: "80vh",
@@ -40,8 +42,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "2em",
   },
   mainIcon: {
-    fontSize: "10em",
-    color: theme.palette.primary.dark,
+    fontSize: "13em",
   },
   messageBodyContainer: {
     padding: "4em 0"
@@ -61,13 +62,9 @@ function EmptyPage({
   return (
     <div className={classes.messageContainer}>
       <div
-        className={`${classes.messageLogoContainer} ${classes.hiddenMobile}`}
+        className={`${classes.messageLogoContainer} ${classes.hiddenMobile} ${classes.mainIcon}`}
       >
-        <FontAwesomeIcon
-          icon={faMagnifyingGlass}
-          size="4x"
-          className={classes.mainIcon}
-        />
+        <BrokenSearchIcon/>
       </div>
       <div className={`${classes.divider} ${classes.hiddenMobile}`}></div>
       <div className="message-body-container">
