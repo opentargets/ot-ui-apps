@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 
-import { Typography } from '@material-ui/core';
+import { Typography, makeStyles, Chip } from '@material-ui/core';
 import { DataTable } from '../../../components/Table';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import {
@@ -20,7 +20,17 @@ import usePlatformApi from '../../../hooks/usePlatformApi';
 
 import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
 
-const columns = [
+const useStyles = makeStyles({
+  xsmall: {
+    fontSize: '0.7rem',
+  },
+  chipLink: {
+    marginLeft: '5px',
+  }
+});
+
+function getColumns(classes) {
+  return [
   {
     id: 'disease',
     label: 'Disease/phenotype',
@@ -97,8 +107,12 @@ const columns = [
   {
     id: 'variantFunctionalConsequenceId',
     label: 'Functional Consequence',
-    renderCell: ({ variantFunctionalConsequence }) =>
-      variantFunctionalConsequence ? (
+    renderCell: ({ variantFunctionalConsequence, variantId }) =>
+      { 
+        const pvparams = variantId?.split('_') || [];
+        return (
+        variantFunctionalConsequence ? (
+          <>
         <Link
           external
           to={identifiersOrgLink(
@@ -108,9 +122,24 @@ const columns = [
         >
           {sentenceCase(variantFunctionalConsequence.label)}
         </Link>
+
+        { 
+          // could also check agains functional consequence ID, 
+          // but the "missense_variant" label is also reliable
+          (variantFunctionalConsequence.label === 'missense_variant' && pvparams.length==4) ? (
+            <Link
+              external
+              to = {`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
+              className={classes.chipLink}
+            >
+              <Chip label="ProtVar" size="small" color="primary" clickable variant="outlined" className={classes.xsmall}/>
+            </Link>
+          ) : null
+        }
+</>
       ) : (
         naLabel
-      ),
+      ))},
     filterValue: ({ variantFunctionalConsequence }) =>
       `${sentenceCase(variantFunctionalConsequence.label)} ${
         variantFunctionalConsequence.id
@@ -222,11 +251,14 @@ const columns = [
     renderCell: ({ resourceScore }) => parseFloat(resourceScore.toFixed(5)),
   },
 ];
+}
 
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: count };
-
+  const classes = useStyles();
+  const columns = getColumns(classes);
+  
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,
   });
