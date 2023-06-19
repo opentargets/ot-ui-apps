@@ -28,215 +28,232 @@ const useStyles = makeStyles({
   },
   chipLink: {
     marginLeft: '5px',
-  }
+  },
 });
 
 function getColumns(classes) {
   return [
-  {
-    id: 'disease.name',
-    label: 'Disease/phenotype',
-    renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => (
-      <Tooltip
-        title={
-          <>
-            <Typography variant="subtitle2" display="block" align="center">
-              Reported disease or phenotype:
-            </Typography>
-            <Typography
-              variant="caption"
-              display="block"
-              align="center"
-              gutterBottom
-            >
-              {diseaseFromSource}
-            </Typography>
+    {
+      id: 'disease.name',
+      label: 'Disease/phenotype',
+      renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => (
+        <Tooltip
+          title={
+            <>
+              <Typography variant="subtitle2" display="block" align="center">
+                Reported disease or phenotype:
+              </Typography>
+              <Typography
+                variant="caption"
+                display="block"
+                align="center"
+                gutterBottom
+              >
+                {diseaseFromSource}
+              </Typography>
 
-            {cohortPhenotypes?.length > 1 ? (
-              <>
-                <Typography variant="subtitle2" display="block" align="center">
-                  All reported phenotypes:
-                </Typography>
-                <Typography variant="caption" display="block">
-                  {cohortPhenotypes.map(cp => (
-                    <div key={cp}>{cp}</div>
-                  ))}
-                </Typography>
-              </>
-            ) : (
-              ''
-            )}
+              {cohortPhenotypes?.length > 1 ? (
+                <>
+                  <Typography
+                    variant="subtitle2"
+                    display="block"
+                    align="center"
+                  >
+                    All reported phenotypes:
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    {cohortPhenotypes.map(cp => (
+                      <div key={cp}>{cp}</div>
+                    ))}
+                  </Typography>
+                </>
+              ) : (
+                ''
+              )}
+            </>
+          }
+          showHelpIcon
+        >
+          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        </Tooltip>
+      ),
+    },
+    {
+      id: 'variantId',
+      label: 'Variant ID',
+      renderCell: ({ variantId }) =>
+        // trim long IDs and append '...'
+        variantId ? (
+          <>
+            {variantId.substring(0, 20)}
+            {variantId.length > 20 ? '\u2026' : ''}
           </>
-        }
-        showHelpIcon
-      >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-      </Tooltip>
-    ),
-  },
-  {
-    id: 'variantId',
-    label: 'Variant ID',
-    renderCell: ({ variantId }) =>
-      // trim long IDs and append '...'
-      variantId ? (
-        <>
-          {variantId.substring(0, 20)}
-          {variantId.length > 20 ? '\u2026' : ''}
-        </>
-      ) : (
-        naLabel
-      ),
-  },
-  {
-    id: 'variantRsId',
-    label: 'rsID',
-    renderCell: ({ variantRsId }) =>
-      variantRsId ? (
-        <Link
-          external
-          to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
-        >
-          {variantRsId}
-        </Link>
-      ) : (
-        naLabel
-      ),
-  },
-  {
-    id: 'variantHgvsId',
-    label: 'HGVS ID',
-    renderCell: ({ variantHgvsId }) => variantHgvsId || naLabel,
-  },
-  {
-    id: 'studyId',
-    label: 'ClinVar ID',
-    renderCell: ({ studyId }) =>
-      studyId ? (
-        <Link external to={`https://www.ncbi.nlm.nih.gov/clinvar/${studyId}`}>
-          {studyId}
-        </Link>
-      ) : (
-        naLabel
-      ),
-  },
-  {
-    label: 'Functional consequence',
-    renderCell: ({ variantFunctionalConsequence, variantId }) => {
-      const pvparams = variantId?.split('_') || [];
-      return (
-      <>
-        <Link
-          external
-          to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
-        >
-          {sentenceCase(variantFunctionalConsequence.label)}
-        </Link>
-        { 
-          // could also check agains functional consequence ID, 
-          // but the "missense_variant" label is also reliable
-          (variantFunctionalConsequence.label === 'missense_variant' && pvparams.length==4) ? (
+        ) : (
+          naLabel
+        ),
+    },
+    {
+      id: 'variantRsId',
+      label: 'rsID',
+      renderCell: ({ variantRsId }) =>
+        variantRsId ? (
+          <Link
+            external
+            to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
+          >
+            {variantRsId}
+          </Link>
+        ) : (
+          naLabel
+        ),
+    },
+    {
+      id: 'variantHgvsId',
+      label: 'HGVS ID',
+      renderCell: ({ variantHgvsId }) => variantHgvsId || naLabel,
+    },
+    {
+      id: 'studyId',
+      label: 'ClinVar ID',
+      renderCell: ({ studyId }) =>
+        studyId ? (
+          <Link external to={`https://www.ncbi.nlm.nih.gov/clinvar/${studyId}`}>
+            {studyId}
+          </Link>
+        ) : (
+          naLabel
+        ),
+    },
+    {
+      label: 'Functional consequence',
+      renderCell: ({ variantFunctionalConsequence, variantId }) => {
+        const pvparams = variantId?.split('_') || [];
+        return (
+          <>
             <Link
               external
-              to = {`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
-              className={classes.chipLink}
+              to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
             >
-              <Chip label="ProtVar" size="small" color="primary" clickable variant="outlined" className={classes.xsmall}/>
+              {sentenceCase(variantFunctionalConsequence.label)}
             </Link>
-          ) : null
-        }
-      </>
-    )},
-    filterValue: ({ variantFunctionalConsequence }) =>
-      sentenceCase(variantFunctionalConsequence.label),
-  },
-  {
-    id: 'clinicalSignificances',
-    filterValue: ({ clinicalSignificances }) => clinicalSignificances.join(),
-    label: 'Clinical significance',
-    renderCell: ({ clinicalSignificances }) => {
-      if (!clinicalSignificances) return naLabel;
-      if (clinicalSignificances.length === 1)
-        return sentenceCase(clinicalSignificances[0]);
-      return (
-        <ul
-          style={{
-            margin: 0,
-            padding: 0,
-            listStyle: 'none',
-          }}
-        >
-          {clinicalSignificances.map(clinicalSignificance => (
-            <li key={clinicalSignificance}>
-              {sentenceCase(clinicalSignificance)}
-            </li>
-          ))}
-        </ul>
-      );
-    },
-  },
-  {
-    id: 'allelicRequirements',
-    label: 'Allele origin',
-    renderCell: ({ alleleOrigins, allelicRequirements }) => {
-      if (!alleleOrigins || alleleOrigins.length === 0) return naLabel;
-
-      if (allelicRequirements)
-        return (
-          <Tooltip
-            title={
-              <>
-                <Typography variant="subtitle2" display="block" align="center">
-                  Allelic requirements:
-                </Typography>
-                {allelicRequirements.map(r => (
-                  <Typography variant="caption" key={r}>
-                    {r}
-                  </Typography>
-                ))}
-              </>
+            {
+              // could also check agains functional consequence ID,
+              // but the "missense_variant" label is also reliable
+              variantFunctionalConsequence.label === 'missense_variant' &&
+              pvparams.length == 4 ? (
+                <Link
+                  external
+                  to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
+                  className={classes.chipLink}
+                >
+                  <Chip
+                    label="ProtVar"
+                    size="small"
+                    color="primary"
+                    clickable
+                    variant="outlined"
+                    className={classes.xsmall}
+                  />
+                </Link>
+              ) : null
             }
-            showHelpIcon
-          >
-            {alleleOrigins.map(a => sentenceCase(a)).join('; ')}
-          </Tooltip>
+          </>
         );
-
-      return alleleOrigins.map(a => sentenceCase(a)).join('; ');
+      },
+      filterValue: ({ variantFunctionalConsequence }) =>
+        sentenceCase(variantFunctionalConsequence.label),
     },
-    filterValue: ({ alleleOrigins }) =>
-      alleleOrigins ? alleleOrigins.join() : '',
-  },
-  {
-    id: 'confidence',
-    label: 'Review status',
-    renderCell: ({ confidence }) => (
-      <Tooltip title={confidence}>
-        <span>
-          <ClinvarStars num={clinvarStarMap[confidence]} />
-        </span>
-      </Tooltip>
-    ),
-  },
-  {
-    label: 'Literature',
-    renderCell: ({ literature }) => {
-      const literatureList =
-        literature?.reduce((acc, id) => {
-          if (id !== 'NA') {
-            acc.push({
-              name: id,
-              url: epmcUrl(id),
-              group: 'literature',
-            });
-          }
-          return acc;
-        }, []) || [];
-
-      return <PublicationsDrawer entries={literatureList} />;
+    {
+      id: 'clinicalSignificances',
+      filterValue: ({ clinicalSignificances }) => clinicalSignificances.join(),
+      label: 'Clinical significance',
+      renderCell: ({ clinicalSignificances }) => {
+        if (!clinicalSignificances) return naLabel;
+        if (clinicalSignificances.length === 1)
+          return sentenceCase(clinicalSignificances[0]);
+        return (
+          <ul
+            style={{
+              margin: 0,
+              padding: 0,
+              listStyle: 'none',
+            }}
+          >
+            {clinicalSignificances.map(clinicalSignificance => (
+              <li key={clinicalSignificance}>
+                {sentenceCase(clinicalSignificance)}
+              </li>
+            ))}
+          </ul>
+        );
+      },
     },
-  },
-];
+    {
+      id: 'allelicRequirements',
+      label: 'Allele origin',
+      renderCell: ({ alleleOrigins, allelicRequirements }) => {
+        if (!alleleOrigins || alleleOrigins.length === 0) return naLabel;
+
+        if (allelicRequirements)
+          return (
+            <Tooltip
+              title={
+                <>
+                  <Typography
+                    variant="subtitle2"
+                    display="block"
+                    align="center"
+                  >
+                    Allelic requirements:
+                  </Typography>
+                  {allelicRequirements.map(r => (
+                    <Typography variant="caption" key={r}>
+                      {r}
+                    </Typography>
+                  ))}
+                </>
+              }
+              showHelpIcon
+            >
+              {alleleOrigins.map(a => sentenceCase(a)).join('; ')}
+            </Tooltip>
+          );
+
+        return alleleOrigins.map(a => sentenceCase(a)).join('; ');
+      },
+      filterValue: ({ alleleOrigins }) =>
+        alleleOrigins ? alleleOrigins.join() : '',
+    },
+    {
+      id: 'confidence',
+      label: 'Review status',
+      renderCell: ({ confidence }) => (
+        <Tooltip title={confidence}>
+          <span>
+            <ClinvarStars num={clinvarStarMap[confidence]} />
+          </span>
+        </Tooltip>
+      ),
+    },
+    {
+      label: 'Literature',
+      renderCell: ({ literature }) => {
+        const literatureList =
+          literature?.reduce((acc, id) => {
+            if (id !== 'NA') {
+              acc.push({
+                name: id,
+                url: epmcUrl(id),
+                group: 'literature',
+              });
+            }
+            return acc;
+          }, []) || [];
+
+        return <PublicationsDrawer entries={literatureList} />;
+      },
+    },
+  ];
 }
 
 function fetchClinvar(ensemblId, efoId, cursor, size) {
