@@ -257,7 +257,7 @@ export const defaultRowsPerPageOptions = [10, 25, 100];
 export const decimalPlaces = 3;
 
 const clinicalPhases = {
-  '-1': 'Phase Unknown',
+  '-1': 'Unknown',
   0: 'Phase 0',
   0.5: 'Phase I (Early)',
   1: 'Phase I',
