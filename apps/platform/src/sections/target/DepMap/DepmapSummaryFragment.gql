@@ -1,9 +1,5 @@
-# TODO: update with correct query when ready
-fragment CancerHallmarksSummaryFragment on Target {
-  hallmarks {
-    cancerHallmarks {
-      impact
-      label
-    }
+fragment DepmapSummaryFragment on Target {
+  depMapEssentiality{
+    tissueName
   }
 }
