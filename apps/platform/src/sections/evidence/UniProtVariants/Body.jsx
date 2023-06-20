@@ -15,7 +15,7 @@ import { dataTypesMap } from '../../../dataTypes';
 
 import UNIPROT_VARIANTS_QUERY from './UniprotVariantsQuery.gql';
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
@@ -77,7 +77,13 @@ const columns = [
           return acc;
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -94,6 +100,8 @@ export function BodyCore({ definition, id, label, count }) {
   const request = useQuery(UNIPROT_VARIANTS_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem
