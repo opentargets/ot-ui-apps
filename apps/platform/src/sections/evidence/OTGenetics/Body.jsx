@@ -119,13 +119,21 @@ function getColumns(classes) {
                 variantFunctionalConsequence.id.slice(3)
               )}
             >
-              {sentenceCase(variantFunctionalConsequence.label)}
+              <Chip
+                label={sentenceCase(variantFunctionalConsequence.label)}
+                size="small"
+                color="primary"
+                clickable
+                variant="outlined"
+                className={classes.xsmall}
+              />
             </Link>
 
             {
-              // could also check agains functional consequence ID,
-              // but the "missense_variant" label is also reliable
-              variantFunctionalConsequence.label === 'missense_variant' &&
+              // add linkout to ProtVar for specific functional consequence values:
+              // "missense variant", "stop gained"
+              (variantFunctionalConsequence.id === 'SO:0001583' ||
+                variantFunctionalConsequence.id === 'SO:0001587') &&
               pvparams.length == 4 ? (
                 <Link
                   external
