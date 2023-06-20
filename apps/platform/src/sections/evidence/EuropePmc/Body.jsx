@@ -13,7 +13,7 @@ import Summary from './Summary';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import EUROPE_PMC_QUERY from './sectionQuery.gql';
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease',
     label: 'Disease/phenotype',
@@ -36,6 +36,8 @@ const columns = [
       journal,
       source,
       patentDetails,
+      isOpenAccess,
+      pmcId,
     }) => (
       <Publication
         europePmcId={europePmcId}
@@ -46,6 +48,10 @@ const columns = [
         journal={journal}
         source={source}
         patentDetails={patentDetails}
+        isOpenAccess={isOpenAccess}
+        pmcId={pmcId}
+        symbol={label.symbol}
+        name={label.name}
       />
     ),
   },
@@ -71,12 +77,14 @@ function mergeData(rows, literatureData) {
       return {
         ...row,
         europePmcId: relevantEntry.id,
+        pmcId: relevantEntry.pmcid,
         source: relevantEntry.source,
         patentDetails: relevantEntry?.patentDetails,
         title: relevantEntry.title,
         year: relevantEntry.pubYear,
         abstract: relevantEntry.abstractText,
         authors: relevantEntry.authorList?.author || [],
+        isOpenAccess: relevantEntry.isOpenAccess === 'Y',
         journal: {
           ...relevantEntry.journalInfo,
           page: relevantEntry.pageInfo,
@@ -179,10 +187,7 @@ export function BodyCore({ definition, id, label }) {
         const resJson = await res.json();
         const newLiteratureData = resJson.resultList.result;
 
-        setLiteratureData(litData => [
-          ...litData,
-          ...newLiteratureData,
-        ]);
+        setLiteratureData(litData => [...litData, ...newLiteratureData]);
         setLoading(false);
       }
     }
@@ -193,6 +198,8 @@ export function BodyCore({ definition, id, label }) {
       isCurrent = false;
     };
   }, [newIds]);
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

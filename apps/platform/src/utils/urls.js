@@ -105,3 +105,16 @@ export const getAbleRoutes = ({ routes = [], isPartnerPreview = false }) => {
   }, []);
   return ableRouter;
 };
+
+export const publicationSummaryQuery = ({ pmcId, symbol, name }) => {
+  const baseUrl = `${config.urlAiApi}/literature/publication/summary`;
+  const body = {
+    payload: {
+      pmcId,
+      targetSymbol: symbol,
+      diseaseName: name,
+    },
+  };
+
+  return { baseUrl, body };
+};

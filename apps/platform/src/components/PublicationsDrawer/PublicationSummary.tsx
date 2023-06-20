@@ -4,8 +4,9 @@ import { Box, Typography, Button } from '@material-ui/core';
 import Collapse from '@material-ui/core/Collapse';
 import { faCircleNodes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import config from '../../config';
+import { publicationSummaryQuery } from '../../utils/urls';
+import PublicationActionsTooltip from './PublicationActionsTooltip';
+import SummaryLoader from './SummaryLoader';
 
 type LoadingState = true | false;
 type CollapsedState = true | false;
@@ -15,6 +16,9 @@ type PublicationSummaryProps = {
   symbol: string;
   name: string;
 };
+
+const helpText =
+  "Evidence summarisation based on the available full-text article. Free-to-use full-text article provided by Europe PMC and summarised using OpenAI's gpt-3.5-turbo model.";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,30 +42,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const publicationSummaryQuery = ({
-  pmcId,
-  symbol,
-  name,
-}: PublicationSummaryProps) => {
-  const baseUrl = `${config.urlAiApi}/literature/publication/summary`;
-  const body = {
-    payload: {
-      pmcId,
-      targetSymbol: symbol,
-      diseaseName: name,
-    },
-  };
-
-  return { baseUrl, body };
-};
-
 function PublicationSummary({
   pmcId,
   symbol,
   name,
 }: PublicationSummaryProps): JSX.Element {
   const [loading, setLoading] = useState<LoadingState>(false);
-  const [text, setText] = useState<TextState>(null);
+  const [summaryText, setSummaryText] = useState<TextState>(null);
   const [collapseOpen, setCollapseOpen] = useState<CollapsedState>(false);
   const classes = useStyles();
 
@@ -87,33 +74,39 @@ function PublicationSummary({
       fetch(baseUrl, requestOptions)
         .then(response => response.json())
         .then(data => {
-          setText(data.text);
+          setSummaryText(data.text);
           setLoading(false);
         });
     };
-    if (collapseOpen) {
+    if (collapseOpen && summaryText === null) {
       fetchData();
     }
   }, [collapseOpen]);
 
   return (
     <div>
-      <Button
-        className={classes.detailsButton}
-        variant="outlined"
-        size="small"
-        onClick={() => {
-          handleChange();
-        }}
-        startIcon={<FontAwesomeIcon icon={faCircleNodes} size="sm" />}
-      >
-        Show summary
-      </Button>
+      <PublicationActionsTooltip title={helpText} placement="top">
+        <Button
+          className={classes.detailsButton}
+          variant="outlined"
+          size="small"
+          onClick={() => {
+            handleChange();
+          }}
+          startIcon={<FontAwesomeIcon icon={faCircleNodes} size="sm" />}
+        >
+          Show summary
+        </Button>
+      </PublicationActionsTooltip>
       <Collapse in={collapseOpen}>
         <Box className={classes.detailPanel}>
-          <Typography variant="subtitle2">Summary</Typography>
-          {loading && <div>Loading ...</div>}
-          {!loading && <span className={classes.summarySpan}>{text}</span>}
+          {loading && <SummaryLoader />}
+          {!loading && (
+            <>
+              <Typography variant="subtitle2">Summary</Typography>
+              <span className={classes.summarySpan}>{summaryText}</span>
+            </>
+          )}
         </Box>
       </Collapse>
     </div>
