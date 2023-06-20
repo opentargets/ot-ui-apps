@@ -134,7 +134,14 @@ function getColumns(classes) {
               external
               to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
             >
-              {sentenceCase(variantFunctionalConsequence.label)}
+              <Chip
+                label={sentenceCase(variantFunctionalConsequence.label)}
+                size="small"
+                color="primary"
+                clickable
+                variant="outlined"
+                className={classes.xsmall}
+              />
             </Link>
             {
               // could also check agains functional consequence ID,
