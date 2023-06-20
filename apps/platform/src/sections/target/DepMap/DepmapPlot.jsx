@@ -80,6 +80,7 @@ function DepmapPlot({ data }) {
     autosize: true,
     xaxis: {
       title: 'Gene Effect',
+      zerolinecolor: '#DDD',
     },
     yaxis: {
       automargin: 'width',
@@ -93,7 +94,7 @@ function DepmapPlot({ data }) {
         x1: -1,
         y1: depMapEssentiality.length - 0.5,
         line: {
-          color: '#rgba(255,0,0,.5)',
+          color: '#rgba(255,0,0,.9)',
           width: 1,
           dash: 'dot',
         },
