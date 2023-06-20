@@ -25,7 +25,7 @@ function SummaryLoader() {
       <Box className={classes.container}>
         <CircularProgress color="inherit" />
       </Box>
-      Loading summary
+      Summarising...
     </LoadingContainer>
   );
 }

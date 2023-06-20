@@ -103,7 +103,7 @@ function PublicationSummary({
           {loading && <SummaryLoader />}
           {!loading && (
             <>
-              <Typography variant="subtitle2">Summary</Typography>
+              <Typography variant="subtitle2">Evidence summary</Typography>
               <span className={classes.summarySpan}>{summaryText}</span>
             </>
           )}

@@ -120,6 +120,17 @@ function Publication({
         }}
       />
       <div className={classes.btnsContainer}>
+        {isOpenAccess && (
+          <Button
+            className={classes.detailsButton}
+            variant="outlined"
+            size="small"
+            startIcon={<FontAwesomeIcon icon={faCircleNodes} size="sm" />}
+            onClick={handleShowSummaryClick}
+          >
+            {showSummary ? 'Hide summary' : 'Show summary'}
+          </Button>
+        )}
         {abstract && (
           <Button
             className={classes.detailsButton}
@@ -137,19 +148,6 @@ function Publication({
             {showAbstract ? 'Hide abstract' : 'Show abstract'}
           </Button>
         )}
-
-        {isOpenAccess && (
-          <Button
-            className={classes.detailsButton}
-            variant="outlined"
-            size="small"
-            startIcon={<FontAwesomeIcon icon={faCircleNodes} size="sm" />}
-            onClick={handleShowSummaryClick}
-          >
-            {showSummary ? 'Hide summary' : 'Show summary'}
-          </Button>
-        )}
-
         {textMiningSentences && (
           <Button
             className={classes.detailsButton}
@@ -171,21 +169,21 @@ function Publication({
         )}
       </div>
       <Box>
-        {showAbstract && (
-          <Box className={classes.detailPanel}>
-            <Typography variant="subtitle2">Abstract</Typography>
-            <span className={classes.abstractSpan}>{abstract}</span>
-          </Box>
-        )}
         {showSummary && (
           <Box className={classes.detailPanel}>
             {loading && <SummaryLoader />}
             {!loading && (
               <>
-                <Typography variant="subtitle2">Summary</Typography>
+                <Typography variant="subtitle2">Evidence summary</Typography>
                 <span className={classes.abstractSpan}>{summaryText}</span>
               </>
             )}
+          </Box>
+        )}
+        {showAbstract && (
+          <Box className={classes.detailPanel}>
+            <Typography variant="subtitle2">Abstract</Typography>
+            <span className={classes.abstractSpan}>{abstract}</span>
           </Box>
         )}
         {showMatches && (
