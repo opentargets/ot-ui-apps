@@ -313,5 +313,23 @@
    "order": null,
    "include_in_fe": false,
    "include_in_bq": false
+ },
+ {
+   "id": "targetsPriorisation",
+   "category": "Target",
+   "nice_name": "n/a",
+   "description": "------- I have no idea how to describe this -------",
+   "order": null,
+   "include_in_fe": false,
+   "include_in_bq": true
+ },
+{
+   "id": "targetEssentiality",
+   "category": "Target",
+   "nice_name": "n/a",
+   "description": "------- I have no idea how to describe this -------",
+   "order": null,
+   "include_in_fe": false,
+   "include_in_bq": true
  }
 ]
