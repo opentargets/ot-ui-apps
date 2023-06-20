@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Link, OtTable } from '../ot-ui-components';
+import { Link, OtTableRF, DataDownloader } from '../ot-ui-components';
 
 import variantIdComparator from '../logic/variantIdComparator';
 import cytobandComparator from '../logic/cytobandComparator';
@@ -69,15 +69,29 @@ function ManhattansVariantsTable({
       cytoband: getCytoband(chromosome, position),
     };
   });
+  const downloadData = dataWithCytoband.map(row => {
+    console.log(row);
+    return {
+      ...row,
+      bestGenes: row.bestGenes.map(d => d.gene.symbol).join(', '),
+    }
+  });
+
   return (
-    <OtTable
+    <OtTableRF
+      right={
+        <DataDownloader
+        tableHeaders={tableColumns(studyIds)}
+        rows={downloadData}
+        fileStem={filenameStem}
+        />
+      }
       loading={loading}
       error={error}
       columns={tableColumns(studyIds)}
       data={dataWithCytoband}
       sortBy="indexVariantId"
       order="asc"
-      downloadFileStem={filenameStem}
       message="Loci in this table are shared across all selected studies."
     />
   );
