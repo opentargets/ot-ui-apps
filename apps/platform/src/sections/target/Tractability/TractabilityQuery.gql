@@ -1,11 +1,10 @@
-query TractabilitySummaryFragment($ensemblId: String!) {
+query TractabilityQuery($ensemblId: String!) {
   target(ensemblId: $ensemblId) {
     id
     tractability {
       value
       modality
-      # Must rename the id, or Apollo will cache it, messing up the response data
-      label: id
+      label
     }
   }
 }
