@@ -175,10 +175,17 @@ function getColumns(classes) {
               variantFunctionalConsequenceFromQtlId.id.slice(3)
             )}
           >
-            {sentenceCase(variantFunctionalConsequenceFromQtlId.label)}
+            <Chip
+                label={sentenceCase(variantFunctionalConsequenceFromQtlId.label)}
+                size="small"
+                color="primary"
+                clickable
+                variant="outlined"
+                className={classes.xsmall}
+              />
           </Link>
         ) : (
-          naLabel
+          ''
         ),
       filterValue: ({ variantFunctionalConsequenceFromQtlId }) =>
         variantFunctionalConsequenceFromQtlId
