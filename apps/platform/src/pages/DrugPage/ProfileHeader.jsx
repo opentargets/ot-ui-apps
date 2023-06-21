@@ -18,6 +18,7 @@ import Smiles from './Smiles';
 import usePlatformApi from '../../hooks/usePlatformApi';
 
 import DRUG_PROFILE_HEADER_FRAGMENT from './ProfileHeader.gql';
+import { phaseMap } from '../../constants';
 
 function ProfileHeader({ chemblId }) {
   const { loading, error, data } = usePlatformApi();
@@ -39,6 +40,10 @@ function ProfileHeader({ chemblId }) {
     blackBoxWarning,
   } = data?.drug || {};
 
+  const clinicalPhase = maximumClinicalTrialPhase
+    ? phaseMap(maximumClinicalTrialPhase)
+    : 'Preclinical';
+
   return (
     <BaseProfileHeader>
       <>
@@ -50,7 +55,7 @@ function ProfileHeader({ chemblId }) {
           {yearOfFirstApproval || 'N/A'}
         </Field>
         <Field loading={loading} title="Max phase">
-          {maximumClinicalTrialPhase}
+          {clinicalPhase}
         </Field>
         <Field loading={loading} title="Status">
           {isApproved ? (

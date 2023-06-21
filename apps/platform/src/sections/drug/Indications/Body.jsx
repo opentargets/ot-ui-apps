@@ -37,8 +37,8 @@ const columns = [
     label: 'Max Phase',
     sortable: true,
     width: '10%',
-    renderCell: ({ maxPhaseForIndication }) => phaseMap[maxPhaseForIndication],
-    filterValue: ({ maxPhaseForIndication }) => phaseMap[maxPhaseForIndication],
+    renderCell: ({ maxPhaseForIndication }) => phaseMap(maxPhaseForIndication),
+    filterValue: ({ maxPhaseForIndication }) => phaseMap(maxPhaseForIndication),
   },
   {
     id: 'references',

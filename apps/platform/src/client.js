@@ -4,7 +4,14 @@ import config from './config';
 
 const client = new ApolloClient({
   uri: config.urlApi,
-  cache: new InMemoryCache({ possibleTypes }),
+  cache: new InMemoryCache({
+    possibleTypes,
+    typePolicies: {
+      ScoredComponent: {
+        keyFields: ['componentId', 'score'],
+      },
+    },
+  }),
   headers: { 'OT-Platform': true },
 });
 
