@@ -200,7 +200,7 @@
   {
     "id": "reactome",
     "category": "Target",
-    "nice_name": "n/a",
+    "nice_name": "Target - Reactome pathway information",
     "description": "Reactome pathway data used to annotate targets",
     "order": null,
     "include_in_fe": true,
@@ -317,7 +317,7 @@
   {
     "id": "targetsPriorisation",
     "category": "Target",
-    "nice_name": "Target Prioritisation",
+    "nice_name": "Target - Prioritisation",
     "description": "List of target-specific attributes from the Target Engine project",
     "order": null,
     "include_in_fe": true,
@@ -326,7 +326,7 @@
   {
     "id": "targetEssentiality",
     "category": "Target",
-    "nice_name": "Gene essentiality",
+    "nice_name": "Target - DepMap essentiality",
     "description": "Target essentiality assessments from DepMap Portal",
     "order": null,
     "include_in_fe": true,
