@@ -32,6 +32,27 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+function SkeletonRow() {
+  return (
+    <Fade in>
+      <Box mb={2}>
+        <Skeleton height={60} />
+        {/* <Box pt="1px"> */}
+        <Skeleton width="60%" height={45} />
+        {/* </Box> */}
+        <Grid container wrap="nowrap">
+          <Box width={130} mr={1}>
+            <Skeleton height={45} />
+          </Box>
+          <Box width={130}>
+            <Skeleton height={45} />
+          </Box>
+        </Grid>
+      </Box>
+    </Fade>
+  );
+}
+
 function PublicationsList({ hideSearch = false }) {
   const classes = useStyles();
   const lits = useRecoilValue(litsIdsState);
@@ -227,27 +248,5 @@ function PublicationsList({ hideSearch = false }) {
     />
   );
 }
-
-function SkeletonRow() {
-  return (
-    <Fade in>
-      <Box mb={2}>
-        <Skeleton height={60} />
-        {/* <Box pt="1px"> */}
-        <Skeleton width="60%" height={45} />
-        {/* </Box> */}
-        <Grid container wrap="nowrap">
-          <Box width={130} mr={1}>
-            <Skeleton height={45} />
-          </Box>
-          <Box width={130}>
-            <Skeleton height={45} />
-          </Box>
-        </Grid>
-      </Box>
-    </Fade>
-  );
-}
-
 
 export default PublicationsList;
