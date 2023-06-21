@@ -331,5 +331,5 @@
     "order": null,
     "include_in_fe": false,
     "include_in_bq": false
-  },
+  }
 ]
