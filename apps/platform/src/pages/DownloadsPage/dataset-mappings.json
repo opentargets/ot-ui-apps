@@ -202,7 +202,25 @@
     "category": "Target",
     "nice_name": "Target - Reactome pathway information",
     "description": "Reactome pathway data used to annotate targets",
-    "order": null,
+    "order": 22,
+    "include_in_fe": true,
+    "include_in_bq": true
+  },
+  {
+    "id": "targetsPriorisation",
+    "category": "Target",
+    "nice_name": "Target - Prioritisation",
+    "description": "List of target-specific attributes from the Target Engine project",
+    "order": 24,
+    "include_in_fe": true,
+    "include_in_bq": true
+  },
+  {
+    "id": "targetEssentiality",
+    "category": "Target",
+    "nice_name": "Target - DepMap essentiality",
+    "description": "Target essentiality assessments from DepMap Portal",
+    "order": 23,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -314,22 +332,4 @@
     "include_in_fe": false,
     "include_in_bq": false
   },
-  {
-    "id": "targetsPriorisation",
-    "category": "Target",
-    "nice_name": "Target - Prioritisation",
-    "description": "List of target-specific attributes from the Target Engine project",
-    "order": null,
-    "include_in_fe": true,
-    "include_in_bq": true
-  },
-  {
-    "id": "targetEssentiality",
-    "category": "Target",
-    "nice_name": "Target - DepMap essentiality",
-    "description": "Target essentiality assessments from DepMap Portal",
-    "order": null,
-    "include_in_fe": true,
-    "include_in_bq": true
-  }
 ]
