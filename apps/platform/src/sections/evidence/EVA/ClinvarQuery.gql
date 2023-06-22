@@ -14,6 +14,7 @@ query ClinvarQuery(
       cursor: $cursor
     ) {
       cursor
+      count
       rows {
         disease {
           id
