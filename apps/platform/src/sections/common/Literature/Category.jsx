@@ -34,7 +34,7 @@ export default function Category() {
   const bibliographyState = useRecoilValue(literatureState);
 
   const handleChange = async event => {
-    const { query, id, bibliographyCategory, selectedEntities, globalEntity, cursor } =
+    const { query, id, category: bibliographyCategory, selectedEntities, globalEntity, cursor } =
       bibliographyState;
     const {
       target: { name: clicked },

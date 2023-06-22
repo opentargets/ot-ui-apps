@@ -234,6 +234,7 @@ class OtTableRF extends Component {
       verticalHeaders,
       classes,
       left,
+      right,
       center,
       message,
       filters,
@@ -258,6 +259,7 @@ class OtTableRF extends Component {
         loading={loading}
         error={error}
         left={left}
+        right={right}
         center={center}
       >
         {message ? (

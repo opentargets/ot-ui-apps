@@ -8,6 +8,11 @@ import Description from './Description';
 import { naLabel, defaultRowsPerPageOptions } from '../../../constants';
 
 import DRUG_WARNINGS_QUERY from './DrugWarningsQuery.gql';
+import Tooltip from '../../../components/Tooltip';
+
+const replaceSemicolonWithUnderscore = id => id.replace(':', '_');
+
+const EBI_OLS_URL = `https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=`;
 
 const columns = [
   {
@@ -15,14 +20,40 @@ const columns = [
     label: 'Warning type',
   },
   {
-    id: 'description',
-    label: 'Description',
-    renderCell: ({ description }) => description ?? naLabel,
+    id: 'efoTerm',
+    label: 'Adverse event',
+    renderCell: ({ efoTerm, efoId, description }) => {
+      if (efoId)
+        return (
+          <Tooltip title={`Description : ${description}`} showHelpIcon>
+            <Link
+              external
+              to={EBI_OLS_URL + replaceSemicolonWithUnderscore(efoId)}
+            >
+              {efoTerm || efoId}
+            </Link>
+          </Tooltip>
+        );
+      return efoTerm || description || naLabel;
+    },
   },
   {
     id: 'toxicityClass',
     label: 'ChEMBL warning class',
-    renderCell: ({ toxicityClass }) => toxicityClass ?? naLabel,
+    renderCell: ({ toxicityClass, efoIdForWarningClass, description }) => {
+      if (efoIdForWarningClass)
+        return (
+          <Link
+            external
+            to={
+              EBI_OLS_URL + replaceSemicolonWithUnderscore(efoIdForWarningClass)
+            }
+          >
+            {toxicityClass || efoIdForWarningClass}
+          </Link>
+        );
+      return toxicityClass || description || naLabel;
+    },
   },
   {
     id: 'meddraSocCode',

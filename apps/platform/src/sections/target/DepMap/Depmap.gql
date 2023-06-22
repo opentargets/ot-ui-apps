@@ -1,18 +1,14 @@
-# TODO: update with correct query when ready
-query Hallmarks($ensemblId: String!) {
+query Depmap ($ensemblId: String!) {
   target(ensemblId: $ensemblId) {
     id
-    hallmarks {
-      attributes {
-        name
-        pmid
-        description
-      }
-      cancerHallmarks {
-        pmid
-        impact
-        description
-        label
+    depMapEssentiality {
+      tissueName
+      screens{
+        depmapId
+        cellLineName
+        diseaseFromSource
+        geneEffect
+        expression
       }
     }
   }

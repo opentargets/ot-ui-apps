@@ -109,7 +109,8 @@ function PublicationsList({ hideSearch = false }) {
   const handleRowsPerPageChange = useRecoilCallback(
     ({ snapshot }) =>
       async newPageSize => {
-        const expected = newPageSize * page + newPageSize;
+        const pageSizeInt = Number(newPageSize)
+        const expected = pageSizeInt * page + pageSizeInt;       
         if (expected > lits.length && cursor !== null) {
           const {
             query,
@@ -125,7 +126,7 @@ function PublicationsList({ hideSearch = false }) {
             id,
             category,
             entities: selectedEntities,
-            newCursor,
+            cursor: newCursor,
           });
           setLoadingEntities(false);
           const data = request.data[globalEntity];
@@ -139,11 +140,11 @@ function PublicationsList({ hideSearch = false }) {
             litsIds: [...loadedPublications, ...newLits],
             cursor: data.literatureOcurrences?.cursor,
             page: 0,
-            pageSize: newPageSize,
+            pageSize: pageSizeInt,
           };
           setLiteratureUpdate(update);
         } else {
-          setLiteratureUpdate({ pageSize: newPageSize });
+          setLiteratureUpdate({ pageSize: pageSizeInt });
         }
       }
   );
@@ -151,7 +152,8 @@ function PublicationsList({ hideSearch = false }) {
   const handlePageChange = useRecoilCallback(
     ({ snapshot }) =>
       async newPage => {
-        if (pageSize * newPage + pageSize > lits.length && cursor !== null) {
+        const newPageInt = Number(newPage);
+        if (pageSize * newPageInt + pageSize > lits.length && cursor !== null) {
           const {
             query,
             id,
@@ -166,7 +168,7 @@ function PublicationsList({ hideSearch = false }) {
             id,
             category,
             entities: selectedEntities,
-            newCursor,
+            cursor: newCursor,
           });
           setLoadingEntities(false);
           const data = request.data[globalEntity];
@@ -179,11 +181,11 @@ function PublicationsList({ hideSearch = false }) {
           const update = {
             litsIds: [...loadedPublications, ...newLits],
             cursor: data.literatureOcurrences?.cursor,
-            page: newPage,
+            page: newPageInt,
           };
           setLiteratureUpdate(update);
         } else {
-          setLiteratureUpdate({ page: newPage });
+          setLiteratureUpdate({ page: newPageInt });
         }
       }
   );

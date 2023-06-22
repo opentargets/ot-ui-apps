@@ -1,5 +1,5 @@
-import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { ReactNode } from 'react';
 
 const useStyles = makeStyles(theme => ({
   plotContainerSection: {
@@ -8,7 +8,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PlotContainerSection = ({ children }) => {
+type PlotContainerSectionProps = {
+  children: ReactNode;
+};
+const PlotContainerSection = ({ children }: PlotContainerSectionProps) => {
   const classes = useStyles();
   return <div className={classes.plotContainerSection}>{children}</div>;
 };

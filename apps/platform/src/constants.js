@@ -256,12 +256,19 @@ export const defaultRowsPerPageOptions = [10, 25, 100];
 
 export const decimalPlaces = 3;
 
-export const phaseMap = {
+const clinicalPhases = {
+  '-1': 'Unknown',
   0: 'Phase 0',
+  0.5: 'Phase I (Early)',
   1: 'Phase I',
   2: 'Phase II',
   3: 'Phase III',
   4: 'Phase IV',
+};
+
+export const phaseMap = clinicalPhase => {
+  const clinicalPhaseId = String(clinicalPhase);
+  return clinicalPhases[clinicalPhaseId];
 };
 
 export const sourceMap = {

@@ -10,7 +10,7 @@ query targetAnnotation {
     safetyLiabilities {
       event
       eventId
-      biosample {
+      biosamples {
         cellFormat
         cellLabel
         tissueLabel
@@ -20,7 +20,7 @@ query targetAnnotation {
         dosing
         direction
       }
-      study {
+      studies {
         name
         type
         description

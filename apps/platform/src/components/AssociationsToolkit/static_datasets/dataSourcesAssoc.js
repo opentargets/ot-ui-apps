@@ -145,6 +145,16 @@ const dataSources = [
     docsLink: 'https://platform-docs.opentargets.org/evidence#chembl',
   },
   {
+    id: 'crispr_screen',
+    sectionId: 'crispr_screen',
+    label: 'CRISPR Screens',
+    aggregation: 'Affected pathway',
+    aggregationId: 'affected_pathway',
+    weight: 1,
+    isPrivate: false,
+    docsLink: 'https://platform-docs.opentargets.org/evidence#project-score', // TODO: check this
+  },
+  {
     id: 'crispr',
     sectionId: 'crispr',
     label: 'Project Score',
@@ -365,6 +375,13 @@ export const grouped = {
     },
   ],
   'Affected pathway': [
+    {
+      id: 'crispr_screen',
+      sectionId: 'crispr_screen',
+      label: 'CRISPR Screens',
+      aggregation: 'Affected pathway',
+      weight: 1,
+    },
     {
       id: 'crispr',
       sectionId: 'crispr',

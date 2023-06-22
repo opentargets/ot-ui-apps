@@ -9,12 +9,14 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const PPP_API_URL =
   'https://api.partner-platform.opentargets.org/api/v4/graphql';
 const PPP_WEB_URL = 'https://partner-platform.opentargets.org';
+const FOURTEEN = 14;
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     padding: '1em 1em 2em',
     borderRadius: '12px',
@@ -33,11 +35,20 @@ const useStyles = makeStyles(() => ({
       marginTop: '0.3em !important',
     },
   },
+  anchorOriginBottomCenter: {
+    bottom: '70px',
+    '& .MuiSnackbarContent-root': {
+      borderRadius: '8px',
+      backgroundColor: 'white',
+      color: theme.palette.text.primary,
+    },
+  },
 }));
 
 function ShouldAccessPPP() {
   const location = useLocation();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const classes = useStyles();
 
   const isOnPublic = () => {
@@ -47,12 +58,38 @@ function ShouldAccessPPP() {
     return !windowLocation.includes('partner');
   };
 
-  const handleOpen = () => {
+  const shouldShowPopupAfterFixedDays = (DAYS: number) => {
+    const currentDate = new Date();
+    const oldDateObject = JSON.parse(
+      localStorage.getItem('ppp-reminder-closed-on') || '{}'
+    );
+    if (!oldDateObject.date) return true;
+    const oldDate = new Date(oldDateObject.date);
+    const diffInTime = Math.abs(currentDate.getTime() - oldDate.getTime());
+    const diffInDays = Math.floor(diffInTime / (1000 * 3600 * 24));
+    if (diffInDays >= DAYS) return true;
+    return false;
+  };
+
+  const handleOpenDialog = () => {
     setDialogOpen(true);
   };
 
-  const handleClose = () => {
+  const handleCloseDialog = () => {
     setDialogOpen(false);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
+  const remindMeLater = () => {
+    handleCloseDialog();
+    localStorage.setItem(
+      'ppp-reminder-closed-on',
+      JSON.stringify({ date: new Date() })
+    );
+    setSnackbarOpen(true);
   };
 
   const checkPPPaccess = () => {
@@ -76,7 +113,7 @@ function ShouldAccessPPP() {
       }),
     })
       .then(response => {
-        if (response.status === 200) handleOpen();
+        if (response.status === 200) handleOpenDialog();
       })
       .catch(() => {
         console.log('Does not have access to Partner Preview Platform');
@@ -84,7 +121,8 @@ function ShouldAccessPPP() {
   };
 
   useEffect(() => {
-    if (isOnPublic()) checkPPPaccess();
+    if (isOnPublic() && shouldShowPopupAfterFixedDays(FOURTEEN))
+      checkPPPaccess();
   }, []);
 
   const goToPPP = () => {
@@ -92,43 +130,57 @@ function ShouldAccessPPP() {
   };
 
   return (
-    <Dialog
-      onClose={handleClose}
-      aria-labelledby="should-access-ppp"
-      open={dialogOpen}
-      classes={{
-        paper: classes.paper,
-      }}
-    >
-      <DialogTitle>
-        Looks like you are part of the Open Targets Consortium!
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          We are pleased to inform you that you have access to our exclusive
-          Partner Preview Platform &#40;PPP&#41;. This will have pre-publication
-          data from OTAR projects and early access to the latest features,
-          updates, and innovations before they are made available to the public.
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions className={classes.actions}>
-        <Button
-          className={classes.button}
-          onClick={handleClose}
-          variant="outlined"
-        >
-          Continue to Public Version
-        </Button>
-        <Button
-          className={classes.button}
-          onClick={goToPPP}
-          variant="contained"
-          color="primary"
-        >
-          Continue on Partner Preview Platform
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <>
+      <Dialog
+        onClose={handleCloseDialog}
+        aria-labelledby="ppp-reminder"
+        open={dialogOpen}
+        classes={{
+          paper: classes.paper,
+        }}
+      >
+        <DialogTitle>
+          Looks like you are part of the Open Targets Consortium!
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            We are pleased to inform you that you have access to our exclusive
+            Partner Preview Platform &#40;PPP&#41;. This will have
+            pre-publication data from OTAR projects in addition to all the
+            publicly available data, providing early access to the latest
+            features, updates, and innovations before they are made available to
+            the public.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions className={classes.actions}>
+          <Button
+            className={classes.button}
+            onClick={remindMeLater}
+            variant="outlined"
+          >
+            Remind me later
+          </Button>
+          <Button
+            className={classes.button}
+            onClick={goToPPP}
+            variant="contained"
+            color="primary"
+          >
+            Continue on Partner Preview Platform
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        classes={{
+          anchorOriginBottomCenter: classes.anchorOriginBottomCenter,
+        }}
+        open={snackbarOpen}
+        onClose={handleCloseSnackbar}
+        message="We will remind you in a couple of weeks"
+        autoHideDuration={3000}
+      />
+    </>
   );
 }
 

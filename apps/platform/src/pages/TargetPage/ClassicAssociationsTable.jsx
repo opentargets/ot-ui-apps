@@ -243,7 +243,7 @@ function ClassicAssociationsTable({ ensgId, aggregationFilters }) {
     'data.target.associatedDiseases'
   );
 
-  function handlePageChange(pageChanged) {
+  const handlePageChange = pageChanged => {
     setLoading(true);
     client
       .query({
@@ -262,21 +262,22 @@ function ClassicAssociationsTable({ ensgId, aggregationFilters }) {
         setPage(pageChanged);
         setLoading(false);
       });
-  }
+  };
 
-  function handleRowsPerPageChange(pageSizeChanged) {
-    setPageSize(pageSizeChanged);
-  }
+  const handleRowsPerPageChange = pageSizeChanged => {
+    const newPageSize = Number(pageSizeChanged);
+    setPageSize(newPageSize);
+  };
 
-  function handleSort(sortChanged) {
+  const handleSort = sortChanged => {
     setSortBy(sortChanged);
-  }
+  };
 
-  function handleGlobalFilterChange(newFilter) {
+  const handleGlobalFilterChange = newFilter => {
     if (newFilter !== filter) {
       setFilter(newFilter);
     }
-  }
+  };
 
   if (initialLoading) return <Skeleton variant="rect" height="40vh" />;
 
@@ -301,10 +302,10 @@ function ClassicAssociationsTable({ ensgId, aggregationFilters }) {
         pageSize={pageSize}
         rowCount={count}
         rowsPerPageOptions={[10, 50, 200, 500]}
-        onGlobalFilterChange={() => handleGlobalFilterChange()}
-        onSortBy={() => handleSort()}
-        onPageChange={() => handlePageChange()}
-        onRowsPerPageChange={() => handleRowsPerPageChange()}
+        onGlobalFilterChange={handleGlobalFilterChange}
+        onSortBy={handleSort}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
       />
       <Legend />
     </>
