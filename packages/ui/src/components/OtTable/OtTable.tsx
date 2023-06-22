@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import OtTableGlobalFilter from "./OtTableGlobalFilter";
 import OtTableBody from "./OtTableBody";
 import OtTableFooter from "./OtTableFooter";
-import useDebounce from "../hooks/useDebounce";
+import useDebounce from "../../hooks/useDebounce";
 import {
   useReactTable,
   ColumnFiltersState,
