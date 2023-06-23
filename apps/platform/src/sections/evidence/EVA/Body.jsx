@@ -16,7 +16,7 @@ import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import Description from './Description';
 import Link from '../../../components/Link';
 import { epmcUrl } from '../../../utils/urls';
-import { sentenceCase } from '../../../utils/global';
+import { identifiersOrgLink, sentenceCase } from '../../../utils/global';
 import SectionItem from '../../../components/Section/SectionItem';
 import Tooltip from '../../../components/Tooltip';
 import usePlatformApi from '../../../hooks/usePlatformApi';
