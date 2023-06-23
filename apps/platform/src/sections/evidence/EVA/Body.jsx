@@ -165,45 +165,6 @@ function getColumns() {
           </div>
         );
       },
-        // return (
-        //   <>
-        //     <Link
-        //       external
-        //       to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
-        //     >
-        //       <Chip
-        //         label={sentenceCase(variantFunctionalConsequence.label)}
-        //         size="small"
-        //         color="primary"
-        //         clickable
-        //         variant="outlined"
-        //         className={classes.xsmall}
-        //       />
-        //     </Link>
-        //     {
-        //       // add linkout to ProtVar for specific functional consequence values:
-        //       // "missense variant", "stop gained"
-        //       (variantFunctionalConsequence.id === 'SO:0001583' ||
-        //         variantFunctionalConsequence.id === 'SO:0001587') &&
-        //       pvparams.length == 4 ? (
-        //         <Link
-        //           external
-        //           to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
-        //           className={classes.chipLink}
-        //         >
-        //           <Chip
-        //             label="ProtVar"
-        //             size="small"
-        //             color="primary"
-        //             clickable
-        //             variant="outlined"
-        //             className={classes.xsmall}
-        //           />
-        //         </Link>
-        //       ) : null
-        //     }
-        //   </>
-        // );
       filterValue: ({ variantFunctionalConsequence, variantFunctionalConsequenceFromQtlId }) =>
         (`${sentenceCase(variantFunctionalConsequence.label)}, ${sentenceCase(variantFunctionalConsequenceFromQtlId.label)}`),
     },
