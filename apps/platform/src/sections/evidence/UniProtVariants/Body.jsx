@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Typography, makeStyles, Chip } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import { identifiersOrgLink } from '../../../utils/global';
 import Link from '../../../components/Link';
@@ -7,7 +7,8 @@ import Tooltip from '../../../components/Tooltip';
 import SectionItem from '../../../components/Section/SectionItem';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { DataTable } from '../../../components/Table';
-import { defaultRowsPerPageOptions } from '../../../constants';
+import LabelChip from '../../../components/LabelChip';
+import { defaultRowsPerPageOptions, variantConsequenceSource } from '../../../constants';
 import { epmcUrl } from '../../../utils/urls';
 import Summary from './Summary';
 import Description from './Description';
@@ -15,16 +16,7 @@ import { dataTypesMap } from '../../../dataTypes';
 
 import UNIPROT_VARIANTS_QUERY from './UniprotVariantsQuery.gql';
 
-const useStyles = makeStyles({
-  xsmall: {
-    fontSize: '0.7rem',
-  },
-  chipLink: {
-    marginLeft: '5px',
-  },
-});
-
-function getColumns(classes) {
+function getColumns() {
   return [
     {
       id: 'disease.name',
@@ -69,24 +61,17 @@ function getColumns(classes) {
       ),
     },
     {
-      id: 'variantFunctionalConsequenceId',
-      label: 'Functional Consequence',
+      id: 'variantConsequence',
+      label: 'Variant Consequence',
       renderCell: ({ variantRsId }) => {
         return (
-          <Link
-            external
-            to={`https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`}
-            className={classes.chipLink}
-          >
-            <Chip
-              label="ProtVar"
-              size="small"
-              color="primary"
-              clickable
-              variant="outlined"
-              className={classes.xsmall}
+          <div style={{ display: 'flex', gap: '5px' }}>
+            <LabelChip
+              label={variantConsequenceSource.ProtVar.label}
+              to={`https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`}
+              tooltip={variantConsequenceSource.ProtVar.tooltip}
             />
-          </Link>
+          </div>
         );
       },
     },
@@ -123,8 +108,7 @@ export function BodyCore({ definition, id, label, count }) {
     efoId,
     size: count,
   };
-  const classes = useStyles();
-  const columns = getColumns(classes);
+  const columns = getColumns();
 
   const request = useQuery(UNIPROT_VARIANTS_QUERY, {
     variables,
