@@ -128,8 +128,7 @@ export function BodyCore({ definition, id, label, count }) {
     efoId,
     size: count,
   };
-  const classes = useStyles();
-  const columns = getColumns(classes);
+  const columns = getColumns();
 
   const request = useQuery(UNIPROT_VARIANTS_QUERY, {
     variables,
