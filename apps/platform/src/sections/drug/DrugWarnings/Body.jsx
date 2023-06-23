@@ -12,8 +12,6 @@ import Tooltip from '../../../components/Tooltip';
 
 const replaceSemicolonWithUnderscore = id => id.replace(':', '_');
 
-const EBI_OLS_URL = `https://www.ebi.ac.uk/ols4/ontologies/efo/terms?short_form=`;
-
 const columns = [
   {
     id: 'warningType',
@@ -26,10 +24,7 @@ const columns = [
       if (efoId)
         return (
           <Tooltip title={`Description:${description}`} showHelpIcon>
-            <Link
-              external
-              to={EBI_OLS_URL + replaceSemicolonWithUnderscore(efoId)}
-            >
+            <Link to={`/disease/${replaceSemicolonWithUnderscore(efoId)}`}>
               {efoTerm || efoId}
             </Link>
           </Tooltip>
@@ -45,9 +40,9 @@ const columns = [
         return (
           <Link
             external
-            to={
-              EBI_OLS_URL + replaceSemicolonWithUnderscore(efoIdForWarningClass)
-            }
+            to={`/disease/${replaceSemicolonWithUnderscore(
+              efoIdForWarningClass
+            )}`}
           >
             {toxicityClass || efoIdForWarningClass}
           </Link>
