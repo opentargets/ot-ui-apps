@@ -304,3 +304,16 @@ export const studySourceMap = {
   SAIGE: 'UK Biobank',
   NEALE: 'UK Biobank',
 };
+
+export const variantConsequenceSource = {
+  VEP: {
+    label: 'VEP',
+    tooltip: 'Ensembl variant effect predictor',
+  },
+  ProtVar: { label: 'ProtVar', tooltip: 'Variant effect on protein function' },
+  QTL: {
+    label: 'QTL',
+    tooltip:
+      'The direction is inferred from the strongest effect across all the co-localising QTLs',
+  },
+};
