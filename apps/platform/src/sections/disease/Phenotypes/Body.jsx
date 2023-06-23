@@ -37,23 +37,27 @@ const columns = [
     id: 'phenotypeHPO',
     label: 'Phenotype',
     renderCell: ({ phenotypeEFO, phenotypeHPO }) => {
-      let content;
-      if (phenotypeEFO && phenotypeEFO.id) {
-        content = (
-          <Link to={`/disease/${phenotypeEFO.id}`}>{phenotypeHPO.name}</Link>
+      if (
+        phenotypeEFO &&
+        phenotypeEFO.id &&
+        phenotypeHPO &&
+        phenotypeHPO.description
+      )
+        return (
+          <Tooltip
+            title={`Description : ${phenotypeHPO.description}`}
+            showHelpIcon
+          >
+            <Link to={`/disease/${phenotypeEFO.id}`}>
+              {phenotypeHPO.name || phenotypeEFO.id}
+            </Link>
+          </Tooltip>
         );
-      } else if (phenotypeHPO && phenotypeHPO.name) content = phenotypeHPO.name;
-      else content = naLabel;
 
-      return phenotypeHPO.description ? (
-        <Tooltip
-          title={`Description: ${phenotypeHPO.description}`}
-          showHelpIcon
-        >
-          {content}
-        </Tooltip>
-      ) : (
-        content
+      return (
+        (phenotypeHPO && (phenotypeHPO.name ||
+        phenotypeHPO.description)) ||
+        naLabel
       );
     },
     filterValue: row => row.phenotypeHPO.name,
@@ -64,12 +68,14 @@ const columns = [
     id: 'phenotypeHDOid',
     label: 'Phenotype ID',
     renderCell: ({ phenotypeHPO }) => {
-      const id = phenotypeHPO.id.replace('_', ':');
-      return (
-        <Link external to={`https://identifiers.org/ols/${id}`}>
-          {id}
-        </Link>
-      );
+      const id = phenotypeHPO && phenotypeHPO.id.replace('_', ':');
+      if (id)
+        return (
+          <Link external to={`https://identifiers.org/ols/${id}`}>
+            {id}
+          </Link>
+        );
+      return naLabel;
     },
     filterValue: row => row.phenotypeHPO.id.replace('_', ':'),
     exportValue: row => row.phenotypeHPO.id.replace('_', ':'),
