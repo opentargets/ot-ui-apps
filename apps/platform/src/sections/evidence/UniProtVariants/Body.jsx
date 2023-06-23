@@ -74,26 +74,6 @@ function getColumns() {
           </div>
         );
       },
-      // id: 'variantFunctionalConsequenceId',
-      // label: 'Functional Consequence',
-      // renderCell: ({ variantRsId }) => {
-      //   return (
-      //     <Link
-      //       external
-      //       to={`https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`}
-      //       className={classes.chipLink}
-      //     >
-      //       <Chip
-      //         label="ProtVar"
-      //         size="small"
-      //         color="primary"
-      //         clickable
-      //         variant="outlined"
-      //         className={classes.xsmall}
-      //       />
-      //     </Link>
-      //   );
-      // },
     },
     {
       id: 'confidence',
