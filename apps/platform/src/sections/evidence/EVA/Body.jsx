@@ -204,9 +204,8 @@ function getColumns() {
         //     }
         //   </>
         // );
-      },
-      filterValue: ({ variantFunctionalConsequence }) =>
-        `${sentenceCase(variantFunctionalConsequence.label)}, ${sentenceCase(variantFunctionalConsequenceFromQtlId.label)}`,
+      filterValue: ({ variantFunctionalConsequence, variantFunctionalConsequenceFromQtlId }) =>
+        (`${sentenceCase(variantFunctionalConsequence.label)}, ${sentenceCase(variantFunctionalConsequenceFromQtlId.label)}`),
     },
     {
       id: 'clinicalSignificances',
