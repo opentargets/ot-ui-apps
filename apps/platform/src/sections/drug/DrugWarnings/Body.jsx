@@ -3,7 +3,6 @@ import { useQuery } from '@apollo/client';
 import Link from '../../../components/Link';
 import SectionItem from '../../../components/Section/SectionItem';
 import { DataTable, TableDrawer } from '../../../components/Table';
-import { identifiersOrgLink } from '../../../utils/global';
 import Description from './Description';
 import { naLabel, defaultRowsPerPageOptions } from '../../../constants';
 
@@ -49,18 +48,6 @@ const columns = [
         );
       return toxicityClass || description || naLabel;
     },
-  },
-  {
-    id: 'meddraSocCode',
-    label: 'MedDRA SOC code',
-    renderCell: ({ meddraSocCode }) =>
-      meddraSocCode ? (
-        <Link external to={identifiersOrgLink('meddra', meddraSocCode)}>
-          {meddraSocCode}
-        </Link>
-      ) : (
-        naLabel
-      ),
   },
   {
     id: 'country',
