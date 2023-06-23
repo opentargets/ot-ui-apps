@@ -37,28 +37,24 @@ const columns = [
     id: 'phenotypeHPO',
     label: 'Phenotype',
     renderCell: ({ phenotypeEFO, phenotypeHPO }) => {
-      if (
-        phenotypeEFO &&
-        phenotypeEFO.id &&
-        phenotypeHPO &&
-        phenotypeHPO.description
-      )
-        return (
+      let content = naLabel;
+      if (phenotypeHPO && phenotypeHPO.name) content = phenotypeHPO.name;
+      if (phenotypeEFO && phenotypeEFO.id)
+        content = (
+          <Link to={`/disease/${phenotypeEFO.id}`}>
+            {(phenotypeHPO && phenotypeHPO.name) || phenotypeEFO.id}
+          </Link>
+        );
+      if (phenotypeHPO && phenotypeHPO.description)
+        content = (
           <Tooltip
             title={`Description : ${phenotypeHPO.description}`}
             showHelpIcon
           >
-            <Link to={`/disease/${phenotypeEFO.id}`}>
-              {phenotypeHPO.name || phenotypeEFO.id}
-            </Link>
+            {content}
           </Tooltip>
         );
-
-      return (
-        (phenotypeHPO && (phenotypeHPO.name ||
-        phenotypeHPO.description)) ||
-        naLabel
-      );
+      return content;
     },
     filterValue: row => row.phenotypeHPO.name,
     exportValue: row => row.phenotypeHPO.name,
