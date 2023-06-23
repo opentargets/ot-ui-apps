@@ -12,7 +12,7 @@ import Tooltip from '../../../components/Tooltip';
 
 const replaceSemicolonWithUnderscore = id => id.replace(':', '_');
 
-const EBI_OLS_URL = `https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=`;
+const EBI_OLS_URL = `https://www.ebi.ac.uk/ols4/ontologies/efo/terms?short_form=`;
 
 const columns = [
   {
@@ -25,7 +25,7 @@ const columns = [
     renderCell: ({ efoTerm, efoId, description }) => {
       if (efoId)
         return (
-          <Tooltip title={`Description : ${description}`} showHelpIcon>
+          <Tooltip title={`Description:${description}`} showHelpIcon>
             <Link
               external
               to={EBI_OLS_URL + replaceSemicolonWithUnderscore(efoId)}
