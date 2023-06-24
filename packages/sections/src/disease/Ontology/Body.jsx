@@ -1,20 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-import Description from './Description';
-import OntologySubgraph from './OntologySubgraph';
-import SectionItem from '../../../components/Section/SectionItem';
-import config from '../../../config';
+import Description from "./Description";
+import OntologySubgraph from "./OntologySubgraph";
+import SectionItem from "../../components/Section/SectionItem";
+import config from "../../config";
+import { definition } from "./index";
 
-function Body({ definition, id: efoId, label: name }) {
+function Body({ id: efoId, label: name }) {
   const [efoNodes, setEfoNodes] = useState(null);
 
   useEffect(() => {
     let isCurrent = true;
     fetch(config.efoURL)
-      .then(res => res.text())
-      .then(lines => {
+      .then((res) => res.text())
+      .then((lines) => {
         if (isCurrent) {
-          const nodes = lines.trim().split('\n').map(JSON.parse);
+          const nodes = lines.trim().split("\n").map(JSON.parse);
           setEfoNodes(nodes);
         }
       });

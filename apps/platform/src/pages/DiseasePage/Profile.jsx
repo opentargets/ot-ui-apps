@@ -1,5 +1,7 @@
 import { gql } from '@apollo/client';
 
+import OntologySection from 'sections/src/disease/Ontology/Body';
+
 import { createSummaryFragment } from '../../components/Summary/utils';
 import PlatformApiProvider from '../../contexts/PlatformApiProvider';
 import ProfileHeader from './ProfileHeader';
@@ -46,6 +48,7 @@ function Profile({ efoId, name }) {
           ))}
         </SummaryContainer>
 
+        <OntologySection id={efoId} label={name} />
         <SectionContainer>
           {sections.map(({ Body, definition }) => (
             <Body

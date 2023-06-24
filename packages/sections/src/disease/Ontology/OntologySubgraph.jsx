@@ -1,24 +1,24 @@
-import { withContentRect } from 'react-measure';
-import { line as d3Line, max, curveMonotoneX } from 'd3';
+import { withContentRect } from "react-measure";
+import { line as d3Line, max, curveMonotoneX } from "d3";
 import {
   layeringLongestPath,
   decrossTwoLayer,
   coordCenter,
   sugiyama,
   dagStratify,
-} from 'd3-dag';
-import { makeStyles } from '@material-ui/core';
-import Link from '../../../components/Link';
-import Tooltip from '../../../components/Tooltip';
+} from "d3-dag";
+import { makeStyles } from "@material-ui/core";
+import Link from "../../components/Link";
+import Tooltip from "../../components/Tooltip";
 
 const useStyles = makeStyles({
   labelText: {
-    '&:hover': { fontWeight: '700' },
+    "&:hover": { fontWeight: "700" },
   },
 });
 
 function getAncestors(efoId, idToDisease) {
-  const ancestors = [{ ...idToDisease[efoId], nodeType: 'anchor' }];
+  const ancestors = [{ ...idToDisease[efoId], nodeType: "anchor" }];
   const queue = [efoId];
   const visited = new Set([efoId]);
 
@@ -26,9 +26,9 @@ function getAncestors(efoId, idToDisease) {
     const id = queue.shift();
     const node = idToDisease[id];
 
-    node.parentIds.forEach(parentId => {
+    node.parentIds.forEach((parentId) => {
       if (!visited.has(parentId)) {
-        ancestors.push({ ...idToDisease[parentId], nodeType: 'ancestor' });
+        ancestors.push({ ...idToDisease[parentId], nodeType: "ancestor" });
         queue.push(parentId);
         visited.add(parentId);
       }
@@ -42,20 +42,20 @@ function buildDagData(efoId, efo, idToDisease) {
   const dag = [];
 
   // find direct children of efoId
-  efo.forEach(disease => {
+  efo.forEach((disease) => {
     if (disease.parentIds.includes(efoId)) {
       dag.push({
         id: disease.id,
         name: disease.name,
         parentIds: [efoId],
-        nodeType: 'child',
+        nodeType: "child",
       });
     }
   });
 
   const ancestors = getAncestors(efoId, idToDisease); // find ancestors
 
-  ancestors.forEach(ancestor => {
+  ancestors.forEach((ancestor) => {
     dag.push(ancestor);
   });
 
@@ -81,7 +81,7 @@ function getMaxLayerCount(dag) {
   const counts = {};
   let maxCount = Number.NEGATIVE_INFINITY;
 
-  dag.descendants().forEach(node => {
+  dag.descendants().forEach((node) => {
     const { layer } = node;
 
     if (counts[layer]) {
@@ -95,7 +95,7 @@ function getMaxLayerCount(dag) {
     }
   });
 
-  dag.links().forEach(link => {
+  dag.links().forEach((link) => {
     link.points.forEach((_, i) => {
       const index = link.source.layer + i;
       counts[index] += 1;
@@ -109,9 +109,9 @@ function getMaxLayerCount(dag) {
 }
 
 const colorMap = {
-  anchor: '#ff6350',
-  ancestor: '#3489ca',
-  child: '#85b8df',
+  anchor: "#ff6350",
+  ancestor: "#3489ca",
+  child: "#85b8df",
 };
 const diameter = 12;
 const radius = diameter / 2;
@@ -145,12 +145,12 @@ function OntologySubgraph({
   layout(dag);
   const nodes = dag.descendants();
   const links = dag.links();
-  const separation = width / (max(nodes, d => d.layer) + 1);
+  const separation = width / (max(nodes, (d) => d.layer) + 1);
   const xOffset = separation / 2 - radius;
   const textLimit = separation / 8;
 
-  line.x(d => d.y - xOffset).y(d => d.x);
-  
+  line.x((d) => d.y - xOffset).y((d) => d.x);
+
   return (
     <div ref={measureRef}>
       {width ? (
@@ -296,14 +296,14 @@ function OntologySubgraph({
             ))}
           </g>
           <g transform={`translate(0, ${yOffset})`}>
-            {nodes.map(node => (
+            {nodes.map((node) => (
               <Link
                 to={`/disease/${node.data.id}`}
                 className={classes.labelText}
                 key={node.id}
               >
                 <Tooltip
-                  title={`${node.data.name || 'No name'} | ID: ${node.id}`}
+                  title={`${node.data.name || "No name"} | ID: ${node.id}`}
                 >
                   <g>
                     <text
@@ -313,10 +313,10 @@ function OntologySubgraph({
                       fontSize="12"
                       dominantBaseline="middle"
                       fill="#5a5f5f"
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: "pointer" }}
                     >
                       <title>{node.data.name}</title>
-                      {textWithEllipsis(node.data.name || 'No name', textLimit)}
+                      {textWithEllipsis(node.data.name || "No name", textLimit)}
                     </text>
 
                     {node.data.parentIds.length === 0 ? (
@@ -348,4 +348,4 @@ function OntologySubgraph({
   );
 }
 
-export default withContentRect('bounds')(OntologySubgraph);
+export default withContentRect("bounds")(OntologySubgraph);

@@ -1,10 +1,10 @@
-import Link from '../../../components/Link';
+import Link from "../../components/Link";
 
 function Description({ name }) {
   return (
     <>
-      Ontology subgraph including children, ancestors and therapeutic areas of{' '}
-      <strong>{name}</strong>. Source:{' '}
+      Ontology subgraph including children, ancestors and therapeutic areas of{" "}
+      <strong>{name}</strong>. Source:{" "}
       <Link to="https://www.ebi.ac.uk/efo/" external>
         EFO
       </Link>
