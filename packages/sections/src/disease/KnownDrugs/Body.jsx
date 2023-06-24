@@ -1,6 +1,8 @@
 import { Body as KnownDrugsBody } from "../../common/KnownDrugs";
 import Description from "./Description";
 import { sentenceCase } from "../../utils/global";
+import { definition } from "./index";
+import client from "../../client";
 
 import KNOWN_DRUGS_BODY_QUERY from "./KnownDrugsQuery.gql";
 
@@ -67,13 +69,14 @@ const exportColumns = [
   },
 ];
 
-function Body({ definition, id: efoId, label: name }) {
+function Body({ id: efoId, label: name }) {
   return (
     <KnownDrugsBody
       definition={definition}
       entity="disease"
       variables={{ efoId }}
       BODY_QUERY={KNOWN_DRUGS_BODY_QUERY}
+      client={client}
       // eslint-disable-next-line
       Description={() => <Description name={name} />}
       columnsToShow={["disease", "drug", "target", "clinicalTrials"]}

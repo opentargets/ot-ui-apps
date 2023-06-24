@@ -1,5 +1,5 @@
 // Section imports
-import * as KnownDrugs from '../../sections/disease/KnownDrugs';
+// import * as KnownDrugs from '../../sections/disease/KnownDrugs';
 import * as Phenotypes from '../../sections/disease/Phenotypes';
 import * as Bibliography from '../../sections/disease/Bibliography';
 import * as OTProjects from '../../sections/disease/OTProjects';
@@ -8,7 +8,7 @@ import config from '../../config';
 
 const sections = [
   // Ontology,
-  KnownDrugs,
+  // KnownDrugs,
   Phenotypes,
   Bibliography,
   OTProjects,
