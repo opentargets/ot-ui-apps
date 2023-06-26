@@ -1,7 +1,6 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import { usePlatformApi, SummaryItem } from "ui";
 
-import PHENOTYPES_SUMMARY_FRAGMENT from './PhenotypesSummaryFragment.gql';
+import PHENOTYPES_SUMMARY_FRAGMENT from "./PhenotypesSummaryFragment.gql";
 
 function Summary({ definition }) {
   const request = usePlatformApi(PHENOTYPES_SUMMARY_FRAGMENT);
@@ -10,7 +9,7 @@ function Summary({ definition }) {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => <>{data.phenotypes?.count || 0} phenotypes</>}
+      renderSummary={(data) => <>{data.phenotypes?.count || 0} phenotypes</>}
     />
   );
 }

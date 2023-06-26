@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
+import { SectionItem } from "ui";
 
 import Description from "./Description";
 import OntologySubgraph from "./OntologySubgraph";
-import SectionItem from "../../components/Section/SectionItem";
 import config from "../../config";
 import { definition } from "./index";
 

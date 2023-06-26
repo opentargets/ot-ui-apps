@@ -1,28 +1,29 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { makeStyles } from '@material-ui/core';
-import Description from './Description';
-import Link from '../../../components/Link';
-import { DataTable } from '../../../components/Table';
-import SectionItem from '../../../components/Section/SectionItem';
-import { defaultRowsPerPageOptions } from '../../../constants';
-import Summary from './Summary';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import { usePlatformApi } from "ui";
 
-const useStyles = makeStyles(theme => ({
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { makeStyles } from "@material-ui/core";
+import Description from "./Description";
+import Link from "../../components/Link";
+import { DataTable } from "../../components/Table";
+import SectionItem from "../../components/Section/SectionItem";
+import { defaultRowsPerPageOptions } from "../../constants";
+import Summary from "./Summary";
+
+const useStyles = makeStyles((theme) => ({
   primaryColor: {
     color: theme.palette.primary.main,
   },
 }));
 
-const getColumns = classes => [
+const getColumns = (classes) => [
   {
-    id: 'projectName',
-    label: 'Project name',
+    id: "projectName",
+    label: "Project name",
   },
   {
-    id: 'otarCode',
-    label: 'Project Code',
+    id: "otarCode",
+    label: "Project Code",
     renderCell: ({ otarCode }) => (
       <Link external to={`http://home.opentargets.org/${otarCode}`}>
         {otarCode}
@@ -30,8 +31,8 @@ const getColumns = classes => [
     ),
   },
   {
-    id: 'integratesInPPP',
-    label: 'Integrates in PPP',
+    id: "integratesInPPP",
+    label: "Integrates in PPP",
     renderCell: ({ integratesInPPP }) =>
       integratesInPPP ? (
         <FontAwesomeIcon
@@ -40,7 +41,7 @@ const getColumns = classes => [
           size="lg"
         />
       ) : null,
-    exportValue: ({ integratesInPPP }) => (integratesInPPP ? 'yes' : 'no'),
+    exportValue: ({ integratesInPPP }) => (integratesInPPP ? "yes" : "no"),
   },
 ];
 

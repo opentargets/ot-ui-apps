@@ -1,16 +1,21 @@
 import { gql } from '@apollo/client';
+import { PlatformApiProvider, SummaryContainer, SectionContainer } from 'ui';
 
 import OntologySection from 'sections/src/disease/Ontology/Body';
 import KnownDrugsSection from 'sections/src/disease/KnownDrugs/Body';
+import BibliographySection from 'sections/src/disease/Bibliography/Body';
+import PhenotypesSection from 'sections/src/disease/Phenotypes/Body';
+import BibliographySummary from 'sections/src/disease/Bibliography/Summary';
 
 import { createSummaryFragment } from '../../components/Summary/utils';
-import PlatformApiProvider from '../../contexts/PlatformApiProvider';
+import client from '../../client';
 import ProfileHeader from './ProfileHeader';
-import SectionContainer from '../../components/Section/SectionContainer';
+// import SectionContainer from '../../components/Section/SectionContainer';
 import SectionOrderProvider from '../../contexts/SectionOrderProvider';
-import SummaryContainer from '../../components/Summary/SummaryContainer';
+// import SummaryContainer from '../../components/Summary/SummaryContainer';
 
 import sections from './sections';
+import PrivateWrapper from '../../components/PrivateWrapper';
 
 const DISEASE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
   sections,
@@ -34,35 +39,38 @@ function Profile({ efoId, name }) {
       entity="disease"
       query={DISEASE_PROFILE_QUERY}
       variables={{ efoId }}
+      client={client}
     >
-      <SectionOrderProvider sections={sections}>
-        <ProfileHeader />
-
-        <SummaryContainer>
-          {sections.map(({ Summary, definition }) => (
-            <Summary
-              key={definition.id}
-              id={efoId}
-              label={name}
-              definition={definition}
-            />
-          ))}
-        </SummaryContainer>
-
+      {/* <SectionOrderProvider sections={sections}> */}
+      <ProfileHeader />
+      {/* <SummaryContainer>
+        <BibliographySummary id={efoId} label={name} />
+      </SummaryContainer> */}
+      {/* </SectionOrderProvider> */}
+      {/* </Summary.SummaryContainer>
+        {sections.map(({ Summary, definition }) => (
+          <Summary
+            key={definition.id}
+            id={efoId}
+            label={name}
+            definition={definition}
+          /> */}
+      <SectionContainer>
         <OntologySection id={efoId} label={name} />
         <KnownDrugsSection id={efoId} label={name} />
-
-        <SectionContainer>
-          {sections.map(({ Body, definition }) => (
-            <Body
-              key={definition.id}
-              id={efoId}
-              label={name}
-              definition={definition}
-            />
-          ))}
-        </SectionContainer>
-      </SectionOrderProvider>
+        <PhenotypesSection id={efoId} label={name} />
+        <BibliographySection id={efoId} label={name} />
+      </SectionContainer>
+      {/* <SectionContainer>
+        {sections.map(({ Body, definition }) => (
+          <Body
+            key={definition.id}
+            id={efoId}
+            label={name}
+            definition={definition}
+          />
+        ))}
+      </SectionContainer> */}
     </PlatformApiProvider>
   );
 }

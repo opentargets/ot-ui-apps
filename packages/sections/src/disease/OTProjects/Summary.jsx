@@ -1,7 +1,7 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import { usePlatformApi } from "ui";
+import SummaryItem from "../../components/Summary/SummaryItem";
 
-import OT_PROJECTS_SUMMARY_FRAGMENT from './OTProjectsSummaryFragment.gql';
+import OT_PROJECTS_SUMMARY_FRAGMENT from "./OTProjectsSummaryFragment.gql";
 
 function Summary({ definition }) {
   const request = usePlatformApi(OT_PROJECTS_SUMMARY_FRAGMENT);
@@ -13,7 +13,7 @@ function Summary({ definition }) {
       renderSummary={({ otarProjects }) => (
         <>
           {otarProjects.length} OTAR project
-          {otarProjects.length === 1 ? '' : 's'}
+          {otarProjects.length === 1 ? "" : "s"}
         </>
       )}
     />

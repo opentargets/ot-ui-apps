@@ -1,15 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 import {
   useRecoilState,
   useRecoilValue,
   useSetRecoilState,
   useRecoilCallback,
-} from 'recoil';
-import { Box, Grid, makeStyles, Fade } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-import PublicationWrapper from '../../../components/PublicationsDrawer/PublicationWrapper';
-import { Table } from '../../../components/Table';
-import Loader from './Loader';
+} from "recoil";
+import { Box, Grid, makeStyles, Fade } from "@material-ui/core";
+import { Skeleton } from "@material-ui/lab";
+import PublicationWrapper from "../../components/PublicationsDrawer/PublicationWrapper";
+import { Table } from "../../components/Table";
+import Loader from "./Loader";
 
 import {
   litsIdsState,
@@ -24,7 +24,7 @@ import {
   fetchSimilarEntities,
   updateLiteratureState,
   tablePageSizeState,
-} from './atoms';
+} from "./atoms";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -71,8 +71,8 @@ function PublicationsList({ hideSearch = false }) {
     ({ snapshot, set }) =>
       async () => {
         const AllLits = await snapshot.getPromise(litsIdsState);
-        const readyForRequest = AllLits.filter(x => x.status === 'ready').map(
-          x => x.id
+        const readyForRequest = AllLits.filter((x) => x.status === "ready").map(
+          (x) => x.id
         );
 
         if (readyForRequest.length === 0) return;
@@ -85,13 +85,13 @@ function PublicationsList({ hideSearch = false }) {
         const parsedPublications = parsePublications(queryResult);
 
         const mapedResults = new Map(
-          parsedPublications.map(key => [key.europePmcId, key])
+          parsedPublications.map((key) => [key.europePmcId, key])
         );
 
-        const updatedPublications = AllLits.map(x => {
+        const updatedPublications = AllLits.map((x) => {
           const publication = mapedResults.get(x.id);
-          if (x.status === 'loaded') return x;
-          const status = publication ? 'loaded' : 'missing';
+          if (x.status === "loaded") return x;
+          const status = publication ? "loaded" : "missing";
           return { ...x, status, publication };
         });
         set(litsIdsState, updatedPublications);
@@ -108,9 +108,9 @@ function PublicationsList({ hideSearch = false }) {
 
   const handleRowsPerPageChange = useRecoilCallback(
     ({ snapshot }) =>
-      async newPageSize => {
-        const pageSizeInt = Number(newPageSize)
-        const expected = pageSizeInt * page + pageSizeInt;       
+      async (newPageSize) => {
+        const pageSizeInt = Number(newPageSize);
+        const expected = pageSizeInt * page + pageSizeInt;
         if (expected > lits.length && cursor !== null) {
           const {
             query,
@@ -133,7 +133,7 @@ function PublicationsList({ hideSearch = false }) {
           const loadedPublications = await snapshot.getPromise(litsIdsState);
           const newLits = data.literatureOcurrences?.rows?.map(({ pmid }) => ({
             id: pmid,
-            status: 'ready',
+            status: "ready",
             publication: null,
           }));
           const update = {
@@ -151,7 +151,7 @@ function PublicationsList({ hideSearch = false }) {
 
   const handlePageChange = useRecoilCallback(
     ({ snapshot }) =>
-      async newPage => {
+      async (newPage) => {
         const newPageInt = Number(newPage);
         if (pageSize * newPageInt + pageSize > lits.length && cursor !== null) {
           const {
@@ -175,7 +175,7 @@ function PublicationsList({ hideSearch = false }) {
           const loadedPublications = await snapshot.getPromise(litsIdsState);
           const newLits = data.literatureOcurrences?.rows?.map(({ pmid }) => ({
             id: pmid,
-            status: 'ready',
+            status: "ready",
             publication: null,
           }));
           const update = {
@@ -192,11 +192,11 @@ function PublicationsList({ hideSearch = false }) {
 
   const columns = [
     {
-      id: 'publications',
-      label: ' ',
+      id: "publications",
+      label: " ",
       renderCell: ({ publication, status }) => {
-        if (status === 'ready') return <SkeletonRow />;
-        if (status === 'missing') return null;
+        if (status === "ready") return <SkeletonRow />;
+        if (status === "missing") return null;
         return (
           <PublicationWrapper
             europePmcId={publication.europePmcId}
@@ -221,7 +221,7 @@ function PublicationsList({ hideSearch = false }) {
             if (author.fullName) acc.push(author.fullName);
             return acc;
           }, [])
-          .join(' ')}`,
+          .join(" ")}`,
     },
   ];
 

@@ -1,7 +1,7 @@
 // Section imports
 // import * as KnownDrugs from '../../sections/disease/KnownDrugs';
 import * as Phenotypes from '../../sections/disease/Phenotypes';
-import * as Bibliography from '../../sections/disease/Bibliography';
+// import * as Bibliography from '../../sections/disease/Bibliography';
 import * as OTProjects from '../../sections/disease/OTProjects';
 
 import config from '../../config';
@@ -9,8 +9,8 @@ import config from '../../config';
 const sections = [
   // Ontology,
   // KnownDrugs,
-  Phenotypes,
-  Bibliography,
+  // Phenotypes,
+  // Bibliography,
   OTProjects,
 ].filter(
   // select sections to show based on:

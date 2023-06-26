@@ -1,8 +1,9 @@
-import { Body as Bibliography } from '../../common/Literature';
+import { Body as Bibliography } from "../../common/Literature";
+import { definition } from ".";
 
-import DISEASE_LITERATURE_OCURRENCES from './BibliographyQuery.gql';
+import DISEASE_LITERATURE_OCURRENCES from "./BibliographyQuery.gql";
 
-function Body({ definition, id, label: name }) {
+function Body({ id, label: name }) {
   return (
     <Bibliography
       definition={definition}
