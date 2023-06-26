@@ -1,14 +1,13 @@
-import { usePlatformApi } from "ui";
+import { usePlatformApi, Link, SectionItem } from "ui";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { makeStyles } from "@material-ui/core";
 import Description from "./Description";
-import Link from "../../components/Link";
 import { DataTable } from "../../components/Table";
-import SectionItem from "../../components/Section/SectionItem";
 import { defaultRowsPerPageOptions } from "../../constants";
 import Summary from "./Summary";
+import { definition } from ".";
 
 const useStyles = makeStyles((theme) => ({
   primaryColor: {
@@ -45,7 +44,7 @@ const getColumns = (classes) => [
   },
 ];
 
-function Body({ definition, label, id: efoId }) {
+function Body({ label, id: efoId }) {
   const request = usePlatformApi(Summary.fragments.OTProjectsSummaryFragment);
   const classes = useStyles();
 

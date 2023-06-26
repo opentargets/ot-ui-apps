@@ -1,9 +1,9 @@
 import { useQuery } from "@apollo/client";
 import _ from "lodash";
+import { Link, Tooltip } from "ui";
 
 import Description from "./Description";
 import { DataTable, TableDrawer } from "../../components/Table";
-import { Link, Tooltip } from "ui";
 import SectionItem from "../../components/Section/SectionItem";
 import { naLabel } from "../../constants";
 
