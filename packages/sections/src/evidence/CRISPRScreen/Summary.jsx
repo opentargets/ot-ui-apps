@@ -1,11 +1,10 @@
-import React from 'react';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import { dataTypesMap } from '../../../dataTypes';
+import { usePlatformApi, SummaryItem } from "ui";
+import { dataTypesMap } from "../../dataTypes";
+import { definition } from ".";
 
-import CRISPR_SUMMARY from './CrisprScreenSummary.gql';
+import CRISPR_SUMMARY from "./CrisprScreenSummary.gql";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(CRISPR_SUMMARY);
   return (
     <SummaryItem
@@ -13,7 +12,7 @@ function Summary({ definition }) {
       request={request}
       renderSummary={({ CrisprScreenSummary }) => {
         const { count } = CrisprScreenSummary;
-        return `${count} ${count === 1 ? 'entry' : 'entries'}`;
+        return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
       subText={dataTypesMap.affected_pathway}
     />
