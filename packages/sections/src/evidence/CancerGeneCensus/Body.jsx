@@ -130,14 +130,13 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: ".5rem" },
 });
 
-function Body({ id, label, count }) {
+function Body({ id, label }) {
   const classes = useStyles();
   const { ensgId, efoId } = id;
 
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(CANCER_GENE_CENSUS_QUERY, {

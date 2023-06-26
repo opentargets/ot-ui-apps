@@ -93,7 +93,6 @@ function Body({ id, label, count }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(CANCER_BIOMARKERS_EVIDENCE_QUERY, {
