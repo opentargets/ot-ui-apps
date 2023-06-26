@@ -115,9 +115,10 @@ export function BodyCore({ definition, id, label }) {
   const [loading, setLoading] = useState(isLoading);
 
   const handlePageChange = pageChange => {
+    const pageChangeNum = Number(pageChange);
     if (
-      pageChange * pageSize >= data.disease.evidences.rows.length - pageSize &&
-      (pageChange + 1) * pageSize < data.disease.evidences.count
+      pageChangeNum * pageSize >= data.disease.evidences.rows.length - pageSize &&
+      (pageChangeNum + 1) * pageSize < data.disease.evidences.count
     ) {
       setLoading(true); // fetchMore takes too long to set loading to true.
       fetchMore({
@@ -156,15 +157,16 @@ export function BodyCore({ definition, id, label }) {
   };
 
   const handleRowsPerPageChange = newPageSize => {
+    const newPageSizeNum = Number(newPageSize);
     if (
-      page * newPageSize >=
-      data.disease.evidences.rows.length - newPageSize
+      page * newPageSizeNum >=
+      data.disease.evidences.rows.length - newPageSizeNum
     ) {
       refetch(variables);
     }
 
     setPage(0);
-    setPageSize(newPageSize);
+    setPageSize(newPageSizeNum);
   };
 
   useEffect(() => {
