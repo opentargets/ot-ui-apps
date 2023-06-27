@@ -13,6 +13,7 @@ import SentenceMatch from './SentenceMatch';
 import SimplePublication from '../../common/Bibliography/SimplePublication';
 import { publicationSummaryQuery } from '../../../utils/urls';
 import SummaryLoader from '../../../components/PublicationsDrawer/SummaryLoader';
+import config from '../../../config';
 
 const useStyles = makeStyles(theme => ({
   abstractSpan: {
@@ -58,6 +59,8 @@ function Publication({
   const [summaryText, setSummaryText] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const { urlAiApi } = config;
 
   if (!title) {
     return { naLabel };
@@ -158,7 +161,7 @@ function Publication({
         }}
       />
       <div className={classes.btnsContainer}>
-        {isOpenAccess && (
+        {isOpenAccess && urlAiApi && (
           <Button
             className={classes.detailsButton}
             variant="outlined"
