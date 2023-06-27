@@ -1,12 +1,13 @@
 import { useQuery } from '@apollo/client';
-
-import { Typography, makeStyles, Chip } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { DataTable } from '../../../components/Table';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
+import LabelChip from '../../../components/LabelChip';
 import {
   defaultRowsPerPageOptions,
   naLabel,
   studySourceMap,
+  variantConsequenceSource,
 } from '../../../constants';
 import Description from './Description';
 import { otgStudyUrl, otgVariantUrl } from '../../../utils/urls';
@@ -20,16 +21,7 @@ import usePlatformApi from '../../../hooks/usePlatformApi';
 
 import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
 
-const useStyles = makeStyles({
-  xsmall: {
-    fontSize: '0.7rem',
-  },
-  chipLink: {
-    marginLeft: '5px',
-  },
-});
-
-function getColumns(classes, label) {
+function getColumns(label) {
   return [
     {
       id: 'disease',
@@ -108,86 +100,51 @@ function getColumns(classes, label) {
         `${variantId} ${variantRsId}`,
     },
     {
-      id: 'variantFunctionalConsequenceId',
-      label: 'Functional Consequence',
-      renderCell: ({ variantFunctionalConsequence, variantId }) => {
+      id: 'variantConsequence',
+      label: 'Variant Consequence',
+      renderCell: ({
+        variantFunctionalConsequence,
+        variantFunctionalConsequenceFromQtlId,
+        variantId,
+      }) => {
         const pvparams = variantId?.split('_') || [];
-        return variantFunctionalConsequence ? (
-          <>
-            <Link
-              external
-              to={identifiersOrgLink(
-                'SO',
-                variantFunctionalConsequence.id.slice(3)
-              )}
-            >
-              <Chip
-                label={sentenceCase(variantFunctionalConsequence.label)}
-                size="small"
-                color="primary"
-                clickable
-                variant="outlined"
-                className={classes.xsmall}
+        return (
+          <div style={{ display: 'flex', gap: '5px' }}>
+            {variantFunctionalConsequence && (
+              <LabelChip
+                label={variantConsequenceSource.VEP.label}
+                value={sentenceCase(variantFunctionalConsequence.label)}
+                tooltip={variantConsequenceSource.VEP.tooltip}
+                to={identifiersOrgLink(
+                  'SO',
+                  variantFunctionalConsequence.id.slice(3)
+                )}
               />
-            </Link>
-
-            {
-              // add linkout to ProtVar for specific functional consequence values:
-              // "missense variant", "stop gained"
-              (variantFunctionalConsequence.id === 'SO:0001583' ||
-                variantFunctionalConsequence.id === 'SO:0001587') &&
-              pvparams.length == 4 ? (
-                <Link
-                  external
-                  to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
-                  className={classes.chipLink}
-                >
-                  <Chip
-                    label="ProtVar"
-                    size="small"
-                    color="primary"
-                    clickable
-                    variant="outlined"
-                    className={classes.xsmall}
-                  />
-                </Link>
-              ) : null
-            }
-          </>
-        ) : (
-          naLabel
+            )}
+            {variantFunctionalConsequenceFromQtlId && (
+              <LabelChip
+                label={variantConsequenceSource.QTL.label}
+                value={sentenceCase(
+                  variantFunctionalConsequenceFromQtlId.label
+                )}
+                to={identifiersOrgLink(
+                  'SO',
+                  variantFunctionalConsequenceFromQtlId.id.slice(3)
+                )}
+                tooltip={variantConsequenceSource.QTL.tooltip}
+              />
+            )}
+            {(variantFunctionalConsequence.id === 'SO:0001583' ||
+              variantFunctionalConsequence.id === 'SO:0001587') && (
+              <LabelChip
+                label={variantConsequenceSource.ProtVar.label}
+                to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
+                tooltip={variantConsequenceSource.ProtVar.tooltip}
+              />
+            )}
+          </div>
         );
       },
-      filterValue: ({ variantFunctionalConsequence }) =>
-        `${sentenceCase(variantFunctionalConsequence.label)} ${
-          variantFunctionalConsequence.id
-        }`,
-    },
-    {
-      id: 'variantFunctionalConsequenceFromQtlId',
-      label: 'QTL effect',
-      tooltip:
-        'The direction is inferred from the strongest effect across all the co-localising QTLs',
-      renderCell: ({ variantFunctionalConsequenceFromQtlId }) =>
-        variantFunctionalConsequenceFromQtlId ? (
-          <Link
-            external
-            to={identifiersOrgLink(
-              'SO',
-              variantFunctionalConsequenceFromQtlId.id.slice(3)
-            )}
-          >
-            {sentenceCase(variantFunctionalConsequenceFromQtlId.label)}
-          </Link>
-        ) : (
-          naLabel
-        ),
-      filterValue: ({ variantFunctionalConsequenceFromQtlId }) =>
-        variantFunctionalConsequenceFromQtlId
-          ? `${sentenceCase(variantFunctionalConsequenceFromQtlId.label)} ${
-              variantFunctionalConsequenceFromQtlId.id
-            }`
-          : naLabel,
     },
     {
       id: 'pValueMantissa',
@@ -278,8 +235,7 @@ function getColumns(classes, label) {
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: count };
-  const classes = useStyles();
-  const columns = getColumns(classes, label);
+  const columns = getColumns(label);
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,

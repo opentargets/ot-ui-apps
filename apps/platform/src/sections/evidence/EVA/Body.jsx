@@ -1,18 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Typography, makeStyles, Chip } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import client from '../../../client';
 import ClinvarStars from '../../../components/ClinvarStars';
+import LabelChip from '../../../components/LabelChip';
 import {
   clinvarStarMap,
   naLabel,
   defaultRowsPerPageOptions,
+  variantConsequenceSource,
 } from '../../../constants';
-import { DataTable, getPage, Table } from '../../../components/Table';
+import { getPage, Table } from '../../../components/Table';
+import { getComparator } from '../../../components/Table/sortingAndFiltering';
+import useCursorBatchDownloader from '../../../hooks/useCursorBatchDownloader';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import Description from './Description';
 import Link from '../../../components/Link';
 import { epmcUrl } from '../../../utils/urls';
-import { sentenceCase } from '../../../utils/global';
+import { identifiersOrgLink, sentenceCase } from '../../../utils/global';
 import SectionItem from '../../../components/Section/SectionItem';
 import Tooltip from '../../../components/Tooltip';
 import usePlatformApi from '../../../hooks/usePlatformApi';
@@ -22,16 +26,7 @@ import { dataTypesMap } from '../../../dataTypes';
 
 import CLINVAR_QUERY from './ClinvarQuery.gql';
 
-const useStyles = makeStyles({
-  xsmall: {
-    fontSize: '0.7rem',
-  },
-  chipLink: {
-    marginLeft: '5px',
-  },
-});
-
-function getColumns(classes, label) {
+function getColumns(label) {
   return [
     {
       id: 'disease.name',
@@ -125,51 +120,58 @@ function getColumns(classes, label) {
         ),
     },
     {
-      label: 'Functional consequence',
-      renderCell: ({ variantFunctionalConsequence, variantId }) => {
+      id: 'variantConsequence',
+      label: 'Variant Consequence',
+      renderCell: ({
+        variantFunctionalConsequence,
+        variantFunctionalConsequenceFromQtlId,
+        variantId,
+      }) => {
         const pvparams = variantId?.split('_') || [];
         return (
-          <>
-            <Link
-              external
-              to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
-            >
-              <Chip
-                label={sentenceCase(variantFunctionalConsequence.label)}
-                size="small"
-                color="primary"
-                clickable
-                variant="outlined"
-                className={classes.xsmall}
+          <div style={{ display: 'flex', gap: '5px' }}>
+            {variantFunctionalConsequence && (
+              <LabelChip
+                label={variantConsequenceSource.VEP.label}
+                value={sentenceCase(variantFunctionalConsequence.label)}
+                tooltip={variantConsequenceSource.VEP.tooltip}
+                to={identifiersOrgLink(
+                  'SO',
+                  variantFunctionalConsequence.id.slice(3)
+                )}
               />
-            </Link>
-            {
-              // add linkout to ProtVar for specific functional consequence values:
-              // "missense variant", "stop gained"
-              (variantFunctionalConsequence.id === 'SO:0001583' ||
-                variantFunctionalConsequence.id === 'SO:0001587') &&
-              pvparams.length === 4 ? (
-                <Link
-                  external
-                  to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
-                  className={classes.chipLink}
-                >
-                  <Chip
-                    label="ProtVar"
-                    size="small"
-                    color="primary"
-                    clickable
-                    variant="outlined"
-                    className={classes.xsmall}
-                  />
-                </Link>
-              ) : null
-            }
-          </>
+            )}
+            {variantFunctionalConsequenceFromQtlId && (
+              <LabelChip
+                label={variantConsequenceSource.QTL.label}
+                value={sentenceCase(
+                  variantFunctionalConsequenceFromQtlId.label
+                )}
+                to={identifiersOrgLink(
+                  'SO',
+                  variantFunctionalConsequenceFromQtlId.id.slice(3)
+                )}
+                tooltip={variantConsequenceSource.QTL.tooltip}
+              />
+            )}
+            {(variantFunctionalConsequence.id === 'SO:0001583' ||
+              variantFunctionalConsequence.id === 'SO:0001587') && (
+              <LabelChip
+                label={variantConsequenceSource.ProtVar.label}
+                to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
+                tooltip={variantConsequenceSource.ProtVar.tooltip}
+              />
+            )}
+          </div>
         );
       },
-      filterValue: ({ variantFunctionalConsequence }) =>
-        sentenceCase(variantFunctionalConsequence.label),
+      filterValue: ({
+        variantFunctionalConsequence,
+        variantFunctionalConsequenceFromQtlId,
+      }) =>
+        `${sentenceCase(variantFunctionalConsequence.label)}, ${sentenceCase(
+          variantFunctionalConsequenceFromQtlId.label
+        )}`,
     },
     {
       id: 'clinicalSignificances',
@@ -270,7 +272,7 @@ function getColumns(classes, label) {
   ];
 }
 
-function fetchClinvar(ensemblId, efoId, cursor, size) {
+function fetchClinvar({ ensemblId, efoId, cursor, size, freeTextQuery }) {
   return client.query({
     query: CLINVAR_QUERY,
     variables: {
@@ -278,38 +280,39 @@ function fetchClinvar(ensemblId, efoId, cursor, size) {
       efoId,
       cursor,
       size,
+      freeTextQuery,
     },
   });
 }
 
-export function BodyCore({ definition, id, label, count }) {
+export function BodyCore({ definition, id, label }) {
   const { ensgId: ensemblId, efoId } = id;
-  const countCutoff = 1000;
   const [initialLoading, setInitialLoading] = useState(true); // state variable to keep track of initial loading of rows
   const [loading, setLoading] = useState(false); // state variable to keep track of loading state on page chage
+  const [count, setCount] = useState(0);
   const [cursor, setCursor] = useState('');
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
-  const getSize = () => (count > countCutoff ? 100 : count);
-  const variables = { ensemblId, efoId, size: getSize() };
+  const [size, setPageSize] = useState(10);
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortOrder, setSortOrder] = useState('asc');
+  // const [globalFilter, setGlobalFilter] = useState('');
 
-  const classes = useStyles();
-  const columns = getColumns(classes, label);
+  const columns = getColumns(label);
 
   useEffect(() => {
     let isCurrent = true;
-    // Depending on count, make a decision for how many rows to fetch.
-    // For more than [countCutoff] rows, we want to use server side paging
-    // so just fetch 100 rows for the initial page. If there's less
-    // than [countCutoff] rows, just fetch all rows at once and do client side
-    // paging
-    fetchClinvar(ensemblId, efoId, '', getSize()).then(res => {
-      const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
 
+    fetchClinvar({ ensemblId, efoId, cursor: '', size }).then(res => {
+      const {
+        cursor: newCursor,
+        rows: newRows,
+        count: newCount,
+      } = res.data.disease.evidences;
       if (isCurrent) {
         setInitialLoading(false);
         setCursor(newCursor);
+        setCount(newCount);
         setRows(newRows);
       }
     });
@@ -317,38 +320,83 @@ export function BodyCore({ definition, id, label, count }) {
     return () => {
       isCurrent = false;
     };
-  }, [ensemblId, efoId, count]);
+  }, []);
 
-  function handlePageChange(newPage) {
-    if (pageSize * newPage + pageSize > rows.length && cursor !== null) {
+  const getWholeDataset = useCursorBatchDownloader(
+    CLINVAR_QUERY,
+    {
+      ensemblId,
+      efoId,
+    },
+    `data.disease.evidences`
+  );
+
+  const handlePageChange = newPage => {
+    const newPageInt = Number(newPage);
+    if (size * newPageInt + size > rows.length && cursor !== null) {
       setLoading(true);
-      fetchClinvar(ensemblId, efoId, cursor, 100).then(res => {
+      fetchClinvar({ ensemblId, efoId, cursor, size }).then(res => {
         const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
+        setRows([...rows, ...newRows]);
         setLoading(false);
         setCursor(newCursor);
-        setPage(newPage);
-        setRows([...rows, ...newRows]);
+        setPage(newPageInt);
       });
     } else {
-      setPage(newPage);
+      setPage(newPageInt);
     }
-  }
+  };
 
-  function handleRowsPerPageChange(newPageSize) {
-    if (newPageSize > rows.length && cursor !== null) {
+  const handleRowsPerPageChange = newPageSize => {
+    const newPageSizeInt = Number(newPageSize);
+    if (newPageSizeInt > rows.length && cursor !== null) {
       setLoading(true);
-      fetchClinvar(ensemblId, efoId, cursor, 100).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
-        setLoading(false);
-        setCursor(newCursor);
-        setPage(0);
-        setPageSize(newPageSize);
-        setRows([...rows, ...newRows]);
-      });
+      fetchClinvar({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(
+        res => {
+          const { cursor: newCursor, rows: newRows } =
+            res.data.disease.evidences;
+          setRows([...rows, ...newRows]);
+          setLoading(false);
+          setCursor(newCursor);
+          setPage(0);
+          setPageSize(newPageSizeInt);
+        }
+      );
     } else {
       setPage(0);
-      setPageSize(newPageSize);
+      setPageSize(newPageSizeInt);
     }
+  };
+
+  const handleSortBy = sortBy => {
+    setSortColumn(sortBy);
+    setSortOrder(
+      // eslint-disable-next-line
+      sortColumn === sortBy ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc'
+    );
+  };
+
+  // const handleGlobalFilterChange = freeTextQuery => {
+  //   setLoading(true);
+  //   fetchClinvar({ ensemblId, efoId, size, freeTextQuery }).then(res => {
+  //     const {
+  //       cursor: newCursor,
+  //       rows: newRows,
+  //       count: newCount,
+  //     } = res.data.disease.evidences;
+  //     setLoading(false);
+  //     setPage(0);
+  //     setCursor(newCursor);
+  //     setCount(newCount);
+  //     setGlobalFilter(freeTextQuery);
+  //     setRows([...rows, ...newRows]);
+  //   });
+  // };
+
+  const processedRows = [...rows];
+
+  if (sortColumn) {
+    processedRows.sort(getComparator(columns, sortOrder, sortColumn));
   }
 
   return (
@@ -359,32 +407,33 @@ export function BodyCore({ definition, id, label, count }) {
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
-      renderBody={() =>
-        // depending on count, decide whether to use the server side paging
-        // Table component or the client side paging DataTable component
-        count > countCutoff ? (
-          <Table
-            loading={loading}
-            columns={columns}
-            rows={getPage(rows, page, pageSize)}
-            rowCount={count}
-            page={page}
-            rowsPerPageOptions={defaultRowsPerPageOptions}
-            onPageChange={() => handlePageChange()}
-            onRowsPerPageChange={() => handleRowsPerPageChange()}
-          />
-        ) : (
-          <DataTable
-            showGlobalFilter
-            columns={columns}
-            rows={rows}
-            dataDownloader
-            rowsPerPageOptions={defaultRowsPerPageOptions}
-            query={CLINVAR_QUERY.loc.source.body}
-            variables={variables}
-          />
-        )
-      }
+      renderBody={() => (
+        <Table
+          // showGlobalFilter
+          // globalFilter={globalFilter}
+          // onGlobalFilterChange={handleGlobalFilterChange}
+          loading={loading}
+          columns={columns}
+          rows={getPage(processedRows, page, size)}
+          rowCount={count}
+          rowsPerPageOptions={defaultRowsPerPageOptions}
+          page={page}
+          pageSize={size}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          onSortBy={handleSortBy}
+          query={CLINVAR_QUERY.loc.source.body}
+          dataDownloader
+          dataDownloaderRows={getWholeDataset}
+          dataDownloaderFileStem="clinvar-evidence"
+          variables={{
+            ensemblId,
+            efoId,
+            cursor,
+            size,
+          }}
+        />
+      )}
     />
   );
 }

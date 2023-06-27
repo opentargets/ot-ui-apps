@@ -54,8 +54,9 @@ function DataTable({
     onPagination(page, pageSize);
   };
 
-  const handleRowsPerPageChange = pageSize => {
-    setPageSize(pageSize);
+  const handleRowsPerPageChange = newPageSize => {
+    const newPageSizeNumber = Number(newPageSize);
+    setPageSize(newPageSizeNumber);
     setPage(0);
   };
 
