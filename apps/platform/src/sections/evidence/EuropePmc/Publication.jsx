@@ -126,12 +126,6 @@ function Publication({
         body: JSON.stringify({ payload: body.payload }),
       };
       requestSummary({ baseUrl, requestOptions });
-      // fetch(baseUrl, requestOptions)
-      //   .then(response => response.json())
-      //   .then(data => {
-      //     setSummaryText(data.text);
-      //     setLoading(false);
-      //   });
     };
     if (showSummary && summaryText === null) {
       fetchData();
@@ -142,6 +136,7 @@ function Publication({
     setShowAbstract(false);
     setShowMatches(false);
     setShowSummary(false);
+    setSummaryText(null);
   }, [title]);
 
   return (
