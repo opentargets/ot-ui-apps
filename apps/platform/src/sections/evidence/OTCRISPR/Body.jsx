@@ -47,7 +47,7 @@ const getColumns = () => [
             showHelpIcon
             title={
               <TooltipStyledLabel
-                label="Study overview"
+                label={'Study overview'}
                 description={row.studyOverview}
               />
             }
@@ -76,7 +76,7 @@ const getColumns = () => [
           showHelpIcon
           title={
             <TooltipStyledLabel
-              label="Cell line background"
+              label={'Cell line background'}
               description={row.cellLineBackground}
             />
           }
@@ -105,7 +105,7 @@ const getColumns = () => [
             showHelpIcon
             title={
               <TooltipStyledLabel
-                label={'STATISTICAL TEST TAIL'}
+                label={'Statistical test tail'}
                 description={row.statisticalTestTail}
               />
             }
