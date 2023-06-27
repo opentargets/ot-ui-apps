@@ -58,7 +58,7 @@ function ProjectPage() {
       renderCell: ({ disease_mapping: diseaseMapping }) => {
         const ALL_AVATARS = [];
         diseaseMapping.forEach(disease => {
-          if (disease && disease.label) {
+          if (disease && disease.disease_id) {
             ALL_AVATARS.push(
               <Link
                 to={`disease/${disease.disease_id}`}
@@ -66,7 +66,7 @@ function ProjectPage() {
               >
                 <Chip
                   size="small"
-                  label={disease.label}
+                  label={disease.label || disease.disease_id}
                   clickable
                   color="primary"
                   className={classes.disease}
