@@ -69,7 +69,7 @@ const getColumns = () => [
             showHelpIcon
             title={
               <TooltipStyledLabel
-                label={'SCREEN LIBRARY'}
+                label={'Screen library'}
                 description={row.crisprScreenLibrary}
               />
             }
@@ -113,7 +113,7 @@ const getColumns = () => [
             showHelpIcon
             title={
               <TooltipStyledLabel
-                label={'STATISTICAL TEST TAIL'}
+                label={'Statistical test tail'}
                 description={row.statisticalTestTail}
               />
             }
