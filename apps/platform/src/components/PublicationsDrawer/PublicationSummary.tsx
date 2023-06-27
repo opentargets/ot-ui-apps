@@ -52,7 +52,7 @@ function PublicationSummary({
   const [error, setError] = useState<TextState>(null);
   const [summaryText, setSummaryText] = useState<TextState>(null);
   const [collapseOpen, setCollapseOpen] = useState<CollapsedState>(false);
-  const [requestCount, setRequestCount] = useState<RequestCountState>(0);
+
   const classes = useStyles();
 
   const handleChange = () => {

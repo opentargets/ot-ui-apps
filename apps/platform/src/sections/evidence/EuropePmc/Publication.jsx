@@ -56,6 +56,7 @@ function Publication({
   const [showMatches, setShowMatches] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [summaryText, setSummaryText] = useState(null);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   if (!title) {
@@ -74,6 +75,41 @@ function Publication({
     setShowSummary(current => !current);
   };
 
+  function requestSummary({ baseUrl, requestOptions }) {
+    fetch(baseUrl, requestOptions)
+      .then(response => {
+        if (response.ok) return response.json();
+        const errorText = response.statusText;
+        throw new Error(errorText);
+      })
+      .then(data => {
+        setSummaryText(data.text);
+        setError(null);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }
+
+  const onClickRetry = () => {
+    setLoading(true);
+    const { baseUrl, body } = publicationSummaryQuery({
+      pmcId,
+      symbol,
+      name,
+    });
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ payload: body.payload }),
+    };
+    requestSummary({ baseUrl, requestOptions });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -89,17 +125,24 @@ function Publication({
         },
         body: JSON.stringify({ payload: body.payload }),
       };
-      fetch(baseUrl, requestOptions)
-        .then(response => response.json())
-        .then(data => {
-          setSummaryText(data.text);
-          setLoading(false);
-        });
+      requestSummary({ baseUrl, requestOptions });
+      // fetch(baseUrl, requestOptions)
+      //   .then(response => response.json())
+      //   .then(data => {
+      //     setSummaryText(data.text);
+      //     setLoading(false);
+      //   });
     };
     if (showSummary && summaryText === null) {
       fetchData();
     }
   }, [showSummary]);
+
+  useEffect(() => {
+    setShowAbstract(false);
+    setShowMatches(false);
+    setShowSummary(false);
+  }, [title]);
 
   return (
     <Box>
@@ -172,7 +215,20 @@ function Publication({
         {showSummary && (
           <Box className={classes.detailPanel}>
             {loading && <SummaryLoader />}
-            {!loading && (
+            {!loading && error && (
+              <>
+                <span className={classes.abstractSpan}>
+                  <b>Error: </b>
+                  {error}
+                </span>
+                <br />
+                <br />
+                <button type="button" onClick={onClickRetry}>
+                  Retry request
+                </button>
+              </>
+            )}
+            {!loading && !error && (
               <>
                 <Typography variant="subtitle2">Evidence summary</Typography>
                 <span className={classes.abstractSpan}>{summaryText}</span>
