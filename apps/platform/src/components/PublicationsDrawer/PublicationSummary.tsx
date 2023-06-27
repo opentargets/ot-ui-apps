@@ -11,6 +11,7 @@ import SummaryLoader from './SummaryLoader';
 type LoadingState = true | false;
 type CollapsedState = true | false;
 type TextState = string | null;
+type RequestCountState = number | null;
 type PublicationSummaryProps = {
   pmcId: string;
   symbol: string;
@@ -48,12 +49,49 @@ function PublicationSummary({
   name,
 }: PublicationSummaryProps): JSX.Element {
   const [loading, setLoading] = useState<LoadingState>(false);
+  const [error, setError] = useState<TextState>(null);
   const [summaryText, setSummaryText] = useState<TextState>(null);
   const [collapseOpen, setCollapseOpen] = useState<CollapsedState>(false);
+  const [requestCount, setRequestCount] = useState<RequestCountState>(0);
   const classes = useStyles();
 
   const handleChange = () => {
     setCollapseOpen(prev => !prev);
+  };
+
+  function requestSummary({ baseUrl, requestOptions }: any) {
+    fetch(baseUrl, requestOptions)
+      .then(response => {
+        if (response.ok) return response.json();
+        const errorText = response.statusText;
+        throw new Error(errorText);
+      })
+      .then(data => {
+        setSummaryText(data.text);
+        setError(null);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }
+
+  const onClickRetry = () => {
+    setLoading(true);
+    const { baseUrl, body } = publicationSummaryQuery({
+      pmcId,
+      symbol,
+      name,
+    });
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ payload: body.payload }),
+    };
+    requestSummary({ baseUrl, requestOptions });
   };
 
   useEffect(() => {
@@ -71,12 +109,8 @@ function PublicationSummary({
         },
         body: JSON.stringify({ payload: body.payload }),
       };
-      fetch(baseUrl, requestOptions)
-        .then(response => response.json())
-        .then(data => {
-          setSummaryText(data.text);
-          setLoading(false);
-        });
+
+      requestSummary({ baseUrl, requestOptions });
     };
     if (collapseOpen && summaryText === null) {
       fetchData();
@@ -101,7 +135,20 @@ function PublicationSummary({
       <Collapse in={collapseOpen}>
         <Box className={classes.detailPanel}>
           {loading && <SummaryLoader />}
-          {!loading && (
+          {!loading && error && (
+            <>
+              <span className={classes.summarySpan}>
+                <b>Error: </b>
+                {error}
+              </span>
+              <br />
+              <br />
+              <button type="button" onClick={onClickRetry}>
+                Retry request
+              </button>
+            </>
+          )}
+          {!loading && !error && (
             <>
               <Typography variant="subtitle2">Evidence summary</Typography>
               <span className={classes.summarySpan}>{summaryText}</span>
