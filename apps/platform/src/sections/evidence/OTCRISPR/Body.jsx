@@ -9,7 +9,7 @@ import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
 import TooltipStyledLabel from '../../../components/TooltipStyledLabel';
 import Link from '../../../components/Link';
-import { defaultRowsPerPageOptions } from '../../../constants';
+import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
 
 import CRISPR_QUERY from './OTCrisprQuery.gql';
 
@@ -98,8 +98,27 @@ const getColumns = () => [
     id: 'resourceScore',
     label: 'Significance',
     filterValue: row => `${row.resourceScore}; ${row.statisticalTestTail}`,
-    renderCell: row =>
-      row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : 'N/A',
+    renderCell: row => {
+      if (row.resourceScore && row.statisticalTestTail) {
+        return (
+          <Tooltip
+            showHelpIcon
+            title={
+              <TooltipStyledLabel
+                label={'STATISTICAL TEST TAIL'}
+                description={row.statisticalTestTail}
+              />
+            }
+          >
+            <span>{parseFloat(row.resourceScore.toFixed(6))}</span>
+          </Tooltip>
+        );
+      } else {
+        return row.resourceScore
+          ? parseFloat(row.resourceScore.toFixed(6))
+          : naLabel;
+      }
+    },
   },
   {
     id: 'releaseVersion',
