@@ -8,14 +8,8 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Other Therapy Area",
     "disease_mapping": [
-      {
-        "label": "Psoriasis",
-        "disease_id": "EFO_0000676"
-      },
-      {
-        "label": "Atopic Eczema",
-        "disease_id": "EFO_0000274"
-      }
+      { "label": "Psoriasis", "disease_id": "EFO_0000676" },
+      { "label": "Atopic Eczema", "disease_id": "EFO_0000274" }
     ]
   },
   {
@@ -30,7 +24,8 @@
       {
         "label": "amyotrophic lateral sclerosis",
         "disease_id": "MONDO_0004976"
-      }
+      },
+      { "label": "", "disease_id": "MONDO_0004975" }
     ]
   },
   {
@@ -42,18 +37,8 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      {
-        "label": "Alzheimer disease",
-        "disease_id": "MONDO_0004975"
-      },
-      {
-        "label": "Parkinson disease",
-        "disease_id": "MONDO_0005180"
-      },
-      {
-        "label": "frontotemporal dementia ",
-        "disease_id": "MONDO_0017276"
-      }
+      { "label": "Alzheimer disease", "disease_id": "MONDO_0004975" },
+      { "label": "Parkinson disease", "disease_id": "MONDO_0005180" }
     ]
   },
   {
@@ -65,10 +50,7 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      {
-        "label": "Alzheimer disease",
-        "disease_id": "MONDO_0004975"
-      }
+      { "label": "Alzheimer disease", "disease_id": "MONDO_0004975" }
     ]
   },
   {
@@ -80,10 +62,7 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Other Therapy Area",
     "disease_mapping": [
-      {
-        "label": "colorectal carcinoma",
-        "disease_id": "EFO_1001951"
-      }
+      { "label": "colorectal carcinoma", "disease_id": "EFO_1001951" }
     ]
   },
   {
@@ -95,10 +74,7 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": [
-      {
-        "label": "colorectal carcinoma",
-        "disease_id": "EFO_1001951"
-      }
+      { "label": "colorectal carcinoma", "disease_id": "EFO_1001951" }
     ]
   },
   {
@@ -110,11 +86,18 @@
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      {
-        "label": "Parkinson disease",
-        "disease_id": "EFO_1001951"
-      }
+      { "label": "Parkinson disease", "disease_id": "MONDO_0005180" }
     ]
+  },
+  {
+    "otar_code": "OTAR2052",
+    "project_name": "Identification and Validation of Novel Pain Targets",
+    "project_lead": "Manos Metzakopian / Andrew Bassett",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "Y",
+    "project_status": "Closed",
+    "open_targets_therapeutic_area": "Neurodegenerative Disease",
+    "disease_mapping": [{ "label": "Pain", "disease_id": "EFO_0003843" }]
   },
   {
     "otar_code": "OTAR031",
@@ -194,16 +177,6 @@
     "currently_integrates_in_PPP": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Other Therapy Area",
-    "disease_mapping": []
-  },
-  {
-    "otar_code": "OTAR2052",
-    "project_name": "Identification and Validation of Novel Pain Targets",
-    "project_lead": "Manos Metzakopian / Andrew Bassett",
-    "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
-    "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": []
   },
   {
