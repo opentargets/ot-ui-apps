@@ -14,6 +14,7 @@ import SimplePublication from '../../common/Bibliography/SimplePublication';
 import { publicationSummaryQuery } from '../../../utils/urls';
 import SummaryLoader from '../../../components/PublicationsDrawer/SummaryLoader';
 import config from '../../../config';
+import PublicationSummaryLabel from '../../../components/PublicationsDrawer/PublicationSummaryLabel';
 
 const useStyles = makeStyles(theme => ({
   abstractSpan: {
@@ -25,7 +26,9 @@ const useStyles = makeStyles(theme => ({
   detailPanel: {
     background: `${theme.palette.grey[100]}`,
     marginTop: '10px',
-    padding: '20px',
+    marginBottom: '10px',
+    padding: '25px 20px',
+    position: 'relative',
   },
   matchTable: {
     width: '100%',
@@ -233,6 +236,7 @@ function Publication({
                 <span className={classes.abstractSpan}>{summaryText}</span>
               </>
             )}
+            <PublicationSummaryLabel />
           </Box>
         )}
         {showAbstract && (

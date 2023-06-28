@@ -7,11 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { publicationSummaryQuery } from '../../utils/urls';
 import PublicationActionsTooltip from './PublicationActionsTooltip';
 import SummaryLoader from './SummaryLoader';
+import PublicationSummaryLabel from './PublicationSummaryLabel';
 
 type LoadingState = true | false;
 type CollapsedState = true | false;
 type TextState = string | null;
-type RequestCountState = number | null;
 type PublicationSummaryProps = {
   pmcId: string;
   symbol: string;
@@ -32,7 +32,9 @@ const useStyles = makeStyles((theme: Theme) =>
     detailPanel: {
       background: `${theme.palette.grey[100]}`,
       marginTop: '10px',
-      padding: '20px',
+      marginBottom: '10px',
+      padding: '25px 20px',
+      position: 'relative',
     },
     summarySpan: {
       whiteSpace: 'normal',
@@ -155,6 +157,7 @@ function PublicationSummary({
               <span className={classes.summarySpan}>{summaryText}</span>
             </>
           )}
+          <PublicationSummaryLabel />
         </Box>
       </Collapse>
     </div>
