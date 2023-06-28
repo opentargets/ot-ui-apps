@@ -63,8 +63,9 @@ function PublicationSummary({
     fetch(baseUrl, requestOptions)
       .then(response => {
         if (response.ok) return response.json();
-        const errorText = response.statusText;
-        throw new Error(errorText);
+        return response.json().then(err => {
+          throw new Error(err.error);
+        });
       })
       .then(data => {
         setSummaryText(data.text);
