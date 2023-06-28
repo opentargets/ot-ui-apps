@@ -1,66 +1,66 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from "@apollo/client";
 import {
   faCheckSquare,
   faExclamationTriangle,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Typography } from '@material-ui/core';
-import { v1 } from 'uuid';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Typography } from "@material-ui/core";
+import { v1 } from "uuid";
+import { Tooltip, SectionItem, Link } from "ui";
 
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
-import { DataTable } from '../../../components/Table';
-import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
-import Description from './Description';
-import { epmcUrl } from '../../../utils/urls';
-import { sentenceCase } from '../../../utils/global';
-import Link from '../../../components/Link';
-import SectionItem from '../../../components/Section/SectionItem';
-import Summary from './Summary';
-import Tooltip from '../../../components/Tooltip';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { dataTypesMap } from '../../../dataTypes';
-import GENOMICS_ENGLAND_QUERY from './sectionQuery.gql';
+import { definition } from ".";
+import Summary from "./Summary";
+
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
+import { DataTable } from "../../components/Table";
+import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import Description from "./Description";
+import { epmcUrl } from "../../utils/urls";
+import { sentenceCase } from "../../utils/global";
+
+import { dataTypesMap } from "../../dataTypes";
+import GENOMICS_ENGLAND_QUERY from "./sectionQuery.gql";
 
 const geUrl = (id, approvedSymbol) =>
   `https://panelapp.genomicsengland.co.uk/panels/${id}/gene/${approvedSymbol}`;
 
-const confidenceCaption = confidence =>
+const confidenceCaption = (confidence) =>
   ({
     green: (
-      <span style={{ color: '#3fad46' }}>
-        <FontAwesomeIcon icon={faCheckSquare} size="sm" />{' '}
+      <span style={{ color: "#3fad46" }}>
+        <FontAwesomeIcon icon={faCheckSquare} size="sm" />{" "}
         {sentenceCase(confidence)}
       </span>
     ),
     amber: (
-      <span style={{ color: '#f0ad4e' }}>
-        <FontAwesomeIcon icon={faExclamationTriangle} size="sm" />{' '}
+      <span style={{ color: "#f0ad4e" }}>
+        <FontAwesomeIcon icon={faExclamationTriangle} size="sm" />{" "}
         {sentenceCase(confidence)}
       </span>
     ),
   }[confidence]);
 
-const confidenceMap = confidence =>
+const confidenceMap = (confidence) =>
   ({
     green: 20,
     amber: 10,
   }[confidence.toLowerCase()] || 0);
 
-const allelicRequirementsCaption = allelicRequirements => {
+const allelicRequirementsCaption = (allelicRequirements) => {
   const caption = sentenceCase(
-    allelicRequirements.split(' ', 1)[0].replace(/[;:,]*/g, '')
+    allelicRequirements.split(" ", 1)[0].replace(/[;:,]*/g, "")
   );
   const description =
-    allelicRequirements.split(' ').slice(1).join(' ') ||
-    'No more information available';
+    allelicRequirements.split(" ").slice(1).join(" ") ||
+    "No more information available";
 
   return [caption, description];
 };
 
 const columns = [
   {
-    id: 'disease',
-    label: 'Disease/phenotype',
+    id: "disease",
+    label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => (
       <Tooltip
         title={
@@ -83,13 +83,13 @@ const columns = [
                   All reported phenotypes:
                 </Typography>
                 <Typography variant="caption" display="block">
-                  {cohortPhenotypes.map(cp => (
+                  {cohortPhenotypes.map((cp) => (
                     <div key={cp}>{cp}</div>
                   ))}
                 </Typography>
               </>
             ) : (
-              ''
+              ""
             )}
           </>
         }
@@ -102,11 +102,11 @@ const columns = [
       [disease.name, diseaseFromSource].join(),
   },
   {
-    id: 'allelicRequirements',
-    label: 'Allelic Requirement',
+    id: "allelicRequirements",
+    label: "Allelic Requirement",
     renderCell: ({ allelicRequirements }) =>
       allelicRequirements
-        ? allelicRequirements.map(item => {
+        ? allelicRequirements.map((item) => {
             const [caption, description] = allelicRequirementsCaption(item);
 
             return (
@@ -124,8 +124,8 @@ const columns = [
         : naLabel,
   },
   {
-    id: 'studyOverview',
-    label: 'Genomics England Panel',
+    id: "studyOverview",
+    label: "Genomics England Panel",
     renderCell: ({ studyOverview, studyId, target: { approvedSymbol } }) =>
       studyOverview && studyId && approvedSymbol ? (
         <Link external to={geUrl(studyId, approvedSymbol)}>
@@ -136,14 +136,14 @@ const columns = [
       ),
   },
   {
-    id: 'confidence',
-    label: 'Gene rating',
+    id: "confidence",
+    label: "Gene rating",
     sortable: true,
     renderCell: ({ confidence }) => (
       <Tooltip
         title={
           <Typography variant="caption" display="block" align="center">
-            As defined by the{' '}
+            As defined by the{" "}
             <Link
               external
               to="https://panelapp.genomicsengland.co.uk/#!Guidelines"
@@ -161,18 +161,18 @@ const columns = [
       confidenceMap(a.confidence) - confidenceMap(b.confidence),
   },
   {
-    id: 'literature',
+    id: "literature",
     renderCell: ({ literature }) => {
       const literatureList =
         literature?.reduce((acc, id) => {
-          if (id === 'NA') return acc;
+          if (id === "NA") return acc;
 
           return [
             ...acc,
             {
               name: id,
               url: epmcUrl(id),
-              group: 'literature',
+              group: "literature",
             },
           ];
         }, []) || [];
@@ -182,12 +182,11 @@ const columns = [
   },
 ];
 
-export function BodyCore({ definition, id, label, count }) {
+export function Body({ id, label }) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(GENOMICS_ENGLAND_QUERY, {
@@ -202,7 +201,7 @@ export function BodyCore({ definition, id, label, count }) {
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
-      renderBody={data => (
+      renderBody={(data) => (
         <DataTable
           columns={columns}
           dataDownloader
@@ -221,17 +220,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.GenomicsEnglandSummaryFragment
-  );
-  const { count } = summaryData.genomicsEngland;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

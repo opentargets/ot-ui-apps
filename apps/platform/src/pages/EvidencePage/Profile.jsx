@@ -16,6 +16,8 @@ import EVASection from 'sections/src/evidence/EVA/Body';
 import EVASomaticSection from 'sections/src/evidence/EVASomatic/Body';
 import ExpressionAtlasSection from 'sections/src/evidence/ExpressionAtlas/Body';
 import Gene2PhenotypeSection from 'sections/src/evidence/Gene2Phenotype/Body';
+import GenomicsEnglandSection from 'sections/src/evidence/GenomicsEngland/Body';
+
 
 import SectionOrderProvider from '../../contexts/SectionOrderProvider';
 // import SummaryContainer from '../../components/Summary/SummaryContainer';
@@ -80,6 +82,8 @@ function Profile({ ensgId, efoId, symbol, name }) {
         <EVASomaticSection id={id} label={label} />
         <ExpressionAtlasSection id={id} label={label} />
         <Gene2PhenotypeSection id={id} label={label} />
+        <GenomicsEnglandSection id={id} label={label} />
+
       </SectionContainer>
       {/* </SectionOrderProvider> */}
     </PlatformApiProvider>
