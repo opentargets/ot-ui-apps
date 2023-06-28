@@ -65,20 +65,27 @@ function ProfileHeader() {
     theme.palette.primary.main
   );
   const synonyms = parseSynonyms(data?.target.synonyms || []);
-  
-  const geneInfo = [{
-    label: 'Core essential gene',
-    tooltip: 'Source: Cancer DepMap',
-  }];
+
+  // geneInfo currently holds the details for the "core essential" chip,
+  // however in the future it will hold information to display other chips
+  const geneInfo = [
+    {
+      label: 'Core essential gene',
+      tooltip: 'Source: Cancer DepMap',
+      isVisible: data?.target.isEssential,
+    },
+  ];
 
   return (
     <BaseProfileHeader>
-      <TargetDescription
-        loading={loading}
-        descriptions={targetDescription}
-        targetId={data?.target.id}
-        infoChips= {data?.target.isEssential ? geneInfo : null}
-      />
+      <>
+        <TargetDescription
+          loading={loading}
+          descriptions={targetDescription}
+          targetId={data?.target.id}
+        />
+        <ChipList>{geneInfo.filter(gi => gi.isVisible)}</ChipList>
+      </>
       <ChipList title="Synonyms" loading={loading}>
         {synonyms}
       </ChipList>
