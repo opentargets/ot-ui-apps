@@ -12,7 +12,7 @@ function PublicationSummaryLabel() {
   return (
     <div className={classes.container}>
       <b>
-        <Typography variant="caption">Powerd by OpenAI</Typography>
+        <Typography variant="caption">Powered by OpenAI</Typography>
       </b>
     </div>
   );
