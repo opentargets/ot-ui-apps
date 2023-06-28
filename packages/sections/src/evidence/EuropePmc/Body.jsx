@@ -1,32 +1,30 @@
-import { useState, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import { useState, useEffect } from "react";
+import { useQuery } from "@apollo/client";
+import { SectionItem, Link } from "ui";
 
-import Description from './Description';
-import { europePmcLiteratureQuery } from '../../../utils/urls';
-import { dataTypesMap } from '../../../dataTypes';
-import { getPage, Table } from '../../../components/Table';
-import Link from '../../../components/Link';
-import { naLabel } from '../../../constants';
-import Publication from './Publication';
-import SectionItem from '../../../components/Section/SectionItem';
-import Summary from './Summary';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import EUROPE_PMC_QUERY from './sectionQuery.gql';
+import Description from "./Description";
+import { europePmcLiteratureQuery } from "../../utils/urls";
+import { dataTypesMap } from "../../dataTypes";
+import { getPage, Table } from "../../components/Table";
+import { naLabel } from "../../constants";
+import Publication from "./Publication";
+import EUROPE_PMC_QUERY from "./sectionQuery.gql";
+import { definition } from ".";
 
 const columns = [
   {
-    id: 'disease',
-    label: 'Disease/phenotype',
+    id: "disease",
+    label: "Disease/phenotype",
     renderCell: ({ disease }) => (
       <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
     ),
     filterValue: ({ disease }) => disease.name,
   },
   {
-    id: 'publicationDetails',
-    propertyPath: 'title',
-    label: 'Publication',
-    width: '80%',
+    id: "publicationDetails",
+    propertyPath: "title",
+    label: "Publication",
+    width: "80%",
     renderCell: ({
       europePmcId,
       title,
@@ -50,21 +48,21 @@ const columns = [
     ),
   },
   {
-    id: 'year',
+    id: "year",
     renderCell: ({ year }) => year || naLabel,
   },
   {
-    id: 'resourceScore',
-    label: 'Score',
+    id: "resourceScore",
+    label: "Score",
     numeric: true,
   },
 ];
 
 // Merges data from platform-API and EuropePMC API.
 function mergeData(rows, literatureData) {
-  const mergedRows = rows.map(row => {
+  const mergedRows = rows.map((row) => {
     const relevantEntry = literatureData.find(
-      entry => entry.id === row.literature[0]
+      (entry) => entry.id === row.literature[0]
     );
 
     if (relevantEntry) {
@@ -92,7 +90,7 @@ function mergeData(rows, literatureData) {
 /*
  * EuropePMC widget does NOT require the count prop
  */
-export function BodyCore({ definition, id, label }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
   const pagesToFetch = 10;
   const [page, setPage] = useState(0);
@@ -108,13 +106,13 @@ export function BodyCore({ definition, id, label }) {
     refetch,
   } = useQuery(EUROPE_PMC_QUERY, {
     variables,
-    onCompleted: res => {
-      setNewIds(res.disease.evidences.rows.map(entry => entry.literature[0]));
+    onCompleted: (res) => {
+      setNewIds(res.disease.evidences.rows.map((entry) => entry.literature[0]));
     },
   });
   const [loading, setLoading] = useState(isLoading);
 
-  const handlePageChange = pageChange => {
+  const handlePageChange = (pageChange) => {
     if (
       pageChange * pageSize >= data.disease.evidences.rows.length - pageSize &&
       (pageChange + 1) * pageSize < data.disease.evidences.count
@@ -130,7 +128,7 @@ export function BodyCore({ definition, id, label }) {
 
           setNewIds(
             fetchMoreResult.disease.evidences.rows.map(
-              entry => entry.literature[0]
+              (entry) => entry.literature[0]
             )
           );
 
@@ -155,7 +153,7 @@ export function BodyCore({ definition, id, label }) {
     setPage(pageChange);
   };
 
-  const handleRowsPerPageChange = newPageSize => {
+  const handleRowsPerPageChange = (newPageSize) => {
     if (
       page * newPageSize >=
       data.disease.evidences.rows.length - newPageSize
@@ -179,10 +177,7 @@ export function BodyCore({ definition, id, label }) {
         const resJson = await res.json();
         const newLiteratureData = resJson.resultList.result;
 
-        setLiteratureData(litData => [
-          ...litData,
-          ...newLiteratureData,
-        ]);
+        setLiteratureData((litData) => [...litData, ...newLiteratureData]);
         setLoading(false);
       }
     }
@@ -202,7 +197,7 @@ export function BodyCore({ definition, id, label }) {
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
-      renderBody={res => {
+      renderBody={(res) => {
         const rows = mergeData(
           getPage(res.disease.evidences.rows, page, pageSize),
           literatureData
@@ -230,16 +225,4 @@ export function BodyCore({ definition, id, label }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.EuropePmcSummaryFragment
-  );
-  const { count } = summaryData.europePmc;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  // Note that EuropePMC widget, unlike others, does not require count
-  return <BodyCore definition={definition} id={id} label={label} />;
-}
+export default Body;

@@ -203,13 +203,12 @@ function getColumns(classes) {
   ];
 }
 
-function Body({ id, label, count }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
 
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(CHEMBL_QUERY, {

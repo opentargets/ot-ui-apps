@@ -85,13 +85,12 @@ const columns = [
   },
 ];
 
-function Body({ id, label, count }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
 
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(CLINGEN_QUERY, {

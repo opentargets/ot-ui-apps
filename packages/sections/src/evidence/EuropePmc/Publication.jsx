@@ -1,29 +1,29 @@
-import { useState } from 'react';
-import { v1 } from 'uuid';
+import { useState } from "react";
+import { v1 } from "uuid";
 import {
   AddCircleOutlineRounded,
   RemoveCircleOutlineRounded,
-} from '@material-ui/icons';
-import { Box, Button, makeStyles, Typography } from '@material-ui/core';
+} from "@material-ui/icons";
+import { Box, Button, makeStyles, Typography } from "@material-ui/core";
 
-import { naLabel } from '../../../constants';
-import SentenceMatch from './SentenceMatch';
-import SimplePublication from '../../common/Bibliography/SimplePublication';
+import { naLabel } from "../../constants";
+import SentenceMatch from "./SentenceMatch";
+import SimplePublication from "../../common/Bibliography/SimplePublication";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   abstractSpan: {
-    whiteSpace: 'normal',
+    whiteSpace: "normal",
   },
   detailsButton: {
-    margin: '1rem',
+    margin: "1rem",
   },
   detailPanel: {
     background: `${theme.palette.grey[100]}`,
-    marginTop: '10px',
-    padding: '20px',
+    marginTop: "10px",
+    padding: "20px",
   },
   matchTable: {
-    width: '100%',
+    width: "100%",
   },
 }));
 
@@ -34,7 +34,7 @@ function Publication({
   textMiningSentences,
   authors,
   journal,
-  source = 'MED',
+  source = "MED",
   patentDetails = null,
 }) {
   const classes = useStyles();
@@ -46,11 +46,11 @@ function Publication({
   }
 
   const handleShowAbstractClick = () => {
-    setShowAbstract(current => !current);
+    setShowAbstract((current) => !current);
   };
 
   const handleShowMatchesClick = () => {
-    setShowMatches(current => !current);
+    setShowMatches((current) => !current);
   };
 
   return (
@@ -85,7 +85,7 @@ function Publication({
           }
           onClick={handleShowAbstractClick}
         >
-          {showAbstract ? 'Hide abstract' : 'Show abstract'}
+          {showAbstract ? "Hide abstract" : "Show abstract"}
         </Button>
       )}
       {textMiningSentences && (
@@ -103,7 +103,7 @@ function Publication({
           onClick={handleShowMatchesClick}
         >
           {showMatches
-            ? 'Hide match details'
+            ? "Hide match details"
             : `Show ${textMiningSentences.length} match details`}
         </Button>
       )}
@@ -118,7 +118,7 @@ function Publication({
           <Typography variant="subtitle2">Matches</Typography>
           <table className={classes.matchTable}>
             <tbody>
-              {textMiningSentences.map(match => (
+              {textMiningSentences.map((match) => (
                 <SentenceMatch key={v1()} match={match} />
               ))}
             </tbody>

@@ -4,8 +4,14 @@ import { SectionContainer } from 'ui';
 import { createSummaryFragment } from '../../components/Summary/utils';
 import PlatformApiProvider from '../../contexts/PlatformApiProvider';
 import ProfileHeader from './ProfileHeader';
+
 import CancerBiomarkersSection from 'sections/src/evidence/CancerBiomarkers/Body';
 import CancerGeneCensusSection from 'sections/src/evidence/CancerGeneCensus/Body';
+import ChemblSection from 'sections/src/evidence/Chembl/Body';
+import ClinGenSection from 'sections/src/evidence/ClinGen/Body';
+import CRISPRSection from 'sections/src/evidence/CRISPR/Body';
+import CrisprScreenSection from 'sections/src/evidence/CRISPRScreen/Body';
+import EuropePmcSection from 'sections/src/evidence/EuropePmc/Body';
 
 import SectionOrderProvider from '../../contexts/SectionOrderProvider';
 // import SummaryContainer from '../../components/Summary/SummaryContainer';
@@ -45,6 +51,9 @@ const EVIDENCE_PROFILE_QUERY = gql`
 `;
 
 function Profile({ ensgId, efoId, symbol, name }) {
+  const id = { ensgId, efoId };
+  const label = { symbol, name };
+
   return (
     <PlatformApiProvider
       lsSectionsField="evidence"
@@ -56,14 +65,13 @@ function Profile({ ensgId, efoId, symbol, name }) {
       <ProfileHeader />
 
       <SectionContainer>
-        <CancerBiomarkersSection
-          id={{ ensgId, efoId }}
-          label={{ symbol, name }}
-        />
-        <CancerGeneCensusSection
-          id={{ ensgId, efoId }}
-          label={{ symbol, name }}
-        />
+        <CancerBiomarkersSection id={id} label={label} />
+        <CancerGeneCensusSection id={id} label={label} />
+        <ChemblSection id={id} label={label} />
+        <ClinGenSection id={id} label={label} />
+        <CRISPRSection id={id} label={label} />
+        <CrisprScreenSection id={id} label={label} />
+        <EuropePmcSection id={id} label={label} />
       </SectionContainer>
       {/* </SectionOrderProvider> */}
     </PlatformApiProvider>

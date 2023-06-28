@@ -47,13 +47,12 @@ const columns = [
   },
 ];
 
-function Body({ id, label, count }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
 
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(CRISPR_QUERY, {
@@ -86,16 +85,3 @@ function Body({ id, label, count }) {
 }
 
 export default Body;
-
-// export function Body({ definition, id, label }) {
-//   const { data: summaryData } = usePlatformApi(Summary.fragments.crisprSummary);
-//   const { count } = summaryData.crisprSummary;
-
-//   if (!count || count < 1) {
-//     return null;
-//   }
-
-//   return (
-//     <BodyCore definition={definition} id={id} label={label} count={count} />
-//   );
-// }
