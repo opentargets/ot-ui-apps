@@ -1,6 +1,6 @@
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import { dataTypesMap } from '../../../dataTypes';
+import usePlatformApi from '../../hooks/usePlatformApi';
+import SummaryItem from '../../components/Summary/SummaryItem';
+import { dataTypesMap } from '../../dataTypes';
 
 import EVA_SOMATIC_SUMMARY from './EvaSomaticSummary.gql';
 
