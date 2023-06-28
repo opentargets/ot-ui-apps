@@ -104,7 +104,7 @@ function TargetDescription({
   let content;
 
   if (!descriptions || descriptions.length < 1) {
-    content = 'No description available';
+    content = (<Typography variant='body2'gutterBottom>No description available</Typography>);
   } else {
     content = (
       <StyledLongText
