@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "13em",
   },
   messageBodyContainer: {
-    padding: "4em 0"
+    padding: "4em 0",
   },
 }));
 
@@ -62,7 +62,7 @@ function EmptyPage({
       <div
         className={`${classes.messageLogoContainer} ${classes.hiddenMobile} ${classes.mainIcon}`}
       >
-        <BrokenSearchIcon/>
+        <BrokenSearchIcon />
       </div>
       <div className={`${classes.divider} ${classes.hiddenMobile}`}></div>
       <div className="message-body-container">
@@ -73,8 +73,8 @@ function EmptyPage({
           <div>{children}</div>
           <Typography>
             You deserve a fresh start. Maybe our
-            <Link to={documentationLink}> Documentation</Link> or{" "}
-            <Link to={"https://community.opentargets.org/"}>
+            <Link external to={documentationLink}> Documentation</Link> or{" "}
+            <Link external to={"https://community.opentargets.org/"}>
               Community page
             </Link>{" "}
             can help!
