@@ -6,7 +6,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { ReactNode } from "react";
-import { Link } from "../components/Link";
+import Link from "../components/Link";
 import BrokenSearchIcon from "../components/icons/BrokenSearchIcon";
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "13em",
   },
   messageBodyContainer: {
-    padding: "4em 0"
+    padding: "4em 0",
   },
 }));
 
@@ -62,7 +62,7 @@ function EmptyPage({
       <div
         className={`${classes.messageLogoContainer} ${classes.hiddenMobile} ${classes.mainIcon}`}
       >
-        <BrokenSearchIcon/>
+        <BrokenSearchIcon />
       </div>
       <div className={`${classes.divider} ${classes.hiddenMobile}`}></div>
       <div className="message-body-container">

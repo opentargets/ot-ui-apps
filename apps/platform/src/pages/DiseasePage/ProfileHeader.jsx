@@ -1,9 +1,9 @@
+import { usePlatformApi } from 'ui';
 import {
   Description,
   ProfileHeader as BaseProfileHeader,
   ChipList,
 } from '../../components/ProfileHeader';
-import usePlatformApi from '../../hooks/usePlatformApi';
 
 import DISEASE_PROFILE_HEADER_FRAGMENT from './ProfileHeader.gql';
 

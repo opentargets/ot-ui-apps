@@ -1,11 +1,14 @@
 import { gql } from '@apollo/client';
+import { SectionContainer } from 'ui';
 
 import { createSummaryFragment } from '../../components/Summary/utils';
 import PlatformApiProvider from '../../contexts/PlatformApiProvider';
 import ProfileHeader from './ProfileHeader';
-import SectionContainer from '../../components/Section/SectionContainer';
+import CancerBiomarkersSection from 'sections/src/evidence/CancerBiomarkers/Body';
+import CancerGeneCensusSection from 'sections/src/evidence/CancerGeneCensus/Body';
+
 import SectionOrderProvider from '../../contexts/SectionOrderProvider';
-import SummaryContainer from '../../components/Summary/SummaryContainer';
+// import SummaryContainer from '../../components/Summary/SummaryContainer';
 
 import sections from './sections';
 
@@ -49,31 +52,20 @@ function Profile({ ensgId, efoId, symbol, name }) {
       query={EVIDENCE_PROFILE_QUERY}
       variables={{ ensgId, efoId }}
     >
-      <SectionOrderProvider sections={sections}>
-        <ProfileHeader />
+      {/* <SectionOrderProvider sections={sections}> */}
+      <ProfileHeader />
 
-        <SummaryContainer>
-          {sections.map(({ Summary, definition }) => (
-            <Summary
-              key={definition.id}
-              id={{ ensgId, efoId }}
-              label={{ symbol, name }}
-              definition={definition}
-            />
-          ))}
-        </SummaryContainer>
-
-        <SectionContainer>
-          {sections.map(({ Body, definition }) => (
-            <Body
-              key={definition.id}
-              id={{ ensgId, efoId }}
-              label={{ symbol, name }}
-              definition={definition}
-            />
-          ))}
-        </SectionContainer>
-      </SectionOrderProvider>
+      <SectionContainer>
+        <CancerBiomarkersSection
+          id={{ ensgId, efoId }}
+          label={{ symbol, name }}
+        />
+        <CancerGeneCensusSection
+          id={{ ensgId, efoId }}
+          label={{ symbol, name }}
+        />
+      </SectionContainer>
+      {/* </SectionOrderProvider> */}
     </PlatformApiProvider>
   );
 }
