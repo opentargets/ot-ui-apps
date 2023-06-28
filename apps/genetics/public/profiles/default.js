@@ -2,7 +2,7 @@
 var configProfile = {
   /* general items */
 
-  helpdeskEmail: 'helpdesk@opentargets.org',
+  documentationUrl: "https://platform-docs.opentargets.org",
   communityUrl: 'https://community.opentargets.org',
   communityTicketUrl: 'https://community.opentargets.org/c/community-feedback/bug-reports/34',
   // config navbar main menu (hamburger)
