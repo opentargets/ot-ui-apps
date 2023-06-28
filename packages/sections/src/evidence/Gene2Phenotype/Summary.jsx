@@ -1,8 +1,9 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { dataTypesMap } from '../../../dataTypes';
+import { SummaryItem } from "ui";
 
-import GENE_2_PHENOTYPE_SUMMARY_FRAGMENT from './Gene2PhenotypeSummaryFragment.gql';
+import GENE_2_PHENOTYPE_SUMMARY_FRAGMENT from "./Gene2PhenotypeSummaryFragment.gql";
+
+import usePlatformApi from "../../hooks/usePlatformApi";
+import { dataTypesMap } from "../../dataTypes";
 
 function Summary({ definition }) {
   const request = usePlatformApi(GENE_2_PHENOTYPE_SUMMARY_FRAGMENT);
@@ -11,9 +12,9 @@ function Summary({ definition }) {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         `${data.gene2Phenotype.count} entr${
-          data.gene2Phenotype.count === 1 ? 'y' : 'ies'
+          data.gene2Phenotype.count === 1 ? "y" : "ies"
         }`
       }
       subText={dataTypesMap.genetic_association}

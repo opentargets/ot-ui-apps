@@ -1,8 +1,8 @@
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import { dataTypesMap } from '../../../dataTypes';
+import usePlatformApi from "../../hooks/usePlatformApi";
+import SummaryItem from "../../components/Summary/SummaryItem";
+import { dataTypesMap } from "../../dataTypes";
 
-import EXPRESSION_ATLAS_SUMMARY from './ExpressionAtlasSummary.gql';
+import EXPRESSION_ATLAS_SUMMARY from "./ExpressionAtlasSummary.gql";
 
 function Summary({ definition }) {
   const request = usePlatformApi(EXPRESSION_ATLAS_SUMMARY);
@@ -12,7 +12,7 @@ function Summary({ definition }) {
       request={request}
       renderSummary={({ expressionAtlasSummary }) => {
         const { count } = expressionAtlasSummary;
-        return `${count} ${count === 1 ? 'entry' : 'entries'}`;
+        return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
       subText={dataTypesMap.rna_expression}
     />
