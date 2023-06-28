@@ -12,6 +12,7 @@ import ClinGenSection from 'sections/src/evidence/ClinGen/Body';
 import CRISPRSection from 'sections/src/evidence/CRISPR/Body';
 import CrisprScreenSection from 'sections/src/evidence/CRISPRScreen/Body';
 import EuropePmcSection from 'sections/src/evidence/EuropePmc/Body';
+import EVASection from 'sections/src/evidence/EVA/Body';
 
 import SectionOrderProvider from '../../contexts/SectionOrderProvider';
 // import SummaryContainer from '../../components/Summary/SummaryContainer';
@@ -72,6 +73,7 @@ function Profile({ ensgId, efoId, symbol, name }) {
         <CRISPRSection id={id} label={label} />
         <CrisprScreenSection id={id} label={label} />
         <EuropePmcSection id={id} label={label} />
+        <EVASection id={id} label={label} />
       </SectionContainer>
       {/* </SectionOrderProvider> */}
     </PlatformApiProvider>
