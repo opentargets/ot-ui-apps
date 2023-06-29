@@ -5,6 +5,7 @@ import sections from './sections';
 import { createSummaryFragment } from '../../components/Summary/utils';
 import PlatformApiProvider from '../../contexts/PlatformApiProvider';
 import ProfileHeader from './ProfileHeader';
+import PrivateWrapper from '../../components/PrivateWrapper';
 
 import CancerBiomarkersSection from 'sections/src/evidence/CancerBiomarkers/Body';
 import CancerGeneCensusSection from 'sections/src/evidence/CancerGeneCensus/Body';
@@ -24,7 +25,8 @@ import GeneBurdenSection from 'sections/src/evidence/GeneBurden/Body';
 import OrphanetSection from 'sections/src/evidence/Orphanet/Body';
 import OTCRISPRSection from 'sections/src/evidence/OTCRISPR/Body';
 import OTEncoreSection from 'sections/src/evidence/OTEncore/Body';
-import PrivateWrapper from '../../components/PrivateWrapper';
+import OTGeneticsSection from 'sections/src/evidence/OTGenetics/Body';
+
 
 const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
   sections,
@@ -69,7 +71,6 @@ function Profile({ ensgId, efoId, symbol, name }) {
       query={EVIDENCE_PROFILE_QUERY}
       variables={{ ensgId, efoId }}
     >
-      {/* <SectionOrderProvider sections={sections}> */}
       <ProfileHeader />
 
       <SectionContainer>
@@ -93,8 +94,11 @@ function Profile({ ensgId, efoId, symbol, name }) {
           <OTCRISPRSection id={id} label={label} />
           <OTEncoreSection id={id} label={label} />
         </PrivateWrapper>
+        <OTGeneticsSection id={id} label={label} />
+
+
+
       </SectionContainer>
-      {/* </SectionOrderProvider> */}
     </PlatformApiProvider>
   );
 }
