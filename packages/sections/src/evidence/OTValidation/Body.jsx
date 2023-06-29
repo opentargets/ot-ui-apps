@@ -1,21 +1,18 @@
+import _ from 'lodash';
+import classNames from 'classnames';
 import { useQuery } from '@apollo/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faTimesCircle } from '@fortawesome/free-regular-svg-icons';
 import { Box, makeStyles, Typography, Chip, Grid } from '@material-ui/core';
-import classNames from 'classnames';
-import _ from 'lodash';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SectionItem from '../../../components/Section/SectionItem';
-import { DataTable } from '../../../components/Table';
-import { dataTypesMap } from '../../../dataTypes';
+import { Link, SectionItem, Tooltip, ChipList } from 'ui';
+
+import { definition } from '.';
 import Summary from './Summary';
 import Description from './Description';
-import Tooltip from '../../../components/Tooltip';
-import ChipList from '../../../components/ChipList';
-import Link from '../../../components/Link';
-import { defaultRowsPerPageOptions } from '../../../constants';
-
+import { dataTypesMap } from '../../dataTypes';
+import { DataTable } from '../../components/Table';
+import { defaultRowsPerPageOptions } from '../../constants';
 import VALIDATION_QUERY from './OTValidationQuery.gql';
 
 const useStyles = makeStyles(theme => ({
@@ -270,9 +267,9 @@ const exportColumns = [
   },
 ];
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
-  const variables = { ensemblId: ensgId, efoId, size: count };
+  const variables = { ensemblId: ensgId, efoId};
   const request = useQuery(VALIDATION_QUERY, {
     variables,
   });
@@ -404,17 +401,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.otValidationSummary
-  );
-  const { count } = summaryData.otValidationSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

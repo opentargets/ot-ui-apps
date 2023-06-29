@@ -26,7 +26,7 @@ import OrphanetSection from 'sections/src/evidence/Orphanet/Body';
 import OTCRISPRSection from 'sections/src/evidence/OTCRISPR/Body';
 import OTEncoreSection from 'sections/src/evidence/OTEncore/Body';
 import OTGeneticsSection from 'sections/src/evidence/OTGenetics/Body';
-
+import OTValidationSection from 'sections/src/evidence/OTValidation/Body';
 
 const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
   sections,
@@ -93,11 +93,9 @@ function Profile({ ensgId, efoId, symbol, name }) {
         <PrivateWrapper>
           <OTCRISPRSection id={id} label={label} />
           <OTEncoreSection id={id} label={label} />
+          <OTValidationSection id={id} label={label} />
         </PrivateWrapper>
         <OTGeneticsSection id={id} label={label} />
-
-
-
       </SectionContainer>
     </PlatformApiProvider>
   );
