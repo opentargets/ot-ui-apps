@@ -27,6 +27,9 @@ import OTCRISPRSection from 'sections/src/evidence/OTCRISPR/Body';
 import OTEncoreSection from 'sections/src/evidence/OTEncore/Body';
 import OTGeneticsSection from 'sections/src/evidence/OTGenetics/Body';
 import OTValidationSection from 'sections/src/evidence/OTValidation/Body';
+import ProgenySection from 'sections/src/evidence/Progeny/Body';
+import ReactomeSection from 'sections/src/evidence/Reactome/Body';
+
 
 const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
   sections,
@@ -96,6 +99,8 @@ function Profile({ ensgId, efoId, symbol, name }) {
           <OTValidationSection id={id} label={label} />
         </PrivateWrapper>
         <OTGeneticsSection id={id} label={label} />
+        <ProgenySection id={id} label={label} />
+        <ReactomeSection id={id} label={label} />
       </SectionContainer>
     </PlatformApiProvider>
   );

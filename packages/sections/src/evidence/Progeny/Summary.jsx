@@ -1,10 +1,10 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { dataTypesMap } from '../../../dataTypes';
+import { SummaryItem, usePlatformApi } from 'ui';
 
+import { definition } from '.';
+import { dataTypesMap } from '../../dataTypes';
 import PROGENY_SUMMARY_FRAGMENT from './ProgenySummaryFragment.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(PROGENY_SUMMARY_FRAGMENT);
 
   return (
