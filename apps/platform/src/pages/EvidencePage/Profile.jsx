@@ -21,8 +21,10 @@ import GenomicsEnglandSection from 'sections/src/evidence/GenomicsEngland/Body';
 import ImpcSection from 'sections/src/evidence/Impc/Body';
 import IntOgenSection from 'sections/src/evidence/IntOgen/Body';
 import GeneBurdenSection from 'sections/src/evidence/GeneBurden/Body';
-
-
+import OrphanetSection from 'sections/src/evidence/Orphanet/Body';
+import OTCRISPRSection from 'sections/src/evidence/OTCRISPR/Body';
+import OTEncoreSection from 'sections/src/evidence/OTEncore/Body';
+import PrivateWrapper from '../../components/PrivateWrapper';
 
 const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
   sections,
@@ -86,8 +88,11 @@ function Profile({ ensgId, efoId, symbol, name }) {
         <ImpcSection id={id} label={label} />
         <IntOgenSection id={id} label={label} />
         <GeneBurdenSection id={id} label={label} />
-
-
+        <OrphanetSection id={id} label={label} />
+        <PrivateWrapper>
+          <OTCRISPRSection id={id} label={label} />
+          <OTEncoreSection id={id} label={label} />
+        </PrivateWrapper>
       </SectionContainer>
       {/* </SectionOrderProvider> */}
     </PlatformApiProvider>

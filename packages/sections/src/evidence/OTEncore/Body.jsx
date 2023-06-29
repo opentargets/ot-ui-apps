@@ -1,66 +1,63 @@
-import { useQuery } from '@apollo/client';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import classNames from "classnames";
+import { useQuery } from "@apollo/client";
+import { makeStyles } from "@material-ui/core";
 import {
   faArrowAltCircleUp,
   faArrowAltCircleDown,
-} from '@fortawesome/free-solid-svg-icons';
-import { makeStyles } from '@material-ui/core';
-import classNames from 'classnames';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SectionItem from '../../../components/Section/SectionItem';
-import { DataTable } from '../../../components/Table';
-import { dataTypesMap } from '../../../dataTypes';
-import Summary from './Summary';
-import Description from './Description';
-import Tooltip from '../../../components/Tooltip';
-import TooltipStyledLabel from '../../../components/TooltipStyledLabel';
-import Link from '../../../components/Link';
-import ChipList from '../../../components/ChipList';
-import { defaultRowsPerPageOptions } from '../../../constants';
-import ScientificNotation from '../../../components/ScientificNotation';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link, SectionItem, Tooltip, TooltipStyledLabel, ChipList } from "ui";
 
-import ENCORE_QUERY from './OTEncoreQuery.gql';
+import { definition } from ".";
+import Summary from "./Summary";
+import Description from "./Description";
+import { DataTable } from "../../components/Table";
+import { dataTypesMap } from "../../dataTypes";
+import { defaultRowsPerPageOptions } from "../../constants";
+import ScientificNotation from "../../components/ScientificNotation";
 
-const useStyles = makeStyles(theme => ({
+import ENCORE_QUERY from "./OTEncoreQuery.gql";
+
+const useStyles = makeStyles((theme) => ({
   primaryColor: {
     color: theme.palette.primary.main,
-    cursor: 'pointer',
+    cursor: "pointer",
   },
   grey: {
     color: theme.palette.grey[300],
   },
   circleUp: {
-    marginRight: '10px',
+    marginRight: "10px",
   },
 }));
 
-const getColumns = classes => [
+const getColumns = (classes) => [
   {
-    id: 'disease',
-    label: 'Reported disease',
-    renderCell: row => (
+    id: "disease",
+    label: "Reported disease",
+    renderCell: (row) => (
       <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>
     ),
-    filterValue: row => `${row.disease.name}, ${row.disease.id}`,
+    filterValue: (row) => `${row.disease.name}, ${row.disease.id}`,
   },
   {
-    id: 'target',
-    label: 'Library gene',
-    renderCell: row => (
+    id: "target",
+    label: "Library gene",
+    renderCell: (row) => (
       <Link to={`/target/${row.target.id}`}>{row.target.approvedSymbol}</Link>
     ),
-    filterValue: row => `${row.target.approvedSymbol}, ${row.target.id}`,
+    filterValue: (row) => `${row.target.approvedSymbol}, ${row.target.id}`,
   },
   {
-    id: 'interactingTargetFromSourceId',
-    label: 'Anchor gene',
+    id: "interactingTargetFromSourceId",
+    label: "Anchor gene",
     sortable: true,
   },
   {
-    id: 'cellType',
-    label: 'Cell line',
-    renderCell: row =>
-      row.diseaseCellLines.map(diseaseCellLine => (
+    id: "cellType",
+    label: "Cell line",
+    renderCell: (row) =>
+      row.diseaseCellLines.map((diseaseCellLine) => (
         <Link
           external
           to={`https://cellmodelpassports.sanger.ac.uk/passports/${diseaseCellLine.id}`}
@@ -71,12 +68,12 @@ const getColumns = classes => [
       )),
   },
   {
-    id: 'biomarkerList',
-    label: 'Cell line biomarkers',
-    renderCell: row => (
+    id: "biomarkerList",
+    label: "Cell line biomarkers",
+    renderCell: (row) => (
       <ChipList
         small
-        items={row.biomarkerList.map(bm => ({
+        items={row.biomarkerList.map((bm) => ({
           label: bm.name,
           tooltip: bm.description,
         }))}
@@ -84,19 +81,19 @@ const getColumns = classes => [
     ),
   },
   {
-    id: 'releaseVersion',
-    label: 'Release version',
+    id: "releaseVersion",
+    label: "Release version",
   },
   {
-    id: 'phenotypicConsequenceLogFoldChange',
-    label: 'Cell count logFC',
+    id: "phenotypicConsequenceLogFoldChange",
+    label: "Cell count logFC",
     tooltip: (
       <>
         When a negative log fold change is measured, it means there is an excess
         of cell death.
       </>
     ),
-    renderCell: row => (
+    renderCell: (row) => (
       <Tooltip
         title={
           <>
@@ -140,26 +137,26 @@ const getColumns = classes => [
     ),
   },
   {
-    id: 'geneInteractionType',
-    label: 'Type of effect',
-    filterValue: row => row.geneInteractionType,
+    id: "geneInteractionType",
+    label: "Type of effect",
+    filterValue: (row) => row.geneInteractionType,
   },
   {
-    id: 'geneticInteractionScore',
-    label: 'BLISS score',
+    id: "geneticInteractionScore",
+    label: "BLISS score",
     tooltip: (
       <>
         We used the Bliss independence model to define synergy between gRNA
         pairs.
       </>
     ),
-    renderCell: row => row.geneticInteractionScore.toFixed(3),
+    renderCell: (row) => row.geneticInteractionScore.toFixed(3),
     numeric: true,
   },
   {
-    id: 'geneticInteractionPValue',
-    label: 'P-value',
-    renderCell: row => (
+    id: "geneticInteractionPValue",
+    label: "P-value",
+    renderCell: (row) => (
       <ScientificNotation number={row.geneticInteractionPValue} />
     ),
     numeric: true,
@@ -168,90 +165,89 @@ const getColumns = classes => [
 
 const exportColumns = [
   {
-    label: 'disease',
-    exportValue: row => row.disease.name,
+    label: "disease",
+    exportValue: (row) => row.disease.name,
   },
   {
-    label: 'disease id',
-    exportValue: row => row.disease.id,
+    label: "disease id",
+    exportValue: (row) => row.disease.id,
   },
   // genes
   {
-    label: 'library gene',
-    exportValue: row => row.target.approvedSymbol,
+    label: "library gene",
+    exportValue: (row) => row.target.approvedSymbol,
   },
   {
-    label: 'libarary gene id',
-    exportValue: row => row.target.id,
+    label: "libarary gene id",
+    exportValue: (row) => row.target.id,
   },
   {
-    label: 'anchor gene',
-    exportValue: row => row.interactingTargetFromSourceId,
+    label: "anchor gene",
+    exportValue: (row) => row.interactingTargetFromSourceId,
   },
   // cell lines and biomarkers
   {
-    label: 'cell line',
-    exportValue: row =>
+    label: "cell line",
+    exportValue: (row) =>
       row.diseaseCellLines
-        .map(diseaseCellLine => diseaseCellLine.name)
-        .join(', '),
+        .map((diseaseCellLine) => diseaseCellLine.name)
+        .join(", "),
   },
   {
-    label: 'cell line id',
-    exportValue: row =>
+    label: "cell line id",
+    exportValue: (row) =>
       row.diseaseCellLines
-        .map(diseaseCellLine => diseaseCellLine.id)
-        .join(', '),
+        .map((diseaseCellLine) => diseaseCellLine.id)
+        .join(", "),
   },
   {
-    label: 'cell line biomarkers',
-    exportValue: row => row.biomarkerList.map(bm => bm.name).join(','),
+    label: "cell line biomarkers",
+    exportValue: (row) => row.biomarkerList.map((bm) => bm.name).join(","),
   },
   // cell count logFC and values in tooltip
   {
-    label: 'direction of effect',
-    exportValue: row =>
-      row.phenotypicConsequenceLogFoldChange >= 0 ? 'up' : 'down',
+    label: "direction of effect",
+    exportValue: (row) =>
+      row.phenotypicConsequenceLogFoldChange >= 0 ? "up" : "down",
   },
   {
-    label: 'phenotypicConsequenceLogFoldChange',
-    exportValue: row => row.phenotypicConsequenceLogFoldChange,
+    label: "phenotypicConsequenceLogFoldChange",
+    exportValue: (row) => row.phenotypicConsequenceLogFoldChange,
   },
   {
-    label: 'phenotypicConsequencePValue',
-    exportValue: row => row.phenotypicConsequencePValue,
+    label: "phenotypicConsequencePValue",
+    exportValue: (row) => row.phenotypicConsequencePValue,
   },
   {
-    label: 'phenotypicConsequenceFDR',
-    exportValue: row => row.phenotypicConsequenceFDR,
+    label: "phenotypicConsequenceFDR",
+    exportValue: (row) => row.phenotypicConsequenceFDR,
   },
   // type of effect
   {
-    label: 'type of effect',
-    exportValue: row => row.geneInteractionType,
+    label: "type of effect",
+    exportValue: (row) => row.geneInteractionType,
   },
   {
-    label: 'BLISS score',
-    exportValue: row => row.geneticInteractionScore.toFixed(3),
+    label: "BLISS score",
+    exportValue: (row) => row.geneticInteractionScore.toFixed(3),
   },
   {
-    label: 'p value',
-    exportValue: row => row.geneticInteractionPValue,
+    label: "p value",
+    exportValue: (row) => row.geneticInteractionPValue,
   },
   {
-    label: 'release version',
-    exportValue: row => row.releaseVersion,
+    label: "release version",
+    exportValue: (row) => row.releaseVersion,
   },
 ];
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({ id, label}) {
   const { ensgId, efoId } = id;
 
   const request = useQuery(ENCORE_QUERY, {
     variables: {
       ensemblId: ensgId,
       efoId,
-      size: count,
     },
   });
   const classes = useStyles();
@@ -287,17 +283,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.otEncoreSummary
-  );
-  const { count } = summaryData.otEncoreSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

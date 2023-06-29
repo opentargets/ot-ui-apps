@@ -1,10 +1,10 @@
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import { dataTypesMap } from '../../../dataTypes';
+import { SummaryItem, usePlatformApi } from 'ui';
 
+import { definition } from '.';
+import { dataTypesMap } from '../../dataTypes';
 import OT_CRISPR_SUMMARY from './OTCrisprSummary.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(OT_CRISPR_SUMMARY);
   return (
     <SummaryItem
