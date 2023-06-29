@@ -1,19 +1,17 @@
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
+import { Link, SectionItem, Tooltip } from 'ui';
 
-import { DataTable } from '../../../components/Table';
-import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
-import Description from './Description';
-import Link from '../../../components/Link';
-import ScientificNotation from '../../../components/ScientificNotation';
-import SectionItem from '../../../components/Section/SectionItem';
-import { sentenceCase } from '../../../utils/global';
+import { definition } from '.';
 import Summary from './Summary';
-import Tooltip from '../../../components/Tooltip';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { dataTypesMap } from '../../../dataTypes';
-
+import Description from './Description';
+import { dataTypesMap } from '../../dataTypes';
 import SLAPENRICH_QUERY from './sectionQuery.gql';
+import { sentenceCase } from '../../utils/global';
+import { DataTable } from '../../components/Table';
+import { defaultRowsPerPageOptions, naLabel } from '../../constants';
+import ScientificNotation from '../../components/ScientificNotation';
+
 
 const reactomeUrl = id => `https://identifiers.org/reactome:${id}`;
 
@@ -68,12 +66,11 @@ const columns = [
   },
 ];
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({ id, label}) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(SLAPENRICH_QUERY, {
@@ -107,17 +104,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.SlapEnrichSummaryFragment
-  );
-  const { count } = summaryData.slapEnrich;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;
