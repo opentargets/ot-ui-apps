@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 import { SectionContainer } from 'ui';
 
+import sections from './sections';
 import { createSummaryFragment } from '../../components/Summary/utils';
 import PlatformApiProvider from '../../contexts/PlatformApiProvider';
 import ProfileHeader from './ProfileHeader';
@@ -19,13 +20,9 @@ import Gene2PhenotypeSection from 'sections/src/evidence/Gene2Phenotype/Body';
 import GenomicsEnglandSection from 'sections/src/evidence/GenomicsEngland/Body';
 import ImpcSection from 'sections/src/evidence/Impc/Body';
 import IntOgenSection from 'sections/src/evidence/IntOgen/Body';
+import GeneBurdenSection from 'sections/src/evidence/GeneBurden/Body';
 
 
-
-import SectionOrderProvider from '../../contexts/SectionOrderProvider';
-// import SummaryContainer from '../../components/Summary/SummaryContainer';
-
-import sections from './sections';
 
 const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
   sections,
@@ -88,6 +85,7 @@ function Profile({ ensgId, efoId, symbol, name }) {
         <GenomicsEnglandSection id={id} label={label} />
         <ImpcSection id={id} label={label} />
         <IntOgenSection id={id} label={label} />
+        <GeneBurdenSection id={id} label={label} />
 
 
       </SectionContainer>

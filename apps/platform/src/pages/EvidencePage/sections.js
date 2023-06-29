@@ -13,6 +13,7 @@ import * as Gene2Phenotype from '../../sections/evidence/Gene2Phenotype';
 import * as GenomicsEngland from '../../sections/evidence/GenomicsEngland';
 import * as Impc from '../../sections/evidence/Impc';
 import * as IntOgen from '../../sections/evidence/IntOgen';
+import * as GeneBurden from '../../sections/evidence/GeneBurden';
 import * as OTGenetics from '../../sections/evidence/OTGenetics';
 import * as Progeny from '../../sections/evidence/Progeny';
 import * as Reactome from '../../sections/evidence/Reactome';
@@ -24,7 +25,6 @@ import * as Orphanet from '../../sections/evidence/Orphanet';
 import * as OTCRISPR from '../../sections/evidence/OTCRISPR';
 import * as OTEncore from '../../sections/evidence/OTEncore';
 import * as OTValidation from '../../sections/evidence/OTValidation';
-import * as GeneBurden from '../../sections/evidence/GeneBurden';
 
 import config from '../../config';
 
