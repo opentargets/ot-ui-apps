@@ -32,6 +32,8 @@ import ReactomeSection from 'sections/src/evidence/Reactome/Body';
 import SlapEnrichSection from 'sections/src/evidence/SlapEnrich/Body';
 import SysBioSection from 'sections/src/evidence/SysBio/Body';
 import UniProtLiteratureSection from 'sections/src/evidence/UniProtLiterature/Body';
+import UniProtVariantsSection from 'sections/src/evidence/UniProtVariants/Body';
+
 
 
 const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
@@ -107,6 +109,7 @@ function Profile({ ensgId, efoId, symbol, name }) {
         <SlapEnrichSection id={id} label={label} />
         <SysBioSection id={id} label={label} />
         <UniProtLiteratureSection id={id} label={label} />
+        <UniProtVariantsSection id={id} label={label} />
       </SectionContainer>
     </PlatformApiProvider>
   );
