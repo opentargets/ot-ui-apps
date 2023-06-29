@@ -30,6 +30,7 @@ import OTValidationSection from 'sections/src/evidence/OTValidation/Body';
 import ProgenySection from 'sections/src/evidence/Progeny/Body';
 import ReactomeSection from 'sections/src/evidence/Reactome/Body';
 import SlapEnrichSection from 'sections/src/evidence/SlapEnrich/Body';
+import SysBioSection from 'sections/src/evidence/SysBio/Body';
 
 
 const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
@@ -103,6 +104,7 @@ function Profile({ ensgId, efoId, symbol, name }) {
         <ProgenySection id={id} label={label} />
         <ReactomeSection id={id} label={label} />
         <SlapEnrichSection id={id} label={label} />
+        <SysBioSection id={id} label={label} />
       </SectionContainer>
     </PlatformApiProvider>
   );
