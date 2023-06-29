@@ -1,10 +1,10 @@
-import usePlatformApi from "../../hooks/usePlatformApi";
-import SummaryItem from "../../components/Summary/SummaryItem";
-import { dataTypesMap } from "../../dataTypes";
+import { SummaryItem, usePlatformApi } from "ui";
 
+import { definition } from ".";
+import { dataTypesMap } from "../../dataTypes";
 import EXPRESSION_ATLAS_SUMMARY from "./ExpressionAtlasSummary.gql";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(EXPRESSION_ATLAS_SUMMARY);
   return (
     <SummaryItem

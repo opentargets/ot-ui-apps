@@ -1,11 +1,10 @@
-import { SummaryItem } from "ui";
+import { SummaryItem, usePlatformApi } from "ui";
 
+import { definition } from ".";
+import { dataTypesMap } from "../../dataTypes";
 import GENE_2_PHENOTYPE_SUMMARY_FRAGMENT from "./Gene2PhenotypeSummaryFragment.gql";
 
-import usePlatformApi from "../../hooks/usePlatformApi";
-import { dataTypesMap } from "../../dataTypes";
-
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(GENE_2_PHENOTYPE_SUMMARY_FRAGMENT);
 
   return (

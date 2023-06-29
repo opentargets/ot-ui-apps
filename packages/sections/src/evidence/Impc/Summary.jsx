@@ -1,10 +1,10 @@
-import { SummaryItem } from "ui";
+import { SummaryItem, usePlatformApi } from "ui";
 
+import { definition } from ".";
 import { dataTypesMap } from "../../dataTypes";
-import usePlatformApi from "../../hooks/usePlatformApi";
 import IMCP_SUMMARY_FRAGMENT from "./IMCPSummaryFragment.gql";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(IMCP_SUMMARY_FRAGMENT);
 
   return (

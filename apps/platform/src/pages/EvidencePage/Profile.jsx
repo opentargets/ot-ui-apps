@@ -18,6 +18,8 @@ import ExpressionAtlasSection from 'sections/src/evidence/ExpressionAtlas/Body';
 import Gene2PhenotypeSection from 'sections/src/evidence/Gene2Phenotype/Body';
 import GenomicsEnglandSection from 'sections/src/evidence/GenomicsEngland/Body';
 import ImpcSection from 'sections/src/evidence/Impc/Body';
+import IntOgenSection from 'sections/src/evidence/IntOgen/Body';
+
 
 
 import SectionOrderProvider from '../../contexts/SectionOrderProvider';
@@ -85,6 +87,8 @@ function Profile({ ensgId, efoId, symbol, name }) {
         <Gene2PhenotypeSection id={id} label={label} />
         <GenomicsEnglandSection id={id} label={label} />
         <ImpcSection id={id} label={label} />
+        <IntOgenSection id={id} label={label} />
+
 
       </SectionContainer>
       {/* </SectionOrderProvider> */}

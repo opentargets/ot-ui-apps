@@ -2,27 +2,24 @@ import { useState, useEffect } from "react";
 import { Typography, makeStyles, Chip } from "@material-ui/core";
 import { Link, SectionItem, Tooltip } from "ui";
 
-import client from "../../client";
-import ClinvarStars from "../../components/ClinvarStars";
 import {
   clinvarStarMap,
   naLabel,
   defaultRowsPerPageOptions,
 } from "../../constants";
-import { getPage, Table } from "../../components/Table";
-import { getComparator } from "../../components/Table/sortingAndFiltering";
-import useCursorBatchDownloader from "../../hooks/useCursorBatchDownloader";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
-
-import { epmcUrl } from "../../utils/urls";
-import { sentenceCase } from "../../utils/global";
-import usePlatformApi from "../../hooks/usePlatformApi";
-import { dataTypesMap } from "../../dataTypes";
-
 import { definition } from ".";
 import Summary from "./Summary";
+import client from "../../client";
 import Description from "./Description";
+import { epmcUrl } from "../../utils/urls";
 import CLINVAR_QUERY from "./ClinvarQuery.gql";
+import { dataTypesMap } from "../../dataTypes";
+import { sentenceCase } from "../../utils/global";
+import { getPage, Table } from "../../components/Table";
+import ClinvarStars from "../../components/ClinvarStars";
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
+import { getComparator } from "../../components/Table/sortingAndFiltering";
+import useCursorBatchDownloader from "../../hooks/useCursorBatchDownloader";
 
 const useStyles = makeStyles({
   xsmall: {

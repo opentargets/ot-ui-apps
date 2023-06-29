@@ -121,7 +121,7 @@ const columns = [
   },
 ];
 
-export function Body({ id, label }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
