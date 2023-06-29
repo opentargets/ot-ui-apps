@@ -8,7 +8,10 @@ import SectionItem from '../../../components/Section/SectionItem';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { DataTable } from '../../../components/Table';
 import LabelChip from '../../../components/LabelChip';
-import { defaultRowsPerPageOptions, variantConsequenceSource } from '../../../constants';
+import {
+  defaultRowsPerPageOptions,
+  variantConsequenceSource,
+} from '../../../constants';
 import { epmcUrl } from '../../../utils/urls';
 import Summary from './Summary';
 import Description from './Description';
@@ -16,7 +19,7 @@ import { dataTypesMap } from '../../../dataTypes';
 
 import UNIPROT_VARIANTS_QUERY from './UniprotVariantsQuery.gql';
 
-function getColumns() {
+function getColumns(label) {
   return [
     {
       id: 'disease.name',
@@ -63,17 +66,15 @@ function getColumns() {
     {
       id: 'variantConsequence',
       label: 'Variant Consequence',
-      renderCell: ({ variantRsId }) => {
-        return (
-          <div style={{ display: 'flex', gap: '5px' }}>
-            <LabelChip
-              label={variantConsequenceSource.ProtVar.label}
-              to={`https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`}
-              tooltip={variantConsequenceSource.ProtVar.tooltip}
-            />
-          </div>
-        );
-      },
+      renderCell: ({ variantRsId }) => (
+        <div style={{ display: 'flex', gap: '5px' }}>
+          <LabelChip
+            label={variantConsequenceSource.ProtVar.label}
+            to={`https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`}
+            tooltip={variantConsequenceSource.ProtVar.tooltip}
+          />
+        </div>
+      ),
     },
     {
       id: 'confidence',
@@ -94,7 +95,13 @@ function getColumns() {
             return acc;
           }, []) || [];
 
-        return <PublicationsDrawer entries={literatureList} />;
+        return (
+          <PublicationsDrawer
+            entries={literatureList}
+            symbol={label.symbol}
+            name={label.name}
+          />
+        );
       },
     },
   ];
@@ -108,11 +115,12 @@ export function BodyCore({ definition, id, label, count }) {
     efoId,
     size: count,
   };
-  const columns = getColumns();
 
   const request = useQuery(UNIPROT_VARIANTS_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

@@ -57,7 +57,7 @@ const allelicRequirementsCaption = allelicRequirements => {
   return [caption, description];
 };
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease',
     label: 'Disease/phenotype',
@@ -177,18 +177,27 @@ const columns = [
           ];
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          symbol={label.symbol}
+          name={label.name}
+          entries={literatureList}
+        />
+      );
     },
   },
 ];
 
 export function BodyCore({ definition, id, label, count }) {
+  console.log({ label });
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
     efoId,
     size: count,
   };
+
+  const columns = getColumns(label);
 
   const request = useQuery(GENOMICS_ENGLAND_QUERY, {
     variables,
