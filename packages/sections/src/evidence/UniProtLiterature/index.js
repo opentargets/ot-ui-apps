@@ -1,4 +1,4 @@
-import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
+import { isPrivateEvidenceSection } from '../../utils/partnerPreviewUtils';
 
 const id = 'uniprot_literature';
 export const definition = {
@@ -8,6 +8,3 @@ export const definition = {
   hasData: ({ uniprotLiteratureSummary }) => uniprotLiteratureSummary.count > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };
-
-export { default as Summary } from './Summary';
-export * from './Body';
