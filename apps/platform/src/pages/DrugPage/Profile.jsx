@@ -11,9 +11,7 @@ import IndicationsSection from 'sections/src/drug/Indications/Body';
 import KnownDrugsSection from 'sections/src/drug/KnownDrugs/Body';
 import DrugWarningsSection from 'sections/src/drug/DrugWarnings/Body';
 import AdverseEventsSection from 'sections/src/drug/AdverseEvents/Body';
-
-
-
+import BibliographySection from 'sections/src/drug/Bibliography/Body';
 
 const DRUG_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(sections, 'Drug');
 const DRUG_PROFILE_QUERY = gql`
@@ -39,12 +37,12 @@ function Profile({ chemblId, name }) {
       <ProfileHeader chemblId={chemblId} />
 
       <SectionContainer>
-        <MechanismsOfActionSection id={chemblId} label={name}/>
-        <IndicationsSection id={chemblId} label={name}/>
-        <KnownDrugsSection id={chemblId} label={name}/>
-        <DrugWarningsSection id={chemblId} label={name}/>
-        <AdverseEventsSection id={chemblId} label={name}/>
-        
+        <MechanismsOfActionSection id={chemblId} label={name} />
+        <IndicationsSection id={chemblId} label={name} />
+        <KnownDrugsSection id={chemblId} label={name} />
+        <DrugWarningsSection id={chemblId} label={name} />
+        <AdverseEventsSection id={chemblId} label={name} />
+        <BibliographySection id={chemblId} label={name} />
       </SectionContainer>
     </PlatformApiProvider>
   );

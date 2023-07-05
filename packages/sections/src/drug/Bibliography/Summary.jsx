@@ -1,20 +1,20 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import SIMILARENTTIES_SUMMARY_FRAGMENT from './BibliographySummaryFragment.gql';
+import { definition } from ".";
+import SIMILARENTTIES_SUMMARY_FRAGMENT from "./BibliographySummaryFragment.gql";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(SIMILARENTTIES_SUMMARY_FRAGMENT);
 
   return (
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         data.literatureOcurrences?.count > 0 ? (
           <>
             {data.literatureOcurrences.count.toLocaleString()} publication
-            {data.literatureOcurrences.count === 1 ? '' : 's'}
+            {data.literatureOcurrences.count === 1 ? "" : "s"}
           </>
         ) : (
           <>no data</>
