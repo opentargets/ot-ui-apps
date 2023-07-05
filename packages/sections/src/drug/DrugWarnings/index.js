@@ -5,6 +5,3 @@ export const definition = {
   hasData: ({ hasBeenWithdrawn, blackBoxWarning }) =>
     hasBeenWithdrawn || blackBoxWarning,
 };
-
-export { default as Summary } from './Summary';
-export { default as Body } from './Body';

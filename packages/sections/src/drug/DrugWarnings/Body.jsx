@@ -1,24 +1,22 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from "@apollo/client";
+import { Link, SectionItem, Tooltip } from "ui";
 
-import Link from '../../../components/Link';
-import SectionItem from '../../../components/Section/SectionItem';
-import { DataTable, TableDrawer } from '../../../components/Table';
-import Description from './Description';
-import { naLabel, defaultRowsPerPageOptions } from '../../../constants';
+import { definition } from ".";
+import Description from "./Description";
+import DRUG_WARNINGS_QUERY from "./DrugWarningsQuery.gql";
+import { DataTable, TableDrawer } from "../../components/Table";
+import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 
-import DRUG_WARNINGS_QUERY from './DrugWarningsQuery.gql';
-import Tooltip from '../../../components/Tooltip';
-
-const replaceSemicolonWithUnderscore = id => id.replace(':', '_');
+const replaceSemicolonWithUnderscore = (id) => id.replace(":", "_");
 
 const columns = [
   {
-    id: 'warningType',
-    label: 'Warning type',
+    id: "warningType",
+    label: "Warning type",
   },
   {
-    id: 'efoTerm',
-    label: 'Adverse event',
+    id: "efoTerm",
+    label: "Adverse event",
     renderCell: ({ efoTerm, efoId, description }) => {
       if (efoId)
         return (
@@ -32,8 +30,8 @@ const columns = [
     },
   },
   {
-    id: 'toxicityClass',
-    label: 'ChEMBL warning class',
+    id: "toxicityClass",
+    label: "ChEMBL warning class",
     renderCell: ({ toxicityClass, efoIdForWarningClass, description }) => {
       if (efoIdForWarningClass)
         return (
@@ -50,19 +48,19 @@ const columns = [
     },
   },
   {
-    id: 'country',
-    label: 'Country / region',
+    id: "country",
+    label: "Country / region",
     renderCell: ({ country }) => country ?? naLabel,
   },
-  { id: 'year', label: 'Year', renderCell: ({ year }) => year ?? naLabel },
+  { id: "year", label: "Year", renderCell: ({ year }) => year ?? naLabel },
   {
-    id: 'references',
-    label: 'References',
+    id: "references",
+    label: "References",
     renderCell: ({ references }) => {
       const sources = new Set(); // used to collect unique sources
       const refs = [];
 
-      references.forEach(ref => {
+      references.forEach((ref) => {
         sources.add(ref.source); // add source to set
         refs.push({
           // create new entry object
@@ -72,7 +70,7 @@ const columns = [
         });
       });
 
-      const message = Array.from(sources).join(', ');
+      const message = Array.from(sources).join(", ");
 
       return (
         <TableDrawer entries={refs} showSingle={false} message={message} />
@@ -81,7 +79,7 @@ const columns = [
   },
 ];
 
-function Body({ definition, id: chemblId, label: name }) {
+function Body({ id: chemblId, label: name }) {
   const variables = { chemblId };
   const request = useQuery(DRUG_WARNINGS_QUERY, {
     variables,
