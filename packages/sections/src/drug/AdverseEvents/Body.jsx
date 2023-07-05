@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { makeStyles, Typography } from '@material-ui/core';
 import _ from 'lodash';
+import { Link, SectionItem } from "ui";
 
+import { definition } from ".";
 import Description from './Description';
-import SectionItem from '../../../components/Section/SectionItem';
-import { Table, PaginationActionsComplete } from '../../../components/Table';
-import useBatchDownloader from '../../../hooks/useBatchDownloader';
-import Link from '../../../components/Link';
+import { Table, PaginationActionsComplete } from '../../components/Table';
 
 import ADVERSE_EVENTS_QUERY from './AdverseEventsQuery.gql';
+import useBatchDownloader from '../../hooks/useBatchDownloader';
 
 const useStyles = makeStyles(theme => ({
   levelBarContainer: {
@@ -73,7 +73,7 @@ const getColumns = (critVal, maxLlr, classes) => [
   },
 ];
 
-function Body({ definition, id: chemblId, label: name }) {
+function Body({id: chemblId, label: name }) {
   const classes = useStyles();
   const variables = { chemblId };
   const [page, setPage] = useState(0);

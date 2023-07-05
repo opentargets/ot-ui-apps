@@ -1,9 +1,10 @@
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SummaryItem from '../../../components/Summary/SummaryItem';
 
+import { SummaryItem, usePlatformApi } from 'ui';
+
+import { definition } from '.';
 import ADVERSE_EVENTS_SUMMARY_FRAGMENT from './AdverseEventsSummaryFragment.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(ADVERSE_EVENTS_SUMMARY_FRAGMENT);
 
   return (
