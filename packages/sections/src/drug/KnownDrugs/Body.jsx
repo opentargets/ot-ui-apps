@@ -1,3 +1,5 @@
+import { definition } from '.';
+import client from '../../client';
 import { Body as KnownDrugsBody } from '../../common/KnownDrugs';
 import Description from './Description';
 
@@ -34,7 +36,7 @@ const exportColumns = [
   },
 ];
 
-function Body({ definition, id: chemblId, label: name }) {
+function Body({ id: chemblId, label: name }) {
   return (
     <KnownDrugsBody
       definition={definition}
@@ -46,6 +48,7 @@ function Body({ definition, id: chemblId, label: name }) {
       columnsToShow={['disease', 'target', 'clinicalTrials']}
       stickyColumn="disease"
       exportColumns={exportColumns}
+      client={client}
     />
   );
 }

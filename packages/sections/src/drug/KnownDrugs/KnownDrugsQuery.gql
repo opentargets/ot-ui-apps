@@ -2,11 +2,10 @@ query KnownDrugsQuery(
   $chemblId: String!
   $cursor: String
   $freeTextQuery: String
-  $size: Int = 10
 ) {
   drug(chemblId: $chemblId) {
     id
-    knownDrugs(cursor: $cursor, freeTextQuery: $freeTextQuery, size: $size) {
+    knownDrugs(cursor: $cursor, freeTextQuery: $freeTextQuery) {
       count
       cursor
       rows {

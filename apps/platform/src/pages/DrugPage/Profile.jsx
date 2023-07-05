@@ -8,6 +8,7 @@ import { createSummaryFragment } from '../../components/Summary/utils';
 
 import MechanismsOfActionSection from 'sections/src/drug/MechanismsOfAction/Body';
 import IndicationsSection from 'sections/src/drug/Indications/Body';
+import KnownDrugsSection from 'sections/src/drug/KnownDrugs/Body';
 
 
 const DRUG_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(sections, 'Drug');
@@ -36,6 +37,8 @@ function Profile({ chemblId, name }) {
       <SectionContainer>
         <MechanismsOfActionSection id={chemblId} label={name}/>
         <IndicationsSection id={chemblId} label={name}/>
+        <KnownDrugsSection id={chemblId} label={name}/>
+
         
       </SectionContainer>
     </PlatformApiProvider>

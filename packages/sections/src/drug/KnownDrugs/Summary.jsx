@@ -1,9 +1,11 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
 
+
+import { SummaryItem, usePlatformApi } from 'ui';
 import KNOWN_DRUGS_SUMMARY_FRAGMENT from './KnownDrugsSummaryFragment.gql';
 
-function Summary({ definition }) {
+import { definition } from '.';
+
+function Summary() {
   const request = usePlatformApi(KNOWN_DRUGS_SUMMARY_FRAGMENT);
 
   return (
