@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState } from "react";
+import { Link } from "ui";
 import {
   Box,
   Drawer,
@@ -9,47 +10,45 @@ import {
   makeStyles,
   Paper,
   Typography,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+} from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
-import Link from '../../../components/Link';
-
-const therapeuticAreasDrawerStyles = makeStyles(theme => ({
+const therapeuticAreasDrawerStyles = makeStyles((theme) => ({
   drawerBody: {
-    overflowY: 'overlay',
+    overflowY: "overlay",
   },
   drawerBodyPaperRoot: {
-    border: '1px solid #ccc',
-    margin: '1rem 1rem 0 1rem',
-    padding: '1rem',
-    '&::before': {
-      backgroundColor: 'transparent',
+    border: "1px solid #ccc",
+    margin: "1rem 1rem 0 1rem",
+    padding: "1rem",
+    "&::before": {
+      backgroundColor: "transparent",
     },
   },
   drawerLink: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
   drawerModal: {
-    '& .MuiBackdrop-root': {
-      opacity: '0 !important',
+    "& .MuiBackdrop-root": {
+      opacity: "0 !important",
     },
   },
   drawerPaper: {
     backgroundColor: theme.palette.grey[300],
   },
   drawerTitle: {
-    borderBottom: '1px solid #ccc',
-    padding: '1rem',
+    borderBottom: "1px solid #ccc",
+    padding: "1rem",
   },
   drawerTitleCaption: {
     color: theme.palette.grey[700],
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
+    fontSize: "1.2rem",
+    fontWeight: "bold",
   },
   drawerSubtitleCaption: {
     color: theme.palette.grey[400],
-    fontSize: '0.8rem',
-    fontStyle: 'italic',
+    fontSize: "0.8rem",
+    fontStyle: "italic",
   },
 }));
 
@@ -58,7 +57,7 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
   const classes = therapeuticAreasDrawerStyles();
 
   if (therapeuticAreas.length === 0) {
-    return 'N/A';
+    return "N/A";
   }
 
   if (therapeuticAreas.length === 1) {
@@ -69,10 +68,10 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
     );
   }
 
-  const toggleDrawer = event => {
+  const toggleDrawer = (event) => {
     if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
     ) {
       return;
     }

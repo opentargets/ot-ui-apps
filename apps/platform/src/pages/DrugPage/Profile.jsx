@@ -7,6 +7,8 @@ import ProfileHeader from './ProfileHeader';
 import { createSummaryFragment } from '../../components/Summary/utils';
 
 import MechanismsOfActionSection from 'sections/src/drug/MechanismsOfAction/Body';
+import IndicationsSection from 'sections/src/drug/Indications/Body';
+
 
 const DRUG_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(sections, 'Drug');
 const DRUG_PROFILE_QUERY = gql`
@@ -33,6 +35,8 @@ function Profile({ chemblId, name }) {
 
       <SectionContainer>
         <MechanismsOfActionSection id={chemblId} label={name}/>
+        <IndicationsSection id={chemblId} label={name}/>
+        
       </SectionContainer>
     </PlatformApiProvider>
   );

@@ -1,55 +1,55 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from "@apollo/client";
 
-import { sourceMap, phaseMap } from '../../../constants';
-import { referenceUrls } from '../../../utils/urls';
+import { Link, SectionItem } from "ui";
+import { sourceMap, phaseMap } from "../../constants";
+import { referenceUrls } from "../../utils/urls";
 import {
   DataTable,
   PaginationActionsComplete,
   TableDrawer,
-} from '../../../components/Table';
-import Description from './Description';
-import Link from '../../../components/Link';
-import SectionItem from '../../../components/Section/SectionItem';
-import TherapeuticAreasDrawer from './TherapeuticAreasDrawer';
+} from "../../components/Table";
+import Description from "./Description";
+import TherapeuticAreasDrawer from "./TherapeuticAreasDrawer";
 
-import INDICATIONS_QUERY from './IndicationsQuery.gql';
+import INDICATIONS_QUERY from "./IndicationsQuery.gql";
+import { definition } from ".";
 
 const columns = [
   {
-    id: 'indication',
-    propertyPath: 'disease.name',
-    renderCell: d => (
+    id: "indication",
+    propertyPath: "disease.name",
+    renderCell: (d) => (
       <Link to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>
     ),
-    width: '38%',
+    width: "38%",
   },
   {
-    id: 'therapeuticAreas',
-    renderCell: d => (
+    id: "therapeuticAreas",
+    renderCell: (d) => (
       <TherapeuticAreasDrawer therapeuticAreas={d.disease.therapeuticAreas} />
     ),
-    exportValue: d =>
-      d.disease.therapeuticAreas.map(therapeuticArea => therapeuticArea.id),
-    width: '38%',
+    exportValue: (d) =>
+      d.disease.therapeuticAreas.map((therapeuticArea) => therapeuticArea.id),
+    width: "38%",
   },
   {
-    id: 'maxPhaseForIndication',
-    label: 'Max Phase',
+    id: "maxPhaseForIndication",
+    label: "Max Phase",
     sortable: true,
-    width: '10%',
+    width: "10%",
     renderCell: ({ maxPhaseForIndication }) => phaseMap(maxPhaseForIndication),
     filterValue: ({ maxPhaseForIndication }) => phaseMap(maxPhaseForIndication),
   },
   {
-    id: 'references',
-    label: 'Source',
+    id: "references",
+    label: "Source",
     renderCell: ({ references }) => {
-      if (!references) return 'N/A';
+      if (!references) return "N/A";
 
       const referenceList = [];
 
-      references.forEach(reference => {
-        reference.ids.forEach(id => {
+      references.forEach((reference) => {
+        reference.ids.forEach((id) => {
           referenceList.push({
             name: id,
             url: referenceUrls[reference.source](id),
@@ -71,7 +71,7 @@ const columns = [
   },
 ];
 
-function Body({ definition, id: chemblId, label: name }) {
+function Body({ id: chemblId, label: name }) {
   const variables = { chemblId };
   const request = useQuery(INDICATIONS_QUERY, { variables });
 
@@ -80,7 +80,7 @@ function Body({ definition, id: chemblId, label: name }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description name={name} />}
-      renderBody={data => {
+      renderBody={(data) => {
         const { rows } = data.drug.indications;
 
         return (
