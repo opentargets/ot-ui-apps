@@ -22,10 +22,6 @@ const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
 
 function TargetPageTabs({ ensgId }) {
   const location = useLocation();
-  const { isPartnerPreview } = usePermissions();
-  const classicAssociationsPath = isPartnerPreview
-    ? 'classic-associations'
-    : 'associations';
 
   const routes = [
     {
@@ -36,16 +32,15 @@ function TargetPageTabs({ ensgId }) {
         </div>
       ),
       path: `/target/${ensgId}/associations`,
-      private: true,
     },
     {
       label: 'Associated diseases',
-      path: `/target/${ensgId}/${classicAssociationsPath}`,
+      path: `/target/${ensgId}/classic-associations`,
     },
     { label: 'Profile', path: `/target/${ensgId}` },
   ];
 
-  const ableRoutes = getAbleRoutes({ routes, isPartnerPreview });
+  const ableRoutes = getAbleRoutes({ routes });
   const activeTabIndex = ableRoutes.findIndex(
     route => route.path === location.pathname
   );
@@ -120,20 +115,18 @@ function TargetPage({ location, match }) {
               />
             )}
           />
-          {isPartnerPreview && (
-            <Route
-              path="/target/:ensgId/associations"
-              render={routeProps => (
-                <Associations
-                  match={routeProps.match}
-                  location={routeProps.location}
-                  history={routeProps.history}
-                  ensgId={ensgId}
-                  symbol={symbol}
-                />
-              )}
-            />
-          )}
+          <Route
+            path="/target/:ensgId/associations"
+            render={routeProps => (
+              <Associations
+                match={routeProps.match}
+                location={routeProps.location}
+                history={routeProps.history}
+                ensgId={ensgId}
+                symbol={symbol}
+              />
+            )}
+          />
           <Route
             path={classicAssocURL}
             render={routeProps => (
