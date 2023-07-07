@@ -37,7 +37,7 @@ const getEvidenceSummaryQuery = sectionSumary => {
 
 export function SecctionRendererWrapper({ activeSection, table, children }) {
   const isAssociations = table === 'associations';
-  const pointer = isAssociations ? 0 : 2;
+  const pointer = isAssociations ? 1 : 2;
   const toSearch = activeSection[pointer];
   const sectionsToFilter = isAssociations ? evidenceSections : targetSections;
   const section = sectionsToFilter.find(el => el.definition.id === toSearch);

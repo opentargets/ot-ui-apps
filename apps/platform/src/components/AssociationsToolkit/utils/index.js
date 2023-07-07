@@ -8,14 +8,19 @@ export const { isPartnerPreview } = config.profile;
 /* --- TABLE SHARED HELPERS --- */
 export const getPriorisationSectionId = columnDef => columnDef.sectionId;
 
-export const getCellId = (cell, entityToGet, displayedTable) => {
+export const getCellId = (
+  cell,
+  entityToGet,
+  displayedTable,
+  tablePrefix = null
+) => {
   const colId = cell.column.id;
   const rowId = cell.row.original[entityToGet].id;
   const sectionId =
     displayedTable === 'associations'
       ? cell.column.id
       : cell.column.columnDef.sectionId;
-  return [colId, rowId, sectionId];
+  return [rowId, colId, sectionId, tablePrefix];
 };
 
 export const cellHasValue = score => typeof score === 'number';
@@ -171,9 +176,12 @@ export const tableCSSVariables = {
   '--grey-light': '#ececec',
   '--grey-mid': '#b8b8b8',
   '--primary-color': primaryColor,
+  '--text-color': '#5A5F5F',
   '--header-border-color': 'var(--grey-light)',
   '--aggregations-color': 'var(--grey-mid)',
   '--entities-border-color': 'var(--grey-light)',
+  '--table-header-min-width': '120px',
+  '--table-header-max-width': '160px',
   '--table-footer-border-color': 'var(--grey-light)',
   '--row-hover-color': 'var(--grey-light)',
   '--colums-controls-color': 'var(--grey-lighter)',

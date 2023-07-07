@@ -31,7 +31,9 @@ function AssociationsProvider({ children, entity, id, query }) {
 
   // Table Controls
   const [expanded, setExpanded] = useState([]);
+  const [pinExpanded, setPinExpanded] = useState([]);
   const [tableExpanded, setTableExpanded] = useState({});
+  const [tablePinExpanded, setTablePinExpanded] = useState({});
 
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
@@ -133,8 +135,13 @@ function AssociationsProvider({ children, entity, id, query }) {
     }
   };
 
-  const expanderHandler = tableExpanderController => cell => {
-    const expandedId = getCellId(cell, entityToGet, displayedTable);
+  const expanderHandler = tableExpanderController => (cell, tablePrefix) => {
+    const expandedId = getCellId(
+      cell,
+      entityToGet,
+      displayedTable,
+      tablePrefix
+    );
     if (expanded.join('-') === expandedId.join('-')) {
       setTableExpanded({});
       setExpanded([]);
@@ -180,6 +187,10 @@ function AssociationsProvider({ children, entity, id, query }) {
     searhFilter,
     sorting,
     modifiedSourcesDataControls,
+    tablePinExpanded,
+    pinExpanded,
+    setPinExpanded,
+    setTablePinExpanded,
     resetDatasourceControls,
     handleSortingChange,
     handleSearchInputChange,

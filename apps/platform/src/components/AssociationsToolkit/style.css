@@ -62,7 +62,7 @@
 }
 
 .TAssociations .Theader .header-name {
-  width: 120px;
+  width: var(--table-header-max-width);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -187,10 +187,19 @@
 }
 
 .TAssociations .data-row .name-cell {
-  width: 120px;
+  width: var(--table-header-max-width);
   white-space: nowrap;
-  padding: 0 0.5rem 0 0;
+  margin: 0 0.5rem 0 0;
   text-align: left;
+}
+
+.TAssociations .data-row .name-cell .pinnedIcon.active {
+  color: var(--primary-color);
+}
+
+.TAssociations .pinned .data-row .name-cell .pinnedIcon.active {
+  opacity: 1;
+  color: var(--text-color);
 }
 
 .TAssociations .data-row .data-cell .data-score.loading {
@@ -225,7 +234,7 @@
 .TAssociations .aggregations-container {
   display: flex;
   flex-direction: row;
-  margin-left: 170px;
+  margin-left: 220px;
   gap: 4px;
   align-items: center;
 }

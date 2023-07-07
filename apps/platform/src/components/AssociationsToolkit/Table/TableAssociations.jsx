@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -31,10 +31,21 @@ const TableElement = styled('div')({
   margin: '0 auto',
 });
 
+const TableDivider = styled('div')({
+  background: '#ececec',
+  height: '1px',
+  margin: '5px 0',
+});
+
 const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
-function getDatasources(expanderHandler, loading, displayedTable) {
+function getDatasources({
+  expanderHandler,
+  loading,
+  displayedTable,
+  isPinTable = false,
+}) {
   const isAssociations = displayedTable === 'associations';
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
@@ -67,7 +78,8 @@ function getDatasources(expanderHandler, loading, displayedTable) {
         isPrivate,
         docsLink,
         cell: row => {
-          if (loading)
+          const tablePrefix = row.table.getState().prefix;
+          if (loading && tablePrefix !== 'pinned')
             return <Skeleton variant="circle" width={26} height={25} />;
           const hasValue = cellHasValue(row.getValue());
           return hasValue ? (
@@ -79,6 +91,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
               cell={row}
               loading={loading}
               isAssociations={isAssociations}
+              tablePrefix={tablePrefix}
             />
           ) : (
             <ColoredCell />
@@ -99,6 +112,8 @@ function TableAssociations() {
     count,
     loading,
     tableExpanded,
+    expanded,
+    pinExpanded,
     pagination,
     expanderHandler,
     handlePaginationChange,
@@ -106,7 +121,12 @@ function TableAssociations() {
     displayedTable,
     sorting,
     handleSortingChange,
+    pinnedData,
   } = useAotfContext();
+
+  console.log({ data });
+
+  // const [tableExpanded, setTableExpanded] = useState(null);
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
 
@@ -119,10 +139,17 @@ function TableAssociations() {
           columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
             id: 'name',
             enableSorting: false,
-            cell: row =>
-              !loading ? (
-                <CellName name={row.getValue()} rowId={row.row.id} />
-              ) : null,
+            cell: row => {
+              const tablePrefix = row.table.getState().prefix;
+              if (loading && tablePrefix !== 'pinned') return null;
+              return (
+                <CellName
+                  name={row.getValue()}
+                  rowId={row.row.id}
+                  row={row.row}
+                />
+              );
+            },
             header: () => {
               const label = entityToGet === 'target' ? 'Target' : 'Disease';
               return <span>{label}</span>;
@@ -132,7 +159,8 @@ function TableAssociations() {
             id: 'score',
             header: 'Association Score',
             cell: row => {
-              if (loading)
+              const tablePrefix = row.table.getState().prefix;
+              if (loading && tablePrefix !== 'pinned')
                 return <Skeleton variant="rect" width={30} height={25} />;
               return (
                 <ColoredCell
@@ -150,7 +178,9 @@ function TableAssociations() {
       columnHelper.group({
         header: 'entities',
         id: 'entity-cols',
-        columns: [...getDatasources(expanderHandler, loading, displayedTable)],
+        columns: [
+          ...getDatasources({ expanderHandler, loading, displayedTable }),
+        ],
       }),
     ],
     [expanderHandler, loading, displayedTable, entityToGet, rowNameEntity]
@@ -165,8 +195,34 @@ function TableAssociations() {
     columns,
     state: {
       expanded: tableExpanded,
+      pagination: {
+        pageIndex: 0,
+        pageSize: 50,
+      },
+      sorting,
+      prefix: 'body',
+    },
+    pageCount: count,
+    onPaginationChange: handlePaginationChange,
+    onExpandedChange: setTableExpanded,
+    onSortingChange: handleSortingChange,
+    getRowCanExpand: () => true,
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getRowId: row => row[entityToGet].id,
+    manualPagination: true,
+    manualSorting: true,
+  });
+  console.log({ pinnedData, tableExpanded });
+
+  const tablePinned = useReactTable({
+    data: pinnedData,
+    columns,
+    state: {
+      expanded: tableExpanded,
       pagination,
       sorting,
+      prefix: 'pinned',
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
@@ -182,6 +238,8 @@ function TableAssociations() {
 
   const entitesHeaders = table.getHeaderGroups()[0].headers[1].subHeaders;
 
+  console.log({ expanded, pinExpanded });
+
   return (
     <div className="TAssociations" style={tableCSSVariables}>
       <TableElement>
@@ -192,7 +250,11 @@ function TableAssociations() {
         <HeaderControls cols={entitesHeaders} />
 
         {/* BODY CONTENT */}
-        <TableBody table={table} />
+        <TableBody table={tablePinned} expanded={expanded} prefix="pinned" />
+
+        {pinnedData.length > 0 && <TableDivider />}
+
+        <TableBody table={table} expanded={expanded} prefix="body" />
 
         {/* FOOTER */}
         <TableFooter table={table} />

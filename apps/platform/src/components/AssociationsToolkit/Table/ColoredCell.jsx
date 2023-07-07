@@ -15,11 +15,14 @@ function ColoredCell({
   cell,
   isAssociations = true,
   hasValue = false,
+  tablePrefix = null,
 }) {
   // if(!hasValue) return null
   const colorScale = getScale(isAssociations);
 
-  const onClickHabdler = onClick ? () => onClick(cell) : () => ({});
+  const onClickHandler = onClick
+    ? () => onClick(cell, tablePrefix)
+    : () => ({});
   const backgroundColor = hasValue ? colorScale(scoreValue) : '#fafafa';
   const borderColor = hasValue ? colorScale(scoreValue) : '#e0dede';
   const className = getClassName({ globalScore, hasValue });
@@ -35,7 +38,7 @@ function ColoredCell({
 
   return (
     <Tooltip title={scoreText} arrow disableHoverListener={false}>
-      <div className={className} onClick={onClickHabdler} style={style} />
+      <div className={className} onClick={onClickHandler} style={style} />
     </Tooltip>
   );
 }

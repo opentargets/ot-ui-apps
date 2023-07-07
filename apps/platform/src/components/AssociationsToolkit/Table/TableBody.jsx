@@ -16,20 +16,31 @@ const getColContainerClassName = ({ id }) => {
   return 'group-entity-cols';
 };
 
-const getRowClassName = ({ getIsExpanded }) => {
-  const activeClass = getIsExpanded() ? 'active' : '';
+const getRowClassName = ({ getIsExpanded }, isExpandedInTable) => {
+  const activeClass = getIsExpanded() && isExpandedInTable ? 'active' : '';
   return `data-row ${activeClass}`;
 };
 
-const getCellClassName = (cell, entityToGet, displayedTable, expanded) => {
+const getCellClassName = (
+  cell,
+  entityToGet,
+  displayedTable,
+  expanded,
+  tablePrefix
+) => {
   if (cell.column.id === 'name') return 'name-cell';
-  const expandedId = getCellId(cell, entityToGet, displayedTable).join('-');
+  const expandedId = getCellId(
+    cell,
+    entityToGet,
+    displayedTable,
+    tablePrefix
+  ).join('-');
   if (expandedId === expanded.join('-')) return 'active data-cell';
   return 'data-cell';
 };
 
-function TableBody({ table }) {
-  const { id, entity, entityToGet, expanded, displayedTable, resetExpandler } =
+function TableBody({ table, expanded, prefix = null }) {
+  const { id, entity, entityToGet, displayedTable, resetExpandler } =
     useAotfContext();
 
   const isAssociations = displayedTable === 'associations';
@@ -42,13 +53,17 @@ function TableBody({ table }) {
     resetExpandler();
   };
 
+  const tablePrefix = table.getState().prefix;
+  const isExpandedInTable = expanded[3] === tablePrefix;
+  console.log({ expanded, isExpandedInTable, tablePrefix });
+
   return (
-    <div>
+    <div className={prefix}>
       <div className="TBody">
         <div className="TRow">
           {table.getRowModel().rows.map(row => (
             <Fragment key={row.id}>
-              <div className={getRowClassName(row)}>
+              <div className={getRowClassName(row, isExpandedInTable)}>
                 <div className="data-row-content">
                   {highLevelHeaders.map(columnGroup => (
                     <div
@@ -66,7 +81,8 @@ function TableBody({ table }) {
                               cell,
                               entityToGet,
                               displayedTable,
-                              expanded
+                              expanded,
+                              tablePrefix
                             )}
                           >
                             {flexRender(
@@ -80,13 +96,14 @@ function TableBody({ table }) {
                   ))}
                 </div>
               </div>
-              {row.getIsExpanded() && (
-                <div key={`${row.original[entityToGet].id}-${expanded[0]}`}>
+              {isExpandedInTable && row.getIsExpanded() && (
+                <div key={`${row.original[entityToGet].id}-${expanded[1]}`}>
                   <ClickAwayListener onClickAway={handleClickAway}>
                     <div>
                       <SecctionRendererWrapper
                         activeSection={expanded}
                         table={displayedTable}
+                        tablePrefix={prefix}
                       >
                         {isAssociations ? (
                           <EvidenceSecctionRenderer
