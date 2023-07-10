@@ -1,13 +1,12 @@
 import { gql } from '@apollo/client';
+import { PlatformApiProvider, SectionContainer } from 'ui';
 
-import { createSummaryFragment } from '../../components/Summary/utils';
-import PlatformApiProvider from '../../contexts/PlatformApiProvider';
 import ProfileHeader from './ProfileHeader';
-import SummaryContainer from '../../components/Summary/SummaryContainer';
-import SectionContainer from '../../components/Section/SectionContainer';
-import SectionOrderProvider from '../../contexts/SectionOrderProvider';
+import KnownDrugsSection from 'sections/src/target/KnownDrugs/Body';
+import { createSummaryFragment } from '../../components/Summary/utils';
 
 import sections from './sections';
+import client from '../../client';
 
 const TARGET_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
   sections,
@@ -31,31 +30,13 @@ function Profile({ ensgId, symbol }) {
       entity="target"
       query={TARGET_PROFILE_QUERY}
       variables={{ ensgId }}
+      client={client}
     >
-      <SectionOrderProvider sections={sections}>
-        <ProfileHeader />
-        <SummaryContainer>
-          {sections.map(({ Summary, definition }) => (
-            <Summary
-              key={definition.id}
-              id={ensgId}
-              label={symbol}
-              definition={definition}
-            />
-          ))}
-        </SummaryContainer>
+      <ProfileHeader />
 
-        <SectionContainer>
-          {sections.map(({ Body, definition }) => (
-            <Body
-              key={definition.id}
-              id={ensgId}
-              label={symbol}
-              definition={definition}
-            />
-          ))}
-        </SectionContainer>
-      </SectionOrderProvider>
+      <SectionContainer>
+        <KnownDrugsSection id={ensgId} label={symbol} />
+      </SectionContainer>
     </PlatformApiProvider>
   );
 }
