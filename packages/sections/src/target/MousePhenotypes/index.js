@@ -4,6 +4,3 @@ export const definition = {
   shortName: 'MP',
   hasData: data => data.mousePhenotypes.length > 0,
 };
-
-export { default as Summary } from './Summary';
-export { default as Body } from './Body';

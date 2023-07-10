@@ -11,9 +11,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
-import { LoadingBackdrop } from 'ui';
-import Link from '../../../components/Link';
-import { identifiersOrgLink, getUniprotIds } from '../../../utils/global';
+import { LoadingBackdrop, Link } from 'ui';
+import { identifiersOrgLink, getUniprotIds } from '../../utils/global';
 
 const SwissbioViz =
   'customElements' in window

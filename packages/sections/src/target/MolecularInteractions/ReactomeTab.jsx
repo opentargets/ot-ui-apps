@@ -1,21 +1,18 @@
+import { Link, Tooltip } from 'ui';
 import { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import client from '../../../client';
-
-import DataTable from '../../../components/Table/DataTable';
+import client from '../../client';
+import DataTable from '../../components/Table/DataTable';
 import {
   MethodIconText,
   MethodIconArrow,
   MethodIconExpandArrow,
 } from './custom/MethodIcons';
-import Tooltip from '../../../components/Tooltip';
-
-import Link from '../../../components/Link';
-import EllsWrapper from '../../../components/EllsWrapper';
-import { defaultRowsPerPageOptions } from '../../../constants';
+import EllsWrapper from '../../components/EllsWrapper';
+import { defaultRowsPerPageOptions } from '../../constants';
 
 import INTERACTIONS_QUERY from './InteractionsQuery.gql';
 

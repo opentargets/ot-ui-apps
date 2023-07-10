@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import client from '../../../client';
+import { SectionItem, usePlatformApi } from 'ui';
 
-import SectionItem from '../../../components/Section/SectionItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import client from '../../client';
+import { definition } from '.';
 import Description from './Description';
 
 import IntactTab from './IntactTab';
@@ -46,7 +46,7 @@ const sources = [
   },
 ];
 
-function Body({ definition, label: symbol, id }) {
+function Body({ label: symbol, id }) {
   const request = usePlatformApi();
   const [source, setSource] = useState(sources[0].id); // must initialize to valid value for tabs to work
   const [counts, setCounts] = useState({});

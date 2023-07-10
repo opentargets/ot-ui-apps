@@ -1,9 +1,9 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import { SummaryItem, usePlatformApi } from 'ui';
 
+import { definition } from '.';
 import MOUSE_PHENOTYPES_SUMMARY_FRAGMENT from './MousePhenotypesSummary.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(MOUSE_PHENOTYPES_SUMMARY_FRAGMENT);
 
   return (

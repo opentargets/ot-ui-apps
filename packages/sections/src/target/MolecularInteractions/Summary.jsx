@@ -1,9 +1,9 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import { SummaryItem, usePlatformApi } from 'ui';
 
+import { definition } from '.';
 import MOLECULAR_INTERACTIONS_SUMMARY_FRAGMENT from './InteractionsSummary.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(MOLECULAR_INTERACTIONS_SUMMARY_FRAGMENT);
 
   return (

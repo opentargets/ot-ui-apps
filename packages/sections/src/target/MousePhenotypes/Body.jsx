@@ -1,12 +1,13 @@
 import { useQuery } from '@apollo/client';
+import { SectionItem } from 'ui';
 
+import { definition } from '.';
 import Description from './Description';
-import SectionItem from '../../../components/Section/SectionItem';
 import PhenotypesTable from './PhenotypesTable';
 
 import MOUSE_PHENOTYPES_QUERY from './MousePhenotypes.gql';
 
-function Body({ definition, id, label: symbol }) {
+function Body({ id, label: symbol }) {
   const variables = { ensemblId: id };
   const request = useQuery(MOUSE_PHENOTYPES_QUERY, {
     variables,

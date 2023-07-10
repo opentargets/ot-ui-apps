@@ -2,12 +2,11 @@ import { makeStyles } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
+import { Link, Tooltip } from 'ui';
 
-import Link from '../../../components/Link';
-import Tooltip from '../../../components/Tooltip';
-import { DataTable } from '../../../components/Table';
-import { identifiersOrgLink } from '../../../utils/global';
-import { defaultRowsPerPageOptions, decimalPlaces } from '../../../constants';
+import { DataTable } from '../../components/Table';
+import { identifiersOrgLink } from '../../utils/global';
+import { defaultRowsPerPageOptions, decimalPlaces } from '../../constants';
 
 import ChimpanzeeIcon from './ChimpanzeeIcon';
 import HumanIcon from './HumanIcon';

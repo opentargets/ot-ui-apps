@@ -9,10 +9,10 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import { Link } from "ui";
 
-import Link from '../../../components/Link';
-import MouseModelAllelicComposition from '../../../components/MouseModelAllelicComposition';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
+import MouseModelAllelicComposition from '../../components/MouseModelAllelicComposition';
+import { PublicationsDrawer } from '../../components/PublicationsDrawer';
 
 const useStyles = makeStyles(theme => ({
   drawerLink: {

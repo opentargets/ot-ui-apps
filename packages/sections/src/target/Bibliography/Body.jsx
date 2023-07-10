@@ -1,8 +1,8 @@
 import { Body as Bibliography } from '../../common/Literature';
-
+import { definition } from '.';
 import TARGET_LITERATURE_OCURRENCES from './SimilarEntities.gql';
 
-function Body({ definition, id, label: name }) {
+function Body({ id, label: name }) {
   return (
     <Bibliography
       definition={definition}

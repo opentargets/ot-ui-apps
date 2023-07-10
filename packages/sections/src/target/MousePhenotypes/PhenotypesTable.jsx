@@ -1,6 +1,6 @@
-import { DataTable, TableDrawer } from '../../../components/Table';
-import Link from '../../../components/Link';
-import { defaultRowsPerPageOptions } from '../../../constants';
+import { Link } from "ui";
+import { DataTable, TableDrawer } from '../../components/Table';
+import { defaultRowsPerPageOptions } from '../../constants';
 
 import AllelicCompositionDrawer from './AllelicCompositionDrawer';
 

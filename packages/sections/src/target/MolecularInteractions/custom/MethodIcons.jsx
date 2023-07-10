@@ -1,11 +1,11 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircle,
   faArrowsAltH,
   faExpandArrowsAlt,
-} from '@fortawesome/free-solid-svg-icons';
-import { v1 } from 'uuid';
-import Tooltip from '../../../../components/Tooltip';
+} from "@fortawesome/free-solid-svg-icons";
+import { v1 } from "uuid";
+import { Tooltip } from "ui";
 
 function MethodIcon({
   tooltip,
@@ -16,9 +16,9 @@ function MethodIcon({
 }) {
   let title;
 
-  if (!enabled || !tooltip) title = 'no data';
+  if (!enabled || !tooltip) title = "no data";
   else if (Array.isArray(tooltip)) {
-    title = tooltip.map(m => (
+    title = tooltip.map((m) => (
       <span key={v1()}>
         {m}
         <br />
@@ -29,11 +29,11 @@ function MethodIcon({
     <span
       className="fa-layers fa-fw"
       style={{
-        marginRight: '20px',
-        color: enabled ? undefined : ' #e0e0e0', // theme.palette.text.disabled,
-        cursor: tooltip ? 'help' : 'default',
-        fontSize: small ? '0.7em' : '',
-        marginBottom: small ? '0.1em' : '',
+        marginRight: "20px",
+        color: enabled ? undefined : " #e0e0e0", // theme.palette.text.disabled,
+        cursor: tooltip ? "help" : "default",
+        fontSize: small ? "0.7em" : "",
+        marginBottom: small ? "0.1em" : "",
       }}
     >
       <FontAwesomeIcon icon={faCircle} size="2x" />
@@ -61,7 +61,7 @@ function MethodIconText({
       <span
         className="fa-layers-text fa-inverse"
         data-fa-transform="shrink-10 left-2"
-        style={{ left: '80%' }}
+        style={{ left: "80%" }}
       >
         {children}
       </span>

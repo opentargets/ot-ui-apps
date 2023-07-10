@@ -1,12 +1,13 @@
 import { useQuery } from '@apollo/client';
-import HomologyTable from './HomologyTable';
+import { SectionItem } from 'ui';
 
-import SectionItem from '../../../components/Section/SectionItem';
+import { definition } from '.';
+import HomologyTable from './HomologyTable';
 import Description from './Description';
 
 import COMP_GENOMICS_QUERY from './CompGenomics.gql';
 
-function Body({ definition, id: ensemblId, label: symbol }) {
+function Body({ id: ensemblId, label: symbol }) {
   const variables = { ensemblId };
   const request = useQuery(COMP_GENOMICS_QUERY, { variables });
   return (

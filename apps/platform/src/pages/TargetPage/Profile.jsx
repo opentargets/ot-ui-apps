@@ -11,9 +11,13 @@ import DepMapSection from 'sections/src/target/DepMap/Body';
 import GeneOntologySection from 'sections/src/target/GeneOntology/Body';
 import GeneticConstraintSection from 'sections/src/target/GeneticConstraint/Body';
 import ProtVistaSection from 'sections/src/target/ProtVista/Body';
-
-
-
+import MolecularInteractionsSection from 'sections/src/target/MolecularInteractions/Body';
+import PathwaysSection from 'sections/src/target/Pathways/Body';
+import CancerHallmarksSection from 'sections/src/target/CancerHallmarks/Body';
+import MousePhenotypesSection from 'sections/src/target/MousePhenotypes/Body';
+import ComparativeGenomicsSection from 'sections/src/target/ComparativeGenomics/Body';
+import SubcellularLocationSection from 'sections/src/target/SubcellularLocation/Body';
+import BibliographySection from 'sections/src/target/Bibliography/Body';
 import { createSummaryFragment } from '../../components/Summary/utils';
 
 import sections from './sections';
@@ -55,9 +59,13 @@ function Profile({ ensgId, symbol }) {
         <GeneOntologySection id={ensgId} label={symbol} />
         <GeneticConstraintSection id={ensgId} label={symbol} />
         <ProtVistaSection id={ensgId} label={symbol} />
-
-
-
+        <MolecularInteractionsSection id={ensgId} label={symbol} />
+        <PathwaysSection id={ensgId} label={symbol} />
+        {/* <CancerHallmarksSection id={ensgId} label={symbol} /> */}
+        <MousePhenotypesSection id={ensgId} label={symbol} />
+        <ComparativeGenomicsSection id={ensgId} label={symbol} />
+        <SubcellularLocationSection id={ensgId} label={symbol} />
+        <BibliographySection id={ensgId} label={symbol} />
       </SectionContainer>
     </PlatformApiProvider>
   );

@@ -1,12 +1,12 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
+import { ChipList, SectionItem } from 'ui';
 
-import ChipList from '../../../components/ChipList';
+import { definition } from '.';
 import Description from './Description';
-import DataTable from '../../../components/Table/DataTable';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
-import SectionItem from '../../../components/Section/SectionItem';
-import { defaultRowsPerPageOptions } from '../../../constants';
+import DataTable from '../../components/Table/DataTable';
+import { PublicationsDrawer } from '../../components/PublicationsDrawer';
+import { defaultRowsPerPageOptions } from '../../constants';
 
 import HALLMARKS_QUERY from './Hallmarks.gql';
 
@@ -57,7 +57,7 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: '.5rem' },
 });
 
-function Section({ definition, id, label: symbol }) {
+function Section({ id, label: symbol }) {
   const variables = { ensemblId: id };
   const classes = useStyles();
   const request = useQuery(HALLMARKS_QUERY, { variables });

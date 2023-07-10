@@ -1,12 +1,14 @@
 import { useQuery } from '@apollo/client';
+import { SectionItem } from 'ui';
 
+import { definition } from '.';
 import Description from './Description';
 import PathwaysTable from './PathwaysTable';
-import SectionItem from '../../../components/Section/SectionItem';
+
 
 import PATHWAYS_QUERY from './Pathways.gql';
 
-function Body({ definition, id: ensemblId, label: symbol }) {
+function Body({ id: ensemblId, label: symbol }) {
   const variables = { ensemblId };
   const request = useQuery(PATHWAYS_QUERY, {
     variables,

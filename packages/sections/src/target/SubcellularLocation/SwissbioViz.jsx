@@ -3,7 +3,7 @@ import { memo, useRef, useEffect } from 'react';
 import { v1 } from 'uuid';
 
 import '@swissprot/swissbiopics-visualizer';
-import config from '../../../config';
+import config from '../../config';
 
 const shapes = [
   'path',

@@ -1,9 +1,9 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import { SummaryItem, usePlatformApi } from 'ui';
 
+import { definition } from '.';
 import SUBCELLULAR_LOCATION_FRAGMENT from './SubcellularLocationFragment.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(SUBCELLULAR_LOCATION_FRAGMENT);
 
   return (

@@ -11,6 +11,3 @@ export const definition = {
     return paralogueCount > 0 || orthologueCount > 0;
   },
 };
-
-export { default as Summary } from './Summary';
-export { default as Body } from './Body';

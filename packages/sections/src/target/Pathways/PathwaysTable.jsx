@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarker } from '@fortawesome/free-solid-svg-icons';
+import { Link } from "ui";
 
-import { DataTable } from '../../../components/Table';
-import { identifiersOrgLink } from '../../../utils/global';
-import Link from '../../../components/Link';
-import { defaultRowsPerPageOptions } from '../../../constants';
+import { DataTable } from '../../components/Table';
+import { identifiersOrgLink } from '../../utils/global';
+import { defaultRowsPerPageOptions } from '../../constants';
 
 function getColumns(symbol) {
   return [

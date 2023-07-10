@@ -1,11 +1,10 @@
 import _ from 'lodash';
+import { SummaryItem, usePlatformApi } from 'ui';
 
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SummaryItem from '../../../components/Summary/SummaryItem';
-
+import { definition } from '.';
 import CANCER_HALLMARKS_SUMMARY_FRAGMENT from './HallmarksSummaryFragment.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(CANCER_HALLMARKS_SUMMARY_FRAGMENT);
 
   return (

@@ -1,9 +1,10 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
 
+import { SummaryItem, usePlatformApi } from 'ui';
+
+import { definition } from '.';
 import PATHWAYS_SUMMARY_FRAGMENT from './PathwaysSummary.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(PATHWAYS_SUMMARY_FRAGMENT);
 
   return (

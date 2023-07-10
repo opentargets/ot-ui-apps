@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { withTheme, makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { scaleQuantize } from 'd3';
-import client from '../../../client';
+import { Link } from "ui";
 
-import DataTable from '../../../components/Table/DataTable';
-import Legend from '../../../components/Legend';
-import { colorRange } from '../../../constants';
+import client from '../../client';
+import DataTable from '../../components/Table/DataTable';
+import Legend from '../../components/Legend';
+import { colorRange } from '../../constants';
 
-import Link from '../../../components/Link';
 
 import INTERACTIONS_QUERY from './InteractionsStringQuery.gql';
 
