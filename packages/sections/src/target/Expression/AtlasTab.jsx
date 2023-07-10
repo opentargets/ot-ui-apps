@@ -1,7 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { Helmet } from 'react-helmet';
-
-import ErrorBoundary from '../../../components/ErrorBoundary';
+import ErrorBoundary from 'ui/src/components/ErrorBoundary';
 
 const ExpressionAtlasHeatmap = lazy(() =>
   import('@ebi-gene-expression-group/expression-atlas-heatmap-highcharts')

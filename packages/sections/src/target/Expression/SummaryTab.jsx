@@ -1,10 +1,9 @@
 import { Grid } from '@material-ui/core';
-import client from '../../../client';
 
-import DataDownloader from '../../../components/DataDownloader';
+import client from '../../client';
 import SummaryTable from './SummaryTable';
-
 import EXPRESSION_QUERY from './ExpressionQuery.gql';
+import DataDownloader from '../../components/DataDownloader';
 
 export function getData(ensgId) {
   return client.query({

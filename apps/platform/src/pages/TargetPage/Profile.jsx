@@ -6,6 +6,8 @@ import KnownDrugsSection from 'sections/src/target/KnownDrugs/Body';
 import TractabilitySection from 'sections/src/target/Tractability/Body';
 import SafetySection from 'sections/src/target/Safety/Body';
 import ChemicalProbesSection from 'sections/src/target/ChemicalProbes/Body';
+import BaselineExpressionSection from 'sections/src/target/Expression/Body';
+import DepMapSection from 'sections/src/target/DepMap/Body';
 
 import { createSummaryFragment } from '../../components/Summary/utils';
 
@@ -43,6 +45,8 @@ function Profile({ ensgId, symbol }) {
         <TractabilitySection id={ensgId} label={symbol} />
         <SafetySection id={ensgId} label={symbol} />
         <ChemicalProbesSection id={ensgId} label={symbol} />
+        <BaselineExpressionSection id={ensgId} label={symbol} />
+        <DepMapSection id={ensgId} label={symbol} />
 
 
       </SectionContainer>

@@ -1,12 +1,12 @@
-import { useQuery } from '@apollo/client';
-import Description from './Description';
-import SectionItem from '../../../components/Section/SectionItem';
-import DepmapPlot from './DepmapPlot';
+import { useQuery } from "@apollo/client";
+import { SectionItem } from "ui";
 
-import DEPMAP_QUERY from './Depmap.gql';
+import { definition } from ".";
+import Description from "./Description";
+import DepmapPlot from "./DepmapPlot";
+import DEPMAP_QUERY from "./Depmap.gql";
 
-
-function Section({ definition, id, label: symbol }) {
+function Section({ id, label: symbol }) {
   const variables = { ensemblId: id };
   const request = useQuery(DEPMAP_QUERY, { variables });
 
@@ -15,7 +15,7 @@ function Section({ definition, id, label: symbol }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => {
+      renderBody={(data) => {
         return (
           <>
             <DepmapPlot data={data.target.depMapEssentiality} />

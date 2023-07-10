@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Tab, Tabs } from '@material-ui/core';
+import { useEffect, useState } from "react";
+import { Tab, Tabs } from "@material-ui/core";
+import { SectionItem } from "ui";
 
-import Description from './Description';
-import SectionItem from '../../../components/Section/SectionItem';
+import { definition } from ".";
+import AtlasTab from "./AtlasTab";
+import Description from "./Description";
+import GtexTab, { getData as getGtexData } from "./GtexTab";
+import SummaryTab, { getData as getSummaryData } from "./SummaryTab";
 
-import AtlasTab from './AtlasTab';
-import GtexTab, { getData as getGtexData } from './GtexTab';
-import SummaryTab, { getData as getSummaryData } from './SummaryTab';
-
-function Section({ definition, id: ensgId, label: symbol }) {
-  const defaultTab = 'summary';
+function Section({ id: ensgId, label: symbol }) {
+  const defaultTab = "summary";
   const [tab, setTab] = useState(defaultTab);
   const [requestSummary, setRequestSummary] = useState({ loading: true });
   const [requestGtex, setRequestGtex] = useState({ loading: true });
@@ -50,20 +50,20 @@ function Section({ definition, id: ensgId, label: symbol }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => (
+      renderBody={(data) => (
         <>
           <Tabs
             value={tab}
             onChange={handleChangeTab}
-            style={{ marginBottom: '1rem' }}
+            style={{ marginBottom: "1rem" }}
           >
             <Tab value="summary" label="Summary" />
             <Tab value="atlas" label="Experiments (Expression Atlas)" />
             <Tab value="gtex" label="Variation (GTEx)" />
           </Tabs>
-          {tab === 'summary' && <SummaryTab symbol={symbol} data={data} />}
-          {tab === 'atlas' && <AtlasTab ensgId={ensgId} symbol={symbol} />}
-          {tab === 'gtex' && <GtexTab symbol={symbol} data={data} />}
+          {tab === "summary" && <SummaryTab symbol={symbol} data={data} />}
+          {tab === "atlas" && <AtlasTab ensgId={ensgId} symbol={symbol} />}
+          {tab === "gtex" && <GtexTab symbol={symbol} data={data} />}
         </>
       )}
     />

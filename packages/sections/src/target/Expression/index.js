@@ -8,6 +8,3 @@ export const definition = {
     return hasRNA || hasProtein;
   },
 };
-
-export { default as Summary } from './Summary';
-export { default as Body } from './Body';

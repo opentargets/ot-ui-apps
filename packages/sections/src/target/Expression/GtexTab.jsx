@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { median as d3Median, quantile } from 'd3';
+import { DownloadSvgPlot } from '../../components/DownloadSvgPlot';
 
-import { DownloadSvgPlot } from '../../../components/DownloadSvgPlot';
 import GtexVariability from './GtexVariability';
 
 const transformData = data =>

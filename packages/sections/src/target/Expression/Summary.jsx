@@ -1,9 +1,8 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import { SummaryItem, usePlatformApi } from "ui";
+import { definition } from ".";
+import EXPRESSION_SUMMARY_FRAGMENT from "./ExpressionSummary.gql";
 
-import EXPRESSION_SUMMARY_FRAGMENT from './ExpressionSummary.gql';
-
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(EXPRESSION_SUMMARY_FRAGMENT);
 
   return (
@@ -11,21 +10,21 @@ function Summary({ definition }) {
       definition={definition}
       request={request}
       renderSummary={() => {
-        const hasRNA = request.data.expressions.some(d => d.rna.level >= 0);
+        const hasRNA = request.data.expressions.some((d) => d.rna.level >= 0);
         const hasProtein = request.data.expressions.some(
-          d => d.protein.level >= 0
+          (d) => d.protein.level >= 0
         );
         const expressionTypes = [];
 
         if (hasRNA) {
-          expressionTypes.push('RNA');
+          expressionTypes.push("RNA");
         }
 
         if (hasProtein) {
-          expressionTypes.push('Protein');
+          expressionTypes.push("Protein");
         }
 
-        return expressionTypes.join(' • ');
+        return expressionTypes.join(" • ");
       }}
     />
   );
