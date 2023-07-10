@@ -1,12 +1,12 @@
+import { SectionItem } from 'ui';
 import { useQuery } from '@apollo/client';
 import GeneticConstraintTable from './GeneticConstraintTable';
 
-import SectionItem from '../../../components/Section/SectionItem';
+import { definition } from '.';
 import Description from './Description';
-
 import GENETIC_CONSTRAINT from './GeneticConstraint.gql';
 
-function Body({ definition, id: ensemblId, label: symbol }) {
+function Body({ id: ensemblId, label: symbol }) {
   const variables = { ensemblId };
   const request = useQuery(GENETIC_CONSTRAINT, { variables: { ensemblId } });
   return (

@@ -1,10 +1,10 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import upperBin6Map from './upperBin6Map';
+import { SummaryItem, usePlatformApi } from 'ui';
 
+import { definition } from '.';
+import upperBin6Map from './upperBin6Map';
 import GENETIC_CONSTRAINT_FRAGMENT from './GeneticConstraintFragment.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(GENETIC_CONSTRAINT_FRAGMENT);
 
   return (

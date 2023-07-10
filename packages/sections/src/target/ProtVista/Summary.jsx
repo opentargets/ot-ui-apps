@@ -1,16 +1,16 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import PROTVISTA_SUMMARY_FRAGMENT from './summaryQuery.gql';
+import { definition } from ".";
+import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(PROTVISTA_SUMMARY_FRAGMENT);
 
   return (
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={() => 'Positional, Structural and Functional Information'}
+      renderSummary={() => "Positional, Structural and Functional Information"}
     />
   );
 }

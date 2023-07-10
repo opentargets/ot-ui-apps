@@ -11,6 +11,3 @@ export const definition = {
     return false;
   },
 };
-
-export { default as Summary } from './Summary';
-export { default as Body } from './Body';

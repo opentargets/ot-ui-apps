@@ -1,15 +1,14 @@
 import { useQuery } from '@apollo/client';
 import { sortBy, filter } from 'lodash';
-import Description from './Description';
-import Tooltip from '../../../components/Tooltip';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
-import SectionItem from '../../../components/Section/SectionItem';
-import DataTable from '../../../components/Table/DataTable';
-import Link from '../../../components/Link';
-import { epmcUrl } from '../../../utils/urls';
-import { defaultRowsPerPageOptions } from '../../../constants';
-import GeneOntologyEvidenceCodeMap from './GeneOntologyEvidenceCodeMappings.json';
+import { Link, Tooltip, SectionItem } from 'ui';
 
+import { definition } from '.';
+import Description from './Description';
+import { PublicationsDrawer } from '../../components/PublicationsDrawer';
+import DataTable from '../../components/Table/DataTable';
+import { epmcUrl } from '../../utils/urls';
+import { defaultRowsPerPageOptions } from '../../constants';
+import GeneOntologyEvidenceCodeMap from './GeneOntologyEvidenceCodeMappings.json';
 import GENE_ONTOLOGY_QUERY from './GeneOntology.gql';
 
 const CATEGORY_BY_PREFIX = {
@@ -140,7 +139,7 @@ const columns = [
   },
 ];
 
-function Section({ definition, id, label: symbol }) {
+function Section({ id, label: symbol }) {
   const variables = { ensemblId: id };
   const request = useQuery(GENE_ONTOLOGY_QUERY, { variables });
 

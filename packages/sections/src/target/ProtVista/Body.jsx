@@ -1,12 +1,13 @@
 import Description from './Description';
-import SectionItem from '../../../components/Section/SectionItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { getUniprotIds } from '../../../utils/global';
+import { SectionItem, usePlatformApi } from 'ui';
+
+import { definition } from '.';
+import { getUniprotIds } from '../../utils/global';
 import ProtVista from './ProtVista';
 
 import PROTVISTA_SUMMARY_FRAGMENT from './summaryQuery.gql';
 
-function Body({ definition, label: symbol }) {
+function Body({ label: symbol }) {
   const request = usePlatformApi(PROTVISTA_SUMMARY_FRAGMENT);
 
   return (

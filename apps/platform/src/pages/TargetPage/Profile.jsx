@@ -8,6 +8,11 @@ import SafetySection from 'sections/src/target/Safety/Body';
 import ChemicalProbesSection from 'sections/src/target/ChemicalProbes/Body';
 import BaselineExpressionSection from 'sections/src/target/Expression/Body';
 import DepMapSection from 'sections/src/target/DepMap/Body';
+import GeneOntologySection from 'sections/src/target/GeneOntology/Body';
+import GeneticConstraintSection from 'sections/src/target/GeneticConstraint/Body';
+import ProtVistaSection from 'sections/src/target/ProtVista/Body';
+
+
 
 import { createSummaryFragment } from '../../components/Summary/utils';
 
@@ -47,6 +52,10 @@ function Profile({ ensgId, symbol }) {
         <ChemicalProbesSection id={ensgId} label={symbol} />
         <BaselineExpressionSection id={ensgId} label={symbol} />
         <DepMapSection id={ensgId} label={symbol} />
+        <GeneOntologySection id={ensgId} label={symbol} />
+        <GeneticConstraintSection id={ensgId} label={symbol} />
+        <ProtVistaSection id={ensgId} label={symbol} />
+
 
 
       </SectionContainer>

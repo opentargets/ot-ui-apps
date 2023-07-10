@@ -1,9 +1,8 @@
 import { makeStyles } from '@material-ui/core';
+import { Link, Tooltip } from 'ui';
 
-import Link from '../../../components/Link';
-import Tooltip from '../../../components/Tooltip';
-import { DataTable } from '../../../components/Table';
-import { defaultRowsPerPageOptions } from '../../../constants';
+import { DataTable } from '../../components/Table';
+import { defaultRowsPerPageOptions } from '../../constants';
 import upperBin6Map from './upperBin6Map';
 
 const useStyles = makeStyles(theme => ({
