@@ -1,9 +1,10 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import { SummaryItem, usePlatformApi } from 'ui';
+import { definition } from '.';
+
 
 import TRACTABILITY_SUMMARY_FRAGMENT from './TractabilitySummary.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(TRACTABILITY_SUMMARY_FRAGMENT);
 
   return (

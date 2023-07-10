@@ -1,34 +1,32 @@
-import classNames from 'classnames';
-import { Grid, Typography, makeStyles } from '@material-ui/core';
-import { useQuery } from '@apollo/client';
-import { v1 } from 'uuid';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckCircle,
   faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons';
-import TRACTABILITY_QUERY from './TractabilityQuery.gql';
-// import Summary from './Summary';
-// import usePlatformApi from '../../../hooks/usePlatformApi';
-import SectionItem from '../../../components/Section/SectionItem';
-import Description from './Description';
+} from "@fortawesome/free-solid-svg-icons";
+import { v1 } from "uuid";
+import { SectionItem } from "ui";
+import classNames from "classnames";
+import { useQuery } from "@apollo/client";
+import { Grid, Typography, makeStyles } from "@material-ui/core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import EllsWrapper from '../../../components/EllsWrapper';
+import { definition } from ".";
+import Description from "./Description";
+import EllsWrapper from "../../components/EllsWrapper";
+import TRACTABILITY_QUERY from "./TractabilityQuery.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   modality: {
-    marginBottom: '0.35em',
+    marginBottom: "0.35em",
   },
   modalityEnabled: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   modalityDisabled: {
     color: theme.palette.grey[300],
   },
   modalityIcon: {
-    paddingRight: '0.5em',
-    float: 'left',
+    paddingRight: "0.5em",
+    float: "left",
   },
   modalityIconEnabled: {
     color: theme.palette.primary.main,
@@ -37,20 +35,20 @@ const useStyles = makeStyles(theme => ({
 
 const modalities = [
   {
-    modality: 'SM',
-    label: 'Small molecule',
+    modality: "SM",
+    label: "Small molecule",
   },
   {
-    modality: 'AB',
-    label: 'Antibody',
+    modality: "AB",
+    label: "Antibody",
   },
   {
-    modality: 'PR',
-    label: 'PROTAC',
+    modality: "PR",
+    label: "PROTAC",
   },
   {
-    modality: 'OC',
-    label: 'Other modalities',
+    modality: "OC",
+    label: "Other modalities",
   },
 ];
 
@@ -65,8 +63,8 @@ function ModalityList({ modality, data }) {
   return (
     <>
       {data
-        .filter(d => d.modality === modality)
-        .map(d => (
+        .filter((d) => d.modality === modality)
+        .map((d) => (
           <div
             key={v1()}
             className={classNames(
@@ -93,7 +91,7 @@ function ModalityList({ modality, data }) {
   );
 }
 
-function Body({ definition, label: symbol, id: ensemblId }) {
+function Body({ label: symbol, id: ensemblId }) {
   // const request = usePlatformApi(Summary.fragments.TractabilitySummaryFragment);
 
   const request = useQuery(TRACTABILITY_QUERY, {
@@ -105,9 +103,9 @@ function Body({ definition, label: symbol, id: ensemblId }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => (
+      renderBody={(data) => (
         <Grid container spacing={3}>
-          {modalities.map(m => (
+          {modalities.map((m) => (
             <Grid item xs={6} sm={3} key={v1()}>
               <Typography variant="subtitle1" gutterBottom>
                 {m.label}
