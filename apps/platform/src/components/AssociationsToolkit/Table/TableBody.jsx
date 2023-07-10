@@ -55,7 +55,6 @@ function TableBody({ table, expanded, prefix = null }) {
 
   const tablePrefix = table.getState().prefix;
   const isExpandedInTable = expanded[3] === tablePrefix;
-  console.log({ expanded, isExpandedInTable, tablePrefix });
 
   return (
     <div className={prefix}>
