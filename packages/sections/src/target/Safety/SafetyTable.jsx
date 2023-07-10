@@ -1,18 +1,17 @@
-import { makeStyles } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link, Tooltip } from "ui";
+import { makeStyles } from "@material-ui/core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowAltCircleDown,
   faArrowAltCircleUp,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
-import { naLabel, defaultRowsPerPageOptions } from '../../../constants';
-import Tooltip from '../../../components/Tooltip';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
-import { DataTable, TableDrawer } from '../../../components/Table';
-import Link from '../../../components/Link';
-import SafetyStudiesDrawer from './SafetyStudiesDrawer';
+import SafetyStudiesDrawer from "./SafetyStudiesDrawer";
+import { DataTable, TableDrawer } from "../../components/Table";
+import { naLabel, defaultRowsPerPageOptions } from "../../constants";
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   blue: {
     color: theme.palette.primary.main,
   },
@@ -20,10 +19,10 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.grey[300],
   },
   direction: {
-    marginBottom: '7px',
+    marginBottom: "7px",
   },
   circleUp: {
-    marginRight: '10px',
+    marginRight: "10px",
   },
 }));
 
@@ -41,8 +40,8 @@ function EffectTooltipContent({ classes, effect }) {
 function getColumns(classes) {
   return [
     {
-      id: 'event',
-      label: 'Safety event',
+      id: "event",
+      label: "Safety event",
       renderCell: ({ event, eventId }) =>
         eventId ? (
           <Link to={`/disease/${eventId}`}>{event ?? naLabel}</Link>
@@ -51,28 +50,28 @@ function getColumns(classes) {
         ),
     },
     {
-      id: 'biosamples',
-      label: 'Biosystems',
+      id: "biosamples",
+      label: "Biosystems",
       filterValue: ({ biosamples }) => {
         if (biosamples.length === 1) {
           const sample = biosamples[0];
           return `${sample.cellFormat} ${sample.cellLabel} ${sample.tissueLabel}`.trim();
         }
-        return 'biosamples';
+        return "biosamples";
       },
       renderCell: ({ biosamples }) => {
         /* TODO: remove to handle only arrays */
-        if (!biosamples) return 'N/A';
+        if (!biosamples) return "N/A";
         const entries = biosamples.map(
           ({ cellFormat, cellLabel, tissueLabel, tissueId }) => ({
             name: cellFormat
-              ? `${cellFormat}${cellLabel ? ` (${cellLabel})` : ''}`
+              ? `${cellFormat}${cellLabel ? ` (${cellLabel})` : ""}`
               : tissueLabel,
             url:
               cellFormat || !tissueId
                 ? null
-                : `https://identifiers.org/${tissueId.replace('_', ':')}`,
-            group: cellFormat ? 'Assay' : 'Organ system',
+                : `https://identifiers.org/${tissueId.replace("_", ":")}`,
+            group: cellFormat ? "Assay" : "Organ system",
           })
         );
 
@@ -86,14 +85,14 @@ function getColumns(classes) {
       },
     },
     {
-      id: 'dosing',
-      label: 'Dosing effects',
+      id: "dosing",
+      label: "Dosing effects",
       renderCell: ({ effects }) => {
         const circleUpData = effects
-          ? effects.find(effect => effect.direction === 'activation')
+          ? effects.find((effect) => effect.direction === "activation")
           : null;
         const circleDownData = effects
-          ? effects.find(effect => effect.direction === 'inhibition')
+          ? effects.find((effect) => effect.direction === "inhibition")
           : null;
         return (
           <>
@@ -150,17 +149,17 @@ function getColumns(classes) {
       },
     },
     {
-      id: 'studies',
-      label: 'Experimental studies',
+      id: "studies",
+      label: "Experimental studies",
       renderCell: ({ studies }) => {
         /* TODO: remove to handle only arrays */
-        if (!studies) return 'N/A';
+        if (!studies) return "N/A";
         return <SafetyStudiesDrawer studies={studies} />;
       },
     },
     {
-      id: 'datasource',
-      label: 'Source',
+      id: "datasource",
+      label: "Source",
       renderCell: ({ datasource, literature, url }) =>
         literature ? (
           <PublicationsDrawer

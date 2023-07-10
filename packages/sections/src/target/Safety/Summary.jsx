@@ -1,19 +1,18 @@
-import _ from 'lodash';
+import _ from "lodash";
+import { SummaryItem, usePlatformApi } from "ui";
 
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import definition from ".";
+import SAFETY_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 
-import SAFETY_SUMMARY_FRAGMENT from './summaryQuery.gql';
-
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(SAFETY_SUMMARY_FRAGMENT);
 
   return (
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => {
-        const uniqueEvents = _.uniqBy(data.safetyLiabilities, 'event');
+      renderSummary={(data) => {
+        const uniqueEvents = _.uniqBy(data.safetyLiabilities, "event");
         return `${uniqueEvents.length} unique safety events`;
       }}
     />
