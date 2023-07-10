@@ -1,15 +1,13 @@
-import { Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
+import { Typography } from '@material-ui/core';
+import { Link, SectionItem, Tooltip } from 'ui';
 
-import Link from '../../../components/Link';
-import SectionItem from '../../../components/Section/SectionItem';
+import { definition } from '.';
 import Description from './Description';
-import Tooltip from '../../../components/Tooltip';
-import { naLabel, defaultRowsPerPageOptions } from '../../../constants';
-import { DataTable } from '../../../components/Table';
-import ClinvarStars from '../../../components/ClinvarStars';
-
+import { DataTable } from '../../components/Table';
+import ClinvarStars from '../../components/ClinvarStars';
 import CHEMICAL_PROBES_QUERY from './ChemicalProbes.gql';
+import { naLabel, defaultRowsPerPageOptions } from '../../constants';
 
 /**
  * Style the tooltips as "label: value" with a bold label
@@ -90,7 +88,7 @@ const columns = [
   },
 ];
 
-function Body({ definition, id, label: symbol }) {
+function Body({ id, label: symbol }) {
   const variables = { ensemblId: id };
   const request = useQuery(CHEMICAL_PROBES_QUERY, { variables });
 

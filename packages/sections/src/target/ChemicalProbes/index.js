@@ -4,6 +4,3 @@ export const definition = {
   shortName: 'CP',
   hasData: data => data.chemicalProbes.length > 0,
 };
-
-export { default as Summary } from './Summary';
-export { default as Body } from './Body';

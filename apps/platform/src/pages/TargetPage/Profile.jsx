@@ -5,6 +5,7 @@ import ProfileHeader from './ProfileHeader';
 import KnownDrugsSection from 'sections/src/target/KnownDrugs/Body';
 import TractabilitySection from 'sections/src/target/Tractability/Body';
 import SafetySection from 'sections/src/target/Safety/Body';
+import ChemicalProbesSection from 'sections/src/target/ChemicalProbes/Body';
 
 import { createSummaryFragment } from '../../components/Summary/utils';
 
@@ -41,6 +42,8 @@ function Profile({ ensgId, symbol }) {
         <KnownDrugsSection id={ensgId} label={symbol} />
         <TractabilitySection id={ensgId} label={symbol} />
         <SafetySection id={ensgId} label={symbol} />
+        <ChemicalProbesSection id={ensgId} label={symbol} />
+
 
       </SectionContainer>
     </PlatformApiProvider>

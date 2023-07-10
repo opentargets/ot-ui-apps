@@ -1,19 +1,19 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import CHEMICAL_PROBES_SUMMARY_FRAGMENT from './ProbesSummaryFragment.gql';
+import { definition } from ".";
+import CHEMICAL_PROBES_SUMMARY_FRAGMENT from "./ProbesSummaryFragment.gql";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(CHEMICAL_PROBES_SUMMARY_FRAGMENT);
 
   return (
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         data.chemicalProbes?.length > 0
           ? `${data.chemicalProbes.length} chemical probe${
-              data.chemicalProbes.length !== 1 ? 's' : ''
+              data.chemicalProbes.length !== 1 ? "s" : ""
             }`
           : null
       }
