@@ -1,4 +1,4 @@
-import { Chip, useTheme } from '@material-ui/core';
+import { Chip, useTheme } from '@mui/material';
 
 function Tag({ type }) {
   const theme = useTheme();

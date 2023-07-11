@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { styled } from '@material-ui/styles';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { faDna , faStethoscope } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 

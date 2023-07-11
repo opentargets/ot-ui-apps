@@ -9,6 +9,8 @@
   "dependencies": {
     "@apollo/client": "^3.3.4",
     "@ebi-gene-expression-group/expression-atlas-heatmap-highcharts": "^5.4.1-beta1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
@@ -18,6 +20,8 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.50",
     "@material-ui/styles": "^4.9.1",
+    "@mui/icons-material": "^5.14.0",
+    "@mui/material": "^5.14.0",
     "@swissprot/swissbiopics-visualizer": "^0.0.28",
     "@tanstack/react-table": "^8.5.11",
     "classnames": "^2.2.6",

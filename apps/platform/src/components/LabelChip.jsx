@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import OTTooltip from './Tooltip';
 
 function LabelChip({ label, value, to, tooltip = null }) {

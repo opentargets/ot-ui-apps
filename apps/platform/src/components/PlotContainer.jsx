@@ -1,8 +1,5 @@
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import { withStyles } from '@material-ui/core/styles';
+import {Typography, Paper, Grid, LinearProgress} from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { v1 } from 'uuid';
 
 import PlotContainerSection from './PlotContainerSection';

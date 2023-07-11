@@ -5,7 +5,7 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
-} from '@material-ui/core';
+} from '@mui/material';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { styled } from '@material-ui/styles';

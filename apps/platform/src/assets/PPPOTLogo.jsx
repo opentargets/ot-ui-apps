@@ -1,11 +1,12 @@
-import { SvgIcon, makeStyles } from '@material-ui/core';
+import { SvgIcon } from '@mui/material';
+// import { makeStyles } from '@mui/styles';
 import config from '../config';
 
-const useStyles = makeStyles({
-  root: {
-    height: 'unset',
-  },
-});
+// const useStyles = makeStyles({
+//   root: {
+//     height: 'unset',
+//   },
+// });
 
 function OTLogo(props) {
   const classes = useStyles();
@@ -17,7 +18,8 @@ function OTLogo(props) {
       // TODO: review props spreading
       // eslint-disable-next-line
       {...props}
-      classes={classes}
+      // classes={classes}
+      sx={{height: 'unset'}}
     >
       <defs>
         <style>

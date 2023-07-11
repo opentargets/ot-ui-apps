@@ -1,14 +1,18 @@
-import { SvgIcon, makeStyles } from '@material-ui/core';
+import { SvgIcon } from '@mui/material';
+// import { makeStyles } from '@mui/styles';
+
 import config from '../config';
 
-const useStyles = makeStyles({
+const styles = {
   root: {
     height: 'unset',
+    // width: '100%',
+    // maxWidth: '30rem',
   },
-});
+};
 
-function OTLogo(props) {
-  const classes = useStyles();
+function OTLogo({props, sx = []}) {
+  // const classes = useClasses(styles);
   const tagline = config.profile.otLogoTagline ?? '';
 
   return (
@@ -18,7 +22,12 @@ function OTLogo(props) {
       // TODO: review props spreading
       // eslint-disable-next-line
       {...props}
-      classes={classes}
+      // classes={classes}
+      sx={[
+        styles.root,
+        // You cannot spread `sx` directly because `SxProps` (typeof sx) can be an array.
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
     >
       <path
         fill="#abd0e7"

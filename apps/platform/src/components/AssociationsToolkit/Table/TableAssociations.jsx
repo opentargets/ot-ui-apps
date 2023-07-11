@@ -6,9 +6,9 @@ import {
   getExpandedRowModel,
   createColumnHelper,
 } from '@tanstack/react-table';
-import Skeleton from '@material-ui/lab/Skeleton';
+import Skeleton from '@mui/material/Skeleton';
 
-import { styled } from '@material-ui/styles';
+import { styled } from '@mui/system';
 
 import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
 import prioritizationCols from '../static_datasets/prioritizationCols';
