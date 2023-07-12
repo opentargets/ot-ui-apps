@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     width: "100%",
     wordBreak: "break-word",
+    paddingRight: "0.2rem",
   },
   searchListItemText: {
     maxWidth: "90%"
@@ -119,9 +120,9 @@ function SearchListItem({
           >
             {getSymbolHeader()}
           </span>
-          <Typography variant="caption">
+          {item.id && <Typography variant="caption">
             <span className={classes.id}>{item.id}</span>
-          </Typography>
+          </Typography>}
         </div>
         {isTopHit && item.description && (
           <div className="functionDescription">
