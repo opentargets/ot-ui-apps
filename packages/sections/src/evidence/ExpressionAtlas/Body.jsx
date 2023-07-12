@@ -1,22 +1,24 @@
-import { useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { dataTypesMap } from '../../../dataTypes';
-import SectionItem from '../../../components/Section/SectionItem';
-import { DataTable } from '../../../components/Table';
-import Tooltip from '../../../components/Tooltip';
-import ScientificNotation from '../../../components/ScientificNotation';
-import Summary from './Summary';
-import Description from './Description';
-import Link from '../../../components/Link';
-import { sentenceCase } from '../../../utils/global';
+import { useQuery } from "@apollo/client";
+import { Typography } from "@material-ui/core";
+import { SectionItem, Tooltip, Link } from "ui";
 
-import EXPRESSION_ATLAS_QUERY from './ExpressionAtlasQuery.gql';
+import { dataTypesMap } from "../../dataTypes";
+
+import { DataTable } from "../../components/Table";
+
+import ScientificNotation from "../../components/ScientificNotation";
+import Summary from "./Summary";
+import Description from "./Description";
+
+import { sentenceCase } from "../../utils/global";
+
+import EXPRESSION_ATLAS_QUERY from "./ExpressionAtlasQuery.gql";
+import { definition } from ".";
 
 const columns = [
   {
-    id: 'disease.name',
-    label: 'Disease/phenotype',
+    id: "disease.name",
+    label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -36,8 +38,8 @@ const columns = [
     ),
   },
   {
-    id: 'studyId',
-    label: 'Experiment ID',
+    id: "studyId",
+    label: "Experiment ID",
     renderCell: ({ studyId }) => (
       <Link external to={`http://www.ebi.ac.uk/gxa/experiments/${studyId}`}>
         {studyId}
@@ -45,8 +47,8 @@ const columns = [
     ),
   },
   {
-    id: 'contrast',
-    label: 'Experiment details',
+    id: "contrast",
+    label: "Experiment details",
     renderCell: ({ contrast, studyOverview }) => (
       <Tooltip title={studyOverview} showHelpIcon>
         <span>{contrast}</span>
@@ -54,13 +56,13 @@ const columns = [
     ),
   },
   {
-    id: 'confidence',
-    label: 'Experiment confidence',
+    id: "confidence",
+    label: "Experiment confidence",
     renderCell: ({ confidence }) => (
       <Tooltip
         title={
           <Typography variant="caption" display="block" align="center">
-            As defined by the{' '}
+            As defined by the{" "}
             <Link external to="https://www.ebi.ac.uk/gxa/FAQ.html">
               Expression Atlas Guideline
             </Link>
@@ -73,7 +75,7 @@ const columns = [
     ),
   },
   {
-    id: 'log2FoldChangeValue',
+    id: "log2FoldChangeValue",
     label: (
       <>
         Log<sub>2</sub> fold change
@@ -83,13 +85,13 @@ const columns = [
     sortable: true,
   },
   {
-    id: 'log2FoldChangePercentileRank',
-    label: 'Percentile',
+    id: "log2FoldChangePercentileRank",
+    label: "Percentile",
     numeric: true,
     sortable: true,
   },
   {
-    id: 'resourceScore',
+    id: "resourceScore",
     label: (
       <>
         <i>p</i>-value
@@ -103,12 +105,11 @@ const columns = [
   },
 ];
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(EXPRESSION_ATLAS_QUERY, {
@@ -142,17 +143,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.expressionAtlasSummary
-  );
-  const { count } = summaryData.expressionAtlasSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

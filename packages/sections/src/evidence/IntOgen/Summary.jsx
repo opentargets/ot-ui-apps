@@ -1,10 +1,10 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { dataTypesMap } from '../../../dataTypes';
+import { SummaryItem, usePlatformApi } from 'ui';
 
+import { definition } from '.';
+import { dataTypesMap } from '../../dataTypes';
 import INTOGEN_SUMMARY_FRAGMENT from './IntOgenSummaryQuery.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(INTOGEN_SUMMARY_FRAGMENT);
 
   return (

@@ -1,17 +1,16 @@
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
-import Link from '../../../components/Link';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SectionItem from '../../../components/Section/SectionItem';
-import Tooltip from '../../../components/Tooltip';
-import { DataTable } from '../../../components/Table';
-import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
-import { dataTypesMap } from '../../../dataTypes';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
-import { epmcUrl } from '../../../utils/urls';
-import Description from './Description';
-import ScientificNotation from '../../../components/ScientificNotation';
+import { Link, Tooltip, SectionItem } from 'ui';
+
+import { definition } from '.';
 import Summary from './Summary';
+import Description from './Description';
+import { epmcUrl } from '../../utils/urls';
+import { dataTypesMap } from '../../dataTypes';
+import { DataTable } from '../../components/Table';
+import ScientificNotation from '../../components/ScientificNotation';
+import { defaultRowsPerPageOptions, naLabel } from '../../constants';
+import { PublicationsDrawer } from '../../components/PublicationsDrawer';
 
 import GENE_BURDEN_QUERY from './GeneBurdenQuery.gql';
 
@@ -232,12 +231,11 @@ const columns = [
   },
 ];
 
-export function BodyCore({ definition, id, label, count }) {
+export function Body({ id, label}) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(GENE_BURDEN_QUERY, {
@@ -273,17 +271,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.geneBurdenSummary
-  );
-  const { count } = summaryData.geneBurdenSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

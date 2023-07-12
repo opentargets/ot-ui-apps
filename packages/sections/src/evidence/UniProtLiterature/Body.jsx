@@ -1,19 +1,17 @@
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
-import { identifiersOrgLink, sentenceCase } from '../../../utils/global';
-import Link from '../../../components/Link';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import Tooltip from '../../../components/Tooltip';
-import SectionItem from '../../../components/Section/SectionItem';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
-import { DataTable } from '../../../components/Table';
-import { defaultRowsPerPageOptions } from '../../../constants';
-import { epmcUrl } from '../../../utils/urls';
+import { Link, SectionItem, Tooltip, ChipList } from 'ui';
+
+import { definition } from '.';
 import Summary from './Summary';
 import Description from './Description';
-import { dataTypesMap } from '../../../dataTypes';
-
+import { epmcUrl } from '../../utils/urls';
+import { dataTypesMap } from '../../dataTypes';
+import { DataTable } from '../../components/Table';
+import { defaultRowsPerPageOptions } from '../../constants';
 import UNIPROT_LITERATURE_QUERY from './UniprotLiteratureQuery.gql';
+import { identifiersOrgLink, sentenceCase } from '../../utils/global';
+import { PublicationsDrawer } from '../../components/PublicationsDrawer';
 
 const columns = [
   {
@@ -71,13 +69,12 @@ const columns = [
   },
 ];
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
 
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(UNIPROT_LITERATURE_QUERY, {
@@ -109,19 +106,5 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.UniprotLiteratureSummary
-  );
-  const { count } = summaryData.uniprotLiteratureSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
+export default Body;
 

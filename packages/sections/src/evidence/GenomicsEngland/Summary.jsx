@@ -1,19 +1,19 @@
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { dataTypesMap } from '../../../dataTypes';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import GENOMICS_ENGLAND_SUMMARY_FRAGMENT from './GenomicsEnglandSummaryFragment.gql';
+import { definition } from ".";
+import { dataTypesMap } from "../../dataTypes";
+import GENOMICS_ENGLAND_SUMMARY_FRAGMENT from "./GenomicsEnglandSummaryFragment.gql";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(GENOMICS_ENGLAND_SUMMARY_FRAGMENT);
 
   return (
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         `${data.genomicsEngland.count} entr${
-          data.genomicsEngland.count === 1 ? 'y' : 'ies'
+          data.genomicsEngland.count === 1 ? "y" : "ies"
         }`
       }
       subText={dataTypesMap.genetic_association}

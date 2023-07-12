@@ -1,49 +1,47 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from "@apollo/client";
+import { Typography, makeStyles, Chip } from "@material-ui/core";
+import { SectionItem, Link } from "ui";
 
-import { Typography, makeStyles, Chip } from '@material-ui/core';
-import { DataTable } from '../../../components/Table';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import {
   defaultRowsPerPageOptions,
   naLabel,
   studySourceMap,
-} from '../../../constants';
-import Description from './Description';
-import { otgStudyUrl, otgVariantUrl } from '../../../utils/urls';
-import { dataTypesMap } from '../../../dataTypes';
-import { identifiersOrgLink, sentenceCase } from '../../../utils/global';
-import Link from '../../../components/Link';
-import ScientificNotation from '../../../components/ScientificNotation';
-import SectionItem from '../../../components/Section/SectionItem';
-import Summary from './Summary';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-
-import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
+} from "../../constants";
+import { definition } from ".";
+import Summary from "./Summary";
+import Description from "./Description";
+import { dataTypesMap } from "../../dataTypes";
+import { DataTable } from "../../components/Table";
+import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
+import { otgStudyUrl, otgVariantUrl } from "../../utils/urls";
+import ScientificNotation from "../../components/ScientificNotation";
+import { identifiersOrgLink, sentenceCase } from "../../utils/global";
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
 const useStyles = makeStyles({
   xsmall: {
-    fontSize: '0.7rem',
+    fontSize: "0.7rem",
   },
   chipLink: {
-    marginLeft: '5px',
+    marginLeft: "5px",
   },
 });
 
 function getColumns(classes) {
   return [
     {
-      id: 'disease',
-      label: 'Disease/phenotype',
+      id: "disease",
+      label: "Disease/phenotype",
       renderCell: ({ disease }) => (
         <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
       ),
       filterValue: ({ disease }) => disease.name,
     },
     {
-      id: 'diseaseFromSource',
-      label: 'Reported disease/phenotype',
+      id: "diseaseFromSource",
+      label: "Reported disease/phenotype",
       renderCell: ({ diseaseFromSource, studyId }) => {
-        const parsedDiseaseFromSource = diseaseFromSource.replace(/['"]+/g, '');
+        const parsedDiseaseFromSource = diseaseFromSource.replace(/['"]+/g, "");
         return (
           <Link external to={otgStudyUrl(studyId)}>
             {diseaseFromSource ? parsedDiseaseFromSource : studyId}
@@ -52,8 +50,8 @@ function getColumns(classes) {
       },
     },
     {
-      id: 'literature',
-      label: 'Publication',
+      id: "literature",
+      label: "Publication",
       renderCell: ({ literature, publicationYear, publicationFirstAuthor }) => {
         if (!literature) return naLabel;
         return (
@@ -67,8 +65,8 @@ function getColumns(classes) {
         `${literature} ${publicationYear} ${publicationFirstAuthor}`,
     },
     {
-      id: 'studySource',
-      label: 'Study source',
+      id: "studySource",
+      label: "Study source",
       renderCell: ({ projectId }) => {
         if (!projectId) return naLabel;
         if (Object.keys(studySourceMap).indexOf(projectId) < 0) return naLabel;
@@ -76,8 +74,8 @@ function getColumns(classes) {
       },
     },
     {
-      id: 'variantId',
-      label: 'Variant ID (RSID)',
+      id: "variantId",
+      label: "Variant ID (RSID)",
       renderCell: ({ variantId, variantRsId }) => (
         <>
           {variantId ? (
@@ -89,7 +87,7 @@ function getColumns(classes) {
           )}
           {variantRsId ? (
             <Typography variant="caption">
-              {' '}
+              {" "}
               (
               <Link
                 external
@@ -106,16 +104,16 @@ function getColumns(classes) {
         `${variantId} ${variantRsId}`,
     },
     {
-      id: 'variantFunctionalConsequenceId',
-      label: 'Functional Consequence',
+      id: "variantFunctionalConsequenceId",
+      label: "Functional Consequence",
       renderCell: ({ variantFunctionalConsequence, variantId }) => {
-        const pvparams = variantId?.split('_') || [];
+        const pvparams = variantId?.split("_") || [];
         return variantFunctionalConsequence ? (
           <>
             <Link
               external
               to={identifiersOrgLink(
-                'SO',
+                "SO",
                 variantFunctionalConsequence.id.slice(3)
               )}
             >
@@ -132,8 +130,8 @@ function getColumns(classes) {
             {
               // add linkout to ProtVar for specific functional consequence values:
               // "missense variant", "stop gained"
-              (variantFunctionalConsequence.id === 'SO:0001583' ||
-                variantFunctionalConsequence.id === 'SO:0001587') &&
+              (variantFunctionalConsequence.id === "SO:0001583" ||
+                variantFunctionalConsequence.id === "SO:0001587") &&
               pvparams.length == 4 ? (
                 <Link
                   external
@@ -162,30 +160,30 @@ function getColumns(classes) {
         }`,
     },
     {
-      id: 'variantFunctionalConsequenceFromQtlId',
-      label: 'QTL effect',
+      id: "variantFunctionalConsequenceFromQtlId",
+      label: "QTL effect",
       tooltip:
-        'The direction is inferred from the strongest effect across all the co-localising QTLs',
+        "The direction is inferred from the strongest effect across all the co-localising QTLs",
       renderCell: ({ variantFunctionalConsequenceFromQtlId }) =>
         variantFunctionalConsequenceFromQtlId ? (
           <Link
             external
             to={identifiersOrgLink(
-              'SO',
+              "SO",
               variantFunctionalConsequenceFromQtlId.id.slice(3)
             )}
           >
             <Chip
-                label={sentenceCase(variantFunctionalConsequenceFromQtlId.label)}
-                size="small"
-                color="primary"
-                clickable
-                variant="outlined"
-                className={classes.xsmall}
-              />
+              label={sentenceCase(variantFunctionalConsequenceFromQtlId.label)}
+              size="small"
+              color="primary"
+              clickable
+              variant="outlined"
+              className={classes.xsmall}
+            />
           </Link>
         ) : (
-          ''
+          ""
         ),
       filterValue: ({ variantFunctionalConsequenceFromQtlId }) =>
         variantFunctionalConsequenceFromQtlId
@@ -195,7 +193,7 @@ function getColumns(classes) {
           : naLabel,
     },
     {
-      id: 'pValueMantissa',
+      id: "pValueMantissa",
       label: (
         <>
           Association <i>p</i>-value
@@ -211,8 +209,8 @@ function getColumns(classes) {
         b.pValueMantissa * 10 ** b.pValueExponent,
     },
     {
-      id: 'studySampleSize',
-      label: 'Sample size',
+      id: "studySampleSize",
+      label: "Sample size",
       numeric: true,
       sortable: true,
       renderCell: ({ studySampleSize }) =>
@@ -221,8 +219,8 @@ function getColumns(classes) {
           : naLabel,
     },
     {
-      id: 'oddsRatio',
-      label: 'Odds Ratio (CI 95%)',
+      id: "oddsRatio",
+      label: "Odds Ratio (CI 95%)",
       numeric: true,
       renderCell: ({
         oddsRatio,
@@ -234,15 +232,15 @@ function getColumns(classes) {
             ? `(${parseFloat(
                 oddsRatioConfidenceIntervalLower.toFixed(3)
               )}, ${parseFloat(oddsRatioConfidenceIntervalUpper.toFixed(3))})`
-            : '';
+            : "";
         return oddsRatio
           ? `${parseFloat(oddsRatio.toFixed(3))} ${ci}`
           : naLabel;
       },
     },
     {
-      id: 'betaConfidenceInterval',
-      label: 'Beta (CI 95%)',
+      id: "betaConfidenceInterval",
+      label: "Beta (CI 95%)",
       numeric: true,
       renderCell: ({
         beta,
@@ -254,22 +252,22 @@ function getColumns(classes) {
             ? `(${parseFloat(
                 betaConfidenceIntervalLower.toFixed(3)
               )}, ${parseFloat(betaConfidenceIntervalUpper.toFixed(3))})`
-            : '';
+            : "";
         return beta ? `${parseFloat(beta.toFixed(3))} ${ci}` : naLabel;
       },
     },
     {
-      id: 'resourceScore',
-      label: 'L2G score',
+      id: "resourceScore",
+      label: "L2G score",
       tooltip: (
         <>
-          Causal inference score - see{' '}
+          Causal inference score - see{" "}
           <Link
             external
             to="https://platform-docs.opentargets.org/evidence#open-targets-genetics-portal"
           >
             our documentation
-          </Link>{' '}
+          </Link>{" "}
           for more information.
         </>
       ),
@@ -280,9 +278,9 @@ function getColumns(classes) {
   ];
 }
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
-  const variables = { ensemblId: ensgId, efoId, size: count };
+  const variables = { ensemblId: ensgId, efoId };
   const classes = useStyles();
   const columns = getColumns(classes);
 
@@ -298,7 +296,7 @@ export function BodyCore({ definition, id, label, count }) {
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
-      renderBody={data => (
+      renderBody={(data) => (
         <DataTable
           columns={columns}
           dataDownloader
@@ -317,17 +315,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.OpenTargetsGeneticsSummaryFragment
-  );
-  const { count } = summaryData.openTargetsGenetics;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

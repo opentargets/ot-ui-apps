@@ -1,14 +1,17 @@
 import { gql } from '@apollo/client';
+import { PlatformApiProvider, SectionContainer } from 'ui';
 
-import { createSummaryFragment } from '../../components/Summary/utils';
-import PlatformApiProvider from '../../contexts/PlatformApiProvider';
-import ProfileHeader from './ProfileHeader';
-
-import SectionContainer from '../../components/Section/SectionContainer';
-import SectionOrderProvider from '../../contexts/SectionOrderProvider';
-import SummaryContainer from '../../components/Summary/SummaryContainer';
-
+import client from '../../client';
 import sections from './sections';
+import ProfileHeader from './ProfileHeader';
+import { createSummaryFragment } from '../../components/Summary/utils';
+
+import MechanismsOfActionSection from 'sections/src/drug/MechanismsOfAction/Body';
+import IndicationsSection from 'sections/src/drug/Indications/Body';
+import KnownDrugsSection from 'sections/src/drug/KnownDrugs/Body';
+import DrugWarningsSection from 'sections/src/drug/DrugWarnings/Body';
+import AdverseEventsSection from 'sections/src/drug/AdverseEvents/Body';
+import BibliographySection from 'sections/src/drug/Bibliography/Body';
 
 const DRUG_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(sections, 'Drug');
 const DRUG_PROFILE_QUERY = gql`
@@ -29,31 +32,18 @@ function Profile({ chemblId, name }) {
       entity="drug"
       query={DRUG_PROFILE_QUERY}
       variables={{ chemblId }}
+      client={client}
     >
       <ProfileHeader chemblId={chemblId} />
-      <SectionOrderProvider sections={sections}>
-        <SummaryContainer>
-          {sections.map(({ Summary, definition }) => (
-            <Summary
-              key={definition.id}
-              id={chemblId}
-              label={name}
-              definition={definition}
-            />
-          ))}
-        </SummaryContainer>
 
-        <SectionContainer>
-          {sections.map(({ Body, definition }) => (
-            <Body
-              key={definition.id}
-              id={chemblId}
-              label={name}
-              definition={definition}
-            />
-          ))}
-        </SectionContainer>
-      </SectionOrderProvider>
+      <SectionContainer>
+        <MechanismsOfActionSection id={chemblId} label={name} />
+        <IndicationsSection id={chemblId} label={name} />
+        <KnownDrugsSection id={chemblId} label={name} />
+        <DrugWarningsSection id={chemblId} label={name} />
+        <AdverseEventsSection id={chemblId} label={name} />
+        <BibliographySection id={chemblId} label={name} />
+      </SectionContainer>
     </PlatformApiProvider>
   );
 }

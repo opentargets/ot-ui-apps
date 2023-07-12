@@ -1,28 +1,26 @@
-import { List, ListItem, Typography } from '@material-ui/core';
-import { useQuery } from '@apollo/client';
-import { v1 } from 'uuid';
+import { List, ListItem, Typography } from "@material-ui/core";
+import { useQuery } from "@apollo/client";
+import { v1 } from "uuid";
+import { SectionItem, Tooltip, Link } from "ui";
 
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { DataTable } from '../../../components/Table';
-import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
-import Description from './Description';
-import { epmcUrl } from '../../../utils/urls';
-import { dataTypesMap } from '../../../dataTypes';
-import Link from '../../../components/Link';
-import SectionItem from '../../../components/Section/SectionItem';
-import { sentenceCase } from '../../../utils/global';
-import Tooltip from '../../../components/Tooltip';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
-import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
-import Summary from './Summary';
+import { DataTable } from "../../components/Table";
+import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import Description from "./Description";
+import { epmcUrl } from "../../utils/urls";
+import { dataTypesMap } from "../../dataTypes";
+import { sentenceCase } from "../../utils/global";
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
+import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
+import Summary from "./Summary";
+import { definition } from ".";
 
 const g2pUrl = (studyId, symbol) =>
   `https://www.ebi.ac.uk/gene2phenotype/search?panel=${studyId}&search_term=${symbol}`;
 
 const columns = [
   {
-    id: 'disease.name',
-    label: 'Disease/phenotype',
+    id: "disease.name",
+    label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -42,8 +40,8 @@ const columns = [
     ),
   },
   {
-    id: 'variantFunctionalConsequence',
-    label: 'Functional consequence',
+    id: "variantFunctionalConsequence",
+    label: "Functional consequence",
     renderCell: ({ variantFunctionalConsequence }) =>
       variantFunctionalConsequence ? (
         <Link
@@ -59,13 +57,13 @@ const columns = [
       sentenceCase(variantFunctionalConsequence.label),
   },
   {
-    id: 'allelicRequirements',
-    label: 'Allelic requirement',
+    id: "allelicRequirements",
+    label: "Allelic requirement",
     renderCell: ({ allelicRequirements }) => {
       if (allelicRequirements && allelicRequirements.length > 1) {
         return (
           <List>
-            {allelicRequirements.map(item => (
+            {allelicRequirements.map((item) => (
               <ListItem key={v1()}>{item}</ListItem>
             ))}
           </List>
@@ -80,8 +78,8 @@ const columns = [
     filterValue: ({ allelicRequirements }) => allelicRequirements.join(),
   },
   {
-    id: 'studyId',
-    label: 'Panel',
+    id: "studyId",
+    label: "Panel",
     renderCell: ({ studyId, target: { approvedSymbol } }) => (
       <Link external to={g2pUrl(studyId, approvedSymbol)}>
         {studyId}
@@ -89,14 +87,14 @@ const columns = [
     ),
   },
   {
-    id: 'confidence',
-    label: 'Confidence category',
+    id: "confidence",
+    label: "Confidence category",
     renderCell: ({ confidence }) =>
       confidence ? (
         <Tooltip
           title={
             <Typography variant="caption" display="block" align="center">
-              As defined by the{' '}
+              As defined by the{" "}
               <Link
                 external
                 to="https://thegencc.org/faq.html#validity-termsdelphi-survey"
@@ -114,14 +112,14 @@ const columns = [
       ),
   },
   {
-    id: 'literature',
-    label: 'Literature',
+    id: "literature",
+    label: "Literature",
     renderCell: ({ literature }) => {
       const entries = literature
-        ? literature.map(id => ({
+        ? literature.map((id) => ({
             name: id,
             url: epmcUrl(id),
-            group: 'literature',
+            group: "literature",
           }))
         : [];
       return <PublicationsDrawer entries={entries} />;
@@ -129,13 +127,8 @@ const columns = [
   },
 ];
 
-export function BodyCore({
-  definition,
-  id: { ensgId, efoId },
-  label: { symbol, name },
-  count,
-}) {
-  const variables = { ensemblId: ensgId, efoId, size: count };
+function Body({ id: { ensgId, efoId }, label: { symbol, name } }) {
+  const variables = { ensemblId: ensgId, efoId };
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,
@@ -147,7 +140,7 @@ export function BodyCore({
       chipText={dataTypesMap.genetic_association}
       request={request}
       renderDescription={() => <Description symbol={symbol} name={name} />}
-      renderBody={data => (
+      renderBody={(data) => (
         <DataTable
           columns={columns}
           dataDownloader
@@ -164,18 +157,4 @@ export function BodyCore({
   );
 }
 
-export function Body({ definition, id, label }) {
-  const {
-    data: {
-      gene2Phenotype: { count },
-    },
-  } = usePlatformApi(Summary.fragments.Gene2PhenotypeSummaryFragment);
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

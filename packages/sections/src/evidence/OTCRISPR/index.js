@@ -1,4 +1,4 @@
-import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
+import { isPrivateEvidenceSection } from '../../utils/partnerPreviewUtils';
 
 const id = 'ot_crispr';
 export const definition = {
@@ -9,5 +9,3 @@ export const definition = {
   isPrivate: isPrivateEvidenceSection(id),
 };
 
-export { default as Summary } from './Summary';
-export * from './Body';
