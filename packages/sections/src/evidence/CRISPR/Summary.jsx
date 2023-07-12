@@ -1,5 +1,4 @@
-import { SummaryItem } from "ui";
-import usePlatformApi from "../../hooks/usePlatformApi";
+import { SummaryItem, usePlatformApi } from "ui";
 import { dataTypesMap } from "../../dataTypes";
 import { definition } from ".";
 
