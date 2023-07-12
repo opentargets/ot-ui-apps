@@ -57,7 +57,7 @@ function Profile({ chemblId, name }) {
         <IndicationsSection id={chemblId} label={name} />
         <KnownDrugsSection id={chemblId} label={name} />
         <DrugWarningsSection id={chemblId} label={name} />
-        <AdverseEventsSection id={chemblId} label={name} />
+        {/* <AdverseEventsSection id={chemblId} label={name} /> */}
         <BibliographySection id={chemblId} label={name} />
       </SectionContainer>
     </PlatformApiProvider>

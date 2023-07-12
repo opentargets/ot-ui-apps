@@ -77,7 +77,7 @@ function Profile({ ensgId, symbol }) {
         <ProtVistaSummary />
         <MolecularInteractionsSummary />
         <PathwaysSummary />
-        <CancerHallmarksSummary />
+        {/* <CancerHallmarksSummary /> */}
         <MousePhenotypesSummary />
         <ComparativeGenomicsSummary />
         <SubcellularLocationSummary />
@@ -96,7 +96,7 @@ function Profile({ ensgId, symbol }) {
         <ProtVistaSection id={ensgId} label={symbol} />
         <MolecularInteractionsSection id={ensgId} label={symbol} />
         <PathwaysSection id={ensgId} label={symbol} />
-        <CancerHallmarksSection id={ensgId} label={symbol} />
+        {/* <CancerHallmarksSection id={ensgId} label={symbol} /> */}
         <MousePhenotypesSection id={ensgId} label={symbol} />
         <ComparativeGenomicsSection id={ensgId} label={symbol} />
         <SubcellularLocationSection id={ensgId} label={symbol} />
