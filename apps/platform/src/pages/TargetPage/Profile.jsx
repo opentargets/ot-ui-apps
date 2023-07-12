@@ -1,7 +1,23 @@
 import { gql } from '@apollo/client';
-import { PlatformApiProvider, SectionContainer } from 'ui';
+import { PlatformApiProvider, SectionContainer, SummaryContainer } from 'ui';
 
-import ProfileHeader from './ProfileHeader';
+import KnownDrugsSummary from 'sections/src/target/KnownDrugs/Summary';
+import TractabilitySummary from 'sections/src/target/Tractability/Summary';
+import SafetySummary from 'sections/src/target/Safety/Summary';
+import ChemicalProbesSummary from 'sections/src/target/ChemicalProbes/Summary';
+import BaselineExpressionSummary from 'sections/src/target/Expression/Summary';
+import DepMapSummary from 'sections/src/target/DepMap/Summary';
+import GeneOntologySummary from 'sections/src/target/GeneOntology/Summary';
+import GeneticConstraintSummary from 'sections/src/target/GeneticConstraint/Summary';
+import ProtVistaSummary from 'sections/src/target/ProtVista/Summary';
+import MolecularInteractionsSummary from 'sections/src/target/MolecularInteractions/Summary';
+import PathwaysSummary from 'sections/src/target/Pathways/Summary';
+import CancerHallmarksSummary from 'sections/src/target/CancerHallmarks/Summary';
+import MousePhenotypesSummary from 'sections/src/target/MousePhenotypes/Summary';
+import ComparativeGenomicsSummary from 'sections/src/target/ComparativeGenomics/Summary';
+import SubcellularLocationSummary from 'sections/src/target/SubcellularLocation/Summary';
+import BibliographySummary from 'sections/src/target/Bibliography/Summary';
+
 import KnownDrugsSection from 'sections/src/target/KnownDrugs/Body';
 import TractabilitySection from 'sections/src/target/Tractability/Body';
 import SafetySection from 'sections/src/target/Safety/Body';
@@ -18,6 +34,7 @@ import MousePhenotypesSection from 'sections/src/target/MousePhenotypes/Body';
 import ComparativeGenomicsSection from 'sections/src/target/ComparativeGenomics/Body';
 import SubcellularLocationSection from 'sections/src/target/SubcellularLocation/Body';
 import BibliographySection from 'sections/src/target/Bibliography/Body';
+import ProfileHeader from './ProfileHeader';
 import { createSummaryFragment } from '../../components/Summary/utils';
 
 import sections from './sections';
@@ -48,6 +65,24 @@ function Profile({ ensgId, symbol }) {
       client={client}
     >
       <ProfileHeader />
+      <SummaryContainer>
+        <KnownDrugsSummary />
+        <TractabilitySummary />
+        <SafetySummary />
+        <ChemicalProbesSummary />
+        <BaselineExpressionSummary />
+        <DepMapSummary />
+        <GeneOntologySummary />
+        <GeneticConstraintSummary />
+        <ProtVistaSummary />
+        <MolecularInteractionsSummary />
+        <PathwaysSummary />
+        <CancerHallmarksSummary />
+        <MousePhenotypesSummary />
+        <ComparativeGenomicsSummary />
+        <SubcellularLocationSummary />
+        <BibliographySummary />
+      </SummaryContainer>
 
       <SectionContainer>
         <KnownDrugsSection id={ensgId} label={symbol} />
@@ -61,7 +96,7 @@ function Profile({ ensgId, symbol }) {
         <ProtVistaSection id={ensgId} label={symbol} />
         <MolecularInteractionsSection id={ensgId} label={symbol} />
         <PathwaysSection id={ensgId} label={symbol} />
-        {/* <CancerHallmarksSection id={ensgId} label={symbol} /> */}
+        <CancerHallmarksSection id={ensgId} label={symbol} />
         <MousePhenotypesSection id={ensgId} label={symbol} />
         <ComparativeGenomicsSection id={ensgId} label={symbol} />
         <SubcellularLocationSection id={ensgId} label={symbol} />

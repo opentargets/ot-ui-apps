@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { SummaryItem, usePlatformApi } from "ui";
 
-import definition from ".";
+import {definition} from ".";
 import SAFETY_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 
 function Summary() {
