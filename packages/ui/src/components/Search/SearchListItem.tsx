@@ -1,6 +1,7 @@
 import { makeStyles, Typography, Chip } from "@material-ui/core";
 import SearchRecentListItem from "./SearchRecentListItem";
 import { commaSeparate } from "./utils/searchUtils";
+import ArrowTurnDownLeft from "../../components/icons/ArrowTurnDownLeft";
 
 const useStyles = makeStyles((theme) => ({
   justifyBetween: {
@@ -26,7 +27,19 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "capitalize",
     display: "flex",
     alignItems: "center",
+    width: "100%"
   },
+  searchListItem: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    cursor: "pointer",
+    width: "100%",
+    wordBreak: "break-word",
+  },
+  searchListItemText: {
+    maxWidth: "90%"
+  }
 }));
 
 export interface SearchResult {
@@ -66,7 +79,16 @@ function SearchListItem({
   }
 
   const getSymbolHeader = () => {
-    if (!(item.entity === "search") && item.symbol && item.name)
+    if (item.entity === "search") {
+      return (
+        <div className={classes.searchListItem}>
+          <Typography className={classes.searchListItemText} variant="subtitle1">
+            {item.symbol || item.name || item.id}
+          </Typography>
+          <ArrowTurnDownLeft />
+        </div>
+      );
+    } else if (!(item.entity === "search") && item.symbol && item.name)
       return (
         <>
           <Typography variant={isTopHit ? "h6" : "subtitle1"}>
@@ -101,14 +123,13 @@ function SearchListItem({
             <span className={classes.id}>{item.id}</span>
           </Typography>
         </div>
-        {isTopHit &&
-          item.description && (
-            <div className="functionDescription">
-              <Typography variant="subtitle1">
-                {item.description.substring(0, 180)} ...{" "}
-              </Typography>
-            </div>
-          )}
+        {isTopHit && item.description && (
+          <div className="functionDescription">
+            <Typography variant="subtitle1">
+              {item.description.substring(0, 180)} ...{" "}
+            </Typography>
+          </div>
+        )}
 
         <div className={classes.justifyBetween}>
           <Typography variant="caption">
