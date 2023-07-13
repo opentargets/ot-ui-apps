@@ -22,6 +22,7 @@
     "@material-ui/styles": "^4.9.1",
     "@mui/icons-material": "^5.14.0",
     "@mui/material": "^5.14.0",
+    "@mui/styles": "^5.14.0",
     "@swissprot/swissbiopics-visualizer": "^0.0.28",
     "@tanstack/react-table": "^8.5.11",
     "classnames": "^2.2.6",
