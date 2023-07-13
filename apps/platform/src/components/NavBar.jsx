@@ -1,7 +1,6 @@
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { AppBar, Toolbar, Button, Typography, MenuItem, MenuList, useMediaQuery } from '@mui/material';
-// import { withStyles } from '@mui/styles';
-import { withStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme, styled } from '@mui/styles';
 import classNames from 'classnames';
 import { v1 } from 'uuid';
 
@@ -10,16 +9,16 @@ import OpenTargetsTitle from './OpenTargetsTitle';
 import HeaderMenu from './HeaderMenu';
 import PrivateWrapper from './PrivateWrapper';
 
-const styles = theme => ({
+const useStyles = makeStyles((theme) => ({
   navbar: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: `${theme.palette.primary.main} !important`,
     margin: 0,
     width: '100%',
   },
   navbarHomepage: {
     left: 0,
     top: 0,
-    position: 'absolute',
+    position: 'absolute !important',
   },
   flex: {
     flexGrow: 1,
@@ -66,7 +65,7 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'end',
   },
-});
+}));
 
 function MenuExternalLink({ classes, href, children }) {
   return (
@@ -84,7 +83,6 @@ function MenuExternalLink({ classes, href, children }) {
 }
 
 function NavBar({
-  classes,
   name,
   search,
   api,
@@ -95,6 +93,7 @@ function NavBar({
   items,
   placement,
 }) {
+  const classes = useStyles();
   const theme = useTheme();
   const smMQ = useMediaQuery(theme.breakpoints.down('sm'));
   const isHomePageRegular = homepage && !smMQ;
@@ -185,4 +184,4 @@ function NavBar({
   );
 }
 
-export default withStyles(styles)(NavBar);
+export default NavBar;

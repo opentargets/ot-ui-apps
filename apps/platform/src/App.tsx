@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
-import { ThemeProvider, SearchProvider } from 'ui';
+// TODO: this is temporary
+// import { ThemeProvider, SearchProvider } from 'ui';
+import { SearchProvider } from 'ui';
+import ThemeProvider from './temp/ThemeProvider/ThemeProvider';
 
 import SEARCH_QUERY from './components/Search/SearchQuery.gql';
 import PrivateRoute from './components/PrivateRoute';
