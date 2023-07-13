@@ -18,8 +18,9 @@ import client from '../../client';
 import ProfileHeader from './ProfileHeader';
 
 import PrivateWrapper from '../../components/PrivateWrapper';
+import sections from './sections';
 
-const DISEASE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment([], 'Disease');
+const DISEASE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(sections, 'Disease');
 const DISEASE_PROFILE_QUERY = gql`
   query DiseaseProfileQuery($efoId: String!) {
     disease(efoId: $efoId) {
@@ -42,7 +43,7 @@ function Profile({ efoId, name }) {
     >
       <ProfileHeader />
       <SummaryContainer>
-        {/* <OntologySummary  /> */}
+        <OntologySummary  />
         <KnownDrugsSummary  />
         <PhenotypesSummary  />
         <BibliographySummary  />
