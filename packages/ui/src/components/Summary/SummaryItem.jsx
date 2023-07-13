@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import classNames from "classnames";
 import {
   Avatar,
   Card,
@@ -6,12 +6,12 @@ import {
   Grid,
   LinearProgress,
   Typography,
-} from '@material-ui/core';
-import { scroller } from 'react-scroll';
+} from "@material-ui/core";
+import { scroller } from "react-scroll";
 
-import summaryStyles from './summaryStyles';
-import { createShortName } from './utils';
-import PartnerLockIcon from '../PartnerLockIcon';
+import summaryStyles from "./summaryStyles";
+import { createShortName } from "./utils";
+import PartnerLockIcon from "../PartnerLockIcon";
 
 function SummaryItem({ definition, request, renderSummary, subText }) {
   const classes = summaryStyles();
@@ -58,7 +58,7 @@ function SummaryItem({ definition, request, renderSummary, subText }) {
                 })}
                 variant="body2"
               >
-                {definition.name}{' '}
+                {definition.name}{" "}
                 {definition.isPrivate ? <PartnerLockIcon /> : null}
               </Typography>
               {subText ? (
@@ -71,32 +71,22 @@ function SummaryItem({ definition, request, renderSummary, subText }) {
                   {subText}
                 </Typography>
               ) : null}
+
+              <Typography
+                className={classNames(classes.subheader, {
+                  [classes.subheaderHasData]: hasData,
+                  [classes.subheaderError]: error,
+                })}
+              >
+                {error && "An error occurred while loading this section"}
+                {loading && "Loading..."}
+                {!loading && data && !hasData && "no data"}
+                {!loading && data && hasData && renderSummary(data)}
+              </Typography>
             </>
           }
         />
         {loading && <LinearProgress />}
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-          className={classes.content}
-        >
-          <Grid item>
-            <Typography
-              align="center"
-              className={classNames(classes.subheader, {
-                [classes.subheaderHasData]: hasData,
-                [classes.subheaderError]: error,
-              })}
-            >
-              {error && 'An error occurred while loading this section'}
-              {loading && 'Loading...'}
-              {!loading && data && !hasData && 'no data'}
-              {!loading && data && hasData && renderSummary(data)}
-            </Typography>
-          </Grid>
-        </Grid>
       </Card>
     </Grid>
   );

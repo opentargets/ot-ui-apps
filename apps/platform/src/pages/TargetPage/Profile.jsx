@@ -72,6 +72,7 @@ function Profile({ ensgId, symbol }) {
         <ChemicalProbesSummary />
         <BaselineExpressionSummary />
         <DepMapSummary />
+        <SubcellularLocationSummary />
         <GeneOntologySummary />
         <GeneticConstraintSummary />
         <ProtVistaSummary />
@@ -80,7 +81,6 @@ function Profile({ ensgId, symbol }) {
         {/* <CancerHallmarksSummary /> */}
         <MousePhenotypesSummary />
         <ComparativeGenomicsSummary />
-        <SubcellularLocationSummary />
         <BibliographySummary />
       </SummaryContainer>
 
@@ -91,6 +91,7 @@ function Profile({ ensgId, symbol }) {
         <ChemicalProbesSection id={ensgId} label={symbol} />
         <BaselineExpressionSection id={ensgId} label={symbol} />
         <DepMapSection id={ensgId} label={symbol} />
+        <SubcellularLocationSection id={ensgId} label={symbol} />
         <GeneOntologySection id={ensgId} label={symbol} />
         <GeneticConstraintSection id={ensgId} label={symbol} />
         <ProtVistaSection id={ensgId} label={symbol} />
@@ -99,7 +100,6 @@ function Profile({ ensgId, symbol }) {
         {/* <CancerHallmarksSection id={ensgId} label={symbol} /> */}
         <MousePhenotypesSection id={ensgId} label={symbol} />
         <ComparativeGenomicsSection id={ensgId} label={symbol} />
-        <SubcellularLocationSection id={ensgId} label={symbol} />
         <BibliographySection id={ensgId} label={symbol} />
       </SectionContainer>
     </PlatformApiProvider>
