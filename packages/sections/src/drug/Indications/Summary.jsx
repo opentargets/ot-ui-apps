@@ -1,18 +1,18 @@
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SummaryItem from '../../../components/Summary/SummaryItem';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import INDICATIONS_SUMMARY_FRAGMENT from './IndicationsSummaryFragment.gql';
+import { definition } from ".";
+import INDICATIONS_SUMMARY_FRAGMENT from "./IndicationsSummaryFragment.gql";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(INDICATIONS_SUMMARY_FRAGMENT);
 
   return (
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         `${data.indications.count} indication${
-          data.indications.count !== 1 ? 's' : ''
+          data.indications.count !== 1 ? "s" : ""
         }`
       }
     />

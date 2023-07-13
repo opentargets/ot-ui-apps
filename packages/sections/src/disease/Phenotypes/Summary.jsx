@@ -1,8 +1,9 @@
 import { usePlatformApi, SummaryItem } from "ui";
 
+import { definition } from ".";
 import PHENOTYPES_SUMMARY_FRAGMENT from "./PhenotypesSummaryFragment.gql";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(PHENOTYPES_SUMMARY_FRAGMENT);
 
   return (

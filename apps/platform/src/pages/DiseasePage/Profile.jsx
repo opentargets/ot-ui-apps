@@ -1,5 +1,11 @@
 import { gql } from '@apollo/client';
-import { PlatformApiProvider, SectionContainer } from 'ui';
+import { PlatformApiProvider, SectionContainer, SummaryContainer } from 'ui';
+
+import OntologySummary from 'sections/src/disease/Ontology/Summary';
+import KnownDrugsSummary from 'sections/src/disease/KnownDrugs/Summary';
+import BibliographySummary from 'sections/src/disease/Bibliography/Summary';
+import PhenotypesSummary from 'sections/src/disease/Phenotypes/Summary';
+import OTProjectsSummary from 'sections/src/disease/OTProjects/Summary';
 
 import OntologySection from 'sections/src/disease/Ontology/Body';
 import KnownDrugsSection from 'sections/src/disease/KnownDrugs/Body';
@@ -12,8 +18,9 @@ import client from '../../client';
 import ProfileHeader from './ProfileHeader';
 
 import PrivateWrapper from '../../components/PrivateWrapper';
+import sections from './sections';
 
-const DISEASE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment([], 'Disease');
+const DISEASE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(sections, 'Disease');
 const DISEASE_PROFILE_QUERY = gql`
   query DiseaseProfileQuery($efoId: String!) {
     disease(efoId: $efoId) {
@@ -35,9 +42,15 @@ function Profile({ efoId, name }) {
       client={client}
     >
       <ProfileHeader />
-      {/* <SummaryContainer>
-        <BibliographySummary id={efoId} label={name} />
-      </SummaryContainer> */}
+      <SummaryContainer>
+        <OntologySummary  />
+        <KnownDrugsSummary  />
+        <PhenotypesSummary  />
+        <BibliographySummary  />
+        <PrivateWrapper>
+          <OTProjectsSummary  />
+        </PrivateWrapper>
+      </SummaryContainer>
 
       <SectionContainer>
         <OntologySection id={efoId} label={name} />
