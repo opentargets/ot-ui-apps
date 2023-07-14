@@ -1,20 +1,19 @@
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SectionItem from '../../../components/Section/SectionItem';
-import Tooltip from '../../../components/Tooltip';
-import { DataTable, TableDrawer } from '../../../components/Table';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
-import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
-import { dataTypesMap } from '../../../dataTypes';
-import Description from './Description';
-import { sentenceCase } from '../../../utils/global';
-import { epmcUrl } from '../../../utils/urls';
-import Link from '../../../components/Link';
-import Summary from './Summary';
-import EllsWrapper from '../../../components/EllsWrapper';
+import { Link, SectionItem, Tooltip } from 'ui';
 
+import { definition } from '.';
+import Summary from './Summary';
+import Description from './Description';
+import { epmcUrl } from '../../utils/urls';
+import { dataTypesMap } from '../../dataTypes';
 import REACTOME_QUERY from './sectionQuery.gql';
+import { sentenceCase } from '../../utils/global';
+import EllsWrapper from '../../components/EllsWrapper';
+import { DataTable, TableDrawer } from '../../components/Table';
+import { defaultRowsPerPageOptions, naLabel } from '../../constants';
+import { PublicationsDrawer } from '../../components/PublicationsDrawer';
+
 
 const columns = [
   {
@@ -146,13 +145,12 @@ const columns = [
   },
 ];
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({  id, label }) {
   const { ensgId, efoId } = id;
 
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(REACTOME_QUERY, {
@@ -187,17 +185,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.reactomeSummary
-  );
-  const { count } = summaryData.reactomeSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

@@ -1,19 +1,16 @@
 import { Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
+import { Link, SectionItem, Tooltip } from 'ui';
 
-import { DataTable, TableDrawer } from '../../../components/Table';
-import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
-import Description from './Description';
-import Link from '../../../components/Link';
-import MouseModelAllelicComposition from '../../../components/MouseModelAllelicComposition';
-import SectionItem from '../../../components/Section/SectionItem';
-import { sentenceCase } from '../../../utils/global';
+import { definition } from '.';
 import Summary from './Summary';
-import Tooltip from '../../../components/Tooltip';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { dataTypesMap } from '../../../dataTypes';
-
+import Description from './Description';
 import INTOGEN_QUERY from './sectionQuery.gql';
+import { dataTypesMap } from '../../dataTypes';
+import { sentenceCase } from '../../utils/global';
+import { DataTable, TableDrawer } from '../../components/Table';
+import { defaultRowsPerPageOptions, naLabel } from '../../constants';
+import MouseModelAllelicComposition from '../../components/MouseModelAllelicComposition';
 
 const columns = [
   {
@@ -124,12 +121,11 @@ const columns = [
   },
 ];
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
   const request = useQuery(INTOGEN_QUERY, {
     variables,
@@ -160,17 +156,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.IMCPSummaryFragment
-  );
-  const { count } = summaryData.impc;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

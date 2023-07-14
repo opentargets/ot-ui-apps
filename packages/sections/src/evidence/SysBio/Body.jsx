@@ -1,18 +1,15 @@
 import { useQuery } from '@apollo/client';
+import { Link, SectionItem, Tooltip } from 'ui';
 
-import { DataTable } from '../../../components/Table';
-import Description from './Description';
-import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
-import { epmcUrl } from '../../../utils/urls';
-import Link from '../../../components/Link';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
-import SectionItem from '../../../components/Section/SectionItem';
+import { definition } from '.';
 import Summary from './Summary';
-import Tooltip from '../../../components/Tooltip';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { dataTypesMap } from '../../../dataTypes';
-
+import Description from './Description';
+import { epmcUrl } from '../../utils/urls';
 import SYSBIO_QUERY from './sectionQuery.gql';
+import { dataTypesMap } from '../../dataTypes';
+import { DataTable } from '../../components/Table';
+import { defaultRowsPerPageOptions, naLabel } from '../../constants';
+import { PublicationsDrawer } from '../../components/PublicationsDrawer';
 
 const columns = [
   {
@@ -59,13 +56,12 @@ const columns = [
   },
 ];
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
 
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(SYSBIO_QUERY, {
@@ -97,17 +93,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.SysBioSummaryFragment
-  );
-  const { count } = summaryData.sysBio;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

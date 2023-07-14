@@ -1,30 +1,28 @@
-import { useQuery } from '@apollo/client';
-import { Box, Typography, makeStyles } from '@material-ui/core';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { sentenceCase } from '../../../utils/global';
-import SectionItem from '../../../components/Section/SectionItem';
-import ChipList from '../../../components/ChipList';
-import { DataTable } from '../../../components/Table';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
-import { epmcUrl } from '../../../utils/urls';
+import { useQuery } from "@apollo/client";
+import { Box, Typography, makeStyles } from "@material-ui/core";
+import { SectionItem, ChipList, Tooltip, Link } from "ui";
+
+import { sentenceCase } from "../../utils/global";
+
+import { DataTable } from "../../components/Table";
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
+import { epmcUrl } from "../../utils/urls";
 import {
   clinvarStarMap,
   naLabel,
   defaultRowsPerPageOptions,
-} from '../../../constants';
-import Tooltip from '../../../components/Tooltip';
-import ClinvarStars from '../../../components/ClinvarStars';
-import Summary from './Summary';
-import Description from './Description';
-import Link from '../../../components/Link';
-import { dataTypesMap } from '../../../dataTypes';
-
-import EVA_SOMATIC_QUERY from './EvaSomaticQuery.gql';
+} from "../../constants";
+import ClinvarStars from "../../components/ClinvarStars";
+import Summary from "./Summary";
+import Description from "./Description";
+import { dataTypesMap } from "../../dataTypes";
+import EVA_SOMATIC_QUERY from "./EvaSomaticQuery.gql";
+import {definition} from '.';
 
 const columns = [
   {
-    id: 'disease.name',
-    label: 'Disease/phenotype',
+    id: "disease.name",
+    label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => (
       <Tooltip
         title={
@@ -47,13 +45,13 @@ const columns = [
                   All reported phenotypes:
                 </Typography>
                 <Typography variant="caption" display="block">
-                  {cohortPhenotypes.map(cp => (
+                  {cohortPhenotypes.map((cp) => (
                     <div key={cp}>{cp}</div>
                   ))}
                 </Typography>
               </>
             ) : (
-              ''
+              ""
             )}
           </>
         }
@@ -64,13 +62,13 @@ const columns = [
     ),
   },
   {
-    id: 'variantId',
-    label: 'Variant ID',
+    id: "variantId",
+    label: "Variant ID",
     renderCell: ({ variantId }) =>
       variantId ? (
         <>
           {variantId.substring(0, 20)}
-          {variantId.length > 20 ? '\u2026' : ''}
+          {variantId.length > 20 ? "\u2026" : ""}
         </>
       ) : (
         naLabel
@@ -78,8 +76,8 @@ const columns = [
     filterValue: ({ variantId }) => `${variantId}`,
   },
   {
-    id: 'variantRsId',
-    label: 'rsID',
+    id: "variantRsId",
+    label: "rsID",
     renderCell: ({ variantRsId }) =>
       variantRsId ? (
         <Link
@@ -94,14 +92,14 @@ const columns = [
     filterValue: ({ variantRsId }) => `${variantRsId}`,
   },
   {
-    id: 'variantHgvsId',
-    label: 'HGVS ID',
+    id: "variantHgvsId",
+    label: "HGVS ID",
     renderCell: ({ variantHgvsId }) => variantHgvsId || naLabel,
     filterValue: ({ variantHgvsId }) => `${variantHgvsId}`,
   },
   {
-    id: 'studyId',
-    label: 'ClinVar ID',
+    id: "studyId",
+    label: "ClinVar ID",
     renderCell: ({ studyId }) => (
       <Link external to={`https://identifiers.org/clinvar.record/${studyId}`}>
         {studyId}
@@ -109,8 +107,8 @@ const columns = [
     ),
   },
   {
-    id: 'clinicalSignificances',
-    label: 'Clinical significance',
+    id: "clinicalSignificances",
+    label: "Clinical significance",
     renderCell: ({ clinicalSignificances }) => {
       if (!clinicalSignificances) return naLabel;
 
@@ -123,10 +121,10 @@ const columns = [
             style={{
               margin: 0,
               padding: 0,
-              listStyle: 'none',
+              listStyle: "none",
             }}
           >
-            {clinicalSignificances.map(clinicalSignificance => (
+            {clinicalSignificances.map((clinicalSignificance) => (
               <li key={clinicalSignificance}>
                 {sentenceCase(clinicalSignificance)}
               </li>
@@ -139,8 +137,8 @@ const columns = [
     filterValue: ({ clinicalSignificances }) => clinicalSignificances.join(),
   },
   {
-    id: 'allelicRequirements',
-    label: 'Allele origin',
+    id: "allelicRequirements",
+    label: "Allele origin",
     renderCell: ({ alleleOrigins, allelicRequirements }) => {
       if (!alleleOrigins || alleleOrigins.length === 0) return naLabel;
 
@@ -152,7 +150,7 @@ const columns = [
                 <Typography variant="subtitle2" display="block" align="center">
                   Allelic requirements:
                 </Typography>
-                {allelicRequirements.map(r => (
+                {allelicRequirements.map((r) => (
                   <Typography variant="caption" key={r}>
                     {r}
                   </Typography>
@@ -161,17 +159,17 @@ const columns = [
             }
             showHelpIcon
           >
-            {alleleOrigins.map(a => sentenceCase(a)).join('; ')}
+            {alleleOrigins.map((a) => sentenceCase(a)).join("; ")}
           </Tooltip>
         );
 
-      return alleleOrigins.map(a => sentenceCase(a)).join('; ');
+      return alleleOrigins.map((a) => sentenceCase(a)).join("; ");
     },
     filterValue: ({ alleleOrigins }) =>
-      alleleOrigins ? alleleOrigins.join() : '',
+      alleleOrigins ? alleleOrigins.join() : "",
   },
   {
-    label: 'Review status',
+    label: "Review status",
     renderCell: ({ confidence }) => (
       <Tooltip title={confidence}>
         <span>
@@ -181,15 +179,15 @@ const columns = [
     ),
   },
   {
-    label: 'Literature',
+    label: "Literature",
     renderCell: ({ literature }) => {
       const literatureList =
         literature?.reduce((acc, id) => {
-          if (id !== 'NA') {
+          if (id !== "NA") {
             acc.push({
               name: id,
               url: epmcUrl(id),
-              group: 'literature',
+              group: "literature",
             });
           }
           return acc;
@@ -202,20 +200,19 @@ const columns = [
 
 const useStyles = makeStyles({
   roleInCancerBox: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '2rem',
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "2rem",
   },
-  roleInCancerTitle: { marginRight: '.5rem' },
+  roleInCancerTitle: { marginRight: ".5rem" },
 });
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({ id, label }) {
   const classes = useStyles();
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(EVA_SOMATIC_QUERY, {
@@ -236,12 +233,12 @@ export function BodyCore({ definition, id, label, count }) {
         const roleInCancerItems =
           hallmarks && hallmarks.attributes.length > 0
             ? hallmarks.attributes
-                .filter(attribute => attribute.name === 'role in cancer')
-                .map(attribute => ({
+                .filter((attribute) => attribute.name === "role in cancer")
+                .map((attribute) => ({
                   label: attribute.description,
                   url: epmcUrl(attribute.pmid),
                 }))
-            : [{ label: 'Unknown' }];
+            : [{ label: "Unknown" }];
         return (
           <>
             <Box className={classes.roleInCancerBox}>
@@ -268,17 +265,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.evaSomaticSummary
-  );
-  const { count } = summaryData.evaSomaticSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

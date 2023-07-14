@@ -14,7 +14,7 @@ const summaryStyles = makeStyles(theme => ({
   card: {
     height: '100%',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
   },
   cardHasData: {
     cursor: 'pointer',

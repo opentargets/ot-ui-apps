@@ -1,9 +1,32 @@
 import { gql } from '@apollo/client';
-import { SectionContainer } from 'ui';
+import { PlatformApiProvider, SectionContainer, SummaryContainer } from 'ui';
 
-import { createSummaryFragment } from '../../components/Summary/utils';
-import PlatformApiProvider from '../../contexts/PlatformApiProvider';
-import ProfileHeader from './ProfileHeader';
+import CancerBiomarkersSummary from 'sections/src/evidence/CancerBiomarkers/Summary';
+import CancerGeneCensusSummary from 'sections/src/evidence/CancerGeneCensus/Summary';
+import ChemblSummary from 'sections/src/evidence/Chembl/Summary';
+import ClinGenSummary from 'sections/src/evidence/ClinGen/Summary';
+import CRISPRSummary from 'sections/src/evidence/CRISPR/Summary';
+import CrisprScreenSummary from 'sections/src/evidence/CRISPRScreen/Summary';
+import EuropePmcSummary from 'sections/src/evidence/EuropePmc/Summary';
+import EVASummary from 'sections/src/evidence/EVA/Summary';
+import EVASomaticSummary from 'sections/src/evidence/EVASomatic/Summary';
+import ExpressionAtlasSummary from 'sections/src/evidence/ExpressionAtlas/Summary';
+import Gene2PhenotypeSummary from 'sections/src/evidence/Gene2Phenotype/Summary';
+import GenomicsEnglandSummary from 'sections/src/evidence/GenomicsEngland/Summary';
+import ImpcSummary from 'sections/src/evidence/Impc/Summary';
+import IntOgenSummary from 'sections/src/evidence/IntOgen/Summary';
+import GeneBurdenSummary from 'sections/src/evidence/GeneBurden/Summary';
+import OrphanetSummary from 'sections/src/evidence/Orphanet/Summary';
+import OTCRISPRSummary from 'sections/src/evidence/OTCRISPR/Summary';
+import OTEncoreSummary from 'sections/src/evidence/OTEncore/Summary';
+import OTGeneticsSummary from 'sections/src/evidence/OTGenetics/Summary';
+import OTValidationSummary from 'sections/src/evidence/OTValidation/Summary';
+import ProgenySummary from 'sections/src/evidence/Progeny/Summary';
+import ReactomeSummary from 'sections/src/evidence/Reactome/Summary';
+import SlapEnrichSummary from 'sections/src/evidence/SlapEnrich/Summary';
+import SysBioSummary from 'sections/src/evidence/SysBio/Summary';
+import UniProtLiteratureSummary from 'sections/src/evidence/UniProtLiterature/Summary';
+import UniProtVariantsSummary from 'sections/src/evidence/UniProtVariants/Summary';
 
 import CancerBiomarkersSection from 'sections/src/evidence/CancerBiomarkers/Body';
 import CancerGeneCensusSection from 'sections/src/evidence/CancerGeneCensus/Body';
@@ -12,11 +35,30 @@ import ClinGenSection from 'sections/src/evidence/ClinGen/Body';
 import CRISPRSection from 'sections/src/evidence/CRISPR/Body';
 import CrisprScreenSection from 'sections/src/evidence/CRISPRScreen/Body';
 import EuropePmcSection from 'sections/src/evidence/EuropePmc/Body';
-
-import SectionOrderProvider from '../../contexts/SectionOrderProvider';
-// import SummaryContainer from '../../components/Summary/SummaryContainer';
+import EVASection from 'sections/src/evidence/EVA/Body';
+import EVASomaticSection from 'sections/src/evidence/EVASomatic/Body';
+import ExpressionAtlasSection from 'sections/src/evidence/ExpressionAtlas/Body';
+import Gene2PhenotypeSection from 'sections/src/evidence/Gene2Phenotype/Body';
+import GenomicsEnglandSection from 'sections/src/evidence/GenomicsEngland/Body';
+import ImpcSection from 'sections/src/evidence/Impc/Body';
+import IntOgenSection from 'sections/src/evidence/IntOgen/Body';
+import GeneBurdenSection from 'sections/src/evidence/GeneBurden/Body';
+import OrphanetSection from 'sections/src/evidence/Orphanet/Body';
+import OTCRISPRSection from 'sections/src/evidence/OTCRISPR/Body';
+import OTEncoreSection from 'sections/src/evidence/OTEncore/Body';
+import OTGeneticsSection from 'sections/src/evidence/OTGenetics/Body';
+import OTValidationSection from 'sections/src/evidence/OTValidation/Body';
+import ProgenySection from 'sections/src/evidence/Progeny/Body';
+import ReactomeSection from 'sections/src/evidence/Reactome/Body';
+import SlapEnrichSection from 'sections/src/evidence/SlapEnrich/Body';
+import SysBioSection from 'sections/src/evidence/SysBio/Body';
+import UniProtLiteratureSection from 'sections/src/evidence/UniProtLiterature/Body';
+import UniProtVariantsSection from 'sections/src/evidence/UniProtVariants/Body';
 
 import sections from './sections';
+import { createSummaryFragment } from '../../components/Summary/utils';
+import ProfileHeader from './ProfileHeader';
+import PrivateWrapper from '../../components/PrivateWrapper';
 
 const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
   sections,
@@ -61,19 +103,69 @@ function Profile({ ensgId, efoId, symbol, name }) {
       query={EVIDENCE_PROFILE_QUERY}
       variables={{ ensgId, efoId }}
     >
-      {/* <SectionOrderProvider sections={sections}> */}
       <ProfileHeader />
 
+      <SummaryContainer>
+        <OTGeneticsSummary />
+        <EVASummary />
+        <GeneBurdenSummary />
+        <GenomicsEnglandSummary />
+        <Gene2PhenotypeSummary />
+        <UniProtLiteratureSummary />
+        <UniProtVariantsSummary />
+        <ClinGenSummary />
+        <OrphanetSummary />
+        <CancerGeneCensusSummary />
+        <IntOgenSummary />
+        <EVASomaticSummary />
+        <ChemblSummary />
+        <CRISPRSummary />
+        <CrisprScreenSummary />
+        <CancerBiomarkersSummary />
+        <SlapEnrichSummary />
+        <ProgenySummary />
+        <ReactomeSummary />
+        <SysBioSummary />
+        <EuropePmcSummary />
+        <ExpressionAtlasSummary />
+        <ImpcSummary />
+        <PrivateWrapper>
+          <OTCRISPRSummary />
+          <OTEncoreSummary />
+          <OTValidationSummary />
+        </PrivateWrapper>
+      </SummaryContainer>
+
       <SectionContainer>
-        <CancerBiomarkersSection id={id} label={label} />
-        <CancerGeneCensusSection id={id} label={label} />
-        <ChemblSection id={id} label={label} />
+        <OTGeneticsSection id={id} label={label} />
+        <EVASection id={id} label={label} />
+        <GeneBurdenSection id={id} label={label} />
+        <GenomicsEnglandSection id={id} label={label} />
+        <Gene2PhenotypeSection id={id} label={label} />
+        <UniProtLiteratureSection id={id} label={label} />
+        <UniProtVariantsSection id={id} label={label} />
         <ClinGenSection id={id} label={label} />
+        <OrphanetSection id={id} label={label} />
+        <CancerGeneCensusSection id={id} label={label} />
+        <IntOgenSection id={id} label={label} />
+        <EVASomaticSection id={id} label={label} />
+        <ChemblSection id={id} label={label} />
         <CRISPRSection id={id} label={label} />
         <CrisprScreenSection id={id} label={label} />
+        <CancerBiomarkersSection id={id} label={label} />
+        <SlapEnrichSection id={id} label={label} />
+        <ProgenySection id={id} label={label} />
+        <ReactomeSection id={id} label={label} />
+        <SysBioSection id={id} label={label} />
         <EuropePmcSection id={id} label={label} />
+        <ExpressionAtlasSection id={id} label={label} />
+        <ImpcSection id={id} label={label} />
+        <PrivateWrapper>
+          <OTCRISPRSection id={id} label={label} />
+          <OTEncoreSection id={id} label={label} />
+          <OTValidationSection id={id} label={label} />
+        </PrivateWrapper>
       </SectionContainer>
-      {/* </SectionOrderProvider> */}
     </PlatformApiProvider>
   );
 }

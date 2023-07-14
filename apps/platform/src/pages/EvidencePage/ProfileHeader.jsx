@@ -7,6 +7,7 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
+import { Link, usePlatformApi } from 'ui';
 
 import { Skeleton } from '@material-ui/lab';
 import {
@@ -14,8 +15,6 @@ import {
   ProfileHeader as BaseProfileHeader,
   ChipList,
 } from '../../components/ProfileHeader';
-import Link from '../../components/Link';
-import usePlatformApi from '../../hooks/usePlatformApi';
 
 const useStyles = makeStyles(theme => ({
   card: { height: '100%' },

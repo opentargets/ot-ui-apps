@@ -1,10 +1,9 @@
-import { usePlatformApi } from "ui";
-
-import SummaryItem from "../../components/Summary/SummaryItem";
+import { SummaryItem, usePlatformApi } from "ui";
 
 import ONTOLOGY_SUMMARY_FRAGMENT from "./OntologySummaryFragment.gql";
+import { definition } from ".";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(ONTOLOGY_SUMMARY_FRAGMENT);
 
   return (

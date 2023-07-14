@@ -1,4 +1,4 @@
-import Link from '../../../components/Link';
+import { Link } from "ui";
 
 function Description({ symbol, diseaseName }) {
   return (

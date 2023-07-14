@@ -1,11 +1,10 @@
-query EvaSomaticQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
+query EvaSomaticQuery($ensemblId: String!, $efoId: String!) {
   disease(efoId: $efoId) {
     id
     evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["eva_somatic"]
-      size: $size
     ) {
       rows {
         disease {

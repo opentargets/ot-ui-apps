@@ -1,43 +1,40 @@
-import { useState, useEffect } from 'react';
-import { Typography, makeStyles, Chip } from '@material-ui/core';
-import client from '../../../client';
-import ClinvarStars from '../../../components/ClinvarStars';
+import { useState, useEffect } from "react";
+import { Typography, makeStyles, Chip } from "@material-ui/core";
+import { Link, SectionItem, Tooltip } from "ui";
+
 import {
   clinvarStarMap,
   naLabel,
   defaultRowsPerPageOptions,
-} from '../../../constants';
-import { getPage, Table } from '../../../components/Table';
-import { getComparator } from '../../../components/Table/sortingAndFiltering';
-import useCursorBatchDownloader from '../../../hooks/useCursorBatchDownloader';
-import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
-import Description from './Description';
-import Link from '../../../components/Link';
-import { epmcUrl } from '../../../utils/urls';
-import { sentenceCase } from '../../../utils/global';
-import SectionItem from '../../../components/Section/SectionItem';
-import Tooltip from '../../../components/Tooltip';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-
-import Summary from './Summary';
-import { dataTypesMap } from '../../../dataTypes';
-
-import CLINVAR_QUERY from './ClinvarQuery.gql';
+} from "../../constants";
+import { definition } from ".";
+import Summary from "./Summary";
+import client from "../../client";
+import Description from "./Description";
+import { epmcUrl } from "../../utils/urls";
+import CLINVAR_QUERY from "./ClinvarQuery.gql";
+import { dataTypesMap } from "../../dataTypes";
+import { sentenceCase } from "../../utils/global";
+import { getPage, Table } from "../../components/Table";
+import ClinvarStars from "../../components/ClinvarStars";
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
+import { getComparator } from "../../components/Table/sortingAndFiltering";
+import useCursorBatchDownloader from "../../hooks/useCursorBatchDownloader";
 
 const useStyles = makeStyles({
   xsmall: {
-    fontSize: '0.7rem',
+    fontSize: "0.7rem",
   },
   chipLink: {
-    marginLeft: '5px',
+    marginLeft: "5px",
   },
 });
 
 function getColumns(classes) {
   return [
     {
-      id: 'disease.name',
-      label: 'Disease/phenotype',
+      id: "disease.name",
+      label: "Disease/phenotype",
       renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => (
         <Tooltip
           title={
@@ -64,13 +61,13 @@ function getColumns(classes) {
                     All reported phenotypes:
                   </Typography>
                   <Typography variant="caption" display="block">
-                    {cohortPhenotypes.map(cp => (
+                    {cohortPhenotypes.map((cp) => (
                       <div key={cp}>{cp}</div>
                     ))}
                   </Typography>
                 </>
               ) : (
-                ''
+                ""
               )}
             </>
           }
@@ -81,22 +78,22 @@ function getColumns(classes) {
       ),
     },
     {
-      id: 'variantId',
-      label: 'Variant ID',
+      id: "variantId",
+      label: "Variant ID",
       renderCell: ({ variantId }) =>
         // trim long IDs and append '...'
         variantId ? (
           <>
             {variantId.substring(0, 20)}
-            {variantId.length > 20 ? '\u2026' : ''}
+            {variantId.length > 20 ? "\u2026" : ""}
           </>
         ) : (
           naLabel
         ),
     },
     {
-      id: 'variantRsId',
-      label: 'rsID',
+      id: "variantRsId",
+      label: "rsID",
       renderCell: ({ variantRsId }) =>
         variantRsId ? (
           <Link
@@ -110,13 +107,13 @@ function getColumns(classes) {
         ),
     },
     {
-      id: 'variantHgvsId',
-      label: 'HGVS ID',
+      id: "variantHgvsId",
+      label: "HGVS ID",
       renderCell: ({ variantHgvsId }) => variantHgvsId || naLabel,
     },
     {
-      id: 'studyId',
-      label: 'ClinVar ID',
+      id: "studyId",
+      label: "ClinVar ID",
       renderCell: ({ studyId }) =>
         studyId ? (
           <Link external to={`https://www.ncbi.nlm.nih.gov/clinvar/${studyId}`}>
@@ -127,9 +124,9 @@ function getColumns(classes) {
         ),
     },
     {
-      label: 'Functional consequence',
+      label: "Functional consequence",
       renderCell: ({ variantFunctionalConsequence, variantId }) => {
-        const pvparams = variantId?.split('_') || [];
+        const pvparams = variantId?.split("_") || [];
         return (
           <>
             <Link
@@ -148,9 +145,9 @@ function getColumns(classes) {
             {
               // add linkout to ProtVar for specific functional consequence values:
               // "missense variant", "stop gained"
-              (variantFunctionalConsequence.id === 'SO:0001583' ||
-                variantFunctionalConsequence.id === 'SO:0001587') &&
-              pvparams.length == 4 ? (
+              (variantFunctionalConsequence.id === "SO:0001583" ||
+                variantFunctionalConsequence.id === "SO:0001587") &&
+              pvparams.length === 4 ? (
                 <Link
                   external
                   to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
@@ -174,9 +171,9 @@ function getColumns(classes) {
         sentenceCase(variantFunctionalConsequence.label),
     },
     {
-      id: 'clinicalSignificances',
+      id: "clinicalSignificances",
       filterValue: ({ clinicalSignificances }) => clinicalSignificances.join(),
-      label: 'Clinical significance',
+      label: "Clinical significance",
       renderCell: ({ clinicalSignificances }) => {
         if (!clinicalSignificances) return naLabel;
         if (clinicalSignificances.length === 1)
@@ -186,10 +183,10 @@ function getColumns(classes) {
             style={{
               margin: 0,
               padding: 0,
-              listStyle: 'none',
+              listStyle: "none",
             }}
           >
-            {clinicalSignificances.map(clinicalSignificance => (
+            {clinicalSignificances.map((clinicalSignificance) => (
               <li key={clinicalSignificance}>
                 {sentenceCase(clinicalSignificance)}
               </li>
@@ -199,8 +196,8 @@ function getColumns(classes) {
       },
     },
     {
-      id: 'allelicRequirements',
-      label: 'Allele origin',
+      id: "allelicRequirements",
+      label: "Allele origin",
       renderCell: ({ alleleOrigins, allelicRequirements }) => {
         if (!alleleOrigins || alleleOrigins.length === 0) return naLabel;
 
@@ -216,7 +213,7 @@ function getColumns(classes) {
                   >
                     Allelic requirements:
                   </Typography>
-                  {allelicRequirements.map(r => (
+                  {allelicRequirements.map((r) => (
                     <Typography variant="caption" key={r}>
                       {r}
                     </Typography>
@@ -225,18 +222,18 @@ function getColumns(classes) {
               }
               showHelpIcon
             >
-              {alleleOrigins.map(a => sentenceCase(a)).join('; ')}
+              {alleleOrigins.map((a) => sentenceCase(a)).join("; ")}
             </Tooltip>
           );
 
-        return alleleOrigins.map(a => sentenceCase(a)).join('; ');
+        return alleleOrigins.map((a) => sentenceCase(a)).join("; ");
       },
       filterValue: ({ alleleOrigins }) =>
-        alleleOrigins ? alleleOrigins.join() : '',
+        alleleOrigins ? alleleOrigins.join() : "",
     },
     {
-      id: 'confidence',
-      label: 'Review status',
+      id: "confidence",
+      label: "Review status",
       renderCell: ({ confidence }) => (
         <Tooltip title={confidence}>
           <span>
@@ -246,15 +243,15 @@ function getColumns(classes) {
       ),
     },
     {
-      label: 'Literature',
+      label: "Literature",
       renderCell: ({ literature }) => {
         const literatureList =
           literature?.reduce((acc, id) => {
-            if (id !== 'NA') {
+            if (id !== "NA") {
               acc.push({
                 name: id,
                 url: epmcUrl(id),
-                group: 'literature',
+                group: "literature",
               });
             }
             return acc;
@@ -279,17 +276,17 @@ function fetchClinvar({ ensemblId, efoId, cursor, size, freeTextQuery }) {
   });
 }
 
-export function BodyCore({ definition, id, label }) {
+function Body({ id, label }) {
   const { ensgId: ensemblId, efoId } = id;
   const [initialLoading, setInitialLoading] = useState(true); // state variable to keep track of initial loading of rows
   const [loading, setLoading] = useState(false); // state variable to keep track of loading state on page chage
   const [count, setCount] = useState(0);
-  const [cursor, setCursor] = useState('');
+  const [cursor, setCursor] = useState("");
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [size, setPageSize] = useState(10);
   const [sortColumn, setSortColumn] = useState(null);
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortOrder, setSortOrder] = useState("asc");
   // const [globalFilter, setGlobalFilter] = useState('');
 
   const classes = useStyles();
@@ -298,7 +295,7 @@ export function BodyCore({ definition, id, label }) {
   useEffect(() => {
     let isCurrent = true;
 
-    fetchClinvar({ ensemblId, efoId, cursor: '', size }).then(res => {
+    fetchClinvar({ ensemblId, efoId, cursor: "", size }).then((res) => {
       const {
         cursor: newCursor,
         rows: newRows,
@@ -326,11 +323,11 @@ export function BodyCore({ definition, id, label }) {
     `data.disease.evidences`
   );
 
-  const handlePageChange = newPage => {
+  const handlePageChange = (newPage) => {
     const newPageInt = Number(newPage);
     if (size * newPageInt + size > rows.length && cursor !== null) {
       setLoading(true);
-      fetchClinvar({ ensemblId, efoId, cursor, size }).then(res => {
+      fetchClinvar({ ensemblId, efoId, cursor, size }).then((res) => {
         const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
         setRows([...rows, ...newRows]);
         setLoading(false);
@@ -342,12 +339,12 @@ export function BodyCore({ definition, id, label }) {
     }
   };
 
-  const handleRowsPerPageChange = newPageSize => {
+  const handleRowsPerPageChange = (newPageSize) => {
     const newPageSizeInt = Number(newPageSize);
     if (newPageSizeInt > rows.length && cursor !== null) {
       setLoading(true);
       fetchClinvar({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(
-        res => {
+        (res) => {
           const { cursor: newCursor, rows: newRows } =
             res.data.disease.evidences;
           setRows([...rows, ...newRows]);
@@ -363,30 +360,13 @@ export function BodyCore({ definition, id, label }) {
     }
   };
 
-  const handleSortBy = sortBy => {
+  const handleSortBy = (sortBy) => {
     setSortColumn(sortBy);
     setSortOrder(
       // eslint-disable-next-line
-      sortColumn === sortBy ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc'
+      sortColumn === sortBy ? (sortOrder === "asc" ? "desc" : "asc") : "asc"
     );
   };
-
-  // const handleGlobalFilterChange = freeTextQuery => {
-  //   setLoading(true);
-  //   fetchClinvar({ ensemblId, efoId, size, freeTextQuery }).then(res => {
-  //     const {
-  //       cursor: newCursor,
-  //       rows: newRows,
-  //       count: newCount,
-  //     } = res.data.disease.evidences;
-  //     setLoading(false);
-  //     setPage(0);
-  //     setCursor(newCursor);
-  //     setCount(newCount);
-  //     setGlobalFilter(freeTextQuery);
-  //     setRows([...rows, ...newRows]);
-  //   });
-  // };
 
   const processedRows = [...rows];
 
@@ -433,15 +413,4 @@ export function BodyCore({ definition, id, label }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(Summary.fragments.evaSummary);
-  const { count } = summaryData.evaSummary; // reuse the count that was fetched in the summary query
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

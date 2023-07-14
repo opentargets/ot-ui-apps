@@ -1,15 +1,14 @@
 import { useQuery } from '@apollo/client';
 import { makeStyles } from '@material-ui/core';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SectionItem from '../../../components/Section/SectionItem';
-import { DataTable } from '../../../components/Table';
-import { dataTypesMap } from '../../../dataTypes';
+import { SectionItem, Link, Tooltip } from 'ui';
+
+import { definition } from '.';
 import Summary from './Summary';
 import Description from './Description';
-import Tooltip from '../../../components/Tooltip';
-import TooltipStyledLabel from '../../../components/TooltipStyledLabel';
-import Link from '../../../components/Link';
-import { defaultRowsPerPageOptions } from '../../../constants';
+import { dataTypesMap } from '../../dataTypes';
+import { DataTable } from '../../components/Table';
+import { defaultRowsPerPageOptions } from '../../constants';
+import TooltipStyledLabel from '../../components/TooltipStyledLabel';
 
 import CRISPR_QUERY from './OTCrisprQuery.gql';
 
@@ -150,13 +149,12 @@ const exportColumns = [
   },
 ];
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({ id, label }) {
   const { ensgId, efoId } = id;
   const request = useQuery(CRISPR_QUERY, {
     variables: {
       ensemblId: ensgId,
       efoId,
-      size: count,
     },
   });
   const classes = useStyles();
@@ -191,17 +189,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.OtCrisprSummary
-  );
-  const { count } = summaryData.OtCrisprSummary;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

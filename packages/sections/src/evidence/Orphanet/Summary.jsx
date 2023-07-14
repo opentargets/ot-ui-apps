@@ -1,10 +1,10 @@
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import { dataTypesMap } from '../../../dataTypes';
+import { SummaryItem, usePlatformApi } from 'ui';
 
+import { definition } from '.';
+import { dataTypesMap } from '../../dataTypes';
 import ORPHANET_SUMMARY from './OrphanetSummaryFragment.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(ORPHANET_SUMMARY);
   return (
     <SummaryItem

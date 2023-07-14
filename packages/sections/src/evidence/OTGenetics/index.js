@@ -1,4 +1,4 @@
-import { isPrivateEvidenceSection } from '../../../utils/partnerPreviewUtils';
+import { isPrivateEvidenceSection } from '../../utils/partnerPreviewUtils';
 
 const id = 'ot_genetics_portal';
 export const definition = {
@@ -8,6 +8,3 @@ export const definition = {
   hasData: data => data.openTargetsGenetics.count > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };
-
-export { default as Summary } from './Summary';
-export * from './Body';

@@ -2,8 +2,9 @@ import { usePlatformApi, SummaryItem } from "ui";
 import { dataTypesMap } from "../../dataTypes";
 
 import CLINGEN_SUMMARY_FRAGMENT from "./ClinGenSummaryFragment.gql";
+import { definition } from ".";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(CLINGEN_SUMMARY_FRAGMENT);
 
   return (

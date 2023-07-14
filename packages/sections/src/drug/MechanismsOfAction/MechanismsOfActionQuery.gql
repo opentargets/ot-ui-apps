@@ -1,0 +1,27 @@
+query MechanismsOfActionSectionQuery($chemblId: String!) {
+  drug(chemblId: $chemblId) {
+    id
+    mechanismsOfAction {
+      rows {
+        mechanismOfAction
+        targetName
+        targets {
+          id
+          approvedSymbol
+        }
+        references {
+          source
+          urls
+        }
+      }
+    }
+    parentMolecule {
+      id
+      name
+    }
+    childMolecules {
+      id
+      name
+    }
+  }
+}

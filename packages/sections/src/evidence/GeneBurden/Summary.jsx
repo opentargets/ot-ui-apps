@@ -1,10 +1,11 @@
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import { dataTypesMap } from '../../../dataTypes';
 
+import { SummaryItem, usePlatformApi } from 'ui';
+
+import { definition } from '.';
+import { dataTypesMap } from '../../dataTypes';
 import GENE_BURDEN_SUMMARY from './GeneBurdenSummary.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(GENE_BURDEN_SUMMARY);
 
   return (

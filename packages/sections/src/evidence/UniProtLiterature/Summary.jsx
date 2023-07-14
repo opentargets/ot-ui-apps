@@ -1,10 +1,9 @@
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import { dataTypesMap } from '../../../dataTypes';
+import { SummaryItem, usePlatformApi } from 'ui';
 
-import UNIPROT_LITERATURE_SUMMARY from './UniprotLiteratureSummary.gql';
+import { definition } from '.';
+import { dataTypesMap } from '../../dataTypes';import UNIPROT_LITERATURE_SUMMARY from './UniprotLiteratureSummary.gql';
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(UNIPROT_LITERATURE_SUMMARY);
   return (
     <SummaryItem

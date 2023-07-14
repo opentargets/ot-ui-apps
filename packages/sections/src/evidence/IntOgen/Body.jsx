@@ -1,22 +1,20 @@
 import { Box, List, ListItem, makeStyles, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 import { v1 } from 'uuid';
+import { ChipList, Link, SectionItem, Tooltip } from 'ui';
 
-import ChipList from '../../../components/ChipList';
-import { DataTable } from '../../../components/Table';
-import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
-import Description from './Description';
-import { epmcUrl } from '../../../utils/urls';
-import Link from '../../../components/Link';
+import { definition } from '.';
 import methods from './methods';
-import ScientificNotation from '../../../components/ScientificNotation';
-import SectionItem from '../../../components/Section/SectionItem';
-import { sentenceCase } from '../../../utils/global';
 import Summary from './Summary';
-import Tooltip from '../../../components/Tooltip';
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import { dataTypesMap } from '../../../dataTypes';
+import Description from './Description';
+import { epmcUrl } from '../../utils/urls';
+import { dataTypesMap } from '../../dataTypes';
 import INTOGEN_QUERY from './sectionQuery.gql';
+import { sentenceCase } from '../../utils/global';
+import { DataTable } from '../../components/Table';
+import { defaultRowsPerPageOptions, naLabel } from '../../constants';
+import ScientificNotation from '../../components/ScientificNotation';
+
 
 const intOgenUrl = (id, approvedSymbol) =>
   `https://www.intogen.org/search?gene=${approvedSymbol}&cohort=${id}`;
@@ -160,14 +158,13 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: '.5rem' },
 });
 
-export function BodyCore({ definition, id, label, count }) {
+function Body({id, label }) {
   const classes = useStyles();
 
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
     efoId,
-    size: count,
   };
 
   const request = useQuery(INTOGEN_QUERY, {
@@ -226,17 +223,4 @@ export function BodyCore({ definition, id, label, count }) {
   );
 }
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.IntOgenSummaryFragment
-  );
-  const { count } = summaryData.intOgen;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
+export default Body;

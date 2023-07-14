@@ -1,10 +1,10 @@
-import usePlatformApi from '../../../hooks/usePlatformApi';
-import SummaryItem from '../../../components/Summary/SummaryItem';
-import { dataTypesMap } from '../../../dataTypes';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import OT_ENCORE_SUMMARY from './OTEncoreSummary.gql';
+import { definition } from ".";
+import { dataTypesMap } from "../../dataTypes";
+import OT_ENCORE_SUMMARY from "./OTEncoreSummary.gql";
 
-function Summary({ definition }) {
+function Summary() {
   const request = usePlatformApi(OT_ENCORE_SUMMARY);
   return (
     <SummaryItem
@@ -12,7 +12,7 @@ function Summary({ definition }) {
       request={request}
       renderSummary={({ otEncoreSummary }) => {
         const { count } = otEncoreSummary;
-        return `${count} ${count === 1 ? 'entry' : 'entries'}`;
+        return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
       subText={dataTypesMap.ot_partner}
     />

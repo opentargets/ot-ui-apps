@@ -6,5 +6,3 @@ export const definition = {
   hasData: () => true,
   external: true,
 };
-
-export { default as Body } from "./Body";
