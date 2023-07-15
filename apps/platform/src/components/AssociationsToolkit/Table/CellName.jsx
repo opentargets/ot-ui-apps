@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { styled } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
-import { faDna , faStethoscope } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDna,
+  faStethoscope,
+  faThumbTack,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Tooltip from '../AotFTooltip';
@@ -10,11 +14,21 @@ import useAotfContext from '../hooks/useAotfContext';
 
 const NameContainer = styled('div')({
   position: 'relative',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
   '& .pinnedIcon': {
-    display: 'none',
+    opacity: '0',
+    transition: 'opacity ease-in-out 300ms',
+    marginLeft: '5px',
+  },
+  '& .pinnedIcon.active': {
+    // opacity: '1',
   },
   '&:hover .pinnedIcon': {
-    display: 'block',
+    opacity: '1',
+    cursor: 'pointer',
+    color: 'ececec',
   },
 });
 
@@ -58,15 +72,33 @@ function TooltipContent({ id, entity, name, icon }) {
   );
 }
 
-function CellName({ name, rowId }) {
+function CellName({ name, rowId, row }) {
   const [open, setOpen] = useState(false);
-  const { entityToGet } = useAotfContext();
+  const { entityToGet, pinnedData, setPinnedData } = useAotfContext();
+
+  const rowData = row.original;
+  const isPinned = pinnedData.find(e => e.id === rowData.id);
+
+  const handleClickPin = () => {
+    if (isPinned) {
+      const newPinnedData = pinnedData.filter(e => e.id !== rowData.id);
+      setPinnedData(newPinnedData);
+    } else {
+      setPinnedData([...pinnedData, rowData]);
+    }
+  };
 
   const rowEntity = entityToGet === 'target' ? 'target' : 'disease';
   const icon = rowEntity === 'target' ? faDna : faStethoscope;
 
   return (
     <NameContainer>
+      <div
+        className={`pinnedIcon ${isPinned && 'active'}`}
+        onClick={handleClickPin}
+      >
+        <FontAwesomeIcon icon={faThumbTack} />
+      </div>
       <Tooltip
         open={open}
         onClose={() => setOpen(false)}

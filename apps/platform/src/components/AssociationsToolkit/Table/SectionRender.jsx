@@ -37,7 +37,7 @@ const getEvidenceSummaryQuery = sectionSumary => {
 
 export function SecctionRendererWrapper({ activeSection, table, children }) {
   const isAssociations = table === 'associations';
-  const pointer = isAssociations ? 0 : 2;
+  const pointer = isAssociations ? 1 : 2;
   const toSearch = activeSection[pointer];
   const sectionsToFilter = isAssociations ? evidenceSections : targetSections;
   const section = sectionsToFilter.find(el => el.definition.id === toSearch);
@@ -62,17 +62,12 @@ export function TargetSecctionRenderer({ section, entity, rowId, id, label }) {
   return <Body definition={definition} id={ensgId} label={label} />;
 }
 
-export function EvidenceSecctionRenderer({
-  section,
-  entity,
-  rowId,
-  id,
-  label,
-}) {
+export function EvidenceSecctionRenderer({ section, entity, rowId, id, row }) {
   const { BodyCore, definition, Summary } = section;
-
+  const { diseaseName, targetSymbol } = row.original;
   const ensgId = entity === 'disease' ? rowId : id;
   const efoId = entity === 'disease' ? id : rowId;
+  const label = { symbol: targetSymbol, name: diseaseName };
 
   const { COUNT_QUERY, sectionSummaryName } = getEvidenceSummaryQuery(Summary);
   const { loading, data } = useQuery(COUNT_QUERY, {
@@ -94,7 +89,7 @@ export function EvidenceSecctionRenderer({
     <BodyCore
       definition={definition}
       id={{ ensgId, efoId }}
-      label={{ symbol: label, name: definition.name }}
+      label={label}
       count={count}
     />
   );

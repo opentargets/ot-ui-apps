@@ -15,7 +15,7 @@ import { sentenceCase } from '../../../utils/global';
 
 import ORPHANET_QUERY from './OrphanetQuery.gql';
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
@@ -91,7 +91,13 @@ const columns = [
           return acc;
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -139,7 +145,6 @@ const exportColumns = [
   },
 ];
 
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
 
@@ -152,6 +157,8 @@ export function BodyCore({ definition, id, label, count }) {
   const request = useQuery(ORPHANET_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem
@@ -195,4 +202,3 @@ export function Body({ definition, id, label }) {
     <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }
-
