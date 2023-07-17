@@ -1,0 +1,12 @@
+query TargetProfileQuery($ensemblId: String!) {
+  target(ensemblId: $ensemblId) {
+    id
+    approvedSymbol
+    synonyms {
+      label
+      source
+    }
+    functionDescriptions
+    isEssential
+  }
+}
