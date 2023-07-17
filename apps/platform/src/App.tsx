@@ -17,6 +17,7 @@ import VariantsPage from './pages/VariantsPage';
 import APIPage from './pages/APIPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProjectsPage from './pages/ProjectsPage';
+import TheoremPage from './pages/Theorem';
 import ShouldAccessPPP from './components/ShouldAccessPPP';
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
               <Route path="/evidence/:ensgId/:efoId" component={EvidencePage} />
               <Route path="/variants" component={VariantsPage} />
               <Route path="/api" component={APIPage} />
+              <Route path="/theorem" component={TheoremPage} />
               <Route path="/projects">
                 <PrivateRoute>
                   <ProjectsPage location="" />

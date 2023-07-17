@@ -100,6 +100,11 @@ export const mainMenuItems = config.profile.mainMenuItems ?? [
     url: '/api',
     external: false,
   },
+  {
+    name: 'Theorem',
+    url: '/theorem',
+    external: false,
+  },
   // Community
   {
     name: 'Community',

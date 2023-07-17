@@ -91,6 +91,7 @@ function NavBar({
   name,
   search,
   api,
+  theorem,
   downloads,
   docs,
   contact,
@@ -131,6 +132,12 @@ function NavBar({
           {api ? (
             <MenuExternalLink classes={classes} href={api}>
               API
+            </MenuExternalLink>
+          ) : null}
+
+          {theorem ? (
+            <MenuExternalLink classes={classes} href={theorem}>
+              Theorem
             </MenuExternalLink>
           ) : null}
 
