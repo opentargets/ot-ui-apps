@@ -1,0 +1,10 @@
+query EvidencePageQuery($ensemblId: String!, $efoId: String!) {
+  target(ensemblId: $ensemblId) {
+    id
+    approvedSymbol
+  }
+  disease(efoId: $efoId) {
+    id
+    name
+  }
+}

@@ -1,94 +1,82 @@
 import { v1 } from 'uuid';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
-import { TreeItem, TreeView } from '@material-ui/lab';
 
 import BasePage from '../../components/BasePage';
 
 import { BlockWrapper } from './components';
+import EditDrawer from './EditDrawer';
 
 import targetSections from './targetSections';
+import evidenceSections from './evidenceSections';
+import {
+  ENTITIES,
+  INIT_BLOCKS_STATE,
+  getBlockName,
+  getBlockProfileQuery,
+} from './utils';
 
-import TARGET_PROFILE_QUERY from './TargetProfile.gql';
-
-const sampleState = [
-  {
-    id: 'target_ENSG00000196230',
-    entity: 'target',
-    inputs: ['ENSG00000196230'],
-    sections: ['safety'],
-  },
-  {
-    id: 'target_ENSG00000157764',
-    entity: 'target',
-    inputs: ['ENSG00000157764'],
-    sections: ['safety', 'bibliography'],
-  },
-];
-
-function getSection({ entity, section, id }) {
+function getSection({ entity, section, inputs }) {
+  let Component = null;
+  const label = { symbol: '', name: '' };
   switch (entity) {
-    case 'target':
-      const Component = targetSections.get(section);
-      return <Component key={v1()} id={id} />;
+    case ENTITIES.TARGET:
+      Component = targetSections.get(section);
+      return <Component key={v1()} id={inputs[0]} />;
+    case ENTITIES.EVIDENCE:
+      Component = evidenceSections.get(section);
+      return (
+        <Component
+          key={v1()}
+          id={{ ensgId: inputs[0], efoId: inputs[1] }}
+          label={label}
+        />
+      );
     default:
-      return 'Error';
+      return 'No Section parser';
   }
 }
 
-function getBlockProfileQuery({ entity }) {
-  switch (entity) {
-    case 'target':
-      return TARGET_PROFILE_QUERY;
-    default:
-      return 'Error';
-  }
-}
-
-function BlockRender({ id, entity, children }) {
-  const query = getBlockProfileQuery({ entity });
+function BlockRender({ entity, inputs, children }) {
+  const { query, variables } = getBlockProfileQuery({ entity, inputs });
   const { data, loading, error } = useQuery(query, {
-    variables: { ensemblId: id },
+    variables,
   });
 
-  if (loading) return 'Loading block ...';
+  if (loading) return <BlockWrapper>Loading block ...</BlockWrapper>;
   if (!data && !loading) return null;
   if (error) return null;
 
+  const blockName = getBlockName({ entity, data });
+
   return (
-    <div>
-      <Typography variant="h5">{data.target.approvedSymbol}</Typography>
-      <BlockWrapper>{children}</BlockWrapper>
-    </div>
+    <BlockWrapper>
+      <Typography variant="h5">{blockName}</Typography>
+      {children}
+    </BlockWrapper>
   );
 }
 
 function TheoremPage() {
+  const [blocks, setBlocks] = useState(INIT_BLOCKS_STATE);
+
   return (
     <BasePage>
-      <TreeView>
-        {sampleState.map(({ entity, sections, inputs }) => (
-          <TreeItem key={v1()} nodeId={v1()} label={`${entity} ${inputs[0]}`}>
-            {sections.map(section => (
-              <TreeItem key={v1()} nodeId={v1()} label={section} />
-            ))}
-          </TreeItem>
-        ))}
-      </TreeView>
-      <Suspense>
-        {sampleState.map(({ entity, sections, inputs }) => (
-          <BlockRender entity={entity} key={v1()} id={inputs[0]}>
-            {sections.map(section =>
-              getSection({
+      <EditDrawer blocks={blocks} setBlocks={setBlocks} />
+      {blocks.map(({ entity, sections, inputs }) => (
+        <BlockRender key={v1()} entity={entity} inputs={inputs}>
+          {sections.map(section => (
+            <Suspense key={v1()} fallback="Loading">
+              {getSection({
                 entity,
                 section,
-                id: inputs[0],
-              })
-            )}
-          </BlockRender>
-        ))}
-      </Suspense>
+                inputs,
+              })}
+            </Suspense>
+          ))}
+        </BlockRender>
+      ))}
     </BasePage>
   );
 }
