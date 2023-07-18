@@ -10,6 +10,8 @@ import EditDrawer from './EditDrawer';
 
 import targetSections from './targetSections';
 import evidenceSections from './evidenceSections';
+import drugSections from './drugSections';
+
 import {
   ENTITIES,
   INIT_BLOCKS_STATE,
@@ -23,6 +25,9 @@ function getSection({ entity, section, inputs }) {
   switch (entity) {
     case ENTITIES.TARGET:
       Component = targetSections.get(section);
+      return <Component key={v1()} id={inputs[0]} />;
+    case ENTITIES.DRUG:
+      Component = drugSections.get(section);
       return <Component key={v1()} id={inputs[0]} />;
     case ENTITIES.EVIDENCE:
       Component = evidenceSections.get(section);
