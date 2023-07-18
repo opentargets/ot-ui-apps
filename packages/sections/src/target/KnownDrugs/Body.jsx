@@ -61,11 +61,11 @@ const exportColumns = id => [
   },
 ];
 
-function Body({ id: ensgId, label: symbol }) {
+function Body({ id: ensgId, label: symbol , entity}) {
   return (
     <KnownDrugsBody
       definition={definition}
-      entity="target"
+      entity={entity}
       variables={{ ensgId }}
       BODY_QUERY={KNOWN_DRUGS_BODY_QUERY}
       // eslint-disable-next-line

@@ -139,13 +139,14 @@ const columns = [
   },
 ];
 
-function Section({ id, label: symbol }) {
+function Section({ id, label: symbol, entity }) {
   const variables = { ensemblId: id };
   const request = useQuery(GENE_ONTOLOGY_QUERY, { variables });
 
   return (
     <SectionItem
       definition={definition}
+      entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={({ target }) => {

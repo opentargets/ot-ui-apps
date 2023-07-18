@@ -88,7 +88,7 @@ const columns = [
   },
 ];
 
-function Body({ id, label: symbol }) {
+function Body({ id, label: symbol, entity }) {
   const variables = { ensemblId: id };
   const request = useQuery(CHEMICAL_PROBES_QUERY, { variables });
 
@@ -96,6 +96,7 @@ function Body({ id, label: symbol }) {
     <SectionItem
       definition={definition}
       request={request}
+      entity={entity}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={data =>
         data.target.chemicalProbes?.length > 0 ? (

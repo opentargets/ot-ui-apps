@@ -91,7 +91,7 @@ function ModalityList({ modality, data }) {
   );
 }
 
-function Body({ label: symbol, id: ensemblId }) {
+function Body({ label: symbol, id: ensemblId, entity }) {
   // const request = usePlatformApi(Summary.fragments.TractabilitySummaryFragment);
 
   const request = useQuery(TRACTABILITY_QUERY, {
@@ -102,6 +102,7 @@ function Body({ label: symbol, id: ensemblId }) {
     <SectionItem
       definition={definition}
       request={request}
+      entity={entity}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={(data) => (
         <Grid container spacing={3}>

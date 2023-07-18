@@ -1,22 +1,23 @@
-import Description from './Description';
-import { SectionItem, usePlatformApi } from 'ui';
+import { SectionItem, usePlatformApi } from "ui";
 
-import { definition } from '.';
-import { getUniprotIds } from '../../utils/global';
-import ProtVista from './ProtVista';
+import Description from "./Description";
+import { definition } from ".";
+import { getUniprotIds } from "../../utils/global";
+import ProtVista from "./ProtVista";
 
-import PROTVISTA_SUMMARY_FRAGMENT from './summaryQuery.gql';
+import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 
-function Body({ label: symbol }) {
+function Body({ label: symbol, entity }) {
   const request = usePlatformApi(PROTVISTA_SUMMARY_FRAGMENT);
 
   return (
     <SectionItem
       definition={definition}
-      request={request}
+      entity={entity}
+      request={{ ...request, data: { [entity]: request.data } }}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={({ proteinIds }) => {
-        const uniprotId = getUniprotIds(proteinIds)[0];
+      renderBody={(data) => {
+        const uniprotId = getUniprotIds(data[entity].proteinIds)[0];
 
         return <ProtVista uniprotId={uniprotId} />;
       }}

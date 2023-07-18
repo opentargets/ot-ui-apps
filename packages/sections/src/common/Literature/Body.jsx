@@ -91,6 +91,7 @@ function Body({ definition, name, id, entity, BODY_QUERY }) {
       <SectionItem
         definition={definition}
         request={{ loading: false, error: null, data: true }}
+        entity={entity}
         renderDescription={() => <Description name={name} />}
         renderBody={() => (
           <LiteratureList
