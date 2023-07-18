@@ -6,7 +6,7 @@ import OntologySubgraph from "./OntologySubgraph";
 import config from "../../config";
 import { definition } from "./index";
 
-function Body({ id: efoId, label: name }) {
+function Body({ id: efoId, label: name, entity }) {
   const [efoNodes, setEfoNodes] = useState(null);
 
   useEffect(() => {
@@ -28,20 +28,23 @@ function Body({ id: efoId, label: name }) {
   return (
     <SectionItem
       definition={definition}
+      entity={entity}
       request={{
         loading: !efoNodes,
-        data: { efoNodes },
+        data: {
+          [entity]: { efoNodes },
+        },
       }}
       renderDescription={() => <Description name={name} />}
-      renderBody={({ efoNodes: efoNodesArray }) => {
-        const idToDisease = efoNodesArray.reduce((acc, disease) => {
+      renderBody={(data) => {
+        const idToDisease = data[entity].efoNodes.reduce((acc, disease) => {
           acc[disease.id] = disease;
           return acc;
         }, {});
         return (
           <OntologySubgraph
             efoId={efoId}
-            efo={efoNodesArray}
+            efo={data[entity].efoNodes}
             name={name}
             idToDisease={idToDisease}
           />
