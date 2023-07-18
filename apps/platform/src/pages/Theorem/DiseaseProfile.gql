@@ -1,0 +1,7 @@
+query DiseaseProfileQuery($efoId: String!) {
+  disease(efoId: $efoId) {
+    id
+    name
+    dbXRefs
+  }
+}
