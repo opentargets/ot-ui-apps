@@ -1,7 +1,7 @@
-import TARGET_PROFILE_QUERY from './TargetProfile.gql';
-import EVIDENCE_PROFILE_QUERY from './EvidenceProfile.gql';
-import DRUG_PROFILE_QUERY from './DrugProfile.gql';
-import DISEASE_PROFILE_QUERY from './DiseaseProfile.gql';
+import TARGET_PROFILE_QUERY from './querys/TargetProfile.gql';
+import EVIDENCE_PROFILE_QUERY from './querys/EvidenceProfile.gql';
+import DRUG_PROFILE_QUERY from './querys/DrugProfile.gql';
+import DISEASE_PROFILE_QUERY from './querys/DiseaseProfile.gql';
 
 export const INIT_BLOCKS_STATE = [
   {

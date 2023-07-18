@@ -8,10 +8,10 @@ import BasePage from '../../components/BasePage';
 import { BlockWrapper } from './components';
 import EditDrawer from './EditDrawer';
 
-import targetSections from './targetSections';
-import evidenceSections from './evidenceSections';
-import drugSections from './drugSections';
-import diseaseSections from './diseaseSections';
+import targetSections from './sections/targetSections';
+import evidenceSections from './sections/evidenceSections';
+import drugSections from './sections/drugSections';
+import diseaseSections from './sections/diseaseSections';
 
 import {
   ENTITIES,
