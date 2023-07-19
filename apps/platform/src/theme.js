@@ -1,4 +1,4 @@
-import { createTheme } from '@material-ui/core';
+import { createTheme } from "@mui/material";
 import { lighten, darken } from 'polished';
 import config from './config';
 
