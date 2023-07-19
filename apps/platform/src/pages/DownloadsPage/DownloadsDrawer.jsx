@@ -4,8 +4,8 @@ import {
   IconButton,
   Paper,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { formatMap } from '../../constants';
 
@@ -59,16 +59,16 @@ function DownloadsDrawer({ title, format, path, month, year, children }) {
 
   return (
     <>
-      <span onClick={()=>toggleOpen()}>{children}</span>
+      <span onClick={() => toggleOpen()}>{children}</span>
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={()=>close()}
+        onClose={() => close()}
         anchor="right"
       >
         <Typography className={classes.title}>
           {title}
-          <IconButton onClick={()=>close()}>
+          <IconButton onClick={() => close()}>
             <CloseIcon />
           </IconButton>
         </Typography>
@@ -83,9 +83,8 @@ function DownloadsDrawer({ title, format, path, month, year, children }) {
           <div className={classes.resourceURL}>
             <a
               className={classes.ftpURL}
-              href={`http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${year}.${
-                month < 10 ? '0' : ''
-              }${month}/output/etl/${format}${path}`}
+              href={`http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${year}.${month < 10 ? '0' : ''
+                }${month}/output/etl/${format}${path}`}
             >
               ftp.ebi.ac.uk/pub/databases/opentargets/platform/{year}.
               {month.toString().padStart(2, '0')}/output/etl/{format}
