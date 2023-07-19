@@ -1,6 +1,6 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import queryString from 'query-string';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { LoadingBackdrop, EmptyPage } from 'ui';
 import BasePage from '../../components/BasePage';
 
