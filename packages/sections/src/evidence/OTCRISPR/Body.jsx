@@ -149,7 +149,7 @@ const exportColumns = [
   },
 ];
 
-function Body({ id, label }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const request = useQuery(CRISPR_QUERY, {
     variables: {
@@ -164,11 +164,12 @@ function Body({ id, label }) {
       definition={definition}
       chipText={dataTypesMap.ot_partner}
       request={request}
+      entity={entity}
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
       renderBody={({ disease }) => {
-        const { rows } = disease.evidences;
+        const { rows } = disease.OtCrisprSummary;
         return (
           <DataTable
             columns={getColumns(classes)}

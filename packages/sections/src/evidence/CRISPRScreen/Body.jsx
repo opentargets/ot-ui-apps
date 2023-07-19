@@ -196,7 +196,7 @@ const exportColumns = [
   },
 ];
 
-function Body({ id, label }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const request = useQuery(CRISPR_QUERY, {
     variables: {
@@ -210,11 +210,12 @@ function Body({ id, label }) {
       definition={definition}
       chipText={dataTypesMap.affected_pathway}
       request={request}
+      entity={entity}
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
       renderBody={({ disease }) => {
-        const { rows } = disease.evidences;
+        const { rows } = disease.CrisprScreenSummary;
         return (
           <DataTable
             columns={getColumns()}

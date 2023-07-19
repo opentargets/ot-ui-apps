@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, SectionItem, Tooltip, TooltipStyledLabel, ChipList } from "ui";
 
 import { definition } from ".";
-import Summary from "./Summary";
 import Description from "./Description";
 import { DataTable } from "../../components/Table";
 import { dataTypesMap } from "../../dataTypes";
@@ -241,7 +240,7 @@ const exportColumns = [
   },
 ];
 
-function Body({ id, label}) {
+function Body({ id, label, entity}) {
   const { ensgId, efoId } = id;
 
   const request = useQuery(ENCORE_QUERY, {
@@ -257,11 +256,12 @@ function Body({ id, label}) {
       definition={definition}
       chipText={dataTypesMap.ot_partner}
       request={request}
+      entity={entity}
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
       renderBody={({ disease }) => {
-        const { rows } = disease.evidences;
+        const { rows } = disease.otEncoreSummary;
         return (
           <DataTable
             columns={getColumns(classes)}

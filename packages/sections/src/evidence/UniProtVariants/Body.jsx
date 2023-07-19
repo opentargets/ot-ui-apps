@@ -1,33 +1,32 @@
-import { useQuery } from '@apollo/client';
-import { Typography, makeStyles, Chip } from '@material-ui/core';
-import { Link, SectionItem, Tooltip } from 'ui';
+import { useQuery } from "@apollo/client";
+import { Typography, makeStyles, Chip } from "@material-ui/core";
+import { Link, SectionItem, Tooltip } from "ui";
 
-import { definition } from '.';
-import Summary from './Summary';
-import Description from './Description';
-import { epmcUrl } from '../../utils/urls';
-import { dataTypesMap } from '../../dataTypes';
-import { DataTable } from '../../components/Table';
-import { identifiersOrgLink } from '../../utils/global';
-import { defaultRowsPerPageOptions } from '../../constants';
-import UNIPROT_VARIANTS_QUERY from './UniprotVariantsQuery.gql';
-import { PublicationsDrawer } from '../../components/PublicationsDrawer';
-
+import { definition } from ".";
+import Summary from "./Summary";
+import Description from "./Description";
+import { epmcUrl } from "../../utils/urls";
+import { dataTypesMap } from "../../dataTypes";
+import { DataTable } from "../../components/Table";
+import { identifiersOrgLink } from "../../utils/global";
+import { defaultRowsPerPageOptions } from "../../constants";
+import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
 const useStyles = makeStyles({
   xsmall: {
-    fontSize: '0.7rem',
+    fontSize: "0.7rem",
   },
   chipLink: {
-    marginLeft: '5px',
+    marginLeft: "5px",
   },
 });
 
 function getColumns(classes) {
   return [
     {
-      id: 'disease.name',
-      label: 'Disease/phenotype',
+      id: "disease.name",
+      label: "Disease/phenotype",
       renderCell: ({ disease, diseaseFromSource }) => (
         <Tooltip
           title={
@@ -47,17 +46,17 @@ function getColumns(classes) {
       ),
     },
     {
-      id: 'targetFromSourceId',
-      label: 'Reported protein',
+      id: "targetFromSourceId",
+      label: "Reported protein",
       renderCell: ({ targetFromSourceId }) => (
-        <Link external to={identifiersOrgLink('uniprot', targetFromSourceId)}>
+        <Link external to={identifiersOrgLink("uniprot", targetFromSourceId)}>
           {targetFromSourceId}
         </Link>
       ),
     },
     {
-      id: 'variantRsId',
-      label: 'Variant',
+      id: "variantRsId",
+      label: "Variant",
       renderCell: ({ variantRsId }) => (
         <Link
           external
@@ -68,8 +67,8 @@ function getColumns(classes) {
       ),
     },
     {
-      id: 'variantFunctionalConsequenceId',
-      label: 'Functional Consequence',
+      id: "variantFunctionalConsequenceId",
+      label: "Functional Consequence",
       renderCell: ({ variantRsId }) => {
         return (
           <Link
@@ -90,19 +89,19 @@ function getColumns(classes) {
       },
     },
     {
-      id: 'confidence',
-      label: 'Confidence',
+      id: "confidence",
+      label: "Confidence",
     },
     {
-      label: 'Literature',
+      label: "Literature",
       renderCell: ({ literature }) => {
         const literatureList =
           literature?.reduce((acc, id) => {
-            if (id !== 'NA') {
+            if (id !== "NA") {
               acc.push({
                 name: id,
                 url: epmcUrl(id),
-                group: 'literature',
+                group: "literature",
               });
             }
             return acc;
@@ -114,7 +113,7 @@ function getColumns(classes) {
   ];
 }
 
-export function Body({ id, label }) {
+export function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
 
   const variables = {
@@ -133,11 +132,12 @@ export function Body({ id, label }) {
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       request={request}
+      entity={entity}
       renderDescription={() => (
         <Description symbol={label.symbol} diseaseName={label.name} />
       )}
       renderBody={({ disease }) => {
-        const { rows } = disease.evidences;
+        const { rows } = disease.uniprotVariantsSummary;
         return (
           <DataTable
             columns={columns}
@@ -154,4 +154,4 @@ export function Body({ id, label }) {
   );
 }
 
-export default Body
+export default Body;
