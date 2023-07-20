@@ -1,11 +1,11 @@
+/* eslint-disable prefer-destructuring */
 import { v1 } from 'uuid';
 import { Suspense, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
-
 import BasePage from '../../components/BasePage';
 
 import { BlockWrapper } from './components';
+import BlockHeader from './BlockHeader';
 import EditDrawer from './EditDrawer';
 
 import targetSections from './sections/targetSections';
@@ -13,38 +13,34 @@ import evidenceSections from './sections/evidenceSections';
 import drugSections from './sections/drugSections';
 import diseaseSections from './sections/diseaseSections';
 
-import {
-  ENTITIES,
-  INIT_BLOCKS_STATE,
-  getBlockName,
-  getBlockProfileQuery,
-} from './utils';
+import { ENTITIES, INIT_BLOCKS_STATE, getBlockProfileQuery } from './utils';
 
-function getSection({ entity, section, inputs }) {
+function SectionRender({ entity, section, inputs = [] }) {
   let Component = null;
-  const label = { symbol: '', name: '' };
+  let id = null;
+  let label = null;
   switch (entity) {
     case ENTITIES.TARGET:
       Component = targetSections.get(section);
-      return <Component key={v1()} id={inputs[0]} />;
+      id = inputs[0];
+      break;
     case ENTITIES.DISEASE:
       Component = diseaseSections.get(section);
-      return <Component key={v1()} id={inputs[0]} />;
+      id = inputs[0];
+      break;
     case ENTITIES.DRUG:
       Component = drugSections.get(section);
-      return <Component key={v1()} id={inputs[0]} />;
+      id = inputs[0];
+      break;
     case ENTITIES.EVIDENCE:
       Component = evidenceSections.get(section);
-      return (
-        <Component
-          key={v1()}
-          id={{ ensgId: inputs[0], efoId: inputs[1] }}
-          label={label}
-        />
-      );
+      id = { ensgId: inputs[0], efoId: inputs[1] };
+      label = { symbol: '', name: '' };
+      break;
     default:
       return 'No Section parser';
   }
+  return <Component key={v1()} id={id} label={label} />;
 }
 
 function BlockRender({ entity, inputs, children }) {
@@ -57,11 +53,9 @@ function BlockRender({ entity, inputs, children }) {
   if (!data && !loading) return null;
   if (error) return null;
 
-  const blockName = getBlockName({ entity, data });
-
   return (
     <BlockWrapper>
-      <Typography variant="h5">{blockName}</Typography>
+      <BlockHeader entity={entity} data={data} />
       {children}
     </BlockWrapper>
   );
@@ -77,11 +71,11 @@ function TheoremPage() {
         <BlockRender key={v1()} entity={entity} inputs={inputs}>
           {sections.map(section => (
             <Suspense key={v1()} fallback="Loading">
-              {getSection({
-                entity,
-                section,
-                inputs,
-              })}
+              <SectionRender
+                entity={entity}
+                section={section}
+                inputs={inputs}
+              />
             </Suspense>
           ))}
         </BlockRender>

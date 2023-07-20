@@ -5,27 +5,27 @@ import DISEASE_PROFILE_QUERY from './querys/DiseaseProfile.gql';
 
 export const INIT_BLOCKS_STATE = [
   {
-    id: 'target_ENSG00000196230',
+    id: 'target_ENSG00000183454',
     entity: 'target',
-    inputs: ['ENSG00000196230'],
+    inputs: ['ENSG00000183454'],
     sections: ['geneOntology'],
   },
   {
-    id: 'disease_EFO_0000756',
+    id: 'disease_EFO_0000618',
     entity: 'disease',
-    inputs: ['EFO_0000756'],
+    inputs: ['EFO_0000618'],
     sections: ['phenotypes'],
   },
   {
-    id: 'drug_CHEMBL2010601',
+    id: 'drug_CHEMBL1059',
     entity: 'drug',
-    inputs: ['CHEMBL2010601'],
+    inputs: ['CHEMBL1059'],
     sections: ['indications'],
   },
   {
-    id: 'evidence_ENSG00000196230_Orphanet_183506',
+    id: 'evidence_ENSG00000183454_EFO_0000618',
     entity: 'evidence',
-    inputs: ['ENSG00000196230', 'Orphanet_183506'],
+    inputs: ['ENSG00000183454', 'EFO_0000618'],
     sections: ['gene2phenotype', 'chembl'],
   },
 ];
