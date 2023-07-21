@@ -3,11 +3,11 @@ import {
   AccordionDetails,
   AccordionSummary,
   IconButton,
-  makeStyles,
   Typography,
-} from '@material-ui/core';
-import { ChevronRight, Clear, ExpandMore } from '@material-ui/icons';
-import { TreeView } from '@material-ui/lab';
+} from '@mui/material';
+import { ChevronRight, Clear, ExpandMore } from '@mui/icons-material';
+import { TreeView } from '@mui/lab';
+import { makeStyles } from '@mui/styles';
 
 import { hasAnyDescendantChecked } from './utils';
 import TreeLevel from './TreeLevel';
@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   accordionSummaryContent: {
     alignItems: 'center',
     justifyContent: 'space-between',
-    margin: 0,
+    margin: '0 !important',
   },
   clearButtonRoot: {
     height: 'unset',
