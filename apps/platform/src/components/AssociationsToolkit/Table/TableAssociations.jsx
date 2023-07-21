@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-table';
 import Skeleton from '@mui/material/Skeleton';
 
-import { styled } from '@mui/system';
+import { styled } from '@mui/styles';
 
 import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
 import prioritizationCols from '../static_datasets/prioritizationCols';
