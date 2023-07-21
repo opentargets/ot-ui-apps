@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { v1 } from 'uuid';
 import {
   MenuItem,
@@ -8,13 +8,13 @@ import {
   Fade,
   Paper,
   ClickAwayListener,
-} from '@material-ui/core';
-import { Menu as MenuIcon, Close as CloseIcon } from '@material-ui/icons';
-import { withStyles } from '@material-ui/core/styles';
+} from '@mui/material';
+import { Menu as MenuIcon, Close as CloseIcon } from '@mui/icons-material';
+import { makeStyles } from '@mui/styles';
 import Link from './Link';
 import PrivateWrapper from './PrivateWrapper';
 
-const styles = () => ({
+const useStyles = makeStyles((theme) => ({
   icon: {
     marginLeft: '20px',
   },
@@ -29,116 +29,102 @@ const styles = () => ({
     paddingLeft: '0px',
     paddingRight: '0px',
   },
-});
-class HeaderMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      anchorEl: null,
-    };
-  }
+}));
 
-  handleMenuToggle = event => {
-    const { anchorEl } = this.state;
-    this.setState({
-      anchorEl: anchorEl === null ? event.currentTarget : null,
-    });
+function HeaderMenu ({ items, placement }) {
+  const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(anchorEl);
+
+  const handleMenuToggle = event => {
+    setAnchorEl(anchorEl === null ? event.currentTarget : null);
   };
 
-  handleMenuClose = () => {
-    this.setState({
-      anchorEl: null,
-    });
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
-  handleListKeyDown = event => {
+  const handleListKeyDown = event => {
     if (event.key === 'Tab') {
       event.preventDefault();
-      this.setState({
-        anchorEl: null,
-      });
+      setAnchorEl(null);
     }
   };
 
-  render() {
-    const { anchorEl } = this.state;
-    const { items, placement, classes } = this.props;
-    const isMenuOpen = Boolean(anchorEl);
 
-    return (
-      <>
-        <IconButton
-          className={classes.icon}
-          size="medium"
-          color="inherit"
-          aria-label="open header menu"
-          aria-haspopup="true"
-          onClick={this.handleMenuToggle}
-        >
-          {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
-        </IconButton>
+  return (
+    <>
+      <IconButton
+        className={classes.icon}
+        size="medium"
+        color="inherit"
+        aria-label="open header menu"
+        aria-haspopup="true"
+        onClick={handleMenuToggle}
+      >
+        {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
+      </IconButton>
 
-        <Popper
-          open={isMenuOpen}
-          anchorEl={anchorEl}
-          role={undefined}
-          transition
-          disablePortal
-          placement={placement || 'bottom-start'}
-        >
-          {({ TransitionProps }) => (
-            // TODO: review props spreading
-            // eslint-disable-next-line
-            <Fade {...TransitionProps}>
-              <Paper>
-                <ClickAwayListener onClickAway={this.handleMenuClose}>
-                  <MenuList onKeyDown={this.handleListKeyDown}>
-                    {items.map((item, i) => {
-                      if (item.showOnlyPartner) {
-                        return (
-                          <PrivateWrapper key={v1()}>
-                            <MenuItem
-                              onClick={this.handleMenuClose}
-                              dense
-                              className={classes.menuItem}
-                            >
-                              <Link
-                                external={item.external}
-                                to={item.url}
-                                className={classes.menuLink}
-                              >
-                                {item.name}
-                              </Link>
-                            </MenuItem>
-                          </PrivateWrapper>
-                        );
-                      }
+      <Popper
+        open={isMenuOpen}
+        anchorEl={anchorEl}
+        role={undefined}
+        transition
+        disablePortal
+        placement={placement || 'bottom-start'}
+      >
+        {({ TransitionProps }) => (
+          // TODO: review props spreading
+          // eslint-disable-next-line
+          <Fade {...TransitionProps}>
+            <Paper>
+              <ClickAwayListener onClickAway={handleMenuClose}>
+                <MenuList onKeyDown={handleListKeyDown}>
+                  {items.map((item, i) => {
+                    if (item.showOnlyPartner) {
                       return (
-                        <MenuItem
-                          onClick={this.handleMenuClose}
-                          key={v1()}
-                          dense
-                          className={classes.menuItem}
-                        >
-                          <Link
-                            external={item.external}
-                            to={item.url}
-                            className={classes.menuLink}
+                        <PrivateWrapper key={v1()}>
+                          <MenuItem
+                            onClick={handleMenuClose}
+                            dense
+                            className={classes.menuItem}
                           >
-                            {item.name}
-                          </Link>
-                        </MenuItem>
+                            <Link
+                              external={item.external}
+                              to={item.url}
+                              className={classes.menuLink}
+                            >
+                              {item.name}
+                            </Link>
+                          </MenuItem>
+                        </PrivateWrapper>
                       );
-                    })}
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Fade>
-          )}
-        </Popper>
-      </>
-    );
-  }
+                    }
+                    return (
+                      <MenuItem
+                        onClick={handleMenuClose}
+                        key={v1()}
+                        dense
+                        className={classes.menuItem}
+                      >
+                        <Link
+                          external={item.external}
+                          to={item.url}
+                          className={classes.menuLink}
+                        >
+                          {item.name}
+                        </Link>
+                      </MenuItem>
+                    );
+                  })}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
+    </>
+  );
 }
 
-export default withStyles(styles)(HeaderMenu);
+export default HeaderMenu;
