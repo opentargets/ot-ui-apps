@@ -1,7 +1,7 @@
-import { Avatar, ListItem, ListItemText } from '@material-ui/core';
+import { Avatar, ListItem, ListItemText } from '@mui/material';
 import classNames from 'classnames';
 import { Draggable } from 'react-beautiful-dnd';
-import { DragIndicator } from '@material-ui/icons';
+import { DragIndicator } from '@mui/icons-material';
 import { scroller } from 'react-scroll';
 
 import navPanelStyles from './navPanelStyles';
