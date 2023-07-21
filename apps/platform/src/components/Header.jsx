@@ -1,5 +1,5 @@
-import { Grid, makeStyles, Typography } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Grid, Skeleton, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
   },
   mainIconContainer: {
     width: '56px',
-    marginRight: '4px',
+    marginRight: '4px !important',
     justifyContent: 'center',
     display: 'flex',
     alignItems: 'center',
@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     color: theme.palette.primary.main,
-    fontWeight: 500,
+    fontWeight: '500 !important',
   },
   titleContainer: {
     justifyContent: 'space-between',
