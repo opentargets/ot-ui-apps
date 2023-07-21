@@ -1,10 +1,10 @@
 import {Typography, Paper, Grid, LinearProgress} from '@mui/material';
-import { withStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import { v1 } from 'uuid';
 
 import PlotContainerSection from './PlotContainerSection';
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   plotContainer: {
     marginBottom: '15px',
   },
@@ -14,10 +14,9 @@ const styles = () => ({
   rightContainer: {
     marginRight: '4px',
   },
-});
+}));
 
 function PlotContainer({
-  classes,
   loading,
   error,
   left,
@@ -25,6 +24,7 @@ function PlotContainer({
   right,
   children,
 }) {
+  const classes = useStyles();
   return (
     <Paper className={classes.plotContainer} elevation={0}>
       {left || center || right ? (
@@ -57,4 +57,4 @@ function PlotContainer({
   );
 }
 
-export default withStyles(styles)(PlotContainer);
+export default PlotContainer;

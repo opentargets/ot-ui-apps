@@ -1,13 +1,14 @@
-import { withStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   plotContainerSection: {
     padding: '4px 0',
     borderBottom: `1px solid ${theme.palette.grey[300]}`,
   },
-});
+}));
 
-function PlotContainerSection({ classes, children }) {
+function PlotContainerSection({ children }) {
+  const classes = useStyles();
   return <div className={classes.plotContainerSection}>{children}</div>;
 }
 

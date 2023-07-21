@@ -1,7 +1,5 @@
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import { Button, Grid, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import FileSaver from 'file-saver';
 
@@ -102,7 +100,7 @@ const downloadTable = async ({
   FileSaver.saveAs(blob, `${filenameStem}.${format}`, { autoBOM: false });
 };
 
-const styles = () => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     marginBottom: '2px',
   },
@@ -112,7 +110,7 @@ const styles = () => ({
   downloadHeader: {
     marginTop: '7px',
   },
-});
+}));
 
 function handleDownload(headers, rows, fileStem, format) {
   downloadTable({
@@ -123,7 +121,8 @@ function handleDownload(headers, rows, fileStem, format) {
   });
 }
 
-function DataDownloader({ tableHeaders, rows, classes, fileStem }) {
+function DataDownloader({ tableHeaders, rows, fileStem }) {
+  const classes = useStyles();
   return (
     <Grid
       container
@@ -164,4 +163,4 @@ function DataDownloader({ tableHeaders, rows, classes, fileStem }) {
   );
 }
 
-export default withStyles(styles)(DataDownloader);
+export default DataDownloader;

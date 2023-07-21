@@ -1,6 +1,6 @@
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { AppBar, Toolbar, Button, Typography, MenuItem, MenuList, useMediaQuery } from '@mui/material';
-import { makeStyles, useTheme, styled } from '@mui/styles';
+import { makeStyles, useTheme } from '@mui/styles';
 import classNames from 'classnames';
 import { v1 } from 'uuid';
 

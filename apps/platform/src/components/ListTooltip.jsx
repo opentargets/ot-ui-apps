@@ -1,14 +1,8 @@
-// import Paper from '@material-ui/core/Paper';
-// import List from '@material-ui/core/List';
-// import ListItem from '@material-ui/core/ListItem';
-// import ListItemText from '@material-ui/core/ListItemText';
-// import Popper from '@material-ui/core/Popper';
-// import Fade from '@material-ui/core/Fade';
 import {Paper, List, ListItem, ListItemText, Popper, Fade} from '@mui/material';
-import { withStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import { v1 } from 'uuid';
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   listitem: {
     padding: '0.2rem 0.6rem',
     width: '100%',
@@ -17,9 +11,10 @@ const styles = () => ({
     fontSize: '0.75rem',
     minWidth: '100%',
   },
-});
+}));
 
-function ListTooltip({ classes, dataList, open, anchorEl, container }) {
+function ListTooltip({ dataList, open, anchorEl, container }) {
+  const classes = useStyles();
   return (
     <Popper
       open={open}
@@ -57,4 +52,4 @@ function ListTooltip({ classes, dataList, open, anchorEl, container }) {
   );
 }
 
-export default withStyles(styles)(ListTooltip);
+export default ListTooltip;
