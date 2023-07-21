@@ -1,4 +1,4 @@
-import HelpIcon from '@material-ui/icons/Help';
+import HelpIcon from '@mui/icons-material/Help';
 import { makeStyles } from '@mui/styles';
 import { Tooltip } from '@mui/material';
 
