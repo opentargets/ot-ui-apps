@@ -117,12 +117,12 @@ function TreeItem({
                 )}
               </>
             }
+            onClick={handleClick}
           />
           <Typography className={classes.countLabel}>{count}</Typography>
         </>
       }
       nodeId={nodeId}
-      onLabelClick={handleClick}
       // TODO: review props spreading
       // eslint-disable-next-line
       {...other}
