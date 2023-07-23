@@ -12,4 +12,4 @@ function PlotContainerSection({ children }) {
   return <div className={classes.plotContainerSection}>{children}</div>;
 }
 
-export default withStyles(styles)(PlotContainerSection);
+export default PlotContainerSection;
