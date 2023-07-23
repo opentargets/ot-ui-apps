@@ -1,6 +1,6 @@
 import { CardContent, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import WarningIcon from '@material-ui/icons/Warning';
+import WarningIcon from '@mui/icons-material/Warning';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
 

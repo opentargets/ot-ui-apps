@@ -1,4 +1,3 @@
-// import { withStyles, useTheme } from '@material-ui/core';
 import { makeStyles, useTheme } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDna } from '@fortawesome/free-solid-svg-icons';
