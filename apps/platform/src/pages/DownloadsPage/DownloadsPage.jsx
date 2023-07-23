@@ -1,7 +1,6 @@
 import { Fragment, useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { Paper, Box, Chip, Typography } from '@mui/material';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Paper, Box, Chip, Typography, Alert, AlertTitle } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Link from '../../components/Link';
 import { defaultRowsPerPageOptions, formatMap } from '../../constants';

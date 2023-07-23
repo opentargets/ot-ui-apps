@@ -6,7 +6,7 @@ import {
   Typography,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import { formatMap } from '../../constants';
 
 const useStyles = makeStyles(theme => ({
