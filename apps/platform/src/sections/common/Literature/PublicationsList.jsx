@@ -5,8 +5,8 @@ import {
   useSetRecoilState,
   useRecoilCallback,
 } from 'recoil';
-import { Box, Grid, makeStyles, Fade } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Box, Grid, Fade, Skeleton } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import PublicationWrapper from '../../../components/PublicationsDrawer/PublicationWrapper';
 import { Table } from '../../../components/Table';
 import Loader from './Loader';

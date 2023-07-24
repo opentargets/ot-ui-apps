@@ -3,7 +3,7 @@ import {
   FormGroup,
   Checkbox,
   FormControlLabel,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   selectedCategoriesState,
