@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
-import { Tab, Tabs } from '@material-ui/core';
+import { Tab, Tabs } from '@mui/material';
 import { Link, Route, Switch, useLocation } from 'react-router-dom';
 import { v1 } from 'uuid';
 import { LoadingBackdrop } from 'ui';

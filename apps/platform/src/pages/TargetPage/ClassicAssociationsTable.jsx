@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { makeStyles } from '@mui/styles';
+import { Skeleton } from '@mui/material';
 import Link from '../../components/Link';
 import { Table } from '../../components/Table';
 import AssocCell from '../../components/AssocCell';

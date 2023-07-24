@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import { faDna } from '@fortawesome/free-solid-svg-icons';
 import config from '../../config';
 

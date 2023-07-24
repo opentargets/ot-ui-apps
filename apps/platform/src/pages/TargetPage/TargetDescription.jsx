@@ -1,7 +1,7 @@
 import { useState, useLayoutEffect, useRef } from 'react';
 import { v1 } from 'uuid';
-import { Typography, withStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Typography, Skeleton } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import {ChipList} from '../../components/ProfileHeader';
 
 const styles = theme => ({
