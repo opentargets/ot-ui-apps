@@ -21,7 +21,7 @@ function ChipList({ children, title, loading = false, inline }) {
 
   return (
     <Box>
-      <Typography variant="subtitle2" display={inline ? 'inline' : 'initial'}>
+      <Typography variant="subtitle2" display={inline ? 'inline' : ''}>
         {title}
         {inline ? ': ' : ''}
       </Typography>
