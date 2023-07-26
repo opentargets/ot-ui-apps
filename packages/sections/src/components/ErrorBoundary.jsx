@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import config from '../config';
 import Link from './Link';
 

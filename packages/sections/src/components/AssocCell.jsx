@@ -1,5 +1,5 @@
 import { scaleQuantize } from 'd3';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 import Link from './Link';
 import { colorRange } from '../constants';
 

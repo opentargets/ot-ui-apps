@@ -1,5 +1,5 @@
-import { Skeleton } from '@material-ui/lab';
-import { Box, Typography, Tooltip, makeStyles } from '@material-ui/core';
+import { Box, Skeleton, Typography, Tooltip } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import _ from 'lodash';
 import Chip from '../Chip';

@@ -1,5 +1,5 @@
-import { Grid } from '@material-ui/core';
-import { styled } from '@material-ui/styles';
+import { Grid } from '@mui/material';
+import { styled } from '@mui/styles';
 import { gql, useQuery } from '@apollo/client';
 import { cloneElement } from 'react';
 

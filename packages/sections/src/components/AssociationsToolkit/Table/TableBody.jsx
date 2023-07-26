@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { flexRender } from '@tanstack/react-table';
-import { ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener } from '@mui/material';
 import {
   EvidenceSecctionRenderer,
   SecctionRendererWrapper,

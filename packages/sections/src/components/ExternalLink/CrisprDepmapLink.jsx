@@ -1,5 +1,6 @@
-import HelpIcon from '@material-ui/icons/Help';
-import { makeStyles, Tooltip } from '@material-ui/core';
+import HelpIcon from '@mui/icons-material/Help';
+import { makeStyles } from '@mui/styles';
+import { Tooltip } from '@mui/material';
 
 import Link from '../Link';
 
