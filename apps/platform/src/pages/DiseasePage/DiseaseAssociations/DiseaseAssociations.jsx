@@ -1,18 +1,17 @@
 import { LoadingBackdrop } from 'ui';
-import { useContext } from 'react';
 import {
   TableAssociations,
   AdvanceOptionsMenu,
   TargetPrioritisationSwitch,
-  AssociationsContext,
   AssociationsProvider,
   SearhInput,
   DataDownloader,
+  useAotfContext,
 } from '../../../components/AssociationsToolkit';
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociationsQuery.gql';
 
 function AssociationsWrapper() {
-  const { initialLoading, id } = useContext(AssociationsContext);
+  const { initialLoading, id } = useAotfContext();
 
   if (initialLoading)
     return (

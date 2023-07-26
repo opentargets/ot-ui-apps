@@ -40,12 +40,7 @@ const TableDivider = styled('div')({
 const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
-function getDatasources({
-  expanderHandler,
-  loading,
-  displayedTable,
-  isPinTable = false,
-}) {
+function getDatasources({ expanderHandler, loading, displayedTable }) {
   const isAssociations = displayedTable === 'associations';
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
@@ -195,10 +190,7 @@ function TableAssociations() {
     columns,
     state: {
       expanded: tableExpanded,
-      pagination: {
-        pageIndex: 0,
-        pageSize: 50,
-      },
+      pagination,
       sorting,
       prefix: 'body',
     },
@@ -220,7 +212,10 @@ function TableAssociations() {
     columns,
     state: {
       expanded: tableExpanded,
-      pagination,
+      pagination: {
+        pageIndex: 0,
+        pageSize: 50,
+      },
       sorting,
       prefix: 'pinned',
     },

@@ -7,3 +7,4 @@ export {
   default as AssociationsContext,
   AssociationsProvider,
 } from './context/AssociationsContext';
+export { default as useAotfContext } from './hooks/useAotfContext';
