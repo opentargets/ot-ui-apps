@@ -1,4 +1,5 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useQuery } from '@apollo/client';
 
 import ChipList from '../../../components/ChipList';
