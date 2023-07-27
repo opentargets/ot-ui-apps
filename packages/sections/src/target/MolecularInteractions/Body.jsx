@@ -46,7 +46,7 @@ const sources = [
   },
 ];
 
-function Body({ label: symbol, id }) {
+function Body({ label: symbol, id, entity }) {
   const request = usePlatformApi();
   const [source, setSource] = useState(sources[0].id); // must initialize to valid value for tabs to work
   const [counts, setCounts] = useState({});
@@ -88,6 +88,7 @@ function Body({ label: symbol, id }) {
 
   return (
     <SectionItem
+      entity={entity}
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}

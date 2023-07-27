@@ -71,7 +71,7 @@ const columns = [
   },
 ];
 
-function Body({ id: chemblId, label: name }) {
+function Body({ id: chemblId, label: name, entity }) {
   const variables = { chemblId };
   const request = useQuery(INDICATIONS_QUERY, { variables });
 
@@ -79,6 +79,7 @@ function Body({ id: chemblId, label: name }) {
     <SectionItem
       definition={definition}
       request={request}
+      entity={entity}
       renderDescription={() => <Description name={name} />}
       renderBody={(data) => {
         const { rows } = data.drug.indications;

@@ -1,11 +1,12 @@
 query ProgenyQuery($ensemblId: String!, $efoId: String!) {
   disease(efoId: $efoId) {
     id
-    evidences(
+    progeny: evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["progeny"]
     ) {
+      count
       rows {
         disease {
           id

@@ -105,7 +105,7 @@ const columns = [
   },
 ];
 
-function Body({ id, label }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
@@ -121,11 +121,12 @@ function Body({ id, label }) {
       definition={definition}
       chipText={dataTypesMap.rna_expression}
       request={request}
+      entity={entity}
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
       renderBody={({ disease }) => {
-        const { rows } = disease.evidences;
+        const { rows } = disease.expressionAtlasSummary;
         return (
           <DataTable
             columns={columns}

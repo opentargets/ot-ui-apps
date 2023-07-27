@@ -276,7 +276,7 @@ function fetchClinvar({ ensemblId, efoId, cursor, size, freeTextQuery }) {
   });
 }
 
-function Body({ id, label }) {
+function Body({ id, label, entity }) {
   const { ensgId: ensemblId, efoId } = id;
   const [initialLoading, setInitialLoading] = useState(true); // state variable to keep track of initial loading of rows
   const [loading, setLoading] = useState(false); // state variable to keep track of loading state on page chage
@@ -300,7 +300,7 @@ function Body({ id, label }) {
         cursor: newCursor,
         rows: newRows,
         count: newCount,
-      } = res.data.disease.evidences;
+      } = res.data.disease.evaSummary;
       if (isCurrent) {
         setInitialLoading(false);
         setCursor(newCursor);
@@ -320,7 +320,7 @@ function Body({ id, label }) {
       ensemblId,
       efoId,
     },
-    `data.disease.evidences`
+    `data.disease.evaSummary`
   );
 
   const handlePageChange = (newPage) => {
@@ -328,7 +328,7 @@ function Body({ id, label }) {
     if (size * newPageInt + size > rows.length && cursor !== null) {
       setLoading(true);
       fetchClinvar({ ensemblId, efoId, cursor, size }).then((res) => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
+        const { cursor: newCursor, rows: newRows } = res.data.disease.evaSummary;
         setRows([...rows, ...newRows]);
         setLoading(false);
         setCursor(newCursor);
@@ -346,7 +346,7 @@ function Body({ id, label }) {
       fetchClinvar({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(
         (res) => {
           const { cursor: newCursor, rows: newRows } =
-            res.data.disease.evidences;
+            res.data.disease.evaSummary;
           setRows([...rows, ...newRows]);
           setLoading(false);
           setCursor(newCursor);
@@ -378,7 +378,8 @@ function Body({ id, label }) {
     <SectionItem
       definition={definition}
       chipText={dataTypesMap.genetic_association}
-      request={{ loading: initialLoading, data: rows }}
+      entity={entity}
+      request={{ loading: initialLoading, data: { [entity]: { evaSummary: { rows, count: rows.length } } }, }}
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}

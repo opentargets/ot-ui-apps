@@ -7,7 +7,7 @@ import PhenotypesTable from './PhenotypesTable';
 
 import MOUSE_PHENOTYPES_QUERY from './MousePhenotypes.gql';
 
-function Body({ id, label: symbol }) {
+function Body({ id, label: symbol, entity }) {
   const variables = { ensemblId: id };
   const request = useQuery(MOUSE_PHENOTYPES_QUERY, {
     variables,
@@ -16,6 +16,7 @@ function Body({ id, label: symbol }) {
   return (
     <SectionItem
       definition={definition}
+      entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={({ target }) => (

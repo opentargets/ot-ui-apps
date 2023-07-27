@@ -6,13 +6,14 @@ import Description from './Description';
 import SUBCELLULAR_LOCATION_QUERY from './SubcellularLocation.gql';
 import SubcellularViz from './SubcellularViz';
 
-function Body({ id: ensemblId, label: symbol }) {
+function Body({ id: ensemblId, label: symbol, entity }) {
   const request = useQuery(SUBCELLULAR_LOCATION_QUERY, {
     variables: { ensemblId },
   });
 
   return (
     <SectionItem
+      entity={entity}
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}

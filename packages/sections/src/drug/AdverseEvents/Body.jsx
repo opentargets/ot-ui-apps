@@ -1,34 +1,34 @@
-import { useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { makeStyles, Typography } from '@material-ui/core';
-import _ from 'lodash';
+import { useState } from "react";
+import { useQuery } from "@apollo/client";
+import { makeStyles, Typography } from "@material-ui/core";
+import _ from "lodash";
 import { Link, SectionItem } from "ui";
 
 import { definition } from ".";
-import Description from './Description';
-import { Table, PaginationActionsComplete } from '../../components/Table';
+import Description from "./Description";
+import { Table, PaginationActionsComplete } from "../../components/Table";
 
-import ADVERSE_EVENTS_QUERY from './AdverseEventsQuery.gql';
-import useBatchDownloader from '../../hooks/useBatchDownloader';
+import ADVERSE_EVENTS_QUERY from "./AdverseEventsQuery.gql";
+import useBatchDownloader from "../../hooks/useBatchDownloader";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   levelBarContainer: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
   levelBar: {
     backgroundColor: theme.palette.primary.main,
     borderRight: `1px solid ${theme.palette.primary.main}`,
-    height: '10px',
-    marginRight: '5px',
+    height: "10px",
+    marginRight: "5px",
   },
 }));
 
 const getColumns = (critVal, maxLlr, classes) => [
   {
-    id: 'name',
-    label: 'Adverse event (MedDRA)',
-    renderCell: d =>
+    id: "name",
+    label: "Adverse event (MedDRA)",
+    renderCell: (d) =>
       d.meddraCode ? (
         <Link to={`https://identifiers.org/meddra:${d.meddraCode}`} external>
           <Typography
@@ -43,18 +43,18 @@ const getColumns = (critVal, maxLlr, classes) => [
       ) : (
         _.upperFirst(d.name)
       ),
-    width: '30%',
+    width: "30%",
   },
   {
-    id: 'count',
-    label: 'Number of reported events',
+    id: "count",
+    label: "Number of reported events",
     numeric: true,
-    width: '25%',
+    width: "25%",
   },
   {
-    id: 'llr',
+    id: "llr",
     label: `Log likelihood ratio (CV = ${critVal.toFixed(2)})`,
-    renderCell: d => {
+    renderCell: (d) => {
       const w = ((d.logLR / maxLlr) * 85).toFixed(2); // scale to max 85% of the width to allows space for label
       return (
         <div className={classes.levelBarContainer}>
@@ -68,12 +68,12 @@ const getColumns = (critVal, maxLlr, classes) => [
         </div>
       );
     },
-    exportValue: d => d.logLR.toFixed(2),
-    width: '45%',
+    exportValue: (d) => d.logLR.toFixed(2),
+    width: "45%",
   },
 ];
 
-function Body({id: chemblId, label: name }) {
+function Body({ id: chemblId, label: name, entity }) {
   const classes = useStyles();
   const variables = { chemblId };
   const [page, setPage] = useState(0);
@@ -94,7 +94,7 @@ function Body({id: chemblId, label: name }) {
     });
   }
 
-  const handlePageChange = newPage => {
+  const handlePageChange = (newPage) => {
     setPage(newPage);
     getData(newPage, pageSize);
   };
@@ -108,15 +108,16 @@ function Body({id: chemblId, label: name }) {
   const getAllAdverseEvents = useBatchDownloader(
     ADVERSE_EVENTS_QUERY,
     variables,
-    'data.drug.adverseEvents'
+    "data.drug.adverseEvents"
   );
 
   return (
     <SectionItem
       definition={definition}
       request={{ loading, error, data }}
+      entity={entity}
       renderDescription={() => <Description name={name} />}
-      renderBody={res => {
+      renderBody={(res) => {
         // TODO: Change GraphQL schema to have a maxLlr field instead of having
         // to get the first item of adverse events to get the largest llr since
         // items are sorted in decreasing llr order.
@@ -138,7 +139,7 @@ function Body({id: chemblId, label: name }) {
             fixed
             pageSize={pageSize}
             rowsPerPageOptions={[10, 25, 50, 100]}
-            onRowsPerPageChange={()=>handleRowsPerPageChange()}
+            onRowsPerPageChange={() => handleRowsPerPageChange()}
             query={ADVERSE_EVENTS_QUERY.loc.source.body}
             variables={variables}
           />

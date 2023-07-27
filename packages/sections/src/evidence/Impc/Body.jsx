@@ -3,7 +3,6 @@ import { useQuery } from '@apollo/client';
 import { Link, SectionItem, Tooltip } from 'ui';
 
 import { definition } from '.';
-import Summary from './Summary';
 import Description from './Description';
 import INTOGEN_QUERY from './sectionQuery.gql';
 import { dataTypesMap } from '../../dataTypes';
@@ -121,7 +120,7 @@ const columns = [
   },
 ];
 
-function Body({ id, label }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
@@ -136,6 +135,7 @@ function Body({ id, label }) {
       definition={definition}
       chipText={dataTypesMap.animal_model}
       request={request}
+      entity={entity}
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
@@ -144,7 +144,7 @@ function Body({ id, label }) {
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
-          rows={data.disease.evidences.rows}
+          rows={data.disease.impc.rows}
           pageSize={5}
           rowsPerPageOptions={[5].concat(defaultRowsPerPageOptions)} // custom page size of 5 is not included in defaultRowsPerPageOptions
           showGlobalFilter

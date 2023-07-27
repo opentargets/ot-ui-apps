@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { makeStyles, Box } from "@material-ui/core";
 import {
   useSetRecoilState,
@@ -6,9 +6,9 @@ import {
   useResetRecoilState,
   RecoilRoot,
 } from "recoil";
+import { SectionItem } from "ui";
 import PublicationsList from "./PublicationsList";
 import Description from "./Description";
-import SectionItem from "../../components/Section/SectionItem";
 import {
   literatureState,
   updateLiteratureState,
@@ -26,8 +26,9 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function LiteratureList({ id, name, entity, BODY_QUERY }) {
+function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
   const classes = useStyles();
+  const [requestObj, setRequestObj] = useState({});
 
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
   const resetLiteratureState = useResetRecoilState(literatureState);
@@ -48,6 +49,7 @@ function LiteratureList({ id, name, entity, BODY_QUERY }) {
           endYear,
           endMonth,
         });
+        setRequestObj(inintRequest);
         const data = inintRequest.data[entity];
         const update = {
           entities: data.similarEntities,
@@ -74,32 +76,34 @@ function LiteratureList({ id, name, entity, BODY_QUERY }) {
     []
   );
   return (
-    <div>
-      <Box className={classes.controlsContainer}>
-        <Category />
-        <CountInfo />
-      </Box>
-      <Entities id={id} name={name} />
-      <PublicationsList hideSearch />
-    </div>
+    <SectionItem
+      definition={definition}
+      request={requestObj}
+      entity={entity}
+      renderDescription={() => <Description name={name} />}
+      renderBody={() => (
+        <>
+          <Box className={classes.controlsContainer}>
+            <Category />
+            <CountInfo />
+          </Box>
+          <Entities id={id} name={name} />
+          <PublicationsList hideSearch />
+        </>
+      )}
+    />
   );
 }
 
 function Body({ definition, name, id, entity, BODY_QUERY }) {
   return (
     <RecoilRoot>
-      <SectionItem
+      <LiteratureList
+        id={id}
+        name={name}
+        entity={entity}
+        BODY_QUERY={BODY_QUERY}
         definition={definition}
-        request={{ loading: false, error: null, data: true }}
-        renderDescription={() => <Description name={name} />}
-        renderBody={() => (
-          <LiteratureList
-            id={id}
-            name={name}
-            entity={entity}
-            BODY_QUERY={BODY_QUERY}
-          />
-        )}
       />
     </RecoilRoot>
   );

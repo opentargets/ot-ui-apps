@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import classNames from "classnames";
 import {
   Avatar,
   Box,
@@ -8,15 +8,15 @@ import {
   Grid,
   LinearProgress,
   Typography,
-} from '@material-ui/core';
-import { Element } from 'react-scroll';
+} from "@material-ui/core";
+import { Element } from "react-scroll";
 
-import ErrorBoundary from '../ErrorBoundary';
-import Chip from '../Chip';
-import SectionError from './SectionError';
-import sectionStyles from './sectionStyles';
-import { createShortName } from '../Summary/utils';
-import PartnerLockIcon from '../PartnerLockIcon';
+import ErrorBoundary from "../ErrorBoundary";
+import Chip from "../Chip";
+import SectionError from "./SectionError";
+import sectionStyles from "./sectionStyles";
+import { createShortName } from "../Summary/utils";
+import PartnerLockIcon from "../PartnerLockIcon";
 
 function SectionItem({
   definition,
@@ -25,10 +25,19 @@ function SectionItem({
   renderBody,
   tags,
   chipText,
+  entity,
+  showEmptySection = false,
 }) {
   const classes = sectionStyles();
   const { loading, error, data } = request;
   const shortName = createShortName(definition);
+  let hasData = false;
+
+  if (data && entity && data[entity]) {
+    hasData = definition.hasData(data[entity]);
+  }
+
+  if (!hasData && !showEmptySection) return null;
 
   return (
     <Grid item xs={12}>
@@ -56,7 +65,7 @@ function SectionItem({
                       [classes.titleError]: error,
                     })}
                   >
-                    {definition.name}{' '}
+                    {definition.name}{" "}
                     {definition.isPrivate ? <PartnerLockIcon /> : null}
                   </Typography>
                   {chipText ? (
@@ -85,9 +94,17 @@ function SectionItem({
               <Box className={classes.loadingPlaceholder} />
             )}
             {error && <SectionError error={error} />}
-            {!loading && data && (
+            {!loading && hasData && (
               <CardContent className={classes.cardContent}>
                 {renderBody(data)}
+              </CardContent>
+            )}
+            {!loading && !hasData && showEmptySection && (
+              <CardContent className={classes.cardContent}>
+                <div className={classes.noData}>
+                  {" "}
+                  No data available for this {entity}.{" "}
+                </div>
               </CardContent>
             )}
           </ErrorBoundary>

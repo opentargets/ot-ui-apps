@@ -66,7 +66,7 @@ const columns = [
   },
 ];
 
-function Body({ id, label}) {
+function Body({ id, label, entity}) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
@@ -80,6 +80,7 @@ function Body({ id, label}) {
   return (
     <SectionItem
       definition={definition}
+      entity={entity}
       chipText={dataTypesMap.affected_pathway}
       request={request}
       renderDescription={() => (
@@ -91,7 +92,7 @@ function Body({ id, label}) {
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           order="asc"
-          rows={data.disease.evidences.rows}
+          rows={data.disease.slapEnrich.rows}
           pageSize={10}
           rowsPerPageOptions={defaultRowsPerPageOptions}
           showGlobalFilter

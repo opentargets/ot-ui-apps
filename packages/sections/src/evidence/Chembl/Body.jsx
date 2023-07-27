@@ -203,7 +203,7 @@ function getColumns(classes) {
   ];
 }
 
-function Body({ id, label }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
 
   const variables = {
@@ -222,12 +222,13 @@ function Body({ id, label }) {
     <SectionItem
       definition={definition}
       chipText={dataTypesMap.known_drug}
+      entity={entity}
       request={request}
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
       renderBody={({ disease }) => {
-        const { rows } = disease.evidences;
+        const { rows } = disease.chemblSummary;
         return (
           <DataTable
             columns={columns}

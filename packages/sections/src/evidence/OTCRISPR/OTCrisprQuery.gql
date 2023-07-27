@@ -1,11 +1,12 @@
 query CrisprQuery($ensemblId: String!, $efoId: String!) {
   disease(efoId: $efoId) {
     id
-    evidences(
+    OtCrisprSummary: evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["ot_crispr"]
     ) {
+      count
       rows {
         disease {
           id

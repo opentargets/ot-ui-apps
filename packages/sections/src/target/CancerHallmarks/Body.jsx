@@ -57,7 +57,7 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: '.5rem' },
 });
 
-function Section({ id, label: symbol }) {
+function Section({ id, label: symbol, entity }) {
   const variables = { ensemblId: id };
   const classes = useStyles();
   const request = useQuery(HALLMARKS_QUERY, { variables });
@@ -65,6 +65,7 @@ function Section({ id, label: symbol }) {
   return (
     <SectionItem
       definition={definition}
+      entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={data => {

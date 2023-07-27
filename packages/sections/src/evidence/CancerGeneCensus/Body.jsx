@@ -130,7 +130,7 @@ const useStyles = makeStyles({
   roleInCancerTitle: { marginRight: ".5rem" },
 });
 
-function Body({ id, label }) {
+function Body({ id, label, entity }) {
   const classes = useStyles();
   const { ensgId, efoId } = id;
 
@@ -148,12 +148,13 @@ function Body({ id, label }) {
       definition={definition}
       chipText={dataTypesMap.somatic_mutation}
       request={request}
+      entity={entity}
       renderDescription={() => (
         <Description symbol={label.symbol} diseaseName={label.name} />
       )}
       renderBody={({
         disease: {
-          evidences: { rows },
+          cancerGeneCensusSummary: { rows },
         },
         target: { hallmarks },
       }) => {

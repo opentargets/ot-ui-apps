@@ -228,7 +228,7 @@ const columns = [
   },
 ];
 
-function Body({ label: name, id: efoId }) {
+function Body({ label: name, id: efoId, entity }) {
   const variables = {
     efoId,
     index: 0,
@@ -242,6 +242,7 @@ function Body({ label: name, id: efoId }) {
   return (
     <SectionItem
       definition={definition}
+      entity={entity}
       request={request}
       renderDescription={() => <Description name={name} />}
       renderBody={(data) => {

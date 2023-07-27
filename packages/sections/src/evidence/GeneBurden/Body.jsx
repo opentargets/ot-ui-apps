@@ -231,7 +231,7 @@ const columns = [
   },
 ];
 
-export function Body({ id, label}) {
+export function Body({ id, label, entity}) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
@@ -246,12 +246,13 @@ export function Body({ id, label}) {
     <SectionItem
       definition={definition}
       chipText={dataTypesMap.genetic_association}
+      entity={entity}
       request={request}
       renderDescription={() => (
         <Description symbol={label.symbol} diseaseName={label.name} />
       )}
       renderBody={({ disease }) => {
-        const { rows } = disease.evidences;
+        const { rows } = disease.geneBurdenSummary;
         return (
           <DataTable
             columns={columns}

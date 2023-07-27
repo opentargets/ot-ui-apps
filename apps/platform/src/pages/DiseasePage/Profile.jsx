@@ -20,7 +20,11 @@ import ProfileHeader from './ProfileHeader';
 import PrivateWrapper from '../../components/PrivateWrapper';
 import sections from './sections';
 
-const DISEASE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(sections, 'Disease');
+const DISEASE = 'disease';
+const DISEASE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
+  sections,
+  'Disease'
+);
 const DISEASE_PROFILE_QUERY = gql`
   query DiseaseProfileQuery($efoId: String!) {
     disease(efoId: $efoId) {
@@ -36,29 +40,29 @@ const DISEASE_PROFILE_QUERY = gql`
 function Profile({ efoId, name }) {
   return (
     <PlatformApiProvider
-      entity="disease"
+      entity={DISEASE}
       query={DISEASE_PROFILE_QUERY}
       variables={{ efoId }}
       client={client}
     >
       <ProfileHeader />
       <SummaryContainer>
-        <OntologySummary  />
-        <KnownDrugsSummary  />
-        <PhenotypesSummary  />
-        <BibliographySummary  />
+        <OntologySummary />
+        <KnownDrugsSummary />
+        <PhenotypesSummary />
+        <BibliographySummary />
         <PrivateWrapper>
-          <OTProjectsSummary  />
+          <OTProjectsSummary />
         </PrivateWrapper>
       </SummaryContainer>
 
       <SectionContainer>
-        <OntologySection id={efoId} label={name} />
-        <KnownDrugsSection id={efoId} label={name} />
-        <PhenotypesSection id={efoId} label={name} />
-        <BibliographySection id={efoId} label={name} />
+        <OntologySection id={efoId} label={name} entity={DISEASE} />
+        <KnownDrugsSection id={efoId} label={name} entity={DISEASE} />
+        <PhenotypesSection id={efoId} label={name} entity={DISEASE} />
+        <BibliographySection id={efoId} label={name} entity={DISEASE} />
         <PrivateWrapper>
-          <OTProjectsSection id={efoId} label={name} />
+          <OTProjectsSection id={efoId} label={name} entity={DISEASE} />
         </PrivateWrapper>
       </SectionContainer>
     </PlatformApiProvider>

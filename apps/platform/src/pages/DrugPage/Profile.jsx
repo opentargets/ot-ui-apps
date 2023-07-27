@@ -20,6 +20,8 @@ import sections from './sections';
 import ProfileHeader from './ProfileHeader';
 import { createSummaryFragment } from '../../components/Summary/utils';
 
+
+const DRUG = "drug";
 const DRUG_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(sections, 'Drug');
 const DRUG_PROFILE_QUERY = gql`
   query DrugProfileQuery($chemblId: String!) {
@@ -36,7 +38,7 @@ const DRUG_PROFILE_QUERY = gql`
 function Profile({ chemblId, name }) {
   return (
     <PlatformApiProvider
-      entity="drug"
+      entity={DRUG}
       query={DRUG_PROFILE_QUERY}
       variables={{ chemblId }}
       client={client}
@@ -53,12 +55,12 @@ function Profile({ chemblId, name }) {
       </SummaryContainer>
 
       <SectionContainer>
-        <MechanismsOfActionSection id={chemblId} label={name} />
-        <IndicationsSection id={chemblId} label={name} />
-        <KnownDrugsSection id={chemblId} label={name} />
-        <DrugWarningsSection id={chemblId} label={name} />
-        {/* <AdverseEventsSection id={chemblId} label={name} /> */}
-        <BibliographySection id={chemblId} label={name} />
+        <MechanismsOfActionSection id={chemblId} label={name} entity={DRUG}/>
+        <IndicationsSection id={chemblId} label={name} entity={DRUG} />
+        <KnownDrugsSection id={chemblId} label={name} entity={DRUG}/>
+        <DrugWarningsSection id={chemblId} label={name} entity={DRUG}/>
+        <AdverseEventsSection id={chemblId} label={name} entity={DRUG}/>
+        <BibliographySection id={chemblId} label={name} entity={DRUG}/>
       </SectionContainer>
     </PlatformApiProvider>
   );

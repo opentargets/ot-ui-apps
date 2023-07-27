@@ -7,11 +7,12 @@ import Description from './Description';
 
 import COMP_GENOMICS_QUERY from './CompGenomics.gql';
 
-function Body({ id: ensemblId, label: symbol }) {
+function Body({ id: ensemblId, label: symbol, entity }) {
   const variables = { ensemblId };
   const request = useQuery(COMP_GENOMICS_QUERY, { variables });
   return (
     <SectionItem
+      entity={entity}
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}

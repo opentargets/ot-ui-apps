@@ -7,7 +7,7 @@ import SafetyTable from './SafetyTable';
 import SAFETY_QUERY from './Safety.gql';
 
 
-function Body({ id: ensemblId, label: symbol }) {
+function Body({ id: ensemblId, label: symbol, entity }) {
   const variables = { ensemblId };
   const request = useQuery(SAFETY_QUERY, { variables });
   return (
@@ -15,6 +15,7 @@ function Body({ id: ensemblId, label: symbol }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
+      entity={entity}
       renderBody={data => (
         <SafetyTable
           safetyLiabilities={data.target.safetyLiabilities}
