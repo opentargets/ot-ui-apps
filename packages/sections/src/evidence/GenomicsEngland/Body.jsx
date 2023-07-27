@@ -182,7 +182,7 @@ const columns = [
   },
 ];
 
-export function Body({ id, label }) {
+export function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
@@ -198,6 +198,7 @@ export function Body({ id, label }) {
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       request={request}
+      entity={entity}
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
@@ -207,7 +208,7 @@ export function Body({ id, label }) {
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           order="desc"
-          rows={data.disease.evidences.rows}
+          rows={data.disease.genomicsEngland.rows}
           pageSize={10}
           rowsPerPageOptions={defaultRowsPerPageOptions}
           showGlobalFilter

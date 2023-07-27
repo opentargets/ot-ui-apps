@@ -6,7 +6,7 @@ query ClinvarQuery(
 ) {
   disease(efoId: $efoId) {
     id
-    evidences(
+    evaSummary: evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["eva"]

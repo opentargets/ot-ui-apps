@@ -51,6 +51,11 @@ const sectionStyles = makeStyles((theme) => ({
     position: "relative",
     top: "5px",
   },
+  noData: {
+    display: "flex",
+    fontStyle: "italic",
+    justifyContent: "center",
+  },
 }));
 
 export default sectionStyles;

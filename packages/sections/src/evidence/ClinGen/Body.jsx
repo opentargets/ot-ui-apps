@@ -85,7 +85,7 @@ const columns = [
   },
 ];
 
-function Body({ id, label }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
 
   const variables = {
@@ -100,13 +100,14 @@ function Body({ id, label }) {
   return (
     <SectionItem
       definition={definition}
+      entity={entity}
       chipText={dataTypesMap.genetic_association}
       request={request}
       renderDescription={() => (
         <Description symbol={label.symbol} diseaseName={label.name} />
       )}
       renderBody={({ disease }) => {
-        const { rows } = disease.evidences;
+        const { rows } = disease.clingenSummary;
         return (
           <DataTable
             columns={columns}

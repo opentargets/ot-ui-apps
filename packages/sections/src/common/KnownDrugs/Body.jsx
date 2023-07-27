@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 import Link from "../../components/Link";
 import { naLabel, phaseMap } from "../../constants";
 import { sentenceCase } from "../../utils/global";
-import SectionItem from "../../components/Section/SectionItem";
 import SourceDrawer from "./SourceDrawer";
 import { Table, getPage } from "../../components/Table";
 import useCursorBatchDownloader from "../../hooks/useCursorBatchDownloader";
 import { getComparator } from "../../components/Table/sortingAndFiltering";
+import { SectionItem } from "ui";
 
 function getColumnPool(id, entity) {
   return {
@@ -185,14 +185,13 @@ function Body({
       let isCurrent = true;
 
       fetchDrugs(variables, null, pageSize).then((res) => {
-        const {
-          cursor: newCursor,
-          count: newCount,
-          rows: newRows,
-        } = res.data[entity].knownDrugs;
-
-        if (isCurrent) {
-          setInitialLoading(false);
+        setInitialLoading(false);
+        if (res.data[entity].knownDrugs && isCurrent) {
+          const {
+            cursor: newCursor,
+            count: newCount,
+            rows: newRows,
+          } = res.data[entity].knownDrugs;
           setCursor(newCursor);
           setCount(newCount);
           setRows(newRows);
@@ -284,7 +283,12 @@ function Body({
   return (
     <SectionItem
       definition={definition}
-      request={{ loading: initialLoading, error: false, data: rows }}
+      entity={entity}
+      request={{
+        loading: initialLoading,
+        error: false,
+        data: { [entity]: { knownDrugs: { rows, count: rows.length } } },
+      }}
       renderDescription={Description}
       renderBody={() => (
         <Table

@@ -267,7 +267,7 @@ const exportColumns = [
   },
 ];
 
-function Body({ id, label }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId};
   const request = useQuery(VALIDATION_QUERY, {
@@ -280,11 +280,12 @@ function Body({ id, label }) {
       definition={definition}
       chipText={dataTypesMap.ot_validation_lab}
       request={request}
+      entity={entity}
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
       renderBody={({ disease }) => {
-        const { rows } = disease.evidences;
+        const { rows } = disease.otValidationSummary;
         const hypothesis = _.uniqBy(
           rows.reduce(
             (prev, curr) =>

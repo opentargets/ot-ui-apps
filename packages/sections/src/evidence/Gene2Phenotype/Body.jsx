@@ -11,7 +11,6 @@ import { dataTypesMap } from "../../dataTypes";
 import { sentenceCase } from "../../utils/global";
 import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
-import Summary from "./Summary";
 import { definition } from ".";
 
 const g2pUrl = (studyId, symbol) =>
@@ -127,7 +126,7 @@ const columns = [
   },
 ];
 
-function Body({ id: { ensgId, efoId }, label: { symbol, name } }) {
+function Body({ id: { ensgId, efoId }, label: { symbol, name }, entity }) {
   const variables = { ensemblId: ensgId, efoId };
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
@@ -139,13 +138,14 @@ function Body({ id: { ensgId, efoId }, label: { symbol, name } }) {
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       request={request}
+      entity={entity}
       renderDescription={() => <Description symbol={symbol} name={name} />}
       renderBody={(data) => (
         <DataTable
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`${ensgId}-${efoId}-gene2phenotype`}
-          rows={data.disease.evidences.rows}
+          rows={data.disease.gene2Phenotype.rows}
           pageSize={10}
           rowsPerPageOptions={defaultRowsPerPageOptions}
           showGlobalFilter

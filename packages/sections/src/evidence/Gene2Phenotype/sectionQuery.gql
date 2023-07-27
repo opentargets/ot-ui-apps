@@ -4,11 +4,12 @@ query OpenTargetsGeneticsQuery(
 ) {
   disease(efoId: $efoId) {
     id
-    evidences(
+    gene2Phenotype: evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["gene2phenotype"]
     ) {
+      count
       rows {
         id
         disease {

@@ -25,10 +25,19 @@ function SectionItem({
   renderBody,
   tags,
   chipText,
+  entity,
+  showEmptySection = false,
 }) {
   const classes = sectionStyles();
   const { loading, error, data } = request;
   const shortName = createShortName(definition);
+  let hasData = false;
+
+  if (data && entity && data[entity]) {
+    hasData = definition.hasData(data[entity]);
+  }
+
+  if (!hasData && !showEmptySection) return null;
 
   return (
     <Grid item xs={12}>
@@ -85,9 +94,17 @@ function SectionItem({
               <Box className={classes.loadingPlaceholder} />
             )}
             {error && <SectionError error={error} />}
-            {!loading && data && (
+            {!loading && hasData && (
               <CardContent className={classes.cardContent}>
                 {renderBody(data)}
+              </CardContent>
+            )}
+            {!loading && !hasData && showEmptySection && (
+              <CardContent className={classes.cardContent}>
+                <div className={classes.noData}>
+                  {" "}
+                  No data available for this {entity}.{" "}
+                </div>
               </CardContent>
             )}
           </ErrorBoundary>

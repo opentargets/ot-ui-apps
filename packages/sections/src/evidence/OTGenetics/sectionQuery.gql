@@ -1,7 +1,7 @@
 query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!) {
   disease(efoId: $efoId) {
     id
-    evidences(
+    openTargetsGenetics: evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["ot_genetics_portal"]
@@ -39,6 +39,7 @@ query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!) {
         resourceScore
         projectId
       }
+      count
     }
   }
 }

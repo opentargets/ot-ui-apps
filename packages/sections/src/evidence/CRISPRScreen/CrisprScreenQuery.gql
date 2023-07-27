@@ -1,11 +1,12 @@
 query CrisprScreenQuery($ensemblId: String!, $efoId: String!) {
   disease(efoId: $efoId) {
     id
-    evidences(
+    CrisprScreenSummary: evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["crispr_screen"]
     ) {
+      count
       rows {
         # disease {
         #   id

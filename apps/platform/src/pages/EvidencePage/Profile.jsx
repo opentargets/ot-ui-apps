@@ -60,6 +60,11 @@ import { createSummaryFragment } from '../../components/Summary/utils';
 import ProfileHeader from './ProfileHeader';
 import PrivateWrapper from '../../components/PrivateWrapper';
 
+
+  const EVIDENCE="evidence";
+  const DISEASE = "disease";
+
+
 const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
   sections,
   'Disease',
@@ -98,8 +103,8 @@ function Profile({ ensgId, efoId, symbol, name }) {
 
   return (
     <PlatformApiProvider
-      lsSectionsField="evidence"
-      entity="disease"
+      lsSectionsField={EVIDENCE}
+      entity={DISEASE}
       query={EVIDENCE_PROFILE_QUERY}
       variables={{ ensgId, efoId }}
     >
@@ -137,33 +142,33 @@ function Profile({ ensgId, efoId, symbol, name }) {
       </SummaryContainer>
 
       <SectionContainer>
-        <OTGeneticsSection id={id} label={label} />
-        <EVASection id={id} label={label} />
-        <GeneBurdenSection id={id} label={label} />
-        <GenomicsEnglandSection id={id} label={label} />
-        <Gene2PhenotypeSection id={id} label={label} />
-        <UniProtLiteratureSection id={id} label={label} />
-        <UniProtVariantsSection id={id} label={label} />
-        <ClinGenSection id={id} label={label} />
-        <OrphanetSection id={id} label={label} />
-        <CancerGeneCensusSection id={id} label={label} />
-        <IntOgenSection id={id} label={label} />
-        <EVASomaticSection id={id} label={label} />
-        <ChemblSection id={id} label={label} />
-        <CRISPRSection id={id} label={label} />
-        <CrisprScreenSection id={id} label={label} />
-        <CancerBiomarkersSection id={id} label={label} />
-        <SlapEnrichSection id={id} label={label} />
-        <ProgenySection id={id} label={label} />
-        <ReactomeSection id={id} label={label} />
-        <SysBioSection id={id} label={label} />
-        <EuropePmcSection id={id} label={label} />
-        <ExpressionAtlasSection id={id} label={label} />
-        <ImpcSection id={id} label={label} />
+        <OTGeneticsSection id={id} label={label} entity={DISEASE}/>
+        <EVASection id={id} label={label} entity={DISEASE}/>
+        <GeneBurdenSection id={id} label={label} entity={DISEASE} />
+        <GenomicsEnglandSection id={id} label={label} entity={DISEASE} />
+        <Gene2PhenotypeSection id={id} label={label} entity={DISEASE} />
+        <UniProtLiteratureSection id={id} label={label} entity={DISEASE} />
+        <UniProtVariantsSection id={id} label={label} entity={DISEASE} />
+        <ClinGenSection id={id} label={label} entity={DISEASE} />
+        <OrphanetSection id={id} label={label} entity={DISEASE} />
+        <CancerGeneCensusSection id={id} label={label} entity={DISEASE} />
+        <IntOgenSection id={id} label={label} entity={DISEASE} />
+        <EVASomaticSection id={id} label={label} entity={DISEASE} />
+        <ChemblSection id={id} label={label} entity={DISEASE} />
+        <CRISPRSection id={id} label={label} entity={DISEASE} />
+        <CrisprScreenSection id={id} label={label} entity={DISEASE} />
+        <CancerBiomarkersSection id={id} label={label} entity={DISEASE} />
+        <SlapEnrichSection id={id} label={label} entity={DISEASE} />
+        <ProgenySection id={id} label={label} entity={DISEASE} />
+        <ReactomeSection id={id} label={label} entity={DISEASE} />
+        <SysBioSection id={id} label={label} entity={DISEASE} />
+        <EuropePmcSection id={id} label={label} entity={DISEASE} />
+        <ExpressionAtlasSection id={id} label={label} entity={DISEASE} />
+        <ImpcSection id={id} label={label} entity={DISEASE} />
         <PrivateWrapper>
-          <OTCRISPRSection id={id} label={label} />
-          <OTEncoreSection id={id} label={label} />
-          <OTValidationSection id={id} label={label} />
+          <OTCRISPRSection id={id} label={label} entity={DISEASE} />
+          <OTEncoreSection id={id} label={label} entity={DISEASE} />
+          <OTValidationSection id={id} label={label} entity={DISEASE} />
         </PrivateWrapper>
       </SectionContainer>
     </PlatformApiProvider>

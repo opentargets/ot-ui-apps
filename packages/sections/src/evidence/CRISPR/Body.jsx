@@ -47,7 +47,7 @@ const columns = [
   },
 ];
 
-function Body({ id, label }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
 
   const variables = {
@@ -64,11 +64,12 @@ function Body({ id, label }) {
       definition={definition}
       chipText={dataTypesMap.affected_pathway}
       request={request}
+      entity={entity}
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
       renderBody={({ disease }) => {
-        const { rows } = disease.evidences;
+        const { rows } = disease.crisprSummary;
         return (
           <DataTable
             columns={columns}

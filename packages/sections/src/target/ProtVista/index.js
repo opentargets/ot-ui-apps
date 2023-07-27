@@ -1,13 +1,7 @@
 export const definition = {
-  id: 'protVista',
-  name: 'ProtVista',
-  shortName: 'PV',
-  hasData: ({ proteinIds }) => {
-    for (let i = 0; i < proteinIds.length; i++) {
-      if (proteinIds[i].source === 'uniprot_swissprot') {
-        return true;
-      }
-    }
-    return false;
-  },
+  id: "protVista",
+  name: "ProtVista",
+  shortName: "PV",
+  hasData: ({ proteinIds }) =>
+    proteinIds.some((e) => e.source === "uniprot_swissprot"),
 };

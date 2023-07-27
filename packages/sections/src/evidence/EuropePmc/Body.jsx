@@ -90,7 +90,7 @@ function mergeData(rows, literatureData) {
 /*
  * EuropePMC widget does NOT require the count prop
  */
-function Body({ id, label }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const pagesToFetch = 10;
   const [page, setPage] = useState(0);
@@ -107,27 +107,27 @@ function Body({ id, label }) {
   } = useQuery(EUROPE_PMC_QUERY, {
     variables,
     onCompleted: (res) => {
-      setNewIds(res.disease.evidences.rows.map((entry) => entry.literature[0]));
+      setNewIds(res.disease.europePmc.rows.map((entry) => entry.literature[0]));
     },
   });
   const [loading, setLoading] = useState(isLoading);
 
   const handlePageChange = (pageChange) => {
     if (
-      pageChange * pageSize >= data.disease.evidences.rows.length - pageSize &&
-      (pageChange + 1) * pageSize < data.disease.evidences.count
+      pageChange * pageSize >= data.disease.europePmc.rows.length - pageSize &&
+      (pageChange + 1) * pageSize < data.disease.europePmc.count
     ) {
       setLoading(true); // fetchMore takes too long to set loading to true.
       fetchMore({
         variables: {
           ...variables,
-          cursor: data.disease.evidences.cursor,
+          cursor: data.disease.europePmc.cursor,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev;
 
           setNewIds(
-            fetchMoreResult.disease.evidences.rows.map(
+            fetchMoreResult.disease.europePmc.rows.map(
               (entry) => entry.literature[0]
             )
           );
@@ -136,12 +136,12 @@ function Body({ id, label }) {
             ...prev,
             disease: {
               ...prev.disease,
-              evidences: {
-                ...prev.disease.evidences,
-                cursor: fetchMoreResult.disease.evidences.cursor,
+              europePmc: {
+                ...prev.disease.europePmc,
+                cursor: fetchMoreResult.disease.europePmc.cursor,
                 rows: [
-                  ...prev.disease.evidences.rows,
-                  ...fetchMoreResult.disease.evidences.rows,
+                  ...prev.disease.europePmc.rows,
+                  ...fetchMoreResult.disease.europePmc.rows,
                 ],
               },
             },
@@ -156,7 +156,7 @@ function Body({ id, label }) {
   const handleRowsPerPageChange = (newPageSize) => {
     if (
       page * newPageSize >=
-      data.disease.evidences.rows.length - newPageSize
+      data.disease.europePmc.rows.length - newPageSize
     ) {
       refetch(variables);
     }
@@ -192,6 +192,7 @@ function Body({ id, label }) {
   return (
     <SectionItem
       definition={definition}
+      entity={entity}
       chipText={dataTypesMap.literature}
       request={{ loading, error, data }}
       renderDescription={() => (
@@ -199,7 +200,7 @@ function Body({ id, label }) {
       )}
       renderBody={(res) => {
         const rows = mergeData(
-          getPage(res.disease.evidences.rows, page, pageSize),
+          getPage(res.disease.europePmc.rows, page, pageSize),
           literatureData
         );
 
@@ -214,7 +215,7 @@ function Body({ id, label }) {
             page={page}
             pageSize={pageSize}
             rows={rows}
-            rowCount={data.disease.evidences.count}
+            rowCount={data.disease.europePmc.count}
             rowsPerPageOptions={[5, 10, 15, 20, 25]}
             query={EUROPE_PMC_QUERY.loc.source.body}
             variables={variables}

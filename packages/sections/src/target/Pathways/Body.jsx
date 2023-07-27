@@ -8,7 +8,7 @@ import PathwaysTable from './PathwaysTable';
 
 import PATHWAYS_QUERY from './Pathways.gql';
 
-function Body({ id: ensemblId, label: symbol }) {
+function Body({ id: ensemblId, label: symbol, entity }) {
   const variables = { ensemblId };
   const request = useQuery(PATHWAYS_QUERY, {
     variables,
@@ -17,6 +17,7 @@ function Body({ id: ensemblId, label: symbol }) {
   return (
     <SectionItem
       definition={definition}
+      entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={({ target }) => (

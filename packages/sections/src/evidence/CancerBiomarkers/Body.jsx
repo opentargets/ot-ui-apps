@@ -87,7 +87,7 @@ const columns = [
   },
 ];
 
-function Body({ id, label, count }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
 
   const variables = {
@@ -104,11 +104,12 @@ function Body({ id, label, count }) {
       definition={definition}
       chipText={definition.dataType}
       request={request}
+      entity={entity}
       renderDescription={() => (
         <Description symbol={label.symbol} diseaseName={label.name} />
       )}
       renderBody={({ disease }) => {
-        const { rows } = disease.evidences;
+        const { rows } = disease.cancerBiomarkersSummary;
         return (
           <DataTable
             columns={columns}

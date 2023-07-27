@@ -8,7 +8,7 @@ import Description from "./Description";
 import GtexTab, { getData as getGtexData } from "./GtexTab";
 import SummaryTab, { getData as getSummaryData } from "./SummaryTab";
 
-function Section({ id: ensgId, label: symbol }) {
+function Section({ id: ensgId, label: symbol, entity }) {
   const defaultTab = "summary";
   const [tab, setTab] = useState(defaultTab);
   const [requestSummary, setRequestSummary] = useState({ loading: true });
@@ -48,6 +48,7 @@ function Section({ id: ensgId, label: symbol }) {
   return (
     <SectionItem
       definition={definition}
+      entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={(data) => (

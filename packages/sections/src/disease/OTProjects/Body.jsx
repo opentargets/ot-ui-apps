@@ -44,7 +44,7 @@ const getColumns = (classes) => [
   },
 ];
 
-function Body({ label, id: efoId }) {
+function Body({ label, id: efoId, entity }) {
   const request = usePlatformApi(Summary.fragments.OTProjectsSummaryFragment);
   const classes = useStyles();
 
@@ -52,6 +52,7 @@ function Body({ label, id: efoId }) {
     <SectionItem
       definition={definition}
       request={request}
+      entity={entity}
       renderDescription={() => <Description name={label} />}
       renderBody={({ otarProjects }) => (
         <DataTable
