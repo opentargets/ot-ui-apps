@@ -1,8 +1,9 @@
-import { makeStyles, Tooltip as MUITooltip } from '@material-ui/core';
-import _ from 'lodash';
+import { makeStyles } from "@mui/styles";
+import { Tooltip as MUITooltip } from "@material-ui/core";
+import _ from "lodash";
 
 function Tooltip({ style, children, title, showHelpIcon = false, ...props }) {
-  const classes = makeStyles(theme =>
+  const classes = makeStyles((theme) =>
     _.merge(style, {
       tooltip: {
         backgroundColor: theme.palette.background.paper,
@@ -10,12 +11,12 @@ function Tooltip({ style, children, title, showHelpIcon = false, ...props }) {
         color: theme.palette.text.primary,
       },
       tooltipBadge: {
-        paddingLeft: '1rem',
-        top: '.4rem',
+        paddingLeft: "1rem",
+        top: ".4rem",
       },
       tooltipIcon: {
-        fontWeight: '500',
-        cursor: 'default',
+        fontWeight: "500",
+        cursor: "default",
       },
     })
   )();

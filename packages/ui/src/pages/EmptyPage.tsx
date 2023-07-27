@@ -1,10 +1,6 @@
-import {
-  Button,
-  Grid,
-  Typography,
-  colors,
-  makeStyles,
-} from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
+import { Button, Typography } from "@mui/material";
+
 import { ReactNode } from "react";
 import Link from "../components/Link";
 import BrokenSearchIcon from "../components/icons/BrokenSearchIcon";

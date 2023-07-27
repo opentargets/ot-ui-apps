@@ -1,9 +1,10 @@
-import { Box, Chip, makeStyles, Tooltip } from '@material-ui/core';
-import classNames from 'classnames';
-import { v1 } from 'uuid';
-import { naLabel } from '../constants';
+import { makeStyles } from "@mui/styles";
+import { Box, Chip, Tooltip } from "@material-ui/core";
+import classNames from "classnames";
+import { v1 } from "uuid";
+import { naLabel } from "../constants";
 
-const useContainerStyles = makeStyles(theme => ({
+const useContainerStyles = makeStyles((theme) => ({
   tooltip: {
     backgroundColor: theme.palette.background.paper,
     border: `1px solid ${theme.palette.grey[300]}`,
@@ -12,7 +13,7 @@ const useContainerStyles = makeStyles(theme => ({
 }));
 
 const useChipStyles = makeStyles({
-  chip: { margin: '3px 5px 3px 0' },
+  chip: { margin: "3px 5px 3px 0" },
 });
 
 function ChipContainer({ item, children }) {
@@ -44,8 +45,8 @@ function ChipList({ items, small }) {
 
   if (!items || items.length === 0) return naLabel;
 
-  return items.map(item => {
-    const component = item.url ? 'a' : Box;
+  return items.map((item) => {
+    const component = item.url ? "a" : Box;
     return (
       <ChipContainer key={v1()} item={item}>
         <Chip
@@ -58,7 +59,7 @@ function ChipList({ items, small }) {
           noreferrer="true"
           color="primary"
           label={item.label}
-          size={small ? 'small' : 'medium'}
+          size={small ? "small" : "medium"}
         />
       </ChipContainer>
     );

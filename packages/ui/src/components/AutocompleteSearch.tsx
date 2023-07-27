@@ -4,7 +4,7 @@ import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "../hooks/useSearchQueryData";
 import SearchListItem, { SearchResult } from "./Search/SearchListItem";
 import SearchListHeader from "./Search/SearchListHeader";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 import useListOption from "../hooks/useListOption";
 import { SearchContext } from "./Search/SearchContext";
 import SearchLoadingState from "./Search/SearchLoadingState";

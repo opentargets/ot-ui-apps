@@ -1,11 +1,6 @@
 import { useCallback, useEffect, useState, useContext } from "react";
-
-import {
-  makeStyles,
-  Typography,
-  Dialog,
-  DialogContent,
-} from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
+import { Typography, Dialog, DialogContent } from "@material-ui/core";
 import { Search as SearchIcon } from "@material-ui/icons";
 
 import AutocompleteSearch from "./AutocompleteSearch";
@@ -66,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GlobalSearch({showSearchResultPage}) {
+function GlobalSearch({ showSearchResultPage }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleClose = () => {
@@ -128,7 +123,10 @@ function GlobalSearch({showSearchResultPage}) {
         className={classes.modal}
       >
         <DialogContent>
-          <AutocompleteSearch closeModal={handleClose} showSearchResultPage={showSearchResultPage}/>
+          <AutocompleteSearch
+            closeModal={handleClose}
+            showSearchResultPage={showSearchResultPage}
+          />
         </DialogContent>
       </Dialog>
     </>

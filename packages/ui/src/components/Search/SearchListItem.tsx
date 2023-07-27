@@ -1,4 +1,5 @@
-import { makeStyles, Typography, Chip } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
+import { Typography, Chip } from "@mui/material";
 import SearchRecentListItem from "./SearchRecentListItem";
 import { commaSeparate } from "./utils/searchUtils";
 
@@ -101,14 +102,13 @@ function SearchListItem({
             <span className={classes.id}>{item.id}</span>
           </Typography>
         </div>
-        {isTopHit &&
-          item.description && (
-            <div className="functionDescription">
-              <Typography variant="subtitle1">
-                {item.description.substring(0, 180)} ...{" "}
-              </Typography>
-            </div>
-          )}
+        {isTopHit && item.description && (
+          <div className="functionDescription">
+            <Typography variant="subtitle1">
+              {item.description.substring(0, 180)} ...{" "}
+            </Typography>
+          </div>
+        )}
 
         <div className={classes.justifyBetween}>
           <Typography variant="caption">

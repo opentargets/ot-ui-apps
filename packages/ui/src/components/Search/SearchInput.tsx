@@ -1,11 +1,7 @@
 import { useEffect, useContext, useRef } from "react";
 import { Search } from "@material-ui/icons";
-import {
-  makeStyles,
-  TextField,
-  InputAdornment,
-  TextFieldProps,
-} from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
+import { TextField, InputAdornment, TextFieldProps } from "@material-ui/core";
 import useDebounce from "../../hooks/useDebounce";
 import { SearchContext } from "./SearchContext";
 

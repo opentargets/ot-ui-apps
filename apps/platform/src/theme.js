@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material";
+import { createTheme } from '@mui/material';
 import { lighten, darken } from 'polished';
 import config from './config';
 
@@ -11,6 +11,7 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: '"Inter", sans-serif',
+    fontSize: 12,
   },
   palette: {
     primary: {

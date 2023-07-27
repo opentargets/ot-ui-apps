@@ -1,6 +1,6 @@
 import { Grid, Typography } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 
 import Link from "./Link";
 import { EmailLink } from "./EmailLink";

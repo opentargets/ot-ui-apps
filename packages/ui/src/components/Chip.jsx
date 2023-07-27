@@ -1,12 +1,13 @@
-import classNames from 'classnames';
-import { Chip as MUIChip, makeStyles } from '@material-ui/core';
+import classNames from "classnames";
+import { makeStyles } from "@mui/styles";
+import { Chip as MUIChip } from "@material-ui/core";
 
 const useStyles = makeStyles({
   chip: {
-    height: '20px',
-    marginRight: '4px',
-    marginBottom: '4px',
-    maxWidth: '100%',
+    height: "20px",
+    marginRight: "4px",
+    marginBottom: "4px",
+    maxWidth: "100%",
   },
 });
 

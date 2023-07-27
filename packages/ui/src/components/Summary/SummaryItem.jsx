@@ -6,7 +6,7 @@ import {
   Grid,
   LinearProgress,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { scroller } from "react-scroll";
 
 import summaryStyles from "./summaryStyles";
