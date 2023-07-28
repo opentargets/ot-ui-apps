@@ -119,8 +119,6 @@ function TableAssociations() {
     pinnedData,
   } = useAotfContext();
 
-  console.log({ data });
-
   // const [tableExpanded, setTableExpanded] = useState(null);
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
@@ -205,7 +203,6 @@ function TableAssociations() {
     manualPagination: true,
     manualSorting: true,
   });
-  console.log({ pinnedData, tableExpanded });
 
   const tablePinned = useReactTable({
     data: pinnedData,
@@ -232,8 +229,6 @@ function TableAssociations() {
   });
 
   const entitesHeaders = table.getHeaderGroups()[0].headers[1].subHeaders;
-
-  console.log({ expanded, pinExpanded });
 
   return (
     <div className="TAssociations" style={tableCSSVariables}>

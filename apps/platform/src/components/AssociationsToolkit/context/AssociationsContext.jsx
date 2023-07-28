@@ -52,7 +52,8 @@ function AssociationsProvider({ children, entity, id, query }) {
   // only two posible (associations || prioritisations)
   const [displayedTable, setDisplayedTable] = useState('associations');
 
-  const [pinnedData, setPinnedData] = useState([]);
+  // const [pinnedData, setPinnedData] = useState([]);
+  const [pinnedEntries, setPinnedEntries] = useState([]);
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
     query,
@@ -66,6 +67,25 @@ function AssociationsProvider({ children, entity, id, query }) {
       datasources: dataSourcesWeights,
       entity,
       aggregationFilters: dataSourcesRequired,
+    },
+  });
+
+  const {
+    data: pinnedData,
+    loading: loadingPinned,
+    error: errorPinned,
+    count: countPinned,
+  } = useAssociationsData({
+    query,
+    options: {
+      id,
+      size: pinnedEntries.length,
+      sortBy: sorting[0].id,
+      enableIndirect,
+      datasources: dataSourcesWeights,
+      entity,
+      aggregationFilters: dataSourcesRequired,
+      rowsFilter: pinnedEntries,
     },
   });
 
@@ -188,13 +208,17 @@ function AssociationsProvider({ children, entity, id, query }) {
     sorting,
     modifiedSourcesDataControls,
     tablePinExpanded,
+    loadingPinned,
+    errorPinned,
+    countPinned,
     pinExpanded,
+    pinnedEntries,
+    setPinnedEntries,
     setPinExpanded,
     setTablePinExpanded,
     resetDatasourceControls,
     handleSortingChange,
     handleSearchInputChange,
-    setPinnedData,
     setDisplayedTable,
     setDataSourcesWeights,
     setDataSourcesRequired,

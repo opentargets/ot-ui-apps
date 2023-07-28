@@ -74,17 +74,19 @@ function TooltipContent({ id, entity, name, icon }) {
 
 function CellName({ name, rowId, row }) {
   const [open, setOpen] = useState(false);
-  const { entityToGet, pinnedData, setPinnedData } = useAotfContext();
+  const { entityToGet, pinnedEntries, setPinnedData, setPinnedEntries } =
+    useAotfContext();
 
   const rowData = row.original;
-  const isPinned = pinnedData.find(e => e.id === rowData.id);
+
+  const isPinned = pinnedEntries.find(e => e === rowData.id);
 
   const handleClickPin = () => {
     if (isPinned) {
-      const newPinnedData = pinnedData.filter(e => e.id !== rowData.id);
-      setPinnedData(newPinnedData);
+      const newPinnedData = pinnedEntries.filter(e => e !== rowData.id);
+      setPinnedEntries(newPinnedData);
     } else {
-      setPinnedData([...pinnedData, rowData]);
+      setPinnedEntries([...pinnedEntries, rowData.id]);
     }
   };
 
