@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { List } from '@material-ui/core';
+import { List } from '@mui/material';
 
 import navPanelStyles from './navPanelStyles';
 import SectionMenuItem from './SectionMenuItem';

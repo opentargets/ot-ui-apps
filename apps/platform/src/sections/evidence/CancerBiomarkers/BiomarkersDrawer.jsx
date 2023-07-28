@@ -7,7 +7,7 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Close as CloseIcon } from "@mui/icons-material";
 
 import Tooltip from '../../../components/Tooltip';
 import Link from '../../../components/Link';

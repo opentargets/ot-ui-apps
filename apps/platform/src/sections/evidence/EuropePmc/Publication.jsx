@@ -3,7 +3,7 @@ import { v1 } from 'uuid';
 import {
   AddCircleOutlineRounded,
   RemoveCircleOutlineRounded,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 
 import { naLabel } from '../../../constants';
