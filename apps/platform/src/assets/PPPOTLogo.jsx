@@ -9,7 +9,7 @@ import config from '../config';
 // });
 
 function OTLogo(props) {
-  const classes = useStyles();
+  // const classes = useStyles();
 
   return (
     <SvgIcon

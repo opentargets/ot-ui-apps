@@ -6,7 +6,8 @@ import { v1 } from "uuid";
 import { SectionItem } from "ui";
 import classNames from "classnames";
 import { useQuery } from "@apollo/client";
-import { Grid, Typography, makeStyles } from "@material-ui/core";
+import { Grid, Typography } from "@mui/material";
+import { makeStyles } from "@material-ui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { definition } from ".";

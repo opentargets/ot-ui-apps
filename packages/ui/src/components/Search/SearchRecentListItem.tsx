@@ -1,4 +1,4 @@
-import { History, Clear } from "@material-ui/icons";
+import { History, Clear } from "@mui/icons-material";
 import { Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
