@@ -113,7 +113,6 @@ const columns = [
               <Tooltip
                 key={v1()}
                 placement="top"
-                interactive
                 title={description}
                 showHelpIcon
               >

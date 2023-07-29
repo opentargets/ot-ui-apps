@@ -22,7 +22,6 @@ function ChipContainer({ item, children }) {
   return item.tooltip ? (
     <Tooltip
       placement="top"
-      interactive
       classes={{ tooltip: classes.tooltip }}
       title={item.tooltip}
     >

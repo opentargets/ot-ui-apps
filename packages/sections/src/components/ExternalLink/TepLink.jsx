@@ -52,7 +52,6 @@ function TepLink({ ensgId }) {
           </>
         }
         placement="top"
-        interactive
       >
         <sup>
           <HelpIcon className={classes.helpIcon} />

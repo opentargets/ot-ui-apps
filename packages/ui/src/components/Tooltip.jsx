@@ -26,7 +26,6 @@ function Tooltip({ style, children, title, showHelpIcon = false, ...props }) {
       {showHelpIcon && children}
       <MUITooltip
         placement="top"
-        interactive
         classes={{ tooltip: classes.tooltip }}
         title={title}
         // TODO: review props spreading
