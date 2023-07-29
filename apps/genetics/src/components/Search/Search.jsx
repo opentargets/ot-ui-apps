@@ -8,7 +8,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { Search as SearchIcon, ArrowDropDown } from '@material-ui/icons';
+import { Search as SearchIcon, ArrowDropDown } from @mui/icons-material';
 import { useHistory } from 'react-router-dom';
 
 import useDebounce from '../../hooks/useDebounce';

@@ -10,7 +10,7 @@ import {
   makeStyles,
   PopperProps,
 } from '@material-ui/core';
-import { Menu as MenuIcon, Close as CloseIcon } from '@material-ui/icons';
+import { Menu as MenuIcon, Close as CloseIcon } from @mui/icons-material';
 import Link from '../Link';
 
 const useStyles = makeStyles({
