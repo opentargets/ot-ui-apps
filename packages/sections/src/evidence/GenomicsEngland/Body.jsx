@@ -4,7 +4,7 @@ import {
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { v1 } from "uuid";
 import { Tooltip, SectionItem, Link } from "ui";
 
