@@ -6,9 +6,9 @@ const PRIMARY = config.profile.primaryColor;
 const SECONDARY = '#ff6350';
 
 const theme = createTheme({
-  shape: {
-    borderRadius: 0,
-  },
+  // shape: {
+  //   borderRadius: 0,
+  // },
   typography: {
     fontFamily: '"Inter", sans-serif',
     fontSize: 12,

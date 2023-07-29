@@ -56,7 +56,7 @@ function SearchListItem({
   isTopHit = false,
   clearItem,
 }: {
-  item: SearchResult;
+  item: any;
   isTopHit: boolean;
   clearItem: (item: SearchResult) => void;
 }) {

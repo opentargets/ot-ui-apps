@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import { Tooltip as MUITooltip } from "@material-ui/core";
+import { Tooltip as MUITooltip } from "@mui/material";
 import _ from "lodash";
 
 function Tooltip({ style, children, title, showHelpIcon = false, ...props }) {

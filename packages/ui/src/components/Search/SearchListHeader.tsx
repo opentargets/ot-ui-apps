@@ -37,7 +37,7 @@ function SearchListHeader({
   children,
   clearAll,
 }: {
-  listHeader: React.ReactNode;
+  listHeader: any;
   children: React.ReactNode;
   clearAll: () => void;
 }) {

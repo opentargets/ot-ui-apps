@@ -1,10 +1,11 @@
 import { useState, useEffect, useContext, ChangeEvent } from "react";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import { Autocomplete } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { v1 } from "uuid";
 import SearchInput from "./Search/SearchInput";
 import useSearchQueryData from "../hooks/useSearchQueryData";
 import SearchListItem, { SearchResult } from "./Search/SearchListItem";
 import SearchListHeader from "./Search/SearchListHeader";
-import { makeStyles } from "@mui/styles";
 import useListOption from "../hooks/useListOption";
 import { SearchContext } from "./Search/SearchContext";
 import SearchLoadingState from "./Search/SearchLoadingState";
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottomWidth: "0.3px",
     borderStyle: "solid",
     borderImage: "linear-gradient(to right, white, #00000063, white)0 0 90",
-    "&[data-focus='true']": {
+    ".Mui-focused": {
       border: `0.3px solid ${theme.palette.primary}`,
       borderRadius: "4px",
       background: "#3489ca29",
@@ -144,12 +145,12 @@ export default function AutocompleteSearch({
 
   return (
     <Autocomplete
-      classes={{
-        paper: classes.paper,
-        popper: classes.popper,
-        listbox: classes.listbox,
-        option: classes.option,
-      }}
+      // classes={{
+      //   paper: classes.paper,
+      //   popper: classes.popper,
+      //   // listbox: classes.listbox,
+      //   // option: classes.option,
+      // }}
       disablePortal
       openOnFocus
       autoHighlight
@@ -161,22 +162,19 @@ export default function AutocompleteSearch({
       loading={searchQueryLoading}
       loadingText={<SearchLoadingState />}
       renderGroup={(group) => (
-        <SearchListHeader
-          key={group.key}
-          listHeader={group.group}
-          children={group.children}
-          clearAll={clearAll}
-        />
+        <SearchListHeader listHeader={group.group} clearAll={clearAll}>
+          {group.children}
+        </SearchListHeader>
       )}
       getOptionLabel={(option) => option.symbol || option.name || option.id}
-      renderOption={(option) => (
+      renderOption={(props, option) => (
         <SearchListItem
           item={option}
           isTopHit={option.type === "topHit"}
           clearItem={clearItem}
         />
       )}
-      getOptionSelected={(option, value) => option.name === value.toString()}
+      isOptionEqualToValue={(option, value) => option.name === value.toString()}
       filterOptions={() => searchResult}
       renderInput={(params) => (
         <SearchInput
