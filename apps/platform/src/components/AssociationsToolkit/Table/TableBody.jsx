@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { flexRender } from '@tanstack/react-table';
-import { ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener, Fade, Grow } from '@material-ui/core';
+import { v1 } from 'uuid';
 import {
   EvidenceSecctionRenderer,
   SecctionRendererWrapper,
@@ -62,65 +63,69 @@ function TableBody({ table, expanded, prefix = null }) {
         <div className="TRow">
           {table.getRowModel().rows.map(row => (
             <Fragment key={row.id}>
-              <div className={getRowClassName(row, isExpandedInTable)}>
-                <div className="data-row-content">
-                  {highLevelHeaders.map(columnGroup => (
-                    <div
-                      className={getColContainerClassName(columnGroup)}
-                      key={columnGroup.id}
-                    >
-                      {columnGroup.subHeaders.map(column => {
-                        const cell = row
-                          .getVisibleCells()
-                          .find(el => el.column.id === column.id);
-                        return (
-                          <div
-                            key={cell.id}
-                            className={getCellClassName(
-                              cell,
-                              entityToGet,
-                              displayedTable,
-                              expanded,
-                              tablePrefix
-                            )}
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ))}
+              <Fade in>
+                <div className={getRowClassName(row, isExpandedInTable)}>
+                  <div className="data-row-content">
+                    {highLevelHeaders.map(columnGroup => (
+                      <div
+                        className={getColContainerClassName(columnGroup)}
+                        key={columnGroup.id}
+                      >
+                        {columnGroup.subHeaders.map(column => {
+                          const cell = row
+                            .getVisibleCells()
+                            .find(el => el.column.id === column.id);
+                          return (
+                            <div
+                              key={cell.id}
+                              className={getCellClassName(
+                                cell,
+                                entityToGet,
+                                displayedTable,
+                                expanded,
+                                tablePrefix
+                              )}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </Fade>
               {isExpandedInTable && row.getIsExpanded() && (
-                <div key={`${row.original[entityToGet].id}-${expanded[1]}`}>
+                <div key={v1()}>
                   <ClickAwayListener onClickAway={handleClickAway}>
                     <div>
-                      <SecctionRendererWrapper
-                        activeSection={expanded}
-                        table={displayedTable}
-                        tablePrefix={prefix}
-                      >
-                        {isAssociations ? (
-                          <EvidenceSecctionRenderer
-                            id={id}
-                            row={row}
-                            rowId={row.original[entityToGet].id}
-                            entity={entity}
-                            label={row.original[entityToGet][rowNameEntity]}
-                          />
-                        ) : (
-                          <TargetSecctionRenderer
-                            id={id}
-                            rowId={row.original[entityToGet].id}
-                            entity={entity}
-                            label={row.original[entityToGet][rowNameEntity]}
-                          />
-                        )}
-                      </SecctionRendererWrapper>
+                      <Grow in>
+                        <SecctionRendererWrapper
+                          activeSection={expanded}
+                          table={displayedTable}
+                          tablePrefix={prefix}
+                        >
+                          {isAssociations ? (
+                            <EvidenceSecctionRenderer
+                              id={id}
+                              row={row}
+                              rowId={row.original[entityToGet].id}
+                              entity={entity}
+                              label={row.original[entityToGet][rowNameEntity]}
+                            />
+                          ) : (
+                            <TargetSecctionRenderer
+                              id={id}
+                              rowId={row.original[entityToGet].id}
+                              entity={entity}
+                              label={row.original[entityToGet][rowNameEntity]}
+                            />
+                          )}
+                        </SecctionRendererWrapper>
+                      </Grow>
                     </div>
                   </ClickAwayListener>
                 </div>

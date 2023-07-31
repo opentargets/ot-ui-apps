@@ -74,8 +74,7 @@ function TooltipContent({ id, entity, name, icon }) {
 
 function CellName({ name, rowId, row }) {
   const [open, setOpen] = useState(false);
-  const { entityToGet, pinnedEntries, setPinnedData, setPinnedEntries } =
-    useAotfContext();
+  const { entityToGet, pinnedEntries, setPinnedEntries } = useAotfContext();
 
   const rowData = row.original;
 

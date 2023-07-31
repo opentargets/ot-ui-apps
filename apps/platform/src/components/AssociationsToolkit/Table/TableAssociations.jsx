@@ -40,7 +40,7 @@ const TableDivider = styled('div')({
 const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
-function getDatasources({ expanderHandler, loading, displayedTable }) {
+function getDatasources({ expanderHandler, displayedTable }) {
   const isAssociations = displayedTable === 'associations';
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
@@ -73,8 +73,8 @@ function getDatasources({ expanderHandler, loading, displayedTable }) {
         isPrivate,
         docsLink,
         cell: row => {
-          const tablePrefix = row.table.getState().prefix;
-          if (loading && tablePrefix !== 'pinned')
+          const { prefix, loading } = row.table.getState();
+          if (loading)
             return <Skeleton variant="circle" width={26} height={25} />;
           const hasValue = cellHasValue(row.getValue());
           return hasValue ? (
@@ -86,7 +86,7 @@ function getDatasources({ expanderHandler, loading, displayedTable }) {
               cell={row}
               loading={loading}
               isAssociations={isAssociations}
-              tablePrefix={tablePrefix}
+              tablePrefix={prefix}
             />
           ) : (
             <ColoredCell />
@@ -105,10 +105,9 @@ function TableAssociations() {
     entityToGet,
     data,
     count,
-    loading,
+    loading: associationsLoading,
     tableExpanded,
     expanded,
-    pinExpanded,
     pagination,
     expanderHandler,
     handlePaginationChange,
@@ -117,9 +116,8 @@ function TableAssociations() {
     sorting,
     handleSortingChange,
     pinnedData,
+    pinnedLoading,
   } = useAotfContext();
-
-  // const [tableExpanded, setTableExpanded] = useState(null);
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
 
@@ -133,8 +131,8 @@ function TableAssociations() {
             id: 'name',
             enableSorting: false,
             cell: row => {
-              const tablePrefix = row.table.getState().prefix;
-              if (loading && tablePrefix !== 'pinned') return null;
+              const { loading } = row.table.getState();
+              if (loading) return null;
               return (
                 <CellName
                   name={row.getValue()}
@@ -152,8 +150,8 @@ function TableAssociations() {
             id: 'score',
             header: 'Association Score',
             cell: row => {
-              const tablePrefix = row.table.getState().prefix;
-              if (loading && tablePrefix !== 'pinned')
+              const { loading } = row.table.getState();
+              if (loading)
                 return <Skeleton variant="rect" width={30} height={25} />;
               return (
                 <ColoredCell
@@ -171,12 +169,10 @@ function TableAssociations() {
       columnHelper.group({
         header: 'entities',
         id: 'entity-cols',
-        columns: [
-          ...getDatasources({ expanderHandler, loading, displayedTable }),
-        ],
+        columns: [...getDatasources({ expanderHandler, displayedTable })],
       }),
     ],
-    [expanderHandler, loading, displayedTable, entityToGet, rowNameEntity]
+    [expanderHandler, displayedTable, entityToGet, rowNameEntity]
   );
 
   /**
@@ -191,6 +187,7 @@ function TableAssociations() {
       pagination,
       sorting,
       prefix: 'body',
+      loading: associationsLoading,
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
@@ -215,6 +212,7 @@ function TableAssociations() {
       },
       sorting,
       prefix: 'pinned',
+      loading: pinnedLoading,
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,

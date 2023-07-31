@@ -1,5 +1,6 @@
 import { createContext, useState, useMemo, useEffect } from 'react';
 import { isEqual } from 'lodash';
+import { useStateParams } from 'ui';
 import {
   defaulDatasourcesWeigths,
   getControlChecked,
@@ -52,8 +53,12 @@ function AssociationsProvider({ children, entity, id, query }) {
   // only two posible (associations || prioritisations)
   const [displayedTable, setDisplayedTable] = useState('associations');
 
-  // const [pinnedData, setPinnedData] = useState([]);
-  const [pinnedEntries, setPinnedEntries] = useState([]);
+  const [pinnedEntries, setPinnedEntries] = useStateParams(
+    [],
+    'pinned',
+    arr => arr.join(','),
+    str => str.split(',')
+  );
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
     query,
@@ -72,9 +77,9 @@ function AssociationsProvider({ children, entity, id, query }) {
 
   const {
     data: pinnedData,
-    loading: loadingPinned,
-    error: errorPinned,
-    count: countPinned,
+    loading: pinnedLoading,
+    error: pinnedError,
+    count: pinnedCount,
   } = useAssociationsData({
     query,
     options: {
@@ -85,7 +90,7 @@ function AssociationsProvider({ children, entity, id, query }) {
       datasources: dataSourcesWeights,
       entity,
       aggregationFilters: dataSourcesRequired,
-      rowsFilter: pinnedEntries,
+      rowsFilter: pinnedEntries.toSorted(),
     },
   });
 
@@ -208,9 +213,9 @@ function AssociationsProvider({ children, entity, id, query }) {
     sorting,
     modifiedSourcesDataControls,
     tablePinExpanded,
-    loadingPinned,
-    errorPinned,
-    countPinned,
+    pinnedLoading,
+    pinnedError,
+    pinnedCount,
     pinExpanded,
     pinnedEntries,
     setPinnedEntries,
