@@ -32,9 +32,8 @@ const TableElement = styled('div')({
 });
 
 const TableDivider = styled('div')({
-  background: '#ececec',
-  height: '1px',
-  margin: '5px 0',
+  borderBottom: '1px solid #ececec',
+  marginBottom: 4,
 });
 
 const columnHelper = createColumnHelper();
