@@ -13,27 +13,29 @@ import { containsObject } from "./Search/utils/searchUtils";
 
 const useStyles = makeStyles((theme) => ({
   popper: {
-    borderRadius: "0 0 12px 12px !important",
+    height: "94% !important",
+    minHeight: "94% !important",
   },
   paper: {
-    height: "inherit !important",
-    boxShadow: "2px 0 4px -4px #999, -2px 0 4px -4px #999",
+    height: "100% !important",
+    boxShadow:
+      "0px 0px 0px -13px rgba(0,0,0,0.2), 1px 0px 1px -1px rgba(0,0,0,0.14), 0px -1px 3px 0px rgba(0,0,0,0.12)",
   },
   listbox: {
-    maxHeight: "47vh !important",
+    maxHeight: "100% !important",
   },
   option: {
-    margin: "0 1rem",
-    padding: "11px",
-    border: "0.3px solid transparent",
-    borderBottomWidth: "0.3px",
-    borderStyle: "solid",
-    borderImage: "linear-gradient(to right, white, #00000063, white)0 0 90",
-    ".Mui-focused": {
-      border: `0.3px solid ${theme.palette.primary}`,
-      borderRadius: "4px",
-      background: "#3489ca29",
-    },
+    // margin: "0 1rem",
+    // padding: "11px",
+    // border: "0.3px solid transparent",
+    // borderBottomWidth: "0.3px",
+    // borderStyle: "solid",
+    // borderImage: "linear-gradient(to right, white, #00000063, white)0 0 90",
+    // ".Mui-focused": {
+    //   border: `0.3px solid ${theme.palette.primary}`,
+    //   borderRadius: "4px",
+    //   background: "#3489ca29",
+    // },
   },
 }));
 
@@ -46,7 +48,7 @@ export default function AutocompleteSearch({
   isHomePage?: boolean;
   showSearchResultPage?: boolean;
 }) {
-  const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
+  const [searchResult, setSearchResult] = useState<any[]>([]);
   const [openListItem] = useListOption();
   const [recentItems, setRecentValue] = useState(
     JSON.parse(localStorage.getItem("search-history") || "[]") || []
@@ -124,6 +126,7 @@ export default function AutocompleteSearch({
     event: ChangeEvent<object>,
     option: string | SearchResult | null
   ) => {
+    console.log(event, option)
     if (typeof option === "object") {
       onClose();
       openListItem(option);
@@ -145,17 +148,18 @@ export default function AutocompleteSearch({
 
   return (
     <Autocomplete
-      // classes={{
-      //   paper: classes.paper,
-      //   popper: classes.popper,
-      //   // listbox: classes.listbox,
-      //   // option: classes.option,
-      // }}
+      classes={{
+        popper: classes.popper,
+        listbox: classes.listbox,
+        option: classes.option,
+        paper: classes.paper,
+      }}
       disablePortal
       openOnFocus
       autoHighlight
       clearOnEscape
       freeSolo
+      open
       options={searchResult}
       onChange={handleSelectOption}
       groupBy={(option) => option.type}

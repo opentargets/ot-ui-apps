@@ -70,9 +70,9 @@ function SearchInput({
   }, [debouncedInputValue]);
 
   useEffect(() => {
-    if (inputRef.current && (!isHomePage || focus)) {
+    // if (inputRef.current && (!isHomePage || focus)) {
       inputRef.current.focus();
-    }
+    // }
   }, [focus, isHomePage]);
 
   return (
@@ -110,9 +110,9 @@ function SearchInput({
         onKeyDown={(e) => {
           if (e.code === "Escape") onClose();
         }}
-        onBlur={() => {
-          onClose();
-        }}
+        // onBlur={() => {
+        //   onClose();
+        // }}
         onFocus={() => {
           setOpen(true);
         }}

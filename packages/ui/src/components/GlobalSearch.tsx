@@ -49,8 +49,9 @@ const useStyles = makeStyles((theme) => ({
       "& .MuiDialog-paperWidthSm": {
         width: "80vw",
         maxWidth: "800px",
-        height: "inherit",
-        maxHeight: "55vh",
+        minHeight: "55vh",
+        height: "600px",
+        maxHeight: "90vh",
         margin: " 0.5rem 0.968rem",
         borderRadius: "5px",
         "& .MuiDialogContent-root": {
