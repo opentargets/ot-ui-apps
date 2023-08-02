@@ -231,7 +231,7 @@ function TableAssociations() {
     <div className="TAssociations" style={tableCSSVariables}>
       <TableElement>
         {/* HEADER */}
-        <TableHeader table={table} />
+        <TableHeader table={table} cols={entitesHeaders} />
 
         {/* Weights controlls */}
         <HeaderControls cols={entitesHeaders} />

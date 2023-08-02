@@ -1,7 +1,6 @@
 /* ENTITIES GRID */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(24, 1fr);
   grid-template-rows: 1fr;
   grid-column-gap: 2px;
   grid-row-gap: 0px;
@@ -52,20 +51,22 @@
 
 .TAssociations .Theader .naiming-cols {
   display: flex;
+  width: 260px;
+  /* max-width: var(--table-header-max-width); */
 }
 .TAssociations .Theader .entity-cols {
-  display: flex;
-  padding-left: 5px;
-  margin-left: 30px;
+  /* display: flex; */
   width: 100%;
-  gap: 4px;
+  /* gap: 4px; */
 }
 
 .TAssociations .Theader .header-name {
-  width: var(--table-header-max-width);
+  /* max-width: var(--table-header-max-width); */
+  /* min-width: var(--table-header-max-width); */
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  flex-grow: 1;
 }
 
 .TAssociations .Theader .header-name div {
@@ -75,7 +76,6 @@
 .TAssociations .Theader .rotate {
   height: 140px;
   white-space: nowrap;
-  flex-grow: 1;
 }
 
 .TAssociations .Theader .docs-link {
@@ -101,7 +101,7 @@
 
 .TAssociations .Theader .rotate > div {
   transform: translate(0, 110px) rotate(315deg);
-  width: 30px;
+  width: 32px;
   display: flex;
   align-items: center;
 }
@@ -193,6 +193,11 @@
   text-align: left;
 }
 
+.data-row-content:hover .pinnedIcon {
+  opacity: 1;
+  cursor: pointer;
+}
+
 .TAssociations .data-row .name-cell .pinnedIcon.active {
   color: var(--primary-color);
 }
@@ -281,9 +286,8 @@
   width: 100%;
 }
 .TAssociations .weights-controlls .header-controls-labels {
-  padding: 6px 10px;
   text-align: right;
-  width: 195px;
+  width: 260px;
 }
 
 .TAssociations .weights-controlls .required-container {

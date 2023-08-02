@@ -1,4 +1,4 @@
-import { Collapse, Grid, Typography } from '@material-ui/core';
+import { Box, Collapse, Grid, Typography } from '@material-ui/core';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -9,7 +9,6 @@ import Slider from './SliderControl';
 import Required from './RequiredControl';
 
 import useAotfContext from '../hooks/useAotfContext';
-
 
 const CloseContainer = styled('div')({
   position: 'absolute',
@@ -30,18 +29,13 @@ function HeaderControls({ cols = [] }) {
   };
 
   const columnContainerStyle = {
-    gridTemplateColumns: ` repeat(${cols.length}, 1fr)`,
+    gridTemplateColumns: `repeat(${cols.length}, 1fr)`,
   };
 
   return (
     <Collapse in={activeHeadersControlls}>
       <div className="weights-controlls">
-        <Grid
-          container
-          direction="row"
-          wrap="nowrap"
-          className="controlls-container"
-        >
+        <Grid container direction="row" wrap="nowrap">
           <CloseContainer onClick={handleClose}>
             <FontAwesomeIcon icon={faXmark} size="lg" />
           </CloseContainer>
@@ -52,14 +46,14 @@ function HeaderControls({ cols = [] }) {
             className="header-controls-labels"
             justifyContent="space-between"
           >
-            <Grid item>
+            <Box>
               <Typography variant="subtitle2">
                 Datasource weight control:
               </Typography>
-            </Grid>
-            <Grid item>
+            </Box>
+            <Box>
               <Typography variant="subtitle2">Required datasource:</Typography>
-            </Grid>
+            </Box>
           </Grid>
           <Grid
             item

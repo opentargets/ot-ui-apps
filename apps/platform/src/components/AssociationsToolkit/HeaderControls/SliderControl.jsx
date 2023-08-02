@@ -4,6 +4,9 @@ import useAotfContext from '../hooks/useAotfContext';
 import { getWightSourceDefault } from '../utils';
 
 const OTSlider = withStyles({
+  root: {
+    padding: '0 10px !important',
+  },
   mark: {
     backgroundColor: '#b8b8b8',
     width: 10,

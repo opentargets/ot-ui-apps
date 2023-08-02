@@ -48,7 +48,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [sorting, setSorting] = useState([{ id: 'score', desc: true }]);
 
   // Data controls UI
-  const [activeHeadersControlls, setActiveHeadersControlls] = useState(false);
+  const [activeHeadersControlls, setActiveHeadersControlls] = useState(true);
 
   // only two posible (associations || prioritisations)
   const [displayedTable, setDisplayedTable] = useState('associations');

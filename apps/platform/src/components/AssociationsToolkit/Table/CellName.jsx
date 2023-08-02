@@ -25,11 +25,6 @@ const NameContainer = styled('div')({
   '& .pinnedIcon.active': {
     // opacity: '1',
   },
-  '&:hover .pinnedIcon': {
-    opacity: '1',
-    cursor: 'pointer',
-    color: 'ececec',
-  },
 });
 
 const TextContainer = styled('div')({

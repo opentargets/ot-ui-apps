@@ -9,10 +9,11 @@ import {
 
 import AggregationsRow from './AggregationsRow';
 import useAotfContext from '../hooks/useAotfContext';
+import { Grid } from '@material-ui/core';
 
 const getHeaderContainerClassName = ({ id }) => {
   if (id === '1_naiming-cols_name') return 'naiming-cols';
-  return 'entity-cols';
+  return 'entity-cols grid-container';
 };
 
 const getHeaderClassName = ({ id }) => {
@@ -21,7 +22,7 @@ const getHeaderClassName = ({ id }) => {
   return 'rotate';
 };
 
-function TableHeader({ table }) {
+function TableHeader({ table, cols }) {
   const { id, displayedTable, handleAggregationClick, activeHeadersControlls } =
     useAotfContext();
   const [activeAggregation, setActiveAggegation] = useState(null);
@@ -37,15 +38,21 @@ function TableHeader({ table }) {
   };
 
   const highLevelHeaders = table.getHeaderGroups()[0].headers;
-  const entitesHeaders = table.getHeaderGroups()[0].headers[1].subHeaders;
+
+  const columnContainerStyle = {
+    gridTemplateColumns: `repeat(${cols.length}, 1fr)`,
+  };
 
   return (
     <div className="Theader">
-      <div className="cols-container">
+      <Grid container direction="row" wrap="nowrap">
         {highLevelHeaders.map(highLevelHeader => (
-          <div
+          <Grid
+            item
+            style={columnContainerStyle}
             className={getHeaderContainerClassName(highLevelHeader)}
             key={highLevelHeader.id}
+            wrap="nowrap"
           >
             {highLevelHeader.subHeaders.map(header => (
               <div className={getHeaderClassName(header)} key={header.id}>
@@ -101,12 +108,12 @@ function TableHeader({ table }) {
                 )}
               </div>
             ))}
-          </div>
+          </Grid>
         ))}
-      </div>
+      </Grid>
       <AggregationsRow
         handleAggregationClick={handleAggregationClick}
-        cols={entitesHeaders}
+        cols={cols}
         table={displayedTable}
         active={activeAggregation}
         activeHeadersControlls={activeHeadersControlls}
