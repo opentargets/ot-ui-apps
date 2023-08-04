@@ -2,7 +2,7 @@ import { usePlatformApi, Link, SectionItem } from "ui";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
 import Description from "./Description";
 import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions } from "../../constants";

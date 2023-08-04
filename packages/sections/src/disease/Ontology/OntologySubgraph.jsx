@@ -7,7 +7,7 @@ import {
   sugiyama,
   dagStratify,
 } from "d3-dag";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
 import Link from "../../components/Link";
 import Tooltip from "../../components/Tooltip";
 
