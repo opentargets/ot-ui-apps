@@ -1,4 +1,5 @@
-import { Chip, makeStyles, Grow } from '@material-ui/core';
+import { Chip, Grow } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import {
   entitiesState,

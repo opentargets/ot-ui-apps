@@ -6,7 +6,7 @@ import {
   Box,
   Link as MUILink,
   Button,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useRecoilSnapshot, useGotoRecoilSnapshot } from 'recoil';
 
 export default function TimeTravelObserver() {
