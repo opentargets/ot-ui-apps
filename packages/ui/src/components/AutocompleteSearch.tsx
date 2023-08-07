@@ -1,5 +1,11 @@
-import { useState, useEffect, useContext, ChangeEvent } from "react";
-import { Autocomplete } from "@mui/material";
+import {
+  useState,
+  useEffect,
+  useContext,
+  ChangeEvent,
+  SyntheticEvent,
+} from "react";
+import { Autocomplete, TextField } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { v1 } from "uuid";
 import SearchInput from "./Search/SearchInput";
@@ -25,17 +31,17 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "100% !important",
   },
   option: {
-    // margin: "0 1rem",
-    // padding: "11px",
-    // border: "0.3px solid transparent",
-    // borderBottomWidth: "0.3px",
-    // borderStyle: "solid",
-    // borderImage: "linear-gradient(to right, white, #00000063, white)0 0 90",
-    // ".Mui-focused": {
-    //   border: `0.3px solid ${theme.palette.primary}`,
-    //   borderRadius: "4px",
-    //   background: "#3489ca29",
-    // },
+    margin: "0 1rem",
+    padding: "11px",
+    border: "0.3px solid transparent",
+    borderBottomWidth: "0.3px",
+    borderStyle: "solid",
+    borderImage: "linear-gradient(to right, white, #00000063, white)0 0 90",
+    "&.Mui-focused": {
+      border: `0.3px solid ${theme.palette.primary}`,
+      borderRadius: "4px",
+      background: "#3489ca29",
+    },
   },
 }));
 
@@ -123,10 +129,9 @@ export default function AutocompleteSearch({
   };
 
   const handleSelectOption = (
-    event: ChangeEvent<object>,
+    event: SyntheticEvent<object>,
     option: string | SearchResult | null
   ) => {
-    console.log(event, option)
     if (typeof option === "object") {
       onClose();
       openListItem(option);
@@ -172,13 +177,18 @@ export default function AutocompleteSearch({
       )}
       getOptionLabel={(option) => option.symbol || option.name || option.id}
       renderOption={(props, option) => (
-        <SearchListItem
-          item={option}
-          isTopHit={option.type === "topHit"}
-          clearItem={clearItem}
-        />
+        <li {...props}>
+          <SearchListItem
+            item={option}
+            isTopHit={option.type === "topHit"}
+            clearItem={clearItem}
+          />
+        </li>
       )}
-      isOptionEqualToValue={(option, value) => option.name === value.toString()}
+      isOptionEqualToValue={(option, value) => {
+        console.log(option.name, value.name);
+        return option.name === value.name;
+      }}
       filterOptions={() => searchResult}
       renderInput={(params) => (
         <SearchInput
