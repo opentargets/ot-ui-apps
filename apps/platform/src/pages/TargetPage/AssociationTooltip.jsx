@@ -47,7 +47,6 @@ function AssociationTooltip({ ensemblId, efoId, name, score, children }) {
           </Link>
         </>
       }
-      interactive
       placement="top"
     >
       {children}

@@ -9,7 +9,7 @@ import {
   faMapPin,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { Star, Label } from "@material-ui/icons";
+import { Star, Label } from "@mui/icons-material";
 
 const useStyles = makeStyles((theme) => ({
   sectionHeader: {
@@ -37,7 +37,7 @@ function SearchListHeader({
   children,
   clearAll,
 }: {
-  listHeader: React.ReactNode;
+  listHeader: any;
   children: React.ReactNode;
   clearAll: () => void;
 }) {

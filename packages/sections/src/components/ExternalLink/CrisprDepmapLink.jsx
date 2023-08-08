@@ -27,7 +27,6 @@ function CrisprDepmapLink({ id }) {
         classes={{ tooltip: classes.tooltip }}
         title="CRISPR-Cas9 cancer cell line dependency data from Project Score"
         placement="top"
-        interactive
       >
         <sup>
           <HelpIcon className={classes.helpIcon} />

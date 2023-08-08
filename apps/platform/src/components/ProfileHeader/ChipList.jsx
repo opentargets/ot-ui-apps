@@ -38,7 +38,6 @@ function ChipList({ children, title, loading = false, inline }) {
             return (
               <Tooltip
                 placement="top"
-                interactive
                 classes={{ tooltip: classes.tooltip }}
                 title={item.tooltip}
                 key={item.label}
