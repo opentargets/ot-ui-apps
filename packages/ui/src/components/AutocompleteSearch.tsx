@@ -23,9 +23,8 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "94% !important",
   },
   paper: {
-    height: "100% !important",
-    boxShadow:
-      "0px 0px 0px -13px rgba(0,0,0,0.2), 1px 0px 1px -1px rgba(0,0,0,0.14), 0px -1px 3px 0px rgba(0,0,0,0.12)",
+    height: "max-content !important",
+    boxShadow: "-19px 0px 22px -16px rgba(0,0,0,0.1), 22px 0px 22px -16px rgba(0,0,0,0.1) !important",
   },
   listbox: {
     maxHeight: "100% !important",
@@ -36,12 +35,13 @@ const useStyles = makeStyles((theme) => ({
     border: "0.3px solid transparent",
     borderBottomWidth: "0.3px",
     borderStyle: "solid",
-    borderImage: "linear-gradient(to right, white, #00000063, white)0 0 90",
-    "&.Mui-focused": {
-      border: `0.3px solid ${theme.palette.primary}`,
-      borderRadius: "4px",
-      background: "#3489ca29",
-    },
+    borderImage: "linear-gradient(to right, white, #00000017, white)0 0 90",
+  },
+  "& .Mui-focused": {
+    // border: `0.3px solid ${theme.palette.primary}`,
+    borderRadius: "4px",
+    // background: "#3489ca29",
+    background: "red",
   },
 }));
 
@@ -164,7 +164,6 @@ export default function AutocompleteSearch({
       autoHighlight
       clearOnEscape
       freeSolo
-      open
       options={searchResult}
       onChange={handleSelectOption}
       groupBy={(option) => option.type}
@@ -185,10 +184,7 @@ export default function AutocompleteSearch({
           />
         </li>
       )}
-      isOptionEqualToValue={(option, value) => {
-        console.log(option.name, value.name);
-        return option.name === value.name;
-      }}
+      isOptionEqualToValue={(option, value) => option.name === value.name}
       filterOptions={() => searchResult}
       renderInput={(params) => (
         <SearchInput
