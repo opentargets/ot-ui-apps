@@ -36,12 +36,11 @@ const useStyles = makeStyles((theme) => ({
     borderBottomWidth: "0.3px",
     borderStyle: "solid",
     borderImage: "linear-gradient(to right, white, #00000017, white)0 0 90",
-  },
-  "& .Mui-focused": {
-    // border: `0.3px solid ${theme.palette.primary}`,
-    borderRadius: "4px",
-    // background: "#3489ca29",
-    background: "red",
+    "&.Mui-focused": {
+      border: `0.3px solid ${theme.palette.primary}`,
+      borderRadius: "4px",
+      background: "#3489ca29",
+    },
   },
 }));
 
