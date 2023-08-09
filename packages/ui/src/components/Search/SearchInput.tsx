@@ -49,7 +49,7 @@ function SearchInput({
   debounceValue,
   onClose,
   isHomePage,
-  focus=true,
+  focus,
   setOpen,
 }: {
   params: TextFieldProps;
