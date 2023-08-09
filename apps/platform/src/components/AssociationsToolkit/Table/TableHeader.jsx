@@ -6,14 +6,15 @@ import {
   faBook,
   faLock,
 } from '@fortawesome/free-solid-svg-icons';
+import { Grid } from '@material-ui/core';
 
 import AggregationsRow from './AggregationsRow';
 import useAotfContext from '../hooks/useAotfContext';
-import { Grid } from '@material-ui/core';
+import { GridContainer } from '../layout';
 
 const getHeaderContainerClassName = ({ id }) => {
   if (id === '1_naiming-cols_name') return 'naiming-cols';
-  return 'entity-cols grid-container';
+  return 'entity-cols';
 };
 
 const getHeaderClassName = ({ id }) => {
@@ -39,20 +40,14 @@ function TableHeader({ table, cols }) {
 
   const highLevelHeaders = table.getHeaderGroups()[0].headers;
 
-  const columnContainerStyle = {
-    gridTemplateColumns: `repeat(${cols.length}, 1fr)`,
-  };
-
   return (
     <div className="Theader">
       <Grid container direction="row" wrap="nowrap">
         {highLevelHeaders.map(highLevelHeader => (
-          <Grid
-            item
-            style={columnContainerStyle}
+          <GridContainer
+            columnsCount={cols.length}
             className={getHeaderContainerClassName(highLevelHeader)}
             key={highLevelHeader.id}
-            wrap="nowrap"
           >
             {highLevelHeader.subHeaders.map(header => (
               <div className={getHeaderClassName(header)} key={header.id}>
@@ -108,7 +103,7 @@ function TableHeader({ table, cols }) {
                 )}
               </div>
             ))}
-          </Grid>
+          </GridContainer>
         ))}
       </Grid>
       <AggregationsRow

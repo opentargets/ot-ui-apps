@@ -182,6 +182,7 @@ export const tableCSSVariables = {
   '--entities-border-color': 'var(--grey-light)',
   '--table-header-min-width': '120px',
   '--table-header-max-width': '160px',
+  '--table-left-column-width': '260px',
   '--table-footer-border-color': 'var(--grey-light)',
   '--row-hover-color': 'var(--grey-light)',
   '--colums-controls-color': 'var(--grey-lighter)',

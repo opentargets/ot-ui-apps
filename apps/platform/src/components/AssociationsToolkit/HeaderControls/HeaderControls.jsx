@@ -7,6 +7,7 @@ import dataSources from '../static_datasets/dataSourcesAssoc';
 
 import Slider from './SliderControl';
 import Required from './RequiredControl';
+import { GridContainer } from '../layout';
 
 import useAotfContext from '../hooks/useAotfContext';
 
@@ -26,10 +27,6 @@ function HeaderControls({ cols = [] }) {
 
   const handleClose = () => {
     setActiveHeadersControlls(false);
-  };
-
-  const columnContainerStyle = {
-    gridTemplateColumns: `repeat(${cols.length}, 1fr)`,
   };
 
   return (
@@ -55,11 +52,9 @@ function HeaderControls({ cols = [] }) {
               <Typography variant="subtitle2">Required datasource:</Typography>
             </Box>
           </Grid>
-          <Grid
-            item
-            container
-            style={columnContainerStyle}
-            className="grid-container controlls-wrapper"
+          <GridContainer
+            columnsCount={cols.length}
+            className="controlls-wrapper"
           >
             {cols.map(({ id }) => (
               <div key={id} className="colum-control">
@@ -76,7 +71,7 @@ function HeaderControls({ cols = [] }) {
                 </div>
               </div>
             ))}
-          </Grid>
+          </GridContainer>
         </Grid>
       </div>
     </Collapse>

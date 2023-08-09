@@ -237,11 +237,21 @@ function TableAssociations() {
         <HeaderControls cols={entitesHeaders} />
 
         {/* BODY CONTENT */}
-        <TableBody table={tablePinned} expanded={expanded} prefix="pinned" />
+        <TableBody
+          table={tablePinned}
+          expanded={expanded}
+          prefix="pinned"
+          cols={entitesHeaders}
+        />
 
         {pinnedData.length > 0 && <TableDivider />}
 
-        <TableBody table={table} expanded={expanded} prefix="body" />
+        <TableBody
+          table={table}
+          expanded={expanded}
+          prefix="body"
+          cols={entitesHeaders}
+        />
 
         {/* FOOTER */}
         <TableFooter table={table} />
