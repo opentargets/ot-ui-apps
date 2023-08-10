@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import { Tooltip as MUITooltip } from "@material-ui/core";
+import { Tooltip as MUITooltip } from "@mui/material";
 import _ from "lodash";
 
 function Tooltip({ style, children, title, showHelpIcon = false, ...props }) {
@@ -26,7 +26,6 @@ function Tooltip({ style, children, title, showHelpIcon = false, ...props }) {
       {showHelpIcon && children}
       <MUITooltip
         placement="top"
-        interactive
         classes={{ tooltip: classes.tooltip }}
         title={title}
         // TODO: review props spreading
