@@ -3,8 +3,9 @@ import { v1 } from "uuid";
 import {
   AddCircleOutlineRounded,
   RemoveCircleOutlineRounded,
-} from "@material-ui/icons";
-import { Box, Button, makeStyles, Typography } from "@material-ui/core";
+} from "@mui/icons-material";
+import { Box, Button, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 import { naLabel } from "../../constants";
 import SentenceMatch from "./SentenceMatch";
