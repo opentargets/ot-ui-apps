@@ -6,7 +6,7 @@ const sectionStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.grey[300],
   },
   avatarHasData: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: `${theme.palette.primary.main} !important`,
   },
   avatarError: {
     backgroundColor: theme.palette.secondary.main,
@@ -38,8 +38,8 @@ const sectionStyles = makeStyles(theme => ({
   },
   title: {
     color: theme.palette.grey[400],
-    fontWeight: 'bold',
-    fontSize: '1.2rem',
+    fontWeight: 'bold !important',
+    fontSize: '1.2rem !important',
   },
   titleHasData: {
     color: theme.palette.grey[700],
