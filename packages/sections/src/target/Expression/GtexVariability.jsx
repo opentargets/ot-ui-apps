@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useRef, useEffect } from 'react';
 import {
   scaleLinear,
   scalePoint,
@@ -9,7 +9,7 @@ import {
   axisTop,
   axisLeft,
 } from 'd3';
-import { withTheme } from '@material-ui/core';
+import { useTheme } from '@mui/styles';
 
 const width = 900;
 const boxHeight = 20;
@@ -50,38 +50,28 @@ function buildTooltip(X, tooltipObject, data) {
     .join('');
 }
 
-class GtexVariability extends Component {
-  boxPlotRef = React.createRef();
+function GtexVariability({ data }) {
+  const theme = useTheme();
+  const boxPlotRef = useRef();
+  const tooltipRef = useRef();
+  const xAxisRef = useRef();
+  const yAxisRef = useRef();
 
-  tooltipRef = React.createRef();
+  const x = scaleLinear();
+  const y = scalePoint().padding(0.5);
+  const colour = scaleOrdinal();
 
-  xAxisRef = React.createRef();
 
-  yAxisRef = React.createRef();
+  margin.left = getTextWidth(getLongestId(data), 12, 'Arial');
 
-  // xAxis = axisTop();
+  const height = data.length * boxHeight + margin.top + margin.bottom;
 
-  // yAxis = axisLeft();
+  useEffect(() => {
+    d3Render(data);
+  });
 
-  x = scaleLinear();
-
-  y = scalePoint().padding(0.5);
-
-  colour = scaleOrdinal();
-
-  componentDidMount() {
-    this.d3Render();
-  }
-
-  componentDidUpdate() {
-    this.d3Render();
-  }
-
-  d3Render() {
-    const { theme, data: propsData } = this.props;
-    const { x, y, colour } = this;
+  function d3Render(propsData) {
     const data = propsData.slice().sort((a, b) => b.median - a.median);
-
     const height = data.length * boxHeight + margin.top + margin.bottom;
     const rectHeight = boxHeight - 2 * boxPadding;
     const xMax = max(data, d => max(d.outliers));
@@ -125,7 +115,7 @@ class GtexVariability extends Component {
       offsetY: boxHeight / 2 + 5,
     };
 
-    const tooltip = select(this.tooltipRef.current);
+    const tooltip = select(tooltipRef.current);
 
     const tooltipRect = tooltip
       .append('rect')
@@ -139,10 +129,9 @@ class GtexVariability extends Component {
       .style('font-size', `${tooltipSettings.fontSize}px`)
       .style('visibility', 'hidden');
 
-    const boxPlot = select(this.boxPlotRef.current);
-
+    const boxPlot = select(boxPlotRef.current);
     const boxContainer = boxPlot.selectAll('g').data(data).join('g');
-
+    
     boxContainer
       .append('line')
       .attr('x1', d => x(d.lowerLimit))
@@ -150,8 +139,8 @@ class GtexVariability extends Component {
       .attr('y1', d => y(d.tissueSiteDetailId.replace(/_/g, ' ')))
       .attr('y2', d => y(d.tissueSiteDetailId.replace(/_/g, ' ')))
       .attr('stroke', theme.palette.grey[700]);
-
-    boxContainer
+    
+      boxContainer
       .append('rect')
       .attr('x', d => x(d.q1))
       .attr(
@@ -273,46 +262,39 @@ class GtexVariability extends Component {
       g.selectAll('.tick text').attr('fill', theme.palette.grey[700]);
     };
 
-    select(this.xAxisRef.current).call(customAxis, xAxis);
-    select(this.yAxisRef.current).call(customAxis, yAxis);
+    select(xAxisRef.current).call(customAxis, xAxis);
+    select(yAxisRef.current).call(customAxis, yAxis);
   }
 
-  render() {
-    const { theme, data } = this.props;
-    margin.left = getTextWidth(getLongestId(data), 12, 'Arial');
-
-    const height = data.length * boxHeight + margin.top + margin.bottom;
-
-    return (
-      <svg xmlns="http://www.w3.org/2000/svg" height={height} width={width}>
-        <text
-          x={margin.left}
-          y="15"
-          fill={theme.palette.grey[700]}
-          fontSize="14"
-        >
-          Normalised expression (RPKM)
-        </text>
-        <g
-          className="boxplot"
-          ref={this.boxPlotRef}
-          transform={`translate(${margin.left}, ${margin.top})`}
-        />
-        <g
-          ref={this.xAxisRef}
-          transform={`translate(${margin.left}, ${margin.top})`}
-        />
-        <g
-          ref={this.yAxisRef}
-          transform={`translate(${margin.left}, ${margin.top})`}
-        />
-        <g
-          ref={this.tooltipRef}
-          transform={`translate(${margin.left}, ${margin.top})`}
-        />
-      </svg>
-    );
-  }
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" height={height} width={width}>
+      <text
+        x={margin.left}
+        y="15"
+        fill={theme.palette.grey[700]}
+        fontSize="14"
+      >
+        Normalised expression (RPKM)
+      </text>
+      <g
+        className="boxplot"
+        ref={boxPlotRef}
+        transform={`translate(${margin.left}, ${margin.top})`}
+      />
+      <g
+        ref={xAxisRef}
+        transform={`translate(${margin.left}, ${margin.top})`}
+      />
+      <g
+        ref={yAxisRef}
+        transform={`translate(${margin.left}, ${margin.top})`}
+      />
+      <g
+        ref={tooltipRef}
+        transform={`translate(${margin.left}, ${margin.top})`}
+      />
+    </svg>
+  );
 }
 
-export default withTheme(GtexVariability);
+export default GtexVariability;
