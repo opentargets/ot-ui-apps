@@ -1,9 +1,8 @@
-import { Component, Fragment } from 'react';
+import { useState } from 'react';
 import maxBy from 'lodash/maxBy';
 import classNames from 'classnames';
 import {
   Typography,
-  withStyles,
   Table,
   TableHead,
   TableSortLabel,
@@ -11,8 +10,10 @@ import {
   TableRow,
   TableCell,
   Grid,
-} from '@material-ui/core';
-import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
+  ToggleButtonGroup, 
+  ToggleButton
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import SummaryRow from './SummaryRow';
 
@@ -87,16 +88,16 @@ const sort = (parents, sortBy) => {
   return parents.sort(parentComparator(sortBy));
 };
 
-const styles = () => ({
+const useStyles = makeStyles({
   groupBy: {
     marginBottom: '20px',
     marginTop: '40px',
   },
   groupByText: {
-    marginRight: '7px',
+    marginRight: '7px !important',
   },
   headerCell: {
-    textAlign: 'center',
+    textAlign: 'center !important',
   },
   rnaCell: {
     paddingRight: '8px',
@@ -105,115 +106,110 @@ const styles = () => ({
     paddingLeft: '8px',
   },
   highLow: {
-    border: 'none',
+    border: 'none !important',
   },
 });
 
-class SummaryTable extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { groupBy: 'organs', sortBy: 'rna' };
-  }
+function SummaryTable({ data }) {
+  const [groupBy, setGroupBy] = useState('organs');
+  const [sortBy, setSortBy] = useState('rna');
 
-  handleChange = (_, groupBy) => {
-    if (groupBy) {
-      this.setState({ groupBy });
+  const classes = useStyles();
+  const maxRnaValue = getMaxRnaValue(data);
+  const parents = sort(groupTissues(data, groupBy), sortBy);
+
+  // handlers
+  const handleChange = (e, group) => {
+    if (group) {
+      setGroupBy(group);
     }
-  };
-
-  handleSort = sortBy => {
-    this.setState({ sortBy });
-  };
-
-  render() {
-    const { classes, data } = this.props;
-    const { groupBy, sortBy } = this.state;
-
-    const maxRnaValue = getMaxRnaValue(data);
-    const parents = sort(groupTissues(data, groupBy), sortBy);
-
-    return (
-      <>
-        <Grid
-          className={classes.groupBy}
-          container
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Typography className={classes.groupByText} variant="body2">
-            Group by
-          </Typography>
-          <ToggleButtonGroup
-            size="small"
-            value={groupBy}
-            exclusive
-            onChange={this.handleChange}
-          >
-            <ToggleButton value="organs">Organs</ToggleButton>
-            <ToggleButton value="anatomicalSystems">
-              Anatomical Systems
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Grid>
-        <Grid container justifyContent="center">
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell className={classes.headerCell}>Tissue</TableCell>
-                <TableCell
-                  className={classes.headerCell}
-                  onClick={() => this.handleSort('rna')}
-                >
-                  <TableSortLabel direction="desc" active={sortBy === 'rna'}>
-                    RNA (Expression Atlas)
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell
-                  className={classes.headerCell}
-                  onClick={() => this.handleSort('protein')}
-                >
-                  <TableSortLabel
-                    direction="desc"
-                    active={sortBy === 'protein'}
-                  >
-                    Protein (HPA)
-                  </TableSortLabel>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className={classes.highLow} />
-                <TableCell
-                  className={classNames(classes.highLow, classes.rnaCell)}
-                >
-                  <Grid container justifyContent="space-between">
-                    <Grid item>High</Grid>
-                    <Grid item>Low</Grid>
-                  </Grid>
-                </TableCell>
-                <TableCell
-                  className={classNames(classes.highLow, classes.proteinCell)}
-                >
-                  <Grid container justifyContent="space-between">
-                    <Grid item>Low</Grid>
-                    <Grid item>High</Grid>
-                  </Grid>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {parents.map(parent => (
-                <SummaryRow
-                  key={parent.parentLabel}
-                  maxRnaValue={maxRnaValue}
-                  parent={parent}
-                />
-              ))}
-            </TableBody>
-          </Table>
-        </Grid>
-      </>
-    );
   }
+
+  const handleSort = (sort) => {
+    setSortBy(sort);
+  }
+
+  return (
+    <>
+      <Grid
+        className={classes.groupBy}
+        container
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Typography className={classes.groupByText} variant="body2">
+          Group by
+        </Typography>
+        <ToggleButtonGroup
+          size="small"
+          value={groupBy}
+          exclusive
+          onChange={handleChange}
+        >
+          <ToggleButton value="organs">Organs</ToggleButton>
+          <ToggleButton value="anatomicalSystems">
+            Anatomical Systems
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Grid>
+      <Grid container justifyContent="center">
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell className={classes.headerCell}>Tissue</TableCell>
+              <TableCell
+                className={classes.headerCell}
+                onClick={() => handleSort('rna')}
+              >
+                <TableSortLabel direction="desc" active={sortBy === 'rna'}>
+                  RNA (Expression Atlas)
+                </TableSortLabel>
+              </TableCell>
+              <TableCell
+                className={classes.headerCell}
+                onClick={() => handleSort('protein')}
+              >
+                <TableSortLabel
+                  direction="desc"
+                  active={sortBy === 'protein'}
+                >
+                  Protein (HPA)
+                </TableSortLabel>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className={classes.highLow} />
+              <TableCell
+                className={classNames(classes.highLow, classes.rnaCell)}
+              >
+                <Grid container justifyContent="space-between">
+                  <Grid item>High</Grid>
+                  <Grid item>Low</Grid>
+                </Grid>
+              </TableCell>
+              <TableCell
+                className={classNames(classes.highLow, classes.proteinCell)}
+              >
+                <Grid container justifyContent="space-between">
+                  <Grid item>Low</Grid>
+                  <Grid item>High</Grid>
+                </Grid>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {parents.map(parent => (
+              <SummaryRow
+                key={parent.parentLabel}
+                maxRnaValue={maxRnaValue}
+                parent={parent}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </Grid>
+    </>
+  )
 }
 
-export default withStyles(styles)(SummaryTable);
+export default SummaryTable;

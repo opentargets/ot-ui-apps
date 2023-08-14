@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Tab, Tabs } from "@material-ui/core";
+import { Tab, Tabs } from "@mui/material";
 import { SectionItem } from "ui";
 
 import { definition } from ".";
@@ -13,9 +13,16 @@ function Section({ id: ensgId, label: symbol, entity }) {
   const [tab, setTab] = useState(defaultTab);
   const [requestSummary, setRequestSummary] = useState({ loading: true });
   const [requestGtex, setRequestGtex] = useState({ loading: true });
+  // TODO: 
+  // the part about requests (see below) will need rethinking / refactoring
+  // SectionItem checks for data based on these requests, but only works for data coming from the target object
+  // the widget displays based on the summary tab only.
+  // Atlas and gTex tab should always be there is the widget is visible, hence the hack of using requestSummary for Atlas
+  // the request for gTex wraps the data in a structure similar to that from the target object:
+  // this can be probably be rewritten differently, but that's a wider scope than the MUI migration we're currently doing
   const [request, setRequest] = {
     summary: [requestSummary, setRequestSummary],
-    atlas: [{ loading: false, data: true }, undefined],
+    atlas: [requestSummary, setRequestSummary], // [{ loading: false, data: true }, undefined],
     gtex: [requestGtex, setRequestGtex],
   }[tab];
   const getData = {

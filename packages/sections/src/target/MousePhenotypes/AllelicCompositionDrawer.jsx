@@ -6,9 +6,9 @@ import {
   IconButton,
   Paper,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import CloseIcon from '@mui/icons-material/Close';
 import { Link } from "ui";
 
 import MouseModelAllelicComposition from '../../components/MouseModelAllelicComposition';

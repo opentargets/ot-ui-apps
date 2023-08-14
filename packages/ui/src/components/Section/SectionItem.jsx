@@ -37,7 +37,7 @@ function SectionItem({
     hasData = definition.hasData(data[entity]);
   }
 
-  if (!hasData && !showEmptySection) return null;
+  if (!hasData && !showEmptySection && !loading) return null;
 
   return (
     <Grid item xs={12}>

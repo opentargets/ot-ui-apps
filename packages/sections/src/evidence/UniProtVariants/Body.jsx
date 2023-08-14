@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
-import { Typography, makeStyles, Chip } from "@material-ui/core";
+import { Typography, Chip } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { Link, SectionItem, Tooltip } from "ui";
 
 import { definition } from ".";

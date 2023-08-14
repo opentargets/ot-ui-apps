@@ -44,7 +44,13 @@ export async function getData(symbol) {
     const urlData = `https://gtexportal.org/rest/v1/expression/geneExpression?gencodeId=${gencodeId}`;
     const resData = await fetch(urlData);
     const rawData = await resData.json();
-    const data = transformData(rawData.geneExpression);
+    // TODO:
+    // in order for the SectionItem null check to work, the data needs to match the target object format.
+    // Ideally when switching tabs we don't want to check and hide the widget, so this should be handled differently
+    const data = {
+      target:{
+        expressions: transformData(rawData.geneExpression)
+    }};
 
     return { loading: false, data };
   } catch (error) {
@@ -60,7 +66,7 @@ function GtexTab({ symbol, data }) {
       svgContainer={gtexVariability}
       filenameStem={`${symbol}-gtex`}
     >
-      <GtexVariability data={data} ref={gtexVariability} />
+      <GtexVariability data={data.target.expressions} ref={gtexVariability} />
     </DownloadSvgPlot>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { withTheme, makeStyles } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@mui/styles';
+import { Grid } from '@mui/material';
 import { scaleQuantize } from 'd3';
 import { Link } from "ui";
 
@@ -26,10 +26,10 @@ const getData = (query, ensgId, sourceDatabase, index, size) =>
 const useStyles = makeStyles({
   root: {
     overflow: 'visible',
-    padding: '2rem 3rem 0 0',
+    padding: '2rem 3rem 0 0 !important',
   },
   table: {
-    tableLayout: 'fixed',
+    tableLayout: 'fixed !important',
   },
   sortLabel: {
     top: '8px',
@@ -44,33 +44,35 @@ const useStyles = makeStyles({
   },
   nameHeaderCell: {
     width: '15%',
-    borderBottom: 0,
-    height: '140px',
-    verticalAlign: 'bottom',
-    textAlign: 'end',
+    borderBottom: '0 !important',
+    height: '140px !important',
+    verticalAlign: 'bottom !important',
+    textAlign: 'end !important',
+    padding: '1rem 0.5rem !important',
     paddingBottom: '.4rem',
   },
   headerCell: {
     position: 'relative',
-    borderBottom: 0,
-    height: '140px',
+    borderBottom: '0 !important',
+    height: '140px !important',
     whiteSpace: 'nowrap',
-    textAlign: 'center',
-    verticalAlign: 'bottom',
+    textAlign: 'center !important',
+    verticalAlign: 'bottom !important',
+    padding: '1rem 0.5rem !important',
   },
   overallCell: {
-    border: 0,
-    textAlign: 'center',
-    paddingTop: '1px',
-    paddingBottom: '1px',
-    paddingLeft: '1px',
-    paddingRight: '10px',
+    border: '0 !important',
+    textAlign: 'center !important',
+    paddingTop: '1px !important',
+    paddingBottom: '1px !important',
+    paddingLeft: '1px !important',
+    paddingRight: '10px !important',
   },
   cell: {
-    border: 0,
-    height: '20px',
-    textAlign: 'center',
-    padding: '1px 1px',
+    border: '0 !important',
+    height: '20px !important',
+    textAlign: 'center !important',
+    padding: '1px 1px !important',
     '&:last-child': {
       paddingRight: 0,
     },
@@ -81,16 +83,16 @@ const useStyles = makeStyles({
     border: '1px solid #eeefef',
   },
   nameCell: {
-    border: 0,
+    border: '0 !important',
     // width: '20%',
-    padding: '0 0.5rem 0 0',
+    padding: '0 0.5rem 0 0 !important',
     '&:first-child': {
-      paddingLeft: 0,
+      paddingLeft: '0 !important',
     },
   },
   nameContainer: {
     display: 'block',
-    textAlign: 'end',
+    textAlign: 'end !important',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
   },
@@ -340,5 +342,4 @@ function StringTab({ ensgId, symbol }) {
   );
 }
 
-// export default StringTab;
-export default withTheme(StringTab);
+export default StringTab;

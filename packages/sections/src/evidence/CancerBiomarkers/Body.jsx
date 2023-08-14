@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { Link, Tooltip, SectionItem } from "ui";
 
 import { defaultRowsPerPageOptions } from "../../constants";
@@ -53,7 +53,7 @@ const columns = [
     id: "drugResponse.name",
     label: "Drug response",
     renderCell: ({ drugResponse }) => (
-      <Link to={`/disease/${drugResponse.id}`}>{drugResponse.name}</Link>
+      <Link to={`/disease/${drugResponse?.id}`}>{drugResponse?.name}</Link>
     ),
   },
   {

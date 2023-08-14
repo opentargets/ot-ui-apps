@@ -10,11 +10,11 @@ export const tableStyles = makeStyles(theme => ({
     },
   },
   cellBody: {
-    padding: '.25rem .5rem',
+    padding: '.25rem .5rem !important',
     fontSize: '0.8125rem',
   },
   cellHeader: {
-    padding: '1rem .5rem',
+    padding: '1rem .5rem !important',
   },
   cellGroup: {
     borderLeft: '1px solid #E0E0E0',

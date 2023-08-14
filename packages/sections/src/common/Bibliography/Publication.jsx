@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { Component } from 'react';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Button, Grid, Typography } from '@mui/material';
 import { v1 } from 'uuid';
 
 import Abstract from './Abstract';
