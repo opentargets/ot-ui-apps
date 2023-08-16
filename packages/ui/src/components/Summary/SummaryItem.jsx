@@ -80,8 +80,8 @@ function SummaryItem({ definition, request, renderSummary, subText }) {
               >
                 {error && "An error occurred while loading this section"}
                 {loading && "Loading..."}
-                {!loading && data && !hasData && "no data"}
-                {!loading && data && hasData && renderSummary(data)}
+                {/* {!loading && data && !hasData && "no data"}
+                {!loading && data && hasData && renderSummary(data)} */}
               </Typography>
             </>
           }

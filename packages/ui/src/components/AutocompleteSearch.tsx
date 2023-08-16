@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
   popper: {
     height: "94% !important",
     minHeight: "94% !important",
+    overflowY: "auto",
   },
   paper: {
     height: "max-content !important",
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     borderStyle: "solid",
     borderImage: "linear-gradient(to right, white, #00000017, white)0 0 90",
     "&.Mui-focused": {
-      border: `0.3px solid ${theme.palette.primary}`,
+      border: `0.3px solid ${theme.palette.primary.main}`,
       borderRadius: "4px",
       background: "#3489ca29",
     },
