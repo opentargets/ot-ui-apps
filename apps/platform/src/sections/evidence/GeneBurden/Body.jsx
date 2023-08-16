@@ -41,7 +41,7 @@ const getSourceLink = (project, targetId) => {
   return '';
 };
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
@@ -143,7 +143,9 @@ const columns = [
     numeric: true,
     sortable: true,
     renderCell: ({ studySampleSize }) =>
-      studySampleSize ? parseInt(studySampleSize, 10).toLocaleString() : naLabel,
+      studySampleSize
+        ? parseInt(studySampleSize, 10).toLocaleString()
+        : naLabel,
   },
   {
     id: 'oddsRatio',
@@ -227,7 +229,13 @@ const columns = [
           }))
         : [];
 
-      return <PublicationsDrawer entries={entries} />;
+      return (
+        <PublicationsDrawer
+          entries={entries}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -243,6 +251,8 @@ export function BodyCore({ definition, id, label, count }) {
   const request = useQuery(GENE_BURDEN_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem
