@@ -32,11 +32,11 @@ export const RowsContainer = styled('div')({
 export const RowContainer = styled('div', {
   shouldForwardProp: prop => prop !== 'rowExpanded',
 })(({ rowExpanded }) => ({
-  top: '145px',
+  top: '148px',
   position: rowExpanded ? 'sticky' : 'initial',
   padding: rowExpanded ? '0.1em 0 0.1em 0' : '0.1em 0 0.1em 0',
   zIndex: rowExpanded ? '90 !important' : 'initial',
-  backgroundColor: rowExpanded ? 'initial' : 'initial',
+  backgroundColor: rowExpanded ? 'var(--row-hover-color)' : 'initial',
   display: 'flex',
   alignItems: 'center',
   width: '100%',
