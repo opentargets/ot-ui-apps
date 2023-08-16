@@ -28,7 +28,7 @@ const sources = {
 // this might be sorted at data level at some point
 const parseDiseaseName = d => d.toLowerCase().replace('essential genes / ', '');
 
-const getColumns = () => [
+const getColumns = label => [
   {
     id: 'diseaseFromSourceMappedId',
     label: 'Reported disease',
@@ -146,7 +146,13 @@ const getColumns = () => [
     label: 'Publication',
     renderCell: ({ literature }) => {
       if (!literature) return naLabel;
-      return <PublicationsDrawer entries={[{ name: literature[0] }]} />;
+      return (
+        <PublicationsDrawer
+          entries={[{ name: literature[0] }]}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
     filterValue: ({ literature }) => literature,
     width: '9%',
@@ -200,21 +206,6 @@ const exportColumns = [
   },
 ];
 
-export function Body({ definition, id, label }) {
-  const { data: summaryData } = usePlatformApi(
-    Summary.fragments.CrisprScreenSummary
-  );
-  const count = summaryData.CrisprScreenSummary.count;
-
-  if (!count || count < 1) {
-    return null;
-  }
-
-  return (
-    <BodyCore definition={definition} id={id} label={label} count={count} />
-  );
-}
-
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const request = useQuery(CRISPR_QUERY, {
@@ -224,6 +215,8 @@ export function BodyCore({ definition, id, label, count }) {
       size: count,
     },
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem
@@ -237,7 +230,7 @@ export function BodyCore({ definition, id, label, count }) {
         const { rows } = disease.evidences;
         return (
           <DataTable
-            columns={getColumns()}
+            columns={columns}
             rows={rows}
             dataDownloader
             dataDownloaderColumns={exportColumns}
@@ -252,5 +245,20 @@ export function BodyCore({ definition, id, label, count }) {
         );
       }}
     />
+  );
+}
+
+export function Body({ definition, id, label }) {
+  const { data: summaryData } = usePlatformApi(
+    Summary.fragments.CrisprScreenSummary
+  );
+  const { count } = summaryData.CrisprScreenSummary;
+
+  if (!count || count < 1) {
+    return null;
+  }
+
+  return (
+    <BodyCore definition={definition} id={id} label={label} count={count} />
   );
 }

@@ -47,69 +47,70 @@ function TableBody({ table }) {
       <div className="TBody">
         <div className="TRow">
           {table.getRowModel().rows.map(row => (
-              <Fragment key={row.id}>
-                <div className={getRowClassName(row)}>
-                  <div className="data-row-content">
-                    {highLevelHeaders.map(columnGroup => (
-                        <div
-                          className={getColContainerClassName(columnGroup)}
-                          key={columnGroup.id}
-                        >
-                          {columnGroup.subHeaders.map(column => {
-                            const cell = row
-                              .getVisibleCells()
-                              .find(el => el.column.id === column.id);
-                            return (
-                              <div
-                                key={cell.id}
-                                className={getCellClassName(
-                                  cell,
-                                  entityToGet,
-                                  displayedTable,
-                                  expanded
-                                )}
-                              >
-                                {flexRender(
-                                  cell.column.columnDef.cell,
-                                  cell.getContext()
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      ))}
-                  </div>
+            <Fragment key={row.id}>
+              <div className={getRowClassName(row)}>
+                <div className="data-row-content">
+                  {highLevelHeaders.map(columnGroup => (
+                    <div
+                      className={getColContainerClassName(columnGroup)}
+                      key={columnGroup.id}
+                    >
+                      {columnGroup.subHeaders.map(column => {
+                        const cell = row
+                          .getVisibleCells()
+                          .find(el => el.column.id === column.id);
+                        return (
+                          <div
+                            key={cell.id}
+                            className={getCellClassName(
+                              cell,
+                              entityToGet,
+                              displayedTable,
+                              expanded
+                            )}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
-                {row.getIsExpanded() && (
-                  <div key={`${row.original[entityToGet].id}-${expanded[0]}`}>
-                    <ClickAwayListener onClickAway={handleClickAway}>
-                      <div>
-                        <SecctionRendererWrapper
-                          activeSection={expanded}
-                          table={displayedTable}
-                        >
-                          {isAssociations ? (
-                            <EvidenceSecctionRenderer
-                              id={id}
-                              rowId={row.original[entityToGet].id}
-                              entity={entity}
-                              label={row.original[entityToGet][rowNameEntity]}
-                            />
-                          ) : (
-                            <TargetSecctionRenderer
-                              id={id}
-                              rowId={row.original[entityToGet].id}
-                              entity={entity}
-                              label={row.original[entityToGet][rowNameEntity]}
-                            />
-                          )}
-                        </SecctionRendererWrapper>
-                      </div>
-                    </ClickAwayListener>
-                  </div>
-                )}
-              </Fragment>
-            ))}
+              </div>
+              {row.getIsExpanded() && (
+                <div key={`${row.original[entityToGet].id}-${expanded[0]}`}>
+                  <ClickAwayListener onClickAway={handleClickAway}>
+                    <div>
+                      <SecctionRendererWrapper
+                        activeSection={expanded}
+                        table={displayedTable}
+                      >
+                        {isAssociations ? (
+                          <EvidenceSecctionRenderer
+                            id={id}
+                            row={row}
+                            rowId={row.original[entityToGet].id}
+                            entity={entity}
+                            label={row.original[entityToGet][rowNameEntity]}
+                          />
+                        ) : (
+                          <TargetSecctionRenderer
+                            id={id}
+                            rowId={row.original[entityToGet].id}
+                            entity={entity}
+                            label={row.original[entityToGet][rowNameEntity]}
+                          />
+                        )}
+                      </SecctionRendererWrapper>
+                    </div>
+                  </ClickAwayListener>
+                </div>
+              )}
+            </Fragment>
+          ))}
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ import Summary from './Summary';
 const g2pUrl = (studyId, symbol) =>
   `https://www.ebi.ac.uk/gene2phenotype/search?panel=${studyId}&search_term=${symbol}`;
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
@@ -124,29 +124,34 @@ const columns = [
             group: 'literature',
           }))
         : [];
-      return <PublicationsDrawer entries={entries} />;
+      return (
+        <PublicationsDrawer
+          entries={entries}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
 
-export function BodyCore({
-  definition,
-  id: { ensgId, efoId },
-  label: { symbol, name },
-  count,
-}) {
+export function BodyCore({ definition, id: { ensgId, efoId }, label, count }) {
   const variables = { ensemblId: ensgId, efoId, size: count };
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,
   });
 
+  const columns = getColumns(label);
+
   return (
     <SectionItem
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       request={request}
-      renderDescription={() => <Description symbol={symbol} name={name} />}
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} />
+      )}
       renderBody={data => (
         <DataTable
           columns={columns}

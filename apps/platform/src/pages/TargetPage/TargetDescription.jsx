@@ -2,7 +2,6 @@ import { useState, useLayoutEffect, useRef } from 'react';
 import { v1 } from 'uuid';
 import { Typography, withStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import {ChipList} from '../../components/ProfileHeader';
 
 const styles = theme => ({
   textContainer: {
@@ -35,7 +34,7 @@ function LongText({
   variant = 'body2',
   descriptions,
   targetId,
-  hasGutterBottom=false,
+  hasGutterBottom = false,
 }) {
   const containerRef = useRef();
   const [showMore, setShowMore] = useState(false);
@@ -101,23 +100,19 @@ function TargetDescription({
   showLabel = true,
   targetId,
   lineLimit = 3,
-  infoChips = [],
 }) {
   let content;
 
   if (!descriptions || descriptions.length < 1) {
-    content = 'No description available';
+    content = (<Typography variant='body2'gutterBottom>No description available</Typography>);
   } else {
     content = (
-      <>
-        <StyledLongText
-          lineLimit={lineLimit}
-          descriptions={descriptions}
-          targetId={targetId}
-          hasGutterBottom={infoChips?.length>0}
-        />
-        {infoChips?.length>0 ? (<ChipList>{infoChips}</ChipList>) : null}
-      </>
+      <StyledLongText
+        lineLimit={lineLimit}
+        descriptions={descriptions}
+        targetId={targetId}
+        hasGutterBottom
+      />
     );
   }
 
