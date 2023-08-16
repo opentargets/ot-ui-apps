@@ -112,4 +112,4 @@ Link.defaultProps = {
   to: "/",
 };
 
-export { Link };
+export default Link;

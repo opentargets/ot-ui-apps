@@ -1,10 +1,10 @@
+import { usePlatformApi } from 'ui';
 import { useTheme } from '@material-ui/core/styles';
 import TargetDescription from './TargetDescription';
 import {
   ProfileHeader as BaseProfileHeader,
   ChipList,
 } from '../../components/ProfileHeader';
-import usePlatformApi from '../../hooks/usePlatformApi';
 import { clearDescriptionCodes } from '../../utils/global';
 
 import TARGET_PROFILE_HEADER_FRAGMENT from './TargetProfileHeader.gql';
