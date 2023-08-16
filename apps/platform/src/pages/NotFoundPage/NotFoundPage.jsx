@@ -9,7 +9,6 @@ function NotFoundPage() {
       <EmptyPage>
         <Typography>This page could not be found.</Typography>
       </EmptyPage>
-
     </BasePage>
   );
 }

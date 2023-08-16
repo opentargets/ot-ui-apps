@@ -108,7 +108,7 @@ function TableHeader({ table, cols }) {
       </Grid>
       <AggregationsRow
         handleAggregationClick={handleAggregationClick}
-        cols={cols}
+        columnsCount={cols.length}
         table={displayedTable}
         active={activeAggregation}
         activeHeadersControlls={activeHeadersControlls}

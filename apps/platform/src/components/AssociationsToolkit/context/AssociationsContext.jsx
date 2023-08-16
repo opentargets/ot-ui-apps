@@ -36,7 +36,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [tableExpanded, setTableExpanded] = useState({});
   const [tablePinExpanded, setTablePinExpanded] = useState({});
 
-  // Data controls
+  // Data controls8
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
   const [dataSourcesWeights, setDataSourcesWeights] = useState(
     defaulDatasourcesWeigths
@@ -51,7 +51,12 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [activeHeadersControlls, setActiveHeadersControlls] = useState(false);
 
   // only two posible (associations || prioritisations)
-  const [displayedTable, setDisplayedTable] = useState('associations');
+  const [displayedTable, setDisplayedTable] = useStateParams(
+    'associations',
+    'table',
+    arr => arr,
+    str => str
+  );
 
   const [pinnedEntries, setPinnedEntries] = useStateParams(
     [],

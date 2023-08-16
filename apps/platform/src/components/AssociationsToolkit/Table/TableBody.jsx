@@ -61,6 +61,8 @@ function TableBody({ table, expanded, prefix = null, cols }) {
   const tablePrefix = table.getState().prefix;
   const isExpandedInTable = expanded[3] === tablePrefix;
 
+  if (table.getRowModel().rows.length < 1) return null;
+
   return (
     <TableBodyContent>
       <RowsContainer>

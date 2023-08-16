@@ -130,9 +130,9 @@
 }
 
 .TAssociations .group-entity-cols {
-  border-left: 1px solid var(--entities-border-color);
+  /* border-left: 1px solid var(--entities-border-color); */
   align-items: center;
-  height: 35px;
+  height: 32px;
 }
 
 /*  CELL  */
@@ -194,31 +194,33 @@
 /* Agregations indicators */
 
 .TAssociations .aggregations-container {
-  display: flex;
-  flex-direction: row;
   margin-left: 220px;
-  gap: 4px;
-  align-items: center;
 }
 
-.TAssociations .aggregations-container .aggregation-indicator {
+.TAssociations .aggregation-indicator {
   position: relative;
-  background-color: var(--aggregations-color);
-  height: 5px;
+  width: 100%;
+  height: 8px;
+  opacity: 0.8;
   transition: all ease 300ms;
+  background-color: var(--aggregations-border-color);
+  border: 1.5px solid var(--aggregations-border-color);
+  border-radius: 2px;
 }
 
-.TAssociations .aggregations-container .aggregation-indicator.active {
-  transform: scale(1, 1.8);
+.TAssociations .aggregation-indicator.active {
+  transform: scale(1, 1.3);
   background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
-.TAssociations .aggregations-container .aggregation-indicator:hover {
+.TAssociations .aggregation-indicator:hover {
   transform: scale(1, 2);
   background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
-.TAssociations .aggregations-container .aggregation-indicator.clickAble:hover {
+.TAssociations .aggregation-indicator.clickAble:hover {
   cursor: pointer;
 }
 

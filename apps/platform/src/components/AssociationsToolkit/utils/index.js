@@ -5,6 +5,24 @@ import config from '../../../config';
 
 export const { isPartnerPreview } = config.profile;
 
+export const groupViewColumnsBy = (input, key) =>
+  input.reduce((acc, currentValue) => {
+    const groupKey = currentValue[key];
+    const { isPrivate } = currentValue;
+    if (isPrivate === false || typeof isPrivate === 'undefined') {
+      if (!acc[groupKey]) {
+        acc[groupKey] = [];
+      }
+      acc[groupKey].push(currentValue);
+    } else if (isPartnerPreview) {
+      if (!acc[groupKey]) {
+        acc[groupKey] = [];
+      }
+      acc[groupKey].push(currentValue);
+    }
+    return acc;
+  }, {});
+
 /* --- TABLE SHARED HELPERS --- */
 export const getPriorisationSectionId = columnDef => columnDef.sectionId;
 
@@ -51,7 +69,7 @@ export const getControlChecked = (values, id) =>
 const { primaryColor } = config.profile;
 
 /* Associations colors */
-const PUBLIC_ASSOCIATION_COLORS = [
+export const ASSOCIATION_COLORS = [
   rgb('#deebf7'),
   rgb('#c6dbef'),
   rgb('#9ecae1'),
@@ -60,43 +78,10 @@ const PUBLIC_ASSOCIATION_COLORS = [
   rgb('#2171b5'),
   rgb('#08519c'),
 ];
-
-// PPP Greens
-const PPP_ASSOCIATION_COLORS = [
-  rgb('#deebf7'),
-  rgb('#c6dbef'),
-  rgb('#9ecae1'),
-  rgb('#6baed6'),
-  rgb('#4292c6'),
-  rgb('#2171b5'),
-  rgb('#08519c'),
-];
-const _PPP_ASSOCIATION_COLORS = [
-  rgb('#deebf7'),
-  rgb('#c6dbef'),
-  rgb('#9ecae1'),
-  rgb('#6baed6'),
-  rgb('#4292c6'),
-  rgb('#2171b5'),
-  rgb('#08519c'),
-];
-
-export const ASSOCIATION_COLORS = isPartnerPreview
-  ? PPP_ASSOCIATION_COLORS
-  : PUBLIC_ASSOCIATION_COLORS;
 
 /* PRIORITIZATION */
 // Red to blue
-const _PUBLIC_PRIORITISATION_COLORS = [
-  rgb('#b2172b'),
-  rgb('#c15e6f'),
-  rgb('#cfa4b3'),
-  rgb('#deebf7'),
-  rgb('#97b8d9'),
-  rgb('#4f84ba'),
-  rgb('#08519c'),
-];
-const PUBLIC_PRIORITISATION_COLORS = [
+export const PRIORITISATION_COLORS = [
   rgb('#ec2746'),
   rgb('#f16d47'),
   rgb('#f19d5c'),
@@ -105,41 +90,6 @@ const PUBLIC_PRIORITISATION_COLORS = [
   rgb('#95ae43'),
   rgb('#52a237'),
 ];
-
-// PPP red to green
-const _PPP_PRIORITISATION_COLORS = [
-  rgb('#b2172b'),
-  rgb('#bc5863'),
-  rgb('#c59a9b'),
-  rgb('#cfdbd3'),
-  rgb('#9fb8a8'),
-  rgb('#70957e'),
-  rgb('#407253'),
-];
-
-const PPP_PRIORITISATION_COLORS = [
-  rgb('#ec2746'),
-  rgb('#f16d47'),
-  rgb('#f19d5c'),
-  rgb('#f0c584'),
-  rgb('#c8b95f'),
-  rgb('#95ae43'),
-  rgb('#52a237'),
-];
-// const PPP_PRIORITISATION_COLORS = [
-//   rgb('#e27c7c'),
-//   rgb('#a86464'),
-//   rgb('#6d4b4b'),
-//   rgb('#503f3f'),
-//   rgb('#333333'),
-//   rgb('#3c4e4b'),
-//   rgb('#466964'),
-//   rgb('#599e94'),
-//   rgb('#6cd4c5'),
-// ];
-export const PRIORITISATION_COLORS = isPartnerPreview
-  ? PPP_PRIORITISATION_COLORS
-  : PUBLIC_PRIORITISATION_COLORS;
 
 /* ASSOCIATION SCALE */
 export const asscScaleDomain = scaleQuantize().domain([0, 1]);
@@ -177,8 +127,10 @@ export const tableCSSVariables = {
   '--grey-mid': '#b8b8b8',
   '--primary-color': primaryColor,
   '--text-color': '#5A5F5F',
+  '--aggregations-background-color': 'var(--grey-light)',
+  '--aggregations-border-color': 'var(--grey-mid)',
   '--header-border-color': 'var(--grey-light)',
-  '--aggregations-color': 'var(--grey-mid)',
+  // '--aggregations-color': 'var(--grey-mid)',
   '--entities-border-color': 'var(--grey-light)',
   '--table-header-min-width': '120px',
   '--table-header-max-width': '160px',

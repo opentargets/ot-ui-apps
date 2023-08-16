@@ -44,12 +44,10 @@ function HeaderControls({ cols = [] }) {
             justifyContent="space-between"
           >
             <Box>
-              <Typography variant="subtitle2">
-                Datasource weight control:
-              </Typography>
+              <Typography variant="subtitle2">Weight</Typography>
             </Box>
             <Box>
-              <Typography variant="subtitle2">Required datasource:</Typography>
+              <Typography variant="subtitle2">Require</Typography>
             </Box>
           </Grid>
           <GridContainer
