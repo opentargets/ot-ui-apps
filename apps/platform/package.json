@@ -51,6 +51,7 @@
     "react-table": "^7.8.0",
     "react-tsparticles": "^2.0.6",
     "recoil": "^0.3.0",
+    "sections": "*",
     "smiles-drawer": "^1.1.22",
     "tsparticles": "^2.0.6",
     "typeface-inter": "^3.3.0",

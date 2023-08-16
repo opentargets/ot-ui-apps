@@ -1,0 +1,39 @@
+query KnownDrugsQuery(
+  $ensgId: String!
+  $cursor: String
+  $freeTextQuery: String
+) {
+  target(ensemblId: $ensgId) {
+    id
+    knownDrugs(cursor: $cursor, freeTextQuery: $freeTextQuery) {
+      count
+      cursor
+      rows {
+        phase
+        status
+        urls {
+          name
+          url
+        }
+        disease {
+          id
+          name
+        }
+        drug {
+          id
+          name
+          mechanismsOfAction {
+            rows {
+              actionType
+              targets {
+                id
+              }
+            }
+          }
+        }
+        drugType
+        mechanismOfAction
+      }
+    }
+  }
+}
