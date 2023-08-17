@@ -53,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
         height: "600px",
         maxHeight: "90vh",
         margin: " 0.5rem 0.968rem",
+        overflow: "hidden",
         borderRadius: "5px",
         "& .MuiDialogContent-root": {
           padding: "8px 0 !important",

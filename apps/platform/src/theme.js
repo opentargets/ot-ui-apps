@@ -10,7 +10,7 @@ const theme = {
   // },
   typography: {
     fontFamily: '"Inter", sans-serif',
-    fontSize: 12,
+    fontSize: 14,
   },
   palette: {
     primary: {

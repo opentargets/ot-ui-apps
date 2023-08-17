@@ -15,7 +15,6 @@ const useStyles = makeStyles(() => ({
     color: "#fff",
     margin: 0,
     width: "100%",
-    padding: 24,
   },
 }));
 
@@ -31,7 +30,7 @@ const useLinkStyles = makeStyles(() => ({
 const FooterLink = ({ label, url, icon }) => {
   const classes = useLinkStyles();
   return (
-    <Grid item xs={12} className={classes.linkContainer}>
+    <Grid item xs={12} sx={{mb:1}}>
       <Typography color="inherit">
         {url.startsWith("mailto") ? (
           <EmailLink href={url} label={label} icon={icon} />
@@ -207,6 +206,7 @@ const Footer = ({ externalLinks }) => {
   const classes = useStyles();
   return (
     <Grid
+      sx={{p:3}}
       className={classes.footer}
       container
       justifyContent="center"

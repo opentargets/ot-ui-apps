@@ -21,7 +21,7 @@ import usePlatformApi from '../../../hooks/usePlatformApi';
 
 import OPEN_TARGETS_GENETICS_QUERY from './sectionQuery.gql';
 
-function getColumns() {
+function getColumns(label) {
   return [
     {
       id: 'disease',
@@ -52,6 +52,8 @@ function getColumns() {
           <PublicationsDrawer
             entries={[{ name: literature[0] }]}
             customLabel={`${publicationFirstAuthor} et al, ${publicationYear}`}
+            symbol={label.symbol}
+            name={label.name}
           />
         );
       },
@@ -233,7 +235,7 @@ function getColumns() {
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: count };
-  const columns = getColumns();
+  const columns = getColumns(label);
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,
