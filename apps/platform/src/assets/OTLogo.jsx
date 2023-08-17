@@ -6,13 +6,10 @@ import config from '../config';
 const styles = {
   root: {
     height: 'unset',
-    // width: '100%',
-    // maxWidth: '30rem',
   },
 };
 
 function OTLogo({props, sx = []}) {
-  // const classes = useClasses(styles);
   const tagline = config.profile.otLogoTagline ?? '';
 
   return (
@@ -22,7 +19,6 @@ function OTLogo({props, sx = []}) {
       // TODO: review props spreading
       // eslint-disable-next-line
       {...props}
-      // classes={classes}
       sx={[
         styles.root,
         // You cannot spread `sx` directly because `SxProps` (typeof sx) can be an array.
