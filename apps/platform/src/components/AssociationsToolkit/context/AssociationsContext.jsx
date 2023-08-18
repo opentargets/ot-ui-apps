@@ -15,12 +15,13 @@ import useAssociationsData from '../hooks/useAssociationsData';
 const AssociationsContext = createContext();
 
 const initialIndirect = entity => entity !== 'target';
+const initialPagination = {
+  pageIndex: 0,
+  pageSize: 50,
+};
 
 function AssociationsProvider({ children, entity, id, query }) {
-  const [{ pageIndex, pageSize }, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 50,
-  });
+  const [{ pageIndex, pageSize }, setPagination] = useState(initialPagination);
 
   const pagination = useMemo(
     () => ({
@@ -146,6 +147,12 @@ function AssociationsProvider({ children, entity, id, query }) {
 
   const entityToGet = entity === 'target' ? 'disease' : 'target';
 
+  const resetToInitialPagination = () => {
+    setTableExpanded({});
+    setExpanded([]);
+    setPagination(initialPagination);
+  };
+
   const handlePaginationChange = newPagination => {
     setTableExpanded({});
     setExpanded([]);
@@ -225,6 +232,7 @@ function AssociationsProvider({ children, entity, id, query }) {
     pinnedCount,
     pinExpanded,
     pinnedEntries,
+    resetToInitialPagination,
     setPinnedEntries,
     setPinExpanded,
     setTablePinExpanded,

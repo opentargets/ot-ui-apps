@@ -10,8 +10,12 @@ const OTCheckbox = withStyles({
 })(Checkbox);
 
 function RequiredControl({ id, aggregationId }) {
-  const { dataSourcesRequired, setDataSourcesRequired, loading } =
-    useAotfContext();
+  const {
+    dataSourcesRequired,
+    setDataSourcesRequired,
+    loading,
+    resetToInitialPagination,
+  } = useAotfContext();
 
   const [displayValue, setDisplayValue] = useState(
     getControlChecked(dataSourcesRequired, id)
@@ -39,6 +43,7 @@ function RequiredControl({ id, aggregationId }) {
       setDataSourcesRequired(newRequiredElement);
       setDisplayValue(newValue);
     }
+    resetToInitialPagination();
   };
 
   return (

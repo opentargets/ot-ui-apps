@@ -30,7 +30,11 @@ const getSliderValue = (values, id) => {
 };
 
 function SliderControll({ id }) {
-  const { dataSourcesWeights, setDataSourcesWeights } = useAotfContext();
+  const {
+    dataSourcesWeights,
+    setDataSourcesWeights,
+    resetToInitialPagination,
+  } = useAotfContext();
 
   const defaultValue = getWightSourceDefault(id);
   const initialValue = getSliderValue(dataSourcesWeights, id);
@@ -48,6 +52,7 @@ function SliderControll({ id }) {
       return src;
     });
     setDataSourcesWeights(newDataSources);
+    resetToInitialPagination();
   }, [value]);
 
   useEffect(() => {
