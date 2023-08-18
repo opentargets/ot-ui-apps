@@ -30,8 +30,8 @@ function ColoredCell({
 
   const style = {
     height: '26px',
-    width: rounded ? '26px' : '30px',
-    borderRadius: rounded ? '13px' : 0,
+    width: '26px',
+    borderRadius: rounded ? '50%' : 0,
     backgroundColor,
     border: `1px solid ${borderColor}`,
   };

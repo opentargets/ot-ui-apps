@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { flexRender } from '@tanstack/react-table';
 import { ClickAwayListener, Fade, Grow } from '@material-ui/core';
+import { v1 } from 'uuid';
 
 import useAotfContext from '../hooks/useAotfContext';
 
@@ -48,10 +49,13 @@ function TableBody({ core, expanded, cols }) {
   const { rows } = core.getRowModel();
   if (rows.length < 1) return null;
 
+  const flatCols = cols.map(c => c.id);
+
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
   const tablePrefix = core.getState().prefix;
-  const isExpandedInTable = expanded[3] === tablePrefix;
+  const isExpandedInTable =
+    expanded[3] === tablePrefix && flatCols.includes(expanded[1]);
 
   const handleClickAway = () => {
     resetExpandler();
@@ -97,7 +101,7 @@ function TableBody({ core, expanded, cols }) {
               </RowContainer>
             </Fade>
             {isExpandedInTable && row.getIsExpanded() && (
-              <div>
+              <div key={v1()}>
                 <ClickAwayListener onClickAway={handleClickAway}>
                   <Grow in timeout={600}>
                     <section>
