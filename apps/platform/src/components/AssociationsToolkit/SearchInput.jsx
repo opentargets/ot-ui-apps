@@ -38,6 +38,7 @@ function SearchInput({ placeholder = 'Search' }) {
     <InputContainer container>
       <Grid item xs={12}>
         <Input
+          name="associationsSearchInput"
           autoComplete="off"
           startAdornment={<SearchIcon />}
           endAdornment={

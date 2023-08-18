@@ -152,16 +152,6 @@
 
 .data-row-content:hover .pinnedIcon {
   opacity: 1;
-  cursor: pointer;
-}
-
-.TAssociations .name-cell .pinnedIcon.active {
-  color: var(--primary-color);
-}
-
-.TAssociations .pinned .name-cell .pinnedIcon.active {
-  opacity: 1;
-  color: var(--text-color);
 }
 
 .TAssociations .data-cell .data-score.loading {

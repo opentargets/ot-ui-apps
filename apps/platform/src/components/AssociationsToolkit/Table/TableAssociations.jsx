@@ -130,13 +130,14 @@ function TableAssociations() {
             id: 'name',
             enableSorting: false,
             cell: row => {
-              const { loading } = row.table.getState();
+              const { loading, prefix } = row.table.getState();
               if (loading) return null;
               return (
                 <CellName
                   name={row.getValue()}
                   rowId={row.row.id}
                   row={row.row}
+                  tablePrefix={prefix}
                 />
               );
             },
@@ -178,7 +179,7 @@ function TableAssociations() {
    * TABLE HOOK
    * @description tanstack/react-table
    */
-  const table = useReactTable({
+  const coreAssociationsTable = useReactTable({
     data,
     columns,
     state: {
@@ -200,14 +201,14 @@ function TableAssociations() {
     manualSorting: true,
   });
 
-  const tablePinned = useReactTable({
+  const corePinnedTable = useReactTable({
     data: pinnedData,
     columns,
     state: {
       expanded: tableExpanded,
       pagination: {
         pageIndex: 0,
-        pageSize: 50,
+        pageSize: 150,
       },
       sorting,
       prefix: 'pinned',
@@ -225,36 +226,37 @@ function TableAssociations() {
     manualSorting: true,
   });
 
-  const entitesHeaders = table.getHeaderGroups()[0].headers[1].subHeaders;
+  const entitesHeaders =
+    coreAssociationsTable.getHeaderGroups()[0].headers[1].subHeaders;
 
   return (
     <div className="TAssociations" style={tableCSSVariables}>
       <TableElement>
         {/* HEADER */}
-        <TableHeader table={table} cols={entitesHeaders} />
+        <TableHeader table={coreAssociationsTable} cols={entitesHeaders} />
 
         {/* Weights controlls */}
         <HeaderControls cols={entitesHeaders} />
+        <div>
+          {/* BODY CONTENT */}
+          <TableBody
+            core={corePinnedTable}
+            expanded={expanded}
+            prefix="pinned"
+            cols={entitesHeaders}
+          />
 
-        {/* BODY CONTENT */}
-        <TableBody
-          table={tablePinned}
-          expanded={expanded}
-          prefix="pinned"
-          cols={entitesHeaders}
-        />
+          {pinnedData.length > 0 && <TableDivider />}
 
-        {pinnedData.length > 0 && <TableDivider />}
-
-        <TableBody
-          table={table}
-          expanded={expanded}
-          prefix="body"
-          cols={entitesHeaders}
-        />
-
+          <TableBody
+            core={coreAssociationsTable}
+            expanded={expanded}
+            prefix="body"
+            cols={entitesHeaders}
+          />
+        </div>
         {/* FOOTER */}
-        <TableFooter table={table} />
+        <TableFooter table={coreAssociationsTable} />
       </TableElement>
     </div>
   );

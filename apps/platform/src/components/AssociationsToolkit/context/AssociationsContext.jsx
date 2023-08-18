@@ -31,12 +31,14 @@ function AssociationsProvider({ children, entity, id, query }) {
   );
 
   // Table Controls
+  // [rowId, columnId, codebaseSectionId, tablePrefix]
+  // eg. ['ENSG00000087085', 'hasHighQualityChemicalProbes', 'chemicalProbes', 'pinned']
   const [expanded, setExpanded] = useState([]);
   const [pinExpanded, setPinExpanded] = useState([]);
   const [tableExpanded, setTableExpanded] = useState({});
   const [tablePinExpanded, setTablePinExpanded] = useState({});
 
-  // Data controls8
+  // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
   const [dataSourcesWeights, setDataSourcesWeights] = useState(
     defaulDatasourcesWeigths

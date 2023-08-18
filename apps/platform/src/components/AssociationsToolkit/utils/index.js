@@ -5,6 +5,13 @@ import config from '../../../config';
 
 export const { isPartnerPreview } = config.profile;
 
+export const ENTITIES = {
+  TARGET: 'target',
+  EVIDENCE: 'evidence',
+  DISEASE: 'disease',
+  DRUG: 'drug',
+};
+
 export const groupViewColumnsBy = (input, key) =>
   input.reduce((acc, currentValue) => {
     const groupKey = currentValue[key];

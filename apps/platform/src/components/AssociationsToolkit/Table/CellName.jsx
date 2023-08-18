@@ -5,6 +5,7 @@ import {
   faDna,
   faStethoscope,
   faThumbTack,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -17,13 +18,8 @@ const NameContainer = styled('div')({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  '& .pinnedIcon': {
-    opacity: '0',
-    transition: 'opacity ease-in-out 300ms',
-    marginLeft: '5px',
-  },
-  '& .pinnedIcon.active': {
-    // opacity: '1',
+  '&:hover > .PinnedContainer': {
+    opacity: 1,
   },
 });
 
@@ -53,6 +49,18 @@ const LinksTooltipContent = styled('span')({
   gap: '5px',
 });
 
+const PinnedContainer = styled('div', {
+  shouldForwardProp: prop => prop !== 'active',
+})(({ active }) => ({
+  opacity: active ? '1' : '0',
+  cursor: 'pointer',
+  transition: 'opacity ease-in 150ms, scale ease 300ms',
+  marginLeft: '5px',
+  '&:hover': {
+    scale: 1.1,
+  },
+}));
+
 function TooltipContent({ id, entity, name, icon }) {
   const profileURL = `/${entity}/${id}`;
   const associationsURL = `/${entity}/${id}/associations`;
@@ -67,13 +75,17 @@ function TooltipContent({ id, entity, name, icon }) {
   );
 }
 
-function CellName({ name, rowId, row }) {
+function CellName({ name, rowId, row, tablePrefix }) {
   const [open, setOpen] = useState(false);
   const { entityToGet, pinnedEntries, setPinnedEntries } = useAotfContext();
 
   const rowData = row.original;
 
   const isPinned = pinnedEntries.find(e => e === rowData.id);
+  const rowEntity = entityToGet === 'target' ? 'target' : 'disease';
+  const icon = rowEntity === 'target' ? faDna : faStethoscope;
+
+  const pinnedIcon = tablePrefix === 'body' ? faThumbTack : faXmark;
 
   const handleClickPin = () => {
     if (isPinned) {
@@ -84,17 +96,15 @@ function CellName({ name, rowId, row }) {
     }
   };
 
-  const rowEntity = entityToGet === 'target' ? 'target' : 'disease';
-  const icon = rowEntity === 'target' ? faDna : faStethoscope;
-
   return (
     <NameContainer>
-      <div
-        className={`pinnedIcon ${isPinned && 'active'}`}
+      <PinnedContainer
+        className="PinnedContainer"
         onClick={handleClickPin}
+        active={isPinned}
       >
-        <FontAwesomeIcon icon={faThumbTack} />
-      </div>
+        <FontAwesomeIcon icon={pinnedIcon} size="sm" />
+      </PinnedContainer>
       <Tooltip
         open={open}
         onClose={() => setOpen(false)}

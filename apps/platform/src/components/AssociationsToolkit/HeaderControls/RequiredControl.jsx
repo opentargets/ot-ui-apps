@@ -46,6 +46,7 @@ function RequiredControl({ id, aggregationId }) {
       checked={displayValue}
       color="primary"
       onChange={handleChange}
+      name={id}
     />
   );
 }

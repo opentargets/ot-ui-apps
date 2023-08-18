@@ -1,12 +1,7 @@
 import { Fragment } from 'react';
 import { flexRender } from '@tanstack/react-table';
 import { ClickAwayListener, Fade, Grow } from '@material-ui/core';
-import { v1 } from 'uuid';
-import {
-  EvidenceSecctionRenderer,
-  SecctionRendererWrapper,
-  TargetSecctionRenderer,
-} from './SectionRender';
+
 import useAotfContext from '../hooks/useAotfContext';
 
 import { getCellId } from '../utils';
@@ -16,6 +11,8 @@ import {
   TableBodyContent,
   GridContainer,
 } from '../layout';
+
+import { SectionRender, SectionRendererWrapper } from './SectionRender';
 
 /* HELPERS */
 const getColContainerClassName = ({ id }) => {
@@ -44,29 +41,26 @@ const getCellClassName = (
   return 'data-cell';
 };
 
-function TableBody({ table, expanded, prefix = null, cols }) {
+function TableBody({ core, expanded, cols }) {
   const { id, entity, entityToGet, displayedTable, resetExpandler } =
     useAotfContext();
 
-  const isAssociations = displayedTable === 'associations';
+  const { rows } = core.getRowModel();
+  if (rows.length < 1) return null;
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
-
-  const highLevelHeaders = table.getHeaderGroups()[0].headers;
+  const highLevelHeaders = core.getHeaderGroups()[0].headers;
+  const tablePrefix = core.getState().prefix;
+  const isExpandedInTable = expanded[3] === tablePrefix;
 
   const handleClickAway = () => {
     resetExpandler();
   };
 
-  const tablePrefix = table.getState().prefix;
-  const isExpandedInTable = expanded[3] === tablePrefix;
-
-  if (table.getRowModel().rows.length < 1) return null;
-
   return (
     <TableBodyContent>
       <RowsContainer>
-        {table.getRowModel().rows.map(row => (
+        {rows.map(row => (
           <Fragment key={row.id}>
             <Fade in>
               <RowContainer rowExpanded={getRowActive(row, isExpandedInTable)}>
@@ -103,34 +97,26 @@ function TableBody({ table, expanded, prefix = null, cols }) {
               </RowContainer>
             </Fade>
             {isExpandedInTable && row.getIsExpanded() && (
-              <div key={v1()}>
+              <div>
                 <ClickAwayListener onClickAway={handleClickAway}>
-                  <div>
-                    <Grow in>
-                      <SecctionRendererWrapper
-                        activeSection={expanded}
-                        table={displayedTable}
-                        tablePrefix={prefix}
-                      >
-                        {isAssociations ? (
-                          <EvidenceSecctionRenderer
-                            id={id}
-                            row={row}
-                            rowId={row.original[entityToGet].id}
-                            entity={entity}
-                            label={row.original[entityToGet][rowNameEntity]}
-                          />
-                        ) : (
-                          <TargetSecctionRenderer
-                            id={id}
-                            rowId={row.original[entityToGet].id}
-                            entity={entity}
-                            label={row.original[entityToGet][rowNameEntity]}
-                          />
-                        )}
-                      </SecctionRendererWrapper>
-                    </Grow>
-                  </div>
+                  <Grow in timeout={600}>
+                    <section>
+                      <SectionRendererWrapper>
+                        <SectionRender
+                          id={id}
+                          entity={entity}
+                          section={expanded[2]}
+                          expanded={expanded}
+                          rowId={row.original[entityToGet].id}
+                          row={row}
+                          entityToGet={entityToGet}
+                          rowNameEntity={rowNameEntity}
+                          displayedTable={displayedTable}
+                          cols={cols}
+                        />
+                      </SectionRendererWrapper>
+                    </section>
+                  </Grow>
                 </ClickAwayListener>
               </div>
             )}
