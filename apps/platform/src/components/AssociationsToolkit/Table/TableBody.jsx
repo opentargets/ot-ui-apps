@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { flexRender } from '@tanstack/react-table';
-import { ClickAwayListener, Fade, Grow } from '@material-ui/core';
+import { ClickAwayListener, Fade, Box } from '@material-ui/core';
 import { v1 } from 'uuid';
 
 import useAotfContext from '../hooks/useAotfContext';
@@ -42,6 +42,16 @@ const getCellClassName = (
   return 'data-cell';
 };
 
+function ExpandableContainer({
+  rowExpanded,
+  isExpandedInTable,
+  loading,
+  children,
+}) {
+  if (!isExpandedInTable || !rowExpanded || loading) return null;
+  return <Box key={v1()}>{children}</Box>;
+}
+
 function TableBody({ core, expanded, cols }) {
   const { id, entity, entityToGet, displayedTable, resetExpandler } =
     useAotfContext();
@@ -53,9 +63,9 @@ function TableBody({ core, expanded, cols }) {
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
-  const tablePrefix = core.getState().prefix;
+  const { prefix, loading } = core.getState();
   const isExpandedInTable =
-    expanded[3] === tablePrefix && flatCols.includes(expanded[1]);
+    expanded[3] === prefix && flatCols.includes(expanded[1]);
 
   const handleClickAway = () => {
     resetExpandler();
@@ -86,7 +96,7 @@ function TableBody({ core, expanded, cols }) {
                             entityToGet,
                             displayedTable,
                             expanded,
-                            tablePrefix
+                            prefix
                           )}
                         >
                           {flexRender(
@@ -100,30 +110,30 @@ function TableBody({ core, expanded, cols }) {
                 ))}
               </RowContainer>
             </Fade>
-            {isExpandedInTable && row.getIsExpanded() && (
-              <div key={v1()}>
-                <ClickAwayListener onClickAway={handleClickAway}>
-                  <Grow in timeout={600}>
-                    <section>
-                      <SectionRendererWrapper>
-                        <SectionRender
-                          id={id}
-                          entity={entity}
-                          section={expanded[2]}
-                          expanded={expanded}
-                          rowId={row.original[entityToGet].id}
-                          row={row}
-                          entityToGet={entityToGet}
-                          rowNameEntity={rowNameEntity}
-                          displayedTable={displayedTable}
-                          cols={cols}
-                        />
-                      </SectionRendererWrapper>
-                    </section>
-                  </Grow>
-                </ClickAwayListener>
-              </div>
-            )}
+            <ExpandableContainer
+              rowExpanded={row.getIsExpanded()}
+              isExpandedInTable={isExpandedInTable}
+              loading={loading}
+            >
+              <ClickAwayListener onClickAway={handleClickAway}>
+                <section>
+                  <SectionRendererWrapper>
+                    <SectionRender
+                      id={id}
+                      entity={entity}
+                      section={expanded[2]}
+                      expanded={expanded}
+                      rowId={row.original[entityToGet].id}
+                      row={row}
+                      entityToGet={entityToGet}
+                      rowNameEntity={rowNameEntity}
+                      displayedTable={displayedTable}
+                      cols={cols}
+                    />
+                  </SectionRendererWrapper>
+                </section>
+              </ClickAwayListener>
+            </ExpandableContainer>
           </Fragment>
         ))}
       </RowsContainer>

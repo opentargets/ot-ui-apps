@@ -25,7 +25,7 @@ function AggregationItem({
   dataset,
   active,
   handleAggregationClick,
-  activeHeadersControlls,
+  setActiveHeadersControlls,
 }) {
   const [open, setOpen] = useState(false);
   const onMouseEnter = () => {
@@ -36,25 +36,25 @@ function AggregationItem({
     setOpen(false);
   };
 
+  const onClick = () => {
+    handleAggregationClick(aggregation);
+    setActiveHeadersControlls(true);
+  };
+
   const colsCont = dataset[aggregation].length;
   const style = {
     gridColumn: `span ${colsCont}`,
     gridRow: `row1-start / 2`,
   };
   const isActive = active === aggregation;
-  const className = `aggregation-indicator ${isActive && 'active'} ${
-    activeHeadersControlls && 'clickAble'
-  } `;
+  const className = `aggregation-indicator ${isActive && 'active'} clickAble`;
   return (
     <div
       className={className}
       style={style}
       onMouseEnter={e => onMouseEnter(aggregation)}
       onMouseLeave={e => onMouseLeave()}
-      onClick={() => {
-        if (activeHeadersControlls) return handleAggregationClick(aggregation);
-        return () => ({});
-      }}
+      onClick={() => onClick()}
     >
       <AggregationsTooltip
         title={aggregation}
@@ -72,6 +72,7 @@ function AggregationsRow({
   handleAggregationClick,
   activeHeadersControlls,
   columnsCount,
+  setActiveHeadersControlls,
 }) {
   const dataset =
     table === 'associations' ? associationGrouped : prioritizationGrouped;
@@ -88,6 +89,7 @@ function AggregationsRow({
             dataset={dataset}
             handleAggregationClick={handleAggregationClick}
             activeHeadersControlls={activeHeadersControlls}
+            setActiveHeadersControlls={setActiveHeadersControlls}
           />
         ))}
       </AggregationsContainer>

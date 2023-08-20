@@ -24,8 +24,13 @@ const getHeaderClassName = ({ id }) => {
 };
 
 function TableHeader({ table, cols }) {
-  const { id, displayedTable, handleAggregationClick, activeHeadersControlls } =
-    useAotfContext();
+  const {
+    id,
+    displayedTable,
+    handleAggregationClick,
+    activeHeadersControlls,
+    setActiveHeadersControlls,
+  } = useAotfContext();
   const [activeAggregation, setActiveAggegation] = useState(null);
   const onEnterHoverHeader = ({ id: elementId, column }) => {
     if (elementId === 'score' || elementId === 'name') return;
@@ -112,6 +117,7 @@ function TableHeader({ table, cols }) {
         table={displayedTable}
         active={activeAggregation}
         activeHeadersControlls={activeHeadersControlls}
+        setActiveHeadersControlls={setActiveHeadersControlls}
       />
     </div>
   );
