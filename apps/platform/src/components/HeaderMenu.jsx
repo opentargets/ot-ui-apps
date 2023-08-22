@@ -70,7 +70,7 @@ function HeaderMenu ({ items, placement }) {
         anchorEl={anchorEl}
         role={undefined}
         transition
-        disablePortal
+        // disablePortal
         placement={placement || 'bottom-start'}
       >
         {({ TransitionProps }) => (
