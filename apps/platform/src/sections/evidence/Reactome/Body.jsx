@@ -16,7 +16,7 @@ import EllsWrapper from '../../../components/EllsWrapper';
 
 import REACTOME_QUERY from './sectionQuery.gql';
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease.name',
     label: 'Disease / phenotype',
@@ -140,7 +140,13 @@ const columns = [
           });
         }
       });
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
     width: '12%',
   },
@@ -158,6 +164,8 @@ export function BodyCore({ definition, id, label, count }) {
   const request = useQuery(REACTOME_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

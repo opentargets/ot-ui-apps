@@ -15,7 +15,7 @@ import BiomarkersDrawer from './BiomarkersDrawer';
 
 import CANCER_BIOMARKERS_EVIDENCE_QUERY from './CancerBiomarkersEvidence.gql';
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease.name',
     label: 'Disease',
@@ -85,7 +85,13 @@ const columns = [
           }))
         : [];
 
-      return <PublicationsDrawer entries={entries} />;
+      return (
+        <PublicationsDrawer
+          entries={entries}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -102,6 +108,8 @@ export function BodyCore({ definition, id, label, count }) {
   const request = useQuery(CANCER_BIOMARKERS_EVIDENCE_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

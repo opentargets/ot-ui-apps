@@ -10,6 +10,8 @@ import { makeStyles } from '@mui/styles';
 
 import { LongText } from 'ui';
 import Link from '../Link';
+import PublicationSummary from './PublicationSummary';
+import config from '../../config';
 
 const pmUrl = 'https://europepmc.org/';
 const pmTitleUrlMED = 'abstract/med/';
@@ -50,8 +52,13 @@ function PublicationWrapper({
   fullTextOpen,
   source = 'MED',
   patentDetails,
+  symbol = null,
+  name = null,
+  pmcId = null,
+  isOpenAccess = false,
 }) {
   const [showAbstract, setShowAbstract] = useState(false);
+  const { urlAiApi } = config;
 
   const handleShowAbstractClick = () => {
     setShowAbstract(!showAbstract);
@@ -166,6 +173,9 @@ function PublicationWrapper({
             dangerouslySetInnerHTML={{ __html: abstract }}
           />
         </Box>
+      )}
+      {isOpenAccess && urlAiApi && (
+        <PublicationSummary name={name} symbol={symbol} pmcId={pmcId} />
       )}
     </Box>
   );

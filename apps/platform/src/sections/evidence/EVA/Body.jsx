@@ -26,7 +26,7 @@ import { dataTypesMap } from '../../../dataTypes';
 
 import CLINVAR_QUERY from './ClinvarQuery.gql';
 
-function getColumns() {
+function getColumns(label) {
   return [
     {
       id: 'disease.name',
@@ -165,8 +165,13 @@ function getColumns() {
           </div>
         );
       },
-      filterValue: ({ variantFunctionalConsequence, variantFunctionalConsequenceFromQtlId }) =>
-        (`${sentenceCase(variantFunctionalConsequence.label)}, ${sentenceCase(variantFunctionalConsequenceFromQtlId.label)}`),
+      filterValue: ({
+        variantFunctionalConsequence,
+        variantFunctionalConsequenceFromQtlId,
+      }) =>
+        `${sentenceCase(variantFunctionalConsequence.label)}, ${sentenceCase(
+          variantFunctionalConsequenceFromQtlId.label
+        )}`,
     },
     {
       id: 'clinicalSignificances',
@@ -255,7 +260,13 @@ function getColumns() {
             return acc;
           }, []) || [];
 
-        return <PublicationsDrawer entries={literatureList} />;
+        return (
+          <PublicationsDrawer
+            entries={literatureList}
+            symbol={label.symbol}
+            name={label.name}
+          />
+        );
       },
     },
   ];
@@ -287,7 +298,7 @@ export function BodyCore({ definition, id, label }) {
   const [sortOrder, setSortOrder] = useState('asc');
   // const [globalFilter, setGlobalFilter] = useState('');
 
-  const columns = getColumns();
+  const columns = getColumns(label);
 
   useEffect(() => {
     let isCurrent = true;

@@ -1,11 +1,10 @@
-import { createTheme } from '@mui/material';
 import { lighten, darken } from 'polished';
 import config from './config';
 
 const PRIMARY = config.profile.primaryColor;
 const SECONDARY = '#ff6350';
 
-const theme = createTheme({
+const theme = {
   // shape: {
   //   borderRadius: 0,
   // },
@@ -128,6 +127,6 @@ const theme = createTheme({
       },
     },
   },
-});
+};
 
 export default theme;
