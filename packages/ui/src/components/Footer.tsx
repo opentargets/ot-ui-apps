@@ -30,7 +30,7 @@ const useLinkStyles = makeStyles(() => ({
 const FooterLink = ({ label, url, icon }) => {
   const classes = useLinkStyles();
   return (
-    <Grid item xs={12} sx={{mb:1}}>
+    <Grid item xs={12} sx={{ mb: 1 }}>
       <Typography color="inherit">
         {url.startsWith("mailto") ? (
           <EmailLink href={url} label={label} icon={icon} />
@@ -163,6 +163,7 @@ const FooterSection = ({
 // Creative Commons License
 const useLicenseStyles = makeStyles({
   icon: {
+    minWidth: "20px !important",
     height: "22px !important",
     marginLeft: "3px",
     verticalAlign: "middle",
@@ -189,10 +190,14 @@ const LicenseCC0 = ({ links }) => {
         >
           CC0 1.0
           <img
+            alt="cc0 license image 1"
+            aria-label="cc0 license image 1"
             className={classes.icon}
             src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
           />
           <img
+            alt="cc0 license image 2"
+            aria-label="cc0 license image 2"
             className={classes.icon}
             src="https://mirrors.creativecommons.org/presskit/icons/zero.svg?ref=chooser-v1"
           />
@@ -206,7 +211,7 @@ const Footer = ({ externalLinks }) => {
   const classes = useStyles();
   return (
     <Grid
-      sx={{p:3}}
+      sx={{ p: 3 }}
       className={classes.footer}
       container
       justifyContent="center"
