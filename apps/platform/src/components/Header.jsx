@@ -68,7 +68,7 @@ function Header({
                 noWrap
                 title={title}
               >
-                {loading ? <Skeleton width="10vw" /> : title}
+                {loading ? <Skeleton width="10vw" height="3.3rem"/> : title}
               </Typography>
               <Typography className={classes.subtitle} variant="subtitle2">
                 {loading ? <Skeleton width="25vw" /> : subtitle}
