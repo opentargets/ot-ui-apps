@@ -202,6 +202,30 @@ export function BodyCore({ definition, id, label }) {
   }, [newIds]);
 
   const columns = getColumns(label);
+  const downloadColumns = [
+    {
+      id: 'disease',
+      label: 'Disease/phenotype',
+    },
+    {
+      id: 'title',
+      label: 'Publication',
+    },
+    {
+      id: 'europePmcId',
+    },
+    {
+      id: 'pmcId',
+    },
+    {
+      id: 'year',
+    },
+    {
+      id: 'resourceScore',
+      label: 'Score',
+      numeric: true,
+    },
+  ];
 
   return (
     <SectionItem
@@ -216,7 +240,12 @@ export function BodyCore({ definition, id, label }) {
           getPage(res.disease.evidences.rows, page, pageSize),
           literatureData
         );
-
+        const downloadData = rows.map(row => {
+          return {
+            ...row,
+            disease: row.disease.name,
+          }
+        });
         return (
           <Table
             loading={loading}
@@ -228,6 +257,8 @@ export function BodyCore({ definition, id, label }) {
             page={page}
             pageSize={pageSize}
             rows={rows}
+            dataDownloaderRows={downloadData}
+            dataDownloaderColumns={downloadColumns}
             rowCount={data.disease.evidences.count}
             rowsPerPageOptions={[5, 10, 15, 20, 25]}
             query={EUROPE_PMC_QUERY.loc.source.body}
