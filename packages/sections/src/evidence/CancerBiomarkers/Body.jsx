@@ -11,6 +11,7 @@ import BiomarkersDrawer from "./BiomarkersDrawer";
 import { definition } from ".";
 
 import CANCER_BIOMARKERS_EVIDENCE_QUERY from "./CancerBiomarkersEvidence.gql";
+import { naLabel } from "ui/src/constants";
 
 const columns = [
   {
@@ -52,9 +53,11 @@ const columns = [
   {
     id: "drugResponse.name",
     label: "Drug response",
-    renderCell: ({ drugResponse }) => (
-      <Link to={`/disease/${drugResponse.id}`}>{drugResponse.name}</Link>
-    ),
+    renderCell: ({ drugResponse }) =>
+      (drugResponse && (
+        <Link to={`/disease/${drugResponse.id}`}>{drugResponse.name}</Link>
+      )) ||
+      naLabel,
   },
   {
     id: "confidence",
