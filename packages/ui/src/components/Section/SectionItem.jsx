@@ -83,7 +83,7 @@ function SectionItem({
                     }
                   )}
                 >
-                  {renderDescription()}
+                  {renderDescription(data)}
                 </Typography>
               }
               action={tags}
