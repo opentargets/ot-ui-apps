@@ -4,7 +4,7 @@ query targetAnnotation {
     approvedSymbol
     tractability {
       modality
-      id
+      label
       value
     }
     safetyLiabilities {
