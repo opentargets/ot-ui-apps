@@ -33,6 +33,7 @@
     "litemol": "^2.4.2",
     "local-storage": "^2.0.0",
     "lodash": "^4.17.21",
+    "oo-ascii-tree": "^1.88.0",
     "plotly.js": "^2.23.1",
     "polished": "^2.3.0",
     "protvista-uniprot": "^2.8.3",

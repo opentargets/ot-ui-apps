@@ -9,6 +9,7 @@ import { DataTable } from '../../components/Table';
 import DownloadsDrawer from './DownloadsDrawer';
 import datasetMappings from './dataset-mappings.json';
 import config from '../../config';
+import DownloadsSchemaDrawer from './DownloadsSchemaDrawer';
 
 const useStyles = makeStyles(theme => ({
   alert: {
@@ -66,6 +67,24 @@ function getColumns(date) {
             >
               <Chip label={formatMap[format.format]} clickable size="small" />
             </DownloadsDrawer>{' '}
+          </Fragment>
+        )),
+    },
+    {
+      id: 'schemas',
+      label: 'Schema(s)',
+      renderCell: ({ niceName, formats }) =>
+        formats.map((format) => (
+          <Fragment key={format.format + format.path + date.month + date.year}>
+            <DownloadsSchemaDrawer
+              title={niceName}
+              format={format.format}
+              path={format.path}
+              month={date.month}
+              year={date.year}
+            >
+              <Chip label={formatMap[format.format]} clickable size="small" />
+            </DownloadsSchemaDrawer>{' '}
           </Fragment>
         )),
     },
