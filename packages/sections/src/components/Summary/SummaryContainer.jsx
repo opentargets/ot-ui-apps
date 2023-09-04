@@ -1,5 +1,5 @@
 import { Children } from "react";
-import { Grid } from '@mui/material';
+import { Grid } from "@mui/material";
 
 import summaryStyles from "./summaryStyles";
 

@@ -1,15 +1,22 @@
-import {Paper, List, ListItem, ListItemText, Popper, Fade} from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { v1 } from 'uuid';
+import {
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  Popper,
+  Fade,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { v1 } from "uuid";
 
 const useStyles = makeStyles(() => ({
   listitem: {
-    padding: '0.2rem 0.6rem',
-    width: '100%',
+    padding: "0.2rem 0.6rem",
+    width: "100%",
   },
   listItemText: {
-    fontSize: '0.75rem',
-    minWidth: '100%',
+    fontSize: "0.75rem",
+    minWidth: "100%",
   },
 }));
 
@@ -25,7 +32,7 @@ function ListTooltip({ dataList, open, anchorEl, container }) {
       modifiers={{
         preventOverflow: {
           enabled: true,
-          boundariesElement: 'window',
+          boundariesElement: "window",
         },
       }}
     >
@@ -35,7 +42,7 @@ function ListTooltip({ dataList, open, anchorEl, container }) {
         <Fade {...TransitionProps} timeout={350}>
           <Paper>
             <List dense>
-              {dataList.map(d => (
+              {dataList.map((d) => (
                 <ListItem key={v1()} className={classes.listitem}>
                   <ListItemText
                     primary={d.label}

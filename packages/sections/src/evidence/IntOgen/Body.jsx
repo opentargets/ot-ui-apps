@@ -1,32 +1,31 @@
-import { Box, List, ListItem, Typography } from '@mui/material';
+import { Box, List, ListItem, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { useQuery } from '@apollo/client';
-import { v1 } from 'uuid';
-import { ChipList, Link, SectionItem, Tooltip } from 'ui';
+import { useQuery } from "@apollo/client";
+import { v1 } from "uuid";
+import { ChipList, Link, SectionItem, Tooltip } from "ui";
 
-import { definition } from '.';
-import methods from './methods';
-import Summary from './Summary';
-import Description from './Description';
-import { epmcUrl } from '../../utils/urls';
-import { dataTypesMap } from '../../dataTypes';
-import INTOGEN_QUERY from './sectionQuery.gql';
-import { sentenceCase } from '../../utils/global';
-import { DataTable } from '../../components/Table';
-import { defaultRowsPerPageOptions, naLabel } from '../../constants';
-import ScientificNotation from '../../components/ScientificNotation';
-
+import { definition } from ".";
+import methods from "./methods";
+import Summary from "./Summary";
+import Description from "./Description";
+import { epmcUrl } from "../../utils/urls";
+import { dataTypesMap } from "../../dataTypes";
+import INTOGEN_QUERY from "./sectionQuery.gql";
+import { sentenceCase } from "../../utils/global";
+import { DataTable } from "../../components/Table";
+import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import ScientificNotation from "../../components/ScientificNotation";
 
 const intOgenUrl = (id, approvedSymbol) =>
   `https://www.intogen.org/search?gene=${approvedSymbol}&cohort=${id}`;
 
-const samplePercent = item =>
+const samplePercent = (item) =>
   (item.numberMutatedSamples / item.numberSamplesTested) * 100;
 
 const columns = [
   {
-    id: 'disease',
-    label: 'Disease/phenotype',
+    id: "disease",
+    label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -48,23 +47,23 @@ const columns = [
       [disease.name, diseaseFromSource].join(),
   },
   {
-    id: 'mutatedSamples',
-    propertyPath: 'mutatedSamples.numberMutatedSamples',
-    label: 'Mutated / Total samples',
+    id: "mutatedSamples",
+    propertyPath: "mutatedSamples.numberMutatedSamples",
+    label: "Mutated / Total samples",
     renderCell: ({ mutatedSamples }) => (
       <List style={{ padding: 0 }}>
         {mutatedSamples
           .sort((a, b) => samplePercent(b) - samplePercent(a))
-          .map(item => {
+          .map((item) => {
             const percent = samplePercent(item);
 
             return (
-              <ListItem key={v1()} style={{ padding: '.25rem 0' }}>
+              <ListItem key={v1()} style={{ padding: ".25rem 0" }}>
                 {percent < 5
                   ? parseFloat(percent.toFixed(2)).toString()
                   : Math.round(percent)}
                 %
-                <Typography variant="caption" style={{ marginLeft: '.33rem' }}>
+                <Typography variant="caption" style={{ marginLeft: ".33rem" }}>
                   ({item.numberMutatedSamples}/{item.numberSamplesTested})
                 </Typography>
               </ListItem>
@@ -74,7 +73,7 @@ const columns = [
     ),
   },
   {
-    id: 'resourceScore',
+    id: "resourceScore",
     label: (
       <span>
         Combined <i>p</i>-value
@@ -83,10 +82,10 @@ const columns = [
 
     tooltip: (
       <>
-        Visit the{' '}
+        Visit the{" "}
         <Link external to="https://www.intogen.org/faq">
           IntOGen FAQ
-        </Link>{' '}
+        </Link>{" "}
         for more information.
       </>
     ),
@@ -97,25 +96,25 @@ const columns = [
     ),
   },
   {
-    id: 'significantDriverMethods',
-    label: 'Cancer driver methods',
+    id: "significantDriverMethods",
+    label: "Cancer driver methods",
     tooltip: (
       <>
         The current version of the intOGen pipeline uses seven methods to
         identify cancer driver genes from somatic point mutations - HotMAPS,
         dNDScv, smRegions, CBaSE, FML, MutPanning, and CLUSTL. The pipeline also
         uses a combination of methods. For further information on the methods,
-        please{' '}
+        please{" "}
         <Link to={methods.columnTooltip.url} external>
           click here
-        </Link>{' '}
+        </Link>{" "}
         visit the intOGen FAQ.
       </>
     ),
     renderCell: ({ significantDriverMethods }) =>
       significantDriverMethods ? (
         <ChipList
-          items={significantDriverMethods.map(am => ({
+          items={significantDriverMethods.map((am) => ({
             label: am,
             tooltip: (methods[am] || {}).description,
           }))}
@@ -124,11 +123,11 @@ const columns = [
         naLabel
       ),
     filterValue: ({ significantDriverMethods }) =>
-      significantDriverMethods.map(am => am).join(),
+      significantDriverMethods.map((am) => am).join(),
   },
   {
-    id: 'cohortShortName',
-    label: 'Cohort Information',
+    id: "cohortShortName",
+    label: "Cohort Information",
     renderCell: ({
       cohortId,
       cohortShortName,
@@ -139,7 +138,7 @@ const columns = [
         <>
           <Link external to={intOgenUrl(cohortId, approvedSymbol)}>
             {cohortShortName}
-          </Link>{' '}
+          </Link>{" "}
           {cohortDescription}
         </>
       ) : (
@@ -152,14 +151,14 @@ const columns = [
 
 const useStyles = makeStyles({
   roleInCancerBox: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '2rem',
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "2rem",
   },
-  roleInCancerTitle: { marginRight: '.5rem' },
+  roleInCancerTitle: { marginRight: ".5rem" },
 });
 
-function Body({id, label, entity }) {
+function Body({ id, label, entity }) {
   const classes = useStyles();
 
   const { ensgId, efoId } = id;
@@ -190,12 +189,12 @@ function Body({id, label, entity }) {
         const roleInCancerItems =
           hallmarks && hallmarks.attributes.length > 0
             ? hallmarks.attributes
-                .filter(attribute => attribute.name === 'role in cancer')
-                .map(attribute => ({
+                .filter((attribute) => attribute.name === "role in cancer")
+                .map((attribute) => ({
                   label: attribute.description,
                   url: epmcUrl(attribute.pmid),
                 }))
-            : [{ label: 'Unknown' }];
+            : [{ label: "Unknown" }];
 
         return (
           <>

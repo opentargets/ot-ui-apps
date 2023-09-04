@@ -1,38 +1,38 @@
-import { makeStyles } from '@mui/styles';
-import { Link, Tooltip } from 'ui';
+import { makeStyles } from "@mui/styles";
+import { Link, Tooltip } from "ui";
 
-import { DataTable } from '../../components/Table';
-import { defaultRowsPerPageOptions } from '../../constants';
-import upperBin6Map from './upperBin6Map';
+import { DataTable } from "../../components/Table";
+import { defaultRowsPerPageOptions } from "../../constants";
+import upperBin6Map from "./upperBin6Map";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   filled: {
-    display: 'inline-block',
-    border: '1px solid black',
+    display: "inline-block",
+    border: "1px solid black",
     backgroundColor: theme.palette.primary.main,
-    height: '16px',
-    width: '16px',
-    borderRadius: '50%',
-    marginRight: '3px',
+    height: "16px",
+    width: "16px",
+    borderRadius: "50%",
+    marginRight: "3px",
   },
   notFilled: {
-    display: 'inline-block',
-    border: '1px solid black',
-    height: '16px',
-    width: '16px',
-    borderRadius: '50%',
-    marginRight: '3px',
+    display: "inline-block",
+    border: "1px solid black",
+    height: "16px",
+    width: "16px",
+    borderRadius: "50%",
+    marginRight: "3px",
   },
   title: {
-    display: 'inline-block',
-    marginTop: '11px',
+    display: "inline-block",
+    marginTop: "11px",
   },
 }));
 
 const constraintTypeMap = {
-  syn: 'Synonymous',
-  mis: 'Missense',
-  lof: 'pLoF',
+  syn: "Synonymous",
+  mis: "Missense",
+  lof: "pLoF",
 };
 
 function ConstraintAssessment({ ensemblId, symbol, upperBin6 }) {
@@ -68,25 +68,25 @@ function ConstraintAssessment({ ensemblId, symbol, upperBin6 }) {
 function getColumns(ensemblId, symbol) {
   return [
     {
-      id: 'constraintType',
-      label: 'Category',
+      id: "constraintType",
+      label: "Category",
       renderCell: ({ constraintType }) => constraintTypeMap[constraintType],
     },
     {
-      id: 'exp',
-      label: 'Expected SNVs',
+      id: "exp",
+      label: "Expected SNVs",
     },
     {
-      id: 'obs',
-      label: 'Observed SNVs',
+      id: "obs",
+      label: "Observed SNVs",
     },
     {
-      id: 'metrics',
-      label: 'Constraint metrics',
+      id: "metrics",
+      label: "Constraint metrics",
       renderCell: ({ score, oe, oeLower, oeUpper, upperBin6 }) => (
         <>
           <div>
-            {upperBin6 === null ? 'Z' : 'pLI'} = {score}
+            {upperBin6 === null ? "Z" : "pLI"} = {score}
           </div>
           <div>
             o/e = {oe} ({oeLower} - {oeUpper})

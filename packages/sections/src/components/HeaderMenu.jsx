@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { v1 } from 'uuid';
+import { useState } from "react";
+import { v1 } from "uuid";
 import {
   MenuItem,
   Popper,
@@ -8,26 +8,26 @@ import {
   Fade,
   Paper,
   ClickAwayListener,
-} from '@mui/material';
-import { Menu as MenuIcon, Close as CloseIcon } from '@mui/icons-material';
-import { makeStyles } from '@mui/styles';
-import Link from './Link';
-import PrivateWrapper from './PrivateWrapper';
+} from "@mui/material";
+import { Menu as MenuIcon, Close as CloseIcon } from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
+import Link from "./Link";
+import PrivateWrapper from "./PrivateWrapper";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
-    marginLeft: '20px',
+    marginLeft: "20px",
   },
   menuLink: {
-    width: '100%',
-    paddingTop: '8px',
-    paddingBottom: '8px',
-    paddingLeft: '16px',
-    paddingRight: '16px',
+    width: "100%",
+    paddingTop: "8px",
+    paddingBottom: "8px",
+    paddingLeft: "16px",
+    paddingRight: "16px",
   },
   menuItem: {
-    paddingLeft: '0px',
-    paddingRight: '0px',
+    paddingLeft: "0px",
+    paddingRight: "0px",
   },
 }));
 
@@ -36,7 +36,7 @@ function HeaderMenu({ items, placement }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
 
-  const handleMenuToggle = event => {
+  const handleMenuToggle = (event) => {
     setAnchorEl(anchorEl === null ? event.currentTarget : null);
   };
 
@@ -44,8 +44,8 @@ function HeaderMenu({ items, placement }) {
     setAnchorEl(null);
   };
 
-  const handleListKeyDown = event => {
-    if (event.key === 'Tab') {
+  const handleListKeyDown = (event) => {
+    if (event.key === "Tab") {
       event.preventDefault();
       setAnchorEl(null);
     }
@@ -70,7 +70,7 @@ function HeaderMenu({ items, placement }) {
         role={undefined}
         transition
         disablePortal
-        placement={placement || 'bottom-start'}
+        placement={placement || "bottom-start"}
       >
         {({ TransitionProps }) => (
           // TODO: review props spreading

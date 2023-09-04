@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
-import { Tab, Tabs, Typography } from '@mui/material';
-import { SectionItem, usePlatformApi } from 'ui';
+import { useState, useEffect } from "react";
+import { Tab, Tabs, Typography } from "@mui/material";
+import { SectionItem, usePlatformApi } from "ui";
 
-import client from '../../client';
-import { definition } from '.';
-import Description from './Description';
+import client from "../../client";
+import { definition } from ".";
+import Description from "./Description";
 
-import IntactTab from './IntactTab';
-import SignorTab from './SignorTab';
-import ReactomeTab from './ReactomeTab';
-import StringTab from './StringTab';
+import IntactTab from "./IntactTab";
+import SignorTab from "./SignorTab";
+import ReactomeTab from "./ReactomeTab";
+import StringTab from "./StringTab";
 
-import INTERACTIONS_STATS_QUERY from './InteractionsStats.gql';
+import INTERACTIONS_STATS_QUERY from "./InteractionsStats.gql";
 
-const getSummaryCounts = ensgId =>
+const getSummaryCounts = (ensgId) =>
   client.query({
     query: INTERACTIONS_STATS_QUERY,
     variables: {
@@ -23,24 +23,24 @@ const getSummaryCounts = ensgId =>
 
 const sources = [
   {
-    label: 'IntAct',
-    id: 'intact',
-    countDescription: 'molecular interactions',
+    label: "IntAct",
+    id: "intact",
+    countDescription: "molecular interactions",
   },
   {
-    label: 'Signor',
-    id: 'signor',
-    countDescription: 'directional, causal interactions',
+    label: "Signor",
+    id: "signor",
+    countDescription: "directional, causal interactions",
   },
   {
-    label: 'Reactome',
-    id: 'reactome',
-    countDescription: 'pathway-based interactions',
+    label: "Reactome",
+    id: "reactome",
+    countDescription: "pathway-based interactions",
   },
   {
-    label: 'String',
-    id: 'string',
-    countDescription: 'functional interactions',
+    label: "String",
+    id: "string",
+    countDescription: "functional interactions",
   },
 ];
 
@@ -56,12 +56,12 @@ function Body({ label: symbol, id, entity }) {
 
   // load tabs summary counts
   useEffect(() => {
-    getSummaryCounts(id).then(res => {
+    getSummaryCounts(id).then((res) => {
       // when there is no data, interactions object is null, so there is no count
       setCounts(
         Object.assign(
           {},
-          ...sources.map(k => ({
+          ...sources.map((k) => ({
             [k.id]: res.data.target[k.id] ? res.data.target[k.id].count : 0,
           }))
         )
@@ -76,7 +76,7 @@ function Body({ label: symbol, id, entity }) {
       );
       // find first source (tab) with data and set that as the initially selected tab
       const initialTab = sources.find(
-        s => res.data.target[s.id] && res.data.target[s.id].count > 0
+        (s) => res.data.target[s.id] && res.data.target[s.id].count > 0
       );
       if (initialTab) {
         setSource(initialTab.id);
@@ -124,24 +124,24 @@ function Body({ label: symbol, id, entity }) {
             ))}
           </Tabs>
 
-          <div style={{ marginTop: '50px' }}>
+          <div style={{ marginTop: "50px" }}>
             {/* intact stuff */}
-            {source === 'intact' && counts[source] > 0 && (
+            {source === "intact" && counts[source] > 0 && (
               <IntactTab ensgId={id} symbol={symbol} />
             )}
 
             {/* signor stuff */}
-            {source === 'signor' && counts[source] > 0 && (
+            {source === "signor" && counts[source] > 0 && (
               <SignorTab ensgId={id} symbol={symbol} />
             )}
 
             {/* reactome stuff */}
-            {source === 'reactome' && counts[source] > 0 && (
+            {source === "reactome" && counts[source] > 0 && (
               <ReactomeTab ensgId={id} symbol={symbol} />
             )}
 
             {/* string stuff */}
-            {source === 'string' && counts[source] > 0 && (
+            {source === "string" && counts[source] > 0 && (
               <StringTab ensgId={id} symbol={symbol} />
             )}
           </div>

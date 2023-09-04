@@ -1,21 +1,21 @@
-import React, { Suspense } from 'react';
+import React, { Suspense } from "react";
 import {
   generatePath,
   Route,
   Switch,
   useHistory,
   useRouteMatch,
-} from 'react-router-dom';
-import { Tabs } from '@mui/material';
-import { LoadingBackdrop } from 'ui';
-import { v1 } from 'uuid';
+} from "react-router-dom";
+import { Tabs } from "@mui/material";
+import { LoadingBackdrop } from "ui";
+import { v1 } from "uuid";
 
 function RoutingTabs({ children }) {
   const match = useRouteMatch();
   const history = useHistory();
   const routes = [];
 
-  const preparedChildren = React.Children.map(children, child => {
+  const preparedChildren = React.Children.map(children, (child) => {
     // Prepares routes for the tabs.
     if (child.props.component) {
       routes.push({

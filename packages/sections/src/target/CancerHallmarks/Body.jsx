@@ -1,61 +1,61 @@
-import { Box, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { useQuery } from '@apollo/client';
-import { ChipList, SectionItem } from 'ui';
+import { Box, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { useQuery } from "@apollo/client";
+import { ChipList, SectionItem } from "ui";
 
-import { definition } from '.';
-import Description from './Description';
-import DataTable from '../../components/Table/DataTable';
-import { PublicationsDrawer } from '../../components/PublicationsDrawer';
-import { defaultRowsPerPageOptions } from '../../constants';
+import { definition } from ".";
+import Description from "./Description";
+import DataTable from "../../components/Table/DataTable";
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
+import { defaultRowsPerPageOptions } from "../../constants";
 
-import HALLMARKS_QUERY from './Hallmarks.gql';
+import HALLMARKS_QUERY from "./Hallmarks.gql";
 
 const columns = [
   {
-    id: 'label',
-    label: 'Hallmark',
-    renderCell: row => row.label,
-    exportLabel: 'Hallmark',
+    id: "label",
+    label: "Hallmark",
+    renderCell: (row) => row.label,
+    exportLabel: "Hallmark",
   },
   {
-    id: 'activity',
-    label: 'Effect',
-    renderCell: row => row.activity,
-    exportLabel: 'Effect',
+    id: "activity",
+    label: "Effect",
+    renderCell: (row) => row.activity,
+    exportLabel: "Effect",
   },
   {
-    id: 'description',
-    label: 'Description',
-    renderCell: row => row.description,
-    exportLabel: 'Description',
+    id: "description",
+    label: "Description",
+    renderCell: (row) => row.description,
+    exportLabel: "Description",
   },
   {
-    id: 'publications',
-    label: 'Publications',
+    id: "publications",
+    label: "Publications",
     renderCell: ({ pmid }) => (
       <PublicationsDrawer
         entries={[
           {
             name: pmid,
             url: `http://europepmc.org/search?query=EXT_ID:${pmid}`,
-            group: 'literature',
+            group: "literature",
           },
         ]}
       />
     ),
-    exportLabel: 'Literature (PubMed id)',
-    exportValue: row => row.pmid,
+    exportLabel: "Literature (PubMed id)",
+    exportValue: (row) => row.pmid,
   },
 ];
 
 const useStyles = makeStyles({
   roleInCancerBox: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '2rem',
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "2rem",
   },
-  roleInCancerTitle: { marginRight: '.5rem' },
+  roleInCancerTitle: { marginRight: ".5rem" },
 });
 
 function Section({ id, label: symbol, entity }) {
@@ -69,16 +69,16 @@ function Section({ id, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => {
+      renderBody={(data) => {
         const roleInCancer = data.target.hallmarks.attributes
-          .filter(a => a.name === 'role in cancer')
-          .map(r => ({
+          .filter((a) => a.name === "role in cancer")
+          .map((r) => ({
             label: r.description,
             url: `http://europepmc.org/search?query=EXT_ID:${r.pmid}`,
           }));
-        const rows = data.target.hallmarks.cancerHallmarks.map(r => ({
+        const rows = data.target.hallmarks.cancerHallmarks.map((r) => ({
           label: r.label,
-          activity: r.impact === 'promotes' ? 'promotes' : 'suppresses',
+          activity: r.impact === "promotes" ? "promotes" : "suppresses",
           description: r.description,
           pmid: r.pmid,
         }));
@@ -93,7 +93,7 @@ function Section({ id, label: symbol, entity }) {
                 items={
                   roleInCancer.length > 0
                     ? roleInCancer
-                    : [{ label: 'Unknown' }]
+                    : [{ label: "Unknown" }]
                 }
               />
             </Box>

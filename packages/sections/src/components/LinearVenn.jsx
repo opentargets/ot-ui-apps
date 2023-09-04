@@ -1,5 +1,5 @@
-import { useLayoutEffect, useState, useRef } from 'react';
-import { useTheme } from '@mui/styles';
+import { useLayoutEffect, useState, useRef } from "react";
+import { useTheme } from "@mui/styles";
 
 const WIDTH = 400;
 const HEIGHT = 18;
@@ -160,8 +160,9 @@ function Legend({ a, b, aAndB }) {
         </text>
       </g>
       <g
-        transform={`translate(0,${LEGEND_SQUARE_SIZE * 2 +
-          LEGEND_PADDING * 3})`}
+        transform={`translate(0,${
+          LEGEND_SQUARE_SIZE * 2 + LEGEND_PADDING * 3
+        })`}
       >
         <rect
           x={0}

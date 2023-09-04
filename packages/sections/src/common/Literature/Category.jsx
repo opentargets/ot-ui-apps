@@ -3,26 +3,26 @@ import {
   FormGroup,
   Checkbox,
   FormControlLabel,
-} from '@mui/material';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+} from "@mui/material";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   selectedCategoriesState,
   loadingEntitiesState,
   literatureState,
   fetchSimilarEntities,
   updateLiteratureState,
-} from './atoms';
+} from "./atoms";
 
 const toggleValue = (selected, categories) => {
   const isChecked = categories.indexOf(selected) !== -1;
   if (!isChecked) return [...categories, selected];
-  return [...categories.filter(value => value !== selected).sort()];
+  return [...categories.filter((value) => value !== selected).sort()];
 };
 
 const categories = [
-  { name: 'target', label: 'Target' },
-  { name: 'disease', label: 'Disease' },
-  { name: 'drug', label: 'Drug' },
+  { name: "target", label: "Target" },
+  { name: "disease", label: "Disease" },
+  { name: "drug", label: "Drug" },
 ];
 
 export default function Category() {
@@ -33,9 +33,15 @@ export default function Category() {
 
   const bibliographyState = useRecoilValue(literatureState);
 
-  const handleChange = async event => {
-    const { query, id, category: bibliographyCategory, selectedEntities, globalEntity, cursor } =
-      bibliographyState;
+  const handleChange = async (event) => {
+    const {
+      query,
+      id,
+      category: bibliographyCategory,
+      selectedEntities,
+      globalEntity,
+      cursor,
+    } = bibliographyState;
     const {
       target: { name: clicked },
     } = event;
@@ -61,12 +67,12 @@ export default function Category() {
   return (
     <div
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      <InputLabel style={{ marginRight: '15px' }} id="demo-mutiple-name-label">
+      <InputLabel style={{ marginRight: "15px" }} id="demo-mutiple-name-label">
         Tag category:
       </InputLabel>
       <FormGroup row>

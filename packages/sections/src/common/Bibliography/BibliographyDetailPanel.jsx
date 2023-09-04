@@ -1,10 +1,10 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   detailPanel: {
     background: `${theme.palette.grey[100]}`,
-    marginTop: '10px',
-    padding: '20px',
+    marginTop: "10px",
+    padding: "20px",
   },
 }));
 

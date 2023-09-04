@@ -1,20 +1,20 @@
-import Grid from '@mui/material/Grid';
-import { makeStyles } from '@mui/styles';
+import Grid from "@mui/material/Grid";
+import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   page: {
-    background: theme.palette.grey['50'],
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
+    background: theme.palette.grey["50"],
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
     margin: 0,
-    width: '100%',
+    width: "100%",
   },
   gridContainer: {
     margin: 0,
-    padding: '24px',
-    width: '100%',
-    flex: '1 0 auto',
+    padding: "24px",
+    width: "100%",
+    flex: "1 0 auto",
   },
 }));
 

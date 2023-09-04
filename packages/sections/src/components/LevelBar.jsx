@@ -1,13 +1,13 @@
-import { makeStyles } from '@mui/style';
+import { makeStyles } from "@mui/style";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   levelBar: {
     backgroundColor: theme.palette.primary.main,
-    borderRight: '1px solid white',
-    height: '12px',
+    borderRight: "1px solid white",
+    height: "12px",
   },
   containerBar: {
-    width: '100%',
+    width: "100%",
     backgroundColor: `${theme.palette.grey[300]}`,
   },
 }));

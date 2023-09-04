@@ -1,6 +1,6 @@
-import { Chip, Grow } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
+import { Chip, Grow } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import {
   entitiesState,
   selectedEntitiesState,
@@ -8,19 +8,19 @@ import {
   literatureState,
   loadingEntitiesState,
   updateLiteratureState,
-} from './atoms';
+} from "./atoms";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > *': {
+    display: "flex",
+    flexWrap: "wrap",
+    "& > *": {
       margin: theme.spacing(0.5),
     },
   },
   loadingContainer: {
-    display: 'flex',
-    margin: '10px',
+    display: "flex",
+    margin: "10px",
   },
 }));
 
@@ -34,7 +34,7 @@ function EntitiesToSelect({ id }) {
   const [loadingEntities, setLoadingEntities] =
     useRecoilState(loadingEntitiesState);
 
-  const handleSelectChip = async e => {
+  const handleSelectChip = async (e) => {
     const {
       query,
       id: bibliographyId,
@@ -64,7 +64,7 @@ function EntitiesToSelect({ id }) {
       entities: data.similarEntities,
       litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => ({
         id: pmid,
-        status: 'ready',
+        status: "ready",
         publication: null,
       })),
       litsCount: data.literatureOcurrences?.count,
@@ -75,13 +75,14 @@ function EntitiesToSelect({ id }) {
     setLiteratureUpdate(update);
   };
 
-  const validateEntity = entity => {
+  const validateEntity = (entity) => {
     if (id === entity.object?.id) return null;
-    if (selectedChips.find(s => s.object.id === entity.object.id)) return null;
+    if (selectedChips.find((s) => s.object.id === entity.object.id))
+      return null;
     return entity;
   };
 
-  return entities.map(e => {
+  return entities.map((e) => {
     if (!e.object)
       return (
         <Grow in key={`empty-entity-${e.id}`}>
@@ -125,7 +126,7 @@ export default function Entities({ name, id }) {
     selectedEntitiesState
   );
 
-  const handleDeleteChip = async index => {
+  const handleDeleteChip = async (index) => {
     const {
       query,
       id: bibliographyId,
@@ -149,7 +150,7 @@ export default function Entities({ name, id }) {
       entities: data.similarEntities,
       litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => ({
         id: pmid,
-        status: 'ready',
+        status: "ready",
         publication: null,
       })),
       litsCount: data.literatureOcurrences?.count,

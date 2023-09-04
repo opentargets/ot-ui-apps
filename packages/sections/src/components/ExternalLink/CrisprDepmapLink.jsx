@@ -1,12 +1,12 @@
-import HelpIcon from '@mui/icons-material/Help';
-import { makeStyles } from '@mui/styles';
-import { Tooltip } from '@mui/material';
+import HelpIcon from "@mui/icons-material/Help";
+import { makeStyles } from "@mui/styles";
+import { Tooltip } from "@mui/material";
 
-import Link from '../Link';
+import Link from "../Link";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   helpIcon: {
-    fontSize: '10px',
+    fontSize: "10px",
   },
   tooltip: {
     backgroundColor: theme.palette.background.paper,
@@ -32,7 +32,7 @@ function CrisprDepmapLink({ id }) {
           <HelpIcon className={classes.helpIcon} />
         </sup>
       </Tooltip>
-      :{' '}
+      :{" "}
       <Link external to={`https://score.depmap.sanger.ac.uk/gene/${id}`}>
         {id}
       </Link>

@@ -18,7 +18,7 @@ import Summary from "./Summary";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
 import EVA_SOMATIC_QUERY from "./EvaSomaticQuery.gql";
-import {definition} from '.';
+import { definition } from ".";
 
 const columns = [
   {

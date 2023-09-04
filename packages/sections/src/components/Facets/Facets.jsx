@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Typography,
   Box,
   CircularProgress,
   IconButton,
   Skeleton,
-} from '@mui/material';
-import { Clear } from '@mui/icons-material';
-import { makeStyles } from '@mui/styles';
+} from "@mui/material";
+import { Clear } from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
 
-import Facet from './Facet';
+import Facet from "./Facet";
 import {
   getFilters,
   hasAllChildrenChecked,
@@ -18,30 +18,30 @@ import {
   updateFacetCounts,
   setAllChildren,
   traverse,
-} from './utils';
+} from "./utils";
 
 const useStyles = makeStyles({
   facetSummary: {
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    display: "flex",
+    justifyContent: "space-between",
   },
   loadingContainer: {
-    alignItems: 'center',
-    display: 'flex',
+    alignItems: "center",
+    display: "flex",
 
-    '& > div': {
-      marginRight: '.5rem',
+    "& > div": {
+      marginRight: ".5rem",
     },
   },
   subtitle1: {
-    marginBottom: '1rem !important',
-    fontWeight: 'bold !important',
+    marginBottom: "1rem !important",
+    fontWeight: "bold !important",
   },
   subtitle2: {
-    marginTop: '1rem !important',
-    marginBottom: '1rem !important',
-    fontWeight: 'bold !important',
+    marginTop: "1rem !important",
+    marginBottom: "1rem !important",
+    fontWeight: "bold !important",
   },
 });
 
@@ -55,7 +55,7 @@ function Facets({ loading, data, onChange, type }) {
     if (!facets.length) {
       setFacets(prepareFacetData(data));
     } else {
-      setFacets(newFacets => updateFacetCounts(newFacets, data));
+      setFacets((newFacets) => updateFacetCounts(newFacets, data));
     }
   }, [data, facets.length]);
 
@@ -80,7 +80,7 @@ function Facets({ loading, data, onChange, type }) {
   const handleClickClear = () => {
     const newFacets = [...facets];
 
-    newFacets.forEach(facet => {
+    newFacets.forEach((facet) => {
       setAllChildren(facet, false);
     });
 
@@ -125,10 +125,10 @@ function Facets({ loading, data, onChange, type }) {
             isPrivate={facets[0].isPrivate}
           />
           <Typography className={classes.subtitle2}>
-            {type === 'target' ? 'Target' : 'Disease/phenotype'}-specific
+            {type === "target" ? "Target" : "Disease/phenotype"}-specific
             filters
           </Typography>
-          {facets.slice(1).map(facet => (
+          {facets.slice(1).map((facet) => (
             <Facet
               loading={loading}
               key={facet.nodeId}

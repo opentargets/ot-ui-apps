@@ -1,32 +1,32 @@
-import classNames from 'classnames';
-import { Link as RouterLink } from 'react-router-dom';
-import { makeStyles } from '@mui/styles';
+import classNames from "classnames";
+import { Link as RouterLink } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   base: {
-    fontSize: 'inherit',
-    textDecoration: 'none',
+    fontSize: "inherit",
+    textDecoration: "none",
   },
   baseDefault: {
     color: theme.palette.primary.main,
-    '&:hover': {
+    "&:hover": {
       color: theme.palette.primary.dark,
     },
   },
   baseTooltip: {
-    color: 'white',
-    '&:hover': {
+    color: "white",
+    "&:hover": {
       color: theme.palette.primary.light,
     },
-    textDecoration: 'underline',
+    textDecoration: "underline",
   },
   baseFooter: {
-    color: 'white',
-    '&:hover': {
+    color: "white",
+    "&:hover": {
       color: theme.palette.primary.light,
     },
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
 }));
 
@@ -42,7 +42,7 @@ function Link({
 }) {
   const classes = useStyles();
   const newTabProps = newTab
-    ? { target: '_blank', rel: 'noopener noreferrer' }
+    ? { target: "_blank", rel: "noopener noreferrer" }
     : {};
   if (external) {
     return (

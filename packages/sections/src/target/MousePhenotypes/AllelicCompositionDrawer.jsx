@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState } from "react";
 
 import {
   Drawer,
@@ -6,46 +6,46 @@ import {
   IconButton,
   Paper,
   Typography,
-} from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import CloseIcon from '@mui/icons-material/Close';
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "ui";
 
-import MouseModelAllelicComposition from '../../components/MouseModelAllelicComposition';
-import { PublicationsDrawer } from '../../components/PublicationsDrawer';
+import MouseModelAllelicComposition from "../../components/MouseModelAllelicComposition";
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   drawerLink: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
   backdrop: {
-    '& .MuiBackdrop-root': {
-      opacity: '0 !important',
+    "& .MuiBackdrop-root": {
+      opacity: "0 !important",
     },
   },
   container: {
     backgroundColor: theme.palette.grey[300],
-    display: 'unset',
+    display: "unset",
   },
   title: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    borderBottom: '1px solid #ccc',
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    padding: '1rem',
+    display: "flex",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    borderBottom: "1px solid #ccc",
+    fontSize: "1.2rem",
+    fontWeight: "bold",
+    padding: "1rem",
   },
   paper: {
-    width: '420px',
-    margin: '1rem',
-    padding: '1rem',
+    width: "420px",
+    margin: "1rem",
+    padding: "1rem",
   },
 }));
 
 function Model({ model }) {
   const { id, allelicComposition, geneticBackground, literature } = model;
-  const entries = literature ? literature.map(lit => ({ name: lit })) : [];
+  const entries = literature ? literature.map((lit) => ({ name: lit })) : [];
   return (
     <>
       <Link external to={`https://identifiers.org/${id}`}>
@@ -78,32 +78,32 @@ function AllelicCompositionDrawer({ biologicalModels }) {
   }
 
   if (biologicalModels.length === 0) {
-    return 'N/A';
+    return "N/A";
   }
 
   return (
     <>
       <MuiLink
         className={classes.drawerLink}
-        onClick={()=>toggleOpen()}
+        onClick={() => toggleOpen()}
         underline="none"
       >
-        {biologicalModels.length}{' '}
-        {biologicalModels.length === 1 ? 'model' : 'models'}
+        {biologicalModels.length}{" "}
+        {biologicalModels.length === 1 ? "model" : "models"}
       </MuiLink>
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={()=>close()}
+        onClose={() => close()}
         anchor="right"
       >
         <Typography className={classes.title}>
           Experimental studies
-          <IconButton onClick={()=>close()}>
+          <IconButton onClick={() => close()}>
             <CloseIcon />
           </IconButton>
         </Typography>
-        {biologicalModels.map(model => (
+        {biologicalModels.map((model) => (
           <Paper key={model.id} className={classes.paper} variant="outlined">
             <Model model={model} />
           </Paper>

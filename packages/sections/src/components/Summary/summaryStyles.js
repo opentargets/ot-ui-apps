@@ -1,8 +1,8 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from "@mui/styles";
 
-const summaryStyles = makeStyles(theme => ({
+const summaryStyles = makeStyles((theme) => ({
   avatar: {
-    color: 'white',
+    color: "white",
     backgroundColor: theme.palette.grey[300],
   },
   avatarHasData: {
@@ -12,27 +12,27 @@ const summaryStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.secondary.main,
   },
   card: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
   },
   cardHasData: {
-    cursor: 'pointer',
-    '&:hover': {
+    cursor: "pointer",
+    "&:hover": {
       backgroundColor: theme.palette.primary.main,
     },
-    '&:hover $titleHasData': {
-      color: 'white',
+    "&:hover $titleHasData": {
+      color: "white",
     },
-    '&:hover $subtitle': {
-      color: 'white',
+    "&:hover $subtitle": {
+      color: "white",
     },
-    '&:hover $subheaderHasData': {
-      color: 'white',
+    "&:hover $subheaderHasData": {
+      color: "white",
     },
-    '&:hover $avatarHasData': {
+    "&:hover $avatarHasData": {
       color: theme.palette.primary.main,
-      backgroundColor: 'white !important',
+      backgroundColor: "white !important",
     },
   },
   cardHeader: {
@@ -43,17 +43,17 @@ const summaryStyles = makeStyles(theme => ({
     borderTop: `1px solid ${theme.palette.grey[300]}`,
   },
   content: {
-    height: '100%',
+    height: "100%",
     borderTop: `1px solid ${theme.palette.grey[300]}`,
     paddingTop: 4,
-    '&:last-child': {
+    "&:last-child": {
       paddingBottom: 4,
     },
   },
   subheader: {
     color: theme.palette.grey[500],
-    fontSize: '0.8rem',
-    fontStyle: 'italic',
+    fontSize: "0.8rem",
+    fontStyle: "italic",
   },
   subheaderHasData: {
     color: theme.palette.primary.main,
@@ -62,16 +62,16 @@ const summaryStyles = makeStyles(theme => ({
     color: theme.palette.secondary.main,
   },
   summaryContainer: {
-    marginBottom: '2rem',
-    marginTop: '2rem',
+    marginBottom: "2rem",
+    marginTop: "2rem",
   },
   title: {
     color: theme.palette.grey[500],
-    wordBreak: 'break-word',
+    wordBreak: "break-word",
   },
   titleHasData: {
     color: theme.palette.primary.main,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   subtitle: {
     color: theme.palette.grey[500],

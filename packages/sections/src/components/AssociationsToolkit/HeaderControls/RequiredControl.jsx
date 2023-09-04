@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Checkbox } from '@mui/material';
-import { withStyles } from '@mui/styles';
-import useAotfContext from '../hooks/useAotfContext';
-import { checkBoxPayload, getControlChecked } from '../utils';
+import { useState, useEffect } from "react";
+import { Checkbox } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import useAotfContext from "../hooks/useAotfContext";
+import { checkBoxPayload, getControlChecked } from "../utils";
 
 const OTCheckbox = withStyles({
   root: {
@@ -31,7 +31,7 @@ function RequiredControl({ id, aggregationId }) {
       setDisplayValue(newValue);
     } else {
       const indexToRemove = dataSourcesRequired.findIndex(
-        element => element.id === id
+        (element) => element.id === id
       );
       const newRequiredElement = [
         ...dataSourcesRequired.slice(0, indexToRemove),

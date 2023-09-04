@@ -1,8 +1,8 @@
-import { Drawer } from '@mui/material';
+import { Drawer } from "@mui/material";
 
-import GoBackButton from './GoBackButton';
-import navPanelStyles from './navPanelStyles';
-import SectionMenu from './SectionMenu';
+import GoBackButton from "./GoBackButton";
+import navPanelStyles from "./navPanelStyles";
+import SectionMenu from "./SectionMenu";
 
 function NavPanel({ ...props }) {
   const classes = navPanelStyles();

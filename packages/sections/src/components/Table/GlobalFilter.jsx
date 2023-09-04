@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react';
-import { Grid, Input, IconButton } from '@mui/material';
-import SearchIcon from '@mui/icons-material//Search';
-import ClearIcon from '@mui/icons-material//Clear';
+import { useEffect, useState } from "react";
+import { Grid, Input, IconButton } from "@mui/material";
+import SearchIcon from "@mui/icons-material//Search";
+import ClearIcon from "@mui/icons-material//Clear";
 
-import useDebounce from '../../hooks/useDebounce';
-import { globalSearchStyles } from './tableStyles';
+import useDebounce from "../../hooks/useDebounce";
+import { globalSearchStyles } from "./tableStyles";
 
 function GlobalFilter({ onGlobalFilterChange }) {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 300);
 
-  const handleInputChange = e => {
+  const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
   const handleInputClean = () => {
-    setInputValue('');
+    setInputValue("");
   };
 
   useEffect(

@@ -11,10 +11,10 @@ import {
   IconButton,
   Link as MUILink,
   Typography,
-} from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CloseIcon from '@mui/icons-material/Close';
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CloseIcon from "@mui/icons-material/Close";
 import _ from "lodash";
 
 import Link from "../../components/Link";

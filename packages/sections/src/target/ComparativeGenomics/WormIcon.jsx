@@ -1,4 +1,4 @@
-import { useTheme } from '@mui/styles';
+import { useTheme } from "@mui/styles";
 
 function WormIcon() {
   const theme = useTheme();

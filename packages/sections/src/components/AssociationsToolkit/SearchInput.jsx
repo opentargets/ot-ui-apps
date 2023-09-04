@@ -1,30 +1,30 @@
-import { useEffect, useState } from 'react';
-import { Grid, Input, IconButton } from '@mui/material';
-import { styled } from '@mui/styles';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
-import useAotfContext from './hooks/useAotfContext';
-import useDebounce from '../../hooks/useDebounce';
+import { useEffect, useState } from "react";
+import { Grid, Input, IconButton } from "@mui/material";
+import { styled } from "@mui/styles";
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
+import useAotfContext from "./hooks/useAotfContext";
+import useDebounce from "../../hooks/useDebounce";
 
 const InputContainer = styled(Grid)({
-  marginRight: '15px',
-  width: '250px',
-  '& input': {
-    width: '220px',
+  marginRight: "15px",
+  width: "250px",
+  "& input": {
+    width: "220px",
   },
 });
 
-function SearchInput({ placeholder = 'Search' }) {
+function SearchInput({ placeholder = "Search" }) {
   const { handleSearchInputChange } = useAotfContext();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 300);
 
-  const handleInputChange = e => {
+  const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
   const handleInputClean = () => {
-    setInputValue('');
+    setInputValue("");
   };
 
   useEffect(

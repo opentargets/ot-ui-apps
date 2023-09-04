@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import _ from "lodash";
 import { Link, SectionItem } from "ui";
 

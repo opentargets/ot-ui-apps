@@ -1,47 +1,47 @@
-import { useState } from 'react';
-import { styled } from '@mui/styles';
-import { Typography } from '@mui/material';
-import { faDna , faStethoscope } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from "react";
+import { styled } from "@mui/styles";
+import { Typography } from "@mui/material";
+import { faDna, faStethoscope } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import Tooltip from '../AotFTooltip';
-import Link from '../../Link';
-import useAotfContext from '../hooks/useAotfContext';
+import Tooltip from "../AotFTooltip";
+import Link from "../../Link";
+import useAotfContext from "../hooks/useAotfContext";
 
-const NameContainer = styled('div')({
-  position: 'relative',
-  '& .pinnedIcon': {
-    display: 'none',
+const NameContainer = styled("div")({
+  position: "relative",
+  "& .pinnedIcon": {
+    display: "none",
   },
-  '&:hover .pinnedIcon': {
-    display: 'block',
-  },
-});
-
-const TextContainer = styled('div')({
-  display: 'block',
-  overflow: 'hidden',
-  textAlign: 'end',
-  textOverflow: 'ellipsis',
-  maxWidth: '120px',
-  '&:hover': {
-    cursor: 'pointer',
-  },
-  '&:hover span': {
-    textDecoration: 'underline',
+  "&:hover .pinnedIcon": {
+    display: "block",
   },
 });
 
-const Name = styled('span')({
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  textOverflow: 'ellipsis',
+const TextContainer = styled("div")({
+  display: "block",
+  overflow: "hidden",
+  textAlign: "end",
+  textOverflow: "ellipsis",
+  maxWidth: "120px",
+  "&:hover": {
+    cursor: "pointer",
+  },
+  "&:hover span": {
+    textDecoration: "underline",
+  },
 });
 
-const LinksTooltipContent = styled('span')({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '5px',
+const Name = styled("span")({
+  overflow: "hidden",
+  whiteSpace: "nowrap",
+  textOverflow: "ellipsis",
+});
+
+const LinksTooltipContent = styled("span")({
+  display: "flex",
+  flexDirection: "column",
+  gap: "5px",
 });
 
 function TooltipContent({ id, entity, name, icon }) {
@@ -62,8 +62,8 @@ function CellName({ name, rowId }) {
   const [open, setOpen] = useState(false);
   const { entityToGet } = useAotfContext();
 
-  const rowEntity = entityToGet === 'target' ? 'target' : 'disease';
-  const icon = rowEntity === 'target' ? faDna : faStethoscope;
+  const rowEntity = entityToGet === "target" ? "target" : "disease";
+  const icon = rowEntity === "target" ? faDna : faStethoscope;
 
   return (
     <NameContainer>

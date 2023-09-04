@@ -1,25 +1,25 @@
-import { useQuery } from '@apollo/client';
-import { Typography } from '@mui/material';
-import { Link, Tooltip, SectionItem } from 'ui';
+import { useQuery } from "@apollo/client";
+import { Typography } from "@mui/material";
+import { Link, Tooltip, SectionItem } from "ui";
 
-import { definition } from '.';
-import Summary from './Summary';
-import Description from './Description';
-import { epmcUrl } from '../../utils/urls';
-import { dataTypesMap } from '../../dataTypes';
-import { DataTable } from '../../components/Table';
-import ScientificNotation from '../../components/ScientificNotation';
-import { defaultRowsPerPageOptions, naLabel } from '../../constants';
-import { PublicationsDrawer } from '../../components/PublicationsDrawer';
+import { definition } from ".";
+import Summary from "./Summary";
+import Description from "./Description";
+import { epmcUrl } from "../../utils/urls";
+import { dataTypesMap } from "../../dataTypes";
+import { DataTable } from "../../components/Table";
+import ScientificNotation from "../../components/ScientificNotation";
+import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
-import GENE_BURDEN_QUERY from './GeneBurdenQuery.gql';
+import GENE_BURDEN_QUERY from "./GeneBurdenQuery.gql";
 
 const sources = [
-  'Epi25 collaborative',
-  'Autism Sequencing Consortiuml',
-  'SCHEMA consortium',
-  'Genebass',
-  'AstraZeneca PheWAS Portal',
+  "Epi25 collaborative",
+  "Autism Sequencing Consortiuml",
+  "SCHEMA consortium",
+  "Genebass",
+  "AstraZeneca PheWAS Portal",
 ];
 
 const getSource = (cohort, project) => {
@@ -28,22 +28,22 @@ const getSource = (cohort, project) => {
 };
 
 const getSourceLink = (project, targetId) => {
-  if (project === 'Epi25 collaborative')
+  if (project === "Epi25 collaborative")
     return `https://epi25.broadinstitute.org/gene/${targetId}`;
-  if (project === 'Autism Sequencing Consortiuml')
+  if (project === "Autism Sequencing Consortiuml")
     return `https://asc.broadinstitute.org/gene/${targetId}`;
-  if (project === 'SCHEMA consortium')
+  if (project === "SCHEMA consortium")
     return `https://schema.broadinstitute.org/gene/${targetId}`;
-  if (project === 'Genebass')
+  if (project === "Genebass")
     return `https://app.genebass.org/gene/${targetId}?burdenSet=pLoF&phewasOpts=1&resultLayout=full`;
-  if (project === 'AstraZeneca PheWAS Portal') return `https://azphewas.com`;
-  return '';
+  if (project === "AstraZeneca PheWAS Portal") return `https://azphewas.com`;
+  return "";
 };
 
 const columns = [
   {
-    id: 'disease.name',
-    label: 'Disease/phenotype',
+    id: "disease.name",
+    label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -63,8 +63,8 @@ const columns = [
     ),
   },
   {
-    id: 'studyId',
-    label: 'Study ID',
+    id: "studyId",
+    label: "Study ID",
     renderCell: ({ studyId }) =>
       studyId ? (
         <Link to={`https://www.ebi.ac.uk/gwas/studies/${studyId}`} external>
@@ -75,8 +75,8 @@ const columns = [
       ),
   },
   {
-    id: 'cohortId',
-    label: 'Cohort/Project',
+    id: "cohortId",
+    label: "Cohort/Project",
     renderCell: ({ cohortId, projectId, target }) => {
       if (!cohortId && !projectId) return naLabel;
       // the getSource() function takes care of case where cohortId==null
@@ -90,8 +90,8 @@ const columns = [
     filterValue: ({ cohortId, projectId }) => `${cohortId} ${projectId}`,
   },
   {
-    id: 'ancestry',
-    label: 'Ancestry',
+    id: "ancestry",
+    label: "Ancestry",
     renderCell: ({ ancestry, ancestryId }) => {
       if (!ancestry) return naLabel;
       return (
@@ -102,8 +102,8 @@ const columns = [
     },
   },
   {
-    id: 'statisticalMethod',
-    label: 'Model',
+    id: "statisticalMethod",
+    label: "Model",
     renderCell: ({ statisticalMethod, statisticalMethodOverview }) => (
       <Tooltip title={statisticalMethodOverview} showHelpIcon>
         {statisticalMethod}
@@ -111,14 +111,14 @@ const columns = [
     ),
   },
   {
-    id: 'allelicRequirements',
-    label: 'Allelic Requirement',
+    id: "allelicRequirements",
+    label: "Allelic Requirement",
     renderCell: ({ allelicRequirements }) =>
       allelicRequirements ? allelicRequirements[0] : naLabel,
   },
   {
-    id: 'studyCasesWithQualifyingVariants',
-    label: 'Cases with QV',
+    id: "studyCasesWithQualifyingVariants",
+    label: "Cases with QV",
     numeric: true,
     sortable: true,
     renderCell: ({ studyCasesWithQualifyingVariants }) =>
@@ -129,24 +129,26 @@ const columns = [
       `${studyCasesWithQualifyingVariants} ${naLabel}`,
   },
   {
-    id: 'studyCases',
-    label: 'Cases',
+    id: "studyCases",
+    label: "Cases",
     numeric: true,
     sortable: true,
     renderCell: ({ studyCases }) =>
       studyCases ? parseInt(studyCases, 10).toLocaleString() : naLabel,
   },
   {
-    id: 'studySampleSize',
-    label: 'Sample size',
+    id: "studySampleSize",
+    label: "Sample size",
     numeric: true,
     sortable: true,
     renderCell: ({ studySampleSize }) =>
-      studySampleSize ? parseInt(studySampleSize, 10).toLocaleString() : naLabel,
+      studySampleSize
+        ? parseInt(studySampleSize, 10).toLocaleString()
+        : naLabel,
   },
   {
-    id: 'oddsRatio',
-    label: 'Odds Ratio (CI 95%)',
+    id: "oddsRatio",
+    label: "Odds Ratio (CI 95%)",
     numeric: true,
     sortable: true,
     renderCell: ({
@@ -159,7 +161,7 @@ const columns = [
           ? `(${parseFloat(
               oddsRatioConfidenceIntervalLower.toFixed(3)
             )}, ${parseFloat(oddsRatioConfidenceIntervalUpper.toFixed(3))})`
-          : '';
+          : "";
       return oddsRatio ? `${parseFloat(oddsRatio.toFixed(3))} ${ci}` : naLabel;
     },
     filterValue: ({
@@ -170,8 +172,8 @@ const columns = [
       `${oddsRatio} ${oddsRatioConfidenceIntervalLower} ${oddsRatioConfidenceIntervalUpper} ${naLabel}`,
   },
   {
-    id: 'beta',
-    label: 'Beta (CI 95%)',
+    id: "beta",
+    label: "Beta (CI 95%)",
     numeric: true,
     sortable: true,
     renderCell: ({
@@ -184,7 +186,7 @@ const columns = [
           ? `(${parseFloat(
               betaConfidenceIntervalLower.toFixed(3)
             )}, ${parseFloat(betaConfidenceIntervalUpper.toFixed(3))})`
-          : '';
+          : "";
       return beta ? `${parseFloat(beta.toFixed(3))} ${ci}` : naLabel;
     },
     filterValue: ({
@@ -195,7 +197,7 @@ const columns = [
       `${beta} ${betaConfidenceIntervalLower} ${betaConfidenceIntervalUpper} ${naLabel}`,
   },
   {
-    id: 'pValue',
+    id: "pValue",
     label: (
       <>
         <i>p</i>-value
@@ -215,14 +217,14 @@ const columns = [
       b.pValueMantissa * 10 ** b.pValueExponent,
   },
   {
-    id: 'literature',
-    label: 'Literature',
+    id: "literature",
+    label: "Literature",
     renderCell: ({ literature }) => {
       const entries = literature
-        ? literature.map(id => ({
+        ? literature.map((id) => ({
             name: id,
             url: epmcUrl(id),
-            group: 'literature',
+            group: "literature",
           }))
         : [];
 
@@ -231,7 +233,7 @@ const columns = [
   },
 ];
 
-export function Body({ id, label, entity}) {
+export function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,

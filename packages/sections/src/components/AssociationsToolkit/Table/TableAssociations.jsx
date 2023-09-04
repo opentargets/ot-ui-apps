@@ -1,43 +1,43 @@
 /* eslint-disable */
-import { useMemo } from 'react';
+import { useMemo } from "react";
 import {
   useReactTable,
   getCoreRowModel,
   getExpandedRowModel,
   createColumnHelper,
-} from '@tanstack/react-table';
-import Skeleton from '@mui/material/Skeleton';
+} from "@tanstack/react-table";
+import Skeleton from "@mui/material/Skeleton";
 
-import { styled } from '@mui/styles';
+import { styled } from "@mui/styles";
 
-import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
-import prioritizationCols from '../static_datasets/prioritizationCols';
+import dataSourcesCols from "../static_datasets/dataSourcesAssoc";
+import prioritizationCols from "../static_datasets/prioritizationCols";
 
-import AggregationsTooltip from './AggregationsTooltip';
-import ColoredCell from './ColoredCell';
+import AggregationsTooltip from "./AggregationsTooltip";
+import ColoredCell from "./ColoredCell";
 
-import HeaderControls from '../HeaderControls';
-import CellName from './CellName';
-import TableHeader from './TableHeader';
-import TableFooter from './TableFooter';
-import TableBody from './TableBody';
-import useAotfContext from '../hooks/useAotfContext';
+import HeaderControls from "../HeaderControls";
+import CellName from "./CellName";
+import TableHeader from "./TableHeader";
+import TableFooter from "./TableFooter";
+import TableBody from "./TableBody";
+import useAotfContext from "../hooks/useAotfContext";
 
-import { cellHasValue, isPartnerPreview, tableCSSVariables } from '../utils';
+import { cellHasValue, isPartnerPreview, tableCSSVariables } from "../utils";
 
-const TableElement = styled('div')({
-  minWidth: '900px',
-  maxWidth: '1400px',
-  margin: '0 auto',
+const TableElement = styled("div")({
+  minWidth: "900px",
+  maxWidth: "1400px",
+  margin: "0 auto",
 });
 
 const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
 function getDatasources(expanderHandler, loading, displayedTable) {
-  const isAssociations = displayedTable === 'associations';
+  const isAssociations = displayedTable === "associations";
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
-  const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
+  const dataProp = isAssociations ? "dataSources" : "prioritisations";
   const datasources = [];
   baseCols.forEach(
     ({
@@ -50,7 +50,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
       docsLink,
     }) => {
       if (isPrivate && isPrivate !== isPartnerPreview) return;
-      const column = columnHelper.accessor(row => row[dataProp][id], {
+      const column = columnHelper.accessor((row) => row[dataProp][id], {
         id,
         header: isAssociations ? (
           <div className="">{label}</div>
@@ -66,7 +66,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
         aggregation,
         isPrivate,
         docsLink,
-        cell: row => {
+        cell: (row) => {
           if (loading)
             return <Skeleton variant="circle" width={26} height={25} />;
           const hasValue = cellHasValue(row.getValue());
@@ -108,30 +108,30 @@ function TableAssociations() {
     handleSortingChange,
   } = useAotfContext();
 
-  const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
+  const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
 
   const columns = useMemo(
     () => [
       columnHelper.group({
-        header: 'header',
-        id: 'naiming-cols',
+        header: "header",
+        id: "naiming-cols",
         columns: [
-          columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
-            id: 'name',
+          columnHelper.accessor((row) => row[entityToGet][rowNameEntity], {
+            id: "name",
             enableSorting: false,
-            cell: row =>
+            cell: (row) =>
               !loading ? (
                 <CellName name={row.getValue()} rowId={row.row.id} />
               ) : null,
             header: () => {
-              const label = entityToGet === 'target' ? 'Target' : 'Disease';
+              const label = entityToGet === "target" ? "Target" : "Disease";
               return <span>{label}</span>;
             },
           }),
-          columnHelper.accessor(row => row.score, {
-            id: 'score',
-            header: 'Association Score',
-            cell: row => {
+          columnHelper.accessor((row) => row.score, {
+            id: "score",
+            header: "Association Score",
+            cell: (row) => {
               if (loading)
                 return <Skeleton variant="rect" width={30} height={25} />;
               return (
@@ -148,8 +148,8 @@ function TableAssociations() {
         ],
       }),
       columnHelper.group({
-        header: 'entities',
-        id: 'entity-cols',
+        header: "entities",
+        id: "entity-cols",
         columns: [...getDatasources(expanderHandler, loading, displayedTable)],
       }),
     ],
@@ -175,7 +175,7 @@ function TableAssociations() {
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    getRowId: row => row[entityToGet].id,
+    getRowId: (row) => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
   });

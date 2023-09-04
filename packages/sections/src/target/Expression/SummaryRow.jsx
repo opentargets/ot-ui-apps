@@ -1,30 +1,30 @@
-import { useState } from 'react';
-import classNames from 'classnames';
-import { TableCell, TableRow } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { useState } from "react";
+import classNames from "classnames";
+import { TableCell, TableRow } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-const proteinLevel = level => {
+const proteinLevel = (level) => {
   if (level === 0) {
-    return 'Under expressed';
+    return "Under expressed";
   }
   if (level === 1) {
-    return 'Low';
+    return "Low";
   }
   if (level === 2) {
-    return 'Medium';
+    return "Medium";
   }
-  return 'High';
+  return "High";
 };
 
 const rnaValueToPercent = (maxRnaValue, value) => (value * 100) / maxRnaValue;
 
-const proteinLevelToPercent = level => (level * 100) / 3;
+const proteinLevelToPercent = (level) => (level * 100) / 3;
 
 const useStyles = makeStyles((theme) => ({
   parentRow: {
-    height: '20px',
-    cursor: 'pointer',
-    '&:hover': {
+    height: "20px",
+    cursor: "pointer",
+    "&:hover": {
       backgroundColor: theme.palette.grey[400],
     },
   },
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     borderRight: `1px solid ${theme.palette.grey[400]}`,
   },
   row: {
-    height: '24px !important',
+    height: "24px !important",
     backgroundColor: theme.palette.grey[100],
     borderLeft: `1px solid ${theme.palette.grey[400]}`,
     borderRight: `1px solid ${theme.palette.grey[400]}`,
@@ -43,37 +43,37 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.grey[400]}`,
   },
   cell: {
-    border: 'none !important',
-    width: '230px',
-    paddingTop: '0 !important',
-    paddingBottom: '0 !important',
+    border: "none !important",
+    width: "230px",
+    paddingTop: "0 !important",
+    paddingBottom: "0 !important",
   },
   parentTissueCell: {
-    fontWeight: 'bold !important',
+    fontWeight: "bold !important",
   },
   tissueCell: {
-    textTransform: 'capitalize',
-    paddingRight: '8px',
+    textTransform: "capitalize",
+    paddingRight: "8px",
   },
   rnaCell: {
-    paddingRight: '8px',
+    paddingRight: "8px",
   },
   proteinCell: {
-    paddingLeft: '8px',
+    paddingLeft: "8px",
   },
   barContainer: {
-    height: '12px',
+    height: "12px",
     backgroundColor: theme.palette.grey[300],
-    fontSize: '10px !important',
-    textAlign: 'center',
+    fontSize: "10px !important",
+    textAlign: "center",
   },
   barParent: {
     backgroundColor: theme.palette.primary.main,
-    height: '12px',
+    height: "12px",
   },
   barTissue: {
     backgroundColor: theme.palette.primary.light,
-    height: '12px',
+    height: "12px",
   },
 }));
 
@@ -113,11 +113,11 @@ function SummaryRow({ parent, maxRnaValue }) {
                     maxRnaValue,
                     parent.maxRnaValue
                   )}%`,
-                  float: 'right',
+                  float: "right",
                 }}
               />
             ) : (
-              'N/A'
+              "N/A"
             )}
           </div>
         </TableCell>
@@ -132,7 +132,7 @@ function SummaryRow({ parent, maxRnaValue }) {
                 }}
               />
             ) : (
-              'N/A'
+              "N/A"
             )}
           </div>
         </TableCell>
@@ -147,11 +147,9 @@ function SummaryRow({ parent, maxRnaValue }) {
               [classes.lastChildRow]: index === tissues.length - 1,
             })}
             key={tissue.tissue.label}
-            style={{ display: collapsed ? 'none' : 'table-row' }}
+            style={{ display: collapsed ? "none" : "table-row" }}
           >
-            <TableCell
-              className={classNames(classes.cell, classes.tissueCell)}
-            >
+            <TableCell className={classNames(classes.cell, classes.tissueCell)}>
               {tissue.tissue.label}
             </TableCell>
             <TableCell className={classNames(classes.cell, classes.rnaCell)}>
@@ -162,11 +160,11 @@ function SummaryRow({ parent, maxRnaValue }) {
                     title={`${tissue.rna.value} (normalized count)`}
                     style={{
                       width: `${rnaPercent}%`,
-                      float: 'right',
+                      float: "right",
                     }}
                   />
                 ) : (
-                  'N/A'
+                  "N/A"
                 )}
               </div>
             </TableCell>
@@ -183,7 +181,7 @@ function SummaryRow({ parent, maxRnaValue }) {
                     }}
                   />
                 ) : (
-                  'N/A'
+                  "N/A"
                 )}
               </div>
             </TableCell>
@@ -191,7 +189,7 @@ function SummaryRow({ parent, maxRnaValue }) {
         );
       })}
     </>
-  )
+  );
 }
 
 export default SummaryRow;

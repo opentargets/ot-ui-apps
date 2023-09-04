@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import classNames from "classnames";
 import {
   Avatar,
   Card,
@@ -6,12 +6,12 @@ import {
   Grid,
   LinearProgress,
   Typography,
-} from '@mui/material';
-import { scroller } from 'react-scroll';
+} from "@mui/material";
+import { scroller } from "react-scroll";
 
-import summaryStyles from './summaryStyles';
-import { createShortName } from './utils';
-import PartnerLockIcon from '../PartnerLockIcon';
+import summaryStyles from "./summaryStyles";
+import { createShortName } from "./utils";
+import PartnerLockIcon from "../PartnerLockIcon";
 
 function SummaryItem({ definition, request, renderSummary, subText }) {
   const classes = summaryStyles();
@@ -58,7 +58,7 @@ function SummaryItem({ definition, request, renderSummary, subText }) {
                 })}
                 variant="body2"
               >
-                {definition.name}{' '}
+                {definition.name}{" "}
                 {definition.isPrivate ? <PartnerLockIcon /> : null}
               </Typography>
               {subText ? (
@@ -90,9 +90,9 @@ function SummaryItem({ definition, request, renderSummary, subText }) {
                 [classes.subheaderError]: error,
               })}
             >
-              {error && 'An error occurred while loading this section'}
-              {loading && 'Loading...'}
-              {!loading && data && !hasData && 'no data'}
+              {error && "An error occurred while loading this section"}
+              {loading && "Loading..."}
+              {!loading && data && !hasData && "no data"}
               {!loading && data && hasData && renderSummary(data)}
             </Typography>
           </Grid>

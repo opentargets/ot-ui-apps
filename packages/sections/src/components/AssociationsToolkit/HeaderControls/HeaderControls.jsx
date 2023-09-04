@@ -1,21 +1,20 @@
-import { Collapse, Grid, Typography } from '@mui/material';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Collapse, Grid, Typography } from "@mui/material";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { styled } from '@mui/styles';
-import dataSources from '../static_datasets/dataSourcesAssoc';
+import { styled } from "@mui/styles";
+import dataSources from "../static_datasets/dataSourcesAssoc";
 
-import Slider from './SliderControl';
-import Required from './RequiredControl';
+import Slider from "./SliderControl";
+import Required from "./RequiredControl";
 
-import useAotfContext from '../hooks/useAotfContext';
+import useAotfContext from "../hooks/useAotfContext";
 
-
-const CloseContainer = styled('div')({
-  position: 'absolute',
-  left: '10px',
-  top: '10px',
-  cursor: 'pointer',
+const CloseContainer = styled("div")({
+  position: "absolute",
+  left: "10px",
+  top: "10px",
+  cursor: "pointer",
   zIndex: 10,
 });
 
@@ -23,7 +22,7 @@ function HeaderControls({ cols = [] }) {
   const { activeHeadersControlls, setActiveHeadersControlls, displayedTable } =
     useAotfContext();
 
-  if (displayedTable === 'prioritisations') return null;
+  if (displayedTable === "prioritisations") return null;
 
   const handleClose = () => {
     setActiveHeadersControlls(false);
@@ -76,7 +75,7 @@ function HeaderControls({ cols = [] }) {
                   <Required
                     id={id}
                     aggregationId={
-                      (dataSources.find(el => el.id === id).aggregationId, id)
+                      (dataSources.find((el) => el.id === id).aggregationId, id)
                     }
                   />
                 </div>

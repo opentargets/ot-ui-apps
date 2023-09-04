@@ -1,13 +1,13 @@
-import { useQuery } from '@apollo/client';
-import { Typography } from '@mui/material';
-import { Link, SectionItem, Tooltip } from 'ui';
+import { useQuery } from "@apollo/client";
+import { Typography } from "@mui/material";
+import { Link, SectionItem, Tooltip } from "ui";
 
-import { definition } from '.';
-import Description from './Description';
-import { DataTable } from '../../components/Table';
-import ClinvarStars from '../../components/ClinvarStars';
-import CHEMICAL_PROBES_QUERY from './ChemicalProbes.gql';
-import { naLabel, defaultRowsPerPageOptions } from '../../constants';
+import { definition } from ".";
+import Description from "./Description";
+import { DataTable } from "../../components/Table";
+import ClinvarStars from "../../components/ClinvarStars";
+import CHEMICAL_PROBES_QUERY from "./ChemicalProbes.gql";
+import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 
 /**
  * Style the tooltips as "label: value" with a bold label
@@ -15,16 +15,16 @@ import { naLabel, defaultRowsPerPageOptions } from '../../constants';
 function TooltipStyledLabel({ label, value }) {
   return (
     <Typography variant="body2">
-      <span style={{ fontWeight: 'bold' }}>{label}:</span> {value}
+      <span style={{ fontWeight: "bold" }}>{label}:</span> {value}
     </Typography>
   );
 }
 
 const columns = [
   {
-    id: 'id',
-    label: 'Probe ID',
-    renderCell: row => {
+    id: "id",
+    label: "Probe ID",
+    renderCell: (row) => {
       // link to drug page if drugid is available; also add tooltip with control if available
       const c = row.drugId ? (
         <Link to={`/drug/${row.drugId}`}>{row.id}</Link>
@@ -42,49 +42,49 @@ const columns = [
         c
       );
     },
-    exportValue: row => row.id,
-    filterValue: row => row.id,
-    width: '25%',
+    exportValue: (row) => row.id,
+    filterValue: (row) => row.id,
+    width: "25%",
   },
   {
-    id: 'isHighQuality',
-    label: 'Quality',
-    renderCell: row => (
-      <Tooltip title={row.isHighQuality ? 'High quality' : 'Low quality'}>
+    id: "isHighQuality",
+    label: "Quality",
+    renderCell: (row) => (
+      <Tooltip title={row.isHighQuality ? "High quality" : "Low quality"}>
         <span>
           <ClinvarStars num={row.isHighQuality ? 1 : 0} length={1} />
         </span>
       </Tooltip>
     ),
-    exportValue: row => (row.isHighQuality ? 'high' : 'low'),
-    filterValue: row => (row.isHighQuality ? 1 : 0),
+    exportValue: (row) => (row.isHighQuality ? "high" : "low"),
+    filterValue: (row) => (row.isHighQuality ? 1 : 0),
     tooltip:
-      'Chemical probes selection based on the union of following criteria: compound belongs to one of the high-quality probe sets; use in Cells or Organisms rating ≥ 75%; P&D approved experimental probe; not labelled as obsolete.',
-    width: '12%',
+      "Chemical probes selection based on the union of following criteria: compound belongs to one of the high-quality probe sets; use in Cells or Organisms rating ≥ 75%; P&D approved experimental probe; not labelled as obsolete.",
+    width: "12%",
   },
   {
-    id: 'mechanismOfAction',
-    label: 'Mechanism of action',
-    renderCell: row => row.mechanismOfAction?.join(', ') || naLabel,
-    exportValue: row => row.mechanismOfAction?.join(', '),
-    filterValue: row => row.mechanismOfAction?.join(', ') || naLabel,
-    width: '25%',
+    id: "mechanismOfAction",
+    label: "Mechanism of action",
+    renderCell: (row) => row.mechanismOfAction?.join(", ") || naLabel,
+    exportValue: (row) => row.mechanismOfAction?.join(", "),
+    filterValue: (row) => row.mechanismOfAction?.join(", ") || naLabel,
+    width: "25%",
   },
   {
-    id: 'origin',
-    label: 'Probe origin',
-    renderCell: row => row.origin?.join(', ') || naLabel,
-    exportValue: row => row.origin?.join(', '),
-    filterValue: row => row.origin?.join(', ') || naLabel,
-    width: '25%',
+    id: "origin",
+    label: "Probe origin",
+    renderCell: (row) => row.origin?.join(", ") || naLabel,
+    exportValue: (row) => row.origin?.join(", "),
+    filterValue: (row) => row.origin?.join(", ") || naLabel,
+    width: "25%",
   },
   {
-    id: 'probesDrugsScore',
-    label: 'Score',
-    renderCell: row => row.probesDrugsScore || naLabel,
-    exportValue: row => row.probesDrugsScore || naLabel,
-    filterValue: row => row.probesDrugsScore,
-    width: '13%',
+    id: "probesDrugsScore",
+    label: "Score",
+    renderCell: (row) => row.probesDrugsScore || naLabel,
+    exportValue: (row) => row.probesDrugsScore || naLabel,
+    filterValue: (row) => row.probesDrugsScore,
+    width: "13%",
   },
 ];
 
@@ -98,7 +98,7 @@ function Body({ id, label: symbol, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data =>
+      renderBody={(data) =>
         data.target.chemicalProbes?.length > 0 ? (
           <DataTable
             columns={columns}

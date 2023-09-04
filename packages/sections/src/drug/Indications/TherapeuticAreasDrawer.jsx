@@ -9,9 +9,9 @@ import {
   ListItem,
   Paper,
   Typography,
-} from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import CloseIcon from '@mui/icons-material/Close';
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import CloseIcon from "@mui/icons-material/Close";
 
 const therapeuticAreasDrawerStyles = makeStyles((theme) => ({
   drawerBody: {

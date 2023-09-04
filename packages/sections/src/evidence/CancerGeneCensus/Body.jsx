@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Box, List, ListItem, Typography } from "@mui/material";
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from "@mui/styles";
 import { v1 } from "uuid";
 
 import { ChipList, Link, SectionItem } from "ui";

@@ -1,24 +1,23 @@
-import { useQuery } from '@apollo/client';
-import { Typography } from '@mui/material';
-import { Link, SectionItem, Tooltip } from 'ui';
+import { useQuery } from "@apollo/client";
+import { Typography } from "@mui/material";
+import { Link, SectionItem, Tooltip } from "ui";
 
-import { definition } from '.';
-import Summary from './Summary';
-import Description from './Description';
-import { dataTypesMap } from '../../dataTypes';
-import SLAPENRICH_QUERY from './sectionQuery.gql';
-import { sentenceCase } from '../../utils/global';
-import { DataTable } from '../../components/Table';
-import { defaultRowsPerPageOptions, naLabel } from '../../constants';
-import ScientificNotation from '../../components/ScientificNotation';
+import { definition } from ".";
+import Summary from "./Summary";
+import Description from "./Description";
+import { dataTypesMap } from "../../dataTypes";
+import SLAPENRICH_QUERY from "./sectionQuery.gql";
+import { sentenceCase } from "../../utils/global";
+import { DataTable } from "../../components/Table";
+import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import ScientificNotation from "../../components/ScientificNotation";
 
-
-const reactomeUrl = id => `https://identifiers.org/reactome:${id}`;
+const reactomeUrl = (id) => `https://identifiers.org/reactome:${id}`;
 
 const columns = [
   {
-    id: 'disease',
-    label: 'Disease/phenotype',
+    id: "disease",
+    label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -40,8 +39,8 @@ const columns = [
       [disease.name, diseaseFromSource].join(),
   },
   {
-    id: 'pathwayName',
-    label: 'Significant pathway',
+    id: "pathwayName",
+    label: "Significant pathway",
     renderCell: ({ pathways }) =>
       pathways?.length >= 1 ? (
         <Link external to={reactomeUrl(pathways[0].id)}>
@@ -52,7 +51,7 @@ const columns = [
       ),
   },
   {
-    id: 'resourceScore',
+    id: "resourceScore",
     label: (
       <>
         <i>p</i>-value
@@ -66,7 +65,7 @@ const columns = [
   },
 ];
 
-function Body({ id, label, entity}) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = {
     ensemblId: ensgId,
@@ -86,7 +85,7 @@ function Body({ id, label, entity}) {
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
-      renderBody={data => (
+      renderBody={(data) => (
         <DataTable
           columns={columns}
           dataDownloader

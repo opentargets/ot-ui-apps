@@ -13,7 +13,7 @@ function Section({ id: ensgId, label: symbol, entity }) {
   const [tab, setTab] = useState(defaultTab);
   const [requestSummary, setRequestSummary] = useState({ loading: true });
   const [requestGtex, setRequestGtex] = useState({ loading: true });
-  // TODO: 
+  // TODO:
   // the part about requests (see below) will need rethinking / refactoring
   // SectionItem checks for data based on these requests, but only works for data coming from the target object
   // the widget displays based on the summary tab only.

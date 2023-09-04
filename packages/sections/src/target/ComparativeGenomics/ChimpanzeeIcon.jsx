@@ -1,4 +1,4 @@
-import { useTheme } from '@mui/styles';
+import { useTheme } from "@mui/styles";
 
 function ChimpanzeeIcon() {
   const theme = useTheme();

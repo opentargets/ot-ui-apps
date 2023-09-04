@@ -1,19 +1,19 @@
-import { Link, Tooltip } from 'ui';
-import { useState, useEffect } from 'react';
-import { Grid, Typography } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import client from '../../client';
-import DataTable from '../../components/Table/DataTable';
+import { Link, Tooltip } from "ui";
+import { useState, useEffect } from "react";
+import { Grid, Typography } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import client from "../../client";
+import DataTable from "../../components/Table/DataTable";
 import {
   MethodIconText,
   MethodIconArrow,
   MethodIconExpandArrow,
-} from './custom/MethodIcons';
-import EllsWrapper from '../../components/EllsWrapper';
-import { defaultRowsPerPageOptions } from '../../constants';
+} from "./custom/MethodIcons";
+import EllsWrapper from "../../components/EllsWrapper";
+import { defaultRowsPerPageOptions } from "../../constants";
 
-import INTERACTIONS_QUERY from './InteractionsQuery.gql';
+import INTERACTIONS_QUERY from "./InteractionsQuery.gql";
 
 const getData = (query, ensgId, sourceDatabase, index, size) =>
   client.query({
@@ -36,10 +36,10 @@ const columns = {
   // interactions table columns
   interactions: [
     {
-      id: 'targetB',
+      id: "targetB",
       label: (
         <>
-          Interactor{' '}
+          Interactor{" "}
           <MethodIconText notooltip enabled>
             B
           </MethodIconText>
@@ -47,8 +47,8 @@ const columns = {
           <Typography variant="caption">Alt ID</Typography>
         </>
       ),
-      exportLabel: 'interactorB-AltId',
-      renderCell: row => (
+      exportLabel: "interactorB-AltId",
+      renderCell: (row) => (
         <>
           <EllsWrapper
             title={row.targetB ? row.targetB.approvedSymbol : row.intB}
@@ -67,13 +67,13 @@ const columns = {
               </Link>
             )}
           </EllsWrapper>
-          {row.speciesB && row.speciesB?.mnemonic.toLowerCase() !== 'human' ? (
+          {row.speciesB && row.speciesB?.mnemonic.toLowerCase() !== "human" ? (
             <Tooltip title={row.speciesB?.mnemonic} showHelpIcon />
           ) : null}
           <br />
           <EllsWrapper title={row.intB}>
             <Typography variant="caption">
-              Alt ID:{' '}
+              Alt ID:{" "}
               <Link
                 to={`http://uniprot.org/uniprot/${row.intB}`}
                 onClick={onLinkClick}
@@ -85,14 +85,14 @@ const columns = {
           </EllsWrapper>
         </>
       ),
-      exportValue: row => row.targetB?.approvedSymbol || row.intB,
-      filterValue: row => `${row.targetB?.approvedSymbol} ${row.intB}`,
-      width: '65%',
+      exportValue: (row) => row.targetB?.approvedSymbol || row.intB,
+      filterValue: (row) => `${row.targetB?.approvedSymbol} ${row.intB}`,
+      width: "65%",
     },
     {
-      id: 'sizeEvidences',
-      label: 'Interaction evidence entries',
-      renderCell: row => (
+      id: "sizeEvidences",
+      label: "Interaction evidence entries",
+      renderCell: (row) => (
         <>
           {row.count}
           <span className="selected-evidence">
@@ -100,17 +100,17 @@ const columns = {
           </span>
         </>
       ),
-      exportValue: row => row.count,
-      width: '35%',
+      exportValue: (row) => row.count,
+      width: "35%",
     },
   ],
 
   // evidence table
   evidence: [
     {
-      id: 'interactionIdentifier',
-      label: 'ID',
-      renderCell: row => (
+      id: "interactionIdentifier",
+      label: "ID",
+      renderCell: (row) => (
         <Link
           to={`https://reactome.org/content/detail/${row.interactionIdentifier}`}
           onClick={onLinkClick}
@@ -119,10 +119,10 @@ const columns = {
           {row.interactionIdentifier}
         </Link>
       ),
-      width: '25%',
+      width: "25%",
     },
     {
-      id: 'interaction',
+      id: "interaction",
       label: (
         <>
           Interaction
@@ -130,7 +130,7 @@ const columns = {
           <Typography variant="caption">Host organism</Typography>
         </>
       ),
-      renderCell: row => (
+      renderCell: (row) => (
         <>
           <EllsWrapper>{row.interactionTypeShortName}</EllsWrapper>
           <br />
@@ -141,18 +141,18 @@ const columns = {
           </EllsWrapper>
         </>
       ),
-      filterValue: row =>
+      filterValue: (row) =>
         `${row.interactionTypeShortName} ${row.hostOrganismScientificName}`,
-      width: '30%',
+      width: "30%",
     },
     {
-      id: 'methods',
-      label: 'Detection methods',
-      renderCell: row => (
+      id: "methods",
+      label: "Detection methods",
+      renderCell: (row) => (
         <>
           <MethodIconText
             tooltip={row.participantDetectionMethodA
-              .map(m => m.shortName)
+              .map((m) => m.shortName)
               .join()}
             enabled
           >
@@ -174,70 +174,71 @@ const columns = {
           />
         </>
       ),
-      filterValue: row =>
-        `${row.participantDetectionMethodA.map(m => m.shortName).join(' ')} ${
+      filterValue: (row) =>
+        `${row.participantDetectionMethodA.map((m) => m.shortName).join(" ")} ${
           row.interactionDetectionMethodShortName
         } ${
           row.participantDetectionMethodB
             ? row.participantDetectionMethodB[0].shortName
-            : ''
+            : ""
         } ${row.expansionMethodShortName}`,
-      width: '25%',
+      width: "25%",
     },
     {
-      id: 'pubmedId',
-      label: 'Publication',
-      renderCell: d =>
-        d.pubmedId && d.pubmedId.indexOf('unassigned') === -1 ? (
+      id: "pubmedId",
+      label: "Publication",
+      renderCell: (d) =>
+        d.pubmedId && d.pubmedId.indexOf("unassigned") === -1 ? (
           <Link external to={`http://europepmc.org/abstract/MED/${d.pubmedId}`}>
             {d.pubmedId}
           </Link>
         ) : (
           d.pubmedId
         ),
-      filterValue: row => row.pubmedId,
-      width: '20%',
+      filterValue: (row) => row.pubmedId,
+      width: "20%",
     },
   ],
 };
 
 const evidenceColsExport = [
   {
-    label: 'Interaction host organism',
-    exportValue: row => row.hostOrganismScientificName,
+    label: "Interaction host organism",
+    exportValue: (row) => row.hostOrganismScientificName,
   },
   {
-    label: 'detection method A',
-    exportValue: row => row.participantDetectionMethodA.map(m => m.shortName),
+    label: "detection method A",
+    exportValue: (row) =>
+      row.participantDetectionMethodA.map((m) => m.shortName),
   },
   {
-    label: 'detection method short name',
-    exportValue: row => row.interactionDetectionMethodShortName,
+    label: "detection method short name",
+    exportValue: (row) => row.interactionDetectionMethodShortName,
   },
   {
-    label: 'detection method B',
-    exportValue: row => row.participantDetectionMethodB[0].shortName,
+    label: "detection method B",
+    exportValue: (row) => row.participantDetectionMethodB[0].shortName,
   },
   {
-    label: 'expansion method short name',
-    exportValue: row => row.expansionMethodShortName,
+    label: "expansion method short name",
+    exportValue: (row) => row.expansionMethodShortName,
   },
 ];
 
-const id = 'reactome';
+const id = "reactome";
 const index = 0;
 const size = 5000;
 
 function ReactomeTab({ ensgId, symbol }) {
   const [data, setData] = useState([]);
   const [evidence, setEvidence] = useState([]);
-  const [selectedIntB, setSelectedIntB] = useState('');
+  const [selectedIntB, setSelectedIntB] = useState("");
   const [loading, setLoading] = useState(false);
   const variables = { ensgId, sourceDatabase: id };
   // load tab data when new tab selected (also on first load)
   useEffect(() => {
     setLoading(true);
-    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then((res) => {
       if (res.data.target.interactions) {
         setLoading(false);
         setData(res.data.target.interactions.rows);
@@ -256,10 +257,10 @@ function ReactomeTab({ ensgId, symbol }) {
         <Typography variant="h6" gutterBottom>
           Interactors of
           <br />
-          {symbol}{' '}
+          {symbol}{" "}
           <MethodIconText notooltip enabled small>
             A
-          </MethodIconText>{' '}
+          </MethodIconText>{" "}
         </Typography>
         <DataTable
           showGlobalFilter
@@ -269,7 +270,7 @@ function ReactomeTab({ ensgId, symbol }) {
           dataDownloaderFileStem={`${symbol}-molecular-interactions-interactors`}
           hover
           selected
-          onRowClick={r => {
+          onRowClick={(r) => {
             setEvidence(r.evidences);
             setSelectedIntB(r.targetB?.approvedSymbol || r.intB);
           }}
@@ -295,7 +296,7 @@ function ReactomeTab({ ensgId, symbol }) {
         <Typography variant="h6" gutterBottom>
           Interaction evidence of
           <br />
-          {symbol}{' '}
+          {symbol}{" "}
           <MethodIconText notooltip enabled small>
             A
           </MethodIconText>

@@ -1,6 +1,6 @@
-import FileSaver from 'file-saver';
-import { Suspense, useState, lazy } from 'react';
-import _ from 'lodash';
+import FileSaver from "file-saver";
+import { Suspense, useState, lazy } from "react";
+import _ from "lodash";
 import {
   Button,
   Grid,
@@ -11,16 +11,16 @@ import {
   Drawer,
   Paper,
   IconButton,
-} from '@mui/material';
-import {makeStyles} from '@mui/styles';
-import CloseIcon from '@mui/icons-material/Close';
-import 'graphiql/graphiql.min.css';
-import { fetcher } from '../../utils/global';
-import Link from '../Link';
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import CloseIcon from "@mui/icons-material/Close";
+import "graphiql/graphiql.min.css";
+import { fetcher } from "../../utils/global";
+import Link from "../Link";
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
-  import('graphiql').then(module => {
+  import("graphiql").then((module) => {
     module.default.Logo = function () {
       return null;
     };
@@ -32,7 +32,7 @@ const GraphiQL = lazy(() =>
 );
 
 const asJSON = (columns, rows) => {
-  const rowStrings = rows.map(row =>
+  const rowStrings = rows.map((row) =>
     columns.reduce((accumulator, newKey) => {
       if (newKey.exportValue === false) return accumulator;
 
@@ -44,7 +44,7 @@ const asJSON = (columns, rows) => {
         ...accumulator,
         [newLabel]: newKey.exportValue
           ? newKey.exportValue(row)
-          : _.get(row, newKey.propertyPath || newKey.id, ''),
+          : _.get(row, newKey.propertyPath || newKey.id, ""),
       };
     }, {})
   );
@@ -52,17 +52,17 @@ const asJSON = (columns, rows) => {
   return JSON.stringify(rowStrings);
 };
 
-const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
-  const quoteString = d => {
+const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
+  const quoteString = (d) => {
     let result = d;
     // converts arrays to strings
     if (Array.isArray(d)) {
-      result = d.join(',');
+      result = d.join(",");
     }
-    return quoteStrings && typeof result === 'string' ? `"${result}"` : result;
+    return quoteStrings && typeof result === "string" ? `"${result}"` : result;
   };
 
-  const lineSeparator = '\n';
+  const lineSeparator = "\n";
 
   const headerString = columns
     .reduce((accHeaderString, column) => {
@@ -77,7 +77,7 @@ const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
     .join(separator);
 
   const rowStrings = rows
-    .map(row =>
+    .map((row) =>
       columns
         .reduce((rowString, column) => {
           if (column.exportValue === false) return rowString;
@@ -85,7 +85,7 @@ const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
           const newValue = quoteString(
             column.exportValue
               ? column.exportValue(row)
-              : _.get(row, column.propertyPath || column.id, '')
+              : _.get(row, column.propertyPath || column.id, "")
           );
 
           return [...rowString, newValue];
@@ -97,61 +97,61 @@ const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
   return [headerString, rowStrings].join(lineSeparator);
 };
 
-const createBlob = format =>
+const createBlob = (format) =>
   ({
     json: (columns, rows) =>
       new Blob([asJSON(columns, rows)], {
-        type: 'application/json;charset=utf-8',
+        type: "application/json;charset=utf-8",
       }),
     csv: (columns, rows) =>
       new Blob([asDSV(columns, rows)], {
-        type: 'text/csv;charset=utf-8',
+        type: "text/csv;charset=utf-8",
       }),
     tsv: (columns, rows) =>
-      new Blob([asDSV(columns, rows, '\t', false)], {
-        type: 'text/tab-separated-values;charset=utf-8',
+      new Blob([asDSV(columns, rows, "\t", false)], {
+        type: "text/tab-separated-values;charset=utf-8",
       }),
   }[format]);
 
-const styles = makeStyles(theme => ({
+const styles = makeStyles((theme) => ({
   messageProgress: {
-    marginRight: '1rem',
+    marginRight: "1rem",
   },
   snackbarContentMessage: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    padding: '.75rem 1rem',
-    width: '100%',
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    padding: ".75rem 1rem",
+    width: "100%",
   },
   snackbarContentRoot: {
     padding: 0,
   },
   backdrop: {
-    '& .MuiBackdrop-root': {
-      opacity: '0 !important',
+    "& .MuiBackdrop-root": {
+      opacity: "0 !important",
     },
   },
   container: {
-    width: '80%',
+    width: "80%",
     backgroundColor: theme.palette.grey[300],
   },
   paper: {
-    margin: '1.5rem',
-    padding: '1rem',
+    margin: "1.5rem",
+    padding: "1rem",
   },
   title: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    borderBottom: '1px solid #ccc',
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    padding: '1rem',
+    display: "flex",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    borderBottom: "1px solid #ccc",
+    fontSize: "1.2rem",
+    fontWeight: "bold",
+    padding: "1rem",
   },
   playgroundContainer: {
-    margin: '0 1.5rem 1.5rem 1.5rem',
-    height: '100%',
+    margin: "0 1.5rem 1.5rem 1.5rem",
+    height: "100%",
   },
 }));
 
@@ -163,7 +163,7 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
   const downloadData = async (format, dataColumns, dataRows, dataFileStem) => {
     let allRows = dataRows;
 
-    if (typeof dataRows === 'function') {
+    if (typeof dataRows === "function") {
       setDownloading(true);
       allRows = await dataRows();
       setDownloading(false);
@@ -179,11 +179,11 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
   };
 
   const handleClickDownloadJSON = async () => {
-    downloadData('json', columns, rows, fileStem);
+    downloadData("json", columns, rows, fileStem);
   };
 
   const handleClickDownloadTSV = async () => {
-    downloadData('tsv', columns, rows, fileStem);
+    downloadData("tsv", columns, rows, fileStem);
   };
 
   function togglePlayground() {
@@ -191,7 +191,7 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
   }
 
   function close(e) {
-    if (e.key === 'Escape') return;
+    if (e.key === "Escape") return;
     setOpen(false);
   }
 
@@ -232,7 +232,7 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
         ) : null}
       </Grid>
       <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={downloading}
         TransitionComponent={Slide}
         ContentProps={{
@@ -251,28 +251,28 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={e => close(e)}
+        onClose={(e) => close(e)}
         anchor="right"
       >
         <Typography className={classes.title}>
           API query
-          <IconButton onClick={e => close(e)}>
+          <IconButton onClick={(e) => close(e)}>
             <CloseIcon />
           </IconButton>
         </Typography>
         <Paper className={classes.paper} variant="outlined">
           Press the Play button to explore the GraphQL API query used to
-          populate this table. You can also visit our{' '}
+          populate this table. You can also visit our{" "}
           <Link
             external
             to="https://platform-docs.opentargets.org/data-access/graphql-api"
           >
             GraphQL API documentation
-          </Link>{' '}
-          and{' '}
+          </Link>{" "}
+          and{" "}
           <Link external to="https://community.opentargets.org">
             Community
-          </Link>{' '}
+          </Link>{" "}
           for more how-to guides and tutorials.
         </Paper>
         {query ? (

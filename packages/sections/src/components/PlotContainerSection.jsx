@@ -1,8 +1,8 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   plotContainerSection: {
-    padding: '4px 0',
+    padding: "4px 0",
     borderBottom: `1px solid ${theme.palette.grey[300]}`,
   },
 }));

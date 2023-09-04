@@ -1,10 +1,10 @@
-import { Typography } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Typography } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDna,
   faPrescriptionBottleAlt,
   faStethoscope,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
 function Search({ data }) {
   return <Typography>Search for: {data.name}</Typography>;
@@ -32,8 +32,8 @@ function TopHitDrug({ data }) {
       {data.mechanismsOfAction ? (
         <Typography variant="caption" display="block" noWrap>
           {data.mechanismsOfAction.rows
-            .map(row => row.mechanismOfAction)
-            .join(', ')}
+            .map((row) => row.mechanismOfAction)
+            .join(", ")}
         </Typography>
       ) : null}
     </>
@@ -45,7 +45,7 @@ function TopHitTarget({ data }) {
     <>
       <Typography variant="h4" color="primary">
         <FontAwesomeIcon icon={faDna} size="xs" /> {data.approvedSymbol}
-      </Typography>{' '}
+      </Typography>{" "}
       <Typography display="block" noWrap>
         {data.approvedName}
       </Typography>
@@ -77,7 +77,7 @@ function Target({ data }) {
     <>
       <Typography variant="subtitle2" display="inline">
         {data.approvedSymbol}
-      </Typography>{' '}
+      </Typography>{" "}
       <Typography variant="caption" color="textSecondary" display="inline">
         {data.approvedName}
       </Typography>

@@ -1,44 +1,43 @@
-import { ButtonGroup, Button, colors } from '@mui/material';
-import { withStyles } from '@mui/styles';
-import useAotfContext from './hooks/useAotfContext';
-
+import { ButtonGroup, Button, colors } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import useAotfContext from "./hooks/useAotfContext";
 
 const { grey } = colors;
 
 const StyledButton = withStyles({
   root: {
-    boxShadow: 'none',
-    textTransform: 'none',
-    padding: '6px 12px',
-    border: '0.8px solid',
+    boxShadow: "none",
+    textTransform: "none",
+    padding: "6px 12px",
+    border: "0.8px solid",
     lineHeight: 1.5,
     backgroundColor: grey[50],
     borderColor: `${grey[500]} !important`,
-    color: '#5A5F5F',
-    '&:hover': {
+    color: "#5A5F5F",
+    "&:hover": {
       backgroundColor: grey[200],
-      boxShadow: 'none',
+      boxShadow: "none",
     },
-    '&.active': {
-      boxShadow: 'none',
+    "&.active": {
+      boxShadow: "none",
       backgroundColor: grey[300],
     },
-    '&:focus': {
-      boxShadow: 'none',
+    "&:focus": {
+      boxShadow: "none",
     },
-    '& .MuiTouchRipple-root': {
-      display: 'none !important',
+    "& .MuiTouchRipple-root": {
+      display: "none !important",
     },
-    '&.MuiButtonGroup-groupedContainedHorizontal:not(:last-child)': {
-      borderRight: 'none',
+    "&.MuiButtonGroup-groupedContainedHorizontal:not(:last-child)": {
+      borderRight: "none",
     },
   },
 })(Button);
 
 const StyledButtonGroup = withStyles({
   root: {
-    '&:nth-child(0)': {
-      borderColor: 'red',
+    "&:nth-child(0)": {
+      borderColor: "red",
     },
   },
 })(ButtonGroup);
@@ -47,24 +46,24 @@ function TargetPrioritisationSwitch() {
   const { displayedTable, setDisplayedTable } = useAotfContext();
 
   const handleClickAssoc = () => {
-    setDisplayedTable('associations');
+    setDisplayedTable("associations");
   };
 
   const handleClickPrior = () => {
-    setDisplayedTable('prioritisations');
+    setDisplayedTable("prioritisations");
   };
 
   return (
     <StyledButtonGroup disableElevation color="primary" variant="contained">
       <StyledButton
-        className={displayedTable === 'associations' ? 'active' : ''}
+        className={displayedTable === "associations" ? "active" : ""}
         onClick={() => handleClickAssoc()}
         disableRipple
       >
         Target-disease association
       </StyledButton>
       <StyledButton
-        className={displayedTable === 'prioritisations' ? 'active' : ''}
+        className={displayedTable === "prioritisations" ? "active" : ""}
         onClick={() => handleClickPrior()}
         disableRipple
       >

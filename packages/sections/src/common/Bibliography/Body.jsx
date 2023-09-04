@@ -9,8 +9,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { withStyles } from '@mui/styles';
-// TODO: note this component is not actually used. 
+import { withStyles } from "@mui/styles";
+// TODO: note this component is not actually used.
 // Only SimplePublication is used in evidence bibliography
 
 import Publication from "./Publication";
@@ -113,9 +113,9 @@ class Section extends Component {
               selectedNewAggregationObject.label = a.label || a.key;
               return (
                 selectedNewAggregationObject.key.toString().toLowerCase() ===
-                b.key.toString().toLowerCase() ||
+                  b.key.toString().toLowerCase() ||
                 selectedNewAggregationObject.label.toString().toLowerCase() ===
-                b.key.toString().toLowerCase()
+                  b.key.toString().toLowerCase()
               );
             }).length === 0
         ),
@@ -267,16 +267,16 @@ class Section extends Component {
               <Box>
                 {aggregations[selectedAggregation.value]
                   ? aggregations[selectedAggregation.value].buckets.map(
-                    (agg, i) => (
-                      <Chip
-                        key={v1()}
-                        variant="outlined"
-                        label={agg.label || agg.key}
-                        onClick={() => this.selectChip(agg)}
-                        className={classes.chip}
-                      />
+                      (agg, i) => (
+                        <Chip
+                          key={v1()}
+                          variant="outlined"
+                          label={agg.label || agg.key}
+                          onClick={() => this.selectChip(agg)}
+                          className={classes.chip}
+                        />
+                      )
                     )
-                  )
                   : null}
               </Box>
             </Grid>

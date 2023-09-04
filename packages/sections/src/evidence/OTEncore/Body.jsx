@@ -240,7 +240,7 @@ const exportColumns = [
   },
 ];
 
-function Body({ id, label, entity}) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
 
   const request = useQuery(ENCORE_QUERY, {

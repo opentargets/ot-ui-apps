@@ -1,16 +1,16 @@
-import { Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { useRecoilValue } from 'recoil';
+import { Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { useRecoilValue } from "recoil";
 import {
   litsCountState,
   loadingEntitiesState,
   tablePageSizeState,
-} from './atoms';
+} from "./atoms";
 
 const useStyles = makeStyles(() => ({
   resultCount: {
-    marginLeft: '2rem',
-    marginRight: '6rem',
+    marginLeft: "2rem",
+    marginRight: "6rem",
   },
 }));
 

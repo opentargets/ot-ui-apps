@@ -1,8 +1,8 @@
-import { animateScroll } from 'react-scroll';
-import { Avatar, List, ListItem, ListItemText } from '@mui/material';
-import { Home } from '@mui/icons-material';
+import { animateScroll } from "react-scroll";
+import { Avatar, List, ListItem, ListItemText } from "@mui/material";
+import { Home } from "@mui/icons-material";
 
-import navPanelStyles from './navPanelStyles';
+import navPanelStyles from "./navPanelStyles";
 
 function GoBackButton() {
   const classes = navPanelStyles();

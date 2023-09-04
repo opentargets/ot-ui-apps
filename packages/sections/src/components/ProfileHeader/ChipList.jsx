@@ -1,11 +1,11 @@
-import { Box, Skeleton, Typography, Tooltip } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Box, Skeleton, Typography, Tooltip } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import _ from 'lodash';
-import Chip from '../Chip';
-import LongList from '../LongList';
+import _ from "lodash";
+import Chip from "../Chip";
+import LongList from "../LongList";
 
-const useContainerStyles = makeStyles(theme => ({
+const useContainerStyles = makeStyles((theme) => ({
   tooltip: {
     backgroundColor: theme.palette.background.paper,
     border: `1px solid ${theme.palette.grey[300]}`,
@@ -21,9 +21,9 @@ function ChipList({ children, title, loading = false, inline }) {
 
   return (
     <Box>
-      <Typography variant="subtitle2" display={inline ? 'inline' : 'initial'}>
+      <Typography variant="subtitle2" display={inline ? "inline" : "initial"}>
         {title}
-        {inline ? ': ' : ''}
+        {inline ? ": " : ""}
       </Typography>
       {loading ? (
         <Skeleton count={1} />
@@ -31,7 +31,7 @@ function ChipList({ children, title, loading = false, inline }) {
         <LongList
           terms={children}
           maxTerms={10}
-          render={item => {
+          render={(item) => {
             if (_.isString(item)) {
               return <Chip key={item} label={item} title={item} />;
             }
