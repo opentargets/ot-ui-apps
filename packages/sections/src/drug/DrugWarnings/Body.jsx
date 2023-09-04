@@ -20,7 +20,7 @@ const columns = [
     renderCell: ({ efoTerm, efoId, description }) => {
       if (efoId)
         return (
-          <Tooltip title={`Description:${description}`} showHelpIcon>
+          <Tooltip title={`Description: ${description}`} showHelpIcon>
             <Link to={`/disease/${replaceSemicolonWithUnderscore(efoId)}`}>
               {efoTerm || efoId}
             </Link>

@@ -46,10 +46,12 @@ const useStyles = makeStyles((theme) => ({
 type EmptyPageProps = {
   children: ReactNode;
   documentationLink?: string;
+  communityLink?: string;
 };
 function EmptyPage({
   children,
   documentationLink = "https://platform-docs.opentargets.org",
+  communityLink = "https://community.opentargets.org",
 }: EmptyPageProps) {
   const classes = useStyles();
 
@@ -69,8 +71,12 @@ function EmptyPage({
           <div>{children}</div>
           <Typography>
             You deserve a fresh start. Maybe our
-            <Link to={documentationLink}> Documentation</Link> or{" "}
-            <Link to={"https://community.opentargets.org/"}>
+            <Link external to={documentationLink}>
+              {" "}
+              Documentation
+            </Link>{" "}
+            or{" "}
+            <Link external to={communityLink}>
               Community page
             </Link>{" "}
             can help!
