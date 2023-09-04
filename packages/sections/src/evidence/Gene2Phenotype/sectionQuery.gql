@@ -1,0 +1,34 @@
+query OpenTargetsGeneticsQuery(
+  $ensemblId: String!
+  $efoId: String!
+) {
+  disease(efoId: $efoId) {
+    id
+    gene2Phenotype: evidences(
+      ensemblIds: [$ensemblId]
+      enableIndirect: true
+      datasourceIds: ["gene2phenotype"]
+    ) {
+      count
+      rows {
+        id
+        disease {
+          id
+          name
+        }
+        diseaseFromSource
+        allelicRequirements
+        confidence
+        studyId
+        target {
+          approvedSymbol
+        }
+        variantFunctionalConsequence {
+          id
+          label
+        }
+        literature
+      }
+    }
+  }
+}

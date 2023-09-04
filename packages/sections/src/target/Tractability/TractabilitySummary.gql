@@ -1,0 +1,6 @@
+fragment TractabilitySummaryFragment on Target {
+  id
+  tractability {
+    modality
+  }
+}

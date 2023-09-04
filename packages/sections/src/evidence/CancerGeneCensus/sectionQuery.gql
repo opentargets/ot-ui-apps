@@ -1,0 +1,37 @@
+query CancerGeneCensusQuery($ensemblId: String!, $efoId: String!) {
+  disease(efoId: $efoId) {
+    id
+    cancerGeneCensusSummary: evidences(
+      ensemblIds: [$ensemblId]
+      enableIndirect: true
+      datasourceIds: ["cancer_gene_census"]
+    ) {
+      count
+      rows {
+        disease {
+          id
+          name
+        }
+        mutatedSamples {
+          functionalConsequence {
+            id
+            label
+          }
+          numberSamplesWithMutationType
+          numberSamplesTested
+        }
+        literature
+      }
+    }
+  }
+  target(ensemblId: $ensemblId) {
+    id
+    hallmarks {
+      attributes {
+        description
+        pmid
+        name
+      }
+    }
+  }
+}
