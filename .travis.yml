@@ -1,7 +1,7 @@
 language: node_js
 dist: jammy
 node_js:
-  - "stable"
+  - 20
 cache:
   directories:
     - "node_modules"
