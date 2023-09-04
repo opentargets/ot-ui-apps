@@ -83,8 +83,7 @@ function DownloadsDrawer({ title, format, path, month, year, children }) {
           <div className={classes.resourceURL}>
             <a
               className={classes.ftpURL}
-              href={`http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${year}.${month < 10 ? '0' : ''
-                }${month}/output/etl/${format}${path}`}
+              href={`http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${year}.${month}/output/etl/${format}${path}`}
             >
               ftp.ebi.ac.uk/pub/databases/opentargets/platform/{year}.
               {month.toString().padStart(2, '0')}/output/etl/{format}

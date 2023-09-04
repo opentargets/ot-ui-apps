@@ -123,7 +123,7 @@ function TargetDescription({
   return (
     <>
       {showLabel && <Typography variant="subtitle2">Description</Typography>}
-      {loading ? <Skeleton /> : content}
+      {loading ? <Skeleton height="6.5rem"/> : content}
     </>
   );
 }

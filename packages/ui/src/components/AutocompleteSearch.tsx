@@ -170,13 +170,13 @@ export default function AutocompleteSearch({
       loading={searchQueryLoading}
       loadingText={<SearchLoadingState />}
       renderGroup={(group) => (
-        <SearchListHeader listHeader={group.group} clearAll={clearAll}>
+        <SearchListHeader key={v1()} listHeader={group.group} clearAll={clearAll}>
           {group.children}
         </SearchListHeader>
       )}
       getOptionLabel={(option) => option.symbol || option.name || option.id}
       renderOption={(props, option) => (
-        <li {...props}>
+        <li key={v1()} {...props}>
           <SearchListItem
             item={option}
             isTopHit={option.type === "topHit"}

@@ -37,7 +37,7 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId }) {
           <TepLink ensgId={ensgId} symbol={symbol} />
         </>
       }
-      rightContent={
+      rightContent={ symbol && 
         <Button
           href={geneticsUrl}
           target="_blank"
