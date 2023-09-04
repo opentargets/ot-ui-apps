@@ -1,15 +1,27 @@
 import { gql } from '@apollo/client';
+import { PlatformApiProvider, SectionContainer, SummaryContainer } from 'ui';
 
-import { createSummaryFragment } from '../../components/Summary/utils';
-import PlatformApiProvider from '../../contexts/PlatformApiProvider';
-import ProfileHeader from './ProfileHeader';
+import MechanismsOfActionSummary from 'sections/src/drug/MechanismsOfAction/Summary';
+import IndicationsSummary from 'sections/src/drug/Indications/Summary';
+import KnownDrugsSummary from 'sections/src/drug/KnownDrugs/Summary';
+import DrugWarningsSummary from 'sections/src/drug/DrugWarnings/Summary';
+import AdverseEventsSummary from 'sections/src/drug/AdverseEvents/Summary';
+import BibliographySummary from 'sections/src/drug/Bibliography/Summary';
 
-import SectionContainer from '../../components/Section/SectionContainer';
-import SectionOrderProvider from '../../contexts/SectionOrderProvider';
-import SummaryContainer from '../../components/Summary/SummaryContainer';
+import MechanismsOfActionSection from 'sections/src/drug/MechanismsOfAction/Body';
+import IndicationsSection from 'sections/src/drug/Indications/Body';
+import KnownDrugsSection from 'sections/src/drug/KnownDrugs/Body';
+import DrugWarningsSection from 'sections/src/drug/DrugWarnings/Body';
+import AdverseEventsSection from 'sections/src/drug/AdverseEvents/Body';
+import BibliographySection from 'sections/src/drug/Bibliography/Body';
 
+import client from '../../client';
 import sections from './sections';
+import ProfileHeader from './ProfileHeader';
+import { createSummaryFragment } from '../../components/Summary/utils';
 
+
+const DRUG = "drug";
 const DRUG_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(sections, 'Drug');
 const DRUG_PROFILE_QUERY = gql`
   query DrugProfileQuery($chemblId: String!) {
@@ -26,34 +38,30 @@ const DRUG_PROFILE_QUERY = gql`
 function Profile({ chemblId, name }) {
   return (
     <PlatformApiProvider
-      entity="drug"
+      entity={DRUG}
       query={DRUG_PROFILE_QUERY}
       variables={{ chemblId }}
+      client={client}
     >
       <ProfileHeader chemblId={chemblId} />
-      <SectionOrderProvider sections={sections}>
-        <SummaryContainer>
-          {sections.map(({ Summary, definition }) => (
-            <Summary
-              key={definition.id}
-              id={chemblId}
-              label={name}
-              definition={definition}
-            />
-          ))}
-        </SummaryContainer>
 
-        <SectionContainer>
-          {sections.map(({ Body, definition }) => (
-            <Body
-              key={definition.id}
-              id={chemblId}
-              label={name}
-              definition={definition}
-            />
-          ))}
-        </SectionContainer>
-      </SectionOrderProvider>
+      <SummaryContainer>
+        <MechanismsOfActionSummary />
+        <IndicationsSummary />
+        <KnownDrugsSummary />
+        <DrugWarningsSummary />
+        <AdverseEventsSummary />
+        <BibliographySummary />
+      </SummaryContainer>
+
+      <SectionContainer>
+        <MechanismsOfActionSection id={chemblId} label={name} entity={DRUG}/>
+        <IndicationsSection id={chemblId} label={name} entity={DRUG} />
+        <KnownDrugsSection id={chemblId} label={name} entity={DRUG}/>
+        <DrugWarningsSection id={chemblId} label={name} entity={DRUG}/>
+        <AdverseEventsSection id={chemblId} label={name} entity={DRUG}/>
+        <BibliographySection id={chemblId} label={name} entity={DRUG}/>
+      </SectionContainer>
     </PlatformApiProvider>
   );
 }
