@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@material-ui/core";
 import { Link, Tooltip, SectionItem } from "ui";
+import { naLabel } from "ui/src/constants";
 
 import { defaultRowsPerPageOptions } from "../../constants";
 import { DataTable, TableDrawer } from "../../components/Table";
@@ -11,7 +12,6 @@ import BiomarkersDrawer from "./BiomarkersDrawer";
 import { definition } from ".";
 
 import CANCER_BIOMARKERS_EVIDENCE_QUERY from "./CancerBiomarkersEvidence.gql";
-import { naLabel } from "ui/src/constants";
 
 const columns = [
   {
@@ -130,18 +130,3 @@ function Body({ id, label, entity }) {
 }
 
 export default Body;
-
-// export function Body({ definition, id, label }) {
-//   const { data: summaryData } = usePlatformApi(
-//     Summary.fragments.CancerBiomarkersEvidenceFragment
-//   );
-//   const { count } = summaryData.cancerBiomarkersSummary;
-
-//   if (!count || count < 1) {
-//     return null;
-//   }
-
-//   return (
-//     <BodyCore definition={definition} id={id} label={label} count={count} />
-//   );
-// }
