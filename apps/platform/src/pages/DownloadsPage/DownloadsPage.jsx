@@ -79,9 +79,6 @@ function getColumns(date) {
             <DownloadsSchemaDrawer
               title={niceName}
               format={format.format}
-              path={format.path}
-              month={date.month}
-              year={date.year}
             >
               <Chip label={formatMap[format.format]} clickable size="small" />
             </DownloadsSchemaDrawer>{' '}

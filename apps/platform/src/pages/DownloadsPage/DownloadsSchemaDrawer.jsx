@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   },
   codeBlock: {
     backgroundColor: theme.palette.grey[300],
-    padding: ' 0.2em 2em'
+    padding: '2em',
   },
   title: {
     display: 'flex',
@@ -50,74 +50,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function DownloadsSchemaDrawer({ title, format, path, month, year, children }) {
+function DownloadsSchemaDrawer({ title, format, children }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  // const SCHEMA = {
-  //   id: 'string',
-  //   code: 'string',
-  //   dbXRefs: {
-  //     type: 'array',
-  //     element: 'string',
-  //   },
-  //   description: 'string',
-  //   name: 'string',
-  //   parents: {
-  //     type: 'array',
-  //     element: 'string',
-  //   },
-  //   synonyms: {
-  //     type: 'object',
-  //     hasExactSynonym: {
-  //       type: 'array',
-  //       element: 'string',
-  //     },
-  //     hasRelatedSynonym: {
-  //       type: 'array',
-  //       element: 'string',
-  //     },
-  //   },
-  //   ancestors: {
-  //     type: 'array',
-  //     element: 'string',
-  //   },
-  //   descendants: {
-  //     type: 'array',
-  //     element: 'string',
-  //   },
-  //   children: {
-  //     type: 'array',
-  //     element: 'string',
-  //   },
-  //   theraputicAreas: {
-  //     type: 'array',
-  //     element: 'string',
-  //   },
-  //   ontology: {
-  //     type: 'object',
-  //     isTherapeuticArea: 'boolean',
-  //     leaf: 'boolean',
-  //     surces: {
-  //       type: 'object',
-  //       url: 'string',
-  //       name: 'string',
-  //     },
-  //   },
-  // };
-
-  // tree.add(new AsciiTree('child1'));
-
-  // tree.add(
-  //   new AsciiTree(
-  //     'child2',
-  //     new AsciiTree('grandchild1'),
-  //     new AsciiTree('grandchild2')
-  //   )
-  // );
-
-  // tree.add(new AsciiTree('child3'));
-
-  // tree.add(new AsciiTree('child1'));
 
   const data = {
     id: 'Orphanet_98261',
