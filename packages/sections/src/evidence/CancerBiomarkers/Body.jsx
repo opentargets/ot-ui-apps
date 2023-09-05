@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@material-ui/core";
 import { Link, Tooltip, SectionItem } from "ui";
+import { naLabel } from "ui/src/constants";
 
 import { defaultRowsPerPageOptions } from "../../constants";
 import { DataTable, TableDrawer } from "../../components/Table";
@@ -52,9 +53,11 @@ const columns = [
   {
     id: "drugResponse.name",
     label: "Drug response",
-    renderCell: ({ drugResponse }) => (
-      <Link to={`/disease/${drugResponse.id}`}>{drugResponse.name}</Link>
-    ),
+    renderCell: ({ drugResponse }) =>
+      (drugResponse && (
+        <Link to={`/disease/${drugResponse.id}`}>{drugResponse.name}</Link>
+      )) ||
+      naLabel,
   },
   {
     id: "confidence",
@@ -127,18 +130,3 @@ function Body({ id, label, entity }) {
 }
 
 export default Body;
-
-// export function Body({ definition, id, label }) {
-//   const { data: summaryData } = usePlatformApi(
-//     Summary.fragments.CancerBiomarkersEvidenceFragment
-//   );
-//   const { count } = summaryData.cancerBiomarkersSummary;
-
-//   if (!count || count < 1) {
-//     return null;
-//   }
-
-//   return (
-//     <BodyCore definition={definition} id={id} label={label} count={count} />
-//   );
-// }

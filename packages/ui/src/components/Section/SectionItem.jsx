@@ -105,11 +105,6 @@ function SectionItem({
                 <Box className={classes.loadingPlaceholder} />
               )}
               {error && <SectionError error={error} />}
-              {loading && showContentLoading && (
-                <CardContent className={classes.cardContent}>
-                  <div className={classes.noData}> Loading {entity}. </div>
-                </CardContent>
-              )}
               {!loading && hasData && (
                 <CardContent className={classes.cardContent}>
                   {renderBody(data)}
