@@ -1,65 +1,61 @@
-import {
-  Checkbox,
-  FormControlLabel,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { TreeItem as MUITreeItem } from '@material-ui/lab';
-import PartnerLockIcon from '../PartnerLockIcon';
+import { Checkbox, FormControlLabel, Typography } from "@mui/material";
+import { TreeItem as MUITreeItem } from "@mui/lab";
+import { makeStyles } from "@mui/styles";
+import PartnerLockIcon from "../PartnerLockIcon";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   countLabel: {
-    fontSize: '.7rem',
-    fontWeight: 'bold',
+    fontSize: ".7rem",
+    fontWeight: "bold",
     color: theme.palette.grey[500],
   },
 
   formControlLabelRoot: {
-    minWidth: '85%',
+    minWidth: "85%",
   },
   FormControlLabelLabel: {
-    fontSize: '.9rem',
-    display: 'flex',
-    maxWidth: '100%',
-    paddingRight: '15%',
+    fontSize: ".9rem",
+    display: "flex",
+    maxWidth: "100%",
+    paddingRight: "15%",
   },
   treeItemRoot: {
-    '&:focus > $treeItemContent $treeItemLabel': {
-      backgroundColor: 'transparent',
+    "&:focus > $treeItemContent $treeItemLabel": {
+      backgroundColor: "transparent",
     },
-    '&$treeItemSelected > $treeItemContent $treeItemLabel': {
-      backgroundColor: 'transparent',
+    "&$treeItemSelected > $treeItemContent $treeItemLabel": {
+      backgroundColor: "transparent",
     },
-    '&$treeItemSelected:focus > $treeItemContent $treeItemLabel': {
-      backgroundColor: 'transparent',
+    "&$treeItemSelected:focus > $treeItemContent $treeItemLabel": {
+      backgroundColor: "transparent",
     },
-    '&$treeItemSelected > $treeItemContent $treeItemLabel:hover': {
-      backgroundColor: 'transparent',
+    "&$treeItemSelected > $treeItemContent $treeItemLabel:hover": {
+      backgroundColor: "transparent",
     },
   },
 
   treeItemContent: {
-    '&:hover': {
+    "&:hover": {
       backgroundColor: theme.palette.grey[200],
     },
   },
   treeItemSelected: {},
   treeItemLabel: {
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '91%',
-    '&:hover': {
-      backgroundColor: 'transparent',
+    alignItems: "center",
+    display: "flex",
+    justifyContent: "space-between",
+    width: "91%",
+    "&:hover": {
+      backgroundColor: "transparent",
     },
   },
   treeItemLabelText: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   treeItemLabelIcon: {
-    marginLeft: '0.5em',
+    marginLeft: "0.5em",
   },
 }));
 
@@ -76,7 +72,7 @@ function TreeItem({
 }) {
   const classes = useStyles();
 
-  const handleClick = event => {
+  const handleClick = (event) => {
     event.preventDefault();
     if (!loading && count) onClick([nodeId]);
   };
@@ -102,6 +98,7 @@ function TreeItem({
                 color="primary"
                 checked={checked}
                 indeterminate={indeterminate}
+                sx={{ padding: "4px" }}
               />
             }
             label={
@@ -116,12 +113,12 @@ function TreeItem({
                 )}
               </>
             }
+            onClick={handleClick}
           />
           <Typography className={classes.countLabel}>{count}</Typography>
         </>
       }
       nodeId={nodeId}
-      onLabelClick={handleClick}
       // TODO: review props spreading
       // eslint-disable-next-line
       {...other}

@@ -6,14 +6,14 @@ import {
   Grid,
   Typography,
   CircularProgress,
-  makeStyles,
   Snackbar,
   Slide,
   Drawer,
   Paper,
   IconButton,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+} from '@mui/material';
+import {makeStyles} from '@mui/styles';
+import CloseIcon from '@mui/icons-material/Close';
 import 'graphiql/graphiql.min.css';
 import { fetcher } from '../../utils/global';
 import Link from '../Link';

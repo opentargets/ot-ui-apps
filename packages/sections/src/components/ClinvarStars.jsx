@@ -1,9 +1,9 @@
-import { makeStyles } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
-import { faStar } from '@fortawesome/free-regular-svg-icons';
+import { makeStyles } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
+import { faStar } from "@fortawesome/free-regular-svg-icons";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   star: {
     color: theme.palette.primary.main,
   },
@@ -18,7 +18,7 @@ function ClinvarStars({ num, length = 4 }) {
     stars.push(
       <FontAwesomeIcon
         key={i}
-        className={starNum > 0 ? classes.star : ''}
+        className={starNum > 0 ? classes.star : ""}
         icon={starNum > 0 ? faStarSolid : faStar}
       />
     );

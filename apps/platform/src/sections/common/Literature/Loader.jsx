@@ -1,9 +1,9 @@
 import {
-  makeStyles,
   Box,
   Typography,
   CircularProgress,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useEffect, useState } from 'react';
 
 const listComponentStyles = makeStyles(() => ({

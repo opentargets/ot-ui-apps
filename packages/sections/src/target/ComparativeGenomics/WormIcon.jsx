@@ -1,4 +1,4 @@
-import { useTheme } from '@material-ui/core';
+import { useTheme } from "@mui/styles";
 
 function WormIcon() {
   const theme = useTheme();

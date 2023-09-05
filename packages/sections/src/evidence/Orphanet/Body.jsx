@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { Link, Tooltip, SectionItem } from "ui";
 
 import { definition } from ".";
@@ -138,7 +138,7 @@ const exportColumns = [
   },
 ];
 
-function Body({id, label, entity }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
 
   const variables = {

@@ -1,37 +1,37 @@
-import { Grid, makeStyles, Typography } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Grid, Skeleton, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   externalLinks: {
-    '& > :not(:first-child):before': {
+    "& > :not(:first-child):before": {
       content: '" | "',
     },
   },
   mainIconContainer: {
-    width: '56px',
-    marginRight: '4px',
-    justifyContent: 'center',
-    display: 'flex',
-    alignItems: 'center',
+    width: "56px",
+    marginRight: "4px !important",
+    justifyContent: "center",
+    display: "flex",
+    alignItems: "center",
   },
   mainIcon: {
     color: theme.palette.primary.main,
   },
   subtitle: {
-    display: 'flex',
-    paddingLeft: '5px',
-    alignItems: 'center',
+    display: "flex",
+    paddingLeft: "5px",
+    alignItems: "center",
   },
   title: {
     color: theme.palette.primary.main,
-    fontWeight: 500,
+    fontWeight: "500 !important",
   },
   titleContainer: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '10px',
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "10px",
   },
 }));
 

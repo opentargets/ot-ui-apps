@@ -1,13 +1,13 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles(() => ({
   ellipseContainer: {
-    display: 'inline-block',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    maxWidth: '100%',
-    verticalAlign: 'bottom',
+    display: "inline-block",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    maxWidth: "100%",
+    verticalAlign: "bottom",
   },
 }));
 

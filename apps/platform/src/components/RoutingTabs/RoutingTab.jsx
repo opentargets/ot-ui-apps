@@ -1,4 +1,4 @@
-import { Tab } from '@material-ui/core';
+import { Tab } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 function RoutingTab({ component, ...props }) {

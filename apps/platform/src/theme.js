@@ -1,16 +1,16 @@
-import { createTheme } from '@material-ui/core';
 import { lighten, darken } from 'polished';
 import config from './config';
 
 const PRIMARY = config.profile.primaryColor;
 const SECONDARY = '#ff6350';
 
-const theme = createTheme({
-  shape: {
-    borderRadius: 0,
-  },
+const theme = {
+  // shape: {
+  //   borderRadius: 0,
+  // },
   typography: {
     fontFamily: '"Inter", sans-serif',
+    fontSize: 14,
   },
   palette: {
     primary: {
@@ -127,6 +127,6 @@ const theme = createTheme({
       },
     },
   },
-});
+};
 
 export default theme;

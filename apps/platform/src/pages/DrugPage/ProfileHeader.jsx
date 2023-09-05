@@ -1,6 +1,6 @@
 import { usePlatformApi, Link } from 'ui';
 import { Fragment } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckCircle,

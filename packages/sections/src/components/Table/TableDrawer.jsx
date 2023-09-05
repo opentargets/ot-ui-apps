@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   AccordionSummary,
   AccordionDetails,
@@ -9,72 +9,72 @@ import {
   ListItem,
   Drawer,
   Link as MUILink,
-  makeStyles,
   Typography,
   Paper,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import _ from 'lodash';
-import { v1 } from 'uuid';
-import { naLabel } from '../../constants';
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import CloseIcon from "@mui/icons-material/Close";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import _ from "lodash";
+import { v1 } from "uuid";
+import { naLabel } from "../../constants";
 
-import Link from '../Link';
+import Link from "../Link";
 
-const sourceDrawerStyles = makeStyles(theme => ({
+const sourceDrawerStyles = makeStyles((theme) => ({
   drawerLink: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
   drawerBody: {
-    overflowY: 'overlay',
+    overflowY: "overlay",
   },
   drawerModal: {
-    '& .MuiBackdrop-root': {
-      opacity: '0 !important',
+    "& .MuiBackdrop-root": {
+      opacity: "0 !important",
     },
   },
   drawerPaper: {
     backgroundColor: theme.palette.grey[300],
   },
   drawerTitle: {
-    borderBottom: '1px solid #ccc',
-    padding: '1rem',
+    borderBottom: "1px solid #ccc",
+    padding: "1rem",
   },
   drawerTitleCaption: {
     color: theme.palette.grey[700],
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
+    fontSize: "1.2rem",
+    fontWeight: "bold",
   },
   AccordionExpanded: {
-    margin: '1rem !important',
+    margin: "1rem !important",
   },
   AccordionRoot: {
-    border: '1px solid #ccc',
-    margin: '1rem 1rem 0 1rem',
-    padding: '1rem',
-    '&::before': {
-      backgroundColor: 'transparent',
+    border: "1px solid #ccc",
+    margin: "1rem 1rem 0 1rem",
+    padding: "1rem",
+    "&::before": {
+      backgroundColor: "transparent",
     },
   },
   AccordionSubtitle: {
     color: theme.palette.grey[400],
-    fontSize: '0.8rem',
-    fontStyle: 'italic',
+    fontSize: "0.8rem",
+    fontStyle: "italic",
   },
   AccordionTitle: {
     color: theme.palette.grey[700],
-    fontSize: '1rem',
-    fontWeight: 'bold',
+    fontSize: "1rem",
+    fontWeight: "bold",
   },
   summaryBoxRoot: {
-    marginRight: '2rem',
+    marginRight: "2rem",
   },
 }));
 
 function TableDrawer({
   entries,
   message,
-  caption = 'Records',
+  caption = "Records",
   showSingle = true,
 }) {
   const [open, setOpen] = useState(false);
@@ -98,10 +98,10 @@ function TableDrawer({
     );
   }
 
-  const toggleDrawer = event => {
+  const toggleDrawer = (event) => {
     if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
     ) {
       return;
     }
@@ -113,7 +113,7 @@ function TableDrawer({
     setOpen(false);
   };
 
-  const groupedEntries = _.groupBy(entries, 'group');
+  const groupedEntries = _.groupBy(entries, "group");
 
   const drawerContent = (
     <>
@@ -129,7 +129,7 @@ function TableDrawer({
       </Paper>
 
       <Box className={classes.drawerBody}>
-        {Object.keys(groupedEntries).map(group => (
+        {Object.keys(groupedEntries).map((group) => (
           <Accordion
             elevation={0}
             key={group}
@@ -154,7 +154,7 @@ function TableDrawer({
             </AccordionSummary>
             <AccordionDetails>
               <List>
-                {groupedEntries[group].map(entry => (
+                {groupedEntries[group].map((entry) => (
                   <ListItem key={v1()}>
                     {entry.url ? (
                       <Link external to={entry.url}>

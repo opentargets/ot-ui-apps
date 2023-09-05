@@ -1,18 +1,18 @@
-import { Grid } from '@material-ui/core';
-import { Children } from 'react';
+import { Grid } from "@mui/material";
+import { Children } from "react";
 
-import { NavPanel } from '../NavPanel';
-import useSectionOrder from '../../hooks/useSectionOrder';
+import { NavPanel } from "../NavPanel";
+import useSectionOrder from "../../hooks/useSectionOrder";
 
 function SectionContainer({ children }) {
   const { sectionOrder, updateSectionOrder, shouldRender } = useSectionOrder();
-  const sortedChildren = sectionOrder.map(sectionId =>
+  const sortedChildren = sectionOrder.map((sectionId) =>
     Children.toArray(children).find(
-      child => child.props.definition.id === sectionId
+      (child) => child.props.definition.id === sectionId
     )
   );
 
-  const handleSectionReorder = newSectionOrder => {
+  const handleSectionReorder = (newSectionOrder) => {
     updateSectionOrder(newSectionOrder);
   };
 
@@ -23,7 +23,7 @@ function SectionContainer({ children }) {
         onSectionReorder={handleSectionReorder}
       />
       <Grid id="summary-section" container spacing={1}>
-        {sortedChildren.map(Section =>
+        {sortedChildren.map((Section) =>
           shouldRender(Section) ? Section : null
         )}
       </Grid>

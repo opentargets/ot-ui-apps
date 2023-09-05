@@ -1,20 +1,20 @@
 /* eslint-disable */
-import React from 'react';
-import classNames from 'classnames';
-import _ from 'lodash';
+import classNames from "classnames";
+import _ from "lodash";
 import {
-  Hidden,
+  Hidden, // note this is deprecated in MUI 5
   TableHead,
   TableRow,
   TableCell,
   TableSortLabel,
-  withWidth,
-} from '@material-ui/core';
+  useMediaQuery,
+} from "@mui/material";
+import { useTheme } from "@mui/styles";
 
-import { getHiddenBreakpoints } from './utils';
-import { tableStyles } from './tableStyles';
-import Tooltip from '../Tooltip';
-import useDynamicColspan from '../../hooks/useDynamicColspans';
+import { getHiddenBreakpoints } from "./utils";
+import { tableStyles } from "./tableStyles";
+import Tooltip from "../Tooltip";
+import useDynamicColspan from "../../hooks/useDynamicColspans";
 
 function HeaderCell({
   classes = {},
@@ -89,10 +89,15 @@ function TableHeader({
   order,
   onRequestSort,
   sortBy,
-  width,
 }) {
+  // workaround for the old withWidth hook
+  const theme = useTheme();
+  const width = theme.breakpoints.keys.filter((k) =>
+    useMediaQuery(theme.breakpoints.only(k))
+  );
+
   const colspans = useDynamicColspan(headerGroups, columns, width);
-  const createSortHandler = property => event => {
+  const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
 
@@ -105,7 +110,7 @@ function TableHeader({
               colspan={colspans[cellIndex]}
               isHeaderGroup={true}
               key={cellIndex}
-              label={headerCell.label || ''}
+              label={headerCell.label || ""}
               noWrapHeader={noWrapHeader}
               sticky={headerCell.sticky || false}
               tooltip={headerCell.tooltip}
@@ -119,7 +124,7 @@ function TableHeader({
           <Hidden {...getHiddenBreakpoints(column)} key={index}>
             <HeaderCell
               align={
-                column.align ? column.align : column.numeric ? 'right' : 'left'
+                column.align ? column.align : column.numeric ? "right" : "left"
               }
               label={column.label || _.startCase(column.id)}
               noWrapHeader={noWrapHeader}
@@ -128,7 +133,7 @@ function TableHeader({
                 column.sortable
                   ? {
                       active: sortBy === column.id,
-                      direction: sortBy === column.id ? order : 'asc',
+                      direction: sortBy === column.id ? order : "asc",
                       onClick: createSortHandler(column.id),
                     }
                   : null
@@ -148,4 +153,4 @@ function TableHeader({
   );
 }
 
-export default withWidth()(TableHeader);
+export default TableHeader;

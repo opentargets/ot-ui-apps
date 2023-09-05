@@ -1,6 +1,6 @@
 /* eslint-disable */
-import React, { useState } from 'react';
-import classNames from 'classnames';
+import { useState } from "react";
+import classNames from "classnames";
 import {
   CircularProgress,
   Grid,
@@ -11,13 +11,13 @@ import {
   TablePagination,
   TableRow as MUITableRow,
   Box,
-} from '@material-ui/core';
+} from "@mui/material";
 
-import DataDownloader from './DataDownloader';
-import GlobalFilter from './GlobalFilter';
-import TableHeader from './TableHeader';
-import TableRow from './TableRow';
-import { tableStyles } from './tableStyles';
+import DataDownloader from "./DataDownloader";
+import GlobalFilter from "./GlobalFilter";
+import TableHeader from "./TableHeader";
+import TableRow from "./TableRow";
+import { tableStyles } from "./tableStyles";
 
 const Table = ({
   classes = {},
@@ -36,7 +36,7 @@ const Table = ({
   onPageChange = () => {},
   pageSize = 10,
   dataDownloader = false,
-  dataDownloaderFileStem = 'data',
+  dataDownloaderFileStem = "data",
   dataDownloaderRows,
   dataDownloaderColumns,
   hover = false,
@@ -56,7 +56,7 @@ const Table = ({
   const [selectedRow, setSelectedRow] = useState(0);
   const defaultClasses = tableStyles();
 
-  const handleGlobalFilterChange = newGlobalFilter => {
+  const handleGlobalFilterChange = (newGlobalFilter) => {
     if (newGlobalFilter !== globalFilter) {
       onGlobalFilterChange(newGlobalFilter);
     }
@@ -66,7 +66,7 @@ const Table = ({
     onSortBy(sortBy);
   };
 
-  const handleChangeRowsPerPage = event => {
+  const handleChangeRowsPerPage = (event) => {
     onRowsPerPageChange(event.target.value);
   };
   const handleChangePage = (_, page) => {
@@ -131,7 +131,7 @@ const Table = ({
                 key={i}
                 row={row}
                 noWrap={noWrap}
-                onClick={event => handleClick(event, row, i)}
+                onClick={(event) => handleClick(event, row, i)}
                 selected={rowIsSelectable && selectedRow === i}
               />
             ))}
@@ -143,7 +143,7 @@ const Table = ({
                     root: `${defaultClasses.cellBody} ${defaultClasses.noData}`,
                   }}
                 >
-                  {!rows.length && 'No data'}
+                  {!rows.length && "No data"}
                 </TableCell>
               </MUITableRow>
             )}

@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
-import { Alert } from '@material-ui/lab';
-import { TablePagination, Typography } from '@material-ui/core';
+import { Alert, TablePagination, Typography } from '@mui/material';
 import useAotfContext from '../hooks/useAotfContext';
 import ColoredCell from './ColoredCell';
 import { getLegend } from '../utils';

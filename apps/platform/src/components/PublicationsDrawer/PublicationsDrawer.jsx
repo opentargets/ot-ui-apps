@@ -4,12 +4,12 @@ import {
   IconButton,
   Drawer,
   Link as MUILink,
-  makeStyles,
   Typography,
   Paper,
   CircularProgress,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import CloseIcon from '@mui/icons-material/Close';
 import { naLabel } from '../../constants';
 import { europePmcSearchPOSTQuery } from '../../utils/urls';
 import PublicationWrapper from './PublicationWrapper';

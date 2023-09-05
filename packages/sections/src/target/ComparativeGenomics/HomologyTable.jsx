@@ -1,26 +1,26 @@
-import { makeStyles } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
-import { faStar } from '@fortawesome/free-regular-svg-icons';
-import { Link, Tooltip } from 'ui';
+import { makeStyles } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
+import { faStar } from "@fortawesome/free-regular-svg-icons";
+import { Link, Tooltip } from "ui";
 
-import { DataTable } from '../../components/Table';
-import { identifiersOrgLink } from '../../utils/global';
-import { defaultRowsPerPageOptions, decimalPlaces } from '../../constants';
+import { DataTable } from "../../components/Table";
+import { identifiersOrgLink } from "../../utils/global";
+import { defaultRowsPerPageOptions, decimalPlaces } from "../../constants";
 
-import ChimpanzeeIcon from './ChimpanzeeIcon';
-import HumanIcon from './HumanIcon';
-import RatIcon from './RatIcon';
-import FrogIcon from './FrogIcon';
-import DogIcon from './DogIcon';
-import FlyIcon from './FlyIcon';
-import RabbitIcon from './RabbitIcon';
-import MacaqueIcon from './MacaqueIcon';
-import PigIcon from './PigIcon';
-import WormIcon from './WormIcon';
-import ZebrafishIcon from './ZebrafishIcon';
-import GuineaPigIcon from './GuineaPigIcon';
-import MouseIcon from './MouseIcon';
+import ChimpanzeeIcon from "./ChimpanzeeIcon";
+import HumanIcon from "./HumanIcon";
+import RatIcon from "./RatIcon";
+import FrogIcon from "./FrogIcon";
+import DogIcon from "./DogIcon";
+import FlyIcon from "./FlyIcon";
+import RabbitIcon from "./RabbitIcon";
+import MacaqueIcon from "./MacaqueIcon";
+import PigIcon from "./PigIcon";
+import WormIcon from "./WormIcon";
+import ZebrafishIcon from "./ZebrafishIcon";
+import GuineaPigIcon from "./GuineaPigIcon";
+import MouseIcon from "./MouseIcon";
 
 // map species ids to species icon component
 const speciesIcons = {
@@ -39,90 +39,90 @@ const speciesIcons = {
   10090: MouseIcon,
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   star: {
     color: theme.palette.primary.main,
   },
   iconContainer: {
-    display: 'inline-block',
-    textAlign: 'right',
-    width: '43px',
-    marginRight: '5px',
+    display: "inline-block",
+    textAlign: "right",
+    width: "43px",
+    marginRight: "5px",
   },
   container: {
-    display: 'inline-block',
-    width: '16px',
+    display: "inline-block",
+    width: "16px",
   },
 }));
 
 function getColumns(classes) {
   return [
     {
-      id: 'speciesName',
-      label: 'Species',
+      id: "speciesName",
+      label: "Species",
       renderCell: ({ speciesId, speciesName }) => {
         const SpeciesIcon = speciesIcons[speciesId];
         return (
           <>
             <span className={classes.iconContainer}>
               <SpeciesIcon />
-            </span>{' '}
+            </span>{" "}
             {speciesName}
           </>
         );
       },
     },
     {
-      id: 'homologyType',
-      label: 'Homology type',
+      id: "homologyType",
+      label: "Homology type",
       renderCell: ({ isHighConfidence, homologyType }) => (
         <>
           <span className={classes.container}>
-            {isHighConfidence === 'NULL' ? null : (
+            {isHighConfidence === "NULL" ? null : (
               <Tooltip
                 title={
-                  isHighConfidence === '1'
-                    ? 'High confidence orthologue'
-                    : 'Low confidence orthologue'
+                  isHighConfidence === "1"
+                    ? "High confidence orthologue"
+                    : "Low confidence orthologue"
                 }
               >
                 <span>
                   <FontAwesomeIcon
-                    className={isHighConfidence === '1' ? classes.star : ''}
-                    icon={isHighConfidence === '1' ? faStarSolid : faStar}
+                    className={isHighConfidence === "1" ? classes.star : ""}
+                    icon={isHighConfidence === "1" ? faStarSolid : faStar}
                   />
                 </span>
               </Tooltip>
             )}
-          </span>{' '}
-          {homologyType.replaceAll('_', ' ')}
+          </span>{" "}
+          {homologyType.replaceAll("_", " ")}
         </>
       ),
     },
     {
-      id: 'targetGeneSymbol',
-      label: 'Homologue',
+      id: "targetGeneSymbol",
+      label: "Homologue",
       renderCell: ({ targetGeneId, targetGeneSymbol }) => (
-        <Link external to={identifiersOrgLink('ensembl', targetGeneId)}>
+        <Link external to={identifiersOrgLink("ensembl", targetGeneId)}>
           {targetGeneSymbol || targetGeneId}
         </Link>
       ),
     },
     {
-      id: 'queryPercentageIdentity',
+      id: "queryPercentageIdentity",
       label: `Query %id`,
       renderCell: ({ queryPercentageIdentity }) =>
         queryPercentageIdentity
           ? queryPercentageIdentity.toFixed(decimalPlaces)
-          : 'N/A',
+          : "N/A",
     },
     {
-      id: 'targetPercentageIdentity',
+      id: "targetPercentageIdentity",
       label: `Target %id`,
       renderCell: ({ targetPercentageIdentity }) =>
         targetPercentageIdentity
           ? targetPercentageIdentity.toFixed(decimalPlaces)
-          : 'N/A',
+          : "N/A",
     },
   ];
 }

@@ -1,40 +1,41 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   faPlusCircle,
   faMinusCircle,
   faFileAlt,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Box, Button, makeStyles, Typography } from '@material-ui/core';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Button, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import { LongText } from 'ui';
-import Link from '../Link';
+import { LongText } from "ui";
+import Link from "../Link";
 
-const pmUrl = 'https://europepmc.org/';
-const pmTitleUrlMED = 'abstract/med/';
-const pmTitleUrlPAT = 'abstract/pat/';
+const pmUrl = "https://europepmc.org/";
+const pmTitleUrlMED = "abstract/med/";
+const pmTitleUrlPAT = "abstract/pat/";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   abstractSpan: {
-    whiteSpace: 'normal',
+    whiteSpace: "normal",
   },
   detailsButton: {
-    margin: '1rem',
-    marginLeft: '0',
+    margin: "1rem",
+    marginLeft: "0",
   },
   detailPanel: {
     background: `${theme.palette.grey[100]}`,
-    marginTop: '10px',
-    padding: '20px',
+    marginTop: "10px",
+    padding: "20px",
   },
   matchTable: {
-    width: '100%',
+    width: "100%",
   },
   fileLabel: {
-    color: '#5a5f5f',
-    fontSize: '0.875rem',
+    color: "#5a5f5f",
+    fontSize: "0.875rem",
     fontFamily: '"Inter", "sans-serif"',
-    fontWeight: '500',
+    fontWeight: "500",
   },
 }));
 
@@ -44,10 +45,10 @@ function PublicationWrapper({
   titleHtml,
   authors,
   journal,
-  variant = 'regular',
+  variant = "regular",
   abstract,
   fullTextOpen,
-  source = 'MED',
+  source = "MED",
   patentDetails,
 }) {
   const [showAbstract, setShowAbstract] = useState(false);
@@ -62,20 +63,20 @@ function PublicationWrapper({
 
   const classes = useStyles();
 
-  const isSourcePAT = source === 'PAT';
+  const isSourcePAT = source === "PAT";
   const sourceScope = isSourcePAT ? pmTitleUrlPAT : pmTitleUrlMED;
   const externalURL = pmUrl + sourceScope + europePmcId;
 
   return (
     <Box mb={2}>
       {/* paper title */}
-      <Box style={{ whiteSpace: 'normal' }}>
-        <Typography variant={variant === 'small' ? 'subtitle2' : 'subtitle1'}>
+      <Box style={{ whiteSpace: "normal" }}>
+        <Typography variant={variant === "small" ? "subtitle2" : "subtitle1"}>
           <Link external to={externalURL}>
             {titleHtml ? (
               <span
                 dangerouslySetInnerHTML={{ __html: titleHtml }}
-                style={{ whiteSpace: 'normal' }}
+                style={{ whiteSpace: "normal" }}
               />
             ) : (
               title
@@ -84,51 +85,51 @@ function PublicationWrapper({
         </Typography>
       </Box>
 
-      <Box style={{ whiteSpace: 'normal' }}>
+      <Box style={{ whiteSpace: "normal" }}>
         <LongText
           lineLimit={1}
-          variant={variant === 'small' ? 'caption' : 'body2'}
+          variant={variant === "small" ? "caption" : "body2"}
         >
           {authors
             .reduce((acc, author) => {
               if (author.lastName)
                 acc.push(
                   author.lastName +
-                    (author.initials ? ` ${author.initials}` : '')
+                    (author.initials ? ` ${author.initials}` : "")
                 );
               return acc;
             }, [])
-            .join(', ')}
+            .join(", ")}
         </LongText>
       </Box>
 
       {isSourcePAT ? (
-        <Box style={{ whiteSpace: 'normal' }}>
-          <Typography variant={variant === 'small' ? 'caption' : 'body2'}>
+        <Box style={{ whiteSpace: "normal" }}>
+          <Typography variant={variant === "small" ? "caption" : "body2"}>
             {patentDetails.typeDescription}
-            {' - '}
+            {" - "}
             <span>{patentDetails.country}</span>
           </Typography>
         </Box>
       ) : (
-        <Box style={{ whiteSpace: 'normal' }}>
-          <Typography variant={variant === 'small' ? 'caption' : 'body2'}>
+        <Box style={{ whiteSpace: "normal" }}>
+          <Typography variant={variant === "small" ? "caption" : "body2"}>
             {/* journal, year, reference */}
-            {journal.journal?.title || ''}{' '}
+            {journal.journal?.title || ""}{" "}
             <span>
               <b>
                 {journal.dateOfPublication &&
-                  (journal.dateOfPublication.substring(0, 4) || '')}
+                  (journal.dateOfPublication.substring(0, 4) || "")}
               </b>
-            </span>{' '}
-            <span>{journal.volume || ''}</span>
+            </span>{" "}
+            <span>{journal.volume || ""}</span>
             <span>{journal.issue && `(${journal.issue})`}</span>
             <span>{journal.page && `:${journal.page}`}</span>
           </Typography>
         </Box>
       )}
 
-      <Box style={{ display: 'flex', alignItems: 'center' }}>
+      <Box style={{ display: "flex", alignItems: "center" }}>
         <Button
           className={classes.detailsButton}
           variant="outlined"
@@ -143,13 +144,13 @@ function PublicationWrapper({
             )
           }
         >
-          {showAbstract ? 'Hide abstract' : 'Show abstract'}
+          {showAbstract ? "Hide abstract" : "Show abstract"}
         </Button>
         {fullTextOpen && (
           <span className={classes.fileLabel}>
             <FontAwesomeIcon
               icon={faFileAlt}
-              style={{ marginRight: '8px' }}
+              style={{ marginRight: "8px" }}
               size="lg"
             />
             Full text available

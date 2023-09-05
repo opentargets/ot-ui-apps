@@ -1,17 +1,19 @@
-import { useState } from 'react';
-import { Typography, withStyles } from '@material-ui/core';
+import { useState } from "react";
+import { Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-const highlightStyles = theme => ({
+const useStyles = makeStyles((theme) => ({
   showMore: {
-    cursor: 'pointer',
+    cursor: "pointer",
     color: theme.palette.primary.main,
   },
   matches: {
-    marginTop: '4px',
+    marginTop: "4px",
   },
-});
+}));
 
-function Highlights({ classes, highlights }) {
+function Highlights({ highlights }) {
+  const classes = useStyles();
   const [showMore, setShowMore] = useState(false);
 
   if (highlights.length === 0) return null;
@@ -20,7 +22,7 @@ function Highlights({ classes, highlights }) {
     <div className={classes.matches}>
       <Typography component="span" display="inline" variant="subtitle2">
         Matches:
-      </Typography>{' '}
+      </Typography>{" "}
       <Typography
         display="inline"
         variant="caption"
@@ -33,15 +35,15 @@ function Highlights({ classes, highlights }) {
       />
       {highlights.length > 1 && (
         <>
-          {' '}
+          {" "}
           <Typography variant="body2" display="inline">
-            [{' '}
+            [{" "}
             <span
               className={classes.showMore}
               onClick={() => setShowMore(!showMore)}
             >
-              {showMore ? 'hide' : 'more'}
-            </span>{' '}
+              {showMore ? "hide" : "more"}
+            </span>{" "}
             ]
           </Typography>
         </>
@@ -50,4 +52,4 @@ function Highlights({ classes, highlights }) {
   );
 }
 
-export default withStyles(highlightStyles)(Highlights);
+export default Highlights;

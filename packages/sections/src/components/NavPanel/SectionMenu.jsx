@@ -1,9 +1,9 @@
-import classNames from 'classnames';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { List } from '@material-ui/core';
+import classNames from "classnames";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { List } from "@mui/material";
 
-import navPanelStyles from './navPanelStyles';
-import SectionMenuItem from './SectionMenuItem';
+import navPanelStyles from "./navPanelStyles";
+import SectionMenuItem from "./SectionMenuItem";
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -17,12 +17,12 @@ const reorder = (list, startIndex, endIndex) => {
 function SectionMenu({ sections, onSectionReorder }) {
   const classes = navPanelStyles();
 
-  const handleSectionDrop = result => {
+  const handleSectionDrop = (result) => {
     if (!result.destination) return;
     if (result.destination.index === result.source.index) return;
 
     const newSectionOrder = reorder(
-      sections.map(section => section.props.definition.id),
+      sections.map((section) => section.props.definition.id),
       result.source.index,
       result.destination.index
     );
@@ -33,7 +33,7 @@ function SectionMenu({ sections, onSectionReorder }) {
   return (
     <DragDropContext onDragEnd={handleSectionDrop}>
       <Droppable droppableId="section-list-droppable">
-        {provided => (
+        {(provided) => (
           <List
             className={classNames(classes.list, classes.listOverflowClass)}
             ref={provided.innerRef}

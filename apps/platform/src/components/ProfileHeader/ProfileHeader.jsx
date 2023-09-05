@@ -1,12 +1,13 @@
 import { Children } from 'react';
-import { Grid, makeStyles } from '@material-ui/core';
+import { Grid } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   profileHeaderContainer: {
-    marginTop: '.5rem',
+    marginTop: '.5rem !important',
   },
   profileHeaderSection: {
-    marginBottom: '5px',
+    marginBottom: '5px !important',
   },
 });
 

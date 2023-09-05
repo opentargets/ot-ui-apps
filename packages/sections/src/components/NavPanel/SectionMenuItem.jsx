@@ -1,18 +1,18 @@
-import { Avatar, ListItem, ListItemText } from '@material-ui/core';
-import classNames from 'classnames';
-import { Draggable } from 'react-beautiful-dnd';
-import { DragIndicator } from '@material-ui/icons';
-import { scroller } from 'react-scroll';
+import { Avatar, ListItem, ListItemText } from "@mui/material";
+import classNames from "classnames";
+import { Draggable } from "react-beautiful-dnd";
+import { DragIndicator } from "@mui/icons-material";
+import { scroller } from "react-scroll";
 
-import navPanelStyles from './navPanelStyles';
-import useSectionOrder from '../../hooks/useSectionOrder';
+import navPanelStyles from "./navPanelStyles";
+import useSectionOrder from "../../hooks/useSectionOrder";
 
 function SectionMenuItem({ index, section }) {
   const classes = navPanelStyles();
   const { shouldRender } = useSectionOrder();
   const { id, name, shortName } = section.props.definition;
 
-  const handleSectionButtonClick = sectionId => {
+  const handleSectionButtonClick = (sectionId) => {
     scroller.scrollTo(sectionId, {
       duration: 500,
       smooth: true,
@@ -21,7 +21,7 @@ function SectionMenuItem({ index, section }) {
 
   return (
     <Draggable draggableId={id} index={index}>
-      {provided => (
+      {(provided) => (
         <div
           ref={provided.innerRef}
           // TODO: review props spreading

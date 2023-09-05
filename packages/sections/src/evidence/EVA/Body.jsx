@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Typography, makeStyles, Chip } from "@material-ui/core";
+import { Typography, Chip } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { Link, SectionItem, Tooltip } from "ui";
 
 import {
@@ -328,7 +329,8 @@ function Body({ id, label, entity }) {
     if (size * newPageInt + size > rows.length && cursor !== null) {
       setLoading(true);
       fetchClinvar({ ensemblId, efoId, cursor, size }).then((res) => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.evaSummary;
+        const { cursor: newCursor, rows: newRows } =
+          res.data.disease.evaSummary;
         setRows([...rows, ...newRows]);
         setLoading(false);
         setCursor(newCursor);
@@ -379,7 +381,10 @@ function Body({ id, label, entity }) {
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       entity={entity}
-      request={{ loading: initialLoading, data: { [entity]: { evaSummary: { rows, count: rows.length } } }, }}
+      request={{
+        loading: initialLoading,
+        data: { [entity]: { evaSummary: { rows, count: rows.length } } },
+      }}
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}

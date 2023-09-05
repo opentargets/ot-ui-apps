@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Skeleton } from '@material-ui/lab';
+import { Skeleton } from '@mui/material';
 import config from '../../config';
 import useBatchDownloader from '../../hooks/useBatchDownloader';
 

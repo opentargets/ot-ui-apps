@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import { faDna } from '@fortawesome/free-solid-svg-icons';
 import config from '../../config';
 
@@ -37,7 +37,7 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId }) {
           <TepLink ensgId={ensgId} symbol={symbol} />
         </>
       }
-      rightContent={
+      rightContent={ symbol && 
         <Button
           href={geneticsUrl}
           target="_blank"

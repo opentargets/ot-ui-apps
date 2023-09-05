@@ -1,5 +1,4 @@
-import { Component, Fragment } from "react";
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography } from "@mui/material";
 
 import { LongText } from "ui";
 import Link from "../../components/Link";

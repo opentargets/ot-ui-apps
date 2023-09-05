@@ -1,33 +1,23 @@
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import { withStyles } from '@material-ui/core/styles';
-import { v1 } from 'uuid';
+import { Typography, Paper, Grid, LinearProgress } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { v1 } from "uuid";
 
-import PlotContainerSection from './PlotContainerSection';
+import PlotContainerSection from "./PlotContainerSection";
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   plotContainer: {
-    marginBottom: '15px',
+    marginBottom: "15px",
   },
   leftContainer: {
-    marginLeft: '4px',
+    marginLeft: "4px",
   },
   rightContainer: {
-    marginRight: '4px',
+    marginRight: "4px",
   },
-});
+}));
 
-function PlotContainer({
-  classes,
-  loading,
-  error,
-  left,
-  center,
-  right,
-  children,
-}) {
+function PlotContainer({ loading, error, left, center, right, children }) {
+  const classes = useStyles();
   return (
     <Paper className={classes.plotContainer} elevation={0}>
       {left || center || right ? (
@@ -60,4 +50,4 @@ function PlotContainer({
   );
 }
 
-export default withStyles(styles)(PlotContainer);
+export default PlotContainer;

@@ -1,12 +1,12 @@
 /* eslint-disable no-underscore-dangle */
-import { Component } from 'react';
-import { Button, Grid, Typography } from '@material-ui/core';
-import { v1 } from 'uuid';
+import { Component } from "react";
+import { Button, Grid, Typography } from "@mui/material";
+import { v1 } from "uuid";
 
-import Abstract from './Abstract';
-import BibliographyDetailPanel from './BibliographyDetailPanel';
-import SimplePublication from './SimplePublication';
-import { getPublicationAbstract, getSimilarPublications } from './Api';
+import Abstract from "./Abstract";
+import BibliographyDetailPanel from "./BibliographyDetailPanel";
+import SimplePublication from "./SimplePublication";
+import { getPublicationAbstract, getSimilarPublications } from "./Api";
 
 /**
  * This renders a full publication block in the bibliography details.
@@ -26,7 +26,7 @@ class Publication extends Component {
     this.state = {
       showAbstract: false,
       showSimilar: false,
-      abstract: '',
+      abstract: "",
       similar: null,
     };
   }
@@ -64,14 +64,14 @@ class Publication extends Component {
           alignItems="stretch"
           spacing={2}
         >
-          {similar.map(hit => (
+          {similar.map((hit) => (
             <Grid item xs={12} key={v1()}>
               <SimplePublication
                 variant="small"
                 pmId={hit._source.pub_id}
                 title={hit._source.title}
                 authors={
-                  (hit._source.authors || []).map(a => ({
+                  (hit._source.authors || []).map((a) => ({
                     lastName: a.LastName,
                     initials: a.Initials,
                   })) || []
@@ -93,14 +93,14 @@ class Publication extends Component {
   getAbstract = () => {
     const { pmId } = this.props;
     getPublicationAbstract(pmId).then(
-      resp => {
+      (resp) => {
         this.setState({
           abstract: resp.abstract,
         });
       },
       () => {
         this.setState({
-          abstract: '',
+          abstract: "",
         });
       }
     );
@@ -110,7 +110,7 @@ class Publication extends Component {
   getSimilar = () => {
     const { pmId } = this.props;
     getSimilarPublications(pmId).then(
-      resp => {
+      (resp) => {
         this.setState({
           similar: resp.hits.hits,
         });
@@ -150,8 +150,8 @@ class Publication extends Component {
                     this.setState({ showAbstract: !showAbstract });
                   }}
                 >
-                  {showAbstract ? '- Hide abstract' : '+ Show abstract'}
-                </Button>{' '}
+                  {showAbstract ? "- Hide abstract" : "+ Show abstract"}
+                </Button>{" "}
               </>
             ) : (
               <>
@@ -162,7 +162,7 @@ class Publication extends Component {
                   disabled
                 >
                   No abstract available
-                </Button>{' '}
+                </Button>{" "}
               </>
             )}
             <Button
@@ -173,7 +173,7 @@ class Publication extends Component {
                 this.setState({ showSimilar: !showSimilar });
               }}
             >
-              {showSimilar ? '- Hide similar' : '+ Show similar'}
+              {showSimilar ? "- Hide similar" : "+ Show similar"}
             </Button>
           </div>
 

@@ -1,12 +1,10 @@
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import { Button, Grid, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import FileSaver from 'file-saver';
+import FileSaver from "file-saver";
 
 const UNEXPECTED_FORMAT =
-  'Unexpected format. Supported options are csv, tsv and json.';
+  "Unexpected format. Supported options are csv, tsv and json.";
 
 const pick = (object, keys) =>
   keys.reduce((o, k) => {
@@ -15,23 +13,23 @@ const pick = (object, keys) =>
     return o;
   }, {});
 
-const quoteIfString = d => (typeof d === 'string' ? `"${d}"` : d);
+const quoteIfString = (d) => (typeof d === "string" ? `"${d}"` : d);
 
 const asJSONString = ({ rows, headerMap }) => {
   // use the full headerMap which contain optional export() function for each header
-  const rowsHeadersOnly = rows.map(row => pick(row, headerMap));
+  const rowsHeadersOnly = rows.map((row) => pick(row, headerMap));
   return JSON.stringify(rowsHeadersOnly);
 };
 
 const asCSVString = ({ rows, headerMap }) => {
-  const separator = ',';
-  const lineSeparator = '\n';
+  const separator = ",";
+  const lineSeparator = "\n";
   const headersString = headerMap
-    .map(d => quoteIfString(d.label))
+    .map((d) => quoteIfString(d.label))
     .join(separator);
-  const rowsArray = rows.map(row =>
+  const rowsArray = rows.map((row) =>
     headerMap
-      .map(header =>
+      .map((header) =>
         quoteIfString(header.export ? header.export(row) : row[header.id])
       )
       .join(separator)
@@ -40,12 +38,12 @@ const asCSVString = ({ rows, headerMap }) => {
 };
 
 const asTSVString = ({ rows, headerMap }) => {
-  const separator = '\t';
-  const lineSeparator = '\n';
-  const headersString = headerMap.map(d => d.label).join(separator);
-  const rowsArray = rows.map(row =>
+  const separator = "\t";
+  const lineSeparator = "\n";
+  const headersString = headerMap.map((d) => d.label).join(separator);
+  const rowsArray = rows.map((row) =>
     headerMap
-      .map(header => (header.export ? header.export(row) : row[header.id]))
+      .map((header) => (header.export ? header.export(row) : row[header.id]))
       .join(separator)
   );
   return [headersString, ...rowsArray].join(lineSeparator);
@@ -53,25 +51,25 @@ const asTSVString = ({ rows, headerMap }) => {
 
 const asContentString = ({ rows, headerMap, format }) => {
   switch (format) {
-    case 'json':
+    case "json":
       return asJSONString({ rows, headerMap });
-    case 'csv':
+    case "csv":
       return asCSVString({ rows, headerMap });
-    case 'tsv':
+    case "tsv":
       return asTSVString({ rows, headerMap });
     default:
       throw Error(UNEXPECTED_FORMAT);
   }
 };
 
-const asMimeType = format => {
+const asMimeType = (format) => {
   switch (format) {
-    case 'json':
-      return 'application/json;charset=utf-8';
-    case 'csv':
-      return 'text/csv;charset=utf-8';
-    case 'tsv':
-      return 'text/tab-separated-values;charset=utf-8';
+    case "json":
+      return "application/json;charset=utf-8";
+    case "csv":
+      return "text/csv;charset=utf-8";
+    case "tsv":
+      return "text/tab-separated-values;charset=utf-8";
     default:
       throw Error(UNEXPECTED_FORMAT);
   }
@@ -85,13 +83,13 @@ const downloadTable = async ({
 }) => {
   let data = null;
   let rows = getRows;
-  if (typeof getRows === 'function') {
+  if (typeof getRows === "function") {
     data = await getRows();
     rows = data;
   }
 
   if (!rows || rows.length === 0) {
-    console.info('Nothing to download.');
+    console.info("Nothing to download.");
     return;
   }
 
@@ -102,17 +100,17 @@ const downloadTable = async ({
   FileSaver.saveAs(blob, `${filenameStem}.${format}`, { autoBOM: false });
 };
 
-const styles = () => ({
+const useStyles = makeStyles((theme) => ({
   container: {
-    marginBottom: '2px',
+    marginBottom: "2px",
   },
   caption: {
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   downloadHeader: {
-    marginTop: '7px',
+    marginTop: "7px",
   },
-});
+}));
 
 function handleDownload(headers, rows, fileStem, format) {
   downloadTable({
@@ -123,7 +121,8 @@ function handleDownload(headers, rows, fileStem, format) {
   });
 }
 
-function DataDownloader({ tableHeaders, rows, classes, fileStem }) {
+function DataDownloader({ tableHeaders, rows, fileStem }) {
+  const classes = useStyles();
   return (
     <Grid
       container
@@ -139,7 +138,7 @@ function DataDownloader({ tableHeaders, rows, classes, fileStem }) {
       <Grid item>
         <Button
           variant="outlined"
-          onClick={() => handleDownload(tableHeaders, rows, fileStem, 'json')}
+          onClick={() => handleDownload(tableHeaders, rows, fileStem, "json")}
         >
           JSON
         </Button>
@@ -147,7 +146,7 @@ function DataDownloader({ tableHeaders, rows, classes, fileStem }) {
       <Grid item>
         <Button
           variant="outlined"
-          onClick={() => handleDownload(tableHeaders, rows, fileStem, 'csv')}
+          onClick={() => handleDownload(tableHeaders, rows, fileStem, "csv")}
         >
           CSV
         </Button>
@@ -155,7 +154,7 @@ function DataDownloader({ tableHeaders, rows, classes, fileStem }) {
       <Grid item>
         <Button
           variant="outlined"
-          onClick={() => handleDownload(tableHeaders, rows, fileStem, 'tsv')}
+          onClick={() => handleDownload(tableHeaders, rows, fileStem, "tsv")}
         >
           TSV
         </Button>
@@ -164,4 +163,4 @@ function DataDownloader({ tableHeaders, rows, classes, fileStem }) {
   );
 }
 
-export default withStyles(styles)(DataDownloader);
+export default DataDownloader;

@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
-import { Box, Typography, makeStyles } from "@material-ui/core";
+import { Box, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { SectionItem, ChipList, Tooltip, Link } from "ui";
 
 import { sentenceCase } from "../../utils/global";
@@ -17,7 +18,7 @@ import Summary from "./Summary";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
 import EVA_SOMATIC_QUERY from "./EvaSomaticQuery.gql";
-import {definition} from '.';
+import { definition } from ".";
 
 const columns = [
   {

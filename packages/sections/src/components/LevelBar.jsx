@@ -1,18 +1,19 @@
-import { withStyles } from '@material-ui/core';
+import { makeStyles } from "@mui/style";
 
-const styles = theme => ({
+const useStyles = makeStyles((theme) => ({
   levelBar: {
     backgroundColor: theme.palette.primary.main,
-    borderRight: '1px solid white',
-    height: '12px',
+    borderRight: "1px solid white",
+    height: "12px",
   },
   containerBar: {
-    width: '100%',
+    width: "100%",
     backgroundColor: `${theme.palette.grey[300]}`,
   },
-});
+}));
 
-function LevelBar({ classes, value, altTitle }) {
+function LevelBar({ value, altTitle }) {
+  const classes = useStyles();
   return (
     <div className={classes.containerBar}>
       <div
@@ -26,4 +27,4 @@ function LevelBar({ classes, value, altTitle }) {
   );
 }
 
-export default withStyles(styles)(LevelBar);
+export default LevelBar;

@@ -1,11 +1,10 @@
 /* eslint-disable */
-import React from 'react';
-import classNames from 'classnames';
-import { Hidden, TableCell, TableRow as MUITableRow } from '@material-ui/core';
-import _ from 'lodash';
+import classNames from "classnames";
+import { Hidden, TableCell, TableRow as MUITableRow } from "@mui/material";
+import _ from "lodash";
 
-import { getHiddenBreakpoints } from './utils';
-import { tableStyles } from './tableStyles';
+import { getHiddenBreakpoints } from "./utils";
+import { tableStyles } from "./tableStyles";
 
 function TableRow({
   columns,
@@ -21,7 +20,7 @@ function TableRow({
 
   return (
     <MUITableRow
-      classes={{ root: isFixedRow ? classes.rowFixed : '' }}
+      classes={{ root: isFixedRow ? classes.rowFixed : "" }}
       hover={hover}
       onClick={onClick}
       selected={selected}
@@ -30,7 +29,7 @@ function TableRow({
         <Hidden {...getHiddenBreakpoints(column)} key={index}>
           <TableCell
             align={
-              column.align ? column.align : column.numeric ? 'right' : 'left'
+              column.align ? column.align : column.numeric ? "right" : "left"
             }
             classes={{
               root: classNames(
@@ -44,13 +43,13 @@ function TableRow({
                 }
               ),
             }}
-            component={column.sticky ? 'th' : 'td'}
+            component={column.sticky ? "th" : "td"}
             key={index}
             style={{ ...column.style, ...row.rowStyle, ...style }}
           >
             {column.renderCell
               ? column.renderCell(row)
-              : _.get(row, column.propertyPath || column.id, 'N/A')}
+              : _.get(row, column.propertyPath || column.id, "N/A")}
           </TableCell>
         </Hidden>
       ))}
