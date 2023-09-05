@@ -71,7 +71,6 @@ function AggregationsRow({
   active,
   handleAggregationClick,
   activeHeadersControlls,
-  columnsCount,
   setActiveHeadersControlls,
 }) {
   const dataset =
@@ -80,7 +79,7 @@ function AggregationsRow({
 
   return (
     <div className="aggregations-container">
-      <AggregationsContainer columnsCount={columnsCount}>
+      <AggregationsContainer>
         {aggregations.map(aggregation => (
           <AggregationItem
             key={aggregation}
