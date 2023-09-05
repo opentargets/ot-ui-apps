@@ -1,73 +1,72 @@
-import FileSaver from 'file-saver';
-import { useState, useMemo } from 'react';
-import _ from 'lodash';
+import FileSaver from "file-saver";
+import { useState, useMemo } from "react";
+import _ from "lodash";
 import {
   Button,
   Grid,
   Typography,
   CircularProgress,
-  makeStyles,
   Snackbar,
   Slide,
   Popover,
-  styled,
-} from '@material-ui/core';
-import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import useAotfContext from './hooks/useAotfContext';
-import useBatchDownloader from '../../hooks/useBatchDownloader';
-import dataSources from './static_datasets/dataSourcesAssoc';
+} from "@mui/material";
+import { makeStyles, styled } from "@mui/styles";
+import { faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useAotfContext from "./hooks/useAotfContext";
+import useBatchDownloader from "../../hooks/useBatchDownloader";
+import dataSources from "./static_datasets/dataSourcesAssoc";
 
-const PopoverContent = styled('div')({
-  padding: '20px 25px',
+const PopoverContent = styled("div")({
+  padding: "20px 25px",
 });
 
-const LabelContainer = styled('div')({
+const LabelContainer = styled("div")({
   marginBottom: 12,
 });
 
 const targetName = {
-  id: 'symbol',
-  label: 'Symbol',
-  exportValue: data => data.target.approvedSymbol,
+  id: "symbol",
+  label: "Symbol",
+  exportValue: (data) => data.target.approvedSymbol,
 };
 
 const diseaseName = {
-  id: 'symbol',
-  label: 'Symbol',
-  exportValue: data => data.disease.name,
+  id: "symbol",
+  label: "Symbol",
+  exportValue: (data) => data.disease.name,
 };
 
-const getRowsQuerySelector = entityToGet =>
-  entityToGet === 'target'
-    ? 'data.disease.associatedTargets'
-    : 'data.target.associatedDiseases';
+const getRowsQuerySelector = (entityToGet) =>
+  entityToGet === "target"
+    ? "data.disease.associatedTargets"
+    : "data.target.associatedDiseases";
 
-const getExportedColumns = entityToGet => {
-  const nameColumn = entityToGet === 'target' ? targetName : diseaseName;
+const getExportedColumns = (entityToGet) => {
+  const nameColumn = entityToGet === "target" ? targetName : diseaseName;
   const sources = dataSources.map(({ id }) => ({
     id,
-    exportValue: data => {
+    exportValue: (data) => {
       const datatypeScore = data.datasourceScores.find(
-        datasourceScore => datasourceScore.componentId === id
+        (datasourceScore) => datasourceScore.componentId === id
       );
-      return datatypeScore ? datatypeScore.score : 'No data';
+      return datatypeScore ? datatypeScore.score : "No data";
     },
   }));
 
   return [
     nameColumn,
     {
-      id: 'score',
-      label: 'Score',
-      exportValue: data => data.score,
+      id: "score",
+      label: "Score",
+      exportValue: (data) => data.score,
     },
     ...sources,
   ];
 };
 
 const asJSON = (columns, rows) => {
-  const rowStrings = rows.map(row =>
+  const rowStrings = rows.map((row) =>
     columns.reduce((accumulator, newKey) => {
       if (newKey.exportValue === false) return accumulator;
 
@@ -79,7 +78,7 @@ const asJSON = (columns, rows) => {
         ...accumulator,
         [newLabel]: newKey.exportValue
           ? newKey.exportValue(row)
-          : _.get(row, newKey.propertyPath || newKey.id, ''),
+          : _.get(row, newKey.propertyPath || newKey.id, ""),
       };
     }, {})
   );
@@ -100,22 +99,22 @@ const getHeaderString = ({ columns, quoteString, separator }) =>
     }, [])
     .join(separator);
 
-const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
-  const quoteString = d => {
+const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
+  const quoteString = (d) => {
     let result = d;
     // converts arrays to strings
     if (Array.isArray(d)) {
-      result = d.join(',');
+      result = d.join(",");
     }
-    return quoteStrings && typeof result === 'string' ? `"${result}"` : result;
+    return quoteStrings && typeof result === "string" ? `"${result}"` : result;
   };
 
-  const lineSeparator = '\n';
+  const lineSeparator = "\n";
 
   const headerString = getHeaderString({ columns, quoteString, separator });
 
   const rowStrings = rows
-    .map(row =>
+    .map((row) =>
       columns
         .reduce((rowString, column) => {
           if (column.exportValue === false) return rowString;
@@ -123,7 +122,7 @@ const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
           const newValue = quoteString(
             column.exportValue
               ? column.exportValue(row)
-              : _.get(row, column.propertyPath || column.id, '')
+              : _.get(row, column.propertyPath || column.id, "")
           );
 
           return [...rowString, newValue];
@@ -135,61 +134,61 @@ const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
   return [headerString, rowStrings].join(lineSeparator);
 };
 
-const createBlob = format =>
+const createBlob = (format) =>
   ({
     json: (columns, rows) =>
       new Blob([asJSON(columns, rows)], {
-        type: 'application/json;charset=utf-8',
+        type: "application/json;charset=utf-8",
       }),
     csv: (columns, rows) =>
       new Blob([asDSV(columns, rows)], {
-        type: 'text/csv;charset=utf-8',
+        type: "text/csv;charset=utf-8",
       }),
     tsv: (columns, rows) =>
-      new Blob([asDSV(columns, rows, '\t', false)], {
-        type: 'text/tab-separated-values;charset=utf-8',
+      new Blob([asDSV(columns, rows, "\t", false)], {
+        type: "text/tab-separated-values;charset=utf-8",
       }),
   }[format]);
 
-const styles = makeStyles(theme => ({
+const styles = makeStyles((theme) => ({
   messageProgress: {
-    marginRight: '1rem',
+    marginRight: "1rem",
   },
   snackbarContentMessage: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    padding: '.75rem 1rem',
-    width: '100%',
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    padding: ".75rem 1rem",
+    width: "100%",
   },
   snackbarContentRoot: {
     padding: 0,
   },
   backdrop: {
-    '& .MuiBackdrop-root': {
-      opacity: '0 !important',
+    "& .MuiBackdrop-root": {
+      opacity: "0 !important",
     },
   },
   container: {
-    width: '80%',
+    width: "80%",
     backgroundColor: theme.palette.grey[300],
   },
   paper: {
-    margin: '1.5rem',
-    padding: '1rem',
+    margin: "1.5rem",
+    padding: "1rem",
   },
   title: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    borderBottom: '1px solid #ccc',
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    padding: '1rem',
+    display: "flex",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    borderBottom: "1px solid #ccc",
+    fontSize: "1.2rem",
+    fontWeight: "bold",
+    padding: "1rem",
   },
   playgroundContainer: {
-    margin: '0 1.5rem 1.5rem 1.5rem',
-    height: '100%',
+    margin: "0 1.5rem 1.5rem 1.5rem",
+    height: "100%",
   },
 }));
 
@@ -224,14 +223,14 @@ function DataDownloader({ fileStem }) {
     queryResponseSelector
   );
 
-  const isPrioritisation = displayedTable === 'prioritisations';
+  const isPrioritisation = displayedTable === "prioritisations";
 
   const open = Boolean(anchorEl);
-  const popoverId = open ? 'dowloader-popover' : undefined;
+  const popoverId = open ? "dowloader-popover" : undefined;
 
   const downloadData = async (format, dataColumns, rows, dataFileStem) => {
     let allRows = rows;
-    if (typeof rows === 'function') {
+    if (typeof rows === "function") {
       setDownloading(true);
       allRows = await rows();
       setDownloading(false);
@@ -243,7 +242,7 @@ function DataDownloader({ fileStem }) {
     FileSaver.saveAs(blob, `${dataFileStem}.${format}`, { autoBOM: false });
   };
 
-  const handleClickBTN = event => {
+  const handleClickBTN = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -252,11 +251,11 @@ function DataDownloader({ fileStem }) {
   };
 
   const handleClickDownloadJSON = async () => {
-    downloadData('json', columns, getAllAssociations, fileStem);
+    downloadData("json", columns, getAllAssociations, fileStem);
   };
 
   const handleClickDownloadTSV = async () => {
-    downloadData('tsv', columns, getAllAssociations, fileStem);
+    downloadData("tsv", columns, getAllAssociations, fileStem);
   };
 
   if (isPrioritisation) return null;
@@ -278,12 +277,12 @@ function DataDownloader({ fileStem }) {
         anchorEl={anchorEl}
         onClose={handleClosePopover}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: "bottom",
+          horizontal: "left",
         }}
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
+          vertical: "top",
+          horizontal: "left",
         }}
       >
         <PopoverContent>
@@ -313,7 +312,7 @@ function DataDownloader({ fileStem }) {
         </PopoverContent>
       </Popover>
       <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={downloading}
         TransitionComponent={Slide}
         ContentProps={{

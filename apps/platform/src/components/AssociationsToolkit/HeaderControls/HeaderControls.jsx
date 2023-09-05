@@ -1,8 +1,8 @@
-import { Box, Collapse, Grid, Typography } from '@material-ui/core';
+import { Box, Collapse, Grid, Typography } from '@mui/material';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { styled } from '@material-ui/styles';
+import { styled } from '@mui/styles';
 import dataSources from '../static_datasets/dataSourcesAssoc';
 
 import Slider from './SliderControl';

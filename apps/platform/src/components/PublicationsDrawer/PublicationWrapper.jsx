@@ -5,7 +5,8 @@ import {
   faFileAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Box, Button, makeStyles, Typography } from '@material-ui/core';
+import { Box, Button, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import { LongText } from 'ui';
 import Link from '../Link';
@@ -101,7 +102,7 @@ function PublicationWrapper({
               if (author.lastName)
                 acc.push(
                   author.lastName +
-                    (author.initials ? ` ${author.initials}` : '')
+                  (author.initials ? ` ${author.initials}` : '')
                 );
               return acc;
             }, [])

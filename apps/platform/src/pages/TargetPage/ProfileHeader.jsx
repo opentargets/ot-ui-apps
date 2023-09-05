@@ -1,5 +1,5 @@
 import { usePlatformApi } from 'ui';
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@mui/styles';
 import TargetDescription from './TargetDescription';
 import {
   ProfileHeader as BaseProfileHeader,

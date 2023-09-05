@@ -4,12 +4,12 @@ import {
   Card,
   CardContent,
   CardHeader,
-  makeStyles,
+  Skeleton,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { Link, usePlatformApi } from 'ui';
 
-import { Skeleton } from '@material-ui/lab';
+import { makeStyles } from '@mui/styles';
 import {
   Description,
   ProfileHeader as BaseProfileHeader,

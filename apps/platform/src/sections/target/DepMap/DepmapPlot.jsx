@@ -1,4 +1,3 @@
-import React from 'react';
 import Plot from 'react-plotly.js';
 import _ from 'lodash';
 import { useLayoutEffect, useRef, useState } from 'react';

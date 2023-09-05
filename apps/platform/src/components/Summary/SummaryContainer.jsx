@@ -1,5 +1,5 @@
 import { Children } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 
 import summaryStyles from './summaryStyles';
 import useSectionOrder from '../../hooks/useSectionOrder';

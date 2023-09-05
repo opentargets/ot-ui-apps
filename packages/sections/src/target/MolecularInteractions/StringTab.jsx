@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react';
-import { withTheme, makeStyles } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import { scaleQuantize } from 'd3';
+import { useState, useEffect } from "react";
+import { makeStyles } from "@mui/styles";
+import { Grid } from "@mui/material";
+import { scaleQuantize } from "d3";
 import { Link } from "ui";
 
-import client from '../../client';
-import DataTable from '../../components/Table/DataTable';
-import Legend from '../../components/Legend';
-import { colorRange } from '../../constants';
+import client from "../../client";
+import DataTable from "../../components/Table/DataTable";
+import Legend from "../../components/Legend";
+import { colorRange } from "../../constants";
 
-
-import INTERACTIONS_QUERY from './InteractionsStringQuery.gql';
+import INTERACTIONS_QUERY from "./InteractionsStringQuery.gql";
 
 const getData = (query, ensgId, sourceDatabase, index, size) =>
   client.query({
@@ -25,91 +24,92 @@ const getData = (query, ensgId, sourceDatabase, index, size) =>
 
 const useStyles = makeStyles({
   root: {
-    overflow: 'visible',
-    padding: '2rem 3rem 0 0',
+    overflow: "visible",
+    padding: "2rem 3rem 0 0 !important",
   },
   table: {
-    tableLayout: 'fixed',
+    tableLayout: "fixed !important",
   },
   sortLabel: {
-    top: '8px',
+    top: "8px",
   },
   innerLabel: {
-    position: 'absolute',
-    display: 'inline-block',
-    transformOrigin: '-20px 20px',
+    position: "absolute",
+    display: "inline-block",
+    transformOrigin: "-20px 20px",
     bottom: 0,
-    transform: 'rotate(315deg)',
-    marginBottom: '5px',
+    transform: "rotate(315deg)",
+    marginBottom: "5px",
   },
   nameHeaderCell: {
-    width: '15%',
-    borderBottom: 0,
-    height: '140px',
-    verticalAlign: 'bottom',
-    textAlign: 'end',
-    paddingBottom: '.4rem',
+    width: "15%",
+    borderBottom: "0 !important",
+    height: "140px !important",
+    verticalAlign: "bottom !important",
+    textAlign: "end !important",
+    padding: "1rem 0.5rem !important",
+    paddingBottom: ".4rem",
   },
   headerCell: {
-    position: 'relative',
-    borderBottom: 0,
-    height: '140px',
-    whiteSpace: 'nowrap',
-    textAlign: 'center',
-    verticalAlign: 'bottom',
+    position: "relative",
+    borderBottom: "0 !important",
+    height: "140px !important",
+    whiteSpace: "nowrap",
+    textAlign: "center !important",
+    verticalAlign: "bottom !important",
+    padding: "1rem 0.5rem !important",
   },
   overallCell: {
-    border: 0,
-    textAlign: 'center',
-    paddingTop: '1px',
-    paddingBottom: '1px',
-    paddingLeft: '1px',
-    paddingRight: '10px',
+    border: "0 !important",
+    textAlign: "center !important",
+    paddingTop: "1px !important",
+    paddingBottom: "1px !important",
+    paddingLeft: "1px !important",
+    paddingRight: "10px !important",
   },
   cell: {
-    border: 0,
-    height: '20px',
-    textAlign: 'center',
-    padding: '1px 1px',
-    '&:last-child': {
+    border: "0 !important",
+    height: "20px !important",
+    textAlign: "center !important",
+    padding: "1px 1px !important",
+    "&:last-child": {
       paddingRight: 0,
     },
   },
   colorSpan: {
-    display: 'block',
-    height: '20px',
-    border: '1px solid #eeefef',
+    display: "block",
+    height: "20px",
+    border: "1px solid #eeefef",
   },
   nameCell: {
-    border: 0,
+    border: "0 !important",
     // width: '20%',
-    padding: '0 0.5rem 0 0',
-    '&:first-child': {
-      paddingLeft: 0,
+    padding: "0 0.5rem 0 0 !important",
+    "&:first-child": {
+      paddingLeft: "0 !important",
     },
   },
   nameContainer: {
-    display: 'block',
-    textAlign: 'end',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
+    display: "block",
+    textAlign: "end !important",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
   },
 });
 
-
-const id = 'string';
+const id = "string";
 const index = 0;
 const size = 10000;
 const color = scaleQuantize().domain([0, 1]).range(colorRange);
 
 const getScoreForColumn = (evidences, evidencesId) =>
   evidences
-    .filter(e => e.interactionDetectionMethodShortName === evidencesId)
-    .map(e => e.evidenceScore)[0]; // TODO: the [0] is to catch a data error: remove when fixed.
+    .filter((e) => e.interactionDetectionMethodShortName === evidencesId)
+    .map((e) => e.evidenceScore)[0]; // TODO: the [0] is to catch a data error: remove when fixed.
 const getHeatmapCell = (score, classes) => (
   <span
     className={classes.colorSpan}
-    title={score || 'No data'}
+    title={score || "No data"}
     style={{ backgroundColor: color(score) }}
   />
 );
@@ -117,13 +117,13 @@ const getHeatmapCell = (score, classes) => (
 function getColumns(classes) {
   return [
     {
-      id: 'partner',
+      id: "partner",
       label: <>Interactor B</>,
       classes: {
         headerCell: classes.nameHeaderCell,
         cell: classes.nameCell,
       },
-      renderCell: row => (
+      renderCell: (row) => (
         <span className={classes.nameContainer}>
           {row.targetB ? (
             <Link to={`/target/${row.targetB.id}`}>
@@ -136,11 +136,11 @@ function getColumns(classes) {
           )}
         </span>
       ),
-      exportValue: row => row.targetB?.approvedSymbol || row.intB,
-      filterValue: row => `${row.targetB?.approvedSymbol} ${row.intB}`,
+      exportValue: (row) => row.targetB?.approvedSymbol || row.intB,
+      filterValue: (row) => `${row.targetB?.approvedSymbol} ${row.intB}`,
     },
     {
-      id: 'overallScore',
+      id: "overallScore",
       label: (
         <>
           Overall
@@ -154,153 +154,152 @@ function getColumns(classes) {
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row => row.score.toFixed(3),
-      exportValue: row => row.score.toFixed(3),
-      filterValue: row => row.score.toFixed(3),
+      renderCell: (row) => row.score.toFixed(3),
+      exportValue: (row) => row.score.toFixed(3),
+      filterValue: (row) => row.score.toFixed(3),
     },
     {
-      id: 'neighbourhood',
-      label: 'Neighbourhood',
+      id: "neighbourhood",
+      label: "Neighbourhood",
       classes: {
         headerCell: classes.headerCell,
         cell: classes.cell,
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row =>
+      renderCell: (row) =>
         getHeatmapCell(
-          getScoreForColumn(row.evidences, 'neighborhood'),
+          getScoreForColumn(row.evidences, "neighborhood"),
           classes
         ),
-      exportValue: row =>
-        getScoreForColumn(row.evidences, 'neighborhood')?.toFixed(3),
-      filterValue: row =>
-        getScoreForColumn(row.evidences, 'neighborhood')?.toFixed(3),
+      exportValue: (row) =>
+        getScoreForColumn(row.evidences, "neighborhood")?.toFixed(3),
+      filterValue: (row) =>
+        getScoreForColumn(row.evidences, "neighborhood")?.toFixed(3),
     },
     {
-      id: 'geneFusion',
-      label: 'Gene fusion',
+      id: "geneFusion",
+      label: "Gene fusion",
       classes: {
         headerCell: classes.headerCell,
         cell: classes.cell,
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row =>
-        getHeatmapCell(getScoreForColumn(row.evidences, 'fusion'), classes),
-      exportValue: row =>
-        getScoreForColumn(row.evidences, 'fusion')?.toFixed(3),
-      filterValue: row =>
-        getScoreForColumn(row.evidences, 'fusion')?.toFixed(3),
+      renderCell: (row) =>
+        getHeatmapCell(getScoreForColumn(row.evidences, "fusion"), classes),
+      exportValue: (row) =>
+        getScoreForColumn(row.evidences, "fusion")?.toFixed(3),
+      filterValue: (row) =>
+        getScoreForColumn(row.evidences, "fusion")?.toFixed(3),
     },
     {
-      id: 'occurance',
-      label: 'Co-occurrance',
+      id: "occurance",
+      label: "Co-occurrance",
       classes: {
         headerCell: classes.headerCell,
         cell: classes.cell,
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row =>
+      renderCell: (row) =>
         getHeatmapCell(
-          getScoreForColumn(row.evidences, 'cooccurence'),
+          getScoreForColumn(row.evidences, "cooccurence"),
           classes
         ),
-      exportValue: row =>
-        getScoreForColumn(row.evidences, 'cooccurence')?.toFixed(3),
-      filterValue: row =>
-        getScoreForColumn(row.evidences, 'cooccurence')?.toFixed(3),
+      exportValue: (row) =>
+        getScoreForColumn(row.evidences, "cooccurence")?.toFixed(3),
+      filterValue: (row) =>
+        getScoreForColumn(row.evidences, "cooccurence")?.toFixed(3),
     },
     {
-      id: 'expression',
-      label: 'Co-expression',
+      id: "expression",
+      label: "Co-expression",
       classes: {
         headerCell: classes.headerCell,
         cell: classes.cell,
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row =>
+      renderCell: (row) =>
         getHeatmapCell(
-          getScoreForColumn(row.evidences, 'coexpression'),
+          getScoreForColumn(row.evidences, "coexpression"),
           classes
         ),
-      exportValue: row =>
-        getScoreForColumn(row.evidences, 'coexpression')?.toFixed(3),
-      filterValue: row =>
-        getScoreForColumn(row.evidences, 'coexpression')?.toFixed(3),
+      exportValue: (row) =>
+        getScoreForColumn(row.evidences, "coexpression")?.toFixed(3),
+      filterValue: (row) =>
+        getScoreForColumn(row.evidences, "coexpression")?.toFixed(3),
     },
     {
-      id: 'experiments',
-      label: 'Experiments',
+      id: "experiments",
+      label: "Experiments",
       classes: {
         headerCell: classes.headerCell,
         cell: classes.cell,
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row =>
+      renderCell: (row) =>
         getHeatmapCell(
-          getScoreForColumn(row.evidences, 'experimental'),
+          getScoreForColumn(row.evidences, "experimental"),
           classes
         ),
-      exportValue: row =>
-        getScoreForColumn(row.evidences, 'experimental')?.toFixed(3),
-      filterValue: row =>
-        getScoreForColumn(row.evidences, 'experimental')?.toFixed(3),
+      exportValue: (row) =>
+        getScoreForColumn(row.evidences, "experimental")?.toFixed(3),
+      filterValue: (row) =>
+        getScoreForColumn(row.evidences, "experimental")?.toFixed(3),
     },
     {
-      id: 'databases',
-      label: 'Databases',
+      id: "databases",
+      label: "Databases",
       classes: {
         headerCell: classes.headerCell,
         cell: classes.cell,
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row =>
-        getHeatmapCell(getScoreForColumn(row.evidences, 'database'), classes),
-      exportValue: row =>
-        getScoreForColumn(row.evidences, 'database')?.toFixed(3),
-      filterValue: row =>
-        getScoreForColumn(row.evidences, 'database')?.toFixed(3),
+      renderCell: (row) =>
+        getHeatmapCell(getScoreForColumn(row.evidences, "database"), classes),
+      exportValue: (row) =>
+        getScoreForColumn(row.evidences, "database")?.toFixed(3),
+      filterValue: (row) =>
+        getScoreForColumn(row.evidences, "database")?.toFixed(3),
     },
     {
-      id: 'textMining',
-      label: 'Text mining',
+      id: "textMining",
+      label: "Text mining",
       classes: {
         headerCell: classes.headerCell,
         cell: classes.cell,
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row =>
-        getHeatmapCell(getScoreForColumn(row.evidences, 'textmining'), classes),
-      exportValue: row =>
-        getScoreForColumn(row.evidences, 'textmining')?.toFixed(3),
-      filterValue: row =>
-        getScoreForColumn(row.evidences, 'textmining')?.toFixed(3),
+      renderCell: (row) =>
+        getHeatmapCell(getScoreForColumn(row.evidences, "textmining"), classes),
+      exportValue: (row) =>
+        getScoreForColumn(row.evidences, "textmining")?.toFixed(3),
+      filterValue: (row) =>
+        getScoreForColumn(row.evidences, "textmining")?.toFixed(3),
     },
     {
-      id: 'homology',
-      label: 'Homology',
+      id: "homology",
+      label: "Homology",
       classes: {
         headerCell: classes.headerCell,
         cell: classes.cell,
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row =>
-        getHeatmapCell(getScoreForColumn(row.evidences, 'homology'), classes),
-      exportValue: row =>
-        getScoreForColumn(row.evidences, 'homology')?.toFixed(3),
-      filterValue: row =>
-        getScoreForColumn(row.evidences, 'homology')?.toFixed(3),
+      renderCell: (row) =>
+        getHeatmapCell(getScoreForColumn(row.evidences, "homology"), classes),
+      exportValue: (row) =>
+        getScoreForColumn(row.evidences, "homology")?.toFixed(3),
+      filterValue: (row) =>
+        getScoreForColumn(row.evidences, "homology")?.toFixed(3),
     },
   ];
 }
-
 
 function StringTab({ ensgId, symbol }) {
   const [data, setData] = useState([]);
@@ -311,7 +310,7 @@ function StringTab({ ensgId, symbol }) {
   // load tab data when new tab selected (also on first load)
   useEffect(() => {
     setLoading(true);
-    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then((res) => {
       if (res.data.target.interactions) {
         setLoading(false);
         setData(res.data.target.interactions.rows);
@@ -340,5 +339,4 @@ function StringTab({ ensgId, symbol }) {
   );
 }
 
-// export default StringTab;
-export default withTheme(StringTab);
+export default StringTab;

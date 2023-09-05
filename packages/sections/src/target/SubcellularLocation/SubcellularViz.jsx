@@ -1,54 +1,48 @@
-import { lazy, useEffect, useRef, Suspense, useState } from 'react';
-import {
-  Typography,
-  List,
-  ListItem,
-  Box,
-  makeStyles,
-  Tabs,
-  Tab,
-} from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { lazy, useEffect, useRef, Suspense, useState } from "react";
+import { Typography, List, ListItem, Box, Tabs, Tab } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
-import { LoadingBackdrop, Link } from 'ui';
-import { identifiersOrgLink, getUniprotIds } from '../../utils/global';
+import { LoadingBackdrop, Link } from "ui";
+import { identifiersOrgLink, getUniprotIds } from "../../utils/global";
 
 const SwissbioViz =
-  'customElements' in window
-    ? lazy(() => import('./SwissbioViz'))
+  "customElements" in window
+    ? lazy(() => import("./SwissbioViz"))
     : ({ children }) => children;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   locationIcon: {
-    paddingRight: '0.5em',
+    paddingRight: "0.5em",
   },
   locationsList: {
-    cursor: 'pointer',
-    fontWeight: 'bold',
+    cursor: "pointer",
+    fontWeight: "bold",
     color: theme.palette.primary.main,
-    '& .inpicture.lookedAt': {
+    "& .inpicture.lookedAt": {
       color: theme.palette.primary.dark,
     },
   },
   tabPanel: {
-    marginTop: '30px',
+    marginTop: "30px",
   },
 }));
 
 // Remove the 'SL-' from a location termSL (e.g. "SL-0097")
 // The sib-swissbiopics component (different from what is documented)
 // actually doesn't accept the "SL-" part of the term
-const parseLocationTerm = term => term?.substring(3);
+const parseLocationTerm = (term) => term?.substring(3);
 
 // Parse termSL to specific id format used by the text for rollovers
-const parseTermToTextId = term => (term ? `${term.replace('-', '')}term` : '');
+const parseTermToTextId = (term) =>
+  term ? `${term.replace("-", "")}term` : "";
 
 // Parse API response and split locations based on sources. Example:
 // { HPA_main: [], uniprot: [], }
-const parseLocationData = subcellularLocations => {
+const parseLocationData = (subcellularLocations) => {
   const sourcesLocations = {};
-  subcellularLocations.forEach(sl => {
+  subcellularLocations.forEach((sl) => {
     if (sourcesLocations[sl.source] === undefined) {
       sourcesLocations[sl.source] = [];
     }
@@ -59,15 +53,15 @@ const parseLocationData = subcellularLocations => {
 
 // Filter the sources array to only those with data
 const filterSourcesWithData = (sources, sourcesLocations) =>
-  sources.filter(s => sourcesLocations[s.id] !== undefined);
+  sources.filter((s) => sourcesLocations[s.id] !== undefined);
 
-const getTabId = id => `${id}-tab`;
+const getTabId = (id) => `${id}-tab`;
 
 function LocationLink({ sourceId, id }) {
   return (
     <Link
       external
-      to={identifiersOrgLink(sourceId === 'uniprot' ? 'uniprot' : 'hpa', id)}
+      to={identifiersOrgLink(sourceId === "uniprot" ? "uniprot" : "hpa", id)}
     >
       {id}
     </Link>
@@ -107,10 +101,10 @@ function SubcellularVizTabs({ sources: activeSources, children }) {
   useEffect(() => {
     // update tab panels visibility: we change the style of the DOM element directly
     // to avoid any re-rendering as that causes the swissbiopic component to crash
-    children.forEach(child => {
-      child.ref.current.setAttribute('style', 'display:none');
+    children.forEach((child) => {
+      child.ref.current.setAttribute("style", "display:none");
     });
-    children[activeTab].ref.current.setAttribute('style', 'display:block');
+    children[activeTab].ref.current.setAttribute("style", "display:block");
   });
 
   return (
@@ -138,23 +132,23 @@ function SubcellularViz({ data: target }) {
   // define the sources here so we can have call useRef() and then pass it to the tabs panels
   const sources = [
     {
-      id: 'HPA_main',
-      label: 'HPA main location',
+      id: "HPA_main",
+      label: "HPA main location",
       ref: useRef(),
     },
     {
-      id: 'HPA_additional',
-      label: 'HPA additional location',
+      id: "HPA_additional",
+      label: "HPA additional location",
       ref: useRef(),
     },
     {
-      id: 'HPA_extracellular_location',
-      label: 'HPA extracellular location',
+      id: "HPA_extracellular_location",
+      label: "HPA extracellular location",
       ref: useRef(),
     },
     {
-      id: 'uniprot',
-      label: 'UniProt',
+      id: "uniprot",
+      label: "UniProt",
       ref: useRef(),
     },
   ];
@@ -177,16 +171,16 @@ function SubcellularViz({ data: target }) {
               <SwissbioViz
                 taxonId="9606"
                 locationIds={sourcesLocations[s.id]
-                  .map(l => parseLocationTerm(l.termSL))
+                  .map((l) => parseLocationTerm(l.termSL))
                   .join()}
                 sourceId={s.id.toLowerCase()}
               >
                 <Box ml={4} key={s.id}>
                   <Typography variant="h6">{s.label}</Typography>
-                  Location for{' '}
+                  Location for{" "}
                   <LocationLink
                     sourceId={s.id}
-                    id={s.id === 'uniprot' ? uniprotId : target.id}
+                    id={s.id === "uniprot" ? uniprotId : target.id}
                   />
                   <LocationsList sls={sourcesLocations[s.id]} />
                 </Box>

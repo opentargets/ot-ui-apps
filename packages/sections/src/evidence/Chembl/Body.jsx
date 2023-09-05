@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
 import { Link, SectionItem, Tooltip, ChipList } from "ui";
 import { DataTable, TableDrawer } from "../../components/Table";
 import {

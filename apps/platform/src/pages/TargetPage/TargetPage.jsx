@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
-import { Tab, Tabs } from '@material-ui/core';
+import { Box, Tab, Tabs } from '@mui/material';
 import { Link, Route, Switch, useLocation } from 'react-router-dom';
 import { v1 } from 'uuid';
 import { LoadingBackdrop } from 'ui';
@@ -46,11 +46,18 @@ function TargetPageTabs({ ensgId }) {
   );
 
   return (
-    <Tabs value={activeTabIndex}>
-      {ableRoutes.map(route => (
-        <Tab key={v1()} label={route.label} component={Link} to={route.path} />
-      ))}
-    </Tabs>
+    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Tabs value={activeTabIndex}>
+        {ableRoutes.map(route => (
+          <Tab
+            key={v1()}
+            label={route.label}
+            component={Link}
+            to={route.path}
+          />
+        ))}
+      </Tabs>
+    </Box>
   );
 }
 

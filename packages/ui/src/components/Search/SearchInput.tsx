@@ -1,11 +1,7 @@
 import { useEffect, useContext, useRef } from "react";
-import { Search } from "@material-ui/icons";
-import {
-  makeStyles,
-  TextField,
-  InputAdornment,
-  TextFieldProps,
-} from "@material-ui/core";
+import { Search } from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
+import { TextField, InputAdornment, TextFieldProps } from "@mui/material";
 import useDebounce from "../../hooks/useDebounce";
 import { SearchContext } from "./SearchContext";
 
@@ -53,7 +49,7 @@ function SearchInput({
   debounceValue,
   onClose,
   isHomePage,
-  focus,
+  focus=true,
   setOpen,
 }: {
   params: TextFieldProps;
@@ -74,8 +70,8 @@ function SearchInput({
   }, [debouncedInputValue]);
 
   useEffect(() => {
-    if (inputRef.current) {
-      (!isHomePage || focus) && inputRef.current.focus();
+    if (inputRef.current && (!isHomePage || focus)) {
+      inputRef.current.focus();
     }
   }, [focus, isHomePage]);
 
@@ -84,6 +80,7 @@ function SearchInput({
       <TextField
         inputRef={inputRef}
         className={classes.searchInput}
+        variant="standard"
         {...params}
         InputProps={{
           ...params.InputProps,
@@ -94,7 +91,11 @@ function SearchInput({
           ),
           endAdornment: !isHomePage && (
             <InputAdornment position="end">
-              <button className={classes.escButton} onClick={onClose}>
+              <button
+                type="button"
+                className={classes.escButton}
+                onClick={onClose}
+              >
                 esc
               </button>
             </InputAdornment>

@@ -1,15 +1,16 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { Box, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   matchInnerContainer: {
     background: `${theme.palette.grey[200]}`,
-    marginLeft: '.5rem',
-    padding: '.5rem',
-    whiteSpace: 'normal',
+    marginLeft: ".5rem",
+    padding: ".5rem",
+    whiteSpace: "normal",
   },
   matchOuterContainer: {
-    alignItems: 'center',
-    display: 'flex',
+    alignItems: "center",
+    display: "flex",
   },
   diseaseMark: {
     backgroundColor: theme.palette.secondary.light,
@@ -28,7 +29,7 @@ function SentenceMatch({ match }) {
     match.tEnd + 1,
   ].sort((a, b) => a - b);
 
-  const whichMatch = index => {
+  const whichMatch = (index) => {
     if (index === match.dStart) return classes.diseaseMark;
     if (index === match.tStart) return classes.targetMark;
 

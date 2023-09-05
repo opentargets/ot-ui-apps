@@ -1,17 +1,18 @@
-import { useState, useEffect } from 'react';
-import { Slider, withStyles } from '@material-ui/core';
-import useAotfContext from '../hooks/useAotfContext';
-import { getWightSourceDefault } from '../utils';
+import { useState, useEffect } from "react";
+import { Slider } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import useAotfContext from "../hooks/useAotfContext";
+import { getWightSourceDefault } from "../utils";
 
 const OTSlider = withStyles({
   mark: {
-    backgroundColor: '#b8b8b8',
+    backgroundColor: "#b8b8b8",
     width: 10,
     height: 1,
     marginLeft: -4,
   },
   valueLabel: {
-    zIndex: '9999',
+    zIndex: "9999",
   },
 })(Slider);
 
@@ -22,7 +23,7 @@ const sliderPayload = (id, value) => ({
 });
 
 const getSliderValue = (values, id) => {
-  const value = values.find(val => val.id === id).weight;
+  const value = values.find((val) => val.id === id).weight;
   return value;
 };
 
@@ -38,7 +39,7 @@ function SliderControll({ id }) {
   useEffect(() => {
     if (initialValue === value) return;
     const newDataValue = sliderPayload(id, value);
-    const newDataSources = dataSourcesWeights.map(src => {
+    const newDataSources = dataSourcesWeights.map((src) => {
       if (src.id === id) {
         return newDataValue;
       }

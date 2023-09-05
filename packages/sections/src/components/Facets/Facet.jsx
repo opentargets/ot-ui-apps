@@ -3,37 +3,37 @@ import {
   AccordionDetails,
   AccordionSummary,
   IconButton,
-  makeStyles,
   Typography,
-} from '@material-ui/core';
-import { ChevronRight, Clear, ExpandMore } from '@material-ui/icons';
-import { TreeView } from '@material-ui/lab';
+} from "@mui/material";
+import { ChevronRight, Clear, ExpandMore } from "@mui/icons-material";
+import { TreeView } from "@mui/lab";
+import { makeStyles } from "@mui/styles";
 
-import { hasAnyDescendantChecked } from './utils';
-import TreeLevel from './TreeLevel';
+import { hasAnyDescendantChecked } from "./utils";
+import TreeLevel from "./TreeLevel";
 
 const useStyles = makeStyles({
   accordionSummaryContent: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    margin: 0,
+    alignItems: "center",
+    justifyContent: "space-between",
+    margin: "0 !important",
   },
   clearButtonRoot: {
-    height: 'unset',
+    height: "unset",
   },
   facetRoot: {
-    width: '100%',
+    width: "100%",
   },
 });
 
 function Facet({ loading, treeId, label, aggs, onSelectionChange }) {
   const classes = useStyles();
 
-  const handleSelectionChange = newSelection => {
+  const handleSelectionChange = (newSelection) => {
     onSelectionChange(newSelection);
   };
 
-  const handleClickClear = event => {
+  const handleClickClear = (event) => {
     event.stopPropagation();
     onSelectionChange([treeId], false);
   };

@@ -1,23 +1,23 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Popover,
   FormGroup,
   Button,
   FormControlLabel,
   Checkbox,
-} from '@material-ui/core';
-import { faGear } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { styled } from '@material-ui/styles';
+} from "@mui/material";
+import { faGear } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { styled } from "@mui/styles";
 
-import useAotfContext from './hooks/useAotfContext';
+import useAotfContext from "./hooks/useAotfContext";
 
-const TextContent = styled('div')({
-  marginLeft: '5px',
+const TextContent = styled("div")({
+  marginLeft: "5px",
 });
 
-const PopoverContent = styled('div')({
-  padding: '15px',
+const PopoverContent = styled("div")({
+  padding: "15px",
 });
 
 function DataMenu() {
@@ -31,9 +31,9 @@ function DataMenu() {
     displayedTable,
   } = useAotfContext();
 
-  const isPrioritisation = displayedTable === 'prioritisations';
+  const isPrioritisation = displayedTable === "prioritisations";
 
-  const handleClick = event => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -42,7 +42,7 @@ function DataMenu() {
   };
 
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const id = open ? "simple-popover" : undefined;
 
   return (
     <>
@@ -62,12 +62,12 @@ function DataMenu() {
         onClose={handleClose}
         open={open}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: "bottom",
+          horizontal: "left",
         }}
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
+          vertical: "top",
+          horizontal: "left",
         }}
       >
         <PopoverContent>

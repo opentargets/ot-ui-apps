@@ -1,9 +1,9 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from "@mui/material";
 
-import client from '../../client';
-import SummaryTable from './SummaryTable';
-import EXPRESSION_QUERY from './ExpressionQuery.gql';
-import DataDownloader from '../../components/DataDownloader';
+import client from "../../client";
+import SummaryTable from "./SummaryTable";
+import EXPRESSION_QUERY from "./ExpressionQuery.gql";
+import DataDownloader from "../../components/DataDownloader";
 
 export function getData(ensgId) {
   return client.query({
@@ -13,18 +13,18 @@ export function getData(ensgId) {
 }
 
 const headers = [
-  { id: 'label', label: 'Tissue' },
-  { id: 'organs', label: 'Organs' },
-  { id: 'anatomicalSystems', label: 'Anatomical Systems' },
-  { id: 'rna', label: 'RNA' },
-  { id: 'protein', label: 'Protein' },
+  { id: "label", label: "Tissue" },
+  { id: "organs", label: "Organs" },
+  { id: "anatomicalSystems", label: "Anatomical Systems" },
+  { id: "rna", label: "RNA" },
+  { id: "protein", label: "Protein" },
 ];
 
-const getDownloadRows = expressions =>
-  expressions.map(expression => ({
+const getDownloadRows = (expressions) =>
+  expressions.map((expression) => ({
     label: expression.tissue.label,
-    organs: expression.tissue.organs.join(','),
-    anatomicalSystems: expression.tissue.anatomicalSystems.join(','),
+    organs: expression.tissue.organs.join(","),
+    anatomicalSystems: expression.tissue.anatomicalSystems.join(","),
     rna: expression.rna.value,
     protein: expression.protein.level,
   }));

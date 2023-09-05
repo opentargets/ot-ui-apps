@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { useQuery } from "@apollo/client";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
 import {
   faArrowAltCircleUp,
   faArrowAltCircleDown,
@@ -240,7 +240,7 @@ const exportColumns = [
   },
 ];
 
-function Body({ id, label, entity}) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
 
   const request = useQuery(ENCORE_QUERY, {

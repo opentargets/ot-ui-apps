@@ -1,12 +1,6 @@
-import {
-  Grid,
-  makeStyles,
-  Typography,
-  Hidden,
-  Box,
-  useMediaQuery,
-} from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
+import { Grid, Typography, Hidden, Box, useMediaQuery, IconButton } from '@mui/material';
+
+import { makeStyles, useTheme } from '@mui/styles';
 import { Helmet } from 'react-helmet';
 
 import { Footer, AutocompleteSearch } from 'ui';
@@ -209,26 +203,27 @@ function HomePage() {
 
         {/* scroll down button */}
         <Grid container justifyContent="center">
-          <button
-            type="button"
+          <IconButton
             className="fa-layers fa-fw fa-3x"
             style={{
               height: '0px',
-              marginTop: '-1em',
+              marginTop: '-3em',
               filter: 'drop-shadow( 1px 1px 2px rgba(0, 0, 0, .5))',
               cursor: 'pointer',
+              fontSize: '40px'
             }}
+            size="large"
             onClick={handleScrollDown}
           >
             <FontAwesomeIcon icon={faCircle} inverse />
             <FontAwesomeIcon icon={faChevronDown} transform="shrink-4" />
-          </button>
+          </IconButton>
         </Grid>
       </Grid>
 
       {/* About */}
-      <Grid container justifyContent="center" className={classes.hpSection}>
-        <Grid item xs={10} md={8}>
+      <Grid container justifyContent="center" sx={{my: 1}}>
+        <Grid item xs={10} md={8} sx={{my: 2}}>
           <Typography variant="h4" component="h1" align="center" paragraph>
             About the Open Targets Platform
           </Typography>
@@ -260,8 +255,8 @@ function HomePage() {
       </Grid>
 
       {/* Get started */}
-      <Grid container justifyContent="center" className={classes.hpSection}>
-        <Grid item xs={10} md={8}>
+      <Grid container justifyContent="center" sx={{mb: 8}}>
+        <Grid item xs={10} md={8} sx={{my: 4}}>
           <Typography variant="h4" component="h1" align="center" paragraph>
             Get started with the Platform
           </Typography>
@@ -271,6 +266,7 @@ function HomePage() {
             justifyContent="space-evenly"
             alignItems="flex-start"
             spacing={1}
+            sx={{mt:3}}
           >
             <Grid item xs={12} sm="auto">
               <HelpBoxPanel

@@ -8,8 +8,7 @@ import {
   Grid,
   LinearProgress,
   Typography,
-  Grow,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Element } from "react-scroll";
 
 import ErrorBoundary from "../ErrorBoundary";
@@ -39,7 +38,7 @@ function SectionItem({
     hasData = definition.hasData(data[entity]);
   }
 
-  if (!hasData && !showEmptySection) return null;
+  if (!hasData && !showEmptySection && !loading) return null;
 
   return (
     <Grid item xs={12}>

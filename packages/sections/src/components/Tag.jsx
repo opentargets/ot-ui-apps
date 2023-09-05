@@ -1,10 +1,11 @@
-import { Chip, useTheme } from '@material-ui/core';
+import { Chip } from "@mui/material";
+import { useTheme } from "@mui/styles";
 
 function Tag({ type }) {
   const theme = useTheme();
   const tagTypes = {
-    new: { color: theme.palette.primary, label: 'New' },
-    wip: { color: theme.palette.warning, label: 'WIP' },
+    new: { color: theme.palette.primary, label: "New" },
+    wip: { color: theme.palette.warning, label: "WIP" },
   };
 
   if (!tagTypes[type]) {
@@ -18,8 +19,8 @@ function Tag({ type }) {
       style={{
         backgroundColor: tagTypes[type].color.main,
         color: tagTypes[type].color.contrastText,
-        marginRight: '.5rem',
-        fontWeight: 'bold',
+        marginRight: ".5rem",
+        fontWeight: "bold",
       }}
     />
   );

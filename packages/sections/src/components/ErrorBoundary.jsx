@@ -1,7 +1,7 @@
-import { Component } from 'react';
-import { Typography } from '@material-ui/core';
-import config from '../config';
-import Link from './Link';
+import { Component } from "react";
+import { Typography } from "@mui/material";
+import config from "../config";
+import Link from "./Link";
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -24,7 +24,7 @@ class ErrorBoundary extends Component {
       message = isPartnerPreview ? (
         // PPP error message
         <div>
-          Something went wrong. Please contact Open Targets at{' '}
+          Something went wrong. Please contact Open Targets at{" "}
           <Link to={`mailto: ${config.profile.helpdeskEmail}`} external>
             {config.profile.helpdeskEmail}
           </Link>
@@ -32,10 +32,10 @@ class ErrorBoundary extends Component {
       ) : (
         // public platform error message
         <div>
-          Something went wrong. Please{' '}
+          Something went wrong. Please{" "}
           <Link to={config.profile.communityTicketUrl} external>
             submit a bug report
-          </Link>{' '}
+          </Link>{" "}
           on the Open Targets Community ({config.profile.communityUrl})
         </div>
       ),

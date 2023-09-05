@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { withStyles, Checkbox } from '@material-ui/core';
+import { Checkbox } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import useAotfContext from '../hooks/useAotfContext';
 import { checkBoxPayload, getControlChecked } from '../utils';
 

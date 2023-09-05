@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
-import { styled } from '@material-ui/styles';
-import { Collapse } from '@material-ui/core';
+import { styled } from '@mui/styles';
+import { Collapse } from '@mui/material';
 import { LoadingBackdrop } from 'ui';
 import { ENTITIES } from '../utils';
 

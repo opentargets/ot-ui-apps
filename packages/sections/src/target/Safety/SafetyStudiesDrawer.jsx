@@ -1,39 +1,33 @@
-import { useState } from 'react';
-import {
-  Drawer,
-  Button,
-  IconButton,
-  Paper,
-  Typography,
-  makeStyles,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { useState } from "react";
+import { Drawer, Button, IconButton, Paper, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import CloseIcon from "@mui/icons-material/Close";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   drawerLink: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
   backdrop: {
-    '& .MuiBackdrop-root': {
-      opacity: '0 !important',
+    "& .MuiBackdrop-root": {
+      opacity: "0 !important",
     },
   },
   container: {
     backgroundColor: theme.palette.grey[300],
   },
   title: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    borderBottom: '1px solid #ccc',
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    padding: '1rem',
+    display: "flex",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    borderBottom: "1px solid #ccc",
+    fontSize: "1.2rem",
+    fontWeight: "bold",
+    padding: "1rem",
   },
   paper: {
-    width: '420px',
-    margin: '1.5rem',
-    padding: '1rem',
+    width: "420px",
+    margin: "1.5rem",
+    padding: "1rem",
   },
 }));
 
@@ -50,7 +44,7 @@ function SafetyStudiesDrawer({ studies }) {
   }
 
   if (studies.length === 0) {
-    return 'N/A';
+    return "N/A";
   }
 
   return (
@@ -68,7 +62,7 @@ function SafetyStudiesDrawer({ studies }) {
             <CloseIcon />
           </IconButton>
         </Typography>
-        {studies.map(study => (
+        {studies.map((study) => (
           <Paper key={study.name} className={classes.paper} variant="outlined">
             <Typography variant="h6" gutterBottom>
               Study:

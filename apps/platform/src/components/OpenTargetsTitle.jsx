@@ -1,10 +1,10 @@
-import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import { Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
 
 import usePermissions from '../hooks/usePermissions';
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: 'inline',
   },
@@ -16,9 +16,10 @@ const styles = () => ({
     fontWeight: 300,
     textTransform: 'capitalize',
   },
-});
+}));
 
-function OpenTargetsTitle({ classes, className, name }) {
+function OpenTargetsTitle({ className, name }) {
+  const classes = useStyles();
   const titleClasses = classNames(classes.root, className);
   const { isPartnerPreview } = usePermissions();
   const displayedAppName = isPartnerPreview ? 'Partner Preview Platform' : name;
@@ -30,4 +31,4 @@ function OpenTargetsTitle({ classes, className, name }) {
   );
 }
 
-export default withStyles(styles)(OpenTargetsTitle);
+export default OpenTargetsTitle;

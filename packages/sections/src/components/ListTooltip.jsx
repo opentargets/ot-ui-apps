@@ -1,24 +1,27 @@
-import Paper from '@material-ui/core/Paper';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Popper from '@material-ui/core/Popper';
-import Fade from '@material-ui/core/Fade';
-import { withStyles } from '@material-ui/core/styles';
-import { v1 } from 'uuid';
+import {
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  Popper,
+  Fade,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { v1 } from "uuid";
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   listitem: {
-    padding: '0.2rem 0.6rem',
-    width: '100%',
+    padding: "0.2rem 0.6rem",
+    width: "100%",
   },
   listItemText: {
-    fontSize: '0.75rem',
-    minWidth: '100%',
+    fontSize: "0.75rem",
+    minWidth: "100%",
   },
-});
+}));
 
-function ListTooltip({ classes, dataList, open, anchorEl, container }) {
+function ListTooltip({ dataList, open, anchorEl, container }) {
+  const classes = useStyles();
   return (
     <Popper
       open={open}
@@ -29,7 +32,7 @@ function ListTooltip({ classes, dataList, open, anchorEl, container }) {
       modifiers={{
         preventOverflow: {
           enabled: true,
-          boundariesElement: 'window',
+          boundariesElement: "window",
         },
       }}
     >
@@ -39,7 +42,7 @@ function ListTooltip({ classes, dataList, open, anchorEl, container }) {
         <Fade {...TransitionProps} timeout={350}>
           <Paper>
             <List dense>
-              {dataList.map(d => (
+              {dataList.map((d) => (
                 <ListItem key={v1()} className={classes.listitem}>
                   <ListItemText
                     primary={d.label}
@@ -56,4 +59,4 @@ function ListTooltip({ classes, dataList, open, anchorEl, container }) {
   );
 }
 
-export default withStyles(styles)(ListTooltip);
+export default ListTooltip;

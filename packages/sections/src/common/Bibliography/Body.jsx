@@ -1,15 +1,17 @@
 import { Component } from "react";
 import { v1 } from "uuid";
-import { Autocomplete } from "@material-ui/lab";
 import {
+  Autocomplete,
   Box,
   Button,
   Chip,
   Grid,
   TextField,
   Typography,
-  withStyles,
-} from "@material-ui/core";
+} from "@mui/material";
+import { withStyles } from "@mui/styles";
+// TODO: note this component is not actually used.
+// Only SimplePublication is used in evidence bibliography
 
 import Publication from "./Publication";
 import { getAggregationsData, getPublicationsData } from "./Api";

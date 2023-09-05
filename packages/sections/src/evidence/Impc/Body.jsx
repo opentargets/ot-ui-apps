@@ -1,20 +1,20 @@
-import { Typography } from '@material-ui/core';
-import { useQuery } from '@apollo/client';
-import { Link, SectionItem, Tooltip } from 'ui';
+import { Typography } from "@mui/material";
+import { useQuery } from "@apollo/client";
+import { Link, SectionItem, Tooltip } from "ui";
 
-import { definition } from '.';
-import Description from './Description';
-import INTOGEN_QUERY from './sectionQuery.gql';
-import { dataTypesMap } from '../../dataTypes';
-import { sentenceCase } from '../../utils/global';
-import { DataTable, TableDrawer } from '../../components/Table';
-import { defaultRowsPerPageOptions, naLabel } from '../../constants';
-import MouseModelAllelicComposition from '../../components/MouseModelAllelicComposition';
+import { definition } from ".";
+import Description from "./Description";
+import INTOGEN_QUERY from "./sectionQuery.gql";
+import { dataTypesMap } from "../../dataTypes";
+import { sentenceCase } from "../../utils/global";
+import { DataTable, TableDrawer } from "../../components/Table";
+import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import MouseModelAllelicComposition from "../../components/MouseModelAllelicComposition";
 
 const columns = [
   {
-    id: 'disease',
-    label: 'Disease/phenotype',
+    id: "disease",
+    label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -36,15 +36,15 @@ const columns = [
       [disease.name, diseaseFromSource].join(),
   },
   {
-    id: 'diseaseModelAssociatedHumanPhenotypes',
-    label: 'Human phenotypes',
+    id: "diseaseModelAssociatedHumanPhenotypes",
+    label: "Human phenotypes",
     renderCell: ({
       diseaseModelAssociatedHumanPhenotypes: humanPhenotypes,
     }) => {
       const entries = humanPhenotypes
-        ? humanPhenotypes.map(entry => ({
+        ? humanPhenotypes.map((entry) => ({
             name: entry.label,
-            group: 'Human phenotypes',
+            group: "Human phenotypes",
           }))
         : [];
       return (
@@ -52,38 +52,38 @@ const columns = [
           entries={entries}
           showSingle={false}
           message={`${humanPhenotypes ? humanPhenotypes.length : 0} phenotype${
-            humanPhenotypes === null || humanPhenotypes.length !== 1 ? 's' : ''
+            humanPhenotypes === null || humanPhenotypes.length !== 1 ? "s" : ""
           }`}
         />
       );
     },
     filterValue: ({ diseaseModelAssociatedHumanPhenotypes = [] }) =>
-      diseaseModelAssociatedHumanPhenotypes.map(dmahp => dmahp.label).join(),
+      diseaseModelAssociatedHumanPhenotypes.map((dmahp) => dmahp.label).join(),
   },
   {
-    id: 'diseaseModelAssociatedModelPhenotypes',
-    label: 'Mouse phenotypes',
+    id: "diseaseModelAssociatedModelPhenotypes",
+    label: "Mouse phenotypes",
 
     renderCell: ({
       diseaseModelAssociatedModelPhenotypes: mousePhenotypes,
     }) => (
       <TableDrawer
-        entries={mousePhenotypes.map(entry => ({
+        entries={mousePhenotypes.map((entry) => ({
           name: entry.label,
-          group: 'Mouse phenotypes',
+          group: "Mouse phenotypes",
         }))}
         showSingle={false}
         message={`${mousePhenotypes.length} phenotype${
-          mousePhenotypes.length !== 1 ? 's' : ''
+          mousePhenotypes.length !== 1 ? "s" : ""
         }`}
       />
     ),
     filterValue: ({ diseaseModelAssociatedModelPhenotypes = [] }) =>
-      diseaseModelAssociatedModelPhenotypes.map(dmamp => dmamp.label).join(),
+      diseaseModelAssociatedModelPhenotypes.map((dmamp) => dmamp.label).join(),
   },
   {
-    id: 'literature',
-    label: 'Mouse model allelic composition',
+    id: "literature",
+    label: "Mouse model allelic composition",
     renderCell: ({
       biologicalModelAllelicComposition,
       biologicalModelGeneticBackground,
@@ -139,7 +139,7 @@ function Body({ id, label, entity }) {
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
-      renderBody={data => (
+      renderBody={(data) => (
         <DataTable
           columns={columns}
           dataDownloader

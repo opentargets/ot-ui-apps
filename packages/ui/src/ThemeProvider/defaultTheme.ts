@@ -1,4 +1,4 @@
-import { createTheme, colors } from "@material-ui/core";
+import { colors } from "@mui/material";
 import { lighten, darken } from "polished";
 
 const { grey } = colors;
@@ -6,12 +6,13 @@ const { grey } = colors;
 const PRIMARY = "#3489ca";
 const SECONDARY = "#ff6350";
 
-const theme = createTheme({
+const theme = {
   shape: {
     borderRadius: 0,
   },
   typography: {
     fontFamily: '"Inter", sans-serif',
+    fontSize: "12px",
   },
   palette: {
     primary: {
@@ -137,6 +138,6 @@ const theme = createTheme({
       },
     },
   },
-});
+};
 
 export default theme;

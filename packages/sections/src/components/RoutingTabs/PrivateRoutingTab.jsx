@@ -1,6 +1,6 @@
-import { Tab } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import usePermissions from '../../hooks/usePermissions';
+import { Tab } from "@mui/material";
+import { Link } from "react-router-dom";
+import usePermissions from "../../hooks/usePermissions";
 
 function PrivateRoutingTab({ component, ...props }) {
   const { isPartnerPreview } = usePermissions();

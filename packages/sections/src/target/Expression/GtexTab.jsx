@@ -1,11 +1,11 @@
-import { useRef } from 'react';
-import { median as d3Median, quantile } from 'd3';
-import { DownloadSvgPlot } from '../../components/DownloadSvgPlot';
+import { useRef } from "react";
+import { median as d3Median, quantile } from "d3";
+import { DownloadSvgPlot } from "../../components/DownloadSvgPlot";
 
-import GtexVariability from './GtexVariability';
+import GtexVariability from "./GtexVariability";
 
-const transformData = data =>
-  data.map(d => {
+const transformData = (data) =>
+  data.map((d) => {
     // d3 requires for the array of values to be sorted before using median and quantile
     d.data.sort((a, b) => a - b);
     const median = d3Median(d.data);
@@ -16,7 +16,7 @@ const transformData = data =>
     const iqr = q3 - q1; // interquartile range
 
     // find the outliers and not outliers
-    d.data.forEach(item => {
+    d.data.forEach((item) => {
       if (item < q1 - 1.5 * iqr || item > q3 + 1.5 * iqr) {
         outliers.push(item);
       } else {
@@ -44,7 +44,14 @@ export async function getData(symbol) {
     const urlData = `https://gtexportal.org/rest/v1/expression/geneExpression?gencodeId=${gencodeId}`;
     const resData = await fetch(urlData);
     const rawData = await resData.json();
-    const data = transformData(rawData.geneExpression);
+    // TODO:
+    // in order for the SectionItem null check to work, the data needs to match the target object format.
+    // Ideally when switching tabs we don't want to check and hide the widget, so this should be handled differently
+    const data = {
+      target: {
+        expressions: transformData(rawData.geneExpression),
+      },
+    };
 
     return { loading: false, data };
   } catch (error) {
@@ -60,7 +67,7 @@ function GtexTab({ symbol, data }) {
       svgContainer={gtexVariability}
       filenameStem={`${symbol}-gtex`}
     >
-      <GtexVariability data={data} ref={gtexVariability} />
+      <GtexVariability data={data.target.expressions} ref={gtexVariability} />
     </DownloadSvgPlot>
   );
 }

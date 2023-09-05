@@ -1,24 +1,23 @@
-import { useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
-import { Link, SectionItem, Tooltip } from 'ui';
+import { useQuery } from "@apollo/client";
+import { Typography } from "@mui/material";
+import { Link, SectionItem, Tooltip } from "ui";
 
-import { definition } from '.';
-import Summary from './Summary';
-import Description from './Description';
-import { epmcUrl } from '../../utils/urls';
-import { dataTypesMap } from '../../dataTypes';
-import REACTOME_QUERY from './sectionQuery.gql';
-import { sentenceCase } from '../../utils/global';
-import EllsWrapper from '../../components/EllsWrapper';
-import { DataTable, TableDrawer } from '../../components/Table';
-import { defaultRowsPerPageOptions, naLabel } from '../../constants';
-import { PublicationsDrawer } from '../../components/PublicationsDrawer';
-
+import { definition } from ".";
+import Summary from "./Summary";
+import Description from "./Description";
+import { epmcUrl } from "../../utils/urls";
+import { dataTypesMap } from "../../dataTypes";
+import REACTOME_QUERY from "./sectionQuery.gql";
+import { sentenceCase } from "../../utils/global";
+import EllsWrapper from "../../components/EllsWrapper";
+import { DataTable, TableDrawer } from "../../components/Table";
+import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
 const columns = [
   {
-    id: 'disease.name',
-    label: 'Disease / phenotype',
+    id: "disease.name",
+    label: "Disease / phenotype",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -38,11 +37,11 @@ const columns = [
         </Link>
       </Tooltip>
     ),
-    width: '18%',
+    width: "18%",
   },
   {
-    id: 'pathwayName',
-    label: 'Pathway',
+    id: "pathwayName",
+    label: "Pathway",
     renderCell: ({ pathways }) => {
       if (!pathways || pathways.length === 0) {
         return naLabel;
@@ -57,28 +56,28 @@ const columns = [
           </Link>
         );
       }
-      const refs = pathways.map(p => ({
+      const refs = pathways.map((p) => ({
         url: `http://www.reactome.org/PathwayBrowser/#${p.id}`,
         name: p.name,
-        group: 'Pathways',
+        group: "Pathways",
       }));
       return <TableDrawer entries={refs} message={`${refs.length} pathways`} />;
     },
-    width: '17%',
+    width: "17%",
   },
   {
-    id: 'reactionId',
-    label: 'Reaction',
+    id: "reactionId",
+    label: "Reaction",
     renderCell: ({ reactionName, reactionId }) => (
       <Link external to={`https://identifiers.org/reactome/${reactionId}`}>
         <EllsWrapper>{reactionName}</EllsWrapper>
       </Link>
     ),
-    width: '17%',
+    width: "17%",
   },
   {
-    id: 'targetFromSourceId',
-    label: 'Reported target',
+    id: "targetFromSourceId",
+    label: "Reported target",
     renderCell: ({ targetFromSourceId }) => (
       <Link
         external
@@ -87,11 +86,11 @@ const columns = [
         <EllsWrapper>{targetFromSourceId}</EllsWrapper>
       </Link>
     ),
-    width: '12%',
+    width: "12%",
   },
   {
-    id: 'targetModulation',
-    label: 'Target modulation',
+    id: "targetModulation",
+    label: "Target modulation",
     renderCell: ({ targetModulation }) =>
       targetModulation ? (
         <EllsWrapper>{sentenceCase(targetModulation)}</EllsWrapper>
@@ -99,14 +98,14 @@ const columns = [
         naLabel
       ),
     filterValue: ({ targetModulation }) => sentenceCase(targetModulation),
-    width: '12%',
+    width: "12%",
   },
   {
     filterValue: ({ variantAminoacidDescriptions }) =>
       variantAminoacidDescriptions
-        .map(variantAminoacidDescription => variantAminoacidDescription)
+        .map((variantAminoacidDescription) => variantAminoacidDescription)
         .join(),
-    label: 'Amino acid variation',
+    label: "Amino acid variation",
     renderCell: ({ variantAminoacidDescriptions }) => {
       if (variantAminoacidDescriptions?.length === 1) {
         return <EllsWrapper>{variantAminoacidDescriptions[0]}</EllsWrapper>;
@@ -114,38 +113,38 @@ const columns = [
       if (variantAminoacidDescriptions?.length > 1) {
         return (
           <TableDrawer
-            entries={variantAminoacidDescriptions.map(d => ({
+            entries={variantAminoacidDescriptions.map((d) => ({
               name: d,
-              group: 'Amino acid variation',
+              group: "Amino acid variation",
             }))}
           />
         );
       }
       return naLabel;
     },
-    width: '12%',
+    width: "12%",
   },
   {
-    id: 'literature',
-    label: 'Literature',
+    id: "literature",
+    label: "Literature",
     renderCell: ({ literature = [] }) => {
       const literatureList = [];
-      literature?.forEach(id => {
-        if (id !== 'NA') {
+      literature?.forEach((id) => {
+        if (id !== "NA") {
           literatureList.push({
             name: id,
             url: epmcUrl(id),
-            group: 'literature',
+            group: "literature",
           });
         }
       });
       return <PublicationsDrawer entries={literatureList} />;
     },
-    width: '12%',
+    width: "12%",
   },
 ];
 
-function Body({  id, label, entity }) {
+function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
 
   const variables = {

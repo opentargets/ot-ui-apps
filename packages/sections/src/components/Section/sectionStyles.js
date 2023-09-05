@@ -1,18 +1,18 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from "@mui/styles";
 
-const sectionStyles = makeStyles(theme => ({
+const sectionStyles = makeStyles((theme) => ({
   avatar: {
-    color: 'white',
+    color: "white",
     backgroundColor: theme.palette.grey[300],
   },
   avatarHasData: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: `${theme.palette.primary.main} !important`,
   },
   avatarError: {
     backgroundColor: theme.palette.secondary.main,
   },
   cardHeaderAction: {
-    alignSelf: 'unset',
+    alignSelf: "unset",
     margin: 0,
   },
   cardHeader: {
@@ -23,8 +23,8 @@ const sectionStyles = makeStyles(theme => ({
     borderTop: `1px solid ${theme.palette.grey[300]}`,
   },
   description: {
-    fontStyle: 'italic',
-    fontSize: '0.8rem',
+    fontStyle: "italic",
+    fontSize: "0.8rem",
     color: theme.palette.grey[400],
   },
   descriptionError: {
@@ -34,12 +34,12 @@ const sectionStyles = makeStyles(theme => ({
     color: theme.palette.grey[700],
   },
   loadingPlaceholder: {
-    paddingTop: '.0625rem',
+    paddingTop: ".0625rem",
   },
   title: {
     color: theme.palette.grey[400],
-    fontWeight: 'bold',
-    fontSize: '1.2rem',
+    fontWeight: "bold !important",
+    fontSize: "1.2rem !important",
   },
   titleHasData: {
     color: theme.palette.grey[700],
@@ -48,8 +48,8 @@ const sectionStyles = makeStyles(theme => ({
     color: theme.palette.secondary.main,
   },
   chip: {
-    position: 'relative',
-    top: '5px',
+    position: "relative",
+    top: "5px",
   },
 }));
 

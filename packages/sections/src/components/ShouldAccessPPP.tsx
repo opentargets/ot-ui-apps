@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,40 +6,40 @@ import {
   DialogContent,
   DialogContentText,
   Button,
-  makeStyles,
-} from '@material-ui/core';
-import { useLocation } from 'react-router-dom';
-import Snackbar from '@material-ui/core/Snackbar';
+  Snackbar,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { useLocation } from "react-router-dom";
 
 const PPP_API_URL =
-  'https://api.partner-platform.opentargets.org/api/v4/graphql';
-const PPP_WEB_URL = 'https://partner-platform.opentargets.org';
+  "https://api.partner-platform.opentargets.org/api/v4/graphql";
+const PPP_WEB_URL = "https://partner-platform.opentargets.org";
 const FOURTEEN = 14;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
-    padding: '1em 1em 2em',
-    borderRadius: '12px',
+    padding: "1em 1em 2em",
+    borderRadius: "12px",
   },
   actions: {
-    '@media (max-width: 767px)': {
-      flexDirection: 'column',
+    "@media (max-width: 767px)": {
+      flexDirection: "column",
     },
   },
   button: {
-    '@media (max-width: 767px)': {
-      minHeight: 'auto',
-      height: '100%',
-      width: '100%',
-      margin: '0 !important',
-      marginTop: '0.3em !important',
+    "@media (max-width: 767px)": {
+      minHeight: "auto",
+      height: "100%",
+      width: "100%",
+      margin: "0 !important",
+      marginTop: "0.3em !important",
     },
   },
   anchorOriginBottomCenter: {
-    bottom: '70px',
-    '& .MuiSnackbarContent-root': {
-      borderRadius: '8px',
-      backgroundColor: 'white',
+    bottom: "70px",
+    "& .MuiSnackbarContent-root": {
+      borderRadius: "8px",
+      backgroundColor: "white",
       color: theme.palette.text.primary,
     },
   },
@@ -55,13 +55,13 @@ function ShouldAccessPPP() {
     const windowLocation = window.location.href;
     // escape validation on dev mode
     if (import.meta.env.DEV) return false;
-    return !windowLocation.includes('partner');
+    return !windowLocation.includes("partner");
   };
 
   const shouldShowPopupAfterFixedDays = (DAYS: number) => {
     const currentDate = new Date();
     const oldDateObject = JSON.parse(
-      localStorage.getItem('ppp-reminder-closed-on') || '{}'
+      localStorage.getItem("ppp-reminder-closed-on") || "{}"
     );
     if (!oldDateObject.date) return true;
     const oldDate = new Date(oldDateObject.date);
@@ -86,7 +86,7 @@ function ShouldAccessPPP() {
   const remindMeLater = () => {
     handleCloseDialog();
     localStorage.setItem(
-      'ppp-reminder-closed-on',
+      "ppp-reminder-closed-on",
       JSON.stringify({ date: new Date() })
     );
     setSnackbarOpen(true);
@@ -94,10 +94,10 @@ function ShouldAccessPPP() {
 
   const checkPPPaccess = () => {
     fetch(PPP_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        operationName: 'DataVersion',
+        operationName: "DataVersion",
         variables: {},
         query: `query DataVersion {
         meta {
@@ -112,11 +112,11 @@ function ShouldAccessPPP() {
     }`,
       }),
     })
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) handleOpenDialog();
       })
       .catch(() => {
-        console.log('Does not have access to Partner Preview Platform');
+        console.log("Does not have access to Partner Preview Platform");
       });
   };
 

@@ -1,13 +1,12 @@
-import { Typography } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Skeleton, Typography } from "@mui/material";
 
-import { LongText } from 'ui';
+import { LongText } from "ui";
 
 function Description({ children, loading = false }) {
   const content = children ? (
     <LongText lineLimit={3}>{children}</LongText>
   ) : (
-    'No description available'
+    "No description available"
   );
 
   return (

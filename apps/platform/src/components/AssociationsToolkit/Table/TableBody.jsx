@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { flexRender } from '@tanstack/react-table';
-import { ClickAwayListener, Fade, Box } from '@material-ui/core';
+import { ClickAwayListener, Fade, Box } from '@mui/material';
 import { v1 } from 'uuid';
 
 import useAotfContext from '../hooks/useAotfContext';

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   List,
   ListItem,
@@ -6,8 +6,8 @@ import {
   Box,
   Link as MUILink,
   Button,
-} from '@material-ui/core';
-import { useRecoilSnapshot, useGotoRecoilSnapshot } from 'recoil';
+} from "@mui/material";
+import { useRecoilSnapshot, useGotoRecoilSnapshot } from "recoil";
 
 export default function TimeTravelObserver() {
   const [snapshots, setSnapshots] = useState([]);
@@ -15,10 +15,10 @@ export default function TimeTravelObserver() {
 
   const snapshot = useRecoilSnapshot();
 
-  const toggleDrawer = event => {
+  const toggleDrawer = (event) => {
     if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
     ) {
       return;
     }
@@ -32,7 +32,7 @@ export default function TimeTravelObserver() {
 
   useEffect(
     () => {
-      if (snapshots.every(s => s.getID() !== snapshot.getID())) {
+      if (snapshots.every((s) => s.getID() !== snapshot.getID())) {
         setSnapshots([...snapshots, snapshot]);
       }
     },
@@ -47,11 +47,13 @@ export default function TimeTravelObserver() {
       <MUILink onClick={toggleDrawer}>Time Travel Observer</MUILink>
       <Drawer anchor="right" open={open} onClose={closeDrawer}>
         <Box>
-          <List style={{ width: '250px' }}>
+          <List style={{ width: "250px" }}>
             {snapshots.map((snapshotItem, i) => (
               <ListItem key={snapshotItem.getID()}>
                 Snapshot {i}
-                <Button onClick={() => gotoSnapshot(snapshotItem)}>Restore</Button>
+                <Button onClick={() => gotoSnapshot(snapshotItem)}>
+                  Restore
+                </Button>
               </ListItem>
             ))}
           </List>

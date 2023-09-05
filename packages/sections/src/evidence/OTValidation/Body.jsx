@@ -1,21 +1,22 @@
-import _ from 'lodash';
-import classNames from 'classnames';
-import { useQuery } from '@apollo/client';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { faTimesCircle } from '@fortawesome/free-regular-svg-icons';
-import { Box, makeStyles, Typography, Chip, Grid } from '@material-ui/core';
-import { Link, SectionItem, Tooltip, ChipList } from 'ui';
+import _ from "lodash";
+import classNames from "classnames";
+import { useQuery } from "@apollo/client";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
+import { Box, Typography, Chip, Grid } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { Link, SectionItem, Tooltip, ChipList } from "ui";
 
-import { definition } from '.';
-import Summary from './Summary';
-import Description from './Description';
-import { dataTypesMap } from '../../dataTypes';
-import { DataTable } from '../../components/Table';
-import { defaultRowsPerPageOptions } from '../../constants';
-import VALIDATION_QUERY from './OTValidationQuery.gql';
+import { definition } from ".";
+import Summary from "./Summary";
+import Description from "./Description";
+import { dataTypesMap } from "../../dataTypes";
+import { DataTable } from "../../components/Table";
+import { defaultRowsPerPageOptions } from "../../constants";
+import VALIDATION_QUERY from "./OTValidationQuery.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   primaryColor: {
     color: theme.palette.primary.main,
   },
@@ -23,42 +24,42 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.grey[300],
   },
   circleUp: {
-    marginRight: '10px',
+    marginRight: "10px",
   },
   hypotesisBox: {
-    marginBottom: '2rem',
-    paddingBottom: '1rem',
+    marginBottom: "2rem",
+    paddingBottom: "1rem",
     borderBottom: `1px solid ${theme.palette.grey[300]}`,
   },
   hypotesisLegend: {
-    marginBottom: '1rem',
+    marginBottom: "1rem",
   },
   bold: {
     fontWeight: 700,
   },
   // hypothesis status classes
   hsLegendChip: {
-    width: '32px',
+    width: "32px",
   },
   hsGreen: {
-    backgroundColor: '#407253', // same as PPP green
+    backgroundColor: "#407253", // same as PPP green
     border: `1px solid ${theme.palette.grey[600]}`,
   },
   hsRed: {
-    backgroundColor: '#9e1316',
+    backgroundColor: "#9e1316",
     border: `1px solid ${theme.palette.grey[600]}`,
   },
   hsWhite: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     color: theme.palette.grey[600],
     border: `1px solid ${theme.palette.grey[600]}`,
   },
   hsBlack: {
-    backgroundColor: '#000',
+    backgroundColor: "#000",
     border: `1px solid ${theme.palette.grey[600]}`,
   },
   hsBlue: {
-    backgroundColor: '#3489ca',
+    backgroundColor: "#3489ca",
     border: `1px solid ${theme.palette.grey[600]}`,
   },
   // in the unlikely case the hypothesis status is unavailable,
@@ -73,7 +74,7 @@ const isHit = (conf, validatedConf) => {
   if (conf && validatedConf) {
     return conf.toLowerCase() === validatedConf.toLowerCase();
   }
-  return conf.toLowerCase() === 'significant';
+  return conf.toLowerCase() === "significant";
 };
 
 function HitIcon({ isHitValue, classes }) {
@@ -89,49 +90,49 @@ function HitIcon({ isHitValue, classes }) {
 // Map response hypotheses status to style and labels
 const hypothesesStatus = [
   {
-    status: 'expected but not observed',
+    status: "expected but not observed",
     expected: true,
     observed: false,
-    styles: 'hsRed',
+    styles: "hsRed",
   },
   {
-    status: 'observed and expected',
+    status: "observed and expected",
     expected: true,
     observed: true,
-    styles: 'hsGreen',
+    styles: "hsGreen",
   },
   {
-    status: 'not expected and not observed',
+    status: "not expected and not observed",
     expected: false,
     observed: false,
-    styles: 'hsBlack',
+    styles: "hsBlack",
   },
   {
-    status: 'observed but not expected',
+    status: "observed but not expected",
     expected: false,
     observed: true,
-    styles: 'hsBlue',
+    styles: "hsBlue",
   },
 ];
 
-const getColumns = classes => [
+const getColumns = (classes) => [
   {
-    id: 'disease',
-    label: 'Reported disease',
-    renderCell: row => (
+    id: "disease",
+    label: "Reported disease",
+    renderCell: (row) => (
       <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>
     ),
-    filterValue: row => `${row.diseaseLabel}, ${row.diseaseId}`,
+    filterValue: (row) => `${row.diseaseLabel}, ${row.diseaseId}`,
   },
   {
-    id: 'projectDescription',
-    label: 'OTAR primary project',
+    id: "projectDescription",
+    label: "OTAR primary project",
     tooltip: (
       <>
         Binary assessment of gene perturbation effect in primary project screen
       </>
     ),
-    renderCell: row => (
+    renderCell: (row) => (
       <Link to={`http://home.opentargets.org/${row.projectId}`} external>
         {row.projectDescription}
         <Typography variant="caption" display="block">
@@ -139,24 +140,24 @@ const getColumns = classes => [
         </Typography>
       </Link>
     ),
-    filterValue: row => `${row.projectDescription}, ${row.projectId}`,
+    filterValue: (row) => `${row.projectDescription}, ${row.projectId}`,
   },
   {
-    id: 'contrast',
-    label: 'Contrast',
-    renderCell: row => (
+    id: "contrast",
+    label: "Contrast",
+    renderCell: (row) => (
       <Tooltip title={row.studyOverview} showHelpIcon>
         {row.contrast}
       </Tooltip>
     ),
-    filterValue: row => `${row.contrast}, ${row.studyOverview}`,
+    filterValue: (row) => `${row.contrast}, ${row.studyOverview}`,
   },
   {
-    id: 'diseaseCellLines',
-    label: 'Cell line',
-    renderCell: row => (
+    id: "diseaseCellLines",
+    label: "Cell line",
+    renderCell: (row) => (
       <>
-        {row.diseaseCellLines.map(line => (
+        {row.diseaseCellLines.map((line) => (
           <Link
             to={`https://cellmodelpassports.sanger.ac.uk/passports/${line.id}`}
             external
@@ -167,109 +168,109 @@ const getColumns = classes => [
         ))}
       </>
     ),
-    filterValue: row =>
-      row.diseaseCellLines.map(line => `${line.name}, ${line.id}`).join(', '),
-    width: '8%',
+    filterValue: (row) =>
+      row.diseaseCellLines.map((line) => `${line.name}, ${line.id}`).join(", "),
+    width: "8%",
   },
   {
-    id: 'biomarkerList',
-    label: 'Cell line biomarkers',
-    renderCell: row => (
+    id: "biomarkerList",
+    label: "Cell line biomarkers",
+    renderCell: (row) => (
       <ChipList
         small
-        items={row.biomarkerList.map(bm => ({
+        items={row.biomarkerList.map((bm) => ({
           label: bm.name,
           tooltip: bm.description,
           customClass: classes.hsWhite,
         }))}
       />
     ),
-    filterValue: row =>
-      row.biomarkerList.map(bm => `${bm.name}, ${bm.description}`).join(', '),
-    width: '16%',
+    filterValue: (row) =>
+      row.biomarkerList.map((bm) => `${bm.name}, ${bm.description}`).join(", "),
+    width: "16%",
   },
   {
-    id: 'resourceScore',
-    label: 'Effect size',
-    renderCell: row => row.resourceScore,
+    id: "resourceScore",
+    label: "Effect size",
+    renderCell: (row) => row.resourceScore,
     numeric: true,
-    width: '8%',
+    width: "8%",
   },
   {
-    id: 'confidence',
-    label: 'OTVL hit',
+    id: "confidence",
+    label: "OTVL hit",
     tooltip: <>Binary assessment of gene perturbation effect in contrast</>,
-    renderCell: row => (
+    renderCell: (row) => (
       <HitIcon isHit={isHit(row.confidence)} classes={classes} />
     ),
-    width: '8%',
+    width: "8%",
   },
   {
-    id: 'projectHit',
-    label: 'Primary project hit',
-    renderCell: row => (
+    id: "projectHit",
+    label: "Primary project hit",
+    renderCell: (row) => (
       <HitIcon isHit={isHit(row.expectedConfidence)} classes={classes} />
     ),
-    width: '8%',
+    width: "8%",
   },
   {
-    id: 'releaseVersion',
-    label: 'Release version',
-    width: '8%',
+    id: "releaseVersion",
+    label: "Release version",
+    width: "8%",
   },
 ];
 
 const exportColumns = [
   {
-    label: 'disease',
-    exportValue: row => row.disease.name,
+    label: "disease",
+    exportValue: (row) => row.disease.name,
   },
   {
-    label: 'disease id',
-    exportValue: row => row.disease.id,
+    label: "disease id",
+    exportValue: (row) => row.disease.id,
   },
   {
-    label: 'project description',
-    exportValue: row => row.projectDescription,
+    label: "project description",
+    exportValue: (row) => row.projectDescription,
   },
   {
-    label: 'project id',
-    exportValue: row => row.projectId,
+    label: "project id",
+    exportValue: (row) => row.projectId,
   },
   {
-    label: 'contrast',
-    exportValue: row => row.contrast,
+    label: "contrast",
+    exportValue: (row) => row.contrast,
   },
   {
-    label: 'study overview',
-    exportValue: row => row.studyOverview,
+    label: "study overview",
+    exportValue: (row) => row.studyOverview,
   },
   {
-    label: 'disease cell line',
-    exportValue: row =>
-      row.diseaseCellLines.map(line => `${line.name} (${line.id})`),
+    label: "disease cell line",
+    exportValue: (row) =>
+      row.diseaseCellLines.map((line) => `${line.name} (${line.id})`),
   },
   {
-    label: 'biomarkers',
-    exportValue: row => row.biomarkerList.map(bm => bm.name),
+    label: "biomarkers",
+    exportValue: (row) => row.biomarkerList.map((bm) => bm.name),
   },
   {
-    label: 'effect size',
-    exportValue: row => row.resourceScore,
+    label: "effect size",
+    exportValue: (row) => row.resourceScore,
   },
   {
-    label: 'hit',
-    exportValue: row => isHit(row.confidence),
+    label: "hit",
+    exportValue: (row) => isHit(row.confidence),
   },
   {
-    label: 'primary project hit',
-    exportValue: row => isHit(row.expectedConfidence),
+    label: "primary project hit",
+    exportValue: (row) => isHit(row.expectedConfidence),
   },
 ];
 
 function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
-  const variables = { ensemblId: ensgId, efoId};
+  const variables = { ensemblId: ensgId, efoId };
   const request = useQuery(VALIDATION_QUERY, {
     variables,
   });
@@ -290,23 +291,21 @@ function Body({ id, label, entity }) {
           rows.reduce(
             (prev, curr) =>
               prev.concat(
-                curr.validationHypotheses.map(vht => ({
+                curr.validationHypotheses.map((vht) => ({
                   label: vht.name,
                   tooltip: vht.description,
                   customClass:
                     classes[
-                      hypothesesStatus.find(s => s.status === vht.status)
-                        ?.styles || 'hsUndefined'
+                      hypothesesStatus.find((s) => s.status === vht.status)
+                        ?.styles || "hsUndefined"
                     ],
                 }))
               ),
             []
           ),
-          'label'
+          "label"
           // sort alphabetically but move 'PAN-CO' at the end of the list
-        ).sort((a, b) =>
-          (b.label === 'PAN-CO' || a.label < b.label) ? -1 : 1
-        );
+        ).sort((a, b) => (b.label === "PAN-CO" || a.label < b.label ? -1 : 1));
 
         return (
           <>
@@ -321,7 +320,7 @@ function Body({ id, label, entity }) {
                     <>
                       This table provides an overarching summary of the
                       target-disease association in the context of the listed
-                      biomarkers, based on criteria described{' '}
+                      biomarkers, based on criteria described{" "}
                       <Link
                         external
                         to="http://home.opentargets.org/ppp-documentation"
@@ -344,7 +343,7 @@ function Body({ id, label, entity }) {
               {/** LEGEND */}
               <div className={classes.hypotesisLegend}>
                 <Grid container spacing={4} direction="row">
-                  {hypothesesStatus.map(hs => (
+                  {hypothesesStatus.map((hs) => (
                     <Grid item key={hs.status}>
                       <Grid container spacing={1} alignItems="center">
                         <Grid item>
@@ -358,14 +357,14 @@ function Body({ id, label, entity }) {
                         <Grid item>
                           <Typography variant="caption" display="block">
                             <span className={classes.bold}>
-                              {hs.expected ? 'Expected' : 'Not expected'}
-                            </span>{' '}
+                              {hs.expected ? "Expected" : "Not expected"}
+                            </span>{" "}
                             in OTAR primary project
                           </Typography>
                           <Typography variant="caption" display="block">
                             <span className={classes.bold}>
-                              {hs.observed ? 'Observed' : 'Not observed'}
-                            </span>{' '}
+                              {hs.observed ? "Observed" : "Not observed"}
+                            </span>{" "}
                             in OTVL
                           </Typography>
                         </Grid>

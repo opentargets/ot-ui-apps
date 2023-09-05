@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Grid, Typography, withStyles } from '@material-ui/core';
+import { Grid, Typography, withStyles } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDna, faStethoscope } from '@fortawesome/free-solid-svg-icons';
 
@@ -99,4 +99,5 @@ function Stats({ classes }) {
   );
 }
 
-export default withStyles(styles)(Stats);
+// export default withStyles(styles)(Stats);
+export default Stats;

@@ -1,4 +1,4 @@
-import { List, ListItem, Typography } from "@material-ui/core";
+import { List, ListItem, Typography } from "@mui/material";
 import { useQuery } from "@apollo/client";
 import { v1 } from "uuid";
 import { SectionItem, Tooltip, Link } from "ui";

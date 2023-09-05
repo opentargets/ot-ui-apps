@@ -1,21 +1,16 @@
-import { useEffect, useState } from 'react';
-import {
-  FormControl,
-  FormGroup,
-  InputLabel,
-  Slider,
-  withStyles,
-} from '@material-ui/core';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useEffect, useState } from "react";
+import { FormControl, FormGroup, InputLabel, Slider } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   fetchSimilarEntities,
   literatureState,
   loadingEntitiesState,
   updateLiteratureState,
-} from './atoms';
+} from "./atoms";
 
 const iOSBoxShadow =
-  '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)';
+  "0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)";
 
 const monthsBtwnDates = (startDate, endDate) =>
   Math.max(
@@ -24,11 +19,11 @@ const monthsBtwnDates = (startDate, endDate) =>
     0
   );
 
-const IOSSlider = withStyles(theme => ({
+const IOSSlider = withStyles((theme) => ({
   root: {
     color: theme.palette.primary.main,
     height: 2,
-    padding: '15px 0',
+    padding: "15px 0",
   },
   thumb: {
     height: 20,
@@ -37,22 +32,22 @@ const IOSSlider = withStyles(theme => ({
     boxShadow: iOSBoxShadow,
     marginTop: -10,
     marginLeft: -14,
-    '&:focus, &:hover, &$active': {
+    "&:focus, &:hover, &$active": {
       boxShadow:
-        '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)',
+        "0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)",
       // Reset on touch devices, it doesn't add specificity
-      '@media (hover: none)': {
+      "@media (hover: none)": {
         boxShadow: iOSBoxShadow,
       },
     },
   },
   active: {},
   valueLabel: {
-    left: 'calc(-50% + 4px)',
+    left: "calc(-50% + 4px)",
     top: -22,
-    whiteSpace: 'nowrap',
-    '& *': {
-      background: 'transparent',
+    whiteSpace: "nowrap",
+    "& *": {
+      background: "transparent",
       color: theme.palette.text.primary,
     },
   },
@@ -62,17 +57,17 @@ const IOSSlider = withStyles(theme => ({
   rail: {
     height: 2,
     opacity: 0.5,
-    backgroundColor: '#bfbfbf',
+    backgroundColor: "#bfbfbf",
   },
   mark: {
-    backgroundColor: '#bfbfbf',
+    backgroundColor: "#bfbfbf",
     height: 8,
     width: 1,
     marginTop: -3,
   },
   markActive: {
     opacity: 1,
-    backgroundColor: 'currentColor',
+    backgroundColor: "currentColor",
   },
 }))(Slider);
 
@@ -108,7 +103,7 @@ export function DateFilter() {
     setFilterDate([0, numberOfMonths]);
   }, []);
 
-  const handleChange = async values => {
+  const handleChange = async (values) => {
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
       query,
@@ -133,7 +128,7 @@ export function DateFilter() {
       endMonth,
       litsIds: data.literatureOccurrences?.rows?.map(({ pmId }) => ({
         id: pmId,
-        status: 'ready',
+        status: "ready",
         publication: null,
       })),
       litsCount: data.literatureOccurrences?.count,
@@ -143,12 +138,12 @@ export function DateFilter() {
     setLiteratureUpdate(update);
   };
 
-  const selectedDate = value => {
+  const selectedDate = (value) => {
     const from = new Date(earliestPubYear, 0, 1, 1, 1, 1, 1);
     return new Date(from.setMonth(from.getMonth() + value));
   };
 
-  const valueLabelFormat = value => {
+  const valueLabelFormat = (value) => {
     if (earliestPubYear) {
       const labelDate = selectedDate(value);
       return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;
@@ -174,9 +169,9 @@ export function DateFilter() {
   return (
     <div
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <InputLabel id="date-filter-demo">Date Filter:</InputLabel>

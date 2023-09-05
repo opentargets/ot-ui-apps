@@ -1,4 +1,5 @@
-import { Button, makeStyles, Typography } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
+import { Button, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPrescriptionBottleAlt,
@@ -8,7 +9,7 @@ import {
   faMapPin,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { Star, Label } from "@material-ui/icons";
+import { Star, Label } from "@mui/icons-material";
 
 const useStyles = makeStyles((theme) => ({
   sectionHeader: {
@@ -34,11 +35,11 @@ const useStyles = makeStyles((theme) => ({
 function SearchListHeader({
   listHeader,
   children,
-  clearAll
+  clearAll,
 }: {
-  listHeader: React.ReactNode;
+  listHeader: any;
   children: React.ReactNode;
-  clearAll: () => void
+  clearAll: () => void;
 }) {
   const classes = useStyles();
 

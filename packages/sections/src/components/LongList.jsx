@@ -1,13 +1,14 @@
-import { useState } from 'react';
-import { Typography, makeStyles } from '@material-ui/core';
+import { useState } from "react";
+import { Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   showMore: {
-    whiteSpace: 'nowrap',
+    whiteSpace: "nowrap",
   },
   showMoreText: {
     color: theme.palette.primary.main,
-    cursor: 'pointer',
+    cursor: "pointer",
   },
 }));
 
@@ -33,9 +34,9 @@ function LongList({ terms, render, maxTerms = 10 }) {
           className={classes.showMore}
           onClick={handleClick}
         >
-          {showMore ? '' : '... '}[
+          {showMore ? "" : "... "}[
           <span className={classes.showMoreText}>
-            {showMore ? ' hide ' : ' show more '}
+            {showMore ? " hide " : " show more "}
           </span>
           ]
         </Typography>
