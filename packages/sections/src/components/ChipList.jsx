@@ -13,7 +13,7 @@ const useContainerStyles = makeStyles((theme) => ({
 }));
 
 const useChipStyles = makeStyles({
-  chip: { margin: "3px 5px 3px 0" },
+  chip: { margin: "3px 5px 3px 0 !important" },
 });
 
 function ChipContainer({ item, children }) {
