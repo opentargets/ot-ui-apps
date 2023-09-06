@@ -75,6 +75,7 @@ function SectionItem({
               }
               subheader={
                 <Typography
+                  variant="body2"
                   className={classNames(
                     classes.description,
                     classes.descriptionHasData,
