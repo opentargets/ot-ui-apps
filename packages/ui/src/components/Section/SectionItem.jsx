@@ -42,7 +42,7 @@ function SectionItem({
   return (
     <Grid item xs={12}>
       <Element name={definition.id}>
-        <Card elevation={0}>
+        <Card elevation={0} variant="outlined">
           <ErrorBoundary>
             <CardHeader
               classes={{
