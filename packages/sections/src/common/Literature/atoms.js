@@ -3,6 +3,7 @@ import { atom, selectorFamily, selector } from "recoil";
 import client from "../../client";
 import { getPage } from "../../components/Table";
 import { europePmcBiblioSearchPOSTQuery } from "../../utils/urls";
+import {v1} from 'uuid';
 
 // ------------------------------------------
 // Helpers
@@ -30,7 +31,7 @@ export const parsePublications = (publications) =>
 // ATOMS
 // ------------------------------------------
 export const literatureState = atom({
-  key: "literatureState",
+  key: v1(),
   default: {
     id: "",
     cursor: "",
@@ -56,7 +57,7 @@ export const literatureState = atom({
 // SELECTORS
 // ------------------------------------------
 export const loadingEntitiesState = selector({
-  key: "loadingEntitiesState",
+  key: v1(),
   get: ({ get }) => {
     const { loadingEntities } = get(literatureState);
     return loadingEntities;
@@ -71,7 +72,7 @@ export const loadingEntitiesState = selector({
 });
 
 export const selectedCategoriesState = selector({
-  key: "selectedCategoriesState",
+  key: v1(),
   get: ({ get }) => {
     const { category } = get(literatureState);
     const sortedCategories = [...category].sort();
@@ -80,7 +81,7 @@ export const selectedCategoriesState = selector({
 });
 
 export const litsCursorState = selector({
-  key: "litsCursorState",
+  key: v1(),
   get: ({ get }) => {
     const { cursor } = get(literatureState);
     return cursor;
@@ -88,7 +89,7 @@ export const litsCursorState = selector({
 });
 
 export const tablePageState = selector({
-  key: "tablePageState",
+  key: v1(),
   get: ({ get }) => {
     const { page } = get(literatureState);
     return page;
@@ -96,7 +97,7 @@ export const tablePageState = selector({
 });
 
 export const tablePageSizeState = selector({
-  key: "tablePageSizeState",
+  key: v1(),
   get: ({ get }) => {
     const { pageSize } = get(literatureState);
     return pageSize;
@@ -111,7 +112,7 @@ export const tablePageSizeState = selector({
 });
 
 export const litsCountState = selector({
-  key: "litsCountState",
+  key: v1(),
   get: ({ get }) => {
     const { litsCount } = get(literatureState);
     return litsCount;
@@ -119,7 +120,7 @@ export const litsCountState = selector({
 });
 
 export const litsIdsState = selector({
-  key: "litsIdsState",
+  key: v1(),
   get: ({ get }) => {
     const { litsIds } = get(literatureState);
     return litsIds;
@@ -134,7 +135,7 @@ export const litsIdsState = selector({
 });
 
 export const displayedPublications = selector({
-  key: "displayedPublications",
+  key: v1(),
   get: ({ get }) => {
     const page = get(tablePageState);
     const pageSize = get(tablePageSizeState);
@@ -146,7 +147,7 @@ export const displayedPublications = selector({
 });
 
 export const entitiesState = selector({
-  key: "entitiesState",
+  key: v1(),
   get: ({ get }) => {
     const { entities } = get(literatureState);
     return entities;
@@ -154,7 +155,7 @@ export const entitiesState = selector({
 });
 
 export const selectedEntitiesState = selector({
-  key: "selectedEntitiesState",
+  key: v1(),
   get: ({ get }) => {
     const { selectedEntities } = get(literatureState);
     return selectedEntities;
@@ -166,7 +167,7 @@ export const selectedEntitiesState = selector({
 });
 
 export const updateLiteratureState = selector({
-  key: "updateLiteratureState",
+  key: v1(),
   set: ({ set, get }, stateUpdate) => {
     const currentState = get(literatureState);
     return set(literatureState, { ...currentState, ...stateUpdate });
@@ -181,7 +182,7 @@ const fetchLiteraturesFromPMC = async ({ baseUrl, requestOptions }) =>
   fetch(baseUrl, requestOptions).then((response) => response.json());
 
 export const literaturesEuropePMCQuery = selectorFamily({
-  key: "literaturesEuropePMCQuery",
+  key: v1(),
   get:
     ({ literaturesIds }) =>
     async () => {
