@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 
 import useAotfContext from './hooks/useAotfContext';
 

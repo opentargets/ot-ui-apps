@@ -8,7 +8,6 @@ import {
   checkBoxPayload,
 } from '../utils';
 import dataSources from '../static_datasets/dataSourcesAssoc';
-import '../style.css';
 
 import useAssociationsData from '../hooks/useAssociationsData';
 

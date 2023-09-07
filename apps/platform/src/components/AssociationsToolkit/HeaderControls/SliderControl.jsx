@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Slider } from '@mui/material';
-import { withStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
+
 import useAotfContext from '../hooks/useAotfContext';
 import { getWightSourceDefault } from '../utils';
 
-const OTSlider = withStyles({
+const OTSlider = styled(Slider)({
   root: {
     padding: '0 10px !important',
   },
@@ -17,7 +18,7 @@ const OTSlider = withStyles({
   valueLabel: {
     zIndex: '9999',
   },
-})(Slider);
+});
 
 const sliderPayload = (id, value) => ({
   id,

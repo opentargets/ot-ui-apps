@@ -1,4 +1,4 @@
-import { styled } from '@material-ui/core';
+import { styled } from '@mui/material/styles';
 
 const baseGridContainerStyles = {
   display: 'grid',
@@ -51,3 +51,11 @@ export const RowContainer = styled('div', {
     cursor: 'pointer',
   },
 }));
+
+export const ControlsSection = styled('section')`
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;

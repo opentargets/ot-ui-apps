@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-table';
 import Skeleton from '@mui/material/Skeleton';
 
-import { styled } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 
 import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
 import prioritizationCols from '../static_datasets/prioritizationCols';
@@ -25,7 +25,7 @@ import useAotfContext from '../hooks/useAotfContext';
 
 import { cellHasValue, isPartnerPreview, tableCSSVariables } from '../utils';
 
-const TableElement = styled('div')({
+const TableElement = styled('main')({
   minWidth: '900px',
   maxWidth: '1400px',
   margin: '0 auto',

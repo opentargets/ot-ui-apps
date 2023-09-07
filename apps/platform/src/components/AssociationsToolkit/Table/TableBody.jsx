@@ -76,40 +76,39 @@ function TableBody({ core, expanded, cols }) {
       <RowsContainer>
         {rows.map(row => (
           <Fragment key={row.id}>
-            <Fade in>
-              <RowContainer rowExpanded={getRowActive(row, isExpandedInTable)}>
-                {highLevelHeaders.map(columnGroup => (
-                  <GridContainer
-                    columnsCount={cols.length}
-                    className={getColContainerClassName(columnGroup)}
-                    key={columnGroup.id}
-                  >
-                    {columnGroup.subHeaders.map(column => {
-                      const cell = row
-                        .getVisibleCells()
-                        .find(el => el.column.id === column.id);
-                      return (
-                        <div
-                          key={cell.id}
-                          className={getCellClassName(
-                            cell,
-                            entityToGet,
-                            displayedTable,
-                            expanded,
-                            prefix
-                          )}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </div>
-                      );
-                    })}
-                  </GridContainer>
-                ))}
-              </RowContainer>
-            </Fade>
+            <RowContainer rowExpanded={getRowActive(row, isExpandedInTable)}>
+              {highLevelHeaders.map(columnGroup => (
+                <GridContainer
+                  columnsCount={cols.length}
+                  className={getColContainerClassName(columnGroup)}
+                  key={columnGroup.id}
+                >
+                  {columnGroup.subHeaders.map(column => {
+                    const cell = row
+                      .getVisibleCells()
+                      .find(el => el.column.id === column.id);
+                    return (
+                      <div
+                        key={cell.id}
+                        className={getCellClassName(
+                          cell,
+                          entityToGet,
+                          displayedTable,
+                          expanded,
+                          prefix
+                        )}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </div>
+                    );
+                  })}
+                </GridContainer>
+              ))}
+            </RowContainer>
+
             <ExpandableContainer
               rowExpanded={row.getIsExpanded()}
               isExpandedInTable={isExpandedInTable}

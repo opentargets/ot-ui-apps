@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { styled } from '@material-ui/core';
+import { styled } from '@mui/material/styles';
 
 import AggregationsTooltip from './AggregationsTooltip';
 import associationsColumns from '../static_datasets/dataSourcesAssoc';

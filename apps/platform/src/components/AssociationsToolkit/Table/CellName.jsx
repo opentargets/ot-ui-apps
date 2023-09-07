@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import {
   faDna,
@@ -98,11 +98,7 @@ function CellName({ name, rowId, row, tablePrefix }) {
 
   return (
     <NameContainer>
-      <PinnedContainer
-        className="PinnedContainer"
-        onClick={handleClickPin}
-        active={isPinned}
-      >
+      <PinnedContainer onClick={handleClickPin} active={isPinned}>
         <FontAwesomeIcon icon={pinnedIcon} size="sm" />
       </PinnedContainer>
       <Tooltip

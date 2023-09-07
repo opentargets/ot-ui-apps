@@ -7,6 +7,7 @@ import {
   SearhInput,
   DataDownloader,
   useAotfContext,
+  ControlsSection,
 } from '../../../components/AssociationsToolkit';
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociationsQuery.gql';
 
@@ -22,7 +23,7 @@ function AssociationsWrapper() {
 
   return (
     <>
-      <div className="ControlsSection">
+      <ControlsSection>
         <div className="global-controls-container">
           <SearhInput />
           <div className="options-controls">
@@ -33,7 +34,7 @@ function AssociationsWrapper() {
         <div>
           <TargetPrioritisationSwitch />
         </div>
-      </div>
+      </ControlsSection>
       <TableAssociations />
     </>
   );

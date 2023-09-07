@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { Collapse } from '@mui/material';
 import { LoadingBackdrop } from 'ui';
 import { ENTITIES } from '../utils';
@@ -22,12 +22,14 @@ const Container = styled('div')({
 
 function LoadingSection() {
   return (
-    <Collapse appear in timeout={900}>
+    // <Collapse appear in timeout={900}>
+    <div>
       <LoadingContainer>
         <LoadingBackdrop />
         Importing section assets
       </LoadingContainer>
-    </Collapse>
+    </div>
+    // </Collapse>
   );
 }
 

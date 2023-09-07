@@ -10,7 +10,8 @@ import {
   Slide,
   Popover,
 } from '@mui/material';
-import { makeStyles, styled } from '@mui/styles';
+import { styled } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAotfContext from './hooks/useAotfContext';

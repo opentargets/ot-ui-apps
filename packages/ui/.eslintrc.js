@@ -1,4 +1,4 @@
 module.exports = {
   root: true,
-  extends: ["eslint-config-custom-vite"],
+  extends: ["eslint-config-react-lib"],
 };
