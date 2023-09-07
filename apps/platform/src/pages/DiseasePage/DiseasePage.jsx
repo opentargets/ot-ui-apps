@@ -47,8 +47,8 @@ function DiseasePageTabs({ efoId }) {
 
   const ableRoutes = getAbleRoutes({ routes, isPartnerPreview });
   const activeTabIndex = ableRoutes.findIndex(
-    route => location.pathname.includes(route.path)
-    );
+    route => route.path === location.pathname
+  );
 
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

@@ -1,7 +1,14 @@
 import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, Tab, Tabs } from '@mui/material';
-import { Link, Route, Switch, useLocation } from 'react-router-dom';
+import {
+  Link,
+  Route,
+  Switch,
+  useLocation,
+  matchPath,
+  useRouteMatch,
+} from 'react-router-dom';
 import { v1 } from 'uuid';
 import { LoadingBackdrop } from 'ui';
 
@@ -46,8 +53,26 @@ function TargetPageTabs({ ensgId }) {
   ];
 
   const ableRoutes = getAbleRoutes({ routes, isPartnerPreview });
-  const activeTabIndex = ableRoutes.findIndex(route =>
-    location.pathname.includes(route.path)
+
+  function findMatchingRoute(patterns) {
+    const { pathname } = useLocation();
+
+    for (let i = 0; i < patterns.length; i += 1) {
+      const pattern = patterns[i];
+      const possibleMatch = useRouteMatch(pattern.path, pathname);
+      if (possibleMatch !== null) {
+        return possibleMatch;
+      }
+    }
+
+    return null;
+  }
+
+  const routeMatch = findMatchingRoute(ableRoutes);
+  const currentTab = routeMatch;
+
+  const activeTabIndex = ableRoutes.findIndex(
+    route => currentTab.path === route.path
   );
 
   return (
