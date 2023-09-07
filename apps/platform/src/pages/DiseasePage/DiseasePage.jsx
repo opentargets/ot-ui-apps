@@ -47,8 +47,8 @@ function DiseasePageTabs({ efoId }) {
 
   const ableRoutes = getAbleRoutes({ routes, isPartnerPreview });
   const activeTabIndex = ableRoutes.findIndex(
-    route => route.path === location.pathname
-  );
+    route => location.pathname.includes(route.path)
+    );
 
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -56,7 +56,9 @@ function DiseasePageTabs({ efoId }) {
         {ableRoutes.map(route => (
           <Tab
             key={v1()}
-            label={route.label}
+            label={
+              <Box sx={{ textTransform: 'capitalize' }}>{route.label}</Box>
+            }
             component={Link}
             to={route.path}
           />
