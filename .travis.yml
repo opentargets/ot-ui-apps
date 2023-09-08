@@ -1,7 +1,10 @@
 language: node_js
+dist: jammy
 node_js:
-  - 16
-cache: yarn
+  - 20
+cache:
+  directories:
+    - "node_modules"
 install:
   - yarn
 before_script:

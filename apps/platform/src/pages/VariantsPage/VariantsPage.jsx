@@ -1,5 +1,4 @@
-import { Fragment } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { DataTable } from '../../components/Table';
 import Link from '../../components/Link';
 import { naLabel } from '../../constants';

@@ -1,5 +1,4 @@
-import { Typography } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Skeleton, Typography } from '@mui/material';
 
 import { LongText } from 'ui';
 
@@ -13,7 +12,7 @@ function Description({ children, loading = false }) {
   return (
     <>
       <Typography variant="subtitle2">Description</Typography>
-      {loading ? <Skeleton /> : content}
+      {loading ? <Skeleton height="5rem"/> : content}
     </>
   );
 }

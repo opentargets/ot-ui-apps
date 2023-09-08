@@ -1,47 +1,36 @@
-import { makeStyles, Typography, Chip } from "@material-ui/core";
+import { makeStyles, styled } from "@mui/styles";
+import { Typography, Chip } from "@mui/material";
 import SearchRecentListItem from "./SearchRecentListItem";
 import { commaSeparate } from "./utils/searchUtils";
 import ArrowTurnDownLeft from "../../components/icons/ArrowTurnDownLeft";
 
-const useStyles = makeStyles((theme) => ({
-  justifyBetween: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  topHitItem: {
-    color: theme.palette.primary.main,
-  },
-  id: {
-    padding: "0.3rem 0 0 1rem ",
-    fontStyle: "italic",
-    overflowWrap: "break-word",
-  },
-  listItem: {
-    cursor: "pointer",
-    width: "100%",
-  },
-  author: {
-    display: "flex",
-  },
-  symbol: {
-    textTransform: "capitalize",
-    display: "flex",
-    alignItems: "center",
-    width: "100%"
-  },
-  searchListItem: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    cursor: "pointer",
-    width: "100%",
-    wordBreak: "break-word",
-    paddingRight: "0.2rem",
-  },
-  searchListItemText: {
-    maxWidth: "90%"
-  }
+const ListItem = styled("div")({
+  cursor: "pointer",
+  width: "100%",
+});
+
+const JustifyBetween = styled("div")({
+  display: "flex",
+  justifyContent: "space-between",
+});
+
+const TopHitItem = styled("span")(({ theme }) => ({
+  // todo: separate color to conditional tophit item
+  color: theme.palette.primary.main,
+  textTransform: "capitalize",
+  display: "flex",
+  alignItems: "center",
 }));
+
+const ItemId = styled("span")({
+  padding: "0.3rem 0 0 1rem ",
+  fontStyle: "italic",
+  overflowWrap: "break-word",
+});
+
+const FlexSpan = styled("span")({
+  display: "flex",
+});
 
 export interface SearchResult {
   type: string;
@@ -69,11 +58,11 @@ function SearchListItem({
   isTopHit = false,
   clearItem,
 }: {
-  item: SearchResult;
+  item: any;
   isTopHit: boolean;
   clearItem: (item: SearchResult) => void;
 }) {
-  const classes = useStyles();
+  // const classes = useStyles();
 
   if (item.type === "recent") {
     return <SearchRecentListItem item={item} clearItem={clearItem} />;
@@ -113,17 +102,13 @@ function SearchListItem({
 
   return (
     <>
-      <div className={classes.listItem}>
-        <div className={classes.justifyBetween}>
-          <span
-            className={`${classes.symbol} ${isTopHit && classes.topHitItem}`}
-          >
-            {getSymbolHeader()}
-          </span>
-          {item.id && <Typography variant="caption">
-            <span className={classes.id}>{item.id}</span>
-          </Typography>}
-        </div>
+      <ListItem>
+        <JustifyBetween>
+          <TopHitItem>{getSymbolHeader()}</TopHitItem>
+          <Typography variant="caption">
+            <ItemId>{item.id}</ItemId>
+          </Typography>
+        </JustifyBetween>
         {isTopHit && item.description && (
           <div className="functionDescription">
             <Typography variant="subtitle1">
@@ -132,25 +117,25 @@ function SearchListItem({
           </div>
         )}
 
-        <div className={classes.justifyBetween}>
+        <JustifyBetween>
           <Typography variant="caption">
-            <span className={classes.author}>
+            <FlexSpan>
               {item.pubAuthor && item.pubAuthor}
               {item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}
-            </span>
-            <span className={classes.author}>
+            </FlexSpan>
+            <FlexSpan>
               {item.position &&
                 item.chromosome &&
                 `GRCh38:` +
                   item.chromosome +
                   `:` +
                   commaSeparate(Number(item.position))}
-            </span>
+            </FlexSpan>
           </Typography>
           <Typography variant="caption">
             {item.pubJournal && item.pubJournal}
           </Typography>
-        </div>
+        </JustifyBetween>
 
         {item.rsId && (
           <Typography variant="caption">
@@ -160,7 +145,7 @@ function SearchListItem({
           </Typography>
         )}
 
-        <div className={classes.justifyBetween}>
+        <JustifyBetween>
           <Typography variant="caption">
             {item.numAssocLoci > -1 && (
               <strong>{item.numAssocLoci} associated loci</strong>
@@ -178,7 +163,7 @@ function SearchListItem({
               label="summary statistics"
             />
           )}
-        </div>
+        </JustifyBetween>
 
         {item.nInitial && (
           <Typography variant="caption">N Study: {item.nInitial}</Typography>
@@ -189,7 +174,7 @@ function SearchListItem({
             {item.start} {item.start && item.end && `-`} {item.end}
           </Typography>
         </div>
-      </div>
+      </ListItem>
     </>
   );
 }

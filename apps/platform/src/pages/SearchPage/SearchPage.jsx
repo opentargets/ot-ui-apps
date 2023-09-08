@@ -1,11 +1,12 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import queryString from 'query-string';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { LoadingBackdrop, EmptyPage } from 'ui';
 import BasePage from '../../components/BasePage';
 
 import client from '../../client';
 import SEARCH_PAGE_QUERY from './SearchPageQuery.gql';
+import config from '../../config';
 
 const SearchContainer = lazy(() => import('./SearchContainer'));
 
@@ -73,7 +74,7 @@ function SearchPage({ location, history }) {
 
   if (data && data.search.total === 0) {
     SEARCH_CONTAINER = (
-      <EmptyPage>
+      <EmptyPage communityLink={config.profile.communityUrl} documentationLink={config.profile.documentationUrl}>
         <Typography>
           We could not find anything in the Platform database that matches
           &quot;{q}&quot;

@@ -13,7 +13,7 @@ import {
   Typography,
   Tabs,
   Tab,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useQuery } from '@apollo/client';
 
 import ClassicAssociationsDAG from './ClassicAssociationsDAG';

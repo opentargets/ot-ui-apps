@@ -1,4 +1,5 @@
-import { Box, Chip, makeStyles, Tooltip } from '@material-ui/core';
+import { Box, Chip, Tooltip } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
 import { v1 } from 'uuid';
 import { naLabel } from '../constants';
@@ -21,7 +22,6 @@ function ChipContainer({ item, children }) {
   return item.tooltip ? (
     <Tooltip
       placement="top"
-      interactive
       classes={{ tooltip: classes.tooltip }}
       title={item.tooltip}
     >

@@ -1,4 +1,4 @@
-import { Drawer } from '@material-ui/core';
+import { Drawer } from '@mui/material';
 
 import GoBackButton from './GoBackButton';
 import navPanelStyles from './navPanelStyles';

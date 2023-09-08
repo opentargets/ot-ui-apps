@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import OTTooltip from './Tooltip';
 
 function LabelChip({ label, value, to, tooltip = null }) {
@@ -26,7 +26,7 @@ function LabelChip({ label, value, to, tooltip = null }) {
     borderLeft: '1px solid #3489ca',
   };
   return (
-    <OTTooltip title={tooltip} interactive={false}>
+    <OTTooltip title={tooltip} disableInteractive>
       <a href={to} style={containerStyle}>
         {label && (
           <div style={labelStyle}>

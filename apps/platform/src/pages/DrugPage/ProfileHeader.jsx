@@ -1,5 +1,6 @@
+import { usePlatformApi, Link } from 'ui';
 import { Fragment } from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckCircle,
@@ -13,9 +14,7 @@ import {
   Field,
   ProfileHeader as BaseProfileHeader,
 } from '../../components/ProfileHeader';
-import Link from '../../components/Link';
 import Smiles from './Smiles';
-import usePlatformApi from '../../hooks/usePlatformApi';
 
 import DRUG_PROFILE_HEADER_FRAGMENT from './ProfileHeader.gql';
 import { phaseMap } from '../../constants';

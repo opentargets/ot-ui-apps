@@ -9,12 +9,12 @@ import {
   ListItem,
   Drawer,
   Link as MUILink,
-  makeStyles,
   Typography,
   Paper,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
+import {makeStyles} from '@mui/styles';
+import CloseIcon from '@mui/icons-material/Close';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import _ from 'lodash';
 import { v1 } from 'uuid';
 import { naLabel } from '../../constants';

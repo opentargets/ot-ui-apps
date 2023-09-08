@@ -1,13 +1,14 @@
-import { Component } from 'react';
-import CloseIcon from '@material-ui/icons/Close';
-import { Modal, Paper, withStyles } from '@material-ui/core';
+import { useState, useEffect } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import { Modal, Paper } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import SmilesDrawer from 'smiles-drawer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearchPlus } from '@fortawesome/free-solid-svg-icons';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   container: {
-    background: 'none',
+    background: 'none !important',
     cursor: 'pointer',
     height: '240px',
     marginLeft: 'auto',
@@ -32,83 +33,57 @@ const styles = theme => ({
     float: 'right',
     fill: theme.palette.grey[800],
   },
-});
+}));
 
-class SmilesHelper extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false,
-    };
-  }
+const drawSmiles = (smiles, chemblId, config) => {
+  const smilesDrawer = new SmilesDrawer.Drawer(config);
+  SmilesDrawer.parse(
+    smiles,
+    tree => {
+      smilesDrawer.draw(tree, chemblId);
+    },
+    () => {
+      console.error('error parsing smiles');
+    }
+  );
+};
 
-  componentDidMount() {
-    const { smiles, chemblId } = this.props;
-    const smilesDrawer = new SmilesDrawer.Drawer({
-      width: 450,
-      height: 240,
-      padding: 10,
-    });
-    SmilesDrawer.parse(
-      smiles,
-      tree => {
-        smilesDrawer.draw(tree, chemblId);
-      },
-      () => {
-        console.error('error parsing smiles');
-      }
-    );
-  }
+function SmilesHelper({ smiles, chemblId }) {
+  const classes = useStyles();
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleModal = () => {
+    setIsOpen(!isOpen);
+  };
 
-  componentDidUpdate() {
-    const { open } = this.state;
-
-    if (open) {
-      const { smiles, chemblId } = this.props;
-      const smilesDrawer = new SmilesDrawer.Drawer({
+  useEffect(() => {
+    if (isOpen) {
+      drawSmiles(smiles, `${chemblId}-modal`, {
         width: 750,
         height: 440,
         padding: 10,
       });
+    } else
+      drawSmiles(smiles, chemblId, {
+        width: 450,
+        height: 240,
+        padding: 10,
+      });
+  });
 
-      SmilesDrawer.parse(
-        smiles,
-        tree => {
-          smilesDrawer.draw(tree, `${chemblId}-modal`);
-        },
-        () => {
-          console.error('error parsing smiles');
-        }
-      );
-    }
-  }
-
-  toggleModal = () => {
-    this.setState(({ open }) => ({ open: !open }));
-  };
-
-  render() {
-    const { chemblId, classes } = this.props;
-    const { open } = this.state;
-    return (
-      <>
-        <Paper
-          className={classes.container}
-          elevation={0}
-          onClick={this.toggleModal}
-        >
-          <canvas id={chemblId} />
-          <FontAwesomeIcon icon={faSearchPlus} className="seeDetailsIcon" />
+  return (
+    <>
+      <Paper className={classes.container} elevation={0} onClick={toggleModal}>
+        <canvas id={chemblId} />
+        <FontAwesomeIcon icon={faSearchPlus} className="seeDetailsIcon" />
+      </Paper>
+      <Modal open={isOpen} onClose={toggleModal} keepMounted>
+        <Paper className={classes.modal}>
+          <CloseIcon className={classes.close} onClick={toggleModal} />
+          <canvas id={`${chemblId}-modal`} className={classes.modalCanvas} />
         </Paper>
-        <Modal open={open} onClose={this.toggleModal} keepMounted>
-          <Paper className={classes.modal}>
-            <CloseIcon className={classes.close} onClick={this.toggleModal} />
-            <canvas id={`${chemblId}-modal`} className={classes.modalCanvas} />
-          </Paper>
-        </Modal>
-      </>
-    );
-  }
+      </Modal>
+    </>
+  );
 }
 
-export default withStyles(styles)(SmilesHelper);
+export default SmilesHelper;

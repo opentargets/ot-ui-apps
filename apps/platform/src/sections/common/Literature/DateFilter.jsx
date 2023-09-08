@@ -4,8 +4,8 @@ import {
   FormGroup,
   InputLabel,
   Slider,
-  withStyles,
-} from '@material-ui/core';
+} from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   fetchSimilarEntities,

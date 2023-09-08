@@ -1,18 +1,18 @@
 import { useState } from 'react';
-import { withStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 
 import Link from '../Link';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   showMore: {
     color: theme.palette.primary.main,
     cursor: 'pointer',
   },
-});
+}));
 
-function XRefLinks({ classes, label, urlStem, ids, limit }) {
+function XRefLinks({ label, urlStem, ids, limit }) {
   const [showMore, setShowMore] = useState(false);
-
+  const classes = useStyles();
   const displayNone = {
     display: 'none',
   };
@@ -44,4 +44,4 @@ function XRefLinks({ classes, label, urlStem, ids, limit }) {
   );
 }
 
-export default withStyles(styles)(XRefLinks);
+export default XRefLinks;

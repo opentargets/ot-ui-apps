@@ -1,10 +1,11 @@
 import { useLayoutEffect, useState, useRef } from 'react';
-import { withTheme } from '@material-ui/core';
+import { useTheme } from '@mui/styles';
 
 const WIDTH = 400;
 const HEIGHT = 18;
 
-function LinearVenn({ theme, aOnly, aAndB, bOnly, max }) {
+function LinearVenn({ aOnly, aAndB, bOnly, max }) {
+  const theme = useTheme();
   const aOnlyStart = 0;
   const aOnlyWidth = (WIDTH * aOnly) / max;
   const aAndBStart = aOnlyStart + aOnlyWidth;
@@ -70,7 +71,8 @@ function LinearVenn({ theme, aOnly, aAndB, bOnly, max }) {
   );
 }
 
-function Legend({ theme, a, b, aAndB }) {
+function Legend({ a, b, aAndB }) {
+  const theme = useTheme();
   const [legendWidth, setLegendWidth] = useState(0);
   const LEGEND_SQUARE_SIZE = 15;
   const LEGEND_PADDING = 6;
@@ -183,6 +185,6 @@ function Legend({ theme, a, b, aAndB }) {
   );
 }
 
-export const LinearVennLegend = withTheme(Legend);
+export const LinearVennLegend = Legend;
 
-export default withTheme(LinearVenn);
+export default LinearVenn;

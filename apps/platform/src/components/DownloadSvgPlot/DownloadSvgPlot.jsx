@@ -1,5 +1,4 @@
-import { Button } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import { Button, Grid } from '@mui/material';
 
 import downloadSvg from './DownloadSvg';
 import PlotContainer from '../PlotContainer';

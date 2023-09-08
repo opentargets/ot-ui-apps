@@ -7,9 +7,9 @@ import {
   Button,
   Grid,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import 'graphiql/graphiql.min.css';
 
 import Link from '../../components/Link';
@@ -41,7 +41,7 @@ const GraphiQL = lazy(() =>
 
 const useStyles = makeStyles({
   container: {
-    minHeight: '600px',
+    minHeight: '600px !important',
   },
   buttonMargin: {
     marginBottom: '12px',

@@ -8,7 +8,7 @@ import {
   dagStratify,
 } from 'd3-dag';
 import { withContentRect } from 'react-measure';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import { DownloadSvgPlot } from '../../components/DownloadSvgPlot';
 import Legend from '../../components/Legend';
 import Slider from './ClassicAssociationsSlider';

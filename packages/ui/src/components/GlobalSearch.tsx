@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useState, useContext } from "react";
-
-import {
-  makeStyles,
-  Typography,
-  Dialog,
-  DialogContent,
-} from "@material-ui/core";
-import { Search as SearchIcon } from "@material-ui/icons";
+import { makeStyles } from "@mui/styles";
+import { Typography, Dialog, DialogContent } from "@mui/material";
+import { Search as SearchIcon } from "@mui/icons-material";
 
 import AutocompleteSearch from "./AutocompleteSearch";
 import { SearchContext } from "./Search/SearchContext";
@@ -54,9 +49,11 @@ const useStyles = makeStyles((theme) => ({
       "& .MuiDialog-paperWidthSm": {
         width: "80vw",
         maxWidth: "800px",
-        height: "inherit",
-        maxHeight: "55vh",
+        minHeight: "55vh",
+        height: "600px",
+        maxHeight: "90vh",
         margin: " 0.5rem 0.968rem",
+        overflow: "hidden",
         borderRadius: "5px",
         "& .MuiDialogContent-root": {
           padding: "8px 0 !important",
@@ -66,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GlobalSearch({showSearchResultPage}) {
+function GlobalSearch({ showSearchResultPage }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleClose = () => {
@@ -128,7 +125,10 @@ function GlobalSearch({showSearchResultPage}) {
         className={classes.modal}
       >
         <DialogContent>
-          <AutocompleteSearch closeModal={handleClose} showSearchResultPage={showSearchResultPage}/>
+          <AutocompleteSearch
+            closeModal={handleClose}
+            showSearchResultPage={showSearchResultPage}
+          />
         </DialogContent>
       </Dialog>
     </>

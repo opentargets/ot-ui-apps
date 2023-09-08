@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import {
+  Autocomplete,
   Box,
   CircularProgress,
   Input,
   InputBase,
-  makeStyles,
-} from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
-import { Search as SearchIcon, ArrowDropDown } from '@material-ui/icons';
+} from '@mui/material';
+import {makeStyles} from '@mui/styles';
+import { Search as SearchIcon, ArrowDropDown } from '@mui/icons-material';
 import { useHistory } from 'react-router-dom';
 
 import useDebounce from '../../hooks/useDebounce';

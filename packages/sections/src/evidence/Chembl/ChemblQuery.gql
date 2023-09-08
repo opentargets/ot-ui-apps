@@ -1,0 +1,46 @@
+query ChemblQuery($ensemblId: String!, $efoId: String!) {
+  disease(efoId: $efoId) {
+    id
+    chemblSummary: evidences(
+      ensemblIds: [$ensemblId]
+      enableIndirect: true
+      datasourceIds: ["chembl"]
+    ) {
+      count
+      rows {
+        disease {
+          id
+          name
+        }
+        target {
+          id
+          approvedSymbol
+        }
+        drug {
+          id
+          name
+          drugType
+          mechanismsOfAction {
+            rows {
+              mechanismOfAction
+              targets {
+                id
+                approvedSymbol
+              }
+            }
+          }
+        }
+        targetFromSourceId
+        clinicalPhase
+        clinicalStatus
+        studyStartDate
+        studyStopReason
+        studyStopReasonCategories
+        urls {
+          niceName
+          url
+        }
+      }
+    }
+  }
+}

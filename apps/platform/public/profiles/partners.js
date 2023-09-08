@@ -2,6 +2,7 @@
 var configProfile = {
   /* general items */
 
+  documentationUrl: "https://platform-docs.opentargets.org",
   helpdeskEmail: 'partner-support@opentargets.org',
   communityUrl: 'https://community.opentargets.org',
   communityTicketUrl:

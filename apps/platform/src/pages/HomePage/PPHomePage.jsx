@@ -1,12 +1,12 @@
 import {
   Grid,
-  makeStyles,
   Typography,
   Hidden,
   Box,
   useMediaQuery,
-} from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
+} from '@mui/material';
+
+import { makeStyles, useTheme } from '@mui/styles';
 import { Helmet } from 'react-helmet';
 import { Footer, AutocompleteSearch } from 'ui';
 

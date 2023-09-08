@@ -6,10 +6,10 @@ import {
   DialogContent,
   DialogContentText,
   Button,
-  makeStyles,
-} from '@material-ui/core';
+  Snackbar
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useLocation } from 'react-router-dom';
-import Snackbar from '@material-ui/core/Snackbar';
 
 const PPP_API_URL =
   'https://api.partner-platform.opentargets.org/api/v4/graphql';
