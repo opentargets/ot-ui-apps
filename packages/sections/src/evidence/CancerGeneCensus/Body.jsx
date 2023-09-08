@@ -128,7 +128,7 @@ const useStyles = makeStyles({
     alignItems: "center",
     marginBottom: "2rem",
   },
-  roleInCancerTitle: { marginRight: ".5rem" },
+  roleInCancerTitle: { marginRight: ".5rem !important" },
 });
 
 function Body({ id, label, entity }) {

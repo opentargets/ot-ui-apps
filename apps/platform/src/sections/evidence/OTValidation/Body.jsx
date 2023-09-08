@@ -12,7 +12,7 @@ import { dataTypesMap } from '../../../dataTypes';
 import Summary from './Summary';
 import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
-import ChipList from '../../../components/ChipList';
+import { ChipList } from 'ui';
 import Link from '../../../components/Link';
 import { defaultRowsPerPageOptions } from '../../../constants';
 
