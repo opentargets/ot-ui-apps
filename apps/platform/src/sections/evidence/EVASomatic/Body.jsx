@@ -3,7 +3,7 @@ import { Box, Typography, makeStyles } from '@material-ui/core';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import { sentenceCase } from '../../../utils/global';
 import SectionItem from '../../../components/Section/SectionItem';
-import ChipList from '../../../components/ChipList';
+import { ChipList } from 'ui';
 import { DataTable } from '../../../components/Table';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { epmcUrl } from '../../../utils/urls';
