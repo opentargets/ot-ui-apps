@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Drawer, Button, IconButton, Paper, Typography } from "@mui/material";
+import { Drawer, Button, IconButton, Paper, Typography, Link as MUILink } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -49,7 +49,9 @@ function SafetyStudiesDrawer({ studies }) {
 
   return (
     <>
-      <Button onClick={() => toggleOpen()}>{studies.length} studies</Button>
+    <MUILink onClick={toggleOpen} className={classes.drawerLink} underline="none">
+    {studies.length} studies
+      </MUILink>
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
