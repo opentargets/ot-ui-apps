@@ -56,7 +56,9 @@ function DiseasePageTabs({ efoId }) {
         {ableRoutes.map(route => (
           <Tab
             key={v1()}
-            label={route.label}
+            label={
+              <Box sx={{ textTransform: 'capitalize' }}>{route.label}</Box>
+            }
             component={Link}
             to={route.path}
           />
