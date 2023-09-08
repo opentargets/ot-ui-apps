@@ -2,6 +2,7 @@ import { makeStyles, styled } from "@mui/styles";
 import { Typography, Chip } from "@mui/material";
 import SearchRecentListItem from "./SearchRecentListItem";
 import { commaSeparate } from "./utils/searchUtils";
+import ArrowTurnDownLeft from "../../components/icons/ArrowTurnDownLeft";
 
 const ListItem = styled("div")({
   cursor: "pointer",
@@ -15,10 +16,11 @@ const JustifyBetween = styled("div")({
 
 const TopHitItem = styled("span")(({ theme }) => ({
   // todo: separate color to conditional tophit item
-  color: theme.palette.primary.main,
+  // color: theme.palette.primary.main,
   textTransform: "capitalize",
   display: "flex",
   alignItems: "center",
+  width: "100%"
 }));
 
 const ItemId = styled("span")({
@@ -29,6 +31,20 @@ const ItemId = styled("span")({
 
 const FlexSpan = styled("span")({
   display: "flex",
+});
+
+const SearchListItemContainer = styled("div")({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  cursor: "pointer",
+  width: "100%",
+  wordBreak: "break-word",
+  paddingRight: "0.2rem",
+});
+
+const SearchListItemText = styled("span")({
+  maxWidth: "90%",
 });
 
 export interface SearchResult {
@@ -68,7 +84,18 @@ function SearchListItem({
   }
 
   const getSymbolHeader = () => {
-    if (!(item.entity === "search") && item.symbol && item.name)
+    if (item.entity === "search") {
+      return (
+        <SearchListItemContainer>
+          <SearchListItemText>
+            <Typography variant="subtitle1">
+              {item.symbol || item.name || item.id}
+            </Typography>
+          </SearchListItemText>
+          <ArrowTurnDownLeft />
+        </SearchListItemContainer>
+      );
+    } else if (!(item.entity === "search") && item.symbol && item.name)
       return (
         <>
           <Typography variant={isTopHit ? "h6" : "subtitle1"}>
