@@ -46,7 +46,7 @@ function SectionItem({
       {/* <Grow appear in timeout={600} unmountOnExit> */}
       <section>
         <Element name={definition.id}>
-          <Card elevation={0}>
+          <Card elevation={0} variant="outlined">
             <ErrorBoundary>
               <CardHeader
                 classes={{

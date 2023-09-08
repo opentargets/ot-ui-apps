@@ -36,6 +36,7 @@ function SummaryItem({ definition, request, renderSummary, subText }) {
         })}
         onClick={handleClickSection}
         elevation={0}
+        variant="outlined"
       >
         <CardHeader
           className={classes.cardHeader}

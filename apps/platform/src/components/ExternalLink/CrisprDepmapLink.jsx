@@ -6,7 +6,7 @@ import Link from '../Link';
 
 const useStyles = makeStyles(theme => ({
   helpIcon: {
-    fontSize: '10px',
+    fontSize: '0.875rem !important',
   },
   tooltip: {
     backgroundColor: theme.palette.background.paper,

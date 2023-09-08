@@ -55,7 +55,7 @@ const useStyles = makeStyles({
     alignItems: "center",
     marginBottom: "2rem",
   },
-  roleInCancerTitle: { marginRight: ".5rem" },
+  roleInCancerTitle: { marginRight: ".5rem !important" },
 });
 
 function Section({ id, label: symbol, entity }) {

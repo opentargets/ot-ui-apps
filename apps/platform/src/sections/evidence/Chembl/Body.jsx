@@ -14,7 +14,7 @@ import SectionItem from '../../../components/Section/SectionItem';
 import Summary from './Summary';
 import Tooltip from '../../../components/Tooltip';
 import usePlatformApi from '../../../hooks/usePlatformApi';
-import ChipList from '../../../components/ChipList';
+import { ChipList } from 'ui';
 
 import CHEMBL_QUERY from './ChemblQuery.gql';
 

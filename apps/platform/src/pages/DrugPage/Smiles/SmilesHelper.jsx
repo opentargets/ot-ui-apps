@@ -6,7 +6,7 @@ import SmilesDrawer from 'smiles-drawer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearchPlus } from '@fortawesome/free-solid-svg-icons';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   container: {
     background: 'none !important',
     cursor: 'pointer',
@@ -48,37 +48,31 @@ const drawSmiles = (smiles, chemblId, config) => {
   );
 };
 
-function SmilesHelper ({ smiles, chemblId }) {
+function SmilesHelper({ smiles, chemblId }) {
   const classes = useStyles();
   const [isOpen, setIsOpen] = useState(false);
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
-  
-  // draw the page smiles image
-  drawSmiles(smiles, chemblId, {
-      width: 450,
-      height: 240,
-      padding: 10,
-    });
 
-  useEffect(()=>{
+  useEffect(() => {
     if (isOpen) {
       drawSmiles(smiles, `${chemblId}-modal`, {
         width: 750,
         height: 440,
         padding: 10,
       });
-    }
+    } else
+      drawSmiles(smiles, chemblId, {
+        width: 450,
+        height: 240,
+        padding: 10,
+      });
   });
 
   return (
     <>
-      <Paper
-        className={classes.container}
-        elevation={0}
-        onClick={toggleModal}
-      >
+      <Paper className={classes.container} elevation={0} onClick={toggleModal}>
         <canvas id={chemblId} />
         <FontAwesomeIcon icon={faSearchPlus} className="seeDetailsIcon" />
       </Paper>

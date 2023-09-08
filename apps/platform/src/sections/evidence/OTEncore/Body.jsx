@@ -15,7 +15,7 @@ import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
 import TooltipStyledLabel from '../../../components/TooltipStyledLabel';
 import Link from '../../../components/Link';
-import ChipList from '../../../components/ChipList';
+import { ChipList } from 'ui';
 import { defaultRowsPerPageOptions } from '../../../constants';
 import ScientificNotation from '../../../components/ScientificNotation';
 
