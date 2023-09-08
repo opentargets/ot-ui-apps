@@ -8,8 +8,10 @@ import {
   DataDownloader,
   useAotfContext,
   ControlsSection,
+  OptionsControlls,
 } from '../../../components/AssociationsToolkit';
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociationsQuery.gql';
+import { Box } from '@mui/material';
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useAotfContext();
@@ -24,13 +26,13 @@ function AssociationsWrapper() {
   return (
     <>
       <ControlsSection>
-        <div className="global-controls-container">
+        <Box sx={{ display: 'flex' }}>
           <SearhInput />
-          <div className="options-controls">
+          <OptionsControlls>
             <AdvanceOptionsMenu />
             <DataDownloader fileStem={`${id}-associated-targets`} />
-          </div>
-        </div>
+          </OptionsControlls>
+        </Box>
         <div>
           <TargetPrioritisationSwitch />
         </div>
