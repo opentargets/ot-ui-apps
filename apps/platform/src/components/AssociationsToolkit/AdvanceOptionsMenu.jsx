@@ -12,10 +12,6 @@ import { styled } from '@mui/material/styles';
 
 import useAotfContext from './hooks/useAotfContext';
 
-const TextContent = styled('div')({
-  marginLeft: '5px',
-});
-
 const PopoverContent = styled('div')({
   padding: '15px',
 });
@@ -52,9 +48,9 @@ function DataMenu() {
         variant="outlined"
         disableElevation
         disabled={isPrioritisation}
+        startIcon={<FontAwesomeIcon icon={faGear} size="lg" />}
       >
-        <FontAwesomeIcon icon={faGear} size="lg" />
-        <TextContent>Advanced options</TextContent>
+        Advanced options
       </Button>
       <Popover
         id={id}

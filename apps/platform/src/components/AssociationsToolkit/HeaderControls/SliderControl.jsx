@@ -73,6 +73,7 @@ function SliderControll({ id }) {
 
   return (
     <OTSlider
+      size="small"
       orientation="vertical"
       value={displayValue}
       aria-labelledby="vertical-slider"

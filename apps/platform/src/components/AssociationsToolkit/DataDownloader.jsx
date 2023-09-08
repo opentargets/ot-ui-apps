@@ -259,8 +259,6 @@ function DataDownloader({ fileStem }) {
     downloadData('tsv', columns, getAllAssociations, fileStem);
   };
 
-  if (isPrioritisation) return null;
-
   return (
     <div>
       <Button
@@ -269,8 +267,9 @@ function DataDownloader({ fileStem }) {
         variant="outlined"
         disableElevation
         disabled={isPrioritisation}
+        startIcon={<FontAwesomeIcon icon={faCloudArrowDown} size="lg" />}
       >
-        <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
+        Export
       </Button>
       <Popover
         id={popoverId}

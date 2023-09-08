@@ -28,8 +28,7 @@ const Associations = lazy(() => import('./TargetAssociations'));
 const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
 
 function TargetPageTabs({ ensgId }) {
-  const location = useLocation();
-
+  const { isPartnerPreview } = usePermissions();
   const routes = [
     {
       label: (

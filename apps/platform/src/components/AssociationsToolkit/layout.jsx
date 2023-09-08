@@ -62,6 +62,6 @@ export const ControlsSection = styled('section')`
 
 export const OptionsControlls = styled('div')`
   display: flex;
-  width: 240px;
   justify-content: space-between;
+  gap: 12px;
 `;
