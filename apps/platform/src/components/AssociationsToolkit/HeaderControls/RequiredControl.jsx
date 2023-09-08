@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Checkbox } from '@mui/material';
-import { withStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import useAotfContext from '../hooks/useAotfContext';
 import { checkBoxPayload, getControlChecked } from '../utils';
 
-const OTCheckbox = withStyles({
-  root: {
-    padding: 0,
-  },
-})(Checkbox);
+const OTCheckbox = styled(Checkbox)`
+  padding: 0;
+`;
 
 function RequiredControl({ id, aggregationId }) {
-  const { dataSourcesRequired, setDataSourcesRequired, loading } =
-    useAotfContext();
+  const {
+    dataSourcesRequired,
+    setDataSourcesRequired,
+    loading,
+    resetToInitialPagination,
+  } = useAotfContext();
 
   const [displayValue, setDisplayValue] = useState(
     getControlChecked(dataSourcesRequired, id)
@@ -40,6 +42,7 @@ function RequiredControl({ id, aggregationId }) {
       setDataSourcesRequired(newRequiredElement);
       setDisplayValue(newValue);
     }
+    resetToInitialPagination();
   };
 
   return (
@@ -47,6 +50,7 @@ function RequiredControl({ id, aggregationId }) {
       checked={displayValue}
       color="primary"
       onChange={handleChange}
+      name={id}
     />
   );
 }

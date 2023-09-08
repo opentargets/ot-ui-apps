@@ -1,14 +1,19 @@
 import { Fragment } from 'react';
 import { flexRender } from '@tanstack/react-table';
-import { ClickAwayListener } from '@mui/material';
-import {
-  EvidenceSecctionRenderer,
-  SecctionRendererWrapper,
-  TargetSecctionRenderer,
-} from './SectionRender';
+import { ClickAwayListener, Fade, Box } from '@mui/material';
+import { v1 } from 'uuid';
+
 import useAotfContext from '../hooks/useAotfContext';
 
 import { getCellId } from '../utils';
+import {
+  RowContainer,
+  RowsContainer,
+  TableBodyContent,
+  GridContainer,
+} from '../layout';
+
+import { SectionRender, SectionRendererWrapper } from './SectionRender';
 
 /* HELPERS */
 const getColContainerClassName = ({ id }) => {
@@ -16,42 +21,69 @@ const getColContainerClassName = ({ id }) => {
   return 'group-entity-cols';
 };
 
-const getRowClassName = ({ getIsExpanded }) => {
-  const activeClass = getIsExpanded() ? 'active' : '';
-  return `data-row ${activeClass}`;
-};
+const getRowActive = ({ getIsExpanded }, isExpandedInTable) =>
+  getIsExpanded() && isExpandedInTable;
 
-const getCellClassName = (cell, entityToGet, displayedTable, expanded) => {
+const getCellClassName = (
+  cell,
+  entityToGet,
+  displayedTable,
+  expanded,
+  tablePrefix
+) => {
   if (cell.column.id === 'name') return 'name-cell';
-  const expandedId = getCellId(cell, entityToGet, displayedTable).join('-');
+  const expandedId = getCellId(
+    cell,
+    entityToGet,
+    displayedTable,
+    tablePrefix
+  ).join('-');
   if (expandedId === expanded.join('-')) return 'active data-cell';
   return 'data-cell';
 };
 
-function TableBody({ table }) {
-  const { id, entity, entityToGet, expanded, displayedTable, resetExpandler } =
+function ExpandableContainer({
+  rowExpanded,
+  isExpandedInTable,
+  loading,
+  children,
+}) {
+  if (!isExpandedInTable || !rowExpanded || loading) return null;
+  return <Box key={v1()}>{children}</Box>;
+}
+
+function TableBody({ core, expanded, cols }) {
+  const { id, entity, entityToGet, displayedTable, resetExpandler } =
     useAotfContext();
 
-  const isAssociations = displayedTable === 'associations';
+  const { rows } = core.getRowModel();
+  if (rows.length < 1) return null;
+
+  const flatCols = cols.map(c => c.id);
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
-
-  const highLevelHeaders = table.getHeaderGroups()[0].headers;
+  const highLevelHeaders = core.getHeaderGroups()[0].headers;
+  const { prefix, loading } = core.getState();
+  const isExpandedInTable =
+    expanded[3] === prefix && flatCols.includes(expanded[1]);
 
   const handleClickAway = () => {
     resetExpandler();
   };
 
   return (
-    <div>
-      <div className="TBody">
-        <div className="TRow">
-          {table.getRowModel().rows.map(row => (
-            <Fragment key={row.id}>
-              <div className={getRowClassName(row)}>
-                <div className="data-row-content">
+    <TableBodyContent>
+      <RowsContainer>
+        {rows.map(row => (
+          <Fragment key={row.id}>
+            <Fade in appear>
+              <div>
+                <RowContainer
+                  rowExpanded={getRowActive(row, isExpandedInTable)}
+                >
                   {highLevelHeaders.map(columnGroup => (
-                    <div
+                    <GridContainer
+                      columnsCount={cols.length}
                       className={getColContainerClassName(columnGroup)}
                       key={columnGroup.id}
                     >
@@ -66,7 +98,8 @@ function TableBody({ table }) {
                               cell,
                               entityToGet,
                               displayedTable,
-                              expanded
+                              expanded,
+                              prefix
                             )}
                           >
                             {flexRender(
@@ -76,44 +109,40 @@ function TableBody({ table }) {
                           </div>
                         );
                       })}
-                    </div>
+                    </GridContainer>
                   ))}
-                </div>
+                </RowContainer>
               </div>
-              {row.getIsExpanded() && (
-                <div key={`${row.original[entityToGet].id}-${expanded[0]}`}>
-                  <ClickAwayListener onClickAway={handleClickAway}>
-                    <div>
-                      <SecctionRendererWrapper
-                        activeSection={expanded}
-                        table={displayedTable}
-                      >
-                        {isAssociations ? (
-                          <EvidenceSecctionRenderer
-                            id={id}
-                            row={row}
-                            rowId={row.original[entityToGet].id}
-                            entity={entity}
-                            label={row.original[entityToGet][rowNameEntity]}
-                          />
-                        ) : (
-                          <TargetSecctionRenderer
-                            id={id}
-                            rowId={row.original[entityToGet].id}
-                            entity={entity}
-                            label={row.original[entityToGet][rowNameEntity]}
-                          />
-                        )}
-                      </SecctionRendererWrapper>
-                    </div>
-                  </ClickAwayListener>
-                </div>
-              )}
-            </Fragment>
-          ))}
-        </div>
-      </div>
-    </div>
+            </Fade>
+
+            <ExpandableContainer
+              rowExpanded={row.getIsExpanded()}
+              isExpandedInTable={isExpandedInTable}
+              loading={loading}
+            >
+              <ClickAwayListener onClickAway={handleClickAway}>
+                <section>
+                  <SectionRendererWrapper>
+                    <SectionRender
+                      id={id}
+                      entity={entity}
+                      section={expanded[2]}
+                      expanded={expanded}
+                      rowId={row.original[entityToGet].id}
+                      row={row}
+                      entityToGet={entityToGet}
+                      rowNameEntity={rowNameEntity}
+                      displayedTable={displayedTable}
+                      cols={cols}
+                    />
+                  </SectionRendererWrapper>
+                </section>
+              </ClickAwayListener>
+            </ExpandableContainer>
+          </Fragment>
+        ))}
+      </RowsContainer>
+    </TableBodyContent>
   );
 }
 

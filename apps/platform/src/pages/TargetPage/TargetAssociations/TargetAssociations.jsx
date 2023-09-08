@@ -7,8 +7,11 @@ import {
   AssociationsProvider,
   SearhInput,
   DataDownloader,
+  ControlsSection,
+  OptionsControlls,
 } from '../../../components/AssociationsToolkit';
 import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
+import { Box } from '@mui/material';
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useContext(AssociationsContext);
@@ -21,15 +24,15 @@ function AssociationsWrapper() {
 
   return (
     <>
-      <div className="ControlsSection">
-        <div className="global-controls-container">
+      <ControlsSection>
+        <Box sx={{ display: 'flex' }}>
           <SearhInput />
-          <div className="options-controls">
+          <OptionsControlls>
             <AdvanceOptionsMenu />
-            <DataDownloader fileStem={`${id}-associated-diseases`} />
-          </div>
-        </div>
-      </div>
+            <DataDownloader fileStem={`${id}-associated-targets`} />
+          </OptionsControlls>
+        </Box>
+      </ControlsSection>
       <TableAssociations />
     </>
   );

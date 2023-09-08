@@ -87,8 +87,8 @@ export const referenceUrls = {
 };
 
 // Associations and URL PPP
-export const getClassicAssociationsURL = ({ baseURL, isPartnerPreview }) => {
-  const path = isPartnerPreview ? 'classic-associations' : 'associations';
+export const getClassicAssociationsURL = ({ baseURL }) => {
+  const path = 'classic-associations';
   const fullURL = `${baseURL}${path}`;
   return { fullURL, path };
 };

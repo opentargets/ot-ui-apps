@@ -10,7 +10,8 @@ import {
   Slide,
   Popover,
 } from '@mui/material';
-import { makeStyles, styled } from '@mui/styles';
+import { styled } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAotfContext from './hooks/useAotfContext';
@@ -258,8 +259,6 @@ function DataDownloader({ fileStem }) {
     downloadData('tsv', columns, getAllAssociations, fileStem);
   };
 
-  if (isPrioritisation) return null;
-
   return (
     <div>
       <Button
@@ -268,8 +267,9 @@ function DataDownloader({ fileStem }) {
         variant="outlined"
         disableElevation
         disabled={isPrioritisation}
+        startIcon={<FontAwesomeIcon icon={faCloudArrowDown} size="lg" />}
       >
-        <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
+        Export
       </Button>
       <Popover
         id={popoverId}

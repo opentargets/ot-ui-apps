@@ -23,3 +23,7 @@ export { default as usePlatformApi } from "./hooks/usePlatformApi";
 export { default as EmptyPage } from "./pages/EmptyPage";
 export { default as NotFoundPage } from "./pages/NotFoundPage";
 export { default as Page } from "./pages/Page";
+
+/* HOOKS */
+
+export { default as useStateParams } from "./hooks/useStateParams";

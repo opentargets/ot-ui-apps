@@ -1,18 +1,20 @@
 import { LoadingBackdrop } from 'ui';
-import { useContext } from 'react';
 import {
   TableAssociations,
   AdvanceOptionsMenu,
   TargetPrioritisationSwitch,
-  AssociationsContext,
   AssociationsProvider,
   SearhInput,
   DataDownloader,
+  useAotfContext,
+  ControlsSection,
+  OptionsControlls,
 } from '../../../components/AssociationsToolkit';
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociationsQuery.gql';
+import { Box } from '@mui/material';
 
 function AssociationsWrapper() {
-  const { initialLoading, id } = useContext(AssociationsContext);
+  const { initialLoading, id } = useAotfContext();
 
   if (initialLoading)
     return (
@@ -23,18 +25,18 @@ function AssociationsWrapper() {
 
   return (
     <>
-      <div className="ControlsSection">
-        <div className="global-controls-container">
+      <ControlsSection>
+        <Box sx={{ display: 'flex' }}>
           <SearhInput />
-          <div className="options-controls">
+          <OptionsControlls>
             <AdvanceOptionsMenu />
             <DataDownloader fileStem={`${id}-associated-targets`} />
-          </div>
-        </div>
+          </OptionsControlls>
+        </Box>
         <div>
           <TargetPrioritisationSwitch />
         </div>
-      </div>
+      </ControlsSection>
       <TableAssociations />
     </>
   );

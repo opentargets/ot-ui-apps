@@ -1,5 +1,6 @@
 import { createContext, useState, useMemo, useEffect } from 'react';
 import { isEqual } from 'lodash';
+import { useStateParams } from 'ui';
 import {
   defaulDatasourcesWeigths,
   getControlChecked,
@@ -7,19 +8,19 @@ import {
   checkBoxPayload,
 } from '../utils';
 import dataSources from '../static_datasets/dataSourcesAssoc';
-import '../style.css';
 
 import useAssociationsData from '../hooks/useAssociationsData';
 
 const AssociationsContext = createContext();
 
 const initialIndirect = entity => entity !== 'target';
+const initialPagination = {
+  pageIndex: 0,
+  pageSize: 50,
+};
 
 function AssociationsProvider({ children, entity, id, query }) {
-  const [{ pageIndex, pageSize }, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 50,
-  });
+  const [{ pageIndex, pageSize }, setPagination] = useState(initialPagination);
 
   const pagination = useMemo(
     () => ({
@@ -30,8 +31,12 @@ function AssociationsProvider({ children, entity, id, query }) {
   );
 
   // Table Controls
+  // [rowId, columnId, codebaseSectionId, tablePrefix]
+  // eg. ['ENSG00000087085', 'hasHighQualityChemicalProbes', 'chemicalProbes', 'pinned']
   const [expanded, setExpanded] = useState([]);
+  const [pinExpanded, setPinExpanded] = useState([]);
   const [tableExpanded, setTableExpanded] = useState({});
+  const [tablePinExpanded, setTablePinExpanded] = useState({});
 
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
@@ -48,9 +53,19 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [activeHeadersControlls, setActiveHeadersControlls] = useState(false);
 
   // only two posible (associations || prioritisations)
-  const [displayedTable, setDisplayedTable] = useState('associations');
+  const [displayedTable, setDisplayedTable] = useStateParams(
+    'associations',
+    'table',
+    arr => arr,
+    str => str
+  );
 
-  const [pinnedData, setPinnedData] = useState([]);
+  const [pinnedEntries, setPinnedEntries] = useStateParams(
+    [],
+    'pinned',
+    arr => arr.join(','),
+    str => str.split(',')
+  );
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
     query,
@@ -64,6 +79,25 @@ function AssociationsProvider({ children, entity, id, query }) {
       datasources: dataSourcesWeights,
       entity,
       aggregationFilters: dataSourcesRequired,
+    },
+  });
+
+  const {
+    data: pinnedData,
+    loading: pinnedLoading,
+    error: pinnedError,
+    count: pinnedCount,
+  } = useAssociationsData({
+    query,
+    options: {
+      id,
+      size: pinnedEntries.length,
+      sortBy: sorting[0].id,
+      enableIndirect,
+      datasources: dataSourcesWeights,
+      entity,
+      aggregationFilters: dataSourcesRequired,
+      rowsFilter: pinnedEntries.toSorted(),
     },
   });
 
@@ -112,6 +146,12 @@ function AssociationsProvider({ children, entity, id, query }) {
 
   const entityToGet = entity === 'target' ? 'disease' : 'target';
 
+  const resetToInitialPagination = () => {
+    setTableExpanded({});
+    setExpanded([]);
+    setPagination(initialPagination);
+  };
+
   const handlePaginationChange = newPagination => {
     setTableExpanded({});
     setExpanded([]);
@@ -133,8 +173,13 @@ function AssociationsProvider({ children, entity, id, query }) {
     }
   };
 
-  const expanderHandler = tableExpanderController => cell => {
-    const expandedId = getCellId(cell, entityToGet, displayedTable);
+  const expanderHandler = tableExpanderController => (cell, tablePrefix) => {
+    const expandedId = getCellId(
+      cell,
+      entityToGet,
+      displayedTable,
+      tablePrefix
+    );
     if (expanded.join('-') === expandedId.join('-')) {
       setTableExpanded({});
       setExpanded([]);
@@ -180,10 +225,19 @@ function AssociationsProvider({ children, entity, id, query }) {
     searhFilter,
     sorting,
     modifiedSourcesDataControls,
+    tablePinExpanded,
+    pinnedLoading,
+    pinnedError,
+    pinnedCount,
+    pinExpanded,
+    pinnedEntries,
+    resetToInitialPagination,
+    setPinnedEntries,
+    setPinExpanded,
+    setTablePinExpanded,
     resetDatasourceControls,
     handleSortingChange,
     handleSearchInputChange,
-    setPinnedData,
     setDisplayedTable,
     setDataSourcesWeights,
     setDataSourcesRequired,

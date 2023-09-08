@@ -1,7 +1,12 @@
 import { useState } from 'react';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
-import { faDna , faStethoscope } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDna,
+  faStethoscope,
+  faThumbTack,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Tooltip from '../AotFTooltip';
@@ -10,11 +15,11 @@ import useAotfContext from '../hooks/useAotfContext';
 
 const NameContainer = styled('div')({
   position: 'relative',
-  '& .pinnedIcon': {
-    display: 'none',
-  },
-  '&:hover .pinnedIcon': {
-    display: 'block',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  '&:hover > .PinnedContainer': {
+    opacity: 1,
   },
 });
 
@@ -44,6 +49,18 @@ const LinksTooltipContent = styled('span')({
   gap: '5px',
 });
 
+const PinnedContainer = styled('div', {
+  shouldForwardProp: prop => prop !== 'active',
+})(({ active }) => ({
+  opacity: active ? '1' : '0',
+  cursor: 'pointer',
+  transition: 'opacity ease-in 150ms, scale ease 300ms',
+  marginLeft: '5px',
+  '&:hover': {
+    scale: 1.1,
+  },
+}));
+
 function TooltipContent({ id, entity, name, icon }) {
   const profileURL = `/${entity}/${id}`;
   const associationsURL = `/${entity}/${id}/associations`;
@@ -58,15 +75,32 @@ function TooltipContent({ id, entity, name, icon }) {
   );
 }
 
-function CellName({ name, rowId }) {
+function CellName({ name, rowId, row, tablePrefix }) {
   const [open, setOpen] = useState(false);
-  const { entityToGet } = useAotfContext();
+  const { entityToGet, pinnedEntries, setPinnedEntries } = useAotfContext();
 
+  const rowData = row.original;
+
+  const isPinned = pinnedEntries.find(e => e === rowData.id);
   const rowEntity = entityToGet === 'target' ? 'target' : 'disease';
   const icon = rowEntity === 'target' ? faDna : faStethoscope;
 
+  const pinnedIcon = tablePrefix === 'body' ? faThumbTack : faXmark;
+
+  const handleClickPin = () => {
+    if (isPinned) {
+      const newPinnedData = pinnedEntries.filter(e => e !== rowData.id);
+      setPinnedEntries(newPinnedData);
+    } else {
+      setPinnedEntries([...pinnedEntries, rowData.id]);
+    }
+  };
+
   return (
     <NameContainer>
+      <PinnedContainer onClick={handleClickPin} active={isPinned}>
+        <FontAwesomeIcon icon={pinnedIcon} size="sm" />
+      </PinnedContainer>
       <Tooltip
         open={open}
         onClose={() => setOpen(false)}

@@ -29,8 +29,8 @@ const getAssociatedTargetsData = data => {
       (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
       {}
     );
-    const targetPrioritisation = d.target.priorisations?.items
-      ? d.target.priorisations.items.reduce(
+    const targetPrioritisation = d.target.prioritisation?.items
+      ? d.target.prioritisation.items.reduce(
           (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
           {}
         )
@@ -57,7 +57,7 @@ const getAllDataCount = (entity, apiResponse) => {
   if (entity === 'disease') return apiResponse.disease.associatedTargets.count;
 };
 
-function useTargetAssociations({
+function useAssociationsData({
   query,
   options: {
     id = '',
@@ -68,6 +68,7 @@ function useTargetAssociations({
     aggregationFilters = [],
     enableIndirect = false,
     datasources = null,
+    rowsFilter = [],
     entity,
   },
 }) {
@@ -91,6 +92,7 @@ function useTargetAssociations({
           sortBy,
           enableIndirect,
           datasources,
+          rowsFilter,
           aggregationFilters: aggregationFilters.map(el => ({
             name: el.name,
             path: el.path,
@@ -122,4 +124,4 @@ function useTargetAssociations({
   return { loading, error, data, initialLoading, count };
 }
 
-export default useTargetAssociations;
+export default useAssociationsData;

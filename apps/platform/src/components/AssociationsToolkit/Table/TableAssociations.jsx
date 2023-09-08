@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-table';
 import Skeleton from '@mui/material/Skeleton';
 
-import { styled } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 
 import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
 import prioritizationCols from '../static_datasets/prioritizationCols';
@@ -25,16 +25,21 @@ import useAotfContext from '../hooks/useAotfContext';
 
 import { cellHasValue, isPartnerPreview, tableCSSVariables } from '../utils';
 
-const TableElement = styled('div')({
+const TableElement = styled('main')({
   minWidth: '900px',
   maxWidth: '1400px',
   margin: '0 auto',
 });
 
+const TableDivider = styled('div')({
+  borderBottom: '1px solid #ececec',
+  marginBottom: 4,
+});
+
 const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
-function getDatasources(expanderHandler, loading, displayedTable) {
+function getDatasources({ expanderHandler, displayedTable }) {
   const isAssociations = displayedTable === 'associations';
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
@@ -67,6 +72,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
         isPrivate,
         docsLink,
         cell: row => {
+          const { prefix, loading } = row.table.getState();
           if (loading)
             return <Skeleton variant="circle" width={26} height={25} />;
           const hasValue = cellHasValue(row.getValue());
@@ -79,6 +85,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
               cell={row}
               loading={loading}
               isAssociations={isAssociations}
+              tablePrefix={prefix}
             />
           ) : (
             <ColoredCell />
@@ -97,8 +104,9 @@ function TableAssociations() {
     entityToGet,
     data,
     count,
-    loading,
+    loading: associationsLoading,
     tableExpanded,
+    expanded,
     pagination,
     expanderHandler,
     handlePaginationChange,
@@ -106,6 +114,8 @@ function TableAssociations() {
     displayedTable,
     sorting,
     handleSortingChange,
+    pinnedData,
+    pinnedLoading,
   } = useAotfContext();
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
@@ -119,10 +129,18 @@ function TableAssociations() {
           columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
             id: 'name',
             enableSorting: false,
-            cell: row =>
-              !loading ? (
-                <CellName name={row.getValue()} rowId={row.row.id} />
-              ) : null,
+            cell: row => {
+              const { loading, prefix } = row.table.getState();
+              if (loading) return null;
+              return (
+                <CellName
+                  name={row.getValue()}
+                  rowId={row.row.id}
+                  row={row.row}
+                  tablePrefix={prefix}
+                />
+              );
+            },
             header: () => {
               const label = entityToGet === 'target' ? 'Target' : 'Disease';
               return <span>{label}</span>;
@@ -132,6 +150,7 @@ function TableAssociations() {
             id: 'score',
             header: 'Association Score',
             cell: row => {
+              const { loading } = row.table.getState();
               if (loading)
                 return <Skeleton variant="rect" width={30} height={25} />;
               return (
@@ -150,23 +169,25 @@ function TableAssociations() {
       columnHelper.group({
         header: 'entities',
         id: 'entity-cols',
-        columns: [...getDatasources(expanderHandler, loading, displayedTable)],
+        columns: [...getDatasources({ expanderHandler, displayedTable })],
       }),
     ],
-    [expanderHandler, loading, displayedTable, entityToGet, rowNameEntity]
+    [expanderHandler, displayedTable, entityToGet, rowNameEntity]
   );
 
   /**
    * TABLE HOOK
    * @description tanstack/react-table
    */
-  const table = useReactTable({
+  const coreAssociationsTable = useReactTable({
     data,
     columns,
     state: {
       expanded: tableExpanded,
       pagination,
       sorting,
+      prefix: 'body',
+      loading: associationsLoading,
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
@@ -180,22 +201,62 @@ function TableAssociations() {
     manualSorting: true,
   });
 
-  const entitesHeaders = table.getHeaderGroups()[0].headers[1].subHeaders;
+  const corePinnedTable = useReactTable({
+    data: pinnedData,
+    columns,
+    state: {
+      expanded: tableExpanded,
+      pagination: {
+        pageIndex: 0,
+        pageSize: 150,
+      },
+      sorting,
+      prefix: 'pinned',
+      loading: pinnedLoading,
+    },
+    pageCount: count,
+    onPaginationChange: handlePaginationChange,
+    onExpandedChange: setTableExpanded,
+    onSortingChange: handleSortingChange,
+    getRowCanExpand: () => true,
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getRowId: row => row[entityToGet].id,
+    manualPagination: true,
+    manualSorting: true,
+  });
+
+  const entitesHeaders =
+    coreAssociationsTable.getHeaderGroups()[0].headers[1].subHeaders;
 
   return (
     <div className="TAssociations" style={tableCSSVariables}>
       <TableElement>
         {/* HEADER */}
-        <TableHeader table={table} />
+        <TableHeader table={coreAssociationsTable} cols={entitesHeaders} />
 
         {/* Weights controlls */}
         <HeaderControls cols={entitesHeaders} />
+        <div>
+          {/* BODY CONTENT */}
+          <TableBody
+            core={corePinnedTable}
+            expanded={expanded}
+            prefix="pinned"
+            cols={entitesHeaders}
+          />
 
-        {/* BODY CONTENT */}
-        <TableBody table={table} />
+          {pinnedData.length > 0 && <TableDivider />}
 
+          <TableBody
+            core={coreAssociationsTable}
+            expanded={expanded}
+            prefix="body"
+            cols={entitesHeaders}
+          />
+        </div>
         {/* FOOTER */}
-        <TableFooter table={table} />
+        <TableFooter table={coreAssociationsTable} />
       </TableElement>
     </div>
   );
