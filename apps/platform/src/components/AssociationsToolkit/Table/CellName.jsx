@@ -54,7 +54,6 @@ const PinnedContainer = styled('div', {
 })(({ active }) => ({
   opacity: active ? '1' : '0',
   cursor: 'pointer',
-  transition: 'opacity ease-in 150ms, scale ease 300ms',
   marginLeft: '5px',
   '&:hover': {
     scale: 1.1,
@@ -98,7 +97,11 @@ function CellName({ name, rowId, row, tablePrefix }) {
 
   return (
     <NameContainer>
-      <PinnedContainer onClick={handleClickPin} active={isPinned}>
+      <PinnedContainer
+        className="pinnedIcon"
+        onClick={handleClickPin}
+        active={isPinned}
+      >
         <FontAwesomeIcon icon={pinnedIcon} size="sm" />
       </PinnedContainer>
       <Tooltip
