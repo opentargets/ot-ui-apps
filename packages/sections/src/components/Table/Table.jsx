@@ -67,7 +67,7 @@ const Table = ({
   };
 
   const handleChangeRowsPerPage = (event) => {
-    onRowsPerPageChange(event.target.value);
+    onRowsPerPageChange(Number(event.target.value));
   };
   const handleChangePage = (_, page) => {
     // reset the selected;
@@ -93,8 +93,6 @@ const Table = ({
             className={defaultClasses.downloader}
             item
             xs={12}
-            md={8}
-            lg={8}
           >
             <DataDownloader
               columns={dataDownloaderColumns || columns}
