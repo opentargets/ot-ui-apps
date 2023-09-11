@@ -154,6 +154,7 @@ function Body({ id, label, entity }) {
   };
 
   const handleRowsPerPageChange = (newPageSize) => {
+    setLoading(true)
     if (
       page * newPageSize >=
       data.disease.europePmc.rows.length - newPageSize

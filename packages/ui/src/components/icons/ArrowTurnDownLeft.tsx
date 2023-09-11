@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 import { ReactNode } from 'react'
 
 const useStyles = makeStyles((theme) => ({
