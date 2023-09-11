@@ -16,7 +16,9 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: "normal",
   },
   detailsButton: {
-    margin: "1rem",
+    margin: "1rem !important",
+    color: '#5a5f5f !important',
+    borderColor: '#c4c4c4 !important',
   },
   detailPanel: {
     background: `${theme.palette.grey[100]}`,

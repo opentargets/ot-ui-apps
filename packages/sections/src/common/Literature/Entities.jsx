@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexWrap: "wrap",
     "& > *": {
-      margin: theme.spacing(0.5),
+      margin: `${theme.spacing(0.5)} !important`,
     },
   },
   loadingContainer: {
