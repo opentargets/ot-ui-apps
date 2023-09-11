@@ -1,4 +1,4 @@
-import { makeStyles, styled } from "@mui/material/styles";
+import { makeStyles, styled } from "@mui/styles";
 import { Typography, Chip } from "@mui/material";
 import SearchRecentListItem from "./SearchRecentListItem";
 import { commaSeparate } from "./utils/searchUtils";
