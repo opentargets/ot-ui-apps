@@ -67,7 +67,7 @@ const Table = ({
   };
 
   const handleChangeRowsPerPage = (event) => {
-    onRowsPerPageChange(event.target.value);
+    onRowsPerPageChange(Number(event.target.value));
   };
   const handleChangePage = (_, page) => {
     // reset the selected;

@@ -154,6 +154,7 @@ function Body({ id, label, entity }) {
   };
 
   const handleRowsPerPageChange = (newPageSize) => {
+    setLoading(true)
     if (
       page * newPageSize >=
       data.disease.europePmc.rows.length - newPageSize
@@ -178,8 +179,8 @@ function Body({ id, label, entity }) {
         const newLiteratureData = resJson.resultList.result;
 
         setLiteratureData((litData) => [...litData, ...newLiteratureData]);
-        setLoading(false);
       }
+      setLoading(false);
     }
 
     if (isCurrent) fetchLiterature();
