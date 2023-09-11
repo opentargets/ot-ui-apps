@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Slider, withStyles } from '@material-ui/core';
+import { Slider } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
 import useAotfContext from '../hooks/useAotfContext';
 import { getWightSourceDefault } from '../utils';
 
-const OTSlider = withStyles({
+const OTSlider = styled(Slider)({
+  root: {
+    padding: '0 10px !important',
+  },
   mark: {
     backgroundColor: '#b8b8b8',
     width: 10,
@@ -13,7 +18,7 @@ const OTSlider = withStyles({
   valueLabel: {
     zIndex: '9999',
   },
-})(Slider);
+});
 
 const sliderPayload = (id, value) => ({
   id,
@@ -27,7 +32,11 @@ const getSliderValue = (values, id) => {
 };
 
 function SliderControll({ id }) {
-  const { dataSourcesWeights, setDataSourcesWeights } = useAotfContext();
+  const {
+    dataSourcesWeights,
+    setDataSourcesWeights,
+    resetToInitialPagination,
+  } = useAotfContext();
 
   const defaultValue = getWightSourceDefault(id);
   const initialValue = getSliderValue(dataSourcesWeights, id);
@@ -45,6 +54,7 @@ function SliderControll({ id }) {
       return src;
     });
     setDataSourcesWeights(newDataSources);
+    resetToInitialPagination();
   }, [value]);
 
   useEffect(() => {
@@ -63,6 +73,7 @@ function SliderControll({ id }) {
 
   return (
     <OTSlider
+      size="small"
       orientation="vertical"
       value={displayValue}
       aria-labelledby="vertical-slider"

@@ -3,11 +3,13 @@ import { useQuery } from '@apollo/client';
 import Link from '../../../components/Link';
 import SectionItem from '../../../components/Section/SectionItem';
 import { DataTable, TableDrawer } from '../../../components/Table';
-import { identifiersOrgLink } from '../../../utils/global';
 import Description from './Description';
 import { naLabel, defaultRowsPerPageOptions } from '../../../constants';
 
 import DRUG_WARNINGS_QUERY from './DrugWarningsQuery.gql';
+import Tooltip from '../../../components/Tooltip';
+
+const replaceSemicolonWithUnderscore = id => id.replace(':', '_');
 
 const columns = [
   {
@@ -15,26 +17,37 @@ const columns = [
     label: 'Warning type',
   },
   {
-    id: 'description',
-    label: 'Description',
-    renderCell: ({ description }) => description ?? naLabel,
+    id: 'efoTerm',
+    label: 'Adverse event',
+    renderCell: ({ efoTerm, efoId, description }) => {
+      if (efoId)
+        return (
+          <Tooltip title={`Description: ${description}`} showHelpIcon>
+            <Link to={`/disease/${replaceSemicolonWithUnderscore(efoId)}`}>
+              {efoTerm || efoId}
+            </Link>
+          </Tooltip>
+        );
+      return efoTerm || description || naLabel;
+    },
   },
   {
     id: 'toxicityClass',
     label: 'ChEMBL warning class',
-    renderCell: ({ toxicityClass }) => toxicityClass ?? naLabel,
-  },
-  {
-    id: 'meddraSocCode',
-    label: 'MedDRA SOC code',
-    renderCell: ({ meddraSocCode }) =>
-      meddraSocCode ? (
-        <Link external to={identifiersOrgLink('meddra', meddraSocCode)}>
-          {meddraSocCode}
-        </Link>
-      ) : (
-        naLabel
-      ),
+    renderCell: ({ toxicityClass, efoIdForWarningClass, description }) => {
+      if (efoIdForWarningClass)
+        return (
+          <Link
+            external
+            to={`/disease/${replaceSemicolonWithUnderscore(
+              efoIdForWarningClass
+            )}`}
+          >
+            {toxicityClass || efoIdForWarningClass}
+          </Link>
+        );
+      return toxicityClass || description || naLabel;
+    },
   },
   {
     id: 'country',

@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client';
-
 import { DataTable } from '../../../components/Table';
 import Description from './Description';
 import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
@@ -14,7 +13,7 @@ import { dataTypesMap } from '../../../dataTypes';
 
 import SYSBIO_QUERY from './sectionQuery.gql';
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease',
     label: 'Disease/phenotype',
@@ -54,7 +53,13 @@ const columns = [
           }
           return acc;
         }, []) || [];
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -71,6 +76,8 @@ export function BodyCore({ definition, id, label, count }) {
   const request = useQuery(SYSBIO_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

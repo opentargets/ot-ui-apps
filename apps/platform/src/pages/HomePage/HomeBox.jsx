@@ -1,10 +1,10 @@
-import { Grid, Paper, makeStyles } from '@material-ui/core';
+import { Grid, Paper, Box } from '@mui/material';
 import config from '../../config';
 
 import OTLogo from '../../assets/OTLogo';
 import PPOTLogo from '../../assets/PPPOTLogo';
 
-const useStyles = makeStyles(theme => ({
+const styles = {
   homeboxContainer: {
     overflow: 'visible',
     padding: '30px 60px',
@@ -15,43 +15,27 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center',
     marginBottom: '20px',
   },
-  title: {
-    color: theme.palette.grey[700],
-    bottom: '40px',
-    fontSize: '30px',
-    marginLeft: '7px',
-    position: 'relative',
-  },
   logo: {
     maxWidth: '30rem',
     width: '100%',
   },
-  note: {
-    backgroundColor: '#ffffcc',
-    textAlign: 'center',
-    padding: '15px 74px',
-  },
-  important: {
-    marginBottom: '10px',
-  },
-}));
+};
 
 function HomeBox({ children }) {
-  const classes = useStyles();
   return (
     <Grid item xs={12} sm={8} md={8} lg={8}>
-      <Paper className={classes.homeboxContainer}>
-        <div className={classes.homeboxHeader}>
+      <Paper sx={styles.homeboxContainer}>
+        <Box sx={styles.homeboxHeader}>
           {config.profile.isPartnerPreview ? (
-            <PPOTLogo className={classes.logo} />
+            <PPOTLogo sx={styles.logo} />
           ) : (
-            <OTLogo className={classes.logo} />
+            <OTLogo sx={styles.logo} />
           )}
-        </div>
+        </Box>
         {children}
       </Paper>
     </Grid>
-  );
+  )
 }
 
 export default HomeBox;

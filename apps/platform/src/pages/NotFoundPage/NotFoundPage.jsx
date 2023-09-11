@@ -1,13 +1,14 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
+import { EmptyPage } from 'ui';
 import BasePage from '../../components/BasePage';
-import EmptyPage from '../EmptyPage';
+import config from '../../config';
 
 function NotFoundPage() {
   return (
     <BasePage>
-      <EmptyPage>
-        <Typography>404 Page Not Found</Typography>
+      <EmptyPage communityLink={config.profile.communityUrl} documentationLink={config.profile.documentationUrl}>
+        <Typography>This page could not be found.</Typography>
       </EmptyPage>
     </BasePage>
   );

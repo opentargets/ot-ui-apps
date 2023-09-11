@@ -3,7 +3,7 @@ import { Box, Typography, makeStyles } from '@material-ui/core';
 import usePlatformApi from '../../../hooks/usePlatformApi';
 import { sentenceCase } from '../../../utils/global';
 import SectionItem from '../../../components/Section/SectionItem';
-import ChipList from '../../../components/ChipList';
+import { ChipList } from 'ui';
 import { DataTable } from '../../../components/Table';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { epmcUrl } from '../../../utils/urls';
@@ -21,7 +21,7 @@ import { dataTypesMap } from '../../../dataTypes';
 
 import EVA_SOMATIC_QUERY from './EvaSomaticQuery.gql';
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
@@ -195,7 +195,13 @@ const columns = [
           return acc;
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -221,6 +227,8 @@ export function BodyCore({ definition, id, label, count }) {
   const request = useQuery(EVA_SOMATIC_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

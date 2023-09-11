@@ -1,5 +1,4 @@
 import {
-  withStyles,
   Grid,
   Card,
   Typography,
@@ -7,7 +6,8 @@ import {
   FormGroup,
   FormControlLabel,
   TablePagination,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faDna,
@@ -37,7 +37,7 @@ const getCounts = entities => {
   return counts;
 };
 
-const styles = theme => ({
+const useStyles = makeStyles((theme) => ({
   label: {
     marginLeft: '-6px',
   },
@@ -45,11 +45,12 @@ const styles = theme => ({
     color: theme.palette.primary.main,
     marginRight: '2px',
   },
-});
+}));
 
-const SearchFilters = withStyles(styles)(
-  ({ classes, entities, entitiesCount, setEntity }) => {
+const SearchFilters = 
+  ({ entities, entitiesCount, setEntity }) => {
     const counts = getCounts(entitiesCount);
+    const classes = useStyles();
 
     return (
       <>
@@ -118,8 +119,7 @@ const SearchFilters = withStyles(styles)(
         />
       </>
     );
-  }
-);
+  };
 
 function SearchResults({ results, page, onPageChange }) {
   const TYPE_NAME = '__typename';

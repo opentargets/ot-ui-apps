@@ -1,7 +1,8 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useQuery } from '@apollo/client';
 
-import ChipList from '../../../components/ChipList';
+import { ChipList } from 'ui';
 import Description from './Description';
 import DataTable from '../../../components/Table/DataTable';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';

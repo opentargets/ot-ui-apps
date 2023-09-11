@@ -1,4 +1,3 @@
-import React from 'react';
 import Plot from 'react-plotly.js';
 import _ from 'lodash';
 import { useLayoutEffect, useRef, useState } from 'react';
@@ -9,11 +8,9 @@ function DepmapPlot({ data }) {
 
   useLayoutEffect(() => {
     setWidth(ref.current.offsetWidth);
-    // setWidth(ref.current.clientWidth);
-    // console.log('width: ', ref.current.offsetWidth, ref.current.clientWidth);
   }, []);
 
-  const trackHeight = 60;
+  const trackHeight = 40;
 
   const onPointClick = evt => {
     const { points } = evt;
@@ -77,9 +74,13 @@ function DepmapPlot({ data }) {
   // plot layout options
   const layoutOptions = {
     width: width,
-    height: data.length * trackHeight + 180, // plotly adds 180px at the bottom after tracks
+    height: data.length * trackHeight + (trackHeight * 3), // plotly adds roghly this space at the bottom after tracks
     title: '',
     autosize: true,
+    xaxis: {
+      title: 'Gene Effect',
+      zerolinecolor: '#DDD',
+    },
     yaxis: {
       automargin: 'width',
     },
@@ -92,15 +93,15 @@ function DepmapPlot({ data }) {
         x1: -1,
         y1: depMapEssentiality.length - 0.5,
         line: {
-          color: '#rgba(255,0,0,.5)',
+          color: '#rgba(255,0,0,.9)',
           width: 1,
-          dash: `0px, ${trackHeight * 0.15}px, ${trackHeight * 0.7}px, ${
-            trackHeight * 0.15
-          }px`,
+          dash: 'dot',
         },
       },
     ],
-
+    margin: {
+      t: 30,
+    },
     boxgap: 0.5,
     font: {
       family: 'Inter',

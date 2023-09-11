@@ -12,7 +12,7 @@ import { dataTypesMap } from '../../../dataTypes';
 import Summary from './Summary';
 import Description from './Description';
 import Tooltip from '../../../components/Tooltip';
-import ChipList from '../../../components/ChipList';
+import { ChipList } from 'ui';
 import Link from '../../../components/Link';
 import { defaultRowsPerPageOptions } from '../../../constants';
 
@@ -203,7 +203,7 @@ const getColumns = classes => [
     label: 'OTVL hit',
     tooltip: <>Binary assessment of gene perturbation effect in contrast</>,
     renderCell: row => (
-      <HitIcon isHit={isHit(row.confidence)} classes={classes} />
+      <HitIcon isHitValue={isHit(row.confidence)} classes={classes} />
     ),
     width: '8%',
   },
@@ -211,7 +211,7 @@ const getColumns = classes => [
     id: 'projectHit',
     label: 'Primary project hit',
     renderCell: row => (
-      <HitIcon isHit={isHit(row.expectedConfidence)} classes={classes} />
+      <HitIcon isHitValue={isHit(row.expectedConfidence)} classes={classes} />
     ),
     width: '8%',
   },
@@ -306,9 +306,7 @@ export function BodyCore({ definition, id, label, count }) {
           ),
           'label'
           // sort alphabetically but move 'PAN-CO' at the end of the list
-        ).sort((a, b) =>
-          (b.label === 'PAN-CO' || a.label < b.label) ? -1 : 1
-        );
+        ).sort((a, b) => (b.label === 'PAN-CO' || a.label < b.label ? -1 : 1));
 
         return (
           <>

@@ -1,7 +1,6 @@
 /* ENTITIES GRID */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(24, 1fr);
   grid-template-rows: 1fr;
   grid-column-gap: 2px;
   grid-row-gap: 0px;
@@ -52,20 +51,14 @@
 
 .TAssociations .Theader .naiming-cols {
   display: flex;
-}
-.TAssociations .Theader .entity-cols {
-  display: flex;
-  padding-left: 5px;
-  margin-left: 30px;
-  width: 100%;
-  gap: 4px;
+  width: var(--table-left-column-width);
 }
 
 .TAssociations .Theader .header-name {
-  width: 120px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  flex-grow: 1;
 }
 
 .TAssociations .Theader .header-name div {
@@ -75,7 +68,6 @@
 .TAssociations .Theader .rotate {
   height: 140px;
   white-space: nowrap;
-  flex-grow: 1;
 }
 
 .TAssociations .Theader .docs-link {
@@ -101,20 +93,9 @@
 
 .TAssociations .Theader .rotate > div {
   transform: translate(0, 110px) rotate(315deg);
-  width: 30px;
+  width: 32px;
   display: flex;
   align-items: center;
-}
-
-/* --- BODY --- */
-.TAssociations .TBody {
-  display: flex;
-  flex-direction: column;
-  /* overflow: hidden; */
-}
-
-.TAssociations .table-body {
-  padding-bottom: 10px;
 }
 
 /* Table footer */
@@ -136,46 +117,22 @@
 }
 
 /* ROW */
-.TAssociations .TRow {
-  display: flex;
-  flex-direction: column;
-}
-.TAssociations .data-row {
-  display: flex;
-  align-items: center;
-}
-
-.TAssociations .data-row .data-row-content {
+.TAssociations .data-row-content {
   display: flex;
   align-items: center;
   width: 100%;
 }
 
-.TAssociations .data-row:hover {
-  background-color: var(--row-hover-color);
-}
-
-.TAssociations .data-row.active {
-  position: sticky;
-  top: 145px;
-  padding: 0.5em 0 0.5em 0;
-  z-index: 90 !important;
-  background-color: var(--row-hover-color);
-}
-
-.TAssociations .data-row .data-row-content .group-naiming-cols {
+.TAssociations .group-naiming-cols {
   display: flex;
   align-items: center;
+  width: var(--table-left-column-width);
 }
 
-.TAssociations .data-row .data-row-content .group-entity-cols {
-  display: flex;
+.TAssociations .group-entity-cols {
+  /* border-left: 1px solid var(--entities-border-color); */
   align-items: center;
-  height: 35px;
-  margin-left: 20px;
-  width: 100%;
-  border-left: 1px solid var(--entities-border-color);
-  /* border-left: 1px solid #aeaeae; */
+  height: 32px;
 }
 
 /*  CELL  */
@@ -186,14 +143,18 @@
   flex-grow: 1;
 }
 
-.TAssociations .data-row .name-cell {
-  width: 120px;
+.TAssociations .name-cell {
+  width: var(--table-header-max-width);
   white-space: nowrap;
-  padding: 0 0.5rem 0 0;
+  margin: 0 0.5rem 0 0;
   text-align: left;
 }
 
-.TAssociations .data-row .data-cell .data-score.loading {
+.data-row-content:hover .pinnedIcon {
+  opacity: 1;
+}
+
+.TAssociations .data-cell .data-score.loading {
   background: #eee;
   background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
   border-radius: 5px;
@@ -201,12 +162,12 @@
   animation: 1.5s shine linear infinite;
 }
 
-.TAssociations .data-row .data-cell .data-score {
+.TAssociations .data-cell .data-score {
   cursor: pointer;
   box-sizing: border-box;
 }
 
-.TAssociations .data-row .data-cell.active .data-score {
+.TAssociations .data-cell.active .data-score {
   -webkit-box-shadow: 0px 0px 3px 1px rgba(92, 19, 19, 0.35);
   box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
   border: 2px solid rgb(0, 0, 0) !important;
@@ -214,8 +175,8 @@
   top: 0;
 }
 
-.TAssociations .data-row .data-cell .data-score:hover,
-.TAssociations .data-row .data-cell .data-score:focus {
+.TAssociations .data-cell .data-score:hover,
+.TAssociations .data-cell .data-score:focus {
   -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
   box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
 }
@@ -223,31 +184,33 @@
 /* Agregations indicators */
 
 .TAssociations .aggregations-container {
-  display: flex;
-  flex-direction: row;
-  margin-left: 170px;
-  gap: 4px;
-  align-items: center;
+  margin-left: 220px;
 }
 
-.TAssociations .aggregations-container .aggregation-indicator {
+.TAssociations .aggregation-indicator {
   position: relative;
-  background-color: var(--aggregations-color);
-  height: 5px;
+  width: 100%;
+  height: 8px;
+  opacity: 0.8;
   transition: all ease 300ms;
+  background-color: var(--aggregations-border-color);
+  border: 1.5px solid var(--aggregations-border-color);
+  border-radius: 2px;
 }
 
-.TAssociations .aggregations-container .aggregation-indicator.active {
-  transform: scale(1, 1.8);
+.TAssociations .aggregation-indicator.active {
+  transform: scale(1, 1.3);
   background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
-.TAssociations .aggregations-container .aggregation-indicator:hover {
+.TAssociations .aggregation-indicator:hover {
   transform: scale(1, 2);
   background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
-.TAssociations .aggregations-container .aggregation-indicator.clickAble:hover {
+.TAssociations .aggregation-indicator.clickAble:hover {
   cursor: pointer;
 }
 
@@ -272,9 +235,8 @@
   width: 100%;
 }
 .TAssociations .weights-controlls .header-controls-labels {
-  padding: 6px 10px;
   text-align: right;
-  width: 195px;
+  width: var(--table-left-column-width);
 }
 
 .TAssociations .weights-controlls .required-container {

@@ -6,7 +6,7 @@ import {
   useHistory,
   useRouteMatch,
 } from 'react-router-dom';
-import { Tabs } from '@material-ui/core';
+import { Tabs, Box } from '@mui/material';
 import { LoadingBackdrop } from 'ui';
 import { v1 } from 'uuid';
 
@@ -33,7 +33,9 @@ function RoutingTabs({ children }) {
 
   return (
     <>
-      <Tabs value={history.location.pathname}>{preparedChildren}</Tabs>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={history.location.pathname}>{preparedChildren}</Tabs>
+      </Box>
       <Suspense fallback={<LoadingBackdrop />}>
         <Switch>
           {routes.map((route, index) => (

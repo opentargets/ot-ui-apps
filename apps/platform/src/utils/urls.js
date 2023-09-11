@@ -36,7 +36,7 @@ export function europePmcSearchPOSTQuery(ids) {
     resultType: 'core',
     format: 'json',
     pageSize: '1000',
-    query: `SRC:MED AND (ext_id:${query})`,
+    query: `ext_id:${query}`,
     sort: 'P_PDATE_D desc',
   };
   const formBody = encodeParams(bodyOptions);
@@ -87,8 +87,8 @@ export const referenceUrls = {
 };
 
 // Associations and URL PPP
-export const getClassicAssociationsURL = ({ baseURL, isPartnerPreview }) => {
-  const path = isPartnerPreview ? 'classic-associations' : 'associations';
+export const getClassicAssociationsURL = ({ baseURL }) => {
+  const path = 'classic-associations';
   const fullURL = `${baseURL}${path}`;
   return { fullURL, path };
 };
@@ -104,4 +104,17 @@ export const getAbleRoutes = ({ routes = [], isPartnerPreview = false }) => {
     return [...accumulator, currentValue];
   }, []);
   return ableRouter;
+};
+
+export const publicationSummaryQuery = ({ pmcId, symbol, name }) => {
+  const baseUrl = `${config.urlAiApi}/literature/publication/summary`;
+  const body = {
+    payload: {
+      pmcId,
+      targetSymbol: symbol,
+      diseaseName: name,
+    },
+  };
+
+  return { baseUrl, body };
 };

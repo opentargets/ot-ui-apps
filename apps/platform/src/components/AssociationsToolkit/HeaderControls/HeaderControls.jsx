@@ -1,15 +1,15 @@
-import { Collapse, Grid, Typography } from '@material-ui/core';
+import { Box, Collapse, Grid, Typography } from '@mui/material';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { styled } from '@material-ui/styles';
+import { styled } from '@mui/material/styles';
 import dataSources from '../static_datasets/dataSourcesAssoc';
 
 import Slider from './SliderControl';
 import Required from './RequiredControl';
+import { GridContainer } from '../layout';
 
 import useAotfContext from '../hooks/useAotfContext';
-
 
 const CloseContainer = styled('div')({
   position: 'absolute',
@@ -29,19 +29,10 @@ function HeaderControls({ cols = [] }) {
     setActiveHeadersControlls(false);
   };
 
-  const columnContainerStyle = {
-    gridTemplateColumns: ` repeat(${cols.length}, 1fr)`,
-  };
-
   return (
     <Collapse in={activeHeadersControlls}>
       <div className="weights-controlls">
-        <Grid
-          container
-          direction="row"
-          wrap="nowrap"
-          className="controlls-container"
-        >
+        <Grid container direction="row" wrap="nowrap">
           <CloseContainer onClick={handleClose}>
             <FontAwesomeIcon icon={faXmark} size="lg" />
           </CloseContainer>
@@ -52,20 +43,16 @@ function HeaderControls({ cols = [] }) {
             className="header-controls-labels"
             justifyContent="space-between"
           >
-            <Grid item>
-              <Typography variant="subtitle2">
-                Datasource weight control:
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="subtitle2">Required datasource:</Typography>
-            </Grid>
+            <Box>
+              <Typography variant="subtitle2">Weight</Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle2">Require</Typography>
+            </Box>
           </Grid>
-          <Grid
-            item
-            container
-            style={columnContainerStyle}
-            className="grid-container controlls-wrapper"
+          <GridContainer
+            columnsCount={cols.length}
+            className="controlls-wrapper"
           >
             {cols.map(({ id }) => (
               <div key={id} className="colum-control">
@@ -82,7 +69,7 @@ function HeaderControls({ cols = [] }) {
                 </div>
               </div>
             ))}
-          </Grid>
+          </GridContainer>
         </Grid>
       </div>
     </Collapse>

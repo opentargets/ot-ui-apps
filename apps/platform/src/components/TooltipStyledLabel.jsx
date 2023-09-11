@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 /**
  * Styled label for use in the tooltip for consistent look'n'feel.
@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core';
 function TooltipStyledLabel({ label, description, newline = false }) {
   return (
     <Typography variant="body2">
-      <span style={{ fontWeight: 'bold' }}>{label}:</span>{' '}
+      {label ? <span style={{ fontWeight: 'bold' }}>{label}:</span> : ''}{' '}
       {newline ? <br /> : null}
       {description}
     </Typography>

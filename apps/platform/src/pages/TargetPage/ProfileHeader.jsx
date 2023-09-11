@@ -1,10 +1,10 @@
-import { useTheme } from '@material-ui/core/styles';
+import { usePlatformApi } from 'ui';
+import { useTheme } from '@mui/styles';
 import TargetDescription from './TargetDescription';
 import {
   ProfileHeader as BaseProfileHeader,
   ChipList,
 } from '../../components/ProfileHeader';
-import usePlatformApi from '../../hooks/usePlatformApi';
 import { clearDescriptionCodes } from '../../utils/global';
 
 import TARGET_PROFILE_HEADER_FRAGMENT from './TargetProfileHeader.gql';
@@ -66,13 +66,26 @@ function ProfileHeader() {
   );
   const synonyms = parseSynonyms(data?.target.synonyms || []);
 
+  // geneInfo currently holds the details for the "core essential" chip,
+  // however in the future it will hold information to display other chips
+  const geneInfo = [
+    {
+      label: 'Core essential gene',
+      tooltip: 'Source: Cancer DepMap',
+      isVisible: data?.target.isEssential,
+    },
+  ];
+
   return (
     <BaseProfileHeader>
-      <TargetDescription
-        loading={loading}
-        descriptions={targetDescription}
-        targetId={data?.target.id}
-      />
+      <>
+        <TargetDescription
+          loading={loading}
+          descriptions={targetDescription}
+          targetId={data?.target.id}
+        />
+        <ChipList>{geneInfo.filter(gi => gi.isVisible)}</ChipList>
+      </>
       <ChipList title="Synonyms" loading={loading}>
         {synonyms}
       </ChipList>

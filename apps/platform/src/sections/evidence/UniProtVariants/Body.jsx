@@ -7,7 +7,11 @@ import Tooltip from '../../../components/Tooltip';
 import SectionItem from '../../../components/Section/SectionItem';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 import { DataTable } from '../../../components/Table';
-import { defaultRowsPerPageOptions } from '../../../constants';
+import LabelChip from '../../../components/LabelChip';
+import {
+  defaultRowsPerPageOptions,
+  variantConsequenceSource,
+} from '../../../constants';
 import { epmcUrl } from '../../../utils/urls';
 import Summary from './Summary';
 import Description from './Description';
@@ -15,72 +19,93 @@ import { dataTypesMap } from '../../../dataTypes';
 
 import UNIPROT_VARIANTS_QUERY from './UniprotVariantsQuery.gql';
 
-const columns = [
-  {
-    id: 'disease.name',
-    label: 'Disease/phenotype',
-    renderCell: ({ disease, diseaseFromSource }) => (
-      <Tooltip
-        title={
-          <>
-            <Typography variant="subtitle2" display="block" align="center">
-              Reported disease or phenotype:
-            </Typography>
-            <Typography variant="caption" display="block" align="center">
-              {diseaseFromSource}
-            </Typography>
-          </>
-        }
-        showHelpIcon
-      >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-      </Tooltip>
-    ),
-  },
-  {
-    id: 'targetFromSourceId',
-    label: 'Reported protein',
-    renderCell: ({ targetFromSourceId }) => (
-      <Link external to={identifiersOrgLink('uniprot', targetFromSourceId)}>
-        {targetFromSourceId}
-      </Link>
-    ),
-  },
-  {
-    id: 'variantRsId',
-    label: 'Variant',
-    renderCell: ({ variantRsId }) => (
-      <Link
-        external
-        to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
-      >
-        {variantRsId}
-      </Link>
-    ),
-  },
-  {
-    id: 'confidence',
-    label: 'Confidence',
-  },
-  {
-    label: 'Literature',
-    renderCell: ({ literature }) => {
-      const literatureList =
-        literature?.reduce((acc, id) => {
-          if (id !== 'NA') {
-            acc.push({
-              name: id,
-              url: epmcUrl(id),
-              group: 'literature',
-            });
+function getColumns(label) {
+  return [
+    {
+      id: 'disease.name',
+      label: 'Disease/phenotype',
+      renderCell: ({ disease, diseaseFromSource }) => (
+        <Tooltip
+          title={
+            <>
+              <Typography variant="subtitle2" display="block" align="center">
+                Reported disease or phenotype:
+              </Typography>
+              <Typography variant="caption" display="block" align="center">
+                {diseaseFromSource}
+              </Typography>
+            </>
           }
-          return acc;
-        }, []) || [];
-
-      return <PublicationsDrawer entries={literatureList} />;
+          showHelpIcon
+        >
+          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        </Tooltip>
+      ),
     },
-  },
-];
+    {
+      id: 'targetFromSourceId',
+      label: 'Reported protein',
+      renderCell: ({ targetFromSourceId }) => (
+        <Link external to={identifiersOrgLink('uniprot', targetFromSourceId)}>
+          {targetFromSourceId}
+        </Link>
+      ),
+    },
+    {
+      id: 'variantRsId',
+      label: 'Variant',
+      renderCell: ({ variantRsId }) => (
+        <Link
+          external
+          to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
+        >
+          {variantRsId}
+        </Link>
+      ),
+    },
+    {
+      id: 'variantConsequence',
+      label: 'Variant Consequence',
+      renderCell: ({ variantRsId }) => (
+        <div style={{ display: 'flex', gap: '5px' }}>
+          <LabelChip
+            label={variantConsequenceSource.ProtVar.label}
+            to={`https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`}
+            tooltip={variantConsequenceSource.ProtVar.tooltip}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'confidence',
+      label: 'Confidence',
+    },
+    {
+      label: 'Literature',
+      renderCell: ({ literature }) => {
+        const literatureList =
+          literature?.reduce((acc, id) => {
+            if (id !== 'NA') {
+              acc.push({
+                name: id,
+                url: epmcUrl(id),
+                group: 'literature',
+              });
+            }
+            return acc;
+          }, []) || [];
+
+        return (
+          <PublicationsDrawer
+            entries={literatureList}
+            symbol={label.symbol}
+            name={label.name}
+          />
+        );
+      },
+    },
+  ];
+}
 
 export function BodyCore({ definition, id, label, count }) {
   const { ensgId, efoId } = id;
@@ -94,6 +119,8 @@ export function BodyCore({ definition, id, label, count }) {
   const request = useQuery(UNIPROT_VARIANTS_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

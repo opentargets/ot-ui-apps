@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import Table from './Table';
 import { getPage } from './utils';
@@ -54,8 +54,9 @@ function DataTable({
     onPagination(page, pageSize);
   };
 
-  const handleRowsPerPageChange = pageSize => {
-    setPageSize(pageSize);
+  const handleRowsPerPageChange = newPageSize => {
+    const newPageSizeNumber = Number(newPageSize);
+    setPageSize(newPageSizeNumber);
     setPage(0);
   };
 

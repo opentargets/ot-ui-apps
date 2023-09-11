@@ -1,4 +1,4 @@
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/styles';
 
 function GuineaPigIcon() {
   const theme = useTheme();

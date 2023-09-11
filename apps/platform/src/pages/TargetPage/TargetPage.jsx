@@ -1,7 +1,14 @@
 import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
-import { Tab, Tabs } from '@material-ui/core';
-import { Link, Route, Switch, useLocation } from 'react-router-dom';
+import { Box, Tab, Tabs } from '@mui/material';
+import {
+  Link,
+  Route,
+  Switch,
+  useLocation,
+  matchPath,
+  useRouteMatch,
+} from 'react-router-dom';
 import { v1 } from 'uuid';
 import { LoadingBackdrop } from 'ui';
 
@@ -21,12 +28,7 @@ const Associations = lazy(() => import('./TargetAssociations'));
 const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
 
 function TargetPageTabs({ ensgId }) {
-  const location = useLocation();
   const { isPartnerPreview } = usePermissions();
-  const classicAssociationsPath = isPartnerPreview
-    ? 'classic-associations'
-    : 'associations';
-
   const routes = [
     {
       label: (
@@ -36,26 +38,52 @@ function TargetPageTabs({ ensgId }) {
         </div>
       ),
       path: `/target/${ensgId}/associations`,
-      private: true,
     },
     {
       label: 'Associated diseases',
-      path: `/target/${ensgId}/${classicAssociationsPath}`,
+      path: `/target/${ensgId}/classic-associations`,
     },
     { label: 'Profile', path: `/target/${ensgId}` },
   ];
 
   const ableRoutes = getAbleRoutes({ routes, isPartnerPreview });
+
+  function findMatchingRoute(patterns) {
+    const { pathname } = useLocation();
+
+    for (let i = 0; i < patterns.length; i += 1) {
+      const pattern = patterns[i];
+      const possibleMatch = useRouteMatch(pattern.path, pathname);
+      if (possibleMatch !== null) {
+        return possibleMatch;
+      }
+    }
+
+    return null;
+  }
+
+  const routeMatch = findMatchingRoute(ableRoutes);
+  const currentTab = routeMatch;
+
   const activeTabIndex = ableRoutes.findIndex(
-    route => route.path === location.pathname
+    route => currentTab.path === route.path
   );
 
   return (
-    <Tabs value={activeTabIndex}>
-      {ableRoutes.map(route => (
-        <Tab key={v1()} label={route.label} component={Link} to={route.path} />
-      ))}
-    </Tabs>
+    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Tabs value={activeTabIndex}>
+        {ableRoutes.map(route => (
+          <Tab
+            key={v1()}
+            label={
+              <Box sx={{ textTransform: 'capitalize' }}>{route.label}</Box>
+            }
+            component={Link}
+            to={route.path}
+          />
+        ))}
+      </Tabs>
+    </Box>
   );
 }
 
@@ -120,20 +148,18 @@ function TargetPage({ location, match }) {
               />
             )}
           />
-          {isPartnerPreview && (
-            <Route
-              path="/target/:ensgId/associations"
-              render={routeProps => (
-                <Associations
-                  match={routeProps.match}
-                  location={routeProps.location}
-                  history={routeProps.history}
-                  ensgId={ensgId}
-                  symbol={symbol}
-                />
-              )}
-            />
-          )}
+          <Route
+            path="/target/:ensgId/associations"
+            render={routeProps => (
+              <Associations
+                match={routeProps.match}
+                location={routeProps.location}
+                history={routeProps.history}
+                ensgId={ensgId}
+                symbol={symbol}
+              />
+            )}
+          />
           <Route
             path={classicAssocURL}
             render={routeProps => (

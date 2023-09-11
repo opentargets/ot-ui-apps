@@ -4,12 +4,12 @@ import {
   IconButton,
   Drawer,
   Link as MUILink,
-  makeStyles,
   Typography,
   Paper,
   CircularProgress,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import CloseIcon from '@mui/icons-material/Close';
 import { naLabel } from '../../constants';
 import { europePmcSearchPOSTQuery } from '../../utils/urls';
 import PublicationWrapper from './PublicationWrapper';
@@ -81,7 +81,12 @@ const listComponentStyles = makeStyles(theme => ({
   },
 }));
 
-export function PublicationsList({ entriesIds, hideSearch = false }) {
+export function PublicationsList({
+  entriesIds,
+  hideSearch = false,
+  name,
+  symbol,
+}) {
   const [publications, setPublications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -123,11 +128,12 @@ export function PublicationsList({ entriesIds, hideSearch = false }) {
   const parsedPublications = publications.map(pub => {
     const row = {};
     row.europePmcId = pub.id;
+    row.pmcId = pub.pmcid;
     row.fullTextOpen = !!(pub.inEPMC === 'Y' || pub.inPMC === 'Y');
     row.title = pub.title;
     row.year = pub.pubYear;
     row.abstract = pub.abstractText;
-    row.openAccess = pub.isOpenAccess !== 'N';
+    row.isOpenAccess = pub.isOpenAccess !== 'N';
     row.authors = pub.authorList?.author || [];
     row.journal = {
       ...pub.journalInfo,
@@ -152,6 +158,8 @@ export function PublicationsList({ entriesIds, hideSearch = false }) {
           fullTextOpen,
           source,
           patentDetails,
+          pmcId,
+          isOpenAccess,
         } = publication;
         return (
           <PublicationWrapper
@@ -165,6 +173,10 @@ export function PublicationsList({ entriesIds, hideSearch = false }) {
             fullTextOpen={fullTextOpen}
             source={source}
             patentDetails={patentDetails}
+            isOpenAccess={isOpenAccess}
+            pmcId={pmcId}
+            symbol={symbol}
+            name={name}
           />
         );
       },
@@ -194,6 +206,8 @@ function PublicationsDrawer({
   customLabel,
   caption = 'Publications',
   singleEntryId = true,
+  symbol,
+  name,
 }) {
   const [open, setOpen] = useState(false);
   const classes = sourceDrawerStyles();
@@ -257,7 +271,11 @@ function PublicationsDrawer({
         <Box width={600} className={classes.drawerBody}>
           {open && (
             <Box my={3} mx={3} p={3} pb={6} bgcolor="white">
-              <PublicationsList entriesIds={entriesIds} />
+              <PublicationsList
+                entriesIds={entriesIds}
+                symbol={symbol}
+                name={name}
+              />
             </Box>
           )}
         </Box>

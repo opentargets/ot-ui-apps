@@ -1,15 +1,15 @@
 /* eslint-disable */
-import React from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
 import {
-  Hidden,
+  Hidden, // note this is deprecated in MUI 5
   TableHead,
   TableRow,
   TableCell,
   TableSortLabel,
-  withWidth,
-} from '@material-ui/core';
+  useMediaQuery,
+} from '@mui/material';
+import { useTheme } from '@mui/styles';
 
 import { getHiddenBreakpoints } from './utils';
 import { tableStyles } from './tableStyles';
@@ -89,8 +89,14 @@ function TableHeader({
   order,
   onRequestSort,
   sortBy,
-  width,
 }) {
+  
+  // workaround for the old withWidth hook
+  const theme = useTheme();
+  const width = theme.breakpoints.keys.filter(
+    k => useMediaQuery(theme.breakpoints.only(k))
+  );
+
   const colspans = useDynamicColspan(headerGroups, columns, width);
   const createSortHandler = property => event => {
     onRequestSort(event, property);
@@ -148,4 +154,4 @@ function TableHeader({
   );
 }
 
-export default withWidth()(TableHeader);
+export default TableHeader;

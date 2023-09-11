@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { makeStyles } from '@mui/styles';
+import { Skeleton } from '@mui/material';
 import Link from '../../components/Link';
 import { Table } from '../../components/Table';
 import AssocCell from '../../components/AssocCell';
@@ -17,10 +17,10 @@ import usePermissions from '../../hooks/usePermissions';
 const useStyles = makeStyles(theme => ({
   root: {
     overflow: 'visible',
-    padding: '2rem 2rem 0 0',
+    padding: '2rem 2rem 0 0 !important',
   },
   table: {
-    tableLayout: 'fixed',
+    tableLayout: 'fixed !imortant',
   },
   sortLabel: {
     top: '8px',
@@ -34,58 +34,58 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '5px',
   },
   symbolHeaderCell: {
-    width: '10%',
-    borderBottom: 0,
-    height: '140px',
-    verticalAlign: 'bottom',
-    textAlign: 'end',
+    width: '10% !important',
+    borderBottom: '0 !important',
+    height: '140px !important',
+    verticalAlign: 'bottom !important',
+    textAlign: 'end !important',
     paddingBottom: '.4rem',
   },
   nameHeaderCell: {
     width: '20%',
-    borderBottom: 0,
-    height: '140px',
-    verticalAlign: 'bottom',
+    borderBottom: '0 !important',
+    height: '140px !important',
+    verticalAlign: 'bottom !important',
     paddingBottom: '.4rem',
   },
   headerCell: {
     position: 'relative',
-    borderBottom: 0,
-    height: '140px',
+    borderBottom: '0 !important',
+    height: '140px !important',
     whiteSpace: 'nowrap',
-    textAlign: 'center',
-    verticalAlign: 'bottom',
+    textAlign: 'center !important',
+    verticalAlign: 'bottom !important',
   },
   overallCell: {
-    border: 0,
-    textAlign: 'center',
-    paddingTop: '1px',
-    paddingBottom: '1px',
-    paddingLeft: '1px',
-    paddingRight: '10px',
+    border: '0 !important',
+    textAlign: 'center !important',
+    paddingTop: '1px !important',
+    paddingBottom: '1px !important',
+    paddingLeft: '1px !important',
+    paddingRight: '10px !important',
   },
   cell: {
-    border: 0,
-    height: '20px',
-    textAlign: 'center',
-    padding: '1px 1px',
+    border: '0 !important',
+    height: '20px !important',
+    textAlign: 'center !important',
+    padding: '1px 1px !important',
     '&:last-child': {
       paddingRight: 0,
     },
   },
   symbolCell: {
-    border: 0,
+    border: '0 !important',
     width: '20%',
-    padding: '0 0.5rem 0 0',
+    padding: '0 0.5rem 0 0 !important',
   },
   nameCell: {
-    border: 0,
+    border: '0 !important',
     width: '10%',
-    padding: '0 0 0 0.5rem',
+    padding: '0 0 0 0.5rem !important',
   },
   symbolContainer: {
     display: 'block',
-    textAlign: 'end',
+    textAlign: 'end !important',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     color: theme.palette.text.primary,
@@ -277,7 +277,7 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
     'data.disease.associatedTargets'
   );
 
-  function handlePageChange(pageChanged) {
+  const handlePageChange = pageChanged => {
     setLoading(true);
     client
       .query({
@@ -296,21 +296,22 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
         setPage(pageChanged);
         setLoading(false);
       });
-  }
+  };
 
-  function handleRowsPerPageChange(pageSizeChanged) {
-    setPageSize(pageSizeChanged);
-  }
+  const handleRowsPerPageChange = pageSizeChanged => {
+    const newPageSize = Number(pageSizeChanged);
+    setPageSize(newPageSize);
+  };
 
-  function handleSort(sortChanged) {
+  const handleSort = sortChanged => {
     setSortBy(sortChanged);
-  }
+  };
 
-  function handleGlobalFilterChange(newFilter) {
+  const handleGlobalFilterChange = newFilter => {
     if (newFilter !== filter) {
       setFilter(newFilter);
     }
-  }
+  };
 
   const columns = getColumns(efoId, classes, isPartnerPreview);
   const processedRows = getRows(rows);
@@ -335,10 +336,10 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
         pageSize={pageSize}
         rowCount={count}
         rowsPerPageOptions={[10, 50, 200, 500]}
-        onGlobalFilterChange={()=>handleGlobalFilterChange()}
-        onSortBy={()=>handleSort()}
-        onPageChange={()=>handlePageChange()}
-        onRowsPerPageChange={()=>handleRowsPerPageChange()}
+        onGlobalFilterChange={handleGlobalFilterChange}
+        onSortBy={handleSort}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
       />
       <Legend />
     </>

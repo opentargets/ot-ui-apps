@@ -1,0 +1,5 @@
+fragment SafetySummaryFragment on Target {
+  safetyLiabilities {
+    event
+  }
+}

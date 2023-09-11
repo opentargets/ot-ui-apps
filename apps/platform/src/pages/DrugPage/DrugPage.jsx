@@ -7,6 +7,7 @@ import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
 import { RoutingTab, RoutingTabs } from '../../components/RoutingTabs';
 import DRUG_PAGE_QUERY from './DrugPage.gql';
+import { Box } from '@mui/material';
 
 const Profile = lazy(() => import('./Profile'));
 
@@ -38,7 +39,9 @@ function DrugPage({ location, match }) {
 
       <RoutingTabs>
         <RoutingTab
-          label="Profile"
+          label={
+            <Box sx={{ textTransform: 'capitalize' }}>Profile</Box>
+          }
           path="/drug/:chemblId"
           // eslint-disable-next-line
           component={() => <Profile chemblId={chemblId} name={name} />}

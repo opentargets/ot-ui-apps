@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { useQuery } from '@apollo/client';
 
 import Link from '../../../components/Link';

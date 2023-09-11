@@ -2,7 +2,7 @@ import { Box, List, ListItem, makeStyles, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 import { v1 } from 'uuid';
 
-import ChipList from '../../../components/ChipList';
+import { ChipList } from 'ui';
 import { DataTable } from '../../../components/Table';
 import { defaultRowsPerPageOptions, naLabel } from '../../../constants';
 import Description from './Description';

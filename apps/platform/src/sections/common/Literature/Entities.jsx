@@ -1,4 +1,5 @@
-import { Chip, makeStyles, Grow } from '@material-ui/core';
+import { Chip, Grow } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import {
   entitiesState,
@@ -34,7 +35,12 @@ function EntitiesToSelect({ id }) {
     useRecoilState(loadingEntitiesState);
 
   const handleSelectChip = async e => {
-    const { query, bibliographyId, category, globalEntity } = bibliographyState;
+    const {
+      query,
+      id: bibliographyId,
+      category,
+      globalEntity,
+    } = bibliographyState;
     const newChips = [
       ...selectedChips,
       {
@@ -49,7 +55,7 @@ function EntitiesToSelect({ id }) {
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
       query,
-      bibliographyId,
+      id: bibliographyId,
       category,
       entities: newChips,
     });
@@ -75,7 +81,7 @@ function EntitiesToSelect({ id }) {
     return entity;
   };
 
-  return entities.map((e) => {
+  return entities.map(e => {
     if (!e.object)
       return (
         <Grow in key={`empty-entity-${e.id}`}>
@@ -120,7 +126,12 @@ export default function Entities({ name, id }) {
   );
 
   const handleDeleteChip = async index => {
-    const { query, bibliographyId, category, globalEntity } = bibliographyState;
+    const {
+      query,
+      id: bibliographyId,
+      category,
+      globalEntity,
+    } = bibliographyState;
     const newChips = [
       ...selectedChips.slice(0, index),
       ...selectedChips.slice(index + 1),
@@ -129,7 +140,7 @@ export default function Entities({ name, id }) {
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
       query,
-      bibliographyId,
+      id: bibliographyId,
       category,
       entities: newChips,
     });

@@ -7,9 +7,11 @@ query TargetAssociationsQuery(
   $aggregationFilters: [AggregationFilter!]
   $enableIndirect: Boolean!
   $datasources: [DatasourceSettingsInput!]
+  $rowsFilter: [String!]
 ) {
   target(ensemblId: $id) {
     id
+    approvedSymbol
     associatedDiseases(
       page: { index: $index, size: $size }
       orderByScore: $sortBy
@@ -17,6 +19,7 @@ query TargetAssociationsQuery(
       aggregationFilters: $aggregationFilters
       enableIndirect: $enableIndirect
       datasources: $datasources
+      Bs: $rowsFilter
     ) {
       count
       rows {

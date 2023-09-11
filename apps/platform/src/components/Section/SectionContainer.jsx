@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { Children } from 'react';
 
 import { NavPanel } from '../NavPanel';

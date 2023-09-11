@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Grid, Input, IconButton, styled } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import ClearIcon from '@material-ui/icons/Clear';
+import { Grid, Input, IconButton } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 import useAotfContext from './hooks/useAotfContext';
 import useDebounce from '../../hooks/useDebounce';
 
@@ -38,6 +39,7 @@ function SearchInput({ placeholder = 'Search' }) {
     <InputContainer container>
       <Grid item xs={12}>
         <Input
+          name="associationsSearchInput"
           autoComplete="off"
           startAdornment={<SearchIcon />}
           endAdornment={

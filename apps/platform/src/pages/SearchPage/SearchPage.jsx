@@ -1,14 +1,14 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import queryString from 'query-string';
-import { Typography } from '@material-ui/core';
-import { LoadingBackdrop } from 'ui';
+import { Typography } from '@mui/material';
+import { LoadingBackdrop, EmptyPage } from 'ui';
 import BasePage from '../../components/BasePage';
 
 import client from '../../client';
 import SEARCH_PAGE_QUERY from './SearchPageQuery.gql';
+import config from '../../config';
 
 const SearchContainer = lazy(() => import('./SearchContainer'));
-const EmptyPage = lazy(() => import('../EmptyPage'));
 
 const QS_OPTIONS = {
   sort: false,
@@ -74,14 +74,14 @@ function SearchPage({ location, history }) {
 
   if (data && data.search.total === 0) {
     SEARCH_CONTAINER = (
-      <EmptyPage>
-        <Typography align="center">
+      <EmptyPage communityLink={config.profile.communityUrl} documentationLink={config.profile.documentationUrl}>
+        <Typography>
           We could not find anything in the Platform database that matches
+          &quot;{q}&quot;
         </Typography>
-        <Typography align="center">&quot;{q}&quot;</Typography>
       </EmptyPage>
     );
-  } else {
+  } else if(data) {
     SEARCH_CONTAINER = (
       <SearchContainer
         q={q}
@@ -92,6 +92,8 @@ function SearchPage({ location, history }) {
         data={data}
       />
     );
+  } else {
+    SEARCH_CONTAINER = null;
   }
 
   return (

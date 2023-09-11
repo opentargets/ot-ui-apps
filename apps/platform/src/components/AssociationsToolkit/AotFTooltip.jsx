@@ -1,11 +1,5 @@
-import {
-  Box,
-  ClickAwayListener,
-  Fade,
-  makeStyles,
-  Paper,
-  Popper,
-} from '@material-ui/core';
+import { Box, ClickAwayListener, Fade, Paper, Popper } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useState, cloneElement } from 'react';
 
 const useStyles = makeStyles(theme => {

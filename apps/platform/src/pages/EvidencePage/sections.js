@@ -1,17 +1,20 @@
 // Section imports
+import * as CancerBiomarkers from '../../sections/evidence/CancerBiomarkers';
 import * as CancerGeneCensus from '../../sections/evidence/CancerGeneCensus';
 import * as Chembl from '../../sections/evidence/Chembl';
 import * as ClinGen from '../../sections/evidence/ClinGen';
 import * as CRISPR from '../../sections/evidence/CRISPR';
+import * as CRISPRScreen from '../../sections/evidence/CRISPRScreen';
 import * as EuropePmc from '../../sections/evidence/EuropePmc';
 import * as EVA from '../../sections/evidence/EVA';
 import * as EVASomatic from '../../sections/evidence/EVASomatic';
 import * as ExpressionAtlas from '../../sections/evidence/ExpressionAtlas';
 import * as Gene2Phenotype from '../../sections/evidence/Gene2Phenotype';
 import * as GenomicsEngland from '../../sections/evidence/GenomicsEngland';
-import * as IntOgen from '../../sections/evidence/IntOgen';
-import * as OTGenetics from '../../sections/evidence/OTGenetics';
 import * as Impc from '../../sections/evidence/Impc';
+import * as IntOgen from '../../sections/evidence/IntOgen';
+import * as GeneBurden from '../../sections/evidence/GeneBurden';
+import * as OTGenetics from '../../sections/evidence/OTGenetics';
 import * as Progeny from '../../sections/evidence/Progeny';
 import * as Reactome from '../../sections/evidence/Reactome';
 import * as SlapEnrich from '../../sections/evidence/SlapEnrich';
@@ -21,9 +24,7 @@ import * as UniProtVariants from '../../sections/evidence/UniProtVariants';
 import * as Orphanet from '../../sections/evidence/Orphanet';
 import * as OTCRISPR from '../../sections/evidence/OTCRISPR';
 import * as OTEncore from '../../sections/evidence/OTEncore';
-import * as CancerBiomarkers from '../../sections/evidence/CancerBiomarkers';
 import * as OTValidation from '../../sections/evidence/OTValidation';
-import * as GeneBurden from '../../sections/evidence/GeneBurden';
 
 import config from '../../config';
 
@@ -42,6 +43,7 @@ const sections = [
   EVASomatic,
   Chembl,
   CRISPR,
+  CRISPRScreen,
   CancerBiomarkers,
   SlapEnrich,
   Progeny,

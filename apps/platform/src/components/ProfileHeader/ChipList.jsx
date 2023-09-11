@@ -1,5 +1,5 @@
-import { Skeleton } from '@material-ui/lab';
-import { Box, Typography, Tooltip, makeStyles } from '@material-ui/core';
+import { Box, Skeleton, Typography, Tooltip } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import _ from 'lodash';
 import Chip from '../Chip';
@@ -21,7 +21,7 @@ function ChipList({ children, title, loading = false, inline }) {
 
   return (
     <Box>
-      <Typography variant="subtitle2" display={inline ? 'inline' : 'initial'}>
+      <Typography variant="subtitle2" display={inline ? 'inline' : ''}>
         {title}
         {inline ? ': ' : ''}
       </Typography>
@@ -38,7 +38,6 @@ function ChipList({ children, title, loading = false, inline }) {
             return (
               <Tooltip
                 placement="top"
-                interactive
                 classes={{ tooltip: classes.tooltip }}
                 title={item.tooltip}
                 key={item.label}

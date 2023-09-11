@@ -1,11 +1,12 @@
-import { CardContent, Typography, withStyles } from '@material-ui/core';
+import { CardContent, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
 
 import { LongText } from 'ui';
 import Link from '../../components/Link';
 
-const styles = () => ({
+const useStyles = makeStyles({
   link: {
     display: 'block',
   },
@@ -14,8 +15,9 @@ const styles = () => ({
   },
 });
 
-function DiseaseDetail({ classes, data }) {
+function DiseaseDetail({ data }) {
   const { id, name, description, therapeuticAreas } = data;
+  const classes = useStyles();
   return (
     <CardContent>
       <Typography color="primary" variant="h5">
@@ -45,4 +47,4 @@ function DiseaseDetail({ classes, data }) {
   );
 }
 
-export default withStyles(styles)(DiseaseDetail);
+export default DiseaseDetail;

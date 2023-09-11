@@ -1,5 +1,5 @@
-import { Fragment } from 'react';
-import { Paper, Box, Typography, makeStyles, Chip } from '@material-ui/core';
+import { Paper, Box, Typography, Chip } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleCheck,
@@ -58,7 +58,7 @@ function ProjectPage() {
       renderCell: ({ disease_mapping: diseaseMapping }) => {
         const ALL_AVATARS = [];
         diseaseMapping.forEach(disease => {
-          if (disease && disease.label) {
+          if (disease && disease.disease_id) {
             ALL_AVATARS.push(
               <Link
                 to={`disease/${disease.disease_id}`}
@@ -66,7 +66,7 @@ function ProjectPage() {
               >
                 <Chip
                   size="small"
-                  label={disease.label}
+                  label={disease.label || disease.disease_id}
                   clickable
                   color="primary"
                   className={classes.disease}

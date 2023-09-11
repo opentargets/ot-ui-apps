@@ -41,7 +41,7 @@ function MethodIcon({
     </span>
   );
 
-  return notooltip ? { icon } : <Tooltip title={title}>{icon}</Tooltip>;
+  return notooltip ? icon : <Tooltip title={title}>{icon}</Tooltip>;
 }
 
 function MethodIconText({

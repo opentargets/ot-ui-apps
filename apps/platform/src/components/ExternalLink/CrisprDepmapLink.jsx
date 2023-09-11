@@ -1,11 +1,12 @@
-import HelpIcon from '@material-ui/icons/Help';
-import { makeStyles, Tooltip } from '@material-ui/core';
+import HelpIcon from '@mui/icons-material/Help';
+import { makeStyles } from '@mui/styles';
+import { Tooltip } from '@mui/material';
 
 import Link from '../Link';
 
 const useStyles = makeStyles(theme => ({
   helpIcon: {
-    fontSize: '10px',
+    fontSize: '0.875rem !important',
   },
   tooltip: {
     backgroundColor: theme.palette.background.paper,
@@ -26,7 +27,6 @@ function CrisprDepmapLink({ id }) {
         classes={{ tooltip: classes.tooltip }}
         title="CRISPR-Cas9 cancer cell line dependency data from Project Score"
         placement="top"
-        interactive
       >
         <sup>
           <HelpIcon className={classes.helpIcon} />

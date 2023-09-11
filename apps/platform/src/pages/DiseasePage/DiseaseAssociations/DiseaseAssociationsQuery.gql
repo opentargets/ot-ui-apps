@@ -7,9 +7,11 @@ query DiseaseAssociationsQuery(
   $aggregationFilters: [AggregationFilter!]
   $enableIndirect: Boolean!
   $datasources: [DatasourceSettingsInput!]
+  $rowsFilter: [String!]
 ) {
   disease(efoId: $id) {
     id
+    name
     associatedTargets(
       page: { index: $index, size: $size }
       orderByScore: $sortBy
@@ -17,6 +19,7 @@ query DiseaseAssociationsQuery(
       aggregationFilters: $aggregationFilters
       enableIndirect: $enableIndirect
       datasources: $datasources
+      Bs: $rowsFilter
     ) {
       count
       rows {
@@ -24,7 +27,7 @@ query DiseaseAssociationsQuery(
           id
           approvedSymbol
           approvedName
-          priorisations {
+          prioritisation {
             items {
               key
               value

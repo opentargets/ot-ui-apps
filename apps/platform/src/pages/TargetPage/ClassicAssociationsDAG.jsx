@@ -8,7 +8,7 @@ import {
   dagStratify,
 } from 'd3-dag';
 import { withContentRect } from 'react-measure';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import { DownloadSvgPlot } from '../../components/DownloadSvgPlot';
 import Legend from '../../components/Legend';
 import Slider from './ClassicAssociationsSlider';
@@ -176,11 +176,10 @@ function ClassicAssociationsDAG({
   const { width } = contentRect.bounds;
 
   const { assocs, height, nodes, xOffset, links, textLimit } = useMemo(
-    getDagValues({ associations, idToDisease, minCommittedScore, width }),
+    () => getDagValues({ associations, idToDisease, minCommittedScore, width }),
     [associations, idToDisease, minCommittedScore, width]
   );
 
-  if (!width) return null;
   return (
     <>
       <DownloadSvgPlot
@@ -200,7 +199,7 @@ function ClassicAssociationsDAG({
           alignItems="center"
           style={{ margin: '0 auto', minHeight: '340px' }}
         >
-          {assocs.length > 0 ? (
+          {width && assocs.length > 0 && (
             <Dag
               ensemblId={ensemblId}
               width={width}
@@ -211,7 +210,8 @@ function ClassicAssociationsDAG({
               textLimit={textLimit}
               svgRef={svgRef}
             />
-          ) : (
+          )}
+          {width && assocs.length <= 0 && (
             <Typography align="center">
               No associations with score greater than or equal to{' '}
               {minCommittedScore}

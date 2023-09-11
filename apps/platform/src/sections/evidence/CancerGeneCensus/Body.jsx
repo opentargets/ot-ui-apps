@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { Box, List, ListItem, makeStyles, Typography } from '@material-ui/core';
 import { v1 } from 'uuid';
 
-import ChipList from '../../../components/ChipList';
+import { ChipList } from 'ui';
 import { DataTable } from '../../../components/Table';
 import { PublicationsDrawer } from '../../../components/PublicationsDrawer';
 
@@ -24,7 +24,7 @@ const samplePercent = item =>
 const getMaxPercent = row =>
   Math.max(...row.mutatedSamples.map(item => samplePercent(item)));
 
-const columns = [
+const getColumns = label => [
   {
     id: 'disease.name',
     label: 'Disease/phenotype',
@@ -118,7 +118,13 @@ const columns = [
           ];
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -145,6 +151,8 @@ export function BodyCore({ definition, id, label, count }) {
   const request = useQuery(CANCER_GENE_CENSUS_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

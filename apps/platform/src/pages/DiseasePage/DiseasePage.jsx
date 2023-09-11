@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
-import { Tab, Tabs } from '@material-ui/core';
+import { Box, Tab, Tabs } from '@mui/material';
 import { Link, Route, Switch, useLocation } from 'react-router-dom';
 import { LoadingBackdrop } from 'ui';
 import { v1 } from 'uuid';
@@ -14,7 +14,6 @@ import ScrollToTop from '../../components/ScrollToTop';
 
 import DISEASE_PAGE_QUERY from './DiseasePage.gql';
 import NewChip from '../../components/NewChip';
-import usePermissions from '../../hooks/usePermissions';
 
 const Profile = lazy(() => import('./Profile'));
 const Associations = lazy(() => import('./DiseaseAssociations'));
@@ -22,10 +21,6 @@ const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
 
 function DiseasePageTabs({ efoId }) {
   const location = useLocation();
-  const { isPartnerPreview } = usePermissions();
-  const classicAssociationsPath = isPartnerPreview
-    ? 'classic-associations'
-    : 'associations';
 
   const routes = [
     {
@@ -36,26 +31,34 @@ function DiseasePageTabs({ efoId }) {
         </div>
       ),
       path: `/disease/${efoId}/associations`,
-      private: true,
     },
     {
       label: 'Associated targets',
-      path: `/disease/${efoId}/${classicAssociationsPath}`,
+      path: `/disease/${efoId}/classic-associations`,
     },
     { label: 'Profile', path: `/disease/${efoId}` },
   ];
 
-  const ableRoutes = getAbleRoutes({ routes, isPartnerPreview });
+  const ableRoutes = getAbleRoutes({ routes });
   const activeTabIndex = ableRoutes.findIndex(
     route => route.path === location.pathname
   );
 
   return (
-    <Tabs value={activeTabIndex}>
-      {ableRoutes.map(route => (
-        <Tab key={v1()} label={route.label} component={Link} to={route.path} />
-      ))}
-    </Tabs>
+    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Tabs value={activeTabIndex}>
+        {ableRoutes.map(route => (
+          <Tab
+            key={v1()}
+            label={
+              <Box sx={{ textTransform: 'capitalize' }}>{route.label}</Box>
+            }
+            component={Link}
+            to={route.path}
+          />
+        ))}
+      </Tabs>
+    </Box>
   );
 }
 
@@ -65,11 +68,9 @@ function DiseasePage({ location, match }) {
     variables: { efoId },
   });
 
-  const { isPartnerPreview } = usePermissions();
   const baseURL = '/disease/:ensgId/';
   const { fullURL: classicAssocURL } = getClassicAssociationsURL({
     baseURL,
-    isPartnerPreview,
   });
 
   if (data && !data.disease) {
@@ -110,20 +111,18 @@ function DiseasePage({ location, match }) {
               />
             )}
           />
-          {isPartnerPreview && (
-            <Route
-              path="/disease/:efoId/associations"
-              render={routeProps => (
-                <Associations
-                  match={routeProps.match}
-                  location={routeProps.location}
-                  history={routeProps.history}
-                  efoId={efoId}
-                  name={name}
-                />
-              )}
-            />
-          )}
+          <Route
+            path="/disease/:efoId/associations"
+            render={routeProps => (
+              <Associations
+                match={routeProps.match}
+                location={routeProps.location}
+                history={routeProps.history}
+                efoId={efoId}
+                name={name}
+              />
+            )}
+          />
           <Route
             path={classicAssocURL}
             render={routeProps => (

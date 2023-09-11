@@ -1,7 +1,7 @@
 import { useState, useLayoutEffect, useRef } from 'react';
 import { v1 } from 'uuid';
-import { Typography, withStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Typography, Skeleton } from '@mui/material';
+import { withStyles } from '@mui/styles';
 
 const styles = theme => ({
   textContainer: {
@@ -34,6 +34,7 @@ function LongText({
   variant = 'body2',
   descriptions,
   targetId,
+  hasGutterBottom = false,
 }) {
   const containerRef = useRef();
   const [showMore, setShowMore] = useState(false);
@@ -66,7 +67,7 @@ function LongText({
   }
 
   return (
-    <Typography variant={variant}>
+    <Typography variant={variant} gutterBottom={hasGutterBottom}>
       <span ref={containerRef} className={classes.textContainer}>
         {descriptions.map((desc, i) => (
           <span
@@ -103,13 +104,18 @@ function TargetDescription({
   let content;
 
   if (!descriptions || descriptions.length < 1) {
-    content = 'No description available';
+    content = (
+      <Typography variant="body2" gutterBottom>
+        No description available
+      </Typography>
+    );
   } else {
     content = (
       <StyledLongText
         lineLimit={lineLimit}
         descriptions={descriptions}
         targetId={targetId}
+        hasGutterBottom
       />
     );
   }
@@ -117,7 +123,7 @@ function TargetDescription({
   return (
     <>
       {showLabel && <Typography variant="subtitle2">Description</Typography>}
-      {loading ? <Skeleton /> : content}
+      {loading ? <Skeleton height="6.5rem"/> : content}
     </>
   );
 }

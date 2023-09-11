@@ -14,7 +14,7 @@ import SectionItem from '../../../components/Section/SectionItem';
 import Summary from './Summary';
 import Tooltip from '../../../components/Tooltip';
 import usePlatformApi from '../../../hooks/usePlatformApi';
-import ChipList from '../../../components/ChipList';
+import { ChipList } from 'ui';
 
 import CHEMBL_QUERY from './ChemblQuery.gql';
 
@@ -140,8 +140,8 @@ function getColumns(classes) {
       id: 'clinicalPhase',
       label: 'Phase',
       sortable: true,
-      renderCell: ({ clinicalPhase }) => phaseMap[clinicalPhase],
-      filterValue: ({ clinicalPhase }) => phaseMap[clinicalPhase],
+      renderCell: ({ clinicalPhase }) => phaseMap(clinicalPhase),
+      filterValue: ({ clinicalPhase }) => phaseMap(clinicalPhase),
     },
     {
       id: 'clinicalStatus',
@@ -176,7 +176,7 @@ function getColumns(classes) {
               {clinicalStatus}
             </Tooltip>
           );
-        if (clinicalStatus) return { clinicalStatus };
+        if (clinicalStatus) return clinicalStatus;
         return naLabel;
       },
     },

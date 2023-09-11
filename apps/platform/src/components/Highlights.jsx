@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Typography, withStyles } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
-const highlightStyles = theme => ({
+const useStyles = makeStyles(theme => ({
   showMore: {
     cursor: 'pointer',
     color: theme.palette.primary.main,
@@ -9,9 +10,10 @@ const highlightStyles = theme => ({
   matches: {
     marginTop: '4px',
   },
-});
+}));
 
-function Highlights({ classes, highlights }) {
+function Highlights({ highlights }) {
+  const classes = useStyles();
   const [showMore, setShowMore] = useState(false);
 
   if (highlights.length === 0) return null;
@@ -50,4 +52,4 @@ function Highlights({ classes, highlights }) {
   );
 }
 
-export default withStyles(highlightStyles)(Highlights);
+export default Highlights;
