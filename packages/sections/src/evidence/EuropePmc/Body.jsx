@@ -178,8 +178,8 @@ function Body({ id, label, entity }) {
         const newLiteratureData = resJson.resultList.result;
 
         setLiteratureData((litData) => [...litData, ...newLiteratureData]);
-        setLoading(false);
       }
+      setLoading(false);
     }
 
     if (isCurrent) fetchLiterature();
