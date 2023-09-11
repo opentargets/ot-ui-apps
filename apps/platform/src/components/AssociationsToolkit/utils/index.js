@@ -5,6 +5,11 @@ import config from '../../../config';
 
 export const { isPartnerPreview } = config.profile;
 
+export const DISPLAY_MODE = {
+  PRIORITISATION: 'prioritisations',
+  ASSOCIATIONS: 'associations',
+};
+
 export const ENTITIES = {
   TARGET: 'target',
   EVIDENCE: 'evidence',

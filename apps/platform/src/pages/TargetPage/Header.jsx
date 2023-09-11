@@ -1,6 +1,7 @@
 import { Button } from '@mui/material';
 import { faDna } from '@fortawesome/free-solid-svg-icons';
 import config from '../../config';
+import { styled } from '@mui/material/styles';
 
 import {
   CrisprDepmapLink,
@@ -9,6 +10,11 @@ import {
   XRefLinks,
 } from '../../components/ExternalLink';
 import HeaderBase from '../../components/Header';
+
+const GeneticsButton = styled(Button)`
+  color: #fff;
+  border: none;
+`;
 
 function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId }) {
   const ensemblUrl = `https://identifiers.org/ensembl:${ensgId}`;
@@ -37,17 +43,19 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId }) {
           <TepLink ensgId={ensgId} symbol={symbol} />
         </>
       }
-      rightContent={ symbol && 
-        <Button
-          href={geneticsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          color="primary"
-          variant="contained"
-          disableElevation
-        >
-          View {symbol} in Open Targets Genetics
-        </Button>
+      rightContent={
+        symbol && (
+          <GeneticsButton
+            href={geneticsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="callToAction"
+            variant="contained"
+            disableElevation
+          >
+            View {symbol} in Open Targets Genetics
+          </GeneticsButton>
+        )
       }
     />
   );

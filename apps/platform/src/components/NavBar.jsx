@@ -1,6 +1,15 @@
 import { Link as ReactRouterLink } from 'react-router-dom';
-import { AppBar, Toolbar, Button, Typography, MenuItem, MenuList, useMediaQuery } from '@mui/material';
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Typography,
+  MenuItem,
+  MenuList,
+  useMediaQuery,
+} from '@mui/material';
 import { makeStyles, useTheme } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import classNames from 'classnames';
 import { v1 } from 'uuid';
 
@@ -9,7 +18,12 @@ import OpenTargetsTitle from './OpenTargetsTitle';
 import HeaderMenu from './HeaderMenu';
 import PrivateWrapper from './PrivateWrapper';
 
-const useStyles = makeStyles((theme) => ({
+const LogoBTN = styled(Button)`
+  border: none;
+  color: white;
+`;
+
+const useStyles = makeStyles(theme => ({
   navbar: {
     backgroundColor: `${theme.palette.primary.main} !important`,
     margin: 0,
@@ -109,9 +123,9 @@ function NavBar({
       <Toolbar variant="dense" className={classNames(classes.spaceBetween)}>
         <div className={classes.navLogo}>
           {homepage ? null : (
-            <Button component={ReactRouterLink} to="/" color="inherit">
+            <LogoBTN component={ReactRouterLink} to="/" color="inherit">
               <OpenTargetsTitle name={name} />
-            </Button>
+            </LogoBTN>
           )}
         </div>
 
