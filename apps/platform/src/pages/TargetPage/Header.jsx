@@ -49,7 +49,7 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId }) {
             href={geneticsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            color="callToAction"
+            color="primary"
             variant="contained"
             disableElevation
           >

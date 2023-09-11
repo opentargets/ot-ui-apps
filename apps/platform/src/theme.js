@@ -24,14 +24,6 @@ const theme = {
       dark: darken(0.2, SECONDARY),
       contrastText: '#fff',
     },
-    callToAction: {
-      light: lighten(0.2, PRIMARY),
-      main: PRIMARY,
-      dark: darken(0.2, PRIMARY),
-      contrastText: '#fff',
-      color: '#fff',
-    },
-
     text: {
       primary: '#5A5F5F',
     },
@@ -60,15 +52,6 @@ const theme = {
         },
       },
     },
-    //  MuiIconButton: {
-    //    styleOverrides:{
-    //         root: {
-    //           width: '32px',
-    //           height: '32px',
-    //           padding: '0px',
-    //         },
-    //       },
-    //   }
   },
 
   // overrides: {
