@@ -32,12 +32,12 @@ const getDownloadRows = (expressions) =>
 function SummaryTab({ symbol, data }) {
   return (
     <Grid container justifyContent="center">
+      <DataDownloader
+        tableHeaders={headers}
+        rows={getDownloadRows(data.target.expressions)}
+        fileStem={`${symbol}-expression`}
+      />
       <Grid item xs={12} lg={8}>
-        <DataDownloader
-          tableHeaders={headers}
-          rows={getDownloadRows(data.target.expressions)}
-          fileStem={`${symbol}-expression`}
-        />
         <SummaryTable data={data.target.expressions} />
       </Grid>
     </Grid>
