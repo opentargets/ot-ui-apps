@@ -1,13 +1,17 @@
-import { CssBaseline, createTheme, ThemeOptions } from "@mui/material";
-import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import { ThemeOptions } from "@mui/material";
+import {
+  ThemeProvider as MuiThemeProvider,
+  createTheme,
+} from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
 import defaultTheme from "./defaultTheme";
 
 function ThemeProvider({
   children,
-  theme = defaultTheme,
+  theme,
 }: {
-  children: ReactNode;
+  children: any;
   theme: ThemeOptions;
 }) {
   const uiKitTheme = createTheme(theme);

@@ -1,13 +1,20 @@
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
+import { DISPLAY_MODE } from './utils';
 import useAotfContext from './hooks/useAotfContext';
 
 function TargetPrioritisationSwitch() {
   const { displayedTable, setDisplayedTable } = useAotfContext();
 
   const handleChange = (event, newAlignment) => {
-    setDisplayedTable(newAlignment);
+    event.preventDefault();
+    if (
+      newAlignment === DISPLAY_MODE.PRIORITISATION ||
+      newAlignment === DISPLAY_MODE.ASSOCIATIONS
+    ) {
+      setDisplayedTable(newAlignment);
+    }
   };
 
   return (

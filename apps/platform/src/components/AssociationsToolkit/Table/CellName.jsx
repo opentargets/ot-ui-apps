@@ -8,9 +8,9 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'ui';
 
 import Tooltip from '../AotFTooltip';
-import Link from '../../Link';
 import useAotfContext from '../hooks/useAotfContext';
 
 const NameContainer = styled('div')({
@@ -37,12 +37,6 @@ const TextContainer = styled('div')({
   },
 });
 
-const Name = styled('span')({
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  textOverflow: 'ellipsis',
-});
-
 const LinksTooltipContent = styled('span')({
   display: 'flex',
   flexDirection: 'column',
@@ -55,9 +49,6 @@ const PinnedContainer = styled('div', {
   opacity: active ? '1' : '0',
   cursor: 'pointer',
   marginLeft: '5px',
-  '&:hover': {
-    scale: 1.1,
-  },
 }));
 
 function TooltipContent({ id, entity, name, icon }) {
@@ -117,7 +108,7 @@ function CellName({ name, rowId, row, tablePrefix }) {
         }
       >
         <TextContainer onClick={() => setOpen(true)}>
-          <Name>{name}</Name>
+          <Typography>{name}</Typography>
         </TextContainer>
       </Tooltip>
     </NameContainer>
