@@ -33,16 +33,18 @@ export const formatSearchData = (unformattedData) => {
 export const addSearchToLocalStorage = (item) => {
   const recentItems =
     JSON.parse(localStorage.getItem("search-history") || "[]") || [];
-  const existingIndex = containsObject(item, recentItems);
+  const newItem = { ...item };
+  delete newItem.description;
+  const existingIndex = containsObject(newItem, recentItems);
 
   if (existingIndex >= 0) {
     recentItems.splice(existingIndex, 1);
   }
   const recentItemsDeepCopy = [...recentItems];
 
-  item && recentItemsDeepCopy.unshift(item);
+  newItem && recentItemsDeepCopy.unshift(newItem);
   exceedsArrayLengthLimit(recentItemsDeepCopy) && recentItemsDeepCopy.pop();
-  item &&
+  newItem &&
     localStorage.setItem("search-history", JSON.stringify(recentItemsDeepCopy));
 };
 
@@ -89,7 +91,7 @@ const flattenObj = (ob) => {
         result[j] = temp[j];
       }
     } else {
-      if(i === "functionDescriptions") {
+      if (i === "functionDescriptions") {
         result[mapStandardKeys(i)] = ob[i][0];
       } else {
         result[mapStandardKeys(i)] = ob[i];
