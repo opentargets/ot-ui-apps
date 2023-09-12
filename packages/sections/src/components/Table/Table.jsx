@@ -93,6 +93,9 @@ const Table = ({
             className={defaultClasses.downloader}
             item
             xs={12}
+            md={8}
+            lg={8}
+            sx={{ml: 'auto'}}
           >
             <DataDownloader
               columns={dataDownloaderColumns || columns}
