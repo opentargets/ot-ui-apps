@@ -182,7 +182,7 @@ function SourceDrawer({ references }) {
 
   return (
     <>
-      <MUILink onClick={toggleDrawer} className={classes.drawerLink}>
+      <MUILink onClick={toggleDrawer} className={classes.drawerLink} underline="none">
         {references.length} references
       </MUILink>
 
