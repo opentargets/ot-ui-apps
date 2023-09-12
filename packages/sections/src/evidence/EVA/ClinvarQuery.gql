@@ -4,9 +4,13 @@ query ClinvarQuery(
   $size: Int!
   $cursor: String
 ) {
+  target(ensemblId: $ensemblId) {
+    approvedSymbol
+  }
   disease(efoId: $efoId) {
     id
-    evaSummary: evidences(
+    name
+    evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["eva"]

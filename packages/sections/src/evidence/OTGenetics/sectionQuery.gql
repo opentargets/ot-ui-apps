@@ -1,11 +1,16 @@
 query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!) {
+  target(ensemblId: $ensemblId) {
+    approvedSymbol
+  }
   disease(efoId: $efoId) {
     id
+    name
     openTargetsGenetics: evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["ot_genetics_portal"]
     ) {
+      count
       rows {
         id
         disease {
@@ -32,14 +37,13 @@ query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!) {
           id
           label
         }
-        variantFunctionalConsequenceFromQtlId{
+        variantFunctionalConsequenceFromQtlId {
           id
           label
         }
         resourceScore
         projectId
       }
-      count
     }
   }
 }

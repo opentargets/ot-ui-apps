@@ -1,27 +1,26 @@
-import { useQuery } from '@apollo/client';
-import { Link, SectionItem, Tooltip } from 'ui';
+import { useQuery } from "@apollo/client";
+import { Link, SectionItem, Tooltip, PublicationsDrawer } from "ui";
 
-import { definition } from '.';
-import Description from './Description';
-import { epmcUrl } from '../../utils/urls';
-import SYSBIO_QUERY from './sectionQuery.gql';
-import { dataTypesMap } from '../../dataTypes';
-import { DataTable } from '../../components/Table';
-import { defaultRowsPerPageOptions, naLabel } from '../../constants';
-import { PublicationsDrawer } from '../../components/PublicationsDrawer';
+import { definition } from ".";
+import Description from "./Description";
+import { epmcUrl } from "../../utils/urls";
+import SYSBIO_QUERY from "./sectionQuery.gql";
+import { dataTypesMap } from "../../dataTypes";
+import { DataTable } from "../../components/Table";
+import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 
-const columns = [
+const getColumns = (label) => [
   {
-    id: 'disease',
-    label: 'Disease/phenotype',
+    id: "disease",
+    label: "Disease/phenotype",
     renderCell: ({ disease }) => (
       <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
     ),
     filterValue: ({ disease }) => disease.name,
   },
   {
-    id: 'pathwayName',
-    label: 'Gene set',
+    id: "pathwayName",
+    label: "Gene set",
     renderCell: ({ pathways, studyOverview }) => {
       if (pathways && pathways.length >= 1 && studyOverview) {
         return (
@@ -37,20 +36,26 @@ const columns = [
     },
   },
   {
-    id: 'literature',
+    id: "literature",
     renderCell: ({ literature }) => {
       const literatureList =
         literature?.reduce((acc, id) => {
-          if (id !== 'NA') {
+          if (id !== "NA") {
             acc.push({
               name: id,
               url: epmcUrl(id),
-              group: 'literature',
+              group: "literature",
             });
           }
           return acc;
         }, []) || [];
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -67,6 +72,8 @@ function Body({ id, label, entity }) {
     variables,
   });
 
+  const columns = getColumns(label);
+
   return (
     <SectionItem
       definition={definition}
@@ -76,7 +83,7 @@ function Body({ id, label, entity }) {
       renderDescription={() => (
         <Description symbol={label.symbol} name={label.name} />
       )}
-      renderBody={data => (
+      renderBody={(data) => (
         <DataTable
           columns={columns}
           dataDownloader

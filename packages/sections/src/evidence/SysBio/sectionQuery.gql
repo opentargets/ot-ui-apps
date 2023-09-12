@@ -1,4 +1,7 @@
 query SysBioQuery($ensemblId: String!, $efoId: String!) {
+  target(ensemblId: $ensemblId) {
+    approvedSymbol
+  }
   disease(efoId: $efoId) {
     id
     sysBio: evidences(

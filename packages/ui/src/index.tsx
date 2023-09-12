@@ -12,18 +12,19 @@ export { default as Link } from "./components/Link";
 export { default as Chip } from "./components/Chip";
 export { default as ChipList } from "./components/ChipList";
 export { default as TooltipStyledLabel } from "./components/TooltipStyledLabel";
-
 export { default as SectionItem } from "./components/Section/SectionItem";
 export { default as SectionContainer } from "./components/Section/SectionContainer";
-
-export { default as PlatformApiProvider } from "./contexts/PlatformApiProvider";
-
-export { default as usePlatformApi } from "./hooks/usePlatformApi";
+export { default as LabelChip } from "./components/LabelChip";
 
 export { default as EmptyPage } from "./pages/EmptyPage";
 export { default as NotFoundPage } from "./pages/NotFoundPage";
 export { default as Page } from "./pages/Page";
 
+export { default as PlatformApiProvider } from "./contexts/PlatformApiProvider";
+
+export * from "./components/PublicationsDrawer";
+
 /* HOOKS */
 
+export { default as usePlatformApi } from "./hooks/usePlatformApi";
 export { default as useStateParams } from "./hooks/useStateParams";

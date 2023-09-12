@@ -1,20 +1,18 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem } from "ui";
+import { Link, Tooltip, SectionItem, PublicationsDrawer } from "ui";
 
 import { definition } from ".";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 import { epmcUrl } from "../../utils/urls";
-import Summary from "./Summary";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
 import { sentenceCase } from "../../utils/global";
 
 import ORPHANET_QUERY from "./OrphanetQuery.gql";
 
-const columns = [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -90,7 +88,13 @@ const columns = [
           return acc;
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -149,6 +153,8 @@ function Body({ id, label, entity }) {
   const request = useQuery(ORPHANET_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

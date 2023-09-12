@@ -1,4 +1,7 @@
 query UniprotLiteratureQuery($ensemblId: String!, $efoId: String!) {
+  target(ensemblId: $ensemblId) {
+    approvedSymbol
+  }
   disease(efoId: $efoId) {
     id
     uniprotLiteratureSummary: evidences(

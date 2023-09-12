@@ -3,9 +3,8 @@ import { Box, List, ListItem, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { v1 } from "uuid";
 
-import { ChipList, Link, SectionItem } from "ui";
+import { ChipList, Link, SectionItem, PublicationsDrawer } from "ui";
 import { DataTable } from "../../components/Table";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 import { dataTypesMap } from "../../dataTypes";
@@ -23,7 +22,7 @@ const samplePercent = (item) =>
 const getMaxPercent = (row) =>
   Math.max(...row.mutatedSamples.map((item) => samplePercent(item)));
 
-const columns = [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -117,7 +116,13 @@ const columns = [
           ];
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -143,6 +148,8 @@ function Body({ id, label, entity }) {
   const request = useQuery(CANCER_GENE_CENSUS_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

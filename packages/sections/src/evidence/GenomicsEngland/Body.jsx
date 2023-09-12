@@ -6,12 +6,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Typography } from "@mui/material";
 import { v1 } from "uuid";
-import { Tooltip, SectionItem, Link } from "ui";
+import { Tooltip, SectionItem, Link, PublicationsDrawer } from "ui";
 
 import { definition } from ".";
-import Summary from "./Summary";
-
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 import Description from "./Description";
@@ -57,7 +54,7 @@ const allelicRequirementsCaption = (allelicRequirements) => {
   return [caption, description];
 };
 
-const columns = [
+const getColumns = (label) => [
   {
     id: "disease",
     label: "Disease/phenotype",
@@ -176,7 +173,13 @@ const columns = [
           ];
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          symbol={label.symbol}
+          name={label.name}
+          entries={literatureList}
+        />
+      );
     },
   },
 ];
@@ -191,6 +194,8 @@ export function Body({ id, label, entity }) {
   const request = useQuery(GENOMICS_ENGLAND_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

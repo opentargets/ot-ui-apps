@@ -1,16 +1,14 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem } from "ui";
+import { Link, Tooltip, SectionItem, PublicationsDrawer } from "ui";
 
 import { definition } from ".";
-import Summary from "./Summary";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
 import { DataTable } from "../../components/Table";
 import ScientificNotation from "../../components/ScientificNotation";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
 import GENE_BURDEN_QUERY from "./GeneBurdenQuery.gql";
 
@@ -40,7 +38,7 @@ const getSourceLink = (project, targetId) => {
   return "";
 };
 
-const columns = [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -228,7 +226,13 @@ const columns = [
           }))
         : [];
 
-      return <PublicationsDrawer entries={entries} />;
+      return (
+        <PublicationsDrawer
+          entries={entries}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -243,6 +247,8 @@ export function Body({ id, label, entity }) {
   const request = useQuery(GENE_BURDEN_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem
