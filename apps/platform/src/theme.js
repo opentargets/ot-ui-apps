@@ -52,6 +52,23 @@ const theme = {
         },
       },
     },
+    MuiTabs: {
+      styleOverrides: {
+        indicator: {
+          transition: 'none',
+        }
+      }
+    },
+    MuiTab: {
+      defaultProps: {
+        disableRipple: true,
+      },
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        }
+      }
+    }
   },
 
   // overrides: {
