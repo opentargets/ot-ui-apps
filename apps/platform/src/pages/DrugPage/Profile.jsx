@@ -16,13 +16,20 @@ import AdverseEventsSection from 'sections/src/drug/AdverseEvents/Body';
 import BibliographySection from 'sections/src/drug/Bibliography/Body';
 
 import client from '../../client';
-import sections from './sections';
 import ProfileHeader from './ProfileHeader';
 import { createSummaryFragment } from '../../components/Summary/utils';
 
+const summaries = [
+  MechanismsOfActionSummary,
+  IndicationsSummary,
+  KnownDrugsSummary,
+  DrugWarningsSummary,
+  AdverseEventsSummary,
+  BibliographySummary,
+];
 
-const DRUG = "drug";
-const DRUG_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(sections, 'Drug');
+const DRUG = 'drug';
+const DRUG_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(summaries, 'Drug');
 const DRUG_PROFILE_QUERY = gql`
   query DrugProfileQuery($chemblId: String!) {
     drug(chemblId: $chemblId) {
@@ -55,12 +62,12 @@ function Profile({ chemblId, name }) {
       </SummaryContainer>
 
       <SectionContainer>
-        <MechanismsOfActionSection id={chemblId} label={name} entity={DRUG}/>
+        <MechanismsOfActionSection id={chemblId} label={name} entity={DRUG} />
         <IndicationsSection id={chemblId} label={name} entity={DRUG} />
-        <KnownDrugsSection id={chemblId} label={name} entity={DRUG}/>
-        <DrugWarningsSection id={chemblId} label={name} entity={DRUG}/>
-        <AdverseEventsSection id={chemblId} label={name} entity={DRUG}/>
-        <BibliographySection id={chemblId} label={name} entity={DRUG}/>
+        <KnownDrugsSection id={chemblId} label={name} entity={DRUG} />
+        <DrugWarningsSection id={chemblId} label={name} entity={DRUG} />
+        <AdverseEventsSection id={chemblId} label={name} entity={DRUG} />
+        <BibliographySection id={chemblId} label={name} entity={DRUG} />
       </SectionContainer>
     </PlatformApiProvider>
   );

@@ -1,5 +1,0 @@
-fragment PathwaysSummaryFragment on Target {
-  pathways {
-    pathwayId
-  }
-}

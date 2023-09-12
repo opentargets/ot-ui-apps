@@ -37,12 +37,30 @@ import BibliographySection from 'sections/src/target/Bibliography/Body';
 import ProfileHeader from './ProfileHeader';
 import { createSummaryFragment } from '../../components/Summary/utils';
 
-import sections from './sections';
 import client from '../../client';
+
+const summaries = [
+  KnownDrugsSummary,
+  TractabilitySummary,
+  SafetySummary,
+  ChemicalProbesSummary,
+  BaselineExpressionSummary,
+  DepMapSummary,
+  GeneOntologySummary,
+  GeneticConstraintSummary,
+  ProtVistaSummary,
+  MolecularInteractionsSummary,
+  PathwaysSummary,
+  CancerHallmarksSummary,
+  MousePhenotypesSummary,
+  ComparativeGenomicsSummary,
+  SubcellularLocationSummary,
+  BibliographySummary,
+];
 
 const TARGET = 'target';
 const TARGET_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
-  sections,
+  summaries,
   'Target'
 );
 const TARGET_PROFILE_QUERY = gql`
@@ -86,21 +104,33 @@ function Profile({ ensgId, symbol }) {
       </SummaryContainer>
 
       <SectionContainer>
-        <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET}/>
-        <TractabilitySection id={ensgId} label={symbol} entity={TARGET}/>
-        <SafetySection id={ensgId} label={symbol} entity={TARGET}/>
+        <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET} />
+        <TractabilitySection id={ensgId} label={symbol} entity={TARGET} />
+        <SafetySection id={ensgId} label={symbol} entity={TARGET} />
         <ChemicalProbesSection id={ensgId} label={symbol} entity={TARGET} />
         <BaselineExpressionSection id={ensgId} label={symbol} entity={TARGET} />
         <DepMapSection id={ensgId} label={symbol} entity={TARGET} />
-        <SubcellularLocationSection id={ensgId} label={symbol} entity={TARGET} />
+        <SubcellularLocationSection
+          id={ensgId}
+          label={symbol}
+          entity={TARGET}
+        />
         <GeneOntologySection id={ensgId} label={symbol} entity={TARGET} />
         <GeneticConstraintSection id={ensgId} label={symbol} entity={TARGET} />
         <ProtVistaSection id={ensgId} label={symbol} entity={TARGET} />
-        <MolecularInteractionsSection id={ensgId} label={symbol} entity={TARGET} />
+        <MolecularInteractionsSection
+          id={ensgId}
+          label={symbol}
+          entity={TARGET}
+        />
         <PathwaysSection id={ensgId} label={symbol} entity={TARGET} />
         <CancerHallmarksSection id={ensgId} label={symbol} entity={TARGET} />
         <MousePhenotypesSection id={ensgId} label={symbol} entity={TARGET} />
-        <ComparativeGenomicsSection id={ensgId} label={symbol} entity={TARGET} />
+        <ComparativeGenomicsSection
+          id={ensgId}
+          label={symbol}
+          entity={TARGET}
+        />
         <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
       </SectionContainer>
     </PlatformApiProvider>

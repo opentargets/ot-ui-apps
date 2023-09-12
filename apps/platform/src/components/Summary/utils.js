@@ -5,13 +5,13 @@ export function createSummaryFragment(sections, entity, fragmentName) {
   const sectionFragmentNames = [];
   const fragmentNameStr = fragmentName || `${entity}ProfileSummaryFragment`;
 
-  sections.forEach(section => {
-    if (!section.Summary.fragments) return;
+  sections.forEach(Summary => {
+    if (!Summary.fragments) return;
 
-    const sectionFragmentName = Object.keys(section.Summary.fragments)[0];
+    const sectionFragmentName = Object.keys(Summary.fragments)[0];
 
     sectionFragmentNames.push(sectionFragmentName);
-    sectionFragments.push(section.Summary.fragments[sectionFragmentName]);
+    sectionFragments.push(Summary.fragments[sectionFragmentName]);
   });
 
   return gql`

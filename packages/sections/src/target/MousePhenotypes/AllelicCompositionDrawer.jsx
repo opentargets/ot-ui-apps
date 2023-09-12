@@ -9,10 +9,9 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import CloseIcon from "@mui/icons-material/Close";
-import { Link } from "ui";
+import { Link, PublicationsDrawer } from "ui";
 
 import MouseModelAllelicComposition from "../../components/MouseModelAllelicComposition";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
 const useStyles = makeStyles((theme) => ({
   drawerLink: {

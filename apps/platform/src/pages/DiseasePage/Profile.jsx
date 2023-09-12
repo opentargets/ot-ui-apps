@@ -18,11 +18,18 @@ import client from '../../client';
 import ProfileHeader from './ProfileHeader';
 
 import PrivateWrapper from '../../components/PrivateWrapper';
-import sections from './sections';
+
+const summaries = [
+  OntologySummary,
+  KnownDrugsSummary,
+  BibliographySummary,
+  PhenotypesSummary,
+  OTProjectsSummary,
+];
 
 const DISEASE = 'disease';
 const DISEASE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
-  sections,
+  summaries,
   'Disease'
 );
 const DISEASE_PROFILE_QUERY = gql`
