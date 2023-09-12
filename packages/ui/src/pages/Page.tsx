@@ -36,7 +36,7 @@ function Page({ header, footer, children }: PageProps): ReactNode {
         spacing={3}
         className={classes.gridContainer}
       >
-        <Grid item xs={12} md={11}>
+        <Grid item xs={12} md={11} sx={{pb:3}}>
           {children}
         </Grid>
       </Grid>

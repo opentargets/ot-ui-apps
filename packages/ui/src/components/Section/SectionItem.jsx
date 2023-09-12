@@ -94,6 +94,7 @@ function SectionItem({
                           [classes.descriptionError]: error,
                         }
                       )}
+                      variant="body2"
                     >
                       {renderDescription()}
                     </Typography>

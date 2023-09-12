@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import { Button, Typography } from "@mui/material";
+import { Button, Typography, styled } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPrescriptionBottleAlt,
@@ -31,6 +31,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.5rem",
   },
 }));
+
+const ClearAllButton = styled(Button)`
+  border: none;
+`;
 
 function SearchListHeader({
   listHeader,
@@ -110,9 +114,9 @@ function SearchListHeader({
           <Typography variant="h6">{listHeader}</Typography>
         </div>
         {listHeader === "recent" && (
-          <Button onClick={clearAll}>
+          <ClearAllButton onClick={clearAll}>
             <Typography variant="caption">clear all</Typography>
-          </Button>
+          </ClearAllButton>
         )}
       </div>
       {children}

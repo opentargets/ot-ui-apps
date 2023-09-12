@@ -6,7 +6,8 @@ import {
   DialogContent,
   DialogContentText,
   Button,
-  Snackbar
+  Snackbar,
+  styled,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useLocation } from 'react-router-dom';
@@ -44,6 +45,11 @@ const useStyles = makeStyles(theme => ({
     },
   },
 }));
+
+const PrimaryButton = styled(Button)`
+  border: none;
+  color: white;
+`;
 
 function ShouldAccessPPP() {
   const location = useLocation();
@@ -160,14 +166,14 @@ function ShouldAccessPPP() {
           >
             Remind me later
           </Button>
-          <Button
+          <PrimaryButton
             className={classes.button}
             onClick={goToPPP}
             variant="contained"
             color="primary"
           >
             Continue on Partner Preview Platform
-          </Button>
+          </PrimaryButton>
         </DialogActions>
       </Dialog>
 
