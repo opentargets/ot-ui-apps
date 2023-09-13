@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import { Box, Typography, Button } from "@material-ui/core";
-import Collapse from "@material-ui/core/Collapse";
+import { makeStyles, createStyles } from "@mui/styles";
+import { Collapse, Box, Typography, Button, Theme } from "@mui/material";
+
 import { faCircleNodes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { publicationSummaryQuery } from "../../constants";

@@ -167,9 +167,6 @@ function PublicationWrapper({
             Full text available
           </span>
         )}
-        {fullTextOpen && isOpenAccess && urlAiApi && (
-          <PublicationSummary name={name} symbol={symbol} pmcId={pmcId} />
-        )}
       </Box>
 
       {showAbstract && (
@@ -180,6 +177,10 @@ function PublicationWrapper({
             dangerouslySetInnerHTML={{ __html: abstract }}
           />
         </Box>
+      )}
+
+      {fullTextOpen && isOpenAccess && urlAiApi && (
+        <PublicationSummary name={name} symbol={symbol} pmcId={pmcId} />
       )}
     </Box>
   );

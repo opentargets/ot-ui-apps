@@ -1,4 +1,5 @@
-import { Typography, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
+import { Typography } from "@mui/material";
 
 const useStyles = makeStyles(() => ({
   container: {
