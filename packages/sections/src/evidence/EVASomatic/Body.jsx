@@ -1,18 +1,24 @@
 import { useQuery } from "@apollo/client";
 import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { SectionItem, ChipList, Tooltip, Link, PublicationsDrawer } from "ui";
+import {
+  SectionItem,
+  ChipList,
+  Tooltip,
+  Link,
+  PublicationsDrawer,
+  DataTable,
+  ClinvarStars,
+} from "ui";
 
 import { sentenceCase } from "../../utils/global";
 
-import { DataTable } from "../../components/Table";
 import { epmcUrl } from "../../utils/urls";
 import {
   clinvarStarMap,
   naLabel,
   defaultRowsPerPageOptions,
 } from "../../constants";
-import ClinvarStars from "../../components/ClinvarStars";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
 import EVA_SOMATIC_QUERY from "./EvaSomaticQuery.gql";

@@ -1,6 +1,10 @@
 import { gql } from '@apollo/client';
-import { PlatformApiProvider, SectionContainer, SummaryContainer } from 'ui';
-
+import {
+  PlatformApiProvider,
+  SectionContainer,
+  SummaryContainer,
+  summaryUtils,
+} from 'ui';
 import MechanismsOfActionSummary from 'sections/src/drug/MechanismsOfAction/Summary';
 import IndicationsSummary from 'sections/src/drug/Indications/Summary';
 import KnownDrugsSummary from 'sections/src/drug/KnownDrugs/Summary';
@@ -17,7 +21,6 @@ import BibliographySection from 'sections/src/drug/Bibliography/Body';
 
 import client from '../../client';
 import ProfileHeader from './ProfileHeader';
-import { createSummaryFragment } from '../../components/Summary/utils';
 
 const summaries = [
   MechanismsOfActionSummary,
@@ -29,7 +32,10 @@ const summaries = [
 ];
 
 const DRUG = 'drug';
-const DRUG_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(summaries, 'Drug');
+const DRUG_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
+  summaries,
+  'Drug'
+);
 const DRUG_PROFILE_QUERY = gql`
   query DrugProfileQuery($chemblId: String!) {
     drug(chemblId: $chemblId) {

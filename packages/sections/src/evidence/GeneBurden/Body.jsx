@@ -1,13 +1,18 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem, PublicationsDrawer } from "ui";
+import {
+  Link,
+  Tooltip,
+  SectionItem,
+  PublicationsDrawer,
+  DataTable,
+  ScientificNotation,
+} from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
-import { DataTable } from "../../components/Table";
-import ScientificNotation from "../../components/ScientificNotation";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 
 import GENE_BURDEN_QUERY from "./GeneBurdenQuery.gql";

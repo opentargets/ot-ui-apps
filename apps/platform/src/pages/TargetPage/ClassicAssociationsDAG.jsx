@@ -9,8 +9,7 @@ import {
 } from 'd3-dag';
 import { withContentRect } from 'react-measure';
 import { Grid, Typography } from '@mui/material';
-import { DownloadSvgPlot } from '../../components/DownloadSvgPlot';
-import Legend from '../../components/Legend';
+import { Legend, DownloadSvgPlot } from 'ui';
 import Slider from './ClassicAssociationsSlider';
 import Dag from './Dag';
 

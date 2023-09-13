@@ -1,6 +1,14 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer } from "ui";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  PublicationsDrawer,
+  EllsWrapper,
+  DataTable,
+  TableDrawer,
+} from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -8,8 +16,6 @@ import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
 import REACTOME_QUERY from "./sectionQuery.gql";
 import { sentenceCase } from "../../utils/global";
-import EllsWrapper from "../../components/EllsWrapper";
-import { DataTable, TableDrawer } from "../../components/Table";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 
 const getColumns = (label) => [

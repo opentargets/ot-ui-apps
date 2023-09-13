@@ -4,10 +4,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
 
-import { LongText } from 'ui';
-import Chip from '../../components/Chip';
-import Link from '../../components/Link';
-import LongList from '../../components/LongList';
+import { LongText, Chip, Link, LongList } from 'ui';
 
 const useStyles = makeStyles({
   link: {

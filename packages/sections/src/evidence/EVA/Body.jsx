@@ -1,6 +1,17 @@
 import { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, LabelChip, PublicationsDrawer } from "ui";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  LabelChip,
+  PublicationsDrawer,
+  getPage,
+  Table,
+  getComparator,
+  useCursorBatchDownloader,
+  ClinvarStars,
+} from "ui";
 
 import {
   clinvarStarMap,
@@ -16,10 +27,6 @@ import { epmcUrl } from "../../utils/urls";
 import CLINVAR_QUERY from "./ClinvarQuery.gql";
 import { dataTypesMap } from "../../dataTypes";
 import { sentenceCase, identifiersOrgLink } from "../../utils/global";
-import { getPage, Table } from "../../components/Table";
-import ClinvarStars from "../../components/ClinvarStars";
-import { getComparator } from "../../components/Table/sortingAndFiltering";
-import useCursorBatchDownloader from "../../hooks/useCursorBatchDownloader";
 
 function getColumns(label) {
   return [

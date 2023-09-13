@@ -1,17 +1,19 @@
-import { Helmet } from 'react-helmet';
-import { Footer, GlobalSearch, Page } from 'ui';
+import { Helmet } from "react-helmet";
+import Footer from "./Footer";
+import GlobalSearch from "./GlobalSearch";
+import Page from "./Page";
 
-import NavBar from './NavBar';
+import NavBar from "./NavBar";
 import {
   appTitle,
   appDescription,
   appCanonicalUrl,
   externalLinks,
   mainMenuItems,
-} from '../constants';
+} from "../constants";
 
 function BasePage({ title, children, description, location }) {
-  const composedTitle = `${title ? `${title} | ` : ''} ${appTitle}`;
+  const composedTitle = `${title ? `${title} | ` : ""} ${appTitle}`;
 
   return (
     <Page
@@ -28,7 +30,7 @@ function BasePage({ title, children, description, location }) {
         <meta name="description" content={description || appDescription} />
         <link
           rel="canonical"
-          href={appCanonicalUrl + (location?.pathname || '')}
+          href={appCanonicalUrl + (location?.pathname || "")}
         />
       </Helmet>
       {children}

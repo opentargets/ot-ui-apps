@@ -1,9 +1,9 @@
 import { Grid } from "@mui/material";
+import { DataDownloader } from "ui";
 
 import client from "../../client";
 import SummaryTable from "./SummaryTable";
 import EXPRESSION_QUERY from "./ExpressionQuery.gql";
-import DataDownloader from "../../components/DataDownloader";
 
 export function getData(ensgId) {
   return client.query({

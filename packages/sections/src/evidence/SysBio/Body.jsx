@@ -1,12 +1,11 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, Tooltip, PublicationsDrawer } from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, DataTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import SYSBIO_QUERY from "./sectionQuery.gql";
 import { dataTypesMap } from "../../dataTypes";
-import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 
 const getColumns = (label) => [

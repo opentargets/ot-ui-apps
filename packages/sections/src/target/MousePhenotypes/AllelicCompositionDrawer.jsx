@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 
 import {
   Drawer,
@@ -9,9 +9,7 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import CloseIcon from "@mui/icons-material/Close";
-import { Link, PublicationsDrawer } from "ui";
-
-import MouseModelAllelicComposition from "../../components/MouseModelAllelicComposition";
+import { Link, PublicationsDrawer, MouseModelAllelicComposition } from "ui";
 
 const useStyles = makeStyles((theme) => ({
   drawerLink: {

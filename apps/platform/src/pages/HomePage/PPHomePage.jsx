@@ -1,14 +1,8 @@
-import {
-  Grid,
-  Typography,
-  Hidden,
-  Box,
-  useMediaQuery,
-} from '@mui/material';
+import { Grid, Typography, Hidden, Box, useMediaQuery } from '@mui/material';
 
 import { makeStyles, useTheme } from '@mui/styles';
 import { Helmet } from 'react-helmet';
-import { Footer, AutocompleteSearch } from 'ui';
+import { Footer, AutocompleteSearch, Link, NavBar } from 'ui';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -28,8 +22,6 @@ import {
   mainMenuItems,
 } from '../../constants';
 import HomeBox from './HomeBox';
-import Link from '../../components/Link';
-import NavBar from '../../components/NavBar';
 import searchExamples from './ppSearchExamples';
 import Splash from './Splash';
 import Version from './Version';

@@ -1,13 +1,19 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, LabelChip } from "ui";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  PublicationsDrawer,
+  LabelChip,
+  DataTable,
+} from "ui";
 
 import { definition } from ".";
 
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
-import { DataTable } from "../../components/Table";
 import { identifiersOrgLink } from "../../utils/global";
 import {
   defaultRowsPerPageOptions,

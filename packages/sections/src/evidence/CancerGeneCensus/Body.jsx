@@ -3,8 +3,7 @@ import { Box, List, ListItem, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { v1 } from "uuid";
 
-import { ChipList, Link, SectionItem, PublicationsDrawer } from "ui";
-import { DataTable } from "../../components/Table";
+import { ChipList, Link, SectionItem, PublicationsDrawer, DataTable } from "ui";
 
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 import { dataTypesMap } from "../../dataTypes";

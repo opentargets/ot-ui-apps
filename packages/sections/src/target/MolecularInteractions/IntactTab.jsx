@@ -1,12 +1,10 @@
-import { Link, Tooltip } from "ui";
+import { Link, Tooltip, DataTable, EllsWrapper } from "ui";
 import { useState, useEffect } from "react";
 import { Grid, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import client from "../../client";
-import DataTable from "../../components/Table/DataTable";
 import { MethodIconText, MethodIconArrow } from "./custom/MethodIcons";
-import EllsWrapper from "../../components/EllsWrapper";
 import { defaultRowsPerPageOptions } from "../../constants";
 
 import INTERACTIONS_QUERY from "./InteractionsQuery.gql";

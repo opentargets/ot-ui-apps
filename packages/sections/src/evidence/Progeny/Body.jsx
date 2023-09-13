@@ -1,16 +1,13 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip } from "ui";
+import { Link, SectionItem, Tooltip, DataTable, ScientificNotation } from "ui";
 
 import { definition } from ".";
-import Summary from "./Summary";
 import Description from "./Description";
 import PROGENY_QUERY from "./sectionQuery.gql";
 import { dataTypesMap } from "../../dataTypes";
 import { sentenceCase } from "../../utils/global";
-import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
-import ScientificNotation from "../../components/ScientificNotation";
 
 const reactomeUrl = (id) => `https://identifiers.org/reactome:${id}`;
 

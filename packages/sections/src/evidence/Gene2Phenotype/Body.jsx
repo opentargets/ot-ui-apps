@@ -1,9 +1,8 @@
 import { List, ListItem, Typography } from "@mui/material";
 import { useQuery } from "@apollo/client";
 import { v1 } from "uuid";
-import { SectionItem, Tooltip, Link, PublicationsDrawer } from "ui";
+import { SectionItem, Tooltip, Link, PublicationsDrawer, DataTable } from "ui";
 
-import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";

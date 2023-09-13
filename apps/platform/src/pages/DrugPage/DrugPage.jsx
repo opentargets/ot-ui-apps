@@ -1,11 +1,9 @@
 import { lazy } from 'react';
 import { useQuery } from '@apollo/client';
+import { BasePage, ScrollToTop, RoutingTabs, RoutingTab } from 'ui';
 
-import BasePage from '../../components/BasePage';
-import ScrollToTop from '../../components/ScrollToTop';
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
-import { RoutingTab, RoutingTabs } from '../../components/RoutingTabs';
 import DRUG_PAGE_QUERY from './DrugPage.gql';
 import { Box } from '@mui/material';
 
@@ -39,9 +37,7 @@ function DrugPage({ location, match }) {
 
       <RoutingTabs>
         <RoutingTab
-          label={
-            <Box sx={{ textTransform: 'capitalize' }}>Profile</Box>
-          }
+          label={<Box sx={{ textTransform: 'capitalize' }}>Profile</Box>}
           path="/drug/:chemblId"
           // eslint-disable-next-line
           component={() => <Profile chemblId={chemblId} name={name} />}

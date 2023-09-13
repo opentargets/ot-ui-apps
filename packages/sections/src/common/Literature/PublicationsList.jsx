@@ -7,8 +7,7 @@ import {
 } from "recoil";
 import { Box, Grid, Fade, Skeleton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { PublicationWrapper } from "ui";
-import { Table } from "../../components/Table";
+import { PublicationWrapper, Table } from "ui";
 import Loader from "./Loader";
 
 import {

@@ -12,10 +12,10 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
+import { useBatchDownloader } from 'ui';
 import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAotfContext from './hooks/useAotfContext';
-import useBatchDownloader from '../../hooks/useBatchDownloader';
 import dataSources from './static_datasets/dataSourcesAssoc';
 
 const PopoverContent = styled('div')({

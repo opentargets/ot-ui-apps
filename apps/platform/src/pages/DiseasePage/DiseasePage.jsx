@@ -2,18 +2,15 @@ import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, Tab, Tabs } from '@mui/material';
 import { Link, Route, Switch, useLocation } from 'react-router-dom';
-import { LoadingBackdrop } from 'ui';
+import { LoadingBackdrop, BasePage, NewChip, ScrollToTop } from 'ui';
 import { v1 } from 'uuid';
 
 import { getAbleRoutes, getClassicAssociationsURL } from '../../utils/urls';
 
-import BasePage from '../../components/BasePage';
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
-import ScrollToTop from '../../components/ScrollToTop';
 
 import DISEASE_PAGE_QUERY from './DiseasePage.gql';
-import NewChip from '../../components/NewChip';
 
 const Profile = lazy(() => import('./Profile'));
 const Associations = lazy(() => import('./DiseaseAssociations'));

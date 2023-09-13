@@ -1,6 +1,13 @@
 import { useQuery } from "@apollo/client";
-import { Typography, Chip } from "@mui/material";
-import { SectionItem, Link, PublicationsDrawer, LabelChip } from "ui";
+import { Typography } from "@mui/material";
+import {
+  SectionItem,
+  Link,
+  PublicationsDrawer,
+  LabelChip,
+  DataTable,
+  ScientificNotation,
+} from "ui";
 
 import {
   defaultRowsPerPageOptions,
@@ -11,10 +18,8 @@ import {
 import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
-import { DataTable } from "../../components/Table";
 import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
 import { otgStudyUrl, otgVariantUrl } from "../../utils/urls";
-import ScientificNotation from "../../components/ScientificNotation";
 import { identifiersOrgLink, sentenceCase } from "../../utils/global";
 
 function getColumns(label) {

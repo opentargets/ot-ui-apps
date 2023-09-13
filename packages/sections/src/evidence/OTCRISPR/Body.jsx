@@ -1,14 +1,11 @@
 import { useQuery } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
-import { SectionItem, Link, Tooltip } from "ui";
+import { SectionItem, Link, Tooltip, DataTable, TooltipStyledLabel } from "ui";
 
 import { definition } from ".";
-import Summary from "./Summary";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
-import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions } from "../../constants";
-import TooltipStyledLabel from "../../components/TooltipStyledLabel";
 
 import CRISPR_QUERY from "./OTCrisprQuery.gql";
 

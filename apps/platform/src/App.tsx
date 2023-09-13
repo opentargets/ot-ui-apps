@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
-import { ThemeProvider, SearchProvider } from 'ui';
+import { ThemeProvider, SearchProvider, PrivateRoute } from 'ui';
 
 import SEARCH_QUERY from './components/Search/SearchQuery.gql';
-import PrivateRoute from './components/PrivateRoute';
+import ShouldAccessPPP from './components/ShouldAccessPPP';
 import client from './client';
 import theme from './theme';
 import HomePage from './pages/HomePage';
@@ -17,7 +17,6 @@ import VariantsPage from './pages/VariantsPage';
 import APIPage from './pages/APIPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProjectsPage from './pages/ProjectsPage';
-import ShouldAccessPPP from './components/ShouldAccessPPP';
 
 function App() {
   return (

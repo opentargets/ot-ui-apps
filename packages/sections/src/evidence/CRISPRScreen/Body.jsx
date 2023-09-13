@@ -1,10 +1,9 @@
 import _ from "lodash";
 import { useQuery } from "@apollo/client";
-import { Tooltip, SectionItem, TooltipStyledLabel, Link } from "ui";
+import { Tooltip, SectionItem, TooltipStyledLabel, Link, DataTable } from "ui";
 
 import { dataTypesMap } from "../../dataTypes";
 import Description from "./Description";
-import { DataTable } from "../../components/Table";
 import { PublicationsDrawer } from "ui";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 import { definition } from ".";

@@ -1,5 +1,11 @@
 import { gql } from '@apollo/client';
-import { PlatformApiProvider, SectionContainer, SummaryContainer } from 'ui';
+import {
+  PlatformApiProvider,
+  SectionContainer,
+  SummaryContainer,
+  summaryUtils,
+  PrivateWrapper,
+} from 'ui';
 
 import OntologySummary from 'sections/src/disease/Ontology/Summary';
 import KnownDrugsSummary from 'sections/src/disease/KnownDrugs/Summary';
@@ -13,11 +19,8 @@ import BibliographySection from 'sections/src/disease/Bibliography/Body';
 import PhenotypesSection from 'sections/src/disease/Phenotypes/Body';
 import OTProjectsSection from 'sections/src/disease/OTProjects/Body';
 
-import { createSummaryFragment } from '../../components/Summary/utils';
 import client from '../../client';
 import ProfileHeader from './ProfileHeader';
-
-import PrivateWrapper from '../../components/PrivateWrapper';
 
 const summaries = [
   OntologySummary,
@@ -28,7 +31,7 @@ const summaries = [
 ];
 
 const DISEASE = 'disease';
-const DISEASE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
+const DISEASE_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
   summaries,
   'Disease'
 );

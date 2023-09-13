@@ -1,10 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { sortBy, filter } from "lodash";
-import { Link, Tooltip, SectionItem, PublicationsDrawer } from "ui";
+import { Link, Tooltip, SectionItem, PublicationsDrawer, DataTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import DataTable from "../../components/Table/DataTable";
 import { epmcUrl } from "../../utils/urls";
 import { defaultRowsPerPageOptions } from "../../constants";
 import GeneOntologyEvidenceCodeMap from "./GeneOntologyEvidenceCodeMappings.json";

@@ -6,10 +6,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Typography } from "@mui/material";
 import { v1 } from "uuid";
-import { Tooltip, SectionItem, Link, PublicationsDrawer } from "ui";
+import { Tooltip, SectionItem, Link, PublicationsDrawer, DataTable } from "ui";
 
 import { definition } from ".";
-import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";

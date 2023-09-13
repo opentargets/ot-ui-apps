@@ -1,7 +1,6 @@
 import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
 
-import HeaderBase from '../../components/Header';
-import { ExternalLink, XRefLinks } from '../../components/ExternalLink';
+import { Header as HeaderBase, ExternalLink, XRefLinks } from 'ui';
 
 const xrefsToDisplay = {
   mondo: { label: 'MONDO', urlStem: 'http://purl.obolibrary.org/obo/MONDO_' },

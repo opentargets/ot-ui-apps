@@ -1,4 +1,11 @@
-import { usePlatformApi, Link } from 'ui';
+import {
+  usePlatformApi,
+  Link,
+  ProfileChipList,
+  ProfileDescription,
+  Field,
+  ProfileHeader as BaseProfileHeader,
+} from 'ui';
 import { Fragment } from 'react';
 import { Box } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,12 +15,6 @@ import {
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
-import {
-  ChipList,
-  Description,
-  Field,
-  ProfileHeader as BaseProfileHeader,
-} from '../../components/ProfileHeader';
 import Smiles from './Smiles';
 
 import DRUG_PROFILE_HEADER_FRAGMENT from './ProfileHeader.gql';
@@ -46,7 +47,7 @@ function ProfileHeader({ chemblId }) {
   return (
     <BaseProfileHeader>
       <>
-        <Description loading={loading}>{description}</Description>
+        <ProfileDescription loading={loading}>{description}</ProfileDescription>
         <Field loading={loading} title="Molecule type">
           {drugType}
         </Field>
@@ -86,12 +87,12 @@ function ProfileHeader({ chemblId }) {
             </Fragment>
           ))}
         </Field>
-        <ChipList title="Synonyms" inline loading={loading}>
+        <ProfileChipList title="Synonyms" inline loading={loading}>
           {synonyms}
-        </ChipList>
-        <ChipList title="Known trade names" inline loading={loading}>
+        </ProfileChipList>
+        <ProfileChipList title="Known trade names" inline loading={loading}>
           {tradeNames}
-        </ChipList>
+        </ProfileChipList>
       </>
       <Smiles chemblId={chemblId} />
     </BaseProfileHeader>

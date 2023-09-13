@@ -1,11 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip } from "ui";
+import { Link, SectionItem, Tooltip, DataTable, ClinvarStars } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { DataTable } from "../../components/Table";
-import ClinvarStars from "../../components/ClinvarStars";
 import CHEMICAL_PROBES_QUERY from "./ChemicalProbes.gql";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 

@@ -3,7 +3,7 @@ import {
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { v1 } from "uuid";
-import { SectionItem } from "ui";
+import { SectionItem, EllsWrapper } from "ui";
 import classNames from "classnames";
 import { useQuery } from "@apollo/client";
 import { Grid, Typography } from "@mui/material";
@@ -12,7 +12,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { definition } from ".";
 import Description from "./Description";
-import EllsWrapper from "../../components/EllsWrapper";
 import TRACTABILITY_QUERY from "./TractabilityQuery.gql";
 
 const useStyles = makeStyles((theme) => ({

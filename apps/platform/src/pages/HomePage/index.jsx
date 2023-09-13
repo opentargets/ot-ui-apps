@@ -1,7 +1,6 @@
 import PublicHome from './HomePage';
 import PPHome from './PPHomePage';
-
-import usePermissions from '../../hooks/usePermissions';
+import { usePermissions } from 'ui';
 
 function GetHomePage() {
   const { isPartnerPreview } = usePermissions();

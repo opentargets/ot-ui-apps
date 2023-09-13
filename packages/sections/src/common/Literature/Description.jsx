@@ -1,4 +1,4 @@
-import Link from "../../components/Link";
+import { Link } from "ui";
 
 const url = "http://platform-docs.opentargets.org/bibliography";
 

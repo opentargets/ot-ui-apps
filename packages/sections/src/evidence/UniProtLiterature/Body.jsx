@@ -1,12 +1,11 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer } from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, DataTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
-import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions } from "../../constants";
 import UNIPROT_LITERATURE_QUERY from "./UniprotLiteratureQuery.gql";
 import { identifiersOrgLink, sentenceCase } from "../../utils/global";

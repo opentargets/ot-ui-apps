@@ -7,14 +7,15 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material';
-import { Link, usePlatformApi } from 'ui';
+import {
+  Link,
+  usePlatformApi,
+  ProfileDescription,
+  ProfileHeader as BaseProfileHeader,
+  ProfileChipList,
+} from 'ui';
 
 import { makeStyles } from '@mui/styles';
-import {
-  Description,
-  ProfileHeader as BaseProfileHeader,
-  ChipList,
-} from '../../components/ProfileHeader';
 
 const useStyles = makeStyles(theme => ({
   card: { height: '100%' },
@@ -99,8 +100,8 @@ function ProfileHeader() {
             }
           />
           <CardContent className={classes.cardContent}>
-            <Description>{targetDescription}</Description>
-            <ChipList title="Synonyms">{targetSynonyms}</ChipList>
+            <ProfileDescription>{targetDescription}</ProfileDescription>
+            <ProfileChipList title="Synonyms">{targetSynonyms}</ProfileChipList>
           </CardContent>
         </Card>
       )}
@@ -118,9 +119,11 @@ function ProfileHeader() {
             }
           />
           <CardContent className={classes.cardContent}>
-            <Description>{diseaseDescription}</Description>
+            <ProfileDescription>{diseaseDescription}</ProfileDescription>
             {diseaseSynonyms.length > 0 ? (
-              <ChipList title="Synonyms">{diseaseSynonyms}</ChipList>
+              <ProfileChipList title="Synonyms">
+                {diseaseSynonyms}
+              </ProfileChipList>
             ) : null}
           </CardContent>
         </Card>

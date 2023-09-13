@@ -1,9 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
 
-import { LoadingBackdrop } from 'ui';
-import BasePage from '../../components/BasePage';
-import ScrollToTop from '../../components/ScrollToTop';
+import { LoadingBackdrop, BasePage, ScrollToTop } from 'ui';
 
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';

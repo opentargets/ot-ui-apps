@@ -5,9 +5,8 @@ import {
   faCircleCheck,
   faCircleNotch,
 } from '@fortawesome/free-solid-svg-icons';
+import { DataTable, Link } from 'ui';
 import projectsData from './projects-data.json';
-import { DataTable } from '../../components/Table';
-import Link from '../../components/Link';
 
 const useStyles = makeStyles(theme => ({
   icon: {

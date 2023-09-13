@@ -2,9 +2,8 @@ import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
-import { Link, Tooltip } from "ui";
+import { Link, Tooltip, DataTable } from "ui";
 
-import { DataTable } from "../../components/Table";
 import { identifiersOrgLink } from "../../utils/global";
 import { defaultRowsPerPageOptions, decimalPlaces } from "../../constants";
 

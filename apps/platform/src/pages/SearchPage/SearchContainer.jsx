@@ -14,12 +14,12 @@ import {
   faPrescriptionBottleAlt,
   faStethoscope,
 } from '@fortawesome/free-solid-svg-icons';
+import { ErrorBoundary } from 'ui';
 
 import DiseaseDetail from './DiseaseDetail';
 import DiseaseResult from './DiseaseResult';
 import DrugDetail from './DrugDetail';
 import DrugResult from './DrugResult';
-import ErrorBoundary from '../../components/ErrorBoundary';
 import TargetDetail from './TargetDetail';
 import TargetResult from './TargetResult';
 
@@ -37,7 +37,7 @@ const getCounts = entities => {
   return counts;
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   label: {
     marginLeft: '-6px',
   },
@@ -47,79 +47,78 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SearchFilters = 
-  ({ entities, entitiesCount, setEntity }) => {
-    const counts = getCounts(entitiesCount);
-    const classes = useStyles();
+const SearchFilters = ({ entities, entitiesCount, setEntity }) => {
+  const counts = getCounts(entitiesCount);
+  const classes = useStyles();
 
-    return (
-      <>
-        <FormControlLabel
-          className={classes.label}
-          control={
-            <Checkbox
-              checked={entities.includes('target')}
-              onChange={setEntity('target')}
+  return (
+    <>
+      <FormControlLabel
+        className={classes.label}
+        control={
+          <Checkbox
+            checked={entities.includes('target')}
+            onChange={setEntity('target')}
+          />
+        }
+        label={
+          <>
+            <FontAwesomeIcon
+              icon={faDna}
+              fixedWidth
+              className={classes.labelIcon}
             />
-          }
-          label={
-            <>
-              <FontAwesomeIcon
-                icon={faDna}
-                fixedWidth
-                className={classes.labelIcon}
-              />
-              <Typography variant="body2" display="inline">
-                Target ({counts.target})
-              </Typography>
-            </>
-          }
-        />
-        <FormControlLabel
-          className={classes.label}
-          control={
-            <Checkbox
-              checked={entities.includes('disease')}
-              onChange={setEntity('disease')}
+            <Typography variant="body2" display="inline">
+              Target ({counts.target})
+            </Typography>
+          </>
+        }
+      />
+      <FormControlLabel
+        className={classes.label}
+        control={
+          <Checkbox
+            checked={entities.includes('disease')}
+            onChange={setEntity('disease')}
+          />
+        }
+        label={
+          <>
+            <FontAwesomeIcon
+              icon={faStethoscope}
+              fixedWidth
+              className={classes.labelIcon}
             />
-          }
-          label={
-            <>
-              <FontAwesomeIcon
-                icon={faStethoscope}
-                fixedWidth
-                className={classes.labelIcon}
-              />
-              <Typography variant="body2" display="inline">
-                Disease or phenotype ({counts.disease})
-              </Typography>
-            </>
-          }
-        />
-        <FormControlLabel
-          className={classes.label}
-          control={
-            <Checkbox
-              checked={entities.includes('drug')}
-              onChange={setEntity('drug')}
+            <Typography variant="body2" display="inline">
+              Disease or phenotype ({counts.disease})
+            </Typography>
+          </>
+        }
+      />
+      <FormControlLabel
+        className={classes.label}
+        control={
+          <Checkbox
+            checked={entities.includes('drug')}
+            onChange={setEntity('drug')}
+          />
+        }
+        label={
+          <>
+            <FontAwesomeIcon
+              icon={faPrescriptionBottleAlt}
+              fixedWidth
+              className={classes.labelIcon}
             />
-          }
-          label={
-            <>
-              <FontAwesomeIcon
-                icon={faPrescriptionBottleAlt}
-                fixedWidth
-                className={classes.labelIcon}
-              />
-              <Typography variant="body2" display="inline">
-                Drug ({counts.drug})
-              </Typography>
-            </>
-          }
-        />
-      </>
-    );
-  };
+            <Typography variant="body2" display="inline">
+              Drug ({counts.drug})
+            </Typography>
+          </>
+        }
+      />
+    </>
+  );
+};
 
 function SearchResults({ results, page, onPageChange }) {
   const TYPE_NAME = '__typename';

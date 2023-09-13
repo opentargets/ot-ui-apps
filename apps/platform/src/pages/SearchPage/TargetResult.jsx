@@ -1,13 +1,12 @@
 import { makeStyles, useTheme } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDna } from '@fortawesome/free-solid-svg-icons';
+import { Highlights, Link } from 'ui';
+
 import { clearDescriptionCodes } from '../../utils/global';
 import TargetDescription from '../TargetPage/TargetDescription';
 
-import Highlights from '../../components/Highlights';
-import Link from '../../components/Link';
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   container: {
     marginBottom: '30px',
   },
@@ -21,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function TargetResult({ data, highlights }) {
-  const classes= useStyles();
+  const classes = useStyles();
   const theme = useTheme();
   const targetDescription = clearDescriptionCodes(
     data.functionDescriptions,

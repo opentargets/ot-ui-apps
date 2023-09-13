@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import { SectionItem, Link } from "ui";
+import { SectionItem, Link, getPage, Table } from "ui";
 
 import Description from "./Description";
 import { europePmcLiteratureQuery } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
-import { getPage, Table } from "../../components/Table";
 import { naLabel } from "../../constants";
 import Publication from "./Publication";
 import EUROPE_PMC_QUERY from "./sectionQuery.gql";

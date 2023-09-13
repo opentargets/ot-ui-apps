@@ -6,13 +6,11 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 import { Box, Typography, Chip, Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, Tooltip, ChipList } from "ui";
+import { Link, SectionItem, Tooltip, ChipList, DataTable } from "ui";
 
 import { definition } from ".";
-import Summary from "./Summary";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
-import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions } from "../../constants";
 import VALIDATION_QUERY from "./OTValidationQuery.gql";
 

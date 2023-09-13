@@ -1,5 +1,5 @@
 import { Suspense, useState, lazy } from 'react';
-import { LoadingBackdrop } from 'ui';
+import { LoadingBackdrop, Link } from 'ui';
 import {
   Accordion,
   AccordionSummary,
@@ -12,7 +12,6 @@ import { makeStyles } from '@mui/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import 'graphiql/graphiql.min.css';
 
-import Link from '../../components/Link';
 import { fetcher } from '../../utils/global';
 
 import TARGET_ASSOCS from './TargetAssocs.gql';

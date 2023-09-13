@@ -1,5 +1,10 @@
 import { gql } from '@apollo/client';
-import { PlatformApiProvider, SectionContainer, SummaryContainer } from 'ui';
+import {
+  PlatformApiProvider,
+  SectionContainer,
+  SummaryContainer,
+  summaryUtils,
+} from 'ui';
 
 import KnownDrugsSummary from 'sections/src/target/KnownDrugs/Summary';
 import TractabilitySummary from 'sections/src/target/Tractability/Summary';
@@ -35,7 +40,6 @@ import ComparativeGenomicsSection from 'sections/src/target/ComparativeGenomics/
 import SubcellularLocationSection from 'sections/src/target/SubcellularLocation/Body';
 import BibliographySection from 'sections/src/target/Bibliography/Body';
 import ProfileHeader from './ProfileHeader';
-import { createSummaryFragment } from '../../components/Summary/utils';
 
 import client from '../../client';
 
@@ -59,7 +63,7 @@ const summaries = [
 ];
 
 const TARGET = 'target';
-const TARGET_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
+const TARGET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
   summaries,
   'Target'
 );

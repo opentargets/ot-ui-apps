@@ -8,8 +8,7 @@ import {
   dagStratify,
 } from "d3-dag";
 import { makeStyles } from "@mui/styles";
-import Link from "../../components/Link";
-import Tooltip from "../../components/Tooltip";
+import { Link, Tooltip } from "ui";
 
 const useStyles = makeStyles({
   labelText: {

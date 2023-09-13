@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material';
-import { DataTable } from '../../components/Table';
-import Link from '../../components/Link';
+import { Link, DataTable } from 'ui';
 import { naLabel } from '../../constants';
 
 const accessionUrl =

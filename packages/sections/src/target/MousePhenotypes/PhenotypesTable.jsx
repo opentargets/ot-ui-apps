@@ -1,13 +1,12 @@
-import { Link } from "ui";
-import { DataTable, TableDrawer } from '../../components/Table';
-import { defaultRowsPerPageOptions } from '../../constants';
+import { Link, DataTable, TableDrawer } from "ui";
+import { defaultRowsPerPageOptions } from "../../constants";
 
-import AllelicCompositionDrawer from './AllelicCompositionDrawer';
+import AllelicCompositionDrawer from "./AllelicCompositionDrawer";
 
 const columns = [
   {
-    id: 'targetInModel',
-    label: 'Mouse gene',
+    id: "targetInModel",
+    label: "Mouse gene",
     renderCell: ({ targetInModel, targetInModelMgiId }) => (
       <Link external to={`https://identifiers.org/${targetInModelMgiId}`}>
         {targetInModel}
@@ -15,8 +14,8 @@ const columns = [
     ),
   },
   {
-    id: 'modelPhenotypeLabel',
-    label: 'Phenotype',
+    id: "modelPhenotypeLabel",
+    label: "Phenotype",
     renderCell: ({ modelPhenotypeLabel, modelPhenotypeId }) => (
       <Link external to={`https://identifiers.org/${modelPhenotypeId}`}>
         {modelPhenotypeLabel}
@@ -24,19 +23,19 @@ const columns = [
     ),
   },
   {
-    id: 'modelPhenotypeClasses',
-    label: 'Category',
+    id: "modelPhenotypeClasses",
+    label: "Category",
     filterValue: ({ modelPhenotypeClasses }) => {
       if (modelPhenotypeClasses.length === 1) {
         return modelPhenotypeClasses[0].label;
       }
-      return 'categories';
+      return "categories";
     },
     renderCell: ({ modelPhenotypeClasses }) => {
-      const entries = modelPhenotypeClasses.map(phenotypeClass => ({
+      const entries = modelPhenotypeClasses.map((phenotypeClass) => ({
         name: phenotypeClass.label,
         url: `https://identifiers.org/${phenotypeClass.id}`,
-        group: 'Categories',
+        group: "Categories",
       }));
       return (
         <TableDrawer
@@ -47,16 +46,16 @@ const columns = [
       );
     },
     exportValue: ({ modelPhenotypeClasses }) =>
-      modelPhenotypeClasses.map(phenotypeClass => phenotypeClass.label),
+      modelPhenotypeClasses.map((phenotypeClass) => phenotypeClass.label),
   },
   {
-    id: 'lol',
-    label: 'Allelic composition',
+    id: "lol",
+    label: "Allelic composition",
     renderCell: ({ biologicalModels }) => (
       <AllelicCompositionDrawer biologicalModels={biologicalModels} />
     ),
     exportValue: ({ biologicalModels }) =>
-      biologicalModels.map(bm => bm.allelicComposition),
+      biologicalModels.map((bm) => bm.allelicComposition),
   },
 ];
 

@@ -1,6 +1,6 @@
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 
-import HeaderBase from '../../components/Header';
+import { Header as HeaderBase } from 'ui';
 
 function EvidenceHeader({ loading, symbol, name }) {
   return (

@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { Box } from '@mui/material';
-import Link from '../../components/Link';
+import { Link } from 'ui';
 
 // HELPERS
 function getVersion({ month, year }) {

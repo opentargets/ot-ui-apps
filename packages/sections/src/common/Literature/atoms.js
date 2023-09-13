@@ -1,7 +1,7 @@
 import isEmpty from "lodash/isEmpty";
 import { atom, selectorFamily, selector } from "recoil";
+import { getPage } from "ui";
 import client from "../../client";
-import { getPage } from "../../components/Table";
 import { europePmcBiblioSearchPOSTQuery } from "../../utils/urls";
 
 // ------------------------------------------
