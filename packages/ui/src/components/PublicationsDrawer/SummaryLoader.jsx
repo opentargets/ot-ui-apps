@@ -1,16 +1,14 @@
-import { Box, CircularProgress, makeStyles, styled } from "@material-ui/core";
+import { Box, CircularProgress, styled } from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    color: theme.palette.primary.main,
-    background: theme.palette.grey["100"],
-    width: "auto",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    display: "flex",
-    marginBottom: "15px",
-  },
+const StyledContainer = styled(Box)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  background: theme.palette.grey["100"],
+  width: "auto",
+  height: "100%",
+  justifyContent: "center",
+  alignItems: "center",
+  display: "flex",
+  marginBottom: "15px",
 }));
 
 const LoadingContainer = styled("div")({
@@ -19,12 +17,11 @@ const LoadingContainer = styled("div")({
 });
 
 function SummaryLoader() {
-  const classes = useStyles();
   return (
     <LoadingContainer>
-      <Box className={classes.container}>
+      <StyledContainer>
         <CircularProgress color="inherit" />
-      </Box>
+      </StyledContainer>
       Summarising...
     </LoadingContainer>
   );
