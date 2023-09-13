@@ -3,8 +3,8 @@ import { Grid, Input, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useDebounce } from 'ui';
 import useAotfContext from './hooks/useAotfContext';
-import useDebounce from '../../hooks/useDebounce';
 
 const InputContainer = styled(Grid)({
   marginRight: '15px',

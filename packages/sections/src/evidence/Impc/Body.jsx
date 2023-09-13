@@ -1,15 +1,20 @@
 import { Typography } from "@mui/material";
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, Tooltip } from "ui";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  DataTable,
+  TableDrawer,
+  MouseModelAllelicComposition,
+} from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
 import INTOGEN_QUERY from "./sectionQuery.gql";
 import { dataTypesMap } from "../../dataTypes";
 import { sentenceCase } from "../../utils/global";
-import { DataTable, TableDrawer } from "../../components/Table";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
-import MouseModelAllelicComposition from "../../components/MouseModelAllelicComposition";
 
 const columns = [
   {

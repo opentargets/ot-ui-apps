@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import { Skeleton } from '@mui/material';
-import Link from '../../components/Link';
-import { Table } from '../../components/Table';
+import {
+  Link,
+  Table,
+  PartnerLockIcon,
+  useBatchDownloader,
+  usePermissions,
+  Legend,
+} from 'ui';
 import AssocCell from '../../components/AssocCell';
-import Legend from '../../components/Legend';
-import useBatchDownloader from '../../hooks/useBatchDownloader';
 import dataTypes from '../../dataTypes';
 import client from '../../client';
 import config from '../../config';
-import PartnerLockIcon from '../../components/PartnerLockIcon';
 
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociations.gql';
-import usePermissions from '../../hooks/usePermissions';
 
 const useStyles = makeStyles(theme => ({
   root: {

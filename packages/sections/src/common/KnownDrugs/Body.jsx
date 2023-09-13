@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 
-import Link from "../../components/Link";
+import {
+  Link,
+  Table,
+  getPage,
+  getComparator,
+  useCursorBatchDownloader,
+} from "ui";
 import { naLabel, phaseMap } from "../../constants";
 import { sentenceCase } from "../../utils/global";
 import SourceDrawer from "./SourceDrawer";
-import { Table, getPage } from "../../components/Table";
-import useCursorBatchDownloader from "../../hooks/useCursorBatchDownloader";
-import { getComparator } from "../../components/Table/sortingAndFiltering";
 import { SectionItem } from "ui";
 
 function getColumnPool(id, entity) {

@@ -1,10 +1,11 @@
-import { usePlatformApi } from 'ui';
+import {
+  usePlatformApi,
+  ProfileHeader as BaseProfileHeader,
+  ProfileChipList,
+} from 'ui';
 import { useTheme } from '@mui/styles';
 import TargetDescription from './TargetDescription';
-import {
-  ProfileHeader as BaseProfileHeader,
-  ChipList,
-} from '../../components/ProfileHeader';
+
 import { clearDescriptionCodes } from '../../utils/global';
 
 import TARGET_PROFILE_HEADER_FRAGMENT from './TargetProfileHeader.gql';
@@ -84,11 +85,11 @@ function ProfileHeader() {
           descriptions={targetDescription}
           targetId={data?.target.id}
         />
-        <ChipList>{geneInfo.filter(gi => gi.isVisible)}</ChipList>
+        <ProfileChipList>{geneInfo.filter(gi => gi.isVisible)}</ProfileChipList>
       </>
-      <ChipList title="Synonyms" loading={loading}>
+      <ProfileChipList title="Synonyms" loading={loading}>
         {synonyms}
-      </ChipList>
+      </ProfileChipList>
     </BaseProfileHeader>
   );
 }

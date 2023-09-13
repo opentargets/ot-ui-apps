@@ -1,4 +1,7 @@
 query OrphanetQuery($ensemblId: String!, $efoId: String!) {
+  target(ensemblId: $ensemblId) {
+    approvedSymbol
+  }
   disease(efoId: $efoId) {
     id
     orphanetSummary: evidences(
@@ -24,7 +27,7 @@ query OrphanetQuery($ensemblId: String!, $efoId: String!) {
         alleleOrigins
         confidence
         literature
-        variantFunctionalConsequence{
+        variantFunctionalConsequence {
           id
           label
         }

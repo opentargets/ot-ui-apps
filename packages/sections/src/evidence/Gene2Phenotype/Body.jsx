@@ -1,22 +1,20 @@
 import { List, ListItem, Typography } from "@mui/material";
 import { useQuery } from "@apollo/client";
 import { v1 } from "uuid";
-import { SectionItem, Tooltip, Link } from "ui";
+import { SectionItem, Tooltip, Link, PublicationsDrawer, DataTable } from "ui";
 
-import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
 import { sentenceCase } from "../../utils/global";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
 import { definition } from ".";
 
 const g2pUrl = (studyId, symbol) =>
   `https://www.ebi.ac.uk/gene2phenotype/search?panel=${studyId}&search_term=${symbol}`;
 
-const columns = [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -121,7 +119,13 @@ const columns = [
             group: "literature",
           }))
         : [];
-      return <PublicationsDrawer entries={entries} />;
+      return (
+        <PublicationsDrawer
+          entries={entries}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -132,6 +136,8 @@ function Body({ id: { ensgId, efoId }, label: { symbol, name }, entity }) {
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,
   });
+
+  const columns = getColumns({ symbol, name });
 
   return (
     <SectionItem

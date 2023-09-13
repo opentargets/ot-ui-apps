@@ -1,11 +1,7 @@
-import {
-  Checkbox,
-  FormControlLabel,
-  Typography,
-} from '@mui/material';
+import { Checkbox, FormControlLabel, Typography } from '@mui/material';
 import { TreeItem as MUITreeItem } from '@mui/lab';
 import { makeStyles } from '@mui/styles';
-import PartnerLockIcon from '../PartnerLockIcon';
+import { PartnerLockIcon } from 'ui';
 
 const useStyles = makeStyles(theme => ({
   countLabel: {
@@ -102,7 +98,7 @@ function TreeItem({
                 color="primary"
                 checked={checked}
                 indeterminate={indeterminate}
-                sx= {{padding: '4px'}}
+                sx={{ padding: '4px' }}
               />
             }
             label={

@@ -2,19 +2,23 @@ import { Box, List, ListItem, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useQuery } from "@apollo/client";
 import { v1 } from "uuid";
-import { ChipList, Link, SectionItem, Tooltip } from "ui";
+import {
+  ChipList,
+  Link,
+  SectionItem,
+  Tooltip,
+  DataTable,
+  ScientificNotation,
+} from "ui";
 
 import { definition } from ".";
 import methods from "./methods";
-import Summary from "./Summary";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
 import INTOGEN_QUERY from "./sectionQuery.gql";
 import { sentenceCase } from "../../utils/global";
-import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
-import ScientificNotation from "../../components/ScientificNotation";
 
 const intOgenUrl = (id, approvedSymbol) =>
   `https://www.intogen.org/search?gene=${approvedSymbol}&cohort=${id}`;

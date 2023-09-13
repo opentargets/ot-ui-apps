@@ -3,8 +3,7 @@ import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
 
-import { LongText } from 'ui';
-import Link from '../../components/Link';
+import { LongText, Link } from 'ui';
 
 const useStyles = makeStyles({
   link: {

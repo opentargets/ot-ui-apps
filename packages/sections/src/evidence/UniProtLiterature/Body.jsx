@@ -1,19 +1,16 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, ChipList } from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, DataTable } from "ui";
 
 import { definition } from ".";
-import Summary from "./Summary";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
-import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions } from "../../constants";
 import UNIPROT_LITERATURE_QUERY from "./UniprotLiteratureQuery.gql";
 import { identifiersOrgLink, sentenceCase } from "../../utils/global";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
-const columns = [
+const getcolumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -64,7 +61,13 @@ const columns = [
           return acc;
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -80,6 +83,9 @@ function Body({ id, label, entity }) {
   const request = useQuery(UNIPROT_LITERATURE_QUERY, {
     variables,
   });
+
+  const columns = getcolumns(label);
+
   return (
     <SectionItem
       definition={definition}

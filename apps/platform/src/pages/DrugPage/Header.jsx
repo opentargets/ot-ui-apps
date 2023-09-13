@@ -1,7 +1,5 @@
 import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
-
-import { ExternalLink } from '../../components/ExternalLink';
-import HeaderBase from '../../components/Header';
+import { Header as HeaderBase, ExternalLink } from 'ui';
 
 function DrugHeader({ loading, chemblId, name, crossReferences }) {
   const chemblUrl = `https://www.ebi.ac.uk/chembl/compound_report_card/${chemblId}/`;

@@ -5,7 +5,7 @@ import { makeStyles } from "@mui/styles";
 import Link from "./Link";
 import { EmailLink } from "./EmailLink";
 
-import PrivateWrapper from "../../../../apps/platform/src/components/PrivateWrapper";
+import PrivateWrapper from "./PrivateWrapper";
 
 const FOOTER_BACKGROUND_COLOR = "#2e2d35";
 

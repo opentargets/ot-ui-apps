@@ -1,11 +1,16 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem } from "ui";
+import {
+  Link,
+  Tooltip,
+  SectionItem,
+  PublicationsDrawer,
+  DataTable,
+  TableDrawer,
+} from "ui";
 import { naLabel } from "ui/src/constants";
 
 import { defaultRowsPerPageOptions } from "../../constants";
-import { DataTable, TableDrawer } from "../../components/Table";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 import { epmcUrl } from "../../utils/urls";
 import Description from "./Description";
 import BiomarkersDrawer from "./BiomarkersDrawer";
@@ -13,7 +18,7 @@ import { definition } from ".";
 
 import CANCER_BIOMARKERS_EVIDENCE_QUERY from "./CancerBiomarkersEvidence.gql";
 
-const columns = [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease",
@@ -85,7 +90,13 @@ const columns = [
           }))
         : [];
 
-      return <PublicationsDrawer entries={entries} />;
+      return (
+        <PublicationsDrawer
+          entries={entries}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -101,6 +112,8 @@ function Body({ id, label, entity }) {
   const request = useQuery(CANCER_BIOMARKERS_EVIDENCE_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

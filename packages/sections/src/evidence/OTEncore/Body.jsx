@@ -6,14 +6,20 @@ import {
   faArrowAltCircleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, SectionItem, Tooltip, TooltipStyledLabel, ChipList } from "ui";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  TooltipStyledLabel,
+  ChipList,
+  DataTable,
+  ScientificNotation,
+} from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { DataTable } from "../../components/Table";
 import { dataTypesMap } from "../../dataTypes";
 import { defaultRowsPerPageOptions } from "../../constants";
-import ScientificNotation from "../../components/ScientificNotation";
 
 import ENCORE_QUERY from "./OTEncoreQuery.gql";
 

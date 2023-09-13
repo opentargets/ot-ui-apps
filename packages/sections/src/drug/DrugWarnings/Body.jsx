@@ -1,10 +1,9 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, Tooltip } from "ui";
+import { Link, SectionItem, Tooltip, Table } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
 import DRUG_WARNINGS_QUERY from "./DrugWarningsQuery.gql";
-import { DataTable, TableDrawer } from "../../components/Table";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 
 const replaceSemicolonWithUnderscore = (id) => id.replace(":", "_");

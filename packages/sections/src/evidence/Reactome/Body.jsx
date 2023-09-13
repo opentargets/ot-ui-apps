@@ -1,20 +1,24 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip } from "ui";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  PublicationsDrawer,
+  EllsWrapper,
+  DataTable,
+  TableDrawer,
+} from "ui";
 
 import { definition } from ".";
-import Summary from "./Summary";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
 import REACTOME_QUERY from "./sectionQuery.gql";
 import { sentenceCase } from "../../utils/global";
-import EllsWrapper from "../../components/EllsWrapper";
-import { DataTable, TableDrawer } from "../../components/Table";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
-const columns = [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease / phenotype",
@@ -138,7 +142,13 @@ const columns = [
           });
         }
       });
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
     width: "12%",
   },
@@ -155,6 +165,8 @@ function Body({ id, label, entity }) {
   const request = useQuery(REACTOME_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

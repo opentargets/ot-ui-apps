@@ -1,4 +1,4 @@
-import { Link, Tooltip } from "ui";
+import { Link, Tooltip, PublicationsDrawer, DataTable, TableDrawer } from "ui";
 import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,9 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import SafetyStudiesDrawer from "./SafetyStudiesDrawer";
-import { DataTable, TableDrawer } from "../../components/Table";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
 const useStyles = makeStyles((theme) => ({
   blue: {

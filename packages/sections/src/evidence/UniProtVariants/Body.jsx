@@ -1,29 +1,27 @@
 import { useQuery } from "@apollo/client";
-import { Typography, Chip } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, Tooltip } from "ui";
+import { Typography } from "@mui/material";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  PublicationsDrawer,
+  LabelChip,
+  DataTable,
+} from "ui";
 
 import { definition } from ".";
-import Summary from "./Summary";
+
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
-import { DataTable } from "../../components/Table";
 import { identifiersOrgLink } from "../../utils/global";
-import { defaultRowsPerPageOptions } from "../../constants";
+import {
+  defaultRowsPerPageOptions,
+  variantConsequenceSource,
+} from "../../constants";
 import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 
-const useStyles = makeStyles({
-  xsmall: {
-    fontSize: "0.7rem",
-  },
-  chipLink: {
-    marginLeft: "5px",
-  },
-});
-
-function getColumns(classes) {
+function getColumns(label) {
   return [
     {
       id: "disease.name",
@@ -68,26 +66,17 @@ function getColumns(classes) {
       ),
     },
     {
-      id: "variantFunctionalConsequenceId",
-      label: "Functional Consequence",
-      renderCell: ({ variantRsId }) => {
-        return (
-          <Link
-            external
+      id: "variantConsequence",
+      label: "Variant Consequence",
+      renderCell: ({ variantRsId }) => (
+        <div style={{ display: "flex", gap: "5px" }}>
+          <LabelChip
+            label={variantConsequenceSource.ProtVar.label}
             to={`https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`}
-            className={classes.chipLink}
-          >
-            <Chip
-              label="ProtVar"
-              size="small"
-              color="primary"
-              clickable
-              variant="outlined"
-              className={classes.xsmall}
-            />
-          </Link>
-        );
-      },
+            tooltip={variantConsequenceSource.ProtVar.tooltip}
+          />
+        </div>
+      ),
     },
     {
       id: "confidence",
@@ -108,7 +97,13 @@ function getColumns(classes) {
             return acc;
           }, []) || [];
 
-        return <PublicationsDrawer entries={literatureList} />;
+        return (
+          <PublicationsDrawer
+            entries={literatureList}
+            symbol={label.symbol}
+            name={label.name}
+          />
+        );
       },
     },
   ];
@@ -121,8 +116,7 @@ export function Body({ id, label, entity }) {
     ensemblId: ensgId,
     efoId,
   };
-  const classes = useStyles();
-  const columns = getColumns(classes);
+  const columns = getColumns(label);
 
   const request = useQuery(UNIPROT_VARIANTS_QUERY, {
     variables,

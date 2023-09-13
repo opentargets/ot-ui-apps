@@ -17,7 +17,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CloseIcon from "@mui/icons-material/Close";
 import _ from "lodash";
 
-import Link from "../../components/Link";
+import { Link } from "ui";
 
 const sourceDrawerStyles = makeStyles((theme) => ({
   drawerLink: {
@@ -182,7 +182,11 @@ function SourceDrawer({ references }) {
 
   return (
     <>
-      <MUILink onClick={toggleDrawer} className={classes.drawerLink} underline="none">
+      <MUILink
+        onClick={toggleDrawer}
+        className={classes.drawerLink}
+        underline="none"
+      >
         {references.length} references
       </MUILink>
 

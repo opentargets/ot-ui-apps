@@ -1,8 +1,7 @@
 import { Link as RouterLink } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { Link } from "@mui/material";
-import { SectionItem } from "ui";
-import { DataTable, TableDrawer } from "../../components/Table";
+import { SectionItem, DataTable, TableDrawer } from "ui";
 import { dataTypesMap } from "../../dataTypes";
 import { naLabel } from "../../constants";
 import Description from "./Description";

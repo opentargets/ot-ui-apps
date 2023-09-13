@@ -2,9 +2,8 @@ import { Fragment, useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Paper, Box, Chip, Typography, Alert, AlertTitle } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import Link from '../../components/Link';
+import { Link, DataTable } from 'ui';
 import { defaultRowsPerPageOptions, formatMap } from '../../constants';
-import { DataTable } from '../../components/Table';
 import DownloadsDrawer from './DownloadsDrawer';
 import datasetMappings from './dataset-mappings.json';
 import config from '../../config';
@@ -54,7 +53,7 @@ function getColumns(date) {
       id: 'formats',
       label: 'Format(s)',
       renderCell: ({ niceName, formats }) =>
-        formats.map((format) => (
+        formats.map(format => (
           <Fragment key={format.format + format.path + date.month + date.year}>
             <DownloadsDrawer
               title={niceName}

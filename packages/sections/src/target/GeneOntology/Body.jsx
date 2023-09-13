@@ -1,51 +1,49 @@
-import { useQuery } from '@apollo/client';
-import { sortBy, filter } from 'lodash';
-import { Link, Tooltip, SectionItem } from 'ui';
+import { useQuery } from "@apollo/client";
+import { sortBy, filter } from "lodash";
+import { Link, Tooltip, SectionItem, PublicationsDrawer, DataTable } from "ui";
 
-import { definition } from '.';
-import Description from './Description';
-import { PublicationsDrawer } from '../../components/PublicationsDrawer';
-import DataTable from '../../components/Table/DataTable';
-import { epmcUrl } from '../../utils/urls';
-import { defaultRowsPerPageOptions } from '../../constants';
-import GeneOntologyEvidenceCodeMap from './GeneOntologyEvidenceCodeMappings.json';
-import GENE_ONTOLOGY_QUERY from './GeneOntology.gql';
+import { definition } from ".";
+import Description from "./Description";
+import { epmcUrl } from "../../utils/urls";
+import { defaultRowsPerPageOptions } from "../../constants";
+import GeneOntologyEvidenceCodeMap from "./GeneOntologyEvidenceCodeMappings.json";
+import GENE_ONTOLOGY_QUERY from "./GeneOntology.gql";
 
 const CATEGORY_BY_PREFIX = {
-  F: { code: 'MOLECULAR_FUNCTION', label: 'Molecular Function' },
-  P: { code: 'BIOLOGICAL_PROCESS', label: 'Biological Process' },
-  C: { code: 'CELLULAR_COMPONENT', label: 'Cellular Component' },
+  F: { code: "MOLECULAR_FUNCTION", label: "Molecular Function" },
+  P: { code: "BIOLOGICAL_PROCESS", label: "Biological Process" },
+  C: { code: "CELLULAR_COMPONENT", label: "Cellular Component" },
 };
 
-const extractCategory = row => ({
+const extractCategory = (row) => ({
   ...row,
   category: CATEGORY_BY_PREFIX[row.aspect],
 });
 
 const sourceURLS = {
-  Reactome: id => `https://identifiers.org/reactome:${id}`,
-  DOI: id => `https://doi.org/${id}}`,
-  GO_REF: id => `https://identifiers.org/GO_REF:${id}`,
+  Reactome: (id) => `https://identifiers.org/reactome:${id}`,
+  DOI: (id) => `https://doi.org/${id}}`,
+  GO_REF: (id) => `https://identifiers.org/GO_REF:${id}`,
 };
 
-const sourceMapContent = source => {
-  const sourceName = source.slice(0, source.indexOf(':'));
-  const sourceId = source.slice(source.indexOf(':') + 1);
-  if (sourceName !== 'PMID')
+const sourceMapContent = (source) => {
+  const sourceName = source.slice(0, source.indexOf(":"));
+  const sourceId = source.slice(source.indexOf(":") + 1);
+  if (sourceName !== "PMID")
     return (
       <Link external to={sourceURLS[sourceName](sourceId)}>
         {sourceName}
       </Link>
     );
 
-  if (sourceName === 'PMID')
+  if (sourceName === "PMID")
     return (
       <PublicationsDrawer
         entries={[
           {
             name: sourceId,
             url: epmcUrl(sourceId),
-            group: 'literature',
+            group: "literature",
           },
         ]}
       />
@@ -80,31 +78,31 @@ function EvidenceTooltip({ evidence }) {
 
 const columns = [
   {
-    id: 'category',
-    label: 'Category',
+    id: "category",
+    label: "Category",
     renderCell: ({ category }) => category.label,
     filterValue: ({ category }) => category.label,
-    exportLabel: 'Category',
-    propertyPath: 'category.label',
+    exportLabel: "Category",
+    propertyPath: "category.label",
   },
   {
-    id: 'goTerm',
-    label: 'GO term',
+    id: "goTerm",
+    label: "GO term",
     renderCell: ({ term }) =>
       term ? (
         <Link external to={`https://identifiers.org/${term.id}`}>
           {term.name}
         </Link>
       ) : (
-        'N/A'
+        "N/A"
       ),
-    exportLabel: 'GO term',
+    exportLabel: "GO term",
     exportValue: ({ term }) => term.name,
     filterValue: ({ term }) => term.name,
   },
   {
-    id: 'geneProduct',
-    label: 'Gene product',
+    id: "geneProduct",
+    label: "Gene product",
     renderCell: ({ geneProduct, term }) =>
       term ? (
         <Link
@@ -116,14 +114,14 @@ const columns = [
       ) : (
         geneProduct
       ),
-    exportLabel: 'GO term',
+    exportLabel: "GO term",
     exportValue: ({ term }) => term.name,
   },
   {
-    id: 'evidence',
-    label: 'Evidence code',
-    exportLabel: 'Evidence code',
-    exportValue: row => row.evidence,
+    id: "evidence",
+    label: "Evidence code",
+    exportLabel: "Evidence code",
+    exportValue: (row) => row.evidence,
     renderCell: ({ evidence }) => (
       <Tooltip title={<EvidenceTooltip evidence={evidence} />} showHelpIcon>
         {evidence}
@@ -131,10 +129,10 @@ const columns = [
     ),
   },
   {
-    id: 'source',
-    label: 'Source',
-    exportLabel: 'Source',
-    exportValue: row => row.source,
+    id: "source",
+    label: "Source",
+    exportLabel: "Source",
+    exportValue: (row) => row.source,
     renderCell: ({ source }) => sourceMapContent(source),
   },
 ];
@@ -152,7 +150,7 @@ function Section({ id, label: symbol, entity }) {
       renderBody={({ target }) => {
         const rows = sortBy(
           target.geneOntology.map(extractCategory),
-          'category.label'
+          "category.label"
         );
         return (
           <DataTable

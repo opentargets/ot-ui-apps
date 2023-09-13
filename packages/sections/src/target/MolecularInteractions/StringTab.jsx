@@ -2,11 +2,9 @@ import { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
 import { Grid } from "@mui/material";
 import { scaleQuantize } from "d3";
-import { Link } from "ui";
+import { Link, DataTable, Legend } from "ui";
 
 import client from "../../client";
-import DataTable from "../../components/Table/DataTable";
-import Legend from "../../components/Legend";
 import { colorRange } from "../../constants";
 
 import INTERACTIONS_QUERY from "./InteractionsStringQuery.gql";

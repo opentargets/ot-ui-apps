@@ -1,37 +1,34 @@
 import { useState, useEffect } from "react";
-import { Typography, Chip } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, Tooltip } from "ui";
+import { Typography } from "@mui/material";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  LabelChip,
+  PublicationsDrawer,
+  getPage,
+  Table,
+  getComparator,
+  useCursorBatchDownloader,
+  ClinvarStars,
+} from "ui";
 
 import {
   clinvarStarMap,
   naLabel,
   defaultRowsPerPageOptions,
+  variantConsequenceSource,
 } from "../../constants";
 import { definition } from ".";
-import Summary from "./Summary";
+
 import client from "../../client";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import CLINVAR_QUERY from "./ClinvarQuery.gql";
 import { dataTypesMap } from "../../dataTypes";
-import { sentenceCase } from "../../utils/global";
-import { getPage, Table } from "../../components/Table";
-import ClinvarStars from "../../components/ClinvarStars";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
-import { getComparator } from "../../components/Table/sortingAndFiltering";
-import useCursorBatchDownloader from "../../hooks/useCursorBatchDownloader";
+import { sentenceCase, identifiersOrgLink } from "../../utils/global";
 
-const useStyles = makeStyles({
-  xsmall: {
-    fontSize: "0.7rem",
-  },
-  chipLink: {
-    marginLeft: "5px",
-  },
-});
-
-function getColumns(classes) {
+function getColumns(label) {
   return [
     {
       id: "disease.name",
@@ -125,51 +122,58 @@ function getColumns(classes) {
         ),
     },
     {
-      label: "Functional consequence",
-      renderCell: ({ variantFunctionalConsequence, variantId }) => {
+      id: "variantConsequence",
+      label: "Variant Consequence",
+      renderCell: ({
+        variantFunctionalConsequence,
+        variantFunctionalConsequenceFromQtlId,
+        variantId,
+      }) => {
         const pvparams = variantId?.split("_") || [];
         return (
-          <>
-            <Link
-              external
-              to={`http://www.sequenceontology.org/browser/current_svn/term/${variantFunctionalConsequence.id}`}
-            >
-              <Chip
-                label={sentenceCase(variantFunctionalConsequence.label)}
-                size="small"
-                color="primary"
-                clickable
-                variant="outlined"
-                className={classes.xsmall}
+          <div style={{ display: "flex", gap: "5px" }}>
+            {variantFunctionalConsequence && (
+              <LabelChip
+                label={variantConsequenceSource.VEP.label}
+                value={sentenceCase(variantFunctionalConsequence.label)}
+                tooltip={variantConsequenceSource.VEP.tooltip}
+                to={identifiersOrgLink(
+                  "SO",
+                  variantFunctionalConsequence.id.slice(3)
+                )}
               />
-            </Link>
-            {
-              // add linkout to ProtVar for specific functional consequence values:
-              // "missense variant", "stop gained"
-              (variantFunctionalConsequence.id === "SO:0001583" ||
-                variantFunctionalConsequence.id === "SO:0001587") &&
-              pvparams.length === 4 ? (
-                <Link
-                  external
-                  to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
-                  className={classes.chipLink}
-                >
-                  <Chip
-                    label="ProtVar"
-                    size="small"
-                    color="primary"
-                    clickable
-                    variant="outlined"
-                    className={classes.xsmall}
-                  />
-                </Link>
-              ) : null
-            }
-          </>
+            )}
+            {variantFunctionalConsequenceFromQtlId && (
+              <LabelChip
+                label={variantConsequenceSource.QTL.label}
+                value={sentenceCase(
+                  variantFunctionalConsequenceFromQtlId.label
+                )}
+                to={identifiersOrgLink(
+                  "SO",
+                  variantFunctionalConsequenceFromQtlId.id.slice(3)
+                )}
+                tooltip={variantConsequenceSource.QTL.tooltip}
+              />
+            )}
+            {(variantFunctionalConsequence.id === "SO:0001583" ||
+              variantFunctionalConsequence.id === "SO:0001587") && (
+              <LabelChip
+                label={variantConsequenceSource.ProtVar.label}
+                to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
+                tooltip={variantConsequenceSource.ProtVar.tooltip}
+              />
+            )}
+          </div>
         );
       },
-      filterValue: ({ variantFunctionalConsequence }) =>
-        sentenceCase(variantFunctionalConsequence.label),
+      filterValue: ({
+        variantFunctionalConsequence,
+        variantFunctionalConsequenceFromQtlId,
+      }) =>
+        `${sentenceCase(variantFunctionalConsequence.label)}, ${sentenceCase(
+          variantFunctionalConsequenceFromQtlId.label
+        )}`,
     },
     {
       id: "clinicalSignificances",
@@ -258,7 +262,13 @@ function getColumns(classes) {
             return acc;
           }, []) || [];
 
-        return <PublicationsDrawer entries={literatureList} />;
+        return (
+          <PublicationsDrawer
+            entries={literatureList}
+            symbol={label.symbol}
+            name={label.name}
+          />
+        );
       },
     },
   ];
@@ -290,8 +300,7 @@ function Body({ id, label, entity }) {
   const [sortOrder, setSortOrder] = useState("asc");
   // const [globalFilter, setGlobalFilter] = useState('');
 
-  const classes = useStyles();
-  const columns = getColumns(classes);
+  const columns = getColumns(label);
 
   useEffect(() => {
     let isCurrent = true;
@@ -301,7 +310,7 @@ function Body({ id, label, entity }) {
         cursor: newCursor,
         rows: newRows,
         count: newCount,
-      } = res.data.disease.evaSummary;
+      } = res.data.disease.evidences;
       if (isCurrent) {
         setInitialLoading(false);
         setCursor(newCursor);
@@ -329,8 +338,7 @@ function Body({ id, label, entity }) {
     if (size * newPageInt + size > rows.length && cursor !== null) {
       setLoading(true);
       fetchClinvar({ ensemblId, efoId, cursor, size }).then((res) => {
-        const { cursor: newCursor, rows: newRows } =
-          res.data.disease.evaSummary;
+        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
         setRows([...rows, ...newRows]);
         setLoading(false);
         setCursor(newCursor);
@@ -348,7 +356,7 @@ function Body({ id, label, entity }) {
       fetchClinvar({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(
         (res) => {
           const { cursor: newCursor, rows: newRows } =
-            res.data.disease.evaSummary;
+            res.data.disease.evidences;
           setRows([...rows, ...newRows]);
           setLoading(false);
           setCursor(newCursor);

@@ -1,26 +1,30 @@
 import { useQuery } from "@apollo/client";
 import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { SectionItem, ChipList, Tooltip, Link } from "ui";
+import {
+  SectionItem,
+  ChipList,
+  Tooltip,
+  Link,
+  PublicationsDrawer,
+  DataTable,
+  ClinvarStars,
+} from "ui";
 
 import { sentenceCase } from "../../utils/global";
 
-import { DataTable } from "../../components/Table";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 import { epmcUrl } from "../../utils/urls";
 import {
   clinvarStarMap,
   naLabel,
   defaultRowsPerPageOptions,
 } from "../../constants";
-import ClinvarStars from "../../components/ClinvarStars";
-import Summary from "./Summary";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
 import EVA_SOMATIC_QUERY from "./EvaSomaticQuery.gql";
 import { definition } from ".";
 
-const columns = [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -194,7 +198,13 @@ const columns = [
           return acc;
         }, []) || [];
 
-      return <PublicationsDrawer entries={literatureList} />;
+      return (
+        <PublicationsDrawer
+          entries={literatureList}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
   },
 ];
@@ -219,6 +229,8 @@ function Body({ id, label, entity }) {
   const request = useQuery(EVA_SOMATIC_QUERY, {
     variables,
   });
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

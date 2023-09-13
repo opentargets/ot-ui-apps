@@ -1,29 +1,28 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarker } from '@fortawesome/free-solid-svg-icons';
-import { Link } from "ui";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMapMarker } from "@fortawesome/free-solid-svg-icons";
+import { Link, DataTable } from "ui";
 
-import { DataTable } from '../../components/Table';
-import { identifiersOrgLink } from '../../utils/global';
-import { defaultRowsPerPageOptions } from '../../constants';
+import { identifiersOrgLink } from "../../utils/global";
+import { defaultRowsPerPageOptions } from "../../constants";
 
 function getColumns(symbol) {
   return [
     {
-      id: 'pathway',
-      label: 'Pathway',
+      id: "pathway",
+      label: "Pathway",
       renderCell: ({ pathwayId, pathway }) => (
-        <Link external to={identifiersOrgLink('reactome', pathwayId)}>
+        <Link external to={identifiersOrgLink("reactome", pathwayId)}>
           {pathway}
         </Link>
       ),
     },
     {
-      id: 'topLevelTerm',
-      label: 'Top-level parent pathway',
+      id: "topLevelTerm",
+      label: "Top-level parent pathway",
     },
     {
-      id: 'pathwayId',
-      label: 'View target and pathway',
+      id: "pathwayId",
+      label: "View target and pathway",
       renderCell: ({ pathwayId }) => (
         <Link
           external

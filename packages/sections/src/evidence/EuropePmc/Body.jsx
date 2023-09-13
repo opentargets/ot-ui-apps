@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import { SectionItem, Link } from "ui";
+import { SectionItem, Link, getPage, Table } from "ui";
 
 import Description from "./Description";
 import { europePmcLiteratureQuery } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
-import { getPage, Table } from "../../components/Table";
 import { naLabel } from "../../constants";
 import Publication from "./Publication";
 import EUROPE_PMC_QUERY from "./sectionQuery.gql";
 import { definition } from ".";
 
-const columns = [
+const getColumns = (label) => [
   {
     id: "disease",
     label: "Disease/phenotype",
@@ -34,6 +33,9 @@ const columns = [
       journal,
       source,
       patentDetails,
+      isOpenAccess,
+      pmcId,
+      fullTextOpen,
     }) => (
       <Publication
         europePmcId={europePmcId}
@@ -44,6 +46,11 @@ const columns = [
         journal={journal}
         source={source}
         patentDetails={patentDetails}
+        isOpenAccess={isOpenAccess}
+        fullTextOpen={fullTextOpen}
+        pmcId={pmcId}
+        symbol={label.symbol}
+        name={label.name}
       />
     ),
   },
@@ -69,12 +76,17 @@ function mergeData(rows, literatureData) {
       return {
         ...row,
         europePmcId: relevantEntry.id,
+        pmcId: relevantEntry.pmcid,
         source: relevantEntry.source,
         patentDetails: relevantEntry?.patentDetails,
         title: relevantEntry.title,
         year: relevantEntry.pubYear,
         abstract: relevantEntry.abstractText,
         authors: relevantEntry.authorList?.author || [],
+        isOpenAccess: relevantEntry.isOpenAccess === "Y",
+        fullTextOpen: !!(
+          relevantEntry.inEPMC === "Y" || relevantEntry.inPMC === "Y"
+        ),
         journal: {
           ...relevantEntry.journalInfo,
           page: relevantEntry.pageInfo,
@@ -154,7 +166,7 @@ function Body({ id, label, entity }) {
   };
 
   const handleRowsPerPageChange = (newPageSize) => {
-    setLoading(true)
+    setLoading(true);
     if (
       page * newPageSize >=
       data.disease.europePmc.rows.length - newPageSize
@@ -189,6 +201,8 @@ function Body({ id, label, entity }) {
       isCurrent = false;
     };
   }, [newIds]);
+
+  const columns = getColumns(label);
 
   return (
     <SectionItem

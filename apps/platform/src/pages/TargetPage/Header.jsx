@@ -8,8 +8,8 @@ import {
   ExternalLink,
   TepLink,
   XRefLinks,
-} from '../../components/ExternalLink';
-import HeaderBase from '../../components/Header';
+  Header as HeaderBase,
+} from 'ui';
 
 const GeneticsButton = styled(Button)`
   color: #fff;

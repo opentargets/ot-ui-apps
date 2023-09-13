@@ -1,4 +1,0 @@
-fragment DrugWarningsSummaryFragment on Drug {
-  hasBeenWithdrawn
-  blackBoxWarning
-}

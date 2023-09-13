@@ -1,11 +1,10 @@
 import _ from "lodash";
 import { useQuery } from "@apollo/client";
-import { Tooltip, SectionItem, TooltipStyledLabel, Link } from "ui";
+import { Tooltip, SectionItem, TooltipStyledLabel, Link, DataTable } from "ui";
 
 import { dataTypesMap } from "../../dataTypes";
 import Description from "./Description";
-import { DataTable } from "../../components/Table";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
+import { PublicationsDrawer } from "ui";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 import { definition } from ".";
 
@@ -24,7 +23,7 @@ const sources = {
 const parseDiseaseName = (d) =>
   d.toLowerCase().replace("essential genes / ", "");
 
-const getColumns = () => [
+const getColumns = (label) => [
   {
     id: "diseaseFromSourceMappedId",
     label: "Reported disease",
@@ -142,7 +141,13 @@ const getColumns = () => [
     label: "Publication",
     renderCell: ({ literature }) => {
       if (!literature) return naLabel;
-      return <PublicationsDrawer entries={[{ name: literature[0] }]} />;
+      return (
+        <PublicationsDrawer
+          entries={[{ name: literature[0] }]}
+          symbol={label.symbol}
+          name={label.name}
+        />
+      );
     },
     filterValue: ({ literature }) => literature,
     width: "9%",
@@ -205,6 +210,8 @@ function Body({ id, label, entity }) {
     },
   });
 
+  const columns = getColumns(label);
+
   return (
     <SectionItem
       definition={definition}
@@ -218,7 +225,7 @@ function Body({ id, label, entity }) {
         const { rows } = disease.CrisprScreenSummary;
         return (
           <DataTable
-            columns={getColumns()}
+            columns={columns}
             rows={rows}
             dataDownloader
             dataDownloaderColumns={exportColumns}

@@ -1,13 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { SectionItem, Tooltip, Link } from "ui";
+import { SectionItem, Tooltip, Link, DataTable, ScientificNotation } from "ui";
 
 import { dataTypesMap } from "../../dataTypes";
 
-import { DataTable } from "../../components/Table";
-
-import ScientificNotation from "../../components/ScientificNotation";
-import Summary from "./Summary";
 import Description from "./Description";
 
 import { sentenceCase } from "../../utils/global";

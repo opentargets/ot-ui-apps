@@ -1,5 +1,0 @@
-fragment SubcellularLocationFragment on Target {
-  subcellularLocations {
-    source
-  }
-}

@@ -1,6 +1,0 @@
-fragment GeneticConstraintFragment on Target {
-  geneticConstraint {
-    constraintType
-    upperBin6
-  }
-}

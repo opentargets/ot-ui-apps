@@ -1,4 +1,7 @@
 query reactomeQuery($ensemblId: String!, $efoId: String!) {
+  target(ensemblId: $ensemblId) {
+    approvedSymbol
+  }
   disease(efoId: $efoId) {
     id
     reactomeSummary: evidences(

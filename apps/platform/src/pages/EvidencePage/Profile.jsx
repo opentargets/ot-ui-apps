@@ -1,5 +1,11 @@
 import { gql } from '@apollo/client';
-import { PlatformApiProvider, SectionContainer, SummaryContainer } from 'ui';
+import {
+  PlatformApiProvider,
+  SectionContainer,
+  SummaryContainer,
+  summaryUtils,
+  PrivateWrapper,
+} from 'ui';
 
 import CancerBiomarkersSummary from 'sections/src/evidence/CancerBiomarkers/Summary';
 import CancerGeneCensusSummary from 'sections/src/evidence/CancerGeneCensus/Summary';
@@ -55,18 +61,42 @@ import SysBioSection from 'sections/src/evidence/SysBio/Body';
 import UniProtLiteratureSection from 'sections/src/evidence/UniProtLiterature/Body';
 import UniProtVariantsSection from 'sections/src/evidence/UniProtVariants/Body';
 
-import sections from './sections';
-import { createSummaryFragment } from '../../components/Summary/utils';
 import ProfileHeader from './ProfileHeader';
-import PrivateWrapper from '../../components/PrivateWrapper';
 
+const summaries = [
+  CancerBiomarkersSummary,
+  CancerGeneCensusSummary,
+  ChemblSummary,
+  ClinGenSummary,
+  CRISPRSummary,
+  CrisprScreenSummary,
+  EuropePmcSummary,
+  EVASummary,
+  EVASomaticSummary,
+  ExpressionAtlasSummary,
+  Gene2PhenotypeSummary,
+  GenomicsEnglandSummary,
+  ImpcSummary,
+  IntOgenSummary,
+  GeneBurdenSummary,
+  OrphanetSummary,
+  OTCRISPRSummary,
+  OTEncoreSummary,
+  OTGeneticsSummary,
+  OTValidationSummary,
+  ProgenySummary,
+  ReactomeSummary,
+  SlapEnrichSummary,
+  SysBioSummary,
+  UniProtLiteratureSummary,
+  UniProtVariantsSummary,
+];
 
-  const EVIDENCE="evidence";
-  const DISEASE = "disease";
+const EVIDENCE = 'evidence';
+const DISEASE = 'disease';
 
-
-const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = createSummaryFragment(
-  sections,
+const EVIDENCE_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
+  summaries,
   'Disease',
   'EvidenceProfileSummaryFragment'
 );
@@ -142,8 +172,8 @@ function Profile({ ensgId, efoId, symbol, name }) {
       </SummaryContainer>
 
       <SectionContainer>
-        <OTGeneticsSection id={id} label={label} entity={DISEASE}/>
-        <EVASection id={id} label={label} entity={DISEASE}/>
+        <OTGeneticsSection id={id} label={label} entity={DISEASE} />
+        <EVASection id={id} label={label} entity={DISEASE} />
         <GeneBurdenSection id={id} label={label} entity={DISEASE} />
         <GenomicsEnglandSection id={id} label={label} entity={DISEASE} />
         <Gene2PhenotypeSection id={id} label={label} entity={DISEASE} />

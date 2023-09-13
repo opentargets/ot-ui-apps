@@ -6,22 +6,23 @@ import {
   Route,
   Switch,
   useLocation,
-  matchPath,
   useRouteMatch,
 } from 'react-router-dom';
 import { v1 } from 'uuid';
-import { LoadingBackdrop } from 'ui';
+import {
+  LoadingBackdrop,
+  BasePage,
+  ScrollToTop,
+  NewChip,
+  usePermissions,
+} from 'ui';
 
 import { getAbleRoutes, getClassicAssociationsURL } from '../../utils/urls';
 
-import BasePage from '../../components/BasePage';
-import ScrollToTop from '../../components/ScrollToTop';
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
 import { getUniprotIds } from '../../utils/global';
 import TARGET_PAGE_QUERY from './TargetPage.gql';
-import NewChip from '../../components/NewChip';
-import usePermissions from '../../hooks/usePermissions';
 
 const Profile = lazy(() => import('./Profile'));
 const Associations = lazy(() => import('./TargetAssociations'));

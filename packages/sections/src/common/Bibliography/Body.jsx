@@ -15,7 +15,7 @@ import { withStyles } from "@mui/styles";
 
 import Publication from "./Publication";
 import { getAggregationsData, getPublicationsData } from "./Api";
-import SectionItem from "../../components/Section/SectionItem";
+import { SectionItem } from "ui";
 import Description from "./Description";
 
 const aggtype = [

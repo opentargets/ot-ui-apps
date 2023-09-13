@@ -10,7 +10,7 @@ import {
 import { makeStyles, useTheme } from '@mui/styles';
 import { Helmet } from 'react-helmet';
 
-import { Footer, AutocompleteSearch } from 'ui';
+import { Footer, AutocompleteSearch, Link, PrivateWrapper, NavBar } from 'ui';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircle,
@@ -29,14 +29,11 @@ import {
   mainMenuItems,
 } from '../../constants';
 import HomeBox from './HomeBox';
-import Link from '../../components/Link';
-import NavBar from '../../components/NavBar';
 import searchExamples from './searchExamples';
 import Splash from './Splash';
 import Version from './Version';
 
 import config from '../../config';
-import PrivateWrapper from '../../components/PrivateWrapper';
 
 const useStyles = makeStyles(() => ({
   links: {
@@ -71,7 +68,7 @@ function pickTwo(arr) {
   const resultArray = arr.splice(i1, 1);
   const i2 = Math.floor(Math.random() * arr.length);
   resultArray.push(...arr.splice(i2, 1));
-  
+
   return resultArray;
 }
 

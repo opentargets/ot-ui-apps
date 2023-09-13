@@ -4,11 +4,10 @@ import { useTheme } from '@mui/styles';
 import { withContentRect } from 'react-measure';
 import { scaleQuantize, pack, hierarchy } from 'd3';
 import { v1 } from 'uuid';
+import { Legend, DownloadSvgPlot } from 'ui';
 
 import AssociationTooltip from './AssociationTooltip';
 import { colorRange } from '../../constants';
-import { DownloadSvgPlot } from '../../components/DownloadSvgPlot';
-import Legend from '../../components/Legend';
 import Slider from './ClassicAssociationsSlider';
 
 function findTas(id, idToDisease) {

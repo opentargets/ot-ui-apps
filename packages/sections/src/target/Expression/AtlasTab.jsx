@@ -1,9 +1,9 @@
-import { Suspense, lazy } from 'react';
-import { Helmet } from 'react-helmet';
-import ErrorBoundary from 'ui/src/components/ErrorBoundary';
+import { Suspense, lazy } from "react";
+import { Helmet } from "react-helmet";
+import { ErrorBoundary } from "ui";
 
 const ExpressionAtlasHeatmap = lazy(() =>
-  import('@ebi-gene-expression-group/expression-atlas-heatmap-highcharts')
+  import("@ebi-gene-expression-group/expression-atlas-heatmap-highcharts")
 );
 
 function AtlasTab({ ensgId, symbol }) {
@@ -14,18 +14,18 @@ function AtlasTab({ ensgId, symbol }) {
       <Helmet
         link={[
           {
-            rel: 'stylesheet',
-            type: 'text/css',
-            href: 'https://www.ebi.ac.uk/gxa/resources/css/customized-bootstrap-3.3.5.css',
+            rel: "stylesheet",
+            type: "text/css",
+            href: "https://www.ebi.ac.uk/gxa/resources/css/customized-bootstrap-3.3.5.css",
           },
         ]}
       />
       <Suspense fallback={<div>Loading...</div>}>
         <ExpressionAtlasHeatmap
           query={{
-            species: 'homo sapiens',
+            species: "homo sapiens",
             gene: ensgId,
-            target: 'heatmapContainer',
+            target: "heatmapContainer",
           }}
           showAnatomogram={false}
         />

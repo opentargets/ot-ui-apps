@@ -1,13 +1,15 @@
 import { useQuery } from "@apollo/client";
 
-import { Link, SectionItem } from "ui";
-import { sourceMap, phaseMap } from "../../constants";
-import { referenceUrls } from "../../utils/urls";
 import {
+  Link,
+  SectionItem,
   DataTable,
   PaginationActionsComplete,
   TableDrawer,
-} from "../../components/Table";
+} from "ui";
+import { sourceMap, phaseMap } from "../../constants";
+import { referenceUrls } from "../../utils/urls";
+
 import Description from "./Description";
 import TherapeuticAreasDrawer from "./TherapeuticAreasDrawer";
 

@@ -1,7 +1,6 @@
 import { makeStyles } from "@mui/styles";
-import { Link, Tooltip } from "ui";
+import { Link, Tooltip, DataTable } from "ui";
 
-import { DataTable } from "../../components/Table";
 import { defaultRowsPerPageOptions } from "../../constants";
 import upperBin6Map from "./upperBin6Map";
 

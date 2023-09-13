@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client";
 
-import SummaryItem from "../../components/Summary/SummaryItem";
-import usePlatformApi from "../../hooks/usePlatformApi";
+import { SummaryItem, usePlatformApi } from "ui";
 
 const SIMILARENTTIES_SUMMARY_FRAGMENT = gql`
   fragment SimilarEntitiesDisease on Disease {

@@ -1,5 +1,0 @@
-fragment MousePhenotypesSummaryFragment on Target {
-  mousePhenotypes {
-    modelPhenotypeId
-  }
-}

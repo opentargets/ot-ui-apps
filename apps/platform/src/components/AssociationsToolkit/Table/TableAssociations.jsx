@@ -74,7 +74,7 @@ function getDatasources({ expanderHandler, displayedTable }) {
         cell: row => {
           const { prefix, loading } = row.table.getState();
           if (loading)
-            return <Skeleton variant="circle" width={26} height={25} />;
+            return <Skeleton variant="circular" width={26} height={26} />;
           const hasValue = cellHasValue(row.getValue());
           return hasValue ? (
             <ColoredCell

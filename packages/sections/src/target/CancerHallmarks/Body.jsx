@@ -1,12 +1,10 @@
 import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useQuery } from "@apollo/client";
-import { ChipList, SectionItem } from "ui";
+import { ChipList, SectionItem, PublicationsDrawer, DataTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import DataTable from "../../components/Table/DataTable";
-import { PublicationsDrawer } from "../../components/PublicationsDrawer";
 import { defaultRowsPerPageOptions } from "../../constants";
 
 import HALLMARKS_QUERY from "./Hallmarks.gql";

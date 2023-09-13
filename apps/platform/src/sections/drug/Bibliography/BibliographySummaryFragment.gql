@@ -1,5 +1,0 @@
-fragment DrugBibliography on Drug {
-  literatureOcurrences {
-    count
-  }
-}

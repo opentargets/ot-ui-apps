@@ -3,11 +3,9 @@ import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
 
-import { LongText } from 'ui';
-import Highlights from '../../components/Highlights';
-import Link from '../../components/Link';
+import { LongText, Highlights, Link } from 'ui';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   container: {
     marginBottom: '30px',
   },

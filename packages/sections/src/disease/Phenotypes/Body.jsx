@@ -1,9 +1,8 @@
 import { useQuery } from "@apollo/client";
 import _ from "lodash";
-import { Link, SectionItem, Tooltip } from "ui";
+import { Link, SectionItem, Tooltip, DataTable, TableDrawer } from "ui";
 
 import Description from "./Description";
-import { DataTable, TableDrawer } from "../../components/Table";
 import { naLabel } from "../../constants";
 
 import PHENOTYPES_BODY_QUERY from "./PhenotypesQuery.gql";
@@ -244,7 +243,7 @@ function Body({ label: name, id: efoId, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description name={name} />}
-      renderBody={({disease}) => {
+      renderBody={({ disease }) => {
         // process the data
         const rows = [];
         disease.phenotypes.rows.forEach((p) =>

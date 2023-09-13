@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import SummaryItem from "../../components/Summary/SummaryItem";
+import { SummaryItem } from "ui";
 
 import { getStats } from "./Api";
 

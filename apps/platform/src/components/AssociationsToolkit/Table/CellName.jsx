@@ -10,7 +10,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'ui';
 
-import Tooltip from '../AotFTooltip';
+import Tooltip from '@mui/material/Tooltip';
 import useAotfContext from '../hooks/useAotfContext';
 
 const NameContainer = styled('div')({
@@ -98,6 +98,7 @@ function CellName({ name, rowId, row, tablePrefix }) {
       <Tooltip
         open={open}
         onClose={() => setOpen(false)}
+        arrow
         content={
           <TooltipContent
             name={name}
