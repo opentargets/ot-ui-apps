@@ -25,7 +25,7 @@ const PopoverContent = styled('div')({
 });
 
 const DisclaimerContainer = styled('div')({
-  marginTop: '15px',
+  marginTop: 12,
 });
 
 const LabelContainer = styled('div')({
