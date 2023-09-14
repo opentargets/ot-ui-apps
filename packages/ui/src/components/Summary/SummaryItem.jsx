@@ -5,6 +5,7 @@ import {
   CardHeader,
   Grid,
   LinearProgress,
+  Skeleton,
   Typography,
 } from "@mui/material";
 import { scroller } from "react-scroll";
@@ -59,7 +60,8 @@ function SummaryItem({ definition, request, renderSummary, subText }) {
                 })}
                 variant="body2"
               >
-                {definition.name}{" "}
+                {loading && <Skeleton width={100} />}
+                {!loading && definition.name}{" "}
                 {definition.isPrivate ? <PartnerLockIcon /> : null}
               </Typography>
               {subText ? (
@@ -80,7 +82,6 @@ function SummaryItem({ definition, request, renderSummary, subText }) {
                 })}
               >
                 {error && "An error occurred while loading this section"}
-                {loading && "Loading..."}
                 {/* {!loading && data && !hasData && "no data"}
                 {!loading && data && hasData && renderSummary(data)} */}
               </Typography>

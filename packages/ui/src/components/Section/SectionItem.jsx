@@ -43,7 +43,7 @@ function SectionItem({
 
   return (
     <Grid item xs={12}>
-      <Grow appear in timeout={500}>
+      <Grow in timeout={500}>
         <section>
           <Element name={definition.id}>
             <Card elevation={0} variant="outlined">
