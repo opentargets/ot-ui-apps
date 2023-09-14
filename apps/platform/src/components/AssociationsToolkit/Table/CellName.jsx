@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material';
 import { Typography } from '@mui/material';
 import {
   faDna,
@@ -8,9 +8,8 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'ui';
+import { Link, Tooltip } from 'ui';
 
-import Tooltip from '@mui/material/Tooltip';
 import useAotfContext from '../hooks/useAotfContext';
 
 const NameContainer = styled('div')({
@@ -18,6 +17,9 @@ const NameContainer = styled('div')({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
+  '&:hover': {
+    cursor: 'pointer',
+  },
   '&:hover > .PinnedContainer': {
     opacity: 1,
   },
@@ -29,9 +31,6 @@ const TextContainer = styled('div')({
   textAlign: 'end',
   textOverflow: 'ellipsis',
   maxWidth: '120px',
-  '&:hover': {
-    cursor: 'pointer',
-  },
   '&:hover span': {
     textDecoration: 'underline',
   },
@@ -56,11 +55,15 @@ function TooltipContent({ id, entity, name, icon }) {
   const associationsURL = `/${entity}/${id}/associations`;
   return (
     <LinksTooltipContent>
-      <Typography variant="subtitle1">
+      <Typography variant="h6">
         <FontAwesomeIcon icon={icon} /> {name}
       </Typography>
-      <Link to={profileURL}>Go to Profile</Link>
-      <Link to={associationsURL}>Go to Associations</Link>
+      <Typography>
+        <Link to={profileURL}>Go to Profile</Link>
+      </Typography>
+      <Typography>
+        <Link to={associationsURL}>Go to Associations</Link>
+      </Typography>
     </LinksTooltipContent>
   );
 }
@@ -87,32 +90,33 @@ function CellName({ name, rowId, row, tablePrefix }) {
   };
 
   return (
-    <NameContainer>
-      <PinnedContainer
-        className="pinnedIcon"
-        onClick={handleClickPin}
-        active={isPinned}
+    <Tooltip
+      open={open}
+      onClose={() => setOpen(false)}
+      placement="top"
+      title={
+        <TooltipContent name={name} entity={rowEntity} id={rowId} icon={icon} />
+      }
+    >
+      <NameContainer
+        onClick={() => {
+          setOpen(true);
+        }}
       >
-        <FontAwesomeIcon icon={pinnedIcon} size="sm" />
-      </PinnedContainer>
-      <Tooltip
-        open={open}
-        onClose={() => setOpen(false)}
-        arrow
-        content={
-          <TooltipContent
-            name={name}
-            entity={rowEntity}
-            id={rowId}
-            icon={icon}
-          />
-        }
-      >
-        <TextContainer onClick={() => setOpen(true)}>
-          <Typography>{name}</Typography>
+        <PinnedContainer
+          className="PinnedContainer"
+          onClick={handleClickPin}
+          active={isPinned}
+        >
+          <FontAwesomeIcon icon={pinnedIcon} size="sm" />
+        </PinnedContainer>
+        <TextContainer>
+          <Typography noWrap variant="body2">
+            {name}
+          </Typography>
         </TextContainer>
-      </Tooltip>
-    </NameContainer>
+      </NameContainer>
+    </Tooltip>
   );
 }
 

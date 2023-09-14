@@ -1,4 +1,4 @@
-import { LoadingBackdrop } from 'ui';
+import { LoadingBackdrop, PrivateWrapper } from 'ui';
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -34,7 +34,9 @@ function AssociationsWrapper() {
           </OptionsControlls>
         </Box>
         <div>
-          <TargetPrioritisationSwitch />
+          <PrivateWrapper>
+            <TargetPrioritisationSwitch />
+          </PrivateWrapper>
         </div>
       </ControlsSection>
       <TableAssociations />

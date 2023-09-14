@@ -7,12 +7,18 @@ import {
   Button,
   Grid,
   Typography,
+  styled,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import 'graphiql/graphiql.min.css';
 
 import { fetcher } from '../../utils/global';
+
+const QueryButton = styled(Button)`
+  color: #fff;
+  border: none;
+`;
 
 import TARGET_ASSOCS from './TargetAssocs.gql';
 import DISEASE_ASSOCS from './DiseaseAssocs.gql';
@@ -106,24 +112,24 @@ function APIPage() {
                 <Typography variant="subtitle2" display="block" paragraph>
                   Find targets associated with a specific disease or phenotype
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(DISEASE_ASSOCS.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
                 <Typography variant="subtitle2" display="block" paragraph>
                   Find diseases and phenotypes associated with a specific target
                 </Typography>
-                <Button
+                <QueryButton
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(TARGET_ASSOCS.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>
@@ -139,7 +145,7 @@ function APIPage() {
                   Explore evidence that supports a specific target-disease
                   association
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
@@ -148,7 +154,7 @@ function APIPage() {
                   }
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>
@@ -161,14 +167,14 @@ function APIPage() {
                 <Typography variant="subtitle2" display="block" paragraph>
                   Find tractability and safety information for a specific target
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(TARGET_ANNOTATION.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>
@@ -181,14 +187,14 @@ function APIPage() {
                 <Typography variant="subtitle2" display="block" paragraph>
                   Find clinical signs and symptoms for a specific disease
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(DISEASE_ANNOTATION.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>
@@ -202,14 +208,14 @@ function APIPage() {
                   Find approval status and withdrawn and black-box warning for a
                   specific drug
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(DRUG_ANNOTATION.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>
@@ -222,26 +228,26 @@ function APIPage() {
                 <Typography variant="subtitle2" display="block" paragraph>
                   Example query for insulin
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(SEARCH_ANNOTATION.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
                 <Typography variant="subtitle2" display="block" paragraph>
                   Example query to get how many entries there are in each entity
                   category for Insulin
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(SEARCH_ASSOCS.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>

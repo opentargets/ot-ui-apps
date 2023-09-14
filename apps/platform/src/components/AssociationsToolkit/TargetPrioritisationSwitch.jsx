@@ -26,10 +26,10 @@ function TargetPrioritisationSwitch() {
       aria-label="Visualizations"
       size="small"
     >
-      <ToggleButton disableRipple value="associations">
+      <ToggleButton value="associations">
         Target-disease association
       </ToggleButton>
-      <ToggleButton disableRipple value="prioritisations">
+      <ToggleButton value="prioritisations">
         Target prioritisation factors
       </ToggleButton>
     </ToggleButtonGroup>

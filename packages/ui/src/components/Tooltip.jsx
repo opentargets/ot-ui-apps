@@ -18,6 +18,9 @@ function Tooltip({ style, children, title, showHelpIcon = false, ...props }) {
         fontWeight: "500",
         cursor: "default",
       },
+      tooltipArrow: {
+        backgroundColor: `${theme.palette.background.paper} !important`,
+      },
     })
   )();
 

@@ -95,7 +95,7 @@ function AllelicCompositionDrawer({ biologicalModels }) {
         anchor="right"
       >
         <Typography className={classes.title}>
-          Experimental studies
+          Allelic composition
           <IconButton onClick={() => close()}>
             <CloseIcon />
           </IconButton>

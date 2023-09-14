@@ -72,77 +72,73 @@ function TableBody({ core, expanded, cols }) {
   };
 
   return (
-    <TableBodyContent>
-      <RowsContainer>
-        {rows.map(row => (
-          <Fragment key={row.id}>
-            <Fade in appear>
-              <div>
-                <RowContainer
-                  rowExpanded={getRowActive(row, isExpandedInTable)}
-                >
-                  {highLevelHeaders.map(columnGroup => (
-                    <GridContainer
-                      columnsCount={cols.length}
-                      className={getColContainerClassName(columnGroup)}
-                      key={columnGroup.id}
-                    >
-                      {columnGroup.subHeaders.map(column => {
-                        const cell = row
-                          .getVisibleCells()
-                          .find(el => el.column.id === column.id);
-                        return (
-                          <div
-                            key={cell.id}
-                            className={getCellClassName(
-                              cell,
-                              entityToGet,
-                              displayedTable,
-                              expanded,
-                              prefix
-                            )}
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </div>
-                        );
-                      })}
-                    </GridContainer>
-                  ))}
-                </RowContainer>
-              </div>
-            </Fade>
+    <Fade in>
+      <TableBodyContent>
+        <RowsContainer>
+          {rows.map(row => (
+            <Fragment key={row.id}>
+              <RowContainer rowExpanded={getRowActive(row, isExpandedInTable)}>
+                {highLevelHeaders.map(columnGroup => (
+                  <GridContainer
+                    columnsCount={cols.length}
+                    className={getColContainerClassName(columnGroup)}
+                    key={columnGroup.id}
+                  >
+                    {columnGroup.subHeaders.map(column => {
+                      const cell = row
+                        .getVisibleCells()
+                        .find(el => el.column.id === column.id);
+                      return (
+                        <div
+                          key={cell.id}
+                          className={getCellClassName(
+                            cell,
+                            entityToGet,
+                            displayedTable,
+                            expanded,
+                            prefix
+                          )}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </div>
+                      );
+                    })}
+                  </GridContainer>
+                ))}
+              </RowContainer>
 
-            <ExpandableContainer
-              rowExpanded={row.getIsExpanded()}
-              isExpandedInTable={isExpandedInTable}
-              loading={loading}
-            >
-              <ClickAwayListener onClickAway={handleClickAway}>
-                <section>
-                  <SectionRendererWrapper>
-                    <SectionRender
-                      id={id}
-                      entity={entity}
-                      section={expanded[2]}
-                      expanded={expanded}
-                      rowId={row.original[entityToGet].id}
-                      row={row}
-                      entityToGet={entityToGet}
-                      rowNameEntity={rowNameEntity}
-                      displayedTable={displayedTable}
-                      cols={cols}
-                    />
-                  </SectionRendererWrapper>
-                </section>
-              </ClickAwayListener>
-            </ExpandableContainer>
-          </Fragment>
-        ))}
-      </RowsContainer>
-    </TableBodyContent>
+              <ExpandableContainer
+                rowExpanded={row.getIsExpanded()}
+                isExpandedInTable={isExpandedInTable}
+                loading={loading}
+              >
+                <ClickAwayListener onClickAway={handleClickAway}>
+                  <section>
+                    <SectionRendererWrapper>
+                      <SectionRender
+                        id={id}
+                        entity={entity}
+                        section={expanded[2]}
+                        expanded={expanded}
+                        rowId={row.original[entityToGet].id}
+                        row={row}
+                        entityToGet={entityToGet}
+                        rowNameEntity={rowNameEntity}
+                        displayedTable={displayedTable}
+                        cols={cols}
+                      />
+                    </SectionRendererWrapper>
+                  </section>
+                </ClickAwayListener>
+              </ExpandableContainer>
+            </Fragment>
+          ))}
+        </RowsContainer>
+      </TableBodyContent>
+    </Fade>
   );
 }
 

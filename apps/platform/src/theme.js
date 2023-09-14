@@ -52,12 +52,27 @@ const theme = {
         },
       },
     },
+    MuiToggleButton: {
+      defaultProps: {
+        disableRipple: true,
+      },
+      styleOverrides: {
+        root: {
+          border: '1px solid',
+          borderColor: 'rgb(196,196,196)',
+          padding: '6px 12px',
+          textTransform: 'none',
+          height: '32px',
+          color: '#5A5F5F',
+        },
+      },
+    },
     MuiTabs: {
       styleOverrides: {
         indicator: {
           transition: 'none',
-        }
-      }
+        },
+      },
     },
     MuiTab: {
       defaultProps: {
@@ -65,10 +80,23 @@ const theme = {
       },
       styleOverrides: {
         root: {
-          textTransform: "none",
-        }
-      }
-    }
+          textTransform: 'none',
+        },
+      },
+    },
+    MuiTooltip: {
+      variants: [
+        {
+          props: { variant: 'aotf' },
+          style: {
+            root: {
+              backgroundColor: `red`,
+              color: '#fff',
+            },
+          },
+        },
+      ],
+    },
   },
 
   // overrides: {
