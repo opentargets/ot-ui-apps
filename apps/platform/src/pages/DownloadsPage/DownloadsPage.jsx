@@ -83,7 +83,7 @@ function getColumns(date) {
     },
     {
       id: 'schemas',
-      label: 'Schema(s)',
+      label: 'Schema',
       renderCell: ({ niceName, serialisedSchema }) => (
         <DownloadsSchemaDrawer
           title={niceName}
