@@ -50,10 +50,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
-  console.log(
-    `👻 ~ file: DownloadsSchemaDrawer.jsx:54 ~ DownloadsSchemaDrawer ~ serialisedSchema:`,
-    serialisedSchema
-  );
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
@@ -136,7 +132,6 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
           <div className={classes.codeBlock}>
             <pre>
               <code>{`  root${jsonToSchema(serialisedSchema)}`}</code>
-              {/* <code>{JSON.stringify(data, null, 2)}</code> */}
             </pre>
           </div>
         </div>
