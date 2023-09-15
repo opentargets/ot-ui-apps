@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Drawer, IconButton, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-// update to font awesome icon
-import CloseIcon from '@material-ui/icons/Close';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
@@ -10,9 +10,13 @@ const useStyles = makeStyles(theme => ({
       opacity: '0 !important',
     },
   },
+  children: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
   codeBlock: {
     backgroundColor: theme.palette.grey[300],
-    padding: ' 0.2em 2em',
+    padding: '0.2em 2em 0.2em 0.2em',
     fontSize: '0.85em',
   },
   title: {
@@ -45,145 +49,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function DownloadsSchemaDrawer({ title, children }) {
+function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
+  console.log(
+    `👻 ~ file: DownloadsSchemaDrawer.jsx:54 ~ DownloadsSchemaDrawer ~ serialisedSchema:`,
+    serialisedSchema
+  );
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-
-  const data = {
-    type: 'struct',
-    fields: [
-      { name: 'id', type: 'string', nullable: true, metadata: {} },
-      {
-        name: 'tissues',
-        type: {
-          type: 'array',
-          elementType: {
-            type: 'struct',
-            fields: [
-              {
-                name: 'efo_code',
-                type: 'string',
-                nullable: true,
-                metadata: {},
-              },
-              { name: 'label', type: 'string', nullable: true, metadata: {} },
-              {
-                name: 'organs',
-                type: {
-                  type: 'array',
-                  elementType: 'string',
-                  containsNull: true,
-                },
-                nullable: true,
-                metadata: {},
-              },
-              {
-                name: 'anatomical_systems',
-                type: {
-                  type: 'array',
-                  elementType: 'string',
-                  containsNull: true,
-                },
-                nullable: true,
-                metadata: {},
-              },
-              {
-                name: 'rna',
-                type: {
-                  type: 'struct',
-                  fields: [
-                    {
-                      name: 'value',
-                      type: 'double',
-                      nullable: true,
-                      metadata: {},
-                    },
-                    {
-                      name: 'zscore',
-                      type: 'integer',
-                      nullable: true,
-                      metadata: {},
-                    },
-                    {
-                      name: 'level',
-                      type: 'integer',
-                      nullable: true,
-                      metadata: {},
-                    },
-                    {
-                      name: 'unit',
-                      type: 'string',
-                      nullable: true,
-                      metadata: {},
-                    },
-                  ],
-                },
-                nullable: false,
-                metadata: {},
-              },
-              {
-                name: 'protein',
-                type: {
-                  type: 'struct',
-                  fields: [
-                    {
-                      name: 'reliability',
-                      type: 'boolean',
-                      nullable: true,
-                      metadata: {},
-                    },
-                    {
-                      name: 'level',
-                      type: 'integer',
-                      nullable: true,
-                      metadata: {},
-                    },
-                    {
-                      name: 'cell_type',
-                      type: {
-                        type: 'array',
-                        elementType: {
-                          type: 'struct',
-                          fields: [
-                            {
-                              name: 'name',
-                              type: 'string',
-                              nullable: true,
-                              metadata: {},
-                            },
-                            {
-                              name: 'reliability',
-                              type: 'boolean',
-                              nullable: true,
-                              metadata: {},
-                            },
-                            {
-                              name: 'level',
-                              type: 'integer',
-                              nullable: true,
-                              metadata: {},
-                            },
-                          ],
-                        },
-                        containsNull: false,
-                      },
-                      nullable: false,
-                      metadata: {},
-                    },
-                  ],
-                },
-                nullable: false,
-                metadata: {},
-              },
-            ],
-          },
-          containsNull: false,
-        },
-        nullable: false,
-        metadata: {},
-      },
-    ],
-  };
 
   function isEmpty(obj) {
     return Object.keys(obj).length === 0;
@@ -201,6 +73,8 @@ function DownloadsSchemaDrawer({ title, children }) {
 
   function jsonToSchema(rawObj) {
     let schemaObjString = '';
+    if (isEmpty(rawObj))
+      schemaObjString = `${schemaObjString} ${typeof rawObj}`;
 
     Object.keys(rawObj).forEach(key => {
       if (typeof rawObj[key] === 'object' && !isEmpty(rawObj[key])) {
@@ -238,7 +112,9 @@ function DownloadsSchemaDrawer({ title, children }) {
 
   return (
     <>
-      <span onClick={() => toggleOpen()}>{children}</span>
+      <span className={classes.children} onClick={() => toggleOpen()}>
+        {children}
+      </span>
       <Drawer
         classes={{ root: classes.backdrop }}
         open={open}
@@ -248,7 +124,7 @@ function DownloadsSchemaDrawer({ title, children }) {
         <Typography className={classes.title}>
           {title}
           <IconButton onClick={() => close()}>
-            <CloseIcon />
+            <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
 
@@ -259,7 +135,7 @@ function DownloadsSchemaDrawer({ title, children }) {
 
           <div className={classes.codeBlock}>
             <pre>
-              <code>{`root ${jsonToSchema(data)}`}</code>
+              <code>{`  root${jsonToSchema(serialisedSchema)}`}</code>
               {/* <code>{JSON.stringify(data, null, 2)}</code> */}
             </pre>
           </div>

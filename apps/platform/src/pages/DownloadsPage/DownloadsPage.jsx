@@ -3,6 +3,10 @@ import { gql, useQuery } from '@apollo/client';
 import { Paper, Box, Chip, Typography, Alert, AlertTitle } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Link, DataTable } from 'ui';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAlignLeft } from '@fortawesome/free-solid-svg-icons';
+import IconButton from '@mui/material/IconButton';
+
 import { defaultRowsPerPageOptions, formatMap } from '../../constants';
 import DownloadsDrawer from './DownloadsDrawer';
 import datasetMappings from './dataset-mappings.json';
@@ -30,6 +34,14 @@ function getFormats(id, downloadData) {
   return formats;
 }
 
+function getSerialisedSchema(id, downloadData) {
+  let schemaObject;
+  downloadData.forEach(data => {
+    if (id === data.id) schemaObject = JSON.parse(data.serialisedSchema);
+  });
+  return schemaObject;
+}
+
 function getRows(downloadData, allDatasetMappings) {
   const rows = [];
 
@@ -39,6 +51,7 @@ function getRows(downloadData, allDatasetMappings) {
         niceName: mapping.nice_name,
         description: mapping.description,
         formats: getFormats(mapping.id, downloadData),
+        serialisedSchema: getSerialisedSchema(mapping.id, downloadData),
       });
     }
   });
@@ -71,16 +84,16 @@ function getColumns(date) {
     {
       id: 'schemas',
       label: 'Schema(s)',
-      renderCell: ({ niceName, formats }) =>
-        formats.map(format => (
-          <Fragment key={format.format + format.path + date.month + date.year}>
-            <DownloadsSchemaDrawer
-              title={niceName}
-            >
-              <Chip label={formatMap[format.format]} clickable size="small" />
-            </DownloadsSchemaDrawer>{' '}
-          </Fragment>
-        )),
+      renderCell: ({ niceName, serialisedSchema }) => (
+        <DownloadsSchemaDrawer
+          title={niceName}
+          serialisedSchema={serialisedSchema}
+        >
+          <IconButton size="small" aria-label="show schema button">
+            <FontAwesomeIcon icon={faAlignLeft} />
+          </IconButton>
+        </DownloadsSchemaDrawer>
+      ),
     },
   ];
   return columns;
@@ -105,8 +118,8 @@ function getVersion(data) {
 
 function DownloadsPage() {
   const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
-  const [downloasdData, setDownloadsData] = useState(null);
-  const rows = downloasdData ? getRows(downloasdData, datasetMappings) : [];
+  const [downloadsData, setDownloadsData] = useState(null);
+  const rows = downloadsData ? getRows(downloadsData, datasetMappings) : [];
   const columns = loading || error ? [] : getColumns(data.meta.dataVersion);
   const classes = useStyles();
 
