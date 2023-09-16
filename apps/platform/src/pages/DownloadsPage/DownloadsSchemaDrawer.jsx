@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Drawer, IconButton, Typography } from '@mui/material';
+import { Drawer, IconButton, Snackbar, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faClipboard } from '@fortawesome/free-regular-svg-icons';
+import { Tooltip } from 'ui';
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
@@ -14,10 +16,17 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
+  clipboard: {
+    position: 'absolute !important',
+    top: '0',
+    right: '0',
+    padding: '0.4em 0.5em !important',
+  },
   codeBlock: {
     backgroundColor: theme.palette.grey[300],
     padding: '0.2em 2em 0.2em 0.2em',
     fontSize: '0.85em',
+    position: 'relative',
   },
   title: {
     display: 'flex',
@@ -52,6 +61,7 @@ const useStyles = makeStyles(theme => ({
 function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   function isEmpty(obj) {
     return Object.keys(obj).length === 0;
@@ -106,6 +116,15 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
     setOpen(false);
   }
 
+  function handleCloseSnackbar() {
+    setSnackbarOpen(false);
+  }
+
+  function copyToClipboard() {
+    setSnackbarOpen(true);
+    navigator.clipboard.writeText(serialisedSchema);
+  }
+
   return (
     <>
       <span className={classes.children} onClick={() => toggleOpen()}>
@@ -130,12 +149,26 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
           </Typography>
 
           <div className={classes.codeBlock}>
+            <Tooltip title="Copy schema to clipboard">
+              <IconButton
+                className={classes.clipboard}
+                onClick={() => copyToClipboard()}
+              >
+                <FontAwesomeIcon icon={faClipboard} />
+              </IconButton>
+            </Tooltip>
             <pre>
-              <code>{`  root${jsonToSchema(serialisedSchema)}`}</code>
+              <code>{`   root${jsonToSchema(serialisedSchema)}`}</code>
             </pre>
           </div>
         </div>
       </Drawer>
+      <Snackbar
+        open={snackbarOpen}
+        onClose={() => handleCloseSnackbar()}
+        message="Schema copied"
+        autoHideDuration={3000}
+      />
     </>
   );
 }

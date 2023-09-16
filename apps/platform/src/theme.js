@@ -56,8 +56,8 @@ const theme = {
       styleOverrides: {
         indicator: {
           transition: 'none',
-        }
-      }
+        },
+      },
     },
     MuiTab: {
       defaultProps: {
@@ -65,10 +65,28 @@ const theme = {
       },
       styleOverrides: {
         root: {
-          textTransform: "none",
+          textTransform: 'none',
         }
       }
-    }
+    },
+    MuiSnackbar: {
+      defaultProps: {
+        anchorOrigin: {
+        
+          vertical: 'bottom',
+          horizontal: 'center',
+        }
+      },
+    },
+    MuiSnackbarContent: {
+      styleOverrides: {
+        root: {
+          background: PRIMARY,
+          color: 'white',
+          borderRadius: '4px'
+        },
+      },
+    },
   },
 
   // overrides: {

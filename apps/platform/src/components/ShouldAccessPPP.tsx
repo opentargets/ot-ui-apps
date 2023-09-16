@@ -36,14 +36,6 @@ const useStyles = makeStyles(theme => ({
       marginTop: '0.3em !important',
     },
   },
-  anchorOriginBottomCenter: {
-    bottom: '70px',
-    '& .MuiSnackbarContent-root': {
-      borderRadius: '8px',
-      backgroundColor: 'white',
-      color: theme.palette.text.primary,
-    },
-  },
 }));
 
 const PrimaryButton = styled(Button)`
@@ -178,9 +170,6 @@ function ShouldAccessPPP() {
       </Dialog>
 
       <Snackbar
-        classes={{
-          anchorOriginBottomCenter: classes.anchorOriginBottomCenter,
-        }}
         open={snackbarOpen}
         onClose={handleCloseSnackbar}
         message="We will remind you in a couple of weeks"
