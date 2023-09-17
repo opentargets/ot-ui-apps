@@ -5,5 +5,5 @@
     "rootDir": "src",
     "outDir": "bundle-genetics"
   },
-  "include": ["src"]
+  "include": ["src", "codegen.ts"]
 }

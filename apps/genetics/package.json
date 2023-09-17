@@ -51,6 +51,7 @@
     "ui": "*"
   },
   "scripts": {
+    "gql:compile": "graphql-codegen",
     "dev": "vite --host 0.0.0.0 --port 3001 --clearScreen false",
     "build": "vite build",
     "preview": "vite preview",
@@ -69,6 +70,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@graphql-codegen/cli": "^3.3.1",
+    "@graphql-codegen/client-preset": "^3.0.1",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-helmet": "^6.1.6",
