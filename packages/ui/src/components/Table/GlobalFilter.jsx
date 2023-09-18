@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Grid, Input, IconButton } from "@mui/material";
-import SearchIcon from "@mui/icons-material//Search";
-import ClearIcon from "@mui/icons-material//Clear";
+import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import useDebounce from "../../hooks/useDebounce";
 import { globalSearchStyles } from "./tableStyles";
@@ -34,11 +34,11 @@ function GlobalFilter({ onGlobalFilterChange }) {
         <Input
           autoComplete="off"
           classes={{ root: classes.root }}
-          startAdornment={<SearchIcon />}
+          startAdornment={<FontAwesomeIcon icon={faMagnifyingGlass} />}
           endAdornment={
             !!inputValue && (
               <IconButton onClick={handleInputClean}>
-                <ClearIcon />
+                <FontAwesomeIcon icon={faXmark} />
               </IconButton>
             )
           }

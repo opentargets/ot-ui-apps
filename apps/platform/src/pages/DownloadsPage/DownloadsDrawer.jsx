@@ -1,12 +1,8 @@
 import { useState } from 'react';
-import {
-  Drawer,
-  IconButton,
-  Paper,
-  Typography,
-} from '@mui/material';
+import { Drawer, IconButton, Paper, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import CloseIcon from '@mui/icons-material/Close';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { formatMap } from '../../constants';
 
 const useStyles = makeStyles(theme => ({
@@ -69,7 +65,7 @@ function DownloadsDrawer({ title, format, path, month, year, children }) {
         <Typography className={classes.title}>
           {title}
           <IconButton onClick={() => close()}>
-            <CloseIcon />
+            <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
 

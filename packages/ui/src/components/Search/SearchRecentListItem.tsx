@@ -1,4 +1,5 @@
-import { History, Clear } from "@mui/icons-material";
+import { faXmark, faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
@@ -31,13 +32,16 @@ function SearchRecentListItem({ item, clearItem }) {
   return (
     <div className={classes.recentItemContainer}>
       <div className={classes.recentIcon}>
-        <History />
+        <FontAwesomeIcon icon={faClockRotateLeft} />
         <Typography variant="subtitle2">
           {item.symbol || item.name || item.id}
         </Typography>
       </div>
 
-      <Clear onClick={(event) => stopEvent(event, item)} />
+      <FontAwesomeIcon
+        icon={faXmark}
+        onClick={(event) => stopEvent(event, item)}
+      />
     </div>
   );
 }

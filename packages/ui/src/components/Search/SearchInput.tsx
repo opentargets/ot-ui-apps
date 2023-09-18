@@ -1,5 +1,6 @@
 import { useEffect, useContext, useRef } from "react";
-import { Search } from "@mui/icons-material";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { makeStyles } from "@mui/styles";
 import { TextField, InputAdornment, TextFieldProps } from "@mui/material";
 import useDebounce from "../../hooks/useDebounce";
@@ -9,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
   searchIcon: {
     color: theme.palette.primary.main,
     marginRight: "0.6rem",
-    fontSize: "1.6rem",
+    fontSize: "1.3rem",
   },
   escButton: {
     cursor: "pointer",
@@ -49,7 +50,7 @@ function SearchInput({
   debounceValue,
   onClose,
   isHomePage,
-  focus=true,
+  focus = true,
   setOpen,
 }: {
   params: TextFieldProps;
@@ -86,7 +87,11 @@ function SearchInput({
           ...params.InputProps,
           startAdornment: (
             <InputAdornment position="start">
-              <Search className={classes.searchIcon} />
+              <FontAwesomeIcon
+                icon={faMagnifyingGlass}
+                className={classes.searchIcon}
+                size="xs"
+              />
             </InputAdornment>
           ),
           endAdornment: !isHomePage && (

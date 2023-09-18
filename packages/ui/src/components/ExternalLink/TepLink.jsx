@@ -1,15 +1,16 @@
-import HelpIcon from '@mui/icons-material/Help';
-import { makeStyles } from '@mui/styles';
-import { Tooltip } from '@mui/material';
-import { useQuery } from '@apollo/client';
+import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { makeStyles } from "@mui/styles";
+import { Tooltip } from "@mui/material";
+import { useQuery } from "@apollo/client";
 
-import Link from '../Link';
+import Link from "../Link";
 
-import TEP_LINK_QUERY from './TepLinkQuery.gql';
+import TEP_LINK_QUERY from "./TepLinkQuery.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   helpIcon: {
-    fontSize: '10px',
+    fontSize: "10px",
   },
   tepTooltip: {
     backgroundColor: theme.palette.background.paper,
@@ -25,7 +26,7 @@ function TepLink({ ensgId }) {
     variables: { ensgId },
   });
 
-  if (loading) return <span>Loading ...</span>;
+  if (loading) return null;
 
   if (!data.target?.tep) return null;
 
@@ -44,7 +45,7 @@ function TepLink({ ensgId }) {
           <>
             <Link external to="https://www.thesgc.org">
               TEPs
-            </Link>{' '}
+            </Link>{" "}
             provide a critical mass of reagents and knowledge on a protein
             target to allow rapid biochemical and chemical exploration and
             characterisation of proteins with genetic linkage to key disease
@@ -54,10 +55,13 @@ function TepLink({ ensgId }) {
         placement="top"
       >
         <sup>
-          <HelpIcon className={classes.helpIcon} />
+          <FontAwesomeIcon
+            icon={faCircleQuestion}
+            className={classes.helpIcon}
+          />
         </sup>
       </Tooltip>
-      :{' '}
+      :{" "}
       <Link external to={uri}>
         {name}
       </Link>

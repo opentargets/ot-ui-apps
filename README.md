@@ -4,7 +4,7 @@ This repository holds the Open Targets web applications.
 
 ## Required stack
 
-- [NodeJS >= v14](https://nodejs.org/en/)
+- [NodeJS >= v18](https://nodejs.org/en/)
 - [Yarn package manager](https://yarnpkg.com/)
 
 ## Running development

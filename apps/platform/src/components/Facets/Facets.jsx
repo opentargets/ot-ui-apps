@@ -6,7 +6,8 @@ import {
   IconButton,
   Skeleton,
 } from '@mui/material';
-import { Clear } from '@mui/icons-material';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { makeStyles } from '@mui/styles';
 
 import Facet from './Facet';
@@ -101,7 +102,7 @@ function Facets({ loading, data, onChange, type }) {
         )}
         {hasAnyDescendantChecked(facets) && (
           <IconButton disabled={loading} onClick={handleClickClear}>
-            <Clear />
+            <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         )}
       </Box>

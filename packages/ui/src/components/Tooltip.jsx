@@ -6,9 +6,9 @@ function Tooltip({ style, children, title, showHelpIcon = false, ...props }) {
   const classes = makeStyles((theme) =>
     _.merge(style, {
       tooltip: {
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: `${theme.palette.background.paper} !important`,
         border: `1px solid ${theme.palette.grey[300]}`,
-        color: theme.palette.text.primary,
+        color: `${theme.palette.text.primary} !important`,
       },
       tooltipBadge: {
         paddingLeft: "1rem",
@@ -17,6 +17,9 @@ function Tooltip({ style, children, title, showHelpIcon = false, ...props }) {
       tooltipIcon: {
         fontWeight: "500",
         cursor: "default",
+      },
+      tooltipArrow: {
+        backgroundColor: `${theme.palette.background.paper} !important`,
       },
     })
   )();

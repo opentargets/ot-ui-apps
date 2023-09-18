@@ -52,6 +52,21 @@ const theme = {
         },
       },
     },
+    MuiToggleButton: {
+      defaultProps: {
+        disableRipple: true,
+      },
+      styleOverrides: {
+        root: {
+          border: '1px solid',
+          borderColor: 'rgb(196,196,196)',
+          padding: '6px 12px',
+          textTransform: 'none',
+          height: '32px',
+          color: '#5A5F5F',
+        },
+      },
+    },
     MuiTabs: {
       styleOverrides: {
         indicator: {
@@ -66,16 +81,28 @@ const theme = {
       styleOverrides: {
         root: {
           textTransform: 'none',
-        }
-      }
+        },
+      },
+    },
+    MuiTooltip: {
+      variants: [
+        {
+          props: { variant: 'aotf' },
+          style: {
+            root: {
+              backgroundColor: `red`,
+              color: '#fff',
+            },
+          },
+        },
+      ],
     },
     MuiSnackbar: {
       defaultProps: {
         anchorOrigin: {
-        
           vertical: 'bottom',
           horizontal: 'center',
-        }
+        },
       },
     },
     MuiSnackbarContent: {
@@ -83,7 +110,7 @@ const theme = {
         root: {
           background: PRIMARY,
           color: 'white',
-          borderRadius: '4px'
+          borderRadius: '4px',
         },
       },
     },

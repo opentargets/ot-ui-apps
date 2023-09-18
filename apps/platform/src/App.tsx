@@ -27,7 +27,6 @@ function App() {
           searchPlaceholder="Search for a target, drug, disease, or phenotype..."
         >
           <Router>
-            <ShouldAccessPPP />
             <Switch>
               <Route exact path="/" component={HomePage} />
               <Route path="/search" component={SearchPage} />
@@ -45,6 +44,7 @@ function App() {
               </Route>
               <Route component={NotFoundPage} />
             </Switch>
+            <ShouldAccessPPP />
           </Router>
         </SearchProvider>
       </ThemeProvider>

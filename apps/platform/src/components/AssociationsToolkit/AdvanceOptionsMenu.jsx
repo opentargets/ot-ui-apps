@@ -5,6 +5,7 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
+  Switch,
 } from '@mui/material';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -69,10 +70,8 @@ function DataMenu() {
         <PopoverContent>
           <FormGroup>
             <FormControlLabel
-              disabled={isPrioritisation}
               control={
-                <Checkbox
-                  color="primary"
+                <Switch
                   checked={activeHeadersControlls}
                   onChange={() =>
                     setActiveHeadersControlls(!activeHeadersControlls)
@@ -82,7 +81,7 @@ function DataMenu() {
               label="Show data sources controls"
             />
           </FormGroup>
-          <FormGroup>
+          {/* <FormGroup>
             <FormControlLabel
               disabled={isPrioritisation}
               control={
@@ -94,7 +93,7 @@ function DataMenu() {
               }
               label="Enable Indirect"
             />
-          </FormGroup>
+          </FormGroup> */}
         </PopoverContent>
       </Popover>
     </>

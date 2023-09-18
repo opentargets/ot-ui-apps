@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { Suspense, lazy } from 'react';
 import {
   PlatformApiProvider,
   SectionContainer,
@@ -34,32 +35,68 @@ import SysBioSummary from 'sections/src/evidence/SysBio/Summary';
 import UniProtLiteratureSummary from 'sections/src/evidence/UniProtLiterature/Summary';
 import UniProtVariantsSummary from 'sections/src/evidence/UniProtVariants/Summary';
 
-import CancerBiomarkersSection from 'sections/src/evidence/CancerBiomarkers/Body';
-import CancerGeneCensusSection from 'sections/src/evidence/CancerGeneCensus/Body';
-import ChemblSection from 'sections/src/evidence/Chembl/Body';
-import ClinGenSection from 'sections/src/evidence/ClinGen/Body';
-import CRISPRSection from 'sections/src/evidence/CRISPR/Body';
-import CrisprScreenSection from 'sections/src/evidence/CRISPRScreen/Body';
-import EuropePmcSection from 'sections/src/evidence/EuropePmc/Body';
-import EVASection from 'sections/src/evidence/EVA/Body';
-import EVASomaticSection from 'sections/src/evidence/EVASomatic/Body';
-import ExpressionAtlasSection from 'sections/src/evidence/ExpressionAtlas/Body';
-import Gene2PhenotypeSection from 'sections/src/evidence/Gene2Phenotype/Body';
-import GenomicsEnglandSection from 'sections/src/evidence/GenomicsEngland/Body';
-import ImpcSection from 'sections/src/evidence/Impc/Body';
-import IntOgenSection from 'sections/src/evidence/IntOgen/Body';
-import GeneBurdenSection from 'sections/src/evidence/GeneBurden/Body';
-import OrphanetSection from 'sections/src/evidence/Orphanet/Body';
-import OTCRISPRSection from 'sections/src/evidence/OTCRISPR/Body';
-import OTEncoreSection from 'sections/src/evidence/OTEncore/Body';
-import OTGeneticsSection from 'sections/src/evidence/OTGenetics/Body';
-import OTValidationSection from 'sections/src/evidence/OTValidation/Body';
-import ProgenySection from 'sections/src/evidence/Progeny/Body';
-import ReactomeSection from 'sections/src/evidence/Reactome/Body';
-import SlapEnrichSection from 'sections/src/evidence/SlapEnrich/Body';
-import SysBioSection from 'sections/src/evidence/SysBio/Body';
-import UniProtLiteratureSection from 'sections/src/evidence/UniProtLiterature/Body';
-import UniProtVariantsSection from 'sections/src/evidence/UniProtVariants/Body';
+const CancerBiomarkersSection = lazy(() =>
+  import('sections/src/evidence/CancerBiomarkers/Body')
+);
+const CancerGeneCensusSection = lazy(() =>
+  import('sections/src/evidence/CancerGeneCensus/Body')
+);
+const ChemblSection = lazy(() => import('sections/src/evidence/Chembl/Body'));
+const ClinGenSection = lazy(() => import('sections/src/evidence/ClinGen/Body'));
+const CRISPRSection = lazy(() => import('sections/src/evidence/CRISPR/Body'));
+const CrisprScreenSection = lazy(() =>
+  import('sections/src/evidence/CRISPRScreen/Body')
+);
+const EuropePmcSection = lazy(() =>
+  import('sections/src/evidence/EuropePmc/Body')
+);
+const EVASection = lazy(() => import('sections/src/evidence/EVA/Body'));
+const EVASomaticSection = lazy(() =>
+  import('sections/src/evidence/EVASomatic/Body')
+);
+const ExpressionAtlasSection = lazy(() =>
+  import('sections/src/evidence/ExpressionAtlas/Body')
+);
+const Gene2PhenotypeSection = lazy(() =>
+  import('sections/src/evidence/Gene2Phenotype/Body')
+);
+const GenomicsEnglandSection = lazy(() =>
+  import('sections/src/evidence/GenomicsEngland/Body')
+);
+const ImpcSection = lazy(() => import('sections/src/evidence/Impc/Body'));
+const IntOgenSection = lazy(() => import('sections/src/evidence/IntOgen/Body'));
+const GeneBurdenSection = lazy(() =>
+  import('sections/src/evidence/GeneBurden/Body')
+);
+const OrphanetSection = lazy(() =>
+  import('sections/src/evidence/Orphanet/Body')
+);
+const OTCRISPRSection = lazy(() =>
+  import('sections/src/evidence/OTCRISPR/Body')
+);
+const OTEncoreSection = lazy(() =>
+  import('sections/src/evidence/OTEncore/Body')
+);
+const OTGeneticsSection = lazy(() =>
+  import('sections/src/evidence/OTGenetics/Body')
+);
+const OTValidationSection = lazy(() =>
+  import('sections/src/evidence/OTValidation/Body')
+);
+const ProgenySection = lazy(() => import('sections/src/evidence/Progeny/Body'));
+const ReactomeSection = lazy(() =>
+  import('sections/src/evidence/Reactome/Body')
+);
+const SlapEnrichSection = lazy(() =>
+  import('sections/src/evidence/SlapEnrich/Body')
+);
+const SysBioSection = lazy(() => import('sections/src/evidence/SysBio/Body'));
+const UniProtLiteratureSection = lazy(() =>
+  import('sections/src/evidence/UniProtLiterature/Body')
+);
+const UniProtVariantsSection = lazy(() =>
+  import('sections/src/evidence/UniProtVariants/Body')
+);
 
 import ProfileHeader from './ProfileHeader';
 
@@ -172,34 +209,36 @@ function Profile({ ensgId, efoId, symbol, name }) {
       </SummaryContainer>
 
       <SectionContainer>
-        <OTGeneticsSection id={id} label={label} entity={DISEASE} />
-        <EVASection id={id} label={label} entity={DISEASE} />
-        <GeneBurdenSection id={id} label={label} entity={DISEASE} />
-        <GenomicsEnglandSection id={id} label={label} entity={DISEASE} />
-        <Gene2PhenotypeSection id={id} label={label} entity={DISEASE} />
-        <UniProtLiteratureSection id={id} label={label} entity={DISEASE} />
-        <UniProtVariantsSection id={id} label={label} entity={DISEASE} />
-        <ClinGenSection id={id} label={label} entity={DISEASE} />
-        <OrphanetSection id={id} label={label} entity={DISEASE} />
-        <CancerGeneCensusSection id={id} label={label} entity={DISEASE} />
-        <IntOgenSection id={id} label={label} entity={DISEASE} />
-        <EVASomaticSection id={id} label={label} entity={DISEASE} />
-        <ChemblSection id={id} label={label} entity={DISEASE} />
-        <CRISPRSection id={id} label={label} entity={DISEASE} />
-        <CrisprScreenSection id={id} label={label} entity={DISEASE} />
-        <CancerBiomarkersSection id={id} label={label} entity={DISEASE} />
-        <SlapEnrichSection id={id} label={label} entity={DISEASE} />
-        <ProgenySection id={id} label={label} entity={DISEASE} />
-        <ReactomeSection id={id} label={label} entity={DISEASE} />
-        <SysBioSection id={id} label={label} entity={DISEASE} />
-        <EuropePmcSection id={id} label={label} entity={DISEASE} />
-        <ExpressionAtlasSection id={id} label={label} entity={DISEASE} />
-        <ImpcSection id={id} label={label} entity={DISEASE} />
-        <PrivateWrapper>
-          <OTCRISPRSection id={id} label={label} entity={DISEASE} />
-          <OTEncoreSection id={id} label={label} entity={DISEASE} />
-          <OTValidationSection id={id} label={label} entity={DISEASE} />
-        </PrivateWrapper>
+        <Suspense fallback={'Loading ...'}>
+          <OTGeneticsSection id={id} label={label} entity={DISEASE} />
+          <EVASection id={id} label={label} entity={DISEASE} />
+          <GeneBurdenSection id={id} label={label} entity={DISEASE} />
+          <GenomicsEnglandSection id={id} label={label} entity={DISEASE} />
+          <Gene2PhenotypeSection id={id} label={label} entity={DISEASE} />
+          <UniProtLiteratureSection id={id} label={label} entity={DISEASE} />
+          <UniProtVariantsSection id={id} label={label} entity={DISEASE} />
+          <ClinGenSection id={id} label={label} entity={DISEASE} />
+          <OrphanetSection id={id} label={label} entity={DISEASE} />
+          <CancerGeneCensusSection id={id} label={label} entity={DISEASE} />
+          <IntOgenSection id={id} label={label} entity={DISEASE} />
+          <EVASomaticSection id={id} label={label} entity={DISEASE} />
+          <ChemblSection id={id} label={label} entity={DISEASE} />
+          <CRISPRSection id={id} label={label} entity={DISEASE} />
+          <CrisprScreenSection id={id} label={label} entity={DISEASE} />
+          <CancerBiomarkersSection id={id} label={label} entity={DISEASE} />
+          <SlapEnrichSection id={id} label={label} entity={DISEASE} />
+          <ProgenySection id={id} label={label} entity={DISEASE} />
+          <ReactomeSection id={id} label={label} entity={DISEASE} />
+          <SysBioSection id={id} label={label} entity={DISEASE} />
+          <EuropePmcSection id={id} label={label} entity={DISEASE} />
+          <ExpressionAtlasSection id={id} label={label} entity={DISEASE} />
+          <ImpcSection id={id} label={label} entity={DISEASE} />
+          <PrivateWrapper>
+            <OTCRISPRSection id={id} label={label} entity={DISEASE} />
+            <OTEncoreSection id={id} label={label} entity={DISEASE} />
+            <OTValidationSection id={id} label={label} entity={DISEASE} />
+          </PrivateWrapper>
+        </Suspense>
       </SectionContainer>
     </PlatformApiProvider>
   );

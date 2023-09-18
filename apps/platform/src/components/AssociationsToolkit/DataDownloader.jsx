@@ -9,10 +9,11 @@ import {
   Snackbar,
   Slide,
   Popover,
+  Alert,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { useBatchDownloader } from 'ui';
+import { Link, useBatchDownloader } from 'ui';
 import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAotfContext from './hooks/useAotfContext';
@@ -20,6 +21,11 @@ import dataSources from './static_datasets/dataSourcesAssoc';
 
 const PopoverContent = styled('div')({
   padding: '20px 25px',
+  width: '350px',
+});
+
+const DisclaimerContainer = styled('div')({
+  marginTop: 12,
 });
 
 const LabelContainer = styled('div')({
@@ -309,6 +315,19 @@ function DataDownloader({ fileStem }) {
               </Button>
             </Grid>
           </Grid>
+          <DisclaimerContainer>
+            <Alert icon={false} severity="warning">
+              Table with pre-set weights only. See{' '}
+              <Link
+                to="https://github.com/opentargets/issues/issues/3063"
+                external
+                newTab
+              >
+                here
+              </Link>{' '}
+              for more information
+            </Alert>
+          </DisclaimerContainer>
         </PopoverContent>
       </Popover>
       <Snackbar

@@ -13,7 +13,8 @@ import {
   IconButton,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import CloseIcon from "@mui/icons-material/Close";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "graphiql/graphiql.min.css";
 import { fetcher } from "../../utils/global";
 import Link from "../Link";
@@ -257,7 +258,7 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
         <Typography className={classes.title}>
           API query
           <IconButton onClick={(e) => close(e)}>
-            <CloseIcon />
+            <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
         <Paper className={classes.paper} variant="outlined">

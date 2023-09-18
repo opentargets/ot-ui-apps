@@ -8,7 +8,8 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import CloseIcon from "@mui/icons-material/Close";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, PublicationsDrawer, MouseModelAllelicComposition } from "ui";
 
 const useStyles = makeStyles((theme) => ({
@@ -95,9 +96,9 @@ function AllelicCompositionDrawer({ biologicalModels }) {
         anchor="right"
       >
         <Typography className={classes.title}>
-          Experimental studies
+          Allelic composition
           <IconButton onClick={() => close()}>
-            <CloseIcon />
+            <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
         {biologicalModels.map((model) => (
