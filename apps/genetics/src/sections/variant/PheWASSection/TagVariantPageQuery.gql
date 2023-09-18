@@ -1,4 +1,4 @@
-query TagVariantPageQuery($variantId: String!) {
+query TagVariantPheWASSectionQuery($variantId: String!) {
   tagVariantsAndStudiesForIndexVariant(variantId: $variantId) {
     associations {
       tagVariant {

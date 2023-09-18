@@ -331,5 +331,14 @@
     "order": null,
     "include_in_fe": false,
     "include_in_bq": false
+  },
+  {
+    "id": "targetPrioritisation",
+    "category": "Target Prioritisation",
+    "nice_name": "n/a",
+    "description": "Target properties considered relevant for prioritising targets in drug development",
+    "order": null,
+    "include_in_fe": false,
+    "include_in_bq": false
   }
 ]

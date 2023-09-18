@@ -1,9 +1,12 @@
-import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
-import downloadTable from '../helpers/downloadTable';
+import downloadTable, {
+  DownloadFormat,
+  HeaderMap,
+  TableRow,
+} from '../helpers/downloadTable';
 import { Skeleton } from '@material-ui/lab';
 
 const styles = () => ({
@@ -18,7 +21,12 @@ const styles = () => ({
   },
 });
 
-function handleDownload(headers, rows, fileStem, format) {
+function handleDownload(
+  headers: HeaderMap,
+  rows: TableRow[],
+  fileStem: string,
+  format: DownloadFormat
+) {
   downloadTable({
     headerMap: headers,
     rows,
@@ -27,19 +35,20 @@ function handleDownload(headers, rows, fileStem, format) {
   });
 }
 
+type DataDownloaderProps = {
+  tableHeaders: HeaderMap;
+  rows: TableRow[];
+  classes: Record<string, string>;
+  loading: boolean;
+  fileStem: string;
+};
 function DataDownloader({
   tableHeaders,
   rows,
   classes,
   fileStem,
   loading,
-}: {
-  tableHeaders: string;
-  rows: any[];
-  classes: Record<string, string>;
-  loading: boolean;
-  fileStem: string;
-}) {
+}: DataDownloaderProps) {
   if (loading) {
     return (
       <Grid container justifyContent="flex-end" spacing={1}>

@@ -1,4 +1,4 @@
-query GWASLeadVariantsPageQuery($variantId: String!) {
+query GWASLeadVariantsPheWASSectionQuery($variantId: String!) {
   indexVariantsAndStudiesForTagVariant(variantId: $variantId) {
     associations {
       indexVariant {
