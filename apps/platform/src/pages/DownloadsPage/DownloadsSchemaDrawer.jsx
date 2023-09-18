@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Drawer, IconButton, Snackbar, Typography } from '@mui/material';
+import { Box, Drawer, IconButton, Snackbar, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -22,6 +22,13 @@ const useStyles = makeStyles(theme => ({
     right: '0',
     padding: '0.4em 0.5em !important',
   },
+  closeButton: {
+    zIndex: '2',
+    position: 'fixed',
+    top: 0,
+    right: 0,
+    padding: '0.7em',
+  },
   codeBlock: {
     backgroundColor: theme.palette.grey[300],
     padding: '0.2em 2em 0.2em 0.2em',
@@ -36,25 +43,12 @@ const useStyles = makeStyles(theme => ({
     fontSize: '1.2rem',
     fontWeight: 'bold',
     padding: '1rem',
-  },
-  paper: {
-    width: '420px',
-    margin: '1.5rem',
-    padding: '1rem',
-  },
-  resourceURL: {
-    marginBottom: '8px',
-    padding: '10px',
-    wordBreak: 'break-all',
-    backgroundColor: theme.palette.grey[800],
-    color: 'white',
-  },
-  ftpURL: {
-    color: 'white',
-    textDecoration: 'none',
+    position: 'fixed',
+    width: '100%',
+    zIndex: '1',
   },
   schemaContainer: {
-    padding: '2em',
+    padding: '5em 2em',
   },
 }));
 
@@ -122,7 +116,7 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
 
   function copyToClipboard() {
     setSnackbarOpen(true);
-    navigator.clipboard.writeText(serialisedSchema);
+    navigator.clipboard.writeText(JSON.stringify(serialisedSchema));
   }
 
   return (
@@ -136,13 +130,14 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
         onClose={() => close()}
         anchor="right"
       >
-        <Typography className={classes.title}>
-          {title}
-          <IconButton onClick={() => close()}>
-            <FontAwesomeIcon icon={faXmark} />
+        <Box>
+          <Typography variant="h6" className={classes.title}>
+            {title}
+          </Typography>
+          <IconButton className={classes.closeButton} onClick={() => close()}>
+            <FontAwesomeIcon icon={faXmark} className={classes.closeButton} />
           </IconButton>
-        </Typography>
-
+        </Box>
         <div className={classes.schemaContainer}>
           <Typography variant="h6" gutterBottom>
             Schema Format

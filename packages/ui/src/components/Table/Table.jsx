@@ -95,7 +95,7 @@ const Table = ({
             xs={12}
             md={8}
             lg={8}
-            sx={{ml: 'auto'}}
+            sx={{ ml: "auto" }}
           >
             <DataDownloader
               columns={dataDownloaderColumns || columns}
@@ -151,10 +151,12 @@ const Table = ({
           </TableBody>
         </MuiTable>
       </TableContainer>
-      <Grid item container justifyContent="flex-end">
+      <Grid item container justifyContent="center">
         {loading && (
           <CircularProgress className={defaultClasses.progress} size={22} />
         )}
+      </Grid>
+      <Grid item container justifyContent="flex-end">
         {showPagination ? (
           <TablePagination
             ActionsComponent={ActionsComponent}

@@ -1,11 +1,19 @@
 import { Fragment, useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { Paper, Box, Chip, Typography, Alert, AlertTitle } from '@mui/material';
+import {
+  Paper,
+  Box,
+  Chip,
+  Typography,
+  Alert,
+  AlertTitle,
+  IconButton,
+  CircularProgress,
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Link, DataTable } from 'ui';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAlignLeft } from '@fortawesome/free-solid-svg-icons';
-import IconButton from '@mui/material/IconButton';
 
 import { defaultRowsPerPageOptions, formatMap } from '../../constants';
 import DownloadsDrawer from './DownloadsDrawer';
@@ -89,9 +97,11 @@ function getColumns(date) {
           title={niceName}
           serialisedSchema={serialisedSchema}
         >
-          <IconButton size="small" aria-label="show schema button">
-            <FontAwesomeIcon icon={faAlignLeft} />
-          </IconButton>
+          <Chip
+            clickable
+            size="small"
+            label={<FontAwesomeIcon icon={faAlignLeft} />}
+          />
         </DownloadsSchemaDrawer>
       ),
     },
@@ -119,12 +129,14 @@ function getVersion(data) {
 function DownloadsPage() {
   const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
   const [downloadsData, setDownloadsData] = useState(null);
+  const [loadingDownloadsData, setLoadingDownloadsData] = useState(false);
   const rows = downloadsData ? getRows(downloadsData, datasetMappings) : [];
   const columns = loading || error ? [] : getColumns(data.meta.dataVersion);
   const classes = useStyles();
 
   useEffect(() => {
     let isCurrent = true;
+    setLoadingDownloadsData(true);
     fetch(config.downloadsURL)
       .then(res => res.text())
       .then(lines => {
@@ -132,6 +144,7 @@ function DownloadsPage() {
           const nodes = lines.trim().split('\n').map(JSON.parse);
           setDownloadsData(nodes);
         }
+        setLoadingDownloadsData(false);
       });
 
     return () => {
@@ -190,18 +203,25 @@ function DownloadsPage() {
         </Alert>
       ) : null}
 
-      <Paper variant="outlined" elevation={0}>
-        <Box m={2}>
-          {loading || error ? null : (
+      {loadingDownloadsData && (
+        <Box display="flex" justifyContent="center">
+          <CircularProgress />
+        </Box>
+      )}
+
+      {loadingDownloadsData || loading || error ? null : (
+        <Paper variant="outlined" elevation={0}>
+          <Box m={2}>
             <DataTable
               showGlobalFilter
               columns={columns}
               rows={rows}
+              loading={loadingDownloadsData}
               rowsPerPageOptions={defaultRowsPerPageOptions}
             />
-          )}
-        </Box>
-      </Paper>
+          </Box>
+        </Paper>
+      )}
     </>
   );
 }
