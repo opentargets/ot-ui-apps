@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { v1 } from "uuid";
-import {
-  AddCircleOutlineRounded,
-  RemoveCircleOutlineRounded,
-} from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { PublicationSummaryLabel, SummaryLoader } from "ui";
-import { faCircleNodes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCircleNodes,
+  faCircleMinus,
+  faCirclePlus,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { publicationSummaryQuery } from "../../utils/urls";
 import config from "../../config";
@@ -187,9 +187,9 @@ function Publication({
             size="small"
             startIcon={
               showAbstract ? (
-                <RemoveCircleOutlineRounded />
+                <FontAwesomeIcon icon={faCircleMinus} />
               ) : (
-                <AddCircleOutlineRounded />
+                <FontAwesomeIcon icon={faCirclePlus} />
               )
             }
             onClick={handleShowAbstractClick}
@@ -204,9 +204,9 @@ function Publication({
             size="small"
             startIcon={
               showMatches ? (
-                <RemoveCircleOutlineRounded />
+                <FontAwesomeIcon icon={faCircleMinus} />
               ) : (
-                <AddCircleOutlineRounded />
+                <FontAwesomeIcon icon={faCirclePlus} />
               )
             }
             onClick={handleShowMatchesClick}

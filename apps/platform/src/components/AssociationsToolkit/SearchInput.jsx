@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Grid, Input, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
+import { faXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDebounce } from 'ui';
 import useAotfContext from './hooks/useAotfContext';
 
@@ -41,11 +41,11 @@ function SearchInput({ placeholder = 'Search' }) {
         <Input
           name="associationsSearchInput"
           autoComplete="off"
-          startAdornment={<SearchIcon />}
+          startAdornment={<FontAwesomeIcon icon={faMagnifyingGlass} />}
           endAdornment={
             !!inputValue && (
               <IconButton onClick={handleInputClean}>
-                <ClearIcon />
+                <FontAwesomeIcon icon={faXmark} size="2xs" />
               </IconButton>
             )
           }

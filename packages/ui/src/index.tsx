@@ -13,8 +13,6 @@ export { default as Link } from "./components/Link";
 export { default as Chip } from "./components/Chip";
 export { default as ChipList } from "./components/ChipList";
 export { default as TooltipStyledLabel } from "./components/TooltipStyledLabel";
-export { default as SectionItem } from "./components/Section/SectionItem";
-export { default as SectionContainer } from "./components/Section/SectionContainer";
 export { default as LabelChip } from "./components/LabelChip";
 export { default as BasePage } from "./components/BasePage";
 export { default as NewChip } from "./components/NewChip";
@@ -41,6 +39,7 @@ export { default as Page } from "./pages/Page";
 export { default as PlatformApiProvider } from "./contexts/PlatformApiProvider";
 
 export * as summaryUtils from "./components/Summary/utils";
+export * from "./components/Section";
 
 export * from "./components/ProfileHeader";
 export * from "./components/DownloadSvgPlot";

@@ -9,7 +9,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import CloseIcon from "@mui/icons-material/Close";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { naLabel } from "../../constants";
 import { europePmcSearchPOSTQuery } from "../../utils/urls";
 import PublicationWrapper from "./PublicationWrapper";
@@ -263,7 +264,7 @@ function PublicationsDrawer({
               {caption}
             </Typography>
             <IconButton onClick={closeDrawer}>
-              <CloseIcon />
+              <FontAwesomeIcon icon={faXmark} />
             </IconButton>
           </Box>
         </Paper>

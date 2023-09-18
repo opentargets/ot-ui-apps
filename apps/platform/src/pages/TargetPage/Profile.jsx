@@ -1,9 +1,11 @@
 import { gql } from '@apollo/client';
+import { lazy, Suspense } from 'react';
 import {
   PlatformApiProvider,
   SectionContainer,
   SummaryContainer,
   summaryUtils,
+  SectionLoader,
 } from 'ui';
 
 import KnownDrugsSummary from 'sections/src/target/KnownDrugs/Summary';
@@ -23,22 +25,49 @@ import ComparativeGenomicsSummary from 'sections/src/target/ComparativeGenomics/
 import SubcellularLocationSummary from 'sections/src/target/SubcellularLocation/Summary';
 import BibliographySummary from 'sections/src/target/Bibliography/Summary';
 
-import KnownDrugsSection from 'sections/src/target/KnownDrugs/Body';
-import TractabilitySection from 'sections/src/target/Tractability/Body';
-import SafetySection from 'sections/src/target/Safety/Body';
-import ChemicalProbesSection from 'sections/src/target/ChemicalProbes/Body';
-import BaselineExpressionSection from 'sections/src/target/Expression/Body';
-import DepMapSection from 'sections/src/target/DepMap/Body';
-import GeneOntologySection from 'sections/src/target/GeneOntology/Body';
-import GeneticConstraintSection from 'sections/src/target/GeneticConstraint/Body';
-import ProtVistaSection from 'sections/src/target/ProtVista/Body';
-import MolecularInteractionsSection from 'sections/src/target/MolecularInteractions/Body';
-import PathwaysSection from 'sections/src/target/Pathways/Body';
-import CancerHallmarksSection from 'sections/src/target/CancerHallmarks/Body';
-import MousePhenotypesSection from 'sections/src/target/MousePhenotypes/Body';
-import ComparativeGenomicsSection from 'sections/src/target/ComparativeGenomics/Body';
-import SubcellularLocationSection from 'sections/src/target/SubcellularLocation/Body';
-import BibliographySection from 'sections/src/target/Bibliography/Body';
+const KnownDrugsSection = lazy(() =>
+  import('sections/src/target/KnownDrugs/Body')
+);
+const TractabilitySection = lazy(() =>
+  import('sections/src/target/Tractability/Body')
+);
+const SafetySection = lazy(() => import('sections/src/target/Safety/Body'));
+const ChemicalProbesSection = lazy(() =>
+  import('sections/src/target/ChemicalProbes/Body')
+);
+const BaselineExpressionSection = lazy(() =>
+  import('sections/src/target/Expression/Body')
+);
+const DepMapSection = lazy(() => import('sections/src/target/DepMap/Body'));
+const GeneOntologySection = lazy(() =>
+  import('sections/src/target/GeneOntology/Body')
+);
+const GeneticConstraintSection = lazy(() =>
+  import('sections/src/target/GeneticConstraint/Body')
+);
+const ProtVistaSection = lazy(() =>
+  import('sections/src/target/ProtVista/Body')
+);
+const MolecularInteractionsSection = lazy(() =>
+  import('sections/src/target/MolecularInteractions/Body')
+);
+const PathwaysSection = lazy(() => import('sections/src/target/Pathways/Body'));
+const CancerHallmarksSection = lazy(() =>
+  import('sections/src/target/CancerHallmarks/Body')
+);
+const MousePhenotypesSection = lazy(() =>
+  import('sections/src/target/MousePhenotypes/Body')
+);
+const ComparativeGenomicsSection = lazy(() =>
+  import('sections/src/target/ComparativeGenomics/Body')
+);
+const SubcellularLocationSection = lazy(() =>
+  import('sections/src/target/SubcellularLocation/Body')
+);
+const BibliographySection = lazy(() =>
+  import('sections/src/target/Bibliography/Body')
+);
+
 import ProfileHeader from './ProfileHeader';
 
 import client from '../../client';
@@ -108,34 +137,74 @@ function Profile({ ensgId, symbol }) {
       </SummaryContainer>
 
       <SectionContainer>
-        <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET} />
-        <TractabilitySection id={ensgId} label={symbol} entity={TARGET} />
-        <SafetySection id={ensgId} label={symbol} entity={TARGET} />
-        <ChemicalProbesSection id={ensgId} label={symbol} entity={TARGET} />
-        <BaselineExpressionSection id={ensgId} label={symbol} entity={TARGET} />
-        <DepMapSection id={ensgId} label={symbol} entity={TARGET} />
-        <SubcellularLocationSection
-          id={ensgId}
-          label={symbol}
-          entity={TARGET}
-        />
-        <GeneOntologySection id={ensgId} label={symbol} entity={TARGET} />
-        <GeneticConstraintSection id={ensgId} label={symbol} entity={TARGET} />
-        <ProtVistaSection id={ensgId} label={symbol} entity={TARGET} />
-        <MolecularInteractionsSection
-          id={ensgId}
-          label={symbol}
-          entity={TARGET}
-        />
-        <PathwaysSection id={ensgId} label={symbol} entity={TARGET} />
-        <CancerHallmarksSection id={ensgId} label={symbol} entity={TARGET} />
-        <MousePhenotypesSection id={ensgId} label={symbol} entity={TARGET} />
-        <ComparativeGenomicsSection
-          id={ensgId}
-          label={symbol}
-          entity={TARGET}
-        />
-        <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
+        <Suspense fallback={<SectionLoader />}>
+          <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <TractabilitySection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <SafetySection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <ChemicalProbesSection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <BaselineExpressionSection
+            id={ensgId}
+            label={symbol}
+            entity={TARGET}
+          />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <DepMapSection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <SubcellularLocationSection
+            id={ensgId}
+            label={symbol}
+            entity={TARGET}
+          />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <GeneOntologySection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <GeneticConstraintSection
+            id={ensgId}
+            label={symbol}
+            entity={TARGET}
+          />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <ProtVistaSection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <MolecularInteractionsSection
+            id={ensgId}
+            label={symbol}
+            entity={TARGET}
+          />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <PathwaysSection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <CancerHallmarksSection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <MousePhenotypesSection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <ComparativeGenomicsSection
+            id={ensgId}
+            label={symbol}
+            entity={TARGET}
+          />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
       </SectionContainer>
     </PlatformApiProvider>
   );

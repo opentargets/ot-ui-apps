@@ -210,6 +210,8 @@ function HomePage() {
         {/* scroll down button */}
         <Grid container justifyContent="center">
           <IconButton
+            id="scrollDownHandler"
+            aria-label="Scroll down handler"
             className="fa-layers fa-fw fa-3x"
             style={{
               height: '0px',

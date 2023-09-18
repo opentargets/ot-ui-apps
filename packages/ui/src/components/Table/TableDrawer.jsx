@@ -13,8 +13,8 @@ import {
   Paper,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import CloseIcon from "@mui/icons-material/Close";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { faXmark, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import _ from "lodash";
 import { v1 } from "uuid";
 import { naLabel } from "../../constants";
@@ -123,7 +123,7 @@ function TableDrawer({
             {caption}
           </Typography>
           <IconButton onClick={closeDrawer}>
-            <CloseIcon />
+            <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Box>
       </Paper>
@@ -142,7 +142,9 @@ function TableDrawer({
               Object.keys(groupedEntries).length === 1
             }
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Box classes={{ root: classes.summaryBoxRoot }}>
                 <Typography className={classes.AccordionTitle}>
                   {group}
