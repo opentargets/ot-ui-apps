@@ -1,6 +1,5 @@
 import { CardContent, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPrescriptionBottleAlt,
