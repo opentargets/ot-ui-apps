@@ -34,8 +34,8 @@ function TargetPageTabs({ ensgId }) {
     {
       label: (
         <div>
-          <NewChip />
           Associated diseases
+          <NewChip />
         </div>
       ),
       path: `/target/${ensgId}/associations`,
@@ -134,7 +134,7 @@ function TargetPage({ location, match }) {
         crisprId={crisprId}
       />
       <TargetPageTabs ensgId={ensgId} />
-      <Suspense fallback={<LoadingBackdrop />}>
+      <Suspense fallback={<LoadingBackdrop height={11500} />}>
         <Switch>
           <Route
             exact
