@@ -10,7 +10,8 @@ import {
   styled,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import 'graphiql/graphiql.min.css';
 
 import { fetcher } from '../../utils/global';
@@ -102,7 +103,9 @@ function APIPage() {
             Example queries
           </Typography>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">
                 Target-disease association
               </Typography>
@@ -134,7 +137,9 @@ function APIPage() {
             </AccordionDetails>
           </Accordion>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">
                 Target-disease evidence
               </Typography>
@@ -159,7 +164,9 @@ function APIPage() {
             </AccordionDetails>
           </Accordion>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">Target annotation</Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -179,7 +186,9 @@ function APIPage() {
             </AccordionDetails>
           </Accordion>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">Disease annotation</Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -199,7 +208,9 @@ function APIPage() {
             </AccordionDetails>
           </Accordion>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">Drug annotation</Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -220,7 +231,9 @@ function APIPage() {
             </AccordionDetails>
           </Accordion>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">Search page</Typography>
             </AccordionSummary>
             <AccordionDetails>

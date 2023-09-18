@@ -7,7 +7,8 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import CloseIcon from "@mui/icons-material/Close";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip, Link } from "ui";
 
 import { sentenceCase } from "../../utils/global";
@@ -82,7 +83,7 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
         <Typography className={classes.title}>
           Biomarker
           <IconButton onClick={() => close()}>
-            <CloseIcon />
+            <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
         {biomarkers.variant ? (

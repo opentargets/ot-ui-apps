@@ -11,7 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import CloseIcon from "@mui/icons-material/Close";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const therapeuticAreasDrawerStyles = makeStyles((theme) => ({
   drawerBody: {
@@ -96,7 +97,7 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
             </Typography>
           </Box>
           <IconButton onClick={closeDrawer}>
-            <CloseIcon />
+            <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Box>
       </Paper>

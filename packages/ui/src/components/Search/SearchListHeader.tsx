@@ -7,9 +7,9 @@ import {
   faDna,
   faChartBar,
   faMapPin,
+  faStar,
+  faTag,
 } from "@fortawesome/free-solid-svg-icons";
-
-import { Star, Label } from "@mui/icons-material";
 
 const useStyles = makeStyles((theme) => ({
   sectionHeader: {
@@ -52,7 +52,7 @@ function SearchListHeader({
   const getIcon = () => {
     switch (listHeader) {
       case "topHit":
-        return <Star className={classes.labelIcon} />;
+        return <FontAwesomeIcon icon={faStar} className={classes.labelIcon} />;
       case "drug":
         return (
           <FontAwesomeIcon
@@ -102,7 +102,7 @@ function SearchListHeader({
           />
         );
       default:
-        return <Label />;
+        return <FontAwesomeIcon icon={faTag} />;
     }
   };
 

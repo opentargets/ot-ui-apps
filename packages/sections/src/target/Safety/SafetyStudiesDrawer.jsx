@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { Drawer, Button, IconButton, Paper, Typography, Link as MUILink } from "@mui/material";
+import {
+  Drawer,
+  IconButton,
+  Paper,
+  Typography,
+  Link as MUILink,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import CloseIcon from "@mui/icons-material/Close";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const useStyles = makeStyles((theme) => ({
   drawerLink: {
@@ -49,8 +56,12 @@ function SafetyStudiesDrawer({ studies }) {
 
   return (
     <>
-    <MUILink onClick={toggleOpen} className={classes.drawerLink} underline="none">
-    {studies.length} studies
+      <MUILink
+        onClick={toggleOpen}
+        className={classes.drawerLink}
+        underline="none"
+      >
+        {studies.length} studies
       </MUILink>
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
@@ -61,7 +72,7 @@ function SafetyStudiesDrawer({ studies }) {
         <Typography className={classes.title}>
           Experimental studies
           <IconButton onClick={() => close()}>
-            <CloseIcon />
+            <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
         {studies.map((study) => (

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState, useContext } from "react";
 import { makeStyles } from "@mui/styles";
 import { Typography, Dialog, DialogContent } from "@mui/material";
-import { Search as SearchIcon } from "@mui/icons-material";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import AutocompleteSearch from "./AutocompleteSearch";
 import { SearchContext } from "./Search/SearchContext";
@@ -109,7 +110,10 @@ function GlobalSearch({ showSearchResultPage }) {
         className={classes.searchButton}
         onClick={handleOpen}
       >
-        <SearchIcon className={classes.searchIcon} />
+        <FontAwesomeIcon
+          icon={faMagnifyingGlass}
+          className={classes.searchIcon}
+        />
         <Typography className={classes.searchButtonText} variant="body1">
           Search...
         </Typography>

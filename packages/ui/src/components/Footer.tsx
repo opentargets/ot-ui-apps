@@ -79,9 +79,9 @@ const FooterSocial = ({ social }) => {
         container
         justifyContent="space-between"
       >
-        {social.map(({ icon, url }, i) => (
+        {social.map(({ icon, url, label }, i) => (
           <Grid item key={i}>
-            <Link external footer to={url}>
+            <Link external footer to={url} ariaLabel={label}>
               <FontAwesomeIcon className={classes.socialIcon} icon={icon} />
             </Link>
           </Grid>

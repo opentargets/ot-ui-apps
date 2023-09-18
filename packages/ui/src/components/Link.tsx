@@ -41,6 +41,7 @@ function Link({
   footer,
   tooltip,
   className,
+  ariaLabel,
 }: {
   className?: string;
   to: string;
@@ -50,8 +51,10 @@ function Link({
   footer: boolean;
   tooltip?: unknown;
   children: React.ReactNode;
+  ariaLabel?: string;
 }) {
   const classes = useStyles();
+  const ariaLabelProp = ariaLabel ? { "aria-label": ariaLabel } : {};
   const newTabProps = newTab
     ? { target: "_blank", rel: "noopener noreferrer" }
     : {};
@@ -69,6 +72,7 @@ function Link({
       href={to}
       onClick={onClick}
       {...newTabProps}
+      {...ariaLabelProp}
     >
       {children}
     </a>

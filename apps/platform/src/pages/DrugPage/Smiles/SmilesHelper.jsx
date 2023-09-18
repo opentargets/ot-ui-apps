@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import CloseIcon from '@mui/icons-material/Close';
+import { faXmark, faSearchPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Modal, Paper } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import SmilesDrawer from 'smiles-drawer';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearchPlus } from '@fortawesome/free-solid-svg-icons';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -78,7 +77,11 @@ function SmilesHelper({ smiles, chemblId }) {
       </Paper>
       <Modal open={isOpen} onClose={toggleModal} keepMounted>
         <Paper className={classes.modal}>
-          <CloseIcon className={classes.close} onClick={toggleModal} />
+          <FontAwesomeIcon
+            icon={faXmark}
+            className={classes.close}
+            onClick={toggleModal}
+          />
           <canvas id={`${chemblId}-modal`} className={classes.modalCanvas} />
         </Paper>
       </Modal>

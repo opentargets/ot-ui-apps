@@ -1,9 +1,13 @@
 import { IconButton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import FirstPageIcon from "@mui/icons-material/FirstPage";
-import LastPageIcon from "@mui/icons-material/LastPage";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBackwardStep,
+  faForwardStep,
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 const useStyles = makeStyles({
   root: { flexShrink: 0 },
@@ -36,22 +40,22 @@ export function PaginationActionsComplete({
   return (
     <div className={classes.root}>
       <IconButton onClick={handleFirstPageButtonClick} disabled={page === 0}>
-        <FirstPageIcon />
+        <FontAwesomeIcon icon={faBackwardStep} />
       </IconButton>
       <IconButton onClick={handleBackButtonClick} disabled={page === 0}>
-        <KeyboardArrowLeft />
+        <FontAwesomeIcon icon={faChevronLeft} />
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
       >
-        <KeyboardArrowRight />
+        <FontAwesomeIcon icon={faChevronRight} />
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
       >
-        <LastPageIcon />
+        <FontAwesomeIcon icon={faForwardStep} />
       </IconButton>
     </div>
   );
