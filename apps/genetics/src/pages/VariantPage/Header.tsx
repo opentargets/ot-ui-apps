@@ -9,11 +9,9 @@ type VariantHeaderProps = {
   data?: VariantHeaderQuery;
 };
 const VariantHeader = ({ loading, data }: VariantHeaderProps) => {
-  const { id, chromosomeB37, positionB37, refAllele, altAllele, rsId } =
+  const id = data?.variantInfo?.id || '';
+  const { chromosomeB37, positionB37, refAllele, altAllele, rsId } =
     data?.variantInfo || {};
-  if (!id) {
-    return null;
-  }
   const gnomadId = `${chromosomeB37}-${positionB37}-${refAllele}-${altAllele}`;
   const chromosome = !loading ? id.split('_')[0] : '';
   const positionString = !loading ? id.split('_')[1] : '';
