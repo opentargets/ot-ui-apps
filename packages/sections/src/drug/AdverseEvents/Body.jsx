@@ -144,7 +144,7 @@ function Body({ id: chemblId, label: name, entity }) {
             fixed
             pageSize={pageSize}
             rowsPerPageOptions={[10, 25, 50, 100]}
-            onRowsPerPageChange={() => handleRowsPerPageChange()}
+            onRowsPerPageChange={(newSize) => handleRowsPerPageChange(newSize)}
             query={ADVERSE_EVENTS_QUERY.loc.source.body}
             variables={variables}
           />
