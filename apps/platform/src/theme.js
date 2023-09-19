@@ -97,6 +97,23 @@ const theme = {
         },
       ],
     },
+    MuiSnackbar: {
+      defaultProps: {
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'center',
+        },
+      },
+    },
+    MuiSnackbarContent: {
+      styleOverrides: {
+        root: {
+          background: PRIMARY,
+          color: 'white',
+          borderRadius: '4px',
+        },
+      },
+    },
   },
 
   // overrides: {
