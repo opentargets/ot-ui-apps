@@ -40,22 +40,22 @@ export function PaginationActionsComplete({
   return (
     <div className={classes.root}>
       <IconButton onClick={handleFirstPageButtonClick} disabled={page === 0}>
-        <FontAwesomeIcon icon={faBackwardStep} />
+        <FontAwesomeIcon size="2xs" icon={faBackwardStep} />
       </IconButton>
       <IconButton onClick={handleBackButtonClick} disabled={page === 0}>
-        <FontAwesomeIcon icon={faChevronLeft} />
+        <FontAwesomeIcon size="2xs" icon={faChevronLeft} />
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
       >
-        <FontAwesomeIcon icon={faChevronRight} />
+        <FontAwesomeIcon size="2xs" icon={faChevronRight} />
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
       >
-        <FontAwesomeIcon icon={faForwardStep} />
+        <FontAwesomeIcon size="2xs" icon={faForwardStep} />
       </IconButton>
     </div>
   );
