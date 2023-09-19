@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   },
   codeBlock: {
     backgroundColor: theme.palette.grey[300],
-    padding: '0.2em 2em 0.2em 0.2em',
+    padding: '0.2em 6em 0.2em 0.2em',
     fontSize: '0.9em',
     position: 'relative',
   },
@@ -70,7 +70,7 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
       : NON_LAST_ELEMENT_IN_SCHEMA_STRING;
     return `${NEXT_LINE_STRING}${schemaString}${obj.name} : ${
       obj.type
-    } (nullable = ${obj.nullable || obj.containsNull})`;
+    }`;
   }
 
   function convertArrayObjectToSchema(obj, isLastElement) {
@@ -83,19 +83,16 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
         ? 'struct'
         : typeof obj.type.elementType;
 
-    let schema = `${NEXT_LINE_STRING}${schemaString}${obj.name}: array (nullable = ${obj.nullable})${NEXT_LINE_STRING}`;
+    let schema = `${NEXT_LINE_STRING}${schemaString}${obj.name}: array `;
 
     if (elementType === 'struct') {
       const childSchema = convertStructObjectToSchema(
         obj.type.elementType,
         false
       );
-      schema = `${schema} ${childSchema.replaceAll(
-        /\n/g,
-        '\n│   '
-      )}`;
+      schema = `${schema}${childSchema}`;
     } else {
-      schema = `${schema}│   ${NON_LAST_ELEMENT_IN_SCHEMA_STRING}element: ${elementType} (containsNull = ${obj.type.containsNull})`
+      schema = `${schema}${NEXT_LINE_STRING}│   ${NON_LAST_ELEMENT_IN_SCHEMA_STRING}element: ${elementType} `;
     }
 
     return schema;
@@ -106,13 +103,15 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
       ? LAST_ELEMENT_IN_SCHEMA_STRING
       : NON_LAST_ELEMENT_IN_SCHEMA_STRING;
 
-    let schema = `${NEXT_LINE_STRING}${schemaString}${obj.name}: array (nullable = ${obj.nullable})${NEXT_LINE_STRING}│   ${NON_LAST_ELEMENT_IN_SCHEMA_STRING}element: struct`;
+    let schema =
+      obj.type.fields ?
+      `${NEXT_LINE_STRING}${schemaString}${obj.name}: array ${NEXT_LINE_STRING}│   ${NON_LAST_ELEMENT_IN_SCHEMA_STRING}element: struct` : `${NEXT_LINE_STRING}│   ${schemaString}element: struct `;
 
     const fields = obj.type.fields || obj.fields;
     if (fields)
       fields.forEach(element => {
         const childSchemaFn = getType(element);
-        schema = `${schema} ${childSchemaFn(element, false).replaceAll(
+        schema = `${schema}${childSchemaFn(element, false).replaceAll(
           /\n/g,
           '\n│   │   '
         )}`;
@@ -205,7 +204,7 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
               </IconButton>
             </Tooltip>
             <pre>
-              <code>{`   root${jsonToSchema(serialisedSchema.fields)}`}</code>
+              <code>{`   root${serialisedSchema.fields && jsonToSchema(serialisedSchema.fields)}`}</code>
             </pre>
           </div>
         </div>
