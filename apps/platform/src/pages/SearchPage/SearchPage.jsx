@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import queryString from 'query-string';
 import { Typography } from '@mui/material';
+import { useLocation, useHistory } from 'react-router-dom';
 import { LoadingBackdrop, EmptyPage, BasePage } from 'ui';
 
 import client from '../../client';
@@ -25,7 +26,9 @@ const parseQueryString = qs => {
   return params;
 };
 
-function SearchPage({ location, history }) {
+function SearchPage() {
+  const location = useLocation();
+  const history = useHistory();
   const { q, page, entities } = parseQueryString(location.search);
   const [data, setData] = useState(null);
 

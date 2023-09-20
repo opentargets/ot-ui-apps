@@ -1,11 +1,8 @@
 import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, Tab, Tabs } from '@mui/material';
-import { Link, Route, Switch, useLocation } from 'react-router-dom';
+import { Link, Route, Switch, useLocation, useParams } from 'react-router-dom';
 import { LoadingBackdrop, BasePage, NewChip, ScrollToTop } from 'ui';
-import { v1 } from 'uuid';
-
-import { getAbleRoutes, getClassicAssociationsURL } from '../../utils/urls';
 
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
@@ -16,58 +13,11 @@ const Profile = lazy(() => import('./Profile'));
 const Associations = lazy(() => import('./DiseaseAssociations'));
 const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
 
-function DiseasePageTabs({ efoId }) {
+function DiseasePage() {
   const location = useLocation();
-
-  const routes = [
-    {
-      label: (
-        <div>
-          Associated targets
-          <NewChip />
-        </div>
-      ),
-      path: `/disease/${efoId}/associations`,
-    },
-    {
-      label: 'Associated targets',
-      path: `/disease/${efoId}/classic-associations`,
-    },
-    { label: 'Profile', path: `/disease/${efoId}` },
-  ];
-
-  const ableRoutes = getAbleRoutes({ routes });
-  const activeTabIndex = ableRoutes.findIndex(
-    route => route.path === location.pathname
-  );
-
-  return (
-    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-      <Tabs value={activeTabIndex}>
-        {ableRoutes.map(route => (
-          <Tab
-            key={v1()}
-            label={
-              <Box sx={{ textTransform: 'capitalize' }}>{route.label}</Box>
-            }
-            component={Link}
-            to={route.path}
-          />
-        ))}
-      </Tabs>
-    </Box>
-  );
-}
-
-function DiseasePage({ location, match }) {
-  const { efoId } = match.params;
+  const { efoId } = useParams();
   const { loading, data } = useQuery(DISEASE_PAGE_QUERY, {
     variables: { efoId },
-  });
-
-  const baseURL = '/disease/:ensgId/';
-  const { fullURL: classicAssocURL } = getClassicAssociationsURL({
-    baseURL,
   });
 
   if (data && !data.disease) {
@@ -92,7 +42,50 @@ function DiseasePage({ location, match }) {
     >
       <Header loading={loading} efoId={efoId} name={name} dbXRefs={dbXRefs} />
       <ScrollToTop />
-      <DiseasePageTabs efoId={efoId} />
+      <Route
+        path="/"
+        render={history => (
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs
+              value={
+                history.location.pathname !== '/'
+                  ? history.location.pathname
+                  : false
+              }
+            >
+              <Tab
+                label={
+                  <Box sx={{ textTransform: 'capitalize' }}>
+                    <div>
+                      Associated targets
+                      <NewChip />
+                    </div>
+                  </Box>
+                }
+                value={`/disease/${efoId}/associations`}
+                component={Link}
+                to={`/disease/${efoId}/associations`}
+              />
+              <Tab
+                label={
+                  <Box sx={{ textTransform: 'capitalize' }}>
+                    Associated targets
+                  </Box>
+                }
+                value={`/disease/${efoId}/classic-associations`}
+                component={Link}
+                to={`/disease/${efoId}/classic-associations`}
+              />
+              <Tab
+                label={<Box sx={{ textTransform: 'capitalize' }}>Profile</Box>}
+                value={`/disease/${efoId}`}
+                component={Link}
+                to={`/disease/${efoId}`}
+              />
+            </Tabs>
+          </Box>
+        )}
+      />
       <Suspense fallback={<LoadingBackdrop />}>
         <Switch>
           <Route
@@ -121,7 +114,7 @@ function DiseasePage({ location, match }) {
             )}
           />
           <Route
-            path={classicAssocURL}
+            path="/disease/:efoId/classic-associations"
             render={routeProps => (
               <ClassicAssociations
                 match={routeProps.match}

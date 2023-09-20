@@ -1,9 +1,11 @@
 import { Suspense, lazy } from 'react';
+import { useLocation } from 'react-router-dom';
 import { LoadingBackdrop, BasePage } from 'ui';
 
 const VariantsPage = lazy(() => import('./VariantsPage'));
 
-function VariantsWrapper({ location }) {
+function VariantsWrapper() {
+  const location = useLocation();
   return (
     <BasePage
       title="Variant definitions"

@@ -25,6 +25,9 @@ import ComparativeGenomicsSummary from 'sections/src/target/ComparativeGenomics/
 import SubcellularLocationSummary from 'sections/src/target/SubcellularLocation/Summary';
 import BibliographySummary from 'sections/src/target/Bibliography/Summary';
 
+import ProfileHeader from './ProfileHeader';
+import client from '../../client';
+
 const KnownDrugsSection = lazy(() =>
   import('sections/src/target/KnownDrugs/Body')
 );
@@ -67,10 +70,6 @@ const SubcellularLocationSection = lazy(() =>
 const BibliographySection = lazy(() =>
   import('sections/src/target/Bibliography/Body')
 );
-
-import ProfileHeader from './ProfileHeader';
-
-import client from '../../client';
 
 const summaries = [
   KnownDrugsSummary,
