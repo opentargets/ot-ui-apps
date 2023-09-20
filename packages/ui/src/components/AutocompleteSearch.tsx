@@ -114,13 +114,16 @@ export default function AutocompleteSearch({
   const fetchSearchResults = (value: string) => {
     getSearchData({ variables: { queryString: value } }).then((res) => {
       const formattedData = formatSearchData(res.data.search || res.data);
-      let searchForTermObject = {
-        symbol: "Search For: " + searchInputValue,
-        name: searchInputValue,
-        entity: "search",
-        type: "",
-      };
-      setSearchResult([searchForTermObject, ...formattedData]);
+      let searchForTermObject;
+      if (showSearchResultPage) {
+        searchForTermObject = {
+          symbol: "Search For: " + searchInputValue,
+          name: searchInputValue,
+          entity: "search",
+          type: "",
+        };
+        setSearchResult([searchForTermObject, ...formattedData]);
+      } else setSearchResult(formattedData);
     });
   };
 
@@ -169,7 +172,7 @@ export default function AutocompleteSearch({
       options={searchResult}
       onChange={handleSelectOption}
       inputValue={searchInputValue}
-      onInputChange={(e,v) => setSearchInputValue(v)}
+      onInputChange={(e, v) => setSearchInputValue(v)}
       groupBy={(option) => option.type}
       loading={loading}
       loadingText={<SearchLoadingState />}
