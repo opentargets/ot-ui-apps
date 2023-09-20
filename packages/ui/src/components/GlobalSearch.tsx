@@ -69,8 +69,7 @@ function GlobalSearch({ showSearchResultPage }) {
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
-    setLoading(false);
-    setInputValue("");
+    // setLoading(false);
   };
   const handleOpen = () => setOpen(true);
 
@@ -91,7 +90,7 @@ function GlobalSearch({ showSearchResultPage }) {
     }
   }, []);
 
-  const { setLoading, setInputValue } = useContext(SearchContext);
+  // const { setLoading } = useContext(SearchContext);
 
   const shortcutText =
     navigator?.platform.indexOf("Mac") > -1 ? "⌘ K" : "Ctrl+K";
