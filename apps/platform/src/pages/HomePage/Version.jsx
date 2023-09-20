@@ -65,7 +65,7 @@ function Version({
   return (
     <VersionContainer>
       <Typography variant="body2">
-        Last update:{' '}
+        Last update:{'  '}
         <VersionLink
           link={releaseNotesURL}
           month={fullMonth}
