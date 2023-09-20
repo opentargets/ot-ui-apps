@@ -163,8 +163,6 @@ const FooterSection = ({
 // Creative Commons License
 const useLicenseStyles = makeStyles({
   icon: {
-    minWidth: "20px !important",
-    height: "22px !important",
     marginLeft: "3px",
     verticalAlign: "middle",
   },
@@ -194,12 +192,16 @@ const LicenseCC0 = ({ links }) => {
             aria-label="cc0 license image 1"
             className={classes.icon}
             src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
+            height="22px"
+            width="22px"
           />
           <img
             alt="cc0 license image 2"
             aria-label="cc0 license image 2"
             className={classes.icon}
             src="https://mirrors.creativecommons.org/presskit/icons/zero.svg?ref=chooser-v1"
+            height="22px"
+            width="22px"
           />
         </Link>
       </Typography>
