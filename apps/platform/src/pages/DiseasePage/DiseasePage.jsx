@@ -88,43 +88,15 @@ function DiseasePage() {
       />
       <Suspense fallback={<LoadingBackdrop />}>
         <Switch>
-          <Route
-            exact
-            path="/disease/:efoId"
-            render={routeProps => (
-              <Profile
-                match={routeProps.match}
-                location={routeProps.location}
-                history={routeProps.history}
-                efoId={efoId}
-                name={name}
-              />
-            )}
-          />
-          <Route
-            path="/disease/:efoId/associations"
-            render={routeProps => (
-              <Associations
-                match={routeProps.match}
-                location={routeProps.location}
-                history={routeProps.history}
-                efoId={efoId}
-                name={name}
-              />
-            )}
-          />
-          <Route
-            path="/disease/:efoId/classic-associations"
-            render={routeProps => (
-              <ClassicAssociations
-                match={routeProps.match}
-                location={routeProps.location}
-                history={routeProps.history}
-                efoId={efoId}
-                name={name}
-              />
-            )}
-          />
+          <Route exact path="/disease/:efoId">
+            <Profile efoId={efoId} name={name} />
+          </Route>
+          <Route path="/disease/:efoId/associations">
+            <Associations efoId={efoId} name={name} />
+          </Route>
+          <Route path="/disease/:efoId/classic-associations">
+            <ClassicAssociations efoId={efoId} name={name} />
+          </Route>
         </Switch>
       </Suspense>
     </BasePage>

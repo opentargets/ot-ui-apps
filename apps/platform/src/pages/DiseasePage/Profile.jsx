@@ -1,10 +1,13 @@
 import { gql } from '@apollo/client';
+import { lazy, Suspense } from 'react';
+
 import {
   PlatformApiProvider,
   SectionContainer,
   SummaryContainer,
   summaryUtils,
   PrivateWrapper,
+  SectionLoader,
 } from 'ui';
 
 import OntologySummary from 'sections/src/disease/Ontology/Summary';
@@ -13,14 +16,24 @@ import BibliographySummary from 'sections/src/disease/Bibliography/Summary';
 import PhenotypesSummary from 'sections/src/disease/Phenotypes/Summary';
 import OTProjectsSummary from 'sections/src/disease/OTProjects/Summary';
 
-import OntologySection from 'sections/src/disease/Ontology/Body';
-import KnownDrugsSection from 'sections/src/disease/KnownDrugs/Body';
-import BibliographySection from 'sections/src/disease/Bibliography/Body';
-import PhenotypesSection from 'sections/src/disease/Phenotypes/Body';
-import OTProjectsSection from 'sections/src/disease/OTProjects/Body';
-
 import client from '../../client';
 import ProfileHeader from './ProfileHeader';
+
+const OntologySection = lazy(() =>
+  import('sections/src/disease/Ontology/Body')
+);
+const KnownDrugsSection = lazy(() =>
+  import('sections/src/disease/KnownDrugs/Body')
+);
+const BibliographySection = lazy(() =>
+  import('sections/src/disease/Bibliography/Body')
+);
+const PhenotypesSection = lazy(() =>
+  import('sections/src/disease/Phenotypes/Body')
+);
+const OTProjectsSection = lazy(() =>
+  import('sections/src/disease/OTProjects/Body')
+);
 
 const summaries = [
   OntologySummary,
@@ -67,12 +80,22 @@ function Profile({ efoId, name }) {
       </SummaryContainer>
 
       <SectionContainer>
-        <OntologySection id={efoId} label={name} entity={DISEASE} />
-        <KnownDrugsSection id={efoId} label={name} entity={DISEASE} />
-        <PhenotypesSection id={efoId} label={name} entity={DISEASE} />
-        <BibliographySection id={efoId} label={name} entity={DISEASE} />
+        <Suspense fallback={<SectionLoader />}>
+          <OntologySection id={efoId} label={name} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <KnownDrugsSection id={efoId} label={name} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <PhenotypesSection id={efoId} label={name} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <BibliographySection id={efoId} label={name} entity={DISEASE} />
+        </Suspense>
         <PrivateWrapper>
-          <OTProjectsSection id={efoId} label={name} entity={DISEASE} />
+          <Suspense fallback={<SectionLoader />}>
+            <OTProjectsSection id={efoId} label={name} entity={DISEASE} />
+          </Suspense>
         </PrivateWrapper>
       </SectionContainer>
     </PlatformApiProvider>
