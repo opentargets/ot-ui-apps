@@ -1,11 +1,5 @@
-import {
-  useState,
-  useEffect,
-  useContext,
-  ChangeEvent,
-  SyntheticEvent,
-} from "react";
-import { Autocomplete, TextField } from "@mui/material";
+import { useState, useEffect, useContext, SyntheticEvent } from "react";
+import { Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { v1 } from "uuid";
 import SearchInput from "./Search/SearchInput";
@@ -25,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     height: "max-content !important",
-    boxShadow: "-19px 0px 22px -16px rgba(0,0,0,0.1), 22px 0px 22px -16px rgba(0,0,0,0.1) !important",
+    boxShadow:
+      "-19px 0px 22px -16px rgba(0,0,0,0.1), 22px 0px 22px -16px rgba(0,0,0,0.1) !important",
   },
   listbox: {
     maxHeight: "100% !important",
@@ -170,7 +165,11 @@ export default function AutocompleteSearch({
       loading={searchQueryLoading}
       loadingText={<SearchLoadingState />}
       renderGroup={(group) => (
-        <SearchListHeader key={v1()} listHeader={group.group} clearAll={clearAll}>
+        <SearchListHeader
+          key={v1()}
+          listHeader={group.group}
+          clearAll={clearAll}
+        >
           {group.children}
         </SearchListHeader>
       )}

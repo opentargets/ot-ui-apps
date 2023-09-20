@@ -1,4 +1,5 @@
 import { LoadingBackdrop, PrivateWrapper } from 'ui';
+import { Box } from '@mui/material';
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -11,7 +12,6 @@ import {
   OptionsControlls,
 } from '../../../components/AssociationsToolkit';
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociationsQuery.gql';
-import { Box } from '@mui/material';
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useAotfContext();

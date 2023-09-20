@@ -87,10 +87,16 @@ function getColumns(classes) {
       label: "Dosing effects",
       renderCell: ({ effects }) => {
         const circleUpData = effects
-          ? effects.find((effect) => effect.direction === "activation")
+          ? effects.find(
+              (effect) =>
+                effect.direction === "Activation/Increase/Upregulation"
+            )
           : null;
         const circleDownData = effects
-          ? effects.find((effect) => effect.direction === "inhibition")
+          ? effects.find(
+              (effect) =>
+                effect.direction === "Inhibition/Decrease/Downregulation"
+            )
           : null;
         return (
           <>

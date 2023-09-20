@@ -1,5 +1,5 @@
-import Tooltip from '@mui/material/Tooltip';
 import { getScale } from '../utils';
+import Tooltip from './AssocTooltip';
 
 const getClassName = ({ globalScore, hasValue }) => {
   if (globalScore) return 'data-global-score';

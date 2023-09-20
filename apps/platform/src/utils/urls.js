@@ -89,7 +89,7 @@ export const referenceUrls = {
 // Associations and URL PPP
 export const getClassicAssociationsURL = ({ baseURL }) => {
   const path = 'classic-associations';
-  const fullURL = `${baseURL}${path}`;
+  const fullURL = `${baseURL}/${path}`;
   return { fullURL, path };
 };
 

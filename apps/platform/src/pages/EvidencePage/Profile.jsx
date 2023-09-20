@@ -6,6 +6,7 @@ import {
   SummaryContainer,
   summaryUtils,
   PrivateWrapper,
+  SectionLoader,
 } from 'ui';
 
 import CancerBiomarkersSummary from 'sections/src/evidence/CancerBiomarkers/Summary';
@@ -34,6 +35,8 @@ import SlapEnrichSummary from 'sections/src/evidence/SlapEnrich/Summary';
 import SysBioSummary from 'sections/src/evidence/SysBio/Summary';
 import UniProtLiteratureSummary from 'sections/src/evidence/UniProtLiterature/Summary';
 import UniProtVariantsSummary from 'sections/src/evidence/UniProtVariants/Summary';
+
+import ProfileHeader from './ProfileHeader';
 
 const CancerBiomarkersSection = lazy(() =>
   import('sections/src/evidence/CancerBiomarkers/Body')
@@ -97,8 +100,6 @@ const UniProtLiteratureSection = lazy(() =>
 const UniProtVariantsSection = lazy(() =>
   import('sections/src/evidence/UniProtVariants/Body')
 );
-
-import ProfileHeader from './ProfileHeader';
 
 const summaries = [
   CancerBiomarkersSummary,
@@ -209,36 +210,87 @@ function Profile({ ensgId, efoId, symbol, name }) {
       </SummaryContainer>
 
       <SectionContainer>
-        <Suspense fallback={'Loading ...'}>
+        <Suspense fallback={<SectionLoader />}>
           <OTGeneticsSection id={id} label={label} entity={DISEASE} />
-          <EVASection id={id} label={label} entity={DISEASE} />
-          <GeneBurdenSection id={id} label={label} entity={DISEASE} />
-          <GenomicsEnglandSection id={id} label={label} entity={DISEASE} />
-          <Gene2PhenotypeSection id={id} label={label} entity={DISEASE} />
-          <UniProtLiteratureSection id={id} label={label} entity={DISEASE} />
-          <UniProtVariantsSection id={id} label={label} entity={DISEASE} />
-          <ClinGenSection id={id} label={label} entity={DISEASE} />
-          <OrphanetSection id={id} label={label} entity={DISEASE} />
-          <CancerGeneCensusSection id={id} label={label} entity={DISEASE} />
-          <IntOgenSection id={id} label={label} entity={DISEASE} />
-          <EVASomaticSection id={id} label={label} entity={DISEASE} />
-          <ChemblSection id={id} label={label} entity={DISEASE} />
-          <CRISPRSection id={id} label={label} entity={DISEASE} />
-          <CrisprScreenSection id={id} label={label} entity={DISEASE} />
-          <CancerBiomarkersSection id={id} label={label} entity={DISEASE} />
-          <SlapEnrichSection id={id} label={label} entity={DISEASE} />
-          <ProgenySection id={id} label={label} entity={DISEASE} />
-          <ReactomeSection id={id} label={label} entity={DISEASE} />
-          <SysBioSection id={id} label={label} entity={DISEASE} />
-          <EuropePmcSection id={id} label={label} entity={DISEASE} />
-          <ExpressionAtlasSection id={id} label={label} entity={DISEASE} />
-          <ImpcSection id={id} label={label} entity={DISEASE} />
-          <PrivateWrapper>
-            <OTCRISPRSection id={id} label={label} entity={DISEASE} />
-            <OTEncoreSection id={id} label={label} entity={DISEASE} />
-            <OTValidationSection id={id} label={label} entity={DISEASE} />
-          </PrivateWrapper>
         </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <EVASection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <GeneBurdenSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <GenomicsEnglandSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <Gene2PhenotypeSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <UniProtLiteratureSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <UniProtVariantsSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <ClinGenSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <OrphanetSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <CancerGeneCensusSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <IntOgenSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <EVASomaticSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <ChemblSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <CRISPRSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <CrisprScreenSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <CancerBiomarkersSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <SlapEnrichSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <ProgenySection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <ReactomeSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <SysBioSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <EuropePmcSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <ExpressionAtlasSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <ImpcSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
+
+        <PrivateWrapper>
+          <Suspense fallback={<SectionLoader />}>
+            <OTCRISPRSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <OTEncoreSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <OTValidationSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+        </PrivateWrapper>
       </SectionContainer>
     </PlatformApiProvider>
   );

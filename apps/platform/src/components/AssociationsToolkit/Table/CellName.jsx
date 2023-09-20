@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { styled } from '@mui/material';
-import { Typography } from '@mui/material';
+import { styled, Typography } from '@mui/material';
 import {
   faDna,
   faStethoscope,
@@ -8,7 +7,8 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link, Tooltip } from 'ui';
+import { Link } from 'ui';
+import Tooltip from './AssocTooltip';
 
 import useAotfContext from '../hooks/useAotfContext';
 
@@ -94,6 +94,7 @@ function CellName({ name, rowId, row, tablePrefix }) {
       open={open}
       onClose={() => setOpen(false)}
       placement="top"
+      arrow
       title={
         <TooltipContent name={name} entity={rowEntity} id={rowId} icon={icon} />
       }

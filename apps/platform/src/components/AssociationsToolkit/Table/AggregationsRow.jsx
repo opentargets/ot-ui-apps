@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 
-import AggregationsTooltip from './AggregationsTooltip';
+import AggregationsTooltip from './AssocTooltip';
 import associationsColumns from '../static_datasets/dataSourcesAssoc';
 import prioritizationColumns from '../static_datasets/prioritizationCols';
 import { groupViewColumnsBy } from '../utils';

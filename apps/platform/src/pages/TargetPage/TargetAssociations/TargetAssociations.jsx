@@ -1,5 +1,6 @@
 import { LoadingBackdrop } from 'ui';
 import { useContext } from 'react';
+import { Box } from '@mui/material';
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -11,7 +12,6 @@ import {
   OptionsControlls,
 } from '../../../components/AssociationsToolkit';
 import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
-import { Box } from '@mui/material';
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useContext(AssociationsContext);

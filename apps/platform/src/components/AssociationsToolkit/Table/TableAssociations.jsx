@@ -13,7 +13,7 @@ import { styled } from '@mui/material/styles';
 import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
 import prioritizationCols from '../static_datasets/prioritizationCols';
 
-import AggregationsTooltip from './AggregationsTooltip';
+import AggregationsTooltip from './AssocTooltip';
 import ColoredCell from './ColoredCell';
 
 import HeaderControls from '../HeaderControls';

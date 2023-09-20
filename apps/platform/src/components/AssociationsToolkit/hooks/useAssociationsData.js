@@ -57,6 +57,14 @@ const getAllDataCount = (entity, apiResponse) => {
   if (entity === 'disease') return apiResponse.disease.associatedTargets.count;
 };
 
+const initialState = {
+  loading: false,
+  error: false,
+  data: [],
+  initialLoading: true,
+  count: 0,
+};
+
 function useAssociationsData({
   query,
   options: {
@@ -72,15 +80,11 @@ function useAssociationsData({
     entity,
   },
 }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState([]);
-  const [count, setCount] = useState(0);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [state, setState] = useState(initialState);
 
   useEffect(() => {
     let isCurrent = true;
-    setLoading(true);
+    setState({ ...state, loading: true });
     const fetchData = async () => {
       const resData = await client.query({
         query,
@@ -101,12 +105,14 @@ function useAssociationsData({
       });
       const parsedData = getParsedData(entity, resData.data);
       const dataCount = getAllDataCount(entity, resData.data);
-      setCount(dataCount);
-      setData(parsedData);
-      setInitialLoading(false);
-      setLoading(false);
+      setState({
+        count: dataCount,
+        data: parsedData,
+        loading: false,
+        initialLoading: false,
+      });
     };
-    fetchData();
+    if (isCurrent) fetchData();
     return () => (isCurrent = false);
   }, [
     id,
@@ -121,7 +127,7 @@ function useAssociationsData({
     aggregationFilters,
   ]);
 
-  return { loading, error, data, initialLoading, count };
+  return state;
 }
 
 export default useAssociationsData;

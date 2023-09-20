@@ -1,9 +1,11 @@
 import { Suspense, lazy } from 'react';
+import { useLocation } from 'react-router-dom';
 import { LoadingBackdrop, BasePage } from 'ui';
 
 const DownloadsPage = lazy(() => import('./DownloadsPage'));
 
-function DownloadsWrapper({ location }) {
+function DownloadsWrapper() {
+  const location = useLocation();
   return (
     <BasePage
       title="Data downloads | Open Targets Platform"
