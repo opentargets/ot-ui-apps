@@ -49,7 +49,9 @@ export default function AutocompleteSearch({
   isHomePage?: boolean;
   showSearchResultPage?: boolean;
 }) {
-  const [searchResult, setSearchResult] = useState<any[]>([]);
+  const [searchResult, setSearchResult] = useState<any[]>(
+    JSON.parse(localStorage.getItem("search-history") || "[]") || []
+  );
   const [openListItem] = useListOption();
   const [recentItems, setRecentValue] = useState(
     JSON.parse(localStorage.getItem("search-history") || "[]") || []
@@ -80,7 +82,7 @@ export default function AutocompleteSearch({
 
   useEffect(() => {
     let searchForTermObject;
-    setSearchResult(recentItems);
+    // setSearchResult(recentItems);
     setLoading(searchQueryLoading);
     if (inputValue && showSearchResultPage) {
       searchForTermObject = {
@@ -89,7 +91,10 @@ export default function AutocompleteSearch({
         entity: "search",
         type: "",
       };
-      setSearchResult([searchForTermObject, ...recentItems]);
+      setSearchResult([
+        searchForTermObject,
+        ...JSON.parse(localStorage.getItem("search-history") || "[]"),
+      ]);
     }
     if (!loading && inputValue && data.length) {
       const RESULT_DATA = JSON.parse(JSON.stringify(data));
@@ -97,7 +102,7 @@ export default function AutocompleteSearch({
       setSearchResult(RESULT_DATA);
       setLoading(false);
     }
-  }, [data, inputValue, recentItems]);
+  }, [data, inputValue]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
@@ -105,6 +110,14 @@ export default function AutocompleteSearch({
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, []);
+
+  useEffect(() => {
+    console.log({
+      props: { isHomePage, showSearchResultPage },
+      state: { searchResult, recentItems, open },
+      context: { searchQuery, inputValue, loading, searchQueryLoading },
+    });
+  });
 
   const searchQueryInput = (param: string) => {
     if (!param) {
@@ -145,6 +158,8 @@ export default function AutocompleteSearch({
     setRecentValue([]);
     localStorage.removeItem("search-history");
   };
+
+  console.log("fiop3ne4io");
 
   return (
     <Autocomplete

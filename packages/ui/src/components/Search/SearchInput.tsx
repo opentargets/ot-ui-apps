@@ -1,4 +1,4 @@
-import { useEffect, useContext, useRef } from "react";
+import { useEffect, useContext, useRef, useState } from "react";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { makeStyles } from "@mui/styles";
@@ -61,8 +61,8 @@ function SearchInput({
   setOpen: (value: boolean) => void;
 }) {
   const classes = useStyles();
-  const { searchPlaceholder, setInputValue, inputValue } =
-    useContext(SearchContext);
+  const { searchPlaceholder } = useContext(SearchContext);
+  const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 300);
   const inputRef = useRef<HTMLInputElement>(null);
 
