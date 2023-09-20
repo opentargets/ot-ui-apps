@@ -70,7 +70,7 @@ function Publication({
   const { urlAiApi } = config;
 
   if (!title) {
-    return { naLabel };
+    return naLabel;
   }
 
   const handleShowAbstractClick = () => {
