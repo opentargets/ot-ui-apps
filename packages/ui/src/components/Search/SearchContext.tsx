@@ -11,11 +11,9 @@ export const SearchContext = createContext<{
   setLoading: (arg: boolean) => void;
 }>({
   searchQuery: "",
-  inputValue: "",
   loading: false,
   searchPlaceholder: "Search...",
   primaryColor: "#3489ca",
-  setInputValue: () => undefined,
   setLoading: () => undefined,
 });
 
@@ -31,7 +29,6 @@ function SearchProvider({
   primaryColor?: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const [inputValue, setInputValue] = useState("");
 
   return (
     <SearchContext.Provider
@@ -39,10 +36,8 @@ function SearchProvider({
         primaryColor,
         searchQuery,
         loading,
-        inputValue,
         searchPlaceholder,
         setLoading,
-        setInputValue,
       }}
     >
       {children}

@@ -16,6 +16,7 @@ import useListOption from "../hooks/useListOption";
 import { SearchContext } from "./Search/SearchContext";
 import SearchLoadingState from "./Search/SearchLoadingState";
 import { containsObject } from "./Search/utils/searchUtils";
+import useDebounce from "../hooks/useDebounce";
 
 const useStyles = makeStyles((theme) => ({
   popper: {
@@ -25,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     height: "max-content !important",
-    boxShadow: "-19px 0px 22px -16px rgba(0,0,0,0.1), 22px 0px 22px -16px rgba(0,0,0,0.1) !important",
+    boxShadow:
+      "-19px 0px 22px -16px rgba(0,0,0,0.1), 22px 0px 22px -16px rgba(0,0,0,0.1) !important",
   },
   listbox: {
     maxHeight: "100% !important",
@@ -60,11 +62,12 @@ export default function AutocompleteSearch({
     JSON.parse(localStorage.getItem("search-history") || "[]") || []
   );
   const [open, setOpen] = useState(isHomePage ? false : true);
+  const [searchInputValue, setSearchInputValue] = useState("");
 
   const classes = useStyles();
 
-  const { searchQuery, setLoading, inputValue, setInputValue, loading } =
-    useContext(SearchContext);
+  const { searchQuery, setLoading, loading } = useContext(SearchContext);
+  const debouncedInputValue = useDebounce(searchInputValue, 300);
 
   const [getSearchData, { data, loading: searchQueryLoading }] =
     useSearchQueryData(searchQuery);
@@ -87,22 +90,22 @@ export default function AutocompleteSearch({
     let searchForTermObject;
     setSearchResult(recentItems);
     setLoading(searchQueryLoading);
-    if (inputValue && showSearchResultPage) {
+    if (searchInputValue && showSearchResultPage) {
       searchForTermObject = {
-        symbol: "Search For: " + inputValue,
-        name: inputValue,
+        symbol: "Search For: " + searchInputValue,
+        name: searchInputValue,
         entity: "search",
         type: "",
       };
       setSearchResult([searchForTermObject, ...recentItems]);
     }
-    if (!loading && inputValue && data.length) {
+    if (!loading && searchInputValue && data.length) {
       const RESULT_DATA = JSON.parse(JSON.stringify(data));
       showSearchResultPage && RESULT_DATA.unshift(searchForTermObject);
       setSearchResult(RESULT_DATA);
       setLoading(false);
     }
-  }, [data, inputValue, recentItems]);
+  }, [data, recentItems]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
@@ -111,19 +114,36 @@ export default function AutocompleteSearch({
     };
   }, []);
 
+  useEffect(() => {
+    searchQueryInput(debouncedInputValue);
+  }, [debouncedInputValue]);
+
+  useEffect(() => {
+    let searchForTermObject;
+    if (searchInputValue && showSearchResultPage) {
+      searchForTermObject = {
+        symbol: "Search For: " + searchInputValue,
+        name: searchInputValue,
+        entity: "search",
+        type: "",
+      };
+      setSearchResult([searchForTermObject, ...recentItems]);
+    }
+  }, [searchInputValue]);
+
   const searchQueryInput = (param: string) => {
     if (!param) {
       setSearchResult(recentItems);
     } else {
       setOpen(true);
-      setInputValue(param);
+      setSearchInputValue(param);
       getSearchData(param);
     }
   };
 
   const onClose = () => {
     setLoading(false);
-    setInputValue("");
+    setSearchInputValue("");
     setOpen(false);
     closeModal();
   };
@@ -169,8 +189,14 @@ export default function AutocompleteSearch({
       groupBy={(option) => option.type}
       loading={searchQueryLoading}
       loadingText={<SearchLoadingState />}
+      inputValue={searchInputValue}
+      onInputChange={(event, iV) => setSearchInputValue(iV)}
       renderGroup={(group) => (
-        <SearchListHeader key={v1()} listHeader={group.group} clearAll={clearAll}>
+        <SearchListHeader
+          key={v1()}
+          listHeader={group.group}
+          clearAll={clearAll}
+        >
           {group.children}
         </SearchListHeader>
       )}
@@ -189,7 +215,6 @@ export default function AutocompleteSearch({
       renderInput={(params) => (
         <SearchInput
           params={params}
-          debounceValue={searchQueryInput}
           onClose={onClose}
           isHomePage={isHomePage}
           focus={open}

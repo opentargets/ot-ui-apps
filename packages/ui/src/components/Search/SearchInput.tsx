@@ -47,34 +47,26 @@ const useStyles = makeStyles((theme) => ({
 
 function SearchInput({
   params,
-  debounceValue,
   onClose,
   isHomePage,
   focus = true,
   setOpen,
 }: {
   params: TextFieldProps;
-  debounceValue: (str: string) => void;
   onClose: () => void;
   isHomePage?: boolean;
   focus: boolean;
   setOpen: (value: boolean) => void;
 }) {
   const classes = useStyles();
-  const { searchPlaceholder, setInputValue, inputValue } =
-    useContext(SearchContext);
-  const debouncedInputValue = useDebounce(inputValue, 300);
+  const { searchPlaceholder } = useContext(SearchContext);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    debounceValue(debouncedInputValue);
-  }, [debouncedInputValue]);
 
   useEffect(() => {
     if (inputRef.current && (!isHomePage || focus)) {
       inputRef.current.focus();
     }
-  }, [focus, isHomePage]);
+  }, [focus]);
 
   return (
     <div className={classes.searchContainer}>
@@ -107,10 +99,6 @@ function SearchInput({
           ),
           className: classes.inputPadding,
         }}
-        onChange={(e) => {
-          setInputValue(e.target.value.trim() || "");
-        }}
-        value={inputValue}
         placeholder={searchPlaceholder}
         onKeyDown={(e) => {
           if (e.code === "Escape") onClose();
