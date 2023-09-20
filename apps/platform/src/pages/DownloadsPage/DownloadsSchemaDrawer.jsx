@@ -31,8 +31,8 @@ const useStyles = makeStyles(theme => ({
   },
   codeBlock: {
     backgroundColor: theme.palette.grey[300],
-    padding: '0.2em 2em 0.2em 0.2em',
-    fontSize: '0.85em',
+    padding: '0.2em 6em 0.2em 0.2em',
+    fontSize: '0.9em',
     position: 'relative',
   },
   title: {
@@ -56,19 +56,82 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const LAST_ELEMENT_IN_SCHEMA_STRING = '└───';
+  const NON_LAST_ELEMENT_IN_SCHEMA_STRING = '├───';
+  const NEXT_LINE_STRING = '\n';
 
   function isEmpty(obj) {
     return Object.keys(obj).length === 0;
   }
 
-  function isLastElementInObject(obj, key) {
-    if (Object.keys(obj)[Object.keys(obj).length - 1] === key) return true;
-    return false;
+  function convertSimpleObjectToSchema(obj, isLastElement) {
+    const schemaString = isLastElement
+      ? LAST_ELEMENT_IN_SCHEMA_STRING
+      : NON_LAST_ELEMENT_IN_SCHEMA_STRING;
+    return `${NEXT_LINE_STRING}${schemaString}${obj.name} : ${
+      obj.type
+    }`;
   }
 
-  function convertToVisual(obj, key) {
-    if (isLastElementInObject(obj, key)) return `\n└───${key} : ${obj[key]}`;
-    return `\n├───${key} : ${obj[key]}`;
+  function convertArrayObjectToSchema(obj, isLastElement) {
+    const schemaString = isLastElement
+      ? LAST_ELEMENT_IN_SCHEMA_STRING
+      : NON_LAST_ELEMENT_IN_SCHEMA_STRING;
+
+    const elementType =
+      typeof obj.type.elementType === 'object'
+        ? 'struct'
+        : typeof obj.type.elementType;
+
+    let schema = `${NEXT_LINE_STRING}${schemaString}${obj.name}: array `;
+
+    if (elementType === 'struct') {
+      const childSchema = convertStructObjectToSchema(
+        obj.type.elementType,
+        false
+      );
+      schema = `${schema}${childSchema}`;
+    } else {
+      schema = `${schema}${NEXT_LINE_STRING}│   ${NON_LAST_ELEMENT_IN_SCHEMA_STRING}element: ${elementType} `;
+    }
+
+    return schema;
+  }
+
+  function convertStructObjectToSchema(obj, isLastElement) {
+    const schemaString = isLastElement
+      ? LAST_ELEMENT_IN_SCHEMA_STRING
+      : NON_LAST_ELEMENT_IN_SCHEMA_STRING;
+
+    let schema =
+      obj.type.fields ?
+      `${NEXT_LINE_STRING}${schemaString}${obj.name}: array ${NEXT_LINE_STRING}│   ${NON_LAST_ELEMENT_IN_SCHEMA_STRING}element: struct` : `${NEXT_LINE_STRING}│   ${schemaString}element: struct `;
+
+    const fields = obj.type.fields || obj.fields;
+    if (fields)
+      fields.forEach(element => {
+        const childSchemaFn = getType(element);
+        schema = `${schema}${childSchemaFn(element, false).replaceAll(
+          /\n/g,
+          '\n│   │   '
+        )}`;
+      });
+    return schema;
+  }
+
+  function getType(obj) {
+    if (typeof obj !== 'object') return null;
+
+    if (typeof obj.type === 'string') return convertSimpleObjectToSchema;
+
+    switch (obj.type.type) {
+      case 'array':
+        return convertArrayObjectToSchema;
+      case 'struct':
+        return convertStructObjectToSchema;
+      default:
+        return getType(obj.type);
+    }
   }
 
   function jsonToSchema(rawObj) {
@@ -76,29 +139,17 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
     if (isEmpty(rawObj))
       schemaObjString = `${schemaObjString} ${typeof rawObj}`;
 
-    Object.keys(rawObj).forEach(key => {
-      if (typeof rawObj[key] === 'object' && !isEmpty(rawObj[key])) {
-        if (Array.isArray(rawObj[key])) {
-          schemaObjString = `${schemaObjString}\n├───${key} : array[]`;
-          rawObj[key].forEach(element => {
-            const childSchema = jsonToSchema(element);
-            schemaObjString = `${schemaObjString}\n│   ├───element:${childSchema.replaceAll(
-              /\n/g,
-              '\n│   │'
-            )}`;
-            schemaObjString.replaceAll(/\n/g, '\n|');
-          });
-        } else {
-          const childSchema = jsonToSchema(rawObj[key]);
-          schemaObjString = `${schemaObjString}\n├───${key}${childSchema.replaceAll(
-            /\n/g,
-            '\n│'
-          )}`;
-        }
-      } else {
-        schemaObjString += convertToVisual(rawObj, key);
-      }
-    });
+    if (Array.isArray(rawObj)) {
+      rawObj.forEach(element => {
+        const childSchema = jsonToSchema(element);
+        schemaObjString = `${schemaObjString}${childSchema}`;
+      });
+    } else if (typeof rawObj === 'object') {
+      const fnType = getType(rawObj);
+      const childSchema = fnType(rawObj, false);
+      schemaObjString = `${schemaObjString}${childSchema}`;
+    }
+
     return schemaObjString.replaceAll(/\n/g, '\n   ');
   }
 
@@ -144,7 +195,7 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
           </Typography>
 
           <div className={classes.codeBlock}>
-            <Tooltip title="Copy schema to clipboard">
+            <Tooltip title="Copy JSON to clipboard">
               <IconButton
                 className={classes.clipboard}
                 onClick={() => copyToClipboard()}
@@ -153,7 +204,7 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
               </IconButton>
             </Tooltip>
             <pre>
-              <code>{`   root${jsonToSchema(serialisedSchema)}`}</code>
+              <code>{`   root${serialisedSchema.fields && jsonToSchema(serialisedSchema.fields)}`}</code>
             </pre>
           </div>
         </div>
