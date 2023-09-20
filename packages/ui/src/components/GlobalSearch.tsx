@@ -5,7 +5,6 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import AutocompleteSearch from "./AutocompleteSearch";
-import { SearchContext } from "./Search/SearchContext";
 
 const useStyles = makeStyles((theme) => ({
   searchButton: {

@@ -168,6 +168,8 @@ export default function AutocompleteSearch({
       freeSolo
       options={searchResult}
       onChange={handleSelectOption}
+      inputValue={searchInputValue}
+      onInputChange={(e,v) => setSearchInputValue(v)}
       groupBy={(option) => option.type}
       loading={loading}
       loadingText={<SearchLoadingState />}
@@ -195,7 +197,6 @@ export default function AutocompleteSearch({
       renderInput={(params) => (
         <SearchInput
           params={params}
-          debounceValue={searchQueryInput}
           onClose={onClose}
           isHomePage={isHomePage}
           focus={open}
