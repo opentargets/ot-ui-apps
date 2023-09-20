@@ -1,21 +1,21 @@
-import React, { Suspense } from 'react';
+import { Suspense, Children, cloneElement } from "react";
 import {
   generatePath,
   Route,
   Switch,
   useHistory,
   useRouteMatch,
-} from 'react-router-dom';
-import { Tabs, Box } from '@mui/material';
-import { LoadingBackdrop } from 'ui';
-import { v1 } from 'uuid';
+} from "react-router-dom";
+import { Tabs, Box } from "@mui/material";
+import { v1 } from "uuid";
+import LoadingBackdrop from "../LoadingBackdrop";
 
 function RoutingTabs({ children }) {
   const match = useRouteMatch();
   const history = useHistory();
   const routes = [];
 
-  const preparedChildren = React.Children.map(children, child => {
+  const preparedChildren = Children.map(children, (child) => {
     // Prepares routes for the tabs.
     if (child.props.component) {
       routes.push({
@@ -26,14 +26,14 @@ function RoutingTabs({ children }) {
     }
 
     // Adds value prop for the tab highlight.
-    return React.cloneElement(child, {
+    return cloneElement(child, {
       value: generatePath(child.props.path, match.params),
     });
   });
 
   return (
     <>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={history.location.pathname}>{preparedChildren}</Tabs>
       </Box>
       <Suspense fallback={<LoadingBackdrop />}>

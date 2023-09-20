@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactNode } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Link as RouterLink } from "react-router-dom";
@@ -50,7 +50,7 @@ function Link({
   newTab?: boolean;
   footer: boolean;
   tooltip?: unknown;
-  children: React.ReactNode;
+  children: ReactNode;
   ariaLabel?: string;
 }) {
   const classes = useStyles();
