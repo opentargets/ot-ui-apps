@@ -75,19 +75,26 @@ function getColumns(date) {
       id: 'formats',
       label: 'Format(s)',
       renderCell: ({ niceName, formats }) =>
-        formats.map(format => (
-          <Fragment key={format.format + format.path + date.month + date.year}>
-            <DownloadsDrawer
-              title={niceName}
-              format={format.format}
-              path={format.path}
-              month={date.month}
-              year={date.year}
+        formats
+          .sort((a, b) => {
+            if (a.format > b.format) return 1;
+            return -1;
+          })
+          .map(format => (
+            <Fragment
+              key={format.format + format.path + date.month + date.year}
             >
-              <Chip label={formatMap[format.format]} clickable size="small" />
-            </DownloadsDrawer>{' '}
-          </Fragment>
-        )),
+              <DownloadsDrawer
+                title={niceName}
+                format={format.format}
+                path={format.path}
+                month={date.month}
+                year={date.year}
+              >
+                <Chip label={formatMap[format.format]} clickable size="small" />
+              </DownloadsDrawer>{' '}
+            </Fragment>
+          )),
     },
     {
       id: 'schemas',
