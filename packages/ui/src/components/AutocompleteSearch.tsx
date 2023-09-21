@@ -81,28 +81,12 @@ export default function AutocompleteSearch({
   }, [searchQueryLoading]);
 
   useEffect(() => {
-    let searchForTermObject;
-    // setSearchResult(recentItems);
-    setLoading(searchQueryLoading);
-    if (inputValue && showSearchResultPage) {
-      searchForTermObject = {
-        symbol: "Search For: " + inputValue,
-        name: inputValue,
-        entity: "search",
-        type: "",
-      };
-      setSearchResult([
-        searchForTermObject,
-        ...JSON.parse(localStorage.getItem("search-history") || "[]"),
-      ]);
-    }
-    if (!loading && inputValue && data.length) {
+    if (!loading && data.length) {
       const RESULT_DATA = JSON.parse(JSON.stringify(data));
-      showSearchResultPage && RESULT_DATA.unshift(searchForTermObject);
       setSearchResult(RESULT_DATA);
       setLoading(false);
     }
-  }, [data, inputValue]);
+  }, [data]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
@@ -111,20 +95,13 @@ export default function AutocompleteSearch({
     };
   }, []);
 
-  useEffect(() => {
-    console.log({
-      props: { isHomePage, showSearchResultPage },
-      state: { searchResult, recentItems, open },
-      context: { searchQuery, inputValue, loading, searchQueryLoading },
-    });
-  });
-
   const searchQueryInput = (param: string) => {
     if (!param) {
-      setSearchResult(recentItems);
+      setSearchResult(
+        JSON.parse(localStorage.getItem("search-history") || "[]")
+      );
     } else {
       setOpen(true);
-      setInputValue(param);
       getSearchData(param);
     }
   };
@@ -158,8 +135,6 @@ export default function AutocompleteSearch({
     setRecentValue([]);
     localStorage.removeItem("search-history");
   };
-
-  console.log("fiop3ne4io");
 
   return (
     <Autocomplete
