@@ -75,8 +75,6 @@ export default function AutocompleteSearch({
     }
   };
 
-  console.log("inside autocomplete");
-
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
     return () => {
