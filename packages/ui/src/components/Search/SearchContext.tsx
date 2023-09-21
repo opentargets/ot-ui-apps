@@ -23,7 +23,6 @@ function SearchProvider({
   primaryColor: string;
 }) {
 
-  console.log('inside context')
   return (
     <SearchContext.Provider
       value={{

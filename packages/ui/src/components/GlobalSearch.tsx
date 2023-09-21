@@ -89,8 +89,6 @@ function GlobalSearch({ showSearchResultPage }) {
     }
   }, []);
 
-  console.log('inside global search popup')
-
   const shortcutText =
     navigator?.platform.indexOf("Mac") > -1 ? "⌘ K" : "Ctrl+K";
 

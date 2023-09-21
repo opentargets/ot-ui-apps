@@ -62,8 +62,6 @@ function SearchInput({
   const { searchPlaceholder } = useContext(SearchContext);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  console.log('inpi=uttt')
-
   useEffect(() => {
     if (inputRef.current && (!isHomePage || focus)) {
       inputRef.current.focus();
