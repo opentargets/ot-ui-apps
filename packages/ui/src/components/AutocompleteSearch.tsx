@@ -187,7 +187,7 @@ export default function AutocompleteSearch({
       )}
       getOptionLabel={(option) => option.symbol || option.name || option.id}
       renderOption={(props, option) => (
-        <li key={v1()} {...props}>
+        <li {...props}>
           <SearchListItem
             item={option}
             isTopHit={option.type === "topHit"}
