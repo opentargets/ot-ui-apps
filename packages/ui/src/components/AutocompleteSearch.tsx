@@ -2,14 +2,15 @@ import { useState, useEffect, useContext, SyntheticEvent } from "react";
 import { Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { v1 } from "uuid";
+import { useLazyQuery } from "@apollo/client";
 import SearchInput from "./Search/SearchInput";
-import useSearchQueryData from "../hooks/useSearchQueryData";
 import SearchListItem, { SearchResult } from "./Search/SearchListItem";
 import SearchListHeader from "./Search/SearchListHeader";
 import useListOption from "../hooks/useListOption";
 import { SearchContext } from "./Search/SearchContext";
 import SearchLoadingState from "./Search/SearchLoadingState";
-import { containsObject } from "./Search/utils/searchUtils";
+import { containsObject, formatSearchData } from "./Search/utils/searchUtils";
+import useDebounce from "../hooks/useDebounce";
 
 const useStyles = makeStyles((theme) => ({
   popper: {
@@ -55,14 +56,15 @@ export default function AutocompleteSearch({
     JSON.parse(localStorage.getItem("search-history") || "[]") || []
   );
   const [open, setOpen] = useState(isHomePage ? false : true);
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const classes = useStyles();
 
-  const { searchQuery, setLoading, inputValue, setInputValue, loading } =
-    useContext(SearchContext);
+  const { searchQuery } = useContext(SearchContext);
+  const debouncedInputValue = useDebounce(searchInputValue, 500);
 
-  const [getSearchData, { data, loading: searchQueryLoading }] =
-    useSearchQueryData(searchQuery);
+  const [getSearchData] = useLazyQuery(searchQuery);
 
   const handleKeyPress = (event: KeyboardEvent): void => {
     // open on cmd + k
@@ -74,51 +76,57 @@ export default function AutocompleteSearch({
   };
 
   useEffect(() => {
-    setLoading(searchQueryLoading);
-    if (searchQueryLoading) setSearchResult([]);
-  }, [searchQueryLoading]);
-
-  useEffect(() => {
-    let searchForTermObject;
-    setSearchResult(recentItems);
-    setLoading(searchQueryLoading);
-    if (inputValue && showSearchResultPage) {
-      searchForTermObject = {
-        symbol: "Search For: " + inputValue,
-        name: inputValue,
-        entity: "search",
-        type: "",
-      };
-      setSearchResult([searchForTermObject, ...recentItems]);
-    }
-    if (!loading && inputValue && data.length) {
-      const RESULT_DATA = JSON.parse(JSON.stringify(data));
-      showSearchResultPage && RESULT_DATA.unshift(searchForTermObject);
-      setSearchResult(RESULT_DATA);
-      setLoading(false);
-    }
-  }, [data, inputValue, recentItems]);
-
-  useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, []);
 
+  useEffect(() => {
+    searchQueryInput(debouncedInputValue);
+  }, [debouncedInputValue]);
+
+  useEffect(() => {
+    let searchForTermObject;
+    setSearchResult(recentItems);
+    if (searchInputValue && showSearchResultPage) {
+      searchForTermObject = {
+        symbol: "Search For: " + searchInputValue,
+        name: searchInputValue,
+        entity: "search",
+        type: "",
+      };
+      setSearchResult([searchForTermObject, ...recentItems]);
+    }
+  }, [searchInputValue, recentItems]);
+
   const searchQueryInput = (param: string) => {
     if (!param) {
       setSearchResult(recentItems);
     } else {
       setOpen(true);
-      setInputValue(param);
-      getSearchData(param);
+      fetchSearchResults(param);
     }
   };
 
+  const fetchSearchResults = (value: string) => {
+    getSearchData({ variables: { queryString: value } }).then((res) => {
+      const formattedData = formatSearchData(res.data.search || res.data);
+      let searchForTermObject;
+      if (showSearchResultPage) {
+        searchForTermObject = {
+          symbol: "Search For: " + searchInputValue,
+          name: searchInputValue,
+          entity: "search",
+          type: "",
+        };
+        setSearchResult([searchForTermObject, ...formattedData]);
+      } else setSearchResult(formattedData);
+    });
+  };
+
   const onClose = () => {
-    setLoading(false);
-    setInputValue("");
+    setSearchInputValue("");
     setOpen(false);
     closeModal();
   };
@@ -161,8 +169,10 @@ export default function AutocompleteSearch({
       freeSolo
       options={searchResult}
       onChange={handleSelectOption}
+      inputValue={searchInputValue}
+      onInputChange={(e, v) => setSearchInputValue(v)}
       groupBy={(option) => option.type}
-      loading={searchQueryLoading}
+      loading={loading}
       loadingText={<SearchLoadingState />}
       renderGroup={(group) => (
         <SearchListHeader
@@ -175,7 +185,7 @@ export default function AutocompleteSearch({
       )}
       getOptionLabel={(option) => option.symbol || option.name || option.id}
       renderOption={(props, option) => (
-        <li key={v1()} {...props}>
+        <li {...props}>
           <SearchListItem
             item={option}
             isTopHit={option.type === "topHit"}
@@ -188,7 +198,6 @@ export default function AutocompleteSearch({
       renderInput={(params) => (
         <SearchInput
           params={params}
-          debounceValue={searchQueryInput}
           onClose={onClose}
           isHomePage={isHomePage}
           focus={open}

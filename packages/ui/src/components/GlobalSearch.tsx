@@ -5,7 +5,6 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import AutocompleteSearch from "./AutocompleteSearch";
-import { SearchContext } from "./Search/SearchContext";
 
 const useStyles = makeStyles((theme) => ({
   searchButton: {
@@ -69,8 +68,7 @@ function GlobalSearch({ showSearchResultPage }) {
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
-    setLoading(false);
-    setInputValue("");
+    // setLoading(false);
   };
   const handleOpen = () => setOpen(true);
 
@@ -90,8 +88,6 @@ function GlobalSearch({ showSearchResultPage }) {
       return false;
     }
   }, []);
-
-  const { setLoading, setInputValue } = useContext(SearchContext);
 
   const shortcutText =
     navigator?.platform.indexOf("Mac") > -1 ? "⌘ K" : "Ctrl+K";
