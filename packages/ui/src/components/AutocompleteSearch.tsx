@@ -62,7 +62,7 @@ export default function AutocompleteSearch({
   const classes = useStyles();
 
   const { searchQuery } = useContext(SearchContext);
-  const debouncedInputValue = useDebounce(searchInputValue, 300);
+  const debouncedInputValue = useDebounce(searchInputValue, 500);
 
   const [getSearchData] = useLazyQuery(searchQuery);
 
