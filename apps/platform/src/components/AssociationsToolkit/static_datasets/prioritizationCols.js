@@ -102,7 +102,7 @@ const cols = [
     label: 'Small molecule binder',
     aggregation: 'Tractability',
     sectionId: 'tractability',
-    description: 'Target binds a specific ligand',
+    description: 'Target binds a small molecule',
     docsLink:
       'http://home.opentargets.org/aotf-documentation#small-molecule-binder',
   },
