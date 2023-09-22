@@ -5,6 +5,10 @@ import config from '../../../config';
 
 export const { isPartnerPreview } = config.profile;
 
+const ASSOCIATION_LEGEND_LABEL = 'Association score';
+const PRIORITISATION_LEGEND_LABEL = 'Prioritisation indicator';
+const TARGE_PRIORITISATION_LEGEND_TICKS = ['Unfavourable', 'Favourable'];
+
 export const DISPLAY_MODE = {
   PRIORITISATION: 'prioritisations',
   ASSOCIATIONS: 'associations',
@@ -115,12 +119,20 @@ export const prioritizationScale = prioritizationScaleDomain.range(
 
 /* LEGENDS */
 const PrioritisationLegend = Legend(prioritizationScale, {
-  title: 'Prioritisation indicator',
-  tickFormat: (d, i) => ['Deprioritised', ' ', ' ', ' ', ' ', 'Prioritised'][i],
+  title: PRIORITISATION_LEGEND_LABEL,
+  tickFormat: (d, i) =>
+    [
+      TARGE_PRIORITISATION_LEGEND_TICKS[0],
+      ' ',
+      ' ',
+      ' ',
+      ' ',
+      TARGE_PRIORITISATION_LEGEND_TICKS[1],
+    ][i],
 });
 
 const AssociationsLegend = Legend(assocScale, {
-  title: 'Association score',
+  title: ASSOCIATION_LEGEND_LABEL,
   tickFormat: '.1f',
 });
 
