@@ -18,6 +18,15 @@ const cols = [
       'http://home.opentargets.org/aotf-documentation#genetic-constraint',
   },
   {
+    id: 'geneEssentiality',
+    label: 'Gene essentiality',
+    aggregation: 'Safety',
+    sectionId: 'depMapEssentiality',
+    description: 'Gene is defined as core essential by the DepMap portal',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#gene-essentiality',
+  },
+  {
     id: 'hasSafetyEvent',
     label: 'Known adverse events',
     aggregation: 'Safety',
@@ -87,6 +96,15 @@ const cols = [
     sectionId: 'tractability',
     description: 'Target binds a specific ligand',
     docsLink: 'http://home.opentargets.org/aotf-documentation#ligand-binder',
+  },
+  {
+    id: 'hasSmallMoleculeBinder',
+    label: 'Small molecule binder',
+    aggregation: 'Tractability',
+    sectionId: 'tractability',
+    description: 'Target binds a specific ligand',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#small-molecule-binder',
   },
   {
     id: 'hasPocket',
