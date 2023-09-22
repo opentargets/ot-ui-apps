@@ -8,6 +8,63 @@ const cols = [
     docsLink: 'http://home.opentargets.org/aotf-documentation#target-in-clinic',
   },
   {
+    id: 'geneticConstraint',
+    label: 'Genetic constraint',
+    aggregation: 'Safety',
+    sectionId: 'geneticConstraint',
+    description:
+      'Relative genetic constraint in natural populations derived from GnomAD',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#genetic-constraint',
+  },
+  {
+    id: 'hasSafetyEvent',
+    label: 'Known adverse events',
+    aggregation: 'Safety',
+    sectionId: 'safety',
+    description: 'Target associated with a curated adverse event',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#known-adverse-events',
+  },
+  {
+    id: 'isCancerDriverGene',
+    label: 'Cancer driver gene',
+    aggregation: 'Safety',
+    sectionId: 'cancerHallmarks', // Safety
+    description:
+      'Target is classified as an Oncogene and/or Tumor Suppressor Gene',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#cancer-driver-gene',
+  },
+  {
+    id: 'paralogMaxIdentityPercentage',
+    label: 'Paralogues',
+    aggregation: 'Safety',
+    sectionId: 'compGenomics',
+    description: 'Paralog maximum identity percentage',
+    docsLink: 'http://home.opentargets.org/aotf-documentation#paralogues',
+  },
+  {
+    id: 'tissueSpecificity',
+    label: 'Tissue specificity',
+    aggregation: 'Safety',
+    sectionId: 'expressions',
+    description:
+      'HPA category types of elevated expression across tissues for the target',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#tissue-specificity',
+  },
+  {
+    id: 'tissueDistribution',
+    label: 'Tissue distribution',
+    aggregation: 'Safety',
+    sectionId: 'expressions',
+    description:
+      'HPA category types of detectable expression across tissues for the target',
+    docsLink:
+      'http://home.opentargets.org/aotf-documentation#tissue-distribution',
+  },
+  {
     id: 'isInMembrane',
     label: 'Membrane protein',
     aggregation: 'Tractability',
@@ -73,63 +130,6 @@ const cols = [
   //   description: 'Availability of Target Enabling Package for the target',
   //   docsLink: 'https://partner-platform.opentargets.org/projects',
   // },
-  {
-    id: 'geneticConstraint',
-    label: 'Genetic constraint',
-    aggregation: 'Safety',
-    sectionId: 'geneticConstraint',
-    description:
-      'Relative genetic constraint in natural populations derived from GnomAD',
-    docsLink:
-      'http://home.opentargets.org/aotf-documentation#genetic-constraint',
-  },
-  {
-    id: 'hasSafetyEvent',
-    label: 'Known adverse events',
-    aggregation: 'Safety',
-    sectionId: 'safety',
-    description: 'Target associated with a curated adverse event',
-    docsLink:
-      'http://home.opentargets.org/aotf-documentation#known-adverse-events',
-  },
-  {
-    id: 'isCancerDriverGene',
-    label: 'Cancer driver gene',
-    aggregation: 'Safety',
-    sectionId: 'cancerHallmarks', // Safety
-    description:
-      'Target is classified as an Oncogene and/or Tumor Suppressor Gene',
-    docsLink:
-      'http://home.opentargets.org/aotf-documentation#cancer-driver-gene',
-  },
-  {
-    id: 'paralogMaxIdentityPercentage',
-    label: 'Paralogues',
-    aggregation: 'Safety',
-    sectionId: 'compGenomics',
-    description: 'Paralog maximum identity percentage',
-    docsLink: 'http://home.opentargets.org/aotf-documentation#paralogues',
-  },
-  {
-    id: 'tissueSpecificity',
-    label: 'Tissue specificity',
-    aggregation: 'Safety',
-    sectionId: 'expressions',
-    description:
-      'HPA category types of elevated expression across tissues for the target',
-    docsLink:
-      'http://home.opentargets.org/aotf-documentation#tissue-specificity',
-  },
-  {
-    id: 'tissueDistribution',
-    label: 'Tissue distribution',
-    aggregation: 'Safety',
-    sectionId: 'expressions',
-    description:
-      'HPA category types of detectable expression across tissues for the target',
-    docsLink:
-      'http://home.opentargets.org/aotf-documentation#tissue-distribution',
-  },
 ];
 
 export default cols;
