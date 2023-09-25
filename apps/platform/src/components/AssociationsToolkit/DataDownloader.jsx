@@ -18,6 +18,7 @@ import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAotfContext from './hooks/useAotfContext';
 import dataSources from './static_datasets/dataSourcesAssoc';
+import prioritizationCols from './static_datasets/prioritizationCols';
 
 const PopoverContent = styled('div')({
   padding: '20px 25px',
@@ -51,15 +52,34 @@ const getRowsQuerySelector = entityToGet =>
 
 const getExportedColumns = entityToGet => {
   const nameColumn = entityToGet === 'target' ? targetName : diseaseName;
+  let exportedColumns = [];
   const sources = dataSources.map(({ id }) => ({
     id,
     exportValue: data => {
       const datatypeScore = data.datasourceScores.find(
         datasourceScore => datasourceScore.componentId === id
       );
-      return datatypeScore ? datatypeScore.score : 'No data';
+      return datatypeScore ? parseFloat(datatypeScore.score) : 'No data';
     },
   }));
+
+  exportedColumns = [...sources];
+
+  if (entityToGet === 'target') {
+    const prioritisationExportCols = prioritizationCols.map(({ id }) => ({
+      id,
+      exportValue: data => {
+        const prioritisationScore = data.target.prioritisation.items.find(
+          prioritisationItem => prioritisationItem.key === id
+        );
+        return prioritisationScore
+          ? parseFloat(prioritisationScore.value)
+          : 'No data';
+      },
+    }));
+
+    exportedColumns = [...sources, ...prioritisationExportCols];
+  }
 
   return [
     nameColumn,
@@ -68,7 +88,7 @@ const getExportedColumns = entityToGet => {
       label: 'Score',
       exportValue: data => data.score,
     },
-    ...sources,
+    ...exportedColumns,
   ];
 };
 
