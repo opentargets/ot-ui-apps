@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAotfContext from './hooks/useAotfContext';
 import dataSources from './static_datasets/dataSourcesAssoc';
 import prioritizationCols from './static_datasets/prioritizationCols';
+import { isPartnerPreview } from './utils';
 
 const PopoverContent = styled('div')({
   padding: '20px 25px',
@@ -65,7 +66,7 @@ const getExportedColumns = entityToGet => {
 
   exportedColumns = [...sources];
 
-  if (entityToGet === 'target') {
+  if (entityToGet === 'target' && isPartnerPreview) {
     const prioritisationExportCols = prioritizationCols.map(({ id }) => ({
       id,
       exportValue: data => {
