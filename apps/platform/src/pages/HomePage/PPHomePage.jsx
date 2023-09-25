@@ -48,13 +48,11 @@ const useStyles = makeStyles(() => ({
 
 function pickTwo(arr) {
   const i1 = Math.floor(Math.random() * arr.length);
-  let i2 = Math.floor(Math.random() * arr.length);
+  const resultArray = arr.splice(i1, 1);
+  const i2 = Math.floor(Math.random() * arr.length);
+  resultArray.push(...arr.splice(i2, 1));
 
-  while (i1 === i2) {
-    i2 = Math.floor(Math.random() * arr.length);
-  }
-
-  return [arr[i1], arr[i2]];
+  return resultArray;
 }
 
 const usePanelStyles = makeStyles(theme => ({
