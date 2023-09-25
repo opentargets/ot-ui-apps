@@ -3,10 +3,12 @@ import { usePlatformApi, Link, SectionItem, DataTable } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { makeStyles } from "@mui/styles";
+import { useQuery } from "@apollo/client";
+
 import Description from "./Description";
 import { defaultRowsPerPageOptions } from "../../constants";
-import Summary from "./Summary";
 import { definition } from ".";
+import OT_PROJECTS_QUERY from "./OTProjectsQuery.gql";
 
 const useStyles = makeStyles((theme) => ({
   primaryColor: {
@@ -44,8 +46,10 @@ const getColumns = (classes) => [
 ];
 
 function Body({ label, id: efoId, entity }) {
-  const request = usePlatformApi(Summary.fragments.OTProjectsSummaryFragment);
   const classes = useStyles();
+  const request = useQuery(OT_PROJECTS_QUERY, {
+    variables: { efoId },
+  });
 
   return (
     <SectionItem
@@ -53,13 +57,13 @@ function Body({ label, id: efoId, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description name={label} />}
-      renderBody={({ otarProjects }) => (
+      renderBody={({ disease }) => (
         <DataTable
           showGlobalFilter
           dataDownloader
           dataDownloaderFileStem={`${efoId}-otprojects`}
           columns={getColumns(classes)}
-          rows={otarProjects}
+          rows={disease.otarProjects}
           rowsPerPageOptions={defaultRowsPerPageOptions}
           sortBy="status"
         />
