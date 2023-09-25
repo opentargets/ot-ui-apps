@@ -94,7 +94,7 @@ function SectionItem({
                     )}
                     variant="body2"
                   >
-                    {renderDescription()}
+                    {renderDescription(data)}
                   </Typography>
                 }
                 action={tags}

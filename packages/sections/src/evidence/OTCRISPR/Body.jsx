@@ -162,8 +162,8 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.ot_partner}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
+      renderDescription={(data) => (
+        <Description symbol={label.symbol} name={label.name} data={data}/>
       )}
       renderBody={({ disease }) => {
         const { rows } = disease.OtCrisprSummary;

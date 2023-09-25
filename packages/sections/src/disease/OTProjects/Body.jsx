@@ -56,7 +56,9 @@ function Body({ label, id: efoId, entity }) {
       definition={definition}
       request={request}
       entity={entity}
-      renderDescription={() => <Description name={label} />}
+      renderDescription={(data) => (
+        <Description name={label} data={data} />
+      )}
       renderBody={({ disease }) => (
         <DataTable
           showGlobalFilter
