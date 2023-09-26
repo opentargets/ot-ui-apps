@@ -110,9 +110,6 @@ code {
   grid-row-gap: 0px;
 }
 
-.TAssociations.loading-container {
-  height: 1000px;
-}
 
 /* --- CONTROLS --- */
 .ControlsSection {
@@ -189,7 +186,7 @@ code {
 
 .TAssociations .Theader .rotate > div {
   transform: translate(0, 110px) rotate(315deg);
-  width: 32px;
+  width: 24px;
   display: flex;
   align-items: center;
 }
@@ -233,7 +230,7 @@ code {
 
 /*  CELL  */
 .TAssociations .data-cell {
-  width: 30px;
+  width: 24px;
   display: flex;
   justify-content: center;
   flex-grow: 1;
@@ -315,16 +312,9 @@ code {
 }
 
 /* Weights controlls */
-.TAssociations .weights-controlls {
-  background-color: var(--colums-controls-color);
-  position: relative;
-  box-sizing: content-box;
-  padding: 20px 0 15px;
-}
 
 .TAssociations .weights-controlls .controlls-container {
   display: flex;
-  /* height: 65px; */
 }
 
 .TAssociations .weights-controlls .controlls-wrapper {

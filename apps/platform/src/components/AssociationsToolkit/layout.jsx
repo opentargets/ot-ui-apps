@@ -1,4 +1,23 @@
 import { styled } from '@mui/material';
+import { LoadingBackdrop } from 'ui';
+
+const LoadingContainer = styled('div')({
+  height: '1100px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  gap: '15px',
+});
+
+export function AotFLoader() {
+  return (
+    <LoadingContainer>
+      <LoadingBackdrop />
+      Loading associations
+    </LoadingContainer>
+  );
+}
 
 const baseGridContainerStyles = {
   display: 'grid',

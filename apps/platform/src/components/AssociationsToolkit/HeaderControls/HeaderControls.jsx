@@ -19,6 +19,20 @@ const CloseContainer = styled('div')({
   zIndex: 10,
 });
 
+const WeightsControllsContainer = styled('div')({
+  backgroundColor: 'var(--colums-controls-color)',
+  position: 'relative',
+  boxSizing: 'content-box',
+  padding: '20px 0 15px',
+});
+
+// .TAssociations .weights-controlls {
+//   background-color: var(--colums-controls-color);
+//   position: relative;
+//   box-sizing: content-box;
+//   padding: 20px 0 15px;
+// }
+
 function HeaderControls({ cols = [] }) {
   const { activeHeadersControlls, setActiveHeadersControlls, displayedTable } =
     useAotfContext();
@@ -31,7 +45,7 @@ function HeaderControls({ cols = [] }) {
 
   return (
     <Collapse in={activeHeadersControlls}>
-      <div className="weights-controlls">
+      <WeightsControllsContainer className="weights-controlls">
         <Grid container direction="row" wrap="nowrap">
           <CloseContainer onClick={handleClose}>
             <FontAwesomeIcon icon={faXmark} size="lg" />
@@ -71,7 +85,7 @@ function HeaderControls({ cols = [] }) {
             ))}
           </GridContainer>
         </Grid>
-      </div>
+      </WeightsControllsContainer>
     </Collapse>
   );
 }
