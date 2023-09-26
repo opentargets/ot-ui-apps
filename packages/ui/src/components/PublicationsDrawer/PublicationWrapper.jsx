@@ -3,6 +3,8 @@ import {
   faPlusCircle,
   faMinusCircle,
   faFileAlt,
+  faGlasses,
+  faQuoteLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Typography } from "@mui/material";
@@ -10,6 +12,7 @@ import { makeStyles } from "@mui/styles";
 
 import LongText from "../LongText";
 import Link from "../Link";
+import Tooltip from "../Tooltip";
 
 import PublicationSummary from "./PublicationSummary";
 import config from "../../config";
@@ -164,9 +167,45 @@ function PublicationWrapper({
               style={{ marginRight: "8px" }}
               size="lg"
             />
-            Full text available: {
-              isOpenAccess ? "free to read and use" : "free to read"
+            {
+              isOpenAccess ? "Full text free to use/read" : "Full text free to read"
             }
+
+            {/* <Tooltip
+              title={isOpenAccess ? "Free to read and use" : "Free to read"}
+              showHelpIcon
+            >
+              <FontAwesomeIcon
+                icon={faFileAlt}
+                style={{ marginRight: "8px" }}
+                size="lg"
+              />
+              Full text available
+            </Tooltip> */}
+
+            {/* <Tooltip
+              title={isOpenAccess ? "Free to read and use" : "Free to read"}
+            >
+            <FontAwesomeIcon
+                icon={faFileAlt}
+                style={{ marginRight: "8px" }}
+                size="lg"
+              />
+              Full text available
+              <FontAwesomeIcon
+                icon={faGlasses}
+                style={{ marginLeft: "8px" }}
+                size="md"
+              />
+              { isOpenAccess ? 
+               <FontAwesomeIcon
+                icon={faQuoteLeft}
+                style={{ marginLeft: "8px" }}
+                size="md"
+              /> : null}
+            </Tooltip> */}
+
+
           </span>
         )}
       </Box>
