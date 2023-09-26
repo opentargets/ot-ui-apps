@@ -170,42 +170,6 @@ function PublicationWrapper({
             {
               isOpenAccess ? "Full text free to use/read" : "Full text free to read"
             }
-
-            {/* <Tooltip
-              title={isOpenAccess ? "Free to read and use" : "Free to read"}
-              showHelpIcon
-            >
-              <FontAwesomeIcon
-                icon={faFileAlt}
-                style={{ marginRight: "8px" }}
-                size="lg"
-              />
-              Full text available
-            </Tooltip> */}
-
-            {/* <Tooltip
-              title={isOpenAccess ? "Free to read and use" : "Free to read"}
-            >
-            <FontAwesomeIcon
-                icon={faFileAlt}
-                style={{ marginRight: "8px" }}
-                size="lg"
-              />
-              Full text available
-              <FontAwesomeIcon
-                icon={faGlasses}
-                style={{ marginLeft: "8px" }}
-                size="md"
-              />
-              { isOpenAccess ? 
-               <FontAwesomeIcon
-                icon={faQuoteLeft}
-                style={{ marginLeft: "8px" }}
-                size="md"
-              /> : null}
-            </Tooltip> */}
-
-
           </span>
         )}
       </Box>
