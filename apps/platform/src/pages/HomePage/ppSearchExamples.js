@@ -11,7 +11,7 @@ const searchExamples = {
     { label: 'Psoriasis', id: 'EFO_0000676' },
     { label: 'Alzheimer Disease', id: 'MONDO_0004975' },
     { label: 'Parkinson Disease', id: 'MONDO_0005180' },
-    { label: 'Colorectal Cancer', id: 'EFO_0005842' },
+    { label: 'Colorectal Cancer', id: 'MONDO_0005575' },
     { label: 'Colorectal Neoplasm', id: 'EFO_0004142' },
   ],
   drugs: [
