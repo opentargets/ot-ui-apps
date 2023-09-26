@@ -164,7 +164,9 @@ function PublicationWrapper({
               style={{ marginRight: "8px" }}
               size="lg"
             />
-            Full text available
+            {
+              isOpenAccess ? "Full text free to use/read" : "Full text free to read"
+            }
           </span>
         )}
       </Box>
