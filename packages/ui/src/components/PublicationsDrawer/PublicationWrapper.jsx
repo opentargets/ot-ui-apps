@@ -3,8 +3,6 @@ import {
   faPlusCircle,
   faMinusCircle,
   faFileAlt,
-  faGlasses,
-  faQuoteLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Typography } from "@mui/material";
@@ -12,7 +10,6 @@ import { makeStyles } from "@mui/styles";
 
 import LongText from "../LongText";
 import Link from "../Link";
-import Tooltip from "../Tooltip";
 
 import PublicationSummary from "./PublicationSummary";
 import config from "../../config";
