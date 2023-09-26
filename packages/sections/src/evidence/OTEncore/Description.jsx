@@ -13,7 +13,7 @@ function Description({ symbol, name }) {
         external
         to="http://home.opentargets.org/ppp-documentation-otar2062"
       >
-        Open Targets OTAR2026
+        Open Targets OTAR2062
       </Link>
     </>
   );
