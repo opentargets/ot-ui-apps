@@ -49,12 +49,13 @@ const exceedsArrayLengthLimit = (array) => {
 };
 
 export const formatSearchData = (unformattedData) => {
-  const allTypes = [];
+  const formattedData = {};
 
   Object.entries(unformattedData).forEach(([key, value]) => {
+    const typesArray = [];
     if (isArray(value)) {
       value.map((i) =>
-        allTypes.push({
+        typesArray.push({
           type: key === "topHit" ? "topHit" : key,
           entity: key,
           ...flattenObj(i),
@@ -62,16 +63,17 @@ export const formatSearchData = (unformattedData) => {
       );
     } else if (isArray(value.hits)) {
       value.hits.map((i) =>
-        allTypes.push({
+        typesArray.push({
           type: key === "topHit" ? "topHit" : i.entity,
           entity: i.entity,
           ...flattenObj(i.object),
         })
       );
     }
+    formattedData[key] = typesArray;
   });
 
-  return allTypes;
+  return formattedData;
 };
 
 export const containsObject = (obj, list) => {
@@ -104,6 +106,17 @@ export const addSearchToLocalStorage = (item) => {
 
 export const clearAllRecent = () => {
   localStorage.removeItem("search-history");
+};
+
+export const clearRecentItem = ({ item }) => {
+  const recentItems = JSON.parse(
+    localStorage.getItem("search-history") || "[]"
+  );
+  const removedItems = [...recentItems];
+  const existingIndex = containsObject(item, removedItems);
+  removedItems.splice(existingIndex, 1);
+  localStorage.setItem("search-history", JSON.stringify(removedItems));
+  return removedItems;
 };
 
 export const commaSeparate = format(",");

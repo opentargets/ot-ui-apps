@@ -20,7 +20,7 @@ function BasePage({ title, children, description, location }) {
       header={
         <NavBar
           name="Platform"
-          search={<GlobalSearch showSearchResultPage />}
+          search={<div>s</div>}
           items={mainMenuItems}
         />
       }

@@ -23,6 +23,7 @@ export { default as PartnerLockIcon } from "./components/PartnerLockIcon";
 export { default as PrivateRoute } from "./components/PrivateRoute";
 export { default as EllsWrapper } from "./components/EllsWrapper";
 export { default as ErrorBoundary } from "./components/ErrorBoundary";
+export { default as TempGlobalSearch } from "./components/TempSearch/GlobalSearch";
 
 export { default as PrivateWrapper } from "./components/PrivateWrapper";
 export { default as NavBar } from "./components/NavBar";
