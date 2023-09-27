@@ -100,7 +100,6 @@ code {
   visibility: visible;
 }
 
-
 // AotF
 /* ENTITIES GRID */
 .grid-container {
@@ -108,10 +107,6 @@ code {
   grid-template-rows: 1fr;
   grid-column-gap: 2px;
   grid-row-gap: 0px;
-}
-
-.TAssociations.loading-container {
-  height: 1000px;
 }
 
 /* --- CONTROLS --- */
@@ -127,8 +122,6 @@ code {
   width: 200px;
 }
 
-
-
 /* --- HEADER ---  */
 .TAssociations .Theader {
   display: flex;
@@ -137,8 +130,6 @@ code {
   top: 0;
   background-color: #fafafa;
   z-index: 100;
-  font-weight: 800;
-  /* border-bottom: 1px solid var(--header-border-color); */
 }
 
 .TAssociations .Theader .cols-container {
@@ -189,7 +180,7 @@ code {
 
 .TAssociations .Theader .rotate > div {
   transform: translate(0, 110px) rotate(315deg);
-  width: 32px;
+  width: 24px;
   display: flex;
   align-items: center;
 }
@@ -233,10 +224,8 @@ code {
 
 /*  CELL  */
 .TAssociations .data-cell {
-  width: 30px;
   display: flex;
   justify-content: center;
-  flex-grow: 1;
 }
 
 .TAssociations .name-cell {
@@ -279,10 +268,6 @@ code {
 
 /* Agregations indicators */
 
-.TAssociations .aggregations-container {
-  margin-left: 220px;
-}
-
 .TAssociations .aggregation-indicator {
   position: relative;
   width: 100%;
@@ -304,10 +289,7 @@ code {
   transform: scale(1, 2);
   background-color: var(--primary-color);
   border-color: var(--primary-color);
-}
-
-.TAssociations .aggregation-indicator.clickAble:hover {
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 .TAssociations .category-container:hover .category-indicator div {
@@ -315,16 +297,9 @@ code {
 }
 
 /* Weights controlls */
-.TAssociations .weights-controlls {
-  background-color: var(--colums-controls-color);
-  position: relative;
-  box-sizing: content-box;
-  padding: 20px 0 15px;
-}
 
 .TAssociations .weights-controlls .controlls-container {
   display: flex;
-  /* height: 65px; */
 }
 
 .TAssociations .weights-controlls .controlls-wrapper {
@@ -369,4 +344,22 @@ code {
 
 .TAssociations .weights-controlls .control-container span {
   font-size: 11px;
+}
+
+@media only screen and (max-width: 1050px) {
+  .TAssociations {
+    --table-left-column-width: 170px !important;
+    --table-header-max-width: 100px !important;
+    overflow-x: scroll;
+    max-height: 600px;
+    & main {
+      max-width: 900px !important;
+      min-width: 820px !important;
+    }
+    & .data-score,
+    & .data-empty {
+      height: 22px !important;
+      width: 22px !important;
+    }
+  }
 }

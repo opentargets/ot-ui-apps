@@ -19,9 +19,9 @@ const useStyles = makeStyles((theme) => ({
 
 function LoadingBackdrop({ height }: LoadingBackdropProps) {
   const classes = useStyles();
-  const containerHeight = height ? height : "auto";
+  const containerHeight = height ? `${height}px` : "auto";
   return (
-    <Box className={classes.container} sx={{ height: `${containerHeight}px` }}>
+    <Box className={classes.container} sx={{ height: containerHeight }}>
       <CircularProgress color="inherit" />
     </Box>
   );

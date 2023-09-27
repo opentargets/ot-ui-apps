@@ -234,6 +234,16 @@ const dataSources = [
     isPrivate: false,
     docsLink: 'https://platform-docs.opentargets.org/evidence#impc',
   },
+  {
+    id: 'ot_crispr_validation',
+    sectionId: 'validationlab',
+    label: 'OT Validation',
+    aggregation: 'Partner-only',
+    aggregationId: 'partner_only',
+    weight: 0.5,
+    isPrivate: true,
+    docsLink: 'https://partner-platform.opentargets.org/projects',
+  },
   // Private
   {
     id: 'ot_crispr',
@@ -257,16 +267,6 @@ const dataSources = [
     docsLink: 'https://partner-platform.opentargets.org/projects',
   },
   // Private
-  {
-    id: 'ot_crispr_validation',
-    sectionId: 'validationlab',
-    label: 'OT Validation',
-    aggregation: 'Partner-only',
-    aggregationId: 'partner_only',
-    weight: 0.5,
-    isPrivate: true,
-    docsLink: 'https://partner-platform.opentargets.org/projects',
-  },
 ];
 
 export default dataSources;

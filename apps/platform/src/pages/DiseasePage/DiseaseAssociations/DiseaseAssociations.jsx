@@ -1,4 +1,4 @@
-import { LoadingBackdrop, PrivateWrapper } from 'ui';
+import { PrivateWrapper } from 'ui';
 import { Box } from '@mui/material';
 import {
   TableAssociations,
@@ -10,23 +10,19 @@ import {
   useAotfContext,
   ControlsSection,
   OptionsControlls,
+  AotFLoader,
 } from '../../../components/AssociationsToolkit';
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociationsQuery.gql';
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useAotfContext();
 
-  if (initialLoading)
-    return (
-      <div className="TAssociations loading-container">
-        <LoadingBackdrop />
-      </div>
-    );
+  if (initialLoading) return <AotFLoader />;
 
   return (
     <>
       <ControlsSection>
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />

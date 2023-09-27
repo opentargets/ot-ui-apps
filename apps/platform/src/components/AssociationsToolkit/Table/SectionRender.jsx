@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 import { styled } from '@mui/material/styles';
-import { Collapse } from '@mui/material';
 import { LoadingBackdrop } from 'ui';
 import { ENTITIES } from '../utils';
 
@@ -9,10 +8,11 @@ import evidenceSections from '../../../sections/evidenceSections';
 
 const LoadingContainer = styled('div')({
   margin: '25px 0',
-  height: '400px',
+  height: '100px',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+  gap: '20px',
 });
 
 const Container = styled('div')({
@@ -22,14 +22,12 @@ const Container = styled('div')({
 
 function LoadingSection() {
   return (
-    // <Collapse appear in timeout={900}>
     <div>
       <LoadingContainer>
         <LoadingBackdrop />
         Importing section assets
       </LoadingContainer>
     </div>
-    // </Collapse>
   );
 }
 
