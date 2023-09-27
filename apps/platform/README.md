@@ -26,7 +26,7 @@ To start developing, follow these steps:
 
 ## Special thanks
 
-[<img src="../../docs/img/netlify-logo.svg" alt="BrowserStack" width="325">](https://www.netlify.com/)
+[<img src="../../docs/img/netlify-logo.svg" alt="Netlify" width="325">](https://www.netlify.com/)
 
 [<img src="../../docs/img/browserstack-logo.svg" alt="BrowserStack" width="400">](https://www.browserstack.com/)
 
