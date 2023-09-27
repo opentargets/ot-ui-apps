@@ -26,11 +26,11 @@ To start developing, follow these steps:
 
 ## Special thanks
 
-[<img src="./docs/netlify-logo.svg" alt="BrowserStack" width="325">](https://www.netlify.com/)
+[<img src="../../docs/img/netlify-logo.svg" alt="BrowserStack" width="325">](https://www.netlify.com/)
 
-[<img src="./docs/browserstack-logo.svg" alt="BrowserStack" width="400">](https://www.browserstack.com/)
+[<img src="../../docs/img/browserstack-logo.svg" alt="BrowserStack" width="400">](https://www.browserstack.com/)
 
-[<img src="./docs/thehyve-logo.svg" alt="TheHyve" width="410">](https://www.thehyve.nl/)
+[<img src="../../docs/img/thehyve-logo.svg" alt="TheHyve" width="410">](https://www.thehyve.nl/)
 
 ## Copyright
 
