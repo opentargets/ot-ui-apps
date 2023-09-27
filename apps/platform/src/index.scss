@@ -100,7 +100,6 @@ code {
   visibility: visible;
 }
 
-
 // AotF
 /* ENTITIES GRID */
 .grid-container {
@@ -109,7 +108,6 @@ code {
   grid-column-gap: 2px;
   grid-row-gap: 0px;
 }
-
 
 /* --- CONTROLS --- */
 .ControlsSection {
@@ -124,8 +122,6 @@ code {
   width: 200px;
 }
 
-
-
 /* --- HEADER ---  */
 .TAssociations .Theader {
   display: flex;
@@ -134,7 +130,7 @@ code {
   top: 0;
   background-color: #fafafa;
   z-index: 100;
-  font-weight: 800;
+  // font-weight: 800;
   /* border-bottom: 1px solid var(--header-border-color); */
 }
 
@@ -230,10 +226,8 @@ code {
 
 /*  CELL  */
 .TAssociations .data-cell {
-  width: 24px;
   display: flex;
   justify-content: center;
-  flex-grow: 1;
 }
 
 .TAssociations .name-cell {
@@ -276,10 +270,6 @@ code {
 
 /* Agregations indicators */
 
-.TAssociations .aggregations-container {
-  margin-left: 220px;
-}
-
 .TAssociations .aggregation-indicator {
   position: relative;
   width: 100%;
@@ -301,10 +291,7 @@ code {
   transform: scale(1, 2);
   background-color: var(--primary-color);
   border-color: var(--primary-color);
-}
-
-.TAssociations .aggregation-indicator.clickAble:hover {
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 .TAssociations .category-container:hover .category-indicator div {
@@ -359,4 +346,22 @@ code {
 
 .TAssociations .weights-controlls .control-container span {
   font-size: 11px;
+}
+
+@media only screen and (max-width: 1050px) {
+  .TAssociations {
+    --table-left-column-width: 170px !important;
+    --table-header-max-width: 100px !important;
+    overflow-x: scroll;
+    max-height: 600px;
+    & main {
+      max-width: 900px !important;
+      min-width: 820px !important;
+    }
+    & .data-score,
+    & .data-empty {
+      height: 22px !important;
+      width: 22px !important;
+    }
+  }
 }

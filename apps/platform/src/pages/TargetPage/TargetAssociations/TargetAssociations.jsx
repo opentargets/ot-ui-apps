@@ -20,7 +20,7 @@ function AssociationsWrapper() {
   return (
     <>
       <ControlsSection>
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />

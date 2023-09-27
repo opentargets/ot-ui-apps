@@ -1,14 +1,13 @@
 /* eslint-disable */
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
   getExpandedRowModel,
   createColumnHelper,
 } from '@tanstack/react-table';
-import Skeleton from '@mui/material/Skeleton';
 
-import { styled } from '@mui/material/styles';
+import { styled, Skeleton, Typography } from '@mui/material';
 
 import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
 import prioritizationCols from '../static_datasets/prioritizationCols';
@@ -26,8 +25,7 @@ import useAotfContext from '../hooks/useAotfContext';
 import { cellHasValue, isPartnerPreview, tableCSSVariables } from '../utils';
 
 const TableElement = styled('main')({
-  minWidth: '900px',
-  maxWidth: '1400px',
+  maxWidth: '1600px',
   margin: '0 auto',
 });
 
@@ -58,11 +56,11 @@ function getDatasources({ expanderHandler, displayedTable }) {
       const column = columnHelper.accessor(row => row[dataProp][id], {
         id,
         header: isAssociations ? (
-          <div className="">{label}</div>
+          <Typography variant="assoc_header">{label}</Typography>
         ) : (
           <AggregationsTooltip title={description} placement="right">
             <div className="cursor-help">
-              <span>{label}</span>
+              <Typography variant="assoc_header">{label}</Typography>
             </div>
           </AggregationsTooltip>
         ),
@@ -143,12 +141,14 @@ function TableAssociations() {
             },
             header: () => {
               const label = entityToGet === 'target' ? 'Target' : 'Disease';
-              return <span>{label}</span>;
+              return <Typography variant="assoc_header">{label}</Typography>;
             },
           }),
           columnHelper.accessor(row => row.score, {
             id: 'score',
-            header: 'Association Score',
+            header: (
+              <Typography variant="assoc_header">Association Score</Typography>
+            ),
             cell: row => {
               const { loading } = row.table.getState();
               if (loading)

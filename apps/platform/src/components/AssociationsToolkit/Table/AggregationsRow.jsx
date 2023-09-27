@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { styled } from '@mui/material/styles';
+import { styled, Grid } from '@mui/material';
 
 import AggregationsTooltip from './AssocTooltip';
 import associationsColumns from '../static_datasets/dataSourcesAssoc';
@@ -8,7 +8,12 @@ import { groupViewColumnsBy } from '../utils';
 import { GridContainer } from '../layout';
 
 const AggregationsContainer = styled(GridContainer)({
-  gridColumnGap: '6px',
+  gridColumnGap: '4px',
+});
+
+const HiddenCol = styled('div')({
+  width: 'var(--table-left-column-width)',
+  display: 'flex',
 });
 
 const associationGrouped = groupViewColumnsBy(
@@ -46,14 +51,15 @@ function AggregationItem({
     gridColumn: `span ${colsCont}`,
     gridRow: `row1-start / 2`,
   };
-  const isActive = active === aggregation;
+  const isActive = active === aggregation || open;
   const className = `aggregation-indicator ${isActive && 'active'} clickAble`;
   return (
-    <div
+    <button
+      type="button"
       className={className}
       style={style}
-      onMouseEnter={e => onMouseEnter(aggregation)}
-      onMouseLeave={e => onMouseLeave()}
+      onMouseEnter={() => onMouseEnter(aggregation)}
+      onMouseLeave={() => onMouseLeave()}
       onClick={() => onClick()}
     >
       <AggregationsTooltip
@@ -62,7 +68,7 @@ function AggregationItem({
       >
         <div style={{ width: '100%' }} />
       </AggregationsTooltip>
-    </div>
+    </button>
   );
 }
 
@@ -72,14 +78,16 @@ function AggregationsRow({
   handleAggregationClick,
   activeHeadersControlls,
   setActiveHeadersControlls,
+  columnsCount,
 }) {
   const dataset =
     table === 'associations' ? associationGrouped : prioritizationGrouped;
   const aggregations = Object.keys(dataset);
 
   return (
-    <div className="aggregations-container">
-      <AggregationsContainer>
+    <Grid container direction="row" wrap="nowrap">
+      <HiddenCol />
+      <AggregationsContainer columnsCount={columnsCount}>
         {aggregations.map(aggregation => (
           <AggregationItem
             key={aggregation}
@@ -92,7 +100,7 @@ function AggregationsRow({
           />
         ))}
       </AggregationsContainer>
-    </div>
+    </Grid>
   );
 }
 

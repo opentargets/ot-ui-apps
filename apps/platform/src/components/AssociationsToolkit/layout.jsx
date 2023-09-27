@@ -59,6 +59,7 @@ export const RowContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
   width: '100%',
+  boxSizing: 'content-box',
   boxShadow: rowExpanded ? boxShadow : 'none',
   border: rowExpanded ? '0.7px solid #666' : '0.7px solid #fafafa',
   '&:hover': {
@@ -77,6 +78,7 @@ export const ControlsSection = styled('section')`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 `;
 
 export const OptionsControlls = styled('div')`
