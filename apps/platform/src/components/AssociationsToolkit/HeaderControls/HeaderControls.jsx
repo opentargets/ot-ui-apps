@@ -26,13 +26,6 @@ const WeightsControllsContainer = styled('div')({
   padding: '20px 0 15px',
 });
 
-// .TAssociations .weights-controlls {
-//   background-color: var(--colums-controls-color);
-//   position: relative;
-//   box-sizing: content-box;
-//   padding: 20px 0 15px;
-// }
-
 function HeaderControls({ cols = [] }) {
   const { activeHeadersControlls, setActiveHeadersControlls, displayedTable } =
     useAotfContext();
