@@ -5,17 +5,18 @@ import {
   Button,
   Grid,
   Typography,
-  CircularProgress,
   Snackbar,
   Slide,
   Popover,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { Link, useBatchDownloader } from 'ui';
+import { Link } from 'ui';
 import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useBatchDownloader from './hooks/useBatchDownloader';
 import useAotfContext from './hooks/useAotfContext';
 import dataSources from './static_datasets/dataSourcesAssoc';
 import prioritizationCols from './static_datasets/prioritizationCols';
