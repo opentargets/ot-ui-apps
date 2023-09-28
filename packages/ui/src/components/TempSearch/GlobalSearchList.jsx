@@ -16,13 +16,27 @@ const List = styled("ul")({
 const MemoizedListItem = memo(GlobalSearchListItem);
 
 function FreeSearchItem({ label = "Search for: ", inputValue }) {
+  const { setOpen } = useContext(SearchContext);
+  const [openListItem] = useListOption();
+
   const freeSearchTermObject = {
     symbol: label + inputValue,
     name: inputValue,
     entity: "search",
     type: "",
   };
-  return <GlobalSearchListItem item={freeSearchTermObject} />;
+
+  const handleItemClick = useCallback((item) => {
+    setOpen(false);
+    openListItem(item);
+  }, []);
+
+  return (
+    <MemoizedListItem
+      item={freeSearchTermObject}
+      onItemClick={handleItemClick}
+    />
+  );
 }
 
 function GlobalSearchList({ inputValue }) {
@@ -30,7 +44,7 @@ function GlobalSearchList({ inputValue }) {
   const { searchQuery, setOpen } = useContext(SearchContext);
   const [getSearchData] = useLazyQuery(searchQuery);
   const debouncedInputValue = useDebounce(inputValue, 500);
-  const [recentItems, setRecentValue] = useState(
+  const [recentItems, setRecentItems] = useState(
     JSON.parse(localStorage.getItem("search-history")) || { recent: [] }
   );
   const [openListItem] = useListOption();
@@ -65,8 +79,15 @@ function GlobalSearchList({ inputValue }) {
     }
   }, [debouncedInputValue]);
 
+  useEffect(() => {
+    if (Array.isArray(recentItems)) setRecentItems({ recent: recentItems });
+  }, []);
+
   return (
     <>
+      {/* show free search list item if there is an input value */}
+      {inputValue && <FreeSearchItem inputValue={inputValue} />}
+
       {/* input value is present and there are results available */}
       {inputValue &&
         (!isResultEmpty() ? (
@@ -75,7 +96,11 @@ function GlobalSearchList({ inputValue }) {
               <GlobalSearchListHeader listHeader={key} />
               <List tabIndex={-1}>
                 {value.map((item) => (
-                  <MemoizedListItem key={item.id || item.symbol} item={item} onItemClick={handleItemClick}/>
+                  <MemoizedListItem
+                    key={item.id || item.symbol}
+                    item={item}
+                    onItemClick={handleItemClick}
+                  />
                 ))}
               </List>
             </Box>

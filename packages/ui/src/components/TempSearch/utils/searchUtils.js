@@ -87,9 +87,9 @@ export const containsObject = (obj, list) => {
 };
 
 export const addSearchToLocalStorage = (item) => {
-  const recentItems = JSON.parse(
-    localStorage.getItem("search-history")
-  ) || {'recent': []};
+  const recentItems = JSON.parse(localStorage.getItem("search-history")) || {
+    recent: [],
+  };
   const newItem = { ...item };
   delete newItem.description;
   const existingIndex = containsObject(newItem, recentItems.recent);
@@ -111,12 +111,10 @@ export const clearAllRecent = () => {
 };
 
 export const clearRecentItem = ({ item }) => {
-  const recentItems = JSON.parse(
-    localStorage.getItem("search-history") || "[]"
-  );
-  const removedItems = [...recentItems];
-  const existingIndex = containsObject(item, removedItems);
-  removedItems.splice(existingIndex, 1);
+  const recentItems = JSON.parse(localStorage.getItem("search-history"));
+  const removedItems = { ...recentItems };
+  const existingIndex = containsObject(item, removedItems.recent);
+  removedItems.recent.splice(existingIndex, 1);
   localStorage.setItem("search-history", JSON.stringify(removedItems));
   return removedItems;
 };
