@@ -182,6 +182,7 @@ const createBlob = format =>
 const styles = makeStyles(theme => ({
   messageProgress: {
     marginRight: '1rem',
+    color: 'white !important',
   },
   snackbarContentMessage: {
     display: 'flex',
@@ -347,7 +348,10 @@ function DataDownloader({ fileStem }) {
               >
                 here
               </Link>{' '}
-              for more information
+              for more information.
+              <br />
+              {isPartnerPreview &&
+                `The file will also include the target prioritisation data.`}
             </Alert>
           </DisclaimerContainer>
         </PopoverContent>
@@ -365,7 +369,7 @@ function DataDownloader({ fileStem }) {
         message={
           <>
             <CircularProgress className={classes.messageProgress} />
-            Preparing data...
+            Preparing the data. This may take several minutes...
           </>
         }
       />
