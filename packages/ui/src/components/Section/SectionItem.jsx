@@ -28,6 +28,7 @@ function SectionItem({
   entity,
   showEmptySection = false,
   showContentLoading = false,
+  showEmptyBody = false
 }) {
   const classes = sectionStyles();
   const { loading, error, data } = request;
@@ -38,7 +39,7 @@ function SectionItem({
     hasData = definition.hasData(data[entity]);
   }
 
-  if (!hasData && !showEmptySection && !loading) return null;
+  if (!hasData && !showEmptySection && !loading && !showEmptyBody) return null;
 
   return (
     <Grid item xs={12}>
@@ -105,7 +106,7 @@ function SectionItem({
                 <Box className={classes.loadingPlaceholder} />
               )}
               {error && <SectionError error={error} />}
-              {!loading && hasData && (
+              {!loading && (hasData || showEmptyBody) && (
                 <CardContent className={classes.cardContent}>
                   {renderBody(data)}
                 </CardContent>

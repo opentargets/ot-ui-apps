@@ -293,6 +293,7 @@ function Body({
         data: { [entity]: { knownDrugs: { rows, count: rows.length } } },
       }}
       renderDescription={Description}
+      showEmptyBody
       renderBody={() => (
         <Table
           loading={loading}

@@ -52,7 +52,7 @@ const Table = ({
   query,
   variables,
 }) => {
-  const emptyRows = pageSize - rows.length;
+  const emptyRows = pageSize - rows?.length;
   const [selectedRow, setSelectedRow] = useState(0);
   const defaultClasses = tableStyles();
 
