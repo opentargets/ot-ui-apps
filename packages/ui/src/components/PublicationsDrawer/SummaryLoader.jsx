@@ -22,7 +22,7 @@ function SummaryLoader() {
       <StyledContainer>
         <CircularProgress color="inherit" />
       </StyledContainer>
-      Summarising...
+      Summarising. This may take some time...
     </LoadingContainer>
   );
 }

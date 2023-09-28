@@ -347,7 +347,9 @@ function DataDownloader({ fileStem }) {
               >
                 here
               </Link>{' '}
-              for more information
+              for more information.
+              {isPartnerPreview &&
+                `The file will also include the target prioritisation data.`}
             </Alert>
           </DisclaimerContainer>
         </PopoverContent>
@@ -365,7 +367,7 @@ function DataDownloader({ fileStem }) {
         message={
           <>
             <CircularProgress className={classes.messageProgress} />
-            Preparing data...
+            Preparing the data. This may take several minutes...
           </>
         }
       />
