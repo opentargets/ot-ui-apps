@@ -27,14 +27,21 @@ function GlobalSearchInput({ onInputValueChange, inputValue, setOpen }) {
             if (e.key === "Escape" && inputValue) {
               e.preventDefault();
               e.stopPropagation();
-              onInputValueChange("");
-              setOpen(false)
+              // onInputValueChange("");
+              setOpen(false);
             }
           }}
         />
       </Box>
       <Box>
-        <button type="button" onClick={()=> {setOpen(false)}}>esc</button>
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(false);
+          }}
+        >
+          esc
+        </button>
       </Box>
     </Box>
   );

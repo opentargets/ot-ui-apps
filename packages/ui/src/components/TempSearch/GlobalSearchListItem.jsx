@@ -5,13 +5,12 @@ import { faXmark, faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
 
 import { clearRecentItem, commaSeparate } from "./utils/searchUtils";
 import ArrowTurnDownLeft from "../../components/icons/ArrowTurnDownLeft";
-import useListOption from "../../hooks/useListOption";
 
-const ListItem = styled("li")(({theme})=>({
+const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
-  listStyle: 'none',
-  paddingLeft: theme.spacing(2)
+  listStyle: "none",
+  paddingLeft: theme.spacing(2),
 }));
 
 const JustifyBetween = styled("div")({
@@ -64,9 +63,15 @@ const RecentIconContainer = styled("div")({
   gap: "10px",
 });
 
-function RecentListItem({ item }) {
+function RecentListItem({ item, onItemClick }) {
   return (
-    <RecentItemContainer className="search-list-item">
+    <RecentItemContainer
+      className="search-list-item"
+      role="menuitem"
+      onClick={() => {
+        onItemClick(item);
+      }}
+    >
       <RecentIconContainer>
         <FontAwesomeIcon icon={faClockRotateLeft} />
         <Typography variant="subtitle2">
@@ -85,12 +90,10 @@ function RecentListItem({ item }) {
   );
 }
 
-function GlobalSearchListItem({ item, isTopHit = false }) {
+function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
   if (item.type === "recent") {
-    return <RecentListItem item={item} />;
+    return <RecentListItem item={item} onItemClick={onItemClick} />;
   }
-
-  const [openListItem] = useListOption();
 
   const getSymbolHeader = () => {
     if (item.entity === "search") {
@@ -130,7 +133,7 @@ function GlobalSearchListItem({ item, isTopHit = false }) {
       className="search-list-item"
       role="menuitem"
       onClick={() => {
-        openListItem(item);
+        onItemClick(item);
       }}
     >
       <JustifyBetween>

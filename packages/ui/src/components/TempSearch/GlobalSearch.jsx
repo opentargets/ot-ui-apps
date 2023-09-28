@@ -1,13 +1,13 @@
-import { useEffect, useState, forwardRef } from "react";
+import { useEffect, forwardRef, useContext } from "react";
 import { Box, Grow } from "@mui/material";
 
 import GlobalSearchDialog from "./GlobalSearchDialog";
+import { SearchContext } from "../Search/SearchContext";
 
 function GlobalSearch() {
-  const [open, setOpen] = useState(false);
+  const { setOpen } = useContext(SearchContext);
 
-
-  console.log('global search rerender');
+  console.log("global search rerender");
 
   function monitorCmdK(event) {
     // open on cmd + k
@@ -37,7 +37,7 @@ function GlobalSearch() {
       </button>
 
       {/* <Grow > */}
-      <GlobalSearchDialog open={open} setOpen={setOpen}/>
+      <GlobalSearchDialog />
       {/* </Grow> */}
     </Box>
   );

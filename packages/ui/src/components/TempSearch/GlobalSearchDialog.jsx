@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Box, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import useListOption from "../../hooks/useListOption";
 import GlobalSearchInput from "./GlobalSearchInput";
 import GlobalSearchList from "./GlobalSearchList";
 import useDebounce from "../../hooks/useDebounce";
+import { SearchContext } from "../Search/SearchContext";
 
-function GlobalSearchDialog({ open, setOpen }) {
+function GlobalSearchDialog() {
   const [openListItem] = useListOption();
   const [inputValue, setInputValue] = useState("");
-  const debouncedInputValue = useDebounce(inputValue, 500);
+  const { open, setOpen } = useContext(SearchContext);
 
   console.log("- dialog rerender");
 
@@ -90,7 +91,7 @@ function GlobalSearchDialog({ open, setOpen }) {
         />
       </DialogTitle>
       <DialogContent dividers>
-        <GlobalSearchList inputValue={inputValue} debouncedInputValue={debouncedInputValue} />
+        <GlobalSearchList inputValue={inputValue.trim()} />
       </DialogContent>
     </Dialog>
   );
