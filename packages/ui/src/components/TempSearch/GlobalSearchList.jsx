@@ -51,10 +51,9 @@ function GlobalSearchList({ inputValue }) {
 
   console.log("---list rerender");
 
-  function fetchSearchResults(value) {
-    getSearchData({ variables: { queryString: value } }).then((res) => {
+  function fetchSearchResults() {
+    getSearchData({ variables: { queryString: debouncedInputValue } }).then((res) => {
       const formattedData = formatSearchData(res.data.search || res.data);
-      // add free search object
       setSearchResult({ ...formattedData });
     });
   }
@@ -73,14 +72,17 @@ function GlobalSearchList({ inputValue }) {
   }, []);
 
   useEffect(() => {
-    if (debouncedInputValue.trim()) fetchSearchResults(debouncedInputValue);
+    if (debouncedInputValue) fetchSearchResults();
     else {
       // add recentItems
     }
   }, [debouncedInputValue]);
 
   useEffect(() => {
-    if (Array.isArray(recentItems)) setRecentItems({ recent: recentItems });
+    if (Array.isArray(recentItems)) {
+      console.log('i was here');
+      setRecentItems({ recent: recentItems });
+    }
   }, []);
 
   return (
@@ -91,7 +93,7 @@ function GlobalSearchList({ inputValue }) {
       {/* input value is present and there are results available */}
       {inputValue &&
         (!isResultEmpty() ? (
-          Object.entries(searchResult).map(([key, value], index) => (
+          Object.entries(searchResult).map(([key, value]) => (
             <Box key={key} sx={{ pt: 2 }}>
               <GlobalSearchListHeader listHeader={key} />
               <List tabIndex={-1}>
@@ -106,6 +108,7 @@ function GlobalSearchList({ inputValue }) {
             </Box>
           ))
         ) : (
+          // no search result
           <Box>no search result place</Box>
         ))}
 
@@ -124,8 +127,6 @@ function GlobalSearchList({ inputValue }) {
           </List>
         </Box>
       )}
-
-      {/* input value is present and no results available */}
     </>
   );
 }
