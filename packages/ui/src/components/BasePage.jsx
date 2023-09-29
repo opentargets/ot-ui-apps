@@ -1,6 +1,5 @@
 import { Helmet } from "react-helmet";
 import Footer from "./Footer";
-import GlobalSearch from "./GlobalSearch";
 import Page from "./Page";
 
 import NavBar from "./NavBar";
@@ -11,6 +10,8 @@ import {
   externalLinks,
   mainMenuItems,
 } from "../constants";
+import GlobalSearch from "./TempSearch/GlobalSearch";
+
 
 function BasePage({ title, children, description, location }) {
   const composedTitle = `${title ? `${title} | ` : ""} ${appTitle}`;
@@ -20,7 +21,7 @@ function BasePage({ title, children, description, location }) {
       header={
         <NavBar
           name="Platform"
-          search={<div>s</div>}
+          search={<GlobalSearch />}
           items={mainMenuItems}
         />
       }

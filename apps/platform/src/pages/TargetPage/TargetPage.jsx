@@ -9,7 +9,7 @@ import {
   useRouteMatch,
   useParams,
 } from 'react-router-dom';
-import { LoadingBackdrop, BasePage, ScrollToTop, NewChip, TempGlobalSearch } from 'ui';
+import { LoadingBackdrop, BasePage, ScrollToTop, NewChip } from 'ui';
 
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
@@ -54,7 +54,6 @@ function TargetPage() {
       location={location}
     >
       <ScrollToTop />
-      <TempGlobalSearch/>
       <Header
         loading={loading}
         ensgId={ensgId}
