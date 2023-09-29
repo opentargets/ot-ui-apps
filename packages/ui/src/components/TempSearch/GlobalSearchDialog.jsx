@@ -3,7 +3,6 @@ import { Box, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import useListOption from "../../hooks/useListOption";
 import GlobalSearchInput from "./GlobalSearchInput";
 import GlobalSearchList from "./GlobalSearchList";
-import useDebounce from "../../hooks/useDebounce";
 import { SearchContext } from "../Search/SearchContext";
 
 function GlobalSearchDialog() {

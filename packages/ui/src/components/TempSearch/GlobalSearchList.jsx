@@ -52,10 +52,12 @@ function GlobalSearchList({ inputValue }) {
   console.log("---list rerender");
 
   function fetchSearchResults() {
-    getSearchData({ variables: { queryString: debouncedInputValue } }).then((res) => {
-      const formattedData = formatSearchData(res.data.search || res.data);
-      setSearchResult({ ...formattedData });
-    });
+    getSearchData({ variables: { queryString: debouncedInputValue } }).then(
+      (res) => {
+        const formattedData = formatSearchData(res.data.search || res.data);
+        setSearchResult({ ...formattedData });
+      }
+    );
   }
 
   function isResultEmpty() {
@@ -73,17 +75,7 @@ function GlobalSearchList({ inputValue }) {
 
   useEffect(() => {
     if (debouncedInputValue) fetchSearchResults();
-    else {
-      // add recentItems
-    }
   }, [debouncedInputValue]);
-
-  useEffect(() => {
-    if (Array.isArray(recentItems)) {
-      console.log('i was here');
-      setRecentItems({ recent: recentItems });
-    }
-  }, []);
 
   return (
     <>
@@ -94,7 +86,16 @@ function GlobalSearchList({ inputValue }) {
       {inputValue &&
         (!isResultEmpty() ? (
           Object.entries(searchResult).map(([key, value]) => (
-            <Box key={key} sx={{ pt: 2 }}>
+            <Box
+              key={key}
+              sx={{
+                pt: 1,
+                borderBottomWidth: "1px",
+                borderStyle: "solid",
+                borderImage:
+                  "linear-gradient(to right, white, #00000037, white)0 0 90",
+              }}
+            >
               <GlobalSearchListHeader listHeader={key} />
               <List tabIndex={-1}>
                 {value.map((item) => (
@@ -114,7 +115,7 @@ function GlobalSearchList({ inputValue }) {
 
       {/* input value is not present */}
       {!inputValue && recentItems.recent.length > 0 && (
-        <Box sx={{ pt: 2 }}>
+        <Box sx={{ pt: 1 }}>
           <GlobalSearchListHeader listHeader="recent" />
           <List tabIndex={-1}>
             {recentItems.recent.map((item) => (

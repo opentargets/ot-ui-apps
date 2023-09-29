@@ -10,7 +10,12 @@ const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   listStyle: "none",
-  paddingLeft: theme.spacing(2),
+  padding: `${theme.spacing(1.5)}`,
+  borderRadius: theme.spacing(1),
+  color: theme.palette.grey["900"],
+  "&:hover": {
+    background: theme.palette.grey["200"],
+  },
 }));
 
 const JustifyBetween = styled("div")({
@@ -49,13 +54,19 @@ const SearchListItemText = styled("span")({
   maxWidth: "90%",
 });
 
-const RecentItemContainer = styled("div")({
+const RecentItemContainer = styled("li")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
   cursor: "pointer",
   width: "100%",
-});
+  padding: `${theme.spacing(1.5)}`,
+  borderRadius: theme.spacing(1),
+  color: theme.palette.grey["900"],
+  "&:hover": {
+    background: theme.palette.grey["200"],
+  },
+}));
 
 const RecentIconContainer = styled("div")({
   display: "flex",
@@ -68,6 +79,7 @@ function RecentListItem({ item, onItemClick }) {
     <RecentItemContainer
       className="search-list-item"
       role="menuitem"
+      tabIndex="0"
       onClick={() => {
         onItemClick(item);
       }}
@@ -95,7 +107,10 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
     return <RecentListItem item={item} onItemClick={onItemClick} />;
   }
 
+  // todo: make top hit item separate and add blue background
+
   const getSymbolHeader = () => {
+    // todo: make italics
     if (item.entity === "search") {
       return (
         <SearchListItemContainer>
@@ -132,6 +147,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
     <ListItem
       className="search-list-item"
       role="menuitem"
+      tabIndex="0"
       onClick={() => {
         onItemClick(item);
       }}

@@ -15,11 +15,10 @@ import { clearAllRecent } from "./utils/searchUtils";
 const useStyles = makeStyles((theme) => ({
   sectionHeader: {
     textTransform: "capitalize",
-    color: theme.palette.primary.main,
+    color: theme.palette.grey[600],
     display: "flex",
     alignItems: "center",
     gap: theme.spacing(1),
-    margin: "0.5rem 0",
     justifyContent: "space-between",
   },
   label: {
@@ -29,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "uppercase",
   },
   labelIcon: {
-    color: theme.palette.primary.main,
+    color: theme.palette.grey[600],
     fontSize: "0.8rem",
   },
 }));
@@ -95,6 +94,8 @@ function GlobalSearchListHeader({ listHeader, children }) {
             className={classes.labelIcon}
           />
         );
+      case "recent":
+        return null;
       default:
         return <FontAwesomeIcon icon={faTag} />;
     }
@@ -104,7 +105,9 @@ function GlobalSearchListHeader({ listHeader, children }) {
     <div tabIndex="-1" className={classes.sectionHeader}>
       <div className={classes.label}>
         {getIcon()}
-        <Typography variant="caption">{listHeader}</Typography>
+        <Typography sx={{ fontWeight: "bold" }} variant="caption">
+          {listHeader}
+        </Typography>
       </div>
       {listHeader === "recent" && (
         <ClearAllButton onClick={clearAllRecent}>
