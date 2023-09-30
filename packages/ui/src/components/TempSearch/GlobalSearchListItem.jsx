@@ -1,5 +1,6 @@
+import { memo } from "react";
 import { makeStyles, styled } from "@mui/styles";
-import { Typography, Chip } from "@mui/material";
+import { Typography, Chip, Box } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
 
@@ -11,7 +12,7 @@ const ListItem = styled("li")(({ theme }) => ({
   width: "100%",
   listStyle: "none",
   padding: `${theme.spacing(1.5)}`,
-  borderRadius: theme.spacing(1),
+  borderRadius: theme.spacing(0.5),
   color: theme.palette.grey["900"],
   "&:hover": {
     background: theme.palette.grey["200"],
@@ -21,9 +22,10 @@ const ListItem = styled("li")(({ theme }) => ({
 const JustifyBetween = styled("div")({
   display: "flex",
   justifyContent: "space-between",
+  width: "100%",
 });
 
-const TopHitItem = styled("span")(({ theme }) => ({
+const ListItemDisplayName = styled("span")(({ theme }) => ({
   textTransform: "capitalize",
   display: "flex",
   alignItems: "center",
@@ -62,7 +64,7 @@ const RecentItemContainer = styled("li")(({ theme }) => ({
   width: "100%",
   padding: `${theme.spacing(1.5)}`,
   borderRadius: theme.spacing(1),
-  color: theme.palette.grey["900"],
+  color: theme.palette.grey["700"],
   "&:hover": {
     background: theme.palette.grey["200"],
   },
@@ -73,6 +75,29 @@ const RecentIconContainer = styled("div")({
   alignItems: "center",
   gap: "10px",
 });
+
+const TopHitItem = styled("li")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  cursor: "pointer",
+  width: "100%",
+  padding: `${theme.spacing(1.5)}`,
+  borderRadius: theme.spacing(1),
+  color: theme.palette.grey["900"],
+  "&:hover": {
+    background: theme.palette.grey["200"],
+  },
+}));
+
+const TopHitItemContainer = styled("div")(({ theme }) => ({
+  cursor: "pointer",
+  width: "100%",
+  padding: `${theme.spacing(1.5)}`,
+  borderRadius: theme.spacing(1),
+  color: theme.palette.primary.contrastText,
+  background: theme.palette.primary.light,
+}));
 
 function RecentListItem({ item, onItemClick }) {
   return (
@@ -102,21 +127,58 @@ function RecentListItem({ item, onItemClick }) {
   );
 }
 
+function TopHitListItem({ item }) {
+  return (
+    <TopHitItem>
+      <TopHitItemContainer>
+        <JustifyBetween>
+          <Typography variant="h6">
+            <ListItemDisplayName>
+              <Box sx={{ fontWeight: "900", letterSpacing: 2 }}>
+                {item.symbol || item.name}
+              </Box>
+            </ListItemDisplayName>
+          </Typography>
+
+          <Typography variant="caption">
+            {item.id && <ItemId>{item.id}</ItemId>}
+          </Typography>
+        </JustifyBetween>
+        <Typography variant="subtitle1">
+          <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
+            {item.symbol && item.name}
+          </Box>
+        </Typography>
+        <Typography variant="body2">
+          <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
+            {item.description && item.description.substring(0, 180) && `... `}
+          </Box>
+        </Typography>
+      </TopHitItemContainer>
+    </TopHitItem>
+  );
+}
+
 function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
+  console.log("list item rerendered", item);
+
   if (item.type === "recent") {
     return <RecentListItem item={item} onItemClick={onItemClick} />;
   }
 
-  // todo: make top hit item separate and add blue background
+  if (isTopHit) {
+    return <TopHitListItem item={item} />;
+  }
 
   const getSymbolHeader = () => {
-    // todo: make italics
     if (item.entity === "search") {
       return (
         <SearchListItemContainer>
           <SearchListItemText>
             <Typography variant="subtitle1">
-              {item.symbol || item.name || item.id}
+              <Box sx={{ fontStyle: "oblique" }}>
+                {item.symbol || item.name || item.id}
+              </Box>
             </Typography>
           </SearchListItemText>
           <ArrowTurnDownLeft />
@@ -126,13 +188,8 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
     if (!(item.entity === "search") && item.symbol && item.name)
       return (
         <>
-          <Typography variant={isTopHit ? "h6" : "subtitle1"}>
-            {item.symbol}
-          </Typography>
-          -
-          <Typography variant={isTopHit ? "subtitle1" : "subtitle2"}>
-            {item.name}
-          </Typography>
+          <Typography variant="subtitle1">{item.symbol}</Typography>-
+          <Typography variant="subtitle2">{item.name}</Typography>
         </>
       );
 
@@ -153,18 +210,11 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
       }}
     >
       <JustifyBetween>
-        <TopHitItem>{getSymbolHeader()}</TopHitItem>
+        <ListItemDisplayName>{getSymbolHeader()}</ListItemDisplayName>
         <Typography variant="caption">
-          <ItemId>{item.id}</ItemId>
+          {item.id && <ItemId>{item.id}</ItemId>}
         </Typography>
       </JustifyBetween>
-      {isTopHit && item.description && (
-        <div className="functionDescription">
-          <Typography variant="subtitle1">
-            {item.description.substring(0, 180)} ...{" "}
-          </Typography>
-        </div>
-      )}
 
       <JustifyBetween>
         <Typography variant="caption">
@@ -227,4 +277,4 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
   );
 }
 
-export default GlobalSearchListItem;
+export default memo(GlobalSearchListItem);

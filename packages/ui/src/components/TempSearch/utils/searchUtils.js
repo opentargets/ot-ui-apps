@@ -70,7 +70,7 @@ export const formatSearchData = (unformattedData) => {
         })
       );
     }
-    formattedData[key] = typesArray;
+    if (typesArray.length > 0) formattedData[key] = typesArray;
   });
 
   return formattedData;

@@ -1,15 +1,25 @@
 import { useEffect, forwardRef, useContext } from "react";
-import { Box, Grow } from "@mui/material";
+import { Box, Grow, styled, alpha } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 import GlobalSearchDialog from "./GlobalSearchDialog";
 import { SearchContext } from "../Search/SearchContext";
 
+const SearchButton = styled("button")(({ theme }) => ({
+  cursor: "pointer",
+  width: "100%",
+  background: alpha("#fff", 0.3),
+  border: `1px solid ${theme.palette.primary.main}`,
+  borderRadius: theme.spacing(0.6),
+  padding: `${theme.spacing(0.4)} ${theme.spacing(1.2)}`,
+  color: "white",
+}));
+
 function GlobalSearch() {
   const { setOpen } = useContext(SearchContext);
-
-  console.log("global search rerender");
+  const shortcutText =
+    navigator?.platform.indexOf("Mac") > -1 ? "⌘ K" : "Ctrl+K";
 
   function monitorCmdK(event) {
     // open on cmd + k
@@ -28,21 +38,38 @@ function GlobalSearch() {
   }, []);
 
   return (
-    <Box>
-      <Box>
-        <button
-          type="button"
-          onClick={() => {
-            setOpen(true);
+    <Box sx={{ width: 1 }}>
+      <SearchButton
+        type="button"
+        onClick={() => {
+          setOpen(true);
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            fontSize: (theme) => theme.spacing(2),
           }}
         >
           <Box>
             <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
           </Box>
-          search button
-          <Box>cmdk button</Box>
-        </button>
-      </Box>
+          Search...
+          <Box
+            sx={{
+              fontSize: (theme) => theme.spacing(1.3),
+              fontWeight: "bold",
+              color: "white",
+              backgroundColor: (theme) => theme.palette.primary.main,
+              padding: (theme) => `${theme.spacing(0.5)} ${theme.spacing(1)}`,
+              borderRadius: (theme) => theme.spacing(0.4),
+            }}
+          >
+            {shortcutText}
+          </Box>
+        </Box>
+      </SearchButton>
 
       {/* <Grow > */}
       <GlobalSearchDialog />
