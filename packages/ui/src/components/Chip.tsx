@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import * as classNames from "classnames";
 import { makeStyles } from "@mui/styles";
 import { Chip as MUIChip } from "@mui/material";
 
@@ -11,7 +11,14 @@ const useStyles = makeStyles({
   },
 });
 
-function Chip({ className, label, title, disabled }) {
+type ChipProps = {
+  className: string;
+  disabled: boolean;
+  label: string;
+  title: string;
+};
+
+export default function Chip({ className, label, title, disabled }: ChipProps) {
   const classes = useStyles();
   return (
     <MUIChip
@@ -24,5 +31,3 @@ function Chip({ className, label, title, disabled }) {
     />
   );
 }
-
-export default Chip;
