@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import {
   Box,
   Dialog,
@@ -14,6 +14,7 @@ import GlobalSearchList from "./GlobalSearchList";
 import { SearchContext } from "../Search/SearchContext";
 import useDebounce from "../../hooks/useDebounce";
 import ArrowTurnDownLeft from "../../components/icons/ArrowTurnDownLeft";
+import useListOption from "../../hooks/useListOption";
 
 const SearchInput = styled("input")(({ theme }) => ({
   borderColor: "transparent",
@@ -61,7 +62,8 @@ const SearchListItemText = styled("span")({
 function GlobalSearchDialog() {
   const { open, setOpen, searchPlaceholder } = useContext(SearchContext);
   const [inputValue, setInputValue] = useState("");
-  const debouncedInputValue = useDebounce(inputValue, 500);
+  const debouncedInputValue = useDebounce(inputValue, 300);
+  const [openListItem] = useListOption();
   const freeSearchTermObject = {
     symbol: `Search for: ${inputValue}`,
     name: inputValue,
@@ -86,6 +88,11 @@ function GlobalSearchDialog() {
       e.stopPropagation();
     }
   }
+
+  const handleItemClick = useCallback((item) => {
+    setOpen(false);
+    openListItem(item);
+  }, []);
 
   return (
     <Dialog
@@ -138,7 +145,9 @@ function GlobalSearchDialog() {
       </DialogTitle>
       <DialogContent dividers>
         {inputValue && (
-          <FreeSearchListItem>
+          <FreeSearchListItem
+            onClick={() => handleItemClick(freeSearchTermObject)}
+          >
             <SearchListItemText>
               <Typography variant="subtitle1">
                 <Box sx={{ fontStyle: "oblique" }}>
