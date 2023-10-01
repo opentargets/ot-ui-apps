@@ -5,9 +5,7 @@ import GlobalSearchListHeader from "./GlobalSearchListHeader";
 import GlobalSearchListItem from "./GlobalSearchListItem";
 import { SearchContext } from "../Search/SearchContext";
 import { formatSearchData } from "./utils/searchUtils";
-import useDebounce from "../../hooks/useDebounce";
 import useListOption from "../../hooks/useListOption";
-import { InputValueContext } from "./Context/GlobalSearchSelectContext";
 import GlobalSearchLoadingState from "./GlobalSearchLoadingState";
 
 const List = styled("ul")({
@@ -15,37 +13,25 @@ const List = styled("ul")({
   padding: "0",
 });
 
-const MemoizedListItem = memo(GlobalSearchListItem);
-
-function GlobalSearchList() {
+function GlobalSearchList({ inputValue }) {
   const [searchResult, setSearchResult] = useState({});
   const [loading, setLoading] = useState(false);
-  const [inputValue] = useContext(InputValueContext);
   const { searchQuery, setOpen } = useContext(SearchContext);
   const [getSearchData] = useLazyQuery(searchQuery);
-  const debouncedInputValue = useDebounce(inputValue, 500);
   const [openListItem] = useListOption();
   const [recentItems, setRecentItems] = useState(
     JSON.parse(localStorage.getItem("search-history")) || { recent: [] }
   );
-  const freeSearchTermObject = {
-    symbol: `Search for: ${inputValue}`,
-    name: inputValue,
-    entity: "search",
-    type: "",
-  };
 
   console.log("list rerender");
 
   function fetchSearchResults() {
     setLoading(true);
-    getSearchData({ variables: { queryString: debouncedInputValue } }).then(
-      (res) => {
-        const formattedData = formatSearchData(res.data.search || res.data);
-        setSearchResult({ ...formattedData });
-        setLoading(false);
-      }
-    );
+    getSearchData({ variables: { queryString: inputValue } }).then((res) => {
+      const formattedData = formatSearchData(res.data.search || res.data);
+      setSearchResult({ ...formattedData });
+      setLoading(false);
+    });
   }
 
   function isResultEmpty() {
@@ -58,13 +44,13 @@ function GlobalSearchList() {
   }, []);
 
   useEffect(() => {
-    if (debouncedInputValue) fetchSearchResults();
-  }, [debouncedInputValue]);
+    if (inputValue) fetchSearchResults();
+  }, [inputValue]);
 
   return (
     <>
       {/* show free search list item if there is an input value */}
-      {inputValue && (
+      {/* {inputValue && (
         <Box
           sx={{
             borderBottomWidth: "1px",
@@ -78,7 +64,7 @@ function GlobalSearchList() {
             onItemClick={handleItemClick}
           />
         </Box>
-      )}
+      )} */}
 
       {inputValue && loading && <GlobalSearchLoadingState />}
 
@@ -100,7 +86,7 @@ function GlobalSearchList() {
             <GlobalSearchListHeader listHeader={key} />
             <List tabIndex={-1}>
               {value.map((item) => (
-                <MemoizedListItem
+                <GlobalSearchListItem
                   key={item.id || item.symbol}
                   item={item}
                   onItemClick={handleItemClick}
@@ -122,7 +108,7 @@ function GlobalSearchList() {
           <GlobalSearchListHeader listHeader="recent" />
           <List tabIndex={-1}>
             {recentItems.recent.map((item) => (
-              <MemoizedListItem
+              <GlobalSearchListItem
                 key={item.id || item.symbol}
                 item={item}
                 onItemClick={handleItemClick}

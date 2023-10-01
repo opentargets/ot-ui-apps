@@ -1,11 +1,10 @@
 import { memo } from "react";
-import { makeStyles, styled } from "@mui/styles";
+import { styled } from "@mui/styles";
 import { Typography, Chip, Box } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
 
 import { clearRecentItem, commaSeparate } from "./utils/searchUtils";
-import ArrowTurnDownLeft from "../../components/icons/ArrowTurnDownLeft";
 
 const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
@@ -40,20 +39,6 @@ const ItemId = styled("span")({
 
 const FlexSpan = styled("span")({
   display: "flex",
-});
-
-const SearchListItemContainer = styled("div")({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  cursor: "pointer",
-  width: "100%",
-  wordBreak: "break-word",
-  paddingRight: "0.2rem",
-});
-
-const SearchListItemText = styled("span")({
-  maxWidth: "90%",
 });
 
 const RecentItemContainer = styled("li")(({ theme }) => ({
@@ -171,21 +156,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
   }
 
   const getSymbolHeader = () => {
-    if (item.entity === "search") {
-      return (
-        <SearchListItemContainer>
-          <SearchListItemText>
-            <Typography variant="subtitle1">
-              <Box sx={{ fontStyle: "oblique" }}>
-                {item.symbol || item.name || item.id}
-              </Box>
-            </Typography>
-          </SearchListItemText>
-          <ArrowTurnDownLeft />
-        </SearchListItemContainer>
-      );
-    }
-    if (!(item.entity === "search") && item.symbol && item.name)
+    if (item.symbol && item.name)
       return (
         <>
           <Typography variant="subtitle1">{item.symbol}</Typography>-
@@ -220,15 +191,14 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
         <Typography variant="caption">
           <FlexSpan>
             {item.pubAuthor && item.pubAuthor}
-            {item.pubDate && ` (` + item.pubDate.substring(0, 4) + `)`}
+            {item.pubDate && ` ( ${item.pubDate.substring(0, 4)} )`}
           </FlexSpan>
           <FlexSpan>
             {item.position &&
               item.chromosome &&
-              `GRCh38:` +
-                item.chromosome +
-                `:` +
-                commaSeparate(Number(item.position))}
+              `GRCh38: ${item.chromosome} : ${commaSeparate(
+                Number(item.position)
+              )}`}
           </FlexSpan>
         </Typography>
         <Typography variant="caption">
