@@ -23,8 +23,6 @@ function GlobalSearchList({ inputValue }) {
     JSON.parse(localStorage.getItem("search-history")) || { recent: [] }
   );
 
-  console.log("list rerender");
-
   function fetchSearchResults() {
     setLoading(true);
     getSearchData({ variables: { queryString: inputValue } }).then((res) => {
@@ -45,27 +43,11 @@ function GlobalSearchList({ inputValue }) {
 
   useEffect(() => {
     if (inputValue) fetchSearchResults();
+    else setSearchResult({});
   }, [inputValue]);
 
   return (
     <>
-      {/* show free search list item if there is an input value */}
-      {/* {inputValue && (
-        <Box
-          sx={{
-            borderBottomWidth: "1px",
-            borderStyle: "solid",
-            borderImage:
-              "linear-gradient(to right, white, #00000037, white)0 0 90",
-          }}
-        >
-          <GlobalSearchListItem
-            item={freeSearchTermObject}
-            onItemClick={handleItemClick}
-          />
-        </Box>
-      )} */}
-
       {inputValue && loading && <GlobalSearchLoadingState />}
 
       {/* input value is present and there are results available */}

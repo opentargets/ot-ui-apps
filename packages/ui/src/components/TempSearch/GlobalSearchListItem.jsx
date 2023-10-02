@@ -112,9 +112,16 @@ function RecentListItem({ item, onItemClick }) {
   );
 }
 
-function TopHitListItem({ item }) {
+function TopHitListItem({ item, onItemClick }) {
   return (
-    <TopHitItem>
+    <TopHitItem
+      className="search-list-item"
+      role="menuitem"
+      tabIndex="0"
+      onClick={() => {
+        onItemClick(item);
+      }}
+    >
       <TopHitItemContainer>
         <JustifyBetween>
           <Typography variant="h6">
@@ -145,14 +152,12 @@ function TopHitListItem({ item }) {
 }
 
 function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
-  console.log("list item rerendered", item);
-
   if (item.type === "recent") {
     return <RecentListItem item={item} onItemClick={onItemClick} />;
   }
 
   if (isTopHit) {
-    return <TopHitListItem item={item} />;
+    return <TopHitListItem item={item} onItemClick={onItemClick} />;
   }
 
   const getSymbolHeader = () => {

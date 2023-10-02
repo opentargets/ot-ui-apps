@@ -45,19 +45,27 @@ const EscButton = styled("button")(({ theme }) => ({
   },
 }));
 
-const FreeSearchListItem = styled("div")({
+const FreeSearchListItem = styled("li")(({ theme }) => ({
+  cursor: "pointer",
+  width: "100%",
+  listStyle: "none",
+  padding: `${theme.spacing(1.5)}`,
+  borderRadius: theme.spacing(0.5),
+  color: theme.palette.grey["900"],
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  cursor: "pointer",
-  width: "100%",
   wordBreak: "break-word",
-  paddingRight: "0.2rem",
-});
+  "&:hover": {
+    background: theme.palette.grey["200"],
+  },
+}));
 
 const SearchListItemText = styled("span")({
   maxWidth: "90%",
 });
+
+
 
 function GlobalSearchDialog() {
   const { open, setOpen, searchPlaceholder } = useContext(SearchContext);
@@ -103,6 +111,14 @@ function GlobalSearchDialog() {
       role="searchbox"
       scroll="paper"
       tabIndex={0}
+      sx={{
+        "& .MuiDialog-container": {
+          "& .MuiPaper-root": {
+            width: "80vw",
+            maxWidth: "800px", 
+          },
+        },
+      }}
     >
       <DialogTitle>
         <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -146,6 +162,9 @@ function GlobalSearchDialog() {
       <DialogContent dividers>
         {inputValue && (
           <FreeSearchListItem
+            className="search-list-item"
+            role="menuitem"
+            tabIndex="0"
             onClick={() => handleItemClick(freeSearchTermObject)}
           >
             <SearchListItemText>
