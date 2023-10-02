@@ -9,6 +9,7 @@ import { SearchContext } from "../Search/SearchContext";
 const SearchButton = styled("button")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
+  maxWidth: "400px",
   background: alpha("#fff", 0.3),
   border: `1px solid ${theme.palette.primary.main}`,
   borderRadius: theme.spacing(0.6),
@@ -38,7 +39,7 @@ function GlobalSearch() {
   }, []);
 
   return (
-    <Box sx={{ width: 1 }}>
+    <Box sx={{ width: 1, display: "flex", justifyContent: "center" }}>
       <SearchButton
         type="button"
         onClick={() => {

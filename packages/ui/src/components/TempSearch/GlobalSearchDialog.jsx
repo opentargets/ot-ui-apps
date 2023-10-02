@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import {
   Box,
   Dialog,
@@ -65,11 +65,10 @@ const SearchListItemText = styled("span")({
   maxWidth: "90%",
 });
 
-
-
 function GlobalSearchDialog() {
   const { open, setOpen, searchPlaceholder } = useContext(SearchContext);
   const [inputValue, setInputValue] = useState("");
+  const [selected, setSelected] = useState(0);
   const debouncedInputValue = useDebounce(inputValue, 300);
   const [openListItem] = useListOption();
   const freeSearchTermObject = {
@@ -79,7 +78,73 @@ function GlobalSearchDialog() {
     type: "",
   };
 
-  function onKeyDownHandler(e) {
+  function handleChangeSelected(direction) {
+    const items = document.querySelectorAll(".search-list-item");
+
+    let index = 0;
+    let newIndex = 0;
+
+    if (direction === "down") {
+      items.forEach((_, i) => {
+        if (i === selected) {
+          index = i;
+        }
+      });
+
+      newIndex = index === items.length - 1 ? 0 : index + 1;
+    } else if (direction === "up") {
+      items.forEach((_, i) => {
+        if (i === selected) {
+          index = i;
+        }
+      });
+
+      newIndex = !index ? items.length - 1 : index - 1;
+    } else {
+      setSelected(0);
+    }
+
+    const newItem = items[newIndex];
+
+    if (newItem && typeof newIndex === "number") {
+      setSelected(newIndex);
+      items.forEach((el) => {
+        el.classList.remove("search-list-item-active");
+      });
+      newItem.classList.add("search-list-item-active");
+      newItem.scrollIntoView({
+        behavior: "smooth",
+        block: newIndex ? "center" : "end",
+      });
+    }
+  }
+
+  // function handleSelect() {
+  //   const items = document.querySelectorAll(".search-list-item");
+
+  //   let index = 0;
+  //   let item: HTMLAnchorElement | HTMLButtonElement;
+
+  //   items.forEach((_, i) => {
+  //     if (i === selected) {
+  //       index = i;
+  //     }
+  //   });
+
+  //   item = items[index];
+
+  //   if (item) {
+  //     item.click();
+
+  //     if (
+  //       item.attributes.getNamedItem("data-close-on-select")?.value === "true"
+  //     ) {
+  //       onChangeOpen(false);
+  //     }
+  //   }
+  // }
+
+  const onKeyDownHandler = useCallback((e) => {
     if (e.key === "Escape") {
       setOpen(false);
       e.preventDefault();
@@ -88,14 +153,23 @@ function GlobalSearchDialog() {
     } else if (e.code === "ArrowDown") {
       e.preventDefault();
       e.stopPropagation();
+      handleChangeSelected("down");
     } else if (e.code === "ArrowUp") {
       e.preventDefault();
       e.stopPropagation();
+      handleChangeSelected("up");
     } else if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("keydown", onKeyDownHandler);
+    return () => {
+      document.removeEventListener("keydown", onKeyDownHandler);
+    };
+  }, []);
 
   const handleItemClick = useCallback((item) => {
     setOpen(false);
@@ -104,18 +178,21 @@ function GlobalSearchDialog() {
 
   return (
     <Dialog
-      onClose={() => {
-        setOpen(false);
-      }}
       open={open}
       role="searchbox"
       scroll="paper"
       tabIndex={0}
+      onClose={() => {
+        setOpen(false);
+      }}
       sx={{
         "& .MuiDialog-container": {
+          alignItems: "start",
           "& .MuiPaper-root": {
             width: "80vw",
-            maxWidth: "800px", 
+            maxWidth: "800px",
+            borderRadius: (theme) => theme.spacing(1),
+            margin: (theme) => theme.spacing(6),
           },
         },
       }}
@@ -142,9 +219,6 @@ function GlobalSearchDialog() {
               onFocus={(e) => {
                 e.currentTarget.select();
               }}
-              onKeyDown={(e) => {
-                onKeyDownHandler(e);
-              }}
             />
           </Box>
           <Box>
@@ -162,7 +236,7 @@ function GlobalSearchDialog() {
       <DialogContent dividers>
         {inputValue && (
           <FreeSearchListItem
-            className="search-list-item"
+            className="search-list-item search-list-item-active"
             role="menuitem"
             tabIndex="0"
             onClick={() => handleItemClick(freeSearchTermObject)}
