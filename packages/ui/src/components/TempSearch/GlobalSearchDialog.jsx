@@ -12,23 +12,9 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 import GlobalSearchList from "./GlobalSearchList";
 import { SearchContext } from "../Search/SearchContext";
-import useDebounce from "../../hooks/useDebounce";
 import ArrowTurnDownLeft from "../../components/icons/ArrowTurnDownLeft";
+import GlobalSearchInput from "./GlobalSearchInput";
 import useListOption from "../../hooks/useListOption";
-
-const SearchInput = styled("input")(({ theme }) => ({
-  borderColor: "transparent",
-  padding: `0 ${theme.spacing(1)}`,
-  fontSize: theme.spacing(3),
-  color: theme.palette.grey[700],
-  width: "100%",
-  "&:focus": {
-    outline: "none",
-  },
-  "&::placeholder": {
-    color: theme.palette.grey[400],
-  },
-}));
 
 const EscButton = styled("button")(({ theme }) => ({
   display: "block",
@@ -66,10 +52,10 @@ const SearchListItemText = styled("span")({
 });
 
 function GlobalSearchDialog() {
-  const { open, setOpen, searchPlaceholder } = useContext(SearchContext);
+  const { open, setOpen } = useContext(SearchContext);
   const [inputValue, setInputValue] = useState("");
   let selected = 0;
-  const debouncedInputValue = useDebounce(inputValue, 300);
+  // const inputValue = useDebounce(inputValue, 300);
   const [openListItem] = useListOption();
   const freeSearchTermObject = {
     symbol: `Search for: ${inputValue}`,
@@ -194,16 +180,7 @@ function GlobalSearchDialog() {
             <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
           </Box>
           <Box sx={{ display: "flex", flexGrow: "1" }}>
-            <SearchInput
-              placeholder={searchPlaceholder}
-              autoFocus
-              value={inputValue}
-              type="text"
-              onChange={(e) => setInputValue(e.currentTarget.value)}
-              onFocus={(e) => {
-                e.currentTarget.select();
-              }}
-            />
+            <GlobalSearchInput setValue={setInputValue} />
           </Box>
           <Box>
             <EscButton
@@ -235,7 +212,7 @@ function GlobalSearchDialog() {
             <ArrowTurnDownLeft />
           </FreeSearchListItem>
         )}
-        <GlobalSearchList inputValue={debouncedInputValue} />
+        <GlobalSearchList inputValue={inputValue} />
       </DialogContent>
     </Dialog>
   );

@@ -136,32 +136,22 @@ function TopHitListItem({ item, onItemClick }) {
             {item.id && <ItemId>{item.id}</ItemId>}
           </Typography>
         </JustifyBetween>
-        <Typography variant="subtitle1">
-          <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
+        <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
+          <Typography variant="subtitle1">
             {item.symbol && item.name}
-          </Box>
-        </Typography>
-        <Typography variant="body2">
-          <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
+          </Typography>
+        </Box>
+        <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
+          <Typography variant="body2">
             {item.description && `${item.description.substring(0, 180)}...`}
-          </Box>
-        </Typography>
+          </Typography>
+        </Box>
       </TopHitItemContainer>
     </TopHitItem>
   );
 }
 
 function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
-  if (item.type === "recent") {
-    return <RecentListItem item={item} onItemClick={onItemClick} />;
-  }
-
-  console.log('list item')
-
-  if (isTopHit) {
-    return <TopHitListItem item={item} onItemClick={onItemClick} />;
-  }
-
   const getSymbolHeader = () => {
     if (item.symbol && item.name)
       return (
@@ -177,6 +167,14 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
       </Typography>
     );
   };
+
+  if (item.type === "recent") {
+    return <RecentListItem item={item} onItemClick={onItemClick} />;
+  }
+
+  if (isTopHit) {
+    return <TopHitListItem item={item} onItemClick={onItemClick} />;
+  }
 
   return (
     <ListItem
