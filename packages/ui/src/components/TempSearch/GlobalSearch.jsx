@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 import GlobalSearchDialog from "./GlobalSearchDialog";
-import { SearchContext } from "../Search/SearchContext";
+import { SearchContext } from "./SearchContext";
 
 const SearchButton = styled("button")(({ theme }) => ({
   cursor: "pointer",
@@ -31,7 +31,7 @@ function GlobalSearch() {
     }
   }
 
-  console.log('global search')
+  console.log("global search");
 
   useEffect(() => {
     document.addEventListener("keydown", monitorCmdK);

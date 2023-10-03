@@ -3,7 +3,7 @@ import { Box, styled } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
 import GlobalSearchListHeader from "./GlobalSearchListHeader";
 import GlobalSearchListItem from "./GlobalSearchListItem";
-import { SearchContext } from "../Search/SearchContext";
+import { SearchContext } from "./SearchContext";
 import { formatSearchData } from "./utils/searchUtils";
 import useListOption from "../../hooks/useListOption";
 import GlobalSearchLoadingState from "./GlobalSearchLoadingState";

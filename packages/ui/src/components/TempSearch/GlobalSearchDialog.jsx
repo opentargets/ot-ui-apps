@@ -1,20 +1,12 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import {
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Typography,
-  styled,
-} from "@mui/material";
+import { Box, Dialog, DialogContent, DialogTitle, styled } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 import GlobalSearchList from "./GlobalSearchList";
-import { SearchContext } from "../Search/SearchContext";
-import ArrowTurnDownLeft from "../../components/icons/ArrowTurnDownLeft";
+import { SearchContext, SearchInputProvider } from "./SearchContext";
 import GlobalSearchInput from "./GlobalSearchInput";
-import useListOption from "../../hooks/useListOption";
+import GlobalSearchFreeListItem from "./GlobalSearchFreeListItem";
 
 const EscButton = styled("button")(({ theme }) => ({
   display: "block",
@@ -31,38 +23,10 @@ const EscButton = styled("button")(({ theme }) => ({
   },
 }));
 
-const FreeSearchListItem = styled("li")(({ theme }) => ({
-  cursor: "pointer",
-  width: "100%",
-  listStyle: "none",
-  padding: `${theme.spacing(1.5)}`,
-  borderRadius: theme.spacing(0.5),
-  color: theme.palette.grey["900"],
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  wordBreak: "break-word",
-  "&:hover": {
-    background: theme.palette.grey["200"],
-  },
-}));
-
-const SearchListItemText = styled("span")({
-  maxWidth: "90%",
-});
-
 function GlobalSearchDialog() {
   const { open, setOpen } = useContext(SearchContext);
   const [inputValue, setInputValue] = useState("");
   let selected = 0;
-  // const inputValue = useDebounce(inputValue, 300);
-  const [openListItem] = useListOption();
-  const freeSearchTermObject = {
-    symbol: `Search for: ${inputValue}`,
-    name: inputValue,
-    entity: "search",
-    type: "",
-  };
 
   console.log(" dialog rerender");
 
@@ -111,9 +75,6 @@ function GlobalSearchDialog() {
     );
   }
 
-  // function handleSelect() {
-  // }
-
   const onKeyDownHandler = useCallback((e) => {
     if (e.key === "Escape") {
       setOpen(false);
@@ -141,11 +102,6 @@ function GlobalSearchDialog() {
     };
   }, []);
 
-  const handleItemClick = useCallback((item) => {
-    setOpen(false);
-    openListItem(item);
-  }, []);
-
   return (
     <Dialog
       open={open}
@@ -167,53 +123,39 @@ function GlobalSearchDialog() {
         },
       }}
     >
-      <DialogTitle>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              fontSize: (theme) => `${theme.spacing(3.5)}`,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
-          </Box>
-          <Box sx={{ display: "flex", flexGrow: "1" }}>
-            <GlobalSearchInput setValue={setInputValue} />
-          </Box>
-          <Box>
-            <EscButton
-              type="button"
-              onClick={() => {
-                setOpen(false);
+      <SearchInputProvider setValue={setInputValue}>
+        <DialogTitle>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                fontSize: (theme) => `${theme.spacing(3.5)}`,
+                color: (theme) => theme.palette.grey[500],
               }}
             >
-              esc
-            </EscButton>
+              <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
+            </Box>
+            <Box sx={{ display: "flex", flexGrow: "1" }}>
+              <GlobalSearchInput />
+            </Box>
+            <Box>
+              <EscButton
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                esc
+              </EscButton>
+            </Box>
           </Box>
-        </Box>
-      </DialogTitle>
-      <DialogContent dividers>
-        {inputValue && (
-          <FreeSearchListItem
-            className="search-list-item search-list-item-active"
-            role="menuitem"
-            tabIndex="0"
-            onClick={() => handleItemClick(freeSearchTermObject)}
-          >
-            <SearchListItemText>
-              <Typography variant="subtitle1">
-                <Box sx={{ fontStyle: "oblique" }}>
-                  {freeSearchTermObject.symbol}
-                </Box>
-              </Typography>
-            </SearchListItemText>
-            <ArrowTurnDownLeft />
-          </FreeSearchListItem>
-        )}
-        <GlobalSearchList inputValue={inputValue} />
-      </DialogContent>
+        </DialogTitle>
+        <DialogContent dividers>
+          <GlobalSearchFreeListItem />
+          <GlobalSearchList inputValue={inputValue} />
+        </DialogContent>
+      </SearchInputProvider>
     </Dialog>
   );
 }

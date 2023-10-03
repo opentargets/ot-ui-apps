@@ -1,8 +1,7 @@
-import { useContext, useEffect, useState, memo } from "react";
+import { useContext, memo } from "react";
 import { styled } from "@mui/material";
 
-import { SearchContext } from "../Search/SearchContext";
-import useDebounce from "../../hooks/useDebounce";
+import { SearchContext, SearchInputContext } from "./SearchContext";
 
 const SearchInput = styled("input")(({ theme }) => ({
   borderColor: "transparent",
@@ -18,15 +17,9 @@ const SearchInput = styled("input")(({ theme }) => ({
   },
 }));
 
-function GlobalSearchInput({ setValue }) {
-  const [inputValue, setInputValue] = useState("");
+function GlobalSearchInput() {
   const { searchPlaceholder } = useContext(SearchContext);
-
-  const debouncedInputValue = useDebounce(inputValue, 300);
-
-  useEffect(() => {
-    setValue(debouncedInputValue);
-  }, [debouncedInputValue]);
+  const { inputValue, setInputValue } = useContext(SearchInputContext);
 
   return (
     <SearchInput

@@ -2,7 +2,7 @@ import { Grid, Typography, Hidden, Box, useMediaQuery } from '@mui/material';
 
 import { makeStyles, useTheme } from '@mui/styles';
 import { Helmet } from 'react-helmet';
-import { Footer, AutocompleteSearch, Link, NavBar } from 'ui';
+import { Footer, TempGlobalSearch, Link, NavBar } from 'ui';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -132,7 +132,7 @@ function HomePage() {
           placement="bottom-end"
         />
         <HomeBox>
-          <AutocompleteSearch isHomePage />
+          <TempGlobalSearch />
           {/* Search examples */}
           <Grid
             className={classes.links}
