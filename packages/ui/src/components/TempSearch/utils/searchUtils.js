@@ -87,34 +87,32 @@ export const containsObject = (obj, list) => {
 };
 
 export const addSearchToLocalStorage = (item) => {
-  const recentItems = JSON.parse(localStorage.getItem("search-history")) || {
-    recent: [],
-  };
+  const recentItems = JSON.parse(localStorage.getItem("search-history")) || [];
   const newItem = { ...item };
   delete newItem.description;
-  const existingIndex = containsObject(newItem, recentItems.recent);
+  const existingIndex = containsObject(newItem, recentItems);
 
   if (existingIndex >= 0) {
-    recentItems.recent.splice(existingIndex, 1);
+    recentItems.splice(existingIndex, 1);
   }
-  const recentItemsDeepCopy = { ...recentItems };
+  const recentItemsDeepCopy = [...recentItems];
   if (newItem) {
-    recentItemsDeepCopy.recent.unshift(newItem);
+    recentItemsDeepCopy.unshift(newItem);
     localStorage.setItem("search-history", JSON.stringify(recentItemsDeepCopy));
   }
-  if (exceedsArrayLengthLimit(recentItemsDeepCopy.recent))
-    recentItemsDeepCopy.recent.pop();
+  if (exceedsArrayLengthLimit(recentItemsDeepCopy)) recentItemsDeepCopy.pop();
 };
 
 export const clearAllRecent = () => {
   localStorage.removeItem("search-history");
 };
 
-export const clearRecentItem = ({ item }) => {
+export const clearRecentItem = (item) => {
+  console.log(`👻 ~ file: searchUtils.js:111 ~ clearRecentItem ~ item:`, item);
   const recentItems = JSON.parse(localStorage.getItem("search-history"));
-  const removedItems = { ...recentItems };
-  const existingIndex = containsObject(item, removedItems.recent);
-  removedItems.recent.splice(existingIndex, 1);
+  const removedItems = [...recentItems];
+  const existingIndex = containsObject(item, removedItems);
+  removedItems.splice(existingIndex, 1);
   localStorage.setItem("search-history", JSON.stringify(removedItems));
   return removedItems;
 };

@@ -20,7 +20,7 @@ function GlobalSearchList({ inputValue }) {
   const [getSearchData] = useLazyQuery(searchQuery);
   const [openListItem] = useListOption();
   const [recentItems, setRecentItems] = useState(
-    JSON.parse(localStorage.getItem("search-history")) || { recent: [] }
+    JSON.parse(localStorage.getItem("search-history")) || []
   );
 
   function fetchSearchResults() {
@@ -32,7 +32,7 @@ function GlobalSearchList({ inputValue }) {
     });
   }
 
-  console.log('list rerender ')
+  console.log("list rerender ");
 
   function isResultEmpty() {
     return Object.keys(searchResult).length === 0;
@@ -87,11 +87,11 @@ function GlobalSearchList({ inputValue }) {
       )}
 
       {/* input value is not present */}
-      {!inputValue && recentItems.recent.length > 0 && (
+      {!inputValue && recentItems.length > 0 && (
         <Box sx={{ pt: 1 }}>
           <GlobalSearchListHeader listHeader="recent" />
           <List tabIndex={-1}>
-            {recentItems.recent.map((item) => (
+            {recentItems.map((item) => (
               <GlobalSearchListItem
                 key={item.id || item.symbol}
                 item={item}
