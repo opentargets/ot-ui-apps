@@ -143,7 +143,7 @@ function TopHitListItem({ item, onItemClick }) {
         </Typography>
         <Typography variant="body2">
           <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
-            {item.description && item.description.substring(0, 180) && `... `}
+            {item.description && `${item.description.substring(0, 180)}...`}
           </Box>
         </Typography>
       </TopHitItemContainer>
@@ -155,6 +155,8 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
   if (item.type === "recent") {
     return <RecentListItem item={item} onItemClick={onItemClick} />;
   }
+
+  console.log('list item')
 
   if (isTopHit) {
     return <TopHitListItem item={item} onItemClick={onItemClick} />;

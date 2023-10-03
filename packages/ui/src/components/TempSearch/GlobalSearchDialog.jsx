@@ -68,7 +68,7 @@ const SearchListItemText = styled("span")({
 function GlobalSearchDialog() {
   const { open, setOpen, searchPlaceholder } = useContext(SearchContext);
   const [inputValue, setInputValue] = useState("");
-  const [selected, setSelected] = useState(0);
+  let selected = 0;
   const debouncedInputValue = useDebounce(inputValue, 300);
   const [openListItem] = useListOption();
   const freeSearchTermObject = {
@@ -77,6 +77,8 @@ function GlobalSearchDialog() {
     entity: "search",
     type: "",
   };
+
+  console.log(" dialog rerender");
 
   function handleChangeSelected(direction) {
     const items = document.querySelectorAll(".search-list-item");
@@ -101,13 +103,13 @@ function GlobalSearchDialog() {
 
       newIndex = !index ? items.length - 1 : index - 1;
     } else {
-      setSelected(0);
+      selected = 0;
     }
 
     const newItem = items[newIndex];
 
     if (newItem && typeof newIndex === "number") {
-      setSelected(newIndex);
+      selected = newIndex;
       items.forEach((el) => {
         el.classList.remove("search-list-item-active");
       });
@@ -117,31 +119,13 @@ function GlobalSearchDialog() {
         block: newIndex ? "center" : "end",
       });
     }
+    console.log(
+      `👻 ~ file: GlobalSearchDialog.jsx:110 ~ handleChangeSelected ~ items:`,
+      items
+    );
   }
 
   // function handleSelect() {
-  //   const items = document.querySelectorAll(".search-list-item");
-
-  //   let index = 0;
-  //   let item: HTMLAnchorElement | HTMLButtonElement;
-
-  //   items.forEach((_, i) => {
-  //     if (i === selected) {
-  //       index = i;
-  //     }
-  //   });
-
-  //   item = items[index];
-
-  //   if (item) {
-  //     item.click();
-
-  //     if (
-  //       item.attributes.getNamedItem("data-close-on-select")?.value === "true"
-  //     ) {
-  //       onChangeOpen(false);
-  //     }
-  //   }
   // }
 
   const onKeyDownHandler = useCallback((e) => {
@@ -151,13 +135,13 @@ function GlobalSearchDialog() {
       e.stopPropagation();
       // onInputValueChange("");
     } else if (e.code === "ArrowDown") {
-      e.preventDefault();
-      e.stopPropagation();
       handleChangeSelected("down");
-    } else if (e.code === "ArrowUp") {
       e.preventDefault();
       e.stopPropagation();
+    } else if (e.code === "ArrowUp") {
       handleChangeSelected("up");
+      e.preventDefault();
+      e.stopPropagation();
     } else if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();

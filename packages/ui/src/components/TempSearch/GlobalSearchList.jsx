@@ -32,6 +32,8 @@ function GlobalSearchList({ inputValue }) {
     });
   }
 
+  console.log('list rerender ')
+
   function isResultEmpty() {
     return Object.keys(searchResult).length === 0;
   }
