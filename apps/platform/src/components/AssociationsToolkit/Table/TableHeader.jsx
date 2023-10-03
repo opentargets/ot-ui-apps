@@ -6,7 +6,7 @@ import {
   faBook,
   faLock,
 } from '@fortawesome/free-solid-svg-icons';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 
 import AggregationsRow from './AggregationsRow';
 import useAotfContext from '../hooks/useAotfContext';
@@ -63,8 +63,8 @@ function TableHeader({ table, cols }) {
                         ? 'cursor-pointer select-none'
                         : '',
                     }}
-                    onMouseEnter={_ => onEnterHoverHeader(header)}
-                    onMouseLeave={_ => onLeaveHoverHeader()}
+                    onMouseEnter={() => onEnterHoverHeader(header)}
+                    onMouseLeave={() => onLeaveHoverHeader()}
                   >
                     <div
                       {...{

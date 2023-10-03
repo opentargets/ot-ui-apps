@@ -86,7 +86,7 @@ function DiseasePage() {
           </Box>
         )}
       />
-      <Suspense fallback={<LoadingBackdrop />}>
+      <Suspense fallback={<LoadingBackdrop height={1500} />}>
         <Switch>
           <Route exact path="/disease/:efoId">
             <Profile efoId={efoId} name={name} />

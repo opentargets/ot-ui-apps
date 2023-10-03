@@ -10,6 +10,10 @@ const theme = {
   },
   typography: {
     fontFamily: '"Inter", sans-serif',
+    assoc_header: {
+      fontSize: '.90rem',
+      fontWeight: 700,
+    },
   },
   palette: {
     primary: {
