@@ -1,5 +1,5 @@
-import { useEffect, forwardRef, useContext } from "react";
-import { Box, Grow, styled, alpha } from "@mui/material";
+import { useEffect, useContext } from "react";
+import { Box, Grow, styled } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
@@ -10,7 +10,7 @@ const SearchButton = styled("button")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   maxWidth: "400px",
-  background: alpha("#fff", 0.3),
+  background: theme.palette.primary.light,
   border: `1px solid ${theme.palette.primary.main}`,
   borderRadius: theme.spacing(0.6),
   padding: `${theme.spacing(0.4)} ${theme.spacing(1.2)}`,

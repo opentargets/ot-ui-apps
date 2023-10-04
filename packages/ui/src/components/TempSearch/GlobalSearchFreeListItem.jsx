@@ -19,6 +19,12 @@ const FreeSearchListItem = styled("li")(({ theme }) => ({
   "&:hover": {
     background: theme.palette.grey["200"],
   },
+  "&.search-list-item": {
+    transition: "background ease-in 50ms",
+  },
+  "&.search-list-item-active": {
+    background: theme.palette.grey["300"],
+  },
 }));
 
 const SearchListItemText = styled("span")({

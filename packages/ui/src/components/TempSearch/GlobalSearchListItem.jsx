@@ -106,6 +106,7 @@ function RecentListItem({ item, onItemClick }) {
         onClick={(event) => {
           event.stopPropagation();
           clearRecentItem(item);
+          // update view for deleted item
         }}
       />
     </RecentItemContainer>
