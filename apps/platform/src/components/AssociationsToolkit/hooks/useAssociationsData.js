@@ -1,6 +1,59 @@
 /* eslint-disable */
 import { useEffect, useState } from 'react';
 import client from '../../../client';
+import { ENTITIES } from '../utils';
+
+const diseaseAssociationsTargetSelector = data =>
+  data[ENTITIES.DISEASE].associatedTargets.rows;
+const targetAssociationsDiseaseSelector = data =>
+  data[ENTITIES.TARGET].associatedDiseases.rows;
+
+const diseasePrioritisationTargetsSelector = data =>
+  data[ENTITIES.TARGET].prioritisation.items;
+
+// const targetSymbolSelector = (data, ass) => entity === ENTITIES
+// const diseaseNameSelector = (data, ass) => entity === ENTITIES
+
+const getPrioritisationData = data => {
+  const dataRows = diseasePrioritisationTargetsSelector(data);
+  return dataRows.reduce(
+    (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
+    {}
+  );
+};
+
+const getAssociationsData = (data, entity) => {
+  if (!data) return [];
+  const withPrioririsation = entity === ENTITIES.DISEASE;
+  let prioritisations;
+  const dataRows =
+    entity === ENTITIES.DISEASE
+      ? diseaseAssociationsTargetSelector(data)
+      : targetAssociationsDiseaseSelector(data);
+
+  return dataRows.map(d => {
+    const sources = d.datasourceScores.reduce(
+      (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
+      {}
+    );
+    if (withPrioririsation) {
+      const prioritisationRows = diseasePrioritisationTargetsSelector(d);
+      prioritisations = prioritisationRows.reduce(
+        (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
+        {}
+      );
+    }
+    return {
+      id: d.target.id,
+      score: d.score,
+      target: d.target,
+      targetSymbol: d.target.approvedSymbol,
+      diseaseName: data.disease.name,
+      dataSources: sources,
+      ...(withPrioririsation && prioritisations),
+    };
+  });
+};
 
 // Select and parsed data from API response from fixed Target
 const getAssociatedDiseasesData = data => {
@@ -47,17 +100,17 @@ const getAssociatedTargetsData = data => {
   });
 };
 
-const getParsedData = (entity, apiResponse) => {
-  if (entity === 'target') return getAssociatedDiseasesData(apiResponse);
-  if (entity === 'disease') return getAssociatedTargetsData(apiResponse);
+const getParsedData = (entity, data) => {
+  if (entity === ENTITIES.TARGET) return getAssociatedDiseasesData(data);
+  if (entity === ENTITIES.DISEASE) return getAssociatedTargetsData(data);
 };
 
-const getAllDataCount = (entity, apiResponse) => {
-  if (entity === 'target') return apiResponse.target.associatedDiseases.count;
-  if (entity === 'disease') return apiResponse.disease.associatedTargets.count;
+const getAllDataCount = (entity, data) => {
+  if (entity === ENTITIES.TARGET) return data.target.associatedDiseases.count;
+  if (entity === ENTITIES.DISEASE) return data.disease.associatedTargets.count;
 };
 
-const initialState = {
+const INITIAL_USE_ASSOCIATION_STATE = {
   loading: false,
   error: false,
   data: [],
@@ -80,7 +133,7 @@ function useAssociationsData({
     entity,
   },
 }) {
-  const [state, setState] = useState(initialState);
+  const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
 
   useEffect(() => {
     let isCurrent = true;

@@ -9,6 +9,16 @@ const ASSOCIATION_LEGEND_LABEL = 'Association score';
 const PRIORITISATION_LEGEND_LABEL = 'Prioritisation indicator';
 const TARGE_PRIORITISATION_LEGEND_TICKS = ['Unfavourable', 'Favourable'];
 
+export const DEFAULT_TABLE_PAGE_INDEX = 0;
+export const DEFAULT_TABLE_PAGE_SIZE = 50;
+
+export const DEFAULT_TABLE_PAGINATION_STATE = {
+  pageIndex: DEFAULT_TABLE_PAGE_INDEX,
+  pageSize: DEFAULT_TABLE_PAGE_SIZE,
+};
+
+export const DEFAULT_TABLE_SORTING_STATE = [{ id: 'score', desc: true }];
+
 export const DISPLAY_MODE = {
   PRIORITISATION: 'prioritisations',
   ASSOCIATIONS: 'associations',
