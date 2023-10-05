@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import client from '../../../client';
 import { ENTITIES } from '../utils';
 
+/***********
+ * HELPERS *
+ ***********/
 const diseaseAssociationsTargetSelector = data =>
   data[ENTITIES.DISEASE].associatedTargets.rows;
 const targetAssociationsDiseaseSelector = data =>
@@ -11,103 +14,78 @@ const targetAssociationsDiseaseSelector = data =>
 const diseasePrioritisationTargetsSelector = data =>
   data[ENTITIES.TARGET].prioritisation.items;
 
-// const targetSymbolSelector = (data, ass) => entity === ENTITIES
-// const diseaseNameSelector = (data, ass) => entity === ENTITIES
-
 const getPrioritisationData = data => {
   const dataRows = diseasePrioritisationTargetsSelector(data);
-  return dataRows.reduce(
+  const prioritisations = dataRows.reduce(
     (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
     {}
   );
+  return { prioritisations };
 };
 
-const getAssociationsData = (data, entity) => {
+const getDataSourcesData = data => {
+  const sources = data.datasourceScores.reduce(
+    (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
+    {}
+  );
+  return sources;
+};
+
+const getDataRowMetadata = (parentEntity, row, fixedEntity) => {
+  let targetSymbol, diseaseName, id;
+  switch (fixedEntity) {
+    case ENTITIES.DISEASE:
+      id = row.target.id;
+      targetSymbol = row.target.approvedSymbol;
+      diseaseName = parentEntity.disease.name;
+      break;
+    case ENTITIES.TARGET:
+      id = row.disease.id;
+      targetSymbol = parentEntity.target.approvedSymbol;
+      diseaseName = row.disease.name;
+    default:
+      return { targetSymbol, diseaseName };
+  }
+  return { targetSymbol, diseaseName };
+};
+
+const getAllDataCount = (fixedEntity, data) => {
+  switch (fixedEntity) {
+    case ENTITIES.TARGET:
+      return data[ENTITIES.TARGET].associatedDiseases.count;
+    case ENTITIES.DISEASE:
+      return data[ENTITIES.DISEASE].associatedTargets.count;
+    default:
+      return 0;
+  }
+};
+
+const getAssociationsData = (fixedEntity, data) => {
   if (!data) return [];
-  const withPrioririsation = entity === ENTITIES.DISEASE;
-  let prioritisations;
+  const withPrioritisation = fixedEntity === ENTITIES.DISEASE;
   const dataRows =
-    entity === ENTITIES.DISEASE
+    fixedEntity === ENTITIES.DISEASE
       ? diseaseAssociationsTargetSelector(data)
       : targetAssociationsDiseaseSelector(data);
 
-  return dataRows.map(d => {
-    const sources = d.datasourceScores.reduce(
-      (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
-      {}
-    );
-    if (withPrioririsation) {
-      const prioritisationRows = diseasePrioritisationTargetsSelector(d);
-      prioritisations = prioritisationRows.reduce(
-        (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
-        {}
-      );
-    }
-    return {
-      id: d.target.id,
-      score: d.score,
-      target: d.target,
-      targetSymbol: d.target.approvedSymbol,
-      diseaseName: data.disease.name,
-      dataSources: sources,
-      ...(withPrioririsation && prioritisations),
-    };
-  });
-};
-
-// Select and parsed data from API response from fixed Target
-const getAssociatedDiseasesData = data => {
-  if (!data) return [];
-  return data.target.associatedDiseases.rows.map(d => {
-    const sources = d.datasourceScores.reduce(
-      (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
-      {}
+  return dataRows.map(row => {
+    const dataSources = getDataSourcesData(row);
+    const { targetSymbol, diseaseName, id } = getDataRowMetadata(
+      data,
+      row,
+      fixedEntity
     );
     return {
-      id: d.disease.id,
-      score: d.score,
-      disease: d.disease,
-      targetSymbol: data.target.approvedSymbol,
-      diseaseName: d.disease.name,
-      dataSources: sources,
+      score: row.score,
+      id,
+      targetSymbol,
+      diseaseName,
+      dataSources,
+      ...(!withPrioritisation && { disease: row.disease }),
+      ...(withPrioritisation && { target: row.target }),
+      ...(withPrioritisation && getPrioritisationData(row)),
     };
   });
-};
-
-// Select and parsed data from API response from fixed Disease
-const getAssociatedTargetsData = data => {
-  if (!data) return [];
-  return data.disease.associatedTargets.rows.map(d => {
-    const sources = d.datasourceScores.reduce(
-      (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
-      {}
-    );
-    const targetPrioritisation = d.target.prioritisation?.items
-      ? d.target.prioritisation.items.reduce(
-          (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
-          {}
-        )
-      : [];
-    return {
-      id: d.target.id,
-      score: d.score,
-      target: d.target,
-      targetSymbol: d.target.approvedSymbol,
-      diseaseName: data.disease.name,
-      dataSources: sources,
-      prioritisations: targetPrioritisation,
-    };
-  });
-};
-
-const getParsedData = (entity, data) => {
-  if (entity === ENTITIES.TARGET) return getAssociatedDiseasesData(data);
-  if (entity === ENTITIES.DISEASE) return getAssociatedTargetsData(data);
-};
-
-const getAllDataCount = (entity, data) => {
-  if (entity === ENTITIES.TARGET) return data.target.associatedDiseases.count;
-  if (entity === ENTITIES.DISEASE) return data.disease.associatedTargets.count;
 };
 
 const INITIAL_USE_ASSOCIATION_STATE = {
@@ -118,6 +96,9 @@ const INITIAL_USE_ASSOCIATION_STATE = {
   count: 0,
 };
 
+/********
+ * HOOK *
+ ********/
 function useAssociationsData({
   query,
   options: {
@@ -156,7 +137,7 @@ function useAssociationsData({
           })),
         },
       });
-      const parsedData = getParsedData(entity, resData.data);
+      const parsedData = getAssociationsData(entity, resData.data);
       const dataCount = getAllDataCount(entity, resData.data);
       setState({
         count: dataCount,
