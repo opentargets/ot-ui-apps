@@ -6,6 +6,7 @@ import { definition } from ".";
 import Description from "./Description";
 import CHEMICAL_PROBES_QUERY from "./ChemicalProbes.gql";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
+import _ from "lodash";
 
 /**
  * Style the tooltips as "label: value" with a bold label
@@ -96,17 +97,24 @@ function Body({ id, label: symbol, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={(data) =>
-        data.target.chemicalProbes?.length > 0 ? (
+      renderBody={(data) => {
+        // sort probes manually as we need a custom sort based score, quality and origin
+        const sortedProbes = _.orderBy(data.target.chemicalProbes, [
+          'probesDrugsScore',
+          'isHighQuality',
+          p => p.origin?.map(o => o.toLowerCase()).includes('experimental'),
+        ], ['desc', 'desc', 'desc']);
+
+        return data.target.chemicalProbes?.length > 0 ? (
           <DataTable
             columns={columns}
-            rows={data.target.chemicalProbes}
+            rows={sortedProbes}
             showGlobalFilter
             dataDownloader
             dataDownloaderFileStem={`${symbol}-chemical-probes`}
             fixed
-            sortBy="probesDrugsScore"
-            order="desc"
+            // sortBy="probesDrugsScore"
+            // order="desc"
             rowsPerPageOptions={defaultRowsPerPageOptions}
             noWrap={false}
             noWrapHeader={false}
@@ -114,6 +122,7 @@ function Body({ id, label: symbol, entity }) {
             variables={variables}
           />
         ) : null
+      }
       }
     />
   );
