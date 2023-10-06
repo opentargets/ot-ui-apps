@@ -1,7 +1,7 @@
 export { default as Footer } from "./components/Footer";
 export { default as ThemeProvider } from "./ThemeProvider/ThemeProvider";
 export { default as LoadingBackdrop } from "./components/LoadingBackdrop";
-export * from "./components/TempSearch/SearchContext";
+export * from "./components/GlobalSearch/SearchContext";
 export { default as LongText } from "./components/LongText";
 export { default as LongList } from "./components/LongList";
 export { default as SummaryContainer } from "./components/Summary/SummaryContainer";
@@ -21,7 +21,7 @@ export { default as PartnerLockIcon } from "./components/PartnerLockIcon";
 export { default as PrivateRoute } from "./components/PrivateRoute";
 export { default as EllsWrapper } from "./components/EllsWrapper";
 export { default as ErrorBoundary } from "./components/ErrorBoundary";
-export { default as TempGlobalSearch } from "./components/TempSearch/GlobalSearch";
+export { default as TempGlobalSearch } from "./components/GlobalSearch/GlobalSearch";
 
 export { default as PrivateWrapper } from "./components/PrivateWrapper";
 export { default as NavBar } from "./components/NavBar";

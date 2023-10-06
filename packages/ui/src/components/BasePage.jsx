@@ -10,7 +10,7 @@ import {
   externalLinks,
   mainMenuItems,
 } from "../constants";
-import GlobalSearch from "./TempSearch/GlobalSearch";
+import GlobalSearch from "./GlobalSearch/GlobalSearch";
 
 
 function BasePage({ title, children, description, location }) {

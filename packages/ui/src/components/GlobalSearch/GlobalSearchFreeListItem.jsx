@@ -2,7 +2,7 @@ import { useCallback, useContext } from "react";
 import { Box, Typography, styled } from "@mui/material";
 
 import { SearchContext, SearchInputContext } from "./SearchContext";
-import ArrowTurnDownLeft from "../../components/icons/ArrowTurnDownLeft";
+import ArrowTurnDownLeft from "../icons/ArrowTurnDownLeft";
 import useListOption from "../../hooks/useListOption";
 
 const FreeSearchListItem = styled("li")(({ theme }) => ({
