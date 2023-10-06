@@ -90,6 +90,7 @@ function RecentListItem({ item, onItemClick }) {
       className="search-list-item"
       role="menuitem"
       tabIndex="0"
+      data-item-details={JSON.stringify(item)}
       onClick={() => {
         onItemClick(item);
       }}
@@ -118,6 +119,7 @@ function TopHitListItem({ item, onItemClick }) {
     <TopHitItem
       className="search-list-item"
       role="menuitem"
+      data-item-details={JSON.stringify(item)}
       tabIndex="0"
       onClick={() => {
         onItemClick(item);
@@ -182,6 +184,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
       className="search-list-item"
       role="menuitem"
       tabIndex="0"
+      data-item-details={JSON.stringify(item)}
       onClick={() => {
         onItemClick(item);
       }}

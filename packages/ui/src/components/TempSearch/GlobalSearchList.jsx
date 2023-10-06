@@ -33,14 +33,16 @@ function GlobalSearchList({ inputValue }) {
   const focusOnItem = useCallback((index = 0) => {
     selected = index;
     const items = document.querySelectorAll(".search-list-item");
-    items.forEach((el) => {
-      el.classList.remove("search-list-item-active");
-    });
-    items[index].classList.add("search-list-item-active");
-    items[index].scrollIntoView({
-      behavior: "smooth",
-      block: index ? "center" : "end",
-    });
+    if (items.length) {
+      items.forEach((el) => {
+        el.classList.remove("search-list-item-active");
+      });
+      items[index].classList.add("search-list-item-active");
+      items[index].scrollIntoView({
+        behavior: "smooth",
+        block: index ? "center" : "end",
+      });
+    }
   }, []);
 
   const onKeyDownHandler = useCallback((e) => {
@@ -58,6 +60,11 @@ function GlobalSearchList({ inputValue }) {
       e.preventDefault();
       e.stopPropagation();
     } else if (e.key === "Enter") {
+      const selectedElement = document.querySelector(
+        ".search-list-item-active"
+      );
+      const item = JSON.parse(selectedElement.dataset.itemDetails);
+      handleItemClick(item);
       e.preventDefault();
       e.stopPropagation();
     }
@@ -76,8 +83,6 @@ function GlobalSearchList({ inputValue }) {
       setLoading(false);
     });
   }
-
-  console.log("list rerender ");
 
   function isResultEmpty() {
     return Object.keys(searchResult).length === 0;
