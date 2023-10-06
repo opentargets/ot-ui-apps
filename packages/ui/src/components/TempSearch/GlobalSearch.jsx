@@ -31,8 +31,6 @@ function GlobalSearch() {
     }
   }
 
-  console.log("global search");
-
   useEffect(() => {
     document.addEventListener("keydown", monitorCmdK);
     return () => {

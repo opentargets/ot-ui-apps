@@ -80,8 +80,6 @@ const TopHitItemContainer = styled("div")(({ theme }) => ({
   width: "100%",
   padding: `${theme.spacing(1.5)}`,
   borderRadius: theme.spacing(1),
-  color: theme.palette.primary.contrastText,
-  background: theme.palette.primary.light,
 }));
 
 function RecentListItem({ item, onItemClick }) {
@@ -105,6 +103,7 @@ function RecentListItem({ item, onItemClick }) {
       <FontAwesomeIcon
         icon={faXmark}
         onClick={(event) => {
+          event.preventDefault();
           event.stopPropagation();
           clearRecentItem(item);
           // update view for deleted item
@@ -129,7 +128,12 @@ function TopHitListItem({ item, onItemClick }) {
         <JustifyBetween>
           <Typography variant="h6">
             <ListItemDisplayName>
-              <Box sx={{ fontWeight: "900", letterSpacing: 2 }}>
+              <Box
+                sx={{
+                  fontWeight: "bold",
+                  color: (theme) => theme.palette.primary.main,
+                }}
+              >
                 {item.symbol || item.name}
               </Box>
             </ListItemDisplayName>

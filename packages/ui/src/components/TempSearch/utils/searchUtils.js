@@ -105,15 +105,16 @@ export const addSearchToLocalStorage = (item) => {
 
 export const clearAllRecent = () => {
   localStorage.removeItem("search-history");
+  window.dispatchEvent(new Event("storage"));
 };
 
 export const clearRecentItem = (item) => {
-  console.log(`👻 ~ file: searchUtils.js:111 ~ clearRecentItem ~ item:`, item);
   const recentItems = JSON.parse(localStorage.getItem("search-history"));
   const removedItems = [...recentItems];
   const existingIndex = containsObject(item, removedItems);
   removedItems.splice(existingIndex, 1);
   localStorage.setItem("search-history", JSON.stringify(removedItems));
+  window.dispatchEvent(new Event("storage"));
   return removedItems;
 };
 

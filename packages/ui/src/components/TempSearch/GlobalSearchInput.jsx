@@ -6,7 +6,7 @@ import { SearchContext, SearchInputContext } from "./SearchContext";
 const SearchInput = styled("input")(({ theme }) => ({
   borderColor: "transparent",
   padding: `0 ${theme.spacing(1)}`,
-  fontSize: theme.spacing(3),
+  fontSize: theme.spacing(2.5),
   color: theme.palette.grey[700],
   width: "100%",
   "&:focus": {

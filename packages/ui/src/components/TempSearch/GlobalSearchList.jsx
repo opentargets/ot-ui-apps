@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, memo, useCallback } from "react";
-import { Box, Collapse, Fade, Grow, styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
 import GlobalSearchListHeader from "./GlobalSearchListHeader";
 import GlobalSearchListItem from "./GlobalSearchListItem";
@@ -122,6 +122,10 @@ function GlobalSearchList({ inputValue }) {
     }
   }
 
+  function handleChangeInRecentItems() {
+    setRecentItems(JSON.parse(localStorage.getItem("search-history")) || []);
+  }
+
   useEffect(() => {
     focusOnItem();
     if (inputValue) fetchSearchResults();
@@ -130,18 +134,16 @@ function GlobalSearchList({ inputValue }) {
 
   useEffect(() => {
     document.addEventListener("keydown", onKeyDownHandler);
+    window.addEventListener("storage", handleChangeInRecentItems);
     return () => {
       document.removeEventListener("keydown", onKeyDownHandler);
+      window.addEventListener("storage", handleChangeInRecentItems);
     };
   }, []);
 
   return (
     <>
-      {inputValue && (
-        <Collapse in={loading}>
-          <GlobalSearchLoadingState />
-        </Collapse>
-      )}
+      {inputValue && loading && <GlobalSearchLoadingState />}
 
       {/* input value is present and there are results available */}
       {inputValue &&
