@@ -10,11 +10,11 @@ const SearchButton = styled("button")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   maxWidth: "400px",
-  background: theme.palette.primary.light,
+  background: "white",
   border: `1px solid ${theme.palette.primary.main}`,
   borderRadius: theme.spacing(0.6),
   padding: `${theme.spacing(0.4)} ${theme.spacing(1.2)}`,
-  color: "white",
+  color: theme.palette.primary.dark,
 }));
 
 function GlobalSearch() {
@@ -51,6 +51,7 @@ function GlobalSearch() {
             display: "flex",
             justifyContent: "space-between",
             fontSize: (theme) => theme.spacing(2),
+            alignItems: "center",
           }}
         >
           <Box>
