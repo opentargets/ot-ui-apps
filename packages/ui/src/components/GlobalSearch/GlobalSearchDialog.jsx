@@ -7,6 +7,7 @@ import GlobalSearchList from "./GlobalSearchList";
 import { SearchContext, SearchInputProvider } from "./SearchContext";
 import GlobalSearchInput from "./GlobalSearchInput";
 import GlobalSearchFreeListItem from "./GlobalSearchFreeListItem";
+import ErrorBoundary from "../ErrorBoundary";
 
 const EscButton = styled("button")(({ theme }) => ({
   display: "block",
@@ -26,7 +27,6 @@ const EscButton = styled("button")(({ theme }) => ({
 function GlobalSearchDialog() {
   const { open, setOpen } = useContext(SearchContext);
   const [inputValue, setInputValue] = useState("");
-
 
   return (
     <Dialog
@@ -49,39 +49,41 @@ function GlobalSearchDialog() {
         },
       }}
     >
-      <SearchInputProvider setValue={setInputValue}>
-        <DialogTitle>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                fontSize: (theme) => `${theme.spacing(3.5)}`,
-                color: (theme) => theme.palette.grey[500],
-              }}
-            >
-              <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
-            </Box>
-            <Box sx={{ display: "flex", flexGrow: "1" }}>
-              <GlobalSearchInput />
-            </Box>
-            <Box>
-              <EscButton
-                type="button"
-                onClick={() => {
-                  setOpen(false);
+      <ErrorBoundary>
+        <SearchInputProvider setValue={setInputValue}>
+          <DialogTitle>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: (theme) => `${theme.spacing(3.5)}`,
+                  color: (theme) => theme.palette.grey[500],
                 }}
               >
-                esc
-              </EscButton>
+                <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
+              </Box>
+              <Box sx={{ display: "flex", flexGrow: "1" }}>
+                <GlobalSearchInput />
+              </Box>
+              <Box>
+                <EscButton
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                  }}
+                >
+                  esc
+                </EscButton>
+              </Box>
             </Box>
-          </Box>
-        </DialogTitle>
-        <DialogContent dividers>
-          <GlobalSearchFreeListItem />
-          <GlobalSearchList inputValue={inputValue} />
-        </DialogContent>
-      </SearchInputProvider>
+          </DialogTitle>
+          <DialogContent dividers>
+            <GlobalSearchFreeListItem />
+            <GlobalSearchList inputValue={inputValue} />
+          </DialogContent>
+        </SearchInputProvider>
+      </ErrorBoundary>
     </Dialog>
   );
 }

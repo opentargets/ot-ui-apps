@@ -81,6 +81,8 @@ function GlobalSearchList({ inputValue }) {
       const formattedData = formatSearchData(res.data.search || res.data);
       setSearchResult({ ...formattedData });
       setLoading(false);
+    }).catch((err) => {
+      setLoading(false);
     });
   }
 

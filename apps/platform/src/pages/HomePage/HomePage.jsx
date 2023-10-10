@@ -140,7 +140,6 @@ function HomePage() {
         />
         <HomeBox>
           <GlobalSearch isHomePage />
-          {/* <AutocompleteSearch isHomePage showSearchResultPage /> */}
           {/* Search examples */}
           <Grid
             className={classes.links}

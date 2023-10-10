@@ -82,9 +82,7 @@ function GlobalSearch({ isHomePage }) {
         </Box>
       </SearchButton>
 
-      {/* <Grow > */}
       <GlobalSearchDialog />
-      {/* </Grow> */}
     </Box>
   );
 }
