@@ -1,14 +1,19 @@
-import React from 'react';
-import queryString from 'query-string';
+import { stringify } from 'query-string';
 import { makeStyles } from '@material-ui/core';
 
 import { Link, Button, LocusIcon } from '../ot-ui-components';
-import { chromosomesWithCumulativeLengths } from '../utils';
+import {
+  ChromosomeWithCumulativeLength,
+  chromosomesWithCumulativeLengths,
+} from '../utils';
 
+type ChromosomeDict = {
+  [chromosomeName: string]: ChromosomeWithCumulativeLength;
+};
 const chromosomeDict = chromosomesWithCumulativeLengths.reduce((acc, d) => {
   acc[d.name] = d;
   return acc;
-}, {});
+}, {} as ChromosomeDict);
 
 const mb = 1000000;
 
@@ -42,6 +47,15 @@ const useStyles = makeStyles({
   },
 });
 
+type LocusLinkProps = {
+  big?: boolean;
+  chromosome: string | null;
+  position: number;
+  selectedGenes?: string[];
+  selectedTagVariants?: string[];
+  selectedIndexVariants?: string[];
+  selectedStudies?: string[];
+};
 const LocusLink = ({
   big,
   chromosome,
@@ -50,15 +64,7 @@ const LocusLink = ({
   selectedTagVariants,
   selectedIndexVariants,
   selectedStudies,
-}: {
-  big: boolean;
-  chromosome: string;
-  position: number;
-  selectedGenes: string[];
-  selectedTagVariants: string[];
-  selectedIndexVariants: string[];
-  selectedStudies: string[];
-}) => {
+}: LocusLinkProps) => {
   const classes = useStyles();
   if (chromosome === null) return null;
   const chromosomeObj = chromosomeDict[chromosome];
@@ -81,10 +87,7 @@ const LocusLink = ({
     params.selectedStudies = selectedStudies;
   }
   return (
-    <Link
-      to={`/locus?${queryString.stringify(params)}`}
-      className={classes.link}
-    >
+    <Link to={`/locus?${stringify(params)}`} className={classes.link}>
       <Button className={big ? classes.buttonBig : classes.button}>
         Locus Plot
         <LocusIcon className={big ? classes.iconBig : classes.icon} />
