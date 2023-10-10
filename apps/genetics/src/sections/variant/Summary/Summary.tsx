@@ -1,17 +1,23 @@
-import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import { useQuery } from '@apollo/client';
 import { Skeleton } from '@material-ui/lab';
 import { Link, Typography, SectionHeading } from '../../../ot-ui-components';
+import { safeCommaSeparate, variantPopulations } from '../../../utils';
 import {
-  commaSeparate,
-  variantHasInfo,
-  variantGetInfo,
-  variantPopulations,
-} from '../../../utils';
-
+  VariantSummaryQuery,
+  VariantSummaryQueryVariables,
+} from '../../../__generated__/graphql';
+import { Fragment } from 'react';
+import { ClassNameMap } from '@material-ui/core/styles/withStyles';
+// import { loader } from 'graphql.macro';
 import VARIANT_SUMMARY_QUERY from './VariantSummary.gql';
+
+// const VARIANT_SUMMARY_QUERY = loader('./VariantSummary.gql');
+
+console.log('loaded');
+
+// const VARIANT_SUMMARY_QUERY = './VariantSummary.gql';
 
 const styles = () => ({
   value: {
@@ -20,12 +26,20 @@ const styles = () => ({
   },
 });
 
-function Summary({ classes, variantId }) {
-  const { loading, data: queryResult } = useQuery(VARIANT_SUMMARY_QUERY, {
+type VariantSummaryProps = {
+  classes: ClassNameMap<'value'>;
+  variantId: string;
+};
+function Summary({ classes, variantId }: VariantSummaryProps) {
+  console.log(variantId);
+  const { loading, data: queryResult } = useQuery<
+    VariantSummaryQuery,
+    VariantSummaryQueryVariables
+  >(VARIANT_SUMMARY_QUERY, {
     variables: { variantId },
   });
-  const isVariantWithInfo = variantHasInfo(queryResult);
-  const data = isVariantWithInfo ? variantGetInfo(queryResult) : {};
+  const data = queryResult?.variantInfo;
+  console.log(data);
   return (
     <>
       <SectionHeading
@@ -45,8 +59,8 @@ function Summary({ classes, variantId }) {
               <Skeleton width="50vw" />
             ) : (
               <>
-                <strong>GRCh38:</strong> {data.chromosome}:
-                {commaSeparate(data.position)}
+                <strong>GRCh38:</strong> {data?.chromosome}:
+                {safeCommaSeparate(data?.position)}
               </>
             )}
           </Typography>
@@ -55,8 +69,8 @@ function Summary({ classes, variantId }) {
               <Skeleton width="50vw" />
             ) : (
               <>
-                <strong>GRCh37:</strong> {data.chromosomeB37}:
-                {commaSeparate(data.positionB37)}
+                <strong>GRCh37:</strong> {data?.chromosomeB37}:
+                {safeCommaSeparate(data?.position)}
               </>
             )}
           </Typography>
@@ -65,7 +79,7 @@ function Summary({ classes, variantId }) {
               <Skeleton width="50vw" />
             ) : (
               <>
-                <strong>Reference allele:</strong> {data.refAllele}
+                <strong>Reference allele:</strong> {data?.refAllele}
               </>
             )}
           </Typography>
@@ -75,7 +89,7 @@ function Summary({ classes, variantId }) {
             ) : (
               <>
                 <strong>Alternative allele (effect allele):</strong>{' '}
-                {data.altAllele}
+                {data?.altAllele}
               </>
             )}
           </Typography>
@@ -92,8 +106,11 @@ function Summary({ classes, variantId }) {
           {!loading && data?.nearestGene ? (
             <Typography variant="subtitle2">
               <strong>
-                Nearest gene ({commaSeparate(data.nearestGeneDistance)} bp to
-                canonical TSS):
+                Nearest gene (
+                {data && data.nearestGeneDistance
+                  ? safeCommaSeparate(data.nearestGeneDistance)
+                  : ''}{' '}
+                bp to canonical TSS):
               </strong>{' '}
               <Link to={`/gene/${data.nearestGene.id}`}>
                 {data.nearestGene.symbol}
@@ -108,8 +125,8 @@ function Summary({ classes, variantId }) {
             <Typography variant="subtitle2">
               <strong>
                 Nearest coding gene (
-                {commaSeparate(data.nearestCodingGeneDistance)} bp to canonical
-                TSS):
+                {safeCommaSeparate(data.nearestCodingGeneDistance)} bp to
+                canonical TSS):
               </strong>{' '}
               <Link to={`/gene/${data.nearestCodingGene.id}`}>
                 {data.nearestCodingGene.symbol}
@@ -139,7 +156,7 @@ function Summary({ classes, variantId }) {
             ) : (
               <>
                 <strong>Most severe consequence:</strong>{' '}
-                {data.mostSevereConsequence
+                {data?.mostSevereConsequence
                   ? data.mostSevereConsequence.replace(/_/g, ' ')
                   : 'N/A'}
               </>
@@ -171,20 +188,27 @@ function Summary({ classes, variantId }) {
           </Typography>
           <Grid container>
             {!loading &&
-              variantPopulations.map((p) => (
-                <React.Fragment key={p.code}>
-                  <Grid item xs={9}>
-                    <Typography variant="subtitle2">{p.description}</Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant="subtitle2" align="right">
-                      {data[`gnomad${p.code}`]
-                        ? data[`gnomad${p.code}`].toPrecision(3)
-                        : 'N/A'}
-                    </Typography>
-                  </Grid>
-                </React.Fragment>
-              ))}
+              variantPopulations.map(p => {
+                const property = `gnomad${p.code}` as keyof typeof data;
+                const value =
+                  data && data[property]
+                    ? (data[property] as number).toPrecision(3)
+                    : 'N/A';
+                return (
+                  <Fragment key={p.code}>
+                    <Grid item xs={9}>
+                      <Typography variant="subtitle2">
+                        {p.description}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Typography variant="subtitle2" align="right">
+                        {value}
+                      </Typography>
+                    </Grid>
+                  </Fragment>
+                );
+              })}
           </Grid>
         </Grid>
       </Grid>
