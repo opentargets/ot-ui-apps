@@ -1,16 +1,11 @@
-import React from 'react';
-
 import Link from '../Link';
 
-function ExternalLink({
-  title,
-  id,
-  url,
-}: {
-  title: string,
-  id: string,
-  url: string,
-}) {
+type ExternalLinkProps = {
+  title: string;
+  id: string | null;
+  url: string;
+};
+function ExternalLink({ title, id, url }: ExternalLinkProps) {
   if (!id) return null;
 
   return (
