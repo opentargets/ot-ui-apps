@@ -290,7 +290,15 @@ function Body({
       request={{
         loading: initialLoading,
         error: false,
-        data: { [entity]: { knownDrugs: { rows, count: rows.length } } },
+        data: {
+          [entity]: {
+            knownDrugs: {
+              rows,
+              count: rows.length,
+              freeTextQuery: globalFilter,
+            },
+          },
+        },
       }}
       renderDescription={Description}
       renderBody={() => (
