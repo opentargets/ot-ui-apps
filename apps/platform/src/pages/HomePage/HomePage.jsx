@@ -10,7 +10,7 @@ import {
 import { makeStyles, useTheme } from '@mui/styles';
 import { Helmet } from 'react-helmet';
 
-import { Footer, AutocompleteSearch, Link, PrivateWrapper, NavBar } from 'ui';
+import { Footer, Link, PrivateWrapper, NavBar, GlobalSearch } from 'ui';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircle,
@@ -139,7 +139,7 @@ function HomePage() {
           placement="bottom-end"
         />
         <HomeBox>
-          <AutocompleteSearch isHomePage showSearchResultPage />
+          <GlobalSearch isHomePage />
           {/* Search examples */}
           <Grid
             className={classes.links}
