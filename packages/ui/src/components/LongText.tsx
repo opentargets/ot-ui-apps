@@ -1,7 +1,8 @@
 import { useState, useLayoutEffect, useRef, PropsWithChildren } from "react";
-import { Typography, makeStyles, Theme } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
+import { Typography } from "@mui/material";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme) => ({
   textContainer: {
     display: "flex",
     flexDirection: "column",

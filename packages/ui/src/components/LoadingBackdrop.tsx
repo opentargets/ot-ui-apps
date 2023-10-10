@@ -1,4 +1,9 @@
-import { Box, CircularProgress, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
+import { Box, CircularProgress } from "@mui/material";
+
+type LoadingBackdropProps = {
+  height?: number;
+};
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -6,17 +11,17 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.grey["50"],
     zIndex: 999,
     width: "auto",
-    height: "100%",
     justifyContent: "center",
     alignItems: "center",
     display: "flex",
   },
 }));
 
-function LoadingBackdrop() {
+function LoadingBackdrop({ height }: LoadingBackdropProps) {
   const classes = useStyles();
+  const containerHeight = height ? `${height}px` : "auto";
   return (
-    <Box className={classes.container}>
+    <Box className={classes.container} sx={{ height: containerHeight }}>
       <CircularProgress color="inherit" />
     </Box>
   );

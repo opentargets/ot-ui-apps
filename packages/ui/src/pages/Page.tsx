@@ -1,5 +1,5 @@
-import Grid from "@material-ui/core/Grid";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
+import { Grid } from "@mui/material";
 import { ReactNode } from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +36,7 @@ function Page({ header, footer, children }: PageProps): ReactNode {
         spacing={3}
         className={classes.gridContainer}
       >
-        <Grid item xs={12} md={11}>
+        <Grid item xs={12} md={11} sx={{pb:3}}>
           {children}
         </Grid>
       </Grid>

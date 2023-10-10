@@ -1,13 +1,11 @@
-import { Typography, withStyles } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
 
-import { LongText } from 'ui';
+import { LongText, Link, Highlights } from 'ui';
 
-import Highlights from '../../components/Highlights';
-import Link from '../../components/Link';
-
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   container: {
     marginBottom: '30px',
   },
@@ -18,9 +16,10 @@ const styles = theme => ({
   icon: {
     color: theme.palette.primary.main,
   },
-});
+}));
 
-function DiseaseResult({ classes, data, highlights }) {
+function DiseaseResult({ data, highlights }) {
+  const classes = useStyles();
   return (
     <div className={classes.container}>
       <Link
@@ -40,4 +39,4 @@ function DiseaseResult({ classes, data, highlights }) {
   );
 }
 
-export default withStyles(styles)(DiseaseResult);
+export default DiseaseResult;

@@ -1,13 +1,12 @@
-import { Fragment } from 'react';
-import { Paper, Box, Typography, makeStyles, Chip } from '@material-ui/core';
+import { Paper, Box, Typography, Chip } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleCheck,
   faCircleNotch,
 } from '@fortawesome/free-solid-svg-icons';
+import { DataTable, Link } from 'ui';
 import projectsData from './projects-data.json';
-import { DataTable } from '../../components/Table';
-import Link from '../../components/Link';
 
 const useStyles = makeStyles(theme => ({
   icon: {

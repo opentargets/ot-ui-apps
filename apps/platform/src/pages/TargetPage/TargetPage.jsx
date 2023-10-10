@@ -1,74 +1,32 @@
 import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
-import { Tab, Tabs } from '@material-ui/core';
-import { Link, Route, Switch, useLocation } from 'react-router-dom';
-import { v1 } from 'uuid';
-import { LoadingBackdrop } from 'ui';
+import { Box, Tab, Tabs } from '@mui/material';
+import {
+  Link,
+  Route,
+  Switch,
+  useLocation,
+  useRouteMatch,
+  useParams,
+} from 'react-router-dom';
+import { LoadingBackdrop, BasePage, ScrollToTop, NewChip } from 'ui';
 
-import { getAbleRoutes, getClassicAssociationsURL } from '../../utils/urls';
-
-import BasePage from '../../components/BasePage';
-import ScrollToTop from '../../components/ScrollToTop';
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
 import { getUniprotIds } from '../../utils/global';
 import TARGET_PAGE_QUERY from './TargetPage.gql';
-import NewChip from '../../components/NewChip';
-import usePermissions from '../../hooks/usePermissions';
 
 const Profile = lazy(() => import('./Profile'));
 const Associations = lazy(() => import('./TargetAssociations'));
 const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
 
-function TargetPageTabs({ ensgId }) {
+function TargetPage() {
   const location = useLocation();
-  const { isPartnerPreview } = usePermissions();
-  const classicAssociationsPath = isPartnerPreview
-    ? 'classic-associations'
-    : 'associations';
+  const { ensgId } = useParams();
+  const { path } = useRouteMatch();
 
-  const routes = [
-    {
-      label: (
-        <div>
-          <NewChip />
-          Associated diseases
-        </div>
-      ),
-      path: `/target/${ensgId}/associations`,
-      private: true,
-    },
-    {
-      label: 'Associated diseases',
-      path: `/target/${ensgId}/${classicAssociationsPath}`,
-    },
-    { label: 'Profile', path: `/target/${ensgId}` },
-  ];
-
-  const ableRoutes = getAbleRoutes({ routes, isPartnerPreview });
-  const activeTabIndex = ableRoutes.findIndex(
-    route => route.path === location.pathname
-  );
-
-  return (
-    <Tabs value={activeTabIndex}>
-      {ableRoutes.map(route => (
-        <Tab key={v1()} label={route.label} component={Link} to={route.path} />
-      ))}
-    </Tabs>
-  );
-}
-
-function TargetPage({ location, match }) {
-  const { ensgId } = match.params;
   const { loading, data } = useQuery(TARGET_PAGE_QUERY, {
     variables: { ensgId },
-  });
-  const { isPartnerPreview } = usePermissions();
-  const baseURL = '/target/:ensgId/';
-  const { fullURL: classicAssocURL } = getClassicAssociationsURL({
-    baseURL,
-    isPartnerPreview,
   });
 
   if (data && !data.target) {
@@ -104,48 +62,62 @@ function TargetPage({ location, match }) {
         name={approvedName}
         crisprId={crisprId}
       />
-      <TargetPageTabs ensgId={ensgId} />
-      <Suspense fallback={<LoadingBackdrop />}>
+
+      <Route
+        path="/"
+        render={history => (
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs
+              value={
+                history.location.pathname !== '/'
+                  ? history.location.pathname
+                  : false
+              }
+            >
+              <Tab
+                label={
+                  <Box sx={{ textTransform: 'capitalize' }}>
+                    <div>
+                      Associated diseases
+                      <NewChip />
+                    </div>
+                  </Box>
+                }
+                value={`/target/${ensgId}/associations`}
+                component={Link}
+                to={`/target/${ensgId}/associations`}
+              />
+              <Tab
+                label={
+                  <Box sx={{ textTransform: 'capitalize' }}>
+                    Associated diseases
+                  </Box>
+                }
+                value={`/target/${ensgId}/classic-associations`}
+                component={Link}
+                to={`/target/${ensgId}/classic-associations`}
+              />
+              <Tab
+                label={<Box sx={{ textTransform: 'capitalize' }}>Profile</Box>}
+                value={`/target/${ensgId}`}
+                component={Link}
+                to={`/target/${ensgId}`}
+              />
+            </Tabs>
+          </Box>
+        )}
+      />
+      <Suspense fallback={<LoadingBackdrop height={11500} />}>
         <Switch>
-          <Route
-            exact
-            path="/target/:ensgId"
-            render={routeProps => (
-              <Profile
-                match={routeProps.match}
-                location={routeProps.location}
-                history={routeProps.history}
-                ensgId={ensgId}
-                symbol={symbol}
-              />
-            )}
-          />
-          {isPartnerPreview && (
-            <Route
-              path="/target/:ensgId/associations"
-              render={routeProps => (
-                <Associations
-                  match={routeProps.match}
-                  location={routeProps.location}
-                  history={routeProps.history}
-                  ensgId={ensgId}
-                  symbol={symbol}
-                />
-              )}
-            />
-          )}
-          <Route
-            path={classicAssocURL}
-            render={routeProps => (
-              <ClassicAssociations
-                match={routeProps.match}
-                location={routeProps.location}
-                history={routeProps.history}
-                ensgId={ensgId}
-                symbol={symbol}
-              />
-            )}
-          />
+          <Route exact path={path}>
+            <Profile ensgId={ensgId} symbol={symbol} />
+          </Route>
+          <Route path={`${path}/associations`}>
+            <Associations ensgId={ensgId} symbol={symbol} />
+          </Route>
+          <Route path={`${path}/classic-associations`}>
+            <ClassicAssociations ensgId={ensgId} symbol={symbol} />
+          </Route>
         </Switch>
       </Suspense>
     </BasePage>

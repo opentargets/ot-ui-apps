@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
-import { ThemeProvider, SearchProvider } from 'ui';
+import { ThemeProvider, SearchProvider, PrivateRoute } from 'ui';
 
 import SEARCH_QUERY from './components/Search/SearchQuery.gql';
-import PrivateRoute from './components/PrivateRoute';
+import ShouldAccessPPP from './components/ShouldAccessPPP';
 import client from './client';
 import theme from './theme';
 import HomePage from './pages/HomePage';
@@ -17,7 +17,6 @@ import VariantsPage from './pages/VariantsPage';
 import APIPage from './pages/APIPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProjectsPage from './pages/ProjectsPage';
-import ShouldAccessPPP from './components/ShouldAccessPPP';
 
 function App() {
   return (
@@ -28,24 +27,44 @@ function App() {
           searchPlaceholder="Search for a target, drug, disease, or phenotype..."
         >
           <Router>
-            <ShouldAccessPPP />
             <Switch>
-              <Route exact path="/" component={HomePage} />
-              <Route path="/search" component={SearchPage} />
-              <Route path="/downloads" component={DownloadsPage} />
-              <Route path="/disease/:efoId" component={DiseasePage} />
-              <Route path="/target/:ensgId" component={TargetPage} />
-              <Route path="/drug/:chemblId" component={DrugPage} />
-              <Route path="/evidence/:ensgId/:efoId" component={EvidencePage} />
-              <Route path="/variants" component={VariantsPage} />
-              <Route path="/api" component={APIPage} />
+              <Route exact path="/">
+                <HomePage />
+              </Route>
+              <Route path="/search">
+                <SearchPage />
+              </Route>
+              <Route path="/downloads">
+                <DownloadsPage />
+              </Route>
+              <Route path="/disease/:efoId">
+                <DiseasePage />
+              </Route>
+              <Route path="/target/:ensgId">
+                <TargetPage />
+              </Route>
+              <Route path="/drug/:chemblId">
+                <DrugPage />
+              </Route>
+              <Route path="/evidence/:ensgId/:efoId">
+                <EvidencePage />
+              </Route>
+              <Route path="/variants">
+                <VariantsPage />
+              </Route>
+              <Route path="/api">
+                <APIPage />
+              </Route>
               <Route path="/projects">
                 <PrivateRoute>
-                  <ProjectsPage location="" />
+                  <ProjectsPage />
                 </PrivateRoute>
               </Route>
-              <Route component={NotFoundPage} />
+              <Route>
+                <NotFoundPage />
+              </Route>
             </Switch>
+            <ShouldAccessPPP />
           </Router>
         </SearchProvider>
       </ThemeProvider>

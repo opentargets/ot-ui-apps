@@ -1,0 +1,54 @@
+{
+  "name": "sections",
+  "version": "0.0.0",
+  "main": "./src/index.tsx",
+  "files": [
+    "./src/*"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\""
+  },
+  "dependencies": {
+    "@apollo/client": "^3.3.4",
+    "@ebi-gene-expression-group/expression-atlas-heatmap-highcharts": "^5.4.1-beta1",
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-brands-svg-icons": "^6.1.1",
+    "@fortawesome/free-regular-svg-icons": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mui/lab": "^5.0.0-alpha.137",
+    "@mui/material": "^5.14.1",
+    "@mui/styles": "^5.14.1",
+    "@swissprot/swissbiopics-visualizer": "^0.0.28",
+    "classnames": "^2.2.6",
+    "d3": "^5.9.2",
+    "d3-dag": "^0.5.0",
+    "d3-format": "^3.0.1",
+    "litemol": "^2.4.2",
+    "local-storage": "^2.0.0",
+    "lodash": "^4.17.21",
+    "plotly.js": "^2.23.1",
+    "protvista-uniprot": "^2.8.3",
+    "react": "^18.2.0",
+    "react-helmet": "^6.0.0",
+    "react-measure": "^2.1.2",
+    "react-plotly.js": "^2.6.0",
+    "react-router-dom": "5.1.2",
+    "recoil": "^0.3.0",
+    "smiles-drawer": "^1.1.22",
+    "tsparticles": "^2.0.6",
+    "typeface-inter": "^3.3.0",
+    "ui": "*",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/d3-format": "^3.0.1",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "eslint": "^8.49.0",
+    "eslint-config-react-lib": "*",
+    "tsconfig": "*",
+    "typescript": "*"
+  }
+}

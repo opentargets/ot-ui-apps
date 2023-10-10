@@ -1,14 +1,8 @@
-import {
-  Grid,
-  makeStyles,
-  Typography,
-  Hidden,
-  Box,
-  useMediaQuery,
-} from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
+import { Grid, Typography, Hidden, Box, useMediaQuery } from '@mui/material';
+
+import { makeStyles, useTheme } from '@mui/styles';
 import { Helmet } from 'react-helmet';
-import { Footer, AutocompleteSearch } from 'ui';
+import { Footer, GlobalSearch, Link, NavBar } from 'ui';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -28,8 +22,6 @@ import {
   mainMenuItems,
 } from '../../constants';
 import HomeBox from './HomeBox';
-import Link from '../../components/Link';
-import NavBar from '../../components/NavBar';
 import searchExamples from './ppSearchExamples';
 import Splash from './Splash';
 import Version from './Version';
@@ -56,13 +48,11 @@ const useStyles = makeStyles(() => ({
 
 function pickTwo(arr) {
   const i1 = Math.floor(Math.random() * arr.length);
-  let i2 = Math.floor(Math.random() * arr.length);
+  const resultArray = arr.splice(i1, 1);
+  const i2 = Math.floor(Math.random() * arr.length);
+  resultArray.push(...arr.splice(i2, 1));
 
-  while (i1 === i2) {
-    i2 = Math.floor(Math.random() * arr.length);
-  }
-
-  return [arr[i1], arr[i2]];
+  return resultArray;
 }
 
 const usePanelStyles = makeStyles(theme => ({
@@ -142,7 +132,7 @@ function HomePage() {
           placement="bottom-end"
         />
         <HomeBox>
-          <AutocompleteSearch isHomePage />
+          <GlobalSearch isHomePage />
           {/* Search examples */}
           <Grid
             className={classes.links}

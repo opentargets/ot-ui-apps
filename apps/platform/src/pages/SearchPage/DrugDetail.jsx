@@ -1,12 +1,12 @@
-import { CardContent, makeStyles, Typography } from '@material-ui/core';
-import WarningIcon from '@material-ui/icons/Warning';
+import { CardContent, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPrescriptionBottleAlt,
+  faTriangleExclamation,
+} from '@fortawesome/free-solid-svg-icons';
 
-import { LongText } from 'ui';
-import Chip from '../../components/Chip';
-import Link from '../../components/Link';
-import LongList from '../../components/LongList';
+import { LongText, Chip, Link, LongList } from 'ui';
 
 const useStyles = makeStyles({
   link: {
@@ -34,7 +34,11 @@ function DrugDetail({ data }) {
       <LongText lineLimit={4}>{data.description}</LongText>
       {data.hasBeenWithdrawn ? (
         <Typography variant="subtitle2" color="secondary">
-          <WarningIcon className={classes.warningIcon} /> Withdrawn Drug
+          <FontAwesomeIcon
+            icon={faTriangleExclamation}
+            className={classes.warningIcon}
+          />{' '}
+          Withdrawn Drug
         </Typography>
       ) : null}
       <Typography className={classes.subtitle} variant="subtitle1">

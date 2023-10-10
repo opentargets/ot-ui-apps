@@ -6,10 +6,11 @@ import {
   DialogContent,
   DialogContentText,
   Button,
-  makeStyles,
-} from '@material-ui/core';
+  Snackbar,
+  styled,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useLocation } from 'react-router-dom';
-import Snackbar from '@material-ui/core/Snackbar';
 
 const PPP_API_URL =
   'https://api.partner-platform.opentargets.org/api/v4/graphql';
@@ -35,15 +36,12 @@ const useStyles = makeStyles(theme => ({
       marginTop: '0.3em !important',
     },
   },
-  anchorOriginBottomCenter: {
-    bottom: '70px',
-    '& .MuiSnackbarContent-root': {
-      borderRadius: '8px',
-      backgroundColor: 'white',
-      color: theme.palette.text.primary,
-    },
-  },
 }));
+
+const PrimaryButton = styled(Button)`
+  border: none;
+  color: white;
+`;
 
 function ShouldAccessPPP() {
   const location = useLocation();
@@ -160,21 +158,18 @@ function ShouldAccessPPP() {
           >
             Remind me later
           </Button>
-          <Button
+          <PrimaryButton
             className={classes.button}
             onClick={goToPPP}
             variant="contained"
             color="primary"
           >
             Continue on Partner Preview Platform
-          </Button>
+          </PrimaryButton>
         </DialogActions>
       </Dialog>
 
       <Snackbar
-        classes={{
-          anchorOriginBottomCenter: classes.anchorOriginBottomCenter,
-        }}
         open={snackbarOpen}
         onClose={handleCloseSnackbar}
         message="We will remind you in a couple of weeks"

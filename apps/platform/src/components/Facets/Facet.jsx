@@ -3,11 +3,17 @@ import {
   AccordionDetails,
   AccordionSummary,
   IconButton,
-  makeStyles,
   Typography,
-} from '@material-ui/core';
-import { ChevronRight, Clear, ExpandMore } from '@material-ui/icons';
-import { TreeView } from '@material-ui/lab';
+} from '@mui/material';
+import {
+  faChevronRight,
+  faChevronDown,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { TreeView } from '@mui/lab';
+import { makeStyles } from '@mui/styles';
 
 import { hasAnyDescendantChecked } from './utils';
 import TreeLevel from './TreeLevel';
@@ -16,7 +22,7 @@ const useStyles = makeStyles({
   accordionSummaryContent: {
     alignItems: 'center',
     justifyContent: 'space-between',
-    margin: 0,
+    margin: '0 !important',
   },
   clearButtonRoot: {
     height: 'unset',
@@ -42,7 +48,7 @@ function Facet({ loading, treeId, label, aggs, onSelectionChange }) {
     <Accordion>
       <AccordionSummary
         classes={{ content: classes.accordionSummaryContent }}
-        expandIcon={<ExpandMore />}
+        expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
       >
         <Typography>{label}</Typography>
         {hasAnyDescendantChecked(aggs) && (
@@ -51,7 +57,7 @@ function Facet({ loading, treeId, label, aggs, onSelectionChange }) {
             disabled={loading}
             onClick={handleClickClear}
           >
-            <Clear />
+            <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         )}
       </AccordionSummary>
@@ -59,8 +65,8 @@ function Facet({ loading, treeId, label, aggs, onSelectionChange }) {
       <AccordionDetails>
         <TreeView
           className={classes.facetRoot}
-          defaultCollapseIcon={<ExpandMore />}
-          defaultExpandIcon={<ChevronRight />}
+          defaultCollapseIcon={<FontAwesomeIcon icon={faChevronDown} />}
+          defaultExpandIcon={<FontAwesomeIcon icon={faChevronRight} />}
         >
           <TreeLevel
             loading={loading}

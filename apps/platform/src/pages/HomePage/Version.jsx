@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
-import { Box } from '@material-ui/core';
-import Link from '../../components/Link';
+import { Box, Typography } from '@mui/material';
+import { Link } from 'ui';
 
 // HELPERS
 function getVersion({ month, year }) {
@@ -36,11 +36,9 @@ function VersionContainer({ children }) {
 // LINK
 function VersionLink({ month, year, version, link }) {
   return (
-    <Box ml={1}>
-      <Link external to={link}>
-        {month} 20{year} ({version})
-      </Link>
-    </Box>
+    <Link external to={link}>
+      {month} 20{year} ({version})
+    </Link>
   );
 }
 
@@ -51,7 +49,11 @@ function Version({
   const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
   if (error) return null;
   if (loading)
-    return <VersionContainer>Loading data version ...</VersionContainer>;
+    return (
+      <VersionContainer>
+        <Typography variant="body2">Loading data version ...</Typography>
+      </VersionContainer>
+    );
   const {
     meta: {
       dataVersion: { month, year },
@@ -62,13 +64,15 @@ function Version({
 
   return (
     <VersionContainer>
-      Last update:
-      <VersionLink
-        link={releaseNotesURL}
-        month={fullMonth}
-        year={year}
-        version={version}
-      />
+      <Typography variant="body2">
+        Last update:{' '}
+        <VersionLink
+          link={releaseNotesURL}
+          month={fullMonth}
+          year={year}
+          version={version}
+        />
+      </Typography>
     </VersionContainer>
   );
 }

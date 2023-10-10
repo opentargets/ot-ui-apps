@@ -6,9 +6,11 @@ import {
   faBook,
   faLock,
 } from '@fortawesome/free-solid-svg-icons';
+import { Grid } from '@mui/material';
 
 import AggregationsRow from './AggregationsRow';
 import useAotfContext from '../hooks/useAotfContext';
+import { GridContainer } from '../layout';
 
 const getHeaderContainerClassName = ({ id }) => {
   if (id === '1_naiming-cols_name') return 'naiming-cols';
@@ -21,9 +23,14 @@ const getHeaderClassName = ({ id }) => {
   return 'rotate';
 };
 
-function TableHeader({ table }) {
-  const { id, displayedTable, handleAggregationClick, activeHeadersControlls } =
-    useAotfContext();
+function TableHeader({ table, cols }) {
+  const {
+    id,
+    displayedTable,
+    handleAggregationClick,
+    activeHeadersControlls,
+    setActiveHeadersControlls,
+  } = useAotfContext();
   const [activeAggregation, setActiveAggegation] = useState(null);
   const onEnterHoverHeader = ({ id: elementId, column }) => {
     if (elementId === 'score' || elementId === 'name') return;
@@ -37,13 +44,13 @@ function TableHeader({ table }) {
   };
 
   const highLevelHeaders = table.getHeaderGroups()[0].headers;
-  const entitesHeaders = table.getHeaderGroups()[0].headers[1].subHeaders;
 
   return (
     <div className="Theader">
-      <div className="cols-container">
+      <Grid container direction="row" wrap="nowrap">
         {highLevelHeaders.map(highLevelHeader => (
-          <div
+          <GridContainer
+            columnsCount={cols.length}
             className={getHeaderContainerClassName(highLevelHeader)}
             key={highLevelHeader.id}
           >
@@ -56,8 +63,8 @@ function TableHeader({ table }) {
                         ? 'cursor-pointer select-none'
                         : '',
                     }}
-                    onMouseEnter={_ => onEnterHoverHeader(header)}
-                    onMouseLeave={_ => onLeaveHoverHeader()}
+                    onMouseEnter={() => onEnterHoverHeader(header)}
+                    onMouseLeave={() => onLeaveHoverHeader()}
                   >
                     <div
                       {...{
@@ -101,15 +108,16 @@ function TableHeader({ table }) {
                 )}
               </div>
             ))}
-          </div>
+          </GridContainer>
         ))}
-      </div>
+      </Grid>
       <AggregationsRow
         handleAggregationClick={handleAggregationClick}
-        cols={entitesHeaders}
+        columnsCount={cols.length}
         table={displayedTable}
         active={activeAggregation}
         activeHeadersControlls={activeHeadersControlls}
+        setActiveHeadersControlls={setActiveHeadersControlls}
       />
     </div>
   );

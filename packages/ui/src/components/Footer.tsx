@@ -1,11 +1,11 @@
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 
-import { Link } from "./Link";
+import Link from "./Link";
 import { EmailLink } from "./EmailLink";
 
-import PrivateWrapper from "../../../../apps/platform/src/components/PrivateWrapper";
+import PrivateWrapper from "./PrivateWrapper";
 
 const FOOTER_BACKGROUND_COLOR = "#2e2d35";
 
@@ -15,7 +15,6 @@ const useStyles = makeStyles(() => ({
     color: "#fff",
     margin: 0,
     width: "100%",
-    padding: 24,
   },
 }));
 
@@ -31,7 +30,7 @@ const useLinkStyles = makeStyles(() => ({
 const FooterLink = ({ label, url, icon }) => {
   const classes = useLinkStyles();
   return (
-    <Grid item xs={12} className={classes.linkContainer}>
+    <Grid item xs={12} sx={{ mb: 1 }}>
       <Typography color="inherit">
         {url.startsWith("mailto") ? (
           <EmailLink href={url} label={label} icon={icon} />
@@ -80,9 +79,9 @@ const FooterSocial = ({ social }) => {
         container
         justifyContent="space-between"
       >
-        {social.map(({ icon, url }, i) => (
+        {social.map(({ icon, url, label }, i) => (
           <Grid item key={i}>
-            <Link external footer to={url}>
+            <Link external footer to={url} ariaLabel={label}>
               <FontAwesomeIcon className={classes.socialIcon} icon={icon} />
             </Link>
           </Grid>
@@ -164,7 +163,6 @@ const FooterSection = ({
 // Creative Commons License
 const useLicenseStyles = makeStyles({
   icon: {
-    height: "22px !important",
     marginLeft: "3px",
     verticalAlign: "middle",
   },
@@ -190,12 +188,20 @@ const LicenseCC0 = ({ links }) => {
         >
           CC0 1.0
           <img
+            alt="cc0 license image 1"
+            aria-label="cc0 license image 1"
             className={classes.icon}
             src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
+            height="22px"
+            width="22px"
           />
           <img
+            alt="cc0 license image 2"
+            aria-label="cc0 license image 2"
             className={classes.icon}
             src="https://mirrors.creativecommons.org/presskit/icons/zero.svg?ref=chooser-v1"
+            height="22px"
+            width="22px"
           />
         </Link>
       </Typography>
@@ -207,6 +213,7 @@ const Footer = ({ externalLinks }) => {
   const classes = useStyles();
   return (
     <Grid
+      sx={{ p: 3 }}
       className={classes.footer}
       container
       justifyContent="center"

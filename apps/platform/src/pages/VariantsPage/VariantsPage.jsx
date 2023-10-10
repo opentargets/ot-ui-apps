@@ -1,7 +1,5 @@
-import { Fragment } from 'react';
-import { Typography } from '@material-ui/core';
-import { DataTable } from '../../components/Table';
-import Link from '../../components/Link';
+import { Typography } from '@mui/material';
+import { Link, DataTable } from 'ui';
 import { naLabel } from '../../constants';
 
 const accessionUrl =

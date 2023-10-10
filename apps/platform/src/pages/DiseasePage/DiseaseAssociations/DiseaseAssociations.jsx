@@ -1,40 +1,40 @@
-import { LoadingBackdrop } from 'ui';
-import { useContext } from 'react';
+import { PrivateWrapper } from 'ui';
+import { Box } from '@mui/material';
 import {
   TableAssociations,
   AdvanceOptionsMenu,
   TargetPrioritisationSwitch,
-  AssociationsContext,
   AssociationsProvider,
   SearhInput,
   DataDownloader,
+  useAotfContext,
+  ControlsSection,
+  OptionsControlls,
+  AotFLoader,
 } from '../../../components/AssociationsToolkit';
 import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociationsQuery.gql';
 
 function AssociationsWrapper() {
-  const { initialLoading, id } = useContext(AssociationsContext);
+  const { initialLoading, id } = useAotfContext();
 
-  if (initialLoading)
-    return (
-      <div className="TAssociations loading-container">
-        <LoadingBackdrop />
-      </div>
-    );
+  if (initialLoading) return <AotFLoader />;
 
   return (
     <>
-      <div className="ControlsSection">
-        <div className="global-controls-container">
+      <ControlsSection>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
           <SearhInput />
-          <div className="options-controls">
+          <OptionsControlls>
             <AdvanceOptionsMenu />
             <DataDownloader fileStem={`${id}-associated-targets`} />
-          </div>
-        </div>
+          </OptionsControlls>
+        </Box>
         <div>
-          <TargetPrioritisationSwitch />
+          <PrivateWrapper>
+            <TargetPrioritisationSwitch />
+          </PrivateWrapper>
         </div>
-      </div>
+      </ControlsSection>
       <TableAssociations />
     </>
   );

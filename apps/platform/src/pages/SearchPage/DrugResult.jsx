@@ -1,12 +1,11 @@
-import { Typography, withStyles } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
 
-import { LongText } from 'ui';
-import Highlights from '../../components/Highlights';
-import Link from '../../components/Link';
+import { LongText, Highlights, Link } from 'ui';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   container: {
     marginBottom: '30px',
   },
@@ -17,9 +16,10 @@ const styles = theme => ({
   icon: {
     color: theme.palette.primary.main,
   },
-});
+}));
 
-function DrugResult({ classes, data, highlights }) {
+function DrugResult({ data, highlights }) {
+  const classes = useStyles();
   return (
     <div className={classes.container}>
       <Link to={`drug/${data.id}`} className={classes.subtitle}>
@@ -39,4 +39,4 @@ function DrugResult({ classes, data, highlights }) {
   );
 }
 
-export default withStyles(styles)(DrugResult);
+export default DrugResult;

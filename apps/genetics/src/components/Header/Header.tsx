@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid, makeStyles, Typography } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
@@ -36,6 +35,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+type HeaderProps = {
+  loading: boolean;
+  Icon: IconProp;
+  title: string;
+  subtitle?: React.ReactNode;
+  externalLinks?: React.ReactNode;
+  children?: React.ReactNode;
+};
 function Header({
   loading,
   Icon,
@@ -43,14 +50,7 @@ function Header({
   subtitle = null,
   externalLinks,
   children = null,
-}: {
-  loading: boolean;
-  Icon: IconProp;
-  title: string;
-  subtitle?: React.ReactNode;
-  externalLinks?: string[];
-  children?: React.ReactNode;
-}) {
+}: HeaderProps) {
   const classes = useStyles();
 
   return (

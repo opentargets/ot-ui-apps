@@ -29,8 +29,8 @@ const getAssociatedTargetsData = data => {
       (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
       {}
     );
-    const targetPrioritisation = d.target.priorisations?.items
-      ? d.target.priorisations.items.reduce(
+    const targetPrioritisation = d.target.prioritisation?.items
+      ? d.target.prioritisation.items.reduce(
           (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
           {}
         )
@@ -57,7 +57,15 @@ const getAllDataCount = (entity, apiResponse) => {
   if (entity === 'disease') return apiResponse.disease.associatedTargets.count;
 };
 
-function useTargetAssociations({
+const initialState = {
+  loading: false,
+  error: false,
+  data: [],
+  initialLoading: true,
+  count: 0,
+};
+
+function useAssociationsData({
   query,
   options: {
     id = '',
@@ -68,18 +76,15 @@ function useTargetAssociations({
     aggregationFilters = [],
     enableIndirect = false,
     datasources = null,
+    rowsFilter = [],
     entity,
   },
 }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState([]);
-  const [count, setCount] = useState(0);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [state, setState] = useState(initialState);
 
   useEffect(() => {
     let isCurrent = true;
-    setLoading(true);
+    setState({ ...state, loading: true });
     const fetchData = async () => {
       const resData = await client.query({
         query,
@@ -91,6 +96,7 @@ function useTargetAssociations({
           sortBy,
           enableIndirect,
           datasources,
+          rowsFilter,
           aggregationFilters: aggregationFilters.map(el => ({
             name: el.name,
             path: el.path,
@@ -99,12 +105,14 @@ function useTargetAssociations({
       });
       const parsedData = getParsedData(entity, resData.data);
       const dataCount = getAllDataCount(entity, resData.data);
-      setCount(dataCount);
-      setData(parsedData);
-      setInitialLoading(false);
-      setLoading(false);
+      setState({
+        count: dataCount,
+        data: parsedData,
+        loading: false,
+        initialLoading: false,
+      });
     };
-    fetchData();
+    if (isCurrent) fetchData();
     return () => (isCurrent = false);
   }, [
     id,
@@ -119,7 +127,7 @@ function useTargetAssociations({
     aggregationFilters,
   ]);
 
-  return { loading, error, data, initialLoading, count };
+  return state;
 }
 
-export default useTargetAssociations;
+export default useAssociationsData;

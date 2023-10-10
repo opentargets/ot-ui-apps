@@ -1,7 +1,7 @@
 import { useState, useLayoutEffect, useRef } from 'react';
 import { v1 } from 'uuid';
-import { Typography, withStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Typography, Skeleton } from '@mui/material';
+import { withStyles } from '@mui/styles';
 
 const styles = theme => ({
   textContainer: {
@@ -104,7 +104,11 @@ function TargetDescription({
   let content;
 
   if (!descriptions || descriptions.length < 1) {
-    content = (<Typography variant='body2'gutterBottom>No description available</Typography>);
+    content = (
+      <Typography variant="body2" gutterBottom>
+        No description available
+      </Typography>
+    );
   } else {
     content = (
       <StyledLongText
@@ -119,7 +123,7 @@ function TargetDescription({
   return (
     <>
       {showLabel && <Typography variant="subtitle2">Description</Typography>}
-      {loading ? <Skeleton /> : content}
+      {loading ? <Skeleton height="6.5rem"/> : content}
     </>
   );
 }

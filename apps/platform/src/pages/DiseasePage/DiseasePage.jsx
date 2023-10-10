@@ -1,75 +1,23 @@
 import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
-import { Tab, Tabs } from '@material-ui/core';
-import { Link, Route, Switch, useLocation } from 'react-router-dom';
-import { LoadingBackdrop } from 'ui';
-import { v1 } from 'uuid';
+import { Box, Tab, Tabs } from '@mui/material';
+import { Link, Route, Switch, useLocation, useParams } from 'react-router-dom';
+import { LoadingBackdrop, BasePage, NewChip, ScrollToTop } from 'ui';
 
-import { getAbleRoutes, getClassicAssociationsURL } from '../../utils/urls';
-
-import BasePage from '../../components/BasePage';
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
-import ScrollToTop from '../../components/ScrollToTop';
 
 import DISEASE_PAGE_QUERY from './DiseasePage.gql';
-import NewChip from '../../components/NewChip';
-import usePermissions from '../../hooks/usePermissions';
 
 const Profile = lazy(() => import('./Profile'));
 const Associations = lazy(() => import('./DiseaseAssociations'));
 const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
 
-function DiseasePageTabs({ efoId }) {
+function DiseasePage() {
   const location = useLocation();
-  const { isPartnerPreview } = usePermissions();
-  const classicAssociationsPath = isPartnerPreview
-    ? 'classic-associations'
-    : 'associations';
-
-  const routes = [
-    {
-      label: (
-        <div>
-          <NewChip />
-          Associated targets
-        </div>
-      ),
-      path: `/disease/${efoId}/associations`,
-      private: true,
-    },
-    {
-      label: 'Associated targets',
-      path: `/disease/${efoId}/${classicAssociationsPath}`,
-    },
-    { label: 'Profile', path: `/disease/${efoId}` },
-  ];
-
-  const ableRoutes = getAbleRoutes({ routes, isPartnerPreview });
-  const activeTabIndex = ableRoutes.findIndex(
-    route => route.path === location.pathname
-  );
-
-  return (
-    <Tabs value={activeTabIndex}>
-      {ableRoutes.map(route => (
-        <Tab key={v1()} label={route.label} component={Link} to={route.path} />
-      ))}
-    </Tabs>
-  );
-}
-
-function DiseasePage({ location, match }) {
-  const { efoId } = match.params;
+  const { efoId } = useParams();
   const { loading, data } = useQuery(DISEASE_PAGE_QUERY, {
     variables: { efoId },
-  });
-
-  const { isPartnerPreview } = usePermissions();
-  const baseURL = '/disease/:ensgId/';
-  const { fullURL: classicAssocURL } = getClassicAssociationsURL({
-    baseURL,
-    isPartnerPreview,
   });
 
   if (data && !data.disease) {
@@ -94,48 +42,61 @@ function DiseasePage({ location, match }) {
     >
       <Header loading={loading} efoId={efoId} name={name} dbXRefs={dbXRefs} />
       <ScrollToTop />
-      <DiseasePageTabs efoId={efoId} />
-      <Suspense fallback={<LoadingBackdrop />}>
+      <Route
+        path="/"
+        render={history => (
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs
+              value={
+                history.location.pathname !== '/'
+                  ? history.location.pathname
+                  : false
+              }
+            >
+              <Tab
+                label={
+                  <Box sx={{ textTransform: 'capitalize' }}>
+                    <div>
+                      Associated targets
+                      <NewChip />
+                    </div>
+                  </Box>
+                }
+                value={`/disease/${efoId}/associations`}
+                component={Link}
+                to={`/disease/${efoId}/associations`}
+              />
+              <Tab
+                label={
+                  <Box sx={{ textTransform: 'capitalize' }}>
+                    Associated targets
+                  </Box>
+                }
+                value={`/disease/${efoId}/classic-associations`}
+                component={Link}
+                to={`/disease/${efoId}/classic-associations`}
+              />
+              <Tab
+                label={<Box sx={{ textTransform: 'capitalize' }}>Profile</Box>}
+                value={`/disease/${efoId}`}
+                component={Link}
+                to={`/disease/${efoId}`}
+              />
+            </Tabs>
+          </Box>
+        )}
+      />
+      <Suspense fallback={<LoadingBackdrop height={1500} />}>
         <Switch>
-          <Route
-            exact
-            path="/disease/:efoId"
-            render={routeProps => (
-              <Profile
-                match={routeProps.match}
-                location={routeProps.location}
-                history={routeProps.history}
-                efoId={efoId}
-                name={name}
-              />
-            )}
-          />
-          {isPartnerPreview && (
-            <Route
-              path="/disease/:efoId/associations"
-              render={routeProps => (
-                <Associations
-                  match={routeProps.match}
-                  location={routeProps.location}
-                  history={routeProps.history}
-                  efoId={efoId}
-                  name={name}
-                />
-              )}
-            />
-          )}
-          <Route
-            path={classicAssocURL}
-            render={routeProps => (
-              <ClassicAssociations
-                match={routeProps.match}
-                location={routeProps.location}
-                history={routeProps.history}
-                efoId={efoId}
-                name={name}
-              />
-            )}
-          />
+          <Route exact path="/disease/:efoId">
+            <Profile efoId={efoId} name={name} />
+          </Route>
+          <Route path="/disease/:efoId/associations">
+            <Associations efoId={efoId} name={name} />
+          </Route>
+          <Route path="/disease/:efoId/classic-associations">
+            <ClassicAssociations efoId={efoId} name={name} />
+          </Route>
         </Switch>
       </Suspense>
     </BasePage>

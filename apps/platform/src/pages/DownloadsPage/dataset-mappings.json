@@ -83,7 +83,7 @@
   {
     "id": "associationByDatatypeIndirect",
     "category": "Associations",
-    "nice_name": "Associations - indrect (by data type)",
+    "nice_name": "Associations - indirect (by data type)",
     "description": "Data-type metrics for indirect target-disease associations",
     "order": 10,
     "include_in_fe": true,
@@ -207,7 +207,7 @@
     "include_in_bq": true
   },
   {
-    "id": "targetsPriorisation",
+    "id": "targetPrioritisation",
     "category": "Target",
     "nice_name": "Target - Prioritisation",
     "description": "List of target-specific attributes from the Target Engine project",

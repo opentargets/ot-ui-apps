@@ -1,17 +1,27 @@
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 import { useQuery } from '@apollo/client';
+import { BasePage, ScrollToTop, LoadingBackdrop } from 'ui';
+import { Box, Tabs, Tab } from '@mui/material';
+import {
+  useLocation,
+  useParams,
+  Switch,
+  Route,
+  useRouteMatch,
+  Link,
+} from 'react-router-dom';
 
-import BasePage from '../../components/BasePage';
-import ScrollToTop from '../../components/ScrollToTop';
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
-import { RoutingTab, RoutingTabs } from '../../components/RoutingTabs';
 import DRUG_PAGE_QUERY from './DrugPage.gql';
 
 const Profile = lazy(() => import('./Profile'));
 
-function DrugPage({ location, match }) {
-  const { chemblId } = match.params;
+function DrugPage() {
+  const location = useLocation();
+  const { chemblId } = useParams();
+  const { path } = useRouteMatch();
+
   const { loading, data } = useQuery(DRUG_PAGE_QUERY, {
     variables: { chemblId },
   });
@@ -36,14 +46,34 @@ function DrugPage({ location, match }) {
       />
       <ScrollToTop />
 
-      <RoutingTabs>
-        <RoutingTab
-          label="Profile"
-          path="/drug/:chemblId"
-          // eslint-disable-next-line
-          component={() => <Profile chemblId={chemblId} name={name} />}
-        />
-      </RoutingTabs>
+      <Route
+        path="/"
+        render={history => (
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs
+              value={
+                history.location.pathname !== '/'
+                  ? history.location.pathname
+                  : false
+              }
+            >
+              <Tab
+                label={<Box sx={{ textTransform: 'capitalize' }}>Profile</Box>}
+                value={`/drug/${chemblId}`}
+                component={Link}
+                to={`/drug/${chemblId}`}
+              />
+            </Tabs>
+          </Box>
+        )}
+      />
+      <Suspense fallback={<LoadingBackdrop height={11500} />}>
+        <Switch>
+          <Route exact path={path}>
+            <Profile chemblId={chemblId} name={name} />
+          </Route>
+        </Switch>
+      </Suspense>
     </BasePage>
   );
 }

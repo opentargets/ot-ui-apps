@@ -6,14 +6,13 @@ import {
   getExpandedRowModel,
   createColumnHelper,
 } from '@tanstack/react-table';
-import Skeleton from '@material-ui/lab/Skeleton';
 
-import { styled } from '@material-ui/styles';
+import { styled, Skeleton, Typography } from '@mui/material';
 
 import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
 import prioritizationCols from '../static_datasets/prioritizationCols';
 
-import AggregationsTooltip from './AggregationsTooltip';
+import AggregationsTooltip from './AssocTooltip';
 import ColoredCell from './ColoredCell';
 
 import HeaderControls from '../HeaderControls';
@@ -25,16 +24,20 @@ import useAotfContext from '../hooks/useAotfContext';
 
 import { cellHasValue, isPartnerPreview, tableCSSVariables } from '../utils';
 
-const TableElement = styled('div')({
-  minWidth: '900px',
-  maxWidth: '1400px',
+const TableElement = styled('main')({
+  maxWidth: '1600px',
   margin: '0 auto',
+});
+
+const TableDivider = styled('div')({
+  borderBottom: '1px solid #ececec',
+  marginBottom: 4,
 });
 
 const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
-function getDatasources(expanderHandler, loading, displayedTable) {
+function getDatasources({ expanderHandler, displayedTable }) {
   const isAssociations = displayedTable === 'associations';
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
@@ -53,11 +56,11 @@ function getDatasources(expanderHandler, loading, displayedTable) {
       const column = columnHelper.accessor(row => row[dataProp][id], {
         id,
         header: isAssociations ? (
-          <div className="">{label}</div>
+          <Typography variant="assoc_header">{label}</Typography>
         ) : (
           <AggregationsTooltip title={description} placement="right">
             <div className="cursor-help">
-              <span>{label}</span>
+              <Typography variant="assoc_header">{label}</Typography>
             </div>
           </AggregationsTooltip>
         ),
@@ -67,8 +70,9 @@ function getDatasources(expanderHandler, loading, displayedTable) {
         isPrivate,
         docsLink,
         cell: row => {
+          const { prefix, loading } = row.table.getState();
           if (loading)
-            return <Skeleton variant="circle" width={26} height={25} />;
+            return <Skeleton variant="circular" width={26} height={26} />;
           const hasValue = cellHasValue(row.getValue());
           return hasValue ? (
             <ColoredCell
@@ -79,6 +83,7 @@ function getDatasources(expanderHandler, loading, displayedTable) {
               cell={row}
               loading={loading}
               isAssociations={isAssociations}
+              tablePrefix={prefix}
             />
           ) : (
             <ColoredCell />
@@ -97,8 +102,9 @@ function TableAssociations() {
     entityToGet,
     data,
     count,
-    loading,
+    loading: associationsLoading,
     tableExpanded,
+    expanded,
     pagination,
     expanderHandler,
     handlePaginationChange,
@@ -106,6 +112,8 @@ function TableAssociations() {
     displayedTable,
     sorting,
     handleSortingChange,
+    pinnedData,
+    pinnedLoading,
   } = useAotfContext();
 
   const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
@@ -119,19 +127,30 @@ function TableAssociations() {
           columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
             id: 'name',
             enableSorting: false,
-            cell: row =>
-              !loading ? (
-                <CellName name={row.getValue()} rowId={row.row.id} />
-              ) : null,
+            cell: row => {
+              const { loading, prefix } = row.table.getState();
+              if (loading) return null;
+              return (
+                <CellName
+                  name={row.getValue()}
+                  rowId={row.row.id}
+                  row={row.row}
+                  tablePrefix={prefix}
+                />
+              );
+            },
             header: () => {
               const label = entityToGet === 'target' ? 'Target' : 'Disease';
-              return <span>{label}</span>;
+              return <Typography variant="assoc_header">{label}</Typography>;
             },
           }),
           columnHelper.accessor(row => row.score, {
             id: 'score',
-            header: 'Association Score',
+            header: (
+              <Typography variant="assoc_header">Association Score</Typography>
+            ),
             cell: row => {
+              const { loading } = row.table.getState();
               if (loading)
                 return <Skeleton variant="rect" width={30} height={25} />;
               return (
@@ -150,23 +169,25 @@ function TableAssociations() {
       columnHelper.group({
         header: 'entities',
         id: 'entity-cols',
-        columns: [...getDatasources(expanderHandler, loading, displayedTable)],
+        columns: [...getDatasources({ expanderHandler, displayedTable })],
       }),
     ],
-    [expanderHandler, loading, displayedTable, entityToGet, rowNameEntity]
+    [expanderHandler, displayedTable, entityToGet, rowNameEntity]
   );
 
   /**
    * TABLE HOOK
    * @description tanstack/react-table
    */
-  const table = useReactTable({
+  const coreAssociationsTable = useReactTable({
     data,
     columns,
     state: {
       expanded: tableExpanded,
       pagination,
       sorting,
+      prefix: 'body',
+      loading: associationsLoading,
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
@@ -180,22 +201,62 @@ function TableAssociations() {
     manualSorting: true,
   });
 
-  const entitesHeaders = table.getHeaderGroups()[0].headers[1].subHeaders;
+  const corePinnedTable = useReactTable({
+    data: pinnedData,
+    columns,
+    state: {
+      expanded: tableExpanded,
+      pagination: {
+        pageIndex: 0,
+        pageSize: 150,
+      },
+      sorting,
+      prefix: 'pinned',
+      loading: pinnedLoading,
+    },
+    pageCount: count,
+    onPaginationChange: handlePaginationChange,
+    onExpandedChange: setTableExpanded,
+    onSortingChange: handleSortingChange,
+    getRowCanExpand: () => true,
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getRowId: row => row[entityToGet].id,
+    manualPagination: true,
+    manualSorting: true,
+  });
+
+  const entitesHeaders =
+    coreAssociationsTable.getHeaderGroups()[0].headers[1].subHeaders;
 
   return (
     <div className="TAssociations" style={tableCSSVariables}>
       <TableElement>
         {/* HEADER */}
-        <TableHeader table={table} />
+        <TableHeader table={coreAssociationsTable} cols={entitesHeaders} />
 
         {/* Weights controlls */}
         <HeaderControls cols={entitesHeaders} />
+        <div>
+          {/* BODY CONTENT */}
+          <TableBody
+            core={corePinnedTable}
+            expanded={expanded}
+            prefix="pinned"
+            cols={entitesHeaders}
+          />
 
-        {/* BODY CONTENT */}
-        <TableBody table={table} />
+          {pinnedData.length > 0 && <TableDivider />}
 
+          <TableBody
+            core={coreAssociationsTable}
+            expanded={expanded}
+            prefix="body"
+            cols={entitesHeaders}
+          />
+        </div>
         {/* FOOTER */}
-        <TableFooter table={table} />
+        <TableFooter table={coreAssociationsTable} />
       </TableElement>
     </div>
   );

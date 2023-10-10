@@ -1,9 +1,9 @@
+import { usePlatformApi } from 'ui';
 import {
-  Description,
+  ProfileDescription,
   ProfileHeader as BaseProfileHeader,
-  ChipList,
-} from '../../components/ProfileHeader';
-import usePlatformApi from '../../hooks/usePlatformApi';
+  ProfileChipList,
+} from 'ui';
 
 import DISEASE_PROFILE_HEADER_FRAGMENT from './ProfileHeader.gql';
 
@@ -44,11 +44,13 @@ function ProfileHeader() {
 
   return (
     <BaseProfileHeader>
-      <Description loading={loading}>{data?.disease.description}</Description>
+      <ProfileDescription loading={loading}>
+        {data?.disease.description}
+      </ProfileDescription>
       {diseaseSynonyms.length > 0 ? (
-        <ChipList title="Synonyms" loading={loading}>
+        <ProfileChipList title="Synonyms" loading={loading}>
           {diseaseSynonyms}
-        </ChipList>
+        </ProfileChipList>
       ) : null}
     </BaseProfileHeader>
   );

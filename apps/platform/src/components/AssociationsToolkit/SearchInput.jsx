@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Grid, Input, IconButton, styled } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import ClearIcon from '@material-ui/icons/Clear';
+import { Grid, Input, IconButton } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { faXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useDebounce } from 'ui';
 import useAotfContext from './hooks/useAotfContext';
-import useDebounce from '../../hooks/useDebounce';
 
 const InputContainer = styled(Grid)({
   marginRight: '15px',
@@ -16,7 +17,7 @@ const InputContainer = styled(Grid)({
 function SearchInput({ placeholder = 'Search' }) {
   const { handleSearchInputChange } = useAotfContext();
   const [inputValue, setInputValue] = useState('');
-  const debouncedInputValue = useDebounce(inputValue, 300);
+  const debouncedInputValue = useDebounce(inputValue, 200);
 
   const handleInputChange = e => {
     setInputValue(e.target.value);
@@ -38,12 +39,13 @@ function SearchInput({ placeholder = 'Search' }) {
     <InputContainer container>
       <Grid item xs={12}>
         <Input
+          name="associationsSearchInput"
           autoComplete="off"
-          startAdornment={<SearchIcon />}
+          startAdornment={<FontAwesomeIcon icon={faMagnifyingGlass} />}
           endAdornment={
             !!inputValue && (
               <IconButton onClick={handleInputClean}>
-                <ClearIcon />
+                <FontAwesomeIcon icon={faXmark} size="2xs" />
               </IconButton>
             )
           }

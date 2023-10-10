@@ -1,96 +1,92 @@
-import { Grid } from '@material-ui/core';
-import { styled } from '@material-ui/styles';
-import { gql, useQuery } from '@apollo/client';
-import { cloneElement } from 'react';
-
+import { Suspense } from 'react';
+import { styled } from '@mui/material/styles';
 import { LoadingBackdrop } from 'ui';
-import ErrorBoundary from '../../ErrorBoundary';
+import { ENTITIES } from '../utils';
 
-import evidenceSections from '../../../pages/EvidencePage/sections';
-import targetSections from '../../../pages/TargetPage/sections';
+import targetSections from '../../../sections/targetSections';
+import evidenceSections from '../../../sections/evidenceSections';
 
-const SectionWrapper = styled('div')({
+const LoadingContainer = styled('div')({
+  margin: '25px 0',
+  height: '100px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: '20px',
+});
+
+const Container = styled('div')({
   marginTop: '10px',
   marginBottom: '40px',
 });
 
-const LoadingContainer = styled('div')({
-  margin: '50px 0',
-});
-
-const getEvidenceSummaryQuery = sectionSumary => {
-  const fragmentName = Object.keys(sectionSumary.fragments)[0];
-  const sectionSummaryName =
-    sectionSumary.fragments[fragmentName].definitions[0].selectionSet
-      .selections[0].alias.value;
-  const COUNT_QUERY = gql`
-    query QUERY_EVIDENCE_SUMMARY($ensgId: String!, $efoId: String!) {
-      disease(efoId: $efoId) {
-        id
-        ...${fragmentName}
-      }
-    }
-    ${sectionSumary.fragments[fragmentName]}
-  `;
-  return { sectionSummaryName, COUNT_QUERY };
-};
-
-export function SecctionRendererWrapper({ activeSection, table, children }) {
-  const isAssociations = table === 'associations';
-  const pointer = isAssociations ? 0 : 2;
-  const toSearch = activeSection[pointer];
-  const sectionsToFilter = isAssociations ? evidenceSections : targetSections;
-  const section = sectionsToFilter.find(el => el.definition.id === toSearch);
-
-  // Validate if the active section is not in Evidence sections
-  if (typeof section === 'undefined') return null;
-
-  const ClonedChildren = cloneElement(children, { section, isAssociations });
-
+function LoadingSection() {
   return (
-    <SectionWrapper>
-      <Grid id="summary-section" container spacing={1} justifyContent="center">
-        <ErrorBoundary>{ClonedChildren}</ErrorBoundary>
-      </Grid>
-    </SectionWrapper>
+    <div>
+      <LoadingContainer>
+        <LoadingBackdrop />
+        Importing section assets
+      </LoadingContainer>
+    </div>
   );
 }
 
-export function TargetSecctionRenderer({ section, entity, rowId, id, label }) {
-  const { Body, definition } = section;
-  const ensgId = entity === 'disease' ? rowId : id;
-  return <Body definition={definition} id={ensgId} label={label} />;
+function SectionNotFound() {
+  return <div>Section not found</div>;
 }
 
-export function EvidenceSecctionRenderer({ section, entity, rowId, id, row }) {
-  const { BodyCore, definition, Summary } = section;
-  const { diseaseName, targetSymbol } = row.original;
-  const ensgId = entity === 'disease' ? rowId : id;
-  const efoId = entity === 'disease' ? id : rowId;
-  const label = { symbol: targetSymbol, name: diseaseName };
+export function SectionRender({
+  id,
+  entity,
+  section,
+  row,
+  entityToGet,
+  rowNameEntity,
+  rowId,
+  displayedTable,
+  cols = [],
+  expanded,
+}) {
+  let label = row.original[entityToGet][rowNameEntity];
+  let ensgId;
+  let efoId;
+  let componentId;
+  let Component;
+  let entityOfSection = entity;
 
-  const { COUNT_QUERY, sectionSummaryName } = getEvidenceSummaryQuery(Summary);
-  const { loading, data } = useQuery(COUNT_QUERY, {
-    variables: { ensgId, efoId },
-  });
+  const flatCols = cols.map(c => c.id);
+  if (!flatCols.includes(expanded[1])) return null;
 
-  if (loading)
-    return (
-      <LoadingContainer>
-        <LoadingBackdrop />
-        Loading section count
-      </LoadingContainer>
-    );
+  switch (displayedTable) {
+    case 'prioritisations': {
+      Component = targetSections.get(section);
+      const { targetSymbol } = row.original;
+      ensgId = entity === ENTITIES.DISEASE ? rowId : id;
+      label = targetSymbol;
+      componentId = ensgId;
+      entityOfSection = 'target';
+      break;
+    }
+    case 'associations': {
+      Component = evidenceSections.get(section);
+      const { diseaseName, targetSymbol } = row.original;
+      ensgId = entity === ENTITIES.DISEASE ? rowId : id;
+      efoId = entity === ENTITIES.DISEASE ? id : rowId;
+      componentId = { ensgId, efoId };
+      label = { symbol: targetSymbol, name: diseaseName };
+      entityOfSection = 'disease';
+      break;
+    }
+    default:
+      return <SectionNotFound />;
+  }
+  return <Component id={componentId} label={label} entity={entityOfSection} />;
+}
 
-  const count = data?.disease[sectionSummaryName].count;
-  if (!count) throw new Error('No count on section request');
-
+export function SectionRendererWrapper({ children }) {
   return (
-    <BodyCore
-      definition={definition}
-      id={{ ensgId, efoId }}
-      label={label}
-      count={count}
-    />
+    <Suspense fallback={<LoadingSection />}>
+      <Container>{children}</Container>
+    </Suspense>
   );
 }

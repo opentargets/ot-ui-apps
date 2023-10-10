@@ -5,21 +5,30 @@ import {
   Button,
   Grid,
   Typography,
-  CircularProgress,
-  makeStyles,
   Snackbar,
   Slide,
   Popover,
-  styled,
-} from '@material-ui/core';
+  Alert,
+  CircularProgress,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+import { Link } from 'ui';
 import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useBatchDownloader from './hooks/useBatchDownloader';
 import useAotfContext from './hooks/useAotfContext';
-import useBatchDownloader from '../../hooks/useBatchDownloader';
 import dataSources from './static_datasets/dataSourcesAssoc';
+import prioritizationCols from './static_datasets/prioritizationCols';
+import { isPartnerPreview } from './utils';
 
 const PopoverContent = styled('div')({
   padding: '20px 25px',
+  width: '350px',
+});
+
+const DisclaimerContainer = styled('div')({
+  marginTop: 12,
 });
 
 const LabelContainer = styled('div')({
@@ -45,15 +54,34 @@ const getRowsQuerySelector = entityToGet =>
 
 const getExportedColumns = entityToGet => {
   const nameColumn = entityToGet === 'target' ? targetName : diseaseName;
+  let exportedColumns = [];
   const sources = dataSources.map(({ id }) => ({
     id,
     exportValue: data => {
       const datatypeScore = data.datasourceScores.find(
         datasourceScore => datasourceScore.componentId === id
       );
-      return datatypeScore ? datatypeScore.score : 'No data';
+      return datatypeScore ? parseFloat(datatypeScore.score) : 'No data';
     },
   }));
+
+  exportedColumns = [...sources];
+
+  if (entityToGet === 'target' && isPartnerPreview) {
+    const prioritisationExportCols = prioritizationCols.map(({ id }) => ({
+      id,
+      exportValue: data => {
+        const prioritisationScore = data.target.prioritisation.items.find(
+          prioritisationItem => prioritisationItem.key === id
+        );
+        return prioritisationScore
+          ? parseFloat(prioritisationScore.value)
+          : 'No data';
+      },
+    }));
+
+    exportedColumns = [...sources, ...prioritisationExportCols];
+  }
 
   return [
     nameColumn,
@@ -62,7 +90,7 @@ const getExportedColumns = entityToGet => {
       label: 'Score',
       exportValue: data => data.score,
     },
-    ...sources,
+    ...exportedColumns,
   ];
 };
 
@@ -154,6 +182,7 @@ const createBlob = format =>
 const styles = makeStyles(theme => ({
   messageProgress: {
     marginRight: '1rem',
+    color: 'white !important',
   },
   snackbarContentMessage: {
     display: 'flex',
@@ -259,8 +288,6 @@ function DataDownloader({ fileStem }) {
     downloadData('tsv', columns, getAllAssociations, fileStem);
   };
 
-  if (isPrioritisation) return null;
-
   return (
     <div>
       <Button
@@ -269,8 +296,9 @@ function DataDownloader({ fileStem }) {
         variant="outlined"
         disableElevation
         disabled={isPrioritisation}
+        startIcon={<FontAwesomeIcon icon={faCloudArrowDown} size="lg" />}
       >
-        <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
+        Export
       </Button>
       <Popover
         id={popoverId}
@@ -310,6 +338,22 @@ function DataDownloader({ fileStem }) {
               </Button>
             </Grid>
           </Grid>
+          <DisclaimerContainer>
+            <Alert icon={false} severity="warning">
+              Table with pre-set weights only. See{' '}
+              <Link
+                to="https://github.com/opentargets/issues/issues/3063"
+                external
+                newTab
+              >
+                here
+              </Link>{' '}
+              for more information.
+              <br />
+              {isPartnerPreview &&
+                `The file will also include the target prioritisation data.`}
+            </Alert>
+          </DisclaimerContainer>
         </PopoverContent>
       </Popover>
       <Snackbar
@@ -325,7 +369,7 @@ function DataDownloader({ fileStem }) {
         message={
           <>
             <CircularProgress className={classes.messageProgress} />
-            Preparing data...
+            Preparing the data. This may take several minutes...
           </>
         }
       />

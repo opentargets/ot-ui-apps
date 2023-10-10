@@ -1,5 +1,5 @@
 import { Suspense, useState, lazy } from 'react';
-import { LoadingBackdrop } from 'ui';
+import { LoadingBackdrop, Link } from 'ui';
 import {
   Accordion,
   AccordionSummary,
@@ -7,13 +7,19 @@ import {
   Button,
   Grid,
   Typography,
-  makeStyles,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+  styled,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import 'graphiql/graphiql.min.css';
 
-import Link from '../../components/Link';
 import { fetcher } from '../../utils/global';
+
+const QueryButton = styled(Button)`
+  color: #fff;
+  border: none;
+`;
 
 import TARGET_ASSOCS from './TargetAssocs.gql';
 import DISEASE_ASSOCS from './DiseaseAssocs.gql';
@@ -41,7 +47,7 @@ const GraphiQL = lazy(() =>
 
 const useStyles = makeStyles({
   container: {
-    minHeight: '600px',
+    minHeight: '600px !important',
   },
   buttonMargin: {
     marginBottom: '12px',
@@ -97,7 +103,9 @@ function APIPage() {
             Example queries
           </Typography>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">
                 Target-disease association
               </Typography>
@@ -107,29 +115,31 @@ function APIPage() {
                 <Typography variant="subtitle2" display="block" paragraph>
                   Find targets associated with a specific disease or phenotype
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(DISEASE_ASSOCS.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
                 <Typography variant="subtitle2" display="block" paragraph>
                   Find diseases and phenotypes associated with a specific target
                 </Typography>
-                <Button
+                <QueryButton
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(TARGET_ASSOCS.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">
                 Target-disease evidence
               </Typography>
@@ -140,7 +150,7 @@ function APIPage() {
                   Explore evidence that supports a specific target-disease
                   association
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
@@ -149,12 +159,14 @@ function APIPage() {
                   }
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">Target annotation</Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -162,19 +174,21 @@ function APIPage() {
                 <Typography variant="subtitle2" display="block" paragraph>
                   Find tractability and safety information for a specific target
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(TARGET_ANNOTATION.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">Disease annotation</Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -182,19 +196,21 @@ function APIPage() {
                 <Typography variant="subtitle2" display="block" paragraph>
                   Find clinical signs and symptoms for a specific disease
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(DISEASE_ANNOTATION.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">Drug annotation</Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -203,19 +219,21 @@ function APIPage() {
                   Find approval status and withdrawn and black-box warning for a
                   specific drug
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(DRUG_ANNOTATION.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>
           <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
+            >
               <Typography variant="subtitle2">Search page</Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -223,26 +241,26 @@ function APIPage() {
                 <Typography variant="subtitle2" display="block" paragraph>
                   Example query for insulin
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(SEARCH_ANNOTATION.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
                 <Typography variant="subtitle2" display="block" paragraph>
                   Example query to get how many entries there are in each entity
                   category for Insulin
                 </Typography>
-                <Button
+                <QueryButton
                   className={classes.buttonMargin}
                   variant="contained"
                   color="primary"
                   onClick={() => setQuery(SEARCH_ASSOCS.loc.source.body)}
                 >
                   Run sample query
-                </Button>
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>

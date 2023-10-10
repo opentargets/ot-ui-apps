@@ -1,9 +1,8 @@
 import { Suspense, lazy } from 'react';
 import { useQuery } from '@apollo/client';
+import { useLocation, useParams } from 'react-router-dom';
 
-import { LoadingBackdrop } from 'ui';
-import BasePage from '../../components/BasePage';
-import ScrollToTop from '../../components/ScrollToTop';
+import { LoadingBackdrop, BasePage, ScrollToTop } from 'ui';
 
 import Header from './Header';
 import NotFoundPage from '../NotFoundPage';
@@ -12,8 +11,9 @@ import EVIDENCE_PAGE_QUERY from './EvidencePageQuery.gql';
 
 const Profile = lazy(() => import('./Profile'));
 
-function EvidencePage({ location, match }) {
-  const { ensgId, efoId } = match.params;
+function EvidencePage() {
+  const location = useLocation();
+  const { ensgId, efoId } = useParams();
   const { loading, data } = useQuery(EVIDENCE_PAGE_QUERY, {
     variables: { ensgId, efoId },
   });

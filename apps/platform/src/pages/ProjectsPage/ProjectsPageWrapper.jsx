@@ -1,19 +1,22 @@
 import { Suspense, lazy } from 'react';
-import { LoadingBackdrop } from 'ui';
-import BasePage from '../../components/BasePage';
+import { useLocation } from 'react-router-dom';
+import { LoadingBackdrop, BasePage } from 'ui';
 
 const ProjectPage = lazy(() => import('./ProjectsPage'));
 
-function ProjectsPageWrapper({ location }) {
-  return <BasePage
-    title="Projects page | Open Targets Platform"
-    description="Projects page | Open Targets Platform"
-    location={location}
-  >
-    <Suspense fallback={<LoadingBackdrop />}>
-      <ProjectPage />
-    </Suspense>
-  </BasePage>
+function ProjectsPageWrapper() {
+  const location = useLocation();
+  return (
+    <BasePage
+      title="Projects page | Open Targets Platform"
+      description="Projects page | Open Targets Platform"
+      location={location}
+    >
+      <Suspense fallback={<LoadingBackdrop />}>
+        <ProjectPage />
+      </Suspense>
+    </BasePage>
+  );
 }
 
 export default ProjectsPageWrapper;

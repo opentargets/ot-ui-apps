@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, CardContent, Grid, Typography } from '@material-ui/core';
+import { Card, CardContent, Grid, Typography } from '@mui/material';
 import { useQuery } from '@apollo/client';
 
 import ClassicAssociationsTable from './ClassicAssociationsTable';

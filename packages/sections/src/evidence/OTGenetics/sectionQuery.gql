@@ -1,0 +1,49 @@
+query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!) {
+  target(ensemblId: $ensemblId) {
+    approvedSymbol
+  }
+  disease(efoId: $efoId) {
+    id
+    name
+    openTargetsGenetics: evidences(
+      ensemblIds: [$ensemblId]
+      enableIndirect: true
+      datasourceIds: ["ot_genetics_portal"]
+    ) {
+      count
+      rows {
+        id
+        disease {
+          id
+          name
+        }
+        diseaseFromSource
+        studyId
+        studySampleSize
+        variantId
+        variantRsId
+        literature
+        publicationYear
+        publicationFirstAuthor
+        pValueExponent
+        pValueMantissa
+        oddsRatio
+        oddsRatioConfidenceIntervalLower
+        oddsRatioConfidenceIntervalUpper
+        beta
+        betaConfidenceIntervalLower
+        betaConfidenceIntervalUpper
+        variantFunctionalConsequence {
+          id
+          label
+        }
+        variantFunctionalConsequenceFromQtlId {
+          id
+          label
+        }
+        resourceScore
+        projectId
+      }
+    }
+  }
+}

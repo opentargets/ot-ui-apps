@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Skeleton } from '@material-ui/lab';
+import { Skeleton } from '@mui/material';
 import SmilesHelper from './SmilesHelper';
 
 class Smiles extends Component {

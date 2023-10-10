@@ -1,22 +1,22 @@
-import { Slider, Typography, withStyles } from '@material-ui/core';
-
+import { Slider, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { decimalPlaces } from '../../constants';
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   root: {
     width: 300,
   },
   container: {
     padding: '10px 0',
   },
-});
+}));
 
 function ClassicAssociationsSlider({
-  classes,
   value,
   onChange,
   onChangeCommitted,
 }) {
+  const classes = useStyles();
   return (
     <div className={classes.root}>
       <Typography id="label">
@@ -38,4 +38,4 @@ function ClassicAssociationsSlider({
   );
 }
 
-export default withStyles(styles)(ClassicAssociationsSlider);
+export default ClassicAssociationsSlider;

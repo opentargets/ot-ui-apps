@@ -1,0 +1,30 @@
+query SysBioQuery($ensemblId: String!, $efoId: String!) {
+  target(ensemblId: $ensemblId) {
+    approvedSymbol
+  }
+  disease(efoId: $efoId) {
+    id
+    sysBio: evidences(
+      ensemblIds: [$ensemblId]
+      enableIndirect: true
+      datasourceIds: ["sysbio"]
+    ) {
+      count
+      rows {
+        disease {
+          id
+          name
+        }
+        target {
+          id
+          approvedSymbol
+        }
+        studyOverview
+        literature
+        pathways {
+          name
+        }
+      }
+    }
+  }
+}

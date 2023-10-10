@@ -1,14 +1,36 @@
 import { useState } from 'react';
-import AggregationsTooltip from './AggregationsTooltip';
-import { grouped as assocGrouped } from '../static_datasets/dataSourcesAssoc';
-import { grouped as prioritizationGrouped } from '../static_datasets/prioritizationCols';
+import { styled, Grid } from '@mui/material';
+
+import AggregationsTooltip from './AssocTooltip';
+import associationsColumns from '../static_datasets/dataSourcesAssoc';
+import prioritizationColumns from '../static_datasets/prioritizationCols';
+import { groupViewColumnsBy } from '../utils';
+import { GridContainer } from '../layout';
+
+const AggregationsContainer = styled(GridContainer)({
+  gridColumnGap: '4px',
+});
+
+const HiddenCol = styled('div')({
+  width: 'var(--table-left-column-width)',
+  display: 'flex',
+});
+
+const associationGrouped = groupViewColumnsBy(
+  associationsColumns,
+  'aggregation'
+);
+const prioritizationGrouped = groupViewColumnsBy(
+  prioritizationColumns,
+  'aggregation'
+);
 
 function AggregationItem({
   aggregation,
   dataset,
   active,
   handleAggregationClick,
-  activeHeadersControlls,
+  setActiveHeadersControlls,
 }) {
   const [open, setOpen] = useState(false);
   const onMouseEnter = () => {
@@ -19,24 +41,26 @@ function AggregationItem({
     setOpen(false);
   };
 
+  const onClick = () => {
+    handleAggregationClick(aggregation);
+    setActiveHeadersControlls(true);
+  };
+
   const colsCont = dataset[aggregation].length;
   const style = {
-    flexGrow: colsCont,
+    gridColumn: `span ${colsCont}`,
+    gridRow: `row1-start / 2`,
   };
-  const isActive = active === aggregation;
-  const className = `aggregation-indicator ${isActive && 'active'} ${
-    activeHeadersControlls && 'clickAble'
-  } `;
+  const isActive = active === aggregation || open;
+  const className = `aggregation-indicator ${isActive && 'active'} clickAble`;
   return (
-    <div
+    <button
+      type="button"
       className={className}
       style={style}
-      onMouseEnter={e => onMouseEnter(aggregation)}
-      onMouseLeave={e => onMouseLeave()}
-      onClick={() => {
-        if (activeHeadersControlls) return handleAggregationClick(aggregation);
-        return () => ({});
-      }}
+      onMouseEnter={() => onMouseEnter(aggregation)}
+      onMouseLeave={() => onMouseLeave()}
+      onClick={() => onClick()}
     >
       <AggregationsTooltip
         title={aggregation}
@@ -44,7 +68,7 @@ function AggregationItem({
       >
         <div style={{ width: '100%' }} />
       </AggregationsTooltip>
-    </div>
+    </button>
   );
 }
 
@@ -53,24 +77,30 @@ function AggregationsRow({
   active,
   handleAggregationClick,
   activeHeadersControlls,
+  setActiveHeadersControlls,
+  columnsCount,
 }) {
   const dataset =
-    table === 'associations' ? assocGrouped : prioritizationGrouped;
+    table === 'associations' ? associationGrouped : prioritizationGrouped;
   const aggregations = Object.keys(dataset);
 
   return (
-    <div className="aggregations-container">
-      {aggregations.map(aggregation => (
-        <AggregationItem
-          key={aggregation}
-          aggregation={aggregation}
-          active={active}
-          dataset={dataset}
-          handleAggregationClick={handleAggregationClick}
-          activeHeadersControlls={activeHeadersControlls}
-        />
-      ))}
-    </div>
+    <Grid container direction="row" wrap="nowrap">
+      <HiddenCol />
+      <AggregationsContainer columnsCount={columnsCount}>
+        {aggregations.map(aggregation => (
+          <AggregationItem
+            key={aggregation}
+            aggregation={aggregation}
+            active={active}
+            dataset={dataset}
+            handleAggregationClick={handleAggregationClick}
+            activeHeadersControlls={activeHeadersControlls}
+            setActiveHeadersControlls={setActiveHeadersControlls}
+          />
+        ))}
+      </AggregationsContainer>
+    </Grid>
   );
 }
 

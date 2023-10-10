@@ -1,0 +1,33 @@
+query GenomicsEnglandQuery($ensemblId: String!, $efoId: String!) {
+  target(ensemblId: $ensemblId) {
+    approvedSymbol
+  }
+  disease(efoId: $efoId) {
+    id
+    name
+    genomicsEngland: evidences(
+      ensemblIds: [$ensemblId]
+      enableIndirect: true
+      datasourceIds: ["genomics_england"]
+    ) {
+      count
+      rows {
+        disease {
+          id
+          name
+        }
+        target {
+          approvedSymbol
+        }
+        diseaseFromSource
+        cohortPhenotypes
+        confidence
+        allelicRequirements
+        studyOverview
+        studyId
+        confidence
+        literature
+      }
+    }
+  }
+}

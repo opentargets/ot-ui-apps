@@ -1,23 +1,19 @@
-import {
-  CardContent,
-  Typography,
-  withStyles,
-  useTheme,
-} from '@material-ui/core';
+import { CardContent, Typography } from '@mui/material';
+import { makeStyles, useTheme } from '@mui/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDna } from '@fortawesome/free-solid-svg-icons';
 
-import Link from '../../components/Link';
+import { Link } from 'ui';
 import TargetDescription from '../TargetPage/TargetDescription';
 import { getUniprotIds, clearDescriptionCodes } from '../../utils/global';
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   subtitle: {
     fontWeight: 500,
   },
-});
+}));
 
-function TargetDetail({ classes, data }) {
+function TargetDetail({ data }) {
   const {
     id,
     approvedSymbol,
@@ -27,6 +23,7 @@ function TargetDetail({ classes, data }) {
     proteinIds,
   } = data;
 
+  const classes = useStyles();
   const theme = useTheme();
 
   const uniprotIds = getUniprotIds(proteinIds);
@@ -69,4 +66,4 @@ function TargetDetail({ classes, data }) {
   );
 }
 
-export default withStyles(styles)(TargetDetail);
+export default TargetDetail;

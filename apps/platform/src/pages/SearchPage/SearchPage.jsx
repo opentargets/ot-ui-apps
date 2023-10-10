@@ -1,11 +1,12 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import queryString from 'query-string';
-import { Typography } from '@material-ui/core';
-import { LoadingBackdrop, EmptyPage } from 'ui';
-import BasePage from '../../components/BasePage';
+import { Typography } from '@mui/material';
+import { useLocation, useHistory } from 'react-router-dom';
+import { LoadingBackdrop, EmptyPage, BasePage } from 'ui';
 
 import client from '../../client';
 import SEARCH_PAGE_QUERY from './SearchPageQuery.gql';
+import config from '../../config';
 
 const SearchContainer = lazy(() => import('./SearchContainer'));
 
@@ -25,7 +26,9 @@ const parseQueryString = qs => {
   return params;
 };
 
-function SearchPage({ location, history }) {
+function SearchPage() {
+  const location = useLocation();
+  const history = useHistory();
   const { q, page, entities } = parseQueryString(location.search);
   const [data, setData] = useState(null);
 
@@ -73,14 +76,17 @@ function SearchPage({ location, history }) {
 
   if (data && data.search.total === 0) {
     SEARCH_CONTAINER = (
-      <EmptyPage>
+      <EmptyPage
+        communityLink={config.profile.communityUrl}
+        documentationLink={config.profile.documentationUrl}
+      >
         <Typography>
           We could not find anything in the Platform database that matches
           &quot;{q}&quot;
         </Typography>
       </EmptyPage>
     );
-  } else if(data) {
+  } else if (data) {
     SEARCH_CONTAINER = (
       <SearchContainer
         q={q}

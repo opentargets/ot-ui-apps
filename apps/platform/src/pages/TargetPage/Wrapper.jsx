@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Skeleton } from '@material-ui/lab';
+import { Skeleton } from '@mui/material';
+import { useBatchDownloader } from 'ui';
 import config from '../../config';
-import useBatchDownloader from '../../hooks/useBatchDownloader';
 
 import ASSOCIATIONS_VIZ_QUERY from './AssociationsViz.gql';
 
@@ -30,7 +30,9 @@ function Wrapper({ ensemblId, symbol, Component, aggregationFilters }) {
         }
       });
 
-      return () => {isCurrent = false};
+      return () => {
+        isCurrent = false;
+      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [ensemblId, aggregationFilters]

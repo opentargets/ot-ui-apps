@@ -1,0 +1,26 @@
+query UniprotLiteratureQuery($ensemblId: String!, $efoId: String!) {
+  target(ensemblId: $ensemblId) {
+    approvedSymbol
+  }
+  disease(efoId: $efoId) {
+    id
+    uniprotLiteratureSummary: evidences(
+      ensemblIds: [$ensemblId]
+      enableIndirect: true
+      datasourceIds: ["uniprot_literature"]
+    ) {
+      count
+      rows {
+        disease {
+          id
+          name
+        }
+        diseaseFromSource
+        targetFromSourceId
+        studyId
+        literature
+        confidence
+      }
+    }
+  }
+}

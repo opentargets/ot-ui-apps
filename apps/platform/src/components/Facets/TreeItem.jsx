@@ -1,11 +1,7 @@
-import {
-  Checkbox,
-  FormControlLabel,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { TreeItem as MUITreeItem } from '@material-ui/lab';
-import PartnerLockIcon from '../PartnerLockIcon';
+import { Checkbox, FormControlLabel, Typography } from '@mui/material';
+import { TreeItem as MUITreeItem } from '@mui/lab';
+import { makeStyles } from '@mui/styles';
+import { PartnerLockIcon } from 'ui';
 
 const useStyles = makeStyles(theme => ({
   countLabel: {
@@ -102,6 +98,7 @@ function TreeItem({
                 color="primary"
                 checked={checked}
                 indeterminate={indeterminate}
+                sx={{ padding: '4px' }}
               />
             }
             label={
@@ -116,12 +113,12 @@ function TreeItem({
                 )}
               </>
             }
+            onClick={handleClick}
           />
           <Typography className={classes.countLabel}>{count}</Typography>
         </>
       }
       nodeId={nodeId}
-      onLabelClick={handleClick}
       // TODO: review props spreading
       // eslint-disable-next-line
       {...other}

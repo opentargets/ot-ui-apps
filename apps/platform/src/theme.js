@@ -1,16 +1,19 @@
-import { createTheme } from '@material-ui/core';
 import { lighten, darken } from 'polished';
 import config from './config';
 
 const PRIMARY = config.profile.primaryColor;
 const SECONDARY = '#ff6350';
 
-const theme = createTheme({
+const theme = {
   shape: {
-    borderRadius: 0,
+    borderRadius: 2,
   },
   typography: {
     fontFamily: '"Inter", sans-serif',
+    assoc_header: {
+      fontSize: '.90rem',
+      fontWeight: 700,
+    },
   },
   palette: {
     primary: {
@@ -35,98 +38,182 @@ const theme = createTheme({
       disableRipple: true,
     },
   },
-  overrides: {
+  components: {
     MuiButton: {
-      root: {
-        borderRadius: 0,
-        border: 0,
-        padding: '6px 12px',
-        minWidth: '32px',
-        minHeight: '32px',
-        height: '32px',
-        textTransform: 'none',
+      defaultProps: {
+        disableRipple: true,
+      },
+      styleOverrides: {
+        root: {
+          border: '1px solid',
+          padding: '6px 12px',
+          minWidth: '32px',
+          minHeight: '32px',
+          height: '32px',
+          textTransform: 'none',
+          color: '#5A5F5F',
+          borderColor: 'rgb(196,196,196)',
+        },
       },
     },
-    MuiCard: {
-      root: {
-        border: `1px solid #ddd`,
+    MuiToggleButton: {
+      defaultProps: {
+        disableRipple: true,
       },
-    },
-    MuiIconButton: {
-      root: {
-        width: '32px',
-        height: '32px',
-        padding: '0px',
-      },
-    },
-    MuiTablePagination: {
-      root: {
-        height: '36px',
-        minHeight: '36px',
-      },
-      toolbar: {
-        height: '36px',
-        minHeight: '36px',
+      styleOverrides: {
+        root: {
+          border: '1px solid',
+          borderColor: 'rgb(196,196,196)',
+          padding: '6px 12px',
+          textTransform: 'none',
+          height: '32px',
+          color: '#5A5F5F',
+        },
       },
     },
     MuiTabs: {
-      root: {
-        borderBottom: '1px solid #616161',
-      },
-      indicator: {
-        display: 'none',
+      styleOverrides: {
+        indicator: {
+          transition: 'none',
+        },
       },
     },
     MuiTab: {
-      root: {
-        textTransform: 'none',
-        minWidth: '10px !important',
-        '&$selected': {
-          backgroundColor: PRIMARY,
+      defaultProps: {
+        disableRipple: true,
+      },
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+        },
+      },
+    },
+    MuiTooltip: {
+      variants: [
+        {
+          props: { variant: 'aotf' },
+          style: {
+            root: {
+              backgroundColor: `red`,
+              color: '#fff',
+            },
+          },
+        },
+      ],
+    },
+    MuiSnackbar: {
+      defaultProps: {
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'center',
+        },
+      },
+    },
+    MuiSnackbarContent: {
+      styleOverrides: {
+        root: {
+          background: PRIMARY,
           color: 'white',
-          '&:hover': { backgroundColor: PRIMARY },
+          borderRadius: '4px',
         },
-        '&:hover': { backgroundColor: lighten(0.3, PRIMARY) },
-      },
-    },
-    MuiTypography: {
-      // colorSecondary: {
-      //   color: '#E2DFDF',
-      // },
-      colorError: {
-        color: SECONDARY,
-      },
-    },
-    MuiExpansionPanelSummary: {
-      root: {
-        padding: 0,
-        paddingRight: '32px',
-        minHeight: 0,
-        '&$expanded': {
-          minHeight: 0,
-          margin: 0,
-        },
-      },
-      content: {
-        width: '100%',
-        margin: 0,
-        '&$expanded': {
-          margin: 0,
-        },
-      },
-    },
-    MuiExpansionPanelDetails: {
-      root: {
-        padding: 0,
-        paddingRight: '32px',
-      },
-    },
-    MuiLinearProgress: {
-      root: {
-        height: '1px',
       },
     },
   },
-});
+
+  // overrides: {
+  //   MuiButton: {
+  //     root: {
+  //       borderRadius: 0,
+  //       border: 0,
+  //       padding: '6px 12px',
+  //       minWidth: '32px',
+  //       minHeight: '32px',
+  //       height: '32px',
+  //       textTransform: 'none',
+  //       color: '#000',
+  //       borderColor: 'rgb(196,196,196)',
+  //     },
+  //   },
+  //   MuiCard: {
+  //     root: {
+  //       border: `1px solid #ddd`,
+  //     },
+  //   },
+  //   MuiIconButton: {
+  //     root: {
+  //       width: '32px',
+  //       height: '32px',
+  //       padding: '0px',
+  //     },
+  //   },
+  //   MuiTablePagination: {
+  //     root: {
+  //       height: '36px',
+  //       minHeight: '36px',
+  //     },
+  //     toolbar: {
+  //       height: '36px',
+  //       minHeight: '36px',
+  //     },
+  //   },
+  //   MuiTabs: {
+  //     root: {
+  //       borderBottom: '1px solid #616161',
+  //     },
+  //     indicator: {
+  //       display: 'none',
+  //     },
+  //   },
+  //   MuiTab: {
+  //     root: {
+  //       textTransform: 'none',
+  //       minWidth: '10px !important',
+  //       '&$selected': {
+  //         backgroundColor: PRIMARY,
+  //         color: 'white',
+  //         '&:hover': { backgroundColor: PRIMARY },
+  //       },
+  //       '&:hover': { backgroundColor: lighten(0.3, PRIMARY) },
+  //     },
+  //   },
+  //   MuiTypography: {
+  //     // colorSecondary: {
+  //     //   color: '#E2DFDF',
+  //     // },
+  //     colorError: {
+  //       color: SECONDARY,
+  //     },
+  //   },
+  //   MuiExpansionPanelSummary: {
+  //     root: {
+  //       padding: 0,
+  //       paddingRight: '32px',
+  //       minHeight: 0,
+  //       '&$expanded': {
+  //         minHeight: 0,
+  //         margin: 0,
+  //       },
+  //     },
+  //     content: {
+  //       width: '100%',
+  //       margin: 0,
+  //       '&$expanded': {
+  //         margin: 0,
+  //       },
+  //     },
+  //   },
+  //   MuiExpansionPanelDetails: {
+  //     root: {
+  //       padding: 0,
+  //       paddingRight: '32px',
+  //     },
+  //   },
+  //   MuiLinearProgress: {
+  //     root: {
+  //       height: '1px',
+  //     },
+  //   },
+  // },
+};
 
 export default theme;

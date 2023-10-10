@@ -1,14 +1,25 @@
 import { Fragment, useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { Paper, Box, Chip, Typography } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/core/styles';
-import Link from '../../components/Link';
+import {
+  Paper,
+  Box,
+  Chip,
+  Typography,
+  Alert,
+  AlertTitle,
+  IconButton,
+  CircularProgress,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { Link, DataTable } from 'ui';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAlignLeft } from '@fortawesome/free-solid-svg-icons';
+
 import { defaultRowsPerPageOptions, formatMap } from '../../constants';
-import { DataTable } from '../../components/Table';
 import DownloadsDrawer from './DownloadsDrawer';
 import datasetMappings from './dataset-mappings.json';
 import config from '../../config';
+import DownloadsSchemaDrawer from './DownloadsSchemaDrawer';
 
 const useStyles = makeStyles(theme => ({
   alert: {
@@ -31,6 +42,14 @@ function getFormats(id, downloadData) {
   return formats;
 }
 
+function getSerialisedSchema(id, downloadData) {
+  let schemaObject;
+  downloadData.forEach(data => {
+    if (id === data.id) schemaObject = JSON.parse(data.serialisedSchema);
+  });
+  return schemaObject;
+}
+
 function getRows(downloadData, allDatasetMappings) {
   const rows = [];
 
@@ -40,6 +59,7 @@ function getRows(downloadData, allDatasetMappings) {
         niceName: mapping.nice_name,
         description: mapping.description,
         formats: getFormats(mapping.id, downloadData),
+        serialisedSchema: getSerialisedSchema(mapping.id, downloadData),
       });
     }
   });
@@ -55,19 +75,42 @@ function getColumns(date) {
       id: 'formats',
       label: 'Format(s)',
       renderCell: ({ niceName, formats }) =>
-        formats.map((format) => (
-          <Fragment key={format.format + format.path + date.month + date.year}>
-            <DownloadsDrawer
-              title={niceName}
-              format={format.format}
-              path={format.path}
-              month={date.month}
-              year={date.year}
+        formats
+          .sort((a, b) => {
+            if (a.format > b.format) return 1;
+            return -1;
+          })
+          .map(format => (
+            <Fragment
+              key={format.format + format.path + date.month + date.year}
             >
-              <Chip label={formatMap[format.format]} clickable size="small" />
-            </DownloadsDrawer>{' '}
-          </Fragment>
-        )),
+              <DownloadsDrawer
+                title={niceName}
+                format={format.format}
+                path={format.path}
+                month={date.month}
+                year={date.year}
+              >
+                <Chip label={formatMap[format.format]} clickable size="small" />
+              </DownloadsDrawer>{' '}
+            </Fragment>
+          )),
+    },
+    {
+      id: 'schemas',
+      label: 'Schema',
+      renderCell: ({ niceName, serialisedSchema }) => (
+        <DownloadsSchemaDrawer
+          title={niceName}
+          serialisedSchema={serialisedSchema}
+        >
+          <Chip
+            clickable
+            size="small"
+            label={<FontAwesomeIcon icon={faAlignLeft} />}
+          />
+        </DownloadsSchemaDrawer>
+      ),
     },
   ];
   return columns;
@@ -92,13 +135,15 @@ function getVersion(data) {
 
 function DownloadsPage() {
   const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
-  const [downloasdData, setDownloadsData] = useState(null);
-  const rows = downloasdData ? getRows(downloasdData, datasetMappings) : [];
+  const [downloadsData, setDownloadsData] = useState(null);
+  const [loadingDownloadsData, setLoadingDownloadsData] = useState(false);
+  const rows = downloadsData ? getRows(downloadsData, datasetMappings) : [];
   const columns = loading || error ? [] : getColumns(data.meta.dataVersion);
   const classes = useStyles();
 
   useEffect(() => {
     let isCurrent = true;
+    setLoadingDownloadsData(true);
     fetch(config.downloadsURL)
       .then(res => res.text())
       .then(lines => {
@@ -106,6 +151,7 @@ function DownloadsPage() {
           const nodes = lines.trim().split('\n').map(JSON.parse);
           setDownloadsData(nodes);
         }
+        setLoadingDownloadsData(false);
       });
 
     return () => {
@@ -164,18 +210,25 @@ function DownloadsPage() {
         </Alert>
       ) : null}
 
-      <Paper variant="outlined" elevation={0}>
-        <Box m={2}>
-          {loading || error ? null : (
+      {loadingDownloadsData && (
+        <Box display="flex" justifyContent="center">
+          <CircularProgress />
+        </Box>
+      )}
+
+      {loadingDownloadsData || loading || error ? null : (
+        <Paper variant="outlined" elevation={0}>
+          <Box m={2}>
             <DataTable
               showGlobalFilter
               columns={columns}
               rows={rows}
+              loading={loadingDownloadsData}
               rowsPerPageOptions={defaultRowsPerPageOptions}
             />
-          )}
-        </Box>
-      </Paper>
+          </Box>
+        </Paper>
+      )}
     </>
   );
 }

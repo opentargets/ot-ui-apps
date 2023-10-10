@@ -4,10 +4,11 @@ import {
   Box,
   CircularProgress,
   IconButton,
-  makeStyles,
-} from '@material-ui/core';
-import { Clear } from '@material-ui/icons';
-import { Skeleton } from '@material-ui/lab';
+  Skeleton,
+} from '@mui/material';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { makeStyles } from '@mui/styles';
 
 import Facet from './Facet';
 import {
@@ -35,13 +36,13 @@ const useStyles = makeStyles({
     },
   },
   subtitle1: {
-    marginBottom: '1rem',
-    fontWeight: 'bold',
+    marginBottom: '1rem !important',
+    fontWeight: 'bold !important',
   },
   subtitle2: {
-    marginTop: '1rem',
-    marginBottom: '1rem',
-    fontWeight: 'bold',
+    marginTop: '1rem !important',
+    marginBottom: '1rem !important',
+    fontWeight: 'bold !important',
   },
 });
 
@@ -101,7 +102,7 @@ function Facets({ loading, data, onChange, type }) {
         )}
         {hasAnyDescendantChecked(facets) && (
           <IconButton disabled={loading} onClick={handleClickClear}>
-            <Clear />
+            <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         )}
       </Box>

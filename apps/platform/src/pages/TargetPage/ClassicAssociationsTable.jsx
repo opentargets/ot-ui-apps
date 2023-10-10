@@ -1,26 +1,28 @@
 import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-import Link from '../../components/Link';
-import { Table } from '../../components/Table';
+import { makeStyles } from '@mui/styles';
+import { Skeleton } from '@mui/material';
+import {
+  Link,
+  Table,
+  PartnerLockIcon,
+  useBatchDownloader,
+  usePermissions,
+  Legend,
+} from 'ui';
 import AssocCell from '../../components/AssocCell';
-import useBatchDownloader from '../../hooks/useBatchDownloader';
-import Legend from '../../components/Legend';
 import dataTypes from '../../dataTypes';
 import client from '../../client';
 import config from '../../config';
-import PartnerLockIcon from '../../components/PartnerLockIcon';
 
 import TARGET_ASSOCIATIONS_QUERY from './TargetAssociations.gql';
-import usePermissions from '../../hooks/usePermissions';
 
 const useStyles = makeStyles(theme => ({
   root: {
     overflow: 'visible',
-    padding: '2rem 3rem 0 0',
+    padding: '2rem 3rem 0 0 !important',
   },
   table: {
-    tableLayout: 'fixed',
+    tableLayout: 'fixed !important',
   },
   sortLabel: {
     top: '8px',
@@ -35,33 +37,33 @@ const useStyles = makeStyles(theme => ({
   },
   nameHeaderCell: {
     width: '20%',
-    borderBottom: 0,
-    height: '140px',
-    verticalAlign: 'bottom',
+    borderBottom: '0 !important',
+    height: '140px !important',
+    verticalAlign: 'bottom !important',
     textAlign: 'end',
     paddingBottom: '.4rem',
   },
   headerCell: {
     position: 'relative',
-    borderBottom: 0,
-    height: '140px',
+    borderBottom: '0 !important',
+    height: '140px !important',
     whiteSpace: 'nowrap',
-    textAlign: 'center',
-    verticalAlign: 'bottom',
+    textAlign: 'center !important',
+    verticalAlign: 'bottom !important',
   },
   overallCell: {
-    border: 0,
-    textAlign: 'center',
-    paddingTop: '1px',
-    paddingBottom: '1px',
-    paddingLeft: '1px',
-    paddingRight: '10px',
+    border: '0 !important',
+    textAlign: 'center !important',
+    paddingTop: '1px !important',
+    paddingBottom: '1px !important',
+    paddingLeft: '1px !important',
+    paddingRight: '10px !important',
   },
   cell: {
-    border: 0,
-    height: '20px',
-    textAlign: 'center',
-    padding: '1px 1px',
+    border: '0 !important',
+    height: '20px !important',
+    textAlign: 'center !important',
+    padding: '1px 1px !important',
     '&:last-child': {
       paddingRight: 0,
     },
@@ -72,9 +74,9 @@ const useStyles = makeStyles(theme => ({
     border: '1px solid #eeefef',
   },
   nameCell: {
-    border: 0,
+    border: '0 !important',
     width: '20%',
-    padding: '0 0.5rem 0 0',
+    padding: '0 0.5rem 0 0 !important',
     '&:first-child': {
       paddingLeft: 0,
     },

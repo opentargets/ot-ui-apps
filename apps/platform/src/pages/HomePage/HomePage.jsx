@@ -1,15 +1,16 @@
 import {
   Grid,
-  makeStyles,
   Typography,
   Hidden,
   Box,
   useMediaQuery,
-} from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
+  IconButton,
+} from '@mui/material';
+
+import { makeStyles, useTheme } from '@mui/styles';
 import { Helmet } from 'react-helmet';
 
-import { Footer, AutocompleteSearch } from 'ui';
+import { Footer, Link, PrivateWrapper, NavBar, GlobalSearch } from 'ui';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircle,
@@ -28,14 +29,11 @@ import {
   mainMenuItems,
 } from '../../constants';
 import HomeBox from './HomeBox';
-import Link from '../../components/Link';
-import NavBar from '../../components/NavBar';
 import searchExamples from './searchExamples';
 import Splash from './Splash';
 import Version from './Version';
 
 import config from '../../config';
-import PrivateWrapper from '../../components/PrivateWrapper';
 
 const useStyles = makeStyles(() => ({
   links: {
@@ -67,13 +65,11 @@ const usePanelStyles = makeStyles(theme => ({
 
 function pickTwo(arr) {
   const i1 = Math.floor(Math.random() * arr.length);
-  let i2 = Math.floor(Math.random() * arr.length);
+  const resultArray = arr.splice(i1, 1);
+  const i2 = Math.floor(Math.random() * arr.length);
+  resultArray.push(...arr.splice(i2, 1));
 
-  while (i1 === i2) {
-    i2 = Math.floor(Math.random() * arr.length);
-  }
-
-  return [arr[i1], arr[i2]];
+  return resultArray;
 }
 
 function HelpBoxPanel({ fai, url, label, external }) {
@@ -143,7 +139,7 @@ function HomePage() {
           placement="bottom-end"
         />
         <HomeBox>
-          <AutocompleteSearch isHomePage showSearchResultPage />
+          <GlobalSearch isHomePage />
           {/* Search examples */}
           <Grid
             className={classes.links}
@@ -151,26 +147,30 @@ function HomePage() {
             justifyContent="space-around"
           >
             <Link to={`/target/${targets[0].id}/associations`}>
-              {targets[0].label}
+              <Typography variant="body2">{targets[0].label}</Typography>
             </Link>
             <Hidden smDown>
               <Link to={`/target/${targets[1].id}/associations`}>
-                {targets[1].label}
+                <Typography variant="body2">{targets[1].label}</Typography>
               </Link>
             </Hidden>
 
             <Link to={`/disease/${diseases[0].id}/associations`}>
-              {diseases[0].label}
+              <Typography variant="body2">{diseases[0].label}</Typography>
             </Link>
             <Hidden smDown>
               <Link to={`/disease/${diseases[1].id}/associations`}>
-                {diseases[1].label}
+                <Typography variant="body2">{diseases[1].label}</Typography>
               </Link>
             </Hidden>
 
-            <Link to={`/drug/${drugs[0].id}`}>{drugs[0].label}</Link>
+            <Link to={`/drug/${drugs[0].id}`}>
+              <Typography variant="body2">{drugs[0].label}</Typography>
+            </Link>
             <Hidden smDown>
-              <Link to={`/drug/${drugs[1].id}`}>{drugs[1].label}</Link>
+              <Link to={`/drug/${drugs[1].id}`}>
+                <Typography variant="body2">{drugs[1].label}</Typography>
+              </Link>
             </Hidden>
           </Grid>
           <Version />
@@ -209,26 +209,29 @@ function HomePage() {
 
         {/* scroll down button */}
         <Grid container justifyContent="center">
-          <button
-            type="button"
+          <IconButton
+            id="scrollDownHandler"
+            aria-label="Scroll down handler"
             className="fa-layers fa-fw fa-3x"
             style={{
               height: '0px',
-              marginTop: '-1em',
+              marginTop: '-3em',
               filter: 'drop-shadow( 1px 1px 2px rgba(0, 0, 0, .5))',
               cursor: 'pointer',
+              fontSize: '40px',
             }}
+            size="large"
             onClick={handleScrollDown}
           >
             <FontAwesomeIcon icon={faCircle} inverse />
             <FontAwesomeIcon icon={faChevronDown} transform="shrink-4" />
-          </button>
+          </IconButton>
         </Grid>
       </Grid>
 
       {/* About */}
-      <Grid container justifyContent="center" className={classes.hpSection}>
-        <Grid item xs={10} md={8}>
+      <Grid container justifyContent="center" sx={{ my: 1 }}>
+        <Grid item xs={10} md={8} sx={{ my: 2 }}>
           <Typography variant="h4" component="h1" align="center" paragraph>
             About the Open Targets Platform
           </Typography>
@@ -260,8 +263,8 @@ function HomePage() {
       </Grid>
 
       {/* Get started */}
-      <Grid container justifyContent="center" className={classes.hpSection}>
-        <Grid item xs={10} md={8}>
+      <Grid container justifyContent="center" sx={{ mb: 8 }}>
+        <Grid item xs={10} md={8} sx={{ my: 4 }}>
           <Typography variant="h4" component="h1" align="center" paragraph>
             Get started with the Platform
           </Typography>
@@ -271,6 +274,7 @@ function HomePage() {
             justifyContent="space-evenly"
             alignItems="flex-start"
             spacing={1}
+            sx={{ mt: 3 }}
           >
             <Grid item xs={12} sm="auto">
               <HelpBoxPanel

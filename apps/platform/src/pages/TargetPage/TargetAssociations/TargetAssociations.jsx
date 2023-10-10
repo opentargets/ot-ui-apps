@@ -1,5 +1,5 @@
-import { LoadingBackdrop } from 'ui';
 import { useContext } from 'react';
+import { Box } from '@mui/material';
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -7,29 +7,27 @@ import {
   AssociationsProvider,
   SearhInput,
   DataDownloader,
+  ControlsSection,
+  OptionsControlls,
+  AotFLoader,
 } from '../../../components/AssociationsToolkit';
 import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useContext(AssociationsContext);
-  if (initialLoading)
-    return (
-      <div className="TAssociations loading-container">
-        <LoadingBackdrop />
-      </div>
-    );
+  if (initialLoading) return <AotFLoader />;
 
   return (
     <>
-      <div className="ControlsSection">
-        <div className="global-controls-container">
+      <ControlsSection>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
           <SearhInput />
-          <div className="options-controls">
+          <OptionsControlls>
             <AdvanceOptionsMenu />
-            <DataDownloader fileStem={`${id}-associated-diseases`} />
-          </div>
-        </div>
-      </div>
+            <DataDownloader fileStem={`${id}-associated-targets`} />
+          </OptionsControlls>
+        </Box>
+      </ControlsSection>
       <TableAssociations />
     </>
   );
