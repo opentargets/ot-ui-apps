@@ -10,14 +10,7 @@ import {
 } from '../../../__generated__/graphql';
 import { Fragment } from 'react';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
-// import { loader } from 'graphql.macro';
 import VARIANT_SUMMARY_QUERY from './VariantSummary.gql';
-
-// const VARIANT_SUMMARY_QUERY = loader('./VariantSummary.gql');
-
-console.log('loaded');
-
-// const VARIANT_SUMMARY_QUERY = './VariantSummary.gql';
 
 const styles = () => ({
   value: {
@@ -31,7 +24,6 @@ type VariantSummaryProps = {
   variantId: string;
 };
 function Summary({ classes, variantId }: VariantSummaryProps) {
-  console.log(variantId);
   const { loading, data: queryResult } = useQuery<
     VariantSummaryQuery,
     VariantSummaryQueryVariables
@@ -39,7 +31,6 @@ function Summary({ classes, variantId }: VariantSummaryProps) {
     variables: { variantId },
   });
   const data = queryResult?.variantInfo;
-  console.log(data);
   return (
     <>
       <SectionHeading

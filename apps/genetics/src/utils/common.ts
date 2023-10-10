@@ -27,9 +27,9 @@ export const hasData = (data: { [k: string]: any }, property: string) => {
   return false;
 };
 
-type NumberLike = number | { valueOf(): number };
-export const commaSeparate = format(',');
-export const safeCommaSeparate = (n?: NumberLike | null) =>
+type D3FormatNumberLike = number | { valueOf(): number };
+export const commaSeparate: (n: D3FormatNumberLike) => string = format(',');
+export const safeCommaSeparate = (n?: D3FormatNumberLike | null) =>
   n ? commaSeparate(n) : '';
 
 export const sanitize = (str: string) => str.replace(/[^a-zA-Z0-9]/g, '');
