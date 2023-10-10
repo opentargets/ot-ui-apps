@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import { SectionItem, Link, getPage, Table } from "ui";
 
 import Description from "./Description";
@@ -122,6 +122,42 @@ function Body({ id, label, entity }) {
       setNewIds(res.disease.europePmc.rows.map((entry) => entry.literature[0]));
     },
   });
+  const [fetchDownloadData] = useLazyQuery(EUROPE_PMC_QUERY, {
+    variables: {ensemblId: ensgId, efoId, size: data?.disease.europePmc.count},
+  });
+
+  async function getDownloadData(){
+    // Get Elasticsearch europPmc data
+    const res = await fetchDownloadData()
+    const litIds = res.data.disease.europePmc.rows.map(entry => entry.literature[0])
+
+    // Get literature data from europePmc
+    // in chucnks of 200 to prevent query to europepmc from getting too large
+    let downloadLiteratureData = []
+    let chunkSize = 200
+    for (let i = 0; i < litIds.length; i += chunkSize) {
+      const litIdsChunk = litIds.slice(i, i + chunkSize);
+      const queryUrl = europePmcLiteratureQuery(litIdsChunk);
+      const resp = await fetch(queryUrl);
+      const resJson = await resp.json();
+      const newLiteratureData = resJson.resultList.result;
+      downloadLiteratureData = [...downloadLiteratureData, ...newLiteratureData];
+    }
+
+    // Merge data
+    const rows = mergeData(
+      res.data.disease.europePmc.rows,
+      downloadLiteratureData
+    );
+
+    return rows.map(row => {
+      return {
+        ...row,
+        disease: row.disease.name,
+      }
+    })
+  }
+
   const [loading, setLoading] = useState(isLoading);
 
   const handlePageChange = (pageChange) => {
@@ -203,6 +239,30 @@ function Body({ id, label, entity }) {
   }, [newIds]);
 
   const columns = getColumns(label);
+  const downloadColumns = [
+    {
+      id: 'disease',
+      label: 'Disease/phenotype',
+    },
+    {
+      id: 'title',
+      label: 'Publication',
+    },
+    {
+      id: 'europePmcId',
+    },
+    {
+      id: 'pmcId',
+    },
+    {
+      id: 'year',
+    },
+    {
+      id: 'resourceScore',
+      label: 'Score',
+      numeric: true,
+    },
+  ];
 
   return (
     <SectionItem
@@ -231,6 +291,8 @@ function Body({ id, label, entity }) {
             pageSize={pageSize}
             rows={rows}
             rowCount={data.disease.europePmc.count}
+            dataDownloaderRows={getDownloadData}
+            dataDownloaderColumns={downloadColumns}
             rowsPerPageOptions={[5, 10, 15, 20, 25]}
             query={EUROPE_PMC_QUERY.loc.source.body}
             variables={variables}
