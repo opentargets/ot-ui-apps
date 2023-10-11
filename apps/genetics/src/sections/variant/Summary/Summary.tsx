@@ -61,7 +61,7 @@ function Summary({ classes, variantId }: VariantSummaryProps) {
             ) : (
               <>
                 <strong>GRCh37:</strong> {data?.chromosomeB37}:
-                {safeCommaSeparate(data?.position)}
+                {safeCommaSeparate(data?.positionB37)}
               </>
             )}
           </Typography>
