@@ -1,5 +1,5 @@
 import FileSaver from 'file-saver';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import _ from 'lodash';
 import {
   Button,
@@ -10,11 +10,19 @@ import {
   Popover,
   Alert,
   CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  IconButton,
+  DialogActions,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { Link } from 'ui';
-import { faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faCloudArrowDown, faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useBatchDownloader from './hooks/useBatchDownloader';
 import useAotfContext from './hooks/useAotfContext';
@@ -223,9 +231,7 @@ const styles = makeStyles(theme => ({
 }));
 
 function DataDownloader({ fileStem }) {
-  const [downloading, setDownloading] = useState(false);
   const classes = styles();
-  const [anchorEl, setAnchorEl] = useState(null);
   const {
     id,
     query,
@@ -234,7 +240,21 @@ function DataDownloader({ fileStem }) {
     enableIndirect,
     entityToGet,
     displayedTable,
+    modifiedSourcesDataControls,
+    pinnedEntries,
+    dataSourcesWeights,
+    dataSourcesRequired,
   } = useAotfContext();
+  const [onlyPinnedCheckBox, setOnlyPinnedCheckBox] = useState(false);
+  const [weightControlCheckBox, setWeightControlCheckBox] = useState(
+    modifiedSourcesDataControls
+  );
+  const [requiredControlCheckBox, setRequiredControlCheckBox] = useState(
+    modifiedSourcesDataControls
+  );
+
+  const [downloading, setDownloading] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const columns = useMemo(() => getExportedColumns(entityToGet), [entityToGet]);
   const queryResponseSelector = useMemo(
@@ -242,14 +262,29 @@ function DataDownloader({ fileStem }) {
     [entityToGet]
   );
 
+  const allAssociationsVariable = {
+    id,
+    filter: searhFilter,
+    sortBy: sorting[0].id,
+    enableIndirect,
+    datasource: dataSourcesWeights,
+    aggregationFilters: dataSourcesRequired,
+  };
+
+  const pinnedAssociationsVariable = {
+    ...allAssociationsVariable,
+    rowsFilter: pinnedEntries,
+  };
+
+  const getOnlyPinnedData = useBatchDownloader(
+    query,
+    pinnedAssociationsVariable,
+    queryResponseSelector
+  );
+
   const getAllAssociations = useBatchDownloader(
     query,
-    {
-      id,
-      filter: searhFilter,
-      sortBy: sorting[0].id,
-      enableIndirect,
-    },
+    allAssociationsVariable,
     queryResponseSelector
   );
 
@@ -281,12 +316,25 @@ function DataDownloader({ fileStem }) {
   };
 
   const handleClickDownloadJSON = async () => {
-    downloadData('json', columns, getAllAssociations, fileStem);
+    if (onlyPinnedCheckBox)
+      downloadData('json', columns, getOnlyPinnedData, fileStem);
+    else downloadData('json', columns, getAllAssociations, fileStem);
   };
 
   const handleClickDownloadTSV = async () => {
-    downloadData('tsv', columns, getAllAssociations, fileStem);
+    if (onlyPinnedCheckBox)
+      downloadData('tsv', columns, getOnlyPinnedData, fileStem);
+    else downloadData('tsv', columns, getAllAssociations, fileStem);
   };
+
+  const handleFormGroupChange = (event, fn) => {
+    fn(event.target.checked);
+  };
+
+  useEffect(() => {
+    setRequiredControlCheckBox(modifiedSourcesDataControls);
+    setWeightControlCheckBox(modifiedSourcesDataControls);
+  }, [modifiedSourcesDataControls]);
 
   return (
     <div>
@@ -300,21 +348,54 @@ function DataDownloader({ fileStem }) {
       >
         Export
       </Button>
-      <Popover
-        id={popoverId}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClosePopover}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-      >
-        <PopoverContent>
+      <Dialog onClose={handleClosePopover} open={open}>
+        <DialogTitle>Header Text</DialogTitle>
+        <DialogContent>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  disabled={pinnedEntries.length <= 0 || downloading}
+                  checked={onlyPinnedCheckBox}
+                  onChange={e =>
+                    handleFormGroupChange(e, setOnlyPinnedCheckBox)
+                  }
+                />
+              }
+              label="Only pinned / upload rows"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={weightControlCheckBox}
+                  disabled={!modifiedSourcesDataControls || downloading}
+                  onChange={e =>
+                    handleFormGroupChange(e, setWeightControlCheckBox)
+                  }
+                />
+              }
+              label="Include custom weight controls"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={requiredControlCheckBox}
+                  disabled={!modifiedSourcesDataControls || downloading}
+                  onChange={e =>
+                    handleFormGroupChange(e, setRequiredControlCheckBox)
+                  }
+                />
+              }
+              label="Include custom required control"
+            />
+          </FormGroup>
+          <DisclaimerContainer>
+            {isPartnerPreview && (
+              <Alert icon={false} severity="warning">
+                `The file will also include the target prioritisation data.
+              </Alert>
+            )}
+          </DisclaimerContainer>
           <LabelContainer>
             <Typography variant="caption">Download data as</Typography>
           </LabelContainer>
@@ -338,24 +419,8 @@ function DataDownloader({ fileStem }) {
               </Button>
             </Grid>
           </Grid>
-          <DisclaimerContainer>
-            <Alert icon={false} severity="warning">
-              Table with pre-set weights only. See{' '}
-              <Link
-                to="https://github.com/opentargets/issues/issues/3063"
-                external
-                newTab
-              >
-                here
-              </Link>{' '}
-              for more information.
-              <br />
-              {isPartnerPreview &&
-                `The file will also include the target prioritisation data.`}
-            </Alert>
-          </DisclaimerContainer>
-        </PopoverContent>
-      </Popover>
+        </DialogContent>
+      </Dialog>
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         open={downloading}
