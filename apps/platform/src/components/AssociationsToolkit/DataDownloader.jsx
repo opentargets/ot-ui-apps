@@ -7,7 +7,6 @@ import {
   Typography,
   Snackbar,
   Slide,
-  Popover,
   Alert,
   CircularProgress,
   Dialog,
@@ -16,8 +15,6 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
-  IconButton,
-  DialogActions,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -255,7 +252,7 @@ function DataDownloader({ fileStem }) {
 
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const [urlSnackbar, setUrlSnackbar] = useState(false);
   const columns = useMemo(() => getExportedColumns(entityToGet), [entityToGet]);
   const queryResponseSelector = useMemo(
     () => getRowsQuerySelector(entityToGet),
@@ -396,6 +393,16 @@ function DataDownloader({ fileStem }) {
               </Alert>
             )}
           </DisclaimerContainer>
+          <Button
+            variant="outlined"
+            startIcon={<FontAwesomeIcon icon={faLink} size="2xs" />}
+            onClick={() => {
+              setUrlSnackbar(true);
+              navigator.clipboard.writeText(window.location.href);
+            }}
+          >
+            Copy Url
+          </Button>
           <LabelContainer>
             <Typography variant="caption">Download data as</Typography>
           </LabelContainer>
@@ -437,6 +444,23 @@ function DataDownloader({ fileStem }) {
             Preparing the data. This may take several minutes...
           </>
         }
+      />
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={urlSnackbar}
+        onClose={() => {
+          setUrlSnackbar(false);
+        }}
+        autoHideDuration={2000}
+        TransitionComponent={Slide}
+        ContentProps={{
+          classes: {
+            root: classes.snackbarContentRoot,
+            message: classes.snackbarContentMessage,
+          },
+        }}
+        message="URL copied"
       />
     </div>
   );
