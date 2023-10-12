@@ -28,6 +28,8 @@ module.exports = {
     "no-underscore-dangle": "warn",
     "no-await-in-loop": "warn",
     "no-param-reassign": ["error", { props: false }],
+    "no-empty-function": "off",
+    "@typescript-eslint/no-empty-function": 1,
 
     "react/prop-types": 0,
     "react/react-in-jsx-scope": 0,

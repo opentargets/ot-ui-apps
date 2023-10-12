@@ -22,9 +22,11 @@ import Link from "../Link";
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
   import("graphiql").then((module) => {
+    // eslint-disable-next-line react/display-name
     module.default.Logo = function () {
       return null;
     };
+    // eslint-disable-next-line react/display-name
     module.default.Toolbar = function () {
       return null;
     };

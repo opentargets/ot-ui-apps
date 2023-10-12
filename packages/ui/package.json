@@ -4,7 +4,7 @@
   "main": "./src/index.tsx",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\""
+    "lint": "eslint --quiet \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\""
   },
   "dependencies": {
     "@apollo/client": "^3.8.3",
