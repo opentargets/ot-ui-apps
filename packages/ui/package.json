@@ -15,7 +15,6 @@
     "@mui/styles": "^5.14.1",
     "classnames": "^2.3.2",
     "d3-format": "^3.1.0",
-    "eslint": "^8.39.0",
     "file-saver": "^2.0.5",
     "graphql-anywhere": "^4.2.8",
     "local-storage": "^2.0.0",
@@ -33,8 +32,11 @@
     "@types/d3-format": "^3.0.1",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "eslint-config-react-lib": "*",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "eslint": "^8.51.0",
+    "eslint-config-custom": "*",
     "tsconfig": "*",
-    "typescript": "*"
+    "typescript": "^4.5.2"
   }
 }
