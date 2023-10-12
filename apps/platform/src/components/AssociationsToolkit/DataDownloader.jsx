@@ -265,7 +265,12 @@ function DataDownloader({ fileStem }) {
     sortBy: sorting[0].id,
     enableIndirect,
     datasources: dataSourcesWeights,
-    ...(requiredControlCheckBox && { aggregationFilters: dataSourcesRequired }),
+    ...(requiredControlCheckBox && {
+      aggregationFilters: dataSourcesRequired.map(el => ({
+        name: el.name,
+        path: el.path,
+      })),
+    }),
   };
 
   const pinnedAssociationsVariable = {
