@@ -264,8 +264,8 @@ function DataDownloader({ fileStem }) {
     filter: searhFilter,
     sortBy: sorting[0].id,
     enableIndirect,
-    datasource: dataSourcesWeights,
-    aggregationFilters: dataSourcesRequired,
+    datasources: dataSourcesWeights,
+    ...(requiredControlCheckBox && { aggregationFilters: dataSourcesRequired }),
   };
 
   const pinnedAssociationsVariable = {
