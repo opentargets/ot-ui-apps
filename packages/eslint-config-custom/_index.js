@@ -14,6 +14,7 @@ module.exports = {
   parserOptions: {
     sourceType: "module",
     ecmaVersion: 2020,
+    // project: ["tsconfig/vite.json"],
   },
   plugins: ["@typescript-eslint"],
   settings: {
