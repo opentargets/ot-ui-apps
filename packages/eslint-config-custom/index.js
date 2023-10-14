@@ -1,3 +1,5 @@
+const project = require("tsconfig/vite.json");
+
 module.exports = {
   env: {
     node: true,
@@ -7,6 +9,7 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:jsx-a11y/recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "prettier",
@@ -14,8 +17,9 @@ module.exports = {
   parserOptions: {
     sourceType: "module",
     ecmaVersion: 2020,
+    project,
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "jsx-a11y"],
   settings: {
     react: {
       version: "detect",
