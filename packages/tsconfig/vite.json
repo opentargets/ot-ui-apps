@@ -12,6 +12,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": false,
     "target": "ESNext",
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "allowSyntheticDefaultImports": true
   }
 }
