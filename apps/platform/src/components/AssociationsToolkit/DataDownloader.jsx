@@ -235,6 +235,7 @@ function DataDownloader({ fileStem }) {
     searhFilter,
     sorting,
     enableIndirect,
+    entity,
     entityToGet,
     displayedTable,
     modifiedSourcesDataControls,
@@ -249,6 +250,7 @@ function DataDownloader({ fileStem }) {
   const [requiredControlCheckBox, setRequiredControlCheckBox] = useState(
     modifiedSourcesDataControls
   );
+  const [onlyTargetData, setOnlyTargetData] = useState(false);
 
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -300,13 +302,19 @@ function DataDownloader({ fileStem }) {
     if (typeof rows === 'function') {
       setDownloading(true);
       allRows = await rows();
+      if (onlyTargetData) {
+        allRows.map(e => e.target);
+      }
       setDownloading(false);
     }
     if (!allRows || allRows.length === 0) {
       return;
     }
     const blob = createBlob(format)(dataColumns, allRows);
-    FileSaver.saveAs(blob, `${dataFileStem}.${format}`, { autoBOM: false });
+    const d = new Date().toLocaleDateString();
+    FileSaver.saveAs(blob, `${dataFileStem}-${d}-v<VersionNumber>.${format}`, {
+      autoBOM: false,
+    });
   };
 
   const handleClickBTN = event => {
@@ -389,6 +397,18 @@ function DataDownloader({ fileStem }) {
               }
               label="Include custom required control"
             />
+            {entity === 'disease' && (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    disabled={downloading}
+                    checked={onlyTargetData}
+                    onChange={e => handleFormGroupChange(e, setOnlyTargetData)}
+                  />
+                }
+                label="Only prioritisation data"
+              />
+            )}
           </FormGroup>
           <Button
             variant="outlined"
