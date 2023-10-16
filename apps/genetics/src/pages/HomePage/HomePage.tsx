@@ -12,7 +12,7 @@ import {
   faFileAlt,
   faCommentDots,
 } from '@fortawesome/free-solid-svg-icons';
-import { Footer, AutocompleteSearch } from 'ui';
+import { Footer, GlobalSearch } from 'ui';
 import Link from '../../components/Link';
 import ScrollDownButton from '../../components/ScrollDownButton';
 import NavBar from '../../components/NavBar/NavBar';
@@ -171,7 +171,7 @@ function HomePage() {
           />
           <HomeBox name="Genetics">
             <div style={{ position: 'relative' }}>
-              <AutocompleteSearch isHomePage />
+              <GlobalSearch isHomePage />
             </div>
             <Grid
               container

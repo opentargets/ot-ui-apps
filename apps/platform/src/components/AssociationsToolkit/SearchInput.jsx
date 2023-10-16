@@ -17,7 +17,7 @@ const InputContainer = styled(Grid)({
 function SearchInput({ placeholder = 'Search' }) {
   const { handleSearchInputChange } = useAotfContext();
   const [inputValue, setInputValue] = useState('');
-  const debouncedInputValue = useDebounce(inputValue, 300);
+  const debouncedInputValue = useDebounce(inputValue, 200);
 
   const handleInputChange = e => {
     setInputValue(e.target.value);
