@@ -345,7 +345,6 @@ function DataDownloader({ fileStem }) {
         onClick={handleClickBTN}
         variant="outlined"
         disableElevation
-        disabled={isPrioritisation}
         startIcon={<FontAwesomeIcon icon={faCloudArrowDown} size="lg" />}
       >
         Export
@@ -391,13 +390,6 @@ function DataDownloader({ fileStem }) {
               label="Include custom required control"
             />
           </FormGroup>
-          <DisclaimerContainer>
-            {isPartnerPreview && (
-              <Alert icon={false} severity="warning">
-                `The file will also include the target prioritisation data.
-              </Alert>
-            )}
-          </DisclaimerContainer>
           <Button
             variant="outlined"
             startIcon={<FontAwesomeIcon icon={faLink} size="2xs" />}
