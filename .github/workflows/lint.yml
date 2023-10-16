@@ -1,0 +1,38 @@
+name: LINT
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  build:
+    name: Lint codebase
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Install yarn
+        run: |-
+          curl -fsSL --create-dirs -o $HOME/bin/yarn \
+          https://github.com/yarnpkg/yarn/releases/download/v1.22.19/yarn-1.22.19.js
+          chmod +x $HOME/bin/yarn
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.17.1"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
