@@ -51,7 +51,7 @@ function getColumns(classes) {
       id: "biosamples",
       label: "Biosystems",
       filterValue: ({ biosamples }) => {
-        if (biosamples.length === 1) {
+        if (biosamples?.length === 1) {
           const sample = biosamples[0];
           return `${sample.cellFormat} ${sample.cellLabel} ${sample.tissueLabel}`.trim();
         }
