@@ -7,7 +7,6 @@ import {
   Typography,
   Snackbar,
   Slide,
-  Alert,
   CircularProgress,
   Dialog,
   DialogTitle,
@@ -18,23 +17,12 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { Link } from 'ui';
 import { faCloudArrowDown, faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useBatchDownloader from './hooks/useBatchDownloader';
 import useAotfContext from './hooks/useAotfContext';
 import dataSources from './static_datasets/dataSourcesAssoc';
 import prioritizationCols from './static_datasets/prioritizationCols';
-import { isPartnerPreview } from './utils';
-
-const PopoverContent = styled('div')({
-  padding: '20px 25px',
-  width: '350px',
-});
-
-const DisclaimerContainer = styled('div')({
-  marginTop: 12,
-});
 
 const LabelContainer = styled('div')({
   marginBottom: 12,
@@ -72,7 +60,7 @@ const getExportedColumns = entityToGet => {
 
   exportedColumns = [...sources];
 
-  if (entityToGet === 'target' && isPartnerPreview) {
+  if (entityToGet === 'target') {
     const prioritisationExportCols = prioritizationCols.map(({ id }) => ({
       id,
       exportValue: data => {
@@ -90,6 +78,34 @@ const getExportedColumns = entityToGet => {
 
   return [
     nameColumn,
+    {
+      id: 'score',
+      label: 'Score',
+      exportValue: data => data.score,
+    },
+    ...exportedColumns,
+  ];
+};
+
+const getExportedPrioritisationColumns = () => {
+  let exportedColumns = [];
+
+  const prioritisationExportCols = prioritizationCols.map(({ id }) => ({
+    id,
+    exportValue: data => {
+      const prioritisationScore = data.target.prioritisation.items.find(
+        prioritisationItem => prioritisationItem.key === id
+      );
+      return prioritisationScore
+        ? parseFloat(prioritisationScore.value)
+        : 'No data';
+    },
+  }));
+
+  exportedColumns = [...prioritisationExportCols];
+
+  return [
+    targetName,
     {
       id: 'score',
       label: 'Score',
@@ -256,6 +272,10 @@ function DataDownloader({ fileStem }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [urlSnackbar, setUrlSnackbar] = useState(false);
   const columns = useMemo(() => getExportedColumns(entityToGet), [entityToGet]);
+  const prioritisationColumns = useMemo(
+    () => getExportedPrioritisationColumns(),
+    []
+  );
   const queryResponseSelector = useMemo(
     () => getRowsQuerySelector(entityToGet),
     [entityToGet]
@@ -292,8 +312,6 @@ function DataDownloader({ fileStem }) {
     queryResponseSelector
   );
 
-  const isPrioritisation = displayedTable === 'prioritisations';
-
   const open = Boolean(anchorEl);
   const popoverId = open ? 'dowloader-popover' : undefined;
 
@@ -302,9 +320,6 @@ function DataDownloader({ fileStem }) {
     if (typeof rows === 'function') {
       setDownloading(true);
       allRows = await rows();
-      if (onlyTargetData) {
-        allRows.map(e => e.target);
-      }
       setDownloading(false);
     }
     if (!allRows || allRows.length === 0) {
@@ -326,15 +341,15 @@ function DataDownloader({ fileStem }) {
   };
 
   const handleClickDownloadJSON = async () => {
-    if (onlyPinnedCheckBox)
-      downloadData('json', columns, getOnlyPinnedData, fileStem);
-    else downloadData('json', columns, getAllAssociations, fileStem);
+    const data = onlyPinnedCheckBox ? getOnlyPinnedData : getAllAssociations;
+    const columnToGet = onlyTargetData ? prioritisationColumns : columns;
+    downloadData('json', columnToGet, data, fileStem);
   };
 
   const handleClickDownloadTSV = async () => {
-    if (onlyPinnedCheckBox)
-      downloadData('tsv', columns, getOnlyPinnedData, fileStem);
-    else downloadData('tsv', columns, getAllAssociations, fileStem);
+    const data = onlyPinnedCheckBox ? getOnlyPinnedData : getAllAssociations;
+    const columnToGet = onlyTargetData ? prioritisationColumns : columns;
+    downloadData('tsv', columnToGet, data, fileStem);
   };
 
   const handleFormGroupChange = (event, fn) => {
@@ -358,8 +373,19 @@ function DataDownloader({ fileStem }) {
         Export
       </Button>
       <Dialog onClose={handleClosePopover} open={open}>
-        <DialogTitle>Header Text</DialogTitle>
+        <DialogTitle>Export: {fileStem} data</DialogTitle>
         <DialogContent>
+          <Button
+            variant="outlined"
+            startIcon={<FontAwesomeIcon icon={faLink} size="2xs" />}
+            onClick={() => {
+              setUrlSnackbar(true);
+              navigator.clipboard.writeText(window.location.href);
+            }}
+          >
+            Copy Url
+          </Button>
+          <Typography variant="body1">Advance export options:</Typography>
           <FormGroup>
             <FormControlLabel
               control={
@@ -410,16 +436,6 @@ function DataDownloader({ fileStem }) {
               />
             )}
           </FormGroup>
-          <Button
-            variant="outlined"
-            startIcon={<FontAwesomeIcon icon={faLink} size="2xs" />}
-            onClick={() => {
-              setUrlSnackbar(true);
-              navigator.clipboard.writeText(window.location.href);
-            }}
-          >
-            Copy Url
-          </Button>
           <LabelContainer>
             <Typography variant="caption">Download data as</Typography>
           </LabelContainer>
