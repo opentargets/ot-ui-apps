@@ -1,4 +1,4 @@
-name: BUILD_PLATFORM
+name: CI Genetics
 
 on:
   push:
@@ -34,5 +34,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Lint
+        run: yarn lint
+
       - name: Build
-        run: yarn build:platform
+        run: yarn build:genetics

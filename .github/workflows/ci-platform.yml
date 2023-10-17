@@ -1,4 +1,4 @@
-name: BUILD_GENETICS
+name: CI Platform
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build genetics
+    name: Build platform
     timeout-minutes: 15
     runs-on: ubuntu-latest
 
@@ -34,5 +34,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Lint
+        run: yarn lint
+
       - name: Build
-        run: yarn build:genetics
+        run: yarn build:platform
