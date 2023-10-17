@@ -5,5 +5,5 @@
     "rootDir": "src",
     "outDir": "bundle-platform"
   },
-  "include": ["src"]
+  "include": ["src", "./**/*.gql"]
 }

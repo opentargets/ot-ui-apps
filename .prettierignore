@@ -1,0 +1,9 @@
+**/bundle-genetics
+**/bundle-platform
+**/node_modules
+**/.github
+**/.husky
+**/public
+**/__generated__
+packages/eslint-config-custom
+packages/tsconfig

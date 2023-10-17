@@ -46,9 +46,9 @@
     "@types/d3-format": "^3.0.1",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "eslint": "^8.49.0",
-    "eslint-config-react-lib": "*",
+    "eslint": "7.32.0",
+    "eslint-config-custom": "*",
     "tsconfig": "*",
-    "typescript": "*"
+    "typescript": "^5.2.2"
   }
 }
