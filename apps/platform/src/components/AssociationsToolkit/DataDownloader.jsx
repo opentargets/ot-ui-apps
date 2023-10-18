@@ -18,6 +18,11 @@ import {
   AccordionSummary,
   AccordionDetails,
   Divider,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  ListItemText,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -37,8 +42,8 @@ const LabelContainer = styled('div')({
 });
 
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
-  boxShadow: "none",
-  border: `1px solid ${theme.palette.grey[300]}`
+  boxShadow: 'none',
+  border: `1px solid ${theme.palette.grey[300]}`,
 }));
 
 const targetName = {
@@ -58,10 +63,10 @@ const getRowsQuerySelector = entityToGet =>
     ? 'data.disease.associatedTargets'
     : 'data.target.associatedDiseases';
 
-const getExportedColumns = entityToGet => {
+const getExportedColumns = (entityToGet, assocArr, prioArr) => {
   const nameColumn = entityToGet === 'target' ? targetName : diseaseName;
   let exportedColumns = [];
-  const sources = dataSources.map(({ id }) => ({
+  const sources = assocArr.map(({ id }) => ({
     id,
     exportValue: data => {
       const datatypeScore = data.datasourceScores.find(
@@ -74,7 +79,7 @@ const getExportedColumns = entityToGet => {
   exportedColumns = [...sources];
 
   if (entityToGet === 'target') {
-    const prioritisationExportCols = prioritizationCols.map(({ id }) => ({
+    const prioritisationExportCols = prioArr.map(({ id }) => ({
       id,
       exportValue: data => {
         const prioritisationScore = data.target.prioritisation.items.find(
@@ -100,10 +105,10 @@ const getExportedColumns = entityToGet => {
   ];
 };
 
-const getExportedPrioritisationColumns = () => {
+const getExportedPrioritisationColumns = arr => {
   let exportedColumns = [];
 
-  const prioritisationExportCols = prioritizationCols.map(({ id }) => ({
+  const prioritisationExportCols = arr.map(({ id }) => ({
     id,
     exportValue: data => {
       const prioritisationScore = data.target.prioritisation.items.find(
@@ -257,6 +262,13 @@ const styles = makeStyles(theme => ({
 }));
 
 function DataDownloader({ fileStem }) {
+  const allAssociationsAggregation = [
+    ...new Set(dataSources.map(e => e.aggregation)),
+  ];
+  const allPrioritizationAggregation = [
+    ...new Set(prioritizationCols.map(e => e.aggregation)),
+  ];
+
   const classes = styles();
   const {
     id,
@@ -281,13 +293,32 @@ function DataDownloader({ fileStem }) {
   );
   const [onlyTargetData, setOnlyTargetData] = useState(false);
 
+  const [selectedAssociationColumns, setSelectedAssociationColumns] = useState([
+    ...dataSources,
+  ]);
+  const [selectedPrioritizationColumns, setSelectedPrioritizationColumns] =
+    useState(prioritizationCols);
+
+  const [associationAggregationSelect, setAssociationAggregationSelect] =
+    useState([...allAssociationsAggregation]);
+  const [prioritisationAggregationSelect, setPrioritisationAggregationSelect] =
+    useState([...allPrioritizationAggregation]);
+
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [urlSnackbar, setUrlSnackbar] = useState(false);
-  const columns = useMemo(() => getExportedColumns(entityToGet), [entityToGet]);
+  const columns = useMemo(
+    () =>
+      getExportedColumns(
+        entityToGet,
+        selectedAssociationColumns,
+        selectedPrioritizationColumns
+      ),
+    [entityToGet, selectedAssociationColumns, selectedPrioritizationColumns]
+  );
   const prioritisationColumns = useMemo(
-    () => getExportedPrioritisationColumns(),
-    []
+    () => getExportedPrioritisationColumns(selectedPrioritizationColumns),
+    [selectedPrioritizationColumns]
   );
   const queryResponseSelector = useMemo(
     () => getRowsQuerySelector(entityToGet),
@@ -326,7 +357,7 @@ function DataDownloader({ fileStem }) {
   );
 
   const open = Boolean(anchorEl);
-  const popoverId = open ? 'dowloader-popover' : undefined;
+  const popoverId = open ? 'downloader-popover' : undefined;
 
   const downloadData = async (format, dataColumns, rows, dataFileStem) => {
     let allRows = rows;
@@ -370,6 +401,22 @@ function DataDownloader({ fileStem }) {
     setWeightControlCheckBox(modifiedSourcesDataControls);
   }, [modifiedSourcesDataControls]);
 
+  useEffect(() => {
+    const filteredValues = associationAggregationSelect.map(ag =>
+      selectedAssociationColumns.filter(e => e.aggregation === ag)
+    );
+    setSelectedAssociationColumns([...filteredValues.flat(1)]);
+    console.log(selectedAssociationColumns);
+  }, [associationAggregationSelect]);
+
+  useEffect(() => {
+    const filteredValues = prioritisationAggregationSelect.map(ag =>
+      selectedPrioritizationColumns.filter(e => e.aggregation === ag)
+    );
+    setSelectedPrioritizationColumns([...filteredValues.flat(1)]);
+    console.log(selectedAssociationColumns);
+  }, [prioritisationAggregationSelect]);
+
   return (
     <div>
       <Button
@@ -384,15 +431,78 @@ function DataDownloader({ fileStem }) {
       <Dialog onClose={handleClosePopover} open={open}>
         <DialogTitle>Export: {fileStem} data</DialogTitle>
         <DialogContent>
-          <BorderAccordion>
+          <BorderAccordion defaultExpanded={true}>
             <AccordionSummary
               expandIcon={<FontAwesomeIcon icon={faCaretDown} size="lg" />}
             >
               <Typography variant="body1">Advance export options:</Typography>
             </AccordionSummary>
-            <Divider/>
+            <Divider />
             <AccordionDetails>
               <FormGroup>
+                <FormControl size="small" sx={{ m: 1, maxWidth: '100%' }}>
+                  <InputLabel id="select-association-small-label">
+                    Association Aggregation
+                  </InputLabel>
+                  <Select
+                    disabled={onlyTargetData}
+                    multiple
+                    labelId="select-association-small-label"
+                    value={associationAggregationSelect}
+                    label="Association Aggregation"
+                    renderValue={selected => selected.join(', ')}
+                    onChange={e => {
+                      setAssociationAggregationSelect(
+                        typeof e.target.value === 'string'
+                          ? e.target.value.split(',')
+                          : e.target.value
+                      );
+                    }}
+                  >
+                    {allAssociationsAggregation.map(ds => (
+                      <MenuItem key={ds} value={ds}>
+                        <Checkbox
+                          checked={
+                            associationAggregationSelect.indexOf(ds) > -1
+                          }
+                        />
+                        <ListItemText primary={ds} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl size="small" sx={{ m: 1, maxWidth: '100%' }}>
+                  <InputLabel id="select-prioritization-small-label">
+                    Prioritization Aggregation
+                  </InputLabel>
+                  <Select
+                    multiple
+                    labelId="select-prioritization-small-label"
+                    value={prioritisationAggregationSelect}
+                    label="Prioritization Aggregation"
+                    renderValue={selected => selected.join(', ')}
+                    onChange={e => {
+                      setPrioritisationAggregationSelect(
+                        typeof e.target.value === 'string'
+                          ? e.target.value.split(',')
+                          : e.target.value
+                      );
+                    }}
+                  >
+                    {allPrioritizationAggregation.map(ds => (
+                      <MenuItem key={ds} value={ds}>
+                        <Checkbox
+                          checked={
+                            prioritisationAggregationSelect.indexOf(ds) > -1
+                          }
+                        />
+                        <ListItemText primary={ds} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
                 <FormControlLabel
                   control={
                     <Checkbox
