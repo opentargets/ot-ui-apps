@@ -352,10 +352,6 @@ function DataDownloader({ fileStem }) {
     downloadData('tsv', columnToGet, data, fileStem);
   };
 
-  const handleFormGroupChange = (event, fn) => {
-    fn(event.target.checked);
-  };
-
   useEffect(() => {
     setRequiredControlCheckBox(modifiedSourcesDataControls);
     setWeightControlCheckBox(modifiedSourcesDataControls);
@@ -387,14 +383,13 @@ function DataDownloader({ fileStem }) {
           </Button>
           <Typography variant="body1">Advance export options:</Typography>
           <FormGroup>
+
             <FormControlLabel
               control={
                 <Checkbox
                   disabled={pinnedEntries.length <= 0 || downloading}
                   checked={onlyPinnedCheckBox}
-                  onChange={e =>
-                    handleFormGroupChange(e, setOnlyPinnedCheckBox)
-                  }
+                  onChange={e => setOnlyPinnedCheckBox(e.target.checked)}
                 />
               }
               label="Only pinned / upload rows"
@@ -404,9 +399,7 @@ function DataDownloader({ fileStem }) {
                 <Checkbox
                   checked={weightControlCheckBox}
                   disabled={!modifiedSourcesDataControls || downloading}
-                  onChange={e =>
-                    handleFormGroupChange(e, setWeightControlCheckBox)
-                  }
+                  onChange={e => setWeightControlCheckBox(e.target.checked)}
                 />
               }
               label="Include custom weight controls"
@@ -416,9 +409,7 @@ function DataDownloader({ fileStem }) {
                 <Checkbox
                   checked={requiredControlCheckBox}
                   disabled={!modifiedSourcesDataControls || downloading}
-                  onChange={e =>
-                    handleFormGroupChange(e, setRequiredControlCheckBox)
-                  }
+                  onChange={e => setRequiredControlCheckBox(e.target.checked)}
                 />
               }
               label="Include custom required control"
@@ -429,7 +420,7 @@ function DataDownloader({ fileStem }) {
                   <Checkbox
                     disabled={downloading}
                     checked={onlyTargetData}
-                    onChange={e => handleFormGroupChange(e, setOnlyTargetData)}
+                    onChange={e => setOnlyTargetData(e.target.checked)}
                   />
                 }
                 label="Only prioritisation data"
