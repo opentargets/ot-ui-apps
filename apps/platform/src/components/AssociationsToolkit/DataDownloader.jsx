@@ -14,10 +14,18 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Divider,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { faCloudArrowDown, faLink } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCloudArrowDown,
+  faLink,
+  faCaretDown,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useBatchDownloader from './hooks/useBatchDownloader';
 import useAotfContext from './hooks/useAotfContext';
@@ -27,6 +35,11 @@ import prioritizationCols from './static_datasets/prioritizationCols';
 const LabelContainer = styled('div')({
   marginBottom: 12,
 });
+
+const BorderAccordion = styled(Accordion)(({ theme }) => ({
+  boxShadow: "none",
+  border: `1px solid ${theme.palette.grey[300]}`
+}));
 
 const targetName = {
   id: 'symbol',
@@ -371,6 +384,62 @@ function DataDownloader({ fileStem }) {
       <Dialog onClose={handleClosePopover} open={open}>
         <DialogTitle>Export: {fileStem} data</DialogTitle>
         <DialogContent>
+          <BorderAccordion>
+            <AccordionSummary
+              expandIcon={<FontAwesomeIcon icon={faCaretDown} size="lg" />}
+            >
+              <Typography variant="body1">Advance export options:</Typography>
+            </AccordionSummary>
+            <Divider/>
+            <AccordionDetails>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      disabled={pinnedEntries.length <= 0 || downloading}
+                      checked={onlyPinnedCheckBox}
+                      onChange={e => setOnlyPinnedCheckBox(e.target.checked)}
+                    />
+                  }
+                  label="Only pinned / upload rows"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={weightControlCheckBox}
+                      disabled={!modifiedSourcesDataControls || downloading}
+                      onChange={e => setWeightControlCheckBox(e.target.checked)}
+                    />
+                  }
+                  label="Include custom weight controls"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={requiredControlCheckBox}
+                      disabled={!modifiedSourcesDataControls || downloading}
+                      onChange={e =>
+                        setRequiredControlCheckBox(e.target.checked)
+                      }
+                    />
+                  }
+                  label="Include custom required control"
+                />
+                {entity === 'disease' && (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        disabled={downloading}
+                        checked={onlyTargetData}
+                        onChange={e => setOnlyTargetData(e.target.checked)}
+                      />
+                    }
+                    label="Only prioritisation data"
+                  />
+                )}
+              </FormGroup>
+            </AccordionDetails>
+          </BorderAccordion>
           <Button
             variant="outlined"
             startIcon={<FontAwesomeIcon icon={faLink} size="2xs" />}
@@ -381,52 +450,6 @@ function DataDownloader({ fileStem }) {
           >
             Copy Url
           </Button>
-          <Typography variant="body1">Advance export options:</Typography>
-          <FormGroup>
-
-            <FormControlLabel
-              control={
-                <Checkbox
-                  disabled={pinnedEntries.length <= 0 || downloading}
-                  checked={onlyPinnedCheckBox}
-                  onChange={e => setOnlyPinnedCheckBox(e.target.checked)}
-                />
-              }
-              label="Only pinned / upload rows"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={weightControlCheckBox}
-                  disabled={!modifiedSourcesDataControls || downloading}
-                  onChange={e => setWeightControlCheckBox(e.target.checked)}
-                />
-              }
-              label="Include custom weight controls"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={requiredControlCheckBox}
-                  disabled={!modifiedSourcesDataControls || downloading}
-                  onChange={e => setRequiredControlCheckBox(e.target.checked)}
-                />
-              }
-              label="Include custom required control"
-            />
-            {entity === 'disease' && (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    disabled={downloading}
-                    checked={onlyTargetData}
-                    onChange={e => setOnlyTargetData(e.target.checked)}
-                  />
-                }
-                label="Only prioritisation data"
-              />
-            )}
-          </FormGroup>
           <LabelContainer>
             <Typography variant="caption">Download data as</Typography>
           </LabelContainer>
