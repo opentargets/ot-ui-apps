@@ -23,6 +23,7 @@ import {
   Select,
   MenuItem,
   ListItemText,
+  Box,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -431,7 +432,7 @@ function DataDownloader({ fileStem }) {
       <Dialog onClose={handleClosePopover} open={open}>
         <DialogTitle>Export: {fileStem} data</DialogTitle>
         <DialogContent>
-          <BorderAccordion defaultExpanded={true}>
+          <BorderAccordion>
             <AccordionSummary
               expandIcon={<FontAwesomeIcon icon={faCaretDown} size="lg" />}
             >
@@ -445,7 +446,7 @@ function DataDownloader({ fileStem }) {
                     Association Aggregation
                   </InputLabel>
                   <Select
-                    disabled={onlyTargetData}
+                    disabled={downloading}
                     multiple
                     labelId="select-association-small-label"
                     value={associationAggregationSelect}
@@ -477,6 +478,7 @@ function DataDownloader({ fileStem }) {
                     Prioritization Aggregation
                   </InputLabel>
                   <Select
+                    disabled={downloading}
                     multiple
                     labelId="select-prioritization-small-label"
                     value={prioritisationAggregationSelect}
@@ -503,17 +505,7 @@ function DataDownloader({ fileStem }) {
                   </Select>
                 </FormControl>
 
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      disabled={pinnedEntries.length <= 0 || downloading}
-                      checked={onlyPinnedCheckBox}
-                      onChange={e => setOnlyPinnedCheckBox(e.target.checked)}
-                    />
-                  }
-                  label="Only pinned / upload rows"
-                />
-                <FormControlLabel
+                <FormControlLabel sx={{ mx: 1 }}
                   control={
                     <Checkbox
                       checked={weightControlCheckBox}
@@ -535,11 +527,25 @@ function DataDownloader({ fileStem }) {
                   }
                   label="Include custom required control"
                 />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      disabled={pinnedEntries.length <= 0 || downloading}
+                      checked={onlyPinnedCheckBox}
+                      onChange={e => setOnlyPinnedCheckBox(e.target.checked)}
+                    />
+                  }
+                  label="Only pinned / upload rows"
+                />
+
                 {entity === 'disease' && (
                   <FormControlLabel
                     control={
                       <Checkbox
-                        disabled={downloading}
+                        disabled={
+                          downloading ||
+                          prioritisationAggregationSelect.length <= 0
+                        }
                         checked={onlyTargetData}
                         onChange={e => setOnlyTargetData(e.target.checked)}
                       />
@@ -550,39 +556,45 @@ function DataDownloader({ fileStem }) {
               </FormGroup>
             </AccordionDetails>
           </BorderAccordion>
-          <Button
-            variant="outlined"
-            startIcon={<FontAwesomeIcon icon={faLink} size="2xs" />}
-            onClick={() => {
-              setUrlSnackbar(true);
-              navigator.clipboard.writeText(window.location.href);
-            }}
-          >
-            Copy Url
-          </Button>
-          <LabelContainer>
-            <Typography variant="caption">Download data as</Typography>
-          </LabelContainer>
-          <Grid container alignItems="center" spacing={3}>
-            <Grid item>
+          <Box sx={{display: "flex", justifyContent: "space-between", alignItems:"flex-end"}}>
+            <Box>
               <Button
                 variant="outlined"
-                onClick={handleClickDownloadJSON}
-                size="small"
+                startIcon={<FontAwesomeIcon icon={faLink} size="2xs" />}
+                onClick={() => {
+                  setUrlSnackbar(true);
+                  navigator.clipboard.writeText(window.location.href);
+                }}
               >
-                JSON
+                Copy Url
               </Button>
-            </Grid>
-            <Grid item>
-              <Button
-                variant="outlined"
-                onClick={handleClickDownloadTSV}
-                size="small"
-              >
-                TSV
-              </Button>
-            </Grid>
-          </Grid>
+            </Box>
+            <Box>
+              <LabelContainer>
+                <Typography variant="caption">Download data as</Typography>
+              </LabelContainer>
+              <Grid container alignItems="center" spacing={3}>
+                <Grid item>
+                  <Button
+                    variant="outlined"
+                    onClick={handleClickDownloadJSON}
+                    size="small"
+                  >
+                    JSON
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="outlined"
+                    onClick={handleClickDownloadTSV}
+                    size="small"
+                  >
+                    TSV
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
         </DialogContent>
       </Dialog>
       <Snackbar
