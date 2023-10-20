@@ -416,7 +416,6 @@ function DataDownloader({ fileStem }) {
       selectedAssociationColumns.filter(e => e.aggregation === ag)
     );
     setSelectedAssociationColumns([...filteredValues.flat(1)]);
-    console.log(selectedAssociationColumns);
   }, [associationAggregationSelect]);
 
   useEffect(() => {
@@ -424,7 +423,6 @@ function DataDownloader({ fileStem }) {
       selectedPrioritizationColumns.filter(e => e.aggregation === ag)
     );
     setSelectedPrioritizationColumns([...filteredValues.flat(1)]);
-    console.log(selectedAssociationColumns);
   }, [prioritisationAggregationSelect]);
 
   return (
