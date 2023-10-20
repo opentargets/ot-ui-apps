@@ -18,7 +18,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function OpenTargetsTitle({ className, name }) {
+type OpenTargetsTitleProps = {
+  className?: string;
+  name: string;
+}
+
+function OpenTargetsTitle({ className, name }: OpenTargetsTitleProps) {
   const classes = useStyles();
   const titleClasses = classNames(classes.root, className);
   const { isPartnerPreview } = usePermissions();
