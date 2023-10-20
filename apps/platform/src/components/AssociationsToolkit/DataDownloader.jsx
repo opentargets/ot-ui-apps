@@ -44,8 +44,17 @@ const LabelContainer = styled('div')({
 
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: 'none',
-  border: `1px solid ${theme.palette.grey[300]}`,
+  border: `1px solid ${theme.palette.primary.light}`,
 }));
+
+const BlueAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+  background: theme.palette.primary.light,
+  div: {
+    color: 'white',
+  },
+}));
+
+AccordionSummary;
 
 const targetName = {
   id: 'symbol',
@@ -433,24 +442,24 @@ function DataDownloader({ fileStem }) {
         <DialogTitle>Export: {fileStem} data</DialogTitle>
         <DialogContent>
           <BorderAccordion>
-            <AccordionSummary
+            <BlueAccordionSummary
               expandIcon={<FontAwesomeIcon icon={faCaretDown} size="lg" />}
             >
-              <Typography variant="body1">Advance export options:</Typography>
-            </AccordionSummary>
+              <Typography variant="body1">Advanced export options:</Typography>
+            </BlueAccordionSummary>
             <Divider />
             <AccordionDetails>
               <FormGroup>
                 <FormControl size="small" sx={{ m: 1, maxWidth: '100%' }}>
                   <InputLabel id="select-association-small-label">
-                    Association Aggregation
+                    Associations Aggregation
                   </InputLabel>
                   <Select
-                    disabled={downloading}
+                    disabled={downloading || onlyTargetData}
                     multiple
                     labelId="select-association-small-label"
                     value={associationAggregationSelect}
-                    label="Association Aggregation"
+                    label="Associations Aggregation"
                     renderValue={selected => selected.join(', ')}
                     onChange={e => {
                       setAssociationAggregationSelect(
@@ -505,7 +514,8 @@ function DataDownloader({ fileStem }) {
                   </Select>
                 </FormControl>
 
-                <FormControlLabel sx={{ mx: 1 }}
+                <FormControlLabel
+                  sx={{ pl: 1 }}
                   control={
                     <Checkbox
                       checked={weightControlCheckBox}
@@ -516,6 +526,7 @@ function DataDownloader({ fileStem }) {
                   label="Include custom weight controls"
                 />
                 <FormControlLabel
+                  sx={{ pl: 1 }}
                   control={
                     <Checkbox
                       checked={requiredControlCheckBox}
@@ -528,6 +539,7 @@ function DataDownloader({ fileStem }) {
                   label="Include custom required control"
                 />
                 <FormControlLabel
+                  sx={{ pl: 1 }}
                   control={
                     <Checkbox
                       disabled={pinnedEntries.length <= 0 || downloading}
@@ -540,6 +552,7 @@ function DataDownloader({ fileStem }) {
 
                 {entity === 'disease' && (
                   <FormControlLabel
+                    sx={{ pl: 1 }}
                     control={
                       <Checkbox
                         disabled={
@@ -556,7 +569,13 @@ function DataDownloader({ fileStem }) {
               </FormGroup>
             </AccordionDetails>
           </BorderAccordion>
-          <Box sx={{display: "flex", justifyContent: "space-between", alignItems:"flex-end"}}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+            }}
+          >
             <Box>
               <Button
                 variant="outlined"
