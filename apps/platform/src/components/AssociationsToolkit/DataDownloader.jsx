@@ -33,10 +33,20 @@ import {
   faCaretDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { usePermissions } from 'ui';
 import useBatchDownloader from './hooks/useBatchDownloader';
 import useAotfContext from './hooks/useAotfContext';
-import dataSources from './static_datasets/dataSourcesAssoc';
+import OriginalDataSources from './static_datasets/dataSourcesAssoc';
 import prioritizationCols from './static_datasets/prioritizationCols';
+
+const { isPartnerPreview } = usePermissions();
+
+const dataSources = OriginalDataSources.filter(e => {
+  if (isPartnerPreview && e.isPrivate) {
+    return e;
+  } else if (!e.isPrivate) return e;
+  return;
+});
 
 const LabelContainer = styled('div')({
   marginBottom: 12,
