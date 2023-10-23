@@ -57,15 +57,6 @@ const BorderAccordion = styled(Accordion)(({ theme }) => ({
   border: `1px solid ${theme.palette.primary.light}`,
 }));
 
-const BlueAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
-  background: theme.palette.primary.light,
-  div: {
-    color: 'white',
-  },
-}));
-
-AccordionSummary;
-
 const targetName = {
   id: 'symbol',
   label: 'Symbol',
@@ -450,11 +441,11 @@ function DataDownloader({ fileStem }) {
         <DialogTitle>Export: {fileStem} data</DialogTitle>
         <DialogContent>
           <BorderAccordion>
-            <BlueAccordionSummary
+            <AccordionSummary
               expandIcon={<FontAwesomeIcon icon={faCaretDown} size="lg" />}
             >
               <Typography variant="body1">Advanced export options:</Typography>
-            </BlueAccordionSummary>
+            </AccordionSummary>
             <Divider />
             <AccordionDetails>
               <FormGroup>
@@ -490,7 +481,7 @@ function DataDownloader({ fileStem }) {
                   </Select>
                 </FormControl>
 
-                <FormControl size="small" sx={{ m: 1, maxWidth: '100%' }}>
+                { entity === "disease" && <FormControl size="small" sx={{ m: 1, maxWidth: '100%' }}>
                   <InputLabel id="select-prioritization-small-label">
                     Prioritization Aggregation
                   </InputLabel>
@@ -520,7 +511,7 @@ function DataDownloader({ fileStem }) {
                       </MenuItem>
                     ))}
                   </Select>
-                </FormControl>
+                </FormControl>}
 
                 <FormControlLabel
                   sx={{ pl: 1 }}
