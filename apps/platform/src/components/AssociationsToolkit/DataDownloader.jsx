@@ -24,6 +24,7 @@ import {
   MenuItem,
   ListItemText,
   Box,
+  FormHelperText,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -479,39 +480,49 @@ function DataDownloader({ fileStem }) {
                       </MenuItem>
                     ))}
                   </Select>
+                  <FormHelperText>
+                    Selected {associationAggregationSelect.length} of{' '}
+                    {allAssociationsAggregation.length}
+                  </FormHelperText>
                 </FormControl>
 
-                { entity === "disease" && <FormControl size="small" sx={{ m: 1, maxWidth: '100%' }}>
-                  <InputLabel id="select-prioritization-small-label">
-                    Prioritization Aggregation
-                  </InputLabel>
-                  <Select
-                    disabled={downloading}
-                    multiple
-                    labelId="select-prioritization-small-label"
-                    value={prioritisationAggregationSelect}
-                    label="Prioritization Aggregation"
-                    renderValue={selected => selected.join(', ')}
-                    onChange={e => {
-                      setPrioritisationAggregationSelect(
-                        typeof e.target.value === 'string'
-                          ? e.target.value.split(',')
-                          : e.target.value
-                      );
-                    }}
-                  >
-                    {allPrioritizationAggregation.map(ds => (
-                      <MenuItem key={ds} value={ds}>
-                        <Checkbox
-                          checked={
-                            prioritisationAggregationSelect.indexOf(ds) > -1
-                          }
-                        />
-                        <ListItemText primary={ds} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>}
+                {entity === 'disease' && (
+                  <FormControl size="small" sx={{ m: 1, maxWidth: '100%' }}>
+                    <InputLabel id="select-prioritization-small-label">
+                      Prioritization Aggregation
+                    </InputLabel>
+                    <Select
+                      disabled={downloading}
+                      multiple
+                      labelId="select-prioritization-small-label"
+                      value={prioritisationAggregationSelect}
+                      label="Prioritization Aggregation"
+                      renderValue={selected => selected.join(', ')}
+                      onChange={e => {
+                        setPrioritisationAggregationSelect(
+                          typeof e.target.value === 'string'
+                            ? e.target.value.split(',')
+                            : e.target.value
+                        );
+                      }}
+                    >
+                      {allPrioritizationAggregation.map(ds => (
+                        <MenuItem key={ds} value={ds}>
+                          <Checkbox
+                            checked={
+                              prioritisationAggregationSelect.indexOf(ds) > -1
+                            }
+                          />
+                          <ListItemText primary={ds} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <FormHelperText>
+                      Selected {prioritisationAggregationSelect.length} of{' '}
+                      {allPrioritizationAggregation.length}
+                    </FormHelperText>
+                  </FormControl>
+                )}
 
                 <FormControlLabel
                   sx={{ pl: 1 }}
