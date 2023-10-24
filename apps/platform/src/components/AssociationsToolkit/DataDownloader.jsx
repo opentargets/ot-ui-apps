@@ -1,5 +1,5 @@
 import FileSaver from 'file-saver';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useReducer } from 'react';
 import _ from 'lodash';
 import {
   Button,
@@ -39,6 +39,13 @@ import useBatchDownloader from './hooks/useBatchDownloader';
 import useAotfContext from './hooks/useAotfContext';
 import OriginalDataSources from './static_datasets/dataSourcesAssoc';
 import prioritizationCols from './static_datasets/prioritizationCols';
+import {
+  getRowsQuerySelector,
+  getExportedColumns,
+  getExportedPrioritisationColumns,
+  createBlob,
+  getFilteredColumnArray,
+} from './utils/downloads';
 
 const { isPartnerPreview } = usePermissions();
 
@@ -57,178 +64,6 @@ const BorderAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: 'none',
   border: `1px solid ${theme.palette.primary.light}`,
 }));
-
-const targetName = {
-  id: 'symbol',
-  label: 'Symbol',
-  exportValue: data => data.target.approvedSymbol,
-};
-
-const diseaseName = {
-  id: 'symbol',
-  label: 'Symbol',
-  exportValue: data => data.disease.name,
-};
-
-const getRowsQuerySelector = entityToGet =>
-  entityToGet === 'target'
-    ? 'data.disease.associatedTargets'
-    : 'data.target.associatedDiseases';
-
-const getExportedColumns = (entityToGet, assocArr, prioArr) => {
-  const nameColumn = entityToGet === 'target' ? targetName : diseaseName;
-  let exportedColumns = [];
-  const sources = assocArr.map(({ id }) => ({
-    id,
-    exportValue: data => {
-      const datatypeScore = data.datasourceScores.find(
-        datasourceScore => datasourceScore.componentId === id
-      );
-      return datatypeScore ? parseFloat(datatypeScore.score) : 'No data';
-    },
-  }));
-
-  exportedColumns = [...sources];
-
-  if (entityToGet === 'target') {
-    const prioritisationExportCols = prioArr.map(({ id }) => ({
-      id,
-      exportValue: data => {
-        const prioritisationScore = data.target.prioritisation.items.find(
-          prioritisationItem => prioritisationItem.key === id
-        );
-        return prioritisationScore
-          ? parseFloat(prioritisationScore.value)
-          : 'No data';
-      },
-    }));
-
-    exportedColumns = [...sources, ...prioritisationExportCols];
-  }
-
-  return [
-    nameColumn,
-    {
-      id: 'score',
-      label: 'Score',
-      exportValue: data => data.score,
-    },
-    ...exportedColumns,
-  ];
-};
-
-const getExportedPrioritisationColumns = arr => {
-  let exportedColumns = [];
-
-  const prioritisationExportCols = arr.map(({ id }) => ({
-    id,
-    exportValue: data => {
-      const prioritisationScore = data.target.prioritisation.items.find(
-        prioritisationItem => prioritisationItem.key === id
-      );
-      return prioritisationScore
-        ? parseFloat(prioritisationScore.value)
-        : 'No data';
-    },
-  }));
-
-  exportedColumns = [...prioritisationExportCols];
-
-  return [
-    targetName,
-    {
-      id: 'score',
-      label: 'Score',
-      exportValue: data => data.score,
-    },
-    ...exportedColumns,
-  ];
-};
-
-const asJSON = (columns, rows) => {
-  const rowStrings = rows.map(row =>
-    columns.reduce((accumulator, newKey) => {
-      if (newKey.exportValue === false) return accumulator;
-
-      const newLabel = _.camelCase(
-        newKey.exportLabel || newKey.label || newKey.id
-      );
-
-      return {
-        ...accumulator,
-        [newLabel]: newKey.exportValue
-          ? newKey.exportValue(row)
-          : _.get(row, newKey.propertyPath || newKey.id, ''),
-      };
-    }, {})
-  );
-
-  return JSON.stringify(rowStrings);
-};
-
-const getHeaderString = ({ columns, quoteString, separator }) =>
-  columns
-    .reduce((headerString, column) => {
-      if (column.exportValue === false) return headerString;
-
-      const newLabel = quoteString(
-        _.camelCase(column.exportLabel || column.label || column.id)
-      );
-
-      return [...headerString, newLabel];
-    }, [])
-    .join(separator);
-
-const asDSV = (columns, rows, separator = ',', quoteStrings = true) => {
-  const quoteString = d => {
-    let result = d;
-    // converts arrays to strings
-    if (Array.isArray(d)) {
-      result = d.join(',');
-    }
-    return quoteStrings && typeof result === 'string' ? `"${result}"` : result;
-  };
-
-  const lineSeparator = '\n';
-
-  const headerString = getHeaderString({ columns, quoteString, separator });
-
-  const rowStrings = rows
-    .map(row =>
-      columns
-        .reduce((rowString, column) => {
-          if (column.exportValue === false) return rowString;
-
-          const newValue = quoteString(
-            column.exportValue
-              ? column.exportValue(row)
-              : _.get(row, column.propertyPath || column.id, '')
-          );
-
-          return [...rowString, newValue];
-        }, [])
-        .join(separator)
-    )
-    .join(lineSeparator);
-
-  return [headerString, rowStrings].join(lineSeparator);
-};
-
-const createBlob = format =>
-  ({
-    json: (columns, rows) =>
-      new Blob([asJSON(columns, rows)], {
-        type: 'application/json;charset=utf-8',
-      }),
-    csv: (columns, rows) =>
-      new Blob([asDSV(columns, rows)], {
-        type: 'text/csv;charset=utf-8',
-      }),
-    tsv: (columns, rows) =>
-      new Blob([asDSV(columns, rows, '\t', false)], {
-        type: 'text/tab-separated-values;charset=utf-8',
-      }),
-  }[format]);
 
 const styles = makeStyles(theme => ({
   messageProgress: {
@@ -273,13 +108,59 @@ const styles = makeStyles(theme => ({
   },
 }));
 
+const allAssociationsAggregation = [
+  ...new Set(dataSources.map(e => e.aggregation)),
+];
+const allPrioritizationAggregation = [
+  ...new Set(prioritizationCols.map(e => e.aggregation)),
+];
+
+const initialState = {
+  associationAggregationSelectValue: allAssociationsAggregation,
+  prioritisationAggregationSelectValue: allPrioritizationAggregation,
+  selectedAssociationAggregationColumnObjectValue: [...dataSources],
+  selectedPrioritisationAggregationColumnObjectValue: [...prioritizationCols],
+};
+
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'UPDATE_ASSOCIATION_COLUMNS':
+      return {
+        ...state,
+        associationAggregationSelectValue: action.payload,
+        selectedAssociationAggregationColumnObjectValue: getFilteredColumnArray(
+          action.payload,
+          state.selectedAssociationAggregationColumnObjectValue
+        ),
+      };
+    case 'UPDATE_PRIORITISATION_COLUMNS':
+      return {
+        ...state,
+        prioritisationAggregationSelectValue: action.payload,
+        selectedPrioritisationAggregationColumnObjectValue:
+          getFilteredColumnArray(
+            action.payload,
+            state.selectedPrioritisationAggregationColumnObjectValue
+          ),
+      };
+    default:
+      return state;
+  }
+};
+
+const actions = {
+  UPDATE_ASSOCIATION_COLUMNS: payload => ({
+    type: 'UPDATE_ASSOCIATION_COLUMNS',
+    payload,
+  }),
+  UPDATE_PRIORITISATION_COLUMNS: payload => ({
+    type: 'UPDATE_PRIORITISATION_COLUMNS',
+    payload,
+  }),
+};
+
 function DataDownloader({ fileStem }) {
-  const allAssociationsAggregation = [
-    ...new Set(dataSources.map(e => e.aggregation)),
-  ];
-  const allPrioritizationAggregation = [
-    ...new Set(prioritizationCols.map(e => e.aggregation)),
-  ];
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const classes = styles();
   const {
@@ -305,17 +186,6 @@ function DataDownloader({ fileStem }) {
   );
   const [onlyTargetData, setOnlyTargetData] = useState(false);
 
-  const [selectedAssociationColumns, setSelectedAssociationColumns] = useState([
-    ...dataSources,
-  ]);
-  const [selectedPrioritizationColumns, setSelectedPrioritizationColumns] =
-    useState(prioritizationCols);
-
-  const [associationAggregationSelect, setAssociationAggregationSelect] =
-    useState([...allAssociationsAggregation]);
-  const [prioritisationAggregationSelect, setPrioritisationAggregationSelect] =
-    useState([...allPrioritizationAggregation]);
-
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [urlSnackbar, setUrlSnackbar] = useState(false);
@@ -323,14 +193,21 @@ function DataDownloader({ fileStem }) {
     () =>
       getExportedColumns(
         entityToGet,
-        selectedAssociationColumns,
-        selectedPrioritizationColumns
+        state.selectedAssociationAggregationColumnObjectValue,
+        state.selectedPrioritisationAggregationColumnObjectValue
       ),
-    [entityToGet, selectedAssociationColumns, selectedPrioritizationColumns]
+    [
+      entityToGet,
+      state.selectedAssociationAggregationColumnObjectValue,
+      state.selectedPrioritisationAggregationColumnObjectValue,
+    ]
   );
   const prioritisationColumns = useMemo(
-    () => getExportedPrioritisationColumns(selectedPrioritizationColumns),
-    [selectedPrioritizationColumns]
+    () =>
+      getExportedPrioritisationColumns(
+        state.selectedPrioritisationAggregationColumnObjectValue
+      ),
+    [state.selectedPrioritisationAggregationColumnObjectValue]
   );
   const queryResponseSelector = useMemo(
     () => getRowsQuerySelector(entityToGet),
@@ -413,20 +290,6 @@ function DataDownloader({ fileStem }) {
     setWeightControlCheckBox(modifiedSourcesDataControls);
   }, [modifiedSourcesDataControls]);
 
-  useEffect(() => {
-    const filteredValues = associationAggregationSelect.map(ag =>
-      selectedAssociationColumns.filter(e => e.aggregation === ag)
-    );
-    setSelectedAssociationColumns([...filteredValues.flat(1)]);
-  }, [associationAggregationSelect]);
-
-  useEffect(() => {
-    const filteredValues = prioritisationAggregationSelect.map(ag =>
-      selectedPrioritizationColumns.filter(e => e.aggregation === ag)
-    );
-    setSelectedPrioritizationColumns([...filteredValues.flat(1)]);
-  }, [prioritisationAggregationSelect]);
-
   return (
     <div>
       <Button
@@ -458,14 +321,16 @@ function DataDownloader({ fileStem }) {
                     disabled={downloading || onlyTargetData}
                     multiple
                     labelId="select-association-small-label"
-                    value={associationAggregationSelect}
+                    value={state.associationAggregationSelectValue}
                     label="Associations Aggregation"
                     renderValue={selected => selected.join(', ')}
                     onChange={e => {
-                      setAssociationAggregationSelect(
-                        typeof e.target.value === 'string'
-                          ? e.target.value.split(',')
-                          : e.target.value
+                      dispatch(
+                        actions.UPDATE_ASSOCIATION_COLUMNS(
+                          e.target.value.length
+                            ? String(e.target.value).split(',')
+                            : []
+                        )
                       );
                     }}
                   >
@@ -473,7 +338,9 @@ function DataDownloader({ fileStem }) {
                       <MenuItem key={ds} value={ds}>
                         <Checkbox
                           checked={
-                            associationAggregationSelect.indexOf(ds) > -1
+                            state.associationAggregationSelectValue.indexOf(
+                              ds
+                            ) > -1
                           }
                         />
                         <ListItemText primary={ds} />
@@ -481,7 +348,7 @@ function DataDownloader({ fileStem }) {
                     ))}
                   </Select>
                   <FormHelperText>
-                    Selected {associationAggregationSelect.length} of{' '}
+                    Selected {state.associationAggregationSelectValue.length} of{' '}
                     {allAssociationsAggregation.length}
                   </FormHelperText>
                 </FormControl>
@@ -495,14 +362,16 @@ function DataDownloader({ fileStem }) {
                       disabled={downloading}
                       multiple
                       labelId="select-prioritization-small-label"
-                      value={prioritisationAggregationSelect}
+                      value={state.prioritisationAggregationSelectValue}
                       label="Prioritization Aggregation"
                       renderValue={selected => selected.join(', ')}
                       onChange={e => {
-                        setPrioritisationAggregationSelect(
-                          typeof e.target.value === 'string'
-                            ? e.target.value.split(',')
-                            : e.target.value
+                        dispatch(
+                          actions.UPDATE_PRIORITISATION_COLUMNS(
+                            e.target.value.length
+                              ? String(e.target.value).split(',')
+                              : []
+                          )
                         );
                       }}
                     >
@@ -510,7 +379,9 @@ function DataDownloader({ fileStem }) {
                         <MenuItem key={ds} value={ds}>
                           <Checkbox
                             checked={
-                              prioritisationAggregationSelect.indexOf(ds) > -1
+                              state.prioritisationAggregationSelectValue.indexOf(
+                                ds
+                              ) > -1
                             }
                           />
                           <ListItemText primary={ds} />
@@ -518,7 +389,8 @@ function DataDownloader({ fileStem }) {
                       ))}
                     </Select>
                     <FormHelperText>
-                      Selected {prioritisationAggregationSelect.length} of{' '}
+                      Selected{' '}
+                      {state.prioritisationAggregationSelectValue.length} of{' '}
                       {allPrioritizationAggregation.length}
                     </FormHelperText>
                   </FormControl>
@@ -567,7 +439,7 @@ function DataDownloader({ fileStem }) {
                       <Checkbox
                         disabled={
                           downloading ||
-                          prioritisationAggregationSelect.length <= 0
+                          state.prioritisationAggregationSelectValue.length <= 0
                         }
                         checked={onlyTargetData}
                         onChange={e => setOnlyTargetData(e.target.checked)}
