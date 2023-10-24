@@ -37,7 +37,7 @@ function processXRefs(dbXRefs) {
 }
 
 function Header({ loading, efoId, name, dbXRefs = [] }) {
-  const efoUrl = `https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=${efoId}`;
+  const efoUrl = `https://www.ebi.ac.uk/ols4/ontologies/efo/terms?short_form=${efoId}`;
   const xrefs = processXRefs(dbXRefs);
 
   return (
