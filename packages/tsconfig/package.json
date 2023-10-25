@@ -1,12 +1,13 @@
 {
   "name": "tsconfig",
+  "files": [
+    "./base.json",
+    "./vite.json"
+  ],
   "version": "0.0.0",
   "private": true,
-  "main": "index.js",
-  "files": [
-    "base.json",
-    "nextjs.json",
-    "react-library.json",
-    "vite.json"
-  ]
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
 }

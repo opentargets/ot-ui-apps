@@ -1,12 +1,13 @@
 import { createContext, useState, useEffect } from "react";
 import useDebounce from "../../hooks/useDebounce";
+import { DocumentNode } from "@apollo/client";
 
 /**********************************
  * GLOBAL SEARCH CONTEXT/PROVIDER *
  **********************************/
 type GlobalSearchProviderProps = {
   children: React.ReactNode;
-  searchQuery: string;
+  searchQuery: DocumentNode;
   searchPlaceholder: string;
 };
 

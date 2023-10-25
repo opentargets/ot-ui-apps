@@ -1,4 +1,3 @@
-import { ThemeOptions } from "@mui/material";
 import {
   ThemeProvider as MuiThemeProvider,
   createTheme,
@@ -9,10 +8,10 @@ import defaultTheme from "./defaultTheme";
 
 function ThemeProvider({
   children,
-  theme,
+  theme = defaultTheme,
 }: {
   children: any;
-  theme: ThemeOptions;
+  theme: any;
 }) {
   const uiKitTheme = createTheme(theme);
   return (

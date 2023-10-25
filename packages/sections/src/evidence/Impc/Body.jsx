@@ -63,7 +63,7 @@ const columns = [
       );
     },
     filterValue: ({ diseaseModelAssociatedHumanPhenotypes = [] }) =>
-      diseaseModelAssociatedHumanPhenotypes.map((dmahp) => dmahp.label).join(),
+      diseaseModelAssociatedHumanPhenotypes?.map((dmahp) => dmahp.label).join(),
   },
   {
     id: "diseaseModelAssociatedModelPhenotypes",

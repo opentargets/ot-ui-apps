@@ -69,10 +69,6 @@ function Publication({
 
   const { urlAiApi } = config;
 
-  if (!title) {
-    return naLabel;
-  }
-
   const handleShowAbstractClick = () => {
     setShowAbstract((current) => !current);
   };
@@ -149,6 +145,10 @@ function Publication({
     setShowSummary(false);
     setSummaryText(null);
   }, [title]);
+
+  if (!title) {
+    return naLabel;
+  }
 
   return (
     <Box>

@@ -107,7 +107,7 @@ const getColumns = (label) => [
   {
     filterValue: ({ variantAminoacidDescriptions }) =>
       variantAminoacidDescriptions
-        .map((variantAminoacidDescription) => variantAminoacidDescription)
+        ?.map((variantAminoacidDescription) => variantAminoacidDescription)
         .join(),
     label: "Amino acid variation",
     renderCell: ({ variantAminoacidDescriptions }) => {
