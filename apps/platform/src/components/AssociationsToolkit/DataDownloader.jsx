@@ -63,6 +63,7 @@ const LabelContainer = styled('div')({
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: 'none',
   border: `1px solid ${theme.palette.primary.light}`,
+  borderRadius: `${theme.spacing(1)} !important`,
 }));
 
 const styles = makeStyles(theme => ({
@@ -301,7 +302,17 @@ function DataDownloader({ fileStem }) {
       >
         Export
       </Button>
-      <Dialog onClose={handleClosePopover} open={open}>
+      <Dialog
+        onClose={handleClosePopover}
+        open={open}
+        sx={{
+          '.MuiDialog-paper': {
+            width: "70%",
+            maxWidth: "800px !important",
+            borderRadius: theme => theme.spacing(1),
+          },
+        }}
+      >
         <DialogTitle>Export: {fileStem} data</DialogTitle>
         <DialogContent>
           <BorderAccordion>
