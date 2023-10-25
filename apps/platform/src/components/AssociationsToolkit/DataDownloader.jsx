@@ -1,6 +1,6 @@
-import FileSaver from 'file-saver';
-import { useState, useMemo, useEffect, useReducer } from 'react';
-import _ from 'lodash';
+import FileSaver from "file-saver";
+import { useState, useMemo, useEffect, useReducer } from "react";
+import _ from "lodash";
 import {
   Button,
   Grid,
@@ -25,29 +25,25 @@ import {
   ListItemText,
   Box,
   FormHelperText,
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
-import {
-  faCloudArrowDown,
-  faLink,
-  faCaretDown,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { usePermissions } from 'ui';
-import useBatchDownloader from './hooks/useBatchDownloader';
-import useAotfContext from './hooks/useAotfContext';
-import OriginalDataSources from './static_datasets/dataSourcesAssoc';
-import prioritizationCols from './static_datasets/prioritizationCols';
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
+import { faCloudArrowDown, faLink, faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useBatchDownloader from "./hooks/useBatchDownloader";
+import useAotfContext from "./hooks/useAotfContext";
+import OriginalDataSources from "./static_datasets/dataSourcesAssoc";
+import prioritizationCols from "./static_datasets/prioritizationCols";
 import {
   getRowsQuerySelector,
   getExportedColumns,
   getExportedPrioritisationColumns,
   createBlob,
   getFilteredColumnArray,
-} from './utils/downloads';
+} from "./utils/downloads";
+import config from "ui/src/config";
 
-const { isPartnerPreview } = usePermissions();
+const { isPartnerPreview } = config.profile;
 
 const dataSources = OriginalDataSources.filter(e => {
   if (isPartnerPreview && e.isPrivate) {
@@ -56,65 +52,61 @@ const dataSources = OriginalDataSources.filter(e => {
   return;
 });
 
-const LabelContainer = styled('div')({
+const LabelContainer = styled("div")({
   marginBottom: 12,
 });
 
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
-  boxShadow: 'none',
+  boxShadow: "none",
   border: `1px solid ${theme.palette.primary.light}`,
   borderRadius: `${theme.spacing(1)} !important`,
 }));
 
 const styles = makeStyles(theme => ({
   messageProgress: {
-    marginRight: '1rem',
-    color: 'white !important',
+    marginRight: "1rem",
+    color: "white !important",
   },
   snackbarContentMessage: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    padding: '.75rem 1rem',
-    width: '100%',
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    padding: ".75rem 1rem",
+    width: "100%",
   },
   snackbarContentRoot: {
     padding: 0,
   },
   backdrop: {
-    '& .MuiBackdrop-root': {
-      opacity: '0 !important',
+    "& .MuiBackdrop-root": {
+      opacity: "0 !important",
     },
   },
   container: {
-    width: '80%',
+    width: "80%",
     backgroundColor: theme.palette.grey[300],
   },
   paper: {
-    margin: '1.5rem',
-    padding: '1rem',
+    margin: "1.5rem",
+    padding: "1rem",
   },
   title: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    borderBottom: '1px solid #ccc',
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    padding: '1rem',
+    display: "flex",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    borderBottom: "1px solid #ccc",
+    fontSize: "1.2rem",
+    fontWeight: "bold",
+    padding: "1rem",
   },
   playgroundContainer: {
-    margin: '0 1.5rem 1.5rem 1.5rem',
-    height: '100%',
+    margin: "0 1.5rem 1.5rem 1.5rem",
+    height: "100%",
   },
 }));
 
-const allAssociationsAggregation = [
-  ...new Set(dataSources.map(e => e.aggregation)),
-];
-const allPrioritizationAggregation = [
-  ...new Set(prioritizationCols.map(e => e.aggregation)),
-];
+const allAssociationsAggregation = [...new Set(dataSources.map(e => e.aggregation))];
+const allPrioritizationAggregation = [...new Set(prioritizationCols.map(e => e.aggregation))];
 
 const initialState = {
   associationAggregationSelectValue: allAssociationsAggregation,
@@ -125,7 +117,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'UPDATE_ASSOCIATION_COLUMNS':
+    case "UPDATE_ASSOCIATION_COLUMNS":
       return {
         ...state,
         associationAggregationSelectValue: action.payload,
@@ -134,15 +126,14 @@ const reducer = (state = initialState, action) => {
           state.selectedAssociationAggregationColumnObjectValue
         ),
       };
-    case 'UPDATE_PRIORITISATION_COLUMNS':
+    case "UPDATE_PRIORITISATION_COLUMNS":
       return {
         ...state,
         prioritisationAggregationSelectValue: action.payload,
-        selectedPrioritisationAggregationColumnObjectValue:
-          getFilteredColumnArray(
-            action.payload,
-            state.selectedPrioritisationAggregationColumnObjectValue
-          ),
+        selectedPrioritisationAggregationColumnObjectValue: getFilteredColumnArray(
+          action.payload,
+          state.selectedPrioritisationAggregationColumnObjectValue
+        ),
       };
     default:
       return state;
@@ -151,11 +142,11 @@ const reducer = (state = initialState, action) => {
 
 const actions = {
   UPDATE_ASSOCIATION_COLUMNS: payload => ({
-    type: 'UPDATE_ASSOCIATION_COLUMNS',
+    type: "UPDATE_ASSOCIATION_COLUMNS",
     payload,
   }),
   UPDATE_PRIORITISATION_COLUMNS: payload => ({
-    type: 'UPDATE_PRIORITISATION_COLUMNS',
+    type: "UPDATE_PRIORITISATION_COLUMNS",
     payload,
   }),
 };
@@ -179,9 +170,7 @@ function DataDownloader({ fileStem }) {
     dataSourcesRequired,
   } = useAotfContext();
   const [onlyPinnedCheckBox, setOnlyPinnedCheckBox] = useState(false);
-  const [weightControlCheckBox, setWeightControlCheckBox] = useState(
-    modifiedSourcesDataControls
-  );
+  const [weightControlCheckBox, setWeightControlCheckBox] = useState(modifiedSourcesDataControls);
   const [requiredControlCheckBox, setRequiredControlCheckBox] = useState(
     modifiedSourcesDataControls
   );
@@ -205,15 +194,10 @@ function DataDownloader({ fileStem }) {
   );
   const prioritisationColumns = useMemo(
     () =>
-      getExportedPrioritisationColumns(
-        state.selectedPrioritisationAggregationColumnObjectValue
-      ),
+      getExportedPrioritisationColumns(state.selectedPrioritisationAggregationColumnObjectValue),
     [state.selectedPrioritisationAggregationColumnObjectValue]
   );
-  const queryResponseSelector = useMemo(
-    () => getRowsQuerySelector(entityToGet),
-    [entityToGet]
-  );
+  const queryResponseSelector = useMemo(() => getRowsQuerySelector(entityToGet), [entityToGet]);
 
   const allAssociationsVariable = {
     id,
@@ -247,11 +231,11 @@ function DataDownloader({ fileStem }) {
   );
 
   const open = Boolean(anchorEl);
-  const popoverId = open ? 'downloader-popover' : undefined;
+  const popoverId = open ? "downloader-popover" : undefined;
 
   const downloadData = async (format, dataColumns, rows, dataFileStem) => {
     let allRows = rows;
-    if (typeof rows === 'function') {
+    if (typeof rows === "function") {
       setDownloading(true);
       allRows = await rows();
       setDownloading(false);
@@ -277,13 +261,13 @@ function DataDownloader({ fileStem }) {
   const handleClickDownloadJSON = async () => {
     const data = onlyPinnedCheckBox ? getOnlyPinnedData : getAllAssociations;
     const columnToGet = onlyTargetData ? prioritisationColumns : columns;
-    downloadData('json', columnToGet, data, fileStem);
+    downloadData("json", columnToGet, data, fileStem);
   };
 
   const handleClickDownloadTSV = async () => {
     const data = onlyPinnedCheckBox ? getOnlyPinnedData : getAllAssociations;
     const columnToGet = onlyTargetData ? prioritisationColumns : columns;
-    downloadData('tsv', columnToGet, data, fileStem);
+    downloadData("tsv", columnToGet, data, fileStem);
   };
 
   useEffect(() => {
@@ -306,7 +290,7 @@ function DataDownloader({ fileStem }) {
         onClose={handleClosePopover}
         open={open}
         sx={{
-          '.MuiDialog-paper': {
+          ".MuiDialog-paper": {
             width: "70%",
             maxWidth: "800px !important",
             borderRadius: theme => theme.spacing(1),
@@ -316,15 +300,13 @@ function DataDownloader({ fileStem }) {
         <DialogTitle>Export: {fileStem} data</DialogTitle>
         <DialogContent>
           <BorderAccordion>
-            <AccordionSummary
-              expandIcon={<FontAwesomeIcon icon={faCaretDown} size="lg" />}
-            >
+            <AccordionSummary expandIcon={<FontAwesomeIcon icon={faCaretDown} size="lg" />}>
               <Typography variant="body1">Advanced export options:</Typography>
             </AccordionSummary>
             <Divider />
             <AccordionDetails>
               <FormGroup>
-                <FormControl size="small" sx={{ m: 1, maxWidth: '100%' }}>
+                <FormControl size="small" sx={{ m: 1, maxWidth: "100%" }}>
                   <InputLabel id="select-association-small-label">
                     Associations Aggregation
                   </InputLabel>
@@ -334,13 +316,11 @@ function DataDownloader({ fileStem }) {
                     labelId="select-association-small-label"
                     value={state.associationAggregationSelectValue}
                     label="Associations Aggregation"
-                    renderValue={selected => selected.join(', ')}
+                    renderValue={selected => selected.join(", ")}
                     onChange={e => {
                       dispatch(
                         actions.UPDATE_ASSOCIATION_COLUMNS(
-                          e.target.value.length
-                            ? String(e.target.value).split(',')
-                            : []
+                          e.target.value.length ? String(e.target.value).split(",") : []
                         )
                       );
                     }}
@@ -348,24 +328,20 @@ function DataDownloader({ fileStem }) {
                     {allAssociationsAggregation.map(ds => (
                       <MenuItem key={ds} value={ds}>
                         <Checkbox
-                          checked={
-                            state.associationAggregationSelectValue.indexOf(
-                              ds
-                            ) > -1
-                          }
+                          checked={state.associationAggregationSelectValue.indexOf(ds) > -1}
                         />
                         <ListItemText primary={ds} />
                       </MenuItem>
                     ))}
                   </Select>
                   <FormHelperText>
-                    Selected {state.associationAggregationSelectValue.length} of{' '}
+                    Selected {state.associationAggregationSelectValue.length} of{" "}
                     {allAssociationsAggregation.length}
                   </FormHelperText>
                 </FormControl>
 
-                {entity === 'disease' && (
-                  <FormControl size="small" sx={{ m: 1, maxWidth: '100%' }}>
+                {entity === "disease" && (
+                  <FormControl size="small" sx={{ m: 1, maxWidth: "100%" }}>
                     <InputLabel id="select-prioritization-small-label">
                       Prioritization Aggregation
                     </InputLabel>
@@ -375,13 +351,11 @@ function DataDownloader({ fileStem }) {
                       labelId="select-prioritization-small-label"
                       value={state.prioritisationAggregationSelectValue}
                       label="Prioritization Aggregation"
-                      renderValue={selected => selected.join(', ')}
+                      renderValue={selected => selected.join(", ")}
                       onChange={e => {
                         dispatch(
                           actions.UPDATE_PRIORITISATION_COLUMNS(
-                            e.target.value.length
-                              ? String(e.target.value).split(',')
-                              : []
+                            e.target.value.length ? String(e.target.value).split(",") : []
                           )
                         );
                       }}
@@ -389,19 +363,14 @@ function DataDownloader({ fileStem }) {
                       {allPrioritizationAggregation.map(ds => (
                         <MenuItem key={ds} value={ds}>
                           <Checkbox
-                            checked={
-                              state.prioritisationAggregationSelectValue.indexOf(
-                                ds
-                              ) > -1
-                            }
+                            checked={state.prioritisationAggregationSelectValue.indexOf(ds) > -1}
                           />
                           <ListItemText primary={ds} />
                         </MenuItem>
                       ))}
                     </Select>
                     <FormHelperText>
-                      Selected{' '}
-                      {state.prioritisationAggregationSelectValue.length} of{' '}
+                      Selected {state.prioritisationAggregationSelectValue.length} of{" "}
                       {allPrioritizationAggregation.length}
                     </FormHelperText>
                   </FormControl>
@@ -424,9 +393,7 @@ function DataDownloader({ fileStem }) {
                     <Checkbox
                       checked={requiredControlCheckBox}
                       disabled={!modifiedSourcesDataControls || downloading}
-                      onChange={e =>
-                        setRequiredControlCheckBox(e.target.checked)
-                      }
+                      onChange={e => setRequiredControlCheckBox(e.target.checked)}
                     />
                   }
                   label="Include custom required control"
@@ -443,14 +410,13 @@ function DataDownloader({ fileStem }) {
                   label="Only pinned / upload rows"
                 />
 
-                {entity === 'disease' && (
+                {entity === "disease" && (
                   <FormControlLabel
                     sx={{ pl: 1 }}
                     control={
                       <Checkbox
                         disabled={
-                          downloading ||
-                          state.prioritisationAggregationSelectValue.length <= 0
+                          downloading || state.prioritisationAggregationSelectValue.length <= 0
                         }
                         checked={onlyTargetData}
                         onChange={e => setOnlyTargetData(e.target.checked)}
@@ -464,9 +430,9 @@ function DataDownloader({ fileStem }) {
           </BorderAccordion>
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
             }}
           >
             <Box>
@@ -487,20 +453,12 @@ function DataDownloader({ fileStem }) {
               </LabelContainer>
               <Grid container alignItems="center" spacing={3}>
                 <Grid item>
-                  <Button
-                    variant="outlined"
-                    onClick={handleClickDownloadJSON}
-                    size="small"
-                  >
+                  <Button variant="outlined" onClick={handleClickDownloadJSON} size="small">
                     JSON
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button
-                    variant="outlined"
-                    onClick={handleClickDownloadTSV}
-                    size="small"
-                  >
+                  <Button variant="outlined" onClick={handleClickDownloadTSV} size="small">
                     TSV
                   </Button>
                 </Grid>
@@ -510,7 +468,7 @@ function DataDownloader({ fileStem }) {
         </DialogContent>
       </Dialog>
       <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={downloading}
         TransitionComponent={Slide}
         ContentProps={{
@@ -528,7 +486,7 @@ function DataDownloader({ fileStem }) {
       />
 
       <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         open={urlSnackbar}
         onClose={() => {
           setUrlSnackbar(false);
