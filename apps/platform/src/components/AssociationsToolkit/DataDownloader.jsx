@@ -41,7 +41,7 @@ import {
   createBlob,
   getFilteredColumnArray,
 } from "./utils/downloads";
-import config from "ui/src/config";
+import config from "../../config";
 
 const { isPartnerPreview } = config.profile;
 
