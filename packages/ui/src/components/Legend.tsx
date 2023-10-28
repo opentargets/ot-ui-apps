@@ -3,7 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { colorRange } from "../constants";
 
-function Legend({ url, urlLabel, hideLink }) {
+type LegendProps = {
+  url?: string;
+  urlLabel?: string;
+  hideLink?: boolean;
+}
+
+function Legend({ url, urlLabel, hideLink }: LegendProps) {
   const linkUrl =
     url ||
     "https://platform-docs.opentargets.org/associations#association-scores";
@@ -24,7 +30,7 @@ function Legend({ url, urlLabel, hideLink }) {
         <div style={{ height: "20px", width: "20px", textAlign: "center" }}>
           0
         </div>
-        {colorRange.map((color) => (
+        {colorRange.map((color: string) => (
           <div
             key={color}
             style={{
