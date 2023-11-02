@@ -1,11 +1,11 @@
-query PharmacogenomicsQuery($ensemblId: String!) {
-  target(ensemblId: $ensemblId) {
+query PharmacogenomicsQuery($chemblId: String!) {
+  drug(chemblId: $chemblId) {
     id
     pharmacogenomics {
+      targetFromSourceId
       variantRsId
       genotypeId
       variantFunctionalConsequenceId
-      drugId
       phenotypeText
       pgxCategory
       evidenceLevel

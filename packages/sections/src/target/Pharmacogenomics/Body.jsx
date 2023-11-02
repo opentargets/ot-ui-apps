@@ -21,8 +21,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={({ target }) => (
         <PharmacogenomicsTable
-          symbol={target.approvedSymbol}
-          pathways={target.pathways}
+          pharmacogenomics={target.pharmacogenomics}
           query={PHARMACOGENOMICS_QUERY.loc.source.body}
           variables={variables}
         />

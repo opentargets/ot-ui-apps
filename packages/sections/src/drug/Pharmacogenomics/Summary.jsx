@@ -10,13 +10,15 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={({ pharmacogenomics }) => `${pharmacogenomics.length} Pharmacogenomics Records`}
+      renderSummary={({ pharmacogenomics }) =>
+        `${pharmacogenomics.length} Pharmacogenomics Records`
+      }
     />
   );
 }
 
 Summary.fragments = {
-  PathwaysSummaryFragment: PHARMACOGENOMICS_SUMMARY_FRAGMENT,
+  PharmacogenomicsSummaryFragment: PHARMACOGENOMICS_SUMMARY_FRAGMENT,
 };
 
 export default Summary;

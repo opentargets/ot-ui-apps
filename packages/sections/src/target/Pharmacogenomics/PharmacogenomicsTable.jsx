@@ -1,14 +1,14 @@
 import { Link, DataTable, Tooltip, LabelChip } from "ui";
 
 // import { identifiersOrgLink } from "../../utils/global";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 
-function getColumns(symbol) {
+function getColumns() {
   return [
     {
       id: "rsId",
       label: "RsID",
-      renderCell: ({ variantRsId }) => variantRsId,
+      renderCell: ({ variantRsId }) => variantRsId || naLabel,
     },
     {
       id: "genotypeId",
@@ -21,7 +21,7 @@ function getColumns(symbol) {
             </Link>
           )} for more details`}
         >
-          {genotypeId}
+          <>{genotypeId || naLabel}</>
         </Tooltip>
       ),
     },
@@ -31,8 +31,8 @@ function getColumns(symbol) {
       label: "Variant Consequence",
       renderCell: ({ variantFunctionalConsequenceId }) => (
         <LabelChip
-          label={variantFunctionalConsequenceId}
-          value={variantFunctionalConsequenceId}
+          label={variantFunctionalConsequenceId || naLabel}
+          value={variantFunctionalConsequenceId || naLabel}
           tooltip={"Ensembl variant effect predictor"}
         />
       ),
@@ -41,23 +41,23 @@ function getColumns(symbol) {
     {
       id: "drug",
       label: "Drug(s)",
-      renderCell: ({ drugId }) => (
-        <Link to={`https://platform.opentargets.org/drug/${drugId}`}>{drugId}</Link>
-      ),
+      renderCell: ({ drugId }) => <Link to={`/drug/${drugId}`}>{drugId || naLabel}</Link>,
     },
     {
       id: "adverseOutcome",
       label: "Adverse Outcome",
       renderCell: ({ phenotypeText }) => (
         <Tooltip title={`Genotypennotationtext`}>
-          <Link>{phenotypeText}</Link>
+          <>
+            <Link to={`/disease/`}>{phenotypeText || naLabel}</Link>
+          </>
         </Tooltip>
       ),
     },
     {
       id: "adverseOutcomeCategory",
       label: "Adverse Outcome Category",
-      renderCell: ({ pgxCategory }) => ({ pgxCategory }),
+      renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
     },
     {
       id: "confidenceLevel",
@@ -68,7 +68,7 @@ function getColumns(symbol) {
             <Link to={`https://www.pharmgkb.org/page/clinAnnLevels`}> PharmGKB ClinAnn Levels</Link>
           )}`}
         >
-          {evidenceLevel}
+          <>{evidenceLevel || naLabel}</>
         </Tooltip>
       ),
     },
@@ -76,24 +76,27 @@ function getColumns(symbol) {
       id: "source",
       label: "Source",
       renderCell: ({ studyId }) => (
-        <Link to={`https://www.pharmgkb.org/clinicalAnnotations/${studyId}`}> {studyId}</Link>
+        <Link to={`https://www.pharmgkb.org/clinicalAnnotations/${studyId}`}>
+          {" "}
+          {studyId || naLabel}
+        </Link>
       ),
     },
     {
       id: "literature",
       label: "Literature",
-      renderCell: ({ literature }) => <Link> {literature}</Link>,
+      renderCell: ({ literature }) => <Link> {literature.join(",")}</Link>,
     },
   ];
 }
 
-function OverviewTab({ symbol, pathways, query, variables }) {
+function OverviewTab({ pharmacogenomics, query, variables }) {
   return (
     <DataTable
       showGlobalFilter
       dataDownloader
-      columns={getColumns(symbol)}
-      rows={pathways}
+      columns={getColumns()}
+      rows={pharmacogenomics}
       rowsPerPageOptions={defaultRowsPerPageOptions}
       query={query}
       variables={variables}
