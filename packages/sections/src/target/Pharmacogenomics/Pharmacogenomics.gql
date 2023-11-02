@@ -1,0 +1,16 @@
+query PharmacogenomicsQuery($ensemblId: String!) {
+  target(ensemblId: $ensemblId) {
+    id
+    pharmacogenomics {
+      variantRsId
+      genotypeId
+      variantFunctionalConsequenceId
+      drugId
+      phenotypeText
+      pgxCategory
+      evidenceLevel
+      studyId
+      literature
+    }
+  }
+}
