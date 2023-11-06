@@ -7,9 +7,9 @@ import Description from "./Description";
 import PROGENY_QUERY from "./sectionQuery.gql";
 import { dataTypesMap } from "../../dataTypes";
 import { sentenceCase } from "../../utils/global";
-import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 
-const reactomeUrl = (id) => `https://identifiers.org/reactome:${id}`;
+const reactomeUrl = id => `https://identifiers.org/reactome:${id}`;
 
 const columns = [
   {
@@ -32,8 +32,7 @@ const columns = [
         <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
       </Tooltip>
     ),
-    filterValue: ({ disease, diseaseFromSource }) =>
-      [disease.name, diseaseFromSource].join(),
+    filterValue: ({ disease, diseaseFromSource }) => [disease.name, diseaseFromSource].join(),
   },
   {
     id: "pathwayName",
@@ -56,9 +55,7 @@ const columns = [
     ),
     numeric: true,
     sortable: true,
-    renderCell: ({ resourceScore }) => (
-      <ScientificNotation number={resourceScore} />
-    ),
+    renderCell: ({ resourceScore }) => <ScientificNotation number={resourceScore} />,
   },
 ];
 
@@ -68,6 +65,7 @@ function Body({ id, label, entity }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(PROGENY_QUERY, {
@@ -80,10 +78,8 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.affected_pathway}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
-      renderBody={(data) => (
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderBody={data => (
         <DataTable
           columns={columns}
           dataDownloader
