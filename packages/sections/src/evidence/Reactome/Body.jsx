@@ -16,9 +16,9 @@ import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
 import REACTOME_QUERY from "./sectionQuery.gql";
 import { sentenceCase } from "../../utils/global";
-import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 
-const getColumns = (label) => [
+const getColumns = label => [
   {
     id: "disease.name",
     label: "Disease / phenotype",
@@ -52,15 +52,12 @@ const getColumns = (label) => [
       }
       if (pathways.length === 1) {
         return (
-          <Link
-            external
-            to={`http://www.reactome.org/PathwayBrowser/#${pathways[0].id}`}
-          >
+          <Link external to={`http://www.reactome.org/PathwayBrowser/#${pathways[0].id}`}>
             <EllsWrapper>{pathways[0].name}</EllsWrapper>
           </Link>
         );
       }
-      const refs = pathways.map((p) => ({
+      const refs = pathways.map(p => ({
         url: `http://www.reactome.org/PathwayBrowser/#${p.id}`,
         name: p.name,
         group: "Pathways",
@@ -83,10 +80,7 @@ const getColumns = (label) => [
     id: "targetFromSourceId",
     label: "Reported target",
     renderCell: ({ targetFromSourceId }) => (
-      <Link
-        external
-        to={`https://identifiers.org/uniprot/${targetFromSourceId}`}
-      >
+      <Link external to={`https://identifiers.org/uniprot/${targetFromSourceId}`}>
         <EllsWrapper>{targetFromSourceId}</EllsWrapper>
       </Link>
     ),
@@ -96,18 +90,14 @@ const getColumns = (label) => [
     id: "targetModulation",
     label: "Target modulation",
     renderCell: ({ targetModulation }) =>
-      targetModulation ? (
-        <EllsWrapper>{sentenceCase(targetModulation)}</EllsWrapper>
-      ) : (
-        naLabel
-      ),
+      targetModulation ? <EllsWrapper>{sentenceCase(targetModulation)}</EllsWrapper> : naLabel,
     filterValue: ({ targetModulation }) => sentenceCase(targetModulation),
     width: "12%",
   },
   {
     filterValue: ({ variantAminoacidDescriptions }) =>
       variantAminoacidDescriptions
-        ?.map((variantAminoacidDescription) => variantAminoacidDescription)
+        ?.map(variantAminoacidDescription => variantAminoacidDescription)
         .join(),
     label: "Amino acid variation",
     renderCell: ({ variantAminoacidDescriptions }) => {
@@ -117,7 +107,7 @@ const getColumns = (label) => [
       if (variantAminoacidDescriptions?.length > 1) {
         return (
           <TableDrawer
-            entries={variantAminoacidDescriptions.map((d) => ({
+            entries={variantAminoacidDescriptions.map(d => ({
               name: d,
               group: "Amino acid variation",
             }))}
@@ -133,7 +123,7 @@ const getColumns = (label) => [
     label: "Literature",
     renderCell: ({ literature = [] }) => {
       const literatureList = [];
-      literature?.forEach((id) => {
+      literature?.forEach(id => {
         if (id !== "NA") {
           literatureList.push({
             name: id,
@@ -143,11 +133,7 @@ const getColumns = (label) => [
         }
       });
       return (
-        <PublicationsDrawer
-          entries={literatureList}
-          symbol={label.symbol}
-          name={label.name}
-        />
+        <PublicationsDrawer entries={literatureList} symbol={label.symbol} name={label.name} />
       );
     },
     width: "12%",
@@ -160,6 +146,7 @@ function Body({ id, label, entity }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(REACTOME_QUERY, {
@@ -174,9 +161,7 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.affected_pathway}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={({ disease }) => {
         const { rows } = disease.reactomeSummary;
         return (
