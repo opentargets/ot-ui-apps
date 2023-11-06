@@ -10,6 +10,7 @@ import { sentenceCase } from "../../utils/global";
 
 import EXPRESSION_ATLAS_QUERY from "./ExpressionAtlasQuery.gql";
 import { definition } from ".";
+import { sectionsBaseSizeQuery } from "../../constants";
 
 const columns = [
   {
@@ -93,9 +94,7 @@ const columns = [
         <i>p</i>-value
       </>
     ),
-    renderCell: ({ resourceScore }) => (
-      <ScientificNotation number={resourceScore} />
-    ),
+    renderCell: ({ resourceScore }) => <ScientificNotation number={resourceScore} />,
     numeric: true,
     sortable: true,
   },
@@ -106,6 +105,7 @@ function Body({ id, label, entity }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(EXPRESSION_ATLAS_QUERY, {
@@ -118,9 +118,7 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.rna_expression}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={({ disease }) => {
         const { rows } = disease.expressionAtlasSummary;
         return (
