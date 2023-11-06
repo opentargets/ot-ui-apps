@@ -1,19 +1,12 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import {
-  Link,
-  Tooltip,
-  SectionItem,
-  PublicationsDrawer,
-  DataTable,
-  ScientificNotation,
-} from "ui";
+import { Link, Tooltip, SectionItem, PublicationsDrawer, DataTable, ScientificNotation } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 
 import GENE_BURDEN_QUERY from "./GeneBurdenQuery.gql";
 
@@ -31,19 +24,17 @@ const getSource = (cohort, project) => {
 };
 
 const getSourceLink = (project, targetId) => {
-  if (project === "Epi25 collaborative")
-    return `https://epi25.broadinstitute.org/gene/${targetId}`;
+  if (project === "Epi25 collaborative") return `https://epi25.broadinstitute.org/gene/${targetId}`;
   if (project === "Autism Sequencing Consortiuml")
     return `https://asc.broadinstitute.org/gene/${targetId}`;
-  if (project === "SCHEMA consortium")
-    return `https://schema.broadinstitute.org/gene/${targetId}`;
+  if (project === "SCHEMA consortium") return `https://schema.broadinstitute.org/gene/${targetId}`;
   if (project === "Genebass")
     return `https://app.genebass.org/gene/${targetId}?burdenSet=pLoF&phewasOpts=1&resultLayout=full`;
   if (project === "AstraZeneca PheWAS Portal") return `https://azphewas.com`;
   return "";
 };
 
-const getColumns = (label) => [
+const getColumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -145,9 +136,7 @@ const getColumns = (label) => [
     numeric: true,
     sortable: true,
     renderCell: ({ studySampleSize }) =>
-      studySampleSize
-        ? parseInt(studySampleSize, 10).toLocaleString()
-        : naLabel,
+      studySampleSize ? parseInt(studySampleSize, 10).toLocaleString() : naLabel,
   },
   {
     id: "oddsRatio",
@@ -161,9 +150,9 @@ const getColumns = (label) => [
     }) => {
       const ci =
         oddsRatioConfidenceIntervalLower && oddsRatioConfidenceIntervalUpper
-          ? `(${parseFloat(
-              oddsRatioConfidenceIntervalLower.toFixed(3)
-            )}, ${parseFloat(oddsRatioConfidenceIntervalUpper.toFixed(3))})`
+          ? `(${parseFloat(oddsRatioConfidenceIntervalLower.toFixed(3))}, ${parseFloat(
+              oddsRatioConfidenceIntervalUpper.toFixed(3)
+            )})`
           : "";
       return oddsRatio ? `${parseFloat(oddsRatio.toFixed(3))} ${ci}` : naLabel;
     },
@@ -179,24 +168,16 @@ const getColumns = (label) => [
     label: "Beta (CI 95%)",
     numeric: true,
     sortable: true,
-    renderCell: ({
-      beta,
-      betaConfidenceIntervalLower,
-      betaConfidenceIntervalUpper,
-    }) => {
+    renderCell: ({ beta, betaConfidenceIntervalLower, betaConfidenceIntervalUpper }) => {
       const ci =
         betaConfidenceIntervalLower && betaConfidenceIntervalUpper
-          ? `(${parseFloat(
-              betaConfidenceIntervalLower.toFixed(3)
-            )}, ${parseFloat(betaConfidenceIntervalUpper.toFixed(3))})`
+          ? `(${parseFloat(betaConfidenceIntervalLower.toFixed(3))}, ${parseFloat(
+              betaConfidenceIntervalUpper.toFixed(3)
+            )})`
           : "";
       return beta ? `${parseFloat(beta.toFixed(3))} ${ci}` : naLabel;
     },
-    filterValue: ({
-      beta,
-      betaConfidenceIntervalLower,
-      betaConfidenceIntervalUpper,
-    }) =>
+    filterValue: ({ beta, betaConfidenceIntervalLower, betaConfidenceIntervalUpper }) =>
       `${beta} ${betaConfidenceIntervalLower} ${betaConfidenceIntervalUpper} ${naLabel}`,
   },
   {
@@ -211,33 +192,24 @@ const getColumns = (label) => [
     renderCell: ({ pValueMantissa, pValueExponent }) => (
       <ScientificNotation number={[pValueMantissa, pValueExponent]} />
     ),
-    filterValue: ({ pValueMantissa, pValueExponent }) =>
-      `${pValueMantissa} ${pValueExponent}`,
-    exportValue: ({ pValueMantissa, pValueExponent }) =>
-      `${pValueMantissa}x10${pValueExponent}`,
+    filterValue: ({ pValueMantissa, pValueExponent }) => `${pValueMantissa} ${pValueExponent}`,
+    exportValue: ({ pValueMantissa, pValueExponent }) => `${pValueMantissa}x10${pValueExponent}`,
     comparator: (a, b) =>
-      a.pValueMantissa * 10 ** a.pValueExponent -
-      b.pValueMantissa * 10 ** b.pValueExponent,
+      a.pValueMantissa * 10 ** a.pValueExponent - b.pValueMantissa * 10 ** b.pValueExponent,
   },
   {
     id: "literature",
     label: "Literature",
     renderCell: ({ literature }) => {
       const entries = literature
-        ? literature.map((id) => ({
+        ? literature.map(id => ({
             name: id,
             url: epmcUrl(id),
             group: "literature",
           }))
         : [];
 
-      return (
-        <PublicationsDrawer
-          entries={entries}
-          symbol={label.symbol}
-          name={label.name}
-        />
-      );
+      return <PublicationsDrawer entries={entries} symbol={label.symbol} name={label.name} />;
     },
   },
 ];
@@ -247,6 +219,7 @@ export function Body({ id, label, entity }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(GENE_BURDEN_QUERY, {
@@ -261,9 +234,7 @@ export function Body({ id, label, entity }) {
       chipText={dataTypesMap.genetic_association}
       entity={entity}
       request={request}
-      renderDescription={() => (
-        <Description symbol={label.symbol} diseaseName={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
       renderBody={({ disease }) => {
         const { rows } = disease.geneBurdenSummary;
         return (
