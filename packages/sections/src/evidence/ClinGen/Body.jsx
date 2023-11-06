@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { Link, Tooltip, SectionItem, DataTable } from "ui";
-import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import { dataTypesMap } from "../../dataTypes";
 import Description from "./Description";
 import { definition } from ".";
@@ -45,7 +45,7 @@ const columns = [
             listStyle: "none",
           }}
         >
-          {allelicRequirements.map((allelicRequirement) => (
+          {allelicRequirements.map(allelicRequirement => (
             <li key={allelicRequirement}>{allelicRequirement}</li>
           ))}
         </ul>
@@ -62,10 +62,7 @@ const columns = [
         title={
           <Typography variant="caption" display="block" align="center">
             As defined by the{" "}
-            <Link
-              external
-              to="https://thegencc.org/faq.html#validity-termsdelphi-survey"
-            >
+            <Link external to="https://thegencc.org/faq.html#validity-termsdelphi-survey">
               GenCC Guidelines
             </Link>
           </Typography>
@@ -90,6 +87,7 @@ function Body({ id, label, entity }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(CLINGEN_QUERY, {
@@ -102,9 +100,7 @@ function Body({ id, label, entity }) {
       entity={entity}
       chipText={dataTypesMap.genetic_association}
       request={request}
-      renderDescription={() => (
-        <Description symbol={label.symbol} diseaseName={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
       renderBody={({ disease }) => {
         const { rows } = disease.clingenSummary;
         return (
