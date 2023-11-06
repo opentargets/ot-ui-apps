@@ -1,4 +1,4 @@
-query UniprotLiteratureQuery($ensemblId: String!, $efoId: String!) {
+query UniprotLiteratureQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
   target(ensemblId: $ensemblId) {
     approvedSymbol
   }
@@ -8,6 +8,7 @@ query UniprotLiteratureQuery($ensemblId: String!, $efoId: String!) {
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["uniprot_literature"]
+      size: $size
     ) {
       count
       rows {

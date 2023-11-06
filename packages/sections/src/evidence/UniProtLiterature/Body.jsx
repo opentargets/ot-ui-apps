@@ -6,11 +6,11 @@ import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
 import UNIPROT_LITERATURE_QUERY from "./UniprotLiteratureQuery.gql";
 import { identifiersOrgLink, sentenceCase } from "../../utils/global";
 
-const getcolumns = (label) => [
+const getcolumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -62,11 +62,7 @@ const getcolumns = (label) => [
         }, []) || [];
 
       return (
-        <PublicationsDrawer
-          entries={literatureList}
-          symbol={label.symbol}
-          name={label.name}
-        />
+        <PublicationsDrawer entries={literatureList} symbol={label.symbol} name={label.name} />
       );
     },
   },
@@ -78,6 +74,7 @@ function Body({ id, label, entity }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(UNIPROT_LITERATURE_QUERY, {
@@ -92,9 +89,7 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.genetic_association}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} diseaseName={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
       renderBody={({ disease }) => {
         const { rows } = disease.uniprotLiteratureSummary;
         return (
