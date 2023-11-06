@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/client";
 import { v1 } from "uuid";
 import { SectionItem, Tooltip, Link, PublicationsDrawer, DataTable } from "ui";
 
-import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
@@ -14,7 +14,7 @@ import { definition } from ".";
 const g2pUrl = (studyId, symbol) =>
   `https://www.ebi.ac.uk/gene2phenotype/search?panel=${studyId}&search_term=${symbol}`;
 
-const getColumns = (label) => [
+const getColumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -60,7 +60,7 @@ const getColumns = (label) => [
       if (allelicRequirements && allelicRequirements.length > 1) {
         return (
           <List>
-            {allelicRequirements.map((item) => (
+            {allelicRequirements.map(item => (
               <ListItem key={v1()}>{item}</ListItem>
             ))}
           </List>
@@ -92,10 +92,7 @@ const getColumns = (label) => [
           title={
             <Typography variant="caption" display="block" align="center">
               As defined by the{" "}
-              <Link
-                external
-                to="https://thegencc.org/faq.html#validity-termsdelphi-survey"
-              >
+              <Link external to="https://thegencc.org/faq.html#validity-termsdelphi-survey">
                 GenCC Guidelines
               </Link>
             </Typography>
@@ -113,25 +110,19 @@ const getColumns = (label) => [
     label: "Literature",
     renderCell: ({ literature }) => {
       const entries = literature
-        ? literature.map((id) => ({
+        ? literature.map(id => ({
             name: id,
             url: epmcUrl(id),
             group: "literature",
           }))
         : [];
-      return (
-        <PublicationsDrawer
-          entries={entries}
-          symbol={label.symbol}
-          name={label.name}
-        />
-      );
+      return <PublicationsDrawer entries={entries} symbol={label.symbol} name={label.name} />;
     },
   },
 ];
 
 function Body({ id: { ensgId, efoId }, label: { symbol, name }, entity }) {
-  const variables = { ensemblId: ensgId, efoId };
+  const variables = { ensemblId: ensgId, efoId, size: sectionsBaseSizeQuery };
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
     variables,
@@ -146,7 +137,7 @@ function Body({ id: { ensgId, efoId }, label: { symbol, name }, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={symbol} name={name} />}
-      renderBody={(data) => (
+      renderBody={data => (
         <DataTable
           columns={columns}
           dataDownloader
