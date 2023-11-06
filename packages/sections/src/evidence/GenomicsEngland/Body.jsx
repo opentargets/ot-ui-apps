@@ -1,15 +1,12 @@
 import { useQuery } from "@apollo/client";
-import {
-  faCheckSquare,
-  faExclamationTriangle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckSquare, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Typography } from "@mui/material";
 import { v1 } from "uuid";
 import { Tooltip, SectionItem, Link, PublicationsDrawer, DataTable } from "ui";
 
 import { definition } from ".";
-import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { sentenceCase } from "../../utils/global";
@@ -20,40 +17,35 @@ import GENOMICS_ENGLAND_QUERY from "./sectionQuery.gql";
 const geUrl = (id, approvedSymbol) =>
   `https://panelapp.genomicsengland.co.uk/panels/${id}/gene/${approvedSymbol}`;
 
-const confidenceCaption = (confidence) =>
+const confidenceCaption = confidence =>
   ({
     green: (
       <span style={{ color: "#3fad46" }}>
-        <FontAwesomeIcon icon={faCheckSquare} size="sm" />{" "}
-        {sentenceCase(confidence)}
+        <FontAwesomeIcon icon={faCheckSquare} size="sm" /> {sentenceCase(confidence)}
       </span>
     ),
     amber: (
       <span style={{ color: "#f0ad4e" }}>
-        <FontAwesomeIcon icon={faExclamationTriangle} size="sm" />{" "}
-        {sentenceCase(confidence)}
+        <FontAwesomeIcon icon={faExclamationTriangle} size="sm" /> {sentenceCase(confidence)}
       </span>
     ),
   }[confidence]);
 
-const confidenceMap = (confidence) =>
+const confidenceMap = confidence =>
   ({
     green: 20,
     amber: 10,
   }[confidence.toLowerCase()] || 0);
 
-const allelicRequirementsCaption = (allelicRequirements) => {
-  const caption = sentenceCase(
-    allelicRequirements.split(" ", 1)[0].replace(/[;:,]*/g, "")
-  );
+const allelicRequirementsCaption = allelicRequirements => {
+  const caption = sentenceCase(allelicRequirements.split(" ", 1)[0].replace(/[;:,]*/g, ""));
   const description =
-    allelicRequirements.split(" ").slice(1).join(" ") ||
-    "No more information available";
+    allelicRequirements.split(" ").slice(1).join(" ") || "No more information available";
 
   return [caption, description];
 };
 
-const getColumns = (label) => [
+const getColumns = label => [
   {
     id: "disease",
     label: "Disease/phenotype",
@@ -64,12 +56,7 @@ const getColumns = (label) => [
             <Typography variant="subtitle2" display="block" align="center">
               Reported disease or phenotype:
             </Typography>
-            <Typography
-              variant="caption"
-              display="block"
-              align="center"
-              gutterBottom
-            >
+            <Typography variant="caption" display="block" align="center" gutterBottom>
               {sentenceCase(diseaseFromSource)}
             </Typography>
 
@@ -79,7 +66,7 @@ const getColumns = (label) => [
                   All reported phenotypes:
                 </Typography>
                 <Typography variant="caption" display="block">
-                  {cohortPhenotypes.map((cp) => (
+                  {cohortPhenotypes.map(cp => (
                     <div key={cp}>{cp}</div>
                   ))}
                 </Typography>
@@ -94,24 +81,18 @@ const getColumns = (label) => [
         <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
       </Tooltip>
     ),
-    filterValue: ({ disease, diseaseFromSource }) =>
-      [disease.name, diseaseFromSource].join(),
+    filterValue: ({ disease, diseaseFromSource }) => [disease.name, diseaseFromSource].join(),
   },
   {
     id: "allelicRequirements",
     label: "Allelic Requirement",
     renderCell: ({ allelicRequirements }) =>
       allelicRequirements
-        ? allelicRequirements.map((item) => {
+        ? allelicRequirements.map(item => {
             const [caption, description] = allelicRequirementsCaption(item);
 
             return (
-              <Tooltip
-                key={v1()}
-                placement="top"
-                title={description}
-                showHelpIcon
-              >
+              <Tooltip key={v1()} placement="top" title={description} showHelpIcon>
                 {caption}
               </Tooltip>
             );
@@ -139,10 +120,7 @@ const getColumns = (label) => [
         title={
           <Typography variant="caption" display="block" align="center">
             As defined by the{" "}
-            <Link
-              external
-              to="https://panelapp.genomicsengland.co.uk/#!Guidelines"
-            >
+            <Link external to="https://panelapp.genomicsengland.co.uk/#!Guidelines">
               Panel App Guidelines
             </Link>
           </Typography>
@@ -152,8 +130,7 @@ const getColumns = (label) => [
         {confidenceCaption(confidence)}
       </Tooltip>
     ),
-    comparator: (a, b) =>
-      confidenceMap(a.confidence) - confidenceMap(b.confidence),
+    comparator: (a, b) => confidenceMap(a.confidence) - confidenceMap(b.confidence),
   },
   {
     id: "literature",
@@ -173,11 +150,7 @@ const getColumns = (label) => [
         }, []) || [];
 
       return (
-        <PublicationsDrawer
-          symbol={label.symbol}
-          name={label.name}
-          entries={literatureList}
-        />
+        <PublicationsDrawer symbol={label.symbol} name={label.name} entries={literatureList} />
       );
     },
   },
@@ -188,6 +161,7 @@ export function Body({ id, label, entity }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(GENOMICS_ENGLAND_QUERY, {
@@ -202,10 +176,8 @@ export function Body({ id, label, entity }) {
       chipText={dataTypesMap.genetic_association}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
-      renderBody={(data) => (
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderBody={data => (
         <DataTable
           columns={columns}
           dataDownloader
