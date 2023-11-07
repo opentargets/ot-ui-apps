@@ -8,10 +8,8 @@ query PharmacogenomicsQuery($ensemblId: String!) {
         id
         label
       }
-      drug {
-        id
-        name
-      }
+      drugFromSource
+      drugId
       phenotypeFromSourceId
       genotypeAnnotationText
       phenotypeText

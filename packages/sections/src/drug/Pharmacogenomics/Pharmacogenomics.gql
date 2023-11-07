@@ -9,6 +9,7 @@ query PharmacogenomicsQuery($chemblId: String!) {
         id
         label
       }
+      isDirectTarget
       phenotypeFromSourceId
       genotypeAnnotationText
       phenotypeText

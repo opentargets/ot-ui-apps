@@ -24,6 +24,13 @@ export const colorRange = [
   "#005299",
 ];
 
+export const PHARM_GKB_COLOR = {
+  green: "#0ABC72",
+  blue: "#2A74DF",
+  yellow: "#FFC105",
+  red: "#C53B3B",
+};
+
 export const defaultRowsPerPageOptions = [10, 25, 100];
 
 export const decimalPlaces = 3;

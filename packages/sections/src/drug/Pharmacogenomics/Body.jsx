@@ -1,152 +1,207 @@
+import classNames from "classnames";
 import { useQuery } from "@apollo/client";
+import { makeStyles } from "@mui/styles";
 import { Link, SectionItem, Tooltip, DataTable, LabelChip, PublicationsDrawer } from "ui";
 
 import { epmcUrl } from "../../utils/urls";
 import { definition } from ".";
 import Description from "./Description";
 import PHARMACOGENOMICS_QUERY from "./Pharmacogenomics.gql";
-import { naLabel, defaultRowsPerPageOptions } from "../../constants";
+import { naLabel, defaultRowsPerPageOptions, PHARM_GKB_COLOR } from "../../constants";
 
-const columns = [
-  {
-    id: "gene",
-    label: "Gene",
-    renderCell: ({ targetFromSourceId }) =>
-      targetFromSourceId ? (
-        <Link
-          tooltip="This gene may not be direct target of the drug."
-          to={`/target/${targetFromSourceId}`}
-        >
-          <span>{targetFromSourceId}</span>
-        </Link>
-      ) : (
-        naLabel
-      ),
+const useStyles = makeStyles(theme => ({
+  level: {
+    color: "white",
+    padding: theme.spacing(0.5),
+    borderRadius: theme.spacing(0.5),
   },
-  {
-    id: "rsId",
-    label: "RsID",
-    renderCell: ({ variantRsId }) => variantRsId || naLabel,
+  green: {
+    background: PHARM_GKB_COLOR.green,
   },
-  {
-    id: "genotypeId",
-    label: "Genotype ID",
-    renderCell: ({ genotypeId }) =>
-      genotypeId ? (
-        <Tooltip
-          title={
-            <>
-              VCF-style(chr_pos_ref_allele1,allele2). See
-              <Link
-                external
-                to="https://github.com/apriltuesday/opentargets-pharmgkb/tree/issue-18#variant-coordinate-computation"
-              >
-                {" "}
-                here{" "}
-              </Link>
-              for more details
-            </>
-          }
-        >
-          <span>{genotypeId}</span>
-        </Tooltip>
-      ) : (
-        naLabel
-      ),
+  red: {
+    background: PHARM_GKB_COLOR.red,
   },
-  {
-    id: "variantFunctionalConsequence",
-    label: "Variant Consequence",
-    renderCell: ({ variantFunctionalConsequence }) => {
-      if (variantFunctionalConsequence)
-        return (
-          <LabelChip
-            label={variantFunctionalConsequence.id}
-            value={variantFunctionalConsequence.label}
-            tooltip="Ensembl variant effect predictor"
-          />
-        );
-      return naLabel;
-    },
+  yellow: {
+    background: PHARM_GKB_COLOR.yellow,
   },
-  {
-    id: "drugResponse",
-    label: "Drug Response",
-    renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
-      const phenotypeTextElement = phenotypeFromSourceId ? (
-        <Link tooltip={genotypeAnnotationText} to={`/disease/${phenotypeFromSourceId}`}>
-          {phenotypeText}
-        </Link>
-      ) : (
-        <Tooltip title={genotypeAnnotationText}>{phenotypeText}</Tooltip>
-      );
-      return phenotypeTextElement;
-    },
+  blue: {
+    background: PHARM_GKB_COLOR.blue,
   },
-  {
-    id: "drugResponseCategory",
-    label: "Drug Response Category",
-    renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
-  },
-  {
-    id: "confidenceLevel",
-    label: "Confidence (Level)",
-    renderCell: ({ evidenceLevel }) =>
-      evidenceLevel ? (
-        <Tooltip
-          title={
-            <>
-              As defined by
-              <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
-                {" "}
-                PharmGKB ClinAnn Levels
-              </Link>
-            </>
-          }
-        >
-          <span>{evidenceLevel}</span>
-        </Tooltip>
-      ) : (
-        naLabel
-      ),
-  },
-  {
-    id: "source",
-    label: "Source",
-    renderCell: ({ studyId }) =>
-      studyId ? (
-        <Link external to={`https://www.pharmgkb.org/clinicalAnnotation/${studyId}`}>
-          PharmGKB-{studyId}
-        </Link>
-      ) : (
-        naLabel
-      ),
-  },
-  {
-    id: "literature",
-    label: "Literature",
-    renderCell: ({ literature }) => {
-      const literatureList =
-        literature?.reduce((acc, id) => {
-          if (id === "NA") return acc;
+}));
 
-          return [
-            ...acc,
-            {
-              name: id,
-              url: epmcUrl(id),
-              group: "literature",
-            },
-          ];
-        }, []) || [];
-
-      return <PublicationsDrawer entries={literatureList} />;
-    },
-  },
-];
+const getLevelElementClassName = level => {
+  switch (level) {
+    case "1":
+      return "green";
+    case "1A":
+      return "green";
+    case "2":
+      return "level-blue";
+    case "2A":
+      return "level-blue";
+    case "3":
+      return "level-yellow";
+    case "4":
+      return "level-red";
+    default:
+      return "level-red";
+  }
+};
 
 function Body({ id: chemblId, label: name, entity }) {
   const variables = { chemblId };
+  const classes = useStyles();
+
+  const columns = [
+    {
+      id: "gene",
+      label: "Gene",
+      renderCell: ({ targetFromSourceId, isDirectTarget }) => {
+        if (targetFromSourceId) {
+          const tooltipText = isDirectTarget
+            ? "The variant is in the drug's primary target gene."
+            : "The variant is outside the drug's primary target gene.";
+          return (
+            <Tooltip title={tooltipText} showHelpIcon>
+              <Link to={`/target/${targetFromSourceId}`}>
+                <span>{targetFromSourceId}</span>
+              </Link>
+            </Tooltip>
+          );
+        }
+        return naLabel;
+      },
+    },
+    {
+      id: "rsId",
+      label: "rsID",
+      renderCell: ({ variantRsId }) => variantRsId || naLabel,
+    },
+    {
+      id: "genotypeId",
+      label: "Genotype ID",
+      renderCell: ({ genotypeId }) =>
+        genotypeId ? (
+          <Tooltip
+            showHelpIcon
+            title={
+              <>
+                VCF-style(chr_pos_ref_allele1,allele2). See
+                <Link
+                  external
+                  to="https://github.com/apriltuesday/opentargets-pharmgkb/tree/issue-18#variant-coordinate-computation"
+                >
+                  {" "}
+                  here{" "}
+                </Link>
+                for more details
+              </>
+            }
+          >
+            <span>{genotypeId}</span>
+          </Tooltip>
+        ) : (
+          naLabel
+        ),
+    },
+    {
+      id: "variantFunctionalConsequence",
+      label: "Variant Consequence",
+      renderCell: ({ variantFunctionalConsequence }) => {
+        if (variantFunctionalConsequence)
+          return (
+            <LabelChip
+              label={variantFunctionalConsequence.id}
+              value={variantFunctionalConsequence.label}
+              tooltip="Ensembl variant effect predictor"
+            />
+          );
+        return naLabel;
+      },
+    },
+    {
+      id: "drugResponse",
+      label: "Drug Response",
+      renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
+        const phenotypeTextElement = phenotypeFromSourceId ? (
+          <Tooltip title={genotypeAnnotationText} showHelpIcon>
+            <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeText}</Link>
+          </Tooltip>
+        ) : (
+          <Tooltip showHelpIcon title={genotypeAnnotationText}>
+            {phenotypeText}
+          </Tooltip>
+        );
+        return phenotypeTextElement;
+      },
+    },
+    {
+      id: "drugResponseCategory",
+      label: "Drug Response Category",
+      renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
+    },
+    {
+      id: "confidenceLevel",
+      label: "Confidence (Level)",
+      renderCell: ({ evidenceLevel }) => {
+        if (evidenceLevel) {
+          const levelClass = getLevelElementClassName(evidenceLevel);
+          return (
+            <Tooltip
+              title={
+                <span>
+                  As defined by
+                  <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
+                    {" "}
+                    PharmGKB ClinAnn Levels
+                  </Link>
+                </span>
+              }
+            >
+              <span className={classNames(classes.level, classes[levelClass])}>
+                Level {evidenceLevel}
+              </span>
+            </Tooltip>
+          );
+        }
+        return naLabel;
+      },
+    },
+    {
+      id: "source",
+      label: "Source",
+      renderCell: ({ studyId }) =>
+        studyId ? (
+          <Link external to={`https://www.pharmgkb.org/clinicalAnnotation/${studyId}`}>
+            PharmGKB
+          </Link>
+        ) : (
+          naLabel
+        ),
+    },
+    {
+      id: "literature",
+      label: "Literature",
+      renderCell: ({ literature }) => {
+        const literatureList =
+          literature?.reduce((acc, id) => {
+            if (id === "NA") return acc;
+
+            return [
+              ...acc,
+              {
+                name: id,
+                url: epmcUrl(id),
+                group: "literature",
+              },
+            ];
+          }, []) || [];
+
+        return <PublicationsDrawer entries={literatureList} />;
+      },
+    },
+  ];
+
   const request = useQuery(PHARMACOGENOMICS_QUERY, {
     variables,
   });

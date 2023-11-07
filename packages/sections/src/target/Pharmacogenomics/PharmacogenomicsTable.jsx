@@ -1,137 +1,186 @@
+import classNames from "classnames";
+import { makeStyles } from "@mui/styles";
 import { Link, DataTable, Tooltip, LabelChip, PublicationsDrawer } from "ui";
 
 import { epmcUrl } from "../../utils/urls";
-import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel, PHARM_GKB_COLOR } from "../../constants";
 
-const columns = [
-  {
-    id: "rsId",
-    label: "rsID",
-    renderCell: ({ variantRsId }) => variantRsId || naLabel,
+const useStyles = makeStyles(theme => ({
+  level: {
+    color: "white",
+    padding: theme.spacing(0.5),
+    borderRadius: theme.spacing(0.5),
   },
-  {
-    id: "genotypeId",
-    label: "Genotype ID",
-    renderCell: ({ genotypeId }) =>
-      genotypeId ? (
-        <Tooltip
-          title={
-            <>
-              VCF-style(chr_pos_ref_allele1,allele2). See
-              <Link
-                external
-                to="https://github.com/apriltuesday/opentargets-pharmgkb/tree/issue-18#variant-coordinate-computation"
-              >
-                {" "}
-                here{" "}
-              </Link>
-              for more details
-            </>
-          }
-        >
-          <span>{genotypeId}</span>
-        </Tooltip>
-      ) : (
-        naLabel
-      ),
+  green: {
+    background: PHARM_GKB_COLOR.green,
   },
-  {
-    id: "variantFunctionalConsequence",
-    label: "Variant Consequence",
-    renderCell: ({ variantFunctionalConsequence }) => {
-      if (variantFunctionalConsequence)
-        return (
-          <LabelChip
-            label={variantFunctionalConsequence.id}
-            value={variantFunctionalConsequence.label}
-            tooltip="Ensembl variant effect predictor"
-          />
-        );
-      return naLabel;
-    },
+  red: {
+    background: PHARM_GKB_COLOR.red,
   },
-  {
-    id: "drug",
-    label: "Drug(s)",
-    renderCell: ({ drug }) =>
-      drug && drug?.id ? <Link to={`/drug/${drug.id}`}>{drug.name || drug.id}</Link> : naLabel,
+  yellow: {
+    background: PHARM_GKB_COLOR.yellow,
   },
-  {
-    id: "drugResponse",
-    label: "Drug Response",
-    renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
-      const phenotypeTextElement = phenotypeFromSourceId ? (
-        <Link tooltip={genotypeAnnotationText} to={`/disease/${phenotypeFromSourceId}`}>
-          {phenotypeText}
-        </Link>
-      ) : (
-        <Tooltip title={genotypeAnnotationText}>{phenotypeText}</Tooltip>
-      );
-      return phenotypeTextElement;
-    },
+  blue: {
+    background: PHARM_GKB_COLOR.blue,
   },
-  {
-    id: "drugResponseCategory",
-    label: "Drug Response Category",
-    renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
-  },
-  {
-    id: "confidenceLevel",
-    label: "Confidence (Level)",
-    renderCell: ({ evidenceLevel }) =>
-      evidenceLevel ? (
-        <Tooltip
-          title={
-            <span>
-              As defined by
-              <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
-                {" "}
-                PharmGKB ClinAnn Levels
-              </Link>
-            </span>
-          }
-        >
-          <span>{evidenceLevel}</span>
-        </Tooltip>
-      ) : (
-        naLabel
-      ),
-  },
-  {
-    id: "source",
-    label: "Source",
-    renderCell: ({ studyId }) =>
-      studyId ? (
-        <Link external to={`https://www.pharmgkb.org/clinicalAnnotation/${studyId}`}>
-          PharmGKB-{studyId}
-        </Link>
-      ) : (
-        naLabel
-      ),
-  },
-  {
-    id: "literature",
-    renderCell: ({ literature }) => {
-      const literatureList =
-        literature?.reduce((acc, id) => {
-          if (id === "NA") return acc;
+}));
 
-          return [
-            ...acc,
-            {
-              name: id,
-              url: epmcUrl(id),
-              group: "literature",
-            },
-          ];
-        }, []) || [];
-
-      return <PublicationsDrawer entries={literatureList} />;
-    },
-  },
-];
+const getLevelElementClassName = level => {
+  switch (level) {
+    case "1":
+      return "green";
+    case "1A":
+      return "green";
+    case "2":
+      return "level-blue";
+    case "2A":
+      return "level-blue";
+    case "3":
+      return "level-yellow";
+    case "4":
+      return "level-red";
+    default:
+      return "level-red";
+  }
+};
 
 function OverviewTab({ pharmacogenomics, query, variables }) {
+  const classes = useStyles();
+  const columns = [
+    {
+      id: "rsId",
+      label: "rsID",
+      renderCell: ({ variantRsId }) => variantRsId || naLabel,
+    },
+    {
+      id: "genotypeId",
+      label: "Genotype ID",
+      renderCell: ({ genotypeId }) =>
+        genotypeId ? (
+          <Tooltip
+            showHelpIcon
+            title={
+              <>
+                VCF-style(chr_pos_ref_allele1,allele2). See
+                <Link
+                  external
+                  to="https://github.com/apriltuesday/opentargets-pharmgkb/tree/issue-18#variant-coordinate-computation"
+                >
+                  {" "}
+                  here{" "}
+                </Link>
+                for more details
+              </>
+            }
+          >
+            <span>{genotypeId}</span>
+          </Tooltip>
+        ) : (
+          naLabel
+        ),
+    },
+    {
+      id: "variantFunctionalConsequence",
+      label: "Variant Consequence",
+      renderCell: ({ variantFunctionalConsequence }) => {
+        if (variantFunctionalConsequence)
+          return (
+            <LabelChip
+              label={variantFunctionalConsequence.id}
+              value={variantFunctionalConsequence.label}
+              tooltip="Ensembl variant effect predictor"
+            />
+          );
+        return naLabel;
+      },
+    },
+    {
+      id: "drug",
+      label: "Drug(s)",
+      renderCell: ({ drugId, drugFromSource }) =>
+        drugId ? <Link to={`/drug/${drugId}`}>{drugFromSource || naLabel}</Link> : naLabel,
+    },
+    {
+      id: "drugResponse",
+      label: "Drug Response",
+      renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
+        const phenotypeTextElement = phenotypeFromSourceId ? (
+          <Tooltip showHelpIcon title={genotypeAnnotationText}>
+            <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeText}</Link>
+          </Tooltip>
+        ) : (
+          <Tooltip showHelpIcon title={genotypeAnnotationText}>
+            {phenotypeText}
+          </Tooltip>
+        );
+        return phenotypeTextElement;
+      },
+    },
+    {
+      id: "drugResponseCategory",
+      label: "Drug Response Category",
+      renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
+    },
+    {
+      id: "confidenceLevel",
+      label: "Confidence (Level)",
+      renderCell: ({ evidenceLevel }) => {
+        if (evidenceLevel) {
+          const levelClass = getLevelElementClassName(evidenceLevel);
+          return (
+            <Tooltip
+              title={
+                <span>
+                  As defined by
+                  <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
+                    {" "}
+                    PharmGKB ClinAnn Levels
+                  </Link>
+                </span>
+              }
+            >
+              <span className={classNames(classes.level, classes[levelClass])}>
+                Level {evidenceLevel}
+              </span>
+            </Tooltip>
+          );
+        }
+        return naLabel;
+      },
+    },
+    {
+      id: "source",
+      label: "Source",
+      renderCell: ({ studyId }) =>
+        studyId ? (
+          <Link external to={`https://www.pharmgkb.org/clinicalAnnotation/${studyId}`}>
+            PharmGKB
+          </Link>
+        ) : (
+          naLabel
+        ),
+    },
+    {
+      id: "literature",
+      renderCell: ({ literature }) => {
+        const literatureList =
+          literature?.reduce((acc, id) => {
+            if (id === "NA") return acc;
+
+            return [
+              ...acc,
+              {
+                name: id,
+                url: epmcUrl(id),
+                group: "literature",
+              },
+            ];
+          }, []) || [];
+
+        return <PublicationsDrawer entries={literatureList} />;
+      },
+    },
+  ];
   return (
     <DataTable
       showGlobalFilter
