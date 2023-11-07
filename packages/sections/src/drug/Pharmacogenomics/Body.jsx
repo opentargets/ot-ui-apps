@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, Tooltip, DataTable, TableDrawer, LabelChip } from "ui";
+import { Link, SectionItem, Tooltip, DataTable, LabelChip, PublicationsDrawer } from "ui";
 
+import { epmcUrl } from "../../utils/urls";
 import { definition } from ".";
 import Description from "./Description";
 import PHARMACOGENOMICS_QUERY from "./Pharmacogenomics.gql";
@@ -36,7 +37,10 @@ const columns = [
           title={
             <>
               VCF-style(chr_pos_ref_allele1,allele2). See
-              <Link external to="google.com">
+              <Link
+                external
+                to="https://github.com/apriltuesday/opentargets-pharmgkb/tree/issue-18#variant-coordinate-computation"
+              >
                 {" "}
                 here{" "}
               </Link>
@@ -57,8 +61,8 @@ const columns = [
       if (variantFunctionalConsequence)
         return (
           <LabelChip
-            label={variantFunctionalConsequence.id || naLabel}
-            value={variantFunctionalConsequence.label || naLabel}
+            label={variantFunctionalConsequence.id}
+            value={variantFunctionalConsequence.label}
             tooltip="Ensembl variant effect predictor"
           />
         );
@@ -68,13 +72,16 @@ const columns = [
   {
     id: "drugResponse",
     label: "Drug Response",
-    renderCell: ({ phenotypeText, phenotypeFromSourceId, genotypeAnnotationText }) => (
-      <Tooltip title={genotypeAnnotationText}>
-        <span>
-          <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeText}</Link>
-        </span>
-      </Tooltip>
-    ),
+    renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
+      const phenotypeTextElement = phenotypeFromSourceId ? (
+        <Link tooltip={genotypeAnnotationText} to={`/disease/${phenotypeFromSourceId}`}>
+          {phenotypeText}
+        </Link>
+      ) : (
+        <Tooltip title={genotypeAnnotationText}>{phenotypeText}</Tooltip>
+      );
+      return phenotypeTextElement;
+    },
   },
   {
     id: "drugResponseCategory",
@@ -108,7 +115,9 @@ const columns = [
     label: "Source",
     renderCell: ({ studyId }) =>
       studyId ? (
-        <Link to={`https://www.pharmgkb.org/clinicalAnnotations/${studyId}`}>{studyId}</Link>
+        <Link external to={`https://www.pharmgkb.org/clinicalAnnotation/${studyId}`}>
+          PharmGKB-{studyId}
+        </Link>
       ) : (
         naLabel
       ),
@@ -116,16 +125,23 @@ const columns = [
   {
     id: "literature",
     label: "Literature",
-    renderCell: ({ literature }) =>
-      literature.length > 0 ? (
-        <span>
-          {literature.map(e => (
-            <Link key={e}> {e}</Link>
-          ))}
-        </span>
-      ) : (
-        naLabel
-      ),
+    renderCell: ({ literature }) => {
+      const literatureList =
+        literature?.reduce((acc, id) => {
+          if (id === "NA") return acc;
+
+          return [
+            ...acc,
+            {
+              name: id,
+              url: epmcUrl(id),
+              group: "literature",
+            },
+          ];
+        }, []) || [];
+
+      return <PublicationsDrawer entries={literatureList} />;
+    },
   },
 ];
 
