@@ -4,8 +4,16 @@ query PharmacogenomicsQuery($ensemblId: String!) {
     pharmacogenomics {
       variantRsId
       genotypeId
-      variantFunctionalConsequenceId
-      drugId
+      variantFunctionalConsequence {
+        id
+        label
+      }
+      drug {
+        id
+        name
+      }
+      phenotypeFromSourceId
+      genotypeAnnotationText
       phenotypeText
       pgxCategory
       evidenceLevel

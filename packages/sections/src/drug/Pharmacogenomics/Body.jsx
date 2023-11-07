@@ -6,21 +6,18 @@ import Description from "./Description";
 import PHARMACOGENOMICS_QUERY from "./Pharmacogenomics.gql";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 
-const replaceSemicolonWithUnderscore = id => id.replace(":", "_");
-
 const columns = [
   {
     id: "gene",
     label: "Gene",
     renderCell: ({ targetFromSourceId }) =>
       targetFromSourceId ? (
-        <Tooltip title={`This gene may not be direct target of the drug.`}>
-          <>
-            <Link to={`https://platform.opentargets.org/target/${targetFromSourceId}`}>
-              {targetFromSourceId}
-            </Link>
-          </>
-        </Tooltip>
+        <Link
+          tooltip="This gene may not be direct target of the drug."
+          to={`/target/${targetFromSourceId}`}
+        >
+          <span>{targetFromSourceId}</span>
+        </Link>
       ) : (
         naLabel
       ),
@@ -40,50 +37,48 @@ const columns = [
             <>
               VCF-style(chr_pos_ref_allele1,allele2). See
               <Link external to="google.com">
-                here
+                {" "}
+                here{" "}
               </Link>
               for more details
             </>
           }
         >
-          <>{genotypeId}</>
+          <span>{genotypeId}</span>
         </Tooltip>
       ) : (
         naLabel
       ),
   },
   {
-    // todo: check the value of label and value
-    id: "variantFunctionalConsequenceId",
+    id: "variantFunctionalConsequence",
     label: "Variant Consequence",
-    renderCell: ({ variantFunctionalConsequenceId }) =>
-      variantFunctionalConsequenceId ? (
-        <LabelChip
-          label={variantFunctionalConsequenceId}
-          value={variantFunctionalConsequenceId}
-          tooltip={"Ensembl variant effect predictor"}
-        />
-      ) : (
-        naLabel
-      ),
+    renderCell: ({ variantFunctionalConsequence }) => {
+      if (variantFunctionalConsequence)
+        return (
+          <LabelChip
+            label={variantFunctionalConsequence.id || naLabel}
+            value={variantFunctionalConsequence.label || naLabel}
+            tooltip="Ensembl variant effect predictor"
+          />
+        );
+      return naLabel;
+    },
   },
   {
-    id: "adverseOutcome",
-    label: "Adverse Outcome",
-    renderCell: ({ phenotypeText }) =>
-      phenotypeText ? (
-        <Tooltip title={`Genotypennotationtext`}>
-          <>
-            <Link>{phenotypeText}</Link>
-          </>
-        </Tooltip>
-      ) : (
-        naLabel
-      ),
+    id: "drugResponse",
+    label: "Drug Response",
+    renderCell: ({ phenotypeText, phenotypeFromSourceId, genotypeAnnotationText }) => (
+      <Tooltip title={genotypeAnnotationText}>
+        <span>
+          <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeText}</Link>
+        </span>
+      </Tooltip>
+    ),
   },
   {
-    id: "adverseOutcomeCategory",
-    label: "Adverse Outcome Category",
+    id: "drugResponseCategory",
+    label: "Drug Response Category",
     renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
   },
   {
@@ -95,14 +90,14 @@ const columns = [
           title={
             <>
               As defined by
-              <Link to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
+              <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
                 {" "}
                 PharmGKB ClinAnn Levels
               </Link>
             </>
           }
         >
-          <>{evidenceLevel}</>
+          <span>{evidenceLevel}</span>
         </Tooltip>
       ) : (
         naLabel
@@ -113,7 +108,7 @@ const columns = [
     label: "Source",
     renderCell: ({ studyId }) =>
       studyId ? (
-        <Link to={`https://www.pharmgkb.org/clinicalAnnotations/${studyId}`}> {studyId}</Link>
+        <Link to={`https://www.pharmgkb.org/clinicalAnnotations/${studyId}`}>{studyId}</Link>
       ) : (
         naLabel
       ),
@@ -121,7 +116,16 @@ const columns = [
   {
     id: "literature",
     label: "Literature",
-    renderCell: ({ literature }) => <Link> {literature}</Link>,
+    renderCell: ({ literature }) =>
+      literature.length > 0 ? (
+        <span>
+          {literature.map(e => (
+            <Link key={e}> {e}</Link>
+          ))}
+        </span>
+      ) : (
+        naLabel
+      ),
   },
 ];
 

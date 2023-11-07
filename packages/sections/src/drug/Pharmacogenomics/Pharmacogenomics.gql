@@ -5,7 +5,12 @@ query PharmacogenomicsQuery($chemblId: String!) {
       targetFromSourceId
       variantRsId
       genotypeId
-      variantFunctionalConsequenceId
+      variantFunctionalConsequence {
+        id
+        label
+      }
+      phenotypeFromSourceId
+      genotypeAnnotationText
       phenotypeText
       pgxCategory
       evidenceLevel
