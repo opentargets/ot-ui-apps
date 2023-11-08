@@ -92,7 +92,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
     },
     {
       id: "drugResponse",
-      label: "Drug Response",
+      label: "Drug Response Phenotype",
       renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
         const phenotypeTextElement = phenotypeFromSourceId ? (
           <Tooltip showHelpIcon title={genotypeAnnotationText}>

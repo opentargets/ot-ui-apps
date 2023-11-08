@@ -111,7 +111,7 @@ function Body({ id: chemblId, label: name, entity }) {
     },
     {
       id: "drugResponse",
-      label: "Drug Response",
+      label: "Drug Response Phenotype",
       renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
         const phenotypeTextElement = phenotypeFromSourceId ? (
           <Tooltip title={genotypeAnnotationText} showHelpIcon>
