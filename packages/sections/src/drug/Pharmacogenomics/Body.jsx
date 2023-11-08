@@ -56,15 +56,15 @@ function Body({ id: chemblId, label: name, entity }) {
     {
       id: "gene",
       label: "Gene",
-      renderCell: ({ targetFromSourceId, isDirectTarget }) => {
-        if (targetFromSourceId) {
+      renderCell: ({ target, isDirectTarget }) => {
+        if (target) {
           const tooltipText = isDirectTarget
             ? "The variant is in the drug's primary target gene."
             : "The variant is outside the drug's primary target gene.";
           return (
             <Tooltip title={tooltipText} showHelpIcon>
-              <Link to={`/target/${targetFromSourceId}`}>
-                <span>{targetFromSourceId}</span>
+              <Link to={`/target/${target.id}`}>
+                <span>{target.approvedSymbol}</span>
               </Link>
             </Tooltip>
           );

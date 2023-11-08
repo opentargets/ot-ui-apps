@@ -2,12 +2,15 @@ query PharmacogenomicsQuery($chemblId: String!) {
   drug(chemblId: $chemblId) {
     id
     pharmacogenomics {
-      targetFromSourceId
       variantRsId
       genotypeId
       variantFunctionalConsequence {
         id
         label
+      }
+      target {
+        id
+        approvedSymbol
       }
       isDirectTarget
       phenotypeFromSourceId
