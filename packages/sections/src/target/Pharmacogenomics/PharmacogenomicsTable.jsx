@@ -55,29 +55,19 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
     {
       id: "genotypeId",
       label: "Genotype ID",
-      renderCell: ({ genotypeId }) =>
-        genotypeId ? (
-          <Tooltip
-            showHelpIcon
-            title={
-              <>
-                VCF-style(chr_pos_ref_allele1,allele2). See
-                <Link
-                  external
-                  to="https://github.com/apriltuesday/opentargets-pharmgkb/tree/issue-18#variant-coordinate-computation"
-                >
-                  {" "}
-                  here{" "}
-                </Link>
-                for more details
-              </>
-            }
+      tooltip: (
+        <>
+          VCF-style(chr_pos_ref_allele1,allele2). See{" "}
+          <Link
+            external
+            to="https://github.com/apriltuesday/opentargets-pharmgkb/tree/issue-18#variant-coordinate-computation"
           >
-            <span>{genotypeId}</span>
-          </Tooltip>
-        ) : (
-          naLabel
-        ),
+            here
+          </Link>{" "}
+          for more details.
+        </>
+      ),
+      renderCell: ({ genotypeId }) => genotypeId || naLabel,
     },
     {
       id: "variantFunctionalConsequence",
@@ -123,26 +113,23 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
     },
     {
       id: "confidenceLevel",
-      label: "Confidence (Level)",
+      label: "Confidence Level",
+      tooltip: (
+        <>
+          As defined by
+          <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
+            {" "}
+            PharmGKB ClinAnn Levels
+          </Link>
+        </>
+      ),
       renderCell: ({ evidenceLevel }) => {
         if (evidenceLevel) {
           const levelClass = getLevelElementClassName(evidenceLevel);
           return (
-            <Tooltip
-              title={
-                <span>
-                  As defined by
-                  <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
-                    {" "}
-                    PharmGKB ClinAnn Levels
-                  </Link>
-                </span>
-              }
-            >
-              <span className={classNames(classes.level, classes[levelClass])}>
-                Level {evidenceLevel}
-              </span>
-            </Tooltip>
+            <span className={classNames(classes.level, classes[levelClass])}>
+              Level {evidenceLevel}
+            </span>
           );
         }
         return naLabel;
