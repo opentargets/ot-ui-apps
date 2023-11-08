@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     background: PHARM_GKB_COLOR.yellow,
   },
   blue: {
-    background: PHARM_GKB_COLOR.blue,
+    background: theme.palette.primary.main,
   },
 }));
 
