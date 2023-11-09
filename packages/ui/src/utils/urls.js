@@ -64,7 +64,7 @@ export function europePmcBiblioSearchPOSTQuery(ids, size = 25) {
 }
 
 function clinicalTrialsUrl(id) {
-  return `https://www.clinicaltrials.gov/ct2/show/${id}`;
+  return `https://www.clinicaltrials.gov/study/${id}`;
 }
 
 function fdaUrl(id) {
