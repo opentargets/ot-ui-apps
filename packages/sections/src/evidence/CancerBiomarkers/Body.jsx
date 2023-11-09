@@ -1,16 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import {
-  Link,
-  Tooltip,
-  SectionItem,
-  PublicationsDrawer,
-  DataTable,
-  TableDrawer,
-} from "ui";
+import { Link, Tooltip, SectionItem, PublicationsDrawer, DataTable, TableDrawer } from "ui";
 import { naLabel } from "ui/src/constants";
 
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
 import { epmcUrl } from "../../utils/urls";
 import Description from "./Description";
 import BiomarkersDrawer from "./BiomarkersDrawer";
@@ -18,7 +11,7 @@ import { definition } from ".";
 
 import CANCER_BIOMARKERS_EVIDENCE_QUERY from "./CancerBiomarkersEvidence.gql";
 
-const getColumns = (label) => [
+const getColumns = label => [
   {
     id: "disease.name",
     label: "Disease",
@@ -52,16 +45,13 @@ const getColumns = (label) => [
     label: "Reported drug",
     renderCell: ({ drug, drugFromSource }) =>
       drug ? <Link to={`/drug/${drug.id}`}>{drug.name}</Link> : drugFromSource,
-    filterValue: ({ drug, drugFromSource }) =>
-      drug ? drug.name : drugFromSource,
+    filterValue: ({ drug, drugFromSource }) => (drug ? drug.name : drugFromSource),
   },
   {
     id: "drugResponse.name",
     label: "Drug response",
     renderCell: ({ drugResponse }) =>
-      (drugResponse && (
-        <Link to={`/disease/${drugResponse.id}`}>{drugResponse.name}</Link>
-      )) ||
+      (drugResponse && <Link to={`/disease/${drugResponse.id}`}>{drugResponse.name}</Link>) ||
       naLabel,
   },
   {
@@ -69,7 +59,7 @@ const getColumns = (label) => [
     label: "Source",
     renderCell: ({ confidence, urls }) => {
       const entries = urls
-        ? urls.map((url) => ({
+        ? urls.map(url => ({
             url: url.url,
             name: url.niceName,
             group: "Sources",
@@ -83,20 +73,14 @@ const getColumns = (label) => [
     label: "Literature",
     renderCell: ({ literature }) => {
       const entries = literature
-        ? literature.map((id) => ({
+        ? literature.map(id => ({
             name: id,
             url: epmcUrl(id),
             group: "literature",
           }))
         : [];
 
-      return (
-        <PublicationsDrawer
-          entries={entries}
-          symbol={label.symbol}
-          name={label.name}
-        />
-      );
+      return <PublicationsDrawer entries={entries} symbol={label.symbol} name={label.name} />;
     },
   },
 ];
@@ -107,6 +91,7 @@ function Body({ id, label, entity }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(CANCER_BIOMARKERS_EVIDENCE_QUERY, {
@@ -121,9 +106,7 @@ function Body({ id, label, entity }) {
       chipText={definition.dataType}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} diseaseName={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
       renderBody={({ disease }) => {
         const { rows } = disease.cancerBiomarkersSummary;
         return (

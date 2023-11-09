@@ -7,6 +7,7 @@ export const appCanonicalUrl = "https://platform.opentargets.org";
 // Chunk sizes for server side pagination/download.
 export const tableChunkSize = 100;
 export const downloaderChunkSize = 2500;
+export const sectionsBaseSizeQuery = 3500;
 
 // NA label.
 export const naLabel = "N/A";
@@ -38,7 +39,7 @@ const clinicalPhases = {
   4: "Phase IV",
 };
 
-export const phaseMap = (clinicalPhase) => {
+export const phaseMap = clinicalPhase => {
   const clinicalPhaseId = String(clinicalPhase);
   return clinicalPhases[clinicalPhaseId];
 };

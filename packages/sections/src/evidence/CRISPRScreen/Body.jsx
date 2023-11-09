@@ -5,7 +5,7 @@ import { Tooltip, SectionItem, TooltipStyledLabel, Link, DataTable } from "ui";
 import { dataTypesMap } from "../../dataTypes";
 import Description from "./Description";
 import { PublicationsDrawer } from "ui";
-import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import { definition } from ".";
 
 import CRISPR_QUERY from "./CrisprScreenQuery.gql";
@@ -20,32 +20,23 @@ const sources = {
 
 // format the diseaseFromSource field: remove the "essential genes" info
 // this might be sorted at data level at some point
-const parseDiseaseName = (d) =>
-  d.toLowerCase().replace("essential genes / ", "");
+const parseDiseaseName = d => d.toLowerCase().replace("essential genes / ", "");
 
-const getColumns = (label) => [
+const getColumns = label => [
   {
     id: "diseaseFromSourceMappedId",
     label: "Reported disease",
-    renderCell: (row) => {
+    renderCell: row => {
       const disease = parseDiseaseName(row.diseaseFromSource);
-      return (
-        <Link to={`/disease/${row.diseaseFromSourceMappedId}`}>
-          {_.capitalize(disease)}
-        </Link>
-      );
+      return <Link to={`/disease/${row.diseaseFromSourceMappedId}`}>{_.capitalize(disease)}</Link>;
     },
-    filterValue: (row) =>
-      row.diseaseFromSource + ", " + row.diseaseFromSourceMappedId,
+    filterValue: row => row.diseaseFromSource + ", " + row.diseaseFromSourceMappedId,
   },
   {
     id: "studyId",
     label: "Study Identifier",
-    renderCell: (row) => (
-      <Link
-        external
-        to={`https://crisprbrain.org/simple-screen/?screen=${row.studyId}`}
-      >
+    renderCell: row => (
+      <Link external to={`https://crisprbrain.org/simple-screen/?screen=${row.studyId}`}>
         {row.studyId}
       </Link>
     ),
@@ -53,7 +44,7 @@ const getColumns = (label) => [
   {
     id: "contrast",
     label: "Contrast / Study overview",
-    renderCell: (row) => {
+    renderCell: row => {
       // trim the last '.' - this could also be addressed at data level perhaps?
       const overview = row.studyOverview?.endsWith(".")
         ? row.studyOverview.slice(0, -1)
@@ -63,10 +54,7 @@ const getColumns = (label) => [
           <Tooltip
             showHelpIcon
             title={
-              <TooltipStyledLabel
-                label={"SCREEN LIBRARY"}
-                description={row.crisprScreenLibrary}
-              />
+              <TooltipStyledLabel label={"SCREEN LIBRARY"} description={row.crisprScreenLibrary} />
             }
           >
             <span>
@@ -80,28 +68,26 @@ const getColumns = (label) => [
         return <span>{overview}</span>;
       }
     },
-    filterValue: (row) => row.contrast + "; " + row.studyOverview,
+    filterValue: row => row.contrast + "; " + row.studyOverview,
   },
   {
     id: "cellType",
     label: "Cell type",
-    renderCell: (row) => row.cellType,
-    filterValue: (row) => row.cellType,
+    renderCell: row => row.cellType,
+    filterValue: row => row.cellType,
     width: "12%",
   },
   {
     id: "log2FoldChangeValue",
     label: "log2 fold change",
-    renderCell: (row) =>
-      row.log2FoldChangeValue
-        ? parseFloat(row.log2FoldChangeValue.toFixed(6))
-        : naLabel,
+    renderCell: row =>
+      row.log2FoldChangeValue ? parseFloat(row.log2FoldChangeValue.toFixed(6)) : naLabel,
     width: "9%",
   },
   {
     id: "resourceScore",
     label: "Significance",
-    renderCell: (row) => {
+    renderCell: row => {
       if (row.resourceScore && row.statisticalTestTail) {
         return (
           <Tooltip
@@ -117,23 +103,21 @@ const getColumns = (label) => [
           </Tooltip>
         );
       } else {
-        return row.resourceScore
-          ? parseFloat(row.resourceScore.toFixed(6))
-          : naLabel;
+        return row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : naLabel;
       }
     },
-    filterValue: (row) => row.resourceScore + "; " + row.statisticalTestTail,
+    filterValue: row => row.resourceScore + "; " + row.statisticalTestTail,
     width: "9%",
   },
   {
     id: "projectId",
     label: "Source",
-    renderCell: (row) => (
+    renderCell: row => (
       <Link external to={sources[row.projectId]?.url}>
         {sources[row.projectId].name}
       </Link>
     ),
-    filterValue: (row) => row.projectId,
+    filterValue: row => row.projectId,
     width: "9%",
   },
   {
@@ -157,57 +141,59 @@ const getColumns = (label) => [
 const exportColumns = [
   {
     label: "disease",
-    exportValue: (row) => parseDiseaseName(row.diseaseFromSource),
+    exportValue: row => parseDiseaseName(row.diseaseFromSource),
   },
   {
     label: "disease id",
-    exportValue: (row) => row.diseaseFromSourceMappedId,
+    exportValue: row => row.diseaseFromSourceMappedId,
   },
   {
     label: "study identifier",
-    exportValue: (row) => row.studyId,
+    exportValue: row => row.studyId,
   },
   {
     label: "contrast",
-    exportValue: (row) => row.contrast,
+    exportValue: row => row.contrast,
   },
   {
     label: "study overview",
-    exportValue: (row) => row.studyOverview,
+    exportValue: row => row.studyOverview,
   },
   {
     label: "cell type",
-    exportValue: (row) => row.cellType,
+    exportValue: row => row.cellType,
   },
   {
     label: "log2 fold change",
-    exportValue: (row) => row.log2FoldChangeValue,
+    exportValue: row => row.log2FoldChangeValue,
   },
   {
     label: "significance",
-    exportValue: (row) => row.resourceScore,
+    exportValue: row => row.resourceScore,
   },
   {
     label: "statistical test tail",
-    exportValue: (row) => row.statisticalTestTail,
+    exportValue: row => row.statisticalTestTail,
   },
   {
     label: "source",
-    exportValue: (row) => row.projectId,
+    exportValue: row => row.projectId,
   },
   {
     label: "publication",
-    exportValue: (row) => row.literature.join(", "),
+    exportValue: row => row.literature.join(", "),
   },
 ];
 
 function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
+  const variables = {
+    ensemblId: ensgId,
+    efoId,
+    size: sectionsBaseSizeQuery,
+  };
   const request = useQuery(CRISPR_QUERY, {
-    variables: {
-      ensemblId: ensgId,
-      efoId,
-    },
+    variables,
   });
 
   const columns = getColumns(label);
@@ -218,9 +204,7 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.affected_pathway}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={({ disease }) => {
         const { rows } = disease.CrisprScreenSummary;
         return (
@@ -236,6 +220,8 @@ function Body({ id, label, entity }) {
             noWrap={false}
             noWrapHeader={false}
             rowsPerPageOptions={defaultRowsPerPageOptions}
+            query={CRISPR_QUERY.loc.source.body}
+            variables={variables}
           />
         );
       }}
