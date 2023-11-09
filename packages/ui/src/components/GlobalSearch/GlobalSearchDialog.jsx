@@ -24,7 +24,7 @@ const EscButton = styled("button")(({ theme }) => ({
   },
 }));
 
-function GlobalSearchDialog() {
+function GlobalSearchDialog({isHomePage}) {
   const { open, setOpen } = useContext(SearchContext);
   const [inputValue, setInputValue] = useState("");
 
@@ -39,7 +39,7 @@ function GlobalSearchDialog() {
       }}
       sx={{
         "& .MuiDialog-container": {
-          alignItems: "start",
+          alignItems: !isHomePage && 'start',
           "& .MuiPaper-root": {
             width: "80vw",
             maxWidth: "800px",

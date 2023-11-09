@@ -39,7 +39,7 @@ const flattenObj = (ob) => {
 const isArray = (value) => Array.isArray(value) && value.length > 0;
 
 const exceedsArrayLengthLimit = (array) => {
-  const limitLength = 10;
+  const limitLength = 9;
   let exceedsLimit = false;
 
   if (array.length > limitLength) {
@@ -96,11 +96,11 @@ export const addSearchToLocalStorage = (item) => {
     recentItems.splice(existingIndex, 1);
   }
   const recentItemsDeepCopy = [...recentItems];
+  if (exceedsArrayLengthLimit(recentItemsDeepCopy)) recentItemsDeepCopy.pop();
   if (newItem) {
     recentItemsDeepCopy.unshift(newItem);
     localStorage.setItem("search-history", JSON.stringify(recentItemsDeepCopy));
   }
-  if (exceedsArrayLengthLimit(recentItemsDeepCopy)) recentItemsDeepCopy.pop();
 };
 
 export const clearAllRecent = () => {
