@@ -7,7 +7,13 @@ import { epmcUrl } from "../../utils/urls";
 import { definition } from ".";
 import Description from "./Description";
 import PHARMACOGENOMICS_QUERY from "./Pharmacogenomics.gql";
-import { naLabel, defaultRowsPerPageOptions, PHARM_GKB_COLOR } from "../../constants";
+import {
+  naLabel,
+  defaultRowsPerPageOptions,
+  PHARM_GKB_COLOR,
+  variantConsequenceSource,
+} from "../../constants";
+import { identifiersOrgLink, sentenceCase } from "../../utils/global";
 
 const useStyles = makeStyles(theme => ({
   level: {
@@ -73,9 +79,19 @@ function Body({ id: chemblId, label: name, entity }) {
       },
     },
     {
-      id: "rsId",
+      id: "variantRsId",
       label: "rsID",
-      renderCell: ({ variantRsId }) => variantRsId || naLabel,
+      renderCell: ({ variantRsId }) =>
+        variantRsId ? (
+          <Link
+            external
+            to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
+          >
+            {variantRsId}
+          </Link>
+        ) : (
+          naLabel
+        ),
     },
     {
       id: "genotypeId",
@@ -95,19 +111,35 @@ function Body({ id: chemblId, label: name, entity }) {
       renderCell: ({ genotypeId }) => genotypeId || naLabel,
     },
     {
-      id: "variantFunctionalConsequence",
+      id: "variantConsequence",
       label: "Variant Consequence",
-      renderCell: ({ variantFunctionalConsequence }) => {
-        if (variantFunctionalConsequence)
-          return (
-            <LabelChip
-              label={variantFunctionalConsequence.id}
-              value={variantFunctionalConsequence.label}
-              tooltip="Ensembl variant effect predictor"
-            />
-          );
-        return naLabel;
+      renderCell: ({ variantFunctionalConsequence, genotypeId }) => {
+        const pvparams = genotypeId?.split(",")[0].split("_") || [];
+        return (
+          <div style={{ display: "flex", gap: "5px" }}>
+            {variantFunctionalConsequence ? (
+              <LabelChip
+                label={variantConsequenceSource.VEP.label}
+                value={sentenceCase(variantFunctionalConsequence.label)}
+                tooltip={variantConsequenceSource.VEP.tooltip}
+                to={identifiersOrgLink("SO", variantFunctionalConsequence.id.slice(3))}
+              />
+            ) : (
+              naLabel
+            )}
+            {(variantFunctionalConsequence?.id === "SO:0001583" ||
+              variantFunctionalConsequence?.id === "SO:0001587") && (
+              <LabelChip
+                label={variantConsequenceSource.ProtVar.label}
+                to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
+                tooltip={variantConsequenceSource.ProtVar.tooltip}
+              />
+            )}
+          </div>
+        );
       },
+      filterValue: ({ variantFunctionalConsequence }) =>
+        `${sentenceCase(variantFunctionalConsequence.label)}`,
     },
     {
       id: "drugResponse",
