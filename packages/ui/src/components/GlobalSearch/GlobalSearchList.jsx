@@ -23,7 +23,7 @@ function GlobalSearchList({ inputValue }) {
   let selected = 0;
   const [searchResult, setSearchResult] = useState({});
   const [loading, setLoading] = useState(false);
-  const { searchQuery, setOpen } = useContext(SearchContext);
+  const { searchQuery, setOpen, searchSuggestions } = useContext(SearchContext);
   const [getSearchData] = useLazyQuery(searchQuery);
   const [openListItem] = useListOption();
   const [recentItems, setRecentItems] = useState(
@@ -34,7 +34,7 @@ function GlobalSearchList({ inputValue }) {
     selected = index;
     const items = document.querySelectorAll(".search-list-item");
     if (items.length) {
-      items.forEach((el) => {
+      items.forEach(el => {
         el.classList.remove("search-list-item-active");
       });
       items[index].classList.add("search-list-item-active");
@@ -45,7 +45,7 @@ function GlobalSearchList({ inputValue }) {
     }
   }, []);
 
-  const onKeyDownHandler = useCallback((e) => {
+  const onKeyDownHandler = useCallback(e => {
     if (e.key === "Escape") {
       setOpen(false);
       e.preventDefault();
@@ -60,9 +60,7 @@ function GlobalSearchList({ inputValue }) {
       e.preventDefault();
       e.stopPropagation();
     } else if (e.key === "Enter") {
-      const selectedElement = document.querySelector(
-        ".search-list-item-active"
-      );
+      const selectedElement = document.querySelector(".search-list-item-active");
       const item = JSON.parse(selectedElement.dataset.itemDetails);
       handleItemClick(item);
       e.preventDefault();
@@ -70,20 +68,22 @@ function GlobalSearchList({ inputValue }) {
     }
   }, []);
 
-  const handleItemClick = useCallback((item) => {
+  const handleItemClick = useCallback(item => {
     setOpen(false);
     openListItem(item);
   }, []);
 
   function fetchSearchResults() {
     setLoading(true);
-    getSearchData({ variables: { queryString: inputValue } }).then((res) => {
-      const formattedData = formatSearchData(res.data.search || res.data);
-      setSearchResult({ ...formattedData });
-      setLoading(false);
-    }).catch((err) => {
-      setLoading(false);
-    });
+    getSearchData({ variables: { queryString: inputValue } })
+      .then(res => {
+        const formattedData = formatSearchData(res.data.search || res.data);
+        setSearchResult({ ...formattedData });
+        setLoading(false);
+      })
+      .catch(err => {
+        setLoading(false);
+      });
   }
 
   function isResultEmpty() {
@@ -128,6 +128,26 @@ function GlobalSearchList({ inputValue }) {
     setRecentItems(JSON.parse(localStorage.getItem("search-history")) || []);
   }
 
+  const SearchSuggestionEl = (
+    <Box
+      sx={{
+        pt: 1,
+      }}
+    >
+      <GlobalSearchListHeader listHeader="Search Suggestions" />
+      <List tabIndex={-1}>
+        {searchSuggestions.map(item => (
+          <GlobalSearchListItem
+            key={item.id || item.symbol}
+            item={item}
+            onItemClick={handleItemClick}
+            isTopHit={item.type === "topHit"}
+          />
+        ))}
+      </List>
+    </Box>
+  );
+
   useEffect(() => {
     focusOnItem();
     if (inputValue) fetchSearchResults();
@@ -158,13 +178,12 @@ function GlobalSearchList({ inputValue }) {
               pt: 1,
               borderBottomWidth: "1px",
               borderStyle: "solid",
-              borderImage:
-                "linear-gradient(to right, white, #00000037, white)0 0 90",
+              borderImage: "linear-gradient(to right, white, #00000037, white)0 0 90",
             }}
           >
             <GlobalSearchListHeader listHeader={key} />
             <List tabIndex={-1}>
-              {value.map((item) => (
+              {value.map(item => (
                 <GlobalSearchListItem
                   key={item.id || item.symbol}
                   item={item}
@@ -178,17 +197,25 @@ function GlobalSearchList({ inputValue }) {
 
       {/* no search result state  */}
       {inputValue && !loading && isResultEmpty() && (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          No search result found
-        </Box>
+        <>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>No search result found</Box>
+          {SearchSuggestionEl}
+        </>
       )}
 
       {/* input value is not present */}
       {!inputValue && recentItems.length > 0 && (
-        <Box sx={{ pt: 1 }}>
+        <Box
+          sx={{
+            pt: 1,
+            borderBottomWidth: "1px",
+            borderStyle: "solid",
+            borderImage: "linear-gradient(to right, white, #00000037, white)0 0 90",
+          }}
+        >
           <GlobalSearchListHeader listHeader="recent" />
           <List tabIndex={-1}>
-            {recentItems.map((item) => (
+            {recentItems.map(item => (
               <GlobalSearchListItem
                 key={item.id || item.symbol}
                 item={item}
@@ -198,6 +225,9 @@ function GlobalSearchList({ inputValue }) {
           </List>
         </Box>
       )}
+
+      {/* no input value search suggestions */}
+      {!inputValue && recentItems.length < 4 && SearchSuggestionEl}
     </>
   );
 }

@@ -39,7 +39,7 @@ function GlobalSearchDialog({isHomePage}) {
       }}
       sx={{
         "& .MuiDialog-container": {
-          alignItems: !isHomePage && 'start',
+          alignItems: (isHomePage ? 'center' : 'start'),
           "& .MuiPaper-root": {
             width: "80vw",
             maxWidth: "800px",
