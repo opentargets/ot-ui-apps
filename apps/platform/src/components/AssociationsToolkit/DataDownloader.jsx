@@ -171,9 +171,6 @@ function DataDownloader({ fileStem }) {
   } = useAotfContext();
   const [onlyPinnedCheckBox, setOnlyPinnedCheckBox] = useState(false);
   const [weightControlCheckBox, setWeightControlCheckBox] = useState(modifiedSourcesDataControls);
-  const [requiredControlCheckBox, setRequiredControlCheckBox] = useState(
-    modifiedSourcesDataControls
-  );
   const [onlyTargetData, setOnlyTargetData] = useState(false);
 
   const [downloading, setDownloading] = useState(false);
@@ -205,7 +202,7 @@ function DataDownloader({ fileStem }) {
     sortBy: sorting[0].id,
     enableIndirect,
     datasources: dataSourcesWeights,
-    ...(requiredControlCheckBox && {
+    ...(weightControlCheckBox && {
       aggregationFilters: dataSourcesRequired.map(el => ({
         name: el.name,
         path: el.path,
@@ -271,7 +268,6 @@ function DataDownloader({ fileStem }) {
   };
 
   useEffect(() => {
-    setRequiredControlCheckBox(modifiedSourcesDataControls);
     setWeightControlCheckBox(modifiedSourcesDataControls);
   }, [modifiedSourcesDataControls]);
 
@@ -299,6 +295,11 @@ function DataDownloader({ fileStem }) {
       >
         <DialogTitle>Export: {fileStem} data</DialogTitle>
         <DialogContent>
+          <Typography sx={{m: theme=> `${theme.spacing(1)} 0 ${theme.spacing(4)} 0`}} variant="subtitle2" gutterBottom>
+            By clicking on the download tabs from this view, you will export the entire association
+            table (default option). Please expand the advanced options to export your own customised
+            view.
+          </Typography>
           <BorderAccordion>
             <AccordionSummary expandIcon={<FontAwesomeIcon icon={faCaretDown} size="lg" />}>
               <Typography variant="body1">Advanced export options:</Typography>
@@ -385,18 +386,7 @@ function DataDownloader({ fileStem }) {
                       onChange={e => setWeightControlCheckBox(e.target.checked)}
                     />
                   }
-                  label="Include custom weight controls"
-                />
-                <FormControlLabel
-                  sx={{ pl: 1 }}
-                  control={
-                    <Checkbox
-                      checked={requiredControlCheckBox}
-                      disabled={!modifiedSourcesDataControls || downloading}
-                      onChange={e => setRequiredControlCheckBox(e.target.checked)}
-                    />
-                  }
-                  label="Include custom required control"
+                  label="Include custom controls"
                 />
                 <FormControlLabel
                   sx={{ pl: 1 }}

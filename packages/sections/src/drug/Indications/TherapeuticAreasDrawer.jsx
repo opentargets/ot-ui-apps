@@ -123,7 +123,7 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
 
   return (
     <>
-      <MUILink onClick={toggleDrawer} className={classes.drawerLink}>
+      <MUILink underline="none" onClick={toggleDrawer} className={classes.drawerLink}>
         {therapeuticAreas.length} areas
       </MUILink>
 

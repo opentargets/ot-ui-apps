@@ -81,19 +81,6 @@ function DataMenu() {
               label="Show data sources controls"
             />
           </FormGroup>
-          {/* <FormGroup>
-            <FormControlLabel
-              disabled={isPrioritisation}
-              control={
-                <Checkbox
-                  color="primary"
-                  checked={enableIndirect}
-                  onChange={() => setEnableIndirect(!enableIndirect)}
-                />
-              }
-              label="Enable Indirect"
-            />
-          </FormGroup> */}
         </PopoverContent>
       </Popover>
     </>
