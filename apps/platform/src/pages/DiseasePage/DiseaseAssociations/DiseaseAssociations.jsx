@@ -1,5 +1,5 @@
-import { PrivateWrapper } from 'ui';
-import { Box } from '@mui/material';
+import { PrivateWrapper } from "ui";
+import { Box } from "@mui/material";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -11,8 +11,8 @@ import {
   ControlsSection,
   OptionsControlls,
   AotFLoader,
-} from '../../../components/AssociationsToolkit';
-import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociationsQuery.gql';
+} from "../../../components/AssociationsToolkit";
+import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useAotfContext();
@@ -22,18 +22,14 @@ function AssociationsWrapper() {
   return (
     <>
       <ControlsSection>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
             <DataDownloader fileStem={`${id}-associated-targets`} />
           </OptionsControlls>
         </Box>
-        <div>
-          <PrivateWrapper>
-            <TargetPrioritisationSwitch />
-          </PrivateWrapper>
-        </div>
+        <TargetPrioritisationSwitch />
       </ControlsSection>
       <TableAssociations />
     </>
@@ -43,11 +39,7 @@ function AssociationsWrapper() {
 /* DISEASE ASSOCIATION  */
 function DiseaseAssociations({ efoId }) {
   return (
-    <AssociationsProvider
-      id={efoId}
-      entity="disease"
-      query={DISEASE_ASSOCIATIONS_QUERY}
-    >
+    <AssociationsProvider id={efoId} entity="disease" query={DISEASE_ASSOCIATIONS_QUERY}>
       <AssociationsWrapper />
     </AssociationsProvider>
   );
