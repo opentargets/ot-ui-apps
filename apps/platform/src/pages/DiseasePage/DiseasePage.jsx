@@ -1,17 +1,17 @@
-import { Suspense, lazy } from 'react';
-import { useQuery } from '@apollo/client';
-import { Box, Tab, Tabs } from '@mui/material';
-import { Link, Route, Switch, useLocation, useParams } from 'react-router-dom';
-import { LoadingBackdrop, BasePage, NewChip, ScrollToTop } from 'ui';
+import { Suspense, lazy } from "react";
+import { useQuery } from "@apollo/client";
+import { Box, Tab, Tabs } from "@mui/material";
+import { Link, Redirect, Route, Switch, useLocation, useParams } from "react-router-dom";
+import { LoadingBackdrop, BasePage, NewChip, ScrollToTop } from "ui";
 
-import Header from './Header';
-import NotFoundPage from '../NotFoundPage';
+import Header from "./Header";
+import NotFoundPage from "../NotFoundPage";
 
-import DISEASE_PAGE_QUERY from './DiseasePage.gql';
+import DISEASE_PAGE_QUERY from "./DiseasePage.gql";
 
-const Profile = lazy(() => import('./Profile'));
-const Associations = lazy(() => import('./DiseaseAssociations'));
-const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
+const Profile = lazy(() => import("./Profile"));
+const Associations = lazy(() => import("./DiseaseAssociations"));
+const ClassicAssociations = lazy(() => import("./ClassicAssociations"));
 
 function DiseasePage() {
   const location = useLocation();
@@ -29,12 +29,12 @@ function DiseasePage() {
   return (
     <BasePage
       title={
-        location.pathname.includes('associations')
+        location.pathname.includes("associations")
           ? `Targets associated with ${name}`
           : `${name} profile page`
       }
       description={
-        location.pathname.includes('associations')
+        location.pathname.includes("associations")
           ? `Ranked list of targets associated with ${name}`
           : `Annotation information for ${name}`
       }
@@ -45,17 +45,11 @@ function DiseasePage() {
       <Route
         path="/"
         render={history => (
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs
-              value={
-                history.location.pathname !== '/'
-                  ? history.location.pathname
-                  : false
-              }
-            >
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs value={history.location.pathname !== "/" ? history.location.pathname : false}>
               <Tab
                 label={
-                  <Box sx={{ textTransform: 'capitalize' }}>
+                  <Box sx={{ textTransform: "capitalize" }}>
                     <div>
                       Associated targets
                       <NewChip />
@@ -67,17 +61,13 @@ function DiseasePage() {
                 to={`/disease/${efoId}/associations`}
               />
               <Tab
-                label={
-                  <Box sx={{ textTransform: 'capitalize' }}>
-                    Associated targets
-                  </Box>
-                }
+                label={<Box sx={{ textTransform: "capitalize" }}>Associated targets</Box>}
                 value={`/disease/${efoId}/classic-associations`}
                 component={Link}
                 to={`/disease/${efoId}/classic-associations`}
               />
               <Tab
-                label={<Box sx={{ textTransform: 'capitalize' }}>Profile</Box>}
+                label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
                 value={`/disease/${efoId}`}
                 component={Link}
                 to={`/disease/${efoId}`}
@@ -96,6 +86,9 @@ function DiseasePage() {
           </Route>
           <Route path="/disease/:efoId/classic-associations">
             <ClassicAssociations efoId={efoId} name={name} />
+          </Route>
+          <Route path="*">
+            <Redirect to={`/disease/${efoId}`} />
           </Route>
         </Switch>
       </Suspense>
