@@ -29,15 +29,12 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: "1rem",
     borderBottom: `1px solid ${theme.palette.grey[300]}`,
   },
-  hypotesisLegend: {
-    marginBottom: "1rem",
-  },
   bold: {
     fontWeight: 700,
   },
   // hypothesis status classes
   hsLegendChip: {
-    width: "32px",
+    width: theme.spacing(4),
   },
   hsGreen: {
     backgroundColor: "#407253 !important", // same as PPP green
@@ -314,35 +311,38 @@ function Body({ id, label, entity }) {
               </Typography>
 
               {/** LEGEND */}
-              <div className={classes.hypotesisLegend}>
-                <Grid container spacing={4} direction="row">
-                  {hypothesesStatus.map(hs => (
-                    <Grid item key={hs.status}>
-                      <Grid container spacing={1} alignItems="center">
-                        <Grid item>
-                          <Chip className={classNames(classes.hsLegendChip, classes[hs.styles])} />
-                        </Grid>
-                        <Grid item>
-                          <Typography variant="caption" display="block">
-                            <span className={classes.bold}>
-                              {hs.expected ? "Expected" : "Not expected"}
-                            </span>{" "}
-                            in OTAR primary project
-                          </Typography>
-                          <Typography variant="caption" display="block">
-                            <span className={classes.bold}>
-                              {hs.observed ? "Observed" : "Not observed"}
-                            </span>{" "}
-                            in OTVL
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  ))}
-                </Grid>
-              </div>
+              <Box
+                sx={{
+                  mb: theme => theme.spacing(2),
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                }}
+              >
+                {hypothesesStatus.map(hs => (
+                  <Box
+                    key={hs.status}
+                    sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+                  >
+                    <Chip className={classNames(classes.hsLegendChip, classes[hs.styles])} />
+                    <Box sx={{ p: theme => `0 ${theme.spacing(3)} 0 ${theme.spacing(1)}` }}>
+                      <Box sx={{ display: "flex", flexDirection: "row" }}>
+                        <Typography variant="caption">
+                          <b>{hs.expected ? "Expected" : "Not expected"}</b> in OTAR primary project
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: "flex", flexDirection: "row" }}>
+                        <Typography variant="caption">
+                          <b>{hs.observed ? "Observed" : "Not observed"} </b>
+                          in OTVL
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
 
-              {/** CHIPLIST */}
+              {/** CHIP LIST */}
               <ChipList items={hypothesis} />
             </Box>
 
