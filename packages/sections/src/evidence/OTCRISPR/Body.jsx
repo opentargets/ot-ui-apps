@@ -5,11 +5,11 @@ import { SectionItem, Link, Tooltip, DataTable, TooltipStyledLabel } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
 
 import CRISPR_QUERY from "./OTCrisprQuery.gql";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   significanceIcon: {
     color: theme.palette.primary.main,
   },
@@ -19,15 +19,13 @@ const getColumns = () => [
   {
     id: "disease",
     label: "Reported disease",
-    renderCell: (row) => (
-      <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>
-    ),
-    filterValue: (row) => `${row.disease.name}, ${row.disease.id}`,
+    renderCell: row => <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>,
+    filterValue: row => `${row.disease.name}, ${row.disease.id}`,
   },
   {
     id: "projectId",
     label: "OTAR project code",
-    renderCell: (row) => (
+    renderCell: row => (
       <Link external to={`http://home.opentargets.org/${row.projectId}`}>
         {row.projectId}
       </Link>
@@ -36,17 +34,12 @@ const getColumns = () => [
   {
     id: "contrast",
     label: "Contrast / Study overview",
-    renderCell: (row) => {
+    renderCell: row => {
       if (row.contrast && row.studyOverview) {
         return (
           <Tooltip
             showHelpIcon
-            title={
-              <TooltipStyledLabel
-                label="Study overview"
-                description={row.studyOverview}
-              />
-            }
+            title={<TooltipStyledLabel label="Study overview" description={row.studyOverview} />}
           >
             <span>{row.contrast}</span>
           </Tooltip>
@@ -61,20 +54,17 @@ const getColumns = () => [
       return null;
     },
     width: "25%",
-    filterValue: (row) => `${row.contrast}; ${row.studyOverview}`,
+    filterValue: row => `${row.contrast}; ${row.studyOverview}`,
   },
   {
     id: "cellType",
     label: "Cell type",
-    renderCell: (row) =>
+    renderCell: row =>
       row.cellLineBackground ? (
         <Tooltip
           showHelpIcon
           title={
-            <TooltipStyledLabel
-              label="Cell line background"
-              description={row.cellLineBackground}
-            />
+            <TooltipStyledLabel label="Cell line background" description={row.cellLineBackground} />
           }
         >
           <span>{row.cellType}</span>
@@ -82,20 +72,18 @@ const getColumns = () => [
       ) : (
         row.cellType
       ),
-    filterValue: (row) => `${row.cellType}; ${row.cellLineBackground}`,
+    filterValue: row => `${row.cellType}; ${row.cellLineBackground}`,
   },
   {
     id: "log2FoldChangeValue",
     label: "log2 fold change",
-    renderCell: (row) =>
-      row.log2FoldChangeValue ? row.log2FoldChangeValue : "N/A",
+    renderCell: row => (row.log2FoldChangeValue ? row.log2FoldChangeValue : "N/A"),
   },
   {
     id: "resourceScore",
     label: "Significance",
-    filterValue: (row) => `${row.resourceScore}; ${row.statisticalTestTail}`,
-    renderCell: (row) =>
-      row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : "N/A",
+    filterValue: row => `${row.resourceScore}; ${row.statisticalTestTail}`,
+    renderCell: row => (row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : "N/A"),
   },
   {
     id: "releaseVersion",
@@ -106,43 +94,43 @@ const getColumns = () => [
 const exportColumns = [
   {
     label: "disease",
-    exportValue: (row) => row.disease.name,
+    exportValue: row => row.disease.name,
   },
   {
     label: "disease id",
-    exportValue: (row) => row.disease.id,
+    exportValue: row => row.disease.id,
   },
   {
     label: "OTAR project code",
-    exportValue: (row) => row.projectId,
+    exportValue: row => row.projectId,
   },
   {
     label: "contrast",
-    exportValue: (row) => row.contrast,
+    exportValue: row => row.contrast,
   },
   {
     label: "study overview",
-    exportValue: (row) => row.studyOverview,
+    exportValue: row => row.studyOverview,
   },
   {
     label: "cell type",
-    exportValue: (row) => row.cellType,
+    exportValue: row => row.cellType,
   },
   {
     label: "cell line background",
-    exportValue: (row) => row.cellLineBackground,
+    exportValue: row => row.cellLineBackground,
   },
   {
     label: "CRISPR screen library",
-    exportValue: (row) => row.crisprScreenLibrary,
+    exportValue: row => row.crisprScreenLibrary,
   },
   {
     label: "resource score",
-    exportValue: (row) => row.resourceScore,
+    exportValue: row => row.resourceScore,
   },
   {
     label: "statistical test tail",
-    exportValue: (row) => row.statisticalTestTail,
+    exportValue: row => row.statisticalTestTail,
   },
 ];
 
@@ -152,6 +140,7 @@ function Body({ id, label, entity }) {
     variables: {
       ensemblId: ensgId,
       efoId,
+      size: sectionsBaseSizeQuery,
     },
   });
   const classes = useStyles();
@@ -162,8 +151,8 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.ot_partner}
       request={request}
       entity={entity}
-      renderDescription={(data) => (
-        <Description symbol={label.symbol} name={label.name} data={data}/>
+      renderDescription={data => (
+        <Description symbol={label.symbol} name={label.name} data={data} />
       )}
       renderBody={({ disease }) => {
         const { rows } = disease.OtCrisprSummary;
