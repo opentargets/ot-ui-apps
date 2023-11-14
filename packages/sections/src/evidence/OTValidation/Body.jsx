@@ -11,7 +11,7 @@ import { Link, SectionItem, Tooltip, ChipList, DataTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
 import VALIDATION_QUERY from "./OTValidationQuery.gql";
 
 const useStyles = makeStyles(theme => ({
@@ -255,7 +255,7 @@ const exportColumns = [
 
 function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
-  const variables = { ensemblId: ensgId, efoId };
+  const variables = { ensemblId: ensgId, efoId, size: sectionsBaseSizeQuery };
   const request = useQuery(VALIDATION_QUERY, {
     variables,
   });
