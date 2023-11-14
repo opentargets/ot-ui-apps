@@ -10,6 +10,7 @@ function LabelChip({ label, value, to, tooltip = null }) {
     color: '#3489ca',
     margin: '3px 0',
     textDecoration: 'none',
+    width: "min-content",
   };
   const commonStyle = {
     padding: '0 5px',

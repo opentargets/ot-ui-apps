@@ -11,6 +11,7 @@ import {
 import KnownDrugsSummary from 'sections/src/target/KnownDrugs/Summary';
 import TractabilitySummary from 'sections/src/target/Tractability/Summary';
 import SafetySummary from 'sections/src/target/Safety/Summary';
+import PharmacogenomicsSummary from 'sections/src/target/Pharmacogenomics/Summary';
 import ChemicalProbesSummary from 'sections/src/target/ChemicalProbes/Summary';
 import BaselineExpressionSummary from 'sections/src/target/Expression/Summary';
 import DepMapSummary from 'sections/src/target/DepMap/Summary';
@@ -35,6 +36,7 @@ const TractabilitySection = lazy(() =>
   import('sections/src/target/Tractability/Body')
 );
 const SafetySection = lazy(() => import('sections/src/target/Safety/Body'));
+const PharmacogenomicsSection = lazy(() => import('sections/src/target/Pharmacogenomics/Body'));
 const ChemicalProbesSection = lazy(() =>
   import('sections/src/target/ChemicalProbes/Body')
 );
@@ -75,6 +77,7 @@ const summaries = [
   KnownDrugsSummary,
   TractabilitySummary,
   SafetySummary,
+  PharmacogenomicsSummary,
   ChemicalProbesSummary,
   BaselineExpressionSummary,
   DepMapSummary,
@@ -120,6 +123,7 @@ function Profile({ ensgId, symbol }) {
         <KnownDrugsSummary />
         <TractabilitySummary />
         <SafetySummary />
+        <PharmacogenomicsSummary/>
         <ChemicalProbesSummary />
         <BaselineExpressionSummary />
         <DepMapSummary />
@@ -144,6 +148,9 @@ function Profile({ ensgId, symbol }) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <SafetySection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <PharmacogenomicsSection id={ensgId} label={symbol} entity={TARGET}/>
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <ChemicalProbesSection id={ensgId} label={symbol} entity={TARGET} />
