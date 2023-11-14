@@ -1,11 +1,9 @@
 import { Link } from "ui";
 
-function Description({ symbol }) {
+function Description({ name }) {
   return (
     <>
-      Genetic variants in that are associated with the response to{" "}
-      <Link to={`/drug/drugid`}>drugid</Link>
-      Source:{" "}
+      Genetic variants that are associated with the response to <strong>{name}</strong> Source:{" "}
       <Link external to="https://www.pharmgkb.org/">
         PharmGKB
       </Link>
