@@ -1,6 +1,6 @@
 import { format } from "d3-format";
 import config from "../config";
-import searchExamples from "../pages/HomePage/searchExamples";
+import { searchExamples, pppSearchExamples } from "../pages/HomePage/searchExamples";
 
 function pickTwo(arr) {
   const i1 = Math.floor(Math.random() * arr.length);
@@ -73,9 +73,10 @@ export async function fetcher(graphQLParams) {
 }
 
 export function getSuggestedSearch() {
-  const targets = pickTwo(searchExamples.targets);
-  const diseases = pickTwo(searchExamples.diseases);
-  const drugs = pickTwo(searchExamples.drugs);
+  const suggestionArray = config.profile.isPartnerPreview ? pppSearchExamples : searchExamples;
+  const targets = pickTwo(suggestionArray.targets);
+  const diseases = pickTwo(suggestionArray.diseases);
+  const drugs = pickTwo(suggestionArray.drugs);
 
   return [...targets, ...diseases, ...drugs];
 }

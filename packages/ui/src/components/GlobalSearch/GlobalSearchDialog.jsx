@@ -24,7 +24,7 @@ const EscButton = styled("button")(({ theme }) => ({
   },
 }));
 
-function GlobalSearchDialog({isHomePage}) {
+function GlobalSearchDialog() {
   const { open, setOpen } = useContext(SearchContext);
   const [inputValue, setInputValue] = useState("");
 
@@ -39,12 +39,12 @@ function GlobalSearchDialog({isHomePage}) {
       }}
       sx={{
         "& .MuiDialog-container": {
-          alignItems: (isHomePage ? 'center' : 'start'),
+          alignItems: "start",
           "& .MuiPaper-root": {
             width: "80vw",
             maxWidth: "800px",
-            borderRadius: (theme) => theme.spacing(1),
-            margin: (theme) => theme.spacing(6),
+            borderRadius: theme => theme.spacing(1),
+            margin: theme => theme.spacing(6),
           },
         },
       }}
@@ -57,8 +57,8 @@ function GlobalSearchDialog({isHomePage}) {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  fontSize: (theme) => `${theme.spacing(3.5)}`,
-                  color: (theme) => theme.palette.grey[500],
+                  fontSize: theme => `${theme.spacing(3.5)}`,
+                  color: theme => theme.palette.grey[500],
                 }}
               >
                 <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
