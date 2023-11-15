@@ -1,29 +1,23 @@
-import { useState } from 'react';
-import { styled, Grid } from '@mui/material';
+import { useState } from "react";
+import { styled, Grid } from "@mui/material";
 
-import AggregationsTooltip from './AssocTooltip';
-import associationsColumns from '../static_datasets/dataSourcesAssoc';
-import prioritizationColumns from '../static_datasets/prioritizationCols';
-import { groupViewColumnsBy } from '../utils';
-import { GridContainer } from '../layout';
+import AggregationsTooltip from "./AssocTooltip";
+import associationsColumns from "../static_datasets/dataSourcesAssoc";
+import prioritizationColumns from "../static_datasets/prioritisationColumns";
+import { groupViewColumnsBy } from "../utils";
+import { GridContainer } from "../layout";
 
 const AggregationsContainer = styled(GridContainer)({
-  gridColumnGap: '4px',
+  gridColumnGap: "4px",
 });
 
-const HiddenCol = styled('div')({
-  width: 'var(--table-left-column-width)',
-  display: 'flex',
+const HiddenCol = styled("div")({
+  width: "var(--table-left-column-width)",
+  display: "flex",
 });
 
-const associationGrouped = groupViewColumnsBy(
-  associationsColumns,
-  'aggregation'
-);
-const prioritizationGrouped = groupViewColumnsBy(
-  prioritizationColumns,
-  'aggregation'
-);
+const associationGrouped = groupViewColumnsBy(associationsColumns, "aggregation");
+const prioritizationGrouped = groupViewColumnsBy(prioritizationColumns, "aggregation");
 
 function AggregationItem({
   aggregation,
@@ -52,7 +46,7 @@ function AggregationItem({
     gridRow: `row1-start / 2`,
   };
   const isActive = active === aggregation || open;
-  const className = `aggregation-indicator ${isActive && 'active'} clickAble`;
+  const className = `aggregation-indicator ${isActive && "active"} clickAble`;
   return (
     <button
       type="button"
@@ -62,11 +56,8 @@ function AggregationItem({
       onMouseLeave={() => onMouseLeave()}
       onClick={() => onClick()}
     >
-      <AggregationsTooltip
-        title={aggregation}
-        open={active === aggregation || open}
-      >
-        <div style={{ width: '100%' }} />
+      <AggregationsTooltip title={aggregation} open={active === aggregation || open}>
+        <div style={{ width: "100%" }} />
       </AggregationsTooltip>
     </button>
   );
@@ -80,8 +71,7 @@ function AggregationsRow({
   setActiveHeadersControlls,
   columnsCount,
 }) {
-  const dataset =
-    table === 'associations' ? associationGrouped : prioritizationGrouped;
+  const dataset = table === "associations" ? associationGrouped : prioritizationGrouped;
   const aggregations = Object.keys(dataset);
 
   return (

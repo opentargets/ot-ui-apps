@@ -33,7 +33,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useBatchDownloader from "./hooks/useBatchDownloader";
 import useAotfContext from "./hooks/useAotfContext";
 import OriginalDataSources from "./static_datasets/dataSourcesAssoc";
-import prioritizationCols from "./static_datasets/prioritizationCols";
+import prioritizationCols from "./static_datasets/prioritisationColumns";
 import {
   getRowsQuerySelector,
   getExportedColumns,
@@ -295,7 +295,11 @@ function DataDownloader({ fileStem }) {
       >
         <DialogTitle>Export: {fileStem} data</DialogTitle>
         <DialogContent>
-          <Typography sx={{m: theme=> `${theme.spacing(1)} 0 ${theme.spacing(4)} 0`}} variant="subtitle2" gutterBottom>
+          <Typography
+            sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
+            variant="subtitle2"
+            gutterBottom
+          >
             By clicking on the download tabs from this view, you will export the entire association
             table (default option). Please expand the advanced options to export your own customised
             view.
