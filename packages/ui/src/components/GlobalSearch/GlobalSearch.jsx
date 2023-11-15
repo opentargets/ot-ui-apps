@@ -14,19 +14,18 @@ const SearchButton = styled("button")(({ theme, isHomePage = false }) => ({
   color: isHomePage ? theme.palette.primary.dark : "white",
   borderRadius: theme.spacing(0.6),
   border: `1px solid ${theme.palette.primary.main}`,
-  padding: `${theme.spacing(0.4)} ${theme.spacing(1.2)}`,
+  padding: theme.spacing(0.4),
 }));
 
 function GlobalSearch({ isHomePage }) {
   const { setOpen } = useContext(SearchContext);
-  const shortcutText =
-    navigator?.platform.indexOf("Mac") > -1 ? "⌘ K" : "Ctrl+K";
+  const shortcutText = navigator?.platform.indexOf("Mac") > -1 ? "⌘ K" : "Ctrl+K";
   const searchButtonContainer = {
     width: 1,
     display: "flex",
     justifyContent: "center",
     ...(isHomePage && {
-      margin: (theme) => `${theme.spacing(2)} 0 ${theme.spacing(3)}`,
+      margin: theme => `${theme.spacing(2)} 0 ${theme.spacing(3)}`,
     }),
   };
 
@@ -59,22 +58,23 @@ function GlobalSearch({ isHomePage }) {
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            fontSize: (theme) => theme.spacing(2),
+            typography: "subtitle1",
             alignItems: "center",
+            lineHeight: "normal",
           }}
         >
-          <Box>
+          <Box sx={{ paddingLeft: theme => theme.spacing(1) }}>
             <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
           </Box>
           Search...
           <Box
             sx={{
-              fontSize: (theme) => theme.spacing(1.3),
+              typography: "caption",
               fontWeight: "bold",
               color: "white",
-              backgroundColor: (theme) => theme.palette.primary.main,
-              padding: (theme) => `${theme.spacing(0.5)} ${theme.spacing(1)}`,
-              borderRadius: (theme) => theme.spacing(0.4),
+              backgroundColor: theme => theme.palette.primary.main,
+              padding: theme => `${theme.spacing(0.1)} ${theme.spacing(1)}`,
+              borderRadius: theme => theme.spacing(0.4),
             }}
           >
             {shortcutText}
@@ -82,7 +82,7 @@ function GlobalSearch({ isHomePage }) {
         </Box>
       </SearchButton>
 
-      <GlobalSearchDialog isHomePage={isHomePage}/>
+      <GlobalSearchDialog isHomePage={isHomePage} />
     </Box>
   );
 }
