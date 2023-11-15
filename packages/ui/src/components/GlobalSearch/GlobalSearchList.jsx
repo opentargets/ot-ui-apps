@@ -227,7 +227,7 @@ function GlobalSearchList({ inputValue }) {
       )}
 
       {/* no input value search suggestions */}
-      {!inputValue && recentItems.length < 4 && SearchSuggestionEl}
+      {!inputValue && SearchSuggestionEl}
     </>
   );
 }
