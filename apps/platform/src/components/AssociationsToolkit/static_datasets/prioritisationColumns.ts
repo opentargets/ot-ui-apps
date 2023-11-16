@@ -102,7 +102,7 @@ const hasHighQualityChemicalProbes: Column = {
 };
 
 const mouseKOScore: Column = {
-  id: "MouseKOScore",
+  id: "mouseKOScore",
   label: "Mouse models",
   aggregation: aggregations.safety,
   sectionId: "mousePhenotypes",
