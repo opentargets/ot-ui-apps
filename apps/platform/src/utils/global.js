@@ -1,44 +1,44 @@
-import { format } from 'd3-format';
-import config from '../config';
+import { format } from "d3-format";
+import config from "../config";
+import { searchExamples, pppSearchExamples } from "../pages/HomePage/searchExamples";
+
+function pickTwo(arr) {
+  const i1 = Math.floor(Math.random() * arr.length);
+  const resultArray = arr.splice(i1, 1);
+  const i2 = Math.floor(Math.random() * arr.length);
+  resultArray.push(...arr.splice(i2, 1));
+
+  return resultArray;
+}
 
 export const safeToString = x => {
   switch (typeof x) {
-    case 'object':
-      return 'object';
-    case 'function':
-      return 'function';
+    case "object":
+      return "object";
+    case "function":
+      return "function";
     case undefined:
     case null:
-      return '';
+      return "";
     default:
-      return `${x  }`;
+      return `${x}`;
   }
 };
 
 export const identifiersOrgLink = (prefix, accession, resource) =>
-  `https://identifiers.org/${
-    resource ? `${resource  }/` : ''
-  }${prefix}:${accession}`;
+  `https://identifiers.org/${resource ? `${resource}/` : ""}${prefix}:${accession}`;
 
 export const literatureUrl = id =>
-  id.startsWith('PMC')
-    ? identifiersOrgLink('pmc', id)
-    : identifiersOrgLink('pubmed', id);
+  id.startsWith("PMC") ? identifiersOrgLink("pmc", id) : identifiersOrgLink("pubmed", id);
 
 export const sentenceCase = str =>
-  str
-    ? str.charAt(0).toUpperCase() +
-      str
-        .slice(1)
-        .replace(/_/g, ' ')
-        .toLocaleLowerCase()
-    : str;
+  str ? str.charAt(0).toUpperCase() + str.slice(1).replace(/_/g, " ").toLocaleLowerCase() : str;
 
-export const formatComma = format(',');
+export const formatComma = format(",");
 
 export function getUniprotIds(proteinIds) {
   return proteinIds
-    .filter(proteinId => proteinId.source === 'uniprot_swissprot')
+    .filter(proteinId => proteinId.source === "uniprot_swissprot")
     .map(proteinId => proteinId.id);
 }
 
@@ -54,7 +54,7 @@ const makePmidLink = themeColor => {
 export function clearDescriptionCodes(descriptions, themeColor) {
   if (!descriptions) return [];
   return descriptions.map(desc => {
-    const codeStart = desc.indexOf('{');
+    const codeStart = desc.indexOf("{");
     const parsedDesc = desc.slice(0, codeStart);
     return parsedDesc.replace(/Pubmed:\d+/gi, makePmidLink(themeColor));
   });
@@ -62,12 +62,21 @@ export function clearDescriptionCodes(descriptions, themeColor) {
 
 export async function fetcher(graphQLParams) {
   const data = await fetch(config.urlApi, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(graphQLParams),
   });
   return data.json();
+}
+
+export function getSuggestedSearch() {
+  const suggestionArray = config.profile.isPartnerPreview ? pppSearchExamples : searchExamples;
+  const targets = pickTwo(suggestionArray.targets);
+  const diseases = pickTwo(suggestionArray.diseases);
+  const drugs = pickTwo(suggestionArray.drugs);
+
+  return [...targets, ...diseases, ...drugs];
 }

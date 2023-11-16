@@ -17,12 +17,14 @@ import VariantsPage from './pages/VariantsPage';
 import APIPage from './pages/APIPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProjectsPage from './pages/ProjectsPage';
+import { getSuggestedSearch } from './utils/global';
 
 function App() {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
         <SearchProvider
+          searchSuggestions={getSuggestedSearch()}
           searchQuery={SEARCH_QUERY}
           searchPlaceholder="Search for a target, drug, disease, or phenotype..."
         >

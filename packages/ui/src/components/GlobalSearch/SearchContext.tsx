@@ -9,6 +9,7 @@ type GlobalSearchProviderProps = {
   children: React.ReactNode;
   searchQuery: DocumentNode;
   searchPlaceholder: string;
+  searchSuggestions: Array<unknown>;
 };
 
 export const SearchContext = createContext<{
@@ -16,17 +17,20 @@ export const SearchContext = createContext<{
   searchPlaceholder: string;
   open: boolean;
   setOpen: (arg: boolean) => void;
+  searchSuggestions: Array<any>;
 }>({
   searchQuery: "",
   searchPlaceholder: "Search...",
   open: false,
   setOpen: () => undefined,
+  searchSuggestions: [],
 });
 
 export function SearchProvider({
   children,
   searchQuery,
   searchPlaceholder = "Search...",
+  searchSuggestions,
 }: GlobalSearchProviderProps) {
   const [open, setOpen] = useState(false);
 
@@ -37,6 +41,7 @@ export function SearchProvider({
         searchPlaceholder,
         open,
         setOpen,
+        searchSuggestions,
       }}
     >
       {children}
@@ -60,10 +65,7 @@ export const SearchInputContext = createContext<{
   setInputValue: () => {},
 });
 
-export function SearchInputProvider({
-  children,
-  setValue,
-}: SearchInputProviderProps) {
+export function SearchInputProvider({ children, setValue }: SearchInputProviderProps) {
   const [inputValue, setInputValue] = useState("");
 
   const debouncedInputValue = useDebounce(inputValue, 300);

@@ -2,7 +2,7 @@ import { memo } from "react";
 import { styled } from "@mui/styles";
 import { Typography, Chip, Box } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faClockRotateLeft, faArrowTrendUp } from "@fortawesome/free-solid-svg-icons";
 
 import { clearRecentItem, commaSeparate } from "./utils/searchUtils";
 
@@ -81,6 +81,27 @@ const TopHitItemContainer = styled("div")(({ theme }) => ({
   padding: `${theme.spacing(1.5)}`,
   borderRadius: theme.spacing(1),
 }));
+
+function SuggestionListItem({ item, onItemClick }) {
+  return (
+    <RecentItemContainer
+      className="search-list-item"
+      role="menuitem"
+      tabIndex="0"
+      data-item-details={JSON.stringify(item)}
+      onClick={() => {
+        onItemClick(item);
+      }}
+    >
+      <RecentIconContainer>
+        <FontAwesomeIcon icon={faArrowTrendUp} />
+        <Typography variant="subtitle2">
+          {item.symbol || item.name || item.id}
+        </Typography>
+      </RecentIconContainer>
+    </RecentItemContainer>
+  );
+}
 
 function RecentListItem({ item, onItemClick }) {
   return (
@@ -177,6 +198,10 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
 
   if (item.type === "recent") {
     return <RecentListItem item={item} onItemClick={onItemClick} />;
+  }
+
+  if(item.type === "suggestion"){
+    return <SuggestionListItem item={item} onItemClick={onItemClick} />;
   }
 
   if (isTopHit) {

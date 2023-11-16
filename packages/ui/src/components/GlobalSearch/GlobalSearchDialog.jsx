@@ -43,8 +43,8 @@ function GlobalSearchDialog() {
           "& .MuiPaper-root": {
             width: "80vw",
             maxWidth: "800px",
-            borderRadius: (theme) => theme.spacing(1),
-            margin: (theme) => theme.spacing(6),
+            borderRadius: theme => theme.spacing(1),
+            margin: theme => theme.spacing(6),
           },
         },
       }}
@@ -57,8 +57,8 @@ function GlobalSearchDialog() {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  fontSize: (theme) => `${theme.spacing(3.5)}`,
-                  color: (theme) => theme.palette.grey[500],
+                  fontSize: theme => `${theme.spacing(3.5)}`,
+                  color: theme => theme.palette.grey[500],
                 }}
               >
                 <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
