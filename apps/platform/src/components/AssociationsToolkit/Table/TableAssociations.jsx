@@ -1,36 +1,36 @@
 /* eslint-disable */
-import { useMemo } from 'react';
+import { useMemo } from "react";
 import {
   useReactTable,
   getCoreRowModel,
   getExpandedRowModel,
   createColumnHelper,
-} from '@tanstack/react-table';
+} from "@tanstack/react-table";
 
-import { styled, Skeleton, Typography } from '@mui/material';
+import { styled, Skeleton, Typography } from "@mui/material";
 
-import dataSourcesCols from '../static_datasets/dataSourcesAssoc';
-import prioritizationCols from '../static_datasets/prioritizationCols';
+import dataSourcesCols from "../static_datasets/dataSourcesAssoc";
+import prioritizationCols from "../static_datasets/prioritisationColumns";
 
-import AggregationsTooltip from './AssocTooltip';
-import ColoredCell from './ColoredCell';
+import AggregationsTooltip from "./AssocTooltip";
+import ColoredCell from "./ColoredCell";
 
-import HeaderControls from '../HeaderControls';
-import CellName from './CellName';
-import TableHeader from './TableHeader';
-import TableFooter from './TableFooter';
-import TableBody from './TableBody';
-import useAotfContext from '../hooks/useAotfContext';
+import HeaderControls from "../HeaderControls";
+import CellName from "./CellName";
+import TableHeader from "./TableHeader";
+import TableFooter from "./TableFooter";
+import TableBody from "./TableBody";
+import useAotfContext from "../hooks/useAotfContext";
 
-import { cellHasValue, isPartnerPreview, tableCSSVariables } from '../utils';
+import { cellHasValue, isPartnerPreview, tableCSSVariables } from "../utils";
 
-const TableElement = styled('main')({
-  maxWidth: '1600px',
-  margin: '0 auto',
+const TableElement = styled("main")({
+  maxWidth: "1600px",
+  margin: "0 auto",
 });
 
-const TableDivider = styled('div')({
-  borderBottom: '1px solid #ececec',
+const TableDivider = styled("div")({
+  borderBottom: "1px solid #ececec",
   marginBottom: 4,
 });
 
@@ -38,61 +38,50 @@ const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
 function getDatasources({ expanderHandler, displayedTable }) {
-  const isAssociations = displayedTable === 'associations';
+  const isAssociations = displayedTable === "associations";
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
-  const dataProp = isAssociations ? 'dataSources' : 'prioritisations';
+  const dataProp = isAssociations ? "dataSources" : "prioritisations";
   const datasources = [];
-  baseCols.forEach(
-    ({
+  baseCols.forEach(({ id, label, sectionId, description, aggregation, isPrivate, docsLink }) => {
+    if (isPrivate && isPrivate !== isPartnerPreview) return;
+    const column = columnHelper.accessor(row => row[dataProp][id], {
       id,
-      label,
+      header: isAssociations ? (
+        <Typography variant="assoc_header">{label}</Typography>
+      ) : (
+        <AggregationsTooltip title={description} placement="right">
+          <div className="cursor-help">
+            <Typography variant="assoc_header">{label}</Typography>
+          </div>
+        </AggregationsTooltip>
+      ),
       sectionId,
-      description,
+      enableSorting: isAssociations,
       aggregation,
       isPrivate,
       docsLink,
-    }) => {
-      if (isPrivate && isPrivate !== isPartnerPreview) return;
-      const column = columnHelper.accessor(row => row[dataProp][id], {
-        id,
-        header: isAssociations ? (
-          <Typography variant="assoc_header">{label}</Typography>
+      cell: row => {
+        const { prefix, loading } = row.table.getState();
+        if (loading) return <Skeleton variant="circular" width={26} height={26} />;
+        const hasValue = cellHasValue(row.getValue());
+        return hasValue ? (
+          <ColoredCell
+            hasValue
+            scoreId={id}
+            scoreValue={row.getValue()}
+            onClick={expanderHandler(row.row.getToggleExpandedHandler())}
+            cell={row}
+            loading={loading}
+            isAssociations={isAssociations}
+            tablePrefix={prefix}
+          />
         ) : (
-          <AggregationsTooltip title={description} placement="right">
-            <div className="cursor-help">
-              <Typography variant="assoc_header">{label}</Typography>
-            </div>
-          </AggregationsTooltip>
-        ),
-        sectionId,
-        enableSorting: isAssociations,
-        aggregation,
-        isPrivate,
-        docsLink,
-        cell: row => {
-          const { prefix, loading } = row.table.getState();
-          if (loading)
-            return <Skeleton variant="circular" width={26} height={26} />;
-          const hasValue = cellHasValue(row.getValue());
-          return hasValue ? (
-            <ColoredCell
-              hasValue
-              scoreId={id}
-              scoreValue={row.getValue()}
-              onClick={expanderHandler(row.row.getToggleExpandedHandler())}
-              cell={row}
-              loading={loading}
-              isAssociations={isAssociations}
-              tablePrefix={prefix}
-            />
-          ) : (
-            <ColoredCell />
-          );
-        },
-      });
-      datasources.push(column);
-    }
-  );
+          <ColoredCell />
+        );
+      },
+    });
+    datasources.push(column);
+  });
   return datasources;
 }
 
@@ -116,16 +105,16 @@ function TableAssociations() {
     pinnedLoading,
   } = useAotfContext();
 
-  const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
+  const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
 
   const columns = useMemo(
     () => [
       columnHelper.group({
-        header: 'header',
-        id: 'naiming-cols',
+        header: "header",
+        id: "naiming-cols",
         columns: [
           columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
-            id: 'name',
+            id: "name",
             enableSorting: false,
             cell: row => {
               const { loading, prefix } = row.table.getState();
@@ -140,19 +129,16 @@ function TableAssociations() {
               );
             },
             header: () => {
-              const label = entityToGet === 'target' ? 'Target' : 'Disease';
+              const label = entityToGet === "target" ? "Target" : "Disease";
               return <Typography variant="assoc_header">{label}</Typography>;
             },
           }),
           columnHelper.accessor(row => row.score, {
-            id: 'score',
-            header: (
-              <Typography variant="assoc_header">Association Score</Typography>
-            ),
+            id: "score",
+            header: <Typography variant="assoc_header">Association Score</Typography>,
             cell: row => {
               const { loading } = row.table.getState();
-              if (loading)
-                return <Skeleton variant="rect" width={30} height={25} />;
+              if (loading) return <Skeleton variant="rect" width={30} height={25} />;
               return (
                 <ColoredCell
                   scoreValue={row.getValue()}
@@ -167,8 +153,8 @@ function TableAssociations() {
         ],
       }),
       columnHelper.group({
-        header: 'entities',
-        id: 'entity-cols',
+        header: "entities",
+        id: "entity-cols",
         columns: [...getDatasources({ expanderHandler, displayedTable })],
       }),
     ],
@@ -186,7 +172,7 @@ function TableAssociations() {
       expanded: tableExpanded,
       pagination,
       sorting,
-      prefix: 'body',
+      prefix: "body",
       loading: associationsLoading,
     },
     pageCount: count,
@@ -211,7 +197,7 @@ function TableAssociations() {
         pageSize: 150,
       },
       sorting,
-      prefix: 'pinned',
+      prefix: "pinned",
       loading: pinnedLoading,
     },
     pageCount: count,
@@ -226,8 +212,7 @@ function TableAssociations() {
     manualSorting: true,
   });
 
-  const entitesHeaders =
-    coreAssociationsTable.getHeaderGroups()[0].headers[1].subHeaders;
+  const entitesHeaders = coreAssociationsTable.getHeaderGroups()[0].headers[1].subHeaders;
 
   return (
     <div className="TAssociations" style={tableCSSVariables}>
