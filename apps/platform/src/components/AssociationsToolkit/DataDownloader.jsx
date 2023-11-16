@@ -348,14 +348,14 @@ function DataDownloader({ fileStem }) {
                 {entity === "disease" && (
                   <FormControl size="small" sx={{ m: 1, maxWidth: "100%" }}>
                     <InputLabel id="select-prioritization-small-label">
-                      Prioritization Aggregation
+                      Prioritisation Aggregation
                     </InputLabel>
                     <Select
                       disabled={downloading}
                       multiple
                       labelId="select-prioritization-small-label"
                       value={state.prioritisationAggregationSelectValue}
-                      label="Prioritization Aggregation"
+                      label="Prioritisation Aggregation"
                       renderValue={selected => selected.join(", ")}
                       onChange={e => {
                         dispatch(
