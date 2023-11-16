@@ -138,8 +138,8 @@ export const getExportedPrioritisationColumns = arr => {
   return [
     targetName,
     {
-      id: "score",
-      label: "Score",
+      id: "globalScore",
+      label: "Global Score",
       exportValue: data => data.score,
     },
     ...exportedColumns,
