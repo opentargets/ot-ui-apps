@@ -319,14 +319,14 @@ function DataDownloader({ fileStem }) {
               <FormGroup>
                 <FormControl size="small" sx={{ m: 1, maxWidth: "100%" }}>
                   <InputLabel id="select-association-small-label">
-                    Associations Aggregation
+                    Select associations data type
                   </InputLabel>
                   <Select
                     disabled={downloading || onlyTargetData}
                     multiple
                     labelId="select-association-small-label"
                     value={state.associationAggregationSelectValue}
-                    label="Associations Aggregation"
+                    label="Select associations data type"
                     renderValue={selected => selected.join(", ")}
                     onChange={e => {
                       dispatch(
@@ -354,14 +354,14 @@ function DataDownloader({ fileStem }) {
                 {entity === "disease" && (
                   <FormControl size="small" sx={{ m: 1, maxWidth: "100%" }}>
                     <InputLabel id="select-prioritization-small-label">
-                      Prioritisation Aggregation
+                      Select prioritisation data type
                     </InputLabel>
                     <Select
                       disabled={downloading}
                       multiple
                       labelId="select-prioritization-small-label"
                       value={state.prioritisationAggregationSelectValue}
-                      label="Prioritisation Aggregation"
+                      label="Select prioritisation data type"
                       renderValue={selected => selected.join(", ")}
                       onChange={e => {
                         dispatch(
