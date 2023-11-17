@@ -306,9 +306,9 @@ function DataDownloader({ fileStem }) {
             variant="subtitle2"
             gutterBottom
           >
-            By clicking on the download tabs from this view, you will export the entire association
-            table (default option). Please expand the advanced options to export your own customised
-            view.
+            By default, clicking on the download tabs from this view (JSON or TSV) will export the
+            entire association table. Please expand the advanced options to customise the export
+            parameters.
           </Typography>
           <BorderAccordion>
             <AccordionSummary expandIcon={<FontAwesomeIcon icon={faCaretDown} size="lg" />}>
