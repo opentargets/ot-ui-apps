@@ -80,9 +80,18 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
 export const getRowsQuerySelector = entityToGet =>
   entityToGet === "target" ? "data.disease.associatedTargets" : "data.target.associatedDiseases";
 
-export const getExportedColumns = (entityToGet, assocArr, prioArr) => {
+export const getExportedColumns = (entityToGet, assocArr, prioArr, pinnedArr) => {
   const nameColumn = entityToGet === "target" ? targetName : diseaseName;
   let exportedColumns = [];
+
+  if (pinnedArr.length > 0) {
+    const pinnedColumns = pinnedArr.map(({ id }) => ({
+      id: "isPinned",
+      exportValue: data => data[entityToGet].id === id,
+    }));
+    exportedColumns = [...exportedColumns, ...pinnedColumns];
+  }
+
   const sources = assocArr.map(({ id }) => ({
     id,
     exportValue: data => {
@@ -93,7 +102,7 @@ export const getExportedColumns = (entityToGet, assocArr, prioArr) => {
     },
   }));
 
-  exportedColumns = [...sources];
+  exportedColumns = [...exportedColumns, ...sources];
 
   if (entityToGet === "target") {
     const prioritisationExportCols = prioArr.map(({ id }) => ({
@@ -106,7 +115,7 @@ export const getExportedColumns = (entityToGet, assocArr, prioArr) => {
       },
     }));
 
-    exportedColumns = [...sources, ...prioritisationExportCols];
+    exportedColumns = [...exportedColumns, ...prioritisationExportCols];
   }
 
   return [
@@ -120,8 +129,16 @@ export const getExportedColumns = (entityToGet, assocArr, prioArr) => {
   ];
 };
 
-export const getExportedPrioritisationColumns = arr => {
+export const getExportedPrioritisationColumns = (arr, pinnedArr, entityToGet) => {
   let exportedColumns = [];
+
+  if (pinnedArr.length > 0) {
+    const pinnedColumns = pinnedArr.map(({ id }) => ({
+      id: "isPinned",
+      exportValue: data => data[entityToGet].id === id,
+    }));
+    exportedColumns = [...exportedColumns, ...pinnedColumns];
+  }
 
   const prioritisationExportCols = arr.map(({ id }) => ({
     id,
@@ -133,7 +150,7 @@ export const getExportedPrioritisationColumns = arr => {
     },
   }));
 
-  exportedColumns = [...prioritisationExportCols];
+  exportedColumns = [...exportedColumns, ...prioritisationExportCols];
 
   return [
     targetName,

@@ -163,9 +163,9 @@ function DataDownloader({ fileStem }) {
     enableIndirect,
     entity,
     entityToGet,
-    displayedTable,
     modifiedSourcesDataControls,
     pinnedEntries,
+    pinnedData,
     dataSourcesWeights,
     dataSourcesRequired,
   } = useAotfContext();
@@ -181,18 +181,24 @@ function DataDownloader({ fileStem }) {
       getExportedColumns(
         entityToGet,
         state.selectedAssociationAggregationColumnObjectValue,
-        state.selectedPrioritisationAggregationColumnObjectValue
+        state.selectedPrioritisationAggregationColumnObjectValue,
+        pinnedData
       ),
     [
       entityToGet,
       state.selectedAssociationAggregationColumnObjectValue,
       state.selectedPrioritisationAggregationColumnObjectValue,
+      pinnedData,
     ]
   );
   const prioritisationColumns = useMemo(
     () =>
-      getExportedPrioritisationColumns(state.selectedPrioritisationAggregationColumnObjectValue),
-    [state.selectedPrioritisationAggregationColumnObjectValue]
+      getExportedPrioritisationColumns(
+        state.selectedPrioritisationAggregationColumnObjectValue,
+        pinnedData,
+        entityToGet
+      ),
+    [state.selectedPrioritisationAggregationColumnObjectValue, pinnedData, entityToGet]
   );
   const queryResponseSelector = useMemo(() => getRowsQuerySelector(entityToGet), [entityToGet]);
 
