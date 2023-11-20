@@ -407,7 +407,7 @@ function DataDownloader({ fileStem }) {
                       onChange={e => setOnlyPinnedCheckBox(e.target.checked)}
                     />
                   }
-                  label="Only pinned / upload rows"
+                  label={`Only pinned ${isPartnerPreview ? " / uploaded " : ""} rows`}
                 />
 
                 {entity === "disease" && (
