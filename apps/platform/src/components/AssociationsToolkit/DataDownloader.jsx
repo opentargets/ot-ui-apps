@@ -52,10 +52,6 @@ const dataSources = OriginalDataSources.filter(e => {
   return;
 });
 
-const LabelContainer = styled("div")({
-  marginBottom: 12,
-});
-
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: "none",
   border: `1px solid ${theme.palette.primary.light}`,
@@ -175,7 +171,6 @@ function DataDownloader({ fileStem }) {
 
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [urlSnackbar, setUrlSnackbar] = useState(false);
   const columns = useMemo(
     () =>
       getExportedColumns(
@@ -433,24 +428,13 @@ function DataDownloader({ fileStem }) {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "flex-end",
+              mt: theme => theme.spacing(2),
             }}
           >
             <Box>
-              <Button
-                variant="outlined"
-                startIcon={<FontAwesomeIcon icon={faLink} size="2xs" />}
-                onClick={() => {
-                  setUrlSnackbar(true);
-                  navigator.clipboard.writeText(window.location.href);
-                }}
-              >
-                Copy Url
-              </Button>
+              <Typography>Download data as</Typography>
             </Box>
             <Box>
-              <LabelContainer>
-                <Typography variant="caption">Download data as</Typography>
-              </LabelContainer>
               <Grid container alignItems="center" spacing={3}>
                 <Grid item>
                   <Button variant="outlined" onClick={handleClickDownloadJSON} size="small">
@@ -483,23 +467,6 @@ function DataDownloader({ fileStem }) {
             Preparing the data. This may take several minutes...
           </>
         }
-      />
-
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        open={urlSnackbar}
-        onClose={() => {
-          setUrlSnackbar(false);
-        }}
-        autoHideDuration={2000}
-        TransitionComponent={Slide}
-        ContentProps={{
-          classes: {
-            root: classes.snackbarContentRoot,
-            message: classes.snackbarContentMessage,
-          },
-        }}
-        message="URL copied"
       />
     </div>
   );
