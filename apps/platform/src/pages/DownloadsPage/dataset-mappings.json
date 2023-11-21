@@ -188,7 +188,7 @@
     "include_in_fe": true,
     "include_in_bq": true
   },
-   {
+  {
     "id": "pharmacogenomics",
     "category": "Drug/Target",
     "nice_name": "Drug/Target - pharmacogenetics",
@@ -196,7 +196,7 @@
     "order": 22,
     "include_in_fe": true,
     "include_in_bq": true
-   },
+  },
   {
     "id": "knownDrugsAggregated",
     "category": "Evidence",
