@@ -38,15 +38,15 @@ const getLevelElementClassName = level => {
     case "1A":
       return "green";
     case "2":
-      return "level-blue";
+      return "blue";
     case "2A":
-      return "level-blue";
+      return "blue";
     case "3":
-      return "level-yellow";
+      return "yellow";
     case "4":
-      return "level-red";
+      return "red";
     default:
-      return "level-red";
+      return "red";
   }
 };
 
@@ -126,15 +126,20 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
       id: "drugResponse",
       label: "Drug Response Phenotype",
       renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
-        const phenotypeTextElement = phenotypeFromSourceId ? (
-          <Tooltip showHelpIcon title={genotypeAnnotationText}>
-            <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeText}</Link>
-          </Tooltip>
-        ) : (
-          <Tooltip showHelpIcon title={genotypeAnnotationText}>
-            {phenotypeText}
-          </Tooltip>
-        );
+        let phenotypeTextElement;
+
+        if (phenotypeText) {
+          phenotypeTextElement = phenotypeFromSourceId ? (
+            <Tooltip title={genotypeAnnotationText} showHelpIcon>
+              <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeText}</Link>
+            </Tooltip>
+          ) : (
+            <Tooltip title={genotypeAnnotationText} showHelpIcon>
+              {phenotypeText}
+            </Tooltip>
+          );
+        } else phenotypeTextElement = naLabel;
+
         return phenotypeTextElement;
       },
     },
