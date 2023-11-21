@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { Box } from '@mui/material';
+import { useContext } from "react";
+import { Box } from "@mui/material";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -10,8 +10,9 @@ import {
   ControlsSection,
   OptionsControlls,
   AotFLoader,
-} from '../../../components/AssociationsToolkit';
-import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
+} from "../../../components/AssociationsToolkit";
+import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
+import CopyUrlButton from "../../../components/AssociationsToolkit/CopyUrlButton";
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useContext(AssociationsContext);
@@ -20,12 +21,15 @@ function AssociationsWrapper() {
   return (
     <>
       <ControlsSection>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
             <DataDownloader fileStem={`${id}-associated-targets`} />
           </OptionsControlls>
+        </Box>
+        <Box>
+          <CopyUrlButton />
         </Box>
       </ControlsSection>
       <TableAssociations />
@@ -36,11 +40,7 @@ function AssociationsWrapper() {
 /* TARGET ASSOCIATION  */
 function TargetAssociations({ ensgId }) {
   return (
-    <AssociationsProvider
-      id={ensgId}
-      entity="target"
-      query={TARGET_ASSOCIATIONS_QUERY}
-    >
+    <AssociationsProvider id={ensgId} entity="target" query={TARGET_ASSOCIATIONS_QUERY}>
       <AssociationsWrapper />
     </AssociationsProvider>
   );

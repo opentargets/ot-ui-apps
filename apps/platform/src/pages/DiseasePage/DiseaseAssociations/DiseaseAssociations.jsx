@@ -13,6 +13,7 @@ import {
   AotFLoader,
 } from "../../../components/AssociationsToolkit";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
+import CopyUrlButton from "../../../components/AssociationsToolkit/CopyUrlButton";
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useAotfContext();
@@ -29,7 +30,10 @@ function AssociationsWrapper() {
             <DataDownloader fileStem={`${id}-associated-targets`} />
           </OptionsControlls>
         </Box>
-        <TargetPrioritisationSwitch />
+        <Box>
+          <CopyUrlButton />
+          <TargetPrioritisationSwitch />
+        </Box>
       </ControlsSection>
       <TableAssociations />
     </>

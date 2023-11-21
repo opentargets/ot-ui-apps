@@ -52,10 +52,6 @@ const dataSources = OriginalDataSources.filter(e => {
   return;
 });
 
-const LabelContainer = styled("div")({
-  marginBottom: 12,
-});
-
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: "none",
   border: `1px solid ${theme.palette.primary.light}`,
@@ -163,9 +159,9 @@ function DataDownloader({ fileStem }) {
     enableIndirect,
     entity,
     entityToGet,
-    displayedTable,
     modifiedSourcesDataControls,
     pinnedEntries,
+    pinnedData,
     dataSourcesWeights,
     dataSourcesRequired,
   } = useAotfContext();
@@ -175,24 +171,29 @@ function DataDownloader({ fileStem }) {
 
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [urlSnackbar, setUrlSnackbar] = useState(false);
   const columns = useMemo(
     () =>
       getExportedColumns(
         entityToGet,
         state.selectedAssociationAggregationColumnObjectValue,
-        state.selectedPrioritisationAggregationColumnObjectValue
+        state.selectedPrioritisationAggregationColumnObjectValue,
+        pinnedData
       ),
     [
       entityToGet,
       state.selectedAssociationAggregationColumnObjectValue,
       state.selectedPrioritisationAggregationColumnObjectValue,
+      pinnedData,
     ]
   );
   const prioritisationColumns = useMemo(
     () =>
-      getExportedPrioritisationColumns(state.selectedPrioritisationAggregationColumnObjectValue),
-    [state.selectedPrioritisationAggregationColumnObjectValue]
+      getExportedPrioritisationColumns(
+        state.selectedPrioritisationAggregationColumnObjectValue,
+        pinnedData,
+        entityToGet
+      ),
+    [state.selectedPrioritisationAggregationColumnObjectValue, pinnedData, entityToGet]
   );
   const queryResponseSelector = useMemo(() => getRowsQuerySelector(entityToGet), [entityToGet]);
 
@@ -300,9 +301,9 @@ function DataDownloader({ fileStem }) {
             variant="subtitle2"
             gutterBottom
           >
-            By clicking on the download tabs from this view, you will export the entire association
-            table (default option). Please expand the advanced options to export your own customised
-            view.
+            By default, clicking on the download tabs from this view (JSON or TSV) will export the
+            entire association table. Please expand the advanced options to customise the export
+            parameters.
           </Typography>
           <BorderAccordion>
             <AccordionSummary expandIcon={<FontAwesomeIcon icon={faCaretDown} size="lg" />}>
@@ -313,14 +314,14 @@ function DataDownloader({ fileStem }) {
               <FormGroup>
                 <FormControl size="small" sx={{ m: 1, maxWidth: "100%" }}>
                   <InputLabel id="select-association-small-label">
-                    Associations Aggregation
+                    Select associations data type
                   </InputLabel>
                   <Select
                     disabled={downloading || onlyTargetData}
                     multiple
                     labelId="select-association-small-label"
                     value={state.associationAggregationSelectValue}
-                    label="Associations Aggregation"
+                    label="Select associations data type"
                     renderValue={selected => selected.join(", ")}
                     onChange={e => {
                       dispatch(
@@ -348,14 +349,14 @@ function DataDownloader({ fileStem }) {
                 {entity === "disease" && (
                   <FormControl size="small" sx={{ m: 1, maxWidth: "100%" }}>
                     <InputLabel id="select-prioritization-small-label">
-                      Prioritization Aggregation
+                      Select prioritisation data type
                     </InputLabel>
                     <Select
                       disabled={downloading}
                       multiple
                       labelId="select-prioritization-small-label"
                       value={state.prioritisationAggregationSelectValue}
-                      label="Prioritization Aggregation"
+                      label="Select prioritisation data type"
                       renderValue={selected => selected.join(", ")}
                       onChange={e => {
                         dispatch(
@@ -401,7 +402,7 @@ function DataDownloader({ fileStem }) {
                       onChange={e => setOnlyPinnedCheckBox(e.target.checked)}
                     />
                   }
-                  label="Only pinned / upload rows"
+                  label={`Only pinned ${isPartnerPreview ? " / uploaded " : ""} rows`}
                 />
 
                 {entity === "disease" && (
@@ -427,24 +428,13 @@ function DataDownloader({ fileStem }) {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "flex-end",
+              mt: theme => theme.spacing(2),
             }}
           >
             <Box>
-              <Button
-                variant="outlined"
-                startIcon={<FontAwesomeIcon icon={faLink} size="2xs" />}
-                onClick={() => {
-                  setUrlSnackbar(true);
-                  navigator.clipboard.writeText(window.location.href);
-                }}
-              >
-                Copy Url
-              </Button>
+              <Typography>Download data as</Typography>
             </Box>
             <Box>
-              <LabelContainer>
-                <Typography variant="caption">Download data as</Typography>
-              </LabelContainer>
               <Grid container alignItems="center" spacing={3}>
                 <Grid item>
                   <Button variant="outlined" onClick={handleClickDownloadJSON} size="small">
@@ -477,23 +467,6 @@ function DataDownloader({ fileStem }) {
             Preparing the data. This may take several minutes...
           </>
         }
-      />
-
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        open={urlSnackbar}
-        onClose={() => {
-          setUrlSnackbar(false);
-        }}
-        autoHideDuration={2000}
-        TransitionComponent={Slide}
-        ContentProps={{
-          classes: {
-            root: classes.snackbarContentRoot,
-            message: classes.snackbarContentMessage,
-          },
-        }}
-        message="URL copied"
       />
     </div>
   );
