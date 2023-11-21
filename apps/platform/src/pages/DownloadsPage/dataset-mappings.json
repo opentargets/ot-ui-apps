@@ -189,6 +189,15 @@
     "include_in_bq": true
   },
   {
+    "id": "pharmacogenomics",
+    "category": "Drug/Target",
+    "nice_name": "Drug/Target - pharmacogenetics",
+    "description": "Genetic variants influencing individual drug responses",
+    "order": 22,
+    "include_in_fe": true,
+    "include_in_bq": true
+  },
+  {
     "id": "knownDrugsAggregated",
     "category": "Evidence",
     "nice_name": "n/a",
