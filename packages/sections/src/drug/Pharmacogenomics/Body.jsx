@@ -148,20 +148,24 @@ function Body({ id: chemblId, label: name, entity }) {
     {
       id: "drugResponse",
       label: "Drug Response Phenotype",
-      renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
+      renderCell: ({ phenotypeText, phenotypeFromSourceId, genotypeAnnotationText }) => {
         let phenotypeTextElement;
 
         if (phenotypeText) {
-          phenotypeTextElement = phenotypeFromSourceId ? (
+          phenotypeTextElement = phenotypeText;
+        } else phenotypeTextElement = naLabel;
+
+        if (phenotypeFromSourceId)
+          phenotypeTextElement = (
+            <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeTextElement}</Link>
+          );
+
+        if (genotypeAnnotationText)
+          phenotypeTextElement = (
             <Tooltip title={genotypeAnnotationText} showHelpIcon>
-              <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeText}</Link>
-            </Tooltip>
-          ) : (
-            <Tooltip title={genotypeAnnotationText} showHelpIcon>
-              {phenotypeText}
+              {phenotypeTextElement}
             </Tooltip>
           );
-        } else phenotypeTextElement = naLabel;
 
         return phenotypeTextElement;
       },
@@ -174,6 +178,7 @@ function Body({ id: chemblId, label: name, entity }) {
     {
       id: "confidenceLevel",
       label: "Confidence Level",
+      sortable: true,
       tooltip: (
         <>
           As defined by
