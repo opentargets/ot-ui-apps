@@ -37,9 +37,13 @@ const getLevelElementClassName = level => {
       return "green";
     case "1A":
       return "green";
+    case "1B":
+      return "green";
     case "2":
       return "blue";
     case "2A":
+      return "blue";
+    case "2B":
       return "blue";
     case "3":
       return "yellow";
@@ -114,7 +118,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
         );
       },
       filterValue: ({ variantFunctionalConsequence }) =>
-        `${sentenceCase(variantFunctionalConsequence.label)}`,
+        `${sentenceCase(variantFunctionalConsequence?.label)}`,
     },
     {
       id: "drug",
