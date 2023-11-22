@@ -174,6 +174,7 @@ function Body({ id: chemblId, label: name, entity }) {
       id: "drugResponseCategory",
       label: "Drug Response Category",
       renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
+      filterValue: ({ pgxCategory }) => pgxCategory,
     },
     {
       id: "confidenceLevel",
@@ -199,6 +200,7 @@ function Body({ id: chemblId, label: name, entity }) {
         }
         return naLabel;
       },
+      filterValue: ({ evidenceLevel }) => `Level ${evidenceLevel}`,
     },
     {
       id: "source",

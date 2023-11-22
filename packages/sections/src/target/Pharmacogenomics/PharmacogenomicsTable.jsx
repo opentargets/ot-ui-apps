@@ -155,6 +155,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
       id: "drugResponseCategory",
       label: "Drug Response Category",
       renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
+      filterValue: ({ pgxCategory }) => pgxCategory,
     },
     {
       id: "confidenceLevel",
@@ -180,6 +181,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
         }
         return naLabel;
       },
+      filterValue: ({ evidenceLevel }) => `Level ${evidenceLevel}`,
     },
     {
       id: "source",
