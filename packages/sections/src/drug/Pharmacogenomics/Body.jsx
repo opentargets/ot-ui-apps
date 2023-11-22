@@ -249,6 +249,7 @@ function Body({ id: chemblId, label: name, entity }) {
       renderDescription={() => <Description name={name} />}
       renderBody={({ drug }) => (
         <DataTable
+          sortBy="evidenceLevel"
           showGlobalFilter
           dataDownloader
           columns={columns}

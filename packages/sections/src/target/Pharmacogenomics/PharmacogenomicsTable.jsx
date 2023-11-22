@@ -223,6 +223,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
     <DataTable
       showGlobalFilter
       dataDownloader
+      sortBy="evidenceLevel"
       columns={columns}
       rows={pharmacogenomics}
       rowsPerPageOptions={defaultRowsPerPageOptions}
