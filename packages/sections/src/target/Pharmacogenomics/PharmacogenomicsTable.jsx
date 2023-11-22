@@ -123,8 +123,11 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
     {
       id: "drug",
       label: "Drug(s)",
-      renderCell: ({ drugId, drugFromSource }) =>
-        drugId ? <Link to={`/drug/${drugId}`}>{drugFromSource || naLabel}</Link> : naLabel,
+      renderCell: ({ drugId, drugFromSource }) => {
+        let drugElement = drugFromSource || drugId || naLabel;
+        if (drugId) drugElement = <Link to={`/drug/${drugId}`}>{drugElement}</Link>;
+        return drugElement;
+      },
     },
     {
       id: "drugResponse",
