@@ -93,9 +93,8 @@ function HelpBoxPanel({ fai, url, label, external }) {
   );
 }
 
-function HomePage() {
+function HomePage({ suggestions }) {
   const classes = useStyles();
-  const suggestions = getSuggestedSearch();
 
   const handleScrollDown = () => {
     window.scrollTo({ top: window.innerHeight, left: 0, behavior: "smooth" });
