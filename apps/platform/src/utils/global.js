@@ -2,7 +2,7 @@ import { format } from "d3-format";
 import config from "../config";
 import { searchExamples, pppSearchExamples } from "../pages/HomePage/searchExamples";
 
-function pickTwo(arr) {
+function pickTwo([...arr]) {
   const i1 = Math.floor(Math.random() * arr.length);
   const resultArray = arr.splice(i1, 1);
   const i2 = Math.floor(Math.random() * arr.length);

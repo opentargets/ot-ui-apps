@@ -1,11 +1,11 @@
-import PublicHome from './HomePage';
-import PPHome from './PPHomePage';
-import { usePermissions } from 'ui';
+import PublicHome from "./HomePage";
+import PPHome from "./PPHomePage";
+import { usePermissions } from "ui";
 
-function GetHomePage() {
+function GetHomePage({ suggestions }) {
   const { isPartnerPreview } = usePermissions();
-  if (isPartnerPreview) return <PPHome />;
-  return <PublicHome />;
+  if (isPartnerPreview) return <PPHome suggestions={suggestions} />;
+  return <PublicHome suggestions={suggestions} />;
 }
 
 export default GetHomePage;
