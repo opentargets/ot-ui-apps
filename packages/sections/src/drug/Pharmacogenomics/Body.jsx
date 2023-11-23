@@ -41,9 +41,13 @@ const getLevelElementClassName = level => {
       return "green";
     case "1A":
       return "green";
+    case "1B":
+      return "green";
     case "2":
       return "blue";
     case "2A":
+      return "blue";
+    case "2B":
       return "blue";
     case "3":
       return "yellow";
@@ -139,25 +143,29 @@ function Body({ id: chemblId, label: name, entity }) {
         );
       },
       filterValue: ({ variantFunctionalConsequence }) =>
-        `${sentenceCase(variantFunctionalConsequence.label)}`,
+        sentenceCase(variantFunctionalConsequence?.label),
     },
     {
       id: "drugResponse",
       label: "Drug Response Phenotype",
-      renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
+      renderCell: ({ phenotypeText, phenotypeFromSourceId, genotypeAnnotationText }) => {
         let phenotypeTextElement;
 
         if (phenotypeText) {
-          phenotypeTextElement = phenotypeFromSourceId ? (
+          phenotypeTextElement = phenotypeText;
+        } else phenotypeTextElement = naLabel;
+
+        if (phenotypeFromSourceId)
+          phenotypeTextElement = (
+            <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeTextElement}</Link>
+          );
+
+        if (genotypeAnnotationText)
+          phenotypeTextElement = (
             <Tooltip title={genotypeAnnotationText} showHelpIcon>
-              <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeText}</Link>
-            </Tooltip>
-          ) : (
-            <Tooltip title={genotypeAnnotationText} showHelpIcon>
-              {phenotypeText}
+              {phenotypeTextElement}
             </Tooltip>
           );
-        } else phenotypeTextElement = naLabel;
 
         return phenotypeTextElement;
       },
@@ -166,10 +174,12 @@ function Body({ id: chemblId, label: name, entity }) {
       id: "drugResponseCategory",
       label: "Drug Response Category",
       renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
+      filterValue: ({ pgxCategory }) => pgxCategory,
     },
     {
       id: "confidenceLevel",
       label: "Confidence Level",
+      sortable: true,
       tooltip: (
         <>
           As defined by
@@ -190,6 +200,7 @@ function Body({ id: chemblId, label: name, entity }) {
         }
         return naLabel;
       },
+      filterValue: ({ evidenceLevel }) => `Level ${evidenceLevel}`,
     },
     {
       id: "source",
@@ -238,6 +249,7 @@ function Body({ id: chemblId, label: name, entity }) {
       renderDescription={() => <Description name={name} />}
       renderBody={({ drug }) => (
         <DataTable
+          sortBy="evidenceLevel"
           showGlobalFilter
           dataDownloader
           columns={columns}

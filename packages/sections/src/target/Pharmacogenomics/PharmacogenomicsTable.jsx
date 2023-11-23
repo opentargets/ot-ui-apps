@@ -37,9 +37,13 @@ const getLevelElementClassName = level => {
       return "green";
     case "1A":
       return "green";
+    case "1B":
+      return "green";
     case "2":
       return "blue";
     case "2A":
+      return "blue";
+    case "2B":
       return "blue";
     case "3":
       return "yellow";
@@ -114,13 +118,16 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
         );
       },
       filterValue: ({ variantFunctionalConsequence }) =>
-        `${sentenceCase(variantFunctionalConsequence.label)}`,
+        `${sentenceCase(variantFunctionalConsequence?.label)}`,
     },
     {
       id: "drug",
       label: "Drug(s)",
-      renderCell: ({ drugId, drugFromSource }) =>
-        drugId ? <Link to={`/drug/${drugId}`}>{drugFromSource || naLabel}</Link> : naLabel,
+      renderCell: ({ drugId, drugFromSource }) => {
+        let drugElement = drugFromSource || drugId || naLabel;
+        if (drugId) drugElement = <Link to={`/drug/${drugId}`}>{drugElement}</Link>;
+        return drugElement;
+      },
     },
     {
       id: "drugResponse",
@@ -129,16 +136,20 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
         let phenotypeTextElement;
 
         if (phenotypeText) {
-          phenotypeTextElement = phenotypeFromSourceId ? (
+          phenotypeTextElement = phenotypeText;
+        } else phenotypeTextElement = naLabel;
+
+        if (phenotypeFromSourceId)
+          phenotypeTextElement = (
+            <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeTextElement}</Link>
+          );
+
+        if (genotypeAnnotationText)
+          phenotypeTextElement = (
             <Tooltip title={genotypeAnnotationText} showHelpIcon>
-              <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeText}</Link>
-            </Tooltip>
-          ) : (
-            <Tooltip title={genotypeAnnotationText} showHelpIcon>
-              {phenotypeText}
+              {phenotypeTextElement}
             </Tooltip>
           );
-        } else phenotypeTextElement = naLabel;
 
         return phenotypeTextElement;
       },
@@ -147,10 +158,12 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
       id: "drugResponseCategory",
       label: "Drug Response Category",
       renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
+      filterValue: ({ pgxCategory }) => pgxCategory,
     },
     {
       id: "confidenceLevel",
       label: "Confidence Level",
+      sortable: true,
       tooltip: (
         <>
           As defined by
@@ -171,6 +184,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
         }
         return naLabel;
       },
+      filterValue: ({ evidenceLevel }) => `Level ${evidenceLevel}`,
     },
     {
       id: "source",
@@ -209,6 +223,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
     <DataTable
       showGlobalFilter
       dataDownloader
+      sortBy="evidenceLevel"
       columns={columns}
       rows={pharmacogenomics}
       rowsPerPageOptions={defaultRowsPerPageOptions}
