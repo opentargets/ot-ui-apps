@@ -1,37 +1,38 @@
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { ApolloProvider } from '@apollo/client';
-import { ThemeProvider, SearchProvider, PrivateRoute } from 'ui';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { ApolloProvider } from "@apollo/client";
+import { ThemeProvider, SearchProvider, PrivateRoute } from "ui";
 
-import SEARCH_QUERY from './components/Search/SearchQuery.gql';
-import ShouldAccessPPP from './components/ShouldAccessPPP';
-import client from './client';
-import theme from './theme';
-import HomePage from './pages/HomePage';
-import SearchPage from './pages/SearchPage';
-import DiseasePage from './pages/DiseasePage';
-import DownloadsPage from './pages/DownloadsPage';
-import DrugPage from './pages/DrugPage';
-import TargetPage from './pages/TargetPage';
-import EvidencePage from './pages/EvidencePage';
-import VariantsPage from './pages/VariantsPage';
-import APIPage from './pages/APIPage';
-import NotFoundPage from './pages/NotFoundPage';
-import ProjectsPage from './pages/ProjectsPage';
-import { getSuggestedSearch } from './utils/global';
+import SEARCH_QUERY from "./components/Search/SearchQuery.gql";
+import ShouldAccessPPP from "./components/ShouldAccessPPP";
+import client from "./client";
+import theme from "./theme";
+import HomePage from "./pages/HomePage";
+import SearchPage from "./pages/SearchPage";
+import DiseasePage from "./pages/DiseasePage";
+import DownloadsPage from "./pages/DownloadsPage";
+import DrugPage from "./pages/DrugPage";
+import TargetPage from "./pages/TargetPage";
+import EvidencePage from "./pages/EvidencePage";
+import VariantsPage from "./pages/VariantsPage";
+import APIPage from "./pages/APIPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import ProjectsPage from "./pages/ProjectsPage";
+import { getSuggestedSearch } from "./utils/global";
 
 function App() {
+  const suggestions = getSuggestedSearch();
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
         <SearchProvider
-          searchSuggestions={getSuggestedSearch()}
+          searchSuggestions={suggestions}
           searchQuery={SEARCH_QUERY}
           searchPlaceholder="Search for a target, drug, disease, or phenotype..."
         >
           <Router>
             <Switch>
               <Route exact path="/">
-                <HomePage />
+                <HomePage suggestions={suggestions} />
               </Route>
               <Route path="/search">
                 <SearchPage />
