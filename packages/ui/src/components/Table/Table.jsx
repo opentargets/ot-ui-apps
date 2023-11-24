@@ -63,8 +63,6 @@ const Table = ({
   };
 
   const handleSort = (_, sortBy) => {
-    console.log("file: Table.jsx:66 -> handleSort -> sortBy", sortBy);
-    console.log("file: Table.jsx:66 -> handleSort -> _", _);
     onSortBy(sortBy);
   };
 
@@ -81,8 +79,6 @@ const Table = ({
     setSelectedRow(i);
     onRowClick(row, i);
   };
-
-  console.log(order);
 
   return (
     <Grid container direction="column">

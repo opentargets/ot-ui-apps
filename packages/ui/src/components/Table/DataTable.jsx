@@ -42,7 +42,6 @@ function DataTable({
   };
 
   const handleSortBy = sortBy => {
-    console.log("file: DataTable.jsx:46 -> handleSortBy -> sortBy", sortBy);
     setSortColumn(sortBy);
     setSortOrder(sortColumn === sortBy ? (sortOrder === "asc" ? "desc" : "asc") : "asc");
   };

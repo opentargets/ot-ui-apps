@@ -163,6 +163,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
     {
       id: "confidenceLevel",
       label: "Confidence Level",
+      comparator: (a, b) => (b.evidenceLevel < a.evidenceLevel ? 1 : -1),
       sortable: true,
       tooltip: (
         <>
