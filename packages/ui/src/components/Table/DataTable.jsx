@@ -34,24 +34,27 @@ function DataTable({
   const [globalFilterVal, setGlobalFilterVal] = useState("");
   const [sortColumn, setSortColumn] = useState(sortBy);
   const [sortOrder, setSortOrder] = useState(order);
-  const showPagination = rows.length > [...rowsPerPageOptions, initialPageSize].sort()[0];
+  const showPagination =
+    rows.length > [...rowsPerPageOptions, initialPageSize].sort()[0];
 
-  const handleGlobalFilterChange = globalFilter => {
+  const handleGlobalFilterChange = (globalFilter) => {
     setGlobalFilterVal(globalFilter);
     setPage(0);
   };
 
-  const handleSortBy = sortBy => {
+  const handleSortBy = (sortBy) => {
     setSortColumn(sortBy);
-    setSortOrder(sortColumn === sortBy ? (sortOrder === "asc" ? "desc" : "asc") : "asc");
+    setSortOrder(
+      sortColumn === sortBy ? (sortOrder === "asc" ? "desc" : "asc") : "asc"
+    );
   };
 
-  const handlePageChange = page => {
+  const handlePageChange = (page) => {
     setPage(page);
     onPagination(page, pageSize);
   };
 
-  const handleRowsPerPageChange = newPageSize => {
+  const handleRowsPerPageChange = (newPageSize) => {
     const newPageSizeNumber = Number(newPageSize);
     setPageSize(newPageSizeNumber);
     setPage(0);
@@ -60,7 +63,9 @@ function DataTable({
   let processedRows = [...rows];
 
   if (globalFilterVal) {
-    processedRows = processedRows.filter(row => globalFilter(row, columns, globalFilterVal));
+    processedRows = processedRows.filter((row) =>
+      globalFilter(row, columns, globalFilterVal)
+    );
   }
 
   if (sortColumn) {
