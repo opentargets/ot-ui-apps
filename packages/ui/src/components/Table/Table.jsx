@@ -56,17 +56,19 @@ const Table = ({
   const [selectedRow, setSelectedRow] = useState(0);
   const defaultClasses = tableStyles();
 
-  const handleGlobalFilterChange = (newGlobalFilter) => {
+  const handleGlobalFilterChange = newGlobalFilter => {
     if (newGlobalFilter !== globalFilter) {
       onGlobalFilterChange(newGlobalFilter);
     }
   };
 
   const handleSort = (_, sortBy) => {
+    console.log("file: Table.jsx:66 -> handleSort -> sortBy", sortBy);
+    console.log("file: Table.jsx:66 -> handleSort -> _", _);
     onSortBy(sortBy);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = event => {
     onRowsPerPageChange(Number(event.target.value));
   };
   const handleChangePage = (_, page) => {
@@ -79,6 +81,8 @@ const Table = ({
     setSelectedRow(i);
     onRowClick(row, i);
   };
+
+  console.log(order);
 
   return (
     <Grid container direction="column">
@@ -107,9 +111,7 @@ const Table = ({
           </Grid>
         )}
       </Grid>
-      <TableContainer
-        className={classNames(defaultClasses.container, classes.root)}
-      >
+      <TableContainer className={classNames(defaultClasses.container, classes.root)}>
         <MuiTable
           className={classNames(defaultClasses.table, classes.table, {
             [defaultClasses.tableFixed]: fixed,
@@ -132,7 +134,7 @@ const Table = ({
                 key={i}
                 row={row}
                 noWrap={noWrap}
-                onClick={(event) => handleClick(event, row, i)}
+                onClick={event => handleClick(event, row, i)}
                 selected={rowIsSelectable && selectedRow === i}
               />
             ))}
@@ -152,9 +154,7 @@ const Table = ({
         </MuiTable>
       </TableContainer>
       <Grid item container justifyContent="center">
-        {loading && (
-          <CircularProgress className={defaultClasses.progress} size={22} />
-        )}
+        {loading && <CircularProgress className={defaultClasses.progress} size={22} />}
       </Grid>
       <Grid item container justifyContent="flex-end">
         {showPagination ? (
