@@ -85,11 +85,14 @@ export const getExportedColumns = (entityToGet, assocArr, prioArr, pinnedArr) =>
   let exportedColumns = [];
 
   if (pinnedArr.length > 0) {
-    const pinnedColumns = pinnedArr.map(({ id }) => ({
-      id: "isPinned",
-      exportValue: data => data[entityToGet].id === id,
-    }));
-    exportedColumns = [...exportedColumns, ...pinnedColumns];
+    const isPinnedObj = [
+      {
+        id: "isPinned",
+        exportValue: data =>
+          pinnedArr.some(currentValue => currentValue.id === data[entityToGet].id),
+      },
+    ];
+    exportedColumns = [...exportedColumns, ...isPinnedObj];
   }
 
   const sources = assocArr.map(({ id }) => ({
@@ -133,11 +136,14 @@ export const getExportedPrioritisationColumns = (arr, pinnedArr, entityToGet) =>
   let exportedColumns = [];
 
   if (pinnedArr.length > 0) {
-    const pinnedColumns = pinnedArr.map(({ id }) => ({
-      id: "isPinned",
-      exportValue: data => data[entityToGet].id === id,
-    }));
-    exportedColumns = [...exportedColumns, ...pinnedColumns];
+    const isPinnedObj = [
+      {
+        id: "isPinned",
+        exportValue: data =>
+          pinnedArr.some(currentValue => currentValue.id === data[entityToGet].id),
+      },
+    ];
+    exportedColumns = [...exportedColumns, ...isPinnedObj];
   }
 
   const prioritisationExportCols = arr.map(({ id }) => ({
