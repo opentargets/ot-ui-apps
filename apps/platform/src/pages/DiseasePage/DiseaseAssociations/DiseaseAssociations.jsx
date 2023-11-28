@@ -11,6 +11,7 @@ import {
   ControlsSection,
   OptionsControlls,
   AotFLoader,
+  DataUploader,
 } from "../../../components/AssociationsToolkit";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
 import CopyUrlButton from "../../../components/AssociationsToolkit/CopyUrlButton";
@@ -27,6 +28,9 @@ function AssociationsWrapper() {
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
+            {/* <PrivateWrapper> */}
+            <DataUploader />
+            {/* </PrivateWrapper> */}
             <DataDownloader fileStem={`${id}-associated-targets`} />
           </OptionsControlls>
         </Box>
