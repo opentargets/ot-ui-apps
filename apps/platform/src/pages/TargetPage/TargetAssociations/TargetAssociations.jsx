@@ -1,5 +1,6 @@
 import { useContext } from "react";
-import { Box } from "@mui/material";
+import { PrivateWrapper } from "ui";
+import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -10,6 +11,7 @@ import {
   ControlsSection,
   OptionsControlls,
   AotFLoader,
+  DataUploader,
 } from "../../../components/AssociationsToolkit";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
 import CopyUrlButton from "../../../components/AssociationsToolkit/CopyUrlButton";
@@ -25,12 +27,15 @@ function AssociationsWrapper() {
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
+            <PrivateWrapper>
+              <DataUploader />
+            </PrivateWrapper>
+            <Divider orientation="vertical" />
             <DataDownloader fileStem={`${id}-associated-targets`} />
+            <CopyUrlButton />
           </OptionsControlls>
         </Box>
-        <Box>
-          <CopyUrlButton />
-        </Box>
+        <Box></Box>
       </ControlsSection>
       <TableAssociations />
     </>

@@ -1,20 +1,14 @@
-import { useState } from 'react';
-import {
-  Popover,
-  FormGroup,
-  Button,
-  FormControlLabel,
-  Checkbox,
-  Switch,
-} from '@mui/material';
-import { faGear } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { styled } from '@mui/material/styles';
+import { useState } from "react";
+import { Popover, FormGroup, Button, FormControlLabel, Checkbox, Switch } from "@mui/material";
+import { faGear } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { styled } from "@mui/material/styles";
+import { Tooltip } from "ui";
 
-import useAotfContext from './hooks/useAotfContext';
+import useAotfContext from "./hooks/useAotfContext";
 
-const PopoverContent = styled('div')({
-  padding: '15px',
+const PopoverContent = styled("div")({
+  padding: "15px",
 });
 
 function DataMenu() {
@@ -28,7 +22,7 @@ function DataMenu() {
     displayedTable,
   } = useAotfContext();
 
-  const isPrioritisation = displayedTable === 'prioritisations';
+  const isPrioritisation = displayedTable === "prioritisations";
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -39,32 +33,33 @@ function DataMenu() {
   };
 
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const id = open ? "simple-popover" : undefined;
 
   return (
     <>
-      <Button
-        aria-describedby={id}
-        onClick={handleClick}
-        variant="outlined"
-        disableElevation
-        disabled={isPrioritisation}
-        startIcon={<FontAwesomeIcon icon={faGear} size="lg" />}
-      >
-        Advanced options
-      </Button>
+      <Tooltip placement="bottom" title="Advanced options">
+        <Button
+          aria-describedby={id}
+          onClick={handleClick}
+          variant="outlined"
+          disableElevation
+          disabled={isPrioritisation}
+        >
+          <FontAwesomeIcon icon={faGear} size="lg" />
+        </Button>
+      </Tooltip>
       <Popover
         id={id}
         anchorEl={anchorEl}
         onClose={handleClose}
         open={open}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: "bottom",
+          horizontal: "left",
         }}
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
+          vertical: "top",
+          horizontal: "left",
         }}
       >
         <PopoverContent>
@@ -73,9 +68,7 @@ function DataMenu() {
               control={
                 <Switch
                   checked={activeHeadersControlls}
-                  onChange={() =>
-                    setActiveHeadersControlls(!activeHeadersControlls)
-                  }
+                  onChange={() => setActiveHeadersControlls(!activeHeadersControlls)}
                 />
               }
               label="Show data sources controls"

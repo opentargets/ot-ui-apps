@@ -1,6 +1,5 @@
 import FileSaver from "file-saver";
 import { useState, useMemo, useEffect, useReducer } from "react";
-import _ from "lodash";
 import {
   Button,
   Grid,
@@ -28,8 +27,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
-import { faCloudArrowDown, faLink, faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { faCloudArrowDown, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Tooltip } from "ui";
 import useBatchDownloader from "./hooks/useBatchDownloader";
 import useAotfContext from "./hooks/useAotfContext";
 import OriginalDataSources from "./static_datasets/dataSourcesAssoc";
@@ -274,15 +274,16 @@ function DataDownloader({ fileStem }) {
 
   return (
     <div>
-      <Button
-        aria-describedby={popoverId}
-        onClick={handleClickBTN}
-        variant="outlined"
-        disableElevation
-        startIcon={<FontAwesomeIcon icon={faCloudArrowDown} size="lg" />}
-      >
-        Export
-      </Button>
+      <Tooltip placement="bottom" title="Export results">
+        <Button
+          aria-describedby={popoverId}
+          onClick={handleClickBTN}
+          variant="outlined"
+          disableElevation
+        >
+          <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
+        </Button>
+      </Tooltip>
       <Dialog
         onClose={handleClosePopover}
         open={open}
@@ -423,16 +424,18 @@ function DataDownloader({ fileStem }) {
               </FormGroup>
             </AccordionDetails>
           </BorderAccordion>
+
           <Box
             sx={{
+              mt: 4,
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              mt: theme => theme.spacing(2),
+              flexWrap: "nowrap",
+              alignItems: "center",
+              gap: 3,
             }}
           >
             <Box>
-              <Typography>Download data as</Typography>
+              <Typography>Download data as:</Typography>
             </Box>
             <Box>
               <Grid container alignItems="center" spacing={3}>

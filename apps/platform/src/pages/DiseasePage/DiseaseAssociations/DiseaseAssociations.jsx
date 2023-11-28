@@ -1,5 +1,5 @@
 import { PrivateWrapper } from "ui";
-import { Box } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -11,6 +11,7 @@ import {
   ControlsSection,
   OptionsControlls,
   AotFLoader,
+  DataUploader,
 } from "../../../components/AssociationsToolkit";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
 import CopyUrlButton from "../../../components/AssociationsToolkit/CopyUrlButton";
@@ -27,11 +28,15 @@ function AssociationsWrapper() {
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
+            <PrivateWrapper>
+              <DataUploader />
+            </PrivateWrapper>
+            <Divider orientation="vertical" />
             <DataDownloader fileStem={`${id}-associated-targets`} />
+            <CopyUrlButton />
           </OptionsControlls>
         </Box>
         <Box>
-          <CopyUrlButton />
           <TargetPrioritisationSwitch />
         </Box>
       </ControlsSection>
