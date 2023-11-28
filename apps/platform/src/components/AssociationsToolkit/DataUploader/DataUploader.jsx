@@ -1,9 +1,6 @@
-import { useState, useReducer } from "react";
+import { useState } from "react";
 import {
   Button,
-  Snackbar,
-  Slide,
-  CircularProgress,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -14,19 +11,17 @@ import {
   Box,
   List,
   ListSubheader,
-  ListItem,
-  ListItemText,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { makeStyles } from "@mui/styles";
-import { faCloudArrowUp, faChevronLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useAotfContext from "../hooks/useAotfContext";
-import { getFilteredColumnArray } from "../utils/downloads";
 import { useDropzone } from "react-dropzone";
+import { styled } from "@mui/material/styles";
+import { v1 } from "uuid";
+import { faFileImport, faChevronLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Tooltip } from "ui";
+
+import useAotfContext from "../hooks/useAotfContext";
 import ValidationQuery from "./ValidationQuery.gql";
 import client from "../../../client";
-import { v1 } from "uuid";
 import NestedItem from "./NestedItem";
 
 const StyledContainer = styled("div")`
@@ -50,87 +45,11 @@ const StyledContainer = styled("div")`
   }
 `;
 
-const styles = makeStyles(theme => ({
-  messageProgress: {
-    marginRight: "1rem",
-    color: "white !important",
-  },
-  snackbarContentMessage: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    padding: ".75rem 1rem",
-    width: "100%",
-  },
-  snackbarContentRoot: {
-    padding: 0,
-  },
-  backdrop: {
-    "& .MuiBackdrop-root": {
-      opacity: "0 !important",
-    },
-  },
-  container: {
-    width: "80%",
-    backgroundColor: theme.palette.grey[300],
-  },
-  paper: {
-    margin: "1.5rem",
-    padding: "1rem",
-  },
-  title: {
-    display: "flex",
-    justifyContent: "space-between",
-    backgroundColor: "white",
-    borderBottom: "1px solid #ccc",
-    fontSize: "1.2rem",
-    fontWeight: "bold",
-    padding: "1rem",
-  },
-  playgroundContainer: {
-    margin: "0 1.5rem 1.5rem 1.5rem",
-    height: "100%",
-  },
-}));
-
 const steps = ["Add a file", "Entity validation"];
 
-const initialState = {};
-
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case "UPDATE_ASSOCIATION_COLUMNS":
-      return {
-        ...state,
-        associationAggregationSelectValue: action.payload,
-        selectedAssociationAggregationColumnObjectValue: getFilteredColumnArray(
-          action.payload,
-          state.selectedAssociationAggregationColumnObjectValue
-        ),
-      };
-    case "UPDATE_PRIORITISATION_COLUMNS":
-      return {
-        ...state,
-        prioritisationAggregationSelectValue: action.payload,
-        selectedPrioritisationAggregationColumnObjectValue: getFilteredColumnArray(
-          action.payload,
-          state.selectedPrioritisationAggregationColumnObjectValue
-        ),
-      };
-    default:
-      return state;
-  }
-};
-
-const actions = {
-  UPDATE_ASSOCIATION_COLUMNS: payload => ({
-    type: "UPDATE_ASSOCIATION_COLUMNS",
-    payload,
-  }),
-  UPDATE_PRIORITISATION_COLUMNS: payload => ({
-    type: "UPDATE_PRIORITISATION_COLUMNS",
-    payload,
-  }),
+const getEntityToUploadLabel = {
+  target: "targets",
+  disease: "diseases",
 };
 
 const getValidationResults = async (entity, queryTerms) =>
@@ -139,33 +58,12 @@ const getValidationResults = async (entity, queryTerms) =>
     variables: { entity, queryTerms },
   });
 
-// const handleSteps = step => {
-//   switch (step) {
-//     case 0:
-//       return <FirstStep />;
-//     case 1:
-//       return <SecondStep />;
-//     case 2:
-//       return <Confirm />;
-//     default:
-//       throw new Error("Unknown step");
-//   }
-// };
-
 function DataUploader({ fileStem }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
   const [activeStep, setActiveStep] = useState(0);
   const [queryTermsResults, setQueryTermsResults] = useState(null);
-  const {
-    id,
-    entityToGet,
-    modifiedSourcesDataControls,
-    pinnedData,
-    pinnedEntries,
-    setPinnedEntries,
-  } = useAotfContext();
+  const { entityToGet, pinnedEntries, setPinnedEntries } = useAotfContext();
   const [anchorEl, setAnchorEl] = useState(null);
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "text/html": [".txt"],
     },
@@ -174,15 +72,15 @@ function DataUploader({ fileStem }) {
       reader.onload = async function (e) {
         const contents = e.target.result;
         const terms = contents.split("\n");
-        const result = await getValidationResults(["target"], terms);
-        console.log(result.data.mapIds.mappings);
+        const result = await getValidationResults([entityToGet], terms);
         setQueryTermsResults(result.data.mapIds.mappings);
-        console.log({ queryTermsResults });
         setActiveStep(1);
       };
       reader.readAsText(file);
     },
   });
+
+  const entityToUploadLabel = getEntityToUploadLabel[entityToGet];
 
   const handlePinElements = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -206,8 +104,6 @@ function DataUploader({ fileStem }) {
     setActiveStep(0);
   };
 
-  const classes = styles();
-
   const open = Boolean(anchorEl);
   const popoverId = open ? "downloader-popover" : undefined;
 
@@ -223,15 +119,16 @@ function DataUploader({ fileStem }) {
 
   return (
     <div>
-      <Button
-        aria-describedby={popoverId}
-        onClick={handleClickBTN}
-        variant="outlined"
-        disableElevation
-        startIcon={<FontAwesomeIcon icon={faCloudArrowUp} size="lg" />}
-      >
-        Upload
-      </Button>
+      <Tooltip placement="bottom" title={`Upload list of ${entityToUploadLabel}`}>
+        <Button
+          aria-describedby={popoverId}
+          onClick={handleClickBTN}
+          variant="outlined"
+          disableElevation
+        >
+          <FontAwesomeIcon icon={faFileImport} size="lg" />
+        </Button>
+      </Tooltip>
       <Dialog
         onClose={handleClosePopover}
         open={open}
@@ -243,20 +140,20 @@ function DataUploader({ fileStem }) {
           },
         }}
       >
-        <DialogTitle>Upload list of entities</DialogTitle>
+        <DialogTitle>{`Upload list of ${entityToUploadLabel}`}</DialogTitle>
         <DialogContent>
           <Typography
             sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
             variant="subtitle2"
             gutterBottom
           >
-            By default, clicking on the download tabs from this view (JSON or TSV) will export the
-            entire association table. Please expand the advanced options to customise the export
-            parameters.
+            Upload a text file containing a list of interested targets / diseases. The file should
+            contain a single entity in every row. All the potential matches will be included after
+            the validation of the input
           </Typography>
           <Box sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}>
             <Stepper activeStep={activeStep}>
-              {steps.map((label, index) => {
+              {steps.map(label => {
                 const stepProps = {};
                 const labelProps = {};
                 return (

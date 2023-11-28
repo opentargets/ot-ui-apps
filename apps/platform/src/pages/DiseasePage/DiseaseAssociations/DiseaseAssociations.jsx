@@ -1,5 +1,5 @@
 import { PrivateWrapper } from "ui";
-import { Box } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -28,14 +28,15 @@ function AssociationsWrapper() {
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
-            {/* <PrivateWrapper> */}
-            <DataUploader />
-            {/* </PrivateWrapper> */}
+            <PrivateWrapper>
+              <DataUploader />
+            </PrivateWrapper>
+            <Divider orientation="vertical" />
             <DataDownloader fileStem={`${id}-associated-targets`} />
+            <CopyUrlButton />
           </OptionsControlls>
         </Box>
         <Box>
-          <CopyUrlButton />
           <TargetPrioritisationSwitch />
         </Box>
       </ControlsSection>

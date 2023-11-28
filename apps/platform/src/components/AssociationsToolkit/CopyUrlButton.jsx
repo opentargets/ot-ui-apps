@@ -24,7 +24,7 @@ function CopyUrlButton() {
 
   return (
     <>
-      <Tooltip title="Copy URL. Data sources controls not included">
+      <Tooltip placement="bottom" title="Copy URL. Data sources controls not included">
         <Button
           sx={{ mr: theme => theme.spacing(1) }}
           variant="outlined"
