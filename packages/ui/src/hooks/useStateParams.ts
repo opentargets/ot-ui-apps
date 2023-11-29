@@ -17,7 +17,7 @@ function useStateParams<T>(
     // Updates state when user navigates backwards or forwards in browser history
     if (existingValue && deserialize(existingValue) !== state) {
       setState(deserialize(existingValue));
-    } else setState(initialState);
+    } else if (!existingValue) setState(initialState);
   }, [existingValue]);
 
   const onChange = (s: T) => {
