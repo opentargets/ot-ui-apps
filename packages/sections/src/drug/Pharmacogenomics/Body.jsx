@@ -81,6 +81,7 @@ function Body({ id: chemblId, label: name, entity }) {
         }
         return naLabel;
       },
+      filterValue: ({ target }) => `${target}`,
     },
     {
       id: "variantRsId",
@@ -169,6 +170,7 @@ function Body({ id: chemblId, label: name, entity }) {
 
         return phenotypeTextElement;
       },
+      filterValue: ({ phenotypeText }) => `${phenotypeText}`,
     },
     {
       id: "drugResponseCategory",
