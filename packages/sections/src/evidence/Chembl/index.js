@@ -5,7 +5,7 @@ export const definition = {
   id,
   name: "ChEMBL",
   shortName: "CE",
-  hasData: (data) => data.chemblSummary.count > 0,
+  hasData: data => data.chembl.count > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };
 
