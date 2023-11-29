@@ -128,6 +128,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
         if (drugId) drugElement = <Link to={`/drug/${drugId}`}>{drugElement}</Link>;
         return drugElement;
       },
+      filterValue: ({ drugId, drugFromSource }) => `${drugFromSource} ${drugId}`,
     },
     {
       id: "drugResponse",
@@ -153,6 +154,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
 
         return phenotypeTextElement;
       },
+      filterValue: ({ phenotypeText }) => `${phenotypeText}`,
     },
     {
       id: "drugResponseCategory",
