@@ -224,7 +224,7 @@ function Body({ id, label, entity }) {
     let isCurrent = true;
 
     fetchData({ ensemblId, efoId, cursor: "", size }).then(res => {
-      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.evidences;
+      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.chembl;
       if (isCurrent) {
         setInitialLoading(false);
         setCursor(newCursor);
@@ -244,7 +244,7 @@ function Body({ id, label, entity }) {
       ensemblId,
       efoId,
     },
-    `data.disease.evidence`
+    `data.disease.chembl`
   );
 
   const handlePageChange = newPage => {
@@ -252,7 +252,7 @@ function Body({ id, label, entity }) {
     if (size * newPageInt + size > rows.length && cursor !== null) {
       setLoading(true);
       fetchData({ ensemblId, efoId, cursor, size }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
+        const { cursor: newCursor, rows: newRows } = res.data.disease.chembl;
         setRows([...rows, ...newRows]);
         setLoading(false);
         setCursor(newCursor);
@@ -268,7 +268,7 @@ function Body({ id, label, entity }) {
     if (newPageSizeInt > rows.length && cursor !== null) {
       setLoading(true);
       fetchData({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
+        const { cursor: newCursor, rows: newRows } = res.data.disease.chembl;
         setRows([...rows, ...newRows]);
         setLoading(false);
         setCursor(newCursor);
