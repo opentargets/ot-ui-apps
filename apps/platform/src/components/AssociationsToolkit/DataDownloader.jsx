@@ -29,7 +29,7 @@ import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { faCloudArrowDown, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tooltip } from "ui";
+import { Tooltip, useConfigContext } from "ui";
 import useBatchDownloader from "./hooks/useBatchDownloader";
 import useAotfContext from "./hooks/useAotfContext";
 import OriginalDataSources from "./static_datasets/dataSourcesAssoc";
@@ -149,7 +149,7 @@ const actions = {
 
 function DataDownloader({ fileStem }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const { version } = useConfigContext();
   const classes = styles();
   const {
     id,
@@ -243,7 +243,7 @@ function DataDownloader({ fileStem }) {
     }
     const blob = createBlob(format)(dataColumns, allRows);
     const d = new Date().toLocaleDateString();
-    FileSaver.saveAs(blob, `${dataFileStem}-${d}.${format}`, {
+    FileSaver.saveAs(blob, `${dataFileStem}-${d}-v${version.year}.${version.month}.${format}`, {
       autoBOM: false,
     });
   };
