@@ -147,9 +147,9 @@ function DataUploader({ fileStem }) {
             variant="subtitle2"
             gutterBottom
           >
-            Upload a text file containing a list of interested targets / diseases. The file should
-            contain a single entity in every row. All the potential matches will be included after
-            the validation of the input
+            Please upload a text file here containing your custom list of targets/diseases. The file
+            should contain a single {entityToGet} in every row. You will be able to visualise all
+            the potential matches upon validation of your input.
           </Typography>
           <Box sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}>
             <Stepper activeStep={activeStep}>
