@@ -265,7 +265,7 @@ const exportColumns = [
   },
   {
     label: "variantConsequence",
-    exportValue: row => row.variantFunctionalConsequenceFromQtlId.label,
+    exportValue: row => row.variantFunctionalConsequenceFromQtlId?.label,
   },
   {
     label: "clinicalSignificances",
