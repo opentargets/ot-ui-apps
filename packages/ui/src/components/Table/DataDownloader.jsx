@@ -21,7 +21,7 @@ import Link from "../Link";
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
-  import("graphiql").then((module) => {
+  import("graphiql").then(module => {
     // eslint-disable-next-line react/display-name
     module.default.Logo = function () {
       return null;
@@ -35,13 +35,11 @@ const GraphiQL = lazy(() =>
 );
 
 const asJSON = (columns, rows) => {
-  const rowStrings = rows.map((row) =>
+  const rowStrings = rows.map(row =>
     columns.reduce((accumulator, newKey) => {
       if (newKey.exportValue === false) return accumulator;
 
-      const newLabel = _.camelCase(
-        newKey.exportLabel || newKey.label || newKey.id
-      );
+      const newLabel = _.camelCase(newKey.exportLabel || newKey.label || newKey.id);
 
       return {
         ...accumulator,
@@ -56,7 +54,7 @@ const asJSON = (columns, rows) => {
 };
 
 const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
-  const quoteString = (d) => {
+  const quoteString = d => {
     let result = d;
     // converts arrays to strings
     if (Array.isArray(d)) {
@@ -71,16 +69,14 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
     .reduce((accHeaderString, column) => {
       if (column.exportValue === false) return accHeaderString;
 
-      const newLabel = quoteString(
-        _.camelCase(column.exportLabel || column.label || column.id)
-      );
+      const newLabel = quoteString(_.camelCase(column.exportLabel || column.label || column.id));
 
       return [...accHeaderString, newLabel];
     }, [])
     .join(separator);
 
   const rowStrings = rows
-    .map((row) =>
+    .map(row =>
       columns
         .reduce((rowString, column) => {
           if (column.exportValue === false) return rowString;
@@ -100,7 +96,7 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
   return [headerString, rowStrings].join(lineSeparator);
 };
 
-const createBlob = (format) =>
+const createBlob = format =>
   ({
     json: (columns, rows) =>
       new Blob([asJSON(columns, rows)], {
@@ -116,9 +112,10 @@ const createBlob = (format) =>
       }),
   }[format]);
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles(theme => ({
   messageProgress: {
     marginRight: "1rem",
+    color: "white !important",
   },
   snackbarContentMessage: {
     display: "flex",
@@ -205,30 +202,18 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
           <Typography variant="caption">Download table as</Typography>
         </Grid>
         <Grid item>
-          <Button
-            variant="outlined"
-            onClick={handleClickDownloadJSON}
-            size="small"
-          >
+          <Button variant="outlined" onClick={handleClickDownloadJSON} size="small">
             JSON
           </Button>
         </Grid>
         <Grid item>
-          <Button
-            variant="outlined"
-            onClick={handleClickDownloadTSV}
-            size="small"
-          >
+          <Button variant="outlined" onClick={handleClickDownloadTSV} size="small">
             TSV
           </Button>
         </Grid>
         {query ? (
           <Grid item>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => togglePlayground()}
-            >
+            <Button variant="outlined" size="small" onClick={() => togglePlayground()}>
               API query
             </Button>
           </Grid>
@@ -254,22 +239,19 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
-        onClose={(e) => close(e)}
+        onClose={e => close(e)}
         anchor="right"
       >
         <Typography className={classes.title}>
           API query
-          <IconButton onClick={(e) => close(e)}>
+          <IconButton onClick={e => close(e)}>
             <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
         <Paper className={classes.paper} variant="outlined">
-          Press the Play button to explore the GraphQL API query used to
-          populate this table. You can also visit our{" "}
-          <Link
-            external
-            to="https://platform-docs.opentargets.org/data-access/graphql-api"
-          >
+          Press the Play button to explore the GraphQL API query used to populate this table. You
+          can also visit our{" "}
+          <Link external to="https://platform-docs.opentargets.org/data-access/graphql-api">
             GraphQL API documentation
           </Link>{" "}
           and{" "}

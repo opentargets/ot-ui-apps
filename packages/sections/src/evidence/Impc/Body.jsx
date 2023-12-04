@@ -120,6 +120,29 @@ const columns = [
   },
 ];
 
+const exportColumns = [
+  {
+    label: "diseaseId",
+    exportValue: row => row.disease.id,
+  },
+  {
+    label: "diseaseName",
+    exportValue: row => row.disease.name,
+  },
+  {
+    label: "diseaseModelAssociatedHumanPhenotypes",
+    exportValue: row => row.diseaseModelAssociatedHumanPhenotypes,
+  },
+  {
+    label: "diseaseModelAssociatedModelPhenotypes",
+    exportValue: row => row.diseaseModelAssociatedModelPhenotypes,
+  },
+  {
+    label: "literature",
+    exportValue: row => row.biologicalModelId,
+  },
+];
+
 function fetchData({ ensemblId, efoId, cursor, size }) {
   return client.query({
     query: INTOGEN_QUERY,
@@ -148,7 +171,7 @@ function Body({ id, label, entity }) {
     let isCurrent = true;
 
     fetchData({ ensemblId, efoId, cursor: "", size }).then(res => {
-      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.evidences;
+      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.impc;
       if (isCurrent) {
         setInitialLoading(false);
         setCursor(newCursor);
@@ -176,7 +199,7 @@ function Body({ id, label, entity }) {
     if (size * newPageInt + size > rows.length && cursor !== null) {
       setLoading(true);
       fetchData({ ensemblId, efoId, cursor, size }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
+        const { cursor: newCursor, rows: newRows } = res.data.disease.impc;
         setRows([...rows, ...newRows]);
         setLoading(false);
         setCursor(newCursor);
@@ -192,7 +215,7 @@ function Body({ id, label, entity }) {
     if (newPageSizeInt > rows.length && cursor !== null) {
       setLoading(true);
       fetchData({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
+        const { cursor: newCursor, rows: newRows } = res.data.disease.impc;
         setRows([...rows, ...newRows]);
         setLoading(false);
         setCursor(newCursor);
@@ -244,6 +267,7 @@ function Body({ id, label, entity }) {
           query={INTOGEN_QUERY.loc.source.body}
           dataDownloader
           dataDownloaderRows={getWholeDataset}
+          dataDownloaderColumns={exportColumns}
           dataDownloaderFileStem="impc-evidence"
           variables={{
             ensemblId,

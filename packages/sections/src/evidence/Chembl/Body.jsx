@@ -32,6 +32,45 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const exportColumns = [
+  {
+    label: "diseaseId",
+    exportValue: row => row.disease.id,
+  },
+  {
+    label: "diseaseName",
+    exportValue: row => row.disease.name,
+  },
+  {
+    label: "targets",
+    exportValue: row => row.target,
+  },
+  {
+    label: "drug",
+    exportValue: row => row.drug,
+  },
+  {
+    label: "mechanismofAction",
+    exportValue: row => row.drug.mechanismsOfAction,
+  },
+  {
+    label: "clinicalPhase",
+    exportValue: row => row.clinicalPhase,
+  },
+  {
+    label: "clinicalStatus",
+    exportValue: row => row.clinicalStatus,
+  },
+  {
+    label: "studyStartDate",
+    exportValue: row => row.studyStartDate,
+  },
+  {
+    label: "source",
+    exportValue: row => row.urls,
+  },
+];
+
 function getColumns(classes) {
   return [
     {
@@ -224,7 +263,7 @@ function Body({ id, label, entity }) {
     let isCurrent = true;
 
     fetchData({ ensemblId, efoId, cursor: "", size }).then(res => {
-      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.evidences;
+      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.chembl;
       if (isCurrent) {
         setInitialLoading(false);
         setCursor(newCursor);
@@ -244,7 +283,7 @@ function Body({ id, label, entity }) {
       ensemblId,
       efoId,
     },
-    `data.disease.evidence`
+    `data.disease.chembl`
   );
 
   const handlePageChange = newPage => {
@@ -252,7 +291,7 @@ function Body({ id, label, entity }) {
     if (size * newPageInt + size > rows.length && cursor !== null) {
       setLoading(true);
       fetchData({ ensemblId, efoId, cursor, size }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
+        const { cursor: newCursor, rows: newRows } = res.data.disease.chembl;
         setRows([...rows, ...newRows]);
         setLoading(false);
         setCursor(newCursor);
@@ -268,7 +307,7 @@ function Body({ id, label, entity }) {
     if (newPageSizeInt > rows.length && cursor !== null) {
       setLoading(true);
       fetchData({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
+        const { cursor: newCursor, rows: newRows } = res.data.disease.chembl;
         setRows([...rows, ...newRows]);
         setLoading(false);
         setCursor(newCursor);
@@ -320,6 +359,7 @@ function Body({ id, label, entity }) {
             onSortBy={handleSortBy}
             query={CHEMBL_QUERY.loc.source.body}
             dataDownloader
+            dataDownloaderColumns={exportColumns}
             dataDownloaderRows={getWholeDataset}
             dataDownloaderFileStem="chembl-evidence"
             variables={{
