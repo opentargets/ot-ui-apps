@@ -196,6 +196,46 @@ const getColumns = label => [
   },
 ];
 
+const exportColumns = [
+  {
+    label: "diseaseId",
+    exportValue: row => row.disease.id,
+  },
+  {
+    label: "diseaseName",
+    exportValue: row => row.disease.name,
+  },
+  {
+    label: "variantId",
+    exportValue: row => row.variantId,
+  },
+  {
+    label: "variantRsId",
+    exportValue: row => row.variantRsId,
+  },
+  {
+    label: "variantHgvsId",
+    exportValue: row => row.variantHgvsId,
+  },
+  {
+    label: "clinicalSignificances",
+    exportValue: row => row.clinicalSignificances,
+  },
+  {
+    label: "allelicRequirements",
+    exportValue: row => row.allelicRequirements,
+  },
+  {
+    label: "reviewStatus",
+    exportValue: row => row.confidence,
+  },
+
+  {
+    label: "literature",
+    exportValue: row => row.literature,
+  },
+];
+
 function fetchData({ ensemblId, efoId, cursor, size }) {
   return client.query({
     query: EVA_SOMATIC_QUERY,
@@ -353,6 +393,7 @@ function Body({ id, label, entity }) {
               onSortBy={handleSortBy}
               query={EVA_SOMATIC_QUERY.loc.source.body}
               dataDownloader
+              dataDownloaderColumns={exportColumns}
               dataDownloaderRows={getWholeDataset}
               dataDownloaderFileStem="impc-evidence"
               variables={{

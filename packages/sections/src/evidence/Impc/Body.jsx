@@ -120,6 +120,29 @@ const columns = [
   },
 ];
 
+const exportColumns = [
+  {
+    label: "diseaseId",
+    exportValue: row => row.disease.id,
+  },
+  {
+    label: "diseaseName",
+    exportValue: row => row.disease.name,
+  },
+  {
+    label: "diseaseModelAssociatedHumanPhenotypes",
+    exportValue: row => row.diseaseModelAssociatedHumanPhenotypes,
+  },
+  {
+    label: "diseaseModelAssociatedModelPhenotypes",
+    exportValue: row => row.diseaseModelAssociatedModelPhenotypes,
+  },
+  {
+    label: "literature",
+    exportValue: row => row.biologicalModelId,
+  },
+];
+
 function fetchData({ ensemblId, efoId, cursor, size }) {
   return client.query({
     query: INTOGEN_QUERY,
@@ -244,6 +267,7 @@ function Body({ id, label, entity }) {
           query={INTOGEN_QUERY.loc.source.body}
           dataDownloader
           dataDownloaderRows={getWholeDataset}
+          dataDownloaderColumns={exportColumns}
           dataDownloaderFileStem="impc-evidence"
           variables={{
             ensemblId,

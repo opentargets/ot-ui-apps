@@ -242,6 +242,45 @@ function getColumns(label) {
   ];
 }
 
+const exportColumns = [
+  {
+    label: "diseaseId",
+    exportValue: row => row.disease.id,
+  },
+  {
+    label: "diseaseName",
+    exportValue: row => row.disease.name,
+  },
+  {
+    label: "variantId",
+    exportValue: row => row.variantId,
+  },
+  {
+    label: "variantRsId",
+    exportValue: row => row.variantRsId,
+  },
+  {
+    label: "variantHgvsId",
+    exportValue: row => row.variantHgvsId,
+  },
+  {
+    label: "variantConsequence",
+    exportValue: row => row.variantFunctionalConsequenceFromQtlId.label,
+  },
+  {
+    label: "clinicalSignificances",
+    exportValue: row => row.clinicalSignificances,
+  },
+  {
+    label: "allelicRequirements",
+    exportValue: row => row.allelicRequirements,
+  },
+  {
+    label: "reviewStatus",
+    exportValue: row => row.confidence,
+  },
+];
+
 function fetchClinvar({ ensemblId, efoId, cursor, size, freeTextQuery }) {
   return client.query({
     query: CLINVAR_QUERY,
@@ -373,6 +412,7 @@ function Body({ id, label, entity }) {
           query={CLINVAR_QUERY.loc.source.body}
           dataDownloader
           dataDownloaderRows={getWholeDataset}
+          dataDownloaderColumns={exportColumns}
           dataDownloaderFileStem="clinvar-evidence"
           variables={{
             ensemblId,
