@@ -31,7 +31,7 @@ function AssociationsWrapper() {
               <DataUploader />
             </PrivateWrapper>
             <Divider orientation="vertical" />
-            <DataDownloader fileStem={`${id}-associated-targets`} />
+            <DataDownloader fileStem={`OT-${id}-associated-diseases`} />
             <CopyUrlButton />
           </OptionsControlls>
         </Box>

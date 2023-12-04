@@ -243,7 +243,7 @@ function DataDownloader({ fileStem }) {
     }
     const blob = createBlob(format)(dataColumns, allRows);
     const d = new Date().toLocaleDateString();
-    FileSaver.saveAs(blob, `${dataFileStem}-${d}-v${version.year}.${version.month}.${format}`, {
+    FileSaver.saveAs(blob, `${dataFileStem}-${d}-v${version.year}_${version.month}.${format}`, {
       autoBOM: false,
     });
   };
