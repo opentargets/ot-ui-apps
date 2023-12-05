@@ -135,7 +135,7 @@ const FileExample = ({ entity = "target", runAction }) => {
         <AccordionDetails>
           <Box>
             <SuggestionBlockHeader>
-              <Typography key={v1()} variant="monoText" display="block">
+              <Typography variant="monoText" display="block">
                 fileName.txt
               </Typography>
             </SuggestionBlockHeader>
