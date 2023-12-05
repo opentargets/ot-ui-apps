@@ -42,6 +42,7 @@
     "smiles-drawer": "^1.1.22",
     "tsparticles": "^2.0.6",
     "typeface-inter": "^3.3.0",
+    "typeface-roboto-mono": "^1.1.13",
     "ui": "*",
     "uuid": "^9.0.0"
   },
