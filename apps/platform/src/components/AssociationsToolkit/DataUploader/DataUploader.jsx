@@ -33,7 +33,6 @@ import useAotfContext from "../hooks/useAotfContext";
 import ValidationQuery from "./ValidationQuery.gql";
 import client from "../../../client";
 import NestedItem from "./NestedItem";
-import { useHistory } from "react-router-dom";
 
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: "none",
@@ -102,22 +101,8 @@ const getValidationResults = async (entity, queryTerms) =>
   });
 
 const uploadSuggestions = {
-  target: [
-    "ENSG00000232810",
-    "ENSG00000136244",
-    "ENSG00000141510",
-    "ENSG00000105329",
-    "ENSG00000112715",
-    "ENSG00000010610",
-  ],
-  disease: [
-    "EFO_0000508",
-    "EFO_0000616",
-    "MONDO_0004992",
-    "EFO_0000182",
-    "EFO_0000544",
-    "OBI_1110021",
-  ],
+  target: ["ENSG00000232810", "interleukin 6", "TP53", "ENSG00000105329", "P15692", "CD4"],
+  disease: ["EFO_0000508", "neoplasm", "MONDO_0004992", "EFO_0000182", "infection", "OBI_1110021"],
 };
 
 const FileExample = ({ entity = "target", runAction }) => {
