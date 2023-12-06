@@ -27,7 +27,7 @@ import {
   faPlay,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tooltip } from "ui";
+import { Link, Tooltip } from "ui";
 
 import useAotfContext from "../hooks/useAotfContext";
 import ValidationQuery from "./ValidationQuery.gql";
@@ -262,7 +262,13 @@ function DataUploader({ fileStem }) {
           >
             Please upload a text file here containing your custom list of targets/diseases. The file
             should contain a single {entityToGet} in every row. You will be able to visualise all
-            the potential matches upon validation of your input.
+            the potential matches upon validation of your input. <br />
+            <Link
+              to="https://home.opentargets.org/aotf-documentation#upload-to-associations-on-the-fly"
+              external
+            >
+              Read more details here.
+            </Link>
           </Typography>
           <FileExample entity={entityToGet} runAction={handleRunExample} />
           <Box sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}>
