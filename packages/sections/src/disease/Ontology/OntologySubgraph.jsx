@@ -1,14 +1,9 @@
 import { withContentRect } from "react-measure";
 import { line as d3Line, max, curveMonotoneX } from "d3";
-import {
-  layeringLongestPath,
-  decrossTwoLayer,
-  coordCenter,
-  sugiyama,
-  dagStratify,
-} from "d3-dag";
+import { layeringLongestPath, decrossTwoLayer, coordCenter, sugiyama, dagStratify } from "d3-dag";
 import { makeStyles } from "@mui/styles";
-import { Link, Tooltip } from "ui";
+import { Link } from "react-router-dom";
+import OntologyTooltip from "./OntologyTooltip";
 
 const useStyles = makeStyles({
   labelText: {
@@ -25,7 +20,7 @@ function getAncestors(efoId, idToDisease) {
     const id = queue.shift();
     const node = idToDisease[id];
 
-    node.parentIds.forEach((parentId) => {
+    node.parentIds.forEach(parentId => {
       if (!visited.has(parentId)) {
         ancestors.push({ ...idToDisease[parentId], nodeType: "ancestor" });
         queue.push(parentId);
@@ -41,7 +36,7 @@ function buildDagData(efoId, efo, idToDisease) {
   const dag = [];
 
   // find direct children of efoId
-  efo.forEach((disease) => {
+  efo.forEach(disease => {
     if (disease.parentIds.includes(efoId)) {
       dag.push({
         id: disease.id,
@@ -54,7 +49,7 @@ function buildDagData(efoId, efo, idToDisease) {
 
   const ancestors = getAncestors(efoId, idToDisease); // find ancestors
 
-  ancestors.forEach((ancestor) => {
+  ancestors.forEach(ancestor => {
     dag.push(ancestor);
   });
 
@@ -65,10 +60,7 @@ const layering = layeringLongestPath();
 const decross = decrossTwoLayer();
 const coord = coordCenter();
 
-const helperLayout = sugiyama()
-  .layering(layering)
-  .decross(decross)
-  .coord(coord);
+const helperLayout = sugiyama().layering(layering).decross(decross).coord(coord);
 
 function textWithEllipsis(text, threshold) {
   return text.length <= threshold ? text : `${text.slice(0, threshold)}...`;
@@ -80,7 +72,7 @@ function getMaxLayerCount(dag) {
   const counts = {};
   let maxCount = Number.NEGATIVE_INFINITY;
 
-  dag.descendants().forEach((node) => {
+  dag.descendants().forEach(node => {
     const { layer } = node;
 
     if (counts[layer]) {
@@ -94,7 +86,7 @@ function getMaxLayerCount(dag) {
     }
   });
 
-  dag.links().forEach((link) => {
+  dag.links().forEach(link => {
     link.points.forEach((_, i) => {
       const index = link.source.layer + i;
       counts[index] += 1;
@@ -117,14 +109,7 @@ const radius = diameter / 2;
 const yOffset = 100;
 const line = d3Line().curve(curveMonotoneX);
 
-function OntologySubgraph({
-  efoId,
-  efo,
-  name,
-  idToDisease,
-  measureRef,
-  contentRect,
-}) {
+function OntologySubgraph({ efoId, efo, name, idToDisease, measureRef, contentRect }) {
   const classes = useStyles();
   const { width } = contentRect.bounds;
   const dagData = buildDagData(efoId, efo, idToDisease);
@@ -144,11 +129,11 @@ function OntologySubgraph({
   layout(dag);
   const nodes = dag.descendants();
   const links = dag.links();
-  const separation = width / (max(nodes, (d) => d.layer) + 1);
+  const separation = width / (max(nodes, d => d.layer) + 1);
   const xOffset = separation / 2 - radius;
   const textLimit = separation / 8;
 
-  line.x((d) => d.y - xOffset).y((d) => d.x);
+  line.x(d => d.y - xOffset).y(d => d.x);
 
   return (
     <div ref={measureRef}>
@@ -181,98 +166,31 @@ function OntologySubgraph({
               stroke="#e0e0e0"
               strokeWidth="2"
             />
-            <text
-              x="20"
-              y="17"
-              fill="#5a5f5f"
-              dominantBaseline="middle"
-              fontSize="12"
-            >
+            <text x="20" y="17" fill="#5a5f5f" dominantBaseline="middle" fontSize="12">
               therapeutic area
             </text>
-            <circle
-              cx="10"
-              cy="34"
-              r={radius}
-              fill="none"
-              stroke="#e0e0e0"
-              strokeWidth="2"
-            />
-            <text
-              fill="#5a5f5f"
-              x="20"
-              y="34"
-              dominantBaseline="middle"
-              fontSize="12"
-            >
+            <circle cx="10" cy="34" r={radius} fill="none" stroke="#e0e0e0" strokeWidth="2" />
+            <text fill="#5a5f5f" x="20" y="34" dominantBaseline="middle" fontSize="12">
               disease
             </text>
-            <circle
-              cx="150"
-              cy="0"
-              r={radius}
-              fill={colorMap.child}
-              stroke="#e0e0e0"
-            />
-            <text
-              fill="#5a5f5f"
-              x="160"
-              y="0"
-              dominantBaseline="middle"
-              fontSize="12"
-            >
+            <circle cx="150" cy="0" r={radius} fill={colorMap.child} stroke="#e0e0e0" />
+            <text fill="#5a5f5f" x="160" y="0" dominantBaseline="middle" fontSize="12">
               descendants
             </text>
-            <circle
-              cx="150"
-              cy="17"
-              r={radius}
-              fill={colorMap.ancestor}
-              stroke="#e0e0e0"
-            />
-            <text
-              fill="#5a5f5f"
-              x="160"
-              y="17"
-              dominantBaseline="middle"
-              fontSize="12"
-            >
+            <circle cx="150" cy="17" r={radius} fill={colorMap.ancestor} stroke="#e0e0e0" />
+            <text fill="#5a5f5f" x="160" y="17" dominantBaseline="middle" fontSize="12">
               ancestors
             </text>
-            <circle
-              cx="150"
-              cy="34"
-              r={radius}
-              fill={colorMap.anchor}
-              stroke="#e0e0e0"
-            />
-            <text
-              fill="#5a5f5f"
-              x="160"
-              y="34"
-              dominantBaseline="middle"
-              fontSize="12"
-            >
+            <circle cx="150" cy="34" r={radius} fill={colorMap.anchor} stroke="#e0e0e0" />
+            <text fill="#5a5f5f" x="160" y="34" dominantBaseline="middle" fontSize="12">
               {name}
             </text>
           </g>
           <g transform={`translate(${width / 2}, 70)`}>
-            <text
-              x="-160"
-              fontWeight="bold"
-              fontSize="14"
-              fill="#5a5f5f"
-              dominantBaseline="middle"
-            >
+            <text x="-160" fontWeight="bold" fontSize="14" fill="#5a5f5f" dominantBaseline="middle">
               GENERAL
             </text>
-            <text
-              x="100"
-              fontWeight="bold"
-              fontSize="14"
-              fill="#5a5f5f"
-              dominantBaseline="middle"
-            >
+            <text x="100" fontWeight="bold" fontSize="14" fill="#5a5f5f" dominantBaseline="middle">
               SPECIFIC
             </text>
             <path
@@ -295,15 +213,9 @@ function OntologySubgraph({
             ))}
           </g>
           <g transform={`translate(0, ${yOffset})`}>
-            {nodes.map((node) => (
-              <Link
-                to={`/disease/${node.data.id}`}
-                className={classes.labelText}
-                key={node.id}
-              >
-                <Tooltip
-                  title={`${node.data.name || "No name"} | ID: ${node.id}`}
-                >
+            {nodes.map(node => (
+              <Link to={`/disease/${node.data.id}`} className={classes.labelText} key={node.id}>
+                <OntologyTooltip title={`${node.data.name || "No name"} | ID: ${node.id}`}>
                   <g>
                     <text
                       x={node.y - xOffset}
@@ -337,7 +249,7 @@ function OntologySubgraph({
                       />
                     )}
                   </g>
-                </Tooltip>
+                </OntologyTooltip>
               </Link>
             ))}
           </g>
