@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { FormControl, FormGroup, InputLabel, Slider } from "@mui/material";
-import { withStyles } from "@mui/styles";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   fetchSimilarEntities,
@@ -18,58 +17,6 @@ const monthsBtwnDates = (startDate, endDate) =>
       (endDate.getMonth() - startDate.getMonth()),
     0
   );
-
-const IOSSlider = withStyles((theme) => ({
-  root: {
-    color: theme.palette.primary.main,
-    height: 2,
-    padding: "15px 0",
-  },
-  thumb: {
-    height: 20,
-    width: 20,
-    backgroundColor: theme.palette.primary.main,
-    boxShadow: iOSBoxShadow,
-    marginTop: -10,
-    marginLeft: -14,
-    "&:focus, &:hover, &$active": {
-      boxShadow:
-        "0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)",
-      // Reset on touch devices, it doesn't add specificity
-      "@media (hover: none)": {
-        boxShadow: iOSBoxShadow,
-      },
-    },
-  },
-  active: {},
-  valueLabel: {
-    left: "calc(-50% + 4px)",
-    top: -22,
-    whiteSpace: "nowrap",
-    "& *": {
-      background: "transparent",
-      color: theme.palette.text.primary,
-    },
-  },
-  track: {
-    height: 2,
-  },
-  rail: {
-    height: 2,
-    opacity: 0.5,
-    backgroundColor: "#bfbfbf",
-  },
-  mark: {
-    backgroundColor: "#bfbfbf",
-    height: 8,
-    width: 1,
-    marginTop: -3,
-  },
-  markActive: {
-    opacity: 1,
-    backgroundColor: "currentColor",
-  },
-}))(Slider);
 
 export function DateFilter() {
   const [filterDate, setFilterDate] = useState([0, 100]);
@@ -91,19 +38,18 @@ export function DateFilter() {
   } = useRecoilValue(literatureState);
 
   useEffect(() => {
-    const limit = monthsBtwnDates(
-      new Date(`${earliestPubYear}-01-01`),
-      new Date()
-    );
-    setNumberOfMonths(limit);
-    setFilterDate([0, limit]);
+    if (earliestPubYear) {
+      const limit = monthsBtwnDates(new Date(`${earliestPubYear}-01-01`), new Date());
+      setNumberOfMonths(limit);
+      setFilterDate([0, limit]);
+    }
   }, [earliestPubYear]);
 
   useEffect(() => {
     setFilterDate([0, numberOfMonths]);
   }, []);
-
-  const handleChange = async (values) => {
+  
+  const handleChange = async values => {
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
       query,
@@ -126,24 +72,24 @@ export function DateFilter() {
       startMonth,
       endYear,
       endMonth,
-      litsIds: data.literatureOccurrences?.rows?.map(({ pmId }) => ({
-        id: pmId,
+      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => ({
+        id: pmid,
         status: "ready",
         publication: null,
       })),
-      litsCount: data.literatureOccurrences?.count,
-      earliestPubYear: data.literatureOccurrences?.earliestPubYear,
+      litsCount: data.literatureOcurrences?.count,
+      earliestPubYear: data.literatureOcurrences?.earliestPubYear,
       ...values,
     };
     setLiteratureUpdate(update);
   };
 
-  const selectedDate = (value) => {
+  const selectedDate = value => {
     const from = new Date(earliestPubYear, 0, 1, 1, 1, 1, 1);
     return new Date(from.setMonth(from.getMonth() + value));
   };
 
-  const valueLabelFormat = (value) => {
+  const valueLabelFormat = value => {
     if (earliestPubYear) {
       const labelDate = selectedDate(value);
       return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;
@@ -177,7 +123,7 @@ export function DateFilter() {
       <InputLabel id="date-filter-demo">Date Filter:</InputLabel>
       <FormGroup>
         <FormControl style={{ marginLeft: 35, flex: 1 }}>
-          <IOSSlider
+          <Slider
             style={{ width: 400 }}
             value={filterDate}
             valueLabelDisplay="on"

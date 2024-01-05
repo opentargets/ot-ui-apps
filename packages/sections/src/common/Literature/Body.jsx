@@ -18,6 +18,7 @@ import {
 import Entities from "./Entities";
 import Category from "./Category";
 import CountInfo from "./CountInfo";
+import { DateFilter } from "./DateFilter";
 
 const useStyles = makeStyles(() => ({
   controlsContainer: {
@@ -86,6 +87,7 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
         <>
           <Box className={classes.controlsContainer}>
             <Category />
+            <DateFilter />
             <CountInfo />
           </Box>
           <Entities id={id} name={name} />
