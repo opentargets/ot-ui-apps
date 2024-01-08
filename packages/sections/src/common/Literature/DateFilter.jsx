@@ -118,6 +118,7 @@ export function DateFilter() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        marginRight: 50
       }}
     >
       <InputLabel id="date-filter-demo">Date Filter:</InputLabel>
@@ -132,6 +133,17 @@ export function DateFilter() {
             aria-labelledby="range-slider"
             max={numberOfMonths - 1}
             onsel
+            sx={{
+              "& .MuiSlider-thumb:nth-of-type(odd) [aria-hidden]": {
+                transform: 'translate(0%, 120%)'
+              },
+              "& .MuiSlider-valueLabel:before": {
+                backgroundColor: 'transparent'
+              },
+              "& .MuiSlider-valueLabel:after": {
+                backgroundColor: 'transparent'
+              }
+            }}
             valueLabelFormat={valueLabelFormat}
           />
         </FormControl>
