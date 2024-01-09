@@ -23,7 +23,7 @@
     "build:platform:ppp": "turbo run build-ppp --filter=platform",
     "lint": "turbo run lint",
     "lint:platform": "turbo run lint --filter=platform",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,md}\"",
+    "format": "turbo run prettier:all",
     "prepare": "husky install"
   },
   "devDependencies": {

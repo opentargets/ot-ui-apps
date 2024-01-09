@@ -7,7 +7,8 @@
   ],
   "license": "MIT",
   "scripts": {
-    "lint": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\""
+    "lint": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
+    "prettier:all": "prettier --write \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\""
   },
   "dependencies": {
     "@apollo/client": "^3.3.4",
