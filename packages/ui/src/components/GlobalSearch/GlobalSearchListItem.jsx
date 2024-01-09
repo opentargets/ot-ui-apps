@@ -95,9 +95,7 @@ function SuggestionListItem({ item, onItemClick }) {
     >
       <RecentIconContainer>
         <FontAwesomeIcon icon={faArrowTrendUp} />
-        <Typography variant="subtitle2">
-          {item.symbol || item.name || item.id}
-        </Typography>
+        <Typography variant="subtitle2">{item.symbol || item.name || item.id}</Typography>
       </RecentIconContainer>
     </RecentItemContainer>
   );
@@ -116,14 +114,12 @@ function RecentListItem({ item, onItemClick }) {
     >
       <RecentIconContainer>
         <FontAwesomeIcon icon={faClockRotateLeft} />
-        <Typography variant="subtitle2">
-          {item.symbol || item.name || item.id}
-        </Typography>
+        <Typography variant="subtitle2">{item.symbol || item.name || item.id}</Typography>
       </RecentIconContainer>
 
       <FontAwesomeIcon
         icon={faXmark}
-        onClick={(event) => {
+        onClick={event => {
           event.preventDefault();
           event.stopPropagation();
           clearRecentItem(item);
@@ -152,7 +148,7 @@ function TopHitListItem({ item, onItemClick }) {
               <Box
                 sx={{
                   fontWeight: "bold",
-                  color: (theme) => theme.palette.primary.main,
+                  color: theme => theme.palette.primary.main,
                 }}
               >
                 {item.symbol || item.name}
@@ -160,14 +156,10 @@ function TopHitListItem({ item, onItemClick }) {
             </ListItemDisplayName>
           </Typography>
 
-          <Typography variant="caption">
-            {item.id && <ItemId>{item.id}</ItemId>}
-          </Typography>
+          <Typography variant="caption">{item.id && <ItemId>{item.id}</ItemId>}</Typography>
         </JustifyBetween>
         <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
-          <Typography variant="subtitle1">
-            {item.symbol && item.name}
-          </Typography>
+          <Typography variant="subtitle1">{item.symbol && item.name}</Typography>
         </Box>
         <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
           <Typography variant="body2">
@@ -189,18 +181,14 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
         </>
       );
 
-    return (
-      <Typography variant="subtitle1">
-        {item.symbol || item.name || item.id}
-      </Typography>
-    );
+    return <Typography variant="subtitle1">{item.symbol || item.name || item.id}</Typography>;
   };
 
   if (item.type === "recent") {
     return <RecentListItem item={item} onItemClick={onItemClick} />;
   }
 
-  if(item.type === "suggestion"){
+  if (item.type === "suggestion") {
     return <SuggestionListItem item={item} onItemClick={onItemClick} />;
   }
 
@@ -220,9 +208,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
     >
       <JustifyBetween>
         <ListItemDisplayName>{getSymbolHeader()}</ListItemDisplayName>
-        <Typography variant="caption">
-          {item.id && <ItemId>{item.id}</ItemId>}
-        </Typography>
+        <Typography variant="caption">{item.id && <ItemId>{item.id}</ItemId>}</Typography>
       </JustifyBetween>
 
       <JustifyBetween>
@@ -234,14 +220,10 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
           <FlexSpan>
             {item.position &&
               item.chromosome &&
-              `GRCh38: ${item.chromosome} : ${commaSeparate(
-                Number(item.position)
-              )}`}
+              `GRCh38: ${item.chromosome} : ${commaSeparate(Number(item.position))}`}
           </FlexSpan>
         </Typography>
-        <Typography variant="caption">
-          {item.pubJournal && item.pubJournal}
-        </Typography>
+        <Typography variant="caption">{item.pubJournal && item.pubJournal}</Typography>
       </JustifyBetween>
 
       {item.rsId && (
@@ -254,9 +236,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
 
       <JustifyBetween>
         <Typography variant="caption">
-          {item.numAssocLoci > -1 && (
-            <strong>{item.numAssocLoci} associated loci</strong>
-          )}
+          {item.numAssocLoci > -1 && <strong>{item.numAssocLoci} associated loci</strong>}
         </Typography>
 
         {item.hasSumstats && (
@@ -272,9 +252,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
         )}
       </JustifyBetween>
 
-      {item.nInitial && (
-        <Typography variant="caption">N Study: {item.nInitial}</Typography>
-      )}
+      {item.nInitial && <Typography variant="caption">N Study: {item.nInitial}</Typography>}
 
       <div className="numbers">
         <Typography variant="caption">

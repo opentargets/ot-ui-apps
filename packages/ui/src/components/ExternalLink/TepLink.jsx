@@ -8,7 +8,7 @@ import Link from "../Link";
 
 import TEP_LINK_QUERY from "./TepLinkQuery.gql";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   helpIcon: {
     fontSize: "10px",
   },
@@ -46,19 +46,15 @@ function TepLink({ ensgId }) {
             <Link external to="https://www.thesgc.org">
               TEPs
             </Link>{" "}
-            provide a critical mass of reagents and knowledge on a protein
-            target to allow rapid biochemical and chemical exploration and
-            characterisation of proteins with genetic linkage to key disease
-            areas.
+            provide a critical mass of reagents and knowledge on a protein target to allow rapid
+            biochemical and chemical exploration and characterisation of proteins with genetic
+            linkage to key disease areas.
           </>
         }
         placement="top"
       >
         <sup>
-          <FontAwesomeIcon
-            icon={faCircleQuestion}
-            className={classes.helpIcon}
-          />
+          <FontAwesomeIcon icon={faCircleQuestion} className={classes.helpIcon} />
         </sup>
       </Tooltip>
       :{" "}

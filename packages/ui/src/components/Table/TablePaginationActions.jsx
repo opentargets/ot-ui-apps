@@ -13,27 +13,22 @@ const useStyles = makeStyles({
   root: { flexShrink: 0 },
 });
 
-export function PaginationActionsComplete({
-  count,
-  page,
-  rowsPerPage,
-  onPageChange,
-}) {
+export function PaginationActionsComplete({ count, page, rowsPerPage, onPageChange }) {
   const classes = useStyles();
 
-  const handleFirstPageButtonClick = (event) => {
+  const handleFirstPageButtonClick = event => {
     onPageChange(event, 0);
   };
 
-  const handleBackButtonClick = (event) => {
+  const handleBackButtonClick = event => {
     onPageChange(event, page - 1);
   };
 
-  const handleNextButtonClick = (event) => {
+  const handleNextButtonClick = event => {
     onPageChange(event, page + 1);
   };
 
-  const handleLastPageButtonClick = (event) => {
+  const handleLastPageButtonClick = event => {
     onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 

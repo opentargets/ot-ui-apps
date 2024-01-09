@@ -1,7 +1,7 @@
-import _ from 'lodash';
+import _ from "lodash";
 
-import client from '../client';
-import { downloaderChunkSize } from '../constants';
+import client from "../client";
+import { downloaderChunkSize } from "../constants";
 
 const getRows = (chunk, dataPath) => _.get(chunk, dataPath, []);
 
@@ -24,8 +24,8 @@ function useCursorBatchDownloader(
   query,
   variables,
   dataPath,
-  rowField = 'rows',
-  countField = 'count'
+  rowField = "rows",
+  countField = "count"
 ) {
   const rowPath = `${dataPath}.${rowField}`;
   const cursorPath = `${dataPath}.cursor`;
@@ -51,7 +51,7 @@ function useCursorBatchDownloader(
 
       cursor = _.get(newChunk, cursorPath, null);
       data.push(...getRows(newChunk, rowPath));
-      chunksFetched+=1;
+      chunksFetched += 1;
     }
 
     return data;

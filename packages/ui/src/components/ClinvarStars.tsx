@@ -8,7 +8,7 @@ type ClinvarStarsProps = {
   length?: number;
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   star: {
     color: theme.palette.primary.main,
   },

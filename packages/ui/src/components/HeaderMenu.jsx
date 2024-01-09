@@ -15,7 +15,7 @@ import { makeStyles } from "@mui/styles";
 import Link from "./Link";
 import PrivateWrapper from "./PrivateWrapper";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   icon: {
     marginLeft: "20px",
   },
@@ -37,7 +37,7 @@ function HeaderMenu({ items, placement }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
 
-  const handleMenuToggle = (event) => {
+  const handleMenuToggle = event => {
     setAnchorEl(anchorEl === null ? event.currentTarget : null);
   };
 
@@ -45,7 +45,7 @@ function HeaderMenu({ items, placement }) {
     setAnchorEl(null);
   };
 
-  const handleListKeyDown = (event) => {
+  const handleListKeyDown = event => {
     if (event.key === "Tab") {
       event.preventDefault();
       setAnchorEl(null);
@@ -88,11 +88,7 @@ function HeaderMenu({ items, placement }) {
                     if (item.showOnlyPartner) {
                       return (
                         <PrivateWrapper key={v1()}>
-                          <MenuItem
-                            onClick={handleMenuClose}
-                            dense
-                            className={classes.menuItem}
-                          >
+                          <MenuItem onClick={handleMenuClose} dense className={classes.menuItem}>
                             <Link
                               external={item.external}
                               to={item.url}
@@ -111,11 +107,7 @@ function HeaderMenu({ items, placement }) {
                         dense
                         className={classes.menuItem}
                       >
-                        <Link
-                          external={item.external}
-                          to={item.url}
-                          className={classes.menuLink}
-                        >
+                        <Link external={item.external} to={item.url} className={classes.menuLink}>
                           {item.name}
                         </Link>
                       </MenuItem>

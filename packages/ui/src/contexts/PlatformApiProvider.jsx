@@ -5,14 +5,7 @@ import { useQuery } from "@apollo/client";
 
 const PlatformApiContext = createContext();
 
-function PlatformApiProvider({
-  entity,
-  lsSectionsField,
-  query,
-  client,
-  variables,
-  children,
-}) {
+function PlatformApiProvider({ entity, lsSectionsField, query, client, variables, children }) {
   const request = useQuery(query, { client, variables });
 
   const platformApiValue = useMemo(
@@ -21,9 +14,7 @@ function PlatformApiProvider({
   );
 
   return (
-    <PlatformApiContext.Provider value={platformApiValue}>
-      {children}
-    </PlatformApiContext.Provider>
+    <PlatformApiContext.Provider value={platformApiValue}>{children}</PlatformApiContext.Provider>
   );
 }
 

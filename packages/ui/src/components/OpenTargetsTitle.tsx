@@ -21,7 +21,7 @@ const useStyles = makeStyles(() => ({
 type OpenTargetsTitleProps = {
   className?: string;
   name: string;
-}
+};
 
 function OpenTargetsTitle({ className, name }: OpenTargetsTitleProps) {
   const classes = useStyles();

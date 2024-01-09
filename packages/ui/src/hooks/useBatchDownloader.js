@@ -1,7 +1,7 @@
-import _ from 'lodash';
+import _ from "lodash";
 
-import defaultClient from '../client';
-import { downloaderChunkSize } from '../constants';
+import defaultClient from "../client";
+import { downloaderChunkSize } from "../constants";
 
 const getRows = (data, dataPath) => _.get(data, dataPath, []);
 
@@ -25,8 +25,8 @@ function useBatchDownloader(
   variables,
   dataPath,
   client = defaultClient,
-  rowField = 'rows',
-  countField = 'count'
+  rowField = "rows",
+  countField = "count"
 ) {
   const rowPath = `${dataPath}.${rowField}`;
   const countPath = `${dataPath}.${countField}`;
@@ -44,13 +44,13 @@ function useBatchDownloader(
 
     const firstChunk = await getDataChunk(index, downloaderChunkSize);
     data = [...getRows(firstChunk, rowPath)];
-    index+=1;
+    index += 1;
 
     const count = Math.ceil(_.get(firstChunk, countPath) / downloaderChunkSize);
 
     while (index < count) {
       chunkPromises.push(getDataChunk(index, downloaderChunkSize));
-      index+=1;
+      index += 1;
     }
 
     const remainingChunks = await Promise.all(chunkPromises);

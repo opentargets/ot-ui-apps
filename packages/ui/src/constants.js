@@ -266,7 +266,7 @@ const clinicalPhases = {
   4: "Phase IV",
 };
 
-export const phaseMap = (clinicalPhase) => {
+export const phaseMap = clinicalPhase => {
   const clinicalPhaseId = String(clinicalPhase);
   return clinicalPhases[clinicalPhaseId];
 };

@@ -1,4 +1,4 @@
-import { Skeleton, Typography } from '@mui/material';
+import { Skeleton, Typography } from "@mui/material";
 
 function Field({ title, loading, children }) {
   if (loading) return <Skeleton />;
@@ -9,7 +9,7 @@ function Field({ title, loading, children }) {
 
   return (
     <Typography variant="subtitle2">
-      {title}:{' '}
+      {title}:{" "}
       <Typography display="inline" variant="body2">
         {children}
       </Typography>
