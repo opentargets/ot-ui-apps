@@ -1,29 +1,24 @@
-import { useState, useLayoutEffect, useRef } from 'react';
-import { v1 } from 'uuid';
-import { Typography, Skeleton } from '@mui/material';
-import { withStyles } from '@mui/styles';
+import { useState, useLayoutEffect, useRef } from "react";
+import { v1 } from "uuid";
+import { Typography, Skeleton } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 const styles = theme => ({
   textContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-    '& span:not(:last-child)': { marginBottom: '12px' },
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+    "& span:not(:last-child)": { marginBottom: "12px" },
   },
   showMore: {
     color: theme.palette.primary.main,
-    cursor: 'pointer',
+    cursor: "pointer",
   },
 });
 
-const getStyleHeight = ({
-  newNumberOfLines,
-  lineLimit,
-  showMore,
-  lineHeight,
-}) => {
-  if (newNumberOfLines <= lineLimit) return 'auto';
-  if (showMore) return 'auto';
+const getStyleHeight = ({ newNumberOfLines, lineLimit, showMore, lineHeight }) => {
+  if (newNumberOfLines <= lineLimit) return "auto";
+  if (showMore) return "auto";
   return `${lineLimit * lineHeight}px`;
 };
 
@@ -31,7 +26,7 @@ function LongText({
   classes,
   lineLimit,
   children,
-  variant = 'body2',
+  variant = "body2",
   descriptions,
   targetId,
   hasGutterBottom = false,
@@ -45,9 +40,7 @@ function LongText({
     const el = containerRef.current;
     const height = el.offsetHeight;
     const lineHeight = Number.parseInt(
-      document.defaultView
-        .getComputedStyle(el, null)
-        .getPropertyValue('line-height'),
+      document.defaultView.getComputedStyle(el, null).getPropertyValue("line-height"),
       10
     );
     const newNumberOfLines = Math.round(height / lineHeight);
@@ -78,13 +71,10 @@ function LongText({
       </span>
       {numberOfLines >= lineLimit && (
         <span>
-          {showMore ? '' : '... '}[{' '}
-          <span
-            className={classes.showMore}
-            onClick={() => setShowMore(!showMore)}
-          >
-            {showMore ? ' hide' : ' show more'}
-          </span>{' '}
+          {showMore ? "" : "... "}[{" "}
+          <span className={classes.showMore} onClick={() => setShowMore(!showMore)}>
+            {showMore ? " hide" : " show more"}
+          </span>{" "}
           ]
         </span>
       )}
@@ -123,7 +113,7 @@ function TargetDescription({
   return (
     <>
       {showLabel && <Typography variant="subtitle2">Description</Typography>}
-      {loading ? <Skeleton height="6.5rem"/> : content}
+      {loading ? <Skeleton height="6.5rem" /> : content}
     </>
   );
 }

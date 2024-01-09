@@ -1,10 +1,10 @@
-import { getScale } from '../utils';
-import Tooltip from './AssocTooltip';
+import { getScale } from "../utils";
+import Tooltip from "./AssocTooltip";
 
 const getClassName = ({ globalScore, hasValue }) => {
-  if (globalScore) return 'data-global-score';
-  if (hasValue) return 'data-score';
-  return 'data-empty';
+  if (globalScore) return "data-global-score";
+  if (hasValue) return "data-score";
+  return "data-empty";
 };
 
 function ColoredCell({
@@ -20,18 +20,16 @@ function ColoredCell({
   // if(!hasValue) return null
   const colorScale = getScale(isAssociations);
 
-  const onClickHandler = onClick
-    ? () => onClick(cell, tablePrefix)
-    : () => ({});
-  const backgroundColor = hasValue ? colorScale(scoreValue) : '#fafafa';
-  const borderColor = hasValue ? colorScale(scoreValue) : '#e0dede';
+  const onClickHandler = onClick ? () => onClick(cell, tablePrefix) : () => ({});
+  const backgroundColor = hasValue ? colorScale(scoreValue) : "#fafafa";
+  const borderColor = hasValue ? colorScale(scoreValue) : "#e0dede";
   const className = getClassName({ globalScore, hasValue });
-  const scoreText = hasValue ? `Score: ${scoreValue.toFixed(2)}` : 'No data';
+  const scoreText = hasValue ? `Score: ${scoreValue.toFixed(2)}` : "No data";
 
   const style = {
-    height: '24px',
-    width: '24px',
-    borderRadius: rounded ? '50%' : 0,
+    height: "24px",
+    width: "24px",
+    borderRadius: rounded ? "50%" : 0,
     backgroundColor,
     border: `1px solid ${borderColor}`,
   };

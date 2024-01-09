@@ -1,6 +1,6 @@
-import dataTypes from '../../dataTypes';
-import dataSources from '../../dataSources';
-import config from '../../config';
+import dataTypes from "../../dataTypes";
+import dataSources from "../../dataSources";
+import config from "../../config";
 
 const facetData = [...dataTypes, ...dataSources];
 
@@ -9,13 +9,13 @@ export const fixLabel = id => {
 
   if (label) return label;
 
-  if (id === 'tractabilityProtac') {
-    return 'Tractability PROTAC';
+  if (id === "tractabilityProtac") {
+    return "Tractability PROTAC";
   }
 
   // only do this for ids that start with a lowercase character
   if (/^[a-z]/.test(id)) {
-    const spacedLabel = id.replace(/([a-z])([A-Z])/g, '$1 $2');
+    const spacedLabel = id.replace(/([a-z])([A-Z])/g, "$1 $2");
     return `${spacedLabel[0].toUpperCase()}${spacedLabel.slice(1)}`;
   }
 
@@ -26,8 +26,7 @@ export const fixLabel = id => {
  * Check if specified facet (id) is set as private
  * in the facet data (so datatypes and datasource)
  */
-const fixIsPrivate = id =>
-  facetData.find(item => item.id === id)?.isPrivate || false;
+const fixIsPrivate = id => facetData.find(item => item.id === id)?.isPrivate || false;
 
 /**
  * Filter a level in the datatypes facets based on config where
@@ -43,9 +42,7 @@ const sortLevel = (a, b) => {
   const aIndex = facetData.findIndex(item => item.id === a.nodeId);
   const bIndex = facetData.findIndex(item => item.id === b.nodeId);
 
-  return aIndex !== -1 && bIndex !== -1
-    ? aIndex - bIndex
-    : a.nodeId.localeCompare(b.nodeId);
+  return aIndex !== -1 && bIndex !== -1 ? aIndex - bIndex : a.nodeId.localeCompare(b.nodeId);
 };
 
 const extractLevel = level =>
@@ -67,8 +64,7 @@ export const prepareFacetData = data => extractLevel(data) || [];
 const updateLevel = (facets, data = []) => {
   facets.forEach(facet => {
     const newFacet = data.find(
-      searchElement =>
-        facet.nodeId === (searchElement.key || searchElement.name)
+      searchElement => facet.nodeId === (searchElement.key || searchElement.name)
     );
     const newCount = newFacet?.uniques || 0;
     facet.count = newCount;
@@ -79,8 +75,7 @@ const updateLevel = (facets, data = []) => {
   return facets;
 };
 
-export const updateFacetCounts = (facets, data) =>
-  updateLevel([...facets], data);
+export const updateFacetCounts = (facets, data) => updateLevel([...facets], data);
 
 // Facet tree tools
 export const traverse = (tree, path, parent) => {
@@ -98,8 +93,7 @@ export const setAllChildren = (tree, value) =>
     setAllChildren(branch, value);
   });
 
-export const hasAllChildrenChecked = level =>
-  level.aggs?.every(agg => agg.checked);
+export const hasAllChildrenChecked = level => level.aggs?.every(agg => agg.checked);
 
 export const hasSomeChildrenChecked = level =>
   level.aggs?.some(agg => agg.checked) && !hasAllChildrenChecked(level);

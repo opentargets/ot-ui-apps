@@ -6,22 +6,18 @@ import {
   FormGroup,
   FormControlLabel,
   TablePagination,
-} from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faDna,
-  faPrescriptionBottleAlt,
-  faStethoscope,
-} from '@fortawesome/free-solid-svg-icons';
-import { ErrorBoundary } from 'ui';
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDna, faPrescriptionBottleAlt, faStethoscope } from "@fortawesome/free-solid-svg-icons";
+import { ErrorBoundary } from "ui";
 
-import DiseaseDetail from './DiseaseDetail';
-import DiseaseResult from './DiseaseResult';
-import DrugDetail from './DrugDetail';
-import DrugResult from './DrugResult';
-import TargetDetail from './TargetDetail';
-import TargetResult from './TargetResult';
+import DiseaseDetail from "./DiseaseDetail";
+import DiseaseResult from "./DiseaseResult";
+import DrugDetail from "./DrugDetail";
+import DrugResult from "./DrugResult";
+import TargetDetail from "./TargetDetail";
+import TargetResult from "./TargetResult";
 
 const getCounts = entities => {
   const counts = {
@@ -39,11 +35,11 @@ const getCounts = entities => {
 
 const useStyles = makeStyles(theme => ({
   label: {
-    marginLeft: '-6px',
+    marginLeft: "-6px",
   },
   labelIcon: {
     color: theme.palette.primary.main,
-    marginRight: '2px',
+    marginRight: "2px",
   },
 }));
 
@@ -55,19 +51,10 @@ const SearchFilters = ({ entities, entitiesCount, setEntity }) => {
     <>
       <FormControlLabel
         className={classes.label}
-        control={
-          <Checkbox
-            checked={entities.includes('target')}
-            onChange={setEntity('target')}
-          />
-        }
+        control={<Checkbox checked={entities.includes("target")} onChange={setEntity("target")} />}
         label={
           <>
-            <FontAwesomeIcon
-              icon={faDna}
-              fixedWidth
-              className={classes.labelIcon}
-            />
+            <FontAwesomeIcon icon={faDna} fixedWidth className={classes.labelIcon} />
             <Typography variant="body2" display="inline">
               Target ({counts.target})
             </Typography>
@@ -77,18 +64,11 @@ const SearchFilters = ({ entities, entitiesCount, setEntity }) => {
       <FormControlLabel
         className={classes.label}
         control={
-          <Checkbox
-            checked={entities.includes('disease')}
-            onChange={setEntity('disease')}
-          />
+          <Checkbox checked={entities.includes("disease")} onChange={setEntity("disease")} />
         }
         label={
           <>
-            <FontAwesomeIcon
-              icon={faStethoscope}
-              fixedWidth
-              className={classes.labelIcon}
-            />
+            <FontAwesomeIcon icon={faStethoscope} fixedWidth className={classes.labelIcon} />
             <Typography variant="body2" display="inline">
               Disease or phenotype ({counts.disease})
             </Typography>
@@ -97,12 +77,7 @@ const SearchFilters = ({ entities, entitiesCount, setEntity }) => {
       />
       <FormControlLabel
         className={classes.label}
-        control={
-          <Checkbox
-            checked={entities.includes('drug')}
-            onChange={setEntity('drug')}
-          />
-        }
+        control={<Checkbox checked={entities.includes("drug")} onChange={setEntity("drug")} />}
         label={
           <>
             <FontAwesomeIcon
@@ -121,7 +96,7 @@ const SearchFilters = ({ entities, entitiesCount, setEntity }) => {
 };
 
 function SearchResults({ results, page, onPageChange }) {
-  const TYPE_NAME = '__typename';
+  const TYPE_NAME = "__typename";
   return (
     <>
       <TablePagination
@@ -133,25 +108,11 @@ function SearchResults({ results, page, onPageChange }) {
         onPageChange={onPageChange}
       />
       {results.hits.map(({ highlights, object }) => {
-        if (object[TYPE_NAME] === 'Target')
-          return (
-            <TargetResult
-              key={object.id}
-              data={object}
-              highlights={highlights}
-            />
-          );
-        if (object[TYPE_NAME] === 'Disease')
-          return (
-            <DiseaseResult
-              key={object.id}
-              data={object}
-              highlights={highlights}
-            />
-          );
-        return (
-          <DrugResult key={object.id} data={object} highlights={highlights} />
-        );
+        if (object[TYPE_NAME] === "Target")
+          return <TargetResult key={object.id} data={object} highlights={highlights} />;
+        if (object[TYPE_NAME] === "Disease")
+          return <DiseaseResult key={object.id} data={object} highlights={highlights} />;
+        return <DrugResult key={object.id} data={object} highlights={highlights} />;
       })}
 
       <TablePagination
@@ -168,13 +129,10 @@ function SearchResults({ results, page, onPageChange }) {
 
 function TopHitDetail({ topHit }) {
   let COMPONENT = null;
-  const TYPE_NAME = '__typename';
-  if (topHit[TYPE_NAME] === 'Target')
-    COMPONENT = <TargetDetail data={topHit} />;
-  else if (topHit[TYPE_NAME] === 'Disease')
-    COMPONENT = <DiseaseDetail data={topHit} />;
-  else if (topHit[TYPE_NAME] === 'Drug')
-    COMPONENT = <DrugDetail data={topHit} />;
+  const TYPE_NAME = "__typename";
+  if (topHit[TYPE_NAME] === "Target") COMPONENT = <TargetDetail data={topHit} />;
+  else if (topHit[TYPE_NAME] === "Disease") COMPONENT = <DiseaseDetail data={topHit} />;
+  else if (topHit[TYPE_NAME] === "Drug") COMPONENT = <DrugDetail data={topHit} />;
   return (
     <Card elevation={0}>
       <ErrorBoundary>{COMPONENT}</ErrorBoundary>
@@ -182,14 +140,7 @@ function TopHitDetail({ topHit }) {
   );
 }
 
-function SearchContainer({
-  q,
-  page,
-  entities,
-  data,
-  onPageChange,
-  onSetEntity,
-}) {
+function SearchContainer({ q, page, entities, data, onPageChange, onSetEntity }) {
   const { entities: entitiesCount } = data.search.aggregations;
   const topHit = data.topHit.hits[0]?.object;
 
@@ -211,11 +162,7 @@ function SearchContainer({
         </Grid>
         <Grid item md={7}>
           {data.search.hits.length > 0 ? (
-            <SearchResults
-              page={page}
-              results={data.search}
-              onPageChange={onPageChange}
-            />
+            <SearchResults page={page} results={data.search} onPageChange={onPageChange} />
           ) : null}
         </Grid>
         <Grid item md={3}>

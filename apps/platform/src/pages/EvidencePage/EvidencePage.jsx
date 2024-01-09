@@ -1,15 +1,15 @@
-import { Suspense, lazy } from 'react';
-import { useQuery } from '@apollo/client';
-import { useLocation, useParams } from 'react-router-dom';
+import { Suspense, lazy } from "react";
+import { useQuery } from "@apollo/client";
+import { useLocation, useParams } from "react-router-dom";
 
-import { LoadingBackdrop, BasePage, ScrollToTop } from 'ui';
+import { LoadingBackdrop, BasePage, ScrollToTop } from "ui";
 
-import Header from './Header';
-import NotFoundPage from '../NotFoundPage';
+import Header from "./Header";
+import NotFoundPage from "../NotFoundPage";
 
-import EVIDENCE_PAGE_QUERY from './EvidencePageQuery.gql';
+import EVIDENCE_PAGE_QUERY from "./EvidencePageQuery.gql";
 
-const Profile = lazy(() => import('./Profile'));
+const Profile = lazy(() => import("./Profile"));
 
 function EvidencePage() {
   const location = useLocation();
@@ -31,13 +31,7 @@ function EvidencePage() {
       description={`${symbol} is associated with ${name} through Open Targets Platform evidence that is aggregated from genetic evidence, somatic mutations, known drugs, differential expression experiments, pathways & systems biology, text mining, and animal model data sources`}
       location={location}
     >
-      <Header
-        loading={loading}
-        efoId={efoId}
-        ensgId={ensgId}
-        symbol={symbol}
-        name={name}
-      />
+      <Header loading={loading} efoId={efoId} ensgId={ensgId} symbol={symbol} name={name} />
       <ScrollToTop />
       <Suspense fallback={<LoadingBackdrop />}>
         <Profile ensgId={ensgId} efoId={efoId} symbol={symbol} name={name} />

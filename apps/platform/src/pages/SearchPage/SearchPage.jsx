@@ -1,18 +1,18 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
-import queryString from 'query-string';
-import { Typography } from '@mui/material';
-import { useLocation, useHistory } from 'react-router-dom';
-import { LoadingBackdrop, EmptyPage, BasePage } from 'ui';
+import { useState, useEffect, lazy, Suspense } from "react";
+import queryString from "query-string";
+import { Typography } from "@mui/material";
+import { useLocation, useHistory } from "react-router-dom";
+import { LoadingBackdrop, EmptyPage, BasePage } from "ui";
 
-import client from '../../client';
-import SEARCH_PAGE_QUERY from './SearchPageQuery.gql';
-import config from '../../config';
+import client from "../../client";
+import SEARCH_PAGE_QUERY from "./SearchPageQuery.gql";
+import config from "../../config";
 
-const SearchContainer = lazy(() => import('./SearchContainer'));
+const SearchContainer = lazy(() => import("./SearchContainer"));
 
 const QS_OPTIONS = {
   sort: false,
-  arrayFormat: 'comma',
+  arrayFormat: "comma",
   skipNull: true,
 };
 
@@ -20,7 +20,7 @@ const parseQueryString = qs => {
   const params = queryString.parse(qs, QS_OPTIONS);
   if (!params.entities) {
     params.entities = [];
-  } else if (typeof params.entities === 'string') {
+  } else if (typeof params.entities === "string") {
     params.entities = [params.entities];
   }
   return params;
@@ -64,9 +64,7 @@ function SearchPage() {
     const params = {
       q,
       page: 1, // reset to page 1
-      entities: checked
-        ? [...entities, entity]
-        : entities.filter(e => e !== entity),
+      entities: checked ? [...entities, entity] : entities.filter(e => e !== entity),
     };
     const qs = queryString.stringify(params, QS_OPTIONS);
     history.push(`/search?${qs}`);
@@ -81,8 +79,7 @@ function SearchPage() {
         documentationLink={config.profile.documentationUrl}
       >
         <Typography>
-          We could not find anything in the Platform database that matches
-          &quot;{q}&quot;
+          We could not find anything in the Platform database that matches &quot;{q}&quot;
         </Typography>
       </EmptyPage>
     );

@@ -1,22 +1,22 @@
-import { useState, useEffect } from 'react';
-import { Slider } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { useState, useEffect } from "react";
+import { Slider } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-import useAotfContext from '../hooks/useAotfContext';
-import { getWightSourceDefault } from '../utils';
+import useAotfContext from "../hooks/useAotfContext";
+import { getWightSourceDefault } from "../utils";
 
 const OTSlider = styled(Slider)({
   root: {
-    padding: '0 10px !important',
+    padding: "0 10px !important",
   },
   mark: {
-    backgroundColor: '#b8b8b8',
+    backgroundColor: "#b8b8b8",
     width: 10,
     height: 1,
     marginLeft: -4,
   },
   valueLabel: {
-    zIndex: '9999',
+    zIndex: "9999",
   },
 });
 
@@ -32,11 +32,7 @@ const getSliderValue = (values, id) => {
 };
 
 function SliderControll({ id }) {
-  const {
-    dataSourcesWeights,
-    setDataSourcesWeights,
-    resetToInitialPagination,
-  } = useAotfContext();
+  const { dataSourcesWeights, setDataSourcesWeights, resetToInitialPagination } = useAotfContext();
 
   const defaultValue = getWightSourceDefault(id);
   const initialValue = getSliderValue(dataSourcesWeights, id);

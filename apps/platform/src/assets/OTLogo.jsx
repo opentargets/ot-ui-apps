@@ -1,16 +1,16 @@
-import { SvgIcon } from '@mui/material';
+import { SvgIcon } from "@mui/material";
 // import { makeStyles } from '@mui/styles';
 
-import config from '../config';
+import config from "../config";
 
 const styles = {
   root: {
-    height: 'unset',
+    height: "unset",
   },
 };
 
-function OTLogo({props, sx = []}) {
-  const tagline = config.profile.otLogoTagline ?? '';
+function OTLogo({ props, sx = [] }) {
+  const tagline = config.profile.otLogoTagline ?? "";
 
   return (
     <SvgIcon
@@ -53,9 +53,9 @@ function OTLogo({props, sx = []}) {
       <text
         fill="#3488c8"
         style={{
-          fontSize: '50px',
-          fontWeight: '500',
-          fontFamily: 'Inter, sans-serif',
+          fontSize: "50px",
+          fontWeight: "500",
+          fontFamily: "Inter, sans-serif",
         }}
         transform="translate(1660 261.35)"
         textAnchor="end"

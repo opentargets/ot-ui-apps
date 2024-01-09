@@ -1,54 +1,54 @@
-import { useState } from 'react';
-import { Box, Drawer, IconButton, Snackbar, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { faClipboard } from '@fortawesome/free-regular-svg-icons';
-import { Tooltip } from 'ui';
+import { useState } from "react";
+import { Box, Drawer, IconButton, Snackbar, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faClipboard } from "@fortawesome/free-regular-svg-icons";
+import { Tooltip } from "ui";
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
-    '& .MuiBackdrop-root': {
-      opacity: '0 !important',
+    "& .MuiBackdrop-root": {
+      opacity: "0 !important",
     },
   },
   children: {
-    display: 'flex',
-    justifyContent: 'center',
+    display: "flex",
+    justifyContent: "center",
   },
   clipboard: {
-    position: 'absolute !important',
-    top: '0',
-    right: '0',
-    padding: '0.4em 0.5em !important',
+    position: "absolute !important",
+    top: "0",
+    right: "0",
+    padding: "0.4em 0.5em !important",
   },
   closeButton: {
-    zIndex: '2',
-    position: 'fixed',
+    zIndex: "2",
+    position: "fixed",
     top: 0,
     right: 0,
-    padding: '0.7em',
+    padding: "0.7em",
   },
   codeBlock: {
     backgroundColor: theme.palette.grey[300],
-    padding: '0.2em 6em 0.2em 0.2em',
-    fontSize: '0.9em',
-    position: 'relative',
+    padding: "0.2em 6em 0.2em 0.2em",
+    fontSize: "0.9em",
+    position: "relative",
   },
   title: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    borderBottom: '1px solid #ccc',
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    padding: '1rem',
-    position: 'fixed',
-    width: '100%',
-    zIndex: '1',
+    display: "flex",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    borderBottom: "1px solid #ccc",
+    fontSize: "1.2rem",
+    fontWeight: "bold",
+    padding: "1rem",
+    position: "fixed",
+    width: "100%",
+    zIndex: "1",
   },
   schemaContainer: {
-    padding: '5em 2em',
+    padding: "5em 2em",
   },
 }));
 
@@ -56,9 +56,9 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const LAST_ELEMENT_IN_SCHEMA_STRING = '└───';
-  const NON_LAST_ELEMENT_IN_SCHEMA_STRING = '├───';
-  const NEXT_LINE_STRING = '\n';
+  const LAST_ELEMENT_IN_SCHEMA_STRING = "└───";
+  const NON_LAST_ELEMENT_IN_SCHEMA_STRING = "├───";
+  const NEXT_LINE_STRING = "\n";
 
   function isEmpty(obj) {
     return Object.keys(obj).length === 0;
@@ -68,9 +68,7 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
     const schemaString = isLastElement
       ? LAST_ELEMENT_IN_SCHEMA_STRING
       : NON_LAST_ELEMENT_IN_SCHEMA_STRING;
-    return `${NEXT_LINE_STRING}${schemaString}${obj.name} : ${
-      obj.type
-    }`;
+    return `${NEXT_LINE_STRING}${schemaString}${obj.name} : ${obj.type}`;
   }
 
   function convertArrayObjectToSchema(obj, isLastElement) {
@@ -79,17 +77,12 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
       : NON_LAST_ELEMENT_IN_SCHEMA_STRING;
 
     const elementType =
-      typeof obj.type.elementType === 'object'
-        ? 'struct'
-        : typeof obj.type.elementType;
+      typeof obj.type.elementType === "object" ? "struct" : typeof obj.type.elementType;
 
     let schema = `${NEXT_LINE_STRING}${schemaString}${obj.name}: array `;
 
-    if (elementType === 'struct') {
-      const childSchema = convertStructObjectToSchema(
-        obj.type.elementType,
-        false
-      );
+    if (elementType === "struct") {
+      const childSchema = convertStructObjectToSchema(obj.type.elementType, false);
       schema = `${schema}${childSchema}`;
     } else {
       schema = `${schema}${NEXT_LINE_STRING}│   ${NON_LAST_ELEMENT_IN_SCHEMA_STRING}element: ${elementType} `;
@@ -103,31 +96,28 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
       ? LAST_ELEMENT_IN_SCHEMA_STRING
       : NON_LAST_ELEMENT_IN_SCHEMA_STRING;
 
-    let schema =
-      obj.type.fields ?
-      `${NEXT_LINE_STRING}${schemaString}${obj.name}: array ${NEXT_LINE_STRING}│   ${NON_LAST_ELEMENT_IN_SCHEMA_STRING}element: struct` : `${NEXT_LINE_STRING}│   ${schemaString}element: struct `;
+    let schema = obj.type.fields
+      ? `${NEXT_LINE_STRING}${schemaString}${obj.name}: array ${NEXT_LINE_STRING}│   ${NON_LAST_ELEMENT_IN_SCHEMA_STRING}element: struct`
+      : `${NEXT_LINE_STRING}│   ${schemaString}element: struct `;
 
     const fields = obj.type.fields || obj.fields;
     if (fields)
       fields.forEach(element => {
         const childSchemaFn = getType(element);
-        schema = `${schema}${childSchemaFn(element, false).replaceAll(
-          /\n/g,
-          '\n│   │   '
-        )}`;
+        schema = `${schema}${childSchemaFn(element, false).replaceAll(/\n/g, "\n│   │   ")}`;
       });
     return schema;
   }
 
   function getType(obj) {
-    if (typeof obj !== 'object') return null;
+    if (typeof obj !== "object") return null;
 
-    if (typeof obj.type === 'string') return convertSimpleObjectToSchema;
+    if (typeof obj.type === "string") return convertSimpleObjectToSchema;
 
     switch (obj.type.type) {
-      case 'array':
+      case "array":
         return convertArrayObjectToSchema;
-      case 'struct':
+      case "struct":
         return convertStructObjectToSchema;
       default:
         return getType(obj.type);
@@ -135,22 +125,21 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
   }
 
   function jsonToSchema(rawObj) {
-    let schemaObjString = '';
-    if (isEmpty(rawObj))
-      schemaObjString = `${schemaObjString} ${typeof rawObj}`;
+    let schemaObjString = "";
+    if (isEmpty(rawObj)) schemaObjString = `${schemaObjString} ${typeof rawObj}`;
 
     if (Array.isArray(rawObj)) {
       rawObj.forEach(element => {
         const childSchema = jsonToSchema(element);
         schemaObjString = `${schemaObjString}${childSchema}`;
       });
-    } else if (typeof rawObj === 'object') {
+    } else if (typeof rawObj === "object") {
       const fnType = getType(rawObj);
       const childSchema = fnType(rawObj, false);
       schemaObjString = `${schemaObjString}${childSchema}`;
     }
 
-    return schemaObjString.replaceAll(/\n/g, '\n   ');
+    return schemaObjString.replaceAll(/\n/g, "\n   ");
   }
 
   function toggleOpen() {
@@ -196,15 +185,14 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
 
           <div className={classes.codeBlock}>
             <Tooltip title="Copy JSON to clipboard">
-              <IconButton
-                className={classes.clipboard}
-                onClick={() => copyToClipboard()}
-              >
+              <IconButton className={classes.clipboard} onClick={() => copyToClipboard()}>
                 <FontAwesomeIcon icon={faClipboard} />
               </IconButton>
             </Tooltip>
             <pre>
-              <code>{`   root${serialisedSchema.fields && jsonToSchema(serialisedSchema.fields)}`}</code>
+              <code>{`   root${
+                serialisedSchema.fields && jsonToSchema(serialisedSchema.fields)
+              }`}</code>
             </pre>
           </div>
         </div>

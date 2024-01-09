@@ -1,35 +1,35 @@
-import { useState, useEffect } from 'react';
-import { faXmark, faSearchPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Modal, Paper } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import SmilesDrawer from 'smiles-drawer';
+import { useState, useEffect } from "react";
+import { faXmark, faSearchPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Modal, Paper } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import SmilesDrawer from "smiles-drawer";
 
 const useStyles = makeStyles(theme => ({
   container: {
-    background: 'none !important',
-    cursor: 'pointer',
-    height: '240px',
-    marginLeft: 'auto',
-    width: 'fit-content',
-    '& .seeDetailsIcon': {
-      visibility: 'hidden',
+    background: "none !important",
+    cursor: "pointer",
+    height: "240px",
+    marginLeft: "auto",
+    width: "fit-content",
+    "& .seeDetailsIcon": {
+      visibility: "hidden",
     },
-    '&:hover .seeDetailsIcon': {
-      visibility: 'visible',
+    "&:hover .seeDetailsIcon": {
+      visibility: "visible",
     },
   },
   modal: {
-    width: '800px',
-    margin: '130px auto 0 auto',
+    width: "800px",
+    margin: "130px auto 0 auto",
   },
   modalCanvas: {
-    display: 'block',
-    margin: '0 auto',
+    display: "block",
+    margin: "0 auto",
   },
   close: {
-    cursor: 'pointer',
-    float: 'right',
+    cursor: "pointer",
+    float: "right",
     fill: theme.palette.grey[800],
   },
 }));
@@ -42,7 +42,7 @@ const drawSmiles = (smiles, chemblId, config) => {
       smilesDrawer.draw(tree, chemblId);
     },
     () => {
-      console.error('error parsing smiles');
+      console.error("error parsing smiles");
     }
   );
 };
@@ -77,11 +77,7 @@ function SmilesHelper({ smiles, chemblId }) {
       </Paper>
       <Modal open={isOpen} onClose={toggleModal} keepMounted>
         <Paper className={classes.modal}>
-          <FontAwesomeIcon
-            icon={faXmark}
-            className={classes.close}
-            onClick={toggleModal}
-          />
+          <FontAwesomeIcon icon={faXmark} className={classes.close} onClick={toggleModal} />
           <canvas id={`${chemblId}-modal`} className={classes.modalCanvas} />
         </Paper>
       </Modal>

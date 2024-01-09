@@ -1,5 +1,5 @@
-import TreeItem from './TreeItem';
-import { hasSomeChildrenChecked } from './utils';
+import TreeItem from "./TreeItem";
+import { hasSomeChildrenChecked } from "./utils";
 
 function TreeLevel({ loading, levelId, aggs, onSelectionChange }) {
   const handleSelectionChange = newSelection => {

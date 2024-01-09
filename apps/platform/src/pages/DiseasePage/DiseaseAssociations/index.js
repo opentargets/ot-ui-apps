@@ -1,1 +1,1 @@
-export { default } from './DiseaseAssociations';
+export { default } from "./DiseaseAssociations";

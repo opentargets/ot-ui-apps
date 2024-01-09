@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { useEffect, useState } from 'react';
-import client from '../../../client';
+import { useEffect, useState } from "react";
+import client from "../../../client";
 
 // Select and parsed data from API response from fixed Target
 const getAssociatedDiseasesData = data => {
@@ -48,13 +48,13 @@ const getAssociatedTargetsData = data => {
 };
 
 const getParsedData = (entity, apiResponse) => {
-  if (entity === 'target') return getAssociatedDiseasesData(apiResponse);
-  if (entity === 'disease') return getAssociatedTargetsData(apiResponse);
+  if (entity === "target") return getAssociatedDiseasesData(apiResponse);
+  if (entity === "disease") return getAssociatedTargetsData(apiResponse);
 };
 
 const getAllDataCount = (entity, apiResponse) => {
-  if (entity === 'target') return apiResponse.target.associatedDiseases.count;
-  if (entity === 'disease') return apiResponse.disease.associatedTargets.count;
+  if (entity === "target") return apiResponse.target.associatedDiseases.count;
+  if (entity === "disease") return apiResponse.disease.associatedTargets.count;
 };
 
 const initialState = {
@@ -68,11 +68,11 @@ const initialState = {
 function useAssociationsData({
   query,
   options: {
-    id = '',
+    id = "",
     index = 0,
     size = 50,
-    filter = '',
-    sortBy = 'score',
+    filter = "",
+    sortBy = "score",
     aggregationFilters = [],
     enableIndirect = false,
     datasources = null,

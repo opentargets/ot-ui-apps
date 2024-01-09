@@ -1,1 +1,1 @@
-export { default } from './TargetAssociations';
+export { default } from "./TargetAssociations";

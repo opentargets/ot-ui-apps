@@ -1,8 +1,8 @@
-import { Suspense, lazy } from 'react';
-import { useLocation } from 'react-router-dom';
-import { LoadingBackdrop, BasePage } from 'ui';
+import { Suspense, lazy } from "react";
+import { useLocation } from "react-router-dom";
+import { LoadingBackdrop, BasePage } from "ui";
 
-const VariantsPage = lazy(() => import('./VariantsPage'));
+const VariantsPage = lazy(() => import("./VariantsPage"));
 
 function VariantsWrapper() {
   const location = useLocation();

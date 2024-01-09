@@ -1,36 +1,35 @@
-import { Box, Collapse, Grid, Typography } from '@mui/material';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Box, Collapse, Grid, Typography } from "@mui/material";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { styled } from '@mui/material/styles';
-import dataSources from '../static_datasets/dataSourcesAssoc';
+import { styled } from "@mui/material/styles";
+import dataSources from "../static_datasets/dataSourcesAssoc";
 
-import Slider from './SliderControl';
-import Required from './RequiredControl';
-import { GridContainer } from '../layout';
+import Slider from "./SliderControl";
+import Required from "./RequiredControl";
+import { GridContainer } from "../layout";
 
-import useAotfContext from '../hooks/useAotfContext';
+import useAotfContext from "../hooks/useAotfContext";
 
-const CloseContainer = styled('div')({
-  position: 'absolute',
-  left: '10px',
-  top: '10px',
-  cursor: 'pointer',
+const CloseContainer = styled("div")({
+  position: "absolute",
+  left: "10px",
+  top: "10px",
+  cursor: "pointer",
   zIndex: 10,
 });
 
-const WeightsControllsContainer = styled('div')({
-  backgroundColor: 'var(--colums-controls-color)',
-  position: 'relative',
-  boxSizing: 'content-box',
-  padding: '20px 0 15px',
+const WeightsControllsContainer = styled("div")({
+  backgroundColor: "var(--colums-controls-color)",
+  position: "relative",
+  boxSizing: "content-box",
+  padding: "20px 0 15px",
 });
 
 function HeaderControls({ cols = [] }) {
-  const { activeHeadersControlls, setActiveHeadersControlls, displayedTable } =
-    useAotfContext();
+  const { activeHeadersControlls, setActiveHeadersControlls, displayedTable } = useAotfContext();
 
-  if (displayedTable === 'prioritisations') return null;
+  if (displayedTable === "prioritisations") return null;
 
   const handleClose = () => {
     setActiveHeadersControlls(false);
@@ -57,10 +56,7 @@ function HeaderControls({ cols = [] }) {
               <Typography variant="subtitle2">Require</Typography>
             </Box>
           </Grid>
-          <GridContainer
-            columnsCount={cols.length}
-            className="controlls-wrapper"
-          >
+          <GridContainer columnsCount={cols.length} className="controlls-wrapper">
             {cols.map(({ id }) => (
               <div key={id} className="colum-control">
                 <Grid className="control-container" key={id}>
@@ -69,9 +65,7 @@ function HeaderControls({ cols = [] }) {
                 <div className="required-container">
                   <Required
                     id={id}
-                    aggregationId={
-                      (dataSources.find(el => el.id === id).aggregationId, id)
-                    }
+                    aggregationId={(dataSources.find(el => el.id === id).aggregationId, id)}
                   />
                 </div>
               </div>
