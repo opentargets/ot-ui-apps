@@ -8,10 +8,7 @@ import {
   updateLiteratureState,
 } from "./atoms";
 
-const iOSBoxShadow =
-  "0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)";
-
-const monthsBtwnDates = (startDate, endDate) =>
+const monthsBtwnDates = (startDate: Date, endDate: Date) =>
   Math.max(
     (endDate.getFullYear() - startDate.getFullYear()) * 12 +
       (endDate.getMonth() - startDate.getMonth()),
@@ -19,7 +16,7 @@ const monthsBtwnDates = (startDate, endDate) =>
   );
 
 export function DateFilter() {
-  const [filterDate, setFilterDate] = useState([0, 100]);
+  const [filterDate, setFilterDate] = useState<number | number[]>([0, 100]);
   const [numberOfMonths, setNumberOfMonths] = useState(0);
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
   const [_, setLoadingEntities] = useRecoilState(loadingEntitiesState);
@@ -27,14 +24,15 @@ export function DateFilter() {
     query,
     id,
     category,
-    startYear,
-    startMonth,
-    endYear,
-    endMonth,
     earliestPubYear,
     selectedEntities,
     globalEntity,
     cursor,
+    litsIds,
+    page,
+    pageSize,
+    litsCount,
+    loadingEntities,
   } = useRecoilValue(literatureState);
 
   useEffect(() => {
@@ -48,48 +46,61 @@ export function DateFilter() {
   useEffect(() => {
     setFilterDate([0, numberOfMonths]);
   }, []);
-  
-  const handleChange = async values => {
+
+  const handleChange = async (values: {
+    startYear: number;
+    startMonth: number;
+    endYear: number;
+    endMonth: number;
+  }) => {
     setLoadingEntities(true);
+    const entities = selectedEntities as any[];
     const request = await fetchSimilarEntities({
       query,
       id,
       category,
-      entities: selectedEntities,
+      entities,
       cursor,
-      startYear,
-      startMonth,
-      endYear,
-      endMonth,
+      earliestPubYear,
+      globalEntity,
+      selectedEntities,
+      litsIds,
+      page,
+      pageSize,
+      litsCount,
+      loadingEntities,
       ...values,
     });
     const data = request.data[globalEntity];
     const update = {
+      id,
+      cursor,
+      query,
       entities: data.similarEntities,
       loadingEntities: false,
       category,
-      startYear,
-      startMonth,
-      endYear,
-      endMonth,
-      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => ({
+      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }: { pmid: any }) => ({
         id: pmid,
         status: "ready",
         publication: null,
       })),
       litsCount: data.literatureOcurrences?.count,
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,
+      globalEntity,
+      selectedEntities,
+      page,
+      pageSize,
       ...values,
     };
     setLiteratureUpdate(update);
   };
 
-  const selectedDate = value => {
+  const selectedDate = (value: number) => {
     const from = new Date(earliestPubYear, 0, 1, 1, 1, 1, 1);
     return new Date(from.setMonth(from.getMonth() + value));
   };
 
-  const valueLabelFormat = value => {
+  const valueLabelFormat = (value: number) => {
     if (earliestPubYear) {
       const labelDate = selectedDate(value);
       return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;
@@ -97,19 +108,24 @@ export function DateFilter() {
     return value;
   };
 
-  const handleDateRangeChange = (event, newValue) => {
-    setFilterDate(newValue);
+  const handleDateRangeChange = (_event: Event, value: number[] | number, _activeThumb: number) => {
+    setFilterDate(value);
   };
 
-  const handleDateRangeChangeCommitted = (event, newValue) => {
-    const startDate = selectedDate(newValue[0]);
-    const endDate = selectedDate(newValue[1]);
-    handleChange({
-      startYear: startDate.getFullYear(),
-      startMonth: startDate.getMonth() + 1,
-      endYear: endDate.getFullYear(),
-      endMonth: endDate.getMonth() + 1,
-    });
+  const handleDateRangeChangeCommitted = (
+    _event: Event | React.SyntheticEvent<Element, Event>,
+    value: number | number[]
+  ) => {
+    if (Array.isArray(value)) {
+      const startDate = selectedDate(value[0]);
+      const endDate = selectedDate(value[1]);
+      handleChange({
+        startYear: startDate.getFullYear(),
+        startMonth: startDate.getMonth() + 1,
+        endYear: endDate.getFullYear(),
+        endMonth: endDate.getMonth() + 1,
+      });
+    }
   };
 
   return (
@@ -118,7 +134,7 @@ export function DateFilter() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        marginRight: 50
+        marginRight: 50,
       }}
     >
       <InputLabel id="date-filter-demo">Date Filter:</InputLabel>
@@ -132,17 +148,16 @@ export function DateFilter() {
             onChangeCommitted={handleDateRangeChangeCommitted}
             aria-labelledby="range-slider"
             max={numberOfMonths - 1}
-            onsel
             sx={{
               "& .MuiSlider-thumb:nth-of-type(odd) [aria-hidden]": {
-                transform: 'translate(0%, 120%)'
+                transform: "translate(0%, 120%)",
               },
               "& .MuiSlider-valueLabel:before": {
-                backgroundColor: 'transparent'
+                backgroundColor: "transparent",
               },
               "& .MuiSlider-valueLabel:after": {
-                backgroundColor: 'transparent'
-              }
+                backgroundColor: "transparent",
+              },
             }}
             valueLabelFormat={valueLabelFormat}
           />
