@@ -1,1 +1,1 @@
-export { default } from './ColocGWASTable';
+export { default } from "./ColocGWASTable";

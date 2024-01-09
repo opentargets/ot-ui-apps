@@ -1,1 +1,1 @@
-export { default } from './GenePrioritisationTabs';
+export { default } from "./GenePrioritisationTabs";

@@ -1,1 +1,1 @@
-export { default } from './ColocAnalysis';
+export { default } from "./ColocAnalysis";

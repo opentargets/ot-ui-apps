@@ -1,4 +1,4 @@
-import chromosomeComparator from './chromosomeComparator';
+import chromosomeComparator from "./chromosomeComparator";
 
 const cytobandComparator = (a, b) => {
   const { chromosome: chromosomeA, cytoband: cytobandA } = a;
@@ -15,7 +15,7 @@ const cytobandComparator = (a, b) => {
   const armB = matchB[0];
 
   if (armA !== armB) {
-    if (armA === 'p') return -1;
+    if (armA === "p") return -1;
     return 1;
   }
 
