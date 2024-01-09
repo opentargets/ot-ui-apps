@@ -37,25 +37,20 @@ const columns = [
     renderCell: ({ phenotypeEFO, phenotypeHPO }) => {
       let content;
       if (phenotypeEFO && phenotypeEFO.id) {
-        content = (
-          <Link to={`/disease/${phenotypeEFO.id}`}>{phenotypeHPO.name}</Link>
-        );
+        content = <Link to={`/disease/${phenotypeEFO.id}`}>{phenotypeHPO.name}</Link>;
       } else if (phenotypeHPO && phenotypeHPO.name) content = phenotypeHPO.name;
       else content = naLabel;
 
       return phenotypeHPO.description ? (
-        <Tooltip
-          title={`Description: ${phenotypeHPO.description}`}
-          showHelpIcon
-        >
+        <Tooltip title={`Description: ${phenotypeHPO.description}`} showHelpIcon>
           {content}
         </Tooltip>
       ) : (
         content
       );
     },
-    filterValue: (row) => row.phenotypeHPO.name,
-    exportValue: (row) => row.phenotypeHPO.name,
+    filterValue: row => row.phenotypeHPO.name,
+    exportValue: row => row.phenotypeHPO.name,
     // width: '9%',
   },
   {
@@ -69,8 +64,8 @@ const columns = [
         </Link>
       );
     },
-    filterValue: (row) => row.phenotypeHPO.id.replace("_", ":"),
-    exportValue: (row) => row.phenotypeHPO.id.replace("_", ":"),
+    filterValue: row => row.phenotypeHPO.id.replace("_", ":"),
+    exportValue: row => row.phenotypeHPO.id.replace("_", ":"),
     // width: '9%',
   },
   {
@@ -79,9 +74,7 @@ const columns = [
     renderCell: ({ evidence }) =>
       evidence.aspect ? (
         <Tooltip
-          title={`Sub-ontology: ${evidence.aspect} (${
-            aspectDescription[evidence.aspect]
-          })`}
+          title={`Sub-ontology: ${evidence.aspect} (${aspectDescription[evidence.aspect]})`}
           showHelpIcon
         >
           {evidence.aspect}
@@ -89,36 +82,28 @@ const columns = [
       ) : (
         naLabel
       ),
-    filterValue: (row) => row.evidence.aspect,
-    exportValue: (row) => row.evidence.aspect,
+    filterValue: row => row.evidence.aspect,
+    exportValue: row => row.evidence.aspect,
     // width: '7%',
   },
   {
     id: "frequency",
     label: "Frequency",
     renderCell: ({ evidence }) => {
-      if (
-        evidence.frequencyHPO &&
-        evidence.frequencyHPO.id &&
-        evidence.frequencyHPO.name
-      )
+      if (evidence.frequencyHPO && evidence.frequencyHPO.id && evidence.frequencyHPO.name)
         return (
           <Link
             external
-            to={`https://identifiers.org/ols/${evidence.frequencyHPO.id.replace(
-              "_",
-              ":"
-            )}`}
+            to={`https://identifiers.org/ols/${evidence.frequencyHPO.id.replace("_", ":")}`}
           >
             {evidence.frequencyHPO.name}
           </Link>
         );
-      if (evidence.frequencyHPO && evidence.frequencyHPO.name)
-        return evidence.frequencyHPO.name;
+      if (evidence.frequencyHPO && evidence.frequencyHPO.name) return evidence.frequencyHPO.name;
       return naLabel;
     },
-    filterValue: (row) => row.evidence.frequencyHPO?.name || naLabel,
-    exportValue: (row) => row.evidence.frequencyHPO?.name || naLabel,
+    filterValue: row => row.evidence.frequencyHPO?.name || naLabel,
+    exportValue: row => row.evidence.frequencyHPO?.name || naLabel,
     // width: '9%',
   },
   {
@@ -126,22 +111,17 @@ const columns = [
     label: "Onset",
     renderCell: ({ evidence }) =>
       evidence.onset?.length > 0
-        ? evidence.onset.map((o) => (
+        ? evidence.onset.map(o => (
             <span key={o.id}>
-              <Link
-                external
-                to={`https://identifiers.org/ols/${o.id.replace("_", ":")}`}
-              >
+              <Link external to={`https://identifiers.org/ols/${o.id.replace("_", ":")}`}>
                 {o.name}
               </Link>
               <br />
             </span>
           ))
         : naLabel,
-    filterValue: (row) =>
-      row.evidence.onset?.map((o) => o.name).join() || naLabel,
-    exportValue: (row) =>
-      row.evidence.onset?.map((o) => o.name).join() || naLabel,
+    filterValue: row => row.evidence.onset?.map(o => o.name).join() || naLabel,
+    exportValue: row => row.evidence.onset?.map(o => o.name).join() || naLabel,
     // width: '9%',
   },
   {
@@ -149,29 +129,24 @@ const columns = [
     label: "Modifier",
     renderCell: ({ evidence }) =>
       evidence.modifiers?.length > 0
-        ? evidence.modifiers.map((m) => (
+        ? evidence.modifiers.map(m => (
             <span key={m.id}>
-              <Link
-                external
-                to={`https://identifiers.org/ols/${m.id.replace("_", ":")}`}
-              >
+              <Link external to={`https://identifiers.org/ols/${m.id.replace("_", ":")}`}>
                 {m.name}
               </Link>
               <br />
             </span>
           ))
         : naLabel,
-    filterValue: (row) =>
-      row.evidence.modifiers?.map((m) => m.name).join() || naLabel,
-    exportValue: (row) =>
-      row.evidence.modifiers?.map((m) => m.name).join() || naLabel,
+    filterValue: row => row.evidence.modifiers?.map(m => m.name).join() || naLabel,
+    exportValue: row => row.evidence.modifiers?.map(m => m.name).join() || naLabel,
     // width: '9%',
   },
   {
     id: "sex",
     label: "Sex",
     renderCell: ({ evidence }) => _.capitalize(evidence.sex) || naLabel,
-    filterValue: (row) => row.evidence.sex || naLabel,
+    filterValue: row => row.evidence.sex || naLabel,
     // width: '9%',
   },
   {
@@ -179,25 +154,22 @@ const columns = [
     label: "Evidence",
     renderCell: ({ evidence }) =>
       evidence.evidenceType ? (
-        <Tooltip
-          title={evidenceTypeDescription[evidence.evidenceType?.toUpperCase()]}
-          showHelpIcon
-        >
+        <Tooltip title={evidenceTypeDescription[evidence.evidenceType?.toUpperCase()]} showHelpIcon>
           {evidence.evidenceType}
         </Tooltip>
       ) : (
         naLabel
       ),
-    filterValue: (row) => row.evidence.evidenceType || naLabel,
-    exportValue: (row) => row.evidence.evidenceType || naLabel,
+    filterValue: row => row.evidence.evidenceType || naLabel,
+    exportValue: row => row.evidence.evidenceType || naLabel,
     // width: '7%',
   },
   {
     id: "source",
     label: "Source",
     renderCell: ({ evidence }) => evidence.resource || naLabel,
-    filterValue: (row) => row.evidence.resource || naLabel,
-    exportValue: (row) => row.evidence.resource || naLabel,
+    filterValue: row => row.evidence.resource || naLabel,
+    exportValue: row => row.evidence.resource || naLabel,
     // width: '9%',
   },
   {
@@ -209,7 +181,7 @@ const columns = [
         return naLabel;
       }
       // parse references
-      const refs = evidence.references.map((r) => ({
+      const refs = evidence.references.map(r => ({
         url: r.toUpperCase().startsWith("PMID:")
           ? `https://europepmc.org/search?query=EXT_ID:${r.split(":").pop()}`
           : `https://hpo.jax.org/app/browse/disease/${r}`,
@@ -218,10 +190,8 @@ const columns = [
       }));
       return <TableDrawer entries={refs} />;
     },
-    filterValue: (row) =>
-      row.evidence.references?.map((r) => r).join() || naLabel,
-    exportValue: (row) =>
-      row.evidence.references?.map((r) => r).join() || naLabel,
+    filterValue: row => row.evidence.references?.map(r => r).join() || naLabel,
+    exportValue: row => row.evidence.references?.map(r => r).join() || naLabel,
     // width: '9%',
   },
 ];
@@ -246,8 +216,8 @@ function Body({ label: name, id: efoId, entity }) {
       renderBody={({ disease }) => {
         // process the data
         const rows = [];
-        disease.phenotypes.rows.forEach((p) =>
-          p.evidence.forEach((e) => {
+        disease.phenotypes.rows.forEach(p =>
+          p.evidence.forEach(e => {
             const p1 = { ...p };
             p1.evidence = e;
             rows.push(p1);

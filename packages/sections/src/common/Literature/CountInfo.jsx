@@ -1,11 +1,7 @@
 import { Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useRecoilValue } from "recoil";
-import {
-  litsCountState,
-  loadingEntitiesState,
-  tablePageSizeState,
-} from "./atoms";
+import { litsCountState, loadingEntitiesState, tablePageSizeState } from "./atoms";
 
 const useStyles = makeStyles(() => ({
   resultCount: {
@@ -20,8 +16,7 @@ function CountInfo() {
   const count = useRecoilValue(litsCountState);
   const loadingEntities = useRecoilValue(loadingEntitiesState);
 
-  if (loadingEntities)
-    return <div className={classes.resultCount}>Loading count...</div>;
+  if (loadingEntities) return <div className={classes.resultCount}>Loading count...</div>;
 
   return (
     <Typography variant="body2" className={classes.resultCount}>

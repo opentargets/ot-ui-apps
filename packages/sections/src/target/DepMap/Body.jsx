@@ -16,7 +16,7 @@ function Section({ id, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={(data) => {
+      renderBody={data => {
         return (
           <>
             <DepmapPlot data={data.target.depMapEssentiality} />

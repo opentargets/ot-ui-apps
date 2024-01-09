@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  Drawer,
-  Link as MuiLink,
-  IconButton,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Drawer, Link as MuiLink, IconButton, Paper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +7,7 @@ import { Tooltip, Link } from "ui";
 
 import { sentenceCase } from "../../utils/global";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   drawerLink: {
     cursor: "pointer",
     display: "inline-block",
@@ -66,11 +60,7 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
   return (
     <>
       <Tooltip title={biomarkerName}>
-        <MuiLink
-          className={classes.drawerLink}
-          onClick={() => toggleOpen()}
-          underline="none"
-        >
+        <MuiLink className={classes.drawerLink} onClick={() => toggleOpen()} underline="none">
           {biomarkerName}
         </MuiLink>
       </Tooltip>
@@ -91,11 +81,10 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
             <Typography variant="subtitle2" paragraph>
               Variant:
             </Typography>
-            {biomarkers.variant.map((variant) => (
+            {biomarkers.variant.map(variant => (
               <div key={variant.name} className={classes.biomarkerItem}>
                 <div>
-                  {variant.name}{" "}
-                  {variant.variantId ? `(ID: ${variant.variantId})` : null}
+                  {variant.name} {variant.variantId ? `(ID: ${variant.variantId})` : null}
                 </div>
                 {variant.functionalConsequenceId ? (
                   <Link
@@ -114,13 +103,10 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
             <Typography variant="subtitle2" paragraph>
               Gene expression:
             </Typography>
-            {biomarkers.geneExpression.map((expression) => (
+            {biomarkers.geneExpression.map(expression => (
               <div key={expression.name} className={classes.biomarkerItem}>
                 <div>{expression.name}</div>
-                <Link
-                  external
-                  to={`https://identifiers.org/${expression.id.id}`}
-                >
+                <Link external to={`https://identifiers.org/${expression.id.id}`}>
                   {expression.id.name}
                 </Link>
               </div>

@@ -17,7 +17,7 @@ function Summary({ definition }) {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={(data) =>
+      renderSummary={data =>
         data.similarEntities?.length > 0 ? <>Data available</> : <>no data</>
       }
     />

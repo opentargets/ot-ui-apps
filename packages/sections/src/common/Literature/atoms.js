@@ -7,8 +7,8 @@ import { europePmcBiblioSearchPOSTQuery } from "../../utils/urls";
 // ------------------------------------------
 // Helpers
 // ------------------------------------------
-export const parsePublications = (publications) =>
-  publications.map((pub) => {
+export const parsePublications = publications =>
+  publications.map(pub => {
     const row = {};
     row.source = pub.source;
     row.patentDetails = pub.patentDetails;
@@ -178,7 +178,7 @@ export const updateLiteratureState = selector({
 // ------------------------------------------
 
 const fetchLiteraturesFromPMC = async ({ baseUrl, requestOptions }) =>
-  fetch(baseUrl, requestOptions).then((response) => response.json());
+  fetch(baseUrl, requestOptions).then(response => response.json());
 
 export const literaturesEuropePMCQuery = selectorFamily({
   key: "literaturesEuropePMCQuery",
@@ -186,8 +186,7 @@ export const literaturesEuropePMCQuery = selectorFamily({
     ({ literaturesIds }) =>
     async () => {
       if (literaturesIds.length === 0) return [];
-      const { baseUrl, requestOptions } =
-        europePmcBiblioSearchPOSTQuery(literaturesIds);
+      const { baseUrl, requestOptions } = europePmcBiblioSearchPOSTQuery(literaturesIds);
       const response = await fetchLiteraturesFromPMC({
         baseUrl,
         requestOptions,
@@ -213,7 +212,7 @@ export const fetchSimilarEntities = ({
   endMonth = null,
 }) => {
   const entityNames = category.length === 0 ? null : category;
-  const ids = entities.map((c) => c.object.id);
+  const ids = entities.map(c => c.object.id);
   return client.query({
     query,
     variables: {

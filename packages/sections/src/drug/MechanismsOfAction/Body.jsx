@@ -20,14 +20,12 @@ const columns = [
   {
     id: "targets",
     label: "Human targets",
-    filterValue: (row) =>
-      row.targets.map((target) => target.approvedSymbol).join(" "),
-    exportValue: (row) =>
-      row.targets.map((target) => target.approvedSymbol).join(),
+    filterValue: row => row.targets.map(target => target.approvedSymbol).join(" "),
+    exportValue: row => row.targets.map(target => target.approvedSymbol).join(),
     renderCell: ({ targets }) => {
       if (!targets) return "non-human";
 
-      const targetList = targets.map((target) => ({
+      const targetList = targets.map(target => ({
         name: target.approvedSymbol,
         url: `/target/${target.id}`,
         group: "Human targets",
@@ -39,11 +37,9 @@ const columns = [
   {
     id: "references",
     label: "References",
-    filterValue: (row) =>
-      row.references.map((reference) => reference.source).join(" "),
-    exportValue: (row) =>
-      row.references.map((reference) => reference.source).join(),
-    renderCell: (row) =>
+    filterValue: row => row.references.map(reference => reference.source).join(" "),
+    exportValue: row => row.references.map(reference => reference.source).join(),
+    renderCell: row =>
       !row.references
         ? "n/a"
         : row.references.map((r, i) => (
@@ -79,7 +75,7 @@ function Body({ id: chemblId, label: name, entity }) {
           childMolecules={request.childMolecules || []}
         />
       )}
-      renderBody={(data) => {
+      renderBody={data => {
         const { rows } = data.drug.mechanismsOfAction;
 
         return (

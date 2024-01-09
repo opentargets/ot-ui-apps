@@ -19,7 +19,7 @@ const monthsBtwnDates = (startDate, endDate) =>
     0
   );
 
-const IOSSlider = withStyles((theme) => ({
+const IOSSlider = withStyles(theme => ({
   root: {
     color: theme.palette.primary.main,
     height: 2,
@@ -33,8 +33,7 @@ const IOSSlider = withStyles((theme) => ({
     marginTop: -10,
     marginLeft: -14,
     "&:focus, &:hover, &$active": {
-      boxShadow:
-        "0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)",
+      boxShadow: "0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)",
       // Reset on touch devices, it doesn't add specificity
       "@media (hover: none)": {
         boxShadow: iOSBoxShadow,
@@ -91,10 +90,7 @@ export function DateFilter() {
   } = useRecoilValue(literatureState);
 
   useEffect(() => {
-    const limit = monthsBtwnDates(
-      new Date(`${earliestPubYear}-01-01`),
-      new Date()
-    );
+    const limit = monthsBtwnDates(new Date(`${earliestPubYear}-01-01`), new Date());
     setNumberOfMonths(limit);
     setFilterDate([0, limit]);
   }, [earliestPubYear]);
@@ -103,7 +99,7 @@ export function DateFilter() {
     setFilterDate([0, numberOfMonths]);
   }, []);
 
-  const handleChange = async (values) => {
+  const handleChange = async values => {
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
       query,
@@ -138,12 +134,12 @@ export function DateFilter() {
     setLiteratureUpdate(update);
   };
 
-  const selectedDate = (value) => {
+  const selectedDate = value => {
     const from = new Date(earliestPubYear, 0, 1, 1, 1, 1, 1);
     return new Date(from.setMonth(from.getMonth() + value));
   };
 
-  const valueLabelFormat = (value) => {
+  const valueLabelFormat = value => {
     if (earliestPubYear) {
       const labelDate = selectedDate(value);
       return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;

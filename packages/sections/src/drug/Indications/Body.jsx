@@ -1,12 +1,6 @@
 import { useQuery } from "@apollo/client";
 
-import {
-  Link,
-  SectionItem,
-  DataTable,
-  PaginationActionsComplete,
-  TableDrawer,
-} from "ui";
+import { Link, SectionItem, DataTable, PaginationActionsComplete, TableDrawer } from "ui";
 import { sourceMap, phaseMap } from "../../constants";
 import { referenceUrls } from "../../utils/urls";
 
@@ -20,18 +14,13 @@ const columns = [
   {
     id: "indication",
     propertyPath: "disease.name",
-    renderCell: (d) => (
-      <Link to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>
-    ),
+    renderCell: d => <Link to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>,
     width: "38%",
   },
   {
     id: "therapeuticAreas",
-    renderCell: (d) => (
-      <TherapeuticAreasDrawer therapeuticAreas={d.disease.therapeuticAreas} />
-    ),
-    exportValue: (d) =>
-      d.disease.therapeuticAreas.map((therapeuticArea) => therapeuticArea.id),
+    renderCell: d => <TherapeuticAreasDrawer therapeuticAreas={d.disease.therapeuticAreas} />,
+    exportValue: d => d.disease.therapeuticAreas.map(therapeuticArea => therapeuticArea.id),
     width: "38%",
   },
   {
@@ -50,8 +39,8 @@ const columns = [
 
       const referenceList = [];
 
-      references.forEach((reference) => {
-        reference.ids.forEach((id) => {
+      references.forEach(reference => {
+        reference.ids.forEach(id => {
           referenceList.push({
             name: id,
             url: referenceUrls[reference.source](id),
@@ -83,7 +72,7 @@ function Body({ id: chemblId, label: name, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description name={name} />}
-      renderBody={(data) => {
+      renderBody={data => {
         const { rows } = data.drug.indications;
 
         return (

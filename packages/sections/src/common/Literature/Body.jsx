@@ -1,20 +1,11 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import {
-  useSetRecoilState,
-  useRecoilValue,
-  useResetRecoilState,
-  RecoilRoot,
-} from "recoil";
+import { useSetRecoilState, useRecoilValue, useResetRecoilState, RecoilRoot } from "recoil";
 import { SectionItem } from "ui";
 import PublicationsList from "./PublicationsList";
 import Description from "./Description";
-import {
-  literatureState,
-  updateLiteratureState,
-  fetchSimilarEntities,
-} from "./atoms";
+import { literatureState, updateLiteratureState, fetchSimilarEntities } from "./atoms";
 import Entities from "./Entities";
 import Category from "./Category";
 import CountInfo from "./CountInfo";
@@ -35,8 +26,7 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
   const resetLiteratureState = useResetRecoilState(literatureState);
 
   const bibliographyState = useRecoilValue(literatureState);
-  const { category, startYear, startMonth, endYear, endMonth } =
-    bibliographyState;
+  const { category, startYear, startMonth, endYear, endMonth } = bibliographyState;
 
   useEffect(
     () => {

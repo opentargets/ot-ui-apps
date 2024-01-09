@@ -10,7 +10,9 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={({ pharmacogenomics }) => `${pharmacogenomics.length} Pharmacogenomics Records`}
+      renderSummary={({ pharmacogenomics }) =>
+        `${pharmacogenomics.length} Pharmacogenomics Records`
+      }
     />
   );
 }

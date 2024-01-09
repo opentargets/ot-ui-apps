@@ -29,9 +29,7 @@ function Loader({ message = "", pageSize = 5 }) {
     >
       <CircularProgress size={60} />
       <Box mt={6}>
-        <Typography className={listComponentStyles.AccordionSubtitle}>
-          {message}
-        </Typography>
+        <Typography className={listComponentStyles.AccordionSubtitle}>{message}</Typography>
       </Box>
     </Box>
   );

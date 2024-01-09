@@ -1,15 +1,12 @@
 import { Link, Tooltip, PublicationsDrawer, DataTable, TableDrawer } from "ui";
 import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowAltCircleDown,
-  faArrowAltCircleUp,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowAltCircleDown, faArrowAltCircleUp } from "@fortawesome/free-solid-svg-icons";
 
 import SafetyStudiesDrawer from "./SafetyStudiesDrawer";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   blue: {
     color: theme.palette.primary.main,
   },
@@ -41,11 +38,7 @@ function getColumns(classes) {
       id: "event",
       label: "Safety event",
       renderCell: ({ event, eventId }) =>
-        eventId ? (
-          <Link to={`/disease/${eventId}`}>{event ?? naLabel}</Link>
-        ) : (
-          event ?? naLabel
-        ),
+        eventId ? <Link to={`/disease/${eventId}`}>{event ?? naLabel}</Link> : event ?? naLabel,
     },
     {
       id: "biosamples",
@@ -60,18 +53,14 @@ function getColumns(classes) {
       renderCell: ({ biosamples }) => {
         /* TODO: remove to handle only arrays */
         if (!biosamples) return "N/A";
-        const entries = biosamples.map(
-          ({ cellFormat, cellLabel, tissueLabel, tissueId }) => ({
-            name: cellFormat
-              ? `${cellFormat}${cellLabel ? ` (${cellLabel})` : ""}`
-              : tissueLabel,
-            url:
-              cellFormat || !tissueId
-                ? null
-                : `https://identifiers.org/${tissueId.replace("_", ":")}`,
-            group: cellFormat ? "Assay" : "Organ system",
-          })
-        );
+        const entries = biosamples.map(({ cellFormat, cellLabel, tissueLabel, tissueId }) => ({
+          name: cellFormat ? `${cellFormat}${cellLabel ? ` (${cellLabel})` : ""}` : tissueLabel,
+          url:
+            cellFormat || !tissueId
+              ? null
+              : `https://identifiers.org/${tissueId.replace("_", ":")}`,
+          group: cellFormat ? "Assay" : "Organ system",
+        }));
 
         return (
           <TableDrawer
@@ -87,34 +76,17 @@ function getColumns(classes) {
       label: "Dosing effects",
       renderCell: ({ effects }) => {
         const circleUpData = effects
-          ? effects.find(
-              (effect) =>
-                effect.direction === "Activation/Increase/Upregulation"
-            )
+          ? effects.find(effect => effect.direction === "Activation/Increase/Upregulation")
           : null;
         const circleDownData = effects
-          ? effects.find(
-              (effect) =>
-                effect.direction === "Inhibition/Decrease/Downregulation"
-            )
+          ? effects.find(effect => effect.direction === "Inhibition/Decrease/Downregulation")
           : null;
         return (
           <>
             {circleUpData ? (
-              <Tooltip
-                title={
-                  <EffectTooltipContent
-                    classes={classes}
-                    effect={circleUpData}
-                  />
-                }
-              >
+              <Tooltip title={<EffectTooltipContent classes={classes} effect={circleUpData} />}>
                 <span className={classes.circleUp}>
-                  <FontAwesomeIcon
-                    className={classes.blue}
-                    icon={faArrowAltCircleUp}
-                    size="lg"
-                  />
+                  <FontAwesomeIcon className={classes.blue} icon={faArrowAltCircleUp} size="lg" />
                 </span>
               </Tooltip>
             ) : (
@@ -125,28 +97,13 @@ function getColumns(classes) {
               />
             )}
             {circleDownData ? (
-              <Tooltip
-                title={
-                  <EffectTooltipContent
-                    classes={classes}
-                    effect={circleDownData}
-                  />
-                }
-              >
+              <Tooltip title={<EffectTooltipContent classes={classes} effect={circleDownData} />}>
                 <span>
-                  <FontAwesomeIcon
-                    className={classes.blue}
-                    icon={faArrowAltCircleDown}
-                    size="lg"
-                  />
+                  <FontAwesomeIcon className={classes.blue} icon={faArrowAltCircleDown} size="lg" />
                 </span>
               </Tooltip>
             ) : (
-              <FontAwesomeIcon
-                className={classes.grey}
-                icon={faArrowAltCircleDown}
-                size="lg"
-              />
+              <FontAwesomeIcon className={classes.grey} icon={faArrowAltCircleDown} size="lg" />
             )}
           </>
         );
@@ -166,10 +123,7 @@ function getColumns(classes) {
       label: "Source",
       renderCell: ({ datasource, literature, url }) =>
         literature ? (
-          <PublicationsDrawer
-            entries={[{ name: literature }]}
-            customLabel={datasource}
-          />
+          <PublicationsDrawer entries={[{ name: literature }]} customLabel={datasource} />
         ) : (
           <Link external to={url}>
             {datasource}

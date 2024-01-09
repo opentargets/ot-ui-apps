@@ -1,11 +1,11 @@
-import { useQuery } from '@apollo/client';
-import { SectionItem } from 'ui';
+import { useQuery } from "@apollo/client";
+import { SectionItem } from "ui";
 
-import { definition } from '.';
-import Description from './Description';
-import PhenotypesTable from './PhenotypesTable';
+import { definition } from ".";
+import Description from "./Description";
+import PhenotypesTable from "./PhenotypesTable";
 
-import MOUSE_PHENOTYPES_QUERY from './MousePhenotypes.gql';
+import MOUSE_PHENOTYPES_QUERY from "./MousePhenotypes.gql";
 
 function Body({ id, label: symbol, entity }) {
   const variables = { ensemblId: id };

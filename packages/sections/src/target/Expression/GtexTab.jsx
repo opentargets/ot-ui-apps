@@ -4,8 +4,8 @@ import { DownloadSvgPlot } from "ui";
 
 import GtexVariability from "./GtexVariability";
 
-const transformData = (data) =>
-  data.map((d) => {
+const transformData = data =>
+  data.map(d => {
     // d3 requires for the array of values to be sorted before using median and quantile
     d.data.sort((a, b) => a - b);
     const median = d3Median(d.data);
@@ -16,7 +16,7 @@ const transformData = (data) =>
     const iqr = q3 - q1; // interquartile range
 
     // find the outliers and not outliers
-    d.data.forEach((item) => {
+    d.data.forEach(item => {
       if (item < q1 - 1.5 * iqr || item > q3 + 1.5 * iqr) {
         outliers.push(item);
       } else {
@@ -63,10 +63,7 @@ function GtexTab({ symbol, data }) {
   const gtexVariability = useRef();
 
   return (
-    <DownloadSvgPlot
-      svgContainer={gtexVariability}
-      filenameStem={`${symbol}-gtex`}
-    >
+    <DownloadSvgPlot svgContainer={gtexVariability} filenameStem={`${symbol}-gtex`}>
       <GtexVariability data={data.target.expressions} ref={gtexVariability} />
     </DownloadSvgPlot>
   );

@@ -1,30 +1,22 @@
 /* eslint-disable */
-import { memo, useRef, useEffect } from 'react';
-import { v1 } from 'uuid';
+import { memo, useRef, useEffect } from "react";
+import { v1 } from "uuid";
 
-import '@swissprot/swissbiopics-visualizer';
-import config from '../../config';
+import "@swissprot/swissbiopics-visualizer";
+import config from "../../config";
 
-const shapes = [
-  'path',
-  'circle',
-  'ellipse',
-  'polygon',
-  'rect',
-  'polyline',
-  'line',
-];
-const shapesSelector = shapes.join(', ');
+const shapes = ["path", "circle", "ellipse", "polygon", "rect", "polyline", "line"];
+const shapesSelector = shapes.join(", ");
 const reMpPart = /(mp|part)_(?<id>\w+)/;
 
-const canonicalName = 'sib-swissbiopics-sl';
+const canonicalName = "sib-swissbiopics-sl";
 const CanonicalDefinition = customElements.get(canonicalName);
 
 // Note that these are without leading zeros eg: GO1 (and not GO0000001) so make sure
 // the correct classnames are supplied in SubcellularLocationGOView
 const getGoTermClassNames = locationGroup =>
   Array.from(locationGroup.classList.values())
-    .filter(className => className.startsWith('GO'))
+    .filter(className => className.startsWith("GO"))
     .map(goId => `.${goId}`);
 
 const getUniProtTextSelectors = subcellularPresentSVG => [
@@ -56,10 +48,7 @@ const SwissbioViz = memo(({ locationIds, taxonId, sourceId, children }) => {
           const { cssRules } = styleSheet;
           for (let index = 0; index < cssRules.length; index += 1) {
             const cssRule = cssRules[index];
-            if (
-              cssRule instanceof CSSStyleRule &&
-              cssRule.selectorText === selectorText
-            ) {
+            if (cssRule instanceof CSSStyleRule && cssRule.selectorText === selectorText) {
               styleSheet.deleteRule(index);
               return;
             }
@@ -77,21 +66,21 @@ const SwissbioViz = memo(({ locationIds, taxonId, sourceId, children }) => {
         if (image?.id) {
           selectors.push(`#${image.id}term`);
         }
-        return this.querySelectorAll(selectors.join(','));
+        return this.querySelectorAll(selectors.join(","));
       }
 
       highLight(text, image, selector) {
         if (!this.removedCSSRules) {
           // Remove the .lookedAt CSS rule to avoid the default styling
-          this.deleteCSSRule('.lookedAt');
+          this.deleteCSSRule(".lookedAt");
           // Undo hard-coded cytoskeleton rule
-          this.deleteCSSRule('#SL0090 .lookedAt');
+          this.deleteCSSRule("#SL0090 .lookedAt");
           this.removedCSSRules = true;
         }
         super.highLight(text, image, selector);
         // Add "lookedAt" classname to image SVG and text
         for (const highlight of this.getHighlights(image)) {
-          highlight?.classList.add('lookedAt');
+          highlight?.classList.add("lookedAt");
         }
       }
 
@@ -100,7 +89,7 @@ const SwissbioViz = memo(({ locationIds, taxonId, sourceId, children }) => {
       removeHiglight(text, image, selector) {
         // Remove "lookedAt" classname from image SVG and text
         for (const highlight of this.getHighlights(image)) {
-          highlight?.classList.remove('lookedAt');
+          highlight?.classList.remove("lookedAt");
         }
         super.removeHiglight(text, image, selector);
       }
@@ -137,13 +126,13 @@ const SwissbioViz = memo(({ locationIds, taxonId, sourceId, children }) => {
           `;
 
       // add styles
-      const style = document.createElement('style');
+      const style = document.createElement("style");
       style.innerText = css;
       shadowRoot?.appendChild(style);
 
       // add a slot to inject content
-      const slot = document.createElement('slot');
-      const terms = shadowRoot?.querySelector('.terms');
+      const slot = document.createElement("slot");
+      const terms = shadowRoot?.querySelector(".terms");
       terms?.appendChild(slot);
 
       // This finds all subcellular location SVGs for which we have a location
@@ -158,29 +147,23 @@ const SwissbioViz = memo(({ locationIds, taxonId, sourceId, children }) => {
           const locationText = instance?.querySelector(textSelector);
 
           if (locationText) {
-            locationText.classList.add('inpicture');
-            const locationSVG = shadowRoot?.querySelector(
-              `#${subcellularPresentSVG.id}`
-            );
+            locationText.classList.add("inpicture");
+            const locationSVG = shadowRoot?.querySelector(`#${subcellularPresentSVG.id}`);
             // TODO: need to remove event listeners on unmount. Will leave for now until
             // to see what changes are made to @swissprot/swissbiopics-visualizer
-            locationText.addEventListener('mouseenter', () => {
+            locationText.addEventListener("mouseenter", () => {
               instance?.highLight(locationText, locationSVG, shapesSelector);
             });
-            locationText.addEventListener('mouseleave', () => {
-              instance?.removeHiglight(
-                locationText,
-                locationSVG,
-                shapesSelector
-              );
+            locationText.addEventListener("mouseleave", () => {
+              instance?.removeHiglight(locationText, locationSVG, shapesSelector);
             });
           }
         }
       });
     };
-    shadowRoot?.addEventListener('svgloaded', onSvgLoaded);
+    shadowRoot?.addEventListener("svgloaded", onSvgLoaded);
     return () => {
-      shadowRoot?.removeEventListener('svgloaded', onSvgLoaded);
+      shadowRoot?.removeEventListener("svgloaded", onSvgLoaded);
     };
   }, [locationIds]);
   function Instance(props) {

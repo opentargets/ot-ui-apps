@@ -26,7 +26,7 @@ function getTextWidth(text, fontSize, fontFace) {
 
 function getLongestId(data) {
   let longestId = "";
-  data.forEach((d) => {
+  data.forEach(d => {
     if (d.tissueSiteDetailId.length > longestId.length) {
       longestId = d.tissueSiteDetailId;
     }
@@ -36,11 +36,9 @@ function getLongestId(data) {
 
 function buildTooltip(X, tooltipObject, data) {
   return Object.keys(tooltipObject)
-    .map((field) => {
+    .map(field => {
       const value =
-        data[field] === null
-          ? "N/A"
-          : data[field].toFixed(tooltipObject[field].roundDigits);
+        data[field] === null ? "N/A" : data[field].toFixed(tooltipObject[field].roundDigits);
       return (
         `<tspan x='${X}' dy='1.2em' style="font-weight: bold;">` +
         `${tooltipObject[field].label}: </tspan>` +
@@ -73,17 +71,15 @@ function GtexVariability({ data }) {
     const data = propsData.slice().sort((a, b) => b.median - a.median);
     const height = data.length * boxHeight + margin.top + margin.bottom;
     const rectHeight = boxHeight - 2 * boxPadding;
-    const xMax = max(data, (d) => max(d.outliers));
+    const xMax = max(data, d => max(d.outliers));
 
     x.domain([0, xMax]).range([0, width - margin.left - margin.right]);
-    y.domain(data.map((d) => d.tissueSiteDetailId.replace(/_/g, " "))).range([
+    y.domain(data.map(d => d.tissueSiteDetailId.replace(/_/g, " "))).range([
       0,
       height - margin.top - margin.bottom,
     ]);
 
-    colour
-      .domain(data.map((d) => d.tissueSiteDetailId))
-      .range(schemeCategory10);
+    colour.domain(data.map(d => d.tissueSiteDetailId)).range(schemeCategory10);
 
     const tooltipTextFields = {
       lowerLimit: {
@@ -135,23 +131,20 @@ function GtexVariability({ data }) {
 
     boxContainer
       .append("line")
-      .attr("x1", (d) => x(d.lowerLimit))
-      .attr("x2", (d) => x(d.upperLimit))
-      .attr("y1", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")))
-      .attr("y2", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")))
+      .attr("x1", d => x(d.lowerLimit))
+      .attr("x2", d => x(d.upperLimit))
+      .attr("y1", d => y(d.tissueSiteDetailId.replace(/_/g, " ")))
+      .attr("y2", d => y(d.tissueSiteDetailId.replace(/_/g, " ")))
       .attr("stroke", theme.palette.grey[700]);
 
     boxContainer
       .append("rect")
-      .attr("x", (d) => x(d.q1))
-      .attr(
-        "y",
-        (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2
-      )
-      .attr("width", (d) => x(d.q3) - x(d.q1))
+      .attr("x", d => x(d.q1))
+      .attr("y", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
+      .attr("width", d => x(d.q3) - x(d.q1))
       .attr("height", rectHeight)
-      .attr("fill", (d) => colour(d.tissueSiteDetailId))
-      .on("mouseover", (d) => {
+      .attr("fill", d => colour(d.tissueSiteDetailId))
+      .on("mouseover", d => {
         let X =
           parseFloat(select(this).attr("x")) +
           parseFloat(select(this).attr("width")) +
@@ -160,9 +153,7 @@ function GtexVariability({ data }) {
 
         tooltipText
           .attr("y", Y)
-          .html(
-            buildTooltip(X + tooltipSettings.offsetText, tooltipTextFields, d)
-          )
+          .html(buildTooltip(X + tooltipSettings.offsetText, tooltipTextFields, d))
           .style("visibility", "visible");
 
         const bbox = tooltip.select("text").node().getBBox();
@@ -172,9 +163,7 @@ function GtexVariability({ data }) {
           X = width - margin.right - bbox.width - margin.left;
           // re-build tooltip string; this is necessary because the X coordinate
           // is part of the tooltip string
-          tooltipText.html(
-            buildTooltip(X + tooltipSettings.offsetText, tooltipTextFields, d)
-          );
+          tooltipText.html(buildTooltip(X + tooltipSettings.offsetText, tooltipTextFields, d));
         }
 
         // keep tooltip box within SVG (Y axis)
@@ -197,59 +186,41 @@ function GtexVariability({ data }) {
 
     boxContainer
       .append("line")
-      .attr("x1", (d) => x(d.median))
-      .attr("x2", (d) => x(d.median))
-      .attr(
-        "y1",
-        (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2
-      )
-      .attr(
-        "y2",
-        (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2
-      )
+      .attr("x1", d => x(d.median))
+      .attr("x2", d => x(d.median))
+      .attr("y1", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
+      .attr("y2", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2)
       .attr("stroke", theme.palette.grey[700])
       .attr("stroke-width", 2);
 
     boxContainer
       .append("line")
-      .attr("x1", (d) => x(d.lowerLimit))
-      .attr("x2", (d) => x(d.lowerLimit))
-      .attr(
-        "y1",
-        (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2
-      )
-      .attr(
-        "y2",
-        (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2
-      )
+      .attr("x1", d => x(d.lowerLimit))
+      .attr("x2", d => x(d.lowerLimit))
+      .attr("y1", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
+      .attr("y2", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2)
       .attr("stroke", theme.palette.grey[700]);
 
     boxContainer
       .append("line")
-      .attr("x1", (d) => x(d.upperLimit))
-      .attr("x2", (d) => x(d.upperLimit))
-      .attr(
-        "y1",
-        (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2
-      )
-      .attr(
-        "y2",
-        (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2
-      )
+      .attr("x1", d => x(d.upperLimit))
+      .attr("x2", d => x(d.upperLimit))
+      .attr("y1", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
+      .attr("y2", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2)
       .attr("stroke", theme.palette.grey[700]);
 
     boxContainer
       .selectAll("circle")
-      .data((d) =>
-        d.outliers.map((outlier) => ({
+      .data(d =>
+        d.outliers.map(outlier => ({
           tissueSiteDetailId: d.tissueSiteDetailId,
           outlier,
         }))
       )
       .join("circle")
       .attr("r", outlierRadius)
-      .attr("cx", (d) => x(d.outlier))
-      .attr("cy", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")))
+      .attr("cx", d => x(d.outlier))
+      .attr("cy", d => y(d.tissueSiteDetailId.replace(/_/g, " ")))
       .attr("fill", "none")
       .attr("stroke", theme.palette.grey[700]);
 
@@ -277,18 +248,9 @@ function GtexVariability({ data }) {
         ref={boxPlotRef}
         transform={`translate(${margin.left}, ${margin.top})`}
       />
-      <g
-        ref={xAxisRef}
-        transform={`translate(${margin.left}, ${margin.top})`}
-      />
-      <g
-        ref={yAxisRef}
-        transform={`translate(${margin.left}, ${margin.top})`}
-      />
-      <g
-        ref={tooltipRef}
-        transform={`translate(${margin.left}, ${margin.top})`}
-      />
+      <g ref={xAxisRef} transform={`translate(${margin.left}, ${margin.top})`} />
+      <g ref={yAxisRef} transform={`translate(${margin.left}, ${margin.top})`} />
+      <g ref={tooltipRef} transform={`translate(${margin.left}, ${margin.top})`} />
     </svg>
   );
 }

@@ -6,7 +6,7 @@ import Description from "./Description";
 import DRUG_WARNINGS_QUERY from "./DrugWarningsQuery.gql";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 
-const replaceSemicolonWithUnderscore = (id) => id.replace(":", "_");
+const replaceSemicolonWithUnderscore = id => id.replace(":", "_");
 
 const columns = [
   {
@@ -20,9 +20,7 @@ const columns = [
       if (efoId)
         return (
           <Tooltip title={`Description: ${description}`} showHelpIcon>
-            <Link to={`/disease/${replaceSemicolonWithUnderscore(efoId)}`}>
-              {efoTerm || efoId}
-            </Link>
+            <Link to={`/disease/${replaceSemicolonWithUnderscore(efoId)}`}>{efoTerm || efoId}</Link>
           </Tooltip>
         );
       return efoTerm || description || naLabel;
@@ -34,12 +32,7 @@ const columns = [
     renderCell: ({ toxicityClass, efoIdForWarningClass, description }) => {
       if (efoIdForWarningClass)
         return (
-          <Link
-            external
-            to={`/disease/${replaceSemicolonWithUnderscore(
-              efoIdForWarningClass
-            )}`}
-          >
+          <Link external to={`/disease/${replaceSemicolonWithUnderscore(efoIdForWarningClass)}`}>
             {toxicityClass || efoIdForWarningClass}
           </Link>
         );
@@ -59,7 +52,7 @@ const columns = [
       const sources = new Set(); // used to collect unique sources
       const refs = [];
 
-      references.forEach((ref) => {
+      references.forEach(ref => {
         sources.add(ref.source); // add source to set
         refs.push({
           // create new entry object
@@ -71,9 +64,7 @@ const columns = [
 
       const message = Array.from(sources).join(", ");
 
-      return (
-        <TableDrawer entries={refs} showSingle={false} message={message} />
-      );
+      return <TableDrawer entries={refs} showSingle={false} message={message} />;
     },
   },
 ];
