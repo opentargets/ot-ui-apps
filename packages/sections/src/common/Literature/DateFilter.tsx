@@ -37,7 +37,8 @@ export function DateFilter() {
 
   useEffect(() => {
     if (earliestPubYear) {
-      const limit = monthsBtwnDates(new Date(`${earliestPubYear}-01-01`), new Date());
+      const earliestYearMonth = `${earliestPubYear}-01-01`;
+      const limit = monthsBtwnDates(new Date(earliestYearMonth), new Date());
       setNumberOfMonths(limit);
       setFilterDate([0, limit]);
     }
