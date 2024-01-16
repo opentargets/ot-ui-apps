@@ -21,7 +21,7 @@ const flattenObj = ob => {
   const result = {};
 
   Object.entries(ob).forEach(([key, value]) => {
-    if (typeof value === "object" && !Array.isArray(value)) {
+    if (value && typeof value === "object" && !Array.isArray(value)) {
       const temp = flattenObj(value);
       Object.entries(temp).forEach(([nestedKey, nestedValue]) => {
         result[nestedKey] = nestedValue;
