@@ -37,11 +37,11 @@ const transformData = (data) =>
 
 export async function getData(symbol) {
   try {
-    const urlGene = `https://gtexportal.org/rest/v1/reference/gene?format=json&geneId=${symbol}`;
+    const urlGene = `https://gtexportal.org/api/v2/reference/gene?format=json&geneId=${symbol}`;
     const resGene = await fetch(urlGene);
     const rawGene = await resGene.json();
-    const { gencodeId } = rawGene.gene[0];
-    const urlData = `https://gtexportal.org/rest/v1/expression/geneExpression?gencodeId=${gencodeId}`;
+    const { gencodeId } = rawGene.data[0];
+    const urlData = `https://gtexportal.org/api/v2/expression/geneExpression?gencodeId=${gencodeId}`;
     const resData = await fetch(urlData);
     const rawData = await resData.json();
     // TODO:
@@ -49,7 +49,7 @@ export async function getData(symbol) {
     // Ideally when switching tabs we don't want to check and hide the widget, so this should be handled differently
     const data = {
       target: {
-        expressions: transformData(rawData.geneExpression),
+        expressions: transformData(rawData.data),
       },
     };
 
