@@ -14,7 +14,7 @@ const client = new ApolloClient({
         keyFields: [],
       },
       MechanismsOfAction: {
-        keyFields: [],
+        keyFields: ["rows"],
       },
       Hallmarks: {
         keyFields: [],

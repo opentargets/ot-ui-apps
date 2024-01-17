@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@mui/styles";
 import {
   Link,
@@ -10,12 +10,12 @@ import {
   useCursorBatchDownloader,
   getComparator,
   getPage,
+  ConfigurationContext,
 } from "ui";
 import { defaultRowsPerPageOptions, phaseMap, sourceMap, naLabel } from "../../constants";
 import { dataTypesMap } from "../../dataTypes";
 import Description from "./Description";
 import { definition } from ".";
-import client from "../../client";
 
 import CHEMBL_QUERY from "./ChemblQuery.gql";
 
@@ -232,18 +232,6 @@ function getColumns(classes) {
   ];
 }
 
-function fetchData({ ensemblId, efoId, cursor, size }) {
-  return client.query({
-    query: CHEMBL_QUERY,
-    variables: {
-      ensemblId,
-      efoId,
-      cursor,
-      size,
-    },
-  });
-}
-
 function Body({ id, label, entity }) {
   const { ensgId: ensemblId, efoId } = id;
   const [initialLoading, setInitialLoading] = useState(true);
@@ -255,6 +243,7 @@ function Body({ id, label, entity }) {
   const [size, setPageSize] = useState(10);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
+  const { client } = useContext(ConfigurationContext);
 
   const classes = useStyles();
   const columns = getColumns(classes);
@@ -332,6 +321,18 @@ function Body({ id, label, entity }) {
 
   if (sortColumn) {
     processedRows.sort(getComparator(columns, sortOrder, sortColumn));
+  }
+
+  function fetchData({ ensemblId, efoId, cursor, size }) {
+    return client.query({
+      query: CHEMBL_QUERY,
+      variables: {
+        ensemblId,
+        efoId,
+        cursor,
+        size,
+      },
+    });
   }
 
   return (
