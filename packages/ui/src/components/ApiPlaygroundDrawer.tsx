@@ -102,4 +102,5 @@ function ApiPlaygroundDrawer({ query, variables }: ApiPlaygroundDrawerProps) {
     </>
   );
 }
+
 export default ApiPlaygroundDrawer;

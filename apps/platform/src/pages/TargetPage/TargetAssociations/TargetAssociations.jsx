@@ -14,8 +14,7 @@ import {
   DataUploader,
 } from "../../../components/AssociationsToolkit";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
-import CopyUrlButton from "../../../components/AssociationsToolkit/CopyUrlButton";
-import ApiPlaygroundDrawer from "ui/src/components/ApiPlaygroundDrawer";
+import { ApiPlaygroundDrawer } from "ui";
 
 function AssociationsWrapper() {
   const {

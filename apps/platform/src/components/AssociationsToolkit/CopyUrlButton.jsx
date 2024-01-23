@@ -26,7 +26,6 @@ function CopyUrlButton() {
     <>
       <Tooltip placement="bottom" title="Copy URL. Data sources controls not included">
         <IconButton
-          // variant="text"
           onClick={() => {
             setUrlSnackbar(true);
             navigator.clipboard.writeText(window.location.href);
