@@ -15,9 +15,33 @@ import {
 } from "../../../components/AssociationsToolkit";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
 import CopyUrlButton from "../../../components/AssociationsToolkit/CopyUrlButton";
+import ApiPlaygroundDrawer from "ui/src/components/ApiPlaygroundDrawer";
 
 function AssociationsWrapper() {
-  const { initialLoading, id } = useContext(AssociationsContext);
+  const {
+    initialLoading,
+    id,
+    pagination,
+    searhFilter,
+    sorting,
+    enableIndirect,
+    dataSourcesWeights,
+    entity,
+    dataSourcesRequired,
+  } = useContext(AssociationsContext);
+
+  const variables = {
+    id,
+    index: pagination.pageIndex,
+    size: pagination.pageSize,
+    filter: searhFilter,
+    sortBy: sorting[0].id,
+    enableIndirect,
+    datasources: dataSourcesWeights,
+    entity,
+    aggregationFilters: dataSourcesRequired,
+  };
+
   if (initialLoading) return <AotFLoader />;
 
   return (
@@ -33,6 +57,10 @@ function AssociationsWrapper() {
             <Divider orientation="vertical" />
             <DataDownloader fileStem={`OT-${id}-associated-diseases`} />
             <CopyUrlButton />
+            <ApiPlaygroundDrawer
+              query={TARGET_ASSOCIATIONS_QUERY.loc.source.body}
+              variables={variables}
+            />
           </OptionsControlls>
         </Box>
         <Box></Box>

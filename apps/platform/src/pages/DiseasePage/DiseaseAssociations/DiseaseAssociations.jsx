@@ -21,8 +21,7 @@ function AssociationsWrapper() {
   const {
     initialLoading,
     id,
-    pageIndex,
-    pageSize,
+    pagination,
     searhFilter,
     sorting,
     enableIndirect,
@@ -33,8 +32,8 @@ function AssociationsWrapper() {
 
   const variables = {
     id,
-    index: pageIndex,
-    size: pageSize,
+    index: pagination.pageIndex,
+    size: pagination.pageSize,
     filter: searhFilter,
     sortBy: sorting[0].id,
     enableIndirect,
@@ -42,8 +41,6 @@ function AssociationsWrapper() {
     entity,
     aggregationFilters: dataSourcesRequired,
   };
-
-  console.log(DISEASE_ASSOCIATIONS_QUERY);
 
   if (initialLoading) return <AotFLoader />;
 
@@ -60,13 +57,13 @@ function AssociationsWrapper() {
             <Divider orientation="vertical" />
             <DataDownloader fileStem={`OT-${id}-associated-targets`} />
             <CopyUrlButton />
+            <ApiPlaygroundDrawer
+              query={DISEASE_ASSOCIATIONS_QUERY.loc.source.body}
+              variables={variables}
+            />
           </OptionsControlls>
         </Box>
         <Box>
-          <ApiPlaygroundDrawer
-            query={DISEASE_ASSOCIATIONS_QUERY.loc.source.body}
-            variables={variables}
-          />
           <TargetPrioritisationSwitch />
         </Box>
       </ControlsSection>

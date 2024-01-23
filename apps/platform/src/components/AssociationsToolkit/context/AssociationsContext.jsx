@@ -211,8 +211,6 @@ function AssociationsProvider({ children, entity, id, query }) {
     pinnedCount,
     pinExpanded,
     pinnedEntries,
-    pageIndex,
-    pageSize,
     resetToInitialPagination,
     setPinnedEntries,
     setPinExpanded,
