@@ -14,7 +14,6 @@ import {
   DataUploader,
 } from "../../../components/AssociationsToolkit";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
-import CopyUrlButton from "../../../components/AssociationsToolkit/CopyUrlButton";
 import ApiPlaygroundDrawer from "ui/src/components/ApiPlaygroundDrawer";
 
 function AssociationsWrapper() {
