@@ -1,6 +1,6 @@
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Slide, Snackbar } from "@mui/material";
+import { IconButton, Slide, Snackbar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useState } from "react";
 import { Tooltip } from "ui";
@@ -25,16 +25,15 @@ function CopyUrlButton() {
   return (
     <>
       <Tooltip placement="bottom" title="Copy URL. Data sources controls not included">
-        <Button
-          sx={{ mr: theme => theme.spacing(1) }}
-          variant="outlined"
+        <IconButton
+          // variant="text"
           onClick={() => {
             setUrlSnackbar(true);
             navigator.clipboard.writeText(window.location.href);
           }}
         >
-          <FontAwesomeIcon icon={faLink} />
-        </Button>
+          <FontAwesomeIcon size="xs" icon={faLink} />
+        </IconButton>
       </Tooltip>
 
       <Snackbar

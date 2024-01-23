@@ -56,7 +56,6 @@ function AssociationsWrapper() {
             </PrivateWrapper>
             <Divider orientation="vertical" />
             <DataDownloader fileStem={`OT-${id}-associated-diseases`} />
-            <CopyUrlButton />
             <ApiPlaygroundDrawer
               query={TARGET_ASSOCIATIONS_QUERY.loc.source.body}
               variables={variables}

@@ -16,6 +16,7 @@ const styles = makeStyles(theme => ({
   container: {
     width: "80%",
     backgroundColor: theme.palette.grey[300],
+    overflowY: "hidden !important",
   },
   paper: {
     margin: "1.5rem",
@@ -52,8 +53,6 @@ const GraphiQL = lazy(() =>
 );
 
 function ApiPlaygroundDrawer({ query, variables }) {
-  console.log("ApiPlaygroundDrawer -> variables", variables);
-  console.log("ApiPlaygroundDrawer -> query", query);
   const classes = styles();
   const [open, setOpen] = useState(false);
 
