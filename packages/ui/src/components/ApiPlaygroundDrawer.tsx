@@ -1,6 +1,6 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, Drawer, Grid, IconButton, Paper, Typography } from "@mui/material";
+import { Box, Button, Drawer, Grid, IconButton, Paper } from "@mui/material";
 
 import Link from "./Link";
 import { KeyboardEvent, Suspense, lazy, useState } from "react";
