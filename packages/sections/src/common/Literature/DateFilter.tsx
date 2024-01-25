@@ -7,6 +7,26 @@ import {
   loadingEntitiesState,
   updateLiteratureState,
 } from "./atoms";
+import { styled } from "@mui/material/styles";
+
+const OTSlider = styled(Slider)({
+  root: {
+    padding: "0 10px !important",
+  },
+  mark: {
+    backgroundColor: "#b8b8b8",
+    width: 10,
+    height: 1,
+    marginLeft: -4,
+  },
+  valueLabel: {
+    zIndex: "9999",
+  },
+});
+
+const DateIndicator = styled("span")({
+  width: 65,
+});
 
 const monthsBtwnDates = (startDate: Date, endDate: Date) =>
   Math.max(
@@ -101,9 +121,9 @@ export function DateFilter() {
     return new Date(from.setMonth(from.getMonth() + value));
   };
 
-  const valueLabelFormat = (value: number) => {
+  const valueLabelFormat = (value: number | number[]) => {
     if (earliestPubYear) {
-      const labelDate = selectedDate(value);
+      const labelDate = selectedDate(value as number);
       return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;
     }
     return value;
@@ -129,39 +149,43 @@ export function DateFilter() {
     }
   };
 
+  const castedFilter = filterDate as number[];
+
   return (
     <div
       style={{
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        marginRight: 50,
+        marginTop: 20,
+        marginBottom: 20,
       }}
     >
       <InputLabel id="date-filter-demo">Date Filter:</InputLabel>
       <FormGroup>
-        <FormControl style={{ marginLeft: 35, flex: 1 }}>
-          <Slider
-            style={{ width: 400 }}
+        <FormControl
+          style={{
+            marginLeft: 20,
+            flex: 1,
+            display: "flex",
+            flexDirection: "row",
+            gap: 12,
+            alignItems: "center",
+          }}
+        >
+          <DateIndicator>{valueLabelFormat(castedFilter[0])}</DateIndicator>
+          <OTSlider
+            size="small"
+            style={{ width: 275 }}
             value={filterDate}
-            valueLabelDisplay="on"
+            valueLabelDisplay="auto"
             onChange={handleDateRangeChange}
             onChangeCommitted={handleDateRangeChangeCommitted}
             aria-labelledby="range-slider"
             max={numberOfMonths - 1}
-            sx={{
-              "& .MuiSlider-thumb:nth-of-type(odd) [aria-hidden]": {
-                transform: "translate(0%, 120%)",
-              },
-              "& .MuiSlider-valueLabel:before": {
-                backgroundColor: "transparent",
-              },
-              "& .MuiSlider-valueLabel:after": {
-                backgroundColor: "transparent",
-              },
-            }}
             valueLabelFormat={valueLabelFormat}
           />
+          <DateIndicator>{valueLabelFormat(castedFilter[1])}</DateIndicator>
         </FormControl>
       </FormGroup>
     </div>

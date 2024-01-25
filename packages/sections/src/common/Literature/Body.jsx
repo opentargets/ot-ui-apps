@@ -1,43 +1,23 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import {
-  useSetRecoilState,
-  useRecoilValue,
-  useResetRecoilState,
-  RecoilRoot,
-} from "recoil";
+import { useSetRecoilState, useRecoilValue, useResetRecoilState, RecoilRoot } from "recoil";
 import { SectionItem } from "ui";
 import PublicationsList from "./PublicationsList";
 import Description from "./Description";
-import {
-  literatureState,
-  updateLiteratureState,
-  fetchSimilarEntities,
-} from "./atoms";
+import { literatureState, updateLiteratureState, fetchSimilarEntities } from "./atoms";
 import Entities from "./Entities";
 import Category from "./Category";
 import CountInfo from "./CountInfo";
 import { DateFilter } from "./DateFilter";
 
-const useStyles = makeStyles(() => ({
-  controlsContainer: {
-    display: "flex",
-    alignItems: "center",
-    margin: "20px 0",
-  },
-}));
-
 function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
-  const classes = useStyles();
   const [requestObj, setRequestObj] = useState({});
 
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
   const resetLiteratureState = useResetRecoilState(literatureState);
 
   const bibliographyState = useRecoilValue(literatureState);
-  const { category, startYear, startMonth, endYear, endMonth } =
-    bibliographyState;
+  const { category, startYear, startMonth, endYear, endMonth } = bibliographyState;
 
   useEffect(
     () => {
@@ -85,9 +65,11 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
       renderDescription={() => <Description name={name} />}
       renderBody={() => (
         <>
-          <Box className={classes.controlsContainer}>
-            <Category />
-            <DateFilter />
+          <Box display="flex" sx={{ justifyContent: "space-between" }}>
+            <Box display="flex" sx={{ flexDirection: "column" }}>
+              <Category />
+              <DateFilter />
+            </Box>
             <CountInfo />
           </Box>
           <Entities id={id} name={name} />
