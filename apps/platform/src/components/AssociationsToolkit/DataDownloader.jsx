@@ -27,7 +27,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
-import { faCloudArrowDown, faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faShareFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip, useConfigContext } from "ui";
 import useBatchDownloader from "./hooks/useBatchDownloader";
@@ -42,6 +42,7 @@ import {
   getFilteredColumnArray,
 } from "./utils/downloads";
 import config from "../../config";
+import CopyUrlButton from "./CopyUrlButton";
 
 const { isPartnerPreview } = config.profile;
 
@@ -274,14 +275,14 @@ function DataDownloader({ fileStem }) {
 
   return (
     <div>
-      <Tooltip placement="bottom" title="Export results">
+      <Tooltip placement="bottom" title="Share / Export">
         <Button
           aria-describedby={popoverId}
           onClick={handleClickBTN}
           variant="outlined"
           disableElevation
         >
-          <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
+          <FontAwesomeIcon icon={faShareFromSquare} size="lg" />
         </Button>
       </Tooltip>
       <Dialog
@@ -295,7 +296,9 @@ function DataDownloader({ fileStem }) {
           },
         }}
       >
-        <DialogTitle>Export: {fileStem} data</DialogTitle>
+        <DialogTitle sx={{ display: "flex", justifyContent: "space-between" }}>
+          Export: {fileStem} data <CopyUrlButton />
+        </DialogTitle>
         <DialogContent>
           <Typography
             sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
