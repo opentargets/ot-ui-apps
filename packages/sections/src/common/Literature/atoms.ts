@@ -1,5 +1,5 @@
 import isEmpty from "lodash/isEmpty";
-import { atom, selectorFamily, selector } from "recoil";
+import { atom, selectorFamily, selector, DefaultValue } from "recoil";
 import { getPage } from "ui";
 import client from "../../client";
 import { europePmcBiblioSearchPOSTQuery } from "../../utils/urls";
@@ -7,49 +7,146 @@ import { europePmcBiblioSearchPOSTQuery } from "../../utils/urls";
 // ------------------------------------------
 // Helpers
 // ------------------------------------------
-export const parsePublications = publications =>
+
+type AuthorListType = {
+  fullName: string;
+  firstName: string;
+  lastName: string;
+  initials: string;
+  authorId: {
+    type: string;
+    value: string;
+  };
+  authorAffiliationDetailsList: {
+    authorAffiliation: {
+      affiliation: string;
+    }[];
+  };
+};
+
+type JournalInfoType = {
+  issue: string;
+  volume: string;
+  journalIssueId: number;
+  dateOfPublication: string;
+  monthOfPublication: number;
+  yearOfPublication: number;
+  printPublicationDate: string;
+  journal: {
+    title: string;
+    medlineAbbreviation: string;
+    isoabbreviation: string;
+    nlmid: string;
+    issn: string;
+    essn: string;
+  };
+};
+
+type PublicationType = {
+  source: string;
+  patentDetails: any;
+  id: string;
+  inEPMC: string;
+  inPMC: string;
+  title: string;
+  pubYear: string;
+  abstractText: string;
+  isOpenAccess: string;
+  authorList: {
+    author: AuthorListType;
+  };
+  journalInfo: JournalInfoType;
+  pageInfo: string;
+};
+
+type RowType = {
+  source: string;
+  patentDetails: any;
+  europePmcId: string;
+  fullTextOpen: boolean;
+  title: string;
+  year: string;
+  abstract: string;
+  openAccess: boolean;
+  authors: AuthorListType;
+  journal: JournalInfoType & { page: string };
+};
+
+export const parsePublications = (publications: PublicationType[]) =>
   publications.map(pub => {
-    const row = {};
-    row.source = pub.source;
-    row.patentDetails = pub.patentDetails;
-    row.europePmcId = pub.id;
-    row.fullTextOpen = !!(pub.inEPMC === "Y" || pub.inPMC === "Y");
-    row.title = pub.title;
-    row.year = pub.pubYear;
-    row.abstract = pub.abstractText;
-    row.openAccess = pub.isOpenAccess !== "N";
-    row.authors = pub.authorList?.author || [];
-    row.journal = {
-      ...pub.journalInfo,
-      page: pub.pageInfo,
+    const row: RowType = {
+      source: pub.source,
+      patentDetails: pub.patentDetails,
+      europePmcId: pub.id,
+      fullTextOpen: !!(pub.inEPMC === "Y" || pub.inPMC === "Y"),
+      title: pub.title,
+      year: pub.pubYear,
+      abstract: pub.abstractText,
+      openAccess: pub.isOpenAccess !== "N",
+      authors: pub.authorList?.author || [],
+      journal: {
+        ...pub.journalInfo,
+        page: pub.pageInfo,
+      },
     };
     return row;
   });
 
+type LiteratureStateType = {
+  id: string;
+  cursor: string | null;
+  threshold?: number;
+  size?: number;
+  category: string[];
+  query: any | null;
+  globalEntity: any | null;
+  entities: any[];
+  selectedEntities: any[] | DefaultValue;
+  startYear: number | null;
+  startMonth: number | null;
+  endYear: number | null;
+  endMonth: number | null;
+  earliestPubYear: number;
+  litsIds:
+    | {
+        id: string;
+        status: string;
+        publication: null;
+      }[]
+    | DefaultValue;
+  page: number;
+  pageSize: number | DefaultValue;
+  litsCount: number;
+  loadingEntities: boolean | DefaultValue;
+};
+
 // ------------------------------------------
 // ATOMS
 // ------------------------------------------
+
+const defaultState: LiteratureStateType = {
+  id: "",
+  cursor: "",
+  category: ["disease", "drug", "target"],
+  query: null,
+  globalEntity: null,
+  entities: [],
+  selectedEntities: [],
+  startYear: null,
+  startMonth: null,
+  endYear: null,
+  endMonth: null,
+  earliestPubYear: 2000,
+  litsIds: [],
+  page: 0,
+  pageSize: 5,
+  litsCount: 0,
+  loadingEntities: false,
+};
+
 export const literatureState = atom({
   key: "literatureState",
-  default: {
-    id: "",
-    cursor: "",
-    category: ["disease", "drug", "target"],
-    query: null,
-    globalEntity: null,
-    entities: [],
-    selectedEntities: [],
-    startYear: null,
-    startMonth: null,
-    endYear: null,
-    endMonth: null,
-    earliestPubYear: 2000,
-    litsIds: [],
-    page: 0,
-    pageSize: 5,
-    litsCount: 0,
-    loadingEntities: false,
-  },
+  default: defaultState,
 });
 
 // ------------------------------------------
@@ -63,10 +160,11 @@ export const loadingEntitiesState = selector({
   },
   set: ({ set, get }, newStatus) => {
     const currentState = get(literatureState);
-    return set(literatureState, {
+    const newState: LiteratureStateType = {
       ...currentState,
       loadingEntities: newStatus,
-    });
+    };
+    return set(literatureState, newState);
   },
 });
 
@@ -103,10 +201,11 @@ export const tablePageSizeState = selector({
   },
   set: ({ set, get }, newPageSize) => {
     const currentState = get(literatureState);
-    return set(literatureState, {
+    const newState: LiteratureStateType = {
       ...currentState,
       pageSize: newPageSize,
-    });
+    };
+    return set(literatureState, newState);
   },
 });
 
@@ -126,10 +225,11 @@ export const litsIdsState = selector({
   },
   set: ({ set, get }, newValue) => {
     const currentState = get(literatureState);
-    return set(literatureState, {
+    const newState: LiteratureStateType = {
       ...currentState,
       litsIds: newValue,
-    });
+    };
+    return set(literatureState, newState);
   },
 });
 
@@ -161,12 +261,14 @@ export const selectedEntitiesState = selector({
   },
   set: ({ set, get }, selectedEntities) => {
     const currentState = get(literatureState);
-    return set(literatureState, { ...currentState, selectedEntities });
+    const newState: LiteratureStateType = { ...currentState, selectedEntities };
+    return set(literatureState, newState);
   },
 });
 
 export const updateLiteratureState = selector({
   key: "updateLiteratureState",
+  get: ({ get }) => get(literatureState),
   set: ({ set, get }, stateUpdate) => {
     const currentState = get(literatureState);
     return set(literatureState, { ...currentState, ...stateUpdate });
@@ -177,13 +279,18 @@ export const updateLiteratureState = selector({
 // Requests
 // ------------------------------------------
 
-const fetchLiteraturesFromPMC = async ({ baseUrl, requestOptions }) =>
-  fetch(baseUrl, requestOptions).then(response => response.json());
+const fetchLiteraturesFromPMC = async ({
+  baseUrl,
+  requestOptions,
+}: {
+  baseUrl: string;
+  requestOptions: any;
+}) => fetch(baseUrl, requestOptions).then(response => response.json());
 
 export const literaturesEuropePMCQuery = selectorFamily({
   key: "literaturesEuropePMCQuery",
   get:
-    ({ literaturesIds }) =>
+    ({ literaturesIds }: { literaturesIds: string[] }) =>
     async () => {
       if (literaturesIds.length === 0) return [];
       const { baseUrl, requestOptions } = europePmcBiblioSearchPOSTQuery(literaturesIds);
@@ -210,7 +317,7 @@ export const fetchSimilarEntities = ({
   startMonth = null,
   endYear = null,
   endMonth = null,
-}) => {
+}: LiteratureStateType) => {
   const entityNames = category.length === 0 ? null : category;
   const ids = entities.map(c => c.object.id);
   return client.query({

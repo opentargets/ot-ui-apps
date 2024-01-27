@@ -144,8 +144,8 @@ function Profile({ ensgId, efoId, symbol, name }) {
 
       <SummaryContainer>
         <OTGeneticsSummary />
-        <EVASummary />
         <GeneBurdenSummary />
+        <EVASummary />
         <GenomicsEnglandSummary />
         <Gene2PhenotypeSummary />
         <UniProtLiteratureSummary />
@@ -178,10 +178,10 @@ function Profile({ ensgId, efoId, symbol, name }) {
           <OTGeneticsSection id={id} label={label} entity={DISEASE} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
-          <EVASection id={id} label={label} entity={DISEASE} />
+          <GeneBurdenSection id={id} label={label} entity={DISEASE} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
-          <GeneBurdenSection id={id} label={label} entity={DISEASE} />
+          <EVASection id={id} label={label} entity={DISEASE} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <GenomicsEnglandSection id={id} label={label} entity={DISEASE} />

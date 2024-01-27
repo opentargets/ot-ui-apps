@@ -30,6 +30,7 @@ export { default as ScientificNotation } from "./components/ScientificNotation";
 export { default as MouseModelAllelicComposition } from "./components/MouseModelAllelicComposition";
 export { default as DataDownloader } from "./components/DataDownloader";
 export { default as Legend } from "./components/Legend";
+export { default as ApiPlaygroundDrawer } from "./components/ApiPlaygroundDrawer";
 
 export { default as EmptyPage } from "./pages/EmptyPage";
 export { default as NotFoundPage } from "./pages/NotFoundPage";

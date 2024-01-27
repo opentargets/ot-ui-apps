@@ -10,16 +10,6 @@ const dataSources = [
     docsLink: "https://platform-docs.opentargets.org/evidence#open-targets-genetics",
   },
   {
-    id: "eva",
-    sectionId: "eva",
-    label: "ClinVar",
-    aggregation: "Genetic association",
-    aggregationId: "genetic_association",
-    weight: 1,
-    isPrivate: false,
-    docsLink: "https://platform-docs.opentargets.org/evidence#clinvar",
-  },
-  {
     id: "gene_burden",
     sectionId: "geneBurden",
     label: "Gene Burden",
@@ -28,6 +18,16 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#gene-burden",
+  },
+  {
+    id: "eva",
+    sectionId: "eva",
+    label: "ClinVar",
+    aggregation: "Genetic association",
+    aggregationId: "genetic_association",
+    weight: 1,
+    isPrivate: false,
+    docsLink: "https://platform-docs.opentargets.org/evidence#clinvar",
   },
   {
     id: "genomics_england",
@@ -82,7 +82,7 @@ const dataSources = [
   {
     id: "clingen",
     sectionId: "clinGen",
-    label: "Clingen",
+    label: "ClinGen",
     aggregation: "Genetic association",
     aggregationId: "genetic_association",
     weight: 1,

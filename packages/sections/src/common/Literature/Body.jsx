@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { useSetRecoilState, useRecoilValue, useResetRecoilState, RecoilRoot } from "recoil";
 import { SectionItem } from "ui";
 import PublicationsList from "./PublicationsList";
@@ -9,17 +8,9 @@ import { literatureState, updateLiteratureState, fetchSimilarEntities } from "./
 import Entities from "./Entities";
 import Category from "./Category";
 import CountInfo from "./CountInfo";
-
-const useStyles = makeStyles(() => ({
-  controlsContainer: {
-    display: "flex",
-    alignItems: "center",
-    margin: "20px 0",
-  },
-}));
+import { DateFilter } from "./DateFilter";
 
 function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
-  const classes = useStyles();
   const [requestObj, setRequestObj] = useState({});
 
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
@@ -74,8 +65,11 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
       renderDescription={() => <Description name={name} />}
       renderBody={() => (
         <>
-          <Box className={classes.controlsContainer}>
-            <Category />
+          <Box display="flex" sx={{ justifyContent: "space-between" }}>
+            <Box display="flex" sx={{ flexDirection: "column" }}>
+              <Category />
+              <DateFilter />
+            </Box>
             <CountInfo />
           </Box>
           <Entities id={id} name={name} />

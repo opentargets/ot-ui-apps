@@ -63,7 +63,6 @@ export default function Category() {
       style={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
       }}
     >
       <InputLabel style={{ marginRight: "15px" }} id="demo-mutiple-name-label">

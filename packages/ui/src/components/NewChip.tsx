@@ -12,7 +12,11 @@ const useStyles = makeStyles({
   },
 });
 
-function NewChip({ className }) {
+type NewChipProps = {
+  className: string;
+};
+
+function NewChip({ className }: NewChipProps) {
   const classes = useStyles();
   return (
     <MUIChip

@@ -109,6 +109,28 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
     return schema;
   }
 
+  function convertMapObjectToSchema(obj, isLastElement) {
+    const schemaString = isLastElement
+      ? LAST_ELEMENT_IN_SCHEMA_STRING
+      : NON_LAST_ELEMENT_IN_SCHEMA_STRING;
+
+    const schemaFn = getType({
+      type: {
+        type: obj.type.valueType,
+      },
+    });
+
+    const schemaObj = { name: "value", type: { ...obj.type.valueType } };
+
+    let schema = `${NEXT_LINE_STRING}${schemaString}${
+      obj.name
+    }: map${NEXT_LINE_STRING}│   ${NON_LAST_ELEMENT_IN_SCHEMA_STRING}key: ${
+      obj.type.keyType
+    } ${schemaFn(schemaObj).replaceAll(/\n/g, "\n│   ")}`;
+
+    return schema;
+  }
+
   function getType(obj) {
     if (typeof obj !== "object") return null;
 
@@ -119,6 +141,8 @@ function DownloadsSchemaDrawer({ title, children, serialisedSchema = {} }) {
         return convertArrayObjectToSchema;
       case "struct":
         return convertStructObjectToSchema;
+      case "map":
+        return convertMapObjectToSchema;
       default:
         return getType(obj.type);
     }
