@@ -1,7 +1,7 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Drawer, Grid, IconButton, Paper, Typography } from "@mui/material";
-
+// import { GraphiQL } from "graphiql";
 import Link from "./Link";
 import { KeyboardEvent, Suspense, lazy, useState } from "react";
 import { fetcher } from "../utils/global";
@@ -9,13 +9,13 @@ import { fetcher } from "../utils/global";
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
   import("graphiql").then(module => {
-    function GraphiQLEmpty() {
-      return <></>;
-    }
-    GraphiQLEmpty.displayName = "";
+    // function GraphiQLEmpty() {
+    //   return <></>;
+    // }
+    // GraphiQLEmpty.displayName = "";
 
-    module.default.Toolbar = GraphiQLEmpty;
-    module.default.Logo = GraphiQLEmpty;
+    // module.default.Toolbar = GraphiQLEmpty;
+    // module.default.Logo = GraphiQLEmpty;
 
     return module;
   })
@@ -91,10 +91,11 @@ function ApiPlaygroundDrawer({ query, variables }: ApiPlaygroundDrawerProps) {
           <Box sx={{ height: 1, m: theme => theme.spacing(2), mt: 0 }}>
             <Suspense fallback={<div>Loading...</div>}>
               <GraphiQL
+                editorTheme="solarized light"
                 fetcher={fetcher}
                 query={query}
                 variables={JSON.stringify(variables, null, 2)}
-              />
+              ></GraphiQL>
             </Suspense>
           </Box>
         ) : null}
