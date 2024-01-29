@@ -1,7 +1,7 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, Drawer, Grid, IconButton, Paper, Typography } from "@mui/material";
-// import { GraphiQL } from "graphiql";
+import { Box, Button, Drawer, Grid, IconButton, Paper } from "@mui/material";
+
 import Link from "./Link";
 import { KeyboardEvent, Suspense, lazy, useState } from "react";
 import { fetcher } from "../utils/global";
