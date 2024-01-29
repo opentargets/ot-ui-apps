@@ -14,6 +14,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  DialogActions,
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { styled } from "@mui/material/styles";
@@ -55,6 +56,8 @@ const StyledContainer = styled("div")`
     color: #bdbdbd;
     outline: none;
     transition: border 0.24s ease-in-out;
+    margin-bottom: 16px;
+    cursor: pointer;
   }
   .dropzone:focus {
     border-color: #3489ca;
@@ -180,7 +183,10 @@ function DataUploader({ fileStem }) {
         const contents = e.target.result;
         const terms = contents.split("\n");
         const result = await getValidationResults([entityToGet], terms);
-        setQueryTermsResults(result.data.mapIds.mappings);
+        let sortedResult = [...result.data.mapIds.mappings].sort(function (a, b) {
+          return a.hits.length < b.hits.length ? 1 : -1;
+        });
+        setQueryTermsResults(sortedResult);
         setActiveStep(1);
       };
       reader.readAsText(file);
@@ -189,7 +195,11 @@ function DataUploader({ fileStem }) {
 
   const handleRunExample = async terms => {
     const result = await getValidationResults([entityToGet], terms);
-    setQueryTermsResults(result.data.mapIds.mappings);
+    console.log(result);
+    let sortedResult = [...result.data.mapIds.mappings].sort(function (a, b) {
+      return a.hits.length < b.hits.length ? 1 : -1;
+    });
+    setQueryTermsResults(sortedResult);
     setActiveStep(1);
   };
 
@@ -210,7 +220,8 @@ function DataUploader({ fileStem }) {
   };
 
   const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
+    if (activeStep < 1) handleClosePopover();
+    else setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
 
   const handleReset = () => {
@@ -254,7 +265,7 @@ function DataUploader({ fileStem }) {
         }}
       >
         <DialogTitle>{`Upload list of ${entityToUploadLabel}`}</DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ pb: 0, overflowY: "scroll" }} dividers>
           <Typography
             sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
             variant="subtitle2"
@@ -270,7 +281,7 @@ function DataUploader({ fileStem }) {
               Read more details here.
             </Link>
           </Typography>
-          <FileExample entity={entityToGet} runAction={handleRunExample} />
+          {activeStep === 0 && <FileExample entity={entityToGet} runAction={handleRunExample} />}
           <Box sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}>
             <Stepper activeStep={activeStep}>
               {steps.map(label => {
@@ -297,46 +308,51 @@ function DataUploader({ fileStem }) {
           )}
           {activeStep === 1 && (
             <Box>
-              <Box sx={{ maxHeight: "40vh", overflowY: "scroll" }}>
+              <Box sx={{ overflowY: "scroll" }}>
                 <List
-                  sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+                  sx={{ width: "100%", maxWidth: 1, bgcolor: "background.paper" }}
                   aria-labelledby="nested-list-subheader"
                   subheader={
-                    <ListSubheader component="div" id="nested-list-subheader">
-                      Validation mappings
+                    <ListSubheader sx={{ px: 1.5 }} component="div" id="nested-list-subheader">
+                      Validation mappings ( Upload count: {queryTermsResults.length})
                     </ListSubheader>
                   }
                 >
                   {queryTermsResults.map(({ term, hits }) => (
                     <NestedItem key={v1()} hits={hits}>
-                      {`${term} - ${hits.length} hits`}
+                      {`${term} (${hits.length} hits)`}
                     </NestedItem>
                   ))}
                 </List>
               </Box>
-              <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-                <Button
-                  aria-describedby={popoverId}
-                  variant="outlined"
-                  disableElevation
-                  startIcon={<FontAwesomeIcon icon={faChevronLeft} size="lg" />}
-                  onClick={handleBack}
-                >
-                  Back
-                </Button>
-                <Button
-                  aria-describedby={popoverId}
-                  variant="outlined"
-                  disableElevation
-                  startIcon={<FontAwesomeIcon icon={faCheck} size="lg" />}
-                  onClick={handlePinElements}
-                >
-                  Pin hits
-                </Button>
-              </Box>
             </Box>
           )}
         </DialogContent>
+
+        <DialogActions>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mx: 2, my: 1, width: 1 }}>
+            <Button
+              aria-describedby={popoverId}
+              variant="outlined"
+              disableElevation
+              startIcon={<FontAwesomeIcon icon={faChevronLeft} size="lg" />}
+              onClick={handleBack}
+            >
+              Back
+            </Button>
+            {activeStep === 1 && (
+              <Button
+                aria-describedby={popoverId}
+                variant="outlined"
+                disableElevation
+                startIcon={<FontAwesomeIcon icon={faCheck} size="lg" />}
+                onClick={handlePinElements}
+              >
+                Pin hits
+              </Button>
+            )}
+          </Box>
+        </DialogActions>
       </Dialog>
     </div>
   );
