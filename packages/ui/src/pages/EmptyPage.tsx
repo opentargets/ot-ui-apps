@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 import Link from "../components/Link";
 import BrokenSearchIcon from "../components/icons/BrokenSearchIcon";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   hiddenMobile: {
     "@media (max-width: 767px)": {
       display: "none",
@@ -81,11 +81,7 @@ function EmptyPage({
             </Link>{" "}
             can help!
           </Typography>
-          <Typography
-            className={`${classes.messageBottom} ${classes.marginTop}`}
-          >
-            or
-          </Typography>
+          <Typography className={`${classes.messageBottom} ${classes.marginTop}`}>or</Typography>
         </div>
         <div className={`${classes.messageBottom} `}>
           <Button href="/" variant="contained" color="primary">

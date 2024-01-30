@@ -9,8 +9,7 @@ import { Typography } from "@mui/material";
 function TooltipStyledLabel({ label, description, newline = false }) {
   return (
     <Typography variant="body2">
-      {label ? <span style={{ fontWeight: "bold" }}>{label}:</span> : ""}{" "}
-      {newline ? <br /> : null}
+      {label ? <span style={{ fontWeight: "bold" }}>{label}:</span> : ""} {newline ? <br /> : null}
       {description}
     </Typography>
   );

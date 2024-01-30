@@ -5,20 +5,20 @@ import {
   ProfileDescription,
   Field,
   ProfileHeader as BaseProfileHeader,
-} from 'ui';
-import { Fragment } from 'react';
-import { Box } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "ui";
+import { Fragment } from "react";
+import { Box } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faExclamationCircle,
   faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
-import Smiles from './Smiles';
+import Smiles from "./Smiles";
 
-import DRUG_PROFILE_HEADER_FRAGMENT from './ProfileHeader.gql';
-import { phaseMap } from '../../constants';
+import DRUG_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
+import { phaseMap } from "../../constants";
 
 function ProfileHeader({ chemblId }) {
   const { loading, error, data } = usePlatformApi();
@@ -42,7 +42,7 @@ function ProfileHeader({ chemblId }) {
 
   const clinicalPhase = maximumClinicalTrialPhase
     ? phaseMap(maximumClinicalTrialPhase)
-    : 'Preclinical';
+    : "Preclinical";
 
   return (
     <BaseProfileHeader>
@@ -52,7 +52,7 @@ function ProfileHeader({ chemblId }) {
           {drugType}
         </Field>
         <Field loading={loading} title="First approval">
-          {yearOfFirstApproval || 'N/A'}
+          {yearOfFirstApproval || "N/A"}
         </Field>
         <Field loading={loading} title="Max phase">
           {clinicalPhase}
@@ -83,7 +83,7 @@ function ProfileHeader({ chemblId }) {
           {childMolecules.map(({ id, name }, i) => (
             <Fragment key={id}>
               <Link to={`/drug/${id}`}>{name}</Link>
-              {i < childMolecules.length - 1 ? ', ' : null}
+              {i < childMolecules.length - 1 ? ", " : null}
             </Fragment>
           ))}
         </Field>

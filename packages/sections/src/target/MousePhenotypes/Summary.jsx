@@ -1,7 +1,7 @@
-import { SummaryItem, usePlatformApi } from 'ui';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from '.';
-import MOUSE_PHENOTYPES_SUMMARY_FRAGMENT from './MousePhenotypesSummary.gql';
+import { definition } from ".";
+import MOUSE_PHENOTYPES_SUMMARY_FRAGMENT from "./MousePhenotypesSummary.gql";
 
 function Summary() {
   const request = usePlatformApi(MOUSE_PHENOTYPES_SUMMARY_FRAGMENT);
@@ -11,9 +11,7 @@ function Summary() {
       definition={definition}
       request={request}
       renderSummary={({ mousePhenotypes }) =>
-        `${mousePhenotypes.length} distinct phenotype${
-          mousePhenotypes.length > 1 ? 's' : ''
-        }`
+        `${mousePhenotypes.length} distinct phenotype${mousePhenotypes.length > 1 ? "s" : ""}`
       }
     />
   );

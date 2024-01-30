@@ -1,12 +1,12 @@
-import _ from 'lodash';
+import _ from "lodash";
 
-import locusFilter from './locusFilter';
-import locusSelected from './locusSelected';
-import locusTransform from './locusTransform';
-import locusChained from './locusChained';
-import locusFinemapping from './locusFinemapping';
-import locusLookups from './locusLookups';
-import locusTable from './locusTable';
+import locusFilter from "./locusFilter";
+import locusSelected from "./locusSelected";
+import locusTransform from "./locusTransform";
+import locusChained from "./locusChained";
+import locusFinemapping from "./locusFinemapping";
+import locusLookups from "./locusLookups";
+import locusTable from "./locusTable";
 
 export const LOCUS_SCHEME = {
   CHAINED: 1,
@@ -37,13 +37,9 @@ const geneTagVariantComparator = (a, b) => {
 const tagVariantIndexVariantStudyComparator = (a, b) => {
   // render by ordering (chained, fine-mapping, r2)
   const scoreA =
-    (a.chained ? 8 : 4) +
-    (a.posteriorProbability ? 1 + a.posteriorProbability : 0) +
-    a.r2;
+    (a.chained ? 8 : 4) + (a.posteriorProbability ? 1 + a.posteriorProbability : 0) + a.r2;
   const scoreB =
-    (b.chained ? 8 : 4) +
-    (b.posteriorProbability ? 1 + b.posteriorProbability : 0) +
-    b.r2;
+    (b.chained ? 8 : 4) + (b.posteriorProbability ? 1 + b.posteriorProbability : 0) + b.r2;
   return scoreA - scoreB;
 };
 
@@ -120,29 +116,15 @@ const locusScheme = ({
   } = chained;
 
   const entities = {
-    genes: _.sortBy(genes, [d => !d.selected, d => !d.chained, 'symbol']),
+    genes: _.sortBy(genes, [d => !d.selected, d => !d.chained, "symbol"]),
     tagVariants: tagVariants,
-    indexVariants: _.sortBy(indexVariants, [
-      d => !d.selected,
-      d => !d.chained,
-
-      'id',
-    ]),
-    studies: _.sortBy(studies, [
-      d => !d.selected,
-      d => !d.chained,
-      'traitReported',
-      'pubAuthor',
-    ]),
+    indexVariants: _.sortBy(indexVariants, [d => !d.selected, d => !d.chained, "id"]),
+    studies: _.sortBy(studies, [d => !d.selected, d => !d.chained, "traitReported", "pubAuthor"]),
   };
 
   const genesFiltered = genes.filter(d => d.chained);
-  const tagVariantsFiltered = tagVariants
-    .filter(d => d.chained)
-    .sort(variantComparator);
-  const indexVariantsFiltered = indexVariants
-    .filter(d => d.chained)
-    .sort(variantComparator);
+  const tagVariantsFiltered = tagVariants.filter(d => d.chained).sort(variantComparator);
+  const indexVariantsFiltered = indexVariants.filter(d => d.chained).sort(variantComparator);
   const studiesFiltered = studies.filter(d => d.chained);
   const geneTagVariantsFiltered = geneTagVariants
     .filter(d => d.chained)
@@ -155,8 +137,7 @@ const locusScheme = ({
     transformed.geneTagVariants.length === 0 &&
     transformed.tagVariantIndexVariantStudies.length === 0;
   const isEmptyFiltered =
-    filtered.geneTagVariants.length === 0 &&
-    filtered.tagVariantIndexVariantStudies.length === 0;
+    filtered.geneTagVariants.length === 0 && filtered.tagVariantIndexVariantStudies.length === 0;
 
   const rows = locusTable(
     {
@@ -184,9 +165,7 @@ const locusScheme = ({
     case LOCUS_SCHEME.ALL:
       const tagVariantsSorted = tagVariants.sort(variantComparator);
       const indexVariantsSorted = indexVariants.sort(variantComparator);
-      const geneTagVariantsSorted = geneTagVariants.sort(
-        geneTagVariantComparator
-      );
+      const geneTagVariantsSorted = geneTagVariants.sort(geneTagVariantComparator);
       const tagVariantIndexVariantStudiesSorted = tagVariantIndexVariantStudies.sort(
         tagVariantIndexVariantStudyComparator
       );

@@ -1,7 +1,7 @@
-import { SummaryItem, usePlatformApi } from 'ui';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from '.';
-import DRUG_WARNINGS_SUMMARY_FRAGMENT from './DrugWarningsSummaryFragment.gql';
+import { definition } from ".";
+import DRUG_WARNINGS_SUMMARY_FRAGMENT from "./DrugWarningsSummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(DRUG_WARNINGS_SUMMARY_FRAGMENT);
@@ -12,12 +12,12 @@ function Summary() {
       request={request}
       renderSummary={({ hasBeenWithdrawn, blackBoxWarning }) => {
         if (hasBeenWithdrawn && blackBoxWarning) {
-          return 'Withdrawn • Black Box';
+          return "Withdrawn • Black Box";
         }
 
-        if (hasBeenWithdrawn) return 'Withdrawn';
+        if (hasBeenWithdrawn) return "Withdrawn";
 
-        if (blackBoxWarning) return 'Black Box';
+        if (blackBoxWarning) return "Black Box";
 
         return null;
       }}

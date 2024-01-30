@@ -1,71 +1,47 @@
-import { Fragment } from 'react';
-import { flexRender } from '@tanstack/react-table';
-import { ClickAwayListener, Fade, Box } from '@mui/material';
-import { v1 } from 'uuid';
+import { Fragment } from "react";
+import { flexRender } from "@tanstack/react-table";
+import { ClickAwayListener, Fade, Box } from "@mui/material";
+import { v1 } from "uuid";
 
-import useAotfContext from '../hooks/useAotfContext';
+import useAotfContext from "../hooks/useAotfContext";
 
-import { getCellId } from '../utils';
-import {
-  RowContainer,
-  RowsContainer,
-  TableBodyContent,
-  GridContainer,
-} from '../layout';
+import { getCellId } from "../utils";
+import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
 
-import { SectionRender, SectionRendererWrapper } from './SectionRender';
+import { SectionRender, SectionRendererWrapper } from "./SectionRender";
 
 /* HELPERS */
 const getColContainerClassName = ({ id }) => {
-  if (id === '1_naiming-cols_name') return 'group-naiming-cols';
-  return 'group-entity-cols';
+  if (id === "1_naiming-cols_name") return "group-naiming-cols";
+  return "group-entity-cols";
 };
 
-const getRowActive = ({ getIsExpanded }, isExpandedInTable) =>
-  getIsExpanded() && isExpandedInTable;
+const getRowActive = ({ getIsExpanded }, isExpandedInTable) => getIsExpanded() && isExpandedInTable;
 
-const getCellClassName = (
-  cell,
-  entityToGet,
-  displayedTable,
-  expanded,
-  tablePrefix
-) => {
-  if (cell.column.id === 'name') return 'name-cell';
-  const expandedId = getCellId(
-    cell,
-    entityToGet,
-    displayedTable,
-    tablePrefix
-  ).join('-');
-  if (expandedId === expanded.join('-')) return 'active data-cell';
-  return 'data-cell';
+const getCellClassName = (cell, entityToGet, displayedTable, expanded, tablePrefix) => {
+  if (cell.column.id === "name") return "name-cell";
+  const expandedId = getCellId(cell, entityToGet, displayedTable, tablePrefix).join("-");
+  if (expandedId === expanded.join("-")) return "active data-cell";
+  return "data-cell";
 };
 
-function ExpandableContainer({
-  rowExpanded,
-  isExpandedInTable,
-  loading,
-  children,
-}) {
+function ExpandableContainer({ rowExpanded, isExpandedInTable, loading, children }) {
   if (!isExpandedInTable || !rowExpanded || loading) return null;
   return <Box key={v1()}>{children}</Box>;
 }
 
 function TableBody({ core, expanded, cols }) {
-  const { id, entity, entityToGet, displayedTable, resetExpandler } =
-    useAotfContext();
+  const { id, entity, entityToGet, displayedTable, resetExpandler } = useAotfContext();
 
   const { rows } = core.getRowModel();
   if (rows.length < 1) return null;
 
   const flatCols = cols.map(c => c.id);
 
-  const rowNameEntity = entity === 'target' ? 'name' : 'approvedSymbol';
+  const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
   const { prefix, loading } = core.getState();
-  const isExpandedInTable =
-    expanded[3] === prefix && flatCols.includes(expanded[1]);
+  const isExpandedInTable = expanded[3] === prefix && flatCols.includes(expanded[1]);
 
   const handleClickAway = () => {
     resetExpandler();
@@ -85,9 +61,7 @@ function TableBody({ core, expanded, cols }) {
                     key={columnGroup.id}
                   >
                     {columnGroup.subHeaders.map(column => {
-                      const cell = row
-                        .getVisibleCells()
-                        .find(el => el.column.id === column.id);
+                      const cell = row.getVisibleCells().find(el => el.column.id === column.id);
                       return (
                         <div
                           key={cell.id}
@@ -99,10 +73,7 @@ function TableBody({ core, expanded, cols }) {
                             prefix
                           )}
                         >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </div>
                       );
                     })}

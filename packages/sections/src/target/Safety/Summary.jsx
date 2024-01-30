@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { SummaryItem, usePlatformApi } from "ui";
 
-import {definition} from ".";
+import { definition } from ".";
 import SAFETY_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 
 function Summary() {
@@ -11,7 +11,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={(data) => {
+      renderSummary={data => {
         const uniqueEvents = _.uniqBy(data.safetyLiabilities, "event");
         return `${uniqueEvents.length} unique safety events`;
       }}

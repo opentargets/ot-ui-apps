@@ -1,12 +1,12 @@
-import { scaleSqrt } from 'd3';
+import { scaleSqrt } from "d3";
 
-export const OVERVIEW = 'overview';
+export const OVERVIEW = "overview";
 
 export const radiusScale = scaleSqrt().domain([0, 1]).range([0, 6]);
 
-export const getDataAll = (genesForVariant) => {
+export const getDataAll = genesForVariant => {
   const data = [];
-  genesForVariant.forEach((item) => {
+  genesForVariant.forEach(item => {
     const row = {
       geneId: item.gene.id,
       geneSymbol: item.gene.symbol,
@@ -14,18 +14,18 @@ export const getDataAll = (genesForVariant) => {
     };
     // for distances we want to use the first element of
     // the distances array
-    item.distances.forEach((distance) => {
+    item.distances.forEach(distance => {
       row[distance.sourceId] = item.distances[0];
     });
-    item.qtls.forEach((qtl) => {
+    item.qtls.forEach(qtl => {
       row[qtl.sourceId] = qtl.aggregatedScore;
     });
-    item.intervals.forEach((interval) => {
+    item.intervals.forEach(interval => {
       row[interval.sourceId] = interval.aggregatedScore;
     });
     // for functionalPredictions we want to use the first element of
     // the functionalPredictions array
-    item.functionalPredictions.forEach((fp) => {
+    item.functionalPredictions.forEach(fp => {
       row[fp.sourceId] = item.functionalPredictions[0];
     });
     data.push(row);
@@ -33,8 +33,8 @@ export const getDataAll = (genesForVariant) => {
   return data;
 };
 
-export const getDataAllDownload = (tableData) => {
-  return tableData.map((row) => {
+export const getDataAllDownload = tableData => {
+  return tableData.map(row => {
     const newRow = { ...row };
     if (row.canonical_tss) {
       newRow.canonical_tss = row.canonical_tss.tissues[0].distance;
@@ -47,5 +47,5 @@ export const getDataAllDownload = (tableData) => {
 };
 
 export const isDisabledColumn = (allData, sourceId) => {
-  return !allData.some((d) => d[sourceId]);
+  return !allData.some(d => d[sourceId]);
 };

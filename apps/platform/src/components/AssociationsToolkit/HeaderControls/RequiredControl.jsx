@@ -1,24 +1,18 @@
-import { useState, useEffect } from 'react';
-import { Checkbox } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import useAotfContext from '../hooks/useAotfContext';
-import { checkBoxPayload, getControlChecked } from '../utils';
+import { useState, useEffect } from "react";
+import { Checkbox } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import useAotfContext from "../hooks/useAotfContext";
+import { checkBoxPayload, getControlChecked } from "../utils";
 
 const OTCheckbox = styled(Checkbox)`
   padding: 0;
 `;
 
 function RequiredControl({ id, aggregationId }) {
-  const {
-    dataSourcesRequired,
-    setDataSourcesRequired,
-    loading,
-    resetToInitialPagination,
-  } = useAotfContext();
+  const { dataSourcesRequired, setDataSourcesRequired, loading, resetToInitialPagination } =
+    useAotfContext();
 
-  const [displayValue, setDisplayValue] = useState(
-    getControlChecked(dataSourcesRequired, id)
-  );
+  const [displayValue, setDisplayValue] = useState(getControlChecked(dataSourcesRequired, id));
 
   useEffect(() => {
     if (loading) return;
@@ -32,9 +26,7 @@ function RequiredControl({ id, aggregationId }) {
       setDataSourcesRequired([...dataSourcesRequired, payload]);
       setDisplayValue(newValue);
     } else {
-      const indexToRemove = dataSourcesRequired.findIndex(
-        element => element.id === id
-      );
+      const indexToRemove = dataSourcesRequired.findIndex(element => element.id === id);
       const newRequiredElement = [
         ...dataSourcesRequired.slice(0, indexToRemove),
         ...dataSourcesRequired.slice(indexToRemove + 1),
@@ -45,14 +37,7 @@ function RequiredControl({ id, aggregationId }) {
     resetToInitialPagination();
   };
 
-  return (
-    <OTCheckbox
-      checked={displayValue}
-      color="primary"
-      onChange={handleChange}
-      name={id}
-    />
-  );
+  return <OTCheckbox checked={displayValue} color="primary" onChange={handleChange} name={id} />;
 }
 
 export default RequiredControl;

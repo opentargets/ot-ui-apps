@@ -19,7 +19,7 @@ import _ from "lodash";
 
 import { Link } from "ui";
 
-const sourceDrawerStyles = makeStyles((theme) => ({
+const sourceDrawerStyles = makeStyles(theme => ({
   drawerLink: {
     cursor: "pointer",
   },
@@ -69,7 +69,7 @@ const sourceDrawerStyles = makeStyles((theme) => ({
   },
 }));
 
-const tableSourceLabel = (name) =>
+const tableSourceLabel = name =>
   ({
     ATC: "ATC",
     ClinicalTrials: "ClinicalTrials.gov",
@@ -111,11 +111,8 @@ function SourceDrawer({ references }) {
 
   const groupedReferences = _.groupBy(references, "name");
 
-  const toggleDrawer = (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
+  const toggleDrawer = event => {
+    if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
     }
 
@@ -130,9 +127,7 @@ function SourceDrawer({ references }) {
     <>
       <Paper classes={{ root: classes.drawerTitle }} elevation={0}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography className={classes.drawerTitleCaption}>
-            Records
-          </Typography>
+          <Typography className={classes.drawerTitleCaption}>Records</Typography>
           <IconButton onClick={closeDrawer}>
             <FontAwesomeIcon icon={faXmark} />
           </IconButton>
@@ -140,7 +135,7 @@ function SourceDrawer({ references }) {
       </Paper>
 
       <Box className={classes.drawerBody}>
-        {Object.keys(groupedReferences).map((group) => (
+        {Object.keys(groupedReferences).map(group => (
           <Accordion
             elevation={0}
             key={group}
@@ -149,13 +144,10 @@ function SourceDrawer({ references }) {
               expanded: classes.AccordionExpanded,
             }}
             defaultExpanded={
-              groupedReferences[group].length < 10 ||
-              Object.keys(groupedReferences).length === 1
+              groupedReferences[group].length < 10 || Object.keys(groupedReferences).length === 1
             }
           >
-            <AccordionSummary
-              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
-            >
+            <AccordionSummary expandIcon={<FontAwesomeIcon icon={faChevronDown} />}>
               <Box classes={{ root: classes.summaryBoxRoot }}>
                 <Typography className={classes.AccordionTitle}>
                   {tableSourceLabel(group)}
@@ -167,7 +159,7 @@ function SourceDrawer({ references }) {
             </AccordionSummary>
             <AccordionDetails>
               <List>
-                {groupedReferences[group].map((item) => (
+                {groupedReferences[group].map(item => (
                   <ListItem key={item.url}>
                     <Link external to={item.url}>
                       {drawerSourceLabel(item.name, item.url)}
@@ -184,11 +176,7 @@ function SourceDrawer({ references }) {
 
   return (
     <>
-      <MUILink
-        onClick={toggleDrawer}
-        className={classes.drawerLink}
-        underline="none"
-      >
+      <MUILink onClick={toggleDrawer} className={classes.drawerLink} underline="none">
         {references.length} references
       </MUILink>
 

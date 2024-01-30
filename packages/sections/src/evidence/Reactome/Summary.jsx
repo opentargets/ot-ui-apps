@@ -1,8 +1,8 @@
-import { SummaryItem, usePlatformApi } from 'ui';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from '.';
-import { dataTypesMap } from '../../dataTypes';
-import REACTOME_SUMMARY from './ReactomeSummary.gql';
+import { definition } from ".";
+import { dataTypesMap } from "../../dataTypes";
+import REACTOME_SUMMARY from "./ReactomeSummary.gql";
 
 function Summary() {
   const request = usePlatformApi(REACTOME_SUMMARY);
@@ -12,7 +12,7 @@ function Summary() {
       request={request}
       renderSummary={({ reactomeSummary }) => {
         const { count } = reactomeSummary;
-        return `${count} ${count === 1 ? 'entry' : 'entries'}`;
+        return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
       subText={dataTypesMap.affected_pathway}
     />

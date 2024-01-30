@@ -1,11 +1,11 @@
-import Link from '../Link';
+import Link from "../Link";
 
 function ExternalLink({ title, id, url }) {
   if (!id) return null;
 
   return (
     <span>
-      {title}:{' '}
+      {title}:{" "}
       <Link external to={url}>
         {id}
       </Link>

@@ -11,10 +11,8 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={(data) =>
-        `${data.gene2Phenotype.count} entr${
-          data.gene2Phenotype.count === 1 ? "y" : "ies"
-        }`
+      renderSummary={data =>
+        `${data.gene2Phenotype.count} entr${data.gene2Phenotype.count === 1 ? "y" : "ies"}`
       }
       subText={dataTypesMap.genetic_association}
     />

@@ -1,23 +1,23 @@
-import { lighten, darken } from 'polished';
+import { lighten, darken } from "polished";
 
-const PRIMARY = '#0091eb';
-const SECONDARY = '#ff6350';
+const PRIMARY = "#0091eb";
+const SECONDARY = "#ff6350";
 // const TERTIARY = '#00a252';
 const GREY = {
-  50: '#fafafa',
-  100: '#f5f5f5',
-  200: '#eeeeee',
-  300: '#e0e0e0',
-  400: '#bdbdbd',
-  500: '#9e9e9e',
-  600: '#757575',
-  700: '#616161',
-  800: '#424242',
-  900: '#212121',
-  A100: '#d5d5d5',
-  A200: '#aaaaaa',
-  A400: '#303030',
-  A700: '#616161',
+  50: "#fafafa",
+  100: "#f5f5f5",
+  200: "#eeeeee",
+  300: "#e0e0e0",
+  400: "#bdbdbd",
+  500: "#9e9e9e",
+  600: "#757575",
+  700: "#616161",
+  800: "#424242",
+  900: "#212121",
+  A100: "#d5d5d5",
+  A200: "#aaaaaa",
+  A400: "#303030",
+  A700: "#616161",
 };
 
 const theme = {
@@ -48,13 +48,13 @@ const theme = {
   },
   gecko: {
     color: GREY[500],
-    backgroundColor: 'white',
+    backgroundColor: "white",
     finemappingColor: GREY[600],
     colorSelected: PRIMARY,
-    backgroundColorSelected: 'white',
+    backgroundColorSelected: "white",
     finemappingColorSelected: darken(0.3, PRIMARY),
     colorChained: SECONDARY,
-    backgroundColorChained: 'white',
+    backgroundColorChained: "white",
     finemappingColorChained: darken(0.3, SECONDARY),
     connectorColor: GREY[300],
     connectorColorSelected: lighten(0.2, PRIMARY),

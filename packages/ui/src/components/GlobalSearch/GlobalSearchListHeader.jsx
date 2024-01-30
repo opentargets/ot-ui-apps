@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { clearAllRecent } from "./utils/searchUtils";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   sectionHeader: {
     textTransform: "capitalize",
     color: theme.palette.grey[600],
@@ -55,45 +55,15 @@ function GlobalSearchListHeader({ listHeader, children }) {
           />
         );
       case "diseases":
-        return (
-          <FontAwesomeIcon
-            icon={faStethoscope}
-            fixedWidth
-            className={classes.labelIcon}
-          />
-        );
+        return <FontAwesomeIcon icon={faStethoscope} fixedWidth className={classes.labelIcon} />;
       case "targets":
-        return (
-          <FontAwesomeIcon
-            icon={faDna}
-            fixedWidth
-            className={classes.labelIcon}
-          />
-        );
+        return <FontAwesomeIcon icon={faDna} fixedWidth className={classes.labelIcon} />;
       case "Study":
-        return (
-          <FontAwesomeIcon
-            icon={faChartBar}
-            fixedWidth
-            className={classes.labelIcon}
-          />
-        );
+        return <FontAwesomeIcon icon={faChartBar} fixedWidth className={classes.labelIcon} />;
       case "Gene":
-        return (
-          <FontAwesomeIcon
-            icon={faDna}
-            fixedWidth
-            className={classes.labelIcon}
-          />
-        );
+        return <FontAwesomeIcon icon={faDna} fixedWidth className={classes.labelIcon} />;
       case "Variant":
-        return (
-          <FontAwesomeIcon
-            icon={faMapPin}
-            fixedWidth
-            className={classes.labelIcon}
-          />
-        );
+        return <FontAwesomeIcon icon={faMapPin} fixedWidth className={classes.labelIcon} />;
       case "recent":
         return null;
       case "Search Suggestions":

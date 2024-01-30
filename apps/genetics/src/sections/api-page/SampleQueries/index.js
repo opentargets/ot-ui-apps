@@ -1,1 +1,1 @@
-export { default } from './SampleQueries';
+export { default } from "./SampleQueries";

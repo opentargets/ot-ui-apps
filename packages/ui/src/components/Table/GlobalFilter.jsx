@@ -10,7 +10,7 @@ function GlobalFilter({ onGlobalFilterChange }) {
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 300);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     setInputValue(e.target.value);
   };
 

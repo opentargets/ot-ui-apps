@@ -1,13 +1,13 @@
-import { CardContent, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStethoscope } from '@fortawesome/free-solid-svg-icons';
+import { CardContent, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStethoscope } from "@fortawesome/free-solid-svg-icons";
 
-import { LongText, Link } from 'ui';
+import { LongText, Link } from "ui";
 
 const useStyles = makeStyles({
   link: {
-    display: 'block',
+    display: "block",
   },
   subtitle: {
     fontWeight: 500,
@@ -32,11 +32,7 @@ function DiseaseDetail({ data }) {
             Therapeutic areas
           </Typography>
           {therapeuticAreas.map(area => (
-            <Link
-              key={area.id}
-              className={classes.link}
-              to={`/disease/${area.id}`}
-            >
+            <Link key={area.id} className={classes.link} to={`/disease/${area.id}`}>
               {area.name}
             </Link>
           ))}

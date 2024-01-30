@@ -1,14 +1,10 @@
-import {
-  usePlatformApi,
-  ProfileHeader as BaseProfileHeader,
-  ProfileChipList,
-} from 'ui';
-import { useTheme } from '@mui/styles';
-import TargetDescription from './TargetDescription';
+import { usePlatformApi, ProfileHeader as BaseProfileHeader, ProfileChipList } from "ui";
+import { useTheme } from "@mui/styles";
+import TargetDescription from "./TargetDescription";
 
-import { clearDescriptionCodes } from '../../utils/global';
+import { clearDescriptionCodes } from "../../utils/global";
 
-import TARGET_PROFILE_HEADER_FRAGMENT from './TargetProfileHeader.gql';
+import TARGET_PROFILE_HEADER_FRAGMENT from "./TargetProfileHeader.gql";
 
 /*
  * Target synonyms from the API have a "label" and a "source"
@@ -18,13 +14,13 @@ import TARGET_PROFILE_HEADER_FRAGMENT from './TargetProfileHeader.gql';
  */
 const parseSynonyms = synonyms => {
   const sources = {
-    HGNC: 'HGNC',
-    uniprot: 'UniProt',
-    NCBI_entrez: 'Entrez',
+    HGNC: "HGNC",
+    uniprot: "UniProt",
+    NCBI_entrez: "Entrez",
   };
   // Synonyms needs to be sorted by source in specific order
   // (order converted to a map for convenience when doing the sort)
-  const sortingOrder = ['HGNC', 'uniprot', 'NCBI_entrez'].reduce(
+  const sortingOrder = ["HGNC", "uniprot", "NCBI_entrez"].reduce(
     (acc, a, i) => ({ ...acc, [a]: i }),
     {}
   );
@@ -36,8 +32,7 @@ const parseSynonyms = synonyms => {
 
   sortedSynonyms.forEach(s => {
     const thisSyn = parsedSynonyms.find(
-      parsedSynonym =>
-        parsedSynonym.label.toLowerCase() === s.label.toLowerCase()
+      parsedSynonym => parsedSynonym.label.toLowerCase() === s.label.toLowerCase()
     );
     if (!thisSyn) {
       parsedSynonyms.push({ label: s.label, tooltip: [s.source] });
@@ -48,7 +43,7 @@ const parseSynonyms = synonyms => {
   });
 
   parsedSynonyms.forEach(syn => {
-    syn.tooltip = `Source: ${syn.tooltip.map(s => sources[s]).join(', ')}`;
+    syn.tooltip = `Source: ${syn.tooltip.map(s => sources[s]).join(", ")}`;
   });
 
   return parsedSynonyms;
@@ -71,8 +66,8 @@ function ProfileHeader() {
   // however in the future it will hold information to display other chips
   const geneInfo = [
     {
-      label: 'Core essential gene',
-      tooltip: 'Source: Cancer DepMap',
+      label: "Core essential gene",
+      tooltip: "Source: Cancer DepMap",
       isVisible: data?.target.isEssential,
     },
   ];

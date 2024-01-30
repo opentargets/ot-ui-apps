@@ -6,16 +6,7 @@ import _ from "lodash";
 import { getHiddenBreakpoints } from "./utils";
 import { tableStyles } from "./tableStyles";
 
-function TableRow({
-  columns,
-  hover,
-  isFixedRow,
-  noWrap,
-  row,
-  style,
-  onClick,
-  selected,
-}) {
+function TableRow({ columns, hover, isFixedRow, noWrap, row, style, onClick, selected }) {
   const classes = tableStyles();
 
   return (
@@ -28,20 +19,13 @@ function TableRow({
       {columns.map((column, index) => (
         <Hidden {...getHiddenBreakpoints(column)} key={index}>
           <TableCell
-            align={
-              column.align ? column.align : column.numeric ? "right" : "left"
-            }
+            align={column.align ? column.align : column.numeric ? "right" : "left"}
             classes={{
-              root: classNames(
-                classes.cell,
-                classes.cellBody,
-                column.classes?.cell,
-                {
-                  [classes.tabularNums]: column.numeric,
-                  [classes.cellSticky]: column.sticky,
-                  [classes.noWrap]: noWrap,
-                }
-              ),
+              root: classNames(classes.cell, classes.cellBody, column.classes?.cell, {
+                [classes.tabularNums]: column.numeric,
+                [classes.cellSticky]: column.sticky,
+                [classes.noWrap]: noWrap,
+              }),
             }}
             component={column.sticky ? "th" : "td"}
             key={index}

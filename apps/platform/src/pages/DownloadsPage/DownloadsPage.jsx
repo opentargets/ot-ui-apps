@@ -1,5 +1,5 @@
-import { Fragment, useState, useEffect } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { Fragment, useState, useEffect } from "react";
+import { gql, useQuery } from "@apollo/client";
 import {
   Paper,
   Box,
@@ -9,17 +9,17 @@ import {
   AlertTitle,
   IconButton,
   CircularProgress,
-} from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { Link, DataTable } from 'ui';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAlignLeft } from '@fortawesome/free-solid-svg-icons';
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { Link, DataTable } from "ui";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAlignLeft } from "@fortawesome/free-solid-svg-icons";
 
-import { defaultRowsPerPageOptions, formatMap } from '../../constants';
-import DownloadsDrawer from './DownloadsDrawer';
-import datasetMappings from './dataset-mappings.json';
-import config from '../../config';
-import DownloadsSchemaDrawer from './DownloadsSchemaDrawer';
+import { defaultRowsPerPageOptions, formatMap } from "../../constants";
+import DownloadsDrawer from "./DownloadsDrawer";
+import datasetMappings from "./dataset-mappings.json";
+import config from "../../config";
+import DownloadsSchemaDrawer from "./DownloadsSchemaDrawer";
 
 const useStyles = makeStyles(theme => ({
   alert: {
@@ -69,11 +69,11 @@ function getRows(downloadData, allDatasetMappings) {
 
 function getColumns(date) {
   const columns = [
-    { id: 'niceName', label: 'Dataset' },
-    { id: 'description', label: 'Description' },
+    { id: "niceName", label: "Dataset" },
+    { id: "description", label: "Description" },
     {
-      id: 'formats',
-      label: 'Format(s)',
+      id: "formats",
+      label: "Format(s)",
       renderCell: ({ niceName, formats }) =>
         formats
           .sort((a, b) => {
@@ -81,9 +81,7 @@ function getColumns(date) {
             return -1;
           })
           .map(format => (
-            <Fragment
-              key={format.format + format.path + date.month + date.year}
-            >
+            <Fragment key={format.format + format.path + date.month + date.year}>
               <DownloadsDrawer
                 title={niceName}
                 format={format.format}
@@ -92,23 +90,16 @@ function getColumns(date) {
                 year={date.year}
               >
                 <Chip label={formatMap[format.format]} clickable size="small" />
-              </DownloadsDrawer>{' '}
+              </DownloadsDrawer>{" "}
             </Fragment>
           )),
     },
     {
-      id: 'schemas',
-      label: 'Schema',
+      id: "schemas",
+      label: "Schema",
       renderCell: ({ niceName, serialisedSchema }) => (
-        <DownloadsSchemaDrawer
-          title={niceName}
-          serialisedSchema={serialisedSchema}
-        >
-          <Chip
-            clickable
-            size="small"
-            label={<FontAwesomeIcon icon={faAlignLeft} />}
-          />
+        <DownloadsSchemaDrawer title={niceName} serialisedSchema={serialisedSchema}>
+          <Chip clickable size="small" label={<FontAwesomeIcon icon={faAlignLeft} />} />
         </DownloadsSchemaDrawer>
       ),
     },
@@ -148,7 +139,7 @@ function DownloadsPage() {
       .then(res => res.text())
       .then(lines => {
         if (isCurrent) {
-          const nodes = lines.trim().split('\n').map(JSON.parse);
+          const nodes = lines.trim().split("\n").map(JSON.parse);
           setDownloadsData(nodes);
         }
         setLoadingDownloadsData(false);
@@ -165,33 +156,24 @@ function DownloadsPage() {
         Data downloads
       </Typography>
       <Typography paragraph>
-        The Open Targets Platform is committed to open data and open access
-        research and all of our data is publicly available for download and can
-        be used for academic or commercial purposes. Please see our{' '}
+        The Open Targets Platform is committed to open data and open access research and all of our
+        data is publicly available for download and can be used for academic or commercial purposes.
+        Please see our{" "}
         <Link external to="http://platform-docs.opentargets.org/licence">
           License documentation
-        </Link>{' '}
+        </Link>{" "}
         for more information.
       </Typography>
       <Typography paragraph>
-        For sample scripts to download and parse datasets using Python or R,
-        please visit our{' '}
-        <Link
-          external
-          to="http://platform-docs.opentargets.org/data-access/datasets"
-        >
+        For sample scripts to download and parse datasets using Python or R, please visit our{" "}
+        <Link external to="http://platform-docs.opentargets.org/data-access/datasets">
           Data Downloads documentation
         </Link>
       </Typography>
+      <Typography paragraph>Current data version: {error ? null : getVersion(data)}</Typography>
       <Typography paragraph>
-        Current data version: {error ? null : getVersion(data)}
-      </Typography>
-      <Typography paragraph>
-        Access archived datasets via{' '}
-        <Link
-          external
-          to="http://ftp.ebi.ac.uk/pub/databases/opentargets/platform"
-        >
+        Access archived datasets via{" "}
+        <Link external to="http://ftp.ebi.ac.uk/pub/databases/opentargets/platform">
           FTP
         </Link>
       </Typography>
@@ -199,13 +181,12 @@ function DownloadsPage() {
       {config.isPartnerPreview ? (
         <Alert severity="warning" className={classes.alert}>
           <AlertTitle>Important Note</AlertTitle>
-          These data files do not contain any of the custom data found in this
-          version of the Platform. They are the same files that are available
-          from the public Platform. To download the data for a specific project,
-          please visit the{' '}
+          These data files do not contain any of the custom data found in this version of the
+          Platform. They are the same files that are available from the public Platform. To download
+          the data for a specific project, please visit the{" "}
           <Link external to="http://home.opentargets.org/">
             Open Targets Intranet
-          </Link>{' '}
+          </Link>{" "}
           and submit a data request.
         </Alert>
       ) : null}

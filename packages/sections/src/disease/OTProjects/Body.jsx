@@ -10,13 +10,13 @@ import { defaultRowsPerPageOptions } from "../../constants";
 import { definition } from ".";
 import OT_PROJECTS_QUERY from "./OTProjectsQuery.gql";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   primaryColor: {
     color: theme.palette.primary.main,
   },
 }));
 
-const getColumns = (classes) => [
+const getColumns = classes => [
   {
     id: "projectName",
     label: "Project name",
@@ -35,11 +35,7 @@ const getColumns = (classes) => [
     label: "Integrates in PPP",
     renderCell: ({ integratesInPPP }) =>
       integratesInPPP ? (
-        <FontAwesomeIcon
-          icon={faCheckCircle}
-          className={classes.primaryColor}
-          size="lg"
-        />
+        <FontAwesomeIcon icon={faCheckCircle} className={classes.primaryColor} size="lg" />
       ) : null,
     exportValue: ({ integratesInPPP }) => (integratesInPPP ? "yes" : "no"),
   },

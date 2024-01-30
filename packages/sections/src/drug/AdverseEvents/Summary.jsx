@@ -1,8 +1,7 @@
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { SummaryItem, usePlatformApi } from 'ui';
-
-import { definition } from '.';
-import ADVERSE_EVENTS_SUMMARY_FRAGMENT from './AdverseEventsSummaryFragment.gql';
+import { definition } from ".";
+import ADVERSE_EVENTS_SUMMARY_FRAGMENT from "./AdverseEventsSummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(ADVERSE_EVENTS_SUMMARY_FRAGMENT);
@@ -12,9 +11,7 @@ function Summary() {
       definition={definition}
       request={request}
       renderSummary={data =>
-        `${data.adverseEvents.count} adverse event${
-          data.adverseEvents.count !== 1 ? 's' : ''
-        }`
+        `${data.adverseEvents.count} adverse event${data.adverseEvents.count !== 1 ? "s" : ""}`
       }
     />
   );

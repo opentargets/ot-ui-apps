@@ -7,12 +7,10 @@ type LegendProps = {
   url?: string;
   urlLabel?: string;
   hideLink?: boolean;
-}
+};
 
 function Legend({ url, urlLabel, hideLink }: LegendProps) {
-  const linkUrl =
-    url ||
-    "https://platform-docs.opentargets.org/associations#association-scores";
+  const linkUrl = url || "https://platform-docs.opentargets.org/associations#association-scores";
   const linkLabel = urlLabel || "Score";
 
   return (
@@ -27,9 +25,7 @@ function Legend({ url, urlLabel, hideLink }: LegendProps) {
       />{" "}
       <span style={{ position: "relative", bottom: "5px" }}>No data</span>
       <div style={{ display: "flex" }}>
-        <div style={{ height: "20px", width: "20px", textAlign: "center" }}>
-          0
-        </div>
+        <div style={{ height: "20px", width: "20px", textAlign: "center" }}>0</div>
         {colorRange.map((color: string) => (
           <div
             key={color}
@@ -40,9 +36,7 @@ function Legend({ url, urlLabel, hideLink }: LegendProps) {
             }}
           />
         ))}
-        <div style={{ height: "20px", width: "20px", textAlign: "center" }}>
-          1
-        </div>
+        <div style={{ height: "20px", width: "20px", textAlign: "center" }}>1</div>
       </div>
       {hideLink ? null : (
         <Link href={linkUrl}>

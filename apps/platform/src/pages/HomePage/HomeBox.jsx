@@ -1,23 +1,23 @@
-import { Grid, Paper, Box } from '@mui/material';
-import config from '../../config';
+import { Grid, Paper, Box } from "@mui/material";
+import config from "../../config";
 
-import OTLogo from '../../assets/OTLogo';
-import PPOTLogo from '../../assets/PPPOTLogo';
+import OTLogo from "../../assets/OTLogo";
+import PPOTLogo from "../../assets/PPPOTLogo";
 
 const styles = {
   homeboxContainer: {
-    overflow: 'visible',
-    padding: '30px 60px',
-    maxWidth: '800px',
-    margin: 'auto',
+    overflow: "visible",
+    padding: "30px 60px",
+    maxWidth: "800px",
+    margin: "auto",
   },
   homeboxHeader: {
-    textAlign: 'center',
-    marginBottom: '20px',
+    textAlign: "center",
+    marginBottom: "20px",
   },
   logo: {
-    maxWidth: '30rem',
-    width: '100%',
+    maxWidth: "30rem",
+    width: "100%",
   },
 };
 
@@ -35,7 +35,7 @@ function HomeBox({ children }) {
         {children}
       </Paper>
     </Grid>
-  )
+  );
 }
 
 export default HomeBox;

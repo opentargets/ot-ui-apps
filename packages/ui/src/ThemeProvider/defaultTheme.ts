@@ -56,23 +56,23 @@ const theme = {
       },
       styleOverrides: {
         root: {
-          border: '1px solid',
-          padding: '6px 12px',
-          minWidth: '32px',
-          minHeight: '32px',
-          height: '32px',
-          textTransform: 'none',
-          color: '#5A5F5F',
-          borderColor: 'rgb(196,196,196)',
+          border: "1px solid",
+          padding: "6px 12px",
+          minWidth: "32px",
+          minHeight: "32px",
+          height: "32px",
+          textTransform: "none",
+          color: "#5A5F5F",
+          borderColor: "rgb(196,196,196)",
         },
       },
     },
     MuiTabs: {
       styleOverrides: {
         indicator: {
-          transition: 'none',
-        }
-      }
+          transition: "none",
+        },
+      },
     },
     MuiTab: {
       defaultProps: {
@@ -81,11 +81,11 @@ const theme = {
       styleOverrides: {
         root: {
           textTransform: "none",
-        }
-      }
-    }
+        },
+      },
+    },
   },
-  
+
   // overrides: {
   //   MuiButton: {
   //     root: {

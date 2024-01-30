@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Skeleton } from '@mui/material';
-import { useBatchDownloader } from 'ui';
-import config from '../../config';
+import { useState, useEffect } from "react";
+import { Skeleton } from "@mui/material";
+import { useBatchDownloader } from "ui";
+import config from "../../config";
 
-import ASSOCIATIONS_VIZ_QUERY from './AssociationsViz.gql';
+import ASSOCIATIONS_VIZ_QUERY from "./AssociationsViz.gql";
 
 function Wrapper({ ensemblId, symbol, Component, aggregationFilters }) {
   const [nodes, setNodes] = useState();
@@ -12,19 +12,16 @@ function Wrapper({ ensemblId, symbol, Component, aggregationFilters }) {
   const getAllAssociations = useBatchDownloader(
     ASSOCIATIONS_VIZ_QUERY,
     { ensemblId, aggregationFilters },
-    'data.target.associatedDiseases'
+    "data.target.associatedDiseases"
   );
 
   useEffect(
     () => {
       let isCurrent = true;
-      const promises = [
-        fetch(config.efoURL).then(res => res.text()),
-        getAllAssociations(),
-      ];
+      const promises = [fetch(config.efoURL).then(res => res.text()), getAllAssociations()];
       Promise.all(promises).then(data => {
         if (isCurrent) {
-          const currentNodes = data[0].trim().split('\n').map(JSON.parse);
+          const currentNodes = data[0].trim().split("\n").map(JSON.parse);
           setNodes(currentNodes);
           setAssociations(data[1]);
         }

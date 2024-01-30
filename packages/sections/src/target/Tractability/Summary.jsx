@@ -1,8 +1,7 @@
-import { SummaryItem, usePlatformApi } from 'ui';
-import { definition } from '.';
+import { SummaryItem, usePlatformApi } from "ui";
+import { definition } from ".";
 
-
-import TRACTABILITY_SUMMARY_FRAGMENT from './TractabilitySummary.gql';
+import TRACTABILITY_SUMMARY_FRAGMENT from "./TractabilitySummary.gql";
 
 function Summary() {
   const request = usePlatformApi(TRACTABILITY_SUMMARY_FRAGMENT);
@@ -29,10 +28,10 @@ function Summary() {
           modalities.push('PROTAC');
         } */
         if (modalities.length === 0) {
-          modalities.push('Assessment available');
+          modalities.push("Assessment available");
         }
         // return null for 'no data'
-        return modalities.length > 0 ? modalities.join(' • ') : null;
+        return modalities.length > 0 ? modalities.join(" • ") : null;
       }}
     />
   );

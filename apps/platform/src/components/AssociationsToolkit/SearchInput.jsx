@@ -1,22 +1,22 @@
-import { useEffect, useState } from 'react';
-import { Grid, Input, IconButton } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { faXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useDebounce } from 'ui';
-import useAotfContext from './hooks/useAotfContext';
+import { useEffect, useState } from "react";
+import { Grid, Input, IconButton } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { faXmark, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useDebounce } from "ui";
+import useAotfContext from "./hooks/useAotfContext";
 
 const InputContainer = styled(Grid)({
-  marginRight: '15px',
-  width: '250px',
-  '& input': {
-    width: '220px',
+  marginRight: "15px",
+  width: "250px",
+  "& input": {
+    width: "220px",
   },
 });
 
-function SearchInput({ placeholder = 'Search' }) {
+function SearchInput({ placeholder = "Search" }) {
   const { handleSearchInputChange } = useAotfContext();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 200);
 
   const handleInputChange = e => {
@@ -24,7 +24,7 @@ function SearchInput({ placeholder = 'Search' }) {
   };
 
   const handleInputClean = () => {
-    setInputValue('');
+    setInputValue("");
   };
 
   useEffect(

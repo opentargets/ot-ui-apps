@@ -10,10 +10,8 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={(data) =>
-        `${data.indications.count} indication${
-          data.indications.count !== 1 ? "s" : ""
-        }`
+      renderSummary={data =>
+        `${data.indications.count} indication${data.indications.count !== 1 ? "s" : ""}`
       }
     />
   );

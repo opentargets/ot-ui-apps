@@ -8,9 +8,7 @@ const ExpressionAtlasHeatmap = lazy(() =>
 
 function AtlasTab({ ensgId, symbol }) {
   return (
-    <ErrorBoundary
-      message={`There was an error loading the Expression Atlas plugin for ${symbol}`}
-    >
+    <ErrorBoundary message={`There was an error loading the Expression Atlas plugin for ${symbol}`}>
       <Helmet
         link={[
           {

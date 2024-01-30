@@ -1,24 +1,16 @@
-import { faPrescriptionBottleAlt } from '@fortawesome/free-solid-svg-icons';
-import { Header as HeaderBase, ExternalLink } from 'ui';
+import { faPrescriptionBottleAlt } from "@fortawesome/free-solid-svg-icons";
+import { Header as HeaderBase, ExternalLink } from "ui";
 
 function DrugHeader({ loading, chemblId, name, crossReferences }) {
   const chemblUrl = `https://www.ebi.ac.uk/chembl/compound_report_card/${chemblId}/`;
 
-  const drugBank = crossReferences
-    ? crossReferences.find(cr => cr.source === 'drugbank')
-    : null;
-  const chEBI = crossReferences
-    ? crossReferences.find(cr => cr.source === 'chEBI')
-    : null;
-  const dailyMed = crossReferences
-    ? crossReferences.find(cr => cr.source === 'DailyMed')
-    : null;
+  const drugBank = crossReferences ? crossReferences.find(cr => cr.source === "drugbank") : null;
+  const chEBI = crossReferences ? crossReferences.find(cr => cr.source === "chEBI") : null;
+  const dailyMed = crossReferences ? crossReferences.find(cr => cr.source === "DailyMed") : null;
   const drugCentral = crossReferences
-    ? crossReferences.find(cr => cr.source === 'DrugCentral')
+    ? crossReferences.find(cr => cr.source === "DrugCentral")
     : null;
-  const wikipedia = crossReferences
-    ? crossReferences.find(cr => cr.source === 'Wikipedia')
-    : null;
+  const wikipedia = crossReferences ? crossReferences.find(cr => cr.source === "Wikipedia") : null;
 
   return (
     <HeaderBase

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -8,32 +8,31 @@ import {
   Button,
   Snackbar,
   styled,
-} from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { useLocation } from 'react-router-dom';
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { useLocation } from "react-router-dom";
 
-const PPP_API_URL =
-  'https://api.partner-platform.opentargets.org/api/v4/graphql';
-const PPP_WEB_URL = 'https://partner-platform.opentargets.org';
+const PPP_API_URL = "https://api.partner-platform.opentargets.org/api/v4/graphql";
+const PPP_WEB_URL = "https://partner-platform.opentargets.org";
 const FOURTEEN = 14;
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    padding: '1em 1em 2em',
-    borderRadius: '12px',
+    padding: "1em 1em 2em",
+    borderRadius: "12px",
   },
   actions: {
-    '@media (max-width: 767px)': {
-      flexDirection: 'column',
+    "@media (max-width: 767px)": {
+      flexDirection: "column",
     },
   },
   button: {
-    '@media (max-width: 767px)': {
-      minHeight: 'auto',
-      height: '100%',
-      width: '100%',
-      margin: '0 !important',
-      marginTop: '0.3em !important',
+    "@media (max-width: 767px)": {
+      minHeight: "auto",
+      height: "100%",
+      width: "100%",
+      margin: "0 !important",
+      marginTop: "0.3em !important",
     },
   },
 }));
@@ -53,14 +52,12 @@ function ShouldAccessPPP() {
     const windowLocation = window.location.href;
     // escape validation on dev mode
     if (import.meta.env.DEV) return false;
-    return !windowLocation.includes('partner');
+    return !windowLocation.includes("partner");
   };
 
   const shouldShowPopupAfterFixedDays = (DAYS: number) => {
     const currentDate = new Date();
-    const oldDateObject = JSON.parse(
-      localStorage.getItem('ppp-reminder-closed-on') || '{}'
-    );
+    const oldDateObject = JSON.parse(localStorage.getItem("ppp-reminder-closed-on") || "{}");
     if (!oldDateObject.date) return true;
     const oldDate = new Date(oldDateObject.date);
     const diffInTime = Math.abs(currentDate.getTime() - oldDate.getTime());
@@ -83,19 +80,16 @@ function ShouldAccessPPP() {
 
   const remindMeLater = () => {
     handleCloseDialog();
-    localStorage.setItem(
-      'ppp-reminder-closed-on',
-      JSON.stringify({ date: new Date() })
-    );
+    localStorage.setItem("ppp-reminder-closed-on", JSON.stringify({ date: new Date() }));
     setSnackbarOpen(true);
   };
 
   const checkPPPaccess = () => {
     fetch(PPP_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        operationName: 'DataVersion',
+        operationName: "DataVersion",
         variables: {},
         query: `query DataVersion {
         meta {
@@ -114,13 +108,12 @@ function ShouldAccessPPP() {
         if (response.status === 200) handleOpenDialog();
       })
       .catch(() => {
-        console.log('Does not have access to Partner Preview Platform');
+        console.log("Does not have access to Partner Preview Platform");
       });
   };
 
   useEffect(() => {
-    if (isOnPublic() && shouldShowPopupAfterFixedDays(FOURTEEN))
-      checkPPPaccess();
+    if (isOnPublic() && shouldShowPopupAfterFixedDays(FOURTEEN)) checkPPPaccess();
   }, []);
 
   const goToPPP = () => {
@@ -137,25 +130,17 @@ function ShouldAccessPPP() {
           paper: classes.paper,
         }}
       >
-        <DialogTitle>
-          Looks like you are part of the Open Targets Consortium!
-        </DialogTitle>
+        <DialogTitle>Looks like you are part of the Open Targets Consortium!</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            We are pleased to inform you that you have access to our exclusive
-            Partner Preview Platform &#40;PPP&#41;. This will have
-            pre-publication data from OTAR projects in addition to all the
-            publicly available data, providing early access to the latest
-            features, updates, and innovations before they are made available to
-            the public.
+            We are pleased to inform you that you have access to our exclusive Partner Preview
+            Platform &#40;PPP&#41;. This will have pre-publication data from OTAR projects in
+            addition to all the publicly available data, providing early access to the latest
+            features, updates, and innovations before they are made available to the public.
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.actions}>
-          <Button
-            className={classes.button}
-            onClick={remindMeLater}
-            variant="outlined"
-          >
+          <Button className={classes.button} onClick={remindMeLater} variant="outlined">
             Remind me later
           </Button>
           <PrimaryButton

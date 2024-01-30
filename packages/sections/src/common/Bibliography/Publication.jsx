@@ -64,14 +64,14 @@ class Publication extends Component {
           alignItems="stretch"
           spacing={2}
         >
-          {similar.map((hit) => (
+          {similar.map(hit => (
             <Grid item xs={12} key={v1()}>
               <SimplePublication
                 variant="small"
                 pmId={hit._source.pub_id}
                 title={hit._source.title}
                 authors={
-                  (hit._source.authors || []).map((a) => ({
+                  (hit._source.authors || []).map(a => ({
                     lastName: a.LastName,
                     initials: a.Initials,
                   })) || []
@@ -93,7 +93,7 @@ class Publication extends Component {
   getAbstract = () => {
     const { pmId } = this.props;
     getPublicationAbstract(pmId).then(
-      (resp) => {
+      resp => {
         this.setState({
           abstract: resp.abstract,
         });
@@ -110,7 +110,7 @@ class Publication extends Component {
   getSimilar = () => {
     const { pmId } = this.props;
     getSimilarPublications(pmId).then(
-      (resp) => {
+      resp => {
         this.setState({
           similar: resp.hits.hits,
         });
@@ -130,12 +130,7 @@ class Publication extends Component {
     return (
       <>
         {/* Publication basic details */}
-        <SimplePublication
-          pmId={pmId}
-          title={title}
-          authors={authors}
-          journal={journal}
-        />
+        <SimplePublication pmId={pmId} title={title} authors={authors} journal={journal} />
 
         {/* Show more details */}
         <div>
@@ -155,12 +150,7 @@ class Publication extends Component {
               </>
             ) : (
               <>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  disabled
-                >
+                <Button variant="outlined" color="primary" size="small" disabled>
                   No abstract available
                 </Button>{" "}
               </>

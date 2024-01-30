@@ -20,8 +20,8 @@ const headers = [
   { id: "protein", label: "Protein" },
 ];
 
-const getDownloadRows = (expressions) =>
-  expressions.map((expression) => ({
+const getDownloadRows = expressions =>
+  expressions.map(expression => ({
     label: expression.tissue.label,
     organs: expression.tissue.organs.join(","),
     anatomicalSystems: expression.tissue.anatomicalSystems.join(","),

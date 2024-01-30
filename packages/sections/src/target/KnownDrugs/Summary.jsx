@@ -1,7 +1,7 @@
-import { SummaryItem, usePlatformApi } from 'ui';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from '.';
-import KNOWN_DRUGS_SUMMARY_FRAGMENT from './KnownDrugsSummary.gql';
+import { definition } from ".";
+import KNOWN_DRUGS_SUMMARY_FRAGMENT from "./KnownDrugsSummary.gql";
 
 function Summary() {
   const request = usePlatformApi(KNOWN_DRUGS_SUMMARY_FRAGMENT);
@@ -12,7 +12,7 @@ function Summary() {
       request={request}
       renderSummary={data => (
         <>
-          {(data.knownDrugs.uniqueDrugs || 0).toLocaleString()} drugs with{' '}
+          {(data.knownDrugs.uniqueDrugs || 0).toLocaleString()} drugs with{" "}
           {(data.knownDrugs.uniqueDiseases || 0).toLocaleString()} indications
         </>
       )}

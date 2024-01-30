@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   emailLink: {
     display: "block",
     textDecoration: "none",
@@ -24,9 +24,7 @@ export const EmailLink = ({ href, label, icon }) => {
   const classes = useStyles();
   return (
     <a className={classes.emailLink} href={href}>
-      {icon && (
-        <FontAwesomeIcon className={classes.icon} icon={icon} size="lg" />
-      )}
+      {icon && <FontAwesomeIcon className={classes.icon} icon={icon} size="lg" />}
       {label}
     </a>
   );

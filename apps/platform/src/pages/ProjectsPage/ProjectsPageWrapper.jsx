@@ -1,8 +1,8 @@
-import { Suspense, lazy } from 'react';
-import { useLocation } from 'react-router-dom';
-import { LoadingBackdrop, BasePage } from 'ui';
+import { Suspense, lazy } from "react";
+import { useLocation } from "react-router-dom";
+import { LoadingBackdrop, BasePage } from "ui";
 
-const ProjectPage = lazy(() => import('./ProjectsPage'));
+const ProjectPage = lazy(() => import("./ProjectsPage"));
 
 function ProjectsPageWrapper() {
   const location = useLocation();

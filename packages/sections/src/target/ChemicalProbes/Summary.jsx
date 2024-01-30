@@ -10,7 +10,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={(data) =>
+      renderSummary={data =>
         data.chemicalProbes?.length > 0
           ? `${data.chemicalProbes.length} chemical probe${
               data.chemicalProbes.length !== 1 ? "s" : ""

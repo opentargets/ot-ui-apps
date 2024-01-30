@@ -1,9 +1,9 @@
-import { Box, Skeleton, Typography, Tooltip } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Box, Skeleton, Typography, Tooltip } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import _ from 'lodash';
-import Chip from '../Chip';
-import LongList from '../LongList';
+import _ from "lodash";
+import Chip from "../Chip";
+import LongList from "../LongList";
 
 const useContainerStyles = makeStyles(theme => ({
   tooltip: {
@@ -21,9 +21,9 @@ function ChipList({ children, title, loading = false, inline }) {
 
   return (
     <Box>
-      <Typography variant="subtitle2" display={inline ? 'inline' : ''}>
+      <Typography variant="subtitle2" display={inline ? "inline" : ""}>
         {title}
-        {inline ? ': ' : ''}
+        {inline ? ": " : ""}
       </Typography>
       {loading ? (
         <Skeleton count={1} />

@@ -1,7 +1,7 @@
-import _ from 'lodash';
-import { useState } from 'react';
-import client from '../client';
-import { downloaderChunkSize } from '../constants';
+import _ from "lodash";
+import { useState } from "react";
+import client from "../client";
+import { downloaderChunkSize } from "../constants";
 
 const getRows = (data, dataPath) => _.get(data, dataPath, []);
 
@@ -19,13 +19,7 @@ const getRows = (data, dataPath) => _.get(data, dataPath, []);
  *
  * @returns {object} Object with {loading, error, data} fields.
  */
-function useBatchDownloader(
-  query,
-  variables,
-  dataPath,
-  rowField = 'rows',
-  countField = 'count'
-) {
+function useBatchDownloader(query, variables, dataPath, rowField = "rows", countField = "count") {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
   const [data, setData] = useState();
@@ -47,15 +41,13 @@ function useBatchDownloader(
     try {
       const firstChunk = await getDataChunk(index, downloaderChunkSize);
       wholeDataset = [...getRows(firstChunk, rowPath)];
-      index+=1;
+      index += 1;
 
-      const count = Math.ceil(
-        _.get(firstChunk, countPath) / downloaderChunkSize
-      );
+      const count = Math.ceil(_.get(firstChunk, countPath) / downloaderChunkSize);
 
       while (index < count) {
         chunkPromises.push(getDataChunk(index, downloaderChunkSize));
-        index+=1;
+        index += 1;
       }
 
       const remainingChunks = await Promise.all(chunkPromises);

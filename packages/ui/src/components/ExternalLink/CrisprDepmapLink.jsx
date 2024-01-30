@@ -5,7 +5,7 @@ import { Tooltip } from "@mui/material";
 
 import Link from "../Link";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   helpIcon: {
     fontSize: "0.875rem !important",
   },
@@ -30,10 +30,7 @@ function CrisprDepmapLink({ id }) {
         placement="top"
       >
         <sup>
-          <FontAwesomeIcon
-            icon={faCircleQuestion}
-            className={classes.helpIcon}
-          />
+          <FontAwesomeIcon icon={faCircleQuestion} className={classes.helpIcon} />
         </sup>
       </Tooltip>
       :{" "}

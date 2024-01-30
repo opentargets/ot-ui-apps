@@ -10,7 +10,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={(data) => <>{data.phenotypes?.count || 0} phenotypes</>}
+      renderSummary={data => <>{data.phenotypes?.count || 0} phenotypes</>}
     />
   );
 }

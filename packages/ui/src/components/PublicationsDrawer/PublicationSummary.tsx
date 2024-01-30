@@ -45,11 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function PublicationSummary({
-  pmcId,
-  symbol,
-  name,
-}: PublicationSummaryProps): JSX.Element {
+function PublicationSummary({ pmcId, symbol, name }: PublicationSummaryProps): JSX.Element {
   const [loading, setLoading] = useState<LoadingState>(false);
   const [error, setError] = useState<TextState>(null);
   const [summaryText, setSummaryText] = useState<TextState>(null);
@@ -58,23 +54,23 @@ function PublicationSummary({
   const classes = useStyles();
 
   const handleChange = () => {
-    setCollapseOpen((prev) => !prev);
+    setCollapseOpen(prev => !prev);
   };
 
   function requestSummary({ baseUrl, requestOptions }: any) {
     fetch(baseUrl, requestOptions)
-      .then((response) => {
+      .then(response => {
         if (response.ok) return response.json();
-        return response.json().then((err) => {
+        return response.json().then(err => {
           throw new Error(err.error);
         });
       })
-      .then((data) => {
+      .then(data => {
         setSummaryText(data.text);
         setError(null);
         setLoading(false);
       })
-      .catch((err) => {
+      .catch(err => {
         setError(err.message);
         setLoading(false);
       });

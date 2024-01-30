@@ -1,8 +1,6 @@
-// Todo add base page and import 
+// Todo add base page and import
 function NotFoundPage() {
-  return (
-    <div>NotFoundPage</div>
-  )
+  return <div>NotFoundPage</div>;
 }
 
-export default NotFoundPage
+export default NotFoundPage;

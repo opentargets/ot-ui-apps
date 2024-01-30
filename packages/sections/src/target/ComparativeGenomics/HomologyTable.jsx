@@ -38,7 +38,7 @@ const speciesIcons = {
   10090: MouseIcon,
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   star: {
     color: theme.palette.primary.main,
   },
@@ -111,17 +111,13 @@ function getColumns(classes) {
       id: "queryPercentageIdentity",
       label: `Query %id`,
       renderCell: ({ queryPercentageIdentity }) =>
-        queryPercentageIdentity
-          ? queryPercentageIdentity.toFixed(decimalPlaces)
-          : "N/A",
+        queryPercentageIdentity ? queryPercentageIdentity.toFixed(decimalPlaces) : "N/A",
     },
     {
       id: "targetPercentageIdentity",
       label: `Target %id`,
       renderCell: ({ targetPercentageIdentity }) =>
-        targetPercentageIdentity
-          ? targetPercentageIdentity.toFixed(decimalPlaces)
-          : "N/A",
+        targetPercentageIdentity ? targetPercentageIdentity.toFixed(decimalPlaces) : "N/A",
     },
   ];
 }

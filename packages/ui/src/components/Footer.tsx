@@ -36,13 +36,7 @@ const FooterLink = ({ label, url, icon }) => {
           <EmailLink href={url} label={label} icon={icon} />
         ) : (
           <Link external footer to={url}>
-            {icon && (
-              <FontAwesomeIcon
-                className={classes.iconClass}
-                icon={icon}
-                size="lg"
-              />
-            )}
+            {icon && <FontAwesomeIcon className={classes.iconClass} icon={icon} size="lg" />}
             {label}
           </Link>
         )}
@@ -74,11 +68,7 @@ const FooterSocial = ({ social }) => {
   return (
     <>
       <FooterSectionHeading>Follow us</FooterSectionHeading>
-      <Grid
-        className={classes.iconsContainer}
-        container
-        justifyContent="space-between"
-      >
+      <Grid className={classes.iconsContainer} container justifyContent="space-between">
         {social.map(({ icon, url, label }, i) => (
           <Grid item key={i}>
             <Link external footer to={url} ariaLabel={label}>
@@ -115,37 +105,18 @@ const FooterSection = ({
 }) => {
   const classes = useSectionStyles();
   return (
-    <Grid
-      item
-      xs={12}
-      sm={6}
-      md={3}
-      container
-      direction="column"
-      justifyContent="space-between"
-    >
+    <Grid item xs={12} sm={6} md={3} container direction="column" justifyContent="space-between">
       <Grid item className={classes.section}>
         <FooterSectionHeading>{heading}</FooterSectionHeading>
         {links.map((link, i) => {
           if (link.showOnlyPartner) {
             return (
               <PrivateWrapper key={i}>
-                <FooterLink
-                  label={link.label}
-                  url={link.url}
-                  icon={link.icon}
-                />
+                <FooterLink label={link.label} url={link.url} icon={link.icon} />
               </PrivateWrapper>
             );
           } else {
-            return (
-              <FooterLink
-                key={i}
-                label={link.label}
-                url={link.url}
-                icon={link.icon}
-              />
-            );
+            return <FooterLink key={i} label={link.label} url={link.url} icon={link.icon} />;
           }
         })}
       </Grid>
@@ -212,27 +183,14 @@ const LicenseCC0 = ({ links }) => {
 const Footer = ({ externalLinks }) => {
   const classes = useStyles();
   return (
-    <Grid
-      sx={{ p: 3 }}
-      className={classes.footer}
-      container
-      justifyContent="center"
-      spacing={3}
-    >
+    <Grid sx={{ p: 3 }} className={classes.footer} container justifyContent="center" spacing={3}>
       <Grid item container xs={12} md={10} spacing={2}>
         <FooterSection heading="About" links={externalLinks.about}>
           <LicenseCC0 links={externalLinks.license} />
         </FooterSection>
-        <FooterSection
-          heading="Help"
-          links={externalLinks.help}
-          social={externalLinks.social}
-        />
+        <FooterSection heading="Help" links={externalLinks.help} social={externalLinks.social} />
         <FooterSection heading="Partners" links={externalLinks.partners} />
-        <FooterSection
-          heading="About Open Targets"
-          links={externalLinks.network}
-        />
+        <FooterSection heading="About Open Targets" links={externalLinks.network} />
       </Grid>
     </Grid>
   );

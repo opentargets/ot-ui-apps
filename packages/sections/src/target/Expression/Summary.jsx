@@ -10,10 +10,8 @@ function Summary() {
       definition={definition}
       request={request}
       renderSummary={() => {
-        const hasRNA = request.data.expressions.some((d) => d.rna.level >= 0);
-        const hasProtein = request.data.expressions.some(
-          (d) => d.protein.level >= 0
-        );
+        const hasRNA = request.data.expressions.some(d => d.rna.level >= 0);
+        const hasProtein = request.data.expressions.some(d => d.protein.level >= 0);
         const expressionTypes = [];
 
         if (hasRNA) {

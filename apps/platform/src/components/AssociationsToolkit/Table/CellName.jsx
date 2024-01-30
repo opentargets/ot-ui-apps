@@ -1,53 +1,48 @@
-import { useState } from 'react';
-import { styled, Typography } from '@mui/material';
-import {
-  faDna,
-  faStethoscope,
-  faThumbTack,
-  faXmark,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'ui';
-import Tooltip from './AssocTooltip';
+import { useState } from "react";
+import { styled, Typography } from "@mui/material";
+import { faDna, faStethoscope, faThumbTack, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "ui";
+import Tooltip from "./AssocTooltip";
 
-import useAotfContext from '../hooks/useAotfContext';
+import useAotfContext from "../hooks/useAotfContext";
 
-const NameContainer = styled('div')({
-  position: 'relative',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  '&:hover': {
-    cursor: 'pointer',
+const NameContainer = styled("div")({
+  position: "relative",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  "&:hover": {
+    cursor: "pointer",
   },
-  '&:hover > .PinnedContainer': {
+  "&:hover > .PinnedContainer": {
     opacity: 1,
   },
 });
 
-const TextContainer = styled('div')({
-  display: 'block',
-  overflow: 'hidden',
-  textAlign: 'end',
-  textOverflow: 'ellipsis',
-  maxWidth: '120px',
-  '&:hover span': {
-    textDecoration: 'underline',
+const TextContainer = styled("div")({
+  display: "block",
+  overflow: "hidden",
+  textAlign: "end",
+  textOverflow: "ellipsis",
+  maxWidth: "120px",
+  "&:hover span": {
+    textDecoration: "underline",
   },
 });
 
-const LinksTooltipContent = styled('span')({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '5px',
+const LinksTooltipContent = styled("span")({
+  display: "flex",
+  flexDirection: "column",
+  gap: "5px",
 });
 
-const PinnedContainer = styled('div', {
-  shouldForwardProp: prop => prop !== 'active',
+const PinnedContainer = styled("div", {
+  shouldForwardProp: prop => prop !== "active",
 })(({ active }) => ({
-  opacity: active ? '1' : '0',
-  cursor: 'pointer',
-  marginLeft: '5px',
+  opacity: active ? "1" : "0",
+  cursor: "pointer",
+  marginLeft: "5px",
 }));
 
 function TooltipContent({ id, entity, name, icon }) {
@@ -75,10 +70,10 @@ function CellName({ name, rowId, row, tablePrefix }) {
   const rowData = row.original;
 
   const isPinned = pinnedEntries.find(e => e === rowData.id);
-  const rowEntity = entityToGet === 'target' ? 'target' : 'disease';
-  const icon = rowEntity === 'target' ? faDna : faStethoscope;
+  const rowEntity = entityToGet === "target" ? "target" : "disease";
+  const icon = rowEntity === "target" ? faDna : faStethoscope;
 
-  const pinnedIcon = tablePrefix === 'body' ? faThumbTack : faXmark;
+  const pinnedIcon = tablePrefix === "body" ? faThumbTack : faXmark;
 
   const handleClickPin = () => {
     if (isPinned) {
@@ -95,20 +90,14 @@ function CellName({ name, rowId, row, tablePrefix }) {
       onClose={() => setOpen(false)}
       placement="top"
       arrow
-      title={
-        <TooltipContent name={name} entity={rowEntity} id={rowId} icon={icon} />
-      }
+      title={<TooltipContent name={name} entity={rowEntity} id={rowId} icon={icon} />}
     >
       <NameContainer
         onClick={() => {
           setOpen(true);
         }}
       >
-        <PinnedContainer
-          className="PinnedContainer"
-          onClick={handleClickPin}
-          active={isPinned}
-        >
+        <PinnedContainer className="PinnedContainer" onClick={handleClickPin} active={isPinned}>
           <FontAwesomeIcon icon={pinnedIcon} size="sm" />
         </PinnedContainer>
         <TextContainer>

@@ -1,64 +1,64 @@
-import { faBook, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
   faDiscourse,
   faTwitterSquare,
   faLinkedin,
   faGithubSquare,
   faYoutubeSquare,
-} from '@fortawesome/free-brands-svg-icons';
-import config from './config';
+} from "@fortawesome/free-brands-svg-icons";
+import config from "./config";
 
 export const externalLinks = {
   about: [
     {
-      label: 'Community forum',
-      url: 'https://community.opentargets.org',
+      label: "Community forum",
+      url: "https://community.opentargets.org",
     },
 
     {
-      label: 'Privacy notice',
-      url: 'https://www.ebi.ac.uk/data-protection/privacy-notice/open-targets',
+      label: "Privacy notice",
+      url: "https://www.ebi.ac.uk/data-protection/privacy-notice/open-targets",
     },
 
     {
-      label: 'Terms of use',
-      url: 'https://platform-docs.opentargets.org/terms-of-use',
+      label: "Terms of use",
+      url: "https://platform-docs.opentargets.org/terms-of-use",
     },
   ],
   license: {
-    label: 'Open Targets Platform',
-    url: 'https://platform.opentargets.org/',
+    label: "Open Targets Platform",
+    url: "https://platform.opentargets.org/",
   },
   network: [
-    { label: 'Science', url: 'https://www.opentargets.org/science' },
-    { label: 'Publications', url: 'https://www.opentargets.org/publications' },
-    { label: 'Open Targets Genetics', url: 'https://genetics.opentargets.org' },
-    { label: 'Jobs', url: 'https://www.opentargets.org/jobs' },
-    { label: 'Blog', url: 'https://blog.opentargets.org' },
+    { label: "Science", url: "https://www.opentargets.org/science" },
+    { label: "Publications", url: "https://www.opentargets.org/publications" },
+    { label: "Open Targets Genetics", url: "https://genetics.opentargets.org" },
+    { label: "Jobs", url: "https://www.opentargets.org/jobs" },
+    { label: "Blog", url: "https://blog.opentargets.org" },
   ],
   partners: [
-    { label: 'Bristol Myers Squibb', url: 'https://www.bms.com' },
-    { label: 'EMBL-EBI', url: 'https://www.ebi.ac.uk' },
-    { label: 'Genentech', url: 'https://www.gene.com' },
-    { label: 'GSK', url: 'https://www.gsk.com' },
-    { label: 'Pfizer', url: 'https://pfizer.com' },
-    { label: 'Sanofi', url: 'https://www.sanofi.com' },
-    { label: 'Wellcome Sanger Institute', url: 'https://www.sanger.ac.uk' },
+    { label: "Bristol Myers Squibb", url: "https://www.bms.com" },
+    { label: "EMBL-EBI", url: "https://www.ebi.ac.uk" },
+    { label: "Genentech", url: "https://www.gene.com" },
+    { label: "GSK", url: "https://www.gsk.com" },
+    { label: "Pfizer", url: "https://pfizer.com" },
+    { label: "Sanofi", url: "https://www.sanofi.com" },
+    { label: "Wellcome Sanger Institute", url: "https://www.sanger.ac.uk" },
   ],
   help: [
     {
-      label: 'Documentation',
+      label: "Documentation",
       icon: faBook,
-      url: 'https://platform-docs.opentargets.org',
+      url: "https://platform-docs.opentargets.org",
     },
     {
-      label: 'Community',
+      label: "Community",
       icon: faDiscourse,
-      url: 'https://community.opentargets.org',
+      url: "https://community.opentargets.org",
       external: true,
     },
     {
-      label: 'Contact us',
+      label: "Contact us",
       icon: faEnvelope,
       url: `mailto: ${config.profile.helpdeskEmail}`,
       external: true,
@@ -68,23 +68,23 @@ export const externalLinks = {
   social: [
     {
       icon: faTwitterSquare,
-      url: 'https://twitter.com/opentargets',
-      label: 'Go to OpenTargets twitter',
+      url: "https://twitter.com/opentargets",
+      label: "Go to OpenTargets twitter",
     },
     {
       icon: faLinkedin,
-      url: 'https://www.linkedin.com/company/open-targets',
-      label: 'Go to OpenTargets linkedin',
+      url: "https://www.linkedin.com/company/open-targets",
+      label: "Go to OpenTargets linkedin",
     },
     {
       icon: faYoutubeSquare,
-      url: 'https://www.youtube.com/opentargets',
-      label: 'Go to OpenTargets youtube',
+      url: "https://www.youtube.com/opentargets",
+      label: "Go to OpenTargets youtube",
     },
     {
       icon: faGithubSquare,
-      url: 'https://github.com/opentargets',
-      label: 'Go to OpenTargets github',
+      url: "https://github.com/opentargets",
+      label: "Go to OpenTargets github",
     },
   ],
 };
@@ -93,38 +93,38 @@ export const externalLinks = {
 export const mainMenuItems = config.profile.mainMenuItems ?? [
   // Projects - ppp
   {
-    name: 'Projects',
-    url: '/projects',
+    name: "Projects",
+    url: "/projects",
     external: false,
     showOnlyPartner: true,
   },
   // Documentation
   {
-    name: 'Documentation',
-    url: 'https://platform-docs.opentargets.org/getting-started',
+    name: "Documentation",
+    url: "https://platform-docs.opentargets.org/getting-started",
     external: true,
   },
   // Downloads
   {
-    name: 'Data downloads',
-    url: '/downloads',
+    name: "Data downloads",
+    url: "/downloads",
     external: false,
   },
   // API
   {
-    name: 'API',
-    url: '/api',
+    name: "API",
+    url: "/api",
     external: false,
   },
   // Community
   {
-    name: 'Community',
-    url: 'https://community.opentargets.org/',
+    name: "Community",
+    url: "https://community.opentargets.org/",
     external: true,
   },
   // Contact - ppp
   {
-    name: 'Contact us',
+    name: "Contact us",
     url: `mailto:${config.profile.helpdeskEmail}`,
     external: true,
     showOnlyPartner: true,
@@ -141,19 +141,19 @@ export const particlesConfig = {
       },
     },
     color: {
-      value: '#ffffff',
+      value: "#ffffff",
     },
     shape: {
-      type: 'circle',
+      type: "circle",
       stroke: {
         width: 0,
-        color: '#000000',
+        color: "#000000",
       },
       polygon: {
         nb_sides: 5,
       },
       image: {
-        src: 'img/github.svg',
+        src: "img/github.svg",
         width: 100,
         height: 100,
       },
@@ -181,17 +181,17 @@ export const particlesConfig = {
     line_linked: {
       enable: true,
       distance: 150,
-      color: '#ffffff',
+      color: "#ffffff",
       opacity: 0.4,
       width: 1,
     },
     move: {
       enable: true,
       speed: 0.3,
-      direction: 'none',
+      direction: "none",
       random: false,
       straight: false,
-      out_mode: 'out',
+      out_mode: "out",
       bounce: false,
       attract: {
         enable: false,
@@ -201,15 +201,15 @@ export const particlesConfig = {
     },
   },
   interactivity: {
-    detect_on: 'canvas',
+    detect_on: "canvas",
     events: {
       onhover: {
         enable: false,
-        mode: 'repulse',
+        mode: "repulse",
       },
       onclick: {
         enable: false,
-        mode: 'push',
+        mode: "push",
       },
       resize: true,
     },
@@ -243,29 +243,29 @@ export const particlesConfig = {
 };
 
 // App title.
-export const appTitle = 'Open Targets Platform';
+export const appTitle = "Open Targets Platform";
 export const appDescription =
-  'The Open Targets Platform is a data integration tool that supports systematic drug target identification and prioritisation';
-export const appCanonicalUrl = 'https://platform.opentargets.org';
+  "The Open Targets Platform is a data integration tool that supports systematic drug target identification and prioritisation";
+export const appCanonicalUrl = "https://platform.opentargets.org";
 
 // Chunk sizes for server side pagination/download.
 export const tableChunkSize = 100;
 export const downloaderChunkSize = 2500;
 
 // NA label.
-export const naLabel = 'N/A';
+export const naLabel = "N/A";
 
 export const colorRange = config.profile.colorRange ?? [
-  '#e5edf4',
-  '#ccdcea',
-  '#b2cbe0',
-  '#99b9d6',
-  '#7fa8cc',
-  '#6697c1',
-  '#4c85b7',
-  '#3274ad',
-  '#1963a3',
-  '#005299',
+  "#e5edf4",
+  "#ccdcea",
+  "#b2cbe0",
+  "#99b9d6",
+  "#7fa8cc",
+  "#6697c1",
+  "#4c85b7",
+  "#3274ad",
+  "#1963a3",
+  "#005299",
 ];
 
 export const defaultRowsPerPageOptions = [10, 25, 100];
@@ -273,13 +273,13 @@ export const defaultRowsPerPageOptions = [10, 25, 100];
 export const decimalPlaces = 3;
 
 const clinicalPhases = {
-  '-1': 'Unknown',
-  0: 'Phase 0',
-  0.5: 'Phase I (Early)',
-  1: 'Phase I',
-  2: 'Phase II',
-  3: 'Phase III',
-  4: 'Phase IV',
+  "-1": "Unknown",
+  0: "Phase 0",
+  0.5: "Phase I (Early)",
+  1: "Phase I",
+  2: "Phase II",
+  3: "Phase III",
+  4: "Phase IV",
 };
 
 export const phaseMap = clinicalPhase => {
@@ -288,48 +288,48 @@ export const phaseMap = clinicalPhase => {
 };
 
 export const sourceMap = {
-  'FDA Information': 'FDA',
-  FDA: 'FDA',
-  'Clinical Trials Information': 'ClinicalTrials.gov',
-  ClinicalTrials: 'ClinicalTrials.gov',
-  'DailyMed Information': 'DailyMed',
-  DailyMed: 'DailyMed',
-  'ATC Information': 'ATC',
-  ATC: 'ATC',
+  "FDA Information": "FDA",
+  FDA: "FDA",
+  "Clinical Trials Information": "ClinicalTrials.gov",
+  ClinicalTrials: "ClinicalTrials.gov",
+  "DailyMed Information": "DailyMed",
+  DailyMed: "DailyMed",
+  "ATC Information": "ATC",
+  ATC: "ATC",
 };
 
 export const clinvarStarMap = {
-  'practice guideline': 4,
-  'reviewed by expert panel': 3,
-  'criteria provided, multiple submitters, no conflicts': 2,
-  'criteria provided, conflicting interpretations': 1,
-  'criteria provided, single submitter': 1,
-  'no assertion for the individual variant': 0,
-  'no assertion criteria provided': 0,
-  'no assertion provided': 0,
+  "practice guideline": 4,
+  "reviewed by expert panel": 3,
+  "criteria provided, multiple submitters, no conflicts": 2,
+  "criteria provided, conflicting interpretations": 1,
+  "criteria provided, single submitter": 1,
+  "no assertion for the individual variant": 0,
+  "no assertion criteria provided": 0,
+  "no assertion provided": 0,
 };
 
 export const formatMap = {
-  json: 'JSON',
-  parquet: 'Parquet',
+  json: "JSON",
+  parquet: "Parquet",
 };
 
 export const studySourceMap = {
-  FINNGEN: 'FinnGen',
-  GCST: 'GWAS Catalog',
-  SAIGE: 'UK Biobank',
-  NEALE: 'UK Biobank',
+  FINNGEN: "FinnGen",
+  GCST: "GWAS Catalog",
+  SAIGE: "UK Biobank",
+  NEALE: "UK Biobank",
 };
 
 export const variantConsequenceSource = {
   VEP: {
-    label: 'VEP',
-    tooltip: 'Ensembl variant effect predictor',
+    label: "VEP",
+    tooltip: "Ensembl variant effect predictor",
   },
-  ProtVar: { label: 'ProtVar', tooltip: 'Variant effect on protein function' },
+  ProtVar: { label: "ProtVar", tooltip: "Variant effect on protein function" },
   QTL: {
-    label: 'QTL',
+    label: "QTL",
     tooltip:
-      'The direction is inferred from the strongest effect across all the co-localising QTLs',
+      "The direction is inferred from the strongest effect across all the co-localising QTLs",
   },
 };

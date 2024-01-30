@@ -55,15 +55,9 @@ function SimplePublication({
       {/* paper data */}
       {/* authors */}
       <Box style={{ whiteSpace: "normal" }}>
-        <LongText
-          lineLimit={1}
-          variant={variant === "small" ? "caption" : "body2"}
-        >
+        <LongText lineLimit={1} variant={variant === "small" ? "caption" : "body2"}>
           {authors
-            .map(
-              (author) =>
-                author.lastName + (author.initials ? ` ${author.initials}` : "")
-            )
+            .map(author => author.lastName + (author.initials ? ` ${author.initials}` : ""))
             .join(", ")}
         </LongText>
       </Box>

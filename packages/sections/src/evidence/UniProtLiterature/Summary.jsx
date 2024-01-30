@@ -1,7 +1,8 @@
-import { SummaryItem, usePlatformApi } from 'ui';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from '.';
-import { dataTypesMap } from '../../dataTypes';import UNIPROT_LITERATURE_SUMMARY from './UniprotLiteratureSummary.gql';
+import { definition } from ".";
+import { dataTypesMap } from "../../dataTypes";
+import UNIPROT_LITERATURE_SUMMARY from "./UniprotLiteratureSummary.gql";
 
 function Summary() {
   const request = usePlatformApi(UNIPROT_LITERATURE_SUMMARY);
@@ -11,7 +12,7 @@ function Summary() {
       request={request}
       renderSummary={({ uniprotLiteratureSummary }) => {
         const { count } = uniprotLiteratureSummary;
-        return `${count} ${count === 1 ? 'entry' : 'entries'}`;
+        return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
       subText={dataTypesMap.genetic_association}
     />
