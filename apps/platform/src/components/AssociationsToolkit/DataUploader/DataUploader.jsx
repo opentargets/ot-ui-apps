@@ -29,6 +29,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, Tooltip } from "ui";
+// import * as xlsxParser from "xls-parser";
+import * as XLSX from "xlsx";
 
 import useAotfContext from "../hooks/useAotfContext";
 import ValidationQuery from "./ValidationQuery.gql";
@@ -176,26 +178,79 @@ function DataUploader({ fileStem }) {
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "text/html": [".txt"],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+        ".csv",
+        ".tsv",
+        ".xlsx",
+      ],
+      "application/JSON": [".json"],
     },
     onDrop: async ([file]) => {
-      var reader = new FileReader();
+      let reader = new FileReader();
+      const fileType = getFileType(file.name);
+
+      if (fileType === "spreadsheet") reader.readAsBinaryString(file);
+      else if (fileType === "text") reader.readAsText(file);
+      else if (fileType === "json") reader.readAsText(file);
+      else console.error("error parsing data from file");
+
       reader.onload = async function (e) {
-        const contents = e.target.result;
-        const terms = contents.split("\n");
-        const result = await getValidationResults([entityToGet], terms);
+        let contents;
+        if (fileType === "spreadsheet") contents = getDataFromSpreadsheet(e);
+        else if (fileType === "text") contents = getDataFromTextFile(e);
+        else if (fileType === "json") contents = JSON.parse(e.target.result);
+        else console.error("error parsing data from file");
+
+        const result = await getValidationResults([entityToGet], contents);
         let sortedResult = [...result.data.mapIds.mappings].sort(function (a, b) {
           return a.hits.length < b.hits.length ? 1 : -1;
         });
         setQueryTermsResults(sortedResult);
         setActiveStep(1);
       };
-      reader.readAsText(file);
     },
   });
 
+  function getDataFromSpreadsheet(file) {
+    const wb = XLSX.read(file.target.result, { type: "binary", bookVBA: true });
+    /* Get first worksheet */
+    const wsname = wb.SheetNames[0];
+    const ws = wb.Sheets[wsname];
+    /* Convert array of arrays */
+    const data = XLSX.utils.sheet_to_json(ws);
+
+    const terms = data.map(function (item) {
+      return item["id"];
+    });
+    return terms;
+  }
+
+  function getDataFromTextFile(file) {
+    const contents = file.target.result;
+    const terms = contents.split("\n");
+    return terms;
+  }
+
+  function getFileType(fileName) {
+    const fileType = fileName.split(".").pop();
+    switch (fileType) {
+      case "csv":
+        return "spreadsheet";
+      case "tsv":
+        return "spreadsheet";
+      case "xlsx":
+        return "spreadsheet";
+      case "txt":
+        return "text";
+      case "json":
+        return "json";
+      default:
+        return fileType;
+    }
+  }
+
   const handleRunExample = async terms => {
     const result = await getValidationResults([entityToGet], terms);
-    console.log(result);
     let sortedResult = [...result.data.mapIds.mappings].sort(function (a, b) {
       return a.hits.length < b.hits.length ? 1 : -1;
     });
