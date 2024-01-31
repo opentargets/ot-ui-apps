@@ -40,7 +40,7 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
             status: "ready",
             publication: null,
           })),
-          litsCount: data.literatureOcurrences?.count,
+          litsCount: data.literatureOcurrences?.filteredCount,
           earliestPubYear: data.literatureOcurrences?.earliestPubYear,
           cursor: data.literatureOcurrences?.cursor,
           id,
