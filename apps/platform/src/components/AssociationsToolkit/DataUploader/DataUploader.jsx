@@ -15,6 +15,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   DialogActions,
+  ToggleButtonGroup,
+  ToggleButton,
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { styled } from "@mui/material/styles";
@@ -114,6 +116,11 @@ const FileExample = ({ entity = "target", runAction }) => {
   const examples = uploadSuggestions[entity];
 
   const [open, setExpanded] = useState(false);
+  const [fileType, setFileType] = useState("text");
+
+  const handleFileTypeChange = (event, newFileType) => {
+    setFileType(newFileType);
+  };
 
   const handleChange = () => {
     setExpanded(open ? false : true);
@@ -139,30 +146,81 @@ const FileExample = ({ entity = "target", runAction }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Box>
-            <SuggestionBlockHeader>
-              <Typography variant="monoText" display="block">
-                fileName.txt
-              </Typography>
-            </SuggestionBlockHeader>
-            <SuggestionContainer>
-              <Box sx={{ position: "absolute", right: 10, display: "flex", gap: 1 }}>
-                <Tooltip placement="bottom" title="Run this sample">
-                  <Button onClick={() => handleClickRun()}>
-                    <FontAwesomeIcon icon={faPlay} />
-                  </Button>
-                </Tooltip>
-                <Tooltip placement="bottom" title="Copy to clipboard">
-                  <Button onClick={() => copyToClipboard()}>
-                    <FontAwesomeIcon icon={faClipboard} />
-                  </Button>
-                </Tooltip>
-              </Box>
-              {examples.map(ex => (
-                <Typography key={v1()} variant="monoText" display="block" gutterBottom>
-                  {ex}
+            <code>
+              <SuggestionBlockHeader>
+                <Typography variant="monoText" display="inline">
+                  File type:
                 </Typography>
-              ))}
-            </SuggestionContainer>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={fileType}
+                  exclusive
+                  onChange={handleFileTypeChange}
+                  aria-label="File Example"
+                  sx={{ ml: 2 }}
+                >
+                  <ToggleButton value="text">.txt</ToggleButton>
+                  <ToggleButton value="spreadsheet">.csv /.tsv /.xlsx</ToggleButton>
+                  <ToggleButton value="json">.json</ToggleButton>
+                </ToggleButtonGroup>
+              </SuggestionBlockHeader>
+              <SuggestionContainer>
+                <Box sx={{ position: "absolute", right: 10, display: "flex", gap: 1 }}>
+                  <Tooltip placement="bottom" title="Run this sample">
+                    <Button onClick={() => handleClickRun()}>
+                      <FontAwesomeIcon icon={faPlay} />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip placement="bottom" title="Copy to clipboard">
+                    <Button onClick={() => copyToClipboard()}>
+                      <FontAwesomeIcon icon={faClipboard} />
+                    </Button>
+                  </Tooltip>
+                </Box>
+                <Box>
+                  {fileType === "json" && (
+                    <>
+                      [
+                      {examples.map(ex => (
+                        <Typography key={v1()} variant="monoText" display="block" gutterBottom>
+                          {`"${ex}",`}
+                        </Typography>
+                      ))}
+                      ]
+                    </>
+                  )}
+                  {fileType === "text" &&
+                    examples.map(ex => (
+                      <Typography key={v1()} variant="monoText" display="block" gutterBottom>
+                        {ex}
+                      </Typography>
+                    ))}
+                  {fileType === "spreadsheet" && (
+                    <table style={{ border: "1px solid black", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr style={{ border: "1px solid black", borderCollapse: "collapse" }}>
+                          <th>id</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {examples.map(ex => (
+                          <tr
+                            key={v1()}
+                            style={{ border: "1px solid black", borderCollapse: "collapse" }}
+                          >
+                            <td>
+                              <Typography variant="monoText" display="block" gutterBottom>
+                                {ex}
+                              </Typography>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </Box>
+              </SuggestionContainer>
+            </code>
           </Box>
         </AccordionDetails>
       </BorderAccordion>
