@@ -44,6 +44,9 @@ function TableBody({ core, expanded, cols }) {
   const isExpandedInTable = expanded[3] === prefix && flatCols.includes(expanded[1]);
 
   const handleClickAway = () => {
+    if(e.srcElement.className === "CodeMirror-hint CodeMirror-hint-active"){
+      return;
+    }
     resetExpandler();
   };
 
