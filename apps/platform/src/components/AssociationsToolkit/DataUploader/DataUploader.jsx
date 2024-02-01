@@ -107,6 +107,21 @@ const getValidationResults = async (entity, queryTerms) =>
     variables: { entity, queryTerms },
   });
 
+function formatQueryTermsResults(queryResult) {
+  const sortedResult = [...queryResult.data.mapIds.mappings].sort(function (a, b) {
+    return a.hits.length < b.hits.length ? 1 : -1;
+  });
+  const parsedResult = sortedResult.map(qT => {
+    const parsedQueryTerm = {
+      ...qT,
+      hits: [...qT.hits.map(e => ({ ...e, checked: true }))],
+    };
+    return parsedQueryTerm;
+  });
+
+  return parsedResult;
+}
+
 const uploadSuggestions = {
   target: ["ENSG00000232810", "interleukin 6", "TP53", "ENSG00000105329", "P15692", "CD4"],
   disease: ["EFO_0000508", "neoplasm", "MONDO_0004992", "EFO_0000182", "infection", "OBI_1110021"],
@@ -260,10 +275,8 @@ function DataUploader({ fileStem }) {
         else console.error("error parsing data from file");
 
         const result = await getValidationResults([entityToGet], contents);
-        let sortedResult = [...result.data.mapIds.mappings].sort(function (a, b) {
-          return a.hits.length < b.hits.length ? 1 : -1;
-        });
-        setQueryTermsResults(sortedResult);
+        const queryTermsData = formatQueryTermsResults(result);
+        setQueryTermsResults(queryTermsData);
         setActiveStep(1);
       };
     },
@@ -309,10 +322,8 @@ function DataUploader({ fileStem }) {
 
   const handleRunExample = async terms => {
     const result = await getValidationResults([entityToGet], terms);
-    let sortedResult = [...result.data.mapIds.mappings].sort(function (a, b) {
-      return a.hits.length < b.hits.length ? 1 : -1;
-    });
-    setQueryTermsResults(sortedResult);
+    const queryTermsData = formatQueryTermsResults(result);
+    setQueryTermsResults(queryTermsData);
     setActiveStep(1);
   };
 
