@@ -7,8 +7,9 @@ import {
   fetchSimilarEntities,
   updateLiteratureState,
 } from "./atoms";
+import { ChangeEvent } from "react";
 
-const toggleValue = (selected, categories) => {
+const toggleValue = (selected: string, categories: string[]) => {
   const isChecked = categories.indexOf(selected) !== -1;
   if (!isChecked) return [...categories, selected];
   return [...categories.filter(value => value !== selected).sort()];
@@ -27,14 +28,14 @@ export default function Category() {
 
   const bibliographyState = useRecoilValue(literatureState);
 
-  const handleChange = async event => {
+  const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const {
       query,
       id,
       category: bibliographyCategory,
       selectedEntities,
       globalEntity,
-      cursor,
+      ...rest
     } = bibliographyState;
     const {
       target: { name: clicked },
@@ -42,18 +43,25 @@ export default function Category() {
     const newCategories = toggleValue(clicked, bibliographyCategory);
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
+      ...rest,
       query,
       id,
       category: newCategories,
-      entities: selectedEntities,
-      cursor,
+      entities: selectedEntities as any[],
+      selectedEntities,
+      globalEntity,
     });
     const data = request.data[globalEntity];
 
     const update = {
+      ...rest,
+      query,
+      id,
       entities: data.similarEntities,
       loadingEntities: false,
       category: newCategories,
+      selectedEntities,
+      globalEntity,
     };
     setLiteratureUpdate(update);
   };
@@ -78,7 +86,7 @@ export default function Category() {
                 onChange={handleChange}
                 name={name}
                 color="primary"
-                disabled={loadingEntities}
+                disabled={!!loadingEntities}
               />
             }
             label={label}

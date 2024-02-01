@@ -103,6 +103,10 @@ function PublicationsList({ hideSearch = false }) {
         selectedEntities,
         cursor: newCursor,
         globalEntity,
+        endYear,
+        endMonth,
+        startYear,
+        startMonth,
       } = bibliographyState;
       setLoadingEntities(true);
       const request = await fetchSimilarEntities({
@@ -111,6 +115,10 @@ function PublicationsList({ hideSearch = false }) {
         category,
         entities: selectedEntities,
         cursor: newCursor,
+        endYear,
+        endMonth,
+        startYear,
+        startMonth,
       });
       setLoadingEntities(false);
       const data = request.data[globalEntity];
@@ -142,6 +150,10 @@ function PublicationsList({ hideSearch = false }) {
         selectedEntities,
         cursor: newCursor,
         globalEntity,
+        endYear,
+        endMonth,
+        startYear,
+        startMonth,
       } = bibliographyState;
       setLoadingEntities(true);
       const request = await fetchSimilarEntities({
@@ -150,6 +162,10 @@ function PublicationsList({ hideSearch = false }) {
         category,
         entities: selectedEntities,
         cursor: newCursor,
+        endYear,
+        endMonth,
+        startYear,
+        startMonth,
       });
       setLoadingEntities(false);
       const data = request.data[globalEntity];

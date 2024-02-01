@@ -32,7 +32,16 @@ function EntitiesToSelect({ id }) {
   const [loadingEntities, setLoadingEntities] = useRecoilState(loadingEntitiesState);
 
   const handleSelectChip = async e => {
-    const { query, id: bibliographyId, category, globalEntity } = bibliographyState;
+    const {
+      query,
+      id: bibliographyId,
+      category,
+      globalEntity,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
+    } = bibliographyState;
     const newChips = [
       ...selectedChips,
       {
@@ -50,6 +59,10 @@ function EntitiesToSelect({ id }) {
       id: bibliographyId,
       category,
       entities: newChips,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
     });
     const data = request.data[globalEntity];
     const update = {
@@ -115,7 +128,16 @@ export default function Entities({ name, id }) {
   const [selectedChips, setSelectedChips] = useRecoilState(selectedEntitiesState);
 
   const handleDeleteChip = async index => {
-    const { query, id: bibliographyId, category, globalEntity } = bibliographyState;
+    const {
+      query,
+      id: bibliographyId,
+      category,
+      globalEntity,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
+    } = bibliographyState;
     const newChips = [...selectedChips.slice(0, index), ...selectedChips.slice(index + 1)];
     setSelectedChips(newChips);
     setLoadingEntities(true);
@@ -124,6 +146,10 @@ export default function Entities({ name, id }) {
       id: bibliographyId,
       category,
       entities: newChips,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
     });
     const data = request.data[globalEntity];
     const update = {
