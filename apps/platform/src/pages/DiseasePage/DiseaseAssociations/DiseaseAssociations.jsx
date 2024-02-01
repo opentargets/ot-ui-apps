@@ -1,5 +1,5 @@
-import { PrivateWrapper } from 'ui';
-import { Box } from '@mui/material';
+import { PrivateWrapper } from "ui";
+import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -11,29 +11,59 @@ import {
   ControlsSection,
   OptionsControlls,
   AotFLoader,
-} from '../../../components/AssociationsToolkit';
-import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociationsQuery.gql';
+  DataUploader,
+} from "../../../components/AssociationsToolkit";
+import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
+import { ApiPlaygroundDrawer } from "ui";
 
 function AssociationsWrapper() {
-  const { initialLoading, id } = useAotfContext();
+  const {
+    initialLoading,
+    id,
+    pagination,
+    searhFilter,
+    sorting,
+    enableIndirect,
+    dataSourcesWeights,
+    entity,
+    dataSourcesRequired,
+  } = useAotfContext();
+
+  const variables = {
+    id,
+    index: pagination.pageIndex,
+    size: pagination.pageSize,
+    filter: searhFilter,
+    sortBy: sorting[0].id,
+    enableIndirect,
+    datasources: dataSourcesWeights,
+    entity,
+    aggregationFilters: dataSourcesRequired,
+  };
 
   if (initialLoading) return <AotFLoader />;
 
   return (
     <>
       <ControlsSection>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
-            <DataDownloader fileStem={`${id}-associated-targets`} />
+            <PrivateWrapper>
+              <DataUploader />
+            </PrivateWrapper>
+            <Divider orientation="vertical" />
+            <DataDownloader fileStem={`OT-${id}-associated-targets`} />
+            <ApiPlaygroundDrawer
+              query={DISEASE_ASSOCIATIONS_QUERY.loc.source.body}
+              variables={variables}
+            />
           </OptionsControlls>
         </Box>
-        <div>
-          <PrivateWrapper>
-            <TargetPrioritisationSwitch />
-          </PrivateWrapper>
-        </div>
+        <Box>
+          <TargetPrioritisationSwitch />
+        </Box>
       </ControlsSection>
       <TableAssociations />
     </>
@@ -43,11 +73,7 @@ function AssociationsWrapper() {
 /* DISEASE ASSOCIATION  */
 function DiseaseAssociations({ efoId }) {
   return (
-    <AssociationsProvider
-      id={efoId}
-      entity="disease"
-      query={DISEASE_ASSOCIATIONS_QUERY}
-    >
+    <AssociationsProvider id={efoId} entity="disease" query={DISEASE_ASSOCIATIONS_QUERY}>
       <AssociationsWrapper />
     </AssociationsProvider>
   );

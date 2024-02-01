@@ -1,15 +1,9 @@
-import { Button } from '@mui/material';
-import { faDna } from '@fortawesome/free-solid-svg-icons';
-import config from '../../config';
-import { styled } from '@mui/material/styles';
+import { Button } from "@mui/material";
+import { faDna } from "@fortawesome/free-solid-svg-icons";
+import config from "../../config";
+import { styled } from "@mui/material/styles";
 
-import {
-  CrisprDepmapLink,
-  ExternalLink,
-  TepLink,
-  XRefLinks,
-  Header as HeaderBase,
-} from 'ui';
+import { CrisprDepmapLink, ExternalLink, TepLink, XRefLinks, Header as HeaderBase } from "ui";
 
 const GeneticsButton = styled(Button)`
   color: #fff;

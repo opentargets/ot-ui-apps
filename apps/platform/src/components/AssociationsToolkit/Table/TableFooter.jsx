@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import { Alert, TablePagination, Typography } from '@mui/material';
-import useAotfContext from '../hooks/useAotfContext';
-import ColoredCell from './ColoredCell';
-import { getLegend } from '../utils';
+import { useEffect } from "react";
+import { Alert, TablePagination, Typography } from "@mui/material";
+import useAotfContext from "../hooks/useAotfContext";
+import ColoredCell from "./ColoredCell";
+import { getLegend } from "../utils";
 
 function TableFooter({ table }) {
   const {
@@ -13,35 +13,35 @@ function TableFooter({ table }) {
     displayedTable,
     resetDatasourceControls,
   } = useAotfContext();
-  const isAssociations = displayedTable === 'associations';
+  const isAssociations = displayedTable === "associations";
 
   /**
    * LEGEND EFECT
    */
   useEffect(() => {
-    const Legend = getLegend(displayedTable === 'associations');
-    document.getElementById('legend').innerHTML = '';
-    document.getElementById('legend').appendChild(Legend);
+    const Legend = getLegend(displayedTable === "associations");
+    document.getElementById("legend").innerHTML = "";
+    document.getElementById("legend").appendChild(Legend);
   }, [displayedTable]);
 
   return (
     <div className="table-footer">
-      <div style={{ display: 'flex', alignItems: ' flex-start' }}>
+      <div style={{ display: "flex", alignItems: " flex-start" }}>
         <div id="legend" />
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginLeft: '10px',
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            marginLeft: "10px",
           }}
         >
           <span
             style={{
-              fontWeight: 'bold',
-              fontSize: '10px',
-              marginBottom: '3px',
+              fontWeight: "bold",
+              fontSize: "10px",
+              marginBottom: "3px",
             }}
           >
             No data
@@ -49,15 +49,13 @@ function TableFooter({ table }) {
           <ColoredCell />
         </div>
       </div>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: "flex" }}>
         {modifiedSourcesDataControls && isAssociations && (
           <Alert severity="info">
-            <Typography variant="caption">
-              Datasource controls modified
-            </Typography>{' '}
+            <Typography variant="caption">Datasource controls modified</Typography>{" "}
             <button
               onClick={() => resetDatasourceControls()}
-              style={{ fontSize: '0.75rem' }}
+              style={{ fontSize: "0.75rem" }}
               type="button"
             >
               Reset to default

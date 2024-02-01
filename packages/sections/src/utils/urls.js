@@ -18,9 +18,9 @@ export function europePmcLiteratureQuery(ids) {
   return encodeURI(baseUrl + ids.join(" OR ext_id:"));
 }
 
-export const encodeParams = (params) => {
+export const encodeParams = params => {
   const formBody = [];
-  Object.keys(params).forEach((key) => {
+  Object.keys(params).forEach(key => {
     const encodedKey = encodeURIComponent(key);
     const encodedValue = encodeURIComponent(params[key]);
     formBody.push(`${encodedKey}=${encodedValue}`);
@@ -64,7 +64,7 @@ export function europePmcBiblioSearchPOSTQuery(ids, size = 25) {
 }
 
 function clinicalTrialsUrl(id) {
-  return `https://www.clinicaltrials.gov/ct2/show/${id}`;
+  return `https://www.clinicaltrials.gov/study/${id}`;
 }
 
 function fdaUrl(id) {

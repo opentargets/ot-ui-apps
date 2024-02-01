@@ -53,13 +53,9 @@ function SectionItem({
                 }}
                 avatar={
                   <Avatar
-                    className={classNames(
-                      classes.avatar,
-                      classes.avatarHasData,
-                      {
-                        [classes.avatarError]: error,
-                      }
-                    )}
+                    className={classNames(classes.avatar, classes.avatarHasData, {
+                      [classes.avatarError]: error,
+                    })}
                   >
                     {shortName}
                   </Avatar>
@@ -67,31 +63,20 @@ function SectionItem({
                 title={
                   <Grid container justifyContent="space-between">
                     <Typography
-                      className={classNames(
-                        classes.title,
-                        classes.titleHasData,
-                        {
-                          [classes.titleError]: error,
-                        }
-                      )}
+                      className={classNames(classes.title, classes.titleHasData, {
+                        [classes.titleError]: error,
+                      })}
                     >
-                      {definition.name}{" "}
-                      {definition.isPrivate ? <PartnerLockIcon /> : null}
+                      {definition.name} {definition.isPrivate ? <PartnerLockIcon /> : null}
                     </Typography>
-                    {chipText ? (
-                      <Chip label={chipText} className={classes.chip} />
-                    ) : null}
+                    {chipText ? <Chip label={chipText} className={classes.chip} /> : null}
                   </Grid>
                 }
                 subheader={
                   <Typography
-                    className={classNames(
-                      classes.description,
-                      classes.descriptionHasData,
-                      {
-                        [classes.descriptionError]: error,
-                      }
-                    )}
+                    className={classNames(classes.description, classes.descriptionHasData, {
+                      [classes.descriptionError]: error,
+                    })}
                     variant="body2"
                   >
                     {renderDescription(data)}
@@ -99,23 +84,14 @@ function SectionItem({
                 }
                 action={tags}
               />
-              {loading ? (
-                <LinearProgress />
-              ) : (
-                <Box className={classes.loadingPlaceholder} />
-              )}
+              {loading ? <LinearProgress /> : <Box className={classes.loadingPlaceholder} />}
               {error && <SectionError error={error} />}
               {!loading && hasData && (
-                <CardContent className={classes.cardContent}>
-                  {renderBody(data)}
-                </CardContent>
+                <CardContent className={classes.cardContent}>{renderBody(data)}</CardContent>
               )}
               {!loading && !hasData && showEmptySection && (
                 <CardContent className={classes.cardContent}>
-                  <div className={classes.noData}>
-                    {" "}
-                    No data available for this {entity}.{" "}
-                  </div>
+                  <div className={classes.noData}> No data available for this {entity}. </div>
                 </CardContent>
               )}
             </ErrorBoundary>

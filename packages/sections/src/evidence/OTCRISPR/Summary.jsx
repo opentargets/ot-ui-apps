@@ -1,8 +1,8 @@
-import { SummaryItem, usePlatformApi } from 'ui';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from '.';
-import { dataTypesMap } from '../../dataTypes';
-import OT_CRISPR_SUMMARY from './OTCrisprSummary.gql';
+import { definition } from ".";
+import { dataTypesMap } from "../../dataTypes";
+import OT_CRISPR_SUMMARY from "./OTCrisprSummary.gql";
 
 function Summary() {
   const request = usePlatformApi(OT_CRISPR_SUMMARY);
@@ -12,7 +12,7 @@ function Summary() {
       request={request}
       renderSummary={({ OtCrisprSummary }) => {
         const { count } = OtCrisprSummary;
-        return `${count} ${count === 1 ? 'entry' : 'entries'}`;
+        return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
       subText={dataTypesMap.ot_partner}
     />

@@ -1,45 +1,17 @@
 import FileSaver from "file-saver";
-import { Suspense, useState, lazy } from "react";
+import { useState } from "react";
 import _ from "lodash";
-import {
-  Button,
-  Grid,
-  Typography,
-  CircularProgress,
-  Snackbar,
-  Slide,
-  Drawer,
-  Paper,
-  IconButton,
-} from "@mui/material";
+import { Button, Grid, Typography, CircularProgress, Snackbar, Slide } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "graphiql/graphiql.min.css";
-import { fetcher } from "../../utils/global";
-import Link from "../Link";
-
-// lazy load GraphiQL and remove Logo and Toolbar
-const GraphiQL = lazy(() =>
-  import("graphiql").then((module) => {
-    module.default.Logo = function () {
-      return null;
-    };
-    module.default.Toolbar = function () {
-      return null;
-    };
-    return module;
-  })
-);
+import ApiPlaygroundDrawer from "../ApiPlaygroundDrawer";
 
 const asJSON = (columns, rows) => {
-  const rowStrings = rows.map((row) =>
+  const rowStrings = rows.map(row =>
     columns.reduce((accumulator, newKey) => {
       if (newKey.exportValue === false) return accumulator;
 
-      const newLabel = _.camelCase(
-        newKey.exportLabel || newKey.label || newKey.id
-      );
+      const newLabel = _.camelCase(newKey.exportLabel || newKey.label || newKey.id);
 
       return {
         ...accumulator,
@@ -54,7 +26,7 @@ const asJSON = (columns, rows) => {
 };
 
 const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
-  const quoteString = (d) => {
+  const quoteString = d => {
     let result = d;
     // converts arrays to strings
     if (Array.isArray(d)) {
@@ -69,16 +41,14 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
     .reduce((accHeaderString, column) => {
       if (column.exportValue === false) return accHeaderString;
 
-      const newLabel = quoteString(
-        _.camelCase(column.exportLabel || column.label || column.id)
-      );
+      const newLabel = quoteString(_.camelCase(column.exportLabel || column.label || column.id));
 
       return [...accHeaderString, newLabel];
     }, [])
     .join(separator);
 
   const rowStrings = rows
-    .map((row) =>
+    .map(row =>
       columns
         .reduce((rowString, column) => {
           if (column.exportValue === false) return rowString;
@@ -98,7 +68,7 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
   return [headerString, rowStrings].join(lineSeparator);
 };
 
-const createBlob = (format) =>
+const createBlob = format =>
   ({
     json: (columns, rows) =>
       new Blob([asJSON(columns, rows)], {
@@ -114,9 +84,10 @@ const createBlob = (format) =>
       }),
   }[format]);
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles(theme => ({
   messageProgress: {
     marginRight: "1rem",
+    color: "white !important",
   },
   snackbarContentMessage: {
     display: "flex",
@@ -128,37 +99,11 @@ const styles = makeStyles((theme) => ({
   snackbarContentRoot: {
     padding: 0,
   },
-  backdrop: {
-    "& .MuiBackdrop-root": {
-      opacity: "0 !important",
-    },
-  },
-  container: {
-    width: "80%",
-    backgroundColor: theme.palette.grey[300],
-  },
-  paper: {
-    margin: "1.5rem",
-    padding: "1rem",
-  },
-  title: {
-    display: "flex",
-    justifyContent: "space-between",
-    backgroundColor: "white",
-    borderBottom: "1px solid #ccc",
-    fontSize: "1.2rem",
-    fontWeight: "bold",
-    padding: "1rem",
-  },
-  playgroundContainer: {
-    margin: "0 1.5rem 1.5rem 1.5rem",
-    height: "100%",
-  },
 }));
 
 function DataDownloader({ columns, rows, fileStem, query, variables }) {
   const [downloading, setDownloading] = useState(false);
-  const [open, setOpen] = useState(false);
+
   const classes = styles();
 
   const downloadData = async (format, dataColumns, dataRows, dataFileStem) => {
@@ -187,15 +132,6 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
     downloadData("tsv", columns, rows, fileStem);
   };
 
-  function togglePlayground() {
-    setOpen(!open);
-  }
-
-  function close(e) {
-    if (e.key === "Escape") return;
-    setOpen(false);
-  }
-
   return (
     <>
       <Grid container alignItems="center" justifyContent="flex-end" spacing={1}>
@@ -203,34 +139,16 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
           <Typography variant="caption">Download table as</Typography>
         </Grid>
         <Grid item>
-          <Button
-            variant="outlined"
-            onClick={handleClickDownloadJSON}
-            size="small"
-          >
+          <Button variant="outlined" onClick={handleClickDownloadJSON} size="small">
             JSON
           </Button>
         </Grid>
         <Grid item>
-          <Button
-            variant="outlined"
-            onClick={handleClickDownloadTSV}
-            size="small"
-          >
+          <Button variant="outlined" onClick={handleClickDownloadTSV} size="small">
             TSV
           </Button>
         </Grid>
-        {query ? (
-          <Grid item>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => togglePlayground()}
-            >
-              API query
-            </Button>
-          </Grid>
-        ) : null}
+        {query ? <ApiPlaygroundDrawer query={query} variables={variables} /> : null}
       </Grid>
       <Snackbar
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
@@ -249,45 +167,6 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
           </>
         }
       />
-      <Drawer
-        classes={{ root: classes.backdrop, paper: classes.container }}
-        open={open}
-        onClose={(e) => close(e)}
-        anchor="right"
-      >
-        <Typography className={classes.title}>
-          API query
-          <IconButton onClick={(e) => close(e)}>
-            <FontAwesomeIcon icon={faXmark} />
-          </IconButton>
-        </Typography>
-        <Paper className={classes.paper} variant="outlined">
-          Press the Play button to explore the GraphQL API query used to
-          populate this table. You can also visit our{" "}
-          <Link
-            external
-            to="https://platform-docs.opentargets.org/data-access/graphql-api"
-          >
-            GraphQL API documentation
-          </Link>{" "}
-          and{" "}
-          <Link external to="https://community.opentargets.org">
-            Community
-          </Link>{" "}
-          for more how-to guides and tutorials.
-        </Paper>
-        {query ? (
-          <div className={classes.playgroundContainer}>
-            <Suspense fallback={<div>Loading...</div>}>
-              <GraphiQL
-                fetcher={fetcher}
-                query={query}
-                variables={JSON.stringify(variables, null, 2)}
-              />
-            </Suspense>
-          </div>
-        ) : null}
-      </Drawer>
     </>
   );
 }

@@ -1,7 +1,7 @@
-import { SummaryItem, usePlatformApi } from 'ui';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from '.';
-import SUBCELLULAR_LOCATION_FRAGMENT from './SubcellularLocationFragment.gql';
+import { definition } from ".";
+import SUBCELLULAR_LOCATION_FRAGMENT from "./SubcellularLocationFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(SUBCELLULAR_LOCATION_FRAGMENT);

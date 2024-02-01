@@ -117,11 +117,20 @@
     "include_in_bq": true
   },
   {
+    "id": "expressionSpecificity",
+    "category": "Target",
+    "nice_name": "Target - baseline expression (tissue specificity)",
+    "description": "Tissue specific baseline RNA and protein expression data for targets",
+    "order": 14,
+    "include_in_fe": true,
+    "include_in_bq": true
+  },
+  {
     "id": "go",
     "category": "Target",
     "nice_name": "Target - gene ontology",
     "description": "Gene ontology annotations for targets",
-    "order": 14,
+    "order": 15,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -130,7 +139,7 @@
     "category": "Target",
     "nice_name": "Target - mouse phenotypes",
     "description": "Mouse phenotype data for targets",
-    "order": 15,
+    "order": 16,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -139,7 +148,7 @@
     "category": "Disease/Phenotype",
     "nice_name": "Disease/Phenotype - clinical signs and symptoms",
     "description": "Clinical signs and symptoms linked to diseases and phenotypes",
-    "order": 16,
+    "order": 17,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -148,7 +157,7 @@
     "category": "Disease/Phenotype",
     "nice_name": "Human Phenotype Ontology",
     "description": "Human Phenotype Ontology subset of information included in the Platform",
-    "order": 17,
+    "order": 18,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -157,7 +166,7 @@
     "category": "Drug",
     "nice_name": "Drug - mechanism of action",
     "description": "Mechanisms of action for drug molecules",
-    "order": 18,
+    "order": 19,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -166,7 +175,7 @@
     "category": "Drug",
     "nice_name": "Drug - indications",
     "description": "Approved and investigational indications for drug molecules",
-    "order": 19,
+    "order": 20,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -175,7 +184,7 @@
     "category": "Drug",
     "nice_name": "Drug - pharmacovigilance",
     "description": "Significant adverse events for drug molecules",
-    "order": 20,
+    "order": 21,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -184,7 +193,16 @@
     "category": "Drug",
     "nice_name": "Drug - withdrawn and black box warnings",
     "description": "Blackbox and withdrawn information for drug molecules",
-    "order": 21,
+    "order": 23,
+    "include_in_fe": true,
+    "include_in_bq": true
+  },
+  {
+    "id": "pharmacogenomics",
+    "category": "Drug/Target",
+    "nice_name": "Drug/Target - pharmacogenetics",
+    "description": "Genetic variants influencing individual drug responses",
+    "order": 22,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -202,7 +220,7 @@
     "category": "Target",
     "nice_name": "Target - Reactome pathway information",
     "description": "Reactome pathway data used to annotate targets",
-    "order": 22,
+    "order": 24,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -211,7 +229,7 @@
     "category": "Target",
     "nice_name": "Target - Prioritisation",
     "description": "List of target-specific attributes from the Target Engine project",
-    "order": 24,
+    "order": 25,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -220,7 +238,7 @@
     "category": "Target",
     "nice_name": "Target - DepMap essentiality",
     "description": "Target essentiality assessments from DepMap Portal",
-    "order": 23,
+    "order": 26,
     "include_in_fe": true,
     "include_in_bq": true
   },
@@ -305,6 +323,15 @@
     "include_in_fe": false,
     "include_in_bq": false
   },
+   {
+    "id": "epmcCooccurrences",
+    "category": "Target",
+    "nice_name": "n/a",
+    "description": "Normalized cooccurrences for EPMC",
+    "order": null,
+    "include_in_fe": false,
+    "include_in_bq": false
+  },
   {
     "id": "adverseDrugReactions",
     "category": "Drug",
@@ -323,6 +350,7 @@
     "include_in_fe": false,
     "include_in_bq": false
   },
+ 
   {
     "id": "significantAdverseTargetReactions",
     "category": "Drug",

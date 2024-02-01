@@ -1,4 +1,4 @@
-query GenomicsEnglandQuery($ensemblId: String!, $efoId: String!) {
+query GenomicsEnglandQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
   target(ensemblId: $ensemblId) {
     approvedSymbol
   }
@@ -9,6 +9,7 @@ query GenomicsEnglandQuery($ensemblId: String!, $efoId: String!) {
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["genomics_england"]
+      size: $size
     ) {
       count
       rows {

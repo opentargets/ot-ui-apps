@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { TableCell, TableRow } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-const proteinLevel = (level) => {
+const proteinLevel = level => {
   if (level === 0) {
     return "Under expressed";
   }
@@ -18,9 +18,9 @@ const proteinLevel = (level) => {
 
 const rnaValueToPercent = (maxRnaValue, value) => (value * 100) / maxRnaValue;
 
-const proteinLevelToPercent = (level) => (level * 100) / 3;
+const proteinLevelToPercent = level => (level * 100) / 3;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   parentRow: {
     height: "20px",
     cursor: "pointer",
@@ -94,11 +94,7 @@ function SummaryRow({ parent, maxRnaValue }) {
         onClick={handleClick}
       >
         <TableCell
-          className={classNames(
-            classes.cell,
-            classes.parentTissueCell,
-            classes.tissueCell
-          )}
+          className={classNames(classes.cell, classes.parentTissueCell, classes.tissueCell)}
         >
           {parent.parentLabel}
         </TableCell>
@@ -109,10 +105,7 @@ function SummaryRow({ parent, maxRnaValue }) {
                 className={classes.barParent}
                 title={`${parent.maxRnaValue} (normalized count)`}
                 style={{
-                  width: `${rnaValueToPercent(
-                    maxRnaValue,
-                    parent.maxRnaValue
-                  )}%`,
+                  width: `${rnaValueToPercent(maxRnaValue, parent.maxRnaValue)}%`,
                   float: "right",
                 }}
               />
@@ -168,9 +161,7 @@ function SummaryRow({ parent, maxRnaValue }) {
                 )}
               </div>
             </TableCell>
-            <TableCell
-              className={classNames(classes.cell, classes.proteinCell)}
-            >
+            <TableCell className={classNames(classes.cell, classes.proteinCell)}>
               <div className={classes.barContainer}>
                 {tissue.protein.level >= 0 ? (
                   <div

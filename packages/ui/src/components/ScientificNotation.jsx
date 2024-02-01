@@ -1,4 +1,4 @@
-import { decimalPlaces } from '../constants';
+import { decimalPlaces } from "../constants";
 
 function ScientificNotation({ number }) {
   if (!number) return null;
@@ -9,8 +9,8 @@ function ScientificNotation({ number }) {
   if (Array.isArray(number)) {
     [mantissa, exponent] = number;
   } else {
-    [mantissa, exponent] = number.toExponential().split('e');
-    exponent = exponent.charAt(0) === '+' ? exponent.slice(1) : exponent;
+    [mantissa, exponent] = number.toExponential().split("e");
+    exponent = exponent.charAt(0) === "+" ? exponent.slice(1) : exponent;
   }
 
   mantissa = parseFloat(parseFloat(mantissa).toFixed(decimalPlaces));

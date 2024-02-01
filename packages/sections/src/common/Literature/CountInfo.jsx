@@ -1,16 +1,12 @@
-import { Typography } from "@mui/material";
+import { InputLabel, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useRecoilValue } from "recoil";
-import {
-  litsCountState,
-  loadingEntitiesState,
-  tablePageSizeState,
-} from "./atoms";
+import { litsCountState, loadingEntitiesState, tablePageSizeState } from "./atoms";
 
 const useStyles = makeStyles(() => ({
   resultCount: {
-    marginLeft: "2rem",
-    marginRight: "6rem",
+    // marginLeft: "2rem",
+    // marginRight: "6rem",
   },
 }));
 
@@ -20,13 +16,15 @@ function CountInfo() {
   const count = useRecoilValue(litsCountState);
   const loadingEntities = useRecoilValue(loadingEntitiesState);
 
-  if (loadingEntities)
-    return <div className={classes.resultCount}>Loading count...</div>;
+  const getLabelText = () => {
+    if (loadingEntities) return "Loading count...";
+    return `Showing ${count > pageSize ? pageSize : count} of ${count} results`;
+  };
 
   return (
-    <Typography variant="body2" className={classes.resultCount}>
-      Showing {count > pageSize ? pageSize : count} of {count} results
-    </Typography>
+    <Box sx={{ mt: 4, mr: 3 }}>
+      <InputLabel className={classes.resultCount}>{getLabelText()}</InputLabel>
+    </Box>
   );
 }
 

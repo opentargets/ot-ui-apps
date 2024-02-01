@@ -1,1 +1,1 @@
-export { default } from './ColocL2GTable';
+export { default } from "./ColocL2GTable";

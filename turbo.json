@@ -1,12 +1,14 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "baseBranch": "origin/main",
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["bundle-genetics/**", "bundle-platform/**"]
     },
     "lint": {
+      "outputs": []
+    },
+    "prettier:all": {
       "outputs": []
     },
     "dev": {

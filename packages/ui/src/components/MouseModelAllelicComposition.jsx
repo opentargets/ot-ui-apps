@@ -1,9 +1,6 @@
 import { Typography } from "@mui/material";
 
-function MouseModelAllelicComposition({
-  allelicComposition,
-  geneticBackground,
-}) {
+function MouseModelAllelicComposition({ allelicComposition, geneticBackground }) {
   const regex = /(.*)<(.*)>\/([^<]*)<?([^>]*)?>?/;
   const match = regex.exec(allelicComposition);
   return (

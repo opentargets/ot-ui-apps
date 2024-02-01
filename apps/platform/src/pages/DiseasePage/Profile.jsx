@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client';
-import { lazy, Suspense } from 'react';
+import { gql } from "@apollo/client";
+import { lazy, Suspense } from "react";
 
 import {
   PlatformApiProvider,
@@ -8,32 +8,22 @@ import {
   summaryUtils,
   PrivateWrapper,
   SectionLoader,
-} from 'ui';
+} from "ui";
 
-import OntologySummary from 'sections/src/disease/Ontology/Summary';
-import KnownDrugsSummary from 'sections/src/disease/KnownDrugs/Summary';
-import BibliographySummary from 'sections/src/disease/Bibliography/Summary';
-import PhenotypesSummary from 'sections/src/disease/Phenotypes/Summary';
-import OTProjectsSummary from 'sections/src/disease/OTProjects/Summary';
+import OntologySummary from "sections/src/disease/Ontology/Summary";
+import KnownDrugsSummary from "sections/src/disease/KnownDrugs/Summary";
+import BibliographySummary from "sections/src/disease/Bibliography/Summary";
+import PhenotypesSummary from "sections/src/disease/Phenotypes/Summary";
+import OTProjectsSummary from "sections/src/disease/OTProjects/Summary";
 
-import client from '../../client';
-import ProfileHeader from './ProfileHeader';
+import client from "../../client";
+import ProfileHeader from "./ProfileHeader";
 
-const OntologySection = lazy(() =>
-  import('sections/src/disease/Ontology/Body')
-);
-const KnownDrugsSection = lazy(() =>
-  import('sections/src/disease/KnownDrugs/Body')
-);
-const BibliographySection = lazy(() =>
-  import('sections/src/disease/Bibliography/Body')
-);
-const PhenotypesSection = lazy(() =>
-  import('sections/src/disease/Phenotypes/Body')
-);
-const OTProjectsSection = lazy(() =>
-  import('sections/src/disease/OTProjects/Body')
-);
+const OntologySection = lazy(() => import("sections/src/disease/Ontology/Body"));
+const KnownDrugsSection = lazy(() => import("sections/src/disease/KnownDrugs/Body"));
+const BibliographySection = lazy(() => import("sections/src/disease/Bibliography/Body"));
+const PhenotypesSection = lazy(() => import("sections/src/disease/Phenotypes/Body"));
+const OTProjectsSection = lazy(() => import("sections/src/disease/OTProjects/Body"));
 
 const summaries = [
   OntologySummary,
@@ -43,11 +33,8 @@ const summaries = [
   OTProjectsSummary,
 ];
 
-const DISEASE = 'disease';
-const DISEASE_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
-  summaries,
-  'Disease'
-);
+const DISEASE = "disease";
+const DISEASE_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(summaries, "Disease");
 const DISEASE_PROFILE_QUERY = gql`
   query DiseaseProfileQuery($efoId: String!) {
     disease(efoId: $efoId) {

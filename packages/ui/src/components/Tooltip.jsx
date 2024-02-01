@@ -2,15 +2,8 @@ import { makeStyles } from "@mui/styles";
 import { Tooltip as MUITooltip } from "@mui/material";
 import { merge } from "lodash";
 
-function Tooltip({
-  style,
-  children,
-  title,
-  showHelpIcon = false,
-  placement = "top",
-  ...props
-}) {
-  const classes = makeStyles((theme) =>
+function Tooltip({ style, children, title, showHelpIcon = false, placement = "top", ...props }) {
+  const classes = makeStyles(theme =>
     merge(style, {
       tooltip: {
         backgroundColor: `${theme.palette.background.paper} !important`,
@@ -42,7 +35,7 @@ function Tooltip({
         // eslint-disable-next-line
         {...props}
       >
-        {showHelpIcon ? <sup className={classes.tooltipIcon}>?</sup> : children}
+        {showHelpIcon ? <sup className={classes.tooltipIcon}>?</sup> : <span>{children}</span>}
       </MUITooltip>
     </>
   );

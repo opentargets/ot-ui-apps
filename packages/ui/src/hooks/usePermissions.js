@@ -1,4 +1,4 @@
-import config from '../config';
+import config from "../config";
 
 function usePermissions() {
   const { isPartnerPreview } = config.profile;

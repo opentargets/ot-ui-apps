@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/client";
 import { Link } from "@mui/material";
 import { SectionItem, DataTable, TableDrawer } from "ui";
 import { dataTypesMap } from "../../dataTypes";
-import { naLabel } from "../../constants";
+import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 import Description from "./Description";
 import { definition } from ".";
 
@@ -24,7 +24,7 @@ const columns = [
     renderCell: ({ diseaseCellLines, diseaseFromSource }) => {
       if (!diseaseCellLines) return naLabel;
 
-      const cellLines = diseaseCellLines.map((line) => ({
+      const cellLines = diseaseCellLines.map(line => ({
         name: line.name,
         url: `https://cellmodelpassports.sanger.ac.uk/passports/${line.id}`,
         group: "Cancer Cell Lines",
@@ -52,6 +52,7 @@ function Body({ id, label, entity }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(CRISPR_QUERY, {
@@ -64,9 +65,7 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.affected_pathway}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={({ disease }) => {
         const { rows } = disease.crisprSummary;
         return (

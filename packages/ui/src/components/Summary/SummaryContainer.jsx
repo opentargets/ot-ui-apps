@@ -6,12 +6,7 @@ function SummaryContainer({ children }) {
   const classes = summaryStyles();
 
   return (
-    <Grid
-      id="summary-section"
-      className={classes.summaryContainer}
-      container
-      spacing={1}
-    >
+    <Grid id="summary-section" className={classes.summaryContainer} container spacing={1}>
       {children}
     </Grid>
   );

@@ -1,1 +1,1 @@
-export { default } from './HeaderControls';
+export { default } from "./HeaderControls";

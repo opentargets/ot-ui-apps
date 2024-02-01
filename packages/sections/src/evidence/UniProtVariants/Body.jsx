@@ -1,13 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import {
-  Link,
-  SectionItem,
-  Tooltip,
-  PublicationsDrawer,
-  LabelChip,
-  DataTable,
-} from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, LabelChip, DataTable } from "ui";
 
 import { definition } from ".";
 
@@ -18,6 +11,7 @@ import { identifiersOrgLink } from "../../utils/global";
 import {
   defaultRowsPerPageOptions,
   variantConsequenceSource,
+  sectionsBaseSizeQuery,
 } from "../../constants";
 import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
 
@@ -98,11 +92,7 @@ function getColumns(label) {
           }, []) || [];
 
         return (
-          <PublicationsDrawer
-            entries={literatureList}
-            symbol={label.symbol}
-            name={label.name}
-          />
+          <PublicationsDrawer entries={literatureList} symbol={label.symbol} name={label.name} />
         );
       },
     },
@@ -115,6 +105,7 @@ export function Body({ id, label, entity }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
+    size: sectionsBaseSizeQuery,
   };
   const columns = getColumns(label);
 
@@ -128,9 +119,7 @@ export function Body({ id, label, entity }) {
       chipText={dataTypesMap.genetic_association}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} diseaseName={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
       renderBody={({ disease }) => {
         const { rows } = disease.uniprotVariantsSummary;
         return (

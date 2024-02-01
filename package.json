@@ -23,15 +23,20 @@
     "build:platform:ppp": "turbo run build-ppp --filter=platform",
     "lint": "turbo run lint",
     "lint:platform": "turbo run lint --filter=platform",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "turbo run prettier:all",
+    "prepare": "husky install"
   },
   "devDependencies": {
+    "eslint": "7.32.0",
+    "eslint-config-custom": "*",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
     "prettier": "^2.5.1",
     "turbo": "^1.10.13"
   },
-  "engines": {
-    "npm": ">=7.0.0",
-    "node": ">=18.0.0"
-  },
-  "packageManager": "yarn@1.22.18"
+  "packageManager": "yarn@1.22.18",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": "eslint --cache --fix",
+    "*.{ts,tsx,js,jsx,md}": "prettier --write"
+  }
 }

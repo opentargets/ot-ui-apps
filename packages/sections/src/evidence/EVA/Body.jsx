@@ -40,26 +40,17 @@ function getColumns(label) {
               <Typography variant="subtitle2" display="block" align="center">
                 Reported disease or phenotype:
               </Typography>
-              <Typography
-                variant="caption"
-                display="block"
-                align="center"
-                gutterBottom
-              >
+              <Typography variant="caption" display="block" align="center" gutterBottom>
                 {diseaseFromSource}
               </Typography>
 
               {cohortPhenotypes?.length > 1 ? (
                 <>
-                  <Typography
-                    variant="subtitle2"
-                    display="block"
-                    align="center"
-                  >
+                  <Typography variant="subtitle2" display="block" align="center">
                     All reported phenotypes:
                   </Typography>
                   <Typography variant="caption" display="block">
-                    {cohortPhenotypes.map((cp) => (
+                    {cohortPhenotypes.map(cp => (
                       <div key={cp}>{cp}</div>
                     ))}
                   </Typography>
@@ -137,22 +128,14 @@ function getColumns(label) {
                 label={variantConsequenceSource.VEP.label}
                 value={sentenceCase(variantFunctionalConsequence.label)}
                 tooltip={variantConsequenceSource.VEP.tooltip}
-                to={identifiersOrgLink(
-                  "SO",
-                  variantFunctionalConsequence.id.slice(3)
-                )}
+                to={identifiersOrgLink("SO", variantFunctionalConsequence.id.slice(3))}
               />
             )}
             {variantFunctionalConsequenceFromQtlId && (
               <LabelChip
                 label={variantConsequenceSource.QTL.label}
-                value={sentenceCase(
-                  variantFunctionalConsequenceFromQtlId.label
-                )}
-                to={identifiersOrgLink(
-                  "SO",
-                  variantFunctionalConsequenceFromQtlId.id.slice(3)
-                )}
+                value={sentenceCase(variantFunctionalConsequenceFromQtlId.label)}
+                to={identifiersOrgLink("SO", variantFunctionalConsequenceFromQtlId.id.slice(3))}
                 tooltip={variantConsequenceSource.QTL.tooltip}
               />
             )}
@@ -167,10 +150,7 @@ function getColumns(label) {
           </div>
         );
       },
-      filterValue: ({
-        variantFunctionalConsequence,
-        variantFunctionalConsequenceFromQtlId,
-      }) =>
+      filterValue: ({ variantFunctionalConsequence, variantFunctionalConsequenceFromQtlId }) =>
         `${sentenceCase(variantFunctionalConsequence.label)}, ${sentenceCase(
           variantFunctionalConsequenceFromQtlId.label
         )}`,
@@ -181,8 +161,7 @@ function getColumns(label) {
       label: "Clinical significance",
       renderCell: ({ clinicalSignificances }) => {
         if (!clinicalSignificances) return naLabel;
-        if (clinicalSignificances.length === 1)
-          return sentenceCase(clinicalSignificances[0]);
+        if (clinicalSignificances.length === 1) return sentenceCase(clinicalSignificances[0]);
         return (
           <ul
             style={{
@@ -191,10 +170,8 @@ function getColumns(label) {
               listStyle: "none",
             }}
           >
-            {clinicalSignificances.map((clinicalSignificance) => (
-              <li key={clinicalSignificance}>
-                {sentenceCase(clinicalSignificance)}
-              </li>
+            {clinicalSignificances.map(clinicalSignificance => (
+              <li key={clinicalSignificance}>{sentenceCase(clinicalSignificance)}</li>
             ))}
           </ul>
         );
@@ -211,14 +188,10 @@ function getColumns(label) {
             <Tooltip
               title={
                 <>
-                  <Typography
-                    variant="subtitle2"
-                    display="block"
-                    align="center"
-                  >
+                  <Typography variant="subtitle2" display="block" align="center">
                     Allelic requirements:
                   </Typography>
-                  {allelicRequirements.map((r) => (
+                  {allelicRequirements.map(r => (
                     <Typography variant="caption" key={r}>
                       {r}
                     </Typography>
@@ -227,14 +200,13 @@ function getColumns(label) {
               }
               showHelpIcon
             >
-              {alleleOrigins.map((a) => sentenceCase(a)).join("; ")}
+              {alleleOrigins.map(a => sentenceCase(a)).join("; ")}
             </Tooltip>
           );
 
-        return alleleOrigins.map((a) => sentenceCase(a)).join("; ");
+        return alleleOrigins.map(a => sentenceCase(a)).join("; ");
       },
-      filterValue: ({ alleleOrigins }) =>
-        alleleOrigins ? alleleOrigins.join() : "",
+      filterValue: ({ alleleOrigins }) => (alleleOrigins ? alleleOrigins.join() : ""),
     },
     {
       id: "confidence",
@@ -263,16 +235,51 @@ function getColumns(label) {
           }, []) || [];
 
         return (
-          <PublicationsDrawer
-            entries={literatureList}
-            symbol={label.symbol}
-            name={label.name}
-          />
+          <PublicationsDrawer entries={literatureList} symbol={label.symbol} name={label.name} />
         );
       },
     },
   ];
 }
+
+const exportColumns = [
+  {
+    label: "diseaseId",
+    exportValue: row => row.disease.id,
+  },
+  {
+    label: "diseaseName",
+    exportValue: row => row.disease.name,
+  },
+  {
+    label: "variantId",
+    exportValue: row => row.variantId,
+  },
+  {
+    label: "variantRsId",
+    exportValue: row => row.variantRsId,
+  },
+  {
+    label: "variantHgvsId",
+    exportValue: row => row.variantHgvsId,
+  },
+  {
+    label: "variantConsequence",
+    exportValue: row => row.variantFunctionalConsequence,
+  },
+  {
+    label: "clinicalSignificances",
+    exportValue: row => row.clinicalSignificances,
+  },
+  {
+    label: "allelicRequirements",
+    exportValue: row => row.alleleOrigins,
+  },
+  {
+    label: "reviewStatus",
+    exportValue: row => row.confidence,
+  },
+];
 
 function fetchClinvar({ ensemblId, efoId, cursor, size, freeTextQuery }) {
   return client.query({
@@ -305,12 +312,8 @@ function Body({ id, label, entity }) {
   useEffect(() => {
     let isCurrent = true;
 
-    fetchClinvar({ ensemblId, efoId, cursor: "", size }).then((res) => {
-      const {
-        cursor: newCursor,
-        rows: newRows,
-        count: newCount,
-      } = res.data.disease.evidences;
+    fetchClinvar({ ensemblId, efoId, cursor: "", size }).then(res => {
+      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.eva;
       if (isCurrent) {
         setInitialLoading(false);
         setCursor(newCursor);
@@ -330,15 +333,15 @@ function Body({ id, label, entity }) {
       ensemblId,
       efoId,
     },
-    `data.disease.evaSummary`
+    `data.disease.eva`
   );
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = newPage => {
     const newPageInt = Number(newPage);
     if (size * newPageInt + size > rows.length && cursor !== null) {
       setLoading(true);
-      fetchClinvar({ ensemblId, efoId, cursor, size }).then((res) => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.evidences;
+      fetchClinvar({ ensemblId, efoId, cursor, size }).then(res => {
+        const { cursor: newCursor, rows: newRows } = res.data.disease.eva;
         setRows([...rows, ...newRows]);
         setLoading(false);
         setCursor(newCursor);
@@ -349,28 +352,25 @@ function Body({ id, label, entity }) {
     }
   };
 
-  const handleRowsPerPageChange = (newPageSize) => {
+  const handleRowsPerPageChange = newPageSize => {
     const newPageSizeInt = Number(newPageSize);
     if (newPageSizeInt > rows.length && cursor !== null) {
       setLoading(true);
-      fetchClinvar({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(
-        (res) => {
-          const { cursor: newCursor, rows: newRows } =
-            res.data.disease.evidences;
-          setRows([...rows, ...newRows]);
-          setLoading(false);
-          setCursor(newCursor);
-          setPage(0);
-          setPageSize(newPageSizeInt);
-        }
-      );
+      fetchClinvar({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(res => {
+        const { cursor: newCursor, rows: newRows } = res.data.disease.eva;
+        setRows([...rows, ...newRows]);
+        setLoading(false);
+        setCursor(newCursor);
+        setPage(0);
+        setPageSize(newPageSizeInt);
+      });
     } else {
       setPage(0);
       setPageSize(newPageSizeInt);
     }
   };
 
-  const handleSortBy = (sortBy) => {
+  const handleSortBy = sortBy => {
     setSortColumn(sortBy);
     setSortOrder(
       // eslint-disable-next-line
@@ -391,11 +391,9 @@ function Body({ id, label, entity }) {
       entity={entity}
       request={{
         loading: initialLoading,
-        data: { [entity]: { evaSummary: { rows, count: rows.length } } },
+        data: { [entity]: { eva: { rows, count: rows.length } } },
       }}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={() => (
         <Table
           // showGlobalFilter
@@ -414,6 +412,7 @@ function Body({ id, label, entity }) {
           query={CLINVAR_QUERY.loc.source.body}
           dataDownloader
           dataDownloaderRows={getWholeDataset}
+          dataDownloaderColumns={exportColumns}
           dataDownloaderFileStem="clinvar-evidence"
           variables={{
             ensemblId,

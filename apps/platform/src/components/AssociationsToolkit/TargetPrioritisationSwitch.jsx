@@ -1,8 +1,8 @@
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
-import { DISPLAY_MODE } from './utils';
-import useAotfContext from './hooks/useAotfContext';
+import { DISPLAY_MODE } from "./utils";
+import useAotfContext from "./hooks/useAotfContext";
 
 function TargetPrioritisationSwitch() {
   const { displayedTable, setDisplayedTable } = useAotfContext();
@@ -26,12 +26,8 @@ function TargetPrioritisationSwitch() {
       aria-label="Visualizations"
       size="small"
     >
-      <ToggleButton value="associations">
-        Target-disease association
-      </ToggleButton>
-      <ToggleButton value="prioritisations">
-        Target prioritisation factors
-      </ToggleButton>
+      <ToggleButton value="associations">Target-disease association</ToggleButton>
+      <ToggleButton value="prioritisations">Target prioritisation factors</ToggleButton>
     </ToggleButtonGroup>
   );
 }

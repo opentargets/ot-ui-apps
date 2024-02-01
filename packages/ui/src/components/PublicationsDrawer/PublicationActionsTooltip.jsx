@@ -1,7 +1,7 @@
 import { Tooltip } from "@mui/material";
 import { withStyles } from "@mui/styles";
 
-const StyledTooltip = withStyles((theme) => ({
+const StyledTooltip = withStyles(theme => ({
   tooltip: {
     maxWidth: 220,
     fontSize: theme.typography.pxToRem(12),

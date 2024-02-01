@@ -1,4 +1,4 @@
-query reactomeQuery($ensemblId: String!, $efoId: String!) {
+query reactomeQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
   target(ensemblId: $ensemblId) {
     approvedSymbol
   }
@@ -8,6 +8,7 @@ query reactomeQuery($ensemblId: String!, $efoId: String!) {
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["reactome"]
+      size: $size
     ) {
       count
       rows {

@@ -11,8 +11,8 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={({ chemblSummary }) => {
-        const { count } = chemblSummary;
+      renderSummary={({ chembl }) => {
+        const { count } = chembl;
         return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
       subText={dataTypesMap.known_drug}

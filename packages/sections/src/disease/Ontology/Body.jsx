@@ -12,8 +12,8 @@ function Body({ id: efoId, label: name, entity }) {
   useEffect(() => {
     let isCurrent = true;
     fetch(config.efoURL)
-      .then((res) => res.text())
-      .then((lines) => {
+      .then(res => res.text())
+      .then(lines => {
         if (isCurrent) {
           const nodes = lines.trim().split("\n").map(JSON.parse);
           setEfoNodes(nodes);
@@ -36,7 +36,7 @@ function Body({ id: efoId, label: name, entity }) {
         },
       }}
       renderDescription={() => <Description name={name} />}
-      renderBody={(data) => {
+      renderBody={data => {
         const idToDisease = data[entity].efoNodes.reduce((acc, disease) => {
           acc[disease.id] = disease;
           return acc;

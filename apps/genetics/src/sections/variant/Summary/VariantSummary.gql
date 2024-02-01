@@ -1,4 +1,4 @@
-query VariantPageQuery($variantId: String!) {
+query VariantSummary($variantId: String!) {
   variantInfo(variantId: $variantId) {
     rsId
     chromosome

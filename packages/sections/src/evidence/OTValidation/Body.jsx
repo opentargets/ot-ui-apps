@@ -11,10 +11,10 @@ import { Link, SectionItem, Tooltip, ChipList, DataTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
 import VALIDATION_QUERY from "./OTValidationQuery.gql";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   primaryColor: {
     color: theme.palette.primary.main,
   },
@@ -29,42 +29,39 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: "1rem",
     borderBottom: `1px solid ${theme.palette.grey[300]}`,
   },
-  hypotesisLegend: {
-    marginBottom: "1rem",
-  },
   bold: {
     fontWeight: 700,
   },
   // hypothesis status classes
   hsLegendChip: {
-    width: "32px",
+    width: theme.spacing(4),
   },
   hsGreen: {
-    backgroundColor: "#407253", // same as PPP green
-    border: `1px solid ${theme.palette.grey[600]}`,
+    backgroundColor: "#407253 !important", // same as PPP green
+    border: `1px solid ${theme.palette.grey[600]} !important`,
   },
   hsRed: {
-    backgroundColor: "#9e1316",
-    border: `1px solid ${theme.palette.grey[600]}`,
+    backgroundColor: "#9e1316 !important",
+    border: `1px solid ${theme.palette.grey[600]} !important`,
   },
   hsWhite: {
-    backgroundColor: "#ffffff",
-    color: theme.palette.grey[600],
-    border: `1px solid ${theme.palette.grey[600]}`,
+    backgroundColor: "#ffffff !important",
+    color: `${theme.palette.grey[600]} !important`,
+    border: `1px solid ${theme.palette.grey[600]} !important`,
   },
   hsBlack: {
-    backgroundColor: "#000",
-    border: `1px solid ${theme.palette.grey[600]}`,
+    backgroundColor: "#000 !important",
+    border: `1px solid ${theme.palette.grey[600]} !important`,
   },
   hsBlue: {
-    backgroundColor: "#3489ca",
-    border: `1px solid ${theme.palette.grey[600]}`,
+    backgroundColor: "#3489ca !important",
+    border: `1px solid ${theme.palette.grey[600]} !important`,
   },
   // in the unlikely case the hypothesis status is unavailable,
   // we don't want to display the primary green (for PPP)
   hsUndefined: {
-    backgroundColor: theme.palette.grey[500],
-    border: `1px solid ${theme.palette.grey[600]}`,
+    backgroundColor: `${theme.palette.grey[500]} !important`,
+    border: `1px solid ${theme.palette.grey[600]} !important`,
   },
 }));
 
@@ -113,24 +110,18 @@ const hypothesesStatus = [
   },
 ];
 
-const getColumns = (classes) => [
+const getColumns = classes => [
   {
     id: "disease",
     label: "Reported disease",
-    renderCell: (row) => (
-      <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>
-    ),
-    filterValue: (row) => `${row.diseaseLabel}, ${row.diseaseId}`,
+    renderCell: row => <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>,
+    filterValue: row => `${row.diseaseLabel}, ${row.diseaseId}`,
   },
   {
     id: "projectDescription",
     label: "OTAR primary project",
-    tooltip: (
-      <>
-        Binary assessment of gene perturbation effect in primary project screen
-      </>
-    ),
-    renderCell: (row) => (
+    tooltip: <>Binary assessment of gene perturbation effect in primary project screen</>,
+    renderCell: row => (
       <Link to={`http://home.opentargets.org/${row.projectId}`} external>
         {row.projectDescription}
         <Typography variant="caption" display="block">
@@ -138,24 +129,24 @@ const getColumns = (classes) => [
         </Typography>
       </Link>
     ),
-    filterValue: (row) => `${row.projectDescription}, ${row.projectId}`,
+    filterValue: row => `${row.projectDescription}, ${row.projectId}`,
   },
   {
     id: "contrast",
     label: "Contrast",
-    renderCell: (row) => (
+    renderCell: row => (
       <Tooltip title={row.studyOverview} showHelpIcon>
         {row.contrast}
       </Tooltip>
     ),
-    filterValue: (row) => `${row.contrast}, ${row.studyOverview}`,
+    filterValue: row => `${row.contrast}, ${row.studyOverview}`,
   },
   {
     id: "diseaseCellLines",
     label: "Cell line",
-    renderCell: (row) => (
+    renderCell: row => (
       <>
-        {row.diseaseCellLines.map((line) => (
+        {row.diseaseCellLines.map(line => (
           <Link
             to={`https://cellmodelpassports.sanger.ac.uk/passports/${line.id}`}
             external
@@ -166,31 +157,29 @@ const getColumns = (classes) => [
         ))}
       </>
     ),
-    filterValue: (row) =>
-      row.diseaseCellLines.map((line) => `${line.name}, ${line.id}`).join(", "),
+    filterValue: row => row.diseaseCellLines.map(line => `${line.name}, ${line.id}`).join(", "),
     width: "8%",
   },
   {
     id: "biomarkerList",
     label: "Cell line biomarkers",
-    renderCell: (row) => (
+    renderCell: row => (
       <ChipList
         small
-        items={row.biomarkerList.map((bm) => ({
+        items={row.biomarkerList.map(bm => ({
           label: bm.name,
           tooltip: bm.description,
           customClass: classes.hsWhite,
         }))}
       />
     ),
-    filterValue: (row) =>
-      row.biomarkerList.map((bm) => `${bm.name}, ${bm.description}`).join(", "),
+    filterValue: row => row.biomarkerList.map(bm => `${bm.name}, ${bm.description}`).join(", "),
     width: "16%",
   },
   {
     id: "resourceScore",
     label: "Effect size",
-    renderCell: (row) => row.resourceScore,
+    renderCell: row => row.resourceScore,
     numeric: true,
     width: "8%",
   },
@@ -198,17 +187,13 @@ const getColumns = (classes) => [
     id: "confidence",
     label: "OTVL hit",
     tooltip: <>Binary assessment of gene perturbation effect in contrast</>,
-    renderCell: (row) => (
-      <HitIcon isHit={isHit(row.confidence)} classes={classes} />
-    ),
+    renderCell: row => <HitIcon isHitValue={isHit(row.confidence)} classes={classes} />,
     width: "8%",
   },
   {
     id: "projectHit",
     label: "Primary project hit",
-    renderCell: (row) => (
-      <HitIcon isHit={isHit(row.expectedConfidence)} classes={classes} />
-    ),
+    renderCell: row => <HitIcon isHitValue={isHit(row.expectedConfidence)} classes={classes} />,
     width: "8%",
   },
   {
@@ -221,54 +206,53 @@ const getColumns = (classes) => [
 const exportColumns = [
   {
     label: "disease",
-    exportValue: (row) => row.disease.name,
+    exportValue: row => row.disease.name,
   },
   {
     label: "disease id",
-    exportValue: (row) => row.disease.id,
+    exportValue: row => row.disease.id,
   },
   {
     label: "project description",
-    exportValue: (row) => row.projectDescription,
+    exportValue: row => row.projectDescription,
   },
   {
     label: "project id",
-    exportValue: (row) => row.projectId,
+    exportValue: row => row.projectId,
   },
   {
     label: "contrast",
-    exportValue: (row) => row.contrast,
+    exportValue: row => row.contrast,
   },
   {
     label: "study overview",
-    exportValue: (row) => row.studyOverview,
+    exportValue: row => row.studyOverview,
   },
   {
     label: "disease cell line",
-    exportValue: (row) =>
-      row.diseaseCellLines.map((line) => `${line.name} (${line.id})`),
+    exportValue: row => row.diseaseCellLines.map(line => `${line.name} (${line.id})`),
   },
   {
     label: "biomarkers",
-    exportValue: (row) => row.biomarkerList.map((bm) => bm.name),
+    exportValue: row => row.biomarkerList.map(bm => bm.name),
   },
   {
     label: "effect size",
-    exportValue: (row) => row.resourceScore,
+    exportValue: row => row.resourceScore,
   },
   {
     label: "hit",
-    exportValue: (row) => isHit(row.confidence),
+    exportValue: row => isHit(row.confidence),
   },
   {
     label: "primary project hit",
-    exportValue: (row) => isHit(row.expectedConfidence),
+    exportValue: row => isHit(row.expectedConfidence),
   },
 ];
 
 function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
-  const variables = { ensemblId: ensgId, efoId };
+  const variables = { ensemblId: ensgId, efoId, size: sectionsBaseSizeQuery };
   const request = useQuery(VALIDATION_QUERY, {
     variables,
   });
@@ -280,22 +264,19 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.ot_validation_lab}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={({ disease }) => {
         const { rows } = disease.otValidationSummary;
         const hypothesis = _.uniqBy(
           rows.reduce(
             (prev, curr) =>
               prev.concat(
-                curr.validationHypotheses.map((vht) => ({
+                curr.validationHypotheses.map(vht => ({
                   label: vht.name,
                   tooltip: vht.description,
                   customClass:
                     classes[
-                      hypothesesStatus.find((s) => s.status === vht.status)
-                        ?.styles || "hsUndefined"
+                      hypothesesStatus.find(s => s.status === vht.status)?.styles || "hsUndefined"
                     ],
                 }))
               ),
@@ -308,28 +289,19 @@ function Body({ id, label, entity }) {
         return (
           <>
             <Box className={classes.hypotesisBox}>
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                className={classes.bold}
-              >
+              <Typography variant="subtitle1" gutterBottom className={classes.bold}>
                 <Tooltip
                   title={
                     <>
-                      This table provides an overarching summary of the
-                      target-disease association in the context of the listed
-                      biomarkers, based on criteria described{" "}
-                      <Link
-                        external
-                        to="http://home.opentargets.org/ppp-documentation"
-                      >
+                      This table provides an overarching summary of the target-disease association
+                      in the context of the listed biomarkers, based on criteria described{" "}
+                      <Link external to="http://home.opentargets.org/ppp-documentation">
                         here
                       </Link>
-                      , as informed by the target performance across the whole
-                      cell line panel. Colour-coding indicates whether a
-                      dependency was expected to be associated with a biomarker
-                      (based on Project SCORE data) and whether it was observed
-                      as such (based on OTVL data).
+                      , as informed by the target performance across the whole cell line panel.
+                      Colour-coding indicates whether a dependency was expected to be associated
+                      with a biomarker (based on Project SCORE data) and whether it was observed as
+                      such (based on OTVL data).
                     </>
                   }
                   showHelpIcon
@@ -339,40 +311,38 @@ function Body({ id, label, entity }) {
               </Typography>
 
               {/** LEGEND */}
-              <div className={classes.hypotesisLegend}>
-                <Grid container spacing={4} direction="row">
-                  {hypothesesStatus.map((hs) => (
-                    <Grid item key={hs.status}>
-                      <Grid container spacing={1} alignItems="center">
-                        <Grid item>
-                          <Chip
-                            className={classNames(
-                              classes[hs.styles],
-                              classes.hsLegendChip
-                            )}
-                          />
-                        </Grid>
-                        <Grid item>
-                          <Typography variant="caption" display="block">
-                            <span className={classes.bold}>
-                              {hs.expected ? "Expected" : "Not expected"}
-                            </span>{" "}
-                            in OTAR primary project
-                          </Typography>
-                          <Typography variant="caption" display="block">
-                            <span className={classes.bold}>
-                              {hs.observed ? "Observed" : "Not observed"}
-                            </span>{" "}
-                            in OTVL
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  ))}
-                </Grid>
-              </div>
+              <Box
+                sx={{
+                  mb: theme => theme.spacing(2),
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                }}
+              >
+                {hypothesesStatus.map(hs => (
+                  <Box
+                    key={hs.status}
+                    sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+                  >
+                    <Chip className={classNames(classes.hsLegendChip, classes[hs.styles])} />
+                    <Box sx={{ p: theme => `0 ${theme.spacing(3)} 0 ${theme.spacing(1)}` }}>
+                      <Box sx={{ display: "flex", flexDirection: "row" }}>
+                        <Typography variant="caption">
+                          <b>{hs.expected ? "Expected" : "Not expected"}</b> in OTAR primary project
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: "flex", flexDirection: "row" }}>
+                        <Typography variant="caption">
+                          <b>{hs.observed ? "Observed" : "Not observed"} </b>
+                          in OTVL
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
 
-              {/** CHIPLIST */}
+              {/** CHIP LIST */}
               <ChipList items={hypothesis} />
             </Box>
 

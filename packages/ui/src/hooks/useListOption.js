@@ -4,7 +4,7 @@ import { addSearchToLocalStorage } from "../components/GlobalSearch/utils/search
 function useListOption() {
   const history = useHistory();
 
-  const openListItem = (option) => {
+  const openListItem = option => {
     if (!option) return;
     const newOption = { ...option };
     newOption.type = "recent";
@@ -16,9 +16,7 @@ function useListOption() {
       history.push(`/${newOption.entity}/${newOption.studyId}`);
     } else {
       history.push(
-        `/${newOption.entity}/${newOption.id}${
-          newOption.entity !== "drug" ? "/associations" : ""
-        }`
+        `/${newOption.entity}/${newOption.id}${newOption.entity !== "drug" ? "/associations" : ""}`
       );
     }
   };

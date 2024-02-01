@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { makeStyles } from '@mui/styles';
+import { useState } from "react";
+import { makeStyles } from "@mui/styles";
 
-import Link from '../Link';
+import Link from "../Link";
 
 const useStyles = makeStyles(theme => ({
   showMore: {
     color: theme.palette.primary.main,
-    cursor: 'pointer',
+    cursor: "pointer",
   },
 }));
 
@@ -14,29 +14,26 @@ function XRefLinks({ label, urlStem, ids, limit }) {
   const [showMore, setShowMore] = useState(false);
   const classes = useStyles();
   const displayNone = {
-    display: 'none',
+    display: "none",
   };
 
   return (
     <span>
-      {label}:{' '}
+      {label}:{" "}
       {ids.map((id, i) => (
         <span key={id} style={i > limit - 1 && !showMore ? displayNone : {}}>
           <Link external to={`${urlStem}${id}`}>
             {id}
-            {i < ids.length - 1 ? ', ' : ''}
+            {i < ids.length - 1 ? ", " : ""}
           </Link>
         </span>
       ))}
       {ids.length > limit ? (
         <span>
-          {showMore ? '' : '... '}[{' '}
-          <span
-            className={classes.showMore}
-            onClick={() => setShowMore(!showMore)}
-          >
-            {showMore ? ' hide' : ' show more'}
-          </span>{' '}
+          {showMore ? "" : "... "}[{" "}
+          <span className={classes.showMore} onClick={() => setShowMore(!showMore)}>
+            {showMore ? " hide" : " show more"}
+          </span>{" "}
           ]
         </span>
       ) : null}

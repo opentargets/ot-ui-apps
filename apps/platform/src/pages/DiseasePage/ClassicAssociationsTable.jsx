@@ -1,106 +1,99 @@
-import { useState, useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
-import { Skeleton } from '@mui/material';
-import {
-  Link,
-  Table,
-  PartnerLockIcon,
-  useBatchDownloader,
-  usePermissions,
-  Legend,
-} from 'ui';
-import AssocCell from '../../components/AssocCell';
-import dataTypes from '../../dataTypes';
-import client from '../../client';
-import config from '../../config';
+import { useState, useEffect } from "react";
+import { makeStyles } from "@mui/styles";
+import { Skeleton } from "@mui/material";
+import { Link, Table, PartnerLockIcon, useBatchDownloader, usePermissions, Legend } from "ui";
+import AssocCell from "../../components/AssocCell";
+import dataTypes from "../../dataTypes";
+import client from "../../client";
+import config from "../../config";
 
-import DISEASE_ASSOCIATIONS_QUERY from './DiseaseAssociations.gql';
+import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociations.gql";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    overflow: 'visible',
-    padding: '2rem 2rem 0 0 !important',
+    overflow: "visible",
+    padding: "2rem 2rem 0 0 !important",
   },
   table: {
-    tableLayout: 'fixed !imortant',
+    tableLayout: "fixed !imortant",
   },
   sortLabel: {
-    top: '8px',
+    top: "8px",
   },
   innerLabel: {
-    position: 'absolute',
-    display: 'inline-block',
-    transformOrigin: '0 0',
+    position: "absolute",
+    display: "inline-block",
+    transformOrigin: "0 0",
     bottom: 0,
-    transform: 'rotate(310deg)',
-    marginBottom: '5px',
+    transform: "rotate(310deg)",
+    marginBottom: "5px",
   },
   symbolHeaderCell: {
-    width: '10% !important',
-    borderBottom: '0 !important',
-    height: '140px !important',
-    verticalAlign: 'bottom !important',
-    textAlign: 'end !important',
-    paddingBottom: '.4rem',
+    width: "10% !important",
+    borderBottom: "0 !important",
+    height: "140px !important",
+    verticalAlign: "bottom !important",
+    textAlign: "end !important",
+    paddingBottom: ".4rem",
   },
   nameHeaderCell: {
-    width: '20%',
-    borderBottom: '0 !important',
-    height: '140px !important',
-    verticalAlign: 'bottom !important',
-    paddingBottom: '.4rem',
+    width: "20%",
+    borderBottom: "0 !important",
+    height: "140px !important",
+    verticalAlign: "bottom !important",
+    paddingBottom: ".4rem",
   },
   headerCell: {
-    position: 'relative',
-    borderBottom: '0 !important',
-    height: '140px !important',
-    whiteSpace: 'nowrap',
-    textAlign: 'center !important',
-    verticalAlign: 'bottom !important',
+    position: "relative",
+    borderBottom: "0 !important",
+    height: "140px !important",
+    whiteSpace: "nowrap",
+    textAlign: "center !important",
+    verticalAlign: "bottom !important",
   },
   overallCell: {
-    border: '0 !important',
-    textAlign: 'center !important',
-    paddingTop: '1px !important',
-    paddingBottom: '1px !important',
-    paddingLeft: '1px !important',
-    paddingRight: '10px !important',
+    border: "0 !important",
+    textAlign: "center !important",
+    paddingTop: "1px !important",
+    paddingBottom: "1px !important",
+    paddingLeft: "1px !important",
+    paddingRight: "10px !important",
   },
   cell: {
-    border: '0 !important',
-    height: '20px !important',
-    textAlign: 'center !important',
-    padding: '1px 1px !important',
-    '&:last-child': {
+    border: "0 !important",
+    height: "20px !important",
+    textAlign: "center !important",
+    padding: "1px 1px !important",
+    "&:last-child": {
       paddingRight: 0,
     },
   },
   symbolCell: {
-    border: '0 !important',
-    width: '20%',
-    padding: '0 0.5rem 0 0 !important',
+    border: "0 !important",
+    width: "20%",
+    padding: "0 0.5rem 0 0 !important",
   },
   nameCell: {
-    border: '0 !important',
-    width: '10%',
-    padding: '0 0 0 0.5rem !important',
+    border: "0 !important",
+    width: "10%",
+    padding: "0 0 0 0.5rem !important",
   },
   symbolContainer: {
-    display: 'block',
-    textAlign: 'end !important',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
+    display: "block",
+    textAlign: "end !important",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
     color: theme.palette.text.primary,
-    '&:hover': {
+    "&:hover": {
       color: theme.palette.text.primary,
     },
   },
   nameContainer: {
-    display: 'block',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
+    display: "block",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
     color: theme.palette.text.primary,
-    '&:hover': {
+    "&:hover": {
       color: theme.palette.text.primary,
     },
   },
@@ -109,25 +102,22 @@ const useStyles = makeStyles(theme => ({
 function getColumns(efoId, classes, isPartnerPreview) {
   const columns = [
     {
-      id: 'symbol',
-      label: 'Symbol',
+      id: "symbol",
+      label: "Symbol",
       classes: {
         headerCell: classes.symbolHeaderCell,
         cell: classes.symbolCell,
       },
       exportValue: data => data.target.approvedSymbol,
       renderCell: row => (
-        <Link
-          to={`/evidence/${row.ensemblId}/${efoId}`}
-          className={classes.symbolContainer}
-        >
+        <Link to={`/evidence/${row.ensemblId}/${efoId}`} className={classes.symbolContainer}>
           {row.symbol}
         </Link>
       ),
     },
     {
-      id: 'score',
-      label: 'Overall association score',
+      id: "score",
+      label: "Overall association score",
       classes: {
         headerCell: classes.headerCell,
         cell: classes.overallCell,
@@ -159,7 +149,7 @@ function getColumns(efoId, classes, isPartnerPreview) {
             {dt.label} {dt.isPrivate ? <PartnerLockIcon /> : null}
           </>
         ),
-        exportLabel: `${dt.label} ${dt.isPrivate ? 'Private' : ''}`,
+        exportLabel: `${dt.label} ${dt.isPrivate ? "Private" : ""}`,
         classes: {
           headerCell: classes.headerCell,
           innerLabel: classes.innerLabel,
@@ -167,36 +157,25 @@ function getColumns(efoId, classes, isPartnerPreview) {
           cell: classes.cell,
         },
         exportValue: data => {
-          const datatypeScore = data.datatypeScores.find(
-            DTScore => DTScore.componentId === dt.id
-          );
-          return datatypeScore ? datatypeScore.score : 'No data';
+          const datatypeScore = data.datatypeScores.find(DTScore => DTScore.componentId === dt.id);
+          return datatypeScore ? datatypeScore.score : "No data";
         },
         sortable: true,
-        renderCell: row => (
-          <AssocCell
-            score={row[dt.id]}
-            ensemblId={row.ensemblId}
-            efoId={efoId}
-          />
-        ),
+        renderCell: row => <AssocCell score={row[dt.id]} ensemblId={row.ensemblId} efoId={efoId} />,
       });
     });
 
   columns.push({
-    id: 'name',
-    label: 'Target name',
+    id: "name",
+    label: "Target name",
     classes: {
       headerCell: classes.nameHeaderCell,
       cell: classes.nameCell,
     },
     exportValue: data => data.target.approvedName,
-    hidden: ['smDown', 'lgOnly'],
+    hidden: ["smDown", "lgOnly"],
     renderCell: row => (
-      <Link
-        to={`/evidence/${row.ensemblId}/${efoId}`}
-        className={classes.nameContainer}
-      >
+      <Link to={`/evidence/${row.ensemblId}/${efoId}`} className={classes.nameContainer}>
         <span title={row.name}>{row.name}</span>
       </Link>
     ),
@@ -214,9 +193,7 @@ function getRows(data) {
       score: d.score,
     };
     dataTypes.forEach(dataType => {
-      const dataTypeScore = d.datatypeScores.find(
-        DTScore => DTScore.componentId === dataType.id
-      );
+      const dataTypeScore = d.datatypeScores.find(DTScore => DTScore.componentId === dataType.id);
 
       if (dataTypeScore) {
         row[dataType.id] = dataTypeScore.score;
@@ -232,8 +209,8 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
   const [count, setCount] = useState();
   const [initialLoading, setInitialLoading] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [filter, setFilter] = useState('');
-  const [sortBy, setSortBy] = useState('score');
+  const [filter, setFilter] = useState("");
+  const [sortBy, setSortBy] = useState("score");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
 
@@ -272,11 +249,11 @@ function ClassicAssociationsTable({ efoId, aggregationFilters }) {
     DISEASE_ASSOCIATIONS_QUERY,
     {
       efoId,
-      filter: filter === '' ? null : filter,
+      filter: filter === "" ? null : filter,
       sortBy,
       aggregationFilters,
     },
-    'data.disease.associatedTargets'
+    "data.disease.associatedTargets"
   );
 
   const handlePageChange = pageChanged => {

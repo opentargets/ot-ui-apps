@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { OVERVIEW, getDataAll, getDataAllDownload } from './utils';
-import { getColumnsAll } from './Renderes';
+import { useState } from "react";
+import { OVERVIEW, getDataAll, getDataAllDownload } from "./utils";
+import { getColumnsAll } from "./Renderes";
 
 export const useAssociatedGenes = (genesForVariantSchema, genesForVariant) => {
   const [value, setValue] = useState(OVERVIEW);
@@ -10,21 +10,21 @@ export const useAssociatedGenes = (genesForVariantSchema, genesForVariant) => {
   };
 
   const schemas = [
-    ...genesForVariantSchema.distances.map((distanceSchema) => ({
+    ...genesForVariantSchema.distances.map(distanceSchema => ({
       ...distanceSchema,
-      type: 'distances',
+      type: "distances",
     })),
-    ...genesForVariantSchema.qtls.map((qtlSchema) => ({
+    ...genesForVariantSchema.qtls.map(qtlSchema => ({
       ...qtlSchema,
-      type: 'qtls',
+      type: "qtls",
     })),
-    ...genesForVariantSchema.intervals.map((intervalSchema) => ({
+    ...genesForVariantSchema.intervals.map(intervalSchema => ({
       ...intervalSchema,
-      type: 'intervals',
+      type: "intervals",
     })),
-    ...genesForVariantSchema.functionalPredictions.map((fpSchema) => ({
+    ...genesForVariantSchema.functionalPredictions.map(fpSchema => ({
       ...fpSchema,
-      type: 'functionalPredictions',
+      type: "functionalPredictions",
     })),
   ];
 

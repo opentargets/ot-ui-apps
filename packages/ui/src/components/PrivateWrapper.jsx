@@ -1,4 +1,4 @@
-import usePermissions from '../hooks/usePermissions';
+import usePermissions from "../hooks/usePermissions";
 
 function PrivateWrapper(props) {
   const { children } = props;

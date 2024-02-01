@@ -21,7 +21,7 @@ import { naLabel } from "../../constants";
 
 import Link from "../Link";
 
-const sourceDrawerStyles = makeStyles((theme) => ({
+const sourceDrawerStyles = makeStyles(theme => ({
   drawerLink: {
     cursor: "pointer",
   },
@@ -71,12 +71,7 @@ const sourceDrawerStyles = makeStyles((theme) => ({
   },
 }));
 
-function TableDrawer({
-  entries,
-  message,
-  caption = "Records",
-  showSingle = true,
-}) {
+function TableDrawer({ entries, message, caption = "Records", showSingle = true }) {
   const [open, setOpen] = useState(false);
   const classes = sourceDrawerStyles();
 
@@ -98,11 +93,8 @@ function TableDrawer({
     );
   }
 
-  const toggleDrawer = (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
+  const toggleDrawer = event => {
+    if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
     }
 
@@ -119,9 +111,7 @@ function TableDrawer({
     <>
       <Paper classes={{ root: classes.drawerTitle }} elevation={0}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography className={classes.drawerTitleCaption}>
-            {caption}
-          </Typography>
+          <Typography className={classes.drawerTitleCaption}>{caption}</Typography>
           <IconButton onClick={closeDrawer}>
             <FontAwesomeIcon icon={faXmark} />
           </IconButton>
@@ -129,7 +119,7 @@ function TableDrawer({
       </Paper>
 
       <Box className={classes.drawerBody}>
-        {Object.keys(groupedEntries).map((group) => (
+        {Object.keys(groupedEntries).map(group => (
           <Accordion
             elevation={0}
             key={group}
@@ -138,17 +128,12 @@ function TableDrawer({
               expanded: classes.AccordionExpanded,
             }}
             defaultExpanded={
-              groupedEntries[group].length < 10 ||
-              Object.keys(groupedEntries).length === 1
+              groupedEntries[group].length < 10 || Object.keys(groupedEntries).length === 1
             }
           >
-            <AccordionSummary
-              expandIcon={<FontAwesomeIcon icon={faChevronDown} />}
-            >
+            <AccordionSummary expandIcon={<FontAwesomeIcon icon={faChevronDown} />}>
               <Box classes={{ root: classes.summaryBoxRoot }}>
-                <Typography className={classes.AccordionTitle}>
-                  {group}
-                </Typography>
+                <Typography className={classes.AccordionTitle}>{group}</Typography>
                 <Typography className={classes.AccordionSubtitle}>
                   {groupedEntries[group].length} {caption}
                 </Typography>
@@ -156,7 +141,7 @@ function TableDrawer({
             </AccordionSummary>
             <AccordionDetails>
               <List>
-                {groupedEntries[group].map((entry) => (
+                {groupedEntries[group].map(entry => (
                   <ListItem key={v1()}>
                     {entry.url ? (
                       <Link external to={entry.url}>
@@ -177,11 +162,7 @@ function TableDrawer({
 
   return (
     <>
-      <MUILink
-        onClick={toggleDrawer}
-        className={classes.drawerLink}
-        underline="none"
-      >
+      <MUILink onClick={toggleDrawer} className={classes.drawerLink} underline="none">
         {message || `${entries.length} entries`}
       </MUILink>
 

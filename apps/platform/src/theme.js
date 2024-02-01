@@ -1,8 +1,8 @@
-import { lighten, darken } from 'polished';
-import config from './config';
+import { lighten, darken } from "polished";
+import config from "./config";
 
 const PRIMARY = config.profile.primaryColor;
-const SECONDARY = '#ff6350';
+const SECONDARY = "#ff6350";
 
 const theme = {
   shape: {
@@ -11,8 +11,13 @@ const theme = {
   typography: {
     fontFamily: '"Inter", sans-serif',
     assoc_header: {
-      fontSize: '.90rem',
+      fontSize: ".90rem",
       fontWeight: 700,
+    },
+    monoText: {
+      fontFamily: "'Roboto Mono', monospace",
+      fontWeight: 500,
+      fontSize: ".80rem",
     },
   },
   palette: {
@@ -20,18 +25,18 @@ const theme = {
       light: lighten(0.2, PRIMARY),
       main: PRIMARY,
       dark: darken(0.2, PRIMARY),
-      contrastText: '#fff',
+      contrastText: "#fff",
     },
     secondary: {
       light: lighten(0.2, SECONDARY),
       main: SECONDARY,
       dark: darken(0.2, SECONDARY),
-      contrastText: '#fff',
+      contrastText: "#fff",
     },
     text: {
-      primary: '#5A5F5F',
+      primary: "#5A5F5F",
     },
-    footer: '#2e2d35',
+    footer: "#2e2d35",
   },
   props: {
     MuiTab: {
@@ -45,14 +50,14 @@ const theme = {
       },
       styleOverrides: {
         root: {
-          border: '1px solid',
-          padding: '6px 12px',
-          minWidth: '32px',
-          minHeight: '32px',
-          height: '32px',
-          textTransform: 'none',
-          color: '#5A5F5F',
-          borderColor: 'rgb(196,196,196)',
+          border: "1px solid",
+          padding: "6px 12px",
+          minWidth: "32px",
+          minHeight: "32px",
+          height: "32px",
+          textTransform: "none",
+          color: "#5A5F5F",
+          borderColor: "rgb(196,196,196)",
         },
       },
     },
@@ -62,19 +67,19 @@ const theme = {
       },
       styleOverrides: {
         root: {
-          border: '1px solid',
-          borderColor: 'rgb(196,196,196)',
-          padding: '6px 12px',
-          textTransform: 'none',
-          height: '32px',
-          color: '#5A5F5F',
+          border: "1px solid",
+          borderColor: "rgb(196,196,196)",
+          padding: "6px 12px",
+          textTransform: "none",
+          height: "32px",
+          color: "#5A5F5F",
         },
       },
     },
     MuiTabs: {
       styleOverrides: {
         indicator: {
-          transition: 'none',
+          transition: "none",
         },
       },
     },
@@ -84,18 +89,18 @@ const theme = {
       },
       styleOverrides: {
         root: {
-          textTransform: 'none',
+          textTransform: "none",
         },
       },
     },
     MuiTooltip: {
       variants: [
         {
-          props: { variant: 'aotf' },
+          props: { variant: "aotf" },
           style: {
             root: {
               backgroundColor: `red`,
-              color: '#fff',
+              color: "#fff",
             },
           },
         },
@@ -104,8 +109,8 @@ const theme = {
     MuiSnackbar: {
       defaultProps: {
         anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'center',
+          vertical: "bottom",
+          horizontal: "center",
         },
       },
     },
@@ -113,8 +118,8 @@ const theme = {
       styleOverrides: {
         root: {
           background: PRIMARY,
-          color: 'white',
-          borderRadius: '4px',
+          color: "white",
+          borderRadius: "4px",
         },
       },
     },

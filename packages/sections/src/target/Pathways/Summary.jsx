@@ -1,8 +1,7 @@
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { SummaryItem, usePlatformApi } from 'ui';
-
-import { definition } from '.';
-import PATHWAYS_SUMMARY_FRAGMENT from './PathwaysSummary.gql';
+import { definition } from ".";
+import PATHWAYS_SUMMARY_FRAGMENT from "./PathwaysSummary.gql";
 
 function Summary() {
   const request = usePlatformApi(PATHWAYS_SUMMARY_FRAGMENT);

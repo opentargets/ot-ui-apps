@@ -8,31 +8,31 @@ import KNOWN_DRUGS_BODY_QUERY from "./KnownDrugsQuery.gql";
 const exportColumns = [
   {
     label: "diseaseId",
-    exportValue: (row) => row.disease.id,
+    exportValue: row => row.disease.id,
   },
   {
     label: "diseaseName",
-    exportValue: (row) => row.disease.name,
+    exportValue: row => row.disease.name,
   },
   {
     label: "symbol",
-    exportValue: (row) => row.target.approvedSymbol,
+    exportValue: row => row.target.approvedSymbol,
   },
   {
     label: "name",
-    exportValue: (row) => row.target.approvedName,
+    exportValue: row => row.target.approvedName,
   },
   {
     label: "phase",
-    exportValue: (row) => row.phase,
+    exportValue: row => row.phase,
   },
   {
     label: "status",
-    exportValue: (row) => row.status,
+    exportValue: row => row.status,
   },
   {
     label: "source",
-    exportValue: (row) => row.urls.map((reference) => reference.url),
+    exportValue: row => row.urls.map(reference => reference.url),
   },
 ];
 

@@ -29,15 +29,9 @@ const locusChained = ({ data, dataFiltered }) => {
   // build dicts
   const geneDict = genesFiltered.reduce(dictReducer(idField), {});
   const tagVariantDict = tagVariantsFiltered.reduce(dictReducer(idField), {});
-  const indexVariantDict = indexVariantsFiltered.reduce(
-    dictReducer(idField),
-    {}
-  );
+  const indexVariantDict = indexVariantsFiltered.reduce(dictReducer(idField), {});
   const studyDict = studiesFiltered.reduce(dictReducer(studyIdField), {});
-  const geneTagVariantDict = geneTagVariantsFiltered.reduce(
-    dictReducer(gTvIdField),
-    {}
-  );
+  const geneTagVariantDict = geneTagVariantsFiltered.reduce(dictReducer(gTvIdField), {});
   const tagVariantIndexVariantStudyDict = tagVariantIndexVariantStudiesFiltered.reduce(
     dictReducer(tvIvSIdField),
     {}
@@ -63,15 +57,10 @@ const locusChained = ({ data, dataFiltered }) => {
     ...d,
     chained: geneTagVariantDict[`${d.geneId}-${d.tagVariantId}`],
   }));
-  const tagVariantIndexVariantStudiesWithChained = tagVariantIndexVariantStudies.map(
-    d => ({
-      ...d,
-      chained:
-        tagVariantIndexVariantStudyDict[
-          `${d.tagVariantId}-${d.indexVariantId}-${d.studyId}`
-        ],
-    })
-  );
+  const tagVariantIndexVariantStudiesWithChained = tagVariantIndexVariantStudies.map(d => ({
+    ...d,
+    chained: tagVariantIndexVariantStudyDict[`${d.tagVariantId}-${d.indexVariantId}-${d.studyId}`],
+  }));
 
   return {
     genes: genesWithChained,

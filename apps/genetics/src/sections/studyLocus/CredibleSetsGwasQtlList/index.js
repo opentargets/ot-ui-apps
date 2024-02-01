@@ -1,1 +1,1 @@
-export { default } from './CredibleSetsGwasQtlList';
+export { default } from "./CredibleSetsGwasQtlList";

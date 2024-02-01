@@ -1,5 +1,5 @@
-import { Redirect } from 'react-router-dom';
-import usePermissions from '../hooks/usePermissions';
+import { Redirect } from "react-router-dom";
+import usePermissions from "../hooks/usePermissions";
 
 function PrivateRoute({ children }) {
   const { isPartnerPreview } = usePermissions();

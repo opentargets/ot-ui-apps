@@ -1,4 +1,4 @@
-query SysBioQuery($ensemblId: String!, $efoId: String!) {
+query SysBioQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
   target(ensemblId: $ensemblId) {
     approvedSymbol
   }
@@ -8,6 +8,7 @@ query SysBioQuery($ensemblId: String!, $efoId: String!) {
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["sysbio"]
+      size: $size
     ) {
       count
       rows {

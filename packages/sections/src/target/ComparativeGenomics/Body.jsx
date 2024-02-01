@@ -1,11 +1,11 @@
-import { useQuery } from '@apollo/client';
-import { SectionItem } from 'ui';
+import { useQuery } from "@apollo/client";
+import { SectionItem } from "ui";
 
-import { definition } from '.';
-import HomologyTable from './HomologyTable';
-import Description from './Description';
+import { definition } from ".";
+import HomologyTable from "./HomologyTable";
+import Description from "./Description";
 
-import COMP_GENOMICS_QUERY from './CompGenomics.gql';
+import COMP_GENOMICS_QUERY from "./CompGenomics.gql";
 
 function Body({ id: ensemblId, label: symbol, entity }) {
   const variables = { ensemblId };

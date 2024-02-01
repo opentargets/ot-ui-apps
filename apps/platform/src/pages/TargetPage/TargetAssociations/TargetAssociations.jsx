@@ -1,5 +1,6 @@
-import { useContext } from 'react';
-import { Box } from '@mui/material';
+import { useContext } from "react";
+import { PrivateWrapper } from "ui";
+import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -10,23 +11,57 @@ import {
   ControlsSection,
   OptionsControlls,
   AotFLoader,
-} from '../../../components/AssociationsToolkit';
-import TARGET_ASSOCIATIONS_QUERY from './TargetAssociationsQuery.gql';
+  DataUploader,
+} from "../../../components/AssociationsToolkit";
+import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
+import { ApiPlaygroundDrawer } from "ui";
 
 function AssociationsWrapper() {
-  const { initialLoading, id } = useContext(AssociationsContext);
+  const {
+    initialLoading,
+    id,
+    pagination,
+    searhFilter,
+    sorting,
+    enableIndirect,
+    dataSourcesWeights,
+    entity,
+    dataSourcesRequired,
+  } = useContext(AssociationsContext);
+
+  const variables = {
+    id,
+    index: pagination.pageIndex,
+    size: pagination.pageSize,
+    filter: searhFilter,
+    sortBy: sorting[0].id,
+    enableIndirect,
+    datasources: dataSourcesWeights,
+    entity,
+    aggregationFilters: dataSourcesRequired,
+  };
+
   if (initialLoading) return <AotFLoader />;
 
   return (
     <>
       <ControlsSection>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
-            <DataDownloader fileStem={`${id}-associated-targets`} />
+            <PrivateWrapper>
+              <DataUploader />
+            </PrivateWrapper>
+            <Divider orientation="vertical" />
+            <DataDownloader fileStem={`OT-${id}-associated-diseases`} />
+            <ApiPlaygroundDrawer
+              query={TARGET_ASSOCIATIONS_QUERY.loc.source.body}
+              variables={variables}
+            />
           </OptionsControlls>
         </Box>
+        <Box></Box>
       </ControlsSection>
       <TableAssociations />
     </>
@@ -36,11 +71,7 @@ function AssociationsWrapper() {
 /* TARGET ASSOCIATION  */
 function TargetAssociations({ ensgId }) {
   return (
-    <AssociationsProvider
-      id={ensgId}
-      entity="target"
-      query={TARGET_ASSOCIATIONS_QUERY}
-    >
+    <AssociationsProvider id={ensgId} entity="target" query={TARGET_ASSOCIATIONS_QUERY}>
       <AssociationsWrapper />
     </AssociationsProvider>
   );

@@ -1,4 +1,4 @@
-query OrphanetQuery($ensemblId: String!, $efoId: String!) {
+query OrphanetQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
   target(ensemblId: $ensemblId) {
     approvedSymbol
   }
@@ -8,6 +8,7 @@ query OrphanetQuery($ensemblId: String!, $efoId: String!) {
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["orphanet"]
+      size: $size
     ) {
       count
       rows {

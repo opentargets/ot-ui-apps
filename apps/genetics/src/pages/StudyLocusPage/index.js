@@ -1,1 +1,1 @@
-export { default } from './StudyLocusPage';
+export { default } from "./StudyLocusPage";

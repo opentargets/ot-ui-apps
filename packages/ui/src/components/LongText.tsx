@@ -2,7 +2,7 @@ import { useState, useLayoutEffect, useRef, PropsWithChildren } from "react";
 import { makeStyles } from "@mui/styles";
 import { Typography } from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   textContainer: {
     display: "flex",
     flexDirection: "column",
@@ -19,11 +19,7 @@ type LongTextProps = {
   variant: string;
 };
 
-const LongText = ({
-  lineLimit,
-  variant = "body2",
-  children,
-}: PropsWithChildren<LongTextProps>) => {
+const LongText = ({ lineLimit, variant = "body2", children }: PropsWithChildren<LongTextProps>) => {
   const classes = useStyles();
   const containerRef = useRef<HTMLInputElement>(null);
   const textRef = useRef<HTMLInputElement>(null);
@@ -36,18 +32,12 @@ const LongText = ({
     if (!el || !container) return;
     const height = el.offsetHeight;
     const DOMLineHeight = document.defaultView
-      ? document.defaultView
-          .getComputedStyle(el, null)
-          .getPropertyValue("line-height")
+      ? document.defaultView.getComputedStyle(el, null).getPropertyValue("line-height")
       : "";
     const lineHeight = Number.parseInt(DOMLineHeight);
     const numberOfLines = Math.round(height / lineHeight);
     container.style.height =
-      numberOfLines <= lineLimit
-        ? "auto"
-        : showMore
-        ? "auto"
-        : `${lineLimit * lineHeight}px`;
+      numberOfLines <= lineLimit ? "auto" : showMore ? "auto" : `${lineLimit * lineHeight}px`;
 
     setNumberOfLines(numberOfLines);
   }, [lineLimit, showMore, children]);
@@ -60,10 +50,7 @@ const LongText = ({
       {numberOfLines > lineLimit && (
         <span>
           {showMore ? "" : "... "}[{" "}
-          <span
-            className={classes.showMore}
-            onClick={() => setShowMore(!showMore)}
-          >
+          <span className={classes.showMore} onClick={() => setShowMore(!showMore)}>
             {showMore ? " hide" : " show more"}
           </span>{" "}
           ]

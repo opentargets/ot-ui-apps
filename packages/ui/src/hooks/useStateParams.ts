@@ -11,15 +11,13 @@ function useStateParams<T>(
   const search = new URLSearchParams(history.location.search);
 
   const existingValue = search.get(paramsName);
-  const [state, setState] = useState<T>(
-    existingValue ? deserialize(existingValue) : initialState
-  );
+  const [state, setState] = useState<T>(existingValue ? deserialize(existingValue) : initialState);
 
   useEffect(() => {
     // Updates state when user navigates backwards or forwards in browser history
     if (existingValue && deserialize(existingValue) !== state) {
       setState(deserialize(existingValue));
-    }
+    } else if (!existingValue) setState(initialState);
   }, [existingValue]);
 
   const onChange = (s: T) => {

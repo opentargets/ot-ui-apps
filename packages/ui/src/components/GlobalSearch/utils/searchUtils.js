@@ -1,6 +1,6 @@
 import { format } from "d3-format";
 
-const mapStandardKeys = (origionalKey) => {
+const mapStandardKeys = origionalKey => {
   switch (origionalKey) {
     case "studyId":
       return "id";
@@ -17,11 +17,11 @@ const mapStandardKeys = (origionalKey) => {
   }
 };
 
-const flattenObj = (ob) => {
+const flattenObj = ob => {
   const result = {};
 
   Object.entries(ob).forEach(([key, value]) => {
-    if (typeof value === "object" && !Array.isArray(value)) {
+    if (value && typeof value === "object" && !Array.isArray(value)) {
       const temp = flattenObj(value);
       Object.entries(temp).forEach(([nestedKey, nestedValue]) => {
         result[nestedKey] = nestedValue;
@@ -36,10 +36,10 @@ const flattenObj = (ob) => {
   return result;
 };
 
-const isArray = (value) => Array.isArray(value) && value.length > 0;
+const isArray = value => Array.isArray(value) && value.length > 0;
 
-const exceedsArrayLengthLimit = (array) => {
-  const limitLength = 10;
+const exceedsArrayLengthLimit = array => {
+  const limitLength = 4;
   let exceedsLimit = false;
 
   if (array.length > limitLength) {
@@ -48,13 +48,13 @@ const exceedsArrayLengthLimit = (array) => {
   return exceedsLimit;
 };
 
-export const formatSearchData = (unformattedData) => {
+export const formatSearchData = unformattedData => {
   const formattedData = {};
 
   Object.entries(unformattedData).forEach(([key, value]) => {
     const typesArray = [];
     if (isArray(value)) {
-      value.map((i) =>
+      value.map(i =>
         typesArray.push({
           type: key === "topHit" ? "topHit" : key,
           entity: key,
@@ -62,7 +62,7 @@ export const formatSearchData = (unformattedData) => {
         })
       );
     } else if (isArray(value.hits)) {
-      value.hits.map((i) =>
+      value.hits.map(i =>
         typesArray.push({
           type: key === "topHit" ? "topHit" : i.entity,
           entity: i.entity,
@@ -86,7 +86,7 @@ export const containsObject = (obj, list) => {
   return -1;
 };
 
-export const addSearchToLocalStorage = (item) => {
+export const addSearchToLocalStorage = item => {
   const recentItems = JSON.parse(localStorage.getItem("search-history")) || [];
   const newItem = { ...item };
   delete newItem.description;
@@ -96,11 +96,11 @@ export const addSearchToLocalStorage = (item) => {
     recentItems.splice(existingIndex, 1);
   }
   const recentItemsDeepCopy = [...recentItems];
+  if (exceedsArrayLengthLimit(recentItemsDeepCopy)) recentItemsDeepCopy.pop();
   if (newItem) {
     recentItemsDeepCopy.unshift(newItem);
     localStorage.setItem("search-history", JSON.stringify(recentItemsDeepCopy));
   }
-  if (exceedsArrayLengthLimit(recentItemsDeepCopy)) recentItemsDeepCopy.pop();
 };
 
 export const clearAllRecent = () => {
@@ -108,7 +108,7 @@ export const clearAllRecent = () => {
   window.dispatchEvent(new Event("storage"));
 };
 
-export const clearRecentItem = (item) => {
+export const clearRecentItem = item => {
   const recentItems = JSON.parse(localStorage.getItem("search-history"));
   const removedItems = [...recentItems];
   const existingIndex = containsObject(item, removedItems);

@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 
-import {
-  Link,
-  Table,
-  getPage,
-  getComparator,
-  useCursorBatchDownloader,
-} from "ui";
+import { Link, Table, getPage, getComparator, useCursorBatchDownloader } from "ui";
 import { naLabel, phaseMap } from "../../constants";
 import { sentenceCase } from "../../utils/global";
 import SourceDrawer from "./SourceDrawer";
@@ -26,13 +20,13 @@ function getColumnPool(id, entity) {
         },
         {
           id: "status",
-          renderCell: (d) => (d.status ? d.status : naLabel),
+          renderCell: d => (d.status ? d.status : naLabel),
         },
         {
           id: "sources",
           label: "Source",
-          exportValue: (d) => d.urls.map((reference) => reference.url),
-          renderCell: (d) => <SourceDrawer references={d.urls} />,
+          exportValue: d => d.urls.map(reference => reference.url),
+          renderCell: d => <SourceDrawer references={d.urls} />,
         },
       ],
     },
@@ -42,9 +36,7 @@ function getColumnPool(id, entity) {
         {
           id: "disease",
           propertyPath: "disease.id",
-          renderCell: (d) => (
-            <Link to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>
-          ),
+          renderCell: d => <Link to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>,
         },
       ],
     },
@@ -54,17 +46,13 @@ function getColumnPool(id, entity) {
         {
           id: "drug",
           propertyPath: "drug.id",
-          renderCell: (d) =>
-            d.drug ? (
-              <Link to={`/drug/${d.drug.id}`}>{d.drug.name}</Link>
-            ) : (
-              naLabel
-            ),
+          renderCell: d =>
+            d.drug ? <Link to={`/drug/${d.drug.id}`}>{d.drug.name}</Link> : naLabel,
         },
         {
           id: "type",
           propertyPath: "drugType",
-          renderCell: (d) => d.drugType,
+          renderCell: d => d.drugType,
         },
         {
           id: "mechanismOfAction",
@@ -77,8 +65,8 @@ function getColumnPool(id, entity) {
 
             const targetId = entity === "target" ? id : target.id;
 
-            mechanismsOfAction.rows.forEach((row) => {
-              row.targets.forEach((t) => {
+            mechanismsOfAction.rows.forEach(row => {
+              row.targets.forEach(t => {
                 if (t.id === targetId) {
                   at.add(row.actionType);
                 }
@@ -95,7 +83,7 @@ function getColumnPool(id, entity) {
                   listStyle: "none",
                 }}
               >
-                {actionTypes.map((actionType) => (
+                {actionTypes.map(actionType => (
                   <li key={actionType}>{sentenceCase(actionType)}</li>
                 ))}
               </ul>
@@ -113,16 +101,14 @@ function getColumnPool(id, entity) {
           id: "targetSymbol",
           label: "Symbol",
           propertyPath: "target.approvedSymbol",
-          renderCell: (d) => (
-            <Link to={`/target/${d.target.id}`}>{d.target.approvedSymbol}</Link>
-          ),
+          renderCell: d => <Link to={`/target/${d.target.id}`}>{d.target.approvedSymbol}</Link>,
         },
         {
           id: "targetName",
           label: "Name",
           propertyPath: "target.approvedName",
           hidden: ["lgDown"],
-          renderCell: (d) => d.target.approvedName,
+          renderCell: d => d.target.approvedName,
         },
       ],
     },
@@ -157,16 +143,16 @@ function Body({
   const columnPool = getColumnPool(id, entity);
   const columns = [];
 
-  columnsToShow.forEach((columnGroupName) => {
+  columnsToShow.forEach(columnGroupName => {
     columns.push(
-      ...columnPool[columnGroupName].columns.map((column) =>
+      ...columnPool[columnGroupName].columns.map(column =>
         column.id === stickyColumn ? { ...column, sticky: true } : column
       )
     );
   });
 
   const headerGroups = [
-    ...columnsToShow.map((columnGroupName) => ({
+    ...columnsToShow.map(columnGroupName => ({
       colspan: columnPool[columnGroupName].columns.length,
       label: columnPool[columnGroupName].label,
     })),
@@ -187,14 +173,10 @@ function Body({
     () => {
       let isCurrent = true;
 
-      fetchDrugs(variables, null, pageSize).then((res) => {
+      fetchDrugs(variables, null, pageSize).then(res => {
         setInitialLoading(false);
         if (res.data[entity].knownDrugs && isCurrent) {
-          const {
-            cursor: newCursor,
-            count: newCount,
-            rows: newRows,
-          } = res.data[entity].knownDrugs;
+          const { cursor: newCursor, count: newCount, rows: newRows } = res.data[entity].knownDrugs;
           setCursor(newCursor);
           setCount(newCount);
           setRows(newRows);
@@ -215,13 +197,12 @@ function Body({
     `data[${entity}].knownDrugs`
   );
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = newPage => {
     const numNewPageSize = parseInt(newPage, 10);
     if (pageSize * numNewPageSize + pageSize > rows.length && cursor !== null) {
       setLoading(true);
-      fetchDrugs(variables, cursor, pageSize, globalFilter).then((res) => {
-        const { cursor: newCursor, rows: newRows } =
-          res.data[entity].knownDrugs;
+      fetchDrugs(variables, cursor, pageSize, globalFilter).then(res => {
+        const { cursor: newCursor, rows: newRows } = res.data[entity].knownDrugs;
         setCursor(newCursor);
         setPage(numNewPageSize);
         setRows([...rows, ...newRows]);
@@ -232,30 +213,27 @@ function Body({
     }
   };
 
-  const handleRowsPerPageChange = (newPageSize) => {
+  const handleRowsPerPageChange = newPageSize => {
     const numNewPageSize = parseInt(newPageSize, 10);
     if (numNewPageSize > rows.length && cursor !== null) {
       setLoading(true);
-      fetchDrugs(variables, cursor, numNewPageSize, globalFilter).then(
-        (res) => {
-          const { cursor: newCursor, rows: newRows } =
-            res.data[entity].knownDrugs;
-          setCursor(newCursor);
-          setPage(0);
-          setPageSize(numNewPageSize);
-          setRows([...rows, ...newRows]);
-          setLoading(false);
-        }
-      );
+      fetchDrugs(variables, cursor, numNewPageSize, globalFilter).then(res => {
+        const { cursor: newCursor, rows: newRows } = res.data[entity].knownDrugs;
+        setCursor(newCursor);
+        setPage(0);
+        setPageSize(numNewPageSize);
+        setRows([...rows, ...newRows]);
+        setLoading(false);
+      });
     } else {
       setPage(0);
       setPageSize(numNewPageSize);
     }
   };
 
-  const handleGlobalFilterChange = (newGlobalFilter) => {
+  const handleGlobalFilterChange = newGlobalFilter => {
     setLoading(true);
-    fetchDrugs(variables, null, pageSize, newGlobalFilter).then((res) => {
+    fetchDrugs(variables, null, pageSize, newGlobalFilter).then(res => {
       const {
         cursor: newCursor,
         count: newCount,
@@ -270,7 +248,7 @@ function Body({
     });
   };
 
-  const handleSortBy = (sortBy) => {
+  const handleSortBy = sortBy => {
     setSortColumn(sortBy);
     setSortOrder(
       // eslint-disable-next-line

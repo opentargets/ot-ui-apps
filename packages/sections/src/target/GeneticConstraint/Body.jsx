@@ -1,10 +1,10 @@
-import { SectionItem } from 'ui';
-import { useQuery } from '@apollo/client';
-import GeneticConstraintTable from './GeneticConstraintTable';
+import { SectionItem } from "ui";
+import { useQuery } from "@apollo/client";
+import GeneticConstraintTable from "./GeneticConstraintTable";
 
-import { definition } from '.';
-import Description from './Description';
-import GENETIC_CONSTRAINT from './GeneticConstraint.gql';
+import { definition } from ".";
+import Description from "./Description";
+import GENETIC_CONSTRAINT from "./GeneticConstraint.gql";
 
 function Body({ id: ensemblId, label: symbol, entity }) {
   const variables = { ensemblId };

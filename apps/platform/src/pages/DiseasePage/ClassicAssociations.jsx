@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Card, CardContent, Grid, Typography } from '@mui/material';
-import { useQuery } from '@apollo/client';
+import { useState } from "react";
+import { Card, CardContent, Grid, Typography } from "@mui/material";
+import { useQuery } from "@apollo/client";
 
-import ClassicAssociationsTable from './ClassicAssociationsTable';
-import { Facets } from '../../components/Facets';
+import ClassicAssociationsTable from "./ClassicAssociationsTable";
+import { Facets } from "../../components/Facets";
 
-import DISEASE_FACETS_QUERY from './DiseaseFacets.gql';
+import DISEASE_FACETS_QUERY from "./DiseaseFacets.gql";
 
 function ClassicAssociations({ efoId }) {
   const [aggregationFilters, setAggregationFilters] = useState([]);
@@ -20,13 +20,13 @@ function ClassicAssociations({ efoId }) {
   const facetData = data?.disease?.associatedTargets.aggregations.aggs;
 
   return (
-    <Grid style={{ marginTop: '8px' }} container spacing={2}>
+    <Grid style={{ marginTop: "8px" }} container spacing={2}>
       <Grid item xs={12}>
         <Typography variant="h6">
           {data ? (
             <>
-              <strong>{data.disease.associatedTargets.count} targets</strong>{' '}
-              associated with <strong>{data.disease.name}</strong>
+              <strong>{data.disease.associatedTargets.count} targets</strong> associated with{" "}
+              <strong>{data.disease.name}</strong>
             </>
           ) : (
             <strong>Loading...</strong>
@@ -46,12 +46,9 @@ function ClassicAssociations({ efoId }) {
         </Card>
       </Grid>
       <Grid item xs={12} lg={9}>
-        <Card elevation={0} style={{ overflow: 'visible' }}>
+        <Card elevation={0} style={{ overflow: "visible" }}>
           <CardContent>
-            <ClassicAssociationsTable
-              efoId={efoId}
-              aggregationFilters={aggregationFilters}
-            />
+            <ClassicAssociationsTable efoId={efoId} aggregationFilters={aggregationFilters} />
           </CardContent>
         </Card>
       </Grid>

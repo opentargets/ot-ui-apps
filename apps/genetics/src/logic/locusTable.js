@@ -1,12 +1,5 @@
 const locusTable = (
-  {
-    genes,
-    tagVariants,
-    indexVariants,
-    studies,
-    geneTagVariants,
-    tagVariantIndexVariantStudies,
-  },
+  { genes, tagVariants, indexVariants, studies, geneTagVariants, tagVariantIndexVariantStudies },
   lookups
 ) => {
   const { geneDict, tagVariantDict, indexVariantDict, studyDict } = lookups;

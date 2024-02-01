@@ -9,63 +9,63 @@ import KNOWN_DRUGS_BODY_QUERY from "./KnownDrugsQuery.gql";
 const exportColumns = [
   {
     label: "diseaseId",
-    exportValue: (row) => row.disease.id,
+    exportValue: row => row.disease.id,
   },
   {
     label: "diseaseName",
-    exportValue: (row) => row.disease.name,
+    exportValue: row => row.disease.name,
   },
   {
     label: "drugId",
-    exportValue: (row) => row.drug.id,
+    exportValue: row => row.drug.id,
   },
   {
     label: "drugName",
-    exportValue: (row) => row.drug.name,
+    exportValue: row => row.drug.name,
   },
   {
     label: "type",
-    exportValue: (row) => row.drugType,
+    exportValue: row => row.drugType,
   },
   {
     label: "mechanismOfAction",
-    exportValue: (row) => row.mechanismOfAction,
+    exportValue: row => row.mechanismOfAction,
   },
   {
     label: "actionType",
     exportValue: ({ drug: { mechanismsOfAction }, target }) => {
       if (!mechanismsOfAction) return "";
       const at = new Set();
-      mechanismsOfAction.rows.forEach((row) => {
-        row.targets.forEach((t) => {
+      mechanismsOfAction.rows.forEach(row => {
+        row.targets.forEach(t => {
           if (t.id === target.id) {
             at.add(row.actionType);
           }
         });
       });
       const actionTypes = Array.from(at);
-      return actionTypes.map((actionType) => sentenceCase(actionType));
+      return actionTypes.map(actionType => sentenceCase(actionType));
     },
   },
   {
     label: "symbol",
-    exportValue: (row) => row.target.approvedSymbol,
+    exportValue: row => row.target.approvedSymbol,
   },
   {
     label: "name",
-    exportValue: (row) => row.target.approvedName,
+    exportValue: row => row.target.approvedName,
   },
   {
     label: "phase",
-    exportValue: (row) => row.phase,
+    exportValue: row => row.phase,
   },
   {
     label: "status",
-    exportValue: (row) => row.status,
+    exportValue: row => row.status,
   },
   {
     label: "source",
-    exportValue: (row) => row.urls.map((reference) => reference.url),
+    exportValue: row => row.urls.map(reference => reference.url),
   },
 ];
 

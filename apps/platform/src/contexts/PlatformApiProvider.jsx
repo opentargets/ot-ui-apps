@@ -1,7 +1,7 @@
-import { useMemo, createContext } from 'react';
-import { useQuery } from '@apollo/client';
+import { useMemo, createContext } from "react";
+import { useQuery } from "@apollo/client";
 
-import productionClient from '../client';
+import productionClient from "../client";
 
 const PlatformApiContext = createContext();
 
@@ -21,9 +21,7 @@ function PlatformApiProvider({
   );
 
   return (
-    <PlatformApiContext.Provider value={platformApiValue}>
-      {children}
-    </PlatformApiContext.Provider>
+    <PlatformApiContext.Provider value={platformApiValue}>{children}</PlatformApiContext.Provider>
   );
 }
 

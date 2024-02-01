@@ -7,6 +7,7 @@ export const appCanonicalUrl = "https://platform.opentargets.org";
 // Chunk sizes for server side pagination/download.
 export const tableChunkSize = 100;
 export const downloaderChunkSize = 2500;
+export const sectionsBaseSizeQuery = 3500;
 
 // NA label.
 export const naLabel = "N/A";
@@ -24,6 +25,12 @@ export const colorRange = [
   "#005299",
 ];
 
+export const PHARM_GKB_COLOR = {
+  green: "#52a237",
+  yellow: "#f0c584",
+  red: "#ec2746",
+};
+
 export const defaultRowsPerPageOptions = [10, 25, 100];
 
 export const decimalPlaces = 3;
@@ -38,7 +45,7 @@ const clinicalPhases = {
   4: "Phase IV",
 };
 
-export const phaseMap = (clinicalPhase) => {
+export const phaseMap = clinicalPhase => {
   const clinicalPhaseId = String(clinicalPhase);
   return clinicalPhases[clinicalPhaseId];
 };

@@ -1,24 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircle,
-  faArrowsAltH,
-  faExpandArrowsAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCircle, faArrowsAltH, faExpandArrowsAlt } from "@fortawesome/free-solid-svg-icons";
 import { v1 } from "uuid";
 import { Tooltip } from "ui";
 
-function MethodIcon({
-  tooltip,
-  enabled = true,
-  children,
-  notooltip,
-  small = false,
-}) {
+function MethodIcon({ tooltip, enabled = true, children, notooltip, small = false }) {
   let title;
 
   if (!enabled || !tooltip) title = "no data";
   else if (Array.isArray(tooltip)) {
-    title = tooltip.map((m) => (
+    title = tooltip.map(m => (
       <span key={v1()}>
         {m}
         <br />
@@ -44,20 +34,9 @@ function MethodIcon({
   return notooltip ? icon : <Tooltip title={title}>{icon}</Tooltip>;
 }
 
-function MethodIconText({
-  tooltip,
-  enabled = true,
-  notooltip,
-  children,
-  small = false,
-}) {
+function MethodIconText({ tooltip, enabled = true, notooltip, children, small = false }) {
   return (
-    <MethodIcon
-      tooltip={tooltip}
-      enabled={enabled}
-      notooltip={notooltip}
-      small={small}
-    >
+    <MethodIcon tooltip={tooltip} enabled={enabled} notooltip={notooltip} small={small}>
       <span
         className="fa-layers-text fa-inverse"
         data-fa-transform="shrink-10 left-2"
@@ -69,48 +48,18 @@ function MethodIconText({
   );
 }
 
-function MethodIconExpandArrow({
-  tooltip,
-  enabled = true,
-  notooltip,
-  small = false,
-}) {
+function MethodIconExpandArrow({ tooltip, enabled = true, notooltip, small = false }) {
   return (
-    <MethodIcon
-      tooltip={tooltip}
-      enabled={enabled}
-      notooltip={notooltip}
-      small={small}
-    >
-      <FontAwesomeIcon
-        icon={faExpandArrowsAlt}
-        size="2x"
-        inverse
-        transform="shrink-6 right-1"
-      />
+    <MethodIcon tooltip={tooltip} enabled={enabled} notooltip={notooltip} small={small}>
+      <FontAwesomeIcon icon={faExpandArrowsAlt} size="2x" inverse transform="shrink-6 right-1" />
     </MethodIcon>
   );
 }
 
-function MethodIconArrow({
-  tooltip,
-  enabled = true,
-  notooltip,
-  small = false,
-}) {
+function MethodIconArrow({ tooltip, enabled = true, notooltip, small = false }) {
   return (
-    <MethodIcon
-      tooltip={tooltip}
-      enabled={enabled}
-      notooltip={notooltip}
-      small={small}
-    >
-      <FontAwesomeIcon
-        icon={faArrowsAltH}
-        size="2x"
-        inverse
-        transform="shrink-6"
-      />
+    <MethodIcon tooltip={tooltip} enabled={enabled} notooltip={notooltip} small={small}>
+      <FontAwesomeIcon icon={faArrowsAltH} size="2x" inverse transform="shrink-6" />
     </MethodIcon>
   );
 }

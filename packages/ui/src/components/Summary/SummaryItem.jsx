@@ -61,8 +61,7 @@ function SummaryItem({ definition, request, renderSummary, subText }) {
                 variant="body2"
               >
                 {loading && <Skeleton width={100} />}
-                {!loading && definition.name}{" "}
-                {definition.isPrivate ? <PartnerLockIcon /> : null}
+                {!loading && definition.name} {definition.isPrivate ? <PartnerLockIcon /> : null}
               </Typography>
               {subText ? (
                 <Typography

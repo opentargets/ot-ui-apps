@@ -1,6 +1,6 @@
-import { Component } from 'react';
-import { Skeleton } from '@mui/material';
-import SmilesHelper from './SmilesHelper';
+import { Component } from "react";
+import { Skeleton } from "@mui/material";
+import SmilesHelper from "./SmilesHelper";
 
 class Smiles extends Component {
   constructor(props) {
@@ -14,15 +14,13 @@ class Smiles extends Component {
     this.mounted = true;
 
     const { chemblId } = this.props;
-    fetch(
-      `https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblId}?format=json`
-    )
+    fetch(`https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblId}?format=json`)
       .then(res => res.json())
       .then(data => {
         if (this.mounted) {
           this.setState({
             smiles:
-              data.molecule_type === 'Small molecule'
+              data.molecule_type === "Small molecule"
                 ? data.molecule_structures?.canonical_smiles
                 : null,
           });
@@ -43,12 +41,7 @@ class Smiles extends Component {
     return smiles ? (
       <SmilesHelper chemblId={chemblId} smiles={smiles} />
     ) : (
-      <Skeleton
-        style={{ marginLeft: 'auto' }}
-        height="240px"
-        variant="rect"
-        width="450px"
-      />
+      <Skeleton style={{ marginLeft: "auto" }} height="240px" variant="rect" width="450px" />
     );
   }
 }

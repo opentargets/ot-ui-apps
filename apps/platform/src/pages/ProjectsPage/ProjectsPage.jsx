@@ -1,22 +1,19 @@
-import { Paper, Box, Typography, Chip } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCircleCheck,
-  faCircleNotch,
-} from '@fortawesome/free-solid-svg-icons';
-import { DataTable, Link } from 'ui';
-import projectsData from './projects-data.json';
+import { Paper, Box, Typography, Chip } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleCheck, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { DataTable, Link } from "ui";
+import projectsData from "./projects-data.json";
 
 const useStyles = makeStyles(theme => ({
   icon: {
     color: theme.palette.primary.main,
   },
   diseaseContainer: {
-    display: 'flex',
+    display: "flex",
   },
   disease: {
-    marginRight: '0.2rem',
+    marginRight: "0.2rem",
   },
 }));
 
@@ -24,8 +21,8 @@ function ProjectPage() {
   const classes = useStyles();
   const columns = [
     {
-      id: 'otar_code',
-      label: 'Project Code',
+      id: "otar_code",
+      label: "Project Code",
       renderCell: ({ otar_code: otarCode }) =>
         otarCode ? (
           <Link to={`http://home.opentargets.org/${otarCode}`} external newTab>
@@ -33,36 +30,28 @@ function ProjectPage() {
           </Link>
         ) : null,
     },
-    { id: 'project_name', label: 'Project Name' },
-    { id: 'project_lead', label: 'Project Lead' },
-    { id: 'generates_data', label: 'Generates Data' },
+    { id: "project_name", label: "Project Name" },
+    { id: "project_lead", label: "Project Lead" },
+    { id: "generates_data", label: "Generates Data" },
     {
-      id: 'currently_integrates_in_PPP',
-      label: 'Currently integrates into PPP',
-      renderCell: ({
-        currently_integrates_in_PPP: currentlyIntegratesInPPP,
-      }) => {
-        const icon =
-          currentlyIntegratesInPPP === 'Y' ? faCircleCheck : faCircleNotch;
-        return (
-          <FontAwesomeIcon size="lg" icon={icon} className={classes.icon} />
-        );
+      id: "currently_integrates_in_PPP",
+      label: "Currently integrates into PPP",
+      renderCell: ({ currently_integrates_in_PPP: currentlyIntegratesInPPP }) => {
+        const icon = currentlyIntegratesInPPP === "Y" ? faCircleCheck : faCircleNotch;
+        return <FontAwesomeIcon size="lg" icon={icon} className={classes.icon} />;
       },
     },
-    { id: 'project_status', label: 'Project Status' },
-    { id: 'open_targets_therapeutic_area', label: 'Therapeutic Area' },
+    { id: "project_status", label: "Project Status" },
+    { id: "open_targets_therapeutic_area", label: "Therapeutic Area" },
     {
-      id: 'disease_mapping',
-      label: 'Disease Mapped in the PPP',
+      id: "disease_mapping",
+      label: "Disease Mapped in the PPP",
       renderCell: ({ disease_mapping: diseaseMapping }) => {
         const ALL_AVATARS = [];
         diseaseMapping.forEach(disease => {
           if (disease && disease.disease_id) {
             ALL_AVATARS.push(
-              <Link
-                to={`disease/${disease.disease_id}`}
-                key={disease.disease_id}
-              >
+              <Link to={`disease/${disease.disease_id}`} key={disease.disease_id}>
                 <Chip
                   size="small"
                   label={disease.label || disease.disease_id}
@@ -84,27 +73,23 @@ function ProjectPage() {
         Open Targets Projects Table
       </Typography>
       <Typography paragraph>
-        The table below contains key information on the OTAR projects, their
-        status and data availability into the PPP.
+        The table below contains key information on the OTAR projects, their status and data
+        availability into the PPP.
       </Typography>
       <Typography paragraph>
-        For further information, please see{' '}
+        For further information, please see{" "}
         <Link to="http://home.opentargets.org/data-available" external newTab>
           here
-        </Link>{' '}
-        or contact us at{' '}
+        </Link>{" "}
+        or contact us at{" "}
         <Link to="mailto: datarequests@opentargets.org" external>
           datarequests@opentargets.org
         </Link>
         .
       </Typography>
       <Typography paragraph>
-        PPP specific documentation can be found{' '}
-        <Link
-          to="http://home.opentargets.org/ppp-documentation"
-          external
-          newTab
-        >
+        PPP specific documentation can be found{" "}
+        <Link to="http://home.opentargets.org/ppp-documentation" external newTab>
           here
         </Link>
       </Typography>

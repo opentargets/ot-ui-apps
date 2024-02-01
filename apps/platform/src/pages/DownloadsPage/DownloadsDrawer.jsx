@@ -1,43 +1,43 @@
-import { useState } from 'react';
-import { Drawer, IconButton, Paper, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { formatMap } from '../../constants';
+import { useState } from "react";
+import { Drawer, IconButton, Paper, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { formatMap } from "../../constants";
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
-    '& .MuiBackdrop-root': {
-      opacity: '0 !important',
+    "& .MuiBackdrop-root": {
+      opacity: "0 !important",
     },
   },
   container: {
     backgroundColor: theme.palette.grey[300],
   },
   title: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    borderBottom: '1px solid #ccc',
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    padding: '1rem',
+    display: "flex",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    borderBottom: "1px solid #ccc",
+    fontSize: "1.2rem",
+    fontWeight: "bold",
+    padding: "1rem",
   },
   paper: {
-    width: '420px',
-    margin: '1.5rem',
-    padding: '1rem',
+    width: "420px",
+    margin: "1.5rem",
+    padding: "1rem",
   },
   resourceURL: {
-    marginBottom: '8px',
-    padding: '10px',
-    wordBreak: 'break-all',
+    marginBottom: "8px",
+    padding: "10px",
+    wordBreak: "break-all",
     backgroundColor: theme.palette.grey[800],
-    color: 'white',
+    color: "white",
   },
   ftpURL: {
-    color: 'white',
-    textDecoration: 'none',
+    color: "white",
+    textDecoration: "none",
   },
 }));
 
@@ -82,15 +82,14 @@ function DownloadsDrawer({ title, format, path, month, year, children }) {
               href={`http://ftp.ebi.ac.uk/pub/databases/opentargets/platform/${year}.${month}/output/etl/${format}${path}`}
             >
               ftp.ebi.ac.uk/pub/databases/opentargets/platform/{year}.
-              {month.toString().padStart(2, '0')}/output/etl/{format}
+              {month.toString().padStart(2, "0")}/output/etl/{format}
               {path}
             </a>
           </div>
           <Typography>rsync</Typography>
           <div className={classes.resourceURL}>
-            rsync -rpltvz --delete
-            rsync.ebi.ac.uk::pub/databases/opentargets/platform/{year}.
-            {month.toString().padStart(2, '0')}/output/etl/{format}
+            rsync -rpltvz --delete rsync.ebi.ac.uk::pub/databases/opentargets/platform/{year}.
+            {month.toString().padStart(2, "0")}/output/etl/{format}
             {path} .
           </div>
           <Typography variant="subtitle2" gutterBottom>
@@ -99,7 +98,7 @@ function DownloadsDrawer({ title, format, path, month, year, children }) {
           <div className={classes.resourceURL}>
             wget --recursive --no-parent --no-host-directories --cut-dirs 8
             ftp://ftp.ebi.ac.uk/pub/databases/opentargets/platform/{year}.
-            {month.toString().padStart(2, '0')}/output/etl/{format}
+            {month.toString().padStart(2, "0")}/output/etl/{format}
             {path}
           </div>
           <Typography variant="subtitle2" gutterBottom>
@@ -107,7 +106,7 @@ function DownloadsDrawer({ title, format, path, month, year, children }) {
           </Typography>
           <div className={classes.resourceURL}>
             gsutil -m cp -r gs://open-targets-data-releases/{year}.
-            {month.toString().padStart(2, '0')}
+            {month.toString().padStart(2, "0")}
             /output/etl/{format}
             {path} .
           </div>

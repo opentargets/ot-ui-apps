@@ -3,7 +3,7 @@ import { makeStyles } from "@mui/styles";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   externalLinks: {
     "& > :not(:first-child):before": {
       content: '" | "',
@@ -35,39 +35,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Header({
-  loading,
-  Icon,
-  title,
-  subtitle = null,
-  externalLinks,
-  rightContent = null,
-}) {
+function Header({ loading, Icon, title, subtitle = null, externalLinks, rightContent = null }) {
   const classes = useStyles();
 
   return (
-    <Grid
-      className={classes.titleContainer}
-      container
-      id="profile-page-header-block"
-    >
+    <Grid className={classes.titleContainer} container id="profile-page-header-block">
       <Grid item zeroMinWidth>
         <Grid container wrap="nowrap">
           <Grid item className={classes.mainIconContainer}>
-            <FontAwesomeIcon
-              icon={Icon}
-              size="3x"
-              className={classes.mainIcon}
-            />
+            <FontAwesomeIcon icon={Icon} size="3x" className={classes.mainIcon} />
           </Grid>
           <Grid item zeroMinWidth>
             <Grid container>
-              <Typography
-                className={classes.title}
-                variant="h4"
-                noWrap
-                title={title}
-              >
+              <Typography className={classes.title} variant="h4" noWrap title={title}>
                 {loading ? <Skeleton width="10vw" height="3.3rem" /> : title}
               </Typography>
               <Typography className={classes.subtitle} variant="subtitle2">

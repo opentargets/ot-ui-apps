@@ -3,8 +3,7 @@ import { makeStyles } from "@mui/styles";
 
 import FileSaver from "file-saver";
 
-const UNEXPECTED_FORMAT =
-  "Unexpected format. Supported options are csv, tsv and json.";
+const UNEXPECTED_FORMAT = "Unexpected format. Supported options are csv, tsv and json.";
 
 const pick = (object, keys) =>
   keys.reduce((o, k) => {
@@ -13,25 +12,21 @@ const pick = (object, keys) =>
     return o;
   }, {});
 
-const quoteIfString = (d) => (typeof d === "string" ? `"${d}"` : d);
+const quoteIfString = d => (typeof d === "string" ? `"${d}"` : d);
 
 const asJSONString = ({ rows, headerMap }) => {
   // use the full headerMap which contain optional export() function for each header
-  const rowsHeadersOnly = rows.map((row) => pick(row, headerMap));
+  const rowsHeadersOnly = rows.map(row => pick(row, headerMap));
   return JSON.stringify(rowsHeadersOnly);
 };
 
 const asCSVString = ({ rows, headerMap }) => {
   const separator = ",";
   const lineSeparator = "\n";
-  const headersString = headerMap
-    .map((d) => quoteIfString(d.label))
-    .join(separator);
-  const rowsArray = rows.map((row) =>
+  const headersString = headerMap.map(d => quoteIfString(d.label)).join(separator);
+  const rowsArray = rows.map(row =>
     headerMap
-      .map((header) =>
-        quoteIfString(header.export ? header.export(row) : row[header.id])
-      )
+      .map(header => quoteIfString(header.export ? header.export(row) : row[header.id]))
       .join(separator)
   );
   return [headersString, ...rowsArray].join(lineSeparator);
@@ -40,11 +35,9 @@ const asCSVString = ({ rows, headerMap }) => {
 const asTSVString = ({ rows, headerMap }) => {
   const separator = "\t";
   const lineSeparator = "\n";
-  const headersString = headerMap.map((d) => d.label).join(separator);
-  const rowsArray = rows.map((row) =>
-    headerMap
-      .map((header) => (header.export ? header.export(row) : row[header.id]))
-      .join(separator)
+  const headersString = headerMap.map(d => d.label).join(separator);
+  const rowsArray = rows.map(row =>
+    headerMap.map(header => (header.export ? header.export(row) : row[header.id])).join(separator)
   );
   return [headersString, ...rowsArray].join(lineSeparator);
 };
@@ -62,7 +55,7 @@ const asContentString = ({ rows, headerMap, format }) => {
   }
 };
 
-const asMimeType = (format) => {
+const asMimeType = format => {
   switch (format) {
     case "json":
       return "application/json;charset=utf-8";
@@ -75,12 +68,7 @@ const asMimeType = (format) => {
   }
 };
 
-const downloadTable = async ({
-  rows: getRows,
-  headerMap,
-  format,
-  filenameStem,
-}) => {
+const downloadTable = async ({ rows: getRows, headerMap, format, filenameStem }) => {
   let data = null;
   let rows = getRows;
   if (typeof getRows === "function") {
@@ -100,7 +88,7 @@ const downloadTable = async ({
   FileSaver.saveAs(blob, `${filenameStem}.${format}`, { autoBOM: false });
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   container: {
     marginBottom: "2px",
   },
@@ -124,12 +112,7 @@ function handleDownload(headers, rows, fileStem, format) {
 function DataDownloader({ tableHeaders, rows, fileStem }) {
   const classes = useStyles();
   return (
-    <Grid
-      container
-      justifyContent="flex-end"
-      spacing={1}
-      className={classes.container}
-    >
+    <Grid container justifyContent="flex-end" spacing={1} className={classes.container}>
       <Grid item className={classes.caption}>
         <Typography variant="caption" className={classes.downloadHeader}>
           Download table as

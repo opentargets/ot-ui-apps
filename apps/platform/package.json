@@ -32,6 +32,7 @@
     "query-string": "^6.10.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-gtm-module": "^2.0.11",
     "react-helmet": "^6.0.0",
     "react-measure": "^2.1.2",
@@ -41,6 +42,7 @@
     "smiles-drawer": "^1.1.22",
     "tsparticles": "^2.0.6",
     "typeface-inter": "^3.3.0",
+    "typeface-roboto-mono": "^1.1.13",
     "ui": "*",
     "uuid": "^9.0.0"
   },
@@ -52,10 +54,10 @@
     "preview": "vite preview",
     "serve": "vite preview",
     "prettier": "prettier --write",
-    "lint": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
+    "lint": "eslint --quiet  \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\" --fix",
     "lint:quiet": "eslint --quiet \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
-    "prettier:all": "prettier --write 'src/**/*.js'",
+    "prettier:all": "prettier --write \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "browserslist": [
@@ -71,32 +73,16 @@
     "@types/react-helmet": "^6.1.6",
     "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^9.0.1",
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
-    "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-react": "^4.0.4",
-    "browserstack-local": "^1.4.5",
     "cross-fetch": "^3.1.4",
-    "eslint": "^8.49.0",
-    "eslint-config-custom-vite": "*",
-    "husky": ">=4",
-    "lint-staged": ">=10",
-    "nanoid-cli": "^1.1.0",
-    "nightwatch": "^1.1.13",
-    "prettier": "^2.7.1",
+    "eslint": "7.32.0",
+    "eslint-config-custom": "*",
     "sass": "^1.49.10",
     "source-map-explorer": "^2.0.0",
     "tsconfig": "*",
-    "typescript": "^5.0.4",
+    "typescript": "^5.2.2",
     "vite": "^4.1.4",
     "vite-plugin-simple-gql": "^0.5.0",
     "vite-plugin-svgr": "^2.4.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx,jsx,css,md}": "prettier --write"
   }
 }
