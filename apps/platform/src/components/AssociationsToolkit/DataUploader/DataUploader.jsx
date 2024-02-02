@@ -107,6 +107,21 @@ const getValidationResults = async (entity, queryTerms) =>
     variables: { entity, queryTerms },
   });
 
+function formatQueryTermsResults(queryResult) {
+  const sortedResult = [...queryResult.data.mapIds.mappings].sort(function (a, b) {
+    return a.hits.length < b.hits.length ? 1 : -1;
+  });
+  const parsedResult = sortedResult.map(qT => {
+    const parsedQueryTerm = {
+      ...qT,
+      hits: [...qT.hits.map(e => ({ ...e, checked: true }))],
+    };
+    return parsedQueryTerm;
+  });
+
+  return parsedResult;
+}
+
 const uploadSuggestions = {
   target: ["ENSG00000232810", "interleukin 6", "TP53", "ENSG00000105329", "P15692", "CD4"],
   disease: ["EFO_0000508", "neoplasm", "MONDO_0004992", "EFO_0000182", "infection", "OBI_1110021"],
@@ -157,7 +172,7 @@ const FileExample = ({ entity = "target", runAction }) => {
                   exclusive
                   onChange={handleFileTypeChange}
                   aria-label="File Example"
-                  sx={{ ml: 2 }}
+                  sx={{ ml: 2, background: "white" }}
                 >
                   <ToggleButton value="text">.txt</ToggleButton>
                   <ToggleButton value="spreadsheet">.csv /.tsv /.xlsx</ToggleButton>
@@ -260,10 +275,7 @@ function DataUploader({ fileStem }) {
         else console.error("error parsing data from file");
 
         const result = await getValidationResults([entityToGet], contents);
-        let sortedResult = [...result.data.mapIds.mappings].sort(function (a, b) {
-          return a.hits.length < b.hits.length ? 1 : -1;
-        });
-        setQueryTermsResults(sortedResult);
+        setQueryTermsResults(formatQueryTermsResults(result));
         setActiveStep(1);
       };
     },
@@ -309,10 +321,7 @@ function DataUploader({ fileStem }) {
 
   const handleRunExample = async terms => {
     const result = await getValidationResults([entityToGet], terms);
-    let sortedResult = [...result.data.mapIds.mappings].sort(function (a, b) {
-      return a.hits.length < b.hits.length ? 1 : -1;
-    });
-    setQueryTermsResults(sortedResult);
+    setQueryTermsResults(formatQueryTermsResults(result));
     setActiveStep(1);
   };
 
@@ -325,7 +334,7 @@ function DataUploader({ fileStem }) {
       const term = queryTermsResults[index];
       for (let r = 0; r < term.hits.length; r++) {
         const hit = term.hits[r];
-        allHits.push(hit.id);
+        if (hit.checked) allHits.push(hit.id);
       }
     }
     setPinnedEntries([...pinnedEntries, ...allHits]);
@@ -353,6 +362,28 @@ function DataUploader({ fileStem }) {
     setQueryTermsResults(null);
     handleReset();
   };
+
+  function handleParentChange(term) {
+    const checkboxUpdateState = [...queryTermsResults];
+    checkboxUpdateState.find(hitItem => {
+      if (hitItem.term === term) {
+        hitItem.hits.every(el => !el.checked)
+          ? hitItem.hits.map(el => (el.checked = true))
+          : hitItem.hits.map(el => (el.checked = false));
+      }
+    });
+    setQueryTermsResults(checkboxUpdateState);
+  }
+
+  function handleChangeChildCheckbox(hitId) {
+    const checkboxUpdateState = [...queryTermsResults];
+    checkboxUpdateState.find(hitItem => {
+      hitItem.hits.find(el => {
+        if (el.id === hitId) return (el.checked = !el.checked);
+      });
+    });
+    setQueryTermsResults(checkboxUpdateState);
+  }
 
   return (
     <div>
@@ -432,7 +463,13 @@ function DataUploader({ fileStem }) {
                   }
                 >
                   {queryTermsResults.map(({ term, hits }) => (
-                    <NestedItem key={v1()} hits={hits}>
+                    <NestedItem
+                      key={v1()}
+                      hits={hits}
+                      term={term}
+                      handleParentChange={handleParentChange}
+                      handleChangeChildCheckbox={handleChangeChildCheckbox}
+                    >
                       {`${term} (${hits.length} hits)`}
                     </NestedItem>
                   ))}

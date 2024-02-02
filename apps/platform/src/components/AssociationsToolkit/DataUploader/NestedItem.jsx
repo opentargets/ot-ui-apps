@@ -1,52 +1,16 @@
 import React, { useState } from "react";
-import {
-  List,
-  Collapse,
-  ListItem,
-  ListItemText,
-  ListItemButton,
-  FormControlLabel,
-  Checkbox,
-  Box,
-  Divider,
-  Typography,
-} from "@mui/material";
-import { v1 } from "uuid";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { List, FormControlLabel, Checkbox, Box } from "@mui/material";
 
-const NestedItem = ({ children, hits = 0 }) => {
-  const [childrenCheckbox, setChildrenCheckbox] = useState([
-    ...hits.map(obj => ({ ...obj, checked: true })),
-  ]);
-  const [parentCheckbox, setParentCheckbox] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
-  const LABEL_ELEMENT = (
+function LABEL_ELEMENT(children) {
+  return (
     <Box sx={{ typography: "body2", fontWeight: "bold" }} display="inline">
       {children}
     </Box>
   );
+}
 
-  const handleIsOpen = () => {
-    setIsOpen(prev => !prev);
-  };
-
-  function handleParentChange() {
-    const checkboxUpdateState = [...childrenCheckbox];
-    checkboxUpdateState.every(el => !el.checked)
-      ? checkboxUpdateState.map(el => (el.checked = true))
-      : checkboxUpdateState.map(el => (el.checked = false));
-    setChildrenCheckbox(checkboxUpdateState);
-  }
-
-  function handleChangeChildCheckbox(hitId) {
-    const checkboxUpdateState = [...childrenCheckbox];
-    checkboxUpdateState.find(el => {
-      if (el.id === hitId) return (el.checked = !el.checked);
-    });
-    setChildrenCheckbox(checkboxUpdateState);
-  }
-
+const NestedItem = ({ children, hits, term, handleParentChange, handleChangeChildCheckbox }) => {
+  const [childrenCheckbox, setChildrenCheckbox] = useState(hits);
   return (
     <List sx={{ mx: 1.5 }}>
       {childrenCheckbox.length === 1 && (
@@ -57,7 +21,7 @@ const NestedItem = ({ children, hits = 0 }) => {
                 label={
                   <>
                     {" "}
-                    {LABEL_ELEMENT} - {hit.name || hit.id}{" "}
+                    {LABEL_ELEMENT(children)} - {hit.name || hit.id}{" "}
                   </>
                 }
                 control={
@@ -75,7 +39,7 @@ const NestedItem = ({ children, hits = 0 }) => {
       {childrenCheckbox.length > 1 && (
         <>
           <FormControlLabel
-            label={LABEL_ELEMENT}
+            label={LABEL_ELEMENT(children)}
             control={
               <Checkbox
                 indeterminate={
@@ -83,7 +47,7 @@ const NestedItem = ({ children, hits = 0 }) => {
                   !childrenCheckbox.every(el => el.checked)
                 }
                 checked={childrenCheckbox.every(el => el.checked)}
-                onChange={handleParentChange}
+                onChange={() => handleParentChange(term)}
               />
             }
           />
