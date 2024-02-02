@@ -68,7 +68,10 @@ const NestedItem = ({ children, hits, term, handleParentChange, handleChangeChil
       )}
       {childrenCheckbox.length <= 0 && (
         <>
-          <FormControlLabel label={LABEL_ELEMENT} control={<Checkbox checked={false} disabled />} />
+          <FormControlLabel
+            label={LABEL_ELEMENT(children)}
+            control={<Checkbox checked={false} disabled />}
+          />
         </>
       )}
     </List>
