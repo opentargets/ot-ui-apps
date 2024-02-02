@@ -1,14 +1,35 @@
 import React, { useState } from "react";
-import { List, FormControlLabel, Checkbox, Box } from "@mui/material";
+import {
+  List,
+  Collapse,
+  ListItem,
+  ListItemText,
+  ListItemButton,
+  FormControlLabel,
+  Checkbox,
+  Box,
+  Divider,
+  Typography,
+} from "@mui/material";
+import { v1 } from "uuid";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const LabelElement = ({ children }) => (
-  <Box sx={{ typography: "body2", fontWeight: "bold" }} display="inline">
-    {children}
-  </Box>
-);
+const NestedItem = ({ children, hits = 0 }) => {
+  const [childrenCheckbox, setChildrenCheckbox] = useState([
+    ...hits.map(obj => ({ ...obj, checked: true })),
+  ]);
+  const [parentCheckbox, setParentCheckbox] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const LABEL_ELEMENT = (
+    <Box sx={{ typography: "body2", fontWeight: "bold" }} display="inline">
+      {children}
+    </Box>
+  );
 
-const NestedItem = ({ children, hits = [] }) => {
-  const [childrenCheckbox, setChildrenCheckbox] = useState(hits);
+  const handleIsOpen = () => {
+    setIsOpen(prev => !prev);
+  };
 
   function handleParentChange() {
     const checkboxUpdateState = [...childrenCheckbox];
@@ -36,7 +57,7 @@ const NestedItem = ({ children, hits = [] }) => {
                 label={
                   <>
                     {" "}
-                    {LabelElement} - {hit.name || hit.id}{" "}
+                    {LABEL_ELEMENT} - {hit.name || hit.id}{" "}
                   </>
                 }
                 control={
@@ -54,7 +75,7 @@ const NestedItem = ({ children, hits = [] }) => {
       {childrenCheckbox.length > 1 && (
         <>
           <FormControlLabel
-            label={LabelElement}
+            label={LABEL_ELEMENT}
             control={
               <Checkbox
                 indeterminate={
@@ -82,7 +103,9 @@ const NestedItem = ({ children, hits = [] }) => {
         </>
       )}
       {childrenCheckbox.length <= 0 && (
-        <FormControlLabel label={LabelElement} control={<Checkbox checked={false} disabled />} />
+        <>
+          <FormControlLabel label={LABEL_ELEMENT} control={<Checkbox checked={false} disabled />} />
+        </>
       )}
     </List>
   );
