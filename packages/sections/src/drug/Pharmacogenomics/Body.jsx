@@ -14,6 +14,8 @@ import {
   variantConsequenceSource,
 } from "../../constants";
 import { identifiersOrgLink, sentenceCase } from "../../utils/global";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const useStyles = makeStyles(theme => ({
   level: {
@@ -177,6 +179,12 @@ function Body({ id: chemblId, label: name, entity }) {
       label: "Drug Response Category",
       renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
       filterValue: ({ pgxCategory }) => pgxCategory,
+    },
+    {
+      id: "isDirectTarget",
+      label: "Direct target of the Drug",
+      renderCell: ({ isDirectTarget }) =>
+        isDirectTarget && <FontAwesomeIcon icon={faCheck} size="sm" />,
     },
     {
       id: "confidenceLevel",
