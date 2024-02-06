@@ -1,10 +1,12 @@
-import Plot from "react-plotly.js";
+import Plotly from "plotly.js-cartesian-dist-min";
+import createPlotlyComponent from "react-plotly.js/factory";
 import _ from "lodash";
 import { useLayoutEffect, useRef, useState } from "react";
 
 function DepmapPlot({ data }) {
   const ref = useRef(null);
   const [width, setWidth] = useState(0);
+  const Plot = createPlotlyComponent(Plotly);
 
   useLayoutEffect(() => {
     setWidth(ref.current.offsetWidth);
