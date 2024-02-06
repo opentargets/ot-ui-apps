@@ -46,16 +46,16 @@ const getDataRowMetadata = (parentEntity, row, fixedEntity) => {
   return { targetSymbol, diseaseName };
 };
 
-// const getAllDataCount = (fixedEntity, data) => {
-//   switch (fixedEntity) {
-//     case ENTITIES.TARGET:
-//       return data[ENTITIES.TARGET].associatedDiseases.count;
-//     case ENTITIES.DISEASE:
-//       return data[ENTITIES.DISEASE].associatedTargets.count;
-//     default:
-//       return 0;
-//   }
-// };
+const getAllDataCount = (fixedEntity, data) => {
+  switch (fixedEntity) {
+    case ENTITIES.TARGET:
+      return data[ENTITIES.TARGET].associatedDiseases.count;
+    case ENTITIES.DISEASE:
+      return data[ENTITIES.DISEASE].associatedTargets.count;
+    default:
+      return 0;
+  }
+};
 
 const getAssociationsData = (fixedEntity, data) => {
   if (!data) return [];
@@ -105,16 +105,6 @@ const getAssociatedTargetsData = data => {
       prioritisations: targetPrioritisation,
     };
   });
-};
-
-const getParsedData = (entity, apiResponse) => {
-  if (entity === "target") return getAssociatedDiseasesData(apiResponse);
-  if (entity === "disease") return getAssociatedTargetsData(apiResponse);
-};
-
-const getAllDataCount = (entity, apiResponse) => {
-  if (entity === "target") return apiResponse.target.associatedDiseases.count;
-  if (entity === "disease") return apiResponse.disease.associatedTargets.count;
 };
 
 const INITIAL_USE_ASSOCIATION_STATE = {

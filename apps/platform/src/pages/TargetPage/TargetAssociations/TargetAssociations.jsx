@@ -50,9 +50,9 @@ function AssociationsWrapper() {
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
-            <PrivateWrapper>
-              <DataUploader />
-            </PrivateWrapper>
+            {/* <PrivateWrapper> */}
+            <DataUploader />
+            {/* </PrivateWrapper> */}
             <Divider orientation="vertical" />
             <DataDownloader fileStem={`OT-${id}-associated-diseases`} />
             <ApiPlaygroundDrawer

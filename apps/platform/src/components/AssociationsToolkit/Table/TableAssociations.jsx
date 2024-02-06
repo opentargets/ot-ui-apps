@@ -7,7 +7,7 @@ import {
   createColumnHelper,
 } from "@tanstack/react-table";
 
-import { styled, Skeleton, Typography } from "@mui/material";
+import { styled, Skeleton, Typography, Box } from "@mui/material";
 
 import dataSourcesCols from "../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../static_datasets/prioritisationColumns";
@@ -125,6 +125,7 @@ function TableAssociations() {
                   rowId={row.row.id}
                   row={row.row}
                   tablePrefix={prefix}
+                  score={row.score}
                 />
               );
             },
@@ -140,13 +141,15 @@ function TableAssociations() {
               const { loading } = row.table.getState();
               if (loading) return <Skeleton variant="rect" width={30} height={25} />;
               return (
-                <ColoredCell
-                  scoreValue={row.getValue()}
-                  globalScore
-                  rounded={false}
-                  isAssociations
-                  hasValue
-                />
+                <Box sx={{ marginRight: "10px" }}>
+                  <ColoredCell
+                    scoreValue={row.getValue()}
+                    globalScore
+                    rounded={false}
+                    isAssociations
+                    hasValue
+                  />
+                </Box>
               );
             },
           }),

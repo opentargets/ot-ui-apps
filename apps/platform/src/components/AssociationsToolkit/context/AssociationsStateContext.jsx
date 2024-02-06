@@ -1,7 +1,7 @@
-import { createContext, useState, useMemo, useEffect } from 'react';
-import { isEqual } from 'lodash';
-import { useStateParams } from 'ui';
-import dataSources from '../static_datasets/dataSourcesAssoc';
+import { createContext, useState, useMemo, useEffect } from "react";
+import { isEqual } from "lodash";
+import { useStateParams } from "ui";
+import dataSources from "../static_datasets/dataSourcesAssoc";
 import {
   defaulDatasourcesWeigths,
   getControlChecked,
@@ -11,18 +11,16 @@ import {
   DEFAULT_TABLE_PAGINATION_STATE,
   DEFAULT_TABLE_SORTING_STATE,
   DISPLAY_MODE,
-} from '../utils';
+} from "../utils";
 
-import useAssociationsData from '../hooks/useAssociationsData';
+import useAssociationsData from "../hooks/useAssociationsData";
 
 const AssociationsStateContext = createContext();
 
 const initialIndirect = entity => entity !== ENTITIES.TARGET;
 
 function AssociationsStateProvider({ children, entity, id, query }) {
-  const [{ pageIndex, pageSize }, setPagination] = useState(
-    DEFAULT_TABLE_PAGINATION_STATE
-  );
+  const [{ pageIndex, pageSize }, setPagination] = useState(DEFAULT_TABLE_PAGINATION_STATE);
 
   const pagination = useMemo(
     () => ({
@@ -42,13 +40,10 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
-  const [dataSourcesWeights, setDataSourcesWeights] = useState(
-    defaulDatasourcesWeigths
-  );
+  const [dataSourcesWeights, setDataSourcesWeights] = useState(defaulDatasourcesWeigths);
   const [dataSourcesRequired, setDataSourcesRequired] = useState([]);
-  const [modifiedSourcesDataControls, setModifiedSourcesDataControls] =
-    useState(false);
-  const [searhFilter, setSearhFilter] = useState('');
+  const [modifiedSourcesDataControls, setModifiedSourcesDataControls] = useState(false);
+  const [searhFilter, setSearhFilter] = useState("");
   const [sorting, setSorting] = useState(DEFAULT_TABLE_SORTING_STATE);
 
   // Data controls UI
@@ -57,16 +52,16 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   // only two posible (associations || prioritisations)
   const [displayedTable, setDisplayedTable] = useStateParams(
     DISPLAY_MODE.ASSOCIATIONS,
-    'table',
+    "table",
     arr => arr,
     str => str
   );
 
   const [pinnedEntries, setPinnedEntries] = useStateParams(
     [],
-    'pinned',
-    arr => arr.join(','),
-    str => str.split(',')
+    "pinned",
+    arr => arr.join(","),
+    str => str.split(",")
   );
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
@@ -93,41 +88,35 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     query,
     options: {
       id,
+      enableIndirect,
+      entity,
       size: pinnedEntries.length,
       sortBy: sorting[0].id,
-      enableIndirect,
       datasources: dataSourcesWeights,
-      entity,
       aggregationFilters: dataSourcesRequired,
       rowsFilter: pinnedEntries.toSorted(),
     },
   });
 
   useEffect(() => {
-    if (
-      isEqual(defaulDatasourcesWeigths, dataSourcesWeights) &&
-      isEqual(dataSourcesRequired, [])
-    )
+    if (isEqual(defaulDatasourcesWeigths, dataSourcesWeights) && isEqual(dataSourcesRequired, []))
       setModifiedSourcesDataControls(false);
     else setModifiedSourcesDataControls(true);
   }, [dataSourcesWeights, dataSourcesRequired]);
 
   const handleAggregationClick = aggregationId => {
-    const aggregationDatasources = dataSources.filter(
-      el => el.aggregation === aggregationId
-    );
+    const aggregationDatasources = dataSources.filter(el => el.aggregation === aggregationId);
     let isAllActive = true;
     aggregationDatasources.forEach(e => {
       if (getControlChecked(dataSourcesRequired, e.id) === false) {
         isAllActive = false;
+        return;
       }
     });
     if (isAllActive) {
       let newPayload = [...dataSourcesRequired];
       aggregationDatasources.forEach(element => {
-        const indexToRemove = newPayload.findIndex(
-          datasource => datasource.id === element.id
-        );
+        const indexToRemove = newPayload.findIndex(datasource => datasource.id === element.id);
         const newRequiredElement = [
           ...newPayload.slice(0, indexToRemove),
           ...newPayload.slice(indexToRemove + 1),
@@ -146,8 +135,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     }
   };
 
-  const entityToGet =
-    entity === ENTITIES.TARGET ? ENTITIES.DISEASE : ENTITIES.TARGET;
+  const entityToGet = entity === ENTITIES.TARGET ? ENTITIES.DISEASE : ENTITIES.TARGET;
 
   const resetToInitialPagination = () => {
     setTableExpanded({});
@@ -177,13 +165,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   };
 
   const expanderHandler = tableExpanderController => (cell, tablePrefix) => {
-    const expandedId = getCellId(
-      cell,
-      entityToGet,
-      displayedTable,
-      tablePrefix
-    );
-    if (expanded.join('-') === expandedId.join('-')) {
+    const expandedId = getCellId(cell, entityToGet, displayedTable, tablePrefix);
+    if (expanded.join("-") === expandedId.join("-")) {
       setTableExpanded({});
       setExpanded([]);
       return;

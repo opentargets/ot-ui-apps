@@ -6,7 +6,7 @@ export { default as DataDownloader } from "./DataDownloader";
 export { default as DataUploader } from "./DataUploader/DataUploader";
 export {
   default as AssociationsContext,
-  AssociationsProvider,
-} from "./context/AssociationsContext";
+  AssociationsStateProvider as AssociationsProvider,
+} from "./context/AssociationsStateContext";
 export { default as useAotfContext } from "./hooks/useAotfContext";
 export * from "./layout";
