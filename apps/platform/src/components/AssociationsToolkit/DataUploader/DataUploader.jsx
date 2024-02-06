@@ -14,6 +14,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  DialogActions,
+  ToggleButtonGroup,
+  ToggleButton,
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { styled } from "@mui/material/styles";
@@ -28,6 +31,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, Tooltip } from "ui";
+import * as XLSX from "xlsx";
 
 import useAotfContext from "../hooks/useAotfContext";
 import ValidationQuery from "./ValidationQuery.gql";
@@ -55,6 +59,8 @@ const StyledContainer = styled("div")`
     color: #bdbdbd;
     outline: none;
     transition: border 0.24s ease-in-out;
+    margin-bottom: 16px;
+    cursor: pointer;
   }
   .dropzone:focus {
     border-color: #3489ca;
@@ -100,6 +106,21 @@ const getValidationResults = async (entity, queryTerms) =>
     variables: { entity, queryTerms },
   });
 
+function formatQueryTermsResults(queryResult) {
+  const sortedResult = [...queryResult.data.mapIds.mappings].sort(function (a, b) {
+    return a.hits.length < b.hits.length ? 1 : -1;
+  });
+  const parsedResult = sortedResult.map(qT => {
+    const parsedQueryTerm = {
+      ...qT,
+      hits: [...qT.hits.map(e => ({ ...e, checked: true }))],
+    };
+    return parsedQueryTerm;
+  });
+
+  return parsedResult;
+}
+
 const uploadSuggestions = {
   target: ["ENSG00000232810", "interleukin 6", "TP53", "ENSG00000105329", "P15692", "CD4"],
   disease: ["EFO_0000508", "neoplasm", "MONDO_0004992", "EFO_0000182", "infection", "OBI_1110021"],
@@ -109,6 +130,11 @@ const FileExample = ({ entity = "target", runAction }) => {
   const examples = uploadSuggestions[entity];
 
   const [open, setExpanded] = useState(false);
+  const [fileType, setFileType] = useState("text");
+
+  const handleFileTypeChange = (event, newFileType) => {
+    setFileType(newFileType);
+  };
 
   const handleChange = () => {
     setExpanded(open ? false : true);
@@ -134,30 +160,81 @@ const FileExample = ({ entity = "target", runAction }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Box>
-            <SuggestionBlockHeader>
-              <Typography variant="monoText" display="block">
-                fileName.txt
-              </Typography>
-            </SuggestionBlockHeader>
-            <SuggestionContainer>
-              <Box sx={{ position: "absolute", right: 10, display: "flex", gap: 1 }}>
-                <Tooltip placement="bottom" title="Run this sample">
-                  <Button onClick={() => handleClickRun()}>
-                    <FontAwesomeIcon icon={faPlay} />
-                  </Button>
-                </Tooltip>
-                <Tooltip placement="bottom" title="Copy to clipboard">
-                  <Button onClick={() => copyToClipboard()}>
-                    <FontAwesomeIcon icon={faClipboard} />
-                  </Button>
-                </Tooltip>
-              </Box>
-              {examples.map(ex => (
-                <Typography key={v1()} variant="monoText" display="block" gutterBottom>
-                  {ex}
+            <code>
+              <SuggestionBlockHeader>
+                <Typography variant="monoText" display="inline">
+                  File type:
                 </Typography>
-              ))}
-            </SuggestionContainer>
+                <ToggleButtonGroup
+                  color="primary"
+                  value={fileType}
+                  exclusive
+                  onChange={handleFileTypeChange}
+                  aria-label="File Example"
+                  sx={{ ml: 2, background: "white" }}
+                >
+                  <ToggleButton value="text">.txt</ToggleButton>
+                  <ToggleButton value="spreadsheet">.csv /.tsv /.xlsx</ToggleButton>
+                  <ToggleButton value="json">.json</ToggleButton>
+                </ToggleButtonGroup>
+              </SuggestionBlockHeader>
+              <SuggestionContainer>
+                <Box sx={{ position: "absolute", right: 10, display: "flex", gap: 1 }}>
+                  <Tooltip placement="bottom" title="Run this sample">
+                    <Button onClick={() => handleClickRun()}>
+                      <FontAwesomeIcon icon={faPlay} />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip placement="bottom" title="Copy to clipboard">
+                    <Button onClick={() => copyToClipboard()}>
+                      <FontAwesomeIcon icon={faClipboard} />
+                    </Button>
+                  </Tooltip>
+                </Box>
+                <Box>
+                  {fileType === "json" && (
+                    <>
+                      [
+                      {examples.map(ex => (
+                        <Typography key={v1()} variant="monoText" display="block" gutterBottom>
+                          {`"${ex}",`}
+                        </Typography>
+                      ))}
+                      ]
+                    </>
+                  )}
+                  {fileType === "text" &&
+                    examples.map(ex => (
+                      <Typography key={v1()} variant="monoText" display="block" gutterBottom>
+                        {ex}
+                      </Typography>
+                    ))}
+                  {fileType === "spreadsheet" && (
+                    <table style={{ border: "1px solid black", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr style={{ border: "1px solid black", borderCollapse: "collapse" }}>
+                          <th>id</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {examples.map(ex => (
+                          <tr
+                            key={v1()}
+                            style={{ border: "1px solid black", borderCollapse: "collapse" }}
+                          >
+                            <td>
+                              <Typography variant="monoText" display="block" gutterBottom>
+                                {ex}
+                              </Typography>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </Box>
+              </SuggestionContainer>
+            </code>
           </Box>
         </AccordionDetails>
       </BorderAccordion>
@@ -173,23 +250,77 @@ function DataUploader({ fileStem }) {
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "text/html": [".txt"],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+        ".csv",
+        ".tsv",
+        ".xlsx",
+      ],
+      "application/JSON": [".json"],
     },
     onDrop: async ([file]) => {
-      var reader = new FileReader();
+      let reader = new FileReader();
+      const fileType = getFileType(file.name);
+
+      if (fileType === "spreadsheet") reader.readAsBinaryString(file);
+      else if (fileType === "text") reader.readAsText(file);
+      else if (fileType === "json") reader.readAsText(file);
+      else console.error("error parsing data from file");
+
       reader.onload = async function (e) {
-        const contents = e.target.result;
-        const terms = contents.split("\n");
-        const result = await getValidationResults([entityToGet], terms);
-        setQueryTermsResults(result.data.mapIds.mappings);
+        let contents;
+        if (fileType === "spreadsheet") contents = getDataFromSpreadsheet(e);
+        else if (fileType === "text") contents = getDataFromTextFile(e);
+        else if (fileType === "json") contents = JSON.parse(e.target.result);
+        else console.error("error parsing data from file");
+
+        const result = await getValidationResults([entityToGet], contents);
+        setQueryTermsResults(formatQueryTermsResults(result));
         setActiveStep(1);
       };
-      reader.readAsText(file);
     },
   });
 
+  function getDataFromSpreadsheet(file) {
+    const wb = XLSX.read(file.target.result, { type: "binary", bookVBA: true });
+    /* Get first worksheet */
+    const wsname = wb.SheetNames[0];
+    const ws = wb.Sheets[wsname];
+    /* Convert array of arrays */
+    const data = XLSX.utils.sheet_to_json(ws);
+
+    const terms = data.map(function (item) {
+      return item["id"];
+    });
+    return terms;
+  }
+
+  function getDataFromTextFile(file) {
+    const contents = file.target.result;
+    const terms = contents.split("\n");
+    return terms;
+  }
+
+  function getFileType(fileName) {
+    const fileType = fileName.split(".").pop();
+    switch (fileType) {
+      case "csv":
+        return "spreadsheet";
+      case "tsv":
+        return "spreadsheet";
+      case "xlsx":
+        return "spreadsheet";
+      case "txt":
+        return "text";
+      case "json":
+        return "json";
+      default:
+        return fileType;
+    }
+  }
+
   const handleRunExample = async terms => {
     const result = await getValidationResults([entityToGet], terms);
-    setQueryTermsResults(result.data.mapIds.mappings);
+    setQueryTermsResults(formatQueryTermsResults(result));
     setActiveStep(1);
   };
 
@@ -202,7 +333,7 @@ function DataUploader({ fileStem }) {
       const term = queryTermsResults[index];
       for (let r = 0; r < term.hits.length; r++) {
         const hit = term.hits[r];
-        allHits.push(hit.id);
+        if (hit.checked) allHits.push(hit.id);
       }
     }
     setPinnedEntries([...pinnedEntries, ...allHits]);
@@ -210,7 +341,8 @@ function DataUploader({ fileStem }) {
   };
 
   const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
+    if (activeStep < 1) handleClosePopover();
+    else setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
 
   const handleReset = () => {
@@ -229,6 +361,28 @@ function DataUploader({ fileStem }) {
     setQueryTermsResults(null);
     handleReset();
   };
+
+  function handleParentChange(term) {
+    const checkboxUpdateState = [...queryTermsResults];
+    checkboxUpdateState.find(hitItem => {
+      if (hitItem.term === term) {
+        hitItem.hits.every(el => !el.checked)
+          ? hitItem.hits.map(el => (el.checked = true))
+          : hitItem.hits.map(el => (el.checked = false));
+      }
+    });
+    setQueryTermsResults(checkboxUpdateState);
+  }
+
+  function handleChangeChildCheckbox(hitId) {
+    const checkboxUpdateState = [...queryTermsResults];
+    checkboxUpdateState.find(hitItem => {
+      hitItem.hits.find(el => {
+        if (el.id === hitId) return (el.checked = !el.checked);
+      });
+    });
+    setQueryTermsResults(checkboxUpdateState);
+  }
 
   return (
     <div>
@@ -254,7 +408,7 @@ function DataUploader({ fileStem }) {
         }}
       >
         <DialogTitle>{`Upload list of ${entityToUploadLabel}`}</DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ pb: 0, overflowY: "scroll" }} dividers>
           <Typography
             sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
             variant="subtitle2"
@@ -270,7 +424,7 @@ function DataUploader({ fileStem }) {
               Read more details here.
             </Link>
           </Typography>
-          <FileExample entity={entityToGet} runAction={handleRunExample} />
+          {activeStep === 0 && <FileExample entity={entityToGet} runAction={handleRunExample} />}
           <Box sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}>
             <Stepper activeStep={activeStep}>
               {steps.map(label => {
@@ -297,46 +451,57 @@ function DataUploader({ fileStem }) {
           )}
           {activeStep === 1 && (
             <Box>
-              <Box sx={{ maxHeight: "40vh", overflowY: "scroll" }}>
+              <Box sx={{ overflowY: "scroll" }}>
                 <List
-                  sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+                  sx={{ width: "100%", maxWidth: 1, bgcolor: "background.paper" }}
                   aria-labelledby="nested-list-subheader"
                   subheader={
-                    <ListSubheader component="div" id="nested-list-subheader">
-                      Validation mappings
+                    <ListSubheader sx={{ px: 1.5 }} component="div" id="nested-list-subheader">
+                      Validation mappings ( Upload count: {queryTermsResults.length})
                     </ListSubheader>
                   }
                 >
                   {queryTermsResults.map(({ term, hits }) => (
-                    <NestedItem key={v1()} hits={hits}>
-                      {`${term} - ${hits.length} hits`}
+                    <NestedItem
+                      key={v1()}
+                      hits={hits}
+                      term={term}
+                      handleParentChange={handleParentChange}
+                      handleChangeChildCheckbox={handleChangeChildCheckbox}
+                    >
+                      {`${term} (${hits.length} hits)`}
                     </NestedItem>
                   ))}
                 </List>
               </Box>
-              <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-                <Button
-                  aria-describedby={popoverId}
-                  variant="outlined"
-                  disableElevation
-                  startIcon={<FontAwesomeIcon icon={faChevronLeft} size="lg" />}
-                  onClick={handleBack}
-                >
-                  Back
-                </Button>
-                <Button
-                  aria-describedby={popoverId}
-                  variant="outlined"
-                  disableElevation
-                  startIcon={<FontAwesomeIcon icon={faCheck} size="lg" />}
-                  onClick={handlePinElements}
-                >
-                  Pin hits
-                </Button>
-              </Box>
             </Box>
           )}
         </DialogContent>
+
+        <DialogActions>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mx: 2, my: 1, width: 1 }}>
+            <Button
+              aria-describedby={popoverId}
+              variant="outlined"
+              disableElevation
+              startIcon={<FontAwesomeIcon icon={faChevronLeft} size="lg" />}
+              onClick={handleBack}
+            >
+              Back
+            </Button>
+            {activeStep === 1 && (
+              <Button
+                aria-describedby={popoverId}
+                variant="outlined"
+                disableElevation
+                startIcon={<FontAwesomeIcon icon={faCheck} size="lg" />}
+                onClick={handlePinElements}
+              >
+                Pin hits
+              </Button>
+            )}
+          </Box>
+        </DialogActions>
       </Dialog>
     </div>
   );

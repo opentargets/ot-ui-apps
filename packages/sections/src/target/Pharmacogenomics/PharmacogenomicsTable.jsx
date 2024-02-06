@@ -10,6 +10,9 @@ import {
   variantConsequenceSource,
 } from "../../constants";
 import { identifiersOrgLink, sentenceCase } from "../../utils/global";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 
 const useStyles = makeStyles(theme => ({
   level: {
@@ -28,6 +31,9 @@ const useStyles = makeStyles(theme => ({
   },
   blue: {
     background: theme.palette.primary.main,
+  },
+  blueIcon: {
+    color: theme.palette.primary.main,
   },
 }));
 
@@ -161,6 +167,14 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
       label: "Drug Response Category",
       renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
       filterValue: ({ pgxCategory }) => pgxCategory,
+    },
+    {
+      id: "isDirectTarget",
+      label: "Direct Drug Target",
+      renderCell: ({ isDirectTarget }) => {
+        const ICON_NAME = isDirectTarget ? faCircleCheck : faCircleXmark;
+        return <FontAwesomeIcon icon={ICON_NAME} size="lg" className={classes.blueIcon} />;
+      },
     },
     {
       id: "confidenceLevel",

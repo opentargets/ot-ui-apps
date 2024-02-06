@@ -44,7 +44,8 @@
     "typeface-inter": "^3.3.0",
     "typeface-roboto-mono": "^1.1.13",
     "ui": "*",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "dev-ppp": "vite --host 0.0.0.0 --port 3000 --clearScreen false --mode ppp",
