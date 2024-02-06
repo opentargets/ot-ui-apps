@@ -31,7 +31,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, Tooltip } from "ui";
-// import * as xlsxParser from "xls-parser";
 import * as XLSX from "xlsx";
 
 import useAotfContext from "../hooks/useAotfContext";

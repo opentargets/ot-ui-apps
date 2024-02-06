@@ -27,7 +27,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
-import { faCaretDown, faShareFromSquare } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip, useConfigContext } from "ui";
 import useBatchDownloader from "./hooks/useBatchDownloader";
@@ -282,7 +282,7 @@ function DataDownloader({ fileStem }) {
           variant="outlined"
           disableElevation
         >
-          <FontAwesomeIcon icon={faShareFromSquare} size="lg" />
+          <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
         </Button>
       </Tooltip>
       <Dialog
