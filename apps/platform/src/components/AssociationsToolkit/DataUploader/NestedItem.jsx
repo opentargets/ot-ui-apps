@@ -1,43 +1,78 @@
 import React, { useState } from "react";
-import { List, Collapse, ListItem, ListItemText, ListItemButton } from "@mui/material";
-import { v1 } from "uuid";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { List, FormControlLabel, Checkbox, Box } from "@mui/material";
 
-const NestedItem = ({ children, hits = 0 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleIsOpen = () => {
-    setIsOpen(prev => !prev);
-  };
-
+function LABEL_ELEMENT(children) {
   return (
-    <List>
-      {hits.length > 0 && (
-        <ListItemButton onClick={handleIsOpen}>
-          <ListItemText primary={children} />
-          {isOpen ? (
-            <FontAwesomeIcon icon={faChevronUp} />
-          ) : (
-            <FontAwesomeIcon icon={faChevronDown} />
-          )}
-        </ListItemButton>
+    <Box sx={{ typography: "body2", fontWeight: "bold" }} display="inline">
+      {children}
+    </Box>
+  );
+}
+
+const NestedItem = ({ children, hits, term, handleParentChange, handleChangeChildCheckbox }) => {
+  const [childrenCheckbox, setChildrenCheckbox] = useState(hits);
+  return (
+    <List sx={{ mx: 1.5 }}>
+      {childrenCheckbox.length === 1 && (
+        <>
+          {childrenCheckbox.map(hit => (
+            <Box key={hit.id}>
+              <FormControlLabel
+                label={
+                  <>
+                    {" "}
+                    {LABEL_ELEMENT(children)} - {hit.name || hit.id}{" "}
+                  </>
+                }
+                control={
+                  <Checkbox
+                    checked={hit.checked}
+                    onChange={() => handleChangeChildCheckbox(hit.id)}
+                  />
+                }
+              />
+            </Box>
+          ))}
+        </>
       )}
-      {hits.length === 0 && (
-        <ListItem>
-          <ListItemText primary={children} />
-        </ListItem>
+
+      {childrenCheckbox.length > 1 && (
+        <>
+          <FormControlLabel
+            label={LABEL_ELEMENT(children)}
+            control={
+              <Checkbox
+                indeterminate={
+                  childrenCheckbox.some(el => el.checked) &&
+                  !childrenCheckbox.every(el => el.checked)
+                }
+                checked={childrenCheckbox.every(el => el.checked)}
+                onChange={() => handleParentChange(term)}
+              />
+            }
+          />
+          {childrenCheckbox.map(hit => (
+            <Box sx={{ ml: theme => theme.spacing(4) }} key={hit.id}>
+              <FormControlLabel
+                label={hit.name || hit.id}
+                control={
+                  <Checkbox
+                    checked={hit.checked}
+                    onChange={() => handleChangeChildCheckbox(hit.id)}
+                  />
+                }
+              />
+            </Box>
+          ))}
+        </>
       )}
-      {hits.length > 0 && (
-        <Collapse in={isOpen}>
-          <List>
-            {hits.map(hit => (
-              <ListItem sx={{ pl: 4 }} key={v1()}>
-                <ListItemText primary={`${hit.id} - ${hit.name}`} />
-              </ListItem>
-            ))}
-          </List>
-        </Collapse>
+      {childrenCheckbox.length <= 0 && (
+        <>
+          <FormControlLabel
+            label={LABEL_ELEMENT(children)}
+            control={<Checkbox checked={false} disabled />}
+          />
+        </>
       )}
     </List>
   );
