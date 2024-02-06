@@ -14,6 +14,9 @@ import {
   variantConsequenceSource,
 } from "../../constants";
 import { identifiersOrgLink, sentenceCase } from "../../utils/global";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 
 const useStyles = makeStyles(theme => ({
   level: {
@@ -32,6 +35,9 @@ const useStyles = makeStyles(theme => ({
   },
   blue: {
     background: theme.palette.primary.main,
+  },
+  blueIcon: {
+    color: theme.palette.primary.main,
   },
 }));
 
@@ -66,17 +72,12 @@ function Body({ id: chemblId, label: name, entity }) {
     {
       id: "gene",
       label: "Gene",
-      renderCell: ({ target, isDirectTarget }) => {
+      renderCell: ({ target }) => {
         if (target) {
-          const tooltipText = isDirectTarget
-            ? "The variant is in the drug's primary target gene."
-            : "The variant is outside the drug's primary target gene.";
           return (
-            <Tooltip title={tooltipText} showHelpIcon>
-              <Link to={`/target/${target.id}`}>
-                <span>{target.approvedSymbol}</span>
-              </Link>
-            </Tooltip>
+            <Link to={`/target/${target.id}`}>
+              <span>{target.approvedSymbol}</span>
+            </Link>
           );
         }
         return naLabel;
@@ -177,6 +178,14 @@ function Body({ id: chemblId, label: name, entity }) {
       label: "Drug Response Category",
       renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
       filterValue: ({ pgxCategory }) => pgxCategory,
+    },
+    {
+      id: "isDirectTarget",
+      label: "Direct Drug Target",
+      renderCell: ({ isDirectTarget }) => {
+        const ICON_NAME = isDirectTarget ? faCircleCheck : faCircleXmark;
+        return <FontAwesomeIcon icon={ICON_NAME} size="lg" className={classes.blueIcon} />;
+      },
     },
     {
       id: "confidenceLevel",
