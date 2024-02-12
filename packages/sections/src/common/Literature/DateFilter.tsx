@@ -36,7 +36,7 @@ const monthsBtwnDates = (startDate: Date, endDate: Date) =>
   );
 
 export function DateFilter() {
-  const [filterDate, setFilterDate] = useState<number | number[]>([0, 100]);
+  const [filterDate, setFilterDate] = useState<number | number[]>([0, 0]);
   const [numberOfMonths, setNumberOfMonths] = useState(0);
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
   const [_, setLoadingEntities] = useRecoilState(loadingEntitiesState);
@@ -47,9 +47,7 @@ export function DateFilter() {
     earliestPubYear,
     selectedEntities,
     globalEntity,
-    cursor,
     litsIds,
-    page,
     pageSize,
     litsCount,
     loadingEntities,
@@ -57,16 +55,13 @@ export function DateFilter() {
 
   useEffect(() => {
     if (earliestPubYear) {
+      console.log("update earliest pub year " + earliestPubYear);
       const earliestYearMonth = `${earliestPubYear}-01-01`;
       const limit = monthsBtwnDates(new Date(earliestYearMonth), new Date());
       setNumberOfMonths(limit);
       setFilterDate([0, limit]);
     }
   }, [earliestPubYear]);
-
-  useEffect(() => {
-    setFilterDate([0, numberOfMonths]);
-  }, []);
 
   const handleChange = async (values: {
     startYear: number;
@@ -81,12 +76,12 @@ export function DateFilter() {
       id,
       category,
       entities,
-      cursor,
+      cursor: null,
       earliestPubYear,
       globalEntity,
       selectedEntities,
       litsIds,
-      page,
+      page: 0,
       pageSize,
       litsCount,
       loadingEntities,
@@ -95,7 +90,7 @@ export function DateFilter() {
     const data = request.data[globalEntity];
     const update = {
       id,
-      cursor,
+      cursor: null,
       query,
       entities: data.similarEntities,
       loadingEntities: false,
@@ -109,7 +104,7 @@ export function DateFilter() {
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,
       globalEntity,
       selectedEntities,
-      page,
+      page: 0,
       pageSize,
       ...values,
     };
