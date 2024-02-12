@@ -131,7 +131,7 @@ function PublicationsList({ hideSearch = false }) {
       }));
       const update = {
         litsIds: [...loadedPublications, ...newLits],
-        cursor: data.literatureOcurrences?.cursor,
+        cursor: null,
         page: 0,
         pageSize: pageSizeInt,
       };
