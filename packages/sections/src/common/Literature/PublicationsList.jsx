@@ -101,7 +101,7 @@ function PublicationsList({ hideSearch = false }) {
         id,
         category,
         selectedEntities,
-        cursor: newCursor,
+        cursor,
         globalEntity,
         endYear,
         endMonth,
@@ -114,7 +114,8 @@ function PublicationsList({ hideSearch = false }) {
         id,
         category,
         entities: selectedEntities,
-        cursor: newCursor,
+        cursor: null,
+        page: 0,
         endYear,
         endMonth,
         startYear,
@@ -136,7 +137,7 @@ function PublicationsList({ hideSearch = false }) {
       };
       setLiteratureUpdate(update);
     } else {
-      setLiteratureUpdate({ pageSize: pageSizeInt });
+      setLiteratureUpdate({ page: 0, pageSize: pageSizeInt });
     }
   });
 

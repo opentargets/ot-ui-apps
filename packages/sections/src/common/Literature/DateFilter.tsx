@@ -55,7 +55,6 @@ export function DateFilter() {
 
   useEffect(() => {
     if (earliestPubYear) {
-      console.log("update earliest pub year " + earliestPubYear);
       const earliestYearMonth = `${earliestPubYear}-01-01`;
       const limit = monthsBtwnDates(new Date(earliestYearMonth), new Date());
       setNumberOfMonths(limit);
