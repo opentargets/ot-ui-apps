@@ -60,6 +60,8 @@ export default function Category() {
 
     const update = {
       entities: data.similarEntities,
+      earliestPubYear: data.literatureOcurrences?.earliestPubYear,
+      litsCount: data.literatureOcurrences?.filteredCount,
       loadingEntities: false,
       category: newCategories,
     };
