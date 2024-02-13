@@ -136,12 +136,13 @@ const exportColumns = [
 
 function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
+  const variables = {
+    ensemblId: ensgId,
+    efoId,
+    size: sectionsBaseSizeQuery,
+  };
   const request = useQuery(CRISPR_QUERY, {
-    variables: {
-      ensemblId: ensgId,
-      efoId,
-      size: sectionsBaseSizeQuery,
-    },
+    variables,
   });
   const classes = useStyles();
 
@@ -169,6 +170,8 @@ function Body({ id, label, entity }) {
             noWrap={false}
             noWrapHeader={false}
             rowsPerPageOptions={defaultRowsPerPageOptions}
+            query={CRISPR_QUERY.loc.source.body}
+            variables={variables}
           />
         );
       }}
