@@ -326,8 +326,8 @@ function Body({ id, label, entity }) {
       },
       {
         id: "directionOfVariantEffect",
-        label: "Direction Of Effect (Variant)",
-        renderCell: ({ variantEffect }) => {
+        label: "Direction Of Effect (Variant and Trait)",
+        renderCell: ({ variantEffect, directionOnTrait }) => {
           return (
             <>
               <Tooltip title={variantEffect}>
@@ -349,16 +349,6 @@ function Body({ id, label, entity }) {
                   <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
                 )}
               </Tooltip>
-            </>
-          );
-        },
-      },
-      {
-        id: "directionOfTraitEffect",
-        label: "Direction Of Effect (Trait)",
-        renderCell: ({ directionOnTrait }) => {
-          return (
-            <>
               <Tooltip title={directionOnTrait}>
                 {directionOnTrait === "risk" && (
                   <FontAwesomeIcon
@@ -379,6 +369,32 @@ function Body({ id, label, entity }) {
           );
         },
       },
+      // {
+      //   id: "directionOfTraitEffect",
+      //   label: "Direction Of Effect (Trait)",
+      //   renderCell: ({ directionOnTrait }) => {
+      //     return (
+      //       <>
+      //         <Tooltip title={directionOnTrait}>
+      //           {directionOnTrait === "risk" && (
+      //             <FontAwesomeIcon
+      //               className={classes.colorBlue}
+      //               icon={faCircleRadiation}
+      //               size="lg"
+      //             />
+      //           )}
+
+      //           {directionOnTrait === "protective" && (
+      //             <FontAwesomeIcon className={classes.colorBlue} icon={faShield} size="lg" />
+      //           )}
+      //           {!directionOnTrait && (
+      //             <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
+      //           )}
+      //         </Tooltip>
+      //       </>
+      //     );
+      //   },
+      // },
       {
         label: "Literature",
         renderCell: ({ literature }) => {

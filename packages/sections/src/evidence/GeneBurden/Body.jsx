@@ -11,13 +11,24 @@ import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../..
 import GENE_BURDEN_QUERY from "./GeneBurdenQuery.gql";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowsDownToLine,
+  faArrowsUpToLine,
   faBan,
+  faBolt,
   faCircleDown,
   faCircleUp,
   faHeartCircleBolt,
   faHeartCircleCheck,
+  faRadiation,
+  faShield,
+  faShieldHeart,
+  faSkullCrossbones,
+  faHeart,
+  faArrowCircleDown,
+  faArrowCircleUp
 } from "@fortawesome/free-solid-svg-icons";
 import { makeStyles } from "@mui/styles";
+
 
 const sources = [
   "Epi25 collaborative",
@@ -214,16 +225,16 @@ export function Body({ id, label, entity }) {
     },
     {
       id: "directionOfVariantEffect",
-      label: "Direction Of Effect (Variant)",
+      label: "DoE (Variant)",
       renderCell: ({ variantEffect }) => {
         return (
           <>
             <Tooltip title={variantEffect}>
               {variantEffect === "LoF" && (
-                <FontAwesomeIcon className={classes.colorBlue} icon={faCircleDown} size="lg" />
+                <FontAwesomeIcon className={classes.colorBlue} icon={faArrowsDownToLine} size="lg" />
               )}
               {variantEffect === "GoF" && (
-                <FontAwesomeIcon className={classes.colorBlue} icon={faCircleUp} size="lg" />
+                <FontAwesomeIcon className={classes.colorBlue} icon={faArrowsUpToLine} size="lg" />
               )}
               {!variantEffect && (
                 <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
@@ -235,19 +246,19 @@ export function Body({ id, label, entity }) {
     },
     {
       id: "directionOfTraitEffect",
-      label: "Direction Of Effect (Trait)",
+      label: "DoE (Trait)",
       renderCell: ({ directionOnTrait }) => {
         return (
           <>
             <Tooltip title={directionOnTrait}>
               {directionOnTrait === "risk" && (
-                <FontAwesomeIcon className={classes.colorBlue} icon={faHeartCircleBolt} size="lg" />
+                <FontAwesomeIcon className={classes.colorBlue} icon={faArrowsDownToLine} size="lg" />
               )}
 
-              {directionOnTrait === "protective" && (
+              {directionOnTrait === "protect" && (
                 <FontAwesomeIcon
                   className={classes.colorBlue}
-                  icon={faHeartCircleCheck}
+                  icon={faArrowsUpToLine}
                   size="lg"
                 />
               )}

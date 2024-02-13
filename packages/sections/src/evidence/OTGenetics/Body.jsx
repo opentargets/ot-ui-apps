@@ -168,31 +168,31 @@ function Body({ id, label, entity }) {
           );
         },
       },
-      {
-        id: "directionOfVariantEffect",
-        label: "Direction Of Effect (Variant)",
-        renderCell: ({ variantEffect }) => {
-          return (
-            <>
-              <Tooltip title={variantEffect}>
-                {variantEffect === "LoF" && (
-                  <FontAwesomeIcon className={classes.colorBlue} icon={faCircleDown} size="lg" />
-                )}
-                {variantEffect === "GoF" && (
-                  <FontAwesomeIcon className={classes.colorBlue} icon={faCircleUp} size="lg" />
-                )}
-                {!variantEffect && (
-                  <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
-                )}
-              </Tooltip>
-            </>
-          );
-        },
-      },
+      // {
+      //   id: "directionOfVariantEffect",
+      //   label: "Direction Of Effect (Variant)",
+      //   renderCell: ({ variantEffect }) => {
+      //     return (
+      //       <>
+      //         <Tooltip title={variantEffect}>
+      //           {variantEffect === "LoF" && (
+      //             <FontAwesomeIcon className={classes.colorBlue} icon={faCircleDown} size="lg" />
+      //           )}
+      //           {variantEffect === "GoF" && (
+      //             <FontAwesomeIcon className={classes.colorBlue} icon={faCircleUp} size="lg" />
+      //           )}
+      //           {!variantEffect && (
+      //             <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
+      //           )}
+      //         </Tooltip>
+      //       </>
+      //     );
+      //   },
+      // },
       {
         id: "directionOfTraitEffect",
-        label: "Direction Of Effect (Trait)",
-        renderCell: ({ directionOnTrait }) => {
+        label: "Direction Of Effect (Trait and Variant)",
+        renderCell: ({ variantEffect, directionOnTrait }) => {
           return (
             <>
               <Tooltip title={directionOnTrait}>
@@ -212,6 +212,17 @@ function Body({ id, label, entity }) {
                   />
                 )}
                 {!directionOnTrait && (
+                  <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
+                )}
+              </Tooltip>
+              <Tooltip title={variantEffect}>
+                {variantEffect === "LoF" && (
+                  <FontAwesomeIcon className={classes.colorBlue} icon={faCircleDown} size="lg" />
+                )}
+                {variantEffect === "GoF" && (
+                  <FontAwesomeIcon className={classes.colorBlue} icon={faCircleUp} size="lg" />
+                )}
+                {!variantEffect && (
                   <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
                 )}
               </Tooltip>
