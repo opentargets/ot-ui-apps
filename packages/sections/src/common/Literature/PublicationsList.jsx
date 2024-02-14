@@ -101,7 +101,7 @@ function PublicationsList({ hideSearch = false }) {
         id,
         category,
         selectedEntities,
-        cursor,
+        cursor: newCursor,
         globalEntity,
         endYear,
         endMonth,
@@ -114,7 +114,7 @@ function PublicationsList({ hideSearch = false }) {
         id,
         category,
         entities: selectedEntities,
-        cursor: null,
+        cursor: newCursor,
         page: 0,
         endYear,
         endMonth,
@@ -131,7 +131,7 @@ function PublicationsList({ hideSearch = false }) {
       }));
       const update = {
         litsIds: [...loadedPublications, ...newLits],
-        cursor: null,
+        cursor: data.literatureOcurrences?.cursor,
         page: 0,
         pageSize: pageSizeInt,
       };

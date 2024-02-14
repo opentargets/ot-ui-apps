@@ -47,6 +47,7 @@ export function DateFilter() {
     category,
     earliestPubYear,
     selectedEntities,
+    cursor,
     globalEntity,
     litsIds,
     pageSize,
@@ -116,7 +117,7 @@ export function DateFilter() {
       id,
       category,
       entities,
-      cursor: null,
+      cursor,
       earliestPubYear,
       globalEntity,
       selectedEntities,
@@ -130,7 +131,7 @@ export function DateFilter() {
     const data = request.data[globalEntity];
     const update = {
       id,
-      cursor: null,
+      cursor,
       query,
       entities: data.similarEntities,
       loadingEntities: false,
