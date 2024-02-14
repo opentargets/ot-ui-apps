@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { FormControl, FormGroup, InputLabel, Slider } from "@mui/material";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
@@ -80,13 +80,18 @@ export function DateFilter() {
       setFilterDate([lowerLimit, higherLimit]);
       setNumberOfMonths(limit);
       setPubYear(earliestPubYear);
+    } else {
+      setPubYear(0);
+      setNumberOfMonths(0);
+      setFilterDate([0, 0]);
     }
   }, [earliestPubYear]);
 
   function getHigherLimit(earliestDate: Date, limit: number) {
     const oldHigherDate = oldSelectedDate(filterDate[1]);
     const newHighFilter = monthsBtwnDates(earliestDate, oldHigherDate);
-    const higherLimit = newHighFilter > 0 && newHighFilter < limit ? newHighFilter : limit;
+    const higherLimit =
+      filterDate[1] > 0 && newHighFilter > 0 && newHighFilter < limit ? newHighFilter : limit;
     return higherLimit;
   }
 
