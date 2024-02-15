@@ -14,6 +14,9 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.primary.main,
     padding: `0 ${theme.spacing(1)}`,
   },
+  hidden: {
+    visibility: "hidden",
+  },
 }));
 
 type DirectionOfEffectIconProp = {
@@ -28,15 +31,17 @@ function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfE
 
   return (
     <>
-      {variantEffect && (
-        <Tooltip title={variantEffect === "LoF" ? "Loss of Function" : "Gain of Function"}>
-          <FontAwesomeIcon
-            className={classes.colorBlue}
-            icon={variantEffect === "LoF" ? faArrowTrendDown : faArrowTrendUp}
-            size="lg"
-          />
-        </Tooltip>
-      )}
+      <Tooltip
+        className={!variantEffect ? classes.hidden : ""}
+        title={variantEffect === "LoF" ? "Loss of Function" : "Gain of Function"}
+      >
+        <FontAwesomeIcon
+          className={classes.colorBlue}
+          icon={variantEffect === "LoF" ? faArrowTrendDown : faArrowTrendUp}
+          size="lg"
+        />
+      </Tooltip>
+
       {directionOnTrait && (
         <Tooltip title={directionOnTrait === "risk" ? "Risk" : "Protect"}>
           <FontAwesomeIcon
