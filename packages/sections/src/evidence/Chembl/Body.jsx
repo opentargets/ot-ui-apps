@@ -179,7 +179,7 @@ function getColumns(classes) {
                 to="https://home.opentargets.org/aotf-documentation#direction-of-effect"
               >
                 here
-              </Link>
+              </Link> for more info on our assessment method
             </>
           }
         >
