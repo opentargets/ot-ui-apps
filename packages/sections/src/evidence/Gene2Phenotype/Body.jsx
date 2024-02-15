@@ -1,7 +1,7 @@
 import { List, ListItem, Typography } from "@mui/material";
 import { useQuery } from "@apollo/client";
 import { v1 } from "uuid";
-import { SectionItem, Tooltip, Link, PublicationsDrawer, DataTable } from "ui";
+import { SectionItem, Tooltip, Link, PublicationsDrawer, DataTable, DirectionOfEffectIcon } from "ui";
 
 import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import Description from "./Description";
@@ -52,6 +52,22 @@ const getColumns = label => [
       ),
     filterValue: ({ variantFunctionalConsequence }) =>
       sentenceCase(variantFunctionalConsequence?.label),
+  },
+  {
+    id: "directionOfVariantEffect",
+    label: (
+      <Tooltip showHelpIcon title={<>See <Link external to="https://home.opentargets.org/aotf-documentation#direction-of-effect">here</Link> for more info on our assessment method</>}>
+        Direction Of Effect
+      </Tooltip>
+    ),
+    renderCell: ({ variantEffect, directionOnTrait }) => {
+      return (
+        <DirectionOfEffectIcon
+          variantEffect={variantEffect}
+          directionOnTrait={directionOnTrait}
+        />
+      );
+    },
   },
   {
     id: "allelicRequirements",

@@ -11,6 +11,7 @@ import {
   getComparator,
   useCursorBatchDownloader,
   ClinvarStars,
+  DirectionOfEffectIcon,
 } from "ui";
 
 import {
@@ -27,26 +28,6 @@ import { epmcUrl } from "../../utils/urls";
 import CLINVAR_QUERY from "./ClinvarQuery.gql";
 import { dataTypesMap } from "../../dataTypes";
 import { sentenceCase, identifiersOrgLink } from "../../utils/global";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowsDownToLine,
-  faArrowsUpToLine,
-  faBan,
-  faCircleRadiation,
-  faShield,
-} from "@fortawesome/free-solid-svg-icons";
-import { makeStyles } from "@mui/styles";
-
-const useStyles = makeStyles(theme => ({
-  colorBlue: {
-    color: theme.palette.primary.main,
-    padding: `0 ${theme.spacing(1)}`,
-  },
-  colorGrey: {
-    color: theme.palette.grey[200],
-    padding: `0 ${theme.spacing(1)}`,
-  },
-}));
 
 const exportColumns = [
   {
@@ -111,7 +92,6 @@ function Body({ id, label, entity }) {
   const [size, setPageSize] = useState(10);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
-  const classes = useStyles();
 
   const columns = getColumns(label);
 
@@ -261,6 +241,22 @@ function Body({ id, label, entity }) {
           )}`,
       },
       {
+        id: "directionOfVariantEffect",
+        label: (
+          <Tooltip showHelpIcon title={<>See <Link external to="https://home.opentargets.org/aotf-documentation#direction-of-effect">here</Link> for more info on our assessment method</>}>
+            Direction Of Effect
+          </Tooltip>
+        ),
+        renderCell: ({ variantEffect, directionOnTrait }) => {
+          return (
+            <DirectionOfEffectIcon
+              variantEffect={variantEffect}
+              directionOnTrait={directionOnTrait}
+            />
+          );
+        },
+      },
+      {
         id: "clinicalSignificances",
         filterValue: ({ clinicalSignificances }) => clinicalSignificances.join(),
         label: "Clinical significance",
@@ -324,77 +320,6 @@ function Body({ id, label, entity }) {
           </Tooltip>
         ),
       },
-      {
-        id: "directionOfVariantEffect",
-        label: "Direction Of Effect (Variant and Trait)",
-        renderCell: ({ variantEffect, directionOnTrait }) => {
-          return (
-            <>
-              <Tooltip title={variantEffect}>
-                {variantEffect === "LoF" && (
-                  <FontAwesomeIcon
-                    className={classes.colorBlue}
-                    icon={faArrowsDownToLine}
-                    size="lg"
-                  />
-                )}
-                {variantEffect === "GoF" && (
-                  <FontAwesomeIcon
-                    className={classes.colorBlue}
-                    icon={faArrowsUpToLine}
-                    size="lg"
-                  />
-                )}
-                {!variantEffect && (
-                  <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
-                )}
-              </Tooltip>
-              <Tooltip title={directionOnTrait}>
-                {directionOnTrait === "risk" && (
-                  <FontAwesomeIcon
-                    className={classes.colorBlue}
-                    icon={faCircleRadiation}
-                    size="lg"
-                  />
-                )}
-
-                {directionOnTrait === "protective" && (
-                  <FontAwesomeIcon className={classes.colorBlue} icon={faShield} size="lg" />
-                )}
-                {!directionOnTrait && (
-                  <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
-                )}
-              </Tooltip>
-            </>
-          );
-        },
-      },
-      // {
-      //   id: "directionOfTraitEffect",
-      //   label: "Direction Of Effect (Trait)",
-      //   renderCell: ({ directionOnTrait }) => {
-      //     return (
-      //       <>
-      //         <Tooltip title={directionOnTrait}>
-      //           {directionOnTrait === "risk" && (
-      //             <FontAwesomeIcon
-      //               className={classes.colorBlue}
-      //               icon={faCircleRadiation}
-      //               size="lg"
-      //             />
-      //           )}
-
-      //           {directionOnTrait === "protective" && (
-      //             <FontAwesomeIcon className={classes.colorBlue} icon={faShield} size="lg" />
-      //           )}
-      //           {!directionOnTrait && (
-      //             <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
-      //           )}
-      //         </Tooltip>
-      //       </>
-      //     );
-      //   },
-      // },
       {
         label: "Literature",
         renderCell: ({ literature }) => {

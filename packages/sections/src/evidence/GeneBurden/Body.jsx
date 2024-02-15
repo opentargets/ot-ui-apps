@@ -1,6 +1,14 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem, PublicationsDrawer, DataTable, ScientificNotation } from "ui";
+import {
+  Link,
+  Tooltip,
+  SectionItem,
+  PublicationsDrawer,
+  DataTable,
+  ScientificNotation,
+  DirectionOfEffectIcon,
+} from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -9,26 +17,6 @@ import { dataTypesMap } from "../../dataTypes";
 import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 
 import GENE_BURDEN_QUERY from "./GeneBurdenQuery.gql";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowsDownToLine,
-  faArrowsUpToLine,
-  faBan,
-  faBolt,
-  faCircleDown,
-  faCircleUp,
-  faHeartCircleBolt,
-  faHeartCircleCheck,
-  faRadiation,
-  faShield,
-  faShieldHeart,
-  faSkullCrossbones,
-  faHeart,
-  faArrowCircleDown,
-  faArrowCircleUp
-} from "@fortawesome/free-solid-svg-icons";
-import { makeStyles } from "@mui/styles";
-
 
 const sources = [
   "Epi25 collaborative",
@@ -54,17 +42,6 @@ const getSourceLink = (project, targetId) => {
   return "";
 };
 
-const useStyles = makeStyles(theme => ({
-  colorBlue: {
-    color: theme.palette.primary.main,
-    padding: `0 ${theme.spacing(1)}`,
-  },
-  colorGrey: {
-    color: theme.palette.grey[200],
-    padding: `0 ${theme.spacing(1)}`,
-  },
-}));
-
 export function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = {
@@ -72,7 +49,6 @@ export function Body({ id, label, entity }) {
     efoId,
     size: sectionsBaseSizeQuery,
   };
-  const classes = useStyles();
   const request = useQuery(GENE_BURDEN_QUERY, {
     variables,
   });
@@ -225,48 +201,17 @@ export function Body({ id, label, entity }) {
     },
     {
       id: "directionOfVariantEffect",
-      label: "DoE (Variant)",
-      renderCell: ({ variantEffect }) => {
+      label: (
+        <Tooltip showHelpIcon title={<>See <Link external to="https://home.opentargets.org/aotf-documentation#direction-of-effect">here</Link> for more info on our assessment method</>}>
+          Direction Of Effect
+        </Tooltip>
+      ),
+      renderCell: ({ variantEffect, directionOnTrait }) => {
         return (
-          <>
-            <Tooltip title={variantEffect}>
-              {variantEffect === "LoF" && (
-                <FontAwesomeIcon className={classes.colorBlue} icon={faArrowsDownToLine} size="lg" />
-              )}
-              {variantEffect === "GoF" && (
-                <FontAwesomeIcon className={classes.colorBlue} icon={faArrowsUpToLine} size="lg" />
-              )}
-              {!variantEffect && (
-                <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
-              )}
-            </Tooltip>
-          </>
-        );
-      },
-    },
-    {
-      id: "directionOfTraitEffect",
-      label: "DoE (Trait)",
-      renderCell: ({ directionOnTrait }) => {
-        return (
-          <>
-            <Tooltip title={directionOnTrait}>
-              {directionOnTrait === "risk" && (
-                <FontAwesomeIcon className={classes.colorBlue} icon={faArrowsDownToLine} size="lg" />
-              )}
-
-              {directionOnTrait === "protect" && (
-                <FontAwesomeIcon
-                  className={classes.colorBlue}
-                  icon={faArrowsUpToLine}
-                  size="lg"
-                />
-              )}
-              {!directionOnTrait && (
-                <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
-              )}
-            </Tooltip>
-          </>
+          <DirectionOfEffectIcon
+            variantEffect={variantEffect}
+            directionOnTrait={directionOnTrait}
+          />
         );
       },
     },

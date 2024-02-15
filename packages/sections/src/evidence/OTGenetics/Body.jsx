@@ -8,6 +8,7 @@ import {
   DataTable,
   ScientificNotation,
   Tooltip,
+  DirectionOfEffectIcon,
 } from "ui";
 
 import {
@@ -23,36 +24,10 @@ import { dataTypesMap } from "../../dataTypes";
 import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
 import { otgStudyUrl, otgVariantUrl } from "../../utils/urls";
 import { identifiersOrgLink, sentenceCase } from "../../utils/global";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowsDownToLine,
-  faArrowsUpToLine,
-  faBan,
-  faCircleDown,
-  faCircleRadiation,
-  faCircleUp,
-  faHeartCircleBolt,
-  faHeartCircleCheck,
-  faHeartCirclePlus,
-  faShield,
-} from "@fortawesome/free-solid-svg-icons";
-import { makeStyles } from "@mui/styles";
-
-const useStyles = makeStyles(theme => ({
-  colorBlue: {
-    color: theme.palette.primary.main,
-    padding: `0 ${theme.spacing(1)}`,
-  },
-  colorGrey: {
-    color: theme.palette.grey[200],
-    padding: `0 ${theme.spacing(1)}`,
-  },
-}));
 
 function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: sectionsBaseSizeQuery };
-  const classes = useStyles();
 
   function getColumns(label) {
     return [
@@ -168,65 +143,19 @@ function Body({ id, label, entity }) {
           );
         },
       },
-      // {
-      //   id: "directionOfVariantEffect",
-      //   label: "Direction Of Effect (Variant)",
-      //   renderCell: ({ variantEffect }) => {
-      //     return (
-      //       <>
-      //         <Tooltip title={variantEffect}>
-      //           {variantEffect === "LoF" && (
-      //             <FontAwesomeIcon className={classes.colorBlue} icon={faCircleDown} size="lg" />
-      //           )}
-      //           {variantEffect === "GoF" && (
-      //             <FontAwesomeIcon className={classes.colorBlue} icon={faCircleUp} size="lg" />
-      //           )}
-      //           {!variantEffect && (
-      //             <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
-      //           )}
-      //         </Tooltip>
-      //       </>
-      //     );
-      //   },
-      // },
       {
-        id: "directionOfTraitEffect",
-        label: "Direction Of Effect (Trait and Variant)",
+        id: "directionOfVariantEffect",
+        label: (
+          <Tooltip showHelpIcon title={<>See <Link external to="https://home.opentargets.org/aotf-documentation#direction-of-effect">here</Link> for more info on our assessment method</>}>
+            Direction Of Effect
+          </Tooltip>
+        ),
         renderCell: ({ variantEffect, directionOnTrait }) => {
           return (
-            <>
-              <Tooltip title={directionOnTrait}>
-                {directionOnTrait === "risk" && (
-                  <FontAwesomeIcon
-                    className={classes.colorBlue}
-                    icon={faHeartCircleBolt}
-                    size="lg"
-                  />
-                )}
-
-                {directionOnTrait === "protective" && (
-                  <FontAwesomeIcon
-                    className={classes.colorBlue}
-                    icon={faHeartCircleCheck}
-                    size="lg"
-                  />
-                )}
-                {!directionOnTrait && (
-                  <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
-                )}
-              </Tooltip>
-              <Tooltip title={variantEffect}>
-                {variantEffect === "LoF" && (
-                  <FontAwesomeIcon className={classes.colorBlue} icon={faCircleDown} size="lg" />
-                )}
-                {variantEffect === "GoF" && (
-                  <FontAwesomeIcon className={classes.colorBlue} icon={faCircleUp} size="lg" />
-                )}
-                {!variantEffect && (
-                  <FontAwesomeIcon className={classes.colorGrey} icon={faBan} size="lg" />
-                )}
-              </Tooltip>
-            </>
+            <DirectionOfEffectIcon
+              variantEffect={variantEffect}
+              directionOnTrait={directionOnTrait}
+            />
           );
         },
       },

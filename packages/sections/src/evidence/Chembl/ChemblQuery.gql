@@ -33,6 +33,8 @@ query ChemblQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: St
             }
           }
         }
+        variantEffect
+        directionOnTrait
         targetFromSourceId
         clinicalPhase
         clinicalStatus
