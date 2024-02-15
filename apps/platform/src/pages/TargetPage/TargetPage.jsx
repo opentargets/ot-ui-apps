@@ -52,7 +52,8 @@ function TargetPage() {
       }
       location={location}
     >
-      <ScrollToTop />
+      Hola
+      {/* <ScrollToTop />
       <Header
         loading={loading}
         ensgId={ensgId}
@@ -111,7 +112,7 @@ function TargetPage() {
             <Redirect to={`/target/${ensgId}`} />
           </Route>
         </Switch>
-      </Suspense>
+      </Suspense> */}
     </BasePage>
   );
 }
