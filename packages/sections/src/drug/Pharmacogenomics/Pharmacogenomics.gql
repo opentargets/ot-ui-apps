@@ -12,6 +12,8 @@ query PharmacogenomicsQuery($chemblId: String!) {
         id
         approvedSymbol
       }
+      haplotypeId
+      haplotypeFromSourceId
       isDirectTarget
       phenotypeFromSourceId
       genotypeAnnotationText

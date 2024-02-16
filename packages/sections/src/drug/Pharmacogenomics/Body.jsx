@@ -100,6 +100,15 @@ function Body({ id: chemblId, label: name, entity }) {
         ),
     },
     {
+      id: "starAllele",
+      label: "Star Allele",
+      renderCell: ({ haplotypeId, haplotypeFromSourceId }) => (
+        <Link to={`https://www.pharmgkb.org/haplotype/${haplotypeFromSourceId}`}>
+          {haplotypeId}
+        </Link>
+      ),
+    },
+    {
       id: "genotypeId",
       label: "Genotype ID",
       tooltip: (
