@@ -4,6 +4,7 @@ import {
   faArrowTrendDown,
   faArrowTrendUp,
   faCircleExclamation,
+  faMinus,
   faShieldHalved,
 } from "@fortawesome/free-solid-svg-icons";
 import { makeStyles } from "@mui/styles";
@@ -17,6 +18,9 @@ const useStyles = makeStyles(theme => ({
   hidden: {
     visibility: "hidden",
   },
+  p4: {
+    padding: `0 ${theme.spacing(4)}`,
+  },
 }));
 
 type DirectionOfEffectIconProp = {
@@ -27,7 +31,12 @@ type DirectionOfEffectIconProp = {
 function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfEffectIconProp) {
   const classes = useStyles();
 
-  if (!variantEffect && !directionOnTrait) return naLabel;
+  if (!variantEffect && !directionOnTrait)
+    return (
+      <Tooltip title={naLabel}>
+        <FontAwesomeIcon className={classes.p4} icon={faMinus} size="lg" />
+      </Tooltip>
+    );
 
   return (
     <>
