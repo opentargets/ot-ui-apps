@@ -8,7 +8,7 @@ import {
   faShieldHalved,
 } from "@fortawesome/free-solid-svg-icons";
 import { makeStyles } from "@mui/styles";
-import { Tooltip } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 
 const useStyles = makeStyles(theme => ({
   colorBlue: {
@@ -33,23 +33,24 @@ function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfE
 
   if (!variantEffect && !directionOnTrait)
     return (
-      <Tooltip title={naLabel}>
-        <FontAwesomeIcon className={classes.p4} icon={faMinus} size="lg" />
-      </Tooltip>
+      <Box sx={{ width: 1, display: "flex", justifyContent: "center" }}>
+        <Tooltip title={naLabel}>
+          <FontAwesomeIcon className={classes.p4} icon={faMinus} size="sm" />
+        </Tooltip>
+      </Box>
     );
 
   return (
-    <>
-      <Tooltip
-        className={!variantEffect ? classes.hidden : ""}
-        title={variantEffect === "LoF" ? "Loss of Function" : "Gain of Function"}
-      >
-        <FontAwesomeIcon
-          className={classes.colorBlue}
-          icon={variantEffect === "LoF" ? faArrowTrendDown : faArrowTrendUp}
-          size="lg"
-        />
-      </Tooltip>
+    <Box sx={{ width: 1, display: "flex", justifyContent: "center" }}>
+      {variantEffect && (
+        <Tooltip title={variantEffect === "LoF" ? "Loss of Function" : "Gain of Function"}>
+          <FontAwesomeIcon
+            className={classes.colorBlue}
+            icon={variantEffect === "LoF" ? faArrowTrendDown : faArrowTrendUp}
+            size="lg"
+          />
+        </Tooltip>
+      )}
 
       {directionOnTrait && (
         <Tooltip title={directionOnTrait === "risk" ? "Risk" : "Protect"}>
@@ -60,7 +61,7 @@ function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfE
           />
         </Tooltip>
       )}
-    </>
+    </Box>
   );
 }
 
