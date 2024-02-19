@@ -35,7 +35,7 @@ function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfE
     return (
       <Box sx={{ width: 1, display: "flex", justifyContent: "center" }}>
         <Tooltip title={naLabel}>
-          <FontAwesomeIcon className={classes.p4} icon={faMinus} size="sm" />
+          <FontAwesomeIcon className={classes.p4} icon={faMinus} size="2xs" />
         </Tooltip>
       </Box>
     );
@@ -53,7 +53,7 @@ function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfE
       )}
 
       {directionOnTrait && (
-        <Tooltip title={directionOnTrait === "risk" ? "Risk" : "Protect"}>
+        <Tooltip title={directionOnTrait === "risk" ? "Risk" : "Protective"}>
           <FontAwesomeIcon
             className={classes.colorBlue}
             icon={directionOnTrait === "risk" ? faCircleExclamation : faShieldHalved}
