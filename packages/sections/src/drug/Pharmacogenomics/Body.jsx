@@ -102,11 +102,16 @@ function Body({ id: chemblId, label: name, entity }) {
     {
       id: "starAllele",
       label: "Star Allele",
-      renderCell: ({ haplotypeId, haplotypeFromSourceId }) => (
-        <Link to={`https://www.pharmgkb.org/haplotype/${haplotypeFromSourceId}`}>
-          {haplotypeId}
-        </Link>
-      ),
+      renderCell: ({ haplotypeId, haplotypeFromSourceId }) => {
+        const displayId = haplotypeId || haplotypeFromSourceId || naLabel;
+        const LinkComponent = haplotypeFromSourceId && (
+          <Link to={`https://www.pharmgkb.org/haplotype/${haplotypeFromSourceId}`}>
+            {displayId}
+          </Link>
+        );
+
+        return LinkComponent || displayId || naLabel;
+      },
     },
     {
       id: "genotypeId",
