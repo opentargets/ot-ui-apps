@@ -1,11 +1,12 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+// import { Link as RouterLink } from "react-router-dom";
 import {
   styled,
   Typography,
-  Menu,
   MenuList,
   MenuItem,
   ListItemText,
+  ListItemIcon,
   Divider,
   Popover,
 } from "@mui/material";
@@ -18,10 +19,21 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "ui";
+import { ENTITIES } from "../utils";
 // import Tooltip from "./AssocTooltip";
 
 import useAotfContext from "../hooks/useAotfContext";
 import { v1 } from "uuid";
+
+const LinkAA = styled(Link)({
+  color: "inherit",
+  display: "flex",
+});
+
+const rowIcon = {
+  [ENTITIES.DISEASE]: faStethoscope,
+  [ENTITIES.TARGET]: faDna,
+};
 
 const NameContainer = styled("div")({
   position: "relative",
@@ -85,81 +97,34 @@ function TooltipContent({ id, entity, name, icon }) {
 }
 
 function CellName({ cell }) {
-  const name = cell.getValue();
   const { loading, prefix: tablePrefix } = cell.table.getState();
+  const name = cell.getValue();
   const row = cell.row;
-  const score = cell.score;
-  const rowData = row.original;
+  const { id } = row;
+  const { score } = row.original;
 
   const [openContext, setOpenContext] = useState(false);
   const contextMenuRef = useRef();
-  const {
-    // entityToGet,
-    // pinnedEntries,
-    // setPinnedEntries,
-    // handleActiveRow,
-    expanderHandler,
-    // resetExpandler,
-  } = useAotfContext();
+  const { expanderHandler, entityToGet } = useAotfContext();
 
-  // const isPinned = pinnedEntries.find(e => e === rowData.id);
-  // const icon = rowEntity === "target" ? faDna : faStethoscope;
-  // const rowEntity = entityToGet === "target" ? "target" : "disease";
+  const profileURL = `/${entityToGet}/${id}`;
 
   const pinnedIcon = tablePrefix === "body" ? faEllipsisVertical : faXmark;
 
-  // const handleClickPin = () => {
-  //   if (isPinned) {
-  //     const newPinnedData = pinnedEntries.filter(e => e !== rowData.id);
-  //     setPinnedEntries(newPinnedData);
-  //   } else {
-  //     setPinnedEntries([...pinnedEntries, rowData.id]);
-  //   }
-  // };
-
-  // const handleClick = () => {
-  //   setOpenContext(true);
-  //   setAnchorEl(contextMenuRef.current);
-  // };
-
-  // const handleClose = useCallback(() => {
-  //   setOpenContext(false);
-  //   setAnchorEl(null);
-  // }, [setOpenContext, setAnchorEl]);
-
   const handleClose = () => {
-    // resetExpandler();
-    // setAnchorEl(null);
     setOpenContext(false);
-    console.log("close call", name);
   };
 
   useEffect(() => {
-    // console.log({});
-    if (openContext) console.log({ openContext });
     if (openContext) {
-      console.log("effect", name);
-      console.log({ contextMenuRef });
       // const event = expanderHandler(row.getToggleExpandedHandler());
       // event(cell, tablePrefix);
     }
   }, [openContext]);
 
-  // const handleToggle = useCallback(() => {
-  //   setOpenContext(true);
-  //   // setAnchorEl(contextMenuRef.current);
-  //   // const event = expanderHandler(row.getToggleExpandedHandler());
-  //   // event(cell, tablePrefix);
-  // }, [expanderHandler, row, tablePrefix, cell]);
-
   const handleToggle = () => {
-    // resetExpandler();
-    // setAnchorEl(null);
     setOpenContext(true);
-    console.log("open call", name);
   };
-
-  // const openContext = Boolean(anchorEl);
 
   if (loading) return null;
 
@@ -191,12 +156,15 @@ function CellName({ cell }) {
       >
         <MenuList dense>
           <MenuItem>
+            {/* <LinkAA to={profileURL}> */}
+            <ListItemIcon>
+              <FontAwesomeIcon size="sm" icon={rowIcon[entityToGet]} />
+            </ListItemIcon>
             <ListItemText>{name}</ListItemText>
+            {/* </LinkAA> */}
           </MenuItem>
           <Divider />
-          <MenuItem>
-            <ListItemText>Double</ListItemText>
-          </MenuItem>
+          <MenuItem>{name}</MenuItem>
         </MenuList>
         {/* <TooltipContent name={name} entity={rowEntity} id={rowId} icon={icon} /> */}
       </Popover>
