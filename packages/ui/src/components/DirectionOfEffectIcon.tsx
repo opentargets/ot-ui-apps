@@ -76,7 +76,7 @@ function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfE
                 size="lg"
               />
             ) : (
-              <FontAwesomeIcon className={classes.colorBlue} icon={faQuestion} size="sm" />
+              <FontAwesomeIcon className={classes.colorBlue} icon={faQuestion} />
             )}
           </Box>
         </Box>
