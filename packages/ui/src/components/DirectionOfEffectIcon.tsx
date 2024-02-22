@@ -43,7 +43,7 @@ function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfE
   else tooltipText += naLabel;
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center" }}>
+    <Box>
       <Tooltip classes={{ tooltip: classes.tooltip }} placement="top" title={tooltipText}>
         <Box
           sx={{
