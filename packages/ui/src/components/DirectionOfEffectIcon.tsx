@@ -5,21 +5,20 @@ import {
   faArrowTrendUp,
   faCircleExclamation,
   faMinus,
+  faQuestion,
   faShieldHalved,
 } from "@fortawesome/free-solid-svg-icons";
 import { makeStyles } from "@mui/styles";
-import { Box, Tooltip } from "@mui/material";
+import { Box, Divider, Tooltip } from "@mui/material";
 
 const useStyles = makeStyles(theme => ({
   colorBlue: {
     color: theme.palette.primary.main,
-    padding: `0 ${theme.spacing(1)}`,
   },
-  hidden: {
-    visibility: "hidden",
-  },
-  p4: {
-    padding: `0 ${theme.spacing(4)}`,
+  tooltip: {
+    backgroundColor: `${theme.palette.background.paper} !important`,
+    border: `1px solid ${theme.palette.grey[300]}`,
+    color: `${theme.palette.text.primary} !important`,
   },
 }));
 
@@ -28,39 +27,60 @@ type DirectionOfEffectIconProp = {
   directionOnTrait?: string;
 };
 
+const LoF = "LoF";
+const RISK = "risk";
+
 function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfEffectIconProp) {
   const classes = useStyles();
 
-  if (!variantEffect && !directionOnTrait)
-    return (
-      <Box sx={{ width: 1, display: "flex", justifyContent: "center" }}>
-        <Tooltip title={naLabel}>
-          <FontAwesomeIcon className={classes.p4} icon={faMinus} size="2xs" />
-        </Tooltip>
-      </Box>
-    );
+  let tooltipText = "";
+  if (variantEffect === LoF) tooltipText += "Loss of Function │ ";
+  else if (variantEffect) tooltipText += "Gain of Function │ ";
+  else tooltipText += naLabel + " │ ";
+
+  if (directionOnTrait === RISK) tooltipText += "Risk";
+  else if (directionOnTrait) tooltipText += "Protective";
+  else tooltipText += naLabel;
 
   return (
-    <Box sx={{ width: 1, display: "flex", justifyContent: "center" }}>
-      {variantEffect && (
-        <Tooltip title={variantEffect === "LoF" ? "Loss of Function" : "Gain of Function"}>
-          <FontAwesomeIcon
-            className={classes.colorBlue}
-            icon={variantEffect === "LoF" ? faArrowTrendDown : faArrowTrendUp}
-            size="lg"
-          />
-        </Tooltip>
-      )}
-
-      {directionOnTrait && (
-        <Tooltip title={directionOnTrait === "risk" ? "Risk" : "Protective"}>
-          <FontAwesomeIcon
-            className={classes.colorBlue}
-            icon={directionOnTrait === "risk" ? faCircleExclamation : faShieldHalved}
-            size="lg"
-          />
-        </Tooltip>
-      )}
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Tooltip classes={{ tooltip: classes.tooltip }} placement="top" title={tooltipText}>
+        <Box
+          sx={{
+            width: 0.7,
+            padding: 1,
+            display: "flex",
+            justifyContent: "space-around",
+            alignItems: "center",
+            background: theme => theme.palette.grey[200],
+            borderRadius: 4,
+          }}
+        >
+          <Box sx={{ display: "flex", justifyContent: "center", width: 20 }}>
+            {variantEffect ? (
+              <FontAwesomeIcon
+                className={classes.colorBlue}
+                icon={variantEffect === LoF ? faArrowTrendDown : faArrowTrendUp}
+                size="lg"
+              />
+            ) : (
+              <FontAwesomeIcon className={classes.colorBlue} icon={faQuestion} />
+            )}
+          </Box>
+          <Divider orientation="vertical" variant="middle" />
+          <Box sx={{ display: "flex", justifyContent: "center", width: 20 }}>
+            {directionOnTrait ? (
+              <FontAwesomeIcon
+                className={classes.colorBlue}
+                icon={directionOnTrait === "risk" ? faCircleExclamation : faShieldHalved}
+                size="lg"
+              />
+            ) : (
+              <FontAwesomeIcon className={classes.colorBlue} icon={faQuestion} size="sm" />
+            )}
+          </Box>
+        </Box>
+      </Tooltip>
     </Box>
   );
 }
