@@ -160,6 +160,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const handleSearchInputChange = newSearchFilter => {
     if (newSearchFilter !== searhFilter) {
+      setPagination(DEFAULT_TABLE_PAGINATION_STATE);
       setSearhFilter(newSearchFilter);
     }
   };
