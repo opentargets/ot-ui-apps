@@ -11,12 +11,6 @@
       "type": "node-terminal"
     },
     {
-      "command": "yarn dev:platform",
-      "name": "Run partner platform dev",
-      "request": "launch",
-      "type": "node-terminal"
-    },
-    {
       "type": "chrome",
       "request": "launch",
       "name": "Launch Platform Chrome against localhost",

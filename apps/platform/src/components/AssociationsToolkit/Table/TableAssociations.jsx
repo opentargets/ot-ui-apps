@@ -22,7 +22,7 @@ import TableFooter from "./TableFooter";
 import TableBody from "./TableBody";
 import useAotfContext from "../hooks/useAotfContext";
 
-import { cellHasValue, isPartnerPreview, tableCSSVariables } from "../utils";
+import { cellHasValue, getScale, isPartnerPreview, tableCSSVariables } from "../utils";
 
 const TableElement = styled("main")({
   maxWidth: "1600px",
@@ -37,7 +37,7 @@ const TableDivider = styled("div")({
 const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
-function getDatasources({ expanderHandler, displayedTable }) {
+function getDatasources({ expanderHandler, displayedTable, colorScale }) {
   const isAssociations = displayedTable === "associations";
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? "dataSources" : "prioritisations";
@@ -74,6 +74,7 @@ function getDatasources({ expanderHandler, displayedTable }) {
             loading={loading}
             isAssociations={isAssociations}
             tablePrefix={prefix}
+            colorScale={colorScale}
           />
         ) : (
           <ColoredCell />
@@ -105,6 +106,8 @@ function TableAssociations() {
   } = useAotfContext();
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
+  const isAssociations = displayedTable === "associations";
+  const colorScale = getScale(isAssociations);
 
   const columns = useMemo(
     () => [
@@ -116,7 +119,7 @@ function TableAssociations() {
             id: "name",
             enableSorting: false,
             cell: cell => {
-              return <CellName cell={cell} />;
+              return <CellName cell={cell} colorScale={colorScale} />;
             },
             header: () => {
               const label = entityToGet === "target" ? "Target" : "Disease";
@@ -137,6 +140,7 @@ function TableAssociations() {
                     rounded={false}
                     isAssociations
                     hasValue
+                    colorScale={colorScale}
                   />
                 </Box>
               );
@@ -147,7 +151,7 @@ function TableAssociations() {
       columnHelper.group({
         header: "entities",
         id: "entity-cols",
-        columns: [...getDatasources({ expanderHandler, displayedTable })],
+        columns: [...getDatasources({ expanderHandler, displayedTable, colorScale })],
       }),
     ],
     [expanderHandler, displayedTable, entityToGet, rowNameEntity]
