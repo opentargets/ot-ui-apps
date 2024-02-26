@@ -1,5 +1,5 @@
 import { useEffect, useContext } from "react";
-import { Box, Typography, styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
@@ -64,12 +64,9 @@ function GlobalSearch({ isHomePage }) {
           }}
         >
           <Box sx={{ paddingLeft: theme => theme.spacing(1) }}>
-            <FontAwesomeIcon icon={faMagnifyingGlass} size="sm" />
+            <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
           </Box>
-          <Typography m={0} p={0} variant="subtitle1">
-            Search...
-          </Typography>
-
+          Search...
           <Box
             sx={{
               typography: "caption",
