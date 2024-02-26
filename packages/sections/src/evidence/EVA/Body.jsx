@@ -11,6 +11,7 @@ import {
   getComparator,
   useCursorBatchDownloader,
   ClinvarStars,
+  DirectionOfEffectIcon,
 } from "ui";
 
 import {
@@ -27,6 +28,45 @@ import { epmcUrl } from "../../utils/urls";
 import CLINVAR_QUERY from "./ClinvarQuery.gql";
 import { dataTypesMap } from "../../dataTypes";
 import { sentenceCase, identifiersOrgLink } from "../../utils/global";
+
+const exportColumns = [
+  {
+    label: "diseaseId",
+    exportValue: row => row.disease.id,
+  },
+  {
+    label: "diseaseName",
+    exportValue: row => row.disease.name,
+  },
+  {
+    label: "variantId",
+    exportValue: row => row.variantId,
+  },
+  {
+    label: "variantRsId",
+    exportValue: row => row.variantRsId,
+  },
+  {
+    label: "variantHgvsId",
+    exportValue: row => row.variantHgvsId,
+  },
+  {
+    label: "variantConsequence",
+    exportValue: row => row.variantFunctionalConsequence,
+  },
+  {
+    label: "clinicalSignificances",
+    exportValue: row => row.clinicalSignificances,
+  },
+  {
+    label: "allelicRequirements",
+    exportValue: row => row.alleleOrigins,
+  },
+  {
+    label: "reviewStatus",
+    exportValue: row => row.confidence,
+  },
+];
 
 function getColumns(label) {
   return [
@@ -156,6 +196,36 @@ function getColumns(label) {
         )}`,
     },
     {
+      id: "directionOfVariantEffect",
+      label: (
+        <Tooltip
+          showHelpIcon
+          title={
+            <>
+              See{" "}
+              <Link
+                external
+                to="https://home.opentargets.org/aotf-documentation#direction-of-effect"
+              >
+                here
+              </Link>{" "}
+              for more info on our assessment method
+            </>
+          }
+        >
+          Direction Of Effect
+        </Tooltip>
+      ),
+      renderCell: ({ variantEffect, directionOnTrait }) => {
+        return (
+          <DirectionOfEffectIcon
+            variantEffect={variantEffect}
+            directionOnTrait={directionOnTrait}
+          />
+        );
+      },
+    },
+    {
       id: "clinicalSignificances",
       filterValue: ({ clinicalSignificances }) => clinicalSignificances.join(),
       label: "Clinical significance",
@@ -242,45 +312,6 @@ function getColumns(label) {
   ];
 }
 
-const exportColumns = [
-  {
-    label: "diseaseId",
-    exportValue: row => row.disease.id,
-  },
-  {
-    label: "diseaseName",
-    exportValue: row => row.disease.name,
-  },
-  {
-    label: "variantId",
-    exportValue: row => row.variantId,
-  },
-  {
-    label: "variantRsId",
-    exportValue: row => row.variantRsId,
-  },
-  {
-    label: "variantHgvsId",
-    exportValue: row => row.variantHgvsId,
-  },
-  {
-    label: "variantConsequence",
-    exportValue: row => row.variantFunctionalConsequence,
-  },
-  {
-    label: "clinicalSignificances",
-    exportValue: row => row.clinicalSignificances,
-  },
-  {
-    label: "allelicRequirements",
-    exportValue: row => row.alleleOrigins,
-  },
-  {
-    label: "reviewStatus",
-    exportValue: row => row.confidence,
-  },
-];
-
 function fetchClinvar({ ensemblId, efoId, cursor, size, freeTextQuery }) {
   return client.query({
     query: CLINVAR_QUERY,
@@ -305,7 +336,6 @@ function Body({ id, label, entity }) {
   const [size, setPageSize] = useState(10);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
-  // const [globalFilter, setGlobalFilter] = useState('');
 
   const columns = getColumns(label);
 

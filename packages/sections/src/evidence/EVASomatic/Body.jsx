@@ -12,6 +12,7 @@ import {
   useCursorBatchDownloader,
   getComparator,
   getPage,
+  DirectionOfEffectIcon,
 } from "ui";
 import client from "../../client";
 
@@ -132,6 +133,19 @@ const getColumns = label => [
       return naLabel;
     },
     filterValue: ({ clinicalSignificances }) => clinicalSignificances.join(),
+  },
+  {
+    id: "directionOfVariantEffect",
+    label: (
+      <Tooltip showHelpIcon title={<>See <Link external to="https://home.opentargets.org/aotf-documentation#direction-of-effect">here</Link> for more info on our assessment method</>}>
+        Direction Of Effect
+      </Tooltip>
+    ),
+    renderCell: ({ variantEffect, directionOnTrait }) => {
+      return (
+        <DirectionOfEffectIcon variantEffect={variantEffect} directionOnTrait={directionOnTrait} />
+      );
+    },
   },
   {
     id: "allelicRequirements",

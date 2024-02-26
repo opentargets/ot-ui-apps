@@ -1,6 +1,14 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem, PublicationsDrawer, DataTable, ScientificNotation } from "ui";
+import {
+  Link,
+  Tooltip,
+  SectionItem,
+  PublicationsDrawer,
+  DataTable,
+  ScientificNotation,
+  DirectionOfEffectIcon,
+} from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -181,6 +189,30 @@ const getColumns = label => [
       `${beta} ${betaConfidenceIntervalLower} ${betaConfidenceIntervalUpper} ${naLabel}`,
   },
   {
+    id: "directionOfVariantEffect",
+    label: (
+      <Tooltip
+        showHelpIcon
+        title={
+          <>
+            See{" "}
+            <Link external to="https://home.opentargets.org/aotf-documentation#direction-of-effect">
+              here
+            </Link>{" "}
+            for more info on our assessment method
+          </>
+        }
+      >
+        Direction Of Effect
+      </Tooltip>
+    ),
+    renderCell: ({ variantEffect, directionOnTrait }) => {
+      return (
+        <DirectionOfEffectIcon variantEffect={variantEffect} directionOnTrait={directionOnTrait} />
+      );
+    },
+  },
+  {
     id: "pValue",
     label: (
       <>
@@ -221,11 +253,9 @@ export function Body({ id, label, entity }) {
     efoId,
     size: sectionsBaseSizeQuery,
   };
-
   const request = useQuery(GENE_BURDEN_QUERY, {
     variables,
   });
-
   const columns = getColumns(label);
 
   return (

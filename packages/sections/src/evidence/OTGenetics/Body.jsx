@@ -7,6 +7,8 @@ import {
   LabelChip,
   DataTable,
   ScientificNotation,
+  Tooltip,
+  DirectionOfEffectIcon,
 } from "ui";
 
 import {
@@ -138,6 +140,36 @@ function getColumns(label) {
       },
     },
     {
+      id: "directionOfVariantEffect",
+      label: (
+        <Tooltip
+          showHelpIcon
+          title={
+            <>
+              See{" "}
+              <Link
+                external
+                to="https://home.opentargets.org/aotf-documentation#direction-of-effect"
+              >
+                here
+              </Link>{" "}
+              for more info on our assessment method
+            </>
+          }
+        >
+          Direction Of Effect
+        </Tooltip>
+      ),
+      renderCell: ({ variantEffect, directionOnTrait }) => {
+        return (
+          <DirectionOfEffectIcon
+            variantEffect={variantEffect}
+            directionOnTrait={directionOnTrait}
+          />
+        );
+      },
+    },
+    {
       id: "pValueMantissa",
       label: (
         <>
@@ -217,6 +249,7 @@ function getColumns(label) {
 function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: sectionsBaseSizeQuery };
+
   const columns = getColumns(label);
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
