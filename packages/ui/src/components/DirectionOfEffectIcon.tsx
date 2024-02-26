@@ -32,15 +32,20 @@ const RISK = "risk";
 
 function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfEffectIconProp) {
   const classes = useStyles();
+  function getTooltipText() {
+    let tooltipValue = "";
+    if (variantEffect === LoF) tooltipValue += "Loss of Function │ ";
+    else if (variantEffect) tooltipValue += "Gain of Function │ ";
+    else tooltipValue += naLabel + " │ ";
 
-  let tooltipText = "";
-  if (variantEffect === LoF) tooltipText += "Loss of Function │ ";
-  else if (variantEffect) tooltipText += "Gain of Function │ ";
-  else tooltipText += naLabel + " │ ";
+    if (directionOnTrait === RISK) tooltipValue += "Risk";
+    else if (directionOnTrait) tooltipValue += "Protective";
+    else tooltipValue += naLabel;
 
-  if (directionOnTrait === RISK) tooltipText += "Risk";
-  else if (directionOnTrait) tooltipText += "Protective";
-  else tooltipText += naLabel;
+    return tooltipValue;
+  }
+
+  const tooltipText = getTooltipText();
 
   return (
     <Box sx={{ display: "flex" }}>
