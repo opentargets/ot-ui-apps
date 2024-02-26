@@ -1,6 +1,13 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem, PublicationsDrawer, DataTable } from "ui";
+import {
+  Link,
+  Tooltip,
+  SectionItem,
+  PublicationsDrawer,
+  DataTable,
+  DirectionOfEffectIcon,
+} from "ui";
 
 import { definition } from ".";
 import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
@@ -60,6 +67,19 @@ const getColumns = label => [
       ),
     filterValue: ({ variantFunctionalConsequence }) =>
       sentenceCase(variantFunctionalConsequence?.label),
+  },
+  {
+    id: "directionOfVariantEffect",
+    label: (
+      <Tooltip showHelpIcon title={<>See <Link external to="https://home.opentargets.org/aotf-documentation#direction-of-effect">here</Link> for more info on our assessment method</>}>
+        Direction Of Effect
+      </Tooltip>
+    ),
+    renderCell: ({ variantEffect, directionOnTrait }) => {
+      return (
+        <DirectionOfEffectIcon variantEffect={variantEffect} directionOnTrait={directionOnTrait} />
+      );
+    },
   },
   {
     id: "alleleOrigins",

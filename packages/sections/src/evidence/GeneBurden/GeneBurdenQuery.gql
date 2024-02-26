@@ -18,6 +18,8 @@ query GeneBurdenQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
           id
           approvedSymbol
         }
+        variantEffect
+        directionOnTrait
         allelicRequirements
         studyId
         ancestry

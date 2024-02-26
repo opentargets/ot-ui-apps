@@ -103,6 +103,10 @@ function PublicationsList({ hideSearch = false }) {
         selectedEntities,
         cursor: newCursor,
         globalEntity,
+        endYear,
+        endMonth,
+        startYear,
+        startMonth,
       } = bibliographyState;
       setLoadingEntities(true);
       const request = await fetchSimilarEntities({
@@ -111,6 +115,11 @@ function PublicationsList({ hideSearch = false }) {
         category,
         entities: selectedEntities,
         cursor: newCursor,
+        page: 0,
+        endYear,
+        endMonth,
+        startYear,
+        startMonth,
       });
       setLoadingEntities(false);
       const data = request.data[globalEntity];
@@ -128,7 +137,7 @@ function PublicationsList({ hideSearch = false }) {
       };
       setLiteratureUpdate(update);
     } else {
-      setLiteratureUpdate({ pageSize: pageSizeInt });
+      setLiteratureUpdate({ page: 0, pageSize: pageSizeInt });
     }
   });
 
@@ -142,6 +151,10 @@ function PublicationsList({ hideSearch = false }) {
         selectedEntities,
         cursor: newCursor,
         globalEntity,
+        endYear,
+        endMonth,
+        startYear,
+        startMonth,
       } = bibliographyState;
       setLoadingEntities(true);
       const request = await fetchSimilarEntities({
@@ -150,6 +163,10 @@ function PublicationsList({ hideSearch = false }) {
         category,
         entities: selectedEntities,
         cursor: newCursor,
+        endYear,
+        endMonth,
+        startYear,
+        startMonth,
       });
       setLoadingEntities(false);
       const data = request.data[globalEntity];

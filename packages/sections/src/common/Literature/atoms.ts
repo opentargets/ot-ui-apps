@@ -136,7 +136,7 @@ const defaultState: LiteratureStateType = {
   startMonth: null,
   endYear: null,
   endMonth: null,
-  earliestPubYear: 2000,
+  earliestPubYear: 0,
   litsIds: [],
   page: 0,
   pageSize: 5,

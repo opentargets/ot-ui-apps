@@ -10,6 +10,7 @@ import {
   useCursorBatchDownloader,
   getComparator,
   getPage,
+  DirectionOfEffectIcon,
 } from "ui";
 import { defaultRowsPerPageOptions, phaseMap, sourceMap, naLabel } from "../../constants";
 import { dataTypesMap } from "../../dataTypes";
@@ -163,6 +164,35 @@ function getColumns(classes) {
         }, new Set());
 
         return `${anchorMa || naLabel}${mas.size > 0 ? ` and ${mas.size} other MoA` : ""}`;
+      },
+    },
+    {
+      id: "directionOfVariantEffect",
+      label: (
+        <Tooltip
+          showHelpIcon
+          title={
+            <>
+              See{" "}
+              <Link
+                external
+                to="https://home.opentargets.org/aotf-documentation#direction-of-effect"
+              >
+                here
+              </Link> for more info on our assessment method
+            </>
+          }
+        >
+          Direction Of Effect
+        </Tooltip>
+      ),
+      renderCell: ({ variantEffect, directionOnTrait }) => {
+        return (
+          <DirectionOfEffectIcon
+            variantEffect={variantEffect}
+            directionOnTrait={directionOnTrait}
+          />
+        );
       },
     },
     {

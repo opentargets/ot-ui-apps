@@ -36,8 +36,9 @@ const monthsBtwnDates = (startDate: Date, endDate: Date) =>
   );
 
 export function DateFilter() {
-  const [filterDate, setFilterDate] = useState<number | number[]>([0, 100]);
+  const [filterDate, setFilterDate] = useState<number[]>([0, 0]);
   const [numberOfMonths, setNumberOfMonths] = useState(0);
+  const [pubYear, setPubYear] = useState(0);
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
   const [_, setLoadingEntities] = useRecoilState(loadingEntitiesState);
   const {
@@ -46,27 +47,62 @@ export function DateFilter() {
     category,
     earliestPubYear,
     selectedEntities,
-    globalEntity,
     cursor,
+    globalEntity,
     litsIds,
-    page,
     pageSize,
     litsCount,
     loadingEntities,
   } = useRecoilValue(literatureState);
 
+  function getDateFromYear(year: number) {
+    return new Date(year, 0, 1, 1, 1, 1, 1);
+  }
+
+  const sumMonthsSinceYear = (year: number) => (value: number) => {
+    const from = getDateFromYear(year);
+    const date = new Date(from.setMonth(from.getMonth() + value));
+    return date;
+  };
+
+  const selectedDate = sumMonthsSinceYear(earliestPubYear);
+  const oldSelectedDate = sumMonthsSinceYear(pubYear);
+
   useEffect(() => {
-    if (earliestPubYear) {
-      const earliestYearMonth = `${earliestPubYear}-01-01`;
-      const limit = monthsBtwnDates(new Date(earliestYearMonth), new Date());
+    // the publication year has changed
+    if (earliestPubYear && earliestPubYear !== pubYear) {
+      const earliestDate = getDateFromYear(earliestPubYear);
+      const limit = monthsBtwnDates(earliestDate, new Date()) - 1;
+
+      const lowerLimit = getLowerLimit(earliestDate);
+
+      const higherLimit = getHigherLimit(earliestDate, limit);
+
+      setFilterDate([lowerLimit, higherLimit]);
       setNumberOfMonths(limit);
-      setFilterDate([0, limit]);
+      setPubYear(earliestPubYear);
+    } else {
+      setPubYear(0);
+      setNumberOfMonths(0);
+      setFilterDate([0, 0]);
     }
   }, [earliestPubYear]);
 
-  useEffect(() => {
-    setFilterDate([0, numberOfMonths]);
-  }, []);
+  function getHigherLimit(earliestDate: Date, limit: number) {
+    const oldHigherDate = oldSelectedDate(filterDate[1]);
+    const newHighFilter = monthsBtwnDates(earliestDate, oldHigherDate);
+    const higherLimit =
+      filterDate[1] > 0 && newHighFilter > 0 && newHighFilter < limit ? newHighFilter : limit;
+    return higherLimit;
+  }
+
+  function getLowerLimit(earliestDate: Date) {
+    if (filterDate[0] == 0) return 0;
+    const oldLowerDate = oldSelectedDate(filterDate[0]);
+    const newLowerFilter = monthsBtwnDates(earliestDate, oldLowerDate);
+    const lowerLimit = newLowerFilter > 0 ? newLowerFilter : 0;
+    return lowerLimit;
+  }
 
   const handleChange = async (values: {
     startYear: number;
@@ -86,7 +122,7 @@ export function DateFilter() {
       globalEntity,
       selectedEntities,
       litsIds,
-      page,
+      page: 0,
       pageSize,
       litsCount,
       loadingEntities,
@@ -105,20 +141,15 @@ export function DateFilter() {
         status: "ready",
         publication: null,
       })),
-      litsCount: data.literatureOcurrences?.count,
+      litsCount: data.literatureOcurrences?.filteredCount,
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,
       globalEntity,
       selectedEntities,
-      page,
+      page: 0,
       pageSize,
       ...values,
     };
     setLiteratureUpdate(update);
-  };
-
-  const selectedDate = (value: number) => {
-    const from = new Date(earliestPubYear, 0, 1, 1, 1, 1, 1);
-    return new Date(from.setMonth(from.getMonth() + value));
   };
 
   const valueLabelFormat = (value: number | number[]) => {
@@ -130,7 +161,7 @@ export function DateFilter() {
   };
 
   const handleDateRangeChange = (_event: Event, value: number[] | number, _activeThumb: number) => {
-    setFilterDate(value);
+    setFilterDate(value as number[]);
   };
 
   const handleDateRangeChangeCommitted = (
@@ -148,8 +179,6 @@ export function DateFilter() {
       });
     }
   };
-
-  const castedFilter = filterDate as number[];
 
   return (
     <div
@@ -173,7 +202,7 @@ export function DateFilter() {
             alignItems: "center",
           }}
         >
-          <DateIndicator>{valueLabelFormat(castedFilter[0])}</DateIndicator>
+          <DateIndicator>{valueLabelFormat(filterDate[0])}</DateIndicator>
           <OTSlider
             size="small"
             style={{ width: 275 }}
@@ -182,10 +211,10 @@ export function DateFilter() {
             onChange={handleDateRangeChange}
             onChangeCommitted={handleDateRangeChangeCommitted}
             aria-labelledby="range-slider"
-            max={numberOfMonths - 1}
+            max={numberOfMonths}
             valueLabelFormat={valueLabelFormat}
           />
-          <DateIndicator>{valueLabelFormat(castedFilter[1])}</DateIndicator>
+          <DateIndicator>{valueLabelFormat(filterDate[1])}</DateIndicator>
         </FormControl>
       </FormGroup>
     </div>

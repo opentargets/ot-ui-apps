@@ -11,6 +11,7 @@ import {
   useCursorBatchDownloader,
   getComparator,
   getPage,
+  DirectionOfEffectIcon,
 } from "ui";
 
 import client from "../../client";
@@ -83,6 +84,19 @@ const columns = [
     ),
     filterValue: ({ diseaseModelAssociatedModelPhenotypes = [] }) =>
       diseaseModelAssociatedModelPhenotypes.map(dmamp => dmamp.label).join(),
+  },
+  {
+    id: "directionOfVariantEffect",
+    label: (
+      <Tooltip showHelpIcon title={<>See <Link external to="https://home.opentargets.org/aotf-documentation#direction-of-effect">here</Link> for more info on our assessment method</>}>
+        Direction Of Effect
+      </Tooltip>
+    ),
+    renderCell: ({ variantEffect, directionOnTrait }) => {
+      return (
+        <DirectionOfEffectIcon variantEffect={variantEffect} directionOnTrait={directionOnTrait} />
+      );
+    },
   },
   {
     id: "literature",

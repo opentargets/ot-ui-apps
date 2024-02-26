@@ -35,6 +35,10 @@ export default function Category() {
       selectedEntities,
       globalEntity,
       cursor,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
     } = bibliographyState;
     const {
       target: { name: clicked },
@@ -47,11 +51,17 @@ export default function Category() {
       category: newCategories,
       entities: selectedEntities,
       cursor,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
     });
     const data = request.data[globalEntity];
 
     const update = {
       entities: data.similarEntities,
+      earliestPubYear: data.literatureOcurrences?.earliestPubYear,
+      litsCount: data.literatureOcurrences?.filteredCount,
       loadingEntities: false,
       category: newCategories,
     };

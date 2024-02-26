@@ -13450,6 +13450,11 @@ pkg-up@3.1.0:
   dependencies:
     find-up "^3.0.0"
 
+plotly.js-cartesian-dist-min@^2.29.0:
+  version "2.29.0"
+  resolved "https://registry.yarnpkg.com/plotly.js-cartesian-dist-min/-/plotly.js-cartesian-dist-min-2.29.0.tgz#62a8efa847cc0b86d698307d7fb4e9896d3e296d"
+  integrity sha512-TCKQkn+sI7f/eHqhgGohNNYAuG4plUjmeIisMJrtRkcWYILUVn74DpN999FO1bJcLK45vYQH8jaO7e4Tm9q6Ig==
+
 plotly.js@^2.23.1:
   version "2.26.2"
   resolved "https://registry.yarnpkg.com/plotly.js/-/plotly.js-2.26.2.tgz#b61f0e7c4b6beb2a86dde3f9b89478ac06731417"
