@@ -8,6 +8,8 @@ query PharmacogenomicsQuery($ensemblId: String!) {
         id
         label
       }
+      haplotypeId
+      haplotypeFromSourceId
       isDirectTarget
       drugFromSource
       drugId

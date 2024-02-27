@@ -79,6 +79,20 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
         ),
     },
     {
+      id: "starAllele",
+      label: "Star Allele",
+      renderCell: ({ haplotypeId, haplotypeFromSourceId }) => {
+        const displayId = haplotypeId || haplotypeFromSourceId || naLabel;
+        const LinkComponent = haplotypeFromSourceId && (
+          <Link external to={`https://www.pharmgkb.org/haplotype/${haplotypeFromSourceId}`}>
+            {displayId}
+          </Link>
+        );
+
+        return LinkComponent || displayId || naLabel;
+      },
+    },
+    {
       id: "genotypeId",
       label: "Genotype ID",
       tooltip: (

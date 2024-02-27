@@ -395,7 +395,6 @@ function Body({ id, label, entity }) {
             variables={{
               ensemblId,
               efoId,
-              cursor,
               size,
             }}
           />
