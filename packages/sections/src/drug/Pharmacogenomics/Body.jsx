@@ -105,7 +105,7 @@ function Body({ id: chemblId, label: name, entity }) {
       renderCell: ({ haplotypeId, haplotypeFromSourceId }) => {
         const displayId = haplotypeId || haplotypeFromSourceId || naLabel;
         const LinkComponent = haplotypeFromSourceId && (
-          <Link to={`https://www.pharmgkb.org/haplotype/${haplotypeFromSourceId}`}>
+          <Link external to={`https://www.pharmgkb.org/haplotype/${haplotypeFromSourceId}`}>
             {displayId}
           </Link>
         );
