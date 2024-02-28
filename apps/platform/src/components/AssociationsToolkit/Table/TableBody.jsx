@@ -30,21 +30,21 @@ function ExpandableContainer({ rowExpanded, isExpandedInTable, loading, children
   return <Box key={v1()}>{children}</Box>;
 }
 
-function TableBody({ core, expanded, cols }) {
-  const { id, entity, entityToGet, displayedTable, resetExpandler } = useAotfContext();
+function TableBody({ core, cols }) {
+  const { id, entity, entityToGet, displayedTable, resetExpandler, expanded } = useAotfContext();
 
   const { rows } = core.getRowModel();
   if (rows.length < 1) return null;
 
-  const flatCols = cols.map(c => c.id);
+  const flatCols = ["name", ...cols.map(c => c.id)];
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
   const { prefix, loading } = core.getState();
   const isExpandedInTable = expanded[3] === prefix && flatCols.includes(expanded[1]);
 
-  const handleClickAway = (e) => {
-    if(e.srcElement.className === "CodeMirror-hint CodeMirror-hint-active"){
+  const handleClickAway = e => {
+    if (e.srcElement.className === "CodeMirror-hint CodeMirror-hint-active") {
       return;
     }
     resetExpandler();

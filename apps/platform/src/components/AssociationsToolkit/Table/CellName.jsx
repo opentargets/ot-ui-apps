@@ -1,23 +1,52 @@
-import { useState } from "react";
-import { styled, Typography } from "@mui/material";
-import { faDna, faStethoscope, faThumbTack, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useState, useRef } from "react";
+import {
+  styled,
+  Typography,
+  MenuList,
+  MenuItem,
+  ListItemText,
+  ListItemIcon,
+  Divider,
+  Popover,
+  Box,
+  Fade,
+} from "@mui/material";
+import {
+  faThumbTack,
+  faEllipsisVertical,
+  faArrowUpRightFromSquare,
+  faTrashCan,
+  faBezierCurve,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "ui";
-import Tooltip from "./AssocTooltip";
-
+import { useHistory } from "react-router-dom";
 import useAotfContext from "../hooks/useAotfContext";
+import { ENTITIES } from "../utils";
+import { grey } from "@mui/material/colors";
+
+const StyledMenuItem = styled(MenuItem)({
+  "&>.MuiListItemIcon-root>svg": {
+    fontSize: "1rem",
+  },
+});
 
 const NameContainer = styled("div")({
   position: "relative",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
+  marginLeft: 5,
   "&:hover": {
     cursor: "pointer",
   },
-  "&:hover > .PinnedContainer": {
+  "&:hover > .ContextMenuContainer": {
     opacity: 1,
   },
+});
+
+const ScoreIndicator = styled("div")({
+  width: "16px",
+  height: "16px",
 });
 
 const TextContainer = styled("div")({
@@ -25,88 +54,141 @@ const TextContainer = styled("div")({
   overflow: "hidden",
   textAlign: "end",
   textOverflow: "ellipsis",
-  maxWidth: "120px",
   "&:hover span": {
     textDecoration: "underline",
   },
 });
 
-const LinksTooltipContent = styled("span")({
-  display: "flex",
-  flexDirection: "column",
-  gap: "5px",
-});
-
-const PinnedContainer = styled("div", {
+const ContextMenuContainer = styled("div", {
   shouldForwardProp: prop => prop !== "active",
 })(({ active }) => ({
   opacity: active ? "1" : "0",
   cursor: "pointer",
-  marginLeft: "5px",
+  borderRadius: 1,
+  "&:hover": {
+    backgroundColor: grey[200],
+  },
 }));
 
-function TooltipContent({ id, entity, name, icon }) {
-  const profileURL = `/${entity}/${id}`;
-  const associationsURL = `/${entity}/${id}/associations`;
-  return (
-    <LinksTooltipContent>
-      <Typography variant="h6">
-        <FontAwesomeIcon icon={icon} /> {name}
-      </Typography>
-      <Typography>
-        <Link to={profileURL}>Go to Profile</Link>
-      </Typography>
-      <Typography>
-        <Link to={associationsURL}>Go to Associations</Link>
-      </Typography>
-    </LinksTooltipContent>
-  );
-}
-
-function CellName({ name, rowId, row, tablePrefix }) {
-  const [open, setOpen] = useState(false);
+function CellName({ cell, colorScale }) {
+  const history = useHistory();
+  const contextMenuRef = useRef();
   const { entityToGet, pinnedEntries, setPinnedEntries } = useAotfContext();
+  const { loading } = cell.table.getState();
+  const name = cell.getValue();
+  const { id } = cell.row;
+  const { score } = cell.row.original;
+  const scoreIndicatorColor = colorScale(score);
+  const [openContext, setOpenContext] = useState(false);
 
-  const rowData = row.original;
+  const isPinned = pinnedEntries.find(e => e === id);
+  const profileURL = `/${entityToGet}/${id}`;
+  const associationsURL = `/${entityToGet}/${id}/associations`;
 
-  const isPinned = pinnedEntries.find(e => e === rowData.id);
-  const rowEntity = entityToGet === "target" ? "target" : "disease";
-  const icon = rowEntity === "target" ? faDna : faStethoscope;
+  const handleClose = () => {
+    setOpenContext(false);
+  };
 
-  const pinnedIcon = tablePrefix === "body" ? faThumbTack : faXmark;
+  const handleToggle = () => {
+    setOpenContext(true);
+  };
 
   const handleClickPin = () => {
     if (isPinned) {
-      const newPinnedData = pinnedEntries.filter(e => e !== rowData.id);
+      const newPinnedData = pinnedEntries.filter(e => e !== id);
       setPinnedEntries(newPinnedData);
     } else {
-      setPinnedEntries([...pinnedEntries, rowData.id]);
+      setPinnedEntries([...pinnedEntries, id]);
     }
   };
 
+  const handleNavigateToProfile = () => {
+    history.push(profileURL);
+  };
+
+  const handleNavigateToAssociations = () => {
+    history.push(associationsURL);
+  };
+
+  if (loading) return null;
+
   return (
-    <Tooltip
-      open={open}
-      onClose={() => setOpen(false)}
-      placement="top"
-      arrow
-      title={<TooltipContent name={name} entity={rowEntity} id={rowId} icon={icon} />}
-    >
-      <NameContainer
-        onClick={() => {
-          setOpen(true);
-        }}
+    <NameContainer>
+      <TextContainer onClick={handleToggle}>
+        <Typography width="150px" noWrap variant="body2">
+          {name}
+        </Typography>
+      </TextContainer>
+      <ContextMenuContainer
+        ref={contextMenuRef}
+        className="ContextMenuContainer"
+        onClick={handleToggle}
+        active={openContext}
       >
-        <PinnedContainer className="PinnedContainer" onClick={handleClickPin} active={isPinned}>
-          <FontAwesomeIcon icon={pinnedIcon} size="sm" />
-        </PinnedContainer>
-        <TextContainer>
-          <Typography noWrap variant="body2">
-            {name}
-          </Typography>
-        </TextContainer>
-      </NameContainer>
-    </Tooltip>
+        <FontAwesomeIcon icon={faEllipsisVertical} size="lg" />
+      </ContextMenuContainer>
+      <Popover
+        id="context-menu"
+        open={openContext}
+        anchorEl={contextMenuRef.current}
+        onClose={handleClose}
+        disableScrollLock
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        TransitionComponent={Fade}
+        transitionDuration={200}
+        elevation={2}
+      >
+        <MenuList dense>
+          <Box sx={{ paddingX: 2, paddingBottom: 1, display: "flex", alignItems: "center" }}>
+            <Box mr={1}>
+              <ScoreIndicator style={{ backgroundColor: scoreIndicatorColor }} />
+            </Box>
+            <Typography variant="subtitle2">{name}</Typography>
+          </Box>
+          <Divider sx={{ marginBottom: 1 }} />
+          {!isPinned && (
+            <StyledMenuItem onClick={handleClickPin}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faThumbTack} />
+              </ListItemIcon>
+              <ListItemText>Pin {entityToGet}</ListItemText>
+            </StyledMenuItem>
+          )}
+          {isPinned && (
+            <StyledMenuItem onClick={handleClickPin}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faTrashCan} />
+              </ListItemIcon>
+              <ListItemText>Unpin {entityToGet}</ListItemText>
+            </StyledMenuItem>
+          )}
+          {entityToGet === ENTITIES.TARGET && (
+            <StyledMenuItem disabled>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faBezierCurve} />
+              </ListItemIcon>
+              <ListItemText>Target network associations</ListItemText>
+            </StyledMenuItem>
+          )}
+          <Divider />
+          <StyledMenuItem onClick={handleNavigateToProfile}>
+            <ListItemIcon>
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </ListItemIcon>
+            <ListItemText>Navigate to profile</ListItemText>
+          </StyledMenuItem>
+          <StyledMenuItem onClick={handleNavigateToAssociations}>
+            <ListItemIcon>
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </ListItemIcon>
+            <ListItemText>Navigate to associations</ListItemText>
+          </StyledMenuItem>
+        </MenuList>
+      </Popover>
+    </NameContainer>
   );
 }
 

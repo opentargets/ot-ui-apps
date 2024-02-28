@@ -16,10 +16,8 @@ function ColoredCell({
   isAssociations = true,
   hasValue = false,
   tablePrefix = null,
+  colorScale,
 }) {
-  // if(!hasValue) return null
-  const colorScale = getScale(isAssociations);
-
   const onClickHandler = onClick ? () => onClick(cell, tablePrefix) : () => ({});
   const backgroundColor = hasValue ? colorScale(scoreValue) : "#fafafa";
   const borderColor = hasValue ? colorScale(scoreValue) : "#e0dede";

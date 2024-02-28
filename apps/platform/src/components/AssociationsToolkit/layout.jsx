@@ -65,10 +65,10 @@ export const RowContainer = styled("div", {
   "&:hover": {
     backgroundColor: "var(--row-hover-color)",
     border: "0.7px solid #666",
-  },
-  "&:hover .pinnedIcon": {
-    opacity: 1,
-    cursor: "pointer",
+    ".PinnedContainer": {
+      opacity: 1,
+      cursor: "pointer",
+    },
   },
 }));
 
