@@ -71,7 +71,7 @@ const getColumns = label => [
   {
     id: "directionOfVariantEffect",
     label: (
-      <Tooltip showHelpIcon title={<>See <Link external to="https://home.opentargets.org/aotf-documentation#direction-of-effect">here</Link> for more info on our assessment method</>}>
+      <Tooltip showHelpIcon title={<>See <Link external to="https://platform-docs.opentargets.org/evidence#orphanet">here</Link> for more info on our assessment method</>}>
         Direction Of Effect
       </Tooltip>
     ),
