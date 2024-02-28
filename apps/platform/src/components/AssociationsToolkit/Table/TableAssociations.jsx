@@ -22,7 +22,14 @@ import TableFooter from "./TableFooter";
 import TableBody from "./TableBody";
 import useAotfContext from "../hooks/useAotfContext";
 
-import { cellHasValue, getScale, isPartnerPreview, tableCSSVariables } from "../utils";
+import {
+  DISPLAY_MODE,
+  ENTITIES,
+  cellHasValue,
+  getScale,
+  isPartnerPreview,
+  tableCSSVariables,
+} from "../utils";
 
 const TableElement = styled("main")({
   maxWidth: "1600px",
@@ -108,6 +115,7 @@ function TableAssociations() {
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const isAssociations = displayedTable === "associations";
   const colorScale = getScale(isAssociations);
+  const associationsColorScale = getScale(true);
 
   const columns = useMemo(
     () => [
@@ -119,7 +127,7 @@ function TableAssociations() {
             id: "name",
             enableSorting: false,
             cell: cell => {
-              return <CellName cell={cell} colorScale={colorScale} />;
+              return <CellName cell={cell} colorScale={associationsColorScale} />;
             },
             header: () => {
               const label = entityToGet === "target" ? "Target" : "Disease";
@@ -140,7 +148,7 @@ function TableAssociations() {
                     rounded={false}
                     isAssociations
                     hasValue
-                    colorScale={colorScale}
+                    colorScale={associationsColorScale}
                   />
                 </Box>
               );

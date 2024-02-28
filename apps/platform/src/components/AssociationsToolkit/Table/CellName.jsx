@@ -22,6 +22,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
 import useAotfContext from "../hooks/useAotfContext";
 import { ENTITIES } from "../utils";
+import { grey } from "@mui/material/colors";
 
 const StyledMenuItem = styled(MenuItem)({
   "&>.MuiListItemIcon-root>svg": {
@@ -38,7 +39,7 @@ const NameContainer = styled("div")({
   "&:hover": {
     cursor: "pointer",
   },
-  "&:hover > .PinnedContainer": {
+  "&:hover > .ContextMenuContainer": {
     opacity: 1,
   },
 });
@@ -58,14 +59,14 @@ const TextContainer = styled("div")({
   },
 });
 
-const PinnedContainer = styled("div", {
+const ContextMenuContainer = styled("div", {
   shouldForwardProp: prop => prop !== "active",
 })(({ active }) => ({
   opacity: active ? "1" : "0",
   cursor: "pointer",
-  borderRadius: "15%",
+  borderRadius: 1,
   "&:hover": {
-    backgroundColor: "#f6f6f6",
+    backgroundColor: grey[200],
   },
 }));
 
@@ -118,14 +119,14 @@ function CellName({ cell, colorScale }) {
           {name}
         </Typography>
       </TextContainer>
-      <PinnedContainer
+      <ContextMenuContainer
         ref={contextMenuRef}
-        className="PinnedContainer"
+        className="ContextMenuContainer"
         onClick={handleToggle}
         active={openContext}
       >
         <FontAwesomeIcon icon={faEllipsisVertical} size="lg" />
-      </PinnedContainer>
+      </ContextMenuContainer>
       <Popover
         id="context-menu"
         open={openContext}
