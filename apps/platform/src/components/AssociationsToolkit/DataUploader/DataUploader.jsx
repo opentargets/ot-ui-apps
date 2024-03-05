@@ -17,6 +17,8 @@ import {
   DialogActions,
   ToggleButtonGroup,
   ToggleButton,
+  Snackbar,
+  IconButton,
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { styled } from "@mui/material/styles";
@@ -28,6 +30,7 @@ import {
   faChevronDown,
   faClipboard,
   faPlay,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, Tooltip } from "ui";
@@ -247,6 +250,7 @@ function DataUploader({ fileStem }) {
   const [queryTermsResults, setQueryTermsResults] = useState(null);
   const { entityToGet, pinnedEntries, setPinnedEntries } = useAotfContext();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "text/html": [".txt"],
@@ -264,14 +268,14 @@ function DataUploader({ fileStem }) {
       if (fileType === "spreadsheet") reader.readAsBinaryString(file);
       else if (fileType === "text") reader.readAsText(file);
       else if (fileType === "json") reader.readAsText(file);
-      else console.error("error parsing data from file");
+      else setOpenErrorSnackbar(true);
 
       reader.onload = async function (e) {
         let contents;
         if (fileType === "spreadsheet") contents = getDataFromSpreadsheet(e);
         else if (fileType === "text") contents = getDataFromTextFile(e);
         else if (fileType === "json") contents = JSON.parse(e.target.result);
-        else console.error("error parsing data from file");
+        else setOpenErrorSnackbar(true);
 
         const result = await getValidationResults([entityToGet], contents);
         setQueryTermsResults(formatQueryTermsResults(result));
@@ -287,6 +291,13 @@ function DataUploader({ fileStem }) {
     const ws = wb.Sheets[wsname];
     /* Convert array of arrays */
     const data = XLSX.utils.sheet_to_json(ws);
+
+    if (!Object.prototype.hasOwnProperty.call(data[0], "id")) {
+      setOpenErrorSnackbar(true);
+      console.error(
+        "Please ensure the uploaded file is in the correct format (see allowed file types and example format)"
+      );
+    }
 
     const terms = data.map(function (item) {
       return item["id"];
@@ -384,6 +395,10 @@ function DataUploader({ fileStem }) {
     setQueryTermsResults(checkboxUpdateState);
   }
 
+  function handleCloseErrorSnackbar() {
+    setOpenErrorSnackbar(false);
+  }
+
   return (
     <div>
       <Tooltip placement="bottom" title={`Upload list of ${entityToUploadLabel}`}>
@@ -414,9 +429,11 @@ function DataUploader({ fileStem }) {
             variant="subtitle2"
             gutterBottom
           >
-            Please upload a text file here containing your custom list of targets/diseases. The file
-            should contain a single {entityToGet} in every row. You will be able to visualise all
-            the potential matches upon validation of your input. <br />
+            Please upload a file here (allowed file formats - .txt / .csv / .tsv / .xlsx / .json)
+            containing your custom list of targets/diseases. The file should contain a single{" "}
+            {entityToGet} in every row. You will be able to visualise all the potential matches upon
+            validation of your input.
+            <br />
             <Link
               to="https://home.opentargets.org/aotf-documentation#upload-to-associations-on-the-fly"
               external
@@ -444,7 +461,7 @@ function DataUploader({ fileStem }) {
               <StyledContainer>
                 <div {...getRootProps({ className: "dropzone" })}>
                   <input {...getInputProps()} />
-                  <p>Drag and drop a .txt file here, or click to select file</p>
+                  <p>Drag and drop a file here, or click to select file (see example format).</p>
                 </div>
               </StyledContainer>
             </>
@@ -503,6 +520,19 @@ function DataUploader({ fileStem }) {
           </Box>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={openErrorSnackbar}
+        autoHideDuration={10000}
+        onClose={handleCloseErrorSnackbar}
+        message={
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            Please ensure the uploaded file has id in column header (see example format)
+            <IconButton sx={{ color: "white" }} onClick={handleCloseErrorSnackbar}>
+              <FontAwesomeIcon icon={faXmark} />
+            </IconButton>
+          </Box>
+        }
+      />
     </div>
   );
 }
