@@ -294,7 +294,7 @@ function DataUploader({ fileStem }) {
 
     if (!Object.prototype.hasOwnProperty.call(data[0], "id")) {
       setOpenErrorSnackbar(true);
-      console.log(
+      console.error(
         "Please ensure the uploaded file is in the correct format (see allowed file types and example format)"
       );
     }
@@ -302,7 +302,6 @@ function DataUploader({ fileStem }) {
     const terms = data.map(function (item) {
       return item["id"];
     });
-    // console.log(terms);
     return terms;
   }
 
