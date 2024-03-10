@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { Box, styled } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
@@ -19,7 +19,12 @@ const SearchButton = styled("button")(({ theme, isHomePage = false }) => ({
 
 function GlobalSearch({ isHomePage }) {
   const { setOpen } = useContext(SearchContext);
-  const shortcutText = navigator?.platform.indexOf("Mac") > -1 ? "⌘ K" : "Ctrl+K";
+  const [shortcutText, setShortcutText] = useState("Ctrl+K");
+
+  useEffect(() => {
+    setShortcutText(navigator?.platform.indexOf("Mac") > -1 ? "⌘ K" : "Ctrl+K");
+  }, []);
+
   const searchButtonContainer = {
     width: 1,
     display: "flex",

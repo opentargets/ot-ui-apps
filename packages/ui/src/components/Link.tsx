@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { Link as RouterLink } from "react-router-dom";
+// import { Link as RouterLink } from "react-router-dom";
+import Link from "next/link";
 import { makeStyles } from "@mui/styles";
 import Tooltip from "./Tooltip";
 
@@ -33,7 +34,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Link({
+function OTLink({
   children,
   to,
   onClick,
@@ -76,7 +77,7 @@ function Link({
       {children}
     </a>
   ) : (
-    <RouterLink
+    <Link
       className={classNames(
         classes.base,
         {
@@ -86,15 +87,15 @@ function Link({
         },
         className
       )}
-      to={to}
+      href={to}
       onClick={onClick}
     >
       <Tooltip title={tooltip}>{children}</Tooltip>
-    </RouterLink>
+    </Link>
   );
 }
 
-Link.propTypes = {
+OTLink.propTypes = {
   /** Whether the link directs to an external site. */
   external: PropTypes.bool,
   /** Whether the link is used within the footer section. */
@@ -107,7 +108,7 @@ Link.propTypes = {
   to: PropTypes.string.isRequired,
 };
 
-Link.defaultProps = {
+OTLink.defaultProps = {
   external: false,
   footer: false,
   tooltip: false,
@@ -115,4 +116,4 @@ Link.defaultProps = {
   to: "/",
 };
 
-export default Link;
+export default OTLink;

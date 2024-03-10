@@ -1,0 +1,16 @@
+{
+  "extends": "@ot/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": "src/",
+    "paths": {
+      "@/lib/*": ["lib/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": ["next-env.d.ts", "next.config.js", "src", ".next/types/**/*.ts", "./**/*.gql"],
+  "exclude": ["node_modules"]
+}
