@@ -51,7 +51,7 @@ function ShouldAccessPPP() {
   const isOnPublic = () => {
     const windowLocation = window.location.href;
     // escape validation on dev mode
-    if (import.meta.env.DEV) return false;
+    if (process.env.NODE_ENV === "development") return false;
     return !windowLocation.includes("partner");
   };
 

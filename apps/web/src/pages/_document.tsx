@@ -16,7 +16,7 @@ export default function Document(props: DocumentHeadTagsProps) {
   );
 }
 
-Document.getInitialProps = async ctx => {
+Document.getInitialProps = async (ctx: any) => {
   const finalProps = await documentGetInitialProps(ctx);
   return finalProps;
 };

@@ -15,8 +15,8 @@ export default function App(props: AppProps) {
   const { Component, pageProps } = props;
   const suggestions = getSuggestedSearch();
   return (
-    <ApolloWrapper>
-      <AppCacheProvider {...props}>
+    <AppCacheProvider {...props}>
+      <ApolloWrapper>
         <ConfigurationProvider client={client}>
           <ThemeProvider theme={theme}>
             <SearchProvider
@@ -28,7 +28,7 @@ export default function App(props: AppProps) {
             </SearchProvider>
           </ThemeProvider>
         </ConfigurationProvider>
-      </AppCacheProvider>
-    </ApolloWrapper>
+      </ApolloWrapper>
+    </AppCacheProvider>
   );
 }

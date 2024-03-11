@@ -26,11 +26,15 @@ type ApiPlaygroundDrawerProps = {
   variables: any;
 };
 
+type closeEvent = {
+  reason: "backdropClick" | "escapeKeyDown" | "clickICon";
+};
+
 function ApiPlaygroundDrawer({ query, variables }: ApiPlaygroundDrawerProps) {
   const [open, setOpen] = useState(false);
 
-  function close(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Escape") return;
+  function close(e: closeEvent) {
+    if (e.reason === "escapeKeyDown") return;
     setOpen(false);
   }
   function togglePlayground() {
@@ -53,7 +57,7 @@ function ApiPlaygroundDrawer({ query, variables }: ApiPlaygroundDrawerProps) {
           sx: { width: "80%", overflowY: "hidden" },
         }}
         open={open}
-        onClose={e => close(e)}
+        onClose={(_, reason) => close({ reason })}
         anchor="right"
       >
         <Box
@@ -68,7 +72,7 @@ function ApiPlaygroundDrawer({ query, variables }: ApiPlaygroundDrawerProps) {
           }}
         >
           API query
-          <IconButton onClick={e => close(e)}>
+          <IconButton onClick={() => close({ reason: "clickICon" })}>
             <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Box>

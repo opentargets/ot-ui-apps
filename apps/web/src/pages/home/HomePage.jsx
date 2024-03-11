@@ -14,6 +14,7 @@ import {
   faFileAlt,
   faCommentDots,
 } from "@fortawesome/free-solid-svg-icons";
+import dynamic from "next/dynamic";
 import {
   appTitle,
   appDescription,
@@ -22,8 +23,10 @@ import {
   mainMenuItems,
 } from "../../constants";
 import HomeBox from "./HomeBox";
-import Splash from "./Splash";
+// import Splash from "./Splash";
 import Version from "./Version";
+
+const Splash = dynamic(() => import("./Splash"), { ssr: false });
 import { getSuggestedSearch } from "../../utils/global";
 
 import config from "../../config";

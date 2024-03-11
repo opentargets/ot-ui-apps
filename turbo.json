@@ -1,5 +1,6 @@
 {
   "$schema": "https://turborepo.org/schema.json",
+  "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
@@ -10,6 +11,10 @@
     },
     "prettier:all": {
       "outputs": []
+    },
+    "start": {
+      "cache": false,
+      "persistent": true
     },
     "dev": {
       "cache": false,
