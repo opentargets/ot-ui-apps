@@ -11,6 +11,7 @@ import {
   IconButton,
   Link as MUILink,
   Typography,
+  ButtonBase,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faChevronDown, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -21,7 +22,7 @@ import { Link } from "ui";
 
 const sourceDrawerStyles = makeStyles(theme => ({
   drawerLink: {
-    cursor: "pointer",
+    color: `${theme.palette.primary.main} !important`,
   },
   drawerBody: {
     overflowY: "overlay",
@@ -176,9 +177,9 @@ function SourceDrawer({ references }) {
 
   return (
     <>
-      <MUILink onClick={toggleDrawer} className={classes.drawerLink} underline="none">
-        {references.length} references
-      </MUILink>
+      <ButtonBase onClick={toggleDrawer} className={classes.drawerLink}>
+        <Typography variant="body2">{references.length} references </Typography>
+      </ButtonBase>
 
       <Drawer
         anchor="right"

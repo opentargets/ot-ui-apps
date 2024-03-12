@@ -211,7 +211,7 @@ export function DateFilter() {
             valueLabelDisplay="auto"
             onChange={handleDateRangeChange}
             onChangeCommitted={handleDateRangeChangeCommitted}
-            aria-labelledby="range-slider"
+            getAriaLabel={() => ("date-range-slider")}
             max={numberOfMonths}
             valueLabelFormat={valueLabelFormat}
           />

@@ -50,7 +50,7 @@ function Header({ loading, Icon, title, subtitle = null, externalLinks, rightCon
               <Typography className={classes.title} variant="h4" noWrap title={title}>
                 {loading ? <Skeleton width="10vw" height="3.3rem" /> : title}
               </Typography>
-              <Typography className={classes.subtitle} variant="subtitle2">
+              <Typography className={classes.subtitle} variant="h5">
                 {loading ? <Skeleton width="25vw" /> : subtitle}
               </Typography>
             </Grid>

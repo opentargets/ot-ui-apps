@@ -7,6 +7,7 @@ import {
   Typography,
   Paper,
   CircularProgress,
+  ButtonBase,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -18,7 +19,7 @@ import { DataTable } from "../Table";
 
 const sourceDrawerStyles = makeStyles(theme => ({
   drawerLink: {
-    cursor: "pointer",
+    color: `${theme.palette.primary.main} !important`,
   },
   drawerBody: {
     overflowY: "overlay",
@@ -227,12 +228,15 @@ function PublicationsDrawer({
 
   return (
     <>
-      <MUILink onClick={toggleDrawer} className={classes.drawerLink} underline="none">
-        {customLabel ||
-          (entries.length === 1 && singleEntryId
-            ? entries[0].name
-            : `${entries.length} ${entries.length === 1 ? "publication" : "publications"}`)}
-      </MUILink>
+      <ButtonBase onClick={toggleDrawer} className={classes.drawerLink}>
+        <Typography variant="body2">
+          {" "}
+          {customLabel ||
+            (entries.length === 1 && singleEntryId
+              ? entries[0].name
+              : `${entries.length} ${entries.length === 1 ? "publication" : "publications"}`)}{" "}
+        </Typography>
+      </ButtonBase>
 
       <Drawer
         anchor="right"
