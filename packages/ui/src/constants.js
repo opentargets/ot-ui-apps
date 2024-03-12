@@ -66,10 +66,26 @@ export const externalLinks = {
     },
   ],
   social: [
-    { icon: faTwitterSquare, url: "https://twitter.com/opentargets" },
-    { icon: faLinkedin, url: "https://www.linkedin.com/company/open-targets" },
-    { icon: faYoutubeSquare, url: "https://www.youtube.com/opentargets" },
-    { icon: faGithubSquare, url: "https://github.com/opentargets" },
+    {
+      icon: faTwitterSquare,
+      url: "https://twitter.com/opentargets",
+      label: "Go to OpenTargets twitter",
+    },
+    {
+      icon: faLinkedin,
+      url: "https://www.linkedin.com/company/open-targets",
+      label: "Go to OpenTargets linkedin",
+    },
+    {
+      icon: faYoutubeSquare,
+      url: "https://www.youtube.com/opentargets",
+      label: "Go to OpenTargets youtube",
+    },
+    {
+      icon: faGithubSquare,
+      url: "https://github.com/opentargets",
+      label: "Go to OpenTargets github",
+    },
   ],
 };
 

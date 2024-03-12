@@ -8,9 +8,10 @@ import {
   List,
   ListItem,
   Drawer,
-  Link as MUILink,
   Typography,
   Paper,
+  Button,
+  ButtonBase,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark, faChevronDown } from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +24,7 @@ import Link from "../Link";
 
 const sourceDrawerStyles = makeStyles(theme => ({
   drawerLink: {
-    cursor: "pointer",
+    color: `${theme.palette.primary.main} !important`,
   },
   drawerBody: {
     overflowY: "overlay",
@@ -162,9 +163,9 @@ function TableDrawer({ entries, message, caption = "Records", showSingle = true 
 
   return (
     <>
-      <MUILink onClick={toggleDrawer} className={classes.drawerLink} underline="none">
-        {message || `${entries.length} entries`}
-      </MUILink>
+      <ButtonBase onClick={toggleDrawer} className={classes.drawerLink}>
+        <Typography variant="body2"> {message || `${entries.length} entries`}</Typography>
+      </ButtonBase>
 
       <Drawer
         anchor="right"
