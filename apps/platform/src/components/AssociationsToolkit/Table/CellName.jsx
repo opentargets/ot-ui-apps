@@ -73,7 +73,7 @@ const ContextMenuContainer = styled("div", {
 function CellName({ cell, colorScale }) {
   const history = useHistory();
   const contextMenuRef = useRef();
-  const { entityToGet, pinnedEntries, setPinnedEntries } = useAotfContext();
+  const { entityToGet, pinnedEntries, setPinnedEntries, id: currentEntityId } = useAotfContext();
   const { loading } = cell.table.getState();
   const name = cell.getValue();
   const { id } = cell.row;
@@ -84,6 +84,11 @@ function CellName({ cell, colorScale }) {
   const isPinned = pinnedEntries.find(e => e === id);
   const profileURL = `/${entityToGet}/${id}`;
   const associationsURL = `/${entityToGet}/${id}/associations`;
+  // Using entity to get for condition instead of entity because we are already fetching entityToGet from aotfContext
+  const evidenceURL =
+    entityToGet === ENTITIES.TARGET
+      ? `/evidence/${id}/${currentEntityId}`
+      : `/evidence/${currentEntityId}/${id}`;
 
   const handleClose = () => {
     setOpenContext(false);
@@ -108,6 +113,10 @@ function CellName({ cell, colorScale }) {
 
   const handleNavigateToAssociations = () => {
     history.push(associationsURL);
+  };
+
+  const handleNavigateToEvidence = () => {
+    history.push(evidenceURL);
   };
 
   if (loading) return null;
@@ -173,6 +182,13 @@ function CellName({ cell, colorScale }) {
               <ListItemText>Target network associations</ListItemText>
             </StyledMenuItem>
           )}
+          <Divider />
+          <StyledMenuItem onClick={handleNavigateToEvidence}>
+            <ListItemIcon>
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </ListItemIcon>
+            <ListItemText>Navigate to evidence page</ListItemText>
+          </StyledMenuItem>
           <Divider />
           <StyledMenuItem onClick={handleNavigateToProfile}>
             <ListItemIcon>

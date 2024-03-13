@@ -79,7 +79,7 @@ function ProfileHeader() {
         <Card className={classes.card} elevation={0}>
           <CardHeader
             title={
-              <Typography variant="h4">
+              <Typography variant="h5">
                 <Link to={`/target/${ensgId}`}>
                   <FontAwesomeIcon icon={faDna} /> {approvedSymbol}
                 </Link>
@@ -98,7 +98,7 @@ function ProfileHeader() {
         <Card className={classes.card} elevation={0}>
           <CardHeader
             title={
-              <Typography variant="h4">
+              <Typography variant="h5">
                 <Link to={`/disease/${efoId}`}>
                   <FontAwesomeIcon icon={faStethoscope} /> {name}
                 </Link>

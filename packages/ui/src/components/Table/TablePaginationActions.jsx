@@ -34,19 +34,29 @@ export function PaginationActionsComplete({ count, page, rowsPerPage, onPageChan
 
   return (
     <div className={classes.root}>
-      <IconButton onClick={handleFirstPageButtonClick} disabled={page === 0}>
+      <IconButton
+        aria-label="First result page of table"
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+      >
         <FontAwesomeIcon size="2xs" icon={faBackwardStep} />
       </IconButton>
-      <IconButton onClick={handleBackButtonClick} disabled={page === 0}>
+      <IconButton
+        aria-label="Previous result page of table"
+        onClick={handleBackButtonClick}
+        disabled={page === 0}
+      >
         <FontAwesomeIcon size="2xs" icon={faChevronLeft} />
       </IconButton>
       <IconButton
+        aria-label="Next result page of table"
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
       >
         <FontAwesomeIcon size="2xs" icon={faChevronRight} />
       </IconButton>
       <IconButton
+        aria-label="Last result page of table"
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
       >

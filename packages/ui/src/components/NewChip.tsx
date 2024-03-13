@@ -21,7 +21,7 @@ function NewChip({ className }: NewChipProps) {
   return (
     <MUIChip
       className={classNames(classes.chip, className)}
-      label="beta"
+      label="new"
       variant="outlined"
       size="small"
     />

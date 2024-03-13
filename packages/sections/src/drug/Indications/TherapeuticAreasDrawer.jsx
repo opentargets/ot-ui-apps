@@ -9,6 +9,7 @@ import {
   ListItem,
   Paper,
   Typography,
+  ButtonBase,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -27,7 +28,7 @@ const therapeuticAreasDrawerStyles = makeStyles(theme => ({
     },
   },
   drawerLink: {
-    cursor: "pointer",
+    color: `${theme.palette.primary.main} !important`,
   },
   drawerModal: {
     "& .MuiBackdrop-root": {
@@ -114,9 +115,9 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
 
   return (
     <>
-      <MUILink underline="none" onClick={toggleDrawer} className={classes.drawerLink}>
-        {therapeuticAreas.length} areas
-      </MUILink>
+      <ButtonBase onClick={toggleDrawer} className={classes.drawerLink}>
+        <Typography variant="body2">{therapeuticAreas.length} areas</Typography>
+      </ButtonBase>
 
       <Drawer
         anchor="right"

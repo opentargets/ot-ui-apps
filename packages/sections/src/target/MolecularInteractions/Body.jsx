@@ -98,7 +98,7 @@ function Body({ label: symbol, id, entity }) {
               <Tab
                 label={
                   <>
-                    <Typography variant="h6">{s.label}</Typography>
+                    <Typography variant="body1">{s.label}</Typography>
                     {versions[s.id] ? (
                       <Typography variant="caption" display="block" gutterBottom>
                         Version: {versions[s.id]}

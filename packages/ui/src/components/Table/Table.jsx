@@ -167,7 +167,12 @@ const Table = ({
             page={page}
             rowsPerPage={pageSize}
             rowsPerPageOptions={rowsPerPageOptions}
-            SelectProps={{ native: true }}
+            SelectProps={{
+              native: true,
+              inputProps: {
+                "aria-label": "Rows per page select dropdown",
+              },
+            }}
           />
         ) : (
           <Box className={defaultClasses.paginationPlaceholder} />

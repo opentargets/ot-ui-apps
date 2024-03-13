@@ -261,7 +261,7 @@ function IntactTab({ ensgId, symbol }) {
     <Grid container spacing={10}>
       <Grid item xs={12} md={5}>
         {/* table 1: interactions */}
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="body1" gutterBottom>
           Interactors of
           <br />
           {symbol}{" "}
@@ -299,7 +299,7 @@ function IntactTab({ ensgId, symbol }) {
 
       {/* table 2: evidence */}
       <Grid item xs={12} md={7}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="body1" gutterBottom>
           Interaction evidence of
           <br />
           {symbol}{" "}
