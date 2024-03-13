@@ -1,9 +1,9 @@
-import { Grid, Typography, Hidden, Box, useMediaQuery, IconButton } from "@mui/material";
+import { Grid, Hidden, Typography, Box, useMediaQuery, IconButton } from "@mui/material";
 
 import { makeStyles, useTheme } from "@mui/styles";
 import { Helmet } from "react-helmet";
 
-import { Footer, Link, PrivateWrapper, NavBar, GlobalSearch } from "ui";
+import { Footer, Link, PrivateWrapper, NavBar, GlobalSearch, SearchContext } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircle,
@@ -23,13 +23,12 @@ import {
   mainMenuItems,
 } from "../../constants";
 import HomeBox from "./HomeBox";
-// import Splash from "./Splash";
 import Version from "./Version";
 
 const Splash = dynamic(() => import("./Splash"), { ssr: false });
-import { getSuggestedSearch } from "../../utils/global";
 
 import config from "../../config";
+import { useContext } from "react";
 
 const useStyles = makeStyles(() => ({
   links: {
@@ -96,8 +95,9 @@ function HelpBoxPanel({ fai, url, label, external }) {
   );
 }
 
-function HomePage({ suggestions }) {
+function HomePage() {
   const classes = useStyles();
+  const { searchSuggestions: suggestions } = useContext(SearchContext);
 
   const handleScrollDown = () => {
     window.scrollTo({ top: window.innerHeight, left: 0, behavior: "smooth" });

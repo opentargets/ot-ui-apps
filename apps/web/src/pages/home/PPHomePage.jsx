@@ -24,9 +24,9 @@ import {
 import HomeBox from "./HomeBox";
 import Splash from "./Splash";
 import Version from "./Version";
+import { getSuggestedSearch } from "utils/global";
 
 import config from "../../config";
-import { getSuggestedSearch } from "../../utils/global";
 
 const useStyles = makeStyles(() => ({
   links: {
