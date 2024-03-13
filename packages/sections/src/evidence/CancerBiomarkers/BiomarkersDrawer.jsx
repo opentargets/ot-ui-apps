@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Drawer, Link as MuiLink, IconButton, Paper, Typography } from "@mui/material";
+import { Drawer, Link as MuiLink, IconButton, Paper, Typography, ButtonBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,8 +9,7 @@ import { sentenceCase } from "../../utils/global";
 
 const useStyles = makeStyles(theme => ({
   drawerLink: {
-    cursor: "pointer",
-    display: "inline-block",
+    color: `${theme.palette.primary.main} !important`,
     maxWidth: "420px",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -60,9 +59,9 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
   return (
     <>
       <Tooltip title={biomarkerName}>
-        <MuiLink className={classes.drawerLink} onClick={() => toggleOpen()} underline="none">
-          {biomarkerName}
-        </MuiLink>
+        <ButtonBase onClick={() => toggleOpen()} className={classes.drawerLink}>
+          <Typography variant="body2"> {biomarkerName}</Typography>
+        </ButtonBase>
       </Tooltip>
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
