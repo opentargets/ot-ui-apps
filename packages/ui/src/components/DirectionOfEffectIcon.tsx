@@ -1,10 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { naLabel } from "../constants";
 import {
   faArrowTrendDown,
   faArrowTrendUp,
   faCircleExclamation,
-  faMinus,
   faQuestion,
   faShieldHalved,
 } from "@fortawesome/free-solid-svg-icons";
@@ -27,6 +25,7 @@ type DirectionOfEffectIconProp = {
   directionOnTrait?: string;
 };
 
+const INCONCLUSIVE_ASSESSMENT = "Inconclusive Assessment";
 const LoF = "LoF";
 const RISK = "risk";
 
@@ -36,11 +35,11 @@ function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfE
     let tooltipValue = "";
     if (variantEffect === LoF) tooltipValue += "Loss of Function │ ";
     else if (variantEffect) tooltipValue += "Gain of Function │ ";
-    else tooltipValue += naLabel + " │ ";
+    else tooltipValue += INCONCLUSIVE_ASSESSMENT + " │ ";
 
     if (directionOnTrait === RISK) tooltipValue += "Risk";
     else if (directionOnTrait) tooltipValue += "Protective";
-    else tooltipValue += naLabel;
+    else tooltipValue += INCONCLUSIVE_ASSESSMENT;
 
     return tooltipValue;
   }
