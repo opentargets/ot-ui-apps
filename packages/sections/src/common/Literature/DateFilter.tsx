@@ -73,7 +73,7 @@ export function DateFilter() {
     // the publication year has changed
     if (earliestPubYear && earliestPubYear !== pubYear) {
       const earliestDate = getDateFromYear(earliestPubYear);
-      const limit = monthsBtwnDates(earliestDate, new Date()) - 1;
+      const limit = monthsBtwnDates(earliestDate, new Date());
 
       const lowerLimit = getLowerLimit(earliestDate);
 
