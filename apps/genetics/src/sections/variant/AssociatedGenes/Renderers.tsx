@@ -1,49 +1,54 @@
-import React from 'react';
-import { max, scaleSqrt } from 'd3';
-import { DataCircle, Link } from '../../../ot-ui-components';
-import LabelHML from '../../../components/LabelHML';
+import React from "react";
+import { max, scaleSqrt } from "d3";
+import { DataCircle, Link } from "../../../ot-ui-components";
+import LabelHML from "../../../components/LabelHML";
 
-import { generateComparator, commaSeparate } from '../../../utils';
+import { generateComparator, commaSeparate, safeCommaSeparate } from "../../../utils";
 
-import { radiusScale } from './utils';
+import {
+  radiusScale,
+  GeneForVariantDataRow,
+  isDistanceElement,
+  isDistanceTissue,
+  isQtlElement,
+  isFunctionalPredictionElement,
+} from "./utils";
+import { G2VSchema, G2VSchemaElement, GeneForVariant } from "../../../__generated__/graphql";
 
-export const createDistanceCellRenderer = schema => {
-  return rowData => {
-    const distanceData = rowData[schema.sourceId];
-    if (distanceData !== undefined) {
+export const createDistanceCellRenderer = (schemaElement: G2VSchemaElement) => {
+  return (rowData: GeneForVariantDataRow) => {
+    const distanceData = rowData[schemaElement.sourceId];
+    if (distanceData !== undefined && isDistanceElement(distanceData)) {
       const { distance } = distanceData.tissues[0];
-      return <React.Fragment>{commaSeparate(distance)}</React.Fragment>;
+      return <>{safeCommaSeparate(distance)}</>;
     }
   };
 };
 
-export const createDistanceAggregateCellRenderer = schema => {
-  return rowData => {
-    if (rowData.aggregated) {
+export const createDistanceAggregateCellRenderer = (_schemaElement: G2VSchemaElement) => {
+  return (rowData: GeneForVariantDataRow) => {
+    if (rowData.aggregated && isDistanceTissue(rowData.aggregated)) {
       const { distance } = rowData.aggregated;
-      return (
-        <React.Fragment>
-          {distance ? commaSeparate(distance) : null}
-        </React.Fragment>
-      );
+      return <>{distance ? commaSeparate(distance) : null}</>;
     } else {
       return null;
     }
   };
 };
 
-export const createQtlCellRenderer = schema => {
-  return rowData => {
-    if (rowData[schema.sourceId] !== undefined) {
-      const circleRadius = radiusScale(rowData[schema.sourceId]);
+export const createQtlCellRenderer = (schemaElement: G2VSchemaElement) => {
+  return (rowData: GeneForVariantDataRow) => {
+    const val = rowData[schemaElement.sourceId];
+    if (typeof val === "number") {
+      const circleRadius = radiusScale(val);
       return <DataCircle radius={circleRadius} colorScheme="default" />;
     }
   };
 };
 
-export const createAggregateCellRenderer = schema => {
-  return rowData => {
-    if (rowData.aggregated) {
+export const createAggregateCellRenderer = (_schemaElement: G2VSchemaElement) => {
+  return (rowData: GeneForVariantDataRow) => {
+    if (rowData.aggregated && isQtlElement(rowData.aggregated)) {
       const circleRadius = radiusScale(rowData.aggregated.aggregatedScore);
       return <DataCircle radius={circleRadius} colorScheme="default" />;
     } else {
@@ -52,82 +57,85 @@ export const createAggregateCellRenderer = schema => {
   };
 };
 
-export const createIntervalCellRenderer = schema => {
-  return rowData => {
-    if (rowData[schema.sourceId] !== undefined) {
-      const circleRadius = radiusScale(rowData[schema.sourceId]);
+export const createIntervalCellRenderer = (schemaElement: G2VSchemaElement) => {
+  return (rowData: GeneForVariantDataRow) => {
+    const val = rowData[schemaElement.sourceId];
+    if (typeof val === "number") {
+      const circleRadius = radiusScale(val);
       return <DataCircle radius={circleRadius} colorScheme="default" />;
     }
   };
 };
 
-export const createFPCellRenderer = schema => {
-  return rowData => {
-    const fpData = rowData[schema.sourceId];
-
-    if (fpData !== undefined) {
+export const createFPCellRenderer = (schemaElement: G2VSchemaElement) => {
+  return (rowData: GeneForVariantDataRow) => {
+    const fpData = rowData[schemaElement.sourceId];
+    if (isFunctionalPredictionElement(fpData)) {
       const { maxEffectLabel, maxEffectScore } = fpData.tissues[0];
+      if (!maxEffectLabel || !maxEffectScore) {
+        return null;
+      }
       const level =
         0 <= maxEffectScore && maxEffectScore <= 1 / 3
-          ? 'L'
+          ? "L"
           : 1 / 3 < maxEffectScore && maxEffectScore <= 2 / 3
-          ? 'M'
-          : 'H';
+          ? "M"
+          : "H";
       return <LabelHML level={level}>{maxEffectLabel}</LabelHML>;
     }
   };
 };
 
-export const createFPAggregateCellRenderer = schema => {
-  return rowData => {
+export const createFPAggregateCellRenderer = (_schemaElement: G2VSchemaElement) => {
+  return (rowData: GeneForVariantDataRow) => {
     const fpData = rowData.aggregated;
-
-    if (fpData !== undefined) {
+    if (isFunctionalPredictionElement(fpData)) {
       const { maxEffectLabel, maxEffectScore } = fpData.tissues[0];
+      if (!maxEffectLabel || !maxEffectScore) {
+        return null;
+      }
       const level =
         0 <= maxEffectScore && maxEffectScore <= 1 / 3
-          ? 'L'
+          ? "L"
           : 1 / 3 < maxEffectScore && maxEffectScore <= 2 / 3
-          ? 'M'
-          : 'H';
+          ? "M"
+          : "H";
       return <LabelHML level={level}>{maxEffectLabel}</LabelHML>;
     }
   };
 };
 
-export const getColumnsAll = (genesForVariantSchema, genesForVariant) => {
-  const overallScoreScale = scaleSqrt()
-    .domain([
-      0,
-      max(genesForVariant, geneForVariant => geneForVariant.overallScore),
-    ])
-    .range([0, 6]);
+export const getColumnsAll = (
+  genesForVariantSchema: G2VSchema,
+  genesForVariant: GeneForVariant[]
+) => {
+  const maxOverallScore = max(genesForVariant, geneForVariant => geneForVariant.overallScore) ?? 0;
+  const overallScoreScale = scaleSqrt().domain([0, maxOverallScore]).range([0, 6]);
   const columns = [
     {
-      id: 'geneSymbol',
-      label: 'Gene',
-      renderCell: rowData => {
+      id: "geneSymbol",
+      label: "Gene",
+      renderCell: (rowData: GeneForVariantDataRow) => {
         return <Link to={`/gene/${rowData.geneId}`}>{rowData.geneSymbol}</Link>;
       },
     },
     {
-      id: 'overallScore',
-      label: 'Overall V2G',
-      renderCell: rowData => {
+      id: "overallScore",
+      label: "Overall V2G",
+      renderCell: (rowData: GeneForVariantDataRow) => {
         const circleRadius = overallScoreScale(rowData.overallScore);
         return <DataCircle radius={circleRadius} colorScheme="bold" />;
       },
     },
-    ...genesForVariantSchema.distances.map(schema => ({
-      id: schema.sourceId,
-      label: schema.sourceLabel,
-      tooltip: schema.sourceDescriptionOverview,
-      renderCell: createDistanceCellRenderer(schema),
-      comparator: generateComparator(d =>
-        d[schema.sourceId] && d[schema.sourceId].tissues[0].distance
-          ? d[schema.sourceId].tissues[0].distance
-          : null
-      ),
+    ...genesForVariantSchema.distances.map((schemaElement: G2VSchemaElement) => ({
+      id: schemaElement.sourceId,
+      label: schemaElement.sourceLabel,
+      tooltip: schemaElement.sourceDescriptionOverview,
+      renderCell: createDistanceCellRenderer(schemaElement),
+      comparator: generateComparator((d: GeneForVariantDataRow) => {
+        const e = d[schemaElement.sourceId];
+        e && isDistanceElement(e) && e.tissues[0].distance ? e.tissues[0].distance : null;
+      }),
     })),
     ...genesForVariantSchema.qtls.map(schema => ({
       id: schema.sourceId,
