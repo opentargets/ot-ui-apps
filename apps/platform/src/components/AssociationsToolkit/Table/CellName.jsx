@@ -187,7 +187,7 @@ function CellName({ cell, colorScale }) {
             <ListItemIcon>
               <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
             </ListItemIcon>
-            <ListItemText>Navigate to evidence page</ListItemText>
+            <ListItemText>Navigate to evidence</ListItemText>
           </StyledMenuItem>
           <Divider />
           <StyledMenuItem onClick={handleNavigateToProfile}>

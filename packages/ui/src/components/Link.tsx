@@ -28,8 +28,12 @@ const useStyles = makeStyles(theme => ({
   },
   baseFooter: {
     color: "white",
+    "text-decoration-color": "transparent",
+    "-webkit-text-decoration-color": "transparent",
     "&:hover": {
       color: theme.palette.primary.light,
+      "text-decoration-color": theme.palette.primary.light,
+    "-webkit-text-decoration-color": theme.palette.primary.light,
     },
     display: "flex",
     alignItems: "center",

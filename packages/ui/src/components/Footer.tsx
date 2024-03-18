@@ -47,7 +47,7 @@ const FooterLink = ({ label, url, icon }) => {
 
 const FooterSectionHeading = ({ children }) => (
   <Grid item xs={12}>
-    <Typography color="inherit">{children}</Typography>
+    <Typography variant="h6" color="inherit">{children}</Typography>
   </Grid>
 );
 
