@@ -25,7 +25,8 @@ const OTSlider = styled(Slider)({
 });
 
 const DateIndicator = styled("span")({
-  width: 65,
+  minWidth: 65,
+  maxWidth: 80,
 });
 
 const monthsBtwnDates = (startDate: Date, endDate: Date) =>
@@ -72,7 +73,7 @@ export function DateFilter() {
     // the publication year has changed
     if (earliestPubYear && earliestPubYear !== pubYear) {
       const earliestDate = getDateFromYear(earliestPubYear);
-      const limit = monthsBtwnDates(earliestDate, new Date()) - 1;
+      const limit = monthsBtwnDates(earliestDate, new Date());
 
       const lowerLimit = getLowerLimit(earliestDate);
 
@@ -157,7 +158,7 @@ export function DateFilter() {
       const labelDate = selectedDate(value as number);
       return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;
     }
-    return value;
+    return "YYYY-MM";
   };
 
   const handleDateRangeChange = (_event: Event, value: number[] | number, _activeThumb: number) => {
@@ -210,7 +211,7 @@ export function DateFilter() {
             valueLabelDisplay="auto"
             onChange={handleDateRangeChange}
             onChangeCommitted={handleDateRangeChangeCommitted}
-            aria-labelledby="range-slider"
+            getAriaLabel={() => ("date-range-slider")}
             max={numberOfMonths}
             valueLabelFormat={valueLabelFormat}
           />

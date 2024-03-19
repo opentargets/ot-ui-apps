@@ -1,21 +1,26 @@
 import { createContext, useState, useMemo, useEffect } from "react";
 import { isEqual } from "lodash";
 import { useStateParams } from "ui";
-import { defaulDatasourcesWeigths, getControlChecked, getCellId, checkBoxPayload } from "../utils";
 import dataSources from "../static_datasets/dataSourcesAssoc";
+import {
+  defaulDatasourcesWeigths,
+  getControlChecked,
+  getCellId,
+  checkBoxPayload,
+  ENTITIES,
+  DEFAULT_TABLE_PAGINATION_STATE,
+  DEFAULT_TABLE_SORTING_STATE,
+  DISPLAY_MODE,
+} from "../utils";
 
 import useAssociationsData from "../hooks/useAssociationsData";
 
-const AssociationsContext = createContext();
+const AssociationsStateContext = createContext();
 
-const initialIndirect = entity => entity !== "target";
-const initialPagination = {
-  pageIndex: 0,
-  pageSize: 50,
-};
+const initialIndirect = entity => entity !== ENTITIES.TARGET;
 
-function AssociationsProvider({ children, entity, id, query }) {
-  const [{ pageIndex, pageSize }, setPagination] = useState(initialPagination);
+function AssociationsStateProvider({ children, entity, id, query }) {
+  const [{ pageIndex, pageSize }, setPagination] = useState(DEFAULT_TABLE_PAGINATION_STATE);
 
   const pagination = useMemo(
     () => ({
@@ -39,14 +44,14 @@ function AssociationsProvider({ children, entity, id, query }) {
   const [dataSourcesRequired, setDataSourcesRequired] = useState([]);
   const [modifiedSourcesDataControls, setModifiedSourcesDataControls] = useState(false);
   const [searhFilter, setSearhFilter] = useState("");
-  const [sorting, setSorting] = useState([{ id: "score", desc: true }]);
+  const [sorting, setSorting] = useState(DEFAULT_TABLE_SORTING_STATE);
 
   // Data controls UI
   const [activeHeadersControlls, setActiveHeadersControlls] = useState(false);
 
   // only two posible (associations || prioritisations)
   const [displayedTable, setDisplayedTable] = useStateParams(
-    "associations",
+    DISPLAY_MODE.ASSOCIATIONS,
     "table",
     arr => arr,
     str => str
@@ -83,11 +88,11 @@ function AssociationsProvider({ children, entity, id, query }) {
     query,
     options: {
       id,
+      enableIndirect,
+      entity,
       size: pinnedEntries.length,
       sortBy: sorting[0].id,
-      enableIndirect,
       datasources: dataSourcesWeights,
-      entity,
       aggregationFilters: dataSourcesRequired,
       rowsFilter: pinnedEntries.toSorted(),
     },
@@ -105,6 +110,7 @@ function AssociationsProvider({ children, entity, id, query }) {
     aggregationDatasources.forEach(e => {
       if (getControlChecked(dataSourcesRequired, e.id) === false) {
         isAllActive = false;
+        return;
       }
     });
     if (isAllActive) {
@@ -129,12 +135,12 @@ function AssociationsProvider({ children, entity, id, query }) {
     }
   };
 
-  const entityToGet = entity === "target" ? "disease" : "target";
+  const entityToGet = entity === ENTITIES.TARGET ? ENTITIES.DISEASE : ENTITIES.TARGET;
 
   const resetToInitialPagination = () => {
     setTableExpanded({});
     setExpanded([]);
-    setPagination(initialPagination);
+    setPagination(DEFAULT_TABLE_PAGINATION_STATE);
   };
 
   const handlePaginationChange = newPagination => {
@@ -146,7 +152,7 @@ function AssociationsProvider({ children, entity, id, query }) {
   const handleSortingChange = newSortingFunc => {
     const newSorting = newSortingFunc();
     if (newSorting[0].id === sorting[0].id) {
-      setSorting([{ id: "score", desc: true }]);
+      setSorting(DEFAULT_TABLE_SORTING_STATE);
       return;
     }
     setSorting(newSorting);
@@ -154,8 +160,13 @@ function AssociationsProvider({ children, entity, id, query }) {
 
   const handleSearchInputChange = newSearchFilter => {
     if (newSearchFilter !== searhFilter) {
+      setPagination(DEFAULT_TABLE_PAGINATION_STATE);
       setSearhFilter(newSearchFilter);
     }
+  };
+
+  const handleActiveRow = (rowid, tablePrefix) => {
+    setExpanded([rowid, "", "", tablePrefix]);
   };
 
   const expanderHandler = tableExpanderController => (cell, tablePrefix) => {
@@ -183,57 +194,97 @@ function AssociationsProvider({ children, entity, id, query }) {
     setTableExpanded({});
   };
 
-  const contextVariables = useMemo(() => ({
-    query,
-    id,
-    entity,
-    entityToGet,
-    count,
-    data,
-    loading,
-    initialLoading,
-    tableExpanded,
-    pagination,
-    expanded,
-    activeHeadersControlls,
-    enableIndirect,
-    error,
-    dataSourcesWeights,
-    dataSourcesRequired,
-    displayedTable,
-    pinnedData,
-    searhFilter,
-    sorting,
-    modifiedSourcesDataControls,
-    tablePinExpanded,
-    pinnedLoading,
-    pinnedError,
-    pinnedCount,
-    pinExpanded,
-    pinnedEntries,
-    resetToInitialPagination,
-    setPinnedEntries,
-    setPinExpanded,
-    setTablePinExpanded,
-    resetDatasourceControls,
-    handleSortingChange,
-    handleSearchInputChange,
-    setDisplayedTable,
-    setDataSourcesWeights,
-    setDataSourcesRequired,
-    handlePaginationChange,
-    expanderHandler,
-    setTableExpanded,
-    setEnableIndirect,
-    setActiveHeadersControlls,
-    resetExpandler,
-    handleAggregationClick,
-  }));
+  const contextVariables = useMemo(
+    () => ({
+      query,
+      id,
+      entity,
+      entityToGet,
+      count,
+      data,
+      loading,
+      initialLoading,
+      tableExpanded,
+      pagination,
+      expanded,
+      activeHeadersControlls,
+      enableIndirect,
+      error,
+      dataSourcesWeights,
+      dataSourcesRequired,
+      displayedTable,
+      pinnedData,
+      searhFilter,
+      sorting,
+      modifiedSourcesDataControls,
+      tablePinExpanded,
+      pinnedLoading,
+      pinnedError,
+      pinnedCount,
+      pinExpanded,
+      pinnedEntries,
+      handleActiveRow,
+      resetToInitialPagination,
+      setPinnedEntries,
+      setPinExpanded,
+      setTablePinExpanded,
+      resetDatasourceControls,
+      handleSortingChange,
+      handleSearchInputChange,
+      setDisplayedTable,
+      setDataSourcesWeights,
+      setDataSourcesRequired,
+      handlePaginationChange,
+      expanderHandler,
+      setTableExpanded,
+      setEnableIndirect,
+      setActiveHeadersControlls,
+      resetExpandler,
+      handleAggregationClick,
+    }),
+    [
+      activeHeadersControlls,
+      count,
+      data,
+      dataSourcesRequired,
+      dataSourcesWeights,
+      displayedTable,
+      enableIndirect,
+      entity,
+      entityToGet,
+      error,
+      expanded,
+      expanderHandler,
+      handleAggregationClick,
+      handleSearchInputChange,
+      handleSortingChange,
+      id,
+      initialLoading,
+      loading,
+      modifiedSourcesDataControls,
+      pagination,
+      pinExpanded,
+      pinnedCount,
+      pinnedData,
+      pinnedEntries,
+      pinnedError,
+      pinnedLoading,
+      query,
+      searhFilter,
+      setDisplayedTable,
+      setPinnedEntries,
+      sorting,
+      tableExpanded,
+      tablePinExpanded,
+    ]
+  );
 
   return (
-    <AssociationsContext.Provider value={contextVariables}>{children}</AssociationsContext.Provider>
+    <AssociationsStateContext.Provider value={contextVariables}>
+      {children}
+    </AssociationsStateContext.Provider>
   );
 }
 
-export default AssociationsContext;
-export { AssociationsProvider };
+export default AssociationsStateContext;
+export { AssociationsStateProvider };

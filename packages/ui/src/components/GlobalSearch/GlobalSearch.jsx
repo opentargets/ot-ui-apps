@@ -1,5 +1,5 @@
 import { useEffect, useContext } from "react";
-import { Box, Grow, styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 

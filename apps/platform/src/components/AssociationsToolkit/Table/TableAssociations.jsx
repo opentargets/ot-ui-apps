@@ -7,7 +7,7 @@ import {
   createColumnHelper,
 } from "@tanstack/react-table";
 
-import { styled, Skeleton, Typography } from "@mui/material";
+import { styled, Skeleton, Typography, Box } from "@mui/material";
 
 import dataSourcesCols from "../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../static_datasets/prioritisationColumns";
@@ -22,7 +22,14 @@ import TableFooter from "./TableFooter";
 import TableBody from "./TableBody";
 import useAotfContext from "../hooks/useAotfContext";
 
-import { cellHasValue, isPartnerPreview, tableCSSVariables } from "../utils";
+import {
+  DISPLAY_MODE,
+  ENTITIES,
+  cellHasValue,
+  getScale,
+  isPartnerPreview,
+  tableCSSVariables,
+} from "../utils";
 
 const TableElement = styled("main")({
   maxWidth: "1600px",
@@ -37,7 +44,7 @@ const TableDivider = styled("div")({
 const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
-function getDatasources({ expanderHandler, displayedTable }) {
+function getDatasources({ expanderHandler, displayedTable, colorScale }) {
   const isAssociations = displayedTable === "associations";
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? "dataSources" : "prioritisations";
@@ -60,20 +67,21 @@ function getDatasources({ expanderHandler, displayedTable }) {
       aggregation,
       isPrivate,
       docsLink,
-      cell: row => {
-        const { prefix, loading } = row.table.getState();
+      cell: cell => {
+        const { prefix, loading } = cell.table.getState();
         if (loading) return <Skeleton variant="circular" width={26} height={26} />;
-        const hasValue = cellHasValue(row.getValue());
+        const hasValue = cellHasValue(cell.getValue());
         return hasValue ? (
           <ColoredCell
             hasValue
             scoreId={id}
-            scoreValue={row.getValue()}
-            onClick={expanderHandler(row.row.getToggleExpandedHandler())}
-            cell={row}
+            scoreValue={cell.getValue()}
+            onClick={expanderHandler(cell.row.getToggleExpandedHandler())}
+            cell={cell}
             loading={loading}
             isAssociations={isAssociations}
             tablePrefix={prefix}
+            colorScale={colorScale}
           />
         ) : (
           <ColoredCell />
@@ -93,7 +101,6 @@ function TableAssociations() {
     count,
     loading: associationsLoading,
     tableExpanded,
-    expanded,
     pagination,
     expanderHandler,
     handlePaginationChange,
@@ -106,6 +113,9 @@ function TableAssociations() {
   } = useAotfContext();
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
+  const isAssociations = displayedTable === "associations";
+  const colorScale = getScale(isAssociations);
+  const associationsColorScale = getScale(true);
 
   const columns = useMemo(
     () => [
@@ -116,17 +126,8 @@ function TableAssociations() {
           columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
             id: "name",
             enableSorting: false,
-            cell: row => {
-              const { loading, prefix } = row.table.getState();
-              if (loading) return null;
-              return (
-                <CellName
-                  name={row.getValue()}
-                  rowId={row.row.id}
-                  row={row.row}
-                  tablePrefix={prefix}
-                />
-              );
+            cell: cell => {
+              return <CellName cell={cell} colorScale={associationsColorScale} />;
             },
             header: () => {
               const label = entityToGet === "target" ? "Target" : "Disease";
@@ -140,13 +141,16 @@ function TableAssociations() {
               const { loading } = row.table.getState();
               if (loading) return <Skeleton variant="rect" width={30} height={25} />;
               return (
-                <ColoredCell
-                  scoreValue={row.getValue()}
-                  globalScore
-                  rounded={false}
-                  isAssociations
-                  hasValue
-                />
+                <Box sx={{ marginRight: "10px" }}>
+                  <ColoredCell
+                    scoreValue={row.getValue()}
+                    globalScore
+                    rounded={false}
+                    isAssociations
+                    hasValue
+                    colorScale={associationsColorScale}
+                  />
+                </Box>
               );
             },
           }),
@@ -155,7 +159,7 @@ function TableAssociations() {
       columnHelper.group({
         header: "entities",
         id: "entity-cols",
-        columns: [...getDatasources({ expanderHandler, displayedTable })],
+        columns: [...getDatasources({ expanderHandler, displayedTable, colorScale })],
       }),
     ],
     [expanderHandler, displayedTable, entityToGet, rowNameEntity]
@@ -224,21 +228,11 @@ function TableAssociations() {
         <HeaderControls cols={entitesHeaders} />
         <div>
           {/* BODY CONTENT */}
-          <TableBody
-            core={corePinnedTable}
-            expanded={expanded}
-            prefix="pinned"
-            cols={entitesHeaders}
-          />
+          <TableBody core={corePinnedTable} prefix="pinned" cols={entitesHeaders} />
 
           {pinnedData.length > 0 && <TableDivider />}
 
-          <TableBody
-            core={coreAssociationsTable}
-            expanded={expanded}
-            prefix="body"
-            cols={entitesHeaders}
-          />
+          <TableBody core={coreAssociationsTable} prefix="body" cols={entitesHeaders} />
         </div>
         {/* FOOTER */}
         <TableFooter table={coreAssociationsTable} />

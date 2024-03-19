@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Drawer, IconButton, Paper, Typography, Link as MUILink } from "@mui/material";
+import { Drawer, IconButton, Paper, Typography, Link as MUILink, ButtonBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const useStyles = makeStyles(theme => ({
   drawerLink: {
-    cursor: "pointer",
+    color: `${theme.palette.primary.main} !important`,
   },
   backdrop: {
     "& .MuiBackdrop-root": {
@@ -50,9 +50,10 @@ function SafetyStudiesDrawer({ studies }) {
 
   return (
     <>
-      <MUILink onClick={toggleOpen} className={classes.drawerLink} underline="none">
-        {studies.length} studies
-      </MUILink>
+      <ButtonBase onClick={toggleOpen} className={classes.drawerLink}>
+        <Typography variant="body2">{studies.length} studies</Typography>
+      </ButtonBase>
+
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}

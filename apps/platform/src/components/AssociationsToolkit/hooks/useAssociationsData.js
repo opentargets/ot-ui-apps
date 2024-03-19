@@ -1,22 +1,82 @@
 /* eslint-disable */
 import { useEffect, useState } from "react";
 import client from "../../../client";
+import { ENTITIES } from "../utils";
 
-// Select and parsed data from API response from fixed Target
-const getAssociatedDiseasesData = data => {
+/***********
+ * HELPERS *
+ ***********/
+const diseaseAssociationsTargetSelector = data => data[ENTITIES.DISEASE].associatedTargets.rows;
+const targetAssociationsDiseaseSelector = data => data[ENTITIES.TARGET].associatedDiseases.rows;
+
+const diseasePrioritisationTargetsSelector = data => data[ENTITIES.TARGET].prioritisation.items;
+
+const getPrioritisationData = data => {
+  const dataRows = diseasePrioritisationTargetsSelector(data);
+  const prioritisations = dataRows.reduce(
+    (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
+    {}
+  );
+  return { prioritisations };
+};
+
+const getDataSourcesData = data => {
+  const sources = data.datasourceScores.reduce(
+    (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
+    {}
+  );
+  return sources;
+};
+
+const getDataRowMetadata = (parentEntity, row, fixedEntity) => {
+  let targetSymbol, diseaseName, id;
+  switch (fixedEntity) {
+    case ENTITIES.DISEASE:
+      id = row.target.id;
+      targetSymbol = row.target.approvedSymbol;
+      diseaseName = parentEntity.disease.name;
+      break;
+    case ENTITIES.TARGET:
+      id = row.disease.id;
+      targetSymbol = parentEntity.target.approvedSymbol;
+      diseaseName = row.disease.name;
+    default:
+      return { targetSymbol, diseaseName };
+  }
+  return { targetSymbol, diseaseName };
+};
+
+const getAllDataCount = (fixedEntity, data) => {
+  switch (fixedEntity) {
+    case ENTITIES.TARGET:
+      return data[ENTITIES.TARGET].associatedDiseases.count;
+    case ENTITIES.DISEASE:
+      return data[ENTITIES.DISEASE].associatedTargets.count;
+    default:
+      return 0;
+  }
+};
+
+const getAssociationsData = (fixedEntity, data) => {
   if (!data) return [];
-  return data.target.associatedDiseases.rows.map(d => {
-    const sources = d.datasourceScores.reduce(
-      (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
-      {}
-    );
+  const withPrioritisation = fixedEntity === ENTITIES.DISEASE;
+  const dataRows =
+    fixedEntity === ENTITIES.DISEASE
+      ? diseaseAssociationsTargetSelector(data)
+      : targetAssociationsDiseaseSelector(data);
+
+  return dataRows.map(row => {
+    const dataSources = getDataSourcesData(row);
+    const { targetSymbol, diseaseName, id } = getDataRowMetadata(data, row, fixedEntity);
     return {
-      id: d.disease.id,
-      score: d.score,
-      disease: d.disease,
-      targetSymbol: data.target.approvedSymbol,
-      diseaseName: d.disease.name,
-      dataSources: sources,
+      score: row.score,
+      id,
+      targetSymbol,
+      diseaseName,
+      dataSources,
+      ...(!withPrioritisation && { disease: row.disease }),
+      ...(withPrioritisation && { target: row.target }),
+      ...(withPrioritisation && getPrioritisationData(row)),
     };
   });
 };
@@ -47,17 +107,7 @@ const getAssociatedTargetsData = data => {
   });
 };
 
-const getParsedData = (entity, apiResponse) => {
-  if (entity === "target") return getAssociatedDiseasesData(apiResponse);
-  if (entity === "disease") return getAssociatedTargetsData(apiResponse);
-};
-
-const getAllDataCount = (entity, apiResponse) => {
-  if (entity === "target") return apiResponse.target.associatedDiseases.count;
-  if (entity === "disease") return apiResponse.disease.associatedTargets.count;
-};
-
-const initialState = {
+const INITIAL_USE_ASSOCIATION_STATE = {
   loading: false,
   error: false,
   data: [],
@@ -65,6 +115,9 @@ const initialState = {
   count: 0,
 };
 
+/********
+ * HOOK *
+ ********/
 function useAssociationsData({
   query,
   options: {
@@ -80,7 +133,7 @@ function useAssociationsData({
     entity,
   },
 }) {
-  const [state, setState] = useState(initialState);
+  const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
 
   useEffect(() => {
     let isCurrent = true;
@@ -103,7 +156,7 @@ function useAssociationsData({
           })),
         },
       });
-      const parsedData = getParsedData(entity, resData.data);
+      const parsedData = getAssociationsData(entity, resData.data);
       const dataCount = getAllDataCount(entity, resData.data);
       setState({
         count: dataCount,

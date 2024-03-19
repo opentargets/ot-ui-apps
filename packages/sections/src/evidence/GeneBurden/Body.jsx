@@ -196,7 +196,7 @@ const getColumns = label => [
         title={
           <>
             See{" "}
-            <Link external to="https://home.opentargets.org/aotf-documentation#direction-of-effect">
+            <Link external to="https://platform-docs.opentargets.org/evidence#gene-burden">
               here
             </Link>{" "}
             for more info on our assessment method
