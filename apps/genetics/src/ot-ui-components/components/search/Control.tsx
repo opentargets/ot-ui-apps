@@ -1,37 +1,33 @@
-import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import { withStyles } from '@material-ui/core/styles';
+import React from "react";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
+import { ControlProps } from "react-select";
 
-const styles = {
+const useStyles = makeStyles(_theme => ({
   input: {
-    display: 'flex',
-    padding: 0,
+    display: "flex",
+    backgroundColor: "#eee",
   },
+}));
+
+// const InputComponent = ({ inputRef, ...rest }) => <input ref={inputRef} {...rest} />;
+
+const Control = ({ innerRef, innerProps, children }: ControlProps) => {
+  const classes = useStyles();
+  return (
+    <TextField
+      fullWidth
+      InputProps={{
+        inputComponent: "input",
+        inputProps: {
+          className: classes.input,
+          inputRef: innerRef as React.RefObject<HTMLInputElement>,
+          children,
+          ...(innerProps as React.InputHTMLAttributes<HTMLInputElement>),
+        },
+      }}
+    />
+  );
 };
 
-const InputComponent = ({ inputRef, ...rest }) => (
-  <div ref={inputRef} {...rest} />
-);
-
-class Control extends React.Component {
-  render() {
-    const { classes, innerRef, innerProps, children, selectProps } = this.props;
-    return (
-      <TextField
-        fullWidth
-        InputProps={{
-          inputComponent: InputComponent,
-          inputProps: {
-            className: classes.input,
-            inputRef: innerRef,
-            children,
-            ...innerProps,
-          },
-        }}
-        {...selectProps.textFieldProps}
-      />
-    );
-  }
-}
-
-export default withStyles(styles)(Control);
+export default Control;
