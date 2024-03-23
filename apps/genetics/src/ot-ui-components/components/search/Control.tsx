@@ -1,32 +1,22 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import { ControlProps } from "react-select";
+import { Box } from "@material-ui/core";
 
 const useStyles = makeStyles(_theme => ({
-  input: {
+  control: {
     display: "flex",
     backgroundColor: "#eee",
+    padding: "4px",
   },
 }));
 
-// const InputComponent = ({ inputRef, ...rest }) => <input ref={inputRef} {...rest} />;
-
-const Control = ({ innerRef, innerProps, children }: ControlProps) => {
+const Control = ({ innerProps, children }: ControlProps) => {
   const classes = useStyles();
   return (
-    <TextField
-      fullWidth
-      InputProps={{
-        inputComponent: "input",
-        inputProps: {
-          className: classes.input,
-          inputRef: innerRef as React.RefObject<HTMLInputElement>,
-          children,
-          ...(innerProps as React.InputHTMLAttributes<HTMLInputElement>),
-        },
-      }}
-    />
+    <Box id="control" className={classes.control} {...innerProps}>
+      {children}
+    </Box>
   );
 };
 
