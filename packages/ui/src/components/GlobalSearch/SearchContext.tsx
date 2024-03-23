@@ -30,7 +30,7 @@ export function SearchProvider({
   children,
   searchQuery,
   searchPlaceholder = "Search...",
-  searchSuggestions,
+  searchSuggestions = [],
 }: GlobalSearchProviderProps) {
   const [open, setOpen] = useState(false);
 
