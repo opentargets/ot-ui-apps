@@ -25,7 +25,7 @@ function GlobalSearchList({ inputValue }) {
   const [loading, setLoading] = useState(false);
   const { searchQuery, setOpen, searchSuggestions } = useContext(SearchContext);
   const [getSearchData] = useLazyQuery(searchQuery);
-  const [openListItem] = useListOption();
+  const openListItem = useListOption();
   const [recentItems, setRecentItems] = useState(
     JSON.parse(localStorage.getItem("search-history")) || []
   );

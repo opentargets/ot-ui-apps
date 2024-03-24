@@ -35,7 +35,7 @@ function GlobalSearchFreeListItem() {
   const { inputValue } = useContext(SearchInputContext);
 
   const { setOpen } = useContext(SearchContext);
-  const [openListItem] = useListOption();
+  const openListItem = useListOption();
 
   const freeSearchTermObject = {
     symbol: `Search for: ${inputValue}`,

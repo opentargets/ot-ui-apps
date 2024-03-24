@@ -4,7 +4,7 @@ import { addSearchToLocalStorage } from "../components/GlobalSearch/utils/search
 function useListOption() {
   const history = useHistory();
 
-  const openListItem = option => {
+  return option => {
     if (!option) return;
     const newOption = { ...option };
     newOption.type = "recent";
@@ -20,8 +20,6 @@ function useListOption() {
       );
     }
   };
-
-  return [openListItem];
 }
 
 export default useListOption;
