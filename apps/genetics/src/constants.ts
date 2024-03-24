@@ -9,6 +9,7 @@ import {
 import { FooterExternalLinks } from "ui";
 
 import { contactUrl as contactUrlConfig } from "./configuration";
+import { NavBarItem } from "./components/NavBar/NavBar";
 
 export const pvalThreshold = 4.94e-322;
 
@@ -16,7 +17,7 @@ export const contactUrl = contactUrlConfig;
 
 export const naLabel = "N/A";
 
-export const mainMenuItems = [
+export const mainMenuItems: NavBarItem[] = [
   // Documentation
   {
     name: "Documentation",
