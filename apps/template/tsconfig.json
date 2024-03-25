@@ -1,0 +1,12 @@
+{
+  "extends": "@ot/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@lib/*": ["src/lib/*"]
+    },
+    "jsxImportSource": "@emotion/react"
+  },
+  "include": ["next-env.d.ts", "next.config.js", "src", ".next/types/**/*.ts", "*.gql", "pages"],
+  "exclude": ["node_modules"]
+}
