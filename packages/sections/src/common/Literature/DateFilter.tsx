@@ -118,7 +118,7 @@ export function DateFilter() {
       id,
       category,
       entities,
-      cursor,
+      cursor: null,
       earliestPubYear,
       globalEntity,
       selectedEntities,
@@ -132,7 +132,7 @@ export function DateFilter() {
     const data = request.data[globalEntity];
     const update = {
       id,
-      cursor,
+      cursor: data.literatureOcurrences?.cursor,
       query,
       entities: data.similarEntities,
       loadingEntities: false,
@@ -211,7 +211,7 @@ export function DateFilter() {
             valueLabelDisplay="auto"
             onChange={handleDateRangeChange}
             onChangeCommitted={handleDateRangeChangeCommitted}
-            getAriaLabel={() => ("date-range-slider")}
+            getAriaLabel={() => "date-range-slider"}
             max={numberOfMonths}
             valueLabelFormat={valueLabelFormat}
           />
