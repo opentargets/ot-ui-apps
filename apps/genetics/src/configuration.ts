@@ -7,7 +7,7 @@ const defaults = {
   REACT_APP_CONTACT_URL: "mailto:helpdesk@opentargets.org",
 };
 
-const envVarOrDefault = envVarName =>
+const envVarOrDefault = (envVarName: string): string =>
   process.env[envVarName] ? process.env[envVarName] : defaults[envVarName];
 
 export const packageVersion = pkg.version;
