@@ -13,11 +13,7 @@ export const GWASLeadVariants = ({ variantId }) => {
     variables: { variantId },
   });
 
-  const hasData =
-    data?.indexVariantsAndStudiesForTagVariant?.associations?.length > 0;
-  const associatedIndexVariants = hasData
-    ? variantTransformAssociatedIndexVariants(data)
-    : [];
+  const associatedIndexVariants = variantTransformAssociatedIndexVariants(data);
 
   return (
     <Fragment>

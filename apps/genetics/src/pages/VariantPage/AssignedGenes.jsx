@@ -16,10 +16,10 @@ export const AssignedGenes = ({ variantId }) => {
     variables: { variantId },
   });
 
-  const genesForVariantSchema = data?.genesForVariantSchema
-    ? variantParseGenesForVariantSchema(data)
-    : [];
-
+  const genesForVariantSchema = variantParseGenesForVariantSchema(data);
+  if (!genesForVariantSchema) {
+    return null;
+  }
   return (
     <Fragment>
       <SectionHeading

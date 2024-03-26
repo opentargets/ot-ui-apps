@@ -13,11 +13,7 @@ export const TagVariantPage = ({ variantId }) => {
     variables: { variantId },
   });
 
-  const hasData =
-    data?.tagVariantsAndStudiesForIndexVariant?.associations?.length > 0;
-  const associatedTagVariants = hasData
-    ? variantTransformAssociatedTagVariants(data)
-    : [];
+  const associatedTagVariants = variantTransformAssociatedTagVariants(data);
 
   return (
     <Fragment>
