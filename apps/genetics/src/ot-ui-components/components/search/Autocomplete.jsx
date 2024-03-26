@@ -2,9 +2,10 @@ import React from 'react';
 import Select from 'react-select';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import Control from "./Control";
+import Input from "./Input";
 import Placeholder from './Placeholder';
 import NoOptionsMessage from './NoOptionsMessage';
 import SingleValue from './SingleValue';
@@ -46,28 +47,6 @@ const OptionContainer = props => {
     </MenuItem>
   );
 };
-
-const InputComponent = ({ inputRef, ...rest }) => (
-  <div ref={inputRef} {...rest} />
-);
-
-function Control(props) {
-  return (
-    <TextField
-      fullWidth
-      InputProps={{
-        inputComponent: InputComponent,
-        inputProps: {
-          style: { display: 'flex', backgroundColor: '#eee' },
-          inputRef: props.innerRef,
-          children: props.children,
-          ...props.innerProps,
-        },
-      }}
-      {...props.selectProps.textFieldProps}
-    />
-  );
-}
 
 class Autocomplete extends React.Component {
   state = {
@@ -122,6 +101,7 @@ class Autocomplete extends React.Component {
       MultiValue,
       IndicatorSeparator,
       ClearIndicator,
+      Input,
     };
 
     return (
@@ -137,7 +117,6 @@ class Autocomplete extends React.Component {
           hideSelectedOptions={false}
           getOptionLabel={getOptionLabel}
           getOptionValue={getOptionValue}
-          menuPortalTarget={document.body}
           menuPlacement="auto"
           menuPosition="absolute"
         />
