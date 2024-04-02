@@ -176,7 +176,7 @@ function getColumns(classes) {
               See{" "}
               <Link
                 external
-                to="https://home.opentargets.org/aotf-documentation#direction-of-effect"
+                to="https://platform-docs.opentargets.org/evidence#chembl"
               >
                 here
               </Link> for more info on our assessment method
@@ -395,7 +395,6 @@ function Body({ id, label, entity }) {
             variables={{
               ensemblId,
               efoId,
-              cursor,
               size,
             }}
           />

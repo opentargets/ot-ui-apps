@@ -7,6 +7,7 @@ import {
   MenuItem,
   MenuList,
   useMediaQuery,
+  Box,
 } from "@mui/material";
 import { makeStyles, useTheme } from "@mui/styles";
 import { styled } from "@mui/material/styles";
@@ -58,6 +59,8 @@ const useStyles = makeStyles(theme => ({
   },
   menuLink: {
     color: theme.palette.secondary.contrastText,
+    margin: `0 ${theme.spacing(2)}`,
+    whiteSpace: "nowrap",
     "&:hover": {
       color: theme.palette.secondary.contrastText,
     },
@@ -144,28 +147,35 @@ function NavBar({ name, search, api, downloads, docs, contact, homepage, items, 
           {items && !isHomePageRegular ? <HeaderMenu items={items} placement={placement} /> : null}
 
           {isHomePageRegular && (
-            <MenuList className={classes.menuList}>
+            <Box sx={{ display: "flex" }}>
               {items.map(item => {
                 if (item.showOnlyPartner) {
                   return (
                     <PrivateWrapper key={v1()}>
-                      <MenuItem dense className={classes.menuItem}>
-                        <Link external={item.external} to={item.url} className={classes.menuLink}>
-                          {item.name}
-                        </Link>
-                      </MenuItem>
+                      <Link
+                        footer
+                        external={item.external}
+                        to={item.url}
+                        className={classes.menuLink}
+                      >
+                        <Typography variant="body2">{item.name}</Typography>
+                      </Link>
                     </PrivateWrapper>
                   );
                 }
                 return (
-                  <MenuItem key={v1()} dense className={classes.menuItem}>
-                    <Link external={item.external} to={item.url} className={classes.menuLink}>
-                      {item.name}
-                    </Link>
-                  </MenuItem>
+                  <Link
+                    key={v1()}
+                    footer
+                    external={item.external}
+                    to={item.url}
+                    className={classes.menuLink}
+                  >
+                    <Typography variant="body2">{item.name}</Typography>
+                  </Link>
                 );
               })}
-            </MenuList>
+            </Box>
           )}
         </div>
       </Toolbar>

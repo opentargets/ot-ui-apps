@@ -84,7 +84,14 @@ function SectionItem({
                 }
                 action={tags}
               />
-              {loading ? <LinearProgress /> : <Box className={classes.loadingPlaceholder} />}
+              {loading ? (
+                <LinearProgress
+                  aria-describedby="section loading progress bar"
+                  aria-busy={loading}
+                />
+              ) : (
+                <Box className={classes.loadingPlaceholder} />
+              )}
               {error && <SectionError error={error} />}
               {!loading && hasData && (
                 <CardContent className={classes.cardContent}>{renderBody(data)}</CardContent>

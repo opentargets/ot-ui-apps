@@ -35,7 +35,7 @@ const FooterLink = ({ label, url, icon }) => {
         {url.startsWith("mailto") ? (
           <EmailLink href={url} label={label} icon={icon} />
         ) : (
-          <Link external footer to={url}>
+          <Link ariaLabel={`Read more about ${label} on this link`} external footer to={url}>
             {icon && <FontAwesomeIcon className={classes.iconClass} icon={icon} size="lg" />}
             {label}
           </Link>
@@ -47,9 +47,7 @@ const FooterLink = ({ label, url, icon }) => {
 
 const FooterSectionHeading = ({ children }) => (
   <Grid item xs={12}>
-    <Typography variant="h6" color="inherit">
-      {children}
-    </Typography>
+    <Typography variant="h6" color="inherit">{children}</Typography>
   </Grid>
 );
 
@@ -147,7 +145,13 @@ const LicenseCC0 = ({ links }) => {
   return (
     <div>
       <Typography color="inherit" variant="caption">
-        <Link to={links.url} external footer className={classes.link}>
+        <Link
+          ariaLabel={`Read more about ${links.label} on this link`}
+          to={links.url}
+          external
+          footer
+          className={classes.link}
+        >
           {links.label}
         </Link>{" "}
         is marked with{" "}
@@ -156,6 +160,7 @@ const LicenseCC0 = ({ links }) => {
           external
           footer
           className={classes.link}
+          ariaLabel={`Read more about creative commons license on this link`}
         >
           CC0 1.0
           <img

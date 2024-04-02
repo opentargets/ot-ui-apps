@@ -205,7 +205,7 @@ function getColumns(label) {
               See{" "}
               <Link
                 external
-                to="https://home.opentargets.org/aotf-documentation#direction-of-effect"
+                to="https://platform-docs.opentargets.org/evidence#clinvar"
               >
                 here
               </Link>{" "}

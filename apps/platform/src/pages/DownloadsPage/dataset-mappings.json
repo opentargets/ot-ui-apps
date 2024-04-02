@@ -117,15 +117,6 @@
     "include_in_bq": true
   },
   {
-    "id": "expressionSpecificity",
-    "category": "Target",
-    "nice_name": "Target - baseline expression (tissue specificity)",
-    "description": "Tissue specific baseline RNA and protein expression data for targets",
-    "order": 14,
-    "include_in_fe": true,
-    "include_in_bq": true
-  },
-  {
     "id": "go",
     "category": "Target",
     "nice_name": "Target - gene ontology",

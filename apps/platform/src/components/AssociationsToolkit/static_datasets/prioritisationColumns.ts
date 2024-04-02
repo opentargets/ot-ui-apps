@@ -130,7 +130,7 @@ const geneEssentiality: Column = {
 
 const hasSafetyEvent: Column = {
   id: "hasSafetyEvent",
-  label: "Known adverse events",
+  label: "Known safety events",
   aggregation: aggregations.safety,
   sectionId: "safety",
   description: "Target associated with a curated adverse event",

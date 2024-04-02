@@ -29,6 +29,8 @@ function AssociationsWrapper() {
     dataSourcesRequired,
   } = useAotfContext();
 
+  const aggregationFilters = dataSourcesRequired.map(({ id, ...obj }) => ({ ...obj }));
+
   const variables = {
     id,
     index: pagination.pageIndex,
@@ -38,7 +40,7 @@ function AssociationsWrapper() {
     enableIndirect,
     datasources: dataSourcesWeights,
     entity,
-    aggregationFilters: dataSourcesRequired,
+    aggregationFilters,
   };
 
   if (initialLoading) return <AotFLoader />;

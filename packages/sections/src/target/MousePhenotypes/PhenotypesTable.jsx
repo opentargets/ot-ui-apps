@@ -49,7 +49,7 @@ const columns = [
       modelPhenotypeClasses.map(phenotypeClass => phenotypeClass.label),
   },
   {
-    id: "lol",
+    id: "allelicComposition",
     label: "Allelic composition",
     renderCell: ({ biologicalModels }) => (
       <AllelicCompositionDrawer biologicalModels={biologicalModels} />

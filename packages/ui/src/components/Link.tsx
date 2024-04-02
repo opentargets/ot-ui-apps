@@ -8,12 +8,15 @@ import Tooltip from "./Tooltip";
 const useStyles = makeStyles(theme => ({
   base: {
     fontSize: "inherit",
-    textDecoration: "none",
+    "text-decoration-color": "white",
+    "-webkit-text-decoration-color": "white",
   },
   baseDefault: {
     color: theme.palette.primary.main,
     "&:hover": {
       color: theme.palette.primary.dark,
+      "text-decoration-color": theme.palette.primary.dark,
+      "-webkit-text-decoration-color": theme.palette.primary.dark,
     },
   },
   baseTooltip: {
@@ -25,8 +28,12 @@ const useStyles = makeStyles(theme => ({
   },
   baseFooter: {
     color: "white",
+    "text-decoration-color": "transparent",
+    "-webkit-text-decoration-color": "transparent",
     "&:hover": {
       color: theme.palette.primary.light,
+      "text-decoration-color": theme.palette.primary.light,
+    "-webkit-text-decoration-color": theme.palette.primary.light,
     },
     display: "flex",
     alignItems: "center",
