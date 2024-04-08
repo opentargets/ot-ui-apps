@@ -158,7 +158,7 @@ function getOtTableColumns() {
           header: "Mechanism Of Action",
           accessorKey: "mechanismOfAction",
           // enableSorting: false,
-          enableColumnFilter: false,
+          enableColumnFilter: true,
         },
         {
           header: "Action Type",
@@ -195,9 +195,9 @@ function getOtTableColumns() {
         {
           header: "Phase",
           accessorKey: "phase",
-          cell: info => phaseMap[info.getValue()],
+          cell: info => phaseMap(info.getValue()),
           // enableSorting: false,
-          enableColumnFilter: false,
+          enableColumnFilter: true,
         },
         {
           header: "Status",
@@ -209,7 +209,7 @@ function getOtTableColumns() {
           header: "Source",
           cell: d => <SourceDrawer references={d.row.original.urls} />,
           // enableSorting: false,
-          enableColumnFilter: false,
+          // enableColumnFilter: false,
         },
       ],
     },

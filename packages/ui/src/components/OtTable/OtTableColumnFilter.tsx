@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Column, Table } from "@tanstack/react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 import {
   Badge,
   Grid,
@@ -9,18 +9,20 @@ import {
   Input,
   InputAdornment,
   List,
-  ListItem,
+  ListItemButton,
   Popover,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { v1 } from "uuid";
 
-const useStyles = makeStyles(theme => ({
-  filterInput: {
-    padding: "0.3rem 0.5rem",
-    width: "min-content",
-    minWidth: "7rem",
-  },
-}));
+// const useStyles = makeStyles(theme => ({
+//   filterInput: {
+//     maxWidth: "100%",
+//     // padding: "0.3rem 0.5rem",
+//     // width: "min-content",
+//     // minWidth: "7rem",
+//   },
+// }));
 
 function OtTableColumnFilter({
   column,
@@ -30,8 +32,6 @@ function OtTableColumnFilter({
   table: Table<any>;
 }) {
   const columnFilterValue = column.getFilterValue();
-
-  const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -48,17 +48,18 @@ function OtTableColumnFilter({
   const id = open ? "simple-popover" : undefined;
 
   const firstValue = table.getPreFilteredRowModel().flatRows[0]?.getValue(column.id);
+  console.log("firstValue", firstValue);
 
-  const sortedUniqueValues =
-    typeof firstValue === "number" ? [] : Array.from(column.getFacetedUniqueValues().keys()).sort();
+  const sortedUniqueValues = Array.from(column.getFacetedUniqueValues().keys()).sort();
+  // typeof firstValue === "number" ? [] : Array.from(column.getFacetedUniqueValues().keys()).sort();
+
+  function clearInput() {
+    column.setFilterValue("");
+  }
+
   return (
     <>
-      <IconButton
-        className={classes["d-none"]}
-        size="small"
-        aria-label="filter"
-        onClick={handleClick}
-      >
+      <IconButton size="small" aria-label="filter" onClick={handleClick}>
         <Badge color="primary" variant="dot" invisible={!columnFilterValue}>
           <FontAwesomeIcon icon={faFilter} size="xs" />
         </Badge>
@@ -77,56 +78,47 @@ function OtTableColumnFilter({
           vertical: "top",
           horizontal: "left",
         }}
+        sx={{ maxHeight: "60vh" }}
       >
         <Grid
           container
           direction="column"
           // justifyContent="center"
-          alignItems="center"
           spacing={2}
         >
-          <Grid item>
+          <Grid sx={{ width: 1 }} item>
             <Input
-              className={classes.filterInput}
+              sx={{ width: 1, padding: theme => `${theme.spacing(1)} ${theme.spacing(1.5)}` }}
+              autoFocus={true}
               value={(columnFilterValue ?? "") as string}
               onChange={e => column.setFilterValue(e.target.value)}
               placeholder={`Search..`}
-              // size="small"
               startAdornment={
                 <InputAdornment position="start">
                   <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </InputAdornment>
               }
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton onClick={clearInput}>
+                    <FontAwesomeIcon icon={faXmark} />
+                  </IconButton>
+                </InputAdornment>
+              }
             />
-
-            {/* <TextField
-              className={classes.filterInput}
-              autoFocus
-              type="text"
-              value={(columnFilterValue ?? "") as string}
-              onChange={(e) => column.setFilterValue(e.target.value)}
-              placeholder={`Search..`}
-              variant="outlined"
-            /> */}
           </Grid>
           <Grid item>
-            {/* <datalist id={column.id + "list"}>
-              {sortedUniqueValues.slice(0, 5000).map((value: any) => (
-                <option value={value} key={value} />
-              ))}
-            </datalist> */}
             <List aria-label="filter-list">
               {sortedUniqueValues.slice(0, 5000).map((value: any) => (
-                <ListItem
-                  key={value}
-                  button
+                <ListItemButton
+                  key={v1()}
                   onClick={() => {
                     handleClose();
                     column.setFilterValue(value);
                   }}
                 >
                   {value}
-                </ListItem>
+                </ListItemButton>
               ))}
             </List>
           </Grid>

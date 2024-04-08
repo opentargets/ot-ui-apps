@@ -31,7 +31,16 @@ import {
   faFilter,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { Button, Grid, Input, InputAdornment, MenuItem, Select, Typography } from "@mui/material";
+import {
+  Button,
+  Grid,
+  IconButton,
+  Input,
+  InputAdornment,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 import OtTableLoader from "./OtTableLoader";
@@ -170,6 +179,7 @@ function OtTable({
   const table = useReactTable({
     data,
     columns,
+    // enableColumnFilters: false,
     filterFns: {
       searchFilterFn: searchFilter,
     },
@@ -177,6 +187,14 @@ function OtTable({
       columnFilters,
       globalFilter,
     },
+    // initialState: {
+    //   sorting: [
+    //     {
+    //       id: "drugType",
+    //       desc: true, // sort by name in descending order by default
+    //     },
+    //   ],
+    // },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: searchFilter,
@@ -348,35 +366,35 @@ function OtTable({
           </div>
 
           <div className="paginationAction">
-            <Button
+            <IconButton
               color="primary"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
-              <FontAwesomeIcon size="lg" icon={faAnglesLeft} />
-            </Button>
-            <Button
+              <FontAwesomeIcon size="2xs" icon={faAnglesLeft} />
+            </IconButton>
+            <IconButton
               color="primary"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              <FontAwesomeIcon size="lg" icon={faAngleLeft} />
-            </Button>
+              <FontAwesomeIcon size="2xs" icon={faAngleLeft} />
+            </IconButton>
 
-            <Button
+            <IconButton
               color="primary"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
-              <FontAwesomeIcon size="lg" icon={faAngleRight} />
-            </Button>
-            <Button
+              <FontAwesomeIcon size="2xs" icon={faAngleRight} />
+            </IconButton>
+            <IconButton
               color="primary"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >
-              <FontAwesomeIcon size="lg" icon={faAnglesRight} />
-            </Button>
+              <FontAwesomeIcon size="2xs" icon={faAnglesRight} />
+            </IconButton>
           </div>
         </div>
       </div>
