@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { Link, Table, getPage, getComparator, useCursorBatchDownloader } from "ui";
+import { Link, Table, getPage, getComparator, useCursorBatchDownloader, OtTable } from "ui";
 import { naLabel, phaseMap } from "../../constants";
 import { sentenceCase } from "../../utils/global";
 import SourceDrawer from "./SourceDrawer";
@@ -115,6 +115,107 @@ function getColumnPool(id, entity) {
   };
 }
 
+function getOtTableColumns() {
+  return [
+    {
+      header: "Disease Information",
+      columns: [
+        {
+          header: "Disease",
+          accessorFn: row => row.disease.id,
+          cell: d => (
+            <Link to={`/disease/${d.row.original.disease.id}`}>{d.row.original.disease.name}</Link>
+          ),
+          enableSorting: false,
+          enableColumnFilter: false,
+        },
+      ],
+    },
+    {
+      header: "Drug Information",
+      columns: [
+        {
+          header: "Drug",
+          accessorKey: "drug.name",
+          cell: d => {
+            return d.row.original.drug ? (
+              <Link to={`/drug/${d.row.original.drug.id}`}>{d.row.original.drug.name}</Link>
+            ) : (
+              naLabel
+            );
+          },
+          enableSorting: false,
+          enableColumnFilter: false,
+          sticky: true,
+        },
+        {
+          header: "Type",
+          accessorKey: "drugType",
+          // enableSorting: false,
+          // enableColumnFilter: false,
+        },
+        {
+          header: "Mechanism Of Action",
+          accessorKey: "mechanismOfAction",
+          // enableSorting: false,
+          enableColumnFilter: false,
+        },
+        {
+          header: "Action Type",
+          id: "actionType",
+          accessorFn: row => row.drug.mechanismsOfAction.rows[0].actionType,
+          enableSorting: false,
+          enableColumnFilter: false,
+        },
+      ],
+    },
+    {
+      header: "Target Information",
+      columns: [
+        {
+          header: "Symbol",
+          accessorKey: "target.approvedSymbol",
+          cell: d => (
+            <Link to={`/target/${d.row.original.target.id}`}>
+              {d.row.original.target.approvedSymbol}
+            </Link>
+          ),
+        },
+        // {
+        //   header: 'Name',
+        //   accessorKey: 'target.approvedName',
+        //   // enableSorting: false,
+        //   enableColumnFilter: false,
+        // },
+      ],
+    },
+    {
+      header: "Clinical Trials Information",
+      columns: [
+        {
+          header: "Phase",
+          accessorKey: "phase",
+          cell: info => phaseMap[info.getValue()],
+          // enableSorting: false,
+          enableColumnFilter: false,
+        },
+        {
+          header: "Status",
+          accessorKey: "status",
+          cell: d => (d.row.original.status ? d.row.original.status : naLabel),
+        },
+        {
+          accessorKey: "sources",
+          header: "Source",
+          cell: d => <SourceDrawer references={d.row.original.urls} />,
+          // enableSorting: false,
+          enableColumnFilter: false,
+        },
+      ],
+    },
+  ];
+}
+
 const INIT_PAGE_SIZE = 10;
 
 function Body({
@@ -129,7 +230,7 @@ function Body({
   client,
 }) {
   const [initialLoading, setInitialLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
   const [cursor, setCursor] = useState("");
   const [rows, setRows] = useState([]);
@@ -175,6 +276,7 @@ function Body({
 
       fetchDrugs(variables, null, pageSize).then(res => {
         setInitialLoading(false);
+        setLoading(false);
         if (res.data[entity].knownDrugs && isCurrent) {
           const { cursor: newCursor, count: newCount, rows: newRows } = res.data[entity].knownDrugs;
           setCursor(newCursor);
@@ -262,49 +364,80 @@ function Body({
   }
 
   return (
-    <SectionItem
-      definition={definition}
-      entity={entity}
-      request={{
-        loading: initialLoading,
-        error: false,
-        data: {
-          [entity]: {
-            knownDrugs: {
-              rows,
-              count: rows.length,
-              freeTextQuery: globalFilter,
+    <>
+      <h2>origional table:</h2>
+      <SectionItem
+        definition={definition}
+        entity={entity}
+        request={{
+          loading: initialLoading,
+          error: false,
+          data: {
+            [entity]: {
+              knownDrugs: {
+                rows,
+                count: rows.length,
+                freeTextQuery: globalFilter,
+              },
             },
           },
-        },
-      }}
-      renderDescription={Description}
-      renderBody={() => (
-        <Table
-          loading={loading}
-          stickyHeader
-          showGlobalFilter
-          globalFilter={globalFilter}
-          dataDownloader
-          dataDownloaderRows={getWholeDataset}
-          dataDownloaderFileStem={`${id}-known-drugs`}
-          headerGroups={headerGroups}
-          columns={columns}
-          rows={getPage(processedRows, page, pageSize)}
-          rowCount={count}
-          rowsPerPageOptions={[10, 25, 100]}
-          page={page}
-          pageSize={pageSize}
-          onGlobalFilterChange={handleGlobalFilterChange}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          onSortBy={handleSortBy}
-          dataDownloaderColumns={exportColumns}
-          query={BODY_QUERY.loc.source.body}
-          variables={variables}
-        />
-      )}
-    />
+        }}
+        renderDescription={Description}
+        renderBody={() => (
+          <Table
+            loading={loading}
+            stickyHeader
+            showGlobalFilter
+            globalFilter={globalFilter}
+            dataDownloader
+            dataDownloaderRows={getWholeDataset}
+            dataDownloaderFileStem={`${id}-known-drugs`}
+            headerGroups={headerGroups}
+            columns={columns}
+            rows={getPage(processedRows, page, pageSize)}
+            rowCount={count}
+            rowsPerPageOptions={[10, 25, 100]}
+            page={page}
+            pageSize={pageSize}
+            onGlobalFilterChange={handleGlobalFilterChange}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            onSortBy={handleSortBy}
+            dataDownloaderColumns={exportColumns}
+            query={BODY_QUERY.loc.source.body}
+            variables={variables}
+          />
+        )}
+      />
+      <h2>tanstack table client side :</h2>
+
+      <SectionItem
+        definition={definition}
+        entity={entity}
+        request={{
+          loading: initialLoading,
+          error: false,
+          data: {
+            [entity]: {
+              knownDrugs: {
+                rows,
+                count: rows.length,
+                freeTextQuery: globalFilter,
+              },
+            },
+          },
+        }}
+        renderDescription={Description}
+        renderBody={() => (
+          <OtTable
+            showGlobalFilter={false}
+            tableDataLoading={loading}
+            allColumns={getOtTableColumns()}
+            allData={rows}
+          />
+        )}
+      />
+    </>
   );
 }
 

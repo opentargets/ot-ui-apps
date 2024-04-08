@@ -3177,6 +3177,11 @@
   resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.13.0.tgz#976b51166ece836c1c1c91b77324425f5e8964ac"
   integrity sha512-/OU4oWkrhSDeOTtt8CNq8XZQ3eS86rCJvCZD3ev7XIdXtKo0LOGp9hLqoYeaPgDNW7D/WXP2IHAA1hRVFICF5A==
 
+"@tanstack/table-core@^8.15.3":
+  version "8.15.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.15.3.tgz#1a11cef82a458e90694bedfb40dcff610e69460e"
+  integrity sha512-wOgV0HfEvuMOv8RlqdR9MdNNqq0uyvQtP39QOvGlggHvIObOE4exS+D5LGO8LZ3LUXxId2IlUKcHDHaGujWhUg==
+
 "@tootallnate/once@1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
