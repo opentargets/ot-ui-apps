@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Column, Table } from "@tanstack/react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -6,55 +6,42 @@ import {
   Badge,
   Grid,
   IconButton,
-  Input,
   InputAdornment,
   List,
   ListItemButton,
   Popover,
+  TextField,
 } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { v1 } from "uuid";
 
-// const useStyles = makeStyles(theme => ({
-//   filterInput: {
-//     maxWidth: "100%",
-//     // padding: "0.3rem 0.5rem",
-//     // width: "min-content",
-//     // minWidth: "7rem",
-//   },
-// }));
-
-function OtTableColumnFilter({
-  column,
-  table,
-}: {
-  column: Column<any, unknown>;
-  table: Table<any>;
-}) {
+function OtTableColumnFilter({ column }: { column: Column<any, unknown> }) {
   const columnFilterValue = column.getFilterValue();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const [columnFilterInputValue, setColumnFilterInputValue] = useState("");
+  const sortedUniqueValues = getAllUniqueOptions();
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const firstValue = table.getPreFilteredRowModel().flatRows[0]?.getValue(column.id);
-  console.log("firstValue", firstValue);
+  function getAllUniqueOptions() {
+    return Array.from(column.getFacetedUniqueValues().keys())
+      .sort()
+      .filter(n => n);
+  }
 
-  const sortedUniqueValues = Array.from(column.getFacetedUniqueValues().keys()).sort();
-  // typeof firstValue === "number" ? [] : Array.from(column.getFacetedUniqueValues().keys()).sort();
+  function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  }
+
+  function handleClose() {
+    setAnchorEl(null);
+  }
 
   function clearInput() {
     column.setFilterValue("");
+    setColumnFilterInputValue("");
   }
 
   return (
@@ -87,50 +74,49 @@ function OtTableColumnFilter({
           spacing={2}
         >
           <Grid sx={{ width: 1 }} item>
-            <Input
+            <TextField
               sx={{ width: 1, padding: theme => `${theme.spacing(1)} ${theme.spacing(1.5)}` }}
-              autoFocus={true}
-              value={(columnFilterValue ?? "") as string}
-              onChange={e => column.setFilterValue(e.target.value)}
+              autoFocus
+              variant="standard"
+              value={columnFilterInputValue}
+              onChange={e => setColumnFilterInputValue(e.target.value)}
               placeholder={`Search..`}
-              startAdornment={
-                <InputAdornment position="start">
-                  <FontAwesomeIcon icon={faMagnifyingGlass} />
-                </InputAdornment>
-              }
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton onClick={clearInput}>
-                    <FontAwesomeIcon icon={faXmark} />
-                  </IconButton>
-                </InputAdornment>
-              }
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <FontAwesomeIcon icon={faMagnifyingGlass} />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={clearInput}>
+                      <FontAwesomeIcon icon={faXmark} size="xs" />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
           <Grid item>
             <List aria-label="filter-list">
-              {sortedUniqueValues.slice(0, 5000).map((value: any) => (
-                <ListItemButton
-                  key={v1()}
-                  onClick={() => {
-                    handleClose();
-                    column.setFilterValue(value);
-                  }}
-                >
-                  {value}
-                </ListItemButton>
-              ))}
+              {sortedUniqueValues.map(
+                (value: any) =>
+                  String(value).search(new RegExp(columnFilterInputValue, "i")) !== -1 && (
+                    <ListItemButton
+                      key={v1()}
+                      onClick={() => {
+                        handleClose();
+                        column.setFilterValue(value);
+                        setColumnFilterInputValue(value);
+                      }}
+                    >
+                      {value}
+                    </ListItemButton>
+                  )
+              )}
             </List>
           </Grid>
         </Grid>
-
-        {/* <input
-          type="text"
-          value={(columnFilterValue ?? "") as string}
-          onChange={(e) => column.setFilterValue(e.target.value)}
-          placeholder={`Search..`}
-          list={column.id + "list"}
-        /> */}
       </Popover>
 
       <div className="h-1" />

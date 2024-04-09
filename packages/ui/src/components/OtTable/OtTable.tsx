@@ -19,8 +19,6 @@ import OtTableColumnFilter from "./OtTableColumnFilter";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowDownZA,
-  faArrowUpAZ,
   faAngleLeft,
   faAngleRight,
   faAnglesLeft,
@@ -28,23 +26,14 @@ import {
   faMagnifyingGlass,
   faArrowUp,
   faArrowDown,
-  faFilter,
 } from "@fortawesome/free-solid-svg-icons";
 
-import {
-  Button,
-  Grid,
-  IconButton,
-  Input,
-  InputAdornment,
-  MenuItem,
-  Select,
-  Typography,
-} from "@mui/material";
+import { Grid, IconButton, Input, InputAdornment, NativeSelect, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 import OtTableLoader from "./OtTableLoader";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { naLabel } from "../../constants";
 
 const useStyles = makeStyles(theme => ({
   OtTableContainer: {
@@ -316,6 +305,8 @@ function OtTable({
                       >
                         <Typography variant="body2">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {/* TODO: check NA value */}
+                          {Boolean(cell.getValue(cell.column)) || naLabel}
                         </Typography>
                       </td>
                     );
@@ -328,19 +319,21 @@ function OtTable({
       </div>
       <div className={classes.tableControls}>
         <div className="rowsPerPage">
-          <span>Rows per page: {"    "}</span>
-          <Select
+          <span>Rows per page:</span>
+          <NativeSelect
+            disableUnderline
+            sx={{ pl: theme => theme.spacing(2) }}
             value={table.getState().pagination.pageSize}
             onChange={e => {
               table.setPageSize(Number(e.target.value));
             }}
           >
             {[10, 25, 100].map(pageSize => (
-              <MenuItem key={pageSize} value={pageSize}>
+              <option key={pageSize} value={pageSize}>
                 {pageSize}
-              </MenuItem>
+              </option>
             ))}
-          </Select>
+          </NativeSelect>
           {/* <span className="flex items-center gap-1">
             | Go to page:
             <input

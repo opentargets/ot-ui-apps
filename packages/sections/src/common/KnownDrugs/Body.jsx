@@ -181,17 +181,17 @@ function getOtTableColumns() {
             </Link>
           ),
         },
-        // {
-        //   header: 'Name',
-        //   accessorKey: 'target.approvedName',
-        //   // enableSorting: false,
-        //   enableColumnFilter: false,
-        // },
       ],
     },
     {
       header: "Clinical Trials Information",
       columns: [
+        {
+          header: "Name",
+          accessorKey: "target.approvedName",
+          // enableSorting: false,
+          enableColumnFilter: false,
+        },
         {
           header: "Phase",
           accessorKey: "phase",
@@ -202,16 +202,16 @@ function getOtTableColumns() {
         {
           header: "Status",
           accessorKey: "status",
-          cell: d => (d.row.original.status ? d.row.original.status : naLabel),
-        },
-        {
-          accessorKey: "sources",
-          header: "Source",
-          cell: d => <SourceDrawer references={d.row.original.urls} />,
-          // enableSorting: false,
-          // enableColumnFilter: false,
+          // cell: d => d.row.original.status,
         },
       ],
+    },
+    {
+      accessorKey: "sources",
+      header: "Source",
+      cell: d => <SourceDrawer references={d.row.original.urls} />,
+      // enableSorting: false,
+      // enableColumnFilter: false,
     },
   ];
 }
@@ -430,7 +430,7 @@ function Body({
         renderDescription={Description}
         renderBody={() => (
           <OtTable
-            showGlobalFilter={false}
+            showGlobalFilter={true}
             tableDataLoading={loading}
             allColumns={getOtTableColumns()}
             allData={rows}
