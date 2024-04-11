@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 
-import { Link, Table, getPage, getComparator, useCursorBatchDownloader, OtTable } from "ui";
+import {
+  Link,
+  Table,
+  getPage,
+  getComparator,
+  useCursorBatchDownloader,
+  OtTable,
+  OtTableWrapper,
+} from "ui";
 import { naLabel, phaseMap } from "../../constants";
 import { sentenceCase } from "../../utils/global";
 import SourceDrawer from "./SourceDrawer";
@@ -144,8 +152,8 @@ function getOtTableColumns() {
               naLabel
             );
           },
-          enableSorting: false,
-          enableColumnFilter: false,
+          // enableSorting: false,
+          // enableColumnFilter: false,
           sticky: true,
         },
         {
@@ -435,6 +443,45 @@ function Body({
             allColumns={getOtTableColumns()}
             allData={rows}
           />
+        )}
+      />
+
+      <h2>tanstack table server side :</h2>
+
+      <SectionItem
+        definition={definition}
+        entity={entity}
+        request={{
+          loading: initialLoading,
+          error: false,
+          data: {
+            [entity]: {
+              knownDrugs: {
+                rows,
+                count: rows.length,
+                freeTextQuery: globalFilter,
+              },
+            },
+          },
+        }}
+        renderDescription={Description}
+        renderBody={() => (
+          // <OtTable
+          //   showGlobalFilter={true}
+          //   tableDataLoading={loading}
+          //   allColumns={getOtTableColumns()}
+          //   allData={rows}
+          // />
+
+          <OtTableWrapper
+            showGlobalFilter
+            columns={getOtTableColumns()}
+            query={BODY_QUERY}
+            variables={variables}
+            entity={entity}
+            client={client}
+          />
+          // <>ddd</>
         )}
       />
     </>

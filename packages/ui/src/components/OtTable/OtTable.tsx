@@ -1,3 +1,13 @@
+import { useEffect, useState } from "react";
+import {
+  CircularProgress,
+  Grid,
+  IconButton,
+  Input,
+  InputAdornment,
+  NativeSelect,
+  Typography,
+} from "@mui/material";
 import {
   useReactTable,
   ColumnFiltersState,
@@ -12,12 +22,6 @@ import {
   ColumnDef,
   flexRender,
 } from "@tanstack/react-table";
-
-import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
-
-import OtTableColumnFilter from "./OtTableColumnFilter";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleLeft,
   faAngleRight,
@@ -28,12 +32,13 @@ import {
   faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { Grid, IconButton, Input, InputAdornment, NativeSelect, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import OtTableLoader from "./OtTableLoader";
-import { useEffect, useState } from "react";
+import OtTableColumnFilter from "./OtTableColumnFilter";
 import { naLabel } from "../../constants";
+import useDebounce from "../../hooks/useDebounce";
 
 const useStyles = makeStyles(theme => ({
   OtTableContainer: {
@@ -149,24 +154,35 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
+type OtTableProps = {
+  showGlobalFilter: boolean;
+  tableDataLoading: boolean;
+  allColumns: Array<any>;
+  allData: Array<any>;
+  verticalHeaders: boolean;
+};
+
 function OtTable({
   showGlobalFilter = true,
   tableDataLoading = false,
   allColumns = [],
   allData = [],
   verticalHeaders = false,
-}) {
+}: OtTableProps) {
+  const columns = [...allColumns];
   const classes = useStyles();
 
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState("");
-
-  const columns = [...allColumns];
-
   const [data, setData] = useState<any[]>([...allData]);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const debouncedTableSearchValue = useDebounce(globalFilter, 300);
+
+  console.log("dkfjvbjhdfbvhjdbhvjdbhjvbhjfb", tableDataLoading);
+
+  // const data = [...allData];
 
   const table = useReactTable({
-    data,
+    data: allData,
     columns,
     // enableColumnFilters: false,
     filterFns: {
@@ -174,7 +190,7 @@ function OtTable({
     },
     state: {
       columnFilters,
-      globalFilter,
+      globalFilter: debouncedTableSearchValue,
     },
     // initialState: {
     //   sorting: [
@@ -199,11 +215,11 @@ function OtTable({
     debugColumns: false,
   });
 
-  useEffect(() => {
-    setData(allData);
-  }, [allData]);
+  // useEffect(() => {
+  //   setData(allData);
+  // }, [allData]);
 
-  if (tableDataLoading) return <OtTableLoader />;
+  // if (tableDataLoading) return <OtTableLoader />;
 
   return (
     <div className={classes.OtTableContainer}>
@@ -282,7 +298,7 @@ function OtTable({
                               }[header.column.getIsSorted() as string] ?? null}
                             </Typography>
                             {header.column.getCanFilter() ? (
-                              <OtTableColumnFilter column={header.column} table={table} />
+                              <OtTableColumnFilter column={header.column} />
                             ) : null}
                           </div>
                         </>
@@ -334,21 +350,10 @@ function OtTable({
               </option>
             ))}
           </NativeSelect>
-          {/* <span className="flex items-center gap-1">
-            | Go to page:
-            <input
-              type="number"
-              defaultValue={table.getState().pagination.pageIndex + 1}
-              onChange={(e) => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                table.setPageIndex(page);
-              }}
-              className="border p-1 rounded w-16"
-            />
-          </span> */}
         </div>
 
         <div className={classes.rowsControls}>
+          {tableDataLoading && <CircularProgress size={20} />}
           <div className="pageInfo">
             <span>Page </span>
             <span>
