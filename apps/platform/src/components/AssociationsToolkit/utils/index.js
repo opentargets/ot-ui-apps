@@ -17,7 +17,7 @@ export const DEFAULT_TABLE_PAGINATION_STATE = {
   pageSize: DEFAULT_TABLE_PAGE_SIZE,
 };
 
-export const DEFAULT_TABLE_SORTING_STATE = [{ id: 'score', desc: true }];
+export const DEFAULT_TABLE_SORTING_STATE = [{ id: "score", desc: true }];
 
 export const DISPLAY_MODE = {
   PRIORITISATION: "prioritisations",

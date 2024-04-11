@@ -128,7 +128,7 @@ function useAssociationsData({
     sortBy = "score",
     aggregationFilters = [],
     enableIndirect = false,
-    datasources = null,
+    datasources = [],
     rowsFilter = [],
     entity,
   },
