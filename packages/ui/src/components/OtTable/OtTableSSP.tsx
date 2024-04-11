@@ -157,7 +157,7 @@ function OtTableSSP({
   tableDataLoading = false,
   allColumns = [],
   allData = [],
-  count = -1,
+  count = 0,
   getMoreData = ({ searchQuery = "", pageSize = 10 }) => null,
   verticalHeaders = false,
 }) {
@@ -191,12 +191,12 @@ function OtTableSSP({
 
     const isPageSizeIncrease = newPageSize > pageSize;
     const nextPageRequested = newIndex > pageIndex;
-    const requiresMoreData = dataLength + 1 < newIndex * newPageSize;
+    const requiresMoreData = dataLength <= newIndex * newPageSize;
 
-    if ((nextPageRequested && requiresMoreData) || isPageSizeIncrease) {
+    if (isPageSizeIncrease) getMoreData({ pageSize: newPageSize });
+    else if (nextPageRequested && requiresMoreData) {
       console.log("fetch");
-      getMoreData({ pageSize: newPageSize });
-      // setPagination(newState);
+      getMoreData({});
     } else {
       console.log("dont fetch");
     }
