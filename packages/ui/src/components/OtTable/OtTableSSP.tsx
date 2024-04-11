@@ -216,6 +216,7 @@ function OtTableSSP({
       globalFilter: debouncedTableSearchValue,
       pagination,
     },
+    autoResetPageIndex: false,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: onPaginationChange,
