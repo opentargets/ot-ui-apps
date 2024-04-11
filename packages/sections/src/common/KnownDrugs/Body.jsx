@@ -59,13 +59,13 @@ function getColumnPool(id, entity) {
         },
         {
           id: "Action type",
-          renderCell: ({ drug: { mechanismsOfAction }, target }) => {
-            if (!mechanismsOfAction) return naLabel;
+          renderCell: ({ drug, target }) => {
+            if (!drug?.mechanismsOfAction) return naLabel;
             const at = new Set();
 
             const targetId = entity === "target" ? id : target.id;
 
-            mechanismsOfAction.rows.forEach(row => {
+            drug.mechanismsOfAction.rows.forEach(row => {
               row.targets.forEach(t => {
                 if (t.id === targetId) {
                   at.add(row.actionType);
@@ -161,6 +161,7 @@ function Body({
   const fetchDrugs = (newVariables, newCursor, size, freeTextQuery) =>
     client.query({
       query: BODY_QUERY,
+      fetchPolicy: "no-cache",
       variables: {
         ...newVariables,
         cursor: newCursor,
