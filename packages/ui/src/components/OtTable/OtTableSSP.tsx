@@ -398,7 +398,7 @@ function OtTableSSP({
             sx={{ pl: theme => theme.spacing(2) }}
             value={table.getState().pagination.pageSize}
             onChange={e => {
-              // table.setPageSize(Number(e.target.value));
+              table.setPageSize(Number(e.target.value));
               setPagination({
                 pageIndex: 0,
                 pageSize: Number(e.target.value),
