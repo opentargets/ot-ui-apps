@@ -7,22 +7,14 @@ import {
   CircularProgress,
   NativeSelect,
   IconButton,
-  Box,
-  LinearProgress,
 } from "@mui/material";
 import {
   useReactTable,
-  ColumnFiltersState,
   getCoreRowModel,
-  getFilteredRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFacetedMinMaxValues,
   getPaginationRowModel,
-  getSortedRowModel,
-  FilterFn,
   flexRender,
   PaginationState,
+  ColumnDef,
 } from "@tanstack/react-table";
 import {
   faAngleRight,
@@ -34,12 +26,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { makeStyles } from "@mui/styles";
-import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import OtTableLoader from "./OtTableLoader";
 import useDebounce from "../../hooks/useDebounce";
-import OtTableColumnFilter from "./OtTableColumnFilter";
+import OtTableSearch from "./OtTableSearch";
 
 const useStyles = makeStyles(theme => ({
   OtTableContainer: {
@@ -90,9 +80,6 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     gap: "2rem",
   },
-  searchAllColumn: {
-    width: "100%",
-  },
   tableColumnHeader: {
     display: "flex",
     flexDirection: "row",
@@ -132,38 +119,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-declare module "@tanstack/table-core" {
-  interface FilterFns {
-    searchFilterFn: FilterFn<unknown>;
-  }
-  interface FilterMeta {
-    itemRank: RankingInfo;
-  }
-}
-
-const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value);
-
-  // Store the itemRank info
-  addMeta({
-    itemRank,
-  });
-
-  // Return if the item should be filtered in/out
-  return itemRank.passed;
-};
-
 const INIT_PAGE_SIZE = 10;
 
 type OtTableProps = {
   showGlobalFilter: boolean;
   verticalHeaders: boolean;
-  columns: Array<any>;
   entity: string;
-  query: any;
-  variables: any;
-  client: any;
+  sectionName: string;
+  columns: ColumnDef<unknown, any>[];
+  query: unknown;
+  variables: unknown;
+  client: unknown;
 };
 
 type tableDataObject = {
@@ -171,8 +137,15 @@ type tableDataObject = {
   loading: boolean;
   initialLoading: boolean;
   dataRows: Array<unknown>;
-  cursor: { type: ["null", "string"] };
+  cursor: null | string;
   size: number;
+};
+
+type AssignDataValuesProps = {
+  res: {
+    data: unknown;
+  };
+  removePreviousData?: boolean;
 };
 
 function OtTableSSP({
@@ -181,6 +154,7 @@ function OtTableSSP({
   columns = [],
   entity = "",
   query = "",
+  sectionName = "",
   variables,
   client,
 }: OtTableProps) {
@@ -195,10 +169,8 @@ function OtTableSSP({
     size: INIT_PAGE_SIZE,
   };
 
+  const [freeTextQuery, setFreeTextQuery] = useState("");
   const [tableObjectState, setTableObjectState] = useState(tableDataObjectInitialValue);
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const debouncedTableSearchValue = useDebounce(globalFilter, 300);
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -219,14 +191,15 @@ function OtTableSSP({
         ...variables,
         cursor: tableObjectState.cursor,
         size: pageSize,
-        freeTextQuery: debouncedTableSearchValue,
+        freeTextQuery,
       },
       fetchPolicy: "no-cache",
     });
   }
 
-  function assignDataValues({ data }, removePreviousData? = false) {
-    const { cursor, count, rows } = data[entity].knownDrugs;
+  function assignDataValues({ res, removePreviousData }: AssignDataValuesProps) {
+    const { data } = res;
+    const { cursor, count, rows } = data[entity][sectionName];
 
     let ALL_ROWS = [];
     if (removePreviousData) ALL_ROWS = [...rows];
@@ -257,13 +230,13 @@ function OtTableSSP({
     if (isPageSizeIncrease) {
       setTableObjectState({ ...tableObjectState, cursor: null, loading: true });
       getData().then(res => {
-        assignDataValues(res, true);
+        assignDataValues({ res, removePreviousData: true });
         setPagination(newState);
       });
     } else if (nextPageRequested && requiresMoreData) {
       setTableObjectState({ ...tableObjectState, loading: true });
       getData().then(res => {
-        assignDataValues(res, false);
+        assignDataValues({ res, removePreviousData: false });
         setPagination(newState);
       });
     } else setPagination(newState);
@@ -282,42 +255,40 @@ function OtTableSSP({
     return `${pageIndex * pageSize + 1} - ${pageEndResultSize} of ${tableObjectState.count}`;
   }
 
+  function setGlobalSearchTerm(searchQuery: string) {
+    const newTableState: tableDataObject = {
+      ...tableObjectState,
+      cursor: null,
+      loading: true,
+    };
+    setTableObjectState(newTableState);
+    setFreeTextQuery(searchQuery);
+  }
+
+  function getGlobalSearchData() {
+    getData().then(res => {
+      assignDataValues({ res, removePreviousData: true });
+      setPagination({ pageIndex: 0, pageSize });
+    });
+  }
+
   const table = useReactTable({
     data: tableObjectState.dataRows,
     columns,
     pageCount: getPageCount(),
-    globalFilterFn: searchFilter,
-    filterFns: {
-      searchFilterFn: searchFilter,
-    },
     state: {
-      columnFilters,
-      globalFilter: debouncedTableSearchValue,
       pagination,
     },
     autoResetPageIndex: false,
-    onColumnFiltersChange: setColumnFilters,
-    onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: onPaginationChange,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    // getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues(),
   });
 
   useEffect(() => {
-    console.log("debounce useffect");
-    setTableObjectState({ ...tableObjectState, cursor: null, loading: true });
-    getData().then(res => {
-      assignDataValues(res, true);
-      setPagination({ pageIndex: 0, pageSize });
-    });
-  }, [debouncedTableSearchValue]);
-
-  console.log("rerender");
+    getGlobalSearchData();
+  }, [freeTextQuery]);
 
   return (
     <div className={classes.OtTableContainer}>
@@ -325,17 +296,7 @@ function OtTableSSP({
       {showGlobalFilter && (
         <Grid container>
           <Grid item xs={12} lg={4}>
-            <Input
-              className={classes.searchAllColumn}
-              value={globalFilter ?? ""}
-              onChange={e => setGlobalFilter(e.target.value)}
-              placeholder="Search all columns..."
-              startAdornment={
-                <InputAdornment position="start">
-                  <FontAwesomeIcon icon={faMagnifyingGlass} />
-                </InputAdornment>
-              }
-            />
+            <OtTableSearch setGlobalSearchTerm={setGlobalSearchTerm} />
           </Grid>
         </Grid>
       )}
@@ -354,13 +315,7 @@ function OtTableSSP({
                     >
                       {header.isPlaceholder ? null : (
                         <>
-                          <div
-                            className={`${classes.tableColumnHeader} ${
-                              header.column.getCanSort()
-                                ? classes.cursorPointer
-                                : classes.cursorAuto
-                            }`}
-                          >
+                          <div className={`${classes.tableColumnHeader}`}>
                             <Typography
                               className={`${
                                 verticalHeaders || header.column.columnDef.verticalHeader
@@ -371,15 +326,18 @@ function OtTableSSP({
                               variant="subtitle2"
                             >
                               {flexRender(header.column.columnDef.header, header.getContext())}
-                              {!header.column.getIsSorted() && header.column.getCanSort() && (
+
+                              {/*
+                               * sorting icon
+                               */}
+                              {/* {!header.column.getIsSorted() && header.column.getCanSort() && (
                                 <FontAwesomeIcon
                                   size="sm"
                                   icon={faArrowUp}
                                   className="sortableColumn"
                                 />
-                              )}
-
-                              {{
+                              )} */}
+                              {/* {{
                                 asc: (
                                   <FontAwesomeIcon
                                     size="sm"
@@ -395,11 +353,11 @@ function OtTableSSP({
                                     className={classes.sortIcon}
                                   />
                                 ),
-                              }[header.column.getIsSorted() as string] ?? null}
+                              }[header.column.getIsSorted() as string] ?? null} */}
                             </Typography>
-                            {header.column.getCanFilter() ? (
+                            {/* {header.column.getCanFilter() ? (
                               <OtTableColumnFilter column={header.column} />
-                            ) : null}
+                            ) : null} */}
                           </div>
                         </>
                       )}
@@ -411,7 +369,6 @@ function OtTableSSP({
           </thead>
           <tbody>
             {table.getRowModel().rows.map(row => {
-              console.log(table.getRowModel().rowsById);
               return (
                 <tr key={row.id}>
                   {row.getVisibleCells().map(cell => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   CircularProgress,
@@ -41,6 +41,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import OtTableColumnFilter from "./OtTableColumnFilter";
 import { naLabel } from "../../constants";
 import useDebounce from "../../hooks/useDebounce";
+import OtTableSearch from "./OtTableSearch";
 
 const useStyles = makeStyles(theme => ({
   OtTableContainer: {
@@ -167,20 +168,17 @@ type OtTableProps = {
 function OtTable({
   showGlobalFilter = true,
   tableDataLoading = false,
-  allColumns = [],
-  allData = [],
+  columns = [],
+  dataRows = [],
   verticalHeaders = false,
 }: OtTableProps) {
-  const columns = [...allColumns];
   const classes = useStyles();
 
-  const [data, setData] = useState<any[]>([...allData]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const debouncedTableSearchValue = useDebounce(globalFilter, 300);
 
   const table = useReactTable({
-    data: allData,
+    data: dataRows,
     columns,
     // enableColumnFilters: false,
     filterFns: {
@@ -188,7 +186,7 @@ function OtTable({
     },
     state: {
       columnFilters,
-      globalFilter: debouncedTableSearchValue,
+      globalFilter,
     },
     // initialState: {
     //   sorting: [
@@ -208,16 +206,7 @@ function OtTable({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
-    debugTable: false,
-    debugHeaders: false,
-    debugColumns: false,
   });
-
-  // useEffect(() => {
-  //   setData(allData);
-  // }, [allData]);
-
-  // if (tableDataLoading) return <OtTableLoader />;
 
   return (
     <div className={classes.OtTableContainer}>
@@ -225,17 +214,7 @@ function OtTable({
       {showGlobalFilter && (
         <Grid container>
           <Grid item xs={12} lg={4}>
-            <Input
-              className={classes.searchAllColumn}
-              value={globalFilter ?? ""}
-              onChange={e => setGlobalFilter(e.target.value)}
-              placeholder="Search all columns..."
-              startAdornment={
-                <InputAdornment position="start">
-                  <FontAwesomeIcon icon={faMagnifyingGlass} />
-                </InputAdornment>
-              }
-            />
+            <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />
           </Grid>
         </Grid>
       )}
@@ -320,7 +299,8 @@ function OtTable({
                         <Typography variant="body2">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           {/* TODO: check NA value */}
-                          {Boolean(cell.getValue(cell.column)) || naLabel}
+                          {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
+                            naLabel}
                         </Typography>
                       </td>
                     );

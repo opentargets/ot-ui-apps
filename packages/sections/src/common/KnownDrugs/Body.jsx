@@ -417,7 +417,7 @@ function Body({
           />
         )}
       />
-      {/* <h2>tanstack table client side :</h2>
+      <h2>tanstack table client side :</h2>
 
       <SectionItem
         definition={definition}
@@ -440,11 +440,11 @@ function Body({
           <OtTable
             showGlobalFilter={true}
             tableDataLoading={loading}
-            allColumns={getOtTableColumns()}
-            allData={rows}
+            columns={getOtTableColumns()}
+            dataRows={rows}
           />
         )}
-      /> */}
+      />
 
       <h2>tanstack table server side :</h2>
 
@@ -490,6 +490,7 @@ function Body({
             variables={variables}
             entity={entity}
             client={client}
+            sectionName="knownDrugs"
           />
 
           // <>ddd</>
