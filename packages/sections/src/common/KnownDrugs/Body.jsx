@@ -7,7 +7,7 @@ import {
   getComparator,
   useCursorBatchDownloader,
   OtTable,
-  OtTableWrapper,
+  OtTableSSP,
 } from "ui";
 import { naLabel, phaseMap } from "../../constants";
 import { sentenceCase } from "../../utils/global";
@@ -417,7 +417,7 @@ function Body({
           />
         )}
       />
-      <h2>tanstack table client side :</h2>
+      {/* <h2>tanstack table client side :</h2>
 
       <SectionItem
         definition={definition}
@@ -444,7 +444,7 @@ function Body({
             allData={rows}
           />
         )}
-      />
+      /> */}
 
       <h2>tanstack table server side :</h2>
 
@@ -473,14 +473,25 @@ function Body({
           //   allData={rows}
           // />
 
-          <OtTableWrapper
+          // <OtTableWrapper
+          //   showGlobalFilter
+          //   columns={getOtTableColumns()}
+          //   query={BODY_QUERY}
+          //   variables={variables}
+          //   entity={entity}
+          //   client={client}
+          // />
+
+          <OtTableSSP
             showGlobalFilter
             columns={getOtTableColumns()}
+            verticalHeaders={false}
             query={BODY_QUERY}
             variables={variables}
             entity={entity}
             client={client}
           />
+
           // <>ddd</>
         )}
       />

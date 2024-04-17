@@ -33,7 +33,7 @@ export { default as DataDownloader } from "./components/DataDownloader";
 export { default as Legend } from "./components/Legend";
 export { default as ApiPlaygroundDrawer } from "./components/ApiPlaygroundDrawer";
 export { default as OtTable } from "./components/OtTable/OtTable";
-export { default as OtTableWrapper } from "./components/OtTable/OtTableWrapper";
+export { default as OtTableSSP } from "./components/OtTable/OtTableSSP";
 
 export { default as EmptyPage } from "./pages/EmptyPage";
 export { default as NotFoundPage } from "./pages/NotFoundPage";

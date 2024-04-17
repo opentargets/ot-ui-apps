@@ -7,6 +7,8 @@ import {
   CircularProgress,
   NativeSelect,
   IconButton,
+  Box,
+  LinearProgress,
 } from "@mui/material";
 import {
   useReactTable,
@@ -152,17 +154,48 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
+const INIT_PAGE_SIZE = 10;
+
+type OtTableProps = {
+  showGlobalFilter: boolean;
+  verticalHeaders: boolean;
+  columns: Array<any>;
+  entity: string;
+  query: any;
+  variables: any;
+  client: any;
+};
+
+type tableDataObject = {
+  count: number;
+  loading: boolean;
+  initialLoading: boolean;
+  dataRows: Array<unknown>;
+  cursor: { type: ["null", "string"] };
+  size: number;
+};
+
 function OtTableSSP({
-  showGlobalFilter = false,
-  tableDataLoading = false,
-  allColumns = [],
-  allData = [],
-  count = 0,
-  getMoreData = ({ searchQuery = "", pageSize = 10 }) => null,
+  showGlobalFilter = true,
   verticalHeaders = false,
-}) {
+  columns = [],
+  entity = "",
+  query = "",
+  variables,
+  client,
+}: OtTableProps) {
   const classes = useStyles();
 
+  const tableDataObjectInitialValue: tableDataObject = {
+    count: 0,
+    loading: true,
+    initialLoading: true,
+    dataRows: [],
+    cursor: null,
+    size: INIT_PAGE_SIZE,
+  };
+
+  const [tableObjectState, setTableObjectState] = useState(tableDataObjectInitialValue);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const debouncedTableSearchValue = useDebounce(globalFilter, 300);
@@ -179,8 +212,35 @@ function OtTableSSP({
     [pageIndex, pageSize]
   );
 
-  function getPageCount() {
-    return Math.ceil(count / pageSize) || -1;
+  function getData() {
+    return client.query({
+      query,
+      variables: {
+        ...variables,
+        cursor: tableObjectState.cursor,
+        size: pageSize,
+        freeTextQuery: debouncedTableSearchValue,
+      },
+      fetchPolicy: "no-cache",
+    });
+  }
+
+  function assignDataValues({ data }, removePreviousData? = false) {
+    const { cursor, count, rows } = data[entity].knownDrugs;
+
+    let ALL_ROWS = [];
+    if (removePreviousData) ALL_ROWS = [...rows];
+    else ALL_ROWS = [...tableObjectState.dataRows, ...rows];
+
+    const newTableState: tableDataObject = {
+      count,
+      cursor,
+      dataRows: ALL_ROWS,
+      loading: false,
+      initialLoading: false,
+      size: pageSize,
+    };
+    setTableObjectState(newTableState);
   }
 
   function onPaginationChange(updater) {
@@ -191,21 +251,40 @@ function OtTableSSP({
 
     const isPageSizeIncrease = newPageSize > pageSize;
     const nextPageRequested = newIndex > pageIndex;
-    const requiresMoreData = dataLength <= newIndex * newPageSize;
+    const requiresMoreData =
+      dataLength < tableObjectState.count && dataLength <= (newIndex + 1) * newPageSize;
 
-    if (isPageSizeIncrease) getMoreData({ pageSize: newPageSize });
-    else if (nextPageRequested && requiresMoreData) {
-      console.log("fetch");
-      getMoreData({});
-    } else {
-      console.log("dont fetch");
-    }
-    setPagination(newState);
+    if (isPageSizeIncrease) {
+      setTableObjectState({ ...tableObjectState, cursor: null, loading: true });
+      getData().then(res => {
+        assignDataValues(res, true);
+        setPagination(newState);
+      });
+    } else if (nextPageRequested && requiresMoreData) {
+      setTableObjectState({ ...tableObjectState, loading: true });
+      getData().then(res => {
+        assignDataValues(res, false);
+        setPagination(newState);
+      });
+    } else setPagination(newState);
+  }
+
+  function getPageCount() {
+    return Math.ceil(tableObjectState.count / pageSize) || 0;
+  }
+
+  function getCurrentPagePosition() {
+    // example return 31-40 of 45 || 41-45 of 45
+    const pageEndResultSize =
+      pageIndex * pageSize + pageSize <= tableObjectState.count
+        ? pageIndex * pageSize + pageSize
+        : tableObjectState.count;
+    return `${pageIndex * pageSize + 1} - ${pageEndResultSize} of ${tableObjectState.count}`;
   }
 
   const table = useReactTable({
-    data: allData,
-    columns: allColumns,
+    data: tableObjectState.dataRows,
+    columns,
     pageCount: getPageCount(),
     globalFilterFn: searchFilter,
     filterFns: {
@@ -227,27 +306,18 @@ function OtTableSSP({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
-    // manualPagination: true,
   });
 
-  // useEffect(() => {
-  //   const WHOLE_DATA = [...data, ...allData];
-  //   console.log("useEffect -> WHOLE_DATA", WHOLE_DATA);
-  //   setData(WHOLE_DATA);
-  //   table.setPageIndex(pageIndex);
-  //   console.log(data);
-  // }, [allData]);
-
   useEffect(() => {
-    getMoreData({ searchQuery: debouncedTableSearchValue });
+    console.log("debounce useffect");
+    setTableObjectState({ ...tableObjectState, cursor: null, loading: true });
+    getData().then(res => {
+      assignDataValues(res, true);
+      setPagination({ pageIndex: 0, pageSize });
+    });
   }, [debouncedTableSearchValue]);
 
-  // useEffect(() => {
-  //   if (allData.length > 0) {
-  //     console.log(pagination);
-  //     setPagination(pagination);
-  //   }
-  // }, [allData]);
+  console.log("rerender");
 
   return (
     <div className={classes.OtTableContainer}>
@@ -341,6 +411,7 @@ function OtTableSSP({
           </thead>
           <tbody>
             {table.getRowModel().rows.map(row => {
+              console.log(table.getRowModel().rowsById);
               return (
                 <tr key={row.id}>
                   {row.getVisibleCells().map(cell => {
@@ -365,13 +436,12 @@ function OtTableSSP({
         <div className="rowsPerPage">
           <span>Rows per page:</span>
           <NativeSelect
-            disabled={tableDataLoading}
+            disabled={tableObjectState.loading}
             disableUnderline
             sx={{ pl: theme => theme.spacing(2) }}
             value={table.getState().pagination.pageSize}
             onChange={e => {
-              console.log(Number(e.target.value));
-              table.setPageSize(Number(e.target.value));
+              // table.setPageSize(Number(e.target.value));
               setPagination({
                 pageIndex: 0,
                 pageSize: Number(e.target.value),
@@ -387,14 +457,9 @@ function OtTableSSP({
         </div>
 
         <div className={classes.rowsControls}>
-          {tableDataLoading && <CircularProgress size={20} />}
+          {tableObjectState.loading && <CircularProgress size={20} />}
           <div className="pageInfo">
-            <span>Page </span>
-            <span>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-              </strong>
-            </span>
+            <span>{getCurrentPagePosition()}</span>
           </div>
 
           <div className="paginationAction">
@@ -403,14 +468,14 @@ function OtTableSSP({
               onClick={() => {
                 table.setPageIndex(0);
               }}
-              disabled={tableDataLoading || !table.getCanPreviousPage()}
+              disabled={tableObjectState.loading || !table.getCanPreviousPage()}
             >
               <FontAwesomeIcon size="2xs" icon={faAnglesLeft} />
             </IconButton>
             <IconButton
               color="primary"
               onClick={() => table.previousPage()}
-              disabled={tableDataLoading || !table.getCanPreviousPage()}
+              disabled={tableObjectState.loading || !table.getCanPreviousPage()}
             >
               <FontAwesomeIcon size="2xs" icon={faAngleLeft} />
             </IconButton>
@@ -420,7 +485,7 @@ function OtTableSSP({
               onClick={() => {
                 table.nextPage();
               }}
-              disabled={tableDataLoading || !table.getCanNextPage()}
+              disabled={tableObjectState.loading || !table.getCanNextPage()}
             >
               <FontAwesomeIcon size="2xs" icon={faAngleRight} />
             </IconButton>

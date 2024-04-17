@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import {
+  Box,
   CircularProgress,
   Grid,
   IconButton,
   Input,
   InputAdornment,
+  LinearProgress,
   NativeSelect,
   Typography,
 } from "@mui/material";
@@ -176,10 +178,6 @@ function OtTable({
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const debouncedTableSearchValue = useDebounce(globalFilter, 300);
-
-  console.log("dkfjvbjhdfbvhjdbhvjdbhjvbhjfb", tableDataLoading);
-
-  // const data = [...allData];
 
   const table = useReactTable({
     data: allData,
@@ -354,6 +352,7 @@ function OtTable({
 
         <div className={classes.rowsControls}>
           {tableDataLoading && <CircularProgress size={20} />}
+
           <div className="pageInfo">
             <span>Page </span>
             <span>
