@@ -8,59 +8,7 @@ import {
   DEFAULT_TABLE_SORTING_STATE,
   DISPLAY_MODE,
 } from "../utils";
-
-/***************
- * STATE TYPES *
- ***************/
-
-enum ENTITIES {
-  TARGET = "TARGET",
-  DISEASE = "DISEASE",
-  DRUG = "DRUG",
-}
-
-enum TABLE_VIEW {
-  MAIN = "MAIN",
-  PRIORITISATION = "PRIORITISATION",
-}
-
-type Sorting = { id: string; desc: boolean }[];
-
-type Data = [any] | []; // TODO: create data type (list of disease || target)
-
-type Pagination = { pageIndex: number; pageSize: number };
-
-interface State {
-  sorting: Sorting;
-  loading: boolean; // TODO: more loaders?
-  enableIndirect: boolean;
-  query: DocumentNode | null;
-  pagination: Pagination;
-  parentEntity: ENTITIES.DISEASE | ENTITIES.TARGET | null;
-  rowEntity: ENTITIES.DISEASE | ENTITIES.TARGET | null;
-  tableView: TABLE_VIEW.MAIN | TABLE_VIEW.PRIORITISATION;
-  searchFilter: string;
-  pinnedEntities: string[];
-  advanceOptionsOpen: boolean;
-  bodyData: Data;
-  pinnedData: Data;
-}
-
-/*****************
- * ACTIONS TYPES *
- *****************/
-
-enum ActionType {
-  PAGINATE = "PAGINATE",
-  SORTING = "SORTING",
-  TEXT_SEARCH = "TEXT_SEARCH",
-}
-
-type Action =
-  | { type: ActionType.PAGINATE; pagination: Pagination }
-  | { type: ActionType.SORTING; sorting: Sorting }
-  | { type: ActionType.TEXT_SEARCH; searchFilter: string }
-  | { type: ActionType.PAGINATE; pagination: Pagination };
+import { Action, ActionType, ENTITIES, State, TABLE_VIEW } from "./types";
 
 /*****************
  * INITIAL STATE *
@@ -70,17 +18,31 @@ export const initialState: State = {
   pagination: DEFAULT_TABLE_PAGINATION_STATE,
   loading: false,
   query: null,
+  parentId: "",
   enableIndirect: false,
   sorting: DEFAULT_TABLE_SORTING_STATE,
   parentEntity: null, // TODO: review initial state
   rowEntity: null,
   tableView: TABLE_VIEW.MAIN,
+  isMainView: true,
   searchFilter: "",
   advanceOptionsOpen: false,
   pinnedEntities: [],
   bodyData: [],
   pinnedData: [],
 };
+
+type InitialStateParams = {
+  parentEntity: ENTITIES;
+  parentId: string;
+  query: DocumentNode;
+};
+
+export function createInitialState({ parentEntity, parentId, query }: InitialStateParams): State {
+  const rowEntity = parentEntity === ENTITIES.TARGET ? ENTITIES.DISEASE : ENTITIES.TARGET;
+  const state = { ...initialState, query, parentId, parentEntity, rowEntity };
+  return state;
+}
 
 export function aotfReducer(state: State = initialState, action: Action): State {
   if (typeof state === undefined) {

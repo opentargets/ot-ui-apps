@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo, useEffect } from "react";
+import { createContext, useState, useMemo, useEffect, useReducer } from "react";
 import { isEqual } from "lodash";
 import { useStateParams } from "ui";
 import dataSources from "../static_datasets/dataSourcesAssoc";
@@ -14,21 +14,33 @@ import {
 } from "../utils";
 
 import useAssociationsData from "../hooks/useAssociationsData";
+import { aotfReducer, createInitialState } from "./aotfReducer";
+import { onPaginationChange } from "./aotfActions";
 
 const AssociationsStateContext = createContext();
 
 const initialIndirect = entity => entity !== ENTITIES.TARGET;
 
 function AssociationsStateProvider({ children, entity, id, query }) {
-  const [{ pageIndex, pageSize }, setPagination] = useState(DEFAULT_TABLE_PAGINATION_STATE);
-
-  const pagination = useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize]
+  const [state, dispatch] = useReducer(
+    aotfReducer,
+    { query, parentEntity: entity, parentId: id },
+    createInitialState
   );
+
+  useEffect(() => {
+    console.log({ state });
+  }, [state]);
+
+  // const [{ pageIndex, pageSize }, setPagination] = useState(DEFAULT_TABLE_PAGINATION_STATE);
+
+  // const pagination = useMemo(
+  //   () => ({
+  //     pageIndex,
+  //     pageSize,
+  //   }),
+  //   [pageIndex, pageSize]
+  // );
 
   // Table Controls
   // [rowId, columnId, codebaseSectionId, tablePrefix]
@@ -68,8 +80,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     query,
     options: {
       id,
-      index: pageIndex,
-      size: pageSize,
+      index: state.pagination.pageIndex,
+      size: state.pagination.pageSize,
       filter: searhFilter,
       sortBy: sorting[0].id,
       enableIndirect,
@@ -140,13 +152,15 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   const resetToInitialPagination = () => {
     setTableExpanded({});
     setExpanded([]);
-    setPagination(DEFAULT_TABLE_PAGINATION_STATE);
+    // setPagination(DEFAULT_TABLE_PAGINATION_STATE);
   };
 
-  const handlePaginationChange = newPagination => {
-    setTableExpanded({});
-    setExpanded([]);
-    setPagination(newPagination);
+  const handlePaginationChange = updater => {
+    const newPagination = updater(state.pagination);
+    dispatch(onPaginationChange(newPagination));
+    // setTableExpanded({});
+    // setExpanded([]);
+    // setPagination(newPagination);
   };
 
   const handleSortingChange = newSortingFunc => {
@@ -160,7 +174,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const handleSearchInputChange = newSearchFilter => {
     if (newSearchFilter !== searhFilter) {
-      setPagination(DEFAULT_TABLE_PAGINATION_STATE);
+      // setPagination(DEFAULT_TABLE_PAGINATION_STATE);
       setSearhFilter(newSearchFilter);
     }
   };
@@ -196,6 +210,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const contextVariables = useMemo(
     () => ({
+      dispatch,
       query,
       id,
       entity,
@@ -205,7 +220,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       loading,
       initialLoading,
       tableExpanded,
-      pagination,
+      pagination: state.pagination,
       expanded,
       activeHeadersControlls,
       enableIndirect,
@@ -243,6 +258,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       handleAggregationClick,
     }),
     [
+      dispatch,
       activeHeadersControlls,
       count,
       data,
@@ -262,7 +278,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       initialLoading,
       loading,
       modifiedSourcesDataControls,
-      pagination,
+      state,
       pinExpanded,
       pinnedCount,
       pinnedData,

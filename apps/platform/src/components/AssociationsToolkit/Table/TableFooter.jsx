@@ -69,6 +69,12 @@ function TableFooter({ table }) {
           rowsPerPage={table.getState().pagination.pageSize}
           page={pagination.pageIndex}
           labelRowsPerPage="Associations per page"
+          backIconButtonProps={{
+            disableFocusRipple: true,
+          }}
+          nextIconButtonProps={{
+            disableFocusRipple: true,
+          }}
           onPageChange={(e, index) => {
             if (!loading) {
               table.setPageIndex(index);

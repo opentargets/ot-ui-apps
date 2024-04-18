@@ -8,9 +8,10 @@ import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 
 import DISEASE_PAGE_QUERY from "./DiseasePage.gql";
+import Associations from "./DiseaseAssociations";
+import Profile from "./Profile";
 
-const Profile = lazy(() => import("./Profile"));
-const Associations = lazy(() => import("./DiseaseAssociations"));
+// const Profile = lazy(() => import("./Profile"));
 const ClassicAssociations = lazy(() => import("./ClassicAssociations"));
 
 function DiseasePage() {

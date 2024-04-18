@@ -139,7 +139,7 @@ function TableAssociations() {
             header: <Typography variant="assoc_header">Association Score</Typography>,
             cell: row => {
               const { loading } = row.table.getState();
-              if (loading) return <Skeleton variant="rect" width={30} height={25} />;
+              if (loading) return <Skeleton variant="rect" width={26} height={25} />;
               return (
                 <Box sx={{ marginRight: "10px" }}>
                   <ColoredCell
