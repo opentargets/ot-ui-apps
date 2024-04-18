@@ -147,7 +147,7 @@ const dataSources = [
     aggregationId: "affected_pathway",
     weight: 1,
     isPrivate: false,
-    docsLink: "https://platform-docs.opentargets.org/evidence#crispr-screens", // TODO: check this
+    docsLink: "https://platform-docs.opentargets.org/evidence#crispr-screens",
   },
   {
     id: "crispr",
