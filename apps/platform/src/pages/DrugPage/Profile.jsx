@@ -1,31 +1,32 @@
 import { gql } from "@apollo/client";
 import { PlatformApiProvider, SectionContainer, SummaryContainer, summaryUtils } from "ui";
-import MechanismsOfActionSummary from "sections/src/drug/MechanismsOfAction/Summary";
-import IndicationsSummary from "sections/src/drug/Indications/Summary";
-import KnownDrugsSummary from "sections/src/drug/KnownDrugs/Summary";
-import DrugWarningsSummary from "sections/src/drug/DrugWarnings/Summary";
-import PharmacogenomicsSummary from "sections/src/drug/Pharmacogenomics/Summary";
-import AdverseEventsSummary from "sections/src/drug/AdverseEvents/Summary";
+// import MechanismsOfActionSummary from "sections/src/drug/MechanismsOfAction/Summary";
+// import IndicationsSummary from "sections/src/drug/Indications/Summary";
+// import KnownDrugsSummary from "sections/src/drug/KnownDrugs/Summary";
+// import DrugWarningsSummary from "sections/src/drug/DrugWarnings/Summary";
+// import PharmacogenomicsSummary from "sections/src/drug/Pharmacogenomics/Summary";
+// import AdverseEventsSummary from "sections/src/drug/AdverseEvents/Summary";
 import BibliographySummary from "sections/src/drug/Bibliography/Summary";
 
-import MechanismsOfActionSection from "sections/src/drug/MechanismsOfAction/Body";
-import IndicationsSection from "sections/src/drug/Indications/Body";
-import KnownDrugsSection from "sections/src/drug/KnownDrugs/Body";
-import DrugWarningsSection from "sections/src/drug/DrugWarnings/Body";
-import PharmacogenomicsSection from "sections/src/drug/Pharmacogenomics/Body";
-import AdverseEventsSection from "sections/src/drug/AdverseEvents/Body";
+// import MechanismsOfActionSection from "sections/src/drug/MechanismsOfAction/Body";
+// import IndicationsSection from "sections/src/drug/Indications/Body";
+// import KnownDrugsSection from "sections/src/drug/KnownDrugs/Body";
+// import DrugWarningsSection from "sections/src/drug/DrugWarnings/Body";
+// import PharmacogenomicsSection from "sections/src/drug/Pharmacogenomics/Body";
+// import AdverseEventsSection from "sections/src/drug/AdverseEvents/Body";
 import BibliographySection from "sections/src/drug/Bibliography/Body";
+import BibliographySectionOld from "sections/src/drug/BibliographyOld/Body";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
 const summaries = [
-  MechanismsOfActionSummary,
-  IndicationsSummary,
-  KnownDrugsSummary,
-  DrugWarningsSummary,
-  PharmacogenomicsSummary,
-  AdverseEventsSummary,
+  // MechanismsOfActionSummary,
+  // IndicationsSummary,
+  // KnownDrugsSummary,
+  // DrugWarningsSummary,
+  // PharmacogenomicsSummary,
+  // AdverseEventsSummary,
   BibliographySummary,
 ];
 
@@ -44,6 +45,7 @@ const DRUG_PROFILE_QUERY = gql`
 `;
 
 function Profile({ chemblId, name }) {
+
   return (
     <PlatformApiProvider
       entity={DRUG}
@@ -54,23 +56,24 @@ function Profile({ chemblId, name }) {
       <ProfileHeader chemblId={chemblId} />
 
       <SummaryContainer>
-        <MechanismsOfActionSummary />
+        {/* <MechanismsOfActionSummary />
         <IndicationsSummary />
         <KnownDrugsSummary />
         <DrugWarningsSummary />
         <PharmacogenomicsSummary />
-        <AdverseEventsSummary />
+        <AdverseEventsSummary /> */}
         <BibliographySummary />
       </SummaryContainer>
 
       <SectionContainer>
-        <MechanismsOfActionSection id={chemblId} label={name} entity={DRUG} />
+        {/* <MechanismsOfActionSection id={chemblId} label={name} entity={DRUG} />
         <IndicationsSection id={chemblId} label={name} entity={DRUG} />
         <KnownDrugsSection id={chemblId} label={name} entity={DRUG} />
         <DrugWarningsSection id={chemblId} label={name} entity={DRUG} />
         <PharmacogenomicsSection id={chemblId} label={name} entity={DRUG} />
-        <AdverseEventsSection id={chemblId} label={name} entity={DRUG} />
+        <AdverseEventsSection id={chemblId} label={name} entity={DRUG} /> */}
         <BibliographySection id={chemblId} label={name} entity={DRUG} />
+        <BibliographySectionOld id={chemblId} label={name} entity={DRUG} />
       </SectionContainer>
     </PlatformApiProvider>
   );

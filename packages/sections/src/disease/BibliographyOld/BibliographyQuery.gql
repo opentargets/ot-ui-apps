@@ -1,0 +1,58 @@
+query SimilarEntitiesQuery(
+  $id: String!
+  $ids: [String!] = []
+  $startYear: Int = null
+  $startMonth: Int = null
+  $endYear: Int = null
+  $endMonth: Int = null
+  $threshold: Float = 0.5
+  $size: Int! = 15
+  $entityNames: [String!] = []
+  $cursor: String = null
+) {
+  disease(efoId: $id) {
+    id
+    name
+    similarEntities(
+      additionalIds: $ids
+      threshold: $threshold
+      size: $size
+      entityNames: $entityNames
+    ) {
+      score
+      id
+      object {
+        ... on Target {
+          id
+          approvedSymbol
+        }
+        ... on Drug {
+          id
+          name
+        }
+        ... on Disease {
+          id
+          name
+        }
+      }
+    }
+    literatureOcurrences(
+      additionalIds: $ids
+      cursor: $cursor
+      startYear: $startYear
+      startMonth: $startMonth
+      endYear: $endYear
+      endMonth: $endMonth
+    ) {
+      count
+      filteredCount
+      earliestPubYear
+      cursor
+      rows {
+        pmid
+        pmcid
+        publicationDate
+      }
+    }
+  }
+}

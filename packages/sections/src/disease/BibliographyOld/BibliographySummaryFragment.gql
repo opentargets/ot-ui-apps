@@ -1,0 +1,6 @@
+fragment DiseaseBibliography on Disease {
+  literatureOcurrences {
+    count
+    filteredCount
+  }
+}

@@ -10,27 +10,29 @@ import {
   SectionLoader,
 } from "ui";
 
-import OntologySummary from "sections/src/disease/Ontology/Summary";
-import KnownDrugsSummary from "sections/src/disease/KnownDrugs/Summary";
+// import OntologySummary from "sections/src/disease/Ontology/Summary";
+// import KnownDrugsSummary from "sections/src/disease/KnownDrugs/Summary";
+
 import BibliographySummary from "sections/src/disease/Bibliography/Summary";
-import PhenotypesSummary from "sections/src/disease/Phenotypes/Summary";
-import OTProjectsSummary from "sections/src/disease/OTProjects/Summary";
+// import PhenotypesSummary from "sections/src/disease/Phenotypes/Summary";
+// import OTProjectsSummary from "sections/src/disease/OTProjects/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
-const OntologySection = lazy(() => import("sections/src/disease/Ontology/Body"));
-const KnownDrugsSection = lazy(() => import("sections/src/disease/KnownDrugs/Body"));
+// const OntologySection = lazy(() => import("sections/src/disease/Ontology/Body"));
+// const KnownDrugsSection = lazy(() => import("sections/src/disease/KnownDrugs/Body"));
 const BibliographySection = lazy(() => import("sections/src/disease/Bibliography/Body"));
-const PhenotypesSection = lazy(() => import("sections/src/disease/Phenotypes/Body"));
-const OTProjectsSection = lazy(() => import("sections/src/disease/OTProjects/Body"));
+const BibliographySectionOld = lazy(() => import("sections/src/disease/BibliographyOld/Body"));
+// const PhenotypesSection = lazy(() => import("sections/src/disease/Phenotypes/Body"));
+// const OTProjectsSection = lazy(() => import("sections/src/disease/OTProjects/Body"));
 
 const summaries = [
-  OntologySummary,
-  KnownDrugsSummary,
+  // OntologySummary,
+  // KnownDrugsSummary,
   BibliographySummary,
-  PhenotypesSummary,
-  OTProjectsSummary,
+  // PhenotypesSummary,
+  // OTProjectsSummary,
 ];
 
 const DISEASE = "disease";
@@ -57,17 +59,17 @@ function Profile({ efoId, name }) {
     >
       <ProfileHeader />
       <SummaryContainer>
-        <OntologySummary />
+        {/* <OntologySummary />
         <KnownDrugsSummary />
-        <PhenotypesSummary />
+        <PhenotypesSummary /> */}
         <BibliographySummary />
-        <PrivateWrapper>
+        {/* <PrivateWrapper>
           <OTProjectsSummary />
-        </PrivateWrapper>
+        </PrivateWrapper> */}
       </SummaryContainer>
 
       <SectionContainer>
-        <Suspense fallback={<SectionLoader />}>
+        {/* <Suspense fallback={<SectionLoader />}>
           <OntologySection id={efoId} label={name} entity={DISEASE} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
@@ -75,15 +77,18 @@ function Profile({ efoId, name }) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <PhenotypesSection id={efoId} label={name} entity={DISEASE} />
-        </Suspense>
+        </Suspense> */}
         <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={efoId} label={name} entity={DISEASE} />
         </Suspense>
-        <PrivateWrapper>
+        <Suspense fallback={<SectionLoader />}>
+          <BibliographySectionOld id={efoId} label={name} entity={DISEASE} />
+        </Suspense>
+        {/* <PrivateWrapper>
           <Suspense fallback={<SectionLoader />}>
             <OTProjectsSection id={efoId} label={name} entity={DISEASE} />
           </Suspense>
-        </PrivateWrapper>
+        </PrivateWrapper> */}
       </SectionContainer>
     </PlatformApiProvider>
   );

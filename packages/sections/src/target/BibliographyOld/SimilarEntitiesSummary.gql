@@ -1,0 +1,6 @@
+fragment EntitiesSummaryFragment on Target {
+  literatureOcurrences {
+    count
+    filteredCount
+  }
+}
