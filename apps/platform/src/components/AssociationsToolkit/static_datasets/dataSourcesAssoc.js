@@ -147,7 +147,7 @@ const dataSources = [
     aggregationId: "affected_pathway",
     weight: 1,
     isPrivate: false,
-    docsLink: "https://platform-docs.opentargets.org/evidence#project-score", // TODO: check this
+    docsLink: "https://platform-docs.opentargets.org/evidence#crispr-screens", // TODO: check this
   },
   {
     id: "crispr",
@@ -177,7 +177,7 @@ const dataSources = [
     aggregationId: "affected_pathway",
     weight: 0.5,
     isPrivate: false,
-    docsLink: "https://platform-docs.opentargets.org/evidence#slapenrich",
+    docsLink: "https://platform-docs.opentargets.org/evidence#progeny",
   },
   {
     id: "reactome",
