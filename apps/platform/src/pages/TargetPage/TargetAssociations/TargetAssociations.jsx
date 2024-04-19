@@ -12,9 +12,9 @@ import {
   OptionsControlls,
   AotFLoader,
   DataUploader,
+  AotfApiPlayground,
 } from "../../../components/AssociationsToolkit";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
-import AotfApiPlayground from "../../../components/AssociationsToolkit/AotfApiPlayground";
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useContext(AssociationsContext);
@@ -32,7 +32,7 @@ function AssociationsWrapper() {
               <DataUploader />
             </PrivateWrapper>
             <Divider orientation="vertical" />
-            <DataDownloader fileStem={`OT-${id}-associated-diseases`} />
+            <DataDownloader />
             <AotfApiPlayground />
           </OptionsControlls>
         </Box>
