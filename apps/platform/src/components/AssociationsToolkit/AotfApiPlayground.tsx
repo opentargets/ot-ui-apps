@@ -16,7 +16,6 @@ function AotfApiPlayground() {
 
   const aggregationFilters = dataSourcesRequired.map(({ id, ...obj }) => ({ ...obj }));
 
-  console.log("AotfApiPlayground -> QUERY", query);
   const variables = {
     id,
     index: pagination.pageIndex,
