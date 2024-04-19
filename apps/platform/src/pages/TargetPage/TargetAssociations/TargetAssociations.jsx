@@ -14,34 +14,10 @@ import {
   DataUploader,
 } from "../../../components/AssociationsToolkit";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
-import { ApiPlaygroundDrawer } from "ui";
+import AotfApiPlayground from "../../../components/AssociationsToolkit/AotfApiPlayground";
 
 function AssociationsWrapper() {
-  const {
-    initialLoading,
-    id,
-    pagination,
-    searhFilter,
-    sorting,
-    enableIndirect,
-    dataSourcesWeights,
-    entity,
-    dataSourcesRequired,
-  } = useContext(AssociationsContext);
-
-  const aggregationFilters = dataSourcesRequired.map(({ id, ...obj }) => ({ ...obj }));
-
-  const variables = {
-    id,
-    index: pagination.pageIndex,
-    size: pagination.pageSize,
-    filter: searhFilter,
-    sortBy: sorting[0].id,
-    enableIndirect,
-    datasources: dataSourcesWeights,
-    entity,
-    aggregationFilters,
-  };
+  const { initialLoading, id } = useContext(AssociationsContext);
 
   if (initialLoading) return <AotFLoader />;
 
@@ -57,10 +33,7 @@ function AssociationsWrapper() {
             </PrivateWrapper>
             <Divider orientation="vertical" />
             <DataDownloader fileStem={`OT-${id}-associated-diseases`} />
-            <ApiPlaygroundDrawer
-              query={TARGET_ASSOCIATIONS_QUERY.loc.source.body}
-              variables={variables}
-            />
+            <AotfApiPlayground />
           </OptionsControlls>
         </Box>
         <Box></Box>
