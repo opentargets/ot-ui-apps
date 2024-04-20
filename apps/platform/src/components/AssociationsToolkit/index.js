@@ -4,6 +4,7 @@ export { default as TargetPrioritisationSwitch } from "./TargetPrioritisationSwi
 export { default as SearhInput } from "./SearchInput";
 export { default as DataDownloader } from "./DataDownloader";
 export { default as DataUploader } from "./DataUploader/DataUploader";
+export { default as AotfApiPlayground } from "./AotfApiPlayground";
 export {
   default as AssociationsContext,
   AssociationsStateProvider as AssociationsProvider,
