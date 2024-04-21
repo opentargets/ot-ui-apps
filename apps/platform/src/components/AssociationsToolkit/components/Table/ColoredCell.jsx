@@ -1,4 +1,4 @@
-import { getScale } from "../utils";
+import { getScale } from "../../utils";
 import Tooltip from "./AssocTooltip";
 
 const getClassName = ({ globalScore, hasValue }) => {

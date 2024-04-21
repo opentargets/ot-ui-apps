@@ -8,7 +8,7 @@ import {
   DEFAULT_TABLE_SORTING_STATE,
   DISPLAY_MODE,
 } from "../utils";
-import { Action, ActionType, ENTITIES, State, TABLE_VIEW } from "./types";
+import { Action, ActionType, ENTITIES, State, TABLE_VIEW } from "../types";
 
 /*****************
  * INITIAL STATE *

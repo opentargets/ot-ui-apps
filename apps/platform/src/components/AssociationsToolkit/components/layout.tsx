@@ -10,14 +10,12 @@ const LoadingContainer = styled("div")({
   gap: "15px",
 });
 
-export function AotFLoader() {
-  return (
-    <LoadingContainer>
-      <LoadingBackdrop />
-      Loading associations
-    </LoadingContainer>
-  );
-}
+export const AotFLoader: React.FC = () => (
+  <LoadingContainer>
+    <LoadingBackdrop />
+    Loading associations
+  </LoadingContainer>
+);
 
 const baseGridContainerStyles = {
   display: "grid",
@@ -30,9 +28,13 @@ const baseGridContainerStyles = {
 
 const boxShadow = "0px 3px 15px -3px rgba(0,0,0,0.1)";
 
+type GridContainerProps = {
+  columnsCount: number;
+};
+
 export const GridContainer = styled("div", {
   shouldForwardProp: prop => prop !== "columnsCount",
-})(({ columnsCount }) => ({
+})<GridContainerProps>(({ columnsCount }) => ({
   ...baseGridContainerStyles,
   gridTemplateColumns: `repeat(${columnsCount}, 1fr)`,
 }));
@@ -48,9 +50,13 @@ export const RowsContainer = styled("div")({
   flexDirection: "column",
 });
 
+type RowContainerProps = {
+  rowExpanded: boolean;
+};
+
 export const RowContainer = styled("div", {
   shouldForwardProp: prop => prop !== "rowExpanded",
-})(({ rowExpanded }) => ({
+})<RowContainerProps>(({ rowExpanded }) => ({
   top: "148px",
   position: rowExpanded ? "sticky" : "initial",
   padding: rowExpanded ? "0.1em 0 0.1em 0" : "0.1em 0 0.1em 0",

@@ -3,9 +3,9 @@ import { flexRender } from "@tanstack/react-table";
 import { ClickAwayListener, Fade, Box } from "@mui/material";
 import { v1 } from "uuid";
 
-import useAotfContext from "../hooks/useAotfContext";
+import useAotfContext from "../../hooks/useAotfContext";
 
-import { getCellId } from "../utils";
+import { getCellId } from "../../utils";
 import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";

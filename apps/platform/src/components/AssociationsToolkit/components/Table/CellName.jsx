@@ -20,8 +20,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
-import useAotfContext from "../hooks/useAotfContext";
-import { ENTITIES } from "../utils";
+import useAotfContext from "../../hooks/useAotfContext";
+import { ENTITIES } from "../../utils";
 import { grey } from "@mui/material/colors";
 
 const StyledMenuItem = styled(MenuItem)({

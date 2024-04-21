@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { Alert, TablePagination, Typography } from "@mui/material";
-import useAotfContext from "../hooks/useAotfContext";
+import useAotfContext from "../../hooks/useAotfContext";
 import ColoredCell from "./ColoredCell";
-import { getLegend } from "../utils";
+import { getLegend } from "../../utils";
 
 function TableFooter({ table }) {
   const {

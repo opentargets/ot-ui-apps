@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from "@mui/material/styles";
 import { Tooltip } from "ui";
 
-import useAotfContext from "./hooks/useAotfContext";
+import useAotfContext from "../hooks/useAotfContext";
 
 const PopoverContent = styled("div")({
   padding: "15px",

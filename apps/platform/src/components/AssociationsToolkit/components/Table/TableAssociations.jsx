@@ -9,8 +9,8 @@ import {
 
 import { styled, Skeleton, Typography, Box } from "@mui/material";
 
-import dataSourcesCols from "../static_datasets/dataSourcesAssoc";
-import prioritizationCols from "../static_datasets/prioritisationColumns";
+import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
+import prioritizationCols from "../../static_datasets/prioritisationColumns";
 
 import AggregationsTooltip from "./AssocTooltip";
 import ColoredCell from "./ColoredCell";
@@ -20,7 +20,7 @@ import CellName from "./CellName";
 import TableHeader from "./TableHeader";
 import TableFooter from "./TableFooter";
 import TableBody from "./TableBody";
-import useAotfContext from "../hooks/useAotfContext";
+import useAotfContext from "../../hooks/useAotfContext";
 
 import {
   DISPLAY_MODE,
@@ -29,7 +29,7 @@ import {
   getScale,
   isPartnerPreview,
   tableCSSVariables,
-} from "../utils";
+} from "../../utils";
 
 const TableElement = styled("main")({
   maxWidth: "1600px",

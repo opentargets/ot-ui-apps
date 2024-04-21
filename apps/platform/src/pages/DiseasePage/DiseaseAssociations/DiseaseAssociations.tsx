@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { PrivateWrapper } from "ui";
 import { Box, Divider } from "@mui/material";
 import {
@@ -12,13 +13,20 @@ import {
   DataUploader,
   AotfApiPlayground,
 } from "../../../components/AssociationsToolkit";
-import { ENTITIES } from "../../../components/AssociationsToolkit/context/types";
+import { ENTITIES } from "../../../components/AssociationsToolkit/types";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
 
-/* DISEASE ASSOCIATION  */
-function DiseaseAssociations({ efoId }) {
+type DiseaseAssociationsProps = {
+  efoId: string;
+};
+
+function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
   return (
-    <AssociationsProvider id={efoId} entity={ENTITIES.DISEASE} query={DISEASE_ASSOCIATIONS_QUERY}>
+    <AssociationsProvider
+      id={pros.efoId}
+      entity={ENTITIES.DISEASE}
+      query={DISEASE_ASSOCIATIONS_QUERY}
+    >
       <ControlsSection>
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <SearhInput />

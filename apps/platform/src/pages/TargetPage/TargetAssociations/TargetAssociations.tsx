@@ -1,28 +1,27 @@
-import { useContext } from "react";
+import { ReactElement } from "react";
 import { PrivateWrapper } from "ui";
 import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
-  AssociationsContext,
   AssociationsProvider,
   SearhInput,
   DataDownloader,
   ControlsSection,
   OptionsControlls,
-  AotFLoader,
   DataUploader,
   AotfApiPlayground,
 } from "../../../components/AssociationsToolkit";
+import { ENTITIES } from "../../../components/AssociationsToolkit/types";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
 
-function AssociationsWrapper() {
-  const { initialLoading, id } = useContext(AssociationsContext);
+type TargetAssociationsProps = {
+  ensgId: string;
+};
 
-  if (initialLoading) return <AotFLoader />;
-
+function TargetAssociations({ ensgId }: TargetAssociationsProps): ReactElement {
   return (
-    <>
+    <AssociationsProvider id={ensgId} entity={ENTITIES.TARGET} query={TARGET_ASSOCIATIONS_QUERY}>
       <ControlsSection>
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <SearhInput />
@@ -39,15 +38,6 @@ function AssociationsWrapper() {
         <Box></Box>
       </ControlsSection>
       <TableAssociations />
-    </>
-  );
-}
-
-/* TARGET ASSOCIATION  */
-function TargetAssociations({ ensgId }) {
-  return (
-    <AssociationsProvider id={ensgId} entity="target" query={TARGET_ASSOCIATIONS_QUERY}>
-      <AssociationsWrapper />
     </AssociationsProvider>
   );
 }

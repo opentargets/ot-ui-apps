@@ -21,6 +21,9 @@ const AssociationsStateContext = createContext();
 
 const initialIndirect = entity => entity !== ENTITIES.TARGET;
 
+/**
+ * Associations on the fly state Provider
+ */
 function AssociationsStateProvider({ children, entity, id, query }) {
   const [state, dispatch] = useReducer(
     aotfReducer,
