@@ -25,9 +25,11 @@ function OtTableColumnFilter({ column }: { column: Column<any, unknown> }) {
   const id = open ? "simple-popover" : undefined;
 
   function getAllUniqueOptions() {
-    return Array.from(column.getFacetedUniqueValues().keys())
+    const uniqueArray = Array.from(column.getFacetedUniqueValues())
       .sort()
-      .filter(n => n);
+      .filter(n => n[0] && n);
+    const uniqueObjectWithCount = Object.fromEntries(uniqueArray);
+    return uniqueObjectWithCount;
   }
 
   function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
@@ -99,18 +101,23 @@ function OtTableColumnFilter({ column }: { column: Column<any, unknown> }) {
           </Grid>
           <Grid item>
             <List aria-label="filter-list">
-              {sortedUniqueValues.map(
-                (value: any) =>
-                  String(value).search(new RegExp(columnFilterInputValue, "i")) !== -1 && (
+              {Object.keys(sortedUniqueValues).map(
+                keyName =>
+                  // TO filter List as per inputValue
+                  String(keyName).search(new RegExp(columnFilterInputValue, "i")) !== -1 && (
                     <ListItemButton
                       key={v1()}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
                       onClick={() => {
+                        column.setFilterValue(keyName);
+                        setColumnFilterInputValue(keyName);
                         handleClose();
-                        column.setFilterValue(value);
-                        setColumnFilterInputValue(value);
                       }}
                     >
-                      {value}
+                      <span>{keyName}</span>
+                      <span>
+                        <strong>&#40;{sortedUniqueValues[keyName]}&#41;</strong>
+                      </span>
                     </ListItemButton>
                   )
               )}

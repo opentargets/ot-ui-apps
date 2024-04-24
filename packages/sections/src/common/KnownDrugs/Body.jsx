@@ -145,33 +145,32 @@ function getOtTableColumns() {
         {
           header: "Drug",
           accessorKey: "drug.name",
-          cell: d => {
-            return d.row.original.drug ? (
-              <Link to={`/drug/${d.row.original.drug.id}`}>{d.row.original.drug.name}</Link>
+          cell: ({ row }) =>
+            row.original.drug ? (
+              <Link to={`/drug/${row.original.drug.id}`}>{row.original.drug.name}</Link>
             ) : (
               naLabel
-            );
-          },
-          // enableSorting: false,
-          // enableColumnFilter: false,
+            ),
+          enableSorting: false,
+          enableColumnFilter: false,
           sticky: true,
         },
         {
           header: "Type",
           accessorKey: "drugType",
-          // enableSorting: false,
-          // enableColumnFilter: false,
+          enableSorting: false,
+          enableColumnFilter: false,
         },
         {
           header: "Mechanism Of Action",
           accessorKey: "mechanismOfAction",
-          // enableSorting: false,
-          enableColumnFilter: true,
+          enableSorting: false,
+          enableColumnFilter: false,
         },
         {
           header: "Action Type",
           id: "actionType",
-          accessorFn: row => row.drug.mechanismsOfAction.rows[0].actionType,
+          accessorFn: row => row.drug?.mechanismsOfAction?.rows[0]?.actionType,
           enableSorting: false,
           enableColumnFilter: false,
         },
@@ -188,6 +187,8 @@ function getOtTableColumns() {
               {d.row.original.target.approvedSymbol}
             </Link>
           ),
+          enableSorting: false,
+          enableColumnFilter: false,
         },
       ],
     },
@@ -197,15 +198,15 @@ function getOtTableColumns() {
         {
           header: "Name",
           accessorKey: "target.approvedName",
-          // enableSorting: false,
+          enableSorting: false,
           enableColumnFilter: false,
         },
         {
           header: "Phase",
           accessorKey: "phase",
           cell: info => phaseMap(info.getValue()),
-          // enableSorting: false,
-          enableColumnFilter: true,
+          enableSorting: true,
+          enableColumnFilter: false,
         },
         {
           header: "Status",
@@ -218,8 +219,8 @@ function getOtTableColumns() {
       accessorKey: "sources",
       header: "Source",
       cell: d => <SourceDrawer references={d.row.original.urls} />,
-      // enableSorting: false,
-      // enableColumnFilter: false,
+      enableSorting: false,
+      enableColumnFilter: false,
     },
   ];
 }

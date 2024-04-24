@@ -9,6 +9,9 @@ import {
   getSortedRowModel,
   FilterFn,
   flexRender,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFacetedMinMaxValues,
 } from "@tanstack/react-table";
 import {
   faAngleLeft,
@@ -68,7 +71,7 @@ const useStyles = makeStyles(theme => ({
   },
   tableControls: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "end",
     alignItems: "center",
     padding: "0.5rem 1rem",
   },
@@ -76,6 +79,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     gap: "2rem",
+    marginLeft: "2rem",
   },
   searchAllColumn: {
     width: "100%",
@@ -187,6 +191,9 @@ function OtTable({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    // getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    // getFacetedMinMaxValues: getFacetedMinMaxValues(),
   });
 
   return (
@@ -293,6 +300,7 @@ function OtTable({
         </table>
       </div>
       <div className={classes.tableControls}>
+        {tableDataLoading && <CircularProgress sx={{ mx: theme => theme.spacing(2) }} size={25} />}
         <div className="rowsPerPage">
           <span>Rows per page:</span>
           <NativeSelect
@@ -312,8 +320,6 @@ function OtTable({
         </div>
 
         <div className={classes.rowsControls}>
-          {tableDataLoading && <CircularProgress size={20} />}
-
           <div className="pageInfo">
             <span>Page </span>
             <span>
