@@ -1,27 +1,13 @@
 import { useState } from "react";
-import {
-  Box,
-  CircularProgress,
-  Grid,
-  IconButton,
-  Input,
-  InputAdornment,
-  LinearProgress,
-  NativeSelect,
-  Typography,
-} from "@mui/material";
+import { CircularProgress, Grid, IconButton, NativeSelect, Typography } from "@mui/material";
 import {
   useReactTable,
   ColumnFiltersState,
   getCoreRowModel,
   getFilteredRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFacetedMinMaxValues,
   getPaginationRowModel,
   getSortedRowModel,
   FilterFn,
-  ColumnDef,
   flexRender,
 } from "@tanstack/react-table";
 import {
@@ -29,7 +15,6 @@ import {
   faAngleRight,
   faAnglesLeft,
   faAnglesRight,
-  faMagnifyingGlass,
   faArrowUp,
   faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
@@ -40,7 +25,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import OtTableColumnFilter from "./OtTableColumnFilter";
 import { naLabel } from "../../constants";
-import useDebounce from "../../hooks/useDebounce";
 import OtTableSearch from "./OtTableSearch";
 
 const useStyles = makeStyles(theme => ({
@@ -157,12 +141,17 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
+type DefaultSortProp = {
+  id: string;
+  desc: boolean;
+};
 type OtTableProps = {
   showGlobalFilter: boolean;
   tableDataLoading: boolean;
   allColumns: Array<any>;
   allData: Array<any>;
   verticalHeaders: boolean;
+  defaultSortObj: DefaultSortProp;
 };
 
 function OtTable({
@@ -171,6 +160,7 @@ function OtTable({
   columns = [],
   dataRows = [],
   verticalHeaders = false,
+  defaultSortObj,
 }: OtTableProps) {
   const classes = useStyles();
 
@@ -180,7 +170,6 @@ function OtTable({
   const table = useReactTable({
     data: dataRows,
     columns,
-    // enableColumnFilters: false,
     filterFns: {
       searchFilterFn: searchFilter,
     },
@@ -188,14 +177,9 @@ function OtTable({
       columnFilters,
       globalFilter,
     },
-    // initialState: {
-    //   sorting: [
-    //     {
-    //       id: "drugType",
-    //       desc: true, // sort by name in descending order by default
-    //     },
-    //   ],
-    // },
+    initialState: {
+      sorting: [{ ...defaultSortObj }],
+    },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: searchFilter,
@@ -203,9 +187,6 @@ function OtTable({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues(),
   });
 
   return (

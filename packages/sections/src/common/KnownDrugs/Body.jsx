@@ -417,7 +417,7 @@ function Body({
           />
         )}
       />
-      {/* <h2>tanstack table client side :</h2>
+      <h2>tanstack table client side :</h2>
 
       <SectionItem
         definition={definition}
@@ -444,7 +444,7 @@ function Body({
             dataRows={rows}
           />
         )}
-      /> */}
+      />
 
       <h2>tanstack table server side :</h2>
 
