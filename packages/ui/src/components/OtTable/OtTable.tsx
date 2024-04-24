@@ -149,7 +149,7 @@ type OtTableProps = {
   showGlobalFilter: boolean;
   tableDataLoading: boolean;
   allColumns: Array<any>;
-  allData: Array<any>;
+  dataRows: Array<any>;
   verticalHeaders: boolean;
   defaultSortObj: DefaultSortProp;
 };
