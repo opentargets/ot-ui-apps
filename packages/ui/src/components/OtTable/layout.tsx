@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Typography, styled } from "@mui/material";
+import { styled } from "@mui/material";
 
-export const OtTableContainer = styled("table")(theme => ({
+export const OtTableContainer = styled("table")(({ theme }) => ({
   whiteSpace: "nowrap",
   borderCollapse: "collapse",
   minWidth: "100%",
@@ -10,7 +10,7 @@ export const OtTableContainer = styled("table")(theme => ({
       "&:hover": {
         backgroundColor: "transparent",
       },
-      "&:first-child:not(:last-child)": {
+      "&:first-of-type:not(:last-child)": {
         "& th:not(:last-child)": {
           borderRight: `1px solid ${theme.palette.grey[300]}`,
         },

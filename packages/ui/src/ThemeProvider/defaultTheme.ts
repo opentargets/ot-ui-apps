@@ -84,6 +84,13 @@ const theme = {
         },
       },
     },
+    // MuiTypography: {
+    //   defaultProps: {
+    //     variantMapping: {
+    //       body2: "span",
+    //     },
+    //   },
+    // },
   },
 
   // overrides: {

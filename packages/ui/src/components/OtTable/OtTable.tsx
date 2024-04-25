@@ -104,6 +104,21 @@ function OtTable({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
+  /*********************************************
+   *     CALCULATE RESULTS ON CURRENT PAGE     *
+   *            FROM TOTAL RESULTS             *
+   * EXAMPLE RETURN 31-40 OF 45 || 41-45 OF 45 *
+   *********************************************/
+
+  function getCurrentPagePosition() {
+    const { pageIndex, pageSize } = table.getState().pagination;
+    const pageEndResultSize =
+      pageIndex * pageSize + pageSize <= dataRows.length
+        ? pageIndex * pageSize + pageSize
+        : dataRows.length;
+    return `${pageIndex * pageSize + 1} - ${pageEndResultSize} of ${dataRows.length}`;
+  }
+
   return (
     <div>
       {/* Global Search */}
@@ -228,9 +243,7 @@ function OtTable({
           <div>
             <span>Page </span>
             <span>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-              </strong>
+              <strong>{getCurrentPagePosition()}</strong>
             </span>
           </div>
 
