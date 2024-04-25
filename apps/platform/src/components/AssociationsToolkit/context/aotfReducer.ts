@@ -8,7 +8,7 @@ import {
   DEFAULT_TABLE_SORTING_STATE,
   DISPLAY_MODE,
 } from "../utils";
-import { Action, ActionType, ENTITIES, State, TABLE_VIEW } from "../types";
+import { Action, ActionType, ENTITY, State, TABLE_VIEW } from "../types";
 
 /*****************
  * INITIAL STATE *
@@ -33,13 +33,13 @@ export const initialState: State = {
 };
 
 type InitialStateParams = {
-  parentEntity: ENTITIES;
+  parentEntity: ENTITY;
   parentId: string;
   query: DocumentNode;
 };
 
 export function createInitialState({ parentEntity, parentId, query }: InitialStateParams): State {
-  const rowEntity = parentEntity === ENTITIES.TARGET ? ENTITIES.DISEASE : ENTITIES.TARGET;
+  const rowEntity = parentEntity === ENTITY.TARGET ? ENTITY.DISEASE : ENTITY.TARGET;
   const state = { ...initialState, query, parentId, parentEntity, rowEntity };
   return state;
 }

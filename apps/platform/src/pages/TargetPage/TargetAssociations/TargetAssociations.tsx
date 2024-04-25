@@ -12,7 +12,7 @@ import {
   DataUploader,
   AotfApiPlayground,
 } from "../../../components/AssociationsToolkit";
-import { ENTITIES } from "../../../components/AssociationsToolkit/types";
+import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
 
 type TargetAssociationsProps = {
@@ -21,7 +21,7 @@ type TargetAssociationsProps = {
 
 function TargetAssociations({ ensgId }: TargetAssociationsProps): ReactElement {
   return (
-    <AssociationsProvider id={ensgId} entity={ENTITIES.TARGET} query={TARGET_ASSOCIATIONS_QUERY}>
+    <AssociationsProvider id={ensgId} entity={ENTITY.TARGET} query={TARGET_ASSOCIATIONS_QUERY}>
       <ControlsSection>
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <SearhInput />

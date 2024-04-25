@@ -13,7 +13,7 @@ import {
   DataUploader,
   AotfApiPlayground,
 } from "../../../components/AssociationsToolkit";
-import { ENTITIES } from "../../../components/AssociationsToolkit/types";
+import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
 
 type DiseaseAssociationsProps = {
@@ -24,7 +24,7 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
   return (
     <AssociationsProvider
       id={pros.efoId}
-      entity={ENTITIES.DISEASE}
+      entity={ENTITY.DISEASE}
       query={DISEASE_ASSOCIATIONS_QUERY}
     >
       <ControlsSection>

@@ -1,10 +1,33 @@
 import { DocumentNode } from "graphql";
 
-export enum ENTITIES {
+export enum ENTITY {
   TARGET = "target",
   DISEASE = "disease",
   DRUG = "drug",
 }
+
+export enum TargetPrioritisationAggregation {
+  PRECEDENCE = "precedence",
+  TRACTABILITY = "tractability",
+  DOABILITY = "doability",
+  SAFETY = "safety",
+}
+
+export enum TargetPrioritisationAggregationLabel {
+  PRECEDENCE = "Precedence",
+  TRACTABILITY = "Tractability",
+  DOABILITY = "Doability",
+  SAFETY = "Safety",
+}
+
+type Column = {
+  id: string;
+  label: string;
+  aggregation: TargetPrioritisationAggregation;
+  sectionId: string;
+  description: string;
+  docsLink: string;
+};
 
 /***************
  * STATE TYPES *
@@ -26,8 +49,8 @@ export interface State {
   query: DocumentNode | null;
   pagination: Pagination;
   parentId: string;
-  parentEntity: ENTITIES | null;
-  rowEntity: ENTITIES | null;
+  parentEntity: ENTITY | null;
+  rowEntity: ENTITY | null;
   tableView: TABLE_VIEW.MAIN | TABLE_VIEW.PRIORITISATION;
   searchFilter: string;
   pinnedEntities: string[];
