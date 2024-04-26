@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 
-// import { LoadingBackdrop, BasePage, ScrollToTop } from "ui";
+import { BasePage } from "ui";
 
-// import Header from "./Header";
+import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 
 // const Profile = lazy(() => import("./Profile"));
@@ -13,8 +13,12 @@ function VariantPage() {
   // const location = useLocation();
   const { varId } = useParams();
   const [data, setData] = useState('waiting');
+  
 
-  // for now, fetch local json data and pick out correct variant
+  // temp: loading is set by useQuery, set to false for now
+  const loading = false;
+
+  // temp: data will come from gql, fetch local json file for now
   useEffect(() => {
     fetch('../data/variant-data.json')
       .then(response => response.json())
@@ -28,7 +32,21 @@ function VariantPage() {
   }
 
   return (
-    JSON.stringify(data)
+    <BasePage
+      title={`${varId} profile page`}
+      description={`Annotation information for ${varId}`}
+      location={location}
+    >
+      <Header
+        loading={loading}
+        varId={varId}
+        rsIds={data.rsIds}
+        chromosomeB37={data.chromosomeB37}
+        positionB37={data.positionB37}
+        referenceAllele={data.referenceAllele}
+        alternateAllele={data.alternateAllele}
+      />
+    </BasePage>
   );
 }
 
