@@ -137,7 +137,18 @@ const getColumns = label => [
   {
     id: "directionOfVariantEffect",
     label: (
-      <Tooltip showHelpIcon title={<>See <Link external to="https://platform-docs.opentargets.org/evidence#clinvar-somatic">here</Link> for more info on our assessment method</>}>
+      <Tooltip
+        showHelpIcon
+        title={
+          <>
+            See{" "}
+            <Link external to="https://platform-docs.opentargets.org/evidence#clinvar-somatic">
+              here
+            </Link>{" "}
+            for more info on our assessment method
+          </>
+        }
+      >
         Direction Of Effect
       </Tooltip>
     ),
@@ -253,6 +264,7 @@ const exportColumns = [
 function fetchData({ ensemblId, efoId, cursor, size }) {
   return client.query({
     query: EVA_SOMATIC_QUERY,
+    fetchPolicy: "no-cache",
     variables: {
       ensemblId,
       efoId,
