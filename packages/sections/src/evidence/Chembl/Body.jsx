@@ -11,6 +11,7 @@ import {
   getComparator,
   getPage,
   DirectionOfEffectIcon,
+  DirectionOfEffectTooltip,
 } from "ui";
 import { defaultRowsPerPageOptions, phaseMap, sourceMap, naLabel } from "../../constants";
 import { dataTypesMap } from "../../dataTypes";
@@ -169,22 +170,7 @@ function getColumns(classes) {
     {
       id: "directionOfVariantEffect",
       label: (
-        <Tooltip
-          showHelpIcon
-          title={
-            <>
-              See{" "}
-              <Link
-                external
-                to="https://platform-docs.opentargets.org/evidence#chembl"
-              >
-                here
-              </Link> for more info on our assessment method
-            </>
-          }
-        >
-          Direction Of Effect
-        </Tooltip>
+        <DirectionOfEffectTooltip docsUrl = 'https://platform-docs.opentargets.org/evidence#chembl'></DirectionOfEffectTooltip>
       ),
       renderCell: ({ variantEffect, directionOnTrait }) => {
         return (

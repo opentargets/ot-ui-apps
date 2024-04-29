@@ -7,6 +7,7 @@ import {
   LabelChip,
   DataTable,
   ScientificNotation,
+  DirectionOfEffectTooltip,
   Tooltip,
   DirectionOfEffectIcon,
 } from "ui";
@@ -142,23 +143,7 @@ function getColumns(label) {
     {
       id: "directionOfVariantEffect",
       label: (
-        <Tooltip
-          showHelpIcon
-          title={
-            <>
-              See{" "}
-              <Link
-                external
-                to="https://platform-docs.opentargets.org/evidence#open-targets-genetics"
-              >
-                here
-              </Link>{" "}
-              for more info on our assessment method
-            </>
-          }
-        >
-          Direction Of Effect
-        </Tooltip>
+        <DirectionOfEffectTooltip docsUrl = 'https://platform-docs.opentargets.org/evidence#open-targets-genetics'></DirectionOfEffectTooltip>
       ),
       renderCell: ({ variantEffect, directionOnTrait }) => {
         return (

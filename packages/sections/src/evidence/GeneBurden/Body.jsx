@@ -8,6 +8,7 @@ import {
   DataTable,
   ScientificNotation,
   DirectionOfEffectIcon,
+  DirectionOfEffectTooltip,
 } from "ui";
 
 import { definition } from ".";
@@ -191,20 +192,7 @@ const getColumns = label => [
   {
     id: "directionOfVariantEffect",
     label: (
-      <Tooltip
-        showHelpIcon
-        title={
-          <>
-            See{" "}
-            <Link external to="https://platform-docs.opentargets.org/evidence#gene-burden">
-              here
-            </Link>{" "}
-            for more info on our assessment method
-          </>
-        }
-      >
-        Direction Of Effect
-      </Tooltip>
+      <DirectionOfEffectTooltip docsUrl = 'https://platform-docs.opentargets.org/evidence#gene-burden'></DirectionOfEffectTooltip>
     ),
     renderCell: ({ variantEffect, directionOnTrait }) => {
       return (
