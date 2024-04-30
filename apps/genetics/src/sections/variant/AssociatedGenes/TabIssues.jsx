@@ -12,7 +12,7 @@ import {
   createDistanceAggregateCellRenderer,
   createAggregateCellRenderer,
   createFPAggregateCellRenderer,
-} from './Renderes';
+} from './Renderers';
 
 import { radiusScale } from './utils';
 import { generateComparator } from '../../../utils';
