@@ -1,3 +1,13 @@
+declare global {
+  interface Window {
+    configApiUrl?: string;
+    configGoogleTagManagerID?: string;
+    configHelpdeskEmail?: string;
+    configProfile?: any;
+    configPlatformUrl?: string;
+  }
+}
+
 const config = {
   apiUrl: window.configApiUrl ?? "https://api.genetics.opentargets.org/graphql",
   // window.configApiUrl ?? 'https://api.genetics.dev.opentargets.xyz/graphql',
