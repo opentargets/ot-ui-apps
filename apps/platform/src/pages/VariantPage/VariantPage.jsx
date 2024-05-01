@@ -1,20 +1,19 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useLocation, useParams } from "react-router-dom";
 
-import { BasePage } from "ui";
+import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
 
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 
-// const Profile = lazy(() => import("./Profile"));
+const Profile = lazy(() => import("./Profile"));
 
 function VariantPage() {
   // const location = useLocation();
   const { varId } = useParams();
   const [data, setData] = useState('waiting');
   
-
   // temp: loading is set by useQuery, set to false for now
   const loading = false;
 
@@ -46,6 +45,10 @@ function VariantPage() {
         referenceAllele={data.referenceAllele}
         alternateAllele={data.alternateAllele}
       />
+      <ScrollToTop />
+      <Suspense fallback={<LoadingBackdrop />}>
+        <Profile data={data}/>
+      </Suspense>
     </BasePage>
   );
 }
