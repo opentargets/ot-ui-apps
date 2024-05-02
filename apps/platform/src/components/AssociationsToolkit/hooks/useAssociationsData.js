@@ -131,11 +131,15 @@ function useAssociationsData({
     datasources = null,
     rowsFilter = [],
     entity,
+    facetFilters = [],
   },
 }) {
+  console.log("outside useeffect facetFilters", facetFilters);
   const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
 
   useEffect(() => {
+    console.log("inside useffect facetFilters", facetFilters);
+
     let isCurrent = true;
     setState({ ...state, loading: true });
     const fetchData = async () => {
@@ -154,6 +158,7 @@ function useAssociationsData({
             name: el.name,
             path: el.path,
           })),
+          facetFilters,
         },
       });
       const parsedData = getAssociationsData(entity, resData.data);
@@ -178,6 +183,7 @@ function useAssociationsData({
     query,
     entity,
     aggregationFilters,
+    facetFilters,
   ]);
 
   return state;

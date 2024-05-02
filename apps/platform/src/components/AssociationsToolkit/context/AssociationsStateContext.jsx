@@ -37,6 +37,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   const [pinExpanded, setPinExpanded] = useState([]);
   const [tableExpanded, setTableExpanded] = useState({});
   const [tablePinExpanded, setTablePinExpanded] = useState({});
+  const [facetFilterIds, setFacetFilterIds] = useState([]);
 
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
@@ -76,6 +77,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       datasources: dataSourcesWeights,
       entity,
       aggregationFilters: dataSourcesRequired,
+      facetFilters: facetFilterIds,
     },
   });
 
@@ -95,6 +97,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       datasources: dataSourcesWeights,
       aggregationFilters: dataSourcesRequired,
       rowsFilter: pinnedEntries.toSorted(),
+      facetFilters: facetFilterIds,
     },
   });
 
@@ -223,6 +226,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       pinnedCount,
       pinExpanded,
       pinnedEntries,
+      facetFilterIds,
       handleActiveRow,
       resetToInitialPagination,
       setPinnedEntries,
@@ -241,6 +245,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       setActiveHeadersControlls,
       resetExpandler,
       handleAggregationClick,
+      setFacetFilterIds,
     }),
     [
       activeHeadersControlls,
@@ -276,6 +281,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       sorting,
       tableExpanded,
       tablePinExpanded,
+      facetFilterIds,
+      setFacetFilterIds,
     ]
   );
 

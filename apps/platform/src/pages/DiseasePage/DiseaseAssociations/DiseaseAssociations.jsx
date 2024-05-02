@@ -15,6 +15,7 @@ import {
   AotfApiPlayground,
 } from "../../../components/AssociationsToolkit";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
+import FacetsSearch from "../../../components/Facets/FacetsSearch";
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useAotfContext();
@@ -24,8 +25,9 @@ function AssociationsWrapper() {
   return (
     <>
       <ControlsSection>
-        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-          <SearhInput />
+        <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center" }}>
+          {/* <SearhInput /> */}
+          <FacetsSearch />
           <OptionsControlls>
             <AdvanceOptionsMenu />
             <PrivateWrapper>
