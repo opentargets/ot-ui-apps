@@ -1,30 +1,40 @@
-import { useEffect } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState, useRecoilCallback } from "recoil";
+import { useEffect, useState } from "react";
 import { Box, Grid, Fade, Skeleton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { PublicationWrapper, Table } from "ui";
 import Loader from "./Loader";
-
+import type { PublicationType, RowType } from "./types";
 import {
-  litsIdsState,
-  loadingEntitiesState,
-  displayedPublications,
-  literaturesEuropePMCQuery,
-  parsePublications,
-  tablePageState,
-  litsCountState,
-  litsCursorState,
-  literatureState,
-  fetchSimilarEntities,
-  updateLiteratureState,
-  tablePageSizeState,
-} from "./atoms";
+  useDisplayedPublications, useLiterature, useLiteratureDispatch,
+} from "./LiteratureContext";
+import { fetchSimilarEntities, literaturesEuropePMCQuery } from "./requests";
 
 const useStyles = makeStyles(() => ({
   root: {
     marginTop: 0,
   },
 }));
+
+function parsePublications(publications: PublicationType[]) {
+  return publications.map(pub => {
+    const row: RowType = {
+      source: pub.source,
+      patentDetails: pub.patentDetails,
+      europePmcId: pub.id,
+      fullTextOpen: !!(pub.inEPMC === "Y" || pub.inPMC === "Y"),
+      title: pub.title,
+      year: pub.pubYear,
+      abstract: pub.abstractText,
+      openAccess: pub.isOpenAccess !== "N",
+      authors: pub.authorList?.author || [],
+      journal: {
+        ...pub.journalInfo,
+        page: pub.pageInfo,
+      },
+    };
+    return row;
+  });
+}
 
 function SkeletonRow() {
   return (
@@ -48,51 +58,42 @@ function SkeletonRow() {
 }
 
 function PublicationsList({ hideSearch = false }) {
+
+  const [publicationDetails, setPublicationDetails] = useState(new Map);
   const classes = useStyles();
-  const lits = useRecoilValue(litsIdsState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(loadingEntitiesState);
-  const count = useRecoilValue(litsCountState);
-  const cursor = useRecoilValue(litsCursorState);
-  const displayedPubs = useRecoilValue(displayedPublications);
-  const bibliographyState = useRecoilValue(literatureState);
-  const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const page = useRecoilValue(tablePageState);
-  const pageSize = useRecoilValue(tablePageSizeState);
+  const literature = useLiterature();
+  const {
+    loadingEntities,
+    litsCount: count,
+    cursor,
+    page,
+    pageSize,
+    litsIds: lits,
+  } = literature;
+  const displayedPubs = useDisplayedPublications();
+  const literatureDispatch = useLiteratureDispatch();
 
-  // function to request 'ready' literatures ids
-  const syncLiteraturesState = useRecoilCallback(({ snapshot, set }) => async () => {
-    const AllLits = await snapshot.getPromise(litsIdsState);
-    const readyForRequest = AllLits.filter(x => x.status === "ready").map(x => x.id);
+  // get publications details from Europe PMC 
+  useEffect(() => {
+    const fetchFunction = async() => {
+      const missingDetails =
+        lits.filter(lit => !publicationDetails.has(lit.id));
+      if (missingDetails.length === 0) return;
+      const queryResult = await literaturesEuropePMCQuery({
+        literaturesIds: missingDetails.map(x => x.id)
+      });
+      setPublicationDetails(currentMap => {
+        const newMap = new Map(currentMap);
+        for (const p of parsePublications(queryResult)) {
+          newMap.set(p.europePmcId, p);
+        };
+        return newMap;
+      });
+    };
+    fetchFunction().catch(console.error);
+  }, [literature]);
 
-    if (readyForRequest.length === 0) return;
-    const queryResult = await snapshot.getPromise(
-      literaturesEuropePMCQuery({
-        literaturesIds: readyForRequest,
-      })
-    );
-
-    const parsedPublications = parsePublications(queryResult);
-
-    const mapedResults = new Map(parsedPublications.map(key => [key.europePmcId, key]));
-
-    const updatedPublications = AllLits.map(x => {
-      const publication = mapedResults.get(x.id);
-      if (x.status === "loaded") return x;
-      const status = publication ? "loaded" : "missing";
-      return { ...x, status, publication };
-    });
-    set(litsIdsState, updatedPublications);
-  });
-
-  useEffect(
-    () => {
-      if (lits.length !== 0) syncLiteraturesState();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [lits]
-  );
-
-  const handleRowsPerPageChange = useRecoilCallback(({ snapshot }) => async newPageSize => {
+  const handleRowsPerPageChange = async newPageSize => {
     const pageSizeInt = Number(newPageSize);
     const expected = pageSizeInt * page + pageSizeInt;
     if (expected > lits.length && cursor !== null) {
@@ -107,41 +108,42 @@ function PublicationsList({ hideSearch = false }) {
         endMonth,
         startYear,
         startMonth,
-      } = bibliographyState;
-      setLoadingEntities(true);
+      } = literature;
+      literatureDispatch({ type: 'loadingEntities', value: true });
       const request = await fetchSimilarEntities({
         query,
         id,
         category,
         entities: selectedEntities,
         cursor: newCursor,
-        page: 0,
         endYear,
         endMonth,
         startYear,
         startMonth,
       });
-      setLoadingEntities(false);
+      literatureDispatch({ type: 'loadingEntities', value: false });
       const data = request.data[globalEntity];
-      const loadedPublications = await snapshot.getPromise(litsIdsState);
       const newLits = data.literatureOcurrences?.rows?.map(({ pmid }) => ({
         id: pmid,
         status: "ready",
         publication: null,
       }));
       const update = {
-        litsIds: [...loadedPublications, ...newLits],
+        litsIds: [...lits, ...newLits],
         cursor: data.literatureOcurrences?.cursor,
         page: 0,
         pageSize: pageSizeInt,
       };
-      setLiteratureUpdate(update);
+      literatureDispatch({ type: 'stateUpdate', value: update });
     } else {
-      setLiteratureUpdate({ page: 0, pageSize: pageSizeInt });
+      literatureDispatch({ 
+        type: 'stateUpdate',
+        value: { page: 0, pageSize: pageSizeInt }
+      });
     }
-  });
+  };
 
-  const handlePageChange = useRecoilCallback(({ snapshot }) => async newPage => {
+  const handlePageChange = async newPage => {
     const newPageInt = Number(newPage);
     if (pageSize * newPageInt + pageSize > lits.length && cursor !== null) {
       const {
@@ -155,8 +157,8 @@ function PublicationsList({ hideSearch = false }) {
         endMonth,
         startYear,
         startMonth,
-      } = bibliographyState;
-      setLoadingEntities(true);
+      } = literature;
+      literatureDispatch({ type: 'loadingEntities', value: true });
       const request = await fetchSimilarEntities({
         query,
         id,
@@ -168,32 +170,35 @@ function PublicationsList({ hideSearch = false }) {
         startYear,
         startMonth,
       });
-      setLoadingEntities(false);
+      literatureDispatch({ type: 'loadingEntities', value: false });
       const data = request.data[globalEntity];
-      const loadedPublications = await snapshot.getPromise(litsIdsState);
       const newLits = data.literatureOcurrences?.rows?.map(({ pmid }) => ({
         id: pmid,
         status: "ready",
         publication: null,
       }));
       const update = {
-        litsIds: [...loadedPublications, ...newLits],
+        litsIds: [...lits, ...newLits],
         cursor: data.literatureOcurrences?.cursor,
         page: newPageInt,
       };
-      setLiteratureUpdate(update);
+      literatureDispatch({ type: 'stateUpdate', value: update });
     } else {
-      setLiteratureUpdate({ page: newPageInt });
+      literatureDispatch({
+        type: 'stateUpdate',
+        value: ({ page: newPageInt })
+      });
     }
-  });
+  };
 
   const columns = [
     {
       id: "publications",
       label: " ",
-      renderCell: ({ publication, status }) => {
-        if (status === "ready") return <SkeletonRow />;
-        if (status === "missing") return null;
+      renderCell({ id }) {
+        if (!publicationDetails?.has(id)) return <SkeletonRow />;
+        const publication = publicationDetails.get(id);
+        if (!publication) return null;
         return (
           <PublicationWrapper
             europePmcId={publication.europePmcId}
@@ -233,8 +238,8 @@ function PublicationsList({ hideSearch = false }) {
       rowsPerPageOptions={[5, 10, 25]}
       page={page}
       pageSize={pageSize}
-      onPageChange={handlePageChange}
-      onRowsPerPageChange={handleRowsPerPageChange}
+      onPageChange={handlePageChange as any}                // !! HACK TO STOP TS COMPLAINING
+      onRowsPerPageChange={handleRowsPerPageChange as any}  // !! HACK TO STOP TS COMPLAINING
     />
   );
 }

@@ -43,7 +43,7 @@ export function europePmcSearchPOSTQuery(ids) {
   return { baseUrl, formBody };
 }
 
-export function europePmcBiblioSearchPOSTQuery(ids, size = 25) {
+export function europePmcBiblioSearchPOSTQuery(ids, size = 25) {    
   const baseUrl = "https://www.ebi.ac.uk/europepmc/webservices/rest/searchPOST";
   const query = ids.join(" OR ext_id:");
   const bodyOptions = {
