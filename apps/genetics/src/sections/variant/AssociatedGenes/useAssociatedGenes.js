@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { OVERVIEW, getDataAll, getDataAllDownload } from "./utils";
-import { getColumnsAll } from "./Renderes";
+import { getColumnsAll } from "./Renderers";
 
 export const useAssociatedGenes = (genesForVariantSchema, genesForVariant) => {
   const [value, setValue] = useState(OVERVIEW);
