@@ -170,7 +170,7 @@ function getColumns(classes) {
     {
       id: "directionOfVariantEffect",
       label: (
-        <DirectionOfEffectTooltip docsUrl = 'https://platform-docs.opentargets.org/evidence#chembl'></DirectionOfEffectTooltip>
+        <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#chembl"></DirectionOfEffectTooltip>
       ),
       renderCell: ({ variantEffect, directionOnTrait }) => {
         return (

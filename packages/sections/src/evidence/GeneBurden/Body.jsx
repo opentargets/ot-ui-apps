@@ -192,7 +192,7 @@ const getColumns = label => [
   {
     id: "directionOfVariantEffect",
     label: (
-      <DirectionOfEffectTooltip docsUrl = 'https://platform-docs.opentargets.org/evidence#gene-burden'></DirectionOfEffectTooltip>
+      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#gene-burden"></DirectionOfEffectTooltip>
     ),
     renderCell: ({ variantEffect, directionOnTrait }) => {
       return (

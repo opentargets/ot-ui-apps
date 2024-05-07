@@ -89,7 +89,7 @@ const columns = [
   {
     id: "directionOfVariantEffect",
     label: (
-      <DirectionOfEffectTooltip docsUrl = 'https://platform-docs.opentargets.org/evidence#impc'></DirectionOfEffectTooltip>
+      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#impc"></DirectionOfEffectTooltip>
     ),
     renderCell: ({ variantEffect, directionOnTrait }) => {
       return (
