@@ -1,33 +1,34 @@
 
 import { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
-
 import { BasePage } from "ui";
-
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
+import { MetadataType } from "./types";
 
 // const Profile = lazy(() => import("./Profile"));
 
 function VariantPage() {
-  // const location = useLocation();
-  const { varId } = useParams();
-  const [data, setData] = useState('waiting');
-  
+  const location = useLocation();
+  const { varId } = useParams() as { varId: string };
+  const [metadata, setMetadata] =
+    useState<MetadataType | 'waiting' | undefined>('waiting');
 
   // temp: loading is set by useQuery, set to false for now
   const loading = false;
 
   // temp: data will come from gql, fetch local json file for now
   useEffect(() => {
-    fetch('../data/variant-data.json')
+    fetch('../data/variant-data-2.json')
       .then(response => response.json())
-      .then(allData => setData(allData.find(v => v.variantId === varId)));
+      .then((allData: MetadataType[]) =>
+        setMetadata(allData.find(v => v.variantId === varId)));
   }, []);
 
-  if (!data) {
+  // temp: revisit this (use same as other pages) once using gql to get data
+  if (!metadata) {
     return <NotFoundPage />;
-  } else if (data === 'waiting') {
+  } else if (metadata === 'waiting') {
     return <b>Waiting</b>;
   }
 
@@ -37,15 +38,7 @@ function VariantPage() {
       description={`Annotation information for ${varId}`}
       location={location}
     >
-      <Header
-        loading={loading}
-        varId={varId}
-        rsIds={data.rsIds}
-        chromosomeB37={data.chromosomeB37}
-        positionB37={data.positionB37}
-        referenceAllele={data.referenceAllele}
-        alternateAllele={data.alternateAllele}
-      />
+      <Header loading={loading} metadata={metadata} />
     </BasePage>
   );
 }

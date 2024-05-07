@@ -1,27 +1,32 @@
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
-
 import { Header as HeaderBase, ExternalLink } from "ui";
+import { MetadataType } from "./types";
 
-function Header({
-    loading,
-    varId,
+type HeaderProps = {
+  loading: boolean;
+  metadata: MetadataType;
+}
+
+function Header({ loading, metadata }: HeaderProps) {
+  const {
+    variantId,
     rsIds,
-    chromosomeB37,
-    positionB37,
+    chromosome,
+    position,
     referenceAllele,
     alternateAllele,
-  }) {
+  } = metadata;
   const rsId = rsIds[0];
   const gnomadId = `${
-    chromosomeB37}-${
-    positionB37}-${
+    chromosome}-${
+    position}-${
     referenceAllele}-${
     alternateAllele}`;
 
   return (
     <HeaderBase
       loading={loading}
-      title={varId}
+      title={variantId}
       Icon={faMapPin}
       externalLinks={
         <>
@@ -31,8 +36,8 @@ function Header({
             id={rsId}
           />
           <ExternalLink
-            title="gnomAD 2.1"
-            url={`https://gnomad.broadinstitute.org/variant/${gnomadId}?dataset=gnomad_r2_1`}
+            title="gnomAD"
+            url={`https://gnomad.broadinstitute.org/variant/${gnomadId}?dataset=gnomad_r4`}
             id={gnomadId}
           />
         </>
