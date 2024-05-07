@@ -1,4 +1,4 @@
-import { faBook, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faBook } from "@fortawesome/free-solid-svg-icons";
 import {
   faDiscourse,
   faTwitterSquare,
@@ -6,9 +6,10 @@ import {
   faGithubSquare,
   faYoutubeSquare,
 } from "@fortawesome/free-brands-svg-icons";
+import { FooterExternalLinks } from "ui";
 
 import { contactUrl as contactUrlConfig } from "./configuration";
-import config from "./config";
+import { NavBarItem } from "./components/NavBar/NavBar";
 
 export const pvalThreshold = 4.94e-322;
 
@@ -16,7 +17,7 @@ export const contactUrl = contactUrlConfig;
 
 export const naLabel = "N/A";
 
-export const mainMenuItems = [
+export const mainMenuItems: NavBarItem[] = [
   // Documentation
   {
     name: "Documentation",
@@ -45,7 +46,7 @@ export const mainMenuItems = [
   },
 ];
 
-export const externalLinks = {
+export const externalLinks: FooterExternalLinks = {
   about: [
     {
       label: "Community forum",
@@ -90,7 +91,6 @@ export const externalLinks = {
       label: "Community",
       icon: faDiscourse,
       url: "https://community.opentargets.org",
-      external: true,
     },
   ],
   social: [

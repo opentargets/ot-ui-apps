@@ -1,0 +1,404 @@
+[
+  {
+    "variantId": "X_27135701_T_C",
+    "chromosome": "X",
+    "position": 27135701,
+    "chromosomeB37": "X",
+    "positionB37": 27153818,
+    "referenceAllele": "T",
+    "alternateAllele": "C",
+    "rsIds": [
+      "rs899125696"
+    ],
+    "alleleType": "snv",
+    "alleleFrequencies": [
+      {
+        "populationName": "afr_adj",
+        "alleleFrequency": 0.00006494560805325539
+      },
+      {
+        "populationName": "ami_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "amr_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "asj_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "eas_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "fin_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "mid_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "nfe_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "remaining_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "sas_adj",
+        "alleleFrequency": 0
+      }
+    ],
+    "vep": {
+      "mostSevereConsequence": "intron_variant",
+      "transcriptConsequences": []
+    },
+    "inSilicoPredictors": {
+      "cadd": {
+        "phred": 0.585,
+        "raw": -0.172629
+      },
+      "pangolinLargestDs": 0.01,
+      "phylop": -0.246
+    }
+  },
+  {
+    "variantId": "X_27135703_G_A",
+    "chromosome": "X",
+    "position": 27135703,
+    "chromosomeB37": "X",
+    "positionB37": 27153820,
+    "referenceAllele": "G",
+    "alternateAllele": "A",
+    "rsIds": [
+      "rs12557104"
+    ],
+    "alleleType": "snv",
+    "alleleFrequencies": [
+      {
+        "populationName": "afr_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "ami_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "amr_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "asj_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "eas_adj",
+        "alleleFrequency": 0.0002838489923360772
+      },
+      {
+        "populationName": "fin_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "mid_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "nfe_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "remaining_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "sas_adj",
+        "alleleFrequency": 0
+      }
+    ],
+    "vep": {
+      "mostSevereConsequence": "intron_variant",
+      "transcriptConsequences": []
+    },
+    "inSilicoPredictors": {
+      "cadd": {
+        "phred": 3.252,
+        "raw": 0.211212
+      },
+      "pangolinLargestDs": 0,
+      "phylop": 1.16
+    }
+  },
+  {
+    "variantId": "X_27135703_G_T",
+    "chromosome": "X",
+    "position": 27135703,
+    "chromosomeB37": "X",
+    "positionB37": 27153820,
+    "referenceAllele": "G",
+    "alternateAllele": "T",
+    "rsIds": [
+      "rs12557104"
+    ],
+    "alleleType": "snv",
+    "alleleFrequencies": [
+      {
+        "populationName": "afr_adj",
+        "alleleFrequency": 0.0025361729800032515
+      },
+      {
+        "populationName": "ami_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "amr_adj",
+        "alleleFrequency": 0.0944471269917914
+      },
+      {
+        "populationName": "asj_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "eas_adj",
+        "alleleFrequency": 0.028758542141230067
+      },
+      {
+        "populationName": "fin_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "mid_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "nfe_adj",
+        "alleleFrequency": 0.00033998828929225774
+      },
+      {
+        "populationName": "remaining_adj",
+        "alleleFrequency": 0.021897810218978103
+      },
+      {
+        "populationName": "sas_adj",
+        "alleleFrequency": 0
+      }
+    ],
+    "vep": {
+      "mostSevereConsequence": "intron_variant",
+      "transcriptConsequences": []
+    },
+    "inSilicoPredictors": {
+      "cadd": {
+        "phred": 2.706,
+        "raw": 0.162359
+      },
+      "pangolinLargestDs": 0,
+      "phylop": 1.16
+    }
+  },
+  {
+    "variantId": "X_27135724_C_T",
+    "chromosome": "X",
+    "position": 27135724,
+    "chromosomeB37": "X",
+    "positionB37": 27153841,
+    "referenceAllele": "C",
+    "alternateAllele": "T",
+    "rsIds": [
+      "rs1456640551"
+    ],
+    "alleleType": "snv",
+    "alleleFrequencies": [
+      {
+        "populationName": "afr_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "ami_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "amr_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "asj_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "eas_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "fin_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "mid_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "nfe_adj",
+        "alleleFrequency": 0.00003774724445115507
+      },
+      {
+        "populationName": "remaining_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "sas_adj",
+        "alleleFrequency": 0
+      }
+    ],
+    "vep": {
+      "mostSevereConsequence": "intron_variant",
+      "transcriptConsequences": []
+    },
+    "inSilicoPredictors": {
+      "cadd": {
+        "phred": 5.415,
+        "raw": 0.398941
+      },
+      "pangolinLargestDs": 0,
+      "phylop": -1.401
+    }
+  },
+  {
+    "variantId": "X_27135725_CCT_C",
+    "chromosome": "X",
+    "position": 27135725,
+    "chromosomeB37": "X",
+    "positionB37": 27153842,
+    "referenceAllele": "CCT",
+    "alternateAllele": "C",
+    "rsIds": [
+      "rs1293174774"
+    ],
+    "alleleType": "del",
+    "alleleFrequencies": [
+      {
+        "populationName": "afr_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "ami_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "amr_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "asj_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "eas_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "fin_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "mid_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "nfe_adj",
+        "alleleFrequency": 0.000056716135740618206
+      },
+      {
+        "populationName": "remaining_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "sas_adj",
+        "alleleFrequency": 0
+      }
+    ],
+    "vep": {
+      "mostSevereConsequence": "intron_variant",
+      "transcriptConsequences": []
+    },
+    "inSilicoPredictors": {
+      "cadd": {
+        "phred": 2.503,
+        "raw": 0.142979
+      },
+      "pangolinLargestDs": 0.01,
+      "phylop": 0.982
+    }
+  },
+  {
+    "variantId": "X_27135733_T_C",
+    "chromosome": "X",
+    "position": 27135733,
+    "chromosomeB37": "X",
+    "positionB37": 27153850,
+    "referenceAllele": "T",
+    "alternateAllele": "C",
+    "rsIds": [
+      "rs1925383031"
+    ],
+    "alleleType": "snv",
+    "alleleFrequencies": [
+      {
+        "populationName": "afr_adj",
+        "alleleFrequency": 0.00003248124208269724
+      },
+      {
+        "populationName": "ami_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "amr_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "asj_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "eas_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "fin_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "mid_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "nfe_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "remaining_adj",
+        "alleleFrequency": 0
+      },
+      {
+        "populationName": "sas_adj",
+        "alleleFrequency": 0
+      }
+    ],
+    "vep": {
+      "mostSevereConsequence": "intron_variant",
+      "transcriptConsequences": []
+    },
+    "inSilicoPredictors": {
+      "cadd": {
+        "phred": 7.241,
+        "raw": 0.57226
+      },
+      "pangolinLargestDs": 0,
+      "phylop": 0.15
+    }
+  }
+]

@@ -148,7 +148,7 @@ const actions = {
   }),
 };
 
-function DataDownloader({ fileStem }) {
+function DataDownloader() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { version } = useConfigContext();
   const classes = styles();
@@ -166,6 +166,7 @@ function DataDownloader({ fileStem }) {
     dataSourcesWeights,
     dataSourcesRequired,
   } = useAotfContext();
+  const fileStem = `OT-${id}-associated-${entityToGet}s`;
   const [onlyPinnedCheckBox, setOnlyPinnedCheckBox] = useState(false);
   const [weightControlCheckBox, setWeightControlCheckBox] = useState(modifiedSourcesDataControls);
   const [onlyTargetData, setOnlyTargetData] = useState(false);

@@ -252,6 +252,7 @@ const exportColumns = [
 function fetchData({ ensemblId, efoId, cursor, size }) {
   return client.query({
     query: EVA_SOMATIC_QUERY,
+    fetchPolicy: "no-cache",
     variables: {
       ensemblId,
       efoId,
