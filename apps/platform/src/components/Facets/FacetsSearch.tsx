@@ -35,7 +35,7 @@ function FacetsSearch(): ReactElement {
   return (
     <>
       <Autocomplete
-        sx={{ width: 600 }}
+        sx={{ width: 600, flexWrap: "nowrap" }}
         id="facets-search-input"
         multiple
         autoComplete
@@ -48,7 +48,7 @@ function FacetsSearch(): ReactElement {
         onChange={(event: any, newValue: any) => {
           setFacetFilterIds(newValue.map(v => v.id));
         }}
-        limitTags={3}
+        // limitTags={3}
         filterOptions={x => x}
         getOptionLabel={option => option?.label}
         onInputChange={(event, newInputValue) => {

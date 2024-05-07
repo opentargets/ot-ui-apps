@@ -15,6 +15,7 @@ import {
   AotfApiPlayground,
 } from "../../../components/AssociationsToolkit";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
+import FacetsSearch from "../../../components/Facets/FacetsSearch";
 
 function AssociationsWrapper() {
   const { initialLoading, id } = useContext(AssociationsContext);
@@ -25,7 +26,8 @@ function AssociationsWrapper() {
     <>
       <ControlsSection>
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-          <SearhInput />
+          <FacetsSearch />
+          {/* <SearhInput /> */}
           <OptionsControlls>
             <AdvanceOptionsMenu />
             <PrivateWrapper>

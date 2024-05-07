@@ -134,12 +134,9 @@ function useAssociationsData({
     facetFilters = [],
   },
 }) {
-  console.log("outside useeffect facetFilters", facetFilters);
   const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
 
   useEffect(() => {
-    console.log("inside useffect facetFilters", facetFilters);
-
     let isCurrent = true;
     setState({ ...state, loading: true });
     const fetchData = async () => {
