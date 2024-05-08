@@ -13,20 +13,15 @@ export enum TargetPrioritisationAggregation {
   SAFETY = "safety",
 }
 
-export enum TargetPrioritisationAggregationLabel {
-  PRECEDENCE = "Precedence",
-  TRACTABILITY = "Tractability",
-  DOABILITY = "Doability",
-  SAFETY = "Safety",
-}
-
-type Column = {
+export type Column = {
   id: string;
   label: string;
   aggregation: TargetPrioritisationAggregation;
   sectionId: string;
   description: string;
   docsLink: string;
+  weight?: number | undefined;
+  private?: boolean;
 };
 
 /***************
