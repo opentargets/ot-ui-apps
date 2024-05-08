@@ -5,7 +5,6 @@ import {
   AdvanceOptionsMenu,
   TargetPrioritisationSwitch,
   AssociationsProvider,
-  SearhInput,
   DataDownloader,
   useAotfContext,
   ControlsSection,
@@ -18,15 +17,14 @@ import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
 import FacetsSearch from "../../../components/Facets/FacetsSearch";
 
 function AssociationsWrapper() {
-  const { initialLoading, id } = useAotfContext();
+  const { initialLoading } = useAotfContext();
 
   if (initialLoading) return <AotFLoader />;
 
   return (
     <>
       <ControlsSection>
-        <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center" }}>
-          {/* <SearhInput /> */}
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <FacetsSearch />
           <OptionsControlls>
             <AdvanceOptionsMenu />

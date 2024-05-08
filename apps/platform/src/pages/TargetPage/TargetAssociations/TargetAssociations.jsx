@@ -6,7 +6,6 @@ import {
   AdvanceOptionsMenu,
   AssociationsContext,
   AssociationsProvider,
-  SearhInput,
   DataDownloader,
   ControlsSection,
   OptionsControlls,
@@ -18,7 +17,7 @@ import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
 import FacetsSearch from "../../../components/Facets/FacetsSearch";
 
 function AssociationsWrapper() {
-  const { initialLoading, id } = useContext(AssociationsContext);
+  const { initialLoading } = useContext(AssociationsContext);
 
   if (initialLoading) return <AotFLoader />;
 
@@ -27,7 +26,6 @@ function AssociationsWrapper() {
       <ControlsSection>
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <FacetsSearch />
-          {/* <SearhInput /> */}
           <OptionsControlls>
             <AdvanceOptionsMenu />
             <PrivateWrapper>
@@ -38,7 +36,6 @@ function AssociationsWrapper() {
             <AotfApiPlayground />
           </OptionsControlls>
         </Box>
-        <Box></Box>
       </ControlsSection>
       <TableAssociations />
     </>

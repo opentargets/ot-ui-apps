@@ -35,7 +35,7 @@ function FacetsSearch(): ReactElement {
   return (
     <>
       <Autocomplete
-        sx={{ width: 600, flexWrap: "nowrap" }}
+        sx={{ width: 1, maxWidth: 1, flexWrap: "nowrap" }}
         id="facets-search-input"
         multiple
         autoComplete
