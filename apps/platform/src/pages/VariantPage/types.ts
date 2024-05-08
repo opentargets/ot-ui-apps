@@ -1,4 +1,4 @@
-type AlleleFrequencyType = {
+export type AlleleFrequencyType = {
   populationName: string;
   alleleFrequency: number;
 };
@@ -10,6 +10,19 @@ type VepType = {
     consequenceTerms: string[];
     geneId: string;
   }[];
+};
+
+export type InSilicoPredictorsType = {
+  cadd?: {
+    phred: number;
+    raw: number;
+  };
+  revelMax?: number;
+  spliceaiDsMax?: number;
+  pangolinLargestDs?: number;
+  phylop?: number;
+  siftMax?: number;
+  polyphenMax?: number;
 };
 
 export type MetadataType = {
@@ -24,16 +37,5 @@ export type MetadataType = {
   alleleType: string;
   alleleFrequencies: AlleleFrequencyType[];
   vep: VepType;
-  inSilicoPredictors: {
-    cadd?: {
-      phred: number;
-      raw: number;
-    };
-    revelMax?: number;
-    spliceaiDsMax?: number;
-    pangolinLargestDs?: number;
-    phylop?: number;
-    siftMax?: number;
-    polyphenMax?: number;
-  };
+  inSilicoPredictors: InSilicoPredictorsType;
 };
