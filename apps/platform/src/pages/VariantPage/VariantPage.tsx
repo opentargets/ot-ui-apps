@@ -1,34 +1,41 @@
-
 import { useState, useEffect, lazy, Suspense } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import {
+  useLocation,
+  useParams,
+  Switch,
+  Route,
+  useRouteMatch,
+  Link,
+  Redirect,
+} from "react-router-dom";
+import { Box, Tabs, Tab } from "@mui/material";
 import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import { MetadataType } from "./types";
 
-const Profile = lazy(() => import("./Profile") as any);  // !! ANY !! //
+const Profile = lazy(() => import("./Profile") as any); // !! ANY !! //
 
 function VariantPage() {
   const location = useLocation();
   const { varId } = useParams() as { varId: string };
-  const [metadata, setMetadata] =
-    useState<MetadataType | 'waiting' | undefined>('waiting');
+  const { path } = useRouteMatch();
+  const [metadata, setMetadata] = useState<MetadataType | "waiting" | undefined>("waiting");
 
   // temp: loading is set by useQuery, set to false for now
   const loading = false;
 
   // temp: data will come from gql, fetch local json file for now
   useEffect(() => {
-    fetch('../data/variant-data-2.json')
+    fetch("../data/variant-data-2.json")
       .then(response => response.json())
-      .then((allData: MetadataType[]) =>
-        setMetadata(allData.find(v => v.variantId === varId)));
+      .then((allData: MetadataType[]) => setMetadata(allData.find(v => v.variantId === varId)));
   }, []);
 
   // temp: revisit this (use same as other pages) once using gql to get data
   if (!metadata) {
     return <NotFoundPage />;
-  } else if (metadata === 'waiting') {
+  } else if (metadata === "waiting") {
     return <b>Waiting</b>;
   }
 
@@ -40,8 +47,27 @@ function VariantPage() {
     >
       <Header loading={loading} metadata={metadata} />
       <ScrollToTop />
-      <Suspense fallback={<LoadingBackdrop />}>
-        <Profile metadata={metadata}/>
+      <Route
+        path="/"
+        render={history => (
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs value={history.location.pathname !== "/" ? history.location.pathname : false}>
+              <Tab
+                label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
+                value={`/variant/${varId}`}
+                component={Link}
+                to={`/variant/${varId}`}
+              />
+            </Tabs>
+          </Box>
+        )}
+      />
+      <Suspense fallback={<LoadingBackdrop height={11500} />}>
+        <Switch>
+          <Route exact path={path}>
+            <Profile metadata={metadata} />
+          </Route>
+        </Switch>
       </Suspense>
     </BasePage>
   );
