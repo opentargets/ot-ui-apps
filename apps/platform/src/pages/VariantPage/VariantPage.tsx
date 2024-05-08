@@ -1,14 +1,12 @@
 
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useLocation, useParams } from "react-router-dom";
-
 import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
-
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import { MetadataType } from "./types";
 
-const Profile = lazy(() => import("./Profile"));
+const Profile = lazy(() => import("./Profile") as any);  // !! ANY !! //
 
 function VariantPage() {
   const location = useLocation();
@@ -41,6 +39,10 @@ function VariantPage() {
       location={location}
     >
       <Header loading={loading} metadata={metadata} />
+      <ScrollToTop />
+      <Suspense fallback={<LoadingBackdrop />}>
+        <Profile metadata={metadata}/>
+      </Suspense>
     </BasePage>
   );
 }
