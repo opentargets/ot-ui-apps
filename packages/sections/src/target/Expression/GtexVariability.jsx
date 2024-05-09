@@ -144,12 +144,12 @@ function GtexVariability({ data }) {
       .attr("width", d => x(d.q3) - x(d.q1))
       .attr("height", rectHeight)
       .attr("fill", d => colour(d.tissueSiteDetailId))
-      .on("mouseover", d => {
+      .on("mouseover", (d, i, nodes) => {
         let X =
-          parseFloat(select(this).attr("x")) +
-          parseFloat(select(this).attr("width")) +
+          parseFloat(select(nodes[i]).attr("x")) +
+          parseFloat(select(nodes[i]).attr("width")) +
           tooltipSettings.offsetX;
-        let Y = parseFloat(select(this).attr("y")) + tooltipSettings.offsetY;
+        let Y = parseFloat(select(nodes[i]).attr("y")) + tooltipSettings.offsetY;
 
         tooltipText
           .attr("y", Y)

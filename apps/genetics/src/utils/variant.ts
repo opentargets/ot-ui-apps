@@ -1,12 +1,17 @@
-export function variantHasInfo(data) {
-  return data && data.variantInfo;
-}
-export function variantGetInfo(data) {
-  return data.variantInfo;
-}
+import {
+  G2VSchema,
+  IndexVariantsAndStudiesForTagVariant,
+  TagVariantsAndStudiesForIndexVariant,
+} from "../__generated__/graphql";
 
-export function variantTransformAssociatedIndexVariants(data) {
-  const associationsFlattened = data.indexVariantsAndStudiesForTagVariant.associations.map(d => {
+type IndexVariantData = {
+  indexVariantsAndStudiesForTagVariant?: IndexVariantsAndStudiesForTagVariant;
+};
+export function variantTransformAssociatedIndexVariants(data?: IndexVariantData) {
+  if (!data?.indexVariantsAndStudiesForTagVariant?.associations?.length) {
+    return [];
+  }
+  return data.indexVariantsAndStudiesForTagVariant.associations.map(d => {
     const { indexVariant, study, ...rest } = d;
     return {
       indexVariantId: indexVariant.id,
@@ -20,11 +25,16 @@ export function variantTransformAssociatedIndexVariants(data) {
       ...rest,
     };
   });
-  return associationsFlattened;
 }
 
-export function variantTransformAssociatedTagVariants(data) {
-  const associationsFlattened = data.tagVariantsAndStudiesForIndexVariant.associations.map(d => {
+type TagVariantData = {
+  tagVariantsAndStudiesForIndexVariant?: TagVariantsAndStudiesForIndexVariant;
+};
+export function variantTransformAssociatedTagVariants(data?: TagVariantData) {
+  if (!data?.tagVariantsAndStudiesForIndexVariant?.associations?.length) {
+    return [];
+  }
+  return data.tagVariantsAndStudiesForIndexVariant.associations.map(d => {
     const { tagVariant, study, ...rest } = d;
     return {
       tagVariantId: tagVariant.id,
@@ -38,7 +48,6 @@ export function variantTransformAssociatedTagVariants(data) {
       ...rest,
     };
   });
-  return associationsFlattened;
 }
 
 export const variantPopulations = [
@@ -57,14 +66,18 @@ export const variantPopulations = [
   { code: "OTH", description: "Other (population not assigned)" },
 ];
 
-export function variantParseGenesForVariantSchema(data) {
-  const genesForVariantSchema = data.genesForVariantSchema;
+type VariantSchemaData = {
+  genesForVariantSchema?: G2VSchema;
+};
+export function variantParseGenesForVariantSchema(data?: VariantSchemaData) {
+  const genesForVariantSchema = data?.genesForVariantSchema;
+  if (!genesForVariantSchema) return;
   const currentQtls = genesForVariantSchema.qtls;
   if (currentQtls.length === 0) return genesForVariantSchema;
   //possibly add new fields
   if (currentQtls[0].id === "pqtl") {
     const pqtl = currentQtls[0];
-    const restQtls = currentQtls.slice(1, pqtl.length);
+    const restQtls = currentQtls.slice(1);
     const sourceDescriptionBreakdown = parseSourceDescriptionBreakdown(
       pqtl.sourceDescriptionBreakdown
     );
@@ -76,12 +89,12 @@ export function variantParseGenesForVariantSchema(data) {
   return genesForVariantSchema;
 }
 
-function parseSourceDescriptionBreakdown(description = "") {
+function parseSourceDescriptionBreakdown(description?: string | null) {
   if (!description) return;
   return description.replace(" Sun *et al.* (2018)", "");
 }
 
-function parseSourceLabel(label = "") {
+function parseSourceLabel(label?: string | null) {
   if (!label) return;
   return label.replace(" (Sun, 2018)", "");
 }
