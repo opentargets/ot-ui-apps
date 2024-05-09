@@ -69,7 +69,7 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       };
     }
     default: {
-      throw Error("Unknown action: " + action.type);
+      throw Error("Unknown action: " + action);
     }
   }
 }

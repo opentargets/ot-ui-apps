@@ -161,9 +161,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   const handlePaginationChange = updater => {
     const newPagination = updater(state.pagination);
     dispatch(onPaginationChange(newPagination));
-    // setTableExpanded({});
-    // setExpanded([]);
-    // setPagination(newPagination);
   };
 
   const handleSortingChange = newSortingFunc => {

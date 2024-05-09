@@ -1,8 +1,8 @@
 import { Action, ActionType, Pagination } from "../types";
 
-export function onPaginationChange(newPagination: Pagination): Action {
+export function onPaginationChange(pagination: Pagination): Action {
   return {
     type: ActionType.PAGINATE,
-    pagination: newPagination,
+    pagination: pagination,
   };
 }
