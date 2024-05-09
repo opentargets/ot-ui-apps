@@ -24,20 +24,17 @@ function AssociationsWrapper() {
   return (
     <>
       <ControlsSection>
-        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+        <Box sx={{ flex: 1, display: "flex", justifyContent: "start" }}>
           <FacetsSearch />
-          <OptionsControlls>
-            <AdvanceOptionsMenu />
-            <PrivateWrapper>
-              <DataUploader />
-            </PrivateWrapper>
-            <Divider orientation="vertical" />
-            <DataDownloader />
-            <AotfApiPlayground />
-          </OptionsControlls>
+          <AdvanceOptionsMenu />
         </Box>
-        <Box>
+        <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
           <TargetPrioritisationSwitch />
+        </Box>
+        <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: "5px" }}>
+          <DataUploader />
+          <DataDownloader />
+          <AotfApiPlayground />
         </Box>
       </ControlsSection>
       <TableAssociations />

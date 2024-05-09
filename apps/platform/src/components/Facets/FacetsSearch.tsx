@@ -12,9 +12,12 @@ function FacetsSearch(): ReactElement {
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 400);
   const [dataOptions, setDataOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const NON_FACETS_CATEGORIES = ["Approved Name", "Approved Symbol", "Reactome"];
   // let my_data = [];
 
   async function getFacetsData() {
+    setLoading(true);
     const variables = {
       queryString: inputValue,
       entityNames: [entityToGet],
@@ -25,7 +28,16 @@ function FacetsSearch(): ReactElement {
       variables,
     });
 
-    setDataOptions(resData.data.facets.hits);
+    const searchResultsWithCategory = resData.data.facets.hits.map(e => {
+      const obj = { ...e };
+      if (NON_FACETS_CATEGORIES.indexOf(e.category) >= 0) obj.filterCategory = "Others";
+      else obj.filterCategory = "Facets";
+      return obj;
+    });
+    searchResultsWithCategory.sort((a, b) => -b.filterCategory.localeCompare(a.filterCategory));
+
+    setDataOptions(searchResultsWithCategory);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -40,15 +52,43 @@ function FacetsSearch(): ReactElement {
         multiple
         autoComplete
         includeInputInList
+        loading={loading}
+        loadingText={"loading"}
         filterSelectedOptions
         options={dataOptions}
         noOptionsText="Search for facets"
         size="small"
+        groupBy={option => option.filterCategory}
+        renderGroup={params => (
+          <li key={params.key}>
+            <Box
+              sx={{
+                borderBottomWidth: "1px",
+                borderStyle: "solid",
+                borderImage: "linear-gradient(to right, white, #00000037, white)0 0 90",
+              }}
+            >
+              <Box
+                sx={{
+                  textTransform: "uppercase",
+                  color: theme => theme.palette.grey[600],
+                  typography: "overline",
+                  fontWeight: "bold",
+                  mx: theme => theme.spacing(1),
+                }}
+              >
+                {params.group}
+              </Box>
+              {params.children}
+            </Box>
+          </li>
+        )}
+        // getOptionLabel={(option) => option.title}
         // value={value}
         onChange={(event: any, newValue: any) => {
           setFacetFilterIds(newValue.map(v => v.id));
         }}
-        // limitTags={3}
+        limitTags={2}
         filterOptions={x => x}
         getOptionLabel={option => option?.label}
         onInputChange={(event, newInputValue) => {
