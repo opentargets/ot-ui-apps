@@ -34,7 +34,7 @@ function FacetsSearch(): ReactElement {
       else obj.filterCategory = "Facets";
       return obj;
     });
-    searchResultsWithCategory.sort((a, b) => -b.filterCategory.localeCompare(a.filterCategory));
+    searchResultsWithCategory.sort((a, b) => -a.filterCategory.localeCompare(b.filterCategory));
 
     setDataOptions(searchResultsWithCategory);
     setLoading(false);
