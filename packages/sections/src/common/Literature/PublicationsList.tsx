@@ -1,13 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Box, Grid, Fade, Skeleton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { PublicationWrapper, Table } from "ui";
 import Loader from "./Loader";
-import type { PublicationType, RowType } from "./types";
+import type { PublicationType } from "./types";
 import {
-  useDisplayedPublications, useLiterature, useLiteratureDispatch,
+  useDisplayedPublications,
+  useLiterature,
+  useLiteratureDispatch,
+  useDetails,
+  useDetailsDispatch,
 } from "./LiteratureContext";
 import { fetchSimilarEntities, literaturesEuropePMCQuery } from "./requests";
+import { DetailsStateType } from "./types";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -15,9 +20,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function parsePublications(publications: PublicationType[]) {
-  return publications.map(pub => {
-    const row: RowType = {
+
+
+function parsePublications(publications: PublicationType[]): DetailsStateType {
+  const obj: DetailsStateType = {};
+  for (const pub of publications) {
+    obj[pub.id] = {
       source: pub.source,
       patentDetails: pub.patentDetails,
       europePmcId: pub.id,
@@ -32,8 +40,8 @@ function parsePublications(publications: PublicationType[]) {
         page: pub.pageInfo,
       },
     };
-    return row;
-  });
+  }
+  return obj;
 }
 
 function SkeletonRow() {
@@ -59,7 +67,6 @@ function SkeletonRow() {
 
 function PublicationsList({ hideSearch = false }) {
 
-  const [publicationDetails, setPublicationDetails] = useState(new Map);
   const classes = useStyles();
   const literature = useLiterature();
   const {
@@ -68,35 +75,37 @@ function PublicationsList({ hideSearch = false }) {
     cursor,
     page,
     pageSize,
-    litsIds: lits,
+    litsIds,
   } = literature;
+  const details = useDetails();
   const displayedPubs = useDisplayedPublications();
   const literatureDispatch = useLiteratureDispatch();
+  const detailsDispatch = useDetailsDispatch();
 
   // get publications details from Europe PMC 
   useEffect(() => {
     const fetchFunction = async() => {
-      const missingDetails =
-        lits.filter(lit => !publicationDetails.has(lit.id));
+      const missingDetails = litsIds.filter((id: string) => !details[id]);
       if (missingDetails.length === 0) return;
+      detailsDispatch({
+        type: 'setToLoading',
+        value: missingDetails,
+      })
       const queryResult = await literaturesEuropePMCQuery({
-        literaturesIds: missingDetails.map(x => x.id)
+        literaturesIds: missingDetails
       });
-      setPublicationDetails(currentMap => {
-        const newMap = new Map(currentMap);
-        for (const p of parsePublications(queryResult)) {
-          newMap.set(p.europePmcId, p);
-        };
-        return newMap;
+      detailsDispatch({
+        type: 'addDetails',
+        value: parsePublications(queryResult),
       });
     };
     fetchFunction().catch(console.error);
   }, [literature]);
 
-  const handleRowsPerPageChange = async newPageSize => {
+  const handleRowsPerPageChange = async (newPageSize: string) => {
     const pageSizeInt = Number(newPageSize);
     const expected = pageSizeInt * page + pageSizeInt;
-    if (expected > lits.length && cursor !== null) {
+    if (expected > litsIds.length && cursor !== null) {
       const {
         query,
         id,
@@ -123,13 +132,10 @@ function PublicationsList({ hideSearch = false }) {
       });
       literatureDispatch({ type: 'loadingEntities', value: false });
       const data = request.data[globalEntity];
-      const newLits = data.literatureOcurrences?.rows?.map(({ pmid }) => ({
-        id: pmid,
-        status: "ready",
-        publication: null,
-      }));
+      const newLitsIds =
+        data.literatureOcurrences?.rows?.map(({ pmid }) => pmid) ?? [];
       const update = {
-        litsIds: [...lits, ...newLits],
+        litsIds: [...litsIds, ...newLitsIds],
         cursor: data.literatureOcurrences?.cursor,
         page: 0,
         pageSize: pageSizeInt,
@@ -143,9 +149,9 @@ function PublicationsList({ hideSearch = false }) {
     }
   };
 
-  const handlePageChange = async newPage => {
+  const handlePageChange = async (newPage: string) => {
     const newPageInt = Number(newPage);
-    if (pageSize * newPageInt + pageSize > lits.length && cursor !== null) {
+    if (pageSize * newPageInt + pageSize > litsIds.length && cursor !== null) {
       const {
         query,
         id,
@@ -172,13 +178,10 @@ function PublicationsList({ hideSearch = false }) {
       });
       literatureDispatch({ type: 'loadingEntities', value: false });
       const data = request.data[globalEntity];
-      const newLits = data.literatureOcurrences?.rows?.map(({ pmid }) => ({
-        id: pmid,
-        status: "ready",
-        publication: null,
-      }));
+      const newLitsIds =
+        data.literatureOcurrences?.rows?.map(({ pmid }) => pmid) ?? [];
       const update = {
-        litsIds: [...lits, ...newLits],
+        litsIds: [...litsIds, ...newLitsIds],
         cursor: data.literatureOcurrences?.cursor,
         page: newPageInt,
       };
@@ -195,24 +198,28 @@ function PublicationsList({ hideSearch = false }) {
     {
       id: "publications",
       label: " ",
-      renderCell({ id }) {
-        if (!publicationDetails?.has(id)) return <SkeletonRow />;
-        const publication = publicationDetails.get(id);
-        if (!publication) return null;
-        return (
-          <PublicationWrapper
-            europePmcId={publication.europePmcId}
-            title={publication.title}
-            titleHtml={publication.titleHtml}
-            authors={publication.authors}
-            journal={publication.journal}
-            variant={publication.variant}
-            abstract={publication.abstract}
-            fullTextOpen={publication.fullTextOpen}
-            source={publication.source}
-            patentDetails={publication.patentDetails}
-          />
-        );
+      renderCell(id) {
+        const det = details[id];
+        if (det === 'loading') {
+          return <SkeletonRow />;
+        } else if (!det) {
+          return null;
+        } else {
+          return (
+            <PublicationWrapper
+              europePmcId={det.europePmcId}
+              title={det.title}
+              titleHtml={det.titleHtml}
+              authors={det.authors}
+              journal={det.journal}
+              variant={det.variant}
+              abstract={det.abstract}
+              fullTextOpen={det.fullTextOpen}
+              source={det.source}
+              patentDetails={det.patentDetails}
+            />
+          )
+        }
       },
       filterValue: ({ row: publication }) =>
         `${publication.journal.journal?.title} ${publication?.title} ${publication?.year}

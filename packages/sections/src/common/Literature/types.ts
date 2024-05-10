@@ -81,15 +81,12 @@ type AuthorListType = {
     endYear: number | null;
     endMonth: number | null;
     earliestPubYear: number;
-    litsIds:
-      | {
-          id: string;
-          status: string;
-          publication: null;
-        }[]
-      | null;  // DefaultValue;
-    page: number;
+    litsIds: string[];
     pageSize: number | null;  // DefaultValue;
     litsCount: number;
     loadingEntities: boolean | null;  // DefaultValue;
+  };
+
+  export type DetailsStateType = {
+    [index: string]: undefined | 'loading' | RowType;
   };

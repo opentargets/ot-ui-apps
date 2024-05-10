@@ -47,11 +47,7 @@ function LiteratureList(
       const data = initRequest.data[entity];
       const update = {
         entities: data.similarEntities,
-        litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => ({
-          id: pmid,
-          status: "ready",
-          publication: null,
-        })),
+        litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
         litsCount: data.literatureOcurrences?.filteredCount,
         earliestPubYear: data.literatureOcurrences?.earliestPubYear,
         cursor: data.literatureOcurrences?.cursor,

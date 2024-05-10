@@ -1,6 +1,6 @@
 import isEmpty from "lodash/isEmpty";
 import { createContext, useContext, useReducer } from 'react';
-import type { LiteratureStateType } from './types';
+import type { LiteratureStateType, DetailsStateType } from './types';
 import { getPage } from "ui";
 
 export const defaultLiteratureState: LiteratureStateType = {
@@ -26,8 +26,11 @@ export const defaultLiteratureState: LiteratureStateType = {
 const LiteratureContext = createContext(null as any);
 const LiteratureDispatchContext = createContext(null as any);
 
+const DetailsContext = createContext(null as any);
+const DetailsDispatchContext = createContext(null as any);
+
 function literatureReducer(literatureState: LiteratureStateType, action: any) {
-  console.log('LITERATURE REDUCER CALLED!');
+  console.log(`LITERATURE REDUCER: ${action.type}`);
   switch (action.type) {
     case 'loadingEntities':
       return {
@@ -38,11 +41,6 @@ function literatureReducer(literatureState: LiteratureStateType, action: any) {
       return {
         ...literatureState,
         pageSize: action.value,
-      };
-    case 'litsIds':
-      return {
-        ...literatureState,
-        litsIds: action.value,
       };
     case 'selectedEntities':
       return {
@@ -59,15 +57,36 @@ function literatureReducer(literatureState: LiteratureStateType, action: any) {
   }
 }
 
+function detailsReducer(detailsState: DetailsStateType, action: any) {
+  console.log(`DETAILS REDUCER: ${action.type}`);
+  let newObj;
+  switch (action.type) {
+    case 'addDetails':
+      return { ...detailsState, ...action.value };
+    case 'setToLoading':
+      newObj = { ...detailsState };
+      for (const id of action.value) {
+        newObj[id] = 'loading';
+      }
+      return newObj;
+  }
+}
+
 export function LiteratureProvider({ children }) {
   
   const [literature, literatureDispatch] =
     useReducer(literatureReducer, defaultLiteratureState);
   
+  const [details, detailsDispatch] = useReducer(detailsReducer, {});
+
   return (
     <LiteratureContext.Provider value={literature}>
       <LiteratureDispatchContext.Provider value={literatureDispatch}>
-        {children}
+        <DetailsContext.Provider value={details}>
+          <DetailsDispatchContext.Provider value={detailsDispatch}>
+            {children}
+          </DetailsDispatchContext.Provider>
+        </DetailsContext.Provider>
       </LiteratureDispatchContext.Provider>
     </LiteratureContext.Provider>
   );
@@ -90,4 +109,12 @@ export function useSelectedCategories() {
 export function useDisplayedPublications() {
   const { page, pageSize, litsIds } = useLiterature();
   return isEmpty(litsIds) ? [] : getPage(litsIds, page, pageSize);
+}
+
+export function useDetails() {
+  return useContext(DetailsContext);
+}
+
+export function useDetailsDispatch() {
+  return useContext(DetailsDispatchContext);
 }

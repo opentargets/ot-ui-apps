@@ -127,11 +127,7 @@ export function DateFilter() {
       entities: data.similarEntities,
       loadingEntities: false,
       category,
-      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => ({
-        id: pmid,
-        status: "ready",
-        publication: null,
-      })),
+      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
       litsCount: data.literatureOcurrences?.filteredCount,
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,
       globalEntity,

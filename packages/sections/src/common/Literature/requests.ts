@@ -2,7 +2,6 @@ import client from "../../client";
 import { europePmcBiblioSearchPOSTQuery } from "../../utils/urls";
 
 export async function literaturesEuropePMCQuery({ literaturesIds }) {
-  // console.log('PMC request!');
   if (literaturesIds.length === 0) return [];
   const { baseUrl, requestOptions } =
     europePmcBiblioSearchPOSTQuery(literaturesIds);
