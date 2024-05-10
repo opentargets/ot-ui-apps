@@ -24,9 +24,10 @@ const GraphiQL = lazy(() =>
 type ApiPlaygroundDrawerProps = {
   query: string;
   variables: any;
+  fullHeight: boolean;
 };
 
-function ApiPlaygroundDrawer({ query, variables }: ApiPlaygroundDrawerProps) {
+function ApiPlaygroundDrawer({ query, variables, fullHeight }: ApiPlaygroundDrawerProps) {
   const [open, setOpen] = useState(false);
 
   function close(e: KeyboardEvent<HTMLInputElement>) {
@@ -42,7 +43,12 @@ function ApiPlaygroundDrawer({ query, variables }: ApiPlaygroundDrawerProps) {
       {" "}
       {query ? (
         <Grid item>
-          <Button variant="outlined" size="small" onClick={() => togglePlayground()}>
+          <Button
+            sx={{ ...(fullHeight && { height: 1 }) }}
+            variant="outlined"
+            size="small"
+            onClick={() => togglePlayground()}
+          >
             API query
           </Button>
         </Grid>

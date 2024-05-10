@@ -30,7 +30,7 @@ function FacetsSearch(): ReactElement {
 
     const searchResultsWithCategory = resData.data.facets.hits.map(e => {
       const obj = { ...e };
-      if (NON_FACETS_CATEGORIES.indexOf(e.category) >= 0) obj.filterCategory = "Others";
+      if (NON_FACETS_CATEGORIES.indexOf(e.category) >= 0) obj.filterCategory = "Entities";
       else obj.filterCategory = "Facets";
       return obj;
     });
@@ -47,7 +47,7 @@ function FacetsSearch(): ReactElement {
   return (
     <>
       <Autocomplete
-        sx={{ width: 1, maxWidth: 1, flexWrap: "nowrap" }}
+        sx={{ minWidth: "300px", width: 1 / 2, maxWidth: 1, flexWrap: "nowrap" }}
         id="facets-search-input"
         multiple
         autoComplete

@@ -1,4 +1,3 @@
-import { PrivateWrapper } from "ui";
 import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
@@ -24,17 +23,16 @@ function AssociationsWrapper() {
   return (
     <>
       <ControlsSection>
-        <Box sx={{ flex: 1, display: "flex", justifyContent: "start" }}>
+        <Box sx={{ flex: 1, display: "flex", flexWrap: "wrap", gap: "12px" }}>
           <FacetsSearch />
           <AdvanceOptionsMenu />
-        </Box>
-        <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
-          <TargetPrioritisationSwitch />
-        </Box>
-        <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", gap: "5px" }}>
           <DataUploader />
+          <Divider orientation="vertical" />
           <DataDownloader />
           <AotfApiPlayground />
+        </Box>
+        <Box sx={{ flex: 1, display: "flex", justifyContent: "end" }}>
+          <TargetPrioritisationSwitch />
         </Box>
       </ControlsSection>
       <TableAssociations />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Popover, FormGroup, Button, FormControlLabel, Checkbox, Switch } from "@mui/material";
-import { faFilter, faGear } from "@fortawesome/free-solid-svg-icons";
+import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from "@mui/material/styles";
 import { Tooltip } from "ui";
@@ -41,12 +41,12 @@ function DataMenu() {
         <Button
           aria-describedby={id}
           onClick={handleClick}
-          // variant="text"
+          variant="outlined"
           disableElevation
           disabled={isPrioritisation}
-          sx={{ height: 1, border: "none" }}
+          sx={{ height: 1 }}
         >
-          <FontAwesomeIcon icon={faFilter} size="lg" />
+          <FontAwesomeIcon icon={faGear} size="lg" />
         </Button>
       </Tooltip>
       <Popover
