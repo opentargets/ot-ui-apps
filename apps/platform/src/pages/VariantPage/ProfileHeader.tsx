@@ -35,7 +35,7 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
       <Box>
         <Typography variant="subtitle1" mt={0}>Location</Typography>
         <Field loading={loading} title="GRCh38">
-          {`${metadata.chromosome}:${metadata.position}`}
+          {metadata.chromosome}:{metadata.position}
         </Field>
         <Field loading={loading} title="Reference Allele">
           {metadata.referenceAllele}
