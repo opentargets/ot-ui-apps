@@ -19,17 +19,17 @@ function VariantPage() {
   const location = useLocation();
   const { varId } = useParams() as { varId: string };
   const { path } = useRouteMatch();
-  const [metadata, setMetadata] = useState<MetadataType | "waiting" | undefined>("waiting");
-
-  // temp: loading is set by useQuery, set to false for now
-  const loading = false;
 
   // temp: data will come from gql, fetch local json file for now
-  useEffect(() => {
-    fetch("../data/variant-data-2.json")
-      .then(response => response.json())
-      .then((allData: MetadataType[]) => setMetadata(allData.find(v => v.variantId === varId)));
-  }, []);
+  const [metadata, setMetadata] = useState<MetadataType | "waiting" | undefined>("waiting");
+   useEffect(() => {
+      fetch("../data/variant-data-2.json")
+        .then(response => response.json())
+        .then((allData: MetadataType[]) => setMetadata(allData.find(v => v.variantId === varId)));
+    }, []);
+  
+    // temp: loading is set by useQuery, set to false for now
+  const loading = false;
 
   // temp: revisit this (use same as other pages) once using gql to get data
   if (!metadata) {
@@ -64,7 +64,7 @@ function VariantPage() {
       <Suspense fallback={<LoadingBackdrop height={11500} />}>
         <Switch>
           <Route exact path={path}>
-            <Profile metadata={metadata} />
+            <Profile varId={varId} />
           </Route>
         </Switch>
       </Suspense>
