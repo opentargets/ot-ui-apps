@@ -6,7 +6,6 @@ import {
   Route,
   useRouteMatch,
   Link,
-  Redirect,
 } from "react-router-dom";
 import { Box, Tabs, Tab } from "@mui/material";
 import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
@@ -14,7 +13,7 @@ import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import { MetadataType } from "./types";
 
-const Profile = lazy(() => import("./Profile") as any); // !! ANY !! //
+const Profile = lazy(() => import("./Profile"));
 
 function VariantPage() {
   const location = useLocation();
