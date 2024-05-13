@@ -1,4 +1,3 @@
-
 import { ProfileHeader as BaseProfileHeader, Field } from "ui";
 import { Typography, Box } from "@mui/material";
 import { MetadataType, InSilicoPredictorsType }
@@ -46,9 +45,8 @@ function Profile({ metadata }: ProfileProps) {
                     </Field>
                   </Box>
                 </>
-                // !! FIX WARNING BELOW - as keyof  is not working
               : <Field key={key} loading={loading} title={key}>
-                  {String(metadata.inSilicoPredictors[key]) as keyof InSilicoPredictorsType}
+                  {String(metadata.inSilicoPredictors[key as keyof InSilicoPredictorsType])}
                 </Field>
           ))
         }
