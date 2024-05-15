@@ -24,7 +24,7 @@ function TargetPrioritisationSwitch() {
       exclusive
       onChange={handleChange}
       aria-label="Visualizations"
-      size="small"
+      size="large"
     >
       <ToggleButton value="associations">Target-disease association</ToggleButton>
       <ToggleButton value="prioritisations">Target prioritisation factors</ToggleButton>

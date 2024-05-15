@@ -1,4 +1,14 @@
-import { Autocomplete, Box, Chip, Grid, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Chip,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  Radio,
+  RadioGroup,
+  TextField,
+} from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
 import { Tooltip, useDebounce } from "ui";
 
@@ -13,8 +23,8 @@ function FacetsSearch(): ReactElement {
   const debouncedInputValue = useDebounce(inputValue, 400);
   const [dataOptions, setDataOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const NON_FACETS_CATEGORIES = ["Approved Name", "Approved Symbol", "Reactome"];
-  // let my_data = [];
+  const [filterCategoryValue, setFilterCategoryValue] = useState("All");
+  const [allCategory, setAllCategory] = useState([]);
 
   async function getFacetsData() {
     setLoading(true);
@@ -28,16 +38,16 @@ function FacetsSearch(): ReactElement {
       variables,
     });
 
-    const searchResultsWithCategory = resData.data.facets.hits.map(e => {
-      const obj = { ...e };
-      if (NON_FACETS_CATEGORIES.indexOf(e.category) >= 0) obj.filterCategory = "Entities";
-      else obj.filterCategory = "Facets";
-      return obj;
-    });
-    searchResultsWithCategory.sort((a, b) => -a.filterCategory.localeCompare(b.filterCategory));
-
+    const searchResultsWithCategory = [...resData.data.facets.hits];
+    searchResultsWithCategory.sort((a, b) => -a.category.localeCompare(b.category));
+    const categories = new Set(searchResultsWithCategory.map(item => item.category));
+    setAllCategory(["All", ...categories]);
     setDataOptions(searchResultsWithCategory);
     setLoading(false);
+  }
+
+  function handleCategoryFilterChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setFilterCategoryValue((event.target as HTMLInputElement).value);
   }
 
   useEffect(() => {
@@ -47,7 +57,7 @@ function FacetsSearch(): ReactElement {
   return (
     <>
       <Autocomplete
-        sx={{ minWidth: "300px", width: 1 / 2, maxWidth: 1, flexWrap: "nowrap" }}
+        sx={{ minWidth: "300px", width: 4 / 7, maxWidth: 1, flexWrap: "nowrap" }}
         id="facets-search-input"
         multiple
         autoComplete
@@ -58,39 +68,53 @@ function FacetsSearch(): ReactElement {
         options={dataOptions}
         noOptionsText="Search for facets"
         size="small"
-        groupBy={option => option.filterCategory}
+        limitTags={3}
+        filterOptions={x => x}
+        getOptionLabel={option => option?.label}
+        groupBy={option => option.category}
         renderGroup={params => (
           <li key={params.key}>
-            <Box
-              sx={{
-                borderBottomWidth: "1px",
-                borderStyle: "solid",
-                borderImage: "linear-gradient(to right, white, #00000037, white)0 0 90",
-              }}
-            >
-              <Box
-                sx={{
-                  textTransform: "uppercase",
-                  color: theme => theme.palette.grey[600],
-                  typography: "overline",
-                  fontWeight: "bold",
-                  mx: theme => theme.spacing(1),
-                }}
-              >
-                {params.group}
-              </Box>
-              {params.children}
+            <Box>
+              {Number(params.key) === 0 && (
+                <Box
+                  sx={{
+                    textTransform: "uppercase",
+                    color: theme => theme.palette.grey[600],
+                    typography: "overline",
+                    fontWeight: "bold",
+                    mx: theme => theme.spacing(1),
+                  }}
+                >
+                  <FormControl>
+                    <RadioGroup
+                      row
+                      aria-labelledby="aotf-search-category-radio-button"
+                      name="category-radio-buttons-group"
+                      value={filterCategoryValue}
+                      onChange={handleCategoryFilterChange}
+                    >
+                      {allCategory.map(e => (
+                        <FormControlLabel key={e} value={e} control={<Radio />} label={e} />
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                </Box>
+              )}
+              {(params.group === filterCategoryValue || filterCategoryValue === "All") && (
+                <Box
+                  sx={{
+                    borderTop: theme => `1px solid ${theme.palette.grey[300]}`,
+                  }}
+                >
+                  {params.children}
+                </Box>
+              )}
             </Box>
           </li>
         )}
-        // getOptionLabel={(option) => option.title}
-        // value={value}
         onChange={(event: any, newValue: any) => {
           setFacetFilterIds(newValue.map(v => v.id));
         }}
-        limitTags={2}
-        filterOptions={x => x}
-        getOptionLabel={option => option?.label}
         onInputChange={(event, newInputValue) => {
           setInputValue(newInputValue);
         }}
