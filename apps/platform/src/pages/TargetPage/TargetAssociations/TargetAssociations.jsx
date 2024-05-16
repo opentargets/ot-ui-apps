@@ -27,9 +27,7 @@ function AssociationsWrapper() {
         <Box sx={{ flex: 1, display: "flex", flexWrap: "wrap", gap: "12px" }}>
           <FacetsSearch />
           <AdvanceOptionsMenu />
-          <PrivateWrapper>
-            <DataUploader />
-          </PrivateWrapper>
+          <DataUploader />
           <Divider orientation="vertical" />
           <DataDownloader />
           <AotfApiPlayground />
