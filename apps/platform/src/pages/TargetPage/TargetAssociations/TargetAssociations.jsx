@@ -27,12 +27,14 @@ function AssociationsWrapper() {
         <Box sx={{ flex: 1, display: "flex", flexWrap: "wrap", gap: "12px" }}>
           <FacetsSearch />
           <AdvanceOptionsMenu />
-          <DataUploader />
+          <PrivateWrapper>
+            <DataUploader />
+          </PrivateWrapper>
           <Divider orientation="vertical" />
           <DataDownloader />
           <AotfApiPlayground />
         </Box>
-        <Box sx={{ flex: 1, display: "flex", justifyContent: "end" }}></Box>
+        <Box sx={{ flex: 1, display: "flex" }}></Box>
       </ControlsSection>
       <TableAssociations />
     </>

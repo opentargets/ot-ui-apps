@@ -79,7 +79,6 @@ export const ControlsSection = styled("section")`
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
 `;
 
 export const OptionsControlls = styled("div")`

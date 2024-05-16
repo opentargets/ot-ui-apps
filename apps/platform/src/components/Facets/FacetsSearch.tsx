@@ -1,14 +1,4 @@
-import {
-  Autocomplete,
-  Box,
-  Chip,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  Radio,
-  RadioGroup,
-  TextField,
-} from "@mui/material";
+import { Autocomplete, Box, Chip, Grid, TextField } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
 import { Tooltip, useDebounce } from "ui";
 
@@ -16,6 +6,7 @@ import FACETS_SEARCH_QUERY from "./FacetsQuery.gql";
 import useAotfContext from "../AssociationsToolkit/hooks/useAotfContext";
 import client from "../../client";
 import { capitalize } from "lodash";
+import FacetsSuggestion from "./FacetsSuggestion";
 
 function FacetsSearch(): ReactElement {
   const { entityToGet, setFacetFilterIds, facetFilterIds } = useAotfContext();
@@ -23,11 +14,12 @@ function FacetsSearch(): ReactElement {
   const debouncedInputValue = useDebounce(inputValue, 400);
   const [dataOptions, setDataOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [filterCategoryValue, setFilterCategoryValue] = useState("All");
-  const [allCategory, setAllCategory] = useState([]);
+  // let my_data = [];
 
   async function getFacetsData() {
+    setDataOptions([]);
     setLoading(true);
+
     const variables = {
       queryString: inputValue,
       entityNames: [entityToGet],
@@ -38,20 +30,13 @@ function FacetsSearch(): ReactElement {
       variables,
     });
 
-    const searchResultsWithCategory = [...resData.data.facets.hits];
-    searchResultsWithCategory.sort((a, b) => -a.category.localeCompare(b.category));
-    const categories = new Set(searchResultsWithCategory.map(item => item.category));
-    setAllCategory(["All", ...categories]);
-    setDataOptions(searchResultsWithCategory);
+    setDataOptions(resData.data.facets.hits);
     setLoading(false);
-  }
-
-  function handleCategoryFilterChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setFilterCategoryValue((event.target as HTMLInputElement).value);
   }
 
   useEffect(() => {
     if (inputValue) getFacetsData();
+    else setDataOptions([]);
   }, [debouncedInputValue]);
 
   return (
@@ -62,59 +47,18 @@ function FacetsSearch(): ReactElement {
         multiple
         autoComplete
         includeInputInList
-        loading={loading}
-        loadingText={"loading"}
         filterSelectedOptions
         options={dataOptions}
-        noOptionsText="Search for facets"
+        noOptionsText={<FacetsSuggestion />}
         size="small"
-        limitTags={3}
-        filterOptions={x => x}
-        getOptionLabel={option => option?.label}
-        groupBy={option => option.category}
-        renderGroup={params => (
-          <li key={params.key}>
-            <Box>
-              {Number(params.key) === 0 && (
-                <Box
-                  sx={{
-                    textTransform: "uppercase",
-                    color: theme => theme.palette.grey[600],
-                    typography: "overline",
-                    fontWeight: "bold",
-                    mx: theme => theme.spacing(1),
-                  }}
-                >
-                  <FormControl>
-                    <RadioGroup
-                      row
-                      aria-labelledby="aotf-search-category-radio-button"
-                      name="category-radio-buttons-group"
-                      value={filterCategoryValue}
-                      onChange={handleCategoryFilterChange}
-                    >
-                      {allCategory.map(e => (
-                        <FormControlLabel key={e} value={e} control={<Radio />} label={e} />
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
-                </Box>
-              )}
-              {(params.group === filterCategoryValue || filterCategoryValue === "All") && (
-                <Box
-                  sx={{
-                    borderTop: theme => `1px solid ${theme.palette.grey[300]}`,
-                  }}
-                >
-                  {params.children}
-                </Box>
-              )}
-            </Box>
-          </li>
-        )}
+        loading={loading}
+        // value={value}
         onChange={(event: any, newValue: any) => {
           setFacetFilterIds(newValue.map(v => v.id));
         }}
+        // limitTags={3}
+        filterOptions={x => x}
+        getOptionLabel={option => option?.label}
         onInputChange={(event, newInputValue) => {
           setInputValue(newInputValue);
         }}
