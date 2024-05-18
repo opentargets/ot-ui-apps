@@ -12,7 +12,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function LongList({ terms, render, maxTerms = 10 }) {
+type LongListProps = {
+  terms: string[];
+  render: () => JSX.Element;
+  maxTerms?: number;
+};
+
+function LongList({ terms, render, maxTerms = 10 }: LongListProps) {
   const [showMore, setShowMore] = useState(false);
   const classes = useStyles();
 
