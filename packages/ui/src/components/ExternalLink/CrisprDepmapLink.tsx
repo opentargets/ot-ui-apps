@@ -16,7 +16,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function CrisprDepmapLink({ id }) {
+type CrisprDepmapLinkProps = {
+  id?: string;
+};
+
+function CrisprDepmapLink({ id }: CrisprDepmapLinkProps) {
   const classes = useStyles();
 
   if (!id) return null;
