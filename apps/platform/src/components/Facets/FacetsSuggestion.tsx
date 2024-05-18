@@ -1,9 +1,10 @@
+import { ReactElement } from "react";
 import { faLightbulb } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box } from "@mui/material";
 import { useAotfContext } from "../AssociationsToolkit";
 
-function FacetsSuggestion() {
+function FacetsSuggestion(): ReactElement {
   const { entityToGet, entity } = useAotfContext();
 
   return (

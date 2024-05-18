@@ -26,8 +26,12 @@ function TargetPrioritisationSwitch() {
       aria-label="Visualizations"
       size="large"
     >
-      <ToggleButton value="associations">Target-disease association</ToggleButton>
-      <ToggleButton value="prioritisations">Target prioritisation factors</ToggleButton>
+      <ToggleButton sx={{ height: "auto" }} value="associations">
+        Target-disease association
+      </ToggleButton>
+      <ToggleButton sx={{ height: "auto" }} value="prioritisations">
+        Target prioritisation factors
+      </ToggleButton>
     </ToggleButtonGroup>
   );
 }

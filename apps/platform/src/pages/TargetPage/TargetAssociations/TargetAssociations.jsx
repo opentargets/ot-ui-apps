@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { PrivateWrapper } from "ui";
 import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
@@ -8,7 +7,6 @@ import {
   AssociationsProvider,
   DataDownloader,
   ControlsSection,
-  OptionsControlls,
   AotFLoader,
   DataUploader,
   AotfApiPlayground,
@@ -24,7 +22,7 @@ function AssociationsWrapper() {
   return (
     <>
       <ControlsSection>
-        <Box sx={{ flex: 1, display: "flex", flexWrap: "wrap", gap: "12px" }}>
+        <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: "12px" }}>
           <FacetsSearch />
           <AdvanceOptionsMenu />
           <DataUploader />
