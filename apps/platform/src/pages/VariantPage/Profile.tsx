@@ -1,4 +1,28 @@
+import { Suspense, lazy } from "react";
+import {
+  // PlatformApiProvider,
+  SectionContainer,
+  SummaryContainer,
+  SectionLoader,
+} from "ui";
+
+import EVASummary from "sections/src/variant/EVA/Summary";
+
 import ProfileHeader from "./ProfileHeader";
+
+const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
+
+const summaries = [
+  EVASummary,
+];
+
+const VARIANT = "variant";
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// TO DO (see e.g. profile.jsx for the evidence page):
+// - VARIANT_PROFILE_SUMMARY_FRAGMENT
+// - EVIDENCE_PROFILE_QUERY
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 type ProfileProps = {
   varId: string;
@@ -6,7 +30,28 @@ type ProfileProps = {
 
 function Profile({ varId }: ProfileProps) {
   
-  return <ProfileHeader varId={varId} />
+  return (
+    // !!!!!!!!!!
+    // PUT EVERYTHING INSIDE <PlatformApiProvider> INSTEAD OF FRAGMENT
+    // !!!!!!!!!!
+    <>
+
+      <ProfileHeader varId={varId} />
+
+      <SummaryContainer>
+        <EVASummary />
+      </SummaryContainer>
+    
+      <SectionContainer>
+        <Suspense fallback={<SectionLoader />}>
+          <EVASection id={varId} label='NO-LABEL!' entity={VARIANT} />
+        </Suspense>
+        {/* NEED ANYTHING IN <PrivateWrapper> ???? see evidence page */}
+      </SectionContainer>
+  
+    </>
+
+  );
 
 }
 

@@ -1,3 +1,8 @@
+
+// ========
+// Metadata
+// ========
+
 export type AlleleFrequencyType = {
   populationName: string;
   alleleFrequency: number;
@@ -38,4 +43,27 @@ export type MetadataType = {
   alleleFrequencies: AlleleFrequencyType[];
   vep: VepType;
   inSilicoPredictors: InSilicoPredictorsType;
+};
+
+// =======
+// ClinVar
+// =======
+
+export type ClinVarType = {
+  alleleOrigins: string[],
+  alleleRequirements: string[],
+  approvedSymbol: string,
+  clinicalSignificances: string[],
+  cohortPhenotypes: string[],
+  confidence: string,
+  directionOnTrait: "risk",
+  "disease.id": string,
+  "disease.name": string,
+  diseaseFromSource: string,
+  diseaseId: string,
+  diseaseName: string,
+  literature: string[],
+  studyId: string,
+  targetId: string,
+  variantId: string,
 };
