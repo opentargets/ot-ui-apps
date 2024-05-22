@@ -12,6 +12,7 @@ import {
   getComparator,
   getPage,
   DirectionOfEffectIcon,
+  DirectionOfEffectTooltip,
 } from "ui";
 
 import client from "../../client";
@@ -88,9 +89,7 @@ const columns = [
   {
     id: "directionOfVariantEffect",
     label: (
-      <Tooltip showHelpIcon title={<>See <Link external to="https://platform-docs.opentargets.org/evidence#impc">here</Link> for more info on our assessment method</>}>
-        Direction Of Effect
-      </Tooltip>
+      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#impc"></DirectionOfEffectTooltip>
     ),
     renderCell: ({ variantEffect, directionOnTrait }) => {
       return (

@@ -1,7 +1,15 @@
 import { List, ListItem, Typography } from "@mui/material";
 import { useQuery } from "@apollo/client";
 import { v1 } from "uuid";
-import { SectionItem, Tooltip, Link, PublicationsDrawer, DataTable, DirectionOfEffectIcon } from "ui";
+import {
+  SectionItem,
+  Tooltip,
+  Link,
+  PublicationsDrawer,
+  DataTable,
+  DirectionOfEffectIcon,
+  DirectionOfEffectTooltip,
+} from "ui";
 
 import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import Description from "./Description";
@@ -56,16 +64,11 @@ const getColumns = label => [
   {
     id: "directionOfVariantEffect",
     label: (
-      <Tooltip showHelpIcon title={<>See <Link external to="https://platform-docs.opentargets.org/evidence#gene2phenotype">here</Link> for more info on our assessment method</>}>
-        Direction Of Effect
-      </Tooltip>
+      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#gene2phenotype"></DirectionOfEffectTooltip>
     ),
     renderCell: ({ variantEffect, directionOnTrait }) => {
       return (
-        <DirectionOfEffectIcon
-          variantEffect={variantEffect}
-          directionOnTrait={directionOnTrait}
-        />
+        <DirectionOfEffectIcon variantEffect={variantEffect} directionOnTrait={directionOnTrait} />
       );
     },
   },

@@ -13,7 +13,7 @@ import DownloadsPage from "./pages/DownloadsPage";
 import DrugPage from "./pages/DrugPage";
 import TargetPage from "./pages/TargetPage";
 import EvidencePage from "./pages/EvidencePage";
-import VariantsPage from "./pages/VariantsPage";
+import VariantPage from "./pages/VariantPage";
 import APIPage from "./pages/APIPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -53,8 +53,8 @@ function App() {
                 <Route path="/evidence/:ensgId/:efoId">
                   <EvidencePage />
                 </Route>
-                <Route path="/variants">
-                  <VariantsPage />
+                <Route path="/variant/:varId">
+                  <VariantPage />
                 </Route>
                 <Route path="/api">
                   <APIPage />
