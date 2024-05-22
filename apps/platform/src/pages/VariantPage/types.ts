@@ -67,3 +67,19 @@ export type ClinVarType = {
   targetId: string,
   variantId: string,
 };
+
+// =======
+// UniProtVariants
+// =======
+
+export type UniProtVariants = {
+  variantId: string,
+  confidence: string,
+  diseaseFromSource: string,
+  literature: string[],
+  targetFromSourceId: string,
+  "target.id": string,
+  "target.approvedSymbol": string,
+  "disease.id": string,
+  "disease.name": string,
+};  
