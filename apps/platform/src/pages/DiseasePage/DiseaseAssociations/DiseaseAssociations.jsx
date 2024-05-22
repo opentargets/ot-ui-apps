@@ -22,7 +22,7 @@ function AssociationsWrapper() {
   return (
     <>
       <ControlsSection>
-        <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: "12px" }}>
+        <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: theme => theme.spacing(2) }}>
           <FacetsSearch />
           <AdvanceOptionsMenu />
           <DataUploader />

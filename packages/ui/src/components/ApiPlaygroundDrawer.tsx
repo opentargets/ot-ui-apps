@@ -48,7 +48,7 @@ function ApiPlaygroundDrawer({
       {query ? (
         <Grid item>
           <Button
-            sx={{ ...(fullHeight && { height: 1 }) }}
+            sx={{ ...(fullHeight && { height: 1, maxHeight: "45px" }) }}
             variant="outlined"
             size="small"
             onClick={() => togglePlayground()}

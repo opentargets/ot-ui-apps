@@ -44,7 +44,7 @@ function DataMenu() {
           variant="outlined"
           disableElevation
           disabled={isPrioritisation}
-          sx={{ height: 1 }}
+          sx={{ height: 1, maxHeight: "45px" }}
         >
           <FontAwesomeIcon icon={faGear} size="lg" />
         </Button>

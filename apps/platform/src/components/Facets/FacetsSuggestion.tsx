@@ -9,7 +9,6 @@ function FacetsSuggestion(): ReactElement {
 
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box></Box>
       <Box>
         <Box
           sx={{

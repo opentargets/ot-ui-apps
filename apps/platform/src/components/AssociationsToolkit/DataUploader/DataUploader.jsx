@@ -407,7 +407,7 @@ function DataUploader({ fileStem }) {
           onClick={handleClickBTN}
           variant="outlined"
           disableElevation
-          sx={{ height: 1 }}
+          sx={{ height: 1, maxHeight: "45px" }}
         >
           <FontAwesomeIcon icon={faFileImport} size="lg" />
         </Button>

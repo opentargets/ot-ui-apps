@@ -6,6 +6,7 @@ import {
   Select,
   SelectChangeEvent,
   TextField,
+  Typography,
 } from "@mui/material";
 import { ReactElement, useEffect, useState } from "react";
 import { Tooltip, useDebounce } from "ui";
@@ -17,9 +18,22 @@ import { capitalize } from "lodash";
 import FacetsSuggestion from "./FacetsSuggestion";
 
 const CATEGORIES = {
-  All: "All",
+  "All Categories": "All",
   Names: "Approved Name",
   Symbol: "Approved Symbol",
+  "ChEMBL Target Class": "ChEMBL Target Class",
+  Disease: "Disease",
+  "GO:BP": "GO:BP",
+  "GO:CC": "GO:CC",
+  "GO:MF": "GO:MF",
+  Reactome: "Reactome",
+  "Subcellular Location": "Subcellular Location",
+  "Target ID": "Target ID",
+  "Therapeutic Area": "Therapeutic Area",
+  "Tractability Antibody": "Tractability Antibody",
+  "Tractability Other Modalities": "Tractability Other Modalities",
+  "Tractability PROTAC": "Tractability PROTAC",
+  "Tractability Small Molecule": "Tractability Small Molecule",
 };
 
 function FacetsSearch(): ReactElement {
@@ -28,7 +42,7 @@ function FacetsSearch(): ReactElement {
   const debouncedInputValue = useDebounce(inputValue, 400);
   const [dataOptions, setDataOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [categoryFilterValue, setCategoryFilterValue] = useState(CATEGORIES.All);
+  const [categoryFilterValue, setCategoryFilterValue] = useState(CATEGORIES["All Categories"]);
   // let my_data = [];
 
   async function getFacetsData() {
@@ -55,7 +69,7 @@ function FacetsSearch(): ReactElement {
   }, [debouncedInputValue]);
 
   return (
-    <Box sx={{ display: "flex", width: 3 / 7, maxWidth: 3 / 7 }}>
+    <Box sx={{ display: "flex" }}>
       <Select
         value={categoryFilterValue}
         size="small"
@@ -63,20 +77,22 @@ function FacetsSearch(): ReactElement {
           setCategoryFilterValue(event.target.value);
         }}
         sx={{
-          width: 110,
+          minWidth: 140,
+          maxWidth: 1,
           background: theme => `${theme.palette.grey[200]}`,
           display: "flex",
           boxShadow: "none",
           ".MuiOutlinedInput-notchedOutline": {
-            border: theme => `1px solid ${theme.palette.grey[400]}`,
+            // border: theme => `1px solid ${theme.palette.grey[400]}`,
             borderRight: 0,
             borderTopRightRadius: 0,
             borderBottomRightRadius: 0,
           },
-          ".MuiInputBase-input": {
-            display: "flex",
-            justifyContent: "center",
-          },
+          // ".MuiInputBase-input": {
+          //   // display: "flex",
+          //   // width: 110,
+          //   // justifyContent: "center",
+          // },
         }}
       >
         {Object.entries(CATEGORIES).map(([key, value]) => (
@@ -87,14 +103,15 @@ function FacetsSearch(): ReactElement {
       </Select>
       <Autocomplete
         sx={{
-          // minWidth: "250px",
+          minWidth: "250px",
           width: 1,
+          maxWidth: 1,
           flexWrap: "nowrap",
-          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            border: theme => `2px solid ${theme.palette.primary.main}`,
-          },
+          // "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          //   border: theme => `2px solid ${theme.palette.primary.main}`,
+          // },
           "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-            border: theme => `1px solid ${theme.palette.grey[400]}`,
+            // border: theme => `1px solid ${theme.palette.grey[400]}`,
             borderLeft: 0,
             borderTopLeftRadius: 0,
             borderBottomLeftRadius: 0,
@@ -105,7 +122,7 @@ function FacetsSearch(): ReactElement {
         autoComplete
         includeInputInList
         filterSelectedOptions
-        freeSolo
+        // freeSolo
         options={dataOptions}
         noOptionsText={<FacetsSuggestion />}
         size="small"
@@ -137,21 +154,48 @@ function FacetsSearch(): ReactElement {
           ))
         }
         renderOption={(props, option) => {
-          const { label, category } = option;
-          if (option.category === categoryFilterValue || categoryFilterValue === CATEGORIES.All)
+          const { label, category, highlights } = option;
+          if (
+            option.category === categoryFilterValue ||
+            categoryFilterValue === CATEGORIES["All Categories"]
+          )
             return (
               <li {...props}>
                 <Box
                   sx={{
                     display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    borderTop: theme => `1px solid ${theme.palette.grey[200]}`,
+                    p: 0,
+                    m: 0,
                     width: "100%",
+                    flexDirection: "column",
                   }}
                 >
-                  <Box sx={{ pr: theme => theme.spacing(2) }}>{label}</Box>
-                  <Box>
-                    <Chip label={category} color="primary" size="small" />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      w: 1,
+                      flexWrap: "wrap",
+                      wordBreak: "break-all",
+                      flexDirection: "row",
+                      justifyContent: "start",
+                      em: {
+                        fontWeight: "bold",
+                      },
+                    }}
+                  >
+                    <p dangerouslySetInnerHTML={{ __html: highlights[0] }}></p>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "start",
+                    }}
+                  >
+                    <Chip
+                      label={<Typography variant="caption"> {category}</Typography>}
+                      size="small"
+                    />
                   </Box>
                 </Box>
               </li>
