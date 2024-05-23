@@ -7,7 +7,7 @@ type DescriptionProps = {
 function Description({ variantId }: DescriptionProps) {
   return (
     <>
-      Germline variation data associating <strong>{variantId}</strong> to disease evidence. Source:{" "}
+      Genetic variation from clinical submissions associating <strong>{variantId}</strong> to a disease/phenotype. Source:{" "}
       <Link to="https://www.ebi.ac.uk/eva/" external>
         EVA
       </Link>
