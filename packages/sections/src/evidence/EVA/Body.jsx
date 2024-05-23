@@ -12,6 +12,7 @@ import {
   useCursorBatchDownloader,
   ClinvarStars,
   DirectionOfEffectIcon,
+  DirectionOfEffectTooltip,
 } from "ui";
 
 import {
@@ -198,23 +199,7 @@ function getColumns(label) {
     {
       id: "directionOfVariantEffect",
       label: (
-        <Tooltip
-          showHelpIcon
-          title={
-            <>
-              See{" "}
-              <Link
-                external
-                to="https://platform-docs.opentargets.org/evidence#clinvar"
-              >
-                here
-              </Link>{" "}
-              for more info on our assessment method
-            </>
-          }
-        >
-          Direction Of Effect
-        </Tooltip>
+        <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#clinvar"></DirectionOfEffectTooltip>
       ),
       renderCell: ({ variantEffect, directionOnTrait }) => {
         return (

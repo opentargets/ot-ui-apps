@@ -25,7 +25,7 @@
         "label": "amyotrophic lateral sclerosis",
         "disease_id": "MONDO_0004976"
       },
-      { "label": "", "disease_id": "MONDO_0004975" }
+      { "label": "Alzheimer disease", "disease_id": "MONDO_0004975" }
     ]
   },
   {
@@ -49,9 +49,7 @@
     "currently_integrates_in_PPP": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "disease_mapping": [
-      { "label": "Alzheimer disease", "disease_id": "MONDO_0004975" }
-    ]
+    "disease_mapping": [{ "label": "Alzheimer disease", "disease_id": "MONDO_0004975" }]
   },
   {
     "otar_code": "OTAR2059",
@@ -61,9 +59,7 @@
     "currently_integrates_in_PPP": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Other Therapy Area",
-    "disease_mapping": [
-      { "label": "colorectal carcinoma", "disease_id": "EFO_1001951" }
-    ]
+    "disease_mapping": [{ "label": "colorectal carcinoma", "disease_id": "EFO_1001951" }]
   },
   {
     "otar_code": "OTAR2062",
@@ -73,9 +69,7 @@
     "currently_integrates_in_PPP": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
-    "disease_mapping": [
-      { "label": "colorectal carcinoma", "disease_id": "EFO_1001951" }
-    ]
+    "disease_mapping": [{ "label": "colorectal carcinoma", "disease_id": "EFO_1001951" }]
   },
   {
     "otar_code": "OTAR035",
@@ -85,9 +79,7 @@
     "currently_integrates_in_PPP": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "disease_mapping": [
-      { "label": "Parkinson disease", "disease_id": "MONDO_0005180" }
-    ]
+    "disease_mapping": [{ "label": "Parkinson disease", "disease_id": "MONDO_0005180" }]
   },
   {
     "otar_code": "OTAR2052",
