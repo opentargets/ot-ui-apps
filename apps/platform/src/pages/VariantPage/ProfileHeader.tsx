@@ -47,25 +47,6 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
         <Field loading={loading} title="most severe consequence">
           {metadata.vep.mostSevereConsequence.replace(/_/g, ' ')}
         </Field>
-        <Typography variant="subtitle1" mt={1}>Insilico predictors</Typography>
-        {
-          Object.keys(metadata.inSilicoPredictors).map(key => (key === 'cadd'
-            ? <>
-                <Field key={key} loading={loading} title={key}>&nbsp;</Field>
-                <Box ml={2}>
-                <Field loading={loading} title="phred">
-                  {metadata.inSilicoPredictors.cadd!.phred}
-                </Field>
-                <Field loading={loading} title="raw">
-                  {metadata.inSilicoPredictors.cadd!.raw}
-                </Field>
-                </Box>
-              </>
-            : <Field key={key} loading={loading} title={key}>
-                {String(metadata.inSilicoPredictors[key as keyof InSilicoPredictorsType])}
-              </Field>
-          ))
-        }
       </Box>
 
       <Box>
