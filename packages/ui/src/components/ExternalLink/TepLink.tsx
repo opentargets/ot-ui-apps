@@ -19,7 +19,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function TepLink({ ensgId }) {
+type TepLinkProps = {
+  ensgId: string;
+};
+
+function TepLink({ ensgId }: TepLinkProps) {
   const classes = useStyles();
 
   const { loading, data } = useQuery(TEP_LINK_QUERY, {

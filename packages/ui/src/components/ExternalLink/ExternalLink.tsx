@@ -1,6 +1,12 @@
 import Link from "../Link";
 
-function ExternalLink({ title, id, url }) {
+type ExternalLinkProps = {
+  id: string | null,
+  title: string,
+  url: string,
+};
+
+function ExternalLink({ title, id, url }: ExternalLinkProps) {
   if (!id) return null;
 
   return (
