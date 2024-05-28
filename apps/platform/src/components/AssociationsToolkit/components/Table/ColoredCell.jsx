@@ -1,4 +1,3 @@
-import { getScale } from "../../utils";
 import Tooltip from "./AssocTooltip";
 
 const getClassName = ({ globalScore, hasValue }) => {
@@ -7,13 +6,14 @@ const getClassName = ({ globalScore, hasValue }) => {
   return "data-empty";
 };
 
+// TODO: refactor variables and loading state
+
 function ColoredCell({
   scoreValue,
   onClick,
   rounded = true,
   globalScore,
   cell,
-  isAssociations = true,
   hasValue = false,
   tablePrefix = null,
   colorScale,

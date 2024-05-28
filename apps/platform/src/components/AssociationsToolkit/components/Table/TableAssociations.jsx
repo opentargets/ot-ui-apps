@@ -110,6 +110,7 @@ function TableAssociations() {
     handleSortingChange,
     pinnedData,
     pinnedLoading,
+    pinnedEntries,
   } = useAotfContext();
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
@@ -228,9 +229,11 @@ function TableAssociations() {
         <HeaderControls cols={entitesHeaders} />
         <div>
           {/* BODY CONTENT */}
-          <TableBody core={corePinnedTable} prefix="pinned" cols={entitesHeaders} />
+          {pinnedEntries.length > 0 && (
+            <TableBody core={corePinnedTable} prefix="pinned" cols={entitesHeaders} />
+          )}
 
-          {pinnedData.length > 0 && <TableDivider />}
+          {pinnedEntries.length > 0 && <TableDivider />}
 
           <TableBody core={coreAssociationsTable} prefix="body" cols={entitesHeaders} />
         </div>

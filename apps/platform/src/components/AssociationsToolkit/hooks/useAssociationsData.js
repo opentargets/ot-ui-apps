@@ -4,6 +4,15 @@ import client from "../../../client";
 import { ENTITIES } from "../utils";
 import { v1 } from "uuid";
 
+const INITIAL_ROW_COUNT = 2;
+
+const getEmptyRow = () => ({
+  dataSources: {},
+  score: 0,
+  disease: { id: v1() },
+  target: { id: v1() },
+});
+
 /***********
  * HELPERS *
  ***********/
@@ -110,21 +119,15 @@ const getAssociatedTargetsData = data => {
 
 //TODO: review
 const getInitialLoadingData = () => {
-  let arr = [];
-  let len = 50;
-  for (let i = 0; i < len; i++) {
-    arr.push({
-      dataSources: {},
-      score: 0,
-      disease: { id: v1() },
-      target: { id: v1() },
-    });
+  const arr = [];
+  for (let i = 0; i < INITIAL_ROW_COUNT; i++) {
+    arr.push(getEmptyRow());
   }
   return arr;
 };
 
 const INITIAL_USE_ASSOCIATION_STATE = {
-  loading: true,
+  loading: false,
   error: false,
   data: getInitialLoadingData(),
   initialLoading: true,
