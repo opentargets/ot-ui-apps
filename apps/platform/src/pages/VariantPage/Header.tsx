@@ -5,7 +5,7 @@ import { MetadataType } from "./types";
 type HeaderProps = {
   loading: boolean;
   metadata: MetadataType;
-}
+};
 
 function Header({ loading, metadata }: HeaderProps) {
   const {
