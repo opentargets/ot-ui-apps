@@ -1,3 +1,8 @@
+
+// ========
+// Metadata
+// ========
+
 export type AlleleFrequencyType = {
   populationName: string;
   alleleFrequency: number;
@@ -37,5 +42,56 @@ export type MetadataType = {
   alleleType: string;
   alleleFrequencies: AlleleFrequencyType[];
   vep: VepType;
-  inSilicoPredictors: InSilicoPredictorsType;
 };
+
+// ==================
+// InSilicoPredictors
+// ==================
+
+export type InSilicoPredictorsType = {
+  [index: number]: {
+    method: string,
+    assesessment?: string,
+    flag?: string,
+    score?: number,
+  }
+};
+
+// =======
+// ClinVar
+// =======
+
+export type ClinVarType = {
+  alleleOrigins: string[],
+  alleleRequirements: string[],
+  approvedSymbol: string,
+  clinicalSignificances: string[],
+  cohortPhenotypes: string[],
+  confidence: string,
+  directionOnTrait: "risk",
+  "disease.id": string,
+  "disease.name": string,
+  diseaseFromSource: string,
+  diseaseId: string,
+  diseaseName: string,
+  literature: string[],
+  studyId: string,
+  targetId: string,
+  variantId: string,
+};
+
+// ===============
+// UniProtVariants
+// ===============
+
+export type UniProtVariants = {
+  variantId: string,
+  confidence: string,
+  diseaseFromSource: string,
+  literature: string[],
+  targetFromSourceId: string,
+  "target.id": string,
+  "target.approvedSymbol": string,
+  "disease.id": string,
+  "disease.name": string,
+};  
