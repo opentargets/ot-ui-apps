@@ -17,6 +17,19 @@ type VepType = {
   }[];
 };
 
+export type InSilicoPredictorsType = {
+  cadd?: {
+    phred: number;
+    raw: number;
+  };
+  revelMax?: number;
+  spliceaiDsMax?: number;
+  pangolinLargestDs?: number;
+  phylop?: number;
+  siftMax?: number;
+  polyphenMax?: number;
+};
+
 export type MetadataType = {
   variantId: string,
   chromosome: string,
