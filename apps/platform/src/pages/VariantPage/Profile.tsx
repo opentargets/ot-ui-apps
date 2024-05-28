@@ -6,15 +6,18 @@ import {
   SectionLoader,
 } from "ui";
 
+import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/Summary";
 import EVASummary from "sections/src/variant/EVA/Summary";
 import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 
+const InSilicoPredictorsSection = lazy(() => import("sections/src/variant/InSilicoPredictors/Body"));
 const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
 const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
 
 const summaries = [
+  InSilicoPredictorsSummary,
   EVASummary,
   UniProtVariantsSummary
 ];
@@ -42,11 +45,15 @@ function Profile({ varId }: ProfileProps) {
       <ProfileHeader varId={varId} />
 
       <SummaryContainer>
+        <InSilicoPredictorsSummary />
         <EVASummary />
         <UniProtVariantsSummary />
       </SummaryContainer>
     
       <SectionContainer>
+        <Suspense fallback={<SectionLoader />}>
+          <InSilicoPredictorsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
+        </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <EVASection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense>

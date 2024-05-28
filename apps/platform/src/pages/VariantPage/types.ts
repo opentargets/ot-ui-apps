@@ -17,19 +17,6 @@ type VepType = {
   }[];
 };
 
-export type InSilicoPredictorsType = {
-  cadd?: {
-    phred: number;
-    raw: number;
-  };
-  revelMax?: number;
-  spliceaiDsMax?: number;
-  pangolinLargestDs?: number;
-  phylop?: number;
-  siftMax?: number;
-  polyphenMax?: number;
-};
-
 export type MetadataType = {
   variantId: string,
   chromosome: string,
@@ -42,7 +29,19 @@ export type MetadataType = {
   alleleType: string;
   alleleFrequencies: AlleleFrequencyType[];
   vep: VepType;
-  inSilicoPredictors: InSilicoPredictorsType;
+};
+
+// ==================
+// InSilicoPredictors
+// ==================
+
+export type InSilicoPredictorsType = {
+  [index: number]: {
+    method: string,
+    assesessment?: string,
+    flag?: string,
+    score?: number,
+  }
 };
 
 // =======
@@ -68,9 +67,9 @@ export type ClinVarType = {
   variantId: string,
 };
 
-// =======
+// ===============
 // UniProtVariants
-// =======
+// ===============
 
 export type UniProtVariants = {
   variantId: string,
