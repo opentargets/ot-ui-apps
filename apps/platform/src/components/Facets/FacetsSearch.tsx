@@ -37,7 +37,7 @@ const CATEGORIES = {
 };
 
 function FacetsSearch(): ReactElement {
-  const { entityToGet, setFacetFilterIds, facetFilterIds } = useAotfContext();
+  const { entityToGet, setFacetFilterIds } = useAotfContext();
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 400);
   const [dataOptions, setDataOptions] = useState([]);
@@ -69,7 +69,7 @@ function FacetsSearch(): ReactElement {
   }, [debouncedInputValue]);
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", maxWidth: 1 / 2 }}>
       <Select
         value={categoryFilterValue}
         size="small"
@@ -83,16 +83,10 @@ function FacetsSearch(): ReactElement {
           display: "flex",
           boxShadow: "none",
           ".MuiOutlinedInput-notchedOutline": {
-            // border: theme => `1px solid ${theme.palette.grey[400]}`,
             borderRight: 0,
             borderTopRightRadius: 0,
             borderBottomRightRadius: 0,
           },
-          // ".MuiInputBase-input": {
-          //   // display: "flex",
-          //   // width: 110,
-          //   // justifyContent: "center",
-          // },
         }}
       >
         {Object.entries(CATEGORIES).map(([key, value]) => (
@@ -107,11 +101,7 @@ function FacetsSearch(): ReactElement {
           width: 1,
           maxWidth: 1,
           flexWrap: "nowrap",
-          // "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-          //   border: theme => `2px solid ${theme.palette.primary.main}`,
-          // },
           "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-            // border: theme => `1px solid ${theme.palette.grey[400]}`,
             borderLeft: 0,
             borderTopLeftRadius: 0,
             borderBottomLeftRadius: 0,
@@ -122,13 +112,11 @@ function FacetsSearch(): ReactElement {
         autoComplete
         includeInputInList
         filterSelectedOptions
-        // freeSolo
         options={dataOptions}
         noOptionsText={<FacetsSuggestion />}
         size="small"
         loading={loading}
         limitTags={2}
-        // value={value}
         onChange={(event: any, newValue: any) => {
           setFacetFilterIds(newValue.map(v => v.id));
         }}
@@ -154,7 +142,7 @@ function FacetsSearch(): ReactElement {
           ))
         }
         renderOption={(props, option) => {
-          const { label, category, highlights } = option;
+          const { category, highlights } = option;
           if (
             option.category === categoryFilterValue ||
             categoryFilterValue === CATEGORIES["All Categories"]
@@ -164,7 +152,6 @@ function FacetsSearch(): ReactElement {
                 <Box
                   sx={{
                     display: "flex",
-                    borderTop: theme => `1px solid ${theme.palette.grey[200]}`,
                     p: 0,
                     m: 0,
                     width: "100%",
@@ -176,26 +163,31 @@ function FacetsSearch(): ReactElement {
                       display: "flex",
                       w: 1,
                       flexWrap: "wrap",
-                      wordBreak: "break-all",
-                      flexDirection: "row",
                       justifyContent: "start",
                       em: {
                         fontWeight: "bold",
+                        fontStyle: "normal",
                       },
                     }}
                   >
-                    <p dangerouslySetInnerHTML={{ __html: highlights[0] }}></p>
+                    <Typography dangerouslySetInnerHTML={{ __html: highlights[0] }}></Typography>
                   </Box>
                   <Box
                     sx={{
                       display: "flex",
-                      justifyContent: "start",
+                      justifyContent: "end",
                     }}
                   >
-                    <Chip
-                      label={<Typography variant="caption"> {category}</Typography>}
-                      size="small"
-                    />
+                    <Box
+                      sx={{
+                        typography: "caption",
+                        fontStyle: "italic",
+                        fontWeight: "bold",
+                        color: theme => theme.palette.primary.main,
+                      }}
+                    >
+                      in {category}
+                    </Box>
                   </Box>
                 </Box>
               </li>
