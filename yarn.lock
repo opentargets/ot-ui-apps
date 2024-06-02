@@ -1625,6 +1625,11 @@
   resolved "https://registry.yarnpkg.com/@fontsource/inter/-/inter-4.5.15.tgz#eed1873d68755d3b52d6fcfcfa3493118430a512"
   integrity sha512-FzleM9AxZQK2nqsTDtBiY0PMEVWvnKnuu2i09+p6DHvrHsuucoV2j0tmw+kAT3L4hvsLdAIDv6MdGehsPIdT+Q==
 
+"@formkit/auto-animate@^0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@formkit/auto-animate/-/auto-animate-0.8.2.tgz#24a56e816159fd5585405dcee6bb992f81c27585"
+  integrity sha512-SwPWfeRa5veb1hOIBMdzI+73te5puUBHmqqaF1Bu7FjvxlYSz/kJcZKSa9Cg60zL0uRNeJL2SbRxV6Jp6Q1nFQ==
+
 "@fortawesome/fontawesome-common-types@6.4.2":
   version "6.4.2"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-6.4.2.tgz#1766039cad33f8ad87f9467b98e0d18fbc8f01c5"

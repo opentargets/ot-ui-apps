@@ -13,6 +13,7 @@
   "dependencies": {
     "@apollo/client": "^3.3.4",
     "@ebi-gene-expression-group/expression-atlas-heatmap-highcharts": "^5.4.1-beta1",
+    "@formkit/auto-animate": "^0.8.2",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",

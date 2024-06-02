@@ -10,10 +10,9 @@ import { Box } from "@mui/material";
 import { SectionItem } from "ui";
 import PublicationsList from "./PublicationsList";
 import Description from "./Description";
-import Entities from "./Entities";
-import Category from "./Category";
 import CountInfo from "./CountInfo";
 import { DateFilter } from "./DateFilter";
+import EntityFilter from "./EntityFilter";
 
 // type LiteratureListParameter = {
 //   id: string,
@@ -23,9 +22,18 @@ import { DateFilter } from "./DateFilter";
 //   definition: any,  // ADD LATER
 // };
 
+const categories = [
+  { name: "target", label: "Target" },
+  { name: "disease", label: "Disease" },
+  { name: "drug", label: "Drug" },
+];
+
 function LiteratureList(
     { id, name, entity, BODY_QUERY, definition }) {
-    // { id, name, entity, BODY_QUERY, definition }: LiteratureListParameter) {
+
+  const categoryOfPage = `${entity[0].toUpperCase()}${entity.slice(1)}`;    
+  
+  // { id, name, entity, BODY_QUERY, definition }: LiteratureListParameter) {
 
   const [requestObj, setRequestObj] = useState({});
   const literature = useLiterature();
@@ -73,17 +81,22 @@ function LiteratureList(
       entity={entity}
       renderDescription={() => <Description name={name} />}
       renderBody={() => (
-        <>
+        <Box my={2} display="flex" flexDirection="column" gap={2}>
+          {
+            ['Disease', 'Target', 'Drug'].map(c => {
+              return c === categoryOfPage
+                ? <EntityFilter key={c} category={c} id={id} name={name} />
+                : <EntityFilter key={c} category={c} />
+            })
+          }
           <Box display="flex" sx={{ justifyContent: "space-between" }}>
             <Box display="flex" sx={{ flexDirection: "column" }}>
-              <Category />
               <DateFilter />
             </Box>
             <CountInfo />
           </Box>
-          <Entities id={id} name={name} />
           <PublicationsList hideSearch />
-        </>
+        </Box>
       )}
     />
   );
