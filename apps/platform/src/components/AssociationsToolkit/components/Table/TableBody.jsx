@@ -35,6 +35,7 @@ function TableBody({ core, cols }) {
 
   const { rows } = core.getRowModel();
   if (rows.length < 1) return null;
+  console.log({ rows });
 
   const flatCols = ["name", ...cols.map(c => c.id)];
 
@@ -56,7 +57,10 @@ function TableBody({ core, cols }) {
         <RowsContainer>
           {rows.map(row => (
             <Fragment key={row.id}>
-              <RowContainer rowExpanded={getRowActive(row, isExpandedInTable)}>
+              <RowContainer
+                isSubRow={row.depth > 0}
+                rowExpanded={getRowActive(row, isExpandedInTable)}
+              >
                 {highLevelHeaders.map(columnGroup => (
                   <GridContainer
                     columnsCount={cols.length}
@@ -84,30 +88,32 @@ function TableBody({ core, cols }) {
                 ))}
               </RowContainer>
 
-              <ExpandableContainer
-                rowExpanded={row.getIsExpanded()}
-                isExpandedInTable={isExpandedInTable}
-                loading={loading}
-              >
-                <ClickAwayListener onClickAway={handleClickAway}>
-                  <section>
-                    <SectionRendererWrapper>
-                      <SectionRender
-                        id={id}
-                        entity={entity}
-                        section={expanded[2]}
-                        expanded={expanded}
-                        rowId={row.original[entityToGet].id}
-                        row={row}
-                        entityToGet={entityToGet}
-                        rowNameEntity={rowNameEntity}
-                        displayedTable={displayedTable}
-                        cols={cols}
-                      />
-                    </SectionRendererWrapper>
-                  </section>
-                </ClickAwayListener>
-              </ExpandableContainer>
+              {row.depth === 0 && (
+                <ExpandableContainer
+                  rowExpanded={row.getIsExpanded()}
+                  isExpandedInTable={isExpandedInTable}
+                  loading={loading}
+                >
+                  <ClickAwayListener onClickAway={handleClickAway}>
+                    <section>
+                      <SectionRendererWrapper>
+                        <SectionRender
+                          id={id}
+                          entity={entity}
+                          section={expanded[2]}
+                          expanded={expanded}
+                          rowId={row.original[entityToGet].id}
+                          row={row}
+                          entityToGet={entityToGet}
+                          rowNameEntity={rowNameEntity}
+                          displayedTable={displayedTable}
+                          cols={cols}
+                        />
+                      </SectionRendererWrapper>
+                    </section>
+                  </ClickAwayListener>
+                </ExpandableContainer>
+              )}
             </Fragment>
           ))}
         </RowsContainer>

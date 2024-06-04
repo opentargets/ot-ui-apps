@@ -32,9 +32,9 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
-            <PrivateWrapper>
-              <DataUploader />
-            </PrivateWrapper>
+            {/* <PrivateWrapper> */}
+            <DataUploader />
+            {/* </PrivateWrapper> */}
             <Divider orientation="vertical" />
             <DataDownloader />
             <AotfApiPlayground />

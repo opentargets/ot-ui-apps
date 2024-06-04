@@ -37,6 +37,10 @@ export type Sorting = { id: string; desc: boolean }[];
 
 export type Data = [any] | []; // TODO: create data type (list of disease || target)
 
+type RowInteractors = [string, string];
+
+export type Interactors = RowInteractors[];
+
 export interface State {
   sorting: Sorting;
   loading: boolean; // TODO: more loaders?
@@ -53,6 +57,7 @@ export interface State {
   isMainView: boolean;
   bodyData: Data;
   pinnedData: Data;
+  interactors?: null | Interactors;
 }
 
 /*****************
@@ -63,10 +68,12 @@ export enum ActionType {
   PAGINATE = "PAGINATE",
   SORTING = "SORTING",
   TEXT_SEARCH = "TEXT_SEARCH",
+  SET_INTERACTORS = "SET_INTERACTORS",
 }
 
 export type Action =
   | { type: ActionType.PAGINATE; pagination: Pagination }
   | { type: ActionType.SORTING; sorting: Sorting }
   | { type: ActionType.TEXT_SEARCH; searchFilter: string }
-  | { type: ActionType.PAGINATE; pagination: Pagination };
+  | { type: ActionType.PAGINATE; pagination: Pagination }
+  | { type: ActionType.SET_INTERACTORS; interactors: Interactors };

@@ -30,6 +30,7 @@ export const initialState: State = {
   pinnedEntities: [],
   bodyData: [],
   pinnedData: [],
+  interactors: null,
 };
 
 type InitialStateParams = {
@@ -68,8 +69,15 @@ export function aotfReducer(state: State = initialState, action: Action): State 
         searchFilter: action.searchFilter,
       };
     }
+    case ActionType.SET_INTERACTORS: {
+      return {
+        ...state,
+        interactors: action.interactors,
+      };
+    }
     default: {
       throw Error("Unknown action: " + action);
+      return state;
     }
   }
 }

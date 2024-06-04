@@ -15,7 +15,7 @@ import {
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
-import { onPaginationChange } from "./aotfActions";
+import { onPaginationChange, setInteractors } from "./aotfActions";
 
 const AssociationsStateContext = createContext();
 
@@ -91,6 +91,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       datasources: dataSourcesWeights,
       entity,
       aggregationFilters: dataSourcesRequired,
+      entityInteractors: state.interactors,
     },
   });
 
@@ -156,6 +157,14 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     setTableExpanded({});
     setExpanded([]);
     // setPagination(DEFAULT_TABLE_PAGINATION_STATE);
+  };
+
+  const handleSetInteractors = newState => {
+    // intact
+    // signor
+    // reactome
+    // string
+    dispatch(setInteractors([[newState, "intact"]]));
   };
 
   const handlePaginationChange = updater => {
@@ -256,9 +265,11 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       setActiveHeadersControlls,
       resetExpandler,
       handleAggregationClick,
+      handleSetInteractors,
     }),
     [
       dispatch,
+      handleSetInteractors,
       activeHeadersControlls,
       count,
       data,
