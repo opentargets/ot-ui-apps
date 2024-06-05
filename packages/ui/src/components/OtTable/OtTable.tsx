@@ -146,14 +146,16 @@ function OtTable({
                       {header.isPlaceholder ? null : (
                         <>
                           <OtTableHeader canBeSorted={header.column.getCanSort()}>
-                            <Typography
+                            <Box
                               className={`${
                                 verticalHeaders || header.column.columnDef.verticalHeader
                                   ? classes.verticalHeaders
                                   : ""
                               }`}
                               onClick={header.column.getToggleSortingHandler()}
-                              variant="subtitle2"
+                              sx={{
+                                typography: "subtitle2",
+                              }}
                             >
                               {flexRender(header.column.columnDef.header, header.getContext())}
                               {!header.column.getIsSorted() && header.column.getCanSort() && (
@@ -167,7 +169,7 @@ function OtTable({
                                 asc: <FontAwesomeIconPadded size="sm" icon={faArrowUp} />,
                                 desc: <FontAwesomeIconPadded size="sm" icon={faArrowDown} />,
                               }[header.column.getIsSorted() as string] ?? null}
-                            </Typography>
+                            </Box>
                             {header.column.getCanFilter() ? (
                               <OtTableColumnFilter column={header.column} />
                             ) : null}
@@ -190,12 +192,12 @@ function OtTable({
                         key={cell.id}
                         className={cell.column.columnDef.sticky ? classes.stickyColumn : ""}
                       >
-                        <Typography variant="body2">
+                        <Box sx={{ typography: "body2" }}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           {/* TODO: check NA value */}
-                          {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
-                            naLabel}
-                        </Typography>
+                          {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
+                            naLabel} */}
+                        </Box>
                       </td>
                     );
                   })}
@@ -210,7 +212,7 @@ function OtTable({
           display: "flex",
           justifyContent: "end",
           alignItems: "center",
-          padding: theme => `${theme.spacing(2)} ${theme.spacing(4)}`,
+          padding: theme => `${theme.spacing(2)} 0 ${theme.spacing(4)}`,
         }}
       >
         {tableDataLoading && <CircularProgress sx={{ mx: theme => theme.spacing(2) }} size={25} />}
