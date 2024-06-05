@@ -95,3 +95,46 @@ export type UniProtVariants = {
   "disease.id": string,
   "disease.name": string,
 };  
+
+// ==================
+// GWAS Credible Sets
+// ==================
+
+export type GWASCredibleSets = {
+  variantId: string,
+  study: {
+    id: string,
+    traitFromSource: string,
+    disease: {
+      id: string,
+      name: string,
+    }
+  },
+  pValueMantissa: number,
+  pValueExponent: number,
+  beta: number,
+  ldPopulationStructure: [
+    {
+      ldPopulation: string,
+      relativeSampleSize: number,
+    }
+  ],
+  finemappingMethod: string,
+  l2g: {
+    score: string,
+    target: {
+      id: string,
+      approvedSymbol: string,
+    }
+  },
+  locus: [
+    {
+      variantId: string,
+      r2Overall: number,
+      posteriorProbability: number,
+      standardError: number,
+      is95CredibleSet: boolean,
+      is99CredibleSet: boolean,
+    }
+  ]
+};
