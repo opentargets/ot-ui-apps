@@ -13,6 +13,7 @@ import { identifiersOrgLink, sentenceCase } from "../../utils/global";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
+import { Box } from "@mui/material";
 
 const useStyles = makeStyles(theme => ({
   level: {
@@ -143,10 +144,19 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
     {
       id: "drug",
       label: "Drug(s)",
-      renderCell: ({ drugId, drugFromSource }) => {
-        let drugElement = drugFromSource || drugId || naLabel;
-        if (drugId) drugElement = <Link to={`/drug/${drugId}`}>{drugElement}</Link>;
-        return drugElement;
+      renderCell: ({ drugs }) => {
+        if (!drugs || drugs.length <= 0) return naLabel;
+
+        return drugs.map((el, index) => {
+          if (el.drugId)
+            return (
+              <Box sx={{ display: "inline" }} key={index}>
+                {index > 0 && <Box sx={{ pr: 0.5, display: "inline " }}>,</Box>}
+                <Link to={`/drug/${el.drugId}`}>{el.drugFromSource || el.drugId}</Link>
+              </Box>
+            );
+          else return el.drugFromSource || el.drugId;
+        });
       },
       filterValue: ({ drugId, drugFromSource }) => `${drugFromSource} ${drugId}`,
     },
