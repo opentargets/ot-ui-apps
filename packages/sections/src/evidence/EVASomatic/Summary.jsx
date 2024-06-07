@@ -14,7 +14,6 @@ function Summary() {
         const { count } = eva_somatic;
         return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
-      subText={dataTypesMap.somatic_mutation}
     />
   );
 }

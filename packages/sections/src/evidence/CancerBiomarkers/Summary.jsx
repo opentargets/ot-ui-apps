@@ -14,7 +14,6 @@ function Summary() {
         const { count } = cancerBiomarkersSummary;
         return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
-      subText={definition.dataType}
     />
   );
 }

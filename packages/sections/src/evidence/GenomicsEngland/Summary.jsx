@@ -14,7 +14,6 @@ function Summary() {
       renderSummary={data =>
         `${data.genomicsEngland.count} entr${data.genomicsEngland.count === 1 ? "y" : "ies"}`
       }
-      subText={dataTypesMap.genetic_association}
     />
   );
 }

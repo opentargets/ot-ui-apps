@@ -14,7 +14,6 @@ function Summary() {
       renderSummary={data =>
         `${data.gene2Phenotype.count} entr${data.gene2Phenotype.count === 1 ? "y" : "ies"}`
       }
-      subText={dataTypesMap.genetic_association}
     />
   );
 }

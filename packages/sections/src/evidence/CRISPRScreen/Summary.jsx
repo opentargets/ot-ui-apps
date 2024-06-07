@@ -14,7 +14,6 @@ function Summary() {
         const { count } = CrisprScreenSummary;
         return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
-      subText={dataTypesMap.affected_pathway}
     />
   );
 }

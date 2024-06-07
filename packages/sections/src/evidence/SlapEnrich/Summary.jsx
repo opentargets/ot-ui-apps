@@ -14,7 +14,6 @@ function Summary() {
       renderSummary={data =>
         `${data.slapEnrich.count} entr${data.slapEnrich.count === 1 ? "y" : "ies"}`
       }
-      subText={dataTypesMap.affected_pathway}
     />
   );
 }

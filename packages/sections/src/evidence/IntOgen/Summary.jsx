@@ -12,7 +12,6 @@ function Summary() {
       definition={definition}
       request={request}
       renderSummary={data => `${data.intOgen.count} entr${data.intOgen.count === 1 ? "y" : "ies"}`}
-      subText={dataTypesMap.somatic_mutation}
     />
   );
 }

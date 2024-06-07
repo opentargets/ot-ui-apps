@@ -15,7 +15,6 @@ function Summary() {
         const { count } = otValidationSummary;
         return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
-      subText={dataTypesMap.ot_validation_lab}
     />
   );
 }

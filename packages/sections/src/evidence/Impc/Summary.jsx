@@ -12,7 +12,6 @@ function Summary() {
       definition={definition}
       request={request}
       renderSummary={data => `${data.impc.count} entr${data.impc.count === 1 ? "y" : "ies"}`}
-      subText={dataTypesMap.animal_model}
     />
   );
 }

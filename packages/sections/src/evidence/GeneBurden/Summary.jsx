@@ -15,7 +15,6 @@ function Summary() {
         const { count } = geneBurdenSummary;
         return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
-      subText={dataTypesMap.genetic_association}
     />
   );
 }

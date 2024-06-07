@@ -14,7 +14,6 @@ function Summary() {
         const { count } = OtCrisprSummary;
         return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
-      subText={dataTypesMap.ot_partner}
     />
   );
 }

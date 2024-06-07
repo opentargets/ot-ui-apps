@@ -12,7 +12,6 @@ function Summary() {
       definition={definition}
       request={request}
       renderSummary={data => `${data.progeny.count} entr${data.progeny.count === 1 ? "y" : "ies"}`}
-      subText={dataTypesMap.affected_pathway}
     />
   );
 }

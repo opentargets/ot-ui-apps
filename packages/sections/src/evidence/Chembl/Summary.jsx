@@ -15,7 +15,6 @@ function Summary() {
         const { count } = chembl;
         return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
-      subText={dataTypesMap.known_drug}
     />
   );
 }

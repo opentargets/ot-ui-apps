@@ -14,7 +14,6 @@ function Summary() {
         const { count } = expressionAtlasSummary;
         return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
-      subText={dataTypesMap.rna_expression}
     />
   );
 }

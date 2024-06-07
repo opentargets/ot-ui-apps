@@ -14,7 +14,6 @@ function Summary() {
       renderSummary={data =>
         `${data.europePmc.count} entr${data.europePmc.count === 1 ? "y" : "ies"}`
       }
-      subText={dataTypesMap.literature}
     />
   );
 }

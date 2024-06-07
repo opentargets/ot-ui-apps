@@ -14,7 +14,6 @@ function Summary() {
         const { count } = uniprotLiteratureSummary;
         return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
-      subText={dataTypesMap.genetic_association}
     />
   );
 }

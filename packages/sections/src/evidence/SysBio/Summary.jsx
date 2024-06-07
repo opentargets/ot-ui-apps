@@ -12,7 +12,6 @@ function Summary() {
       definition={definition}
       request={request}
       renderSummary={data => `${data.sysBio.count} entr${data.sysBio.count === 1 ? "y" : "ies"}`}
-      subText={dataTypesMap.affected_pathway}
     />
   );
 }

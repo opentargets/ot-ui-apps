@@ -16,7 +16,6 @@ function Summary() {
           data.openTargetsGenetics.count === 1 ? "y" : "ies"
         }`
       }
-      subText={dataTypesMap.genetic_association}
     />
   );
 }
