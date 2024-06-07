@@ -1,4 +1,3 @@
-import { PrivateWrapper } from "ui";
 import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
@@ -17,7 +16,7 @@ import {
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
 
 function AssociationsWrapper() {
-  const { initialLoading, id } = useAotfContext();
+  const { initialLoading } = useAotfContext();
 
   if (initialLoading) return <AotFLoader />;
 
@@ -28,9 +27,7 @@ function AssociationsWrapper() {
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
-            <PrivateWrapper>
-              <DataUploader />
-            </PrivateWrapper>
+            <DataUploader />
             <Divider orientation="vertical" />
             <DataDownloader />
             <AotfApiPlayground />
