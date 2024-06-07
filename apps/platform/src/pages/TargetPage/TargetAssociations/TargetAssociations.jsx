@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { PrivateWrapper } from "ui";
 import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
@@ -17,7 +16,7 @@ import {
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
 
 function AssociationsWrapper() {
-  const { initialLoading, id } = useContext(AssociationsContext);
+  const { initialLoading } = useContext(AssociationsContext);
 
   if (initialLoading) return <AotFLoader />;
 
@@ -28,9 +27,7 @@ function AssociationsWrapper() {
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
-            <PrivateWrapper>
-              <DataUploader />
-            </PrivateWrapper>
+            <DataUploader />
             <Divider orientation="vertical" />
             <DataDownloader />
             <AotfApiPlayground />
