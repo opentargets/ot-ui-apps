@@ -32,14 +32,14 @@ const getSource = (cohort, project) => {
   return `${cohort} (${project})`;
 };
 
-const getSourceLink = (project, targetId) => {
+const getSourceLink = (project, targetId, urls) => {
   if (project === "Epi25 collaborative") return `https://epi25.broadinstitute.org/gene/${targetId}`;
   if (project === "Autism Sequencing Consortiuml")
     return `https://asc.broadinstitute.org/gene/${targetId}`;
   if (project === "SCHEMA consortium") return `https://schema.broadinstitute.org/gene/${targetId}`;
   if (project === "Genebass")
     return `https://app.genebass.org/gene/${targetId}?burdenSet=pLoF&phewasOpts=1&resultLayout=full`;
-  if (project === "AstraZeneca PheWAS Portal") return `https://azphewas.com`;
+  if (project === "AstraZeneca PheWAS Portal") return urls[0].url;
   return "";
 };
 
@@ -66,26 +66,14 @@ const getColumns = label => [
     ),
   },
   {
-    id: "studyId",
-    label: "Study ID",
-    renderCell: ({ studyId }) =>
-      studyId ? (
-        <Link to={`https://www.ebi.ac.uk/gwas/studies/${studyId}`} external>
-          {studyId}
-        </Link>
-      ) : (
-        naLabel
-      ),
-  },
-  {
     id: "cohortId",
     label: "Cohort/Project",
-    renderCell: ({ cohortId, projectId, target }) => {
+    renderCell: ({ cohortId, projectId, target, urls }) => {
       if (!cohortId && !projectId) return naLabel;
       // the getSource() function takes care of case where cohortId==null
       if (sources.indexOf(projectId) < 0) return getSource(cohortId, projectId);
       return (
-        <Link to={getSourceLink(projectId, target.id)} external>
+        <Link to={getSourceLink(projectId, target.id, urls)} external>
           {getSource(cohortId, projectId)}
         </Link>
       );
@@ -252,7 +240,7 @@ export function Body({ id, label, entity }) {
       chipText={dataTypesMap.genetic_association}
       entity={entity}
       request={request}
-      renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
+      renderDescription={data => <Description symbol={label.symbol} diseaseName={label.name} data={data} />}
       renderBody={({ disease }) => {
         const { rows } = disease.geneBurdenSummary;
         return (
