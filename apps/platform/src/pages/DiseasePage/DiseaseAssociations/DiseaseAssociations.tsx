@@ -1,5 +1,4 @@
 import { ReactElement } from "react";
-import { PrivateWrapper } from "ui";
 import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
@@ -32,9 +31,7 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
-            {/* <PrivateWrapper> */}
             <DataUploader />
-            {/* </PrivateWrapper> */}
             <Divider orientation="vertical" />
             <DataDownloader />
             <AotfApiPlayground />

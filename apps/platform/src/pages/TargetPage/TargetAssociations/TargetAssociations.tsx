@@ -1,5 +1,4 @@
 import { ReactElement } from "react";
-import { PrivateWrapper } from "ui";
 import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
@@ -27,9 +26,7 @@ function TargetAssociations({ ensgId }: TargetAssociationsProps): ReactElement {
           <SearhInput />
           <OptionsControlls>
             <AdvanceOptionsMenu />
-            <PrivateWrapper>
-              <DataUploader />
-            </PrivateWrapper>
+            <DataUploader />
             <Divider orientation="vertical" />
             <DataDownloader />
             <AotfApiPlayground />
