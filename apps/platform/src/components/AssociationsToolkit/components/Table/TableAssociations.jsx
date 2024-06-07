@@ -68,8 +68,8 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
       isPrivate,
       docsLink,
       cell: cell => {
-        const { prefix, loading } = cell.table.getState();
-        if (loading) return <Skeleton variant="circular" width={26} height={26} />;
+        // const { loading } = cell.table.getState();
+        // if (loading) return <Skeleton variant="circular" width={25} height={25} />;
         const hasValue = cellHasValue(cell.getValue());
         return hasValue ? (
           <ColoredCell
@@ -78,13 +78,11 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
             scoreValue={cell.getValue()}
             onClick={expanderHandler(cell.row.getToggleExpandedHandler())}
             cell={cell}
-            loading={loading}
             isAssociations={isAssociations}
-            tablePrefix={prefix}
             colorScale={colorScale}
           />
         ) : (
-          <ColoredCell />
+          <ColoredCell cell={cell} />
         );
       },
     });
@@ -138,22 +136,17 @@ function TableAssociations() {
           columnHelper.accessor(row => row.score, {
             id: "score",
             header: <Typography variant="assoc_header">Association Score</Typography>,
-            cell: row => {
-              const { loading } = row.table.getState();
-              if (loading) return <Skeleton variant="rect" width={26} height={25} />;
-              return (
-                <Box sx={{ marginRight: "10px" }}>
-                  <ColoredCell
-                    scoreValue={row.getValue()}
-                    globalScore
-                    rounded={false}
-                    isAssociations
-                    hasValue
-                    colorScale={associationsColorScale}
-                  />
-                </Box>
-              );
-            },
+            cell: cell => (
+              <Box sx={{ marginRight: "10px" }}>
+                <ColoredCell
+                  scoreValue={cell.getValue()}
+                  globalScore
+                  shape="rectangular"
+                  colorScale={associationsColorScale}
+                  cell={cell}
+                />
+              </Box>
+            ),
           }),
         ],
       }),
@@ -192,7 +185,7 @@ function TableAssociations() {
     manualSorting: true,
   });
 
-  console.log({ coreAssociationsTable, data });
+  // console.log({ coreAssociationsTable, data });
 
   const corePinnedTable = useReactTable({
     data: pinnedData,

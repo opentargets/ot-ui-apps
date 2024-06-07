@@ -129,7 +129,7 @@ const getInitialLoadingData = () => {
 };
 
 const INITIAL_USE_ASSOCIATION_STATE = {
-  loading: false,
+  loading: true,
   error: false,
   data: getInitialLoadingData(),
   initialLoading: true,

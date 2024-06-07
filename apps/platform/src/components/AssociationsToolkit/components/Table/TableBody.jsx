@@ -35,7 +35,6 @@ function TableBody({ core, cols }) {
 
   const { rows } = core.getRowModel();
   if (rows.length < 1) return null;
-  console.log({ rows });
 
   const flatCols = ["name", ...cols.map(c => c.id)];
 
@@ -50,6 +49,8 @@ function TableBody({ core, cols }) {
     }
     resetExpandler();
   };
+
+  console.log({ rows });
 
   return (
     <Fade in>

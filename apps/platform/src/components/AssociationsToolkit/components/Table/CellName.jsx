@@ -10,6 +10,7 @@ import {
   Popover,
   Box,
   Fade,
+  Skeleton,
 } from "@mui/material";
 import {
   faThumbTack,
@@ -125,7 +126,11 @@ function CellName({ cell, colorScale }) {
     history.push(evidenceURL);
   };
 
-  if (loading) return null;
+  const loadingWidth = entityToGet === ENTITIES.TARGET ? 50 : 150;
+  const loadingMargin = entityToGet === ENTITIES.TARGET ? 12 : 2;
+
+  if (loading)
+    return <Skeleton width={loadingWidth} height={35} sx={{ marginLeft: loadingMargin }} />;
 
   return (
     <NameContainer>
@@ -180,18 +185,56 @@ function CellName({ cell, colorScale }) {
               <ListItemText>Unpin {entityToGet}</ListItemText>
             </StyledMenuItem>
           )}
+          {entityToGet === ENTITIES.TARGET && <Divider />}
           {entityToGet === ENTITIES.TARGET && (
-            <StyledMenuItem
-              onClick={() => {
-                handleSetInteractors(id);
-              }}
-            >
+            <StyledMenuItem>
               <ListItemIcon>
                 <FontAwesomeIcon icon={faBezierCurve} />
               </ListItemIcon>
-              <ListItemText>Target interactors associations</ListItemText>
+              <ListItemText>Target interactors</ListItemText>
             </StyledMenuItem>
           )}
+          {entityToGet === ENTITIES.TARGET && (
+            <StyledMenuItem
+              onClick={() => {
+                handleSetInteractors(id, "intac");
+              }}
+            >
+              <ListItemIcon></ListItemIcon>
+              <ListItemText>IntAct interactors</ListItemText>
+            </StyledMenuItem>
+          )}
+          {entityToGet === ENTITIES.TARGET && (
+            <StyledMenuItem
+              onClick={() => {
+                handleSetInteractors(id, "signor");
+              }}
+            >
+              <ListItemIcon></ListItemIcon>
+              <ListItemText>Signor interactors</ListItemText>
+            </StyledMenuItem>
+          )}
+          {entityToGet === ENTITIES.TARGET && (
+            <StyledMenuItem
+              onClick={() => {
+                handleSetInteractors(id, "reactome");
+              }}
+            >
+              <ListItemIcon></ListItemIcon>
+              <ListItemText>Reactome interactors</ListItemText>
+            </StyledMenuItem>
+          )}
+          {entityToGet === ENTITIES.TARGET && (
+            <StyledMenuItem
+              onClick={() => {
+                handleSetInteractors(id, "string");
+              }}
+            >
+              <ListItemIcon></ListItemIcon>
+              <ListItemText>String interactors</ListItemText>
+            </StyledMenuItem>
+          )}
+
           <Divider />
           <StyledMenuItem onClick={handleNavigateToEvidence}>
             <ListItemIcon>
