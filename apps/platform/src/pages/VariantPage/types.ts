@@ -84,7 +84,7 @@ export type ClinVarType = {
 // UniProtVariants
 // ===============
 
-export type UniProtVariants = {
+export type UniProtVariantsType = {
   variantId: string,
   confidence: string,
   diseaseFromSource: string,
@@ -94,4 +94,23 @@ export type UniProtVariants = {
   "target.approvedSymbol": string,
   "disease.id": string,
   "disease.name": string,
-};  
+};
+
+// ================
+// Pharmacogenomics
+// ================
+
+export type PharmacogenomicsType = {
+  genotypeId: string,
+  isDirectTarget: boolean,
+  drugFromSource: string,
+  drugId: string,
+  phenotypeFromSourceId: string | null,
+  genotypeAnnotationText: string,
+  phenotypeText: string,
+  pgxCategory: string,
+  evidenceLevel: string,
+  datasourceId: string,
+  studyId: string,
+  literature: string[],
+};
