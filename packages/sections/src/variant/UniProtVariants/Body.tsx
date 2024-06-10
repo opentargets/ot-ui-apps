@@ -4,22 +4,12 @@ import { Link, SectionItem, Tooltip, PublicationsDrawer, DataTable } from "ui";
 import { definition } from "../../variant/UniProtVariants";
 import Description from "../../variant/UniProtVariants/Description";
 import { epmcUrl } from "../../utils/urls";
-import { identifiersOrgLink } from "../../utils/global";
 import { defaultRowsPerPageOptions, sectionsBaseSizeQuery,
 } from "../../constants";
 // import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
 
 function getColumns(label: string) {
   return [
-    {
-      id: "targetFromSourceId",
-      label: "Reported protein",
-      renderCell: ({ targetFromSourceId }) => (
-        <Link external to={identifiersOrgLink("uniprot", targetFromSourceId)}>
-          {targetFromSourceId}
-        </Link>
-      ),
-    },
     {
       id: "disease.name",
       label: "Disease/phenotype",
@@ -81,9 +71,6 @@ type BodyProps = {
 
 export function Body({ id, label, entity }) {
 
-  // ID IS JUST THE VARIANT ID STRING FOR NOW
-  // const { ensgId, efoId } = id;
-
   // const variables = {
   //   ensemblId: ensgId,
   //   efoId,
@@ -102,8 +89,8 @@ export function Body({ id, label, entity }) {
       definition={definition}
       request={request}
       entity={entity}
-      renderDescription={() => <Description variantId={id} />}
-      renderBody={({ disease }) => {
+      renderDescription={data => <Description variantId={id} data={data} />}
+      renderBody={() => {
         // const { rows } = disease.uniprotVariantsSummary;
         const rows = request.data.variant.uniProtVariants;      
         return (
