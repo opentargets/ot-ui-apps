@@ -1,10 +1,5 @@
-import {
-  Link,
-  SectionItem,
-  DataTable,
-  ScientificNotation,
-} from "ui";
-import { Typography } from "@mui/material";
+import { Link, SectionItem, DataTable, ScientificNotation } from "ui";
+import { Box, Chip } from "@mui/material";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
@@ -18,7 +13,10 @@ function getColumns(id: string, label: string) {
       label: "Lead Variant",
       renderCell: ({ variantId }) => (
         variantId === id
-          ? `${variantId} (self)`
+          ? <Box display="flex" alignContent="center" gap={0.5}>
+              <span>{variantId}</span>
+              <Chip label="self" variant="outlined" size="small"/>
+            </Box>
           : <Link to={`/variant/${variantId}`}>{variantId}</Link>
       ),
       exportLabel: "Lead Variant",
@@ -133,7 +131,7 @@ function Body({ id: doNotUseForNow, label, entity }: BodyProps) {
       renderDescription={() => <Description variantId={id} />}
       renderBody={() => (
         <DataTable
-          // !! TO DO: add dataDownloader
+          dataDownloader
           sortBy="pValue"
           columns={columns}
           rows={rows}
