@@ -21,11 +21,8 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      {
-        "label": "amyotrophic lateral sclerosis",
-        "disease_id": "MONDO_0004976"
-      },
-      { "label": "Alzheimer disease", "disease_id": "MONDO_0004975" }
+      { "label": "amyotrophic lateral sclerosis", "disease_id": "MONDO_0004976" },
+      { "label": "", "disease_id": "MONDO_0004975" }
     ]
   },
   {
@@ -59,7 +56,10 @@
     "currently_integrates_in_PPP": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Other Therapy Area",
-    "disease_mapping": [{ "label": "colorectal carcinoma", "disease_id": "EFO_1001951" }]
+    "disease_mapping": [
+      { "label": "colorectal carcinoma", "disease_id": "EFO_1001951" },
+      { "label": "breast carcinoma", "disease_id": "EFO_0000305" }
+    ]
   },
   {
     "otar_code": "OTAR2062",
@@ -92,6 +92,19 @@
     "disease_mapping": [{ "label": "Pain", "disease_id": "EFO_0003843" }]
   },
   {
+    "otar_code": "OTAR2061",
+    "project_name": "iFuncOnc",
+    "project_lead": "Mathew Garnett",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "Y",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Oncology",
+    "disease_mapping": [
+      { "label": "Colorectal cancer", "disease_id": "MONDO_0005575" },
+      { "label": "Cutaneous melanoma", "disease_id": "EFO_0000389" }
+    ]
+  },
+  {
     "otar_code": "OTAR031",
     "project_name": "NK Cell Receptors",
     "project_lead": "Dave Adams",
@@ -104,7 +117,7 @@
   {
     "otar_code": "OTAR034",
     "project_name": "Genetics Core",
-    "project_lead": "Maya Ghoussaini/ Ian Dunham",
+    "project_lead": "Yakov T.",
     "generates_data": "Genetics/ Platform evidence",
     "currently_integrates_in_PPP": "N",
     "project_status": "Active",
@@ -225,16 +238,6 @@
     "otar_code": "OTAR2060",
     "project_name": "NSCLC (Deciphering myeloid landscape of non-small cell lung cancer)",
     "project_lead": "Ana Cvejic",
-    "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
-    "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "disease_mapping": []
-  },
-  {
-    "otar_code": "OTAR2061",
-    "project_name": "iFuncOnc",
-    "project_lead": "Mathew Garnett",
     "generates_data": "Yes",
     "currently_integrates_in_PPP": "N",
     "project_status": "Active",
@@ -432,6 +435,16 @@
     "disease_mapping": []
   },
   {
+    "otar_code": "OTAR3085",
+    "project_name": "Decoding molecular and cellular resolution of skin inflammation",
+    "project_lead": "Muzlifah Haniffa",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "N",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Immunology and Inflammation",
+    "disease_mapping": []
+  },
+  {
     "otar_code": "OTAR3086",
     "project_name": "IMMERSE",
     "project_lead": "Gosia Trynka",
@@ -449,6 +462,46 @@
     "currently_integrates_in_PPP": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
+    "disease_mapping": []
+  },
+  {
+    "otar_code": "OTAR3088",
+    "project_name": "Automating Knowledge Management",
+    "project_lead": "Barbara Zdrazil / Sebastian Lobentanzer",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "N",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Informatics",
+    "disease_mapping": []
+  },
+  {
+    "otar_code": "OTAR3089",
+    "project_name": "Perturbation Catalogue",
+    "project_lead": "Leopold Parts / Peter Harrison",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "N",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Informatics",
+    "disease_mapping": []
+  },
+  {
+    "otar_code": "OTAR3090",
+    "project_name": "Drug2Cell",
+    "project_lead": "Mohammad Lotfollahi",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "N",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Informatics",
+    "disease_mapping": []
+  },
+  {
+    "otar_code": "OTAR3091",
+    "project_name": "Proteomics",
+    "project_lead": "Juan Antonia Vizcaino",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "N",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
   },
   {
