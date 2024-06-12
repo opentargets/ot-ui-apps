@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Alert, TablePagination, Typography } from "@mui/material";
 import useAotfContext from "../../hooks/useAotfContext";
-import ColoredCell from "./ColoredCell";
+import TableCell from "./TableCell";
 import { getLegend } from "../../utils";
 
 function TableFooter({ table }) {
@@ -46,7 +46,7 @@ function TableFooter({ table }) {
           >
             No data
           </span>
-          <ColoredCell />
+          <TableCell />
         </div>
       </div>
       <div style={{ display: "flex" }}>

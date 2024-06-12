@@ -29,7 +29,7 @@ const defaultCell = {
   },
 };
 
-function ColoredCell({ onClick, shape = "circular", cell = defaultCell, colorScale }) {
+function TableCell({ onClick, shape = "circular", cell = defaultCell, colorScale }) {
   const { prefix, loading } = cell.table.getState();
   const cellValue = cell.getValue();
   const hasValue = cellHasValue(cellValue);
@@ -60,4 +60,4 @@ function ColoredCell({ onClick, shape = "circular", cell = defaultCell, colorSca
   );
 }
 
-export default ColoredCell;
+export default TableCell;

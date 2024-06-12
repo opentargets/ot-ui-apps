@@ -13,7 +13,7 @@ import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
 
 import AggregationsTooltip from "./AssocTooltip";
-import ColoredCell from "./ColoredCell";
+import TableCell from "./TableCell";
 
 import HeaderControls from "../HeaderControls";
 import CellName from "./CellName";
@@ -72,7 +72,7 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
         // if (loading) return <Skeleton variant="circular" width={25} height={25} />;
         const hasValue = cellHasValue(cell.getValue());
         return hasValue ? (
-          <ColoredCell
+          <TableCell
             hasValue
             scoreId={id}
             scoreValue={cell.getValue()}
@@ -82,7 +82,7 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
             colorScale={colorScale}
           />
         ) : (
-          <ColoredCell cell={cell} />
+          <TableCell cell={cell} />
         );
       },
     });
@@ -138,7 +138,7 @@ function TableAssociations() {
             header: <Typography variant="assoc_header">Association Score</Typography>,
             cell: cell => (
               <Box sx={{ marginRight: "10px" }}>
-                <ColoredCell
+                <TableCell
                   scoreValue={cell.getValue()}
                   globalScore
                   shape="rectangular"
