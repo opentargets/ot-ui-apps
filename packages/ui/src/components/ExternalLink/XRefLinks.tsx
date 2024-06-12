@@ -10,7 +10,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function XRefLinks({ label, urlStem, ids, limit }) {
+type XRefLinksProps = {
+  label: string;
+  urlStem: string;
+  ids: string[];
+  limit: number;
+};
+
+function XRefLinks({ label, urlStem, ids, limit }: XRefLinksProps) {
   const [showMore, setShowMore] = useState(false);
   const classes = useStyles();
   const displayNone = {
