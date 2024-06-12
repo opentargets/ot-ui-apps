@@ -3,7 +3,6 @@ import { Box, Chip } from "@mui/material";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
-// import { sentenceCase } from "../../utils/global";
 
 function getColumns(id: string, label: string) {
 
@@ -88,8 +87,8 @@ function getColumns(id: string, label: string) {
     {
       id: "l2gScore",
       label: "L2G score",
-      comparator: (a, b) => b - a,
-      sortable: true,
+      // comparator: (a, b) => b - a,
+      // sortable: true,
       renderCell: d => d["l2g.score"].toFixed(3),
       exportLabel: "L2G score", 
     },
@@ -105,7 +104,7 @@ function getColumns(id: string, label: string) {
 // !!!! LOAD LOCAL DATA FOR NOW
 // const [metadata, setMetadata] =
 //   useState<MetadataType | "waiting" | undefined>("waiting");
-const datasetIndex = 1;
+const datasetIndex = 0;
 const request = mockQuery(datasetIndex);
 
 type BodyProps = {
