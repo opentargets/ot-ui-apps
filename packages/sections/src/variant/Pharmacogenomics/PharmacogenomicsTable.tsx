@@ -13,7 +13,6 @@ import { identifiersOrgLink, sentenceCase } from "../../utils/global";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
-import { Box } from "@mui/material";
 
 const useStyles = makeStyles(theme => ({
   level: {
@@ -65,35 +64,6 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
   const classes = useStyles();
   const columns = [
     {
-      id: "variantRsId",
-      label: "rsID",
-      renderCell: ({ variantRsId }) =>
-        variantRsId ? (
-          <Link
-            external
-            to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
-          >
-            {variantRsId}
-          </Link>
-        ) : (
-          naLabel
-        ),
-    },
-    {
-      id: "starAllele",
-      label: "Star Allele",
-      renderCell: ({ haplotypeId, haplotypeFromSourceId }) => {
-        const displayId = haplotypeId || haplotypeFromSourceId || naLabel;
-        const LinkComponent = haplotypeFromSourceId && (
-          <Link external to={`https://www.pharmgkb.org/haplotype/${haplotypeFromSourceId}`}>
-            {displayId}
-          </Link>
-        );
-
-        return LinkComponent || displayId || naLabel;
-      },
-    },
-    {
       id: "genotypeId",
       label: "Genotype ID",
       tooltip: (
@@ -111,77 +81,30 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
       renderCell: ({ genotypeId }) => genotypeId || naLabel,
     },
     {
-      id: "variantConsequence",
-      label: "Variant Consequence",
-      renderCell: ({ variantFunctionalConsequence, genotypeId }) => {
-        const pvparams = genotypeId?.split(",")[0].split("_") || [];
-        return (
-          <div style={{ display: "flex", gap: "5px" }}>
-            {variantFunctionalConsequence ? (
-              <LabelChip
-                label={variantConsequenceSource.VEP.label}
-                value={sentenceCase(variantFunctionalConsequence.label)}
-                tooltip={variantConsequenceSource.VEP.tooltip}
-                to={identifiersOrgLink("SO", variantFunctionalConsequence.id.slice(3))}
-              />
-            ) : (
-              naLabel
-            )}
-            {(variantFunctionalConsequence?.id === "SO:0001583" ||
-              variantFunctionalConsequence?.id === "SO:0001587") && (
-              <LabelChip
-                label={variantConsequenceSource.ProtVar.label}
-                to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
-                tooltip={variantConsequenceSource.ProtVar.tooltip}
-              />
-            )}
-          </div>
-        );
-      },
-      filterValue: ({ variantFunctionalConsequence }) =>
-        `${sentenceCase(variantFunctionalConsequence?.label)}`,
-    },
-    {
       id: "drug",
       label: "Drug(s)",
-      renderCell: ({ drugs }) => {
-        if (!drugs || drugs.length <= 0) return naLabel;
-
-        return drugs.map((el, index) => {
-          if (el.drugId)
-            return (
-              <Box sx={{ display: "inline" }} key={index}>
-                {index > 0 && <Box sx={{ pr: 0.5, display: "inline " }}>,</Box>}
-                <Link to={`/drug/${el.drugId}`}>{el.drugFromSource || el.drugId}</Link>
-              </Box>
-            );
-          else return el.drugFromSource || el.drugId;
-        });
+      renderCell: ({ drugId, drugFromSource }) => {
+        let drugElement = drugFromSource || drugId || naLabel;
+        if (drugId) drugElement = <Link to={`/drug/${drugId}`}>{drugElement}</Link>;
+        return drugElement;
       },
       filterValue: ({ drugId, drugFromSource }) => `${drugFromSource} ${drugId}`,
-    },
+    },    
     {
       id: "drugResponse",
       label: "Drug Response Phenotype",
       renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
-        let phenotypeTextElement;
-
-        if (phenotypeText) {
-          phenotypeTextElement = phenotypeText;
-        } else phenotypeTextElement = naLabel;
-
+        let phenotypeTextElement = phenotypeText;
         if (phenotypeFromSourceId)
           phenotypeTextElement = (
             <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeTextElement}</Link>
           );
-
         if (genotypeAnnotationText)
           phenotypeTextElement = (
             <Tooltip title={genotypeAnnotationText} showHelpIcon>
               {phenotypeTextElement}
             </Tooltip>
           );
-
         return phenotypeTextElement;
       },
       filterValue: ({ phenotypeText }) => `${phenotypeText}`,

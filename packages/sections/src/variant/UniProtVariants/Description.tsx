@@ -1,14 +1,16 @@
 import { Link } from "ui";
+import { identifiersOrgLink } from "../../utils/global";
 
 type DescriptionProps = {
   variantId: string;
+  data: any;
 };
 
-function Description({ variantId }: DescriptionProps) {
+function Description({ variantId, data }: DescriptionProps) {
   return (
     <>
       Literature-based curation associating <strong>{variantId}</strong>{" "} to a disease/phenotype. Source:{" "}
-      <Link to="https://www.uniprot.org" external>
+      <Link external to={identifiersOrgLink("uniprot", data.variant.uniProtVariants[0].targetFromSourceId)}>
         UniProt
       </Link>
     </>
