@@ -1,13 +1,5 @@
 import { DocumentNode } from "graphql";
-import {
-  defaulDatasourcesWeigths,
-  getControlChecked,
-  getCellId,
-  checkBoxPayload,
-  DEFAULT_TABLE_PAGINATION_STATE,
-  DEFAULT_TABLE_SORTING_STATE,
-  DISPLAY_MODE,
-} from "../utils";
+import { DEFAULT_TABLE_PAGINATION_STATE, DEFAULT_TABLE_SORTING_STATE } from "../utils";
 import { Action, ActionType, ENTITY, State, TABLE_VIEW } from "../types";
 
 /*****************
@@ -30,7 +22,7 @@ export const initialState: State = {
   pinnedEntities: [],
   bodyData: [],
   pinnedData: [],
-  interactors: null,
+  interactors: new Map(),
 };
 
 type InitialStateParams = {
@@ -70,9 +62,22 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       };
     }
     case ActionType.SET_INTERACTORS: {
+      const currentInteractors = state.interactors;
+      if (typeof currentInteractors === "undefined" || !currentInteractors) return { ...state };
+      const payloadInteractor = action.payload;
+
+      // Todo: review
+      if (currentInteractors.has(payloadInteractor.id)) {
+        const row = currentInteractors.get(payloadInteractor.id);
+        row?.push(payloadInteractor.source);
+        currentInteractors.set(payloadInteractor.id, row);
+      }
+
+      currentInteractors.set(payloadInteractor.id, [payloadInteractor.source]);
+
       return {
         ...state,
-        interactors: action.interactors,
+        interactors: currentInteractors,
       };
     }
     default: {

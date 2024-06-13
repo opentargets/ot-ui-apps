@@ -1,4 +1,4 @@
-import { Action, ActionType, Interactors, Pagination } from "../types";
+import { Action, ActionType, Pagination, RowInteractorsKey } from "../types";
 
 export function onPaginationChange(pagination: Pagination): Action {
   return {
@@ -7,9 +7,9 @@ export function onPaginationChange(pagination: Pagination): Action {
   };
 }
 
-export function setInteractors(interactors: Interactors): Action {
+export function setInteractors(id: RowInteractorsKey, source: string): Action {
   return {
     type: ActionType.SET_INTERACTORS,
-    interactors,
+    payload: { id, source },
   };
 }

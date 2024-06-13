@@ -222,16 +222,16 @@ function TableAssociations() {
 
         {/* Weights controlls */}
         <HeaderControls cols={entitesHeaders} />
-        <div>
-          {/* BODY CONTENT */}
-          {pinnedEntries.length > 0 && (
-            <TableBody core={corePinnedTable} prefix="pinned" cols={entitesHeaders} />
-          )}
 
-          {pinnedEntries.length > 0 && <TableDivider />}
+        {/* BODY CONTENT */}
+        {pinnedEntries.length > 0 && (
+          <TableBody core={corePinnedTable} prefix="pinned" cols={entitesHeaders} />
+        )}
 
-          <TableBody core={coreAssociationsTable} prefix="body" cols={entitesHeaders} />
-        </div>
+        {pinnedEntries.length > 0 && <TableDivider />}
+
+        <TableBody core={coreAssociationsTable} prefix="body" cols={entitesHeaders} />
+
         {/* FOOTER */}
         <TableFooter table={coreAssociationsTable} />
       </TableElement>

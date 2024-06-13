@@ -37,9 +37,10 @@ export type Sorting = { id: string; desc: boolean }[];
 
 export type Data = [any] | []; // TODO: create data type (list of disease || target)
 
-type RowInteractors = [string, string];
+export type RowInteractors = string[];
+export type RowInteractorsKey = string;
 
-export type Interactors = RowInteractors[];
+export type Interactors = Map<RowInteractorsKey, RowInteractors>;
 
 export interface State {
   sorting: Sorting;
@@ -57,7 +58,7 @@ export interface State {
   isMainView: boolean;
   bodyData: Data;
   pinnedData: Data;
-  interactors?: null | Interactors;
+  interactors: Interactors;
 }
 
 /*****************
@@ -71,9 +72,14 @@ export enum ActionType {
   SET_INTERACTORS = "SET_INTERACTORS",
 }
 
+export type SetRowInteractorsPayload = {
+  id: RowInteractorsKey;
+  source: string;
+};
+
 export type Action =
   | { type: ActionType.PAGINATE; pagination: Pagination }
   | { type: ActionType.SORTING; sorting: Sorting }
   | { type: ActionType.TEXT_SEARCH; searchFilter: string }
   | { type: ActionType.PAGINATE; pagination: Pagination }
-  | { type: ActionType.SET_INTERACTORS; interactors: Interactors };
+  | { type: ActionType.SET_INTERACTORS; payload: SetRowInteractorsPayload };

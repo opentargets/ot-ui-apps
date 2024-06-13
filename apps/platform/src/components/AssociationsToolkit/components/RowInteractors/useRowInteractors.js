@@ -1,12 +1,13 @@
 /* eslint-disable */
 import { useEffect, useState } from "react";
-import client from "../../../client";
-import { ENTITIES } from "../utils";
+import client from "../../../../client";
+import { ENTITIES } from "../../utils";
 import { v1 } from "uuid";
 
-import InteractionsQuery from "../components/RowInteractors/InteractionsQuery.gql";
+import InteractionsQuery from "./InteractionsQuery.gql";
+import DiseaseAssociationsQuery from "../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
 
-const INITIAL_ROW_COUNT = 30;
+const INITIAL_ROW_COUNT = 8;
 
 const getEmptyRow = () => ({
   dataSources: {},
@@ -93,32 +94,6 @@ const getAssociationsData = (fixedEntity, data) => {
   });
 };
 
-// Select and parsed data from API response from fixed Disease
-const getAssociatedTargetsData = data => {
-  if (!data) return [];
-  return data.disease.associatedTargets.rows.map(d => {
-    const sources = d.datasourceScores.reduce(
-      (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
-      {}
-    );
-    const targetPrioritisation = d.target.prioritisation?.items
-      ? d.target.prioritisation.items.reduce(
-          (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
-          {}
-        )
-      : [];
-    return {
-      id: d.target.id,
-      score: d.score,
-      target: d.target,
-      targetSymbol: d.target.approvedSymbol,
-      diseaseName: data.disease.name,
-      dataSources: sources,
-      prioritisations: targetPrioritisation,
-    };
-  });
-};
-
 //TODO: review
 const getInitialLoadingData = () => {
   const arr = [];
@@ -139,41 +114,40 @@ const INITIAL_USE_ASSOCIATION_STATE = {
 /********
  * HOOK *
  ********/
-function useAssociationsData({
-  query,
+function useRowInteractors({
+  query = InteractionsQuery,
+  associationsQuery = DiseaseAssociationsQuery,
   options: {
     id = "",
     index = 0,
     size = 50,
     filter = "",
-    sortBy = "score",
+    source = "intac",
     aggregationFilters = [],
     enableIndirect = false,
     datasources = [],
     rowsFilter = [],
     entityInteractors = null,
     entity,
+    diseaseId,
+    sortBy,
+    dataSourcesRequired,
   },
 }) {
   const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
 
   useEffect(() => {
+    let isCurrent = true;
     async function getInteractors() {
-      if (entityInteractors.lenght < 1) return;
-
       const currentData = [...state.data];
-      const rowInteractorsId = entityInteractors[0][0];
-      const rowInteractorsSource = entityInteractors[0][1];
-      const elIndex = currentData.findIndex(e => e.id === rowInteractorsId);
-
-      if (elIndex === -1) return;
-      const element = currentData[elIndex];
+      const rowInteractorsId = id;
+      const rowInteractorsSource = source;
 
       const targetRowInteractorsRequest = await client.query({
-        query: InteractionsQuery,
+        query,
         variables: {
           sourceDatabase: rowInteractorsSource,
-          ensgId: element.id,
+          ensgId: rowInteractorsId,
           index: 0,
           size: 10,
         },
@@ -183,6 +157,7 @@ function useAssociationsData({
         return;
       }
 
+      const interactorsCount = targetRowInteractorsRequest.data.target.interactions.count;
       /**
        * TODO: REVIEW - move to util func
        */
@@ -204,9 +179,9 @@ function useAssociationsData({
       ];
 
       const interactorsAssociationsRequest = await client.query({
-        query,
+        query: associationsQuery,
         variables: {
-          id,
+          id: diseaseId,
           index,
           size,
           filter,
@@ -214,7 +189,7 @@ function useAssociationsData({
           enableIndirect,
           datasources,
           rowsFilter: targetRowInteractors.map(int => int.id),
-          aggregationFilters: aggregationFilters.map(el => ({
+          aggregationFilters: dataSourcesRequired.map(el => ({
             name: el.name,
             path: el.path,
           })),
@@ -233,63 +208,19 @@ function useAssociationsData({
         return { ...interactor, ...assoc };
       });
 
-      element.interactors = targetRowInteractorsAssociations;
-
       setState({
         ...state,
-        data: currentData,
-      });
-    }
-    if (entityInteractors !== null && entityInteractors.size > 0) getInteractors();
-  }, [entityInteractors]);
-
-  useEffect(() => {
-    let isCurrent = true;
-    // if (!state.loading) setState({ ...state, loading: true });
-    const fetchData = async () => {
-      const resData = await client.query({
-        query,
-        variables: {
-          id,
-          index,
-          size,
-          filter,
-          sortBy,
-          enableIndirect,
-          datasources,
-          rowsFilter,
-          aggregationFilters: aggregationFilters.map(el => ({
-            name: el.name,
-            path: el.path,
-          })),
-        },
-      });
-      const parsedData = getAssociationsData(entity, resData.data);
-      const dataCount = getAllDataCount(entity, resData.data);
-
-      setState({
-        count: dataCount,
-        data: parsedData,
         loading: false,
         initialLoading: false,
+        data: targetRowInteractorsAssociations,
       });
-    };
-    if (isCurrent) fetchData();
+    }
+    if (isCurrent) getInteractors();
+    // if (entityInteractors !== null && entityInteractors.size > 0) getInteractors();
     return () => (isCurrent = false);
-  }, [
-    id,
-    index,
-    size,
-    filter,
-    sortBy,
-    enableIndirect,
-    datasources,
-    query,
-    entity,
-    aggregationFilters,
-  ]);
+  }, [entityInteractors]);
 
   return state;
 }
 
-export default useAssociationsData;
+export default useRowInteractors;

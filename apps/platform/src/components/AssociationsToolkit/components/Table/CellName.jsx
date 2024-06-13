@@ -197,7 +197,7 @@ function CellName({ cell, colorScale }) {
           {entityToGet === ENTITIES.TARGET && (
             <StyledMenuItem
               onClick={() => {
-                handleSetInteractors(id, "intac");
+                handleSetInteractors(id, "intact");
               }}
             >
               <ListItemIcon></ListItemIcon>

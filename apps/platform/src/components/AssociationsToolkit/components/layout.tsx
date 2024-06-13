@@ -42,7 +42,7 @@ export const GridContainer = styled("div", {
 export const TableBodyContent = styled("div")({
   display: "flex",
   flexDirection: "column",
-  margin: "6px 0",
+  margin: "0",
 });
 
 export const RowsContainer = styled("div")({

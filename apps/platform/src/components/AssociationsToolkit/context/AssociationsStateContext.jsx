@@ -159,12 +159,12 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     // setPagination(DEFAULT_TABLE_PAGINATION_STATE);
   };
 
-  const handleSetInteractors = newState => {
+  const handleSetInteractors = (id, source) => {
     // intact
     // signor
     // reactome
     // string
-    dispatch(setInteractors([[newState, "intact"]]));
+    dispatch(setInteractors(id, source));
   };
 
   const handlePaginationChange = updater => {
@@ -266,6 +266,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       resetExpandler,
       handleAggregationClick,
       handleSetInteractors,
+      state,
     }),
     [
       dispatch,

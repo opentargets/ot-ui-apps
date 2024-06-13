@@ -10,6 +10,9 @@ import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "..
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
 
+import RowInteractorsWrapper from "../RowInteractors/RowInteractorsWrapper";
+import RowInteractorsTable from "../RowInteractors/RowInteractorsTable";
+
 /* HELPERS */
 const getColContainerClassName = ({ id }) => {
   if (id === "1_naiming-cols_name") return "group-naiming-cols";
@@ -30,7 +33,7 @@ function ExpandableContainer({ rowExpanded, isExpandedInTable, loading, children
   return <Box key={v1()}>{children}</Box>;
 }
 
-function TableBody({ core, cols }) {
+function TableBody({ core, cols, noInteractors }) {
   const { id, entity, entityToGet, displayedTable, resetExpandler, expanded } = useAotfContext();
 
   const { rows } = core.getRowModel();
@@ -49,8 +52,6 @@ function TableBody({ core, cols }) {
     }
     resetExpandler();
   };
-
-  console.log({ rows });
 
   return (
     <Fade in>
@@ -89,31 +90,39 @@ function TableBody({ core, cols }) {
                 ))}
               </RowContainer>
 
-              {row.depth === 0 && (
-                <ExpandableContainer
-                  rowExpanded={row.getIsExpanded()}
-                  isExpandedInTable={isExpandedInTable}
-                  loading={loading}
-                >
-                  <ClickAwayListener onClickAway={handleClickAway}>
-                    <section>
-                      <SectionRendererWrapper>
-                        <SectionRender
-                          id={id}
-                          entity={entity}
-                          section={expanded[2]}
-                          expanded={expanded}
-                          rowId={row.original[entityToGet].id}
-                          row={row}
-                          entityToGet={entityToGet}
-                          rowNameEntity={rowNameEntity}
-                          displayedTable={displayedTable}
-                          cols={cols}
-                        />
-                      </SectionRendererWrapper>
-                    </section>
-                  </ClickAwayListener>
-                </ExpandableContainer>
+              <ExpandableContainer
+                rowExpanded={row.getIsExpanded()}
+                isExpandedInTable={isExpandedInTable}
+                loading={loading}
+              >
+                <ClickAwayListener onClickAway={handleClickAway}>
+                  <section>
+                    <SectionRendererWrapper>
+                      <SectionRender
+                        id={id}
+                        entity={entity}
+                        section={expanded[2]}
+                        expanded={expanded}
+                        rowId={row.original[entityToGet].id}
+                        row={row}
+                        entityToGet={entityToGet}
+                        rowNameEntity={rowNameEntity}
+                        displayedTable={displayedTable}
+                        cols={cols}
+                      />
+                    </SectionRendererWrapper>
+                  </section>
+                </ClickAwayListener>
+              </ExpandableContainer>
+
+              {!noInteractors && (
+                <RowInteractorsWrapper rowId={row.id}>
+                  <RowInteractorsTable
+                    row={row}
+                    columns={core._getColumnDefs()}
+                    rowNameEntity={rowNameEntity}
+                  />
+                </RowInteractorsWrapper>
               )}
             </Fragment>
           ))}
