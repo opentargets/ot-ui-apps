@@ -187,51 +187,15 @@ function CellName({ cell, colorScale }) {
           )}
           {entityToGet === ENTITIES.TARGET && <Divider />}
           {entityToGet === ENTITIES.TARGET && (
-            <StyledMenuItem>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faBezierCurve} />
-              </ListItemIcon>
-              <ListItemText>Target interactors</ListItemText>
-            </StyledMenuItem>
-          )}
-          {entityToGet === ENTITIES.TARGET && (
             <StyledMenuItem
               onClick={() => {
                 handleSetInteractors(id, "intact");
               }}
             >
-              <ListItemIcon></ListItemIcon>
-              <ListItemText>IntAct interactors</ListItemText>
-            </StyledMenuItem>
-          )}
-          {entityToGet === ENTITIES.TARGET && (
-            <StyledMenuItem
-              onClick={() => {
-                handleSetInteractors(id, "signor");
-              }}
-            >
-              <ListItemIcon></ListItemIcon>
-              <ListItemText>Signor interactors</ListItemText>
-            </StyledMenuItem>
-          )}
-          {entityToGet === ENTITIES.TARGET && (
-            <StyledMenuItem
-              onClick={() => {
-                handleSetInteractors(id, "reactome");
-              }}
-            >
-              <ListItemIcon></ListItemIcon>
-              <ListItemText>Reactome interactors</ListItemText>
-            </StyledMenuItem>
-          )}
-          {entityToGet === ENTITIES.TARGET && (
-            <StyledMenuItem
-              onClick={() => {
-                handleSetInteractors(id, "string");
-              }}
-            >
-              <ListItemIcon></ListItemIcon>
-              <ListItemText>String interactors</ListItemText>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faBezierCurve} />
+              </ListItemIcon>
+              <ListItemText>Target interactors</ListItemText>
             </StyledMenuItem>
           )}
 

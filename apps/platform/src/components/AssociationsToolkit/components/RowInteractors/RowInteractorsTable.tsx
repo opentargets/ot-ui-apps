@@ -2,7 +2,7 @@ import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/r
 import useRowInteractors from "./useRowInteractors";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableBody from "../Table/TableBody";
-import { Box, Typography } from "@mui/material";
+import { Box, InputLabel, NativeSelect, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
@@ -16,9 +16,8 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
     dataSourcesWeights,
     dataSourcesRequired,
     entityToGet,
+    handleSetInteractors,
   } = useAotfContext();
-
-  console.log({ row });
 
   const label = row.original[entityToGet][rowNameEntity];
 
@@ -84,8 +83,36 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
           >
             <FontAwesomeIcon size="sm" icon={faClose} />
           </Box>
-          <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-            {label} {source} interactors
+          <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>
+            {label} interactors
+          </Typography>
+          <Box display="flex" alignItems="center" gap={1}>
+            <InputLabel sx={{ fontSize: "0.85rem" }} htmlFor="intaractor_data_source">
+              Source:
+            </InputLabel>
+            <NativeSelect
+              id="intaractor_data_source"
+              onChange={e => {
+                handleSetInteractors(row.id, e.target.value);
+              }}
+              variant="standard"
+              value={source}
+              sx={{
+                fontSize: "0.85rem",
+                boxShadow: "none",
+
+                ".MuiNativeSelect-select": { border: 0 },
+                p: 0,
+              }}
+            >
+              <option value={"intact"}>IntAct</option>
+              <option value={"signor"}>Signor</option>
+              <option value={"reactome"}>Reactome</option>
+              <option value={"string"}>String</option>
+            </NativeSelect>
+          </Box>
+          <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>
+            count {count}
           </Typography>
         </Box>
       </Box>

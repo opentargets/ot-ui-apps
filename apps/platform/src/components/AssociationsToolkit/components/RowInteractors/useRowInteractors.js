@@ -149,7 +149,7 @@ function useRowInteractors({
           sourceDatabase: rowInteractorsSource,
           ensgId: rowInteractorsId,
           index: 0,
-          size: 10,
+          size: 7,
         },
       });
 
@@ -158,13 +158,14 @@ function useRowInteractors({
       }
 
       const interactorsCount = targetRowInteractorsRequest.data.target.interactions.count;
+      const interactorsIds = targetRowInteractorsRequest.data.target.interactions.rows.map;
       /**
        * TODO: REVIEW - move to util func
        */
       const targetRowInteractors = [
         ...new Set(
           targetRowInteractorsRequest.data.target.interactions.rows.map(item => ({
-            id: item.targetB.id,
+            id: item.targetB?.id || v1(),
             targetSymbol: item.targetB.approvedSymbol,
             dataSources: {},
             prioritisations: {},
@@ -209,16 +210,15 @@ function useRowInteractors({
       });
 
       setState({
-        ...state,
         loading: false,
         initialLoading: false,
+        count: interactorsCount,
         data: targetRowInteractorsAssociations,
       });
     }
     if (isCurrent) getInteractors();
-    // if (entityInteractors !== null && entityInteractors.size > 0) getInteractors();
     return () => (isCurrent = false);
-  }, [entityInteractors]);
+  }, [source]);
 
   return state;
 }
