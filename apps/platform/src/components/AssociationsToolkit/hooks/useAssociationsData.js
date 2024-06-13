@@ -151,97 +151,10 @@ function useAssociationsData({
     enableIndirect = false,
     datasources = [],
     rowsFilter = [],
-    entityInteractors = null,
     entity,
   },
 }) {
   const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
-
-  useEffect(() => {
-    async function getInteractors() {
-      if (entityInteractors.lenght < 1) return;
-
-      const currentData = [...state.data];
-      const rowInteractorsId = entityInteractors[0][0];
-      const rowInteractorsSource = entityInteractors[0][1];
-      const elIndex = currentData.findIndex(e => e.id === rowInteractorsId);
-
-      if (elIndex === -1) return;
-      const element = currentData[elIndex];
-
-      const targetRowInteractorsRequest = await client.query({
-        query: InteractionsQuery,
-        variables: {
-          sourceDatabase: rowInteractorsSource,
-          ensgId: element.id,
-          index: 0,
-          size: 10,
-        },
-      });
-
-      if (!targetRowInteractorsRequest.data) {
-        return;
-      }
-
-      /**
-       * TODO: REVIEW - move to util func
-       */
-      const targetRowInteractors = [
-        ...new Set(
-          targetRowInteractorsRequest.data.target.interactions.rows.map(item => ({
-            id: item.targetB.id,
-            targetSymbol: item.targetB.approvedSymbol,
-            dataSources: {},
-            prioritisations: {},
-            diseaseName: "",
-            score: 0,
-            target: {
-              id: item.targetB.id,
-              approvedSymbol: item.targetB.approvedSymbol,
-            },
-          }))
-        ),
-      ];
-
-      const interactorsAssociationsRequest = await client.query({
-        query,
-        variables: {
-          id,
-          index,
-          size,
-          filter,
-          sortBy,
-          enableIndirect,
-          datasources,
-          rowsFilter: targetRowInteractors.map(int => int.id),
-          aggregationFilters: aggregationFilters.map(el => ({
-            name: el.name,
-            path: el.path,
-          })),
-        },
-      });
-
-      const interactorsAssociations = getAssociationsData(
-        entity,
-        interactorsAssociationsRequest.data
-      );
-
-      // merge interactors and associations response
-      const targetRowInteractorsAssociations = targetRowInteractors.map(interactor => {
-        const assoc = interactorsAssociations.find(e => e.id === interactor.id);
-        if (!assoc) return interactor;
-        return { ...interactor, ...assoc };
-      });
-
-      element.interactors = targetRowInteractorsAssociations;
-
-      setState({
-        ...state,
-        data: currentData,
-      });
-    }
-    if (entityInteractors !== null && entityInteractors.size > 0) getInteractors();
-  }, [entityInteractors]);
 
   useEffect(() => {
     let isCurrent = true;
