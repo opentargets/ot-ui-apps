@@ -83,18 +83,18 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
         <Box mt={6}>
           <HorizontalBarchart data={metadata.alleleFrequencies} />
         </Box>
-
+{/* 
         <Box mt={6}>
           <HorizontalBarchart data={metadata.alleleFrequencies} alignLabels="left"/>
-        </Box>
+        </Box> */}
 
         <Box mt={6}>
           <ColoredBoxes data={metadata.alleleFrequencies} />
         </Box>
 
-        <Box mt={6}>
+        {/* <Box mt={6}>
           <FullWidthColoredBoxes data={metadata.alleleFrequencies} alignLabels="left" />
-        </Box>
+        </Box> */}
 
       </Box>
           
@@ -147,7 +147,7 @@ const populationLabels = {
 // =============================================================================
 const faintBar = "#ddd"; 
 // const boldBar = "#888";
-const boldBar = "steelblue";
+const boldBar = "rgb(52, 137, 202)";
 
 
 // =============================================================================
@@ -183,7 +183,7 @@ function ThinUnderBars({ data }) {
   function Bar({ frequency }) {
     const barwidth = 250;
     return (
-      <Box height={5} width={barwidth} mt={0.3} bgcolor={faintBar}>  
+      <Box height={5} width={barwidth} bgcolor={faintBar}>  
         <Box
           sx={{width: `${+frequency * barwidth}px`, height: '5px'}}
           bgcolor={boldBar}
