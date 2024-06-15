@@ -139,6 +139,10 @@ function useRowInteractors({
   useEffect(() => {
     let isCurrent = true;
     async function getInteractors() {
+      setState({
+        ...state,
+        loading: true,
+      });
       const currentData = [...state.data];
       const rowInteractorsId = id;
       const rowInteractorsSource = source;
@@ -149,7 +153,7 @@ function useRowInteractors({
           sourceDatabase: rowInteractorsSource,
           ensgId: rowInteractorsId,
           index: 0,
-          size: 7,
+          size: 100,
         },
       });
 
@@ -158,7 +162,12 @@ function useRowInteractors({
       }
 
       const interactorsCount = targetRowInteractorsRequest.data.target.interactions.count;
-      const interactorsIds = targetRowInteractorsRequest.data.target.interactions.rows.map;
+      const interactorsIds = [
+        ...new Set(
+          targetRowInteractorsRequest.data.target.interactions.rows.map(int => int.targetB?.id)
+        ),
+      ];
+      console.log({ interactorsIds, targetRowInteractorsRequest });
       /**
        * TODO: REVIEW - move to util func
        */

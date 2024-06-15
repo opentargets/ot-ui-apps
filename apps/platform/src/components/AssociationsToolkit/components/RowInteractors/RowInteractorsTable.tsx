@@ -50,6 +50,7 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
     pageCount: count,
     state: {
       sorting,
+      loading,
     },
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
