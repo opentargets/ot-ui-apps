@@ -29,6 +29,7 @@ const sources = [
 
 const getSource = (cohort, project) => {
   if (!cohort) return project;
+  if (!project) return cohort;
   return `${cohort} (${project})`;
 };
 
@@ -70,7 +71,7 @@ const getColumns = label => [
     label: "Cohort/Project",
     renderCell: ({ cohortId, projectId, target, urls }) => {
       if (!cohortId && !projectId) return naLabel;
-      // the getSource() function takes care of case where cohortId==null
+      // the getSource() function handles cases where cohortId==null or projectId==null
       if (sources.indexOf(projectId) < 0) return getSource(cohortId, projectId);
       return (
         <Link to={getSourceLink(projectId, target.id, urls)} external>
