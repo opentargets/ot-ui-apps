@@ -48,10 +48,10 @@ function Header({ loading, Icon, title, subtitle = null, externalLinks, rightCon
           <Grid item zeroMinWidth>
             <Grid container>
               <Typography className={classes.title} variant="h4" noWrap title={title}>
-                {loading ? <Skeleton width="10vw" height="3.3rem" /> : title}
+                {loading ? <Skeleton variant="h4" /> : title}
               </Typography>
               <Typography className={classes.subtitle} variant="h5">
-                {loading ? <Skeleton width="25vw" /> : subtitle}
+                {loading ? <Skeleton width="50vw" /> : subtitle}
               </Typography>
             </Grid>
             <Grid container>
