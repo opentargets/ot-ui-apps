@@ -74,13 +74,7 @@ const ContextMenuContainer = styled("div", {
 function CellName({ cell, colorScale }) {
   const history = useHistory();
   const contextMenuRef = useRef();
-  const {
-    entityToGet,
-    pinnedEntries,
-    setPinnedEntries,
-    id: currentEntityId,
-    handleSetInteractors,
-  } = useAotfContext();
+  const { entityToGet, pinnedEntries, setPinnedEntries, id: currentEntityId } = useAotfContext();
   const { loading } = cell.table.getState();
   const name = cell.getValue();
   const { id } = cell.row;
@@ -186,16 +180,13 @@ function CellName({ cell, colorScale }) {
             </StyledMenuItem>
           )}
           {entityToGet === ENTITIES.TARGET && <Divider />}
+
           {entityToGet === ENTITIES.TARGET && (
-            <StyledMenuItem
-              onClick={() => {
-                handleSetInteractors(id, "intact");
-              }}
-            >
+            <StyledMenuItem disabled>
               <ListItemIcon>
                 <FontAwesomeIcon icon={faBezierCurve} />
               </ListItemIcon>
-              <ListItemText>Target interactors</ListItemText>
+              <ListItemText>Target network associations</ListItemText>
             </StyledMenuItem>
           )}
 
