@@ -87,14 +87,16 @@ function getColumns(id: string, label: string) {
     {
       id: "l2gScore",
       label: "L2G score",
-      // comparator: (a, b) => b - a,
-      // sortable: true,
+      comparator: (a, b) => a["l2g.score"] - b["l2g.score"],
+      sortable: true,
       renderCell: d => d["l2g.score"].toFixed(3),
       exportLabel: "L2G score", 
     },
     {
       id: "credibleSetSize",
       label: "Credible Set Size",
+      comparator: (a, b) => a.locus.length - b.locus.length,
+      sortable: true,
       renderCell: ({ locus }) => locus.length,
       exportLabel: "Credible Set Size",
     }
