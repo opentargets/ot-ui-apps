@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
@@ -6,22 +7,25 @@ import {
   AssociationsProvider,
   SearhInput,
   DataDownloader,
-  useAotfContext,
   ControlsSection,
   OptionsControlls,
-  AotFLoader,
   DataUploader,
   AotfApiPlayground,
 } from "../../../components/AssociationsToolkit";
+import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
 
-function AssociationsWrapper() {
-  const { initialLoading } = useAotfContext();
+type DiseaseAssociationsProps = {
+  efoId: string;
+};
 
-  if (initialLoading) return <AotFLoader />;
-
+function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
   return (
-    <>
+    <AssociationsProvider
+      id={pros.efoId}
+      entity={ENTITY.DISEASE}
+      query={DISEASE_ASSOCIATIONS_QUERY}
+    >
       <ControlsSection>
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <SearhInput />
@@ -38,15 +42,6 @@ function AssociationsWrapper() {
         </Box>
       </ControlsSection>
       <TableAssociations />
-    </>
-  );
-}
-
-/* DISEASE ASSOCIATION  */
-function DiseaseAssociations({ efoId }) {
-  return (
-    <AssociationsProvider id={efoId} entity="disease" query={DISEASE_ASSOCIATIONS_QUERY}>
-      <AssociationsWrapper />
     </AssociationsProvider>
   );
 }
