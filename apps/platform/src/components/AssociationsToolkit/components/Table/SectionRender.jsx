@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import { styled } from "@mui/material/styles";
 import { LoadingBackdrop } from "ui";
-import { ENTITIES } from "../utils";
+import { ENTITIES } from "../../utils";
 
-import targetSections from "../../../sections/targetSections";
-import evidenceSections from "../../../sections/evidenceSections";
+import targetSections from "../../../../sections/targetSections";
+import evidenceSections from "../../../../sections/evidenceSections";
 
 const LoadingContainer = styled("div")({
   margin: "25px 0",

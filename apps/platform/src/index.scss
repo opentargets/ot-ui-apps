@@ -255,13 +255,6 @@ code {
   box-sizing: border-box;
 }
 
-.TAssociations .data-cell.active .data-score {
-  -webkit-box-shadow: 0px 0px 3px 1px rgba(92, 19, 19, 0.35);
-  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
-  border: 2px solid rgb(0, 0, 0) !important;
-  position: sticky;
-  top: 0;
-}
 
 .TAssociations .data-cell .data-score:hover,
 .TAssociations .data-cell .data-score:focus {
@@ -358,11 +351,6 @@ code {
     & main {
       max-width: 900px !important;
       min-width: 820px !important;
-    }
-    & .data-score,
-    & .data-empty {
-      height: 22px !important;
-      width: 22px !important;
     }
   }
 }

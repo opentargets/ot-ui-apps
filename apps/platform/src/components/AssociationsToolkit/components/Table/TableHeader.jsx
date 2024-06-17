@@ -5,7 +5,7 @@ import { faArrowDownWideShort, faBook, faLock } from "@fortawesome/free-solid-sv
 import { Grid } from "@mui/material";
 
 import AggregationsRow from "./AggregationsRow";
-import useAotfContext from "../hooks/useAotfContext";
+import useAotfContext from "../../hooks/useAotfContext";
 import { GridContainer } from "../layout";
 
 const getHeaderContainerClassName = ({ id }) => {

@@ -1,5 +1,5 @@
 import { ApiPlaygroundDrawer } from "ui";
-import useAotfContext from "./hooks/useAotfContext";
+import useAotfContext from "../hooks/useAotfContext";
 
 function AotfApiPlayground() {
   const {
