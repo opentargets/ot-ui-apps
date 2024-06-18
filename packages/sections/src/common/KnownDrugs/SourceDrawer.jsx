@@ -76,6 +76,9 @@ const tableSourceLabel = name =>
     ClinicalTrials: "ClinicalTrials.gov",
     DailyMed: "DailyMed",
     FDA: "FDA",
+    EMA: "European Medicines Agency",
+    INN: "International Nonproprietary Names",
+    USAN: "United States Adopted Name",
   }[name]);
 
 const drawerSourceLabel = (name, url) => {
@@ -91,7 +94,7 @@ const drawerSourceLabel = (name, url) => {
   if (name === "ATC") {
     return url.split("code=")[1] || `${tableSourceLabel(name)} reference`;
   }
-  return `${url.name} entry`;
+  return `${name} entry`;
 };
 
 function SourceDrawer({ references }) {
