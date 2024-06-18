@@ -9,6 +9,7 @@ import {
 import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/Summary";
 import EVASummary from "sections/src/variant/EVA/Summary";
 import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
+import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
 import PharmacogenomicsSummary from "sections/src/variant/Pharmacogenomics/Summary";
 
 import ProfileHeader from "./ProfileHeader";
@@ -16,12 +17,14 @@ import ProfileHeader from "./ProfileHeader";
 const InSilicoPredictorsSection = lazy(() => import("sections/src/variant/InSilicoPredictors/Body"));
 const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
 const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
+const QTLCredibleSetsSection = lazy(() => import("sections/src/variant/QTLCredibleSets/Body"));
 const PharmacogenomicsSection = lazy(() => import("sections/src/variant/Pharmacogenomics/Body"));
 
 const summaries = [
   InSilicoPredictorsSummary,
   EVASummary,
   UniProtVariantsSummary,
+  QTLCredibleSetsSummary,
   PharmacogenomicsSummary,
 ];
 
@@ -51,6 +54,7 @@ function Profile({ varId }: ProfileProps) {
         <InSilicoPredictorsSummary />
         <EVASummary />
         <UniProtVariantsSummary />
+        <QTLCredibleSetsSummary />
         <PharmacogenomicsSummary />
       </SummaryContainer>
     
@@ -65,9 +69,11 @@ function Profile({ varId }: ProfileProps) {
           <UniProtVariantsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
+          <QTLCredibleSetsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
           <PharmacogenomicsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense>
-        {/* NEED ANYTHING IN <PrivateWrapper> ???? see evidence page */}
       </SectionContainer>
   
     </>
