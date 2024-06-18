@@ -8,7 +8,7 @@ const id = "gwas_credible_sets";
 export const definition = {
   id,
   name: "GWAS Credible Sets",
-  shortName: "CS",
+  shortName: "GW",
   hasData: () => true,   // !! CHANGE WHEN USE GQL !!
   isPrivate: false,   // isPrivateVariantSection(id),
 };
