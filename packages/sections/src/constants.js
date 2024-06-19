@@ -59,6 +59,9 @@ export const sourceMap = {
   DailyMed: "DailyMed",
   "ATC Information": "ATC",
   ATC: "ATC",
+  EMA: "European Medicines Agency",
+  INN: "International Nonproprietary Names",
+  USAN: "United States Adopted Name",
 };
 
 export const clinvarStarMap = {

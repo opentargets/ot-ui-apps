@@ -251,6 +251,7 @@ function getColumns(classes) {
 function fetchData({ ensemblId, efoId, cursor, size }) {
   return client.query({
     query: CHEMBL_QUERY,
+    fetchPolicy: "no-cache",
     variables: {
       ensemblId,
       efoId,
