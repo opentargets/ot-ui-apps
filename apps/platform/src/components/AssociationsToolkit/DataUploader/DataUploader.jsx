@@ -435,7 +435,7 @@ function DataUploader({ fileStem }) {
             validation of your input.
             <br />
             <Link
-              to="https://home.opentargets.org/aotf-documentation#upload-to-associations-on-the-fly"
+              to="https://platform-docs.opentargets.org/web-interface/associations-on-the-fly#upload-functionality"
               external
             >
               Read more details here.
