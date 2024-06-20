@@ -26,7 +26,7 @@ function FacetsSuggestion(): ReactElement {
           Tip:
         </Box>
         <Box sx={{ typography: "body2" }}>
-          Please search by {entityToGet} or filter by {entity} category. Example:{" "}
+          Please search by {entityToGet} or filter by {entityToGet} category. Example:{" "}
           {entity === "disease" ? DISEASE_EXAMPLE : TARGET_EXAMPLE}
         </Box>
       </Box>
