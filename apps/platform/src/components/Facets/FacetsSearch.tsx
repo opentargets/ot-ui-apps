@@ -14,26 +14,29 @@ import { Tooltip, useDebounce } from "ui";
 import FACETS_SEARCH_QUERY from "./FacetsQuery.gql";
 import useAotfContext from "../AssociationsToolkit/hooks/useAotfContext";
 import client from "../../client";
-import { capitalize } from "lodash";
 import FacetsSuggestion from "./FacetsSuggestion";
 
-const CATEGORIES = {
+const TARGET_CATEGORIES = {
   "All Categories": "All",
   Names: "Approved Name",
   Symbol: "Approved Symbol",
   "ChEMBL Target Class": "ChEMBL Target Class",
-  Disease: "Disease",
   "GO:BP": "GO:BP",
   "GO:CC": "GO:CC",
   "GO:MF": "GO:MF",
   Reactome: "Reactome",
   "Subcellular Location": "Subcellular Location",
   "Target ID": "Target ID",
-  "Therapeutic Area": "Therapeutic Area",
   "Tractability Antibody": "Tractability Antibody",
   "Tractability Other Modalities": "Tractability Other Modalities",
   "Tractability PROTAC": "Tractability PROTAC",
   "Tractability Small Molecule": "Tractability Small Molecule",
+};
+
+const DISEASE_CATEGORIES = {
+  "All Categories": "All",
+  Disease: "Disease",
+  "Therapeutic Area": "Therapeutic Area",
 };
 
 function FacetsSearch(): ReactElement {
@@ -42,8 +45,8 @@ function FacetsSearch(): ReactElement {
   const debouncedInputValue = useDebounce(inputValue, 400);
   const [dataOptions, setDataOptions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const CATEGORIES = entityToGet === "disease" ? DISEASE_CATEGORIES : TARGET_CATEGORIES;
   const [categoryFilterValue, setCategoryFilterValue] = useState(CATEGORIES["All Categories"]);
-  // let my_data = [];
 
   async function getFacetsData() {
     setDataOptions([]);
@@ -77,8 +80,8 @@ function FacetsSearch(): ReactElement {
           setCategoryFilterValue(event.target.value);
         }}
         sx={{
-          minWidth: 140,
-          maxWidth: 1,
+          minWidth: 150,
+          maxWidth: 150,
           background: theme => `${theme.palette.grey[200]}`,
           display: "flex",
           boxShadow: "none",
@@ -97,7 +100,7 @@ function FacetsSearch(): ReactElement {
       </Select>
       <Autocomplete
         sx={{
-          minWidth: "250px",
+          minWidth: "280px",
           width: 1,
           maxWidth: 1,
           flexWrap: "nowrap",
@@ -126,11 +129,7 @@ function FacetsSearch(): ReactElement {
           setInputValue(newInputValue);
         }}
         renderInput={params => (
-          <TextField
-            {...params}
-            label={`Search ${capitalize(entityToGet)} specific filter`}
-            fullWidth
-          />
+          <TextField {...params} label={`Search ${entityToGet} specific filter`} fullWidth />
         )}
         renderTags={(value: readonly string[], getTagProps) =>
           value.map((option: any, index: number) => (

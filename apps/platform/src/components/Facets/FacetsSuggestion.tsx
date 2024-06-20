@@ -4,6 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box } from "@mui/material";
 import { useAotfContext } from "../AssociationsToolkit";
 
+const TARGET_EXAMPLE = "Measurement";
+const DISEASE_EXAMPLE = "Enzyme";
+
 function FacetsSuggestion(): ReactElement {
   const { entityToGet, entity } = useAotfContext();
 
@@ -23,8 +26,8 @@ function FacetsSuggestion(): ReactElement {
           Tip:
         </Box>
         <Box sx={{ typography: "body2" }}>
-          Please filter {entityToGet}s by aggregated {entity} types or search for single {entity}.
-          Example: Enzyme
+          Please search by {entityToGet} or filter by {entity} category. Example:{" "}
+          {entity === "disease" ? DISEASE_EXAMPLE : TARGET_EXAMPLE}
         </Box>
       </Box>
     </Box>
