@@ -4,7 +4,7 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 import { Box, Chip } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, ChipList, DataTable } from "ui";
+import { Link, SectionItem, ChipList, DataTable, Tooltip } from "ui";
 import { v1 } from "uuid";
 
 import { definition } from ".";
@@ -127,11 +127,13 @@ const getColumns = classes => [
         <>
           {sortedAssays.map(e => (
             <Box sx={{ my: theme => theme.spacing(0.3) }} key={v1()}>
-              <Chip
-                label={ASSAYS_DISPLAY_NAME_MAPPING[e.shortName]}
-                small="true"
-                color={e.isHit ? "primary" : "default"}
-              />
+              <Tooltip title={e.description}>
+                <Chip
+                  label={ASSAYS_DISPLAY_NAME_MAPPING[e.shortName]}
+                  small="true"
+                  color={e.isHit ? "primary" : "default"}
+                />
+              </Tooltip>
             </Box>
           ))}
         </>
