@@ -86,7 +86,6 @@ const getColumns = classes => [
   {
     id: "projectDescription",
     label: "OTAR primary project",
-    tooltip: <>Binary assessment of gene perturbation effect in primary project screen</>,
     renderCell: ({ primaryProjectId }) => (
       <Link to={`http://home.opentargets.org/${primaryProjectId}`} external>
         {primaryProjectId}
@@ -97,6 +96,7 @@ const getColumns = classes => [
   {
     id: "primaryProjectHit",
     label: "Primary project hit",
+    tooltip: <>Binary assessment of gene perturbation effect in primary project screen</>,
     renderCell: ({ primaryProjectHit }) => (
       <FontAwesomeIcon
         icon={primaryProjectHit ? faCheckCircle : faTimesCircle}
@@ -130,7 +130,7 @@ const getColumns = classes => [
               <Tooltip title={e.description}>
                 <Chip
                   label={ASSAYS_DISPLAY_NAME_MAPPING[e.shortName]}
-                  small="true"
+                  size="small"
                   color={e.isHit ? "primary" : "default"}
                 />
               </Tooltip>
