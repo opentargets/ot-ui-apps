@@ -2,9 +2,10 @@ import { useQuery } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
-import { Typography } from "@mui/material";
+import { Box, Chip } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link, SectionItem, ChipList, DataTable } from "ui";
+import { v1 } from "uuid";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -39,36 +40,13 @@ const ASSAYS_DISPLAY_NAME_MAPPING = {
   Confluence: "Cell Confluence",
 };
 
-function HitIcon({ isHitValue, classes }) {
-  return (
-    <FontAwesomeIcon
-      icon={isHitValue ? faCheckCircle : faTimesCircle}
-      size="2x"
-      className={isHitValue ? classes.primaryColor : classes.grey}
-    />
-  );
-}
-
 const getColumns = classes => [
   {
     id: "disease",
     label: "Reported disease",
     renderCell: row => <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>,
+    sortable: true,
     filterValue: row => `${row.diseaseLabel}, ${row.diseaseId}`,
-  },
-  {
-    id: "projectDescription",
-    label: "OTAR primary project",
-    tooltip: <>Binary assessment of gene perturbation effect in primary project screen</>,
-    renderCell: row => (
-      <Link to={`http://home.opentargets.org/${row.primaryProjectId}`} external>
-        {row.projectDescription}
-        <Typography variant="caption" display="block">
-          {row.primaryProjectId}
-        </Typography>
-      </Link>
-    ),
-    filterValue: row => `${row.projectDescription}, ${row.primaryProjectId}`,
   },
   {
     id: "diseaseCellLines",
@@ -106,30 +84,78 @@ const getColumns = classes => [
     width: "16%",
   },
   {
-    id: "assays",
-    label: "VL hit",
-    renderCell: ({ assays }) => (
-      <ChipList
-        small
-        items={assays.map(e => ({
-          label: ASSAYS_DISPLAY_NAME_MAPPING[e.shortName],
-          tooltip: e.description,
-          customClass: !e.isHit && classes.hsDefault,
-        }))}
-      />
+    id: "projectDescription",
+    label: "OTAR primary project",
+    tooltip: <>Binary assessment of gene perturbation effect in primary project screen</>,
+    renderCell: ({ primaryProjectId }) => (
+      <Link to={`http://home.opentargets.org/${primaryProjectId}`} external>
+        {primaryProjectId}
+      </Link>
     ),
+    filterValue: row => `${row.primaryProjectId}`,
   },
   {
     id: "primaryProjectHit",
     label: "Primary project hit",
     renderCell: ({ primaryProjectHit }) => (
-      <HitIcon isHitValue={primaryProjectHit} classes={classes} />
+      <FontAwesomeIcon
+        icon={primaryProjectHit ? faCheckCircle : faTimesCircle}
+        size="2x"
+        className={primaryProjectHit ? classes.primaryColor : classes.grey}
+      />
     ),
+    sortable: true,
     width: "8%",
   },
   {
+    id: "assays",
+    label: "OTVL hit",
+    renderCell: ({ assays }) => {
+      let sortedAssays = [...assays];
+      if (sortedAssays.length >= 2) {
+        sortedAssays.sort(function (a, b) {
+          if (a.shortName < b.shortName) {
+            return -1;
+          }
+          if (a.shortName > b.shortName) {
+            return 1;
+          }
+          return 0;
+        });
+      }
+      return (
+        <>
+          {sortedAssays.map(e => (
+            <Box sx={{ my: theme => theme.spacing(0.3) }} key={v1()}>
+              <Chip
+                label={ASSAYS_DISPLAY_NAME_MAPPING[e.shortName]}
+                small="true"
+                color={e.isHit ? "primary" : "default"}
+              />
+            </Box>
+          ))}
+        </>
+      );
+    },
+  },
+  {
     id: "assessment",
-    label: "VL assessment",
+    label: "OTVL assessment",
+    renderCell: ({ assessment }) => {
+      // TODO: temp solution, assessment key should contain array
+      const regex =
+        /(Evidence of dependency)|(Evidence of toxicity)|(No evidence of dependency)|(No evidence of toxicity)|(Multiple evidence of dependency)/g;
+      const listOfValues = assessment.match(regex);
+      return (
+        <>
+          {listOfValues.map(e => (
+            <Box sx={{ my: theme => theme.spacing(1) }} key={e}>
+              {e}
+            </Box>
+          ))}
+        </>
+      );
+    },
   },
   {
     id: "releaseVersion",
