@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useEffect, useState } from "react";
 import client from "../../../../client";
-import { ENTITIES } from "../../utils";
+import { ENTITIES, getInteractorIds, getTargetRowInteractors } from "../../utils";
 import { v1 } from "uuid";
 
 import InteractionsQuery from "./InteractionsQuery.gql";
@@ -162,31 +162,11 @@ function useRowInteractors({
       }
 
       const interactorsCount = targetRowInteractorsRequest.data.target.interactions.count;
-      const interactorsIds = [
-        ...new Set(
-          targetRowInteractorsRequest.data.target.interactions.rows.map(int => int.targetB?.id)
-        ),
-      ];
-      console.log({ interactorsIds, targetRowInteractorsRequest });
-      /**
-       * TODO: REVIEW - move to util func
-       */
-      const targetRowInteractors = [
-        ...new Set(
-          targetRowInteractorsRequest.data.target.interactions.rows.map(item => ({
-            id: item.targetB?.id || v1(),
-            targetSymbol: item.targetB.approvedSymbol,
-            dataSources: {},
-            prioritisations: {},
-            diseaseName: "",
-            score: 0,
-            target: {
-              id: item.targetB.id,
-              approvedSymbol: item.targetB.approvedSymbol,
-            },
-          }))
-        ),
-      ];
+      const interactorsIds = getInteractorIds(targetRowInteractorsRequest);
+      const targetRowInteractors = getTargetRowInteractors(
+        targetRowInteractorsRequest,
+        interactorsIds
+      );
 
       const interactorsAssociationsRequest = await client.query({
         query: associationsQuery,

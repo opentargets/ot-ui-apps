@@ -17,6 +17,7 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
     dataSourcesRequired,
     entityToGet,
     handleSetInteractors,
+    handleDisableInteractors,
   } = useAotfContext();
 
   const label = row.original[entityToGet][rowNameEntity];
@@ -71,7 +72,9 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Box
+            onClick={() => handleDisableInteractors(row.id)}
             sx={{
+              cursor: "pointer",
               background: grey[400],
               padding: "2px",
               borderRadius: "50%",
@@ -80,6 +83,9 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              "&:hover": {
+                background: grey[500],
+              },
             }}
           >
             <FontAwesomeIcon size="sm" icon={faClose} />
@@ -112,9 +118,9 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
               <option value={"string"}>String</option>
             </NativeSelect>
           </Box>
-          <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>
-            count {count}
-          </Typography>
+          {/* <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>
+            {count} interactors
+          </Typography> */}
         </Box>
       </Box>
       <Box sx={{ border: 1, borderColor: grey[300] }}>

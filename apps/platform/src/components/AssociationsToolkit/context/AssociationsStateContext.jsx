@@ -15,7 +15,7 @@ import {
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
-import { onPaginationChange, setInteractors } from "./aotfActions";
+import { onPaginationChange, setInteractors, disableInteractors } from "./aotfActions";
 
 const AssociationsStateContext = createContext();
 
@@ -34,7 +34,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   useEffect(() => {
     console.log({ state });
   }, [state]);
-
 
   // Table Controls
   // [rowId, columnId, codebaseSectionId, tablePrefix]
@@ -154,6 +153,10 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     dispatch(setInteractors(id, source));
   };
 
+  const handleDisableInteractors = id => {
+    dispatch(disableInteractors(id));
+  };
+
   const handlePaginationChange = updater => {
     const newPagination = updater(state.pagination);
     dispatch(onPaginationChange(newPagination));
@@ -253,11 +256,13 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       resetExpandler,
       handleAggregationClick,
       handleSetInteractors,
+      handleDisableInteractors,
       state,
     }),
     [
       dispatch,
       handleSetInteractors,
+      handleDisableInteractors,
       activeHeadersControlls,
       count,
       data,

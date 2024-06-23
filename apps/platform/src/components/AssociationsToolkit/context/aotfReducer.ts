@@ -37,6 +37,9 @@ export function createInitialState({ parentEntity, parentId, query }: InitialSta
   return state;
 }
 
+/**********************
+ * AOTF STATE REDUCER *
+ **********************/
 export function aotfReducer(state: State = initialState, action: Action): State {
   if (typeof state === undefined) {
     throw Error("State provied to aotfReducer is undefined");
@@ -62,23 +65,25 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       };
     }
     case ActionType.SET_INTERACTORS: {
-      const currentInteractors = state.interactors;
-      if (typeof currentInteractors === "undefined" || !currentInteractors) return { ...state };
-      const payloadInteractor = action.payload;
+      const interactorsState = state.interactors;
+      if (typeof interactorsState === "undefined" || !interactorsState) return { ...state };
+      const { payload } = action;
 
-      // Todo: review
-      if (currentInteractors.has(payloadInteractor.id)) {
-        const row = currentInteractors.get(payloadInteractor.id);
-        row?.push(payloadInteractor.source);
-        currentInteractors.set(payloadInteractor.id, row);
-      }
-
-      currentInteractors.set(payloadInteractor.id, [payloadInteractor.source]);
+      interactorsState.set(payload.id, [payload.source]);
 
       return {
         ...state,
-        interactors: currentInteractors,
+        interactors: interactorsState,
       };
+    }
+    case ActionType.DISABLE_INTERACTORS: {
+      const interactorsState = state.interactors;
+      if (typeof interactorsState === "undefined" || !interactorsState) return { ...state };
+      const { payload } = action;
+
+      interactorsState.delete(payload.id);
+
+      return { ...state, interactors: interactorsState };
     }
     default: {
       throw Error("Unknown action: " + action);

@@ -13,3 +13,10 @@ export function setInteractors(id: RowInteractorsKey, source: string): Action {
     payload: { id, source },
   };
 }
+
+export function disableInteractors(id: RowInteractorsKey): Action {
+  return {
+    type: ActionType.DISABLE_INTERACTORS,
+    payload: { id },
+  };
+}
