@@ -31,11 +31,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     createInitialState
   );
 
-  useEffect(() => {
-    console.log({ state });
-  }, [state]);
-
-
   // Table Controls
   // [rowId, columnId, codebaseSectionId, tablePrefix]
   // eg. ['ENSG00000087085', 'hasHighQualityChemicalProbes', 'chemicalProbes', 'pinned']
@@ -147,7 +142,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   const resetToInitialPagination = () => {
     setTableExpanded({});
     setExpanded([]);
-    // setPagination(DEFAULT_TABLE_PAGINATION_STATE);
   };
 
   const handleSetInteractors = (id, source) => {
@@ -170,7 +164,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const handleSearchInputChange = newSearchFilter => {
     if (newSearchFilter !== searhFilter) {
-      // setPagination(DEFAULT_TABLE_PAGINATION_STATE);
       setSearhFilter(newSearchFilter);
     }
   };
