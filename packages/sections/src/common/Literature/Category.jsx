@@ -51,7 +51,8 @@ export default function Category() {
     });
     const data = request.data[globalEntity];
     const update = {
-      entities: data.similarEntities,
+      // entities: data.similarEntities,
+      entities: [...data.similarTargets, ...data.similarDrugs, ...data.similarDiseases],
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,
       litsCount: data.literatureOcurrences?.filteredCount,
       loadingEntities: false,

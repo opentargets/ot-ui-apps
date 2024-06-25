@@ -10,11 +10,11 @@ export async function literaturesEuropePMCQuery({ literaturesIds }) {
   if (response.error) throw response.error;
   return response.resultList?.result;
 };
-  
+
 export const fetchSimilarEntities = ({
   id = "",
   threshold = 0.5,
-  size = 15,
+  size = 6,
   query,
   cursor = null,
   category = [],

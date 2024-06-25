@@ -63,7 +63,8 @@ export default function EntityFilter({ category, name, id }: EntityFilterProps) 
     });
     const data = request.data[globalEntity];
     const update = {
-      entities: data.similarEntities,
+      // entities: data.similarEntities,
+      entities: [...data.similarTargets, ...data.similarDrugs, ...data.similarDiseases],
       litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
       litsCount: data.literatureOcurrences?.filteredCount,
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,
@@ -101,7 +102,8 @@ export default function EntityFilter({ category, name, id }: EntityFilterProps) 
     });
     const data = request.data[globalEntity];
     const update = {
-      entities: data.similarEntities,
+      // entities: data.similarEntities,
+      entities: [...data.similarTargets, ...data.similarDrugs, ...data.similarDiseases],
       litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
       litsCount: data.literatureOcurrences?.filteredCount,
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,

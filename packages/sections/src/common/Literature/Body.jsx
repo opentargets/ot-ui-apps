@@ -54,7 +54,8 @@ function LiteratureList(
       setRequestObj(initRequest);
       const data = initRequest.data[entity];
       const update = {
-        entities: data.similarEntities,
+        // entities: data.similarEntities,
+        entities: [...data.similarTargets, ...data.similarDrugs, ...data.similarDiseases],
         litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
         litsCount: data.literatureOcurrences?.filteredCount,
         earliestPubYear: data.literatureOcurrences?.earliestPubYear,

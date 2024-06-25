@@ -24,7 +24,7 @@ const useStyles = makeStyles(() => ({
 
 function parsePublications(publications: PublicationType[]): DetailsStateType {
   const obj: DetailsStateType = {};
-  for (const pub of publications) {
+  for (const pub of publications || []) {
     obj[pub.id] = {
       source: pub.source,
       patentDetails: pub.patentDetails,
