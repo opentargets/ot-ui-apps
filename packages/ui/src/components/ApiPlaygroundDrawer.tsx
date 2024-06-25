@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Drawer, Grid, IconButton, Paper } from "@mui/material";
 
 import Link from "./Link";
-import { KeyboardEvent, Suspense, lazy, useState } from "react";
+import { KeyboardEvent, ReactElement, Suspense, lazy, useState } from "react";
 import { fetcher } from "../utils/global";
 
 // lazy load GraphiQL and remove Logo and Toolbar
@@ -24,9 +24,14 @@ const GraphiQL = lazy(() =>
 type ApiPlaygroundDrawerProps = {
   query: string;
   variables: any;
+  fullHeight: boolean;
 };
 
-function ApiPlaygroundDrawer({ query, variables }: ApiPlaygroundDrawerProps) {
+function ApiPlaygroundDrawer({
+  query,
+  variables,
+  fullHeight,
+}: ApiPlaygroundDrawerProps): ReactElement {
   const [open, setOpen] = useState(false);
 
   function close(e: KeyboardEvent<HTMLInputElement>) {
@@ -42,7 +47,12 @@ function ApiPlaygroundDrawer({ query, variables }: ApiPlaygroundDrawerProps) {
       {" "}
       {query ? (
         <Grid item>
-          <Button variant="outlined" size="small" onClick={() => togglePlayground()}>
+          <Button
+            sx={{ ...(fullHeight && { height: 1, maxHeight: "45px" }) }}
+            variant="outlined"
+            size="small"
+            onClick={() => togglePlayground()}
+          >
             API query
           </Button>
         </Grid>

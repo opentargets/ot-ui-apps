@@ -8,14 +8,13 @@ import {
   getCellId,
   checkBoxPayload,
   ENTITIES,
-  DEFAULT_TABLE_PAGINATION_STATE,
   DEFAULT_TABLE_SORTING_STATE,
   DISPLAY_MODE,
 } from "../utils";
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
-import { onPaginationChange, setInteractors, resetPagination } from "./aotfActions";
+import { onPaginationChange, resetPagination } from "./aotfActions";
 
 const AssociationsStateContext = createContext();
 
@@ -51,6 +50,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   const [pinExpanded, setPinExpanded] = useState([]);
   const [tableExpanded, setTableExpanded] = useState({});
   const [tablePinExpanded, setTablePinExpanded] = useState({});
+  const [facetFilterIds, setFacetFilterIds] = useState([]);
 
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
@@ -90,7 +90,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       datasources: dataSourcesWeights,
       entity,
       aggregationFilters: dataSourcesRequired,
-      entityInteractors: state.interactors,
+      facetFilters: facetFilterIds,
     },
   });
 
@@ -110,6 +110,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       datasources: dataSourcesWeights,
       aggregationFilters: dataSourcesRequired,
       rowsFilter: pinnedEntries.toSorted(),
+      facetFilters: facetFilterIds,
     },
   });
 
@@ -156,10 +157,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     setTableExpanded({});
     setExpanded([]);
     dispatch(resetPagination());
-  };
-
-  const handleSetInteractors = (id, source) => {
-    dispatch(setInteractors(id, source));
   };
 
   const handlePaginationChange = updater => {
@@ -241,6 +238,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       pinnedCount,
       pinExpanded,
       pinnedEntries,
+      facetFilterIds,
       handleActiveRow,
       resetToInitialPagination,
       setPinnedEntries,
@@ -259,12 +257,11 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       setActiveHeadersControlls,
       resetExpandler,
       handleAggregationClick,
-      handleSetInteractors,
+      setFacetFilterIds,
       state,
     }),
     [
       dispatch,
-      handleSetInteractors,
       activeHeadersControlls,
       count,
       data,
@@ -298,6 +295,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       sorting,
       tableExpanded,
       tablePinExpanded,
+      facetFilterIds,
+      setFacetFilterIds,
     ]
   );
 

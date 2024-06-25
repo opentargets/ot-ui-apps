@@ -150,6 +150,7 @@ function useAssociationsData({
     datasources = [],
     rowsFilter = [],
     entity,
+    facetFilters = [],
   },
 }) {
   const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
@@ -172,6 +173,7 @@ function useAssociationsData({
             name: el.name,
             path: el.path,
           })),
+          facetFilters,
         },
       });
       const parsedData = getAssociationsData(entity, resData.data);
@@ -197,6 +199,7 @@ function useAssociationsData({
     query,
     entity,
     aggregationFilters,
+    facetFilters,
   ]);
 
   return state;
