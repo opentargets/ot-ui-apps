@@ -10,6 +10,7 @@ import {
   Popover,
   Box,
   Fade,
+  Skeleton,
 } from "@mui/material";
 import {
   faThumbTack,
@@ -20,8 +21,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
-import useAotfContext from "../hooks/useAotfContext";
-import { ENTITIES } from "../utils";
+import useAotfContext from "../../hooks/useAotfContext";
+import { ENTITIES } from "../../utils";
 import { grey } from "@mui/material/colors";
 
 const StyledMenuItem = styled(MenuItem)({
@@ -73,7 +74,13 @@ const ContextMenuContainer = styled("div", {
 function CellName({ cell, colorScale }) {
   const history = useHistory();
   const contextMenuRef = useRef();
-  const { entityToGet, pinnedEntries, setPinnedEntries, id: currentEntityId } = useAotfContext();
+  const {
+    entityToGet,
+    pinnedEntries,
+    setPinnedEntries,
+    id: currentEntityId,
+    handleSetInteractors,
+  } = useAotfContext();
   const { loading } = cell.table.getState();
   const name = cell.getValue();
   const { id } = cell.row;
@@ -119,7 +126,11 @@ function CellName({ cell, colorScale }) {
     history.push(evidenceURL);
   };
 
-  if (loading) return null;
+  const loadingWidth = entityToGet === ENTITIES.TARGET ? 50 : 150;
+  const loadingMargin = entityToGet === ENTITIES.TARGET ? 12 : 2;
+
+  if (loading)
+    return <Skeleton width={loadingWidth} height={35} sx={{ marginLeft: loadingMargin }} />;
 
   return (
     <NameContainer>
@@ -174,14 +185,20 @@ function CellName({ cell, colorScale }) {
               <ListItemText>Unpin {entityToGet}</ListItemText>
             </StyledMenuItem>
           )}
+          {entityToGet === ENTITIES.TARGET && <Divider />}
           {entityToGet === ENTITIES.TARGET && (
-            <StyledMenuItem disabled>
+            <StyledMenuItem
+              onClick={() => {
+                handleSetInteractors(id, "intact");
+              }}
+            >
               <ListItemIcon>
                 <FontAwesomeIcon icon={faBezierCurve} />
               </ListItemIcon>
-              <ListItemText>Target network associations</ListItemText>
+              <ListItemText>Target interactors</ListItemText>
             </StyledMenuItem>
           )}
+
           <Divider />
           <StyledMenuItem onClick={handleNavigateToEvidence}>
             <ListItemIcon>

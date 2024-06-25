@@ -3,9 +3,9 @@ import { flexRender } from "@tanstack/react-table";
 import { ClickAwayListener, Fade, Box } from "@mui/material";
 import { v1 } from "uuid";
 
-import useAotfContext from "../hooks/useAotfContext";
+import useAotfContext from "../../hooks/useAotfContext";
 
-import { getCellId } from "../utils";
+import { getCellId } from "../../utils";
 import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
@@ -56,7 +56,10 @@ function TableBody({ core, cols }) {
         <RowsContainer>
           {rows.map(row => (
             <Fragment key={row.id}>
-              <RowContainer rowExpanded={getRowActive(row, isExpandedInTable)}>
+              <RowContainer
+                isSubRow={row.depth > 0}
+                rowExpanded={getRowActive(row, isExpandedInTable)}
+              >
                 {highLevelHeaders.map(columnGroup => (
                   <GridContainer
                     columnsCount={cols.length}

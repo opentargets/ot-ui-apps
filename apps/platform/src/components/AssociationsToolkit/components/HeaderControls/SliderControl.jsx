@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { Slider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import useAotfContext from "../hooks/useAotfContext";
-import { getWightSourceDefault } from "../utils";
+import useAotfContext from "../../hooks/useAotfContext";
+import { getWightSourceDefault } from "../../utils";
 
 const OTSlider = styled(Slider)({
   root: {

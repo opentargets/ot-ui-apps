@@ -1,27 +1,31 @@
-import { useContext } from "react";
+import { ReactElement } from "react";
 import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
-  AssociationsContext,
+  TargetPrioritisationSwitch,
   AssociationsProvider,
   SearhInput,
   DataDownloader,
   ControlsSection,
   OptionsControlls,
-  AotFLoader,
   DataUploader,
   AotfApiPlayground,
 } from "../../../components/AssociationsToolkit";
-import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
+import { ENTITY } from "../../../components/AssociationsToolkit/types";
+import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
 
-function AssociationsWrapper() {
-  const { initialLoading } = useContext(AssociationsContext);
+type DiseaseAssociationsProps = {
+  efoId: string;
+};
 
-  if (initialLoading) return <AotFLoader />;
-
+function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
   return (
-    <>
+    <AssociationsProvider
+      id={pros.efoId}
+      entity={ENTITY.DISEASE}
+      query={DISEASE_ASSOCIATIONS_QUERY}
+    >
       <ControlsSection>
         <Box sx={{ display: "flex", flexWrap: "wrap" }}>
           <SearhInput />
@@ -33,20 +37,13 @@ function AssociationsWrapper() {
             <AotfApiPlayground />
           </OptionsControlls>
         </Box>
-        <Box></Box>
+        <Box>
+          <TargetPrioritisationSwitch />
+        </Box>
       </ControlsSection>
       <TableAssociations />
-    </>
-  );
-}
-
-/* TARGET ASSOCIATION  */
-function TargetAssociations({ ensgId }) {
-  return (
-    <AssociationsProvider id={ensgId} entity="target" query={TARGET_ASSOCIATIONS_QUERY}>
-      <AssociationsWrapper />
     </AssociationsProvider>
   );
 }
 
-export default TargetAssociations;
+export default DiseaseAssociations;
