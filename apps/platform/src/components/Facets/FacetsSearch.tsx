@@ -62,17 +62,22 @@ function FacetsSearch(): ReactElement {
       variables,
     });
 
-    setDataOptions(resData.data.facets.hits);
+    const filteredData = resData.data.facets.hits.filter(
+      e =>
+        e.category === categoryFilterValue || categoryFilterValue === CATEGORIES["All Categories"]
+    );
+
+    setDataOptions(filteredData);
     setLoading(false);
   }
 
   useEffect(() => {
     if (inputValue) getFacetsData();
-    // else setDataOptions([]);
+    else setDataOptions([]);
   }, [debouncedInputValue]);
 
   return (
-    <Box sx={{ display: "flex", maxWidth: 1 / 2 }}>
+    <Box sx={{ display: "flex" }}>
       <Select
         value={categoryFilterValue}
         size="small"
@@ -142,55 +147,51 @@ function FacetsSearch(): ReactElement {
         }
         renderOption={(props, option) => {
           const { category, highlights } = option;
-          if (
-            option.category === categoryFilterValue ||
-            categoryFilterValue === CATEGORIES["All Categories"]
-          )
-            return (
-              <li {...props}>
+          return (
+            <li {...props}>
+              <Box
+                sx={{
+                  display: "flex",
+                  p: 0,
+                  m: 0,
+                  width: "100%",
+                  flexDirection: "column",
+                }}
+              >
                 <Box
                   sx={{
                     display: "flex",
-                    p: 0,
-                    m: 0,
-                    width: "100%",
-                    flexDirection: "column",
+                    w: 1,
+                    flexWrap: "wrap",
+                    justifyContent: "start",
+                    em: {
+                      fontWeight: "bold",
+                      fontStyle: "normal",
+                    },
+                  }}
+                >
+                  <Typography dangerouslySetInnerHTML={{ __html: highlights[0] }}></Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "end",
                   }}
                 >
                   <Box
                     sx={{
-                      display: "flex",
-                      w: 1,
-                      flexWrap: "wrap",
-                      justifyContent: "start",
-                      em: {
-                        fontWeight: "bold",
-                        fontStyle: "normal",
-                      },
+                      typography: "caption",
+                      fontStyle: "italic",
+                      fontWeight: "bold",
+                      color: theme => theme.palette.primary.main,
                     }}
                   >
-                    <Typography dangerouslySetInnerHTML={{ __html: highlights[0] }}></Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "end",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        typography: "caption",
-                        fontStyle: "italic",
-                        fontWeight: "bold",
-                        color: theme => theme.palette.primary.main,
-                      }}
-                    >
-                      in {category}
-                    </Box>
+                    in {category}
                   </Box>
                 </Box>
-              </li>
-            );
+              </Box>
+            </li>
+          );
         }}
       />
     </Box>
