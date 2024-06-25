@@ -48,6 +48,12 @@ export function aotfReducer(state: State = initialState, action: Action): State 
         pagination: action.pagination,
       };
     }
+    case ActionType.RESET_PAGINATION: {
+      return {
+        ...state,
+        pagination: DEFAULT_TABLE_PAGINATION_STATE,
+      };
+    }
     case ActionType.SORTING: {
       return {
         ...state,

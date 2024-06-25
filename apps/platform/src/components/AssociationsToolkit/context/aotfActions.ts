@@ -7,6 +7,12 @@ export function onPaginationChange(pagination: Pagination): Action {
   };
 }
 
+export function resetPagination(): Action {
+  return {
+    type: ActionType.RESET_PAGINATION,
+  };
+}
+
 export function setInteractors(id: RowInteractorsKey, source: string): Action {
   return {
     type: ActionType.SET_INTERACTORS,

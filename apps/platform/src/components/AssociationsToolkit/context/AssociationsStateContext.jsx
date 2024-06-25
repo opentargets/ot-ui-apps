@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo, useEffect, useReducer } from "react";
+import { createContext, useState, useMemo, useEffect, useReducer, useRef } from "react";
 import { isEqual } from "lodash";
 import { useStateParams } from "ui";
 import dataSources from "../static_datasets/dataSourcesAssoc";
@@ -15,7 +15,7 @@ import {
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
-import { onPaginationChange, setInteractors } from "./aotfActions";
+import { onPaginationChange, setInteractors, resetPagination } from "./aotfActions";
 
 const AssociationsStateContext = createContext();
 
@@ -30,6 +30,19 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     { query, parentEntity: entity, parentId: id },
     createInitialState
   );
+
+  const hasComponentBeenRender = useRef(false);
+
+  useEffect(() => {
+    if (hasComponentBeenRender.current) {
+      resetDatasourceControls();
+      setPinExpanded([]);
+      setActiveHeadersControlls(false);
+      setSorting(DEFAULT_TABLE_SORTING_STATE);
+      dispatch(resetPagination());
+    }
+    hasComponentBeenRender.current = true;
+  }, [id]);
 
   // Table Controls
   // [rowId, columnId, codebaseSectionId, tablePrefix]
@@ -142,6 +155,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   const resetToInitialPagination = () => {
     setTableExpanded({});
     setExpanded([]);
+    dispatch(resetPagination());
   };
 
   const handleSetInteractors = (id, source) => {
