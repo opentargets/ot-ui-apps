@@ -1,11 +1,28 @@
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
 import useRowInteractors from "./useRowInteractors";
+import useInteractors from "./useInteractors";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableBody from "../Table/TableBody";
 import { Box, InputLabel, NativeSelect, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { useEffect } from "react";
+
+const btnStyles = {
+  cursor: "pointer",
+  background: grey[400],
+  padding: "2px",
+  borderRadius: "50%",
+  height: "18px",
+  width: "18px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  "&:hover": {
+    background: grey[500],
+  },
+};
 
 function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string }) {
   const {
@@ -24,34 +41,37 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
 
   const source: string = state.interactors.get(row.id)[0];
 
-  const { data, loading, error, count } = useRowInteractors({
-    options: {
-      id: row.id,
-      index: 0,
-      size: 10,
-      filter: "",
-      source,
-      aggregationFilters: [],
-      enableIndirect,
-      datasources: dataSourcesWeights,
-      dataSourcesRequired,
-      rowsFilter: [],
-      entityInteractors: null,
-      entity: "disease",
-      diseaseId,
-      sortBy: sorting[0].id,
-    },
-  });
+  const { visibleData, visibleLoading, prevPage, nextPage } = useInteractors(row.id, source);
+  useEffect(() => {
+    console.log(visibleData);
+  }, [visibleData]);
 
-  console.log({ data, source });
+  // const { data, loading, error, count } = useRowInteractors({
+  //   options: {
+  //     id: row.id,
+  //     index: 0,
+  //     size: 10,
+  //     filter: "",
+  //     source,
+  //     aggregationFilters: [],
+  //     enableIndirect,
+  //     datasources: dataSourcesWeights,
+  //     dataSourcesRequired,
+  //     rowsFilter: [],
+  //     entityInteractors: null,
+  //     entity: "disease",
+  //     diseaseId,
+  //     sortBy: sorting[0].id,
+  //   },
+  // });
 
   const interactorsTable = useReactTable({
-    data,
+    data: visibleData,
     columns,
-    pageCount: count,
+    pageCount: visibleData.length,
     state: {
       sorting,
-      loading,
+      loading: visibleLoading,
     },
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
@@ -68,26 +88,13 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
           boxSizing: "border-box",
           px: 2,
           py: 0.5,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Box
-            onClick={() => handleDisableInteractors(row.id)}
-            sx={{
-              cursor: "pointer",
-              background: grey[400],
-              padding: "2px",
-              borderRadius: "50%",
-              height: "18px",
-              width: "18px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              "&:hover": {
-                background: grey[500],
-              },
-            }}
-          >
+          <Box onClick={() => handleDisableInteractors(row.id)} sx={btnStyles}>
             <FontAwesomeIcon size="sm" icon={faClose} />
           </Box>
           <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>
@@ -120,7 +127,15 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
           </Box>
           {/* <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>
             {count} interactors
-          </Typography> */}
+            </Typography> */}
+        </Box>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Box onClick={() => prevPage()} sx={{ cursor: "pointer" }}>
+            <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+          </Box>
+          <Box onClick={() => nextPage()} sx={{ cursor: "pointer" }}>
+            <FontAwesomeIcon icon={faChevronRight} size="sm" />
+          </Box>
         </Box>
       </Box>
       <Box sx={{ border: 1, borderColor: grey[300] }}>
