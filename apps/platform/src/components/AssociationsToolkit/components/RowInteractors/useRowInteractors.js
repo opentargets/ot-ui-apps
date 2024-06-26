@@ -153,7 +153,7 @@ function useRowInteractors({
           sourceDatabase: rowInteractorsSource,
           ensgId: rowInteractorsId,
           index: 0,
-          size: 10,
+          size: 5000,
         },
       });
 
@@ -161,24 +161,24 @@ function useRowInteractors({
         return;
       }
 
-      const interactorsCount = targetRowInteractorsRequest.data.target.interactions.count;
+      // const interactorsCount = targetRowInteractorsRequest.data.target.interactions.count;
       const interactorsIds = getInteractorIds(targetRowInteractorsRequest);
-      const targetRowInteractors = getTargetRowInteractors(
-        targetRowInteractorsRequest,
-        interactorsIds
-      );
+      // const targetRowInteractors = getTargetRowInteractors(
+      //   targetRowInteractorsRequest,
+      //   interactorsIds
+      // );
 
       const interactorsAssociationsRequest = await client.query({
         query: associationsQuery,
         variables: {
           id: diseaseId,
           index,
-          size,
+          size: interactorsIds.length,
           filter,
           sortBy,
           enableIndirect,
           datasources,
-          rowsFilter: targetRowInteractors.map(int => int.id),
+          rowsFilter: interactorsIds,
           aggregationFilters: dataSourcesRequired.map(el => ({
             name: el.name,
             path: el.path,
@@ -192,22 +192,22 @@ function useRowInteractors({
       );
 
       // merge interactors and associations response
-      const targetRowInteractorsAssociations = targetRowInteractors.map(interactor => {
-        const assoc = interactorsAssociations.find(e => e.id === interactor.id);
-        if (!assoc) return interactor;
-        return { ...interactor, ...assoc };
-      });
+      // const targetRowInteractorsAssociations = targetRowInteractors.map(interactor => {
+      //   const assoc = interactorsAssociations.find(e => e.id === interactor.id);
+      //   if (!assoc) return interactor;
+      //   return { ...interactor, ...assoc };
+      // });
 
       setState({
         loading: false,
         initialLoading: false,
-        count: interactorsCount,
-        data: targetRowInteractorsAssociations,
+        count: interactorsAssociations.length,
+        data: interactorsAssociations,
       });
     }
     if (isCurrent) getInteractors();
     return () => (isCurrent = false);
-  }, [source]);
+  }, [source, sortBy, dataSourcesRequired]);
 
   return state;
 }

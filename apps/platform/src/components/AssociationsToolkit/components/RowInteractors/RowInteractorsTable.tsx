@@ -1,13 +1,18 @@
-import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
+import {
+  getCoreRowModel,
+  getExpandedRowModel,
+  useReactTable,
+  PaginationState,
+  getPaginationRowModel,
+} from "@tanstack/react-table";
 import useRowInteractors from "./useRowInteractors";
-import useInteractors from "./useInteractors";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableBody from "../Table/TableBody";
-import { Box, InputLabel, NativeSelect, Typography } from "@mui/material";
+import { Box, Button, InputLabel, NativeSelect, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { useEffect } from "react";
+import { useState } from "react";
 
 const btnStyles = {
   cursor: "pointer",
@@ -37,46 +42,53 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
     handleDisableInteractors,
   } = useAotfContext();
 
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
   const label = row.original[entityToGet][rowNameEntity];
 
   const source: string = state.interactors.get(row.id)[0];
 
-  const { visibleData, visibleLoading, prevPage, nextPage } = useInteractors(row.id, source);
-  useEffect(() => {
-    console.log(visibleData);
-  }, [visibleData]);
+  // const { visibleData, visibleLoading, prevPage, nextPage } = useInteractors(row.id, source);
+  // useEffect(() => {
+  //   console.log(visibleData);
+  // }, [visibleData]);
 
-  // const { data, loading, error, count } = useRowInteractors({
-  //   options: {
-  //     id: row.id,
-  //     index: 0,
-  //     size: 10,
-  //     filter: "",
-  //     source,
-  //     aggregationFilters: [],
-  //     enableIndirect,
-  //     datasources: dataSourcesWeights,
-  //     dataSourcesRequired,
-  //     rowsFilter: [],
-  //     entityInteractors: null,
-  //     entity: "disease",
-  //     diseaseId,
-  //     sortBy: sorting[0].id,
-  //   },
-  // });
+  const { data, loading, error, count } = useRowInteractors({
+    options: {
+      id: row.id,
+      index: 0,
+      size: 10,
+      filter: "",
+      source,
+      aggregationFilters: [],
+      enableIndirect,
+      datasources: dataSourcesWeights,
+      dataSourcesRequired,
+      rowsFilter: [],
+      entityInteractors: null,
+      entity: "disease",
+      diseaseId,
+      sortBy: sorting[0].id,
+    },
+  });
 
   const interactorsTable = useReactTable({
-    data: visibleData,
+    data: data,
     columns,
-    pageCount: visibleData.length,
     state: {
       sorting,
-      loading: visibleLoading,
+      pagination,
+      loading,
     },
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
     getRowId: row => row[entityToGet].id,
-    manualSorting: true,
+    // manualSorting: true,
   });
   const cols = interactorsTable.getHeaderGroups()[0].headers[1].subHeaders;
   return (
@@ -130,12 +142,18 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
             </Typography> */}
         </Box>
         <Box sx={{ display: "flex", gap: 2 }}>
-          <Box onClick={() => prevPage()} sx={{ cursor: "pointer" }}>
+          <Button
+            onClick={() => interactorsTable.previousPage()}
+            disabled={!interactorsTable.getCanPreviousPage()}
+          >
             <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-          </Box>
-          <Box onClick={() => nextPage()} sx={{ cursor: "pointer" }}>
+          </Button>
+          <Button
+            onClick={() => interactorsTable.nextPage()}
+            disabled={!interactorsTable.getCanNextPage()}
+          >
             <FontAwesomeIcon icon={faChevronRight} size="sm" />
-          </Box>
+          </Button>
         </Box>
       </Box>
       <Box sx={{ border: 1, borderColor: grey[300] }}>
