@@ -30,8 +30,7 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
     >
       <ControlsSection>
         <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: theme => theme.spacing(2) }}>
-          {isPartnerPreview && <FacetsSearch />}
-          {!isPartnerPreview && <SearchInput />}
+          {isPartnerPreview ? <FacetsSearch /> : <SearchInput />}
           <AdvanceOptionsMenu />
           <DataUploader />
           <Divider orientation="vertical" />
