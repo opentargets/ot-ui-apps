@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 import { Box, Divider } from "@mui/material";
+import { usePermissions } from "ui";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -8,6 +9,7 @@ import {
   ControlsSection,
   DataUploader,
   AotfApiPlayground,
+  SearchInput,
 } from "../../../components/AssociationsToolkit";
 import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
@@ -18,11 +20,13 @@ type TargetAssociationsProps = {
 };
 
 function TargetAssociations({ ensgId }: TargetAssociationsProps): ReactElement {
+  const { isPartnerPreview } = usePermissions();
   return (
     <AssociationsProvider id={ensgId} entity={ENTITY.TARGET} query={TARGET_ASSOCIATIONS_QUERY}>
       <ControlsSection>
         <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: theme => theme.spacing(2) }}>
-          <FacetsSearch />
+          {isPartnerPreview && <FacetsSearch />}
+          {!isPartnerPreview && <SearchInput />}
           <AdvanceOptionsMenu />
           <DataUploader />
           <Divider orientation="vertical" />
