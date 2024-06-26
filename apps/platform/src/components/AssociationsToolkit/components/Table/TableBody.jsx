@@ -1,7 +1,10 @@
 import { Fragment } from "react";
 import { flexRender } from "@tanstack/react-table";
-import { ClickAwayListener, Fade, Box } from "@mui/material";
+import { ClickAwayListener, Fade, Box, Typography } from "@mui/material";
 import { v1 } from "uuid";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilterCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { grey } from "@mui/material/colors";
 
 import useAotfContext from "../../hooks/useAotfContext";
 
@@ -33,17 +36,57 @@ function ExpandableContainer({ rowExpanded, isExpandedInTable, loading, children
   return <Box key={v1()}>{children}</Box>;
 }
 
+function EmptyMessage() {
+  return (
+    <Box
+      sx={{
+        width: "auto",
+        px: 5,
+        py: 6,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Box
+        sx={{
+          borderRadius: "50%",
+          backgroundColor: grey[300],
+          display: "flex",
+          width: "100px",
+          height: "100px",
+          justifyContent: "center",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <FontAwesomeIcon size="3x" icon={faFilterCircleXmark} />
+      </Box>
+      <Typography variant="h5" sx={{ mb: 2 }}>
+        No results found
+      </Typography>
+      <Typography variant="body">
+        Try adjust your search or filter to find what you looking for.
+      </Typography>
+    </Box>
+  );
+}
+
 function TableBody({ core, cols, noInteractors }) {
   const { id, entity, entityToGet, displayedTable, resetExpandler, expanded } = useAotfContext();
 
   const { rows } = core.getRowModel();
-  if (rows.length < 1) return null;
+  const { prefix, loading } = core.getState();
+
+  if (prefix === "pinned" && rows.length < 1) return null;
+
+  if (rows.length < 1) return <EmptyMessage />;
 
   const flatCols = ["name", ...cols.map(c => c.id)];
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
-  const { prefix, loading } = core.getState();
   const isExpandedInTable = expanded[3] === prefix && flatCols.includes(expanded[1]);
 
   const handleClickAway = e => {
