@@ -255,11 +255,15 @@ code {
   box-sizing: border-box;
 }
 
-
 .TAssociations .data-cell .data-score:hover,
 .TAssociations .data-cell .data-score:focus {
   -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
   box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+}
+
+.TAssociations .data-cell.active .data-score {
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+  border: 2px solid rgb(0, 0, 0) !important;
 }
 
 /* Agregations indicators */

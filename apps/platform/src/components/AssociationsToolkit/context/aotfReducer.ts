@@ -37,9 +37,6 @@ export function createInitialState({ parentEntity, parentId, query }: InitialSta
   return state;
 }
 
-/**********************
- * AOTF STATE REDUCER *
- **********************/
 export function aotfReducer(state: State = initialState, action: Action): State {
   if (typeof state === undefined) {
     throw Error("State provied to aotfReducer is undefined");
@@ -49,6 +46,12 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       return {
         ...state,
         pagination: action.pagination,
+      };
+    }
+    case ActionType.RESET_PAGINATION: {
+      return {
+        ...state,
+        pagination: DEFAULT_TABLE_PAGINATION_STATE,
       };
     }
     case ActionType.SORTING: {

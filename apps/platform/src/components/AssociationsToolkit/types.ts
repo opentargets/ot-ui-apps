@@ -71,6 +71,7 @@ export enum ActionType {
   TEXT_SEARCH = "TEXT_SEARCH",
   SET_INTERACTORS = "SET_INTERACTORS",
   DISABLE_INTERACTORS = "DISABLE_INTERACTORS",
+  RESET_PAGINATION = "RESET_PAGINATION",
 }
 
 export type SetRowInteractorsPayload = {
@@ -88,4 +89,5 @@ export type Action =
   | { type: ActionType.TEXT_SEARCH; searchFilter: string }
   | { type: ActionType.PAGINATE; pagination: Pagination }
   | { type: ActionType.SET_INTERACTORS; payload: SetRowInteractorsPayload }
-  | { type: ActionType.DISABLE_INTERACTORS; payload: disableInteractorsPayload };
+  | { type: ActionType.DISABLE_INTERACTORS; payload: disableInteractorsPayload }
+  | { type: ActionType.RESET_PAGINATION };

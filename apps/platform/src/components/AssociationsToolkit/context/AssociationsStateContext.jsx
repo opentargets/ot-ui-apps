@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo, useEffect, useReducer } from "react";
+import { createContext, useState, useMemo, useEffect, useReducer, useRef } from "react";
 import { isEqual } from "lodash";
 import { useStateParams } from "ui";
 import dataSources from "../static_datasets/dataSourcesAssoc";
@@ -8,14 +8,18 @@ import {
   getCellId,
   checkBoxPayload,
   ENTITIES,
-  DEFAULT_TABLE_PAGINATION_STATE,
   DEFAULT_TABLE_SORTING_STATE,
   DISPLAY_MODE,
 } from "../utils";
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
-import { onPaginationChange, setInteractors, disableInteractors } from "./aotfActions";
+import {
+  onPaginationChange,
+  setInteractors,
+  disableInteractors,
+  resetPagination,
+} from "./aotfActions";
 
 const AssociationsStateContext = createContext();
 
@@ -35,6 +39,19 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     console.log({ state });
   }, [state]);
 
+  const hasComponentBeenRender = useRef(false);
+
+  useEffect(() => {
+    if (hasComponentBeenRender.current) {
+      resetDatasourceControls();
+      setPinExpanded([]);
+      setActiveHeadersControlls(false);
+      setSorting(DEFAULT_TABLE_SORTING_STATE);
+      dispatch(resetPagination());
+    }
+    hasComponentBeenRender.current = true;
+  }, [id]);
+
   // Table Controls
   // [rowId, columnId, codebaseSectionId, tablePrefix]
   // eg. ['ENSG00000087085', 'hasHighQualityChemicalProbes', 'chemicalProbes', 'pinned']
@@ -42,6 +59,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   const [pinExpanded, setPinExpanded] = useState([]);
   const [tableExpanded, setTableExpanded] = useState({});
   const [tablePinExpanded, setTablePinExpanded] = useState({});
+  const [facetFilterIds, setFacetFilterIds] = useState([]);
 
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
@@ -82,6 +100,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       entity,
       aggregationFilters: dataSourcesRequired,
       entityInteractors: state.interactors,
+      facetFilters: facetFilterIds,
     },
   });
 
@@ -101,6 +120,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       datasources: dataSourcesWeights,
       aggregationFilters: dataSourcesRequired,
       rowsFilter: pinnedEntries.toSorted(),
+      facetFilters: facetFilterIds,
     },
   });
 
@@ -146,7 +166,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   const resetToInitialPagination = () => {
     setTableExpanded({});
     setExpanded([]);
-    // setPagination(DEFAULT_TABLE_PAGINATION_STATE);
+    dispatch(resetPagination());
   };
 
   const handleSetInteractors = (id, source) => {
@@ -173,7 +193,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const handleSearchInputChange = newSearchFilter => {
     if (newSearchFilter !== searhFilter) {
-      // setPagination(DEFAULT_TABLE_PAGINATION_STATE);
       setSearhFilter(newSearchFilter);
     }
   };
@@ -237,6 +256,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       pinnedCount,
       pinExpanded,
       pinnedEntries,
+      facetFilterIds,
       handleActiveRow,
       resetToInitialPagination,
       setPinnedEntries,
@@ -257,6 +277,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       handleAggregationClick,
       handleSetInteractors,
       handleDisableInteractors,
+      setFacetFilterIds,
       state,
     }),
     [
@@ -296,6 +317,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       sorting,
       tableExpanded,
       tablePinExpanded,
+      facetFilterIds,
+      setFacetFilterIds,
     ]
   );
 

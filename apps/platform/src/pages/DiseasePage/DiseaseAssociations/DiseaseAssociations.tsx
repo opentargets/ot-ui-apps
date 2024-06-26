@@ -5,15 +5,14 @@ import {
   AdvanceOptionsMenu,
   TargetPrioritisationSwitch,
   AssociationsProvider,
-  SearhInput,
   DataDownloader,
   ControlsSection,
-  OptionsControlls,
   DataUploader,
   AotfApiPlayground,
 } from "../../../components/AssociationsToolkit";
 import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
+import FacetsSearch from "../../../components/Facets/FacetsSearch";
 
 type DiseaseAssociationsProps = {
   efoId: string;
@@ -27,17 +26,15 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
       query={DISEASE_ASSOCIATIONS_QUERY}
     >
       <ControlsSection>
-        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-          <SearhInput />
-          <OptionsControlls>
-            <AdvanceOptionsMenu />
-            <DataUploader />
-            <Divider orientation="vertical" />
-            <DataDownloader />
-            <AotfApiPlayground />
-          </OptionsControlls>
+        <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: theme => theme.spacing(2) }}>
+          <FacetsSearch />
+          <AdvanceOptionsMenu />
+          <DataUploader />
+          <Divider orientation="vertical" />
+          <DataDownloader />
+          <AotfApiPlayground />
         </Box>
-        <Box>
+        <Box sx={{ flex: 1, display: "flex", justifyContent: "end" }}>
           <TargetPrioritisationSwitch />
         </Box>
       </ControlsSection>

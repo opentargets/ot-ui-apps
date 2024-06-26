@@ -22,12 +22,7 @@ import TableFooter from "./TableFooter";
 import TableBody from "./TableBody";
 import useAotfContext from "../../hooks/useAotfContext";
 
-import {
-  cellHasValue,
-  getScale,
-  isPartnerPreview,
-  tableCSSVariables,
-} from "../../utils";
+import { cellHasValue, getScale, isPartnerPreview, tableCSSVariables } from "../../utils";
 
 const TableElement = styled("main")({
   maxWidth: "1600px",
@@ -66,8 +61,6 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
       isPrivate,
       docsLink,
       cell: cell => {
-        // const { loading } = cell.table.getState();
-        // if (loading) return <Skeleton variant="circular" width={25} height={25} />;
         const hasValue = cellHasValue(cell.getValue());
         return hasValue ? (
           <TableCell

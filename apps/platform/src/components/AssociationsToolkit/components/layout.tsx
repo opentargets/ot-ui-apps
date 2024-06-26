@@ -84,7 +84,7 @@ export const ControlsSection = styled("section")`
   margin-bottom: 30px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   flex-wrap: wrap;
 `;
 

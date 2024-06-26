@@ -282,6 +282,7 @@ function DataDownloader() {
           onClick={handleClickBTN}
           variant="outlined"
           disableElevation
+          sx={{ height: 1, maxHeight: "45px" }}
         >
           <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
         </Button>

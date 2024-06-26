@@ -51,6 +51,7 @@ function TableCell({ onClick, shape = "circular", cell = defaultCell, colorScale
   return (
     <Tooltip title={scoreText} arrow disableHoverListener={false}>
       <ScoreElement
+        className="data-score"
         backgroundColor={backgroundColor}
         borderColor={borderColor}
         onClick={onClickHandler}
