@@ -3,6 +3,7 @@ export { default as TableAssociations } from "./components/Table/TableAssociatio
 export { default as TargetPrioritisationSwitch } from "./components/TargetPrioritisationSwitch";
 export { default as DataDownloader } from "./components/DataDownloader";
 export { default as DataUploader } from "./components/DataUploader/DataUploader";
+export { default as SearchInput } from "./components/SearchInput";
 export { default as AotfApiPlayground } from "./components/AotfApiPlayground";
 export {
   default as AssociationsContext,
