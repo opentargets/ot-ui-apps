@@ -3,13 +3,13 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { styled } from "@mui/material/styles";
-import dataSources from "../static_datasets/dataSourcesAssoc";
+import dataSources from "../../static_datasets/dataSourcesAssoc";
 
 import Slider from "./SliderControl";
 import Required from "./RequiredControl";
 import { GridContainer } from "../layout";
 
-import useAotfContext from "../hooks/useAotfContext";
+import useAotfContext from "../../hooks/useAotfContext";
 
 const CloseContainer = styled("div")({
   position: "absolute",

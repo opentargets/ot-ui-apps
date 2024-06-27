@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import { faXmark, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDebounce } from "ui";
-import useAotfContext from "./hooks/useAotfContext";
+import useAotfContext from "../hooks/useAotfContext";
 
 const InputContainer = styled(Grid)({
   marginRight: "15px",

@@ -17,8 +17,9 @@ import NotFoundPage from "../NotFoundPage";
 import { getUniprotIds } from "../../utils/global";
 import TARGET_PAGE_QUERY from "./TargetPage.gql";
 
-const Profile = lazy(() => import("./Profile"));
-const Associations = lazy(() => import("./TargetAssociations"));
+import Profile from "./Profile";
+import Associations from "./TargetAssociations";
+
 const ClassicAssociations = lazy(() => import("./ClassicAssociations"));
 
 function TargetPage() {

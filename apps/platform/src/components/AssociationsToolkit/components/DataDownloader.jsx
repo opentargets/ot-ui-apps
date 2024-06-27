@@ -30,18 +30,18 @@ import { makeStyles } from "@mui/styles";
 import { faCaretDown, faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip, useConfigContext } from "ui";
-import useBatchDownloader from "./hooks/useBatchDownloader";
-import useAotfContext from "./hooks/useAotfContext";
-import OriginalDataSources from "./static_datasets/dataSourcesAssoc";
-import prioritizationCols from "./static_datasets/prioritisationColumns";
+import useBatchDownloader from "../hooks/useBatchDownloader";
+import useAotfContext from "../hooks/useAotfContext";
+import OriginalDataSources from "../static_datasets/dataSourcesAssoc";
+import prioritizationCols from "../static_datasets/prioritisationColumns";
 import {
   getRowsQuerySelector,
   getExportedColumns,
   getExportedPrioritisationColumns,
   createBlob,
   getFilteredColumnArray,
-} from "./utils/downloads";
-import config from "../../config";
+} from "../utils/downloads";
+import config from "../../../config";
 import CopyUrlButton from "./CopyUrlButton";
 
 const { isPartnerPreview } = config.profile;
@@ -282,6 +282,7 @@ function DataDownloader() {
           onClick={handleClickBTN}
           variant="outlined"
           disableElevation
+          sx={{ height: 1, maxHeight: "45px" }}
         >
           <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
         </Button>
