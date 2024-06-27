@@ -37,40 +37,6 @@ function getColumns(id: string, label: string) {
       exportLabel: "Study",
     },
     {
-      id: "tissue",
-      label: "Tissue",
-      renderCell: d => (
-        <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${d.tissueFromSourceId}&ontology=uberon`}>
-          {d["tissue.label"] || <i>({d["tissue.id"]})</i>}
-        </Link>
-      ),
-      exportLabel: "Tissue",
-    },
-    {
-      id: "pValue",
-      label: "P-Value",
-      comparator: (a, b) =>
-        a.pValueMantissa * 10 ** a.pValueExponent - b.pValueMantissa * 10 ** b.pValueExponent,
-      sortable: true,
-      renderCell: d => (
-        <ScientificNotation number={[d.pValueMantissa, d.pValueExponent]} />
-      ),
-      exportLabel: "P-Value",
-    },
-    {
-      id: "beta",
-      label: "Beta",
-      tooltip: "Beta with respect to the ALT allele",
-      renderCell: ({ beta }) => beta || beta === 0 ? beta.toPrecision(3) : naLabel,
-      exportLabel: "Beta",
-    },
-    {
-      id: "fineMappingMethod",
-      label: "Finemapping Method",
-      renderCell: ({ finemappingMethod }) => finemappingMethod,
-      exportLabel: "Finemapping Method",
-    },
-    {
       id: "gene",
       label: "Gene",
       renderCell: d => (
@@ -81,11 +47,48 @@ function getColumns(id: string, label: string) {
       exportLabel: "Gene",
     },
     {
+      id: "tissueCell",
+      label: "Tissue/Cell",
+      renderCell: d => (
+        <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${d.tissueFromSourceId}&ontology=uberon`}>
+          {d["tissue.label"] || <i>({d["tissue.id"]})</i>}
+        </Link>
+      ),
+      exportLabel: "Tissue/Cell",
+    },
+    {
+      id: "pValue",
+      label: "P-Value",
+      comparator: (a, b) =>
+        a.pValueMantissa * 10 ** a.pValueExponent - b.pValueMantissa * 10 ** b.pValueExponent,
+      sortable: true,
+      renderCell: d => (
+        <ScientificNotation number={[d.pValueMantissa, d.pValueExponent]} />
+      ),
+      numeric: true,
+      exportLabel: "P-Value",
+    },
+    {
+      id: "beta",
+      label: "Beta",
+      tooltip: "Beta with respect to the ALT allele",
+      renderCell: ({ beta }) => beta || beta === 0 ? beta.toPrecision(3) : naLabel,
+      numeric: true,
+      exportLabel: "Beta",
+    },
+    {
+      id: "fineMappingMethod",
+      label: "Finemapping Method",
+      renderCell: ({ finemappingMethod }) => finemappingMethod,
+      exportLabel: "Finemapping Method",
+    },
+    {
       id: "credibleSetSize",
       label: "Credible Set Size",
       comparator: (a, b) => a.locus.length - b.locus.length,
       sortable: true,
       renderCell: ({ locus }) => locus.length,
+      numeric: true,
       exportLabel: "Credible Set Size",
     }
   ];
