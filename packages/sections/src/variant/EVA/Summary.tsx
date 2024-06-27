@@ -6,12 +6,6 @@ import { dataTypesMap } from "../../dataTypes";
 
 function Summary() {
   
-  // !! THIS IS UGLY BUT AVOIDS ADDING TYPES IN dataType FILE FOR NOW
-  type dataTypesMapType = {
-    [index: string]: number;
-  };
-  const dataTypesMapTyped = dataTypesMap as dataTypesMapType; 
-
   // !! USE PLACEHOLDER REQUEST FOR NOW !!
   // const request = usePlatformApi(EVA_SUMMARY);
   const request = {
@@ -29,7 +23,6 @@ function Summary() {
       //   const { count } = evaSummary;
       //   return `${count} ${count === 1 ? "entry" : "entries"}`;
       // }}
-      subText={dataTypesMapTyped.genetic_association}
     />
   );
 }
