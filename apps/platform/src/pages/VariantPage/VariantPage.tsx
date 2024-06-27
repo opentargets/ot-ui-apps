@@ -23,7 +23,7 @@ function VariantPage() {
   // temp: data will come from gql, fetch local json file for now
   const [metadata, setMetadata] = useState<MetadataType | "waiting" | undefined>("waiting");
    useEffect(() => {
-      fetch("../data/variant-data-2.json")
+      fetch("../data/variant-data-fake.json")
         .then(response => response.json())
         .then((allData: MetadataType[]) => setMetadata(allData.find(v => v.variantId === varId)));
     }, []);
