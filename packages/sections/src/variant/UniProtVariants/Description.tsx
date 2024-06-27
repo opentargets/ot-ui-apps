@@ -7,11 +7,12 @@ type DescriptionProps = {
 };
 
 function Description({ variantId, data }: DescriptionProps) {
+  const { targetFromSourceId } = data.variant.uniProtVariants[0];
   return (
     <>
       Literature-based curation associating <strong>{variantId}</strong>{" "} to a disease/phenotype. Source:{" "}
-      <Link external to={identifiersOrgLink("uniprot", data.variant.uniProtVariants[0].targetFromSourceId)}>
-        UniProt
+      <Link external to={identifiersOrgLink("uniprot", targetFromSourceId)}>
+        UniProt ({targetFromSourceId})
       </Link>
     </>
   );
