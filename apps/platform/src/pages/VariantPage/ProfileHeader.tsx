@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Field, ProfileHeader as BaseProfileHeader } from "ui";
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 type ProfileHeaderProps = {
   varId: string;
