@@ -16,8 +16,10 @@ import useAotfContext from "../AssociationsToolkit/hooks/useAotfContext";
 import client from "../../client";
 import FacetsSuggestion from "./FacetsSuggestion";
 
+const ALL_CATEGORIES = "All Categories";
+
 const TARGET_CATEGORIES = {
-  "All Categories": "All",
+  [ALL_CATEGORIES]: "All",
   Names: "Approved Name",
   Symbol: "Approved Symbol",
   "ChEMBL Target Class": "ChEMBL Target Class",
@@ -34,19 +36,19 @@ const TARGET_CATEGORIES = {
 };
 
 const DISEASE_CATEGORIES = {
-  "All Categories": "All",
+  [ALL_CATEGORIES]: "All",
   Disease: "Disease",
   "Therapeutic Area": "Therapeutic Area",
 };
 
 function FacetsSearch(): ReactElement {
-  const { entityToGet, setFacetFilterIds } = useAotfContext();
+  const { entityToGet, setFacetFilterIds, id } = useAotfContext();
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 400);
   const [dataOptions, setDataOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const CATEGORIES = entityToGet === "disease" ? DISEASE_CATEGORIES : TARGET_CATEGORIES;
-  const [categoryFilterValue, setCategoryFilterValue] = useState(CATEGORIES["All Categories"]);
+  const [categoryFilterValue, setCategoryFilterValue] = useState(CATEGORIES[ALL_CATEGORIES]);
 
   async function getFacetsData() {
     setDataOptions([]);
@@ -63,8 +65,7 @@ function FacetsSearch(): ReactElement {
     });
 
     const filteredData = resData.data.facets.hits.filter(
-      e =>
-        e.category === categoryFilterValue || categoryFilterValue === CATEGORIES["All Categories"]
+      e => e.category === categoryFilterValue || categoryFilterValue === CATEGORIES[ALL_CATEGORIES]
     );
 
     setDataOptions(filteredData);
@@ -75,6 +76,13 @@ function FacetsSearch(): ReactElement {
     if (inputValue) getFacetsData();
     else setDataOptions([]);
   }, [debouncedInputValue]);
+
+  //TODO: clear input on ui
+  useEffect(() => {
+    setDataOptions([]);
+    setCategoryFilterValue(CATEGORIES[ALL_CATEGORIES]);
+    setFacetFilterIds([]);
+  }, [id]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -118,7 +126,6 @@ function FacetsSearch(): ReactElement {
         id="facets-search-input"
         multiple
         autoComplete
-        includeInputInList
         filterSelectedOptions
         options={dataOptions}
         noOptionsText={<FacetsSuggestion />}
