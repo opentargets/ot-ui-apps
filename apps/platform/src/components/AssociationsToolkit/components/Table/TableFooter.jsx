@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { Alert, TablePagination, Typography } from "@mui/material";
-import useAotfContext from "../hooks/useAotfContext";
-import ColoredCell from "./ColoredCell";
-import { getLegend } from "../utils";
+import useAotfContext from "../../hooks/useAotfContext";
+import TableCell from "./TableCell";
+import { getLegend } from "../../utils";
 
 function TableFooter({ table }) {
   const {
@@ -46,7 +46,7 @@ function TableFooter({ table }) {
           >
             No data
           </span>
-          <ColoredCell />
+          <TableCell />
         </div>
       </div>
       <div style={{ display: "flex" }}>
@@ -69,6 +69,12 @@ function TableFooter({ table }) {
           rowsPerPage={table.getState().pagination.pageSize}
           page={pagination.pageIndex}
           labelRowsPerPage="Associations per page"
+          backIconButtonProps={{
+            disableFocusRipple: true,
+          }}
+          nextIconButtonProps={{
+            disableFocusRipple: true,
+          }}
           onPageChange={(e, index) => {
             if (!loading) {
               table.setPageIndex(index);

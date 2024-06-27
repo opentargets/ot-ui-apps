@@ -1,5 +1,5 @@
 import { ApiPlaygroundDrawer } from "ui";
-import useAotfContext from "./hooks/useAotfContext";
+import useAotfContext from "../hooks/useAotfContext";
 
 function AotfApiPlayground() {
   const {
@@ -28,6 +28,8 @@ function AotfApiPlayground() {
     aggregationFilters,
   };
 
-  return <ApiPlaygroundDrawer query={query.loc.source.body} variables={variables} />;
+  return (
+    <ApiPlaygroundDrawer fullHeight={true} query={query.loc.source.body} variables={variables} />
+  );
 }
 export default AotfApiPlayground;
