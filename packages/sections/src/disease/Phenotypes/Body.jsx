@@ -41,7 +41,7 @@ const columns = [
       } else if (phenotypeHPO && phenotypeHPO.name) content = phenotypeHPO.name;
       else content = naLabel;
 
-      return phenotypeHPO.description ? (
+      return phenotypeHPO?.description ? (
         <Tooltip title={`Description: ${phenotypeHPO.description}`} showHelpIcon>
           {content}
         </Tooltip>
@@ -57,7 +57,7 @@ const columns = [
     id: "phenotypeHDOid",
     label: "Phenotype ID",
     renderCell: ({ phenotypeHPO }) => {
-      const id = phenotypeHPO.id.replace("_", ":");
+      const id = phenotypeHPO?.id.replace("_", ":");
       return (
         <Link external to={`https://identifiers.org/ols/${id}`}>
           {id}
