@@ -50,7 +50,7 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
 
       <Box>
         <Typography variant="subtitle1" mt={0}>Population Allele Frequencies</Typography>
-        <HorizontalBarchart data={metadata.alleleFrequencies} alignLabels="right" />
+        <AlleleFrequencyPlot data={metadata.alleleFrequencies} />
       </Box>
 
     </BaseProfileHeader>
@@ -68,8 +68,8 @@ const populationLabels = {
   eas_adj: "East Asian",
   fin_adj: "Finnish",
   nfe_adj: "Non-Finnish European",
-  nwe_adj: "Northwestern European",
-  seu_adj: "Southeastern European",
+  // nwe_adj: "Northwestern European",
+  // seu_adj: "Southeastern European",
   // add in missing from above - 
   ami_adj: "Amish",           // from https://www.pharmgkb.org/variant/PA166175994
   mid_adj: "Middle Eastern",  // guessed from: https://gnomad.broadinstitute.org/variant/1-154453788-C-T?dataset=gnomad_r4
@@ -77,47 +77,47 @@ const populationLabels = {
   remaining_adj: 'Other',
 };
 
-
-function HorizontalBarchart({ data, alignLabels = "right" }) {
-
-  const faintBar = "#ddd"; 
-  const boldBar = "rgb(52, 137, 202)";
+function AlleleFrequencyPlot({ data }) {
+  
+  // sort rows alphabetically on population label - but put "other" last
+  const rows = data.map(({ populationName, alleleFrequency }) => ({
+    label: populationLabels[populationName],
+    alleleFrequency,
+  })).sort((a, b) => a.label < b.label ? -1 : 1);
+  rows.push(rows.splice(rows.findIndex(r => r.label === 'Other'), 1)[0]);
 
   return(
-    <Grid container spacing={0.5} alignItems="center">
-      {data.map(dataRow => (
-        <BarGroup dataRow={dataRow} key={data.populationName} alignLabels={alignLabels}/>
+    <Box display="flex" flexDirection="column" gap={0.25}>
+      {rows.map(row => (
+        <BarGroup dataRow={row} key={row.label}/>
       ))}
-    </Grid>
+    </Box>
   );
+}
 
-  // bars grow slightly with screen width, but 
-  function BarGroup({ dataRow: { populationName, alleleFrequency }, alignLabels }) {
-    return (
-      <>
-        <Grid md="auto" item display="flex" justifyContent="end">
-          <Typography width={170} variant="body2" textAlign={alignLabels}>
-            {populationLabels[populationName]}
-          </Typography>
-        </Grid>          
-        <Grid item md={5} xl={4}>
-          <Box sx={{background: faintBar, height: "9px"}}>
-            <Box
-              sx={{
-                width: `${+alleleFrequency * 100}%`,
-                height: "100%",
-                background: boldBar,
-              }}
-            />
-          </Box>
-        </Grid>
-        <Grid item md={1} lg={2} xl={4}>
-          <Typography fontSize="12px" variant="body2" lineHeight={0.8}>
-            {alleleFrequency.toFixed(3)}
-          </Typography>
-        </Grid>
-      </>
-    );
-  }
-  
+function BarGroup({ dataRow: { label, alleleFrequency } }) {
+  return (
+    <Box display="flex" gap={1} alignItems="center" width="100%">
+      <Typography width={170} fontSize="13.5px" variant="body2" textAlign="right">
+        {label}
+      </Typography>         
+      <Box sx={{
+        flexGrow: 2,
+        maxWidth: "200px",
+        background: theme => theme.palette.grey[300],
+        height: "9px"
+      }}>
+        <Box
+          sx={{
+            width: `${+alleleFrequency * 100}%`,
+            height: "100%",
+            backgroundColor: "primary.main",
+          }}
+        />
+      </Box>
+      <Typography width={40} fontSize="12px" variant="body2" lineHeight={0.8}>
+        {alleleFrequency.toFixed(3)}
+      </Typography>
+    </Box>
+  );
 }
