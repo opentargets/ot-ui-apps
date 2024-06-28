@@ -9,27 +9,20 @@ import {
 
 import { styled, Skeleton, Typography, Box } from "@mui/material";
 
-import dataSourcesCols from "../static_datasets/dataSourcesAssoc";
-import prioritizationCols from "../static_datasets/prioritisationColumns";
+import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
+import prioritizationCols from "../../static_datasets/prioritisationColumns";
 
 import AggregationsTooltip from "./AssocTooltip";
-import ColoredCell from "./ColoredCell";
+import TableCell from "./TableCell";
 
 import HeaderControls from "../HeaderControls";
 import CellName from "./CellName";
 import TableHeader from "./TableHeader";
 import TableFooter from "./TableFooter";
 import TableBody from "./TableBody";
-import useAotfContext from "../hooks/useAotfContext";
+import useAotfContext from "../../hooks/useAotfContext";
 
-import {
-  DISPLAY_MODE,
-  ENTITIES,
-  cellHasValue,
-  getScale,
-  isPartnerPreview,
-  tableCSSVariables,
-} from "../utils";
+import { cellHasValue, getScale, isPartnerPreview, tableCSSVariables } from "../../utils";
 
 const TableElement = styled("main")({
   maxWidth: "1600px",
@@ -68,23 +61,19 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
       isPrivate,
       docsLink,
       cell: cell => {
-        const { prefix, loading } = cell.table.getState();
-        if (loading) return <Skeleton variant="circular" width={26} height={26} />;
         const hasValue = cellHasValue(cell.getValue());
         return hasValue ? (
-          <ColoredCell
+          <TableCell
             hasValue
             scoreId={id}
             scoreValue={cell.getValue()}
             onClick={expanderHandler(cell.row.getToggleExpandedHandler())}
             cell={cell}
-            loading={loading}
             isAssociations={isAssociations}
-            tablePrefix={prefix}
             colorScale={colorScale}
           />
         ) : (
-          <ColoredCell />
+          <TableCell cell={cell} />
         );
       },
     });
@@ -110,6 +99,7 @@ function TableAssociations() {
     handleSortingChange,
     pinnedData,
     pinnedLoading,
+    pinnedEntries,
   } = useAotfContext();
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
@@ -137,22 +127,17 @@ function TableAssociations() {
           columnHelper.accessor(row => row.score, {
             id: "score",
             header: <Typography variant="assoc_header">Association Score</Typography>,
-            cell: row => {
-              const { loading } = row.table.getState();
-              if (loading) return <Skeleton variant="rect" width={30} height={25} />;
-              return (
-                <Box sx={{ marginRight: "10px" }}>
-                  <ColoredCell
-                    scoreValue={row.getValue()}
-                    globalScore
-                    rounded={false}
-                    isAssociations
-                    hasValue
-                    colorScale={associationsColorScale}
-                  />
-                </Box>
-              );
-            },
+            cell: cell => (
+              <Box sx={{ marginRight: "10px" }}>
+                <TableCell
+                  scoreValue={cell.getValue()}
+                  globalScore
+                  shape="rectangular"
+                  colorScale={associationsColorScale}
+                  cell={cell}
+                />
+              </Box>
+            ),
           }),
         ],
       }),
@@ -226,14 +211,16 @@ function TableAssociations() {
 
         {/* Weights controlls */}
         <HeaderControls cols={entitesHeaders} />
-        <div>
-          {/* BODY CONTENT */}
+
+        {/* BODY CONTENT */}
+        {pinnedEntries.length > 0 && (
           <TableBody core={corePinnedTable} prefix="pinned" cols={entitesHeaders} />
+        )}
 
-          {pinnedData.length > 0 && <TableDivider />}
+        {pinnedEntries.length > 0 && <TableDivider />}
 
-          <TableBody core={coreAssociationsTable} prefix="body" cols={entitesHeaders} />
-        </div>
+        <TableBody core={coreAssociationsTable} prefix="body" cols={entitesHeaders} />
+
         {/* FOOTER */}
         <TableFooter table={coreAssociationsTable} />
       </TableElement>

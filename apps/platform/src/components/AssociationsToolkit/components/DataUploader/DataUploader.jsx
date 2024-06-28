@@ -36,9 +36,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, Tooltip } from "ui";
 import * as XLSX from "xlsx";
 
-import useAotfContext from "../hooks/useAotfContext";
+import useAotfContext from "../../hooks/useAotfContext";
 import ValidationQuery from "./ValidationQuery.gql";
-import client from "../../../client";
+import client from "../../../../client";
 import NestedItem from "./NestedItem";
 
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
@@ -245,7 +245,7 @@ const FileExample = ({ entity = "target", runAction }) => {
   );
 };
 
-function DataUploader({ fileStem }) {
+function DataUploader() {
   const [activeStep, setActiveStep] = useState(0);
   const [queryTermsResults, setQueryTermsResults] = useState(null);
   const { entityToGet, pinnedEntries, setPinnedEntries } = useAotfContext();
@@ -407,6 +407,7 @@ function DataUploader({ fileStem }) {
           onClick={handleClickBTN}
           variant="outlined"
           disableElevation
+          sx={{ height: 1, maxHeight: "45px" }}
         >
           <FontAwesomeIcon icon={faFileImport} size="lg" />
         </Button>
@@ -435,7 +436,7 @@ function DataUploader({ fileStem }) {
             validation of your input.
             <br />
             <Link
-              to="https://home.opentargets.org/aotf-documentation#upload-to-associations-on-the-fly"
+              to="https://platform-docs.opentargets.org/web-interface/associations-on-the-fly#upload-functionality"
               external
             >
               Read more details here.

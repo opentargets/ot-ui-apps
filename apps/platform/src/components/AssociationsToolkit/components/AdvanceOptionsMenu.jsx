@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from "@mui/material/styles";
 import { Tooltip } from "ui";
 
-import useAotfContext from "./hooks/useAotfContext";
+import useAotfContext from "../hooks/useAotfContext";
 
 const PopoverContent = styled("div")({
   padding: "15px",
@@ -15,8 +15,6 @@ function DataMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const {
-    enableIndirect,
-    setEnableIndirect,
     activeHeadersControlls,
     setActiveHeadersControlls,
     displayedTable,
@@ -44,6 +42,7 @@ function DataMenu() {
           variant="outlined"
           disableElevation
           disabled={isPrioritisation}
+          sx={{ height: 1, maxHeight: "45px" }}
         >
           <FontAwesomeIcon icon={faGear} size="lg" />
         </Button>

@@ -11,8 +11,10 @@ query PharmacogenomicsQuery($ensemblId: String!) {
       haplotypeId
       haplotypeFromSourceId
       isDirectTarget
-      drugFromSource
-      drugId
+      drugs {
+        drugId
+        drugFromSource
+      }
       phenotypeFromSourceId
       genotypeAnnotationText
       phenotypeText
