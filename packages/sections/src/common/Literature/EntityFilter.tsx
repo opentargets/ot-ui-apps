@@ -172,7 +172,7 @@ export default function EntityFilter({ category, name, id }: EntityFilterProps) 
     <div>
       <Box display="flex" flexDirection="column" gap={1} alignItems="baseline">
         <InputLabel>{category}</InputLabel>
-        <Box display="flex" flexWrap="wrap" gap={1} ref={parent}>
+        <Box width="100%" display="flex" flexWrap="wrap" gap={1} ref={parent}>
           { entityList.map(o => <Chip key={o.key} {...o} />)  /* !! explicit key for now to avoid lint error */ }
         </Box>
       </Box> 
