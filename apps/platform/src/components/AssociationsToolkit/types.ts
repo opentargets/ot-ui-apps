@@ -52,13 +52,13 @@ export interface State {
   parentEntity: ENTITY | null;
   rowEntity: ENTITY | null;
   tableView: TABLE_VIEW.MAIN | TABLE_VIEW.PRIORITISATION;
-  searchFilter: string;
   pinnedEntities: string[];
   advanceOptionsOpen: boolean;
   isMainView: boolean;
   bodyData: Data;
   pinnedData: Data;
   interactors: Interactors;
+  activeWidget;
 }
 
 /*****************
@@ -68,7 +68,6 @@ export interface State {
 export enum ActionType {
   PAGINATE = "PAGINATE",
   SORTING = "SORTING",
-  TEXT_SEARCH = "TEXT_SEARCH",
   SET_INTERACTORS = "SET_INTERACTORS",
   DISABLE_INTERACTORS = "DISABLE_INTERACTORS",
   RESET_PAGINATION = "RESET_PAGINATION",
@@ -86,7 +85,6 @@ export type disableInteractorsPayload = {
 export type Action =
   | { type: ActionType.PAGINATE; pagination: Pagination }
   | { type: ActionType.SORTING; sorting: Sorting }
-  | { type: ActionType.TEXT_SEARCH; searchFilter: string }
   | { type: ActionType.PAGINATE; pagination: Pagination }
   | { type: ActionType.SET_INTERACTORS; payload: SetRowInteractorsPayload }
   | { type: ActionType.DISABLE_INTERACTORS; payload: disableInteractorsPayload }

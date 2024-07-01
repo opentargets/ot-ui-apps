@@ -17,7 +17,6 @@ export const initialState: State = {
   rowEntity: null,
   tableView: TABLE_VIEW.MAIN,
   isMainView: true,
-  searchFilter: "",
   advanceOptionsOpen: false,
   pinnedEntities: [],
   bodyData: [],
