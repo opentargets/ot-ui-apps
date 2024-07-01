@@ -187,7 +187,11 @@ function CellName({ cell, colorScale }) {
           )}
           {entityToGet === ENTITIES.TARGET && <Divider />}
           {entityToGet === ENTITIES.TARGET && (
-            <StyledMenuItem disabled>
+            <StyledMenuItem
+              onClick={() => {
+                handleSetInteractors(id, "intact");
+              }}
+            >
               <ListItemIcon>
                 <FontAwesomeIcon icon={faBezierCurve} />
               </ListItemIcon>

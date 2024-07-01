@@ -14,7 +14,12 @@ import {
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
-import { onPaginationChange, resetPagination } from "./aotfActions";
+import {
+  onPaginationChange,
+  setInteractors,
+  disableInteractors,
+  resetPagination,
+} from "./aotfActions";
 
 const AssociationsStateContext = createContext();
 
@@ -29,6 +34,10 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     { query, parentEntity: entity, parentId: id },
     createInitialState
   );
+
+  useEffect(() => {
+    console.log({ state });
+  }, [state]);
 
   const hasComponentBeenRender = useRef(false);
 
@@ -90,6 +99,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       datasources: dataSourcesWeights,
       entity,
       aggregationFilters: dataSourcesRequired,
+      entityInteractors: state.interactors,
       facetFilters: facetFilterIds,
     },
   });
@@ -157,6 +167,14 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     setTableExpanded({});
     setExpanded([]);
     dispatch(resetPagination());
+  };
+
+  const handleSetInteractors = (id, source) => {
+    dispatch(setInteractors(id, source));
+  };
+
+  const handleDisableInteractors = id => {
+    dispatch(disableInteractors(id));
   };
 
   const handlePaginationChange = updater => {
@@ -257,11 +275,15 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       setActiveHeadersControlls,
       resetExpandler,
       handleAggregationClick,
+      handleSetInteractors,
+      handleDisableInteractors,
       setFacetFilterIds,
       state,
     }),
     [
       dispatch,
+      handleSetInteractors,
+      handleDisableInteractors,
       activeHeadersControlls,
       count,
       data,

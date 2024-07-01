@@ -176,6 +176,8 @@ function TableAssociations() {
     manualSorting: true,
   });
 
+  // console.log({ coreAssociationsTable, data });
+
   const corePinnedTable = useReactTable({
     data: pinnedData,
     columns,

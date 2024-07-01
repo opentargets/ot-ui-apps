@@ -13,6 +13,9 @@ import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "..
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
 
+import RowInteractorsWrapper from "../RowInteractors/RowInteractorsWrapper";
+import RowInteractorsTable from "../RowInteractors/RowInteractorsTable";
+
 /* HELPERS */
 const getColContainerClassName = ({ id }) => {
   if (id === "1_naiming-cols_name") return "group-naiming-cols";
@@ -70,7 +73,7 @@ function EmptyMessage() {
   );
 }
 
-function TableBody({ core, cols }) {
+function TableBody({ core, cols, noInteractors }) {
   const { id, entity, entityToGet, displayedTable, resetExpandler, expanded } = useAotfContext();
 
   const { rows } = core.getRowModel();
@@ -154,6 +157,16 @@ function TableBody({ core, cols }) {
                   </section>
                 </ClickAwayListener>
               </ExpandableContainer>
+
+              {!noInteractors && (
+                <RowInteractorsWrapper rowId={row.id}>
+                  <RowInteractorsTable
+                    row={row}
+                    columns={core._getColumnDefs()}
+                    rowNameEntity={rowNameEntity}
+                  />
+                </RowInteractorsWrapper>
+              )}
             </Fragment>
           ))}
         </RowsContainer>
