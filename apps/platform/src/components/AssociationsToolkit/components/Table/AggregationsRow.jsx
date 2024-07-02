@@ -5,7 +5,7 @@ import AggregationsTooltip from "./AssocTooltip";
 import associationsColumns from "../../static_datasets/dataSourcesAssoc";
 import prioritizationColumns from "../../static_datasets/prioritisationColumns";
 import { groupViewColumnsBy } from "../../utils";
-import { GridContainer } from "../layout";
+import { GridContainer } from "../tableLayout";
 
 const AggregationsContainer = styled(GridContainer)({
   gridColumnGap: "4px",
