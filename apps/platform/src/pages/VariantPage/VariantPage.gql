@@ -1,0 +1,13 @@
+query VariantPageQuery($variantId: String!) {
+  variant(variantId: $variantId) {
+    variantId
+    dbXrefs {
+      id
+      source
+    }
+    chromosome
+    position
+    referenceAllele
+    alternateAllele
+  }
+}
