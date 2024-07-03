@@ -13,19 +13,19 @@ const columns = [
   {
     id: "label",
     label: "Hallmark",
-    renderCell: (row) => row.label,
+    renderCell: row => row.label,
     exportLabel: "Hallmark",
   },
   {
     id: "activity",
     label: "Effect",
-    renderCell: (row) => row.activity,
+    renderCell: row => row.activity,
     exportLabel: "Effect",
   },
   {
     id: "description",
     label: "Description",
-    renderCell: (row) => row.description,
+    renderCell: row => row.description,
     exportLabel: "Description",
   },
   {
@@ -43,7 +43,7 @@ const columns = [
       />
     ),
     exportLabel: "Literature (PubMed id)",
-    exportValue: (row) => row.pmid,
+    exportValue: row => row.pmid,
   },
 ];
 
@@ -67,14 +67,14 @@ function Section({ id, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={(data) => {
+      renderBody={data => {
         const roleInCancer = data.target.hallmarks.attributes
-          .filter((a) => a.name === "role in cancer")
-          .map((r) => ({
+          .filter(a => a.name === "role in cancer")
+          .map(r => ({
             label: r.description,
             url: `http://europepmc.org/search?query=EXT_ID:${r.pmid}`,
           }));
-        const rows = data.target.hallmarks.cancerHallmarks.map((r) => ({
+        const rows = data.target.hallmarks.cancerHallmarks.map(r => ({
           label: r.label,
           activity: r.impact === "promotes" ? "promotes" : "suppresses",
           description: r.description,
@@ -84,16 +84,8 @@ function Section({ id, label: symbol, entity }) {
         return (
           <>
             <Box className={classes.roleInCancerBox}>
-              <Typography className={classes.roleInCancerTitle}>
-                Role in cancer:
-              </Typography>
-              <ChipList
-                items={
-                  roleInCancer.length > 0
-                    ? roleInCancer
-                    : [{ label: "Unknown" }]
-                }
-              />
+              <Typography className={classes.roleInCancerTitle}>Role in cancer:</Typography>
+              <ChipList items={roleInCancer.length > 0 ? roleInCancer : [{ label: "Unknown" }]} />
             </Box>
             <DataTable
               columns={columns}

@@ -32,7 +32,7 @@ const columns = [
       return "categories";
     },
     renderCell: ({ modelPhenotypeClasses }) => {
-      const entries = modelPhenotypeClasses.map((phenotypeClass) => ({
+      const entries = modelPhenotypeClasses.map(phenotypeClass => ({
         name: phenotypeClass.label,
         url: `https://identifiers.org/${phenotypeClass.id}`,
         group: "Categories",
@@ -46,16 +46,15 @@ const columns = [
       );
     },
     exportValue: ({ modelPhenotypeClasses }) =>
-      modelPhenotypeClasses.map((phenotypeClass) => phenotypeClass.label),
+      modelPhenotypeClasses.map(phenotypeClass => phenotypeClass.label),
   },
   {
-    id: "lol",
+    id: "allelicComposition",
     label: "Allelic composition",
     renderCell: ({ biologicalModels }) => (
       <AllelicCompositionDrawer biologicalModels={biologicalModels} />
     ),
-    exportValue: ({ biologicalModels }) =>
-      biologicalModels.map((bm) => bm.allelicComposition),
+    exportValue: ({ biologicalModels }) => biologicalModels.map(bm => bm.allelicComposition),
   },
 ];
 

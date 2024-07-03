@@ -9,12 +9,13 @@ import {
   ListItem,
   Paper,
   Typography,
+  ButtonBase,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const therapeuticAreasDrawerStyles = makeStyles((theme) => ({
+const therapeuticAreasDrawerStyles = makeStyles(theme => ({
   drawerBody: {
     overflowY: "overlay",
   },
@@ -27,7 +28,7 @@ const therapeuticAreasDrawerStyles = makeStyles((theme) => ({
     },
   },
   drawerLink: {
-    cursor: "pointer",
+    color: `${theme.palette.primary.main} !important`,
   },
   drawerModal: {
     "& .MuiBackdrop-root": {
@@ -62,18 +63,11 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
   }
 
   if (therapeuticAreas.length === 1) {
-    return (
-      <Link to={`/disease/${therapeuticAreas[0].id}`}>
-        {therapeuticAreas[0].name}
-      </Link>
-    );
+    return <Link to={`/disease/${therapeuticAreas[0].id}`}>{therapeuticAreas[0].name}</Link>;
   }
 
-  const toggleDrawer = (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
+  const toggleDrawer = event => {
+    if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
     }
 
@@ -89,9 +83,7 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
       <Paper classes={{ root: classes.drawerTitle }} elevation={0}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" flexDirection="column">
-            <Typography className={classes.drawerTitleCaption}>
-              Therapeutic Areas
-            </Typography>
+            <Typography className={classes.drawerTitleCaption}>Therapeutic Areas</Typography>
             <Typography className={classes.drawerSubtitleCaption}>
               {therapeuticAreas.length} entries
             </Typography>
@@ -110,7 +102,7 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
           }}
         >
           <List>
-            {therapeuticAreas.map((item) => (
+            {therapeuticAreas.map(item => (
               <ListItem key={item.id}>
                 <Link to={`/disease/${item.id}`}>{item.name}</Link>
               </ListItem>
@@ -123,9 +115,9 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
 
   return (
     <>
-      <MUILink onClick={toggleDrawer} className={classes.drawerLink}>
-        {therapeuticAreas.length} areas
-      </MUILink>
+      <ButtonBase onClick={toggleDrawer} className={classes.drawerLink}>
+        <Typography variant="body2">{therapeuticAreas.length} areas</Typography>
+      </ButtonBase>
 
       <Drawer
         anchor="right"

@@ -1,6 +1,5 @@
-import { gql, useQuery } from '@apollo/client';
-import { Box, Typography } from '@mui/material';
-import { Link } from 'ui';
+import { Box, Typography } from "@mui/material";
+import { Link, useConfigContext } from "ui";
 
 // HELPERS
 function getVersion({ month, year }) {
@@ -9,20 +8,8 @@ function getVersion({ month, year }) {
 
 function getFullMonth({ month, year }) {
   const date = new Date(year + 2000, month - 1);
-  return date.toLocaleString('default', { month: 'long' });
+  return date.toLocaleString("default", { month: "long" });
 }
-
-// QUERY
-const DATA_VERSION_QUERY = gql`
-  query DataVersion {
-    meta {
-      dataVersion {
-        month
-        year
-      }
-    }
-  }
-`;
 
 // CONTAINER
 function VersionContainer({ children }) {
@@ -43,35 +30,25 @@ function VersionLink({ month, year, version, link }) {
 }
 
 // MAIN COMPONENT
-function Version({
-  releaseNotesURL = 'https://platform-docs.opentargets.org/release-notes',
-}) {
-  const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
-  if (error) return null;
-  if (loading)
+function Version({ releaseNotesURL = "https://platform-docs.opentargets.org/release-notes" }) {
+  const { version } = useConfigContext();
+  if (version.error) return null;
+  if (version.loading)
     return (
       <VersionContainer>
         <Typography variant="body2">Loading data version ...</Typography>
       </VersionContainer>
     );
-  const {
-    meta: {
-      dataVersion: { month, year },
-    },
-  } = data;
-  const version = getVersion({ month, year });
+  const { month, year } = version;
+
+  const parsedVersion = getVersion({ month, year });
   const fullMonth = getFullMonth({ month, year });
 
   return (
     <VersionContainer>
       <Typography variant="body2">
-        Last update:{' '}
-        <VersionLink
-          link={releaseNotesURL}
-          month={fullMonth}
-          year={year}
-          version={version}
-        />
+        Last update:{" "}
+        <VersionLink link={releaseNotesURL} month={fullMonth} year={year} version={parsedVersion} />
       </Typography>
     </VersionContainer>
   );

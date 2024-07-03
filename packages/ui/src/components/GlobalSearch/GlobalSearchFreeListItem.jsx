@@ -44,7 +44,7 @@ function GlobalSearchFreeListItem() {
     type: "",
   };
 
-  const handleItemClick = useCallback((item) => {
+  const handleItemClick = useCallback(item => {
     setOpen(false);
     openListItem(item);
   }, []);

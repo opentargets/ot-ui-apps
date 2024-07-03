@@ -1,24 +1,18 @@
-import { faDna, faStethoscope } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Skeleton,
-  Typography,
-} from '@mui/material';
+import { faDna, faStethoscope } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Card, CardContent, CardHeader, Skeleton, Typography } from "@mui/material";
 import {
   Link,
   usePlatformApi,
   ProfileDescription,
   ProfileHeader as BaseProfileHeader,
   ProfileChipList,
-} from 'ui';
+} from "ui";
 
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles(theme => ({
-  card: { height: '100%' },
+  card: { height: "100%" },
   cardContent: {
     borderTop: `1px solid ${theme.palette.grey[300]}`,
   },
@@ -46,7 +40,7 @@ const parseSynonyms = diseaseSynonyms => {
   // convert the tooltip array to a string for display in the Tooltip component
   t.map(tItem => {
     const syn = tItem;
-    syn.tooltip = tItem.tooltip.join(', ');
+    syn.tooltip = tItem.tooltip.join(", ");
     return syn;
   });
   return t;
@@ -59,30 +53,23 @@ function ProfileHeader() {
   // TODO: Errors!
   if (error) return null;
 
-  const {
-    id: efoId,
-    name,
-    description: diseaseDescription,
-  } = data?.disease || {};
+  const { id: efoId, name, description: diseaseDescription } = data?.disease || {};
   const targetDescription = data?.target.functionDescriptions?.[0];
 
   const diseaseSynonyms = parseSynonyms(data?.disease.synonyms || []);
 
   const { id: ensgId, approvedSymbol } = data?.target || {};
 
-  const targetSynonyms = data?.target?.synonyms?.reduce(
-    (accumulator, synonymous) => {
-      if (accumulator.find(x => x.label === synonymous.label)) {
-        return accumulator;
-      }
-      accumulator.push({
-        ...synonymous,
-        tooltip: synonymous.label,
-      });
+  const targetSynonyms = data?.target?.synonyms?.reduce((accumulator, synonymous) => {
+    if (accumulator.find(x => x.label === synonymous.label)) {
       return accumulator;
-    },
-    []
-  );
+    }
+    accumulator.push({
+      ...synonymous,
+      tooltip: synonymous.label,
+    });
+    return accumulator;
+  }, []);
 
   return (
     <BaseProfileHeader>
@@ -92,7 +79,7 @@ function ProfileHeader() {
         <Card className={classes.card} elevation={0}>
           <CardHeader
             title={
-              <Typography variant="h4">
+              <Typography variant="h5">
                 <Link to={`/target/${ensgId}`}>
                   <FontAwesomeIcon icon={faDna} /> {approvedSymbol}
                 </Link>
@@ -111,7 +98,7 @@ function ProfileHeader() {
         <Card className={classes.card} elevation={0}>
           <CardHeader
             title={
-              <Typography variant="h4">
+              <Typography variant="h5">
                 <Link to={`/disease/${efoId}`}>
                   <FontAwesomeIcon icon={faStethoscope} /> {name}
                 </Link>
@@ -121,9 +108,7 @@ function ProfileHeader() {
           <CardContent className={classes.cardContent}>
             <ProfileDescription>{diseaseDescription}</ProfileDescription>
             {diseaseSynonyms.length > 0 ? (
-              <ProfileChipList title="Synonyms">
-                {diseaseSynonyms}
-              </ProfileChipList>
+              <ProfileChipList title="Synonyms">{diseaseSynonyms}</ProfileChipList>
             ) : null}
           </CardContent>
         </Card>

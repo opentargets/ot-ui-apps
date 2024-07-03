@@ -10,13 +10,11 @@ import Publication from "./Publication";
 import EUROPE_PMC_QUERY from "./sectionQuery.gql";
 import { definition } from ".";
 
-const getColumns = (label) => [
+const getColumns = label => [
   {
     id: "disease",
     label: "Disease/phenotype",
-    renderCell: ({ disease }) => (
-      <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-    ),
+    renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
     filterValue: ({ disease }) => disease.name,
   },
   {
@@ -67,10 +65,8 @@ const getColumns = (label) => [
 
 // Merges data from platform-API and EuropePMC API.
 function mergeData(rows, literatureData) {
-  const mergedRows = rows.map((row) => {
-    const relevantEntry = literatureData.find(
-      (entry) => entry.id === row.literature[0]
-    );
+  const mergedRows = rows.map(row => {
+    const relevantEntry = literatureData.find(entry => entry.id === row.literature[0]);
 
     if (relevantEntry) {
       return {
@@ -84,9 +80,7 @@ function mergeData(rows, literatureData) {
         abstract: relevantEntry.abstractText,
         authors: relevantEntry.authorList?.author || [],
         isOpenAccess: relevantEntry.isOpenAccess === "Y",
-        fullTextOpen: !!(
-          relevantEntry.inEPMC === "Y" || relevantEntry.inPMC === "Y"
-        ),
+        fullTextOpen: !!(relevantEntry.inEPMC === "Y" || relevantEntry.inPMC === "Y"),
         journal: {
           ...relevantEntry.journalInfo,
           page: relevantEntry.pageInfo,
@@ -118,23 +112,23 @@ function Body({ id, label, entity }) {
     refetch,
   } = useQuery(EUROPE_PMC_QUERY, {
     variables,
-    onCompleted: (res) => {
-      setNewIds(res.disease.europePmc.rows.map((entry) => entry.literature[0]));
+    onCompleted: res => {
+      setNewIds(res.disease.europePmc.rows.map(entry => entry.literature[0]));
     },
   });
   const [fetchDownloadData] = useLazyQuery(EUROPE_PMC_QUERY, {
-    variables: {ensemblId: ensgId, efoId, size: data?.disease.europePmc.count},
+    variables: { ensemblId: ensgId, efoId, size: data?.disease.europePmc.count },
   });
 
-  async function getDownloadData(){
+  async function getDownloadData() {
     // Get Elasticsearch europPmc data
-    const res = await fetchDownloadData()
-    const litIds = res.data.disease.europePmc.rows.map(entry => entry.literature[0])
+    const res = await fetchDownloadData();
+    const litIds = res.data.disease.europePmc.rows.map(entry => entry.literature[0]);
 
     // Get literature data from europePmc
     // in chucnks of 200 to prevent query to europepmc from getting too large
-    let downloadLiteratureData = []
-    let chunkSize = 200
+    let downloadLiteratureData = [];
+    let chunkSize = 200;
     for (let i = 0; i < litIds.length; i += chunkSize) {
       const litIdsChunk = litIds.slice(i, i + chunkSize);
       const queryUrl = europePmcLiteratureQuery(litIdsChunk);
@@ -145,22 +139,19 @@ function Body({ id, label, entity }) {
     }
 
     // Merge data
-    const rows = mergeData(
-      res.data.disease.europePmc.rows,
-      downloadLiteratureData
-    );
+    const rows = mergeData(res.data.disease.europePmc.rows, downloadLiteratureData);
 
     return rows.map(row => {
       return {
         ...row,
         disease: row.disease.name,
-      }
-    })
+      };
+    });
   }
 
   const [loading, setLoading] = useState(isLoading);
 
-  const handlePageChange = (pageChange) => {
+  const handlePageChange = pageChange => {
     if (
       pageChange * pageSize >= data.disease.europePmc.rows.length - pageSize &&
       (pageChange + 1) * pageSize < data.disease.europePmc.count
@@ -174,11 +165,7 @@ function Body({ id, label, entity }) {
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev;
 
-          setNewIds(
-            fetchMoreResult.disease.europePmc.rows.map(
-              (entry) => entry.literature[0]
-            )
-          );
+          setNewIds(fetchMoreResult.disease.europePmc.rows.map(entry => entry.literature[0]));
 
           return {
             ...prev,
@@ -187,10 +174,7 @@ function Body({ id, label, entity }) {
               europePmc: {
                 ...prev.disease.europePmc,
                 cursor: fetchMoreResult.disease.europePmc.cursor,
-                rows: [
-                  ...prev.disease.europePmc.rows,
-                  ...fetchMoreResult.disease.europePmc.rows,
-                ],
+                rows: [...prev.disease.europePmc.rows, ...fetchMoreResult.disease.europePmc.rows],
               },
             },
           };
@@ -201,12 +185,9 @@ function Body({ id, label, entity }) {
     setPage(pageChange);
   };
 
-  const handleRowsPerPageChange = (newPageSize) => {
+  const handleRowsPerPageChange = newPageSize => {
     setLoading(true);
-    if (
-      page * newPageSize >=
-      data.disease.europePmc.rows.length - newPageSize
-    ) {
+    if (page * newPageSize >= data.disease.europePmc.rows.length - newPageSize) {
       refetch(variables);
     }
 
@@ -226,7 +207,7 @@ function Body({ id, label, entity }) {
         const resJson = await res.json();
         const newLiteratureData = resJson.resultList.result;
 
-        setLiteratureData((litData) => [...litData, ...newLiteratureData]);
+        setLiteratureData(litData => [...litData, ...newLiteratureData]);
       }
       setLoading(false);
     }
@@ -241,25 +222,25 @@ function Body({ id, label, entity }) {
   const columns = getColumns(label);
   const downloadColumns = [
     {
-      id: 'disease',
-      label: 'Disease/phenotype',
+      id: "disease",
+      label: "Disease/phenotype",
     },
     {
-      id: 'title',
-      label: 'Publication',
+      id: "title",
+      label: "Publication",
     },
     {
-      id: 'europePmcId',
+      id: "europePmcId",
     },
     {
-      id: 'pmcId',
+      id: "pmcId",
     },
     {
-      id: 'year',
+      id: "year",
     },
     {
-      id: 'resourceScore',
-      label: 'Score',
+      id: "resourceScore",
+      label: "Score",
       numeric: true,
     },
   ];
@@ -270,14 +251,9 @@ function Body({ id, label, entity }) {
       entity={entity}
       chipText={dataTypesMap.literature}
       request={{ loading, error, data }}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
-      renderBody={(res) => {
-        const rows = mergeData(
-          getPage(res.disease.europePmc.rows, page, pageSize),
-          literatureData
-        );
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderBody={res => {
+        const rows = mergeData(getPage(res.disease.europePmc.rows, page, pageSize), literatureData);
 
         return (
           <Table

@@ -27,8 +27,8 @@ function GlobalSearchInput() {
       autoFocus
       value={inputValue}
       type="text"
-      onChange={(e) => setInputValue(e.currentTarget.value)}
-      onFocus={(e) => {
+      onChange={e => setInputValue(e.currentTarget.value)}
+      onFocus={e => {
         e.currentTarget.select();
       }}
     />

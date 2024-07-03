@@ -5,7 +5,7 @@ import { v1 } from "uuid";
 
 import { ChipList, Link, SectionItem, PublicationsDrawer, DataTable } from "ui";
 
-import { naLabel, defaultRowsPerPageOptions } from "../../constants";
+import { naLabel, defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
 import { dataTypesMap } from "../../dataTypes";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
@@ -15,19 +15,15 @@ import { definition } from ".";
 
 import CANCER_GENE_CENSUS_QUERY from "./sectionQuery.gql";
 
-const samplePercent = (item) =>
-  (item.numberSamplesWithMutationType / item.numberSamplesTested) * 100;
+const samplePercent = item => (item.numberSamplesWithMutationType / item.numberSamplesTested) * 100;
 
-const getMaxPercent = (row) =>
-  Math.max(...row.mutatedSamples.map((item) => samplePercent(item)));
+const getMaxPercent = row => Math.max(...row.mutatedSamples.map(item => samplePercent(item)));
 
-const getColumns = (label) => [
+const getColumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
-    renderCell: ({ disease }) => (
-      <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-    ),
+    renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
   },
   {
     id: "mutationType",
@@ -40,17 +36,11 @@ const getColumns = (label) => [
         .sort((a, b) => samplePercent(b) - samplePercent(a));
       return (
         <List style={{ padding: 0 }}>
-          {sortedMutatedSamples.map((mutatedSample) => (
-            <ListItem
-              key={mutatedSample.functionalConsequence.id}
-              style={{ padding: ".25rem 0" }}
-            >
+          {sortedMutatedSamples.map(mutatedSample => (
+            <ListItem key={mutatedSample.functionalConsequence.id} style={{ padding: ".25rem 0" }}>
               <Link
                 external
-                to={identifiersOrgLink(
-                  "SO",
-                  mutatedSample.functionalConsequence.id.slice(3)
-                )}
+                to={identifiersOrgLink("SO", mutatedSample.functionalConsequence.id.slice(3))}
               >
                 {sentenceCase(mutatedSample.functionalConsequence.label)}
               </Link>
@@ -61,9 +51,7 @@ const getColumns = (label) => [
     },
     filterValue: ({ mutatedSamples }) =>
       (mutatedSamples || [])
-        .map((mutatedSample) =>
-          sentenceCase(mutatedSample.functionalConsequence.label)
-        )
+        .map(mutatedSample => sentenceCase(mutatedSample.functionalConsequence.label))
         .join(),
   },
   {
@@ -77,18 +65,14 @@ const getColumns = (label) => [
         .sort((a, b) => samplePercent(b) - samplePercent(a));
       return (
         <List style={{ padding: 0 }}>
-          {sortedMutatedSamples.map((item) => {
+          {sortedMutatedSamples.map(item => {
             const percent = samplePercent(item);
 
             return (
               <ListItem key={v1()} style={{ padding: ".25rem 0" }}>
-                {percent < 5
-                  ? parseFloat(percent.toFixed(2)).toString()
-                  : Math.round(percent)}
-                %
+                {percent < 5 ? parseFloat(percent.toFixed(2)).toString() : Math.round(percent)}%
                 <Typography variant="caption" style={{ marginLeft: ".33rem" }}>
-                  ({item.numberSamplesWithMutationType}/
-                  {item.numberSamplesTested})
+                  ({item.numberSamplesWithMutationType}/{item.numberSamplesTested})
                 </Typography>
               </ListItem>
             );
@@ -116,11 +100,7 @@ const getColumns = (label) => [
         }, []) || [];
 
       return (
-        <PublicationsDrawer
-          entries={literatureList}
-          symbol={label.symbol}
-          name={label.name}
-        />
+        <PublicationsDrawer entries={literatureList} symbol={label.symbol} name={label.name} />
       );
     },
   },
@@ -142,6 +122,7 @@ function Body({ id, label, entity }) {
   const variables = {
     ensemblId: ensgId,
     efoId,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(CANCER_GENE_CENSUS_QUERY, {
@@ -156,9 +137,7 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.somatic_mutation}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} diseaseName={label.name} />
-      )}
+      renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
       renderBody={({
         disease: {
           cancerGeneCensusSummary: { rows },
@@ -168,8 +147,8 @@ function Body({ id, label, entity }) {
         const roleInCancerItems =
           hallmarks && hallmarks.attributes.length > 0
             ? hallmarks.attributes
-                .filter((attribute) => attribute.name === "role in cancer")
-                .map((attribute) => ({
+                .filter(attribute => attribute.name === "role in cancer")
+                .map(attribute => ({
                   label: attribute.description,
                   url: epmcUrl(attribute.pmid),
                 }))

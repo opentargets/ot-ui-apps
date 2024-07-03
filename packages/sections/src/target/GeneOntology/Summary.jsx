@@ -1,8 +1,8 @@
-import _ from 'lodash';
-import { SummaryItem, usePlatformApi } from 'ui';
+import _ from "lodash";
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from '.';
-import GENE_ONTOLOGY_SUMMARY_FRAGMENT from './GeneOntologySummary.gql';
+import { definition } from ".";
+import GENE_ONTOLOGY_SUMMARY_FRAGMENT from "./GeneOntologySummary.gql";
 
 function Summary() {
   const request = usePlatformApi(GENE_ONTOLOGY_SUMMARY_FRAGMENT);

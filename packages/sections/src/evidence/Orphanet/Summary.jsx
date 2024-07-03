@@ -1,8 +1,8 @@
-import { SummaryItem, usePlatformApi } from 'ui';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from '.';
-import { dataTypesMap } from '../../dataTypes';
-import ORPHANET_SUMMARY from './OrphanetSummaryFragment.gql';
+import { definition } from ".";
+import { dataTypesMap } from "../../dataTypes";
+import ORPHANET_SUMMARY from "./OrphanetSummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(ORPHANET_SUMMARY);
@@ -12,7 +12,7 @@ function Summary() {
       request={request}
       renderSummary={({ orphanetSummary }) => {
         const { count } = orphanetSummary;
-        return `${count} ${count === 1 ? 'entry' : 'entries'}`;
+        return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
       subText={dataTypesMap.genetic_association}
     />

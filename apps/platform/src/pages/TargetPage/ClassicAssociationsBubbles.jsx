@@ -1,14 +1,14 @@
-import { useRef, useState } from 'react';
-import { Grid, Typography } from '@mui/material';
-import { useTheme } from '@mui/styles';
-import { withContentRect } from 'react-measure';
-import { scaleQuantize, pack, hierarchy } from 'd3';
-import { v1 } from 'uuid';
-import { Legend, DownloadSvgPlot } from 'ui';
+import { useRef, useState } from "react";
+import { Grid, Typography } from "@mui/material";
+import { useTheme } from "@mui/styles";
+import { withContentRect } from "react-measure";
+import { scaleQuantize, pack, hierarchy } from "d3";
+import { v1 } from "uuid";
+import { Legend, DownloadSvgPlot } from "ui";
 
-import AssociationTooltip from './AssociationTooltip';
-import { colorRange } from '../../constants';
-import Slider from './ClassicAssociationsSlider';
+import AssociationTooltip from "./AssociationTooltip";
+import { colorRange } from "../../constants";
+import Slider from "./ClassicAssociationsSlider";
 
 function findTas(id, idToDisease) {
   const tas = new Set();
@@ -59,7 +59,7 @@ function buildHierarchicalData(associations, idToDisease) {
   });
 
   return {
-    uniqueId: 'EFO_ROOT',
+    uniqueId: "EFO_ROOT",
     children: Object.entries(tasMap).map(([taId, descendants]) => ({
       id: taId,
       uniqueId: taId,
@@ -90,15 +90,15 @@ function ClassicAssociationsBubbles({
   const root = hierarchy(hierarchicalData);
   const packLayout = pack()
     .size([size, size])
-    .padding(node => (node.data.uniqueId === 'EFO_ROOT' ? 17 : 2));
+    .padding(node => (node.data.uniqueId === "EFO_ROOT" ? 17 : 2));
   root.sum(d => d.score);
   packLayout(root);
 
   let ASSOCIATION_COMPONENT = null;
 
   function getText({ node }) {
-    if (node.data.uniqueId === 'EFO_ROOT') return null;
-    if (node.parent && node.parent.data.uniqueId === 'EFO_ROOT')
+    if (node.data.uniqueId === "EFO_ROOT") return null;
+    if (node.parent && node.parent.data.uniqueId === "EFO_ROOT")
       return (
         <text
           textAnchor="middle"
@@ -124,7 +124,7 @@ function ClassicAssociationsBubbles({
           textAnchor="middle"
           pointerEvents="none"
         >
-          {node.data.name.split(' ').map((word, i, words) => (
+          {node.data.name.split(" ").map((word, i, words) => (
             <tspan key={v1()} x="0" y={`${i - words.length / 2 + 0.8}em`}>
               {word}
             </tspan>
@@ -144,10 +144,7 @@ function ClassicAssociationsBubbles({
         width={size}
       >
         {root.descendants().map(node => (
-          <g
-            key={node.data.uniqueId}
-            transform={`translate(${node.x},${node.y})`}
-          >
+          <g key={node.data.uniqueId} transform={`translate(${node.x},${node.y})`}>
             <AssociationTooltip
               ensemblId={ensemblId}
               efoId={node.data.id}
@@ -156,23 +153,16 @@ function ClassicAssociationsBubbles({
             >
               <path
                 id={node.data.uniqueId}
-                d={`M 0, ${node.r} a ${node.r},${node.r} 0 1,1 0,-${
-                  2 * node.r
-                } a ${node.r},${node.r} 0 1,1 0,${2 * node.r}`}
-                stroke={
-                  node.data.uniqueId !== 'EFO_ROOT'
-                    ? theme.palette.grey[400]
-                    : 'none'
-                }
+                d={`M 0, ${node.r} a ${node.r},${node.r} 0 1,1 0,-${2 * node.r} a ${node.r},${
+                  node.r
+                } 0 1,1 0,${2 * node.r}`}
+                stroke={node.data.uniqueId !== "EFO_ROOT" ? theme.palette.grey[400] : "none"}
                 fill={
-                  node.data.uniqueId === 'EFO_ROOT' ||
-                  node.parent.data.uniqueId === 'EFO_ROOT'
+                  node.data.uniqueId === "EFO_ROOT" || node.parent.data.uniqueId === "EFO_ROOT"
                     ? theme.palette.grey[50]
                     : color(node.data.score)
                 }
-                pointerEvents={
-                  node.data.uniqueId === 'EFO_ROOT' ? 'none' : 'auto'
-                }
+                pointerEvents={node.data.uniqueId === "EFO_ROOT" ? "none" : "auto"}
               />
             </AssociationTooltip>
             {getText({ node })}
@@ -182,18 +172,13 @@ function ClassicAssociationsBubbles({
     );
   } else if (size) {
     ASSOCIATION_COMPONENT = (
-      <Typography>
-        No associations with score greater than or equal to {minScore}
-      </Typography>
+      <Typography>No associations with score greater than or equal to {minScore}</Typography>
     );
   }
 
   return (
     <>
-      <DownloadSvgPlot
-        svgContainer={svgRef}
-        filenameStem={`${symbol}-associated-diseases-bubbles`}
-      >
+      <DownloadSvgPlot svgContainer={svgRef} filenameStem={`${symbol}-associated-diseases-bubbles`}>
         <Slider value={minScore} onChange={(_, val) => setMinScore(val)} />
         <Grid
           item
@@ -202,7 +187,7 @@ function ClassicAssociationsBubbles({
           md={10}
           justifyContent="center"
           alignItems="center"
-          style={{ margin: '0 auto', minHeight: '340px' }}
+          style={{ margin: "0 auto", minHeight: "340px" }}
         >
           {ASSOCIATION_COMPONENT}
         </Grid>
@@ -212,4 +197,4 @@ function ClassicAssociationsBubbles({
   );
 }
 
-export default withContentRect('bounds')(ClassicAssociationsBubbles);
+export default withContentRect("bounds")(ClassicAssociationsBubbles);

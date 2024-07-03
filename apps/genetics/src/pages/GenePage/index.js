@@ -1,1 +1,1 @@
-export { default } from './GenePage';
+export { default } from "./GenePage";

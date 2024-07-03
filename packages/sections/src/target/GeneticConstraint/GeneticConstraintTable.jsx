@@ -4,7 +4,7 @@ import { Link, Tooltip, DataTable } from "ui";
 import { defaultRowsPerPageOptions } from "../../constants";
 import upperBin6Map from "./upperBin6Map";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   filled: {
     display: "inline-block",
     border: "1px solid black",
@@ -40,10 +40,7 @@ function ConstraintAssessment({ ensemblId, symbol, upperBin6 }) {
 
   for (let i = 0; i < 5; i++) {
     circles.push(
-      <span
-        key={i}
-        className={5 - upperBin6 > i ? classes.filled : classes.notFilled}
-      />
+      <span key={i} className={5 - upperBin6 > i ? classes.filled : classes.notFilled} />
     );
   }
 
@@ -91,11 +88,7 @@ function getColumns(ensemblId, symbol) {
             o/e = {oe} ({oeLower} - {oeUpper})
           </div>
           {upperBin6 === null ? null : (
-            <ConstraintAssessment
-              ensemblId={ensemblId}
-              symbol={symbol}
-              upperBin6={upperBin6}
-            />
+            <ConstraintAssessment ensemblId={ensemblId} symbol={symbol} upperBin6={upperBin6} />
           )}
         </>
       ),
@@ -103,13 +96,7 @@ function getColumns(ensemblId, symbol) {
   ];
 }
 
-function GeneticConstraintTable({
-  ensemblId,
-  symbol,
-  geneticConstraint,
-  query,
-  variables,
-}) {
+function GeneticConstraintTable({ ensemblId, symbol, geneticConstraint, query, variables }) {
   return (
     <DataTable
       dataDownloader

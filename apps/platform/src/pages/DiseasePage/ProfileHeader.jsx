@@ -1,11 +1,7 @@
-import { usePlatformApi } from 'ui';
-import {
-  ProfileDescription,
-  ProfileHeader as BaseProfileHeader,
-  ProfileChipList,
-} from 'ui';
+import { usePlatformApi } from "ui";
+import { ProfileDescription, ProfileHeader as BaseProfileHeader, ProfileChipList } from "ui";
 
-import DISEASE_PROFILE_HEADER_FRAGMENT from './ProfileHeader.gql';
+import DISEASE_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 
 /**
  * Disease synonyms are organized by "relation", each with a list of "terms".
@@ -29,7 +25,7 @@ const parseSynonyms = diseaseSynonyms => {
   // convert the tooltip array to a string for display in the Tooltip component
   t.map(tItem => {
     const syn = tItem;
-    syn.tooltip = tItem.tooltip.join(', ');
+    syn.tooltip = tItem.tooltip.join(", ");
     return syn;
   });
   return t;
@@ -44,9 +40,7 @@ function ProfileHeader() {
 
   return (
     <BaseProfileHeader>
-      <ProfileDescription loading={loading}>
-        {data?.disease.description}
-      </ProfileDescription>
+      <ProfileDescription loading={loading}>{data?.disease.description}</ProfileDescription>
       {diseaseSynonyms.length > 0 ? (
         <ProfileChipList title="Synonyms" loading={loading}>
           {diseaseSynonyms}

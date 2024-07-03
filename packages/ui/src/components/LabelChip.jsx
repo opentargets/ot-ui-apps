@@ -1,29 +1,30 @@
-import { Typography } from '@mui/material';
-import OTTooltip from './Tooltip';
+import { Typography } from "@mui/material";
+import OTTooltip from "./Tooltip";
 
 function LabelChip({ label, value, to, tooltip = null }) {
   const containerStyle = {
-    display: 'flex',
-    borderRadius: '5px',
-    border: '1px solid #3489ca',
-    overflow: 'hidden',
-    color: '#3489ca',
-    margin: '3px 0',
-    textDecoration: 'none',
+    display: "flex",
+    borderRadius: "5px",
+    border: "1px solid #3489ca",
+    overflow: "hidden",
+    color: "#3489ca",
+    margin: "3px 0",
+    textDecoration: "none",
+    width: "min-content",
   };
   const commonStyle = {
-    padding: '0 5px',
-    '&:hover': {},
+    padding: "0 5px",
+    "&:hover": {},
   };
   const labelStyle = {
     ...commonStyle,
-    backgroundColor: '#3489ca',
-    color: 'white',
+    backgroundColor: "#3489ca",
+    color: "white",
   };
   const valueStyle = {
     ...commonStyle,
-    backgroundColor: 'white',
-    borderLeft: '1px solid #3489ca',
+    backgroundColor: "white",
+    borderLeft: "1px solid #3489ca",
   };
   return (
     <OTTooltip title={tooltip} disableInteractive>

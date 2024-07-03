@@ -1,23 +1,20 @@
-import { CardContent, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faPrescriptionBottleAlt,
-  faTriangleExclamation,
-} from '@fortawesome/free-solid-svg-icons';
+import { CardContent, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPrescriptionBottleAlt, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
-import { LongText, Chip, Link, LongList } from 'ui';
+import { LongText, Chip, Link, LongList } from "ui";
 
 const useStyles = makeStyles({
   link: {
-    display: 'block',
+    display: "block",
   },
   subtitle: {
     fontWeight: 500,
   },
   warningIcon: {
-    position: 'relative',
-    top: '5px',
+    position: "relative",
+    top: "5px",
   },
 });
 
@@ -34,11 +31,8 @@ function DrugDetail({ data }) {
       <LongText lineLimit={4}>{data.description}</LongText>
       {data.hasBeenWithdrawn ? (
         <Typography variant="subtitle2" color="secondary">
-          <FontAwesomeIcon
-            icon={faTriangleExclamation}
-            className={classes.warningIcon}
-          />{' '}
-          Withdrawn Drug
+          <FontAwesomeIcon icon={faTriangleExclamation} className={classes.warningIcon} /> Withdrawn
+          Drug
         </Typography>
       ) : null}
       <Typography className={classes.subtitle} variant="subtitle1">
@@ -58,11 +52,7 @@ function DrugDetail({ data }) {
             terms={data.indications.rows}
             maxTerms={5}
             render={(indication, index) => (
-              <Link
-                key={index}
-                className={classes.link}
-                to={`/disease/${indication.disease.id}`}
-              >
+              <Link key={index} className={classes.link} to={`/disease/${indication.disease.id}`}>
                 {indication.disease.name}
               </Link>
             )}
@@ -78,11 +68,7 @@ function DrugDetail({ data }) {
             terms={data.linkedTargets.rows}
             maxTerms={5}
             render={target => (
-              <Link
-                className={classes.link}
-                key={target.id}
-                to={`/target/${target.id}`}
-              >
+              <Link className={classes.link} key={target.id} to={`/target/${target.id}`}>
                 {target.approvedSymbol}
               </Link>
             )}
@@ -97,9 +83,7 @@ function DrugDetail({ data }) {
           <LongList
             terms={data.synonyms}
             maxTerms={5}
-            render={synonym => (
-              <Chip key={synonym} title={synonym} label={synonym} />
-            )}
+            render={synonym => <Chip key={synonym} title={synonym} label={synonym} />}
           />
         </>
       )}
@@ -111,9 +95,7 @@ function DrugDetail({ data }) {
           <LongList
             terms={data.tradeNames}
             maxTerms={5}
-            render={tradeName => (
-              <Chip key={tradeName} title={tradeName} label={tradeName} />
-            )}
+            render={tradeName => <Chip key={tradeName} title={tradeName} label={tradeName} />}
           />
         </>
       )}

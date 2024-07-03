@@ -1,11 +1,10 @@
-import { isPrivateEvidenceSection } from '../../utils/partnerPreviewUtils';
+import { isPrivateEvidenceSection } from "../../utils/partnerPreviewUtils";
 
-const id = 'slapenrich';
+const id = "slapenrich";
 export const definition = {
   id,
-  name: 'SLAPenrich',
-  shortName: 'SE',
+  name: "SLAPenrich",
+  shortName: "SE",
   hasData: data => data.slapEnrich.count > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };
-

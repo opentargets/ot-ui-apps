@@ -10,7 +10,7 @@ import {
   updateLiteratureState,
 } from "./atoms";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
     flexWrap: "wrap",
@@ -28,18 +28,19 @@ function EntitiesToSelect({ id }) {
   const entities = useRecoilValue(entitiesState);
   const bibliographyState = useRecoilValue(literatureState);
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const [selectedChips, setSelectedChips] = useRecoilState(
-    selectedEntitiesState
-  );
-  const [loadingEntities, setLoadingEntities] =
-    useRecoilState(loadingEntitiesState);
+  const [selectedChips, setSelectedChips] = useRecoilState(selectedEntitiesState);
+  const [loadingEntities, setLoadingEntities] = useRecoilState(loadingEntitiesState);
 
-  const handleSelectChip = async (e) => {
+  const handleSelectChip = async e => {
     const {
       query,
       id: bibliographyId,
       category,
       globalEntity,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
     } = bibliographyState;
     const newChips = [
       ...selectedChips,
@@ -58,6 +59,10 @@ function EntitiesToSelect({ id }) {
       id: bibliographyId,
       category,
       entities: newChips,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
     });
     const data = request.data[globalEntity];
     const update = {
@@ -67,7 +72,8 @@ function EntitiesToSelect({ id }) {
         status: "ready",
         publication: null,
       })),
-      litsCount: data.literatureOcurrences?.count,
+      litsCount: data.literatureOcurrences?.filteredCount,
+      earliestPubYear: data.literatureOcurrences?.earliestPubYear,
       cursor: data.literatureOcurrences?.cursor,
       loadingEntities: false,
       page: 0,
@@ -75,14 +81,13 @@ function EntitiesToSelect({ id }) {
     setLiteratureUpdate(update);
   };
 
-  const validateEntity = (entity) => {
+  const validateEntity = entity => {
     if (id === entity.object?.id) return null;
-    if (selectedChips.find((s) => s.object.id === entity.object.id))
-      return null;
+    if (selectedChips.find(s => s.object.id === entity.object.id)) return null;
     return entity;
   };
 
-  return entities.map((e) => {
+  return entities.map(e => {
     if (!e.object)
       return (
         <Grow in key={`empty-entity-${e.id}`}>
@@ -120,23 +125,21 @@ export default function Entities({ name, id }) {
 
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
   const bibliographyState = useRecoilValue(literatureState);
-  const [loadingEntities, setLoadingEntities] =
-    useRecoilState(loadingEntitiesState);
-  const [selectedChips, setSelectedChips] = useRecoilState(
-    selectedEntitiesState
-  );
+  const [loadingEntities, setLoadingEntities] = useRecoilState(loadingEntitiesState);
+  const [selectedChips, setSelectedChips] = useRecoilState(selectedEntitiesState);
 
-  const handleDeleteChip = async (index) => {
+  const handleDeleteChip = async index => {
     const {
       query,
       id: bibliographyId,
       category,
       globalEntity,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
     } = bibliographyState;
-    const newChips = [
-      ...selectedChips.slice(0, index),
-      ...selectedChips.slice(index + 1),
-    ];
+    const newChips = [...selectedChips.slice(0, index), ...selectedChips.slice(index + 1)];
     setSelectedChips(newChips);
     setLoadingEntities(true);
     const request = await fetchSimilarEntities({
@@ -144,6 +147,10 @@ export default function Entities({ name, id }) {
       id: bibliographyId,
       category,
       entities: newChips,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
     });
     const data = request.data[globalEntity];
     const update = {
@@ -153,7 +160,8 @@ export default function Entities({ name, id }) {
         status: "ready",
         publication: null,
       })),
-      litsCount: data.literatureOcurrences?.count,
+      litsCount: data.literatureOcurrences?.filteredCount,
+      earliestPubYear: data.literatureOcurrences?.earliestPubYear,
       cursor: data.literatureOcurrences?.cursor,
       loadingEntities: false,
       page: 0,

@@ -1,6 +1,6 @@
 import { makeStyles } from "@mui/styles";
 
-const summaryStyles = makeStyles((theme) => ({
+const summaryStyles = makeStyles(theme => ({
   avatar: {
     color: "white",
     backgroundColor: theme.palette.grey[300],

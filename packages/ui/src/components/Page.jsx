@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid";
 import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   page: {
     background: theme.palette.grey["50"],
     minHeight: "100vh",
@@ -23,12 +23,7 @@ function Page({ header, footer, children }) {
   return (
     <div className={classes.page}>
       {header}
-      <Grid
-        container
-        justifyContent="center"
-        spacing={3}
-        className={classes.gridContainer}
-      >
+      <Grid container justifyContent="center" spacing={3} className={classes.gridContainer}>
         <Grid item xs={12} md={11} sx={{ pb: 3 }}>
           {children}
         </Grid>

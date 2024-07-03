@@ -1,15 +1,14 @@
-import { SvgIcon } from '@mui/material';
+import { SvgIcon } from "@mui/material";
 // import { makeStyles } from '@mui/styles';
-import config from '../config';
+import config from "../config";
 
 const styles = {
   root: {
-    height: 'unset',
+    height: "unset",
   },
 };
 
-function OTLogo({props, sx = []}) {
-
+function OTLogo({ props, sx = [] }) {
   return (
     <SvgIcon
       xmlns="http://www.w3.org/2000/svg"
@@ -24,9 +23,7 @@ function OTLogo({props, sx = []}) {
       ]}
     >
       <defs>
-        <style>
-          {'.cls-2{fill:#abd0e7}.cls-3{fill:#5c605f}.cls-5{fill:#3488c8}'}
-        </style>
+        <style>{".cls-2{fill:#abd0e7}.cls-3{fill:#5c605f}.cls-5{fill:#3488c8}"}</style>
       </defs>
       <g id="Layer_1-2">
         <path
@@ -52,22 +49,22 @@ function OTLogo({props, sx = []}) {
         <path
           d="M1713.7 111.3h-1.5V104c0-8-6.5-14.5-14.5-14.5s-14.5 6.5-14.5 14.5v7.3h-.5c-2.7 0-5 2.2-5 4.9V138c0 2.7 2.2 5 5 5h30.9c2.7 0 4.9-2.2 5-4.9v-21.8c.1-2.8-2.1-5-4.9-5Zm-25 0V104c-.2-5 3.7-9.3 8.8-9.5 5-.2 9.3 3.7 9.5 8.8v8h-18.3Z"
           style={{
-            fill: '#3489ca',
+            fill: "#3489ca",
           }}
         />
         <path
           style={{
-            fill: 'none',
+            fill: "none",
           }}
           d="M1733.4 94.8h158.4v49.9h-158.4z"
         />
         <text
           transform="translate(1733.39 137.33)"
           style={{
-            isolation: 'isolate',
-            fontFamily: 'Inter, sans-serif',
+            isolation: "isolate",
+            fontFamily: "Inter, sans-serif",
             fontSize: 50,
-            fill: '#3488c8',
+            fill: "#3488c8",
           }}
         >
           <tspan x={0} y={0}>
@@ -77,9 +74,9 @@ function OTLogo({props, sx = []}) {
         <text
           transform="translate(1270.19 284.53)"
           style={{
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: "Inter, sans-serif",
             fontSize: 50,
-            fill: '#3488c8',
+            fill: "#3488c8",
           }}
         >
           <tspan

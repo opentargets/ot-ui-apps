@@ -3,9 +3,8 @@ import { Link } from "ui";
 function Description({ symbol, name, data }) {
   return (
     <>
-      Prepublication CRISPR knockout screens from Open Targets (OTAR)
-      experimental projects, associating <strong>{symbol}</strong> and{" "}
-      <strong>{name}</strong>. Source:{" "}
+      Prepublication CRISPR knockout screens from Open Targets (OTAR) experimental projects,
+      associating <strong>{symbol}</strong> and <strong>{name}</strong>. Source:{" "}
       {data && (
         <Link
           external

@@ -1,7 +1,7 @@
-import { Typography } from '@mui/material';
+import { Typography } from "@mui/material";
 
-import { EmptyPage, BasePage } from 'ui';
-import config from '../../config';
+import { EmptyPage, BasePage } from "ui";
+import config from "../../config";
 
 function NotFoundPage() {
   return (

@@ -1,7 +1,7 @@
-import { lazy, Suspense } from 'react';
-import { useQuery } from '@apollo/client';
-import { BasePage, ScrollToTop, LoadingBackdrop } from 'ui';
-import { Box, Tabs, Tab } from '@mui/material';
+import { lazy, Suspense } from "react";
+import { useQuery } from "@apollo/client";
+import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
+import { Box, Tabs, Tab } from "@mui/material";
 import {
   useLocation,
   useParams,
@@ -9,13 +9,14 @@ import {
   Route,
   useRouteMatch,
   Link,
-} from 'react-router-dom';
+  Redirect,
+} from "react-router-dom";
 
-import Header from './Header';
-import NotFoundPage from '../NotFoundPage';
-import DRUG_PAGE_QUERY from './DrugPage.gql';
+import Header from "./Header";
+import NotFoundPage from "../NotFoundPage";
+import DRUG_PAGE_QUERY from "./DrugPage.gql";
 
-const Profile = lazy(() => import('./Profile'));
+const Profile = lazy(() => import("./Profile"));
 
 function DrugPage() {
   const location = useLocation();
@@ -38,27 +39,16 @@ function DrugPage() {
       description={`Annotation information for ${name || chemblId}`}
       location={location}
     >
-      <Header
-        loading={loading}
-        chemblId={chemblId}
-        name={name}
-        crossReferences={crossReferences}
-      />
+      <Header loading={loading} chemblId={chemblId} name={name} crossReferences={crossReferences} />
       <ScrollToTop />
 
       <Route
         path="/"
         render={history => (
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs
-              value={
-                history.location.pathname !== '/'
-                  ? history.location.pathname
-                  : false
-              }
-            >
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs value={history.location.pathname !== "/" ? history.location.pathname : false}>
               <Tab
-                label={<Box sx={{ textTransform: 'capitalize' }}>Profile</Box>}
+                label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
                 value={`/drug/${chemblId}`}
                 component={Link}
                 to={`/drug/${chemblId}`}
@@ -71,6 +61,9 @@ function DrugPage() {
         <Switch>
           <Route exact path={path}>
             <Profile chemblId={chemblId} name={name} />
+          </Route>
+          <Route path="*">
+            <Redirect to={`/drug/${chemblId}`} />
           </Route>
         </Switch>
       </Suspense>

@@ -17,11 +17,9 @@ import { makeStyles } from "@mui/styles";
 
 import SummaryRow from "./SummaryRow";
 
-const getMaxRnaValue = (expressions) => {
+const getMaxRnaValue = expressions => {
   if (expressions.length <= 0) return 0;
-  return maxBy(expressions, (expression) =>
-    expression?.rna ? expression.rna.value : 0
-  ).rna.value;
+  return maxBy(expressions, expression => (expression?.rna ? expression.rna.value : 0)).rna.value;
 };
 
 // function that transforms tissue data into an array of objects
@@ -37,9 +35,9 @@ const getMaxRnaValue = (expressions) => {
 const groupTissues = (expressions, groupBy) => {
   const groupedTissues = {};
 
-  expressions.forEach((expression) => {
+  expressions.forEach(expression => {
     const parentLabels = expression.tissue[groupBy];
-    parentLabels.forEach((label) => {
+    parentLabels.forEach(label => {
       if (!groupedTissues[label]) {
         groupedTissues[label] = {
           parentLabel: label,
@@ -55,17 +53,14 @@ const groupTissues = (expressions, groupBy) => {
       parent.tissues.push(expression);
       parent.maxRnaValue = Math.max(parent.maxRnaValue, expression.rna.value);
       parent.maxRnaLevel = Math.max(parent.maxRnaLevel, expression.rna.level);
-      parent.maxProteinLevel = Math.max(
-        parent.maxProteinLevel,
-        expression.protein.level
-      );
+      parent.maxProteinLevel = Math.max(parent.maxProteinLevel, expression.protein.level);
     });
   });
 
   return Object.values(groupedTissues);
 };
 
-const tissueComparator = (sortBy) => {
+const tissueComparator = sortBy => {
   if (sortBy === "rna") {
     return (a, b) => b.rna.value - a.rna.value;
   }
@@ -73,7 +68,7 @@ const tissueComparator = (sortBy) => {
   return (a, b) => b.protein.level - a.protein.level;
 };
 
-const parentComparator = (sortBy) => {
+const parentComparator = sortBy => {
   if (sortBy === "rna") {
     return (a, b) => b.maxRnaValue - a.maxRnaValue;
   }
@@ -82,7 +77,7 @@ const parentComparator = (sortBy) => {
 };
 
 const sort = (parents, sortBy) => {
-  parents.forEach((parent) => {
+  parents.forEach(parent => {
     parent.tissues.sort(tissueComparator(sortBy));
   });
   return parents.sort(parentComparator(sortBy));
@@ -125,31 +120,19 @@ function SummaryTable({ data }) {
     }
   };
 
-  const handleSort = (sort) => {
+  const handleSort = sort => {
     setSortBy(sort);
   };
 
   return (
     <>
-      <Grid
-        className={classes.groupBy}
-        container
-        justifyContent="center"
-        alignItems="center"
-      >
+      <Grid className={classes.groupBy} container justifyContent="center" alignItems="center">
         <Typography className={classes.groupByText} variant="body2">
           Group by
         </Typography>
-        <ToggleButtonGroup
-          size="small"
-          value={groupBy}
-          exclusive
-          onChange={handleChange}
-        >
+        <ToggleButtonGroup size="small" value={groupBy} exclusive onChange={handleChange}>
           <ToggleButton value="organs">Organs</ToggleButton>
-          <ToggleButton value="anatomicalSystems">
-            Anatomical Systems
-          </ToggleButton>
+          <ToggleButton value="anatomicalSystems">Anatomical Systems</ToggleButton>
         </ToggleButtonGroup>
       </Grid>
       <Grid container justifyContent="center">
@@ -157,18 +140,12 @@ function SummaryTable({ data }) {
           <TableHead>
             <TableRow>
               <TableCell className={classes.headerCell}>Tissue</TableCell>
-              <TableCell
-                className={classes.headerCell}
-                onClick={() => handleSort("rna")}
-              >
+              <TableCell className={classes.headerCell} onClick={() => handleSort("rna")}>
                 <TableSortLabel direction="desc" active={sortBy === "rna"}>
                   RNA (Expression Atlas)
                 </TableSortLabel>
               </TableCell>
-              <TableCell
-                className={classes.headerCell}
-                onClick={() => handleSort("protein")}
-              >
+              <TableCell className={classes.headerCell} onClick={() => handleSort("protein")}>
                 <TableSortLabel direction="desc" active={sortBy === "protein"}>
                   Protein (HPA)
                 </TableSortLabel>
@@ -176,17 +153,13 @@ function SummaryTable({ data }) {
             </TableRow>
             <TableRow>
               <TableCell className={classes.highLow} />
-              <TableCell
-                className={classNames(classes.highLow, classes.rnaCell)}
-              >
+              <TableCell className={classNames(classes.highLow, classes.rnaCell)}>
                 <Grid container justifyContent="space-between">
                   <Grid item>High</Grid>
                   <Grid item>Low</Grid>
                 </Grid>
               </TableCell>
-              <TableCell
-                className={classNames(classes.highLow, classes.proteinCell)}
-              >
+              <TableCell className={classNames(classes.highLow, classes.proteinCell)}>
                 <Grid container justifyContent="space-between">
                   <Grid item>Low</Grid>
                   <Grid item>High</Grid>
@@ -195,12 +168,8 @@ function SummaryTable({ data }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {parents.map((parent) => (
-              <SummaryRow
-                key={parent.parentLabel}
-                maxRnaValue={maxRnaValue}
-                parent={parent}
-              />
+            {parents.map(parent => (
+              <SummaryRow key={parent.parentLabel} maxRnaValue={maxRnaValue} parent={parent} />
             ))}
           </TableBody>
         </Table>

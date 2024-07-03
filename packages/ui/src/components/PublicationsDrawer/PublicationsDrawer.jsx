@@ -7,6 +7,7 @@ import {
   Typography,
   Paper,
   CircularProgress,
+  ButtonBase,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -16,9 +17,9 @@ import { europePmcSearchPOSTQuery } from "../../utils/urls";
 import PublicationWrapper from "./PublicationWrapper";
 import { DataTable } from "../Table";
 
-const sourceDrawerStyles = makeStyles((theme) => ({
+const sourceDrawerStyles = makeStyles(theme => ({
   drawerLink: {
-    cursor: "pointer",
+    color: `${theme.palette.primary.main} !important`,
   },
   drawerBody: {
     overflowY: "overlay",
@@ -66,7 +67,7 @@ const sourceDrawerStyles = makeStyles((theme) => ({
   },
 }));
 
-const listComponentStyles = makeStyles((theme) => ({
+const listComponentStyles = makeStyles(theme => ({
   loader: {
     display: "flex",
     justifyContent: "center",
@@ -82,12 +83,7 @@ const listComponentStyles = makeStyles((theme) => ({
   },
 }));
 
-export function PublicationsList({
-  entriesIds,
-  hideSearch = false,
-  name,
-  symbol,
-}) {
+export function PublicationsList({ entriesIds, hideSearch = false, name, symbol }) {
   const [publications, setPublications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -101,8 +97,8 @@ export function PublicationsList({
       body: formBody,
     };
     fetch(baseUrl, requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         setLoading(false);
         setPublications(data.resultList.result);
       });
@@ -126,7 +122,7 @@ export function PublicationsList({
       </Box>
     );
 
-  const parsedPublications = publications.map((pub) => {
+  const parsedPublications = publications.map(pub => {
     const row = {};
     row.europePmcId = pub.id;
     row.pmcId = pub.pmcid;
@@ -147,7 +143,7 @@ export function PublicationsList({
     {
       id: "publications",
       label: " ",
-      renderCell: (publication) => {
+      renderCell: publication => {
         const {
           europePmcId,
           title,
@@ -181,7 +177,7 @@ export function PublicationsList({
           />
         );
       },
-      filterValue: (row) =>
+      filterValue: row =>
         `${row.journal.journal?.title} ${row?.title} ${row?.year}
         ${row.authors
           .reduce((acc, author) => {
@@ -213,17 +209,14 @@ function PublicationsDrawer({
   const [open, setOpen] = useState(false);
   const classes = sourceDrawerStyles();
 
-  const entriesIds = entries.map((entry) => entry.name);
+  const entriesIds = entries.map(entry => entry.name);
 
   if (entries.length === 0) {
     return naLabel;
   }
 
-  const toggleDrawer = (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
+  const toggleDrawer = event => {
+    if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
     }
     setOpen(true);
@@ -235,18 +228,15 @@ function PublicationsDrawer({
 
   return (
     <>
-      <MUILink
-        onClick={toggleDrawer}
-        className={classes.drawerLink}
-        underline="none"
-      >
-        {customLabel ||
-          (entries.length === 1 && singleEntryId
-            ? entries[0].name
-            : `${entries.length} ${
-                entries.length === 1 ? "publication" : "publications"
-              }`)}
-      </MUILink>
+      <ButtonBase onClick={toggleDrawer} className={classes.drawerLink}>
+        <Typography variant="body2">
+          {" "}
+          {customLabel ||
+            (entries.length === 1 && singleEntryId
+              ? entries[0].name
+              : `${entries.length} ${entries.length === 1 ? "publication" : "publications"}`)}{" "}
+        </Typography>
+      </ButtonBase>
 
       <Drawer
         anchor="right"
@@ -255,14 +245,8 @@ function PublicationsDrawer({
         onClose={closeDrawer}
       >
         <Paper classes={{ root: classes.drawerTitle }} elevation={0}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography className={classes.drawerTitleCaption}>
-              {caption}
-            </Typography>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography className={classes.drawerTitleCaption}>{caption}</Typography>
             <IconButton onClick={closeDrawer}>
               <FontAwesomeIcon icon={faXmark} />
             </IconButton>
@@ -272,11 +256,7 @@ function PublicationsDrawer({
         <Box width={600} className={classes.drawerBody}>
           {open && (
             <Box my={3} mx={3} p={3} pb={6} bgcolor="white">
-              <PublicationsList
-                entriesIds={entriesIds}
-                symbol={symbol}
-                name={name}
-              />
+              <PublicationsList entriesIds={entriesIds} symbol={symbol} name={name} />
             </Box>
           )}
         </Box>

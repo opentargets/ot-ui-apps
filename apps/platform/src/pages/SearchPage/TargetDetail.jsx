@@ -1,11 +1,11 @@
-import { CardContent, Typography } from '@mui/material';
-import { makeStyles, useTheme } from '@mui/styles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDna } from '@fortawesome/free-solid-svg-icons';
+import { CardContent, Typography } from "@mui/material";
+import { makeStyles, useTheme } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDna } from "@fortawesome/free-solid-svg-icons";
 
-import { Link } from 'ui';
-import TargetDescription from '../TargetPage/TargetDescription';
-import { getUniprotIds, clearDescriptionCodes } from '../../utils/global';
+import { Link } from "ui";
+import TargetDescription from "../TargetPage/TargetDescription";
+import { getUniprotIds, clearDescriptionCodes } from "../../utils/global";
 
 const useStyles = makeStyles(() => ({
   subtitle: {
@@ -14,24 +14,14 @@ const useStyles = makeStyles(() => ({
 }));
 
 function TargetDetail({ data }) {
-  const {
-    id,
-    approvedSymbol,
-    approvedName,
-    functionDescriptions,
-    biotype,
-    proteinIds,
-  } = data;
+  const { id, approvedSymbol, approvedName, functionDescriptions, biotype, proteinIds } = data;
 
   const classes = useStyles();
   const theme = useTheme();
 
   const uniprotIds = getUniprotIds(proteinIds);
 
-  const targetDescription = clearDescriptionCodes(
-    functionDescriptions,
-    theme.palette.primary.main
-  );
+  const targetDescription = clearDescriptionCodes(functionDescriptions, theme.palette.primary.main);
 
   return (
     <CardContent>
@@ -55,7 +45,7 @@ function TargetDetail({ data }) {
       </Typography>
       <Typography variant="body2">{biotype}</Typography>
       <Typography className={classes.subtitle} variant="subtitle1">
-        UniProt accession{uniprotIds.length > 1 ? 's' : ''}
+        UniProt accession{uniprotIds.length > 1 ? "s" : ""}
       </Typography>
       <Typography component="div" variant="body2">
         {uniprotIds.map(uniprotId => (

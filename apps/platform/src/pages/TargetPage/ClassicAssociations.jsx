@@ -1,28 +1,16 @@
-import { useState } from 'react';
-import {
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-  useLocation,
-} from 'react-router-dom';
-import {
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-  Tabs,
-  Tab,
-} from '@mui/material';
-import { useQuery } from '@apollo/client';
+import { useState } from "react";
+import { Switch, Route, useRouteMatch, useLocation } from "react-router-dom";
+import { Card, CardContent, Grid, Typography, Tabs, Tab, Box, Alert } from "@mui/material";
+import { useQuery } from "@apollo/client";
 
-import ClassicAssociationsDAG from './ClassicAssociationsDAG';
-import ClassicAssociationsBubbles from './ClassicAssociationsBubbles';
-import ClassicAssociationsTable from './ClassicAssociationsTable';
-import { Facets } from '../../components/Facets';
-import Wrapper from './Wrapper';
+import ClassicAssociationsDAG from "./ClassicAssociationsDAG";
+import ClassicAssociationsBubbles from "./ClassicAssociationsBubbles";
+import ClassicAssociationsTable from "./ClassicAssociationsTable";
+import { Facets } from "../../components/Facets";
+import Wrapper from "./Wrapper";
 
-import TARGET_FACETS_QUERY from './TargetFacets.gql';
+import TARGET_FACETS_QUERY from "./TargetFacets.gql";
+import { Link } from "ui";
 
 function ClassicAssociations({ ensgId, symbol }) {
   const match = useRouteMatch();
@@ -39,21 +27,34 @@ function ClassicAssociations({ ensgId, symbol }) {
   const facetData = data?.target?.associatedDiseases.aggregations.aggs;
 
   return (
-    <Grid style={{ marginTop: '8px' }} container spacing={2}>
+    <Grid style={{ marginTop: "8px" }} container spacing={2}>
+      <Box sx={{ width: "100%" }}>
+        <Alert severity="warning">
+          <Typography variant="caption">
+            We plan to deprecate this page soon and it is currently out of maintenance. See{" "}
+            <Link
+              aria-label="Documentation about associations on the fly"
+              to="https://platform-docs.opentargets.org/web-interface/associations-on-the-fly-beta"
+              external
+            >
+              here
+            </Link>{" "}
+            for more info
+          </Typography>
+        </Alert>
+      </Box>
       <Grid item xs={12}>
         <Typography variant="h6">
           {data ? (
             <>
-              <strong>
-                {data.target.associatedDiseases.count} diseases or phenotypes
-              </strong>{' '}
+              <strong>{data.target.associatedDiseases.count} diseases or phenotypes</strong>{" "}
               associated with <strong>{symbol}</strong>
             </>
           ) : (
             <strong>Loading...</strong>
           )}
         </Typography>
-      </Grid>{' '}
+      </Grid>{" "}
       <Grid item xs={12} lg={3}>
         <Card elevation={0}>
           <CardContent>
@@ -68,12 +69,7 @@ function ClassicAssociations({ ensgId, symbol }) {
       </Grid>
       <Grid item xs={12} lg={9}>
         <Tabs value={location.pathname}>
-          <Tab
-            component={Link}
-            value={match.url}
-            label="Table"
-            to={match.url}
-          />
+          <Tab component={Link} value={match.url} label="Table" to={match.url} />
           <Tab
             component={Link}
             value={`${match.url}/bubbles`}
@@ -87,7 +83,7 @@ function ClassicAssociations({ ensgId, symbol }) {
             to={`${match.url}/graph`}
           />
         </Tabs>
-        <Card elevation={0} style={{ overflow: 'visible' }}>
+        <Card elevation={0} style={{ overflow: "visible" }}>
           <CardContent>
             <Switch>
               <Route path={`${match.path}/bubbles`}>
@@ -107,10 +103,7 @@ function ClassicAssociations({ ensgId, symbol }) {
                 />
               </Route>
               <Route path={match.path}>
-                <ClassicAssociationsTable
-                  ensgId={ensgId}
-                  aggregationFilters={aggregationFilters}
-                />
+                <ClassicAssociationsTable ensgId={ensgId} aggregationFilters={aggregationFilters} />
               </Route>
             </Switch>
           </CardContent>

@@ -58,13 +58,9 @@ function Section({ id: ensgId, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={(data) => (
+      renderBody={data => (
         <>
-          <Tabs
-            value={tab}
-            onChange={handleChangeTab}
-            style={{ marginBottom: "1rem" }}
-          >
+          <Tabs value={tab} onChange={handleChangeTab} style={{ marginBottom: "1rem" }}>
             <Tab value="summary" label="Summary" />
             <Tab value="atlas" label="Experiments (Expression Atlas)" />
             <Tab value="gtex" label="Variation (GTEx)" />

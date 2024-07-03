@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   matchInnerContainer: {
     background: `${theme.palette.grey[200]}`,
     marginLeft: ".5rem",
@@ -22,14 +22,9 @@ const useStyles = makeStyles((theme) => ({
 
 function SentenceMatch({ match }) {
   const classes = useStyles();
-  const breaks = [
-    match.dStart,
-    match.dEnd + 1,
-    match.tStart,
-    match.tEnd + 1,
-  ].sort((a, b) => a - b);
+  const breaks = [match.dStart, match.dEnd + 1, match.tStart, match.tEnd + 1].sort((a, b) => a - b);
 
-  const whichMatch = (index) => {
+  const whichMatch = index => {
     if (index === match.dStart) return classes.diseaseMark;
     if (index === match.tStart) return classes.targetMark;
 
@@ -44,13 +39,9 @@ function SentenceMatch({ match }) {
       <td>
         <Box className={classes.matchInnerContainer}>
           {match.text.slice(0, breaks[0])}
-          <mark className={whichMatch(breaks[0])}>
-            {match.text.slice(breaks[0], breaks[1])}
-          </mark>
+          <mark className={whichMatch(breaks[0])}>{match.text.slice(breaks[0], breaks[1])}</mark>
           {match.text.slice(breaks[1], breaks[2])}
-          <mark className={whichMatch(breaks[2])}>
-            {match.text.slice(breaks[2], breaks[3])}
-          </mark>
+          <mark className={whichMatch(breaks[2])}>{match.text.slice(breaks[2], breaks[3])}</mark>
           {match.text.slice(breaks[3])}
         </Box>
       </td>

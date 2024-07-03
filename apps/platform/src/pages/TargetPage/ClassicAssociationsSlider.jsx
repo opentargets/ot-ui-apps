@@ -1,27 +1,21 @@
-import { Slider, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { decimalPlaces } from '../../constants';
+import { Slider, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { decimalPlaces } from "../../constants";
 
 const useStyles = makeStyles(() => ({
   root: {
     width: 300,
   },
   container: {
-    padding: '10px 0',
+    padding: "10px 0",
   },
 }));
 
-function ClassicAssociationsSlider({
-  value,
-  onChange,
-  onChangeCommitted,
-}) {
+function ClassicAssociationsSlider({ value, onChange, onChangeCommitted }) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Typography id="label">
-        Minimum Score: {value.toFixed(decimalPlaces)}
-      </Typography>
+      <Typography id="label">Minimum Score: {value.toFixed(decimalPlaces)}</Typography>
       <Slider
         classes={{
           root: classes.container,

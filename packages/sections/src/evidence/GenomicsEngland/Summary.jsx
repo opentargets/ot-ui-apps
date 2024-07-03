@@ -11,10 +11,8 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={(data) =>
-        `${data.genomicsEngland.count} entr${
-          data.genomicsEngland.count === 1 ? "y" : "ies"
-        }`
+      renderSummary={data =>
+        `${data.genomicsEngland.count} entr${data.genomicsEngland.count === 1 ? "y" : "ies"}`
       }
       subText={dataTypesMap.genetic_association}
     />

@@ -1,21 +1,21 @@
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from "@mui/styles";
 
-import Particles from 'react-tsparticles';
-import { loadFull } from 'tsparticles';
+import Particles from "react-tsparticles";
+import { loadFull } from "tsparticles";
 
-import { particlesConfig } from '../../constants';
+import { particlesConfig } from "../../constants";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   splashContainer: {
-    height: '100vh',
+    height: "100vh",
   },
   splash: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     top: 0,
     backgroundColor: theme.palette.primary.main,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     zIndex: -1,
   },
 }));

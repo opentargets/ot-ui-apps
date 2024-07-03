@@ -1,17 +1,17 @@
-import { makeStyles, useTheme } from '@mui/styles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDna } from '@fortawesome/free-solid-svg-icons';
-import { Highlights, Link } from 'ui';
+import { makeStyles, useTheme } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDna } from "@fortawesome/free-solid-svg-icons";
+import { Highlights, Link } from "ui";
 
-import { clearDescriptionCodes } from '../../utils/global';
-import TargetDescription from '../TargetPage/TargetDescription';
+import { clearDescriptionCodes } from "../../utils/global";
+import TargetDescription from "../TargetPage/TargetDescription";
 
 const useStyles = makeStyles(theme => ({
   container: {
-    marginBottom: '30px',
+    marginBottom: "30px",
   },
   subtitle: {
-    fontSize: '20px',
+    fontSize: "20px",
     fontWeight: 500,
   },
   icon: {
@@ -30,8 +30,7 @@ function TargetResult({ data, highlights }) {
   return (
     <div className={classes.container}>
       <Link to={`/target/${data.id}/associations`} className={classes.subtitle}>
-        <FontAwesomeIcon icon={faDna} className={classes.icon} />{' '}
-        {data.approvedSymbol}
+        <FontAwesomeIcon icon={faDna} className={classes.icon} /> {data.approvedSymbol}
       </Link>
       {data.functionDescriptions.length > 0 ? (
         <TargetDescription

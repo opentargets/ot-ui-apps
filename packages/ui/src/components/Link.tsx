@@ -3,29 +3,37 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
+import Tooltip from "./Tooltip";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   base: {
     fontSize: "inherit",
-    textDecoration: "none",
+    "text-decoration-color": "white",
+    "-webkit-text-decoration-color": "white",
   },
   baseDefault: {
     color: theme.palette.primary.main,
     "&:hover": {
       color: theme.palette.primary.dark,
+      "text-decoration-color": theme.palette.primary.dark,
+      "-webkit-text-decoration-color": theme.palette.primary.dark,
     },
   },
   baseTooltip: {
-    color: "white",
+    color: theme.palette.primary.main,
     "&:hover": {
-      color: theme.palette.primary.light,
+      color: theme.palette.primary.dark,
     },
-    textDecoration: "underline",
+    textDecoration: "none",
   },
   baseFooter: {
     color: "white",
+    "text-decoration-color": "transparent",
+    "-webkit-text-decoration-color": "transparent",
     "&:hover": {
       color: theme.palette.primary.light,
+      "text-decoration-color": theme.palette.primary.light,
+    "-webkit-text-decoration-color": theme.palette.primary.light,
     },
     display: "flex",
     alignItems: "center",
@@ -55,9 +63,7 @@ function Link({
 }) {
   const classes = useStyles();
   const ariaLabelProp = ariaLabel ? { "aria-label": ariaLabel } : {};
-  const newTabProps = newTab
-    ? { target: "_blank", rel: "noopener noreferrer" }
-    : {};
+  const newTabProps = newTab ? { target: "_blank", rel: "noopener noreferrer" } : {};
   return external ? (
     <a
       className={classNames(
@@ -90,7 +96,7 @@ function Link({
       to={to}
       onClick={onClick}
     >
-      {children}
+      <Tooltip title={tooltip}>{children}</Tooltip>
     </RouterLink>
   );
 }

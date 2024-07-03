@@ -1,4 +1,5 @@
 export { default as Footer } from "./components/Footer";
+export * from "./components/Footer";
 export { default as ThemeProvider } from "./ThemeProvider/ThemeProvider";
 export { default as LoadingBackdrop } from "./components/LoadingBackdrop";
 export * from "./components/GlobalSearch/SearchContext";
@@ -11,6 +12,8 @@ export { default as Link } from "./components/Link";
 export { default as Chip } from "./components/Chip";
 export { default as ChipList } from "./components/ChipList";
 export { default as TooltipStyledLabel } from "./components/TooltipStyledLabel";
+export { default as DirectionOfEffectIcon } from "./components/DirectionOfEffectIcon";
+export { default as DirectionOfEffectTooltip } from "./components/DirectionOfEffectTooltip";
 export { default as LabelChip } from "./components/LabelChip";
 export { default as BasePage } from "./components/BasePage";
 export { default as NewChip } from "./components/NewChip";
@@ -30,12 +33,14 @@ export { default as ScientificNotation } from "./components/ScientificNotation";
 export { default as MouseModelAllelicComposition } from "./components/MouseModelAllelicComposition";
 export { default as DataDownloader } from "./components/DataDownloader";
 export { default as Legend } from "./components/Legend";
+export { default as ApiPlaygroundDrawer } from "./components/ApiPlaygroundDrawer";
 
 export { default as EmptyPage } from "./pages/EmptyPage";
 export { default as NotFoundPage } from "./pages/NotFoundPage";
 export { default as Page } from "./pages/Page";
 
 export { default as PlatformApiProvider } from "./contexts/PlatformApiProvider";
+export * from "./contexts/ConfigurationProvider";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Section";

@@ -13,7 +13,7 @@ import StringTab from "./StringTab";
 
 import INTERACTIONS_STATS_QUERY from "./InteractionsStats.gql";
 
-const getSummaryCounts = (ensgId) =>
+const getSummaryCounts = ensgId =>
   client.query({
     query: INTERACTIONS_STATS_QUERY,
     variables: {
@@ -56,12 +56,12 @@ function Body({ label: symbol, id, entity }) {
 
   // load tabs summary counts
   useEffect(() => {
-    getSummaryCounts(id).then((res) => {
+    getSummaryCounts(id).then(res => {
       // when there is no data, interactions object is null, so there is no count
       setCounts(
         Object.assign(
           {},
-          ...sources.map((k) => ({
+          ...sources.map(k => ({
             [k.id]: res.data.target[k.id] ? res.data.target[k.id].count : 0,
           }))
         )
@@ -76,7 +76,7 @@ function Body({ label: symbol, id, entity }) {
       );
       // find first source (tab) with data and set that as the initially selected tab
       const initialTab = sources.find(
-        (s) => res.data.target[s.id] && res.data.target[s.id].count > 0
+        s => res.data.target[s.id] && res.data.target[s.id].count > 0
       );
       if (initialTab) {
         setSource(initialTab.id);
@@ -93,22 +93,14 @@ function Body({ label: symbol, id, entity }) {
       renderBody={() => (
         <>
           {/* Interaction Resource */}
-          <Tabs
-            value={source}
-            onChange={onTabChange}
-            aria-label="simple tabs example"
-          >
-            {sources.map((s) => (
+          <Tabs value={source} onChange={onTabChange} aria-label="simple tabs example">
+            {sources.map(s => (
               <Tab
                 label={
                   <>
-                    <Typography variant="h6">{s.label}</Typography>
+                    <Typography variant="body1">{s.label}</Typography>
                     {versions[s.id] ? (
-                      <Typography
-                        variant="caption"
-                        display="block"
-                        gutterBottom
-                      >
+                      <Typography variant="caption" display="block" gutterBottom>
                         Version: {versions[s.id]}
                       </Typography>
                     ) : null}
@@ -126,14 +118,10 @@ function Body({ label: symbol, id, entity }) {
 
           <div style={{ marginTop: "50px" }}>
             {/* intact stuff */}
-            {source === "intact" && counts[source] > 0 && (
-              <IntactTab ensgId={id} symbol={symbol} />
-            )}
+            {source === "intact" && counts[source] > 0 && <IntactTab ensgId={id} symbol={symbol} />}
 
             {/* signor stuff */}
-            {source === "signor" && counts[source] > 0 && (
-              <SignorTab ensgId={id} symbol={symbol} />
-            )}
+            {source === "signor" && counts[source] > 0 && <SignorTab ensgId={id} symbol={symbol} />}
 
             {/* reactome stuff */}
             {source === "reactome" && counts[source] > 0 && (
@@ -141,9 +129,7 @@ function Body({ label: symbol, id, entity }) {
             )}
 
             {/* string stuff */}
-            {source === "string" && counts[source] > 0 && (
-              <StringTab ensgId={id} symbol={symbol} />
-            )}
+            {source === "string" && counts[source] > 0 && <StringTab ensgId={id} symbol={symbol} />}
           </div>
         </>
       )}

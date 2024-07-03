@@ -56,7 +56,7 @@ const Table = ({
   const [selectedRow, setSelectedRow] = useState(0);
   const defaultClasses = tableStyles();
 
-  const handleGlobalFilterChange = (newGlobalFilter) => {
+  const handleGlobalFilterChange = newGlobalFilter => {
     if (newGlobalFilter !== globalFilter) {
       onGlobalFilterChange(newGlobalFilter);
     }
@@ -66,7 +66,7 @@ const Table = ({
     onSortBy(sortBy);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = event => {
     onRowsPerPageChange(Number(event.target.value));
   };
   const handleChangePage = (_, page) => {
@@ -107,9 +107,7 @@ const Table = ({
           </Grid>
         )}
       </Grid>
-      <TableContainer
-        className={classNames(defaultClasses.container, classes.root)}
-      >
+      <TableContainer className={classNames(defaultClasses.container, classes.root)}>
         <MuiTable
           className={classNames(defaultClasses.table, classes.table, {
             [defaultClasses.tableFixed]: fixed,
@@ -132,7 +130,7 @@ const Table = ({
                 key={i}
                 row={row}
                 noWrap={noWrap}
-                onClick={(event) => handleClick(event, row, i)}
+                onClick={event => handleClick(event, row, i)}
                 selected={rowIsSelectable && selectedRow === i}
               />
             ))}
@@ -152,9 +150,7 @@ const Table = ({
         </MuiTable>
       </TableContainer>
       <Grid item container justifyContent="center">
-        {loading && (
-          <CircularProgress className={defaultClasses.progress} size={22} />
-        )}
+        {loading && <CircularProgress className={defaultClasses.progress} size={22} />}
       </Grid>
       <Grid item container justifyContent="flex-end">
         {showPagination ? (
@@ -171,7 +167,12 @@ const Table = ({
             page={page}
             rowsPerPage={pageSize}
             rowsPerPageOptions={rowsPerPageOptions}
-            SelectProps={{ native: true }}
+            SelectProps={{
+              native: true,
+              inputProps: {
+                "aria-label": "Rows per page select dropdown",
+              },
+            }}
           />
         ) : (
           <Box className={defaultClasses.paginationPlaceholder} />

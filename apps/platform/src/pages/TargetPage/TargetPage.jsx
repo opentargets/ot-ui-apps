@@ -1,6 +1,6 @@
-import { Suspense, lazy } from 'react';
-import { useQuery } from '@apollo/client';
-import { Box, Tab, Tabs } from '@mui/material';
+import { Suspense, lazy } from "react";
+import { useQuery } from "@apollo/client";
+import { Box, Tab, Tabs } from "@mui/material";
 import {
   Link,
   Route,
@@ -8,17 +8,19 @@ import {
   useLocation,
   useRouteMatch,
   useParams,
-} from 'react-router-dom';
-import { LoadingBackdrop, BasePage, ScrollToTop, NewChip } from 'ui';
+  Redirect,
+} from "react-router-dom";
+import { LoadingBackdrop, BasePage, ScrollToTop, NewChip } from "ui";
 
-import Header from './Header';
-import NotFoundPage from '../NotFoundPage';
-import { getUniprotIds } from '../../utils/global';
-import TARGET_PAGE_QUERY from './TargetPage.gql';
+import Header from "./Header";
+import NotFoundPage from "../NotFoundPage";
+import { getUniprotIds } from "../../utils/global";
+import TARGET_PAGE_QUERY from "./TargetPage.gql";
 
-const Profile = lazy(() => import('./Profile'));
-const Associations = lazy(() => import('./TargetAssociations'));
-const ClassicAssociations = lazy(() => import('./ClassicAssociations'));
+import Profile from "./Profile";
+import Associations from "./TargetAssociations";
+
+const ClassicAssociations = lazy(() => import("./ClassicAssociations"));
 
 function TargetPage() {
   const location = useLocation();
@@ -35,19 +37,17 @@ function TargetPage() {
 
   const { approvedSymbol: symbol, approvedName } = data?.target || {};
   const uniprotIds = loading ? null : getUniprotIds(data.target.proteinIds);
-  const crisprId = data?.target.dbXrefs.find(
-    p => p.source === 'ProjectScore'
-  )?.id;
+  const crisprId = data?.target.dbXrefs.find(p => p.source === "ProjectScore")?.id;
 
   return (
     <BasePage
       title={
-        location.pathname.includes('associations')
+        location.pathname.includes("associations")
           ? `Diseases associated with ${symbol}`
           : `${symbol} profile page`
       }
       description={
-        location.pathname.includes('associations')
+        location.pathname.includes("associations")
           ? `Ranked list of diseases and phenotypes associated with ${symbol}`
           : `Annotation information for ${symbol}`
       }
@@ -66,17 +66,11 @@ function TargetPage() {
       <Route
         path="/"
         render={history => (
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs
-              value={
-                history.location.pathname !== '/'
-                  ? history.location.pathname
-                  : false
-              }
-            >
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs value={history.location.pathname !== "/" ? history.location.pathname : false}>
               <Tab
                 label={
-                  <Box sx={{ textTransform: 'capitalize' }}>
+                  <Box sx={{ textTransform: "capitalize" }}>
                     <div>
                       Associated diseases
                       <NewChip />
@@ -88,17 +82,13 @@ function TargetPage() {
                 to={`/target/${ensgId}/associations`}
               />
               <Tab
-                label={
-                  <Box sx={{ textTransform: 'capitalize' }}>
-                    Associated diseases
-                  </Box>
-                }
+                label={<Box sx={{ textTransform: "capitalize" }}>Associated diseases</Box>}
                 value={`/target/${ensgId}/classic-associations`}
                 component={Link}
                 to={`/target/${ensgId}/classic-associations`}
               />
               <Tab
-                label={<Box sx={{ textTransform: 'capitalize' }}>Profile</Box>}
+                label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
                 value={`/target/${ensgId}`}
                 component={Link}
                 to={`/target/${ensgId}`}
@@ -117,6 +107,9 @@ function TargetPage() {
           </Route>
           <Route path={`${path}/classic-associations`}>
             <ClassicAssociations ensgId={ensgId} symbol={symbol} />
+          </Route>
+          <Route path="*">
+            <Redirect to={`/target/${ensgId}`} />
           </Route>
         </Switch>
       </Suspense>

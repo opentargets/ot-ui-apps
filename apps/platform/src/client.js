@@ -1,6 +1,6 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
-import possibleTypes from './possibleTypes.json';
-import config from './config';
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+import possibleTypes from "./possibleTypes.json";
+import config from "./config";
 
 const client = new ApolloClient({
   uri: config.urlApi,
@@ -8,11 +8,20 @@ const client = new ApolloClient({
     possibleTypes,
     typePolicies: {
       ScoredComponent: {
-        keyFields: ['componentId', 'score'],
+        keyFields: ["componentId", "score"],
+      },
+      Indications: {
+        keyFields: [],
+      },
+      MechanismsOfAction: {
+        keyFields: [],
+      },
+      Hallmarks: {
+        keyFields: [],
       },
     },
   }),
-  headers: { 'OT-Platform': true },
+  headers: { "OT-Platform": true },
 });
 
 export default client;

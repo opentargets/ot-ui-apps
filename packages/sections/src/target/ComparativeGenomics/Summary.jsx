@@ -1,9 +1,9 @@
-import { SummaryItem, usePlatformApi } from 'ui';
+import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from '.';
-import countHomologues from './countHomologues';
+import { definition } from ".";
+import countHomologues from "./countHomologues";
 
-import COMP_GENOMICS_SUMMARY_FRAGMENT from './CompGenomicsSummaryFragment.gql';
+import COMP_GENOMICS_SUMMARY_FRAGMENT from "./CompGenomicsSummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(COMP_GENOMICS_SUMMARY_FRAGMENT);

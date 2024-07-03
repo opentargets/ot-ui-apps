@@ -1,20 +1,14 @@
 import { useState } from "react";
 
-import {
-  Drawer,
-  Link as MuiLink,
-  IconButton,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Drawer, Link as MuiLink, IconButton, Paper, Typography, ButtonBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, PublicationsDrawer, MouseModelAllelicComposition } from "ui";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   drawerLink: {
-    cursor: "pointer",
+    color: `${theme.palette.primary.main} !important`,
   },
   backdrop: {
     "& .MuiBackdrop-root": {
@@ -43,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Model({ model }) {
   const { id, allelicComposition, geneticBackground, literature } = model;
-  const entries = literature ? literature.map((lit) => ({ name: lit })) : [];
+  const entries = literature ? literature.map(lit => ({ name: lit })) : [];
   return (
     <>
       <Link external to={`https://identifiers.org/${id}`}>
@@ -53,11 +47,7 @@ function Model({ model }) {
         />
       </Link>
       <div>
-        <PublicationsDrawer
-          entries={entries}
-          caption="Allelic composition"
-          singleEntryId={false}
-        />
+        <PublicationsDrawer entries={entries} caption="Allelic composition" singleEntryId={false} />
       </div>
     </>
   );
@@ -81,14 +71,11 @@ function AllelicCompositionDrawer({ biologicalModels }) {
 
   return (
     <>
-      <MuiLink
-        className={classes.drawerLink}
-        onClick={() => toggleOpen()}
-        underline="none"
-      >
-        {biologicalModels.length}{" "}
-        {biologicalModels.length === 1 ? "model" : "models"}
-      </MuiLink>
+      <ButtonBase onClick={() => toggleOpen()} className={classes.drawerLink}>
+        <Typography variant="body2">
+          {biologicalModels.length} {biologicalModels.length === 1 ? "model" : "models"}
+        </Typography>
+      </ButtonBase>
       <Drawer
         classes={{ root: classes.backdrop, paper: classes.container }}
         open={open}
@@ -101,7 +88,7 @@ function AllelicCompositionDrawer({ biologicalModels }) {
             <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
-        {biologicalModels.map((model) => (
+        {biologicalModels.map(model => (
           <Paper key={model.id} className={classes.paper} variant="outlined">
             <Model model={model} />
           </Paper>

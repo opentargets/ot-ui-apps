@@ -1,30 +1,26 @@
-import { Link } from 'ui';
-import { Fragment } from 'react';
-import { v1 } from 'uuid';
-
+import { Link } from "ui";
+import { Fragment } from "react";
+import { v1 } from "uuid";
 
 function Description({ name, parentMolecule, childMolecules }) {
-  const molecules = [...childMolecules];
-
-  if (parentMolecule) molecules.push(parentMolecule);
+  const molecules = [...childMolecules, ...parentMolecule];
 
   return (
     <>
       <strong>{name}</strong>
-      {molecules.length > 0 ? (
+      {molecules.length > 0 && (
         <>
-          , and related molecules{' '}
+          , and related molecules{" "}
           {molecules.map(molecule => (
             <Fragment key={v1()}>
               <Link to={`/drug/${molecule.id}`}>{molecule.name}</Link>
-              {', '}
+              {", "}
             </Fragment>
           ))}
         </>
-      ) : null}{' '}
-      biochemical interactions to produce intended pharmacological effects.
-      Curated from scientific literature and post-marketing package inserts.
-      Source:{' '}
+      )}{" "}
+      biochemical interactions to produce intended pharmacological effects. Curated from scientific
+      literature and post-marketing package inserts. Source:{" "}
       <Link to="https://www.ebi.ac.uk/chembl/" external>
         ChEMBL
       </Link>

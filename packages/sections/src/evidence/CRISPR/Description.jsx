@@ -3,9 +3,8 @@ import { Link } from "ui";
 function Description({ symbol, name }) {
   return (
     <>
-      Cancer cell line dependencies identified using CRISPR-Cas9 whole genome
-      screenings pinpointing a <strong>{symbol}</strong> dependency in{" "}
-      <strong>{name}</strong>. Source:{" "}
+      Cancer cell line dependencies identified using CRISPR-Cas9 whole genome screenings pinpointing
+      a <strong>{symbol}</strong> dependency in <strong>{name}</strong>. Source:{" "}
       <Link to="https://score.depmap.sanger.ac.uk" external>
         Project Score
       </Link>

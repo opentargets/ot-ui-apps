@@ -5,11 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import client from "../../client";
 
-import {
-  MethodIconText,
-  MethodIconArrow,
-  MethodIconExpandArrow,
-} from "./custom/MethodIcons";
+import { MethodIconText, MethodIconArrow, MethodIconExpandArrow } from "./custom/MethodIcons";
 import { defaultRowsPerPageOptions } from "../../constants";
 
 import INTERACTIONS_QUERY from "./InteractionsQuery.gql";
@@ -25,7 +21,7 @@ const getData = (query, ensgId, sourceDatabase, index, size) =>
     },
   });
 
-const onLinkClick = (e) => {
+const onLinkClick = e => {
   // handler to stop propagation of clicks on links in table rows
   // to avoid selection of a different row
   e.stopPropagation();
@@ -47,21 +43,15 @@ const columns = {
         </>
       ),
       exportLabel: "interactorB-AltId",
-      renderCell: (row) => (
+      renderCell: row => (
         <>
-          <EllsWrapper
-            title={row.targetB ? row.targetB.approvedSymbol : row.intB}
-          >
+          <EllsWrapper title={row.targetB ? row.targetB.approvedSymbol : row.intB}>
             {row.targetB ? (
               <Link to={`/target/${row.targetB.id}`} onClick={onLinkClick}>
                 {row.targetB.approvedSymbol}
               </Link>
             ) : (
-              <Link
-                to={`http://uniprot.org/uniprot/${row.intB}`}
-                onClick={onLinkClick}
-                external
-              >
+              <Link to={`http://uniprot.org/uniprot/${row.intB}`} onClick={onLinkClick} external>
                 {row.intB}
               </Link>
             )}
@@ -73,25 +63,21 @@ const columns = {
           <EllsWrapper title={row.intB}>
             <Typography variant="caption">
               Alt ID:{" "}
-              <Link
-                to={`http://uniprot.org/uniprot/${row.intB}`}
-                onClick={onLinkClick}
-                external
-              >
+              <Link to={`http://uniprot.org/uniprot/${row.intB}`} onClick={onLinkClick} external>
                 {row.intB}
               </Link>
             </Typography>
           </EllsWrapper>
         </>
       ),
-      exportValue: (row) => row.targetB?.approvedSymbol || row.intB,
-      filterValue: (row) => `${row.targetB?.approvedSymbol} ${row.intB}`,
+      exportValue: row => row.targetB?.approvedSymbol || row.intB,
+      filterValue: row => `${row.targetB?.approvedSymbol} ${row.intB}`,
       width: "65%",
     },
     {
       id: "sizeEvidences",
       label: "Interaction evidence entries",
-      renderCell: (row) => (
+      renderCell: row => (
         <>
           {row.count}
           <span className="selected-evidence">
@@ -99,7 +85,7 @@ const columns = {
           </span>
         </>
       ),
-      exportValue: (row) => row.count,
+      exportValue: row => row.count,
       width: "35%",
     },
   ],
@@ -109,7 +95,7 @@ const columns = {
     {
       id: "interactionIdentifier",
       label: "ID",
-      renderCell: (row) => (
+      renderCell: row => (
         <Link
           to={`https://reactome.org/content/detail/${row.interactionIdentifier}`}
           onClick={onLinkClick}
@@ -129,64 +115,48 @@ const columns = {
           <Typography variant="caption">Host organism</Typography>
         </>
       ),
-      renderCell: (row) => (
+      renderCell: row => (
         <>
           <EllsWrapper>{row.interactionTypeShortName}</EllsWrapper>
           <br />
           <EllsWrapper title={row.hostOrganismScientificName}>
-            <Typography variant="caption">
-              Organism: {row.hostOrganismScientificName}
-            </Typography>
+            <Typography variant="caption">Organism: {row.hostOrganismScientificName}</Typography>
           </EllsWrapper>
         </>
       ),
-      filterValue: (row) =>
-        `${row.interactionTypeShortName} ${row.hostOrganismScientificName}`,
+      filterValue: row => `${row.interactionTypeShortName} ${row.hostOrganismScientificName}`,
       width: "30%",
     },
     {
       id: "methods",
       label: "Detection methods",
-      renderCell: (row) => (
+      renderCell: row => (
         <>
           <MethodIconText
-            tooltip={row.participantDetectionMethodA
-              .map((m) => m.shortName)
-              .join()}
+            tooltip={row.participantDetectionMethodA.map(m => m.shortName).join()}
             enabled
           >
             A
           </MethodIconText>
-          <MethodIconArrow
-            tooltip={row.interactionDetectionMethodShortName}
-            enabled
-          />
-          <MethodIconText
-            tooltip={row.participantDetectionMethodB[0].shortName}
-            enabled
-          >
+          <MethodIconArrow tooltip={row.interactionDetectionMethodShortName} enabled />
+          <MethodIconText tooltip={row.participantDetectionMethodB[0].shortName} enabled>
             B
           </MethodIconText>
-          <MethodIconExpandArrow
-            tooltip={row.expansionMethodShortName}
-            enabled
-          />
+          <MethodIconExpandArrow tooltip={row.expansionMethodShortName} enabled />
         </>
       ),
-      filterValue: (row) =>
-        `${row.participantDetectionMethodA.map((m) => m.shortName).join(" ")} ${
+      filterValue: row =>
+        `${row.participantDetectionMethodA.map(m => m.shortName).join(" ")} ${
           row.interactionDetectionMethodShortName
-        } ${
-          row.participantDetectionMethodB
-            ? row.participantDetectionMethodB[0].shortName
-            : ""
-        } ${row.expansionMethodShortName}`,
+        } ${row.participantDetectionMethodB ? row.participantDetectionMethodB[0].shortName : ""} ${
+          row.expansionMethodShortName
+        }`,
       width: "25%",
     },
     {
       id: "pubmedId",
       label: "Publication",
-      renderCell: (d) =>
+      renderCell: d =>
         d.pubmedId && d.pubmedId.indexOf("unassigned") === -1 ? (
           <Link external to={`http://europepmc.org/abstract/MED/${d.pubmedId}`}>
             {d.pubmedId}
@@ -194,7 +164,7 @@ const columns = {
         ) : (
           d.pubmedId
         ),
-      filterValue: (row) => row.pubmedId,
+      filterValue: row => row.pubmedId,
       width: "20%",
     },
   ],
@@ -203,24 +173,23 @@ const columns = {
 const evidenceColsExport = [
   {
     label: "Interaction host organism",
-    exportValue: (row) => row.hostOrganismScientificName,
+    exportValue: row => row.hostOrganismScientificName,
   },
   {
     label: "detection method A",
-    exportValue: (row) =>
-      row.participantDetectionMethodA.map((m) => m.shortName),
+    exportValue: row => row.participantDetectionMethodA.map(m => m.shortName),
   },
   {
     label: "detection method short name",
-    exportValue: (row) => row.interactionDetectionMethodShortName,
+    exportValue: row => row.interactionDetectionMethodShortName,
   },
   {
     label: "detection method B",
-    exportValue: (row) => row.participantDetectionMethodB[0].shortName,
+    exportValue: row => row.participantDetectionMethodB[0].shortName,
   },
   {
     label: "expansion method short name",
-    exportValue: (row) => row.expansionMethodShortName,
+    exportValue: row => row.expansionMethodShortName,
   },
 ];
 
@@ -237,7 +206,7 @@ function ReactomeTab({ ensgId, symbol }) {
   // load tab data when new tab selected (also on first load)
   useEffect(() => {
     setLoading(true);
-    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then((res) => {
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
       if (res.data.target.interactions) {
         setLoading(false);
         setData(res.data.target.interactions.rows);
@@ -269,7 +238,7 @@ function ReactomeTab({ ensgId, symbol }) {
           dataDownloaderFileStem={`${symbol}-molecular-interactions-interactors`}
           hover
           selected
-          onRowClick={(r) => {
+          onRowClick={r => {
             setEvidence(r.evidences);
             setSelectedIntB(r.targetB?.approvedSymbol || r.intB);
           }}
@@ -279,8 +248,7 @@ function ReactomeTab({ ensgId, symbol }) {
           onPagination={(page, pageSize) => {
             setEvidence(data[page * pageSize].evidences);
             setSelectedIntB(
-              data[page * pageSize].targetB?.approvedSymbol ||
-                data[page * pageSize].intB
+              data[page * pageSize].targetB?.approvedSymbol || data[page * pageSize].intB
             );
           }}
           rowsPerPageOptions={defaultRowsPerPageOptions}

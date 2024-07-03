@@ -1,12 +1,12 @@
-import { Link as RouterLink } from 'react-router-dom';
-import { Tooltip, Typography, Link } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Link as RouterLink } from "react-router-dom";
+import { Tooltip, Typography, Link } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import { decimalPlaces } from '../../constants';
+import { decimalPlaces } from "../../constants";
 
 const useStyles = makeStyles(theme => ({
   tooltip: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     border: `1px solid ${theme.palette.grey[400]}`,
   },
 }));

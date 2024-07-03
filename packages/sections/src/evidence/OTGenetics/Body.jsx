@@ -7,11 +7,15 @@ import {
   LabelChip,
   DataTable,
   ScientificNotation,
+  DirectionOfEffectTooltip,
+  Tooltip,
+  DirectionOfEffectIcon,
 } from "ui";
 
 import {
   defaultRowsPerPageOptions,
   naLabel,
+  sectionsBaseSizeQuery,
   studySourceMap,
   variantConsequenceSource,
 } from "../../constants";
@@ -27,9 +31,7 @@ function getColumns(label) {
     {
       id: "disease",
       label: "Disease/phenotype",
-      renderCell: ({ disease }) => (
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
-      ),
+      renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
       filterValue: ({ disease }) => disease.name,
     },
     {
@@ -97,8 +99,7 @@ function getColumns(label) {
           ) : null}
         </>
       ),
-      filterValue: ({ variantId, variantRsId }) =>
-        `${variantId} ${variantRsId}`,
+      filterValue: ({ variantId, variantRsId }) => `${variantId} ${variantRsId}`,
     },
     {
       id: "variantConsequence",
@@ -116,22 +117,14 @@ function getColumns(label) {
                 label={variantConsequenceSource.VEP.label}
                 value={sentenceCase(variantFunctionalConsequence.label)}
                 tooltip={variantConsequenceSource.VEP.tooltip}
-                to={identifiersOrgLink(
-                  "SO",
-                  variantFunctionalConsequence.id.slice(3)
-                )}
+                to={identifiersOrgLink("SO", variantFunctionalConsequence.id.slice(3))}
               />
             )}
             {variantFunctionalConsequenceFromQtlId && (
               <LabelChip
                 label={variantConsequenceSource.QTL.label}
-                value={sentenceCase(
-                  variantFunctionalConsequenceFromQtlId.label
-                )}
-                to={identifiersOrgLink(
-                  "SO",
-                  variantFunctionalConsequenceFromQtlId.id.slice(3)
-                )}
+                value={sentenceCase(variantFunctionalConsequenceFromQtlId.label)}
+                to={identifiersOrgLink("SO", variantFunctionalConsequenceFromQtlId.id.slice(3))}
                 tooltip={variantConsequenceSource.QTL.tooltip}
               />
             )}
@@ -148,6 +141,20 @@ function getColumns(label) {
       },
     },
     {
+      id: "directionOfVariantEffect",
+      label: (
+        <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#open-targets-genetics"></DirectionOfEffectTooltip>
+      ),
+      renderCell: ({ variantEffect, directionOnTrait }) => {
+        return (
+          <DirectionOfEffectIcon
+            variantEffect={variantEffect}
+            directionOnTrait={directionOnTrait}
+          />
+        );
+      },
+    },
+    {
       id: "pValueMantissa",
       label: (
         <>
@@ -160,8 +167,7 @@ function getColumns(label) {
         <ScientificNotation number={[pValueMantissa, pValueExponent]} />
       ),
       comparator: (a, b) =>
-        a.pValueMantissa * 10 ** a.pValueExponent -
-        b.pValueMantissa * 10 ** b.pValueExponent,
+        a.pValueMantissa * 10 ** a.pValueExponent - b.pValueMantissa * 10 ** b.pValueExponent,
     },
     {
       id: "studySampleSize",
@@ -169,9 +175,7 @@ function getColumns(label) {
       numeric: true,
       sortable: true,
       renderCell: ({ studySampleSize }) =>
-        studySampleSize
-          ? parseInt(studySampleSize, 10).toLocaleString()
-          : naLabel,
+        studySampleSize ? parseInt(studySampleSize, 10).toLocaleString() : naLabel,
     },
     {
       id: "oddsRatio",
@@ -184,29 +188,23 @@ function getColumns(label) {
       }) => {
         const ci =
           oddsRatioConfidenceIntervalLower && oddsRatioConfidenceIntervalUpper
-            ? `(${parseFloat(
-                oddsRatioConfidenceIntervalLower.toFixed(3)
-              )}, ${parseFloat(oddsRatioConfidenceIntervalUpper.toFixed(3))})`
+            ? `(${parseFloat(oddsRatioConfidenceIntervalLower.toFixed(3))}, ${parseFloat(
+                oddsRatioConfidenceIntervalUpper.toFixed(3)
+              )})`
             : "";
-        return oddsRatio
-          ? `${parseFloat(oddsRatio.toFixed(3))} ${ci}`
-          : naLabel;
+        return oddsRatio ? `${parseFloat(oddsRatio.toFixed(3))} ${ci}` : naLabel;
       },
     },
     {
       id: "betaConfidenceInterval",
       label: "Beta (CI 95%)",
       numeric: true,
-      renderCell: ({
-        beta,
-        betaConfidenceIntervalLower,
-        betaConfidenceIntervalUpper,
-      }) => {
+      renderCell: ({ beta, betaConfidenceIntervalLower, betaConfidenceIntervalUpper }) => {
         const ci =
           betaConfidenceIntervalLower && betaConfidenceIntervalUpper
-            ? `(${parseFloat(
-                betaConfidenceIntervalLower.toFixed(3)
-              )}, ${parseFloat(betaConfidenceIntervalUpper.toFixed(3))})`
+            ? `(${parseFloat(betaConfidenceIntervalLower.toFixed(3))}, ${parseFloat(
+                betaConfidenceIntervalUpper.toFixed(3)
+              )})`
             : "";
         return beta ? `${parseFloat(beta.toFixed(3))} ${ci}` : naLabel;
       },
@@ -235,7 +233,8 @@ function getColumns(label) {
 
 function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
-  const variables = { ensemblId: ensgId, efoId };
+  const variables = { ensemblId: ensgId, efoId, size: sectionsBaseSizeQuery };
+
   const columns = getColumns(label);
 
   const request = useQuery(OPEN_TARGETS_GENETICS_QUERY, {
@@ -248,10 +247,8 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.genetic_association}
       request={request}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
-      renderBody={(data) => (
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderBody={data => (
         <DataTable
           columns={columns}
           dataDownloader

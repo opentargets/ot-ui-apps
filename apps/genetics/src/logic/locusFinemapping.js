@@ -8,13 +8,10 @@ const locusFinemapping = ({ data, finemappingOnly }) => {
   const tagVariantIndexVariantStudiesFinemapping = tagVariantIndexVariantStudies.filter(
     d => d.posteriorProbability
   );
-  const tagVariantsFinemapping = tagVariantIndexVariantStudiesFinemapping.reduce(
-    (acc, d) => {
-      acc[d.tagVariantId] = true;
-      return acc;
-    },
-    {}
-  );
+  const tagVariantsFinemapping = tagVariantIndexVariantStudiesFinemapping.reduce((acc, d) => {
+    acc[d.tagVariantId] = true;
+    return acc;
+  }, {});
   const geneTagVariantsFinemapping = geneTagVariants.filter(
     d => tagVariantsFinemapping[d.tagVariantId]
   );

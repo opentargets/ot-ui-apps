@@ -1,17 +1,10 @@
-import {
-  Grid,
-  Typography,
-  Hidden,
-  Box,
-  useMediaQuery,
-  IconButton,
-} from '@mui/material';
+import { Grid, Typography, Hidden, Box, useMediaQuery, IconButton } from "@mui/material";
 
-import { makeStyles, useTheme } from '@mui/styles';
-import { Helmet } from 'react-helmet';
+import { makeStyles, useTheme } from "@mui/styles";
+import { Helmet } from "react-helmet";
 
-import { Footer, Link, PrivateWrapper, NavBar, GlobalSearch } from 'ui';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Footer, Link, PrivateWrapper, NavBar, GlobalSearch } from "ui";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircle,
   faChevronDown,
@@ -20,61 +13,52 @@ import {
   faQuestionCircle,
   faFileAlt,
   faCommentDots,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 import {
   appTitle,
   appDescription,
   appCanonicalUrl,
   externalLinks,
   mainMenuItems,
-} from '../../constants';
-import HomeBox from './HomeBox';
-import searchExamples from './searchExamples';
-import Splash from './Splash';
-import Version from './Version';
+} from "../../constants";
+import HomeBox from "./HomeBox";
+import Splash from "./Splash";
+import Version from "./Version";
+import { getSuggestedSearch } from "../../utils/global";
 
-import config from '../../config';
+import config from "../../config";
 
 const useStyles = makeStyles(() => ({
   links: {
-    marginTop: '12px',
+    marginTop: "12px",
   },
   api: {
-    marginTop: '38px',
+    marginTop: "38px",
   },
   hpSection: {
-    marginBottom: '40px',
+    marginBottom: "40px",
   },
   dataPolicy: {
-    padding: '10px',
-    marginTop: '30px',
-    border: '2px solid',
+    padding: "10px",
+    marginTop: "30px",
+    border: "2px solid",
     borderColor: config.profile.primaryColor,
   },
 }));
 
 const usePanelStyles = makeStyles(theme => ({
   helpBoxes: {
-    maxWidth: '120px',
-    textAlign: 'center',
-    [theme.breakpoints.down('xs')]: {
-      textAlign: 'left',
+    maxWidth: "120px",
+    textAlign: "center",
+    [theme.breakpoints.down("xs")]: {
+      textAlign: "left",
     },
   },
 }));
 
-function pickTwo(arr) {
-  const i1 = Math.floor(Math.random() * arr.length);
-  const resultArray = arr.splice(i1, 1);
-  const i2 = Math.floor(Math.random() * arr.length);
-  resultArray.push(...arr.splice(i2, 1));
-
-  return resultArray;
-}
-
 function HelpBoxPanel({ fai, url, label, external }) {
   const theme = useTheme();
-  const xsMQ = useMediaQuery(theme.breakpoints.down('xs'));
+  const xsMQ = useMediaQuery(theme.breakpoints.down("xs"));
 
   const classes = usePanelStyles();
 
@@ -109,14 +93,11 @@ function HelpBoxPanel({ fai, url, label, external }) {
   );
 }
 
-function HomePage() {
+function HomePage({ suggestions }) {
   const classes = useStyles();
-  const targets = pickTwo(searchExamples.targets);
-  const diseases = pickTwo(searchExamples.diseases);
-  const drugs = pickTwo(searchExamples.drugs);
 
   const handleScrollDown = () => {
-    window.scrollTo({ top: window.innerHeight, left: 0, behavior: 'smooth' });
+    window.scrollTo({ top: window.innerHeight, left: 0, behavior: "smooth" });
   };
 
   return (
@@ -125,74 +106,49 @@ function HomePage() {
         <meta name="description" content={appDescription} />
         <link rel="canonical" href={appCanonicalUrl} />
       </Helmet>
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        className={classes.hpSection}
-      >
+      <Grid container justifyContent="center" alignItems="center" className={classes.hpSection}>
         <Splash />
-        <NavBar
-          name="platform"
-          homepage
-          items={mainMenuItems}
-          placement="bottom-end"
-        />
+        <NavBar name="platform" homepage items={mainMenuItems} placement="bottom-end" />
         <HomeBox>
           <GlobalSearch isHomePage />
           {/* Search examples */}
-          <Grid
-            className={classes.links}
-            container
-            justifyContent="space-around"
-          >
-            <Link to={`/target/${targets[0].id}/associations`}>
-              <Typography variant="body2">{targets[0].label}</Typography>
+          <Grid className={classes.links} container justifyContent="space-around">
+            <Link to={`/target/${suggestions[0].id}/associations`}>
+              <Typography variant="body2">{suggestions[0].name}</Typography>
             </Link>
             <Hidden smDown>
-              <Link to={`/target/${targets[1].id}/associations`}>
-                <Typography variant="body2">{targets[1].label}</Typography>
+              <Link to={`/target/${suggestions[1].id}/associations`}>
+                <Typography variant="body2">{suggestions[1].name}</Typography>
               </Link>
             </Hidden>
 
-            <Link to={`/disease/${diseases[0].id}/associations`}>
-              <Typography variant="body2">{diseases[0].label}</Typography>
+            <Link to={`/disease/${suggestions[2].id}/associations`}>
+              <Typography variant="body2">{suggestions[2].name}</Typography>
             </Link>
             <Hidden smDown>
-              <Link to={`/disease/${diseases[1].id}/associations`}>
-                <Typography variant="body2">{diseases[1].label}</Typography>
+              <Link to={`/disease/${suggestions[3].id}/associations`}>
+                <Typography variant="body2">{suggestions[3].name}</Typography>
               </Link>
             </Hidden>
 
-            <Link to={`/drug/${drugs[0].id}`}>
-              <Typography variant="body2">{drugs[0].label}</Typography>
+            <Link to={`/drug/${suggestions[4].id}`}>
+              <Typography variant="body2">{suggestions[4].name}</Typography>
             </Link>
             <Hidden smDown>
-              <Link to={`/drug/${drugs[1].id}`}>
-                <Typography variant="body2">{drugs[1].label}</Typography>
+              <Link to={`/drug/${suggestions[5].id}`}>
+                <Typography variant="body2">{suggestions[5].name}</Typography>
               </Link>
             </Hidden>
           </Grid>
           <Version />
           <PrivateWrapper>
             <div className={classes.dataPolicy}>
-              <Typography
-                variant="body2"
-                display="block"
-                align="center"
-                gutterBottom
-              >
-                The Open Targets Partner Preview Platform is provided
-                exclusively to Open Targets consortium members. All data and
-                results of queries must remain confidential and must not be
-                shared publicly.
+              <Typography variant="body2" display="block" align="center" gutterBottom>
+                The Open Targets Partner Preview Platform is provided exclusively to Open Targets
+                consortium members. All data and results of queries must remain confidential and
+                must not be shared publicly.
               </Typography>
-              <Typography
-                variant="body2"
-                display="block"
-                align="center"
-                gutterBottom
-              >
+              <Typography variant="body2" display="block" align="center" gutterBottom>
                 <strong>
                   <Link
                     external
@@ -214,11 +170,11 @@ function HomePage() {
             aria-label="Scroll down handler"
             className="fa-layers fa-fw fa-3x"
             style={{
-              height: '0px',
-              marginTop: '-3em',
-              filter: 'drop-shadow( 1px 1px 2px rgba(0, 0, 0, .5))',
-              cursor: 'pointer',
-              fontSize: '40px',
+              height: "0px",
+              marginTop: "-3em",
+              filter: "drop-shadow( 1px 1px 2px rgba(0, 0, 0, .5))",
+              cursor: "pointer",
+              fontSize: "40px",
             }}
             size="large"
             onClick={handleScrollDown}
@@ -237,27 +193,23 @@ function HomePage() {
           </Typography>
 
           <Typography paragraph>
-            The Open Targets Platform is a comprehensive tool that supports
-            systematic identification and prioritisation of potential
-            therapeutic drug targets.
+            The Open Targets Platform is a comprehensive tool that supports systematic
+            identification and prioritisation of potential therapeutic drug targets.
           </Typography>
 
           <Typography paragraph>
-            By integrating publicly available datasets including data generated
-            by the Open Targets consortium, the Platform builds and scores
-            target-disease associations to assist in drug target identification
-            and prioritisation. It also integrates relevant annotation
-            information about targets, diseases, phenotypes, and drugs, as well
-            as their most relevant relationships.
+            By integrating publicly available datasets including data generated by the Open Targets
+            consortium, the Platform builds and scores target-disease associations to assist in drug
+            target identification and prioritisation. It also integrates relevant annotation
+            information about targets, diseases, phenotypes, and drugs, as well as their most
+            relevant relationships.
           </Typography>
 
           <Typography paragraph>
-            The Platform is a freely available resource that is actively
-            maintained with bi-monthly data updates. Data is available through
-            an intuitive user interface, an API, and data downloads. The
-            pipeline and infrastructure codebases are open-source and the
-            licence allows the creation of self-hosted private instances of the
-            Platform with custom data.
+            The Platform is a freely available resource that is actively maintained with bi-monthly
+            data updates. Data is available through an intuitive user interface, an API, and data
+            downloads. The pipeline and infrastructure codebases are open-source and the licence
+            allows the creation of self-hosted private instances of the Platform with custom data.
           </Typography>
         </Grid>
       </Grid>

@@ -1,31 +1,41 @@
-import { scaleQuantize, rgb } from 'd3';
-import Legend from './Legend';
-import dataSources from '../static_datasets/dataSourcesAssoc';
-import config from '../../../config';
+import { scaleQuantize, rgb } from "d3";
+import Legend from "./Legend";
+import dataSources from "../static_datasets/dataSourcesAssoc";
+import config from "../../../config";
 
 export const { isPartnerPreview } = config.profile;
 
-const ASSOCIATION_LEGEND_LABEL = 'Association score';
-const PRIORITISATION_LEGEND_LABEL = 'Prioritisation indicator';
-const TARGE_PRIORITISATION_LEGEND_TICKS = ['Unfavourable', 'Favourable'];
+const ASSOCIATION_LEGEND_LABEL = "Association score";
+const PRIORITISATION_LEGEND_LABEL = "Prioritisation indicator";
+const TARGE_PRIORITISATION_LEGEND_TICKS = ["Unfavourable", "Favourable"];
+
+export const DEFAULT_TABLE_PAGE_INDEX = 0;
+export const DEFAULT_TABLE_PAGE_SIZE = 50;
+
+export const DEFAULT_TABLE_PAGINATION_STATE = {
+  pageIndex: DEFAULT_TABLE_PAGE_INDEX,
+  pageSize: DEFAULT_TABLE_PAGE_SIZE,
+};
+
+export const DEFAULT_TABLE_SORTING_STATE = [{ id: "score", desc: true }];
 
 export const DISPLAY_MODE = {
-  PRIORITISATION: 'prioritisations',
-  ASSOCIATIONS: 'associations',
+  PRIORITISATION: "prioritisations",
+  ASSOCIATIONS: "associations",
 };
 
 export const ENTITIES = {
-  TARGET: 'target',
-  EVIDENCE: 'evidence',
-  DISEASE: 'disease',
-  DRUG: 'drug',
+  TARGET: "target",
+  EVIDENCE: "evidence",
+  DISEASE: "disease",
+  DRUG: "drug",
 };
 
 export const groupViewColumnsBy = (input, key) =>
   input.reduce((acc, currentValue) => {
     const groupKey = currentValue[key];
     const { isPrivate } = currentValue;
-    if (isPrivate === false || typeof isPrivate === 'undefined') {
+    if (isPrivate === false || typeof isPrivate === "undefined") {
       if (!acc[groupKey]) {
         acc[groupKey] = [];
       }
@@ -42,22 +52,15 @@ export const groupViewColumnsBy = (input, key) =>
 /* --- TABLE SHARED HELPERS --- */
 export const getPriorisationSectionId = columnDef => columnDef.sectionId;
 
-export const getCellId = (
-  cell,
-  entityToGet,
-  displayedTable,
-  tablePrefix = null
-) => {
+export const getCellId = (cell, entityToGet, displayedTable, tablePrefix = null) => {
   const colId = cell.column.id;
   const rowId = cell.row.original[entityToGet].id;
   const sectionId =
-    displayedTable === 'associations'
-      ? cell.column.id
-      : cell.column.columnDef.sectionId;
+    displayedTable === "associations" ? cell.column.id : cell.column.columnDef.sectionId;
   return [rowId, colId, sectionId, tablePrefix];
 };
 
-export const cellHasValue = score => typeof score === 'number';
+export const cellHasValue = score => typeof score === "number";
 
 export const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
   id,
@@ -66,45 +69,42 @@ export const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
 }));
 
 export const getWightSourceDefault = source => {
-  const sourcesDetails = defaulDatasourcesWeigths.find(
-    src => src.id === source
-  );
+  const sourcesDetails = defaulDatasourcesWeigths.find(src => src.id === source);
   return sourcesDetails.weight;
 };
 
 export const checkBoxPayload = (id, aggregationId) => ({
   id,
   path: [aggregationId, id],
-  name: 'dataTypes',
+  name: "dataTypes",
 });
 
-export const getControlChecked = (values, id) =>
-  values.filter(val => val.id === id).length > 0;
+export const getControlChecked = (values, id) => values.filter(val => val.id === id).length > 0;
 
 /* --- CONSTANTS --- */
 const { primaryColor } = config.profile;
 
 /* Associations colors */
 export const ASSOCIATION_COLORS = [
-  rgb('#deebf7'),
-  rgb('#c6dbef'),
-  rgb('#9ecae1'),
-  rgb('#6baed6'),
-  rgb('#4292c6'),
-  rgb('#2171b5'),
-  rgb('#08519c'),
+  rgb("#deebf7"),
+  rgb("#c6dbef"),
+  rgb("#9ecae1"),
+  rgb("#6baed6"),
+  rgb("#4292c6"),
+  rgb("#2171b5"),
+  rgb("#08519c"),
 ];
 
 /* PRIORITIZATION */
 // Red to blue
 export const PRIORITISATION_COLORS = [
-  rgb('#ec2746'),
-  rgb('#f16d47'),
-  rgb('#f19d5c'),
-  rgb('#f0c584'),
-  rgb('#c8b95f'),
-  rgb('#95ae43'),
-  rgb('#52a237'),
+  rgb("#ec2746"),
+  rgb("#f16d47"),
+  rgb("#f19d5c"),
+  rgb("#f0c584"),
+  rgb("#c8b95f"),
+  rgb("#95ae43"),
+  rgb("#52a237"),
 ];
 
 /* ASSOCIATION SCALE */
@@ -113,9 +113,7 @@ export const assocScale = asscScaleDomain.range(ASSOCIATION_COLORS);
 
 /* PRIORITISATION SCALE */
 export const prioritizationScaleDomain = scaleQuantize().domain([-1, 1]);
-export const prioritizationScale = prioritizationScaleDomain.range(
-  PRIORITISATION_COLORS
-);
+export const prioritizationScale = prioritizationScaleDomain.range(PRIORITISATION_COLORS);
 
 /* LEGENDS */
 const PrioritisationLegend = Legend(prioritizationScale, {
@@ -123,17 +121,17 @@ const PrioritisationLegend = Legend(prioritizationScale, {
   tickFormat: (d, i) =>
     [
       TARGE_PRIORITISATION_LEGEND_TICKS[0],
-      ' ',
-      ' ',
-      ' ',
-      ' ',
+      " ",
+      " ",
+      " ",
+      " ",
       TARGE_PRIORITISATION_LEGEND_TICKS[1],
     ][i],
 });
 
 const AssociationsLegend = Legend(assocScale, {
   title: ASSOCIATION_LEGEND_LABEL,
-  tickFormat: '.1f',
+  tickFormat: ".1f",
 });
 
 export const getLegend = isAssoc => {
@@ -146,20 +144,21 @@ export const getScale = isAssoc => (isAssoc ? assocScale : prioritizationScale);
 
 /* --- CSS VARIABLES --- */
 export const tableCSSVariables = {
-  '--grey-lighter': '#f6f6f6',
-  '--grey-light': '#ececec',
-  '--grey-mid': '#b8b8b8',
-  '--primary-color': primaryColor,
-  '--text-color': '#5A5F5F',
-  '--aggregations-background-color': 'var(--grey-light)',
-  '--aggregations-border-color': 'var(--grey-mid)',
-  '--header-border-color': 'var(--grey-light)',
-  // '--aggregations-color': 'var(--grey-mid)',
-  '--entities-border-color': 'var(--grey-light)',
-  '--table-header-min-width': '120px',
-  '--table-header-max-width': '160px',
-  '--table-left-column-width': '260px',
-  '--table-footer-border-color': 'var(--grey-light)',
-  '--row-hover-color': 'var(--grey-light)',
-  '--colums-controls-color': 'var(--grey-lighter)',
+  "--primary-color": primaryColor,
+  "--grey-lighter": "#f6f6f6",
+  "--grey-light": "#ececec",
+  "--grey-mid": "#e0dede",
+  "--grey-dark": "#b8b8b8",
+  "--background-color": "#fafafa",
+  "--text-color": "#5A5F5F",
+  "--table-header-min-width": "120px",
+  "--table-header-max-width": "160px",
+  "--table-left-column-width": "260px",
+  "--row-hover-color": "var(--grey-light)",
+  "--aggregations-background-color": "var(--grey-light)",
+  "--aggregations-border-color": "var(--grey-dark)",
+  "--header-border-color": "var(--grey-light)",
+  "--entities-border-color": "var(--grey-light)",
+  "--table-footer-border-color": "var(--grey-light)",
+  "--colums-controls-color": "var(--grey-lighter)",
 };

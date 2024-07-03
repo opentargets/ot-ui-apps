@@ -1,17 +1,16 @@
-import FileSaver from 'file-saver';
+import FileSaver from "file-saver";
 
-const UNEXPECTED_FORMAT =
-  'Unexpected format. Supported options are csv, tsv and json.';
+const UNEXPECTED_FORMAT = "Unexpected format. Supported options are csv, tsv and json.";
 
 const pick = (object, keys) => {
-  return keys.reduce(function(o, k) {
+  return keys.reduce(function (o, k) {
     // take into account optional export() function, which takes precedence as per other download formats
     o[k.id] = k.export ? k.export(object) : object[k.id];
     return o;
   }, {});
 };
 
-const quoteIfString = d => (typeof d === 'string' ? `"${d}"` : d);
+const quoteIfString = d => (typeof d === "string" ? `"${d}"` : d);
 
 const asJSONString = ({ rows, headerMap }) => {
   // use the full headerMap which contain optional export() function for each header
@@ -20,17 +19,13 @@ const asJSONString = ({ rows, headerMap }) => {
 };
 
 const asCSVString = ({ rows, headerMap }) => {
-  const separator = ',';
-  const lineSeparator = '\n';
-  const headersString = headerMap
-    .map(d => quoteIfString(d.label))
-    .join(separator);
+  const separator = ",";
+  const lineSeparator = "\n";
+  const headersString = headerMap.map(d => quoteIfString(d.label)).join(separator);
   const rowsArray = rows.map(row => {
     return headerMap
       .map(header => {
-        return quoteIfString(
-          header.export ? header.export(row) : row[header.id]
-        );
+        return quoteIfString(header.export ? header.export(row) : row[header.id]);
       })
       .join(separator);
   });
@@ -38,8 +33,8 @@ const asCSVString = ({ rows, headerMap }) => {
 };
 
 const asTSVString = ({ rows, headerMap }) => {
-  const separator = '\t';
-  const lineSeparator = '\n';
+  const separator = "\t";
+  const lineSeparator = "\n";
   const headersString = headerMap.map(d => d.label).join(separator);
   const rowsArray = rows.map(row => {
     return headerMap
@@ -53,11 +48,11 @@ const asTSVString = ({ rows, headerMap }) => {
 
 const asContentString = ({ rows, headerMap, format }) => {
   switch (format) {
-    case 'json':
+    case "json":
       return asJSONString({ rows, headerMap });
-    case 'csv':
+    case "csv":
       return asCSVString({ rows, headerMap });
-    case 'tsv':
+    case "tsv":
       return asTSVString({ rows, headerMap });
     default:
       throw Error(UNEXPECTED_FORMAT);
@@ -66,12 +61,12 @@ const asContentString = ({ rows, headerMap, format }) => {
 
 const asMimeType = format => {
   switch (format) {
-    case 'json':
-      return 'application/json;charset=utf-8';
-    case 'csv':
-      return 'text/csv;charset=utf-8';
-    case 'tsv':
-      return 'text/tab-separated-values;charset=utf-8';
+    case "json":
+      return "application/json;charset=utf-8";
+    case "csv":
+      return "text/csv;charset=utf-8";
+    case "tsv":
+      return "text/tab-separated-values;charset=utf-8";
     default:
       throw Error(UNEXPECTED_FORMAT);
   }
@@ -79,7 +74,7 @@ const asMimeType = format => {
 
 const downloadTable = ({ rows, headerMap, format, filenameStem }) => {
   if (!rows || rows.length === 0) {
-    console.info('Nothing to download.');
+    console.info("Nothing to download.");
     return;
   }
 

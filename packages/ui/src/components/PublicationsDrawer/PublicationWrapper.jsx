@@ -1,9 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  faPlusCircle,
-  faMinusCircle,
-  faFileAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlusCircle, faMinusCircle, faFileAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -18,7 +14,7 @@ const pmUrl = "https://europepmc.org/";
 const pmTitleUrlMED = "abstract/med/";
 const pmTitleUrlPAT = "abstract/pat/";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   abstractSpan: {
     whiteSpace: "normal",
   },
@@ -97,17 +93,11 @@ function PublicationWrapper({
       </Box>
 
       <Box style={{ whiteSpace: "normal" }}>
-        <LongText
-          lineLimit={1}
-          variant={variant === "small" ? "caption" : "body2"}
-        >
+        <LongText lineLimit={1} variant={variant === "small" ? "caption" : "body2"}>
           {authors
             .reduce((acc, author) => {
               if (author.lastName)
-                acc.push(
-                  author.lastName +
-                    (author.initials ? ` ${author.initials}` : "")
-                );
+                acc.push(author.lastName + (author.initials ? ` ${author.initials}` : ""));
               return acc;
             }, [])
             .join(", ")}
@@ -129,8 +119,7 @@ function PublicationWrapper({
             {journal.journal?.title || ""}{" "}
             <span>
               <b>
-                {journal.dateOfPublication &&
-                  (journal.dateOfPublication.substring(0, 4) || "")}
+                {journal.dateOfPublication && (journal.dateOfPublication.substring(0, 4) || "")}
               </b>
             </span>{" "}
             <span>{journal.volume || ""}</span>
@@ -159,14 +148,8 @@ function PublicationWrapper({
         </Button>
         {fullTextOpen && (
           <span className={classes.fileLabel}>
-            <FontAwesomeIcon
-              icon={faFileAlt}
-              style={{ marginRight: "8px" }}
-              size="lg"
-            />
-            {
-              isOpenAccess ? "Full text free to use/read" : "Full text free to read"
-            }
+            <FontAwesomeIcon icon={faFileAlt} style={{ marginRight: "8px" }} size="lg" />
+            {isOpenAccess ? "Full text free to use/read" : "Full text free to read"}
           </span>
         )}
       </Box>
@@ -174,10 +157,7 @@ function PublicationWrapper({
       {showAbstract && (
         <Box className={classes.detailPanel}>
           <Typography variant="subtitle2">Abstract</Typography>
-          <span
-            className={classes.abstractSpan}
-            dangerouslySetInnerHTML={{ __html: abstract }}
-          />
+          <span className={classes.abstractSpan} dangerouslySetInnerHTML={{ __html: abstract }} />
         </Box>
       )}
 

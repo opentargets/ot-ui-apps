@@ -7,7 +7,8 @@
   ],
   "license": "MIT",
   "scripts": {
-    "lint": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\""
+    "lint": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
+    "prettier:all": "prettier --write \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\""
   },
   "dependencies": {
     "@apollo/client": "^3.3.4",
@@ -29,7 +30,8 @@
     "local-storage": "^2.0.0",
     "lodash": "^4.17.21",
     "plotly.js": "^2.23.1",
-    "protvista-uniprot": "^2.8.3",
+    "plotly.js-cartesian-dist-min": "^2.29.0",
+    "protvista-uniprot": "2.11.1",
     "react": "^18.2.0",
     "react-helmet": "^6.0.0",
     "react-measure": "^2.1.2",
@@ -46,9 +48,9 @@
     "@types/d3-format": "^3.0.1",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "eslint": "^8.49.0",
-    "eslint-config-react-lib": "*",
+    "eslint": "7.32.0",
+    "eslint-config-custom": "*",
     "tsconfig": "*",
-    "typescript": "*"
+    "typescript": "^5.2.2"
   }
 }

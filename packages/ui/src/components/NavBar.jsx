@@ -1,4 +1,4 @@
-import { Link as ReactRouterLink } from 'react-router-dom';
+import { Link as ReactRouterLink } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -7,16 +7,17 @@ import {
   MenuItem,
   MenuList,
   useMediaQuery,
-} from '@mui/material';
-import { makeStyles, useTheme } from '@mui/styles';
-import { styled } from '@mui/material/styles';
-import classNames from 'classnames';
-import { v1 } from 'uuid';
+  Box,
+} from "@mui/material";
+import { makeStyles, useTheme } from "@mui/styles";
+import { styled } from "@mui/material/styles";
+import classNames from "classnames";
+import { v1 } from "uuid";
 
-import Link from './Link';
-import OpenTargetsTitle from './OpenTargetsTitle';
-import HeaderMenu from './HeaderMenu';
-import PrivateWrapper from './PrivateWrapper';
+import Link from "./Link";
+import OpenTargetsTitle from "./OpenTargetsTitle";
+import HeaderMenu from "./HeaderMenu";
+import PrivateWrapper from "./PrivateWrapper";
 
 const LogoBTN = styled(Button)`
   border: none;
@@ -27,89 +28,76 @@ const useStyles = makeStyles(theme => ({
   navbar: {
     backgroundColor: `${theme.palette.primary.main} !important`,
     margin: 0,
-    width: '100%',
+    width: "100%",
   },
   navbarHomepage: {
     left: 0,
     top: 0,
-    position: 'absolute !important',
+    position: "absolute !important",
   },
   flex: {
     flexGrow: 1,
   },
   menuExternalLinkContainer: {
-    fontSize: '1rem',
-    '&:first-of-type': {
-      marginLeft: '1rem',
+    fontSize: "1rem",
+    "&:first-of-type": {
+      marginLeft: "1rem",
     },
-    '&:not(:last-child)': {
-      marginRight: '1rem',
+    "&:not(:last-child)": {
+      marginRight: "1rem",
     },
   },
   menuExternalLink: {
-    color: 'inherit',
-    textDecoration: 'none',
-    '&:hover': {
+    color: "inherit",
+    textDecoration: "none",
+    "&:hover": {
       color: theme.palette.secondary.main,
     },
   },
   menuList: {
-    display: 'flex',
+    display: "flex",
   },
   menuLink: {
     color: theme.palette.secondary.contrastText,
-    '&:hover': {
+    margin: `0 ${theme.spacing(2)}`,
+    whiteSpace: "nowrap",
+    "&:hover": {
       color: theme.palette.secondary.contrastText,
     },
   },
   spaceBetween: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    display: "flex",
+    justifyContent: "space-between",
   },
   navLogo: {
     flex: 1,
   },
   navSearch: {
     flex: 1,
-    display: 'flex',
-    justifyContent: 'center',
+    display: "flex",
+    justifyContent: "center",
   },
   navMenu: {
     flex: 1,
-    display: 'flex',
-    justifyContent: 'end',
+    display: "flex",
+    justifyContent: "end",
   },
 }));
 
 function MenuExternalLink({ classes, href, children }) {
   return (
     <Typography color="inherit" className={classes.menuExternalLinkContainer}>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href={href}
-        className={classes.menuExternalLink}
-      >
+      <a target="_blank" rel="noopener noreferrer" href={href} className={classes.menuExternalLink}>
         {children}
       </a>
     </Typography>
   );
 }
 
-function NavBar({
-  name,
-  search,
-  api,
-  downloads,
-  docs,
-  contact,
-  homepage,
-  items,
-  placement,
-}) {
+function NavBar({ name, search, api, downloads, docs, contact, homepage, items, placement }) {
   const classes = useStyles();
   const theme = useTheme();
-  const smMQ = useMediaQuery(theme.breakpoints.down('sm'));
+  const smMQ = useMediaQuery(theme.breakpoints.down("sm"));
   const isHomePageRegular = homepage && !smMQ;
   return (
     <AppBar
@@ -156,41 +144,38 @@ function NavBar({
             </MenuExternalLink>
           ) : null}
 
-          {items && !isHomePageRegular ? (
-            <HeaderMenu items={items} placement={placement} />
-          ) : null}
+          {items && !isHomePageRegular ? <HeaderMenu items={items} placement={placement} /> : null}
 
           {isHomePageRegular && (
-            <MenuList className={classes.menuList}>
+            <Box sx={{ display: "flex" }}>
               {items.map(item => {
                 if (item.showOnlyPartner) {
                   return (
                     <PrivateWrapper key={v1()}>
-                      <MenuItem dense className={classes.menuItem}>
-                        <Link
-                          external={item.external}
-                          to={item.url}
-                          className={classes.menuLink}
-                        >
-                          {item.name}
-                        </Link>
-                      </MenuItem>
+                      <Link
+                        footer
+                        external={item.external}
+                        to={item.url}
+                        className={classes.menuLink}
+                      >
+                        <Typography variant="body2">{item.name}</Typography>
+                      </Link>
                     </PrivateWrapper>
                   );
                 }
                 return (
-                  <MenuItem key={v1()} dense className={classes.menuItem}>
-                    <Link
-                      external={item.external}
-                      to={item.url}
-                      className={classes.menuLink}
-                    >
-                      {item.name}
-                    </Link>
-                  </MenuItem>
+                  <Link
+                    key={v1()}
+                    footer
+                    external={item.external}
+                    to={item.url}
+                    className={classes.menuLink}
+                  >
+                    <Typography variant="body2">{item.name}</Typography>
+                  </Link>
                 );
               })}
-            </MenuList>
+            </Box>
           )}
         </div>
       </Toolbar>

@@ -1,12 +1,11 @@
-import { useQuery } from '@apollo/client';
-import { SectionItem } from 'ui';
+import { useQuery } from "@apollo/client";
+import { SectionItem } from "ui";
 
-import { definition } from '.';
-import Description from './Description';
-import PathwaysTable from './PathwaysTable';
+import { definition } from ".";
+import Description from "./Description";
+import PathwaysTable from "./PathwaysTable";
 
-
-import PATHWAYS_QUERY from './Pathways.gql';
+import PATHWAYS_QUERY from "./Pathways.gql";
 
 function Body({ id: ensemblId, label: symbol, entity }) {
   const variables = { ensemblId };

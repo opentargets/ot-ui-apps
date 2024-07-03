@@ -1,1 +1,1 @@
-export { default } from './StudyLocusGenes';
+export { default } from "./StudyLocusGenes";

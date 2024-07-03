@@ -1,23 +1,22 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-gutter: stable;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 /* Rules for Bibliography abstract highlight */
-[data-entity='TARGET&DISEASE'],
-[data-entity='DISEASE'],
-[data-entity='DRUG'],
-[data-entity='GENE'] {
+[data-entity="TARGET&DISEASE"],
+[data-entity="DISEASE"],
+[data-entity="DRUG"],
+[data-entity="GENE"] {
   padding: 0.15em;
   margin: 0 0.25em;
   line-height: 1;
@@ -26,10 +25,10 @@ code {
   border: 1px solid;
 }
 
-[data-entity='TARGET&DISEASE']:after,
-[data-entity='DISEASE']:after,
-[data-entity='DRUG']:after,
-[data-entity='GENE']:after {
+[data-entity="TARGET&DISEASE"]:after,
+[data-entity="DISEASE"]:after,
+[data-entity="DRUG"]:after,
+[data-entity="GENE"]:after {
   box-sizing: border-box;
   font-size: 0.6em;
   line-height: 1;
@@ -41,38 +40,38 @@ code {
   margin: 0 0 0.1rem 0.5rem;
 }
 
-[data-entity][data-entity='DRUG'] {
+[data-entity][data-entity="DRUG"] {
   background: #d8eddc;
   border-color: #9ccca6;
 }
 
-[data-entity][data-entity='DRUG']:after {
+[data-entity][data-entity="DRUG"]:after {
   background: #d8eddc;
 }
 
-[data-entity][data-entity='DISEASE'] {
+[data-entity][data-entity="DISEASE"] {
   background: #f3e1d9;
   border-color: #e7b1a0;
 }
 
-[data-entity][data-entity='DISEASE']:after {
+[data-entity][data-entity="DISEASE"]:after {
   background: #f3e1d9;
 }
 
-[data-entity][data-entity='TARGET&DISEASE'] {
+[data-entity][data-entity="TARGET&DISEASE"] {
   background: #d0ddeb;
   border-color: #82b0ca;
 }
 
-[data-entity][data-entity='TARGET&DISEASE']:after {
+[data-entity][data-entity="TARGET&DISEASE"]:after {
   background: #d0ddeb;
 }
 
-[data-entity][data-entity='GENE'] {
+[data-entity][data-entity="GENE"] {
   background: #e3d1e2;
   border-color: #bc8cb5;
 }
-[data-entity][data-entity='GENE']:after {
+[data-entity][data-entity="GENE"]:after {
   background: #e3d1e2;
 }
 
@@ -213,11 +212,15 @@ code {
 .TAssociations .group-naiming-cols {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: var(--table-left-column-width);
 }
 
+.TAssociations .header-score {
+  margin-right: 10px;
+}
+
 .TAssociations .group-entity-cols {
-  /* border-left: 1px solid var(--entities-border-color); */
   align-items: center;
   height: 32px;
 }
@@ -229,9 +232,9 @@ code {
 }
 
 .TAssociations .name-cell {
-  width: var(--table-header-max-width);
+  width: 100%;
   white-space: nowrap;
-  margin: 0 0.5rem 0 0;
+  margin: 0 5px 0 0;
   text-align: left;
 }
 
@@ -252,18 +255,15 @@ code {
   box-sizing: border-box;
 }
 
-.TAssociations .data-cell.active .data-score {
-  -webkit-box-shadow: 0px 0px 3px 1px rgba(92, 19, 19, 0.35);
-  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
-  border: 2px solid rgb(0, 0, 0) !important;
-  position: sticky;
-  top: 0;
-}
-
 .TAssociations .data-cell .data-score:hover,
 .TAssociations .data-cell .data-score:focus {
   -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
   box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+}
+
+.TAssociations .data-cell.active .data-score {
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
+  border: 2px solid rgb(0, 0, 0) !important;
 }
 
 /* Agregations indicators */
@@ -325,13 +325,13 @@ code {
 
 .TAssociations .weights-controlls .name-empty-controll {
   width: 230px;
-  content: ' ';
+  content: " ";
 }
 
 .TAssociations .weights-controlls .score-empty-controll {
   height: 25px;
   width: 30px;
-  content: ' ';
+  content: " ";
   margin-right: 20px;
 }
 
@@ -355,11 +355,6 @@ code {
     & main {
       max-width: 900px !important;
       min-width: 820px !important;
-    }
-    & .data-score,
-    & .data-empty {
-      height: 22px !important;
-      width: 22px !important;
     }
   }
 }

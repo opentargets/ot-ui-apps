@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { v1 } from "uuid";
 import { naLabel } from "../constants";
 
-const useContainerStyles = makeStyles((theme) => ({
+const useContainerStyles = makeStyles(theme => ({
   tooltip: {
     backgroundColor: theme.palette.background.paper,
     border: `1px solid ${theme.palette.grey[300]}`,
@@ -20,11 +20,7 @@ function ChipContainer({ item, children }) {
   const classes = useContainerStyles();
 
   return item.tooltip ? (
-    <Tooltip
-      placement="top"
-      classes={{ tooltip: classes.tooltip }}
-      title={item.tooltip}
-    >
+    <Tooltip placement="top" classes={{ tooltip: classes.tooltip }} title={item.tooltip}>
       {children}
     </Tooltip>
   ) : (
@@ -44,7 +40,7 @@ function ChipList({ items, small }) {
 
   if (!items || items.length === 0) return naLabel;
 
-  return items.map((item) => {
+  return items.map(item => {
     const component = item.url ? "a" : Box;
     return (
       <ChipContainer key={v1()} item={item}>

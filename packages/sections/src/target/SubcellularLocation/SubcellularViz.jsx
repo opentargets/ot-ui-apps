@@ -8,11 +8,9 @@ import { LoadingBackdrop, Link } from "ui";
 import { identifiersOrgLink, getUniprotIds } from "../../utils/global";
 
 const SwissbioViz =
-  "customElements" in window
-    ? lazy(() => import("./SwissbioViz"))
-    : ({ children }) => children;
+  "customElements" in window ? lazy(() => import("./SwissbioViz")) : ({ children }) => children;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   locationIcon: {
     paddingRight: "0.5em",
   },
@@ -32,17 +30,16 @@ const useStyles = makeStyles((theme) => ({
 // Remove the 'SL-' from a location termSL (e.g. "SL-0097")
 // The sib-swissbiopics component (different from what is documented)
 // actually doesn't accept the "SL-" part of the term
-const parseLocationTerm = (term) => term?.substring(3);
+const parseLocationTerm = term => term?.substring(3);
 
 // Parse termSL to specific id format used by the text for rollovers
-const parseTermToTextId = (term) =>
-  term ? `${term.replace("-", "")}term` : "";
+const parseTermToTextId = term => (term ? `${term.replace("-", "")}term` : "");
 
 // Parse API response and split locations based on sources. Example:
 // { HPA_main: [], uniprot: [], }
-const parseLocationData = (subcellularLocations) => {
+const parseLocationData = subcellularLocations => {
   const sourcesLocations = {};
-  subcellularLocations.forEach((sl) => {
+  subcellularLocations.forEach(sl => {
     if (sourcesLocations[sl.source] === undefined) {
       sourcesLocations[sl.source] = [];
     }
@@ -53,16 +50,13 @@ const parseLocationData = (subcellularLocations) => {
 
 // Filter the sources array to only those with data
 const filterSourcesWithData = (sources, sourcesLocations) =>
-  sources.filter((s) => sourcesLocations[s.id] !== undefined);
+  sources.filter(s => sourcesLocations[s.id] !== undefined);
 
-const getTabId = (id) => `${id}-tab`;
+const getTabId = id => `${id}-tab`;
 
 function LocationLink({ sourceId, id }) {
   return (
-    <Link
-      external
-      to={identifiersOrgLink(sourceId === "uniprot" ? "uniprot" : "hpa", id)}
-    >
+    <Link external to={identifiersOrgLink(sourceId === "uniprot" ? "uniprot" : "hpa", id)}>
       {id}
     </Link>
   );
@@ -101,7 +95,7 @@ function SubcellularVizTabs({ sources: activeSources, children }) {
   useEffect(() => {
     // update tab panels visibility: we change the style of the DOM element directly
     // to avoid any re-rendering as that causes the swissbiopic component to crash
-    children.forEach((child) => {
+    children.forEach(child => {
       child.ref.current.setAttribute("style", "display:none");
     });
     children[activeTab].ref.current.setAttribute("style", "display:block");
@@ -109,11 +103,7 @@ function SubcellularVizTabs({ sources: activeSources, children }) {
 
   return (
     <>
-      <Tabs
-        value={activeTab}
-        onChange={onTabChange}
-        aria-label="Subcellular location sources"
-      >
+      <Tabs value={activeTab} onChange={onTabChange} aria-label="Subcellular location sources">
         {activeSources.map((s, i) => (
           <Tab label={s.label} value={i} key={s.id} />
         ))}
@@ -159,7 +149,7 @@ function SubcellularViz({ data: target }) {
   return (
     <div>
       <SubcellularVizTabs sources={activeSources}>
-        {activeSources.map((s) => (
+        {activeSources.map(s => (
           <div
             value={getTabId(s.id)}
             id={getTabId(s.id)}
@@ -170,18 +160,13 @@ function SubcellularViz({ data: target }) {
             <Suspense fallback={<LoadingBackdrop />}>
               <SwissbioViz
                 taxonId="9606"
-                locationIds={sourcesLocations[s.id]
-                  .map((l) => parseLocationTerm(l.termSL))
-                  .join()}
+                locationIds={sourcesLocations[s.id].map(l => parseLocationTerm(l.termSL)).join()}
                 sourceId={s.id.toLowerCase()}
               >
                 <Box ml={4} key={s.id}>
                   <Typography variant="h6">{s.label}</Typography>
                   Location for{" "}
-                  <LocationLink
-                    sourceId={s.id}
-                    id={s.id === "uniprot" ? uniprotId : target.id}
-                  />
+                  <LocationLink sourceId={s.id} id={s.id === "uniprot" ? uniprotId : target.id} />
                   <LocationsList sls={sourcesLocations[s.id]} />
                 </Box>
               </SwissbioViz>

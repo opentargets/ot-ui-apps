@@ -1,1 +1,1 @@
-export { default } from './PheWASSection';
+export { default } from "./PheWASSection";

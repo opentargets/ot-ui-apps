@@ -1,1 +1,1 @@
-export { default } from './ColocForGeneTable';
+export { default } from "./ColocForGeneTable";

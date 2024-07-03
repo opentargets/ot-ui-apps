@@ -1,14 +1,21 @@
 import { Typography } from "@mui/material";
-import { useQuery } from "@apollo/client";
+import { useState, useEffect } from "react";
+
 import {
   Link,
   SectionItem,
   Tooltip,
-  DataTable,
+  Table,
   TableDrawer,
   MouseModelAllelicComposition,
+  useCursorBatchDownloader,
+  getComparator,
+  getPage,
+  DirectionOfEffectIcon,
+  DirectionOfEffectTooltip,
 } from "ui";
 
+import client from "../../client";
 import { definition } from ".";
 import Description from "./Description";
 import INTOGEN_QUERY from "./sectionQuery.gql";
@@ -37,17 +44,14 @@ const columns = [
         <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
       </Tooltip>
     ),
-    filterValue: ({ disease, diseaseFromSource }) =>
-      [disease.name, diseaseFromSource].join(),
+    filterValue: ({ disease, diseaseFromSource }) => [disease.name, diseaseFromSource].join(),
   },
   {
     id: "diseaseModelAssociatedHumanPhenotypes",
     label: "Human phenotypes",
-    renderCell: ({
-      diseaseModelAssociatedHumanPhenotypes: humanPhenotypes,
-    }) => {
+    renderCell: ({ diseaseModelAssociatedHumanPhenotypes: humanPhenotypes }) => {
       const entries = humanPhenotypes
-        ? humanPhenotypes.map((entry) => ({
+        ? humanPhenotypes.map(entry => ({
             name: entry.label,
             group: "Human phenotypes",
           }))
@@ -63,28 +67,35 @@ const columns = [
       );
     },
     filterValue: ({ diseaseModelAssociatedHumanPhenotypes = [] }) =>
-      diseaseModelAssociatedHumanPhenotypes.map((dmahp) => dmahp.label).join(),
+      diseaseModelAssociatedHumanPhenotypes?.map(dmahp => dmahp.label).join(),
   },
   {
     id: "diseaseModelAssociatedModelPhenotypes",
     label: "Mouse phenotypes",
 
-    renderCell: ({
-      diseaseModelAssociatedModelPhenotypes: mousePhenotypes,
-    }) => (
+    renderCell: ({ diseaseModelAssociatedModelPhenotypes: mousePhenotypes }) => (
       <TableDrawer
-        entries={mousePhenotypes.map((entry) => ({
+        entries={mousePhenotypes.map(entry => ({
           name: entry.label,
           group: "Mouse phenotypes",
         }))}
         showSingle={false}
-        message={`${mousePhenotypes.length} phenotype${
-          mousePhenotypes.length !== 1 ? "s" : ""
-        }`}
+        message={`${mousePhenotypes.length} phenotype${mousePhenotypes.length !== 1 ? "s" : ""}`}
       />
     ),
     filterValue: ({ diseaseModelAssociatedModelPhenotypes = [] }) =>
-      diseaseModelAssociatedModelPhenotypes.map((dmamp) => dmamp.label).join(),
+      diseaseModelAssociatedModelPhenotypes.map(dmamp => dmamp.label).join(),
+  },
+  {
+    id: "directionOfVariantEffect",
+    label: (
+      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#impc"></DirectionOfEffectTooltip>
+    ),
+    renderCell: ({ variantEffect, directionOnTrait }) => {
+      return (
+        <DirectionOfEffectIcon variantEffect={variantEffect} directionOnTrait={directionOnTrait} />
+      );
+    },
   },
   {
     id: "literature",
@@ -108,10 +119,7 @@ const columns = [
           </Link>
         );
       }
-      if (
-        biologicalModelAllelicComposition &&
-        biologicalModelGeneticBackground
-      ) {
+      if (biologicalModelAllelicComposition && biologicalModelGeneticBackground) {
         return (
           <MouseModelAllelicComposition
             allelicComposition={biologicalModelAllelicComposition}
@@ -125,36 +133,161 @@ const columns = [
   },
 ];
 
-function Body({ id, label, entity }) {
-  const { ensgId, efoId } = id;
-  const variables = {
-    ensemblId: ensgId,
-    efoId,
-  };
-  const request = useQuery(INTOGEN_QUERY, {
-    variables,
+const exportColumns = [
+  {
+    label: "diseaseId",
+    exportValue: row => row.disease.id,
+  },
+  {
+    label: "diseaseName",
+    exportValue: row => row.disease.name,
+  },
+  {
+    label: "diseaseModelAssociatedHumanPhenotypes",
+    exportValue: row => row.diseaseModelAssociatedHumanPhenotypes,
+  },
+  {
+    label: "diseaseModelAssociatedModelPhenotypes",
+    exportValue: row => row.diseaseModelAssociatedModelPhenotypes,
+  },
+  {
+    label: "literature",
+    exportValue: row => row.biologicalModelId,
+  },
+];
+
+function fetchData({ ensemblId, efoId, cursor, size }) {
+  return client.query({
+    query: INTOGEN_QUERY,
+    variables: {
+      ensemblId,
+      efoId,
+      cursor,
+      size,
+    },
   });
+}
+
+function Body({ id, label, entity }) {
+  const { ensgId: ensemblId, efoId } = id;
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [count, setCount] = useState(0);
+  const [cursor, setCursor] = useState("");
+  const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [size, setPageSize] = useState(10);
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
+
+  useEffect(() => {
+    let isCurrent = true;
+
+    fetchData({ ensemblId, efoId, cursor: "", size }).then(res => {
+      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.impc;
+      if (isCurrent) {
+        setInitialLoading(false);
+        setCursor(newCursor);
+        setCount(newCount);
+        setRows(newRows);
+      }
+    });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, []);
+
+  const getWholeDataset = useCursorBatchDownloader(
+    INTOGEN_QUERY,
+    {
+      ensemblId,
+      efoId,
+    },
+    `data.disease.impc`
+  );
+
+  const handlePageChange = newPage => {
+    const newPageInt = Number(newPage);
+    if (size * newPageInt + size > rows.length && cursor !== null) {
+      setLoading(true);
+      fetchData({ ensemblId, efoId, cursor, size }).then(res => {
+        const { cursor: newCursor, rows: newRows } = res.data.disease.impc;
+        setRows([...rows, ...newRows]);
+        setLoading(false);
+        setCursor(newCursor);
+        setPage(newPageInt);
+      });
+    } else {
+      setPage(newPageInt);
+    }
+  };
+
+  const handleRowsPerPageChange = newPageSize => {
+    const newPageSizeInt = Number(newPageSize);
+    if (newPageSizeInt > rows.length && cursor !== null) {
+      setLoading(true);
+      fetchData({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(res => {
+        const { cursor: newCursor, rows: newRows } = res.data.disease.impc;
+        setRows([...rows, ...newRows]);
+        setLoading(false);
+        setCursor(newCursor);
+        setPage(0);
+        setPageSize(newPageSizeInt);
+      });
+    } else {
+      setPage(0);
+      setPageSize(newPageSizeInt);
+    }
+  };
+
+  const handleSortBy = sortBy => {
+    setSortColumn(sortBy);
+    setSortOrder(
+      // eslint-disable-next-line
+      sortColumn === sortBy ? (sortOrder === "asc" ? "desc" : "asc") : "asc"
+    );
+  };
+
+  const processedRows = [...rows];
+
+  if (sortColumn) {
+    processedRows.sort(getComparator(columns, sortOrder, sortColumn));
+  }
 
   return (
     <SectionItem
       definition={definition}
       chipText={dataTypesMap.animal_model}
-      request={request}
+      request={{
+        loading: initialLoading,
+        data: { [entity]: { impc: { rows, count: rows.length } } },
+      }}
       entity={entity}
-      renderDescription={() => (
-        <Description symbol={label.symbol} name={label.name} />
-      )}
-      renderBody={(data) => (
-        <DataTable
+      renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
+      renderBody={() => (
+        <Table
+          loading={loading}
           columns={columns}
-          dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
-          rows={data.disease.impc.rows}
-          pageSize={5}
-          rowsPerPageOptions={[5].concat(defaultRowsPerPageOptions)} // custom page size of 5 is not included in defaultRowsPerPageOptions
-          showGlobalFilter
+          rows={getPage(processedRows, page, size)}
+          rowCount={count}
+          rowsPerPageOptions={defaultRowsPerPageOptions}
+          page={page}
+          pageSize={size}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          onSortBy={handleSortBy}
           query={INTOGEN_QUERY.loc.source.body}
-          variables={variables}
+          dataDownloader
+          dataDownloaderRows={getWholeDataset}
+          dataDownloaderColumns={exportColumns}
+          dataDownloaderFileStem="impc-evidence"
+          variables={{
+            ensemblId,
+            efoId,
+            cursor,
+            size,
+          }}
         />
       )}
     />

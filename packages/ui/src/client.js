@@ -8,6 +8,15 @@ const client = new ApolloClient({
       ScoredComponent: {
         keyFields: ["componentId", "score"],
       },
+      Indications: {
+        keyFields: [],
+      },
+      MechanismsOfAction: {
+        keyFields: [],
+      },
+      Hallmarks: {
+        keyFields: [],
+      },
     },
   }),
   headers: { "OT-Platform": true },

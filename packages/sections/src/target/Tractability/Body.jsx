@@ -1,7 +1,4 @@
-import {
-  faCheckCircle,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { v1 } from "uuid";
 import { SectionItem, EllsWrapper } from "ui";
 import classNames from "classnames";
@@ -14,7 +11,7 @@ import { definition } from ".";
 import Description from "./Description";
 import TRACTABILITY_QUERY from "./TractabilityQuery.gql";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   modality: {
     marginBottom: "0.35em",
   },
@@ -63,8 +60,8 @@ function ModalityList({ modality, data }) {
   return (
     <>
       {data
-        .filter((d) => d.modality === modality)
-        .map((d) => (
+        .filter(d => d.modality === modality)
+        .map(d => (
           <div
             key={v1()}
             className={classNames(
@@ -78,10 +75,7 @@ function ModalityList({ modality, data }) {
                   [classes.modalityIconEnabled]: d.value,
                 })}
               >
-                <FontAwesomeIcon
-                  icon={d.value ? faCheckCircle : faTimesCircle}
-                  size="lg"
-                />
+                <FontAwesomeIcon icon={d.value ? faCheckCircle : faTimesCircle} size="lg" />
               </span>
               {d.label}
             </EllsWrapper>
@@ -104,17 +98,14 @@ function Body({ label: symbol, id: ensemblId, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={(data) => (
+      renderBody={data => (
         <Grid container spacing={3}>
-          {modalities.map((m) => (
+          {modalities.map(m => (
             <Grid item xs={6} sm={3} key={v1()}>
               <Typography variant="subtitle1" gutterBottom>
                 {m.label}
               </Typography>
-              <ModalityList
-                modality={m.modality}
-                data={data.target.tractability}
-              />
+              <ModalityList modality={m.modality} data={data.target.tractability} />
             </Grid>
           ))}
         </Grid>

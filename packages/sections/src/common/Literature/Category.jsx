@@ -1,9 +1,4 @@
-import {
-  InputLabel,
-  FormGroup,
-  Checkbox,
-  FormControlLabel,
-} from "@mui/material";
+import { InputLabel, FormGroup, Checkbox, FormControlLabel } from "@mui/material";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   selectedCategoriesState,
@@ -16,7 +11,7 @@ import {
 const toggleValue = (selected, categories) => {
   const isChecked = categories.indexOf(selected) !== -1;
   if (!isChecked) return [...categories, selected];
-  return [...categories.filter((value) => value !== selected).sort()];
+  return [...categories.filter(value => value !== selected).sort()];
 };
 
 const categories = [
@@ -28,12 +23,11 @@ const categories = [
 export default function Category() {
   const category = useRecoilValue(selectedCategoriesState);
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const [loadingEntities, setLoadingEntities] =
-    useRecoilState(loadingEntitiesState);
+  const [loadingEntities, setLoadingEntities] = useRecoilState(loadingEntitiesState);
 
   const bibliographyState = useRecoilValue(literatureState);
 
-  const handleChange = async (event) => {
+  const handleChange = async event => {
     const {
       query,
       id,
@@ -41,6 +35,10 @@ export default function Category() {
       selectedEntities,
       globalEntity,
       cursor,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
     } = bibliographyState;
     const {
       target: { name: clicked },
@@ -53,11 +51,17 @@ export default function Category() {
       category: newCategories,
       entities: selectedEntities,
       cursor,
+      endYear,
+      endMonth,
+      startYear,
+      startMonth,
     });
     const data = request.data[globalEntity];
 
     const update = {
       entities: data.similarEntities,
+      earliestPubYear: data.literatureOcurrences?.earliestPubYear,
+      litsCount: data.literatureOcurrences?.filteredCount,
       loadingEntities: false,
       category: newCategories,
     };
@@ -69,7 +73,6 @@ export default function Category() {
       style={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
       }}
     >
       <InputLabel style={{ marginRight: "15px" }} id="demo-mutiple-name-label">

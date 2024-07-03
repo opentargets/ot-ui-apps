@@ -1,4 +1,4 @@
-import * as classNames from "classnames";
+import classNames from "classnames";
 import { makeStyles } from "@mui/styles";
 import { Chip as MUIChip } from "@mui/material";
 

@@ -56,16 +56,11 @@ function HeaderCell({
     <TableCell
       align={align}
       classes={{
-        root: classNames(
-          headerClasses.cell,
-          headerClasses.cellHeader,
-          classes.headerCell,
-          {
-            [headerClasses.cellGroup]: isHeaderGroup,
-            [headerClasses.cellSticky]: sticky,
-            [headerClasses.noWrap]: noWrapHeader,
-          }
-        ),
+        root: classNames(headerClasses.cell, headerClasses.cellHeader, classes.headerCell, {
+          [headerClasses.cellGroup]: isHeaderGroup,
+          [headerClasses.cellSticky]: sticky,
+          [headerClasses.noWrap]: noWrapHeader,
+        }),
       }}
       colSpan={colspan}
       sortDirection={sortable && sortParams.direction}
@@ -82,22 +77,13 @@ function HeaderCell({
   );
 }
 
-function TableHeader({
-  columns,
-  headerGroups,
-  noWrapHeader,
-  order,
-  onRequestSort,
-  sortBy,
-}) {
+function TableHeader({ columns, headerGroups, noWrapHeader, order, onRequestSort, sortBy }) {
   // workaround for the old withWidth hook
   const theme = useTheme();
-  const width = theme.breakpoints.keys.filter((k) =>
-    useMediaQuery(theme.breakpoints.only(k))
-  );
+  const width = theme.breakpoints.keys.filter(k => useMediaQuery(theme.breakpoints.only(k)));
 
   const colspans = useDynamicColspan(headerGroups, columns, width);
-  const createSortHandler = (property) => (event) => {
+  const createSortHandler = property => event => {
     onRequestSort(event, property);
   };
 
@@ -123,9 +109,7 @@ function TableHeader({
         {columns.map((column, index) => (
           <Hidden {...getHiddenBreakpoints(column)} key={index}>
             <HeaderCell
-              align={
-                column.align ? column.align : column.numeric ? "right" : "left"
-              }
+              align={column.align ? column.align : column.numeric ? "right" : "left"}
               label={column.label || _.startCase(column.id)}
               noWrapHeader={noWrapHeader}
               sortable={column.sortable}

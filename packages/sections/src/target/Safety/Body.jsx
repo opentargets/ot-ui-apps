@@ -1,11 +1,10 @@
-import { SectionItem } from 'ui';
-import { useQuery } from '@apollo/client';
+import { SectionItem } from "ui";
+import { useQuery } from "@apollo/client";
 
-import { definition } from '.';
-import Description from './Description';
-import SafetyTable from './SafetyTable';
-import SAFETY_QUERY from './Safety.gql';
-
+import { definition } from ".";
+import Description from "./Description";
+import SafetyTable from "./SafetyTable";
+import SAFETY_QUERY from "./Safety.gql";
 
 function Body({ id: ensemblId, label: symbol, entity }) {
   const variables = { ensemblId };

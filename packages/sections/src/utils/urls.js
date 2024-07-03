@@ -18,9 +18,9 @@ export function europePmcLiteratureQuery(ids) {
   return encodeURI(baseUrl + ids.join(" OR ext_id:"));
 }
 
-export const encodeParams = (params) => {
+export const encodeParams = params => {
   const formBody = [];
-  Object.keys(params).forEach((key) => {
+  Object.keys(params).forEach(key => {
     const encodedKey = encodeURIComponent(key);
     const encodedValue = encodeURIComponent(params[key]);
     formBody.push(`${encodedKey}=${encodedValue}`);
@@ -64,7 +64,7 @@ export function europePmcBiblioSearchPOSTQuery(ids, size = 25) {
 }
 
 function clinicalTrialsUrl(id) {
-  return `https://www.clinicaltrials.gov/ct2/show/${id}`;
+  return `https://www.clinicaltrials.gov/study/${id}`;
 }
 
 function fdaUrl(id) {
@@ -79,11 +79,26 @@ function dailyMedUrl(id) {
   return `http://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=${id}`;
 }
 
+function innUrl() {
+  return "https://www.who.int/publications/m/item/inn-pl-126";
+}
+
+function emaUrl() {
+  return "https://www.ema.europa.eu/en/medicines";
+}
+
+function usanUrl(id) {
+  return `https://searchusan.ama-assn.org/finder/usan/search/${id}/relevant/1`;
+}
+
 export const referenceUrls = {
   ClinicalTrials: clinicalTrialsUrl,
   FDA: fdaUrl,
   ATC: atcUrl,
   DailyMed: dailyMedUrl,
+  INN: innUrl,
+  EMA: emaUrl,
+  USAN: usanUrl,
 };
 
 // Associations and URL PPP

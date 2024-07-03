@@ -1,4 +1,4 @@
-import chromosomeComparator from './chromosomeComparator';
+import chromosomeComparator from "./chromosomeComparator";
 
 const variantIdComparator = (a, b) => {
   const { chromosome: aChrom, position: aPos } = a;

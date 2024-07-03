@@ -1,10 +1,12 @@
-import Plot from "react-plotly.js";
+import Plotly from "plotly.js-cartesian-dist-min";
+import createPlotlyComponent from "react-plotly.js/factory";
 import _ from "lodash";
 import { useLayoutEffect, useRef, useState } from "react";
 
 function DepmapPlot({ data }) {
   const ref = useRef(null);
   const [width, setWidth] = useState(0);
+  const Plot = createPlotlyComponent(Plotly);
 
   useLayoutEffect(() => {
     setWidth(ref.current.offsetWidth);
@@ -12,7 +14,7 @@ function DepmapPlot({ data }) {
 
   const trackHeight = 40;
 
-  const onPointClick = (evt) => {
+  const onPointClick = evt => {
     const { points } = evt;
     const id = points[0]?.id;
     if (id) {
@@ -23,19 +25,19 @@ function DepmapPlot({ data }) {
 
   // plot data
   const depMapEssentiality = data
-    .map((d) => ({
+    .map(d => ({
       type: "box",
       tissueName: d.tissueName,
       name: `${_.capitalize(d.tissueName)} (${d.screens.length})`,
 
       // points data:
-      x: d.screens.map((s) => s.geneEffect),
-      ids: d.screens.map((s) => s.depmapId),
+      x: d.screens.map(s => s.geneEffect),
+      ids: d.screens.map(s => s.depmapId),
 
       // tooltip settings
       hoveron: "points", // enable tooltip only for points, not boxes
       hovertext: d.screens.map(
-        (s) =>
+        s =>
           `<b>${s.cellLineName}</b><br />Disease: ${s.diseaseFromSource}<br />Gene Effect: ${s.geneEffect}<br />Expression: ${s.expression}`
       ),
       hoverinfo: "text",
@@ -110,11 +112,7 @@ function DepmapPlot({ data }) {
 
   return (
     <div ref={ref}>
-      <Plot
-        data={depMapEssentiality}
-        layout={layoutOptions}
-        onClick={onPointClick}
-      />
+      <Plot data={depMapEssentiality} layout={layoutOptions} onClick={onPointClick} />
     </div>
   );
 }

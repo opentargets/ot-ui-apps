@@ -1,1 +1,1 @@
-export { default } from './DiseasePage';
+export { default } from "./DiseasePage";

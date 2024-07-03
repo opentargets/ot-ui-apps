@@ -1,4 +1,4 @@
-import config from '../config';
+import config from "../config";
 
 export function epmcUrl(id) {
   return `https://europepmc.org/article/MED/${id}`;
@@ -15,7 +15,7 @@ export function otgVariantUrl(id) {
 export function europePmcLiteratureQuery(ids) {
   const baseUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?&format=json&resultType=core&pageSize=${ids.length}&query=ext_id:`;
 
-  return encodeURI(baseUrl + ids.join(' OR ext_id:'));
+  return encodeURI(baseUrl + ids.join(" OR ext_id:"));
 }
 
 export const encodeParams = params => {
@@ -25,38 +25,38 @@ export const encodeParams = params => {
     const encodedValue = encodeURIComponent(params[key]);
     formBody.push(`${encodedKey}=${encodedValue}`);
   });
-  const encodedParams = formBody.join('&');
+  const encodedParams = formBody.join("&");
   return encodedParams;
 };
 
 export function europePmcSearchPOSTQuery(ids) {
-  const baseUrl = 'https://www.ebi.ac.uk/europepmc/webservices/rest/searchPOST';
-  const query = ids.join(' OR ext_id:');
+  const baseUrl = "https://www.ebi.ac.uk/europepmc/webservices/rest/searchPOST";
+  const query = ids.join(" OR ext_id:");
   const bodyOptions = {
-    resultType: 'core',
-    format: 'json',
-    pageSize: '1000',
+    resultType: "core",
+    format: "json",
+    pageSize: "1000",
     query: `ext_id:${query}`,
-    sort: 'P_PDATE_D desc',
+    sort: "P_PDATE_D desc",
   };
   const formBody = encodeParams(bodyOptions);
   return { baseUrl, formBody };
 }
 
 export function europePmcBiblioSearchPOSTQuery(ids, size = 25) {
-  const baseUrl = 'https://www.ebi.ac.uk/europepmc/webservices/rest/searchPOST';
-  const query = ids.join(' OR ext_id:');
+  const baseUrl = "https://www.ebi.ac.uk/europepmc/webservices/rest/searchPOST";
+  const query = ids.join(" OR ext_id:");
   const bodyOptions = {
-    resultType: 'core',
-    format: 'json',
+    resultType: "core",
+    format: "json",
     pageSize: size,
     query: `ext_id:${query}`,
   };
   const formBody = encodeParams(bodyOptions);
   const requestOptions = {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
     },
     body: formBody,
   };
@@ -64,7 +64,7 @@ export function europePmcBiblioSearchPOSTQuery(ids, size = 25) {
 }
 
 function clinicalTrialsUrl(id) {
-  return `https://www.clinicaltrials.gov/ct2/show/${id}`;
+  return `https://www.clinicaltrials.gov/study/${id}`;
 }
 
 function fdaUrl(id) {
@@ -88,7 +88,7 @@ export const referenceUrls = {
 
 // Associations and URL PPP
 export const getClassicAssociationsURL = ({ baseURL }) => {
-  const path = 'classic-associations';
+  const path = "classic-associations";
   const fullURL = `${baseURL}${path}`;
   return { fullURL, path };
 };
