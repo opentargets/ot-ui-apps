@@ -271,7 +271,10 @@ const getTanstackColumns = label => [
       if (sources.indexOf(row.original.projectId) < 0)
         return getSource(row.original.cohortId, row.original.projectId);
       return (
-        <Link to={getSourceLink(row.original.projectId, row.original.target.id)} external>
+        <Link
+          to={getSourceLink(row.original.projectId, row.original.target.id, row.original.urls)}
+          external
+        >
           {getSource(row.original.cohortId, row.original.projectId)}
         </Link>
       );
@@ -341,9 +344,13 @@ const getTanstackColumns = label => [
       const ci =
         row.original.oddsRatioConfidenceIntervalLower &&
         row.original.oddsRatioConfidenceIntervalUpper
-          ? `(${row.original.oddsRatioConfidenceIntervalLower}, ${row.original.oddsRatioConfidenceIntervalUpper})`
+          ? `(${parseFloat(row.original.oddsRatioConfidenceIntervalLower.toFixed(3))}, ${parseFloat(
+              row.original.oddsRatioConfidenceIntervalUpper.toFixed(3)
+            )})`
           : "";
-      return row.original.oddsRatio ? `${row.original.oddsRatio} ${ci}` : naLabel;
+      return row.original.oddsRatio
+        ? `${parseFloat(row.original.oddsRatio.toFixed(3))} ${ci}`
+        : naLabel;
     },
     enableSorting: true,
     enableColumnFilter: false,
@@ -400,7 +407,7 @@ const getTanstackColumns = label => [
     cell: ({ row }) => (
       <ScientificNotation number={[row.original.pValueMantissa, row.original.pValueExponent]} />
     ),
-    enableSorting: false,
+    enableSorting: true,
     enableColumnFilter: false,
   },
   {
@@ -478,6 +485,7 @@ export function Body({ id, label, entity }) {
               tableDataLoading={false}
               columns={columnsT}
               dataRows={rows}
+              defaultSortObj={{ id: "pValueMantissa", desc: false }}
             />
           );
         }}
