@@ -65,7 +65,6 @@ function getColumns(id: string, label: string) {
       renderCell: d => (
         <ScientificNotation number={[d.pValueMantissa, d.pValueExponent]} />
       ),
-      numeric: true,
       exportLabel: "P-Value",
     },
     {
@@ -73,7 +72,6 @@ function getColumns(id: string, label: string) {
       label: "Beta",
       tooltip: "Beta with respect to the ALT allele",
       renderCell: ({ beta }) => beta || beta === 0 ? beta.toPrecision(3) : naLabel,
-      numeric: true,
       exportLabel: "Beta",
     },
     {
@@ -88,7 +86,6 @@ function getColumns(id: string, label: string) {
       comparator: (a, b) => a.locus.length - b.locus.length,
       sortable: true,
       renderCell: ({ locus }) => locus.length,
-      numeric: true,
       exportLabel: "Credible Set Size",
     }
   ];
