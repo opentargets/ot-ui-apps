@@ -7,9 +7,9 @@ type DescriptionProps = {
 function Description({ variantId }: DescriptionProps) {
   return (
     <>
-      QTL 99% credible sets containing <strong>{variantId}</strong>. Source{" "}
-      <Link to="../" >
-        Open Targets
+      molQTL 99% credible sets containing <strong>{variantId}</strong>. Source{" "}
+      <Link external to="https://www.ebi.ac.uk/eqtl/" >
+        eQTL Catalog
       </Link>
     </>
   );

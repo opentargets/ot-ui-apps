@@ -37,14 +37,24 @@ function getColumns(id: string, label: string) {
       exportLabel: "Study",
     },
     {
-      id: "tissue",
-      label: "Tissue",
+      id: "gene",
+      label: "Gene",
+      renderCell: d => (
+        <Link to={`/target/${d["target.id"]}`}>
+          {d["target.approvedSymbol"]}
+        </Link>
+      ),
+      exportLabel: "Gene",
+    },
+    {
+      id: "tissueCell",
+      label: "Tissue/Cell",
       renderCell: d => (
         <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${d.tissueFromSourceId}&ontology=uberon`}>
           {d["tissue.label"] || <i>({d["tissue.id"]})</i>}
         </Link>
       ),
-      exportLabel: "Tissue",
+      exportLabel: "Tissue/Cell",
     },
     {
       id: "pValue",
@@ -69,16 +79,6 @@ function getColumns(id: string, label: string) {
       label: "Finemapping Method",
       renderCell: ({ finemappingMethod }) => finemappingMethod,
       exportLabel: "Finemapping Method",
-    },
-    {
-      id: "gene",
-      label: "Gene",
-      renderCell: d => (
-        <Link to={`/target/${d["target.id"]}`}>
-          {d["target.approvedSymbol"]}
-        </Link>
-      ),
-      exportLabel: "Gene",
     },
     {
       id: "credibleSetSize",

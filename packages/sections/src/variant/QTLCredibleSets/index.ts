@@ -7,7 +7,7 @@
 const id = "qtl_credible_sets";
 export const definition = {
   id,
-  name: "QTL Credible Sets",
+  name: "molQTL Credible Sets",
   shortName: "QT",
   hasData: () => true,   // !! CHANGE WHEN USE GQL !!
   isPrivate: false,   // isPrivateVariantSection(id),
