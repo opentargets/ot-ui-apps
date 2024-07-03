@@ -56,7 +56,7 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
   //   console.log(visibleData);
   // }, [visibleData]);
 
-  const { data, loading, error, count } = useRowInteractors({
+  const { data, loading, interactorsMetadata, error, count } = useRowInteractors({
     options: {
       id: row.id,
       index: 0,
@@ -74,6 +74,8 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
       sortBy: sorting[0].id,
     },
   });
+
+  console.log({ interactorsMetadata });
 
   const interactorsTable = useReactTable({
     data: data,

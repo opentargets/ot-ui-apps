@@ -109,6 +109,7 @@ const INITIAL_USE_ASSOCIATION_STATE = {
   data: getInitialLoadingData(),
   initialLoading: true,
   count: 0,
+  interactorsMetadata: [],
 };
 
 /********
@@ -161,6 +162,11 @@ function useRowInteractors({
         return;
       }
 
+      setState({
+        ...state,
+        interactorsMetadata: targetRowInteractorsRequest.data.target.interactions,
+      });
+
       // const interactorsCount = targetRowInteractorsRequest.data.target.interactions.count;
       const interactorsIds = getInteractorIds(targetRowInteractorsRequest);
       // const targetRowInteractors = getTargetRowInteractors(
@@ -199,6 +205,7 @@ function useRowInteractors({
       // });
 
       setState({
+        interactorsMetadata: targetRowInteractorsRequest.data.target.interactions,
         loading: false,
         initialLoading: false,
         count: interactorsAssociations.length,
