@@ -7,9 +7,13 @@
     "test": "tests"
   },
   "devDependencies": {
-    "@playwright/test": "^1.36.2"
+    "@playwright/test": "^1.36.2",
+    "start-server-and-test": "^2.0.4"
   },
-  "scripts": {},
+  "scripts": {
+    "dev-test": "playwright test",
+    "test:platform:e2e": "start-server-and-test \"(cd ../../apps/platform && yarn run serve)\" http://localhost:4173 \"playwright test\""
+  },
   "keywords": [],
   "author": "",
   "license": "ISC"
