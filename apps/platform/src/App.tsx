@@ -18,8 +18,9 @@ import APIPage from "./pages/APIPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import { getSuggestedSearch } from "./utils/global";
+import { ReactElement } from "react";
 
-function App() {
+function App(): ReactElement {
   const suggestions = getSuggestedSearch();
   return (
     <ApolloProvider client={client}>
