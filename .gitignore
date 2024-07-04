@@ -40,3 +40,7 @@ yarn-error.log*
 .turbo
 # Local Netlify folder
 .netlify
+
+# testing
+./packages/platform-test/playwright-report
+./packages/platform-test/test-results
