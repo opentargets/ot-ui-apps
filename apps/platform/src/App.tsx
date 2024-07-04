@@ -8,7 +8,7 @@ import client from "./client";
 import theme from "./theme";
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
-import DiseasePage from "./pages/DiseasePage";
+import DiseasePage from "./pages/DiseasePage/DiseasePage";
 import DownloadsPage from "./pages/DownloadsPage";
 import DrugPage from "./pages/DrugPage";
 import TargetPage from "./pages/TargetPage";
