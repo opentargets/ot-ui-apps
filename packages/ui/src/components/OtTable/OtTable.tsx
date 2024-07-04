@@ -29,6 +29,7 @@ import OtTableColumnFilter from "./OtTableColumnFilter";
 import OtTableSearch from "./OtTableSearch";
 import { OtTableProps } from "./table.types";
 import { FontAwesomeIconPadded, OtTableContainer, OtTableHeader } from "./layout";
+import DataDownloader from "../DataDownloader";
 
 const useStyles = makeStyles(theme => ({
   stickyColumn: {
@@ -75,6 +76,11 @@ function OtTable({
   dataRows = [],
   verticalHeaders = false,
   defaultSortObj,
+  dataDownloader,
+  dataDownloaderColumns,
+  dataDownloaderFileStem,
+  query,
+  variables,
 }: OtTableProps): ReactElement {
   const classes = useStyles();
 
@@ -119,14 +125,27 @@ function OtTable({
     return `${pageIndex * pageSize + 1} - ${pageEndResultSize} of ${dataRows.length}`;
   }
 
+  console.log("render");
+
   return (
     <div>
       {/* Global Search */}
       {showGlobalFilter && (
         <Grid container>
-          <Grid item xs={12} lg={4}>
+          <Grid item sm={12} md={4}>
             <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />
           </Grid>
+          {dataDownloader && (
+            <Grid item sm={12} md={8} sx={{ ml: "auto" }}>
+              <DataDownloader
+                columns={dataDownloaderColumns || columns}
+                rows={dataRows}
+                fileStem={dataDownloaderFileStem}
+                query={query}
+                variables={variables}
+              />
+            </Grid>
+          )}
         </Grid>
       )}
       {/* Table component container */}

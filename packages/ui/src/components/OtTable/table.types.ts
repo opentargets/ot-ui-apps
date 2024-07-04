@@ -1,3 +1,4 @@
+import { DocumentNode } from "@apollo/client";
 import { ColumnDef } from "@tanstack/table-core";
 
 /******************************
@@ -16,6 +17,11 @@ export type OtTableProps = {
   dataRows: Array<any>;
   verticalHeaders: boolean;
   defaultSortObj: DefaultSortProp;
+  dataDownloader: boolean;
+  dataDownloaderColumns?: Array<any>;
+  dataDownloaderFileStem: string;
+  query: DocumentNode;
+  variables: any;
 };
 
 /*************************

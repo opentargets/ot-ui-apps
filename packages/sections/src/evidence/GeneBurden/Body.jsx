@@ -249,20 +249,6 @@ const getTanstackColumns = label => [
     enableColumnFilter: false,
   },
   {
-    header: "Study ID",
-    accessorFn: row => row.studyId,
-    cell: d =>
-      d.row.original.studyId ? (
-        <Link to={`https://www.ebi.ac.uk/gwas/studies/${d.row.original.studyId}`} external>
-          {d.row.original.studyId}
-        </Link>
-      ) : (
-        naLabel
-      ),
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
-  {
     header: "Cohort/Project",
     accessorFn: row => `${row.cohortId} (${row.projectId})`,
     cell: ({ row }) => {
@@ -486,6 +472,10 @@ export function Body({ id, label, entity }) {
               columns={columnsT}
               dataRows={rows}
               defaultSortObj={{ id: "pValueMantissa", desc: false }}
+              dataDownloader
+              dataDownloaderFileStem={`geneburden-${ensgId}-${efoId}`}
+              query={GENE_BURDEN_QUERY.loc.source.body}
+              variables={variables}
             />
           );
         }}
