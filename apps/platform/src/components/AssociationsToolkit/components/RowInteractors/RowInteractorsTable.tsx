@@ -51,12 +51,7 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
 
   const source: string = state.interactors.get(row.id)[0];
 
-  // const { visibleData, visibleLoading, prevPage, nextPage } = useInteractors(row.id, source);
-  // useEffect(() => {
-  //   console.log(visibleData);
-  // }, [visibleData]);
-
-  const { data, loading, interactorsMetadata, error, count } = useRowInteractors({
+  const { data, loading, interactorsMetadata } = useRowInteractors({
     options: {
       id: row.id,
       index: 0,
@@ -75,8 +70,6 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
     },
   });
 
-  console.log({ interactorsMetadata });
-
   const interactorsTable = useReactTable({
     data: data,
     columns,
@@ -90,7 +83,6 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
     getRowId: row => row[entityToGet].id,
-    // manualSorting: true,
   });
   const cols = interactorsTable.getHeaderGroups()[0].headers[1].subHeaders;
   return (
@@ -128,9 +120,8 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
               sx={{
                 fontSize: "0.85rem",
                 boxShadow: "none",
-
-                ".MuiNativeSelect-select": { border: 0 },
                 p: 0,
+                ".MuiNativeSelect-select": { border: 0 },
               }}
             >
               <option value={"intact"}>IntAct</option>
@@ -139,9 +130,6 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
               <option value={"string"}>String</option>
             </NativeSelect>
           </Box>
-          {/* <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>
-            {count} interactors
-            </Typography> */}
         </Box>
         <Box sx={{ display: "flex", gap: 2 }}>
           <Button

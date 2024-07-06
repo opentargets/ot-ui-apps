@@ -6,6 +6,7 @@ import config from "../../../config";
 export const { isPartnerPreview } = config.profile;
 
 export * from "./interactors";
+export * from "./associations";
 
 const ASSOCIATION_LEGEND_LABEL = "Association score";
 const PRIORITISATION_LEGEND_LABEL = "Prioritisation indicator";
