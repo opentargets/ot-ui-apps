@@ -27,7 +27,7 @@ function Wrapper({ data }) {
 function DepmapPlot({ data, width }) {
   const headerRef = useRef();
   useEffect(() => {
-    if (data === undefined) return;
+    if (data === undefined || width === null) return;
     const parsedData = prepareData(data);
     const chart = Plot.plot({
       width: width,
@@ -36,6 +36,8 @@ function DepmapPlot({ data, width }) {
         background: "transparent",
       },
       x: {
+        type: "symlog",
+        domain: [-6, 6],
         grid: true,
       },
       color: {
@@ -45,6 +47,7 @@ function DepmapPlot({ data, width }) {
       marks: [
         Plot.ruleX([-1], { strokeDasharray: 4, stroke: "tomato" }),
         Plot.boxX(parsedData, {
+          r: 0,
           x: "geneEffect",
           y: "tissueName",
           opacity: 0.5,
@@ -53,10 +56,8 @@ function DepmapPlot({ data, width }) {
           x: "geneEffect",
           y: "tissueName",
           tip: true,
-          fill: "#08519C",
-          stroke: "#08519C",
+          fill: d => (d.geneEffect < -1 ? "tomato" : "#08519C"),
           fillOpacity: 0.5,
-          strokeOpacity: 0.5,
         }),
         Plot.crosshair(parsedData, { x: "geneEffect", y: "tissueName" }),
       ],
