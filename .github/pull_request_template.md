@@ -1,11 +1,12 @@
-# Pull Request Template (PR Tittle)
-Should match thease format: [Scoped application (Genetics || Platform || Package || AppConfig)]: Short description mentioning the affected page and/or section component
+# [scoped_application]: Short description
+
+PR Tittle Format: [Genetics || Platform || PackageName || AppConfig]: Short description mentioning the affected page and/or section component
 
 ## Description
 
 Please include a summary of the change and which issue is fixed. List any dependencies that are required for this change.
 
-**Issue:** # (link)
+**Issue:** (link)
 **Deploy preview:** (link)
 
 ## Type of change
@@ -21,12 +22,11 @@ Please delete options that are not relevant.
 
 Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce.
 
-- [ ] Test A
-- [ ] Test B
+- Test A
+- Test B
 
 ## Checklist:
 
 - [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
 - [ ] My changes generate no new warnings
-- [ ] Any dependent changes have been merged and published in downstream modules
+- [ ] I have made corresponding changes to the documentation
