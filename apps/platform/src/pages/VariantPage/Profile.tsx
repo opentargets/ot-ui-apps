@@ -77,6 +77,8 @@ function Profile({ varId }: ProfileProps) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <GWASCredibleSetsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
           <PharmacogenomicsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense>
       </SectionContainer>
