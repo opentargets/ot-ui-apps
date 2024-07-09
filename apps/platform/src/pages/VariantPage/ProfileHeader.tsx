@@ -1,6 +1,12 @@
-import { useState, useEffect } from "react";
-import { Field, ProfileHeader as BaseProfileHeader } from "ui";
+// import { useState, useEffect } from "react";
+import {
+  usePlatformApi,
+  Field,
+  ProfileHeader as BaseProfileHeader,
+} from "ui";
 import { Box, Typography } from "@mui/material";
+
+import VARIANT_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 
 type ProfileHeaderProps = {
   varId: string;
@@ -8,25 +14,10 @@ type ProfileHeaderProps = {
 
 function ProfileHeader({ varId }: ProfileHeaderProps) {
 
-  // temp: data will come from gql, fetch local json file for now
-  const [metadata, setMetadata] =
-    useState<MetadataType | "waiting" | undefined>("waiting");
-  useEffect(() => {
-    fetch("../data/variant-data-fake.json")
-      .then(response => response.json())
-      .then((allData: MetadataType[]) =>
-        setMetadata(allData.find(v => v.variantId === varId)));
-  }, []);
+  const { loading, error, data } = usePlatformApi();
 
-  // temp: always set loading to false for now
-  const loading = false;
-
-  // temp: revisit this (use same as other pages) once using gql to get data
-  if (!metadata) {
-    return <b>Metadata not found!</b>
-  } else if (metadata === "waiting") {
-    return <b>Waiting</b>;
-  }
+  // TODO: Errors!
+  if (error) return null;
 
   return (
     <BaseProfileHeader>
@@ -34,30 +25,39 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
       <Box>
         <Typography variant="subtitle1" mt={0}>Location</Typography>
         <Field loading={loading} title="GRCh38">
-          {metadata.chromosome}:{metadata.position}
+          {data.chromosome}:{data.position}
         </Field>
         <Field loading={loading} title="Reference Allele">
-          {metadata.referenceAllele}
+          {data.referenceAllele}
         </Field>
         <Field loading={loading} title="Alternative Allele (effect allele)">
-          {metadata.alternateAllele}
+          {data.alternateAllele}
         </Field>
         <Typography variant="subtitle1" mt={1}>Variant Effect Predictor (VEP)</Typography>
         <Field loading={loading} title="most severe consequence">
-          {metadata.vep.mostSevereConsequence.replace(/_/g, ' ')}
+          {data.vep.mostSevereConsequence.replace(/_/g, ' ')}
         </Field>
       </Box>
 
       <Box>
         <Typography variant="subtitle1" mt={0}>Population Allele Frequencies</Typography>
-        <AlleleFrequencyPlot data={metadata.alleleFrequencies} />
+        <AlleleFrequencyPlot data={data.alleleFrequencies} />
       </Box>
 
     </BaseProfileHeader>
   )
 }
 
+ProfileHeader.fragments = {
+  profileHeader: VARIANT_PROFILE_HEADER_FRAGMENT,
+};
+
 export default ProfileHeader;
+
+
+// =====================
+// allele frequency plot
+// =====================
 
 // THESE NEED CHECKED!!
 const populationLabels = {

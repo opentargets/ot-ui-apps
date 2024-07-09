@@ -44,7 +44,7 @@ function VariantPage() {
       description={`Annotation information for ${varId}`}
       location={location}
     >
-      <Header loading={loading} metadata={metadata} />
+      {/* <Header loading={loading} metadata={metadata} /> */}
       <ScrollToTop />
       <Route
         path="/"
