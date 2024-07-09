@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
 
 type XRefLinksProps = {
   label: string;
-  urlBuilder: (id: string) => string;
+  urlBuilder?: (id: string) => string;
   urlStem: string;
   ids: string[];
   limit: number;

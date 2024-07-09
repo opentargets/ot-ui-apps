@@ -74,7 +74,6 @@ function Header({ loading, variantId, variantPageData }: HeaderProps) {
                 urlStem={urlStem}
                 urlBuilder={urlBuilder ? (id => urlBuilder(id, variantPageData)) : null}
                 ids={[...ids]}
-                extraUrlData={variantPageData}
                 limit="3"
               />
             );

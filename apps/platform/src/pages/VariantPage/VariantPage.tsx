@@ -60,7 +60,6 @@ function VariantPage() {
           <Route exact path={path}>
             <Profile varId={varId} />
           </Route>
-          {/* NEED SECOND ROUTE HERE? - SEE OTHER PAGES PAGE */}
         </Switch>
       </Suspense>
     </BasePage>
