@@ -3,6 +3,7 @@ import { v1 } from "uuid";
 
 const getEmptyRow = id => ({
   dataSources: {},
+  prioritisations: {},
   score: 0,
   disease: { id },
   target: { id },
