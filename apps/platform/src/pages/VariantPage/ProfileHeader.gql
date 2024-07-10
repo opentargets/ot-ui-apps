@@ -1,11 +1,10 @@
-fragment VariantProfileHeaderFragment on Variant {
+fragment VariantProfileHeaderFragment on VariantIndex {
   chromosome
   position
   referenceAllele
   alternateAllele
-  alleleFrequencies: {
+  alleleFrequencies {
     populationName
-    alleleFrequencies
+    alleleFrequency
   }
-
 }

@@ -16,6 +16,12 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
 
   const { loading, error, data } = usePlatformApi();
 
+  // !! REMOVE ONCE HAPPY - SHOULD NOT BE NECESSARY TO CHECK HERE !!
+  // if (!data) return null
+  if (!data) {
+    return null;
+  }
+
   // TODO: Errors!
   if (error) return null;
 
@@ -25,24 +31,27 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
       <Box>
         <Typography variant="subtitle1" mt={0}>Location</Typography>
         <Field loading={loading} title="GRCh38">
-          {data.chromosome}:{data.position}
+          {data.variant.chromosome}:{data.variant.position}
         </Field>
         <Field loading={loading} title="Reference Allele">
-          {data.referenceAllele}
+          {data.variant.referenceAllele}
         </Field>
         <Field loading={loading} title="Alternative Allele (effect allele)">
-          {data.alternateAllele}
+          {data.variant.alternateAllele}
         </Field>
         <Typography variant="subtitle1" mt={1}>Variant Effect Predictor (VEP)</Typography>
         <Field loading={loading} title="most severe consequence">
-          {data.vep.mostSevereConsequence.replace(/_/g, ' ')}
+          WHAT IS THE PLAN HERE?
+          {/* {data.vep.mostSevereConsequence.replace(/_/g, ' ')} */}
         </Field>
       </Box>
 
-      <Box>
-        <Typography variant="subtitle1" mt={0}>Population Allele Frequencies</Typography>
-        <AlleleFrequencyPlot data={data.alleleFrequencies} />
-      </Box>
+      {data.variant.alleleFrequencies &&
+        <Box>
+          <Typography variant="subtitle1" mt={0}>Population Allele Frequencies</Typography>
+          <AlleleFrequencyPlot data={data.variant.alleleFrequencies} />
+        </Box>
+      } 
 
     </BaseProfileHeader>
   )
