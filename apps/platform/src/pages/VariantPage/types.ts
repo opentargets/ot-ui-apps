@@ -1,3 +1,20 @@
+// ===========
+// VariantPage
+// ===========
+
+export type VariantPageDataType = {
+  variantId: string;
+  dbXrefs?: [
+    {
+      id: string,
+      source: number,
+    }
+  ];
+  chromosome: string;
+  position: number;
+  referenceAllele: string;
+  alternateAllele: string;
+};
 
 // ========
 // Metadata

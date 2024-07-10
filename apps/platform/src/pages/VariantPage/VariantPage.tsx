@@ -1,4 +1,5 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { Suspense } from "react";
+import { useQuery } from "@apollo/client";
 import {
   useLocation,
   useParams,
@@ -11,31 +12,20 @@ import { Box, Tabs, Tab } from "@mui/material";
 import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
-import { MetadataType } from "./types";
-
-const Profile = lazy(() => import("./Profile"));
+import VARIANT_PAGE_QUERY from "./VariantPage.gql";
+import Profile from "./Profile";
 
 function VariantPage() {
   const location = useLocation();
   const { varId } = useParams() as { varId: string };
   const { path } = useRouteMatch();
 
-  // temp: data will come from gql, fetch local json file for now
-  const [metadata, setMetadata] = useState<MetadataType | "waiting" | undefined>("waiting");
-   useEffect(() => {
-      fetch("../data/variant-data-fake.json")
-        .then(response => response.json())
-        .then((allData: MetadataType[]) => setMetadata(allData.find(v => v.variantId === varId)));
-    }, []);
-  
-    // temp: loading is set by useQuery, set to false for now
-  const loading = false;
+  const { loading, data } = useQuery(VARIANT_PAGE_QUERY, {
+    variables: { variantId: varId },
+  });
 
-  // temp: revisit this (use same as other pages) once using gql to get data
-  if (!metadata) {
+  if (data && !data.variant) {
     return <NotFoundPage />;
-  } else if (metadata === "waiting") {
-    return <b>Waiting</b>;
   }
 
   return (
@@ -44,7 +34,11 @@ function VariantPage() {
       description={`Annotation information for ${varId}`}
       location={location}
     >
-      <Header loading={loading} metadata={metadata} />
+      <Header
+        loading={loading}
+        variantId={varId}
+        variantPageData={data?.variant}
+      />
       <ScrollToTop />
       <Route
         path="/"
