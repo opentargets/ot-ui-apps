@@ -5,7 +5,6 @@ export const definition = {
   id,
   name: "In silico predictors",
   shortName: "VP",
-  // UPDATE HERE ONCE HAVE PROPER DATA
-  hasData: data => true,  // data.uniprotVariantsSummary.count > 0,
-  isPrivate: false,  // isPrivateEvidenceSection(id),
+  hasData: data => data?.inSilicoPredictors?.length > 0,
+  isPrivate: false,  // isPrivateEvidenceSection(id),  // FIX THIS FOR VARIANT
 };

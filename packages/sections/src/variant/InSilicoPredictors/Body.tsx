@@ -1,4 +1,4 @@
-// import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { Link, SectionItem, Tooltip, PublicationsDrawer, DataTable } from "ui";
 import { definition } from "../InSilicoPredictors";
@@ -7,7 +7,7 @@ import { epmcUrl } from "../../utils/urls";
 import { identifiersOrgLink } from "../../utils/global";
 import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery,
 } from "../../constants";
-// import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
+import IN_SILICO_PREDICTORS_QUERY from "./InSilicoPredictorsQuery.gql";
 
 function getColumns(label: string) {
   return [
@@ -18,14 +18,14 @@ function getColumns(label: string) {
     {
       id: "assessment",
       label: "Prediction",
-      renderCell: ({ assessment, flag }) => (
-        flag
+      renderCell: ({ assessment, assessmentFlag }) => (
+        assessmentFlag
           ? (
             <Tooltip
               title={
                 <>
                   <Typography variant="subtitle2" display="block" align="center">
-                    Flag: {flag}
+                    Flag: {assessmentFlag}
                   </Typography>
                 </>
               }
@@ -51,21 +51,17 @@ type BodyProps = {
   entity: string,
 };
 
-
 export function Body({ id, label, entity }) {
 
-  // const variables = {
-  //   ensemblId: ensgId,
-  //   efoId,
-  //   size: sectionsBaseSizeQuery,
-  // };
+  const variables = {
+    variantId: id,
+  };
 
   const columns = getColumns(label);
 
-  // const request = useQuery(UNIPROT_VARIANTS_QUERY, {
-  //   variables,
-  // });
-  const request = mockQuery();
+  const request = useQuery(IN_SILICO_PREDICTORS_QUERY, {
+    variables,
+  });
 
   return (
     <SectionItem
@@ -74,7 +70,6 @@ export function Body({ id, label, entity }) {
       entity={entity}
       renderDescription={() => <Description variantId={id} />}
       renderBody={() => {
-        // const rows = request.data.variant.inSilicoPredictors;
         const rows =
           [...request.data.variant.inSilicoPredictors].sort((row1, row2) => {
             return row1.method.localeCompare(row2.method);
@@ -85,8 +80,8 @@ export function Body({ id, label, entity }) {
             rows={rows}
             dataDownloader
             rowsPerPageOptions={defaultRowsPerPageOptions}
-            // query={UNIPROT_VARIANTS_QUERY.loc.source.body}
-            // variables={variables}
+            query={IN_SILICO_PREDICTORS_QUERY.loc.source.body}
+            variables={variables}
           />
         );
       }}
@@ -95,41 +90,3 @@ export function Body({ id, label, entity }) {
 }
 
 export default Body;
-
-function mockQuery() {
-  return {
-    loading: false,
-    error: undefined,
-    data: JSON.parse(`
-{ 
-  "variant": {
-    "inSilicoPredictors": [
-      {
-        "method": "alphaMissense",
-        "score": 0.077,
-        "assessment": "likely_benign"
-      },
-      {
-        "method": "phred scaled CADD",
-        "score": 7.293
-      },
-      {
-        "method": "sift max",
-        "score": 0.2,
-        "assessment": "MODERATE"
-      },
-      {
-        "method": "polyphen max",
-        "score": 0.069,
-        "assessment": "tolerated"
-      },
-      {
-        "method": "loftee",
-        "assessment": "high-confidence LoF variant",
-        "flag": "PHYLOCSF_WEAK"
-      }
-    ]
-  }
-}`),
-  };
-}

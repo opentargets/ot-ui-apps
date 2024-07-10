@@ -8,7 +8,7 @@ import {
   summaryUtils,
 } from "ui";
 
-// import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/Summary";
+import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/Summary";
 // import EVASummary from "sections/src/variant/EVA/Summary";
 // import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
 // import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
@@ -18,7 +18,7 @@ import {
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
-// const InSilicoPredictorsSection = lazy(() => import("sections/src/variant/InSilicoPredictors/Body"));
+const InSilicoPredictorsSection = lazy(() => import("sections/src/variant/InSilicoPredictors/Body"));
 // const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
 // const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
 // const QTLCredibleSetsSection = lazy(() => import("sections/src/variant/QTLCredibleSets/Body"));
@@ -26,7 +26,7 @@ import ProfileHeader from "./ProfileHeader";
 // const PharmacogenomicsSection = lazy(() => import("sections/src/variant/Pharmacogenomics/Body"));
 
 const summaries = [
-  // InSilicoPredictorsSummary,
+  InSilicoPredictorsSummary,
   // EVASummary,
   // UniProtVariantsSummary,
   // QTLCredibleSetsSummary,
@@ -34,29 +34,18 @@ const summaries = [
   // PharmacogenomicsSummary,
 ];
 
-// const VARIANT = "variant";
-// const VARIANT_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(summaries, "Variant");
-// const VARIANT_PROFILE_QUERY = gql`
-//   query VariantProfileQuery($variantId: String!) {
-//     variant(variantId: $variantId) {
-//       variantId
-//       ...VariantProfileHeaderFragment
-//       ...VariantProfileSummaryFragment
-//     }
-//   }
-//   ${ProfileHeader.fragments.profileHeader}
-//   ${VARIANT_PROFILE_SUMMARY_FRAGMENT}
-// `;
-
 const VARIANT = "variant";
+const VARIANT_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(summaries, "VariantIndex");
 const VARIANT_PROFILE_QUERY = gql`
   query VariantProfileQuery($variantId: String!) {
     variant(variantId: $variantId) {
       variantId
       ...VariantProfileHeaderFragment
+      ...VariantIndexProfileSummaryFragment
     }
   }
   ${ProfileHeader.fragments.profileHeader}
+  ${VARIANT_PROFILE_SUMMARY_FRAGMENT}
 `;
 
 type ProfileProps = {
@@ -76,20 +65,20 @@ function Profile({ varId }: ProfileProps) {
 
       <ProfileHeader varId={varId} />
 
-      {/* <SummaryContainer>
+      <SummaryContainer>
         <InSilicoPredictorsSummary />
-        <EVASummary />
+        {/* <EVASummary />
         <UniProtVariantsSummary />
         <QTLCredibleSetsSummary />
         <GWASCredibleSetsSummary />
-        <PharmacogenomicsSummary />
+        <PharmacogenomicsSummary /> */}
       </SummaryContainer>
 
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
           <InSilicoPredictorsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense>
-        <Suspense fallback={<SectionLoader />}>
+        {/* <Suspense fallback={<SectionLoader />}>
           <EVASection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
@@ -103,8 +92,8 @@ function Profile({ varId }: ProfileProps) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <PharmacogenomicsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
-        </Suspense>
-      </SectionContainer> */}
+        </Suspense> */}
+      </SectionContainer>
   
     </PlatformApiProvider>
 
