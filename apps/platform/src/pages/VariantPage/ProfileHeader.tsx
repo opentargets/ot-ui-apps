@@ -16,7 +16,7 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
 
   const { loading, error, data } = usePlatformApi();
 
-  // !! REMOVE ONCE HAPPY - SHOULD NOT BE NECESSARY TO CHECK HERE !!
+  // !! REMOVE ONCE HAPPY - SHOULD NOT BE NECESSARY TO CHECK HERE !! - OR IS SINCE OTHER PAGES USE OPTINAL CHAINING TO ACCESS PROPERTIES OF THE DATA
   // if (!data) return null
   if (!data) {
     return null;
@@ -40,9 +40,8 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
           {data.variant.alternateAllele}
         </Field>
         <Typography variant="subtitle1" mt={1}>Variant Effect Predictor (VEP)</Typography>
-        <Field loading={loading} title="most severe consequence">
-          WHAT IS THE PLAN HERE?
-          {/* {data.vep.mostSevereConsequence.replace(/_/g, ' ')} */}
+        <Field loading={loading} title="Most severe consequence">
+          {data.variant.mostSevereConsequence.label.replace(/_/g, ' ')}
         </Field>
       </Box>
 
