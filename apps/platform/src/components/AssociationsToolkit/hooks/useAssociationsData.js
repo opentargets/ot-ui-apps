@@ -2,6 +2,17 @@
 import { useEffect, useState } from "react";
 import client from "../../../client";
 import { ENTITIES } from "../utils";
+import { v1 } from "uuid";
+
+const INITIAL_ROW_COUNT = 30;
+
+const getEmptyRow = () => ({
+  dataSources: {},
+  prioritisations: {},
+  score: 0,
+  disease: { id: v1() },
+  target: { id: v1() },
+});
 
 /***********
  * HELPERS *
@@ -43,7 +54,7 @@ const getDataRowMetadata = (parentEntity, row, fixedEntity) => {
     default:
       return { targetSymbol, diseaseName };
   }
-  return { targetSymbol, diseaseName };
+  return { targetSymbol, diseaseName, id };
 };
 
 const getAllDataCount = (fixedEntity, data) => {
@@ -107,10 +118,19 @@ const getAssociatedTargetsData = data => {
   });
 };
 
+//TODO: review
+const getInitialLoadingData = () => {
+  const arr = [];
+  for (let i = 0; i < INITIAL_ROW_COUNT; i++) {
+    arr.push(getEmptyRow());
+  }
+  return arr;
+};
+
 const INITIAL_USE_ASSOCIATION_STATE = {
-  loading: false,
+  loading: true,
   error: false,
-  data: [],
+  data: getInitialLoadingData(),
   initialLoading: true,
   count: 0,
 };
@@ -128,16 +148,16 @@ function useAssociationsData({
     sortBy = "score",
     aggregationFilters = [],
     enableIndirect = false,
-    datasources = null,
+    datasources = [],
     rowsFilter = [],
     entity,
+    facetFilters = [],
   },
 }) {
   const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
 
   useEffect(() => {
     let isCurrent = true;
-    setState({ ...state, loading: true });
     const fetchData = async () => {
       const resData = await client.query({
         query,
@@ -154,10 +174,12 @@ function useAssociationsData({
             name: el.name,
             path: el.path,
           })),
+          facetFilters,
         },
       });
       const parsedData = getAssociationsData(entity, resData.data);
       const dataCount = getAllDataCount(entity, resData.data);
+
       setState({
         count: dataCount,
         data: parsedData,
@@ -178,6 +200,7 @@ function useAssociationsData({
     query,
     entity,
     aggregationFilters,
+    facetFilters,
   ]);
 
   return state;

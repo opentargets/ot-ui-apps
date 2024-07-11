@@ -1,7 +1,7 @@
 import { Grid, Grow, Skeleton } from "@mui/material";
 
 function GlobalSearchLoadingState() {
-  const listItemsToShow = new Array(4).fill(0);
+  const listItemsToShow = new Array<number>(4).fill(0);
   return (
     <Grow appear in>
       <div>
@@ -14,7 +14,7 @@ function GlobalSearchLoadingState() {
               marginBottom: "1rem",
             }}
           >
-            <Skeleton animation="wave" variant="circle" width="2rem" height="2rem" />
+            <Skeleton animation="wave" variant="circular" width="2rem" height="2rem" />
             <Skeleton variant="text" animation="wave" width="10vw" height="3vh" />
           </Grid>
           {listItemsToShow.map((_item, index) => (
