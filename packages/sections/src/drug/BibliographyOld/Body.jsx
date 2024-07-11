@@ -1,5 +1,5 @@
 import { definition } from ".";
-import { Body as Bibliography } from "../../common/Literature";
+import { Body as Bibliography } from "../../common/LiteratureOld";
 
 import DRUGS_LITERATURE_OCURRENCES from "./BibliographyQuery.gql";
 

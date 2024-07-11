@@ -1,4 +1,4 @@
-import { Body as Bibliography } from "../../common/Literature";
+import { Body as Bibliography } from "../../common/LiteratureOld";
 import { definition } from ".";
 import TARGET_LITERATURE_OCURRENCES from "./SimilarEntities.gql";
 

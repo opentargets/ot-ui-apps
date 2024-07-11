@@ -166,9 +166,9 @@ function Profile({ ensgId, symbol }) {
         <Suspense fallback={<SectionLoader />}>
           <ComparativeGenomicsSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense> */}
-        {/* <Suspense fallback={<SectionLoader />}>
+        <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense> */}
+        </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <BibliographySectionOld id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
