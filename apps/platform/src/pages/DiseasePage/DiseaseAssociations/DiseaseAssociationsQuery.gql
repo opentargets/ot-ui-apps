@@ -8,6 +8,7 @@ query DiseaseAssociationsQuery(
   $enableIndirect: Boolean!
   $datasources: [DatasourceSettingsInput!]
   $rowsFilter: [String!]
+  $facetFilters: [String!]
 ) {
   disease(efoId: $id) {
     id
@@ -20,6 +21,7 @@ query DiseaseAssociationsQuery(
       enableIndirect: $enableIndirect
       datasources: $datasources
       Bs: $rowsFilter
+      facetFilters: $facetFilters
     ) {
       count
       rows {

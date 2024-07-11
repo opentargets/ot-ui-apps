@@ -8,6 +8,7 @@ query TargetAssociationsQuery(
   $enableIndirect: Boolean!
   $datasources: [DatasourceSettingsInput!]
   $rowsFilter: [String!]
+  $facetFilters: [String!]
 ) {
   target(ensemblId: $id) {
     id
@@ -20,6 +21,7 @@ query TargetAssociationsQuery(
       enableIndirect: $enableIndirect
       datasources: $datasources
       Bs: $rowsFilter
+      facetFilters: $facetFilters
     ) {
       count
       rows {
