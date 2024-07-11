@@ -108,15 +108,6 @@ export function DateFilter() {
       category,
       entities: selectedEntities, //selectedEntities as any[],
       cursor: null,
-      //  ?? FOLLOWING PROPS WHERE BEING PASSED, BUT REQUEST DOESN'T TAKE THEM ??!!
-      // earliestPubYear,
-      // globalEntity,
-      // selectedEntities,
-      // litsIds,
-      // page: 0,
-      // pageSize,
-      // litsCount,
-      // loadingEntities,
       ...values,  // values has startYear, startMonth, endYear, endMonth
     });
     const data = request.data[globalEntity];
