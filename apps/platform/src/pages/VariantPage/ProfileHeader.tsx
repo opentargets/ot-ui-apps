@@ -3,8 +3,10 @@ import {
   usePlatformApi,
   Field,
   ProfileHeader as BaseProfileHeader,
+  Link, 
 } from "ui";
 import { Box, Typography } from "@mui/material";
+import { identifiersOrgLink } from "../../utils/global";
 
 import VARIANT_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 
@@ -41,7 +43,12 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
         </Field>
         <Typography variant="subtitle1" mt={1}>Variant Effect Predictor (VEP)</Typography>
         <Field loading={loading} title="Most severe consequence">
-          {data.variant.mostSevereConsequence.label.replace(/_/g, ' ')}
+          <Link
+            external
+            to={identifiersOrgLink("SO", data.variant.mostSevereConsequence.id.slice(3))}
+          >
+            {data.variant.mostSevereConsequence.label.replace(/_/g, ' ')}        
+          </Link>
         </Field>
       </Box>
 
