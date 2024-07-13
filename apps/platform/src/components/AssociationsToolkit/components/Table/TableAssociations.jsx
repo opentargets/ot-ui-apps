@@ -65,6 +65,7 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
         return hasValue ? (
           <TableCell
             hasValue
+            displayedTable={displayedTable}
             scoreId={id}
             scoreValue={cell.getValue()}
             onClick={expanderHandler(cell.row.getToggleExpandedHandler())}

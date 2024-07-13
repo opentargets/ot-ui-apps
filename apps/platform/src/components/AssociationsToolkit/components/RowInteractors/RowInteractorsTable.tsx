@@ -13,6 +13,7 @@ import { grey } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
 
 const btnStyles = {
   cursor: "pointer",
@@ -29,10 +30,9 @@ const btnStyles = {
   },
 };
 
-function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string }) {
+function RowInteractorsTable({ row, columns, rowNameEntity, parentTable }) {
   const {
     id: diseaseId,
-    state,
     sorting,
     enableIndirect,
     dataSourcesWeights,
@@ -49,7 +49,7 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
 
   const label = row.original[entityToGet][rowNameEntity];
 
-  const source: string = state.interactors.get(row.id)[0];
+  const source = "intact";
 
   const { data, loading, interactorsMetadata } = useRowInteractors({
     options: {
@@ -77,6 +77,9 @@ function RowInteractorsTable({ row, columns, rowNameEntity }: { rowId: string })
       sorting,
       pagination,
       loading,
+      prefix: "interactors",
+      parentTable,
+      parentRow: row.id,
     },
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),

@@ -63,6 +63,13 @@ export const getCellId = (cell, entityToGet, displayedTable, tablePrefix = null)
   return [rowId, colId, sectionId, tablePrefix];
 };
 
+export const getColumAndSection = (cell, displayedTable) => {
+  const colId = cell.column.id;
+  const sectionId =
+    displayedTable === "associations" ? cell.column.id : cell.column.columnDef.sectionId;
+  return [colId, sectionId];
+};
+
 export const cellHasValue = score => typeof score === "number";
 
 export const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({

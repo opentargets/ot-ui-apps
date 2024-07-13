@@ -11,3 +11,5 @@ export {
 } from "./context/AssociationsStateContext";
 export { default as useAotfContext } from "./hooks/useAotfContext";
 export * from "./components/layout";
+
+export * from "./context/AssociationsFocusContext";

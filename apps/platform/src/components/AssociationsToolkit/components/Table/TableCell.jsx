@@ -1,6 +1,10 @@
 import { Skeleton, styled } from "@mui/material";
 import Tooltip from "./AssocTooltip";
-import { cellHasValue } from "../../utils";
+import { cellHasValue, getColumAndSection } from "../../utils";
+import {
+  useAssociationsFocus,
+  useAssociationsFocusDispatch,
+} from "../../context/AssociationsFocusContext";
 
 const ScoreElement = styled("div", {
   shouldForwardProp: prop =>
@@ -29,13 +33,35 @@ const defaultCell = {
   },
 };
 
-function TableCell({ onClick, shape = "circular", cell = defaultCell, colorScale }) {
-  const { prefix, loading } = cell.table.getState();
+function TableCell({ shape = "circular", cell = defaultCell, colorScale, displayedTable }) {
+  const { prefix, loading, parentTable, parentRow } = cell.table.getState();
+  const dispatch = useAssociationsFocusDispatch();
   const cellValue = cell.getValue();
   const hasValue = cellHasValue(cellValue);
   const borderColor = hasValue ? colorScale(cellValue) : "#e0dede";
   const backgroundColor = hasValue ? colorScale(cellValue) : "#fafafa";
-  const onClickHandler = onClick ? () => onClick(cell, prefix) : () => ({});
+  // const onClickHandler = onClick ? () => onClick(cell, prefix) : () => ({});
+
+  const onClickHandler = () => {
+    if (prefix === "interactors")
+      return dispatch({
+        type: "SET_INTERACTORS_SECTION",
+        focus: {
+          table: parentTable,
+          row: parentRow,
+          interactorsRow: cell.row.id,
+          section: getColumAndSection(cell, displayedTable),
+        },
+      });
+    return dispatch({
+      type: "SET_FOCUS_SECTION",
+      focus: {
+        table: prefix,
+        row: cell.row.id,
+        section: getColumAndSection(cell, displayedTable),
+      },
+    });
+  };
 
   if (loading) return <Skeleton variant={shape} width={25} height={25} />;
 
@@ -54,7 +80,7 @@ function TableCell({ onClick, shape = "circular", cell = defaultCell, colorScale
         className="data-score"
         backgroundColor={backgroundColor}
         borderColor={borderColor}
-        onClick={onClickHandler}
+        onClick={() => onClickHandler()}
         shape={shape}
       />
     </Tooltip>

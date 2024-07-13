@@ -57,7 +57,7 @@ type RowContainerProps = {
 
 export const RowContainer = styled("div", {
   shouldForwardProp: prop => prop !== "rowExpanded" && prop !== "isSubRow",
-})<RowContainerProps>(({ rowExpanded, isSubRow }) => ({
+})<RowContainerProps>(({ rowExpanded }) => ({
   top: "148px",
   position: rowExpanded ? "sticky" : "initial",
   padding: rowExpanded ? "0.1em 0 0.1em 0" : "0.1em 0 0.1em 0",

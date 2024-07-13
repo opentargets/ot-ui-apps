@@ -11,6 +11,7 @@ import {
   DataUploader,
   AotfApiPlayground,
   SearchInput,
+  AssociationsFocusProvider,
 } from "../../../components/AssociationsToolkit";
 import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
@@ -28,20 +29,26 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
       entity={ENTITY.DISEASE}
       query={DISEASE_ASSOCIATIONS_QUERY}
     >
-      <ControlsSection>
-        <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: theme => theme.spacing(2) }}>
-          {isPartnerPreview ? <FacetsSearch /> : <SearchInput />}
-          <AdvanceOptionsMenu />
-          <DataUploader />
-          <Divider orientation="vertical" />
-          <DataDownloader />
-          <AotfApiPlayground />
-        </Box>
-        <Box sx={{ flex: 1, display: "flex", justifyContent: "end" }}>
-          <TargetPrioritisationSwitch />
-        </Box>
-      </ControlsSection>
-      <TableAssociations />
+      <AssociationsFocusProvider>
+        <>
+          <ControlsSection>
+            <Box
+              sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: theme => theme.spacing(2) }}
+            >
+              {isPartnerPreview ? <FacetsSearch /> : <SearchInput />}
+              <AdvanceOptionsMenu />
+              <DataUploader />
+              <Divider orientation="vertical" />
+              <DataDownloader />
+              <AotfApiPlayground />
+            </Box>
+            <Box sx={{ flex: 1, display: "flex", justifyContent: "end" }}>
+              <TargetPrioritisationSwitch />
+            </Box>
+          </ControlsSection>
+          <TableAssociations />
+        </>
+      </AssociationsFocusProvider>
     </AssociationsProvider>
   );
 }

@@ -24,6 +24,7 @@ import { useHistory } from "react-router-dom";
 import useAotfContext from "../../hooks/useAotfContext";
 import { ENTITIES } from "../../utils";
 import { grey } from "@mui/material/colors";
+import { useAssociationsFocusDispatch } from "../../context/AssociationsFocusContext";
 
 const StyledMenuItem = styled(MenuItem)({
   "&>.MuiListItemIcon-root>svg": {
@@ -74,19 +75,14 @@ const ContextMenuContainer = styled("div", {
 function CellName({ cell, colorScale }) {
   const history = useHistory();
   const contextMenuRef = useRef();
-  const {
-    entityToGet,
-    pinnedEntries,
-    setPinnedEntries,
-    id: currentEntityId,
-    handleSetInteractors,
-  } = useAotfContext();
-  const { loading } = cell.table.getState();
+  const { entityToGet, pinnedEntries, setPinnedEntries, id: currentEntityId } = useAotfContext();
+  const { loading, prefix } = cell.table.getState();
   const name = cell.getValue();
   const { id } = cell.row;
   const { score } = cell.row.original;
   const scoreIndicatorColor = colorScale(score);
   const [openContext, setOpenContext] = useState(false);
+  const dispatch = useAssociationsFocusDispatch();
 
   const isPinned = pinnedEntries.find(e => e === id);
   const profileURL = `/${entityToGet}/${id}`;
@@ -103,6 +99,17 @@ function CellName({ cell, colorScale }) {
 
   const handleToggle = () => {
     setOpenContext(true);
+  };
+
+  const handleClickInteractors = () => {
+    dispatch({
+      type: "SET_INTERACTORS_ON",
+      focus: {
+        table: prefix,
+        row: cell.row.id,
+      },
+    });
+    setOpenContext(false);
   };
 
   const handleClickPin = () => {
@@ -189,7 +196,7 @@ function CellName({ cell, colorScale }) {
           {entityToGet === ENTITIES.TARGET && (
             <StyledMenuItem
               onClick={() => {
-                handleSetInteractors(id, "intact");
+                handleClickInteractors();
               }}
             >
               <ListItemIcon>
