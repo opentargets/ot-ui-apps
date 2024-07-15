@@ -8,6 +8,7 @@ const INITIAL_ROW_COUNT = 30;
 
 const getEmptyRow = () => ({
   dataSources: {},
+  prioritisations: {},
   score: 0,
   disease: { id: v1() },
   target: { id: v1() },
