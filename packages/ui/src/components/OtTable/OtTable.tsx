@@ -28,8 +28,9 @@ import OtTableColumnFilter from "./OtTableColumnFilter";
 // import { naLabel } from "../../constants";
 import OtTableSearch from "./OtTableSearch";
 import { OtTableProps } from "./table.types";
-import { FontAwesomeIconPadded, OtTableContainer, OtTableHeader } from "./layout";
+import { FontAwesomeIconPadded, OtTableContainer, OtTableHeader } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
+import { getDefaultSortObj, mapTableColumnToTanstackColumns } from "./tableUtil";
 
 const useStyles = makeStyles(theme => ({
   stickyColumn: {
@@ -73,9 +74,10 @@ function OtTable({
   showGlobalFilter = true,
   tableDataLoading = false,
   columns = [],
-  dataRows = [],
+  rows = [],
   verticalHeaders = false,
-  defaultSortObj,
+  order,
+  sortBy,
   dataDownloader,
   dataDownloaderColumns,
   dataDownloaderFileStem,
@@ -87,9 +89,11 @@ function OtTable({
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
+  const mappedColumns = mapTableColumnToTanstackColumns(columns);
+
   const table = useReactTable({
-    data: dataRows,
-    columns,
+    data: rows,
+    columns: mappedColumns,
     filterFns: {
       searchFilterFn: searchFilter,
     },
@@ -98,7 +102,7 @@ function OtTable({
       globalFilter,
     },
     initialState: {
-      sorting: [{ ...defaultSortObj }],
+      sorting: [getDefaultSortObj(sortBy, order)],
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
@@ -118,14 +122,14 @@ function OtTable({
 
   function getCurrentPagePosition() {
     const { pageIndex, pageSize } = table.getState().pagination;
-    const pageEndResultSize =
-      pageIndex * pageSize + pageSize <= dataRows.length
-        ? pageIndex * pageSize + pageSize
-        : dataRows.length;
-    return `${pageIndex * pageSize + 1} - ${pageEndResultSize} of ${dataRows.length}`;
-  }
+    const currentPageStartRange = pageIndex * pageSize + 1;
+    const currentPageEndRange = pageIndex * pageSize + pageSize;
+    const pageEndResultSize = Math.min(currentPageEndRange, table.getGroupedRowModel().rows.length);
 
-  console.log("render");
+    return `${currentPageStartRange} - ${pageEndResultSize} of ${
+      table.getGroupedRowModel().rows.length
+    }`;
+  }
 
   return (
     <div>
@@ -139,7 +143,7 @@ function OtTable({
             <Grid item sm={12} md={8} sx={{ ml: "auto" }}>
               <DataDownloader
                 columns={dataDownloaderColumns || columns}
-                rows={dataRows}
+                rows={rows}
                 fileStem={dataDownloaderFileStem}
                 query={query}
                 variables={variables}

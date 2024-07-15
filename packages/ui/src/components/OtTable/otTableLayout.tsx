@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { styled } from "@mui/material";
+import { Popover, styled } from "@mui/material";
 
 export const OtTableContainer = styled("table")(({ theme }) => ({
   whiteSpace: "nowrap",
@@ -51,4 +51,13 @@ export const OtTableHeader = styled("div", {
 
 export const FontAwesomeIconPadded = styled(FontAwesomeIcon)(({ theme }) => ({
   padding: `0 ${theme.spacing(1)}`,
+}));
+
+export const ColumnFilterPopover = styled(Popover)(({ theme }) => ({
+  ".MuiPopover-paper": {
+    maxHeight: "60vh",
+    boxShadow: "none",
+    borderRadius: 4,
+    border: `1px solid ${theme.palette.grey[400]}`,
+  },
 }));

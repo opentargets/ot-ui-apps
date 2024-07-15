@@ -9,10 +9,10 @@ import {
   InputAdornment,
   List,
   ListItemButton,
-  Popover,
   TextField,
 } from "@mui/material";
 import { v1 } from "uuid";
+import { ColumnFilterPopover } from "./otTableLayout";
 
 function OtTableColumnFilter({ column }: { column: Column<any, unknown> }): ReactElement {
   /*****************************************
@@ -34,9 +34,7 @@ function OtTableColumnFilter({ column }: { column: Column<any, unknown> }): Reac
    *            EXAMPLE: {"COMPLETED": 1 }          *
    **************************************************/
   function getAllUniqueOptions() {
-    const uniqueArray = Array.from(column.getFacetedUniqueValues())
-      .sort()
-      .filter(n => n[0] && n);
+    const uniqueArray = Array.from(column.getFacetedUniqueValues()).sort();
     const uniqueObjectWithCount = Object.fromEntries(uniqueArray);
     return uniqueObjectWithCount;
   }
@@ -65,7 +63,8 @@ function OtTableColumnFilter({ column }: { column: Column<any, unknown> }): Reac
       </IconButton>
 
       {/* FILTER POPOVER */}
-      <Popover
+      <ColumnFilterPopover
+        disableScrollLock
         id={id}
         open={open}
         anchorEl={anchorEl}
@@ -78,7 +77,6 @@ function OtTableColumnFilter({ column }: { column: Column<any, unknown> }): Reac
           vertical: "top",
           horizontal: "left",
         }}
-        sx={{ maxHeight: "60vh" }}
       >
         <Grid container direction="column" spacing={2}>
           {/* INPUT FOR COLUMN FILTER */}
@@ -91,14 +89,14 @@ function OtTableColumnFilter({ column }: { column: Column<any, unknown> }): Reac
               onChange={e => setColumnFilterInputValue(e.target.value)}
               placeholder={`Search..`}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <FontAwesomeIcon icon={faMagnifyingGlass} />
-                  </InputAdornment>
-                ),
+                // startAdornment: (
+                //   <InputAdornment position="start">
+                //     <FontAwesomeIcon icon={faMagnifyingGlass} />
+                //   </InputAdornment>
+                // ),
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={clearInput}>
+                    <IconButton disableRipple onClick={clearInput}>
                       <FontAwesomeIcon icon={faXmark} size="xs" />
                     </IconButton>
                   </InputAdornment>
@@ -117,6 +115,7 @@ function OtTableColumnFilter({ column }: { column: Column<any, unknown> }): Reac
                    ****************************************************/
                   String(keyName).search(new RegExp(columnFilterInputValue, "i")) !== -1 && (
                     <ListItemButton
+                      disableRipple
                       key={v1()}
                       sx={{ display: "flex", justifyContent: "space-between" }}
                       onClick={() => {
@@ -135,7 +134,7 @@ function OtTableColumnFilter({ column }: { column: Column<any, unknown> }): Reac
             </List>
           </Grid>
         </Grid>
-      </Popover>
+      </ColumnFilterPopover>
 
       <div className="h-1" />
     </>

@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/table-core";
  * OT TABLE CLIENT SIDE TYPES *
  ******************************/
 
-type DefaultSortProp = {
+export type DefaultSortProp = {
   id: string;
   desc: boolean;
 };
@@ -14,8 +14,10 @@ export type OtTableProps = {
   showGlobalFilter: boolean;
   tableDataLoading: boolean;
   columns: Array<any>;
-  dataRows: Array<any>;
+  rows: Array<any>;
   verticalHeaders: boolean;
+  order: "asc" | "desc";
+  sortBy: string;
   defaultSortObj: DefaultSortProp;
   dataDownloader: boolean;
   dataDownloaderColumns?: Array<any>;
