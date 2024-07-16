@@ -19,6 +19,10 @@ const theme = {
       fontWeight: 500,
       fontSize: ".80rem",
     },
+    controlHeader: {
+      fontWeight: 600,
+      fontSize: "0.875rem",
+    },
   },
   palette: {
     primary: {

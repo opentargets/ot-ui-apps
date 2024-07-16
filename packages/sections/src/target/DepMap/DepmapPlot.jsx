@@ -1,7 +1,8 @@
 import { useRef, useEffect } from "react";
 import * as Plot from "@observablehq/plot";
 import { useMeasure } from "@uidotdev/usehooks";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { grey } from "@mui/material/colors";
 
 const prepareData = (data = []) => {
   const flatData = data.reduce((accumulator, currentValue) => {
@@ -18,8 +19,33 @@ function Wrapper({ data }) {
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
       <div style={{ width: "95%" }} ref={ref}>
+        <ChartControls />
         <DepmapPlot data={data} width={width} />
       </div>
+    </Box>
+  );
+}
+
+function ChartControls({ data }) {
+  return (
+    <Box
+      sx={{
+        border: 1,
+        borderColor: grey[300],
+        background: grey[100],
+        borderRadius: 2,
+        display: "flex",
+        justifyContent: "space-between",
+        py: 1,
+        px: 2,
+      }}
+    >
+      <Box>
+        <Typography variant="controlHeader">Cancer DepMap</Typography>
+      </Box>
+      <Box>
+        <Typography variant="controlHeader">Actions</Typography>
+      </Box>
     </Box>
   );
 }
@@ -45,7 +71,7 @@ function DepmapPlot({ data, width }) {
         scheme: "burd",
       },
       marks: [
-        Plot.ruleX([-1], { strokeDasharray: 4, stroke: "tomato" }),
+        Plot.ruleX([-1], { strokeDasharray: 4, stroke: "#EC2846" }),
         Plot.boxX(parsedData, {
           r: 0,
           x: "geneEffect",
@@ -56,7 +82,7 @@ function DepmapPlot({ data, width }) {
           x: "geneEffect",
           y: "tissueName",
           tip: true,
-          fill: d => (d.geneEffect < -1 ? "tomato" : "#08519C"),
+          fill: d => (d.geneEffect < -1 ? "#EC2846" : "#08519C"),
           fillOpacity: 0.5,
         }),
         Plot.crosshair(parsedData, { x: "geneEffect", y: "tissueName" }),
