@@ -14,6 +14,7 @@ import DrugPage from "./pages/DrugPage";
 import TargetPage from "./pages/TargetPage";
 import EvidencePage from "./pages/EvidencePage";
 import VariantPage from "./pages/VariantPage";
+import StudyPage from "./pages/StudyPage";
 import APIPage from "./pages/APIPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -55,6 +56,9 @@ function App() {
                 </Route>
                 <Route path="/variant/:varId">
                   <VariantPage />
+                </Route>
+                <Route path="/study/:studyId">
+                  <StudyPage />
                 </Route>
                 <Route path="/api">
                   <APIPage />
