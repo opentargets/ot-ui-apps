@@ -6,7 +6,7 @@ import { Grid } from "@mui/material";
 
 import AggregationsRow from "./AggregationsRow";
 import useAotfContext from "../../hooks/useAotfContext";
-import { GridContainer } from "../tableLayout";
+import { GridContainer } from "../layout";
 
 const getHeaderContainerClassName = ({ id }) => {
   if (id === "1_naiming-cols_name") return "naiming-cols";

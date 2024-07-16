@@ -235,7 +235,7 @@ function OtTable({
           display: "flex",
           justifyContent: "end",
           alignItems: "center",
-          padding: theme => `${theme.spacing(2)} 0 ${theme.spacing(4)}`,
+          padding: theme => `${theme.spacing(2)} 0 `,
         }}
       >
         {tableDataLoading && <CircularProgress sx={{ mx: theme => theme.spacing(2) }} size={25} />}
@@ -272,10 +272,7 @@ function OtTable({
           }}
         >
           <div>
-            <span>Page </span>
-            <span>
-              <strong>{getCurrentPagePosition()}</strong>
-            </span>
+            <span>{getCurrentPagePosition()}</span>
           </div>
 
           <div className="paginationAction">

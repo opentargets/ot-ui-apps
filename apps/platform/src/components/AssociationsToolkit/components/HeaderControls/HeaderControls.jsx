@@ -7,7 +7,7 @@ import dataSources from "../../static_datasets/dataSourcesAssoc";
 
 import Slider from "./SliderControl";
 import Required from "./RequiredControl";
-import { GridContainer } from "../tableLayout";
+import { GridContainer } from "../layout";
 
 import useAotfContext from "../../hooks/useAotfContext";
 

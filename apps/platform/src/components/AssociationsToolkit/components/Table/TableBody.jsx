@@ -9,7 +9,7 @@ import { grey } from "@mui/material/colors";
 import useAotfContext from "../../hooks/useAotfContext";
 
 import { getCellId } from "../../utils";
-import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../tableLayout";
+import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
 

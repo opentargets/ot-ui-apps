@@ -10,4 +10,4 @@ export {
   AssociationsStateProvider as AssociationsProvider,
 } from "./context/AssociationsStateContext";
 export { default as useAotfContext } from "./hooks/useAotfContext";
-export * from "./components/tableLayout";
+export * from "./components/layout";
