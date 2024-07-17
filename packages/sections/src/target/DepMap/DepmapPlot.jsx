@@ -26,14 +26,15 @@ function Wrapper({ data }) {
   );
 }
 
-function ChartControls({ data }) {
+function ChartControls({ data, header }) {
   return (
     <Box
       sx={{
-        border: 1,
+        // boxShadow: 1,
+        borderBottom: 1,
         borderColor: grey[300],
-        background: grey[100],
-        borderRadius: 2,
+        // background: grey[100],
+        borderRadius: 1,
         display: "flex",
         justifyContent: "space-between",
         py: 1,
