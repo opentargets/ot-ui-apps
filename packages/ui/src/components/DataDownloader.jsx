@@ -1,148 +1,220 @@
-import { Button, Grid, Typography } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-
+import _ from "lodash";
+import { useState } from "react";
 import FileSaver from "file-saver";
+import { makeStyles } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCode, faFileArrowDown, faTable } from "@fortawesome/free-solid-svg-icons";
+import {
+  Button,
+  Grid,
+  CircularProgress,
+  Snackbar,
+  Slide,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import "graphiql/graphiql.min.css";
+import ApiPlaygroundDrawer from "./ApiPlaygroundDrawer";
 
-const UNEXPECTED_FORMAT = "Unexpected format. Supported options are csv, tsv and json.";
+const asJSON = (columns, rows) => {
+  const rowStrings = rows.map(row =>
+    columns.reduce((accumulator, newKey) => {
+      if (newKey.exportValue === false) return accumulator;
 
-const pick = (object, keys) =>
-  keys.reduce((o, k) => {
-    // take into account optional export() function, which takes precedence as per other download formats
-    o[k.id] = k.export ? k.export(object) : object[k.id];
-    return o;
-  }, {});
+      const newLabel = _.camelCase(newKey.exportLabel || newKey.label || newKey.id);
 
-const quoteIfString = d => (typeof d === "string" ? `"${d}"` : d);
-
-const asJSONString = ({ rows, headerMap }) => {
-  // use the full headerMap which contain optional export() function for each header
-  const rowsHeadersOnly = rows.map(row => pick(row, headerMap));
-  return JSON.stringify(rowsHeadersOnly);
-};
-
-const asCSVString = ({ rows, headerMap }) => {
-  const separator = ",";
-  const lineSeparator = "\n";
-  const headersString = headerMap.map(d => quoteIfString(d.label)).join(separator);
-  const rowsArray = rows.map(row =>
-    headerMap
-      .map(header => quoteIfString(header.export ? header.export(row) : row[header.id]))
-      .join(separator)
+      return {
+        ...accumulator,
+        [newLabel]: newKey.exportValue
+          ? newKey.exportValue(row)
+          : _.get(row, newKey.propertyPath || newKey.id, ""),
+      };
+    }, {})
   );
-  return [headersString, ...rowsArray].join(lineSeparator);
+
+  return JSON.stringify(rowStrings);
 };
 
-const asTSVString = ({ rows, headerMap }) => {
-  const separator = "\t";
+const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
+  const quoteString = d => {
+    let result = d;
+    // converts arrays to strings
+    if (Array.isArray(d)) {
+      result = d.join(",");
+    }
+    return quoteStrings && typeof result === "string" ? `"${result}"` : result;
+  };
+
   const lineSeparator = "\n";
-  const headersString = headerMap.map(d => d.label).join(separator);
-  const rowsArray = rows.map(row =>
-    headerMap.map(header => (header.export ? header.export(row) : row[header.id])).join(separator)
-  );
-  return [headersString, ...rowsArray].join(lineSeparator);
+
+  const headerString = columns
+    .reduce((accHeaderString, column) => {
+      if (column.exportValue === false) return accHeaderString;
+
+      const newLabel = quoteString(_.camelCase(column.exportLabel || column.label || column.id));
+
+      return [...accHeaderString, newLabel];
+    }, [])
+    .join(separator);
+
+  const rowStrings = rows
+    .map(row =>
+      columns
+        .reduce((rowString, column) => {
+          if (column.exportValue === false) return rowString;
+
+          const newValue = quoteString(
+            column.exportValue
+              ? column.exportValue(row)
+              : _.get(row, column.propertyPath || column.id, "")
+          );
+
+          return [...rowString, newValue];
+        }, [])
+        .join(separator)
+    )
+    .join(lineSeparator);
+
+  return [headerString, rowStrings].join(lineSeparator);
 };
 
-const asContentString = ({ rows, headerMap, format }) => {
-  switch (format) {
-    case "json":
-      return asJSONString({ rows, headerMap });
-    case "csv":
-      return asCSVString({ rows, headerMap });
-    case "tsv":
-      return asTSVString({ rows, headerMap });
-    default:
-      throw Error(UNEXPECTED_FORMAT);
-  }
-};
+const createBlob = format =>
+  ({
+    json: (columns, rows) =>
+      new Blob([asJSON(columns, rows)], {
+        type: "application/json;charset=utf-8",
+      }),
+    csv: (columns, rows) =>
+      new Blob([asDSV(columns, rows)], {
+        type: "text/csv;charset=utf-8",
+      }),
+    tsv: (columns, rows) =>
+      new Blob([asDSV(columns, rows, "\t", false)], {
+        type: "text/tab-separated-values;charset=utf-8",
+      }),
+  }[format]);
 
-const asMimeType = format => {
-  switch (format) {
-    case "json":
-      return "application/json;charset=utf-8";
-    case "csv":
-      return "text/csv;charset=utf-8";
-    case "tsv":
-      return "text/tab-separated-values;charset=utf-8";
-    default:
-      throw Error(UNEXPECTED_FORMAT);
-  }
-};
-
-const downloadTable = async ({ rows: getRows, headerMap, format, filenameStem }) => {
-  let data = null;
-  let rows = getRows;
-  if (typeof getRows === "function") {
-    data = await getRows();
-    rows = data;
-  }
-
-  if (!rows || rows.length === 0) {
-    console.info("Nothing to download.");
-    return;
-  }
-
-  const contentString = asContentString({ rows, headerMap, format });
-  const blob = new Blob([contentString], {
-    type: asMimeType(format),
-  });
-  FileSaver.saveAs(blob, `${filenameStem}.${format}`, { autoBOM: false });
-};
-
-const useStyles = makeStyles(theme => ({
-  container: {
-    marginBottom: "2px",
+const styles = makeStyles(theme => ({
+  messageProgress: {
+    marginRight: "1rem",
+    color: "white !important",
   },
-  caption: {
-    alignSelf: "center",
+  snackbarContentMessage: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    padding: ".75rem 1rem",
+    width: "100%",
   },
-  downloadHeader: {
-    marginTop: "7px",
+  snackbarContentRoot: {
+    padding: 0,
   },
 }));
 
-function handleDownload(headers, rows, fileStem, format) {
-  downloadTable({
-    headerMap: headers,
-    rows,
-    format,
-    filenameStem: fileStem,
-  });
-}
+function DataDownloader({ columns, rows, fileStem, query, variables }) {
+  const [downloading, setDownloading] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-function DataDownloader({ tableHeaders, rows, fileStem }) {
-  const classes = useStyles();
+  const classes = styles();
+  const open = Boolean(anchorEl);
+
+  const handleClickExportButton = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const downloadData = async (format, dataColumns, dataRows, dataFileStem) => {
+    let allRows = dataRows;
+
+    if (typeof dataRows === "function") {
+      setDownloading(true);
+      allRows = await dataRows();
+      setDownloading(false);
+    }
+
+    if (!allRows || allRows.length === 0) {
+      return;
+    }
+
+    const blob = createBlob(format)(dataColumns, allRows);
+
+    FileSaver.saveAs(blob, `${dataFileStem}.${format}`, { autoBOM: false });
+  };
+
+  const handleClickDownloadJSON = async () => {
+    downloadData("json", columns, rows, fileStem);
+    handleClose();
+  };
+
+  const handleClickDownloadTSV = async () => {
+    downloadData("tsv", columns, rows, fileStem);
+    handleClose();
+  };
+
   return (
-    <Grid container justifyContent="flex-end" spacing={1} className={classes.container}>
-      <Grid item className={classes.caption}>
-        <Typography variant="caption" className={classes.downloadHeader}>
-          Download table as
-        </Typography>
+    <>
+      <Grid container alignItems="center" justifyContent="flex-end" spacing={1}>
+        <Grid item>
+          <Button
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClickExportButton}
+            sx={{ display: "flex", gap: 1 }}
+          >
+            <FontAwesomeIcon icon={faFileArrowDown} /> Export
+          </Button>
+        </Grid>
+        {query ? <ApiPlaygroundDrawer query={query} variables={variables} /> : null}
       </Grid>
-      <Grid item>
-        <Button
-          variant="outlined"
-          onClick={() => handleDownload(tableHeaders, rows, fileStem, "json")}
-        >
-          JSON
-        </Button>
-      </Grid>
-      <Grid item>
-        <Button
-          variant="outlined"
-          onClick={() => handleDownload(tableHeaders, rows, fileStem, "csv")}
-        >
-          CSV
-        </Button>
-      </Grid>
-      <Grid item>
-        <Button
-          variant="outlined"
-          onClick={() => handleDownload(tableHeaders, rows, fileStem, "tsv")}
-        >
-          TSV
-        </Button>
-      </Grid>
-    </Grid>
+
+      <Menu id="export-data-menu" anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem onClick={handleClickDownloadJSON}>
+          <ListItemIcon>
+            <FontAwesomeIcon icon={faCode} size="sm" />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography noWrap variant="body2">
+              Json
+            </Typography>
+          </ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleClickDownloadTSV}>
+          <ListItemIcon>
+            <FontAwesomeIcon icon={faTable} size="sm" />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography noWrap variant="body2">
+              TSV
+            </Typography>
+          </ListItemText>
+        </MenuItem>
+      </Menu>
+
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={downloading}
+        TransitionComponent={Slide}
+        ContentProps={{
+          classes: {
+            root: classes.snackbarContentRoot,
+            message: classes.snackbarContentMessage,
+          },
+        }}
+        message={
+          <>
+            <CircularProgress className={classes.messageProgress} />
+            Preparing data...
+          </>
+        }
+      />
+    </>
   );
 }
 
