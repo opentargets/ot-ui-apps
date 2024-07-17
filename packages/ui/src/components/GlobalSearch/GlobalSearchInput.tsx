@@ -1,4 +1,4 @@
-import { useContext, memo } from "react";
+import { useContext, memo, FocusEvent, ChangeEvent, ReactElement } from "react";
 import { styled } from "@mui/material";
 
 import { SearchContext, SearchInputContext } from "./SearchContext";
@@ -17,7 +17,7 @@ const SearchInput = styled("input")(({ theme }) => ({
   },
 }));
 
-function GlobalSearchInput() {
+function GlobalSearchInput(): ReactElement {
   const { searchPlaceholder } = useContext(SearchContext);
   const { inputValue, setInputValue } = useContext(SearchInputContext);
 
@@ -27,8 +27,8 @@ function GlobalSearchInput() {
       autoFocus
       value={inputValue}
       type="text"
-      onChange={e => setInputValue(e.currentTarget.value)}
-      onFocus={e => {
+      onChange={(e: ChangeEvent<HTMLInputElement>) => setInputValue(e.currentTarget.value)}
+      onFocus={(e: FocusEvent<HTMLInputElement>) => {
         e.currentTarget.select();
       }}
     />
