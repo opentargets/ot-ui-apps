@@ -47,7 +47,7 @@ function Header({ loading, studyId, traitFromSource, backgroundTraits, targetId,
             url={traitLink.url}
           />
           { 
-            studyType === "GWAS" && backgroundTraits &&
+            studyType === "GWAS" && backgroundTraits.length > 0 &&
               <XRefLinks
                 label="Background traits"
                 urlStem="../disease/"

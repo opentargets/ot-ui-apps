@@ -3,7 +3,10 @@ query StudyPageQuery($studyId: String!) {
     studyId
     projectId
     traitFromSource
-    backgroundTraits
+    backgroundTraits {
+      id
+      name
+    }
     target {
       id
     }
