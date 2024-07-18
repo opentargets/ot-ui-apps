@@ -179,18 +179,18 @@ function OtTable({
                                 showHelpIcon={!!header.column.columnDef.tooltip}
                               >
                                 {flexRender(header.column.columnDef.header, header.getContext())}
-                                {!header.column.getIsSorted() && header.column.getCanSort() && (
-                                  <FontAwesomeIcon
-                                    size="sm"
-                                    icon={faArrowUp}
-                                    className="sortableColumn"
-                                  />
-                                )}
-                                {{
-                                  asc: <FontAwesomeIconPadded size="sm" icon={faArrowUp} />,
-                                  desc: <FontAwesomeIconPadded size="sm" icon={faArrowDown} />,
-                                }[header.column.getIsSorted() as string] ?? null}
                               </Tooltip>
+                              {!header.column.getIsSorted() && header.column.getCanSort() && (
+                                <FontAwesomeIcon
+                                  size="sm"
+                                  icon={faArrowUp}
+                                  className="sortableColumn"
+                                />
+                              )}
+                              {{
+                                asc: <FontAwesomeIconPadded size="sm" icon={faArrowUp} />,
+                                desc: <FontAwesomeIconPadded size="sm" icon={faArrowDown} />,
+                              }[header.column.getIsSorted() as string] ?? null}
                             </OtTableHeaderText>
 
                             {header.column.getCanFilter() ? (
