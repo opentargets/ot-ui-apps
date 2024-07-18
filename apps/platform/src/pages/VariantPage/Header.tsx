@@ -3,7 +3,7 @@ import { Header as HeaderBase, XRefLinks } from "ui";
 import { VariantPageDataType } from "./types";
 
 const xrefsToDisplay = {
-  ensemblVariation: {
+  ensembl_variation: {
     label: "Ensembl",
     urlStem: "https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=",
   },
