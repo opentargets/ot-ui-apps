@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Popover, styled } from "@mui/material";
+import { Box, Popper, styled } from "@mui/material";
 
 export const OtTableContainer = styled("table")(({ theme }) => ({
   whiteSpace: "nowrap",
@@ -53,11 +53,33 @@ export const FontAwesomeIconPadded = styled(FontAwesomeIcon)(({ theme }) => ({
   padding: `0 ${theme.spacing(1)}`,
 }));
 
-export const ColumnFilterPopover = styled(Popover)(({ theme }) => ({
-  ".MuiPopover-paper": {
-    maxHeight: "60vh",
-    boxShadow: "none",
-    borderRadius: 4,
-    border: `1px solid ${theme.palette.grey[400]}`,
-  },
+export const ColumnFilterPopper = styled(Popper)(({ theme }) => ({
+  maxHeight: "60vh",
+  borderRadius: 4,
+  border: `1px solid ${theme.palette.grey[400]}`,
+  background: "white",
+}));
+
+export const OtTH = styled("th", {
+  shouldForwardProp: prop => prop !== "stickyColumn",
+})(({ theme, stickyColumn }) => ({
+  ...(stickyColumn && {
+    left: "0",
+    position: "sticky",
+    backgroundColor: theme.palette.grey[100],
+    zIndex: 1,
+  }),
+}));
+
+export const OtTableHeaderText = styled(Box, {
+  shouldForwardProp: prop => prop !== "verticalHeader",
+})(({ verticalHeader }) => ({
+  typography: "subtitle2",
+  ...(verticalHeader && {
+    writingMode: "vertical-rl",
+    transform: "rotate(180deg)",
+    // TODO: TBC
+    maxHeight: "20rem",
+    height: "14rem",
+  }),
 }));

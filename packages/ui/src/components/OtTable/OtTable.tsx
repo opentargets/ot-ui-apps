@@ -28,7 +28,13 @@ import OtTableColumnFilter from "./OtTableColumnFilter";
 // import { naLabel } from "../../constants";
 import OtTableSearch from "./OtTableSearch";
 import { OtTableProps } from "./table.types";
-import { FontAwesomeIconPadded, OtTableContainer, OtTableHeader } from "./otTableLayout";
+import {
+  FontAwesomeIconPadded,
+  OtTableContainer,
+  OtTableHeader,
+  OtTH,
+  OtTableHeaderText,
+} from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
 import { getDefaultSortObj, mapTableColumnToTanstackColumns } from "./tableUtil";
 
@@ -69,6 +75,14 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Return if the item should be filtered in/out
   return itemRank.passed;
 };
+
+// missing keys from column data obj
+/************
+ *  WIDTH *
+ * tooltip
+ * minWidth
+ * numeric
+ ************/
 
 function OtTable({
   showGlobalFilter = true,
@@ -161,24 +175,20 @@ function OtTable({
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => {
                   return (
-                    <th
+                    <OtTH
                       key={header.id}
                       colSpan={header.colSpan}
-                      className={`${header.column.columnDef.sticky ? classes.stickyColumn : ""}`}
+                      stickyColumn={header.column.columnDef.sticky}
                     >
                       {header.isPlaceholder ? null : (
                         <>
                           <OtTableHeader canBeSorted={header.column.getCanSort()}>
-                            <Box
-                              className={`${
-                                verticalHeaders || header.column.columnDef.verticalHeader
-                                  ? classes.verticalHeaders
-                                  : ""
-                              }`}
+                            <OtTableHeaderText
+                              verticalHeader={
+                                header.column.columnDef.verticalHeader || verticalHeaders
+                              }
                               onClick={header.column.getToggleSortingHandler()}
-                              sx={{
-                                typography: "subtitle2",
-                              }}
+                              sx={{ typography: "subtitle2" }}
                             >
                               {flexRender(header.column.columnDef.header, header.getContext())}
                               {!header.column.getIsSorted() && header.column.getCanSort() && (
@@ -192,14 +202,14 @@ function OtTable({
                                 asc: <FontAwesomeIconPadded size="sm" icon={faArrowUp} />,
                                 desc: <FontAwesomeIconPadded size="sm" icon={faArrowDown} />,
                               }[header.column.getIsSorted() as string] ?? null}
-                            </Box>
+                            </OtTableHeaderText>
                             {header.column.getCanFilter() ? (
                               <OtTableColumnFilter column={header.column} />
                             ) : null}
                           </OtTableHeader>
                         </>
                       )}
-                    </th>
+                    </OtTH>
                   );
                 })}
               </tr>

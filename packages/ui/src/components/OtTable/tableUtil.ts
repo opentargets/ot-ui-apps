@@ -7,8 +7,21 @@ export function mapTableColumnToTanstackColumns(allColumns: any[]): any[] {
   return allColumns.map(column => mapToTanstackColumnObject(column));
 }
 
+// TO BE USED WHEN WANT TO USE MULTIPLE VALUE IN COLUMN FOR FILTERING
+// if disease object has id and name, and want to enable search for both of them
+// example(in column object): TODO: figure out a way to call this
+
 /******************************************************
  * FLATTENS THE OBJECT RETURNS THE VALUES AS A STRING *
+ * @param: object 
+ * const ob = {
+    disease: {
+        name: "cancer"
+        id: "MONDO_0004992"
+    }
+  };
+  @example: getFilterValueFromObject(ob)
+  @return: 'cancer MONDO_0004992'
  ******************************************************/
 export function getFilterValueFromObject(obj: Record<string, unknown>): string {
   const flatObj = flattenObj(obj);
@@ -16,7 +29,12 @@ export function getFilterValueFromObject(obj: Record<string, unknown>): string {
 }
 
 /**********************************************************
- * FN TO RETURN SORT OBJ EXPECTED BY TANSTACK TABLE STATE *
+ * FN TO RETURN SORT OBJECT REQUIRED BY TANSTACK TABLE STATE *
+ * @param:
+ *  sortBy: type string
+ *  order: type string
+ * @example: getDefaultSortObj("pValue", "asc")
+ * @return: { id: "pValue", desc: false}: type DefaultSortProp
  **********************************************************/
 export function getDefaultSortObj(sortBy: string, order: string): DefaultSortProp {
   return {
@@ -26,19 +44,16 @@ export function getDefaultSortObj(sortBy: string, order: string): DefaultSortPro
 }
 
 /*****************************************************
- * FLATTEN THE NESTED OBJECT FOR BETTER FILTER VALUE *
- * Example @param object 
- * let ob = {
-    disease: {
-        name: "cancer"
-    }
-  };
-  OUTPUT: 
-  {
-  'disease.name': 'cancer'
-  }
+ * CONVERT THE NESTED OBJECT TO FLAT OBJECT *
+ * @param: object 
+ *  const ob = {
+      disease: {
+          name: "cancer"
+      }
+    };
+  @example: flattenObj(ob)
+  @return: { 'disease.name': 'cancer' }
  *****************************************************/
-
 export function flattenObj(ob: Record<string, unknown>): Record<string, unknown> {
   const result: Record<string, unknown> = {};
 
@@ -51,9 +66,9 @@ export function flattenObj(ob: Record<string, unknown>): Record<string, unknown>
   return result;
 }
 
-/******************************************************************
- * FN TO MAP EACH KEY FROM CLASSIC COLUMN FOR NEW TANSTACK COLUMN *
- ******************************************************************/
+/****************************************************************************
+ * FN TO MAP EACH KEY FROM CLASSIC MUI COLUMN OBJECT TO NEW TANSTACK COLUMN *
+ ****************************************************************************/
 function mapToTanstackColumnObject(
   originalTableObject: Record<string, unknown>
 ): Record<string, unknown> {
@@ -64,47 +79,36 @@ function mapToTanstackColumnObject(
     enableColumnFilter: originalTableObject.enableColumnFilter || false,
     accessorFn: (row: Record<string, unknown>) => {
       /**************************************************************
-       * ASSIGN ACCESSORFN EITHER FILTERVALUE
-       * EX: CUSTOM FN ADDED TO COLUMN
-       * OR
-       * OBJECT ID CHAINNED
-       * EX: disease.name into row["disease"]["name"] *
+       * ASSIGN EITHER CUSTOM FILTERVALUE OR ID
        **************************************************************/
       if (originalTableObject.filterValue) return originalTableObject.filterValue(row);
-      const accessorKeys = originalTableObject.id.split(".");
-      const filterValue = accessorKeys.reduce(
-        (lastValue, currentValue) => lastValue[currentValue],
-        row
-      );
-      return filterValue;
+      return getValueFromChainedId(originalTableObject.id, row);
     },
     cell: ({ row }: { row: Record<string, unknown> }) => {
       /**************************************************************
-       * ASSIGN CELL EITHER RENDERCELL
-       * EX: CUSTOM RENDERCELL ADDED TO COLUMN
-       * OR
-       * OBJECT ID CHAINNED
-       * EX: disease.name into row["disease"]["name"] *
+       * ASSIGN CELL EITHER CUSTOM RENDER CELL OR ID*
        **************************************************************/
       if (originalTableObject.renderCell) return originalTableObject.renderCell(row.original);
-      const accessorKeys = originalTableObject.id.split(".");
-      const filterValue = accessorKeys.reduce(
-        (lastValue, currentValue) => lastValue[currentValue],
-        row
-      );
-      return filterValue;
+      return getValueFromChainedId(originalTableObject.id, row);
     },
     ...originalTableObject,
   };
   return { ...newTanstackObject };
 }
 
-// missing keys from column data obj
-/************
- *  WIDTH *
- * filter value - ? check
- * exportValue
- * tooltip
- * minWidth
- * numeric
- ************/
+/***********************************************
+ * EXTRACT OBJECT VALUE FROM STRING IDENTIFIER *
+ * @params :
+ *  id: type string
+ *  obj: type object
+ * @example : getValueFromChainedId("disease.name", {disease: { "name": "cancer"}})*
+ * @return: cancer
+ ***********************************************/
+function getValueFromChainedId(id: string, obj: Record<string, unknown>) {
+  const accessorKeys = id.split(".");
+  const filterValue = accessorKeys.reduce(
+    (accumulator, currentValue) => accumulator[currentValue],
+    obj
+  );
+  return filterValue;
+}

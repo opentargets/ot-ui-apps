@@ -13,17 +13,17 @@ export type DefaultSortProp = {
 export type OtTableProps = {
   showGlobalFilter: boolean;
   tableDataLoading: boolean;
-  columns: Array<any>;
-  rows: Array<any>;
+  columns: Array<Record<string, unknown>>;
+  rows: Array<Record<string, unknown>>;
   verticalHeaders: boolean;
   order: "asc" | "desc";
   sortBy: string;
   defaultSortObj: DefaultSortProp;
   dataDownloader: boolean;
-  dataDownloaderColumns?: Array<any>;
+  dataDownloaderColumns?: Array<Record<string, unknown>>;
   dataDownloaderFileStem: string;
   query: DocumentNode;
-  variables: any;
+  variables: Record<string, unknown>;
 };
 
 /*************************
