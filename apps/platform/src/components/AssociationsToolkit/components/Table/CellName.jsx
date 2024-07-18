@@ -67,14 +67,14 @@ const ContextMenuContainer = styled("div", {
   opacity: active ? "1" : "0",
   cursor: "pointer",
   borderRadius: 5,
-  transition: "background 100ms ease",
-  background: grey[300],
+  transition: "all 100ms ease",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   padding: "3px 0",
   width: "12px",
   marginLeft: theme.spacing(1),
+  background: active ? grey[200] : grey[300],
   "&:hover": {
     backgroundColor: grey[200],
   },
@@ -107,13 +107,14 @@ function CellName({ cell, colorScale }) {
 
   const handleToggle = () => {
     setOpenContext(true);
-    // dispatch({
-    //   type: "SET_INTERACTORS_ON",
-    //   focus: {
-    //     table: prefix,
-    //     row: cell.row.id,
-    //   },
-    // });
+    dispatch({
+      type: "SET_FOCUS_SECTION",
+      focus: {
+        section: ["score", undefined],
+        table: prefix,
+        row: cell.row.id,
+      },
+    });
   };
 
   const handleClickInteractors = () => {
@@ -174,7 +175,6 @@ function CellName({ cell, colorScale }) {
         open={openContext}
         anchorEl={contextMenuRef.current}
         onClose={handleClose}
-        disableScrollLock
         anchorOrigin={{
           vertical: "top",
           horizontal: "right",
