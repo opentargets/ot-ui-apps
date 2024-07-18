@@ -37,6 +37,7 @@ import {
 } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
 import { getDefaultSortObj, mapTableColumnToTanstackColumns } from "./tableUtil";
+import Tooltip from "../Tooltip";
 
 declare module "@tanstack/table-core" {
   interface FilterFns {
@@ -172,19 +173,26 @@ function OtTable({
                               onClick={header.column.getToggleSortingHandler()}
                               sx={{ typography: "subtitle2" }}
                             >
-                              {flexRender(header.column.columnDef.header, header.getContext())}
-                              {!header.column.getIsSorted() && header.column.getCanSort() && (
-                                <FontAwesomeIcon
-                                  size="sm"
-                                  icon={faArrowUp}
-                                  className="sortableColumn"
-                                />
-                              )}
-                              {{
-                                asc: <FontAwesomeIconPadded size="sm" icon={faArrowUp} />,
-                                desc: <FontAwesomeIconPadded size="sm" icon={faArrowDown} />,
-                              }[header.column.getIsSorted() as string] ?? null}
+                              <Tooltip
+                                style={""}
+                                title={header.column.columnDef.tooltip}
+                                showHelpIcon={!!header.column.columnDef.tooltip}
+                              >
+                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                {!header.column.getIsSorted() && header.column.getCanSort() && (
+                                  <FontAwesomeIcon
+                                    size="sm"
+                                    icon={faArrowUp}
+                                    className="sortableColumn"
+                                  />
+                                )}
+                                {{
+                                  asc: <FontAwesomeIconPadded size="sm" icon={faArrowUp} />,
+                                  desc: <FontAwesomeIconPadded size="sm" icon={faArrowDown} />,
+                                }[header.column.getIsSorted() as string] ?? null}
+                              </Tooltip>
                             </OtTableHeaderText>
+
                             {header.column.getCanFilter() ? (
                               <OtTableColumnFilter column={header.column} />
                             ) : null}
