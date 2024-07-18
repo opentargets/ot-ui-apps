@@ -8,11 +8,15 @@ import {
   Tooltip,
 } from "ui";
 import { naLabel } from "../../constants";
-// import { Fragment } from "react";
-// import { Box } from "@mui/material";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Typography, Box } from "@mui/material";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
+
+function formatSamples(samples) {
+  return samples
+    .map(({ ancestory, sampleSize }) => `${ancestory}: ${sampleSize}`)
+    .join(", ");
+}
 
 function ProfileHeader({ studyId, studyType }) {
   const { loading, error, data } = usePlatformApi();
@@ -87,40 +91,90 @@ function ProfileHeader({ studyId, studyType }) {
             studyType === "GWAS"
               ? initialSampleSize
               : studyType === "FINNGEN"
-                ? discoverySamples.length  // USE LENGTH??? - AND NEED TO ADD initialSampleSize TOOLTIP HERE!!!
+                ? (discoverySamples?.length
+                    ? (initialSampleSize
+                        ? <Tooltip
+                            title={
+                              <Typography variant="caption">
+                                Initial sample size: {initialSampleSize}
+                              </Typography>
+                            }
+                          >
+                            formatSamples(discoverySamples)
+                          </Tooltip>
+                        : formatSamples(discoverySamples)
+                      )
+                    : naLabel
+                  )
                 : naLabel
           } 
         </Field>
-       <Field loading={loading} title="N replication">
-          { 
-            studyType === "GWAS"
-              ? replicationSamples.length  // ?? USE LENGTH
-              : naLabel
-          } 
-        </Field>
-        <Field loading={loading} title="N cases">
-          { 
-            studyType === "GWAS" || studyType === "FINNGEN"
-              ? nCases
-              : naLabel
-          } 
-        </Field>
-        <Field loading={loading} title="N controls">
-          { 
-            studyType === "GWAS" || studyType === "FINNGEN"
-              ? nControls
-              : naLabel
-          } 
-        </Field>
-        <Field loading={loading} title="Cohorts">
-          TODO
-        </Field>
-        <Field loading={loading} title="QC">
-          TODO
-        </Field>
-        <Field loading={loading} title="Study flags">
-          TODO
-        </Field>
+        <Field loading={loading} title="N replication">
+            { 
+              studyType === "GWAS"
+                ? (replicationSamples?.length
+                    ? formatSamples(replicationSamples)
+                    : naLabel
+                  )
+                : naLabel
+            }
+          </Field>
+          <Field loading={loading} title="N cases">
+            { 
+              studyType === "GWAS" || studyType === "FINNGEN"
+                ? nCases
+                : naLabel
+            } 
+          </Field>
+          <Field loading={loading} title="N controls">
+            { 
+              studyType === "GWAS" || studyType === "FINNGEN"
+                ? nControls
+                : naLabel
+            } 
+          </Field>
+          <Field loading={loading} title="Cohorts">
+            { 
+              (studyType === "GWAS" && cohorts) || (studyType === "FINNGEN")
+                ? (ldPopulationStructure
+                    ? <Tooltip
+                        title={
+                          <>
+                            <Typography variant="subtitle2" display="block" align="center">
+                              LD structure:
+                            </Typography>
+                            {ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
+                              <Box key={ldPopulation}>
+                                <Typography variant="caption">
+                                  LD population: {ldPopulation}, relative sample size: {relativeSampleSize}
+                                </Typography>
+                              </Box>
+                            ))}
+                          </>
+                        }
+                        showHelpIcon
+                      >
+                        {studyType === 'GWAS' ? cohorts.join(", ") : "FinnGen"}
+                      </Tooltip>
+                    : (studyType === 'GWAS' ? cohorts.join(", ") : "FinnGen")
+                  )
+                : naLabel
+            }
+          </Field>
+          <Field loading={loading} title="QC">
+            { 
+              studyType === "GWAS"
+                ? (qualityControls ?? naLabel)
+                : naLabel
+            } 
+          </Field>
+          <Field loading={loading} title="Study flags">
+            { 
+              studyType === "GWAS"
+                ? (analysisFlags ?? naLabel)
+                : naLabel
+            } 
+          </Field>
       </>
     </BaseProfileHeader>
   );

@@ -1,13 +1,13 @@
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
-import { Header as HeaderBase, ExternalLink } from "ui";
+import { Header as HeaderBase, ExternalLink, XRefLinks } from "ui";
 
-function Header({ loading, studyId, traitFromSource, targetId, studyType }) {
+function Header({ loading, studyId, traitFromSource, backgroundTraits, targetId, diseaseId, studyType }) {
 
   let traitLink, sourceLink;
   if (studyType === 'GWAS') {
     traitLink = {
       title: "Trait",
-      url: `https://platform.opentargets.org/disease/???`,  // !!!!! SCHEMA DOES NOT HAVE traitFromSourceMappedIds
+      url: `https://platform.opentargets.org/disease/${diseaseId}`, 
     };
     sourceLink = {
       id: "GWAS Catalog",
@@ -16,7 +16,7 @@ function Header({ loading, studyId, traitFromSource, targetId, studyType }) {
   } else if (studyType === 'FINNGEN') {
     traitLink = {
       title: "Trait",
-      url: `https://platform.opentargets.org/disease/???`,  // !!!!! SCHEMA DOES NOT HAVE traitFromSourceMappedIds
+      url: `https://platform.opentargets.org/disease/${diseaseId}`,
     };
     sourceLink = {
       id: "FinnGenR10",
@@ -42,14 +42,18 @@ function Header({ loading, studyId, traitFromSource, targetId, studyType }) {
       externalLinks={
         <>
           <ExternalLink
-            title={traitLink.title}  // TS complains if spread props
+            title={traitLink.title}
             id={traitFromSource}
             url={traitLink.url}
           />
-          { // !!!!! Background trait if GWAS:          
-            // !!!!! want to check if backgroundTraitFromSourceMappedIds if null
-            // !!!!! but this property not in schema - does have backgroundTraits
-            // !!!!! which us an array of diseases
+          { 
+            studyType === "GWAS" && backgroundTraits &&
+              <XRefLinks
+                label="Background traits"
+                urlStem="../disease/"
+                ids={backgroundTraits.map(t => t.id)}
+                names={backgroundTraits.map(t => t.name)}
+              />
           }
           <ExternalLink
             title="Source"
