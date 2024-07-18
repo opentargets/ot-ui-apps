@@ -30,7 +30,6 @@ const columns = [
     label: "Max Phase",
     sortable: true,
     width: "10%",
-    enableColumnFilter: true,
     renderCell: ({ maxPhaseForIndication }) => phaseMap(maxPhaseForIndication),
     filterValue: ({ maxPhaseForIndication }) => phaseMap(maxPhaseForIndication),
   },
