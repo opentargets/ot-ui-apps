@@ -8,7 +8,6 @@ import {
   DataTable,
   ScientificNotation,
   DirectionOfEffectIcon,
-  OtTable,
   DirectionOfEffectTooltip,
 } from "ui";
 
@@ -237,34 +236,32 @@ export function Body({ id, label, entity }) {
   const columns = getColumns(label);
 
   return (
-    <>
-      <SectionItem
-        definition={definition}
-        chipText={dataTypesMap.genetic_association}
-        entity={entity}
-        request={request}
-        renderDescription={data => (
-          <Description symbol={label.symbol} diseaseName={label.name} data={data} />
-        )}
-        renderBody={({ disease }) => {
-          const { rows } = disease.geneBurdenSummary;
-          return (
-            <DataTable
-              columns={columns}
-              rows={rows}
-              order="asc"
-              sortBy="pValue"
-              dataDownloader
-              dataDownloaderFileStem={`geneburden-${ensgId}-${efoId}`}
-              showGlobalFilter
-              rowsPerPageOptions={defaultRowsPerPageOptions}
-              query={GENE_BURDEN_QUERY.loc.source.body}
-              variables={variables}
-            />
-          );
-        }}
-      />
-    </>
+    <SectionItem
+      definition={definition}
+      chipText={dataTypesMap.genetic_association}
+      entity={entity}
+      request={request}
+      renderDescription={data => (
+        <Description symbol={label.symbol} diseaseName={label.name} data={data} />
+      )}
+      renderBody={({ disease }) => {
+        const { rows } = disease.geneBurdenSummary;
+        return (
+          <DataTable
+            columns={columns}
+            rows={rows}
+            order="asc"
+            sortBy="pValue"
+            dataDownloader
+            dataDownloaderFileStem={`geneburden-${ensgId}-${efoId}`}
+            showGlobalFilter
+            rowsPerPageOptions={defaultRowsPerPageOptions}
+            query={GENE_BURDEN_QUERY.loc.source.body}
+            variables={variables}
+          />
+        );
+      }}
+    />
   );
 }
 
