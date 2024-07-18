@@ -20,7 +20,6 @@ import {
   faBackwardStep,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { makeStyles } from "@mui/styles";
 import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -34,25 +33,10 @@ import {
   OtTableHeader,
   OtTH,
   OtTableHeaderText,
+  OtTD,
 } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
 import { getDefaultSortObj, mapTableColumnToTanstackColumns } from "./tableUtil";
-
-const useStyles = makeStyles(theme => ({
-  stickyColumn: {
-    left: "0",
-    position: "sticky",
-    backgroundColor: theme.palette.grey[100],
-    zIndex: 1,
-  },
-  verticalHeaders: {
-    writingMode: "vertical-rl",
-    transform: "rotate(180deg)",
-    // TODO: TBC
-    maxHeight: "20rem",
-    height: "14rem",
-  },
-}));
 
 declare module "@tanstack/table-core" {
   interface FilterFns {
@@ -98,8 +82,6 @@ function OtTable({
   query,
   variables,
 }: OtTableProps): ReactElement {
-  const classes = useStyles();
-
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -221,17 +203,14 @@ function OtTable({
                 <tr key={row.id}>
                   {row.getVisibleCells().map(cell => {
                     return (
-                      <td
-                        key={cell.id}
-                        className={cell.column.columnDef.sticky ? classes.stickyColumn : ""}
-                      >
+                      <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
                         <Box sx={{ typography: "body2" }}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           {/* TODO: check NA value */}
                           {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
                             naLabel} */}
                         </Box>
-                      </td>
+                      </OtTD>
                     );
                   })}
                 </tr>

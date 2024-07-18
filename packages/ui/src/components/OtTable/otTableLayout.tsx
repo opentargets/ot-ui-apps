@@ -71,6 +71,17 @@ export const OtTH = styled("th", {
   }),
 }));
 
+export const OtTD = styled("td", {
+  shouldForwardProp: prop => prop !== "stickyColumn",
+})(({ theme, stickyColumn }) => ({
+  ...(stickyColumn && {
+    left: "0",
+    position: "sticky",
+    backgroundColor: theme.palette.grey[100],
+    zIndex: 1,
+  }),
+}));
+
 export const OtTableHeaderText = styled(Box, {
   shouldForwardProp: prop => prop !== "verticalHeader",
 })(({ verticalHeader }) => ({
