@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 
-import { Link, SectionItem, DataTable, PaginationActionsComplete, TableDrawer } from "ui";
+import { Link, SectionItem, PaginationActionsComplete, TableDrawer, OtTable } from "ui";
 import { sourceMap, phaseMap } from "../../constants";
 import { referenceUrls } from "../../utils/urls";
 
@@ -13,12 +13,14 @@ import { definition } from ".";
 const columns = [
   {
     id: "indication",
+    label: "Indication",
     propertyPath: "disease.name",
     renderCell: d => <Link to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>,
     width: "38%",
   },
   {
     id: "therapeuticAreas",
+    label: "Therapeutic Areas",
     renderCell: d => <TherapeuticAreasDrawer therapeuticAreas={d.disease.therapeuticAreas} />,
     exportValue: d => d.disease.therapeuticAreas.map(therapeuticArea => therapeuticArea.id),
     width: "38%",
@@ -28,6 +30,7 @@ const columns = [
     label: "Max Phase",
     sortable: true,
     width: "10%",
+    enableColumnFilter: true,
     renderCell: ({ maxPhaseForIndication }) => phaseMap(maxPhaseForIndication),
     filterValue: ({ maxPhaseForIndication }) => phaseMap(maxPhaseForIndication),
   },
@@ -76,7 +79,7 @@ function Body({ id: chemblId, label: name, entity }) {
         const { rows } = data.drug.indications;
 
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             dataDownloader
             dataDownloaderFileStem={`${chemblId}-indications`}
