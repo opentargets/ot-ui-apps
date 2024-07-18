@@ -1,8 +1,21 @@
-import FileSaver from "file-saver";
-import { useState } from "react";
 import _ from "lodash";
-import { Button, Grid, Typography, CircularProgress, Snackbar, Slide } from "@mui/material";
+import { useState } from "react";
+import FileSaver from "file-saver";
 import { makeStyles } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCode, faFileArrowDown, faTable } from "@fortawesome/free-solid-svg-icons";
+import {
+  Button,
+  Grid,
+  CircularProgress,
+  Snackbar,
+  Slide,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import "graphiql/graphiql.min.css";
 import ApiPlaygroundDrawer from "./ApiPlaygroundDrawer";
 
@@ -103,8 +116,18 @@ const styles = makeStyles(theme => ({
 
 function DataDownloader({ columns, rows, fileStem, query, variables }) {
   const [downloading, setDownloading] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const classes = styles();
+  const open = Boolean(anchorEl);
+
+  const handleClickExportButton = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const downloadData = async (format, dataColumns, dataRows, dataFileStem) => {
     let allRows = dataRows;
@@ -126,30 +149,54 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
 
   const handleClickDownloadJSON = async () => {
     downloadData("json", columns, rows, fileStem);
+    handleClose();
   };
 
   const handleClickDownloadTSV = async () => {
     downloadData("tsv", columns, rows, fileStem);
+    handleClose();
   };
 
   return (
     <>
       <Grid container alignItems="center" justifyContent="flex-end" spacing={1}>
         <Grid item>
-          <Typography variant="caption">Download table as</Typography>
-        </Grid>
-        <Grid item>
-          <Button variant="outlined" onClick={handleClickDownloadJSON} size="small">
-            JSON
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="outlined" onClick={handleClickDownloadTSV} size="small">
-            TSV
+          <Button
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClickExportButton}
+            sx={{ display: "flex", gap: 1 }}
+          >
+            <FontAwesomeIcon icon={faFileArrowDown} /> Export
           </Button>
         </Grid>
         {query ? <ApiPlaygroundDrawer query={query} variables={variables} /> : null}
       </Grid>
+
+      <Menu id="export-data-menu" anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem onClick={handleClickDownloadJSON}>
+          <ListItemIcon>
+            <FontAwesomeIcon icon={faCode} size="sm" />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography noWrap variant="body2">
+              Json
+            </Typography>
+          </ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleClickDownloadTSV}>
+          <ListItemIcon>
+            <FontAwesomeIcon icon={faTable} size="sm" />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography noWrap variant="body2">
+              TSV
+            </Typography>
+          </ListItemText>
+        </MenuItem>
+      </Menu>
+
       <Snackbar
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={downloading}
