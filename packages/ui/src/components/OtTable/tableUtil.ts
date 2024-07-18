@@ -89,7 +89,7 @@ function mapToTanstackColumnObject(
        * ASSIGN CELL EITHER CUSTOM RENDER CELL OR ID*
        **************************************************************/
       if (originalTableObject.renderCell) return originalTableObject.renderCell(row.original);
-      return getValueFromChainedId(originalTableObject.id, row);
+      return getValueFromChainedId(originalTableObject.id, row.original);
     },
     ...originalTableObject,
   };
