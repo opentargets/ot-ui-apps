@@ -30,6 +30,24 @@ const btnStyles = {
   },
 };
 
+function AAA() {
+  return (
+    <Box
+      sx={{
+        width: "30px",
+        borderLeft: 1.5,
+        borderBottom: 1.5,
+        borderColor: grey[300],
+        height: "3500px",
+        background: "transparent",
+        position: "absolute",
+        bottom: "20px",
+        left: "10px",
+      }}
+    ></Box>
+  );
+}
+
 function RowInteractorsTable({ row, columns, rowNameEntity, parentTable }) {
   const {
     id: diseaseId,
@@ -89,70 +107,79 @@ function RowInteractorsTable({ row, columns, rowNameEntity, parentTable }) {
   });
   const cols = interactorsTable.getHeaderGroups()[0].headers[1].subHeaders;
   return (
-    <>
-      <Box
-        sx={{
-          background: grey[300],
-          borderRadius: `4px 4px 0 0`,
-          boxSizing: "border-box",
-          px: 2,
-          py: 0.5,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Box onClick={() => handleDisableInteractors(row.id)} sx={btnStyles}>
-            <FontAwesomeIcon size="sm" icon={faClose} />
+    <Box sx={{ pb: 2, background: grey[100], position: "relative" }}>
+      <Box sx={{ position: "relative", pt: 1 }}>
+        <AAA />
+        <Box
+          sx={{
+            // width: "100%",
+            background: grey[300],
+            // border: 1,
+            borderColor: grey[400],
+            // borderRadius: `4px 4px 0 0`,
+            boxSizing: "border-box",
+            px: 2,
+            py: 0.5,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 1,
+            ml: 5,
+            // mr: 2,
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box onClick={() => handleDisableInteractors(row.id)} sx={btnStyles}>
+              <FontAwesomeIcon size="sm" icon={faClose} />
+            </Box>
+            <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>
+              {label} interactors
+            </Typography>
+            <Box display="flex" alignItems="center" gap={1}>
+              <InputLabel sx={{ fontSize: "0.85rem" }} htmlFor="intaractor_data_source">
+                Source:
+              </InputLabel>
+              <NativeSelect
+                id="intaractor_data_source"
+                onChange={e => {
+                  handleSetInteractors(row.id, e.target.value);
+                }}
+                variant="standard"
+                value={source}
+                sx={{
+                  fontSize: "0.85rem",
+                  boxShadow: "none",
+                  p: 0,
+                  ".MuiNativeSelect-select": { border: 0 },
+                }}
+              >
+                <option value={"intact"}>IntAct</option>
+                <option value={"signor"}>Signor</option>
+                <option value={"reactome"}>Reactome</option>
+                <option value={"string"}>String</option>
+              </NativeSelect>
+            </Box>
           </Box>
-          <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>
-            {label} interactors
-          </Typography>
-          <Box display="flex" alignItems="center" gap={1}>
-            <InputLabel sx={{ fontSize: "0.85rem" }} htmlFor="intaractor_data_source">
-              Source:
-            </InputLabel>
-            <NativeSelect
-              id="intaractor_data_source"
-              onChange={e => {
-                handleSetInteractors(row.id, e.target.value);
-              }}
-              variant="standard"
-              value={source}
-              sx={{
-                fontSize: "0.85rem",
-                boxShadow: "none",
-                p: 0,
-                ".MuiNativeSelect-select": { border: 0 },
-              }}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button
+              onClick={() => interactorsTable.previousPage()}
+              disabled={!interactorsTable.getCanPreviousPage()}
             >
-              <option value={"intact"}>IntAct</option>
-              <option value={"signor"}>Signor</option>
-              <option value={"reactome"}>Reactome</option>
-              <option value={"string"}>String</option>
-            </NativeSelect>
+              <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+            </Button>
+            <Button
+              onClick={() => interactorsTable.nextPage()}
+              disabled={!interactorsTable.getCanNextPage()}
+            >
+              <FontAwesomeIcon icon={faChevronRight} size="sm" />
+            </Button>
           </Box>
-        </Box>
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <Button
-            onClick={() => interactorsTable.previousPage()}
-            disabled={!interactorsTable.getCanPreviousPage()}
-          >
-            <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-          </Button>
-          <Button
-            onClick={() => interactorsTable.nextPage()}
-            disabled={!interactorsTable.getCanNextPage()}
-          >
-            <FontAwesomeIcon icon={faChevronRight} size="sm" />
-          </Button>
         </Box>
       </Box>
-      <Box sx={{ border: 1, borderColor: grey[300] }}>
+      <Box>
         <TableBody noInteractors core={interactorsTable} cols={cols} />
       </Box>
-    </>
+    </Box>
   );
 }
 export default RowInteractorsTable;

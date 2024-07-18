@@ -63,10 +63,18 @@ const TextContainer = styled("div")({
 
 const ContextMenuContainer = styled("div", {
   shouldForwardProp: prop => prop !== "active",
-})(({ active }) => ({
+})(({ active, theme }) => ({
   opacity: active ? "1" : "0",
   cursor: "pointer",
-  borderRadius: 1,
+  borderRadius: 5,
+  transition: "background 100ms ease",
+  background: grey[300],
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: "3px 0",
+  width: "12px",
+  marginLeft: theme.spacing(1),
   "&:hover": {
     backgroundColor: grey[200],
   },
@@ -99,6 +107,13 @@ function CellName({ cell, colorScale }) {
 
   const handleToggle = () => {
     setOpenContext(true);
+    // dispatch({
+    //   type: "SET_INTERACTORS_ON",
+    //   focus: {
+    //     table: prefix,
+    //     row: cell.row.id,
+    //   },
+    // });
   };
 
   const handleClickInteractors = () => {

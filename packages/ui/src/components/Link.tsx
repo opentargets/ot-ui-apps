@@ -1,5 +1,4 @@
-import { ReactNode } from "react";
-import PropTypes from "prop-types";
+import { ReactElement, ReactNode } from "react";
 import classNames from "classnames";
 import { Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
@@ -33,12 +32,33 @@ const useStyles = makeStyles(theme => ({
     "&:hover": {
       color: theme.palette.primary.light,
       "text-decoration-color": theme.palette.primary.light,
-    "-webkit-text-decoration-color": theme.palette.primary.light,
+      "-webkit-text-decoration-color": theme.palette.primary.light,
     },
     display: "flex",
     alignItems: "center",
   },
 }));
+
+type LinkPropTypes = {
+  className?: string;
+  to: string;
+  onClick?: () => void;
+  external: boolean;
+  newTab?: boolean;
+  footer: boolean;
+  tooltip?: unknown;
+  children: ReactNode;
+  ariaLabel?: string;
+};
+
+const defaultProps: LinkPropTypes = {
+  external: false,
+  footer: false,
+  tooltip: false,
+  onClick: undefined,
+  to: "/",
+  children: null,
+};
 
 function Link({
   children,
@@ -50,17 +70,7 @@ function Link({
   tooltip,
   className,
   ariaLabel,
-}: {
-  className?: string;
-  to: string;
-  onClick?: () => void;
-  external: boolean;
-  newTab?: boolean;
-  footer: boolean;
-  tooltip?: unknown;
-  children: ReactNode;
-  ariaLabel?: string;
-}) {
+}: LinkPropTypes = defaultProps): ReactElement {
   const classes = useStyles();
   const ariaLabelProp = ariaLabel ? { "aria-label": ariaLabel } : {};
   const newTabProps = newTab ? { target: "_blank", rel: "noopener noreferrer" } : {};
@@ -100,26 +110,5 @@ function Link({
     </RouterLink>
   );
 }
-
-Link.propTypes = {
-  /** Whether the link directs to an external site. */
-  external: PropTypes.bool,
-  /** Whether the link is used within the footer section. */
-  footer: PropTypes.bool,
-  /** Whether the link is used within a tooltip. */
-  tooltip: PropTypes.bool,
-  /** The handler to call on click. */
-  onClick: PropTypes.func,
-  /** The url to visit on clicking the link. */
-  to: PropTypes.string.isRequired,
-};
-
-Link.defaultProps = {
-  external: false,
-  footer: false,
-  tooltip: false,
-  onClick: null,
-  to: "/",
-};
 
 export default Link;

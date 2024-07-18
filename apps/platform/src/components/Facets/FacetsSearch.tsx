@@ -79,6 +79,7 @@ function FacetsSearch(): ReactElement {
   return (
     <Box sx={{ display: "flex" }}>
       <Select
+        id="facet-category"
         value={categoryFilterValue}
         size="small"
         onChange={(event: SelectChangeEvent) => {

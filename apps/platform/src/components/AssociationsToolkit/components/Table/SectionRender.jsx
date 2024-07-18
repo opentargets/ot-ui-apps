@@ -6,6 +6,7 @@ import { ENTITIES } from "../../utils";
 import targetSections from "../../../../sections/targetSections";
 import evidenceSections from "../../../../sections/evidenceSections";
 import { Fade } from "@mui/material";
+import { grey } from "@mui/material/colors";
 
 const LoadingContainer = styled("div")({
   margin: "25px 0",
@@ -23,11 +24,14 @@ const LoadingContainer = styled("div")({
 
 const Container = styled("div", {
   shouldForwardProp: prop => prop !== "table",
-})(({ table }) => ({
-  marginTop: "10px",
-  marginBottom: "10px",
-  marginLeft: table === "interactors" ? 15 : 0,
-  marginRight: table === "interactors" ? 15 : 0,
+})(({ table, theme }) => ({
+  paddingTop: "10px",
+  paddingBottom: "10px",
+  // paddingLeft: 15,
+  // paddingRight: 15,
+  paddingLeft: table === "interactors" ? theme.spacing(9) : theme.spacing(3),
+  // paddingRight: table === "interactors" ? "60px" : 15,
+  background: grey[100],
 }));
 
 function LoadingSection() {

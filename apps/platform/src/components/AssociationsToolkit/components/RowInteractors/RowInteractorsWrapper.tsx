@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
 import { Box } from "@mui/material";
 import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
+import { grey } from "@mui/material/colors";
 
 function RowInteractorsWrapper({
   rowId,
@@ -11,7 +12,6 @@ function RowInteractorsWrapper({
   parentTable: string;
   children: ReactElement;
 }): ReactElement {
-  // const { state } = useAotfContext();
   const focusState = useAssociationsFocus();
   const focusElement = focusState.filter(
     e => e.row === rowId && e.table === parentTable && e.interactors
@@ -23,7 +23,7 @@ function RowInteractorsWrapper({
   // return <Box sx={{ my: 1 }}>{children}</Box>;
   // if (!state.interactors.has(rowId)) return null;
 
-  return <Box sx={{ my: 1 }}>{children}</Box>;
+  return <Box>{children}</Box>;
 }
 
 export default RowInteractorsWrapper;

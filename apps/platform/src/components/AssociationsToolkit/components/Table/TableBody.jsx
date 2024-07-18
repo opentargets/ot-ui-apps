@@ -107,48 +107,49 @@ function TableBody({ core, cols, noInteractors }) {
                   </GridContainer>
                 ))}
               </RowContainer>
+              <Box sx={{ position: "relative", overflow: "hidden" }}>
+                <ClickAwayListener onClickAway={handleClickAway}>
+                  <section>
+                    <SectionRendererWrapper>
+                      <SectionRender
+                        id={id}
+                        entity={entity}
+                        table={prefix}
+                        section={
+                          // TODO: look
+                          prefix !== "interactors"
+                            ? focusState.find(
+                                e => e.row === row.id && e.table === prefix && e.section !== null
+                              )?.section
+                            : focusState.find(
+                                e =>
+                                  e.row === parentRow &&
+                                  e.table === parentTable &&
+                                  e.interactorsRow === row.id &&
+                                  e.interactorsSection !== null
+                              )?.interactorsSection
+                        }
+                        row={row}
+                        entityToGet={entityToGet}
+                        rowNameEntity={rowNameEntity}
+                        displayedTable={displayedTable}
+                        cols={cols}
+                      />
+                    </SectionRendererWrapper>
+                  </section>
+                </ClickAwayListener>
 
-              <ClickAwayListener onClickAway={handleClickAway}>
-                <section>
-                  <SectionRendererWrapper>
-                    <SectionRender
-                      id={id}
-                      entity={entity}
-                      table={prefix}
-                      section={
-                        // TODO: look
-                        prefix !== "interactors"
-                          ? focusState.find(
-                              e => e.row === row.id && e.table === prefix && e.section !== null
-                            )?.section
-                          : focusState.find(
-                              e =>
-                                e.row === parentRow &&
-                                e.table === parentTable &&
-                                e.interactorsRow === row.id &&
-                                e.interactorsSection !== null
-                            )?.interactorsSection
-                      }
+                {!noInteractors && (
+                  <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>
+                    <RowInteractorsTable
                       row={row}
-                      entityToGet={entityToGet}
+                      columns={core._getColumnDefs()}
                       rowNameEntity={rowNameEntity}
-                      displayedTable={displayedTable}
-                      cols={cols}
+                      parentTable={prefix}
                     />
-                  </SectionRendererWrapper>
-                </section>
-              </ClickAwayListener>
-
-              {!noInteractors && (
-                <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>
-                  <RowInteractorsTable
-                    row={row}
-                    columns={core._getColumnDefs()}
-                    rowNameEntity={rowNameEntity}
-                    parentTable={prefix}
-                  />
-                </RowInteractorsWrapper>
-              )}
+                  </RowInteractorsWrapper>
+                )}
+              </Box>
             </Fragment>
           ))}
         </RowsContainer>

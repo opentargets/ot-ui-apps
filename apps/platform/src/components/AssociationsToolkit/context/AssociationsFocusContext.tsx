@@ -24,9 +24,6 @@ const defaultFocusElement: FocusElement = {
 export type FocusState = FocusElement[];
 
 export enum FocusActionType {
-  ADD = "ADD",
-  UPDATE = "UPDATE",
-  DELETE = "DELETE",
   RESET = "RESET",
   SET_INTERACTORS_SECTION = "SET_INTERACTORS_SECTION",
   SET_INTERACTORS_ON = "SET_INTERACTORS_ON",
@@ -34,9 +31,7 @@ export enum FocusActionType {
 }
 
 export type FocusAction =
-  | { type: FocusActionType.ADD; focusElement: FocusElement }
-  | { type: FocusActionType.UPDATE; focusElement: FocusElement }
-  | { type: FocusActionType.DELETE; focusElement: FocusElement }
+  | { type: FocusActionType.RESET }
   | { type: FocusActionType.SET_INTERACTORS_ON; focus: { row: string; table: FocusElementTable } }
   | {
       type: FocusActionType.SET_INTERACTORS_SECTION;
@@ -50,8 +45,7 @@ export type FocusAction =
   | {
       type: FocusActionType.SET_FOCUS_SECTION;
       focus: { row: string; table: FocusElementTable; section: [string, string] };
-    }
-  | { type: FocusActionType.RESET };
+    };
 
 const AssociationsFocusContext = createContext<FocusState>([]);
 
@@ -132,25 +126,6 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
             return focusElement;
           }
         });
-        return [
-          ...focusState,
-          focusElementGenerator(action.focus.table, action.focus.row, action.focus.section, null),
-        ];
-        // const focusElement = focusState.find(
-        //   e => e.table === action.focus.table && e.row === action.focus.row
-        // );
-        // return focusState.map((focusElement: FocusElement) => {
-        //   if (focusElement.table === action.focus.table && focusElement.section !== null) {
-        //     return focusElementGenerator(
-        //       action.focus.table,
-        //       action.focus.row,
-        //       action.focus.section,
-        //       null
-        //     );
-        //   } else {
-        //     return focusElement;
-        //   }
-        // });
       }
 
       if (rowActive && !sectionActive) {
@@ -244,29 +219,6 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
       return focusState.filter(
         (focusElement: FocusElement) =>
           focusElement.row !== action.focus.row || focusElement.table !== action.focus.table
-      );
-      // const focusElement = focusState.find(
-      //   e => e.table === action.focus.table && e.row === action.focus.row
-      // );
-      // return focusState.map((focusElement: FocusElement) => {
-      //   if (focusElement.table === action.focus.table && focusElement.row === action.focus.row) {
-      //     return {
-      //       ...focusElement,
-      //       interactorsView: "intac",
-      //       interactorsSection: action.focus.section,
-      //       interactorsRow: action.focus.interactorsRow,
-      //     };
-      //   } else {
-      //     return focusElement;
-      //   }
-      // });
-    }
-
-    case FocusActionType.DELETE: {
-      return focusState.filter(
-        (focusElement: FocusElement) =>
-          focusElement.row !== action.focusElement.row &&
-          focusElement.table !== action.focusElement.table
       );
     }
     case FocusActionType.RESET: {
