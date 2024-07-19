@@ -1,14 +1,7 @@
 import { Chip, Grow } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import {
-  entitiesState,
-  selectedEntitiesState,
-  fetchSimilarEntities,
-  literatureState,
-  loadingEntitiesState,
-  updateLiteratureState,
-} from "./atoms";
+import { useLiterature, useLiteratureDispatch } from "./LiteratureContext";
+import { fetchSimilarEntities } from "./requests";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,11 +18,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function EntitiesToSelect({ id }) {
-  const entities = useRecoilValue(entitiesState);
-  const bibliographyState = useRecoilValue(literatureState);
-  const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const [selectedChips, setSelectedChips] = useRecoilState(selectedEntitiesState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(loadingEntitiesState);
+
+  const literature = useLiterature();
+  const {
+    entities,
+    selectedEntities: selectedChips,
+    loadingEntities,
+  } = literature;
+  const literatureDispatch = useLiteratureDispatch();
 
   const handleSelectChip = async e => {
     const {
@@ -41,7 +37,7 @@ function EntitiesToSelect({ id }) {
       endMonth,
       startYear,
       startMonth,
-    } = bibliographyState;
+    } = literature;
     const newChips = [
       ...selectedChips,
       {
@@ -52,8 +48,8 @@ function EntitiesToSelect({ id }) {
         },
       },
     ];
-    setSelectedChips(newChips);
-    setLoadingEntities(true);
+    literatureDispatch({ type: 'selectedEntities', value: newChips });
+    literatureDispatch({ type: 'loadingEntities', value: true });
     const request = await fetchSimilarEntities({
       query,
       id: bibliographyId,
@@ -67,18 +63,14 @@ function EntitiesToSelect({ id }) {
     const data = request.data[globalEntity];
     const update = {
       entities: data.similarEntities,
-      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => ({
-        id: pmid,
-        status: "ready",
-        publication: null,
-      })),
+      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
       litsCount: data.literatureOcurrences?.filteredCount,
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,
       cursor: data.literatureOcurrences?.cursor,
       loadingEntities: false,
       page: 0,
     };
-    setLiteratureUpdate(update);
+    literatureDispatch({ type: 'stateUpdate', value: update });
   };
 
   const validateEntity = entity => {
@@ -121,12 +113,14 @@ function EntitiesToSelect({ id }) {
 }
 
 export default function Entities({ name, id }) {
+  
   const classes = useStyles();
-
-  const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const bibliographyState = useRecoilValue(literatureState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(loadingEntitiesState);
-  const [selectedChips, setSelectedChips] = useRecoilState(selectedEntitiesState);
+  const literature = useLiterature();
+  const {
+    selectedEntities: selectedChips,
+    loadingEntities,
+  } = literature;
+  const literatureDispatch = useLiteratureDispatch();
 
   const handleDeleteChip = async index => {
     const {
@@ -138,10 +132,11 @@ export default function Entities({ name, id }) {
       endMonth,
       startYear,
       startMonth,
-    } = bibliographyState;
-    const newChips = [...selectedChips.slice(0, index), ...selectedChips.slice(index + 1)];
-    setSelectedChips(newChips);
-    setLoadingEntities(true);
+    } = literature;
+    const newChips =
+      [...selectedChips.slice(0, index), ...selectedChips.slice(index + 1)];
+    literatureDispatch({ type: 'selectedEntities', value: newChips });
+    literatureDispatch({ type: 'loadingEntities', value: true });
     const request = await fetchSimilarEntities({
       query,
       id: bibliographyId,
@@ -155,18 +150,14 @@ export default function Entities({ name, id }) {
     const data = request.data[globalEntity];
     const update = {
       entities: data.similarEntities,
-      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => ({
-        id: pmid,
-        status: "ready",
-        publication: null,
-      })),
+      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
       litsCount: data.literatureOcurrences?.filteredCount,
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,
       cursor: data.literatureOcurrences?.cursor,
       loadingEntities: false,
       page: 0,
     };
-    setLiteratureUpdate(update);
+    literatureDispatch({ type: 'stateUpdate', value: update });
   };
 
   return (

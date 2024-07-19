@@ -1,7 +1,6 @@
 import { InputLabel, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { useRecoilValue } from "recoil";
-import { litsCountState, loadingEntitiesState, tablePageSizeState } from "./atoms";
+import { useLiterature } from "./LiteratureContext";
 
 const useStyles = makeStyles(() => ({
   resultCount: {
@@ -11,14 +10,12 @@ const useStyles = makeStyles(() => ({
 }));
 
 function CountInfo() {
+  const { pageSize, litsCount, loadingEntities } = useLiterature();
   const classes = useStyles();
-  const pageSize = useRecoilValue(tablePageSizeState);
-  const count = useRecoilValue(litsCountState);
-  const loadingEntities = useRecoilValue(loadingEntitiesState);
-
   const getLabelText = () => {
     if (loadingEntities) return "Loading count...";
-    return `Showing ${count > pageSize ? pageSize : count} of ${count} results`;
+    return `Showing ${
+      litsCount > pageSize ? pageSize : litsCount} of ${litsCount} results`;
   };
 
   return (
