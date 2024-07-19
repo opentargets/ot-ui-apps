@@ -11,7 +11,7 @@
     "prettier:all": "prettier --write \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\""
   },
   "dependencies": {
-    "@apollo/client": "^3.3.4",
+    "@apollo/client": "3.10.8",
     "@ebi-gene-expression-group/expression-atlas-heatmap-highcharts": "^5.4.1-beta1",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^6.1.1",
