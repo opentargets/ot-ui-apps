@@ -10,19 +10,10 @@ import { identifiersOrgLink } from "../../utils/global";
 
 import VARIANT_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 
-type ProfileHeaderProps = {
-  varId: string;
-};
 
-function ProfileHeader({ varId }: ProfileHeaderProps) {
+function ProfileHeader() {
 
   const { loading, error, data } = usePlatformApi();
-
-  // !! REMOVE ONCE HAPPY - SHOULD NOT BE NECESSARY TO CHECK HERE !! - OR IS SINCE OTHER PAGES USE OPTINAL CHAINING TO ACCESS PROPERTIES OF THE DATA
-  // if (!data) return null
-  if (!data) {
-    return null;
-  }
 
   // TODO: Errors!
   if (error) return null;
@@ -33,26 +24,26 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
       <Box>
         <Typography variant="subtitle1" mt={0}>Location</Typography>
         <Field loading={loading} title="GRCh38">
-          {data.variant.chromosome}:{data.variant.position}
+          {data?.variant.chromosome}:{data?.variant.position}
         </Field>
         <Field loading={loading} title="Reference Allele">
-          {data.variant.referenceAllele}
+          {data?.variant.referenceAllele}
         </Field>
         <Field loading={loading} title="Alternative Allele (effect allele)">
-          {data.variant.alternateAllele}
+          {data?.variant.alternateAllele}
         </Field>
         <Typography variant="subtitle1" mt={1}>Variant Effect Predictor (VEP)</Typography>
         <Field loading={loading} title="Most severe consequence">
           <Link
             external
-            to={identifiersOrgLink("SO", data.variant.mostSevereConsequence.id.slice(3))}
+            to={identifiersOrgLink("SO", data?.variant.mostSevereConsequence.id.slice(3))}
           >
-            {data.variant.mostSevereConsequence.label.replace(/_/g, ' ')}        
+            {data?.variant.mostSevereConsequence.label.replace(/_/g, ' ')}        
           </Link>
         </Field>
       </Box>
 
-      {data.variant.alleleFrequencies &&
+      {data?.variant.alleleFrequencies &&
         <Box>
           <Typography variant="subtitle1" mt={0}>Population Allele Frequencies</Typography>
           <AlleleFrequencyPlot data={data.variant.alleleFrequencies} />
@@ -74,18 +65,13 @@ export default ProfileHeader;
 // allele frequency plot
 // =====================
 
-// THESE NEED CHECKED!!
 const populationLabels = {
-  // from AB (orig from YT)
   afr_adj: "African-American",
   amr_adj: "American Admixed/Latino",
   asj_adj: "Ashkenazi Jewish",
   eas_adj: "East Asian",
   fin_adj: "Finnish",
   nfe_adj: "Non-Finnish European",
-  // nwe_adj: "Northwestern European",
-  // seu_adj: "Southeastern European",
-  // add in missing from above - 
   ami_adj: "Amish",           // from https://www.pharmgkb.org/variant/PA166175994
   mid_adj: "Middle Eastern",  // guessed from: https://gnomad.broadinstitute.org/variant/1-154453788-C-T?dataset=gnomad_r4
   sas_adj: "South Asian",     // from https://www.pharmgkb.org/variant/PA166175994
