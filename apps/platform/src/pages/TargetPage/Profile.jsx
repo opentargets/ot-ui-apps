@@ -52,7 +52,6 @@ import client from "../../client";
 //   import("sections/src/target/SubcellularLocation/Body")
 // );
 const BibliographySection = lazy(() => import("sections/src/target/Bibliography/Body"));
-const BibliographySectionOld = lazy(() => import("sections/src/target/BibliographyOld/Body"));
 
 const summaries = [
   // KnownDrugsSummary,
@@ -168,9 +167,6 @@ function Profile({ ensgId, symbol }) {
         </Suspense> */}
         <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <BibliographySectionOld id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
       </SectionContainer>
     </PlatformApiProvider>

@@ -15,7 +15,6 @@ import BibliographySummary from "sections/src/drug/Bibliography/Summary";
 // import PharmacogenomicsSection from "sections/src/drug/Pharmacogenomics/Body";
 // import AdverseEventsSection from "sections/src/drug/AdverseEvents/Body";
 import BibliographySection from "sections/src/drug/Bibliography/Body";
-import BibliographySectionOld from "sections/src/drug/BibliographyOld/Body";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
@@ -73,7 +72,6 @@ function Profile({ chemblId, name }) {
         <PharmacogenomicsSection id={chemblId} label={name} entity={DRUG} />
         <AdverseEventsSection id={chemblId} label={name} entity={DRUG} /> */}
         <BibliographySection id={chemblId} label={name} entity={DRUG} />
-        <BibliographySectionOld id={chemblId} label={name} entity={DRUG} />
       </SectionContainer>
     </PlatformApiProvider>
   );

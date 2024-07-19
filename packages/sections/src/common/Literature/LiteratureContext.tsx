@@ -17,7 +17,6 @@ export const defaultLiteratureState: LiteratureStateType = {
   endMonth: null,
   earliestPubYear: 0,
   litsIds: [],
-  page: 0,
   pageSize: 5,
   litsCount: 0,
   loadingEntities: false,
@@ -59,16 +58,16 @@ function literatureReducer(literatureState: LiteratureStateType, action: any) {
 
 function detailsReducer(detailsState: DetailsStateType, action: any) {
   console.log(`DETAILS REDUCER: ${action.type}`);
-  let newObj;
   switch (action.type) {
     case 'addDetails':
       return { ...detailsState, ...action.value };
-    case 'setToLoading':
-      newObj = { ...detailsState };
+    case 'setToLoading': {
+      const newObj = { ...detailsState };
       for (const id of action.value) {
         newObj[id] = 'loading';
       }
       return newObj;
+    }
   }
 }
 

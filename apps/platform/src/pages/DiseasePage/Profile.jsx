@@ -23,7 +23,6 @@ import ProfileHeader from "./ProfileHeader";
 // const OntologySection = lazy(() => import("sections/src/disease/Ontology/Body"));
 // const KnownDrugsSection = lazy(() => import("sections/src/disease/KnownDrugs/Body"));
 const BibliographySection = lazy(() => import("sections/src/disease/Bibliography/Body"));
-const BibliographySectionOld = lazy(() => import("sections/src/disease/BibliographyOld/Body"));
 // const PhenotypesSection = lazy(() => import("sections/src/disease/Phenotypes/Body"));
 // const OTProjectsSection = lazy(() => import("sections/src/disease/OTProjects/Body"));
 
@@ -80,9 +79,6 @@ function Profile({ efoId, name }) {
         </Suspense> */}
         <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={efoId} label={name} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <BibliographySectionOld id={efoId} label={name} entity={DISEASE} />
         </Suspense>
         {/* <PrivateWrapper>
           <Suspense fallback={<SectionLoader />}>
