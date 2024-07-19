@@ -20,7 +20,7 @@ const xrefsToDisplay = {
         }&alternative_allele=${alternateAllele}`
     ),
   },
-  clinVar: {
+  clinvar: {
     label: "ClinVar",
     urlStem: "https://www.ncbi.nlm.nih.gov/clinvar/variation/",
   },
