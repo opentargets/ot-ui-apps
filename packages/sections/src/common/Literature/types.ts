@@ -82,6 +82,7 @@ type AuthorListType = {
     endMonth: number | null;
     earliestPubYear: number;
     litsIds: string[];
+    page: number;
     pageSize: number | null;  // DefaultValue;
     litsCount: number;
     loadingEntities: boolean | null;  // DefaultValue;

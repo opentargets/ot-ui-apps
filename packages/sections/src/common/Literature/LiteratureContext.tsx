@@ -17,6 +17,7 @@ export const defaultLiteratureState: LiteratureStateType = {
   endMonth: null,
   earliestPubYear: 0,
   litsIds: [],
+  page: 0,
   pageSize: 5,
   litsCount: 0,
   loadingEntities: false,
