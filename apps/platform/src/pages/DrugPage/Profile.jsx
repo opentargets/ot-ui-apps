@@ -44,7 +44,6 @@ const DRUG_PROFILE_QUERY = gql`
 `;
 
 function Profile({ chemblId, name }) {
-
   return (
     <PlatformApiProvider
       entity={DRUG}
