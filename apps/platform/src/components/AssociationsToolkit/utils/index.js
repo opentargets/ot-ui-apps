@@ -5,6 +5,8 @@ import config from "../../../config";
 
 export const { isPartnerPreview } = config.profile;
 
+export * from "./associations";
+
 const ASSOCIATION_LEGEND_LABEL = "Association score";
 const PRIORITISATION_LEGEND_LABEL = "Prioritisation indicator";
 const TARGE_PRIORITISATION_LEGEND_TICKS = ["Unfavourable", "Favourable"];
@@ -58,6 +60,13 @@ export const getCellId = (cell, entityToGet, displayedTable, tablePrefix = null)
   const sectionId =
     displayedTable === "associations" ? cell.column.id : cell.column.columnDef.sectionId;
   return [rowId, colId, sectionId, tablePrefix];
+};
+
+export const getColumAndSection = (cell, displayedTable) => {
+  const colId = cell.column.id;
+  const sectionId =
+    displayedTable === "associations" ? cell.column.id : cell.column.columnDef.sectionId;
+  return [colId, sectionId];
 };
 
 export const cellHasValue = score => typeof score === "number";
