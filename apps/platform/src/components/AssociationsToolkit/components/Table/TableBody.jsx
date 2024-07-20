@@ -9,8 +9,10 @@ import useAotfContext from "../../hooks/useAotfContext";
 import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
-import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
+import RowInteractorsWrapper from "../RowInteractors/RowInteractorsWrapper";
+import RowInteractorsTable from "../RowInteractors/RowInteractorsTable";
 
+import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
 /* HELPERS */
 const getColContainerClassName = ({ id }) => {
   if (id === "1_naiming-cols_name") return "group-naiming-cols";
@@ -68,7 +70,6 @@ function TableBody({ core, cols, noInteractors }) {
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
-
   const handleClickAway = e => {
     if (e.srcElement.className === "CodeMirror-hint CodeMirror-hint-active") {
       return;
@@ -104,7 +105,6 @@ function TableBody({ core, cols, noInteractors }) {
                   </GridContainer>
                 ))}
               </RowContainer>
-
               <Box sx={{ position: "relative", overflow: "hidden" }}>
                 <ClickAwayListener onClickAway={handleClickAway}>
                   <section>
@@ -136,6 +136,17 @@ function TableBody({ core, cols, noInteractors }) {
                     </SectionRendererWrapper>
                   </section>
                 </ClickAwayListener>
+
+                {!noInteractors && (
+                  <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>
+                    <RowInteractorsTable
+                      row={row}
+                      columns={core._getColumnDefs()}
+                      rowNameEntity={rowNameEntity}
+                      parentTable={prefix}
+                    />
+                  </RowInteractorsWrapper>
+                )}
               </Box>
             </Fragment>
           ))}
