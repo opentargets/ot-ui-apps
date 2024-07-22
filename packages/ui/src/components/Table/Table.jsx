@@ -13,7 +13,7 @@ import {
   Box,
 } from "@mui/material";
 
-import DataDownloader from "./DataDownloader";
+import DataDownloader from "../DataDownloader";
 import GlobalFilter from "./GlobalFilter";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";

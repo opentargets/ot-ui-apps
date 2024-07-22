@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, forwardRef } from "react";
 import {
   scaleLinear,
   scalePoint,
@@ -48,7 +48,7 @@ function buildTooltip(X, tooltipObject, data) {
     .join("");
 }
 
-function GtexVariability({ data }) {
+const GtexVariability = forwardRef(function GtexVariability({ data }, ref) {
   const theme = useTheme();
   const boxPlotRef = useRef();
   const tooltipRef = useRef();
@@ -239,7 +239,7 @@ function GtexVariability({ data }) {
   }
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" height={height} width={width}>
+    <svg xmlns="http://www.w3.org/2000/svg" height={height} width={width} ref={ref}>
       <text x={margin.left} y="15" fill={theme.palette.grey[700]} fontSize="14">
         Normalised expression (RPKM)
       </text>
@@ -253,6 +253,6 @@ function GtexVariability({ data }) {
       <g ref={tooltipRef} transform={`translate(${margin.left}, ${margin.top})`} />
     </svg>
   );
-}
+});
 
 export default GtexVariability;
