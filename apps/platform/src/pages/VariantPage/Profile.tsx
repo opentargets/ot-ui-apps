@@ -63,7 +63,7 @@ function Profile({ varId }: ProfileProps) {
       client={client}
     >
 
-      <ProfileHeader varId={varId} />
+      <ProfileHeader />
 
       <SummaryContainer>
         <InSilicoPredictorsSummary />

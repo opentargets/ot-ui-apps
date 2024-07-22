@@ -7,4 +7,8 @@ fragment VariantProfileHeaderFragment on VariantIndex {
     populationName
     alleleFrequency
   }
+  mostSevereConsequence {
+    id
+    label
+  }
 }

@@ -1,8 +1,8 @@
-import { Suspense, lazy } from "react";
+import { ReactElement, Suspense } from "react";
 import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs } from "@mui/material";
 import { Link, Redirect, Route, Switch, useLocation, useParams } from "react-router-dom";
-import { LoadingBackdrop, BasePage, NewChip, ScrollToTop } from "ui";
+import { LoadingBackdrop, BasePage, ScrollToTop } from "ui";
 
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
@@ -11,11 +11,13 @@ import DISEASE_PAGE_QUERY from "./DiseasePage.gql";
 import Associations from "./DiseaseAssociations";
 import Profile from "./Profile";
 
-const ClassicAssociations = lazy(() => import("./ClassicAssociations"));
+type DiseaseURLParams = {
+  efoId: string;
+};
 
-function DiseasePage() {
+function DiseasePage(): ReactElement {
   const location = useLocation();
-  const { efoId } = useParams();
+  const { efoId } = useParams<DiseaseURLParams>();
   const { loading, data } = useQuery(DISEASE_PAGE_QUERY, {
     variables: { efoId },
   });
@@ -50,21 +52,12 @@ function DiseasePage() {
               <Tab
                 label={
                   <Box sx={{ textTransform: "capitalize" }}>
-                    <div>
-                      Associated targets
-                      <NewChip />
-                    </div>
+                    <div>Associated targets</div>
                   </Box>
                 }
                 value={`/disease/${efoId}/associations`}
                 component={Link}
                 to={`/disease/${efoId}/associations`}
-              />
-              <Tab
-                label={<Box sx={{ textTransform: "capitalize" }}>Associated targets</Box>}
-                value={`/disease/${efoId}/classic-associations`}
-                component={Link}
-                to={`/disease/${efoId}/classic-associations`}
               />
               <Tab
                 label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
@@ -82,10 +75,7 @@ function DiseasePage() {
             <Profile efoId={efoId} name={name} />
           </Route>
           <Route path="/disease/:efoId/associations">
-            <Associations efoId={efoId} name={name} />
-          </Route>
-          <Route path="/disease/:efoId/classic-associations">
-            <ClassicAssociations efoId={efoId} name={name} />
+            <Associations efoId={efoId} />
           </Route>
           <Route path="*">
             <Redirect to={`/disease/${efoId}`} />
