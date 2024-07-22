@@ -8,11 +8,7 @@ function Summary() {
   const request = usePlatformApi(IN_SILICO_PREDICTORS_SUMMARY);
   
   return (
-    <SummaryItem
-      definition={definition}
-      request={request}
-      renderSummary={() => {}}  // !! renderSummary PROP NOT USED ANYMORE ANYWAY?
-    />
+    <SummaryItem definition={definition} request={request} />
   );
 }
 

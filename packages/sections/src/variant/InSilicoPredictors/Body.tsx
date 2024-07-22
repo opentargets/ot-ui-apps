@@ -1,15 +1,12 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, DataTable } from "ui";
+import { SectionItem, Tooltip, DataTable } from "ui";
 import { definition } from "../InSilicoPredictors";
 import Description from "../InSilicoPredictors/Description";
-import { epmcUrl } from "../../utils/urls";
-import { identifiersOrgLink } from "../../utils/global";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery,
-} from "../../constants";
+import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 import IN_SILICO_PREDICTORS_QUERY from "./InSilicoPredictorsQuery.gql";
 
-function getColumns(label: string) {
+function getColumns() {
   return [
     {
       id: "method",
@@ -47,17 +44,16 @@ function getColumns(label: string) {
 
 type BodyProps = {
   id: string,
-  label: string,
   entity: string,
 };
 
-export function Body({ id, label, entity }) {
+export function Body({ id, entity }: BodyProps) {
 
   const variables = {
     variantId: id,
   };
 
-  const columns = getColumns(label);
+  const columns = getColumns();
 
   const request = useQuery(IN_SILICO_PREDICTORS_QUERY, {
     variables,

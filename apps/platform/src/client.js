@@ -22,6 +22,9 @@ const client = new ApolloClient({
       AlleleFrequency: {
         keyFields: ["populationName"],
       },
+      InSilicoPredictor: {
+        keyFields: ["method"],
+      },
     },
   }),
   headers: { "OT-Platform": true },
