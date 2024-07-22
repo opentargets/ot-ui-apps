@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { DataDownloader } from "ui";
+import ExpressionDataDownloader from "./ExpressionDataDownloader";
 
 import client from "../../client";
 import SummaryTable from "./SummaryTable";
@@ -32,7 +32,7 @@ const getDownloadRows = expressions =>
 function SummaryTab({ symbol, data }) {
   return (
     <Grid container justifyContent="center">
-      <DataDownloader
+      <ExpressionDataDownloader
         tableHeaders={headers}
         rows={getDownloadRows(data.target.expressions)}
         fileStem={`${symbol}-expression`}

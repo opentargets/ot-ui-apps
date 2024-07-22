@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { ReactElement, Suspense } from "react";
 import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs } from "@mui/material";
 import {
@@ -10,7 +10,7 @@ import {
   useParams,
   Redirect,
 } from "react-router-dom";
-import { LoadingBackdrop, BasePage, ScrollToTop, NewChip } from "ui";
+import { LoadingBackdrop, BasePage, ScrollToTop } from "ui";
 
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
@@ -20,11 +20,13 @@ import TARGET_PAGE_QUERY from "./TargetPage.gql";
 import Profile from "./Profile";
 import Associations from "./TargetAssociations";
 
-const ClassicAssociations = lazy(() => import("./ClassicAssociations"));
+type TargetURLParams = {
+  ensgId: string;
+};
 
-function TargetPage() {
+function TargetPage(): ReactElement {
   const location = useLocation();
-  const { ensgId } = useParams();
+  const { ensgId } = useParams<TargetURLParams>();
   const { path } = useRouteMatch();
 
   const { loading, data } = useQuery(TARGET_PAGE_QUERY, {
@@ -71,21 +73,12 @@ function TargetPage() {
               <Tab
                 label={
                   <Box sx={{ textTransform: "capitalize" }}>
-                    <div>
-                      Associated diseases
-                      <NewChip />
-                    </div>
+                    <div>Associated diseases</div>
                   </Box>
                 }
                 value={`/target/${ensgId}/associations`}
                 component={Link}
                 to={`/target/${ensgId}/associations`}
-              />
-              <Tab
-                label={<Box sx={{ textTransform: "capitalize" }}>Associated diseases</Box>}
-                value={`/target/${ensgId}/classic-associations`}
-                component={Link}
-                to={`/target/${ensgId}/classic-associations`}
               />
               <Tab
                 label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
@@ -103,10 +96,7 @@ function TargetPage() {
             <Profile ensgId={ensgId} symbol={symbol} />
           </Route>
           <Route path={`${path}/associations`}>
-            <Associations ensgId={ensgId} symbol={symbol} />
-          </Route>
-          <Route path={`${path}/classic-associations`}>
-            <ClassicAssociations ensgId={ensgId} symbol={symbol} />
+            <Associations ensgId={ensgId} />
           </Route>
           <Route path="*">
             <Redirect to={`/target/${ensgId}`} />
