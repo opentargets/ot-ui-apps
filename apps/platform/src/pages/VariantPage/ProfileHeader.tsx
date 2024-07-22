@@ -43,7 +43,7 @@ function ProfileHeader() {
         </Field>
       </Box>
 
-      {data?.variant.alleleFrequencies &&
+      {data?.variant.alleleFrequencies.length > 0 &&
         <Box>
           <Typography variant="subtitle1" mt={0}>Population Allele Frequencies</Typography>
           <AlleleFrequencyPlot data={data.variant.alleleFrequencies} />
