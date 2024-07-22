@@ -1,32 +1,22 @@
-import { useState, useEffect } from "react";
-import { Field, ProfileHeader as BaseProfileHeader } from "ui";
+// import { useState, useEffect } from "react";
+import {
+  usePlatformApi,
+  Field,
+  ProfileHeader as BaseProfileHeader,
+  Link, 
+} from "ui";
 import { Box, Typography } from "@mui/material";
+import { identifiersOrgLink } from "../../utils/global";
 
-type ProfileHeaderProps = {
-  varId: string;
-};
+import VARIANT_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 
-function ProfileHeader({ varId }: ProfileHeaderProps) {
 
-  // temp: data will come from gql, fetch local json file for now
-  const [metadata, setMetadata] =
-    useState<MetadataType | "waiting" | undefined>("waiting");
-  useEffect(() => {
-    fetch("../data/variant-data-fake.json")
-      .then(response => response.json())
-      .then((allData: MetadataType[]) =>
-        setMetadata(allData.find(v => v.variantId === varId)));
-  }, []);
+function ProfileHeader() {
 
-  // temp: always set loading to false for now
-  const loading = false;
+  const { loading, error, data } = usePlatformApi();
 
-  // temp: revisit this (use same as other pages) once using gql to get data
-  if (!metadata) {
-    return <b>Metadata not found!</b>
-  } else if (metadata === "waiting") {
-    return <b>Waiting</b>;
-  }
+  // TODO: Errors!
+  if (error) return null;
 
   return (
     <BaseProfileHeader>
@@ -34,43 +24,54 @@ function ProfileHeader({ varId }: ProfileHeaderProps) {
       <Box>
         <Typography variant="subtitle1" mt={0}>Location</Typography>
         <Field loading={loading} title="GRCh38">
-          {metadata.chromosome}:{metadata.position}
+          {data?.variant.chromosome}:{data?.variant.position}
         </Field>
         <Field loading={loading} title="Reference Allele">
-          {metadata.referenceAllele}
+          {data?.variant.referenceAllele}
         </Field>
         <Field loading={loading} title="Alternative Allele (effect allele)">
-          {metadata.alternateAllele}
+          {data?.variant.alternateAllele}
         </Field>
         <Typography variant="subtitle1" mt={1}>Variant Effect Predictor (VEP)</Typography>
-        <Field loading={loading} title="most severe consequence">
-          {metadata.vep.mostSevereConsequence.replace(/_/g, ' ')}
+        <Field loading={loading} title="Most severe consequence">
+          <Link
+            external
+            to={identifiersOrgLink("SO", data?.variant.mostSevereConsequence.id.slice(3))}
+          >
+            {data?.variant.mostSevereConsequence.label.replace(/_/g, ' ')}        
+          </Link>
         </Field>
       </Box>
 
-      <Box>
-        <Typography variant="subtitle1" mt={0}>Population Allele Frequencies</Typography>
-        <AlleleFrequencyPlot data={metadata.alleleFrequencies} />
-      </Box>
+      {data?.variant.alleleFrequencies.length > 0 &&
+        <Box>
+          <Typography variant="subtitle1" mt={0}>Population Allele Frequencies</Typography>
+          <AlleleFrequencyPlot data={data.variant.alleleFrequencies} />
+        </Box>
+      } 
 
     </BaseProfileHeader>
   )
 }
 
+ProfileHeader.fragments = {
+  profileHeader: VARIANT_PROFILE_HEADER_FRAGMENT,
+};
+
 export default ProfileHeader;
 
-// THESE NEED CHECKED!!
+
+// =====================
+// allele frequency plot
+// =====================
+
 const populationLabels = {
-  // from AB (orig from YT)
   afr_adj: "African-American",
   amr_adj: "American Admixed/Latino",
   asj_adj: "Ashkenazi Jewish",
   eas_adj: "East Asian",
   fin_adj: "Finnish",
   nfe_adj: "Non-Finnish European",
-  // nwe_adj: "Northwestern European",
-  // seu_adj: "Southeastern European",
-  // add in missing from above - 
   ami_adj: "Amish",           // from https://www.pharmgkb.org/variant/PA166175994
   mid_adj: "Middle Eastern",  // guessed from: https://gnomad.broadinstitute.org/variant/1-154453788-C-T?dataset=gnomad_r4
   sas_adj: "South Asian",     // from https://www.pharmgkb.org/variant/PA166175994

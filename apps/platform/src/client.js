@@ -19,6 +19,9 @@ const client = new ApolloClient({
       Hallmarks: {
         keyFields: [],
       },
+      AlleleFrequency: {
+        keyFields: ["populationName"],
+      },
     },
   }),
   headers: { "OT-Platform": true },
