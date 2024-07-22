@@ -69,7 +69,7 @@ export const RowContainer = styled("div", {
   width: "100%",
   boxSizing: "border-box",
   boxShadow: rowExpanded ? boxShadow : "none",
-  transition: "background 100ms ",
+  transition: "background 150ms ease-out",
 
   // border: rowExpanded ? "0.7px solid #666" : "none",
   border: rowExpanded ? `1px solid ${grey[400]}` : "none",

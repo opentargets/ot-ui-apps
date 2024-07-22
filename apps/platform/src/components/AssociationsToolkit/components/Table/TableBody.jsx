@@ -62,7 +62,7 @@ function TableBody({ core, cols, noInteractors }) {
   const { rows } = core.getRowModel();
   const { prefix, parentTable, parentRow } = core.getState();
 
-  if (prefix === "pinned" && rows.length < 1) return null;
+  if (prefix === "pinned" && rows.length < 1) return <></>;
 
   if (prefix === "interactors") if (rows.length < 1) return <EmptyMessage />;
 

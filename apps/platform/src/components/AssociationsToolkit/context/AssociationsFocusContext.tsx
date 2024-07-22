@@ -28,11 +28,25 @@ export enum FocusActionType {
   SET_INTERACTORS_SECTION = "SET_INTERACTORS_SECTION",
   SET_INTERACTORS_ON = "SET_INTERACTORS_ON",
   SET_FOCUS_SECTION = "SET_FOCUS_SECTION",
+  CLEAR_FOCUS_CONTEXT_MENU = "CLEAR_FOCUS_CONTEXT_MENU",
+  SET_FOCUS_CONTEXT_MENU = "SET_FOCUS_CONTEXT_MENU",
 }
 
 export type FocusAction =
   | { type: FocusActionType.RESET }
   | { type: FocusActionType.SET_INTERACTORS_ON; focus: { row: string; table: FocusElementTable } }
+  | {
+      type: FocusActionType.SET_FOCUS_CONTEXT_MENU;
+      focus: { row: string; table: FocusElementTable };
+    }
+  | {
+      type: FocusActionType.CLEAR_FOCUS_CONTEXT_MENU;
+      focus: { row: string; table: FocusElementTable };
+    }
+  | {
+      type: FocusActionType.SET_FOCUS_SECTION;
+      focus: { row: string; table: FocusElementTable; section: [string, string] };
+    }
   | {
       type: FocusActionType.SET_INTERACTORS_SECTION;
       focus: {
@@ -41,10 +55,6 @@ export type FocusAction =
         section: [string, string];
         interactorsRow: string;
       };
-    }
-  | {
-      type: FocusActionType.SET_FOCUS_SECTION;
-      focus: { row: string; table: FocusElementTable; section: [string, string] };
     };
 
 const AssociationsFocusContext = createContext<FocusState>([]);
@@ -62,20 +72,24 @@ const getFocusElementState = (
   let sectionActive = false;
   let rowActive = false;
   let tableActive = false;
+  let interactorsActive = false;
+  let hasSectionActive = false;
   state.forEach((el: FocusElement) => {
     if (!tableActive && el.table === table) {
       tableActive = true;
     }
     if (el.row === row && el.table === table) {
       rowActive = true;
+      interactorsActive = el.interactors;
+      hasSectionActive = Array.isArray(el.section);
       if (el.section?.join("-") === section?.join("-")) {
         sectionActive = true;
-        return { sectionActive, rowActive, tableActive };
+        return { sectionActive, rowActive, tableActive, interactorsActive, hasSectionActive };
       }
     }
   });
 
-  return { sectionActive, rowActive, tableActive };
+  return { sectionActive, rowActive, tableActive, interactorsActive, hasSectionActive };
 };
 
 const focusElementGenerator = (
@@ -89,6 +103,7 @@ const focusElementGenerator = (
 };
 
 function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
+  console.log(action, focusState);
   switch (action.type) {
     case FocusActionType.SET_FOCUS_SECTION: {
       const { tableActive, rowActive, sectionActive } = getFocusElementState(focusState, {
@@ -96,7 +111,6 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
         row: action.focus.row,
         section: action.focus.section,
       });
-      console.log(action, focusState);
       if (!tableActive) {
         return [
           ...focusState,
@@ -104,7 +118,6 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
         ];
       }
       if (!rowActive && !sectionActive) {
-        console.log("wcfeds");
         const focusElement = focusState.find(
           e => e.table === action.focus.table && e.section !== null
         );
@@ -129,7 +142,6 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
       }
 
       if (rowActive && !sectionActive) {
-        console.log("wcfe");
         return focusState.map((focusElement: FocusElement) => {
           if (focusElement.table === action.focus.table && focusElement.row === action.focus.row) {
             return { ...focusElement, section: action.focus.section };
@@ -161,7 +173,41 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
       return focusState;
     }
 
-    case FocusActionType.SET_INTERACTORS_ON:
+    case FocusActionType.SET_FOCUS_CONTEXT_MENU: {
+      const { rowActive } = getFocusElementState(focusState, {
+        table: action.focus.table,
+        row: action.focus.row,
+        section: null,
+      });
+
+      if (rowActive) {
+        return focusState;
+      }
+
+      return [
+        ...focusState,
+        focusElementGenerator(action.focus.table, action.focus.row, null, null, false),
+      ];
+    }
+
+    case FocusActionType.CLEAR_FOCUS_CONTEXT_MENU: {
+      const { rowActive, hasSectionActive, interactorsActive } = getFocusElementState(focusState, {
+        table: action.focus.table,
+        row: action.focus.row,
+        section: null,
+      });
+
+      if (rowActive && (hasSectionActive || interactorsActive)) {
+        return focusState;
+      }
+
+      return focusState.filter(
+        (focusElement: FocusElement) =>
+          focusElement.row !== action.focus.row || focusElement.table !== action.focus.table
+      );
+    }
+
+    case FocusActionType.SET_INTERACTORS_ON: {
       {
         const { rowActive } = getFocusElementState(focusState, {
           table: action.focus.table,
@@ -190,6 +236,7 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
         ...focusState,
         focusElementGenerator(action.focus.table, action.focus.row, null, "intac", true),
       ];
+    }
 
     case FocusActionType.SET_INTERACTORS_SECTION: {
       const focusElement = focusState.find(
@@ -221,6 +268,7 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
           focusElement.row !== action.focus.row || focusElement.table !== action.focus.table
       );
     }
+
     case FocusActionType.RESET: {
       return [];
     }

@@ -103,14 +103,20 @@ function CellName({ cell, colorScale }) {
 
   const handleClose = () => {
     setOpenContext(false);
+    dispatch({
+      type: "CLEAR_FOCUS_CONTEXT_MENU",
+      focus: {
+        table: prefix,
+        row: cell.row.id,
+      },
+    });
   };
 
   const handleToggle = () => {
     setOpenContext(true);
     dispatch({
-      type: "SET_FOCUS_SECTION",
+      type: "SET_FOCUS_CONTEXT_MENU",
       focus: {
-        section: ["score", undefined],
         table: prefix,
         row: cell.row.id,
       },
@@ -182,6 +188,7 @@ function CellName({ cell, colorScale }) {
         TransitionComponent={Fade}
         transitionDuration={200}
         elevation={2}
+        disableScrollLock
       >
         <MenuList dense>
           <Box sx={{ paddingX: 2, paddingBottom: 1, display: "flex", alignItems: "center" }}>

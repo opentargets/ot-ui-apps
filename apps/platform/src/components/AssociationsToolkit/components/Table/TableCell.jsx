@@ -42,6 +42,15 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
   const backgroundColor = hasValue ? colorScale(cellValue) : "#fafafa";
   // const onClickHandler = onClick ? () => onClick(cell, prefix) : () => ({});
 
+  const focusState = useAssociationsFocus();
+
+  const activeCell =
+    prefix !== "interactors"
+      ? focusState.find(e => e.table === prefix && e.section !== null)?.section
+      : focusState.find(
+          e => e.row === parentRow && e.table === parentTable && e.interactorsSection !== null
+        )?.interactorsSection;
+
   const onClickHandler = () => {
     if (prefix === "interactors")
       return dispatch({

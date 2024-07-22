@@ -35,7 +35,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   useEffect(() => {
     if (hasComponentBeenRender.current) {
       resetDatasourceControls();
-      setPinExpanded([]);
       setActiveHeadersControlls(false);
       setSorting(DEFAULT_TABLE_SORTING_STATE);
       dispatch(resetPagination());
@@ -44,12 +43,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   }, [id]);
 
   // Table Controls
-  // [rowId, columnId, codebaseSectionId, tablePrefix]
-  // eg. ['ENSG00000087085', 'hasHighQualityChemicalProbes', 'chemicalProbes', 'pinned']
-  const [expanded, setExpanded] = useState([]);
-  const [pinExpanded, setPinExpanded] = useState([]);
-  const [tableExpanded, setTableExpanded] = useState({});
-  const [tablePinExpanded, setTablePinExpanded] = useState({});
   const [facetFilterIds, setFacetFilterIds] = useState([]);
 
   // Data controls
@@ -114,6 +107,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     },
   });
 
+  const entityToGet = entity === ENTITIES.TARGET ? ENTITIES.DISEASE : ENTITIES.TARGET;
+
   useEffect(() => {
     if (isEqual(defaulDatasourcesWeigths, dataSourcesWeights) && isEqual(dataSourcesRequired, []))
       setModifiedSourcesDataControls(false);
@@ -151,11 +146,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     }
   };
 
-  const entityToGet = entity === ENTITIES.TARGET ? ENTITIES.DISEASE : ENTITIES.TARGET;
-
   const resetToInitialPagination = () => {
-    setTableExpanded({});
-    setExpanded([]);
     dispatch(resetPagination());
   };
 
@@ -179,33 +170,9 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     }
   };
 
-  const handleActiveRow = (rowid, tablePrefix) => {
-    setExpanded([rowid, "", "", tablePrefix]);
-  };
-
-  const expanderHandler = tableExpanderController => (cell, tablePrefix) => {
-    const expandedId = getCellId(cell, entityToGet, displayedTable, tablePrefix);
-    if (expanded.join("-") === expandedId.join("-")) {
-      setTableExpanded({});
-      setExpanded([]);
-      return;
-    }
-    /* Validate that only one row can be expanded */
-    if (Object.keys(tableExpanded).length > 0) setTableExpanded({});
-    /* Open the expandable section */
-    tableExpanderController();
-    /* Set the ID of the section expanded element */
-    setExpanded(expandedId);
-  };
-
   const resetDatasourceControls = () => {
     setDataSourcesWeights(defaulDatasourcesWeigths);
     setDataSourcesRequired([]);
-  };
-
-  const resetExpandler = () => {
-    setExpanded([]);
-    setTableExpanded({});
   };
 
   const contextVariables = useMemo(
@@ -219,9 +186,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       data,
       loading,
       initialLoading,
-      tableExpanded,
       pagination: state.pagination,
-      expanded,
       activeHeadersControlls,
       enableIndirect,
       error,
@@ -232,18 +197,13 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       searhFilter,
       sorting,
       modifiedSourcesDataControls,
-      tablePinExpanded,
       pinnedLoading,
       pinnedError,
       pinnedCount,
-      pinExpanded,
       pinnedEntries,
       facetFilterIds,
-      handleActiveRow,
       resetToInitialPagination,
       setPinnedEntries,
-      setPinExpanded,
-      setTablePinExpanded,
       resetDatasourceControls,
       handleSortingChange,
       handleSearchInputChange,
@@ -251,11 +211,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       setDataSourcesWeights,
       setDataSourcesRequired,
       handlePaginationChange,
-      expanderHandler,
-      setTableExpanded,
       setEnableIndirect,
       setActiveHeadersControlls,
-      resetExpandler,
       handleAggregationClick,
       setFacetFilterIds,
       state,
@@ -272,8 +229,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       entity,
       entityToGet,
       error,
-      expanded,
-      expanderHandler,
       handleAggregationClick,
       handleSearchInputChange,
       handleSortingChange,
@@ -282,7 +237,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       loading,
       modifiedSourcesDataControls,
       state,
-      pinExpanded,
       pinnedCount,
       pinnedData,
       pinnedEntries,
@@ -293,10 +247,9 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       setDisplayedTable,
       setPinnedEntries,
       sorting,
-      tableExpanded,
-      tablePinExpanded,
       facetFilterIds,
       setFacetFilterIds,
+      handlePaginationChange,
     ]
   );
 
