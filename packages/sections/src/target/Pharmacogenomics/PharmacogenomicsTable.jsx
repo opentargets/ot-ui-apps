@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { makeStyles } from "@mui/styles";
-import { Link, DataTable, Tooltip, LabelChip, PublicationsDrawer } from "ui";
+import { Link, Tooltip, LabelChip, PublicationsDrawer, OtTable } from "ui";
 
 import { epmcUrl } from "../../utils/urls";
 import {
@@ -261,7 +261,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
     },
   ];
   return (
-    <DataTable
+    <OtTable
       showGlobalFilter
       dataDownloader
       sortBy="evidenceLevel"

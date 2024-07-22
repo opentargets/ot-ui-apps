@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarker } from "@fortawesome/free-solid-svg-icons";
-import { Link, DataTable } from "ui";
+import { Link, OtTable } from "ui";
 
 import { identifiersOrgLink } from "../../utils/global";
 import { defaultRowsPerPageOptions } from "../../constants";
@@ -34,7 +34,7 @@ function getColumns(symbol) {
 
 function OverviewTab({ symbol, pathways, query, variables }) {
   return (
-    <DataTable
+    <OtTable
       showGlobalFilter
       dataDownloader
       columns={getColumns(symbol)}
