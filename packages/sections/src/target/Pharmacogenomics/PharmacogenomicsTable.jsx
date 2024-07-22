@@ -241,6 +241,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
     },
     {
       id: "literature",
+      label: "Literature",
       renderCell: ({ literature }) => {
         const literatureList =
           literature?.reduce((acc, id) => {
