@@ -7,7 +7,7 @@
     "email": "support@targetvalidation.org"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.4",
+    "@apollo/client": "3.10.8",
     "@ebi-gene-expression-group/expression-atlas-heatmap-highcharts": "^5.4.1-beta1",
     "@fontsource/inter": "^4.5.1",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
@@ -26,7 +26,6 @@
     "file-saver": "^1.3.8",
     "graphiql": "^1.4.2",
     "graphql": "^15.0.0",
-    "graphql-anywhere": "^4.2.7",
     "graphql.macro": "^1.4.2",
     "litemol": "^2.4.2",
     "local-storage": "^2.0.0",
