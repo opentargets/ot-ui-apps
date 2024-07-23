@@ -91,6 +91,7 @@ function mapToTanstackColumnObject(
       if (originalTableObject.renderCell) return originalTableObject.renderCell(row.original);
       return getValueFromChainedId(originalTableObject.id, row.original);
     },
+    filterFn: "equalsString",
     ...originalTableObject,
   };
   return { ...newTanstackObject };
