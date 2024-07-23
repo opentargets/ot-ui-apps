@@ -36,7 +36,11 @@ import {
   OtTD,
 } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
-import { getDefaultSortObj, mapTableColumnToTanstackColumns } from "./tableUtil";
+import {
+  getDefaultSortObj,
+  getFilterValueFromObject,
+  mapTableColumnToTanstackColumns,
+} from "./tableUtil";
 import Tooltip from "../Tooltip";
 
 declare module "@tanstack/table-core" {
@@ -51,6 +55,7 @@ declare module "@tanstack/table-core" {
 const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value);
+  const allRowValuesInString = getFilterValueFromObject(row.original);
 
   // Store the itemRank info
   addMeta({
@@ -58,13 +63,12 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   });
 
   // Return if the item should be filtered in/out
-  return itemRank.passed;
+  return itemRank.passed || allRowValuesInString.includes(value);
 };
 
 // missing keys from column data obj
 /************
  *  WIDTH *
- * tooltip
  * minWidth
  * numeric
  ************/
