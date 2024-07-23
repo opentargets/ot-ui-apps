@@ -9,6 +9,7 @@ import {
 } from "ui";
 
 import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/Summary";
+import VariantEffectPredictorSummary from "sections/src/variant/variantEffectPredictor/Summary";
 // import EVASummary from "sections/src/variant/EVA/Summary";
 // import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
 // import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
@@ -19,6 +20,7 @@ import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
 const InSilicoPredictorsSection = lazy(() => import("sections/src/variant/InSilicoPredictors/Body"));
+const VariantEffectPredictorSection = lazy(() => import("sections/src/variant/variantEffectPredictor/Body"));
 // const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
 // const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
 // const QTLCredibleSetsSection = lazy(() => import("sections/src/variant/QTLCredibleSets/Body"));
@@ -27,6 +29,7 @@ const InSilicoPredictorsSection = lazy(() => import("sections/src/variant/InSili
 
 const summaries = [
   InSilicoPredictorsSummary,
+  VariantEffectPredictorSummary,
   // EVASummary,
   // UniProtVariantsSummary,
   // QTLCredibleSetsSummary,
@@ -67,6 +70,7 @@ function Profile({ varId }: ProfileProps) {
 
       <SummaryContainer>
         <InSilicoPredictorsSummary />
+        <VariantEffectPredictorSummary />
         {/* <EVASummary />
         <UniProtVariantsSummary />
         <QTLCredibleSetsSummary />
@@ -77,6 +81,9 @@ function Profile({ varId }: ProfileProps) {
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
           <InSilicoPredictorsSection id={varId} entity={VARIANT} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <VariantEffectPredictorSection id={varId} entity={VARIANT} />
         </Suspense>
         {/* <Suspense fallback={<SectionLoader />}>
           <EVASection id={varId} label='NO-LABEL!' entity={VARIANT} />
