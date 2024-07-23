@@ -11,6 +11,7 @@ export type FocusElement = {
   section: null | [string, string];
   interactorsSection: null | [string, string];
 };
+
 const defaultFocusElement: FocusElement = {
   table: "body",
   row: "",

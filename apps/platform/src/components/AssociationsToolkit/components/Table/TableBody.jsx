@@ -113,6 +113,11 @@ function TableBody({ core, cols, noInteractors }) {
                         id={id}
                         entity={entity}
                         table={prefix}
+                        row={row}
+                        entityToGet={entityToGet}
+                        rowNameEntity={rowNameEntity}
+                        displayedTable={displayedTable}
+                        cols={cols}
                         section={
                           // TODO: look
                           prefix !== "interactors"
@@ -127,11 +132,6 @@ function TableBody({ core, cols, noInteractors }) {
                                   e.interactorsSection !== null
                               )?.interactorsSection
                         }
-                        row={row}
-                        entityToGet={entityToGet}
-                        rowNameEntity={rowNameEntity}
-                        displayedTable={displayedTable}
-                        cols={cols}
                       />
                     </SectionRendererWrapper>
                   </section>

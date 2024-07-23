@@ -8,23 +8,30 @@ import {
 
 const ScoreElement = styled("div", {
   shouldForwardProp: prop =>
-    prop !== "borderColor" && prop !== "backgroundColor" && prop !== "shape",
-})(({ backgroundColor = "var(--background-color)", borderColor = "var(--grey-mid)", shape }) => ({
-  background: backgroundColor.toString(),
-  border: `1px solid ${borderColor}`,
-  borderRadius: shape === "circular" ? "50%" : 0,
-  height: "24px",
-  width: "24px",
-  boxSizing: "border-box",
-  "&:hover": {
-    cursor: "pointer",
-    boxShadow: "0px 0px 3px 1px rgba(0, 0, 0, 0.35)",
-  },
-  "@media only screen and (max-width: 1050px)": {
-    height: "20px",
-    width: "20px",
-  },
-}));
+    prop !== "borderColor" && prop !== "backgroundColor" && prop !== "shape" && prop !== "active",
+})(
+  ({
+    backgroundColor = "var(--background-color)",
+    borderColor = "var(--grey-mid)",
+    shape,
+    active = false,
+  }) => ({
+    background: backgroundColor.toString(),
+    border: active ? `1px solid ${borderColor}` : `1px solid ${borderColor}`,
+    borderRadius: shape === "circular" ? "50%" : 0,
+    height: "24px",
+    width: "24px",
+    boxSizing: "border-box",
+    "&:hover": {
+      cursor: "pointer",
+      boxShadow: "0px 0px 3px 1px rgba(0, 0, 0, 0.35)",
+    },
+    "@media only screen and (max-width: 1050px)": {
+      height: "20px",
+      width: "20px",
+    },
+  })
+);
 
 const defaultCell = {
   getValue: () => false,
@@ -44,12 +51,13 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
 
   const focusState = useAssociationsFocus();
 
-  const activeCell =
-    prefix !== "interactors"
-      ? focusState.find(e => e.table === prefix && e.section !== null)?.section
-      : focusState.find(
-          e => e.row === parentRow && e.table === parentTable && e.interactorsSection !== null
-        )?.interactorsSection;
+  // const active =
+  //   prefix !== "interactors"
+  //     ? focusState.find(e => e.table === prefix && e.section !== null)?.section ===
+  //       getColumAndSection(cell, displayedTable)
+  //     : focusState.find(
+  //         e => e.row === parentRow && e.table === parentTable && e.interactorsSection !== null
+  //       )?.interactorsSection;
 
   const onClickHandler = () => {
     if (prefix === "interactors")
@@ -86,11 +94,11 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
   return (
     <Tooltip title={scoreText} arrow disableHoverListener={false}>
       <ScoreElement
-        className="data-score"
         backgroundColor={backgroundColor}
         borderColor={borderColor}
         onClick={() => onClickHandler()}
         shape={shape}
+        // active={active}
       />
     </Tooltip>
   );
