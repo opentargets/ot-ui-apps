@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, DataTable } from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -93,7 +93,7 @@ function Body({ id, label, entity }) {
       renderBody={({ disease }) => {
         const { rows } = disease.uniprotLiteratureSummary;
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             dataDownloader

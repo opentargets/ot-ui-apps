@@ -5,10 +5,9 @@ import {
   Link,
   PublicationsDrawer,
   LabelChip,
-  DataTable,
+  OtTable,
   ScientificNotation,
   DirectionOfEffectTooltip,
-  Tooltip,
   DirectionOfEffectIcon,
 } from "ui";
 
@@ -249,7 +248,7 @@ function Body({ id, label, entity }) {
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={data => (
-        <DataTable
+        <OtTable
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}

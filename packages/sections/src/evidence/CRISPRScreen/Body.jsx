@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { useQuery } from "@apollo/client";
-import { Tooltip, SectionItem, TooltipStyledLabel, Link, DataTable } from "ui";
+import { Tooltip, SectionItem, TooltipStyledLabel, Link, OtTable } from "ui";
 
 import { dataTypesMap } from "../../dataTypes";
 import Description from "./Description";
@@ -208,7 +208,7 @@ function Body({ id, label, entity }) {
       renderBody={({ disease }) => {
         const { rows } = disease.CrisprScreenSummary;
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             dataDownloader

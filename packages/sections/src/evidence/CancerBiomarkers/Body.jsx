@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem, PublicationsDrawer, DataTable, TableDrawer } from "ui";
+import { Link, Tooltip, SectionItem, PublicationsDrawer, OtTable, TableDrawer } from "ui";
 import { naLabel } from "ui/src/constants";
 
 import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
@@ -110,7 +110,7 @@ function Body({ id, label, entity }) {
       renderBody={({ disease }) => {
         const { rows } = disease.cancerBiomarkersSummary;
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             dataDownloader

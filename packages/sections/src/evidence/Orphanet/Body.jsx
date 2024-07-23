@@ -5,9 +5,9 @@ import {
   Tooltip,
   SectionItem,
   PublicationsDrawer,
-  DataTable,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  OtTable,
 } from "ui";
 
 import { definition } from ".";
@@ -181,7 +181,7 @@ function Body({ id, label, entity }) {
       renderBody={({ disease }) => {
         const { rows } = disease.orphanetSummary;
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             dataDownloader

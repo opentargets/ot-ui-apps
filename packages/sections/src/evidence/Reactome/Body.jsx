@@ -6,7 +6,7 @@ import {
   Tooltip,
   PublicationsDrawer,
   EllsWrapper,
-  DataTable,
+  OtTable,
   TableDrawer,
 } from "ui";
 
@@ -165,7 +165,7 @@ function Body({ id, label, entity }) {
       renderBody={({ disease }) => {
         const { rows } = disease.reactomeSummary;
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             dataDownloader
