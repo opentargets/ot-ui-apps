@@ -14,6 +14,7 @@ import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
 import {
   aggregationClick,
+  dataSourcesFilterClick,
   facetFilterSelectAction,
   onPaginationChange,
   resetDataSourceControl,
@@ -42,6 +43,19 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
   const [sorting, setSorting] = useState(DEFAULT_TABLE_SORTING_STATE);
+
+  const setDataSourcesFilter = newDataSourcesFilter => {
+    dispatch(dataSourcesFilterClick(newDataSourcesFilter));
+  };
+  useEffect(() => {
+    const retrieved = JSON.parse(window.localStorage.getItem("dataSourcesFilter"));
+    retrieved && setDataSourcesFilter(retrieved);
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("dataSourcesFilter", JSON.stringify(state.dataSourcesFilter));
+  }, [state.dataSourcesFilter]);
+  const [filterAffectOverallScore, setFilterAffectOverallScore] = useState(false);
 
   // Data controls UI
   const [activeHeadersControlls, setActiveHeadersControlls] = useState(false);
@@ -129,6 +143,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const resetDatasourceControls = () => {
     dispatch(resetDataSourceControl());
+    setFilterAffectOverallScore(false);
   };
 
   const resetToInitialPagination = () => {
@@ -159,6 +174,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       enableIndirect,
       error,
       dataSourcesWeights: state.dataSourceControls,
+      dataSourcesFilter: state.dataSourcesFilter,
+      filterAffectOverallScore,
       displayedTable,
       pinnedData,
       sorting,
@@ -172,6 +189,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       resetDatasourceControls,
       handleSortingChange,
       setDisplayedTable,
+      setDataSourcesFilter,
+      setFilterAffectOverallScore,
       handlePaginationChange,
       setEnableIndirect,
       setActiveHeadersControlls,
@@ -185,6 +204,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       activeHeadersControlls,
       count,
       data,
+      filterAffectOverallScore,
       displayedTable,
       enableIndirect,
       entity,

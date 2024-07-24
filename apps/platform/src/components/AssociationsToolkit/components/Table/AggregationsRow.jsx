@@ -16,7 +16,6 @@ const HiddenCol = styled("div")({
   display: "flex",
 });
 
-const associationGrouped = groupViewColumnsBy(associationsColumns, "aggregation");
 const prioritizationGrouped = groupViewColumnsBy(prioritizationColumns, "aggregation");
 
 function AggregationItem({
@@ -66,11 +65,14 @@ function AggregationItem({
 function AggregationsRow({
   table,
   active,
+  dataSourcesFilter,
   handleAggregationClick,
   activeHeadersControlls,
   setActiveHeadersControlls,
   columnsCount,
 }) {
+  const associationGrouped = groupViewColumnsBy(dataSourcesFilter, "aggregation");
+
   const dataset = table === "associations" ? associationGrouped : prioritizationGrouped;
   const aggregations = Object.keys(dataset);
 

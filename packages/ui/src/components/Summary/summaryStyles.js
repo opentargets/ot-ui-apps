@@ -63,7 +63,7 @@ const summaryStyles = makeStyles(theme => ({
   },
   summaryContainer: {
     marginBottom: "2rem",
-    marginTop: "2rem !important",
+    marginTop: "0 !important",
   },
   title: {
     color: theme.palette.grey[500],

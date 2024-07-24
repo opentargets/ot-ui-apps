@@ -17,6 +17,7 @@ import SectionError from "./SectionError";
 import sectionStyles from "./sectionStyles";
 import { createShortName } from "../Summary/utils";
 import PartnerLockIcon from "../PartnerLockIcon";
+import { useProfileContext } from "platform/src/components/ProfileToolkit";
 
 function SectionItem({
   definition,
@@ -29,6 +30,7 @@ function SectionItem({
   showEmptySection = false,
   showContentLoading = false,
 }) {
+  const { profileFilter } = useProfileContext();
   const classes = sectionStyles();
   const { loading, error, data } = request;
   const shortName = createShortName(definition);
@@ -39,6 +41,8 @@ function SectionItem({
   }
 
   if (!hasData && !showEmptySection && !loading) return null;
+
+  if (!profileFilter.map(section => section.id).includes(definition.id)) return null;
 
   return (
     <Grid item xs={12}>

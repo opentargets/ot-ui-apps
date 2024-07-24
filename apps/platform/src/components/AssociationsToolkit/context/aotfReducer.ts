@@ -3,6 +3,7 @@ import {
   defaulDatasourcesWeigths,
   DEFAULT_TABLE_PAGINATION_STATE,
   DEFAULT_TABLE_SORTING_STATE,
+  defaultDataSourcesFilter,
 } from "../utils";
 import { Action, ActionType, ENTITY, State, TABLE_VIEW } from "../types";
 import { isEqual } from "lodash";
@@ -31,6 +32,7 @@ export const initialState: State = {
   dataSourceControls: defaulDatasourcesWeigths,
   modifiedSourcesDataControls: false,
   facetFilters: [],
+  dataSourcesFilter: defaultDataSourcesFilter,
 };
 
 type InitialStateParams = {
@@ -142,6 +144,10 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       return {
         ...initialState,
       };
+    }
+    case ActionType.HANDLE_DATA_SOURCES_FILTER: {
+      const newDataSourcesFilter = action.newDataSourcesFilter;
+      return { ...state, dataSourcesFilter: newDataSourcesFilter };
     }
     default: {
       throw Error("Unknown action: " + action);

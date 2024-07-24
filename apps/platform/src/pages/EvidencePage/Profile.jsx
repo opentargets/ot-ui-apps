@@ -37,6 +37,7 @@ import UniProtLiteratureSummary from "sections/src/evidence/UniProtLiterature/Su
 import UniProtVariantsSummary from "sections/src/evidence/UniProtVariants/Summary";
 
 import ProfileHeader from "./ProfileHeader";
+import { ProfileFilter, ProfileProvider } from "../../components/ProfileToolkit";
 
 const CancerBiomarkersSection = lazy(() => import("sections/src/evidence/CancerBiomarkers/Body"));
 const CancerGeneCensusSection = lazy(() => import("sections/src/evidence/CancerGeneCensus/Body"));
@@ -141,121 +142,123 @@ function Profile({ ensgId, efoId, symbol, name }) {
       variables={{ ensgId, efoId }}
     >
       <ProfileHeader />
+      <ProfileProvider entity={EVIDENCE}>
+        <ProfileFilter />
+        <SummaryContainer>
+          <OTGeneticsSummary />
+          <GeneBurdenSummary />
+          <EVASummary />
+          <GenomicsEnglandSummary />
+          <Gene2PhenotypeSummary />
+          <UniProtLiteratureSummary />
+          <UniProtVariantsSummary />
+          <ClinGenSummary />
+          <OrphanetSummary />
+          <CancerGeneCensusSummary />
+          <IntOgenSummary />
+          <EVASomaticSummary />
+          <ChemblSummary />
+          <CRISPRSummary />
+          <CrisprScreenSummary />
+          <CancerBiomarkersSummary />
+          <SlapEnrichSummary />
+          <ProgenySummary />
+          <ReactomeSummary />
+          <SysBioSummary />
+          <EuropePmcSummary />
+          <ExpressionAtlasSummary />
+          <ImpcSummary />
+          <PrivateWrapper>
+            <OTCRISPRSummary />
+            <OTEncoreSummary />
+            <OTValidationSummary />
+          </PrivateWrapper>
+        </SummaryContainer>
 
-      <SummaryContainer>
-        <OTGeneticsSummary />
-        <GeneBurdenSummary />
-        <EVASummary />
-        <GenomicsEnglandSummary />
-        <Gene2PhenotypeSummary />
-        <UniProtLiteratureSummary />
-        <UniProtVariantsSummary />
-        <ClinGenSummary />
-        <OrphanetSummary />
-        <CancerGeneCensusSummary />
-        <IntOgenSummary />
-        <EVASomaticSummary />
-        <ChemblSummary />
-        <CRISPRSummary />
-        <CrisprScreenSummary />
-        <CancerBiomarkersSummary />
-        <SlapEnrichSummary />
-        <ProgenySummary />
-        <ReactomeSummary />
-        <SysBioSummary />
-        <EuropePmcSummary />
-        <ExpressionAtlasSummary />
-        <ImpcSummary />
-        <PrivateWrapper>
-          <OTCRISPRSummary />
-          <OTEncoreSummary />
-          <OTValidationSummary />
-        </PrivateWrapper>
-      </SummaryContainer>
-
-      <SectionContainer>
-        <Suspense fallback={<SectionLoader />}>
-          <OTGeneticsSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <GeneBurdenSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <EVASection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <GenomicsEnglandSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <Gene2PhenotypeSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <UniProtLiteratureSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <UniProtVariantsSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <ClinGenSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <OrphanetSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <CancerGeneCensusSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <IntOgenSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <EVASomaticSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <ChemblSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <CRISPRSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <CrisprScreenSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <CancerBiomarkersSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <SlapEnrichSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <ProgenySection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <ReactomeSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <SysBioSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <EuropePmcSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <ExpressionAtlasSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <ImpcSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-
-        <PrivateWrapper>
+        <SectionContainer>
           <Suspense fallback={<SectionLoader />}>
-            <OTCRISPRSection id={id} label={label} entity={DISEASE} />
+            <OTGeneticsSection id={id} label={label} entity={DISEASE} />
           </Suspense>
           <Suspense fallback={<SectionLoader />}>
-            <OTEncoreSection id={id} label={label} entity={DISEASE} />
+            <GeneBurdenSection id={id} label={label} entity={DISEASE} />
           </Suspense>
           <Suspense fallback={<SectionLoader />}>
-            <OTValidationSection id={id} label={label} entity={DISEASE} />
+            <EVASection id={id} label={label} entity={DISEASE} />
           </Suspense>
-        </PrivateWrapper>
-      </SectionContainer>
+          <Suspense fallback={<SectionLoader />}>
+            <GenomicsEnglandSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <Gene2PhenotypeSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <UniProtLiteratureSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <UniProtVariantsSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <ClinGenSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <OrphanetSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <CancerGeneCensusSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <IntOgenSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <EVASomaticSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <ChemblSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <CRISPRSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <CrisprScreenSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <CancerBiomarkersSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <SlapEnrichSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <ProgenySection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <ReactomeSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <SysBioSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <EuropePmcSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <ExpressionAtlasSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <ImpcSection id={id} label={label} entity={DISEASE} />
+          </Suspense>
+
+          <PrivateWrapper>
+            <Suspense fallback={<SectionLoader />}>
+              <OTCRISPRSection id={id} label={label} entity={DISEASE} />
+            </Suspense>
+            <Suspense fallback={<SectionLoader />}>
+              <OTEncoreSection id={id} label={label} entity={DISEASE} />
+            </Suspense>
+            <Suspense fallback={<SectionLoader />}>
+              <OTValidationSection id={id} label={label} entity={DISEASE} />
+            </Suspense>
+          </PrivateWrapper>
+        </SectionContainer>
+      </ProfileProvider>
     </PlatformApiProvider>
   );
 }

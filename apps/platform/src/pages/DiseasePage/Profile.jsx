@@ -18,6 +18,7 @@ import OTProjectsSummary from "sections/src/disease/OTProjects/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
+import { ProfileFilter, ProfileProvider } from "../../components/ProfileToolkit";
 
 const OntologySection = lazy(() => import("sections/src/disease/Ontology/Body"));
 const KnownDrugsSection = lazy(() => import("sections/src/disease/KnownDrugs/Body"));
@@ -56,35 +57,38 @@ function Profile({ efoId, name }) {
       client={client}
     >
       <ProfileHeader />
-      <SummaryContainer>
-        <OntologySummary />
-        <KnownDrugsSummary />
-        <PhenotypesSummary />
-        <BibliographySummary />
-        <PrivateWrapper>
-          <OTProjectsSummary />
-        </PrivateWrapper>
-      </SummaryContainer>
+      <ProfileProvider entity={DISEASE}>
+        <ProfileFilter />
+        <SummaryContainer>
+          <OntologySummary />
+          <KnownDrugsSummary />
+          <PhenotypesSummary />
+          <BibliographySummary />
+          <PrivateWrapper>
+            <OTProjectsSummary />
+          </PrivateWrapper>
+        </SummaryContainer>
 
-      <SectionContainer>
-        <Suspense fallback={<SectionLoader />}>
-          <OntologySection id={efoId} label={name} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <KnownDrugsSection id={efoId} label={name} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <PhenotypesSection id={efoId} label={name} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <BibliographySection id={efoId} label={name} entity={DISEASE} />
-        </Suspense>
-        <PrivateWrapper>
+        <SectionContainer>
           <Suspense fallback={<SectionLoader />}>
-            <OTProjectsSection id={efoId} label={name} entity={DISEASE} />
+            <OntologySection id={efoId} label={name} entity={DISEASE} />
           </Suspense>
-        </PrivateWrapper>
-      </SectionContainer>
+          <Suspense fallback={<SectionLoader />}>
+            <KnownDrugsSection id={efoId} label={name} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <PhenotypesSection id={efoId} label={name} entity={DISEASE} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <BibliographySection id={efoId} label={name} entity={DISEASE} />
+          </Suspense>
+          <PrivateWrapper>
+            <Suspense fallback={<SectionLoader />}>
+              <OTProjectsSection id={efoId} label={name} entity={DISEASE} />
+            </Suspense>
+          </PrivateWrapper>
+        </SectionContainer>
+      </ProfileProvider>
     </PlatformApiProvider>
   );
 }

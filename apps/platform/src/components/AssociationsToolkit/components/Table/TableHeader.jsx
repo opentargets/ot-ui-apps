@@ -23,6 +23,7 @@ function TableHeader({ table, cols }) {
   const {
     id,
     displayedTable,
+    dataSourcesFilter,
     handleAggregationClick,
     activeHeadersControlls,
     setActiveHeadersControlls,
@@ -98,6 +99,7 @@ function TableHeader({ table, cols }) {
         columnsCount={cols.length}
         table={displayedTable}
         active={activeAggregation}
+        dataSourcesFilter={dataSourcesFilter}
         activeHeadersControlls={activeHeadersControlls}
         setActiveHeadersControlls={setActiveHeadersControlls}
       />

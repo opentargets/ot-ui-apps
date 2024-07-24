@@ -92,6 +92,10 @@ export const defaulDatasourcesWeigths = dataSources.map(
   })
 );
 
+export const defaultDataSourcesFilter = dataSources.filter(
+  e => !e.isPrivate || (e.isPrivate && e.isPrivate === isPartnerPreview)
+);
+
 export const getWightSourceDefault = source => {
   const sourcesDetails = defaulDatasourcesWeigths.find(src => src.id === source);
   return sourcesDetails.weight;

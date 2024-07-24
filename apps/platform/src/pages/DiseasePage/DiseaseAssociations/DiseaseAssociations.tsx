@@ -10,6 +10,7 @@ import {
   DataUploader,
   AotfApiPlayground,
   AssociationsFocusProvider,
+  DataSourcesFilter,
 } from "../../../components/AssociationsToolkit";
 import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
@@ -33,6 +34,7 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
               <FacetsSearch />
               <AdvanceOptionsMenu />
               <DataUploader />
+              <DataSourcesFilter />
               <Divider orientation="vertical" flexItem />
               <DataDownloader />
               <AotfApiPlayground />

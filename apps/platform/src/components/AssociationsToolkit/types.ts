@@ -24,6 +24,18 @@ export type Column = {
   private?: boolean;
 };
 
+export type DataSource = {
+  id: string;
+  sectionId: string;
+  label: string;
+  aggregation: string;
+  aggregationId: string;
+  weight: number;
+  isPrivate: boolean;
+  docsLink: string;
+  required: boolean;
+};
+
 /***************
  * STATE TYPES *
  ***************/
@@ -70,6 +82,7 @@ export interface State {
   dataSourceControls: Array<columnAdvanceControl>;
   modifiedSourcesDataControls: boolean;
   facetFilters: Array<string>;
+  dataSourcesFilter: Array<DataSource>;
 }
 
 /*****************
@@ -86,6 +99,7 @@ export enum ActionType {
   HANDLE_AGGREGATION_CLICK = "HANDLE_AGGREGATION_CLICK",
   FACETS_SEARCH = "FACETS_SEARCH",
   SET_INITIAL_STATE = "SET_INITIAL_STATE",
+  HANDLE_DATA_SOURCES_FILTER = "HANDLE_DATA_SOURCES_FILTER",
 }
 
 export type SetRowInteractorsPayload = {
@@ -103,4 +117,5 @@ export type Action =
   | { type: ActionType.RESET_DATA_SOURCE_CONTROL }
   | { type: ActionType.HANDLE_AGGREGATION_CLICK; aggregation: string }
   | { type: ActionType.FACETS_SEARCH; facetFilters: string[] }
-  | { type: ActionType.SET_INITIAL_STATE };
+  | { type: ActionType.SET_INITIAL_STATE }
+  | { type: ActionType.HANDLE_DATA_SOURCES_FILTER; newDataSourcesFilter: DataSource[] };

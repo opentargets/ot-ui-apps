@@ -28,6 +28,7 @@ import BibliographySummary from "sections/src/target/Bibliography/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 import client from "../../client";
+import { ProfileFilter, ProfileProvider } from "../../components/ProfileToolkit";
 
 const KnownDrugsSection = lazy(() => import("sections/src/target/KnownDrugs/Body"));
 const TractabilitySection = lazy(() => import("sections/src/target/Tractability/Body"));
@@ -96,79 +97,82 @@ function Profile({ ensgId, symbol }) {
       client={client}
     >
       <ProfileHeader />
-      <SummaryContainer>
-        <KnownDrugsSummary />
-        <TractabilitySummary />
-        <SafetySummary />
-        <PharmacogenomicsSummary />
-        <ChemicalProbesSummary />
-        <BaselineExpressionSummary />
-        <DepMapSummary />
-        <SubcellularLocationSummary />
-        <GeneOntologySummary />
-        <GeneticConstraintSummary />
-        <ProtVistaSummary />
-        <MolecularInteractionsSummary />
-        <PathwaysSummary />
-        <CancerHallmarksSummary />
-        <MousePhenotypesSummary />
-        <ComparativeGenomicsSummary />
-        <BibliographySummary />
-      </SummaryContainer>
+      <ProfileProvider entity={TARGET}>
+        <ProfileFilter />
+        <SummaryContainer>
+          <KnownDrugsSummary />
+          <TractabilitySummary />
+          <SafetySummary />
+          <PharmacogenomicsSummary />
+          <ChemicalProbesSummary />
+          <BaselineExpressionSummary />
+          <DepMapSummary />
+          <SubcellularLocationSummary />
+          <GeneOntologySummary />
+          <GeneticConstraintSummary />
+          <ProtVistaSummary />
+          <MolecularInteractionsSummary />
+          <PathwaysSummary />
+          <CancerHallmarksSummary />
+          <MousePhenotypesSummary />
+          <ComparativeGenomicsSummary />
+          <BibliographySummary />
+        </SummaryContainer>
 
-      <SectionContainer>
-        <Suspense fallback={<SectionLoader />}>
-          <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <TractabilitySection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <SafetySection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <PharmacogenomicsSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <ChemicalProbesSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <BaselineExpressionSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <DepMapSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <SubcellularLocationSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <GeneOntologySection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <GeneticConstraintSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <ProtVistaSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <MolecularInteractionsSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <PathwaysSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <CancerHallmarksSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <MousePhenotypesSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <ComparativeGenomicsSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-      </SectionContainer>
+        <SectionContainer>
+          <Suspense fallback={<SectionLoader />}>
+            <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <TractabilitySection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <SafetySection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <PharmacogenomicsSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <ChemicalProbesSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <BaselineExpressionSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <DepMapSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <SubcellularLocationSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <GeneOntologySection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <GeneticConstraintSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <ProtVistaSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <MolecularInteractionsSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <PathwaysSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <CancerHallmarksSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <MousePhenotypesSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <ComparativeGenomicsSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+        </SectionContainer>
+      </ProfileProvider>
     </PlatformApiProvider>
   );
 }

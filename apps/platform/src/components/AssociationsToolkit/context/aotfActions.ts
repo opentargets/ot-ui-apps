@@ -1,5 +1,5 @@
 import { Facet } from "../../Facets/facetsTypes";
-import { Action, ActionType, Pagination, RowInteractorsKey } from "../types";
+import { Action, ActionType, DataSource, Pagination, RowInteractorsKey } from "../types";
 
 export function onPaginationChange(pagination: Pagination): Action {
   return {
@@ -58,5 +58,12 @@ export function facetFilterSelectAction(facets: Facet[]): Action {
 export function resetToInitialState(): Action {
   return {
     type: ActionType.SET_INITIAL_STATE,
+  };
+}
+
+export function dataSourcesFilterClick(newDataSourcesFilter: Array<DataSource>): Action {
+  return {
+    type: ActionType.HANDLE_DATA_SOURCES_FILTER,
+    newDataSourcesFilter,
   };
 }

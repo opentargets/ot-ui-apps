@@ -13,8 +13,10 @@ import { scroller } from "react-scroll";
 import summaryStyles from "./summaryStyles";
 import { createShortName } from "./utils";
 import PartnerLockIcon from "../PartnerLockIcon";
+import { useProfileContext } from "platform/src/components/ProfileToolkit";
 
 function SummaryItem({ definition, request, renderSummary, subText }) {
+  const { profileFilter } = useProfileContext();
   const classes = summaryStyles();
   const { loading, error, data } = request;
   const shortName = createShortName(definition);
@@ -27,6 +29,8 @@ function SummaryItem({ definition, request, renderSummary, subText }) {
       smooth: true,
     });
   };
+
+  if (!profileFilter.map(section => section.id).includes(definition.id)) return null;
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>

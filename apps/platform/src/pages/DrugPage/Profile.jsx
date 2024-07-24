@@ -18,6 +18,7 @@ import BibliographySection from "sections/src/drug/Bibliography/Body";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
+import { ProfileFilter, ProfileProvider } from "../../components/ProfileToolkit";
 
 const summaries = [
   MechanismsOfActionSummary,
@@ -52,26 +53,28 @@ function Profile({ chemblId, name }) {
       client={client}
     >
       <ProfileHeader chemblId={chemblId} />
+      <ProfileProvider entity={DRUG}>
+        <ProfileFilter />
+        <SummaryContainer>
+          <MechanismsOfActionSummary />
+          <IndicationsSummary />
+          <KnownDrugsSummary />
+          <DrugWarningsSummary />
+          <PharmacogenomicsSummary />
+          <AdverseEventsSummary />
+          <BibliographySummary />
+        </SummaryContainer>
 
-      <SummaryContainer>
-        <MechanismsOfActionSummary />
-        <IndicationsSummary />
-        <KnownDrugsSummary />
-        <DrugWarningsSummary />
-        <PharmacogenomicsSummary />
-        <AdverseEventsSummary />
-        <BibliographySummary />
-      </SummaryContainer>
-
-      <SectionContainer>
-        <MechanismsOfActionSection id={chemblId} label={name} entity={DRUG} />
-        <IndicationsSection id={chemblId} label={name} entity={DRUG} />
-        <KnownDrugsSection id={chemblId} label={name} entity={DRUG} />
-        <DrugWarningsSection id={chemblId} label={name} entity={DRUG} />
-        <PharmacogenomicsSection id={chemblId} label={name} entity={DRUG} />
-        <AdverseEventsSection id={chemblId} label={name} entity={DRUG} />
-        <BibliographySection id={chemblId} label={name} entity={DRUG} />
-      </SectionContainer>
+        <SectionContainer>
+          <MechanismsOfActionSection id={chemblId} label={name} entity={DRUG} />
+          <IndicationsSection id={chemblId} label={name} entity={DRUG} />
+          <KnownDrugsSection id={chemblId} label={name} entity={DRUG} />
+          <DrugWarningsSection id={chemblId} label={name} entity={DRUG} />
+          <PharmacogenomicsSection id={chemblId} label={name} entity={DRUG} />
+          <AdverseEventsSection id={chemblId} label={name} entity={DRUG} />
+          <BibliographySection id={chemblId} label={name} entity={DRUG} />
+        </SectionContainer>
+      </ProfileProvider>
     </PlatformApiProvider>
   );
 }

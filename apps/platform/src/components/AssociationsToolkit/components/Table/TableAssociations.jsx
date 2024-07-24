@@ -3,7 +3,6 @@ import { useReactTable, getCoreRowModel, createColumnHelper } from "@tanstack/re
 
 import { styled, Typography, Box } from "@mui/material";
 
-import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
 
 import AggregationsTooltip from "./AssocTooltip";
@@ -36,13 +35,12 @@ const TableDivider = styled("div")({
 const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
-function getDatasources({ displayedTable, colorScale }) {
+function getDatasources({ displayedTable, colorScale, dataSourcesFilter }) {
   const isAssociations = displayedTable === "associations";
-  const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
+  const baseCols = isAssociations ? dataSourcesFilter : prioritizationCols;
   const dataProp = isAssociations ? "dataSources" : "prioritisations";
   const datasources = [];
   baseCols.forEach(({ id, label, sectionId, description, aggregation, isPrivate, docsLink }) => {
-    if (isPrivate && isPrivate !== isPartnerPreview) return;
     const column = columnHelper.accessor(row => row[dataProp][id], {
       id,
       sectionId,
@@ -75,6 +73,7 @@ function TableAssociations() {
     data,
     count,
     loading: associationsLoading,
+    dataSourcesFilter,
     pagination,
     handlePaginationChange,
     displayedTable,
@@ -127,10 +126,10 @@ function TableAssociations() {
       columnHelper.group({
         header: "entities",
         id: "entity-cols",
-        columns: [...getDatasources({ displayedTable, colorScale })],
+        columns: [...getDatasources({ displayedTable, colorScale, dataSourcesFilter })],
       }),
     ],
-    [displayedTable, entityToGet, rowNameEntity]
+    [displayedTable, entityToGet, rowNameEntity, dataSourcesFilter]
   );
 
   /**

@@ -9,6 +9,7 @@ import {
   DataUploader,
   AotfApiPlayground,
   AssociationsFocusProvider,
+  DataSourcesFilter,
 } from "../../../components/AssociationsToolkit";
 import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
@@ -28,6 +29,7 @@ function TargetAssociations({ ensgId }: TargetAssociationsProps): ReactElement {
               <FacetsSearch />
               <AdvanceOptionsMenu />
               <DataUploader />
+              <DataSourcesFilter />
               <Divider orientation="vertical" flexItem />
               <DataDownloader />
               <AotfApiPlayground />
