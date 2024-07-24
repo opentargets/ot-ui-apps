@@ -9,7 +9,7 @@ import {
 } from "ui";
 
 import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/Summary";
-import VariantEffectPredictorSummary from "sections/src/variant/variantEffectPredictor/Summary";
+import VariantEffectPredictorSummary from "sections/src/variant/VariantEffectPredictor/Summary";
 // import EVASummary from "sections/src/variant/EVA/Summary";
 // import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
 // import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
