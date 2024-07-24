@@ -18,13 +18,12 @@ const prepareData = (data = []) => {
 function Wrapper({ data, query, variables }) {
   const [ref, { width }] = useMeasure();
   const parsedData = prepareData(data);
-  console.log({ parsedData });
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <div style={{ width: "95%" }} ref={ref}>
+      <Box sx={{ width: "95%" }} ref={ref}>
         <ChartControls data={parsedData} query={query} variables={variables} />
         <DepmapPlot data={parsedData} width={width} />
-      </div>
+      </Box>
     </Box>
   );
 }
@@ -143,7 +142,7 @@ function DepmapPlot({ data, width }) {
     return () => chart.remove();
   }, [data, width]);
 
-  return <div ref={headerRef}></div>;
+  return <Box ref={headerRef}></Box>;
 }
 
 export default Wrapper;
