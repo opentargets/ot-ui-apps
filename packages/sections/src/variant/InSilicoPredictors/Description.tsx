@@ -11,6 +11,10 @@ function Description({ variantId }: DescriptionProps) {
       <Link to="https://www.ensembl.org/info/docs/tools/vep/index.html" external>
         VEP
       </Link>
+      ,{" "}
+      <Link to="https://gnomad.broadinstitute.org/" external>
+        gnomAD
+      </Link>
     </>
   );
 }
