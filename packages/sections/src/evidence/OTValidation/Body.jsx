@@ -46,7 +46,7 @@ const getColumns = classes => [
     label: "Reported disease",
     renderCell: row => <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>,
     sortable: true,
-    filterValue: row => `${row.diseaseLabel}, ${row.diseaseId}`,
+    filterValue: row => `${row.diseaseLabel}, ${row.disease.id}`,
   },
   {
     id: "diseaseCellLines",
