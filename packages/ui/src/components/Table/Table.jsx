@@ -95,7 +95,7 @@ const Table = ({
             xs={12}
             md={8}
             lg={8}
-            sx={{ ml: "auto" }}
+            sx={{ display: "flex", justifyContent: "end", gap: 1 }}
           >
             <DataDownloader
               columns={dataDownloaderColumns || columns}

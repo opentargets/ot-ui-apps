@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faFileArrowDown, faTable } from "@fortawesome/free-solid-svg-icons";
 import {
   Button,
-  Grid,
   CircularProgress,
   Snackbar,
   Slide,
@@ -15,6 +14,7 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
+  Box,
 } from "@mui/material";
 import "graphiql/graphiql.min.css";
 import ApiPlaygroundDrawer from "./ApiPlaygroundDrawer";
@@ -159,20 +159,19 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
 
   return (
     <>
-      <Grid container alignItems="center" justifyContent="flex-end" spacing={1}>
-        <Grid item>
-          <Button
-            aria-controls={open ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleClickExportButton}
-            sx={{ display: "flex", gap: 1 }}
-          >
-            <FontAwesomeIcon icon={faFileArrowDown} /> Export
-          </Button>
-        </Grid>
-        {query ? <ApiPlaygroundDrawer query={query} variables={variables} /> : null}
-      </Grid>
+      <Box>
+        <Button
+          aria-controls={open ? "basic-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          onClick={handleClickExportButton}
+          sx={{ display: "flex", gap: 1 }}
+          variant="outlined"
+        >
+          <FontAwesomeIcon icon={faFileArrowDown} /> Export
+        </Button>
+      </Box>
+      {query ? <ApiPlaygroundDrawer query={query} variables={variables} /> : null}
 
       <Menu id="export-data-menu" anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem onClick={handleClickDownloadJSON}>

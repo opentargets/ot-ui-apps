@@ -42,6 +42,7 @@ import {
   mapTableColumnToTanstackColumns,
 } from "./tableUtil";
 import Tooltip from "../Tooltip";
+import OtTableColumnVisibility from "./OtTableColumnVisibility";
 
 declare module "@tanstack/table-core" {
   interface FilterFns {
@@ -86,6 +87,7 @@ function OtTable({
   dataDownloaderFileStem,
   query,
   variables,
+  showColumnVisibilityControl = false,
 }: OtTableProps): ReactElement {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -140,8 +142,9 @@ function OtTable({
           <Grid item sm={12} md={4}>
             <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />
           </Grid>
-          {dataDownloader && (
-            <Grid item sm={12} md={8} sx={{ ml: "auto" }}>
+          <Grid item sm={12} md={8} sx={{ display: "flex", justifyContent: "end", gap: 1 }}>
+            {showColumnVisibilityControl && <OtTableColumnVisibility table={table} />}
+            {dataDownloader && (
               <DataDownloader
                 columns={dataDownloaderColumns || columns}
                 rows={rows}
@@ -149,8 +152,8 @@ function OtTable({
                 query={query}
                 variables={variables}
               />
-            </Grid>
-          )}
+            )}
+          </Grid>
         </Grid>
       )}
       {/* Table component container */}
