@@ -1,7 +1,8 @@
 import { Skeleton, styled } from "@mui/material";
 import Tooltip from "./AssocTooltip";
-import { cellHasValue, getColumAndSection } from "../../utils";
+import { cellHasValue, getColumAndSection, TABLE_PREFIX } from "../../utils";
 import {
+  FocusActionType,
   useAssociationsFocus,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
@@ -51,14 +52,11 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
   const hasValue = cellHasValue(cellValue);
   const borderColor = hasValue ? colorScale(cellValue) : grey[300];
   const backgroundColor = hasValue ? colorScale(cellValue) : "#fafafa";
-  // const onClickHandler = onClick ? () => onClick(cell, prefix) : () => ({});
 
   const focusState = useAssociationsFocus();
 
-  // console.log(focusState.find(e => e.table === prefix && e.row === cell?.row?.id));
-
   const active =
-    prefix !== "interactors"
+    prefix !== TABLE_PREFIX.INTERACTORS
       ? !!focusState.find(
           e =>
             e.table === prefix &&
@@ -68,17 +66,18 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
         )
       : !!focusState.find(
           e =>
-            e.table === prefix &&
-            e.row === cell?.row?.id &&
+            e.table === parentTable &&
+            e.row === parentRow &&
+            e.interactorsRow === cell?.row?.id &&
             e.interactorsSection &&
             e.interactorsSection[0] === cell?.column?.id
         );
 
   const onClickHandler = () => {
     if (cell.column.id === "score") return;
-    if (prefix === "interactors")
+    if (prefix === TABLE_PREFIX.INTERACTORS)
       return dispatch({
-        type: "SET_INTERACTORS_SECTION",
+        type: FocusActionType.SET_INTERACTORS_SECTION,
         focus: {
           table: parentTable,
           row: parentRow,
@@ -87,7 +86,7 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
         },
       });
     return dispatch({
-      type: "SET_FOCUS_SECTION",
+      type: FocusActionType.SET_FOCUS_SECTION,
       focus: {
         table: prefix,
         row: cell.row.id,

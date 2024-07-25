@@ -46,12 +46,12 @@ export function SectionRender({
   row,
   table,
   entityToGet,
-  rowNameEntity,
+  nameProperty,
   displayedTable,
   cols = [],
   section,
 }) {
-  let label = row.original[entityToGet][rowNameEntity];
+  let label = row.original[entityToGet][nameProperty];
   let ensgId;
   let efoId;
   let componentId;

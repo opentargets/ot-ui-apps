@@ -10,6 +10,7 @@ import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
 import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
+import { rowNameProperty, TABLE_PREFIX } from "../../utils";
 
 /* HELPERS */
 const getColContainerClassName = ({ id }) => {
@@ -62,15 +63,14 @@ function TableBody({ core, cols, noInteractors }) {
   const { rows } = core.getRowModel();
   const { prefix, parentTable, parentRow } = core.getState();
 
-  if (prefix === "pinned" && rows.length < 1) return <></>;
+  if (prefix === TABLE_PREFIX.PINNING && rows.length < 1) return <></>;
 
-  if (prefix === "interactors") if (rows.length < 1) return <EmptyMessage />;
+  if (prefix === TABLE_PREFIX.INTERACTORS) if (rows.length < 1) return <EmptyMessage />;
 
-  const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
+  const nameProperty = rowNameProperty[entity];
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
 
   const handleClickAway = e => {
-    console.log("hihi", e);
     if (e.srcElement.className === "CodeMirror-hint CodeMirror-hint-active") {
       return;
     }
@@ -109,7 +109,7 @@ function TableBody({ core, cols, noInteractors }) {
               <Box sx={{ position: "relative", overflow: "hidden" }}>
                 <SectionRendererWrapper
                   section={
-                    // TODO: look
+                    // TODO: Review active section definition
                     prefix !== "interactors"
                       ? focusState.find(
                           e => e.row === row.id && e.table === prefix && e.section !== null
@@ -131,11 +131,11 @@ function TableBody({ core, cols, noInteractors }) {
                         table={prefix}
                         row={row}
                         entityToGet={entityToGet}
-                        rowNameEntity={rowNameEntity}
+                        nameProperty={nameProperty}
                         displayedTable={displayedTable}
                         cols={cols}
                         section={
-                          // TODO: look
+                          // TODO: Review active section definition
                           prefix !== "interactors"
                             ? focusState.find(
                                 e => e.row === row.id && e.table === prefix && e.section !== null
