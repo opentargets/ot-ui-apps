@@ -1,11 +1,6 @@
 /* eslint-disable */
 import { useMemo } from "react";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getExpandedRowModel,
-  createColumnHelper,
-} from "@tanstack/react-table";
+import { useReactTable, getCoreRowModel, createColumnHelper } from "@tanstack/react-table";
 
 import { styled, Skeleton, Typography, Box } from "@mui/material";
 
@@ -37,7 +32,7 @@ const TableDivider = styled("div")({
 const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
-function getDatasources({ expanderHandler, displayedTable, colorScale }) {
+function getDatasources({ displayedTable, colorScale }) {
   const isAssociations = displayedTable === "associations";
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? "dataSources" : "prioritisations";
@@ -46,6 +41,11 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
     if (isPrivate && isPrivate !== isPartnerPreview) return;
     const column = columnHelper.accessor(row => row[dataProp][id], {
       id,
+      sectionId,
+      enableSorting: isAssociations,
+      aggregation,
+      isPrivate,
+      docsLink,
       header: isAssociations ? (
         <Typography variant="assoc_header">{label}</Typography>
       ) : (
@@ -55,28 +55,9 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
           </div>
         </AggregationsTooltip>
       ),
-      sectionId,
-      enableSorting: isAssociations,
-      aggregation,
-      isPrivate,
-      docsLink,
-      cell: cell => {
-        const hasValue = cellHasValue(cell.getValue());
-        return hasValue ? (
-          <TableCell
-            hasValue
-            displayedTable={displayedTable}
-            scoreId={id}
-            scoreValue={cell.getValue()}
-            onClick={expanderHandler(cell.row.getToggleExpandedHandler())}
-            cell={cell}
-            isAssociations={isAssociations}
-            colorScale={colorScale}
-          />
-        ) : (
-          <TableCell cell={cell} />
-        );
-      },
+      cell: cell => (
+        <TableCell cell={cell} colorScale={colorScale} displayedTable={displayedTable} />
+      ),
     });
     datasources.push(column);
   });
@@ -90,11 +71,8 @@ function TableAssociations() {
     data,
     count,
     loading: associationsLoading,
-    tableExpanded,
     pagination,
-    expanderHandler,
     handlePaginationChange,
-    setTableExpanded,
     displayedTable,
     sorting,
     handleSortingChange,
@@ -145,10 +123,10 @@ function TableAssociations() {
       columnHelper.group({
         header: "entities",
         id: "entity-cols",
-        columns: [...getDatasources({ expanderHandler, displayedTable, colorScale })],
+        columns: [...getDatasources({ displayedTable, colorScale })],
       }),
     ],
-    [expanderHandler, displayedTable, entityToGet, rowNameEntity]
+    [displayedTable, entityToGet, rowNameEntity]
   );
 
   /**
@@ -159,7 +137,6 @@ function TableAssociations() {
     data,
     columns,
     state: {
-      expanded: tableExpanded,
       pagination,
       sorting,
       prefix: "body",
@@ -167,11 +144,9 @@ function TableAssociations() {
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
-    onExpandedChange: setTableExpanded,
     onSortingChange: handleSortingChange,
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
     getRowId: row => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
@@ -181,7 +156,6 @@ function TableAssociations() {
     data: pinnedData,
     columns,
     state: {
-      expanded: tableExpanded,
       pagination: {
         pageIndex: 0,
         pageSize: 150,
@@ -192,11 +166,9 @@ function TableAssociations() {
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
-    onExpandedChange: setTableExpanded,
     onSortingChange: handleSortingChange,
     getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
     getRowId: row => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,

@@ -114,7 +114,7 @@ const styles = makeStyles(theme => ({
   },
 }));
 
-function DataDownloader({ columns, rows, fileStem, query, variables }) {
+function DataDownloader({ columns, rows, fileStem, query, variables, btnLabel = "Export" }) {
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -168,7 +168,7 @@ function DataDownloader({ columns, rows, fileStem, query, variables }) {
             onClick={handleClickExportButton}
             sx={{ display: "flex", gap: 1 }}
           >
-            <FontAwesomeIcon icon={faFileArrowDown} /> Export
+            <FontAwesomeIcon icon={faFileArrowDown} /> {btnLabel}
           </Button>
         </Grid>
         {query ? <ApiPlaygroundDrawer query={query} variables={variables} /> : null}

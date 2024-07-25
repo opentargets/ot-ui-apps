@@ -5,7 +5,7 @@ import { ENTITIES } from "../../utils";
 
 import targetSections from "../../../../sections/targetSections";
 import evidenceSections from "../../../../sections/evidenceSections";
-import { Fade } from "@mui/material";
+
 import { grey } from "@mui/material/colors";
 
 const LoadingContainer = styled("div")({
@@ -17,31 +17,21 @@ const LoadingContainer = styled("div")({
   gap: "20px",
 });
 
-// const Container = styled("div")({
-//   marginTop: "10px",
-//   marginBottom: "10px",
-// });
-
 const Container = styled("div", {
   shouldForwardProp: prop => prop !== "table",
 })(({ table, theme }) => ({
   paddingTop: "10px",
   paddingBottom: "10px",
-  // paddingLeft: 15,
-  // paddingRight: 15,
   paddingLeft: table === "interactors" ? theme.spacing(9) : theme.spacing(3),
-  // paddingRight: table === "interactors" ? "60px" : 15,
   background: grey[100],
 }));
 
 function LoadingSection() {
   return (
-    <div>
-      <LoadingContainer>
-        <LoadingBackdrop />
-        Importing section assets
-      </LoadingContainer>
-    </div>
+    <LoadingContainer>
+      <LoadingBackdrop />
+      Importing section assets
+    </LoadingContainer>
   );
 }
 
@@ -102,14 +92,13 @@ export function SectionRender({
   if (!Component) return <SectionNotFound />;
 
   return (
-    <Fade in>
-      <Container table={table}>
-        <Component id={componentId} label={label} entity={entityOfSection} />
-      </Container>
-    </Fade>
+    <Container table={table}>
+      <Component id={componentId} label={label} entity={entityOfSection} />
+    </Container>
   );
 }
 
-export function SectionRendererWrapper({ children }) {
+export function SectionRendererWrapper({ children, section }) {
+  if (!section) return <></>;
   return <Suspense fallback={<LoadingSection />}>{children}</Suspense>;
 }

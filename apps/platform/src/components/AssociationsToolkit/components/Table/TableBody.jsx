@@ -64,13 +64,14 @@ function TableBody({ core, cols, noInteractors }) {
   const { rows } = core.getRowModel();
   const { prefix, parentTable, parentRow } = core.getState();
 
-  if (prefix === "pinned" && rows.length < 1) return null;
+  if (prefix === "pinned" && rows.length < 1) return <></>;
 
   if (prefix === "interactors") if (rows.length < 1) return <EmptyMessage />;
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
   const handleClickAway = e => {
+    console.log("hihi", e);
     if (e.srcElement.className === "CodeMirror-hint CodeMirror-hint-active") {
       return;
     }
@@ -106,13 +107,33 @@ function TableBody({ core, cols, noInteractors }) {
                 ))}
               </RowContainer>
               <Box sx={{ position: "relative", overflow: "hidden" }}>
-                <ClickAwayListener onClickAway={handleClickAway}>
-                  <section>
-                    <SectionRendererWrapper>
+                <SectionRendererWrapper
+                  section={
+                    // TODO: look
+                    prefix !== "interactors"
+                      ? focusState.find(
+                          e => e.row === row.id && e.table === prefix && e.section !== null
+                        )?.section
+                      : focusState.find(
+                          e =>
+                            e.row === parentRow &&
+                            e.table === parentTable &&
+                            e.interactorsRow === row.id &&
+                            e.interactorsSection !== null
+                        )?.interactorsSection
+                  }
+                >
+                  <ClickAwayListener onClickAway={e => handleClickAway(e)}>
+                    <section>
                       <SectionRender
                         id={id}
                         entity={entity}
                         table={prefix}
+                        row={row}
+                        entityToGet={entityToGet}
+                        rowNameEntity={rowNameEntity}
+                        displayedTable={displayedTable}
+                        cols={cols}
                         section={
                           // TODO: look
                           prefix !== "interactors"
@@ -127,16 +148,10 @@ function TableBody({ core, cols, noInteractors }) {
                                   e.interactorsSection !== null
                               )?.interactorsSection
                         }
-                        row={row}
-                        entityToGet={entityToGet}
-                        rowNameEntity={rowNameEntity}
-                        displayedTable={displayedTable}
-                        cols={cols}
                       />
-                    </SectionRendererWrapper>
-                  </section>
-                </ClickAwayListener>
-
+                    </section>
+                  </ClickAwayListener>
+                </SectionRendererWrapper>
                 {!noInteractors && (
                   <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>
                     <RowInteractorsTable

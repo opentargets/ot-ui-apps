@@ -64,6 +64,7 @@ export const getCellId = (cell, entityToGet, displayedTable, tablePrefix = null)
 };
 
 export const getColumAndSection = (cell, displayedTable) => {
+  if (!cell.column) return [];
   const colId = cell.column.id;
   const sectionId =
     displayedTable === "associations" ? cell.column.id : cell.column.columnDef.sectionId;
