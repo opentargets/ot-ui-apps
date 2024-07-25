@@ -70,6 +70,7 @@ function TableBody({ core, cols, noInteractors }) {
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
 
   const handleClickAway = e => {
+    console.log("hihi", e);
     if (e.srcElement.className === "CodeMirror-hint CodeMirror-hint-active") {
       return;
     }
@@ -106,9 +107,24 @@ function TableBody({ core, cols, noInteractors }) {
               </RowContainer>
 
               <Box sx={{ position: "relative", overflow: "hidden" }}>
-                <ClickAwayListener onClickAway={handleClickAway}>
-                  <section>
-                    <SectionRendererWrapper>
+                <SectionRendererWrapper
+                  section={
+                    // TODO: look
+                    prefix !== "interactors"
+                      ? focusState.find(
+                          e => e.row === row.id && e.table === prefix && e.section !== null
+                        )?.section
+                      : focusState.find(
+                          e =>
+                            e.row === parentRow &&
+                            e.table === parentTable &&
+                            e.interactorsRow === row.id &&
+                            e.interactorsSection !== null
+                        )?.interactorsSection
+                  }
+                >
+                  <ClickAwayListener onClickAway={e => handleClickAway(e)}>
+                    <section>
                       <SectionRender
                         id={id}
                         entity={entity}
@@ -133,9 +149,9 @@ function TableBody({ core, cols, noInteractors }) {
                               )?.interactorsSection
                         }
                       />
-                    </SectionRendererWrapper>
-                  </section>
-                </ClickAwayListener>
+                    </section>
+                  </ClickAwayListener>
+                </SectionRendererWrapper>
               </Box>
             </Fragment>
           ))}

@@ -138,9 +138,24 @@ function CellName({ cell, colorScale }) {
     if (isPinned) {
       const newPinnedData = pinnedEntries.filter(e => e !== id);
       setPinnedEntries(newPinnedData);
+      dispatch({
+        type: "CLEAR_FOCUS_CONTEXT_MENU",
+        focus: {
+          table: prefix,
+          row: cell.row.id,
+        },
+      });
     } else {
       setPinnedEntries([...pinnedEntries, id]);
+      dispatch({
+        type: "CLEAR_FOCUS_CONTEXT_MENU",
+        focus: {
+          table: prefix,
+          row: cell.row.id,
+        },
+      });
     }
+    setOpenContext(false);
   };
 
   const handleNavigateToProfile = () => {

@@ -1,4 +1,6 @@
 import { createContext, useContext, useReducer, Dispatch, ReactElement, useEffect } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import useAotfContext from "../hooks/useAotfContext";
 
 type FocusElementTable = "body" | "pinned" | "upload";
 
@@ -281,6 +283,11 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
 
 export function AssociationsFocusProvider({ children }: { children: ReactElement }): ReactElement {
   const [focusState, dispatch] = useReducer(focusReducer, []);
+  const { id } = useAotfContext();
+
+  useEffect(() => {
+    dispatch({ type: "RESET" });
+  }, [id]);
 
   useEffect(() => {
     console.log({ focusState });

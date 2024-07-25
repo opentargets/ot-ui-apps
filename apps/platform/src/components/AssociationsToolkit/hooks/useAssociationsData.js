@@ -36,6 +36,10 @@ function useAssociationsData({
   useEffect(() => {
     let isCurrent = true;
     const fetchData = async () => {
+      setState({
+        ...state,
+        loading: true,
+      });
       const resData = await client.query({
         query,
         variables: {
