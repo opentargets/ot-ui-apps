@@ -4,7 +4,6 @@ query TargetAssociationsQuery(
   $size: Int!
   $filter: String
   $sortBy: String!
-  $aggregationFilters: [AggregationFilter!]
   $enableIndirect: Boolean!
   $datasources: [DatasourceSettingsInput!]
   $rowsFilter: [String!]
@@ -17,7 +16,6 @@ query TargetAssociationsQuery(
       page: { index: $index, size: $size }
       orderByScore: $sortBy
       BFilter: $filter
-      aggregationFilters: $aggregationFilters
       enableIndirect: $enableIndirect
       datasources: $datasources
       Bs: $rowsFilter
