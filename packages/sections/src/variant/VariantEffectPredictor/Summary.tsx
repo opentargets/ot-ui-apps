@@ -13,8 +13,7 @@ function Summary() {
 }
 
 Summary.fragments = {
-  VariantEffectPredictorSummaryFragment
-  : VARIANT_EFFECT_PREDICTOR_SUMMARY,
+  VariantEffectPredictorSummaryFragment: VARIANT_EFFECT_PREDICTOR_SUMMARY,
 };
 
 export default Summary;

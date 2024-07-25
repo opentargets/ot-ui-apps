@@ -1,5 +1,5 @@
 fragment VariantEffectPredictorSummaryFragment on VariantIndex {
   transcriptConsequences {
-    transcriptId
+    isEnsemblCanonical
   }
 }

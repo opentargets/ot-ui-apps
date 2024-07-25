@@ -1,13 +1,12 @@
 query VariantEffectPredictorQuery($variantId: String!) {
   variant(variantId: $variantId){
     transcriptConsequences {
-       variantConsequences {
+      variantConsequences {
         id
         label
       }
       aminoAcidChange
       uniprotAccessions
-      isEnsemblCanonical
       codons
       distance
       target {
@@ -20,5 +19,5 @@ query VariantEffectPredictorQuery($variantId: String!) {
       siftPrediction
       polyphenPrediction
     }
-    }
   }
+}
