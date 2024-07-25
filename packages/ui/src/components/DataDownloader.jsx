@@ -114,7 +114,7 @@ const styles = makeStyles(theme => ({
   },
 }));
 
-function DataDownloader({ columns, rows, fileStem, query, variables }) {
+function DataDownloader({ columns, rows, fileStem, query, variables, btnLabel = "Export" }) {
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
