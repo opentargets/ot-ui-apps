@@ -160,7 +160,7 @@ function TableBody({ core, cols, noInteractors }) {
                     <RowInteractorsTable
                       row={row}
                       columns={core._getColumnDefs()}
-                      rowNameEntity={rowNameEntity}
+                      nameProperty={nameProperty}
                       parentTable={prefix}
                     />
                   </RowInteractorsWrapper>

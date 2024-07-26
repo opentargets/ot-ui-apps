@@ -48,7 +48,7 @@ function AAA() {
   );
 }
 
-function RowInteractorsTable({ row, columns, rowNameEntity, parentTable }) {
+function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
   const {
     id: diseaseId,
     sorting,
@@ -65,7 +65,7 @@ function RowInteractorsTable({ row, columns, rowNameEntity, parentTable }) {
     pageSize: 10,
   });
 
-  const label = row.original[entityToGet][rowNameEntity];
+  const label = row.original[entityToGet][nameProperty];
 
   const source = "intact";
 
