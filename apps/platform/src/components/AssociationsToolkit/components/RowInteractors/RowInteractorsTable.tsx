@@ -16,33 +16,33 @@ import { useState } from "react";
 import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
 
 const btnStyles = {
-  cursor: "pointer",
-  background: grey[400],
-  padding: "2px",
-  borderRadius: "50%",
-  height: "18px",
   width: "18px",
+  height: "18px",
+  padding: "2px",
   display: "flex",
+  cursor: "pointer",
+  borderRadius: "50%",
   alignItems: "center",
   justifyContent: "center",
+  background: grey[400],
   "&:hover": {
     background: grey[500],
   },
 };
 
-function AAA() {
+function RowLine() {
   return (
     <Box
       sx={{
+        left: "10px",
         width: "30px",
+        bottom: "20px",
+        height: "6000px",
+        position: "absolute",
+        background: "transparent",
         borderLeft: 1.5,
         borderBottom: 1.5,
         borderColor: grey[300],
-        height: "3500px",
-        background: "transparent",
-        position: "absolute",
-        bottom: "20px",
-        left: "10px",
       }}
     ></Box>
   );
@@ -109,7 +109,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
   return (
     <Box sx={{ pb: 2, background: grey[100], position: "relative" }}>
       <Box sx={{ position: "relative", pt: 1 }}>
-        <AAA />
+        <RowLine />
         <Box
           sx={{
             // width: "100%",
