@@ -13,7 +13,11 @@ import { grey } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
+import {
+  FocusActionType,
+  useAssociationsFocus,
+  useAssociationsFocusDispatch,
+} from "../../context/AssociationsFocusContext";
 
 const btnStyles = {
   width: "18px",
@@ -57,8 +61,9 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     dataSourcesRequired,
     entityToGet,
     handleSetInteractors,
-    handleDisableInteractors,
   } = useAotfContext();
+
+  const dispatch = useAssociationsFocusDispatch();
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -68,6 +73,13 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
   const label = row.original[entityToGet][nameProperty];
 
   const source = "intact";
+
+  const onClickCloseInteractors = () => {
+    dispatch({
+      type: FocusActionType.SET_INTERACTORS_OFF,
+      focus: { row: row.id, table: parentTable },
+    });
+  };
 
   const { data, loading, interactorsMetadata } = useRowInteractors({
     options: {
@@ -105,18 +117,17 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     onPaginationChange: setPagination,
     getRowId: row => row[entityToGet].id,
   });
+
   const cols = interactorsTable.getHeaderGroups()[0].headers[1].subHeaders;
+
   return (
     <Box sx={{ pb: 2, background: grey[100], position: "relative" }}>
       <Box sx={{ position: "relative", pt: 1 }}>
         <RowLine />
         <Box
           sx={{
-            // width: "100%",
             background: grey[300],
-            // border: 1,
             borderColor: grey[400],
-            // borderRadius: `4px 4px 0 0`,
             boxSizing: "border-box",
             px: 2,
             py: 0.5,
@@ -125,11 +136,10 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
             alignItems: "center",
             mb: 1,
             ml: 5,
-            // mr: 2,
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Box onClick={() => handleDisableInteractors(row.id)} sx={btnStyles}>
+            <Box onClick={() => onClickCloseInteractors()} sx={btnStyles}>
               <FontAwesomeIcon size="sm" icon={faClose} />
             </Box>
             <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>

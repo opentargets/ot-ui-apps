@@ -17,8 +17,10 @@ export type FocusState = FocusElement[];
 
 export enum FocusActionType {
   RESET = "RESET",
-  SET_INTERACTORS_SECTION = "SET_INTERACTORS_SECTION",
   SET_INTERACTORS_ON = "SET_INTERACTORS_ON",
+  SET_INTERACTORS_OFF = "SET_INTERACTORS_OFF",
+  SET_INTERACTORS_SECTION = "SET_INTERACTORS_SECTION",
+  CLEAR_INTERACTORS_SECTION = "CLEAR_INTERACTORS_SECTION",
   SET_FOCUS_SECTION = "SET_FOCUS_SECTION",
   CLEAR_FOCUS_CONTEXT_MENU = "CLEAR_FOCUS_CONTEXT_MENU",
   SET_FOCUS_CONTEXT_MENU = "SET_FOCUS_CONTEXT_MENU",
@@ -27,6 +29,7 @@ export enum FocusActionType {
 export type FocusAction =
   | { type: FocusActionType.RESET }
   | { type: FocusActionType.SET_INTERACTORS_ON; focus: { row: string; table: FocusElementTable } }
+  | { type: FocusActionType.SET_INTERACTORS_OFF; focus: { row: string; table: FocusElementTable } }
   | {
       type: FocusActionType.SET_FOCUS_CONTEXT_MENU;
       focus: { row: string; table: FocusElementTable };
@@ -225,6 +228,39 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
                 ...focusElement,
                 interactors: true,
                 interactorsView: "intac",
+              };
+            } else {
+              return focusElement;
+            }
+          });
+        }
+      }
+
+      return [
+        ...focusState,
+        focusElementGenerator(action.focus.table, action.focus.row, null, "intac", true),
+      ];
+    }
+
+    case FocusActionType.SET_INTERACTORS_OFF: {
+      {
+        const { rowActive } = getFocusElementState(focusState, {
+          table: action.focus.table,
+          row: action.focus.row,
+          section: null,
+        });
+        if (rowActive) {
+          return focusState.map((focusElement: FocusElement) => {
+            if (
+              focusElement.row === action.focus.row &&
+              focusElement.table === action.focus.table
+            ) {
+              return {
+                ...focusElement,
+                interactors: false,
+                interactorsRow: null,
+                interactorsView: null,
+                interactorsSection: null,
               };
             } else {
               return focusElement;
