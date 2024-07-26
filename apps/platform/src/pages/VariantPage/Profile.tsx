@@ -65,7 +65,6 @@ function Profile({ varId }: ProfileProps) {
       variables={{ variantId: varId }}
       client={client}
     >
-
       <ProfileHeader />
 
       <SummaryContainer>
@@ -105,7 +104,6 @@ function Profile({ varId }: ProfileProps) {
     </PlatformApiProvider>
 
   );
-
 }
 
 export default Profile;
