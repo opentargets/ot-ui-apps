@@ -24,7 +24,10 @@ import { useHistory } from "react-router-dom";
 import useAotfContext from "../../hooks/useAotfContext";
 import { ENTITIES } from "../../utils";
 import { grey } from "@mui/material/colors";
-import { useAssociationsFocusDispatch } from "../../context/AssociationsFocusContext";
+import {
+  FocusActionType,
+  useAssociationsFocusDispatch,
+} from "../../context/AssociationsFocusContext";
 
 const StyledMenuItem = styled(MenuItem)({
   "&>.MuiListItemIcon-root>svg": {
@@ -104,7 +107,7 @@ function CellName({ cell, colorScale }) {
   const handleClose = () => {
     setOpenContext(false);
     dispatch({
-      type: "CLEAR_FOCUS_CONTEXT_MENU",
+      type: FocusActionType.CLEAR_FOCUS_CONTEXT_MENU,
       focus: {
         table: prefix,
         row: cell.row.id,
@@ -115,7 +118,7 @@ function CellName({ cell, colorScale }) {
   const handleToggle = () => {
     setOpenContext(true);
     dispatch({
-      type: "SET_FOCUS_CONTEXT_MENU",
+      type: FocusActionType.SET_FOCUS_CONTEXT_MENU,
       focus: {
         table: prefix,
         row: cell.row.id,
@@ -125,7 +128,7 @@ function CellName({ cell, colorScale }) {
 
   const handleClickInteractors = () => {
     dispatch({
-      type: "SET_INTERACTORS_ON",
+      type: FocusActionType.SET_INTERACTORS_ON,
       focus: {
         table: prefix,
         row: cell.row.id,
@@ -139,7 +142,7 @@ function CellName({ cell, colorScale }) {
       const newPinnedData = pinnedEntries.filter(e => e !== id);
       setPinnedEntries(newPinnedData);
       dispatch({
-        type: "CLEAR_FOCUS_CONTEXT_MENU",
+        type: FocusActionType.CLEAR_FOCUS_CONTEXT_MENU,
         focus: {
           table: prefix,
           row: cell.row.id,
@@ -148,7 +151,7 @@ function CellName({ cell, colorScale }) {
     } else {
       setPinnedEntries([...pinnedEntries, id]);
       dispatch({
-        type: "CLEAR_FOCUS_CONTEXT_MENU",
+        type: FocusActionType.CLEAR_FOCUS_CONTEXT_MENU,
         focus: {
           table: prefix,
           row: cell.row.id,

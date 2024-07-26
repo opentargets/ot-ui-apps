@@ -1,32 +1,35 @@
-/* eslint-disable */
 import { useMemo } from "react";
 import { useReactTable, getCoreRowModel, createColumnHelper } from "@tanstack/react-table";
 
-import { styled, Skeleton, Typography, Box } from "@mui/material";
+import { styled, Typography, Box } from "@mui/material";
 
 import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
 
 import AggregationsTooltip from "./AssocTooltip";
 import TableCell from "./TableCell";
-
 import HeaderControls from "../HeaderControls";
 import CellName from "./CellName";
 import TableHeader from "./TableHeader";
 import TableFooter from "./TableFooter";
 import TableBody from "./TableBody";
+
 import useAotfContext from "../../hooks/useAotfContext";
 
-import { cellHasValue, getScale, isPartnerPreview, tableCSSVariables } from "../../utils";
+import { getScale, isPartnerPreview, tableCSSVariables, TABLE_PREFIX } from "../../utils";
 
 const TableElement = styled("main")({
-  maxWidth: "1600px",
+  maxWidth: "1800px",
   margin: "0 auto",
+});
+
+const TableSpacer = styled("div")({
+  marginBottom: 5,
 });
 
 const TableDivider = styled("div")({
   borderBottom: "1px solid #ececec",
-  marginBottom: 4,
+  marginBottom: 5,
 });
 
 const columnHelper = createColumnHelper();
@@ -139,13 +142,12 @@ function TableAssociations() {
     state: {
       pagination,
       sorting,
-      prefix: "body",
+      prefix: TABLE_PREFIX.CORE,
       loading: associationsLoading,
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
-    getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
     getRowId: row => row[entityToGet].id,
     manualPagination: true,
@@ -161,13 +163,12 @@ function TableAssociations() {
         pageSize: 150,
       },
       sorting,
-      prefix: "pinned",
+      prefix: TABLE_PREFIX.PINNING,
       loading: pinnedLoading,
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
-    getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
     getRowId: row => row[entityToGet].id,
     manualPagination: true,
@@ -185,14 +186,16 @@ function TableAssociations() {
         {/* Weights controlls */}
         <HeaderControls cols={entitesHeaders} />
 
+        <TableSpacer />
+
         {/* BODY CONTENT */}
         {pinnedEntries.length > 0 && (
-          <TableBody core={corePinnedTable} prefix="pinned" cols={entitesHeaders} />
+          <TableBody core={corePinnedTable} prefix={TABLE_PREFIX.PINNING} cols={entitesHeaders} />
         )}
 
         {pinnedEntries.length > 0 && <TableDivider />}
 
-        <TableBody core={coreAssociationsTable} prefix="body" cols={entitesHeaders} />
+        <TableBody core={coreAssociationsTable} prefix={TABLE_PREFIX.CORE} cols={entitesHeaders} />
 
         {/* FOOTER */}
         <TableFooter table={coreAssociationsTable} />

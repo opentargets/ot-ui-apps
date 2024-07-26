@@ -1,8 +1,7 @@
 import { createContext, useContext, useReducer, Dispatch, ReactElement, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
 import useAotfContext from "../hooks/useAotfContext";
 
-type FocusElementTable = "body" | "pinned" | "upload";
+type FocusElementTable = "core" | "pinned" | "upload";
 
 export type FocusElement = {
   table: FocusElementTable;
@@ -12,16 +11,6 @@ export type FocusElement = {
   interactors: boolean;
   section: null | [string, string];
   interactorsSection: null | [string, string];
-};
-
-const defaultFocusElement: FocusElement = {
-  table: "body",
-  row: "",
-  interactors: false,
-  interactorsRow: null,
-  interactorsView: null,
-  section: null,
-  interactorsSection: null,
 };
 
 export type FocusState = FocusElement[];
@@ -59,6 +48,16 @@ export type FocusAction =
         interactorsRow: string;
       };
     };
+
+const defaultFocusElement: FocusElement = {
+  table: "core",
+  row: "",
+  interactors: false,
+  interactorsRow: null,
+  interactorsView: null,
+  section: null,
+  interactorsSection: null,
+};
 
 const AssociationsFocusContext = createContext<FocusState>([]);
 
@@ -106,7 +105,6 @@ const focusElementGenerator = (
 };
 
 function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
-  console.log(action, focusState);
   switch (action.type) {
     case FocusActionType.SET_FOCUS_SECTION: {
       const { tableActive, rowActive, sectionActive } = getFocusElementState(focusState, {
@@ -286,12 +284,9 @@ export function AssociationsFocusProvider({ children }: { children: ReactElement
   const { id } = useAotfContext();
 
   useEffect(() => {
-    dispatch({ type: "RESET" });
+    dispatch({ type: FocusActionType.RESET });
   }, [id]);
 
-  useEffect(() => {
-    console.log({ focusState });
-  }, [focusState]);
   return (
     <AssociationsFocusContext.Provider value={focusState}>
       <AssociationsFocusDispatchContext.Provider value={dispatch}>

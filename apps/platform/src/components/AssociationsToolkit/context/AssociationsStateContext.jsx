@@ -1,11 +1,18 @@
-import { createContext, useState, useMemo, useEffect, useReducer, useRef } from "react";
+import {
+  createContext,
+  useState,
+  useMemo,
+  useEffect,
+  useReducer,
+  useRef,
+  useCallback,
+} from "react";
 import { isEqual } from "lodash";
 import { useStateParams } from "ui";
 import dataSources from "../static_datasets/dataSourcesAssoc";
 import {
   defaulDatasourcesWeigths,
   getControlChecked,
-  getCellId,
   checkBoxPayload,
   ENTITIES,
   DEFAULT_TABLE_SORTING_STATE,
@@ -19,6 +26,7 @@ import { onPaginationChange, resetPagination } from "./aotfActions";
 const AssociationsStateContext = createContext();
 
 const initialIndirect = entity => entity !== ENTITIES.TARGET;
+const rowEntity = { [ENTITIES.TARGET]: ENTITIES.DISEASE, [ENTITIES.DISEASE]: ENTITIES.TARGET };
 
 /**
  * Associations on the fly state Provider
@@ -31,16 +39,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   );
 
   const hasComponentBeenRender = useRef(false);
-
-  useEffect(() => {
-    if (hasComponentBeenRender.current) {
-      resetDatasourceControls();
-      setActiveHeadersControlls(false);
-      setSorting(DEFAULT_TABLE_SORTING_STATE);
-      dispatch(resetPagination());
-    }
-    hasComponentBeenRender.current = true;
-  }, [id]);
 
   // Table Controls
   const [facetFilterIds, setFacetFilterIds] = useState([]);
@@ -70,6 +68,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     arr => arr.join(","),
     str => str.split(",")
   );
+
+  const entityToGet = rowEntity[entity];
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
     query,
@@ -107,7 +107,15 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     },
   });
 
-  const entityToGet = entity === ENTITIES.TARGET ? ENTITIES.DISEASE : ENTITIES.TARGET;
+  useEffect(() => {
+    if (hasComponentBeenRender.current) {
+      resetDatasourceControls();
+      setActiveHeadersControlls(false);
+      setSorting(DEFAULT_TABLE_SORTING_STATE);
+      dispatch(resetPagination());
+    }
+    hasComponentBeenRender.current = true;
+  }, [id]);
 
   useEffect(() => {
     if (isEqual(defaulDatasourcesWeigths, dataSourcesWeights) && isEqual(dataSourcesRequired, []))
@@ -115,64 +123,76 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     else setModifiedSourcesDataControls(true);
   }, [dataSourcesWeights, dataSourcesRequired]);
 
-  const handleAggregationClick = aggregationId => {
-    const aggregationDatasources = dataSources.filter(el => el.aggregation === aggregationId);
-    let isAllActive = true;
-    aggregationDatasources.forEach(e => {
-      if (getControlChecked(dataSourcesRequired, e.id) === false) {
-        isAllActive = false;
-        return;
-      }
-    });
-    if (isAllActive) {
-      let newPayload = [...dataSourcesRequired];
-      aggregationDatasources.forEach(element => {
-        const indexToRemove = newPayload.findIndex(datasource => datasource.id === element.id);
-        const newRequiredElement = [
-          ...newPayload.slice(0, indexToRemove),
-          ...newPayload.slice(indexToRemove + 1),
-        ];
-        newPayload = [...newRequiredElement];
-      });
-      setDataSourcesRequired(newPayload);
-    } else {
-      const payload = [];
-      aggregationDatasources.forEach(el => {
-        if (dataSourcesRequired.filter(val => val.id === el.id).length === 0) {
-          payload.push(checkBoxPayload(el.id, el.aggregationId));
+  const handleAggregationClick = useCallback(
+    aggregationId => {
+      const aggregationDatasources = dataSources.filter(el => el.aggregation === aggregationId);
+      let isAllActive = true;
+      aggregationDatasources.forEach(e => {
+        if (getControlChecked(dataSourcesRequired, e.id) === false) {
+          isAllActive = false;
+          return;
         }
       });
-      setDataSourcesRequired([...dataSourcesRequired, ...payload]);
-    }
-  };
+      if (isAllActive) {
+        let newPayload = [...dataSourcesRequired];
+        aggregationDatasources.forEach(element => {
+          const indexToRemove = newPayload.findIndex(datasource => datasource.id === element.id);
+          const newRequiredElement = [
+            ...newPayload.slice(0, indexToRemove),
+            ...newPayload.slice(indexToRemove + 1),
+          ];
+          newPayload = [...newRequiredElement];
+        });
+        setDataSourcesRequired(newPayload);
+      } else {
+        const payload = [];
+        aggregationDatasources.forEach(el => {
+          if (dataSourcesRequired.filter(val => val.id === el.id).length === 0) {
+            payload.push(checkBoxPayload(el.id, el.aggregationId));
+          }
+        });
+        setDataSourcesRequired([...dataSourcesRequired, ...payload]);
+      }
+    },
+    [dataSourcesRequired]
+  );
 
-  const resetToInitialPagination = () => {
-    dispatch(resetPagination());
-  };
+  const handlePaginationChange = useCallback(
+    updater => {
+      const newPagination = updater(state.pagination);
+      dispatch(onPaginationChange(newPagination));
+    },
+    [state]
+  );
 
-  const handlePaginationChange = updater => {
-    const newPagination = updater(state.pagination);
-    dispatch(onPaginationChange(newPagination));
-  };
+  const handleSortingChange = useCallback(
+    newSortingFunc => {
+      const newSorting = newSortingFunc();
+      if (newSorting[0].id === sorting[0].id) {
+        setSorting(DEFAULT_TABLE_SORTING_STATE);
+        return;
+      }
+      setSorting(newSorting);
+    },
+    [sorting]
+  );
 
-  const handleSortingChange = newSortingFunc => {
-    const newSorting = newSortingFunc();
-    if (newSorting[0].id === sorting[0].id) {
-      setSorting(DEFAULT_TABLE_SORTING_STATE);
-      return;
-    }
-    setSorting(newSorting);
-  };
-
-  const handleSearchInputChange = newSearchFilter => {
-    if (newSearchFilter !== searhFilter) {
-      setSearhFilter(newSearchFilter);
-    }
-  };
+  const handleSearchInputChange = useCallback(
+    newSearchFilter => {
+      if (newSearchFilter !== searhFilter) {
+        setSearhFilter(newSearchFilter);
+      }
+    },
+    [searhFilter]
+  );
 
   const resetDatasourceControls = () => {
     setDataSourcesWeights(defaulDatasourcesWeigths);
     setDataSourcesRequired([]);
+  };
+
+  const resetToInitialPagination = () => {
+    dispatch(resetPagination());
   };
 
   const contextVariables = useMemo(
