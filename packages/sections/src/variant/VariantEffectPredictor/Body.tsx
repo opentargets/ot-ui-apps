@@ -16,6 +16,19 @@ const columns = [
     id: "transcriptId",
     label: "Transcript",
     tooltip: "Ensembl canonical transcript",
+    renderCell: ({ transcriptId, target }) => {
+      if (!transcriptId) return naLabel;
+      if (!target) return transcriptId;
+      return (
+        <Link
+          external
+          to={`https://www.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;g=${
+               target.id};t=${transcriptId}`}
+        >
+          {transcriptId}
+        </Link>
+      )
+    }
   },
   {
     id: "variantConsequences.label",
@@ -36,17 +49,14 @@ const columns = [
       return variantConsequences.map(({ label }) => {
         return formatVariantConsequenceLabel(label)
       }).join(", ")
-    }
+    },
   },
   {
     id: 'impact',
     label: 'Impact',
     renderCell: ({ impact }) => impact?.toLowerCase?.() ?? naLabel,
-    // ?? !! need exportValue here?
-    //   - need export label in above cols where may simply be missing?
-
   },
-  { // !!!!! UPDATE ONCE ON API !!!!! 
+  { // !!!!! UPDATE ONCE IN API
     id: "consequenceScore",
     label: "Consequence Score",
     renderCell: () => "Not in API"
@@ -55,7 +65,9 @@ const columns = [
     id: "target.approvedName",
     label: "Gene",
     renderCell: ({ target }) => (
-      <Link to={`../target/${target.id}`}>{target.approvedName}</Link>
+      target
+        ? <Link to={`../target/${target.id}`}>{target.approvedName}</Link>
+        : naLabel
     ),
   },
   {
@@ -68,15 +80,15 @@ const columns = [
     label: 'Coding change',
     renderCell: ({ codons }) => codons ?? naLabel,
   },
-  {
+  {  // !!!!! UPDATE ONCE IN API - AND DIST SHOULD BE 0 IN DATA THEN INSTEAD OF NULL
     id: "distance",
     label: "Distance from footprint",
-    renderCell: ({ distance }) => distance ?? 0,  // CAN REMOVE WHEN API UPDATED SO DIST NEVER NULL
+    renderCell: ({ distance }) => distance ?? 0,
   },
-  {
+  {  // !!!!! UPDATE ONCE IN API
     id: "distanceFromTss",
     label: "Distance from start site",
-    renderCell: () => "Not in API",  // FIX WHEN ADDED TO API
+    renderCell: () => "Not in API",
   },
   {
     id: "lofteePrediction",
@@ -103,13 +115,12 @@ const columns = [
               <Link external to={`https://identifiers.org/uniprot:${id}`}>
                 {id}
               </Link>
-              { 
-                i < arr.length - 1 && ', '
-              }
+              { i < arr.length - 1 && ", " }
             </Fragment>
           ))
         : naLabel
-    )
+    ),
+    exportValue: ({ uniprotAccessions }) => (uniprotAccessions ?? []).join(", ")
   }
 ];
 
