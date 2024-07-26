@@ -18,7 +18,7 @@ import Profile from "./Profile";
 
 function StudyPage() {
   const location = useLocation();
-  const { studyId } = useParams();
+  const { studyId } = useParams() as { studyId: string };
   const { path } = useRouteMatch();
 
   const { loading, data } = useQuery(STUDY_PAGE_QUERY, {
@@ -29,13 +29,13 @@ function StudyPage() {
     return <NotFoundPage />;
   }
 
-  // !!!!! CURRENTLY RESOLVE STUDY TYPE PURELY FROM PROJECT ID
+  // !!!!! CURRENTLY RESOLVE STUDY CATEGORY PURELY FROM PROJECT ID
   const { projectId } = data?.gwasStudy || {};
-  let studyType = null;
+  let studyCategory = null;
   if (projectId) {
-    if (projectId === "GCST") studyType = "GWAS"
-    else if (projectId === "FINNGEN_R10") studyType = "FINNGEN"
-    else studyType = "QTL";
+    if (projectId === "GCST") studyCategory = "GWAS";
+    else if (projectId === "FINNGEN_R10") studyCategory = "FINNGEN";
+    else studyCategory = "QTL";
   }
 
   return (
@@ -51,7 +51,7 @@ function StudyPage() {
         backgroundTraits={data?.gwasStudy?.backgroundTraits}
         targetId={data?.gwasStudy?.target?.id}
         diseaseId={data?.gwasStudy?.diseases?.[0].id}
-        studyType={studyType}
+        studyCategory={studyCategory}
       />
       <ScrollToTop />
 
@@ -62,9 +62,9 @@ function StudyPage() {
             <Tabs value={history.location.pathname !== "/" ? history.location.pathname : false}>
               <Tab
                 label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
-                value={`/gwasStudy/${studyId}`}
+                value={`/study/${studyId}`}
                 component={Link}
-                to={`/gwasStudy/${studyId}`}
+                to={`/study/${studyId}`}
               />
             </Tabs>
           </Box>
@@ -73,10 +73,10 @@ function StudyPage() {
       <Suspense fallback={<LoadingBackdrop height={11500} />}>
         <Switch>
           <Route exact path={path}>
-            <Profile studyId={studyId} studyType={studyType}/>
+            <Profile studyId={studyId} studyCategory={studyCategory}/>
           </Route>
           <Route path="*">
-            <Redirect to={`/gwasStudy/${studyId}`} />
+            <Redirect to={`/study/${studyId}`} />
           </Route>
         </Switch>
       </Suspense>

@@ -18,7 +18,7 @@ function formatSamples(samples) {
     .join(", ");
 }
 
-function ProfileHeader({ studyId, studyType }) {
+function ProfileHeader({ studyId, studyCategory }) {
   const { loading, error, data } = usePlatformApi();
 
   // TODO: Errors!
@@ -48,28 +48,28 @@ function ProfileHeader({ studyId, studyType }) {
       <>
         <Field loading={loading} title="Author">
           { 
-            studyType === "GWAS" || studyType === "QTL"
+            studyCategory === "GWAS" || studyCategory === "QTL"
               ? publicationFirstAuthor
               : "FINNGEN_R10"
           }
         </Field>
         <Field loading={loading} title="Publication date">
           { 
-            studyType === "GWAS" || studyType === "QTL"
+            studyCategory === "GWAS" || studyCategory === "QTL"
               ? publicationDate
               : "2023"
           }
         </Field>
         <Field loading={loading} title="Journal">
           { 
-            studyType === "GWAS" || studyType === "QTL"
+            studyCategory === "GWAS" || studyCategory === "QTL"
               ? publicationJournal
               : naLabel
           } 
         </Field>
         <Field loading={loading} title="PubMed">
           { 
-            studyType === "GWAS" || studyType === "QTL"
+            studyCategory === "GWAS" || studyCategory === "QTL"
               ? <Link external to={`https://europepmc.org/article/med/${pubmedId}`}>
                   {pubmedId}
                 </Link>
@@ -78,7 +78,7 @@ function ProfileHeader({ studyId, studyType }) {
         </Field>
         <Field loading={loading} title="Has summary stats">
           { 
-            studyType === "GWAS"
+            studyCategory === "GWAS"
               ? (summarystatsLocation ? "yes" : "no")
               : "yes"
           } 
@@ -88,9 +88,9 @@ function ProfileHeader({ studyId, studyType }) {
         </Field>
         <Field loading={loading} title="N discovery">
           { 
-            studyType === "GWAS"
+            studyCategory === "GWAS"
               ? initialSampleSize
-              : studyType === "FINNGEN"
+              : studyCategory === "FINNGEN"
                 ? (discoverySamples?.length
                     ? (initialSampleSize
                         ? <Tooltip
@@ -111,7 +111,7 @@ function ProfileHeader({ studyId, studyType }) {
         </Field>
         <Field loading={loading} title="N replication">
             { 
-              studyType === "GWAS"
+              studyCategory === "GWAS"
                 ? (replicationSamples?.length
                     ? formatSamples(replicationSamples)
                     : naLabel
@@ -121,21 +121,21 @@ function ProfileHeader({ studyId, studyType }) {
           </Field>
           <Field loading={loading} title="N cases">
             { 
-              studyType === "GWAS" || studyType === "FINNGEN"
+              studyCategory === "GWAS" || studyCategory === "FINNGEN"
                 ? nCases
                 : naLabel
             } 
           </Field>
           <Field loading={loading} title="N controls">
             { 
-              studyType === "GWAS" || studyType === "FINNGEN"
+              studyCategory === "GWAS" || studyCategory === "FINNGEN"
                 ? nControls
                 : naLabel
             } 
           </Field>
           <Field loading={loading} title="Cohorts">
             { 
-              (studyType === "GWAS" && cohorts) || (studyType === "FINNGEN")
+              (studyCategory === "GWAS" && cohorts) || (studyCategory === "FINNGEN")
                 ? (ldPopulationStructure
                     ? <Tooltip
                         title={
@@ -154,23 +154,23 @@ function ProfileHeader({ studyId, studyType }) {
                         }
                         showHelpIcon
                       >
-                        {studyType === 'GWAS' ? cohorts.join(", ") : "FinnGen"}
+                        {studyCategory === 'GWAS' ? cohorts.join(", ") : "FinnGen"}
                       </Tooltip>
-                    : (studyType === 'GWAS' ? cohorts.join(", ") : "FinnGen")
+                    : (studyCategory === 'GWAS' ? cohorts.join(", ") : "FinnGen")
                   )
                 : naLabel
             }
           </Field>
           <Field loading={loading} title="QC">
             { 
-              studyType === "GWAS"
+              studyCategory === "GWAS"
                 ? (qualityControls ?? naLabel)
                 : naLabel
             } 
           </Field>
           <Field loading={loading} title="Study flags">
             { 
-              studyType === "GWAS"
+              studyCategory === "GWAS"
                 ? (analysisFlags ?? naLabel)
                 : naLabel
             } 

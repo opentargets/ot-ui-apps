@@ -35,7 +35,7 @@ const STUDY_PROFILE_QUERY = gql`
 //   ${DRUG_PROFILE_SUMMARY_FRAGMENT}
 // `;
 
-function Profile({ studyId, studyType }) {
+function Profile({ studyId, studyCategory }) {
   return (
     <PlatformApiProvider
       entity={STUDY}
@@ -43,7 +43,7 @@ function Profile({ studyId, studyType }) {
       variables={{ studyId }}
       client={client}
     >
-      <ProfileHeader studyId={studyId} studyType={studyType} />
+      <ProfileHeader studyId={studyId} studyCategory={studyCategory} />
 
       {/* <SummaryContainer>
         <MechanismsOfActionSummary />

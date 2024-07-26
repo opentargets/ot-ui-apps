@@ -1,10 +1,16 @@
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
 import { Header as HeaderBase, ExternalLink, XRefLinks } from "ui";
 
-function Header({ loading, studyId, traitFromSource, backgroundTraits, targetId, diseaseId, studyType }) {
+function Header({ loading,
+                  studyId,
+                  traitFromSource,
+                  backgroundTraits,
+                  targetId,
+                  diseaseId,
+                  studyCategory }) {
 
   let traitLink, sourceLink;
-  if (studyType === 'GWAS') {
+  if (studyCategory === 'GWAS') {
     traitLink = {
       title: "Trait",
       url: `https://platform.opentargets.org/disease/${diseaseId}`, 
@@ -13,7 +19,7 @@ function Header({ loading, studyId, traitFromSource, backgroundTraits, targetId,
       id: "GWAS Catalog",
       url: `https://www.ebi.ac.uk/gwas/studies/${studyId}`,
     };
-  } else if (studyType === 'FINNGEN') {
+  } else if (studyCategory === 'FINNGEN') {
     traitLink = {
       title: "Trait",
       url: `https://platform.opentargets.org/disease/${diseaseId}`,
@@ -47,7 +53,7 @@ function Header({ loading, studyId, traitFromSource, backgroundTraits, targetId,
             url={traitLink.url}
           />
           { 
-            studyType === "GWAS" && backgroundTraits.length > 0 &&
+            studyCategory === "GWAS" && backgroundTraits.length > 0 &&
               <XRefLinks
                 label="Background traits"
                 urlStem="../disease/"
