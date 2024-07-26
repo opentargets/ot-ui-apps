@@ -110,7 +110,7 @@ function TableBody({ core, cols, noInteractors }) {
                 <SectionRendererWrapper
                   section={
                     // TODO: Review active section definition
-                    prefix !== "interactors"
+                    prefix !== TABLE_PREFIX.INTERACTORS
                       ? focusState.find(
                           e => e.row === row.id && e.table === prefix && e.section !== null
                         )?.section
@@ -136,7 +136,7 @@ function TableBody({ core, cols, noInteractors }) {
                         cols={cols}
                         section={
                           // TODO: Review active section definition
-                          prefix !== "interactors"
+                          prefix !== TABLE_PREFIX.INTERACTORS
                             ? focusState.find(
                                 e => e.row === row.id && e.table === prefix && e.section !== null
                               )?.section

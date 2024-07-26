@@ -33,6 +33,14 @@ export const TABLE_PREFIX = {
   UPLOADED: "uploaded",
 };
 
+/**
+ * @constant
+ * @type {Object}
+ * @property {string} TARGET - Target entity.
+ * @property {string} EVIDENCE - Evidence entity.
+ * @property {string} DISEASE - Disease entity.
+ * @property {string} DRUG - Drug entity.
+ */
 export const ENTITIES = {
   TARGET: "target",
   EVIDENCE: "evidence",
