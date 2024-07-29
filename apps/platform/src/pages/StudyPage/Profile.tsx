@@ -28,14 +28,19 @@ const STUDY_PROFILE_QUERY = gql`
 //     gwasStudy(studyId: $studyId) {
 //       studyId
 //       ...StudyProfileHeaderFragment
-//       ...DrugProfileSummaryFragment
+//       ...StudyProfileSummaryFragment
 //     }
 //   }
 //   ${ProfileHeader.fragments.profileHeader}
-//   ${DRUG_PROFILE_SUMMARY_FRAGMENT}
+//   ${STUDY_PROFILE_SUMMARY_FRAGMENT}
 // `;
 
-function Profile({ studyId, studyCategory }) {
+type ProfileProps = {
+  studyId: string;
+  studyCategory: string;
+};
+
+function Profile({ studyId, studyCategory }: ProfileProps) {
   return (
     <PlatformApiProvider
       entity={STUDY}
@@ -43,7 +48,7 @@ function Profile({ studyId, studyCategory }) {
       variables={{ studyId }}
       client={client}
     >
-      <ProfileHeader studyId={studyId} studyCategory={studyCategory} />
+      <ProfileHeader studyCategory={studyCategory} />
 
       {/* <SummaryContainer>
         <MechanismsOfActionSummary />

@@ -1,8 +1,6 @@
 import {
   usePlatformApi,
   Link,
-  ProfileChipList,
-  ProfileDescription,
   Field,
   ProfileHeader as BaseProfileHeader,
   Tooltip,
@@ -12,20 +10,19 @@ import { Typography, Box } from "@mui/material";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 
-function formatSamples(samples) {
+function formatSamples(samples: any[]) {  // wait until get types directly from schema
   return samples
     .map(({ ancestory, sampleSize }) => `${ancestory}: ${sampleSize}`)
     .join(", ");
 }
 
-function ProfileHeader({ studyId, studyCategory }) {
+function ProfileHeader({ studyCategory }) {
   const { loading, error, data } = usePlatformApi();
 
   // TODO: Errors!
   if (error) return null;
 
   const {
-    projectId,
     publicationFirstAuthor,
     publicationDate,
     publicationJournal,
@@ -43,6 +40,8 @@ function ProfileHeader({ studyId, studyCategory }) {
     discoverySamples,
   } = data?.gwasStudy || {};
 
+
+  
   return (
     <BaseProfileHeader>
       <>
@@ -70,9 +69,11 @@ function ProfileHeader({ studyId, studyCategory }) {
         <Field loading={loading} title="PubMed">
           { 
             studyCategory === "GWAS" || studyCategory === "QTL"
-              ? <Link external to={`https://europepmc.org/article/med/${pubmedId}`}>
-                  {pubmedId}
-                </Link>
+              ? ( pubmedId && 
+                    <Link external to={`https://europepmc.org/article/med/${pubmedId}`}>
+                      {pubmedId}
+                    </Link>
+                )
               : naLabel
           } 
         </Field>

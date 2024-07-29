@@ -31,7 +31,7 @@ function StudyPage() {
 
   // !!!!! CURRENTLY RESOLVE STUDY CATEGORY PURELY FROM PROJECT ID
   const { projectId } = data?.gwasStudy || {};
-  let studyCategory = null;
+  let studyCategory = '';
   if (projectId) {
     if (projectId === "GCST") studyCategory = "GWAS";
     else if (projectId === "FINNGEN_R10") studyCategory = "FINNGEN";

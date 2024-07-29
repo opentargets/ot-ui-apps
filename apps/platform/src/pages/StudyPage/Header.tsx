@@ -1,38 +1,57 @@
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
 import { Header as HeaderBase, ExternalLink, XRefLinks } from "ui";
 
+type HeaderProps = {
+  loading: boolean;
+  studyId: string;
+  traitFromSource: string;
+  backgroundTraits: any[];  // array of diseases - wait until get types directly from schema
+  targetId: any;  // target - wait until get types directly from schema
+  diseaseId: string;
+  studyCategory: string;
+};
+
 function Header({ loading,
                   studyId,
                   traitFromSource,
                   backgroundTraits,
                   targetId,
                   diseaseId,
-                  studyCategory }) {
+                  studyCategory }: HeaderProps) {
 
   let traitLink, sourceLink;
   if (studyCategory === 'GWAS') {
-    traitLink = {
-      title: "Trait",
-      url: `https://platform.opentargets.org/disease/${diseaseId}`, 
-    };
+    if (diseaseId) {
+      traitLink = {
+        title: "Trait",
+        id: diseaseId,
+        url: `../disease/${diseaseId}`, 
+      };
+    }
     sourceLink = {
       id: "GWAS Catalog",
       url: `https://www.ebi.ac.uk/gwas/studies/${studyId}`,
     };
   } else if (studyCategory === 'FINNGEN') {
-    traitLink = {
-      title: "Trait",
-      url: `https://platform.opentargets.org/disease/${diseaseId}`,
-    };
+    if (diseaseId) {
+      traitLink = {
+        title: "Trait",
+        id: diseaseId,
+        url: `../disease/${diseaseId}`,
+      };
+    }
     sourceLink = {
       id: "FinnGenR10",
       url: `https://r10.finngen.fi/pheno/${studyID}`,
     };
   } else {  // QTL
-    traitLink = {
-      title: "Affected gene",
-      url: `../target/${targetId}`,
-    };
+    if (targetId) {
+      traitLink = {
+        title: "Affected gene",
+        id: targetId,
+        url: `../target/${targetId}`,
+      };
+    }
     sourceLink = {
       id: "eQTL Catalog",
       url: "https://www.ebi.ac.uk/eqtl/Studies/",
@@ -46,27 +65,28 @@ function Header({ loading,
       subtitle={null}
       Icon={faChartBar}
       externalLinks={
-        <>
-          <ExternalLink
-            title={traitLink.title}
-            id={traitFromSource}
-            url={traitLink.url}
-          />
-          { 
-            studyCategory === "GWAS" && backgroundTraits.length > 0 &&
-              <XRefLinks
-                label="Background traits"
-                urlStem="../disease/"
-                ids={backgroundTraits.map(t => t.id)}
-                names={backgroundTraits.map(t => t.name)}
-              />
-          }
-          <ExternalLink
-            title="Source"
-            id={sourceLink.id}
-            url={sourceLink.url}
-          />
-        </>
+        traitLink &&
+          <> 
+            <ExternalLink
+              title={traitLink.title}
+              id={traitFromSource ?? traitLink.id}
+              url={traitLink.url}
+            />
+            { 
+              studyCategory === "GWAS" && backgroundTraits?.length > 0 &&
+                <XRefLinks
+                  label="Background traits"
+                  urlStem="../disease/"
+                  ids={backgroundTraits.map(t => t.id)}
+                  names={backgroundTraits.map(t => t.name)}
+                />
+            }
+            <ExternalLink
+              title="Source"
+              id={sourceLink.id}
+              url={sourceLink.url}
+            />
+          </>
       }
     />
   );
