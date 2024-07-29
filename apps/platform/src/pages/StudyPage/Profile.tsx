@@ -1,15 +1,10 @@
 import { gql } from "@apollo/client";
 import { PlatformApiProvider, SectionContainer, SummaryContainer, summaryUtils } from "ui";
 
-// import MechanismsOfActionSummary from "sections/src/drug/MechanismsOfAction/Summary";
-
-// import MechanismsOfActionSection from "sections/src/drug/MechanismsOfAction/Body";
-
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
 // const summaries = [
-//   MechanismsOfActionSummary,
 // ];
 
 const STUDY = "study";
@@ -49,14 +44,6 @@ function Profile({ studyId, studyCategory }: ProfileProps) {
       client={client}
     >
       <ProfileHeader studyCategory={studyCategory} />
-
-      {/* <SummaryContainer>
-        <MechanismsOfActionSummary />
-      </SummaryContainer> */}
-
-      {/* <SectionContainer>
-        <MechanismsOfActionSection id={chemblId} label={name} entity={DRUG} />
-      </SectionContainer> */}
     </PlatformApiProvider>
   );
 }
