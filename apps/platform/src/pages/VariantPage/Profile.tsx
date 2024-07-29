@@ -9,6 +9,7 @@ import {
 } from "ui";
 
 import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/Summary";
+import VariantEffectPredictorSummary from "sections/src/variant/VariantEffectPredictor/Summary";
 // import EVASummary from "sections/src/variant/EVA/Summary";
 // import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
 // import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
@@ -18,9 +19,8 @@ import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/S
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
-const InSilicoPredictorsSection = lazy(
-  () => import("sections/src/variant/InSilicoPredictors/Body")
-);
+const InSilicoPredictorsSection = lazy(() => import("sections/src/variant/InSilicoPredictors/Body"));
+const VariantEffectPredictorSection = lazy(() => import("sections/src/variant/VariantEffectPredictor/Body"));
 // const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
 // const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
 // const QTLCredibleSetsSection = lazy(() => import("sections/src/variant/QTLCredibleSets/Body"));
@@ -29,6 +29,7 @@ const InSilicoPredictorsSection = lazy(
 
 const summaries = [
   InSilicoPredictorsSummary,
+  VariantEffectPredictorSummary,
   // EVASummary,
   // UniProtVariantsSummary,
   // QTLCredibleSetsSummary,
@@ -37,10 +38,7 @@ const summaries = [
 ];
 
 const VARIANT = "variant";
-const VARIANT_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
-  summaries,
-  "VariantIndex"
-);
+const VARIANT_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(summaries, "VariantIndex");
 const VARIANT_PROFILE_QUERY = gql`
   query VariantProfileQuery($variantId: String!) {
     variant(variantId: $variantId) {
@@ -58,7 +56,9 @@ type ProfileProps = {
 };
 
 function Profile({ varId }: ProfileProps) {
+
   return (
+    
     <PlatformApiProvider
       entity={VARIANT}
       query={VARIANT_PROFILE_QUERY}
@@ -69,6 +69,7 @@ function Profile({ varId }: ProfileProps) {
 
       <SummaryContainer>
         <InSilicoPredictorsSummary />
+        <VariantEffectPredictorSummary />
         {/* <EVASummary />
         <UniProtVariantsSummary />
         <QTLCredibleSetsSummary />
@@ -79,6 +80,9 @@ function Profile({ varId }: ProfileProps) {
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
           <InSilicoPredictorsSection id={varId} entity={VARIANT} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <VariantEffectPredictorSection id={varId} entity={VARIANT} />
         </Suspense>
         {/* <Suspense fallback={<SectionLoader />}>
           <EVASection id={varId} label='NO-LABEL!' entity={VARIANT} />
@@ -96,7 +100,9 @@ function Profile({ varId }: ProfileProps) {
           <PharmacogenomicsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense> */}
       </SectionContainer>
+  
     </PlatformApiProvider>
+
   );
 }
 

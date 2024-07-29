@@ -1,0 +1,23 @@
+query VariantEffectPredictorQuery($variantId: String!) {
+  variant(variantId: $variantId){
+    transcriptConsequences {
+      variantConsequences {
+        id
+        label
+      }
+      aminoAcidChange
+      uniprotAccessions
+      codons
+      distance
+      target {
+        id
+        approvedName
+      }
+      impact
+      transcriptId
+      lofteePrediction
+      siftPrediction
+      polyphenPrediction
+    }
+  }
+}
