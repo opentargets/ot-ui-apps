@@ -4,8 +4,8 @@ import downloadSvg from "./DownloadSvg";
 import PlotContainer from "../PlotContainer";
 
 const handleSvgDownload = (svgContainer, filenameStem) => {
-  const node = svgContainer;
-  const svgNode = node.nodeName === "svg" ? node : node.querySelector("svg");
+  const svgNode = svgContainer.current;
+  if (svgNode === null) return;
   downloadSvg({ svgNode, filenameStem });
 };
 
@@ -34,7 +34,7 @@ function DownloadSvgPlot({
                 if (reportDownloadEvent) {
                   reportDownloadEvent();
                 }
-                handleSvgDownload(svgContainer.current, filenameStem);
+                handleSvgDownload(svgContainer, filenameStem);
               }}
             >
               SVG

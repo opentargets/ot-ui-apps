@@ -1,4 +1,5 @@
 export { default as Footer } from "./components/Footer";
+export * from "./components/Footer";
 export { default as ThemeProvider } from "./ThemeProvider/ThemeProvider";
 export { default as LoadingBackdrop } from "./components/LoadingBackdrop";
 export * from "./components/GlobalSearch/SearchContext";
@@ -12,6 +13,7 @@ export { default as Chip } from "./components/Chip";
 export { default as ChipList } from "./components/ChipList";
 export { default as TooltipStyledLabel } from "./components/TooltipStyledLabel";
 export { default as DirectionOfEffectIcon } from "./components/DirectionOfEffectIcon";
+export { default as DirectionOfEffectTooltip } from "./components/DirectionOfEffectTooltip";
 export { default as LabelChip } from "./components/LabelChip";
 export { default as BasePage } from "./components/BasePage";
 export { default as NewChip } from "./components/NewChip";

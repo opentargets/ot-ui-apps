@@ -79,11 +79,26 @@ function dailyMedUrl(id) {
   return `http://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=${id}`;
 }
 
+function innUrl() {
+  return "https://www.who.int/publications/m/item/inn-pl-126";
+}
+
+function emaUrl() {
+  return "https://www.ema.europa.eu/en/medicines";
+}
+
+function usanUrl(id) {
+  return `https://searchusan.ama-assn.org/finder/usan/search/${id}/relevant/1`;
+}
+
 export const referenceUrls = {
   ClinicalTrials: clinicalTrialsUrl,
   FDA: fdaUrl,
   ATC: atcUrl,
   DailyMed: dailyMedUrl,
+  INN: innUrl,
+  EMA: emaUrl,
+  USAN: usanUrl,
 };
 
 // Associations and URL PPP

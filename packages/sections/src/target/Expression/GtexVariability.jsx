@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, forwardRef } from "react";
 import {
   scaleLinear,
   scalePoint,
@@ -48,7 +48,7 @@ function buildTooltip(X, tooltipObject, data) {
     .join("");
 }
 
-function GtexVariability({ data }) {
+const GtexVariability = forwardRef(function GtexVariability({ data }, ref) {
   const theme = useTheme();
   const boxPlotRef = useRef();
   const tooltipRef = useRef();
@@ -144,12 +144,12 @@ function GtexVariability({ data }) {
       .attr("width", d => x(d.q3) - x(d.q1))
       .attr("height", rectHeight)
       .attr("fill", d => colour(d.tissueSiteDetailId))
-      .on("mouseover", d => {
+      .on("mouseover", (d, i, nodes) => {
         let X =
-          parseFloat(select(this).attr("x")) +
-          parseFloat(select(this).attr("width")) +
+          parseFloat(select(nodes[i]).attr("x")) +
+          parseFloat(select(nodes[i]).attr("width")) +
           tooltipSettings.offsetX;
-        let Y = parseFloat(select(this).attr("y")) + tooltipSettings.offsetY;
+        let Y = parseFloat(select(nodes[i]).attr("y")) + tooltipSettings.offsetY;
 
         tooltipText
           .attr("y", Y)
@@ -239,7 +239,7 @@ function GtexVariability({ data }) {
   }
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" height={height} width={width}>
+    <svg xmlns="http://www.w3.org/2000/svg" height={height} width={width} ref={ref}>
       <text x={margin.left} y="15" fill={theme.palette.grey[700]} fontSize="14">
         Normalised expression (RPKM)
       </text>
@@ -253,6 +253,6 @@ function GtexVariability({ data }) {
       <g ref={tooltipRef} transform={`translate(${margin.left}, ${margin.top})`} />
     </svg>
   );
-}
+});
 
 export default GtexVariability;

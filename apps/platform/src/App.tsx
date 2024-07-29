@@ -8,18 +8,19 @@ import client from "./client";
 import theme from "./theme";
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
-import DiseasePage from "./pages/DiseasePage";
+import DiseasePage from "./pages/DiseasePage/DiseasePage";
 import DownloadsPage from "./pages/DownloadsPage";
 import DrugPage from "./pages/DrugPage";
 import TargetPage from "./pages/TargetPage";
 import EvidencePage from "./pages/EvidencePage";
-import VariantsPage from "./pages/VariantsPage";
+import VariantPage from "./pages/VariantPage";
 import APIPage from "./pages/APIPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import { getSuggestedSearch } from "./utils/global";
+import { ReactElement } from "react";
 
-function App() {
+function App(): ReactElement {
   const suggestions = getSuggestedSearch();
   return (
     <ApolloProvider client={client}>
@@ -53,8 +54,8 @@ function App() {
                 <Route path="/evidence/:ensgId/:efoId">
                   <EvidencePage />
                 </Route>
-                <Route path="/variants">
-                  <VariantsPage />
+                <Route path="/variant/:varId">
+                  <VariantPage />
                 </Route>
                 <Route path="/api">
                   <APIPage />
