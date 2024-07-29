@@ -6,41 +6,40 @@ import Description from "../InSilicoPredictors/Description";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 import IN_SILICO_PREDICTORS_QUERY from "./InSilicoPredictorsQuery.gql";
 
-function getColumns() {
-  return [
-    {
-      id: "method",
-      label: "Method",
-    },
-    {
-      id: "assessment",
-      label: "Prediction",
-      renderCell: ({ assessment, assessmentFlag }) => (
-        assessmentFlag
-          ? (
-            <Tooltip
-              title={
-                <>
-                  <Typography variant="subtitle2" display="block" align="center">
-                    Flag: {assessmentFlag}
-                  </Typography>
-                </>
-              }
-              showHelpIcon
-            >
-              {assessment ?? naLabel}
-            </Tooltip>
-          ) : (
-            assessment ?? naLabel
-          )
-      )
-    },
-    {
-      id: "score",
-      label: "Score",
-    },
-  ];
-}
+const columns = [
+  {
+    id: "method",
+    label: "Method",
+  },
+  {
+    id: "assessment",
+    label: "Prediction",
+    renderCell: ({ assessment, assessmentFlag }) => (
+      assessmentFlag
+        ? (
+          <Tooltip
+            title={
+              <>
+                <Typography variant="subtitle2" display="block" align="center">
+                  Flag: {assessmentFlag}
+                </Typography>
+              </>
+            }
+            showHelpIcon
+          >
+            {assessment ?? naLabel}
+          </Tooltip>
+        ) : (
+          assessment ?? naLabel
+        )
+    )
+  },
+  {
+    id: "score",
+    label: "Score",
+    renderCell: ({ score }) => score ?? naLabel,
+  },
+];
 
 type BodyProps = {
   id: string,
@@ -53,8 +52,6 @@ export function Body({ id, entity }: BodyProps) {
     variantId: id,
   };
 
-  const columns = getColumns();
-
   const request = useQuery(IN_SILICO_PREDICTORS_QUERY, {
     variables,
   });
@@ -65,9 +62,9 @@ export function Body({ id, entity }: BodyProps) {
       request={request}
       entity={entity}
       renderDescription={() => <Description variantId={id} />}
-      renderBody={() => {
+      renderBody={({ variant }) => {
         const rows =
-          [...request.data.variant.inSilicoPredictors].sort((row1, row2) => {
+          [...variant.inSilicoPredictors].sort((row1, row2) => {
             return row1.method.localeCompare(row2.method);
           }); 
         return (
