@@ -4,12 +4,9 @@ import { definition } from ".";
 import IN_SILICO_PREDICTORS_SUMMARY from "./InSilicoPredictorsSummaryFragment.gql";
 
 function Summary() {
-
   const request = usePlatformApi(IN_SILICO_PREDICTORS_SUMMARY);
-  
-  return (
-    <SummaryItem definition={definition} request={request} />
-  );
+
+  return <SummaryItem definition={definition} request={request} />;
 }
 
 Summary.fragments = {

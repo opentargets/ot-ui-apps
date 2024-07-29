@@ -19,8 +19,12 @@ import VariantEffectPredictorSummary from "sections/src/variant/VariantEffectPre
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
-const InSilicoPredictorsSection = lazy(() => import("sections/src/variant/InSilicoPredictors/Body"));
-const VariantEffectPredictorSection = lazy(() => import("sections/src/variant/VariantEffectPredictor/Body"));
+const InSilicoPredictorsSection = lazy(
+  () => import("sections/src/variant/InSilicoPredictors/Body")
+);
+const VariantEffectPredictorSection = lazy(
+  () => import("sections/src/variant/VariantEffectPredictor/Body")
+);
 // const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
 // const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
 // const QTLCredibleSetsSection = lazy(() => import("sections/src/variant/QTLCredibleSets/Body"));
@@ -38,7 +42,10 @@ const summaries = [
 ];
 
 const VARIANT = "variant";
-const VARIANT_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(summaries, "VariantIndex");
+const VARIANT_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
+  summaries,
+  "VariantIndex"
+);
 const VARIANT_PROFILE_QUERY = gql`
   query VariantProfileQuery($variantId: String!) {
     variant(variantId: $variantId) {
@@ -56,9 +63,7 @@ type ProfileProps = {
 };
 
 function Profile({ varId }: ProfileProps) {
-
   return (
-    
     <PlatformApiProvider
       entity={VARIANT}
       query={VARIANT_PROFILE_QUERY}
@@ -100,9 +105,7 @@ function Profile({ varId }: ProfileProps) {
           <PharmacogenomicsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense> */}
       </SectionContainer>
-  
     </PlatformApiProvider>
-
   );
 }
 

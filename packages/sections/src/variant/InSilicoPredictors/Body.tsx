@@ -14,25 +14,23 @@ const columns = [
   {
     id: "assessment",
     label: "Prediction",
-    renderCell: ({ assessment, assessmentFlag }) => (
-      assessmentFlag
-        ? (
-          <Tooltip
-            title={
-              <>
-                <Typography variant="subtitle2" display="block" align="center">
-                  Flag: {assessmentFlag}
-                </Typography>
-              </>
-            }
-            showHelpIcon
-          >
-            {assessment ?? naLabel}
-          </Tooltip>
-        ) : (
-          assessment ?? naLabel
-        )
-    )
+    renderCell: ({ assessment, assessmentFlag }) =>
+      assessmentFlag ? (
+        <Tooltip
+          title={
+            <>
+              <Typography variant="subtitle2" display="block" align="center">
+                Flag: {assessmentFlag}
+              </Typography>
+            </>
+          }
+          showHelpIcon
+        >
+          {assessment ?? naLabel}
+        </Tooltip>
+      ) : (
+        assessment ?? naLabel
+      ),
   },
   {
     id: "score",
@@ -42,12 +40,11 @@ const columns = [
 ];
 
 type BodyProps = {
-  id: string,
-  entity: string,
+  id: string;
+  entity: string;
 };
 
 export function Body({ id, entity }: BodyProps) {
-
   const variables = {
     variantId: id,
   };
@@ -63,10 +60,9 @@ export function Body({ id, entity }: BodyProps) {
       entity={entity}
       renderDescription={() => <Description variantId={id} />}
       renderBody={({ variant }) => {
-        const rows =
-          [...variant.inSilicoPredictors].sort((row1, row2) => {
-            return row1.method.localeCompare(row2.method);
-          }); 
+        const rows = [...variant.inSilicoPredictors].sort((row1, row2) => {
+          return row1.method.localeCompare(row2.method);
+        });
         return (
           <DataTable
             columns={columns}

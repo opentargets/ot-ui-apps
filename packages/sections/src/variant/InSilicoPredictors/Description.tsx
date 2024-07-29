@@ -7,7 +7,7 @@ type DescriptionProps = {
 function Description({ variantId }: DescriptionProps) {
   return (
     <>
-      Predicted functional effect of <strong>{variantId}</strong>. {" "}Source:{" "}
+      Predicted functional effect of <strong>{variantId}</strong>. Source:{" "}
       <Link to="https://www.ensembl.org/info/docs/tools/vep/index.html" external>
         VEP
       </Link>
