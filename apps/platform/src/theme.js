@@ -1,5 +1,6 @@
 import { lighten, darken } from "polished";
 import config from "./config";
+import { grey } from "@mui/material/colors";
 
 const PRIMARY = config.profile.primaryColor;
 const SECONDARY = "#ff6350";
@@ -18,6 +19,9 @@ const theme = {
       fontFamily: "'Roboto Mono', monospace",
       fontWeight: 500,
       fontSize: ".80rem",
+    },
+    controlHeader: {
+      fontSize: "0.9rem",
     },
   },
   palette: {
@@ -58,6 +62,15 @@ const theme = {
           textTransform: "none",
           color: "#5A5F5F",
           borderColor: "rgb(196,196,196)",
+        },
+      },
+    },
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          boxShadow: "none",
+          border: `1px solid ${grey[400]}`,
+          marginTop: -1,
         },
       },
     },

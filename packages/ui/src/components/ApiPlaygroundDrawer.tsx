@@ -1,4 +1,4 @@
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Drawer, Grid, IconButton, Paper } from "@mui/material";
 
@@ -48,11 +48,12 @@ function ApiPlaygroundDrawer({
       {query ? (
         <Grid item>
           <Button
-            sx={{ ...(fullHeight && { height: 1, maxHeight: "45px" }) }}
+            sx={{ display: "flex", gap: 1, ...(fullHeight && { height: 1, maxHeight: "45px" }) }}
             variant="outlined"
             size="small"
             onClick={() => togglePlayground()}
           >
+            <FontAwesomeIcon icon={faPlay} />
             API query
           </Button>
         </Grid>

@@ -12,13 +12,14 @@ const useStyles = makeStyles(theme => ({
 
 type XRefLinksProps = {
   label: string;
+  urlBuilder?: (id: string) => string;
   urlStem: string;
   ids: string[];
   names?: string[];
   limit: number;
 };
 
-function XRefLinks({ label, urlStem, ids, names, limit }: XRefLinksProps) {
+function XRefLinks({ label, urlBuilder, urlStem, ids, names, limit }: XRefLinksProps) {
   const [showMore, setShowMore] = useState(false);
   const classes = useStyles();
   const displayNone = {
@@ -30,7 +31,10 @@ function XRefLinks({ label, urlStem, ids, names, limit }: XRefLinksProps) {
       {label}:{" "}
       {ids.map((id, i) => (
         <span key={id} style={i > limit - 1 && !showMore ? displayNone : {}}>
-          <Link external to={`${urlStem}${id}`}>
+          <Link
+            external
+            to={urlBuilder?.(id) ?? `${urlStem}${id}`}
+          >
             {names?.[i] ?? id}
             {i < ids.length - 1 ? ", " : ""}
           </Link>

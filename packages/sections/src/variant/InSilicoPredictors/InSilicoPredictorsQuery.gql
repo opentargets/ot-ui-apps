@@ -1,0 +1,11 @@
+query InSilicoPredictorsQuery($variantId: String!) {
+  variant(variantId: $variantId) {
+    variantId
+    inSilicoPredictors {
+      method
+      assessment
+      score
+      assessmentFlag
+    }
+  }
+}

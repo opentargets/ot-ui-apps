@@ -1,43 +1,41 @@
-/* eslint-disable */
 import { useMemo } from "react";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getExpandedRowModel,
-  createColumnHelper,
-} from "@tanstack/react-table";
+import { useReactTable, getCoreRowModel, createColumnHelper } from "@tanstack/react-table";
 
-import { styled, Skeleton, Typography, Box } from "@mui/material";
+import { styled, Typography, Box } from "@mui/material";
 
 import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
 
 import AggregationsTooltip from "./AssocTooltip";
 import TableCell from "./TableCell";
-
 import HeaderControls from "../HeaderControls";
 import CellName from "./CellName";
 import TableHeader from "./TableHeader";
 import TableFooter from "./TableFooter";
 import TableBody from "./TableBody";
+
 import useAotfContext from "../../hooks/useAotfContext";
 
-import { cellHasValue, getScale, isPartnerPreview, tableCSSVariables } from "../../utils";
+import { getScale, isPartnerPreview, tableCSSVariables, TABLE_PREFIX } from "../../utils";
 
 const TableElement = styled("main")({
-  maxWidth: "1600px",
+  maxWidth: "1800px",
   margin: "0 auto",
+});
+
+const TableSpacer = styled("div")({
+  marginBottom: 5,
 });
 
 const TableDivider = styled("div")({
   borderBottom: "1px solid #ececec",
-  marginBottom: 4,
+  marginBottom: 5,
 });
 
 const columnHelper = createColumnHelper();
 
 /* Build table columns bases on displayed table */
-function getDatasources({ expanderHandler, displayedTable, colorScale }) {
+function getDatasources({ displayedTable, colorScale }) {
   const isAssociations = displayedTable === "associations";
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? "dataSources" : "prioritisations";
@@ -46,6 +44,11 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
     if (isPrivate && isPrivate !== isPartnerPreview) return;
     const column = columnHelper.accessor(row => row[dataProp][id], {
       id,
+      sectionId,
+      enableSorting: isAssociations,
+      aggregation,
+      isPrivate,
+      docsLink,
       header: isAssociations ? (
         <Typography variant="assoc_header">{label}</Typography>
       ) : (
@@ -55,27 +58,9 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
           </div>
         </AggregationsTooltip>
       ),
-      sectionId,
-      enableSorting: isAssociations,
-      aggregation,
-      isPrivate,
-      docsLink,
-      cell: cell => {
-        const hasValue = cellHasValue(cell.getValue());
-        return hasValue ? (
-          <TableCell
-            hasValue
-            scoreId={id}
-            scoreValue={cell.getValue()}
-            onClick={expanderHandler(cell.row.getToggleExpandedHandler())}
-            cell={cell}
-            isAssociations={isAssociations}
-            colorScale={colorScale}
-          />
-        ) : (
-          <TableCell cell={cell} />
-        );
-      },
+      cell: cell => (
+        <TableCell cell={cell} colorScale={colorScale} displayedTable={displayedTable} />
+      ),
     });
     datasources.push(column);
   });
@@ -89,11 +74,8 @@ function TableAssociations() {
     data,
     count,
     loading: associationsLoading,
-    tableExpanded,
     pagination,
-    expanderHandler,
     handlePaginationChange,
-    setTableExpanded,
     displayedTable,
     sorting,
     handleSortingChange,
@@ -144,10 +126,10 @@ function TableAssociations() {
       columnHelper.group({
         header: "entities",
         id: "entity-cols",
-        columns: [...getDatasources({ expanderHandler, displayedTable, colorScale })],
+        columns: [...getDatasources({ displayedTable, colorScale })],
       }),
     ],
-    [expanderHandler, displayedTable, entityToGet, rowNameEntity]
+    [displayedTable, entityToGet, rowNameEntity]
   );
 
   /**
@@ -158,19 +140,15 @@ function TableAssociations() {
     data,
     columns,
     state: {
-      expanded: tableExpanded,
       pagination,
       sorting,
-      prefix: "body",
+      prefix: TABLE_PREFIX.CORE,
       loading: associationsLoading,
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
-    onExpandedChange: setTableExpanded,
     onSortingChange: handleSortingChange,
-    getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
     getRowId: row => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
@@ -180,22 +158,18 @@ function TableAssociations() {
     data: pinnedData,
     columns,
     state: {
-      expanded: tableExpanded,
       pagination: {
         pageIndex: 0,
         pageSize: 150,
       },
       sorting,
-      prefix: "pinned",
+      prefix: TABLE_PREFIX.PINNING,
       loading: pinnedLoading,
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
-    onExpandedChange: setTableExpanded,
     onSortingChange: handleSortingChange,
-    getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
     getRowId: row => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
@@ -212,14 +186,16 @@ function TableAssociations() {
         {/* Weights controlls */}
         <HeaderControls cols={entitesHeaders} />
 
+        <TableSpacer />
+
         {/* BODY CONTENT */}
         {pinnedEntries.length > 0 && (
-          <TableBody core={corePinnedTable} prefix="pinned" cols={entitesHeaders} />
+          <TableBody core={corePinnedTable} prefix={TABLE_PREFIX.PINNING} cols={entitesHeaders} />
         )}
 
         {pinnedEntries.length > 0 && <TableDivider />}
 
-        <TableBody core={coreAssociationsTable} prefix="body" cols={entitesHeaders} />
+        <TableBody core={coreAssociationsTable} prefix={TABLE_PREFIX.CORE} cols={entitesHeaders} />
 
         {/* FOOTER */}
         <TableFooter table={coreAssociationsTable} />
