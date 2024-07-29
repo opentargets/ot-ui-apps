@@ -15,10 +15,11 @@ type XRefLinksProps = {
   urlBuilder?: (id: string) => string;
   urlStem: string;
   ids: string[];
+  names?: string[];
   limit: number;
 };
 
-function XRefLinks({ label, urlBuilder, urlStem, ids, limit }: XRefLinksProps) {
+function XRefLinks({ label, urlBuilder, urlStem, ids, names, limit }: XRefLinksProps) {
   const [showMore, setShowMore] = useState(false);
   const classes = useStyles();
   const displayNone = {
@@ -34,7 +35,7 @@ function XRefLinks({ label, urlBuilder, urlStem, ids, limit }: XRefLinksProps) {
             external
             to={urlBuilder?.(id) ?? `${urlStem}${id}`}
           >
-            {id}
+            {names?.[i] ?? id}
           </Link>
           {i < ids.length - 1 ? ", " : ""}
         </span>
