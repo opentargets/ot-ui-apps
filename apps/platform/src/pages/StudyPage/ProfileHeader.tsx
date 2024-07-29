@@ -12,7 +12,7 @@ import STUDY_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 
 function formatSamples(samples: any[]) {  // wait until get types directly from schema
   return samples
-    .map(({ ancestory, sampleSize }) => `${ancestory}: ${sampleSize}`)
+    .map(({ ancestry, sampleSize }) => `${ancestry}: ${sampleSize}`)
     .join(", ");
 }
 
@@ -40,40 +40,36 @@ function ProfileHeader({ studyCategory }) {
     discoverySamples,
   } = data?.gwasStudy || {};
 
-
-  
   return (
     <BaseProfileHeader>
       <>
         <Field loading={loading} title="Author">
           { 
             studyCategory === "GWAS" || studyCategory === "QTL"
-              ? publicationFirstAuthor
+              ? (publicationFirstAuthor ?? naLabel)
               : "FINNGEN_R10"
           }
         </Field>
         <Field loading={loading} title="Publication date">
           { 
             studyCategory === "GWAS" || studyCategory === "QTL"
-              ? publicationDate
+              ? (publicationDate ?? naLabel)
               : "2023"
           }
         </Field>
         <Field loading={loading} title="Journal">
           { 
             studyCategory === "GWAS" || studyCategory === "QTL"
-              ? publicationJournal
+              ? (publicationJournal ?? naLabel)
               : naLabel
           } 
         </Field>
         <Field loading={loading} title="PubMed">
           { 
-            studyCategory === "GWAS" || studyCategory === "QTL"
-              ? ( pubmedId && 
-                    <Link external to={`https://europepmc.org/article/med/${pubmedId}`}>
-                      {pubmedId}
-                    </Link>
-                )
+            (studyCategory === "GWAS" || studyCategory === "QTL") && pubmedId
+              ? <Link external to={`https://europepmc.org/article/med/${pubmedId}`}>
+                  {pubmedId}
+                </Link>
               : naLabel
           } 
         </Field>
@@ -81,16 +77,19 @@ function ProfileHeader({ studyCategory }) {
           { 
             studyCategory === "GWAS"
               ? (summarystatsLocation ? "yes" : "no")
-              : "yes"
-          } 
+              : `yes ${studyCategory === "QTL" && summarystatsLocation
+                  ? `—  ${summarystatsLocation}`
+                  : ''
+                }`
+          }
         </Field>
         <Field loading={loading} title="N study">
-          {nSamples}
+          {nSamples ?? naLabel}
         </Field>
         <Field loading={loading} title="N discovery">
           { 
             studyCategory === "GWAS"
-              ? initialSampleSize
+              ? (initialSampleSize ?? naLabel)
               : studyCategory === "FINNGEN"
                 ? (discoverySamples?.length
                     ? (initialSampleSize
@@ -122,32 +121,34 @@ function ProfileHeader({ studyCategory }) {
           </Field>
           <Field loading={loading} title="N cases">
             { 
-              studyCategory === "GWAS" || studyCategory === "FINNGEN"
+              (studyCategory === "GWAS" || studyCategory === "FINNGEN") &&
+              (typeof nCases === "number")
                 ? nCases
                 : naLabel
             } 
           </Field>
           <Field loading={loading} title="N controls">
             { 
-              studyCategory === "GWAS" || studyCategory === "FINNGEN"
+              (studyCategory === "GWAS" || studyCategory === "FINNGEN") && 
+              (typeof nControls === "number")
                 ? nControls
                 : naLabel
             } 
           </Field>
           <Field loading={loading} title="Cohorts">
             { 
-              (studyCategory === "GWAS" && cohorts) || (studyCategory === "FINNGEN")
-                ? (ldPopulationStructure
+              (studyCategory === "GWAS" && cohorts?.length) || (studyCategory === "FINNGEN")
+                ? (ldPopulationStructure?.length
                     ? <Tooltip
                         title={
                           <>
                             <Typography variant="subtitle2" display="block" align="center">
-                              LD structure:
+                              LD populations and relative sample sizes
                             </Typography>
                             {ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
                               <Box key={ldPopulation}>
                                 <Typography variant="caption">
-                                  LD population: {ldPopulation}, relative sample size: {relativeSampleSize}
+                                  {ldPopulation}: {relativeSampleSize}
                                 </Typography>
                               </Box>
                             ))}
@@ -164,15 +165,15 @@ function ProfileHeader({ studyCategory }) {
           </Field>
           <Field loading={loading} title="QC">
             { 
-              studyCategory === "GWAS"
-                ? (qualityControls ?? naLabel)
+              studyCategory === "GWAS" && qualityControls?.length
+                ? qualityControls.join(", ")
                 : naLabel
             } 
           </Field>
           <Field loading={loading} title="Study flags">
             { 
-              studyCategory === "GWAS"
-                ? (analysisFlags ?? naLabel)
+              studyCategory === "GWAS" && analysisFlags?.length
+                ? analysisFlags.join(", ")
                 : naLabel
             } 
           </Field>
