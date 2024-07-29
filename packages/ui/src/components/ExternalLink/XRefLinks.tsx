@@ -36,8 +36,8 @@ function XRefLinks({ label, urlBuilder, urlStem, ids, names, limit }: XRefLinksP
             to={urlBuilder?.(id) ?? `${urlStem}${id}`}
           >
             {names?.[i] ?? id}
-            {i < ids.length - 1 ? ", " : ""}
           </Link>
+          {i < ids.length - 1 ? ", " : ""}
         </span>
       ))}
       {ids.length > limit ? (
