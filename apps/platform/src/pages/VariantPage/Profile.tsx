@@ -20,7 +20,7 @@ import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
 const InSilicoPredictorsSection = lazy(() => import("sections/src/variant/InSilicoPredictors/Body"));
-const VariantEffectPredictorSection = lazy(() => import("sections/src/variant/variantEffectPredictor/Body"));
+const VariantEffectPredictorSection = lazy(() => import("sections/src/variant/VariantEffectPredictor/Body"));
 // const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
 // const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
 // const QTLCredibleSetsSection = lazy(() => import("sections/src/variant/QTLCredibleSets/Body"));
