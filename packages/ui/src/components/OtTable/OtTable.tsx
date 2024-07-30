@@ -37,6 +37,7 @@ import {
 } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
 import {
+  getCurrentPagePosition,
   getDefaultSortObj,
   getFilterValueFromObject,
   mapTableColumnToTanstackColumns,
@@ -56,6 +57,7 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value);
   const allRowValuesInString = getFilterValueFromObject(row.original);
+  const containsSubstr = new RegExp(value, "i").test(allRowValuesInString);
 
   // Store the itemRank info
   addMeta({
@@ -63,7 +65,7 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   });
 
   // Return if the item should be filtered in/out
-  return itemRank.passed || allRowValuesInString.includes(value);
+  return itemRank.passed || containsSubstr;
 };
 
 // missing keys from column data obj
@@ -115,44 +117,27 @@ function OtTable({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  /*********************************************
-   *     CALCULATE RESULTS ON CURRENT PAGE     *
-   *            FROM TOTAL RESULTS             *
-   * EXAMPLE RETURN 31-40 OF 45 || 41-45 OF 45 *
-   *********************************************/
-
-  function getCurrentPagePosition() {
-    const { pageIndex, pageSize } = table.getState().pagination;
-    const currentPageStartRange = pageIndex * pageSize + 1;
-    const currentPageEndRange = pageIndex * pageSize + pageSize;
-    const pageEndResultSize = Math.min(currentPageEndRange, table.getGroupedRowModel().rows.length);
-
-    return `${currentPageStartRange} - ${pageEndResultSize} of ${
-      table.getGroupedRowModel().rows.length
-    }`;
-  }
-
   return (
     <div>
       {/* Global Search */}
-      {showGlobalFilter && (
-        <Grid container>
+      <Grid container>
+        {showGlobalFilter && (
           <Grid item sm={12} md={4}>
             <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />
           </Grid>
-          {dataDownloader && (
-            <Grid item sm={12} md={8} sx={{ ml: "auto" }}>
-              <DataDownloader
-                columns={dataDownloaderColumns || columns}
-                rows={rows}
-                fileStem={dataDownloaderFileStem}
-                query={query}
-                variables={variables}
-              />
-            </Grid>
-          )}
-        </Grid>
-      )}
+        )}
+        {dataDownloader && (
+          <Grid item sm={12} md={8} sx={{ ml: "auto" }}>
+            <DataDownloader
+              columns={dataDownloaderColumns || columns}
+              rows={rows}
+              fileStem={dataDownloaderFileStem}
+              query={query}
+              variables={variables}
+            />
+          </Grid>
+        )}
+      </Grid>
       {/* Table component container */}
       <Box sx={{ w: 1, overflowX: "auto", marginTop: theme => theme.spacing(3) }}>
         {/* Table component */}
@@ -273,7 +258,13 @@ function OtTable({
           }}
         >
           <div>
-            <span>{getCurrentPagePosition()}</span>
+            <span>
+              {getCurrentPagePosition(
+                table.getState().pagination.pageIndex,
+                table.getState().pagination.pageSize,
+                table.getGroupedRowModel().rows.length
+              )}
+            </span>
           </div>
 
           <div className="paginationAction">
