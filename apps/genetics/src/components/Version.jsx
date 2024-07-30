@@ -1,16 +1,16 @@
-import { gql, useQuery } from '@apollo/client';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-import { makeStyles } from '@material-ui/core';
+import { gql, useQuery } from "@apollo/client";
+import { Link } from "ui";
+import { Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 // HELPERS
 function getVersion({ month, year }) {
-  return `${year}.${month < 10 ? '0' : ''}${month}`;
+  return `${year}.${month < 10 ? "0" : ""}${month}`;
 }
 
 function getFullMonth({ month, year }) {
   const date = new Date(year + 2000, month - 1);
-  return date.toLocaleString('default', { month: 'long' });
+  return date.toLocaleString("default", { month: "long" });
 }
 
 // QUERY
@@ -27,10 +27,10 @@ const DATA_VERSION_QUERY = gql`
 
 const useStyles = makeStyles(() => ({
   container: {
-    display: 'flex',
+    display: "flex",
     marginTop: 5,
-    justifyContent: 'center',
-    alignContent: 'center',
+    justifyContent: "center",
+    alignContent: "center",
   },
 }));
 
@@ -58,10 +58,7 @@ function Version() {
   return (
     <div className={classes.container}>
       <Typography>
-        <Link
-          underline="none"
-          href="https://genetics-docs.opentargets.org/release-notes"
-        >
+        <Link underline="none" href="https://genetics-docs.opentargets.org/release-notes">
           {fullMonth} 20
           {major} ({version})
         </Link>

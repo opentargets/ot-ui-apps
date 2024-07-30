@@ -1,48 +1,48 @@
-import React from 'react';
-import queryString from 'query-string';
-import _ from 'lodash';
-import { withStyles } from '@material-ui/core/styles';
+import React from "react";
+import queryString from "query-string";
+import _ from "lodash";
+import { withStyles } from "@mui/styles";
 
-import BasePage from '../BasePage';
-import Header from './Header';
+import BasePage from "../BasePage";
+import Header from "./Header";
 
-import L2GPipeline from '../../sections/gene/L2GPipeline/L2GPipeline';
-import ColocAnalysis from '../../sections/gene/ColocAnalysis/ColocAnalysis';
+import L2GPipeline from "../../sections/gene/L2GPipeline/L2GPipeline";
+import ColocAnalysis from "../../sections/gene/ColocAnalysis/ColocAnalysis";
 
 const styles = theme => {
   return {
     section: {
-      height: '100%',
+      height: "100%",
       padding: theme.sectionPadding,
     },
     geneSymbol: {
-      display: 'inline-block',
+      display: "inline-block",
     },
     locusLinkButton: {
-      width: '248px',
-      height: '60px',
+      width: "248px",
+      height: "60px",
     },
     locusIcon: {
-      fill: 'white',
-      width: '40px',
-      height: '40px',
+      fill: "white",
+      width: "40px",
+      height: "40px",
     },
     link: {
-      textDecoration: 'none',
+      textDecoration: "none",
     },
     geneInfoItem: {
-      width: '20%',
+      width: "20%",
     },
     platformLink: {
-      textAlign: 'center',
-      textDecoration: 'none',
-      color: '#5A5F5F',
-      '&:hover': {
-        textDecoration: 'underline',
+      textAlign: "center",
+      textDecoration: "none",
+      color: "#5A5F5F",
+      "&:hover": {
+        textDecoration: "underline",
       },
     },
     iconLink: {
-      '&:hover': {
+      "&:hover": {
         fill: theme.palette.primary.dark,
       },
     },
@@ -58,9 +58,7 @@ function GenePage({ history, match }) {
       ...rest,
     };
     if (newColocTraitFilterValue && newColocTraitFilterValue.length > 0) {
-      newQueryParams.colocTraitFilter = newColocTraitFilterValue.map(
-        d => d.value
-      );
+      newQueryParams.colocTraitFilter = newColocTraitFilterValue.map(d => d.value);
     }
     _stringifyQueryProps(newQueryParams);
   };

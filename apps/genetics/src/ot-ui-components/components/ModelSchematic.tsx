@@ -1,10 +1,10 @@
-import * as classNames from 'classnames';
-import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles } from '@material-ui/core/styles';
+import * as classNames from "classnames";
+import Tooltip from "@mui/material/Tooltip";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles(theme => ({
   modelSchematic: {
-    fontFamily: 'sans-serif',
+    fontFamily: "sans-serif",
   },
   entityCircle: {
     strokeWidth: 2,
@@ -17,11 +17,11 @@ const useStyles = makeStyles(theme => ({
   },
   entityText: {
     fill: theme.palette.grey[500],
-    dominantBaseline: 'central',
-    textAnchor: 'middle',
+    dominantBaseline: "central",
+    textAnchor: "middle",
     fontSize: 12,
-    fontWeight: 'bold',
-    '&>tspan': {
+    fontWeight: "bold",
+    "&>tspan": {
       fontSize: 8,
     },
   },
@@ -39,16 +39,16 @@ const ENTITY_RADIUS = ENTITY_WIDTH / 2 - 2;
 const CONNECTOR_WIDTH = 20;
 const TOTAL_HEIGHT = ENTITY_WIDTH;
 const NICENAME_MAP = {
-  gene: 'gene',
-  variant: 'variant',
-  study: 'study',
-  indexVariant: 'lead variant',
-  tagVariant: 'tag variant',
+  gene: "gene",
+  variant: "variant",
+  study: "study",
+  indexVariant: "lead variant",
+  tagVariant: "tag variant",
 };
 const ICON_LABEL_MAP = {
-  gene: 'G',
-  variant: 'V',
-  study: 'S',
+  gene: "G",
+  variant: "V",
+  study: "S",
   indexVariant: (
     <>
       V<tspan dy="6">L</tspan>
@@ -70,13 +70,12 @@ type ModelSchematicProps = {
 };
 const ModelSchematic = ({ entities }: ModelSchematicProps) => {
   const classes = useStyles();
-  const totalWidth =
-    ENTITY_WIDTH * entities.length + CONNECTOR_WIDTH * (entities.length - 1);
+  const totalWidth = ENTITY_WIDTH * entities.length + CONNECTOR_WIDTH * (entities.length - 1);
 
   const tuple = entities.map(d => NICENAME_MAP[d.type]);
   const fixed = entities.filter(d => d.fixed).map(d => NICENAME_MAP[d.type]);
-  const title = `This section shows (${tuple.join(', ')}) tuples${
-    fixed.length > 0 ? ` where the ${fixed[0]} is fixed` : ''
+  const title = `This section shows (${tuple.join(", ")}) tuples${
+    fixed.length > 0 ? ` where the ${fixed[0]} is fixed` : ""
   }`;
   return (
     <Tooltip title={title}>
@@ -92,9 +91,9 @@ const ModelSchematic = ({ entities }: ModelSchematicProps) => {
             return (
               <g
                 key={i}
-                transform={`translate(${
-                  ENTITY_WIDTH / 2 + i * (ENTITY_WIDTH + CONNECTOR_WIDTH)
-                },${TOTAL_HEIGHT / 2})`}
+                transform={`translate(${ENTITY_WIDTH / 2 + i * (ENTITY_WIDTH + CONNECTOR_WIDTH)},${
+                  TOTAL_HEIGHT / 2
+                })`}
               >
                 <circle
                   cx={0}

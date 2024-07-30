@@ -1,20 +1,20 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import * as d3 from 'd3';
-import { withContentRect } from 'react-measure';
+import React from "react";
+import { withStyles } from "@mui/styles";
+import * as d3 from "d3";
+import { withContentRect } from "react-measure";
 
 const styles = theme => ({
   splash: {
     left: 0,
     top: 0,
     backgroundColor: theme.palette.primary.main,
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
+    width: "100%",
+    height: "100%",
+    position: "absolute",
     zIndex: -1,
   },
   svg: {
-    position: 'fixed',
+    position: "fixed",
   },
 });
 
@@ -54,7 +54,7 @@ class Splash extends React.Component {
 
     // scale data and svg to parent dims
     const data = DATA.map(d => [d[0] * width, d[1] * height]);
-    svg.attr('width', width).attr('height', height);
+    svg.attr("width", width).attr("height", height);
 
     // create voronoi generator
     const voronoi = d3.voronoi().extent([
@@ -63,21 +63,21 @@ class Splash extends React.Component {
     ]);
 
     // join
-    const pointsVoronoi = svg.selectAll('path').data(voronoi.polygons(data));
+    const pointsVoronoi = svg.selectAll("path").data(voronoi.polygons(data));
 
     pointsVoronoi
       .enter()
-      .append('path')
-      .attr('stroke', 'rgba(232, 232, 232, 0.6)')
-      .attr('stroke-opacity', 0.3)
-      .attr('fill', 'none')
+      .append("path")
+      .attr("stroke", "rgba(232, 232, 232, 0.6)")
+      .attr("stroke-opacity", 0.3)
+      .attr("fill", "none")
       .merge(pointsVoronoi)
-      .attr('d', function (d) {
-        return d ? 'M' + d.join('L') + 'Z' : null;
+      .attr("d", function (d) {
+        return d ? "M" + d.join("L") + "Z" : null;
       });
 
     pointsVoronoi.exit().remove();
   }
 }
 
-export default withStyles(styles)(withContentRect('bounds')(Splash));
+export default withStyles(styles)(withContentRect("bounds")(Splash));

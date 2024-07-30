@@ -1,9 +1,9 @@
-import { useRef } from 'react';
-import { Helmet } from 'react-helmet';
-import { Grid, Box, Typography, useMediaQuery } from '@material-ui/core';
-import { useTheme, makeStyles } from '@material-ui/core/styles';
+import { useRef } from "react";
+import { Helmet } from "react-helmet";
+import { Grid, Box, Typography, useMediaQuery } from "@mui/material";
+import { makeStyles, useTheme } from "@mui/styles";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircle,
   faDownload,
@@ -11,18 +11,17 @@ import {
   faQuestionCircle,
   faFileAlt,
   faCommentDots,
-} from '@fortawesome/free-solid-svg-icons';
-import { Footer, GlobalSearch } from 'ui';
-import Link from '../../components/Link';
-import ScrollDownButton from '../../components/ScrollDownButton';
-import NavBar from '../../components/NavBar/NavBar';
-import Version from '../../components/Version';
-import { Splash } from '../../ot-ui-components';
+} from "@fortawesome/free-solid-svg-icons";
+import { Footer, GlobalSearch, NavBar, Link } from "ui";
+import ScrollDownButton from "../../components/ScrollDownButton";
 
-import HomeBox from './HomeBox';
+import Version from "../../components/Version";
+import { Splash } from "../../ot-ui-components";
 
-import { externalLinks, mainMenuItems } from '../../constants';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import HomeBox from "./HomeBox";
+
+import { externalLinks, mainMenuItems } from "../../constants";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 type Example = {
   label: string;
@@ -31,65 +30,65 @@ type Example = {
 };
 
 const EXAMPLES: Example[] = [
-  { label: 'PCSK9', url: '/gene/ENSG00000169174', type: 'gene' },
+  { label: "PCSK9", url: "/gene/ENSG00000169174", type: "gene" },
   {
-    label: '1_154453788_C_T',
-    url: '/variant/1_154453788_C_T',
-    type: 'variant-id',
+    label: "1_154453788_C_T",
+    url: "/variant/1_154453788_C_T",
+    type: "variant-id",
   },
-  { label: 'rs4129267', url: '/variant/1_154453788_C_T', type: 'variant-rsid' },
+  { label: "rs4129267", url: "/variant/1_154453788_C_T", type: "variant-rsid" },
   {
-    label: 'LDL cholesterol (Willer CJ et al. 2013)',
-    url: '/study/GCST002222',
-    type: 'study',
+    label: "LDL cholesterol (Willer CJ et al. 2013)",
+    url: "/study/GCST002222",
+    type: "study",
   },
 ];
 
 const useContainerStyles = makeStyles({
   searchSection: {
-    position: 'relative',
-    height: '100vh',
-    overflow: 'visible',
+    position: "relative",
+    height: "100vh",
+    overflow: "visible",
   },
   examples: {
-    marginTop: '12px',
+    marginTop: "12px",
   },
   exampleLink: {
-    marginTop: '12px',
+    marginTop: "12px",
   },
   scrollDown: {
-    position: 'absolute',
-    bottom: '10px',
+    position: "absolute",
+    bottom: "10px",
   },
   linkHeader: {
-    marginTop: '22px',
+    marginTop: "22px",
   },
   scrollDownContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
   },
   hpSection: {
-    marginBottom: '40px',
-    marginTop: '80px',
+    marginBottom: "40px",
+    marginTop: "80px",
   },
   linksContainer: {
-    marginTop: '15px',
-    marginBottom: '15px',
+    marginTop: "15px",
+    marginBottom: "15px",
   },
   homeSection: {
-    marginBottom: '40px',
+    marginBottom: "40px",
   },
 });
 
 const useHelpBoxStyle = makeStyles(theme => ({
   baseLink: {
-    whiteSpace: 'pre-wrap',
+    whiteSpace: "pre-wrap",
   },
   helpBoxes: {
-    maxWidth: '120px',
-    textAlign: 'center',
-    [theme.breakpoints.down('xs')]: {
-      textAlign: 'left',
+    maxWidth: "120px",
+    textAlign: "center",
+    [theme.breakpoints.down("xs")]: {
+      textAlign: "left",
     },
   },
 }));
@@ -106,7 +105,7 @@ const HelpBoxPanel = ({
   external: boolean;
 }) => {
   const theme = useTheme();
-  const xsMQ = useMediaQuery(theme.breakpoints.down('xs'));
+  const xsMQ = useMediaQuery(theme.breakpoints.down("xs"));
   const classes = useHelpBoxStyle();
   if (xsMQ) {
     // on xsmall screens
@@ -148,7 +147,7 @@ function HomePage() {
       return;
     }
     const rect = node.getBoundingClientRect();
-    window.scrollTo({ top: rect.height, left: 0, behavior: 'smooth' });
+    window.scrollTo({ top: rect.height, left: 0, behavior: "smooth" });
   };
   return (
     <>
@@ -163,59 +162,34 @@ function HomePage() {
           alignItems="center"
         >
           <Splash />
-          <NavBar
-            name="Genetics"
-            items={mainMenuItems}
-            search={null}
-            homepage
-          />
+          <NavBar name="Genetics" items={mainMenuItems} search={null} homepage />
           <HomeBox name="Genetics">
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: "relative" }}>
               <GlobalSearch isHomePage />
             </div>
-            <Grid
-              container
-              className={classes.examples}
-              justifyContent="space-around"
-            >
+            <Grid container className={classes.examples} justifyContent="space-around">
               {EXAMPLES.map((d, i) => (
-                <Typography
-                  key={i}
-                  style={{ textAlign: 'center' }}
-                  className={classes.exampleLink}
-                >
+                <Typography key={i} style={{ textAlign: "center" }} className={classes.exampleLink}>
                   <Link to={d.url}>{d.label}</Link>
                 </Typography>
               ))}
             </Grid>
             <Typography
               style={{
-                marginTop: '25px',
+                marginTop: "25px",
               }}
               align="center"
             >
               Note: genomic coordinates are based on GRCh38
             </Typography>
 
-            <Typography
-              className={classes.linkHeader}
-              variant="subtitle2"
-              align="center"
-            >
+            <Typography className={classes.linkHeader} variant="subtitle2" align="center">
               Last updated:
             </Typography>
             <Version />
           </HomeBox>
-          <Grid
-            container
-            item
-            justifyContent="center"
-            className={classes.scrollDownContainer}
-          >
-            <ScrollDownButton
-              className={classes.scrollDown}
-              onClick={handleScrollDown}
-            />
+          <Grid container item justifyContent="center" className={classes.scrollDownContainer}>
+            <ScrollDownButton className={classes.scrollDown} onClick={handleScrollDown} />
           </Grid>
         </Grid>
       </main>
@@ -231,23 +205,20 @@ function HomePage() {
             About Open Targets Genetics
           </Typography>
           <Typography paragraph>
-            Open Targets Genetics is a comprehensive tool highlighting
-            variant-centric statistical evidence to allow both prioritisation of
-            candidate causal variants at trait-associated loci and
-            identification of potential drug targets.
+            Open Targets Genetics is a comprehensive tool highlighting variant-centric statistical
+            evidence to allow both prioritisation of candidate causal variants at trait-associated
+            loci and identification of potential drug targets.
           </Typography>
           <Typography paragraph>
-            It aggregates and integrates genetic associations curated from both
-            literature and newly-derived loci from UK Biobank and FinnGen and
-            also contains functional genomics data (e.g. chromatin conformation,
-            chromatin interactions) and quantitative trait loci (eQTLs, pQTLs
-            and sQTLs). Large-scale pipelines apply statistical fine-mapping
-            across thousands of trait-associated loci to resolve association
-            signals and link each variant to its proximal and distal target
-            gene(s) using a Locus2Gene assessment. Integrated cross-trait
-            colocalisation analyses and linking to detailed pharmaceutical
-            compounds extend the capacity of Open Targets Genetics to explore
-            drug repositioning opportunities and shared genetic architecture.
+            It aggregates and integrates genetic associations curated from both literature and
+            newly-derived loci from UK Biobank and FinnGen and also contains functional genomics
+            data (e.g. chromatin conformation, chromatin interactions) and quantitative trait loci
+            (eQTLs, pQTLs and sQTLs). Large-scale pipelines apply statistical fine-mapping across
+            thousands of trait-associated loci to resolve association signals and link each variant
+            to its proximal and distal target gene(s) using a Locus2Gene assessment. Integrated
+            cross-trait colocalisation analyses and linking to detailed pharmaceutical compounds
+            extend the capacity of Open Targets Genetics to explore drug repositioning opportunities
+            and shared genetic architecture.
           </Typography>
         </Grid>
         <Grid item xs={10} md={8} className={classes.homeSection}>
@@ -262,7 +233,7 @@ function HomePage() {
             spacing={5}
             className={classes.linksContainer}
           >
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm={"auto"}>
               <HelpBoxPanel
                 fai={faDownload}
                 url="https://genetics-docs.opentargets.org/data-access/data-download"
@@ -270,7 +241,7 @@ function HomePage() {
                 external
               />
             </Grid>
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm={"auto"}>
               <HelpBoxPanel
                 fai={faLaptopCode}
                 url="https://genetics-docs.opentargets.org/data-access/graphql-api"
@@ -279,7 +250,7 @@ function HomePage() {
               />
             </Grid>
 
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm={"auto"}>
               <HelpBoxPanel
                 fai={faQuestionCircle}
                 url="https://genetics-docs.opentargets.org/"
@@ -288,7 +259,7 @@ function HomePage() {
               />
             </Grid>
 
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm={"auto"}>
               <HelpBoxPanel
                 fai={faFileAlt}
                 url="https://genetics-docs.opentargets.org/citation"
@@ -297,7 +268,7 @@ function HomePage() {
               />
             </Grid>
 
-            <Grid item xs={12} sm={'auto'}>
+            <Grid item xs={12} sm={"auto"}>
               <HelpBoxPanel
                 fai={faCommentDots}
                 url="https://community.opentargets.org/"

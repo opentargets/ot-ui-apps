@@ -1,7 +1,7 @@
-export { default as Link } from "./components/Link";
+export { Link } from "ui";
 export { default as Page } from "./components/Page";
-export { default as Tabs } from "@material-ui/core/Tabs";
-export { default as Tab } from "@material-ui/core/Tab";
+export { default as Tabs } from "@mui/material/Tabs";
+export { default as Tab } from "@mui/material/Tab";
 
 export { default as Splash } from "./components/Splash";
 export { default as Autocomplete } from "./components/search/Autocomplete";

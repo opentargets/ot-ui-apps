@@ -1,16 +1,15 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core';
-import config from '../../config';
-import { Button } from '../../ot-ui-components';
+import { makeStyles } from "@mui/styles";
+import config from "../../config";
+import { Button } from "../../ot-ui-components";
 
 const useStyles = makeStyles(() => ({
   button: {
     lineHeight: 1,
-    minWidth: '110px',
-    marginLeft: '2px',
+    minWidth: "110px",
+    marginLeft: "2px",
   },
   link: {
-    textDecoration: 'none',
+    textDecoration: "none",
   },
 }));
 

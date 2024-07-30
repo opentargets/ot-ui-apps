@@ -1,37 +1,37 @@
-import { Grid, makeStyles, Typography } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Grid, Skeleton, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const useStyles = makeStyles(theme => ({
   externalLinks: {
-    '& > :not(:first-child):before': {
+    "& > :not(:first-child):before": {
       content: '" | "',
     },
   },
   mainIconContainer: {
-    width: '56px',
-    textAlign: 'center',
-    marginRight: '15px',
+    width: "56px",
+    textAlign: "center",
+    marginRight: "15px !important",
   },
   mainIcon: {
-    width: '100% !important',
+    width: "100% !important",
     color: theme.palette.primary.main,
   },
   subtitle: {
-    display: 'flex',
-    paddingLeft: '5px',
-    alignItems: 'center',
+    display: "flex",
+    paddingLeft: "5px",
+    alignItems: "center",
   },
   title: {
     fontWeight: 500,
-    marginRight: '10px',
+    marginRight: "10px",
   },
   titleContainer: {
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: '10px',
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: "10px",
   },
 }));
 
@@ -64,11 +64,7 @@ function Header({
       <Grid item zeroMinWidth>
         <Grid container wrap="nowrap" alignItems="center">
           <Grid item className={classes.mainIconContainer}>
-            <FontAwesomeIcon
-              icon={Icon}
-              size="4x"
-              className={classes.mainIcon}
-            />
+            <FontAwesomeIcon icon={Icon} size="4x" className={classes.mainIcon} />
           </Grid>
           <Grid item zeroMinWidth>
             <Grid container alignItems="baseline">

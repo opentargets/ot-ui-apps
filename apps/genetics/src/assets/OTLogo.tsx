@@ -1,9 +1,9 @@
-import React from 'react';
-import { makeStyles, SvgIcon, SvgIconProps } from '@material-ui/core';
+import { SvgIcon, SvgIconProps } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles(() => ({
   root: {
-    height: 'unset',
+    height: "unset",
   },
 }));
 
@@ -19,9 +19,7 @@ const OTLogo = ({ ...rest }: SvgIconProps) => {
     >
       <defs>
         <style>
-          {
-            '.prefix__cls-1{fill:#abd0e7}.prefix__cls-2{fill:#3488c8}.prefix__cls-3{fill:#5c605f}'
-          }
+          {".prefix__cls-1{fill:#abd0e7}.prefix__cls-2{fill:#3488c8}.prefix__cls-3{fill:#5c605f}"}
         </style>
       </defs>
       <path

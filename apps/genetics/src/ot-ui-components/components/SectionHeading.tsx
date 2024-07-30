@@ -1,19 +1,20 @@
-import { ReactNode } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import ModelSchematic, { ModelSchematicEntity } from './ModelSchematic';
+import { ReactNode } from "react";
+
+import { makeStyles } from "@mui/styles";
+import { Grid, Typography } from "@mui/material";
+
+import ModelSchematic, { ModelSchematicEntity } from "./ModelSchematic";
 
 const useStyles = makeStyles({
   container: {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'flex-end',
-    marginTop: '1rem',
-    marginBottom: '1rem',
+    width: "100%",
+    display: "flex",
+    alignItems: "flex-end",
+    marginTop: "1rem",
+    marginBottom: "1rem",
   },
   hr: {
-    marginTop: '1rem',
+    marginTop: "1rem",
   },
   flex: {
     flexGrow: 1,
@@ -28,11 +29,7 @@ type SectionHeadingProps = {
   subheading?: ReactNode;
   entities?: ModelSchematicEntity[];
 };
-const SectionHeading = ({
-  heading,
-  subheading,
-  entities,
-}: SectionHeadingProps) => {
+const SectionHeading = ({ heading, subheading, entities }: SectionHeadingProps) => {
   const classes = useStyles();
   return (
     <>

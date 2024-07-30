@@ -1,4 +1,3 @@
-import React from "react";
 import { max, scaleSqrt } from "d3";
 import { DataCircle, Link } from "../../../ot-ui-components";
 import LabelHML from "../../../components/LabelHML";

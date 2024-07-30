@@ -1,10 +1,11 @@
-import React from 'react';
-import { ButtonProps, default as MuiButton } from '@material-ui/core/Button';
+import { ButtonProps, default as MuiButton } from "@mui/material/Button";
 
 const Button = ({ children, color, variant, ...rest }: ButtonProps) => (
   <MuiButton
-    color={color ? color : 'primary'}
-    variant={variant ? variant : 'contained'}
+    color={"primary"}
+    variant="contained"
+    sx={{ border: "none", color: "white" }}
+    disableElevation
     {...rest}
   >
     {children}
