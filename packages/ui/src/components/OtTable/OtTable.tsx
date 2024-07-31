@@ -122,15 +122,14 @@ function OtTable({
   return (
     <div>
       {/* Global Search */}
-      <Grid container>
-        {showGlobalFilter && (
-          <Grid item sm={12} md={4}>
-            <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />
-          </Grid>
-        )}
-        {showColumnVisibilityControl && <OtTableColumnVisibility table={table} />}
-        {dataDownloader && (
-          <Grid item sm={12} md={8} sx={{ ml: "auto" }}>
+      <Grid container sx={{ display: "flex" }}>
+        <Grid item sm={12} md={4}>
+          {showGlobalFilter && <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />}
+        </Grid>
+
+        <Grid item sm={12} md={8} sx={{ display: "flex", justifyContent: "end", gap: 1 }}>
+          {showColumnVisibilityControl && <OtTableColumnVisibility table={table} />}
+          {dataDownloader && (
             <DataDownloader
               columns={dataDownloaderColumns || columns}
               rows={rows}
@@ -138,8 +137,8 @@ function OtTable({
               query={query}
               variables={variables}
             />
-          </Grid>
-        )}
+          )}
+        </Grid>
       </Grid>
       {/* Table component container */}
       <Box sx={{ w: 1, overflowX: "auto", marginTop: theme => theme.spacing(3) }}>

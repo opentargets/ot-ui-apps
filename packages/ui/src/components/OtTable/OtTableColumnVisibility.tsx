@@ -1,5 +1,6 @@
-import { ReactElement, useState } from "react";
+import { MouseEvent, ReactElement, useState } from "react";
 import {
+  Badge,
   Box,
   Button,
   Checkbox,
@@ -16,27 +17,33 @@ import { OtTableColumnVisibilityProps } from "./table.types";
 import { ColumnFilterPopper } from "./otTableLayout";
 
 function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): ReactElement {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>();
+  const open = Boolean(anchorEl);
+  const id = open ? "column-visibility-button" : undefined;
 
-  function handleClick(event) {
+  function handleClick(event: MouseEvent<HTMLElement>): void {
     setAnchorEl(event.currentTarget);
   }
 
-  function handleClose() {
+  function handleClose(): void {
     setAnchorEl(null);
   }
 
-  function isLastColumnActive(column) {
+  function isLastColumnActive(column): boolean {
     return table.getVisibleLeafColumns().length === 1 && column.getIsVisible();
   }
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  function isColumnVisibilityStateChanged(): boolean {
+    return table.getVisibleLeafColumns().length !== table.getAllColumns().length;
+  }
+
   return (
     <>
-      <Button aria-describedby={id} onClick={handleClick} sx={{ display: "flex", gap: 1 }}>
-        <FontAwesomeIcon icon={faTableColumns} /> Columns
-      </Button>
+      <Badge color="primary" variant="dot" invisible={!isColumnVisibilityStateChanged()}>
+        <Button aria-describedby={id} onClick={handleClick} sx={{ display: "flex", gap: 1 }}>
+          <FontAwesomeIcon icon={faTableColumns} /> Columns
+        </Button>
+      </Badge>
 
       <ColumnFilterPopper id={id} open={open} anchorEl={anchorEl}>
         <ClickAwayListener onClickAway={handleClose}>
