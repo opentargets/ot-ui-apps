@@ -1,4 +1,4 @@
-import { DefaultSortProp } from "./table.types";
+import { DefaultSortProp, OtTableCurrentPagePosition } from "./table.types";
 
 /*********************************************************************
  * FN TO CONVERT CLASSIC MUI TABLE COLUMNS TO TANSTACK TABLE COLUMNS *
@@ -6,10 +6,6 @@ import { DefaultSortProp } from "./table.types";
 export function mapTableColumnToTanstackColumns(allColumns: any[]): any[] {
   return allColumns.map(column => mapToTanstackColumnObject(column));
 }
-
-// TO BE USED WHEN WANT TO USE MULTIPLE VALUE IN COLUMN FOR FILTERING
-// if disease object has id and name, and want to enable search for both of them
-// example(in column object): TODO: figure out a way to call this
 
 /******************************************************
  * FLATTENS THE OBJECT RETURNS THE VALUES AS A STRING *
@@ -58,12 +54,35 @@ export function flattenObj(ob: Record<string, unknown>): Record<string, unknown>
   const result: Record<string, unknown> = {};
 
   for (const i in ob) {
-    if (typeof ob[i] === "object" && !Array.isArray(ob[i])) {
+    if (typeof ob[i] === "object") {
       const temp = flattenObj(ob[i]);
       for (const j in temp) result[i + "." + j] = temp[j];
     } else result[i] = ob[i];
   }
   return result;
+}
+
+/**********************************************************************
+ * CALCULATE POSITION OF CURRENT PAGE AS PER PAGE SIZE AND TOTAL ROWS *
+ * @param:
+ *  pageIndex : number
+ *  pageSize : number
+ *  totalRows : number
+ * @return: string
+ *  EXAMPLE 1: 31-40 OF 45
+ *  EXAMPLE 2: 41-45 OF 45
+ **********************************************************************/
+
+export function getCurrentPagePosition(
+  pageIndex: number,
+  pageSize: number,
+  totalRows: number
+): string {
+  const currentPageStartRange = pageIndex * pageSize + 1;
+  const currentPageEndRange = pageIndex * pageSize + pageSize;
+  const pageEndResultSize = Math.min(currentPageEndRange, totalRows);
+
+  return `${currentPageStartRange} - ${pageEndResultSize} of ${totalRows}`;
 }
 
 /****************************************************************************
