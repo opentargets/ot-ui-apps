@@ -1,9 +1,24 @@
 import { useState } from "react";
-import { Box, Button, Popover, Typography } from "@mui/material";
+import { Box, Popover, Typography, IconButton, Snackbar } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faClipboard } from "@fortawesome/free-regular-svg-icons";
+import { Tooltip } from "ui";
+import { lighten } from "polished";
 
-function DisplayVariantId({ variantId, referenceAllele, alternateAllele, maxChars = 3 }) {
+const highlightBackground = theme => lighten(0.4, theme.palette.primary.main);
+
+type DisplayVariantIdProps = {
+  variandId: string;
+  referenceAllele: string;
+  alternateAllele: string;
+  maxChars?: number;
+};
+
+function DisplayVariantId({ variantId, referenceAllele, alternateAllele, maxChars = 5 }) {
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -13,10 +28,19 @@ function DisplayVariantId({ variantId, referenceAllele, alternateAllele, maxChar
     setAnchorEl(null);
   };
 
+  function handleCloseSnackbar() {
+    setSnackbarOpen(false);
+  }
+
+  function copyToClipboard() {
+    setSnackbarOpen(true);
+    navigator.clipboard.writeText(fullName);
+  }
+
   const open = Boolean(anchorEl);
   const id = open ? 'popover' : undefined;
 
-  const stem = variantId.split('_').slice(0, -2).join('_');
+  const stem = variantId.split('_').slice(0, -1).join('_');
   const longReferenceAllele = referenceAllele.length > maxChars;
   const longAlternateAllele = alternateAllele.length > maxChars;
   const fullName = `${stem}_${referenceAllele}_${alternateAllele}`;
@@ -27,24 +51,25 @@ function DisplayVariantId({ variantId, referenceAllele, alternateAllele, maxChar
         <Box
           aria-describedby={id}
           onClick={handleClick}
+          title="Show full variant ID"
           sx={{
             cursor: "pointer",
-            // outline: "2px solid",
+            padding: "2px 6px",
+            borderRadius: "10px",
             "&:hover": {
-              // outlineColor: "red"
-              // background: "pink"
+              background: highlightBackground,
             }
           }}
         >
           {stem}
           _
           {longReferenceAllele
-            ? <HighlightBox>...</HighlightBox>  // or use DEL
+            ? <HighlightBox>...</HighlightBox>
             : referenceAllele
           }
           _
           {longAlternateAllele
-            ? <HighlightBox>...</HighlightBox>  // or use INS
+            ? <HighlightBox>...</HighlightBox>
             : alternateAllele
           }
         </Box>
@@ -57,28 +82,80 @@ function DisplayVariantId({ variantId, referenceAllele, alternateAllele, maxChar
             vertical: 'bottom',
             horizontal: 'left',
           }}
-          // marginThreshold={32}
           slotProps={{
             paper: {
-              sx: {
-                padding: 1,
-              }
+              sx: { position: "relative" }
             }
           }}  
         >
-          <Typography
-            variant="body2"
-            sx={{
-              textWrap: "wrap",
-              wordWrap: "break-word",
-            }}
+          <Box
+            position="fixed"
+            width="100%"
+            // display="flex"
+            // left={0}
+            // right={0}
+            bgcolor="white"
+            sx={{borderBottom: "1px solid #ccc"}}
+            zIndex={2}
           >
-            {fullName}
-          </Typography>
-          <Button sx={{mt: "1em", float: "right"}}>
-            Copy icon
-          </Button>
+            <Typography variant="h6" padding="1rem">
+              Variant ID
+            </Typography>
+            <IconButton
+              onClick={handleClose}
+              sx={{
+                zIndex: "2",
+                position: "absolute",
+                top: "0",
+                right: "0",
+                padding: "0.7em",
+              }}
+            >
+              <FontAwesomeIcon icon={faXmark} />
+            </IconButton>
+          </Box>
+          <Box p="5em 2em">
+            <Box 
+              sx={{
+                backgroundColor: theme => theme.palette.grey[300],
+                padding: "1em 3.5em 1em 1em",   
+                fontSize: "0.9em",
+                position: "relative"
+              }}
+            >
+              <Tooltip
+                title="Copy JSON to clipboard"
+              >
+                <IconButton
+                  onClick={copyToClipboard}
+                  sx={{
+                    position: "absolute !important",
+                    top: "0",
+                    right: "0",
+                    padding: "0.4em 0.5em !important",
+                  }}
+                >
+                  <FontAwesomeIcon icon={faClipboard} />
+                </IconButton>
+              </Tooltip>
+              <Typography
+                variant="body2"
+                sx={{
+                  textWrap: "wrap",
+                  wordWrap: "break-word",
+                }}
+              >
+                {fullName}
+              </Typography>
+            </Box>
+          </Box>
         </Popover>
+        <Snackbar
+          open={snackbarOpen}
+          onClose={handleCloseSnackbar}
+          message="Variant ID copied"
+          autoHideDuration={3000}
+        />
       </div>
     );
   }
@@ -91,11 +168,10 @@ function HighlightBox({ children }) {
   return (
     <Box
       display="inline-block"
-      border="1px solid"
       borderRadius={5}
       mx={0.5}
       px={0.5}
-      bgcolor="#3489ca22"  // HARDCODED! - and may want faint of current color
+      bgcolor={highlightBackground}
     >
       {children}
     </Box>
@@ -103,22 +179,3 @@ function HighlightBox({ children }) {
 }
 
 export default DisplayVariantId;
-
-// TODO:
-// - when hover on name, highlight the div - maybe with outline and offset to avoid space
-//   differences to when no hover or other entities, but not currently working?! - because
-//   parent cutting it off?
-//   - will need to make space in the header component itself - keep appearance change to a min
-// - copy button
-//   - use copy icon
-//   - add functinality! - see copy from data-downalaods schema or from AOTF export
-//     - create e.g. package/ui/utiil - create a helpers file with a copy function
-//            and snackbar component ideally
-//   - indicate that copied to clipboard after click?
-// - ensure works anywhere use variant name
-// - larger space to sides of box when wide - but using marginThreshold does not work?
-// - test with variant names of different sizes
-// - what set maxChars to?
-// - add a type for the props
-// - add space between name and popover
-// - does popover need a close button?
