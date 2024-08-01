@@ -3,7 +3,8 @@ import {
   usePlatformApi,
   Field,
   ProfileHeader as BaseProfileHeader,
-  Link, 
+  Link,
+  LongText,
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import { identifiersOrgLink } from "../../utils/global";
@@ -27,10 +28,10 @@ function ProfileHeader() {
           {data?.variant.chromosome}:{data?.variant.position}
         </Field>
         <Field loading={loading} title="Reference Allele">
-          {data?.variant.referenceAllele}
+          <AlleleContent allele={data?.variant.referenceAllele} />
         </Field>
         <Field loading={loading} title="Alternative Allele (effect allele)">
-          {data?.variant.alternateAllele}
+          <AlleleContent allele={data?.variant.alternateAllele} />
         </Field>
         <Typography variant="subtitle1" mt={1}>Variant Effect Predictor (VEP)</Typography>
         <Field loading={loading} title="Most severe consequence">
@@ -59,6 +60,22 @@ ProfileHeader.fragments = {
 };
 
 export default ProfileHeader;
+
+
+function AlleleContent({ allele }) {
+  return allele?.length >= 15
+    ? <LongText lineLimit={2}>
+        <span style={{ textWrap: "wrap", wordWrap: "break-word" }}>
+          {allele}
+        </span>
+      </LongText>
+    : <>
+        {allele}
+      </>
+}
+
+
+
 
 
 // =====================
