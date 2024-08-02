@@ -70,6 +70,11 @@ function getColumns(label) {
         if (Object.keys(studySourceMap).indexOf(projectId) < 0) return naLabel;
         return studySourceMap[projectId];
       },
+      filterValue: ({ projectId }) => {
+        if (!projectId) return naLabel;
+        if (Object.keys(studySourceMap).indexOf(projectId) < 0) return naLabel;
+        return studySourceMap[projectId];
+      },
     },
     {
       id: "variantId",
@@ -152,6 +157,9 @@ function getColumns(label) {
           />
         );
       },
+
+      // TODO: find a way to access getTooltipText function from DirectionOfEffectIcon.tsx
+      filterValue: ({ variantEffect, directionOnTrait }) => {},
     },
     {
       id: "pValueMantissa",

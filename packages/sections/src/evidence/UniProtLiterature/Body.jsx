@@ -47,6 +47,7 @@ const getcolumns = label => [
     renderCell: ({ confidence }) => <>{sentenceCase(confidence)}</>,
   },
   {
+    id: "literature",
     label: "Literature",
     renderCell: ({ literature }) => {
       const literatureList =
