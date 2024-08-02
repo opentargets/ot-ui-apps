@@ -13,7 +13,7 @@ import CANCER_BIOMARKERS_EVIDENCE_QUERY from "./CancerBiomarkersEvidence.gql";
 
 const getColumns = label => [
   {
-    id: "disease.name",
+    id: "disease",
     label: "Disease",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
@@ -48,7 +48,7 @@ const getColumns = label => [
     filterValue: ({ drug, drugFromSource }) => (drug ? drug.name : drugFromSource),
   },
   {
-    id: "drugResponse.name",
+    id: "drugResponse",
     label: "Drug response",
     renderCell: ({ drugResponse }) =>
       (drugResponse && <Link to={`/disease/${drugResponse.id}`}>{drugResponse.name}</Link>) ||
