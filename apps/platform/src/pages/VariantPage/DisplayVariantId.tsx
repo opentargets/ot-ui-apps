@@ -24,19 +24,20 @@ type DisplayVariantIdProps = {
 };
 
 function DisplayVariantId({
-    variantId,
-    referenceAllele,
-    alternateAllele,
-    maxChars = 6}: DisplayVariantIdProps) {
+      variantId: otVariantId,
+      referenceAllele,
+      alternateAllele,
+      maxChars = 6
+    }: DisplayVariantIdProps) {
 
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const handleClick = () => {
+  function handleClick() {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  function handleClose() {
     setOpen(false);
   };
 
@@ -49,21 +50,32 @@ function DisplayVariantId({
     navigator.clipboard.writeText(text);
   }
 
-  const stem = variantId.split('_').slice(0, -1).join('_');
+  const idParts = otVariantId.split('_');
+  let isHashed, stem, fullVariantId;
+  if (idParts.at(-2) === referenceAllele &&
+      idParts.at(-1) === alternateAllele) {
+    isHashed = false;
+    stem = idParts.slice(0, -2).join('_');
+    fullVariantId = otVariantId;
+  } else {
+    isHashed = true;
+    stem = idParts.slice(0, -1).join('_');
+    fullVariantId = `${stem}_${referenceAllele}_${alternateAllele}`;
+  }
+
   const longReferenceAllele = referenceAllele.length > maxChars;
   const longAlternateAllele = alternateAllele.length > maxChars;
-  const fullVariantId = `${stem}_${referenceAllele}_${alternateAllele}`;
 
-  if (longReferenceAllele || longAlternateAllele) {
+  if (isHashed || longReferenceAllele || longAlternateAllele) {
     return (
-      <div>
+      <>
         <Box
           onClick={handleClick}
-          title="Show full variant ID"
+          title="Show variant ID"
           sx={{
             cursor: "pointer",
-            padding: "2px 6px",
-            borderRadius: "10px",
+            padding: "0 2px",
+            borderRadius: "8px",
             "&:hover": {
               background: highlightBackground,
             }
@@ -90,7 +102,7 @@ function DisplayVariantId({
           maxWidth="md"
         >
           <DialogTitle id="dialog-title">
-            <Typography variant="h6">
+            <Typography variant="h6" component="span">
               Variant ID
             </Typography>
             <IconButton
@@ -110,14 +122,16 @@ function DisplayVariantId({
             dividers={true}
             sx={{ padding: "0 1.5em 3em" }}
           >
+            { isHashed &&
+                <CopyPanel
+                  label="Hashed Variant ID"
+                  tooltipText="Variant ID used in Open Targets data."
+                  text={otVariantId}
+                  copyToClipboard={copyToClipboard}
+                />
+            }
             <CopyPanel
-              heading="Hashed Variant ID"
-              tooltipText="The variant ID used in Open Targets data."
-              text={variantId}
-              copyToClipboard={copyToClipboard}
-            />
-            <CopyPanel
-              heading="Full Variant ID"
+              label="Full Variant ID"
               text={fullVariantId}
               copyToClipboard={copyToClipboard}
             />
@@ -129,7 +143,7 @@ function DisplayVariantId({
           message="Copied to clipboard"
           autoHideDuration={3000}
         />
-      </div>
+      </>
     );
   }
 
@@ -151,15 +165,22 @@ function HighlightBox({ children }) {
   );
 }
 
-function CopyPanel({ heading, text, tooltipText, copyToClipboard }) {
+type CopyPanelProps = {
+  label: string;
+  text: string;
+  tooltipText?: string;
+  copyToClipboard: (text: string) => void;
+};
+
+function CopyPanel({ label, text, tooltipText, copyToClipboard }: CopyPanelProps) {
   return (
     <Box mt={2}>
       {
         tooltipText
           ? <Tooltip title={tooltipText} showHelpIcon>
-              <Typography variant="subtitle1" component="span">{heading}</Typography>
+              <Typography variant="subtitle1" component="span">{label}</Typography>
             </Tooltip>
-          : <Typography variant="subtitle1">{heading}</Typography>
+          : <Typography variant="subtitle1">{label}</Typography>
       }
       <Box sx={{
           marginTop: '0.1em',
