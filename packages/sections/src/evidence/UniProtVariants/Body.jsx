@@ -77,6 +77,7 @@ function getColumns(label) {
       label: "Confidence",
     },
     {
+      id: "literature",
       label: "Literature",
       renderCell: ({ literature }) => {
         const literatureList =
