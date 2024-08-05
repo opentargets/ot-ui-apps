@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { makeStyles } from "@mui/styles";
 import { Box, Divider, Tooltip } from "@mui/material";
+import { ReactNode } from "react";
 
 const useStyles = makeStyles(theme => ({
   colorBlue: {
@@ -21,27 +22,40 @@ const useStyles = makeStyles(theme => ({
 }));
 
 type DirectionOfEffectIconProp = {
-  variantEffect?: string;
-  directionOnTrait?: string;
+  variantEffect: string | null;
+  directionOnTrait: string | null;
 };
 
-const INCONCLUSIVE_ASSESSMENT = "Inconclusive Assessment";
-const LoF = "LoF";
-const RISK = "risk";
+const LABEL = {
+  LoF: {
+    label: "Loss of Function",
+    icon: faArrowTrendDown,
+  },
+  GoF: {
+    label: "Gain of Function",
+    icon: faArrowTrendUp,
+  },
+  risk: {
+    label: "Risk",
+    icon: faCircleExclamation,
+  },
+  protect: {
+    label: "Protective",
+    icon: faShieldHalved,
+  },
+  default: {
+    label: "Inconclusive Assessment",
+    icon: faQuestion,
+  },
+};
 
-function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfEffectIconProp) {
+function DirectionOfEffectIcon({
+  variantEffect = "default",
+  directionOnTrait = "default",
+}: DirectionOfEffectIconProp): ReactNode {
   const classes = useStyles();
   function getTooltipText() {
-    let tooltipValue = "";
-    if (variantEffect === LoF) tooltipValue += "Loss of Function │ ";
-    else if (variantEffect) tooltipValue += "Gain of Function │ ";
-    else tooltipValue += INCONCLUSIVE_ASSESSMENT + " │ ";
-
-    if (directionOnTrait === RISK) tooltipValue += "Risk";
-    else if (directionOnTrait) tooltipValue += "Protective";
-    else tooltipValue += INCONCLUSIVE_ASSESSMENT;
-
-    return tooltipValue;
+    return `${LABEL[variantEffect].label} │ ${LABEL[directionOnTrait].label}`;
   }
 
   const tooltipText = getTooltipText();
@@ -61,27 +75,11 @@ function DirectionOfEffectIcon({ variantEffect, directionOnTrait }: DirectionOfE
           }}
         >
           <Box sx={{ display: "flex", justifyContent: "center", width: 20 }}>
-            {variantEffect ? (
-              <FontAwesomeIcon
-                className={classes.colorBlue}
-                icon={variantEffect === LoF ? faArrowTrendDown : faArrowTrendUp}
-                size="lg"
-              />
-            ) : (
-              <FontAwesomeIcon className={classes.colorBlue} icon={faQuestion} />
-            )}
+            <FontAwesomeIcon className={classes.colorBlue} icon={LABEL[variantEffect].icon} />
           </Box>
           <Divider orientation="vertical" variant="middle" />
           <Box sx={{ display: "flex", justifyContent: "center", width: 20 }}>
-            {directionOnTrait ? (
-              <FontAwesomeIcon
-                className={classes.colorBlue}
-                icon={directionOnTrait === "risk" ? faCircleExclamation : faShieldHalved}
-                size="lg"
-              />
-            ) : (
-              <FontAwesomeIcon className={classes.colorBlue} icon={faQuestion} />
-            )}
+            <FontAwesomeIcon className={classes.colorBlue} icon={LABEL[directionOnTrait].icon} />
           </Box>
         </Box>
       </Tooltip>
