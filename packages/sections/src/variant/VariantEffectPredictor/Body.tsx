@@ -8,7 +8,7 @@ import { identifiersOrgLink } from "../../utils/global";
 import VARIANT_EFFECT_PREDICTOR_QUERY from "./VariantEffectPredictorQuery.gql";
 
 function formatVariantConsequenceLabel(label) {
-  return label.replace(/_/g, ' ');
+  return label.replace(/_/g, " ");
 }
 
 const columns = [
@@ -16,6 +16,7 @@ const columns = [
     id: "transcriptId",
     label: "Transcript",
     tooltip: "Ensembl canonical transcript",
+    comparator: (a, b) => a.transcriptIndex - b.transcriptIndex,
     renderCell: ({ transcriptId, target }) => {
       if (!transcriptId) return naLabel;
       if (!target) return transcriptId;
@@ -52,14 +53,13 @@ const columns = [
     },
   },
   {
-    id: 'impact',
-    label: 'Impact',
+    id: "impact",
+    label: "Impact",
     renderCell: ({ impact }) => impact?.toLowerCase?.() ?? naLabel,
   },
-  { // !!!!! UPDATE ONCE IN API
+  {
     id: "consequenceScore",
     label: "Consequence Score",
-    renderCell: () => "Not in API"
   },
   {
     id: "target.approvedName",
@@ -71,39 +71,22 @@ const columns = [
     ),
   },
   {
-    id: 'aminoAcidChange',
-    label: 'Amino acid change',
+    id: "aminoAcidChange",
+    label: "Amino acid change",
     renderCell: ({ aminoAcidChange }) => aminoAcidChange ?? naLabel,
   },
   {
-    id: 'codons',
-    label: 'Coding change',
+    id: "codons",
+    label: "Coding change",
     renderCell: ({ codons }) => codons ?? naLabel,
   },
-  {  // !!!!! UPDATE ONCE IN API - AND DIST SHOULD BE 0 IN DATA THEN INSTEAD OF NULL
-    id: "distance",
+  {
+    id: "distanceFromFootprint",
     label: "Distance from footprint",
-    renderCell: ({ distance }) => distance ?? 0,
   },
-  {  // !!!!! UPDATE ONCE IN API
+  {
     id: "distanceFromTss",
     label: "Distance from start site",
-    renderCell: () => "Not in API",
-  },
-  {
-    id: "lofteePrediction",
-    label: "Loftee prediction",
-    renderCell: ({ lofteePrediction }) => lofteePrediction ?? naLabel,
-  },
-  {
-    id: "siftPrediction",
-    label: "Sift prediction",
-    renderCell: ({ siftPrediction }) => siftPrediction ?? naLabel,
-  },
-  {
-    id: "polyphenPrediction",
-    label: "Polyphen prediction",
-    renderCell: ({ polyphenPrediction }) => polyphenPrediction ?? naLabel,
   },
   {
     id: "uniprotAccession",
@@ -154,6 +137,7 @@ export function Body({ id, entity }: BodyProps) {
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={VARIANT_EFFECT_PREDICTOR_QUERY.loc.source.body}
             variables={variables}
+            sortBy="transcriptId"
           />
         );
       }}
