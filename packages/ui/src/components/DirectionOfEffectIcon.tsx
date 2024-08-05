@@ -22,8 +22,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 type DirectionOfEffectIconProp = {
-  variantEffect: string | null;
-  directionOnTrait: string | null;
+  variantEffect: string;
+  directionOnTrait: string;
 };
 
 const LABEL = {
@@ -50,12 +50,15 @@ const LABEL = {
 };
 
 function DirectionOfEffectIcon({
-  variantEffect = "default",
-  directionOnTrait = "default",
+  variantEffect,
+  directionOnTrait,
 }: DirectionOfEffectIconProp): ReactNode {
   const classes = useStyles();
+  const variant = variantEffect || "default";
+  const direction = directionOnTrait || "default";
+
   function getTooltipText() {
-    return `${LABEL[variantEffect].label} │ ${LABEL[directionOnTrait].label}`;
+    return `${LABEL[variant].label} │ ${LABEL[direction].label}`;
   }
 
   const tooltipText = getTooltipText();
@@ -75,11 +78,11 @@ function DirectionOfEffectIcon({
           }}
         >
           <Box sx={{ display: "flex", justifyContent: "center", width: 20 }}>
-            <FontAwesomeIcon className={classes.colorBlue} icon={LABEL[variantEffect].icon} />
+            <FontAwesomeIcon className={classes.colorBlue} icon={LABEL[variant].icon} />
           </Box>
           <Divider orientation="vertical" variant="middle" />
           <Box sx={{ display: "flex", justifyContent: "center", width: 20 }}>
-            <FontAwesomeIcon className={classes.colorBlue} icon={LABEL[directionOnTrait].icon} />
+            <FontAwesomeIcon className={classes.colorBlue} icon={LABEL[direction].icon} />
           </Box>
         </Box>
       </Tooltip>
