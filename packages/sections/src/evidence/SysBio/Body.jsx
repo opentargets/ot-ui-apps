@@ -34,6 +34,7 @@ const getColumns = label => [
   },
   {
     id: "literature",
+    label: "Literature",
     renderCell: ({ literature }) => {
       const literatureList =
         literature?.reduce((acc, id) => {
