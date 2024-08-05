@@ -116,29 +116,35 @@ function HomePage({ suggestions }) {
             <Link to={`/target/${suggestions[0].id}/associations`}>
               <Typography variant="body2">{suggestions[0].name}</Typography>
             </Link>
-            <Hidden smDown>
-              <Link to={`/target/${suggestions[1].id}/associations`}>
-                <Typography variant="body2">{suggestions[1].name}</Typography>
-              </Link>
-            </Hidden>
-
+            <Link
+              sx={{ display: { sm: 'none', md: 'block' }}}
+              to={`/target/${suggestions[1].id}/associations`}
+            >
+              <Typography variant="body2">{suggestions[1].name}</Typography>
+            </Link>
             <Link to={`/disease/${suggestions[2].id}/associations`}>
               <Typography variant="body2">{suggestions[2].name}</Typography>
             </Link>
-            <Hidden smDown>
-              <Link to={`/disease/${suggestions[3].id}/associations`}>
+            {/* <Hidden smDown> */}
+              <Link
+                sx={{ display: { sm: 'none', md: 'block' }}}
+                to={`/disease/${suggestions[3].id}/associations`}
+              >
                 <Typography variant="body2">{suggestions[3].name}</Typography>
               </Link>
-            </Hidden>
+            {/* </Hidden> */}
 
             <Link to={`/drug/${suggestions[4].id}`}>
               <Typography variant="body2">{suggestions[4].name}</Typography>
             </Link>
-            <Hidden smDown>
-              <Link to={`/drug/${suggestions[5].id}`}>
+            {/* <Hidden smDown> */}
+              <Link
+                sx={{ display: { sm: 'none', md: 'block' }}}
+                to={`/drug/${suggestions[5].id}`}
+              >
                 <Typography variant="body2">{suggestions[5].name}</Typography>
               </Link>
-            </Hidden>
+            {/* </Hidden> */}
           </Grid>
           <Version />
           <PrivateWrapper>
