@@ -9,6 +9,8 @@ import useAotfContext from "../../hooks/useAotfContext";
 import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
+import RowInteractorsWrapper from "../RowInteractors/RowInteractorsWrapper";
+import RowInteractorsTable from "../RowInteractors/RowInteractorsTable";
 import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
 import { rowNameProperty, TABLE_PREFIX } from "../../utils";
 
@@ -71,6 +73,7 @@ function TableBody({ core, cols, noInteractors }) {
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
 
   const handleClickAway = e => {
+    console.log("hihi", e);
     if (e.srcElement.className === "CodeMirror-hint CodeMirror-hint-active") {
       return;
     }
@@ -152,6 +155,16 @@ function TableBody({ core, cols, noInteractors }) {
                     </section>
                   </ClickAwayListener>
                 </SectionRendererWrapper>
+                {!noInteractors && (
+                  <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>
+                    <RowInteractorsTable
+                      row={row}
+                      columns={core._getColumnDefs()}
+                      nameProperty={nameProperty}
+                      parentTable={prefix}
+                    />
+                  </RowInteractorsWrapper>
+                )}
               </Box>
             </Fragment>
           ))}
