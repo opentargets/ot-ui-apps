@@ -241,7 +241,9 @@ export function Body({ id, label, entity }) {
       chipText={dataTypesMap.genetic_association}
       entity={entity}
       request={request}
-      renderDescription={data => <Description symbol={label.symbol} diseaseName={label.name} data={data} />}
+      renderDescription={data => (
+        <Description symbol={label.symbol} diseaseName={label.name} data={data} />
+      )}
       renderBody={({ disease }) => {
         const { rows } = disease.geneBurdenSummary;
         return (
