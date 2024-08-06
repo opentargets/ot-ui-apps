@@ -1,4 +1,5 @@
 import { styled } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import { LoadingBackdrop } from "ui";
 
 const LoadingContainer = styled("div")({
@@ -57,25 +58,21 @@ type RowContainerProps = {
 
 export const RowContainer = styled("div", {
   shouldForwardProp: prop => prop !== "rowExpanded" && prop !== "isSubRow",
-})<RowContainerProps>(({ rowExpanded, isSubRow }) => ({
+})<RowContainerProps>(({ rowExpanded }) => ({
   top: "148px",
-  position: rowExpanded ? "sticky" : "initial",
-  padding: rowExpanded ? "0.1em 0 0.1em 0" : "0.1em 0 0.1em 0",
-  zIndex: rowExpanded ? "90 !important" : "initial",
-  backgroundColor: rowExpanded ? "var(--row-hover-color)" : "initial",
+  width: "100%",
   display: "flex",
   alignItems: "center",
-  width: "100%",
-  boxSizing: "content-box",
+  boxSizing: "border-box",
+  transition: "background 75ms ease-out",
   boxShadow: rowExpanded ? boxShadow : "none",
-  border: rowExpanded ? "0.7px solid #666" : "0.7px solid #fafafa",
+  position: rowExpanded ? "sticky" : "initial",
+  padding: rowExpanded ? "0.1em 0 0.1em 0" : "0.1em 0 0.1em 0",
+  zIndex: rowExpanded ? "99 !important" : "initial",
+  backgroundColor: rowExpanded ? grey[300] : "initial",
+  border: rowExpanded ? `1px solid ${grey[400]}` : "none",
   "&:hover": {
-    backgroundColor: "var(--row-hover-color)",
-    border: "0.7px solid #666",
-    ".PinnedContainer": {
-      opacity: 1,
-      cursor: "pointer",
-    },
+    backgroundColor: grey[300],
   },
 }));
 

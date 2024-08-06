@@ -6,6 +6,8 @@ import { ENTITIES } from "../../utils";
 import targetSections from "../../../../sections/targetSections";
 import evidenceSections from "../../../../sections/evidenceSections";
 
+import { grey } from "@mui/material/colors";
+
 const LoadingContainer = styled("div")({
   margin: "25px 0",
   height: "100px",
@@ -15,19 +17,21 @@ const LoadingContainer = styled("div")({
   gap: "20px",
 });
 
-const Container = styled("div")({
-  marginTop: "10px",
-  marginBottom: "40px",
-});
+const Container = styled("div", {
+  shouldForwardProp: prop => prop !== "table",
+})(({ table, theme }) => ({
+  paddingTop: "10px",
+  paddingBottom: "10px",
+  paddingLeft: table === "interactors" ? theme.spacing(9) : theme.spacing(3),
+  background: grey[100],
+}));
 
 function LoadingSection() {
   return (
-    <div>
-      <LoadingContainer>
-        <LoadingBackdrop />
-        Importing section assets
-      </LoadingContainer>
-    </div>
+    <LoadingContainer>
+      <LoadingBackdrop />
+      Importing section assets
+    </LoadingContainer>
   );
 }
 
@@ -38,40 +42,44 @@ function SectionNotFound() {
 export function SectionRender({
   id,
   entity,
-  section,
+  focusElement,
   row,
+  table,
   entityToGet,
-  rowNameEntity,
-  rowId,
+  nameProperty,
   displayedTable,
   cols = [],
-  expanded,
+  section,
 }) {
-  let label = row.original[entityToGet][rowNameEntity];
+  let label = row.original[entityToGet][nameProperty];
   let ensgId;
   let efoId;
   let componentId;
   let Component;
   let entityOfSection = entity;
 
+  if (section === undefined) return <></>;
+
+  // const section = focusElement
+
   const flatCols = cols.map(c => c.id);
-  if (!flatCols.includes(expanded[1])) return null;
+  if (!flatCols.includes(section[0])) return <></>;
 
   switch (displayedTable) {
     case "prioritisations": {
-      Component = targetSections.get(section);
+      Component = targetSections.get(section[1]);
       const { targetSymbol } = row.original;
-      ensgId = entity === ENTITIES.DISEASE ? rowId : id;
+      ensgId = entity === ENTITIES.DISEASE ? row.id : id;
       label = targetSymbol;
       componentId = ensgId;
       entityOfSection = "target";
       break;
     }
     case "associations": {
-      Component = evidenceSections.get(section);
+      Component = evidenceSections.get(section[1]);
       const { diseaseName, targetSymbol } = row.original;
-      ensgId = entity === ENTITIES.DISEASE ? rowId : id;
-      efoId = entity === ENTITIES.DISEASE ? id : rowId;
+      ensgId = entity === ENTITIES.DISEASE ? row.id : id;
+      efoId = entity === ENTITIES.DISEASE ? id : row.id;
       componentId = { ensgId, efoId };
       label = { symbol: targetSymbol, name: diseaseName };
       entityOfSection = "disease";
@@ -83,13 +91,14 @@ export function SectionRender({
 
   if (!Component) return <SectionNotFound />;
 
-  return <Component id={componentId} label={label} entity={entityOfSection} />;
+  return (
+    <Container table={table}>
+      <Component id={componentId} label={label} entity={entityOfSection} />
+    </Container>
+  );
 }
 
-export function SectionRendererWrapper({ children }) {
-  return (
-    <Suspense fallback={<LoadingSection />}>
-      <Container>{children}</Container>
-    </Suspense>
-  );
+export function SectionRendererWrapper({ children, section }) {
+  if (!section) return <></>;
+  return <Suspense fallback={<LoadingSection />}>{children}</Suspense>;
 }

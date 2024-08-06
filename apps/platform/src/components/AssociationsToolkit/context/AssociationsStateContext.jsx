@@ -1,11 +1,18 @@
-import { createContext, useState, useMemo, useEffect, useReducer, useRef } from "react";
+import {
+  createContext,
+  useState,
+  useMemo,
+  useEffect,
+  useReducer,
+  useRef,
+  useCallback,
+} from "react";
 import { isEqual } from "lodash";
 import { useStateParams } from "ui";
 import dataSources from "../static_datasets/dataSourcesAssoc";
 import {
   defaulDatasourcesWeigths,
   getControlChecked,
-  getCellId,
   checkBoxPayload,
   ENTITIES,
   DEFAULT_TABLE_SORTING_STATE,
@@ -19,6 +26,7 @@ import { onPaginationChange, resetPagination } from "./aotfActions";
 const AssociationsStateContext = createContext();
 
 const initialIndirect = entity => entity !== ENTITIES.TARGET;
+const rowEntity = { [ENTITIES.TARGET]: ENTITIES.DISEASE, [ENTITIES.DISEASE]: ENTITIES.TARGET };
 
 /**
  * Associations on the fly state Provider
@@ -32,24 +40,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const hasComponentBeenRender = useRef(false);
 
-  useEffect(() => {
-    if (hasComponentBeenRender.current) {
-      resetDatasourceControls();
-      setPinExpanded([]);
-      setActiveHeadersControlls(false);
-      setSorting(DEFAULT_TABLE_SORTING_STATE);
-      dispatch(resetPagination());
-    }
-    hasComponentBeenRender.current = true;
-  }, [id]);
-
   // Table Controls
-  // [rowId, columnId, codebaseSectionId, tablePrefix]
-  // eg. ['ENSG00000087085', 'hasHighQualityChemicalProbes', 'chemicalProbes', 'pinned']
-  const [expanded, setExpanded] = useState([]);
-  const [pinExpanded, setPinExpanded] = useState([]);
-  const [tableExpanded, setTableExpanded] = useState({});
-  const [tablePinExpanded, setTablePinExpanded] = useState({});
   const [facetFilterIds, setFacetFilterIds] = useState([]);
 
   // Data controls
@@ -77,6 +68,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     arr => arr.join(","),
     str => str.split(",")
   );
+
+  const entityToGet = rowEntity[entity];
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
     query,
@@ -115,97 +108,91 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   });
 
   useEffect(() => {
+    if (hasComponentBeenRender.current) {
+      resetDatasourceControls();
+      setActiveHeadersControlls(false);
+      setSorting(DEFAULT_TABLE_SORTING_STATE);
+      dispatch(resetPagination());
+    }
+    hasComponentBeenRender.current = true;
+  }, [id]);
+
+  useEffect(() => {
     if (isEqual(defaulDatasourcesWeigths, dataSourcesWeights) && isEqual(dataSourcesRequired, []))
       setModifiedSourcesDataControls(false);
     else setModifiedSourcesDataControls(true);
   }, [dataSourcesWeights, dataSourcesRequired]);
 
-  const handleAggregationClick = aggregationId => {
-    const aggregationDatasources = dataSources.filter(el => el.aggregation === aggregationId);
-    let isAllActive = true;
-    aggregationDatasources.forEach(e => {
-      if (getControlChecked(dataSourcesRequired, e.id) === false) {
-        isAllActive = false;
-        return;
-      }
-    });
-    if (isAllActive) {
-      let newPayload = [...dataSourcesRequired];
-      aggregationDatasources.forEach(element => {
-        const indexToRemove = newPayload.findIndex(datasource => datasource.id === element.id);
-        const newRequiredElement = [
-          ...newPayload.slice(0, indexToRemove),
-          ...newPayload.slice(indexToRemove + 1),
-        ];
-        newPayload = [...newRequiredElement];
-      });
-      setDataSourcesRequired(newPayload);
-    } else {
-      const payload = [];
-      aggregationDatasources.forEach(el => {
-        if (dataSourcesRequired.filter(val => val.id === el.id).length === 0) {
-          payload.push(checkBoxPayload(el.id, el.aggregationId));
+  const handleAggregationClick = useCallback(
+    aggregationId => {
+      const aggregationDatasources = dataSources.filter(el => el.aggregation === aggregationId);
+      let isAllActive = true;
+      aggregationDatasources.forEach(e => {
+        if (getControlChecked(dataSourcesRequired, e.id) === false) {
+          isAllActive = false;
+          return;
         }
       });
-      setDataSourcesRequired([...dataSourcesRequired, ...payload]);
-    }
-  };
+      if (isAllActive) {
+        let newPayload = [...dataSourcesRequired];
+        aggregationDatasources.forEach(element => {
+          const indexToRemove = newPayload.findIndex(datasource => datasource.id === element.id);
+          const newRequiredElement = [
+            ...newPayload.slice(0, indexToRemove),
+            ...newPayload.slice(indexToRemove + 1),
+          ];
+          newPayload = [...newRequiredElement];
+        });
+        setDataSourcesRequired(newPayload);
+      } else {
+        const payload = [];
+        aggregationDatasources.forEach(el => {
+          if (dataSourcesRequired.filter(val => val.id === el.id).length === 0) {
+            payload.push(checkBoxPayload(el.id, el.aggregationId));
+          }
+        });
+        setDataSourcesRequired([...dataSourcesRequired, ...payload]);
+      }
+    },
+    [dataSourcesRequired]
+  );
 
-  const entityToGet = entity === ENTITIES.TARGET ? ENTITIES.DISEASE : ENTITIES.TARGET;
+  const handlePaginationChange = useCallback(
+    updater => {
+      const newPagination = updater(state.pagination);
+      dispatch(onPaginationChange(newPagination));
+    },
+    [state]
+  );
 
-  const resetToInitialPagination = () => {
-    setTableExpanded({});
-    setExpanded([]);
-    dispatch(resetPagination());
-  };
+  const handleSortingChange = useCallback(
+    newSortingFunc => {
+      const newSorting = newSortingFunc();
+      if (newSorting[0].id === sorting[0].id) {
+        setSorting(DEFAULT_TABLE_SORTING_STATE);
+        return;
+      }
+      setSorting(newSorting);
+    },
+    [sorting]
+  );
 
-  const handlePaginationChange = updater => {
-    const newPagination = updater(state.pagination);
-    dispatch(onPaginationChange(newPagination));
-  };
-
-  const handleSortingChange = newSortingFunc => {
-    const newSorting = newSortingFunc();
-    if (newSorting[0].id === sorting[0].id) {
-      setSorting(DEFAULT_TABLE_SORTING_STATE);
-      return;
-    }
-    setSorting(newSorting);
-  };
-
-  const handleSearchInputChange = newSearchFilter => {
-    if (newSearchFilter !== searhFilter) {
-      setSearhFilter(newSearchFilter);
-    }
-  };
-
-  const handleActiveRow = (rowid, tablePrefix) => {
-    setExpanded([rowid, "", "", tablePrefix]);
-  };
-
-  const expanderHandler = tableExpanderController => (cell, tablePrefix) => {
-    const expandedId = getCellId(cell, entityToGet, displayedTable, tablePrefix);
-    if (expanded.join("-") === expandedId.join("-")) {
-      setTableExpanded({});
-      setExpanded([]);
-      return;
-    }
-    /* Validate that only one row can be expanded */
-    if (Object.keys(tableExpanded).length > 0) setTableExpanded({});
-    /* Open the expandable section */
-    tableExpanderController();
-    /* Set the ID of the section expanded element */
-    setExpanded(expandedId);
-  };
+  const handleSearchInputChange = useCallback(
+    newSearchFilter => {
+      if (newSearchFilter !== searhFilter) {
+        setSearhFilter(newSearchFilter);
+      }
+    },
+    [searhFilter]
+  );
 
   const resetDatasourceControls = () => {
     setDataSourcesWeights(defaulDatasourcesWeigths);
     setDataSourcesRequired([]);
   };
 
-  const resetExpandler = () => {
-    setExpanded([]);
-    setTableExpanded({});
+  const resetToInitialPagination = () => {
+    dispatch(resetPagination());
   };
 
   const contextVariables = useMemo(
@@ -219,9 +206,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       data,
       loading,
       initialLoading,
-      tableExpanded,
       pagination: state.pagination,
-      expanded,
       activeHeadersControlls,
       enableIndirect,
       error,
@@ -232,18 +217,13 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       searhFilter,
       sorting,
       modifiedSourcesDataControls,
-      tablePinExpanded,
       pinnedLoading,
       pinnedError,
       pinnedCount,
-      pinExpanded,
       pinnedEntries,
       facetFilterIds,
-      handleActiveRow,
       resetToInitialPagination,
       setPinnedEntries,
-      setPinExpanded,
-      setTablePinExpanded,
       resetDatasourceControls,
       handleSortingChange,
       handleSearchInputChange,
@@ -251,11 +231,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       setDataSourcesWeights,
       setDataSourcesRequired,
       handlePaginationChange,
-      expanderHandler,
-      setTableExpanded,
       setEnableIndirect,
       setActiveHeadersControlls,
-      resetExpandler,
       handleAggregationClick,
       setFacetFilterIds,
       state,
@@ -272,8 +249,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       entity,
       entityToGet,
       error,
-      expanded,
-      expanderHandler,
       handleAggregationClick,
       handleSearchInputChange,
       handleSortingChange,
@@ -282,7 +257,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       loading,
       modifiedSourcesDataControls,
       state,
-      pinExpanded,
       pinnedCount,
       pinnedData,
       pinnedEntries,
@@ -293,10 +267,9 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       setDisplayedTable,
       setPinnedEntries,
       sorting,
-      tableExpanded,
-      tablePinExpanded,
       facetFilterIds,
       setFacetFilterIds,
+      handlePaginationChange,
     ]
   );
 
