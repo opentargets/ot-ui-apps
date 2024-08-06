@@ -5,6 +5,8 @@ import config from "../../../config";
 
 export const { isPartnerPreview } = config.profile;
 
+export * from "./associations";
+
 const ASSOCIATION_LEGEND_LABEL = "Association score";
 const PRIORITISATION_LEGEND_LABEL = "Prioritisation indicator";
 const TARGE_PRIORITISATION_LEGEND_TICKS = ["Unfavourable", "Favourable"];
@@ -24,12 +26,29 @@ export const DISPLAY_MODE = {
   ASSOCIATIONS: "associations",
 };
 
+export const TABLE_PREFIX = {
+  CORE: "core",
+  PINNING: "pinning",
+  INTERACTORS: "interactors",
+  UPLOADED: "uploaded",
+};
+
+/**
+ * @constant
+ * @type {Object}
+ * @property {string} TARGET - Target entity.
+ * @property {string} EVIDENCE - Evidence entity.
+ * @property {string} DISEASE - Disease entity.
+ * @property {string} DRUG - Drug entity.
+ */
 export const ENTITIES = {
   TARGET: "target",
   EVIDENCE: "evidence",
   DISEASE: "disease",
   DRUG: "drug",
 };
+
+export const rowNameProperty = { [ENTITIES.TARGET]: "approvedSymbol", [ENTITIES.DISEASE]: "name" };
 
 export const groupViewColumnsBy = (input, key) =>
   input.reduce((acc, currentValue) => {
@@ -56,8 +75,16 @@ export const getCellId = (cell, entityToGet, displayedTable, tablePrefix = null)
   const colId = cell.column.id;
   const rowId = cell.row.original[entityToGet].id;
   const sectionId =
-    displayedTable === "associations" ? cell.column.id : cell.column.columnDef.sectionId;
+    displayedTable === DISPLAY_MODE.ASSOCIATIONS ? cell.column.id : cell.column.columnDef.sectionId;
   return [rowId, colId, sectionId, tablePrefix];
+};
+
+export const getColumAndSection = (cell, displayedTable) => {
+  if (!cell.column) return [];
+  const colId = cell.column.id;
+  const sectionId =
+    displayedTable === DISPLAY_MODE.ASSOCIATIONS ? cell.column.id : cell.column.columnDef.sectionId;
+  return [colId, sectionId];
 };
 
 export const cellHasValue = score => typeof score === "number";
