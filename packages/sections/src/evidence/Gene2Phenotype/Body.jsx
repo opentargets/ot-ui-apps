@@ -6,9 +6,9 @@ import {
   Tooltip,
   Link,
   PublicationsDrawer,
-  DataTable,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  OtTable,
 } from "ui";
 
 import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
@@ -157,7 +157,7 @@ function Body({ id: { ensgId, efoId }, label: { symbol, name }, entity }) {
       entity={entity}
       renderDescription={() => <Description symbol={symbol} name={name} />}
       renderBody={data => (
-        <DataTable
+        <OtTable
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`${ensgId}-${efoId}-gene2phenotype`}
