@@ -3544,9 +3544,9 @@
     form-data "^4.0.0"
 
 "@types/node@*":
-  version "20.14.11"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.14.11.tgz#09b300423343460455043ddd4d0ded6ac579b74b"
-  integrity sha512-kprQpL8MMeszbz6ojB5/tU8PLN4kesnN8Gjzw349rDlNgsSzg90lAVj3llK99Dh7JON+t9AuscPPFW6mPbTnSA==
+  version "20.14.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.14.12.tgz#129d7c3a822cb49fc7ff661235f19cfefd422b49"
+  integrity sha512-r7wNXakLeSsGT0H1AU863vS2wa5wBOK4bWMjZz2wj+8nBx+m5PeIn0k8AloSLpRuiwdRQZwarZqHE4FNArPuJQ==
   dependencies:
     undici-types "~5.26.4"
 
@@ -13732,7 +13732,7 @@ protvista-feature-adapter@3.8.13:
     protvista-track "^3.8.13"
     uuid "^8.3.1"
 
-protvista-feature-adapter@^3.8.13:
+protvista-feature-adapter@3.8.15, protvista-feature-adapter@^3.8.13, protvista-feature-adapter@^3.8.15:
   version "3.8.15"
   resolved "https://registry.yarnpkg.com/protvista-feature-adapter/-/protvista-feature-adapter-3.8.15.tgz#039bd6075725056ce3bd10cb20a89cd2db99b8a6"
   integrity sha512-JYio7qFoOsm8o9CSn8RsDkrlkkUmibWNC6ZyQSEZ+TFJLDGrwvK69srxGtnA4fYYPLgBaNTsfLWVR1ft9UEpuQ==
@@ -13784,6 +13784,14 @@ protvista-proteomics-adapter@3.8.13:
   integrity sha512-jGIiUP3IbBke2pEjQkTjm5A1RbQVmpjVsFs5lCaE8BzORCY3g4wwNb4hf2siokENsXs2DfkaRHRB6CheedFymw==
   dependencies:
     protvista-feature-adapter "^3.8.13"
+    uuid "^8.3.1"
+
+protvista-proteomics-adapter@3.8.15:
+  version "3.8.15"
+  resolved "https://registry.yarnpkg.com/protvista-proteomics-adapter/-/protvista-proteomics-adapter-3.8.15.tgz#9a332b19cea576b6cd9c8d306f47c90ead59e7d4"
+  integrity sha512-0RVoOgqJr3cN2kE4sMCaAKJrP2Yyk9GoTKYdD9FVz1v9NMWj8LIg/k3n5kfM5UJ17iihPP9abLxYzJ+Ge93Tfw==
+  dependencies:
+    protvista-feature-adapter "^3.8.15"
     uuid "^8.3.1"
 
 protvista-sequence@3.8.13, protvista-sequence@^3.8.13:
@@ -13859,9 +13867,9 @@ protvista-uniprot@2.11.1:
     url-join "^4.0.1"
 
 protvista-uniprot@^2.8.3:
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/protvista-uniprot/-/protvista-uniprot-2.12.0.tgz#0e3f8fe2cd7117609e24fda7ed51710e578a97fa"
-  integrity sha512-sZxKUncip8Blr8N6hvHHRHM7np2M+1jGeUNQAphfaxvoWS9NIj9tWDXt31DU6LwnTUGHKnkQEu47W9Cgkvjjfw==
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/protvista-uniprot/-/protvista-uniprot-2.12.1.tgz#52f17d28f0d821119321a0f4b3dfe60460131359"
+  integrity sha512-tU4BX8zKxLGbtNFfSozm3b9l5IdHhiCCxtZ/Bb/IN+i5cnD8Yo222F3GGmL1qZ/fTmjy2Fv2xip/4D5ZCUacJA==
   dependencies:
     core-js "^3.13.0"
     data-loader "^2.9.1"
@@ -13869,13 +13877,13 @@ protvista-uniprot@^2.8.3:
     lit-element "^2.2.0"
     protvista-coloured-sequence "3.8.13"
     protvista-datatable "3.8.10"
-    protvista-feature-adapter "3.8.13"
+    protvista-feature-adapter "3.8.15"
     protvista-filter "3.8.4"
     protvista-interpro-adapter "3.8.14"
     protvista-interpro-track "3.8.13"
     protvista-manager "3.8.4"
     protvista-navigation "3.8.10"
-    protvista-proteomics-adapter "3.8.13"
+    protvista-proteomics-adapter "3.8.15"
     protvista-sequence "3.8.13"
     protvista-structure "3.8.4"
     protvista-structure-adapter "3.8.13"
@@ -16376,9 +16384,9 @@ terser-webpack-plugin@4.2.3:
     webpack-sources "^1.4.3"
 
 terser-webpack-plugin@^1.4.3:
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-1.4.5.tgz#a217aefaea330e734ffacb6120ec1fa312d6040b"
-  integrity sha512-04Rfe496lN8EYruwi6oPQkG0vo8C+HT49X687FZnpPF0qMAIHONI6HEXYPKDOE8e5HjXTyKfqRd/agHtH0kOtw==
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-1.4.6.tgz#87fcb6593fd1c977cd09e56143ecd31404600755"
+  integrity sha512-2lBVf/VMVIddjSn3GqbT90GvIJ/eYXJkt8cTzU7NbjKqK8fwv18Ftr4PlbF46b/e88743iZFL5Dtr/rC4hjIeA==
   dependencies:
     cacache "^12.0.2"
     find-cache-dir "^2.1.0"
