@@ -216,6 +216,8 @@ function OtTable({
           </tbody>
         </OtTableContainer>
       </Box>
+
+      {/* Table footer component container */}
       <Box
         sx={{
           display: "flex",
@@ -242,13 +244,6 @@ function OtTable({
             ))}
           </NativeSelect>
         </div>
-
-        {/*
-         ************************
-         * TABLE FOOTER ACTIONS *
-         ************************
-         */}
-
         <Box
           sx={{
             display: "flex",
