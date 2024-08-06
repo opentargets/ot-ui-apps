@@ -1,6 +1,7 @@
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
 import { Header as HeaderBase, XRefLinks } from "ui";
 import { VariantPageDataType } from "./types";
+import DisplayVariantId from "./DisplayVariantId";
 
 const xrefsToDisplay = {
   ensembl_variation: {
@@ -61,7 +62,11 @@ function Header({ loading, variantId, variantPageData }: HeaderProps) {
   return (
     <HeaderBase
       loading={loading}
-      title={variantId}
+      title={<DisplayVariantId
+        variantId={variantId}
+        referenceAllele={variantPageData?.referenceAllele}
+        alternateAllele={variantPageData?.alternateAllele}
+      />}
       Icon={faMapPin}
       externalLinks={
         <>
