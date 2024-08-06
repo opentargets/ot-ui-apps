@@ -1,37 +1,22 @@
 import { Fragment } from "react";
 import { flexRender } from "@tanstack/react-table";
 import { ClickAwayListener, Fade, Box, Typography } from "@mui/material";
-import { v1 } from "uuid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilterCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { grey } from "@mui/material/colors";
 
 import useAotfContext from "../../hooks/useAotfContext";
-
-import { getCellId } from "../../utils";
-import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
+import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
+import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
+import { rowNameProperty, TABLE_PREFIX } from "../../utils";
 
 /* HELPERS */
 const getColContainerClassName = ({ id }) => {
   if (id === "1_naiming-cols_name") return "group-naiming-cols";
   return "group-entity-cols";
 };
-
-const getRowActive = ({ getIsExpanded }, isExpandedInTable) => getIsExpanded() && isExpandedInTable;
-
-const getCellClassName = (cell, entityToGet, displayedTable, expanded, tablePrefix) => {
-  if (cell.column.id === "name") return "name-cell";
-  const expandedId = getCellId(cell, entityToGet, displayedTable, tablePrefix).join("-");
-  if (expandedId === expanded.join("-")) return "active data-cell";
-  return "data-cell";
-};
-
-function ExpandableContainer({ rowExpanded, isExpandedInTable, loading, children }) {
-  if (!isExpandedInTable || !rowExpanded || loading) return null;
-  return <Box key={v1()}>{children}</Box>;
-}
 
 function EmptyMessage() {
   return (
@@ -70,27 +55,26 @@ function EmptyMessage() {
   );
 }
 
-function TableBody({ core, cols }) {
-  const { id, entity, entityToGet, displayedTable, resetExpandler, expanded } = useAotfContext();
+function TableBody({ core, cols, noInteractors }) {
+  const { id, entity, entityToGet, displayedTable } = useAotfContext();
+
+  const focusState = useAssociationsFocus();
 
   const { rows } = core.getRowModel();
-  const { prefix, loading } = core.getState();
+  const { prefix, parentTable, parentRow } = core.getState();
 
-  if (prefix === "pinned" && rows.length < 1) return null;
+  if (prefix === TABLE_PREFIX.PINNING && rows.length < 1) return <></>;
 
-  if (rows.length < 1) return <EmptyMessage />;
+  if (prefix === TABLE_PREFIX.INTERACTORS) if (rows.length < 1) return <EmptyMessage />;
 
-  const flatCols = ["name", ...cols.map(c => c.id)];
-
-  const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
+  const nameProperty = rowNameProperty[entity];
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
-  const isExpandedInTable = expanded[3] === prefix && flatCols.includes(expanded[1]);
 
   const handleClickAway = e => {
     if (e.srcElement.className === "CodeMirror-hint CodeMirror-hint-active") {
       return;
     }
-    resetExpandler();
+    // resetExpandler();
   };
 
   return (
@@ -100,8 +84,9 @@ function TableBody({ core, cols }) {
           {rows.map(row => (
             <Fragment key={row.id}>
               <RowContainer
-                isSubRow={row.depth > 0}
-                rowExpanded={getRowActive(row, isExpandedInTable)}
+                rowExpanded={
+                  focusState.filter(e => e.row === row.id && e.table === prefix).length > 0
+                }
               >
                 {highLevelHeaders.map(columnGroup => (
                   <GridContainer
@@ -112,16 +97,7 @@ function TableBody({ core, cols }) {
                     {columnGroup.subHeaders.map(column => {
                       const cell = row.getVisibleCells().find(el => el.column.id === column.id);
                       return (
-                        <div
-                          key={cell.id}
-                          className={getCellClassName(
-                            cell,
-                            entityToGet,
-                            displayedTable,
-                            expanded,
-                            prefix
-                          )}
-                        >
+                        <div key={cell.id}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </div>
                       );
@@ -130,30 +106,53 @@ function TableBody({ core, cols }) {
                 ))}
               </RowContainer>
 
-              <ExpandableContainer
-                rowExpanded={row.getIsExpanded()}
-                isExpandedInTable={isExpandedInTable}
-                loading={loading}
-              >
-                <ClickAwayListener onClickAway={handleClickAway}>
-                  <section>
-                    <SectionRendererWrapper>
+              <Box sx={{ position: "relative", overflow: "hidden" }}>
+                <SectionRendererWrapper
+                  section={
+                    // TODO: Review active section definition
+                    prefix !== TABLE_PREFIX.INTERACTORS
+                      ? focusState.find(
+                          e => e.row === row.id && e.table === prefix && e.section !== null
+                        )?.section
+                      : focusState.find(
+                          e =>
+                            e.row === parentRow &&
+                            e.table === parentTable &&
+                            e.interactorsRow === row.id &&
+                            e.interactorsSection !== null
+                        )?.interactorsSection
+                  }
+                >
+                  <ClickAwayListener onClickAway={e => handleClickAway(e)}>
+                    <section>
                       <SectionRender
                         id={id}
                         entity={entity}
-                        section={expanded[2]}
-                        expanded={expanded}
-                        rowId={row.original[entityToGet].id}
+                        table={prefix}
                         row={row}
                         entityToGet={entityToGet}
-                        rowNameEntity={rowNameEntity}
+                        nameProperty={nameProperty}
                         displayedTable={displayedTable}
                         cols={cols}
+                        section={
+                          // TODO: Review active section definition
+                          prefix !== TABLE_PREFIX.INTERACTORS
+                            ? focusState.find(
+                                e => e.row === row.id && e.table === prefix && e.section !== null
+                              )?.section
+                            : focusState.find(
+                                e =>
+                                  e.row === parentRow &&
+                                  e.table === parentTable &&
+                                  e.interactorsRow === row.id &&
+                                  e.interactorsSection !== null
+                              )?.interactorsSection
+                        }
                       />
-                    </SectionRendererWrapper>
-                  </section>
-                </ClickAwayListener>
-              </ExpandableContainer>
+                    </section>
+                  </ClickAwayListener>
+                </SectionRendererWrapper>
+              </Box>
             </Fragment>
           ))}
         </RowsContainer>
