@@ -77,6 +77,6 @@ export function getSuggestedSearch() {
   const targets = pickN(suggestionArray.targets, 2);
   const diseases = pickN(suggestionArray.diseases, 2);
   const drugs = pickN(suggestionArray.drugs, 2);
-  const variants = pickN(suggestionArray.variants, 3)
+  const variants = pickN(suggestionArray.variants, 3);
   return [...targets, ...diseases, ...drugs, ...variants];
 }
