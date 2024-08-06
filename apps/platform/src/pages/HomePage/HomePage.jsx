@@ -111,7 +111,7 @@ function HomePage({ suggestions }) {
         <NavBar name="platform" homepage items={mainMenuItems} placement="bottom-end" />
         <HomeBox>
           <GlobalSearch isHomePage />
-          {/* Search examples */}
+
           <Grid className={classes.links} container justifyContent="space-around">
             <Link to={`/target/${suggestions[0].id}/associations`}>
               <Typography variant="body2">{suggestions[0].name}</Typography>
@@ -140,6 +140,23 @@ function HomePage({ suggestions }) {
               </Link>
             </Hidden>
           </Grid>
+          
+          <Grid className={classes.links} container justifyContent="space-around">
+            <Link to={`/variant/${suggestions[6].id}`}>
+              <Typography variant="body2">{suggestions[6].name}</Typography>
+            </Link>
+
+            <Hidden smDown>
+              <Link to={`/variant/${suggestions[7].id}`}>
+                <Typography variant="body2">{suggestions[7].name}</Typography>
+              </Link>
+            </Hidden>
+            
+            <Link to={`/variant/${suggestions[8].id}`}>
+              <Typography variant="body2">{suggestions[8].name}</Typography>
+            </Link>
+          </Grid>
+
           <Version />
           <PrivateWrapper>
             <div className={classes.dataPolicy}>
