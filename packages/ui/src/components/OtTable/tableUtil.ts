@@ -96,17 +96,16 @@ function mapToTanstackColumnObject(
     header: originalTableObject.label,
     enableSorting: originalTableObject.sortable || false,
     enableColumnFilter: originalTableObject.enableColumnFilter || false,
+    sortingFn: (rowA, rowB, column) => {
+      originalTableObject.comparator(rowA.original, rowB.original);
+    },
     accessorFn: (row: Record<string, unknown>) => {
-      /**************************************************************
-       * ASSIGN EITHER CUSTOM FILTERVALUE OR ID
-       **************************************************************/
+      //  ASSIGN EITHER CUSTOM FILTERVALUE OR ID
       if (originalTableObject.filterValue) return originalTableObject.filterValue(row);
       return getValueFromChainedId(originalTableObject.id, row);
     },
     cell: ({ row }: { row: Record<string, unknown> }) => {
-      /**************************************************************
-       * ASSIGN CELL EITHER CUSTOM RENDER CELL OR ID*
-       **************************************************************/
+      //  ASSIGN CELL EITHER CUSTOM RENDER CELL OR ID
       if (originalTableObject.renderCell) return originalTableObject.renderCell(row.original);
       return getValueFromChainedId(originalTableObject.id, row.original);
     },
