@@ -97,7 +97,7 @@ function mapToTanstackColumnObject(
     enableSorting: originalTableObject.sortable || false,
     enableColumnFilter: originalTableObject.enableColumnFilter || false,
     sortingFn: (rowA, rowB, column) => {
-      originalTableObject.comparator(rowA.original, rowB.original);
+      return originalTableObject.comparator(rowA.original, rowB.original);
     },
     accessorFn: (row: Record<string, unknown>) => {
       //  ASSIGN EITHER CUSTOM FILTERVALUE OR ID
