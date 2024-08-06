@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, LabelChip, DataTable } from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, LabelChip, OtTable } from "ui";
 
 import { definition } from ".";
 
@@ -77,6 +77,7 @@ function getColumns(label) {
       label: "Confidence",
     },
     {
+      id: "literature",
       label: "Literature",
       renderCell: ({ literature }) => {
         const literatureList =
@@ -123,7 +124,7 @@ export function Body({ id, label, entity }) {
       renderBody={({ disease }) => {
         const { rows } = disease.uniprotVariantsSummary;
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             dataDownloader
