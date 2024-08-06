@@ -92,6 +92,7 @@ const getColumns = label => [
     renderCell: ({ confidence }) => confidence,
   },
   {
+    id: "literature",
     label: "Literature",
     renderCell: ({ literature }) => {
       const literatureList =

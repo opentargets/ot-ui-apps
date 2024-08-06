@@ -57,6 +57,7 @@ const getColumns = label => [
   {
     id: "mutatedSamples",
     propertyPath: "mutatedSamples.numberSamplesWithMutationType",
+    sortable: "true",
     label: "Mutated / Total samples",
     renderCell: ({ mutatedSamples }) => {
       if (!mutatedSamples) return naLabel;
@@ -166,7 +167,7 @@ function Body({ id, label, entity }) {
             <OtTable
               columns={columns}
               dataDownloader
-              order="desc"
+              order="asc"
               rows={rows}
               rowsPerPageOptions={defaultRowsPerPageOptions}
               showGlobalFilter

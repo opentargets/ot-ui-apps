@@ -20,7 +20,7 @@ import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../..
 
 const getColumns = label => [
   {
-    id: "disease.name",
+    id: "disease",
     label: "Disease / phenotype",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
@@ -44,7 +44,7 @@ const getColumns = label => [
     width: "18%",
   },
   {
-    id: "pathwayName",
+    id: "pathways",
     label: "Pathway",
     renderCell: ({ pathways }) => {
       if (!pathways || pathways.length === 0) {
@@ -95,10 +95,7 @@ const getColumns = label => [
     width: "12%",
   },
   {
-    filterValue: ({ variantAminoacidDescriptions }) =>
-      variantAminoacidDescriptions
-        ?.map(variantAminoacidDescription => variantAminoacidDescription)
-        .join(),
+    id: "variantAminoacidDescriptions",
     label: "Amino acid variation",
     renderCell: ({ variantAminoacidDescriptions }) => {
       if (variantAminoacidDescriptions?.length === 1) {
