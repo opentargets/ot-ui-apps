@@ -1,9 +1,11 @@
-import { DefaultSortProp, OtTableCurrentPagePosition } from "./table.types";
+import { DefaultSortProp } from "./table.types";
 
 /*********************************************************************
  * FN TO CONVERT CLASSIC MUI TABLE COLUMNS TO TANSTACK TABLE COLUMNS *
  *********************************************************************/
-export function mapTableColumnToTanstackColumns(allColumns: any[]): any[] {
+export function mapTableColumnToTanstackColumns(
+  allColumns: Record<string, unknown>[]
+): Record<string, unknown>[] {
   return allColumns.map(column => mapToTanstackColumnObject(column));
 }
 
@@ -91,25 +93,26 @@ export function getCurrentPagePosition(
 function mapToTanstackColumnObject(
   originalTableObject: Record<string, unknown>
 ): Record<string, unknown> {
-  const newTanstackObject = {
+  const newTanstackObject: Record<string, unknown> = {
     id: originalTableObject.id,
     header: originalTableObject.label,
     enableSorting: originalTableObject.sortable || false,
     enableColumnFilter: originalTableObject.enableColumnFilter || false,
-    sortingFn: (rowA, rowB, column) => {
-      return originalTableObject.comparator(rowA.original, rowB.original);
-    },
+    filterFn: "equalsString",
+    ...(originalTableObject.comparator && {
+      sortingFn: (rowA, rowB, column) =>
+        originalTableObject.comparator(rowA.original, rowB.original),
+    }),
+    //  ASSIGN EITHER CUSTOM FILTERVALUE OR ID
     accessorFn: (row: Record<string, unknown>) => {
-      //  ASSIGN EITHER CUSTOM FILTERVALUE OR ID
       if (originalTableObject.filterValue) return originalTableObject.filterValue(row);
       return getValueFromChainedId(originalTableObject.id, row);
     },
+    //  ASSIGN CELL EITHER CUSTOM RENDER CELL OR ID
     cell: ({ row }: { row: Record<string, unknown> }) => {
-      //  ASSIGN CELL EITHER CUSTOM RENDER CELL OR ID
       if (originalTableObject.renderCell) return originalTableObject.renderCell(row.original);
       return getValueFromChainedId(originalTableObject.id, row.original);
     },
-    filterFn: "equalsString",
     ...originalTableObject,
   };
   return { ...newTanstackObject };
