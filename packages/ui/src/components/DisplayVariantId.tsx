@@ -70,12 +70,14 @@ function DisplayVariantId({
     return (
       <>
         <Box
+          className="TEST"
+          component="span"
           onClick={handleClick}
           title="Show variant ID"
           sx={{
             cursor: "pointer",
-            padding: "0 2px",
-            borderRadius: "8px",
+            padding: "0 0.06em",
+            borderRadius: "0.3em",
             "&:hover": {
               background: highlightBackground,
             }
@@ -155,9 +157,9 @@ function HighlightBox({ children }) {
   return (
     <Box
       display="inline-block"
-      borderRadius={5}
-      mx={0.5}
-      px={0.5}
+      borderRadius="0.3em"
+      mx="0.1em"
+      px="0.15em"
       bgcolor={highlightBackground}
     >
       {children}

@@ -1,7 +1,6 @@
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
-import { Header as HeaderBase, XRefLinks } from "ui";
+import { Header as HeaderBase, XRefLinks, DisplayVariantId } from "ui";
 import { VariantPageDataType } from "./types";
-import DisplayVariantId from "./DisplayVariantId";
 
 const xrefsToDisplay = {
   ensembl_variation: {
