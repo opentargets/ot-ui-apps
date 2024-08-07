@@ -4,7 +4,7 @@ import { addSearchToLocalStorage } from "../components/GlobalSearch/utils/search
 function useListOption() {
   const history = useHistory();
 
-  const openListItem = option => {
+  return option => {
     if (!option) return;
     const newOption = { ...option };
     newOption.type = "recent";
@@ -13,15 +13,19 @@ function useListOption() {
     if (newOption.entity === "search") {
       history.push(`/search?q=${newOption.name}&page=1`);
     } else if (newOption.entity === "study") {
-      history.push(`/${newOption.entity}/${newOption.studyId}`);
+      if (newOption.studyId) {
+        history.push(`/${newOption.entity}/${newOption.studyId}`);
+      } else {
+        history.push(`/${newOption.entity}/${newOption.id}`);
+      }
+    } else if (["gene", "variant"].includes(newOption.entity)) {
+      history.push(`/${newOption.entity}/${newOption.id}`);
     } else {
       history.push(
         `/${newOption.entity}/${newOption.id}${newOption.entity !== "drug" ? "/associations" : ""}`
       );
     }
   };
-
-  return [openListItem];
 }
 
 export default useListOption;
