@@ -70,7 +70,6 @@ function DisplayVariantId({
     return (
       <>
         <Box
-          className="TEST"
           component="span"
           onClick={handleClick}
           title="Show variant ID"
@@ -156,7 +155,7 @@ function DisplayVariantId({
 function HighlightBox({ children }) {
   return (
     <Box
-      display="inline-block"
+      component="span"
       borderRadius="0.3em"
       mx="0.1em"
       px="0.15em"

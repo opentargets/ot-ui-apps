@@ -79,6 +79,7 @@ function SectionItem({
                         [classes.descriptionError]: error,
                       })}
                       variant="body2"
+                      component="div"
                     >
                       {renderDescription(data)}
                     </Typography>
