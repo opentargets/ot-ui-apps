@@ -110,18 +110,37 @@ const focusElementGenerator = (
 function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
   switch (action.type) {
     case FocusActionType.SET_FOCUS_SECTION: {
-      const { tableActive, rowActive, sectionActive } = getFocusElementState(focusState, {
-        table: action.focus.table,
-        row: action.focus.row,
-        section: action.focus.section,
-      });
+      const { tableActive, rowActive, sectionActive, interactorsActive } = getFocusElementState(
+        focusState,
+        {
+          table: action.focus.table,
+          row: action.focus.row,
+          section: action.focus.section,
+        }
+      );
+      // When there are no active elements in table
       if (!tableActive) {
+        console.log("tee");
         return [
           ...focusState,
           focusElementGenerator(action.focus.table, action.focus.row, action.focus.section, null),
         ];
       }
+
+      // When section active in the same row
+      if (rowActive && !sectionActive) {
+        console.log("active in same row");
+        return focusState.map((focusElement: FocusElement) => {
+          if (focusElement.table === action.focus.table && focusElement.row === action.focus.row) {
+            return { ...focusElement, section: action.focus.section };
+          } else {
+            return focusElement;
+          }
+        });
+      }
+
       if (!rowActive && !sectionActive) {
+        console.log("nnvo");
         const focusElement = focusState.find(
           e => e.table === action.focus.table && e.section !== null
         );
@@ -145,17 +164,9 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
         });
       }
 
-      if (rowActive && !sectionActive) {
-        return focusState.map((focusElement: FocusElement) => {
-          if (focusElement.table === action.focus.table && focusElement.row === action.focus.row) {
-            return { ...focusElement, section: action.focus.section };
-          } else {
-            return focusElement;
-          }
-        });
-      }
-
+      // When click on active dot
       if (tableActive && rowActive && sectionActive) {
+        console.log("last");
         const focusElement = focusState.find(
           e => e.table === action.focus.table && e.row === action.focus.row
         );
