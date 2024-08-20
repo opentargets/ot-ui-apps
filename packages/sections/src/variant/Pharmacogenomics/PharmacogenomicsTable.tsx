@@ -1,15 +1,15 @@
+import { Fragment } from 'react';
 import classNames from "classnames";
 import { makeStyles } from "@mui/styles";
-import { Link, DataTable, Tooltip, LabelChip, PublicationsDrawer } from "ui";
+import { Link, DataTable, Tooltip, PublicationsDrawer } from "ui";
 
 import { epmcUrl } from "../../utils/urls";
 import {
   defaultRowsPerPageOptions,
   naLabel,
   PHARM_GKB_COLOR,
-  variantConsequenceSource,
 } from "../../constants";
-import { identifiersOrgLink, sentenceCase } from "../../utils/global";
+// import { identifiersOrgLink, sentenceCase } from "../../utils/global";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const getLevelElementClassName = level => {
+const getLevelElementClassName = (level: string) => {
   switch (level) {
     case "1":
       return "green";
@@ -60,7 +60,7 @@ const getLevelElementClassName = level => {
   }
 };
 
-function OverviewTab({ pharmacogenomics, query, variables }) {
+function PharamacogenomicsTable({ pharmacogenomics, query, variables }) {
   const classes = useStyles();
   const columns = [
     {
@@ -83,12 +83,33 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
     {
       id: "drug",
       label: "Drug(s)",
-      renderCell: ({ drugId, drugFromSource }) => {
-        let drugElement = drugFromSource || drugId || naLabel;
-        if (drugId) drugElement = <Link to={`/drug/${drugId}`}>{drugElement}</Link>;
-        return drugElement;
+      renderCell: ({ drugs }) => {
+        const drugsInfo = drugs.filter(d => d.drugId || d.drugFromSource);
+        if (!drugsInfo.length) return naLabel;
+        return (
+          <>
+            {
+              drugsInfo.map(({ drugId, drugFromSource }, i) => {
+                const drugText = drugFromSource
+                  ? drugFromSource.toUpperCase()
+                  : drugId;
+                return (
+                  <Fragment key={drugText}>
+                    {i > 0 && ", "}
+                    {drugId
+                      ? <Link key={drugText} to={`/drug/${drugId}`}>{drugText}</Link>
+                      : <Fragment key={drugText}>{drugText}</Fragment>
+                    }
+                  </Fragment>
+                );
+              })
+            }
+          </>
+        )
       },
-      filterValue: ({ drugId, drugFromSource }) => `${drugFromSource} ${drugId}`,
+      filterValue: ({ drugs }) => (
+        drugs.map(d => `${d.drugFromSource ?? ""} ${d.drugId ?? ""}`).join(" ")
+      ),
     },    
     {
       id: "drugResponse",
@@ -107,7 +128,7 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
           );
         return phenotypeTextElement;
       },
-      filterValue: ({ phenotypeText }) => `${phenotypeText}`,
+      filterValue: ({ phenotypeText }) => phenotypeText,
     },
     {
       id: "drugResponseCategory",
@@ -168,7 +189,6 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
         const literatureList =
           literature?.reduce((acc, id) => {
             if (id === "NA") return acc;
-
             return [
               ...acc,
               {
@@ -178,7 +198,6 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
               },
             ];
           }, []) || [];
-
         return <PublicationsDrawer entries={literatureList} />;
       },
     },
@@ -197,4 +216,4 @@ function OverviewTab({ pharmacogenomics, query, variables }) {
   );
 }
 
-export default OverviewTab;
+export default PharamacogenomicsTable;

@@ -1,10 +1,10 @@
-// import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { SectionItem } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import PharmacogenomicsTable from "./PharmacogenomicsTable";
 
-// import PHARMACOGENOMICS_QUERY from "./Pharmacogenomics.gql";
+import PHARMACOGENOMICS_QUERY from "./PharmacogenomicsQuery.gql";
 
 type BodyProps = {
   id: string,
@@ -13,25 +13,29 @@ type BodyProps = {
 };
 
 function Body({ id, label, entity }: BodyProps) {
-
-  // !!!! LOAD LOCAL DATA FOR NOW
-  // const variables = { ensemblId };
-  // const request = useQuery(PHARMACOGENOMICS_QUERY, {
-  //   variables,
-  // });
-  const request = mockQuery();
+  const variables = { variantId: id };
   
+  const request = useQuery(PHARMACOGENOMICS_QUERY, {
+    variables,
+  });
+
   return (
     <SectionItem
       definition={definition}
       entity={entity}
       request={request}
-      renderDescription={() => <Description variantId={id} />}
+      renderDescription={({ variant }) => (
+        <Description
+          variantId={variant.variantId}
+          referenceAllele={variant.referenceAllele}
+          alternateAllele={variant.alternateAllele}
+        />
+      )}
       renderBody={({ variant }) => (
         <PharmacogenomicsTable
           pharmacogenomics={variant.pharmacogenomics}
-          // query={PHARMACOGENOMICS_QUERY.loc.source.body}
-          // variables={variables}
+          query={PHARMACOGENOMICS_QUERY.loc.source.body}
+          variables={variables}
         />
       )}
     />
@@ -40,6 +44,7 @@ function Body({ id, label, entity }: BodyProps) {
 
 export default Body;
 
+/*
 // !! HARDCODE DATA FOR NOW !!
 function mockQuery() {
   return {
@@ -4821,3 +4826,4 @@ function mockQuery() {
 }`),
   };
 }
+  */
