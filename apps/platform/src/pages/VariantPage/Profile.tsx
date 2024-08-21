@@ -74,13 +74,13 @@ function Profile({ varId }: ProfileProps) {
       <ProfileHeader />
 
       <SummaryContainer>
+        <PharmacogenomicsSummary /> 
         <InSilicoPredictorsSummary />
         <VariantEffectPredictorSummary />
         {/* <EVASummary />
         <UniProtVariantsSummary />
         <QTLCredibleSetsSummary />
         <GWASCredibleSetsSummary /> */}
-        <PharmacogenomicsSummary /> 
       </SummaryContainer>
 
       <SectionContainer>

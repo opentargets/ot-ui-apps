@@ -2,14 +2,12 @@ import { Fragment } from 'react';
 import classNames from "classnames";
 import { makeStyles } from "@mui/styles";
 import { Link, DataTable, Tooltip, PublicationsDrawer } from "ui";
-
 import { epmcUrl } from "../../utils/urls";
 import {
   defaultRowsPerPageOptions,
   naLabel,
   PHARM_GKB_COLOR,
 } from "../../constants";
-// import { identifiersOrgLink, sentenceCase } from "../../utils/global";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
@@ -97,8 +95,8 @@ function PharamacogenomicsTable({ pharmacogenomics, query, variables }) {
                   <Fragment key={drugText}>
                     {i > 0 && ", "}
                     {drugId
-                      ? <Link key={drugText} to={`/drug/${drugId}`}>{drugText}</Link>
-                      : <Fragment key={drugText}>{drugText}</Fragment>
+                      ? <Link to={`/drug/${drugId}`}>{drugText}</Link>
+                      : drugText
                     }
                   </Fragment>
                 );

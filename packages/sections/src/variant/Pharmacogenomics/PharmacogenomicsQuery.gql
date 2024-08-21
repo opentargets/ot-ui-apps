@@ -15,7 +15,6 @@ query PharmacogenomicsQuery($variantId: String!) {
       phenotypeText
       pgxCategory
       evidenceLevel
-      datasourceId
       studyId
       literature
     }
