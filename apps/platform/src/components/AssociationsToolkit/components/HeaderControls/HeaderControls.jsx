@@ -10,6 +10,8 @@ import Required from "./RequiredControl";
 import { GridContainer } from "../layout";
 
 import useAotfContext from "../../hooks/useAotfContext";
+import { useReducer } from "react";
+import { aotfReducer } from "../../context/aotfReducer";
 
 const CloseContainer = styled("div")({
   position: "absolute",
@@ -26,14 +28,42 @@ const WeightsControllsContainer = styled("div")({
   padding: "20px 0 15px",
 });
 
+function getSliderValue(values, id) {
+  const value = values.find(val => val.id === id).weight;
+  return value;
+}
+
+function getRequiredValue(values, id) {
+  const value = values.find(val => val.id === id).required;
+  return value;
+}
+
 function HeaderControls({ cols = [] }) {
-  const { activeHeadersControlls, setActiveHeadersControlls, displayedTable } = useAotfContext();
+  const {
+    activeHeadersControlls,
+    setActiveHeadersControlls,
+    displayedTable,
+    updateDataSourceControls,
+    dataSourcesWeights,
+  } = useAotfContext();
+
+  const [state] = useReducer(aotfReducer);
 
   if (displayedTable === "prioritisations") return null;
 
   const handleClose = () => {
     setActiveHeadersControlls(false);
   };
+
+  function handleChangeSliderCommitted(newValue, id) {
+    const currentRequiredValue = getRequiredValue(dataSourcesWeights, id);
+    updateDataSourceControls(id, newValue, currentRequiredValue);
+  }
+
+  function handleChangeRequire(newValue, id) {
+    const currentSliderValue = getSliderValue(dataSourcesWeights, id);
+    updateDataSourceControls(id, currentSliderValue, newValue);
+  }
 
   return (
     <Collapse in={activeHeadersControlls}>
@@ -60,12 +90,13 @@ function HeaderControls({ cols = [] }) {
             {cols.map(({ id }) => (
               <div key={id} className="colum-control">
                 <Grid className="control-container" key={id}>
-                  <Slider id={id} />
+                  <Slider id={id} handleChangeSliderCommitted={handleChangeSliderCommitted} />
                 </Grid>
                 <div className="required-container">
                   <Required
                     id={id}
                     aggregationId={(dataSources.find(el => el.id === id).aggregationId, id)}
+                    handleChangeRequire={handleChangeRequire}
                   />
                 </div>
               </div>

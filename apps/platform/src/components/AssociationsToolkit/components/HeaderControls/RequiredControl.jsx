@@ -8,33 +8,30 @@ const OTCheckbox = styled(Checkbox)`
   padding: 0;
 `;
 
-function RequiredControl({ id, aggregationId }) {
-  const { dataSourcesRequired, setDataSourcesRequired, loading, resetToInitialPagination } =
-    useAotfContext();
+function RequiredControl({ id, aggregationId, handleChangeRequire }) {
+  // use new state.dataSourcesWeights
+  const { dataSourcesRequired } = useAotfContext();
 
-  const [displayValue, setDisplayValue] = useState(getControlChecked(dataSourcesRequired, id));
-
-  useEffect(() => {
-    if (loading) return;
-    const newValue = getControlChecked(dataSourcesRequired, id);
-    if (newValue !== displayValue) setDisplayValue(newValue);
-  }, [dataSourcesRequired]);
+  const [displayValue, setDisplayValue] = useState();
 
   const handleChange = (_, newValue) => {
-    if (newValue) {
-      const payload = checkBoxPayload(id, aggregationId);
-      setDataSourcesRequired([...dataSourcesRequired, payload]);
-      setDisplayValue(newValue);
-    } else {
-      const indexToRemove = dataSourcesRequired.findIndex(element => element.id === id);
-      const newRequiredElement = [
-        ...dataSourcesRequired.slice(0, indexToRemove),
-        ...dataSourcesRequired.slice(indexToRemove + 1),
-      ];
-      setDataSourcesRequired(newRequiredElement);
-      setDisplayValue(newValue);
-    }
-    resetToInitialPagination();
+    console.log("handleChange -> newValue", newValue);
+    setDisplayValue(newValue);
+    handleChangeRequire(newValue, id);
+    // if (newValue) {
+    //   const payload = checkBoxPayload(col.id, aggregationId);
+    //   setDataSourcesRequired([...dataSourcesRequired, payload]);
+    //   setDisplayValue(newValue);
+    // } else {
+    //   const indexToRemove = dataSourcesRequired.findIndex(element => element.col.id === col.id);
+    //   const newRequiredElement = [
+    //     ...dataSourcesRequired.slice(0, indexToRemove),
+    //     ...dataSourcesRequired.slice(indexToRemove + 1),
+    //   ];
+    //   setDataSourcesRequired(newRequiredElement);
+    //   setDisplayValue(newValue);
+    // }
+    // resetToInitialPagination();
   };
 
   return <OTCheckbox checked={displayValue} color="primary" onChange={handleChange} name={id} />;

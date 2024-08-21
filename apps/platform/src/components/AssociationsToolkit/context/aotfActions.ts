@@ -19,3 +19,10 @@ export function setInteractors(id: RowInteractorsKey, source: string): Action {
     payload: { id, source },
   };
 }
+
+export function setDataSourceControl(id: string, weight: number, required: boolean): Action {
+  return {
+    type: ActionType.DATA_SOURCE_CONTROL,
+    payload: { id, weight, required, propagate: true },
+  };
+}

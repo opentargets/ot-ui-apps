@@ -89,9 +89,10 @@ export const getColumAndSection = (cell, displayedTable) => {
 
 export const cellHasValue = score => typeof score === "number";
 
-export const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
+export const defaulDatasourcesWeigths = dataSources.map(({ id, weight, required }) => ({
   id,
   weight,
+  required,
   propagate: true,
 }));
 

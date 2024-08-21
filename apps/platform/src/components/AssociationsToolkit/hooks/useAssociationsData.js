@@ -49,7 +49,11 @@ function useAssociationsData({
           filter,
           sortBy,
           enableIndirect,
-          datasources,
+          datasources: datasources.map(el => ({
+            id: el.id,
+            weight: el.weight,
+            propagate: el.propagate,
+          })),
           rowsFilter,
           aggregationFilters: aggregationFilters.map(el => ({
             name: el.name,

@@ -31,40 +31,17 @@ const getSliderValue = (values, id) => {
   return value;
 };
 
-function SliderControll({ id }) {
-  const { dataSourcesWeights, setDataSourcesWeights, resetToInitialPagination } = useAotfContext();
+function SliderControll({ id, handleChangeSliderCommitted }) {
+  // use new state.dataSourcesWeights
+  const { dataSourcesWeights } = useAotfContext();
 
   const defaultValue = getWightSourceDefault(id);
   const initialValue = getSliderValue(dataSourcesWeights, id);
 
-  const [value, setValue] = useState(initialValue);
   const [displayValue, setDisplayValue] = useState(initialValue);
-
-  useEffect(() => {
-    if (initialValue === value) return;
-    const newDataValue = sliderPayload(id, value);
-    const newDataSources = dataSourcesWeights.map(src => {
-      if (src.id === id) {
-        return newDataValue;
-      }
-      return src;
-    });
-    setDataSourcesWeights(newDataSources);
-    resetToInitialPagination();
-  }, [value]);
-
-  useEffect(() => {
-    const newValue = getSliderValue(dataSourcesWeights, id);
-    if (newValue === value) return;
-    setDisplayValue(newValue);
-  }, [dataSourcesWeights]);
 
   const handleChange = (_, newValue) => {
     setDisplayValue(newValue);
-  };
-
-  const handleChangeCommitted = (_, newValue) => {
-    setValue(newValue);
   };
 
   return (
@@ -77,7 +54,7 @@ function SliderControll({ id }) {
       max={1.0}
       step={0.1}
       onChange={handleChange}
-      onChangeCommitted={handleChangeCommitted}
+      onChangeCommitted={(_, newValue) => handleChangeSliderCommitted(newValue, id)}
       marks={[{ value: defaultValue }]}
       valueLabelDisplay="auto"
     />

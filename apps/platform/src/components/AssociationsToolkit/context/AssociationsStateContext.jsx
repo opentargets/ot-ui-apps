@@ -21,7 +21,7 @@ import {
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
-import { onPaginationChange, resetPagination } from "./aotfActions";
+import { onPaginationChange, resetPagination, setDataSourceControl } from "./aotfActions";
 
 const AssociationsStateContext = createContext();
 
@@ -80,7 +80,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       filter: searhFilter,
       sortBy: sorting[0].id,
       enableIndirect,
-      datasources: dataSourcesWeights,
+      datasources: state.dataSourceControls,
       entity,
       aggregationFilters: dataSourcesRequired,
       facetFilters: facetFilterIds,
@@ -100,7 +100,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       entity,
       size: pinnedEntries.length,
       sortBy: sorting[0].id,
-      datasources: dataSourcesWeights,
+      datasources: state.dataSourceControls,
       aggregationFilters: dataSourcesRequired,
       rowsFilter: pinnedEntries.toSorted(),
       facetFilters: facetFilterIds,
@@ -195,6 +195,10 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     dispatch(resetPagination());
   };
 
+  const updateDataSourceControls = (id, weight, required) => {
+    dispatch(setDataSourceControl(id, weight, required));
+  };
+
   const contextVariables = useMemo(
     () => ({
       dispatch,
@@ -210,7 +214,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       activeHeadersControlls,
       enableIndirect,
       error,
-      dataSourcesWeights,
+      dataSourcesWeights: state.dataSourceControls,
       dataSourcesRequired,
       displayedTable,
       pinnedData,
@@ -235,6 +239,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       setActiveHeadersControlls,
       handleAggregationClick,
       setFacetFilterIds,
+      updateDataSourceControls,
       state,
     }),
     [

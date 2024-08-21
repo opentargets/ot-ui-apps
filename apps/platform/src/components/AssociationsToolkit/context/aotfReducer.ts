@@ -1,5 +1,9 @@
 import { DocumentNode } from "graphql";
-import { DEFAULT_TABLE_PAGINATION_STATE, DEFAULT_TABLE_SORTING_STATE } from "../utils";
+import {
+  defaulDatasourcesWeigths,
+  DEFAULT_TABLE_PAGINATION_STATE,
+  DEFAULT_TABLE_SORTING_STATE,
+} from "../utils";
 import { Action, ActionType, ENTITY, State, TABLE_VIEW } from "../types";
 
 /*****************
@@ -23,6 +27,7 @@ export const initialState: State = {
   bodyData: [],
   pinnedData: [],
   interactors: new Map(),
+  dataSourceControls: defaulDatasourcesWeigths,
 };
 
 type InitialStateParams = {
@@ -84,6 +89,17 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       return {
         ...state,
         interactors: currentInteractors,
+      };
+    }
+    case ActionType.DATA_SOURCE_CONTROL: {
+      const colUpdatedControls = { ...action.payload };
+      const dataSourceControls = state.dataSourceControls.map(col => {
+        if (col.id === colUpdatedControls.id) return colUpdatedControls;
+        return col;
+      });
+      return {
+        ...state,
+        dataSourceControls,
       };
     }
     default: {
