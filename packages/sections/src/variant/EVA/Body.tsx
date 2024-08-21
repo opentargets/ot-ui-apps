@@ -17,6 +17,7 @@ import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { sentenceCase } from "../../utils/global";
+import EVA_QUERY from "./EVAQuery.gql";
 
 // !! NEEDED??
 const onLinkClick = e => {
@@ -173,11 +174,6 @@ function getColumns(label: string) {
   ];
 }
 
-// !!!! LOAD LOCAL DATA FOR NOW
-// const [metadata, setMetadata] =
-//   useState<MetadataType | "waiting" | undefined>("waiting");
-const request = mockQuery();
-
 type BodyProps = {
   id: string,
   label: string,
@@ -185,6 +181,13 @@ type BodyProps = {
 };
 
 function Body({ id, label, entity }: BodyProps) {
+  const variables = {
+    variantId: id,
+  };
+
+  const request = useQuery(EVA_QUERY, {
+    variables,
+  });
   
   const columns = getColumns(label);
   const rows = request.data.variant.eva;
@@ -194,7 +197,13 @@ function Body({ id, label, entity }: BodyProps) {
       definition={definition}
       entity={entity}
       request={request}
-      renderDescription={() => <Description variantId={id} />}
+      renderDescription={({ variant }) => (
+        <Description
+          variantId={variant.variantId}
+          referenceAllele={variant.referenceAllele}
+          alternateAllele={variant.alternateAllele}
+        />
+      )}
       renderBody={() => (
         <DataTable
           // !! TO DO: add dataDownloader
