@@ -26,3 +26,9 @@ export function setDataSourceControl(id: string, weight: number, required: boole
     payload: { id, weight, required, propagate: true },
   };
 }
+
+export function resetDataSourceControl(): Action {
+  return {
+    type: ActionType.RESET_DATA_SOURCE_CONTROL,
+  };
+}

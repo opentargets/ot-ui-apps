@@ -7,7 +7,6 @@ import {
   useRef,
   useCallback,
 } from "react";
-import { isEqual } from "lodash";
 import { useStateParams } from "ui";
 import dataSources from "../static_datasets/dataSourcesAssoc";
 import {
@@ -21,7 +20,12 @@ import {
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
-import { onPaginationChange, resetPagination, setDataSourceControl } from "./aotfActions";
+import {
+  onPaginationChange,
+  resetDataSourceControl,
+  resetPagination,
+  setDataSourceControl,
+} from "./aotfActions";
 
 const AssociationsStateContext = createContext();
 
@@ -47,7 +51,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
   const [dataSourcesWeights, setDataSourcesWeights] = useState(defaulDatasourcesWeigths);
   const [dataSourcesRequired, setDataSourcesRequired] = useState([]);
-  const [modifiedSourcesDataControls, setModifiedSourcesDataControls] = useState(false);
   const [searhFilter, setSearhFilter] = useState("");
   const [sorting, setSorting] = useState(DEFAULT_TABLE_SORTING_STATE);
 
@@ -117,12 +120,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     hasComponentBeenRender.current = true;
   }, [id]);
 
-  useEffect(() => {
-    if (isEqual(defaulDatasourcesWeigths, dataSourcesWeights) && isEqual(dataSourcesRequired, []))
-      setModifiedSourcesDataControls(false);
-    else setModifiedSourcesDataControls(true);
-  }, [dataSourcesWeights, dataSourcesRequired]);
-
   const handleAggregationClick = useCallback(
     aggregationId => {
       const aggregationDatasources = dataSources.filter(el => el.aggregation === aggregationId);
@@ -187,8 +184,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   );
 
   const resetDatasourceControls = () => {
-    setDataSourcesWeights(defaulDatasourcesWeigths);
-    setDataSourcesRequired([]);
+    dispatch(resetDataSourceControl());
   };
 
   const resetToInitialPagination = () => {
@@ -220,7 +216,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       pinnedData,
       searhFilter,
       sorting,
-      modifiedSourcesDataControls,
+      modifiedSourcesDataControls: state.modifiedSourcesDataControls,
       pinnedLoading,
       pinnedError,
       pinnedCount,
@@ -232,7 +228,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       handleSortingChange,
       handleSearchInputChange,
       setDisplayedTable,
-      setDataSourcesWeights,
       setDataSourcesRequired,
       handlePaginationChange,
       setEnableIndirect,
@@ -247,8 +242,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       activeHeadersControlls,
       count,
       data,
-      dataSourcesRequired,
-      dataSourcesWeights,
       displayedTable,
       enableIndirect,
       entity,
@@ -260,7 +253,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       id,
       initialLoading,
       loading,
-      modifiedSourcesDataControls,
       state,
       pinnedCount,
       pinnedData,

@@ -67,6 +67,7 @@ export interface State {
   pinnedData: Data;
   interactors: Interactors;
   dataSourceControls: Array<columnAdvanceControl>;
+  modifiedSourcesDataControls: boolean;
 }
 
 /*****************
@@ -80,6 +81,7 @@ export enum ActionType {
   SET_INTERACTORS = "SET_INTERACTORS",
   RESET_PAGINATION = "RESET_PAGINATION",
   DATA_SOURCE_CONTROL = "DATA_SOURCE_CONTROL",
+  RESET_DATA_SOURCE_CONTROL = "RESET_DATA_SOURCE_CONTROL",
 }
 
 export type SetRowInteractorsPayload = {
@@ -94,4 +96,5 @@ export type Action =
   | { type: ActionType.PAGINATE; pagination: Pagination }
   | { type: ActionType.SET_INTERACTORS; payload: SetRowInteractorsPayload }
   | { type: ActionType.RESET_PAGINATION }
-  | { type: ActionType.DATA_SOURCE_CONTROL; payload: columnAdvanceControl };
+  | { type: ActionType.DATA_SOURCE_CONTROL; payload: columnAdvanceControl }
+  | { type: ActionType.RESET_DATA_SOURCE_CONTROL };

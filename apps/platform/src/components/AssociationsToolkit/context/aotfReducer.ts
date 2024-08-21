@@ -5,6 +5,7 @@ import {
   DEFAULT_TABLE_SORTING_STATE,
 } from "../utils";
 import { Action, ActionType, ENTITY, State, TABLE_VIEW } from "../types";
+import { isEqual } from "lodash";
 
 /*****************
  * INITIAL STATE *
@@ -28,6 +29,7 @@ export const initialState: State = {
   pinnedData: [],
   interactors: new Map(),
   dataSourceControls: defaulDatasourcesWeigths,
+  modifiedSourcesDataControls: false,
 };
 
 type InitialStateParams = {
@@ -97,9 +99,18 @@ export function aotfReducer(state: State = initialState, action: Action): State 
         if (col.id === colUpdatedControls.id) return colUpdatedControls;
         return col;
       });
+      const modifiedSourcesDataControls = !isEqual(defaulDatasourcesWeigths, dataSourceControls);
       return {
         ...state,
         dataSourceControls,
+        modifiedSourcesDataControls,
+      };
+    }
+    case ActionType.RESET_DATA_SOURCE_CONTROL: {
+      return {
+        ...state,
+        dataSourceControls: defaulDatasourcesWeigths,
+        modifiedSourcesDataControls: false,
       };
     }
     default: {
