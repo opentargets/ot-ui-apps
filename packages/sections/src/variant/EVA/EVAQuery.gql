@@ -3,7 +3,8 @@ query EVAQuery($variantId: String!) {
     variantId
     referenceAllele
     alternateAllele
-    evidences {
+    evidences(datasourceIds: ["eva"]) {
+      count
       rows {
       	alleleOrigins
         allelicRequirements
@@ -17,7 +18,10 @@ query EVAQuery($variantId: String!) {
         }
         diseaseFromSource
         studyId
-        targetId
+        target {
+          id
+        }
+        literature
         variantId
       }
     }

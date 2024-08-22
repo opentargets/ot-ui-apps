@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
-import EVA_SUMMARY from "./EVASummaryQuery.gql";
+import EVA_SUMMARY from "./EVASummaryFragement.gql";
 
 function Summary() {
   const request = usePlatformApi(EVA_SUMMARY);
@@ -12,7 +12,7 @@ function Summary() {
 }
 
 Summary.fragments = {
-  evaSummary: EVA_SUMMARY,
+  EVASummaryFragment: EVA_SUMMARY,
 };
 
 export default Summary;
