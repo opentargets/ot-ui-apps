@@ -18,6 +18,7 @@ import DrugDetail from "./DrugDetail";
 import DrugResult from "./DrugResult";
 import TargetDetail from "./TargetDetail";
 import TargetResult from "./TargetResult";
+import config from "../../config";
 
 const getCounts = entities => {
   const counts = {
@@ -135,7 +136,7 @@ function TopHitDetail({ topHit }) {
   else if (topHit[TYPE_NAME] === "Drug") COMPONENT = <DrugDetail data={topHit} />;
   return (
     <Card elevation={0}>
-      <ErrorBoundary>{COMPONENT}</ErrorBoundary>
+      <ErrorBoundary config={config}>{COMPONENT}</ErrorBoundary>
     </Card>
   );
 }
