@@ -17,6 +17,7 @@ import SectionError from "./SectionError";
 import sectionStyles from "./sectionStyles";
 import { createShortName } from "../Summary/utils";
 import PartnerLockIcon from "../PartnerLockIcon";
+import config from "../../config";
 
 function SectionItem({
   definition,
@@ -45,7 +46,7 @@ function SectionItem({
       <section>
         <Element name={definition.id}>
           <Card elevation={0} variant="outlined">
-            <ErrorBoundary>
+            <ErrorBoundary config={config}>
               <CardHeader
                 classes={{
                   root: classes.cardHeader,
