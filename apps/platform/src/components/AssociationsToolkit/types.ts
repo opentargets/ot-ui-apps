@@ -47,6 +47,7 @@ export type columnAdvanceControl = {
   weight: number;
   required: boolean;
   propagate: boolean;
+  aggregation: string;
 };
 
 export interface State {
@@ -82,6 +83,7 @@ export enum ActionType {
   RESET_PAGINATION = "RESET_PAGINATION",
   DATA_SOURCE_CONTROL = "DATA_SOURCE_CONTROL",
   RESET_DATA_SOURCE_CONTROL = "RESET_DATA_SOURCE_CONTROL",
+  HANDLE_AGGREGATION_CLICK = "HANDLE_AGGREGATION_CLICK",
 }
 
 export type SetRowInteractorsPayload = {
@@ -97,4 +99,5 @@ export type Action =
   | { type: ActionType.SET_INTERACTORS; payload: SetRowInteractorsPayload }
   | { type: ActionType.RESET_PAGINATION }
   | { type: ActionType.DATA_SOURCE_CONTROL; payload: columnAdvanceControl }
-  | { type: ActionType.RESET_DATA_SOURCE_CONTROL };
+  | { type: ActionType.RESET_DATA_SOURCE_CONTROL }
+  | { type: ActionType.HANDLE_AGGREGATION_CLICK; aggregation: string };

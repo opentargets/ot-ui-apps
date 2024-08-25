@@ -28,14 +28,18 @@ const WeightsControllsContainer = styled("div")({
   padding: "20px 0 15px",
 });
 
-function getSliderValue(values, id) {
-  const value = values.find(val => val.id === id).weight;
-  return value;
-}
+// function getSliderValue(values, id) {
+//   const value = values.find(val => val.id === id).weight;
+//   return value;
+// }
 
-function getRequiredValue(values, id) {
-  const value = values.find(val => val.id === id).required;
-  return value;
+// function getRequiredValue(values, id) {
+//   const value = values.find(val => val.id === id).required;
+//   return value;
+// }
+
+function getColumnObject(values, id) {
+  return values.find(val => val.id === id);
 }
 
 function HeaderControls({ cols = [] }) {
@@ -47,8 +51,6 @@ function HeaderControls({ cols = [] }) {
     dataSourcesWeights,
   } = useAotfContext();
 
-  const [state] = useReducer(aotfReducer);
-
   if (displayedTable === "prioritisations") return null;
 
   const handleClose = () => {
@@ -56,13 +58,23 @@ function HeaderControls({ cols = [] }) {
   };
 
   function handleChangeSliderCommitted(newValue, id) {
-    const currentRequiredValue = getRequiredValue(dataSourcesWeights, id);
-    updateDataSourceControls(id, newValue, currentRequiredValue);
+    const currentColumnValue = getColumnObject(dataSourcesWeights, id);
+    updateDataSourceControls(
+      id,
+      newValue,
+      currentColumnValue.weight,
+      currentColumnValue.aggregation
+    );
   }
 
   function handleChangeRequire(newValue, id) {
-    const currentSliderValue = getSliderValue(dataSourcesWeights, id);
-    updateDataSourceControls(id, currentSliderValue, newValue);
+    const currentColumnValue = getColumnObject(dataSourcesWeights, id);
+    updateDataSourceControls(
+      id,
+      currentColumnValue.required,
+      newValue,
+      currentColumnValue.aggregation
+    );
   }
 
   return (

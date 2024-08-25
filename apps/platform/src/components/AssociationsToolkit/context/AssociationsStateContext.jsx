@@ -21,6 +21,7 @@ import {
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
 import {
+  aggregationClick,
   onPaginationChange,
   resetDataSourceControl,
   resetPagination,
@@ -49,7 +50,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
-  const [dataSourcesWeights, setDataSourcesWeights] = useState(defaulDatasourcesWeigths);
   const [dataSourcesRequired, setDataSourcesRequired] = useState([]);
   const [searhFilter, setSearhFilter] = useState("");
   const [sorting, setSorting] = useState(DEFAULT_TABLE_SORTING_STATE);
@@ -120,39 +120,43 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     hasComponentBeenRender.current = true;
   }, [id]);
 
-  const handleAggregationClick = useCallback(
-    aggregationId => {
-      const aggregationDatasources = dataSources.filter(el => el.aggregation === aggregationId);
-      let isAllActive = true;
-      aggregationDatasources.forEach(e => {
-        if (getControlChecked(dataSourcesRequired, e.id) === false) {
-          isAllActive = false;
-          return;
-        }
-      });
-      if (isAllActive) {
-        let newPayload = [...dataSourcesRequired];
-        aggregationDatasources.forEach(element => {
-          const indexToRemove = newPayload.findIndex(datasource => datasource.id === element.id);
-          const newRequiredElement = [
-            ...newPayload.slice(0, indexToRemove),
-            ...newPayload.slice(indexToRemove + 1),
-          ];
-          newPayload = [...newRequiredElement];
-        });
-        setDataSourcesRequired(newPayload);
-      } else {
-        const payload = [];
-        aggregationDatasources.forEach(el => {
-          if (dataSourcesRequired.filter(val => val.id === el.id).length === 0) {
-            payload.push(checkBoxPayload(el.id, el.aggregationId));
-          }
-        });
-        setDataSourcesRequired([...dataSourcesRequired, ...payload]);
-      }
-    },
-    [dataSourcesRequired]
-  );
+  // const handleAggregationClick = useCallback(
+  //   aggregationId => {
+  //     const aggregationDatasources = dataSources.filter(el => el.aggregation === aggregationId);
+  //     let isAllActive = true;
+  //     aggregationDatasources.forEach(e => {
+  //       if (getControlChecked(dataSourcesRequired, e.id) === false) {
+  //         isAllActive = false;
+  //         return;
+  //       }
+  //     });
+  //     if (isAllActive) {
+  //       let newPayload = [...dataSourcesRequired];
+  //       aggregationDatasources.forEach(element => {
+  //         const indexToRemove = newPayload.findIndex(datasource => datasource.id === element.id);
+  //         const newRequiredElement = [
+  //           ...newPayload.slice(0, indexToRemove),
+  //           ...newPayload.slice(indexToRemove + 1),
+  //         ];
+  //         newPayload = [...newRequiredElement];
+  //       });
+  //       setDataSourcesRequired(newPayload);
+  //     } else {
+  //       const payload = [];
+  //       aggregationDatasources.forEach(el => {
+  //         if (dataSourcesRequired.filter(val => val.id === el.id).length === 0) {
+  //           payload.push(checkBoxPayload(el.id, el.aggregationId));
+  //         }
+  //       });
+  //       setDataSourcesRequired([...dataSourcesRequired, ...payload]);
+  //     }
+  //   },
+  //   [dataSourcesRequired]
+  // );
+
+  const handleAggregationClick = aggregation => {
+    dispatch(aggregationClick(aggregation));
+  };
 
   const handlePaginationChange = useCallback(
     updater => {
@@ -191,8 +195,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     dispatch(resetPagination());
   };
 
-  const updateDataSourceControls = (id, weight, required) => {
-    dispatch(setDataSourceControl(id, weight, required));
+  const updateDataSourceControls = (id, weight, required, aggregationId) => {
+    dispatch(setDataSourceControl(id, weight, required, aggregationId));
   };
 
   const contextVariables = useMemo(
@@ -247,7 +251,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       entity,
       entityToGet,
       error,
-      handleAggregationClick,
       handleSearchInputChange,
       handleSortingChange,
       id,

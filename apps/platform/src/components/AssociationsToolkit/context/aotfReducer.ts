@@ -104,6 +104,7 @@ export function aotfReducer(state: State = initialState, action: Action): State 
         ...state,
         dataSourceControls,
         modifiedSourcesDataControls,
+        pagination: DEFAULT_TABLE_PAGINATION_STATE,
       };
     }
     case ActionType.RESET_DATA_SOURCE_CONTROL: {
@@ -111,6 +112,33 @@ export function aotfReducer(state: State = initialState, action: Action): State 
         ...state,
         dataSourceControls: defaulDatasourcesWeigths,
         modifiedSourcesDataControls: false,
+        pagination: DEFAULT_TABLE_PAGINATION_STATE,
+      };
+    }
+    case ActionType.HANDLE_AGGREGATION_CLICK: {
+      const aggregation = action.aggregation;
+
+      const isAllActive = state.dataSourceControls
+        .filter(el => el.aggregation === aggregation)
+        .every(el => el.required === true);
+      const dataSourceControls = state.dataSourceControls.map(col => {
+        if (col.aggregation === aggregation) {
+          return {
+            ...col,
+            required: !isAllActive,
+          };
+        }
+        return col;
+      });
+      console.log({
+        isAllActive,
+        dataSourceControls,
+      });
+      return {
+        ...state,
+        dataSourceControls,
+        modifiedSourcesDataControls: !isAllActive,
+        pagination: DEFAULT_TABLE_PAGINATION_STATE,
       };
     }
     default: {

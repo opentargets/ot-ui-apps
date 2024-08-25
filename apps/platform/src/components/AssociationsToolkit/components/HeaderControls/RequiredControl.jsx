@@ -9,13 +9,9 @@ const OTCheckbox = styled(Checkbox)`
 `;
 
 function RequiredControl({ id, aggregationId, handleChangeRequire }) {
-  // use new state.dataSourcesWeights
-  const { dataSourcesRequired } = useAotfContext();
-
   const [displayValue, setDisplayValue] = useState();
 
   const handleChange = (_, newValue) => {
-    console.log("handleChange -> newValue", newValue);
     setDisplayValue(newValue);
     handleChangeRequire(newValue, id);
     // if (newValue) {
