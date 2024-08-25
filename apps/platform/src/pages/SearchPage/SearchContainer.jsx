@@ -13,7 +13,7 @@ import {
   faDna,
   faMapPin,
   faPrescriptionBottleAlt,
-  faStethoscope
+  faStethoscope,
 } from "@fortawesome/free-solid-svg-icons";
 import { ErrorBoundary } from "ui";
 
@@ -25,6 +25,8 @@ import TargetDetail from "./TargetDetail";
 import TargetResult from "./TargetResult";
 import VariantDetail from "./VariantDetail";
 import VariantResult from "./VariantResult";
+
+import config from "../../config";
 
 const getCounts = entities => {
   const counts = {
@@ -71,7 +73,9 @@ const SearchFilters = ({ entities, entitiesCount, setEntity }) => {
       />
       <FormControlLabel
         className={classes.label}
-        control={<Checkbox checked={entities.includes("variant")} onChange={setEntity("variant")} />}
+        control={
+          <Checkbox checked={entities.includes("variant")} onChange={setEntity("variant")} />
+        }
         label={
           <>
             <FontAwesomeIcon icon={faMapPin} fixedWidth className={classes.labelIcon} />
@@ -158,7 +162,7 @@ function TopHitDetail({ topHit }) {
   else if (topHit[TYPE_NAME] === "Drug") COMPONENT = <DrugDetail data={topHit} />;
   return (
     <Card elevation={0}>
-      <ErrorBoundary>{COMPONENT}</ErrorBoundary>
+      <ErrorBoundary config={config}>{COMPONENT}</ErrorBoundary>
     </Card>
   );
 }
