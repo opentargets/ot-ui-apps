@@ -73,7 +73,6 @@ function TableBody({ core, cols, noInteractors }) {
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
 
   const handleClickAway = e => {
-    console.log("hihi", e);
     if (e.srcElement.className === "CodeMirror-hint CodeMirror-hint-active") {
       return;
     }
