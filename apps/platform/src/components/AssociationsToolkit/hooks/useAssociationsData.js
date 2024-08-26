@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import client from "../../../client";
 import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../utils";
 
-const INITIAL_ROW_COUNT = 30;
+const INITIAL_ROW_COUNT = 20;
 
 const INITIAL_USE_ASSOCIATION_STATE = {
   loading: true,
