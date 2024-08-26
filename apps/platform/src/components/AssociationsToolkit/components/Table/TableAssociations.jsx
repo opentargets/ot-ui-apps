@@ -17,6 +17,7 @@ import TableBody from "./TableBody";
 import useAotfContext from "../../hooks/useAotfContext";
 
 import { getScale, isPartnerPreview, tableCSSVariables, TABLE_PREFIX } from "../../utils";
+import { grey } from "@mui/material/colors";
 
 const TableElement = styled("main")({
   maxWidth: "1800px",
@@ -28,8 +29,9 @@ const TableSpacer = styled("div")({
 });
 
 const TableDivider = styled("div")({
-  borderBottom: "1px solid #ececec",
-  marginBottom: 5,
+  borderBottom: `1px solid ${grey[400]}`,
+  marginBottom: 10,
+  marginTop: 5,
 });
 
 const columnHelper = createColumnHelper();
