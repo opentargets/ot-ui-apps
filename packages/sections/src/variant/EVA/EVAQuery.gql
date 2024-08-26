@@ -11,18 +11,13 @@ query EVAQuery($variantId: String!) {
         clinicalSignificances
         cohortPhenotypes
         confidence
-        directionOnTrait
         disease {
           id
           name
         }
         diseaseFromSource
         studyId
-        target {
-          id
-        }
         literature
-        variantId
       }
     }
   }

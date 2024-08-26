@@ -25,43 +25,48 @@ const columns = [
     id: "disease.name",
     label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => {
-      return (
-        <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Reported disease or phenotype:
-              </Typography>
-              <Typography variant="caption" display="block" align="center" gutterBottom>
-                {diseaseFromSource}
-              </Typography>
-              {cohortPhenotypes?.length > 1 ? (
-                <>
-                  <Typography variant="subtitle2" display="block" align="center">
-                    All reported phenotypes:
-                  </Typography>
-                  <Typography variant="caption" display="block">
-                    {cohortPhenotypes.map(cp => (
-                      <div key={cp}>{cp}</div>
-                    ))}
-                  </Typography>
-                </>
-              ) : (
-                ""
-              )}
-            </>
-          }
-          showHelpIcon
-        >
-          <Link to={`/disease/${disease.id}`}>
+      return diseaseFromSource || cohortPhenotypes?.length > 0
+        ? <Tooltip
+            title={
+              <>
+                {
+                  diseaseFromSource && 
+                    <>
+                      <Typography variant="subtitle2" display="block" align="center">
+                        Reported disease or phenotype:
+                      </Typography>
+                      <Typography variant="caption" display="block" align="center" gutterBottom>
+                        {diseaseFromSource}
+                      </Typography>
+                    </>
+                }
+                {
+                  cohortPhenotypes?.length > (diseaseFromSource ? 1 : 0) &&
+                    <>
+                      <Typography variant="subtitle2" display="block" align="center">
+                        All reported phenotypes:
+                      </Typography>
+                      <Typography variant="caption" display="block">
+                        {cohortPhenotypes.map(cp => (
+                          <div key={cp}>{cp}</div>
+                        ))}
+                      </Typography>
+                    </>
+                }
+              </>
+            }
+            showHelpIcon
+          >
+            <Link to={`/disease/${disease.id}`}>
+              {disease.name}
+            </Link>
+          </Tooltip>
+        : <Link to={`/disease/${disease.id}`}>
             {disease.name}
           </Link>
-      </Tooltip>
-      )
     },
-    exportLabel: "Disease/Phenotype",
-    exportValue: disease => disease.name,
-    filterValue: disease => disease.name,
+    exportValue: ({ disease }) => disease.name,
+    filterValue: ({ disease }) => disease.name,
   },
   {
     id: "studyId",
@@ -73,39 +78,42 @@ const columns = [
         </Link>
       ) : (
         naLabel
-      ),
-    exportLabel: "ClinVar ID",
+      )
   },
   {
     id: "clinicalSignificances",
     label: "Clinical significance",
     renderCell: ({ clinicalSignificances }) => {
-      if (!clinicalSignificances) return naLabel;
-      if (clinicalSignificances.length === 1) return sentenceCase(clinicalSignificances[0]);
-      if (clinicalSignificances.length > 1)
-        return (
-          <ul
-            style={{
-              margin: 0,
-              padding: 0,
-              listStyle: "none",
-            }}
-          >
-            {clinicalSignificances.map(clinicalSignificance => (
-              <li key={clinicalSignificance}>{sentenceCase(clinicalSignificance)}</li>
-            ))}
-          </ul>
-        );
-      return naLabel;
+      if (!clinicalSignificances || clinicalSignificances.length === 0) {
+        return naLabel;
+      }
+      if (clinicalSignificances.length === 1) {
+        return sentenceCase(clinicalSignificances[0]);
+      }
+      return (
+        <ul
+          style={{
+            margin: 0,
+            padding: 0,
+            listStyle: "none",
+          }}
+        >
+          {clinicalSignificances.map(clinicalSignificance => (
+            <li key={clinicalSignificance}>{sentenceCase(clinicalSignificance)}</li>
+          ))}
+        </ul>
+      );
     },
-    filterValue: ({ clinicalSignificances }) => clinicalSignificances.join(),
+    filterValue: ({ clinicalSignificances }) => {
+      return clinicalSignificances?.join(" ") || "";
+    }
   },
   {
     id: "allelicRequirements",
     label: "Allele origin",
     renderCell: ({ alleleOrigins, allelicRequirements }) => {
       if (!alleleOrigins || alleleOrigins.length === 0) return naLabel;
-      if (allelicRequirements)
+      if (allelicRequirements) {
         return (
           <Tooltip
             title={
@@ -114,7 +122,7 @@ const columns = [
                   Allelic requirements:
                 </Typography>
                 {allelicRequirements.map(r => (
-                  <Typography variant="caption" key={r}>
+                  <Typography key={r} variant="caption" display="block">
                     {r}
                   </Typography>
                 ))}
@@ -125,19 +133,24 @@ const columns = [
             {alleleOrigins.map(a => sentenceCase(a)).join("; ")}
           </Tooltip>
         );
+      }
       return alleleOrigins.map(a => sentenceCase(a)).join("; ");
     },
-    filterValue: ({ alleleOrigins }) => (alleleOrigins ? alleleOrigins.join() : ""),
+    filterValue: ({ alleleOrigins }) => (alleleOrigins?.join(" ") || ""),
   },
   {
     id: "reviewStatus",
     label: "Review status",
     renderCell: ({ confidence }) => (
-      <Tooltip title={confidence}>
-        <span>
-          <ClinvarStars num={clinvarStarMap[confidence]} />
-        </span>
-      </Tooltip>
+      confidence ? (
+        <Tooltip title={confidence}>
+          <span>
+            <ClinvarStars num={clinvarStarMap[confidence]} />
+          </span>
+        </Tooltip>
+      ): (
+        naLabel
+      )
     ),
   },
   {
@@ -164,7 +177,6 @@ const columns = [
 
 type BodyProps = {
   id: string,
-  label: string,
   entity: string,
 };
 
@@ -192,6 +204,7 @@ function Body({ id, entity }: BodyProps) {
       renderBody={({ variant }) => (
         <DataTable
           dataDownloader
+          showGlobalFilter
           columns={columns}
           rows={variant.evidences.rows}
           rowsPerPageOptions={defaultRowsPerPageOptions}
