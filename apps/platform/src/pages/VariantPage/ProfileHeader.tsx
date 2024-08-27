@@ -3,9 +3,10 @@ import {
   usePlatformApi,
   Field,
   ProfileHeader as BaseProfileHeader,
-  Link, 
+  Link,
+  LongText,
 } from "ui";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Skeleton } from "@mui/material";
 import { identifiersOrgLink } from "../../utils/global";
 
 import VARIANT_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
@@ -26,12 +27,16 @@ function ProfileHeader() {
         <Field loading={loading} title="GRCh38">
           {data?.variant.chromosome}:{data?.variant.position}
         </Field>
-        <Field loading={loading} title="Reference Allele">
-          {data?.variant.referenceAllele}
-        </Field>
-        <Field loading={loading} title="Alternative Allele (effect allele)">
-          {data?.variant.alternateAllele}
-        </Field>
+        <Allele
+          loading={loading}
+          label="Reference Allele"
+          value={data?.variant.referenceAllele}
+        />
+        <Allele
+          loading={loading}
+          label="Alternative Allele (effect allele)"
+          value={data?.variant.alternateAllele}
+        />
         <Typography variant="subtitle1" mt={1}>Variant Effect Predictor (VEP)</Typography>
         <Field loading={loading} title="Most severe consequence">
           <Link
@@ -59,6 +64,36 @@ ProfileHeader.fragments = {
 };
 
 export default ProfileHeader;
+
+
+// ======
+// allele
+// ======
+
+type AlleleProps = {
+  loading: boolean;
+  label: string;
+  value: string;
+};
+
+function Allele({ loading, label, value }: AlleleProps) {
+  
+  if (loading) return <Skeleton />;
+  
+  return value?.length >= 15
+    ? <>
+        <Typography variant="subtitle2">{label}</Typography>
+        <LongText lineLimit={2} variant="body2">
+          <span style={{ textWrap: "wrap", wordWrap: "break-word" }}>
+            {value}
+          </span>
+        </LongText>
+      </>
+    : <Field loading={loading} title={label}>
+        {value}
+      </Field>
+
+}
 
 
 // =====================

@@ -1,5 +1,6 @@
 query VariantEffectPredictorQuery($variantId: String!) {
   variant(variantId: $variantId){
+    variantId
     transcriptConsequences {
       variantConsequences {
         id
@@ -8,16 +9,21 @@ query VariantEffectPredictorQuery($variantId: String!) {
       aminoAcidChange
       uniprotAccessions
       codons
-      distance
+      distanceFromFootprint
+      distanceFromTss
       target {
         id
         approvedName
       }
       impact
+      consequenceScore
+      transcriptIndex
       transcriptId
       lofteePrediction
       siftPrediction
       polyphenPrediction
     }
+    referenceAllele
+    alternateAllele
   }
 }

@@ -7,5 +7,7 @@ query InSilicoPredictorsQuery($variantId: String!) {
       score
       assessmentFlag
     }
+    referenceAllele
+    alternateAllele
   }
 }
