@@ -1,13 +1,19 @@
-query GWASCredibleSetsQuery($variantId: String!) {
-  variant(variantId: $variantId) {
-    variantId
-    inSilicoPredictors {
-      method
-      assessment
-      score
-      assessmentFlag
+  query GWASCredibleSetsQuery($variantId: String!) {
+    variant(variantId: $variantId) {
+      variantId
+      referenceAllele
+      alternateAllele
+      credibleSets {
+        variant {
+          variantId
+        }
+        study {
+          traitFromSource
+          studyId
+          diseases {
+            name
+          }
+        }
+      }
     }
-    referenceAllele
-    alternateAllele
   }
-}

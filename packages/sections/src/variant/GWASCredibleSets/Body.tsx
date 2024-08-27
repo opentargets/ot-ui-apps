@@ -1,6 +1,12 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, DataTable, ScientificNotation } from "ui";
-import { Box, Chip } from "@mui/material";
+import {
+  Link,
+  SectionItem,
+  DataTable,
+  ScientificNotation,
+  DisplayVariantId,
+} from "ui";
+import { Box, Chip, Typography } from "@mui/material";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
@@ -15,81 +21,125 @@ function getColumns(id: string) {
         if (!variant) {
           return naLabel;
         }
-        const { variantId } = variant;
+        const { variantId, referenceAllele, alternateAllele } = variant;
         if (variantId === id) {
           return (
             <Box display="flex" alignContent="center" gap={0.5}>
-              <span>{variantId}</span>
+              <span>
+                <DisplayVariantId
+                  variantId={variantId}
+                  referenceAllele={referenceAllele}
+                  alternateAllele={alternateAllele}
+                />
+              </span>
               <Chip label="self" variant="outlined" size="small"/>
             </Box>
           );
         }
-        return <Link to={`/variant/${variantId}`}>{variantId}</Link>
+        return (
+          <Link to={`/variant/${variantId}`}>
+            <DisplayVariantId
+              variantId={variantId}
+              referenceAllele={referenceAllele}
+              alternateAllele={alternateAllele}
+            />
+          </Link>
+        )
       },
+      exportValue: ({ variant }) => variant?.variantId,
     },
     {
       id: "trait",
       label: "Trait",
-      renderCell: d => (
-        <Link to={`/disease/${d["study.disease.id"]}`}>
-          {d["study.disease.name"]}
-        </Link>
+      renderCell: ({ study }) => (
+        study?.traitFromSource ? study.traitFromSource : naLabel
       ),
-      exportLabel: "Trait",
+      exportValue: ({ study }) => study?.traitFromSource
     },
     {
-      id: "study",
-      label: "Study",
-      renderCell: d => (
-        <Link external to={`https://www.ebi.ac.uk/gwas/studies/${d["study.id"]}`}>
-          {d["study.id"]}
-        </Link>
+      id: "disease",
+      label: "Diseases",
+      renderCell: ({ study }) => (
+        study.diseases?.length > 0 ? (
+          <>
+            {study.diseases.map(d => (
+              <Typography key={d.name}>{d.name}</Typography>
+            ))}
+          </>
+        ) : (
+          naLabel
+        )
       ),
-      exportLabel: "Study",
+      exportValue: ({ study }) => (
+        study?.diseases?.map(d => d.name).join(", ")
+      ),
+    },
+    {
+      id: "study.studyid",
+      label: "Study",
+      renderCell: ({ study }) => (
+        study ? (
+          <Link external to={`https://www.ebi.ac.uk/gwas/studies/${study.studyId}`}>
+            {study.studyId}
+          </Link>
+        ) : (
+          naLabel
+        )
+      ),
     },
     {
       id: "pValue",
       label: "P-Value",
       comparator: (a, b) =>
-        a.pValueMantissa * 10 ** a.pValueExponent - b.pValueMantissa * 10 ** b.pValueExponent,
+        a.pValueMantissa * 10 ** a.pValueExponent -
+          b.pValueMantissa * 10 ** b.pValueExponent,
       sortable: true,
-      renderCell: d => (
-        <ScientificNotation number={[d.pValueMantissa, d.pValueExponent]} />
+      renderCell: ({ pValueMantissa, pValueExponent }) => (
+        typeof pValueMantissa === "number" &&
+          typeof pValueExponent === "number" &&
+            <ScientificNotation number={[pValueMantissa, pValueExponent]} />
       ),
-      exportLabel: "P-Value",
+      exportValue: ({ pValueMantissa, pValueExponent }) => (
+        typeof pValueMantissa === "number" &&
+          typeof pValueExponent === "number"
+            ? `${pValueMantissa}x10${pValueExponent}`
+            : null
+      ),
     },
     {
       id: "beta",
       label: "Beta",
       tooltip: "Beta with respect to the ALT allele",
       renderCell: ({ beta }) => beta || beta === 0 ? beta.toPrecision(3) : naLabel,
-      exportLabel: "Beta",
     },
-    // {
-    //   id: "ldr2",
-    //   label: "LD (r2)",
-    //   tooltip: "Linkage disequilibrium with the queried variant",
-    //   renderCell: ({ locus }) => (
-    //     locus.find(obj => obj.variantId === id).r2Overall.toFixed(2)
-    //   ),
-    //   exportLabel: "LD (r2)",
-    // },
+    {
+      id: "ldr2",
+      label: "LD (r2)",
+      tooltip: "Linkage disequilibrium with the queried variant",
+      renderCell: ({ locus }) => (
+        locus?.find(obj => obj.variant?.variantId === id)?.r2Overall?.toFixed(2)
+      ),
+      exportValue: ({ locus }) => (
+        locus?.find(obj => obj.variant?.variantId === id)?.r2Overall?.toFixed(2)
+      ),
+    },
     {
       id: "fineMappingMethod",
       label: "Finemapping Method",
-      renderCell: ({ finemappingMethod }) => finemappingMethod,
-      exportLabel: "Finemapping Method",
     },
     {
       id: "topL2G",
       label: "Top L2G",
       tooltip: "Top gene prioritised by our locus-to-gene model",
-      renderCell: d => (
-        <Link to={`/target/${d["l2g.target.id"]}`}>
-          {d["l2g.target.approvedSymbol"]}
-        </Link>
+      renderCell: ({ strongestLocus2gene: { target } }) => (
+        target ? (
+          <Link to={`/target/${target.id}`}>
+            {target.approvedSymbol}
+          </Link>
+        ) : (
+          naLabel
+        )
       ),
-      exportLabel: "Top L2G",
     },
     {
       id: "l2gScore",
@@ -97,7 +147,6 @@ function getColumns(id: string) {
       comparator: (a, b) => a["l2g.score"] - b["l2g.score"],
       sortable: true,
       renderCell: d => d["l2g.score"].toFixed(3),
-      exportLabel: "L2G score", 
     },
     {
       id: "credibleSetSize",
@@ -105,7 +154,6 @@ function getColumns(id: string) {
       comparator: (a, b) => a.locus.length - b.locus.length,
       sortable: true,
       renderCell: ({ locus }) => locus.length,
-      exportLabel: "Credible Set Size",
     }
   ];
 }
