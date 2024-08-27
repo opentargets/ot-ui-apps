@@ -3,15 +3,14 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { styled } from "@mui/material/styles";
-import dataSources from "../../static_datasets/dataSourcesAssoc";
 
 import Slider from "./SliderControl";
 import Required from "./RequiredControl";
 import { GridContainer } from "../layout";
 
 import useAotfContext from "../../hooks/useAotfContext";
-import { useReducer } from "react";
-import { aotfReducer } from "../../context/aotfReducer";
+import { Tooltip } from "ui";
+import { ReactNode } from "react";
 
 const CloseContainer = styled("div")({
   position: "absolute",
@@ -28,21 +27,15 @@ const WeightsControllsContainer = styled("div")({
   padding: "20px 0 15px",
 });
 
-// function getSliderValue(values, id) {
-//   const value = values.find(val => val.id === id).weight;
-//   return value;
-// }
+type HeaderControlsProps = {
+  cols: Record<string, string | number | boolean>[];
+};
 
-// function getRequiredValue(values, id) {
-//   const value = values.find(val => val.id === id).required;
-//   return value;
-// }
-
-function getColumnObject(values, id) {
+function getColumnObject(values: Record<string, string | number | boolean>[], id: string) {
   return values.find(val => val.id === id);
 }
 
-function HeaderControls({ cols = [] }) {
+function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
   const {
     activeHeadersControlls,
     setActiveHeadersControlls,
@@ -57,7 +50,7 @@ function HeaderControls({ cols = [] }) {
     setActiveHeadersControlls(false);
   };
 
-  function handleChangeSliderCommitted(newValue, id) {
+  function handleChangeSliderCommitted(newValue: number | number[], id: string) {
     const currentColumnValue = getColumnObject(dataSourcesWeights, id);
     updateDataSourceControls(
       id,
@@ -67,7 +60,7 @@ function HeaderControls({ cols = [] }) {
     );
   }
 
-  function handleChangeRequire(newValue, id) {
+  function handleChangeRequire(newValue: boolean, id: string) {
     const currentColumnValue = getColumnObject(dataSourcesWeights, id);
     updateDataSourceControls(
       id,
@@ -95,7 +88,15 @@ function HeaderControls({ cols = [] }) {
               <Typography variant="subtitle2">Weight</Typography>
             </Box>
             <Box>
-              <Typography variant="subtitle2">Require</Typography>
+              <Typography variant="subtitle2">
+                <Tooltip
+                  title="Enabling this will return either of the selected data sources."
+                  showHelpIcon
+                  style={null}
+                >
+                  Include
+                </Tooltip>
+              </Typography>
             </Box>
           </Grid>
           <GridContainer columnsCount={cols.length} className="controlls-wrapper">
@@ -105,11 +106,7 @@ function HeaderControls({ cols = [] }) {
                   <Slider id={id} handleChangeSliderCommitted={handleChangeSliderCommitted} />
                 </Grid>
                 <div className="required-container">
-                  <Required
-                    id={id}
-                    aggregationId={(dataSources.find(el => el.id === id).aggregationId, id)}
-                    handleChangeRequire={handleChangeRequire}
-                  />
+                  <Required id={id} handleChangeRequire={handleChangeRequire} />
                 </div>
               </div>
             ))}

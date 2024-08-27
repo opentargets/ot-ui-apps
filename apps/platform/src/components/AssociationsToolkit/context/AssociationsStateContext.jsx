@@ -8,15 +8,7 @@ import {
   useCallback,
 } from "react";
 import { useStateParams } from "ui";
-import dataSources from "../static_datasets/dataSourcesAssoc";
-import {
-  defaulDatasourcesWeigths,
-  getControlChecked,
-  checkBoxPayload,
-  ENTITIES,
-  DEFAULT_TABLE_SORTING_STATE,
-  DISPLAY_MODE,
-} from "../utils";
+import { ENTITIES, DEFAULT_TABLE_SORTING_STATE, DISPLAY_MODE } from "../utils";
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
@@ -119,40 +111,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     }
     hasComponentBeenRender.current = true;
   }, [id]);
-
-  // const handleAggregationClick = useCallback(
-  //   aggregationId => {
-  //     const aggregationDatasources = dataSources.filter(el => el.aggregation === aggregationId);
-  //     let isAllActive = true;
-  //     aggregationDatasources.forEach(e => {
-  //       if (getControlChecked(dataSourcesRequired, e.id) === false) {
-  //         isAllActive = false;
-  //         return;
-  //       }
-  //     });
-  //     if (isAllActive) {
-  //       let newPayload = [...dataSourcesRequired];
-  //       aggregationDatasources.forEach(element => {
-  //         const indexToRemove = newPayload.findIndex(datasource => datasource.id === element.id);
-  //         const newRequiredElement = [
-  //           ...newPayload.slice(0, indexToRemove),
-  //           ...newPayload.slice(indexToRemove + 1),
-  //         ];
-  //         newPayload = [...newRequiredElement];
-  //       });
-  //       setDataSourcesRequired(newPayload);
-  //     } else {
-  //       const payload = [];
-  //       aggregationDatasources.forEach(el => {
-  //         if (dataSourcesRequired.filter(val => val.id === el.id).length === 0) {
-  //           payload.push(checkBoxPayload(el.id, el.aggregationId));
-  //         }
-  //       });
-  //       setDataSourcesRequired([...dataSourcesRequired, ...payload]);
-  //     }
-  //   },
-  //   [dataSourcesRequired]
-  // );
 
   const handleAggregationClick = aggregation => {
     dispatch(aggregationClick(aggregation));
