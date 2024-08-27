@@ -1,0 +1,13 @@
+query GWASCredibleSetsQuery($variantId: String!) {
+  variant(variantId: $variantId) {
+    variantId
+    inSilicoPredictors {
+      method
+      assessment
+      score
+      assessmentFlag
+    }
+    referenceAllele
+    alternateAllele
+  }
+}

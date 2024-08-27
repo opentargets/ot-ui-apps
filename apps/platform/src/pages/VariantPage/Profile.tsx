@@ -99,7 +99,7 @@ function Profile({ varId }: ProfileProps) {
           <QTLCredibleSetsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense> */}
         <Suspense fallback={<SectionLoader />}>
-          <GWASCredibleSetsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
+          <GWASCredibleSetsSection id={varId} entity={VARIANT} />
         </Suspense>
         {/* <Suspense fallback={<SectionLoader />}>
           <PharmacogenomicsSection id={varId} label='NO-LABEL!' entity={VARIANT} />

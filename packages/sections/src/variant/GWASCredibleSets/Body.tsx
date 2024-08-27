@@ -1,24 +1,31 @@
+import { useQuery } from "@apollo/client";
 import { Link, SectionItem, DataTable, ScientificNotation } from "ui";
 import { Box, Chip } from "@mui/material";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 
-function getColumns(id: string, label: string) {
+function getColumns(id: string) {
 
   return [
     {
       id: "leadVariant",
       label: "Lead Variant",
-      renderCell: ({ variantId }) => (
-        variantId === id
-          ? <Box display="flex" alignContent="center" gap={0.5}>
+      renderCell: ({ variant }) => {
+        if (!variant) {
+          return naLabel;
+        }
+        const { variantId } = variant;
+        if (variantId === id) {
+          return (
+            <Box display="flex" alignContent="center" gap={0.5}>
               <span>{variantId}</span>
               <Chip label="self" variant="outlined" size="small"/>
             </Box>
-          : <Link to={`/variant/${variantId}`}>{variantId}</Link>
-      ),
-      exportLabel: "Lead Variant",
+          );
+        }
+        return <Link to={`/variant/${variantId}`}>{variantId}</Link>
+      },
     },
     {
       id: "trait",
@@ -110,25 +117,27 @@ const request = mockQuery();
 
 type BodyProps = {
   id: string,
-  label: string,
   entity: string,
 };
 
 // !! FOR NOW, RENAME id AND SET IT MANUALLY BELOW
-function Body({ id: doNotUseForNow, label, entity }: BodyProps) {
+function Body({ id, entity }: BodyProps) {
   
-  // !! FOR NOW, SET id (IE THE PAGE VARIANT ID) TO FAKE TAG_VARIANT_ID
-  const id = request.data.TAG_VARIANT_ID;
-
-  const columns = getColumns(id, label);
-  const rows = request.data.variant.gwasCredibleSets;
+  const columns = getColumns(id);
+  const rows = request.data.variant.credibleSets;
 
   return (
     <SectionItem
       definition={definition}
       entity={entity}
       request={request}
-      renderDescription={() => <Description variantId={id} />}
+      renderDescription={({ variant }) => (
+        <Description
+          variantId={variant.variantId}
+          referenceAllele={variant.referenceAllele}
+          alternateAllele={variant.alternateAllele}
+        />
+      )}
       renderBody={() => (
         <DataTable
           dataDownloader
