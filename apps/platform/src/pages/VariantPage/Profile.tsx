@@ -85,7 +85,7 @@ function Profile({ varId }: ProfileProps) {
 
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
-          <PharmacogenomicsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
+          <PharmacogenomicsSection id={varId} entity={VARIANT} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <InSilicoPredictorsSection id={varId} entity={VARIANT} />
