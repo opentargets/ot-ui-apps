@@ -1,18 +1,5 @@
-query GWASCredibleSetsQuery($variantId: String!) {
-  variant(variantId: $variantId) {
-    variantId
-    referenceAllele
-    alternateAllele
-    credibleSets(studyTypes: [gwas]) {
-      variant {
-        variantId
-      }
-      study {
-        
-      }
-      
-
-
-    }
+fragment GWASCredibleSetsSummaryFragment on VariantIndex {
+  credibleSets {
+    studyLocusId
   }
 }

@@ -4,7 +4,7 @@ import { definition } from ".";
 import GWAS_CREDIBLE_SETS_SUMMARY from "./GWASCredibleSetsSummaryFragment.gql";
 
 function Summary() {
-  const request = usePlatformApi(UNIPROT_VARIANTS_SUMMARY);
+  const request = usePlatformApi(GWAS_CREDIBLE_SETS_SUMMARY);
   
   return <SummaryItem definition={definition} request={request} />;
 }
