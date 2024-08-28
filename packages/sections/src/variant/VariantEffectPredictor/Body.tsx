@@ -127,7 +127,13 @@ export function Body({ id, entity }: BodyProps) {
       definition={definition}
       request={request}
       entity={entity}
-      renderDescription={() => <Description variantId={id} />}
+      renderDescription={({ variant }) => (
+        <Description
+          variantId={variant.variantId}
+          referenceAllele={variant.referenceAllele}
+          alternateAllele={variant.alternateAllele}
+        />
+      )}
       renderBody={({ variant }) => {
         return (
           <DataTable

@@ -58,7 +58,13 @@ export function Body({ id, entity }: BodyProps) {
       definition={definition}
       request={request}
       entity={entity}
-      renderDescription={() => <Description variantId={id} />}
+      renderDescription={({ variant }) => (
+        <Description
+          variantId={variant.variantId}
+          referenceAllele={variant.referenceAllele}
+          alternateAllele={variant.alternateAllele}
+        />
+      )}
       renderBody={({ variant }) => {
         const rows = [...variant.inSilicoPredictors].sort((row1, row2) => {
           return row1.method.localeCompare(row2.method);

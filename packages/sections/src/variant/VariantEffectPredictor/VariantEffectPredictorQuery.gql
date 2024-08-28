@@ -1,5 +1,6 @@
 query VariantEffectPredictorQuery($variantId: String!) {
   variant(variantId: $variantId){
+    variantId
     transcriptConsequences {
       variantConsequences {
         id
@@ -22,5 +23,7 @@ query VariantEffectPredictorQuery($variantId: String!) {
       siftPrediction
       polyphenPrediction
     }
+    referenceAllele
+    alternateAllele
   }
 }
