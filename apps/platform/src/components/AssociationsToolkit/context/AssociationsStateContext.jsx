@@ -42,7 +42,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
-  const [dataSourcesRequired, setDataSourcesRequired] = useState([]);
   const [searhFilter, setSearhFilter] = useState("");
   const [sorting, setSorting] = useState(DEFAULT_TABLE_SORTING_STATE);
 
@@ -77,7 +76,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       enableIndirect,
       datasources: state.dataSourceControls,
       entity,
-      aggregationFilters: dataSourcesRequired,
       facetFilters: facetFilterIds,
     },
   });
@@ -96,7 +94,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       size: pinnedEntries.length,
       sortBy: sorting[0].id,
       datasources: state.dataSourceControls,
-      aggregationFilters: dataSourcesRequired,
       rowsFilter: pinnedEntries.toSorted(),
       facetFilters: facetFilterIds,
     },
@@ -153,8 +150,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     dispatch(resetPagination());
   };
 
-  const updateDataSourceControls = (id, weight, required, aggregationId) => {
-    dispatch(setDataSourceControl(id, weight, required, aggregationId));
+  const updateDataSourceControls = (id, weight, required, aggregation) => {
+    dispatch(setDataSourceControl(id, weight, required, aggregation));
   };
 
   const contextVariables = useMemo(
@@ -173,7 +170,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       enableIndirect,
       error,
       dataSourcesWeights: state.dataSourceControls,
-      dataSourcesRequired,
       displayedTable,
       pinnedData,
       searhFilter,
@@ -190,7 +186,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       handleSortingChange,
       handleSearchInputChange,
       setDisplayedTable,
-      setDataSourcesRequired,
       handlePaginationChange,
       setEnableIndirect,
       setActiveHeadersControlls,

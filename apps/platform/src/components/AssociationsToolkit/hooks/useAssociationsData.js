@@ -23,7 +23,6 @@ function useAssociationsData({
     size = 50,
     filter = "",
     sortBy = "score",
-    aggregationFilters = [],
     enableIndirect = false,
     datasources = [],
     rowsFilter = [],
@@ -53,12 +52,9 @@ function useAssociationsData({
             id: el.id,
             weight: el.weight,
             propagate: el.propagate,
+            required: el.required,
           })),
           rowsFilter,
-          aggregationFilters: aggregationFilters.map(el => ({
-            name: el.name,
-            path: el.path,
-          })),
           facetFilters,
         },
       });
@@ -74,19 +70,7 @@ function useAssociationsData({
     };
     if (isCurrent) fetchData();
     return () => (isCurrent = false);
-  }, [
-    id,
-    index,
-    size,
-    filter,
-    sortBy,
-    enableIndirect,
-    datasources,
-    query,
-    entity,
-    aggregationFilters,
-    facetFilters,
-  ]);
+  }, [id, index, size, filter, sortBy, enableIndirect, datasources, query, entity, facetFilters]);
 
   return state;
 }

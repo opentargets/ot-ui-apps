@@ -1,6 +1,7 @@
-import { ChangeEvent, ReactElement, useState } from "react";
+import { ChangeEvent, ReactElement, useEffect, useState } from "react";
 import { Checkbox } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import useAotfContext from "../../hooks/useAotfContext";
 
 const OTCheckbox = styled(Checkbox)`
   padding: 0;
@@ -9,15 +10,24 @@ const OTCheckbox = styled(Checkbox)`
 type RequiredControlProps = {
   id: string;
   handleChangeRequire: (newValue: boolean, id: string) => void;
+  checkedValue: boolean;
 };
 
-function RequiredControl({ id, handleChangeRequire }: RequiredControlProps): ReactElement {
-  const [displayValue, setDisplayValue] = useState<boolean>();
+function RequiredControl({
+  id,
+  handleChangeRequire,
+  checkedValue,
+}: RequiredControlProps): ReactElement {
+  const [displayValue, setDisplayValue] = useState<boolean>(checkedValue);
 
   const handleChange = (_: ChangeEvent<HTMLInputElement>, newValue: boolean) => {
     setDisplayValue(newValue);
     handleChangeRequire(newValue, id);
   };
+
+  useEffect(() => {
+    setDisplayValue(checkedValue);
+  }, [checkedValue]);
 
   return <OTCheckbox checked={displayValue} color="primary" onChange={handleChange} name={id} />;
 }

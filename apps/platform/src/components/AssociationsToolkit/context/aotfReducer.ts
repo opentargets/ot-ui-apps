@@ -130,10 +130,6 @@ export function aotfReducer(state: State = initialState, action: Action): State 
         }
         return col;
       });
-      console.log({
-        isAllActive,
-        dataSourceControls,
-      });
       return {
         ...state,
         dataSourceControls,

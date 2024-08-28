@@ -28,10 +28,10 @@ const WeightsControllsContainer = styled("div")({
 });
 
 type HeaderControlsProps = {
-  cols: Record<string, string | number | boolean>[];
+  cols: Record<string, unknown>[];
 };
 
-function getColumnObject(values: Record<string, string | number | boolean>[], id: string) {
+function getColumnObject(values: Record<string, unknown>[], id: string) {
   return values.find(val => val.id === id);
 }
 
@@ -55,7 +55,7 @@ function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
     updateDataSourceControls(
       id,
       newValue,
-      currentColumnValue.weight,
+      currentColumnValue.required,
       currentColumnValue.aggregation
     );
   }
@@ -64,10 +64,16 @@ function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
     const currentColumnValue = getColumnObject(dataSourcesWeights, id);
     updateDataSourceControls(
       id,
-      currentColumnValue.required,
+      currentColumnValue.weight,
       newValue,
       currentColumnValue.aggregation
     );
+  }
+
+  function getRequiredValue(id: string) {
+    const column = getColumnObject(dataSourcesWeights, id);
+    if (column) return column.required;
+    return false;
   }
 
   return (
@@ -90,7 +96,7 @@ function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
             <Box>
               <Typography variant="subtitle2">
                 <Tooltip
-                  title="Enabling this will return either of the selected data sources."
+                  title="Enabling this will return data from any of the selected sources."
                   showHelpIcon
                   style={null}
                 >
@@ -106,7 +112,11 @@ function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
                   <Slider id={id} handleChangeSliderCommitted={handleChangeSliderCommitted} />
                 </Grid>
                 <div className="required-container">
-                  <Required id={id} handleChangeRequire={handleChangeRequire} />
+                  <Required
+                    id={id}
+                    handleChangeRequire={handleChangeRequire}
+                    checkedValue={getRequiredValue(id)}
+                  />
                 </div>
               </div>
             ))}

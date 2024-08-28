@@ -24,11 +24,11 @@ export function setDataSourceControl(
   id: string,
   weight: number,
   required: boolean,
-  aggregationId: string
+  aggregation: string
 ): Action {
   return {
     type: ActionType.DATA_SOURCE_CONTROL,
-    payload: { id, weight, required, propagate: true, aggregationId },
+    payload: { id, weight, required, propagate: true, aggregation },
   };
 }
 
