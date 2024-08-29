@@ -17,29 +17,31 @@ const columns = [
     id: "target.approvedSymbol",
     label: "Gene",
     comparator: (a, b) => a.transcriptIndex - b.transcriptIndex,
-    renderCell: ({ target, transcriptId }) => (
-      !target
-        ? naLabel
-        : transcriptId
-          ? <Tooltip
-              title={
-                <Box>
-                  Ensembl canonical transcript:{" "}
-                  <Link
-                    external
-                    to={`https://www.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;g=${
-                        target.id};t=${transcriptId}`}
-                  >
-                    {transcriptId}
-                  </Link>
-                </Box>
-              }
-              showHelpIcon
-            >
-              <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>
-            </Tooltip>
-          : <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>
-    ),
+    renderCell: ({ target, transcriptId }) => {
+      if (!target) return naLabel;
+      let displayElement = <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>
+      if (transcriptId) {
+        displayElement = 
+          <Tooltip
+            title={
+              <Box>
+                Ensembl canonical transcript:{" "}
+                <Link
+                  external
+                  to={`https://www.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;g=${
+                      target.id};t=${transcriptId}`}
+                >
+                  {transcriptId}
+                </Link>
+              </Box>
+            }
+            showHelpIcon
+          >
+            {displayElement}
+          </Tooltip>
+      }
+      return displayElement;
+    }
   },
   {
     id: "variantConsequences.label",
