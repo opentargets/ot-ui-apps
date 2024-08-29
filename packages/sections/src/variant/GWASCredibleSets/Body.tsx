@@ -6,11 +6,12 @@ import {
   ScientificNotation,
   DisplayVariantId,
 } from "ui";
-import { Box, Chip, Typography } from "@mui/material";
+import { Box, Chip } from "@mui/material";
 import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
+import { Fragment } from "react/jsx-runtime";
 
 function getColumns(id: string, posteriorProbabilities: any) {
 
@@ -62,17 +63,17 @@ function getColumns(id: string, posteriorProbabilities: any) {
     {
       id: "disease",
       label: "Diseases",
-      renderCell: ({ study }) => (
-        study.diseases?.length > 0 ? (
-          <>
-            {study.diseases.map(d => (
-              <Link key={d.name} to={`../diseases/${d.id}`}>{d.name}</Link>
-            ))}
-          </>
-        ) : (
-          naLabel
-        )
-      ),
+      renderCell: ({ study }) => {
+        if (!study.diseases?.length) return naLabel;
+        return <>
+          {study.diseases.map((d, i) => (
+            <Fragment key={d.id}>
+              {i > 0 && ", "}
+              <Link key={d.name} to={`../disease/${d.id}`}>{d.name}</Link>
+            </Fragment>
+          ))}
+        </>
+      },
       exportValue: ({ study }) => (
         study?.diseases?.map(d => d.name).join(", ")
       ),
@@ -80,15 +81,10 @@ function getColumns(id: string, posteriorProbabilities: any) {
     {
       id: "study.studyid",
       label: "Study",
-      renderCell: ({ study }) => (
-        study ? (
-          <Link external to={`https://www.ebi.ac.uk/gwas/studies/${study.studyId}`}>
-            {study.studyId}
-          </Link>
-        ) : (
-          naLabel
-        )
-      ),
+      renderCell: ({ study }) => {
+        if (!study) return naLabel;
+        return <Link to={`../study/${study.studyId}`}>{study.studyId}</Link>
+      },
     },
     {
       id: "pValue",
@@ -129,7 +125,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
     },
     {
       id: "ldr2",
-      label: "LD (r2)",
+      label: "LD (r²)",
       tooltip: "Linkage disequilibrium with the queried variant",
       renderCell: ({ locus }) => (
         locus?.find(obj => obj.variant?.variantId === id)?.r2Overall?.toFixed(2) ?? naLabel
