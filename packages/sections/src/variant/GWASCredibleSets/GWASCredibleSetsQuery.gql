@@ -14,6 +14,7 @@ query GWASCredibleSetsQuery($variantId: String!) {
         studyId
         diseases {
           name
+          id
         }
       }
       pValueMantissa
@@ -24,6 +25,7 @@ query GWASCredibleSetsQuery($variantId: String!) {
           variantId
         }
         r2Overall
+        posteriorProbability
       }
       finemappingMethod
       strongestLocus2gene {

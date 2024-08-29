@@ -12,7 +12,7 @@ import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 
-function getColumns(id: string) {
+function getColumns(id: string, posteriorProbabilities: any) {
 
   return [
     {
@@ -25,7 +25,7 @@ function getColumns(id: string) {
         const { variantId, referenceAllele, alternateAllele } = variant;
         if (variantId === id) {
           return (
-            <Box display="flex" alignContent="center" gap={0.5}>
+            <Box display="flex" alignItems="center" gap={0.5}>
               <span>
                 <DisplayVariantId
                   variantId={variantId}
@@ -66,7 +66,7 @@ function getColumns(id: string) {
         study.diseases?.length > 0 ? (
           <>
             {study.diseases.map(d => (
-              <Typography key={d.name}>{d.name}</Typography>
+              <Link key={d.name} to={`../diseases/${d.id}`}>{d.name}</Link>
             ))}
           </>
         ) : (
@@ -114,6 +114,18 @@ function getColumns(id: string) {
       label: "Beta",
       tooltip: "Beta with respect to the ALT allele",
       renderCell: ({ beta }) => beta || beta === 0 ? beta.toPrecision(3) : naLabel,
+    },
+    {
+      id: "posteriorProbability",
+      label: "Posterior Probability",
+      tooltip: "Probability the fixed page variant is in the credible set.",
+      comparator: (rowA, rowB) => (
+        posteriorProbabilities.get(rowA.locus) -
+          posteriorProbabilities.get(rowB.locus)
+      ),
+      sortable: true,
+      renderCell: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3) ?? naLabel,
+      exportValue: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3) ?? naLabel,
     },
     {
       id: "ldr2",
@@ -186,8 +198,6 @@ function Body({ id, entity }: BodyProps) {
     variables,
   });
   
-  const columns = getColumns(id);
-
   return (
     <SectionItem
       definition={definition}
@@ -200,17 +210,32 @@ function Body({ id, entity }: BodyProps) {
           alternateAllele={variant.alternateAllele}
         />
       )}
-      renderBody={({ variant }) => (
-        <DataTable
-          dataDownloader
-          sortBy="pValue"
-          columns={columns}
-          rows={variant.credibleSets}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
-          query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
-          variables={variables}
-        />
-      )}
+      renderBody={({ variant }) => {
+
+        // get columns here so can get posterior probabilities once - to avoid
+        // having to find posterior probs in sorting comparator function
+        const posteriorProbabilities = new Map;
+        for (const { locus } of variant.credibleSets) {
+          const postProb = locus
+            ?.find(loc => loc.variant?.variantId === id)
+            ?.posteriorProbability
+          if (postProb !== undefined) {
+            posteriorProbabilities.set(locus, postProb);
+          }
+        }
+
+        return (
+          <DataTable
+            dataDownloader
+            sortBy="pValue"
+            columns={getColumns(id, posteriorProbabilities)}
+            rows={variant.credibleSets}
+            rowsPerPageOptions={defaultRowsPerPageOptions}
+            query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
+            variables={variables}
+          />
+        );
+      }}
     />
   );
 
