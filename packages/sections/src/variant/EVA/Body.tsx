@@ -25,45 +25,45 @@ const columns = [
     id: "disease.name",
     label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => {
-      return diseaseFromSource || cohortPhenotypes?.length > 0
-        ? <Tooltip
-            title={
-              <>
-                {
-                  diseaseFromSource && 
-                    <>
-                      <Typography variant="subtitle2" display="block" align="center">
-                        Reported disease or phenotype:
-                      </Typography>
-                      <Typography variant="caption" display="block" align="center" gutterBottom>
-                        {diseaseFromSource}
-                      </Typography>
-                    </>
-                }
-                {
-                  cohortPhenotypes?.length > (diseaseFromSource ? 1 : 0) &&
-                    <>
-                      <Typography variant="subtitle2" display="block" align="center">
-                        All reported phenotypes:
-                      </Typography>
-                      <Typography variant="caption" display="block">
-                        {cohortPhenotypes.map(cp => (
-                          <div key={cp}>{cp}</div>
-                        ))}
-                      </Typography>
-                    </>
-                }
-              </>
-            }
-            showHelpIcon
-          >
-            <Link to={`/disease/${disease.id}`}>
-              {disease.name}
-            </Link>
-          </Tooltip>
-        : <Link to={`/disease/${disease.id}`}>
-            {disease.name}
-          </Link>
+      let displayElement = <Link to={`/disease/${disease.id}`}>
+        {disease.name}
+      </Link>;
+      if (diseaseFromSource || cohortPhenotypes?.length > 0) {
+        displayElement = <Tooltip
+          title={
+            <>
+              {
+                diseaseFromSource && 
+                  <>
+                    <Typography variant="subtitle2" display="block" align="center">
+                      Reported disease or phenotype:
+                    </Typography>
+                    <Typography variant="caption" display="block" align="center" gutterBottom>
+                      {diseaseFromSource}
+                    </Typography>
+                  </>
+              }
+              {
+                cohortPhenotypes?.length > (diseaseFromSource ? 1 : 0) &&
+                  <>
+                    <Typography variant="subtitle2" display="block" align="center">
+                      All reported phenotypes:
+                    </Typography>
+                    <Typography variant="caption" display="block">
+                      {cohortPhenotypes.map(cp => (
+                        <div key={cp}>{cp}</div>
+                      ))}
+                    </Typography>
+                  </>
+              }
+            </>
+          }
+          showHelpIcon
+        >
+          {displayElement}
+        </Tooltip>;
+      }
+      return displayElement;
     },
     exportValue: ({ disease }) => disease.name,
     filterValue: ({ disease }) => disease.name,
@@ -71,14 +71,12 @@ const columns = [
   {
     id: "studyId",
     label: "ClinVar ID",
-    renderCell: ({ studyId }) =>
-      studyId ? (
-        <Link external to={`https://www.ncbi.nlm.nih.gov/clinvar/${studyId}`}>
-          {studyId}
-        </Link>
-      ) : (
-        naLabel
-      )
+    renderCell: ({ studyId }) => {
+      if (!studyId) return naLabel;
+      return <Link external to={`https://www.ncbi.nlm.nih.gov/clinvar/${studyId}`}>
+        {studyId}
+      </Link>
+    }
   },
   {
     id: "clinicalSignificances",
@@ -113,8 +111,9 @@ const columns = [
     label: "Allele origin",
     renderCell: ({ alleleOrigins, allelicRequirements }) => {
       if (!alleleOrigins || alleleOrigins.length === 0) return naLabel;
+      let displayElement = alleleOrigins.map(a => sentenceCase(a)).join("; ");
       if (allelicRequirements) {
-        return (
+        displayElement = 
           <Tooltip
             title={
               <>
@@ -130,28 +129,22 @@ const columns = [
             }
             showHelpIcon
           >
-            {alleleOrigins.map(a => sentenceCase(a)).join("; ")}
+            {displayElement}
           </Tooltip>
-        );
       }
-      return alleleOrigins.map(a => sentenceCase(a)).join("; ");
+      return displayElement;
     },
     filterValue: ({ alleleOrigins }) => (alleleOrigins?.join(" ") || ""),
   },
   {
     id: "reviewStatus",
     label: "Review status",
-    renderCell: ({ confidence }) => (
-      confidence ? (
-        <Tooltip title={confidence}>
-          <span>
-            <ClinvarStars num={clinvarStarMap[confidence]} />
-          </span>
-        </Tooltip>
-      ): (
-        naLabel
-      )
-    ),
+    renderCell: ({ confidence }) => {
+      if (!confidence) return naLabel;
+      return <Tooltip title={confidence}>
+        <ClinvarStars num={clinvarStarMap[confidence]} />
+      </Tooltip>;
+    },
   },
   {
     id: "literature",
