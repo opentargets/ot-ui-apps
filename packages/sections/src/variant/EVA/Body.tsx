@@ -88,19 +88,9 @@ const columns = [
       if (clinicalSignificances.length === 1) {
         return sentenceCase(clinicalSignificances[0]);
       }
-      return (
-        <ul
-          style={{
-            margin: 0,
-            padding: 0,
-            listStyle: "none",
-          }}
-        >
-          {clinicalSignificances.map(clinicalSignificance => (
-            <li key={clinicalSignificance}>{sentenceCase(clinicalSignificance)}</li>
-          ))}
-        </ul>
-      );
+      return clinicalSignificances.map(clinicalSignificance => (
+        <div key={clinicalSignificance}>{sentenceCase(clinicalSignificance)}</div>
+      ));
     },
     filterValue: ({ clinicalSignificances }) => {
       return clinicalSignificances?.join(" ") || "";
