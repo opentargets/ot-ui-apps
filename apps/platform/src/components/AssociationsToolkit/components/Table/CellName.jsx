@@ -137,6 +137,17 @@ function CellName({ cell, colorScale }) {
     setOpenContext(false);
   };
 
+  const handleClickInteractorsOff = () => {
+    dispatch({
+      type: FocusActionType.SET_INTERACTORS_OFF,
+      focus: {
+        table: prefix,
+        row: cell.row.id,
+      },
+    });
+    setOpenContext(false);
+  };
+
   const handleClickPin = () => {
     if (isPinned) {
       const newPinnedData = pinnedEntries.filter(e => e !== id);
