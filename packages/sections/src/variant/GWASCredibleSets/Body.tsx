@@ -22,31 +22,21 @@ function getColumns(id: string, posteriorProbabilities: any) {
       renderCell: ({ variant }) => {
         if (!variant) return naLabel;
         const { variantId, referenceAllele, alternateAllele } = variant;
+        const displayElement = <DisplayVariantId
+          variantId={variantId}
+          referenceAllele={referenceAllele}
+          alternateAllele={alternateAllele}
+          expand={false}
+        />
         if (variantId === id) {
-          return (
-            <Box display="flex" alignItems="center" gap={0.5}>
-              <span>
-                <DisplayVariantId
-                  variantId={variantId}
-                  referenceAllele={referenceAllele}
-                  alternateAllele={alternateAllele}
-                  expand={false}
-                />
-              </span>
-              <Chip label="self" variant="outlined" size="small"/>
-            </Box>
-          );
+          return <Box display="flex" alignItems="center" gap={0.5}>
+            {displayElement}
+            <Chip label="self" variant="outlined" size="small"/>
+          </Box>;
         }
-        return (
-          <Link to={`/variant/${variantId}`}>
-            <DisplayVariantId
-              variantId={variantId}
-              referenceAllele={referenceAllele}
-              alternateAllele={alternateAllele}
-              expand={false}
-            />
-          </Link>
-        )
+        return <Link to={`/variant/${variantId}`}>
+          {displayElement}
+        </Link>;
       },
       exportValue: ({ variant }) => variant?.variantId,
     },
@@ -63,15 +53,15 @@ function getColumns(id: string, posteriorProbabilities: any) {
       id: "disease",
       label: "Diseases",
       renderCell: ({ study }) => {
-        if (!study.diseases?.length) return naLabel;
+        if (!study?.diseases?.length) return naLabel;
         return <>
           {study.diseases.map((d, i) => (
             <Fragment key={d.id}>
               {i > 0 && ", "}
-              <Link key={d.name} to={`../disease/${d.id}`}>{d.name}</Link>
+              <Link to={`../disease/${d.id}`}>{d.name}</Link>
             </Fragment>
           ))}
-        </>
+        </>;
       },
       exportValue: ({ study }) => (
         study?.diseases?.map(d => d.name).join(", ")
@@ -122,14 +112,14 @@ function getColumns(id: string, posteriorProbabilities: any) {
       ),
       sortable: true,
       renderCell: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3) ?? naLabel,
-      exportValue: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3) ?? naLabel,
+      exportValue: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3),
     },
     {
       id: "ldr2",
       label: "LD (r²)",
       tooltip: "Linkage disequilibrium with the queried variant",
       renderCell: ({ locus }) => {
-        const r2 = locus?.find(obj => obj.variant?.id === id)?.r2Overall;
+        const r2 = locus?.find(obj => obj.variant?.variantId === id)?.r2Overall;
         if (typeof r2 !== "number") return naLabel;
         return r2.toFixed(2);
       },
@@ -143,15 +133,11 @@ function getColumns(id: string, posteriorProbabilities: any) {
       label: "Top L2G",
       tooltip: "Top gene prioritised by our locus-to-gene model",
       renderCell: ({ strongestLocus2gene }) => {
-        if (!strongestLocus2gene) return naLabel;
+        if (!strongestLocus2gene?.target) return naLabel;
         const { target } = strongestLocus2gene;
-        return target ? (
-          <Link to={`/target/${target.id}`}>
-            {target.approvedSymbol}
-          </Link>
-        ) : (
-          naLabel
-        )
+        return <Link to={`/target/${target.id}`}>
+          {target.approvedSymbol}
+        </Link>;
       },
       exportValue: ({ strongestLocus2gene }) => (
         strongestLocus2gene?.target.approvedSymbol
@@ -164,9 +150,10 @@ function getColumns(id: string, posteriorProbabilities: any) {
         rowA?.strongestLocus2gene.score - rowB?.strongestLocus2gene.score
       ),
       sortable: true,
-      renderCell: ({ strongestLocus2gene }) => (
-        strongestLocus2gene?.score.toFixed(3)
-      ),
+      renderCell: ({ strongestLocus2gene }) => {
+        if (typeof strongestLocus2gene?.score !== "number") return naLabel;
+        return strongestLocus2gene.score.toFixed(3);
+      },
       exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.score
     },
     {
@@ -174,7 +161,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
       label: "Credible Set Size",
       comparator: (a, b) => a.locus?.length - b.locus?.length,
       sortable: true,
-      renderCell: ({ locus }) => locus?.length,
+      renderCell: ({ locus }) => locus?.length ?? naLabel,
       exportValue: ({ locus }) => locus?.length,
     }
   ];
@@ -208,10 +195,10 @@ function Body({ id, entity }: BodyProps) {
       )}
       renderBody={({ variant }) => {
 
-        // get columns here so can get posterior probabilities once - to avoid
-        // having to find posterior probs in sorting comparator function
+        // get columns here so get posterior probabilities once - avoids
+        // having to find posterior probs inside sorting comparator function
         const posteriorProbabilities = new Map;
-        for (const { locus } of variant.credibleSets) {
+        for (const { locus } of variant?.credibleSets || []) {
           const postProb = locus
             ?.find(loc => loc.variant?.variantId === id)
             ?.posteriorProbability
