@@ -20,9 +20,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
       id: "leadVariant",
       label: "Lead Variant",
       renderCell: ({ variant }) => {
-        if (!variant) {
-          return naLabel;
-        }
+        if (!variant) return naLabel;
         const { variantId, referenceAllele, alternateAllele } = variant;
         if (variantId === id) {
           return (
@@ -55,9 +53,10 @@ function getColumns(id: string, posteriorProbabilities: any) {
     {
       id: "trait",
       label: "Trait",
-      renderCell: ({ study }) => (
-        study?.traitFromSource ? study.traitFromSource : naLabel
-      ),
+      renderCell: ({ study }) => {
+        if (!study?.traitFromSource) return naLabel;
+        return study.traitFromSource;
+      },
       exportValue: ({ study }) => study?.traitFromSource
     },
     {
@@ -90,26 +89,28 @@ function getColumns(id: string, posteriorProbabilities: any) {
       id: "pValue",
       label: "P-Value",
       comparator: (a, b) =>
-        a.pValueMantissa * 10 ** a.pValueExponent -
-          b.pValueMantissa * 10 ** b.pValueExponent,
+        a?.pValueMantissa * 10 ** a?.pValueExponent -
+          b?.pValueMantissa * 10 ** b?.pValueExponent,
       sortable: true,
-      renderCell: ({ pValueMantissa, pValueExponent }) => (
-        typeof pValueMantissa === "number" &&
-          typeof pValueExponent === "number" &&
-            <ScientificNotation number={[pValueMantissa, pValueExponent]} />
-      ),
-      exportValue: ({ pValueMantissa, pValueExponent }) => (
-        typeof pValueMantissa === "number" &&
-          typeof pValueExponent === "number"
-            ? `${pValueMantissa}x10${pValueExponent}`
-            : null
-      ),
+      renderCell: ({ pValueMantissa, pValueExponent }) => {
+        if (typeof pValueMantissa !== "number" ||
+            typeof pValueExponent !== "number") return naLabel;
+        return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
+      },
+      exportValue: ({ pValueMantissa, pValueExponent }) => {
+        if (typeof pValueMantissa !== "number" ||
+            typeof pValueExponent !== "number") return null;
+        return `${pValueMantissa}x10${pValueExponent}`;
+      },
     },
     {
       id: "beta",
       label: "Beta",
       tooltip: "Beta with respect to the ALT allele",
-      renderCell: ({ beta }) => beta || beta === 0 ? beta.toPrecision(3) : naLabel,
+      renderCell: ({ beta }) => {
+        if (typeof beta !== "number") return naLabel;
+        return beta.toPrecision(3);
+      },
     },
     {
       id: "posteriorProbability",
@@ -127,12 +128,11 @@ function getColumns(id: string, posteriorProbabilities: any) {
       id: "ldr2",
       label: "LD (r²)",
       tooltip: "Linkage disequilibrium with the queried variant",
-      renderCell: ({ locus }) => (
-        locus?.find(obj => obj.variant?.variantId === id)?.r2Overall?.toFixed(2) ?? naLabel
-      ),
-      exportValue: ({ locus }) => (
-        locus?.find(obj => obj.variant?.variantId === id)?.r2Overall?.toFixed(2)
-      ),
+      renderCell: ({ locus }) => {
+        const r2 = locus?.find(obj => obj.variant?.id === id)?.r2Overall;
+        if (typeof r2 !== "number") return naLabel;
+        return r2.toFixed(2);
+      },
     },
     {
       id: "finemappingMethod",
