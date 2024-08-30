@@ -8,17 +8,19 @@ import {
   summaryUtils,
 } from "ui";
 
+import PharmacogenomicsSummary from "sections/src/variant/Pharmacogenomics/Summary";
 import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/Summary";
 import VariantEffectPredictorSummary from "sections/src/variant/VariantEffectPredictor/Summary";
 // import EVASummary from "sections/src/variant/EVA/Summary";
 // import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
 // import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
 // import GWASCredibleSetsSummary from "sections/src/variant/GWASCredibleSets/Summary";
-// import PharmacogenomicsSummary from "sections/src/variant/Pharmacogenomics/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
-
+const PharmacogenomicsSection = lazy(
+  () => import("sections/src/variant/Pharmacogenomics/Body")
+);
 const InSilicoPredictorsSection = lazy(
   () => import("sections/src/variant/InSilicoPredictors/Body")
 );
@@ -29,16 +31,15 @@ const VariantEffectPredictorSection = lazy(
 // const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
 // const QTLCredibleSetsSection = lazy(() => import("sections/src/variant/QTLCredibleSets/Body"));
 // const GWASCredibleSetsSection = lazy(() => import("sections/src/variant/GWASCredibleSets/Body"));
-// const PharmacogenomicsSection = lazy(() => import("sections/src/variant/Pharmacogenomics/Body"));
 
 const summaries = [
+  PharmacogenomicsSummary,
   InSilicoPredictorsSummary,
   VariantEffectPredictorSummary,
   // EVASummary,
   // UniProtVariantsSummary,
   // QTLCredibleSetsSummary,
   // GWASCredibleSetsSummary,
-  // PharmacogenomicsSummary,
 ];
 
 const VARIANT = "variant";
@@ -73,16 +74,19 @@ function Profile({ varId }: ProfileProps) {
       <ProfileHeader />
 
       <SummaryContainer>
+        <PharmacogenomicsSummary /> 
         <InSilicoPredictorsSummary />
         <VariantEffectPredictorSummary />
         {/* <EVASummary />
         <UniProtVariantsSummary />
         <QTLCredibleSetsSummary />
-        <GWASCredibleSetsSummary />
-        <PharmacogenomicsSummary /> */}
+        <GWASCredibleSetsSummary /> */}
       </SummaryContainer>
 
       <SectionContainer>
+        <Suspense fallback={<SectionLoader />}>
+          <PharmacogenomicsSection id={varId} entity={VARIANT} />
+        </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <InSilicoPredictorsSection id={varId} entity={VARIANT} />
         </Suspense>
@@ -100,10 +104,7 @@ function Profile({ varId }: ProfileProps) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <GWASCredibleSetsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <PharmacogenomicsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
-        </Suspense> */}
+        </Suspense>  */}
       </SectionContainer>
     </PlatformApiProvider>
   );
