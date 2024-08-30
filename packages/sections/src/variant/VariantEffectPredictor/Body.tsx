@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, DataTable } from "ui";
+import { Box } from "@mui/material";
+import { Link, SectionItem, DataTable, Tooltip } from "ui";
 import { Fragment } from "react";
 import { definition } from "../VariantEffectPredictor";
 import Description from "../VariantEffectPredictor/Description";
@@ -13,22 +14,33 @@ function formatVariantConsequenceLabel(label) {
 
 const columns = [
   {
-    id: "transcriptId",
-    label: "Transcript",
-    tooltip: "Ensembl canonical transcript",
+    id: "target.approvedSymbol",
+    label: "Gene",
     comparator: (a, b) => a.transcriptIndex - b.transcriptIndex,
-    renderCell: ({ transcriptId, target }) => {
-      if (!transcriptId) return naLabel;
-      if (!target) return transcriptId;
-      return (
-        <Link
-          external
-          to={`https://www.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;g=${
-               target.id};t=${transcriptId}`}
-        >
-          {transcriptId}
-        </Link>
-      )
+    renderCell: ({ target, transcriptId }) => {
+      if (!target) return naLabel;
+      let displayElement = <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>
+      if (transcriptId) {
+        displayElement = 
+          <Tooltip
+            title={
+              <Box>
+                Ensembl canonical transcript:{" "}
+                <Link
+                  external
+                  to={`https://www.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;g=${
+                      target.id};t=${transcriptId}`}
+                >
+                  {transcriptId}
+                </Link>
+              </Box>
+            }
+            showHelpIcon
+          >
+            {displayElement}
+          </Tooltip>
+      }
+      return displayElement;
     }
   },
   {
@@ -56,19 +68,6 @@ const columns = [
     id: "impact",
     label: "Impact",
     renderCell: ({ impact }) => impact?.toLowerCase?.() ?? naLabel,
-  },
-  {
-    id: "consequenceScore",
-    label: "Consequence Score",
-  },
-  {
-    id: "target.approvedName",
-    label: "Gene",
-    renderCell: ({ target }) => (
-      target
-        ? <Link to={`../target/${target.id}`}>{target.approvedName}</Link>
-        : naLabel
-    ),
   },
   {
     id: "aminoAcidChange",
@@ -143,7 +142,7 @@ export function Body({ id, entity }: BodyProps) {
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={VARIANT_EFFECT_PREDICTOR_QUERY.loc.source.body}
             variables={variables}
-            sortBy="transcriptId"
+            sortBy="target.approvedSymbol"
           />
         );
       }}

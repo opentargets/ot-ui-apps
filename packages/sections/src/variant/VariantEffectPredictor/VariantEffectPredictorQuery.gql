@@ -13,7 +13,7 @@ query VariantEffectPredictorQuery($variantId: String!) {
       distanceFromTss
       target {
         id
-        approvedName
+        approvedSymbol
       }
       impact
       consequenceScore
