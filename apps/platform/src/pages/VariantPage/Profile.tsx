@@ -11,7 +11,7 @@ import {
 import PharmacogenomicsSummary from "sections/src/variant/Pharmacogenomics/Summary";
 import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/Summary";
 import VariantEffectPredictorSummary from "sections/src/variant/VariantEffectPredictor/Summary";
-// import EVASummary from "sections/src/variant/EVA/Summary";
+import EVASummary from "sections/src/variant/EVA/Summary";
 // import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
 // import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
 // import GWASCredibleSetsSummary from "sections/src/variant/GWASCredibleSets/Summary";
@@ -27,7 +27,7 @@ const InSilicoPredictorsSection = lazy(
 const VariantEffectPredictorSection = lazy(
   () => import("sections/src/variant/VariantEffectPredictor/Body")
 );
-// const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
+const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
 // const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
 // const QTLCredibleSetsSection = lazy(() => import("sections/src/variant/QTLCredibleSets/Body"));
 // const GWASCredibleSetsSection = lazy(() => import("sections/src/variant/GWASCredibleSets/Body"));
@@ -36,7 +36,7 @@ const summaries = [
   PharmacogenomicsSummary,
   InSilicoPredictorsSummary,
   VariantEffectPredictorSummary,
-  // EVASummary,
+  EVASummary,
   // UniProtVariantsSummary,
   // QTLCredibleSetsSummary,
   // GWASCredibleSetsSummary,
@@ -77,8 +77,8 @@ function Profile({ varId }: ProfileProps) {
         <PharmacogenomicsSummary /> 
         <InSilicoPredictorsSummary />
         <VariantEffectPredictorSummary />
-        {/* <EVASummary />
-        <UniProtVariantsSummary />
+        <EVASummary />
+        {/* <UniProtVariantsSummary />
         <QTLCredibleSetsSummary />
         <GWASCredibleSetsSummary /> */}
       </SummaryContainer>
@@ -93,10 +93,10 @@ function Profile({ varId }: ProfileProps) {
         <Suspense fallback={<SectionLoader />}>
           <VariantEffectPredictorSection id={varId} entity={VARIANT} />
         </Suspense>
-        {/* <Suspense fallback={<SectionLoader />}>
-          <EVASection id={varId} label='NO-LABEL!' entity={VARIANT} />
-        </Suspense>
         <Suspense fallback={<SectionLoader />}>
+          <EVASection id={varId} entity={VARIANT} />
+        </Suspense>
+        {/* <Suspense fallback={<SectionLoader />}>
           <UniProtVariantsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
