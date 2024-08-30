@@ -78,7 +78,7 @@ function DepmapPlot({ data, width }) {
         label: null,
       },
       color: {
-        domain: ["Unfavourable", "Neutral"],
+        domain: ["Dependency", "Neutral"],
         range: ["#EC2846", "#08519C"],
         type: "ordinal",
         label: "Gene effect - log(x)",

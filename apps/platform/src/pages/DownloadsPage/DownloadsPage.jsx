@@ -1,17 +1,8 @@
 import { Fragment, useState, useEffect } from "react";
 import { gql, useQuery } from "@apollo/client";
-import {
-  Paper,
-  Box,
-  Chip,
-  Typography,
-  Alert,
-  AlertTitle,
-  IconButton,
-  CircularProgress,
-} from "@mui/material";
+import { Paper, Box, Chip, Typography, Alert, AlertTitle, CircularProgress } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Link, DataTable } from "ui";
+import { Link, OtTable } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAlignLeft } from "@fortawesome/free-solid-svg-icons";
 
@@ -20,6 +11,7 @@ import DownloadsDrawer from "./DownloadsDrawer";
 import datasetMappings from "./dataset-mappings.json";
 import config from "../../config";
 import DownloadsSchemaDrawer from "./DownloadsSchemaDrawer";
+import { v1 } from "uuid";
 
 const useStyles = makeStyles(theme => ({
   alert: {
@@ -81,7 +73,7 @@ function getColumns(date) {
             return -1;
           })
           .map(format => (
-            <Fragment key={format.format + format.path + date.month + date.year}>
+            <Fragment key={format.format + format.path + date.month + date.year + v1()}>
               <DownloadsDrawer
                 title={niceName}
                 format={format.format}
@@ -200,7 +192,7 @@ function DownloadsPage() {
       {loadingDownloadsData || loading || error ? null : (
         <Paper variant="outlined" elevation={0}>
           <Box m={2}>
-            <DataTable
+            <OtTable
               showGlobalFilter
               columns={columns}
               rows={rows}
