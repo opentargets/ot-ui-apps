@@ -1,4 +1,4 @@
-fragment EVASummaryFragment on VariantIndex {
+fragment EVASummaryFragment on Variant {
   evidences(datasourceIds: ["eva"]){
     count
   }
