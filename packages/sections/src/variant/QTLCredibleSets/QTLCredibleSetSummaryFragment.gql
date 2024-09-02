@@ -1,0 +1,5 @@
+fragment QTLCredibleSetsSummaryFragment on Variant {
+  credibleSets(studyTypes: [sqtl, pqtl, eqtl, tuqtl]) {
+    studyLocusId
+  }
+}
