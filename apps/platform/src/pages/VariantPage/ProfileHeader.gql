@@ -1,4 +1,4 @@
-fragment VariantProfileHeaderFragment on VariantIndex {
+fragment VariantProfileHeaderFragment on Variant {
   chromosome
   position
   referenceAllele

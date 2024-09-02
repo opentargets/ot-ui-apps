@@ -1,4 +1,4 @@
-fragment InSilicoPredictorsSummaryFragment on VariantIndex {
+fragment InSilicoPredictorsSummaryFragment on Variant {
   inSilicoPredictors {
     method
   }

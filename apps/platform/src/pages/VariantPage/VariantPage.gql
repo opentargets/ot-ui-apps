@@ -1,6 +1,6 @@
 query VariantPageQuery($variantId: String!) {
   variant(variantId: $variantId) {
-    variantId
+    id
     dbXrefs {
       id
       source
