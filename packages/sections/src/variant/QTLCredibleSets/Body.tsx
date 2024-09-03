@@ -12,7 +12,7 @@ import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 
-function getColumns(id: string, label: string) {
+function getColumns(id: string, posteriorProbabilities: any) {
 
   return [
     {
@@ -20,7 +20,7 @@ function getColumns(id: string, label: string) {
       label: "Lead Variant",
       renderCell: ({ variant }) => {
         if (!variant) return naLabel;
-        const { variantId, referenceAllele, alternateAllele } = variant;
+        const { id: variantId, referenceAllele, alternateAllele } = variant;
         const displayElement = <DisplayVariantId
           variantId={variantId}
           referenceAllele={referenceAllele}
@@ -37,7 +37,7 @@ function getColumns(id: string, label: string) {
           {displayElement}
         </Link>;
       },
-      exportValue: ({ variant }) => variant?.variantId,
+      exportValue: ({ variant }) => variant?.id,
     },
     {
       id: "study.studyid",
@@ -50,26 +50,42 @@ function getColumns(id: string, label: string) {
     {
       id: "study.studyType",
       label: "Type",
+      renderCell: ({ study }) => {
+        const type = study?.studyType;
+        if (!type) return naLabel;
+        return `${type.slice(0, -3)}${type.slice(-3).toUpperCase()}`;
+      },
+      exportValue: ({ study }) => {
+        const type = study?.studyType;
+        if (!type) return null;
+        return `${type.slice(0, -3)}${type.slice(-3).toUpperCase()}`;
+      },
     },
-    // {
-    //   id: "gene",
-    //   label: "Gene",
-    //   renderCell: d => (
-    //     <Link to={`/target/${d["target.id"]}`}>
-    //       {d["target.approvedSymbol"]}
-    //     </Link>
-    //   ),
-    // },
-    // {
-    //   id: "tissueCell",
-    //   label: "Tissue/Cell",
-    //   renderCell: d => (
-    //     <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${d.tissueFromSourceId}&ontology=uberon`}>
-    //       {d["tissue.label"] || <i>({d["tissue.id"]})</i>}
-    //     </Link>
-    //   ),
-    //   exportLabel: "Tissue/Cell",
-    // },
+    {
+      id: "study.target.approvedSymbol",
+      label: "Affected Gene",
+      renderCell: ({ study }) => {
+        if (!study?.target) return naLabel;
+        return <Link to={`/target/${study.target.id}`}>
+          {study.target.approvedSymbol}
+        </Link>
+      },
+    },
+    {
+      id: "study.biosampleFromSourceId",
+      label: "Affected Tissue/Cell",
+      renderCell: ({ study }) => {
+        if (!study?.biosampleFromSourceId) return naLabel;
+        return <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${study.biosampleFromSourceId}&ontology=uberon`}>
+          {study.biosampleFromSourceId}
+        </Link>
+      },
+    },
+    {
+      id: "study.condition",
+      label: "Condition",
+      renderCell: () => <i>Not in API</i>
+    },
     {
       id: "pValue",
       label: "P-Value",
@@ -139,9 +155,6 @@ function Body({ id, entity }: BodyProps) {
     variables,
   });
   
-  const columns = getColumns(id, label);
-  const rows = request.data.variant.gwasCredibleSets;
-
   return (
     <SectionItem
       definition={definition}
@@ -149,20 +162,19 @@ function Body({ id, entity }: BodyProps) {
       request={request}
       renderDescription={({ variant }) => (
         <Description
-          variantId={variant.variantId}
+          variantId={variant.id}
           referenceAllele={variant.referenceAllele}
           alternateAllele={variant.alternateAllele}
         />
       )}
       renderBody={({ variant }) => {
 
-
         // get columns here so get posterior probabilities once - avoids
         // having to find posterior probs inside sorting comparator function
         const posteriorProbabilities = new Map;
         for (const { locus } of variant?.credibleSets || []) {
           const postProb = locus
-            ?.find(loc => loc.variant?.variantId === id)
+            ?.find(loc => loc.variant?.id === id)
             ?.posteriorProbability
           if (postProb !== undefined) {
             posteriorProbabilities.set(locus, postProb);
@@ -173,9 +185,11 @@ function Body({ id, entity }: BodyProps) {
           <DataTable
             dataDownloader
             sortBy="pValue"
-            columns={columns}
-            rows={rows}
+            columns={getColumns(id, posteriorProbabilities)}
+            rows={variant.credibleSets}
             rowsPerPageOptions={defaultRowsPerPageOptions}
+            query={QTL_CREDIBLE_SETS_QUERY.loc.source.body}
+            variables={variables}
           />
         );
       }}

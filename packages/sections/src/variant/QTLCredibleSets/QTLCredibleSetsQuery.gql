@@ -5,36 +5,29 @@ query GWCredibleSetsQuery($variantId: String!) {
     alternateAllele
     credibleSets(studyTypes: [sqtl, pqtl, eqtl, tuqtl]) {
       variant {
-        variantId
+        id
         referenceAllele
         alternateAllele
       }
       study {
-        traitFromSource
         studyId
-        diseases {
-          name
+        studyType
+        target {
           id
+          approvedSymbol
         }
+        biosampleFromSourceId
       }
       pValueMantissa
       pValueExponent
       beta
       locus {
         variant {
-          variantId
+          id
         }
-        r2Overall
         posteriorProbability
       }
       finemappingMethod
-      strongestLocus2gene {
-        target {
-          id
-          approvedSymbol
-        }
-        score
-      }
     }
   }
 }
