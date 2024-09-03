@@ -76,6 +76,12 @@ function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
     return false;
   }
 
+  function getWeightValue(id: string) {
+    const column = getColumnObject(dataSourcesWeights, id);
+    if (column) return column.weight;
+    return false;
+  }
+
   return (
     <Collapse in={activeHeadersControlls}>
       <WeightsControllsContainer className="weights-controlls">
@@ -109,7 +115,11 @@ function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
             {cols.map(({ id }) => (
               <div key={id} className="colum-control">
                 <Grid className="control-container" key={id}>
-                  <Slider id={id} handleChangeSliderCommitted={handleChangeSliderCommitted} />
+                  <Slider
+                    id={id}
+                    handleChangeSliderCommitted={handleChangeSliderCommitted}
+                    value={getWeightValue(id)}
+                  />
                 </Grid>
                 <div className="required-container">
                   <Required
