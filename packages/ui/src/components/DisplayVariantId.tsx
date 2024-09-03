@@ -87,12 +87,12 @@ function DisplayVariantId({
           {stem}
           _
           {longReferenceAllele
-            ? <HighlightBox>...</HighlightBox>
+            ? <HighlightBox bgrd={expand}>...</HighlightBox>
             : referenceAllele
           }
           _
           {longAlternateAllele
-            ? <HighlightBox>...</HighlightBox>
+            ? <HighlightBox bgrd={expand}>...</HighlightBox>
             : alternateAllele
           }
         </Box>
@@ -159,7 +159,7 @@ function DisplayVariantId({
 
 }
 
-function HighlightBox({ children, bgrd }) {
+function HighlightBox({ children, bgrd = true }) {
   return (
     <Box
       component="span"

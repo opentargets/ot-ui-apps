@@ -21,7 +21,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
       label: "Lead Variant",
       renderCell: ({ variant }) => {
         if (!variant) return naLabel;
-        const { variantId, referenceAllele, alternateAllele } = variant;
+        const { id: variantId, referenceAllele, alternateAllele } = variant;
         const displayElement = <DisplayVariantId
           variantId={variantId}
           referenceAllele={referenceAllele}
@@ -38,7 +38,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
           {displayElement}
         </Link>;
       },
-      exportValue: ({ variant }) => variant?.variantId,
+      exportValue: ({ variant }) => variant?.id,
     },
     {
       id: "trait",
@@ -119,7 +119,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
       label: "LD (r²)",
       tooltip: "Linkage disequilibrium with the queried variant",
       renderCell: ({ locus }) => {
-        const r2 = locus?.find(obj => obj.variant?.variantId === id)?.r2Overall;
+        const r2 = locus?.find(obj => obj.variant?.id === id)?.r2Overall;
         if (typeof r2 !== "number") return naLabel;
         return r2.toFixed(2);
       },
@@ -188,7 +188,7 @@ function Body({ id, entity }: BodyProps) {
       request={request}
       renderDescription={({ variant }) => (
         <Description
-          variantId={variant.variantId}
+          variantId={variant.id}
           referenceAllele={variant.referenceAllele}
           alternateAllele={variant.alternateAllele}
         />
@@ -200,7 +200,7 @@ function Body({ id, entity }: BodyProps) {
         const posteriorProbabilities = new Map;
         for (const { locus } of variant?.credibleSets || []) {
           const postProb = locus
-            ?.find(loc => loc.variant?.variantId === id)
+            ?.find(loc => loc.variant?.id === id)
             ?.posteriorProbability
           if (postProb !== undefined) {
             posteriorProbabilities.set(locus, postProb);

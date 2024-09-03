@@ -1,11 +1,11 @@
 query GWASCredibleSetsQuery($variantId: String!) {
   variant(variantId: $variantId) {
-    variantId
+    id
     referenceAllele
     alternateAllele
     credibleSets(studyTypes: [gwas]) {
       variant {
-        variantId
+        id
         referenceAllele
         alternateAllele
       }
@@ -22,7 +22,7 @@ query GWASCredibleSetsQuery($variantId: String!) {
       beta
       locus {
         variant {
-          variantId
+          id
         }
         r2Overall
         posteriorProbability

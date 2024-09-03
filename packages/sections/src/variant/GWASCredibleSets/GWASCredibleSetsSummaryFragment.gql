@@ -1,4 +1,4 @@
-fragment GWASCredibleSetsSummaryFragment on VariantIndex {
+fragment GWASCredibleSetsSummaryFragment on Variant {
   credibleSets(studyTypes: [gwas]) {
     studyLocusId
   }
