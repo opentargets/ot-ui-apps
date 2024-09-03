@@ -42,6 +42,14 @@ export type RowInteractorsKey = string;
 
 export type Interactors = Map<RowInteractorsKey, RowInteractors>;
 
+export type columnAdvanceControl = {
+  id: string;
+  weight: number;
+  required: boolean;
+  propagate: boolean;
+  aggregation: string;
+};
+
 export interface State {
   sorting: Sorting;
   loading: boolean; // TODO: more loaders?
@@ -59,6 +67,8 @@ export interface State {
   bodyData: Data;
   pinnedData: Data;
   interactors: Interactors;
+  dataSourceControls: Array<columnAdvanceControl>;
+  modifiedSourcesDataControls: boolean;
 }
 
 /*****************
@@ -71,6 +81,9 @@ export enum ActionType {
   TEXT_SEARCH = "TEXT_SEARCH",
   SET_INTERACTORS = "SET_INTERACTORS",
   RESET_PAGINATION = "RESET_PAGINATION",
+  DATA_SOURCE_CONTROL = "DATA_SOURCE_CONTROL",
+  RESET_DATA_SOURCE_CONTROL = "RESET_DATA_SOURCE_CONTROL",
+  HANDLE_AGGREGATION_CLICK = "HANDLE_AGGREGATION_CLICK",
 }
 
 export type SetRowInteractorsPayload = {
@@ -84,4 +97,7 @@ export type Action =
   | { type: ActionType.TEXT_SEARCH; searchFilter: string }
   | { type: ActionType.PAGINATE; pagination: Pagination }
   | { type: ActionType.SET_INTERACTORS; payload: SetRowInteractorsPayload }
-  | { type: ActionType.RESET_PAGINATION };
+  | { type: ActionType.RESET_PAGINATION }
+  | { type: ActionType.DATA_SOURCE_CONTROL; payload: columnAdvanceControl }
+  | { type: ActionType.RESET_DATA_SOURCE_CONTROL }
+  | { type: ActionType.HANDLE_AGGREGATION_CLICK; aggregation: string };
