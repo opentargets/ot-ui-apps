@@ -5,10 +5,10 @@ import {
   Tooltip,
   SectionItem,
   PublicationsDrawer,
-  DataTable,
   ScientificNotation,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  OtTable,
 } from "ui";
 
 import { definition } from ".";
@@ -247,7 +247,7 @@ export function Body({ id, label, entity }) {
       renderBody={({ disease }) => {
         const { rows } = disease.geneBurdenSummary;
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             order="asc"

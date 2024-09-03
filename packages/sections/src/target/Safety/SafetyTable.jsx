@@ -1,4 +1,4 @@
-import { Link, Tooltip, PublicationsDrawer, DataTable, TableDrawer } from "ui";
+import { Link, Tooltip, PublicationsDrawer, TableDrawer, OtTable } from "ui";
 import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleDown, faArrowAltCircleUp } from "@fortawesome/free-solid-svg-icons";
@@ -136,7 +136,7 @@ function getColumns(classes) {
 function SafetyTable({ safetyLiabilities, query, variables }) {
   const classes = useStyles();
   return (
-    <DataTable
+    <OtTable
       showGlobalFilter
       dataDownloader
       columns={getColumns(classes)}
