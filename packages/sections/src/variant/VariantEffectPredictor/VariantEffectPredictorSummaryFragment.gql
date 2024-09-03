@@ -1,4 +1,4 @@
-fragment VariantEffectPredictorSummaryFragment on VariantIndex {
+fragment VariantEffectPredictorSummaryFragment on Variant {
   transcriptConsequences {
     isEnsemblCanonical
   }

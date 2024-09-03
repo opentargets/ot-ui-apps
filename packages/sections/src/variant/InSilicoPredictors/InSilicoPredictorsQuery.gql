@@ -1,6 +1,6 @@
 query InSilicoPredictorsQuery($variantId: String!) {
   variant(variantId: $variantId) {
-    variantId
+    id
     inSilicoPredictors {
       method
       assessment

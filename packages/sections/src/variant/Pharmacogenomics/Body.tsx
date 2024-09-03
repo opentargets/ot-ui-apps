@@ -24,7 +24,7 @@ function Body({ id, entity }: BodyProps) {
       request={request}
       renderDescription={({ variant }) => (
         <Description
-          variantId={variant.variantId}
+          variantId={variant.id}
           referenceAllele={variant.referenceAllele}
           alternateAllele={variant.alternateAllele}
         />
