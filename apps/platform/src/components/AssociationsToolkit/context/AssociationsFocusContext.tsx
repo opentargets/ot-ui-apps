@@ -133,7 +133,6 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
             ) {
               acc.push({
                 ...element,
-                interactorsSection: null,
                 section: null,
               });
               return acc;
@@ -149,7 +148,6 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
               // same row active  -> update active section
               acc.push({
                 ...element,
-                interactorsSection: null,
                 section: action.focus.section,
               });
               return acc;
@@ -160,7 +158,6 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
             acc.push({
               ...element,
               section: null,
-              interactorsSection: null,
             });
             return acc;
           }
@@ -221,34 +218,40 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
     }
 
     case FocusActionType.SET_INTERACTORS_ON: {
-      {
-        const { rowActive } = getFocusElementState(focusState, {
-          table: action.focus.table,
-          row: action.focus.row,
-          section: null,
-        });
-        if (rowActive) {
-          return focusState.map((focusElement: FocusElement) => {
-            if (
-              focusElement.row === action.focus.row &&
-              focusElement.table === action.focus.table
-            ) {
-              return {
-                ...focusElement,
-                interactors: true,
-                interactorsView: "intac",
-              };
-            } else {
-              return focusElement;
-            }
+      let elementExists = false;
+
+      const updatedElements = focusState.reduce<FocusState>((acc, element) => {
+        if (element.table === action.focus.table && element.row === action.focus.row) {
+          elementExists = true;
+          acc.push({
+            ...element,
+            interactors: true,
           });
+          return acc;
         }
+        if (element.table === action.focus.table) {
+          if (element.section) {
+            acc.push({
+              ...element,
+              interactors: false,
+            });
+          }
+          return acc;
+        } else {
+          acc.push(element);
+          return acc;
+        }
+      }, []);
+      if (!elementExists) {
+        const newElement = createFocusElement({
+          row: action.focus.row,
+          table: action.focus.table,
+          interactors: true,
+        });
+        updatedElements.push(newElement);
       }
 
-      return [
-        ...focusState,
-        focusElementGenerator(action.focus.table, action.focus.row, null, "intac", true),
-      ];
+      return updatedElements;
     }
 
     case FocusActionType.SET_INTERACTORS_OFF: {
@@ -271,7 +274,9 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
 
     case FocusActionType.SET_INTERACTORS_SECTION: {
       return focusState.reduce<FocusState>((acc, element) => {
+        // Active row
         if (element.table === action.focus.table && element.row === action.focus.row) {
+          // Section already active
           if (
             element.interactorsRow === action.focus.interactorsRow &&
             element.interactorsSection?.join("-") === action.focus.section?.join("-")
@@ -282,24 +287,27 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
               interactorsSection: null,
             });
             return acc;
-          } else {
+          }
+          // Set section on element
+          else {
             acc.push({
               ...element,
               interactorsRow: action.focus.interactorsRow,
               interactorsSection: action.focus.section,
-              section: null,
             });
             return acc;
           }
         }
+        // Rest of elements in same table
         if (element.table === action.focus.table) {
           if (element.interactors) {
             acc.push({
               ...element,
-              section: null,
               interactorsRow: null,
               interactorsSection: null,
             });
+          } else {
+            acc.push({ ...element });
           }
           return acc;
         } else {
