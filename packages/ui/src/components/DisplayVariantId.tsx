@@ -55,11 +55,11 @@ function DisplayVariantId({
   if (idParts.at(-2) === referenceAllele &&
       idParts.at(-1) === alternateAllele) {
     isHashed = false;
-    stem = idParts.slice(0, -2).join('_');
+    stem = idParts.slice(idParts[0] === 'OTVAR' ? 1 : 0, -2).join('_');
     fullVariantId = otVariantId;
   } else {
     isHashed = true;
-    stem = idParts.slice(0, -1).join('_');
+    stem = idParts.slice(idParts[0] === 'OTVAR' ? 1 : 0, -1).join('_');
     fullVariantId = `${stem}_${referenceAllele}_${alternateAllele}`;
   }
 
@@ -85,12 +85,12 @@ function DisplayVariantId({
           {stem}
           _
           {longReferenceAllele
-            ? <HighlightBox>...</HighlightBox>
+            ? <HighlightBox><small><i>INS</i></small></HighlightBox>
             : referenceAllele
           }
           _
           {longAlternateAllele
-            ? <HighlightBox>...</HighlightBox>
+            ? <HighlightBox><small><i>DEL</i></small></HighlightBox>
             : alternateAllele
           }
         </Box>
