@@ -45,14 +45,14 @@ const summaries = [
 const VARIANT = "variant";
 const VARIANT_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
   summaries,
-  "VariantIndex"
+  "Variant"
 );
 const VARIANT_PROFILE_QUERY = gql`
   query VariantProfileQuery($variantId: String!) {
     variant(variantId: $variantId) {
-      variantId
+      id
       ...VariantProfileHeaderFragment
-      ...VariantIndexProfileSummaryFragment
+      ...VariantProfileSummaryFragment
     }
   }
   ${ProfileHeader.fragments.profileHeader}

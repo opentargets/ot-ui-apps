@@ -1,6 +1,6 @@
 query PharmacogenomicsQuery($variantId: String!) {
   variant(variantId: $variantId) {
-    variantId
+    id
     referenceAllele
     alternateAllele
     pharmacogenomics {
