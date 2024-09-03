@@ -30,6 +30,7 @@ export const initialState: State = {
   interactors: new Map(),
   dataSourceControls: defaulDatasourcesWeigths,
   modifiedSourcesDataControls: false,
+  facetFilters: [],
 };
 
 type InitialStateParams = {
@@ -65,13 +66,6 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       return {
         ...state,
         sorting: action.sorting,
-      };
-    }
-    case ActionType.TEXT_SEARCH: {
-      return {
-        ...state,
-        pagination: DEFAULT_TABLE_PAGINATION_STATE,
-        searchFilter: action.searchFilter,
       };
     }
     case ActionType.SET_INTERACTORS: {
@@ -134,6 +128,13 @@ export function aotfReducer(state: State = initialState, action: Action): State 
         ...state,
         dataSourceControls,
         modifiedSourcesDataControls: !isAllActive,
+        pagination: DEFAULT_TABLE_PAGINATION_STATE,
+      };
+    }
+    case ActionType.FACETS_SEARCH: {
+      return {
+        ...state,
+        facetFilters: action.facetFilters,
         pagination: DEFAULT_TABLE_PAGINATION_STATE,
       };
     }

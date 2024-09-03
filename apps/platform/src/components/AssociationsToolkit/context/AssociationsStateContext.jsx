@@ -14,6 +14,7 @@ import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
 import {
   aggregationClick,
+  facetFilterSelectAction,
   onPaginationChange,
   resetDataSourceControl,
   resetPagination,
@@ -37,12 +38,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const hasComponentBeenRender = useRef(false);
 
-  // Table Controls
-  const [facetFilterIds, setFacetFilterIds] = useState([]);
-
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
-  const [searhFilter, setSearhFilter] = useState("");
   const [sorting, setSorting] = useState(DEFAULT_TABLE_SORTING_STATE);
 
   // Data controls UI
@@ -71,12 +68,11 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       id,
       index: state.pagination.pageIndex,
       size: state.pagination.pageSize,
-      filter: searhFilter,
       sortBy: sorting[0].id,
       enableIndirect,
       datasources: state.dataSourceControls,
       entity,
-      facetFilters: facetFilterIds,
+      facetFilters: state.facetFilterIds,
     },
   });
 
@@ -95,7 +91,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       sortBy: sorting[0].id,
       datasources: state.dataSourceControls,
       rowsFilter: pinnedEntries.toSorted(),
-      facetFilters: facetFilterIds,
+      facetFilters: state.facetFilterIds,
     },
   });
 
@@ -133,15 +129,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     [sorting]
   );
 
-  const handleSearchInputChange = useCallback(
-    newSearchFilter => {
-      if (newSearchFilter !== searhFilter) {
-        setSearhFilter(newSearchFilter);
-      }
-    },
-    [searhFilter]
-  );
-
   const resetDatasourceControls = () => {
     dispatch(resetDataSourceControl());
   };
@@ -152,6 +139,10 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const updateDataSourceControls = (id, weight, required, aggregation) => {
     dispatch(setDataSourceControl(id, weight, required, aggregation));
+  };
+
+  const facetFilterSelect = facetFilters => {
+    dispatch(facetFilterSelectAction(facetFilters));
   };
 
   const contextVariables = useMemo(
@@ -172,26 +163,23 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       dataSourcesWeights: state.dataSourceControls,
       displayedTable,
       pinnedData,
-      searhFilter,
       sorting,
       modifiedSourcesDataControls: state.modifiedSourcesDataControls,
       pinnedLoading,
       pinnedError,
       pinnedCount,
       pinnedEntries,
-      facetFilterIds,
       resetToInitialPagination,
       setPinnedEntries,
       resetDatasourceControls,
       handleSortingChange,
-      handleSearchInputChange,
       setDisplayedTable,
       handlePaginationChange,
       setEnableIndirect,
       setActiveHeadersControlls,
       handleAggregationClick,
-      setFacetFilterIds,
       updateDataSourceControls,
+      facetFilterSelect,
       state,
     }),
     [
@@ -204,7 +192,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       entity,
       entityToGet,
       error,
-      handleSearchInputChange,
       handleSortingChange,
       id,
       initialLoading,
@@ -216,12 +203,9 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       pinnedError,
       pinnedLoading,
       query,
-      searhFilter,
       setDisplayedTable,
       setPinnedEntries,
       sorting,
-      facetFilterIds,
-      setFacetFilterIds,
       handlePaginationChange,
     ]
   );

@@ -8,49 +8,32 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useReducer, useState } from "react";
 import { Tooltip, useDebounce } from "ui";
 
 import FACETS_SEARCH_QUERY from "./FacetsQuery.gql";
 import useAotfContext from "../AssociationsToolkit/hooks/useAotfContext";
 import client from "../../client";
 import FacetsSuggestion from "./FacetsSuggestion";
-
-const TARGET_CATEGORIES = {
-  "All Categories": "All",
-  Names: "Approved Name",
-  Symbol: "Approved Symbol",
-  "ChEMBL Target Class": "ChEMBL Target Class",
-  "GO:BP": "GO:BP",
-  "GO:CC": "GO:CC",
-  "GO:MF": "GO:MF",
-  Reactome: "Reactome",
-  "Subcellular Location": "Subcellular Location",
-  "Target ID (ENSG)": "Target ID",
-  "Tractability Antibody": "Tractability Antibody",
-  "Tractability Other Modalities": "Tractability Other Modalities",
-  "Tractability PROTAC": "Tractability PROTAC",
-  "Tractability Small Molecule": "Tractability Small Molecule",
-};
-
-const DISEASE_CATEGORIES = {
-  "All Categories": "All",
-  Disease: "Disease",
-  "Therapeutic Area": "Therapeutic Area",
-};
+import {
+  selectFacet,
+  setCategory,
+  setFacetsCategories,
+  setFacetsData,
+  setLoading,
+} from "./facetsActions";
+import { createInitialState, facetsReducer } from "./facetsReducer";
+import { ALL_CATEGORY } from "./facets.types";
+import { v1 } from "uuid";
 
 function FacetsSearch(): ReactElement {
-  const { entityToGet, setFacetFilterIds } = useAotfContext();
+  const { entityToGet, facetFilterSelect } = useAotfContext();
   const [inputValue, setInputValue] = useState("");
-  const debouncedInputValue = useDebounce(inputValue, 400);
-  const [dataOptions, setDataOptions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const CATEGORIES = entityToGet === "disease" ? DISEASE_CATEGORIES : TARGET_CATEGORIES;
-  const [categoryFilterValue, setCategoryFilterValue] = useState(CATEGORIES["All Categories"]);
+  const debouncedInputValue = useDebounce(inputValue, 200);
+  const [state, dispatch] = useReducer(facetsReducer, entityToGet, createInitialState);
 
   async function getFacetsData() {
-    setDataOptions([]);
-    setLoading(true);
+    dispatch(setLoading(true));
 
     const variables = {
       queryString: inputValue,
@@ -62,27 +45,33 @@ function FacetsSearch(): ReactElement {
       variables,
     });
 
+    // dispatch(setFacetsData(resData.data.facets.hits));
+
     const filteredData = resData.data.facets.hits.filter(
       e =>
-        e.category === categoryFilterValue || categoryFilterValue === CATEGORIES["All Categories"]
+        e.category === state.categoryFilterValue ||
+        state.categoryFilterValue === state.availableCategories[ALL_CATEGORY]
     );
-
-    setDataOptions(filteredData);
-    setLoading(false);
+    dispatch(setFacetsData(filteredData));
   }
 
   useEffect(() => {
     if (inputValue) getFacetsData();
-    else setDataOptions([]);
+    else dispatch(setFacetsData([]));
   }, [debouncedInputValue]);
+
+  useEffect(() => {
+    setFacetsCategories(entityToGet);
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
       <Select
-        value={categoryFilterValue}
+        value={state.categoryFilterValue}
         size="small"
         onChange={(event: SelectChangeEvent) => {
-          setCategoryFilterValue(event.target.value);
+          console.log("0", event.target);
+          dispatch(setCategory(event.target.value));
         }}
         sx={{
           minWidth: 150,
@@ -97,7 +86,7 @@ function FacetsSearch(): ReactElement {
           },
         }}
       >
-        {Object.entries(CATEGORIES).map(([key, value]) => (
+        {Object.entries(state.availableCategories).map(([key, value]) => (
           <MenuItem key={key} value={value}>
             {key}
           </MenuItem>
@@ -120,13 +109,16 @@ function FacetsSearch(): ReactElement {
         autoComplete
         includeInputInList
         filterSelectedOptions
-        options={dataOptions}
+        options={state.dataOptions}
+        value={state.selectedFacets}
         noOptionsText={<FacetsSuggestion />}
+        loading={state.loading}
         size="small"
-        loading={loading}
         limitTags={2}
         onChange={(event: any, newValue: any) => {
-          setFacetFilterIds(newValue.map(v => v.id));
+          dispatch(selectFacet(newValue));
+          //TODO
+          // facetFilterSelect(newValue);
         }}
         filterOptions={x => x}
         getOptionLabel={option => option?.label}
@@ -138,7 +130,7 @@ function FacetsSearch(): ReactElement {
         )}
         renderTags={(value: readonly string[], getTagProps) =>
           value.map((option: any, index: number) => (
-            <Tooltip title={option.label} key={option.id}>
+            <Tooltip title={option.label} key={option.id} style="">
               <Box sx={{ maxWidth: "150px" }}>
                 <Chip size="small" label={option.label} {...getTagProps({ index })} />
               </Box>
@@ -148,7 +140,7 @@ function FacetsSearch(): ReactElement {
         renderOption={(props, option) => {
           const { category, highlights } = option;
           return (
-            <li {...props}>
+            <li {...props} key={v1()}>
               <Box
                 sx={{
                   display: "flex",

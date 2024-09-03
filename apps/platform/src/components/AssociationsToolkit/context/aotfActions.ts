@@ -1,3 +1,4 @@
+import { Facet } from "../../Facets/facets.types";
 import { Action, ActionType, Pagination, RowInteractorsKey } from "../types";
 
 export function onPaginationChange(pagination: Pagination): Action {
@@ -42,5 +43,13 @@ export function aggregationClick(aggregation: string): Action {
   return {
     type: ActionType.HANDLE_AGGREGATION_CLICK,
     aggregation,
+  };
+}
+
+export function facetFilterSelectAction(facets: Facet[]): Action {
+  const facetFilters = facets.map(v => v.id);
+  return {
+    type: ActionType.FACETS_SEARCH,
+    facetFilters,
   };
 }
