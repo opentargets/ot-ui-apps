@@ -51,16 +51,17 @@ function DisplayVariantId({
   }
 
   const idParts = otVariantId.split('_');
-  let isHashed, stem, fullVariantId;
+  if (idParts[0] === "OTVAR") {
+    idParts.shift();
+  };
+  let isHashed, stem;
   if (idParts.at(-2) === referenceAllele &&
       idParts.at(-1) === alternateAllele) {
     isHashed = false;
-    stem = idParts.slice(idParts[0] === 'OTVAR' ? 1 : 0, -2).join('_');
-    fullVariantId = otVariantId;
+    stem = idParts.slice(0, -2).join('_');
   } else {
     isHashed = true;
-    stem = idParts.slice(idParts[0] === 'OTVAR' ? 1 : 0, -1).join('_');
-    fullVariantId = `${stem}_${referenceAllele}_${alternateAllele}`;
+    stem = idParts.slice(0, -1).join('_');
   }
 
   const longReferenceAllele = referenceAllele.length > maxChars;
@@ -85,12 +86,16 @@ function DisplayVariantId({
           {stem}
           _
           {longReferenceAllele
-            ? <HighlightBox><small><i>INS</i></small></HighlightBox>
+            ? <HighlightBox>
+                <span style={{ fontSize: "0.94em", fontStyle: "italic"}}>INS</span>
+              </HighlightBox>
             : referenceAllele
           }
           _
           {longAlternateAllele
-            ? <HighlightBox><small><i>DEL</i></small></HighlightBox>
+            ? <HighlightBox>
+                <span style={{ fontSize: "0.94em", fontStyle: "italic"}}>DEL</span>
+              </HighlightBox>
             : alternateAllele
           }
         </Box>
@@ -133,7 +138,7 @@ function DisplayVariantId({
             }
             <CopyPanel
               label="Full Variant ID"
-              text={fullVariantId}
+              text={`${stem}_${referenceAllele}_${alternateAllele}`}
               copyToClipboard={copyToClipboard}
             />
           </DialogContent>
@@ -148,7 +153,7 @@ function DisplayVariantId({
     );
   }
 
-  return fullVariantId;
+  return `${stem}_${referenceAllele}_${alternateAllele}`;
 
 }
 
