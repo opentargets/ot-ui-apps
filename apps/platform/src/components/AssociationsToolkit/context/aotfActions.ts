@@ -47,9 +47,16 @@ export function aggregationClick(aggregation: string): Action {
 }
 
 export function facetFilterSelectAction(facets: Facet[]): Action {
-  const facetFilters = facets.map(v => v.id);
+  let facetFiltersIds: string[] = [];
+  if (facets && facets.length) facetFiltersIds = facets.map(v => v.id);
   return {
     type: ActionType.FACETS_SEARCH,
-    facetFilters,
+    facetFilters: facetFiltersIds,
+  };
+}
+
+export function resetToInitialState(): Action {
+  return {
+    type: ActionType.SET_INITIAL_STATE,
   };
 }

@@ -85,6 +85,7 @@ export enum ActionType {
   RESET_DATA_SOURCE_CONTROL = "RESET_DATA_SOURCE_CONTROL",
   HANDLE_AGGREGATION_CLICK = "HANDLE_AGGREGATION_CLICK",
   FACETS_SEARCH = "FACETS_SEARCH",
+  SET_INITIAL_STATE = "SET_INITIAL_STATE",
 }
 
 export type SetRowInteractorsPayload = {
@@ -101,4 +102,5 @@ export type Action =
   | { type: ActionType.DATA_SOURCE_CONTROL; payload: columnAdvanceControl }
   | { type: ActionType.RESET_DATA_SOURCE_CONTROL }
   | { type: ActionType.HANDLE_AGGREGATION_CLICK; aggregation: string }
-  | { type: ActionType.FACETS_SEARCH; facetFilters: string[] };
+  | { type: ActionType.FACETS_SEARCH; facetFilters: string[] }
+  | { type: ActionType.SET_INITIAL_STATE };

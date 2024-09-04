@@ -18,6 +18,7 @@ import {
   onPaginationChange,
   resetDataSourceControl,
   resetPagination,
+  resetToInitialState,
   setDataSourceControl,
 } from "./aotfActions";
 
@@ -72,7 +73,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       enableIndirect,
       datasources: state.dataSourceControls,
       entity,
-      facetFilters: state.facetFilterIds,
+      facetFilters: state.facetFilters,
     },
   });
 
@@ -91,16 +92,13 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       sortBy: sorting[0].id,
       datasources: state.dataSourceControls,
       rowsFilter: pinnedEntries.toSorted(),
-      facetFilters: state.facetFilterIds,
+      facetFilters: state.facetFilters,
     },
   });
 
   useEffect(() => {
     if (hasComponentBeenRender.current) {
-      resetDatasourceControls();
-      setActiveHeadersControlls(false);
-      setSorting(DEFAULT_TABLE_SORTING_STATE);
-      dispatch(resetPagination());
+      dispatch(resetToInitialState());
     }
     hasComponentBeenRender.current = true;
   }, [id]);

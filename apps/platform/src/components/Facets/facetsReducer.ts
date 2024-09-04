@@ -30,8 +30,9 @@ export function facetsReducer(state: FacetState = initialFacetState, action: Act
   }
   switch (action.type) {
     case ActionType.RESET_FACETS: {
+      const initialStateWithCategory = createInitialState(action.entityToGet);
       return {
-        ...state,
+        ...initialStateWithCategory,
         selectedFacets: [],
         dataOptions: [],
       };

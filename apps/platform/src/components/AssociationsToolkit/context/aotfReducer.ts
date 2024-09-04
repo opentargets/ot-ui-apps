@@ -138,6 +138,11 @@ export function aotfReducer(state: State = initialState, action: Action): State 
         pagination: DEFAULT_TABLE_PAGINATION_STATE,
       };
     }
+    case ActionType.SET_INITIAL_STATE: {
+      return {
+        ...initialState,
+      };
+    }
     default: {
       throw Error("Unknown action: " + action);
       return state;

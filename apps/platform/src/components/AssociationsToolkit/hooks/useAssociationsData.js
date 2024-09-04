@@ -70,8 +70,7 @@ function useAssociationsData({
     };
     if (isCurrent) fetchData();
     return () => (isCurrent = false);
-    // todo: add facet filter
-  }, [id, index, size, sortBy, enableIndirect, datasources, query, entity]);
+  }, [id, index, size, sortBy, enableIndirect, datasources, query, entity, facetFilters]);
 
   return state;
 }

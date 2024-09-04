@@ -55,7 +55,7 @@ function FacetsSearch(): ReactElement {
   }, [debouncedInputValue]);
 
   useEffect(() => {
-    dispatch(resetFacets());
+    dispatch(resetFacets(entityToGet));
   }, [id]);
 
   return (
@@ -64,7 +64,6 @@ function FacetsSearch(): ReactElement {
         value={state.categoryFilterValue}
         size="small"
         onChange={(event: SelectChangeEvent) => {
-          console.log("0", event.target);
           dispatch(setCategory(event.target.value));
         }}
         sx={{
@@ -111,8 +110,7 @@ function FacetsSearch(): ReactElement {
         limitTags={2}
         onChange={(event: any, newValue: any) => {
           dispatch(selectFacet(newValue));
-          //TODO
-          // facetFilterSelect(newValue);
+          facetFilterSelect(newValue);
         }}
         filterOptions={x => x}
         getOptionLabel={option => option?.label}
@@ -125,8 +123,13 @@ function FacetsSearch(): ReactElement {
         renderTags={(value: readonly string[], getTagProps) =>
           value.map((option: any, index: number) => (
             <Tooltip title={option.label} key={option.id} style="">
-              <Box sx={{ maxWidth: "150px" }}>
-                <Chip size="small" label={option.label} {...getTagProps({ index })} />
+              <Box sx={{ maxWidth: "150px" }} key={option.id}>
+                <Chip
+                  size="small"
+                  label={option.label}
+                  {...getTagProps({ index })}
+                  key={option.id}
+                />
               </Box>
             </Tooltip>
           ))

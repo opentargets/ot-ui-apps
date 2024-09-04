@@ -22,9 +22,10 @@ export function setFacetsCategories(entity: ENTITY): Action {
   };
 }
 
-export function resetFacets(): Action {
+export function resetFacets(entityToGet: ENTITY): Action {
   return {
     type: ActionType.RESET_FACETS,
+    entityToGet,
   };
 }
 

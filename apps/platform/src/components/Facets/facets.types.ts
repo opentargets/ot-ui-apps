@@ -64,4 +64,4 @@ export type Action =
   | { type: ActionType.SET_LOADING; loading: boolean }
   | { type: ActionType.SET_CATEGORY; category: string }
   | { type: ActionType.SELECT_FACET; payload: Facet[] }
-  | { type: ActionType.RESET_FACETS };
+  | { type: ActionType.RESET_FACETS; entityToGet: ENTITY };
