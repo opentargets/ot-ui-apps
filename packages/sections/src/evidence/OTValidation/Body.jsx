@@ -143,21 +143,15 @@ const getColumns = classes => [
   {
     id: "assessment",
     label: "OTVL assessment",
-    renderCell: ({ assessment }) => {
-      // TODO: temp solution, assessment key should contain array
-      const regex =
-        /(Evidence of dependency)|(Evidence of toxicity)|(No evidence of dependency)|(No evidence of toxicity)|(Multiple evidence of dependency)/g;
-      const listOfValues = assessment.match(regex);
-      return (
-        <>
-          {listOfValues.map(e => (
-            <Box sx={{ my: theme => theme.spacing(1) }} key={e}>
-              {e}
-            </Box>
-          ))}
-        </>
-      );
-    },
+    renderCell: ({ assessment }) => (
+      <>
+        {assessment.map(e => (
+          <Box sx={{ my: theme => theme.spacing(1) }} key={e}>
+            {e}
+          </Box>
+        ))}
+      </>
+    ),
   },
   {
     id: "releaseVersion",

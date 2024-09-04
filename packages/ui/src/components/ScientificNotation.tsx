@@ -1,10 +1,15 @@
+import { ReactElement } from "react";
 import { decimalPlaces } from "../constants";
 
-function ScientificNotation({ number }) {
+type ScientificNotationProps = {
+  number: number | number[];
+};
+
+function ScientificNotation({ number }: ScientificNotationProps): ReactElement | null {
   if (!number) return null;
 
-  let mantissa;
-  let exponent;
+  let mantissa: number | string;
+  let exponent: number | string;
 
   if (Array.isArray(number)) {
     [mantissa, exponent] = number;
@@ -13,7 +18,7 @@ function ScientificNotation({ number }) {
     exponent = exponent.charAt(0) === "+" ? exponent.slice(1) : exponent;
   }
 
-  mantissa = parseFloat(parseFloat(mantissa).toFixed(decimalPlaces));
+  mantissa = parseFloat(parseFloat(String(mantissa)).toFixed(decimalPlaces));
 
   return (
     <>
