@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, DataTable, ClinvarStars } from "ui";
+import { Link, SectionItem, Tooltip, ClinvarStars, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -107,7 +107,7 @@ function Body({ id, label: symbol, entity }) {
         );
 
         return data.target.chemicalProbes?.length > 0 ? (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={sortedProbes}
             showGlobalFilter

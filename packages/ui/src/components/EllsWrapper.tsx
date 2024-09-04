@@ -1,4 +1,5 @@
 import { makeStyles } from "@mui/styles";
+import { ReactElement } from "react";
 
 const useStyles = makeStyles(() => ({
   ellipseContainer: {
@@ -11,11 +12,16 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function EllsWrapper({ children, title }) {
+type EllsWrapperProps = {
+  title?: string;
+  children?: ReactElement | string;
+};
+
+function EllsWrapper({ children, title }: EllsWrapperProps): ReactElement {
   const classes = useStyles();
 
   return (
-    <div className={classes.ellipseContainer} title={title || children}>
+    <div className={classes.ellipseContainer} title={title || (children as string)}>
       {children}
     </div>
   );

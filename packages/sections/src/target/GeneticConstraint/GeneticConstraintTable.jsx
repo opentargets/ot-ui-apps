@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import { Link, Tooltip, DataTable } from "ui";
+import { Link, Tooltip, OtTable } from "ui";
 
 import { defaultRowsPerPageOptions } from "../../constants";
 import upperBin6Map from "./upperBin6Map";
@@ -98,7 +98,7 @@ function getColumns(ensemblId, symbol) {
 
 function GeneticConstraintTable({ ensemblId, symbol, geneticConstraint, query, variables }) {
   return (
-    <DataTable
+    <OtTable
       dataDownloader
       columns={getColumns(ensemblId, symbol)}
       rows={geneticConstraint}

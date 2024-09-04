@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { sortBy, filter } from "lodash";
-import { Link, Tooltip, SectionItem, PublicationsDrawer, DataTable } from "ui";
+import { Link, Tooltip, SectionItem, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -150,7 +150,7 @@ function Section({ id, label: symbol, entity }) {
       renderBody={({ target }) => {
         const rows = sortBy(target.geneOntology.map(extractCategory), "category.label");
         return (
-          <DataTable
+          <OtTable
             showGlobalFilter
             dataDownloader
             columns={columns}

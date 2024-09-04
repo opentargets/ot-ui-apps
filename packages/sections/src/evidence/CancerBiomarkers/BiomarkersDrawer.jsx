@@ -75,15 +75,16 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
             <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
-        {biomarkers.variant ? (
+        {biomarkers.geneticVariation ? (
           <Paper className={classes.paper} variant="outlined">
             <Typography variant="subtitle2" paragraph>
               Variant:
             </Typography>
-            {biomarkers.variant.map(variant => (
+            {biomarkers.geneticVariation.map(variant => (
               <div key={variant.name} className={classes.biomarkerItem}>
                 <div>
-                  {variant.name} {variant.variantId ? `(ID: ${variant.variantId})` : null}
+                  {variant.name}{" "}
+                  {variant.geneticVariationId ? `(ID: ${variant.geneticVariationId})` : null}
                 </div>
                 {variant.functionalConsequenceId ? (
                   <Link

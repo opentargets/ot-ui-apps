@@ -1,15 +1,15 @@
 import { Link } from "ui";
 
 function Description({ symbol, diseaseName, data }) {
-
   // construct direct link to AZ PhwWAS Portal if any row is from there
   const { releaseVersion, targetFromSourceId } =
     data?.disease?.geneBurdenSummary?.rows?.find(row => {
       return row.projectId === "AstraZeneca PheWAS Portal";
-     }) ?? {};
-  const azLink = releaseVersion && targetFromSourceId
-    ? `https://azphewas.com/geneView/${releaseVersion}/${targetFromSourceId}`
-    : "https://azphewas.com";
+    }) ?? {};
+  const azLink =
+    releaseVersion && targetFromSourceId
+      ? `https://azphewas.com/geneView/${releaseVersion}/${targetFromSourceId}`
+      : "https://azphewas.com";
 
   return (
     <>
@@ -21,6 +21,10 @@ function Description({ symbol, diseaseName, data }) {
       ,{" "}
       <Link external to="https://app.genebass.org">
         Genebass
+      </Link>
+      ,{" "}
+      <Link external to="https://www.finngen.fi/en">
+        FinnGen
       </Link>
       .
     </>

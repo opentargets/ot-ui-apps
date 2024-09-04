@@ -1,7 +1,7 @@
 import { v1 } from "uuid";
 import { Fragment } from "react";
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, DataTable, TableDrawer } from "ui";
+import { Link, SectionItem, TableDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -79,7 +79,7 @@ function Body({ id: chemblId, label: name, entity }) {
         const { rows } = data.drug.mechanismsOfAction;
 
         return (
-          <DataTable
+          <OtTable
             showGlobalFilter
             columns={columns}
             rows={rows}

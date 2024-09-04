@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useQuery } from "@apollo/client";
-import { ChipList, SectionItem, PublicationsDrawer, DataTable } from "ui";
+import { ChipList, SectionItem, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -87,7 +87,7 @@ function Section({ id, label: symbol, entity }) {
               <Typography className={classes.roleInCancerTitle}>Role in cancer:</Typography>
               <ChipList items={roleInCancer.length > 0 ? roleInCancer : [{ label: "Unknown" }]} />
             </Box>
-            <DataTable
+            <OtTable
               columns={columns}
               dataDownloader
               dataDownloaderFileStem={`${symbol}-hallmarks`}

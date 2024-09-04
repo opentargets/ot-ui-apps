@@ -10,11 +10,8 @@ function AotfApiPlayground() {
     enableIndirect,
     dataSourcesWeights,
     entity,
-    dataSourcesRequired,
     query,
   } = useAotfContext();
-
-  const aggregationFilters = dataSourcesRequired.map(({ id, ...obj }) => ({ ...obj }));
 
   const variables = {
     id,
@@ -23,9 +20,13 @@ function AotfApiPlayground() {
     filter: searhFilter,
     sortBy: sorting[0].id,
     enableIndirect,
-    datasources: dataSourcesWeights,
+    datasources: dataSourcesWeights.map(el => ({
+      id: el.id,
+      weight: el.weight,
+      propagate: el.propagate,
+      required: el.required,
+    })),
     entity,
-    aggregationFilters,
   };
 
   return (

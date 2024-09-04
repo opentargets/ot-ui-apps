@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { SectionItem, Tooltip, Link, DataTable, ScientificNotation } from "ui";
+import { SectionItem, Tooltip, Link, ScientificNotation, OtTable } from "ui";
 
 import { dataTypesMap } from "../../dataTypes";
 
@@ -122,7 +122,7 @@ function Body({ id, label, entity }) {
       renderBody={({ disease }) => {
         const { rows } = disease.expressionAtlasSummary;
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             dataDownloader

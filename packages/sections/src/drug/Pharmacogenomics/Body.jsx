@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useQuery } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, Tooltip, DataTable, LabelChip, PublicationsDrawer } from "ui";
+import { Link, SectionItem, Tooltip, LabelChip, PublicationsDrawer, OtTable } from "ui";
 
 import { epmcUrl } from "../../utils/urls";
 import { definition } from ".";
@@ -273,7 +273,7 @@ function Body({ id: chemblId, label: name, entity }) {
       entity={entity}
       renderDescription={() => <Description name={name} />}
       renderBody={({ drug }) => (
-        <DataTable
+        <OtTable
           sortBy="evidenceLevel"
           showGlobalFilter
           dataDownloader

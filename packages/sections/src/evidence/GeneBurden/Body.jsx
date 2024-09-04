@@ -5,10 +5,10 @@ import {
   Tooltip,
   SectionItem,
   PublicationsDrawer,
-  DataTable,
   ScientificNotation,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  OtTable,
 } from "ui";
 
 import { definition } from ".";
@@ -241,11 +241,13 @@ export function Body({ id, label, entity }) {
       chipText={dataTypesMap.genetic_association}
       entity={entity}
       request={request}
-      renderDescription={data => <Description symbol={label.symbol} diseaseName={label.name} data={data} />}
+      renderDescription={data => (
+        <Description symbol={label.symbol} diseaseName={label.name} data={data} />
+      )}
       renderBody={({ disease }) => {
         const { rows } = disease.geneBurdenSummary;
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             order="asc"

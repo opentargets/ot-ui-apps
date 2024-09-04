@@ -2,7 +2,7 @@ import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
-import { Link, Tooltip, DataTable } from "ui";
+import { Link, Tooltip, OtTable } from "ui";
 
 import { identifiersOrgLink } from "../../utils/global";
 import { defaultRowsPerPageOptions, decimalPlaces } from "../../constants";
@@ -126,7 +126,7 @@ function HomologyTableTab({ homologues, query, variables }) {
   const classes = useStyles();
 
   return (
-    <DataTable
+    <OtTable
       showGlobalFilter
       dataDownloader
       columns={getColumns(classes)}

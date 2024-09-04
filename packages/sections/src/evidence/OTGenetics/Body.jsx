@@ -5,10 +5,9 @@ import {
   Link,
   PublicationsDrawer,
   LabelChip,
-  DataTable,
+  OtTable,
   ScientificNotation,
   DirectionOfEffectTooltip,
-  Tooltip,
   DirectionOfEffectIcon,
 } from "ui";
 
@@ -67,6 +66,11 @@ function getColumns(label) {
       id: "studySource",
       label: "Study source",
       renderCell: ({ projectId }) => {
+        if (!projectId) return naLabel;
+        if (Object.keys(studySourceMap).indexOf(projectId) < 0) return naLabel;
+        return studySourceMap[projectId];
+      },
+      filterValue: ({ projectId }) => {
         if (!projectId) return naLabel;
         if (Object.keys(studySourceMap).indexOf(projectId) < 0) return naLabel;
         return studySourceMap[projectId];
@@ -153,6 +157,9 @@ function getColumns(label) {
           />
         );
       },
+
+      // TODO: find a way to access getTooltipText function from DirectionOfEffectIcon.tsx
+      filterValue: ({ variantEffect, directionOnTrait }) => {},
     },
     {
       id: "pValueMantissa",
@@ -249,7 +256,7 @@ function Body({ id, label, entity }) {
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={data => (
-        <DataTable
+        <OtTable
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}

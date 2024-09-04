@@ -20,6 +20,7 @@ import { definition } from ".";
 import client from "../../client";
 
 import CHEMBL_QUERY from "./ChemblQuery.gql";
+import { Box, Typography } from "@mui/material";
 
 const useStyles = makeStyles(() => ({
   tooltipContainer: {
@@ -78,7 +79,30 @@ function getColumns(classes) {
     {
       id: "disease.name",
       label: "Disease/phenotype",
-      renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
+      renderCell: ({ disease, cohortPhenotypes }) => {
+        let displayElement = naLabel;
+        if (disease) displayElement = <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
+        if (cohortPhenotypes && cohortPhenotypes.length) {
+          displayElement = (
+            <Tooltip
+              showHelpIcon
+              title={
+                <Box>
+                  <Typography variant="subtitle2" display="block" align="center">
+                    All reported phenotypes:
+                  </Typography>
+                  {cohortPhenotypes.map(e => (
+                    <div key={e}>{e}</div>
+                  ))}
+                </Box>
+              }
+            >
+              {displayElement}
+            </Tooltip>
+          );
+        }
+        return displayElement;
+      },
     },
     {
       label: "Targets",

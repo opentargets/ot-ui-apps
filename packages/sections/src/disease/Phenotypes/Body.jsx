@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import _ from "lodash";
-import { Link, SectionItem, Tooltip, DataTable, TableDrawer } from "ui";
+import { Link, SectionItem, Tooltip, TableDrawer, OtTable } from "ui";
 
 import Description from "./Description";
 import { naLabel } from "../../constants";
@@ -225,7 +225,7 @@ function Body({ label: name, id: efoId, entity }) {
         );
 
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             dataDownloader

@@ -2,7 +2,7 @@ import { Box, List, ListItem, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useQuery } from "@apollo/client";
 import { v1 } from "uuid";
-import { ChipList, Link, SectionItem, Tooltip, DataTable, ScientificNotation } from "ui";
+import { ChipList, Link, SectionItem, Tooltip, ScientificNotation, OtTable } from "ui";
 
 import { definition } from ".";
 import methods from "./methods";
@@ -186,7 +186,7 @@ function Body({ id, label, entity }) {
               </Typography>
               <ChipList items={roleInCancerItems} />
             </Box>
-            <DataTable
+            <OtTable
               columns={columns}
               dataDownloader
               dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}

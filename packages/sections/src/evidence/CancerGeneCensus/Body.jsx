@@ -3,7 +3,7 @@ import { Box, List, ListItem, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { v1 } from "uuid";
 
-import { ChipList, Link, SectionItem, PublicationsDrawer, DataTable } from "ui";
+import { ChipList, Link, SectionItem, PublicationsDrawer, OtTable } from "ui";
 
 import { naLabel, defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
 import { dataTypesMap } from "../../dataTypes";
@@ -57,6 +57,7 @@ const getColumns = label => [
   {
     id: "mutatedSamples",
     propertyPath: "mutatedSamples.numberSamplesWithMutationType",
+    sortable: "true",
     label: "Mutated / Total samples",
     renderCell: ({ mutatedSamples }) => {
       if (!mutatedSamples) return naLabel;
@@ -83,6 +84,7 @@ const getColumns = label => [
     comparator: (a, b) => getMaxPercent(a) - getMaxPercent(b),
   },
   {
+    id: "literature",
     label: "Literature",
     renderCell: ({ literature }) => {
       const literatureList =
@@ -162,10 +164,10 @@ function Body({ id, label, entity }) {
               </Typography>
               <ChipList items={roleInCancerItems} />
             </Box>
-            <DataTable
+            <OtTable
               columns={columns}
               dataDownloader
-              order="desc"
+              order="asc"
               rows={rows}
               rowsPerPageOptions={defaultRowsPerPageOptions}
               showGlobalFilter

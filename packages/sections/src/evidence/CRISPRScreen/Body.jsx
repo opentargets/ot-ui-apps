@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { useQuery } from "@apollo/client";
-import { Tooltip, SectionItem, TooltipStyledLabel, Link, DataTable } from "ui";
+import { Tooltip, SectionItem, TooltipStyledLabel, Link, OtTable } from "ui";
 
 import { dataTypesMap } from "../../dataTypes";
 import Description from "./Description";
@@ -87,6 +87,7 @@ const getColumns = label => [
   {
     id: "resourceScore",
     label: "Significance",
+    sortable: true,
     renderCell: row => {
       if (row.resourceScore && row.statisticalTestTail) {
         return (
@@ -106,7 +107,7 @@ const getColumns = label => [
         return row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : naLabel;
       }
     },
-    filterValue: row => row.resourceScore + "; " + row.statisticalTestTail,
+    filterValue: row => `${parseFloat(row.resourceScore.toFixed(6))} ${row.statisticalTestTail}`,
     width: "9%",
   },
   {
@@ -208,7 +209,7 @@ function Body({ id, label, entity }) {
       renderBody={({ disease }) => {
         const { rows } = disease.CrisprScreenSummary;
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             dataDownloader
@@ -216,7 +217,7 @@ function Body({ id, label, entity }) {
             dataDownloaderFileStem={`${ensgId}-${efoId}-crisprscreen`}
             showGlobalFilter
             sortBy="resourceScore"
-            fixed
+            order="asc"
             noWrap={false}
             noWrapHeader={false}
             rowsPerPageOptions={defaultRowsPerPageOptions}
