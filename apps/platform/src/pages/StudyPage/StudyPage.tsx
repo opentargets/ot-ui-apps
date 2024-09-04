@@ -50,7 +50,7 @@ function StudyPage() {
         traitFromSource={data?.gwasStudy?.traitFromSource}
         backgroundTraits={data?.gwasStudy?.backgroundTraits}
         targetId={data?.gwasStudy?.target?.id}
-        diseaseId={data?.gwasStudy?.diseases?.[0].id}
+        diseaseId={data?.gwasStudy?.diseases?.[0]?.id}
         studyCategory={studyCategory}
       />
       <ScrollToTop />

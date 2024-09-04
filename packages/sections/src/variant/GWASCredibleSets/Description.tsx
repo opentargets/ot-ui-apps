@@ -1,13 +1,23 @@
-import { Link } from "ui";
+import { Link, DisplayVariantId } from "ui";
 
 type DescriptionProps = {
   variantId: string;
+  referenceAllele: string;
+  alternateAllele: string;
 };
 
-function Description({ variantId }: DescriptionProps) {
+function Description({ variantId, referenceAllele, alternateAllele }: DescriptionProps) {
   return (
     <>
-      GWAS 99% credible sets containing <strong>{variantId}</strong>. Source{" "}
+      GWAS 99% credible sets containing{" "}
+      <strong>
+        <DisplayVariantId
+          variantId={variantId}
+          referenceAllele={referenceAllele}
+          alternateAllele={alternateAllele}
+        />
+      </strong>
+      . Source{" "}
       <Link to="../" >
         Open Targets
       </Link>

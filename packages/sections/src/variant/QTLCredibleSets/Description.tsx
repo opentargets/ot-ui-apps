@@ -1,13 +1,23 @@
-import { Link } from "ui";
+import { Link, DisplayVariantId } from "ui";
 
 type DescriptionProps = {
   variantId: string;
+  referenceAllele: string;
+  alternateAllele: string;
 };
 
-function Description({ variantId }: DescriptionProps) {
+function Description({ variantId, referenceAllele, alternateAllele }: DescriptionProps) {
   return (
     <>
-      molQTL 99% credible sets containing <strong>{variantId}</strong>. Source{" "}
+      molQTL 99% credible sets containing{" "}
+      <strong>
+        <DisplayVariantId
+          variantId={variantId}
+          referenceAllele={referenceAllele}
+          alternateAllele={alternateAllele}
+        />
+      </strong>
+      . Source{" "}
       <Link external to="https://www.ebi.ac.uk/eqtl/" >
         eQTL Catalog
       </Link>
