@@ -1,31 +1,16 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
+import QTL_CREDIBLE_SETS_SUMMARY from "./QTLCredibleSetsSummaryFragment.gql";
 
 function Summary() {
-
-  // !! USE PLACEHOLDER REQUEST FOR NOW !!
-  // const request = usePlatformApi(UNIPROT_VARIANTS_SUMMARY);
-  const request = {
-    loading: false,
-    error: undefined,
-    data: true,  // data is not actually used by summary - only cares if there is data
-  };
-
-  return (
-    <SummaryItem
-      definition={definition}
-      request={request}
-      renderSummary={() => {}}  // !! renderSummary PROP NOT USED ANYMORE ANYWAY?
-      subText=""
-      // subText={dataTypesMapTyped.genetic_association}
-    />
-  );
+  const request = usePlatformApi(QTL_CREDIBLE_SETS_SUMMARY);
+  
+  return <SummaryItem definition={definition} request={request} />;
 }
 
-// !!!!!!!!!!!!!
-// Summary.fragments = {
-//   ?????????????
-// };
+Summary.fragments = {
+  QTLCredibleSetsSummaryFragment: QTL_CREDIBLE_SETS_SUMMARY,
+};
 
 export default Summary;

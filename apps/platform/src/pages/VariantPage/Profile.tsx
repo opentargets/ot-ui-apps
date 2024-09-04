@@ -13,8 +13,8 @@ import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/S
 import VariantEffectPredictorSummary from "sections/src/variant/VariantEffectPredictor/Summary";
 import EVASummary from "sections/src/variant/EVA/Summary";
 // import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
-// import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
 import GWASCredibleSetsSummary from "sections/src/variant/GWASCredibleSets/Summary";
+import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
@@ -29,8 +29,12 @@ const VariantEffectPredictorSection = lazy(
 );
 const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
 // const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
-// const QTLCredibleSetsSection = lazy(() => import("sections/src/variant/QTLCredibleSets/Body"));
-const GWASCredibleSetsSection = lazy(() => import("sections/src/variant/GWASCredibleSets/Body"));
+const GWASCredibleSetsSection = lazy(
+  () => import("sections/src/variant/GWASCredibleSets/Body")
+);
+const QTLCredibleSetsSection = lazy(
+  () => import("sections/src/variant/QTLCredibleSets/Body")
+);
 
 const summaries = [
   PharmacogenomicsSummary,
@@ -38,8 +42,8 @@ const summaries = [
   VariantEffectPredictorSummary,
   EVASummary,
   // UniProtVariantsSummary,
-  // QTLCredibleSetsSummary,
   GWASCredibleSetsSummary,
+  QTLCredibleSetsSummary,
 ];
 
 const VARIANT = "variant";
@@ -79,8 +83,8 @@ function Profile({ varId }: ProfileProps) {
         <VariantEffectPredictorSummary />
         <EVASummary />
         {/* <UniProtVariantsSummary /> */}
-        {/* <QTLCredibleSetsSummary /> */}
         <GWASCredibleSetsSummary />
+        <QTLCredibleSetsSummary />
       </SummaryContainer>
 
       <SectionContainer>
@@ -99,11 +103,11 @@ function Profile({ varId }: ProfileProps) {
         {/* <Suspense fallback={<SectionLoader />}>
           <UniProtVariantsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense> */}
-        {/* <Suspense fallback={<SectionLoader />}>
-          <QTLCredibleSetsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
-        </Suspense> */}
         <Suspense fallback={<SectionLoader />}>
           <GWASCredibleSetsSection id={varId} entity={VARIANT} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <QTLCredibleSetsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
         </Suspense>
       </SectionContainer>
     </PlatformApiProvider>
