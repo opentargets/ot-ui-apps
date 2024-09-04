@@ -42,7 +42,7 @@ function Header({ loading,
     }
     sourceLink = {
       id: "FinnGenR10",
-      url: `https://r10.finngen.fi/pheno/${studyID}`,
+      url: `https://r10.finngen.fi/pheno/${studyId}`,
     };
   } else {  // QTL
     if (targetId) {

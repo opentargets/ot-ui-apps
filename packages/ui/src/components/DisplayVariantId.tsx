@@ -21,13 +21,15 @@ type DisplayVariantIdProps = {
   referenceAllele: string;
   alternateAllele: string;
   maxChars?: number;
+  expand?: boolean
 };
 
 function DisplayVariantId({
       variantId: otVariantId,
       referenceAllele,
       alternateAllele,
-      maxChars = 6
+      maxChars = 6,
+      expand = true,
     }: DisplayVariantIdProps) {
 
   const [open, setOpen] = useState(false);
@@ -71,79 +73,84 @@ function DisplayVariantId({
       <>
         <Box
           component="span"
-          onClick={handleClick}
+          onClick={expand ? handleClick : null}
           title="Show variant ID"
           sx={{
-            cursor: "pointer",
+            cursor: expand ? "pointer" : "inherit",
             padding: "0 0.06em",
             borderRadius: "0.3em",
             "&:hover": {
-              background: highlightBackground,
+              background: expand ? highlightBackground : "transparent",
             }
           }}
         >
           {stem}
           _
           {longReferenceAllele
-            ? <HighlightBox>...</HighlightBox>
+            ? <HighlightBox bgrd={expand}>...</HighlightBox>
             : referenceAllele
           }
           _
           {longAlternateAllele
-            ? <HighlightBox>...</HighlightBox>
+            ? <HighlightBox bgrd={expand}>...</HighlightBox>
             : alternateAllele
           }
         </Box>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          scroll="paper"
-          aria-labelledby="dialog-title"
-          aria-describedby="dialog-description"
-          maxWidth="md"
-        >
-          <DialogTitle id="dialog-title">
-            <Typography variant="h6" component="span">
-              Variant ID
-            </Typography>
-            <IconButton
-              onClick={handleClose}
-              sx={{
-                zIndex: "2",
-                position: "absolute",
-                top: "0",
-                right: "0",
-                padding: "0.7em",
-              }}
-            >
-              <FontAwesomeIcon icon={faXmark} />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent
-            dividers={true}
-            sx={{ padding: "0 1.5em 3em" }}
-          >
-            { isHashed &&
-                <CopyPanel
-                  label="Hashed Variant ID"
-                  tooltipText="Variant ID used in Open Targets data."
-                  text={otVariantId}
-                  copyToClipboard={copyToClipboard}
-                />
-            }
-            <CopyPanel
-              label="Full Variant ID"
-              text={fullVariantId}
-              copyToClipboard={copyToClipboard}
-            />
-          </DialogContent>
-        </Dialog>
-        <Snackbar
-          open={snackbarOpen}
-          onClose={handleCloseSnackbar}
-          message="Copied to clipboard"
-          autoHideDuration={3000}
-        />
+        {
+          expand &&
+            <>
+              <Dialog
+                open={open}
+                onClose={handleClose}
+                scroll="paper"
+                aria-labelledby="dialog-title"
+                aria-describedby="dialog-description"
+                maxWidth="md"
+              >
+                <DialogTitle id="dialog-title">
+                  <Typography variant="h6" component="span">
+                    Variant ID
+                  </Typography>
+                  <IconButton
+                    onClick={handleClose}
+                    sx={{
+                      zIndex: "2",
+                      position: "absolute",
+                      top: "0",
+                      right: "0",
+                      padding: "0.7em",
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faXmark} />
+                  </IconButton>
+                </DialogTitle>
+                <DialogContent
+                  dividers={true}
+                  sx={{ padding: "0 1.5em 3em" }}
+                >
+                  { isHashed &&
+                      <CopyPanel
+                        label="Hashed Variant ID"
+                        tooltipText="Variant ID used in Open Targets data."
+                        text={otVariantId}
+                        copyToClipboard={copyToClipboard}
+                      />
+                  }
+                  <CopyPanel
+                    label="Full Variant ID"
+                    text={fullVariantId}
+                    copyToClipboard={copyToClipboard}
+                  />
+                </DialogContent>
+              </Dialog>
+              <Snackbar
+                open={snackbarOpen}
+                onClose={handleCloseSnackbar}
+                message="Copied to clipboard"
+                autoHideDuration={3000}
+              />
+            </>
+        }
       </>
     );
   }
@@ -152,14 +159,14 @@ function DisplayVariantId({
 
 }
 
-function HighlightBox({ children }) {
+function HighlightBox({ children, bgrd = true }) {
   return (
     <Box
       component="span"
       borderRadius="0.3em"
       mx="0.1em"
       px="0.15em"
-      bgcolor={highlightBackground}
+      bgcolor={bgrd ? highlightBackground : "transparent"}
     >
       {children}
     </Box>
