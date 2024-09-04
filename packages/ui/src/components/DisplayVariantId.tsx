@@ -89,14 +89,14 @@ function DisplayVariantId({
           _
           {longReferenceAllele
             ? <HighlightBox hlight={expand}>
-                <span style={{ fontSize: "0.94em", fontStyle: "italic"}}>INS</span>
+                <span style={{ fontSize: "0.94em", fontStyle: "italic"}}>DEL</span>
               </HighlightBox>
             : referenceAllele
           }
           _
           {longAlternateAllele
             ? <HighlightBox hlight={expand}>
-                <span style={{ fontSize: "0.94em", fontStyle: "italic"}}>DEL</span>
+                <span style={{ fontSize: "0.94em", fontStyle: "italic"}}>INS</span>
               </HighlightBox>
             : alternateAllele
           }
