@@ -34,7 +34,6 @@ export function facetsReducer(state: FacetState = initialFacetState, action: Act
         ...state,
         selectedFacets: [],
         dataOptions: [],
-        categoryFilterValue: state.availableCategories[ALL_CATEGORY],
       };
     }
     case ActionType.SEARCH_FACETS: {

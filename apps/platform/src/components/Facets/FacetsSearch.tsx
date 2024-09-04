@@ -15,19 +15,13 @@ import FACETS_SEARCH_QUERY from "./FacetsQuery.gql";
 import useAotfContext from "../AssociationsToolkit/hooks/useAotfContext";
 import client from "../../client";
 import FacetsSuggestion from "./FacetsSuggestion";
-import {
-  selectFacet,
-  setCategory,
-  setFacetsCategories,
-  setFacetsData,
-  setLoading,
-} from "./facetsActions";
+import { resetFacets, selectFacet, setCategory, setFacetsData, setLoading } from "./facetsActions";
 import { createInitialState, facetsReducer } from "./facetsReducer";
 import { ALL_CATEGORY } from "./facets.types";
 import { v1 } from "uuid";
 
 function FacetsSearch(): ReactElement {
-  const { entityToGet, facetFilterSelect } = useAotfContext();
+  const { entityToGet, facetFilterSelect, id } = useAotfContext();
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 200);
   const [state, dispatch] = useReducer(facetsReducer, entityToGet, createInitialState);
@@ -61,8 +55,8 @@ function FacetsSearch(): ReactElement {
   }, [debouncedInputValue]);
 
   useEffect(() => {
-    setFacetsCategories(entityToGet);
-  }, []);
+    dispatch(resetFacets());
+  }, [id]);
 
   return (
     <Box sx={{ display: "flex" }}>
