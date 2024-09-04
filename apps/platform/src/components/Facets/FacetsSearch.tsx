@@ -1,14 +1,5 @@
-import {
-  Autocomplete,
-  Box,
-  Chip,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { ReactElement, useEffect, useReducer, useState } from "react";
+import { Box, Chip, MenuItem, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { ReactElement, SyntheticEvent, useEffect, useReducer, useState } from "react";
 import { Tooltip, useDebounce } from "ui";
 
 import FACETS_SEARCH_QUERY from "./FacetsQuery.gql";
@@ -17,8 +8,15 @@ import client from "../../client";
 import FacetsSuggestion from "./FacetsSuggestion";
 import { resetFacets, selectFacet, setCategory, setFacetsData, setLoading } from "./facetsActions";
 import { createInitialState, facetsReducer } from "./facetsReducer";
-import { ALL_CATEGORY } from "./facets.types";
+import { ALL_CATEGORY, Facet } from "./facets.types";
 import { v1 } from "uuid";
+import {
+  FacetListItemCategory,
+  FacetListItemContainer,
+  FacetListItemLabel,
+  FacetsAutocomplete,
+  FacetsSelect,
+} from "./facetsLayout";
 
 function FacetsSearch(): ReactElement {
   const { entityToGet, facetFilterSelect, id } = useAotfContext();
@@ -39,8 +37,6 @@ function FacetsSearch(): ReactElement {
       variables,
     });
 
-    // dispatch(setFacetsData(resData.data.facets.hits));
-
     const filteredData = resData.data.facets.hits.filter(
       e =>
         e.category === state.categoryFilterValue ||
@@ -60,23 +56,11 @@ function FacetsSearch(): ReactElement {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <Select
+      <FacetsSelect
         value={state.categoryFilterValue}
         size="small"
         onChange={(event: SelectChangeEvent) => {
           dispatch(setCategory(event.target.value));
-        }}
-        sx={{
-          minWidth: 150,
-          maxWidth: 150,
-          background: theme => `${theme.palette.grey[200]}`,
-          display: "flex",
-          boxShadow: "none",
-          ".MuiOutlinedInput-notchedOutline": {
-            borderRight: 0,
-            borderTopRightRadius: 0,
-            borderBottomRightRadius: 0,
-          },
         }}
       >
         {Object.entries(state.availableCategories).map(([key, value]) => (
@@ -84,19 +68,8 @@ function FacetsSearch(): ReactElement {
             {key}
           </MenuItem>
         ))}
-      </Select>
-      <Autocomplete
-        sx={{
-          minWidth: "280px",
-          width: 1,
-          maxWidth: 1,
-          flexWrap: "nowrap",
-          "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-            borderLeft: 0,
-            borderTopLeftRadius: 0,
-            borderBottomLeftRadius: 0,
-          },
-        }}
+      </FacetsSelect>
+      <FacetsAutocomplete
         id="facets-search-input"
         multiple
         autoComplete
@@ -108,7 +81,7 @@ function FacetsSearch(): ReactElement {
         loading={state.loading}
         size="small"
         limitTags={2}
-        onChange={(event: any, newValue: any) => {
+        onChange={(event: SyntheticEvent, newValue: Facet) => {
           dispatch(selectFacet(newValue));
           facetFilterSelect(newValue);
         }}
@@ -134,51 +107,18 @@ function FacetsSearch(): ReactElement {
             </Tooltip>
           ))
         }
-        renderOption={(props, option) => {
+        renderOption={(props, option: Facet) => {
           const { category, highlights } = option;
           return (
             <li {...props} key={v1()}>
-              <Box
-                sx={{
-                  display: "flex",
-                  p: 0,
-                  m: 0,
-                  width: "100%",
-                  flexDirection: "column",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    w: 1,
-                    flexWrap: "wrap",
-                    justifyContent: "start",
-                    em: {
-                      fontWeight: "bold",
-                      fontStyle: "normal",
-                    },
-                  }}
-                >
+              <FacetListItemContainer>
+                <FacetListItemLabel>
                   <Typography dangerouslySetInnerHTML={{ __html: highlights[0] }}></Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "end",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      typography: "caption",
-                      fontStyle: "italic",
-                      fontWeight: "bold",
-                      color: theme => theme.palette.primary.main,
-                    }}
-                  >
-                    in {category}
-                  </Box>
-                </Box>
-              </Box>
+                </FacetListItemLabel>
+                <FacetListItemCategory>
+                  <Typography variant="caption">in {category}</Typography>
+                </FacetListItemCategory>
+              </FacetListItemContainer>
             </li>
           );
         }}
