@@ -1,4 +1,4 @@
-import { usePlatformApi, Link, SectionItem, DataTable } from "ui";
+import { Link, SectionItem, OtTable } from "ui";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -37,7 +37,8 @@ const getColumns = classes => [
       integratesInPPP ? (
         <FontAwesomeIcon icon={faCheckCircle} className={classes.primaryColor} size="lg" />
       ) : null,
-    exportValue: ({ integratesInPPP }) => (integratesInPPP ? "yes" : "no"),
+    exportValue: ({ integratesInPPP }) => (integratesInPPP ? "Yes" : "No"),
+    filterValue: ({ integratesInPPP }) => (integratesInPPP ? "Yes" : "No"),
   },
 ];
 
@@ -54,7 +55,7 @@ function Body({ label, id: efoId, entity }) {
       entity={entity}
       renderDescription={() => <Description name={label} />}
       renderBody={({ disease }) => (
-        <DataTable
+        <OtTable
           showGlobalFilter
           dataDownloader
           dataDownloaderFileStem={`${efoId}-otprojects`}

@@ -9,7 +9,7 @@ import {
   Tooltip,
   TooltipStyledLabel,
   ChipList,
-  DataTable,
+  OtTable,
   ScientificNotation,
 } from "ui";
 
@@ -236,7 +236,7 @@ function Body({ id, label, entity }) {
       renderBody={({ disease }) => {
         const { rows } = disease.otEncoreSummary;
         return (
-          <DataTable
+          <OtTable
             columns={getColumns(classes)}
             rows={rows}
             dataDownloader

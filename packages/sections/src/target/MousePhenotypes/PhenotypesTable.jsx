@@ -1,4 +1,4 @@
-import { Link, DataTable, TableDrawer } from "ui";
+import { Link, TableDrawer, OtTable } from "ui";
 import { defaultRowsPerPageOptions } from "../../constants";
 
 import AllelicCompositionDrawer from "./AllelicCompositionDrawer";
@@ -60,7 +60,7 @@ const columns = [
 
 function PhenotypesTable({ mousePhenotypes, query, variables, symbol }) {
   return (
-    <DataTable
+    <OtTable
       showGlobalFilter
       dataDownloader
       dataDownloaderFileStem={`${symbol}-mouse-phenotypes`}

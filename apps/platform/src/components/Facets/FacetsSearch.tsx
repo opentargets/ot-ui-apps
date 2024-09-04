@@ -26,7 +26,7 @@ const TARGET_CATEGORIES = {
   "GO:MF": "GO:MF",
   Reactome: "Reactome",
   "Subcellular Location": "Subcellular Location",
-  "Target ID": "Target ID",
+  "Target ID (ENSG)": "Target ID",
   "Tractability Antibody": "Tractability Antibody",
   "Tractability Other Modalities": "Tractability Other Modalities",
   "Tractability PROTAC": "Tractability PROTAC",
@@ -134,7 +134,7 @@ function FacetsSearch(): ReactElement {
           setInputValue(newInputValue);
         }}
         renderInput={params => (
-          <TextField {...params} label={`Search ${entityToGet} specific filter`} fullWidth />
+          <TextField {...params} label={`Search ${entityToGet} filter (beta)`} fullWidth />
         )}
         renderTags={(value: readonly string[], getTagProps) =>
           value.map((option: any, index: number) => (

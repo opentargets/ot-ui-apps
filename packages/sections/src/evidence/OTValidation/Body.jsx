@@ -4,7 +4,7 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 import { Box, Chip } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, ChipList, DataTable, Tooltip } from "ui";
+import { Link, SectionItem, ChipList, OtTable, Tooltip } from "ui";
 import { v1 } from "uuid";
 
 import { definition } from ".";
@@ -46,7 +46,7 @@ const getColumns = classes => [
     label: "Reported disease",
     renderCell: row => <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>,
     sortable: true,
-    filterValue: row => `${row.diseaseLabel}, ${row.diseaseId}`,
+    filterValue: row => `${row.diseaseLabel}, ${row.disease.id}`,
   },
   {
     id: "diseaseCellLines",
@@ -143,21 +143,15 @@ const getColumns = classes => [
   {
     id: "assessment",
     label: "OTVL assessment",
-    renderCell: ({ assessment }) => {
-      // TODO: temp solution, assessment key should contain array
-      const regex =
-        /(Evidence of dependency)|(Evidence of toxicity)|(No evidence of dependency)|(No evidence of toxicity)|(Multiple evidence of dependency)/g;
-      const listOfValues = assessment.match(regex);
-      return (
-        <>
-          {listOfValues.map(e => (
-            <Box sx={{ my: theme => theme.spacing(1) }} key={e}>
-              {e}
-            </Box>
-          ))}
-        </>
-      );
-    },
+    renderCell: ({ assessment }) => (
+      <>
+        {assessment.map(e => (
+          <Box sx={{ my: theme => theme.spacing(1) }} key={e}>
+            {e}
+          </Box>
+        ))}
+      </>
+    ),
   },
   {
     id: "releaseVersion",
@@ -228,7 +222,7 @@ function Body({ id, label, entity }) {
         const { rows } = disease.otValidationSummary;
         return (
           <>
-            <DataTable
+            <OtTable
               columns={getColumns(classes)}
               rows={rows}
               dataDownloader
