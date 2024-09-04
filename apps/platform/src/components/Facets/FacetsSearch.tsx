@@ -81,7 +81,7 @@ function FacetsSearch(): ReactElement {
         loading={state.loading}
         size="small"
         limitTags={2}
-        onChange={(event: SyntheticEvent, newValue: Facet) => {
+        onChange={(event: SyntheticEvent, newValue: Facet[]) => {
           dispatch(selectFacet(newValue));
           facetFilterSelect(newValue);
         }}
