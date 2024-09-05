@@ -19,3 +19,28 @@ export function setInteractors(id: RowInteractorsKey, source: string): Action {
     payload: { id, source },
   };
 }
+
+export function setDataSourceControl(
+  id: string,
+  weight: number,
+  required: boolean,
+  aggregation: string
+): Action {
+  return {
+    type: ActionType.DATA_SOURCE_CONTROL,
+    payload: { id, weight, required, propagate: true, aggregation },
+  };
+}
+
+export function resetDataSourceControl(): Action {
+  return {
+    type: ActionType.RESET_DATA_SOURCE_CONTROL,
+  };
+}
+
+export function aggregationClick(aggregation: string): Action {
+  return {
+    type: ActionType.HANDLE_AGGREGATION_CLICK,
+    aggregation,
+  };
+}
