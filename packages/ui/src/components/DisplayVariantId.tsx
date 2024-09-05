@@ -53,16 +53,17 @@ function DisplayVariantId({
   }
 
   const idParts = otVariantId.split('_');
-  let isHashed, stem, fullVariantId;
+  if (idParts[0] === "OTVAR") {
+    idParts.shift();
+  };
+  let isHashed, stem;
   if (idParts.at(-2) === referenceAllele &&
       idParts.at(-1) === alternateAllele) {
     isHashed = false;
     stem = idParts.slice(0, -2).join('_');
-    fullVariantId = otVariantId;
   } else {
     isHashed = true;
     stem = idParts.slice(0, -1).join('_');
-    fullVariantId = `${stem}_${referenceAllele}_${alternateAllele}`;
   }
 
   const longReferenceAllele = referenceAllele.length > maxChars;
@@ -87,12 +88,16 @@ function DisplayVariantId({
           {stem}
           _
           {longReferenceAllele
-            ? <HighlightBox bgrd={expand}>...</HighlightBox>
+            ? <HighlightBox hlight={expand}>
+                <span style={{ fontSize: "0.94em", fontStyle: "italic"}}>DEL</span>
+              </HighlightBox>
             : referenceAllele
           }
           _
           {longAlternateAllele
-            ? <HighlightBox bgrd={expand}>...</HighlightBox>
+            ? <HighlightBox hlight={expand}>
+                <span style={{ fontSize: "0.94em", fontStyle: "italic"}}>INS</span>
+              </HighlightBox>
             : alternateAllele
           }
         </Box>
@@ -138,7 +143,7 @@ function DisplayVariantId({
                   }
                   <CopyPanel
                     label="Full Variant ID"
-                    text={fullVariantId}
+                    text={`${stem}_${referenceAllele}_${alternateAllele}`}
                     copyToClipboard={copyToClipboard}
                   />
                 </DialogContent>
@@ -155,18 +160,18 @@ function DisplayVariantId({
     );
   }
 
-  return fullVariantId;
+  return `${stem}_${referenceAllele}_${alternateAllele}`;
 
 }
 
-function HighlightBox({ children, bgrd = true }) {
+function HighlightBox({ children, hlight = true }) {
   return (
     <Box
       component="span"
       borderRadius="0.3em"
-      mx="0.1em"
+      mx={hlight ? "0.1em" : 0}
       px="0.15em"
-      bgcolor={bgrd ? highlightBackground : "transparent"}
+      bgcolor={hlight ? highlightBackground : "transparent"}
     >
       {children}
     </Box>
