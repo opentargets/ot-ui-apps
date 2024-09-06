@@ -5,7 +5,7 @@ import {
   ENTITY,
   Facet,
   TARGET_CATEGORIES,
-} from "./facets.types";
+} from "./facetsTypes";
 
 export function setFacetsData(payload: Facet[]): Action {
   return {

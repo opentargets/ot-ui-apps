@@ -6,7 +6,7 @@ import {
   ENTITY,
   FacetState,
   TARGET_CATEGORIES,
-} from "./facets.types";
+} from "./facetsTypes";
 
 export const initialFacetState: FacetState = {
   dataOptions: [],

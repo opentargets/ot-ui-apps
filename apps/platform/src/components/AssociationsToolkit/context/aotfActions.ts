@@ -1,4 +1,4 @@
-import { Facet } from "../../Facets/facets.types";
+import { Facet } from "../../Facets/facetsTypes";
 import { Action, ActionType, Pagination, RowInteractorsKey } from "../types";
 
 export function onPaginationChange(pagination: Pagination): Action {

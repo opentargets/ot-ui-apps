@@ -8,7 +8,7 @@ import client from "../../client";
 import FacetsSuggestion from "./FacetsSuggestion";
 import { resetFacets, selectFacet, setCategory, setFacetsData, setLoading } from "./facetsActions";
 import { createInitialState, facetsReducer } from "./facetsReducer";
-import { ALL_CATEGORY, Facet } from "./facets.types";
+import { ALL_CATEGORY, Facet } from "./facetsTypes";
 import { v1 } from "uuid";
 import {
   FacetListItemCategory,
