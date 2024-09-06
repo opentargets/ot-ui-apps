@@ -69,6 +69,7 @@ export interface State {
   interactors: Interactors;
   dataSourceControls: Array<columnAdvanceControl>;
   modifiedSourcesDataControls: boolean;
+  facetFilters: Array<string>;
 }
 
 /*****************
@@ -78,12 +79,13 @@ export interface State {
 export enum ActionType {
   PAGINATE = "PAGINATE",
   SORTING = "SORTING",
-  TEXT_SEARCH = "TEXT_SEARCH",
   SET_INTERACTORS = "SET_INTERACTORS",
   RESET_PAGINATION = "RESET_PAGINATION",
   DATA_SOURCE_CONTROL = "DATA_SOURCE_CONTROL",
   RESET_DATA_SOURCE_CONTROL = "RESET_DATA_SOURCE_CONTROL",
   HANDLE_AGGREGATION_CLICK = "HANDLE_AGGREGATION_CLICK",
+  FACETS_SEARCH = "FACETS_SEARCH",
+  SET_INITIAL_STATE = "SET_INITIAL_STATE",
 }
 
 export type SetRowInteractorsPayload = {
@@ -94,10 +96,11 @@ export type SetRowInteractorsPayload = {
 export type Action =
   | { type: ActionType.PAGINATE; pagination: Pagination }
   | { type: ActionType.SORTING; sorting: Sorting }
-  | { type: ActionType.TEXT_SEARCH; searchFilter: string }
   | { type: ActionType.PAGINATE; pagination: Pagination }
   | { type: ActionType.SET_INTERACTORS; payload: SetRowInteractorsPayload }
   | { type: ActionType.RESET_PAGINATION }
   | { type: ActionType.DATA_SOURCE_CONTROL; payload: columnAdvanceControl }
   | { type: ActionType.RESET_DATA_SOURCE_CONTROL }
-  | { type: ActionType.HANDLE_AGGREGATION_CLICK; aggregation: string };
+  | { type: ActionType.HANDLE_AGGREGATION_CLICK; aggregation: string }
+  | { type: ActionType.FACETS_SEARCH; facetFilters: string[] }
+  | { type: ActionType.SET_INITIAL_STATE };
