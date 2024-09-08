@@ -22,7 +22,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
 import useAotfContext from "../../hooks/useAotfContext";
-import { ENTITIES } from "../../utils";
+import { ENTITIES, isPartnerPreview } from "../../utils";
 import { grey } from "@mui/material/colors";
 import {
   FocusActionType,
@@ -187,6 +187,8 @@ function CellName({ cell, colorScale }) {
   const loadingWidth = entityToGet === ENTITIES.TARGET ? 50 : 150;
   const loadingMargin = entityToGet === ENTITIES.TARGET ? 12 : 2;
 
+  const interactorsLabel = isPartnerPreview ? "Target interactors (beta)" : "Target interactors";
+
   if (loading)
     return <Skeleton width={loadingWidth} height={35} sx={{ marginLeft: loadingMargin }} />;
 
@@ -246,6 +248,7 @@ function CellName({ cell, colorScale }) {
           {entityToGet === ENTITIES.TARGET && <Divider />}
           {entityToGet === ENTITIES.TARGET && (
             <StyledMenuItem
+              disabled={!isPartnerPreview}
               onClick={() => {
                 handleClickInteractors();
               }}
@@ -253,7 +256,7 @@ function CellName({ cell, colorScale }) {
               <ListItemIcon>
                 <FontAwesomeIcon icon={faBezierCurve} />
               </ListItemIcon>
-              <ListItemText>Target interactors</ListItemText>
+              <ListItemText>{interactorsLabel}</ListItemText>
             </StyledMenuItem>
           )}
 

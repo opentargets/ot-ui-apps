@@ -20,8 +20,6 @@ function RowInteractorsWrapper({
   if (focusState.length < 1 || focusElement.length < 1) {
     return <></>;
   }
-  // return <Box sx={{ my: 1 }}>{children}</Box>;
-  // if (!state.interactors.has(rowId)) return null;
 
   return <Box>{children}</Box>;
 }

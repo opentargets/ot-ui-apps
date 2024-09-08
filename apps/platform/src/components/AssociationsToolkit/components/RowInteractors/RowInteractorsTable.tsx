@@ -15,7 +15,6 @@ import { faClose, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-
 import { useState } from "react";
 import {
   FocusActionType,
-  useAssociationsFocus,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
 
