@@ -143,9 +143,9 @@ const getColumns = classes => [
   {
     id: "assessment",
     label: "OTVL assessment",
-    renderCell: ({ assessment }) => (
+    renderCell: ({ assessments }) => (
       <>
-        {assessment.map(e => (
+        {assessments.map(e => (
           <Box sx={{ my: theme => theme.spacing(1) }} key={e}>
             {e}
           </Box>
