@@ -2,7 +2,7 @@ import { Paper, Box, Typography, Chip } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { DataTable, Link } from "ui";
+import { OtTable, Link } from "ui";
 import projectsData from "./projects-data.json";
 
 const useStyles = makeStyles(theme => ({
@@ -16,6 +16,11 @@ const useStyles = makeStyles(theme => ({
     marginRight: "0.2rem",
   },
 }));
+
+const CURRENTLY_INTEGRATES_IN_PPP = {
+  Y: faCircleCheck,
+  N: faCircleNotch,
+};
 
 function ProjectPage() {
   const classes = useStyles();
@@ -36,10 +41,13 @@ function ProjectPage() {
     {
       id: "currently_integrates_in_PPP",
       label: "Currently integrates into PPP",
-      renderCell: ({ currently_integrates_in_PPP: currentlyIntegratesInPPP }) => {
-        const icon = currentlyIntegratesInPPP === "Y" ? faCircleCheck : faCircleNotch;
-        return <FontAwesomeIcon size="lg" icon={icon} className={classes.icon} />;
-      },
+      renderCell: ({ currently_integrates_in_PPP }) => (
+        <FontAwesomeIcon
+          size="lg"
+          icon={CURRENTLY_INTEGRATES_IN_PPP[currently_integrates_in_PPP]}
+          className={classes.icon}
+        />
+      ),
     },
     { id: "project_status", label: "Project Status" },
     { id: "open_targets_therapeutic_area", label: "Therapeutic Area" },
@@ -96,7 +104,7 @@ function ProjectPage() {
 
       <Paper variant="outlined" elevation={0}>
         <Box m={2}>
-          <DataTable
+          <OtTable
             showGlobalFilter
             columns={columns}
             rows={projectsData}

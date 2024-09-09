@@ -1,10 +1,11 @@
 import { makeStyles } from "@mui/styles";
-import { Box, Chip, Tooltip } from "@mui/material";
+import { Box, Chip, Theme, Tooltip } from "@mui/material";
 import classNames from "classnames";
 import { v1 } from "uuid";
 import { naLabel } from "../constants";
+import { ElementType, ReactElement } from "react";
 
-const useContainerStyles = makeStyles(theme => ({
+const useContainerStyles = makeStyles((theme: Theme) => ({
   tooltip: {
     backgroundColor: theme.palette.background.paper,
     border: `1px solid ${theme.palette.grey[300]}`,
@@ -16,7 +17,24 @@ const useChipStyles = makeStyles({
   chip: { margin: "3px 5px 3px 0 !important" },
 });
 
-function ChipContainer({ item, children }) {
+type ChipListItem = {
+  customClass?: string;
+  label: string;
+  tooltip?: string;
+  url?: string;
+};
+
+type ChipContainerProps = {
+  children: ReactElement;
+  item: ChipListItem;
+};
+
+type ChipListProps = {
+  items?: ChipListItem[];
+  small?: boolean;
+};
+
+function ChipContainer({ item, children }: ChipContainerProps): ReactElement {
   const classes = useContainerStyles();
 
   return item.tooltip ? (
@@ -31,17 +49,16 @@ function ChipContainer({ item, children }) {
 /**
  * Display a (horizontal) list of "chips".
  * Each chip can show an optional tooltip.
- * @param items Array of Strings.
+ * @param items Array of ChipListItems.
  * @param small Display each chip as size="small"
- * Each item in the items array can also be an object, with format {label, tooltip, customClass}
  */
-function ChipList({ items, small }) {
+function ChipList({ items, small }: ChipListProps): ReactElement[] | string {
   const classes = useChipStyles();
 
   if (!items || items.length === 0) return naLabel;
 
   return items.map(item => {
-    const component = item.url ? "a" : Box;
+    const component: ElementType = item.url ? "a" : Box;
     return (
       <ChipContainer key={v1()} item={item}>
         <Chip

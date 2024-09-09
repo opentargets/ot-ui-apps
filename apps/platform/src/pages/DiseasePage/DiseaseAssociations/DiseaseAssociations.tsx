@@ -1,6 +1,5 @@
 import { ReactElement } from "react";
 import { Box, Divider } from "@mui/material";
-import { usePermissions } from "ui";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -10,7 +9,6 @@ import {
   ControlsSection,
   DataUploader,
   AotfApiPlayground,
-  SearchInput,
   AssociationsFocusProvider,
 } from "../../../components/AssociationsToolkit";
 import { ENTITY } from "../../../components/AssociationsToolkit/types";
@@ -22,7 +20,6 @@ type DiseaseAssociationsProps = {
 };
 
 function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
-  const { isPartnerPreview } = usePermissions();
   return (
     <AssociationsProvider
       id={pros.efoId}
@@ -33,7 +30,7 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
         <>
           <ControlsSection>
             <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: 2 }}>
-              {isPartnerPreview ? <FacetsSearch /> : <SearchInput />}
+              <FacetsSearch />
               <AdvanceOptionsMenu />
               <DataUploader />
               <Divider orientation="vertical" />
