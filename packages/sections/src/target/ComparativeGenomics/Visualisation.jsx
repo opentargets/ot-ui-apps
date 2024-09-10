@@ -1,26 +1,39 @@
 import * as d3 from "d3";
 import { useRef, useEffect } from "react";
-const labels = {
-  "6239": "",
-  "7227": "",
-  "7955": "",
-  "8364": "",
-  "9823": "",
-  "9615": "",
-  "10141": "",
-  "9986": "",
-  "10116": "",
-  "10090": "",
-  "9544": "",
-  "9598": "",
-  "9606": "",
+import { useMeasure } from "@uidotdev/usehooks";
+import { Box } from "@mui/material";
+
+function Wrapper({ homologues, query, variables }) {
+  const [ref, { width }] = useMeasure();
+  return (
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box sx={{ width: "75%" }} ref={ref}>
+        <Visualisation homologues={homologues} width={width} />
+      </Box>
+    </Box>
+  );
 }
 
-function Visualisation({ homologues }) {
+const labels = {
+  6239: "",
+  7227: "",
+  7955: "",
+  8364: "",
+  9823: "",
+  9615: "",
+  10141: "",
+  9986: "",
+  10116: "",
+  10090: "",
+  9544: "",
+  9598: "",
+  9606: "",
+};
+
+function Visualisation({ homologues, width }) {
   const containerReference = useRef();
 
   useEffect(() => {
-    const width = 640;
     const height = 400;
     const marginTop = 20;
     const marginRight = 20;
@@ -85,7 +98,7 @@ function Visualisation({ homologues }) {
         "9598",
         "9606",
       ])
-      .range([height - marginBottom*2, marginTop]);
+      .range([height - marginBottom * 2, marginTop]);
 
     // Create the SVG container.
     const svg = d3.create("svg").attr("width", width).attr("height", height);
@@ -93,35 +106,40 @@ function Visualisation({ homologues }) {
     // Add the x-axis.
     svg
       .append("g")
-      .attr("transform", `translate(0,${height-marginBottom})`)
+      .attr("transform", `translate(0,${height - marginBottom})`)
       .call(d3.axisBottom(queryScale))
-      .call(g => g.append("text")
-        .attr("x", marginLeft)
-        .attr("y", marginBottom - 1)
-        .attr("fill", "currentColor")
-        .attr("text-anchor", "start")
-        .text("Query Percentage Identity →"));
+      .call(g =>
+        g
+          .append("text")
+          .attr("x", marginLeft)
+          .attr("y", marginBottom - 1)
+          .attr("fill", "currentColor")
+          .attr("text-anchor", "start")
+          .text("Query Percentage Identity →")
+      );
 
     // Add the x-axis.
     svg
       .append("g")
-      .attr("transform", `translate(0,${height-marginBottom})`)
+      .attr("transform", `translate(0,${height - marginBottom})`)
       .call(d3.axisBottom(targetScale))
-      .call(g => g.append("text")
-        .attr("x", width-marginRight)
-        .attr("y", marginBottom - 1)
-        .attr("fill", "currentColor")
-        .attr("text-anchor", "end")
-        .text("← Target Percentage Identity"));
+      .call(g =>
+        g
+          .append("text")
+          .attr("x", width - marginRight)
+          .attr("y", marginBottom - 1)
+          .attr("fill", "currentColor")
+          .attr("text-anchor", "end")
+          .text("← Target Percentage Identity")
+      );
 
-
-    const yAxis = d3.axisLeft(y).tickFormat((d) => labels[d])
+    const yAxis = d3.axisLeft(y).tickFormat(d => labels[d]);
     // Add the y-axis.
     svg
-    .append("g")
-    .attr("transform", `translate(${width / 2},0)`)
-    .call(yAxis)
-    .call(g => g.select(".domain").remove());
+      .append("g")
+      .attr("transform", `translate(${width / 2},0)`)
+      .call(yAxis)
+      .call(g => g.select(".domain").remove());
 
     // Create the grid
     const queryContainer = svg.append("g").attr("class", "queryContainer");
@@ -161,8 +179,9 @@ function Visualisation({ homologues }) {
 
     // Append the SVG element.
     containerReference.current.append(svg.node());
-  }, [homologues]);
+    return () => svg.remove();
+  }, [homologues, width]);
 
   return <div ref={containerReference}></div>;
 }
-export default Visualisation;
+export default Wrapper;
