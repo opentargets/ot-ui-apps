@@ -58,6 +58,8 @@ function GlobalSearchListHeader({ listHeader, children }) {
         return <FontAwesomeIcon icon={faStethoscope} fixedWidth className={classes.labelIcon} />;
       case "targets":
         return <FontAwesomeIcon icon={faDna} fixedWidth className={classes.labelIcon} />;
+      case "variants":
+        return <FontAwesomeIcon icon={faMapPin} fixedWidth className={classes.labelIcon} />;
       case "Study":
         return <FontAwesomeIcon icon={faChartBar} fixedWidth className={classes.labelIcon} />;
       case "Gene":

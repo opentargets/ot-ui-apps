@@ -163,6 +163,8 @@ function GlobalSearchList({ inputValue }) {
     };
   }, []);
 
+  console.log(searchResult);
+
   return (
     <>
       {inputValue && loading && <GlobalSearchLoadingState />}

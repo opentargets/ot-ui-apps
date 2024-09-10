@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faClockRotateLeft, faArrowTrendUp } from "@fortawesome/free-solid-svg-icons";
 
 import { clearRecentItem, commaSeparate } from "./utils/searchUtils";
+import DisplayVariantId from "../DisplayVariantId";
 
 const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
@@ -82,6 +83,19 @@ const TopHitItemContainer = styled("div")(({ theme }) => ({
   borderRadius: theme.spacing(1),
 }));
 
+function symbolNameOrId(item) {
+    return item.symbol || item.name || item.id
+    // !! USE BELOW ONCE CAN GET referenceAllele AND alternateAllele FROM SEARCH API
+    // return item.entity === "variant"
+    //   ? <DisplayVariantId
+    //       variantId={item.id}
+    //       referenceAllele={item.referenceAllele}
+    //       alternateAllele={item.alternateAllele}
+    //       expand={false}
+    //     />
+    //   : item.symbol || item.name
+}
+
 function SuggestionListItem({ item, onItemClick }) {
   return (
     <RecentItemContainer
@@ -114,7 +128,7 @@ function RecentListItem({ item, onItemClick }) {
     >
       <RecentIconContainer>
         <FontAwesomeIcon icon={faClockRotateLeft} />
-        <Typography variant="subtitle2">{item.symbol || item.name || item.id}</Typography>
+        <Typography variant="subtitle2">{symbolNameOrId(item)}</Typography>
       </RecentIconContainer>
 
       <FontAwesomeIcon
@@ -151,7 +165,7 @@ function TopHitListItem({ item, onItemClick }) {
                   color: theme => theme.palette.primary.main,
                 }}
               >
-                {item.symbol || item.name}
+                {symbolNameOrId(item)}
               </Box>
             </ListItemDisplayName>
           </Typography>
@@ -208,7 +222,23 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
     >
       <JustifyBetween>
         <ListItemDisplayName>{getSymbolHeader()}</ListItemDisplayName>
-        <Typography variant="caption">{item.id && <ItemId>{item.id}</ItemId>}</Typography>
+        <Typography variant="caption">
+          {!!item.id && 
+            <ItemId>
+              {
+                item.id
+                // !! USE BELOW ONCE CAN GET referenceAllele AND alternateAllele FROM SEARCH API
+                // item.entity === "variant"
+                //   ? <DisplayVariantId
+                //       variantId={item.id}
+                //       referenceAllele={item.referenceAllele}
+                //       alternateAllele={item.alternateAllele}
+                //     />
+                //   : item.id
+              }
+            </ItemId>
+          }
+        </Typography>
       </JustifyBetween>
 
       <JustifyBetween>
