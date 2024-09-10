@@ -86,6 +86,7 @@ function TableBody({ core, cols, noInteractors }) {
           {rows.map(row => (
             <Fragment key={row.id}>
               <RowContainer
+                interactors={prefix === TABLE_PREFIX.INTERACTORS}
                 rowExpanded={
                   focusState.filter(e => e.row === row.id && e.table === prefix).length > 0
                 }

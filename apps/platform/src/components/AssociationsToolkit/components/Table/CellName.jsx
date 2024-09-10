@@ -22,7 +22,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
 import useAotfContext from "../../hooks/useAotfContext";
-import { ENTITIES, isPartnerPreview } from "../../utils";
+import { ENTITIES, isPartnerPreview, TABLE_PREFIX } from "../../utils";
 import { grey } from "@mui/material/colors";
 import {
   FocusActionType,
@@ -245,8 +245,8 @@ function CellName({ cell, colorScale }) {
               <ListItemText>Unpin {entityToGet}</ListItemText>
             </StyledMenuItem>
           )}
-          {entityToGet === ENTITIES.TARGET && <Divider />}
-          {entityToGet === ENTITIES.TARGET && (
+          {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && <Divider />}
+          {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && (
             <StyledMenuItem
               disabled={!isPartnerPreview}
               onClick={() => {
