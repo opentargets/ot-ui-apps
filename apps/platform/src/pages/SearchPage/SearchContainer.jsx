@@ -112,8 +112,8 @@ function SearchResults({ results, page, onPageChange }) {
           return <TargetResult key={object.id} data={object} highlights={highlights} />;
         if (object[TYPE_NAME] === "Disease")
           return <DiseaseResult key={object.id} data={object} highlights={highlights} />;
-        if (object[TYPE_NAME] === "Variant")
-          return <VariantResult key={object.id} data={object} highlights={highlights} />;
+        // if (object[TYPE_NAME] === "Variant")
+        //   return <VariantResult key={object.id} data={object} highlights={highlights} />;
         return <DrugResult key={object.id} data={object} highlights={highlights} />;
       })}
 
