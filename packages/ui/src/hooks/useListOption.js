@@ -5,6 +5,7 @@ function useListOption() {
   const history = useHistory();
 
   const openListItem = option => {
+    console.log({'option item passed to openListItem': option});
     if (!option) return;
     const newOption = { ...option };
     newOption.type = "recent";

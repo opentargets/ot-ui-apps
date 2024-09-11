@@ -19,6 +19,12 @@ query SearchPageQuery(
       id
       highlights
       object {
+        ... on Variant {
+          id
+          referenceAllele
+          alternateAllele
+        }
+
         ... on Target {
           id
           approvedSymbol
@@ -46,6 +52,11 @@ query SearchPageQuery(
   ) {
     hits {
       object {
+        ... on Variant {
+          id
+          referenceAllele
+          alternateAllele
+        }
         ... on Target {
           id
           approvedSymbol
