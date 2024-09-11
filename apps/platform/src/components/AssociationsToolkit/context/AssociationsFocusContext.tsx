@@ -315,6 +315,20 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
       }, []);
     }
 
+    case FocusActionType.SET_INTERACTORS_SOURCE: {
+      return focusState.reduce<FocusState>((acc, element) => {
+        if (element.table === action.focus.table && element.row === action.focus.row) {
+          acc.push({
+            ...element,
+            interactorsSource: action.focus.source,
+          });
+          return acc;
+        }
+        acc.push(element);
+        return acc;
+      }, []);
+    }
+
     case FocusActionType.RESET: {
       return [];
     }

@@ -59,10 +59,9 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     enableIndirect,
     dataSourcesWeights,
     entityToGet,
-    handleSetInteractors,
   } = useAotfContext();
 
-  const label = row.original[entityToGet][nameProperty];
+  // const label = row.original[entityToGet][nameProperty];
 
   const focusState = useAssociationsFocus();
   const dispatch = useAssociationsFocusDispatch();
@@ -80,6 +79,13 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     dispatch({
       type: FocusActionType.SET_INTERACTORS_OFF,
       focus: { row: row.id, table: parentTable },
+    });
+  };
+
+  const onInteractorsSourceChange = newSource => {
+    dispatch({
+      type: FocusActionType.SET_INTERACTORS_SOURCE,
+      focus: { row: row.id, table: parentTable, source: newSource },
     });
   };
 
@@ -154,7 +160,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
               <NativeSelect
                 id="intaractor_data_source"
                 onChange={e => {
-                  handleSetInteractors(row.id, e.target.value);
+                  onInteractorsSourceChange(e.target.value);
                 }}
                 variant="standard"
                 value={focusElement?.interactorsSource}
