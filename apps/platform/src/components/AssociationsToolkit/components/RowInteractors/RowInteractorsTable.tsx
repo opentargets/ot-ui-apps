@@ -15,6 +15,7 @@ import { faClose, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-
 import { useState } from "react";
 import {
   FocusActionType,
+  useAssociationsFocus,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
 
@@ -57,21 +58,23 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     sorting,
     enableIndirect,
     dataSourcesWeights,
-    dataSourcesRequired,
     entityToGet,
     handleSetInteractors,
   } = useAotfContext();
 
+  const label = row.original[entityToGet][nameProperty];
+
+  const focusState = useAssociationsFocus();
   const dispatch = useAssociationsFocusDispatch();
+
+  const focusElement = focusState.find(
+    e => e.row === row.id && e.table === parentTable && e.interactors
+  );
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
-
-  const label = row.original[entityToGet][nameProperty];
-
-  const source = "intact";
 
   const onClickCloseInteractors = () => {
     dispatch({
@@ -86,11 +89,10 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
       index: 0,
       size: 10,
       filter: "",
-      source,
+      source: focusElement?.interactorsSource,
       aggregationFilters: [],
       enableIndirect,
       datasources: dataSourcesWeights,
-      dataSourcesRequired,
       rowsFilter: [],
       entityInteractors: null,
       entity: "disease",
@@ -125,14 +127,14 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
         <RowLine />
         <Box
           sx={{
-            background: grey[300],
-            borderColor: grey[400],
+            justifyContent: "space-between",
             boxSizing: "border-box",
+            alignItems: "center",
+            display: "flex",
+            borderColor: grey[400],
+            background: grey[300],
             px: 2,
             py: 0.5,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
             mb: 1,
             ml: 5,
           }}
@@ -142,8 +144,9 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
               <FontAwesomeIcon size="sm" icon={faClose} />
             </Box>
             <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>
-              {label} interactors
+              Interactors
             </Typography>
+
             <Box display="flex" alignItems="center" gap={1}>
               <InputLabel sx={{ fontSize: "0.85rem" }} htmlFor="intaractor_data_source">
                 Source:
@@ -154,7 +157,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                   handleSetInteractors(row.id, e.target.value);
                 }}
                 variant="standard"
-                value={source}
+                value={focusElement?.interactorsSource}
                 sx={{
                   fontSize: "0.85rem",
                   boxShadow: "none",
@@ -168,6 +171,11 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                 <option value={"string"}>String</option>
               </NativeSelect>
             </Box>
+            <Typography variant="caption" sx={{ ml: 2 }}>
+              <b>{interactorsMetadata?.count || 0}</b> target interactors, <b>{data?.length}</b>{" "}
+              association
+              {data.length > 1 ? "s" : ""} found
+            </Typography>
           </Box>
           <Box sx={{ display: "flex", gap: 2 }}>
             <Button

@@ -1,7 +1,6 @@
 import { ReactElement } from "react";
 import { Box } from "@mui/material";
 import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
-import { grey } from "@mui/material/colors";
 
 function RowInteractorsWrapper({
   rowId,

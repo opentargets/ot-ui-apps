@@ -2,12 +2,13 @@ import { createContext, useContext, useReducer, Dispatch, ReactElement, useEffec
 import useAotfContext from "../hooks/useAotfContext";
 
 type FocusElementTable = "core" | "pinned" | "upload";
+type InteractorsSource = "intac" | "signor" | "reactome" | "string";
 
 export type FocusElement = {
   table: FocusElementTable;
   row: string;
   interactorsRow: string | null;
-  interactorsView: string | null;
+  interactorsSource: InteractorsSource | null;
   interactors: boolean;
   section: null | [string, string];
   interactorsSection: null | [string, string];
@@ -24,12 +25,11 @@ export enum FocusActionType {
   SET_FOCUS_SECTION = "SET_FOCUS_SECTION",
   CLEAR_FOCUS_CONTEXT_MENU = "CLEAR_FOCUS_CONTEXT_MENU",
   SET_FOCUS_CONTEXT_MENU = "SET_FOCUS_CONTEXT_MENU",
+  SET_INTERACTORS_SOURCE = "SET_INTERACTORS_SOURCE",
 }
 
 export type FocusAction =
   | { type: FocusActionType.RESET }
-  | { type: FocusActionType.SET_INTERACTORS_ON; focus: { row: string; table: FocusElementTable } }
-  | { type: FocusActionType.SET_INTERACTORS_OFF; focus: { row: string; table: FocusElementTable } }
   | {
       type: FocusActionType.SET_FOCUS_CONTEXT_MENU;
       focus: { row: string; table: FocusElementTable };
@@ -41,6 +41,12 @@ export type FocusAction =
   | {
       type: FocusActionType.SET_FOCUS_SECTION;
       focus: { row: string; table: FocusElementTable; section: [string, string] };
+    }
+  | { type: FocusActionType.SET_INTERACTORS_ON; focus: { row: string; table: FocusElementTable } }
+  | { type: FocusActionType.SET_INTERACTORS_OFF; focus: { row: string; table: FocusElementTable } }
+  | {
+      type: FocusActionType.SET_INTERACTORS_SOURCE;
+      focus: { row: string; table: FocusElementTable; source: InteractorsSource };
     }
   | {
       type: FocusActionType.SET_INTERACTORS_SECTION;
@@ -57,7 +63,7 @@ const defaultFocusElement: FocusElement = {
   row: "",
   interactors: false,
   interactorsRow: null,
-  interactorsView: null,
+  interactorsSource: "reactome",
   section: null,
   interactorsSection: null,
 };
@@ -104,16 +110,6 @@ const getFocusElementState = (
   });
 
   return { sectionActive, rowActive, tableActive, interactorsActive, hasSectionActive };
-};
-
-const focusElementGenerator = (
-  table: FocusElementTable,
-  row: string,
-  section: [string, string] | null,
-  interactorsView: null | string,
-  interactors = false
-): FocusElement => {
-  return { ...defaultFocusElement, table, row, section: section, interactors, interactorsView };
 };
 
 function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
@@ -194,10 +190,12 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
         return focusState;
       }
 
-      return [
-        ...focusState,
-        focusElementGenerator(action.focus.table, action.focus.row, null, null, false),
-      ];
+      const newElement = createFocusElement({
+        row: action.focus.row,
+        table: action.focus.table,
+      });
+
+      return [...focusState, newElement];
     }
 
     case FocusActionType.CLEAR_FOCUS_CONTEXT_MENU: {

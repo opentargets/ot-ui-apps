@@ -36,7 +36,6 @@ function useRowInteractors({
     entity,
     diseaseId,
     sortBy,
-    dataSourcesRequired,
   },
 }) {
   const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
@@ -106,7 +105,7 @@ function useRowInteractors({
     }
     if (isCurrent) getInteractors();
     return () => (isCurrent = false);
-  }, [source, sortBy, dataSourcesRequired]);
+  }, [source, sortBy]);
 
   return state;
 }
