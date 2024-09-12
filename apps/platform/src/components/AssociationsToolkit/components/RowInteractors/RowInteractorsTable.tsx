@@ -19,7 +19,7 @@ import {
   useAssociationsFocus,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
-import { ENTITIES, TABLE_PREFIX } from "../../utils";
+import { ENTITIES, INTERACTORS_SOURCES, TABLE_PREFIX } from "../../utils";
 
 const btnStyles = {
   width: "18px",
@@ -173,10 +173,10 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                   ".MuiNativeSelect-select": { border: 0 },
                 }}
               >
-                <option value={"intact"}>IntAct</option>
-                <option value={"signor"}>Signor</option>
-                <option value={"reactome"}>Reactome</option>
-                <option value={"string"}>String</option>
+                <option value={INTERACTORS_SOURCES.REACTOME}>Reactome</option>
+                <option value={INTERACTORS_SOURCES.INTACT}>IntAct</option>
+                <option value={INTERACTORS_SOURCES.SIGNOR}>Signor</option>
+                <option value={INTERACTORS_SOURCES.STRING}>String</option>
               </NativeSelect>
             </Box>
             {loading ? (
