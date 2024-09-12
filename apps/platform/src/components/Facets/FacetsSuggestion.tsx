@@ -3,12 +3,15 @@ import { faLightbulb } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box } from "@mui/material";
 import { useAotfContext } from "../AssociationsToolkit";
+import { ENTITY } from "./facetsTypes";
 
-const TARGET_EXAMPLE = "Measurement";
-const DISEASE_EXAMPLE = "Enzyme";
+const EXAMPLE = {
+  [ENTITY.DISEASE]: "Measurement",
+  [ENTITY.TARGET]: "Enzyme",
+};
 
 function FacetsSuggestion(): ReactElement {
-  const { entityToGet, entity } = useAotfContext();
+  const { entityToGet } = useAotfContext();
 
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -27,7 +30,7 @@ function FacetsSuggestion(): ReactElement {
         </Box>
         <Box sx={{ typography: "body2" }}>
           Please search by {entityToGet} or filter by {entityToGet} category. Example:{" "}
-          {entity === "disease" ? DISEASE_EXAMPLE : TARGET_EXAMPLE}
+          {EXAMPLE[entityToGet]}
         </Box>
       </Box>
     </Box>

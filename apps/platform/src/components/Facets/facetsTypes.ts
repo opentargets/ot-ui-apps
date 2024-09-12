@@ -33,16 +33,21 @@ export interface Facet {
   highlights: string[];
   label: string;
   category: string;
-  entityIds: string[];
   score: number;
 }
 
 export interface FacetState {
-  dataOptions: Facet[];
   loading: boolean;
+  dataOptions: Facet[];
+  selectedFacets: Facet[];
+  suggestionOptions: Facet[];
   categoryFilterValue: string;
   availableCategories: Record<string, string>;
-  selectedFacets: Facet[];
+}
+
+export interface FacetCategoryChange {
+  category: string;
+  suggestionOptions: Facet[];
 }
 
 /*****************
@@ -62,6 +67,6 @@ export type Action =
   | { type: ActionType.SEARCH_FACETS; payload: Facet[] }
   | { type: ActionType.SEARCH_CATEGORY; categories: Record<string, string> }
   | { type: ActionType.SET_LOADING; loading: boolean }
-  | { type: ActionType.SET_CATEGORY; category: string }
+  | { type: ActionType.SET_CATEGORY; payload: FacetCategoryChange }
   | { type: ActionType.SELECT_FACET; payload: Facet[] }
   | { type: ActionType.RESET_FACETS; entityToGet: ENTITY };
