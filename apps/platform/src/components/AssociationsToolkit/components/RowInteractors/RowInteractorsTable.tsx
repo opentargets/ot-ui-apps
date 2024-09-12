@@ -15,9 +15,11 @@ import { faClose, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-
 import { useState } from "react";
 import {
   FocusActionType,
+  InteractorsSource,
   useAssociationsFocus,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
+import { ENTITIES, TABLE_PREFIX } from "../../utils";
 
 const btnStyles = {
   width: "18px",
@@ -82,7 +84,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     });
   };
 
-  const onInteractorsSourceChange = newSource => {
+  const onInteractorsSourceChange = (newSource: InteractorsSource) => {
     dispatch({
       type: FocusActionType.SET_INTERACTORS_SOURCE,
       focus: { row: row.id, table: parentTable, source: newSource },
@@ -101,7 +103,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
       datasources: dataSourcesWeights,
       rowsFilter: [],
       entityInteractors: null,
-      entity: "disease",
+      entity: ENTITIES.DISEASE,
       diseaseId,
       sortBy: sorting[0].id,
     },
@@ -114,7 +116,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
       sorting,
       pagination,
       loading,
-      prefix: "interactors",
+      prefix: TABLE_PREFIX.INTERACTORS,
       parentTable,
       parentRow: row.id,
     },

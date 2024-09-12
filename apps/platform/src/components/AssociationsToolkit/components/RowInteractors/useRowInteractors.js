@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import client from "../../../../client";
-import { getAssociationsData, getInteractorIds, getInitialLoadingData } from "../../utils";
+import {
+  getAssociationsData,
+  getInteractorIds,
+  getInitialLoadingData,
+  INTERACTORS_SOURCES,
+} from "../../utils";
 
 import InteractionsQuery from "./InteractorsQuery.gql";
 import DiseaseAssociationsQuery from "../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
@@ -27,7 +32,7 @@ function useRowInteractors({
     index = 0,
     size = 50,
     filter = "",
-    source = "intac",
+    source = INTERACTORS_SOURCES.INTACT,
     aggregationFilters = [],
     enableIndirect = false,
     datasources = [],

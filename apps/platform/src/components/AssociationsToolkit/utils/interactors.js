@@ -1,5 +1,12 @@
 import { v1 } from "uuid";
 
+export const INTERACTORS_SOURCES = {
+  REACTOME: "reactome",
+  STRING: "string",
+  INTACT: "intact",
+  SIGNOR: "signor",
+};
+
 export function getInteractorIds(targetRowInteractorsRequest) {
   if (!targetRowInteractorsRequest?.data?.target?.interactions?.rows) {
     return [];

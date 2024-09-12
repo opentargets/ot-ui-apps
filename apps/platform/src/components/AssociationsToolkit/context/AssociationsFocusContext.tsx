@@ -1,8 +1,9 @@
 import { createContext, useContext, useReducer, Dispatch, ReactElement, useEffect } from "react";
 import useAotfContext from "../hooks/useAotfContext";
+import { INTERACTORS_SOURCES, TABLE_PREFIX } from "../utils";
 
-type FocusElementTable = "core" | "pinned" | "upload";
-type InteractorsSource = "intac" | "signor" | "reactome" | "string";
+export type FocusElementTable = "core" | "pinned" | "upload";
+export type InteractorsSource = "intac" | "signor" | "reactome" | "string";
 
 export type FocusElement = {
   table: FocusElementTable;
@@ -59,11 +60,11 @@ export type FocusAction =
     };
 
 const defaultFocusElement: FocusElement = {
-  table: "core",
+  table: TABLE_PREFIX.CORE,
   row: "",
   interactors: false,
   interactorsRow: null,
-  interactorsSource: "reactome",
+  interactorsSource: INTERACTORS_SOURCES.REACTOME,
   section: null,
   interactorsSection: null,
 };
@@ -332,6 +333,7 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
     case FocusActionType.RESET: {
       return [];
     }
+
     default: {
       throw Error("Unknown action: " + action);
     }
