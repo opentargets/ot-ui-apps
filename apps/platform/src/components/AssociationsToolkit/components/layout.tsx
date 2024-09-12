@@ -53,13 +53,13 @@ export const RowsContainer = styled("div")({
 
 type RowContainerProps = {
   rowExpanded: boolean;
-  isSubRow: boolean;
+  interactors: boolean;
 };
 
 export const RowContainer = styled("div", {
-  shouldForwardProp: prop => prop !== "rowExpanded" && prop !== "isSubRow",
-})<RowContainerProps>(({ rowExpanded }) => ({
-  top: "148px",
+  shouldForwardProp: prop => prop !== "rowExpanded" && prop !== "interactors",
+})<RowContainerProps>(({ rowExpanded, interactors }) => ({
+  top: interactors ? 0 : "148px",
   width: "100%",
   display: "flex",
   alignItems: "center",
