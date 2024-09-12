@@ -14,7 +14,7 @@ import {
   FacetsAutocomplete,
   FacetsSelect,
 } from "./facetsLayout";
-import { getFacetsData } from "./service/facets.service";
+import { getFacetsData } from "./service/facetsService";
 
 function FacetsSearch(): ReactElement {
   const { entityToGet, facetFilterSelect, id } = useAotfContext();
