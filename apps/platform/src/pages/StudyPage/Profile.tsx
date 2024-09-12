@@ -1,34 +1,43 @@
+import { Suspense, lazy } from "react";
 import { gql } from "@apollo/client";
-import { PlatformApiProvider, SectionContainer, SummaryContainer, summaryUtils } from "ui";
+import {
+  PlatformApiProvider,
+  SectionContainer,
+  SummaryContainer,
+  SectionLoader,
+  summaryUtils,
+} from "ui";
+
+import GWASCredidbleSetsSummary from "sections/src/study/GWASCredibleSets/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
-// const summaries = [
-// ];
+const GWASCredibleSetsSection = lazy(
+  () => import("sections/src/study/GWASCredibleSets/Body")
+);
 
-const STUDY = "study";
-// const STUDY_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(summaries, "Gwas");
+const summaries = [
+  GWASCredidbleSetsSummary,
+];
+
+const STUDY = "gwasStudy";
+const STUDY_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
+  summaries,
+  "Gwas",
+  "StudyProfileSummaryFragment"
+);
 const STUDY_PROFILE_QUERY = gql`
   query StudyProfileQuery($studyId: String!) {
     gwasStudy(studyId: $studyId) {
       studyId
       ...StudyProfileHeaderFragment
+      ...StudyProfileSummaryFragment
     }
   }
   ${ProfileHeader.fragments.profileHeader}
+  ${STUDY_PROFILE_SUMMARY_FRAGMENT}
 `;
-// const STUDY_PROFILE_QUERY = gql`
-//   query StudyProfileQuery($chemblId: String!) {
-//     gwasStudy(studyId: $studyId) {
-//       studyId
-//       ...StudyProfileHeaderFragment
-//       ...StudyProfileSummaryFragment
-//     }
-//   }
-//   ${ProfileHeader.fragments.profileHeader}
-//   ${STUDY_PROFILE_SUMMARY_FRAGMENT}
-// `;
 
 type ProfileProps = {
   studyId: string;
@@ -44,6 +53,21 @@ function Profile({ studyId, studyCategory }: ProfileProps) {
       client={client}
     >
       <ProfileHeader studyCategory={studyCategory} />
+
+      <SummaryContainer>
+        {(studyCategory === "GWAS" || studyCategory === "FINNGEN") &&
+          <GWASCredidbleSetsSummary /> 
+        }
+      </SummaryContainer>
+
+      <SectionContainer>
+        {(studyCategory === "GWAS" || studyCategory === "FINNGEN") &&
+          <Suspense fallback={<SectionLoader />}>
+            <GWASCredibleSetsSection id={studyId} entity={STUDY} />
+          </Suspense>
+        }
+      </SectionContainer>
+
     </PlatformApiProvider>
   );
 }
