@@ -8,7 +8,7 @@ import {
 import useRowInteractors from "./useRowInteractors";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableBody from "../Table/TableBody";
-import { Box, Button, InputLabel, NativeSelect, Typography } from "@mui/material";
+import { Box, Button, InputLabel, NativeSelect, Skeleton, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
@@ -177,11 +177,15 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                 <option value={"string"}>String</option>
               </NativeSelect>
             </Box>
-            <Typography variant="caption" sx={{ ml: 2 }}>
-              <b>{interactorsMetadata?.count || 0}</b> target interactors, <b>{data?.length}</b>{" "}
-              association
-              {data.length > 1 ? "s" : ""} found
-            </Typography>
+            {loading ? (
+              <Skeleton width={265} />
+            ) : (
+              <Typography variant="caption" sx={{ ml: 2 }}>
+                <b>{data?.length}</b> association
+                {data.length > 1 ? "s" : ""} found in <b>{interactorsMetadata?.count || 0}</b>{" "}
+                target interactors
+              </Typography>
+            )}
           </Box>
           <Box sx={{ display: "flex", gap: 2 }}>
             <Button

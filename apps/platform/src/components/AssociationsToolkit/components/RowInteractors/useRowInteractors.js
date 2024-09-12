@@ -64,11 +64,6 @@ function useRowInteractors({
         return;
       }
 
-      setState({
-        ...state,
-        interactorsMetadata: targetRowInteractorsRequest.data.target.interactions,
-      });
-
       const interactorsIds = getInteractorIds(targetRowInteractorsRequest);
 
       const interactorsAssociationsRequest = await client.query({
