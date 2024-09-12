@@ -14,6 +14,7 @@ export const initialFacetState: FacetState = {
   availableCategories: {},
   categoryFilterValue: "",
   selectedFacets: [],
+  suggestionOptions: [],
 };
 
 export function createInitialState(entityToGet: string): FacetState {
@@ -38,10 +39,9 @@ export function facetsReducer(state: FacetState = initialFacetState, action: Act
       };
     }
     case ActionType.SEARCH_FACETS: {
-      const allFacets = action.payload;
       return {
         ...state,
-        dataOptions: allFacets,
+        dataOptions: action.payload,
         loading: false,
       };
     }
@@ -61,14 +61,17 @@ export function facetsReducer(state: FacetState = initialFacetState, action: Act
     case ActionType.SET_CATEGORY: {
       return {
         ...state,
-        categoryFilterValue: action.category,
+        loading: false,
+        categoryFilterValue: action.payload.category,
+        dataOptions: action.payload.suggestionOptions,
+        suggestionOptions: action.payload.suggestionOptions,
       };
     }
     case ActionType.SELECT_FACET: {
       return {
         ...state,
         selectedFacets: action.payload,
-        dataOptions: [],
+        dataOptions: state.suggestionOptions,
       };
     }
     default: {

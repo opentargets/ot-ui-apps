@@ -36,10 +36,13 @@ export function setLoading(loading: boolean): Action {
   };
 }
 
-export function setCategory(category: string): Action {
+export function setCategory(category: string, suggestionOptions: Facet[]): Action {
   return {
     type: ActionType.SET_CATEGORY,
-    category,
+    payload: {
+      category,
+      suggestionOptions,
+    },
   };
 }
 
