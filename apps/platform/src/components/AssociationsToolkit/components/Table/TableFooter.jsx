@@ -3,6 +3,18 @@ import { Alert, TablePagination, Typography } from "@mui/material";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableCell from "./TableCell";
 import { getLegend } from "../../utils";
+import { styled } from "@mui/styles";
+
+const TableFooterContainer = styled("div")({
+  position: "sticky",
+  borderTop: "1px solid var(--table-footer-border-color)",
+  bottom: 0,
+  backgroundColor: " #fafafa",
+  padding: "10px",
+  display: "flex",
+  justifyContent: "space-between",
+  zIndex: 100,
+});
 
 function TableFooter({ table }) {
   const {
@@ -25,7 +37,7 @@ function TableFooter({ table }) {
   }, [displayedTable]);
 
   return (
-    <div className="table-footer">
+    <TableFooterContainer>
       <div style={{ display: "flex", alignItems: " flex-start" }}>
         <div id="legend" />
         <div
@@ -87,7 +99,7 @@ function TableFooter({ table }) {
           }}
         />
       </div>
-    </div>
+    </TableFooterContainer>
   );
 }
 

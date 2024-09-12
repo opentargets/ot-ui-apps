@@ -164,17 +164,6 @@ code {
   align-items: center;
 }
 
-/* Table footer */
-.TAssociations .table-footer {
-  position: sticky;
-  border-top: 1px solid var(--table-footer-border-color);
-  bottom: 0;
-  background-color: #fafafa;
-  padding: 10px 0;
-  display: flex;
-  justify-content: space-between;
-}
-
 /* --- LEGEND --- */
 .TAssociations #legend {
   display: flex;
