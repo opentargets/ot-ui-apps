@@ -83,8 +83,9 @@ function innUrl() {
   return "https://www.who.int/publications/m/item/inn-pl-126";
 }
 
-function emaUrl() {
-  return "https://www.ema.europa.eu/en/medicines";
+function emaUrl(id) {
+  const urlId = id.trim().replace(" ", "%20");
+  return `https://www.ema.europa.eu/en/search?f%5B0%5D=ema_search_categories%3A83&f%5B1%5D=ema_search_categories%3A84&f%5B2%5D=ema_search_categories%3A85&f%5B3%5D=ema_search_content_type%3Aema_herbal&f%5B4%5D=ema_search_content_type%3Aema_medicine&f%5B5%5D=ema_herbal_and_authorised_medicines%3AHerbal%20and%20authorised%20medicines&search_api_fulltext=${urlId}`;
 }
 
 function usanUrl(id) {
