@@ -135,6 +135,10 @@ function DepmapPlot({ data, width }) {
           fontSize: 12,
           label: "Tissue name",
         }),
+        Plot.axisX({
+          fontSize: 12,
+          label: "Gene Effect",
+        }),
         Plot.crosshair(data, { x: "geneEffect", y: "tissueName" }),
       ],
     });
