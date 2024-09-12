@@ -113,7 +113,23 @@ const populationLabels = {
   remaining_adj: 'Other',
 };
 
+// magnitude of a number: its index in standard form
+function magnitude(v) {
+  const sf = v.toExponential();
+  return sf.slice(sf.indexOf('e'));
+}
+
 function AlleleFrequencyPlot({ data }) {
+
+  let orderOfMag = -2;
+  for (const { alleleFrequency } of data) {
+    if (alleleFrequency > 0) {
+      orderOfMag = Math.min(
+        orderOfMag,
+        Math.floor(Math.log10(alleleFrequency))
+      )
+    }
+  }
   
   // sort rows alphabetically on population label - but put "other" last
   const rows = data.map(({ populationName, alleleFrequency }) => ({
@@ -125,13 +141,13 @@ function AlleleFrequencyPlot({ data }) {
   return(
     <Box display="flex" flexDirection="column" gap={0.25}>
       {rows.map(row => (
-        <BarGroup dataRow={row} key={row.label}/>
+        <BarGroup dataRow={row} key={row.label} dps={-orderOfMag + 1}/>
       ))}
     </Box>
   );
 }
 
-function BarGroup({ dataRow: { label, alleleFrequency } }) {
+function BarGroup({ dataRow: { label, alleleFrequency }, dps }) {
   return (
     <Box display="flex" gap={1} alignItems="center" width="100%">
       <Typography width={170} fontSize="13.5px" variant="body2" textAlign="right">
@@ -151,8 +167,8 @@ function BarGroup({ dataRow: { label, alleleFrequency } }) {
           }}
         />
       </Box>
-      <Typography width={40} fontSize="12px" variant="body2" lineHeight={0.8}>
-        {alleleFrequency.toFixed(3)}
+      <Typography fontSize="12px" variant="body2" lineHeight={0.8}>
+        { alleleFrequency === 0 ? 0 : alleleFrequency.toFixed(dps) }
       </Typography>
     </Box>
   );
