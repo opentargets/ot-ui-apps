@@ -1,3 +1,4 @@
+
 import { Suspense } from "react";
 import { useQuery } from "@apollo/client";
 import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
@@ -25,12 +26,14 @@ function StudyPage() {
     variables: { studyId },
   });
 
-  if (data && !data.gwasStudy) {
+  const studyInfo = data?.gwasStudy?.[0];
+
+  if (data && !studyInfo) {
     return <NotFoundPage />;
   }
 
   // !!!!! CURRENTLY RESOLVE STUDY CATEGORY PURELY FROM PROJECT ID
-  const { projectId } = data?.gwasStudy || {};
+  const { projectId } = studyInfo || {};
   let studyCategory = '';
   if (projectId) {
     if (projectId === "GCST") studyCategory = "GWAS";
@@ -47,10 +50,10 @@ function StudyPage() {
       <Header 
         loading={loading}
         studyId={studyId}
-        traitFromSource={data?.gwasStudy?.traitFromSource}
-        backgroundTraits={data?.gwasStudy?.backgroundTraits}
-        targetId={data?.gwasStudy?.target?.id}
-        diseaseId={data?.gwasStudy?.diseases?.[0]?.id}
+        traitFromSource={studyInfo?.traitFromSource}
+        backgroundTraits={studyInfo?.backgroundTraits}
+        targetId={studyInfo?.target?.id}
+        diseaseId={studyInfo?.diseases?.[0]?.id}
         studyCategory={studyCategory}
       />
       <ScrollToTop />
@@ -73,7 +76,11 @@ function StudyPage() {
       <Suspense fallback={<LoadingBackdrop height={11500} />}>
         <Switch>
           <Route exact path={path}>
-            <Profile studyId={studyId} studyCategory={studyCategory}/>
+            <Profile
+              studyId={studyId}
+              studyCategory={studyCategory}
+              diseaseIds={studyInfo?.diseases?.map(d => d.id) || []}
+            />
           </Route>
           <Route path="*">
             <Redirect to={`/study/${studyId}`} />
