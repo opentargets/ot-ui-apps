@@ -7,7 +7,7 @@ function Wrapper({ homologues, query, variables }) {
   const [ref, { width }] = useMeasure();
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <Box sx={{ width: "75%" }} ref={ref}>
+      <Box sx={{ width: "95%" }} ref={ref}>
         <Visualisation homologues={homologues} width={width} />
       </Box>
     </Box>
@@ -15,20 +15,22 @@ function Wrapper({ homologues, query, variables }) {
 }
 
 const labels = {
-  6239: "",
-  7227: "",
-  7955: "",
-  8364: "",
-  9823: "",
-  9615: "",
-  10141: "",
-  9986: "",
-  10116: "",
-  10090: "",
-  9544: "",
-  9598: "",
-  9606: "",
+  6239: "Caenorhabditis elegans (Nematode, N2)",
+  7227: "Drosophila melanogaster (Fruit fly)",
+  7955: "Zebrafish",
+  8364: "Tropical clawed frog",
+  9823: "Pig",
+  9615: "Dog",
+  10141: "Guinea Pig",
+  9986: "Rabbit",
+  10116: "Rat",
+  10090: "Mouse",
+  9544: "Macaque",
+  9598: "Chimpanzee",
+  9606: "Human",
 };
+
+const jitter = () => Math.random() * 10;
 
 function Visualisation({ homologues, width }) {
   const containerReference = useRef();
@@ -40,46 +42,17 @@ function Visualisation({ homologues, width }) {
     const marginBottom = 30;
     const marginLeft = 40;
 
+    const chartWidth = (width - marginRight) * 0.4;
+
     // Declare the x (horizontal position) scale.
-    const queryScale = d3
-      .scaleLinear()
-      .domain([0, 100])
-      .range([marginLeft, (width - marginRight) / 3]);
+    const queryScale = d3.scaleLinear().domain([0, 100]).range([marginLeft, chartWidth]);
 
     const targetScale = d3
       .scaleLinear()
       .domain([100, 0])
-      .range([marginLeft + (width - marginRight) / 1.5, width - marginRight]);
+      .range([width - chartWidth, width - marginRight]);
 
     // Declare the y (vertical position) scale.
-
-    // "6239",
-    // "7227",
-    // "7955",
-    // "8364",
-    // "9823",
-    // "9615",
-    // "10141",
-    // "9986",
-    // "10116",
-    // "10090",
-    // "9544",
-    // "9598",
-    // "9606",
-
-    // "Human",
-    //   "Chimpanzee",
-    //   "Macaque",
-    //   "Mouse",
-    //   "Rat",
-    //   "Rabbit",
-    //   "Guinea Pig",
-    //   "Dog",
-    //   "Pig",
-    //   "Tropical clawed frog",
-    //   "Zebrafish",
-    //   "Drosophila melanogaster (Fruit fly)",
-    //   "Caenorhabditis elegans (Nematode, N2)"
 
     const y = d3
       .scalePoint()
@@ -133,13 +106,46 @@ function Visualisation({ homologues, width }) {
           .text("← Target Percentage Identity")
       );
 
-    const yAxis = d3.axisLeft(y).tickFormat(d => labels[d]);
+    const yAxis = d3
+      .axisLeft(y)
+      .tickFormat(d => labels[d])
+      .tickSize(0);
     // Add the y-axis.
     svg
       .append("g")
       .attr("transform", `translate(${width / 2},0)`)
+      .style("text-anchor", "middle")
+      .style("font-size", "0.85rem")
+      .style("font-weight", 400)
       .call(yAxis)
       .call(g => g.select(".domain").remove());
+
+    svg
+      .append("g")
+      .attr("stroke", "currentColor")
+      .attr("stroke-opacity", 0.1)
+      .call(g =>
+        g
+          .append("g")
+          .selectAll("line")
+          .data(queryScale.ticks())
+          .join("line")
+          .attr("x1", d => 0.5 + queryScale(d))
+          .attr("x2", d => 0.5 + queryScale(d))
+          .attr("y1", marginTop)
+          .attr("y2", height - marginBottom)
+      )
+      .call(g =>
+        g
+          .append("g")
+          .selectAll("line")
+          .data(targetScale.ticks())
+          .join("line")
+          .attr("x1", d => 0.5 + targetScale(d))
+          .attr("x2", d => 0.5 + targetScale(d))
+          .attr("y1", marginTop)
+          .attr("y2", height - marginBottom)
+      );
 
     // Create the grid
     const queryContainer = svg.append("g").attr("class", "queryContainer");
