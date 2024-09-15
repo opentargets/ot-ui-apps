@@ -12,7 +12,17 @@ import {
 } from "../constants";
 import GlobalSearch from "./GlobalSearch/GlobalSearch";
 
-function BasePage({ title, children, description, location }) {
+import { ReactElement } from "react";
+import { Location } from "history";
+
+type BasePageProps = {
+  children: ReactElement;
+  description?: string;
+  location?: Location;
+  title?: string;
+};
+
+function BasePage({ title, children, description, location }: BasePageProps): ReactElement {
   const composedTitle = `${title ? `${title} | ` : ""} ${appTitle}`;
 
   return (
