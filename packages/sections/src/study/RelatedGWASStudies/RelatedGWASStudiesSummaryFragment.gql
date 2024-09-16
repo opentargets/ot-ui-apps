@@ -1,8 +1,0 @@
-fragment RelatedGWASStudiesSummaryFragment on Gwas {
-  thisStudy: gwasStudy(studyId: $studyId) {
-    studyId
-  }
-  relatedStudies: gwasStudy(diseaseId: $diseaseId) {
-    studyId
-  }
-}

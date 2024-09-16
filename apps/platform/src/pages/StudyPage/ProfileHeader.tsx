@@ -27,6 +27,7 @@ function ProfileHeader({ studyCategory }) {
     publicationDate,
     publicationJournal,
     pubmedId,
+    hasSumstats,
     summarystatsLocation,
     nSamples,
     initialSampleSize,
@@ -76,7 +77,7 @@ function ProfileHeader({ studyCategory }) {
         <Field loading={loading} title="Has summary stats">
           { 
             studyCategory === "GWAS"
-              ? (summarystatsLocation ? "yes" : "no")
+              ? (hasSumstats ? "yes" : "no")
               : `yes ${studyCategory === "QTL" && summarystatsLocation
                   ? `—  ${summarystatsLocation}`
                   : ''
@@ -100,7 +101,7 @@ function ProfileHeader({ studyCategory }) {
                               </Typography>
                             }
                           >
-                            formatSamples(discoverySamples)
+                            {formatSamples(discoverySamples)}
                           </Tooltip>
                         : formatSamples(discoverySamples)
                       )

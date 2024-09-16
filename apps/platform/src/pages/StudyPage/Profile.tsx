@@ -18,7 +18,7 @@ const RelatedGWASStudiesSection = lazy(
 );
 
 const summaries = [
-  RelatedGWASStudiesSummary,
+  // RelatedGWASStudiesSummary,
 ];
 
 const STUDY = "gwasStudy";
@@ -28,11 +28,14 @@ const STUDY_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
   "StudyProfileSummaryFragment"
 );
 const STUDY_PROFILE_QUERY = gql`
-  query StudyProfileQuery($studyId: String!) {
+  query StudyProfileQuery($studyId: String!, $diseaseId: String!) {
     gwasStudy(studyId: $studyId) {
       studyId
       ...StudyProfileHeaderFragment
       ...StudyProfileSummaryFragment
+    }
+    relatedGWASStudies: gwasStudy(diseaseId: $diseaseId) {
+      studyId
     }
   }
   ${ProfileHeader.fragments.profileHeader}

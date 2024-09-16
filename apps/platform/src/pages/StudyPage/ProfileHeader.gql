@@ -4,6 +4,7 @@ fragment StudyProfileHeaderFragment on Gwas {
   publicationDate
   publicationJournal
   pubmedId
+  hasSumstats
   summarystatsLocation
   nSamples
   initialSampleSize
