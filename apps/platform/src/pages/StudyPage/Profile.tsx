@@ -8,18 +8,16 @@ import {
   summaryUtils,
 } from "ui";
 
+import GWASCredidbleSetsSummary from "sections/src/study/GWASCredibleSets/Summary";
 import QTLCredibleSetsSummary from "sections/src/study/QTLCredibleSets/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
-const QTLCredibleSetsSection = lazy(
-  () => import("sections/src/study/QTLCredibleSets/Body")
-);
+const GWASCredibleSetsSection = lazy(() => import("sections/src/study/GWASCredibleSets/Body"));
+const QTLCredibleSetsSection = lazy(() => import("sections/src/study/QTLCredibleSets/Body"));
 
-const summaries = [
-  QTLCredibleSetsSummary,
-];
+const summaries = [GWASCredidbleSetsSummary, QTLCredibleSetsSummary];
 
 const STUDY = "gwasStudy";
 const STUDY_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
@@ -55,19 +53,22 @@ function Profile({ studyId, studyCategory }: ProfileProps) {
       <ProfileHeader studyCategory={studyCategory} />
 
       <SummaryContainer>
-        {studyCategory === "QTL" &&
-          <QTLCredibleSetsSummary /> 
-        }
+        {(studyCategory === "GWAS" || studyCategory === "FINNGEN") && <GWASCredidbleSetsSummary />}
+        {studyCategory === "QTL" && <QTLCredibleSetsSummary />}
       </SummaryContainer>
 
       <SectionContainer>
-        {studyCategory === "QTL" &&
+        {(studyCategory === "GWAS" || studyCategory === "FINNGEN") && (
+          <Suspense fallback={<SectionLoader />}>
+            <GWASCredibleSetsSection id={studyId} entity={STUDY} />
+          </Suspense>
+        )}
+        {studyCategory === "QTL" && (
           <Suspense fallback={<SectionLoader />}>
             <QTLCredibleSetsSection id={studyId} entity={STUDY} />
           </Suspense>
-        }
+        )}
       </SectionContainer>
-
     </PlatformApiProvider>
   );
 }
