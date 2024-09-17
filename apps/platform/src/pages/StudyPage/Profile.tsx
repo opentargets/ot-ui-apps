@@ -17,8 +17,9 @@ const RelatedGWASStudiesSection = lazy(
   () => import("sections/src/study/RelatedGWASStudies/Body")
 );
 
+// no RelatedGWASStudiesSummary - we add section to the query below directly
+// since the summary cannot be written as a fragment (it gets further studies)
 const summaries = [
-  // RelatedGWASStudiesSummary,
 ];
 
 const STUDY = "gwasStudy";
@@ -34,7 +35,7 @@ const STUDY_PROFILE_QUERY = gql`
       ...StudyProfileHeaderFragment
       ...StudyProfileSummaryFragment
     }
-    relatedGWASStudies: gwasStudy(diseaseId: $diseaseId) {
+    relatedGWASStudies: gwasStudy(diseaseId: $diseaseId, page: { size: 1, index: 0}) {
       studyId
     }
   }
@@ -49,13 +50,15 @@ type ProfileProps = {
 };
 
 function Profile({ studyId, studyCategory, diseaseIds }: ProfileProps) {
+  const diseaseId = diseaseIds?.[0] || "";  // !! WILL CHANGE TO diseaseIds WHEN API UPDATED !!
+
   return (
     <PlatformApiProvider
       entity={STUDY}
       query={STUDY_PROFILE_QUERY}
       variables={{
         studyId,
-        diseaseId: diseaseIds[0] || "",  // !! WILL CHANGE TO diseaseIds WHEN API UPDATED !!
+        diseaseId,
       }}
       client={client}
     >
@@ -70,7 +73,11 @@ function Profile({ studyId, studyCategory, diseaseIds }: ProfileProps) {
       <SectionContainer>
         {(studyCategory === "GWAS" || studyCategory === "FINNGEN") &&
           <Suspense fallback={<SectionLoader />}>
-            <RelatedGWASStudiesSection id={studyId} entity={STUDY} />
+            <RelatedGWASStudiesSection
+              studyId={studyId}
+              diseaseId={diseaseId}
+              entity={STUDY}
+            />
           </Suspense>
         }
       </SectionContainer>

@@ -7,7 +7,7 @@ type DescriptionProps = {
 function Description({ studyId }: DescriptionProps) {
   return (
     <>
-      GWAS studies that share associated traits with study {" "}
+      GWAS studies that share associated traits with study{" "}
       <strong>{studyId}</strong>. Source{" "}
       <Link external to="https://www.ebi.ac.uk/gwas/studies" >
         GWAS Catalog
@@ -16,6 +16,7 @@ function Description({ studyId }: DescriptionProps) {
       <Link external to="https://r10.finngen.fi" >
         FinnGenR10
       </Link>
+      .
     </>
   );
 }

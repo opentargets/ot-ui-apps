@@ -16,6 +16,7 @@ import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import STUDY_PAGE_QUERY from "./StudyPage.gql";
 import Profile from "./Profile";
+import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 
 function StudyPage() {
   const location = useLocation();
@@ -32,14 +33,7 @@ function StudyPage() {
     return <NotFoundPage />;
   }
 
-  // !!!!! CURRENTLY RESOLVE STUDY CATEGORY PURELY FROM PROJECT ID
-  const { projectId } = studyInfo || {};
-  let studyCategory = '';
-  if (projectId) {
-    if (projectId === "GCST") studyCategory = "GWAS";
-    else if (projectId === "FINNGEN_R10") studyCategory = "FINNGEN";
-    else studyCategory = "QTL";
-  }
+  const studyCategory = getStudyCategory(studyInfo?.projectId);
 
   return (
     <BasePage
