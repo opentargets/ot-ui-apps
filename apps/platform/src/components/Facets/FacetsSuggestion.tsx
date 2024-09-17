@@ -4,9 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box } from "@mui/material";
 import { useAotfContext } from "../AssociationsToolkit";
 import { ENTITY } from "./facetsTypes";
+import { Link } from "ui";
 
 const EXAMPLE = {
-  [ENTITY.DISEASE]: "Measurement",
+  [ENTITY.DISEASE]: "Eczema",
   [ENTITY.TARGET]: "Enzyme",
 };
 
@@ -15,22 +16,30 @@ function FacetsSuggestion(): ReactElement {
 
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box>
-        <Box
-          sx={{
-            display: "flex",
-            typography: "subtitle1",
-            fontWeight: "bold",
-            alignItems: "center",
-            gap: theme => theme.spacing(1),
-          }}
-        >
-          <FontAwesomeIcon icon={faLightbulb} />
-          Tip:
+      <Box sx={{ typography: "caption" }}>
+        <Box>
+          <b>How do facet filters work?</b>
+          <ul style={{ paddingLeft: "15px" }}>
+            <li>
+              Please search by {entityToGet} or filter by {entityToGet} category. Example:{" "}
+              {EXAMPLE[entityToGet]}
+            </li>
+            <li>
+              Filters across categories use <b>AND</b>
+            </li>
+            <li>
+              Filters within a category use <b>OR</b>
+            </li>
+          </ul>
         </Box>
-        <Box sx={{ typography: "body2" }}>
-          Please search by {entityToGet} or filter by {entityToGet} category. Example:{" "}
-          {EXAMPLE[entityToGet]}
+        <Box sx={{ w: 1, display: "flex", justifyContent: "end" }}>
+          <Link
+            to="https://platform-docs.opentargets.org/web-interface/associations-on-the-fly#filtering-functionality"
+            external
+            footer={false}
+          >
+            Read more details here.
+          </Link>
         </Box>
       </Box>
     </Box>
