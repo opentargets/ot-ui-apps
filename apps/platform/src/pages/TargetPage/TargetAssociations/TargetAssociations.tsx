@@ -9,6 +9,7 @@ import {
   DataUploader,
   AotfApiPlayground,
   AssociationsFocusProvider,
+  InfoTooltip,
 } from "../../../components/AssociationsToolkit";
 import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
@@ -24,13 +25,12 @@ function TargetAssociations({ ensgId }: TargetAssociationsProps): ReactElement {
       <AssociationsFocusProvider>
         <>
           <ControlsSection>
-            <Box
-              sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: theme => theme.spacing(2) }}
-            >
+            <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: 2 }}>
               <FacetsSearch />
+              <InfoTooltip />
+              <Divider orientation="vertical" flexItem />
               <AdvanceOptionsMenu />
               <DataUploader />
-              <Divider orientation="vertical" />
               <DataDownloader />
               <AotfApiPlayground />
             </Box>

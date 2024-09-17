@@ -10,6 +10,7 @@ import {
   DataUploader,
   AotfApiPlayground,
   AssociationsFocusProvider,
+  InfoTooltip,
 } from "../../../components/AssociationsToolkit";
 import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
@@ -31,9 +32,10 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
           <ControlsSection>
             <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: 2 }}>
               <FacetsSearch />
+              <InfoTooltip />
+              <Divider orientation="vertical" flexItem />
               <AdvanceOptionsMenu />
               <DataUploader />
-              <Divider orientation="vertical" />
               <DataDownloader />
               <AotfApiPlayground />
             </Box>
