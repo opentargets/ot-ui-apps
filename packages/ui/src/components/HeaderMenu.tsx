@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactElement, useState, MouseEvent, KeyboardEvent } from "react";
 import { v1 } from "uuid";
 import {
   MenuItem,
@@ -8,6 +8,7 @@ import {
   Fade,
   Paper,
   ClickAwayListener,
+  PopperPlacementType,
 } from "@mui/material";
 import { faXmark, faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,7 +16,7 @@ import { makeStyles } from "@mui/styles";
 import Link from "./Link";
 import PrivateWrapper from "./PrivateWrapper";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   icon: {
     marginLeft: "20px",
   },
@@ -32,12 +33,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function HeaderMenu({ items, placement }) {
+type HeaderMenuItem = {
+  external: boolean;
+  name: string;
+  showOnlyPartner?: boolean;
+  url: string;
+};
+
+type HeaderMenuProps = {
+  items: HeaderMenuItem[];
+  placement?: PopperPlacementType;
+};
+
+function HeaderMenu({ items, placement }: HeaderMenuProps): ReactElement {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
   const isMenuOpen = Boolean(anchorEl);
 
-  const handleMenuToggle = event => {
+  const handleMenuToggle = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(anchorEl === null ? event.currentTarget : null);
   };
 
@@ -45,7 +58,7 @@ function HeaderMenu({ items, placement }) {
     setAnchorEl(null);
   };
 
-  const handleListKeyDown = event => {
+  const handleListKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Tab") {
       event.preventDefault();
       setAnchorEl(null);
@@ -62,11 +75,7 @@ function HeaderMenu({ items, placement }) {
         aria-haspopup="true"
         onClick={handleMenuToggle}
       >
-        {isMenuOpen ? (
-          <FontAwesomeIcon icon={faXmark} size="xs" />
-        ) : (
-          <FontAwesomeIcon icon={faBars} size="xs" />
-        )}
+        <FontAwesomeIcon icon={isMenuOpen ? faXmark : faBars} size="xs" />
       </IconButton>
 
       <Popper
@@ -84,7 +93,7 @@ function HeaderMenu({ items, placement }) {
             <Paper>
               <ClickAwayListener onClickAway={handleMenuClose}>
                 <MenuList onKeyDown={handleListKeyDown}>
-                  {items.map((item, i) => {
+                  {items.map((item: HeaderMenuItem) => {
                     if (item.showOnlyPartner) {
                       return (
                         <PrivateWrapper key={v1()}>
@@ -93,6 +102,7 @@ function HeaderMenu({ items, placement }) {
                               external={item.external}
                               to={item.url}
                               className={classes.menuLink}
+                              footer={false}
                             >
                               {item.name}
                             </Link>
@@ -107,7 +117,12 @@ function HeaderMenu({ items, placement }) {
                         dense
                         className={classes.menuItem}
                       >
-                        <Link external={item.external} to={item.url} className={classes.menuLink}>
+                        <Link
+                          external={item.external}
+                          to={item.url}
+                          className={classes.menuLink}
+                          footer={false}
+                        >
                           {item.name}
                         </Link>
                       </MenuItem>
