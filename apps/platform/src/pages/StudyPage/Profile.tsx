@@ -17,8 +17,8 @@ const RelatedGWASStudiesSection = lazy(
   () => import("sections/src/study/RelatedGWASStudies/Body")
 );
 
-// no RelatedGWASStudiesSummary - we add section to the query below directly
-// since the summary cannot be written as a fragment (it gets further studies)
+// no RelatedGWASStudiesSummary as we add section to the query below directly
+// (the summary cannot be written as a fragment as it gets further studies)
 const summaries = [
 ];
 
@@ -35,7 +35,7 @@ const STUDY_PROFILE_QUERY = gql`
       ...StudyProfileHeaderFragment
       ...StudyProfileSummaryFragment
     }
-    relatedGWASStudies: gwasStudy(diseaseId: $diseaseId, page: { size: 1, index: 0}) {
+    relatedGWASStudies: gwasStudy(diseaseId: $diseaseId, page: { size: 2, index: 0}) {
       studyId
     }
   }
@@ -50,7 +50,7 @@ type ProfileProps = {
 };
 
 function Profile({ studyId, studyCategory, diseaseIds }: ProfileProps) {
-  const diseaseId = diseaseIds?.[0] || "";  // !! WILL CHANGE TO diseaseIds WHEN API UPDATED !!
+  const diseaseId = diseaseIds?.[0] || "";  // !! WILL LEAVE AS diseaseIds WHEN API UPDATED !!
 
   return (
     <PlatformApiProvider
@@ -58,7 +58,7 @@ function Profile({ studyId, studyCategory, diseaseIds }: ProfileProps) {
       query={STUDY_PROFILE_QUERY}
       variables={{
         studyId,
-        diseaseId,
+        diseaseId,  // !! WILL BE diseaseIds WHEN API UPDATED !!
       }}
       client={client}
     >
@@ -75,7 +75,7 @@ function Profile({ studyId, studyCategory, diseaseIds }: ProfileProps) {
           <Suspense fallback={<SectionLoader />}>
             <RelatedGWASStudiesSection
               studyId={studyId}
-              diseaseId={diseaseId}
+              diseaseId={diseaseId}  // !! WILL BE diseaseIds WHEN API UPDATED !!
               entity={STUDY}
             />
           </Suspense>

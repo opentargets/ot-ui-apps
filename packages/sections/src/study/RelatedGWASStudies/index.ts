@@ -4,6 +4,11 @@ export const definition = {
   name: "Related GWAS Studies",
   shortName: "RS",
   hasData: data => {
-    return data?.length || data?.relatedGWASStudies?.length;
-  }
+    if (data?.relatedGWASStudies) {  // summary
+      return data.relatedGWASStudies.some(relatedStudy => (
+        relatedStudy.studyId !== data.gwasStudy[0].studyId
+      ));
+    } 
+    return data?.length > 0;
+  },
 };

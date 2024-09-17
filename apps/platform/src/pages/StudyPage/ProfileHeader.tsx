@@ -7,14 +7,9 @@ import {
 } from "ui";
 import { naLabel } from "../../constants";
 import { Typography, Box } from "@mui/material";
+import { formatSamples } from "sections/src/utils/formatSamples";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
-
-function formatSamples(samples: any[]) {  // wait until get types directly from schema
-  return samples
-    .map(({ ancestry, sampleSize }) => `${ancestry}: ${sampleSize}`)
-    .join(", ");
-}
 
 function ProfileHeader({ studyCategory }) {
   const { loading, error, data } = usePlatformApi();
@@ -100,6 +95,7 @@ function ProfileHeader({ studyCategory }) {
                                 Initial sample size: {initialSampleSize}
                               </Typography>
                             }
+                            showHelpIcon
                           >
                             {formatSamples(discoverySamples)}
                           </Tooltip>

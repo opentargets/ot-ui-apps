@@ -6,12 +6,7 @@ import Description from "./Description";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 import RELATED_GWAS_STUDIES_QUERY from "./RelatedGWASStudiesQuery.gql";
 import { getStudyCategory } from "../../utils/getStudyCategory";
-
-function formatSamples(samples: any[]) {  // wait until get types directly from schema
-  return samples
-    .map(({ ancestry, sampleSize }) => `${ancestry}: ${sampleSize}`)
-    .join(", ");
-}
+import { formatSamples } from "../../utils/formatSamples";
 
 const columns = [
   {
@@ -53,7 +48,7 @@ const columns = [
     renderCell: ({ projectId, publicationJournal }) => (
       getStudyCategory(projectId) === "FINNGEN"
         ? naLabel
-        : publicationJournal 
+        : publicationJournal || naLabel
     ),
     exportValue: ({ projectId, publicationJournal }) => (
       getStudyCategory(projectId) === "FINNGEN" ? naLabel : publicationJournal 
@@ -77,6 +72,7 @@ const columns = [
                       Initial sample size: {initialSampleSize}
                     </Typography>
                   }
+                  showHelpIcon
                 >
                   {formatSamples(discoverySamples)}
                 </Tooltip>
@@ -154,7 +150,7 @@ const columns = [
   },
   {
     id: "hasSumstats",
-    label: "Has Sumstats",
+    label: "Has sumstats",
     renderCell: ({ projectId, hasSumstats }) => (
       getStudyCategory(projectId) === "FINNGEN"
         ? "yes"
@@ -183,7 +179,7 @@ const columns = [
     exportValue: ({ projectId, pubmedId }) => (
       getStudyCategory(projectId) === "GWAS" && pubmedId 
         ? pubmedId
-        : naLabel
+        : null
     ),
   },
 ];
@@ -195,8 +191,6 @@ type BodyProps = {
 };
 
 export function Body({ studyId, diseaseId, entity }: BodyProps) {
-
-  console.log(studyId);
 
   const variables = {
     diseaseId: diseaseId,
