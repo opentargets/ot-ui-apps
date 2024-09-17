@@ -14,7 +14,7 @@ export const FacetsSelect = styled(Select)(({ theme }) => ({
 }));
 
 export const FacetsAutocomplete = styled(Autocomplete)(({ theme }) => ({
-  minWidth: "280px",
+  minWidth: "320px",
   width: 1,
   maxWidth: 1,
   flexWrap: "nowrap",

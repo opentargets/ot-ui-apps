@@ -4,7 +4,6 @@ export { default as TargetPrioritisationSwitch } from "./components/TargetPriori
 export { default as DataDownloader } from "./components/DataDownloader";
 export { default as DataUploader } from "./components/DataUploader/DataUploader";
 export { default as AotfApiPlayground } from "./components/AotfApiPlayground";
-export { default as InfoTooltip } from "./components/InfoTooltip";
 export {
   default as AssociationsContext,
   AssociationsStateProvider as AssociationsProvider,
