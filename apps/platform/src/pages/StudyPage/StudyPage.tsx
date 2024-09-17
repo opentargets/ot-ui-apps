@@ -1,3 +1,4 @@
+
 import { Suspense } from "react";
 import { useQuery } from "@apollo/client";
 import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
