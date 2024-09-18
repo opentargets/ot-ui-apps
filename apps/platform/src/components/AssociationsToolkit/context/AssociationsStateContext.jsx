@@ -7,21 +7,20 @@ import {
   useRef,
   useCallback,
 } from "react";
-import { isEqual } from "lodash";
 import { useStateParams } from "ui";
-import dataSources from "../static_datasets/dataSourcesAssoc";
-import {
-  defaulDatasourcesWeigths,
-  getControlChecked,
-  checkBoxPayload,
-  ENTITIES,
-  DEFAULT_TABLE_SORTING_STATE,
-  DISPLAY_MODE,
-} from "../utils";
+import { ENTITIES, DEFAULT_TABLE_SORTING_STATE, DISPLAY_MODE } from "../utils";
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
-import { onPaginationChange, resetPagination } from "./aotfActions";
+import {
+  aggregationClick,
+  facetFilterSelectAction,
+  onPaginationChange,
+  resetDataSourceControl,
+  resetPagination,
+  resetToInitialState,
+  setDataSourceControl,
+} from "./aotfActions";
 
 const AssociationsStateContext = createContext();
 
@@ -40,15 +39,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const hasComponentBeenRender = useRef(false);
 
-  // Table Controls
-  const [facetFilterIds, setFacetFilterIds] = useState([]);
-
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
-  const [dataSourcesWeights, setDataSourcesWeights] = useState(defaulDatasourcesWeigths);
-  const [dataSourcesRequired, setDataSourcesRequired] = useState([]);
-  const [modifiedSourcesDataControls, setModifiedSourcesDataControls] = useState(false);
-  const [searhFilter, setSearhFilter] = useState("");
   const [sorting, setSorting] = useState(DEFAULT_TABLE_SORTING_STATE);
 
   // Data controls UI
@@ -77,13 +69,11 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       id,
       index: state.pagination.pageIndex,
       size: state.pagination.pageSize,
-      filter: searhFilter,
       sortBy: sorting[0].id,
       enableIndirect,
-      datasources: dataSourcesWeights,
+      datasources: state.dataSourceControls,
       entity,
-      aggregationFilters: dataSourcesRequired,
-      facetFilters: facetFilterIds,
+      facetFilters: state.facetFilters,
     },
   });
 
@@ -100,62 +90,22 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       entity,
       size: pinnedEntries.length,
       sortBy: sorting[0].id,
-      datasources: dataSourcesWeights,
-      aggregationFilters: dataSourcesRequired,
+      datasources: state.dataSourceControls,
       rowsFilter: pinnedEntries.toSorted(),
-      facetFilters: facetFilterIds,
+      facetFilters: state.facetFilters,
     },
   });
 
   useEffect(() => {
     if (hasComponentBeenRender.current) {
-      resetDatasourceControls();
-      setActiveHeadersControlls(false);
-      setSorting(DEFAULT_TABLE_SORTING_STATE);
-      dispatch(resetPagination());
+      dispatch(resetToInitialState());
     }
     hasComponentBeenRender.current = true;
   }, [id]);
 
-  useEffect(() => {
-    if (isEqual(defaulDatasourcesWeigths, dataSourcesWeights) && isEqual(dataSourcesRequired, []))
-      setModifiedSourcesDataControls(false);
-    else setModifiedSourcesDataControls(true);
-  }, [dataSourcesWeights, dataSourcesRequired]);
-
-  const handleAggregationClick = useCallback(
-    aggregationId => {
-      const aggregationDatasources = dataSources.filter(el => el.aggregation === aggregationId);
-      let isAllActive = true;
-      aggregationDatasources.forEach(e => {
-        if (getControlChecked(dataSourcesRequired, e.id) === false) {
-          isAllActive = false;
-          return;
-        }
-      });
-      if (isAllActive) {
-        let newPayload = [...dataSourcesRequired];
-        aggregationDatasources.forEach(element => {
-          const indexToRemove = newPayload.findIndex(datasource => datasource.id === element.id);
-          const newRequiredElement = [
-            ...newPayload.slice(0, indexToRemove),
-            ...newPayload.slice(indexToRemove + 1),
-          ];
-          newPayload = [...newRequiredElement];
-        });
-        setDataSourcesRequired(newPayload);
-      } else {
-        const payload = [];
-        aggregationDatasources.forEach(el => {
-          if (dataSourcesRequired.filter(val => val.id === el.id).length === 0) {
-            payload.push(checkBoxPayload(el.id, el.aggregationId));
-          }
-        });
-        setDataSourcesRequired([...dataSourcesRequired, ...payload]);
-      }
-    },
-    [dataSourcesRequired]
-  );
+  const handleAggregationClick = aggregation => {
+    dispatch(aggregationClick(aggregation));
+  };
 
   const handlePaginationChange = useCallback(
     updater => {
@@ -177,22 +127,20 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     [sorting]
   );
 
-  const handleSearchInputChange = useCallback(
-    newSearchFilter => {
-      if (newSearchFilter !== searhFilter) {
-        setSearhFilter(newSearchFilter);
-      }
-    },
-    [searhFilter]
-  );
-
   const resetDatasourceControls = () => {
-    setDataSourcesWeights(defaulDatasourcesWeigths);
-    setDataSourcesRequired([]);
+    dispatch(resetDataSourceControl());
   };
 
   const resetToInitialPagination = () => {
     dispatch(resetPagination());
+  };
+
+  const updateDataSourceControls = (id, weight, required, aggregation) => {
+    dispatch(setDataSourceControl(id, weight, required, aggregation));
+  };
+
+  const facetFilterSelect = facetFilters => {
+    dispatch(facetFilterSelectAction(facetFilters));
   };
 
   const contextVariables = useMemo(
@@ -210,31 +158,26 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       activeHeadersControlls,
       enableIndirect,
       error,
-      dataSourcesWeights,
-      dataSourcesRequired,
+      dataSourcesWeights: state.dataSourceControls,
       displayedTable,
       pinnedData,
-      searhFilter,
       sorting,
-      modifiedSourcesDataControls,
+      modifiedSourcesDataControls: state.modifiedSourcesDataControls,
       pinnedLoading,
       pinnedError,
       pinnedCount,
       pinnedEntries,
-      facetFilterIds,
       resetToInitialPagination,
       setPinnedEntries,
       resetDatasourceControls,
       handleSortingChange,
-      handleSearchInputChange,
       setDisplayedTable,
-      setDataSourcesWeights,
-      setDataSourcesRequired,
       handlePaginationChange,
       setEnableIndirect,
       setActiveHeadersControlls,
       handleAggregationClick,
-      setFacetFilterIds,
+      updateDataSourceControls,
+      facetFilterSelect,
       state,
     }),
     [
@@ -242,20 +185,15 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       activeHeadersControlls,
       count,
       data,
-      dataSourcesRequired,
-      dataSourcesWeights,
       displayedTable,
       enableIndirect,
       entity,
       entityToGet,
       error,
-      handleAggregationClick,
-      handleSearchInputChange,
       handleSortingChange,
       id,
       initialLoading,
       loading,
-      modifiedSourcesDataControls,
       state,
       pinnedCount,
       pinnedData,
@@ -263,12 +201,9 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       pinnedError,
       pinnedLoading,
       query,
-      searhFilter,
       setDisplayedTable,
       setPinnedEntries,
       sorting,
-      facetFilterIds,
-      setFacetFilterIds,
       handlePaginationChange,
     ]
   );

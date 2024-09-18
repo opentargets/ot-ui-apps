@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import client from "../../../client";
 import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../utils";
 
-const INITIAL_ROW_COUNT = 30;
+const INITIAL_ROW_COUNT = 20;
 
 const INITIAL_USE_ASSOCIATION_STATE = {
   loading: true,
@@ -23,7 +23,6 @@ function useAssociationsData({
     size = 50,
     filter = "",
     sortBy = "score",
-    aggregationFilters = [],
     enableIndirect = false,
     datasources = [],
     rowsFilter = [],
@@ -49,12 +48,13 @@ function useAssociationsData({
           filter,
           sortBy,
           enableIndirect,
-          datasources,
-          rowsFilter,
-          aggregationFilters: aggregationFilters.map(el => ({
-            name: el.name,
-            path: el.path,
+          datasources: datasources.map(el => ({
+            id: el.id,
+            weight: el.weight,
+            propagate: el.propagate,
+            required: el.required,
           })),
+          rowsFilter,
           facetFilters,
         },
       });
@@ -70,19 +70,7 @@ function useAssociationsData({
     };
     if (isCurrent) fetchData();
     return () => (isCurrent = false);
-  }, [
-    id,
-    index,
-    size,
-    filter,
-    sortBy,
-    enableIndirect,
-    datasources,
-    query,
-    entity,
-    aggregationFilters,
-    facetFilters,
-  ]);
+  }, [id, index, size, sortBy, enableIndirect, datasources, query, entity, facetFilters]);
 
   return state;
 }

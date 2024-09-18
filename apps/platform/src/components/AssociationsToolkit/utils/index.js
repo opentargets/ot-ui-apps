@@ -6,6 +6,7 @@ import config from "../../../config";
 export const { isPartnerPreview } = config.profile;
 
 export * from "./associations";
+export * from "./interactors";
 
 const ASSOCIATION_LEGEND_LABEL = "Association score";
 const PRIORITISATION_LEGEND_LABEL = "Prioritisation indicator";
@@ -33,14 +34,6 @@ export const TABLE_PREFIX = {
   UPLOADED: "uploaded",
 };
 
-/**
- * @constant
- * @type {Object}
- * @property {string} TARGET - Target entity.
- * @property {string} EVIDENCE - Evidence entity.
- * @property {string} DISEASE - Disease entity.
- * @property {string} DRUG - Drug entity.
- */
 export const ENTITIES = {
   TARGET: "target",
   EVIDENCE: "evidence",
@@ -89,11 +82,15 @@ export const getColumAndSection = (cell, displayedTable) => {
 
 export const cellHasValue = score => typeof score === "number";
 
-export const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
-  id,
-  weight,
-  propagate: true,
-}));
+export const defaulDatasourcesWeigths = dataSources.map(
+  ({ id, weight, required, aggregation }) => ({
+    id,
+    weight,
+    required,
+    aggregation,
+    propagate: true,
+  })
+);
 
 export const getWightSourceDefault = source => {
   const sourcesDetails = defaulDatasourcesWeigths.find(src => src.id === source);

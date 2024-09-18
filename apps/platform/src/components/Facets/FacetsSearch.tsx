@@ -1,132 +1,85 @@
-import {
-  Autocomplete,
-  Box,
-  Chip,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { ReactElement, useEffect, useState } from "react";
+import { Box, Chip, MenuItem, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { ReactElement, useEffect, useReducer, useState } from "react";
 import { Tooltip, useDebounce } from "ui";
 
-import FACETS_SEARCH_QUERY from "./FacetsQuery.gql";
 import useAotfContext from "../AssociationsToolkit/hooks/useAotfContext";
-import client from "../../client";
 import FacetsSuggestion from "./FacetsSuggestion";
-
-const TARGET_CATEGORIES = {
-  "All Categories": "All",
-  Names: "Approved Name",
-  Symbol: "Approved Symbol",
-  "ChEMBL Target Class": "ChEMBL Target Class",
-  "GO:BP": "GO:BP",
-  "GO:CC": "GO:CC",
-  "GO:MF": "GO:MF",
-  Reactome: "Reactome",
-  "Subcellular Location": "Subcellular Location",
-  "Target ID": "Target ID",
-  "Tractability Antibody": "Tractability Antibody",
-  "Tractability Other Modalities": "Tractability Other Modalities",
-  "Tractability PROTAC": "Tractability PROTAC",
-  "Tractability Small Molecule": "Tractability Small Molecule",
-};
-
-const DISEASE_CATEGORIES = {
-  "All Categories": "All",
-  Disease: "Disease",
-  "Therapeutic Area": "Therapeutic Area",
-};
+import { resetFacets, selectFacet, setCategory, setFacetsData, setLoading } from "./facetsActions";
+import { createInitialState, facetsReducer } from "./facetsReducer";
+import { v1 } from "uuid";
+import {
+  FacetListItemCategory,
+  FacetListItemContainer,
+  FacetListItemLabel,
+  FacetsAutocomplete,
+  FacetsSelect,
+} from "./facetsLayout";
+import { getFacetsData } from "./service/facetsService";
 
 function FacetsSearch(): ReactElement {
-  const { entityToGet, setFacetFilterIds } = useAotfContext();
+  const { entityToGet, facetFilterSelect, id } = useAotfContext();
   const [inputValue, setInputValue] = useState("");
-  const debouncedInputValue = useDebounce(inputValue, 400);
-  const [dataOptions, setDataOptions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const CATEGORIES = entityToGet === "disease" ? DISEASE_CATEGORIES : TARGET_CATEGORIES;
-  const [categoryFilterValue, setCategoryFilterValue] = useState(CATEGORIES["All Categories"]);
+  const debouncedInputValue = useDebounce(inputValue, 200);
+  const [state, dispatch] = useReducer(facetsReducer, entityToGet, createInitialState);
 
-  async function getFacetsData() {
-    setDataOptions([]);
-    setLoading(true);
-
-    const variables = {
-      queryString: inputValue,
-      entityNames: [entityToGet],
-    };
-
-    const resData = await client.query({
-      query: FACETS_SEARCH_QUERY,
-      variables,
+  function setFacetsCategory(category: string) {
+    dispatch(setLoading(true));
+    if (category === "All") {
+      return dispatch(setCategory(category, []));
+    }
+    const facetData = getFacetsData("*", entityToGet, category);
+    facetData.then(data => {
+      dispatch(setCategory(category, data));
     });
+  }
 
-    const filteredData = resData.data.facets.hits.filter(
-      e =>
-        e.category === categoryFilterValue || categoryFilterValue === CATEGORIES["All Categories"]
-    );
-
-    setDataOptions(filteredData);
-    setLoading(false);
+  function getFacetsQueryData() {
+    dispatch(setLoading(true));
+    const facetData = getFacetsData(inputValue, entityToGet, state.categoryFilterValue);
+    facetData.then(data => {
+      dispatch(setFacetsData(data));
+    });
   }
 
   useEffect(() => {
-    if (inputValue) getFacetsData();
-    else setDataOptions([]);
+    if (inputValue) getFacetsQueryData();
+    else dispatch(setFacetsData([]));
   }, [debouncedInputValue]);
+
+  useEffect(() => {
+    dispatch(resetFacets(entityToGet));
+  }, [id]);
 
   return (
     <Box sx={{ display: "flex" }}>
-      <Select
-        value={categoryFilterValue}
+      <FacetsSelect
+        value={state.categoryFilterValue}
         size="small"
         onChange={(event: SelectChangeEvent) => {
-          setCategoryFilterValue(event.target.value);
-        }}
-        sx={{
-          minWidth: 150,
-          maxWidth: 150,
-          background: theme => `${theme.palette.grey[200]}`,
-          display: "flex",
-          boxShadow: "none",
-          ".MuiOutlinedInput-notchedOutline": {
-            borderRight: 0,
-            borderTopRightRadius: 0,
-            borderBottomRightRadius: 0,
-          },
+          setFacetsCategory(event.target.value);
         }}
       >
-        {Object.entries(CATEGORIES).map(([key, value]) => (
+        {Object.entries(state.availableCategories).map(([key, value]) => (
           <MenuItem key={key} value={value}>
             {key}
           </MenuItem>
         ))}
-      </Select>
-      <Autocomplete
-        sx={{
-          minWidth: "280px",
-          width: 1,
-          maxWidth: 1,
-          flexWrap: "nowrap",
-          "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-            borderLeft: 0,
-            borderTopLeftRadius: 0,
-            borderBottomLeftRadius: 0,
-          },
-        }}
+      </FacetsSelect>
+      <FacetsAutocomplete
         id="facets-search-input"
         multiple
         autoComplete
         includeInputInList
         filterSelectedOptions
-        options={dataOptions}
+        options={state.dataOptions}
+        value={state.selectedFacets}
         noOptionsText={<FacetsSuggestion />}
+        loading={state.loading}
         size="small"
-        loading={loading}
         limitTags={2}
-        onChange={(event: any, newValue: any) => {
-          setFacetFilterIds(newValue.map(v => v.id));
+        onChange={(event, newValue) => {
+          dispatch(selectFacet(newValue));
+          facetFilterSelect(newValue);
         }}
         filterOptions={x => x}
         getOptionLabel={option => option?.label}
@@ -134,65 +87,36 @@ function FacetsSearch(): ReactElement {
           setInputValue(newInputValue);
         }}
         renderInput={params => (
-          <TextField {...params} label={`Search ${entityToGet} specific filter`} fullWidth />
+          <TextField {...params} label={`Search ${entityToGet} filter (beta)`} fullWidth />
         )}
-        renderTags={(value: readonly string[], getTagProps) =>
+        renderTags={(value, getTagProps) =>
           value.map((option: any, index: number) => (
-            <Tooltip title={option.label} key={option.id}>
-              <Box sx={{ maxWidth: "150px" }}>
-                <Chip size="small" label={option.label} {...getTagProps({ index })} />
+            <Tooltip title={option.label} key={option.id} style="">
+              <Box sx={{ maxWidth: "150px" }} key={option.id}>
+                <Chip
+                  size="small"
+                  label={option.label}
+                  {...getTagProps({ index })}
+                  key={option.id}
+                />
               </Box>
             </Tooltip>
           ))
         }
-        renderOption={(props, option) => {
-          const { category, highlights } = option;
-          return (
-            <li {...props}>
-              <Box
-                sx={{
-                  display: "flex",
-                  p: 0,
-                  m: 0,
-                  width: "100%",
-                  flexDirection: "column",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    w: 1,
-                    flexWrap: "wrap",
-                    justifyContent: "start",
-                    em: {
-                      fontWeight: "bold",
-                      fontStyle: "normal",
-                    },
-                  }}
-                >
-                  <Typography dangerouslySetInnerHTML={{ __html: highlights[0] }}></Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "end",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      typography: "caption",
-                      fontStyle: "italic",
-                      fontWeight: "bold",
-                      color: theme => theme.palette.primary.main,
-                    }}
-                  >
-                    in {category}
-                  </Box>
-                </Box>
-              </Box>
-            </li>
-          );
-        }}
+        renderOption={(props, option) => (
+          <li {...props} key={v1()}>
+            <FacetListItemContainer>
+              <FacetListItemLabel>
+                <Typography
+                  dangerouslySetInnerHTML={{ __html: option.highlights[0] || option.label }}
+                ></Typography>
+              </FacetListItemLabel>
+              <FacetListItemCategory>
+                <Typography variant="caption">in {option.category}</Typography>
+              </FacetListItemCategory>
+            </FacetListItemContainer>
+          </li>
+        )}
       />
     </Box>
   );

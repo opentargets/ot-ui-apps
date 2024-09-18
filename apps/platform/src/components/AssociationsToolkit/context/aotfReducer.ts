@@ -1,6 +1,11 @@
 import { DocumentNode } from "graphql";
-import { DEFAULT_TABLE_PAGINATION_STATE, DEFAULT_TABLE_SORTING_STATE } from "../utils";
+import {
+  defaulDatasourcesWeigths,
+  DEFAULT_TABLE_PAGINATION_STATE,
+  DEFAULT_TABLE_SORTING_STATE,
+} from "../utils";
 import { Action, ActionType, ENTITY, State, TABLE_VIEW } from "../types";
+import { isEqual } from "lodash";
 
 /*****************
  * INITIAL STATE *
@@ -23,6 +28,9 @@ export const initialState: State = {
   bodyData: [],
   pinnedData: [],
   interactors: new Map(),
+  dataSourceControls: defaulDatasourcesWeigths,
+  modifiedSourcesDataControls: false,
+  facetFilters: [],
 };
 
 type InitialStateParams = {
@@ -60,13 +68,6 @@ export function aotfReducer(state: State = initialState, action: Action): State 
         sorting: action.sorting,
       };
     }
-    case ActionType.TEXT_SEARCH: {
-      return {
-        ...state,
-        pagination: DEFAULT_TABLE_PAGINATION_STATE,
-        searchFilter: action.searchFilter,
-      };
-    }
     case ActionType.SET_INTERACTORS: {
       const currentInteractors = state.interactors;
       if (typeof currentInteractors === "undefined" || !currentInteractors) return { ...state };
@@ -84,6 +85,62 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       return {
         ...state,
         interactors: currentInteractors,
+      };
+    }
+    case ActionType.DATA_SOURCE_CONTROL: {
+      const colUpdatedControls = { ...action.payload };
+      const dataSourceControls = state.dataSourceControls.map(col => {
+        if (col.id === colUpdatedControls.id) return colUpdatedControls;
+        return col;
+      });
+      const modifiedSourcesDataControls = !isEqual(defaulDatasourcesWeigths, dataSourceControls);
+      return {
+        ...state,
+        dataSourceControls,
+        modifiedSourcesDataControls,
+        pagination: DEFAULT_TABLE_PAGINATION_STATE,
+      };
+    }
+    case ActionType.RESET_DATA_SOURCE_CONTROL: {
+      return {
+        ...state,
+        dataSourceControls: defaulDatasourcesWeigths,
+        modifiedSourcesDataControls: false,
+        pagination: DEFAULT_TABLE_PAGINATION_STATE,
+      };
+    }
+    case ActionType.HANDLE_AGGREGATION_CLICK: {
+      const aggregation = action.aggregation;
+
+      const isAllActive = state.dataSourceControls
+        .filter(el => el.aggregation === aggregation)
+        .every(el => el.required === true);
+      const dataSourceControls = state.dataSourceControls.map(col => {
+        if (col.aggregation === aggregation) {
+          return {
+            ...col,
+            required: !isAllActive,
+          };
+        }
+        return col;
+      });
+      return {
+        ...state,
+        dataSourceControls,
+        modifiedSourcesDataControls: !isAllActive,
+        pagination: DEFAULT_TABLE_PAGINATION_STATE,
+      };
+    }
+    case ActionType.FACETS_SEARCH: {
+      return {
+        ...state,
+        facetFilters: action.facetFilters,
+        pagination: DEFAULT_TABLE_PAGINATION_STATE,
+      };
+    }
+    case ActionType.SET_INITIAL_STATE: {
+      return {
+        ...initialState,
       };
     }
     default: {

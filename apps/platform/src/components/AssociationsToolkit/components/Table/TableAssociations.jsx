@@ -28,8 +28,9 @@ const TableSpacer = styled("div")({
 });
 
 const TableDivider = styled("div")({
-  borderBottom: "1px solid #ececec",
-  marginBottom: 5,
+  borderBottom: "1px solid #cecece",
+  marginBottom: 10,
+  marginTop: 5,
 });
 
 const columnHelper = createColumnHelper();
