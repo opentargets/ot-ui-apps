@@ -12,7 +12,19 @@ import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 
-function getColumns(id: string, posteriorProbabilities: any) {
+type getColumnsType = {
+  id: string;
+  referenceAllele: string;
+  alternateAllele: string;
+  posteriorProbabilities: any;
+};
+
+function getColumns({
+      id,
+      referenceAllele,
+      alternateAllele,
+      posteriorProbabilities
+    }: getColumnsType) {
 
   return [
     {
@@ -116,7 +128,16 @@ function getColumns(id: string, posteriorProbabilities: any) {
     {
       id: "posteriorProbability",
       label: "Posterior Probability",
-      tooltip: "Probability the fixed page variant is in the credible set.",
+      tooltip: <>
+        Probability the fixed page variant (
+        <DisplayVariantId
+          variantId={id}
+          referenceAllele={referenceAllele}
+          alternateAllele={alternateAllele}
+          expand={false}
+        />
+        ) is in the credible set.
+      </>,
       comparator: (rowA, rowB) => (
         posteriorProbabilities.get(rowA.locus) -
           posteriorProbabilities.get(rowB.locus)
@@ -185,7 +206,12 @@ function Body({ id, entity }: BodyProps) {
           <DataTable
             dataDownloader
             sortBy="pValue"
-            columns={getColumns(id, posteriorProbabilities)}
+            columns={getColumns({
+              id,
+              referenceAllele: variant.referenceAllele,
+              alternateAllele: variant.alternateAllele,
+              posteriorProbabilities,
+            })}
             rows={variant.credibleSets}
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={QTL_CREDIBLE_SETS_QUERY.loc.source.body}
