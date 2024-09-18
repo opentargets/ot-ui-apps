@@ -1,0 +1,19 @@
+query QTLCredibleSetsQuery($studyId: String!) {
+  gwasStudy(studyId: $studyId) {
+    studyId
+    credibleSets {
+      variant {
+        id
+        referenceAllele
+        alternateAllele
+      }
+      pValueMantissa
+      pValueExponent
+      beta
+      locus {
+        is95CredibleSet
+      }
+      finemappingMethod
+    }
+  }
+}

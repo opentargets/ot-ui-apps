@@ -1,0 +1,5 @@
+fragment QTLCredibleSetsSummaryFragment on Gwas {
+  qtlCredibleSets: credibleSets {
+    beta
+  }
+}

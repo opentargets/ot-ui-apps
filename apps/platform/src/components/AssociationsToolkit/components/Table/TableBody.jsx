@@ -9,6 +9,8 @@ import useAotfContext from "../../hooks/useAotfContext";
 import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
+import RowInteractorsWrapper from "../RowInteractors/RowInteractorsWrapper";
+import RowInteractorsTable from "../RowInteractors/RowInteractorsTable";
 import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
 import { rowNameProperty, TABLE_PREFIX } from "../../utils";
 
@@ -84,6 +86,7 @@ function TableBody({ core, cols, noInteractors }) {
           {rows.map(row => (
             <Fragment key={row.id}>
               <RowContainer
+                interactors={prefix === TABLE_PREFIX.INTERACTORS}
                 rowExpanded={
                   focusState.filter(e => e.row === row.id && e.table === prefix).length > 0
                 }
@@ -152,6 +155,16 @@ function TableBody({ core, cols, noInteractors }) {
                     </section>
                   </ClickAwayListener>
                 </SectionRendererWrapper>
+                {!noInteractors && (
+                  <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>
+                    <RowInteractorsTable
+                      row={row}
+                      columns={core._getColumnDefs()}
+                      nameProperty={nameProperty}
+                      parentTable={prefix}
+                    />
+                  </RowInteractorsWrapper>
+                )}
               </Box>
             </Fragment>
           ))}

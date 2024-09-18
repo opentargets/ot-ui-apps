@@ -33,7 +33,7 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
               <FacetsSearch />
               <AdvanceOptionsMenu />
               <DataUploader />
-              <Divider orientation="vertical" />
+              <Divider orientation="vertical" flexItem />
               <DataDownloader />
               <AotfApiPlayground />
             </Box>
