@@ -4,7 +4,7 @@ import {
   Box,
   Card,
   CardContent,
-  CardHeader,
+  Divider,
   Grid,
   LinearProgress,
   Typography,
@@ -12,11 +12,12 @@ import {
 import { Element } from "react-scroll";
 
 import ErrorBoundary from "../ErrorBoundary";
-import Chip from "../Chip";
 import SectionError from "./SectionError";
 import sectionStyles from "./sectionStyles";
 import { createShortName } from "../Summary/utils";
 import PartnerLockIcon from "../PartnerLockIcon";
+import SectionViewToggle, { VIEW } from "./SectionViewToggle";
+import { useState } from "react";
 
 function SectionItem({
   definition,
@@ -28,11 +29,13 @@ function SectionItem({
   entity,
   showEmptySection = false,
   showContentLoading = false,
+  renderChart,
 }) {
   const classes = sectionStyles();
   const { loading, error, data } = request;
   const shortName = createShortName(definition);
   let hasData = false;
+  const [selectedView, setSelectedView] = useState(VIEW.table);
 
   if (data && entity && data[entity]) {
     hasData = definition.hasData(data[entity]);
@@ -40,18 +43,28 @@ function SectionItem({
 
   if (!hasData && !showEmptySection && !loading) return null;
 
+  function getSelectedView() {
+    if (selectedView === VIEW.table) return renderBody(data);
+    return renderChart(data);
+  }
+
   return (
     <Grid item xs={12}>
       <section>
         <Element name={definition.id}>
           <Card elevation={0} variant="outlined">
             <ErrorBoundary>
-              <CardHeader
-                classes={{
-                  root: classes.cardHeader,
-                  action: classes.cardHeaderAction,
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 2,
+                  p: 2,
                 }}
-                avatar={
+              >
+                <Box>
+                  {" "}
                   <Avatar
                     className={classNames(classes.avatar, classes.avatarHasData, {
                       [classes.avatarError]: error,
@@ -59,48 +72,50 @@ function SectionItem({
                   >
                     {shortName}
                   </Avatar>
-                }
-                title={
-                  <Grid container justifyContent="space-between">
-                    <Typography
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Box>
+                    <Box
                       className={classNames(classes.title, classes.titleHasData, {
                         [classes.titleError]: error,
                       })}
+                      sx={{ display: "flex", gap: 2, alignItems: "center", h: 1 }}
                     >
-                      {definition.name} {definition.isPrivate ? <PartnerLockIcon /> : null}
+                      {definition.isPrivate && <PartnerLockIcon />} {definition.name}
+                      {chipText && (
+                        <Box sx={{ typography: "caption" }} className={classes.chip}>
+                          {chipText}
+                        </Box>
+                      )}
+                    </Box>
+                  </Box>
+                  <Box>
+                    <Typography
+                      className={classNames(classes.description, classes.descriptionHasData, {
+                        [classes.descriptionError]: error,
+                      })}
+                      variant="body2"
+                    >
+                      {renderDescription(data)}
                     </Typography>
-                    {chipText ? <Chip label={chipText} className={classes.chip} /> : null}
-                  </Grid>
-                }
-                subheader={
-                  <Typography
-                    className={classNames(classes.description, classes.descriptionHasData, {
-                      [classes.descriptionError]: error,
-                    })}
-                    variant="body2"
-                  >
-                    {renderDescription(data)}
-                  </Typography>
-                }
-                action={tags}
-              />
-              {loading ? (
-                <LinearProgress
-                  aria-describedby="section loading progress bar"
-                  aria-busy={loading}
-                />
-              ) : (
-                <Box className={classes.loadingPlaceholder} />
-              )}
-              {error && <SectionError error={error} />}
-              {!loading && hasData && (
-                <CardContent className={classes.cardContent}>{renderBody(data)}</CardContent>
-              )}
-              {!loading && !hasData && showEmptySection && (
-                <CardContent className={classes.cardContent}>
+                  </Box>
+                </Box>
+                <Box>{renderChart && <SectionViewToggle viewChange={setSelectedView} />}</Box>
+              </Box>
+              <Divider />
+              <CardContent className={classes.cardContent}>
+                {/* {loading && (
+                  <LinearProgress
+                    aria-describedby="section loading progress bar"
+                    aria-busy={loading}
+                  />
+                )} */}
+                {error && <SectionError error={error} />}
+                {!loading && hasData && getSelectedView()}
+                {!loading && !hasData && showEmptySection && (
                   <div className={classes.noData}> No data available for this {entity}. </div>
-                </CardContent>
-              )}
+                )}
+              </CardContent>
             </ErrorBoundary>
           </Card>
         </Element>

@@ -49,8 +49,9 @@ const sectionStyles = makeStyles(theme => ({
     color: theme.palette.secondary.main,
   },
   chip: {
-    position: "relative",
-    top: "5px",
+    padding: "0 8px",
+    borderRadius: 10,
+    border: `1px solid ${theme.palette.grey[500]}`,
   },
   noData: {
     display: "flex",

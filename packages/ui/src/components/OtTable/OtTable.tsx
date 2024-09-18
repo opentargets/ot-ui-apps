@@ -122,7 +122,7 @@ function OtTable({
   return (
     <div>
       {/* Global Search */}
-      <Grid container sx={{ display: "flex" }}>
+      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
         <Grid item sm={12} md={4}>
           {showGlobalFilter && <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />}
         </Grid>
