@@ -1,0 +1,26 @@
+query GWASCredibleSetsQuery($studyId: String!) {
+  gwasStudy(studyId: $studyId) {
+    studyId
+    credibleSets {
+      variant {
+        id
+        referenceAllele
+        alternateAllele
+      }
+      pValueMantissa
+      pValueExponent
+      beta
+      locus {
+        is95CredibleSet
+      }
+      finemappingMethod
+      strongestLocus2gene {
+        target {
+          id
+          approvedSymbol
+        }
+        score
+      }
+    }
+  }
+}

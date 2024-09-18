@@ -9,6 +9,8 @@ import {
 } from "ui";
 
 import RelatedGWASStudiesSummary from "sections/src/study/RelatedGWASStudies/Summary";
+import GWASCredidbleSetsSummary from "sections/src/study/GWASCredibleSets/Summary";
+import QTLCredibleSetsSummary from "sections/src/study/QTLCredibleSets/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
@@ -16,11 +18,12 @@ import ProfileHeader from "./ProfileHeader";
 const RelatedGWASStudiesSection = lazy(
   () => import("sections/src/study/RelatedGWASStudies/Body")
 );
+const GWASCredibleSetsSection = lazy(() => import("sections/src/study/GWASCredibleSets/Body"));
+const QTLCredibleSetsSection = lazy(() => import("sections/src/study/QTLCredibleSets/Body"));
 
 // no RelatedGWASStudiesSummary as we add section to the query below directly
 // (the summary cannot be written as a fragment as it gets further studies)
-const summaries = [
-];
+const summaries = [GWASCredidbleSetsSummary, QTLCredibleSetsSummary];
 
 const STUDY = "gwasStudy";
 const STUDY_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
@@ -66,22 +69,37 @@ function Profile({ studyId, studyCategory, diseaseIds }: ProfileProps) {
 
       <SummaryContainer>
         {(studyCategory === "GWAS" || studyCategory === "FINNGEN") &&
-          <RelatedGWASStudiesSummary /> 
+          <>
+            <RelatedGWASStudiesSummary />
+            <GWASCredidbleSetsSummary />
+          </>
+        }
+        {studyCategory === "QTL" &&
+          <QTLCredibleSetsSummary />
         }
       </SummaryContainer>
 
       <SectionContainer>
         {(studyCategory === "GWAS" || studyCategory === "FINNGEN") &&
-          <Suspense fallback={<SectionLoader />}>
-            <RelatedGWASStudiesSection
-              studyId={studyId}
-              diseaseId={diseaseId}  // !! WILL BE diseaseIds WHEN API UPDATED !!
-              entity={STUDY}
-            />
-          </Suspense>
+          <>
+            <Suspense fallback={<SectionLoader />}>
+              <RelatedGWASStudiesSection
+                studyId={studyId}
+                diseaseId={diseaseId}  // !! WILL BE diseaseIds WHEN API UPDATED !!
+                entity={STUDY}
+              />
+            </Suspense>
+            <Suspense fallback={<SectionLoader />}>
+              <GWASCredibleSetsSection id={studyId} entity={STUDY} />
+            </Suspense>
+          </>
         }
+        {studyCategory === "QTL" && (
+          <Suspense fallback={<SectionLoader />}>
+            <QTLCredibleSetsSection id={studyId} entity={STUDY} />
+          </Suspense>
+        )}
       </SectionContainer>
-
     </PlatformApiProvider>
   );
 }
