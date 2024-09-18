@@ -141,16 +141,6 @@ const theme = {
         },
       },
     },
-    MuiPopper: {
-      styleOverrides: {
-        root: {
-          maxHeight: "60vh",
-          borderRadius: 4,
-          border: `1px solid ${grey[400]}`,
-          background: "white",
-        },
-      },
-    },
   },
 };
 

@@ -9,12 +9,12 @@ import {
   FormGroup,
   List,
   ListItemButton,
-  Popper,
 } from "@mui/material";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { OtTableColumnVisibilityProps } from "./table.types";
+import OtPopper from "../OtPopper";
 
 function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): ReactElement {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>();
@@ -45,7 +45,7 @@ function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): React
         </Button>
       </Badge>
 
-      <Popper id={id} open={open} anchorEl={anchorEl}>
+      <OtPopper id={id} open={open} anchorEl={anchorEl}>
         <ClickAwayListener onClickAway={handleClose}>
           <Box>
             <FormGroup>
@@ -69,7 +69,7 @@ function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): React
             </FormGroup>
           </Box>
         </ClickAwayListener>
-      </Popper>
+      </OtPopper>
     </>
   );
 }
