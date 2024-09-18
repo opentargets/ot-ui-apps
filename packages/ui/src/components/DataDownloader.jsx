@@ -168,7 +168,7 @@ function DataDownloader({ columns, rows, fileStem, query, variables, btnLabel = 
           sx={{ display: "flex", gap: 1 }}
           variant="outlined"
         >
-          <FontAwesomeIcon icon={faFileArrowDown} /> Export
+          <FontAwesomeIcon icon={faFileArrowDown} /> {btnLabel}
         </Button>
       </Box>
       {query ? <ApiPlaygroundDrawer query={query} variables={variables} /> : null}
