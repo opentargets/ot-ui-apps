@@ -150,7 +150,7 @@ const columns = [
   },
   {
     id: "hasSumstats",
-    label: "Has sumstats",
+    label: "Has summary stats",
     renderCell: ({ projectId, hasSumstats }) => (
       getStudyCategory(projectId) === "FINNGEN"
         ? "yes"
