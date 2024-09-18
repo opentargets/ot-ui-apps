@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Popper, styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 
 export const OtTableContainer = styled("table")(({ theme }) => ({
   whiteSpace: "nowrap",
@@ -51,13 +51,6 @@ export const OtTableHeader = styled("div", {
 
 export const FontAwesomeIconPadded = styled(FontAwesomeIcon)(({ theme }) => ({
   padding: `0 ${theme.spacing(1)}`,
-}));
-
-export const ColumnFilterPopper = styled(Popper)(({ theme }) => ({
-  maxHeight: "60vh",
-  borderRadius: 4,
-  border: `1px solid ${theme.palette.grey[400]}`,
-  background: "white",
 }));
 
 export const OtTH = styled("th", {

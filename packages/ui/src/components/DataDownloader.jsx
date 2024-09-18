@@ -194,6 +194,9 @@ function DataDownloader({ columns, rows, fileStem, query, variables, btnLabel = 
             </Typography>
           </ListItemText>
         </MenuItem>
+        <Box sx={{ typography: "caption", px: 2 }}>
+          * Column settings and filters are not included in data
+        </Box>
       </Menu>
 
       <Snackbar

@@ -89,7 +89,7 @@ function OtTable({
   dataDownloaderFileStem,
   query,
   variables,
-  showColumnVisibilityControl = false,
+  showColumnVisibilityControl = true,
 }: OtTableProps): ReactElement {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

@@ -9,12 +9,12 @@ import {
   FormGroup,
   List,
   ListItemButton,
+  Popper,
 } from "@mui/material";
-import { faTableColumns } from "@fortawesome/free-solid-svg-icons";
+import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { OtTableColumnVisibilityProps } from "./table.types";
-import { ColumnFilterPopper } from "./otTableLayout";
 
 function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): ReactElement {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>();
@@ -41,11 +41,11 @@ function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): React
     <>
       <Badge color="primary" variant="dot" invisible={!isColumnVisibilityStateChanged()}>
         <Button aria-describedby={id} onClick={handleClick} sx={{ display: "flex", gap: 1 }}>
-          <FontAwesomeIcon icon={faTableColumns} /> Columns
+          <FontAwesomeIcon icon={faGear} /> Columns
         </Button>
       </Badge>
 
-      <ColumnFilterPopper id={id} open={open} anchorEl={anchorEl}>
+      <Popper id={id} open={open} anchorEl={anchorEl}>
         <ClickAwayListener onClickAway={handleClose}>
           <Box>
             <FormGroup>
@@ -69,7 +69,7 @@ function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): React
             </FormGroup>
           </Box>
         </ClickAwayListener>
-      </ColumnFilterPopper>
+      </Popper>
     </>
   );
 }
