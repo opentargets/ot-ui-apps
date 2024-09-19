@@ -1,7 +1,15 @@
 import { Typography } from "@mui/material";
 import OTTooltip from "./Tooltip";
+import { ReactElement } from "react";
 
-function LabelChip({ label, value, to, tooltip = null }) {
+type LabelChipProps = {
+  label?: string;
+  to: string;
+  tooltip?: string | null;
+  value?: string;
+};
+
+function LabelChip({ label, value, to, tooltip = null }: LabelChipProps): ReactElement {
   const containerStyle = {
     display: "flex",
     borderRadius: "5px",
@@ -27,7 +35,7 @@ function LabelChip({ label, value, to, tooltip = null }) {
     borderLeft: "1px solid #3489ca",
   };
   return (
-    <OTTooltip title={tooltip} disableInteractive>
+    <OTTooltip title={tooltip} disableInteractive style={{}}>
       <a href={to} style={containerStyle}>
         {label && (
           <div style={labelStyle}>
