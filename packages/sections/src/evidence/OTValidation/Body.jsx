@@ -10,7 +10,7 @@ import { v1 } from "uuid";
 import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import VALIDATION_QUERY from "./OTValidationQuery.gql";
 
 const useStyles = makeStyles(theme => ({
@@ -143,15 +143,18 @@ const getColumns = classes => [
   {
     id: "assessment",
     label: "OTVL assessment",
-    renderCell: ({ assessment }) => (
-      <>
-        {assessment.map(e => (
-          <Box sx={{ my: theme => theme.spacing(1) }} key={e}>
-            {e}
-          </Box>
-        ))}
-      </>
-    ),
+    renderCell: ({ assessments }) => {
+      if (!assessments || !assessments.length) return naLabel;
+      return (
+        <>
+          {assessments.map(e => (
+            <Box sx={{ my: theme => theme.spacing(1) }} key={e}>
+              {e}
+            </Box>
+          ))}
+        </>
+      );
+    },
   },
   {
     id: "releaseVersion",

@@ -38,7 +38,7 @@ function ProfileHeader({ studyCategory }) {
     qualityControls,
     analysisFlags,
     discoverySamples,
-  } = data?.gwasStudy || {};
+  } = data?.gwasStudy?.[0] || {};
 
   return (
     <BaseProfileHeader>

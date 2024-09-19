@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import client from "../../../client";
 import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../utils";
 
-const INITIAL_ROW_COUNT = 30;
+const INITIAL_ROW_COUNT = 20;
 
 const INITIAL_USE_ASSOCIATION_STATE = {
   loading: true,
@@ -70,7 +70,7 @@ function useAssociationsData({
     };
     if (isCurrent) fetchData();
     return () => (isCurrent = false);
-  }, [id, index, size, filter, sortBy, enableIndirect, datasources, query, entity, facetFilters]);
+  }, [id, index, size, sortBy, enableIndirect, datasources, query, entity, facetFilters]);
 
   return state;
 }
