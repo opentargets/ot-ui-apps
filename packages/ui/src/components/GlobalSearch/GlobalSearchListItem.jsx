@@ -84,16 +84,14 @@ const TopHitItemContainer = styled("div")(({ theme }) => ({
 }));
 
 function symbolNameOrId(item) {
-    return item.symbol || item.name || item.id
-    // !! USE BELOW ONCE CAN GET referenceAllele AND alternateAllele FROM SEARCH API
-    // return item.entity === "variant"
-    //   ? <DisplayVariantId
-    //       variantId={item.id}
-    //       referenceAllele={item.referenceAllele}
-    //       alternateAllele={item.alternateAllele}
-    //       expand={false}
-    //     />
-    //   : item.symbol || item.name
+  return item.entity === "variant"
+    ? <DisplayVariantId
+        variantId={item.id}
+        referenceAllele={item.referenceAllele}
+        alternateAllele={item.alternateAllele}
+        expand={false}
+      />
+    : item.symbol || item.name
 }
 
 function SuggestionListItem({ item, onItemClick }) {
