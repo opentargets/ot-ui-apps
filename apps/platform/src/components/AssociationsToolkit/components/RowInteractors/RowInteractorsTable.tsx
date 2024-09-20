@@ -23,43 +23,27 @@ import { ENTITIES, INTERACTORS_SOURCES, TABLE_PREFIX, InteractorsSource } from "
 
 type ThresholdState = number | null | undefined;
 
-export const INTERACTORS_SOURCE_LABEL = (
+const INTERACTORS_SOURCE_LABEL = (
   assoc: number,
   interactors: number,
   source: InteractorsSource,
   targetName: string
 ): ReactElement => {
-  const labels = {
-    [INTERACTORS_SOURCES.REACTOME]: (
-      <>
-        <b>{assoc}</b> target-disease association{assoc > 1 ? "s" : ""} found for{" "}
-        <b>{interactors}</b> pathway-based interactor{interactors > 1 ? "s" : ""} of{" "}
-        <b>{targetName}</b>
-      </>
-    ),
-    [INTERACTORS_SOURCES.INTACT]: (
-      <>
-        <b>{assoc}</b> target-disease association{assoc > 1 ? "s" : ""} found for{" "}
-        <b>{interactors}</b> binary physical interactor{interactors > 1 ? "s" : ""} of{" "}
-        <b>{targetName}</b>
-      </>
-    ),
-    [INTERACTORS_SOURCES.STRING]: (
-      <>
-        <b>{assoc}</b> target-disease association{assoc > 1 ? "s" : ""} found for{" "}
-        <b>{interactors}</b> functional interactor{interactors > 1 ? "s" : ""} of{" "}
-        <b>{targetName}</b>
-      </>
-    ),
-    [INTERACTORS_SOURCES.SIGNOR]: (
-      <>
-        <b>{assoc}</b> target-disease association{assoc > 1 ? "s" : ""} found for{" "}
-        <b>{interactors}</b> directional, causal interactor{interactors > 1 ? "s" : ""} of{" "}
-        <b>{targetName}</b>
-      </>
-    ),
+  const interactorTypeMap = {
+    [INTERACTORS_SOURCES.REACTOME]: "pathway-based",
+    [INTERACTORS_SOURCES.INTACT]: "binary physical",
+    [INTERACTORS_SOURCES.STRING]: "functional",
+    [INTERACTORS_SOURCES.SIGNOR]: "directional, causal",
   };
-  return labels[source];
+
+  const interactorType = interactorTypeMap[source];
+
+  return (
+    <>
+      <b>{assoc}</b> target-disease association{assoc > 1 ? "s" : ""} found for <b>{interactors}</b>{" "}
+      {interactorType} interactor{interactors > 1 ? "s" : ""} of <b>{targetName}</b>
+    </>
+  );
 };
 
 const btnStyles = {
