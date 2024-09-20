@@ -7,11 +7,25 @@ import {
 } from "ui";
 import { naLabel } from "../../constants";
 import { Typography, Box } from "@mui/material";
-import { formatSamples } from "sections/src/utils/formatSamples";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 
-function ProfileHeader({ studyCategory }) {
+type samplesType = {
+  ancestry: string;
+  sampleSize: number;
+}[];
+
+function formatSamples(samples: samplesType) {
+  return samples
+    .map(({ ancestry, sampleSize }) => `${ancestry}: ${sampleSize}`)
+    .join(", ");
+}
+
+type ProfileHeaderProps = {
+  studyCategory: string;
+};
+
+function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
   const { loading, error, data } = usePlatformApi();
 
   // TODO: Errors!
@@ -22,8 +36,6 @@ function ProfileHeader({ studyCategory }) {
     publicationDate,
     publicationJournal,
     pubmedId,
-    hasSumstats,
-    summarystatsLocation,
     nSamples,
     initialSampleSize,
     replicationSamples,
@@ -69,17 +81,7 @@ function ProfileHeader({ studyCategory }) {
               : naLabel
           } 
         </Field>
-        <Field loading={loading} title="Has summary stats">
-          { 
-            studyCategory === "GWAS"
-              ? (hasSumstats ? "yes" : "no")
-              : `yes ${studyCategory === "QTL" && summarystatsLocation
-                  ? `—  ${summarystatsLocation}`
-                  : ''
-                }`
-          }
-        </Field>
-        <Field loading={loading} title="N study">
+        <Field loading={loading} title="Sample size">
           {nSamples ?? naLabel}
         </Field>
         <Field loading={loading} title="N discovery">

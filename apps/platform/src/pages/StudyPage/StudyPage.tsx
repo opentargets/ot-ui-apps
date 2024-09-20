@@ -44,10 +44,9 @@ function StudyPage() {
       <Header 
         loading={loading}
         studyId={studyId}
-        traitFromSource={studyInfo?.traitFromSource}
         backgroundTraits={studyInfo?.backgroundTraits}
         targetId={studyInfo?.target?.id}
-        diseaseId={studyInfo?.diseases?.[0]?.id}
+        diseases={studyInfo?.diseases}
         studyCategory={studyCategory}
       />
       <ScrollToTop />
@@ -73,7 +72,7 @@ function StudyPage() {
             <Profile
               studyId={studyId}
               studyCategory={studyCategory}
-              diseaseIds={studyInfo?.diseases?.map(d => d.id) || []}
+              diseases={studyInfo?.diseases}
             />
           </Route>
           <Route path="*">
