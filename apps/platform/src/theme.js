@@ -37,6 +37,9 @@ const theme = {
       dark: darken(0.2, SECONDARY),
       contrastText: "#fff",
     },
+    plain: {
+      main: grey[700],
+    },
     text: {
       primary: "#5A5F5F",
     },

@@ -33,11 +33,11 @@ function useRowInteractors({
     size = 50,
     filter = "",
     source = INTERACTORS_SOURCES.INTACT,
-    aggregationFilters = [],
     enableIndirect = false,
     datasources = [],
     rowsFilter = [],
     entityInteractors = null,
+    scoreThreshold = null,
     entity,
     diseaseId,
     sortBy,
@@ -58,6 +58,7 @@ function useRowInteractors({
       const targetRowInteractorsRequest = await client.query({
         query,
         variables: {
+          scoreThreshold,
           sourceDatabase: rowInteractorsSource,
           ensgId: rowInteractorsId,
           index: 0,
@@ -105,7 +106,7 @@ function useRowInteractors({
     }
     if (isCurrent) getInteractors();
     return () => (isCurrent = false);
-  }, [source, sortBy]);
+  }, [source, sortBy, scoreThreshold]);
 
   return state;
 }

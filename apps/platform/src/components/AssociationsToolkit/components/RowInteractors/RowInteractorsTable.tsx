@@ -8,18 +8,59 @@ import {
 import useRowInteractors from "./useRowInteractors";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableBody from "../Table/TableBody";
-import { Box, Button, InputLabel, NativeSelect, Skeleton, Typography } from "@mui/material";
+import { Box, Button, InputLabel, NativeSelect, Skeleton, Typography, Slider } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { styled } from "@mui/material/styles";
+import { useState, useEffect, ReactElement } from "react";
 import {
   FocusActionType,
-  InteractorsSource,
   useAssociationsFocus,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
-import { ENTITIES, INTERACTORS_SOURCES, TABLE_PREFIX } from "../../utils";
+import { ENTITIES, INTERACTORS_SOURCES, TABLE_PREFIX, InteractorsSource } from "../../utils";
+
+type ThresholdState = number | null | undefined;
+
+export const INTERACTORS_SOURCE_LABEL = (
+  assoc: number,
+  interactors: number,
+  source: InteractorsSource,
+  targetName: string
+): ReactElement => {
+  const labels = {
+    [INTERACTORS_SOURCES.REACTOME]: (
+      <>
+        <b>{assoc}</b> target-disease association{assoc > 1 ? "s" : ""} found for{" "}
+        <b>{interactors}</b> pathway-based interactor{interactors > 1 ? "s" : ""} of{" "}
+        <b>{targetName}</b>
+      </>
+    ),
+    [INTERACTORS_SOURCES.INTACT]: (
+      <>
+        <b>{assoc}</b> target-disease association{assoc > 1 ? "s" : ""} found for{" "}
+        <b>{interactors}</b> binary physical interactor{interactors > 1 ? "s" : ""} of{" "}
+        <b>{targetName}</b>
+      </>
+    ),
+    [INTERACTORS_SOURCES.STRING]: (
+      <>
+        <b>{assoc}</b> target-disease association{assoc > 1 ? "s" : ""} found for{" "}
+        <b>{interactors}</b> functional interactor{interactors > 1 ? "s" : ""} of{" "}
+        <b>{targetName}</b>
+      </>
+    ),
+    [INTERACTORS_SOURCES.SIGNOR]: (
+      <>
+        <b>{assoc}</b> target-disease association{assoc > 1 ? "s" : ""} found for{" "}
+        <b>{interactors}</b> directional, causal interactor{interactors > 1 ? "s" : ""} of{" "}
+        <b>{targetName}</b>
+      </>
+    ),
+  };
+  return labels[source];
+};
 
 const btnStyles = {
   width: "18px",
@@ -35,6 +76,24 @@ const btnStyles = {
     background: grey[500],
   },
 };
+
+const OTSlider = styled(Slider)({
+  color: grey[600],
+  root: {
+    padding: "0 10px !important",
+  },
+  mark: {
+    backgroundColor: "#b8b8b8",
+    height: 1,
+  },
+  ".MuiSlider-valueLabel": {
+    bottom: "-60px",
+    top: "none",
+  },
+  ".MuiSlider-valueLabel:before": {
+    display: "none",
+  },
+});
 
 function RowLine() {
   return (
@@ -63,7 +122,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     entityToGet,
   } = useAotfContext();
 
-  // const label = row.original[entityToGet][nameProperty];
+  const label = row.original.targetSymbol;
 
   const focusState = useAssociationsFocus();
   const dispatch = useAssociationsFocusDispatch();
@@ -77,6 +136,12 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     pageSize: 10,
   });
 
+  const [threshold, setThreshold] = useState<ThresholdState>(focusElement?.interactorsThreshold);
+
+  const handleChange = (_: Event, newValue: number | number[]) => {
+    setThreshold(newValue);
+  };
+
   const onClickCloseInteractors = () => {
     dispatch({
       type: FocusActionType.SET_INTERACTORS_OFF,
@@ -88,6 +153,13 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     dispatch({
       type: FocusActionType.SET_INTERACTORS_SOURCE,
       focus: { row: row.id, table: parentTable, source: newSource },
+    });
+  };
+
+  const onInteractorsSourceThresholdChange = (newThreshold: InteractorsSource) => {
+    dispatch({
+      type: FocusActionType.SET_INTERACTORS_THRESHOLD,
+      focus: { row: row.id, table: parentTable, interactorsThreshold: newThreshold },
     });
   };
 
@@ -106,8 +178,13 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
       entity: ENTITIES.DISEASE,
       diseaseId,
       sortBy: sorting[0].id,
+      scoreThreshold: focusElement?.interactorsThreshold,
     },
   });
+
+  useEffect(() => {
+    setThreshold(focusElement?.interactorsThreshold);
+  }, [focusElement]);
 
   const interactorsTable = useReactTable({
     data: data,
@@ -179,16 +256,46 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                 <option value={INTERACTORS_SOURCES.STRING}>String</option>
               </NativeSelect>
             </Box>
+            <Box sx={{ display: "flex", ml: 1, alignItems: "center" }}>
+              <InputLabel sx={{ fontSize: "0.85rem" }} htmlFor="intaractor_data_source">
+                Score threshold:{" "}
+                <Box component="span" sx={{ width: "30px", display: "inline-block" }}>
+                  {threshold}
+                </Box>
+              </InputLabel>
+              <Box width={75} sx={{ display: "flex", ml: 1 }}>
+                <OTSlider
+                  value={threshold}
+                  onChange={handleChange}
+                  onChangeCommitted={(_, newValue) => onInteractorsSourceThresholdChange(newValue)}
+                  aria-label="source threshold"
+                  size="small"
+                  min={0}
+                  max={1.0}
+                  step={0.01}
+                  valueLabelDisplay="off"
+                  disabled={
+                    focusElement?.interactorsSource === INTERACTORS_SOURCES.SIGNOR ||
+                    focusElement?.interactorsSource === INTERACTORS_SOURCES.REACTOME ||
+                    loading
+                  }
+                />
+              </Box>
+            </Box>
             {loading ? (
               <Skeleton width={265} />
             ) : (
               <Typography variant="caption" sx={{ ml: 2 }}>
-                <b>{data?.length}</b> association
-                {data.length > 1 ? "s" : ""} found in <b>{interactorsMetadata?.count || 0}</b>{" "}
-                target interactors
+                {INTERACTORS_SOURCE_LABEL(
+                  data?.length,
+                  interactorsMetadata?.count,
+                  focusElement?.interactorsSource,
+                  label
+                )}
               </Typography>
             )}
           </Box>
+
           <Box sx={{ display: "flex", gap: 2 }}>
             <Button
               onClick={() => interactorsTable.previousPage()}
