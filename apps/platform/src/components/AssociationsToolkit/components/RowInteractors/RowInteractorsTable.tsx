@@ -231,7 +231,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
             border: "1px solid",
             borderColor: grey[400],
             position: "relative",
-            mb: 1,
+            mb: 2,
             ml: 3,
           }}
         >
@@ -252,7 +252,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
               {loading ? (
                 <Skeleton width={500} />
               ) : (
-                <Typography variant="caption" sx={{ mr: 4 }}>
+                <Typography variant="body2" sx={{ mr: 4 }}>
                   {INTERACTORS_SOURCE_LABEL(
                     data?.length,
                     interactorsMetadata?.count,
