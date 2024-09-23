@@ -14,7 +14,19 @@ import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
 import { variantComparator } from "../../utils/comparators";
 
-function getColumns(id: string, posteriorProbabilities: any) {
+type getColumnsType = {
+  id: string;
+  referenceAllele: string;
+  alternateAllele: string;
+  posteriorProbabilities: any;
+};
+
+function getColumns({
+      id,
+      referenceAllele,
+      alternateAllele,
+      posteriorProbabilities
+    }: getColumnsType) {
 
   return [
     {
@@ -77,7 +89,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
     },
     {
       id: "study.studyId",
-      label: "Study",
+      label: "Study ID",
       renderCell: ({ study }) => {
         if (!study) return naLabel;
         return <Link to={`../study/${study.studyId}`}>{study.studyId}</Link>
@@ -116,7 +128,16 @@ function getColumns(id: string, posteriorProbabilities: any) {
       id: "posteriorProbability",
       label: "Posterior Probability",
       filterValue: false,
-      tooltip: "Probability the fixed page variant is in the credible set.",
+      tooltip: <>
+        Probability the fixed page variant (
+        <DisplayVariantId
+          variantId={id}
+          referenceAllele={referenceAllele}
+          alternateAllele={alternateAllele}
+          expand={false}
+        />
+        ) is in the credible set.
+      </>,
       comparator: (rowA, rowB) => (
         posteriorProbabilities.get(rowA.locus) -
           posteriorProbabilities.get(rowB.locus)
@@ -129,7 +150,16 @@ function getColumns(id: string, posteriorProbabilities: any) {
       id: "ldr2",
       label: "LD (r²)",
       filterValue: false,
-      tooltip: "Linkage disequilibrium with the queried variant",
+      tooltip: <>
+        Linkage disequilibrium with the fixed page variant (
+        <DisplayVariantId
+          variantId={id}
+          referenceAllele={referenceAllele}
+          alternateAllele={alternateAllele}
+          expand={false}
+        />
+        ).
+      </>,
       renderCell: ({ locus }) => {
         const r2 = locus?.find(obj => obj.variant?.id === id)?.r2Overall;
         if (typeof r2 !== "number") return naLabel;
@@ -229,7 +259,12 @@ function Body({ id, entity }: BodyProps) {
             dataDownloader
             showGlobalFilter
             sortBy="pValue"
-            columns={getColumns(id, posteriorProbabilities)}
+            columns={getColumns({
+              id,
+              referenceAllele: variant.referenceAllele,
+              alternateAllele: variant.alternateAllele,
+              posteriorProbabilities,
+            })}
             rows={variant.credibleSets}
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
