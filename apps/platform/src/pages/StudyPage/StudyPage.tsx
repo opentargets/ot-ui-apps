@@ -16,6 +16,7 @@ import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import STUDY_PAGE_QUERY from "./StudyPage.gql";
 import Profile from "./Profile";
+import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 
 function StudyPage() {
   const location = useLocation();
@@ -32,14 +33,7 @@ function StudyPage() {
     return <NotFoundPage />;
   }
 
-  // !!!!! CURRENTLY RESOLVE STUDY CATEGORY PURELY FROM PROJECT ID
-  const { projectId } = studyInfo || {};
-  let studyCategory = '';
-  if (projectId) {
-    if (projectId === "GCST") studyCategory = "GWAS";
-    else if (projectId === "FINNGEN_R10") studyCategory = "FINNGEN";
-    else studyCategory = "QTL";
-  }
+  const studyCategory = getStudyCategory(studyInfo?.projectId);
 
   return (
     <BasePage
@@ -50,10 +44,9 @@ function StudyPage() {
       <Header 
         loading={loading}
         studyId={studyId}
-        traitFromSource={studyInfo?.traitFromSource}
         backgroundTraits={studyInfo?.backgroundTraits}
         targetId={studyInfo?.target?.id}
-        diseaseId={studyInfo?.diseases?.[0]?.id}
+        diseases={studyInfo?.diseases}
         studyCategory={studyCategory}
       />
       <ScrollToTop />
@@ -76,7 +69,11 @@ function StudyPage() {
       <Suspense fallback={<LoadingBackdrop height={11500} />}>
         <Switch>
           <Route exact path={path}>
-            <Profile studyId={studyId} studyCategory={studyCategory}/>
+            <Profile
+              studyId={studyId}
+              studyCategory={studyCategory}
+              diseases={studyInfo?.diseases}
+            />
           </Route>
           <Route path="*">
             <Redirect to={`/study/${studyId}`} />

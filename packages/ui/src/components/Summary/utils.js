@@ -17,7 +17,11 @@ export function createSummaryFragment(sections, entity, fragmentName) {
   return gql`
     fragment ${fragmentNameStr} on ${entity} {
       ${
-        sectionFragmentNames.length ? sectionFragmentNames.map(sfn => `...${sfn}`).join("\n") : "id"
+        sectionFragmentNames.length
+          ? sectionFragmentNames.map(sfn => `...${sfn}`).join("\n")
+          : entity === "Gwas"
+            ? "studyId"
+            : "id"
       }
     }
     ${sectionFragments.reduce(
