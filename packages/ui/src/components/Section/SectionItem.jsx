@@ -16,8 +16,9 @@ import SectionError from "./SectionError";
 import sectionStyles from "./sectionStyles";
 import { createShortName } from "../Summary/utils";
 import PartnerLockIcon from "../PartnerLockIcon";
-import SectionViewToggle, { VIEW } from "./SectionViewToggle";
+import SectionViewToggle from "./SectionViewToggle";
 import { useState } from "react";
+import { VIEW } from "../../constants";
 
 function SectionItem({
   definition,

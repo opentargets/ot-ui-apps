@@ -3,11 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { ReactElement, useState } from "react";
 import { FontAwesomeIconPadded } from "../OtTable/otTableLayout";
-
-export const VIEW = {
-  table: "table",
-  chart: "chart",
-};
+import { VIEW } from "../../constants";
 
 function SectionViewToggle({ viewChange }): ReactElement {
   const [alignment, setAlignment] = useState(VIEW.table);
