@@ -4,6 +4,8 @@ query QTLCredibleSetsQuery($studyId: String!) {
     credibleSets {
       variant {
         id
+        chromosome
+        position
         referenceAllele
         alternateAllele
       }

@@ -6,6 +6,8 @@ query GWCredibleSetsQuery($variantId: String!) {
     credibleSets(studyTypes: [sqtl, pqtl, eqtl, tuqtl]) {
       variant {
         id
+        chromosome
+        position
         referenceAllele
         alternateAllele
       }

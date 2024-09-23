@@ -10,11 +10,17 @@ import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
+import { variantComparator } from "../../utils/comparators";
 
 const columns = [
   {
     id: "leadVariant",
     label: "Lead Variant",
+    comparator: variantComparator,
+    sortable: true,
+    filterValue: ({ variant: v }) => (
+      `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`
+    ),
     renderCell: ({ variant }) => {
       if (!variant) return naLabel;
       const { id: variantId, referenceAllele, alternateAllele } = variant;
@@ -36,6 +42,7 @@ const columns = [
       a?.pValueMantissa * 10 ** a?.pValueExponent -
         b?.pValueMantissa * 10 ** b?.pValueExponent,
     sortable: true,
+    filterValue: false,
     renderCell: ({ pValueMantissa, pValueExponent }) => {
       if (typeof pValueMantissa !== "number" ||
           typeof pValueExponent !== "number") return naLabel;
@@ -50,6 +57,7 @@ const columns = [
   {
     id: "beta",
     label: "Beta",
+    filterValue: false,
     tooltip: "Beta with respect to the ALT allele",
     renderCell: ({ beta }) => {
       if (typeof beta !== "number") return naLabel;
@@ -65,6 +73,9 @@ const columns = [
     id: "topL2G",
     label: "Top L2G",
     tooltip: "Top gene prioritised by our locus-to-gene model",
+    filterValue: ({ strongestLocus2gene }) => (
+      strongestLocus2gene?.target.approvedSymbol
+    ),
     renderCell: ({ strongestLocus2gene }) => {
       if (!strongestLocus2gene?.target) return naLabel;
       const { target } = strongestLocus2gene;
@@ -83,6 +94,7 @@ const columns = [
       rowA?.strongestLocus2gene.score - rowB?.strongestLocus2gene.score
     ),
     sortable: true,
+    filterValue: false,
     renderCell: ({ strongestLocus2gene }) => {
       if (typeof strongestLocus2gene?.score !== "number") return naLabel;
       return strongestLocus2gene.score.toFixed(3);
@@ -94,6 +106,7 @@ const columns = [
     label: "Credible Set Size",
     comparator: (a, b) => a.locus?.length - b.locus?.length,
     sortable: true,
+    filterValue: false,
     renderCell: ({ locus }) => locus?.length ?? naLabel,
     exportValue: ({ locus }) => locus?.length,
   }
@@ -122,6 +135,7 @@ function Body({ id, entity }: BodyProps) {
       renderBody={({ gwasStudy }) => (
         <DataTable
           dataDownloader
+          showGlobalFilter
           sortBy="pValue"
           columns={columns}
           rows={gwasStudy[0].credibleSets}

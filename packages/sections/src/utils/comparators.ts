@@ -35,3 +35,44 @@ export const breakpointMatch = (breakpoint, breakpointHelper) => {
 
   return false;
 };
+
+/*
+  Compares variants by chromosome, position, reference allele, alternate allele
+*/
+const chromosomeRank = new Map;
+for (let i = 1; i <= 22; i++) {
+  chromosomeRank.set(String(i), i);
+}
+chromosomeRank.set('X', 23);
+chromosomeRank.set('Y', 24);
+
+type VariantType = {
+  variant: {
+    chromosome: string;
+    position: number;
+    referenceAllele: string;
+    alternateAllele: string;
+  }
+};
+
+export function variantComparator(
+      { variant: v1 }: VariantType,
+      { variant: v2 }: VariantType
+    ) {
+
+  if (!v1 || !v2) return 0;
+
+  const chromosomeDiff =
+    chromosomeRank.get(v1.chromosome) - chromosomeRank.get(v2.chromosome);
+  if (chromosomeDiff !== 0) return chromosomeDiff;
+  
+  const positionDiff = v1.position - v2.position;
+  if (positionDiff !== 0) return positionDiff
+ 
+  if (v1.referenceAllele < v2.referenceAllele) return -1;
+  else if (v1.referenceAllele > v2.referenceAllele) return 1;
+  else if (v1.alternateAllele < v2.alternateAllele) return -1;
+  else if (v1.alternateAllele > v2.alternateAllele) return 1;
+  
+  return 0;
+}

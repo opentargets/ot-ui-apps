@@ -11,6 +11,7 @@ import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
+import { variantComparator } from "../../utils/comparators";
 
 function getColumns(id: string, posteriorProbabilities: any) {
 
@@ -18,6 +19,11 @@ function getColumns(id: string, posteriorProbabilities: any) {
     {
       id: "leadVariant",
       label: "Lead Variant",
+      comparator: variantComparator,
+      sortable: true,
+      filterValue: ({ variant: v }) => (
+        `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`
+      ),
       renderCell: ({ variant }) => {
         if (!variant) return naLabel;
         const { id: variantId, referenceAllele, alternateAllele } = variant;
@@ -40,7 +46,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
       exportValue: ({ variant }) => variant?.id,
     },
     {
-      id: "study.studyid",
+      id: "study.studyId",
       label: "Study",
       renderCell: ({ study }) => {
         if (!study) return naLabel;
@@ -93,6 +99,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
         a?.pValueMantissa * 10 ** a?.pValueExponent -
           b?.pValueMantissa * 10 ** b?.pValueExponent,
       sortable: true,
+      filterValue: false,
       renderCell: ({ pValueMantissa, pValueExponent }) => {
         if (typeof pValueMantissa !== "number" ||
             typeof pValueExponent !== "number") return naLabel;
@@ -107,6 +114,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
     {
       id: "beta",
       label: "Beta",
+      filterValue: false,
       tooltip: "Beta with respect to the ALT allele",
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
@@ -116,6 +124,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
     {
       id: "posteriorProbability",
       label: "Posterior Probability",
+      filterValue: false,
       tooltip: "Probability the fixed page variant is in the credible set.",
       comparator: (rowA, rowB) => (
         posteriorProbabilities.get(rowA.locus) -
@@ -134,6 +143,7 @@ function getColumns(id: string, posteriorProbabilities: any) {
       label: "Credible Set Size",
       comparator: (a, b) => a.locus?.length - b.locus?.length,
       sortable: true,
+      filterValue: false,
       renderCell: ({ locus }) => locus?.length ?? naLabel,
       exportValue: ({ locus }) => locus?.length,
     }
@@ -184,6 +194,7 @@ function Body({ id, entity }: BodyProps) {
         return (
           <DataTable
             dataDownloader
+            showGlobalFilter
             sortBy="pValue"
             columns={getColumns(id, posteriorProbabilities)}
             rows={variant.credibleSets}
