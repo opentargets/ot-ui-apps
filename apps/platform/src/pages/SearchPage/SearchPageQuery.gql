@@ -21,8 +21,11 @@ query SearchPageQuery(
       object {
         ... on Variant {
           id
+          chromosome
+          position
           referenceAllele
           alternateAllele
+          dbXrefs
         }
 
         ... on Target {
@@ -54,8 +57,11 @@ query SearchPageQuery(
       object {
         ... on Variant {
           id
+          chromosome
+          position
           referenceAllele
           alternateAllele
+          dbXrefs
         }
         ... on Target {
           id

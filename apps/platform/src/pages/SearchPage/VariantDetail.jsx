@@ -6,9 +6,7 @@ import { Link, DisplayVariantId } from "ui";
 
 function VariantDetail({ data }) {
   return (
-    <CardContent
-
-    >
+    <CardContent>
       <Typography color="primary" variant="h5"
         sx={{
           whiteSpace: 'nowrap',
@@ -28,6 +26,19 @@ function VariantDetail({ data }) {
       <Typography color="primary">
         <FontAwesomeIcon icon={faMapPin} /> Variant
       </Typography>
+      <Typography variant="subtitle1">
+        Ensembl
+      </Typography>
+      <Typography variant="body2">
+        {/* !!! get rsid from dbxref - always present? */}
+      </Typography>
+      <Typography variant="subtitle1">
+        GRCh38
+      </Typography>
+      <Typography variant="body2">
+        {data.chromosome}:{data.position}
+      </Typography>
+      {/* !!!! include expandable alt and ref alleles here similar to page metadata */}
     </CardContent>
   );
 }
