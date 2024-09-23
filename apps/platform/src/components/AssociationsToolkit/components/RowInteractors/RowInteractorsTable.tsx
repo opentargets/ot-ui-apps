@@ -291,9 +291,13 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                   focusElement?.interactorsSource === INTERACTORS_SOURCES.INTACT ? (
                     <>
                       <InputLabel sx={{ fontSize: "0.85rem" }} htmlFor="threshold_slider">
-                        <Tooltip title="Interaction score help text" showHelpIcon>
-                          Interaction score:{" "}
+                        <Tooltip
+                          title="Filter the list by data source interaction score. Our default cutoff is 0.42 for IntAct and 0.75 for String"
+                          showHelpIcon
+                        >
+                          Interaction score
                         </Tooltip>
+                        :{" "}
                         <Box component="span" sx={{ width: "30px", display: "inline-block" }}>
                           {threshold}
                         </Box>
@@ -324,7 +328,9 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                     <Box
                       sx={{ width: "222px", height: "28px", display: "flex", alignItems: "center" }}
                     >
-                      <Typography variant="caption">No score threshold available</Typography>
+                      <Typography variant="caption">
+                        Interaction score filter not available
+                      </Typography>
                     </Box>
                   )}
                 </Box>
