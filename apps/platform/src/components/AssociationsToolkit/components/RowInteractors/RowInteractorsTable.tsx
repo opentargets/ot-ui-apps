@@ -8,7 +8,15 @@ import {
 import useRowInteractors from "./useRowInteractors";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableBody from "../Table/TableBody";
-import { Box, Button, InputLabel, NativeSelect, Skeleton, Typography, Slider } from "@mui/material";
+import {
+  Box,
+  InputLabel,
+  NativeSelect,
+  Skeleton,
+  Typography,
+  Slider,
+  IconButton,
+} from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -351,21 +359,21 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                 </strong>{" "}
                 of {data?.length || 0} target-disease associations
               </Typography>
-              <Box sx={{ display: "flex", gap: 2, ml: 3 }}>
-                <Button
-                  variant="text"
+              <Box sx={{ display: "flex", gap: 2, mx: 3 }}>
+                <IconButton
+                  disableRipple
                   onClick={() => interactorsTable.previousPage()}
                   disabled={!interactorsTable.getCanPreviousPage()}
                 >
-                  <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-                </Button>
-                <Button
-                  variant="text"
+                  <FontAwesomeIcon icon={faChevronLeft} size="2xs" />
+                </IconButton>
+                <IconButton
+                  disableRipple
                   onClick={() => interactorsTable.nextPage()}
                   disabled={!interactorsTable.getCanNextPage()}
                 >
-                  <FontAwesomeIcon icon={faChevronRight} size="sm" />
-                </Button>
+                  <FontAwesomeIcon icon={faChevronRight} size="2xs" />
+                </IconButton>
               </Box>
             </Box>
           </Box>
