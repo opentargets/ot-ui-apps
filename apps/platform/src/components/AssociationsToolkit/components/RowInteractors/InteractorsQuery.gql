@@ -3,13 +3,17 @@ query InteractionsSectionQuery(
   $sourceDatabase: String
   $index: Int = 0
   $size: Int = 10
+  $scoreThreshold: Float
 ) {
   target(ensemblId: $ensgId) {
     id
     approvedName
     approvedSymbol
-
-    interactions(sourceDatabase: $sourceDatabase, page: { index: $index, size: $size }) {
+    interactions(
+      sourceDatabase: $sourceDatabase
+      scoreThreshold: $scoreThreshold
+      page: { index: $index, size: $size }
+    ) {
       count
       rows {
         intA

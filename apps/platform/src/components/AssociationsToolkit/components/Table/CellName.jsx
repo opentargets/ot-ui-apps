@@ -11,6 +11,7 @@ import {
   Box,
   Fade,
   Skeleton,
+  useMediaQuery,
 } from "@mui/material";
 import {
   faThumbTack,
@@ -94,6 +95,7 @@ function CellName({ cell, colorScale }) {
   const scoreIndicatorColor = colorScale(score);
   const [openContext, setOpenContext] = useState(false);
   const dispatch = useAssociationsFocusDispatch();
+  const isSmallScreen = useMediaQuery("(max-width:1080px)");
 
   const isPinned = pinnedEntries.find(e => e === id);
   const profileURL = `/${entityToGet}/${id}`;
@@ -195,7 +197,7 @@ function CellName({ cell, colorScale }) {
   return (
     <NameContainer>
       <TextContainer onClick={handleToggle}>
-        <Typography width="150px" noWrap variant="body2">
+        <Typography sx={{ width: isSmallScreen ? "90px" : "150px" }} noWrap variant="body2">
           {name}
         </Typography>
       </TextContainer>

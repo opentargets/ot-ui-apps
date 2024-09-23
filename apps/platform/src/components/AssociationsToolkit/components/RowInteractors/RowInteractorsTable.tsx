@@ -8,47 +8,118 @@ import {
 import useRowInteractors from "./useRowInteractors";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableBody from "../Table/TableBody";
-import { Box, Button, InputLabel, NativeSelect, Skeleton, Typography } from "@mui/material";
+import {
+  Box,
+  InputLabel,
+  NativeSelect,
+  Skeleton,
+  Typography,
+  Slider,
+  IconButton,
+} from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import {
+  faClose,
+  faChevronLeft,
+  faChevronRight,
+  faBezierCurve,
+} from "@fortawesome/free-solid-svg-icons";
+import { styled } from "@mui/material/styles";
+import { useState, useEffect, ReactElement } from "react";
 import {
   FocusActionType,
-  InteractorsSource,
   useAssociationsFocus,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
-import { ENTITIES, INTERACTORS_SOURCES, TABLE_PREFIX } from "../../utils";
+import { ENTITIES, INTERACTORS_SOURCES, TABLE_PREFIX, InteractorsSource } from "../../utils";
+import { Tooltip } from "ui";
+
+type ThresholdState = number | null | undefined;
+
+const INTERACTORS_SOURCE_LABEL = (
+  assoc: number,
+  interactors: number,
+  source: InteractorsSource,
+  targetName: string
+): ReactElement => {
+  const interactorTypeMap = {
+    [INTERACTORS_SOURCES.REACTOME]: "pathway-based",
+    [INTERACTORS_SOURCES.INTACT]: "binary physical",
+    [INTERACTORS_SOURCES.STRING]: "functional",
+    [INTERACTORS_SOURCES.SIGNOR]: "directional, causal",
+  };
+
+  const interactorType = interactorTypeMap[source];
+
+  return (
+    <>
+      <b>{assoc}</b> target-disease association{assoc === 1 ? "" : "s"} found for{" "}
+      <b>{interactors}</b> {interactorType} interactor{interactors === 1 ? "" : "s"} of{" "}
+      <b>{targetName}</b>
+    </>
+  );
+};
 
 const btnStyles = {
-  width: "18px",
-  height: "18px",
+  height: "45px",
+  width: "35px",
   padding: "2px",
   display: "flex",
-  cursor: "pointer",
-  borderRadius: "50%",
   alignItems: "center",
   justifyContent: "center",
-  background: grey[400],
+  transition: "background 500ms",
+};
+
+const leftBTNStyles = {
+  ...btnStyles,
+  background: grey[300],
+  marginRight: 2,
+};
+
+const rightBTNStyles = {
+  ...btnStyles,
+  marginLeft: 2,
+  borderLeft: "1px solid",
+  borderColor: grey[400],
+  cursor: "pointer",
   "&:hover": {
-    background: grey[500],
+    background: grey[300],
+    color: "#000",
   },
 };
+
+const OTSlider = styled(Slider)({
+  color: grey[600],
+  root: {
+    padding: "0 10px !important",
+  },
+  mark: {
+    backgroundColor: "#b8b8b8",
+    height: 1,
+  },
+  ".MuiSlider-valueLabel": {
+    bottom: "-60px",
+    top: "none",
+  },
+  ".MuiSlider-valueLabel:before": {
+    display: "none",
+  },
+});
 
 function RowLine() {
   return (
     <Box
       sx={{
         left: "10px",
-        width: "30px",
-        bottom: "20px",
+        width: "20px",
+        bottom: "24px",
         height: "6000px",
         position: "absolute",
         background: "transparent",
         borderLeft: 1.5,
         borderBottom: 1.5,
-        borderColor: grey[300],
+        borderColor: grey[400],
       }}
     ></Box>
   );
@@ -63,7 +134,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     entityToGet,
   } = useAotfContext();
 
-  // const label = row.original[entityToGet][nameProperty];
+  const label = row.original.targetSymbol;
 
   const focusState = useAssociationsFocus();
   const dispatch = useAssociationsFocusDispatch();
@@ -77,6 +148,12 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     pageSize: 10,
   });
 
+  const [threshold, setThreshold] = useState<ThresholdState>(focusElement?.interactorsThreshold);
+
+  const handleChange = (_: Event, newValue: number | number[]) => {
+    setThreshold(newValue);
+  };
+
   const onClickCloseInteractors = () => {
     dispatch({
       type: FocusActionType.SET_INTERACTORS_OFF,
@@ -88,6 +165,13 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     dispatch({
       type: FocusActionType.SET_INTERACTORS_SOURCE,
       focus: { row: row.id, table: parentTable, source: newSource },
+    });
+  };
+
+  const onInteractorsSourceThresholdChange = (newThreshold: InteractorsSource) => {
+    dispatch({
+      type: FocusActionType.SET_INTERACTORS_THRESHOLD,
+      focus: { row: row.id, table: parentTable, interactorsThreshold: newThreshold },
     });
   };
 
@@ -106,11 +190,16 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
       entity: ENTITIES.DISEASE,
       diseaseId,
       sortBy: sorting[0].id,
+      scoreThreshold: focusElement?.interactorsThreshold,
     },
   });
 
+  useEffect(() => {
+    setThreshold(focusElement?.interactorsThreshold);
+  }, [focusElement]);
+
   const interactorsTable = useReactTable({
-    data: data,
+    data,
     columns,
     state: {
       sorting,
@@ -131,82 +220,170 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
 
   return (
     <Box sx={{ pb: 2, background: grey[100], position: "relative" }}>
-      <Box sx={{ position: "relative", pt: 1 }}>
+      <Box sx={{ position: "relative", pt: 2 }}>
         <RowLine />
         <Box
           sx={{
-            justifyContent: "space-between",
+            // justifyContent: "space-between",
             boxSizing: "border-box",
             alignItems: "center",
             display: "flex",
+            border: "1px solid",
             borderColor: grey[400],
-            background: grey[300],
-            px: 2,
-            py: 0.5,
-            mb: 1,
-            ml: 5,
+            position: "relative",
+            mb: 2,
+            ml: 3,
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Box onClick={() => onClickCloseInteractors()} sx={btnStyles}>
-              <FontAwesomeIcon size="sm" icon={faClose} />
-            </Box>
-            <Typography variant="body2" sx={{ fontWeight: "bold", mr: 2 }}>
+          <Box sx={leftBTNStyles}>
+            <FontAwesomeIcon size="sm" icon={faBezierCurve} />
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
+            <Typography variant="controlHeader" sx={{ mr: 2 }}>
               Interactors
             </Typography>
-
-            <Box display="flex" alignItems="center" gap={1}>
-              <InputLabel sx={{ fontSize: "0.85rem" }} htmlFor="intaractor_data_source">
-                Source:
-              </InputLabel>
-              <NativeSelect
-                id="intaractor_data_source"
-                onChange={e => {
-                  onInteractorsSourceChange(e.target.value);
-                }}
-                variant="standard"
-                value={focusElement?.interactorsSource}
-                sx={{
-                  fontSize: "0.85rem",
-                  boxShadow: "none",
-                  p: 0,
-                  ".MuiNativeSelect-select": { border: 0 },
-                }}
-              >
-                <option value={INTERACTORS_SOURCES.REACTOME}>Reactome</option>
-                <option value={INTERACTORS_SOURCES.INTACT}>IntAct</option>
-                <option value={INTERACTORS_SOURCES.SIGNOR}>Signor</option>
-                <option value={INTERACTORS_SOURCES.STRING}>String</option>
-              </NativeSelect>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              gap={1}
+              width="100%"
+            >
+              {loading ? (
+                <Skeleton width={500} />
+              ) : (
+                <Typography variant="body2" sx={{ mr: 4 }}>
+                  {INTERACTORS_SOURCE_LABEL(
+                    data?.length,
+                    interactorsMetadata?.count,
+                    focusElement?.interactorsSource,
+                    label
+                  )}
+                </Typography>
+              )}
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Box display="flex" alignItems="center" gap={1}>
+                  <InputLabel sx={{ fontSize: "0.85rem" }} htmlFor="intaractor_data_source">
+                    Source:
+                  </InputLabel>
+                  <NativeSelect
+                    id="intaractor_data_source"
+                    onChange={e => {
+                      onInteractorsSourceChange(e.target.value);
+                    }}
+                    variant="standard"
+                    value={focusElement?.interactorsSource}
+                    sx={{
+                      fontSize: "0.85rem",
+                      boxShadow: "none",
+                      p: 0,
+                      ".MuiNativeSelect-select": { border: 0 },
+                    }}
+                  >
+                    <option value={INTERACTORS_SOURCES.REACTOME}>Reactome</option>
+                    <option value={INTERACTORS_SOURCES.INTACT}>IntAct</option>
+                    <option value={INTERACTORS_SOURCES.SIGNOR}>Signor</option>
+                    <option value={INTERACTORS_SOURCES.STRING}>String</option>
+                  </NativeSelect>
+                </Box>
+                <Box sx={{ display: "flex", ml: 1, alignItems: "center" }}>
+                  {focusElement?.interactorsSource === INTERACTORS_SOURCES.STRING ||
+                  focusElement?.interactorsSource === INTERACTORS_SOURCES.INTACT ? (
+                    <>
+                      <InputLabel sx={{ fontSize: "0.85rem" }} htmlFor="threshold_slider">
+                        <Tooltip
+                          title="Filter the list by data source interaction score. Our default cutoff is 0.42 for IntAct and 0.75 for String"
+                          showHelpIcon
+                        >
+                          Interaction score
+                        </Tooltip>
+                        :{" "}
+                        <Box component="span" sx={{ width: "30px", display: "inline-block" }}>
+                          {threshold}
+                        </Box>
+                      </InputLabel>
+                      <Box width={75} sx={{ display: "flex", ml: 1 }}>
+                        <OTSlider
+                          id="threshold_slider"
+                          value={threshold}
+                          onChange={handleChange}
+                          onChangeCommitted={(_, newValue) =>
+                            onInteractorsSourceThresholdChange(newValue)
+                          }
+                          aria-label="source threshold"
+                          size="small"
+                          min={0}
+                          max={1.0}
+                          step={0.01}
+                          valueLabelDisplay="off"
+                          disabled={
+                            focusElement?.interactorsSource === INTERACTORS_SOURCES.SIGNOR ||
+                            focusElement?.interactorsSource === INTERACTORS_SOURCES.REACTOME ||
+                            loading
+                          }
+                        />
+                      </Box>
+                    </>
+                  ) : (
+                    <Box
+                      sx={{ width: "222px", height: "28px", display: "flex", alignItems: "center" }}
+                    >
+                      <Typography variant="caption">
+                        Interaction score filter not available
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+              </Box>
             </Box>
-            {loading ? (
-              <Skeleton width={265} />
-            ) : (
-              <Typography variant="caption" sx={{ ml: 2 }}>
-                <b>{data?.length}</b> association
-                {data.length > 1 ? "s" : ""} found in <b>{interactorsMetadata?.count || 0}</b>{" "}
-                target interactors
-              </Typography>
-            )}
           </Box>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <Button
-              onClick={() => interactorsTable.previousPage()}
-              disabled={!interactorsTable.getCanPreviousPage()}
-            >
-              <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-            </Button>
-            <Button
-              onClick={() => interactorsTable.nextPage()}
-              disabled={!interactorsTable.getCanNextPage()}
-            >
-              <FontAwesomeIcon icon={faChevronRight} size="sm" />
-            </Button>
-          </Box>
+          <Tooltip title={`Close ${label} interactors`}>
+            <Box onClick={() => onClickCloseInteractors()} sx={rightBTNStyles}>
+              <FontAwesomeIcon size="sm" icon={faClose} />
+            </Box>
+          </Tooltip>
         </Box>
       </Box>
       <Box>
         <TableBody noInteractors core={interactorsTable} cols={cols} />
+        {data.length > 0 ? (
+          <Box sx={{ width: "100%", display: "flex", justifyContent: "end", mt: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography variant="body2">
+                <strong>
+                  {interactorsTable.getState().pagination.pageIndex *
+                    interactorsTable.getState().pagination.pageSize +
+                    1}
+                </strong>
+                -
+                <strong>
+                  {Math.min(
+                    (interactorsTable.getState().pagination.pageIndex + 1) *
+                      interactorsTable.getState().pagination.pageSize,
+                    data?.length || 0
+                  )}
+                </strong>{" "}
+                of {data?.length || 0} target-disease associations
+              </Typography>
+              <Box sx={{ display: "flex", gap: 2, mx: 3 }}>
+                <IconButton
+                  disableRipple
+                  onClick={() => interactorsTable.previousPage()}
+                  disabled={!interactorsTable.getCanPreviousPage()}
+                >
+                  <FontAwesomeIcon icon={faChevronLeft} size="2xs" />
+                </IconButton>
+                <IconButton
+                  disableRipple
+                  onClick={() => interactorsTable.nextPage()}
+                  disabled={!interactorsTable.getCanNextPage()}
+                >
+                  <FontAwesomeIcon icon={faChevronRight} size="2xs" />
+                </IconButton>
+              </Box>
+            </Box>
+          </Box>
+        ) : null}
       </Box>
     </Box>
   );

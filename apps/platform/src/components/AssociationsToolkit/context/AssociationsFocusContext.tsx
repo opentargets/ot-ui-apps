@@ -1,9 +1,13 @@
 import { createContext, useContext, useReducer, Dispatch, ReactElement, useEffect } from "react";
 import useAotfContext from "../hooks/useAotfContext";
-import { INTERACTORS_SOURCES, TABLE_PREFIX } from "../utils";
+import {
+  TABLE_PREFIX,
+  INTERACTORS_SOURCES,
+  INTERACTORS_SOURCE_THRESHOLD,
+  InteractorsSource,
+} from "../utils";
 
 export type FocusElementTable = "core" | "pinned" | "upload";
-export type InteractorsSource = "intac" | "signor" | "reactome" | "string";
 
 export type FocusElement = {
   table: FocusElementTable;
@@ -13,6 +17,7 @@ export type FocusElement = {
   interactors: boolean;
   section: null | [string, string];
   interactorsSection: null | [string, string];
+  interactorsThreshold: number | null;
 };
 
 export type FocusState = FocusElement[];
@@ -22,6 +27,7 @@ export enum FocusActionType {
   SET_INTERACTORS_ON = "SET_INTERACTORS_ON",
   SET_INTERACTORS_OFF = "SET_INTERACTORS_OFF",
   SET_INTERACTORS_SECTION = "SET_INTERACTORS_SECTION",
+  SET_INTERACTORS_THRESHOLD = "SET_INTERACTORS_THRESHOLD",
   CLEAR_INTERACTORS_SECTION = "CLEAR_INTERACTORS_SECTION",
   SET_FOCUS_SECTION = "SET_FOCUS_SECTION",
   CLEAR_FOCUS_CONTEXT_MENU = "CLEAR_FOCUS_CONTEXT_MENU",
@@ -57,16 +63,25 @@ export type FocusAction =
         section: [string, string];
         interactorsRow: string;
       };
+    }
+  | {
+      type: FocusActionType.SET_INTERACTORS_THRESHOLD;
+      focus: {
+        row: string;
+        table: FocusElementTable;
+        interactorsThreshold: number;
+      };
     };
 
 const defaultFocusElement: FocusElement = {
   table: TABLE_PREFIX.CORE,
   row: "",
+  section: null,
   interactors: false,
   interactorsRow: null,
-  interactorsSource: INTERACTORS_SOURCES.REACTOME,
-  section: null,
   interactorsSection: null,
+  interactorsSource: INTERACTORS_SOURCES.INTACT,
+  interactorsThreshold: INTERACTORS_SOURCE_THRESHOLD[INTERACTORS_SOURCES.INTACT],
 };
 
 const AssociationsFocusContext = createContext<FocusState>([]);
@@ -321,7 +336,23 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
         if (element.table === action.focus.table && element.row === action.focus.row) {
           acc.push({
             ...element,
+            interactorsSection: null,
             interactorsSource: action.focus.source,
+            interactorsThreshold: INTERACTORS_SOURCE_THRESHOLD[action.focus.source],
+          });
+          return acc;
+        }
+        acc.push(element);
+        return acc;
+      }, []);
+    }
+
+    case FocusActionType.SET_INTERACTORS_THRESHOLD: {
+      return focusState.reduce<FocusState>((acc, element) => {
+        if (element.table === action.focus.table && element.row === action.focus.row) {
+          acc.push({
+            ...element,
+            interactorsThreshold: action.focus.interactorsThreshold,
           });
           return acc;
         }
