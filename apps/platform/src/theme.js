@@ -21,7 +21,8 @@ const theme = {
       fontSize: ".80rem",
     },
     controlHeader: {
-      fontSize: "0.9rem",
+      fontSize: "1rem",
+      fontWeight: 700,
     },
   },
   palette: {

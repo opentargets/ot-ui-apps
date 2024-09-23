@@ -67,7 +67,8 @@ function TableBody({ core, cols, noInteractors }) {
 
   if (prefix === TABLE_PREFIX.PINNING && rows.length < 1) return <></>;
 
-  if (prefix === TABLE_PREFIX.INTERACTORS) if (rows.length < 1) return <EmptyMessage />;
+  if (prefix === TABLE_PREFIX.INTERACTORS || prefix === TABLE_PREFIX.CORE)
+    if (rows.length < 1) return <EmptyMessage />;
 
   const nameProperty = rowNameProperty[entity];
   const highLevelHeaders = core.getHeaderGroups()[0].headers;

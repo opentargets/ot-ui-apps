@@ -336,6 +336,7 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
         if (element.table === action.focus.table && element.row === action.focus.row) {
           acc.push({
             ...element,
+            interactorsSection: null,
             interactorsSource: action.focus.source,
             interactorsThreshold: INTERACTORS_SOURCE_THRESHOLD[action.focus.source],
           });
