@@ -1,32 +1,40 @@
 import { faChartPie, faTableColumns } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { ReactElement, useState } from "react";
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { MouseEvent, ReactElement, useState } from "react";
 import { FontAwesomeIconPadded } from "../OtTable/otTableLayout";
+import { VIEW } from "../../constants";
+import Tooltip from "../Tooltip";
 
-export const VIEW = {
-  table: "table",
-  chart: "chart",
+type SectionViewToggleProps = {
+  defaultValue: string;
+  viewChange: (s: string) => void;
 };
 
-function SectionViewToggle({ viewChange }): ReactElement {
-  const [alignment, setAlignment] = useState(VIEW.table);
+function SectionViewToggle({
+  defaultValue = VIEW.table,
+  viewChange,
+}: SectionViewToggleProps): ReactElement {
+  const [alignment, setAlignment] = useState(defaultValue);
 
-  const handleAlignment = (event, newAlignment) => {
-    setAlignment(newAlignment);
-    viewChange(newAlignment);
+  const handleAlignment = (event: MouseEvent, newAlignment: string) => {
+    if (newAlignment) {
+      setAlignment(newAlignment);
+      viewChange(newAlignment);
+    }
   };
 
   return (
     <ToggleButtonGroup value={alignment} exclusive onChange={handleAlignment}>
-      <ToggleButton value={VIEW.table} aria-label="table-view">
-        <FontAwesomeIconPadded icon={faTableColumns} />
-        <Box>Table View</Box>
-      </ToggleButton>
-      <ToggleButton value={VIEW.chart} aria-label="chart-view">
-        <FontAwesomeIconPadded icon={faChartPie} />
-        <Box>Chart View</Box>
-      </ToggleButton>
+      <Tooltip title={`${VIEW.table} view`} style="">
+        <ToggleButton value={VIEW.table} aria-label="table-view">
+          <FontAwesomeIconPadded icon={faTableColumns} />
+        </ToggleButton>
+      </Tooltip>
+      <Tooltip title={`${VIEW.chart} view`} style="">
+        <ToggleButton value={VIEW.chart} aria-label="chart-view">
+          <FontAwesomeIconPadded icon={faChartPie} />
+        </ToggleButton>
+      </Tooltip>
     </ToggleButtonGroup>
   );
 }
