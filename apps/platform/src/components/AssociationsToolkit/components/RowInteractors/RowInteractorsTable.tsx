@@ -40,8 +40,7 @@ type ThresholdState = number | null | undefined;
 const INTERACTORS_SOURCE_LABEL = (
   assoc: number,
   interactors: number,
-  source: InteractorsSource,
-  targetName: string
+  source: InteractorsSource
 ): ReactElement => {
   const interactorTypeMap = {
     [INTERACTORS_SOURCES.REACTOME]: "pathway-based",
@@ -55,8 +54,7 @@ const INTERACTORS_SOURCE_LABEL = (
   return (
     <>
       <b>{assoc}</b> target-disease association{assoc === 1 ? "" : "s"} found for{" "}
-      <b>{interactors}</b> {interactorType} interactor{interactors === 1 ? "" : "s"} of{" "}
-      <b>{targetName}</b>
+      <b>{interactors}</b> {interactorType} interactor{interactors === 1 ? "" : "s"}
     </>
   );
 };
@@ -73,18 +71,15 @@ const btnStyles = {
 
 const leftBTNStyles = {
   ...btnStyles,
-  background: grey[300],
-  marginRight: 2,
+  marginRight: 1,
 };
 
 const rightBTNStyles = {
   ...btnStyles,
-  marginLeft: 2,
-  borderLeft: "1px solid",
+  marginRight: 2,
   borderColor: grey[400],
   cursor: "pointer",
   "&:hover": {
-    background: grey[300],
     color: "#000",
   },
 };
@@ -106,24 +101,6 @@ const OTSlider = styled(Slider)({
     display: "none",
   },
 });
-
-function RowLine() {
-  return (
-    <Box
-      sx={{
-        left: "10px",
-        width: "20px",
-        bottom: "24px",
-        height: "6000px",
-        position: "absolute",
-        background: "transparent",
-        borderLeft: 1.5,
-        borderBottom: 1.5,
-        borderColor: grey[400],
-      }}
-    ></Box>
-  );
-}
 
 function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
   const {
@@ -221,14 +198,11 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
   return (
     <Box sx={{ pb: 2, background: grey[100], position: "relative" }}>
       <Box sx={{ position: "relative", pt: 2 }}>
-        <RowLine />
         <Box
           sx={{
-            // justifyContent: "space-between",
             boxSizing: "border-box",
             alignItems: "center",
             display: "flex",
-            border: "1px solid",
             borderColor: grey[400],
             position: "relative",
             mb: 2,
@@ -236,31 +210,13 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
           }}
         >
           <Box sx={leftBTNStyles}>
-            <FontAwesomeIcon size="sm" icon={faBezierCurve} />
+            <FontAwesomeIcon icon={faBezierCurve} />
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
             <Typography variant="controlHeader" sx={{ mr: 2 }}>
-              Interactors
+              Interactors for {label}
             </Typography>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              gap={1}
-              width="100%"
-            >
-              {loading ? (
-                <Skeleton width={500} />
-              ) : (
-                <Typography variant="body2" sx={{ mr: 4 }}>
-                  {INTERACTORS_SOURCE_LABEL(
-                    data?.length,
-                    interactorsMetadata?.count,
-                    focusElement?.interactorsSource,
-                    label
-                  )}
-                </Typography>
-              )}
+            <Box display="flex" alignItems="center" justifyContent="space-between" gap={1} flex={1}>
               <Box sx={{ display: "flex", gap: 2 }}>
                 <Box display="flex" alignItems="center" gap={1}>
                   <InputLabel sx={{ fontSize: "0.85rem" }} htmlFor="intaractor_data_source">
@@ -335,11 +291,23 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                   )}
                 </Box>
               </Box>
+              {loading ? (
+                <Skeleton width={500} />
+              ) : (
+                <Typography variant="body2" sx={{ mr: 4 }}>
+                  {INTERACTORS_SOURCE_LABEL(
+                    data?.length,
+                    interactorsMetadata?.count,
+                    focusElement?.interactorsSource,
+                    label
+                  )}
+                </Typography>
+              )}
             </Box>
           </Box>
           <Tooltip title={`Close ${label} interactors`}>
             <Box onClick={() => onClickCloseInteractors()} sx={rightBTNStyles}>
-              <FontAwesomeIcon size="sm" icon={faClose} />
+              <FontAwesomeIcon size="xl" icon={faClose} />
             </Box>
           </Tooltip>
         </Box>

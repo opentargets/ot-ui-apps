@@ -160,6 +160,8 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
               // same row active  -> update active section
               acc.push({
                 ...element,
+                interactorsRow: null,
+                interactorsSection: null,
                 section: action.focus.section,
               });
               return acc;
@@ -170,6 +172,8 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
             acc.push({
               ...element,
               section: null,
+              interactorsSection: null,
+              interactorsRow: null,
             });
             return acc;
           }
@@ -308,6 +312,7 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
               ...element,
               interactorsRow: action.focus.interactorsRow,
               interactorsSection: action.focus.section,
+              section: null,
             });
             return acc;
           }
@@ -320,8 +325,6 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
               interactorsRow: null,
               interactorsSection: null,
             });
-          } else {
-            acc.push({ ...element });
           }
           return acc;
         } else {
