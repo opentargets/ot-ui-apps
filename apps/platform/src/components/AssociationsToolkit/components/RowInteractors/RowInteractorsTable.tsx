@@ -102,24 +102,6 @@ const OTSlider = styled(Slider)({
   },
 });
 
-function RowLine() {
-  return (
-    <Box
-      sx={{
-        left: "10px",
-        width: "20px",
-        bottom: "24px",
-        height: "6000px",
-        position: "absolute",
-        background: "transparent",
-        borderLeft: 1.5,
-        borderBottom: 1.5,
-        borderColor: grey[400],
-      }}
-    ></Box>
-  );
-}
-
 function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
   const {
     id: diseaseId,

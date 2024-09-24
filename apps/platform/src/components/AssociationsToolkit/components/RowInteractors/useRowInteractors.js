@@ -96,12 +96,17 @@ function useRowInteractors({
         interactorsAssociationsRequest.data
       );
 
+      const interactorsAssociationsWithScore = addInteractorScore(
+        interactorsAssociations,
+        targetRowInteractorsRequest.data.target.interactions.rows
+      );
+
       setState({
         interactorsMetadata: targetRowInteractorsRequest.data.target.interactions,
         loading: false,
         initialLoading: false,
-        count: interactorsAssociations.length,
-        data: interactorsAssociations,
+        count: interactorsAssociationsWithScore.length,
+        data: interactorsAssociationsWithScore,
       });
     }
     if (isCurrent) getInteractors();
@@ -109,6 +114,14 @@ function useRowInteractors({
   }, [source, sortBy, scoreThreshold]);
 
   return state;
+}
+
+function addInteractorScore(associationsData, interactorsMetaData) {
+  return associationsData.map(element => {
+    const foundInteractor = interactorsMetaData.find(x => x.targetB?.id === element.id);
+    if (!foundInteractor) return { ...element, interactorScore: 0 };
+    return { ...element, interactorScore: foundInteractor.score };
+  });
 }
 
 export default useRowInteractors;
