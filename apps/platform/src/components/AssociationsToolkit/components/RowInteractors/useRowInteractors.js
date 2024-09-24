@@ -66,7 +66,14 @@ function useRowInteractors({
         },
       });
 
-      if (!targetRowInteractorsRequest.data) {
+      if (!targetRowInteractorsRequest?.data?.target?.interactions?.rows) {
+        setState({
+          interactorsMetadata: { count: 0 },
+          loading: false,
+          initialLoading: false,
+          count: 0,
+          data: [],
+        });
         return;
       }
 

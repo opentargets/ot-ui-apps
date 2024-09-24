@@ -209,6 +209,7 @@ function CellName({ cell, colorScale }) {
               {" "}
               -
               <Box
+                component="span"
                 sx={{ fontSize: "0.8rem", width: "35px", display: "inline-block", fontWeight: 800 }}
               >
                 {cell.row.original.interactorScore.toFixed(2)}
