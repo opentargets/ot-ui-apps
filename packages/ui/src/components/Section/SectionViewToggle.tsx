@@ -1,16 +1,17 @@
 import { faChartPie, faTableColumns } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { ReactElement, useState } from "react";
 import { FontAwesomeIconPadded } from "../OtTable/otTableLayout";
 import { VIEW } from "../../constants";
 
-function SectionViewToggle({ viewChange }): ReactElement {
-  const [alignment, setAlignment] = useState(VIEW.table);
+function SectionViewToggle({ defaultValue = VIEW.table, viewChange }): ReactElement {
+  const [alignment, setAlignment] = useState(defaultValue);
 
   const handleAlignment = (event, newAlignment) => {
-    setAlignment(newAlignment);
-    viewChange(newAlignment);
+    if (newAlignment) {
+      setAlignment(newAlignment);
+      viewChange(newAlignment);
+    }
   };
 
   return (

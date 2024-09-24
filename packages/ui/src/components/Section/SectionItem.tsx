@@ -17,8 +17,24 @@ import sectionStyles from "./sectionStyles";
 import { createShortName } from "../Summary/utils";
 import PartnerLockIcon from "../PartnerLockIcon";
 import SectionViewToggle from "./SectionViewToggle";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { VIEW } from "../../constants";
+
+type SectionItemProps = {
+  definition: Record<string, unknown>;
+  request: Record<string, unknown>;
+  renderDescription: (data) => void;
+  renderChart: (data) => void | null;
+  renderBody: (data) => void;
+  // check tags
+  tags: string[];
+  chipText: string;
+  entity: string;
+  showEmptySection: boolean;
+  // check use
+  showContentLoading: boolean;
+  defaultView: string;
+};
 
 function SectionItem({
   definition,
@@ -31,12 +47,13 @@ function SectionItem({
   showEmptySection = false,
   showContentLoading = false,
   renderChart,
-}) {
+  defaultView = VIEW.table,
+}: SectionItemProps): ReactNode {
   const classes = sectionStyles();
   const { loading, error, data } = request;
   const shortName = createShortName(definition);
   let hasData = false;
-  const [selectedView, setSelectedView] = useState(VIEW.table);
+  const [selectedView, setSelectedView] = useState(defaultView);
 
   if (data && entity && data[entity]) {
     hasData = definition.hasData(data[entity]);
@@ -55,17 +72,9 @@ function SectionItem({
         <Element name={definition.id}>
           <Card elevation={0} variant="outlined">
             <ErrorBoundary>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 2,
-                  p: 2,
-                }}
-              >
+              <Box className={classes.cardHeaderContainer}>
+                {/* AVATAR */}
                 <Box>
-                  {" "}
                   <Avatar
                     className={classNames(classes.avatar, classes.avatarHasData, {
                       [classes.avatarError]: error,
@@ -74,22 +83,21 @@ function SectionItem({
                     {shortName}
                   </Avatar>
                 </Box>
+                {/* HEADER, SUB-HEADER & CHIP */}
                 <Box sx={{ flex: 1 }}>
-                  <Box>
-                    <Box
-                      className={classNames(classes.title, classes.titleHasData, {
-                        [classes.titleError]: error,
-                      })}
-                      sx={{ display: "flex", gap: 2, alignItems: "center", h: 1 }}
-                    >
-                      {definition.isPrivate && <PartnerLockIcon />} {definition.name}
-                      {chipText && (
-                        <Box sx={{ typography: "caption" }} className={classes.chip}>
-                          {chipText}
-                        </Box>
-                      )}
-                    </Box>
+                  <Box
+                    className={classNames(classes.title, classes.titleHasData, {
+                      [classes.titleError]: error,
+                    })}
+                  >
+                    {definition.isPrivate && <PartnerLockIcon />} {definition.name}
+                    {chipText && (
+                      <Box sx={{ typography: "caption" }} className={classes.chip}>
+                        {chipText}
+                      </Box>
+                    )}
                   </Box>
+                  {/* CHART VIEW SWITCH */}
                   <Box>
                     <Typography
                       className={classNames(classes.description, classes.descriptionHasData, {
@@ -101,16 +109,20 @@ function SectionItem({
                     </Typography>
                   </Box>
                 </Box>
-                <Box>{renderChart && <SectionViewToggle viewChange={setSelectedView} />}</Box>
+                <Box>
+                  {renderChart && (
+                    <SectionViewToggle defaultValue={defaultView} viewChange={setSelectedView} />
+                  )}
+                </Box>
               </Box>
               <Divider />
               <CardContent className={classes.cardContent}>
-                {/* {loading && (
+                {loading && (
                   <LinearProgress
                     aria-describedby="section loading progress bar"
-                    aria-busy={loading}
+                    aria-busy={true}
                   />
-                )} */}
+                )}
                 {error && <SectionError error={error} />}
                 {!loading && hasData && getSelectedView()}
                 {!loading && !hasData && showEmptySection && (
