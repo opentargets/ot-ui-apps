@@ -1,13 +1,22 @@
 import { faChartPie, faTableColumns } from "@fortawesome/free-solid-svg-icons";
-import { Box, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { ReactElement, useState } from "react";
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { MouseEvent, ReactElement, useState } from "react";
 import { FontAwesomeIconPadded } from "../OtTable/otTableLayout";
 import { VIEW } from "../../constants";
+import Tooltip from "../Tooltip";
 
-function SectionViewToggle({ defaultValue = VIEW.table, viewChange }): ReactElement {
+type SectionViewToggleProps = {
+  defaultValue: string;
+  viewChange: (s: string) => void;
+};
+
+function SectionViewToggle({
+  defaultValue = VIEW.table,
+  viewChange,
+}: SectionViewToggleProps): ReactElement {
   const [alignment, setAlignment] = useState(defaultValue);
 
-  const handleAlignment = (event, newAlignment) => {
+  const handleAlignment = (event: MouseEvent, newAlignment: string) => {
     if (newAlignment) {
       setAlignment(newAlignment);
       viewChange(newAlignment);
@@ -16,14 +25,16 @@ function SectionViewToggle({ defaultValue = VIEW.table, viewChange }): ReactElem
 
   return (
     <ToggleButtonGroup value={alignment} exclusive onChange={handleAlignment}>
-      <ToggleButton value={VIEW.table} aria-label="table-view">
-        <FontAwesomeIconPadded icon={faTableColumns} />
-        <Box>Table View</Box>
-      </ToggleButton>
-      <ToggleButton value={VIEW.chart} aria-label="chart-view">
-        <FontAwesomeIconPadded icon={faChartPie} />
-        <Box>Chart View</Box>
-      </ToggleButton>
+      <Tooltip title={`${VIEW.table} view`} style="">
+        <ToggleButton value={VIEW.table} aria-label="table-view">
+          <FontAwesomeIconPadded icon={faTableColumns} />
+        </ToggleButton>
+      </Tooltip>
+      <Tooltip title={`${VIEW.chart} view`} style="">
+        <ToggleButton value={VIEW.chart} aria-label="chart-view">
+          <FontAwesomeIconPadded icon={faChartPie} />
+        </ToggleButton>
+      </Tooltip>
     </ToggleButtonGroup>
   );
 }

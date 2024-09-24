@@ -20,12 +20,20 @@ import SectionViewToggle from "./SectionViewToggle";
 import { ReactNode, useState } from "react";
 import { VIEW } from "../../constants";
 
+type definitionType = {
+  id: string;
+  name: string;
+  shortName?: string;
+  hasData: any;
+  isPrivate: boolean;
+};
+
 type SectionItemProps = {
-  definition: Record<string, unknown>;
+  definition: definitionType;
   request: Record<string, unknown>;
-  renderDescription: (data) => void;
-  renderChart: (data) => void | null;
-  renderBody: (data) => void;
+  renderDescription: (data: any) => void;
+  renderChart: (data: any) => void | null;
+  renderBody: (data: any) => void;
   // check tags
   tags: string[];
   chipText: string;
@@ -74,41 +82,38 @@ function SectionItem({
             <ErrorBoundary>
               <Box className={classes.cardHeaderContainer}>
                 {/* AVATAR */}
-                <Box>
-                  <Avatar
-                    className={classNames(classes.avatar, classes.avatarHasData, {
-                      [classes.avatarError]: error,
-                    })}
-                  >
-                    {shortName}
-                  </Avatar>
-                </Box>
+                <Avatar
+                  className={classNames(classes.avatar, classes.avatarHasData, {
+                    [classes.avatarError]: error,
+                  })}
+                >
+                  {shortName}
+                </Avatar>
                 {/* HEADER, SUB-HEADER & CHIP */}
                 <Box sx={{ flex: 1 }}>
-                  <Box
+                  <div
                     className={classNames(classes.title, classes.titleHasData, {
                       [classes.titleError]: error,
                     })}
                   >
-                    {definition.isPrivate && <PartnerLockIcon />} {definition.name}
+                    {definition.name}
+                    {definition.isPrivate && <PartnerLockIcon />}
                     {chipText && (
                       <Box sx={{ typography: "caption" }} className={classes.chip}>
                         {chipText}
                       </Box>
                     )}
-                  </Box>
-                  {/* CHART VIEW SWITCH */}
-                  <Box>
-                    <Typography
-                      className={classNames(classes.description, classes.descriptionHasData, {
-                        [classes.descriptionError]: error,
-                      })}
-                      variant="body2"
-                    >
-                      {renderDescription(data)}
-                    </Typography>
-                  </Box>
+                  </div>
+                  <Typography
+                    className={classNames(classes.description, classes.descriptionHasData, {
+                      [classes.descriptionError]: error,
+                    })}
+                    variant="body2"
+                  >
+                    {renderDescription(data)}
+                  </Typography>
                 </Box>
+                {/* CHART VIEW SWITCH */}
                 <Box>
                   {renderChart && (
                     <SectionViewToggle defaultValue={defaultView} viewChange={setSelectedView} />
