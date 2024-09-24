@@ -3,7 +3,7 @@ import { Input, InputAdornment } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import useDebounce from "../../hooks/useDebounce";
-import { OtTableSearchProps } from "./table.types";
+import { OtTableSearchProps } from "./types/tableTypes";
 
 /****************************************
  *      OT TABLE SEARCH COMPONENT       *
