@@ -117,6 +117,11 @@ function CellName({ cell, colorScale }) {
     });
   };
 
+  const handleContextMenu = e => {
+    e.preventDefault();
+    handleToggle();
+  };
+
   const handleToggle = () => {
     setOpenContext(true);
     dispatch({
@@ -196,7 +201,7 @@ function CellName({ cell, colorScale }) {
 
   return (
     <NameContainer>
-      <TextContainer onClick={handleToggle}>
+      <TextContainer onClick={handleToggle} onContextMenu={handleContextMenu}>
         <Typography sx={{ width: isSmallScreen ? "90px" : "150px" }} noWrap variant="body2">
           {name}
         </Typography>
@@ -205,6 +210,7 @@ function CellName({ cell, colorScale }) {
         ref={contextMenuRef}
         className="ContextMenuContainer"
         onClick={handleToggle}
+        onContextMenu={handleContextMenu}
         active={openContext}
       >
         <FontAwesomeIcon icon={faEllipsisVertical} size="lg" />
