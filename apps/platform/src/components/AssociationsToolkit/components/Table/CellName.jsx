@@ -204,7 +204,7 @@ function CellName({ cell, colorScale }) {
       <TextContainer onClick={handleToggle} onContextMenu={handleContextMenu}>
         <Typography sx={{ width: isSmallScreen ? "90px" : "150px" }} noWrap variant="body2">
           {name}
-          {prefix === TABLE_PREFIX.INTERACTORS ? (
+          {prefix === TABLE_PREFIX.INTERACTORS && cell.row.original.interactorScore ? (
             <>
               {" "}
               -
