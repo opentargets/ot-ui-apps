@@ -160,6 +160,8 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
               // same row active  -> update active section
               acc.push({
                 ...element,
+                interactorsRow: null,
+                interactorsSection: null,
                 section: action.focus.section,
               });
               return acc;
