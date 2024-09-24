@@ -1,8 +1,7 @@
 import { CardContent, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
-
-import { Link, DisplayVariantId } from "ui";
+import { Link, DisplayVariantId, LongText } from "ui";
 
 function VariantDetail({ data }) {
   return (
@@ -26,19 +25,52 @@ function VariantDetail({ data }) {
       <Typography color="primary">
         <FontAwesomeIcon icon={faMapPin} /> Variant
       </Typography>
-      <Typography variant="subtitle1">
-        Ensembl
-      </Typography>
-      <Typography variant="body2">
-        {/* !!! get rsid from dbxref - always present? */}
-      </Typography>
+      {data.rsIds.length &&
+        <>
+          <Typography variant="subtitle1">
+            Ensembl
+          </Typography>
+          <Typography variant="body2">
+            {data.rsIds.join(", ")}
+          </Typography>
+        </>
+      }
       <Typography variant="subtitle1">
         GRCh38
       </Typography>
       <Typography variant="body2">
         {data.chromosome}:{data.position}
       </Typography>
-      {/* !!!! include expandable alt and ref alleles here similar to page metadata */}
+      <Typography variant="subtitle1">
+        Reference Allele
+      </Typography>
+      <Typography variant="body2">
+        <LongText lineLimit={2} variant="body2">
+          <span style={{ textWrap: "wrap", wordWrap: "break-word" }}>
+            {data.referenceAllele}
+          </span>
+        </LongText>
+      </Typography>
+      <Typography variant="subtitle1">
+        Alternate Allele
+      </Typography>
+      <Typography variant="body2">
+        <LongText lineLimit={2} variant="body2">
+          <span style={{ textWrap: "wrap", wordWrap: "break-word" }}>
+            {data.alternateAllele}
+          </span>
+        </LongText>
+      </Typography>
+      {data.mostSevereConsequence &&
+        <>
+          <Typography variant="subtitle1">
+            Most Severe Consequence
+          </Typography>
+          <Typography variant="body2">
+            {data.mostSevereConsequence.label.replace(/_/g, ' ')}
+          </Typography>
+        </>
+      }
     </CardContent>
   );
 }

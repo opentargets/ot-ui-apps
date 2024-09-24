@@ -2,6 +2,7 @@ import { makeStyles, useTheme } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
 import { Highlights, Link, DisplayVariantId } from "ui";
+import { Box, Typography } from "@mui/material";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -23,7 +24,7 @@ function VariantResult({ data, highlights }) {
   return (
     <div className={classes.container}>
       <Link to={`/variant/${data.id}`} className={classes.subtitle}>
-        <FontAwesomeIcon icon={faMapPin} />{" "}
+        <FontAwesomeIcon icon={faMapPin} className={classes.icon} />{" "}
         <DisplayVariantId
           variantId={data.id}
           referenceAllele={data.referenceAllele}
@@ -31,6 +32,13 @@ function VariantResult({ data, highlights }) {
           expand={false}
         />
       </Link>
+      {data.rsIds.length &&
+        // <Box>
+          <Typography variant="body2">
+            {" "}{data.rsIds.join(", ")}
+          </Typography>
+        // </Box>
+      }
       <Highlights highlights={highlights} />
     </div>
   );

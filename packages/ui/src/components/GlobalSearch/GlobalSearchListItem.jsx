@@ -84,14 +84,17 @@ const TopHitItemContainer = styled("div")(({ theme }) => ({
 }));
 
 function symbolNameOrId(item) {
-  return item.entity === "variant"
-    ? <DisplayVariantId
-        variantId={item.id}
-        referenceAllele={item.referenceAllele}
-        alternateAllele={item.alternateAllele}
-        expand={false}
-      />
-    : item.symbol || item.name
+  if (item.entity === "variant") {
+    return item.referenceAllele
+      ? <DisplayVariantId
+          variantId={item.id}
+          referenceAllele={item.referenceAllele}
+          alternateAllele={item.alternateAllele}
+          expand={false}
+        />
+      : item.id;
+  }
+  return item.symbol || item.name;
 }
 
 function SuggestionListItem({ item, onItemClick }) {
@@ -107,7 +110,7 @@ function SuggestionListItem({ item, onItemClick }) {
     >
       <RecentIconContainer>
         <FontAwesomeIcon icon={faArrowTrendUp} />
-        <Typography variant="subtitle2">{item.symbol || item.name || item.id}</Typography>
+        <Typography variant="subtitle2">{symbolNameOrId(item)}</Typography>
       </RecentIconContainer>
     </RecentItemContainer>
   );
@@ -168,16 +171,37 @@ function TopHitListItem({ item, onItemClick }) {
             </ListItemDisplayName>
           </Typography>
 
-          <Typography variant="caption">{item.id && <ItemId>{item.id}</ItemId>}</Typography>
+          {item.id &&
+            <Typography variant="caption">
+              {item.entity === "variant"
+                ? <DisplayVariantId
+                    variantId={item.id}
+                    referenceAllele={item.referenceAllele}
+                    alternateAllele={item.alternateAllele}
+                    expand={false}
+                  />
+                : item.id
+              }
+            </Typography>
+          }
         </JustifyBetween>
-        <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
-          <Typography variant="subtitle1">{item.symbol && item.name}</Typography>
-        </Box>
-        <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
-          <Typography variant="body2">
-            {item.description && `${item.description.substring(0, 180)}...`}
-          </Typography>
-        </Box>
+        
+        {item.entity === "variant"
+          ? item.rsIds.length &&
+            <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
+              <Typography variant="subtitle1">{item.rsIds.join(', ')}</Typography>
+            </Box>
+          : <>
+              <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
+                <Typography variant="subtitle1">{item.symbol && item.name}</Typography>
+              </Box>
+              <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
+                <Typography variant="body2">
+                  {item.description && `${item.description.substring(0, 180)}...`}
+                </Typography>
+              </Box>
+            </>
+        }
       </TopHitItemContainer>
     </TopHitItem>
   );
@@ -192,8 +216,16 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
           <Typography variant="subtitle2">{item.name}</Typography>
         </>
       );
-
-    return <Typography variant="subtitle1">{item.symbol || item.name || item.id}</Typography>;
+    return (
+      <>
+        <Typography variant="subtitle1">{symbolNameOrId(item)}</Typography>
+        {item.entity === "variant" && item.rsIds.length &&
+          <Typography variant="subtitle2" textTransform="lowercase">
+            &nbsp;({item.rsIds.join(", ")})
+          </Typography>
+        }
+      </>
+    );
   };
 
   if (item.type === "recent") {
@@ -224,15 +256,14 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
           {!!item.id && 
             <ItemId>
               {
-                item.id
-                // !! USE BELOW ONCE CAN GET referenceAllele AND alternateAllele FROM SEARCH API
-                // item.entity === "variant"
-                //   ? <DisplayVariantId
-                //       variantId={item.id}
-                //       referenceAllele={item.referenceAllele}
-                //       alternateAllele={item.alternateAllele}
-                //     />
-                //   : item.id
+                item.entity === "variant"
+                  ? <DisplayVariantId
+                      variantId={item.id}
+                      referenceAllele={item.referenceAllele}
+                      alternateAllele={item.alternateAllele}
+                      expand={false}
+                    />
+                  : item.id
               }
             </ItemId>
           }

@@ -25,7 +25,10 @@ query SearchPageQuery(
           position
           referenceAllele
           alternateAllele
-          dbXrefs
+          rsIds
+          mostSevereConsequence {
+            label
+          }
         }
 
         ... on Target {
@@ -61,7 +64,10 @@ query SearchPageQuery(
           position
           referenceAllele
           alternateAllele
-          dbXrefs
+          rsIds
+          mostSevereConsequence {
+            label
+          }
         }
         ... on Target {
           id

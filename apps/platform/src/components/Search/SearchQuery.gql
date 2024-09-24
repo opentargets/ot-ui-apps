@@ -55,6 +55,7 @@ query SearchQuery($queryString: String!) {
           id
           referenceAllele
           alternateAllele
+          rsIds
         }
       }
     }
