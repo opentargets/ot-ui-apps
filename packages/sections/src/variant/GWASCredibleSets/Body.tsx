@@ -29,6 +29,15 @@ function getColumns({
 
   return [
     {
+      id: "view",
+      label: "Details",
+      renderCell: ({ studyLocusId }) => (
+        <Link to={`../credible-set/${studyLocusId}`}>view</Link>
+      ),
+      filterValue: false,
+      exportValue: false,
+    },
+    {
       id: "leadVariant",
       label: "Lead Variant",
       renderCell: ({ variant }) => {
