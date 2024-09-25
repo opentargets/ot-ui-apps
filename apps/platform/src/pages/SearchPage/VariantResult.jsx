@@ -32,7 +32,7 @@ function VariantResult({ data, highlights }) {
           expand={false}
         />
       </Link>
-      {data.rsIds.length &&
+      {data.rsIds.length > 0 &&
         // <Box>
           <Typography variant="body2">
             {" "}{data.rsIds.join(", ")}

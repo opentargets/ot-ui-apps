@@ -25,7 +25,7 @@ function VariantDetail({ data }) {
       <Typography color="primary">
         <FontAwesomeIcon icon={faMapPin} /> Variant
       </Typography>
-      {data.rsIds.length &&
+      {data.rsIds.length > 0 &&
         <>
           <Typography variant="subtitle1">
             Ensembl

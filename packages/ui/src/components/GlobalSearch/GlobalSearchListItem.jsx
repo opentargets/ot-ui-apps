@@ -187,7 +187,7 @@ function TopHitListItem({ item, onItemClick }) {
         </JustifyBetween>
         
         {item.entity === "variant"
-          ? item.rsIds.length &&
+          ? item.rsIds.length > 0 &&
             <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
               <Typography variant="subtitle1">{item.rsIds.join(', ')}</Typography>
             </Box>
@@ -219,7 +219,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
     return (
       <>
         <Typography variant="subtitle1">{symbolNameOrId(item)}</Typography>
-        {item.entity === "variant" && item.rsIds.length &&
+        {item.entity === "variant" && item.rsIds.length > 0 &&
           <Typography variant="subtitle2" textTransform="lowercase">
             &nbsp;({item.rsIds.join(", ")})
           </Typography>
