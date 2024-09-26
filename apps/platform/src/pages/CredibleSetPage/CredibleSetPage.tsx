@@ -43,9 +43,10 @@ function CredibleSetPage() {
     >
       <Header
         loading={loading}
-        studyLocusId={studyLocusId}
         studyId={studyId}
         variantId={variantId}
+        referenceAllele={credibleSet.variant.referenceAllele}
+        alternateAllele={credibleSet.variant.alternateAllele}
       />
       <ScrollToTop />
       <Route
