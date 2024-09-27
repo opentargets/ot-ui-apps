@@ -45,7 +45,7 @@ function VariantDetail({ data }) {
         Reference Allele
       </Typography>
       <Typography component="div" variant="body2">
-        <LongText lineLimit={2} variant="body2">
+        <LongText lineLimit={2}>
           <span style={{ textWrap: "wrap", wordWrap: "break-word" }}>
             {data.referenceAllele}
           </span>
@@ -55,7 +55,7 @@ function VariantDetail({ data }) {
         Alternate Allele
       </Typography>
       <Typography component="div" variant="body2">
-        <LongText lineLimit={2} variant="body2">
+        <LongText lineLimit={2}>
           <span style={{ textWrap: "wrap", wordWrap: "break-word" }}>
             {data.alternateAllele}
           </span>

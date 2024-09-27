@@ -33,11 +33,9 @@ function VariantResult({ data, highlights }) {
         />
       </Link>
       {data.rsIds.length > 0 &&
-        // <Box>
-          <Typography variant="body2">
-            {" "}{data.rsIds.join(", ")}
-          </Typography>
-        // </Box>
+        <Typography variant="body2">
+          {data.rsIds.join(", ")}
+        </Typography>
       }
       <Highlights highlights={highlights} />
     </div>

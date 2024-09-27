@@ -94,7 +94,7 @@ function symbolNameOrId(item) {
         />
       : item.id;
   }
-  return item.symbol || item.name;
+  return item.symbol || item.name || item.id;
 }
 
 function SuggestionListItem({ item, onItemClick }) {
@@ -171,19 +171,21 @@ function TopHitListItem({ item, onItemClick }) {
             </ListItemDisplayName>
           </Typography>
 
-          {item.id &&
-            <Typography variant="caption">
-              {item.entity === "variant"
-                ? <DisplayVariantId
-                    variantId={item.id}
-                    referenceAllele={item.referenceAllele}
-                    alternateAllele={item.alternateAllele}
-                    expand={false}
-                  />
-                : item.id
-              }
-            </Typography>
-          }
+          <Typography variant="caption">
+            {!!item.id && 
+              <ItemId>
+                {item.entity === "variant"
+                  ? <DisplayVariantId
+                      variantId={item.id}
+                      referenceAllele={item.referenceAllele}
+                      alternateAllele={item.alternateAllele}
+                      expand={false}
+                    />
+                  : item.id
+                }
+              </ItemId>
+            }
+          </Typography>
         </JustifyBetween>
         
         {item.entity === "variant"

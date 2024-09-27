@@ -21,14 +21,9 @@ query SearchPageQuery(
       object {
         ... on Variant {
           id
-          chromosome
-          position
           referenceAllele
           alternateAllele
           rsIds
-          mostSevereConsequence {
-            label
-          }
         }
 
         ... on Target {
