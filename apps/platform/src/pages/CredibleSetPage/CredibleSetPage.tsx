@@ -28,9 +28,9 @@ function CredibleSetPage() {
     return <NotFoundPage />;
   }
 
-  const credibleSet = data.credibleSets[0];
-  const variantId = credibleSet.variant?.id;
-  const studyId = credibleSet.study?.studyId;
+  const credibleSet = data?.credibleSets[0];
+  const variantId = credibleSet?.variant?.id;
+  const studyId = credibleSet?.study?.studyId;
 
   return (
     <BasePage
@@ -45,8 +45,8 @@ function CredibleSetPage() {
         loading={loading}
         studyId={studyId}
         variantId={variantId}
-        referenceAllele={credibleSet.variant.referenceAllele}
-        alternateAllele={credibleSet.variant.alternateAllele}
+        referenceAllele={credibleSet?.variant.referenceAllele}
+        alternateAllele={credibleSet?.variant.alternateAllele}
       />
       <ScrollToTop />
       <Route
@@ -67,7 +67,7 @@ function CredibleSetPage() {
       <Suspense fallback={<LoadingBackdrop height={11500} />}>
         <Switch>
           <Route exact path={path}>
-            <Profile studyLocusId={studyLocusId} />
+            <Profile studyLocusId={studyLocusId} variantId={variantId} />
           </Route>
         </Switch>
       </Suspense>

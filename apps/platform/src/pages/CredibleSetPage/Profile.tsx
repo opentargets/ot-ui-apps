@@ -23,11 +23,12 @@ const summaries = [
 const CREDIBLE_SET = "credibleSets";
 const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
   summaries,
-  "credibleSet"
+  "credibleSet",
+  "CredibleSetProfileSummaryFragment"
 );
 const CREDIBLE_SET_PROFILE_QUERY = gql`
   query CredibleSetProfileQuery($studyLocusIds: [String!]!) {
-    credibleSets(studyLosucIds: $studyLocusIds) {
+    credibleSets(studyLocusIds: $studyLocusIds) {
       studyLocusId
       ...CredibleSetProfileHeaderFragment
       ...CredibleSetProfileSummaryFragment
@@ -39,9 +40,10 @@ const CREDIBLE_SET_PROFILE_QUERY = gql`
 
 type ProfileProps = {
   studyLocusId: string;
+  variantId: string;
 };
 
-function Profile({ studyLocusId }: ProfileProps) {
+function Profile({ studyLocusId, variantId }: ProfileProps) {
   return (
     <PlatformApiProvider
       entity={CREDIBLE_SET}
@@ -49,7 +51,7 @@ function Profile({ studyLocusId }: ProfileProps) {
       variables={{ studyLocusIds: [studyLocusId] }}
       client={client}
     >
-      <ProfileHeader />
+      <ProfileHeader variantId={variantId} />
 
       <SummaryContainer>
         {/* <PharmacogenomicsSummary />  */}

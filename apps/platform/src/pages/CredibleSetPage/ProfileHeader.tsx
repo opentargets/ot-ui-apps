@@ -6,47 +6,57 @@ import {
   Link,
   ScientificNotation,
 } from "ui";
-import { Box, Typography, Skeleton } from "@mui/material";
-import { identifiersOrgLink } from "../../utils/global";
+import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
+import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 
-function ProfileHeader() {
+type ProfileHeaderProps = {
+  variantId: string;
+};
+
+function ProfileHeader({ variantId }: ProfileHeaderProps) {
 
   const { loading, error, data } = usePlatformApi();
 
   // TODO: Errors!
   if (error) return null;
 
+  const credibleSet = data?.credibleSets?.[0];
+  const study = credibleSet?.study;
+  const studyCategory = study ? getStudyCategory(study) : null;
+  const target = study?.target;
+  const posteriorProbability =
+  credibleSet?.locus?.find(loc => loc?.variant.id === variantId)?.posteriorProbability;
+
   return (
     <BaseProfileHeader>
         
       <Box>
-
         <Typography variant="subtitle1" mt={0}>Lead Variant</Typography>
         <Field loading={loading} title="P-value">
-          <ScientificNotation number={[data?.pValueMantissa, data?.pValueExponent]} />
+          <ScientificNotation number={[credibleSet?.pValueMantissa, credibleSet?.pValueExponent]} />
         </Field>
         <Field loading={loading} title="Beta">
-          data?.beta.toPrecision(3);
+          {credibleSet?.beta?.toPrecision(3)}
         </Field>
         <Field loading={loading} title="Standard Error">
-          data?.standardError.toPrecision(3);
+          {credibleSet?.standardError?.toPrecision(3)}
         </Field>
         <Field loading={loading} title="EAF">
-          data?.effectAlleleFrequencyFromSource.toPrecision(3);
+          {credibleSet?.effectAlleleFrequencyFromSource?.toPrecision(3)}
         </Field>
         <Field loading={loading} title="Posterior Probability">
-          data?.posteriorProbability.toPrecision(3);
+          {posteriorProbability?.toPrecision(3)}
         </Field>
         <Field loading={loading} title="GRCh38">
-          {data?.variant.chromosome}:{data?.variant.position}
+          {credibleSet?.variant?.chromosome}:{credibleSet?.variant?.position}
         </Field>
         {
-          data?.variant?.rsIds.length > 0 &&
+          credibleSet?.variant?.rsIds.length > 0 &&
             <Field loading={loading} title="Ensembl">
               {
-                data.variant.rsIds.map((rsid, index) => (
-                  <Fragment key={rsis}>
+                credibleSet.variant.rsIds.map((rsid, index) => (
+                  <Fragment key={rsid}>
                     {index > 0 && ", "}
                     <Link
                       external
@@ -60,33 +70,57 @@ function ProfileHeader() {
             </Field>
         }
 
-
-        <Typography variant="subtitle1" mt={0}>Credible Set</Typography>
+        <Typography variant="subtitle1" mt={1}>Credible Set</Typography>
         <Field loading={loading} title="Finemapping Method">
-          {data?.finemappingMethod}
+          {credibleSet?.finemappingMethod}
         </Field>
         <Field loading={loading} title="Credible Set Index">
-          {data?.credibleSetIndex}
+          {credibleSet?.credibleSetIndex}
         </Field>
         <Field loading={loading} title="Purity Min">
-          {data?.purityMinR2.toPrecision(3)}
+          {credibleSet?.purityMinR2?.toPrecision(3)}
         </Field>
         <Field loading={loading} title="Start">
-          {data?.locusStart}
+          {credibleSet?.locusStart}
         </Field>
         <Field loading={loading} title="End">
-          {data?.locusEnd}
+          {credibleSet?.locusEnd}
         </Field>
-
       </Box>
 
       <Box>
         <Typography variant="subtitle1" mt={0}>Study</Typography>
         <Field loading={loading} title="Author">
-          {data?.study?.publicationFirstAuthor}
+          {study?.publicationFirstAuthor}
         </Field>
         <Field loading={loading} title="Date">
-          {data?.study?.publicationFirstAuthor?.slice(0, 4)}
+          {study?.publicationDate?.slice(0, 4)}
+        </Field>
+        <Field loading={loading} title="Trait">
+          {study?.traitFromSource}
+        </Field>
+        {studyCategory === "QTL" &&
+          <>
+            {target?.id &&
+              <Field loading={loading} title="Affected gene">
+                <Link to={`../target/${target.id}`}>
+                  study?.target.approvedSymbol
+                </Link>
+              </Field>
+            }
+            <Field loading={loading} title="Affected cell/tissue">
+              {study?.biosample?.biosampleId}
+            </Field>
+          </>
+        }
+        <Field loading={loading} title="Journal">
+          {study?.publicationJournal}
+        </Field>
+        <Field loading={loading} title="PubMed">
+          {study?.pubmedId}
+        </Field>
+        <Field loading={loading} title="Sample Size">
+          {study?.nSamples}
         </Field>
       </Box>
 

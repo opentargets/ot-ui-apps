@@ -99,7 +99,7 @@ function Header({
           <ExternalLink
             title="Study ID"
             id={studyId}
-            url={`../sudy/${studyId}`}
+            url={`../study/${studyId}`}
           />
         </>
       }

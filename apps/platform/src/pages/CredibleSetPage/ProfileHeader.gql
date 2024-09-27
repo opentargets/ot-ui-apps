@@ -8,11 +8,14 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
     posteriorProbability
     variant {
       id
-      chromosome
-      position
     }
   }
-  fineMappingMethod
+  variant {
+    chromosome
+    position
+    rsIds
+  }
+  finemappingMethod
   credibleSetIndex
   purityMinR2
   locusStart
@@ -20,5 +23,16 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
   study {
     publicationFirstAuthor
     publicationDate
+    traitFromSource
+    target {
+      id
+      approvedSymbol
+    }
+    biosample {
+      biosampleId
+    }
+    publicationJournal
+    pubmedId
+    nSamples
   }
 }

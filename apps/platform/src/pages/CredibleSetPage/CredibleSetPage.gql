@@ -6,7 +6,7 @@ query CredibleSetPageQuery($studyLocusIds: [String!]!) {
       alternateAllele
     }
     study {
-      id
+      studyId
     }
   }
 }
