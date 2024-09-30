@@ -26,7 +26,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
   const studyCategory = study ? getStudyCategory(study) : null;
   const target = study?.target;
   const posteriorProbability =
-  credibleSet?.locus?.find(loc => loc?.variant.id === variantId)?.posteriorProbability;
+    credibleSet?.locus?.find(loc => loc?.variant.id === variantId)?.posteriorProbability;
 
   return (
     <BaseProfileHeader>
@@ -49,7 +49,9 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
           {posteriorProbability?.toPrecision(3)}
         </Field>
         <Field loading={loading} title="GRCh38">
-          {credibleSet?.variant?.chromosome}:{credibleSet?.variant?.position}
+          {credibleSet?.variant &&
+            `${credibleSet.variant.chromosome}:${credibleSet.variant.position}`
+          }
         </Field>
         {
           credibleSet?.variant?.rsIds.length > 0 &&
@@ -104,7 +106,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             {target?.id &&
               <Field loading={loading} title="Affected gene">
                 <Link to={`../target/${target.id}`}>
-                  study?.target.approvedSymbol
+                  target.approvedSymbol
                 </Link>
               </Field>
             }
@@ -125,7 +127,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
       </Box>
 
     </BaseProfileHeader>
-  )
+  );
 }
 
 ProfileHeader.fragments = {

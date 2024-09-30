@@ -45,8 +45,8 @@ function CredibleSetPage() {
         loading={loading}
         studyId={studyId}
         variantId={variantId}
-        referenceAllele={credibleSet?.variant.referenceAllele}
-        alternateAllele={credibleSet?.variant.alternateAllele}
+        referenceAllele={credibleSet?.variant?.referenceAllele}
+        alternateAllele={credibleSet?.variant?.alternateAllele}
       />
       <ScrollToTop />
       <Route
