@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { Link, Table, getPage, getComparator, useCursorBatchDownloader } from "ui";
+import { Link, Table, getPage, getComparator, useCursorBatchDownloader, OtTableSSP } from "ui";
 import { naLabel, phaseMap } from "../../constants";
 import { sentenceCase } from "../../utils/global";
 import SourceDrawer from "./SourceDrawer";
@@ -113,6 +113,93 @@ function getColumnPool(id, entity) {
       ],
     },
   };
+}
+
+function getOtTableColumns() {
+  return [
+    {
+      header: "Disease Information",
+      columns: [
+        {
+          header: "Disease",
+          accessorFn: row => row.disease.id,
+          cell: d => (
+            <Link to={`/disease/${d.row.original.disease.id}`}>{d.row.original.disease.name}</Link>
+          ),
+          enableSorting: false,
+          enableColumnFilter: false,
+        },
+      ],
+    },
+    {
+      header: "Drug Information",
+      columns: [
+        {
+          header: "Drug",
+          accessorKey: "drug.name",
+          cell: ({ row }) =>
+            row.original.drug ? (
+              <Link to={`/drug/${row.original.drug.id}`}>{row.original.drug.name}</Link>
+            ) : (
+              naLabel
+            ),
+          enableSorting: false,
+          enableColumnFilter: false,
+          sticky: true,
+        },
+        {
+          header: "Type",
+          accessorKey: "drugType",
+          enableSorting: false,
+          enableColumnFilter: false,
+        },
+        {
+          header: "Mechanism Of Action",
+          accessorKey: "mechanismOfAction",
+          enableSorting: false,
+          enableColumnFilter: false,
+        },
+        {
+          header: "Action Type",
+          id: "actionType",
+          accessorFn: row => row.drug?.mechanismsOfAction?.rows[0]?.actionType,
+          enableSorting: false,
+          enableColumnFilter: false,
+        },
+      ],
+    },
+
+    {
+      header: "Clinical Trials Information",
+      columns: [
+        {
+          header: "Name",
+          accessorKey: "target.approvedName",
+          enableSorting: false,
+          enableColumnFilter: false,
+        },
+        {
+          header: "Phase",
+          accessorKey: "phase",
+          cell: info => phaseMap(info.getValue()),
+          enableSorting: true,
+          enableColumnFilter: false,
+        },
+        {
+          header: "Status",
+          accessorKey: "status",
+          // cell: d => d.row.original.status,
+        },
+      ],
+    },
+    {
+      accessorKey: "sources",
+      header: "Source",
+      cell: d => <SourceDrawer references={d.row.original.urls} />,
+      enableSorting: false,
+      enableColumnFilter: false,
+    },
+  ];
 }
 
 const INIT_PAGE_SIZE = 10;
@@ -263,49 +350,83 @@ function Body({
   }
 
   return (
-    <SectionItem
-      definition={definition}
-      entity={entity}
-      request={{
-        loading: initialLoading,
-        error: false,
-        data: {
-          [entity]: {
-            knownDrugs: {
-              rows,
-              count: rows.length,
-              freeTextQuery: globalFilter,
+    <>
+      {/* <SectionItem
+        definition={definition}
+        entity={entity}
+        request={{
+          loading: initialLoading,
+          error: false,
+          data: {
+            [entity]: {
+              knownDrugs: {
+                rows,
+                count: rows.length,
+                freeTextQuery: globalFilter,
+              },
             },
           },
-        },
-      }}
-      renderDescription={Description}
-      renderBody={() => (
-        <Table
-          loading={loading}
-          stickyHeader
-          showGlobalFilter
-          globalFilter={globalFilter}
-          dataDownloader
-          dataDownloaderRows={getWholeDataset}
-          dataDownloaderFileStem={`${id}-known-drugs`}
-          headerGroups={headerGroups}
-          columns={columns}
-          rows={getPage(processedRows, page, pageSize)}
-          rowCount={count}
-          rowsPerPageOptions={[10, 25, 100]}
-          page={page}
-          pageSize={pageSize}
-          onGlobalFilterChange={handleGlobalFilterChange}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          onSortBy={handleSortBy}
-          dataDownloaderColumns={exportColumns}
-          query={BODY_QUERY.loc.source.body}
-          variables={variables}
-        />
-      )}
-    />
+        }}
+        renderDescription={Description}
+        renderBody={() => (
+          <Table
+            loading={loading}
+            stickyHeader
+            showGlobalFilter
+            globalFilter={globalFilter}
+            dataDownloader
+            dataDownloaderRows={getWholeDataset}
+            dataDownloaderFileStem={`${id}-known-drugs`}
+            headerGroups={headerGroups}
+            columns={columns}
+            rows={getPage(processedRows, page, pageSize)}
+            rowCount={count}
+            rowsPerPageOptions={[10, 25, 100]}
+            page={page}
+            pageSize={pageSize}
+            onGlobalFilterChange={handleGlobalFilterChange}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            onSortBy={handleSortBy}
+            dataDownloaderColumns={exportColumns}
+            query={BODY_QUERY.loc.source.body}
+            variables={variables}
+          />
+        )}
+      /> */}
+      <SectionItem
+        definition={definition}
+        entity={entity}
+        request={{
+          loading: initialLoading,
+          error: false,
+          data: {
+            [entity]: {
+              knownDrugs: {
+                rows,
+                count: rows.length,
+                freeTextQuery: globalFilter,
+              },
+            },
+          },
+        }}
+        renderDescription={Description}
+        renderBody={() => (
+          <OtTableSSP
+            showGlobalFilter
+            columns={getOtTableColumns()}
+            verticalHeaders={false}
+            query={BODY_QUERY}
+            variables={variables}
+            entity={entity}
+            client={client}
+            sectionName="knownDrugs"
+          />
+
+          // <>ddd</>
+        )}
+      />
+    </>
   );
 }
 

@@ -1,3 +1,4 @@
+import { ColumnDef } from "@tanstack/table-core";
 import { DefaultSortProp } from "../types/tableTypes";
 
 /*********************************************************************
@@ -5,7 +6,7 @@ import { DefaultSortProp } from "../types/tableTypes";
  *********************************************************************/
 export function mapTableColumnToTanstackColumns(
   allColumns: Record<string, unknown>[]
-): Record<string, unknown>[] {
+): ColumnDef<string, unknown>[] {
   return allColumns.map(column => mapToTanstackColumnObject(column));
 }
 
@@ -92,8 +93,8 @@ export function getCurrentPagePosition(
  ****************************************************************************/
 function mapToTanstackColumnObject(
   originalTableObject: Record<string, unknown>
-): Record<string, unknown> {
-  const newTanstackObject: Record<string, unknown> = {
+): ColumnDef<string, unknown> {
+  const newTanstackObject: ColumnDef<string, unknown> = {
     id: originalTableObject.id,
     header: originalTableObject.label,
     enableSorting: originalTableObject.sortable || false,

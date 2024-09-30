@@ -5,6 +5,8 @@ import { ColumnDef } from "@tanstack/table-core";
  * OT TABLE CLIENT SIDE TYPES *
  ******************************/
 
+export const INIT_PAGE_SIZE = 10;
+
 export type DefaultSortProp = {
   id: string;
   desc: boolean;
@@ -13,7 +15,7 @@ export type DefaultSortProp = {
 export type OtTableProps = {
   showGlobalFilter: boolean;
   tableDataLoading: boolean;
-  columns: Array<Record<string, unknown>>;
+  columns: Array<ColumnDef<string, unknown>>;
   rows: Array<Record<string, unknown>>;
   verticalHeaders: boolean;
   order: "asc" | "desc";
@@ -26,6 +28,24 @@ export type OtTableProps = {
   variables: Record<string, unknown>;
 };
 
+export type OtTableSSPProps = {
+  showGlobalFilter: boolean;
+  entity: string;
+  sectionName: string;
+  verticalHeaders: boolean;
+  columns: Array<ColumnDef<string, unknown>>;
+  query: DocumentNode;
+  variables: Record<string, unknown>;
+};
+
+export type OtTableSSPState = {
+  count: number;
+  loading: boolean;
+  rows: Array<unknown>;
+  cursor: null | string;
+  freeTextQuery: null | string;
+};
+
 /*************************
  * OT TABLE SEARCH TYPES *
  *************************/
@@ -33,3 +53,22 @@ export type OtTableProps = {
 export type OtTableSearchProps = {
   setGlobalSearchTerm: React.Dispatch<React.SetStateAction<string>>;
 };
+
+/*****************
+ * ACTIONS TYPES *
+ *****************/
+
+export enum ActionType {
+  PAGE_SIZE_CHANGE = "PAGE_SIZE_CHANGE",
+  PAGE_CHANGE = "PAGE_CHANGE",
+  TEXT_SEARCH = "TEXT_SEARCH",
+  SET_LOADING = "SET_LOADING",
+  SET_DATA = "SET_DATA",
+}
+
+export type Action =
+  | { type: ActionType.PAGE_SIZE_CHANGE; pageSize: number }
+  | { type: ActionType.PAGE_CHANGE; payload: Record<string, unknown> }
+  | { type: ActionType.TEXT_SEARCH; freeQueryText: string }
+  | { type: ActionType.SET_DATA; payload: Record<string, unknown> }
+  | { type: ActionType.SET_LOADING; loading: boolean };
