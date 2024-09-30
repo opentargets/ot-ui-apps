@@ -9,7 +9,12 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDna, faPrescriptionBottleAlt, faStethoscope } from "@fortawesome/free-solid-svg-icons";
+import {
+  faDna,
+  faMapPin,
+  faPrescriptionBottleAlt,
+  faStethoscope
+} from "@fortawesome/free-solid-svg-icons";
 import { ErrorBoundary } from "ui";
 
 import DiseaseDetail from "./DiseaseDetail";
@@ -18,11 +23,14 @@ import DrugDetail from "./DrugDetail";
 import DrugResult from "./DrugResult";
 import TargetDetail from "./TargetDetail";
 import TargetResult from "./TargetResult";
+import VariantDetail from "./VariantDetail";
+import VariantResult from "./VariantResult";
 
 const getCounts = entities => {
   const counts = {
     target: 0,
     disease: 0,
+    variant: 0,
     drug: 0,
   };
 
@@ -57,6 +65,18 @@ const SearchFilters = ({ entities, entitiesCount, setEntity }) => {
             <FontAwesomeIcon icon={faDna} fixedWidth className={classes.labelIcon} />
             <Typography variant="body2" display="inline">
               Target ({counts.target})
+            </Typography>
+          </>
+        }
+      />
+      <FormControlLabel
+        className={classes.label}
+        control={<Checkbox checked={entities.includes("variant")} onChange={setEntity("variant")} />}
+        label={
+          <>
+            <FontAwesomeIcon icon={faMapPin} fixedWidth className={classes.labelIcon} />
+            <Typography variant="body2" display="inline">
+              Variant ({counts.variant})
             </Typography>
           </>
         }
@@ -112,6 +132,8 @@ function SearchResults({ results, page, onPageChange }) {
           return <TargetResult key={object.id} data={object} highlights={highlights} />;
         if (object[TYPE_NAME] === "Disease")
           return <DiseaseResult key={object.id} data={object} highlights={highlights} />;
+        if (object[TYPE_NAME] === "Variant")
+          return <VariantResult key={object.id} data={object} highlights={highlights} />;
         return <DrugResult key={object.id} data={object} highlights={highlights} />;
       })}
 
@@ -132,6 +154,7 @@ function TopHitDetail({ topHit }) {
   const TYPE_NAME = "__typename";
   if (topHit[TYPE_NAME] === "Target") COMPONENT = <TargetDetail data={topHit} />;
   else if (topHit[TYPE_NAME] === "Disease") COMPONENT = <DiseaseDetail data={topHit} />;
+  else if (topHit[TYPE_NAME] === "Variant") COMPONENT = <VariantDetail data={topHit} />;
   else if (topHit[TYPE_NAME] === "Drug") COMPONENT = <DrugDetail data={topHit} />;
   return (
     <Card elevation={0}>
