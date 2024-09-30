@@ -39,13 +39,13 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Field loading={loading} title="Beta">
           {credibleSet?.beta?.toPrecision(3)}
         </Field>
-        <Field loading={loading} title="Standard Error">
+        <Field loading={loading} title="Standard error">
           {credibleSet?.standardError?.toPrecision(3)}
         </Field>
         <Field loading={loading} title="EAF">
           {credibleSet?.effectAlleleFrequencyFromSource?.toPrecision(3)}
         </Field>
-        <Field loading={loading} title="Posterior Probability">
+        <Field loading={loading} title="Posterior probability">
           {posteriorProbability?.toPrecision(3)}
         </Field>
         <Field loading={loading} title="GRCh38">
@@ -73,13 +73,13 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         }
 
         <Typography variant="subtitle1" mt={1}>Credible Set</Typography>
-        <Field loading={loading} title="Finemapping Method">
+        <Field loading={loading} title="Finemapping method">
           {credibleSet?.finemappingMethod}
         </Field>
-        <Field loading={loading} title="Credible Set Index">
+        <Field loading={loading} title="Credible set index">
           {credibleSet?.credibleSetIndex}
         </Field>
-        <Field loading={loading} title="Purity Min">
+        <Field loading={loading} title="Purity min">
           {credibleSet?.purityMinR2?.toPrecision(3)}
         </Field>
         <Field loading={loading} title="Start">
@@ -121,7 +121,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Field loading={loading} title="PubMed">
           {study?.pubmedId}
         </Field>
-        <Field loading={loading} title="Sample Size">
+        <Field loading={loading} title="Sample size">
           {study?.nSamples}
         </Field>
       </Box>
