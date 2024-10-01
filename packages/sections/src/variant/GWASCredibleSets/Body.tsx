@@ -31,7 +31,7 @@ function getColumns({
   return [
     {
       id: "leadVariant",
-      label: "Lead Variant",
+      label: "Lead variant",
       comparator: variantComparator,
       sortable: true,
       filterValue: ({ variant: v }) => (
@@ -97,7 +97,7 @@ function getColumns({
     },
     {
       id: "pValue",
-      label: "P-Value",
+      label: "P-value",
       comparator: (a, b) =>
         a?.pValueMantissa * 10 ** a?.pValueExponent -
           b?.pValueMantissa * 10 ** b?.pValueExponent,
@@ -126,7 +126,7 @@ function getColumns({
     },
     {
       id: "posteriorProbability",
-      label: "Posterior Probability",
+      label: "Posterior probability",
       filterValue: false,
       tooltip: <>
         Probability the fixed page variant (
@@ -168,7 +168,7 @@ function getColumns({
     },
     {
       id: "finemappingMethod",
-      label: "Finemapping Method",
+      label: "Finemapping method",
     },
     {
       id: "topL2G",
@@ -204,7 +204,7 @@ function getColumns({
     },
     {
       id: "credibleSetSize",
-      label: "Credible Set Size",
+      label: "Credible set size",
       comparator: (a, b) => a.locus?.length - b.locus?.length,
       sortable: true,
       filterValue: false,

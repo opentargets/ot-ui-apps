@@ -111,7 +111,7 @@ function PharamacogenomicsTable({ pharmacogenomics, query, variables }) {
     },    
     {
       id: "drugResponse",
-      label: "Drug Response Phenotype",
+      label: "Drug response phenotype",
       renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
         let phenotypeTextElement = phenotypeText;
         if (phenotypeFromSourceId)
@@ -130,13 +130,13 @@ function PharamacogenomicsTable({ pharmacogenomics, query, variables }) {
     },
     {
       id: "drugResponseCategory",
-      label: "Drug Response Category",
+      label: "Drug response category",
       renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
       filterValue: ({ pgxCategory }) => pgxCategory,
     },
     {
       id: "isDirectTarget",
-      label: "Direct Drug Target",
+      label: "Direct drug target",
       renderCell: ({ isDirectTarget }) => {
         const ICON_NAME = isDirectTarget ? faCircleCheck : faCircleXmark;
         return <FontAwesomeIcon icon={ICON_NAME} size="lg" className={classes.blueIcon} />;
@@ -144,7 +144,7 @@ function PharamacogenomicsTable({ pharmacogenomics, query, variables }) {
     },
     {
       id: "confidenceLevel",
-      label: "Confidence Level",
+      label: "Confidence level",
       comparator: (a, b) => (b.evidenceLevel < a.evidenceLevel ? 1 : -1),
       sortable: true,
       tooltip: (
