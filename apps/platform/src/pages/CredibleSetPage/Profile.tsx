@@ -8,16 +8,16 @@ import {
   summaryUtils,
 } from "ui";
 
-// import PharmacogenomicsSummary from "sections/src/variant/Pharmacogenomics/Summary";
+import VariantsSummary from "sections/src/variant/Variants/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
-// const PharmacogenomicsSection = lazy(
-//   () => import("sections/src/variant/Pharmacogenomics/Body")
-// );
+const VariantsSection = lazy(
+  () => import("sections/src/credibleSet/variants/Body")
+);
 
 const summaries = [
-  // PharmacogenomicsSummary,
+  VariantsSummary,
 ];
 
 const CREDIBLE_SET = "credibleSets";
@@ -54,13 +54,13 @@ function Profile({ studyLocusId, variantId }: ProfileProps) {
       <ProfileHeader variantId={variantId} />
 
       <SummaryContainer>
-        {/* <PharmacogenomicsSummary />  */}
+        <VariantsSummary /> 
       </SummaryContainer>
 
       <SectionContainer>
-        {/* <Suspense fallback={<SectionLoader />}>
-          <PharmacogenomicsSection id={varId} entity={VARIANT} />
-        </Suspense> */}
+        <Suspense fallback={<SectionLoader />}>
+          <VariantsSection id={studyLocusId} entity={VARIANT} />
+        </Suspense>
       </SectionContainer>
     </PlatformApiProvider>
   );
