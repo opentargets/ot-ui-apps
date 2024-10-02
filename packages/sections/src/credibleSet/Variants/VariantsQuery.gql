@@ -1,5 +1,5 @@
 query VariantsQuery($studyLocusIds: [String!]!) {
-  credibleSets(studyLocusIds $studyLocusIds) {
+  credibleSets(studyLocusIds: $studyLocusIds) {
     studyLocusId
 		locus {
       is95CredibleSet

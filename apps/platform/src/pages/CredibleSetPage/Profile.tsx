@@ -8,7 +8,7 @@ import {
   summaryUtils,
 } from "ui";
 
-import VariantsSummary from "sections/src/variant/Variants/Summary";
+import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
@@ -41,9 +41,17 @@ const CREDIBLE_SET_PROFILE_QUERY = gql`
 type ProfileProps = {
   studyLocusId: string;
   variantId: string;
+  referenceAllele: string;
+  alternateAllele: string;
 };
 
-function Profile({ studyLocusId, variantId }: ProfileProps) {
+function Profile({
+      studyLocusId,
+      variantId,
+      referenceAllele,
+      alternateAllele,
+    }: ProfileProps) {
+
   return (
     <PlatformApiProvider
       entity={CREDIBLE_SET}
@@ -59,11 +67,18 @@ function Profile({ studyLocusId, variantId }: ProfileProps) {
 
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
-          <VariantsSection id={studyLocusId} entity={VARIANT} />
+          <VariantsSection
+            studyLocusId={studyLocusId}
+            leadVariantId={variantId}
+            leadReferenceAllele={referenceAllele}
+            leadAlternateAllele={alternateAllele}
+            entity={CREDIBLE_SET}
+          />
         </Suspense>
       </SectionContainer>
     </PlatformApiProvider>
   );
+
 }
 
 export default Profile;
