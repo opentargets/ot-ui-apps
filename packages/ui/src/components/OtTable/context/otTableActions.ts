@@ -30,6 +30,13 @@ export function setLoading(loading: boolean): Action {
 
 export function addRows(payload: Record<string, unknown>): Action {
   return {
+    type: ActionType.ADD_DATA,
+    payload,
+  };
+}
+
+export function setNewData(payload: Record<string, unknown>): Action {
+  return {
     type: ActionType.SET_DATA,
     payload,
   };

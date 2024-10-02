@@ -26,12 +26,12 @@ export function otTableReducer(
         loading: action.loading,
       };
     }
-    case ActionType.PAGE_SIZE_CHANGE: {
+    case ActionType.TEXT_SEARCH: {
       return {
         ...state,
-        /**
-         *
-         */
+        loading: true,
+        freeTextQuery: action.freeQueryText,
+        cursor: null,
       };
     }
     case ActionType.SET_DATA: {
@@ -39,6 +39,14 @@ export function otTableReducer(
         ...state,
         loading: false,
         count: action.payload.count,
+        cursor: action.payload.cursor,
+        rows: action.payload.rows,
+      };
+    }
+    case ActionType.ADD_DATA: {
+      return {
+        ...state,
+        loading: false,
         cursor: action.payload.cursor,
         rows: [...state.rows, ...action.payload.rows],
       };

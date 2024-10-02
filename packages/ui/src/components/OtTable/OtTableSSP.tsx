@@ -1,8 +1,7 @@
-import { ReactElement, useEffect, useMemo, useReducer, useState } from "react";
+import { ReactElement, useEffect, useReducer, useState } from "react";
 import { Box, CircularProgress, Grid, IconButton, NativeSelect } from "@mui/material";
 import {
   useReactTable,
-  ColumnFiltersState,
   getCoreRowModel,
   getPaginationRowModel,
   flexRender,
@@ -17,18 +16,12 @@ import OtTableSearch from "./OtTableSearch";
 import { OtTableSSPProps } from "./types/tableTypes";
 import { OtTableContainer, OtTableHeader, OtTH, OtTableHeaderText, OtTD } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
-import {
-  getCurrentPagePosition,
-  getDefaultSortObj,
-  getFilterValueFromObject,
-  mapTableColumnToTanstackColumns,
-} from "./utils/tableUtils";
+import { getCurrentPagePosition } from "./utils/tableUtils";
 import Tooltip from "../Tooltip";
 
-import useDebounce from "../../hooks/useDebounce";
 import { getTableRows } from "./service/tableService";
 import { createInitialState, otTableReducer } from "./context/otTableReducer";
-import { addRows, setLoading } from "./context/otTableActions";
+import { addRows, setLoading, setNewData, textSearch } from "./context/otTableActions";
 import { naLabel } from "../../constants";
 
 function OtTableSSP({
@@ -40,13 +33,20 @@ function OtTableSSP({
   entity,
   sectionName,
 }: OtTableSSPProps): ReactElement {
-  const [globalFilter, setGlobalFilter] = useState("");
   const [state, dispatch] = useReducer(otTableReducer, "", createInitialState);
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   const table = useReactTable({
     data: state.rows,
     columns,
     rowCount: state.count,
+    state: {
+      pagination,
+    },
     autoResetPageIndex: false,
     // manualPagination: true,
     onPaginationChange: onPaginationChange,
@@ -54,77 +54,119 @@ function OtTableSSP({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  // Manage your own state
-  const [customState, setCustomState] = useState(table.initialState);
-
-  // Override the state managers for the table to your own
-  // table.setOptions(prev => ({
-  //   ...prev,
-  //   state: customState,
-  //   onStateChange: setCustomState,
-  //   // These are just table options, so if things
-  //   // need to change based on your state, you can
-  //   // derive them here
-
-  //   // Just for fun, let's debug everything if the pageIndex
-  //   // is greater than 2
-  // }));
+  /**********************************************
+   * DEFAULT FUNCTION CALLBACK TRIGGERED BY
+   * REACT TABLE IN ANY PAGE CHANGE EVENT *
+   * @param:
+   * updater: @type callback function
+   **********************************************/
 
   function onPaginationChange(updater) {
-    const { pagination } = table.options.state;
     const newPagination = updater(pagination);
-    console.log(pagination);
-    console.log(newPagination);
-    // table.setPageIndex(newPagination.pageIndex);
-    console.log(table.options.state);
-    return newPagination;
-  }
 
-  function onPageChange(newIndex: string) {
-    console.log("onPageChange new index", newIndex);
-    // let newDataRequired = false;
-    // if(state.index > newIndex) {
-    //   newDataRequired = true;
+    // switch () {
+    //   case (pagination.pageSize !== newPagination.pageSize): {
+    //     onPageSizeChange(newPagination);
+    //     break;
+    //   }
+    //   case (newPagination.pageIndex > pagination.pageIndex): {
+    //     onPageChange(newPagination);
+    //     break;
+    //   }
+    //   default: {
+    //   setPagination(newPagination);
+    //   break;
+    //   }
     // }
-    // if(!newDataRequired) return table.setPageIndex(Number(newIndex));
 
-    // dispatch(setLoading(true));
-    // dispatch(onPageSizeChange());
-    // getTableRows(query, variables, state.cursor, state.size, state.freeTextQuery).then(d => {
-    //   console.log(d);
-    //   // d.data[entity][sectionName];
-    //   // dispatch(setdata);
-    // });
-    // return table.setPageIndex(Number(newIndex));
+    if (pagination.pageSize !== newPagination.pageSize) {
+      onPageSizeChange(newPagination);
+    } else if (newPagination.pageIndex > pagination.pageIndex) {
+      onPageChange(newPagination);
+    } else {
+      setPagination(newPagination);
+    }
   }
 
-  function onPageSizeChange(newSize: string) {
-    console.log("onPageChange new size", newSize);
+  /**********************************************
+   * FUNCTION FOR PAGE INDEX CHANGE
+   * CHECK IF MORE DATA IS REQUIRED BY CHECKING
+   * NUMBER OF ROWS ALREADY FETCHED, PREVENT EXCESSIVE
+   * API CALLS IN CASE USER PAGINATE BACK AND FORTH
+   * @param:
+   * newPagination: @type PaginationState "@tanstack/react-table"
+   **********************************************/
+  function onPageChange(newPagination: PaginationState) {
+    if (needMoreData(pagination.pageSize, newPagination.pageIndex)) {
+      addNewData(newPagination);
+    } else {
+      setPagination(newPagination);
+    }
+  }
 
-    // dispatch(setLoading(true));
-    // dispatch(onPageSizeChange());
-    // getTableRows(query, variables, state.cursor, state.size, state.freeTextQuery).then(d => {
-    //   console.log(d);
-    //   // d.data[entity][sectionName];
-    //   // dispatch(setdata);
-    // });
-    // table.setPageSize(Number(newSize));
+  /**********************************************
+   * FUNCTION FOR PAGE SIZE CHANGE
+   * @param:
+   * newPagination: @type PaginationState "@tanstack/react-table"
+   **********************************************/
+  function onPageSizeChange(newPagination: PaginationState) {
+    setTableData({ newPagination });
+  }
+
+  /**********************************************
+   * FUNCTION TO FETCH MORE DATA (PAGINATION)
+   * SETTING LOADING TRUE BEFORE FETCHING
+   * FETCH DATA AS PER TABLE STATE
+   * SETS PAGINATION AFTER DATA IS FETCHED TO AVOID
+   * SHOWING EMPTY ROWS
+   * @param:
+   * newPagination: @type PaginationState "@tanstack/react-table"
+   **********************************************/
+
+  function addNewData(newPagination: PaginationState) {
+    dispatch(setLoading(true));
+    getTableRows(query, variables, state.cursor, pagination.pageSize, state.freeTextQuery).then(
+      d => {
+        dispatch(addRows(d.data[entity][sectionName]));
+        setPagination(newPagination);
+      }
+    );
+  }
+
+  /**********************************************
+   * FUNCTION TO FETCH NEW DATA (PAGE SIZE CHANGE OR SEARCH TEXT)
+   * SETTING LOADING TRUE BEFORE FETCHING
+   * FETCH DATA AND PASSING CURSOR AS NULL
+   * @param:
+   * newPagination: @type PaginationState "@tanstack/react-table"
+   **********************************************/
+  function setTableData({ newPagination = pagination, freeTextQuery = state.freeTextQuery }) {
+    dispatch(setLoading(true));
+    getTableRows(query, variables, null, newPagination.pageSize, freeTextQuery).then(d => {
+      dispatch(setNewData(d.data[entity][sectionName]));
+    });
+  }
+
+  /**********************************************
+   * FUNCTION TO TO CHECK IF MORE DATA IS NEEDED
+   * IN CASE USER PAGINATE BACKWARDS
+   * @param:
+   * pageSize: number
+   * pageIndex: number
+   * @return : boolean
+   **********************************************/
+  function needMoreData(pageSize: number, pageIndex: number) {
+    const dataLength = table.options.data.length;
+    return dataLength < (pageIndex + 1) * pageSize;
   }
 
   useEffect(() => {
-    getTableRows(
-      query,
-      variables,
-      state.cursor,
-      table.options.state.pagination?.pageSize,
-      state.freeTextQuery
-    ).then(d => {
-      console.log(d.data[entity][sectionName]);
-      // d.data[entity][sectionName];
-      dispatch(addRows(d.data[entity][sectionName]));
-    });
-    // update with debounce
-  }, [globalFilter]);
+    const newPagination = {
+      pageIndex: 0,
+      pageSize: pagination.pageSize,
+    };
+    setTableData({ newPagination, freeTextQuery: state.freeTextQuery });
+  }, [state.freeTextQuery]);
 
   return (
     <div>
@@ -132,7 +174,11 @@ function OtTableSSP({
       <Grid container>
         {showGlobalFilter && (
           <Grid item sm={12} md={4}>
-            <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />
+            <OtTableSearch
+              setGlobalSearchTerm={freeTextQuery => {
+                dispatch(textSearch(freeTextQuery));
+              }}
+            />
           </Grid>
         )}
         {/* {dataDownloader && (
@@ -226,10 +272,13 @@ function OtTableSSP({
           <NativeSelect
             disableUnderline
             sx={{ pl: theme => theme.spacing(2) }}
-            value={table.getState().pagination.pageSize}
+            value={pagination.pageSize}
             onChange={e => {
-              // onPageSizeChange(e.target.value);
               table.setPageSize(Number(e.target.value));
+              setPagination({
+                pageIndex: 0,
+                pageSize: Number(e.target.value),
+              });
             }}
           >
             {/* TODO: set page size  */}
@@ -249,35 +298,29 @@ function OtTableSSP({
           }}
         >
           <div>
-            {/* TODO: get correct page position */}
             <span>
-              {/* TODO: check if  page position multiply by page size  */}
-              {/*  <strong>
-            {table.getState().pagination.pageIndex + 1} of{' '}
-            {table.getPageCount()}
-          </strong>
-               */}
-              {getCurrentPagePosition(
-                table.getState().pagination.pageIndex,
-                table.getState().pagination.pageSize,
-                table.getGroupedRowModel().rows.length
-              )}
+              {getCurrentPagePosition(pagination.pageIndex, pagination.pageSize, state.count)}
             </span>
           </div>
 
           <div className="paginationAction">
-            {/* TODO: disable button while loading */}
             <IconButton
               onClick={() => table.setPageIndex(0)}
-              // disabled={!table.getCanPreviousPage()}
+              disabled={!table.getCanPreviousPage() || state.loading}
             >
               <FontAwesomeIcon size="2xs" icon={faBackwardStep} />
             </IconButton>
-            <IconButton onClick={() => table.previousPage()}>
+            <IconButton
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage() || state.loading}
+            >
               <FontAwesomeIcon size="2xs" icon={faAngleLeft} />
             </IconButton>
 
-            <IconButton onClick={() => table.nextPage()}>
+            <IconButton
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage() || state.loading}
+            >
               <FontAwesomeIcon size="2xs" icon={faAngleRight} />
             </IconButton>
           </div>

@@ -351,7 +351,7 @@ function Body({
 
   return (
     <>
-      {/* <SectionItem
+      <SectionItem
         definition={definition}
         entity={entity}
         request={{
@@ -393,7 +393,7 @@ function Body({
             variables={variables}
           />
         )}
-      /> */}
+      />
       <SectionItem
         definition={definition}
         entity={entity}

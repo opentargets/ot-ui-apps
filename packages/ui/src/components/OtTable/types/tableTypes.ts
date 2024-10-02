@@ -51,7 +51,7 @@ export type OtTableSSPState = {
  *************************/
 
 export type OtTableSearchProps = {
-  setGlobalSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  setGlobalSearchTerm: (s: string) => void;
 };
 
 /*****************
@@ -64,6 +64,7 @@ export enum ActionType {
   TEXT_SEARCH = "TEXT_SEARCH",
   SET_LOADING = "SET_LOADING",
   SET_DATA = "SET_DATA",
+  ADD_DATA = "ADD_DATA",
 }
 
 export type Action =
@@ -71,4 +72,5 @@ export type Action =
   | { type: ActionType.PAGE_CHANGE; payload: Record<string, unknown> }
   | { type: ActionType.TEXT_SEARCH; freeQueryText: string }
   | { type: ActionType.SET_DATA; payload: Record<string, unknown> }
+  | { type: ActionType.ADD_DATA; payload: Record<string, unknown> }
   | { type: ActionType.SET_LOADING; loading: boolean };
