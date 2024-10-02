@@ -139,14 +139,14 @@ function getColumns({
       label: "Posterior probability",
       filterValue: false,
       tooltip: <>
-        Probability the fixed page variant (
+        Posterior inclusion probability that the fixed page variant (
         <DisplayVariantId
           variantId={id}
           referenceAllele={referenceAllele}
           alternateAllele={alternateAllele}
           expand={false}
         />
-        ) is in the credible set.
+        ) is causal.
       </>,
       comparator: (rowA, rowB) => (
         posteriorProbabilities.get(rowA.locus) -
