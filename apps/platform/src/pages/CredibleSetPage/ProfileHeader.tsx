@@ -61,7 +61,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
               </Tooltip>
             }
           >
-            {beta.toPrecision(2)}
+            {beta.toPrecision(3)}
           </Field>
         }
         {typeof standardError === 'number' &&
@@ -80,12 +80,12 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
               </Tooltip>
             }
           >
-            {standardError.toPrecision(2)}
+            {standardError.toPrecision(3)}
           </Field>
         }
         {typeof credibleSet?.effectAlleleFrequencyFromSource === "number" &&
           <Field loading={loading} title="EAF">
-            {credibleSet.effectAlleleFrequencyFromSource.toPrecision(2)}
+            {credibleSet.effectAlleleFrequencyFromSource.toPrecision(3)}
           </Field>
         }
         {typeof leadVariant?.posteriorProbability === "number" &&
@@ -104,7 +104,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
               </Tooltip>
             }
           >
-            {leadVariant.posteriorProbability.toPrecision(2)}
+            {leadVariant.posteriorProbability.toPrecision(3)}
           </Field>
         }
         <Field loading={loading} title="GRCh38">
@@ -139,7 +139,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
           {credibleSet?.credibleSetIndex}
         </Field>
         <Field loading={loading} title="Purity min">
-          {credibleSet?.purityMinR2?.toPrecision(2)}
+          {credibleSet?.purityMinR2?.toPrecision(3)}
         </Field>
         <Field loading={loading} title="Start">
           {credibleSet?.locusStart}
