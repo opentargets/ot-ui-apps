@@ -6,6 +6,10 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
   effectAlleleFrequencyFromSource
   locus {
     posteriorProbability
+    pValueMantissa
+    pValueExponent
+    beta
+    standardError
     variant {
       id
     }

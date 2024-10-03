@@ -20,29 +20,19 @@ function Header({
   return (
     <HeaderBase
       loading={loading}
-      title={
-        <>
-          Credible set around{" "}
-          <DisplayVariantId
-            variantId={variantId}
-            referenceAllele={referenceAllele}
-            alternateAllele={alternateAllele}
-          />
-          {" "}for study {studyId}
-        </>
-      } 
+      title="Credible set" 
       Icon={faDiagramProject}
       externalLinks={
         <>
           <ExternalLink
-            title="Variant ID"
+            title="Lead variant"
             id={variantId &&
-                <DisplayVariantId
-                  variantId={variantId}
-                  referenceAllele={referenceAllele}
-                  alternateAllele={alternateAllele}
-                  expand={false}
-                />
+              <DisplayVariantId
+                variantId={variantId}
+                referenceAllele={referenceAllele}
+                alternateAllele={alternateAllele}
+                expand={false}
+              />
             }
             url={`../variant/${variantId}`}
           />
