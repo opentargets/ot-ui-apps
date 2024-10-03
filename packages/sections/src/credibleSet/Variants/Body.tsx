@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client";
+import { Box, Chip } from "@mui/material";
 import {
   Link,
   SectionItem,
@@ -36,7 +37,7 @@ function getColumns({
       renderCell: ({ variant }) => {
         if (!variant) return naLabel;
         const { id: variantId, referenceAllele, alternateAllele } = variant;
-        return <Link to={`/variant/${variantId}`}>
+        const displayElement = <Link to={`/variant/${variantId}`}>
           <DisplayVariantId
             variantId={variantId}
             referenceAllele={referenceAllele}
@@ -44,6 +45,13 @@ function getColumns({
             expand={false}
           />
         </Link>;
+        if (variantId === leadVariantId) {
+          return <Box display="flex" alignItems="center" gap={0.5}>
+            {displayElement}
+            <Chip label="lead" variant="outlined" size="small"/>
+          </Box>;
+        }
+        return displayElement;
       },
       exportValue: ({ variant }) => variant?.id,
     },
@@ -172,7 +180,8 @@ function Body({
           <DataTable
             dataDownloader
             showGlobalFilter
-            sortBy="pValue"
+            sortBy="posteriorProbability"
+            order="desc"
             columns={columns}
             rows={credibleSets[0].locus}
             rowsPerPageOptions={defaultRowsPerPageOptions}
