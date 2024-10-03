@@ -5,6 +5,7 @@ import {
   ProfileHeader as BaseProfileHeader,
   Link,
   ScientificNotation,
+  Tooltip,
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
@@ -25,29 +26,87 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
   const study = credibleSet?.study;
   const studyCategory = study ? getStudyCategory(study) : null;
   const target = study?.target;
-  const posteriorProbability =
-    credibleSet?.locus?.find(loc => loc?.variant.id === variantId)?.posteriorProbability;
+  const leadVariant = credibleSet?.locus?.find(loc => loc?.variant.id === variantId);
+  const beta = leadVariant?.beta ?? credibleSet?.beta;
+  const standardError = leadVariant?.standardError ?? credibleSet?.standardError;
+  const { pValueMantissa, pValueExponent } =
+    typeof leadVariant?.pValueMantissa === "number" &&
+    typeof leadVariant?.pValueExponent === "number"
+      ? leadVariant
+      : credibleSet ?? {};
 
   return (
     <BaseProfileHeader>
         
       <Box>
         <Typography variant="subtitle1" mt={0}>Lead Variant</Typography>
-        <Field loading={loading} title="P-value">
-          <ScientificNotation number={[credibleSet?.pValueMantissa, credibleSet?.pValueExponent]} />
-        </Field>
-        <Field loading={loading} title="Beta">
-          {credibleSet?.beta?.toPrecision(3)}
-        </Field>
-        <Field loading={loading} title="Standard error">
-          {credibleSet?.standardError?.toPrecision(3)}
-        </Field>
-        <Field loading={loading} title="EAF">
-          {credibleSet?.effectAlleleFrequencyFromSource?.toPrecision(3)}
-        </Field>
-        <Field loading={loading} title="Posterior probability">
-          {posteriorProbability?.toPrecision(3)}
-        </Field>
+        {typeof pValueMantissa === "number" && typeof pValueExponent === "number" &&
+          <Field loading={loading} title="P-value">
+            <ScientificNotation number={[pValueMantissa, pValueExponent]} />
+          </Field>
+        }
+        {typeof beta === 'number' &&
+          <Field
+            loading={loading}
+            title={
+              <Tooltip
+                title={
+                  <Typography variant="caption">
+                    Beta with respect to the ALT allele
+                  </Typography>
+                }
+                showHelpIcon
+              >
+                Beta
+              </Tooltip>
+            }
+          >
+            {beta.toPrecision(2)}
+          </Field>
+        }
+        {typeof standardError === 'number' &&
+          <Field
+            loading={loading}
+            title={
+              <Tooltip
+                title={
+                  <Typography variant="caption">
+                    Standard error: Estimate of the standard deviation of the sampling distribution of the beta
+                  </Typography>
+                }
+                showHelpIcon
+              >
+                Standard error
+              </Tooltip>
+            }
+          >
+            {standardError.toPrecision(2)}
+          </Field>
+        }
+        {typeof credibleSet?.effectAlleleFrequencyFromSource === "number" &&
+          <Field loading={loading} title="EAF">
+            {credibleSet.effectAlleleFrequencyFromSource.toPrecision(2)}
+          </Field>
+        }
+        {typeof leadVariant?.posteriorProbability === "number" &&
+          <Field
+            loading={loading}
+            title={
+              <Tooltip
+                title={
+                  <Typography variant="caption">
+                    Posterior inclusion probability from fine-mapping that this variant is causal
+                  </Typography>
+                }
+                showHelpIcon
+              >
+                Posterior probability
+              </Tooltip>
+            }
+          >
+            {leadVariant.posteriorProbability.toPrecision(2)}
+          </Field>
+        }
         <Field loading={loading} title="GRCh38">
           {credibleSet?.variant &&
             `${credibleSet.variant.chromosome}:${credibleSet.variant.position}`
@@ -80,7 +139,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
           {credibleSet?.credibleSetIndex}
         </Field>
         <Field loading={loading} title="Purity min">
-          {credibleSet?.purityMinR2?.toPrecision(3)}
+          {credibleSet?.purityMinR2?.toPrecision(2)}
         </Field>
         <Field loading={loading} title="Start">
           {credibleSet?.locusStart}
