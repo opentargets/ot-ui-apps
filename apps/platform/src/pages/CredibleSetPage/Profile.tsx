@@ -13,7 +13,7 @@ import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 const VariantsSection = lazy(
-  () => import("sections/src/credibleSet/variants/Body")
+  () => import("sections/src/credibleSet/Variants/Body")
 );
 
 const summaries = [
