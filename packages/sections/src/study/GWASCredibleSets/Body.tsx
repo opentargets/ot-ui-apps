@@ -91,7 +91,7 @@ const columns = [
     id: "l2gScore",
     label: "L2G score",
     comparator: (rowA, rowB) => (
-      rowA?.strongestLocus2gene.score - rowB?.strongestLocus2gene.score
+      rowA?.strongestLocus2gene?.score - rowB?.strongestLocus2gene?.score
     ),
     sortable: true,
     filterValue: false,
