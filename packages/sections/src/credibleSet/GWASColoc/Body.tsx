@@ -13,19 +13,13 @@ import GWAS_COLOC_QUERY from "./GWASColocQuery.gql";
 import { variantComparator } from "../../utils/comparators";
 import { getStudyCategory } from "../../utils/getStudyCategory";
 
-type getColumnsType = {
-  leadVariantId: string;
-  leadReferenceAllele: string;
-  leadAlternateAllele: string;
-};
-
 const columns = [
   {
     id: "view",
     label: "Details",
     renderCell: ({ otherStudyLocus }) => {
       if (!otherStudyLocus) return naLabel;
-      return <Link to={`../credible-set/${otherStudyLocus.studyLocusId}`}>
+      return <Link to={`./${otherStudyLocus.studyLocusId}`}>
         view
       </Link>;
     },
@@ -62,19 +56,19 @@ const columns = [
         : publicationFirstAuthor || naLabel
     },
     exportValue: ({ otherStudyLocus }) => {
-      const { projectId, publicationFirstAuthor } = otherStudyLocus.study;
+      const { projectId, publicationFirstAuthor } = otherStudyLocus.study || {};
       getStudyCategory(projectId) === "FINNGEN"
         ? "FinnGen"
         : publicationFirstAuthor
     },
   },
   {
-    id: "variant.id",
+    id: "otherStudyLocus.variant.id",
     label: "Lead Variant",
     comparator: variantComparator,
     sortable: true,
     filterValue: ({ otherStudyLocus }) => {
-      const { variant: v } = otherStudyLocus; 
+      const v = otherStudyLocus?.variant;
       return `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`
     },
     renderCell: ({ otherStudyLocus }) => {
@@ -131,6 +125,7 @@ const columns = [
     </>,
     filterValue: false,
     comparator: (a, b) => a?.h3 - b?.h3,
+    sortable: true,
     renderCell: ({ h3 }) => {
       if (typeof h3 !== 'number') return naLabel;
       return h3.toPrecision(3);
@@ -142,6 +137,7 @@ const columns = [
     tooltip: "Posterior probability that the signals colocalise",
     filterValue: false,
     comparator: (a, b) => a?.h4 - b?.h4,
+    sortable: true,
     renderCell: ({ h4 }) => {
       if (typeof h4 !== 'number') return naLabel;
       return h4.toPrecision(3);
@@ -152,6 +148,7 @@ const columns = [
     label: "CLPP",
     filterValue: false,
     comparator: (a, b) => a?.clpp - b?.clpp,
+    sortable: true,
     renderCell: ({ clpp }) => {
       if (typeof clpp !== 'number') return naLabel;
       return clpp.toPrecision(3);
