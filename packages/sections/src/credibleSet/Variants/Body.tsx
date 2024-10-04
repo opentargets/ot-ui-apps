@@ -106,7 +106,7 @@ function getColumns({
             alternateAllele={leadAlternateAllele}
             expand={false}
           />
-        ).
+        )
       </>,
       renderCell: ({ r2Overall }) => {
         if (typeof r2Overall !== "number") return naLabel;
