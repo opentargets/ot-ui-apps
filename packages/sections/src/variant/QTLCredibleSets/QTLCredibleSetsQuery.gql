@@ -7,6 +7,7 @@ query QTLCredibleSetsQuery($variantId: String!) {
         studyTypes: [sqtl, pqtl, eqtl, tuqtl],
         page: { size: 2000, index: 0 }
       ) {
+      studyLocusId
       variant {
         id
         chromosome
@@ -21,7 +22,9 @@ query QTLCredibleSetsQuery($variantId: String!) {
           id
           approvedSymbol
         }
-        biosampleFromSourceId
+        biosample {
+          biosampleId
+        }          
       }
       pValueMantissa
       pValueExponent

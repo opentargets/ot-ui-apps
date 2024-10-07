@@ -14,8 +14,17 @@ import { variantComparator } from "../../utils/comparators";
 
 const columns = [
   {
+    id: "view",
+    label: "Details",
+    renderCell: ({ studyLocusId }) => (
+      <Link to={`../credible-set/${studyLocusId}`}>view</Link>
+    ),
+    filterValue: false,
+    exportValue: false,
+  },
+  {
     id: "leadVariant",
-    label: "Lead Variant",
+    label: "Lead variant",
     comparator: variantComparator,
     sortable: true,
     filterValue: ({ variant: v }) => (
@@ -37,7 +46,7 @@ const columns = [
   },
   {
     id: "pValue",
-    label: "P-Value",
+    label: "P-value",
     comparator: (a, b) =>
       a?.pValueMantissa * 10 ** a?.pValueExponent -
         b?.pValueMantissa * 10 ** b?.pValueExponent,
@@ -66,11 +75,11 @@ const columns = [
   },
   {
     id: "finemappingMethod",
-    label: "Finemapping Method",
+    label: "Finemapping method",
   },
   {
     id: "credibleSetSize",
-    label: "Credible Set Size",
+    label: "Credible set size",
     comparator: (a, b) => a.locus?.length - b.locus?.length,
     sortable: true,
     filterValue: false,
