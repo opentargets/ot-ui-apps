@@ -30,7 +30,7 @@ function getColumns({
   return [
     {
       id: "leadVariant",
-      label: "Lead Variant",
+      label: "Lead variant",
       comparator: variantComparator,
       sortable: true,
       filterValue: ({ variant: v }) => (
@@ -81,7 +81,7 @@ function getColumns({
     },
     {
       id: "study.target.approvedSymbol",
-      label: "Affected Gene",
+      label: "Affected gene",
       renderCell: ({ study }) => {
         if (!study?.target) return naLabel;
         return <Link to={`/target/${study.target.id}`}>
@@ -90,12 +90,13 @@ function getColumns({
       },
     },
     {
-      id: "study.biosampleFromSourceId",
-      label: "Affected Tissue/Cell",
+      id: "study.biosample.biosampleId",
+      label: "Affected tissue/cell",
       renderCell: ({ study }) => {
-        if (!study?.biosampleFromSourceId) return naLabel;
-        return <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${study.biosampleFromSourceId}&ontology=uberon`}>
-          {study.biosampleFromSourceId}
+        const { biosampleId } = study?.biosample; 
+        if (!biosampleId) return naLabel;
+        return <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosampleId}&ontology=uberon`}>
+          {biosampleId}
         </Link>
       },
     },
@@ -106,7 +107,7 @@ function getColumns({
     },
     {
       id: "pValue",
-      label: "P-Value",
+      label: "P-value",
       comparator: (a, b) =>
         a?.pValueMantissa * 10 ** a?.pValueExponent -
           b?.pValueMantissa * 10 ** b?.pValueExponent,
@@ -135,17 +136,17 @@ function getColumns({
     },
     {
       id: "posteriorProbability",
-      label: "Posterior Probability",
+      label: "Posterior probability",
       filterValue: false,
       tooltip: <>
-        Probability the fixed page variant (
+        Posterior inclusion probability that the fixed page variant (
         <DisplayVariantId
           variantId={id}
           referenceAllele={referenceAllele}
           alternateAllele={alternateAllele}
           expand={false}
         />
-        ) is in the credible set.
+        ) is causal.
       </>,
       comparator: (rowA, rowB) => (
         posteriorProbabilities.get(rowA.locus) -
@@ -157,11 +158,11 @@ function getColumns({
     },
     {
       id: "finemappingMethod",
-      label: "Finemapping Method",
+      label: "Finemapping method",
     },
     {
       id: "credibleSetSize",
-      label: "Credible Set Size",
+      label: "Credible set size",
       comparator: (a, b) => a.locus?.length - b.locus?.length,
       sortable: true,
       filterValue: false,

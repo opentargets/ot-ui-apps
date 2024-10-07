@@ -15,7 +15,7 @@ import { variantComparator } from "../../utils/comparators";
 const columns = [
   {
     id: "leadVariant",
-    label: "Lead Variant",
+    label: "Lead variant",
     comparator: variantComparator,
     sortable: true,
     filterValue: ({ variant: v }) => (
@@ -37,7 +37,7 @@ const columns = [
   },
   {
     id: "pValue",
-    label: "P-Value",
+    label: "P-value",
     comparator: (a, b) =>
       a?.pValueMantissa * 10 ** a?.pValueExponent -
         b?.pValueMantissa * 10 ** b?.pValueExponent,
@@ -67,7 +67,7 @@ const columns = [
 
   {
     id: "finemappingMethod",
-    label: "Finemapping Method",
+    label: "Finemapping method",
   },
   {
     id: "topL2G",
@@ -91,7 +91,7 @@ const columns = [
     id: "l2gScore",
     label: "L2G score",
     comparator: (rowA, rowB) => (
-      rowA?.strongestLocus2gene.score - rowB?.strongestLocus2gene.score
+      rowA?.strongestLocus2gene?.score - rowB?.strongestLocus2gene?.score
     ),
     sortable: true,
     filterValue: false,
@@ -103,7 +103,7 @@ const columns = [
   },
   {
     id: "credibleSetSize",
-    label: "Credible Set Size",
+    label: "Credible set size",
     comparator: (a, b) => a.locus?.length - b.locus?.length,
     sortable: true,
     filterValue: false,

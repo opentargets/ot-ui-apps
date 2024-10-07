@@ -21,7 +21,9 @@ query QTLCredibleSetsQuery($variantId: String!) {
           id
           approvedSymbol
         }
-        biosampleFromSourceId
+        biosample {
+          biosampleId
+        }          
       }
       pValueMantissa
       pValueExponent
