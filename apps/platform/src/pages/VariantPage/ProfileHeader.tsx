@@ -29,12 +29,12 @@ function ProfileHeader() {
         </Field>
         <Allele
           loading={loading}
-          label="Reference Allele"
+          label="Reference allele"
           value={data?.variant.referenceAllele}
         />
         <Allele
           loading={loading}
-          label="Alternative Allele (effect allele)"
+          label="Alternative allele (effect allele)"
           value={data?.variant.alternateAllele}
         />
         <Typography variant="subtitle1" mt={1}>Variant Effect Predictor (VEP)</Typography>

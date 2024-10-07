@@ -5,7 +5,6 @@ import {
   ProfileHeader as BaseProfileHeader,
   Tooltip,
 } from "ui";
-import { naLabel } from "../../constants";
 import { Typography, Box } from "@mui/material";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
@@ -39,6 +38,7 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
     nSamples,
     initialSampleSize,
     replicationSamples,
+    traitFromSource,
     nCases,
     nControls,
     cohorts,
@@ -54,22 +54,21 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
         <Field loading={loading} title="Author">
           { 
             studyCategory === "GWAS" || studyCategory === "QTL"
-              ? (publicationFirstAuthor ?? naLabel)
+              ? publicationFirstAuthor
               : "FINNGEN_R10"
           }
         </Field>
         <Field loading={loading} title="Publication date">
           { 
             studyCategory === "GWAS" || studyCategory === "QTL"
-              ? (publicationDate ?? naLabel)
+              ? publicationDate
               : "2023"
           }
         </Field>
         <Field loading={loading} title="Journal">
           { 
-            studyCategory === "GWAS" || studyCategory === "QTL"
-              ? (publicationJournal ?? naLabel)
-              : naLabel
+            (studyCategory === "GWAS" || studyCategory === "QTL") &&
+            publicationJournal
           } 
         </Field>
         <Field loading={loading} title="PubMed">
@@ -78,16 +77,19 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
               ? <Link external to={`https://europepmc.org/article/med/${pubmedId}`}>
                   {pubmedId}
                 </Link>
-              : naLabel
+              : null
           } 
         </Field>
+        <Field loading={loading} title="Trait from source">
+          {traitFromSource}
+        </Field>
         <Field loading={loading} title="Sample size">
-          {nSamples ?? naLabel}
+          {nSamples}
         </Field>
         <Field loading={loading} title="N discovery">
           { 
             studyCategory === "GWAS"
-              ? (initialSampleSize ?? naLabel)
+              ? initialSampleSize
               : studyCategory === "FINNGEN"
                 ? (discoverySamples?.length
                     ? (initialSampleSize
@@ -103,77 +105,73 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
                           </Tooltip>
                         : formatSamples(discoverySamples)
                       )
-                    : naLabel
+                    : null
                   )
-                : naLabel
+                : null
           } 
         </Field>
         <Field loading={loading} title="N replication">
             { 
-              studyCategory === "GWAS"
-                ? (replicationSamples?.length
-                    ? formatSamples(replicationSamples)
-                    : naLabel
-                  )
-                : naLabel
+              studyCategory === "GWAS" &&
+              replicationSamples?.length &&
+              formatSamples(replicationSamples)
             }
           </Field>
           <Field loading={loading} title="N cases">
             { 
               (studyCategory === "GWAS" || studyCategory === "FINNGEN") &&
-              (typeof nCases === "number")
-                ? nCases
-                : naLabel
+              (typeof nCases === "number") &&
+              nCases
             } 
           </Field>
           <Field loading={loading} title="N controls">
             { 
               (studyCategory === "GWAS" || studyCategory === "FINNGEN") && 
-              (typeof nControls === "number")
-                ? nControls
-                : naLabel
+              (typeof nControls === "number") &&
+              nControls
             } 
           </Field>
           <Field loading={loading} title="Cohorts">
             { 
-              (studyCategory === "GWAS" && cohorts?.length) || (studyCategory === "FINNGEN")
-                ? (ldPopulationStructure?.length
-                    ? <Tooltip
-                        title={
-                          <>
-                            <Typography variant="subtitle2" display="block" align="center">
-                              LD populations and relative sample sizes
+              (
+                (studyCategory === "GWAS" && cohorts?.length) ||
+                (studyCategory === "FINNGEN")
+              ) && (ldPopulationStructure?.length
+                ? <Tooltip
+                    title={
+                      <>
+                        <Typography variant="subtitle2" display="block" align="center">
+                          LD populations and relative sample sizes
+                        </Typography>
+                        {ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
+                          <Box key={ldPopulation}>
+                            <Typography variant="caption">
+                              {ldPopulation}: {relativeSampleSize}
                             </Typography>
-                            {ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
-                              <Box key={ldPopulation}>
-                                <Typography variant="caption">
-                                  {ldPopulation}: {relativeSampleSize}
-                                </Typography>
-                              </Box>
-                            ))}
-                          </>
-                        }
-                        showHelpIcon
-                      >
-                        {studyCategory === 'GWAS' ? cohorts.join(", ") : "FinnGen"}
-                      </Tooltip>
-                    : (studyCategory === 'GWAS' ? cohorts.join(", ") : "FinnGen")
-                  )
-                : naLabel
+                          </Box>
+                        ))}
+                      </>
+                    }
+                    showHelpIcon
+                  >
+                    {studyCategory === 'GWAS' ? cohorts.join(", ") : "FinnGen"}
+                  </Tooltip>
+                : (studyCategory === 'GWAS' ? cohorts.join(", ") : "FinnGen")
+              )
             }
           </Field>
           <Field loading={loading} title="QC">
             { 
-              studyCategory === "GWAS" && qualityControls?.length
-                ? qualityControls.join(", ")
-                : naLabel
+              studyCategory === "GWAS" &&
+              qualityControls?.length &&
+              qualityControls.join(", ")
             } 
           </Field>
           <Field loading={loading} title="Study flags">
             { 
-              studyCategory === "GWAS" && analysisFlags?.length
-                ? analysisFlags.join(", ")
-                : naLabel
+              studyCategory === "GWAS" &&
+              analysisFlags?.length &&
+              analysisFlags.join(", ")
             } 
           </Field>
       </>
