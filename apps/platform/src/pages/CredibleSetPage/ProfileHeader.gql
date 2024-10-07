@@ -1,0 +1,42 @@
+fragment CredibleSetProfileHeaderFragment on credibleSet {
+  pValueMantissa
+  pValueExponent
+  beta
+  standardError
+  effectAlleleFrequencyFromSource
+  locus {
+    posteriorProbability
+    pValueMantissa
+    pValueExponent
+    beta
+    standardError
+    variant {
+      id
+    }
+  }
+  variant {
+    chromosome
+    position
+    rsIds
+  }
+  finemappingMethod
+  credibleSetIndex
+  purityMinR2
+  locusStart
+  locusEnd
+  study {
+    publicationFirstAuthor
+    publicationDate
+    traitFromSource
+    target {
+      id
+      approvedSymbol
+    }
+    biosample {
+      biosampleId
+    }
+    publicationJournal
+    pubmedId
+    nSamples
+  }
+}
