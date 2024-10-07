@@ -30,8 +30,17 @@ function getColumns({
 
   return [
     {
+      id: "view",
+      label: "Details",
+      renderCell: ({ studyLocusId }) => (
+        <Link to={`../credible-set/${studyLocusId}`}>view</Link>
+      ),
+      filterValue: false,
+      exportValue: false,
+    },
+    {
       id: "leadVariant",
-      label: "Lead Variant",
+      label: "Lead variant",
       comparator: variantComparator,
       sortable: true,
       filterValue: ({ variant: v }) => (
@@ -97,7 +106,7 @@ function getColumns({
     },
     {
       id: "pValue",
-      label: "P-Value",
+      label: "P-value",
       comparator: (a, b) =>
         a?.pValueMantissa * 10 ** a?.pValueExponent -
           b?.pValueMantissa * 10 ** b?.pValueExponent,
@@ -126,17 +135,17 @@ function getColumns({
     },
     {
       id: "posteriorProbability",
-      label: "Posterior Probability",
+      label: "Posterior probability",
       filterValue: false,
       tooltip: <>
-        Probability the fixed page variant (
+        Posterior inclusion probability that the fixed page variant (
         <DisplayVariantId
           variantId={id}
           referenceAllele={referenceAllele}
           alternateAllele={alternateAllele}
           expand={false}
         />
-        ) is in the credible set.
+        ) is causal.
       </>,
       comparator: (rowA, rowB) => (
         posteriorProbabilities.get(rowA.locus) -
@@ -168,7 +177,7 @@ function getColumns({
     },
     {
       id: "finemappingMethod",
-      label: "Finemapping Method",
+      label: "Finemapping method",
     },
     {
       id: "topL2G",
@@ -192,7 +201,7 @@ function getColumns({
       id: "l2gScore",
       label: "L2G score",
       comparator: (rowA, rowB) => (
-        rowA?.strongestLocus2gene.score - rowB?.strongestLocus2gene.score
+        rowA?.strongestLocus2gene?.score - rowB?.strongestLocus2gene?.score
       ),
       sortable: true,
       filterValue: false,
@@ -204,7 +213,7 @@ function getColumns({
     },
     {
       id: "credibleSetSize",
-      label: "Credible Set Size",
+      label: "Credible set size",
       comparator: (a, b) => a.locus?.length - b.locus?.length,
       sortable: true,
       filterValue: false,
