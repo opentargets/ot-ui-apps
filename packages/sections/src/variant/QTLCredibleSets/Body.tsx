@@ -102,7 +102,7 @@ function getColumns({
       id: "study.biosample.biosampleId",
       label: "Affected tissue/cell",
       renderCell: ({ study }) => {
-        const { biosampleId } = study?.biosample; 
+        const biosampleId = study?.biosample?.biosampleId;
         if (!biosampleId) return naLabel;
         return <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosampleId}&ontology=uberon`}>
           {biosampleId}
