@@ -8,16 +8,16 @@ import {
   summaryUtils,
 } from "ui";
 
-// import PharmacogenomicsSummary from "sections/src/variant/Pharmacogenomics/Summary";
+import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
-// const PharmacogenomicsSection = lazy(
-//   () => import("sections/src/variant/Pharmacogenomics/Body")
-// );
+const VariantsSection = lazy(
+  () => import("sections/src/credibleSet/Variants/Body")
+);
 
 const summaries = [
-  // PharmacogenomicsSummary,
+  VariantsSummary,
 ];
 
 const CREDIBLE_SET = "credibleSets";
@@ -41,9 +41,17 @@ const CREDIBLE_SET_PROFILE_QUERY = gql`
 type ProfileProps = {
   studyLocusId: string;
   variantId: string;
+  referenceAllele: string;
+  alternateAllele: string;
 };
 
-function Profile({ studyLocusId, variantId }: ProfileProps) {
+function Profile({
+      studyLocusId,
+      variantId,
+      referenceAllele,
+      alternateAllele,
+    }: ProfileProps) {
+
   return (
     <PlatformApiProvider
       entity={CREDIBLE_SET}
@@ -54,16 +62,23 @@ function Profile({ studyLocusId, variantId }: ProfileProps) {
       <ProfileHeader variantId={variantId} />
 
       <SummaryContainer>
-        {/* <PharmacogenomicsSummary />  */}
+        <VariantsSummary /> 
       </SummaryContainer>
 
       <SectionContainer>
-        {/* <Suspense fallback={<SectionLoader />}>
-          <PharmacogenomicsSection id={varId} entity={VARIANT} />
-        </Suspense> */}
+        <Suspense fallback={<SectionLoader />}>
+          <VariantsSection
+            studyLocusId={studyLocusId}
+            leadVariantId={variantId}
+            leadReferenceAllele={referenceAllele}
+            leadAlternateAllele={alternateAllele}
+            entity={CREDIBLE_SET}
+          />
+        </Suspense>
       </SectionContainer>
     </PlatformApiProvider>
   );
+
 }
 
 export default Profile;
