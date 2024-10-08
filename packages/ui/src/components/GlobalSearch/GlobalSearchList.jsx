@@ -27,7 +27,7 @@ function GlobalSearchList({ inputValue }) {
   const [getSearchData] = useLazyQuery(searchQuery);
   const [openListItem] = useListOption();
   const [recentItems, setRecentItems] = useState(
-    JSON.parse(localStorage.getItem("search-history")) || []
+    getSearchHistory()
   );
 
   const focusOnItem = useCallback((index = 0) => {
@@ -125,7 +125,7 @@ function GlobalSearchList({ inputValue }) {
   }
 
   function handleChangeInRecentItems() {
-    setRecentItems(JSON.parse(localStorage.getItem("search-history")) || []);
+    setRecentItems(getSearchHistory());
   }
 
   const SearchSuggestionEl = (
