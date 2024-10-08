@@ -175,7 +175,6 @@ function Body({
       request={request}
       renderDescription={() => <Description />}
       renderBody={({ credibleSets }) => {
-        // debugger
         return (
           <DataTable
             dataDownloader

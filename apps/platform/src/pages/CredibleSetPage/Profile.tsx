@@ -9,15 +9,20 @@ import {
 } from "ui";
 
 import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
+import GWASColocSummary from "sections/src/credibleSet/GWASColoc/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 const VariantsSection = lazy(
   () => import("sections/src/credibleSet/Variants/Body")
 );
+const GWASColocSection = lazy(
+  () => import("sections/src/credibleSet/GWASColoc/Body")
+);
 
 const summaries = [
   VariantsSummary,
+  GWASColocSummary,
 ];
 
 const CREDIBLE_SET = "credibleSets";
@@ -63,6 +68,7 @@ function Profile({
 
       <SummaryContainer>
         <VariantsSummary /> 
+        <GWASColocSummary /> 
       </SummaryContainer>
 
       <SectionContainer>
@@ -74,6 +80,9 @@ function Profile({
             leadAlternateAllele={alternateAllele}
             entity={CREDIBLE_SET}
           />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <GWASColocSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
         </Suspense>
       </SectionContainer>
     </PlatformApiProvider>
