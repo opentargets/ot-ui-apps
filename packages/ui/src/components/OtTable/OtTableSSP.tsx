@@ -11,9 +11,8 @@ import { faAngleLeft, faAngleRight, faBackwardStep } from "@fortawesome/free-sol
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-// import { naLabel } from "../../constants";
 import OtTableSearch from "./OtTableSearch";
-import { OtTableSSPProps } from "./types/tableTypes";
+import { INIT_PAGE_SIZE, OtTableSSPProps } from "./types/tableTypes";
 import { OtTableContainer, OtTableHeader, OtTH, OtTableHeaderText, OtTD } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
 import { getCurrentPagePosition } from "./utils/tableUtils";
@@ -23,6 +22,7 @@ import { getTableRows } from "./service/tableService";
 import { createInitialState, otTableReducer } from "./context/otTableReducer";
 import { addRows, setLoading, setNewData, textSearch } from "./context/otTableActions";
 import { naLabel } from "../../constants";
+import useCursorBatchDownloader from "../../hooks/useCursorBatchDownloader";
 
 function OtTableSSP({
   showGlobalFilter = true,
@@ -32,12 +32,14 @@ function OtTableSSP({
   variables,
   entity,
   sectionName,
+  dataDownloaderFileStem,
+  dataDownloaderColumns,
+  dataDownloader,
 }: OtTableSSPProps): ReactElement {
   const [state, dispatch] = useReducer(otTableReducer, "", createInitialState);
-
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: INIT_PAGE_SIZE,
   });
 
   const table = useReactTable({
@@ -125,12 +127,16 @@ function OtTableSSP({
 
   function addNewData(newPagination: PaginationState) {
     dispatch(setLoading(true));
-    getTableRows(query, variables, state.cursor, pagination.pageSize, state.freeTextQuery).then(
-      d => {
-        dispatch(addRows(d.data[entity][sectionName]));
-        setPagination(newPagination);
-      }
-    );
+    getTableRows({
+      query,
+      variables,
+      cursor: state.cursor,
+      size: pagination.pageSize,
+      freeTextQuery: state.freeTextQuery,
+    }).then(d => {
+      dispatch(addRows(d.data[entity][sectionName]));
+      setPagination(newPagination);
+    });
   }
 
   /**********************************************
@@ -142,7 +148,13 @@ function OtTableSSP({
    **********************************************/
   function setTableData({ newPagination = pagination, freeTextQuery = state.freeTextQuery }) {
     dispatch(setLoading(true));
-    getTableRows(query, variables, null, newPagination.pageSize, freeTextQuery).then(d => {
+    getTableRows({
+      query,
+      variables,
+      cursor: null,
+      size: newPagination.pageSize,
+      freeTextQuery,
+    }).then(d => {
       dispatch(setNewData(d.data[entity][sectionName]));
     });
   }
@@ -159,6 +171,15 @@ function OtTableSSP({
     const dataLength = table.options.data.length;
     return dataLength < (pageIndex + 1) * pageSize;
   }
+
+  /*********************************
+   * STORES ALL DATA IN FOR EXPORT *
+   *********************************/
+  const getWholeDataset = useCursorBatchDownloader(
+    query,
+    { ...variables, freeTextQuery: state.freeTextQuery },
+    `data[${entity}][${sectionName}]`
+  );
 
   useEffect(() => {
     const newPagination = {
@@ -181,17 +202,17 @@ function OtTableSSP({
             />
           </Grid>
         )}
-        {/* {dataDownloader && (
+        {dataDownloader && (
           <Grid item sm={12} md={8} sx={{ ml: "auto" }}>
             <DataDownloader
               columns={dataDownloaderColumns || columns}
-              rows={rows}
+              rows={getWholeDataset}
               fileStem={dataDownloaderFileStem}
               query={query}
               variables={variables}
             />
           </Grid>
-        )} */}
+        )}
       </Grid>
       {/* Table component container */}
       <Box sx={{ w: 1, overflowX: "auto", marginTop: theme => theme.spacing(3) }}>

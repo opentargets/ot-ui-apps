@@ -421,6 +421,9 @@ function Body({
             entity={entity}
             client={client}
             sectionName="knownDrugs"
+            dataDownloaderColumns={exportColumns}
+            dataDownloaderFileStem={`${id}-known-drugs`}
+            dataDownloader
           />
 
           // <>ddd</>

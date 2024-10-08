@@ -88,6 +88,17 @@ export function getCurrentPagePosition(
   return `${currentPageStartRange} - ${pageEndResultSize} of ${totalRows}`;
 }
 
+/**************************************************
+ * CHECKS IF ANY COLUMN OBJECT HAS NESTED COLUMNS *
+ * @param:
+ *  columns: Record<string, unknown>[]
+ * @return: boolean
+ **************************************************/
+
+export function isNestedHeader(columns: Record<string, unknown>[]): boolean {
+  return columns.some(col => !!col["columns"]);
+}
+
 /****************************************************************************
  * FN TO MAP EACH KEY FROM CLASSIC MUI COLUMN OBJECT TO NEW TANSTACK COLUMN *
  ****************************************************************************/

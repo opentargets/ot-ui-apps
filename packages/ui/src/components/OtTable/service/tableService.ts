@@ -1,6 +1,13 @@
 import client from "../../../client";
+import { getTableRowsProps } from "../types/tableTypes";
 
-export async function getTableRows(query, variables, cursor, size, freeTextQuery): Promise<[]> {
+export async function getTableRows({
+  query,
+  variables,
+  cursor,
+  size,
+  freeTextQuery,
+}: getTableRowsProps): Promise<[]> {
   const resData = await client.query({
     query,
     variables: {

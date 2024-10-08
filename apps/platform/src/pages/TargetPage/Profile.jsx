@@ -96,7 +96,7 @@ function Profile({ ensgId, symbol }) {
       client={client}
     >
       <ProfileHeader />
-      {/* <SummaryContainer>
+      <SummaryContainer>
         <KnownDrugsSummary />
         <TractabilitySummary />
         <SafetySummary />
@@ -114,13 +114,13 @@ function Profile({ ensgId, symbol }) {
         <MousePhenotypesSummary />
         <ComparativeGenomicsSummary />
         <BibliographySummary />
-      </SummaryContainer> */}
+      </SummaryContainer>
 
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
           <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
-        {/* <Suspense fallback={<SectionLoader />}>
+        <Suspense fallback={<SectionLoader />}>
           <TractabilitySection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
@@ -167,7 +167,7 @@ function Profile({ ensgId, symbol }) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense> */}
+        </Suspense>
       </SectionContainer>
     </PlatformApiProvider>
   );

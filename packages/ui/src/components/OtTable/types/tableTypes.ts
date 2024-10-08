@@ -15,7 +15,7 @@ export type DefaultSortProp = {
 export type OtTableProps = {
   showGlobalFilter: boolean;
   tableDataLoading: boolean;
-  columns: Array<ColumnDef<string, unknown>>;
+  columns: Array<Record<string, unknown>>;
   rows: Array<Record<string, unknown>>;
   verticalHeaders: boolean;
   order: "asc" | "desc";
@@ -36,6 +36,9 @@ export type OtTableSSPProps = {
   columns: Array<ColumnDef<string, unknown>>;
   query: DocumentNode;
   variables: Record<string, unknown>;
+  dataDownloaderFileStem: string;
+  dataDownloader: boolean;
+  dataDownloaderColumns?: Array<ColumnDef<string, unknown>>;
 };
 
 export type OtTableSSPState = {
@@ -44,6 +47,14 @@ export type OtTableSSPState = {
   rows: Array<unknown>;
   cursor: null | string;
   freeTextQuery: null | string;
+};
+
+export type getTableRowsProps = {
+  size: number;
+  query: DocumentNode;
+  cursor: string | null;
+  freeTextQuery: string | null;
+  variables: Record<string, unknown>;
 };
 
 /*************************
