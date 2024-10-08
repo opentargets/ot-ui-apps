@@ -21,7 +21,8 @@ const theme = {
       fontSize: ".80rem",
     },
     controlHeader: {
-      fontSize: "0.9rem",
+      fontSize: "1rem",
+      fontWeight: 700,
     },
   },
   palette: {
@@ -36,6 +37,9 @@ const theme = {
       main: SECONDARY,
       dark: darken(0.2, SECONDARY),
       contrastText: "#fff",
+    },
+    plain: {
+      main: grey[700],
     },
     text: {
       primary: "#5A5F5F",

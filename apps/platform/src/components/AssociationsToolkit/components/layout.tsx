@@ -71,6 +71,7 @@ export const RowContainer = styled("div", {
   zIndex: rowExpanded ? "99 !important" : "initial",
   backgroundColor: rowExpanded ? grey[300] : "initial",
   border: rowExpanded ? `1px solid ${grey[400]}` : "none",
+  borderBottom: rowExpanded ? `none` : "none",
   "&:hover": {
     backgroundColor: grey[300],
   },

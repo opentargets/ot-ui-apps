@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { flexRender } from "@tanstack/react-table";
-import { ClickAwayListener, Fade, Box, Typography } from "@mui/material";
+import { Fade, Box, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilterCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { grey } from "@mui/material/colors";
@@ -19,6 +19,41 @@ const getColContainerClassName = ({ id }) => {
   if (id === "1_naiming-cols_name") return "group-naiming-cols";
   return "group-entity-cols";
 };
+
+function getIsRowActive(prefix, row, focusState = [], parentRow, parentTable) {
+  if (prefix === TABLE_PREFIX.INTERACTORS) {
+    return focusState.some(
+      entry =>
+        entry.row === parentRow &&
+        entry.table === parentTable &&
+        entry.interactorsRow === row.id &&
+        entry.interactorsSection !== null
+    );
+  }
+
+  return focusState.some(
+    entry =>
+      entry.row === row.id &&
+      entry.table === prefix &&
+      (entry.section !== null || entry.interactors)
+  );
+}
+
+function getFocusSection(prefix, row, focusState, parentRow, parentTable) {
+  if (prefix === TABLE_PREFIX.INTERACTORS) {
+    return focusState.find(
+      entry =>
+        entry.row === parentRow &&
+        entry.table === parentTable &&
+        entry.interactorsRow === row.id &&
+        entry.interactorsSection !== null
+    )?.interactorsSection;
+  }
+
+  return focusState.find(
+    entry => entry.row === row.id && entry.table === prefix && entry.section !== null
+  )?.section;
+}
 
 function EmptyMessage() {
   return (
@@ -57,6 +92,8 @@ function EmptyMessage() {
   );
 }
 
+const borderStyle = `1px solid ${grey[400]}`;
+
 function TableBody({ core, cols, noInteractors }) {
   const { id, entity, entityToGet, displayedTable } = useAotfContext();
 
@@ -67,17 +104,11 @@ function TableBody({ core, cols, noInteractors }) {
 
   if (prefix === TABLE_PREFIX.PINNING && rows.length < 1) return <></>;
 
-  if (prefix === TABLE_PREFIX.INTERACTORS) if (rows.length < 1) return <EmptyMessage />;
+  if (prefix === TABLE_PREFIX.INTERACTORS || prefix === TABLE_PREFIX.CORE)
+    if (rows.length < 1) return <EmptyMessage />;
 
   const nameProperty = rowNameProperty[entity];
   const highLevelHeaders = core.getHeaderGroups()[0].headers;
-
-  const handleClickAway = e => {
-    if (e.srcElement.className === "CodeMirror-hint CodeMirror-hint-active") {
-      return;
-    }
-    // resetExpandler();
-  };
 
   return (
     <Fade in>
@@ -109,51 +140,35 @@ function TableBody({ core, cols, noInteractors }) {
                 ))}
               </RowContainer>
 
-              <Box sx={{ position: "relative", overflow: "hidden" }}>
+              <Box
+                sx={{
+                  position: "relative",
+                  overflow: "hidden",
+                  borderBottom: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
+                  borderLeft: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
+                  borderRight: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
+                  marginBottom: 1,
+                  display: getIsRowActive(prefix, row, focusState, parentRow, parentTable)
+                    ? "block"
+                    : "none",
+                }}
+              >
                 <SectionRendererWrapper
-                  section={
-                    // TODO: Review active section definition
-                    prefix !== TABLE_PREFIX.INTERACTORS
-                      ? focusState.find(
-                          e => e.row === row.id && e.table === prefix && e.section !== null
-                        )?.section
-                      : focusState.find(
-                          e =>
-                            e.row === parentRow &&
-                            e.table === parentTable &&
-                            e.interactorsRow === row.id &&
-                            e.interactorsSection !== null
-                        )?.interactorsSection
-                  }
+                  section={getFocusSection(prefix, row, focusState, parentRow, parentTable)}
                 >
-                  <ClickAwayListener onClickAway={e => handleClickAway(e)}>
-                    <section>
-                      <SectionRender
-                        id={id}
-                        entity={entity}
-                        table={prefix}
-                        row={row}
-                        entityToGet={entityToGet}
-                        nameProperty={nameProperty}
-                        displayedTable={displayedTable}
-                        cols={cols}
-                        section={
-                          // TODO: Review active section definition
-                          prefix !== TABLE_PREFIX.INTERACTORS
-                            ? focusState.find(
-                                e => e.row === row.id && e.table === prefix && e.section !== null
-                              )?.section
-                            : focusState.find(
-                                e =>
-                                  e.row === parentRow &&
-                                  e.table === parentTable &&
-                                  e.interactorsRow === row.id &&
-                                  e.interactorsSection !== null
-                              )?.interactorsSection
-                        }
-                      />
-                    </section>
-                  </ClickAwayListener>
+                  <section>
+                    <SectionRender
+                      id={id}
+                      entity={entity}
+                      table={prefix}
+                      row={row}
+                      entityToGet={entityToGet}
+                      nameProperty={nameProperty}
+                      displayedTable={displayedTable}
+                      cols={cols}
+                      section={getFocusSection(prefix, row, focusState, parentRow, parentTable)}
+                    />
+                  </section>
                 </SectionRendererWrapper>
                 {!noInteractors && (
                   <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>

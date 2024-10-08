@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Typography } from "@mui/material";
+import { ReactNode, useState } from "react";
+import { Theme, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   showMore: {
     cursor: "pointer",
     color: theme.palette.primary.main,
@@ -12,7 +12,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Highlights({ highlights }) {
+type HighlightItem = string | TrustedHTML;
+
+type HighlightsProps = {
+  highlights: HighlightItem[];
+};
+
+function Highlights({ highlights }: HighlightsProps): ReactNode {
   const classes = useStyles();
   const [showMore, setShowMore] = useState(false);
 

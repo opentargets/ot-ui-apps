@@ -11,6 +11,7 @@ import {
   Box,
   Fade,
   Skeleton,
+  useMediaQuery,
 } from "@mui/material";
 import {
   faThumbTack,
@@ -94,6 +95,7 @@ function CellName({ cell, colorScale }) {
   const scoreIndicatorColor = colorScale(score);
   const [openContext, setOpenContext] = useState(false);
   const dispatch = useAssociationsFocusDispatch();
+  const isSmallScreen = useMediaQuery("(max-width:1080px)");
 
   const isPinned = pinnedEntries.find(e => e === id);
   const profileURL = `/${entityToGet}/${id}`;
@@ -113,6 +115,11 @@ function CellName({ cell, colorScale }) {
         row: cell.row.id,
       },
     });
+  };
+
+  const handleContextMenu = e => {
+    e.preventDefault();
+    handleToggle();
   };
 
   const handleToggle = () => {
@@ -194,15 +201,30 @@ function CellName({ cell, colorScale }) {
 
   return (
     <NameContainer>
-      <TextContainer onClick={handleToggle}>
-        <Typography width="150px" noWrap variant="body2">
+      <TextContainer onClick={handleToggle} onContextMenu={handleContextMenu}>
+        <Typography sx={{ width: isSmallScreen ? "90px" : "150px" }} noWrap variant="body2">
           {name}
+          {prefix === TABLE_PREFIX.INTERACTORS && cell.row.original.interactorScore ? (
+            <>
+              {" "}
+              -
+              <Box
+                component="span"
+                sx={{ fontSize: "0.8rem", width: "35px", display: "inline-block", fontWeight: 800 }}
+              >
+                {cell.row.original.interactorScore.toFixed(2)}
+              </Box>
+            </>
+          ) : (
+            ""
+          )}
         </Typography>
       </TextContainer>
       <ContextMenuContainer
         ref={contextMenuRef}
         className="ContextMenuContainer"
         onClick={handleToggle}
+        onContextMenu={handleContextMenu}
         active={openContext}
       >
         <FontAwesomeIcon icon={faEllipsisVertical} size="lg" />

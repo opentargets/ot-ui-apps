@@ -1,6 +1,13 @@
 import { Skeleton, Typography } from "@mui/material";
+import { ReactNode } from "react";
 
-function Field({ title, loading, children }) {
+type FieldProps = {
+  children?: ReactNode;
+  loading: boolean;
+  title: string;
+};
+
+function Field({ title, loading, children }: FieldProps): ReactNode {
   if (loading) return <Skeleton />;
 
   if (!children || (Array.isArray(children) && children.length === 0)) {
