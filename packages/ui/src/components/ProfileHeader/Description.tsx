@@ -1,10 +1,18 @@
 import { Skeleton, Typography } from "@mui/material";
 
 import LongText from "../LongText";
+import { ReactNode } from "react";
 
-function Description({ children, loading = false }) {
+type DescriptionProps = {
+  children?: ReactNode;
+  loading?: boolean;
+};
+
+function Description({ children, loading = false }: DescriptionProps): ReactNode {
   const content = children ? (
-    <LongText lineLimit={3}>{children}</LongText>
+    <LongText lineLimit={3} variant="body2">
+      {children}
+    </LongText>
   ) : (
     "No description available"
   );
