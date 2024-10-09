@@ -91,11 +91,13 @@ const columns = [
   {
     id: "pValue",
     label: "P-Value",
-    comparator: (a, b) => mantissaExponentComparator(
-      a?.pValueMantissa,
-      a?.pValueExponent,
-      b?.pValueMantissa,
-      b?.pValueExponent,
+    comparator: ({ otherStudyLocus: a }, { otherStudyLocus: b }) => (
+      mantissaExponentComparator(
+        a?.pValueMantissa,
+        a?.pValueExponent,
+        b?.pValueMantissa,
+        b?.pValueExponent,
+      )
     ),
     sortable: true,
     filterValue: false,
