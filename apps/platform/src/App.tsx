@@ -77,7 +77,7 @@ function App(): ReactElement {
                   <NotFoundPage />
                 </Route>
               </Switch>
-              <ShouldAccessPPP />
+              {/* <ShouldAccessPPP /> */}
             </Router>
           </SearchProvider>
         </ThemeProvider>
