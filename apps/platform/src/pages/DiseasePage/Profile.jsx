@@ -15,6 +15,7 @@ import KnownDrugsSummary from "sections/src/disease/KnownDrugs/Summary";
 import BibliographySummary from "sections/src/disease/Bibliography/Summary";
 import PhenotypesSummary from "sections/src/disease/Phenotypes/Summary";
 import OTProjectsSummary from "sections/src/disease/OTProjects/Summary";
+import GWASStudiesSummary from "sections/src/disease/GWASStudies/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
@@ -24,7 +25,10 @@ const KnownDrugsSection = lazy(() => import("sections/src/disease/KnownDrugs/Bod
 const BibliographySection = lazy(() => import("sections/src/disease/Bibliography/Body"));
 const PhenotypesSection = lazy(() => import("sections/src/disease/Phenotypes/Body"));
 const OTProjectsSection = lazy(() => import("sections/src/disease/OTProjects/Body"));
+const GWASStudiesSection = lazy(() => import("sections/src/disease/GWASStudies/Body"));
 
+// no GWASStudiesSummary as we add section to the query below directly
+// (the summary cannot be written as a fragment as it gets further studies)
 const summaries = [
   OntologySummary,
   KnownDrugsSummary,
@@ -41,6 +45,11 @@ const DISEASE_PROFILE_QUERY = gql`
       id
       ...DiseaseProfileHeaderFragment
       ...DiseaseProfileSummaryFragment
+    }
+!! HERE !!!!!:  Need correct param for below
+
+    gwasStudy(diseaseIds: $diseaseIds, page: { size: 1, index: 0}) {
+      studyId
     }
   }
   ${ProfileHeader.fragments.profileHeader}
@@ -60,6 +69,7 @@ function Profile({ efoId, name }) {
         <OntologySummary />
         <KnownDrugsSummary />
         <PhenotypesSummary />
+        <GWASStudiesSummary />
         <BibliographySummary />
         <PrivateWrapper>
           <OTProjectsSummary />
@@ -75,6 +85,9 @@ function Profile({ efoId, name }) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <PhenotypesSection id={efoId} label={name} entity={DISEASE} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <GWASStudiesSection id={efoId} label={name} entity={DISEASE} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={efoId} label={name} entity={DISEASE} />
