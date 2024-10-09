@@ -10,7 +10,10 @@ import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_COLOC_QUERY from "./GWASColocQuery.gql";
-import { variantComparator } from "../../utils/comparators";
+import {
+  mantissaExponentComparator,
+  variantComparator
+} from "../../utils/comparators";
 import { getStudyCategory } from "../../utils/getStudyCategory";
 
 const columns = [
@@ -88,9 +91,12 @@ const columns = [
   {
     id: "pValue",
     label: "P-Value",
-    comparator: ({ otherStudyLocus: a }, { otherStudyLocus: b }) =>
-      a?.pValueMantissa * 10 ** a?.pValueExponent -
-        b?.pValueMantissa * 10 ** b?.pValueExponent,
+    comparator: (a, b) => mantissaExponentComparator(
+      a?.pValueMantissa,
+      a?.pValueExponent,
+      b?.pValueMantissa,
+      b?.pValueExponent,
+    ),
     sortable: true,
     filterValue: false,
     renderCell: ({ otherStudyLocus }) => {

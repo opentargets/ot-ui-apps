@@ -11,7 +11,10 @@ import { naLabel, defaultRowsPerPageOptions } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import VARIANTS_QUERY from "./VariantsQuery.gql";
-import { variantComparator } from "../../utils/comparators";
+import {
+  mantissaExponentComparator,
+  variantComparator
+} from "../../utils/comparators";
 
 type getColumnsType = {
   leadVariantId: string;
@@ -58,9 +61,12 @@ function getColumns({
     {
       id: "pValue",
       label: "P-value",
-      comparator: (a, b) =>
-        a?.pValueMantissa * 10 ** a?.pValueExponent -
-          b?.pValueMantissa * 10 ** b?.pValueExponent,
+      comparator: (a, b) => mantissaExponentComparator(
+        a?.pValueMantissa,
+        a?.pValueExponent,
+        b?.pValueMantissa,
+        b?.pValueExponent,
+      ),
       sortable: true,
       filterValue: false,
       renderCell: ({ pValueMantissa, pValueExponent }) => {
