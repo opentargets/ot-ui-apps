@@ -7,6 +7,7 @@ import { DefaultSortProp } from "../types/tableTypes";
 export function mapTableColumnToTanstackColumns(
   allColumns: Record<string, unknown>[]
 ): ColumnDef<string, unknown>[] {
+  if (isNestedHeader(allColumns)) return allColumns;
   return allColumns.map(column => mapToTanstackColumnObject(column));
 }
 

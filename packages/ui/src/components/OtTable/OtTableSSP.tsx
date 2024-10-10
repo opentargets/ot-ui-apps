@@ -15,7 +15,7 @@ import OtTableSearch from "./OtTableSearch";
 import { INIT_PAGE_SIZE, OtTableSSPProps } from "./types/tableTypes";
 import { OtTableContainer, OtTableHeader, OtTH, OtTableHeaderText, OtTD } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
-import { getCurrentPagePosition } from "./utils/tableUtils";
+import { getCurrentPagePosition, mapTableColumnToTanstackColumns } from "./utils/tableUtils";
 import Tooltip from "../Tooltip";
 
 import { getTableRows } from "./service/tableService";
@@ -41,10 +41,11 @@ function OtTableSSP({
     pageIndex: 0,
     pageSize: INIT_PAGE_SIZE,
   });
+  const mappedColumns = mapTableColumnToTanstackColumns(columns);
 
   const table = useReactTable({
     data: state.rows,
-    columns,
+    columns: mappedColumns,
     rowCount: state.count,
     state: {
       pagination,
