@@ -20,6 +20,7 @@
     "dev:platform": "turbo run dev --filter=platform",
     "build:platform": "turbo run build --filter=platform",
     "dev:platform:ppp": "turbo run dev-ppp --filter=platform",
+    "dev:platform:remix": "turbo run dev --filter=platform-remix",
     "build:platform:ppp": "turbo run build-ppp --filter=platform",
     "lint": "turbo run lint",
     "lint:platform": "turbo run lint --filter=platform",
