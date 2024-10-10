@@ -76,3 +76,8 @@ export function variantComparator(
   
   return 0;
 }
+
+export function mantissaExponentComparator(m1, e1, m2, e2) {
+  if (e1 === e2) return m1 - m2;
+  return e1 - e2;
+}

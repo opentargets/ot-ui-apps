@@ -12,7 +12,10 @@ import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
-import { variantComparator } from "../../utils/comparators";
+import {
+  mantissaExponentComparator,
+  variantComparator
+} from "../../utils/comparators";
 
 type getColumnsType = {
   id: string;
@@ -107,9 +110,12 @@ function getColumns({
     {
       id: "pValue",
       label: "P-value",
-      comparator: (a, b) =>
-        a?.pValueMantissa * 10 ** a?.pValueExponent -
-          b?.pValueMantissa * 10 ** b?.pValueExponent,
+      comparator: (a, b) => mantissaExponentComparator(
+        a?.pValueMantissa,
+        a?.pValueExponent,
+        b?.pValueMantissa,
+        b?.pValueExponent,
+      ),
       sortable: true,
       filterValue: false,
       renderCell: ({ pValueMantissa, pValueExponent }) => {
