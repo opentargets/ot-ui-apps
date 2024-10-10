@@ -350,86 +350,49 @@ function Body({
   }
 
   return (
-    <>
-      <SectionItem
-        definition={definition}
-        entity={entity}
-        request={{
-          loading: initialLoading,
-          error: false,
-          data: {
-            [entity]: {
-              knownDrugs: {
-                rows,
-                count: rows.length,
-                freeTextQuery: globalFilter,
-              },
+    <SectionItem
+      definition={definition}
+      entity={entity}
+      request={{
+        loading: initialLoading,
+        error: false,
+        data: {
+          [entity]: {
+            knownDrugs: {
+              rows,
+              count: rows.length,
+              freeTextQuery: globalFilter,
             },
           },
-        }}
-        renderDescription={Description}
-        renderBody={() => (
-          <Table
-            loading={loading}
-            stickyHeader
-            showGlobalFilter
-            globalFilter={globalFilter}
-            dataDownloader
-            dataDownloaderRows={getWholeDataset}
-            dataDownloaderFileStem={`${id}-known-drugs`}
-            headerGroups={headerGroups}
-            columns={columns}
-            rows={getPage(processedRows, page, pageSize)}
-            rowCount={count}
-            rowsPerPageOptions={[10, 25, 100]}
-            page={page}
-            pageSize={pageSize}
-            onGlobalFilterChange={handleGlobalFilterChange}
-            onPageChange={handlePageChange}
-            onRowsPerPageChange={handleRowsPerPageChange}
-            onSortBy={handleSortBy}
-            dataDownloaderColumns={exportColumns}
-            query={BODY_QUERY.loc.source.body}
-            variables={variables}
-          />
-        )}
-      />
-      <SectionItem
-        definition={definition}
-        entity={entity}
-        request={{
-          loading: initialLoading,
-          error: false,
-          data: {
-            [entity]: {
-              knownDrugs: {
-                rows,
-                count: rows.length,
-                freeTextQuery: globalFilter,
-              },
-            },
-          },
-        }}
-        renderDescription={Description}
-        renderBody={() => (
-          <OtTableSSP
-            showGlobalFilter
-            columns={getOtTableColumns()}
-            verticalHeaders={false}
-            query={BODY_QUERY}
-            variables={variables}
-            entity={entity}
-            client={client}
-            sectionName="knownDrugs"
-            dataDownloaderColumns={exportColumns}
-            dataDownloaderFileStem={`${id}-known-drugs`}
-            dataDownloader
-          />
-
-          // <>ddd</>
-        )}
-      />
-    </>
+        },
+      }}
+      renderDescription={Description}
+      renderBody={() => (
+        <Table
+          loading={loading}
+          stickyHeader
+          showGlobalFilter
+          globalFilter={globalFilter}
+          dataDownloader
+          dataDownloaderRows={getWholeDataset}
+          dataDownloaderFileStem={`${id}-known-drugs`}
+          headerGroups={headerGroups}
+          columns={columns}
+          rows={getPage(processedRows, page, pageSize)}
+          rowCount={count}
+          rowsPerPageOptions={[10, 25, 100]}
+          page={page}
+          pageSize={pageSize}
+          onGlobalFilterChange={handleGlobalFilterChange}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          onSortBy={handleSortBy}
+          dataDownloaderColumns={exportColumns}
+          query={BODY_QUERY.loc.source.body}
+          variables={variables}
+        />
+      )}
+    />
   );
 }
 
