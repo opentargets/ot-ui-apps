@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import OtTableColumnFilter from "./OtTableColumnFilter";
 // import { naLabel } from "../../constants";
 import OtTableSearch from "./OtTableSearch";
-import { OtTableProps } from "./table.types";
+import { OtTableProps } from "./types/tableTypes";
 import {
   FontAwesomeIconPadded,
   OtTableContainer,
@@ -41,7 +41,7 @@ import {
   getDefaultSortObj,
   getFilterValueFromObject,
   mapTableColumnToTanstackColumns,
-} from "./tableUtil";
+} from "./utils/tableUtils";
 import Tooltip from "../Tooltip";
 
 declare module "@tanstack/table-core" {

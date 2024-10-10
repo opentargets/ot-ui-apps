@@ -1,11 +1,13 @@
-import { DefaultSortProp } from "./table.types";
+import { ColumnDef } from "@tanstack/table-core";
+import { DefaultSortProp } from "../types/tableTypes";
 
 /*********************************************************************
  * FN TO CONVERT CLASSIC MUI TABLE COLUMNS TO TANSTACK TABLE COLUMNS *
  *********************************************************************/
 export function mapTableColumnToTanstackColumns(
   allColumns: Record<string, unknown>[]
-): Record<string, unknown>[] {
+): ColumnDef<string, unknown>[] {
+  if (isNestedHeader(allColumns)) return allColumns;
   return allColumns.map(column => mapToTanstackColumnObject(column));
 }
 
@@ -87,13 +89,24 @@ export function getCurrentPagePosition(
   return `${currentPageStartRange} - ${pageEndResultSize} of ${totalRows}`;
 }
 
+/**************************************************
+ * CHECKS IF ANY COLUMN OBJECT HAS NESTED COLUMNS *
+ * @param:
+ *  columns: Record<string, unknown>[]
+ * @return: boolean
+ **************************************************/
+
+export function isNestedHeader(columns: Record<string, unknown>[]): boolean {
+  return columns.some(col => !!col["columns"]);
+}
+
 /****************************************************************************
  * FN TO MAP EACH KEY FROM CLASSIC MUI COLUMN OBJECT TO NEW TANSTACK COLUMN *
  ****************************************************************************/
 function mapToTanstackColumnObject(
   originalTableObject: Record<string, unknown>
-): Record<string, unknown> {
-  const newTanstackObject: Record<string, unknown> = {
+): ColumnDef<string, unknown> {
+  const newTanstackObject: ColumnDef<string, unknown> = {
     id: originalTableObject.id,
     header: originalTableObject.label,
     enableSorting: originalTableObject.sortable || false,
