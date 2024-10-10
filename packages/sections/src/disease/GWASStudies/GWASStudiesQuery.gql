@@ -1,0 +1,16 @@
+query GWASStudiesQuery($diseaseIds: [String!]!) {
+  gwasStudy(diseaseIds: $diseaseIds) {
+    studyId
+    projectId
+    publicationFirstAuthor
+    publicatoinDate
+    publicationJournal
+    nSamples
+    cohorts
+    pubmedId
+    ldPopulationStructure {
+      ldPopulation
+      relativeSampleSize
+    }
+  }
+}

@@ -28,7 +28,8 @@ const OTProjectsSection = lazy(() => import("sections/src/disease/OTProjects/Bod
 const GWASStudiesSection = lazy(() => import("sections/src/disease/GWASStudies/Body"));
 
 // no GWASStudiesSummary as we add section to the query below directly
-// (the summary cannot be written as a fragment as it gets further studies)
+// (the summary cannot be written as a fragment as it uses a different
+//  endpoint - gwasStudy rather than disease)
 const summaries = [
   OntologySummary,
   KnownDrugsSummary,
@@ -46,9 +47,7 @@ const DISEASE_PROFILE_QUERY = gql`
       ...DiseaseProfileHeaderFragment
       ...DiseaseProfileSummaryFragment
     }
-!! HERE !!!!!:  Need correct param for below
-
-    gwasStudy(diseaseIds: $diseaseIds, page: { size: 1, index: 0}) {
+    gwasStudy(diseaseIds: [$efoId], page: { size: 1, index: 0}) {
       studyId
     }
   }
@@ -61,7 +60,9 @@ function Profile({ efoId, name }) {
     <PlatformApiProvider
       entity={DISEASE}
       query={DISEASE_PROFILE_QUERY}
-      variables={{ efoId }}
+      variables={{
+        efoId,
+      }}
       client={client}
     >
       <ProfileHeader />
