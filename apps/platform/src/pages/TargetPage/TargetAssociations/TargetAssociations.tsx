@@ -24,13 +24,11 @@ function TargetAssociations({ ensgId }: TargetAssociationsProps): ReactElement {
       <AssociationsFocusProvider>
         <>
           <ControlsSection>
-            <Box
-              sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: theme => theme.spacing(2) }}
-            >
+            <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: 2 }}>
               <FacetsSearch />
               <AdvanceOptionsMenu />
               <DataUploader />
-              <Divider orientation="vertical" />
+              <Divider orientation="vertical" flexItem />
               <DataDownloader />
               <AotfApiPlayground />
             </Box>

@@ -33,11 +33,11 @@ function useRowInteractors({
     size = 50,
     filter = "",
     source = INTERACTORS_SOURCES.INTACT,
-    aggregationFilters = [],
     enableIndirect = false,
     datasources = [],
     rowsFilter = [],
     entityInteractors = null,
+    scoreThreshold = null,
     entity,
     diseaseId,
     sortBy,
@@ -58,6 +58,7 @@ function useRowInteractors({
       const targetRowInteractorsRequest = await client.query({
         query,
         variables: {
+          scoreThreshold,
           sourceDatabase: rowInteractorsSource,
           ensgId: rowInteractorsId,
           index: 0,
@@ -65,7 +66,14 @@ function useRowInteractors({
         },
       });
 
-      if (!targetRowInteractorsRequest.data) {
+      if (!targetRowInteractorsRequest?.data?.target?.interactions?.rows) {
+        setState({
+          interactorsMetadata: { count: 0 },
+          loading: false,
+          initialLoading: false,
+          count: 0,
+          data: [],
+        });
         return;
       }
 
@@ -95,19 +103,32 @@ function useRowInteractors({
         interactorsAssociationsRequest.data
       );
 
+      const interactorsAssociationsWithScore = addInteractorScore(
+        interactorsAssociations,
+        targetRowInteractorsRequest.data.target.interactions.rows
+      );
+
       setState({
         interactorsMetadata: targetRowInteractorsRequest.data.target.interactions,
         loading: false,
         initialLoading: false,
-        count: interactorsAssociations.length,
-        data: interactorsAssociations,
+        count: interactorsAssociationsWithScore.length,
+        data: interactorsAssociationsWithScore,
       });
     }
     if (isCurrent) getInteractors();
     return () => (isCurrent = false);
-  }, [source, sortBy]);
+  }, [source, sortBy, scoreThreshold]);
 
   return state;
+}
+
+function addInteractorScore(associationsData, interactorsMetaData) {
+  return associationsData.map(element => {
+    const foundInteractor = interactorsMetaData.find(x => x.targetB?.id === element.id);
+    if (!foundInteractor) return { ...element, interactorScore: 0 };
+    return { ...element, interactorScore: foundInteractor.score };
+  });
 }
 
 export default useRowInteractors;

@@ -4,11 +4,12 @@ import { useMeasure } from "@uidotdev/usehooks";
 import { Box } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { DataDownloader } from "ui";
+import { sentenceCase } from "ui/src/utils/global";
 
 const prepareData = (data = []) => {
   const flatData = data.reduce((accumulator, currentValue) => {
     currentValue.screens.forEach(dot => {
-      accumulator.push({ ...dot, tissueName: currentValue.tissueName });
+      accumulator.push({ ...dot, tissueName: sentenceCase(currentValue.tissueName) });
     });
     return accumulator;
   }, []);
@@ -134,6 +135,10 @@ function DepmapPlot({ data, width }) {
         Plot.axisY({
           fontSize: 12,
           label: "Tissue name",
+        }),
+        Plot.axisX({
+          fontSize: 12,
+          label: "Gene Effect",
         }),
         Plot.crosshair(data, { x: "geneEffect", y: "tissueName" }),
       ],
