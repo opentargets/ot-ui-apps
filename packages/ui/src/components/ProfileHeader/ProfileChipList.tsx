@@ -44,7 +44,7 @@ function ChipList({ children, title, loading = false, inline }: ChipListProps): 
         <LongList
           terms={children}
           maxTerms={10}
-          render={(item: ChipListItem) => {
+          render={(item: ChipListItem | string) => {
             if (_.isString(item)) {
               return <Chip key={item} label={item} title={item} />;
             }
