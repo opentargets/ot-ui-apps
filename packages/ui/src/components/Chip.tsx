@@ -12,10 +12,10 @@ const useStyles = makeStyles({
 });
 
 type ChipProps = {
-  className: string;
-  disabled: boolean;
+  className?: string;
+  disabled?: boolean;
   label: string;
-  title: string;
+  title?: string;
 };
 
 export default function Chip({ className, label, title, disabled }: ChipProps) {
