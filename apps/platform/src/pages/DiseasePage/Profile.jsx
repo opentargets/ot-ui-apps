@@ -88,7 +88,7 @@ function Profile({ efoId, name }) {
           <PhenotypesSection id={efoId} label={name} entity={DISEASE} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
-          <GWASStudiesSection id={efoId} label={name} entity={DISEASE} />
+          <GWASStudiesSection id={efoId} label={name} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={efoId} label={name} entity={DISEASE} />

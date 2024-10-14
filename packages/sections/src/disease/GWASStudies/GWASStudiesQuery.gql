@@ -1,9 +1,9 @@
 query GWASStudiesQuery($diseaseIds: [String!]!) {
-  gwasStudy(diseaseIds: $diseaseIds) {
+  gwasStudy(diseaseIds: $diseaseIds, page: { size: 2000, index: 0}) {
     studyId
     projectId
     publicationFirstAuthor
-    publicatoinDate
+    publicationDate
     publicationJournal
     nSamples
     cohorts

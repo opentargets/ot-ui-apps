@@ -1,24 +1,23 @@
 import { useQuery } from "@apollo/client";
 import { Box, Typography } from "@mui/material"; 
-import { Link, SectionItem, Tooltip, OtTable, PublicationsDrawer } from "ui";
-
+import { Link, SectionItem, Tooltip, DataTable, PublicationsDrawer } from "ui";
 import Description from "./Description";
 import {defaultRowsPerPageOptions, naLabel } from "../../constants";
 import { getStudyCategory } from "../../utils/getStudyCategory";
-
 import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
 import { definition } from ".";
+import { epmcUrl } from 'ui/src/utils/urls';
 
 const columns = [
   {
     id: "studyId",
     label: "Study ID",
     renderCell: ({ studyId }) => (
-      <Link to={`./${studyId}`}>{studyId}</Link>
+      <Link to={`/study/${studyId}`}>{studyId}</Link>
     ),
   },
   {
-    id: "author",
+    id: "publicationFirstAuthor",
     label: "Author",
     renderCell: ({ projectId, publicationFirstAuthor }) => (
       getStudyCategory(projectId) === "FINNGEN"
@@ -115,12 +114,11 @@ const columns = [
 ];
 
 type BodyProps = {
-  studyId: string,
-  diseaseIds: string[],
-  entity: string,
+  id: string,
+  label: string,
 };
 
-function Body({ id: efoId, entity }) {
+function Body({ id: efoId, label: diseaseName }: BodyProps) {
   
   const variables = {
     diseaseIds: [efoId],
@@ -133,15 +131,17 @@ function Body({ id: efoId, entity }) {
   return (
     <SectionItem
       definition={definition}
-      entity={entity}
+      entity="gwasStudy"
+      pageEntity="disease"
       request={request}
-      renderDescription={() => <Description name={name} />}
+      renderDescription={() => <Description name={diseaseName} />}
       renderBody={({ gwasStudy }) => (
-        <OtTable
+        <DataTable
           columns={columns}
-          rows={rows}
+          rows={gwasStudy}
+          sortBy="nSamples"
+          order="desc"
           dataDownloader
-          // dataDownloaderFileStem={`${efoId}-phenotypes`}
           rowsPerPageOptions={defaultRowsPerPageOptions}
           query={GWAS_STUDIES_BODY_QUERY.loc.source.body}
           variables={variables}
