@@ -26,6 +26,7 @@ function SectionItem({
   tags,
   chipText,
   entity,
+  pageEntity,
   showEmptySection = false,
   showContentLoading = false,
 }) {
@@ -103,7 +104,9 @@ function SectionItem({
               )}
               {!loading && !hasData && showEmptySection && (
                 <CardContent className={classes.cardContent}>
-                  <div className={classes.noData}> No data available for this {entity}. </div>
+                  <div className={classes.noData}>
+                    No data available for this {pageEntity || entity}.
+                  </div>
                 </CardContent>
               )}
             </ErrorBoundary>
