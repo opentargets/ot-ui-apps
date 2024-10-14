@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Box, Typography } from "@mui/material"; 
 import { Link, SectionItem, Tooltip, DataTable, PublicationsDrawer } from "ui";
 import Description from "./Description";
-import {defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel } from "../../constants";
 import { getStudyCategory } from "../../utils/getStudyCategory";
 import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
 import { definition } from ".";
@@ -15,6 +15,10 @@ const columns = [
     renderCell: ({ studyId }) => (
       <Link to={`/study/${studyId}`}>{studyId}</Link>
     ),
+  },
+  {
+    id: 'traitFromSource',
+    label: 'Trait from source',
   },
   {
     id: "publicationFirstAuthor",

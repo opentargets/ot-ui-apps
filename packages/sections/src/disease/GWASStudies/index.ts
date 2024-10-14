@@ -4,6 +4,6 @@ export const definition = {
   shortName: "GS",
   hasData: data => (
     data?.gwasStudy?.length > 0 ||  // summary
-    data?.length > 0                // section - data is data.gwasStudy
+    data?.length > 0                // section - argument is data.gwasStudy
   ),
 };
