@@ -204,6 +204,7 @@ function Body({ id, label, entity }) {
           dataDownloaderFileStem="impc-evidence"
           entity={entity}
           sectionName="impc"
+          showGlobalFilter={false}
           variables={{
             ensemblId,
             efoId,
