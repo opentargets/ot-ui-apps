@@ -1,9 +1,8 @@
 import { faChartPie, faTableColumns } from "@fortawesome/free-solid-svg-icons";
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { MouseEvent, ReactElement, useState } from "react";
+import { FormControl, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { ReactElement, useState } from "react";
 import { FontAwesomeIconPadded } from "../OtTable/otTableLayout";
 import { VIEW } from "../../constants";
-import Tooltip from "../Tooltip";
 
 type SectionViewToggleProps = {
   defaultValue: string;
@@ -16,26 +15,24 @@ function SectionViewToggle({
 }: SectionViewToggleProps): ReactElement {
   const [alignment, setAlignment] = useState(defaultValue);
 
-  const handleAlignment = (event: MouseEvent, newAlignment: string) => {
-    if (newAlignment) {
-      setAlignment(newAlignment);
-      viewChange(newAlignment);
+  const handleAlignment = (event: SelectChangeEvent) => {
+    if (event.target.value) {
+      setAlignment(event.target.value);
+      viewChange(event.target.value);
     }
   };
 
   return (
-    <ToggleButtonGroup value={alignment} exclusive onChange={handleAlignment}>
-      <Tooltip title={`${VIEW.table} view`} style="">
-        <ToggleButton value={VIEW.table} aria-label="table-view">
-          <FontAwesomeIconPadded icon={faTableColumns} />
-        </ToggleButton>
-      </Tooltip>
-      <Tooltip title={`${VIEW.chart} view`} style="">
-        <ToggleButton value={VIEW.chart} aria-label="chart-view">
-          <FontAwesomeIconPadded icon={faChartPie} />
-        </ToggleButton>
-      </Tooltip>
-    </ToggleButtonGroup>
+    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+      <Select sx={{ typography: "body2" }} value={alignment} onChange={handleAlignment}>
+        <MenuItem value={VIEW.table}>
+          <FontAwesomeIconPadded icon={faTableColumns} /> {VIEW.table} View
+        </MenuItem>
+        <MenuItem value={VIEW.chart}>
+          <FontAwesomeIconPadded icon={faChartPie} /> {VIEW.chart} View
+        </MenuItem>
+      </Select>
+    </FormControl>
   );
 }
 export default SectionViewToggle;
