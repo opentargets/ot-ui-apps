@@ -1,7 +1,8 @@
-import Grid from "@mui/material/Grid";
+import { Theme, Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { ReactElement } from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   page: {
     background: theme.palette.grey["50"],
     minHeight: "100vh",
@@ -18,7 +19,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Page({ header, footer, children }) {
+type PageProps = {
+  children: ReactElement;
+  footer: ReactElement;
+  header: ReactElement;
+};
+
+function Page({ header, footer, children }: PageProps) {
   const classes = useStyles();
   return (
     <div className={classes.page}>
