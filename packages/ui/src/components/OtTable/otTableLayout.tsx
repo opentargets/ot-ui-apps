@@ -36,7 +36,7 @@ export const OtTableHeader = styled("div", {
 })(({ canBeSorted }) => ({
   display: "flex",
   flexDirection: "row",
-  justifyContent: "space-between",
+  justifyContent: "flex-start",
   alignItems: "center",
   cursor: canBeSorted ? "pointer" : "auto",
   "& .sortableColumn": {
