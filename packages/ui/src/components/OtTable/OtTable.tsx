@@ -43,6 +43,7 @@ import {
   mapTableColumnToTanstackColumns,
 } from "./tableUtil";
 import Tooltip from "../Tooltip";
+import OtTableColumnVisibility from "./OtTableColumnVisibility";
 
 declare module "@tanstack/table-core" {
   interface FilterFns {
@@ -88,6 +89,7 @@ function OtTable({
   dataDownloaderFileStem,
   query,
   variables,
+  showColumnVisibilityControl = true,
 }: OtTableProps): ReactElement {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -120,14 +122,14 @@ function OtTable({
   return (
     <div>
       {/* Global Search */}
-      <Grid container>
-        {showGlobalFilter && (
-          <Grid item sm={12} md={4}>
-            <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />
-          </Grid>
-        )}
-        {dataDownloader && (
-          <Grid item sm={12} md={8} sx={{ ml: "auto" }}>
+      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Grid item sm={12} md={4}>
+          {showGlobalFilter && <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />}
+        </Grid>
+
+        <Grid item sm={12} md={8} sx={{ display: "flex", justifyContent: "end", gap: 1 }}>
+          {showColumnVisibilityControl && <OtTableColumnVisibility table={table} />}
+          {dataDownloader && (
             <DataDownloader
               columns={dataDownloaderColumns || columns}
               rows={rows}
@@ -135,8 +137,8 @@ function OtTable({
               query={query}
               variables={variables}
             />
-          </Grid>
-        )}
+          )}
+        </Grid>
       </Grid>
       {/* Table component container */}
       <Box sx={{ w: 1, overflowX: "auto", marginTop: theme => theme.spacing(3) }}>
@@ -216,8 +218,6 @@ function OtTable({
           </tbody>
         </OtTableContainer>
       </Box>
-
-      {/* Table footer component container */}
       <Box
         sx={{
           display: "flex",
@@ -244,6 +244,13 @@ function OtTable({
             ))}
           </NativeSelect>
         </div>
+
+        {/*
+         ************************
+         * TABLE FOOTER ACTIONS *
+         ************************
+         */}
+
         <Box
           sx={{
             display: "flex",
