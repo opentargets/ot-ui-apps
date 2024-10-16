@@ -195,7 +195,7 @@ function DataDownloader({ columns, rows, fileStem, query, variables, btnLabel = 
           </ListItemText>
         </MenuItem>
         <Box sx={{ typography: "caption", px: 2 }}>
-          * Column settings and filters are not included in data
+          * Column settings and filters will not affect export
         </Box>
       </Menu>
 
