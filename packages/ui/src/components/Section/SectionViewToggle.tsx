@@ -1,7 +1,7 @@
 import { faChartPie, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { FormControl, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { ReactElement, useState } from "react";
-import { FontAwesomeIconPadded } from "../OtTable/otTableLayout";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VIEW } from "../../constants";
 
 type SectionViewToggleProps = {
@@ -26,10 +26,10 @@ function SectionViewToggle({
     <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
       <Select sx={{ typography: "body2" }} value={alignment} onChange={handleAlignment}>
         <MenuItem value={VIEW.table}>
-          <FontAwesomeIconPadded icon={faTableColumns} /> {VIEW.table} View
+          <FontAwesomeIcon icon={faTableColumns} /> {VIEW.table} View
         </MenuItem>
         <MenuItem value={VIEW.chart}>
-          <FontAwesomeIconPadded icon={faChartPie} /> {VIEW.chart} View
+          <FontAwesomeIcon icon={faChartPie} /> {VIEW.chart} View
         </MenuItem>
       </Select>
     </FormControl>
