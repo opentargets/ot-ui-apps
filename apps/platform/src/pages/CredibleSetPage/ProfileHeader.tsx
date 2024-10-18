@@ -6,10 +6,12 @@ import {
   Link,
   ScientificNotation,
   Tooltip,
+  PublicationsDrawer,
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 import { getStudyCategory } from "sections/src/utils/getStudyCategory";
+import { epmcUrl } from "../../utils/urls";
 
 type ProfileHeaderProps = {
   variantId: string;
@@ -157,18 +159,23 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Field loading={loading} title="Date">
           {study?.publicationDate?.slice(0, 4)}
         </Field>
+        !!! ONLY IF GWAS!!!!!!!!!!!!!!!!!!
         <Field loading={loading} title="Trait">
           {study?.traitFromSource}
+        </Field>
+        <Field loading={loading}>
+
         </Field>
         {studyCategory === "QTL" &&
           <>
             {target?.id &&
               <Field loading={loading} title="Affected gene">
                 <Link to={`../target/${target.id}`}>
-                  target.approvedSymbol
+                  {target.approvedSymbol} 
                 </Link>
               </Field>
             }
+            !!! NOW ADD PROPER LINK
             <Field loading={loading} title="Affected cell/tissue">
               {study?.biosample?.biosampleId}
             </Field>
@@ -177,9 +184,15 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Field loading={loading} title="Journal">
           {study?.publicationJournal}
         </Field>
-        <Field loading={loading} title="PubMed">
-          {study?.pubmedId}
-        </Field>
+        {study?.pubmedId &&
+          <Field loading={loading} title="PubMed">
+            <PublicationsDrawer
+              entries={[{ name: study.pubmedId, url: epmcUrl(study.pubmedId)}]}
+            >
+              {study.pubmedId}
+            </PublicationsDrawer>
+          </Field>
+        }
         <Field loading={loading} title="Sample size">
           {study?.nSamples}
         </Field>
