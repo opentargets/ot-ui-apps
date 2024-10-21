@@ -26,7 +26,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
 
   const credibleSet = data?.credibleSets?.[0];
   const study = credibleSet?.study;
-  const studyCategory = study ? getStudyCategory(study) : null;
+  const studyCategory = study ? getStudyCategory(study.projectId) : null;
   const target = study?.target;
   const leadVariant = credibleSet?.locus?.find(loc => loc?.variant.id === variantId);
   const beta = leadVariant?.beta ?? credibleSet?.beta;
@@ -159,13 +159,23 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Field loading={loading} title="Date">
           {study?.publicationDate?.slice(0, 4)}
         </Field>
-        !!! ONLY IF GWAS!!!!!!!!!!!!!!!!!!
-        <Field loading={loading} title="Trait">
-          {study?.traitFromSource}
-        </Field>
-        <Field loading={loading}>
-
-        </Field>
+        {studyCategory !== "QTL" &&
+          <>
+            <Field loading={loading} title="Trait">
+              {study?.traitFromSource}
+            </Field>
+            {study?.diseases?.length > 0 &&
+              <Field loading={loading} title="Diseases">
+                {study.diseases.map(({ id, name }, index) => (
+                  <Fragment key={id}>
+                    {index > 0 ? ", " : null}
+                    <Link to={`../disease/${id}`}>{name}</Link>
+                  </Fragment>
+                ))}
+              </Field>
+            }
+          </>
+        }
         {studyCategory === "QTL" &&
           <>
             {target?.id &&
@@ -175,10 +185,13 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
                 </Link>
               </Field>
             }
-            !!! NOW ADD PROPER LINK
-            <Field loading={loading} title="Affected cell/tissue">
-              {study?.biosample?.biosampleId}
-            </Field>
+            { study?.biosample?.biosampleId &&
+              <Field loading={loading} title="Affected cell/tissue">
+                <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${study.biosample.biosampleId}&ontology=uberon`}>
+                  {study.biosample.biosampleId}
+                </Link>
+              </Field>
+            }
           </>
         }
         <Field loading={loading} title="Journal">
