@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
-import EVA_SUMMARY from "./EVASummaryFragement.gql";
+import EVA_SUMMARY from "./EVASummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(EVA_SUMMARY);

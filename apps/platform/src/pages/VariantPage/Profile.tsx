@@ -12,7 +12,7 @@ import PharmacogenomicsSummary from "sections/src/variant/Pharmacogenomics/Summa
 import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/Summary";
 import VariantEffectPredictorSummary from "sections/src/variant/VariantEffectPredictor/Summary";
 import EVASummary from "sections/src/variant/EVA/Summary";
-// import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
+import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
 import GWASCredibleSetsSummary from "sections/src/variant/GWASCredibleSets/Summary";
 import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
 
@@ -28,7 +28,7 @@ const VariantEffectPredictorSection = lazy(
   () => import("sections/src/variant/VariantEffectPredictor/Body")
 );
 const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
-// const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
+const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
 const GWASCredibleSetsSection = lazy(
   () => import("sections/src/variant/GWASCredibleSets/Body")
 );
@@ -41,7 +41,7 @@ const summaries = [
   InSilicoPredictorsSummary,
   VariantEffectPredictorSummary,
   EVASummary,
-  // UniProtVariantsSummary,
+  UniProtVariantsSummary,
   GWASCredibleSetsSummary,
   QTLCredibleSetsSummary,
 ];
@@ -82,7 +82,7 @@ function Profile({ varId }: ProfileProps) {
         <InSilicoPredictorsSummary />
         <VariantEffectPredictorSummary />
         <EVASummary />
-        {/* <UniProtVariantsSummary /> */}
+        <UniProtVariantsSummary />
         <GWASCredibleSetsSummary />
         <QTLCredibleSetsSummary />
       </SummaryContainer>
@@ -98,16 +98,16 @@ function Profile({ varId }: ProfileProps) {
           <VariantEffectPredictorSection id={varId} entity={VARIANT} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
-          <EVASection id={varId} label='NO-LABEL!' entity={VARIANT} />
+          <EVASection id={varId} entity={VARIANT} />
         </Suspense>
-        {/* <Suspense fallback={<SectionLoader />}>
-          <UniProtVariantsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
-        </Suspense> */}
+        <Suspense fallback={<SectionLoader />}>
+          <UniProtVariantsSection id={varId} entity={VARIANT} />
+        </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <GWASCredibleSetsSection id={varId} entity={VARIANT} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
-          <QTLCredibleSetsSection id={varId} label='NO-LABEL!' entity={VARIANT} />
+          <QTLCredibleSetsSection id={varId} entity={VARIANT} />
         </Suspense>
       </SectionContainer>
     </PlatformApiProvider>

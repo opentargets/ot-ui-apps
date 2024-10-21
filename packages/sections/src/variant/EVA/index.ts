@@ -3,5 +3,8 @@ export const definition = {
   id,
   name: "ClinVar",
   shortName: "CV",
-  hasData: ({ evidences }) => evidences.count > 0,
+  hasData: data => {
+    return  data?.evaEvidences?.count > 0 ||  // summary
+            data?.evidences?.count > 0;       // section
+  },
 };
