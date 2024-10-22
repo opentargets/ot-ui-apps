@@ -5,7 +5,7 @@ import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { defaultRowsPerPageOptions, naLabel } from "../../constants";
-import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
+import UNIPROT_VARIANTS_QUERY from "./UniProtVariantsQuery.gql";
 
 const columns = [
   {
