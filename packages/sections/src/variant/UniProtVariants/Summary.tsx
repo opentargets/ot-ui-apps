@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
-import UNIPROT_VARIANTS_SUMMARY from "./UniprotVariantsSummaryFragment.gql";
+import UNIPROT_VARIANTS_SUMMARY from "./UniProtVariantsSummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(UNIPROT_VARIANTS_SUMMARY);
