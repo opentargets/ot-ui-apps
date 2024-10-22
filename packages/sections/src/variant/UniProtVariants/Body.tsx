@@ -13,7 +13,9 @@ const columns = [
     label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource }) => {
       if (!disease) return naLabel;
-      const displayElement = <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+      const displayElement = <Link to={`/disease/${disease.id}`}>
+        {disease.name}
+      </Link>;
       if (diseaseFromSource) {
         return <Tooltip
           title={
@@ -33,6 +35,8 @@ const columns = [
       }
       return displayElement;
     },
+    exportValue: ({ disease }) => disease?.name,
+    filterValue: ({ disease }) => disease?.name,
   },
   {
     id: "confidence",
@@ -53,11 +57,11 @@ const columns = [
           }
           return acc;
         }, []) || [];
-
       return (
         <PublicationsDrawer entries={literatureList} />
       );
     },
+    filterValue: false,
   },
 ];
 

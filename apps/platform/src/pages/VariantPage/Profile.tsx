@@ -28,7 +28,9 @@ const VariantEffectPredictorSection = lazy(
   () => import("sections/src/variant/VariantEffectPredictor/Body")
 );
 const EVASection = lazy(() => import("sections/src/variant/EVA/Body"));
-const UniProtVariantsSection = lazy(() => import("sections/src/variant/UniProtVariants/Body"));
+const UniProtVariantsSection = lazy(
+  () => import("sections/src/variant/UniProtVariants/Body")
+);
 const GWASCredibleSetsSection = lazy(
   () => import("sections/src/variant/GWASCredibleSets/Body")
 );

@@ -27,7 +27,7 @@ function Description({
           alternateAllele={alternateAllele}
         />
       </strong>
-      {" "} to a disease/phenotype. Source:{" "}
+      {" "}to a disease/phenotype. Source:{" "}
       <Link external to={identifiersOrgLink("uniprot", targetFromSourceId)}>
         UniProt ({targetFromSourceId})
       </Link>
