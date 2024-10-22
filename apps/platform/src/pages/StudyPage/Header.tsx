@@ -49,7 +49,7 @@ function Header({
       />
     }
     sourceLink = {
-      id: "FinnGenR10",
+      id: "FinnGen",
       url: `https://r10.finngen.fi/pheno/${studyId}`,
     };
   } else {  // QTL
