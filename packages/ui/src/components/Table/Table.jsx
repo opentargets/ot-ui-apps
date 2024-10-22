@@ -83,20 +83,18 @@ const Table = ({
   return (
     <Grid container direction="column">
       <Grid item container>
-        {showGlobalFilter && (
-          <Grid className={defaultClasses.filter} item xs={12} md={4} lg={4}>
-            <GlobalFilter onGlobalFilterChange={handleGlobalFilterChange} />
-          </Grid>
-        )}
-        {dataDownloader && (
-          <Grid
-            className={defaultClasses.downloader}
-            item
-            xs={12}
-            md={8}
-            lg={8}
-            sx={{ ml: "auto" }}
-          >
+        <Grid className={defaultClasses.filter} item xs={12} md={4} lg={4}>
+          {showGlobalFilter && <GlobalFilter onGlobalFilterChange={handleGlobalFilterChange} />}
+        </Grid>
+        <Grid
+          className={defaultClasses.downloader}
+          item
+          xs={12}
+          md={8}
+          lg={8}
+          sx={{ display: "flex", justifyContent: "end", gap: 1 }}
+        >
+          {dataDownloader && (
             <DataDownloader
               columns={dataDownloaderColumns || columns}
               rows={dataDownloaderRows}
@@ -104,8 +102,8 @@ const Table = ({
               query={query}
               variables={variables}
             />
-          </Grid>
-        )}
+          )}
+        </Grid>
       </Grid>
       <TableContainer className={classNames(defaultClasses.container, classes.root)}>
         <MuiTable

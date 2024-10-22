@@ -19,6 +19,13 @@ const sectionStyles = makeStyles(theme => ({
     paddingTop: 8,
     paddingBottom: 8,
   },
+  cardHeaderContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "1rem",
+    padding: "1rem",
+  },
   cardContent: {
     borderTop: `1px solid ${theme.palette.grey[300]}`,
     minHeight: 36,
@@ -41,6 +48,10 @@ const sectionStyles = makeStyles(theme => ({
     color: theme.palette.grey[400],
     fontWeight: "bold !important",
     fontSize: "1.2rem !important",
+    display: "flex",
+    gap: "1rem",
+    alignItems: "center",
+    height: "100%",
   },
   titleHasData: {
     color: theme.palette.grey[700],
@@ -49,8 +60,9 @@ const sectionStyles = makeStyles(theme => ({
     color: theme.palette.secondary.main,
   },
   chip: {
-    position: "relative",
-    top: "5px",
+    padding: "0 8px",
+    borderRadius: 10,
+    border: `1px solid ${theme.palette.grey[500]}`,
   },
   noData: {
     display: "flex",
