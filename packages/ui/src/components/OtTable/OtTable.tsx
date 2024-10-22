@@ -34,6 +34,7 @@ import {
   OtTH,
   OtTableHeaderText,
   OtTD,
+  OtTableCellContainer,
 } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
 import {
@@ -155,40 +156,41 @@ function OtTable({
                       stickyColumn={header.column.columnDef.sticky}
                     >
                       {header.isPlaceholder ? null : (
-                        <>
-                          <OtTableHeader canBeSorted={header.column.getCanSort()}>
-                            <OtTableHeaderText
-                              verticalHeader={
-                                header.column.columnDef.verticalHeader || verticalHeaders
-                              }
-                              onClick={header.column.getToggleSortingHandler()}
-                              sx={{ typography: "subtitle2" }}
+                        <OtTableHeader
+                          canBeSorted={header.column.getCanSort()}
+                          numeric={header.column.columnDef.numeric}
+                        >
+                          <OtTableHeaderText
+                            verticalHeader={
+                              header.column.columnDef.verticalHeader || verticalHeaders
+                            }
+                            onClick={header.column.getToggleSortingHandler()}
+                            // sx={{ typography: "subtitle2" }}
+                          >
+                            <Tooltip
+                              style={""}
+                              title={header.column.columnDef.tooltip}
+                              showHelpIcon={!!header.column.columnDef.tooltip}
                             >
-                              <Tooltip
-                                style={""}
-                                title={header.column.columnDef.tooltip}
-                                showHelpIcon={!!header.column.columnDef.tooltip}
-                              >
-                                {flexRender(header.column.columnDef.header, header.getContext())}
-                              </Tooltip>
-                              {!header.column.getIsSorted() && header.column.getCanSort() && (
-                                <FontAwesomeIcon
-                                  size="sm"
-                                  icon={faArrowUp}
-                                  className="sortableColumn"
-                                />
-                              )}
-                              {{
-                                asc: <FontAwesomeIconPadded size="sm" icon={faArrowUp} />,
-                                desc: <FontAwesomeIconPadded size="sm" icon={faArrowDown} />,
-                              }[header.column.getIsSorted() as string] ?? null}
-                            </OtTableHeaderText>
+                              {flexRender(header.column.columnDef.header, header.getContext())}
+                            </Tooltip>
+                            {!header.column.getIsSorted() && header.column.getCanSort() && (
+                              <FontAwesomeIcon
+                                size="sm"
+                                icon={faArrowUp}
+                                className="sortableColumn"
+                              />
+                            )}
+                            {{
+                              asc: <FontAwesomeIconPadded size="sm" icon={faArrowUp} />,
+                              desc: <FontAwesomeIconPadded size="sm" icon={faArrowDown} />,
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </OtTableHeaderText>
 
-                            {header.column.getCanFilter() ? (
-                              <OtTableColumnFilter column={header.column} />
-                            ) : null}
-                          </OtTableHeader>
-                        </>
+                          {header.column.getCanFilter() ? (
+                            <OtTableColumnFilter column={header.column} />
+                          ) : null}
+                        </OtTableHeader>
                       )}
                     </OtTH>
                   );
@@ -203,12 +205,12 @@ function OtTable({
                   {row.getVisibleCells().map(cell => {
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
-                        <Box sx={{ typography: "body2" }}>
+                        <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           {/* TODO: check NA value */}
                           {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
                             naLabel} */}
-                        </Box>
+                        </OtTableCellContainer>
                       </OtTD>
                     );
                   })}
