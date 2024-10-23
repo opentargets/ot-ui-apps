@@ -1,0 +1,24 @@
+query EVAQuery($variantId: String!) {
+  variant(variantId: $variantId) {
+    id
+    referenceAllele
+    alternateAllele
+    evidences(datasourceIds: ["eva"]) {
+      count
+      rows {
+      	alleleOrigins
+        allelicRequirements
+        clinicalSignificances
+        cohortPhenotypes
+        confidence
+        disease {
+          id
+          name
+        }
+        diseaseFromSource
+        studyId
+        literature
+      }
+    }
+  }
+}

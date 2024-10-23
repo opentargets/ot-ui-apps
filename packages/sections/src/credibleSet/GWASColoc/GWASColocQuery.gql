@@ -1,0 +1,29 @@
+query GWASColocQuery($studyLocusIds: [String!]!) {
+  credibleSets(studyLocusIds: $studyLocusIds) {
+    colocalisation(studyTypes: [gwas], page: { size: 250, index: 0 }) {
+      otherStudyLocus {
+        studyLocusId
+        study {
+          studyId
+          projectId
+          traitFromSource
+          publicationFirstAuthor
+        }
+        variant {
+          id
+          chromosome
+          position
+          referenceAllele
+          alternateAllele
+        }
+        pValueMantissa
+        pValueExponent
+      }
+      numberColocalisingVariants
+      colocalisationMethod
+      h3
+      h4
+      clpp
+    }
+  }
+}

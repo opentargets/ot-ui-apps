@@ -1,0 +1,5 @@
+fragment VariantEffectPredictorSummaryFragment on Variant {
+  transcriptConsequences {
+    isEnsemblCanonical
+  }
+}

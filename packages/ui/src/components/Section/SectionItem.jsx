@@ -8,9 +8,9 @@ import {
   Grid,
   LinearProgress,
   Typography,
+  Skeleton,
 } from "@mui/material";
 import { Element } from "react-scroll";
-
 import ErrorBoundary from "../ErrorBoundary";
 import Chip from "../Chip";
 import SectionError from "./SectionError";
@@ -26,6 +26,7 @@ function SectionItem({
   tags,
   chipText,
   entity,
+  pageEntity,
   showEmptySection = false,
   showContentLoading = false,
 }) {
@@ -73,14 +74,19 @@ function SectionItem({
                   </Grid>
                 }
                 subheader={
-                  <Typography
-                    className={classNames(classes.description, classes.descriptionHasData, {
-                      [classes.descriptionError]: error,
-                    })}
-                    variant="body2"
-                  >
-                    {renderDescription(data)}
-                  </Typography>
+                  !loading && hasData ? (
+                    <Typography
+                      className={classNames(classes.description, classes.descriptionHasData, {
+                        [classes.descriptionError]: error,
+                      })}
+                      variant="body2"
+                      component="div"
+                    >
+                      {renderDescription(data)}
+                    </Typography>
+                  ) : (
+                    <Skeleton width="50vw" height="20px" />
+                  )
                 }
                 action={tags}
               />
@@ -98,7 +104,9 @@ function SectionItem({
               )}
               {!loading && !hasData && showEmptySection && (
                 <CardContent className={classes.cardContent}>
-                  <div className={classes.noData}> No data available for this {entity}. </div>
+                  <div className={classes.noData}>
+                    No data available for this {pageEntity || entity}.
+                  </div>
                 </CardContent>
               )}
             </ErrorBoundary>

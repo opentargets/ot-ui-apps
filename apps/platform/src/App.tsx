@@ -14,6 +14,8 @@ import DrugPage from "./pages/DrugPage";
 import TargetPage from "./pages/TargetPage";
 import EvidencePage from "./pages/EvidencePage";
 import VariantPage from "./pages/VariantPage";
+import StudyPage from "./pages/StudyPage";
+import CredibleSetPage from "./pages/CredibleSetPage";
 import APIPage from "./pages/APIPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -57,6 +59,12 @@ function App(): ReactElement {
                 <Route path="/variant/:varId">
                   <VariantPage />
                 </Route>
+                <Route path="/study/:studyId">
+                  <StudyPage />
+                </Route>
+                <Route path="/credible-set/:studyLocusId">
+                  <CredibleSetPage />
+                </Route>
                 <Route path="/api">
                   <APIPage />
                 </Route>
@@ -69,7 +77,7 @@ function App(): ReactElement {
                   <NotFoundPage />
                 </Route>
               </Switch>
-              <ShouldAccessPPP />
+              {/* <ShouldAccessPPP /> */}
             </Router>
           </SearchProvider>
         </ThemeProvider>

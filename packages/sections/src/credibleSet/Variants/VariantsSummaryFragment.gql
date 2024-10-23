@@ -1,0 +1,5 @@
+fragment VariantsSummaryFragment on credibleSet {
+  locus {
+    beta
+  }
+}

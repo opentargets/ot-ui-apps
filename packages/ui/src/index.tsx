@@ -14,6 +14,7 @@ export { default as ChipList } from "./components/ChipList";
 export { default as TooltipStyledLabel } from "./components/TooltipStyledLabel";
 export { default as DirectionOfEffectIcon } from "./components/DirectionOfEffectIcon";
 export { default as DirectionOfEffectTooltip } from "./components/DirectionOfEffectTooltip";
+export { default as DisplayVariantId } from "./components/DisplayVariantId";
 export { default as LabelChip } from "./components/LabelChip";
 export { default as BasePage } from "./components/BasePage";
 export { default as NewChip } from "./components/NewChip";

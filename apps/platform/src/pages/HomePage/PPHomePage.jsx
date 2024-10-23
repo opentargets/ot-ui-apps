@@ -128,6 +128,15 @@ function HomePage({ suggestions }) {
               <Link to={`/drug/${suggestions[5].id}`}>{suggestions[5].name}</Link>
             </Hidden>
           </Grid>
+          <Grid className={classes.links} container justifyContent="space-around">
+            <Link to={`/variant/${suggestions[6].id}`}>{suggestions[6].name}</Link>
+
+            <Hidden smDown>
+              <Link to={`/variant/${suggestions[7].id}`}>{suggestions[7].name}</Link>
+            </Hidden>
+   
+            <Link to={`/variant/${suggestions[8].id}`}>{suggestions[8].name}</Link>
+          </Grid>
           <Version releaseNotesURL="http://home.opentargets.org/ppp-release-notes" />
           <div className={classes.dataPolicy}>
             <Typography variant="body2" display="block" align="center" gutterBottom>

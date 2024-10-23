@@ -1,0 +1,5 @@
+fragment GWASCredibleSetsSummaryFragment on Gwas {
+  gwasCredibleSets: credibleSets(page: { size: 1, index: 0 }) {
+    beta
+  }
+}

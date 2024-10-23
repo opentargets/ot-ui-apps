@@ -14,10 +14,17 @@ export function createSummaryFragment(sections, entity, fragmentName) {
     sectionFragments.push(Summary.fragments[sectionFragmentName]);
   });
 
+  const idLookup = {
+    Gwas: 'studyId',
+    credibleSet: 'studyLocusId',
+  }
+
   return gql`
     fragment ${fragmentNameStr} on ${entity} {
       ${
-        sectionFragmentNames.length ? sectionFragmentNames.map(sfn => `...${sfn}`).join("\n") : "id"
+        sectionFragmentNames.length
+          ? sectionFragmentNames.map(sfn => `...${sfn}`).join("\n")
+          : idLookup[entity] || 'id'
       }
     }
     ${sectionFragments.reduce(

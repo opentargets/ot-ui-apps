@@ -1,4 +1,4 @@
-type Entity = "disease" | "drug" | "target";
+type Entity = "disease" | "drug" | "target" | "variant";
 
 type Suggestion = {
   type: string;
@@ -11,6 +11,7 @@ type Examples = {
   targets: Suggestion[];
   diseases: Suggestion[];
   drugs: Suggestion[];
+  variants: Suggestion[];
 };
 
 export const pppSearchExamples: Examples = {
@@ -39,6 +40,13 @@ export const pppSearchExamples: Examples = {
     { type: "suggestion", entity: "drug", name: "TAGRISSO", id: "CHEMBL3353410" },
     { type: "suggestion", entity: "drug", name: "IVACAFTOR", id: "CHEMBL2010601" },
     { type: "suggestion", entity: "drug", name: "LYRICA", id: "CHEMBL1059" },
+  ],
+  variants: [
+    { type: "suggestion", entity: "variant", name: "4_1804392_G_A", id: "4_1804392_G_A" },
+    { type: "suggestion", entity: "variant", name: "11_64600382_G_A", id: "11_64600382_G_A" },
+    { type: "suggestion", entity: "variant", name: "12_6333477_C_T", id: "12_6333477_C_T" },
+    { type: "suggestion", entity: "variant", name: "15_90088702_C_T", id: "15_90088702_C_T" },
+    { type: "suggestion", entity: "variant", name: "17_63945614_C_T", id: "17_63945614_C_T" },
   ],
 };
 
@@ -103,5 +111,12 @@ export const searchExamples: Examples = {
     { type: "suggestion", entity: "drug", name: "TAGRISSO", id: "CHEMBL3353410" },
     { type: "suggestion", entity: "drug", name: "IVACAFTOR", id: "CHEMBL2010601" },
     { type: "suggestion", entity: "drug", name: "LYRICA", id: "CHEMBL1059" },
+  ],
+  variants: [
+    { type: "suggestion", entity: "variant", name: "4_1804392_G_A", id: "4_1804392_G_A" },
+    { type: "suggestion", entity: "variant", name: "11_64600382_G_A", id: "11_64600382_G_A" },
+    { type: "suggestion", entity: "variant", name: "12_6333477_C_T", id: "12_6333477_C_T" },
+    { type: "suggestion", entity: "variant", name: "15_90088702_C_T", id: "15_90088702_C_T" },
+    { type: "suggestion", entity: "variant", name: "17_63945614_C_T", id: "17_63945614_C_T" },
   ],
 };
