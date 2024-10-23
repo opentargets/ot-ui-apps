@@ -25,6 +25,7 @@ export type OtTableProps = {
   query: DocumentNode;
   variables: Record<string, unknown>;
   showColumnVisibilityControl: boolean;
+  loading: boolean;
 };
 
 /*************************

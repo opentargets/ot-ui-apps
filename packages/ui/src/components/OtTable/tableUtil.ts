@@ -87,6 +87,10 @@ export function getCurrentPagePosition(
   return `${currentPageStartRange} - ${pageEndResultSize} of ${totalRows}`;
 }
 
+export function getLoadingRows(size = 10): any[] {
+  return new Array(size);
+}
+
 /****************************************************************************
  * FN TO MAP EACH KEY FROM CLASSIC MUI COLUMN OBJECT TO NEW TANSTACK COLUMN *
  ****************************************************************************/
