@@ -63,6 +63,7 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
       request={requestObj}
       entity={entity}
       renderDescription={() => <Description name={name} />}
+      showContentLoading={true}
       renderBody={() => (
         <>
           <Box display="flex" sx={{ justifyContent: "space-between" }}>
