@@ -85,13 +85,12 @@ function Body({ id, label, entity }) {
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           order="asc"
-          rows={data.disease.progeny.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.disease.progeny.rows}
           showGlobalFilter
           sortBy="resourceScore"
           query={PROGENY_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

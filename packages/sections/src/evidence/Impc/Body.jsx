@@ -264,6 +264,7 @@ function Body({ id, label, entity }) {
         data: { [entity]: { impc: { rows, count: rows.length } } },
       }}
       entity={entity}
+      showContentLoading={true}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={() => (
         <Table

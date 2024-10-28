@@ -159,12 +159,11 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.reactomeSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.reactomeSummary.rows}
             dataDownloader
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
@@ -172,6 +171,7 @@ function Body({ id, label, entity }) {
             noWrapHeader={false}
             query={REACTOME_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

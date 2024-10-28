@@ -33,7 +33,7 @@ function EvidencePage() {
     >
       <Header loading={loading} efoId={efoId} ensgId={ensgId} symbol={symbol} name={name} />
       <ScrollToTop />
-      <Suspense fallback={<LoadingBackdrop />}>
+      <Suspense fallback={<LoadingBackdrop height={11500} />}>
         <Profile ensgId={ensgId} efoId={efoId} symbol={symbol} name={name} />
       </Suspense>
     </BasePage>

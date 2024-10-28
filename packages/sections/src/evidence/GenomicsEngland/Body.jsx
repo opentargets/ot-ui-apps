@@ -177,19 +177,18 @@ export function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={data => (
+      renderBody={() => (
         <OtTable
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           order="desc"
-          rows={data.disease.genomicsEngland.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.disease.genomicsEngland.rows}
           showGlobalFilter
           sortBy="confidence"
           query={GENOMICS_ENGLAND_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

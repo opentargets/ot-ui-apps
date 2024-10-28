@@ -255,19 +255,18 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={data => (
+      renderBody={() => (
         <OtTable
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           order="desc"
-          rows={data.disease.openTargetsGenetics.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.disease.openTargetsGenetics.rows}
           showGlobalFilter
           sortBy="resourceScore"
           query={OPEN_TARGETS_GENETICS_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />
