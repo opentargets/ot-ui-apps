@@ -35,19 +35,15 @@ function Body({ id: efoId, label: name, entity }) {
           [entity]: { efoNodes },
         },
       }}
+      showContentLoading={true}
       renderDescription={() => <Description name={name} />}
-      renderBody={data => {
-        const idToDisease = data[entity].efoNodes.reduce((acc, disease) => {
+      renderBody={() => {
+        const idToDisease = efoNodes.reduce((acc, disease) => {
           acc[disease.id] = disease;
           return acc;
         }, {});
         return (
-          <OntologySubgraph
-            efoId={efoId}
-            efo={data[entity].efoNodes}
-            name={name}
-            idToDisease={idToDisease}
-          />
+          <OntologySubgraph efoId={efoId} efo={efoNodes} name={name} idToDisease={idToDisease} />
         );
       }}
     />
