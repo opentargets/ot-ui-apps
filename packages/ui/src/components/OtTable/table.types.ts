@@ -28,6 +28,10 @@ export type OtTableProps = {
   loading: boolean;
 };
 
+export type loadingTableRows = {
+  id: string;
+};
+
 /*************************
  * OT TABLE SEARCH TYPES *
  *************************/

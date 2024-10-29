@@ -98,7 +98,7 @@ function OtTable({
 
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
 
-  const data = loading ? getLoadingRows() : rows;
+  const data = loading ? getLoadingRows(mappedColumns, 10) : rows;
 
   const table = useReactTable({
     data,
@@ -124,7 +124,7 @@ function OtTable({
   });
 
   function getCellData(cell: ReactNode): ReactNode {
-    if (loading) return <Skeleton variant="text" />;
+    if (loading) return <Skeleton sx={{ minWidth: "50px" }} variant="text" />;
     return <>{cell}</>;
   }
 
