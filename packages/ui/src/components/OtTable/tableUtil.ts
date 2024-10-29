@@ -103,13 +103,13 @@ function mapToTanstackColumnObject(
       sortingFn: (rowA, rowB, column) =>
         originalTableObject.comparator(rowA.original, rowB.original),
     }),
-    //  ASSIGN EITHER CUSTOM FILTERVALUE OR ID
     accessorFn: (row: Record<string, unknown>) => {
+      // ASSIGN EITHER CUSTOM FILTERVALUE OR ID
       if (originalTableObject.filterValue) return originalTableObject.filterValue(row);
       return getValueFromChainedId(originalTableObject.id, row);
     },
-    //  ASSIGN CELL EITHER CUSTOM RENDER CELL OR ID
     cell: ({ row }: { row: Record<string, unknown> }) => {
+      // ASSIGN CELL EITHER CUSTOM RENDER CELL OR ID
       if (originalTableObject.renderCell) return originalTableObject.renderCell(row.original);
       return getValueFromChainedId(originalTableObject.id, row.original);
     },

@@ -333,3 +333,13 @@ export const publicationSummaryQuery = ({ pmcId, symbol, name }) => {
 
   return { baseUrl, body };
 };
+
+export const VIEW = {
+  chart: "Chart",
+  table: "Table",
+};
+
+// export enum DISPLAY_TYPE {
+//   CHART = "chart",
+//   TABLE = "table",
+// }

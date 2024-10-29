@@ -17,8 +17,7 @@ const theme = {
     },
     monoText: {
       fontFamily: "'Roboto Mono', monospace",
-      fontWeight: 500,
-      fontSize: ".80rem",
+      fontSize: ".875rem",
     },
     controlHeader: {
       fontSize: "1rem",
