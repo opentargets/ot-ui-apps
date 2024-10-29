@@ -201,7 +201,7 @@ function getColumns(classes) {
       },
     },
     {
-      id: "confidenceLevel",
+      id: "evidenceLevel",
       label: "Confidence Level",
       comparator: (a, b) => (b.evidenceLevel < a.evidenceLevel ? 1 : -1),
       sortable: true,

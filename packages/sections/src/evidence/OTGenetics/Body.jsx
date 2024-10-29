@@ -233,7 +233,7 @@ function getColumns(label) {
       ),
       numeric: true,
       sortable: true,
-      renderCell: ({ resourceScore }) => parseFloat(resourceScore.toFixed(5)),
+      renderCell: ({ resourceScore }) => parseFloat(resourceScore?.toFixed(5)),
     },
   ];
 }

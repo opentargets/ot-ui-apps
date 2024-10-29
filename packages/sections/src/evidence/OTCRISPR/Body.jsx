@@ -5,7 +5,7 @@ import { SectionItem, Link, Tooltip, OtTable, TooltipStyledLabel } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
+import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 
 import CRISPR_QUERY from "./OTCrisprQuery.gql";
 
@@ -83,7 +83,7 @@ const getColumns = () => [
     id: "resourceScore",
     label: "Significance",
     filterValue: row => `${row.resourceScore}; ${row.statisticalTestTail}`,
-    renderCell: row => (row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : "N/A"),
+    renderCell: row => (row.resourceScore ? parseFloat(row.resourceScore?.toFixed(6)) : naLabel),
   },
   {
     id: "releaseVersion",

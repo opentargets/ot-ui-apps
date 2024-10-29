@@ -35,7 +35,7 @@ const confidenceMap = confidence =>
   ({
     green: 20,
     amber: 10,
-  }[confidence.toLowerCase()] || 0);
+  }[confidence?.toLowerCase()] || 0);
 
 const allelicRequirementsCaption = allelicRequirements => {
   const caption = sentenceCase(allelicRequirements.split(" ", 1)[0].replace(/[;:,]*/g, ""));

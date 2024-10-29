@@ -231,8 +231,6 @@ function Body({ id, label, entity }) {
               dataDownloaderColumns={exportColumns}
               dataDownloaderFileStem={`${ensgId}-${efoId}-otvalidation`}
               showGlobalFilter
-              sortBy="resourceScore"
-              order="des"
               fixed
               noWrap={false}
               noWrapHeader={false}
