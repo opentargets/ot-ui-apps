@@ -17,7 +17,10 @@ import CANCER_GENE_CENSUS_QUERY from "./sectionQuery.gql";
 
 const samplePercent = item => (item.numberSamplesWithMutationType / item.numberSamplesTested) * 100;
 
-const getMaxPercent = row => Math.max(...row.mutatedSamples.map(item => samplePercent(item)));
+const getMaxPercent = row => {
+  if (row.mutatedSamples) return Math.max(...row.mutatedSamples.map(item => samplePercent(item)));
+  return null;
+};
 
 const getColumns = label => [
   {
@@ -57,7 +60,7 @@ const getColumns = label => [
   {
     id: "mutatedSamples",
     propertyPath: "mutatedSamples.numberSamplesWithMutationType",
-    sortable: "true",
+    sortable: true,
     label: "Mutated / Total samples",
     renderCell: ({ mutatedSamples }) => {
       if (!mutatedSamples) return naLabel;
