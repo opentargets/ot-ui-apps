@@ -107,7 +107,7 @@ const getColumns = label => [
         return row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : naLabel;
       }
     },
-    filterValue: row => `${parseFloat(row.resourceScore.toFixed(6))} ${row.statisticalTestTail}`,
+    filterValue: row => `${parseFloat(row.resourceScore?.toFixed(6))} ${row.statisticalTestTail}`,
     width: "9%",
   },
   {
