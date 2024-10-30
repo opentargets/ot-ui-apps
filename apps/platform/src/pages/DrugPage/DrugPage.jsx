@@ -1,6 +1,5 @@
-import { lazy, Suspense } from "react";
 import { useQuery } from "@apollo/client";
-import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
+import { BasePage, ScrollToTop } from "ui";
 import { Box, Tabs, Tab } from "@mui/material";
 import {
   useLocation,
@@ -16,7 +15,7 @@ import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import DRUG_PAGE_QUERY from "./DrugPage.gql";
 
-const Profile = lazy(() => import("./Profile"));
+import Profile from "./Profile";
 
 function DrugPage() {
   const location = useLocation();
@@ -57,16 +56,14 @@ function DrugPage() {
           </Box>
         )}
       />
-      <Suspense fallback={<LoadingBackdrop height={11500} />}>
-        <Switch>
-          <Route exact path={path}>
-            <Profile chemblId={chemblId} name={name} />
-          </Route>
-          <Route path="*">
-            <Redirect to={`/drug/${chemblId}`} />
-          </Route>
-        </Switch>
-      </Suspense>
+      <Switch>
+        <Route exact path={path}>
+          <Profile chemblId={chemblId} name={name} />
+        </Route>
+        <Route path="*">
+          <Redirect to={`/drug/${chemblId}`} />
+        </Route>
+      </Switch>
     </BasePage>
   );
 }
