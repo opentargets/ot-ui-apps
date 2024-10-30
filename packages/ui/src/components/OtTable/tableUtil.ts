@@ -35,10 +35,13 @@ export function getFilterValueFromObject(obj: Record<string, unknown>): string {
  * @return: { id: "pValue", desc: false}: type DefaultSortProp
  **********************************************************/
 export function getDefaultSortObj(sortBy: string, order: string): DefaultSortProp {
-  return {
-    id: sortBy,
-    desc: order === "desc",
-  };
+  if (!sortBy) return undefined;
+  return [
+    {
+      id: sortBy,
+      desc: order === "desc",
+    },
+  ];
 }
 
 /*****************************************************
