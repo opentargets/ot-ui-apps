@@ -1,20 +1,11 @@
 import { useQuery } from "@apollo/client";
 import { Box, Chip } from "@mui/material";
-import {
-  Link,
-  SectionItem,
-  DataTable,
-  ScientificNotation,
-  DisplayVariantId,
-} from "ui";
-import { naLabel, defaultRowsPerPageOptions } from "../../constants";
+import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
+import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import VARIANTS_QUERY from "./VariantsQuery.gql";
-import {
-  mantissaExponentComparator,
-  variantComparator
-} from "../../utils/comparators";
+import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 
 type getColumnsType = {
   leadVariantId: string;
@@ -22,37 +13,35 @@ type getColumnsType = {
   leadAlternateAllele: string;
 };
 
-function getColumns({
-      leadVariantId,
-      leadReferenceAllele,
-      leadAlternateAllele,
-    }: getColumnsType) {
-  
+function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }: getColumnsType) {
   return [
     {
       id: "variant.id",
       label: "Variant ID",
       comparator: variantComparator,
       sortable: true,
-      filterValue: ({ variant: v }) => (
-        `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`
-      ),
+      filterValue: ({ variant: v }) =>
+        `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
       renderCell: ({ variant }) => {
         if (!variant) return naLabel;
         const { id: variantId, referenceAllele, alternateAllele } = variant;
-        const displayElement = <Link to={`/variant/${variantId}`}>
-          <DisplayVariantId
-            variantId={variantId}
-            referenceAllele={referenceAllele}
-            alternateAllele={alternateAllele}
-            expand={false}
-          />
-        </Link>;
+        const displayElement = (
+          <Link to={`/variant/${variantId}`}>
+            <DisplayVariantId
+              variantId={variantId}
+              referenceAllele={referenceAllele}
+              alternateAllele={alternateAllele}
+              expand={false}
+            />
+          </Link>
+        );
         if (variantId === leadVariantId) {
-          return <Box display="flex" alignItems="center" gap={0.5}>
-            {displayElement}
-            <Chip label="lead" variant="outlined" size="small"/>
-          </Box>;
+          return (
+            <Box display="flex" alignItems="center" gap={0.5}>
+              {displayElement}
+              <Chip label="lead" variant="outlined" size="small" />
+            </Box>
+          );
         }
         return displayElement;
       },
@@ -61,22 +50,22 @@ function getColumns({
     {
       id: "pValue",
       label: "P-value",
-      comparator: (a, b) => mantissaExponentComparator(
-        a?.pValueMantissa,
-        a?.pValueExponent,
-        b?.pValueMantissa,
-        b?.pValueExponent,
-      ),
+      comparator: (a, b) =>
+        mantissaExponentComparator(
+          a?.pValueMantissa,
+          a?.pValueExponent,
+          b?.pValueMantissa,
+          b?.pValueExponent
+        ),
       sortable: true,
       filterValue: false,
       renderCell: ({ pValueMantissa, pValueExponent }) => {
-        if (typeof pValueMantissa !== "number" ||
-            typeof pValueExponent !== "number") return naLabel;
+        if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number")
+          return naLabel;
         return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
       },
       exportValue: ({ pValueMantissa, pValueExponent }) => {
-        if (typeof pValueMantissa !== "number" ||
-            typeof pValueExponent !== "number") return null;
+        if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return null;
         return `${pValueMantissa}x10${pValueExponent}`;
       },
     },
@@ -94,7 +83,8 @@ function getColumns({
       id: "standardError",
       label: "Standard error",
       filterValue: false,
-      tooltip: "Standard Error: Estimate of the standard deviation of the sampling distribution of the beta",
+      tooltip:
+        "Standard Error: Estimate of the standard deviation of the sampling distribution of the beta",
       renderCell: ({ standardError }) => {
         if (typeof standardError !== "number") return naLabel;
         return standardError.toPrecision(3);
@@ -104,16 +94,18 @@ function getColumns({
       id: "r2Overall",
       label: "LD (r²)",
       filterValue: false,
-      tooltip: <>
-        Linkage disequilibrium with the lead variant (
+      tooltip: (
+        <>
+          Linkage disequilibrium with the lead variant (
           <DisplayVariantId
             variantId={leadVariantId}
             referenceAllele={leadReferenceAllele}
             alternateAllele={leadAlternateAllele}
             expand={false}
           />
-        )
-      </>,
+          )
+        </>
+      ),
       renderCell: ({ r2Overall }) => {
         if (typeof r2Overall !== "number") return naLabel;
         return r2Overall.toPrecision(3);
@@ -132,34 +124,32 @@ function getColumns({
       },
     },
     {
-      id: 'logBF',
-      label: 'LOG(BF)',
+      id: "logBF",
+      label: "LOG(BF)",
       filterValue: false,
       renderCell: ({ logBF }) => {
         if (typeof logBF !== "number") return naLabel;
         return logBF.toPrecision(3);
       },
-    }
+    },
   ];
-
 }
 
 type BodyProps = {
-  studyLocusId: string,
-  leadVariantId: string,
-  leadReferenceAllele: string,
-  leadAlternateAllele: string,
-  entity: string,
+  studyLocusId: string;
+  leadVariantId: string;
+  leadReferenceAllele: string;
+  leadAlternateAllele: string;
+  entity: string;
 };
 
 function Body({
-      studyLocusId,
-      leadVariantId,
-      leadReferenceAllele,
-      leadAlternateAllele,
-      entity
-    }: BodyProps) {
-
+  studyLocusId,
+  leadVariantId,
+  leadReferenceAllele,
+  leadAlternateAllele,
+  entity,
+}: BodyProps) {
   const variables = {
     studyLocusIds: [studyLocusId],
   };
@@ -167,7 +157,7 @@ function Body({
   const request = useQuery(VARIANTS_QUERY, {
     variables,
   });
-  
+
   const columns = getColumns({
     leadVariantId,
     leadReferenceAllele,
@@ -180,16 +170,17 @@ function Body({
       entity={entity}
       request={request}
       renderDescription={() => <Description />}
-      renderBody={({ credibleSets }) => {
+      renderBody={() => {
         return (
-          <DataTable
-            dataDownloader
+          <OtTable
             showGlobalFilter
+            dataDownloader
+            dataDownloaderFileStem={`${studyLocusId}-credibleset`}
             sortBy="posteriorProbability"
             order="desc"
             columns={columns}
-            rows={credibleSets[0].locus}
-            rowsPerPageOptions={defaultRowsPerPageOptions}
+            loading={request.loading}
+            rows={request.data?.credibleSets[0].locus}
             query={VARIANTS_QUERY.loc.source.body}
             variables={variables}
           />
@@ -197,7 +188,6 @@ function Body({
       }}
     />
   );
-
 }
 
 export default Body;
