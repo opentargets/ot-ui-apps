@@ -179,19 +179,18 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.orphanetSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.orphanetSummary.rows}
             dataDownloader
             dataDownloaderFileStem={`orphanet-${ensgId}-${efoId}`}
             dataDownloaderColumns={exportColumns}
             showGlobalFilter
-            rowsPerPageOptions={defaultRowsPerPageOptions}
             query={ORPHANET_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

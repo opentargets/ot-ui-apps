@@ -111,7 +111,7 @@ function OtTable({
       globalFilter,
     },
     initialState: {
-      sorting: [getDefaultSortObj(sortBy, order)],
+      sorting: getDefaultSortObj(sortBy, order),
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,

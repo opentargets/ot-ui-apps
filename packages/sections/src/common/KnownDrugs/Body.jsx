@@ -129,6 +129,7 @@ function Body({
   client,
 }) {
   const [initialLoading, setInitialLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
   const [cursor, setCursor] = useState("");
@@ -174,15 +175,24 @@ function Body({
     () => {
       let isCurrent = true;
 
-      fetchDrugs(variables, null, pageSize).then(res => {
-        setInitialLoading(false);
-        if (res.data[entity].knownDrugs && isCurrent) {
-          const { cursor: newCursor, count: newCount, rows: newRows } = res.data[entity].knownDrugs;
-          setCursor(newCursor);
-          setCount(newCount);
-          setRows(newRows);
-        }
-      });
+      fetchDrugs(variables, null, pageSize)
+        .then(res => {
+          setInitialLoading(false);
+          if (res.data[entity].knownDrugs && isCurrent) {
+            const {
+              cursor: newCursor,
+              count: newCount,
+              rows: newRows,
+            } = res.data[entity].knownDrugs;
+            setCursor(newCursor);
+            setCount(newCount);
+            setRows(newRows);
+          }
+        })
+        .catch(e => {
+          setInitialLoading(false);
+          setError(e);
+        });
 
       return () => {
         isCurrent = false;
@@ -268,7 +278,7 @@ function Body({
       entity={entity}
       request={{
         loading: initialLoading,
-        error: false,
+        error,
         data: {
           [entity]: {
             knownDrugs: {
@@ -279,6 +289,7 @@ function Body({
           },
         },
       }}
+      showContentLoading={true}
       renderDescription={Description}
       renderBody={() => (
         <Table

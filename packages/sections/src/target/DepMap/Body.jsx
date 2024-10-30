@@ -16,9 +16,10 @@ function Section({ id, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => (
+      showContentLoading={true}
+      renderBody={() => (
         <DepmapPlot
-          data={data.target.depMapEssentiality}
+          data={request.data?.target.depMapEssentiality}
           variables={variables}
           query={DEPMAP_QUERY.loc.source.body}
         />

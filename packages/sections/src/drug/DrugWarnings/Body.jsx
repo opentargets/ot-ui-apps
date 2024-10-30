@@ -81,15 +81,15 @@ function Body({ id: chemblId, label: name, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description name={name} />}
-      renderBody={({ drug }) => (
+      renderBody={() => (
         <OtTable
           showGlobalFilter
           dataDownloader
           columns={columns}
-          rows={drug.drugWarnings}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.drug.drugWarnings}
           query={DRUG_WARNINGS_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

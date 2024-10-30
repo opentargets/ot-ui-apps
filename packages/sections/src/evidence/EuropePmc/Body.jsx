@@ -252,8 +252,12 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.literature}
       request={{ loading, error, data }}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={res => {
-        const rows = mergeData(getPage(res.disease.europePmc.rows, page, pageSize), literatureData);
+      showContentLoading={true}
+      renderBody={() => {
+        const rows = mergeData(
+          getPage(data?.disease.europePmc.rows, page, pageSize),
+          literatureData
+        );
 
         return (
           <Table
