@@ -7,7 +7,10 @@ import config from "../../config";
 import { definition } from "./index";
 
 function Body({ id: efoId, label: name, entity }) {
-  const [efoNodes, setEfoNodes] = useState(null);
+  const [efoNodes, setEfoNodes] = useState({
+    allNodes: null,
+    filteredNodes: null,
+  });
 
   useEffect(() => {
     let isCurrent = true;
@@ -16,7 +19,11 @@ function Body({ id: efoId, label: name, entity }) {
       .then(lines => {
         if (isCurrent) {
           const nodes = lines.trim().split("\n").map(JSON.parse);
-          setEfoNodes(nodes);
+          const idToDisease = nodes.reduce((acc, disease) => {
+            acc[disease.id] = disease;
+            return acc;
+          }, {});
+          setEfoNodes({ allNodes: nodes, filteredNodes: idToDisease });
         }
       });
 
@@ -30,20 +37,21 @@ function Body({ id: efoId, label: name, entity }) {
       definition={definition}
       entity={entity}
       request={{
-        loading: !efoNodes,
+        loading: !efoNodes.filteredNodes,
         data: {
-          [entity]: { efoNodes },
+          [entity]: { efoNodes: efoNodes.allNodes },
         },
       }}
       showContentLoading={true}
       renderDescription={() => <Description name={name} />}
       renderBody={() => {
-        const idToDisease = efoNodes.reduce((acc, disease) => {
-          acc[disease.id] = disease;
-          return acc;
-        }, {});
         return (
-          <OntologySubgraph efoId={efoId} efo={efoNodes} name={name} idToDisease={idToDisease} />
+          <OntologySubgraph
+            efoId={efoId}
+            efo={efoNodes.allNodes}
+            name={name}
+            idToDisease={efoNodes.filteredNodes}
+          />
         );
       }}
     />

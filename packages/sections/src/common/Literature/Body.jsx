@@ -11,7 +11,7 @@ import CountInfo from "./CountInfo";
 import { DateFilter } from "./DateFilter";
 
 function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
-  const [requestObj, setRequestObj] = useState({});
+  const [requestObj, setRequestObj] = useState({ data: null, loading: true, error: null });
 
   const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
   const resetLiteratureState = useResetRecoilState(literatureState);

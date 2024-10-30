@@ -74,22 +74,20 @@ function Body({ id: chemblId, label: name, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description name={name} />}
-      renderBody={data => {
-        const { rows } = data.drug.indications;
-
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
             dataDownloader
             dataDownloaderFileStem={`${chemblId}-indications`}
-            rows={rows}
+            rows={request.data?.drug.indications.rows}
             showGlobalFilter
             sortBy="maxPhaseForIndication"
             order="desc"
-            rowsPerPageOptions={[10, 25, 100]}
             ActionsComponent={PaginationActionsComplete}
             query={INDICATIONS_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}
