@@ -16,9 +16,9 @@ function Body({ label: symbol, entity }) {
       entity={entity}
       request={{ ...request, data: { [entity]: request.data } }}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => {
-        const uniprotId = getUniprotIds(data[entity].proteinIds)[0];
-
+      showContentLoading={true}
+      renderBody={() => {
+        const uniprotId = getUniprotIds(request.data?.proteinIds)[0];
         return <ProtVista uniprotId={uniprotId} />;
       }}
     />

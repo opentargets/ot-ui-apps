@@ -107,7 +107,7 @@ const getColumns = label => [
         return row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : naLabel;
       }
     },
-    filterValue: row => `${parseFloat(row.resourceScore.toFixed(6))} ${row.statisticalTestTail}`,
+    filterValue: row => `${parseFloat(row.resourceScore?.toFixed(6))} ${row.statisticalTestTail}`,
     width: "9%",
   },
   {
@@ -206,12 +206,11 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.CrisprScreenSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.CrisprScreenSummary.rows}
             dataDownloader
             dataDownloaderColumns={exportColumns}
             dataDownloaderFileStem={`${ensgId}-${efoId}-crisprscreen`}
@@ -223,6 +222,7 @@ function Body({ id, label, entity }) {
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={CRISPR_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

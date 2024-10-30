@@ -1,6 +1,11 @@
 import { Typography } from "@mui/material";
+import { ReactNode } from "react";
 
-function SectionError({ message }) {
+type SectionErrorProps = {
+  message: string;
+};
+
+function SectionError({ message }: SectionErrorProps): ReactNode {
   return (
     <Typography color="error" align="center">
       {message}

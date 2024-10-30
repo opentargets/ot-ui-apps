@@ -107,17 +107,17 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.cancerBiomarkersSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.cancerBiomarkersSummary.rows}
             dataDownloader
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={CANCER_BIOMARKERS_EVIDENCE_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

@@ -1,4 +1,4 @@
-import { ReactElement, Suspense } from "react";
+import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs } from "@mui/material";
 import {
@@ -10,7 +10,7 @@ import {
   useParams,
   Redirect,
 } from "react-router-dom";
-import { LoadingBackdrop, BasePage, ScrollToTop } from "ui";
+import { BasePage, ScrollToTop } from "ui";
 
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
@@ -90,19 +90,17 @@ function TargetPage(): ReactElement {
           </Box>
         )}
       />
-      <Suspense fallback={<LoadingBackdrop height={11500} />}>
-        <Switch>
-          <Route exact path={path}>
-            <Profile ensgId={ensgId} symbol={symbol} />
-          </Route>
-          <Route path={`${path}/associations`}>
-            <Associations ensgId={ensgId} />
-          </Route>
-          <Route path="*">
-            <Redirect to={`/target/${ensgId}`} />
-          </Route>
-        </Switch>
-      </Suspense>
+      <Switch>
+        <Route exact path={path}>
+          <Profile ensgId={ensgId} symbol={symbol} />
+        </Route>
+        <Route path={`${path}/associations`}>
+          <Associations ensgId={ensgId} />
+        </Route>
+        <Route path="*">
+          <Redirect to={`/target/${ensgId}`} />
+        </Route>
+      </Switch>
     </BasePage>
   );
 }

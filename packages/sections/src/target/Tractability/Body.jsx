@@ -98,14 +98,15 @@ function Body({ label: symbol, id: ensemblId, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => (
+      showContentLoading={true}
+      renderBody={() => (
         <Grid container spacing={3}>
           {modalities.map(m => (
             <Grid item xs={6} sm={3} key={v1()}>
               <Typography variant="subtitle1" gutterBottom>
                 {m.label}
               </Typography>
-              <ModalityList modality={m.modality} data={data.target.tractability} />
+              <ModalityList modality={m.modality} data={request.data?.target.tractability} />
             </Grid>
           ))}
         </Grid>

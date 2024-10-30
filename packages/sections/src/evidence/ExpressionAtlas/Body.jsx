@@ -119,18 +119,18 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.expressionAtlasSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.expressionAtlasSummary.rows}
             dataDownloader
             showGlobalFilter
             sortBy="resourceScore"
             order="asc"
             query={EXPRESSION_ATLAS_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

@@ -1,8 +1,8 @@
-import { ReactElement, Suspense } from "react";
+import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs } from "@mui/material";
 import { Link, Redirect, Route, Switch, useLocation, useParams } from "react-router-dom";
-import { LoadingBackdrop, BasePage, ScrollToTop } from "ui";
+import { BasePage, ScrollToTop } from "ui";
 
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
@@ -69,19 +69,17 @@ function DiseasePage(): ReactElement {
           </Box>
         )}
       />
-      <Suspense fallback={<LoadingBackdrop height={1500} />}>
-        <Switch>
-          <Route exact path="/disease/:efoId">
-            <Profile efoId={efoId} name={name} />
-          </Route>
-          <Route path="/disease/:efoId/associations">
-            <Associations efoId={efoId} />
-          </Route>
-          <Route path="*">
-            <Redirect to={`/disease/${efoId}`} />
-          </Route>
-        </Switch>
-      </Suspense>
+      <Switch>
+        <Route exact path="/disease/:efoId">
+          <Profile efoId={efoId} name={name} />
+        </Route>
+        <Route path="/disease/:efoId/associations">
+          <Associations efoId={efoId} />
+        </Route>
+        <Route path="*">
+          <Redirect to={`/disease/${efoId}`} />
+        </Route>
+      </Switch>
     </BasePage>
   );
 }

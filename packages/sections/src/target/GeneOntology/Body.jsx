@@ -147,8 +147,11 @@ function Section({ id, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={({ target }) => {
-        const rows = sortBy(target.geneOntology.map(extractCategory), "category.label");
+      renderBody={() => {
+        const rows = sortBy(
+          request.data?.target.geneOntology.map(extractCategory),
+          "category.label"
+        );
         return (
           <OtTable
             showGlobalFilter
@@ -158,6 +161,7 @@ function Section({ id, label: symbol, entity }) {
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={GENE_ONTOLOGY_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}
