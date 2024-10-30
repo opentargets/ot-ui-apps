@@ -1,4 +1,4 @@
-import { Box, Card, CardActions, CardContent, Divider, Grid, Skeleton } from "@mui/material";
+import { Box, Card, CardContent, Divider, Grid, Skeleton } from "@mui/material";
 import { v1 } from "uuid";
 
 type SectionContainerLoaderProps = {
@@ -12,11 +12,11 @@ function SectionLoader({ sectionsCount = 1 }: SectionContainerLoaderProps) {
     <Grid key={v1()} item xs={12}>
       <section>
         <Card elevation={0} variant="outlined">
-          <Box sx={{ p: 2, display: "flex", gap: 1 }}>
+          <Box sx={{ p: 2, display: "flex", gap: 1, alignItems: "center" }}>
             <Skeleton animation="wave" variant="circular" width={40} height={40} />
             <Box sx={{ flex: 1 }}>
-              <Skeleton animation="wave" height={10} width="20%" style={{ marginBottom: 6 }} />
-              <Skeleton animation="wave" height={10} width="60%" />
+              <Skeleton animation="wave" height={30} width="20%" style={{ marginBottom: 1 }} />
+              <Skeleton animation="wave" height={20} width="60%" />
             </Box>
           </Box>
           <Divider />
