@@ -202,7 +202,7 @@ function Body({ id: chemblId, label: name, entity }) {
       },
     },
     {
-      id: "confidenceLevel",
+      id: "evidenceLevel",
       label: "Confidence Level",
       sortable: true,
       tooltip: (
@@ -272,16 +272,16 @@ function Body({ id: chemblId, label: name, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description name={name} />}
-      renderBody={({ drug }) => (
+      renderBody={() => (
         <OtTable
           sortBy="evidenceLevel"
           showGlobalFilter
           dataDownloader
           columns={columns}
-          rows={drug.pharmacogenomics}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.drug.pharmacogenomics}
           query={PHARMACOGENOMICS_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

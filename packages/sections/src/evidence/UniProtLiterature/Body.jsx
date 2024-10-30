@@ -91,17 +91,16 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.uniprotLiteratureSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.uniprotLiteratureSummary.rows}
             dataDownloader
             showGlobalFilter
-            rowsPerPageOptions={defaultRowsPerPageOptions}
             query={UNIPROT_LITERATURE_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

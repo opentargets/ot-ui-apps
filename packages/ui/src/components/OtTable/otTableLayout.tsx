@@ -32,7 +32,7 @@ export const OtTableContainer = styled("table")(({ theme }) => ({
 }));
 
 export const OtTableHeader = styled("div", {
-  shouldForwardProp: prop => prop !== "canBeSorted",
+  shouldForwardProp: prop => prop !== "canBeSorted" && prop !== "numeric",
 })(({ theme, canBeSorted, numeric }) =>
   theme.unstable_sx({
     display: "flex",

@@ -380,6 +380,7 @@ function Body({ id, label, entity }) {
       definition={definition}
       chipText={dataTypesMap.known_drug}
       entity={entity}
+      showContentLoading={true}
       request={{
         loading: initialLoading,
         data: { [entity]: { chembl: { rows, count: rows.length } } },

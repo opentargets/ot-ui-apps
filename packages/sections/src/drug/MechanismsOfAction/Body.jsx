@@ -75,18 +75,17 @@ function Body({ id: chemblId, label: name, entity }) {
           childMolecules={request.childMolecules || []}
         />
       )}
-      renderBody={data => {
-        const { rows } = data.drug.mechanismsOfAction;
-
+      renderBody={() => {
         return (
           <OtTable
             showGlobalFilter
             columns={columns}
-            rows={rows}
+            rows={request.data?.drug.mechanismsOfAction.rows}
             dataDownloader
             dataDownloaderFileStem={`${chemblId}-mechanisms-of-action`}
             query={MECHANISMS_OF_ACTION_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

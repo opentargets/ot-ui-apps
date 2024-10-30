@@ -1,11 +1,65 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem } from "ui";
+import { Link, TableDrawer, OtTable, SectionItem } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import PhenotypesTable from "./PhenotypesTable";
-
 import MOUSE_PHENOTYPES_QUERY from "./MousePhenotypes.gql";
+import AllelicCompositionDrawer from "./AllelicCompositionDrawer";
+
+const columns = [
+  {
+    id: "targetInModel",
+    label: "Mouse gene",
+    renderCell: ({ targetInModel, targetInModelMgiId }) => (
+      <Link external to={`https://identifiers.org/${targetInModelMgiId}`}>
+        {targetInModel}
+      </Link>
+    ),
+  },
+  {
+    id: "modelPhenotypeLabel",
+    label: "Phenotype",
+    renderCell: ({ modelPhenotypeLabel, modelPhenotypeId }) => (
+      <Link external to={`https://identifiers.org/${modelPhenotypeId}`}>
+        {modelPhenotypeLabel}
+      </Link>
+    ),
+  },
+  {
+    id: "modelPhenotypeClasses",
+    label: "Category",
+    filterValue: ({ modelPhenotypeClasses }) => {
+      if (modelPhenotypeClasses.length === 1) {
+        return modelPhenotypeClasses[0].label;
+      }
+      return "categories";
+    },
+    renderCell: ({ modelPhenotypeClasses }) => {
+      const entries = modelPhenotypeClasses.map(phenotypeClass => ({
+        name: phenotypeClass.label,
+        url: `https://identifiers.org/${phenotypeClass.id}`,
+        group: "Categories",
+      }));
+      return (
+        <TableDrawer
+          caption="Category"
+          message={`${modelPhenotypeClasses.length} categories`}
+          entries={entries}
+        />
+      );
+    },
+    exportValue: ({ modelPhenotypeClasses }) =>
+      modelPhenotypeClasses.map(phenotypeClass => phenotypeClass.label),
+  },
+  {
+    id: "allelicComposition",
+    label: "Allelic composition",
+    renderCell: ({ biologicalModels }) => (
+      <AllelicCompositionDrawer biologicalModels={biologicalModels} />
+    ),
+    exportValue: ({ biologicalModels }) => biologicalModels.map(bm => bm.allelicComposition),
+  },
+];
 
 function Body({ id, label: symbol, entity }) {
   const variables = { ensemblId: id };
@@ -19,12 +73,16 @@ function Body({ id, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={({ target }) => (
-        <PhenotypesTable
-          mousePhenotypes={target.mousePhenotypes}
+      renderBody={() => (
+        <OtTable
+          showGlobalFilter
+          dataDownloader
+          dataDownloaderFileStem={`${symbol}-mouse-phenotypes`}
+          columns={columns}
+          rows={request.data?.target.mousePhenotypes}
           query={MOUSE_PHENOTYPES_QUERY.loc.source.body}
           variables={variables}
-          symbol={symbol}
+          loading={request.loading}
         />
       )}
     />

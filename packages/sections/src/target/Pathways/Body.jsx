@@ -1,11 +1,41 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem } from "ui";
+import { SectionItem, Link, OtTable } from "ui";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMapMarker } from "@fortawesome/free-solid-svg-icons";
 
 import { definition } from ".";
 import Description from "./Description";
-import PathwaysTable from "./PathwaysTable";
-
 import PATHWAYS_QUERY from "./Pathways.gql";
+
+import { identifiersOrgLink } from "../../utils/global";
+import { defaultRowsPerPageOptions } from "../../constants";
+
+function getColumns(symbol) {
+  return [
+    {
+      id: "pathway",
+      label: "Pathway",
+      renderCell: ({ pathwayId, pathway }) => (
+        <Link external to={identifiersOrgLink("reactome", pathwayId)}>
+          {pathway}
+        </Link>
+      ),
+    },
+    {
+      id: "topLevelTerm",
+      label: "Top-level parent pathway",
+    },
+    {
+      id: "pathwayId",
+      label: "View target and pathway",
+      renderCell: ({ pathwayId }) => (
+        <Link external to={`https://reactome.org/PathwayBrowser/#/${pathwayId}&FLG=${symbol}`}>
+          <FontAwesomeIcon icon={faMapMarker} /> Reactome pathway browser
+        </Link>
+      ),
+    },
+  ];
+}
 
 function Body({ id: ensemblId, label: symbol, entity }) {
   const variables = { ensemblId };
@@ -19,12 +49,16 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={({ target }) => (
-        <PathwaysTable
-          symbol={target.approvedSymbol}
-          pathways={target.pathways}
+      renderBody={() => (
+        <OtTable
+          showGlobalFilter
+          dataDownloader
+          columns={getColumns(symbol)}
+          rows={request.data?.target.pathways}
+          rowsPerPageOptions={defaultRowsPerPageOptions}
           query={PATHWAYS_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

@@ -5,10 +5,14 @@ import { ColumnDef, Table } from "@tanstack/table-core";
  * OT TABLE CLIENT SIDE TYPES *
  ******************************/
 
-export type DefaultSortProp = {
-  id: string;
-  desc: boolean;
-};
+export type DefaultSortProp =
+  | [
+      {
+        id: string;
+        desc: boolean;
+      }
+    ]
+  | undefined;
 
 export type OtTableProps = {
   showGlobalFilter: boolean;
@@ -25,6 +29,11 @@ export type OtTableProps = {
   query: DocumentNode;
   variables: Record<string, unknown>;
   showColumnVisibilityControl: boolean;
+  loading: boolean;
+};
+
+export type loadingTableRows = {
+  id: string;
 };
 
 /*************************

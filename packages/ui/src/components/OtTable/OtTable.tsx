@@ -1,5 +1,5 @@
-import { ReactElement, useState } from "react";
-import { Box, CircularProgress, Grid, IconButton, NativeSelect } from "@mui/material";
+import { ReactElement, ReactNode, useState } from "react";
+import { Box, CircularProgress, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
   ColumnFiltersState,
@@ -41,6 +41,7 @@ import {
   getCurrentPagePosition,
   getDefaultSortObj,
   getFilterValueFromObject,
+  getLoadingRows,
   mapTableColumnToTanstackColumns,
 } from "./tableUtil";
 import Tooltip from "../Tooltip";
@@ -74,7 +75,6 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 /************
  *  WIDTH *
  * minWidth
- * numeric
  ************/
 
 function OtTable({
@@ -91,14 +91,17 @@ function OtTable({
   query,
   variables,
   showColumnVisibilityControl = true,
+  loading,
 }: OtTableProps): ReactElement {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
 
+  const data = loading ? getLoadingRows(mappedColumns, 10) : rows;
+
   const table = useReactTable({
-    data: rows,
+    data,
     columns: mappedColumns,
     filterFns: {
       searchFilterFn: searchFilter,
@@ -108,7 +111,7 @@ function OtTable({
       globalFilter,
     },
     initialState: {
-      sorting: [getDefaultSortObj(sortBy, order)],
+      sorting: getDefaultSortObj(sortBy, order),
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
@@ -119,6 +122,11 @@ function OtTable({
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
+
+  function getCellData(cell: ReactNode): ReactNode {
+    if (loading) return <Skeleton sx={{ minWidth: "50px" }} variant="text" />;
+    return <>{cell}</>;
+  }
 
   return (
     <div>
@@ -165,7 +173,6 @@ function OtTable({
                               header.column.columnDef.verticalHeader || verticalHeaders
                             }
                             onClick={header.column.getToggleSortingHandler()}
-                            // sx={{ typography: "subtitle2" }}
                           >
                             <Tooltip
                               style={""}
@@ -206,7 +213,8 @@ function OtTable({
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
                         <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {getCellData(flexRender(cell.column.columnDef.cell, cell.getContext()))}
+                          {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
                           {/* TODO: check NA value */}
                           {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
                             naLabel} */}
@@ -220,6 +228,13 @@ function OtTable({
           </tbody>
         </OtTableContainer>
       </Box>
+
+      {/*
+       ************************
+       * TABLE FOOTER ACTIONS *
+       ************************
+       */}
+
       <Box
         sx={{
           display: "flex",
@@ -246,12 +261,6 @@ function OtTable({
             ))}
           </NativeSelect>
         </div>
-
-        {/*
-         ************************
-         * TABLE FOOTER ACTIONS *
-         ************************
-         */}
 
         <Box
           sx={{

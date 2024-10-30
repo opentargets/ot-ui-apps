@@ -7,6 +7,7 @@ import {
   Divider,
   Grid,
   LinearProgress,
+  Skeleton,
   Typography,
 } from "@mui/material";
 import { Element } from "react-scroll";
@@ -31,9 +32,9 @@ type definitionType = {
 type SectionItemProps = {
   definition: definitionType;
   request: Record<string, unknown>;
-  renderDescription: (data: any) => void;
-  renderChart: (data: any) => void | null;
-  renderBody: (data: any) => void;
+  renderDescription: () => ReactNode;
+  renderChart?: () => ReactNode;
+  renderBody: () => ReactNode;
   // check tags
   tags: string[];
   chipText: string;
@@ -69,9 +70,14 @@ function SectionItem({
 
   if (!hasData && !showEmptySection && !loading) return null;
 
-  function getSelectedView() {
-    if (selectedView === VIEW.table) return renderBody(data);
-    return renderChart(data);
+  function getSelectedView(): ReactNode {
+    if (error) return <SectionError error={error} />;
+    if (showContentLoading && loading)
+      return <Skeleton sx={{ height: 390 }} variant="rectangular" />;
+    if (selectedView === VIEW.table) return renderBody();
+    if (selectedView === VIEW.chart) return renderChart();
+    // if (!loading && !hasData && showEmptySection)
+    return <div className={classes.noData}> No data available for this {entity}. </div>;
   }
 
   return (
@@ -110,7 +116,7 @@ function SectionItem({
                     })}
                     variant="body2"
                   >
-                    {renderDescription(data)}
+                    {renderDescription()}
                   </Typography>
                 </Box>
                 {/* CHART VIEW SWITCH */}
@@ -121,19 +127,7 @@ function SectionItem({
                 </Box>
               </Box>
               <Divider />
-              <CardContent className={classes.cardContent}>
-                {loading && (
-                  <LinearProgress
-                    aria-describedby="section loading progress bar"
-                    aria-busy={true}
-                  />
-                )}
-                {error && <SectionError error={error} />}
-                {!loading && hasData && getSelectedView()}
-                {!loading && !hasData && showEmptySection && (
-                  <div className={classes.noData}> No data available for this {entity}. </div>
-                )}
-              </CardContent>
+              <CardContent className={classes.cardContent}>{getSelectedView()}</CardContent>
             </ErrorBoundary>
           </Card>
         </Element>

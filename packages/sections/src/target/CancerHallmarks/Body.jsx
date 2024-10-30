@@ -67,14 +67,14 @@ function Section({ id, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => {
-        const roleInCancer = data.target.hallmarks.attributes
+      renderBody={() => {
+        const roleInCancer = request.data?.target.hallmarks.attributes
           .filter(a => a.name === "role in cancer")
           .map(r => ({
             label: r.description,
             url: `http://europepmc.org/search?query=EXT_ID:${r.pmid}`,
           }));
-        const rows = data.target.hallmarks.cancerHallmarks.map(r => ({
+        const rows = request.data?.target.hallmarks.cancerHallmarks.map(r => ({
           label: r.label,
           activity: r.impact === "promotes" ? "promotes" : "suppresses",
           description: r.description,
@@ -85,7 +85,7 @@ function Section({ id, label: symbol, entity }) {
           <>
             <Box className={classes.roleInCancerBox}>
               <Typography className={classes.roleInCancerTitle}>Role in cancer:</Typography>
-              <ChipList items={roleInCancer.length > 0 ? roleInCancer : [{ label: "Unknown" }]} />
+              <ChipList items={roleInCancer?.length > 0 ? roleInCancer : [{ label: "Unknown" }]} />
             </Box>
             <OtTable
               columns={columns}
@@ -96,6 +96,7 @@ function Section({ id, label: symbol, entity }) {
               rowsPerPageOptions={defaultRowsPerPageOptions}
               query={HALLMARKS_QUERY.loc.source.body}
               variables={variables}
+              loading={request.loading}
             />
           </>
         );

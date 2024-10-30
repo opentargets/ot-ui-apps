@@ -1,4 +1,4 @@
-import { DefaultSortProp } from "./table.types";
+import { DefaultSortProp, loadingTableRows } from "./table.types";
 
 /*********************************************************************
  * FN TO CONVERT CLASSIC MUI TABLE COLUMNS TO TANSTACK TABLE COLUMNS *
@@ -35,10 +35,13 @@ export function getFilterValueFromObject(obj: Record<string, unknown>): string {
  * @return: { id: "pValue", desc: false}: type DefaultSortProp
  **********************************************************/
 export function getDefaultSortObj(sortBy: string, order: string): DefaultSortProp {
-  return {
-    id: sortBy,
-    desc: order === "desc",
-  };
+  if (!sortBy) return undefined;
+  return [
+    {
+      id: sortBy,
+      desc: order === "desc",
+    },
+  ];
 }
 
 /*****************************************************
@@ -85,6 +88,13 @@ export function getCurrentPagePosition(
   const pageEndResultSize = Math.min(currentPageEndRange, totalRows);
 
   return `${currentPageStartRange} - ${pageEndResultSize} of ${totalRows}`;
+}
+
+export function getLoadingRows(columns, size = 10): loadingTableRows[] {
+  const rowObject = columns.map(e => ({
+    [e.id]: null,
+  }));
+  return new Array(size).fill(rowObject);
 }
 
 /****************************************************************************
