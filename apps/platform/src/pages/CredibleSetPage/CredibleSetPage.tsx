@@ -1,15 +1,7 @@
-import { Suspense } from "react";
 import { useQuery } from "@apollo/client";
-import {
-  useLocation,
-  useParams,
-  Switch,
-  Route,
-  useRouteMatch,
-  Link,
-} from "react-router-dom";
+import { useLocation, useParams, Switch, Route, useRouteMatch, Link } from "react-router-dom";
 import { Box, Tabs, Tab } from "@mui/material";
-import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
+import { BasePage, ScrollToTop } from "ui";
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import CREDIBLE_SET_PAGE_QUERY from "./CredibleSetPage.gql";
@@ -30,15 +22,14 @@ function CredibleSetPage() {
 
   const credibleSet = data?.credibleSets[0];
   const variantId = credibleSet?.variant?.id;
-  const referenceAllele = credibleSet?.variant?.referenceAllele
-  const alternateAllele = credibleSet?.variant?.alternateAllele
+  const referenceAllele = credibleSet?.variant?.referenceAllele;
+  const alternateAllele = credibleSet?.variant?.alternateAllele;
   const studyId = credibleSet?.study?.studyId;
 
   return (
     <BasePage
-      title={ variantId && studyId
-        ? `Credible set around ${variantId} for ${studyId}`
-        : studyLocusId
+      title={
+        variantId && studyId ? `Credible set around ${variantId} for ${studyId}` : studyLocusId
       }
       description={`Annotation information for credible set ${studyLocusId}`}
       location={location}
@@ -66,18 +57,17 @@ function CredibleSetPage() {
           </Box>
         )}
       />
-      <Suspense fallback={<LoadingBackdrop height={11500} />}>
-        <Switch>
-          <Route exact path={path}>
-            <Profile
-              studyLocusId={studyLocusId}
-              variantId={variantId}
-              referenceAllele={referenceAllele}
-              alternateAllele={alternateAllele}
-            />
-          </Route>
-        </Switch>
-      </Suspense>
+
+      <Switch>
+        <Route exact path={path}>
+          <Profile
+            studyLocusId={studyLocusId}
+            variantId={variantId}
+            referenceAllele={referenceAllele}
+            alternateAllele={alternateAllele}
+          />
+        </Route>
+      </Switch>
     </BasePage>
   );
 }

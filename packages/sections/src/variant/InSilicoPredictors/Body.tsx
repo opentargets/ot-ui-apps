@@ -1,9 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { SectionItem, Tooltip, DataTable } from "ui";
+import { SectionItem, Tooltip, OtTable } from "ui";
 import { definition } from "../InSilicoPredictors";
 import Description from "../InSilicoPredictors/Description";
-import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { naLabel } from "../../constants";
 import IN_SILICO_PREDICTORS_QUERY from "./InSilicoPredictorsQuery.gql";
 
 const columns = [
@@ -48,7 +48,6 @@ export function Body({ id, entity }: BodyProps) {
   const variables = {
     variantId: id,
   };
-
   const request = useQuery(IN_SILICO_PREDICTORS_QUERY, {
     variables,
   });
@@ -58,25 +57,27 @@ export function Body({ id, entity }: BodyProps) {
       definition={definition}
       request={request}
       entity={entity}
-      renderDescription={({ variant }) => (
+      renderDescription={() => (
         <Description
-          variantId={variant.id}
-          referenceAllele={variant.referenceAllele}
-          alternateAllele={variant.alternateAllele}
+          variantId={request.data?.variant.id}
+          referenceAllele={request.data?.variant.referenceAllele}
+          alternateAllele={request.data?.variant.alternateAllele}
         />
       )}
-      renderBody={({ variant }) => {
-        const rows = [...variant.inSilicoPredictors].sort((row1, row2) => {
-          return row1.method.localeCompare(row2.method);
-        });
+      renderBody={() => {
+        let rows = [];
+        if (request.data)
+          rows = [...request.data.variant.inSilicoPredictors].sort((row1, row2) => {
+            return row1.method.localeCompare(row2.method);
+          });
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             dataDownloader
-            rowsPerPageOptions={defaultRowsPerPageOptions}
             query={IN_SILICO_PREDICTORS_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}
