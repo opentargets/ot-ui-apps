@@ -87,7 +87,7 @@ export function Body({ id, entity }: BodyProps) {
           variantId={request.data?.variant.id}
           referenceAllele={request.data?.variant.referenceAllele}
           alternateAllele={request.data?.variant.alternateAllele}
-          evidences={request.data?.variant.evidences}
+          targetFromSourceId={request.data?.variant.evidences.rows[0]}
         />
       )}
       renderBody={() => {

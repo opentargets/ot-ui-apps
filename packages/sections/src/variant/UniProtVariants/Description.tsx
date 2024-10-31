@@ -5,18 +5,15 @@ type DescriptionProps = {
   variantId: string;
   referenceAllele: string;
   alternateAllele: string;
-  evidences: any;
+  targetFromSourceId: string | null;
 };
 
 function Description({
-      variantId,
-      referenceAllele,
-      alternateAllele,
-      evidences,
-    }: DescriptionProps) {
-  
-  const { targetFromSourceId } = evidences.rows[0];
-  
+  variantId,
+  referenceAllele,
+  alternateAllele,
+  targetFromSourceId,
+}: DescriptionProps) {
   return (
     <>
       Literature-based curation associating{" "}
@@ -26,8 +23,8 @@ function Description({
           referenceAllele={referenceAllele}
           alternateAllele={alternateAllele}
         />
-      </strong>
-      {" "}to a disease/phenotype. Source:{" "}
+      </strong>{" "}
+      to a disease/phenotype. Source:{" "}
       <Link external to={identifiersOrgLink("uniprot", targetFromSourceId)}>
         UniProt ({targetFromSourceId})
       </Link>
