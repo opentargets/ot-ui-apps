@@ -142,7 +142,7 @@ function Body({ id, entity }: BodyProps) {
       },
     },
     {
-      id: "confidenceLevel",
+      id: "evidenceLevel",
       label: "Confidence level",
       comparator: (a, b) => (b.evidenceLevel < a.evidenceLevel ? 1 : -1),
       sortable: true,
