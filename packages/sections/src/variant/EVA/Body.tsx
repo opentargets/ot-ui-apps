@@ -1,18 +1,7 @@
 import { useQuery } from "@apollo/client";
-import {
-  Link,
-  Tooltip,
-  SectionItem,
-  PublicationsDrawer,
-  DataTable,
-  ClinvarStars,
-} from "ui";
+import { Link, Tooltip, SectionItem, PublicationsDrawer, ClinvarStars, OtTable } from "ui";
 import { Typography } from "@mui/material";
-import {
-  clinvarStarMap,
-  naLabel,
-  defaultRowsPerPageOptions,
-} from "../../constants";
+import { clinvarStarMap, naLabel } from "../../constants";
 import { definition } from ".";
 
 import Description from "./Description";
@@ -25,15 +14,13 @@ const columns = [
     id: "disease.name",
     label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => {
-      let displayElement = <Link to={`/disease/${disease.id}`}>
-        {disease.name}
-      </Link>;
+      let displayElement = <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
       if (diseaseFromSource || cohortPhenotypes?.length > 0) {
-        displayElement = <Tooltip
-          title={
-            <>
-              {
-                diseaseFromSource && 
+        displayElement = (
+          <Tooltip
+            title={
+              <>
+                {diseaseFromSource && (
                   <>
                     <Typography variant="subtitle2" display="block" align="center">
                       Reported disease or phenotype:
@@ -42,9 +29,8 @@ const columns = [
                       {diseaseFromSource}
                     </Typography>
                   </>
-              }
-              {
-                cohortPhenotypes?.length > (diseaseFromSource ? 1 : 0) &&
+                )}
+                {cohortPhenotypes?.length > (diseaseFromSource ? 1 : 0) && (
                   <>
                     <Typography variant="subtitle2" display="block" align="center">
                       All reported phenotypes:
@@ -55,13 +41,14 @@ const columns = [
                       ))}
                     </Typography>
                   </>
-              }
-            </>
-          }
-          showHelpIcon
-        >
-          {displayElement}
-        </Tooltip>;
+                )}
+              </>
+            }
+            showHelpIcon
+          >
+            {displayElement}
+          </Tooltip>
+        );
       }
       return displayElement;
     },
@@ -73,10 +60,12 @@ const columns = [
     label: "ClinVar ID",
     renderCell: ({ studyId }) => {
       if (!studyId) return naLabel;
-      return <Link external to={`https://www.ncbi.nlm.nih.gov/clinvar/${studyId}`}>
-        {studyId}
-      </Link>
-    }
+      return (
+        <Link external to={`https://www.ncbi.nlm.nih.gov/clinvar/${studyId}`}>
+          {studyId}
+        </Link>
+      );
+    },
   },
   {
     id: "clinicalSignificances",
@@ -94,7 +83,7 @@ const columns = [
     },
     filterValue: ({ clinicalSignificances }) => {
       return clinicalSignificances?.join(" ") || "";
-    }
+    },
   },
   {
     id: "allelicRequirements",
@@ -103,7 +92,7 @@ const columns = [
       if (!alleleOrigins || alleleOrigins.length === 0) return naLabel;
       let displayElement = alleleOrigins.map(a => sentenceCase(a)).join("; ");
       if (allelicRequirements) {
-        displayElement = 
+        displayElement = (
           <Tooltip
             title={
               <>
@@ -121,19 +110,22 @@ const columns = [
           >
             {displayElement}
           </Tooltip>
+        );
       }
       return displayElement;
     },
-    filterValue: ({ alleleOrigins }) => (alleleOrigins?.join(" ") || ""),
+    filterValue: ({ alleleOrigins }) => alleleOrigins?.join(" ") || "",
   },
   {
     id: "reviewStatus",
     label: "Review status",
     renderCell: ({ confidence }) => {
       if (!confidence) return naLabel;
-      return <Tooltip title={confidence}>
-        <ClinvarStars num={clinvarStarMap[confidence]} />
-      </Tooltip>;
+      return (
+        <Tooltip title={confidence}>
+          <ClinvarStars num={clinvarStarMap[confidence]} />
+        </Tooltip>
+      );
     },
   },
   {
@@ -151,16 +143,14 @@ const columns = [
           }
           return acc;
         }, []) || [];
-      return (
-        <PublicationsDrawer entries={literatureList} />
-      );
+      return <PublicationsDrawer entries={literatureList} />;
     },
   },
 ];
 
 type BodyProps = {
-  id: string,
-  entity: string,
+  id: string;
+  entity: string;
 };
 
 function Body({ id, entity }: BodyProps) {
@@ -177,27 +167,26 @@ function Body({ id, entity }: BodyProps) {
       definition={definition}
       entity={entity}
       request={request}
-      renderDescription={({ variant }) => (
+      renderDescription={() => (
         <Description
-          variantId={variant.id}
-          referenceAllele={variant.referenceAllele}
-          alternateAllele={variant.alternateAllele}
+          variantId={request.data?.variant.id}
+          referenceAllele={request.data?.variant.referenceAllele}
+          alternateAllele={request.data?.variant.alternateAllele}
         />
       )}
-      renderBody={({ variant }) => (
-        <DataTable
+      renderBody={() => (
+        <OtTable
           dataDownloader
           showGlobalFilter
           columns={columns}
-          rows={variant.evidences.rows}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          loading={request.loading}
+          rows={request.data?.variant.evidences.rows}
           query={EVA_QUERY.loc.source.body}
           variables={variables}
         />
       )}
     />
   );
-
 }
 
 export default Body;
