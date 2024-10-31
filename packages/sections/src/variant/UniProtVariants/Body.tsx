@@ -1,10 +1,10 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, DataTable } from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
-import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { naLabel } from "../../constants";
 import UNIPROT_VARIANTS_QUERY from "./UniProtVariantsQuery.gql";
 
 const columns = [
@@ -13,25 +13,25 @@ const columns = [
     label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource }) => {
       if (!disease) return naLabel;
-      const displayElement = <Link to={`/disease/${disease.id}`}>
-        {disease.name}
-      </Link>;
+      const displayElement = <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
       if (diseaseFromSource) {
-        return <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Reported disease or phenotype
-              </Typography>
-              <Typography variant="caption" display="block" align="center">
-                {diseaseFromSource}
-              </Typography>
-            </>
-          }
-          showHelpIcon
-        >
-          {displayElement}
-        </Tooltip>
+        return (
+          <Tooltip
+            title={
+              <>
+                <Typography variant="subtitle2" display="block" align="center">
+                  Reported disease or phenotype
+                </Typography>
+                <Typography variant="caption" display="block" align="center">
+                  {diseaseFromSource}
+                </Typography>
+              </>
+            }
+            showHelpIcon
+          >
+            {displayElement}
+          </Tooltip>
+        );
       }
       return displayElement;
     },
@@ -57,17 +57,15 @@ const columns = [
           }
           return acc;
         }, []) || [];
-      return (
-        <PublicationsDrawer entries={literatureList} />
-      );
+      return <PublicationsDrawer entries={literatureList} />;
     },
     filterValue: false,
   },
 ];
 
 type BodyProps = {
-  id: string,
-  entity: string,
+  id: string;
+  entity: string;
 };
 
 export function Body({ id, entity }: BodyProps) {
@@ -84,22 +82,22 @@ export function Body({ id, entity }: BodyProps) {
       definition={definition}
       request={request}
       entity={entity}
-      renderDescription={({ variant }) => (
+      renderDescription={() => (
         <Description
-          variantId={variant.id}
-          referenceAllele={variant.referenceAllele}
-          alternateAllele={variant.alternateAllele}
-          evidences={variant.evidences}
+          variantId={request.data?.variant.id}
+          referenceAllele={request.data?.variant.referenceAllele}
+          alternateAllele={request.data?.variant.alternateAllele}
+          evidences={request.data?.variant.evidences}
         />
       )}
-      renderBody={({ variant }) => { 
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             dataDownloader
             showGlobalFilter
             columns={columns}
-            rows={variant.evidences.rows}
-            rowsPerPageOptions={defaultRowsPerPageOptions}
+            loading={request.loading}
+            rows={request.data?.variant.evidences.rows}
             query={UNIPROT_VARIANTS_QUERY.loc.source.body}
             variables={variables}
           />
