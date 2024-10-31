@@ -1,15 +1,7 @@
-import { Suspense } from "react";
 import { useQuery } from "@apollo/client";
-import {
-  useLocation,
-  useParams,
-  Switch,
-  Route,
-  useRouteMatch,
-  Link,
-} from "react-router-dom";
+import { useLocation, useParams, Switch, Route, useRouteMatch, Link } from "react-router-dom";
 import { Box, Tabs, Tab } from "@mui/material";
-import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
+import { BasePage, ScrollToTop } from "ui";
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import VARIANT_PAGE_QUERY from "./VariantPage.gql";
@@ -34,11 +26,7 @@ function VariantPage() {
       description={`Annotation information for ${varId}`}
       location={location}
     >
-      <Header
-        loading={loading}
-        variantId={varId}
-        variantPageData={data?.variant}
-      />
+      <Header loading={loading} variantId={varId} variantPageData={data?.variant} />
       <ScrollToTop />
       <Route
         path="/"
@@ -55,13 +43,12 @@ function VariantPage() {
           </Box>
         )}
       />
-      <Suspense fallback={<LoadingBackdrop height={11500} />}>
-        <Switch>
-          <Route exact path={path}>
-            <Profile varId={varId} />
-          </Route>
-        </Switch>
-      </Suspense>
+
+      <Switch>
+        <Route exact path={path}>
+          <Profile varId={varId} />
+        </Route>
+      </Switch>
     </BasePage>
   );
 }

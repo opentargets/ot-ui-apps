@@ -1,7 +1,5 @@
-
-import { Suspense } from "react";
 import { useQuery } from "@apollo/client";
-import { BasePage, ScrollToTop, LoadingBackdrop } from "ui";
+import { BasePage, ScrollToTop } from "ui";
 import { Box, Tabs, Tab } from "@mui/material";
 import {
   useLocation,
@@ -41,7 +39,7 @@ function StudyPage() {
       description={`Annotation information for ${studyId}`}
       location={location}
     >
-      <Header 
+      <Header
         loading={loading}
         studyId={studyId}
         backgroundTraits={studyInfo?.backgroundTraits}
@@ -66,20 +64,15 @@ function StudyPage() {
           </Box>
         )}
       />
-      <Suspense fallback={<LoadingBackdrop height={11500} />}>
-        <Switch>
-          <Route exact path={path}>
-            <Profile
-              studyId={studyId}
-              studyCategory={studyCategory}
-              diseases={studyInfo?.diseases}
-            />
-          </Route>
-          <Route path="*">
-            <Redirect to={`/study/${studyId}`} />
-          </Route>
-        </Switch>
-      </Suspense>
+
+      <Switch>
+        <Route exact path={path}>
+          <Profile studyId={studyId} studyCategory={studyCategory} diseases={studyInfo?.diseases} />
+        </Route>
+        <Route path="*">
+          <Redirect to={`/study/${studyId}`} />
+        </Route>
+      </Switch>
     </BasePage>
   );
 }
