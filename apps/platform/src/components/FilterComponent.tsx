@@ -20,29 +20,45 @@ import {
 import { Tooltip } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { isEqual } from "lodash";
+import { DataSource } from "./AssociationsToolkit/types";
+import { Definition } from "./ProfileToolkit/types";
 
-export function ChipBase({ label, onClick }) {
-  const chipStyle = {
-    width: "72px",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textAlign: "center",
-  };
+interface ChipBaseProps {
+  label: string;
+  onClick: () => void;
+}
 
+export function ChipBase({ label, onClick }: ChipBaseProps) {
   return (
     <Chip
       variant="outlined"
-      label={<div style={chipStyle}>{label}</div>}
+      label={
+        <div
+          style={{
+            width: "72px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textAlign: "center",
+          }}
+        >
+          {label}
+        </div>
+      }
       onClick={onClick}
       sx={{ margin: "3px" }}
     />
   );
 }
 
-function AlertModal({ open, setOpen }) {
-  const [timeoutVal, setTimeoutVal] = useState(undefined);
+interface AlertModalProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
+
+function AlertModal({ open, setOpen }: AlertModalProps) {
+  const [timeoutVal, setTimeoutVal] = useState<number | undefined>(undefined);
 
   const alertStyles = {
     position: "absolute",
@@ -83,23 +99,42 @@ function AlertModal({ open, setOpen }) {
   );
 }
 
+interface FilterComponentProps {
+  filterItems: (Definition | DataSource)[];
+  selectedItems: (Definition | DataSource)[];
+  setSelectedItems: React.Dispatch<React.SetStateAction<(Definition | DataSource)[]>>;
+  defaultItems: (Definition | DataSource)[];
+  alertVisibility?: boolean;
+  setAlertVisibility?: (value: boolean) => void;
+  title: string;
+  label: string;
+  isAssociations?: boolean;
+  isPrioritisation?: boolean;
+  filterAffectOverallScore?: boolean;
+  setFilterAffectOverallScore?: (value: boolean) => void;
+}
+
+const emptyFunction: (value: boolean) => void = () => {
+  // empty
+};
+
 export default function FilterComponent({
   filterItems,
   selectedItems,
   setSelectedItems,
   defaultItems,
   alertVisibility,
-  setAlertVisibility,
+  setAlertVisibility = emptyFunction,
   title,
   label = "label",
   isAssociations = false,
   isPrioritisation = false,
   filterAffectOverallScore,
-  setFilterAffectOverallScore,
-}) {
-  const [anchorEl, setAnchorEl] = useState(null);
+  setFilterAffectOverallScore = emptyFunction,
+}: FilterComponentProps): ReactElement {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleClick = event => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -110,8 +145,8 @@ export default function FilterComponent({
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const handleToggle = value => () => {
-    const newSelection = [...selectedItems].map(item => item[label]);
+  const handleToggle = (value: string) => () => {
+    const newSelection = [...selectedItems].map(item => item[label as keyof typeof item]);
     const currentIndex = newSelection.indexOf(value);
 
     if (currentIndex === -1) {
@@ -120,7 +155,9 @@ export default function FilterComponent({
       newSelection.splice(currentIndex, 1);
     }
 
-    const newSelectedItems = filterItems.filter(item => newSelection.includes(item[label]));
+    const newSelectedItems = filterItems.filter((item: Definition | DataSource) =>
+      newSelection.includes(item[label as keyof typeof item])
+    );
     if (newSelection.length === 0) {
       if (alertVisibility !== undefined) {
         setAlertVisibility(true);
@@ -135,7 +172,7 @@ export default function FilterComponent({
 
   return (
     <>
-      <Box sx={isAssociations || { marginTop: "2rem !important" }}>
+      <Box sx={isAssociations ? {} : { marginTop: "2rem !important" }}>
         <Tooltip placement="bottom" title={title}>
           <Button
             aria-describedby={id}
@@ -229,20 +266,26 @@ export default function FilterComponent({
               <ul>
                 <div style={{ columns: filterItems.length < 5 ? 2 : 3, columnGap: "11px" }}>
                   {filterItems.map(item => {
-                    const itemId = item[label];
+                    const itemId = item[label as keyof typeof item];
                     const labelId = `checkbox-list-label-${itemId}`;
 
-                    return (
+                    return typeof itemId === "string" ? (
                       <ListItem key={itemId} disablePadding>
                         <ListItemButton
                           role={undefined}
                           onClick={handleToggle(itemId)}
                           dense
-                          selected={selectedItems.map(item => item[label]).indexOf(itemId) > -1}
+                          selected={
+                            selectedItems
+                              .map(item => item[label as keyof typeof item])
+                              .indexOf(itemId) > -1
+                          }
                         >
                           <ListItemText id={labelId} primary={itemId} />
                         </ListItemButton>
                       </ListItem>
+                    ) : (
+                      <div>not found</div>
                     );
                   })}
                 </div>

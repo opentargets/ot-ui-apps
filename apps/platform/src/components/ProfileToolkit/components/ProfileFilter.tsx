@@ -1,7 +1,8 @@
 import FilterComponent from "../../FilterComponent";
 import { useProfileContext, getDefaultProfileFilters } from "../index";
+import { ReactElement } from "react";
 
-export default function ProfileFilter() {
+export default function ProfileFilter(): ReactElement {
   const { profileFilter, setProfileFilter, entity } = useProfileContext();
   const profileSections = getDefaultProfileFilters(entity);
 

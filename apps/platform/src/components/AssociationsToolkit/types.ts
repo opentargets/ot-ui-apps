@@ -24,7 +24,7 @@ export type Column = {
   private?: boolean;
 };
 
-export type DataSource = {
+export interface DataSource {
   id: string;
   sectionId: string;
   label: string;
@@ -34,7 +34,7 @@ export type DataSource = {
   isPrivate: boolean;
   docsLink: string;
   required: boolean;
-};
+}
 
 /***************
  * STATE TYPES *

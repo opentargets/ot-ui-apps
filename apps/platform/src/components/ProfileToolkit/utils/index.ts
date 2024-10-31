@@ -3,8 +3,9 @@ import { definitions as drugDefinitions } from "sections/src/drug/index";
 import { definitions as evidenceDefinitions } from "sections/src/evidence/index";
 import { definitions as targetDefinitions } from "sections/src/target/index";
 import { isPartnerPreview } from "../../AssociationsToolkit/utils";
+import { Definition } from "../types";
 
-export const getDefaultProfileFilters = page => {
+export const getDefaultProfileFilters = (page: string): Array<Definition> => {
   const options = {
     disease: diseaseDefinitions,
     drug: drugDefinitions,
@@ -12,7 +13,7 @@ export const getDefaultProfileFilters = page => {
     target: targetDefinitions,
   };
 
-  return options[page].filter(
-    def => !def.isPrivate || (def.isPrivate && def.isPrivate === isPartnerPreview)
+  return options[page as keyof typeof options].filter(
+    (def: Definition) => !def.isPrivate || (def.isPrivate && def.isPrivate === isPartnerPreview)
   );
 };
