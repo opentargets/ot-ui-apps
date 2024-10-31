@@ -1,20 +1,11 @@
 import { useQuery } from "@apollo/client";
-import {
-  Link,
-  SectionItem,
-  DataTable,
-  ScientificNotation,
-  DisplayVariantId
-} from "ui";
+import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
 import { Box, Chip } from "@mui/material";
-import { naLabel, defaultRowsPerPageOptions } from "../../constants";
+import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
-import {
-  mantissaExponentComparator,
-  variantComparator
-} from "../../utils/comparators";
+import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 
 type getColumnsType = {
   id: string;
@@ -24,19 +15,16 @@ type getColumnsType = {
 };
 
 function getColumns({
-      id,
-      referenceAllele,
-      alternateAllele,
-      posteriorProbabilities
-    }: getColumnsType) {
-
+  id,
+  referenceAllele,
+  alternateAllele,
+  posteriorProbabilities,
+}: getColumnsType) {
   return [
     {
       id: "view",
       label: "Details",
-      renderCell: ({ studyLocusId }) => (
-        <Link to={`../credible-set/${studyLocusId}`}>view</Link>
-      ),
+      renderCell: ({ studyLocusId }) => <Link to={`../credible-set/${studyLocusId}`}>view</Link>,
       filterValue: false,
       exportValue: false,
     },
@@ -45,27 +33,28 @@ function getColumns({
       label: "Lead variant",
       comparator: variantComparator,
       sortable: true,
-      filterValue: ({ variant: v }) => (
-        `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`
-      ),
+      filterValue: ({ variant: v }) =>
+        `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
       renderCell: ({ variant }) => {
         if (!variant) return naLabel;
         const { id: variantId, referenceAllele, alternateAllele } = variant;
-        const displayElement = <DisplayVariantId
-          variantId={variantId}
-          referenceAllele={referenceAllele}
-          alternateAllele={alternateAllele}
-          expand={false}
-        />
+        const displayElement = (
+          <DisplayVariantId
+            variantId={variantId}
+            referenceAllele={referenceAllele}
+            alternateAllele={alternateAllele}
+            expand={false}
+          />
+        );
         if (variantId === id) {
-          return <Box display="flex" alignItems="center" gap={0.5}>
-            {displayElement}
-            <Chip label="self" variant="outlined" size="small"/>
-          </Box>;
+          return (
+            <Box display="flex" alignItems="center" gap={0.5}>
+              {displayElement}
+              <Chip label="self" variant="outlined" size="small" />
+            </Box>
+          );
         }
-        return <Link to={`/variant/${variantId}`}>
-          {displayElement}
-        </Link>;
+        return <Link to={`/variant/${variantId}`}>{displayElement}</Link>;
       },
       exportValue: ({ variant }) => variant?.id,
     },
@@ -74,7 +63,7 @@ function getColumns({
       label: "Study ID",
       renderCell: ({ study }) => {
         if (!study) return naLabel;
-        return <Link to={`../study/${study.studyId}`}>{study.studyId}</Link>
+        return <Link to={`../study/${study.studyId}`}>{study.studyId}</Link>;
       },
     },
     {
@@ -96,9 +85,7 @@ function getColumns({
       label: "Affected gene",
       renderCell: ({ study }) => {
         if (!study?.target) return naLabel;
-        return <Link to={`/target/${study.target.id}`}>
-          {study.target.approvedSymbol}
-        </Link>
+        return <Link to={`/target/${study.target.id}`}>{study.target.approvedSymbol}</Link>;
       },
     },
     {
@@ -107,35 +94,37 @@ function getColumns({
       renderCell: ({ study }) => {
         const biosampleId = study?.biosample?.biosampleId;
         if (!biosampleId) return naLabel;
-        return <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosampleId}&ontology=uberon`}>
-          {biosampleId}
-        </Link>
+        return (
+          <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosampleId}&ontology=uberon`}>
+            {biosampleId}
+          </Link>
+        );
       },
     },
     {
       id: "study.condition",
       label: "Condition",
-      renderCell: () => <i>Not in API</i>
+      renderCell: () => <i>Not in API</i>,
     },
     {
       id: "pValue",
       label: "P-value",
-      comparator: (a, b) => mantissaExponentComparator(
-        a?.pValueMantissa,
-        a?.pValueExponent,
-        b?.pValueMantissa,
-        b?.pValueExponent,
-      ),
+      comparator: (a, b) =>
+        mantissaExponentComparator(
+          a?.pValueMantissa,
+          a?.pValueExponent,
+          b?.pValueMantissa,
+          b?.pValueExponent
+        ),
       sortable: true,
       filterValue: false,
       renderCell: ({ pValueMantissa, pValueExponent }) => {
-        if (typeof pValueMantissa !== "number" ||
-            typeof pValueExponent !== "number") return naLabel;
+        if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number")
+          return naLabel;
         return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
       },
       exportValue: ({ pValueMantissa, pValueExponent }) => {
-        if (typeof pValueMantissa !== "number" ||
-            typeof pValueExponent !== "number") return null;
+        if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return null;
         return `${pValueMantissa}x10${pValueExponent}`;
       },
     },
@@ -153,20 +142,20 @@ function getColumns({
       id: "posteriorProbability",
       label: "Posterior probability",
       filterValue: false,
-      tooltip: <>
-        Posterior inclusion probability that the fixed page variant (
-        <DisplayVariantId
-          variantId={id}
-          referenceAllele={referenceAllele}
-          alternateAllele={alternateAllele}
-          expand={false}
-        />
-        ) is causal.
-      </>,
-      comparator: (rowA, rowB) => (
-        posteriorProbabilities.get(rowA.locus) -
-          posteriorProbabilities.get(rowB.locus)
+      tooltip: (
+        <>
+          Posterior inclusion probability that the fixed page variant (
+          <DisplayVariantId
+            variantId={id}
+            referenceAllele={referenceAllele}
+            alternateAllele={alternateAllele}
+            expand={false}
+          />
+          ) is causal.
+        </>
       ),
+      comparator: (rowA, rowB) =>
+        posteriorProbabilities.get(rowA.locus) - posteriorProbabilities.get(rowB.locus),
       sortable: true,
       renderCell: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3) ?? naLabel,
       exportValue: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3),
@@ -183,14 +172,13 @@ function getColumns({
       filterValue: false,
       renderCell: ({ locus }) => locus?.length ?? naLabel,
       exportValue: ({ locus }) => locus?.length,
-    }
+    },
   ];
 }
 
-
 type BodyProps = {
-  id: string,
-  entity: string,
+  id: string;
+  entity: string;
 };
 
 function Body({ id, entity }: BodyProps) {
@@ -201,46 +189,43 @@ function Body({ id, entity }: BodyProps) {
   const request = useQuery(QTL_CREDIBLE_SETS_QUERY, {
     variables,
   });
-  
+
   return (
     <SectionItem
       definition={definition}
       entity={entity}
       request={request}
-      renderDescription={({ variant }) => (
+      renderDescription={() => (
         <Description
-          variantId={variant.id}
-          referenceAllele={variant.referenceAllele}
-          alternateAllele={variant.alternateAllele}
+          variantId={request.data?.variant?.id}
+          referenceAllele={request.data?.variant?.referenceAllele}
+          alternateAllele={request.data?.variant?.alternateAllele}
         />
       )}
-      renderBody={({ variant }) => {
-
+      renderBody={() => {
         // get columns here so get posterior probabilities once - avoids
         // having to find posterior probs inside sorting comparator function
-        const posteriorProbabilities = new Map;
-        for (const { locus } of variant?.credibleSets || []) {
-          const postProb = locus
-            ?.find(loc => loc.variant?.id === id)
-            ?.posteriorProbability
+        const posteriorProbabilities = new Map();
+        for (const { locus } of request.data?.variant?.credibleSets || []) {
+          const postProb = locus?.find(loc => loc.variant?.id === id)?.posteriorProbability;
           if (postProb !== undefined) {
             posteriorProbabilities.set(locus, postProb);
           }
         }
 
         return (
-          <DataTable
+          <OtTable
             dataDownloader
             showGlobalFilter
             sortBy="pValue"
             columns={getColumns({
               id,
-              referenceAllele: variant.referenceAllele,
-              alternateAllele: variant.alternateAllele,
+              referenceAllele: request.data?.variant.referenceAllele,
+              alternateAllele: request.data?.variant.alternateAllele,
               posteriorProbabilities,
             })}
-            rows={variant.credibleSets}
-            rowsPerPageOptions={defaultRowsPerPageOptions}
+            rows={request.data?.variant.credibleSets}
+            loading={request.loading}
             query={QTL_CREDIBLE_SETS_QUERY.loc.source.body}
             variables={variables}
           />
@@ -248,7 +233,6 @@ function Body({ id, entity }: BodyProps) {
       }}
     />
   );
-
 }
 
 export default Body;
