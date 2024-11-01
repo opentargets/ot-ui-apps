@@ -1,0 +1,5 @@
+fragment InSilicoPredictorsSummaryFragment on Variant {
+  inSilicoPredictors {
+    method
+  }
+}

@@ -1,13 +1,21 @@
 query SearchQuery($queryString: String!) {
   topHit: search(
     queryString: $queryString
-    entityNames: ["target", "disease", "drug"]
+    entityNames: ["target", "disease", "drug", "variant"]
     page: { index: 0, size: 1 }
   ) {
     hits {
       id
       entity
       object {
+        ... on Variant {
+          id
+          referenceAllele
+          alternateAllele
+          rsIds
+          __typename
+        }
+        
         ... on Target {
           id
           approvedSymbol
@@ -30,6 +38,24 @@ query SearchQuery($queryString: String!) {
               mechanismOfAction
             }
           }
+        }
+      }
+    }
+  }
+  variants: search(
+    queryString: $queryString
+    entityNames: ["variant"]
+    page: {index: 0, size: 3}
+  ) {
+    hits {
+      id
+      entity
+      object {
+        ... on Variant {
+          id
+          referenceAllele
+          alternateAllele
+          rsIds
         }
       }
     }

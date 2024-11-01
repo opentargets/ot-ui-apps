@@ -1,0 +1,17 @@
+query StudyPageQuery($studyId: String!) {
+  gwasStudy(studyId: $studyId) {
+    studyId
+    projectId
+    backgroundTraits {
+      id
+      name
+    }
+    target {
+      id
+    }
+    diseases {
+      id
+      name
+    }
+  }
+}

@@ -26,7 +26,7 @@ type definitionType = {
   name: string;
   shortName?: string;
   hasData: any;
-  isPrivate: boolean;
+  isPrivate?: boolean;
 };
 
 type SectionItemProps = {

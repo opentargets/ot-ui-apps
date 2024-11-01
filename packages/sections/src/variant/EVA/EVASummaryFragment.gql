@@ -1,0 +1,5 @@
+fragment EVASummaryFragment on Variant {
+  evaEvidences: evidences(datasourceIds: ["eva"]){
+    count
+  }
+}
