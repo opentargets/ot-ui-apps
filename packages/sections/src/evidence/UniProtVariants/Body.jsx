@@ -121,17 +121,17 @@ export function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.uniprotVariantsSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.uniprotVariantsSummary.rows}
             dataDownloader
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={UNIPROT_VARIANTS_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

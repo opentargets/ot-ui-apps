@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Popper, styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 
 export const OtTableContainer = styled("table")(({ theme }) => ({
   whiteSpace: "nowrap",
@@ -32,32 +32,32 @@ export const OtTableContainer = styled("table")(({ theme }) => ({
 }));
 
 export const OtTableHeader = styled("div", {
-  shouldForwardProp: prop => prop !== "canBeSorted",
-})(({ canBeSorted }) => ({
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  cursor: canBeSorted ? "pointer" : "auto",
-  "& .sortableColumn": {
-    visibility: "hidden",
-    padding: "0 0.4rem",
-  },
-  "&:hover .sortableColumn": {
-    visibility: "visible",
-    opacity: "0.5",
-  },
-}));
+  shouldForwardProp: prop => prop !== "canBeSorted" && prop !== "numeric",
+})(({ theme, canBeSorted, numeric }) =>
+  theme.unstable_sx({
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    cursor: canBeSorted ? "pointer" : "auto",
+    "& .sortableColumn": {
+      visibility: "hidden",
+      padding: "0 0.4rem",
+    },
+    "&:hover .sortableColumn": {
+      visibility: "visible",
+      opacity: "0.5",
+    },
+    ...(numeric && {
+      display: "flex",
+      justifyContent: "flex-end",
+      pr: 2,
+    }),
+  })
+);
 
 export const FontAwesomeIconPadded = styled(FontAwesomeIcon)(({ theme }) => ({
   padding: `0 ${theme.spacing(1)}`,
-}));
-
-export const ColumnFilterPopper = styled(Popper)(({ theme }) => ({
-  maxHeight: "60vh",
-  borderRadius: 4,
-  border: `1px solid ${theme.palette.grey[400]}`,
-  background: "white",
 }));
 
 export const OtTH = styled("th", {
@@ -84,13 +84,28 @@ export const OtTD = styled("td", {
 
 export const OtTableHeaderText = styled(Box, {
   shouldForwardProp: prop => prop !== "verticalHeader",
-})(({ verticalHeader }) => ({
-  typography: "subtitle2",
-  ...(verticalHeader && {
-    writingMode: "vertical-rl",
-    transform: "rotate(180deg)",
-    // TODO: TBC
-    maxHeight: "20rem",
-    height: "14rem",
-  }),
-}));
+})(({ theme, verticalHeader }) =>
+  theme.unstable_sx({
+    typography: "subtitle2",
+    ...(verticalHeader && {
+      writingMode: "vertical-rl",
+      transform: "rotate(180deg)",
+      maxHeight: "20rem",
+      height: "14rem",
+    }),
+  })
+);
+
+export const OtTableCellContainer = styled(Box, {
+  shouldForwardProp: prop => prop !== "numeric",
+})(({ theme, numeric }) =>
+  theme.unstable_sx({
+    typography: "body2",
+    ...(numeric && {
+      display: "flex",
+      justifyContent: "flex-end",
+      typography: "monoText",
+      pr: 2,
+    }),
+  })
+);

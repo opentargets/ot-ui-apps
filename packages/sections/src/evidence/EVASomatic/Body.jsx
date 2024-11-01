@@ -373,6 +373,7 @@ function Body({ id, label, entity }) {
         loading: initialLoading,
         data: { [entity]: { eva_somatic: { rows, count: rows.length } } },
       }}
+      showContentLoading={true}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={() => {

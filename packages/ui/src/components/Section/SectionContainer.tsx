@@ -1,6 +1,11 @@
 import { Grid } from "@mui/material";
+import { ReactNode } from "react";
 
-function SectionContainer({ children }) {
+type SectionContainerProps = {
+  children: ReactNode;
+};
+
+function SectionContainer({ children }: SectionContainerProps): ReactNode {
   return (
     <Grid id="summary-section" container spacing={2} style={{ marginTop: "20px" }}>
       {children}

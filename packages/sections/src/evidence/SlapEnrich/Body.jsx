@@ -78,19 +78,18 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.affected_pathway}
       request={request}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={data => (
+      renderBody={() => (
         <OtTable
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           order="asc"
-          rows={data.disease.slapEnrich.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.disease.slapEnrich.rows}
           showGlobalFilter
           sortBy="resourceScore"
           query={SLAPENRICH_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

@@ -404,6 +404,7 @@ function Body({ id, label, entity }) {
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       entity={entity}
+      showContentLoading={true}
       request={{
         loading: initialLoading,
         data: { [entity]: { eva: { rows, count: rows.length } } },

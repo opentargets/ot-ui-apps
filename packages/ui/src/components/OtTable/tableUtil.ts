@@ -1,4 +1,4 @@
-import { DefaultSortProp } from "./table.types";
+import { DefaultSortProp, loadingTableRows } from "./table.types";
 
 /*********************************************************************
  * FN TO CONVERT CLASSIC MUI TABLE COLUMNS TO TANSTACK TABLE COLUMNS *
@@ -35,10 +35,13 @@ export function getFilterValueFromObject(obj: Record<string, unknown>): string {
  * @return: { id: "pValue", desc: false}: type DefaultSortProp
  **********************************************************/
 export function getDefaultSortObj(sortBy: string, order: string): DefaultSortProp {
-  return {
-    id: sortBy,
-    desc: order === "desc",
-  };
+  if (!sortBy) return undefined;
+  return [
+    {
+      id: sortBy,
+      desc: order === "desc",
+    },
+  ];
 }
 
 /*****************************************************
@@ -87,6 +90,13 @@ export function getCurrentPagePosition(
   return `${currentPageStartRange} - ${pageEndResultSize} of ${totalRows}`;
 }
 
+export function getLoadingRows(columns, size = 10): loadingTableRows[] {
+  const rowObject = columns.map(e => ({
+    [e.id]: null,
+  }));
+  return new Array(size).fill(rowObject);
+}
+
 /****************************************************************************
  * FN TO MAP EACH KEY FROM CLASSIC MUI COLUMN OBJECT TO NEW TANSTACK COLUMN *
  ****************************************************************************/
@@ -103,13 +113,13 @@ function mapToTanstackColumnObject(
       sortingFn: (rowA, rowB, column) =>
         originalTableObject.comparator(rowA.original, rowB.original),
     }),
-    //  ASSIGN EITHER CUSTOM FILTERVALUE OR ID
     accessorFn: (row: Record<string, unknown>) => {
+      // ASSIGN EITHER CUSTOM FILTERVALUE OR ID
       if (originalTableObject.filterValue) return originalTableObject.filterValue(row);
       return getValueFromChainedId(originalTableObject.id, row);
     },
-    //  ASSIGN CELL EITHER CUSTOM RENDER CELL OR ID
     cell: ({ row }: { row: Record<string, unknown> }) => {
+      // ASSIGN CELL EITHER CUSTOM RENDER CELL OR ID
       if (originalTableObject.renderCell) return originalTableObject.renderCell(row.original);
       return getValueFromChainedId(originalTableObject.id, row.original);
     },

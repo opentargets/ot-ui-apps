@@ -221,25 +221,22 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.otValidationSummary;
+      renderBody={() => {
         return (
           <>
             <OtTable
               columns={getColumns(classes)}
-              rows={rows}
+              rows={request.data?.disease.otValidationSummary.rows}
               dataDownloader
               dataDownloaderColumns={exportColumns}
               dataDownloaderFileStem={`${ensgId}-${efoId}-otvalidation`}
               showGlobalFilter
-              sortBy="resourceScore"
-              order="des"
               fixed
               noWrap={false}
               noWrapHeader={false}
-              rowsPerPageOptions={defaultRowsPerPageOptions}
               query={VALIDATION_QUERY.loc.source.body}
               variables={variables}
+              loading={request.loading}
             />
           </>
         );

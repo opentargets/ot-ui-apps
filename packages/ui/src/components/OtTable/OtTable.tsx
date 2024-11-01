@@ -1,5 +1,5 @@
-import { ReactElement, useState } from "react";
-import { Box, CircularProgress, Grid, IconButton, NativeSelect } from "@mui/material";
+import { ReactElement, ReactNode, useState } from "react";
+import { Box, CircularProgress, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
   ColumnFiltersState,
@@ -34,15 +34,18 @@ import {
   OtTH,
   OtTableHeaderText,
   OtTD,
+  OtTableCellContainer,
 } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
 import {
   getCurrentPagePosition,
   getDefaultSortObj,
   getFilterValueFromObject,
+  getLoadingRows,
   mapTableColumnToTanstackColumns,
 } from "./tableUtil";
 import Tooltip from "../Tooltip";
+import OtTableColumnVisibility from "./OtTableColumnVisibility";
 
 declare module "@tanstack/table-core" {
   interface FilterFns {
@@ -72,7 +75,6 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 /************
  *  WIDTH *
  * minWidth
- * numeric
  ************/
 
 function OtTable({
@@ -88,14 +90,18 @@ function OtTable({
   dataDownloaderFileStem,
   query,
   variables,
+  showColumnVisibilityControl = true,
+  loading,
 }: OtTableProps): ReactElement {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
 
+  const data = loading ? getLoadingRows(mappedColumns, 10) : rows;
+
   const table = useReactTable({
-    data: rows,
+    data,
     columns: mappedColumns,
     filterFns: {
       searchFilterFn: searchFilter,
@@ -105,7 +111,7 @@ function OtTable({
       globalFilter,
     },
     initialState: {
-      sorting: [getDefaultSortObj(sortBy, order)],
+      sorting: getDefaultSortObj(sortBy, order),
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
@@ -117,17 +123,22 @@ function OtTable({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
+  function getCellData(cell: ReactNode): ReactNode {
+    if (loading) return <Skeleton sx={{ minWidth: "50px" }} variant="text" />;
+    return <>{cell}</>;
+  }
+
   return (
     <div>
       {/* Global Search */}
-      <Grid container>
-        {showGlobalFilter && (
-          <Grid item sm={12} md={4}>
-            <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />
-          </Grid>
-        )}
-        {dataDownloader && (
-          <Grid item sm={12} md={8} sx={{ ml: "auto" }}>
+      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Grid item sm={12} md={4}>
+          {showGlobalFilter && <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />}
+        </Grid>
+
+        <Grid item sm={12} md={8} sx={{ display: "flex", justifyContent: "end", gap: 1 }}>
+          {showColumnVisibilityControl && <OtTableColumnVisibility table={table} />}
+          {dataDownloader && (
             <DataDownloader
               columns={dataDownloaderColumns || columns}
               rows={rows}
@@ -135,8 +146,8 @@ function OtTable({
               query={query}
               variables={variables}
             />
-          </Grid>
-        )}
+          )}
+        </Grid>
       </Grid>
       {/* Table component container */}
       <Box sx={{ w: 1, overflowX: "auto", marginTop: theme => theme.spacing(3) }}>
@@ -153,40 +164,40 @@ function OtTable({
                       stickyColumn={header.column.columnDef.sticky}
                     >
                       {header.isPlaceholder ? null : (
-                        <>
-                          <OtTableHeader canBeSorted={header.column.getCanSort()}>
-                            <OtTableHeaderText
-                              verticalHeader={
-                                header.column.columnDef.verticalHeader || verticalHeaders
-                              }
-                              onClick={header.column.getToggleSortingHandler()}
-                              sx={{ typography: "subtitle2" }}
+                        <OtTableHeader
+                          canBeSorted={header.column.getCanSort()}
+                          numeric={header.column.columnDef.numeric}
+                        >
+                          <OtTableHeaderText
+                            verticalHeader={
+                              header.column.columnDef.verticalHeader || verticalHeaders
+                            }
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            <Tooltip
+                              style={""}
+                              title={header.column.columnDef.tooltip}
+                              showHelpIcon={!!header.column.columnDef.tooltip}
                             >
-                              <Tooltip
-                                style={""}
-                                title={header.column.columnDef.tooltip}
-                                showHelpIcon={!!header.column.columnDef.tooltip}
-                              >
-                                {flexRender(header.column.columnDef.header, header.getContext())}
-                              </Tooltip>
-                              {!header.column.getIsSorted() && header.column.getCanSort() && (
-                                <FontAwesomeIcon
-                                  size="sm"
-                                  icon={faArrowUp}
-                                  className="sortableColumn"
-                                />
-                              )}
-                              {{
-                                asc: <FontAwesomeIconPadded size="sm" icon={faArrowUp} />,
-                                desc: <FontAwesomeIconPadded size="sm" icon={faArrowDown} />,
-                              }[header.column.getIsSorted() as string] ?? null}
-                            </OtTableHeaderText>
+                              {flexRender(header.column.columnDef.header, header.getContext())}
+                            </Tooltip>
+                            {!header.column.getIsSorted() && header.column.getCanSort() && (
+                              <FontAwesomeIcon
+                                size="sm"
+                                icon={faArrowUp}
+                                className="sortableColumn"
+                              />
+                            )}
+                            {{
+                              asc: <FontAwesomeIconPadded size="sm" icon={faArrowUp} />,
+                              desc: <FontAwesomeIconPadded size="sm" icon={faArrowDown} />,
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </OtTableHeaderText>
 
-                            {header.column.getCanFilter() ? (
-                              <OtTableColumnFilter column={header.column} />
-                            ) : null}
-                          </OtTableHeader>
-                        </>
+                          {header.column.getCanFilter() ? (
+                            <OtTableColumnFilter column={header.column} />
+                          ) : null}
+                        </OtTableHeader>
                       )}
                     </OtTH>
                   );
@@ -201,12 +212,13 @@ function OtTable({
                   {row.getVisibleCells().map(cell => {
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
-                        <Box sx={{ typography: "body2" }}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
+                          {getCellData(flexRender(cell.column.columnDef.cell, cell.getContext()))}
+                          {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
                           {/* TODO: check NA value */}
                           {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
                             naLabel} */}
-                        </Box>
+                        </OtTableCellContainer>
                       </OtTD>
                     );
                   })}
@@ -217,7 +229,12 @@ function OtTable({
         </OtTableContainer>
       </Box>
 
-      {/* Table footer component container */}
+      {/*
+       ************************
+       * TABLE FOOTER ACTIONS *
+       ************************
+       */}
+
       <Box
         sx={{
           display: "flex",
@@ -244,6 +261,7 @@ function OtTable({
             ))}
           </NativeSelect>
         </div>
+
         <Box
           sx={{
             display: "flex",

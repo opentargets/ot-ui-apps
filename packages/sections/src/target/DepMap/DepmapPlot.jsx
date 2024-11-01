@@ -36,28 +36,24 @@ function ChartControls({ data, query, variables }) {
         borderColor: grey[300],
         borderRadius: 1,
         display: "flex",
-        justifyContent: "space-between",
-        py: 1,
-        px: 2,
+        justifyContent: "flex-end",
+        gap: 1,
       }}
     >
-      <Box></Box>
-      <Box>
-        <DataDownloader
-          btnLabel="Export data"
-          rows={data}
-          query={query}
-          variables={variables}
-          columns={[
-            { exportValue: row => row.depmapId, id: "depmapId" },
-            { exportValue: row => row.cellLineName, id: "cellLineName" },
-            { exportValue: row => row.diseaseFromSource, id: "diseaseFromSource" },
-            { exportValue: row => row.geneEffect, id: "geneEffect" },
-            { exportValue: row => row.expression, id: "expression" },
-            { exportValue: row => row.tissueName, id: "tissueName" },
-          ]}
-        />
-      </Box>
+      <DataDownloader
+        btnLabel="Export data"
+        rows={data}
+        query={query}
+        variables={variables}
+        columns={[
+          { exportValue: row => row.depmapId, id: "depmapId" },
+          { exportValue: row => row.cellLineName, id: "cellLineName" },
+          { exportValue: row => row.diseaseFromSource, id: "diseaseFromSource" },
+          { exportValue: row => row.geneEffect, id: "geneEffect" },
+          { exportValue: row => row.expression, id: "expression" },
+          { exportValue: row => row.tissueName, id: "tissueName" },
+        ]}
+      />
     </Box>
   );
 }
