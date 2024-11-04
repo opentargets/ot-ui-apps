@@ -223,7 +223,7 @@ function Body({ id, entity }: BodyProps) {
           dataDownloader
           sortBy="evidenceLevel"
           columns={columns}
-          rows={request.data?.pharmacogenomics}
+          rows={request.data?.variant.pharmacogenomics}
           query={PHARMACOGENOMICS_QUERY.loc.source.body}
           variables={variables}
           loading={request.loading}
