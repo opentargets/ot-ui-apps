@@ -2,6 +2,7 @@ import * as d3 from "d3";
 import { useRef, useEffect } from "react";
 import { useMeasure } from "@uidotdev/usehooks";
 import { Box } from "@mui/material";
+import { useHistory, useParams } from "react-router-dom";
 
 function Wrapper({ homologues, query, variables }) {
   const [ref, { width }] = useMeasure();
@@ -32,10 +33,34 @@ const labels = {
 
 const jitter = () => Math.random() * 10;
 
+function getConfigFromURL(searchParams, URLprops, sectionId) {
+  const config = {};
+  for (let i = 0; i < URLprops.length; i++) {
+    config[URLprops[i]] = searchParams.get(sectionId + URLprops[i]);
+  }
+  return config;
+}
+
 function Visualisation({ homologues, width }) {
   const containerReference = useRef();
 
+  const history = useHistory();
+  const searchParams = new URLSearchParams(history.location.search);
+
+  const sectionId = "compGenomics";
+  const URLprops = ["ViewMode", "c", "a"];
+
+  const viewModes = [
+    "default",
+    "mouseOrthologMaxIdentityPercentage",
+    "paralogMaxIdentityPercentage",
+  ];
+
   useEffect(() => {
+    const config = getConfigFromURL(searchParams, URLprops, sectionId);
+
+    console.log(config);
+
     const height = 400;
     const marginTop = 20;
     const marginRight = 20;
@@ -130,8 +155,8 @@ function Visualisation({ homologues, width }) {
           .selectAll("line")
           .data(queryScale.ticks())
           .join("line")
-          .attr("x1", d => 0.5 + queryScale(d))
-          .attr("x2", d => 0.5 + queryScale(d))
+          .attr("x1", d => queryScale(d))
+          .attr("x2", d => queryScale(d))
           .attr("y1", marginTop)
           .attr("y2", height - marginBottom)
       )
@@ -141,8 +166,8 @@ function Visualisation({ homologues, width }) {
           .selectAll("line")
           .data(targetScale.ticks())
           .join("line")
-          .attr("x1", d => 0.5 + targetScale(d))
-          .attr("x2", d => 0.5 + targetScale(d))
+          .attr("x1", d => targetScale(d))
+          .attr("x2", d => targetScale(d))
           .attr("y1", marginTop)
           .attr("y2", height - marginBottom)
       );
