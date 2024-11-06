@@ -95,10 +95,9 @@ function OtTable({
 }: OtTableProps): ReactElement {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [data, setData] = useState<Record<string, unknown>[] | loadingTableRows[]>([]);
 
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
-  const loadingRows = getLoadingRows(mappedColumns, 10);
+  // const loadingRows = getLoadingRows(mappedColumns, 10);
 
   const table = useReactTable({
     data: rows,
@@ -109,6 +108,7 @@ function OtTable({
     state: {
       columnFilters,
       globalFilter,
+      loading,
     },
     initialState: {
       sorting: getDefaultSortObj(sortBy, order),
@@ -122,16 +122,6 @@ function OtTable({
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
-
-  function getCellData(cell: ReactNode): ReactNode {
-    if (loading) return <Skeleton sx={{ minWidth: "50px" }} variant="text" />;
-    return <>{cell}</>;
-  }
-
-  // useEffect(() => {
-  //   const displayRows = loading ? loadingRows : rows;
-  //   setData(displayRows);
-  // }, [loading]);
 
   return (
     <div>
@@ -218,14 +208,11 @@ function OtTable({
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
                         <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
-                          {/* {getCellData(flexRender(cell.column.columnDef.cell, cell.getContext()))} */}
-
-                          {loading ? (
+                          {table.getState().loading ? (
                             <Skeleton sx={{ minWidth: "50px" }} variant="text" />
                           ) : (
                             <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
                           )}
-                          {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
                           {/* TODO: check NA value */}
                           {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
                             naLabel} */}
