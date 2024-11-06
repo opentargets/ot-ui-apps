@@ -112,7 +112,7 @@ function Body({ id: chemblId, label: name, entity }) {
       entity={entity}
       showContentLoading={true}
       renderDescription={() => <Description name={name} />}
-      renderBody={res => {
+      renderBody={() => {
         // TODO: Change GraphQL schema to have a maxLlr field instead of having
         // to get the first item of adverse events to get the largest llr since
         // items are sorted in decreasing llr order.

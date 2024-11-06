@@ -1,15 +1,5 @@
 import classNames from "classnames";
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  Divider,
-  Grid,
-  LinearProgress,
-  Skeleton,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Card, CardContent, Divider, Grid, Skeleton, Typography } from "@mui/material";
 import { Element } from "react-scroll";
 
 import ErrorBoundary from "../ErrorBoundary";

@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
 import { Box, CircularProgress, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import OtTableColumnFilter from "./OtTableColumnFilter";
 // import { naLabel } from "../../constants";
 import OtTableSearch from "./OtTableSearch";
-import { OtTableProps } from "./table.types";
+import { loadingTableRows, OtTableProps } from "./table.types";
 import {
   FontAwesomeIconPadded,
   OtTableContainer,
@@ -95,10 +95,10 @@ function OtTable({
 }: OtTableProps): ReactElement {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [data, setData] = useState<Record<string, unknown>[] | loadingTableRows[]>([]);
 
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
-
-  const data = loading ? getLoadingRows(mappedColumns, 10) : rows;
+  const loadingRows = getLoadingRows(mappedColumns, 10);
 
   const table = useReactTable({
     data,
@@ -127,6 +127,11 @@ function OtTable({
     if (loading) return <Skeleton sx={{ minWidth: "50px" }} variant="text" />;
     return <>{cell}</>;
   }
+
+  useEffect(() => {
+    const displayRows = loading ? loadingRows : rows;
+    setData(displayRows);
+  }, [loading]);
 
   return (
     <div>
