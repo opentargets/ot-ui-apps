@@ -101,7 +101,7 @@ function OtTable({
   const loadingRows = getLoadingRows(mappedColumns, 10);
 
   const table = useReactTable({
-    data,
+    data: rows,
     columns: mappedColumns,
     filterFns: {
       searchFilterFn: searchFilter,
@@ -128,10 +128,10 @@ function OtTable({
     return <>{cell}</>;
   }
 
-  useEffect(() => {
-    const displayRows = loading ? loadingRows : rows;
-    setData(displayRows);
-  }, [loading]);
+  // useEffect(() => {
+  //   const displayRows = loading ? loadingRows : rows;
+  //   setData(displayRows);
+  // }, [loading]);
 
   return (
     <div>
@@ -218,7 +218,13 @@ function OtTable({
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
                         <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
-                          {getCellData(flexRender(cell.column.columnDef.cell, cell.getContext()))}
+                          {/* {getCellData(flexRender(cell.column.columnDef.cell, cell.getContext()))} */}
+
+                          {loading ? (
+                            <Skeleton sx={{ minWidth: "50px" }} variant="text" />
+                          ) : (
+                            <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
+                          )}
                           {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
                           {/* TODO: check NA value */}
                           {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
