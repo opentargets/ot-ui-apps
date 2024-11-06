@@ -19,6 +19,13 @@ query SearchPageQuery(
       id
       highlights
       object {
+        ... on Variant {
+          id
+          referenceAllele
+          alternateAllele
+          rsIds
+        }
+
         ... on Target {
           id
           approvedSymbol
@@ -46,6 +53,17 @@ query SearchPageQuery(
   ) {
     hits {
       object {
+        ... on Variant {
+          id
+          chromosome
+          position
+          referenceAllele
+          alternateAllele
+          rsIds
+          mostSevereConsequence {
+            label
+          }
+        }
         ... on Target {
           id
           approvedSymbol
