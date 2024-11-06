@@ -71,8 +71,8 @@ function Body({ id: chemblId, label: name, entity }) {
       renderDescription={() => (
         <Description
           name={name}
-          parentMolecule={request.parentMolecule || []}
-          childMolecules={request.childMolecules || []}
+          parentMolecule={request.data?.drug.parentMolecule || []}
+          childMolecules={request.data?.drug.childMolecules || []}
         />
       )}
       renderBody={() => {
