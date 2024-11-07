@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
 import { Box, CircularProgress, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import OtTableColumnFilter from "./OtTableColumnFilter";
 // import { naLabel } from "../../constants";
 import OtTableSearch from "./OtTableSearch";
-import { OtTableProps } from "./table.types";
+import { loadingTableRows, OtTableProps } from "./table.types";
 import {
   FontAwesomeIconPadded,
   OtTableContainer,
@@ -97,11 +97,10 @@ function OtTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
-
-  const data = loading ? getLoadingRows(mappedColumns, 10) : rows;
+  // const loadingRows = getLoadingRows(mappedColumns, 10);
 
   const table = useReactTable({
-    data,
+    data: rows,
     columns: mappedColumns,
     filterFns: {
       searchFilterFn: searchFilter,
@@ -109,6 +108,7 @@ function OtTable({
     state: {
       columnFilters,
       globalFilter,
+      loading,
     },
     initialState: {
       sorting: getDefaultSortObj(sortBy, order),
@@ -122,11 +122,6 @@ function OtTable({
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
-
-  function getCellData(cell: ReactNode): ReactNode {
-    if (loading) return <Skeleton sx={{ minWidth: "50px" }} variant="text" />;
-    return <>{cell}</>;
-  }
 
   return (
     <div>
@@ -213,8 +208,11 @@ function OtTable({
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
                         <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
-                          {getCellData(flexRender(cell.column.columnDef.cell, cell.getContext()))}
-                          {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
+                          {table.getState().loading ? (
+                            <Skeleton sx={{ minWidth: "50px" }} variant="text" />
+                          ) : (
+                            <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
+                          )}
                           {/* TODO: check NA value */}
                           {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
                             naLabel} */}
