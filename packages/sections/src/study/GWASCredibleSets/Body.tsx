@@ -173,23 +173,24 @@ export default Body;
 // ========== Manhattan plot ==========
 
 // currently inefficient since finds correct chromosome
-function cumulativePosition(id) {
-  const parts = id.split('_');  // not necessary in platform since can get in query
-  const [chromosome, position] = [parts[0], Number(parts[1])];
+function cumulativePosition({ chromosome, position }) {
   return chromosomeInfo.find(elmt => elmt.chromosome === chromosome).start + position;
+}
+
+function pValue(row) {
+  return row.pValueMantissa * 10 ** row.pValueExponent;
 }
 
 function ManhattanPlot({ data }) {
 
-  console.log()
   if (data == null) return null;
 
   const genomePositions = {};
-  data.forEach(({ leadVariant }) => {
-    genomePositions[leadVariant] = cumulativePosition(leadVariant);
+  data.forEach(({ variant }) => {
+    genomePositions[variant.id] = cumulativePosition(variant);
   });
 
-  const pValueMin = d3.min(data, d => d.pValue);
+  const pValueMin = d3.min(data, pValue);
   const pValueMax = 1;
 
   const background = '#fff';
@@ -217,7 +218,7 @@ function ManhattanPlot({ data }) {
         format={(_, i, __, tickData) => tickData[i].chromosome}
         padding={6}
       />
-      <XGrid values={tickData => tickData.map(chromo => chromo.start)} stroke="#ccc" />
+      <XGrid values={tickData => tickData.map(chromo => chromo.start)} stroke="#d9d9d9" strokeDasharray="3 4"/>
       <XTitle fontSize={10} position="top" align="left" textAnchor="end" padding={14}>
         -log_10(pValue)
       </XTitle>
@@ -225,9 +226,9 @@ function ManhattanPlot({ data }) {
       <YTick />
       <YLabel format={v => -Math.log10(v)} />
       <Segment
-        x={d => genomePositions[d.leadVariant]}
-        xx={d => genomePositions[d.leadVariant]}
-        y={d => d.pValue}
+        x={d => genomePositions[d.variant.id]}
+        xx={d => genomePositions[d.variant.id]}
+        y={pValue}
         yy={pValueMax}
         fill="transparent"
         stroke={markColor}
@@ -236,8 +237,8 @@ function ManhattanPlot({ data }) {
         area={24}
       />
       <Circle
-        x={d => genomePositions[d.leadVariant]}
-        y={d => d.pValue}
+        x={d => genomePositions[d.variant.id]}
+        y={pValue}
         fill={background}
         fillOpacity={1}
         stroke={markColor}
@@ -290,10 +291,15 @@ chromosomeInfo.forEach((chromo, i) => {
 
 const genomeLength = chromosomeInfo.at(-1).end;
 
+
+
 /* ========== TO DO ============================================================
 - only import d3 functions that need
-- show skeleton when plot loading
-- Manhattan plot need extra props such as loading?
+- show skeleton when plot loading?
+- does Manhattan plot need extra props such as loading?
   - poss abstract into a PlotWrapper component? - careful as I think already a
     component called this in the platform
+- need to filter data in case no lead variant - cred set shold always have a lead var?
+- ignore data that uses chromo 23 or 24 - see dochoa slack 7/11/24
+- ignore data with no pValue - need to check at top level and within variant?
 */
