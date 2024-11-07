@@ -12,8 +12,6 @@ function Body({ id: efoId, label: name, entity }) {
     filteredNodes: null,
   });
 
-  const [loading, setLoading] = useState(false);
-
   function requestEfoNodes() {
     fetch(config.efoURL)
       .then(res => res.text())
