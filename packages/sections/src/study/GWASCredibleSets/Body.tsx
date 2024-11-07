@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
+import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable, ManhattanPlot } from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
@@ -129,16 +129,19 @@ function Body({ id, entity }: BodyProps) {
       request={request}
       renderDescription={() => <Description studyId={request.data?.gwasStudy[0].studyId} />}
       renderBody={() => (
-        <OtTable
-          dataDownloader
-          showGlobalFilter
-          sortBy="pValue"
-          loading={request.loading}
-          columns={columns}
-          rows={request.data?.gwasStudy[0].credibleSets}
-          query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
-          variables={variables}
-        />
+        <>
+          <ManhattanPlot />
+          <OtTable
+            dataDownloader
+            showGlobalFilter
+            sortBy="pValue"
+            loading={request.loading}
+            columns={columns}
+            rows={request.data?.gwasStudy[0].credibleSets}
+            query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
+            variables={variables}
+          />
+        </>
       )}
     />
   );
