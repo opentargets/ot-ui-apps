@@ -19,6 +19,7 @@ export default function XTick({
 
   const ops = fromFrameOrPlot(['xTick', 'scales', 'xReverse'], frame, plot);
 
+  // eslint-disable-next-line
   padding ??= plot.tickPadding;
 
   const tickValues = finalData(ops.xTick, values);
@@ -35,6 +36,7 @@ export default function XTick({
       : plot.height - plot.padding.bottom + padding
   })`;
 
+  // eslint-disable-next-line
   tickLength ??= plot.tickLength;
   const y2 = position === 'top' ? -tickLength : tickLength;
 

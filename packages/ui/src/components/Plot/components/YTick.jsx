@@ -20,6 +20,7 @@ export default function YTick({
   const ops =
     fromFrameOrPlot(['yTick', 'scales', 'yReverse'], frame, plot);
 
+  // eslint-disable-next-line
   padding ??= plot.tickPadding;
 
   const tickValues = finalData(ops.yTick, values);
@@ -36,6 +37,7 @@ export default function YTick({
     plot.padding.top
   })`;
 
+  // eslint-disable-next-line
   tickLength ??= plot.tickLength;
   const x2 = position === 'right' ? tickLength : -tickLength;
 

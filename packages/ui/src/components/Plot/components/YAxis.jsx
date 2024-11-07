@@ -7,6 +7,7 @@ export default function YAxis({ position = 'left', padding, ...lineAttrs }) {
     throw Error("YAxis component must appear inside a Plot component");
   }
 
+  // eslint-disable-next-line
   padding ??= plot.axisPadding;
 
   const x = position === 'right'

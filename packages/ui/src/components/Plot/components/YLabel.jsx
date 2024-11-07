@@ -24,6 +24,7 @@ export default function YLabel({
   const tickValues = finalData(ops.yTick, values);
   if (!tickValues) return null;
 
+  // eslint-disable-next-line
   padding ??= plot.labelPadding;
 
   const yScale = ops.yReverse

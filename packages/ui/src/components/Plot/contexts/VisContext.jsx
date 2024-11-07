@@ -33,7 +33,7 @@ export function useVisDispatch() {
 // data reducer
 function reducer(state, action) {
   
-  switch(action.type) {
+  // switch(action.type) {
 
     // case 'select': {
     //   const newState = {};
@@ -41,12 +41,10 @@ function reducer(state, action) {
     //   }
     // }
 
-  }
-
-
+  // }
 
   // !! IF ACTION REPLACES DATA, SET selected TO {} - AND ANY OTHER
   // INTERACTION IBJECTS THAT INTRODUCE
   
-  return newState;
+  // return newState;
 }

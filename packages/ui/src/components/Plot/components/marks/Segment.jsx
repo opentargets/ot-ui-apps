@@ -17,6 +17,7 @@ export default function Segment({ data, missing = 'throw', ...accessors }) {
   const ops = fromFrameOrPlot(['data', 'scales', 'mapX', 'mapY'], frame, plot);
   const { scales, mapX, mapY } = ops;
 
+  // eslint-disable-next-line
   data = finalData(ops.data, data);
   if (!isIterable(data)) {
     throw Error('mark data must be an iterable');

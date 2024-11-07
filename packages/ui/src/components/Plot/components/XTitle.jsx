@@ -18,6 +18,7 @@ export default function XTitle({
 
   if (!children) return null;
 
+  // eslint-disable-next-line
   padding ??= plot.titlePadding;
 
   let x, textAnchor;

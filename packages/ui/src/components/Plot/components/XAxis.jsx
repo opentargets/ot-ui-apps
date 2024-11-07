@@ -7,6 +7,7 @@ export default function XAxis({ position = 'bottom', padding, ...lineAttrs }) {
     throw Error("XAxis component must appear inside a Plot component");
   }
 
+  // eslint-disable-next-line
   padding ??= plot.axisPadding;
 
   const y = position === 'top'

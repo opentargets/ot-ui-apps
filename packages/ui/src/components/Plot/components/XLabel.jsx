@@ -24,6 +24,7 @@ export default function XLabel({
   const tickValues = finalData(ops.xTick, values);
   if (!tickValues) return null;
 
+  // eslint-disable-next-line
   padding ??= plot.labelPadding;
 
   const xScale = ops.xReverse
