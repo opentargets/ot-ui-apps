@@ -109,10 +109,16 @@ const columns = [
   {
     id: "distanceFromFootprint",
     label: "Distance from footprint",
+    numeric: true,
+    renderCell: ({ distanceFromFootprint }) =>
+      distanceFromFootprint ? parseInt(distanceFromFootprint, 10).toLocaleString() : naLabel,
   },
   {
     id: "distanceFromTss",
     label: "Distance from start site",
+    numeric: true,
+    renderCell: ({ distanceFromTss }) =>
+      distanceFromTss ? parseInt(distanceFromTss, 10).toLocaleString() : naLabel,
   },
 ];
 

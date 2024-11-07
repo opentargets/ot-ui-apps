@@ -1,7 +1,15 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
+import {
+  Link,
+  SectionItem,
+  ScientificNotation,
+  DisplayVariantId,
+  OtTable,
+  Tooltip,
+  ClinvarStars,
+} from "ui";
 import { Box, Chip } from "@mui/material";
-import { naLabel } from "../../constants";
+import { clinvarStarMap, naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
@@ -22,11 +30,11 @@ function getColumns({
 }: getColumnsType) {
   return [
     {
-      id: "view",
-      label: "Details",
-      renderCell: ({ studyLocusId }) => <Link to={`../credible-set/${studyLocusId}`}>view</Link>,
-      filterValue: false,
-      exportValue: false,
+      id: "studyLocusId",
+      label: "More details",
+      renderCell: ({ studyLocusId }) => (
+        <Link to={`../credible-set/${studyLocusId}`}>{studyLocusId}</Link>
+      ),
     },
     {
       id: "leadVariant",
@@ -89,14 +97,14 @@ function getColumns({
       },
     },
     {
-      id: "study.biosample.biosampleId",
+      id: "study",
       label: "Affected tissue/cell",
       renderCell: ({ study }) => {
         const biosampleId = study?.biosample?.biosampleId;
         if (!biosampleId) return naLabel;
         return (
           <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosampleId}&ontology=uberon`}>
-            {biosampleId}
+            {study?.biosample?.biosampleName}
           </Link>
         );
       },
@@ -159,6 +167,18 @@ function getColumns({
       sortable: true,
       renderCell: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3) ?? naLabel,
       exportValue: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3),
+    },
+    {
+      id: "confidence",
+      label: "Confidence",
+      renderCell: ({ confidence }) => {
+        if (!confidence) return naLabel;
+        return (
+          <Tooltip title={confidence} style="">
+            <ClinvarStars num={clinvarStarMap[confidence]} />
+          </Tooltip>
+        );
+      },
     },
     {
       id: "finemappingMethod",

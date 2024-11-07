@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { Link, DisplayVariantId } from "ui";
 
 type DescriptionProps = {
@@ -6,7 +7,11 @@ type DescriptionProps = {
   alternateAllele: string;
 };
 
-function Description({ variantId, referenceAllele, alternateAllele }: DescriptionProps) {
+function Description({
+  variantId,
+  referenceAllele,
+  alternateAllele,
+}: DescriptionProps): ReactElement {
   return (
     <>
       molQTL 99% credible sets containing{" "}
@@ -17,10 +22,7 @@ function Description({ variantId, referenceAllele, alternateAllele }: Descriptio
           alternateAllele={alternateAllele}
         />
       </strong>
-      . Source{" "}
-      <Link external to="https://www.ebi.ac.uk/eqtl/" >
-        eQTL Catalog
-      </Link>
+      . Source <Link to="/">Open Targets</Link>
     </>
   );
 }
