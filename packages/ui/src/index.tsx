@@ -26,7 +26,6 @@ export { default as PrivateRoute } from "./components/PrivateRoute";
 export { default as EllsWrapper } from "./components/EllsWrapper";
 export { default as ErrorBoundary } from "./components/ErrorBoundary";
 export { default as GlobalSearch } from "./components/GlobalSearch/GlobalSearch";
-export { default as ManhattanPlot } from "./components/Plot/ManhattanPlot";
 
 export { default as PrivateWrapper } from "./components/PrivateWrapper";
 export { default as NavBar } from "./components/NavBar";
@@ -48,6 +47,7 @@ export * from "./contexts/ConfigurationProvider";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Section";
+export * from "./components/Plot";
 
 export * from "./components/ProfileHeader";
 export * from "./components/DownloadSvgPlot";

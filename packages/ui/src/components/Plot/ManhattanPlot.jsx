@@ -13,12 +13,8 @@ import {
   Circle,
   Segment,
 } from '.';
-import * as d3 from "d3-array";
 
-NEED TO IMPORT D3 SCALES ALSO!!!!!!!!!!!!!!!!
-
-
-window.d3 = d3;
+import * as d3 from "../../../../../node_modules/d3";
 
 
 // ========== chromosome lengths ==========

@@ -1,10 +1,28 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable, ManhattanPlot } from "ui";
+import {
+  Link,
+  SectionItem,
+  ScientificNotation,
+  DisplayVariantId,
+  OtTable,
+  Plot,
+  XAxis,
+  YAxis,
+  XTick,
+  YTick,
+  XLabel,
+  YLabel,
+  XTitle,
+  XGrid,
+  Circle,
+  Segment,
+} from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import * as d3 from "d3";
 
 const columns = [
   {
@@ -130,7 +148,7 @@ function Body({ id, entity }: BodyProps) {
       renderDescription={() => <Description studyId={request.data?.gwasStudy[0].studyId} />}
       renderBody={() => (
         <>
-          <ManhattanPlot />
+          <ManhattanPlot data={request.data?.gwasStudy[0].credibleSets} />
           <OtTable
             dataDownloader
             showGlobalFilter
@@ -148,3 +166,134 @@ function Body({ id, entity }: BodyProps) {
 }
 
 export default Body;
+
+
+// =============================================================================
+
+// ========== Manhattan plot ==========
+
+// currently inefficient since finds correct chromosome
+function cumulativePosition(id) {
+  const parts = id.split('_');  // not necessary in platform since can get in query
+  const [chromosome, position] = [parts[0], Number(parts[1])];
+  return chromosomeInfo.find(elmt => elmt.chromosome === chromosome).start + position;
+}
+
+function ManhattanPlot({ data }) {
+
+  console.log()
+  if (data == null) return null;
+
+  const genomePositions = {};
+  data.forEach(({ leadVariant }) => {
+    genomePositions[leadVariant] = cumulativePosition(leadVariant);
+  });
+
+  const pValueMin = d3.min(data, d => d.pValue);
+  const pValueMax = 1;
+
+  const background = '#fff';
+  const markColor = '#3489ca';
+
+  return (
+    <Plot
+      background={background}
+      width="1200"
+      height="360"
+      padding={{ top: 40, right: 20, bottom: 40, left: 100 }}
+      data={data}
+      yReverse
+      scales={{
+        x: d3.scaleLinear().domain([0, genomeLength]),
+        y: d3.scaleLog().domain([pValueMin, pValueMax]),
+      }}
+      xTick={chromosomeInfo}
+    >
+      <XTick
+        values={tickData => tickData.map(chromo => chromo.start)} tickLength={15}/>
+      <XAxis />
+      <XLabel 
+        values={tickData => tickData.map(chromo => chromo.midpoint)}
+        format={(_, i, __, tickData) => tickData[i].chromosome}
+        padding={6}
+      />
+      <XGrid values={tickData => tickData.map(chromo => chromo.start)} stroke="#ccc" />
+      <XTitle fontSize={10} position="top" align="left" textAnchor="end" padding={14}>
+        -log_10(pValue)
+      </XTitle>
+      <YAxis />
+      <YTick />
+      <YLabel format={v => -Math.log10(v)} />
+      <Segment
+        x={d => genomePositions[d.leadVariant]}
+        xx={d => genomePositions[d.leadVariant]}
+        y={d => d.pValue}
+        yy={pValueMax}
+        fill="transparent"
+        stroke={markColor}
+        strokeWidth={1}
+        strokeOpacity={0.7}
+        area={24}
+      />
+      <Circle
+        x={d => genomePositions[d.leadVariant]}
+        y={d => d.pValue}
+        fill={background}
+        fillOpacity={1}
+        stroke={markColor}
+        strokeWidth={1.2}
+        area={24}
+      />
+    </Plot>
+  );
+}
+
+
+// ========== chromosome lengths ==========
+
+// !! MOVE THIS TO A DIFFERENT FILE WHEN DONE !!
+// from: https://www.ncbi.nlm.nih.gov/grc/human/data
+// (first tab: "Chromosome lengths")
+const chromosomeInfo = [
+  { chromosome: '1',  length: 248956422 },
+  { chromosome: '2',	length: 242193529 },
+  { chromosome: '3',	length: 198295559 },
+  { chromosome: '4',	length: 190214555 },
+  { chromosome: '5',	length: 181538259 },
+  { chromosome: '6',	length: 170805979 },
+  { chromosome: '7',	length: 159345973 },
+  { chromosome: '8',	length: 145138636 },
+  { chromosome: '9',  length: 138394717 },
+  { chromosome: '10',	length: 133797422 },
+  { chromosome: '11',	length: 135086622 },
+  { chromosome: '12',	length: 133275309 },
+  { chromosome: '13',	length: 114364328 },
+  { chromosome: '14',	length: 107043718 },
+  { chromosome: '15',	length: 101991189 },
+  { chromosome: '16',	length: 90338345  },
+  { chromosome: '17',	length: 83257441  },
+  { chromosome: '18',	length: 80373285  },
+  { chromosome: '19',	length: 58617616  },
+  { chromosome: '20',	length: 64444167  },
+  { chromosome: '21',	length: 46709983  },
+  { chromosome: '22',	length: 50818468  },
+  { chromosome: 'X',	length: 156040895 },
+  { chromosome: 'Y',  length: 57227415  },
+];
+
+// const cumulativeLengths = [...d3.cumsum(chromosomeInfo, d => d.length)];
+chromosomeInfo.forEach((chromo, i) => {
+  chromo.start = chromosomeInfo[i-1]?.end ?? 0;
+  chromo.end = chromo.start + chromo.length;
+  chromo.midpoint = (chromo.start + chromo.end) / 2;
+});
+
+const genomeLength = chromosomeInfo.at(-1).end;
+
+/* ========== TO DO ============================================================
+- only import d3 functions that need
+- show skeleton when plot loading
+- Manhattan plot need extra props such as loading?
+  - poss abstract into a PlotWrapper component? - careful as I think already a
+    component called this in the platform
+*/
