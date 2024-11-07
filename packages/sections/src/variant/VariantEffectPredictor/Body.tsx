@@ -73,12 +73,38 @@ const columns = [
   {
     id: "aminoAcidChange",
     label: "Amino acid change",
-    renderCell: ({ aminoAcidChange }) => aminoAcidChange ?? naLabel,
-  },
-  {
-    id: "codons",
-    label: "Coding change",
-    renderCell: ({ codons }) => codons ?? naLabel,
+    renderCell: ({ aminoAcidChange, codons, uniprotAccessions }) => {
+      if (!aminoAcidChange) return naLabel;
+      let displayElement = <>{aminoAcidChange}</>;
+      if (codons)
+        displayElement = (
+          <>
+            {displayElement}&nbsp;[{codons}]
+          </>
+        );
+      if (uniprotAccessions?.length) {
+        const tooltipContent = (
+          <>
+            Uniprot accession:&nbsp;
+            {uniprotAccessions.map((id, i, arr) => (
+              <Fragment key={id}>
+                <Link external to={`https://identifiers.org/uniprot:${id}`} footer={false}>
+                  {id}
+                </Link>
+                {i < arr.length - 1 && ", "}
+              </Fragment>
+            ))}
+          </>
+        );
+
+        displayElement = (
+          <Tooltip title={tooltipContent} style="" showHelpIcon>
+            {displayElement}
+          </Tooltip>
+        );
+      }
+      return displayElement;
+    },
   },
   {
     id: "distanceFromFootprint",
@@ -87,22 +113,6 @@ const columns = [
   {
     id: "distanceFromTss",
     label: "Distance from start site",
-  },
-  {
-    id: "uniprotAccession",
-    label: "Uniprot accession",
-    renderCell: ({ uniprotAccessions }) =>
-      uniprotAccessions?.length
-        ? uniprotAccessions.map((id, i, arr) => (
-            <Fragment key={id}>
-              <Link external to={`https://identifiers.org/uniprot:${id}`}>
-                {id}
-              </Link>
-              {i < arr.length - 1 && ", "}
-            </Fragment>
-          ))
-        : naLabel,
-    exportValue: ({ uniprotAccessions }) => (uniprotAccessions ?? []).join(", "),
   },
 ];
 
