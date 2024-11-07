@@ -12,20 +12,24 @@ function Body({ id: efoId, label: name, entity }) {
     filteredNodes: null,
   });
 
-  useEffect(() => {
-    let isCurrent = true;
+  const [loading, setLoading] = useState(false);
+
+  function requestEfoNodes() {
     fetch(config.efoURL)
       .then(res => res.text())
       .then(lines => {
-        if (isCurrent) {
-          const nodes = lines.trim().split("\n").map(JSON.parse);
-          const idToDisease = nodes.reduce((acc, disease) => {
-            acc[disease.id] = disease;
-            return acc;
-          }, {});
-          setEfoNodes({ allNodes: nodes, filteredNodes: idToDisease });
-        }
+        const nodes = lines.trim().split("\n").map(JSON.parse);
+        const idToDisease = nodes.reduce((acc, disease) => {
+          acc[disease.id] = disease;
+          return acc;
+        }, {});
+        setEfoNodes({ allNodes: nodes, filteredNodes: idToDisease });
       });
+  }
+
+  useEffect(() => {
+    let isCurrent = true;
+    if (isCurrent) requestEfoNodes();
 
     return () => {
       isCurrent = false;
