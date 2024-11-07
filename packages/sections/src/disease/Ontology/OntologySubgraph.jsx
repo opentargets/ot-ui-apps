@@ -35,7 +35,7 @@ function getAncestors(efoId, idToDisease) {
 function buildDagData(efoId, efo, idToDisease) {
   const dag = [];
 
-  if (!efo) return [{ id: "m" }];
+  if (!efo) return dag;
 
   // find direct children of efoId
   efo.forEach(disease => {
