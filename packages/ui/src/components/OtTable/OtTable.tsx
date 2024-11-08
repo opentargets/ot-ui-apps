@@ -97,10 +97,10 @@ function OtTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
-  // const loadingRows = getLoadingRows(mappedColumns, 10);
+  const data = loading ? getLoadingRows(mappedColumns, 10) : rows;
 
   const table = useReactTable({
-    data: rows,
+    data,
     columns: mappedColumns,
     filterFns: {
       searchFilterFn: searchFilter,
@@ -108,7 +108,6 @@ function OtTable({
     state: {
       columnFilters,
       globalFilter,
-      loading,
     },
     initialState: {
       sorting: getDefaultSortObj(sortBy, order),
@@ -122,6 +121,11 @@ function OtTable({
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
+
+  function getCellData(cell: Record<string, unknown>): ReactNode {
+    if (loading) return <Skeleton sx={{ minWidth: "50px" }} variant="text" />;
+    return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
+  }
 
   return (
     <div>
@@ -208,11 +212,8 @@ function OtTable({
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
                         <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
-                          {table.getState().loading ? (
-                            <Skeleton sx={{ minWidth: "50px" }} variant="text" />
-                          ) : (
-                            <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
-                          )}
+                          {getCellData(cell)}
+                          {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
                           {/* TODO: check NA value */}
                           {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
                             naLabel} */}
