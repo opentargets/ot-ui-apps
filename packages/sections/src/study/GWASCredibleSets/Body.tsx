@@ -16,6 +16,7 @@ import {
   XGrid,
   Circle,
   Segment,
+  ResponsivePlot,
 } from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
@@ -91,30 +92,30 @@ const columns = [
     id: "finemappingMethod",
     label: "Finemapping method",
   },
-  {
-    id: "topL2G",
-    label: "Top L2G",
-    tooltip: "Top gene prioritised by our locus-to-gene model",
-    filterValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
-    renderCell: ({ strongestLocus2gene }) => {
-      if (!strongestLocus2gene?.target) return naLabel;
-      const { target } = strongestLocus2gene;
-      return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
-    },
-    exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
-  },
-  {
-    id: "l2gScore",
-    label: "L2G score",
-    comparator: (rowA, rowB) => rowA?.strongestLocus2gene?.score - rowB?.strongestLocus2gene?.score,
-    sortable: true,
-    filterValue: false,
-    renderCell: ({ strongestLocus2gene }) => {
-      if (typeof strongestLocus2gene?.score !== "number") return naLabel;
-      return strongestLocus2gene.score.toFixed(3);
-    },
-    exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.score,
-  },
+  // {
+  //   id: "topL2G",
+  //   label: "Top L2G",
+  //   tooltip: "Top gene prioritised by our locus-to-gene model",
+  //   filterValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
+  //   renderCell: ({ strongestLocus2gene }) => {
+  //     if (!strongestLocus2gene?.target) return naLabel;
+  //     const { target } = strongestLocus2gene;
+  //     return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
+  //   },
+  //   exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
+  // },
+  // {
+  //   id: "l2gScore",
+  //   label: "L2G score",
+  //   comparator: (rowA, rowB) => rowA?.strongestLocus2gene?.score - rowB?.strongestLocus2gene?.score,
+  //   sortable: true,
+  //   filterValue: false,
+  //   renderCell: ({ strongestLocus2gene }) => {
+  //     if (typeof strongestLocus2gene?.score !== "number") return naLabel;
+  //     return strongestLocus2gene.score.toFixed(3);
+  //   },
+  //   exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.score,
+  // },
   {
     id: "credibleSetSize",
     label: "Credible set size",
@@ -197,11 +198,12 @@ function ManhattanPlot({ data }) {
   const markColor = '#3489ca';
 
   return (
-    <Plot
-      background={background}
-      width="1200"
+    <ResponsivePlot
+      // background={background}
+      // width="responsive"
+      // width="500"
       height="360"
-      padding={{ top: 40, right: 20, bottom: 40, left: 100 }}
+      padding={{ top: 40, right: 10, bottom: 40, left: 80 }}
       data={data}
       yReverse
       scales={{
@@ -218,7 +220,7 @@ function ManhattanPlot({ data }) {
         format={(_, i, __, tickData) => tickData[i].chromosome}
         padding={6}
       />
-      <XGrid values={tickData => tickData.map(chromo => chromo.start)} stroke="#d9d9d9" strokeDasharray="3 4"/>
+      <XGrid values={tickData => tickData.map(chromo => chromo.start)} stroke="#cecece" strokeDasharray="3 4"/>
       <XTitle fontSize={10} position="top" align="left" textAnchor="end" padding={14}>
         -log_10(pValue)
       </XTitle>
@@ -245,7 +247,7 @@ function ManhattanPlot({ data }) {
         strokeWidth={1.2}
         area={24}
       />
-    </Plot>
+    </ResponsivePlot>
   );
 }
 
@@ -294,7 +296,9 @@ const genomeLength = chromosomeInfo.at(-1).end;
 
 
 /* ========== TO DO ============================================================
+- orob want plot title e.g. "pValue and position of lead variant of each creidble set"
 - only import d3 functions that need
+- use subscript for log_10 in x-title
 - show skeleton when plot loading?
 - does Manhattan plot need extra props such as loading?
   - poss abstract into a PlotWrapper component? - careful as I think already a
@@ -302,4 +306,5 @@ const genomeLength = chromosomeInfo.at(-1).end;
 - need to filter data in case no lead variant - cred set shold always have a lead var?
 - ignore data that uses chromo 23 or 24 - see dochoa slack 7/11/24
 - ignore data with no pValue - need to check at top level and within variant?
+- properly handle removal of strongestLocusToGene in table in separate PR
 */

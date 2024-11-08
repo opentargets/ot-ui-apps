@@ -11,26 +11,20 @@ const PlotContext = createContext(null);
 const PlotDispatchContext = createContext(null);
 
 export function PlotProvider({ children, options }) {
-  
+
   const vis = useVis();
   const initialState = safeAssign({ ...plotDefaults }, options);
   initialState.data = finalData(vis?.data, initialState.data);
-  
-  // compute values related to plot and panel spacing
+
+  // compute values related to plot size and panel spacing
   let { padding } = initialState;
   if (typeof padding === 'number') {
     padding = { top: padding, right: padding, bottom: padding, left: padding };
     initialState.padding = padding;
   }
-  initialState.panelWidth = initialState.width - padding.left - padding.right;
-  initialState.panelHeight = initialState.height - padding.top - padding.bottom;
   const { scales } = initialState;
   onlyValidScales(scales);
-  scales.x?.range?.([0, initialState.panelWidth]);
-  scales.y?.range?.([0, initialState.panelHeight]);
-  addXYMaps(initialState);
-  initialState.xTick ??= scales.x?.ticks?.() ?? scales.x?.domain();
-  initialState.yTick ??= scales.y?.ticks?.() ?? scales.y?.domain();
+  updateSize(initialState);
 
   const [state, stateDispatch] = useReducer(reducer, initialState);
 
@@ -55,4 +49,28 @@ export function usePlotDispatch() {
 // data reducer
 function reducer(state, action) {
 
+  switch(action.type) {
+    
+    case 'updateSize': {
+      const newState = { ...state };
+      updateSize(newState, action.width, action.height);
+      return newState;
+    }
+
+  }
+
+}
+
+// update width and height of state and properties that depend on them
+function updateSize(state, width, height) {
+  if (width != null) state.width = width;
+  if (height != null) state.height = height;
+  const { padding, scales } = state;
+  state.panelWidth = state.width - padding.left - padding.right;
+  state.panelHeight = state.height - padding.top - padding.bottom;
+  scales.x?.range?.([0, state.panelWidth]);
+  scales.y?.range?.([0, state.panelHeight]);
+  addXYMaps(state);
+  state.xTick ??= scales.x?.ticks?.() ?? scales.x?.domain();
+  state.yTick ??= scales.y?.ticks?.() ?? scales.y?.domain();
 }

@@ -17,13 +17,13 @@ query GWASCredibleSetsQuery($studyId: String!) {
         is95CredibleSet
       }
       finemappingMethod
-      strongestLocus2gene {
-        target {
-          id
-          approvedSymbol
-        }
-        score
-      }
+      # strongestLocus2gene {
+      #   target {
+      #     id
+      #     approvedSymbol
+      #   }
+      #   score
+      # }
     }
   }
 }

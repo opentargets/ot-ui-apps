@@ -17,6 +17,7 @@
 - pass index to accessor functions - and all data values?
 - have not implemented `panelSize` prop?
 - if error because no `MapX` or `mapY` is it clear that missing scale is the reason?
+- legend
   
 --------
 
@@ -205,6 +206,7 @@ Notes:
   XTitle with position='top' and textAnchor='end'
 - currently always using indices for keys - may need to revisit this when think about animation, interaction, ...
 - we can pass arbitrary attr values to ticks, labels etc, but not to marks - since all 'other props' are interpreted as channels. Can/should we allow passing arb attr values through to the svg element representing the mark?
+- `ResposiveContainer` is currently only respsonsive on horizontal changes
 
 Add to docs above
 - padding (on axis, ticks, ...) pushes them away from panel whereas dx,dy props are always in pixels and +ve x to right, +ve y downwards
