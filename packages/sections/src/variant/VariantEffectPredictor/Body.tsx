@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Box, Chip, Typography } from "@mui/material";
+import { Box, Chip } from "@mui/material";
 import { Link, SectionItem, Tooltip, OtTable } from "ui";
 import { Fragment } from "react";
 import { definition } from "../VariantEffectPredictor";
@@ -21,29 +21,47 @@ const columns = [
     id: "target.approvedSymbol",
     label: "Gene",
     sortable: true,
-    renderCell: ({ target, transcriptId }) => {
+    renderCell: ({ target, transcriptId, uniprotAccessions }) => {
       if (!target) return naLabel;
       let displayElement = <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>;
+      let tooltipContent = <></>;
       if (transcriptId) {
-        displayElement = (
-          <Tooltip
-            title={
-              <Box>
-                Ensembl canonical transcript:{" "}
-                <Link
-                  external
-                  to={`https://www.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;g=${target.id};t=${transcriptId}`}
-                >
-                  {transcriptId}
-                </Link>
-              </Box>
-            }
-            showHelpIcon
-          >
-            {displayElement}
-          </Tooltip>
+        tooltipContent = (
+          <Box>
+            <b>Ensembl canonical transcript: </b>
+            <br />
+            <Link
+              external
+              to={`https://www.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;g=${target.id};t=${transcriptId}`}
+            >
+              {transcriptId}
+            </Link>
+          </Box>
         );
       }
+      if (uniprotAccessions?.length) {
+        tooltipContent = (
+          <>
+            {tooltipContent}
+            <b>Protein:</b>
+            <br />
+            {uniprotAccessions.map((id, i, arr) => (
+              <Fragment key={id}>
+                <Link external to={`https://identifiers.org/uniprot:${id}`} footer={false}>
+                  {id}
+                </Link>
+                {i < arr.length - 1 && ", "}
+              </Fragment>
+            ))}
+          </>
+        );
+      }
+      displayElement = (
+        <Tooltip title={tooltipContent} showHelpIcon>
+          {displayElement}
+        </Tooltip>
+      );
+
       if (target?.biotype === "protein_coding") {
         displayElement = (
           <>
@@ -85,7 +103,7 @@ const columns = [
             />
           </Box>
         );
-      if (aminoAcidChange && uniprotAccessions?.length) {
+      if (codons) {
         const tooltipContent = (
           <>
             {codons && (
@@ -98,15 +116,6 @@ const columns = [
             )}
             <b>Protein:</b>
             <br />
-            {/* Uniprot accession:&nbsp; */}
-            {uniprotAccessions.map((id, i, arr) => (
-              <Fragment key={id}>
-                <Link external to={`https://identifiers.org/uniprot:${id}`} footer={false}>
-                  {id}
-                </Link>
-                {i < arr.length - 1 && ", "}
-              </Fragment>
-            ))}
           </>
         );
 
