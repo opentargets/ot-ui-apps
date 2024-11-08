@@ -141,6 +141,7 @@ function getColumns({
       label: "Beta",
       filterValue: false,
       tooltip: "Beta with respect to the ALT allele",
+      sortable: true,
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
         return beta.toPrecision(3);
@@ -171,6 +172,7 @@ function getColumns({
     {
       id: "confidence",
       label: "Confidence",
+      sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;
         return (
@@ -179,6 +181,7 @@ function getColumns({
           </Tooltip>
         );
       },
+      filterValue: ({ confidence }) => clinvarStarMap[confidence],
     },
     {
       id: "finemappingMethod",

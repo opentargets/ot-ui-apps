@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { makeStyles } from "@mui/styles";
 import { Chip as MUIChip } from "@mui/material";
+import { ReactElement } from "react";
 
 const useStyles = makeStyles({
   chip: {
@@ -12,10 +13,10 @@ const useStyles = makeStyles({
 });
 
 type ChipProps = {
-  className: string;
-  disabled: boolean;
-  label: string;
-  title: string;
+  className?: string;
+  disabled?: boolean;
+  label: ReactElement;
+  title?: string;
 };
 
 export default function Chip({ className, label, title, disabled }: ChipProps) {

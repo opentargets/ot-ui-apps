@@ -162,6 +162,7 @@ function getColumns({
     {
       id: "confidence",
       label: "Confidence",
+      sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;
         return (
@@ -170,6 +171,7 @@ function getColumns({
           </Tooltip>
         );
       },
+      filterValue: ({ confidence }) => clinvarStarMap[confidence],
     },
     {
       id: "finemappingMethod",
