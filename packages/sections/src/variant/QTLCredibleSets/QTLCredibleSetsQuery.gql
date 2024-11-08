@@ -10,6 +10,7 @@ query QTLCredibleSetsQuery($variantId: String!) {
       beta
       finemappingMethod
       confidence
+
       variant {
         id
         chromosome
@@ -20,6 +21,7 @@ query QTLCredibleSetsQuery($variantId: String!) {
       study {
         studyId
         studyType
+        condition
         target {
           id
           approvedSymbol

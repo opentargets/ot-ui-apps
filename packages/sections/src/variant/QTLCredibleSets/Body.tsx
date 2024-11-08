@@ -14,6 +14,7 @@ import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { ReactNode } from "react";
 
 type getColumnsType = {
   id: string;
@@ -112,7 +113,7 @@ function getColumns({
     {
       id: "study.condition",
       label: "Condition",
-      renderCell: () => <i>Not in API</i>,
+      renderCell: ({ study }) => study?.condition || naLabel,
     },
     {
       id: "pValue",
@@ -204,7 +205,7 @@ type BodyProps = {
   entity: string;
 };
 
-function Body({ id, entity }: BodyProps) {
+function Body({ id, entity }: BodyProps): ReactNode {
   const variables = {
     variantId: id,
   };
