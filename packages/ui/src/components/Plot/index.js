@@ -2,8 +2,6 @@ export { VisProvider, useVis, useVisDispatch } from "./contexts/VisContext";
 export { default as Frame } from "./components/XAxis";
 export { default as Panel } from "./components/Panel";
 export { default as Plot } from "./components/Plot";
-export { default as ResponsivePlot } from "./components/ResponsivePlot";
-export { default as SVGContainer } from "./components/SVGContainer";
 export { default as XAxis } from "./components/XAxis";
 export { default as XGrid } from "./components/XGrid";
 export { default as XLabel } from "./components/XLabel";

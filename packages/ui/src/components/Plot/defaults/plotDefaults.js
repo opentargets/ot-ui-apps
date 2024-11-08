@@ -5,6 +5,8 @@ export const plotDefaults = {
   xReverse: false,
   yReverse: false,
   width: 260,
+  minWidth: null,
+  maxWidth: null,
   height: 260,
   setPanelSize: false,
   padding: 40,  // number or object with props 'top', 'left', 'bottom', 'right'

@@ -16,7 +16,6 @@ import {
   XGrid,
   Circle,
   Segment,
-  ResponsivePlot,
 } from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
@@ -198,10 +197,8 @@ function ManhattanPlot({ data }) {
   const markColor = '#3489ca';
 
   return (
-    <ResponsivePlot
-      // background={background}
-      // width="responsive"
-      // width="500"
+    <Plot
+      responsive
       height="360"
       padding={{ top: 40, right: 10, bottom: 40, left: 80 }}
       data={data}
@@ -247,7 +244,7 @@ function ManhattanPlot({ data }) {
         strokeWidth={1.2}
         area={24}
       />
-    </ResponsivePlot>
+    </Plot>
   );
 }
 

@@ -33,6 +33,10 @@ A vis provider is also required for interactive plots - even a single interactiv
 
 An individual plot is created with the `<Plot>` component. This creates its own context which makes the plot's data and options available to components inside the plot.
 
+Use the `responsive` prop of `Plot` (no value required) to for width of the plot to adapt to the parent container. Use `minWidth` and `maxWidth` to specify min and max widths for a responsive plot 
+
+> Note: Props for widths, heights, minimum widths etc. should not include units.
+
 ## Frame
 
 Use a `Frame` to use different scales (for the same channel) on the same plot.
@@ -207,6 +211,9 @@ Notes:
 - currently always using indices for keys - may need to revisit this when think about animation, interaction, ...
 - we can pass arbitrary attr values to ticks, labels etc, but not to marks - since all 'other props' are interpreted as channels. Can/should we allow passing arb attr values through to the svg element representing the mark?
 - `ResposiveContainer` is currently only respsonsive on horizontal changes
+- `responsive` prop:
+  - currently only repsonsive for width, but easy to make responsive on height since could use same pattern as for width and the `updateSize` action used with the plot context already handles height changes
+  - adds an unstyled wrapper div (except for possibly min and max widths) which may be too simple for some situations.
 
 Add to docs above
 - padding (on axis, ticks, ...) pushes them away from panel whereas dx,dy props are always in pixels and +ve x to right, +ve y downwards
@@ -234,6 +241,7 @@ POSSIBLE!!:
 - custom marks - e.g.custom shapes or images for points.
 - since data can be any iterable, should also allow tick values (when actually used since can be transformed by `values`) to be any iterable rather than just an array
 - end channels: front, facet (or row/column), ...
+
 
 ## Examples/Tests
 
