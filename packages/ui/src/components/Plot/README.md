@@ -2,19 +2,17 @@
 # TO DO
 
 - scales:
-  - allow `scales` to be function which takes the `data` prop (or passed down data) and returns an object so that can use the data to compoute the scales
+  - allow `scales` to be function which takes the `data` prop (or passed down data) and returns an object so that can use the data to compute the scales
   - shorthand for linear scales: e.g. `x={[10, 40]}`.
   - test with discrete scales
 - remove `strokeCap` from `Circle`
 - change to `values` as an accessor for things that consume tick values - treating as data is unintuitive even if is more powerful 
-- adapting to width changes - even if just 'redraw' the plot - prob with debounce
 - tooltip:
   - allow any action when trigger selected so can eg show a MUI tooltip
 - making \<XTitle> accept children is wrong/misleading since is adding contents SVG <text> not HTML elemnt
   - how do e.g. subscript? - could make it a foreign object and use HTML?
-- add marks: can easily add simple marks using the current `Mark`. Will need extend `Mark` to allow for 'compound marks' such as `Curve` that create a single mark from multiple rows. Can do this by adding a `compound` prop to `Mark` and branching on this where create the mark(s) 
+- add remaining marks: can easily add simple marks using the current `Mark`. Will need to extend `Mark` to allow for 'compound marks' such as `Line` that create a single mark from multiple rows. Can do this by adding a `compound` prop to `Mark` and branching on this where create the mark(s) 
 - implement `clip` prop on a mark to clip it to the panel - see https://stackoverflow.com/questions/17388689/svg-clippath-and-transformations
-- pass index to accessor functions - and all data values?
 - have not implemented `panelSize` prop?
 - if error because no `MapX` or `mapY` is it clear that missing scale is the reason?
 - legend
@@ -33,7 +31,7 @@ A vis provider is also required for interactive plots - even a single interactiv
 
 An individual plot is created with the `<Plot>` component. This creates its own context which makes the plot's data and options available to components inside the plot.
 
-Use the `responsive` prop of `Plot` (no value required) to for width of the plot to adapt to the parent container. Use `minWidth` and `maxWidth` to specify min and max widths for a responsive plot 
+Use the `responsive` prop of `Plot` (no value required) to have the width of the plot adapt to the parent container. Use `minWidth` and `maxWidth` to specify min and max widths for a responsive plot 
 
 > Note: Props for widths, heights, minimum widths etc. should not include units.
 
@@ -247,7 +245,6 @@ POSSIBLE!!:
 
 - use `data` of mark to filter data
 - multuple y-axis
-- use Frame for inlaid subplot?
 - have a before or after the axis title by using e.g. position="right", 
   overriding the textAnchor and using dx and dy
 - rotated labels, in this case x labels at bottom:
