@@ -1,7 +1,16 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
+import {
+  Link,
+  SectionItem,
+  ScientificNotation,
+  DisplayVariantId,
+  OtTable,
+  Tooltip,
+  ClinvarStars,
+  OtScoreLinearBar,
+} from "ui";
 import { Box, Chip } from "@mui/material";
-import { naLabel } from "../../constants";
+import { clinvarStarMap, naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
@@ -23,11 +32,11 @@ function getColumns({
 }: getColumnsType) {
   return [
     {
-      id: "view",
-      label: "Details",
-      renderCell: ({ studyLocusId }) => <Link to={`../credible-set/${studyLocusId}`}>view</Link>,
-      filterValue: false,
-      exportValue: false,
+      id: "studyLocusId",
+      label: "More details",
+      renderCell: ({ studyLocusId }) => (
+        <Link to={`../credible-set/${studyLocusId}`}>{studyLocusId}</Link>
+      ),
     },
     {
       id: "leadVariant",
@@ -151,26 +160,18 @@ function getColumns({
       exportValue: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3),
     },
     {
-      id: "ldr2",
-      label: "LD (r²)",
-      filterValue: false,
-      tooltip: (
-        <>
-          Linkage disequilibrium with the fixed page variant (
-          <DisplayVariantId
-            variantId={id}
-            referenceAllele={referenceAllele}
-            alternateAllele={alternateAllele}
-            expand={false}
-          />
-          ).
-        </>
-      ),
-      renderCell: ({ locus }) => {
-        const r2 = locus?.find(obj => obj.variant?.id === id)?.r2Overall;
-        if (typeof r2 !== "number") return naLabel;
-        return r2.toFixed(2);
+      id: "confidence",
+      label: "Confidence",
+      sortable: true,
+      renderCell: ({ confidence }) => {
+        if (!confidence) return naLabel;
+        return (
+          <Tooltip title={confidence} style="">
+            <ClinvarStars num={clinvarStarMap[confidence]} />
+          </Tooltip>
+        );
       },
+      filterValue: ({ confidence }) => clinvarStarMap[confidence],
     },
     {
       id: "finemappingMethod",
@@ -179,27 +180,28 @@ function getColumns({
     {
       id: "topL2G",
       label: "Top L2G",
-      filterValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
+      filterValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
       tooltip: "Top gene prioritised by our locus-to-gene model",
-      renderCell: ({ strongestLocus2gene }) => {
-        if (!strongestLocus2gene?.target) return naLabel;
-        const { target } = strongestLocus2gene;
+      renderCell: ({ l2Gpredictions }) => {
+        if (!l2Gpredictions[0]?.target) return naLabel;
+        const { target } = l2Gpredictions[0];
         return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
       },
-      exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
+      exportValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
     },
     {
       id: "l2gScore",
       label: "L2G score",
-      comparator: (rowA, rowB) =>
-        rowA?.strongestLocus2gene?.score - rowB?.strongestLocus2gene?.score,
+      comparator: (rowA, rowB) => rowA?.l2Gpredictions[0]?.score - rowB?.l2Gpredictions[0]?.score,
       sortable: true,
-      filterValue: false,
-      renderCell: ({ strongestLocus2gene }) => {
-        if (typeof strongestLocus2gene?.score !== "number") return naLabel;
-        return strongestLocus2gene.score.toFixed(3);
+      renderCell: ({ l2Gpredictions }) => {
+        if (!l2Gpredictions[0]?.score) return naLabel;
+        return (
+          <Tooltip title={l2Gpredictions[0].score.toFixed(3)} style="">
+            <OtScoreLinearBar variant="determinate" value={l2Gpredictions[0].score * 100} />
+          </Tooltip>
+        );
       },
-      exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.score,
     },
     {
       id: "credibleSetSize",
