@@ -86,7 +86,7 @@ function Body({ id, entity }: BodyProps) {
       renderCell: ({ genotypeId }) => genotypeId || naLabel,
     },
     {
-      id: "drug",
+      id: "drugs",
       label: "Drug(s)",
       renderCell: ({ drugs }) => {
         const drugsInfo = drugs.filter(d => d.drugId || d.drugFromSource);
@@ -109,7 +109,7 @@ function Body({ id, entity }: BodyProps) {
         drugs.map(d => `${d.drugFromSource ?? ""} ${d.drugId ?? ""}`).join(" "),
     },
     {
-      id: "drugResponse",
+      id: "genotypeAnnotationText",
       label: "Drug response phenotype",
       renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
         let phenotypeTextElement = <>phenotypeText</>;
@@ -128,7 +128,7 @@ function Body({ id, entity }: BodyProps) {
       filterValue: ({ phenotypeText }) => phenotypeText,
     },
     {
-      id: "drugResponseCategory",
+      id: "pgxCategory",
       label: "Drug response category",
       renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
       filterValue: ({ pgxCategory }) => pgxCategory,
@@ -182,6 +182,7 @@ function Body({ id, entity }: BodyProps) {
     },
     {
       id: "literature",
+      label: "Literature",
       renderCell: ({ literature }) => {
         const literatureList =
           literature?.reduce((acc, id) => {
@@ -222,7 +223,7 @@ function Body({ id, entity }: BodyProps) {
           dataDownloader
           sortBy="evidenceLevel"
           columns={columns}
-          rows={request.data?.pharmacogenomics}
+          rows={request.data?.variant.pharmacogenomics}
           query={PHARMACOGENOMICS_QUERY.loc.source.body}
           variables={variables}
           loading={request.loading}
