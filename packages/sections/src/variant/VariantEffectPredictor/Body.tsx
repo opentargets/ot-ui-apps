@@ -106,15 +106,9 @@ const columns = [
       if (codons) {
         const tooltipContent = (
           <>
-            {codons && (
-              <>
-                <b>Trancript consequence:</b>
-                <br />
-                {codons}
-                <br />
-              </>
-            )}
-            <b>Protein:</b>
+            <b>Trancript consequence:</b>
+            <br />
+            {codons}
             <br />
           </>
         );
