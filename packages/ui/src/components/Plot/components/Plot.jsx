@@ -25,7 +25,6 @@ function ResponsivePlot({ children }) {
   const { minWidth, maxWidth } = plot;
 
   const divStyle = {};
-  console.log(minWidth);
   if (minWidth != null) divStyle.minWidth = `${minWidth}px`;
   if (maxWidth != null) divStyle.maxWidth = `${maxWidth}px`;
 

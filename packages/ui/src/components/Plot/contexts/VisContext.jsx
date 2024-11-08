@@ -8,7 +8,7 @@ export function VisProvider({ children, data = null }) {
   
   const initialState = { 
     data,
-    selected: {},  // individual points that are selected
+    tooltip: null,
   };
 
   const [state, stateDispatch] = useReducer(reducer, initialState);
@@ -33,18 +33,17 @@ export function useVisDispatch() {
 // data reducer
 function reducer(state, action) {
   
-  // switch(action.type) {
+  switch(action.type) {
 
-    // case 'select': {
-    //   const newState = {};
-    //   newState.selected[action.] = action.data;
-    //   }
-    // }
+    case 'tooltip': {
+      const newState = { ...state };
+      newState.tooltip = action.data;
+      return newState;
+    }
 
-  // }
+  }
 
-  // !! IF ACTION REPLACES DATA, SET selected TO {} - AND ANY OTHER
-  // INTERACTION IBJECTS THAT INTRODUCE
+  // !! IF ACTION REPLACES DATA, SET tooltip TO {} - AND ANY OTHER
+  // INTERACTION OBJECTS THAT INTRODUCE
   
-  // return newState;
 }

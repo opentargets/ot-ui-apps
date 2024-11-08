@@ -12,7 +12,7 @@
   - allow any action when trigger selected so can eg show a MUI tooltip
 - making \<XTitle> accept children is wrong/misleading since is adding contents SVG <text> not HTML elemnt
   - how do e.g. subscript? - could make it a foreign object and use HTML?
-- add marks
+- add marks: can easily add simple marks using the current `Mark`. Will need extend `Mark` to allow for 'compound marks' such as `Curve` that create a single mark from multiple rows. Can do this by adding a `compound` prop to `Mark` and branching on this where create the mark(s) 
 - implement `clip` prop on a mark to clip it to the panel - see https://stackoverflow.com/questions/17388689/svg-clippath-and-transformations
 - pass index to accessor functions - and all data values?
 - have not implemented `panelSize` prop?

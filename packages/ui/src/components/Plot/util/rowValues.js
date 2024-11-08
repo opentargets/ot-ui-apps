@@ -2,6 +2,7 @@ import { scaleValue } from "./scaleValue";
 import { noInfiniteOrNaN } from "./assert";
 
 export function rowValues({
+      rowIndex,
       rowData,
       missing,
       finalAccessors,
@@ -15,7 +16,7 @@ export function rowValues({
   for (const [channel, accessor] of finalAccessors) {
     let value = accessor;
     if (typeof accessor === 'function') {
-      value = accessor(rowData);
+      value = accessor(rowData, rowIndex);
       noInfiniteOrNaN(value, channel);
     }
     if (value == null) {

@@ -12,6 +12,7 @@ export const channelDefaults = {
   strokeWidth: 0,  // !! MUST SET STROKE WIDTHS TO SEE LINES !!
   strokeCap: null,
   strokeDash: null,
+  tooltip: null,
 
   // special - only used by one/few marks
   xx: 0,               // HBar, Segment, HLink, VLink, Edge, VBand
