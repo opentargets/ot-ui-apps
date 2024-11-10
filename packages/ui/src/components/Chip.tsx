@@ -19,7 +19,7 @@ type ChipProps = {
   title?: string;
 };
 
-export default function Chip({ className, label, title, disabled }: ChipProps) {
+export default function Chip({ className, label, title, disabled }: ChipProps): ReactElement {
   const classes = useStyles();
   return (
     <MUIChip
