@@ -1,7 +1,13 @@
 import Mark from "./Mark";
 
-export default function Circle({ data, missing = 'throw', ...accessors }) {
-  
+export default function Circle({
+      data,
+      dataFrom,
+      missing = 'throw',
+      hover,
+      ...accessors
+    }) {
+
   const markChannels = [
     'x',
     'y',
@@ -13,12 +19,13 @@ export default function Circle({ data, missing = 'throw', ...accessors }) {
     'strokeOpacity',
     'strokeWidth',
     'strokeCap',
-    'strokeDash',
+    'strokeDasharray',
     'area',
   ];
 
-  let key = 0;
-  function createMark(row) {
+  const tagName = 'circle';
+  
+  function createAttrs(row) {
     const attrs = {
       cx: row.x + row.dx,
       cy: row.y + row.dy,
@@ -30,10 +37,19 @@ export default function Circle({ data, missing = 'throw', ...accessors }) {
       strokeWidth: row.strokeWidth,
     };
     if (row.strokeCap) attrs.strokeCap = row.strokeCap;
-    if (row.strokeDash) attrs.strokeDash = row.strokeDash;
-    // eslint-disable-next-line
-    return <circle key={key++} {...attrs} />
+    if (row.strokeDasharray) attrs.strokeDasharray = row.strokeDasharray;
+    return attrs;
   }
   
-  return <Mark {...{ data, missing, accessors, markChannels, createMark }} />;
+  return <Mark {...{
+    data,
+    dataFrom,
+    missing,
+    hover,
+    accessors,
+    tagName,
+    markChannels,
+    createAttrs,
+  }} />;
+
 }

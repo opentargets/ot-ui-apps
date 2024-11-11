@@ -1,6 +1,12 @@
 import Mark from "./Mark";
 
-export default function Segment({ data, missing = 'throw', ...accessors }) {
+export default function Segment({
+      data,
+      dataFrom,
+      missing = 'throw',
+      hover,
+      ...accessors
+    }) {
 
   const markChannels = [
     'x',
@@ -13,11 +19,12 @@ export default function Segment({ data, missing = 'throw', ...accessors }) {
     'strokeOpacity',
     'strokeWidth',
     'strokeCap',
-    'strokeDash',
+    'strokeDasharray',
   ];
 
-  let key = 0;
-  function createMark(row) {
+  const tagName = 'line';
+
+  function createAttrs(row) {
     const attrs = {
       x1: row.x + row.dx,
       y1: row.y + row.dy,
@@ -28,10 +35,19 @@ export default function Segment({ data, missing = 'throw', ...accessors }) {
       strokeWidth: row.strokeWidth,
     };
     if (row.strokeCap) attrs.strokeCap = row.strokeCap;
-    if (row.strokeDash) attrs.strokeDash = row.strokeDash;
-    // eslint-disable-next-line
-    return <line key={key++} {...attrs} />
+    if (row.strokeDasharray) attrs.strokeDasharray = row.strokeDasharray;
+    return attrs;
   }
   
-  return <Mark {...{ data, missing, accessors, markChannels, createMark }} />;
+  return <Mark {...{
+    data,
+    dataFrom,
+    missing,
+    hover,
+    accessors,
+    tagName,
+    markChannels,
+    createAttrs,
+  }} />;
+
 }

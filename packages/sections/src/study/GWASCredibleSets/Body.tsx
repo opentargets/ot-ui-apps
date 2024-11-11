@@ -16,6 +16,7 @@ import {
   XGrid,
   Circle,
   Segment,
+  VisProvider,
 } from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
@@ -197,54 +198,72 @@ function ManhattanPlot({ data }) {
   const markColor = '#3489ca';
 
   return (
-    <Plot
-      responsive
-      height="360"
-      padding={{ top: 40, right: 10, bottom: 40, left: 80 }}
-      data={data}
-      yReverse
-      scales={{
-        x: d3.scaleLinear().domain([0, genomeLength]),
-        y: d3.scaleLog().domain([pValueMin, pValueMax]),
-      }}
-      xTick={chromosomeInfo}
-    >
-      <XTick
-        values={tickData => tickData.map(chromo => chromo.start)} tickLength={15}/>
-      <XAxis />
-      <XLabel 
-        values={tickData => tickData.map(chromo => chromo.midpoint)}
-        format={(_, i, __, tickData) => tickData[i].chromosome}
-        padding={6}
-      />
-      <XGrid values={tickData => tickData.map(chromo => chromo.start)} stroke="#cecece" strokeDasharray="3 4"/>
-      <XTitle fontSize={10} position="top" align="left" textAnchor="end" padding={14}>
-        -log_10(pValue)
-      </XTitle>
-      <YAxis />
-      <YTick />
-      <YLabel format={v => -Math.log10(v)} />
-      <Segment
-        x={d => genomePositions[d.variant.id]}
-        xx={d => genomePositions[d.variant.id]}
-        y={pValue}
-        yy={pValueMax}
-        fill="transparent"
-        stroke={markColor}
-        strokeWidth={1}
-        strokeOpacity={0.7}
-        area={24}
-      />
-      <Circle
-        x={d => genomePositions[d.variant.id]}
-        y={pValue}
-        fill={background}
-        fillOpacity={1}
-        stroke={markColor}
-        strokeWidth={1.2}
-        area={24}
-      />
-    </Plot>
+    // <VisProvider data={data}>
+      <Plot
+        responsive
+        // width={700}
+        height="360"
+        padding={{ top: 40, right: 10, bottom: 40, left: 80 }}
+        data={data}
+        yReverse
+        scales={{
+          x: d3.scaleLinear().domain([0, genomeLength]),
+          y: d3.scaleLog().domain([pValueMin, pValueMax]),
+        }}
+        xTick={chromosomeInfo}
+      >
+        <XTick
+          values={tickData => tickData.map(chromo => chromo.start)} tickLength={15}/>
+        <XAxis />
+        <XLabel 
+          values={tickData => tickData.map(chromo => chromo.midpoint)}
+          format={(_, i, __, tickData) => tickData[i].chromosome}
+          padding={6}
+        />
+        <XGrid values={tickData => tickData.map(chromo => chromo.start)} stroke="#cecece" strokeDasharray="3 4"/>
+        <XTitle fontSize={10} position="top" align="left" textAnchor="end" padding={14}>
+          -log_10(pValue)
+        </XTitle>
+        <YAxis />
+        <YTick />
+        <YLabel format={v => -Math.log10(v)} />
+        <Segment
+          x={d => genomePositions[d.variant.id]}
+          xx={d => genomePositions[d.variant.id]}
+          y={pValue}
+          yy={pValueMax}
+          fill="transparent"
+          stroke={markColor}
+          strokeWidth={1}
+          strokeOpacity={0.7}
+          area={24}
+          // hover
+        />
+        <Circle
+          x={d => genomePositions[d.variant.id]}
+          y={pValue}
+          fill={background}
+          fillOpacity={1}
+          stroke={markColor}
+          strokeWidth={1.2}
+          area={24}
+          // hover
+        />
+
+        {/* HOVER TETST */}
+        {/* <Circle
+          dataFrom="hover"
+          x={d => genomePositions[d.variant.id]}
+          y={pValue}
+          fill={markColor}
+          fillOpacity={1}
+          stroke={markColor}
+          strokeWidth={1.2}
+          area={64}
+        /> */}
+
+      </Plot>
+    // </VisProvider>
   );
 }
 
@@ -293,9 +312,12 @@ const genomeLength = chromosomeInfo.at(-1).end;
 
 
 /* ========== TO DO ============================================================
-- orob want plot title e.g. "pValue and position of lead variant of each creidble set"
+- prob want plot title e.g. "pValue and position of lead variant of each creidble set"
 - only import d3 functions that need
 - use subscript for log_10 in x-title
+- ideally the circles should show through each other but give circles bgrd colored
+  so cannot see end off segment in middle of circle - so make segments end at btm of
+  circle 
 - show skeleton when plot loading?
 - does Manhattan plot need extra props such as loading?
   - poss abstract into a PlotWrapper component? - careful as I think already a

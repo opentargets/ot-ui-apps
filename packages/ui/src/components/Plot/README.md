@@ -1,11 +1,11 @@
 
 # TO DO
-
+- vis provider: use separate contexts for setting and getting the selected data - and have standard (can set selected data) and 'reactive' (can consume selected data) to avoid rerendering all marks on e.g. hover. (and remove any senseless memoing!)
 - scales:
   - allow `scales` to be function which takes the `data` prop (or passed down data) and returns an object so that can use the data to compute the scales
   - shorthand for linear scales: e.g. `x={[10, 40]}`.
   - test with discrete scales
-- remove `strokeCap` from `Circle`
+- remove `strokeDashArray` from `Circle`?
 - change to `values` as an accessor for things that consume tick values - treating as data is unintuitive even if is more powerful 
 - tooltip:
   - allow any action when trigger selected so can eg show a MUI tooltip
@@ -16,6 +16,7 @@
 - have not implemented `panelSize` prop?
 - if error because no `MapX` or `mapY` is it clear that missing scale is the reason?
 - legend
+- wrap axis, ticks, ... components in memo - so only change when their props change. They will still change when/if the contexts they use change anyway (as they should)
   
 --------
 
@@ -211,7 +212,8 @@ Notes:
 - `ResposiveContainer` is currently only respsonsive on horizontal changes
 - `responsive` prop:
   - currently only repsonsive for width, but easy to make responsive on height since could use same pattern as for width and the `updateSize` action used with the plot context already handles height changes
-  - adds an unstyled wrapper div (except for possibly min and max widths) which may be too simple for some situations.
+  - better design would be to separate dimensions and allow `width="responsive"` and `height="responsive"`
+  - adds an unstyled wrapper div (except for possibly min and max widths) which may be too simple for some situations. 
 
 Add to docs above
 - padding (on axis, ticks, ...) pushes them away from panel whereas dx,dy props are always in pixels and +ve x to right, +ve y downwards
@@ -239,7 +241,6 @@ POSSIBLE!!:
 - custom marks - e.g.custom shapes or images for points.
 - since data can be any iterable, should also allow tick values (when actually used since can be transformed by `values`) to be any iterable rather than just an array
 - end channels: front, facet (or row/column), ...
-
 
 ## Examples/Tests
 
