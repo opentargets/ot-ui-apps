@@ -1,4 +1,4 @@
-import { Grid, Typography, Hidden, Box, useMediaQuery } from "@mui/material";
+import { Grid, Typography, Hidden, Box, useMediaQuery, Chip } from "@mui/material";
 
 import { makeStyles, useTheme } from "@mui/styles";
 import { Helmet } from "react-helmet";
@@ -13,6 +13,10 @@ import {
   faQuestionCircle,
   faFileAlt,
   faCommentDots,
+  faStethoscope,
+  faDna,
+  faPrescriptionBottleMedical,
+  faMapPin,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   appTitle,
@@ -26,7 +30,6 @@ import Splash from "./Splash";
 import Version from "./Version";
 
 import config from "../../config";
-import { getSuggestedSearch } from "../../utils/global";
 
 const useStyles = makeStyles(() => ({
   links: {
@@ -112,8 +115,62 @@ function HomePage({ suggestions }) {
         <HomeBox>
           <GlobalSearch isHomePage />
           {/* Search examples */}
-          <Grid className={classes.links} container justifyContent="space-around">
-            <Link to={`/target/${suggestions[0].id}/associations`}>{suggestions[0].name}</Link>
+          <Grid
+            className={classes.links}
+            container
+            justifyContent="center"
+            gap={1.5}
+            sx={{ mt: 4 }}
+          >
+            <Chip
+              sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+              icon={<FontAwesomeIcon size="md" icon={faDna} />}
+              label={suggestions[0].name}
+            />
+            <Chip
+              sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+              icon={<FontAwesomeIcon size="md" icon={faDna} />}
+              label={suggestions[1].name}
+            />
+            <Chip
+              sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+              icon={<FontAwesomeIcon size="md" icon={faStethoscope} />}
+              label={suggestions[2].name}
+            />
+            <Chip
+              sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+              icon={<FontAwesomeIcon size="md" icon={faStethoscope} />}
+              label={suggestions[3].name}
+            />
+            <Chip
+              sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+              icon={<FontAwesomeIcon size="md" icon={faPrescriptionBottleMedical} />}
+              label={suggestions[4].name}
+            />
+            <Chip
+              sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+              icon={<FontAwesomeIcon size="md" icon={faPrescriptionBottleMedical} />}
+              label={suggestions[5].name}
+            />
+
+            <Chip
+              sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+              icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
+              label={suggestions[6].name}
+            />
+            <Chip
+              sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+              icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
+              label={suggestions[7].name}
+            />
+            <Chip
+              sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+              icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
+              label={suggestions[8].name}
+            />
+
+            {/* <Link to={`/target/${suggestions[0].id}/associations`}>{suggestions[0].name}</Link>
+
             <Hidden smDown>
               <Link to={`/target/${suggestions[1].id}/associations`}>{suggestions[1].name}</Link>
             </Hidden>
@@ -134,11 +191,11 @@ function HomePage({ suggestions }) {
             <Hidden smDown>
               <Link to={`/variant/${suggestions[7].id}`}>{suggestions[7].name}</Link>
             </Hidden>
-   
-            <Link to={`/variant/${suggestions[8].id}`}>{suggestions[8].name}</Link>
+
+            <Link to={`/variant/${suggestions[8].id}`}>{suggestions[8].name}</Link> */}
           </Grid>
           <Version releaseNotesURL="http://home.opentargets.org/ppp-release-notes" />
-          <div className={classes.dataPolicy}>
+          {/* <div className={classes.dataPolicy}>
             <Typography variant="body2" display="block" align="center" gutterBottom>
               The Open Targets Partner Preview Platform is provided exclusively to Open Targets
               consortium members. All data and results of queries must remain confidential and must
@@ -162,7 +219,7 @@ function HomePage({ suggestions }) {
                 </Link>
               </strong>
             </Typography>
-          </div>
+          </div> */}
         </HomeBox>
 
         {/* scroll down button */}
