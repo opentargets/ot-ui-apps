@@ -1,7 +1,7 @@
 const id = "variant_effect_predictor";
 export const definition = {
   id,
-  name: "Variant Effect Predictor (VEP)",
-  shortName: "VE",
+  name: "Transcript consequences",
+  shortName: "TC",
   hasData: data => data?.transcriptConsequences?.length > 0,
 };

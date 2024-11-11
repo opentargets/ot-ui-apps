@@ -119,7 +119,7 @@ function DepmapPlot({ data, width }) {
             textPadding: 10,
             format: {
               fill: false,
-              cellLineName: d => d + "\n\n",
+              cellLineName: true,
               diseaseFromSource: true,
               x: false,
               y: false,

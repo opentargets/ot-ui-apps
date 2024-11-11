@@ -5,6 +5,11 @@ query GWASCredibleSetsQuery($variantId: String!) {
     alternateAllele
     credibleSets(studyTypes: [gwas], page: { size: 2000, index: 0 }) {
       studyLocusId
+      pValueMantissa
+      pValueExponent
+      beta
+      finemappingMethod
+      confidence
       variant {
         id
         chromosome
@@ -20,9 +25,6 @@ query GWASCredibleSetsQuery($variantId: String!) {
           id
         }
       }
-      pValueMantissa
-      pValueExponent
-      beta
       locus {
         variant {
           id
@@ -30,8 +32,7 @@ query GWASCredibleSetsQuery($variantId: String!) {
         r2Overall
         posteriorProbability
       }
-      finemappingMethod
-      strongestLocus2gene {
+      l2Gpredictions(size: 1) {
         target {
           id
           approvedSymbol

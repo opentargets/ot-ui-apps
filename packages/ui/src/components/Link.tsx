@@ -43,9 +43,9 @@ type LinkProptypes = {
   className?: string;
   to: string;
   onClick?: () => void | null;
-  external: boolean;
+  external?: boolean;
   newTab?: boolean;
-  footer: boolean;
+  footer?: boolean;
   tooltip?: unknown;
   children: ReactNode;
   ariaLabel?: string;

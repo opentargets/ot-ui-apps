@@ -2,7 +2,14 @@ import { makeStyles } from "@mui/styles";
 import { Tooltip as MUITooltip } from "@mui/material";
 import { merge } from "lodash";
 
-function Tooltip({ style, children, title, showHelpIcon = false, placement = "top", ...props }) {
+function Tooltip({
+  style = "",
+  children,
+  title,
+  showHelpIcon = false,
+  placement = "top",
+  ...props
+}) {
   const classes = makeStyles(theme =>
     merge(style, {
       tooltip: {
