@@ -27,6 +27,7 @@ const evidenceSections = new Map([
   ["ot_crispr_validation", lazy(() => import("sections/src/evidence/OTValidation/Body"))],
   ["uniprot_literature", lazy(() => import("sections/src/evidence/UniProtLiterature/Body"))],
   ["uniprot_variants", lazy(() => import("sections/src/evidence/UniProtVariants/Body"))],
+  ["gwas_credible_sets", lazy(() => import("sections/src/evidence/GWASCredibleSets/Body"))],
 ]);
 
 export default evidenceSections;
