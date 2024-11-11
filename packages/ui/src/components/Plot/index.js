@@ -1,4 +1,8 @@
-export { VisProvider, useVis } from "./contexts/VisContext";
+export {
+  VisProvider,
+  useVisSelection,
+  useVisUpdateSelection,
+} from "./contexts/VisContext";
 export { default as Frame } from "./components/XAxis";
 export { default as Panel } from "./components/Panel";
 export { default as Plot } from "./components/Plot";

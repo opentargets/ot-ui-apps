@@ -1,38 +1,39 @@
-
 import { createContext, useContext, useState, useCallback } from 'react';
-import { OTHER } from '../util/constants';
 
-const VisContext = createContext(null);
+const SelectionContext = createContext(null);
+const UpdateSelectionContext = createContext(null);
 
-export function VisProvider({ children, data = null }) {
-  
-  let setData;
-  // eslint-disable-next-line
-  [data, setData] = useState(data);
-
-  // use a getter function for selection so only components that depend on
-  // selection rerender when it changes
-  const [_selection, _setSelection] = useState({ hover: {} });
-  
-  const getSelection = useCallback((selectionType, selectionLabel = OTHER) => {
-    return _selection[selectionType][selectionLabel];
-  }, [_selection]);
-  const setSelection = useCallback(
+export function VisProvider({ children }) {
+  const [selection, setSelection] = useState({ hover: {} });
+  const updateSelection = useCallback(
     (selectionType, selectionLabel, selectionData) => {
-      const newSelection = { ..._selection };
-      newSelection[selectionType][selectionLabel] = selectionData;
-      _setSelection(newSelection);
+      const newSelection = { ...selection };
+      if (selectionType === 'hover') {
+        const currentData = newSelection[selectionType][selectionLabel];
+        if (currentData === selectionData ||
+            currentData?.[0] === selectionData?.[0]) {
+          return;
+        }
+        newSelection[selectionType][selectionLabel] = selectionData;
+        setSelection(newSelection);
+      }
     },
-    [_selection, _setSelection]
+    []
   );
 
   return (
-    <VisContext.Provider value={{ data, setData, getSelection, setSelection }}>
-      {children}
-    </VisContext.Provider>
+    <SelectionContext.Provider value={selection}>
+      <UpdateSelectionContext.Provider value={updateSelection}>
+        {children}
+      </UpdateSelectionContext.Provider>
+    </SelectionContext.Provider>
   );
 }
- 
-export function useVis() {
-  return useContext(VisContext);
+
+export function useVisSelection() {
+  return useContext(SelectionContext);
+}
+
+export function useVisUpdateSelection() {
+  return useContext(UpdateSelectionContext);
 }

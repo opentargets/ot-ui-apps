@@ -1,6 +1,5 @@
 
 # TO DO
-- vis provider: use separate contexts for setting and getting the selected data - and have standard (can set selected data) and 'reactive' (can consume selected data) to avoid rerendering all marks on e.g. hover. (and remove any senseless memoing!)
 - scales:
   - allow `scales` to be function which takes the `data` prop (or passed down data) and returns an object so that can use the data to compute the scales
   - shorthand for linear scales: e.g. `x={[10, 40]}`.
@@ -17,6 +16,7 @@
 - if error because no `MapX` or `mapY` is it clear that missing scale is the reason?
 - legend
 - wrap axis, ticks, ... components in memo - so only change when their props change. They will still change when/if the contexts they use change anyway (as they should)
+- import local files from index where can to clean up
   
 --------
 
@@ -241,6 +241,7 @@ POSSIBLE!!:
 - custom marks - e.g.custom shapes or images for points.
 - since data can be any iterable, should also allow tick values (when actually used since can be transformed by `values`) to be any iterable rather than just an array
 - end channels: front, facet (or row/column), ...
+- larger capture zone for hover/selection of mark
 
 ## Examples/Tests
 

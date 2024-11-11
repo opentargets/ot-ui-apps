@@ -1,8 +1,6 @@
 
 import { createContext, useContext, useReducer } from 'react';
-import { useVis } from './VisContext';
 import { safeAssign } from '../util/helpers';
-import { finalData } from '../util/finalData';
 import { plotDefaults } from '../defaults/plotDefaults';
 import { addXYMaps } from '../util/addXYMaps';
 import { onlyValidScales } from '../util/assert';
@@ -12,9 +10,7 @@ const PlotDispatchContext = createContext(null);
 
 export function PlotProvider({ children, options }) {
 
-  const vis = useVis();
   const initialState = safeAssign({ ...plotDefaults }, options);
-  initialState.data = finalData(vis?.data, initialState.data);
 
   // compute values related to plot size and panel spacing
   let { padding } = initialState;
@@ -46,7 +42,6 @@ export function usePlotDispatch() {
   return useContext(PlotDispatchContext);
 }
 
-// data reducer
 function reducer(state, action) {
 
   switch(action.type) {

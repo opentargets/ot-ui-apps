@@ -198,7 +198,7 @@ function ManhattanPlot({ data }) {
   const markColor = '#3489ca';
 
   return (
-    // <VisProvider data={data}>
+    <VisProvider>
       <Plot
         responsive
         // width={700}
@@ -237,7 +237,7 @@ function ManhattanPlot({ data }) {
           strokeWidth={1}
           strokeOpacity={0.7}
           area={24}
-          // hover
+          hover
         />
         <Circle
           x={d => genomePositions[d.variant.id]}
@@ -247,11 +247,11 @@ function ManhattanPlot({ data }) {
           stroke={markColor}
           strokeWidth={1.2}
           area={24}
-          // hover
+          hover
         />
 
         {/* HOVER TETST */}
-        {/* <Circle
+        <Circle
           dataFrom="hover"
           x={d => genomePositions[d.variant.id]}
           y={pValue}
@@ -259,11 +259,11 @@ function ManhattanPlot({ data }) {
           fillOpacity={1}
           stroke={markColor}
           strokeWidth={1.2}
-          area={64}
-        /> */}
+          area={24}
+        />
 
       </Plot>
-    // </VisProvider>
+    </VisProvider>
   );
 }
 
