@@ -2,7 +2,6 @@
 # TO DO
 - scales:
   - allow `scales` to be function which takes the `data` prop (or passed down data) and returns an object so that can use the data to compute the scales
-  - shorthand for linear scales: e.g. `x={[10, 40]}`.
   - test with discrete scales
 - remove `strokeDashArray` from `Circle`?
 - change to `values` as an accessor for things that consume tick values - treating as data is unintuitive even if is more powerful 
@@ -202,6 +201,7 @@ Add to docs above
 - API: components and props
 
 POSSIBLE!!:
+- shorthand for linear scales: e.g. `x={[10, 40]}` - but then need to include d3 as dependency of the plot components - not so bad since clearly require d3 somehow if require d3 scales!
 - border and cornerradius for the plot? - just as have for the panel
 - ? HTML inserts - for tooltip, titles, insets, ...?
   - could have an HTML mark?

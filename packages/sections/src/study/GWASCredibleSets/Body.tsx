@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client";
+import { Skeleton, useTheme } from "@mui/material";
 import {
   Link,
   SectionItem,
@@ -16,15 +17,13 @@ import {
   XGrid,
   Circle,
   Segment,
-  Text,
-  Vis,
 } from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
-import * as d3 from "d3";
+import { scaleLinear, scaleLog, min } from "d3";
 
 const columns = [
   {
@@ -150,7 +149,10 @@ function Body({ id, entity }: BodyProps) {
       renderDescription={() => <Description studyId={request.data?.gwasStudy[0].studyId} />}
       renderBody={() => (
         <>
-          <ManhattanPlot data={request.data?.gwasStudy[0].credibleSets} />
+          <ManhattanPlot
+            loading={request.loading}
+            data={request.data?.gwasStudy[0].credibleSets}
+          />
           <OtTable
             dataDownloader
             showGlobalFilter
@@ -174,123 +176,93 @@ export default Body;
 
 // ========== Manhattan plot ==========
 
-// currently inefficient since finds correct chromosome
-function cumulativePosition({ chromosome, position }) {
-  return chromosomeInfo.find(elmt => elmt.chromosome === chromosome).start + position;
-}
-
 function pValue(row) {
   return row.pValueMantissa * 10 ** row.pValueExponent;
 }
 
-function ManhattanPlot({ data }) {
+function ManhattanPlot({ loading, data }) {
+  
+  const plotHeight = 380;
+  const theme = useTheme();
+  const background = theme.palette.background.paper;
+  const markColor = theme.palette.primary.main;
+  const fontFamily = theme.typography.fontFamily;
+  const circleArea = 24;
 
+  if (loading) return <Skeleton height={plotHeight} />;
   if (data == null) return null;
+
+  const pValueMin = min(data, pValue);
+  const pValueMax = 1;
 
   const genomePositions = {};
   data.forEach(({ variant }) => {
     genomePositions[variant.id] = cumulativePosition(variant);
   });
 
-  const pValueMin = d3.min(data, pValue);
-  const pValueMax = 1;
-
-  const background = '#fff';
-  const markColor = '#3489ca';
-
   return (
-    <Vis>
-      <Plot
-        responsive
-        // width={700}
-        height="360"
-        padding={{ top: 40, right: 10, bottom: 40, left: 80 }}
-        data={data}
-        yReverse
-        scales={{
-          x: d3.scaleLinear().domain([0, genomeLength]),
-          y: d3.scaleLog().domain([pValueMin, pValueMax]),
-        }}
-        xTick={chromosomeInfo}
-      >
-        <XTick
-          values={tickData => tickData.map(chromo => chromo.start)} tickLength={15}/>
-        <XAxis />
-        <XLabel 
-          values={tickData => tickData.map(chromo => chromo.midpoint)}
-          format={(_, i, __, tickData) => tickData[i].chromosome}
-          padding={6}
-        />
-        <XGrid values={tickData => tickData.map(chromo => chromo.start)} stroke="#cecece" strokeDasharray="3 4"/>
-        <XTitle fontSize={10} position="top" align="left" textAnchor="end" padding={14}>
-          -log_10(pValue)
-        </XTitle>
-        <YAxis />
-        <YTick />
-        <YLabel format={v => -Math.log10(v)} />
-        <Segment
-          x={d => genomePositions[d.variant.id]}
-          xx={d => genomePositions[d.variant.id]}
-          y={pValue}
-          yy={pValueMax}
-          fill="transparent"
-          stroke={markColor}
-          strokeWidth={1}
-          strokeOpacity={0.7}
-          area={24}
-          hover
-        />
-        <Circle
-          x={d => genomePositions[d.variant.id]}
-          y={pValue}
-          fill={background}
-          stroke={markColor}
-          strokeWidth={1.2}
-          area={30}
-          hover
-        />
-
-        {/* HOVER TETST */}
-        <Segment
-          dataFrom="hover"
-          x={d => genomePositions[d.variant.id]}
-          xx={d => genomePositions[d.variant.id]}
-          y={pValue}
-          yy={pValueMax}
-          fill="transparent"
-          stroke={markColor}
-          strokeWidth={1.7}
-          strokeOpacity={0.7}
-          area={24}
-          hover
-        />
-        <Circle
-          dataFrom="hover"
-          x={d => genomePositions[d.variant.id]}
-          y={pValue}
-          fill={markColor}
-          area={64}
-        />
-        <Text
-          dataFrom={"hover"}
-          x={d => genomePositions[d.variant.id]}
-          y={pValue}
-          dy={-14}
-          fontSize={12}
-          fontWeight={700}
-          text={d => d.variant.id}
-          fill={markColor}
-        />
-
-      </Plot>
-    </Vis>
+    <Plot
+      responsive
+      height={plotHeight}
+      padding={{ top: 60, right: 40, bottom: 40, left: 60 }}
+      fontFamily={fontFamily}
+      data={data}
+      yReverse
+      scales={{
+        x: scaleLinear().domain([0, genomeLength]),
+        y: scaleLog().domain([pValueMin, pValueMax]),
+      }}
+      xTick={chromosomeInfo}
+    >
+      <XTick
+        values={tickData => [0, ...tickData.map(chromo => chromo.end)]}
+        tickLength={15}
+      />
+      <XAxis />
+      <XLabel
+        values={tickData => tickData.map(chromo => chromo.midpoint)}
+        format={(_, i, __, tickData) => tickData[i].chromosome}
+        padding={5}
+      />
+      <XGrid 
+        values={tickData => tickData.map(chromo => chromo.end)}
+        stroke="#cecece"
+        strokeDasharray="3 4"
+      />
+      <XTitle fontSize={14} position="top" align="left" padding={30} dx={-30}>
+        <tspan fontStyle="italic">-log
+          <tspan fontSize="11" dy="5">10</tspan>
+          <tspan dy="-5">(pValue)</tspan>
+        </tspan>
+        {" "}of lead variants
+      </XTitle>
+      <YAxis />
+      <YTick />
+      <YLabel format={v => -Math.log10(v)} />
+      <Segment
+        x={d => genomePositions[d.variant.id]}
+        xx={d => genomePositions[d.variant.id]}
+        y={pValue}
+        yy={pValueMax}
+        stroke={markColor}
+        strokeWidth={1}
+        strokeOpacity={0.7}
+      />
+      <Circle
+        x={d => genomePositions[d.variant.id]}
+        y={pValue}
+        fill={background}
+        stroke={markColor}
+        strokeWidth={1.2}
+        area={circleArea}
+      />
+    </Plot>
   );
 }
 
 
 // ========== chromosome lengths ==========
 
-// !! MOVE THIS TO A DIFFERENT FILE WHEN DONE !!
 // from: https://www.ncbi.nlm.nih.gov/grc/human/data
 // (first tab: "Chromosome lengths")
 const chromosomeInfo = [
@@ -320,7 +292,6 @@ const chromosomeInfo = [
   { chromosome: 'Y',  length: 57227415  },
 ];
 
-// const cumulativeLengths = [...d3.cumsum(chromosomeInfo, d => d.length)];
 chromosomeInfo.forEach((chromo, i) => {
   chromo.start = chromosomeInfo[i-1]?.end ?? 0;
   chromo.end = chromo.start + chromo.length;
@@ -329,21 +300,11 @@ chromosomeInfo.forEach((chromo, i) => {
 
 const genomeLength = chromosomeInfo.at(-1).end;
 
+const chromosomeInfoMap = new Map(
+  chromosomeInfo.map(obj => [ obj.chromosome, obj ])
+);
 
+function cumulativePosition({ chromosome, position }) {
+  return chromosomeInfoMap.get(chromosome).start + position;
+}
 
-/* ========== TO DO ============================================================
-- prob want plot title e.g. "pValue and position of lead variant of each creidble set"
-- only import d3 functions that need
-- use subscript for log_10 in x-title
-- ideally the circles should show through each other but give circles bgrd colored
-  so cannot see end off segment in middle of circle - so make segments end at btm of
-  circle 
-- show skeleton when plot loading?
-- does Manhattan plot need extra props such as loading?
-  - poss abstract into a PlotWrapper component? - careful as I think already a
-    component called this in the platform
-- need to filter data in case no lead variant - cred set shold always have a lead var?
-- ignore data that uses chromo 23 or 24 - see dochoa slack 7/11/24
-- ignore data with no pValue - need to check at top level and within variant?
-- properly handle removal of strongestLocusToGene in table in separate PR
-*/
