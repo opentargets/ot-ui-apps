@@ -20,11 +20,11 @@
   
 --------
 
-## Vis Provider
+## Vis
 
-If drawing multiple related plots, wrap them in a `<VisProvider>`. This provides a single location where data for the plots can be added.
+For an interactive plot - e.g. to use the §hover§ prop of marks - wrap the plot in a `<Vis>` component. This provides a context which is used internally to set and access selected data.
 
-A vis provider is also required for interactive plots - even a single interactive plot. For multi-plot visualisations, the vis provider makes it easy to e.g. hover on a point in one plot and highlight the corresponding points in the other plots. It's also fine to include non-plot content in the provider - this content can import and use the context provided by `VisProvider` like any other React context.
+We can also wrap multiple plots in a single `Vis` component to coordinate interaction across the plots. For example, hovering on a point in one plot and highlight the corresponding point in another plot. It's also possible to include non-plot content in the `Vis`. In this case the `useVisSelection` and `useVisUpdateSelection` hooks can be used explicitly to get/set selected data.
 
 > Note: CSS should be used to layout groups of plots - flex or grid is typically the most useful.
 
@@ -38,43 +38,15 @@ Use the `responsive` prop of `Plot` (no value required) to have the width of the
 
 ## Frame
 
-Use a `Frame` to use different scales (for the same channel) on the same plot.
+Use a `Frame` to use different scales on the same plot.
 
-Frames allow us to overlay multiple plots on the same panel. A frame goes inside a plot element but can take its `data`, `scales`, `xTick`, `yTick`, `xReverse` and `yReverse` props - where used, these override those inherited from the plot.
+Frames allow us to overlay multiple plots on the same panel. A frame goes inside a plot element but can take its own `data`, `scales`, `xTick`, `yTick`, `xReverse` and `yReverse` props - where used, these override those inherited from the plot.
 
 A frame can contain any of the components that a plot can contain - except for another frame.
 
-In the following example, we use a frame to display a second y-axis that shows the weight in pounds (where 1 kg = 2.2 lbs):
-
-```jsx
-<Plot
-  data={weightData}
-  scales={{ x: [0, 150], y: [0, 200] }}  // SHORTHAND NOTATION NOT IMPLEMENTED YET!!
->
-  <XAxis />
-  <XLabel />
-  <XTitle>Height (cm)</XTitle>
-  <YAxis />
-  <YLabel />
-  <YTitle>Weight (kg)</YTitle>
-  <Frame scales={{ y: [0, 150 * 2.2] }} >
-    <YAxis position="right" />
-    <YLabel />
-    <YTitle>Weight (lbs)</YTitle>
-  </Frame>
-  <Circle x={d => d.height_cm} y={d => d.weight_kg} />
-</Plot>
-```
-
 ### Panel
 
-Conceptually, a plot contains a reactangular _panel_ where the marks are drawn. Any axes are shown along the side/top/bottom of the panel, but are outside the panel. To style this panel, include a `<Panel>` component. The following props can be used to style the panel:
-
-| Prop | Default |
-|----------|-------------|
-| `background` | `left-aligned` |
-| `borderWidth` | `0` |
-| `borderColor` | `#888` |
+A plot's marks are drawn in a rectangular _panel_ computed from the the plot's size and padding. Including a `<Panel>` inside a plot adds a `<rect>` at the correct size and position. Use props such as `fill` to style the rectangle - all props passed to the `Panel` are passed directly to the `rect`.
 
 ### Scales
 
@@ -119,14 +91,13 @@ The behavior for y ticks is identical to that of x ticks.
 
 ## Data
 
-Data flows through a visualisation `VisProvider` -> `Plot` -> `Frame` -> plot components. In many cases, `VisProvider` and `Frame` are omitted.
+Data flows through a visualisation: `Plot` -> (`Frame` ->) mark components.
 
-Each of `VisProvider`, `Plot`, `Frame` as well as mark components such as `Circle` can take a `data` prop. This can be a data set or a function. A function is passed the data from the component above and should return a transformed data set for the component.
+Any of these components can take a `data` prop. The `data` component can be a data set or a function that is passed the data from the component above and should return a transformed data set for the component.
 
 If the `data` prop is not used, data is passed down from the parent component as is.
 
-> Note: The data used by mark components such as `<Circle>` must be an iterable. A `<Circle>` can still use data passed down to it that is not iterable, but the `data` prop must be used to transform the data into an iterable.
-
+The data used by mark components such as `<Circle>` must be an iterable. A `<Circle>` can still use data passed down to it that is not iterable, but the `data` prop must be used to transform the data into an iterable.
 
 ## Marks
 
@@ -160,6 +131,10 @@ __NOT IMPLEMENTED__
 | <code>line</code>  | line |
 | <code>hBand</code> | horizontal band |
 | <code>vBand</code> | vertical band |
+
+### Missing Data
+
+TODO: NAN AND INIFINITE THROW, NULL/UNDEFINED HANDLED BY MISSING PROP OF MARKS
 
 ## Channels
 
@@ -202,14 +177,20 @@ To draw a single mark with all constant channels, use a data set of length 1:
 />
 ```
 
+## Interaction
+
+TODO: ONLY HOVER CURRENTLY
+- USE HOVER PROP IN NORMAL MARKS - VALUE CAN BE OMITTED OR STRING NAME TO REFER TO GROUP
+- USE DATAFROM INSTEAD OF DATA IN MARK TO SHOW ON HOVER
+
 ------
 
 Notes:
+- contexts: plot and frame are standard: everything will be redrawn when change anythng, but OK since will rarely change. Vis context split into get/set so that nothing redrawn on set and only selection marks drawn on get
 - left out YTitle for now since rarely use old school rotated y axis title anymore. Can use an
   XTitle with position='top' and textAnchor='end'
 - currently always using indices for keys - may need to revisit this when think about animation, interaction, ...
 - we can pass arbitrary attr values to ticks, labels etc, but not to marks - since all 'other props' are interpreted as channels. Can/should we allow passing arb attr values through to the svg element representing the mark?
-- `ResposiveContainer` is currently only respsonsive on horizontal changes
 - `responsive` prop:
   - currently only repsonsive for width, but easy to make responsive on height since could use same pattern as for width and the `updateSize` action used with the plot context already handles height changes
   - better design would be to separate dimensions and allow `width="responsive"` and `height="responsive"`
@@ -218,6 +199,7 @@ Notes:
 Add to docs above
 - padding (on axis, ticks, ...) pushes them away from panel whereas dx,dy props are always in pixels and +ve x to right, +ve y downwards
 - use e.g. `stroke` to change color in `XTick` - even though there is `tickColor` in defaults, this is not a prop
+- API: components and props
 
 POSSIBLE!!:
 - border and cornerradius for the plot? - just as have for the panel

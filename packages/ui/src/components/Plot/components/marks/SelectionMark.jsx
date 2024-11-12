@@ -12,7 +12,7 @@ import DynamicTag from "../util/DynamicTag";
 
 export default memo(function SelectionMark({
       data,
-      dataFrom,  // SelectionMark is only used the dataFrom prop is used
+      dataFrom,  // SelectionMark is only used when the dataFrom prop is used
       missing,
       accessors,
       markChannels,
@@ -20,11 +20,9 @@ export default memo(function SelectionMark({
       createAttrs,
     }) {
 
-  // console.log(`selection mark render: ${tagName}`);
-
   const visSelection = useVisSelection(); 
   if (!visSelection) {
-    throw Error("the dataFrom prop can only be used inside a VisProvider");
+    throw Error("the dataFrom prop can only be used inside a Vis component");
   }
 
   const plot = usePlot();
@@ -75,7 +73,7 @@ export default memo(function SelectionMark({
 
     if (row != null) {
       const attrs = createAttrs(row);
-      attrs.pointerEvents = "none";
+      attrs.pointerEvents ??= "none";
       marks.push(
         <DynamicTag tagName={tagName} key={rowIndex} {...attrs} />
       );

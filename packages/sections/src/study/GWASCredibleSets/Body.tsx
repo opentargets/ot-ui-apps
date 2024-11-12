@@ -16,7 +16,7 @@ import {
   XGrid,
   Circle,
   Segment,
-  VisProvider,
+  Vis,
 } from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
@@ -198,7 +198,7 @@ function ManhattanPlot({ data }) {
   const markColor = '#3489ca';
 
   return (
-    <VisProvider>
+    <Vis>
       <Plot
         responsive
         // width={700}
@@ -257,13 +257,11 @@ function ManhattanPlot({ data }) {
           y={pValue}
           fill={markColor}
           fillOpacity={1}
-          stroke={markColor}
-          strokeWidth={1.2}
           area={24}
         />
 
       </Plot>
-    </VisProvider>
+    </Vis>
   );
 }
 

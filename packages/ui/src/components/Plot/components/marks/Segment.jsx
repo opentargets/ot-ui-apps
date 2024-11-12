@@ -20,6 +20,7 @@ export default function Segment({
     'strokeWidth',
     'strokeCap',
     'strokeDasharray',
+    'pointerEvents',
   ];
 
   const tagName = 'line';
@@ -36,6 +37,7 @@ export default function Segment({
     };
     if (row.strokeCap) attrs.strokeCap = row.strokeCap;
     if (row.strokeDasharray) attrs.strokeDasharray = row.strokeDasharray;
+    if (row.pointerEvents) attrs.pointerEvents = row.pointerEvents;
     return attrs;
   }
   

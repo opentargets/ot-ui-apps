@@ -3,7 +3,8 @@ import { createContext, useContext, useState, useCallback } from 'react';
 const SelectionContext = createContext(null);
 const UpdateSelectionContext = createContext(null);
 
-export function VisProvider({ children }) {
+// provider
+export function Vis({ children }) {
   const [selection, setSelection] = useState({ hover: {} });
   const updateSelection = useCallback(
     (selectionType, selectionLabel, selectionData) => {

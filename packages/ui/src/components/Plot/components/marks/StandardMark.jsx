@@ -20,11 +20,9 @@ export default memo(function StandardMark({
       createAttrs,
     }) {
 
-  // console.log(`standard mark render: ${tagName}`);
-
   const visUpdateSelection = useVisUpdateSelection(); 
   if (hover && !visUpdateSelection) {
-    throw Error("hover props can only be used inside a VisProvider");
+    throw Error("hover props can only be used inside a Vis component");
   }
 
   const plot = usePlot();
@@ -80,6 +78,7 @@ export default memo(function StandardMark({
           null,
         );
       }
+
       marks.push(
         <DynamicTag tagName={tagName} key={rowIndex} {...attrs} />
       );

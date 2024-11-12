@@ -21,6 +21,7 @@ export default function Circle({
     'strokeCap',
     'strokeDasharray',
     'area',
+    'pointerEvents',
   ];
 
   const tagName = 'circle';
@@ -38,6 +39,7 @@ export default function Circle({
     };
     if (row.strokeCap) attrs.strokeCap = row.strokeCap;
     if (row.strokeDasharray) attrs.strokeDasharray = row.strokeDasharray;
+    if (row.pointerEvents) attrs.pointerEvents = row.pointerEvents;
     return attrs;
   }
   

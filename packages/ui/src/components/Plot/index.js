@@ -1,5 +1,5 @@
 export {
-  VisProvider,
+  Vis,
   useVisSelection,
   useVisUpdateSelection,
 } from "./contexts/VisContext";
