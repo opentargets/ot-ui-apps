@@ -194,7 +194,9 @@ function HomePage({ suggestions }) {
 
             <Link to={`/variant/${suggestions[8].id}`}>{suggestions[8].name}</Link> */}
           </Grid>
-          <Version releaseNotesURL="http://home.opentargets.org/ppp-release-notes" />
+          <div>
+            <Version releaseNotesURL="http://home.opentargets.org/ppp-release-notes" />
+          </div>
           {/* <div className={classes.dataPolicy}>
             <Typography variant="body2" display="block" align="center" gutterBottom>
               The Open Targets Partner Preview Platform is provided exclusively to Open Targets

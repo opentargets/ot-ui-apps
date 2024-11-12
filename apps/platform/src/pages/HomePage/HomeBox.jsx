@@ -7,7 +7,7 @@ import PPOTLogo from "../../assets/PPPOTLogo";
 const styles = {
   homeboxContainer: {
     overflow: "visible",
-    padding: "90px 80px 90px",
+    padding: "48px 0px 24px",
     maxWidth: "900px",
     margin: "auto",
     backround: "#000003",
@@ -25,7 +25,7 @@ const styles = {
 function HomeBox({ children }) {
   return (
     <Grid item xs={12} sm={8} md={8} lg={8}>
-      <Paper elevation={3} sx={styles.homeboxContainer}>
+      <Paper elevation={1} sx={styles.homeboxContainer}>
         <Box sx={styles.homeboxHeader}>
           {config.profile.isPartnerPreview ? (
             <PPOTLogo sx={styles.logo} />
