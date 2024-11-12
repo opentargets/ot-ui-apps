@@ -18,6 +18,7 @@ export default memo(function SelectionMark({
       markChannels,
       tagName,
       createAttrs,
+      createContent,
     }) {
 
   const visSelection = useVisSelection(); 
@@ -75,7 +76,9 @@ export default memo(function SelectionMark({
       const attrs = createAttrs(row);
       attrs.pointerEvents ??= "none";
       marks.push(
-        <DynamicTag tagName={tagName} key={rowIndex} {...attrs} />
+        <DynamicTag tagName={tagName} key={rowIndex} {...attrs}>
+          {createContent?.(row)}
+        </DynamicTag>
       );
     }
 

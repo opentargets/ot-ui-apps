@@ -17,3 +17,4 @@ export { default as YLabel } from "./components/YLabel";
 export { default as YTick } from "./components/YTick";
 export { default as Circle } from "./components/marks/Circle";
 export { default as Segment } from "./components/marks/Segment";
+export { default as Text } from "./components/marks/Text";

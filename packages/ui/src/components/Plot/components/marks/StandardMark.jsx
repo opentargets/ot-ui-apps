@@ -18,6 +18,7 @@ export default memo(function StandardMark({
       markChannels,
       tagName,
       createAttrs,
+      createContent,
     }) {
 
   const visUpdateSelection = useVisUpdateSelection(); 
@@ -80,7 +81,9 @@ export default memo(function StandardMark({
       }
 
       marks.push(
-        <DynamicTag tagName={tagName} key={rowIndex} {...attrs} />
+        <DynamicTag tagName={tagName} key={rowIndex} {...attrs}>
+          {createContent?.(row)}
+        </DynamicTag>
       );
     }
 

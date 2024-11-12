@@ -6,7 +6,7 @@ export const channelDefaults = {
   dx: 0,  // pixels
   dy: 0,  // pixels
   fill: '#000',
-  fillOpacity: '0.7',
+  fillOpacity: 1,
   stroke: '#000',
   strokeOpacity: 1,
   strokeWidth: 0,  // !! MUST SET STROKE WIDTHS TO SEE LINES !!
@@ -37,5 +37,4 @@ export const channelDefaults = {
   transformOrigin: 'center',    // Text (CSS)
   transformBox: 'fill-box',     // Text (CSS)
   transform: null,              // Text (CSS)
-
 };

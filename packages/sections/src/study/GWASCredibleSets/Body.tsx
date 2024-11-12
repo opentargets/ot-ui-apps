@@ -16,6 +16,7 @@ import {
   XGrid,
   Circle,
   Segment,
+  Text,
   Vis,
 } from "ui";
 import { naLabel } from "../../constants";
@@ -243,21 +244,42 @@ function ManhattanPlot({ data }) {
           x={d => genomePositions[d.variant.id]}
           y={pValue}
           fill={background}
-          fillOpacity={1}
           stroke={markColor}
           strokeWidth={1.2}
-          area={24}
+          area={30}
           hover
         />
 
         {/* HOVER TETST */}
+        <Segment
+          dataFrom="hover"
+          x={d => genomePositions[d.variant.id]}
+          xx={d => genomePositions[d.variant.id]}
+          y={pValue}
+          yy={pValueMax}
+          fill="transparent"
+          stroke={markColor}
+          strokeWidth={1.7}
+          strokeOpacity={0.7}
+          area={24}
+          hover
+        />
         <Circle
           dataFrom="hover"
           x={d => genomePositions[d.variant.id]}
           y={pValue}
           fill={markColor}
-          fillOpacity={1}
-          area={24}
+          area={64}
+        />
+        <Text
+          dataFrom={"hover"}
+          x={d => genomePositions[d.variant.id]}
+          y={pValue}
+          dy={-14}
+          fontSize={12}
+          fontWeight={700}
+          text={d => d.variant.id}
+          fill={markColor}
         />
 
       </Plot>
