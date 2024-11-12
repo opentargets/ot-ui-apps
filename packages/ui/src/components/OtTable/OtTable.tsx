@@ -1,5 +1,5 @@
-import { ReactElement, ReactNode, useEffect, useState } from "react";
-import { Box, CircularProgress, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
+import { ReactElement, ReactNode, useState } from "react";
+import { Box, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
   ColumnFiltersState,
@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import OtTableColumnFilter from "./OtTableColumnFilter";
 // import { naLabel } from "../../constants";
 import OtTableSearch from "./OtTableSearch";
-import { loadingTableRows, OtTableProps } from "./table.types";
+import { OtTableProps } from "./table.types";
 import {
   FontAwesomeIconPadded,
   OtTableContainer,
@@ -79,7 +79,6 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 function OtTable({
   showGlobalFilter = true,
-  tableDataLoading = false,
   columns = [],
   rows = [],
   verticalHeaders = false,
@@ -108,6 +107,7 @@ function OtTable({
     state: {
       columnFilters,
       globalFilter,
+      loading,
     },
     initialState: {
       sorting: getDefaultSortObj(sortBy, order),
@@ -242,7 +242,6 @@ function OtTable({
           padding: theme => `${theme.spacing(2)} 0 `,
         }}
       >
-        {tableDataLoading && <CircularProgress sx={{ mx: theme => theme.spacing(2) }} size={25} />}
         <div>
           <span>Rows per page:</span>
           <NativeSelect
