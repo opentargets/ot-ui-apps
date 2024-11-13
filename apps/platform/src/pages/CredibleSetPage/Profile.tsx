@@ -19,32 +19,62 @@ const VariantsSection = lazy(() => import("sections/src/credibleSet/Variants/Bod
 const GWASColocSection = lazy(() => import("sections/src/credibleSet/GWASColoc/Body"));
 const GWASMolQTLSection = lazy(() => import("sections/src/credibleSet/GWASMolQTL/Body"));
 
-const summaries = [VariantsSummary, GWASColocSummary];
+// const summaries = [VariantsSummary, GWASColocSummary, GWASMolQTLSummary];
 
 const CREDIBLE_SET = "credibleSets";
-const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
-  summaries,
-  "credibleSet",
-  "CredibleSetProfileSummaryFragment"
-);
+// const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
+//   summaries,
+//   "credibleSet",
+//   "CredibleSetProfileSummaryFragment"
+// );
 
-const CREDIBLE_SET_PROFILE_QUERY = gql`
-  query CredibleSetProfileQuery($studyLocusIds: [String!]!) {
-    credibleSets(studyLocusIds: $studyLocusIds) {
-      studyLocusId
-      ...CredibleSetProfileHeaderFragment
-      ...CredibleSetProfileSummaryFragment
-    }
+// const CREDIBLE_SET_PROFILE_QUERY = gql`
+//   query CredibleSetProfileQuery($studyLocusIds: [String!]!) {
+//     credibleSets(studyLocusIds: $studyLocusIds) {
+//       studyLocusId
+//       ...CredibleSetProfileHeaderFragment
+//       ...CredibleSetProfileSummaryFragment
+//     }
+//   }
+//   ${ProfileHeader.fragments.profileHeader}
+//   ${CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT}
+// `;
+
+// type ProfileProps = {
+//   studyLocusId: string;
+//   variantId: string;
+//   referenceAllele: string;
+//   alternateAllele: string;
+// };
+
+const createProfileQuery = (studyType: string) => {
+  const summaries = [VariantsSummary, GWASMolQTLSummary];
+  // if (studyType === "gwas") {
+  //   summaries.push(GWASColocSummary);
+  // }
+  if (studyType !== "gwas") {
+    summaries.push(GWASMolQTLSummary);
   }
-  ${ProfileHeader.fragments.profileHeader}
-  ${CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT}
-`;
+  // const summaries = [VariantsSummary, GWASColocSummary, GWASMolQTLSummary];
+  const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
+    summaries,
+    "credibleSet",
+    "CredibleSetProfileSummaryFragment"
+  );
 
-type ProfileProps = {
-  studyLocusId: string;
-  variantId: string;
-  referenceAllele: string;
-  alternateAllele: string;
+  const CREDIBLE_SET_PROFILE_QUERY = gql`
+    query CredibleSetProfileQuery($studyLocusIds: [String!]!) {
+      credibleSets(studyLocusIds: $studyLocusIds) {
+        studyLocusId
+        ...CredibleSetProfileHeaderFragment
+        ...CredibleSetProfileSummaryFragment
+      }
+    }
+    ${ProfileHeader.fragments.profileHeader}
+    ${CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT}
+  `;
+
+  return CREDIBLE_SET_PROFILE_QUERY;
 };
 
 function Profile({
@@ -54,7 +84,7 @@ function Profile({
   alternateAllele,
   studyType,
 }: ProfileProps) {
-  console.log({ studyType });
+  const CREDIBLE_SET_PROFILE_QUERY = createProfileQuery(studyType);
   return (
     <PlatformApiProvider
       entity={CREDIBLE_SET}

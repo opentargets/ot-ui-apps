@@ -27,6 +27,8 @@ function CredibleSetPage() {
   const studyId = credibleSet?.study?.studyId;
   const studyType = credibleSet?.study?.studyType;
 
+  if (!studyType) return null;
+
   return (
     <BasePage
       title={
