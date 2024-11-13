@@ -20,10 +20,10 @@ export const channelDefaults = {
   shape: 'circle',     // Point
   area: 36,            // Circle, Point
   cornerRadius: null,  // HBar, VBar, Rect
-  width: 1,            // VBar, Rect (x units)
-  height: 1,           // HBar, Rect (y units)
-  pxWidth: 1,          // VBar, Rect (pixels)
-  pxHeight: 1,         // HBar, Rect (pixels)
+  width: 1,            // VBar, Rect, (x units)
+  height: 1,           // HBar, Rect, (y units)
+  pxWidth: 1,          // VBar, Rect, HTML (pixels)
+  pxHeight: 1,         // HBar, Rect, HTML (pixels)
   tension: 0.5,        // Edge
   clockwise: true,     // Edge
   path: null,          // Path
@@ -37,4 +37,6 @@ export const channelDefaults = {
   transformOrigin: 'center',    // Text (CSS)
   transformBox: 'fill-box',     // Text (CSS)
   transform: null,              // Text (CSS)
+  content: null,                // HTML
+  anchor: 'top-left'            // HTML
 };

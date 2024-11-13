@@ -1,14 +1,9 @@
 
 # TO DO
+- NEXT: finish and check HTML - need to complete anchor code 
 - scales:
   - allow `scales` to be function which takes the `data` prop (or passed down data) and returns an object so that can use the data to compute the scales
   - test with discrete scales
-- remove `strokeDashArray` from `Circle`?
-- change to `values` as an accessor for things that consume tick values - treating as data is unintuitive even if is more powerful 
-- tooltip:
-  - allow any action when trigger selected so can eg show a MUI tooltip
-- making \<XTitle> accept children is wrong/misleading since is adding contents SVG <text> not HTML elemnt
-  - how do e.g. subscript? - could make it a foreign object and use HTML?
 - add remaining marks: can easily add simple marks using the current `Mark`. Will need to extend `Mark` to allow for 'compound marks' such as `Line` that create a single mark from multiple rows. Can do this by adding a `compound` prop to `Mark` and branching on this where create the mark(s) 
 - implement `clip` prop on a mark to clip it to the panel - see https://stackoverflow.com/questions/17388689/svg-clippath-and-transformations
 - have not implemented `panelSize` prop?
@@ -16,12 +11,13 @@
 - legend
 - wrap axis, ticks, ... components in memo - so only change when their props change. They will still change when/if the contexts they use change anyway (as they should)
 - import local files from index where can to clean up
-  
+- Switch to TS
+
 --------
 
 ## Vis
 
-For an interactive plot - e.g. to use the §hover§ prop of marks - wrap the plot in a `<Vis>` component. This provides a context which is used internally to set and access selected data.
+For an interactive plot - e.g. to use the `hover` prop of marks - wrap the plot in a `<Vis>` component. This provides a context which is used internally to set and access selected data.
 
 We can also wrap multiple plots in a single `Vis` component to coordinate interaction across the plots. For example, hovering on a point in one plot and highlight the corresponding point in another plot. It's also possible to include non-plot content in the `Vis`. In this case the `useVisSelection` and `useVisUpdateSelection` hooks can be used explicitly to get/set selected data.
 
@@ -80,13 +76,13 @@ Notes:
 
 ### Ticks
 
-There is an `XTick` component for creating and rendering the x ticks. Tick values can be passed to the `Plot` using the `xTick` prop. These are passed to `XTick`, `XGrid`, `XLabel` as the default of the `values` prop.
+There is an `XTick` component for creating and rendering the x ticks. An array of tick values can be passed to a `Plot` (or `Frame`) using the `xTick` prop. If no values are passed, default values are automatically created from the x scale.
 
-If the `xTick` prop of `Plot` is not used, the default values are automatically created from the x scale.
+The `xTick` values from `Plot` are passed to `XTick`, `XGrid` and `XLabel` as the default `values` prop. Overwrite these values by using `values` explicitly. Alternatively, `values` can be a function - it is passed the `xTick` values from `Plot` and should return a new array of values.
 
-> Note: The `values` prop of the `XTick`, `XGrid`, `XLabel` can be a function to transform the values passed down from the plot or frame - THIS IS LIKELY TO CHANGE!!
+The `XLabel` component can take a `format` prop. This is a function that takes a tick value, its index, the array of tick values and the original array of tick values from `Plot`. The function should return the label value.
 
-The behavior for y ticks is identical to that of x ticks.
+The behavior described above is identical for the y dimension.
 
 ## Data
 
@@ -220,7 +216,7 @@ POSSIBLE!!:
 - should `missing` be at plot and frame level rather than just mark level?
 - have e.g. a `constant` prop in marks so can avoid the hacky `data={[1]}` to draw a single mark when all props are constants
 - do not have same channel defaults for all marks? - annoying that need to set `strokeWidth` to see lines
-- custom marks - e.g.custom shapes or images for points.
+- just as have HTML mark, could have SVG mark, or even Plot mark to allow inlays
 - since data can be any iterable, should also allow tick values (when actually used since can be transformed by `values`) to be any iterable rather than just an array
 - end channels: front, facet (or row/column), ...
 - larger capture zone for hover/selection of mark
