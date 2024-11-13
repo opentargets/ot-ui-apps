@@ -74,28 +74,29 @@ const columns = [
     label: "Finemapping method",
   },
   {
-    id: "topL2G",
+    id: "TopL2G",
     label: "Top L2G",
     tooltip: "Top gene prioritised by our locus-to-gene model",
-    filterValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
-    renderCell: ({ strongestLocus2gene }) => {
-      if (!strongestLocus2gene?.target) return naLabel;
-      const { target } = strongestLocus2gene;
+    filterValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.target.approvedSymbol,
+    renderCell: ({ l2Gpredictions }) => {
+      const { target } = l2Gpredictions?.[0];
+      if (!target) return naLabel;
       return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
     },
-    exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
+    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.target.approvedSymbol,
   },
   {
     id: "l2gScore",
     label: "L2G score",
-    comparator: (rowA, rowB) => rowA?.strongestLocus2gene?.score - rowB?.strongestLocus2gene?.score,
+    comparator: (rowA, rowB) => rowA?.l2Gpredictions?.[0]?.score - rowB?.l2Gpredictions?.[0]?.score,
     sortable: true,
     filterValue: false,
-    renderCell: ({ strongestLocus2gene }) => {
-      if (typeof strongestLocus2gene?.score !== "number") return naLabel;
-      return strongestLocus2gene.score.toFixed(3);
+    renderCell: ({ l2Gpredictions }) => {
+      const { score } = l2Gpredictions?.[0];
+      if (typeof score !== "number") return naLabel;
+      return score.toFixed(3);
     },
-    exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.score,
+    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.score,
   },
   {
     id: "credibleSetSize",
