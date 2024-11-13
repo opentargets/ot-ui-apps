@@ -7,7 +7,7 @@ import PPOTLogo from "../../assets/PPPOTLogo";
 const styles = {
   homeboxContainer: {
     overflow: "visible",
-    padding: "48px 0px 24px",
+    padding: "48px 96px 48px",
     maxWidth: "900px",
     margin: "auto",
     backround: "#000003",
