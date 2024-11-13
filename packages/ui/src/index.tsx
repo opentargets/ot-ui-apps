@@ -37,6 +37,7 @@ export { default as Legend } from "./components/Legend";
 export { default as ApiPlaygroundDrawer } from "./components/ApiPlaygroundDrawer";
 export { default as OtTable } from "./components/OtTable/OtTable";
 export { default as OtPopper } from "./components/OtPopper";
+export { default as OtScoreLinearBar } from "./components/OtScoreLinearBar";
 
 export { default as EmptyPage } from "./pages/EmptyPage";
 export { default as NotFoundPage } from "./pages/NotFoundPage";
@@ -47,6 +48,7 @@ export * from "./contexts/ConfigurationProvider";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Section";
+export * from "./components/Plot";
 
 export * from "./components/ProfileHeader";
 export * from "./components/DownloadSvgPlot";

@@ -1,11 +1,20 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
+import {
+  Link,
+  SectionItem,
+  ScientificNotation,
+  DisplayVariantId,
+  OtTable,
+  Tooltip,
+  ClinvarStars,
+} from "ui";
 import { Box, Chip } from "@mui/material";
-import { naLabel } from "../../constants";
+import { clinvarStarMap, naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { ReactNode } from "react";
 
 type getColumnsType = {
   id: string;
@@ -22,11 +31,11 @@ function getColumns({
 }: getColumnsType) {
   return [
     {
-      id: "view",
-      label: "Details",
-      renderCell: ({ studyLocusId }) => <Link to={`../credible-set/${studyLocusId}`}>view</Link>,
-      filterValue: false,
-      exportValue: false,
+      id: "studyLocusId",
+      label: "More details",
+      renderCell: ({ studyLocusId }) => (
+        <Link to={`../credible-set/${studyLocusId}`}>{studyLocusId}</Link>
+      ),
     },
     {
       id: "leadVariant",
@@ -89,14 +98,14 @@ function getColumns({
       },
     },
     {
-      id: "study.biosample.biosampleId",
+      id: "study",
       label: "Affected tissue/cell",
       renderCell: ({ study }) => {
         const biosampleId = study?.biosample?.biosampleId;
         if (!biosampleId) return naLabel;
         return (
           <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosampleId}&ontology=uberon`}>
-            {biosampleId}
+            {study?.biosample?.biosampleName}
           </Link>
         );
       },
@@ -104,7 +113,7 @@ function getColumns({
     {
       id: "study.condition",
       label: "Condition",
-      renderCell: () => <i>Not in API</i>,
+      renderCell: ({ study }) => study?.condition || naLabel,
     },
     {
       id: "pValue",
@@ -133,6 +142,7 @@ function getColumns({
       label: "Beta",
       filterValue: false,
       tooltip: "Beta with respect to the ALT allele",
+      sortable: true,
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
         return beta.toPrecision(3);
@@ -161,6 +171,20 @@ function getColumns({
       exportValue: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3),
     },
     {
+      id: "confidence",
+      label: "Confidence",
+      sortable: true,
+      renderCell: ({ confidence }) => {
+        if (!confidence) return naLabel;
+        return (
+          <Tooltip title={confidence} style="">
+            <ClinvarStars num={clinvarStarMap[confidence]} />
+          </Tooltip>
+        );
+      },
+      filterValue: ({ confidence }) => clinvarStarMap[confidence],
+    },
+    {
       id: "finemappingMethod",
       label: "Finemapping method",
     },
@@ -181,7 +205,7 @@ type BodyProps = {
   entity: string;
 };
 
-function Body({ id, entity }: BodyProps) {
+function Body({ id, entity }: BodyProps): ReactNode {
   const variables = {
     variantId: id,
   };
