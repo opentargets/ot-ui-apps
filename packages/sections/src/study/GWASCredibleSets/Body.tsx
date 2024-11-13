@@ -7,6 +7,7 @@ import {
   DisplayVariantId,
   OtTable,
   Plot,
+  Vis,
   XAxis,
   YAxis,
   XTick,
@@ -17,6 +18,7 @@ import {
   XGrid,
   Circle,
   Segment,
+  HTML,
 } from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
@@ -202,61 +204,83 @@ function ManhattanPlot({ loading, data }) {
   });
 
   return (
-    <Plot
-      responsive
-      height={plotHeight}
-      padding={{ top: 50, right: 40, bottom: 40, left: 90 }}
-      fontFamily={fontFamily}
-      data={data}
-      yReverse
-      scales={{
-        x: scaleLinear().domain([0, genomeLength]),
-        y: scaleLog().domain([pValueMin, pValueMax]),
-      }}
-      xTick={chromosomeInfo}
-    >
-      <XTick
-        values={tickData => [0, ...tickData.map(chromo => chromo.end)]}
-        tickLength={15}
-      />
-      <XAxis />
-      <XLabel
-        values={tickData => tickData.map(chromo => chromo.midpoint)}
-        format={(_, i, __, tickData) => tickData[i].chromosome}
-        padding={5}
-      />
-      <XGrid 
-        values={tickData => tickData.map(chromo => chromo.end)}
-        stroke="#cecece"
-        strokeDasharray="3 4"
-      />
-      <XTitle fontSize={11} position="top" align="left" textAnchor="middle" padding={16} dx={-30}>
-        <tspan fontStyle="italic">-log
-          <tspan fontSize="9" dy="4">10</tspan>
-          <tspan dy="-4">(pValue)</tspan>
-        </tspan>
-      </XTitle>
-      <YAxis />
-      <YTick />
-      <YLabel format={v => -Math.log10(v)} />
-      <Segment
-        x={d => genomePositions[d.variant.id]}
-        xx={d => genomePositions[d.variant.id]}
-        y={pValue}
-        yy={pValueMax}
-        stroke={markColor}
-        strokeWidth={1}
-        strokeOpacity={0.7}
-      />
-      <Circle
-        x={d => genomePositions[d.variant.id]}
-        y={pValue}
-        fill={background}
-        stroke={markColor}
-        strokeWidth={1.2}
-        area={circleArea}
-      />
-    </Plot>
+    <Vis>
+      <Plot
+        responsive
+        height={plotHeight}
+        padding={{ top: 50, right: 40, bottom: 40, left: 90 }}
+        fontFamily={fontFamily}
+        data={data}
+        yReverse
+        scales={{
+          x: scaleLinear().domain([0, genomeLength]),
+          y: scaleLog().domain([pValueMin, pValueMax]),
+        }}
+        xTick={chromosomeInfo}
+      >
+        <XTick
+          values={tickData => [0, ...tickData.map(chromo => chromo.end)]}
+          tickLength={15}
+        />
+        <XAxis />
+        <XLabel
+          values={tickData => tickData.map(chromo => chromo.midpoint)}
+          format={(_, i, __, tickData) => tickData[i].chromosome}
+          padding={5}
+        />
+        <XGrid 
+          values={tickData => tickData.map(chromo => chromo.end)}
+          stroke="#cecece"
+          strokeDasharray="3 4"
+        />
+        <XTitle fontSize={11} position="top" align="left" textAnchor="middle" padding={16} dx={-30}>
+          <tspan fontStyle="italic">-log
+            <tspan fontSize="9" dy="4">10</tspan>
+            <tspan dy="-4">(pValue)</tspan>
+          </tspan>
+        </XTitle>
+        <YAxis />
+        <YTick />
+        <YLabel format={v => -Math.log10(v)} />
+        <Segment
+          x={d => genomePositions[d.variant.id]}
+          xx={d => genomePositions[d.variant.id]}
+          y={pValue}
+          yy={pValueMax}
+          stroke={markColor}
+          strokeWidth={1}
+          strokeOpacity={0.7}
+          hover
+        />
+        <Circle
+          x={d => genomePositions[d.variant.id]}
+          y={pValue}
+          fill={background}
+          stroke={markColor}
+          strokeWidth={1.2}
+          area={circleArea}
+          hover
+        />
+
+        {/* TOOLTIP TEST */}
+        <HTML
+          dataFrom="hover"
+          x={d => genomePositions[d.variant.id]}
+          y={pValue}
+          pxWidth={140}
+          pxHeight={50}
+          content={d => (
+            <div style={{ width: "100%", height: "100%", background: "#f0f0f0", border: "1px solid #000" }}>
+              <b>HTML tooltip</b>
+              <div>{d.variant.id}</div>
+            </div>
+          )}
+          // anchor="top-right"
+          dx={8}
+          dy = {-8}
+        />
+      </Plot>
+    </Vis>
   );
 }
 
