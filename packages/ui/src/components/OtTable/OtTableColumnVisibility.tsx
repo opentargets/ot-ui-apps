@@ -29,12 +29,14 @@ function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): React
     setAnchorEl(null);
   }
 
-  function isLastColumnActive(column): boolean {
-    return table.getVisibleLeafColumns().length === 1 && column.getIsVisible();
+  function isColumnDisable(column): boolean {
+    return (
+      !column.getCanHide() || (table.getVisibleLeafColumns().length === 1 && column.getIsVisible())
+    );
   }
 
   function isColumnVisibilityStateChanged(): boolean {
-    return table.getVisibleLeafColumns().length !== table.getAllColumns().length;
+    return table.getVisibleLeafColumns().length !== table.getAllLeafColumns().length;
   }
 
   return (
@@ -60,7 +62,7 @@ function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): React
                           checked={column.getIsVisible()}
                         />
                       }
-                      disabled={isLastColumnActive(column)}
+                      disabled={isColumnDisable(column)}
                       label={column.columnDef.header || column.id}
                     />
                   </ListItemButton>
