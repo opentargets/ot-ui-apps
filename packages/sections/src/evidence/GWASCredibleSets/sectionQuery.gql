@@ -1,4 +1,4 @@
-query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
+query GwasCredibleSetsQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
   target(ensemblId: $ensemblId) {
     approvedSymbol
   }
@@ -8,44 +8,36 @@ query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!, $size: Int!
     openTargetsGenetics: evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
-      datasourceIds: ["ot_genetics_portal"]
+      datasourceIds: ["gwas_credible_sets"]
       size: $size
     ) {
       count
       rows {
-        id
         disease {
           id
           name
         }
-        variantEffect
-        directionOnTrait
-        diseaseFromSource
-        studyId
-        studySampleSize
-        variantId
-        variantRsId
-        literature
-        publicationYear
-        publicationFirstAuthor
-        pValueExponent
-        pValueMantissa
-        oddsRatio
-        oddsRatioConfidenceIntervalLower
-        oddsRatioConfidenceIntervalUpper
-        beta
-        betaConfidenceIntervalLower
-        betaConfidenceIntervalUpper
-        variantFunctionalConsequence {
-          id
-          label
+        credibleSet {
+          studyLocusId
+          study {
+            traitFromSource
+            studyId
+            projectId
+            publicationFirstAuthor
+            publicationDate
+            pubmedId
+            nSamples
+          }
+          variant {
+            id
+          }
+          pValueMantissa
+          pValueExponent
+          beta
+          finemappingMethod
+          confidence
         }
-        variantFunctionalConsequenceFromQtlId {
-          id
-          label
-        }
-        resourceScore
-        projectId
+        score
       }
     }
   }
