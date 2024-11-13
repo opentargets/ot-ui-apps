@@ -182,7 +182,7 @@ function pValue(row) {
 
 function ManhattanPlot({ loading, data }) {
   
-  const plotHeight = 380;
+  const plotHeight = 370;
   const theme = useTheme();
   const background = theme.palette.background.paper;
   const markColor = theme.palette.primary.main;
@@ -204,7 +204,7 @@ function ManhattanPlot({ loading, data }) {
     <Plot
       responsive
       height={plotHeight}
-      padding={{ top: 60, right: 40, bottom: 40, left: 60 }}
+      padding={{ top: 50, right: 40, bottom: 40, left: 90 }}
       fontFamily={fontFamily}
       data={data}
       yReverse
@@ -229,12 +229,11 @@ function ManhattanPlot({ loading, data }) {
         stroke="#cecece"
         strokeDasharray="3 4"
       />
-      <XTitle fontSize={14} position="top" align="left" padding={30} dx={-30}>
+      <XTitle fontSize={11} position="top" align="left" textAnchor="middle" padding={16} dx={-30}>
         <tspan fontStyle="italic">-log
-          <tspan fontSize="11" dy="5">10</tspan>
-          <tspan dy="-5">(pValue)</tspan>
+          <tspan fontSize="9" dy="4">10</tspan>
+          <tspan dy="-4">(pValue)</tspan>
         </tspan>
-        {" "}of lead variants
       </XTitle>
       <YAxis />
       <YTick />
