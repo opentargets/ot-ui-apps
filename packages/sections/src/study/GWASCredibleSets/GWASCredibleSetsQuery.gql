@@ -17,8 +17,8 @@ query GWASCredibleSetsQuery($studyId: String!) {
         is95CredibleSet
       }
       finemappingMethod
-      strongestLocus2gene {
-        target {
+      l2Gpredictions(size: 1) {
+        target{
           id
           approvedSymbol
         }
