@@ -35,13 +35,13 @@ function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): React
     );
   }
 
-  function isColumnVisibilityStateChanged(): boolean {
-    return table.getVisibleLeafColumns().length !== table.getAllLeafColumns().length;
+  function getIsAllColumnsVisible(): boolean {
+    return table.getIsAllColumnsVisible();
   }
 
   return (
     <>
-      <Badge color="primary" variant="dot" invisible={!isColumnVisibilityStateChanged()}>
+      <Badge color="primary" variant="dot" invisible={getIsAllColumnsVisible()}>
         <Button aria-describedby={id} onClick={handleClick} sx={{ display: "flex", gap: 1 }}>
           <FontAwesomeIcon icon={faGear} /> Columns
         </Button>
