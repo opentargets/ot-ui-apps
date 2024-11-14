@@ -17,6 +17,9 @@ import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";
 import { mantissaExponentComparator } from "../../utils/comparators";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { Box } from "@mui/material";
 
 function getColumns() {
   return [
@@ -24,7 +27,13 @@ function getColumns() {
       id: "credibleSet",
       label: "More Details",
       renderCell: ({ credibleSet }) => {
-        return <Link to={`/credible-set/${credibleSet?.studyLocusId}`}>view</Link>;
+        return (
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Link to={`/credible-set/${credibleSet?.studyLocusId}`}>
+              <FontAwesomeIcon icon={faArrowRightToBracket} />
+            </Link>
+          </Box>
+        );
       },
     },
     {
