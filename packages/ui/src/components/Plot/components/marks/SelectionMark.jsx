@@ -7,7 +7,6 @@ import { isIterable } from "../../util/helpers";
 import { finalData } from "../../util/finalData";
 import { processAccessors } from "../../util/processAccessors";
 import { rowValues } from "../../util/rowValues";
-import { OTHER } from "../../util/constants";
 import DynamicTag from "../util/DynamicTag";
 
 export default memo(function SelectionMark({
@@ -35,18 +34,15 @@ export default memo(function SelectionMark({
   const ops = fromFrameOrPlot(['data', 'scales', 'mapX', 'mapY'], frame, plot);
   const { scales, mapX, mapY } = ops;
 
-  const parts = dataFrom.trim().split('-');
-  const selectionType = parts[0];
-  const selectionLabel = parts.slice(1).join('-') || OTHER;
-  if (selectionType !== 'hover') {
-    throw Error(`"${selectionType}" is not a valid selection type`);
+  if (dataFrom !== 'hover') {
+    throw Error(`"${dataFrom}" is not a valid selection type`);
   }
   if (data && typeof data !== 'function') {
     throw Error(
       'when the dataFrom prop is used, the data prop must be omitted or be a function'
     );
   }
-  const selectedData = visSelection[selectionType][selectionLabel];
+  const selectedData = visSelection.hover;
   // eslint-disable-next-line
   data = selectedData ? finalData(selectedData, data) : [];
 

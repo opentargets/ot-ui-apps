@@ -1,5 +1,8 @@
 import { memo } from "react";
-import { useVisUpdateSelection } from "../../contexts/VisContext";
+import {
+  useVisUpdateSelection,
+  useVisClearSelection
+} from "../../contexts/VisContext";
 import { usePlot } from "../../contexts/PlotContext";
 import { useFrame } from "../../contexts/FrameContext";
 import { fromFrameOrPlot } from "../../util/fromFrameOrPlot";
@@ -7,7 +10,6 @@ import { isIterable } from "../../util/helpers";
 import { finalData } from "../../util/finalData";
 import { processAccessors } from "../../util/processAccessors";
 import { rowValues } from "../../util/rowValues";
-import { OTHER } from "../../util/constants";
 import DynamicTag from "../util/DynamicTag";
 
 export default memo(function StandardMark({
@@ -21,7 +23,8 @@ export default memo(function StandardMark({
       createContent,
     }) {
 
-  const visUpdateSelection = useVisUpdateSelection(); 
+  const visUpdateSelection = useVisUpdateSelection();
+  const visClearSelection = useVisClearSelection();
   if (hover && !visUpdateSelection) {
     throw Error("hover props can only be used inside a Vis component");
   }
@@ -67,17 +70,10 @@ export default memo(function StandardMark({
       const attrs = createAttrs(row);
       
       if (hover) {
-        const selectionLabel = typeof hover === 'string' ? hover : OTHER;
-        attrs.onMouseEnter = () => visUpdateSelection(
-          'hover',
-          selectionLabel,
-          [d],
-        );
-        attrs.onMouseLeave = () => visUpdateSelection(
-          'hover',
-          selectionLabel,
-          null,
-        );
+        attrs.onMouseEnter = () => visUpdateSelection('hover', [d]);
+        if (hover !== 'stay') {
+          attrs.onMouseLeave = visClearSelection;
+        }
       }
 
       marks.push(
