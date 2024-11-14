@@ -162,9 +162,9 @@ function getColumns() {
         return (
           <PublicationsDrawer
             entries={[{ name: pubmedId }]}
-            customLabel={`${publicationFirstAuthor} et al, ${new Date(
+            customLabel={`${publicationFirstAuthor} et al. (${new Date(
               publicationDate
-            ).getFullYear()}`}
+            ).getFullYear()})`}
           />
         );
       },
