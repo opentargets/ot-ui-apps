@@ -4,7 +4,8 @@ import { Link } from "ui";
 function Description(): ReactElement {
   return (
     <>
-      Source: <Link to="../">Open Targets</Link>
+      Genes prioritised by the L2G pipelines within this credible set. Source:{" "}
+      <Link to="../">Open Targets</Link>
     </>
   );
 }

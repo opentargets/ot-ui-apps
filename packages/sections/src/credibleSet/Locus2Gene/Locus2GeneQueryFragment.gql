@@ -1,5 +1,5 @@
-fragment VariantsSummaryFragment on credibleSet {
-  locus {
-    beta
+fragment Locus2GeneQueryFragment on credibleSet {
+  l2Gpredictions {
+    score
   }
 }

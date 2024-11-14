@@ -1,6 +1,5 @@
-query VariantsQuery($studyLocusIds: [String!]!) {
+query Locus2GeneQuery($studyLocusIds: [String!]!) {
   credibleSets(studyLocusIds: $studyLocusIds) {
-    studyLocusId
     l2Gpredictions {
       target {
         id
@@ -8,6 +7,5 @@ query VariantsQuery($studyLocusIds: [String!]!) {
       }
       score
     }
-    proteinIds
   }
 }
