@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Tooltip } from "@mui/material";
+// import { Tooltip } from "@mui/material";
 import {
   SectionItem,
   Link,
@@ -7,6 +7,8 @@ import {
   OtTable,
   ScientificNotation,
   ClinvarStars,
+  OtScoreLinearBar,
+  Tooltip,
 } from "ui";
 
 import { naLabel, sectionsBaseSizeQuery, clinvarStarMap } from "../../constants";
@@ -14,20 +16,24 @@ import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";
+import { mantissaExponentComparator } from "../../utils/comparators";
 
 function getColumns() {
   return [
     {
-      id: "disease",
-      label: "Disease/phenotype",
-      renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
-      filterValue: ({ disease }) => disease.name,
+      id: "credibleSet",
+      label: "More Details",
+      renderCell: ({ credibleSet }) => {
+        return <Link to={`/credible-set/${credibleSet?.studyLocusId}`}>view</Link>;
+      },
     },
     {
-      id: "credibleSet",
-      label: "Credible Set",
+      id: "variantId",
+      label: "Lead Variant",
       renderCell: ({ credibleSet }) => {
-        return <Link to={`../credible-set/${credibleSet?.studyLocusId}`}>view</Link>;
+        const { variant } = credibleSet;
+        if (variant?.id) return <Link to={`/variant/${variant?.id}`}>{variant?.id}</Link>;
+        return naLabel;
       },
     },
     {
@@ -36,69 +42,45 @@ function getColumns() {
       renderCell: ({ credibleSet }) => credibleSet?.study.traitFromSource,
     },
     {
+      id: "disease",
+      label: "Disease/phenotype",
+      renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
+      filterValue: ({ disease }) => disease.name,
+    },
+    {
       id: "study",
-      label: "Study",
+      label: "Study Id",
       renderCell: ({ credibleSet }) => {
         return (
-          <Link to={`../study/${credibleSet?.study.studyId}`}>{credibleSet?.study.studyId}</Link>
+          <Link to={`/study/${credibleSet?.study.studyId}`}>{credibleSet?.study.studyId}</Link>
         );
       },
     },
     {
-      id: "projectId",
-      label: "Project",
-      renderCell: ({ credibleSet }) => credibleSet?.study.projectId,
-    },
-    {
-      id: "publication",
-      label: "Publication",
-      renderCell: ({ credibleSet }) => {
-        const { publicationFirstAuthor, publicationDate, pubmedId } = credibleSet?.study;
-        if (!publicationFirstAuthor) return naLabel;
-        return (
-          <PublicationsDrawer
-            entries={[{ name: pubmedId }]}
-            customLabel={`${publicationFirstAuthor} et al, ${publicationDate}`}
-          />
+      id: "pValue",
+      label: "P-value",
+      comparator: (a, b) => {
+        console.log(a, b);
+        return mantissaExponentComparator(
+          a?.credibleSet.pValueMantissa,
+          a?.credibleSet.pValueExponent,
+          b?.credibleSet.pValueMantissa,
+          b?.credibleSet.pValueExponent
         );
       },
-      filterValue: ({ literature, publicationYear, publicationFirstAuthor }) =>
-        `${literature} ${publicationYear} ${publicationFirstAuthor}`,
-    },
-    {
-      id: "nSamples",
-      label: "Sample size",
-      numeric: true,
       sortable: true,
-      renderCell: ({ credibleSet }) =>
-        credibleSet?.study.nSamples
-          ? parseInt(credibleSet?.study.nSamples, 10).toLocaleString()
-          : naLabel,
-    },
-    {
-      id: "variantId",
-      label: "Lead Variant",
-      renderCell: ({ credibleSet }) => {
-        const { variant } = credibleSet;
-        if (variant?.id) return <Link to={`../variant/${variant?.id}`}>{variant?.id}</Link>;
-        return naLabel;
-      },
-    },
-    {
-      id: "pValueMantissa",
-      label: (
-        <>
-          Association <i>p</i>-value
-        </>
-      ),
-      numeric: true,
-      sortable: true,
+      filterValue: false,
       renderCell: ({ credibleSet }) => {
         const { pValueMantissa, pValueExponent } = credibleSet;
+        if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number")
+          return naLabel;
         return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
       },
-      comparator: (a, b) =>
-        a.pValueMantissa * 10 ** a.pValueExponent - b.pValueMantissa * 10 ** b.pValueExponent,
+      exportValue: ({ credibleSet }) => {
+        const { pValueMantissa, pValueExponent } = credibleSet;
+        if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return null;
+        return `${pValueMantissa}x10${pValueExponent}`;
+      },
     },
     {
       id: "betaConfidenceInterval",
@@ -107,11 +89,6 @@ function getColumns() {
       renderCell: ({ credibleSet }) => {
         return credibleSet?.beta ? `${parseFloat(credibleSet?.beta.toFixed(3))}` : naLabel;
       },
-    },
-    {
-      id: "finemappingMethod",
-      label: "Fine-mapping method",
-      renderCell: ({ credibleSet }) => credibleSet?.finemappingMethod || naLabel,
     },
     {
       id: "confidence",
@@ -128,6 +105,11 @@ function getColumns() {
       filterValue: ({ credibleSet }) => clinvarStarMap[credibleSet?.confidence],
     },
     {
+      id: "finemappingMethod",
+      label: "Fine-mapping method",
+      renderCell: ({ credibleSet }) => credibleSet?.finemappingMethod || naLabel,
+    },
+    {
       id: "score",
       label: "L2G score",
       tooltip: (
@@ -142,9 +124,43 @@ function getColumns() {
           for more information.
         </>
       ),
+      sortable: true,
+      renderCell: ({ score }) => {
+        if (!score) return naLabel;
+        return (
+          <Tooltip title={score.toFixed(3)} style="">
+            <OtScoreLinearBar variant="determinate" value={score * 100} />
+          </Tooltip>
+        );
+      },
+    },
+    {
+      id: "nSamples",
+      label: "Credible set size",
       numeric: true,
       sortable: true,
-      renderCell: ({ score }) => parseFloat(score?.toFixed(5)),
+      renderCell: ({ credibleSet }) =>
+        credibleSet?.study.nSamples
+          ? parseInt(credibleSet?.study.nSamples, 10).toLocaleString()
+          : naLabel,
+    },
+    {
+      id: "publication",
+      label: "Publication",
+      renderCell: ({ credibleSet }) => {
+        const { publicationFirstAuthor, publicationDate, pubmedId } = credibleSet?.study;
+        if (!publicationFirstAuthor) return naLabel;
+        return (
+          <PublicationsDrawer
+            entries={[{ name: pubmedId }]}
+            customLabel={`${publicationFirstAuthor} et al, ${new Date(
+              publicationDate
+            ).getFullYear()}`}
+          />
+        );
+      },
+      filterValue: ({ literature, publicationYear, publicationFirstAuthor }) =>
+        `${literature} ${publicationYear} ${publicationFirstAuthor}`,
     },
   ];
 }
@@ -174,7 +190,7 @@ function Body({ id, label, entity }) {
           order="desc"
           rows={request.data?.disease.openTargetsGenetics.rows}
           showGlobalFilter
-          sortBy="pValueMantissa"
+          sortBy="pValue"
           query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
           variables={variables}
           loading={request.loading}
