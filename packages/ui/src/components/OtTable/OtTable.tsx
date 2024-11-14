@@ -1,5 +1,5 @@
-import { ReactElement, ReactNode, useEffect, useState } from "react";
-import { Box, CircularProgress, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
+import { ReactElement, ReactNode, useState } from "react";
+import { Box, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
   ColumnFiltersState,
@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import OtTableColumnFilter from "./OtTableColumnFilter";
 // import { naLabel } from "../../constants";
 import OtTableSearch from "./OtTableSearch";
-import { loadingTableRows, OtTableProps } from "./table.types";
+import { OtTableProps } from "./table.types";
 import {
   FontAwesomeIconPadded,
   OtTableContainer,
@@ -79,7 +79,6 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 function OtTable({
   showGlobalFilter = true,
-  tableDataLoading = false,
   columns = [],
   rows = [],
   verticalHeaders = false,
@@ -97,10 +96,10 @@ function OtTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
-  // const loadingRows = getLoadingRows(mappedColumns, 10);
+  const data = loading ? getLoadingRows(mappedColumns, 10) : rows;
 
   const table = useReactTable({
-    data: rows,
+    data,
     columns: mappedColumns,
     filterFns: {
       searchFilterFn: searchFilter,
@@ -122,6 +121,11 @@ function OtTable({
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
+
+  function getCellData(cell: Record<string, unknown>): ReactNode {
+    if (loading) return <Skeleton sx={{ minWidth: "50px" }} variant="text" />;
+    return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
+  }
 
   return (
     <div>
@@ -208,11 +212,8 @@ function OtTable({
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
                         <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
-                          {table.getState().loading ? (
-                            <Skeleton sx={{ minWidth: "50px" }} variant="text" />
-                          ) : (
-                            <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
-                          )}
+                          {getCellData(cell)}
+                          {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
                           {/* TODO: check NA value */}
                           {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
                             naLabel} */}
@@ -241,7 +242,6 @@ function OtTable({
           padding: theme => `${theme.spacing(2)} 0 `,
         }}
       >
-        {tableDataLoading && <CircularProgress sx={{ mx: theme => theme.spacing(2) }} size={25} />}
         <div>
           <span>Rows per page:</span>
           <NativeSelect
