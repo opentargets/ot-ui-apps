@@ -9,7 +9,7 @@ type DescriptionProps = {
 function Description({ variantId, referenceAllele, alternateAllele }: DescriptionProps) {
   return (
     <>
-      Variant consequence prediction for transcripts in the genemonic region of{" "}
+      Variant consequence prediction for transcripts in the genomic region of{" "}
       <strong>
         <DisplayVariantId
           variantId={variantId}
