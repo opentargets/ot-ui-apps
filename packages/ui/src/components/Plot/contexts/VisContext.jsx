@@ -1,4 +1,3 @@
-import { setSaturation } from 'polished';
 import { createContext, useContext, useState, useCallback } from 'react';
 
 const SelectionContext = createContext(null);
