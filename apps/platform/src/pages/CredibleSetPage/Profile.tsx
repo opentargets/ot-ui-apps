@@ -10,20 +10,16 @@ import {
 
 import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
 import GWASColocSummary from "sections/src/credibleSet/GWASColoc/Summary";
+import Locus2GeneSummary from "sections/src/credibleSet/Locus2Gene/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
-const VariantsSection = lazy(
-  () => import("sections/src/credibleSet/Variants/Body")
-);
-const GWASColocSection = lazy(
-  () => import("sections/src/credibleSet/GWASColoc/Body")
-);
+const VariantsSection = lazy(() => import("sections/src/credibleSet/Variants/Body"));
+const GWASColocSection = lazy(() => import("sections/src/credibleSet/GWASColoc/Body"));
 
-const summaries = [
-  VariantsSummary,
-  GWASColocSummary,
-];
+const Locus2GeneSection = lazy(() => import("sections/src/credibleSet/Locus2Gene/Body"));
+
+const summaries = [VariantsSummary, GWASColocSummary, Locus2GeneSummary];
 
 const CREDIBLE_SET = "credibleSets";
 const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
@@ -50,13 +46,7 @@ type ProfileProps = {
   alternateAllele: string;
 };
 
-function Profile({
-      studyLocusId,
-      variantId,
-      referenceAllele,
-      alternateAllele,
-    }: ProfileProps) {
-
+function Profile({ studyLocusId, variantId, referenceAllele, alternateAllele }: ProfileProps) {
   return (
     <PlatformApiProvider
       entity={CREDIBLE_SET}
@@ -67,8 +57,9 @@ function Profile({
       <ProfileHeader variantId={variantId} />
 
       <SummaryContainer>
-        <VariantsSummary /> 
-        <GWASColocSummary /> 
+        <VariantsSummary />
+        <GWASColocSummary />
+        <Locus2GeneSummary />
       </SummaryContainer>
 
       <SectionContainer>
@@ -84,10 +75,12 @@ function Profile({
         <Suspense fallback={<SectionLoader />}>
           <GWASColocSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
         </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <Locus2GeneSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
+        </Suspense>
       </SectionContainer>
     </PlatformApiProvider>
   );
-
 }
 
 export default Profile;
