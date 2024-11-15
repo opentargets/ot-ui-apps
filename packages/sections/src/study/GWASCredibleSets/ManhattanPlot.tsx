@@ -155,8 +155,8 @@ export default function ManhattanPlot({ loading, data }) {
           dataFrom="hover"
           x={d => genomePositions[d.variant.id]}
           y={pValue}
-          pxWidth={260}
-          pxHeight={195}
+          pxWidth={290}
+          pxHeight={200}
           content={d => <Tooltip data={d} />}
           anchor={d => `${yAnchor(d)}-${xAnchor(d)}`}
           pointerEvents="visiblePainted"
@@ -176,68 +176,76 @@ export default function ManhattanPlot({ loading, data }) {
 
 function Tooltip({ data }) {
   return (
-    <Box
-      sx={{
-        bgcolor: '#fffc',
-        borderColor: "#ddd",
-        borderWidth: "1px",
-        borderStyle: "solid",
-        borderRadius: "0.2rem",
-      }}
-      p={1}
-    >
-      <TooltipRow label="Details">
-        <Link to={`../credible-set/${data.studyLocusId}`}>view</Link>
-      </TooltipRow>
-      <TooltipRow label="Lead variant">
-        <Link to={`/variant/${data.variant.id}`}>
-          <DisplayVariantId
-            variantId={data.variant.id}
-            referenceAllele={data.variant.referenceAllele}
-            alternateAllele={data.variant.alternateAllele}
-            expand={false}
-          />
-        </Link>
-      </TooltipRow>
-      <TooltipRow label="P-value">
-        <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} />
-      </TooltipRow>
-      <TooltipRow label="Beta">
-        {data.beta?.toFixed(3) ?? naLabel}
-      </TooltipRow>
-      <TooltipRow label="Finemapping method">
-       {data.finemappingMethod ?? naLabel}
-      </TooltipRow>
-      {data.l2Gpredictions?.[0].target
-        ? <TooltipRow label="Top L2G">
-            <Link to={`/target/${data.l2Gpredictions?.[0].target.id}`}>
-              {data.l2Gpredictions?.[0].target.approvedSymbol}
+    <div style={{
+      width: "100%",
+      height: "100%",
+      background: "#fffc",
+      borderColor: "#ddd",
+      borderWidth: "1px",
+      borderStyle: "solid",
+      borderRadius: "0.2rem",
+      padding: "0.25em 0.5rem",
+    }}>
+      <table>
+        <tbody>
+          <TooltipRow label="Details">
+            <Link to={`../credible-set/${data.studyLocusId}`}>view</Link>
+          </TooltipRow>
+          <TooltipRow label="Lead variant">
+            <Link to={`/variant/${data.variant.id}`}>
+              <DisplayVariantId
+                variantId={data.variant.id}
+                referenceAllele={data.variant.referenceAllele}
+                alternateAllele={data.variant.alternateAllele}
+                expand={false}
+              />
             </Link>
           </TooltipRow>
-        : <TooltipRow label="Top L2G">
-            {naLabel}
+          <TooltipRow label="P-value">
+            <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} />
           </TooltipRow>
-      }
-      <TooltipRow label="L2G score">
-        {data.l2Gpredictions?.[0].score.toFixed(3)}
-      </TooltipRow>
-      <TooltipRow label="Credible set size">
-        {data.locus?.length ?? naLabel}
-      </TooltipRow>
-    </Box>
+          <TooltipRow label="Beta">
+            {data.beta?.toFixed(3) ?? naLabel}
+          </TooltipRow>
+          <TooltipRow label="Finemapping">
+          {data.finemappingMethod ?? naLabel}
+          </TooltipRow>
+          {data.l2Gpredictions?.[0].target
+            ? <TooltipRow label="Top L2G">
+                <Link to={`/target/${data.l2Gpredictions?.[0].target.id}`}>
+                  {data.l2Gpredictions?.[0].target.approvedSymbol}
+                </Link>
+              </TooltipRow>
+            : <TooltipRow label="Top L2G">
+                {naLabel}
+              </TooltipRow>
+          }
+          <TooltipRow label="L2G score">
+            {data.l2Gpredictions?.[0].score.toFixed(3)}
+          </TooltipRow>
+          <TooltipRow label="Credible set size">
+            {data.locus?.length ?? naLabel}
+          </TooltipRow>
+        </tbody>
+      </table>
+    </div>
   );
 }
 
 function TooltipRow({ children, label }) {
   return (
-    <Box display="flex" alignItems="center">
-      <Typography variant="subtitle2" style={{ paddingRight: "0.2rem" }}>
-        {label}:
-      </Typography>
-      <Typography variant="body2">
-        {children}
-      </Typography>
-    </Box>
+    <tr>
+      <td>
+        <Typography variant="subtitle2" style={{ lineHeight: 1.35, paddingRight: "0.2rem" }}>
+          {label}:
+        </Typography>
+      </td>
+      <td>
+        <Typography variant="body2"  style={{ lineHeight: 1.35 }}>
+          {children}
+        </Typography>
+      </td>
+    </tr>
   );
 }
 
