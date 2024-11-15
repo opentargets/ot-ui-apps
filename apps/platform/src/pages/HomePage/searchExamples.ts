@@ -16,6 +16,7 @@ type Examples = {
 
 export const pppSearchExamples: Examples = {
   targets: [
+    { type: "suggestion", entity: "target", name: "PCSK9", id: "ENSG00000169174" },
     { type: "suggestion", entity: "target", name: "WRN", id: "ENSG00000165392" },
     { type: "suggestion", entity: "target", name: "KRAS", id: "ENSG00000133703" },
     { type: "suggestion", entity: "target", name: "WDR7", id: "ENSG00000091157" },
@@ -42,6 +43,7 @@ export const pppSearchExamples: Examples = {
     { type: "suggestion", entity: "drug", name: "LYRICA", id: "CHEMBL1059" },
   ],
   variants: [
+    { type: "suggestion", entity: "variant", name: "rs4129267", id: "1_154453788_C_T" },
     { type: "suggestion", entity: "variant", name: "4_1804392_G_A", id: "4_1804392_G_A" },
     { type: "suggestion", entity: "variant", name: "11_64600382_G_A", id: "11_64600382_G_A" },
     { type: "suggestion", entity: "variant", name: "12_6333477_C_T", id: "12_6333477_C_T" },
@@ -52,6 +54,7 @@ export const pppSearchExamples: Examples = {
 
 export const searchExamples: Examples = {
   targets: [
+    { type: "suggestion", entity: "target", name: "PCSK9", id: "ENSG00000169174" },
     { type: "suggestion", entity: "target", name: "IL13", id: "ENSG00000169194" },
     { type: "suggestion", entity: "target", name: "TSLP", id: "ENSG00000145777" },
     { type: "suggestion", entity: "target", name: "ADAM33", id: "ENSG00000149451" },
@@ -113,6 +116,7 @@ export const searchExamples: Examples = {
     { type: "suggestion", entity: "drug", name: "LYRICA", id: "CHEMBL1059" },
   ],
   variants: [
+    { type: "suggestion", entity: "variant", name: "rs4129267", id: "1_154453788_C_T" },
     { type: "suggestion", entity: "variant", name: "4_1804392_G_A", id: "4_1804392_G_A" },
     { type: "suggestion", entity: "variant", name: "11_64600382_G_A", id: "11_64600382_G_A" },
     { type: "suggestion", entity: "variant", name: "12_6333477_C_T", id: "12_6333477_C_T" },
