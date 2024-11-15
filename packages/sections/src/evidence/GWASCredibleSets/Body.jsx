@@ -25,7 +25,7 @@ function getColumns() {
   return [
     {
       id: "credibleSet",
-      label: "More Details",
+      label: "Navigate",
       renderCell: ({ credibleSet }) => {
         return (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -64,6 +64,17 @@ function getColumns() {
           <Link to={`/study/${credibleSet?.study.studyId}`}>{credibleSet?.study.studyId}</Link>
         );
       },
+    },
+    {
+      id: "nSamples",
+      label: "Sample size",
+      numeric: true,
+      sortable: true,
+      renderCell: ({ credibleSet }) =>
+        credibleSet?.study.nSamples
+          ? parseInt(credibleSet?.study.nSamples, 10).toLocaleString()
+          : naLabel,
+      filterValue: ({ credibleSet }) => parseInt(credibleSet?.study.nSamples, 10).toLocaleString(),
     },
     {
       id: "pValue",
@@ -143,18 +154,6 @@ function getColumns() {
       },
     },
     {
-      id: "nSamples",
-      label: "Sample size",
-      numeric: true,
-      sortable: true,
-      renderCell: ({ credibleSet }) =>
-        credibleSet?.study.nSamples
-          ? parseInt(credibleSet?.study.nSamples, 10).toLocaleString()
-          : naLabel,
-
-      filterValue: ({ credibleSet }) => parseInt(credibleSet?.study.nSamples, 10).toLocaleString(),
-    },
-    {
       id: "publication",
       label: "Publication",
       renderCell: ({ credibleSet }) => {
@@ -197,10 +196,10 @@ function Body({ id, label, entity }) {
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
-          order="asc"
+          order="desc"
           rows={request.data?.disease.gwasCredibleSets.rows}
           showGlobalFilter
-          sortBy="pValue"
+          sortBy="score"
           query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
           variables={variables}
           loading={request.loading}
