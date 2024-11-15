@@ -80,6 +80,7 @@ const summaries = [
   ExpressionAtlasSummary,
   Gene2PhenotypeSummary,
   GenomicsEnglandSummary,
+  GWASCredibleSetsSummary,
   ImpcSummary,
   IntOgenSummary,
   GeneBurdenSummary,

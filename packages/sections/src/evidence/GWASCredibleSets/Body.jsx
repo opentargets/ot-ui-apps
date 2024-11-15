@@ -69,7 +69,6 @@ function getColumns() {
       id: "pValue",
       label: "P-value",
       comparator: (a, b) => {
-        console.log(a, b);
         return mantissaExponentComparator(
           a?.credibleSet.pValueMantissa,
           a?.credibleSet.pValueExponent,
@@ -196,8 +195,8 @@ function Body({ id, label, entity }) {
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
-          order="desc"
-          rows={request.data?.disease.openTargetsGenetics.rows}
+          order="asc"
+          rows={request.data?.disease.gwasCredibleSets.rows}
           showGlobalFilter
           sortBy="pValue"
           query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
