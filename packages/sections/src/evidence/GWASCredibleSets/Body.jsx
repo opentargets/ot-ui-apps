@@ -151,6 +151,8 @@ function getColumns() {
         credibleSet?.study.nSamples
           ? parseInt(credibleSet?.study.nSamples, 10).toLocaleString()
           : naLabel,
+
+      filterValue: ({ credibleSet }) => parseInt(credibleSet?.study.nSamples, 10).toLocaleString(),
     },
     {
       id: "publication",
