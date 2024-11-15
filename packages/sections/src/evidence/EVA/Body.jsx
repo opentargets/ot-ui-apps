@@ -139,7 +139,8 @@ function getColumns(label) {
     {
       id: "variantHgvsId",
       label: "HGVS ID",
-      renderCell: ({ variantHgvsId }) => variantHgvsId || naLabel,
+      renderCell: ({ variant }) => variant.hgvsId || naLabel,
+      filterValue: ({ variant }) => `${variant.hgvsId}`,
     },
     {
       id: "studyId",

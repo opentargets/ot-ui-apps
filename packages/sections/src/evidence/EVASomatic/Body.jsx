@@ -96,8 +96,8 @@ const getColumns = label => [
   {
     id: "variantHgvsId",
     label: "HGVS ID",
-    renderCell: ({ variantHgvsId }) => variantHgvsId || naLabel,
-    filterValue: ({ variantHgvsId }) => `${variantHgvsId}`,
+    renderCell: ({ variant }) => variant.hgvsId || naLabel,
+    filterValue: ({ variant }) => `${variant.hgvsId}`,
   },
   {
     id: "studyId",
