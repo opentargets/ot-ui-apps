@@ -144,7 +144,7 @@ function getColumns() {
     },
     {
       id: "nSamples",
-      label: "Credible set size",
+      label: "Sample size",
       numeric: true,
       sortable: true,
       renderCell: ({ credibleSet }) =>
