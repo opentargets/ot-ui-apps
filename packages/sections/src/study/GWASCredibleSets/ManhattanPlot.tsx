@@ -14,6 +14,7 @@ import {
   XGrid,
   Circle,
   Segment,
+  Rect,
   HTML,
 } from "ui";
 import { scaleLinear, scaleLog, min } from "d3";
@@ -81,7 +82,6 @@ export default function ManhattanPlot({ loading, data }) {
           values={tickData => [0, ...tickData.map(chromo => chromo.end)]}
           tickLength={15}
         />
-        <XAxis />
         <XLabel
           values={tickData => tickData.map(chromo => chromo.midpoint)}
           format={(_, i, __, tickData) => tickData[i].chromosome}
@@ -98,7 +98,6 @@ export default function ManhattanPlot({ loading, data }) {
             <tspan dy="-4">(pValue)</tspan>
           </tspan>
         </XTitle>
-        <YAxis />
         <YTick />
         <YLabel format={v => -Math.log10(v)} />
 
@@ -123,6 +122,18 @@ export default function ManhattanPlot({ loading, data }) {
         />
 
         {/* on hover */}
+        <Rect
+          dataFrom="hover"
+          x={0}
+          xx={genomeLength}
+          dxx={8}
+          y={pValueMin}
+          yy={pValueMax}
+          dy={-8}
+          dyy={0}
+          fill={background}
+          fillOpacity={0.4}
+        />
         <Segment
           dataFrom="hover"
           x={d => genomePositions[d.variant.id]}
@@ -132,7 +143,6 @@ export default function ManhattanPlot({ loading, data }) {
           stroke={markColor}
           strokeWidth={1.7}
           strokeOpacity={1}
-          hover="stay"
         />
         <Circle
           dataFrom="hover"
@@ -140,7 +150,6 @@ export default function ManhattanPlot({ loading, data }) {
           y={pValue}
           fill={markColor}
           area={circleArea}
-          hover="stay"
         />
         <HTML
           dataFrom="hover"
@@ -154,6 +163,10 @@ export default function ManhattanPlot({ loading, data }) {
           dx={d => xAnchor(d) === 'left' ? 10 : -10}
           dy={d => yAnchor(d) === 'top' ? 10 : -10}
         />
+
+        {/* axes at end so fade rectangle doesn't cover them */}
+        <XAxis />
+        <YAxis />
 
       </Plot>
     </Vis>
