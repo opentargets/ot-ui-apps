@@ -5,21 +5,18 @@ const UpdateSelectionContext = createContext(null);
 
 // provider
 export function Vis({ children }) {
-  const [selection, setSelection] = useState({ hover: {} });
+  const [selection, setSelection] = useState({ hover: null});
   const updateSelection = useCallback(
-    (selectionType, selectionLabel, selectionData) => {
-      const newSelection = { ...selection };
+    (selectionType, newData) => {
       if (selectionType === 'hover') {
-        const currentData = newSelection[selectionType][selectionLabel];
-        if (currentData === selectionData ||
-            currentData?.[0] === selectionData?.[0]) {
+        if (selection.hover === newData ||
+            selection.hover?.[0] === newData?.[0]) {
           return;
         }
-        newSelection[selectionType][selectionLabel] = selectionData;
-        setSelection(newSelection);
+        setSelection({ hover: newData });
       }
     },
-    []
+    [selection]
   );
 
   return (
@@ -37,4 +34,9 @@ export function useVisSelection() {
 
 export function useVisUpdateSelection() {
   return useContext(UpdateSelectionContext);
+}
+
+export function useVisClearSelection() {
+  const visUpdateSelection = useVisUpdateSelection();
+  return () => visUpdateSelection('hover', null);
 }
