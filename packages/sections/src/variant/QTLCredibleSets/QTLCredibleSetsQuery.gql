@@ -31,10 +31,7 @@ query QTLCredibleSetsQuery($variantId: String!, $size: Int!) {
           biosampleName
         }
       }
-      locus {
-        variant {
-          id
-        }
+      locus(variantIds: [$variantId]) {
         posteriorProbability
       }
     }

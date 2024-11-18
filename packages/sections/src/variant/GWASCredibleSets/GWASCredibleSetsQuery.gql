@@ -25,10 +25,7 @@ query GWASCredibleSetsQuery($variantId: String!, $size: Int!) {
           id
         }
       }
-      locus {
-        variant {
-          id
-        }
+      locus(variantIds: [$variantId]) {
         r2Overall
         posteriorProbability
       }
