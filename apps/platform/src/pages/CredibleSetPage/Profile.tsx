@@ -11,15 +11,20 @@ import {
 import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
 import GWASColocSummary from "sections/src/credibleSet/GWASColoc/Summary";
 import GWASMolQTLSummary from "sections/src/credibleSet/GWASMolQTL/Summary";
+import Locus2GeneSummary from "sections/src/credibleSet/Locus2Gene/Summary";
+
+// const summaries = [VariantsSummary, GWASColocSummary, GWASMolQTLSummary];
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
+const GWASMolQTLSection = lazy(() => import("sections/src/credibleSet/GWASMolQTL/Body"));
 const VariantsSection = lazy(() => import("sections/src/credibleSet/Variants/Body"));
 const GWASColocSection = lazy(() => import("sections/src/credibleSet/GWASColoc/Body"));
-const GWASMolQTLSection = lazy(() => import("sections/src/credibleSet/GWASMolQTL/Body"));
 
-// const summaries = [VariantsSummary, GWASColocSummary, GWASMolQTLSummary];
+const Locus2GeneSection = lazy(() => import("sections/src/credibleSet/Locus2Gene/Body"));
+
+const summaries = [VariantsSummary, GWASColocSummary, Locus2GeneSummary];
 
 const CREDIBLE_SET = "credibleSets";
 // const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
@@ -48,7 +53,7 @@ const CREDIBLE_SET = "credibleSets";
 // };
 
 const createProfileQuery = (studyType: string) => {
-  const summaries = [VariantsSummary, GWASMolQTLSummary];
+  const summaries = [VariantsSummary, GWASMolQTLSummary, Locus2GeneSummary];
   // if (studyType === "gwas") {
   //   summaries.push(GWASColocSummary);
   // }
@@ -96,6 +101,7 @@ function Profile({
 
       <SummaryContainer>
         <VariantsSummary />
+        <Locus2GeneSummary />
         {studyType === "gwas" && (
           <>
             <GWASColocSummary />
@@ -114,6 +120,10 @@ function Profile({
             entity={CREDIBLE_SET}
           />
         </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <Locus2GeneSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
+        </Suspense>
+
         {studyType === "gwas" && (
           <Suspense fallback={<SectionLoader />}>
             <GWASColocSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />

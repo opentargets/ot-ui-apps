@@ -102,9 +102,9 @@ export const OtTableCellContainer = styled(Box, {
   theme.unstable_sx({
     typography: "body2",
     ...(numeric && {
+      fontVariantNumeric: "tabular-nums",
       display: "flex",
       justifyContent: "flex-end",
-      typography: "monoText",
       pr: 2,
     }),
   })

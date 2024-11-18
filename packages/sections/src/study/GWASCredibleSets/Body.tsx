@@ -1,10 +1,17 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
+import {
+  Link,
+  SectionItem,
+  ScientificNotation,
+  DisplayVariantId,
+  OtTable,
+} from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import ManhattanPlot from "./ManhattanPlot";
 
 const columns = [
   {
@@ -74,28 +81,29 @@ const columns = [
     label: "Finemapping method",
   },
   {
-    id: "topL2G",
+    id: "TopL2G",
     label: "Top L2G",
     tooltip: "Top gene prioritised by our locus-to-gene model",
-    filterValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
-    renderCell: ({ strongestLocus2gene }) => {
-      if (!strongestLocus2gene?.target) return naLabel;
-      const { target } = strongestLocus2gene;
+    filterValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.target.approvedSymbol,
+    renderCell: ({ l2Gpredictions }) => {
+      const { target } = l2Gpredictions?.[0];
+      if (!target) return naLabel;
       return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
     },
-    exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
+    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.target.approvedSymbol,
   },
   {
     id: "l2gScore",
     label: "L2G score",
-    comparator: (rowA, rowB) => rowA?.strongestLocus2gene?.score - rowB?.strongestLocus2gene?.score,
+    comparator: (rowA, rowB) => rowA?.l2Gpredictions?.[0]?.score - rowB?.l2Gpredictions?.[0]?.score,
     sortable: true,
     filterValue: false,
-    renderCell: ({ strongestLocus2gene }) => {
-      if (typeof strongestLocus2gene?.score !== "number") return naLabel;
-      return strongestLocus2gene.score.toFixed(3);
+    renderCell: ({ l2Gpredictions }) => {
+      const { score } = l2Gpredictions?.[0];
+      if (typeof score !== "number") return naLabel;
+      return score.toFixed(3);
     },
-    exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.score,
+    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.score,
   },
   {
     id: "credibleSetSize",
@@ -129,16 +137,22 @@ function Body({ id, entity }: BodyProps) {
       request={request}
       renderDescription={() => <Description studyId={request.data?.gwasStudy[0].studyId} />}
       renderBody={() => (
-        <OtTable
-          dataDownloader
-          showGlobalFilter
-          sortBy="pValue"
-          loading={request.loading}
-          columns={columns}
-          rows={request.data?.gwasStudy[0].credibleSets}
-          query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
-          variables={variables}
-        />
+        <>
+          <ManhattanPlot
+            loading={request.loading}
+            data={request.data?.gwasStudy[0].credibleSets}
+          />
+          <OtTable
+            dataDownloader
+            showGlobalFilter
+            sortBy="pValue"
+            loading={request.loading}
+            columns={columns}
+            rows={request.data?.gwasStudy[0].credibleSets}
+            query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
+            variables={variables}
+          />
+        </>
       )}
     />
   );
