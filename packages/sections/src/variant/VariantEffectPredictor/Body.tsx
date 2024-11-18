@@ -181,9 +181,8 @@ export function Body({ id, entity }: BodyProps) {
         />
       )}
       renderBody={() => {
-        let sortedRows = [];
-        sortedRows = structuredClone(request.data?.variant.transcriptConsequences);
-        sortedRows?.sort((a, b) => a.transcriptIndex - b.transcriptIndex);
+        const sortedRows = [...request.data?.variant.transcriptConsequences];
+        sortedRows.sort((a, b) => a.transcriptIndex - b.transcriptIndex);
         return (
           <OtTable
             columns={columns}
