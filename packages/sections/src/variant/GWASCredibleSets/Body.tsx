@@ -10,7 +10,7 @@ import {
   OtScoreLinearBar,
 } from "ui";
 import { Box, Chip } from "@mui/material";
-import { clinvarStarMap, naLabel } from "../../constants";
+import { clinvarStarMap, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
@@ -223,6 +223,7 @@ type BodyProps = {
 function Body({ id, entity }: BodyProps) {
   const variables = {
     variantId: id,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(GWAS_CREDIBLE_SETS_QUERY, {
