@@ -31,7 +31,7 @@ function StudyPage() {
     return <NotFoundPage />;
   }
 
-  const studyCategory = getStudyCategory(studyInfo?.projectId);
+  const studyType = studyInfo?.studyType;
 
   return (
     <BasePage
@@ -45,7 +45,7 @@ function StudyPage() {
         backgroundTraits={studyInfo?.backgroundTraits}
         targetId={studyInfo?.target?.id}
         diseases={studyInfo?.diseases}
-        studyCategory={studyCategory}
+        studyType={studyType}
       />
       <ScrollToTop />
 
@@ -67,7 +67,7 @@ function StudyPage() {
 
       <Switch>
         <Route exact path={path}>
-          <Profile studyId={studyId} studyCategory={studyCategory} diseases={studyInfo?.diseases} />
+          <Profile studyId={studyId} studyType={studyType} diseases={studyInfo?.diseases} />
         </Route>
         <Route path="*">
           <Redirect to={`/study/${studyId}`} />
