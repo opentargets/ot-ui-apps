@@ -16,6 +16,7 @@ export type DefaultSortProp =
 
 export type OtTableProps = {
   showGlobalFilter: boolean;
+  tableDataLoading: boolean;
   columns: Array<Record<string, unknown>>;
   rows: Array<Record<string, unknown>>;
   verticalHeaders: boolean;
@@ -32,7 +33,7 @@ export type OtTableProps = {
 };
 
 export type loadingTableRows = {
-  id: string | null;
+  id: string;
 };
 
 /*************************
