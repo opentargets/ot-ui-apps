@@ -13,8 +13,6 @@ import GWASColocSummary from "sections/src/credibleSet/GWASColoc/Summary";
 import GWASMolQTLSummary from "sections/src/credibleSet/GWASMolQTL/Summary";
 import Locus2GeneSummary from "sections/src/credibleSet/Locus2Gene/Summary";
 
-// const summaries = [VariantsSummary, GWASColocSummary, GWASMolQTLSummary];
-
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
@@ -24,43 +22,17 @@ const GWASColocSection = lazy(() => import("sections/src/credibleSet/GWASColoc/B
 
 const Locus2GeneSection = lazy(() => import("sections/src/credibleSet/Locus2Gene/Body"));
 
-const summaries = [VariantsSummary, GWASColocSummary, Locus2GeneSummary];
-
 const CREDIBLE_SET = "credibleSets";
-// const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
-//   summaries,
-//   "credibleSet",
-//   "CredibleSetProfileSummaryFragment"
-// );
-
-// const CREDIBLE_SET_PROFILE_QUERY = gql`
-//   query CredibleSetProfileQuery($studyLocusIds: [String!]!) {
-//     credibleSets(studyLocusIds: $studyLocusIds) {
-//       studyLocusId
-//       ...CredibleSetProfileHeaderFragment
-//       ...CredibleSetProfileSummaryFragment
-//     }
-//   }
-//   ${ProfileHeader.fragments.profileHeader}
-//   ${CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT}
-// `;
-
-// type ProfileProps = {
-//   studyLocusId: string;
-//   variantId: string;
-//   referenceAllele: string;
-//   alternateAllele: string;
-// };
 
 const createProfileQuery = (studyType: string) => {
-  const summaries = [VariantsSummary, GWASMolQTLSummary, Locus2GeneSummary];
-  // if (studyType === "gwas") {
-  //   summaries.push(GWASColocSummary);
-  // }
+  const summaries = [VariantsSummary, Locus2GeneSummary];
+  if (studyType === "gwas") {
+    summaries.push(GWASColocSummary);
+  }
   if (studyType !== "gwas") {
     summaries.push(GWASMolQTLSummary);
   }
-  // const summaries = [VariantsSummary, GWASColocSummary, GWASMolQTLSummary];
+
   const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
     summaries,
     "credibleSet",
@@ -78,7 +50,6 @@ const createProfileQuery = (studyType: string) => {
     ${ProfileHeader.fragments.profileHeader}
     ${CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT}
   `;
-
   return CREDIBLE_SET_PROFILE_QUERY;
 };
 

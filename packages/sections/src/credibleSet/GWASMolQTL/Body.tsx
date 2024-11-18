@@ -19,6 +19,15 @@ const columns = [
     exportValue: false,
   },
   {
+    id: "otherStudyLocus.study.target",
+    label: "Gene",
+    renderCell: ({ otherStudyLocus }) => {
+      const study = otherStudyLocus?.study;
+      if (!study?.target) return naLabel;
+      return <Link to={`../study/${study.target.id}`}>{study.target.approvedSymbol}</Link>;
+    },
+  },
+  {
     id: "otherStudyLocus.study.studyId",
     label: "Study ID",
     renderCell: ({ otherStudyLocus }) => {
@@ -48,6 +57,24 @@ const columns = [
     exportValue: ({ otherStudyLocus }) => {
       const { projectId, publicationFirstAuthor } = otherStudyLocus.study || {};
       getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor;
+    },
+  },
+  {
+    id: "otherStudyLocus.study.studyType",
+    label: "Affected tissue/cell",
+    renderCell: ({ otherStudyLocus }) => {
+      const biosample = otherStudyLocus?.study?.biosample;
+      if (!biosample) return naLabel;
+      return <Link to={`../study/${biosample.biosampleId}`}>{biosample.name}</Link>;
+    },
+  },
+  {
+    id: "otherStudyLocus.study.studyType",
+    label: "QTL type",
+    renderCell: ({ otherStudyLocus }) => {
+      const studyType = otherStudyLocus?.study?.studyType;
+      if (!studyType) return naLabel;
+      return studyType;
     },
   },
   {

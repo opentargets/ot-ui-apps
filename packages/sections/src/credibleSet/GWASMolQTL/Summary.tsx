@@ -10,7 +10,7 @@ function Summary() {
 }
 
 Summary.fragments = {
-  GWASColocSummaryFragment: GWASMOLQTL_SUMMARY,
+  GWASMolQTLSummaryFragment: GWASMOLQTL_SUMMARY,
 };
 
 export default Summary;

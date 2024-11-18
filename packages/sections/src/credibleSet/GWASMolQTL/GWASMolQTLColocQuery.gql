@@ -5,9 +5,19 @@ query GWASMolQTLColocQuery($studyLocusIds: [String!]!) {
         studyLocusId
         study {
           studyId
+          studyType
           projectId
           traitFromSource
           publicationFirstAuthor
+          target {
+            approvedSymbol
+            id
+          }
+          biosample {
+            biosampleId
+            biosampleName
+            description
+          }
         }
         variant {
           id
