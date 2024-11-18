@@ -1,5 +1,5 @@
 fragment GWASCredibleSetsSummaryFragment on Disease {
-  openTargetsGenetics: evidences(
+  gwasCredibleSets: evidences(
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["gwas_credible_sets"]

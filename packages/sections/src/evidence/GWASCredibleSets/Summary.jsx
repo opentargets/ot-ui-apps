@@ -12,9 +12,7 @@ function Summary() {
       definition={definition}
       request={request}
       renderSummary={data =>
-        `${data.openTargetsGenetics.count} entr${
-          data.openTargetsGenetics.count === 1 ? "y" : "ies"
-        }`
+        `${data.gwasCredibleSets.count} entr${data.gwasCredibleSets.count === 1 ? "y" : "ies"}`
       }
       subText={dataTypesMap.genetic_association}
     />
@@ -22,7 +20,7 @@ function Summary() {
 }
 
 Summary.fragments = {
-  OpenTargetsGeneticsSummaryFragment: GWAS_CREDIBLE_SETS_SUMMARY_FRAGMENT,
+  GWASCredibleSetsSummaryFragment: GWAS_CREDIBLE_SETS_SUMMARY_FRAGMENT,
 };
 
 export default Summary;
