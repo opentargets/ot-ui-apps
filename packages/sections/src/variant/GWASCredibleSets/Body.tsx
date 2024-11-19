@@ -16,6 +16,7 @@ import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import PheWasPlot from "./PheWasPlot";
 
 type getColumnsType = {
   id: string;
@@ -253,21 +254,27 @@ function Body({ id, entity }: BodyProps) {
         }
 
         return (
-          <OtTable
-            dataDownloader
-            showGlobalFilter
-            sortBy="pValue"
-            columns={getColumns({
-              id,
-              referenceAllele: request.data?.variant.referenceAllele,
-              alternateAllele: request.data?.variant.alternateAllele,
-              posteriorProbabilities,
-            })}
-            rows={request.data?.variant.credibleSets}
-            loading={request.loading}
-            query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
-            variables={variables}
-          />
+          <>
+            <PheWasPlot
+              loading={request.loading}
+              data={request.data?.variant.credibleSets}
+            />
+            <OtTable
+              dataDownloader
+              showGlobalFilter
+              sortBy="pValue"
+              columns={getColumns({
+                id,
+                referenceAllele: request.data?.variant.referenceAllele,
+                alternateAllele: request.data?.variant.alternateAllele,
+                posteriorProbabilities,
+              })}
+              rows={request.data?.variant.credibleSets}
+              loading={request.loading}
+              query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
+              variables={variables}
+            />
+          </>
         );
       }}
     />
