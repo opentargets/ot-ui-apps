@@ -22,7 +22,7 @@ import { ScientificNotation } from "ui";
 import { naLabel } from "../../constants";
 
 export default function ManhattanPlot({ loading, data }) {
-  
+
   const plotHeight = 390;
   const theme = useTheme();
   const background = theme.palette.background.paper;
@@ -36,8 +36,8 @@ export default function ManhattanPlot({ loading, data }) {
   // eslint-disable-next-line
   data = data.filter(d => {
     return d.pValueMantissa != null &&
-           d.pValueExponent != null &&
-           d.variant != null;
+      d.pValueExponent != null &&
+      d.variant != null;
   });
   if (data.length === 0) return null;
 
@@ -53,7 +53,7 @@ export default function ManhattanPlot({ loading, data }) {
     const x = genomePositions[row.variant.id];
     return x < genomeLength / 2 ? 'left' : 'right';
   }
-  
+
   function yAnchor(row) {
     const y = pValue(row);
     return Math.log10(y) > Math.log10(pValueMin) / 2 ? 'bottom' : 'top';
@@ -87,7 +87,7 @@ export default function ManhattanPlot({ loading, data }) {
           format={(_, i, __, tickData) => tickData[i].chromosome}
           padding={5}
         />
-        <XGrid 
+        <XGrid
           values={tickData => tickData.map(chromo => chromo.end)}
           stroke="#cecece"
           strokeDasharray="3 4"
@@ -208,17 +208,17 @@ function Tooltip({ data }) {
             {data.beta?.toFixed(3) ?? naLabel}
           </TooltipRow>
           <TooltipRow label="Finemapping">
-          {data.finemappingMethod ?? naLabel}
+            {data.finemappingMethod ?? naLabel}
           </TooltipRow>
           {data.l2Gpredictions?.[0].target
             ? <TooltipRow label="Top L2G">
-                <Link to={`/target/${data.l2Gpredictions?.[0].target.id}`}>
-                  {data.l2Gpredictions?.[0].target.approvedSymbol}
-                </Link>
-              </TooltipRow>
+              <Link to={`/target/${data.l2Gpredictions?.[0].target.id}`}>
+                {data.l2Gpredictions?.[0].target.approvedSymbol}
+              </Link>
+            </TooltipRow>
             : <TooltipRow label="Top L2G">
-                {naLabel}
-              </TooltipRow>
+              {naLabel}
+            </TooltipRow>
           }
           <TooltipRow label="L2G score">
             {data.l2Gpredictions?.[0].score.toFixed(3)}
@@ -241,7 +241,7 @@ function TooltipRow({ children, label }) {
         </Typography>
       </td>
       <td>
-        <Typography variant="body2"  style={{ lineHeight: 1.35 }}>
+        <Typography variant="body2" style={{ lineHeight: 1.35 }}>
           {children}
         </Typography>
       </td>
@@ -250,40 +250,43 @@ function TooltipRow({ children, label }) {
 }
 
 function pValue(row) {
-  return row.pValueMantissa * 10 ** row.pValueExponent;
+  return Math.max(
+    row.pValueMantissa * 10 ** row.pValueExponent,
+    Number.MIN_VALUE
+  );
 }
 
 // from: https://www.ncbi.nlm.nih.gov/grc/human/data
 // (first tab: "Chromosome lengths")
 const chromosomeInfo = [
-  { chromosome: '1',  length: 248956422 },
-  { chromosome: '2',	length: 242193529 },
-  { chromosome: '3',	length: 198295559 },
-  { chromosome: '4',	length: 190214555 },
-  { chromosome: '5',	length: 181538259 },
-  { chromosome: '6',	length: 170805979 },
-  { chromosome: '7',	length: 159345973 },
-  { chromosome: '8',	length: 145138636 },
-  { chromosome: '9',  length: 138394717 },
-  { chromosome: '10',	length: 133797422 },
-  { chromosome: '11',	length: 135086622 },
-  { chromosome: '12',	length: 133275309 },
-  { chromosome: '13',	length: 114364328 },
-  { chromosome: '14',	length: 107043718 },
-  { chromosome: '15',	length: 101991189 },
-  { chromosome: '16',	length: 90338345  },
-  { chromosome: '17',	length: 83257441  },
-  { chromosome: '18',	length: 80373285  },
-  { chromosome: '19',	length: 58617616  },
-  { chromosome: '20',	length: 64444167  },
-  { chromosome: '21',	length: 46709983  },
-  { chromosome: '22',	length: 50818468  },
-  { chromosome: 'X',	length: 156040895 },
-  { chromosome: 'Y',  length: 57227415  },
+  { chromosome: '1', length: 248956422 },
+  { chromosome: '2', length: 242193529 },
+  { chromosome: '3', length: 198295559 },
+  { chromosome: '4', length: 190214555 },
+  { chromosome: '5', length: 181538259 },
+  { chromosome: '6', length: 170805979 },
+  { chromosome: '7', length: 159345973 },
+  { chromosome: '8', length: 145138636 },
+  { chromosome: '9', length: 138394717 },
+  { chromosome: '10', length: 133797422 },
+  { chromosome: '11', length: 135086622 },
+  { chromosome: '12', length: 133275309 },
+  { chromosome: '13', length: 114364328 },
+  { chromosome: '14', length: 107043718 },
+  { chromosome: '15', length: 101991189 },
+  { chromosome: '16', length: 90338345 },
+  { chromosome: '17', length: 83257441 },
+  { chromosome: '18', length: 80373285 },
+  { chromosome: '19', length: 58617616 },
+  { chromosome: '20', length: 64444167 },
+  { chromosome: '21', length: 46709983 },
+  { chromosome: '22', length: 50818468 },
+  { chromosome: 'X', length: 156040895 },
+  { chromosome: 'Y', length: 57227415 },
 ];
 
 chromosomeInfo.forEach((chromo, i) => {
-  chromo.start = chromosomeInfo[i-1]?.end ?? 0;
+  chromo.start = chromosomeInfo[i - 1]?.end ?? 0;
   chromo.end = chromo.start + chromo.length;
   chromo.midpoint = (chromo.start + chromo.end) / 2;
 });
@@ -291,7 +294,7 @@ chromosomeInfo.forEach((chromo, i) => {
 const genomeLength = chromosomeInfo.at(-1).end;
 
 const chromosomeInfoMap = new Map(
-  chromosomeInfo.map(obj => [ obj.chromosome, obj ])
+  chromosomeInfo.map(obj => [obj.chromosome, obj])
 );
 
 function cumulativePosition({ chromosome, position }) {
