@@ -264,6 +264,7 @@ function Body({ id, entity }: BodyProps) {
             <PheWasPlot
               loading={request.loading}
               data={request.data?.variant.credibleSets}
+              id={id}
             />
             <OtTable
               dataDownloader

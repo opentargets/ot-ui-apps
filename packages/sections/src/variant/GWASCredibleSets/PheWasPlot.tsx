@@ -17,24 +17,19 @@ import {
   Rect,
   HTML,
 } from "ui";
-import { scaleLinear, scaleLog, min } from "d3";
+import { scaleLinear, scaleLog, min, scaleOrdinal } from "d3";
 import { ScientificNotation } from "ui";
 import { naLabel } from "../../constants";
-// import { group } from "d3";
-// import * as d3 from "d3";
 import { groupBy } from "lodash";
 
-// window.d3 = d3
-// debugger
+export default function PheWasPlot({ loading, data, id }) {
 
-export default function PheWasPlot({ loading, data }) {
-
-  const plotHeight = 390;
+  const plotHeight = 440;
   const theme = useTheme();
   const background = theme.palette.background.paper;
   const markColor = theme.palette.primary.main;
   const fontFamily = theme.typography.fontFamily;
-  const circleArea = 32;
+  const circleArea = 36;
 
   if (loading) return <Skeleton height={plotHeight} />;
   if (data == null) return null;
@@ -51,39 +46,24 @@ export default function PheWasPlot({ loading, data }) {
   const pValueMin = min(data, pValue);
   const pValueMax = 1;
 
-  // const diseaseGroups = group(data => data.study.traitFromSource); 
-  // const sortedDiseases = [...diseaseGroups.keys()]
-  //   .map(key => key.toLowerCase())
-  //   .sort();
-  // const xLookup = new Map();
-  // const xTickValues = [0];
-  // const xMidpoints = new Map();
-  // for (let disease of sortedDiseases) {
-  //   for (let variant of diseaseGroups.get(disease)) {
-  //     xLookup.set(variant.id, xLookup.size);
-  //   }
-  //   xTickValues.push(xLookup.size);
-  //   xMidpoints.set(disease, ((xTickValues.at(-1) ?? 0) + xLookup.size) / 2);
-  // }
-
   const diseaseGroups = groupBy(data, d => d.study.traitFromSource);
   const sortedDiseases = Object.keys(diseaseGroups)
-    .map(key => key.toLowerCase())
-    .sort();
-  const xLookup = new Map();
+    .sort((a, b) => a.localeCompare(b));
   const xTickValues = [0];
-  const xMidpoints = new Map();
+  const xMidpoints = [];
+  const sortedData = [];
   for (const disease of sortedDiseases) {
-    for (const variant of diseaseGroups[disease]) {
-      xLookup.set(variant.id, xLookup.size);
+    for (const row of diseaseGroups[disease]) {
+      sortedData.push(row);
     }
-    xTickValues.push(xLookup.size);
-    xMidpoints.set(disease, ((xTickValues.at(-1) ?? 0) + xLookup.size) / 2);
+    xTickValues.push(sortedData.length);
+    xMidpoints.push(((xTickValues.at(-2) ?? 0) + xTickValues.at(-1)) / 2);
   }
+  const xLookup = new Map(sortedData.map((d, i) => [d, i]));
 
   function xAnchor(row) {
-    const x = genomePositions[row.variant.id];
-    return x < genomeLength / 2 ? 'left' : 'right';
+    const x = xLookup.get(row);
+    return x < xLookup.size / 2 ? 'left' : 'right';
   }
 
   function yAnchor(row) {
@@ -99,20 +79,27 @@ export default function PheWasPlot({ loading, data }) {
         clearOnClick
         clearOnLeave
         height={plotHeight}
-        padding={{ top: 50, right: 40, bottom: 50, left: 90 }}
+        padding={{ top: 50, right: 40, bottom: 100, left: 90 }}
         fontFamily={fontFamily}
-        data={data}
+        data={sortedData}
         yReverse
         scales={{
-          x: scaleLinear().domain([0, xGlobal.size]),
-          y: scaleLog().domain([pValueMin, pValueMax]),
+          x: scaleLinear().domain([0, sortedData.length]),
+          y: scaleLog().domain([pValueMin, pValueMax]).nice(),
+          fill: scaleOrdinal(['background', 'markColor'], [background, markColor]),
         }}
       >
-        <XTick values={xTickValues} tickLength={15} />
+        <XTick values={xTickValues} tickLength={10} />
         <XLabel
-          values={[...xMidpoints.keys()]}
-          format={disease => xMidpoints.get(disease)}
+          values={xMidpoints}
+          format={(v, i) => sortedDiseases[i]}
           padding={5}
+          textAnchor="start"
+          style={{
+            transformOrigin: '0% 50%',
+            transformBox: 'fill-box',
+            transform: "rotate(45deg)",
+          }}
         />
         <XGrid values={xTickValues} stroke="#cecece" strokeDasharray="3 4" />
         <XTitle fontSize={11} position="top" align="left" textAnchor="middle" padding={16} dx={-30}>
@@ -125,20 +112,20 @@ export default function PheWasPlot({ loading, data }) {
         <YLabel format={v => -Math.log10(v)} />
 
         <Circle
-          x={d => xLookup.get(d.variant.id)}
+          x={(d, i) => i + 0.5}
           y={pValue}
-          fill={background}
+          fill={d => d.variant.id === id ? markColor : background}
           stroke={markColor}
-          strokeWidth={1.2}
+          strokeWidth={1.3}
           area={circleArea}
-        // hover="stay"
+          hover="stay"
         />
 
         {/* on hover */}
-        {/* <Rect
+        <Rect
           dataFrom="hover"
           x={0}
-          xx={genomeLength}
+          xx={sortedData.length}
           dxx={8}
           y={pValueMin}
           yy={pValueMax}
@@ -147,26 +134,18 @@ export default function PheWasPlot({ loading, data }) {
           fill={background}
           fillOpacity={0.4}
         />
-        <Segment
-          dataFrom="hover"
-          x={d => genomePositions[d.variant.id]}
-          xx={d => genomePositions[d.variant.id]}
-          y={pValue}
-          yy={pValueMax}
-          stroke={markColor}
-          strokeWidth={1.7}
-          strokeOpacity={1}
-        />
         <Circle
           dataFrom="hover"
-          x={d => genomePositions[d.variant.id]}
+          x={d => xLookup.get(d) + 0.5}
           y={pValue}
-          fill={markColor}
+          fill={d => d.variant.id === id ? markColor : background}
+          stroke={markColor}
+          strokeWidth={1.2}
           area={circleArea}
         />
         <HTML
           dataFrom="hover"
-          x={d => genomePositions[d.variant.id]}
+          x={d => xLookup.get(d) + 0.5}
           y={pValue}
           pxWidth={290}
           pxHeight={200}
@@ -175,7 +154,7 @@ export default function PheWasPlot({ loading, data }) {
           pointerEvents="visiblePainted"
           dx={d => xAnchor(d) === 'left' ? 10 : -10}
           dy={d => yAnchor(d) === 'top' ? 10 : -10}
-        /> */}
+        />
 
         {/* axes at end so fade rectangle doesn't cover them */}
         <XAxis />
@@ -187,63 +166,64 @@ export default function PheWasPlot({ loading, data }) {
 
 }
 
-// function Tooltip({ data }) {
-//   return (
-//     <div style={{
-//       width: "100%",
-//       height: "100%",
-//       background: "#fffc",
-//       borderColor: "#ddd",
-//       borderWidth: "1px",
-//       borderStyle: "solid",
-//       borderRadius: "0.2rem",
-//       padding: "0.25em 0.5rem",
-//     }}>
-//       <table>
-//         <tbody>
-//           <TooltipRow label="Details">
-//             <Link to={`../credible-set/${data.studyLocusId}`}>view</Link>
-//           </TooltipRow>
-//           <TooltipRow label="Lead variant">
-//             <Link to={`/variant/${data.variant.id}`}>
-//               <DisplayVariantId
-//                 variantId={data.variant.id}
-//                 referenceAllele={data.variant.referenceAllele}
-//                 alternateAllele={data.variant.alternateAllele}
-//                 expand={false}
-//               />
-//             </Link>
-//           </TooltipRow>
-//           <TooltipRow label="P-value">
-//             <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} />
-//           </TooltipRow>
-//           <TooltipRow label="Beta">
-//             {data.beta?.toFixed(3) ?? naLabel}
-//           </TooltipRow>
-//           <TooltipRow label="Finemapping">
-//             {data.finemappingMethod ?? naLabel}
-//           </TooltipRow>
-//           {data.l2Gpredictions?.[0].target
-//             ? <TooltipRow label="Top L2G">
-//               <Link to={`/target/${data.l2Gpredictions?.[0].target.id}`}>
-//                 {data.l2Gpredictions?.[0].target.approvedSymbol}
-//               </Link>
-//             </TooltipRow>
-//             : <TooltipRow label="Top L2G">
-//               {naLabel}
-//             </TooltipRow>
-//           }
-//           <TooltipRow label="L2G score">
-//             {data.l2Gpredictions?.[0].score.toFixed(3)}
-//           </TooltipRow>
-//           <TooltipRow label="Credible set size">
-//             {data.locus?.length ?? naLabel}
-//           </TooltipRow>
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// }
+function Tooltip({ data }) {
+  return (
+    <div style={{
+      width: "100%",
+      height: "100%",
+      background: "#fffc",
+      borderColor: "#ddd",
+      borderWidth: "1px",
+      borderStyle: "solid",
+      borderRadius: "0.2rem",
+      padding: "0.25em 0.5rem",
+    }}>
+      {JSON.stringify(data)};
+      {/* <table>
+        <tbody>
+          <TooltipRow label="Details">
+            <Link to={`../credible-set/${data.studyLocusId}`}>view</Link>
+          </TooltipRow>
+          <TooltipRow label="Lead variant">
+            <Link to={`/variant/${data.variant.id}`}>
+              <DisplayVariantId
+                variantId={data.variant.id}
+                referenceAllele={data.variant.referenceAllele}
+                alternateAllele={data.variant.alternateAllele}
+                expand={false}
+              />
+            </Link>
+          </TooltipRow>
+          <TooltipRow label="P-value">
+            <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} />
+          </TooltipRow>
+          <TooltipRow label="Beta">
+            {data.beta?.toFixed(3) ?? naLabel}
+          </TooltipRow>
+          <TooltipRow label="Finemapping">
+            {data.finemappingMethod ?? naLabel}
+          </TooltipRow>
+          {data.l2Gpredictions?.[0].target
+            ? <TooltipRow label="Top L2G">
+              <Link to={`/target/${data.l2Gpredictions?.[0].target.id}`}>
+                {data.l2Gpredictions?.[0].target.approvedSymbol}
+              </Link>
+            </TooltipRow>
+            : <TooltipRow label="Top L2G">
+              {naLabel}
+            </TooltipRow>
+          }
+          <TooltipRow label="L2G score">
+            {data.l2Gpredictions?.[0].score.toFixed(3)}
+          </TooltipRow>
+          <TooltipRow label="Credible set size">
+            {data.locus?.length ?? naLabel}
+          </TooltipRow>
+        </tbody>
+      </table> */}
+    </div>
+  );
+}
 
 // function TooltipRow({ children, label }) {
 //   return (
@@ -263,5 +243,8 @@ export default function PheWasPlot({ loading, data }) {
 // }
 
 function pValue(row) {
-  return row.pValueMantissa * 10 ** row.pValueExponent;
+  return Math.max(
+    row.pValueMantissa * 10 ** row.pValueExponent,
+    Number.MIN_VALUE
+  );
 }
