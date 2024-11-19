@@ -20,11 +20,7 @@ function ClinvarStars({ num, length = 4 }: ClinvarStarsProps) {
   const stars = [];
   for (let i = 0; i < length; i++) {
     stars.push(
-      <FontAwesomeIcon
-        key={i}
-        className={num > 0 ? classes.star : ""}
-        icon={num > i ? faStarSolid : faStar}
-      />
+      <FontAwesomeIcon key={i} className={classes.star} icon={num > i ? faStarSolid : faStar} />
     );
   }
 

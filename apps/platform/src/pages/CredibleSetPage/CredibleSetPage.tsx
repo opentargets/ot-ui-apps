@@ -25,6 +25,9 @@ function CredibleSetPage() {
   const referenceAllele = credibleSet?.variant?.referenceAllele;
   const alternateAllele = credibleSet?.variant?.alternateAllele;
   const studyId = credibleSet?.study?.studyId;
+  const studyType = credibleSet?.study?.studyType;
+
+  if (!studyType) return null;
 
   return (
     <BasePage
@@ -40,6 +43,7 @@ function CredibleSetPage() {
         variantId={variantId}
         referenceAllele={referenceAllele}
         alternateAllele={alternateAllele}
+        studyType={studyType}
       />
       <ScrollToTop />
       <Route
@@ -65,6 +69,7 @@ function CredibleSetPage() {
             variantId={variantId}
             referenceAllele={referenceAllele}
             alternateAllele={alternateAllele}
+            studyType={studyType}
           />
         </Route>
       </Switch>

@@ -1,31 +1,17 @@
 import { useQuery } from "@apollo/client";
-import { Skeleton, useTheme } from "@mui/material";
 import {
   Link,
   SectionItem,
   ScientificNotation,
   DisplayVariantId,
   OtTable,
-  Plot,
-  Vis,
-  XAxis,
-  YAxis,
-  XTick,
-  YTick,
-  XLabel,
-  YLabel,
-  XTitle,
-  XGrid,
-  Circle,
-  Segment,
-  HTML,
 } from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
-import { scaleLinear, scaleLog, min } from "d3";
+import ManhattanPlot from "./ManhattanPlot";
 
 const columns = [
   {
@@ -173,162 +159,3 @@ function Body({ id, entity }: BodyProps) {
 }
 
 export default Body;
-
-
-// =============================================================================
-
-// ========== Manhattan plot ==========
-
-function pValue(row) {
-  return row.pValueMantissa * 10 ** row.pValueExponent;
-}
-
-function ManhattanPlot({ loading, data }) {
-  
-  const plotHeight = 370;
-  const theme = useTheme();
-  const background = theme.palette.background.paper;
-  const markColor = theme.palette.primary.main;
-  const fontFamily = theme.typography.fontFamily;
-  const circleArea = 24;
-
-  if (loading) return <Skeleton height={plotHeight} />;
-  if (data == null) return null;
-
-  const pValueMin = min(data, pValue);
-  const pValueMax = 1;
-
-  const genomePositions = {};
-  data.forEach(({ variant }) => {
-    genomePositions[variant.id] = cumulativePosition(variant);
-  });
-
-  return (
-    <Vis>
-      <Plot
-        responsive
-        height={plotHeight}
-        padding={{ top: 50, right: 40, bottom: 40, left: 90 }}
-        fontFamily={fontFamily}
-        data={data}
-        yReverse
-        scales={{
-          x: scaleLinear().domain([0, genomeLength]),
-          y: scaleLog().domain([pValueMin, pValueMax]),
-        }}
-        xTick={chromosomeInfo}
-      >
-        <XTick
-          values={tickData => [0, ...tickData.map(chromo => chromo.end)]}
-          tickLength={15}
-        />
-        <XAxis />
-        <XLabel
-          values={tickData => tickData.map(chromo => chromo.midpoint)}
-          format={(_, i, __, tickData) => tickData[i].chromosome}
-          padding={5}
-        />
-        <XGrid 
-          values={tickData => tickData.map(chromo => chromo.end)}
-          stroke="#cecece"
-          strokeDasharray="3 4"
-        />
-        <XTitle fontSize={11} position="top" align="left" textAnchor="middle" padding={16} dx={-30}>
-          <tspan fontStyle="italic">-log
-            <tspan fontSize="9" dy="4">10</tspan>
-            <tspan dy="-4">(pValue)</tspan>
-          </tspan>
-        </XTitle>
-        <YAxis />
-        <YTick />
-        <YLabel format={v => -Math.log10(v)} />
-        <Segment
-          x={d => genomePositions[d.variant.id]}
-          xx={d => genomePositions[d.variant.id]}
-          y={pValue}
-          yy={pValueMax}
-          stroke={markColor}
-          strokeWidth={1}
-          strokeOpacity={0.7}
-          hover
-        />
-        <Circle
-          x={d => genomePositions[d.variant.id]}
-          y={pValue}
-          fill={background}
-          stroke={markColor}
-          strokeWidth={1.2}
-          area={circleArea}
-          hover
-        />
-
-        {/* TOOLTIP TEST */}
-        <HTML
-          dataFrom="hover"
-          x={d => genomePositions[d.variant.id]}
-          y={pValue}
-          pxWidth={140}
-          pxHeight={50}
-          content={d => (
-            <div style={{ width: "100%", height: "100%", background: "#f0f0f0", border: "1px solid #000" }}>
-              <b>HTML tooltip</b>
-              <div>{d.variant.id}</div>
-            </div>
-          )}
-          // anchor="top-right"
-          dx={8}
-          dy = {-8}
-        />
-      </Plot>
-    </Vis>
-  );
-}
-
-
-// ========== chromosome lengths ==========
-
-// from: https://www.ncbi.nlm.nih.gov/grc/human/data
-// (first tab: "Chromosome lengths")
-const chromosomeInfo = [
-  { chromosome: '1',  length: 248956422 },
-  { chromosome: '2',	length: 242193529 },
-  { chromosome: '3',	length: 198295559 },
-  { chromosome: '4',	length: 190214555 },
-  { chromosome: '5',	length: 181538259 },
-  { chromosome: '6',	length: 170805979 },
-  { chromosome: '7',	length: 159345973 },
-  { chromosome: '8',	length: 145138636 },
-  { chromosome: '9',  length: 138394717 },
-  { chromosome: '10',	length: 133797422 },
-  { chromosome: '11',	length: 135086622 },
-  { chromosome: '12',	length: 133275309 },
-  { chromosome: '13',	length: 114364328 },
-  { chromosome: '14',	length: 107043718 },
-  { chromosome: '15',	length: 101991189 },
-  { chromosome: '16',	length: 90338345  },
-  { chromosome: '17',	length: 83257441  },
-  { chromosome: '18',	length: 80373285  },
-  { chromosome: '19',	length: 58617616  },
-  { chromosome: '20',	length: 64444167  },
-  { chromosome: '21',	length: 46709983  },
-  { chromosome: '22',	length: 50818468  },
-  { chromosome: 'X',	length: 156040895 },
-  { chromosome: 'Y',  length: 57227415  },
-];
-
-chromosomeInfo.forEach((chromo, i) => {
-  chromo.start = chromosomeInfo[i-1]?.end ?? 0;
-  chromo.end = chromo.start + chromo.length;
-  chromo.midpoint = (chromo.start + chromo.end) / 2;
-});
-
-const genomeLength = chromosomeInfo.at(-1).end;
-
-const chromosomeInfoMap = new Map(
-  chromosomeInfo.map(obj => [ obj.chromosome, obj ])
-);
-
-function cumulativePosition({ chromosome, position }) {
-  return chromosomeInfoMap.get(chromosome).start + position;
-}
-

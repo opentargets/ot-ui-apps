@@ -1,19 +1,5 @@
 
-# TO DO
-- NEXT: finish and check HTML - need to complete anchor code 
-- scales:
-  - allow `scales` to be function which takes the `data` prop (or passed down data) and returns an object so that can use the data to compute the scales
-  - test with discrete scales
-- add remaining marks: can easily add simple marks using the current `Mark`. Will need to extend `Mark` to allow for 'compound marks' such as `Line` that create a single mark from multiple rows. Can do this by adding a `compound` prop to `Mark` and branching on this where create the mark(s) 
-- implement `clip` prop on a mark to clip it to the panel - see https://stackoverflow.com/questions/17388689/svg-clippath-and-transformations
-- have not implemented `panelSize` prop?
-- if error because no `MapX` or `mapY` is it clear that missing scale is the reason?
-- legend
-- wrap axis, ticks, ... components in memo - so only change when their props change. They will still change when/if the contexts they use change anyway (as they should)
-- import local files from index where can to clean up
-- Switch to TS
-
---------
+__NOT COMPLETE!!__
 
 ## Vis
 
@@ -174,70 +160,4 @@ To draw a single mark with all constant channels, use a data set of length 1:
 
 ## Interaction
 
-TODO: ONLY HOVER CURRENTLY
-- USE HOVER PROP IN NORMAL MARKS - VALUE CAN BE OMITTED OR STRING NAME TO REFER TO GROUP
-- USE DATAFROM INSTEAD OF DATA IN MARK TO SHOW ON HOVER
-
-------
-
-Notes:
-- contexts: plot and frame are standard: everything will be redrawn when change anythng, but OK since will rarely change. Vis context split into get/set so that nothing redrawn on set and only selection marks drawn on get
-- left out YTitle for now since rarely use old school rotated y axis title anymore. Can use an
-  XTitle with position='top' and textAnchor='end'
-- currently always using indices for keys - may need to revisit this when think about animation, interaction, ...
-- we can pass arbitrary attr values to ticks, labels etc, but not to marks - since all 'other props' are interpreted as channels. Can/should we allow passing arb attr values through to the svg element representing the mark?
-- `responsive` prop:
-  - currently only repsonsive for width, but easy to make responsive on height since could use same pattern as for width and the `updateSize` action used with the plot context already handles height changes
-  - better design would be to separate dimensions and allow `width="responsive"` and `height="responsive"`
-  - adds an unstyled wrapper div (except for possibly min and max widths) which may be too simple for some situations. 
-
-Add to docs above
-- padding (on axis, ticks, ...) pushes them away from panel whereas dx,dy props are always in pixels and +ve x to right, +ve y downwards
-- use e.g. `stroke` to change color in `XTick` - even though there is `tickColor` in defaults, this is not a prop
-- API: components and props
-
-POSSIBLE!!:
-- shorthand for linear scales: e.g. `x={[10, 40]}` - but then need to include d3 as dependency of the plot components - not so bad since clearly require d3 somehow if require d3 scales!
-- border and cornerradius for the plot? - just as have for the panel
-- ? HTML inserts - for tooltip, titles, insets, ...?
-  - could have an HTML mark?
-- specify panel size, plot size or container size
-- optional HTML wrapper the size of the container. Absolute poistioned and optional z-index. Useful for titles and text in some cases
-- rely heavily on accessor functions
-- faceting - this will prob limit the min x and y grid squares, but we should still be able to make the grid larger to include other plots - or overlay plots
-- give elements classes so easily styled?
-- conveinernce components to add xAxis, ticks, labels and title altogether
-- currently keep all options values for components that have contexts in the context. However, really only need the options that may be used by descendent components in the context.
-- Allow the data prop of a `Vis` component to be an asynchronous function where the returned promise resolves to the data.
-  - important for allowing skeleton and avoiding layout shift
-- transitions
-- allow more props in frames? - so can e.g. override channel defaults of plot
-- allow more flexibility with data structure? - e.g. column-based data? 
-- should `missing` be at plot and frame level rather than just mark level?
-- have e.g. a `constant` prop in marks so can avoid the hacky `data={[1]}` to draw a single mark when all props are constants
-- do not have same channel defaults for all marks? - annoying that need to set `strokeWidth` to see lines
-- just as have HTML mark, could have SVG mark, or even Plot mark to allow inlays
-- since data can be any iterable, should also allow tick values (when actually used since can be transformed by `values`) to be any iterable rather than just an array
-- end channels: front, facet (or row/column), ...
-- larger capture zone for hover/selection of mark
-
-## Examples/Tests
-
-- use `data` of mark to filter data
-- multuple y-axis
-- have a before or after the axis title by using e.g. position="right", 
-  overriding the textAnchor and using dx and dy
-- rotated labels, in this case x labels at bottom:
-  
-  ```jsx
-  <XLabel
-    position="bottom"
-    format={(v, i) => String(i).repeat(i + 1)}
-    textAnchor="end"
-    style={{
-      transformOrigin: '100% 50%',
-      transformBox: 'fill-box',
-      transform: "rotate(-45deg)",
-    }}
-  />
-  ```
+ADD HOVER DOCS
