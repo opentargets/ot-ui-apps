@@ -2,14 +2,14 @@ import { scaleValue } from "./scaleValue";
 import { noInfiniteOrNaN } from "./assert";
 
 export function rowValues({
-      rowIndex,
-      rowData,
-      missing,
-      finalAccessors,
-      scales,
-      mapX,
-      mapY,
-    }) {
+  rowIndex,
+  rowData,
+  missing,
+  finalAccessors,
+  scales,
+  mapX,
+  mapY,
+}) {
 
   const values = {};
 

@@ -13,15 +13,15 @@ import { rowValues } from "../../util/rowValues";
 import DynamicTag from "../util/DynamicTag";
 
 export default memo(function StandardMark({
-      data,
-      missing,
-      hover,
-      accessors,
-      markChannels,
-      tagName,
-      createAttrs,
-      createContent,
-    }) {
+  data,
+  missing,
+  hover,
+  accessors,
+  markChannels,
+  tagName,
+  createAttrs,
+  createContent,
+}) {
 
   const visUpdateSelection = useVisUpdateSelection();
   const visClearSelection = useVisClearSelection();
@@ -33,7 +33,7 @@ export default memo(function StandardMark({
   if (!plot) {
     throw Error("mark components must appear inside a Plot component");
   }
-  
+
   const frame = useFrame();
   const ops = fromFrameOrPlot(['data', 'scales', 'mapX', 'mapY'], frame, plot);
   const { scales, mapX, mapY } = ops;
@@ -68,7 +68,7 @@ export default memo(function StandardMark({
 
     if (row != null) {
       const attrs = createAttrs(row);
-      
+
       if (hover) {
         attrs.onMouseEnter = () => visUpdateSelection('hover', [d]);
         if (hover !== 'stay') {

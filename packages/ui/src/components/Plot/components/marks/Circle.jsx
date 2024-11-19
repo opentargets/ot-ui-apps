@@ -1,12 +1,12 @@
 import Mark from "./Mark";
 
 export default function Circle({
-      data,
-      dataFrom,
-      missing = 'throw',
-      hover,
-      ...accessors
-    }) {
+  data,
+  dataFrom,
+  missing = 'throw',
+  hover,
+  ...accessors
+}) {
 
   const markChannels = [
     'x',
@@ -25,7 +25,7 @@ export default function Circle({
   ];
 
   const tagName = 'circle';
-  
+
   function createAttrs(row) {
     const attrs = {
       cx: row.x + row.dx,
@@ -42,7 +42,7 @@ export default function Circle({
     if (row.pointerEvents) attrs.pointerEvents = row.pointerEvents;
     return attrs;
   }
-  
+
   return <Mark {...{
     data,
     dataFrom,
