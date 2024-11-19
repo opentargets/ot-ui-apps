@@ -17,6 +17,8 @@ import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import PheWasPlot from "./PheWasPlot";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type getColumnsType = {
   id: string;
@@ -34,9 +36,13 @@ function getColumns({
   return [
     {
       id: "studyLocusId",
-      label: "More details",
+      label: "Navigate",
       renderCell: ({ studyLocusId }) => (
-        <Link to={`../credible-set/${studyLocusId}`}>{studyLocusId}</Link>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Link to={`/credible-set/${studyLocusId}`}>
+            <FontAwesomeIcon icon={faArrowRightToBracket} />
+          </Link>
+        </Box>
       ),
     },
     {

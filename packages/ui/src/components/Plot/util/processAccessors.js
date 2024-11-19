@@ -6,17 +6,17 @@ import { scaleValue } from "./scaleValue";
 const autoScaleChannels = new Set(['x', 'xx', 'width', 'y', 'yy', 'height']);
 
 export function processAccessors({
-      markChannels,
-      accessors,
-      scales,
-      mapX,
-      mapY,
-    }) {
+  markChannels,
+  accessors,
+  scales,
+  mapX,
+  mapY,
+}) {
 
-  const newAccessors = new Map();    
+  const newAccessors = new Map();
 
   for (const channel of markChannels) {
-    
+
     const acc = accessors[channel];
 
     // channel omitted - use default value or ignore channel
@@ -25,11 +25,11 @@ export function processAccessors({
       if (value != null) {
         newAccessors.set(channel, value);
       }
-    
-    // constant channel  
+
+      // constant channel  
     } else if (typeof acc === 'object' ||
-               typeof acc === 'number' ||
-               typeof acc === 'string') {
+      typeof acc === 'number' ||
+      typeof acc === 'string') {
       let input, output;
       if (typeof acc === 'object') {
         ({ input, output } = acc);
@@ -41,9 +41,9 @@ export function processAccessors({
         if (!scaleChannels.has(channel)) {
           throw Error(`cannot use an 'input constant' for ${channel} channel`);
         }
-        value = scaleValue({ input, channel, scales, mapX, mapY});
+        value = scaleValue({ input, channel, scales, mapX, mapY });
       }
-      noInfiniteOrNaN(value);
+      noInfiniteOrNaN(value, channel);
       if (value == null) {
         value = channelDefaults[channel];
       }
@@ -51,12 +51,12 @@ export function processAccessors({
         newAccessors.set(channel, value);
       }
 
-    // dynamic channel
+      // dynamic channel`
     } else if (typeof acc === 'function') {
       newAccessors.set(channel, acc);
 
-    // invalid accessor
-    } else {  
+      // invalid accessor
+    } else {
       throw Error(`invalid accessor (channel: ${channel})`);
     }
 

@@ -1,18 +1,15 @@
 // import { useState, useEffect } from "react";
 import { usePlatformApi, Field, ProfileHeader as BaseProfileHeader, Link, LongText } from "ui";
-import { Box, Typography, Skeleton } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { identifiersOrgLink } from "../../utils/global";
 
 import VARIANT_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
-import ProfileHeaderLoader from "./ProfileHeaderLoader";
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
 
   // TODO: Errors!
   if (error) return null;
-
-  if (loading) return <ProfileHeaderLoader />;
 
   return (
     <BaseProfileHeader>
