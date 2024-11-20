@@ -11,7 +11,7 @@ import { epmcUrl } from "ui/src/utils/urls";
 const columns = [
   {
     id: "studyId",
-    label: "Study ID",
+    label: "Study",
     renderCell: ({ studyId }) => <Link to={`/study/${studyId}`}>{studyId}</Link>,
   },
   {

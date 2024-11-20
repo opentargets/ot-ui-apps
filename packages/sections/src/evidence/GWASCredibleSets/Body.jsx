@@ -58,7 +58,7 @@ function getColumns() {
     },
     {
       id: "study",
-      label: "Study Id",
+      label: "Study",
       renderCell: ({ credibleSet }) => {
         return (
           <Link to={`/study/${credibleSet?.study.studyId}`}>{credibleSet?.study.studyId}</Link>

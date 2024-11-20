@@ -20,7 +20,7 @@ const columns = [
   },
   {
     id: "otherStudyLocus.study.studyId",
-    label: "Study ID",
+    label: "Study",
     renderCell: ({ otherStudyLocus }) => {
       const studyId = otherStudyLocus?.study?.studyId;
       if (!studyId) return naLabel;

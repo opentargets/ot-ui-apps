@@ -14,7 +14,7 @@ function getColumns(diseaseIds: string[]) {
   return [
     {
       id: "studyId",
-      label: "Study ID",
+      label: "Study",
       renderCell: ({ studyId }) => <Link to={`./${studyId}`}>{studyId}</Link>,
     },
     {

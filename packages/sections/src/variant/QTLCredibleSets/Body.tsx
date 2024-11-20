@@ -69,7 +69,7 @@ function getColumns({
     },
     {
       id: "study.studyId",
-      label: "Study ID",
+      label: "Study",
       renderCell: ({ study }) => {
         if (!study) return naLabel;
         return <Link to={`../study/${study.studyId}`}>{study.studyId}</Link>;
