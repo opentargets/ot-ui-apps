@@ -14,7 +14,7 @@ function Description({
 }: DescriptionProps): ReactElement {
   return (
     <>
-      molQTL 99% credible sets containing{" "}
+      molQTL credible sets containing{" "}
       <strong>
         <DisplayVariantId
           variantId={variantId}
