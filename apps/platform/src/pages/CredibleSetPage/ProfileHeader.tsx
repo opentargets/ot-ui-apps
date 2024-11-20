@@ -137,16 +137,16 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Field loading={loading} title="Finemapping method">
           {credibleSet?.finemappingMethod}
         </Field>
-        <Field loading={loading} title="Credible set index">
+        <Field loading={loading} title="Credible set index wthin locus">
           {credibleSet?.credibleSetIndex}
         </Field>
         <Field loading={loading} title="Purity min">
           {credibleSet?.purityMinR2?.toPrecision(3)}
         </Field>
-        <Field loading={loading} title="Start">
+        <Field loading={loading} title="Locus start">
           {credibleSet?.locusStart}
         </Field>
-        <Field loading={loading} title="End">
+        <Field loading={loading} title="Locus end">
           {credibleSet?.locusEnd}
         </Field>
       </Box>
