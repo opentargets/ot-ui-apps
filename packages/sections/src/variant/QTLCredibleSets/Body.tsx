@@ -172,7 +172,7 @@ function getColumns({
     },
     {
       id: "confidence",
-      label: "Confidence",
+      label: "Finemapping confidence",
       sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;

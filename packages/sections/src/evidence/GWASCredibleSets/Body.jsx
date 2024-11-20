@@ -111,7 +111,7 @@ function getColumns() {
     },
     {
       id: "confidence",
-      label: "Confidence",
+      label: "Finemapping confidence",
       sortable: true,
       renderCell: ({ credibleSet }) => {
         if (!credibleSet?.confidence) return naLabel;
