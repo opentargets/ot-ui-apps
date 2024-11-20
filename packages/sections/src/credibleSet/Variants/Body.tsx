@@ -125,7 +125,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
     },
     {
       id: "logBF",
-      label: "LOG(BF)",
+      label: "log(Bayes Factor)",
       filterValue: false,
       renderCell: ({ logBF }) => {
         if (typeof logBF !== "number") return naLabel;
