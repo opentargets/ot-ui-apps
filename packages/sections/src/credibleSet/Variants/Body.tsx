@@ -17,7 +17,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
   return [
     {
       id: "variant.id",
-      label: "Variant ID",
+      label: "Variant",
       comparator: variantComparator,
       sortable: true,
       filterValue: ({ variant: v }) =>
