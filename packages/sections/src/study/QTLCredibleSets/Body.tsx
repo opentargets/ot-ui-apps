@@ -70,7 +70,7 @@ const columns = [
   },
   {
     id: "finemappingMethod",
-    label: "Finemapping method",
+    label: "Fine-mapping method",
   },
   {
     id: "credibleSetSize",

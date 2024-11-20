@@ -134,7 +134,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         }
 
         <Typography variant="subtitle1" mt={1}>Credible Set</Typography>
-        <Field loading={loading} title="Finemapping method">
+        <Field loading={loading} title="Fine-mapping method">
           {credibleSet?.finemappingMethod}
         </Field>
         <Field loading={loading} title="Credible set index wthin locus">

@@ -167,7 +167,7 @@ function getColumns({
     },
     {
       id: "confidence",
-      label: "Finemapping confidence",
+      label: "Fine-mapping confidence",
       sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;
@@ -181,7 +181,7 @@ function getColumns({
     },
     {
       id: "finemappingMethod",
-      label: "Finemapping method",
+      label: "Fine-mapping method",
     },
     {
       id: "topL2G",
