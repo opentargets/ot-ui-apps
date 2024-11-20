@@ -19,7 +19,7 @@ function getColumns(diseaseIds: string[]) {
     },
     {
       id: "sharedDiseases",
-      label: "Shared traits",
+      label: "Shared disease/phenotype",
       renderCell: ({ diseases }) => {
         const sharedTraits = diseases.filter(d => diseaseIdsSet.has(d.id));
         return (

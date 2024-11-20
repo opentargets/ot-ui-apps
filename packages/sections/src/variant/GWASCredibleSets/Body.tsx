@@ -86,7 +86,7 @@ function getColumns({
     },
     {
       id: "disease",
-      label: "Diseases",
+      label: "Disease/phenotype",
       filterValue: ({ study }) => study?.diseases.map(d => d.name).join(", "),
       renderCell: ({ study }) => {
         if (!study?.diseases?.length) return naLabel;

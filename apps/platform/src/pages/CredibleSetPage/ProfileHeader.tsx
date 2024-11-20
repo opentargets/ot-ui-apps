@@ -161,11 +161,11 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         </Field>
         {studyCategory !== "QTL" &&
           <>
-            <Field loading={loading} title="Trait">
+            <Field loading={loading} title="Reported trait">
               {study?.traitFromSource}
             </Field>
             {study?.diseases?.length > 0 &&
-              <Field loading={loading} title="Diseases">
+              <Field loading={loading} title="Disease/phenotype">
                 {study.diseases.map(({ id, name }, index) => (
                   <Fragment key={id}>
                     {index > 0 ? ", " : null}
