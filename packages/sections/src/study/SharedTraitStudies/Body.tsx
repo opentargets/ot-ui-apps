@@ -45,7 +45,7 @@ function getColumns(diseaseIds: string[]) {
     },
     {
       id: "author",
-      label: "Author",
+      label: "First author",
       renderCell: ({ projectId, publicationFirstAuthor }) =>
         getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor || naLabel,
       exportValue: ({ projectId, publicationFirstAuthor }) =>

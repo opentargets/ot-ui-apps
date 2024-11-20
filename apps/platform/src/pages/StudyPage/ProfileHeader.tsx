@@ -51,7 +51,7 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
   return (
     <BaseProfileHeader>
       <>
-        <Field loading={loading} title="Author">
+        <Field loading={loading} title="First author">
           { 
             studyCategory === "GWAS" || studyCategory === "QTL"
               ? publicationFirstAuthor

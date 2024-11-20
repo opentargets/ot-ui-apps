@@ -153,7 +153,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
 
       <Box>
         <Typography variant="subtitle1" mt={0}>Study</Typography>
-        <Field loading={loading} title="Author">
+        <Field loading={loading} title="First author">
           {study?.publicationFirstAuthor}
         </Field>
         <Field loading={loading} title="Publication year">

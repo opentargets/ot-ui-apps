@@ -20,7 +20,7 @@ const columns = [
   },
   {
     id: "publicationFirstAuthor",
-    label: "Author",
+    label: "First author",
     renderCell: ({ projectId, publicationFirstAuthor }) =>
       getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor || naLabel,
   },
