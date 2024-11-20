@@ -26,7 +26,7 @@ const columns = [
   },
   {
     id: "publicationDate",
-    label: "Date",
+    label: "Year",
     renderCell: ({ projectId, publicationDate }) =>
       getStudyCategory(projectId) === "FINNGEN"
         ? "2023"
