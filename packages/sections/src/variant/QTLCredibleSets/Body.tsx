@@ -9,7 +9,7 @@ import {
   ClinvarStars,
 } from "ui";
 import { Box, Chip } from "@mui/material";
-import { clinvarStarMap, naLabel } from "../../constants";
+import { clinvarStarMap, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
@@ -20,15 +20,9 @@ type getColumnsType = {
   id: string;
   referenceAllele: string;
   alternateAllele: string;
-  posteriorProbabilities: any;
 };
 
-function getColumns({
-  id,
-  referenceAllele,
-  alternateAllele,
-  posteriorProbabilities,
-}: getColumnsType) {
+function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
   return [
     {
       id: "studyLocusId",
@@ -165,10 +159,10 @@ function getColumns({
         </>
       ),
       comparator: (rowA, rowB) =>
-        posteriorProbabilities.get(rowA.locus) - posteriorProbabilities.get(rowB.locus),
+        rowA.locus[0].posteriorProbability - rowB.locus[0].posteriorProbability,
       sortable: true,
-      renderCell: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3) ?? naLabel,
-      exportValue: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3),
+      renderCell: ({ locus }) => locus[0]?.posteriorProbability.toFixed(3) ?? naLabel,
+      exportValue: ({ locus }) => locus[0]?.posteriorProbability.toFixed(3),
     },
     {
       id: "confidence",
@@ -208,6 +202,7 @@ type BodyProps = {
 function Body({ id, entity }: BodyProps): ReactNode {
   const variables = {
     variantId: id,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(QTL_CREDIBLE_SETS_QUERY, {
@@ -227,16 +222,6 @@ function Body({ id, entity }: BodyProps): ReactNode {
         />
       )}
       renderBody={() => {
-        // get columns here so get posterior probabilities once - avoids
-        // having to find posterior probs inside sorting comparator function
-        const posteriorProbabilities = new Map();
-        for (const { locus } of request.data?.variant?.credibleSets || []) {
-          const postProb = locus?.find(loc => loc.variant?.id === id)?.posteriorProbability;
-          if (postProb !== undefined) {
-            posteriorProbabilities.set(locus, postProb);
-          }
-        }
-
         return (
           <OtTable
             dataDownloader
@@ -246,7 +231,6 @@ function Body({ id, entity }: BodyProps): ReactNode {
               id,
               referenceAllele: request.data?.variant.referenceAllele,
               alternateAllele: request.data?.variant.alternateAllele,
-              posteriorProbabilities,
             })}
             rows={request.data?.variant.credibleSets}
             loading={request.loading}
