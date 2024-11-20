@@ -39,25 +39,35 @@ export default function PheWasPlot({ loading, data, id }) {
     return d.pValueMantissa != null &&
       d.pValueExponent != null &&
       d.variant != null &&
-      d?.study?.traitFromSource;
+      d?.study?.diseases?.length;
   });
   if (data.length === 0) return null;
 
   const pValueMin = min(data, pValue);
   const pValueMax = 1;
 
-  const diseaseGroups = groupBy(data, d => d.study.traitFromSource);
-  const sortedDiseases = Object.keys(diseaseGroups)
-    .sort((a, b) => a.localeCompare(b));
+  const diseaseGroups = new Map();  // each row has a point for each of its diseases
+  for (const row of data) {
+    for (const { id, name } of row.study.diseases) {
+      diseaseGroups.has(id)
+        ? diseaseGroups.get(id).data.push(row)
+        : diseaseGroups.set(id, { name, data: [row] });
+    }
+  }
+  const sortedDiseaseIds =  // disease ids sorted by disease name
+    [...diseaseGroups]
+      .sort((a, b) => a[1].name.localeCompare(b[1].name))
+      .map(a => a[0]);
   const xTickValues = [0];
   const xMidpoints = [];
   const sortedData = [];
-  for (const disease of sortedDiseases) {
-    for (const row of diseaseGroups[disease]) {
-      sortedData.push(row);
-    }
-    xTickValues.push(sortedData.length);
-    xMidpoints.push(((xTickValues.at(-2) ?? 0) + xTickValues.at(-1)) / 2);
+  const sortedDiseaseNames = [];
+  for (const id of sortedDiseaseIds) {
+    const { name, data: newRows } = diseaseGroups.get(id);
+    sortedDiseaseNames.push(name);
+    sortedData.push(...newRows);
+    xTickValues.push(xTickValues.at(-1) + newRows.length);
+    xMidpoints.push((xTickValues.at(-2) + xTickValues.at(-1)) / 2);
   }
   const xLookup = new Map(sortedData.map((d, i) => [d, i]));
 
@@ -85,14 +95,14 @@ export default function PheWasPlot({ loading, data, id }) {
         yReverse
         scales={{
           x: scaleLinear().domain([0, sortedData.length]),
-          y: scaleLog().domain([pValueMin, pValueMax]).nice(),
+          y: scaleLog().domain([pValueMin, pValueMax]),
           fill: scaleOrdinal(['background', 'markColor'], [background, markColor]),
         }}
       >
         <XTick values={xTickValues} tickLength={10} />
         <XLabel
           values={xMidpoints}
-          format={(v, i) => sortedDiseases[i]}
+          format={(v, i) => sortedDiseaseNames[i]}
           padding={5}
           textAnchor="start"
           style={{
