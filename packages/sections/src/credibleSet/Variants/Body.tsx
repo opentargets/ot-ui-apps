@@ -115,7 +115,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       id: "posteriorProbability",
       label: "Posterior Probability",
       filterValue: false,
-      tooltip: "Posterior inclusion probability from fine-mapping that this variant is causal",
+      tooltip: "Posterior inclusion probability that this variant is causal within the fine-mapped credible set",
       comparator: (rowA, rowB) => rowA?.posteriorProbability - rowB?.posteriorProbability,
       sortable: true,
       renderCell: ({ posteriorProbability }) => {
