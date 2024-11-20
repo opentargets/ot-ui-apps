@@ -76,7 +76,7 @@ function getColumns({
     },
     {
       id: "trait",
-      label: "Trait",
+      label: "Reported trait",
       filterValue: ({ study }) => study?.traitFromSource,
       renderCell: ({ study }) => {
         if (!study?.traitFromSource) return naLabel;

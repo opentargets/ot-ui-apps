@@ -29,7 +29,7 @@ const columns = [
   },
   {
     id: "otherStudyLocus.study.traitFromSource",
-    label: "Trait",
+    label: "Reported trait",
     renderCell: ({ otherStudyLocus }) => {
       const trait = otherStudyLocus?.study?.traitFromSource;
       if (!trait) return naLabel;

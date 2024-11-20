@@ -47,7 +47,7 @@ function getColumns() {
     },
     {
       id: "trait",
-      label: "Trait",
+      label: "Reported trait",
       renderCell: ({ credibleSet }) => credibleSet?.study.traitFromSource,
     },
     {
