@@ -156,7 +156,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Field loading={loading} title="Author">
           {study?.publicationFirstAuthor}
         </Field>
-        <Field loading={loading} title="Date">
+        <Field loading={loading} title="Publication year">
           {study?.publicationDate?.slice(0, 4)}
         </Field>
         {studyCategory !== "QTL" &&

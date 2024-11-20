@@ -58,7 +58,7 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
               : "FINNGEN"
           }
         </Field>
-        <Field loading={loading} title="Publication date">
+        <Field loading={loading} title="Publication year">
           { 
             studyCategory === "GWAS" || studyCategory === "QTL"
               ? publicationDate
