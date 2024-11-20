@@ -41,7 +41,7 @@ function getColumns(diseaseIds: string[]) {
     },
     {
       id: "traitFromSource",
-      label: "Trait from source",
+      label: "Reported trait",
     },
     {
       id: "author",

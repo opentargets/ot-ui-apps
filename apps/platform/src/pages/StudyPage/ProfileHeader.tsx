@@ -80,7 +80,7 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
               : null
           } 
         </Field>
-        <Field loading={loading} title="Trait from source">
+        <Field loading={loading} title="Reported trait">
           {traitFromSource}
         </Field>
         <Field loading={loading} title="Sample size">
