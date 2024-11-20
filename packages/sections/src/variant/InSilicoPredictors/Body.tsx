@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 import { SectionItem, Tooltip, OtTable } from "ui";
 import { definition } from "../InSilicoPredictors";
 import Description from "../InSilicoPredictors/Description";
-import { naLabel } from "../../constants";
+import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 import IN_SILICO_PREDICTORS_QUERY from "./InSilicoPredictorsQuery.gql";
 
 const columns = [
@@ -47,6 +47,7 @@ type BodyProps = {
 export function Body({ id, entity }: BodyProps) {
   const variables = {
     variantId: id,
+    // size: sectionsBaseSizeQuery,
   };
   const request = useQuery(IN_SILICO_PREDICTORS_QUERY, {
     variables,

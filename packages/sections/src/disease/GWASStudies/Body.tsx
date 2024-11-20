@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Box, Typography } from "@mui/material";
 import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
 import Description from "./Description";
-import { naLabel } from "../../constants";
+import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 import { getStudyCategory } from "../../utils/getStudyCategory";
 import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
 import { definition } from ".";
@@ -111,6 +111,7 @@ type BodyProps = {
 function Body({ id: efoId, label: diseaseName }: BodyProps) {
   const variables = {
     diseaseIds: [efoId],
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(GWAS_STUDIES_BODY_QUERY, {
