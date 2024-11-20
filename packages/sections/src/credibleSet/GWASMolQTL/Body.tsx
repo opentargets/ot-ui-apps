@@ -47,7 +47,7 @@ const columns = [
   },
   {
     id: "otherStudyLocus.study.publicationFirstAuthor",
-    label: "Author",
+    label: "First author",
     renderCell: ({ otherStudyLocus }) => {
       const { projectId, publicationFirstAuthor } = otherStudyLocus?.study || {};
       return getStudyCategory(projectId) === "FINNGEN"
