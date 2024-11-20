@@ -32,7 +32,7 @@ function getColumns({
   return [
     {
       id: "studyLocusId",
-      label: "More details",
+      label: "Navigate",
       renderCell: ({ studyLocusId }) => (
         <Link to={`../credible-set/${studyLocusId}`}>{studyLocusId}</Link>
       ),

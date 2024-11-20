@@ -10,7 +10,7 @@ import { getStudyCategory } from "../../utils/getStudyCategory";
 const columns = [
   {
     id: "view",
-    label: "Details",
+    label: "Navigate",
     renderCell: ({ otherStudyLocus }) => {
       if (!otherStudyLocus) return naLabel;
       return <Link to={`./${otherStudyLocus.studyLocusId}`}>view</Link>;

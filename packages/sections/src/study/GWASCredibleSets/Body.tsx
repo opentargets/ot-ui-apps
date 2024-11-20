@@ -16,7 +16,7 @@ import ManhattanPlot from "./ManhattanPlot";
 const columns = [
   {
     id: "view",
-    label: "Details",
+    label: "Navigate",
     renderCell: ({ studyLocusId }) => <Link to={`../credible-set/${studyLocusId}`}>view</Link>,
     filterValue: false,
     exportValue: false,
