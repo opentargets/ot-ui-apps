@@ -110,25 +110,33 @@ const { primaryColor } = config.profile;
 
 /* Associations colors */
 export const ASSOCIATION_COLORS = [
-  rgb("#deebf7"),
-  rgb("#c6dbef"),
-  rgb("#9ecae1"),
-  rgb("#6baed6"),
-  rgb("#4292c6"),
-  rgb("#2171b5"),
-  rgb("#08519c"),
+  rgb("#dbeaf6"),
+  rgb("#BFDAEE"),
+  rgb("#A5CAE6"),
+  rgb("#8ABADE"),
+  rgb("#6EA9D7"),
+  rgb("#4F97CF"),
+  rgb("#3583C0"),
+  rgb("#2C6EA0"),
+  rgb("#245780"),
 ];
 
 /* PRIORITIZATION */
 // Red to blue
 export const PRIORITISATION_COLORS = [
-  rgb("#ec2746"),
-  rgb("#f16d47"),
-  rgb("#f19d5c"),
-  rgb("#f0c584"),
-  rgb("#c8b95f"),
-  rgb("#95ae43"),
-  rgb("#52a237"),
+  rgb("#D11807"),
+  rgb("#E94C1F"),
+  rgb("#F57634"),
+  rgb("#FD9A44"),
+  rgb("#FFB954"),
+  rgb("#F9D576"),
+  rgb("#ECEADA"),
+  rgb("#C6DBED"),
+  rgb("#9DCCEF"),
+  rgb("#60BCE9"),
+  rgb("#42A7C6"),
+  rgb("#238F9D"),
+  rgb("#00767B"),
 ];
 
 /* ASSOCIATION SCALE */
