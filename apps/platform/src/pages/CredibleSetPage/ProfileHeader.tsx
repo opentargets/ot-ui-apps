@@ -137,7 +137,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Field loading={loading} title="Fine-mapping method">
           {credibleSet?.finemappingMethod}
         </Field>
-        <Field loading={loading} title="Credible set index wthin locus">
+        <Field loading={loading} title="Credible set index within locus">
           {credibleSet?.credibleSetIndex}
         </Field>
         <Field loading={loading} title="Purity min">
