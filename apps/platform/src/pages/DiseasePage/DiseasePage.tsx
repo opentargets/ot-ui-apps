@@ -50,11 +50,7 @@ function DiseasePage(): ReactElement {
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs value={history.location.pathname !== "/" ? history.location.pathname : false}>
               <Tab
-                label={
-                  <Box sx={{ textTransform: "capitalize" }}>
-                    <div>Associated targets</div>
-                  </Box>
-                }
+                label={<Box sx={{ textTransform: "capitalize" }}>Associated targets</Box>}
                 value={`/disease/${efoId}/associations`}
                 component={Link}
                 to={`/disease/${efoId}/associations`}

@@ -157,6 +157,12 @@ const PrioritisationLegend = Legend(prioritizationScale, {
       " ",
       " ",
       " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
       TARGE_PRIORITISATION_LEGEND_TICKS[1],
     ][i],
 });

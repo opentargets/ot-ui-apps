@@ -14,11 +14,7 @@ const PopoverContent = styled("div")({
 function DataMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const {
-    activeHeadersControlls,
-    setActiveHeadersControlls,
-    displayedTable,
-  } = useAotfContext();
+  const { activeHeadersControlls, setActiveHeadersControlls, displayedTable } = useAotfContext();
 
   const isPrioritisation = displayedTable === "prioritisations";
 
@@ -43,6 +39,7 @@ function DataMenu() {
           disableElevation
           disabled={isPrioritisation}
           sx={{ height: 1, maxHeight: "45px" }}
+          aria-label="Advanced options"
         >
           <FontAwesomeIcon icon={faGear} size="lg" />
         </Button>
