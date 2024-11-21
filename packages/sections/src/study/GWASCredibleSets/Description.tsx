@@ -7,7 +7,7 @@ type DescriptionProps = {
 function Description({ studyId }: DescriptionProps) {
   return (
     <>
-      GWAS credible sets associated with study {" "}
+      95% GWAS credible sets associated with study {" "}
       <strong>{studyId}</strong>. Source{" "}
       <Link to="../" >
         Open Targets
