@@ -13,11 +13,12 @@ import {
   XTitle,
   XGrid,
   Circle,
+  Point,
   Segment,
   Rect,
   HTML,
 } from "ui";
-import { scaleLinear, scaleLog, min, scaleOrdinal } from "d3";
+import { scaleLinear, scaleLog, min, scaleOrdinal, schemeCategory10, schemeDark2, schemeObser } from "d3";
 import { ScientificNotation } from "ui";
 import { naLabel } from "../../constants";
 import { groupBy } from "lodash";
@@ -29,7 +30,25 @@ export default function PheWasPlot({ loading, data, id }) {
   const background = theme.palette.background.paper;
   const markColor = theme.palette.primary.main;
   const fontFamily = theme.typography.fontFamily;
-  const circleArea = 36;
+  const pointArea = 64;
+
+  const palette = [
+    '#27B4AE',
+    '#4047C4',
+    '#F48730',
+    '#DB4281',
+    '#7E84F4',
+    '#78DF76',
+    '#1C7AED',
+    '#7129CD',
+    '#E7C73B',
+    '#C95F1E',
+    '#188E61',
+    '#BEE952',
+  ];
+  // const palette = schemeCategory10;
+  // const palette = schemeDark2;
+  // const palette = schemeSet1;
 
   if (loading) return <Skeleton height={plotHeight} />;
   if (data == null) return null;
@@ -39,21 +58,24 @@ export default function PheWasPlot({ loading, data, id }) {
     return d.pValueMantissa != null &&
       d.pValueExponent != null &&
       d.variant != null &&
-      d?.study?.diseases?.length;
+      d?.study?.diseases?.map(d => d.therapeuticAreas).flat().length
   });
+
   if (data.length === 0) return null;
 
   const pValueMin = min(data, pValue);
   const pValueMax = 1;
 
-  const diseaseGroups = new Map();  // each row has a point for each of its diseases
+  const diseaseGroups = new Map();
   for (const row of data) {
-    for (const { id, name } of row.study.diseases) {
+    for (const { id, name } of row.study.diseases.map(d => d.therapeuticAreas).flat()) {
       diseaseGroups.has(id)
         ? diseaseGroups.get(id).data.push(row)
         : diseaseGroups.set(id, { name, data: [row] });
+      break;
     }
   }
+
   const sortedDiseaseIds =  // disease ids sorted by disease name
     [...diseaseGroups]
       .sort((a, b) => a[1].name.localeCompare(b[1].name))
@@ -65,6 +87,7 @@ export default function PheWasPlot({ loading, data, id }) {
   for (const id of sortedDiseaseIds) {
     const { name, data: newRows } = diseaseGroups.get(id);
     sortedDiseaseNames.push(name);
+    newRows.sort((row1, row2) => pValue(row1) - pValue(row2));
     sortedData.push(...newRows);
     xTickValues.push(xTickValues.at(-1) + newRows.length);
     xMidpoints.push((xTickValues.at(-2) + xTickValues.at(-1)) / 2);
@@ -81,6 +104,14 @@ export default function PheWasPlot({ loading, data, id }) {
     return Math.log10(y) > Math.log10(pValueMin) / 2 ? 'bottom' : 'top';
   }
 
+  const colorDomain = ['background'];
+  const colorRange = [background];
+  for (const [i, id] of sortedDiseaseIds.entries()) {
+    colorDomain.push(id);
+    colorRange.push(palette[i % palette.length]);
+  }
+  const colorScale = scaleOrdinal(colorDomain, colorRange);
+
   return (
     <Vis>
 
@@ -96,22 +127,30 @@ export default function PheWasPlot({ loading, data, id }) {
         scales={{
           x: scaleLinear().domain([0, sortedData.length]),
           y: scaleLog().domain([pValueMin, pValueMax]),
-          fill: scaleOrdinal(['background', 'markColor'], [background, markColor]),
+          fill: colorScale,
+          stroke: colorScale,
+          shape: scaleOrdinal(['circle', 'triangle'], ['circle', 'triangle'])
         }}
       >
-        <XTick values={xTickValues} tickLength={10} />
-        <XLabel
-          values={xMidpoints}
-          format={(v, i) => sortedDiseaseNames[i]}
-          padding={5}
-          textAnchor="start"
-          style={{
-            transformOrigin: '0% 50%',
-            transformBox: 'fill-box',
-            transform: "rotate(45deg)",
-          }}
-        />
-        <XGrid values={xTickValues} stroke="#cecece" strokeDasharray="3 4" />
+        <XTick values={xTickValues} tickLength={7} />
+        {/* need to use different XLabel elements to use different colors */}
+        {sortedDiseaseIds.map((id, i) => (
+          <XLabel
+            key={i}
+            values={[xMidpoints[i]]}
+            format={() => sortedDiseaseNames[i]}
+            padding={3}
+            textAnchor="start"
+            style={{
+              transformOrigin: '0% 50%',
+              transformBox: 'fill-box',
+              transform: "rotate(45deg)",
+            }}
+            fill={colorScale(id)}
+          />
+        )
+        )}
+        {/* <XGrid values={xTickValues} stroke="#e4e4e4" /> */}
         <XTitle fontSize={11} position="top" align="left" textAnchor="middle" padding={16} dx={-30}>
           <tspan fontStyle="italic">-log
             <tspan fontSize="9" dy="4">10</tspan>
@@ -121,14 +160,16 @@ export default function PheWasPlot({ loading, data, id }) {
         <YTick />
         <YLabel format={v => -Math.log10(v)} />
 
-        <Circle
+        <Point
           x={(d, i) => i + 0.5}
           y={pValue}
-          fill={d => d.variant.id === id ? markColor : background}
-          stroke={markColor}
+          fill={d => d.variant.id === id ? d.study.diseases[0].therapeuticAreas[0].id : ''}
+          stroke={d => d.study.diseases[0].therapeuticAreas[0].id}
           strokeWidth={1.3}
-          area={circleArea}
+          area={pointArea}
           hover="stay"
+          shape={d => d.beta ? 'triangle' : 'circle'}
+          rotation={d => d.beta < 0 ? 180 : 0}
         />
 
         {/* on hover */}
@@ -144,15 +185,19 @@ export default function PheWasPlot({ loading, data, id }) {
           fill={background}
           fillOpacity={0.4}
         />
-        <Circle
+        <Point
           dataFrom="hover"
           x={d => xLookup.get(d) + 0.5}
           y={pValue}
-          fill={d => d.variant.id === id ? markColor : background}
-          stroke={markColor}
-          strokeWidth={1.2}
-          area={circleArea}
+          fill={d => d.variant.id === id ? d.study.diseases[0].therapeuticAreas[0].id : ''}
+          stroke={d => d.study.diseases[0].therapeuticAreas[0].id}
+          strokeWidth={1.3}
+          area={pointArea}
+          hover="stay"
+          shape={d => d.beta ? 'triangle' : 'circle'}
+          rotation={d => d.beta < 0 ? 180 : 0}
         />
+        {/* SOME TOOLTIP POSITIONS CURRENTLY WILDLY OFF ON THE X-AXIS */}
         <HTML
           dataFrom="hover"
           x={d => xLookup.get(d) + 0.5}

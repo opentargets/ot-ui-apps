@@ -16,6 +16,7 @@ export { default as YGrid } from "./components/YGrid";
 export { default as YLabel } from "./components/YLabel";
 export { default as YTick } from "./components/YTick";
 export { default as Circle } from "./components/marks/Circle";
+export { default as Point } from "./components/marks/Point";
 export { default as Segment } from "./components/marks/Segment";
 export { default as Text } from "./components/marks/Text";
 export { default as Rect } from "./components/marks/Rect";
