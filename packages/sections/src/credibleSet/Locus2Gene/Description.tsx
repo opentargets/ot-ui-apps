@@ -4,7 +4,7 @@ import { Link } from "ui";
 function Description(): ReactElement {
   return (
     <>
-      Gene assignment based on machine-learning prioritisation of credible set derived features. Source:{" "}
+      Gene assignment based on machine-learning prioritisation of credible set features. Source:{" "}
       <Link to="../">Open Targets</Link>
     </>
   );
