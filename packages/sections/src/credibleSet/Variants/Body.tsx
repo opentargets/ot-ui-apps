@@ -152,7 +152,6 @@ function Body({
 }: BodyProps) {
   const variables = {
     studyLocusId: studyLocusId,
-    variantIds: [leadVariantId],
   };
 
   const request = useQuery(VARIANTS_QUERY, {
