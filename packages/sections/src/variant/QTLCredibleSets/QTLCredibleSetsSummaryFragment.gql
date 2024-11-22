@@ -1,8 +1,8 @@
 fragment QTLCredibleSetsSummaryFragment on Variant {
   qtlCredibleSets: credibleSets(
-      studyTypes: [sqtl, pqtl, eqtl, tuqtl],
-      page: { size: 1, index: 0 }
-    ) {
-    studyLocusId
+    studyTypes: [sqtl, pqtl, eqtl, tuqtl]
+    page: { size: 1, index: 0 }
+  ) {
+    count
   }
 }

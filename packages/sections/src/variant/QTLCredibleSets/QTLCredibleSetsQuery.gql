@@ -3,36 +3,45 @@ query QTLCredibleSetsQuery($variantId: String!, $size: Int!) {
     id
     referenceAllele
     alternateAllele
-    credibleSets(studyTypes: [sqtl, pqtl, eqtl, tuqtl], page: { size: $size, index: 0 }) {
-      studyLocusId
-      pValueMantissa
-      pValueExponent
-      beta
-      finemappingMethod
-      confidence
+    qtlCredibleSets: credibleSets(
+      studyTypes: [sqtl, pqtl, eqtl, tuqtl]
+      page: { size: $size, index: 0 }
+    ) {
+      count
+      rows {
+        studyLocusId
+        pValueMantissa
+        pValueExponent
+        beta
+        finemappingMethod
+        confidence
 
-      variant {
-        id
-        chromosome
-        position
-        referenceAllele
-        alternateAllele
-      }
-      study {
-        studyId
-        studyType
-        condition
-        target {
+        variant {
           id
-          approvedSymbol
+          chromosome
+          position
+          referenceAllele
+          alternateAllele
         }
-        biosample {
-          biosampleId
-          biosampleName
+        study {
+          studyId
+          studyType
+          condition
+          target {
+            id
+            approvedSymbol
+          }
+          biosample {
+            biosampleId
+            biosampleName
+          }
         }
-      }
-      locus(variantIds: [$variantId]) {
-        posteriorProbability
+        locus(variantIds: [$variantId]) {
+          count
+          rows {
+            posteriorProbability
+          }
+        }
       }
     }
   }
