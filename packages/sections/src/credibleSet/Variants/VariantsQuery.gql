@@ -1,21 +1,28 @@
-query VariantsQuery($studyLocusIds: [String!]!) {
-  credibleSets(studyLocusIds: $studyLocusIds) {
+query VariantsQuery($studyLocusId: String!) {
+  credibleSet(studyLocusId: $studyLocusId) {
     studyLocusId
-		locus {
-      logBF
-      posteriorProbability
-      variant {
-        id
-        chromosome
-        position
-        referenceAllele
-        alternateAllele
+    locus {
+      count
+      rows {
+        logBF
+        posteriorProbability
+        variant {
+          id
+          chromosome
+          position
+          referenceAllele
+          alternateAllele
+          mostSevereConsequence {
+            id
+            label
+          }
+        }
+        pValueMantissa
+        pValueExponent
+        beta
+        standardError
+        r2Overall
       }
-      pValueMantissa
-      pValueExponent
-      beta
-      standardError
-      r2Overall
     }
   }
 }

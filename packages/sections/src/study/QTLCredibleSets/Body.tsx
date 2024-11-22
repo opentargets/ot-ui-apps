@@ -1,18 +1,25 @@
 import { useQuery } from "@apollo/client";
 import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
+import { Box } from "@mui/material";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const columns = [
   {
-    id: "view",
-    label: "Details",
-    renderCell: ({ studyLocusId }) => <Link to={`../credible-set/${studyLocusId}`}>view</Link>,
-    filterValue: false,
-    exportValue: false,
+    id: "studyLocusId",
+    label: "Navigate",
+    renderCell: ({ studyLocusId }) => (
+      <Box sx={{ display: "flex" }}>
+        <Link to={`/credible-set/${studyLocusId}`}>
+          <FontAwesomeIcon icon={faArrowRightToBracket} />
+        </Link>
+      </Box>
+    ),
   },
   {
     id: "leadVariant",
@@ -70,16 +77,16 @@ const columns = [
   },
   {
     id: "finemappingMethod",
-    label: "Finemapping method",
+    label: "Fine-mapping method",
   },
   {
     id: "credibleSetSize",
     label: "Credible set size",
-    comparator: (a, b) => a.locus?.length - b.locus?.length,
+    comparator: (a, b) => a.locus?.count - b.locus?.count,
     sortable: true,
     filterValue: false,
-    renderCell: ({ locus }) => locus?.length ?? naLabel,
-    exportValue: ({ locus }) => locus?.length,
+    renderCell: ({ locus }) => locus?.count ?? naLabel,
+    exportValue: ({ locus }) => locus?.count,
   },
 ];
 
@@ -110,7 +117,7 @@ function Body({ id, entity }: BodyProps) {
           sortBy="pValue"
           columns={columns}
           loading={request.loading}
-          rows={request.data?.gwasStudy[0].credibleSets}
+          rows={request.data?.gwasStudy[0].credibleSets.rows}
           query={QTL_CREDIBLE_SETS_QUERY.loc.source.body}
           variables={variables}
         />

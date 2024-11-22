@@ -65,7 +65,7 @@ const getColumns = label => [
   },
   {
     id: "variantId",
-    label: "Variant ID",
+    label: "Variant",
     renderCell: ({ variantId }) =>
       variantId ? (
         <>

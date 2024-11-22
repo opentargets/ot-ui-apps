@@ -1,43 +1,45 @@
-query GWASCredibleSetsQuery($variantId: String!) {
+query GWASCredibleSetsQuery($variantId: String!, $size: Int!) {
   variant(variantId: $variantId) {
     id
     referenceAllele
     alternateAllele
-    credibleSets(studyTypes: [gwas], page: { size: 2000, index: 0 }) {
-      studyLocusId
-      pValueMantissa
-      pValueExponent
-      beta
-      finemappingMethod
-      confidence
-      variant {
-        id
-        chromosome
-        position
-        referenceAllele
-        alternateAllele
-      }
-      study {
-        traitFromSource
-        studyId
-        diseases {
-          name
-          id
-        }
-      }
-      locus {
+    gwasCredibleSets: credibleSets(studyTypes: [gwas], page: { size: $size, index: 0 }) {
+      count
+      rows {
+        studyLocusId
+        pValueMantissa
+        pValueExponent
+        beta
+        finemappingMethod
+        confidence
         variant {
           id
+          chromosome
+          position
+          referenceAllele
+          alternateAllele
         }
-        r2Overall
-        posteriorProbability
-      }
-      l2Gpredictions(size: 1) {
-        target {
-          id
-          approvedSymbol
+        study {
+          traitFromSource
+          studyId
+          diseases {
+            name
+            id
+          }
         }
-        score
+        locus(variantIds: [$variantId]) {
+          count
+          rows {
+            posteriorProbability
+          }
+        }
+        l2Gpredictions(size: 1) {
+          target {
+            id
+            approvedSymbol
+          }
+          score
+        }
       }
     }
   }

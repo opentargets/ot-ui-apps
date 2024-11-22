@@ -1,13 +1,23 @@
-query GWASColocQuery($studyLocusId: String!) {
+query GWASMolQTLColocQuery($studyLocusId: String!) {
   credibleSet(studyLocusId: $studyLocusId) {
-    colocalisation(studyTypes: [gwas], page: { size: 250, index: 0 }) {
+    colocalisation(studyTypes: [tuqtl, pqtl, eqtl, sqtl], page: { size: 250, index: 0 }) {
       otherStudyLocus {
         studyLocusId
         study {
           studyId
+          studyType
           projectId
           traitFromSource
           publicationFirstAuthor
+          target {
+            approvedSymbol
+            id
+          }
+          biosample {
+            biosampleId
+            biosampleName
+            description
+          }
         }
         variant {
           id

@@ -1,18 +1,22 @@
 import Mark from "./Mark";
 
-export default function Circle({
-  data,
-  dataFrom,
-  missing = 'throw',
-  hover,
-  ...accessors
-}) {
+export default function Rect({
+      data,
+      dataFrom,
+      missing = 'throw',
+      hover,
+      ...accessors
+    }) {
 
   const markChannels = [
     'x',
     'y',
     'dx',
     'dy',
+    'xx',
+    'yy',
+    'dxx',
+    'dyy',
     'fill',
     'fillOpacity',
     'stroke',
@@ -20,17 +24,18 @@ export default function Circle({
     'strokeWidth',
     'strokeCap',
     'strokeDasharray',
-    'area',
     'pointerEvents',
   ];
 
-  const tagName = 'circle';
-
+  const tagName = 'path';
+  
   function createAttrs(row) {
+    const x = row.x + row.dx;
+    const y = row.y + row.dy;
+    const xx = row.xx + (row.dxx ?? row.dx);
+    const yy = row.yy + (row.dyy ?? row.dy);
     const attrs = {
-      cx: row.x + row.dx,
-      cy: row.y + row.dy,
-      r: Math.sqrt(row.area / Math.PI),
+      d: `M ${x},${y} L ${xx},${y} L ${xx},${yy} L ${x},${yy} Z`,
       fill: row.fill,
       fillOpacity: row.fillOpacity,
       stroke: row.stroke,
@@ -42,7 +47,7 @@ export default function Circle({
     if (row.pointerEvents) attrs.pointerEvents = row.pointerEvents;
     return attrs;
   }
-
+  
   return <Mark {...{
     data,
     dataFrom,

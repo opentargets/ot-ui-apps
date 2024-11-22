@@ -109,7 +109,7 @@ function getColumns(label) {
     },
     {
       id: "variantId",
-      label: "Variant ID",
+      label: "Variant",
       renderCell: ({ variantId }) =>
         // trim long IDs and append '...'
         variantId ? (

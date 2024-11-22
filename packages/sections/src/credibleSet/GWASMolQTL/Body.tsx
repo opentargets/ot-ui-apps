@@ -3,7 +3,7 @@ import { Link, SectionItem, DisplayVariantId, ScientificNotation, OtTable } from
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
-import GWAS_COLOC_QUERY from "./GWASColocQuery.gql";
+import GWAS_COLOC_QUERY from "./GWASMolQTLColocQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { getStudyCategory } from "../../utils/getStudyCategory";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,7 +22,6 @@ const columns = [
       </Box>
     ),
     filterValue: false,
-    exportValue: false,
   },
   {
     id: "otherStudyLocus.study.studyId",
@@ -54,6 +53,24 @@ const columns = [
     exportValue: ({ otherStudyLocus }) => {
       const { projectId, publicationFirstAuthor } = otherStudyLocus.study || {};
       getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor;
+    },
+  },
+  {
+    id: "otherStudyLocus.study.studyType",
+    label: "Affected tissue/cell",
+    renderCell: ({ otherStudyLocus }) => {
+      const biosample = otherStudyLocus?.study?.biosample;
+      if (!biosample) return naLabel;
+      return <Link to={`../study/${biosample.biosampleId}`}>{biosample.name}</Link>;
+    },
+  },
+  {
+    id: "otherStudyLocus.study.studyType",
+    label: "QTL type",
+    renderCell: ({ otherStudyLocus }) => {
+      const studyType = otherStudyLocus?.study?.studyType;
+      if (!studyType) return naLabel;
+      return studyType;
     },
   },
   {

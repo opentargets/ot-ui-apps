@@ -7,7 +7,7 @@ type DescriptionProps = {
 function Description({ studyId }: DescriptionProps) {
   return (
     <>
-      molQTL 99% credible sets associated with study{" "}
+      molQTL credible sets associated with study{" "}
       <strong>{studyId}</strong>. Source{" "}
       <Link external to="https://www.ebi.ac.uk/eqtl/" >
         eQTL Catalog

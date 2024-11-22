@@ -5,6 +5,6 @@ export const definition = {
   id,
   name: "GWAS credible sets",
   shortName: "GC",
-  hasData: data => data.openTargetsGenetics.count > 0,
+  hasData: data => data.gwasCredibleSets.count > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };

@@ -5,7 +5,7 @@ query GwasCredibleSetsQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
   disease(efoId: $efoId) {
     id
     name
-    openTargetsGenetics: evidences(
+    gwasCredibleSets: evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
       datasourceIds: ["gwas_credible_sets"]

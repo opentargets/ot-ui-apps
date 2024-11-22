@@ -1,19 +1,31 @@
 import { useRef, useEffect } from "react";
 import { useMeasure } from "@uidotdev/usehooks";
 import { PlotProvider, usePlot, usePlotDispatch } from "../contexts/PlotContext";
+import { useVisClearSelection } from "../contexts/VisContext";
 
-export default function Plot({ children, responsive, ...options }) {
+export default function Plot({
+      children,
+      responsive,
+      clearOnClick,
+      clearOnLeave,
+      ...options
+    }) {
+  
   return (
     <PlotProvider options={options}>
       {responsive
-        ? <ResponsivePlot>{children}</ResponsivePlot>
-        : <SVG>{children}</SVG>
+        ? <ResponsivePlot {...{clearOnClick, clearOnLeave}}>
+            {children}
+          </ResponsivePlot>
+        : <SVG {...{clearOnClick, clearOnLeave}}>
+            {children}
+          </SVG>
       } 
     </PlotProvider>
   );
 }
 
-function ResponsivePlot({ children }) {
+function ResponsivePlot({ children, clearOnClick, clearOnLeave }) {
   const plotDispatch = usePlotDispatch();
   const [ref, { width }] = useMeasure();
 
@@ -30,31 +42,49 @@ function ResponsivePlot({ children }) {
 
   return (
     <div ref={ref} style={divStyle} >
-      <SVG>
+      <SVG {...{clearOnClick, clearOnLeave}}>
         {children}
       </SVG>
     </div>
   );
 }
 
-function SVG({ children }) {
+function SVG({ children, clearOnClick, clearOnLeave }) {
+
+  const visClearSelection = useVisClearSelection();
+
   const plot = usePlot();  
   const { width, height, background, cornerRadius } = plot;
 
+  const attrs = {
+    viewBox: `0 0 ${width} ${height}`,
+    xmlns: "http://www.w3.org/2000/svg",
+    style: {
+      width: `${width}px`,
+      height: `${height}px`,
+      cursor: 'default',
+      'MozUserSelect': 'none',
+      'WebkitUserDelect': 'none',
+      'MsUserSelect': 'none',
+      'userSelect': 'none',
+    },
+  };
+  if (clearOnClick) {
+    if (!visClearSelection) {
+      throw Error("clearOnClick prop can only be used inside a Vis component");
+    }
+    attrs.onClick = visClearSelection;
+  }
+  if (clearOnLeave) {
+    if (!visClearSelection) {
+      throw Error("clearOnLeave prop can only be used inside a Vis component");
+    }
+    attrs.onMouseLeave = visClearSelection;
+  }
+
   return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      xmlns="http://www.w3.org/2000/svg"
-      style={{
-        width: `${width}px`,
-        height: `${height}px`,
-        cursor: 'default',
-        'MozUserSelect': 'none',
-        'WebkitUserDelect': 'none',
-        'MsUserSelect': 'none',
-        'userSelect': 'none',
-      }}
-    > {(background !== 'transparent' || cornerRadius > 0) &&
+    <svg {...attrs}>
+      {(background !== 'transparent' || cornerRadius > 0) &&
         <rect
           width={width}
           height={height}

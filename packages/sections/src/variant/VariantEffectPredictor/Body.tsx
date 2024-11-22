@@ -8,6 +8,7 @@ import { naLabel } from "../../constants";
 import { identifiersOrgLink } from "../../utils/global";
 import VARIANT_EFFECT_PREDICTOR_QUERY from "./VariantEffectPredictorQuery.gql";
 
+
 function formatVariantConsequenceLabel(label) {
   return label.replace(/_/g, " ");
 }
@@ -81,7 +82,7 @@ const columns = [
   {
     id: "variantConsequences.label",
     label: "Predicted consequence",
-    renderCell: ({ variantConsequences, aminoAcidChange, codons, uniprotAccessions }) => {
+    renderCell: ({ variantConsequences, aminoAcidChange, codons }) => {
       if (!variantConsequences?.length) return naLabel;
       let displayElement = variantConsequences.map(({ id, label }, i, arr) => (
         <Fragment key={id}>
@@ -136,7 +137,7 @@ const columns = [
   },
   {
     id: "distanceFromFootprint",
-    label: "Distance from footprint",
+    label: "Distance from footprint (bp)",
     numeric: true,
     sortable: true,
     renderCell: ({ distanceFromFootprint }) =>
@@ -146,7 +147,7 @@ const columns = [
   },
   {
     id: "distanceFromTss",
-    label: "Distance from start site",
+    label: "Distance from start site (bp)",
     numeric: true,
     sortable: true,
     renderCell: ({ distanceFromTss }) =>
