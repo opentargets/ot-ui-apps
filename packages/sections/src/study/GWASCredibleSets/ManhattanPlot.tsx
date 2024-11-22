@@ -207,7 +207,7 @@ function Tooltip({ data }) {
           <TooltipRow label="Beta">
             {data.beta?.toFixed(3) ?? naLabel}
           </TooltipRow>
-          <TooltipRow label="Finemapping">
+          <TooltipRow label="Fine-mapping">
             {data.finemappingMethod ?? naLabel}
           </TooltipRow>
           {data.l2Gpredictions?.[0]?.target

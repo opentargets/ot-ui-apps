@@ -134,38 +134,38 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         }
 
         <Typography variant="subtitle1" mt={1}>Credible Set</Typography>
-        <Field loading={loading} title="Finemapping method">
+        <Field loading={loading} title="Fine-mapping method">
           {credibleSet?.finemappingMethod}
         </Field>
-        <Field loading={loading} title="Credible set index">
+        <Field loading={loading} title="Credible set index within locus">
           {credibleSet?.credibleSetIndex}
         </Field>
         <Field loading={loading} title="Purity min">
           {credibleSet?.purityMinR2?.toPrecision(3)}
         </Field>
-        <Field loading={loading} title="Start">
+        <Field loading={loading} title="Locus start">
           {credibleSet?.locusStart}
         </Field>
-        <Field loading={loading} title="End">
+        <Field loading={loading} title="Locus end">
           {credibleSet?.locusEnd}
         </Field>
       </Box>
 
       <Box>
         <Typography variant="subtitle1" mt={0}>Study</Typography>
-        <Field loading={loading} title="Author">
+        <Field loading={loading} title="First author">
           {study?.publicationFirstAuthor}
         </Field>
-        <Field loading={loading} title="Date">
+        <Field loading={loading} title="Publication year">
           {study?.publicationDate?.slice(0, 4)}
         </Field>
         {studyCategory !== "QTL" &&
           <>
-            <Field loading={loading} title="Trait">
+            <Field loading={loading} title="Reported trait">
               {study?.traitFromSource}
             </Field>
             {study?.diseases?.length > 0 &&
-              <Field loading={loading} title="Diseases">
+              <Field loading={loading} title="Disease/phenotype">
                 {study.diseases.map(({ id, name }, index) => (
                   <Fragment key={id}>
                     {index > 0 ? ", " : null}
