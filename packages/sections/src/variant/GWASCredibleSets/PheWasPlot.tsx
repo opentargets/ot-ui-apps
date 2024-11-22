@@ -22,6 +22,7 @@ import { scaleLinear, scaleLog, min, scaleOrdinal, schemeCategory10, schemeDark2
 import { ScientificNotation } from "ui";
 import { naLabel } from "../../constants";
 import { groupBy } from "lodash";
+import { Fragment } from "react/jsx-runtime";
 
 export default function PheWasPlot({ loading, data, id }) {
 
@@ -32,21 +33,21 @@ export default function PheWasPlot({ loading, data, id }) {
   const fontFamily = theme.typography.fontFamily;
   const pointArea = 64;
 
-  // const palette = [
-  //   '#27B4AE',
-  //   '#4047C4',
-  //   '#F48730',
-  //   '#DB4281',
-  //   '#7E84F4',
-  //   '#78DF76',
-  //   '#1C7AED',
-  //   '#7129CD',
-  //   '#E7C73B',
-  //   '#C95F1E',
-  //   '#188E61',
-  //   '#BEE952',
-  // ];
-  const palette = schemeCategory10;
+  const palette = [
+    '#27B4AE',
+    '#4047C4',
+    '#F48730',
+    '#DB4281',
+    '#7E84F4',
+    '#78DF76',
+    '#1C7AED',
+    '#7129CD',
+    '#E7C73B',
+    '#C95F1E',
+    '#188E61',
+    '#BEE952',
+  ];
+  // const palette = schemeCategory10;
   // const palette = schemeDark2;
   // const palette = schemeSet1;
 
@@ -65,11 +66,11 @@ export default function PheWasPlot({ loading, data, id }) {
   const pValueMin = min(data, pValue);
   const pValueMax = 1;
 
-  const diseaseIdLookup = new Map();
+  const rowLookup = new Map();  // derived values for each row
   const diseaseGroups = new Map();
   for (const row of data) {
     const { id, name } = getTherapeuticArea(row);
-    diseaseIdLookup.set(row, id);
+    rowLookup.set(row, { therapeuticAreaId: id });
     diseaseGroups.has(id)
       ? diseaseGroups.get(id).data.push(row)
       : diseaseGroups.set(id, { name, data: [row] });
@@ -83,23 +84,35 @@ export default function PheWasPlot({ loading, data, id }) {
     sortedDiseaseIds = sortedDiseaseIds.filter(id => id === '__uncategorised__');
     sortedDiseaseIds.shift('__uncategorised__');
   }
-  const xTickValues = [0];
-  const xMidpoints = [];
+  const xIntervals = new Map();
+  // const xMidpoints = [];
+  let xCumu = 0;
+  // const xGap = Math.ceil(data.length / 100);  // gap between groups
+  // const xPad = Math.ceil(data.length / 100);  // padding at ede of groups
+  const xGap = data.length / 300;  // gap between groups
+  // const xGap = 0;
+  const xPad = data.length / 500;  // padding at ede of groups
   const sortedData = [];
-  const sortedDiseaseNames = [];
+  // const sortedDiseaseNames = [];
   for (const id of sortedDiseaseIds) {
     const { name, data: newRows } = diseaseGroups.get(id);
-    sortedDiseaseNames.push(name);
+    // sortedDiseaseNames.push(name);
+    xCumu += xGap;
+    xIntervals.set(id, { start: xCumu });
+    xCumu += xPad;
     newRows.sort((row1, row2) => pValue(row1) - pValue(row2));
-    sortedData.push(...newRows);
-    xTickValues.push(xTickValues.at(-1) + newRows.length);
-    xMidpoints.push((xTickValues.at(-2) + xTickValues.at(-1)) / 2);
+    for (const row of newRows) {
+      rowLookup.get(row).x = xCumu + 0.5;
+      xCumu += 1;
+      sortedData.push(row);
+    }
+    xCumu += xPad;
+    xIntervals.get(id).end = xCumu;
   }
-  const xLookup = new Map(sortedData.map((d, i) => [d, i]));
 
   function xAnchor(row) {
-    const x = xLookup.get(row);
-    return x < xLookup.size / 2 ? 'left' : 'right';
+    const x = rowLookup.get(row).x;
+    return x < xCumu / 2 ? 'left' : 'right';
   }
 
   function yAnchor(row) {
@@ -115,6 +128,10 @@ export default function PheWasPlot({ loading, data, id }) {
   }
   const colorScale = scaleOrdinal(colorDomain, colorRange);
 
+  console.log(diseaseGroups)
+  console.log(xIntervals)
+
+
   return (
     <Vis>
 
@@ -128,16 +145,48 @@ export default function PheWasPlot({ loading, data, id }) {
         data={sortedData}
         yReverse
         scales={{
-          x: scaleLinear().domain([0, sortedData.length]),
+          x: scaleLinear().domain([0, xCumu]),
           y: scaleLog().domain([pValueMin, pValueMax]),
           fill: colorScale,
           stroke: colorScale,
           shape: scaleOrdinal(['circle', 'triangle'], ['circle', 'triangle'])
         }}
       >
-        <XTick values={xTickValues} tickLength={7} />
+        {/* <XTick values={xTickValues} tickLength={7} /> */}
         {/* need to use different XLabel elements to use different colors */}
-        {sortedDiseaseIds.map((id, i) => (
+
+        {[...xIntervals].map(([id, { start, end }]) => (
+          <Fragment key={id}>
+            {/* <XTick
+              values={[start, end]}
+              stroke={colorScale(id)}
+            /> */}
+            <XLabel
+              // key={id}
+              values={[(start + end) / 2]}
+              format={() => diseaseGroups.get(id).name}
+              padding={3}
+              textAnchor="start"
+              dx={-2}
+              style={{
+                transformOrigin: '0% 50%',
+                transformBox: 'fill-box',
+                transform: "rotate(45deg)",
+              }}
+              fill={colorScale(id)}
+            />
+          </Fragment>
+        ))}
+        <Segment
+          data={xIntervals}
+          x={d => d[1].start}
+          xx={d => d[1].end}
+          y={pValueMax}
+          yy={pValueMax}
+          stroke={d => d[0]}
+          strokeWidth={1}
+        />
+        {/* {sortedDiseaseIds.map((id, i) => (
           <XLabel
             key={i}
             values={[xMidpoints[i]]}
@@ -152,7 +201,7 @@ export default function PheWasPlot({ loading, data, id }) {
             fill={colorScale(id)}
           />
         )
-        )}
+        )} */}
         {/* <XGrid values={xTickValues} stroke="#e4e4e4" /> */}
         <XTitle fontSize={11} position="top" align="left" textAnchor="middle" padding={16} dx={-30}>
           <tspan fontStyle="italic">-log
@@ -164,10 +213,12 @@ export default function PheWasPlot({ loading, data, id }) {
         <YLabel format={v => -Math.log10(v)} />
 
         <Point
-          x={(d, i) => i + 0.5}
+          x={(d, i) => rowLookup.get(d).x}
           y={pValue}
-          fill={d => d.variant.id === id ? diseaseIdLookup.get(d) : 'background'}
-          stroke={d => diseaseIdLookup.get(d)}
+          fill={d => {
+            return d.variant.id === id ? rowLookup.get(d).therapeuticAreaId : 'background';
+          }}
+          stroke={d => rowLookup.get(d).therapeuticAreaId}
           strokeWidth={1.3}
           area={pointArea}
           hover="stay"
@@ -176,7 +227,7 @@ export default function PheWasPlot({ loading, data, id }) {
         />
 
         {/* on hover */}
-        <Rect
+        {/* <Rect
           dataFrom="hover"
           x={0}
           xx={sortedData.length}
@@ -200,7 +251,6 @@ export default function PheWasPlot({ loading, data, id }) {
           shape={d => d.beta ? 'triangle' : 'circle'}
           rotation={d => d.beta < 0 ? 180 : 0}
         />
-        {/* SOME TOOLTIP POSITIONS CURRENTLY WILDLY OFF ON THE X-AXIS */}
         <HTML
           dataFrom="hover"
           x={d => xLookup.get(d) + 0.5}
@@ -212,10 +262,10 @@ export default function PheWasPlot({ loading, data, id }) {
           pointerEvents="visiblePainted"
           dx={d => xAnchor(d) === 'left' ? 10 : -10}
           dy={d => yAnchor(d) === 'top' ? 10 : -10}
-        />
+        />  */}
 
         {/* axes at end so fade rectangle doesn't cover them */}
-        <XAxis />
+        {/* <XAxis /> */}
         <YAxis />
 
       </Plot>
