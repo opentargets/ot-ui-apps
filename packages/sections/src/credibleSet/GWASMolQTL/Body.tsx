@@ -6,26 +6,22 @@ import Description from "./Description";
 import GWAS_COLOC_QUERY from "./GWASMolQTLColocQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { getStudyCategory } from "../../utils/getStudyCategory";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { Box } from "@mui/material";
 
 const columns = [
   {
-    id: "view",
+    id: "otherStudyLocus.studyLocusId",
     label: "Navigate",
-    renderCell: ({ otherStudyLocus }) => {
-      if (!otherStudyLocus) return naLabel;
-      return <Link to={`./${otherStudyLocus.studyLocusId}`}>view</Link>;
-    },
+    renderCell: ({ otherStudyLocus }) => (
+      <Box sx={{ display: "flex" }}>
+        <Link to={`./${otherStudyLocus.studyLocusId}`}>
+          <FontAwesomeIcon icon={faArrowRightToBracket} />
+        </Link>
+      </Box>
+    ),
     filterValue: false,
-    exportValue: false,
-  },
-  {
-    id: "otherStudyLocus.study.target",
-    label: "Gene",
-    renderCell: ({ otherStudyLocus }) => {
-      const study = otherStudyLocus?.study;
-      if (!study?.target) return naLabel;
-      return <Link to={`../study/${study.target.id}`}>{study.target.approvedSymbol}</Link>;
-    },
   },
   {
     id: "otherStudyLocus.study.studyId",
