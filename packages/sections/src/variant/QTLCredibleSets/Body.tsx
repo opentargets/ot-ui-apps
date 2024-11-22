@@ -159,10 +159,10 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         </>
       ),
       comparator: (rowA, rowB) =>
-        rowA.locus[0].posteriorProbability - rowB.locus[0].posteriorProbability,
+        rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
       sortable: true,
-      renderCell: ({ locus }) => locus[0]?.posteriorProbability.toFixed(3) ?? naLabel,
-      exportValue: ({ locus }) => locus[0]?.posteriorProbability.toFixed(3),
+      renderCell: ({ locus }) => locus.rows[0]?.posteriorProbability.toFixed(3) ?? naLabel,
+      exportValue: ({ locus }) => locus.rows[0]?.posteriorProbability.toFixed(3),
     },
     {
       id: "confidence",
@@ -185,11 +185,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "credibleSetSize",
       label: "Credible set size",
-      comparator: (a, b) => a.locus?.length - b.locus?.length,
+      comparator: (a, b) => a.locus?.count - b.locus?.count,
       sortable: true,
       filterValue: false,
-      renderCell: ({ locus }) => locus?.length ?? naLabel,
-      exportValue: ({ locus }) => locus?.length,
+      renderCell: ({ locus }) => locus?.count ?? naLabel,
+      exportValue: ({ locus }) => locus?.count,
     },
   ];
 }
@@ -232,7 +232,7 @@ function Body({ id, entity }: BodyProps): ReactNode {
               referenceAllele: request.data?.variant.referenceAllele,
               alternateAllele: request.data?.variant.alternateAllele,
             })}
-            rows={request.data?.variant.credibleSets}
+            rows={request.data?.variant.qtlCredibleSets.rows}
             loading={request.loading}
             query={QTL_CREDIBLE_SETS_QUERY.loc.source.body}
             variables={variables}
