@@ -12,10 +12,6 @@ query VariantsQuery($studyLocusId: String!) {
           position
           referenceAllele
           alternateAllele
-          mostSevereConsequence {
-            id
-            label
-          }
         }
         pValueMantissa
         pValueExponent
