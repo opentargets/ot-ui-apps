@@ -22,7 +22,7 @@ const GWASColocSection = lazy(() => import("sections/src/credibleSet/GWASColoc/B
 
 const Locus2GeneSection = lazy(() => import("sections/src/credibleSet/Locus2Gene/Body"));
 
-const CREDIBLE_SET = "credibleSets";
+const CREDIBLE_SET = "credibleSet";
 
 const createProfileQuery = (studyType: string) => {
   const summaries = [VariantsSummary, Locus2GeneSummary];
@@ -40,8 +40,8 @@ const createProfileQuery = (studyType: string) => {
   );
 
   const CREDIBLE_SET_PROFILE_QUERY = gql`
-    query CredibleSetProfileQuery($studyLocusIds: [String!]!) {
-      credibleSets(studyLocusIds: $studyLocusIds) {
+    query CredibleSetProfileQuery($studyLocusId: String!, $variantIds: [String!]!) {
+      credibleSet(studyLocusId: $studyLocusId) {
         studyLocusId
         ...CredibleSetProfileHeaderFragment
         ...CredibleSetProfileSummaryFragment
@@ -65,7 +65,7 @@ function Profile({
     <PlatformApiProvider
       entity={CREDIBLE_SET}
       query={CREDIBLE_SET_PROFILE_QUERY}
-      variables={{ studyLocusIds: [studyLocusId] }}
+      variables={{ studyLocusId: studyLocusId, variantIds: [variantId] }}
       client={client}
     >
       <ProfileHeader variantId={variantId} />

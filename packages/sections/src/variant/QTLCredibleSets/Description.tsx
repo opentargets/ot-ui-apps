@@ -14,7 +14,7 @@ function Description({
 }: DescriptionProps): ReactElement {
   return (
     <>
-      molQTL 99% credible sets containing{" "}
+      95% credible sets fine-mapped from quantitative trait loci associated with molecular traits containing{" "}
       <strong>
         <DisplayVariantId
           variantId={variantId}

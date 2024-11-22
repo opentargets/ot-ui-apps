@@ -1,5 +1,5 @@
 fragment VariantsSummaryFragment on credibleSet {
-  locus {
-    beta
+  locus(variantIds: $variantIds) {
+    count
   }
 }

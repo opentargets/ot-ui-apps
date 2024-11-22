@@ -8,6 +8,9 @@ export const appCanonicalUrl = "https://platform.opentargets.org";
 export const tableChunkSize = 100;
 export const downloaderChunkSize = 2500;
 export const sectionsBaseSizeQuery = 3500;
+export const sections5kSizeQuery = 5000;
+export const sections7kSizeQuery = 7000;
+export const sections10kSizeQuery = 10000;
 
 // NA label.
 export const naLabel = "N/A";

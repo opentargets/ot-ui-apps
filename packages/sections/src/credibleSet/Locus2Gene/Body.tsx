@@ -41,7 +41,7 @@ const columns = [
 
 function Body({ studyLocusId, entity }: BodyProps): ReactNode {
   const variables = {
-    studyLocusIds: [studyLocusId],
+    studyLocusId: studyLocusId,
   };
 
   const request = useQuery(LOCUS2GENE_QUERY, {
@@ -62,7 +62,7 @@ function Body({ studyLocusId, entity }: BodyProps): ReactNode {
             dataDownloaderFileStem={`${studyLocusId}-locus2gene`}
             columns={columns}
             loading={request.loading}
-            rows={request.data?.credibleSets[0].l2Gpredictions}
+            rows={request.data?.credibleSet.l2Gpredictions}
             query={LOCUS2GENE_QUERY.loc.source.body}
             variables={variables}
           />

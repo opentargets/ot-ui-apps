@@ -136,7 +136,7 @@ const columns = [
   },
   {
     id: "distanceFromFootprint",
-    label: "Distance from footprint",
+    label: "Distance from footprint (bp)",
     numeric: true,
     sortable: true,
     renderCell: ({ distanceFromFootprint }) =>
@@ -146,7 +146,7 @@ const columns = [
   },
   {
     id: "distanceFromTss",
-    label: "Distance from start site",
+    label: "Distance from start site (bp)",
     numeric: true,
     sortable: true,
     renderCell: ({ distanceFromTss }) =>

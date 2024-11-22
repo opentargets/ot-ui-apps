@@ -10,7 +10,7 @@ import {
   OtScoreLinearBar,
 } from "ui";
 import { Box, Chip } from "@mui/material";
-import { clinvarStarMap, naLabel } from "../../constants";
+import { clinvarStarMap, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
@@ -24,15 +24,9 @@ type getColumnsType = {
   id: string;
   referenceAllele: string;
   alternateAllele: string;
-  posteriorProbabilities: any;
 };
 
-function getColumns({
-  id,
-  referenceAllele,
-  alternateAllele,
-  posteriorProbabilities,
-}: getColumnsType) {
+function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
   return [
     {
       id: "studyLocusId",
@@ -77,7 +71,7 @@ function getColumns({
     },
     {
       id: "trait",
-      label: "Trait",
+      label: "Reported trait",
       filterValue: ({ study }) => study?.traitFromSource,
       renderCell: ({ study }) => {
         if (!study?.traitFromSource) return naLabel;
@@ -87,7 +81,7 @@ function getColumns({
     },
     {
       id: "disease",
-      label: "Diseases",
+      label: "Disease/phenotype",
       filterValue: ({ study }) => study?.diseases.map(d => d.name).join(", "),
       renderCell: ({ study }) => {
         if (!study?.diseases?.length) return naLabel;
@@ -106,7 +100,7 @@ function getColumns({
     },
     {
       id: "study.studyId",
-      label: "Study ID",
+      label: "Study",
       renderCell: ({ study }) => {
         if (!study) return naLabel;
         return <Link to={`../study/${study.studyId}`}>{study.studyId}</Link>;
@@ -161,14 +155,14 @@ function getColumns({
         </>
       ),
       comparator: (rowA, rowB) =>
-        posteriorProbabilities.get(rowA.locus) - posteriorProbabilities.get(rowB.locus),
+        rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
       sortable: true,
-      renderCell: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3) ?? naLabel,
-      exportValue: ({ locus }) => posteriorProbabilities.get(locus)?.toFixed(3),
+      renderCell: ({ locus }) => locus.rows[0]?.posteriorProbability.toFixed(3) ?? naLabel,
+      exportValue: ({ locus }) => locus.rows[0]?.posteriorProbability.toFixed(3),
     },
     {
       id: "confidence",
-      label: "Confidence",
+      label: "Fine-mapping confidence",
       sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;
@@ -182,7 +176,7 @@ function getColumns({
     },
     {
       id: "finemappingMethod",
-      label: "Finemapping method",
+      label: "Fine-mapping method",
     },
     {
       id: "topL2G",
@@ -213,11 +207,11 @@ function getColumns({
     {
       id: "credibleSetSize",
       label: "Credible set size",
-      comparator: (a, b) => a.locus?.length - b.locus?.length,
+      comparator: (a, b) => a.locus?.count - b.locus?.count,
       sortable: true,
       filterValue: false,
-      renderCell: ({ locus }) => locus?.length ?? naLabel,
-      exportValue: ({ locus }) => locus?.length,
+      renderCell: ({ locus }) => locus?.count ?? naLabel,
+      exportValue: ({ locus }) => locus?.count,
     },
   ];
 }
@@ -230,6 +224,7 @@ type BodyProps = {
 function Body({ id, entity }: BodyProps) {
   const variables = {
     variantId: id,
+    size: sectionsBaseSizeQuery,
   };
 
   const request = useQuery(GWAS_CREDIBLE_SETS_QUERY, {
@@ -249,34 +244,24 @@ function Body({ id, entity }: BodyProps) {
         />
       )}
       renderBody={() => {
-        // get columns here so get posterior probabilities once - avoids
-        // having to find posterior probs inside sorting comparator function
-        const posteriorProbabilities = new Map();
-        for (const { locus } of request.data?.variant?.credibleSets || []) {
-          const postProb = locus?.find(loc => loc.variant?.id === id)?.posteriorProbability;
-          if (postProb !== undefined) {
-            posteriorProbabilities.set(locus, postProb);
-          }
-        }
-
         return (
           <>
             <PheWasPlot
               loading={request.loading}
-              data={request.data?.variant.credibleSets}
+              data={request.data?.variant.credibleSets.rows}
               id={id}
             />
             <OtTable
               dataDownloader
               showGlobalFilter
-              sortBy="pValue"
+              sortBy="l2gScore"
+              order="desc"
               columns={getColumns({
                 id,
                 referenceAllele: request.data?.variant.referenceAllele,
                 alternateAllele: request.data?.variant.alternateAllele,
-                posteriorProbabilities,
               })}
-              rows={request.data?.variant.credibleSets}
+              rows={request.data?.variant.gwasCredibleSets.rows}
               loading={request.loading}
               query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
               variables={variables}
