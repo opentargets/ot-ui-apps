@@ -224,7 +224,7 @@ function Tooltip({ data }) {
             {data.l2Gpredictions?.[0].score.toFixed(3)}
           </TooltipRow>
           <TooltipRow label="Credible set size">
-            {data.locus?.length ?? naLabel}
+            {data.locus?.count ?? naLabel}
           </TooltipRow>
         </tbody>
       </table>

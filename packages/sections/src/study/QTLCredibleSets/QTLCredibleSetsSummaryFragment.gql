@@ -1,5 +1,5 @@
 fragment QTLCredibleSetsSummaryFragment on Gwas {
   qtlCredibleSets: credibleSets(page: { size: 1, index: 0 }) {
-    beta
+    count
   }
 }
