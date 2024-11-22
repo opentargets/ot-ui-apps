@@ -3,5 +3,5 @@ export const definition = {
   id,
   name: "Variants in Credible Set",
   shortName: "VA",
-  hasData: data => data?.[0]?.locus?.length > 0,
+  hasData: data => data?.locus.count > 0,
 };

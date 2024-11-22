@@ -13,14 +13,14 @@ function CredibleSetPage() {
   const { path } = useRouteMatch();
 
   const { loading, data } = useQuery(CREDIBLE_SET_PAGE_QUERY, {
-    variables: { studyLocusIds: [studyLocusId] },
+    variables: { studyLocusId: studyLocusId },
   });
 
-  if (data && !data?.credibleSets.length) {
+  if (data && !data?.credibleSet) {
     return <NotFoundPage />;
   }
 
-  const credibleSet = data?.credibleSets[0];
+  const credibleSet = data?.credibleSet;
   const variantId = credibleSet?.variant?.id;
   const referenceAllele = credibleSet?.variant?.referenceAllele;
   const alternateAllele = credibleSet?.variant?.alternateAllele;

@@ -18,17 +18,16 @@ type ProfileHeaderProps = {
 };
 
 function ProfileHeader({ variantId }: ProfileHeaderProps) {
-
   const { loading, error, data } = usePlatformApi();
 
   // TODO: Errors!
   if (error) return null;
 
-  const credibleSet = data?.credibleSets?.[0];
+  const credibleSet = data?.credibleSet;
   const study = credibleSet?.study;
   const studyCategory = study ? getStudyCategory(study.projectId) : null;
   const target = study?.target;
-  const leadVariant = credibleSet?.locus?.find(loc => loc?.variant.id === variantId);
+  const leadVariant = credibleSet?.locus.rows[0];
   const beta = leadVariant?.beta ?? credibleSet?.beta;
   const standardError = leadVariant?.standardError ?? credibleSet?.standardError;
   const { pValueMantissa, pValueExponent } =
@@ -39,23 +38,22 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
 
   return (
     <BaseProfileHeader>
-        
       <Box>
-        <Typography variant="subtitle1" mt={0}>Lead Variant</Typography>
-        {typeof pValueMantissa === "number" && typeof pValueExponent === "number" &&
+        <Typography variant="subtitle1" mt={0}>
+          Lead Variant
+        </Typography>
+        {typeof pValueMantissa === "number" && typeof pValueExponent === "number" && (
           <Field loading={loading} title="P-value">
             <ScientificNotation number={[pValueMantissa, pValueExponent]} />
           </Field>
-        }
-        {typeof beta === 'number' &&
+        )}
+        {typeof beta === "number" && (
           <Field
             loading={loading}
             title={
               <Tooltip
                 title={
-                  <Typography variant="caption">
-                    Beta with respect to the ALT allele
-                  </Typography>
+                  <Typography variant="caption">Beta with respect to the ALT allele</Typography>
                 }
                 showHelpIcon
               >
@@ -65,15 +63,16 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
           >
             {beta.toPrecision(3)}
           </Field>
-        }
-        {typeof standardError === 'number' &&
+        )}
+        {typeof standardError === "number" && (
           <Field
             loading={loading}
             title={
               <Tooltip
                 title={
                   <Typography variant="caption">
-                    Standard error: Estimate of the standard deviation of the sampling distribution of the beta
+                    Standard error: Estimate of the standard deviation of the sampling distribution
+                    of the beta
                   </Typography>
                 }
                 showHelpIcon
@@ -84,13 +83,13 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
           >
             {standardError.toPrecision(3)}
           </Field>
-        }
-        {typeof credibleSet?.effectAlleleFrequencyFromSource === "number" &&
+        )}
+        {typeof credibleSet?.effectAlleleFrequencyFromSource === "number" && (
           <Field loading={loading} title="EAF">
             {credibleSet.effectAlleleFrequencyFromSource.toPrecision(3)}
           </Field>
-        }
-        {typeof leadVariant?.posteriorProbability === "number" &&
+        )}
+        {typeof leadVariant?.posteriorProbability === "number" && (
           <Field
             loading={loading}
             title={
@@ -108,32 +107,30 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
           >
             {leadVariant.posteriorProbability.toPrecision(3)}
           </Field>
-        }
+        )}
         <Field loading={loading} title="GRCh38">
           {credibleSet?.variant &&
-            `${credibleSet.variant.chromosome}:${credibleSet.variant.position}`
-          }
+            `${credibleSet.variant.chromosome}:${credibleSet.variant.position}`}
         </Field>
-        {
-          credibleSet?.variant?.rsIds.length > 0 &&
-            <Field loading={loading} title="Ensembl">
-              {
-                credibleSet.variant.rsIds.map((rsid, index) => (
-                  <Fragment key={rsid}>
-                    {index > 0 && ", "}
-                    <Link
-                      external
-                      to={`https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${rsid}`}
-                    >
-                      {rsid}
-                    </Link>
-                  </Fragment>
-                ))
-              }
-            </Field>
-        }
+        {credibleSet?.variant?.rsIds.length > 0 && (
+          <Field loading={loading} title="Ensembl">
+            {credibleSet.variant.rsIds.map((rsid, index) => (
+              <Fragment key={rsid}>
+                {index > 0 && ", "}
+                <Link
+                  external
+                  to={`https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${rsid}`}
+                >
+                  {rsid}
+                </Link>
+              </Fragment>
+            ))}
+          </Field>
+        )}
 
-        <Typography variant="subtitle1" mt={1}>Credible Set</Typography>
+        <Typography variant="subtitle1" mt={1}>
+          Credible Set
+        </Typography>
         <Field loading={loading} title="Finemapping method">
           {credibleSet?.finemappingMethod}
         </Field>
@@ -152,19 +149,21 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
       </Box>
 
       <Box>
-        <Typography variant="subtitle1" mt={0}>Study</Typography>
+        <Typography variant="subtitle1" mt={0}>
+          Study
+        </Typography>
         <Field loading={loading} title="Author">
           {study?.publicationFirstAuthor}
         </Field>
         <Field loading={loading} title="Date">
           {study?.publicationDate?.slice(0, 4)}
         </Field>
-        {studyCategory !== "QTL" &&
+        {studyCategory !== "QTL" && (
           <>
             <Field loading={loading} title="Trait">
               {study?.traitFromSource}
             </Field>
-            {study?.diseases?.length > 0 &&
+            {study?.diseases?.length > 0 && (
               <Field loading={loading} title="Diseases">
                 {study.diseases.map(({ id, name }, index) => (
                   <Fragment key={id}>
@@ -173,44 +172,42 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
                   </Fragment>
                 ))}
               </Field>
-            }
+            )}
           </>
-        }
-        {studyCategory === "QTL" &&
+        )}
+        {studyCategory === "QTL" && (
           <>
-            {target?.id &&
+            {target?.id && (
               <Field loading={loading} title="Affected gene">
-                <Link to={`../target/${target.id}`}>
-                  {target.approvedSymbol} 
-                </Link>
+                <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>
               </Field>
-            }
-            { study?.biosample?.biosampleId &&
+            )}
+            {study?.biosample?.biosampleId && (
               <Field loading={loading} title="Affected cell/tissue">
-                <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${study.biosample.biosampleId}&ontology=uberon`}>
+                <Link
+                  external
+                  to={`https://www.ebi.ac.uk/ols4/search?q=${study.biosample.biosampleId}&ontology=uberon`}
+                >
                   {study.biosample.biosampleId}
                 </Link>
               </Field>
-            }
+            )}
           </>
-        }
+        )}
         <Field loading={loading} title="Journal">
           {study?.publicationJournal}
         </Field>
-        {study?.pubmedId &&
+        {study?.pubmedId && (
           <Field loading={loading} title="PubMed">
-            <PublicationsDrawer
-              entries={[{ name: study.pubmedId, url: epmcUrl(study.pubmedId)}]}
-            >
+            <PublicationsDrawer entries={[{ name: study.pubmedId, url: epmcUrl(study.pubmedId) }]}>
               {study.pubmedId}
             </PublicationsDrawer>
           </Field>
-        }
+        )}
         <Field loading={loading} title="Sample size">
           {study?.nSamples}
         </Field>
       </Box>
-
     </BaseProfileHeader>
   );
 }

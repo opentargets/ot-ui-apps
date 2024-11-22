@@ -1,5 +1,5 @@
-query GWASColocQuery($studyLocusIds: [String!]!) {
-  credibleSets(studyLocusIds: $studyLocusIds) {
+query GWASColocQuery($studyLocusId: String!) {
+  credibleSet(studyLocusId: $studyLocusId) {
     colocalisation(studyTypes: [gwas], page: { size: 250, index: 0 }) {
       otherStudyLocus {
         studyLocusId

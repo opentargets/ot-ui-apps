@@ -4,14 +4,14 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
   beta
   standardError
   effectAlleleFrequencyFromSource
-  locus {
-    posteriorProbability
-    pValueMantissa
-    pValueExponent
-    beta
-    standardError
-    variant {
-      id
+  locus(variantIds: $variantIds) {
+    count
+    rows {
+      posteriorProbability
+      pValueMantissa
+      pValueExponent
+      beta
+      standardError
     }
   }
   variant {

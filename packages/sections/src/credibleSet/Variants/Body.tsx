@@ -151,7 +151,8 @@ function Body({
   entity,
 }: BodyProps) {
   const variables = {
-    studyLocusIds: [studyLocusId],
+    studyLocusId: studyLocusId,
+    variantIds: [leadVariantId],
   };
 
   const request = useQuery(VARIANTS_QUERY, {
@@ -180,7 +181,7 @@ function Body({
             order="desc"
             columns={columns}
             loading={request.loading}
-            rows={request.data?.credibleSets[0].locus}
+            rows={request.data?.credibleSet.locus.rows}
             query={VARIANTS_QUERY.loc.source.body}
             variables={variables}
           />
