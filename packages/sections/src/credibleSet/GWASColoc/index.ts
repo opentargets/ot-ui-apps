@@ -3,5 +3,5 @@ export const definition = {
   id,
   name: "GWAS Colocalisation",
   shortName: "GC",
-  hasData: data => data?.[0]?.colocalisation?.length > 0,
+  hasData: data => data?.colocalisation?.length > 0,
 };

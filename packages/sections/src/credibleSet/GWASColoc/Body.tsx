@@ -157,7 +157,7 @@ type BodyProps = {
 
 function Body({ studyLocusId, entity }: BodyProps) {
   const variables = {
-    studyLocusIds: [studyLocusId],
+    studyLocusId: studyLocusId,
   };
 
   const request = useQuery(GWAS_COLOC_QUERY, {
@@ -180,7 +180,7 @@ function Body({ studyLocusId, entity }: BodyProps) {
             order="asc"
             columns={columns}
             loading={request.loading}
-            rows={request.data?.credibleSets[0].colocalisation}
+            rows={request.data?.credibleSet.colocalisation}
             query={GWAS_COLOC_QUERY.loc.source.body}
             variables={variables}
           />

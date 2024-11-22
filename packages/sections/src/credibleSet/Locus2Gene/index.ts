@@ -3,5 +3,5 @@ export const definition = {
   id,
   name: "Locus to Gene",
   shortName: "LG",
-  hasData: data => data[0]?.l2Gpredictions.length > 0,
+  hasData: data => data?.l2Gpredictions.length > 0,
 };
