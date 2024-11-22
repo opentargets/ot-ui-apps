@@ -68,12 +68,11 @@ export default function PheWasPlot({ loading, data, id }) {
 
   const diseaseGroups = new Map();
   for (const row of data) {
-    for (const { id, name } of row.study.diseases.map(d => d.therapeuticAreas).flat()) {
-      diseaseGroups.has(id)
-        ? diseaseGroups.get(id).data.push(row)
-        : diseaseGroups.set(id, { name, data: [row] });
-      break;
-    }
+    const { id, name } = getTherapeuticArea(row);
+    diseaseGroups.has(id)
+      ? diseaseGroups.get(id).data.push(row)
+      : diseaseGroups.set(id, { name, data: [row] });
+    break;
   }
 
   const sortedDiseaseIds =  // disease ids sorted by disease name
@@ -303,3 +302,46 @@ function pValue(row) {
     Number.MIN_VALUE
   );
 }
+
+const therapeuticPriorities = {
+  MONDO_0045024: { name: "cell proliferation disorder", rank: 1 },
+  EFO_0005741: { name: "infectious disease", rank: 2 },
+  OTAR_0000014: { name: "pregnancy or perinatal disease", rank: 3 },
+  EFO_0005932: { name: "animal disease", rank: 4 },
+  MONDO_0024458: { name: "disease of visual system", rank: 5 },
+  EFO_0000319: { name: "cardiovascular disease", rank: 6 },
+  EFO_0009605: { name: "pancreas disease", rank: 7 },
+  EFO_0010282: { name: "gastrointestinal disease", rank: 8 },
+  OTAR_0000017: { name: "reproductive system or breast disease", rank: 9 },
+  EFO_0010285: { name: "integumentary system disease", rank: 10 },
+  EFO_0001379: { name: "endocrine system disease", rank: 11 },
+  OTAR_0000010: { name: "respiratory or thoracic disease", rank: 12 },
+  EFO_0009690: { name: "urinary system disease", rank: 13 },
+  OTAR_0000006: { name: "musculoskeletal or connective tissue disease", rank: 14 },
+  MONDO_0021205: { name: "disease of ear", rank: 15 },
+  EFO_0000540: { name: "immune system disease", rank: 16 },
+  EFO_0005803: { name: "hematologic disease", rank: 17 },
+  EFO_0000618: { name: "nervous system disease", rank: 18 },
+  MONDO_0002025: { name: "psychiatric disorder", rank: 19 },
+  OTAR_0000020: { name: "nutritional or metabolic disease", rank: 20 },
+  OTAR_0000018: { name: "genetic, familial or congenital disease", rank: 21 },
+  OTAR_0000009: { name: "injury, poisoning or other complication", rank: 22 },
+  EFO_0000651: { name: "phenotype", rank: 23 },
+  EFO_0001444: { name: "measurement", rank: 24 },
+  GO_0008150: { name: "biological process", rank: 25 },
+};
+
+function getTherapeuticArea(row) {
+  let bestId = null;
+  let bestRank = Infinity;
+  for (const id of row.study.diseases.map(d => d.therapeuticAreas).flat()) {
+    const rank = therapeuticPriorities[id]?.rank;
+    if (rank < bestRank) {
+      bestId = id;
+      bestRank = rank;
+    }
+  }
+  return bestId
+    ? { id: bestId, name: therapeuticPriorities[bestId] }
+    : { id: null, name: 'Uncategorised' };
+}   
