@@ -7,14 +7,22 @@ import {
   OtTable,
   Tooltip,
   ClinvarStars,
+  useBatchQuery,
 } from "ui";
 import { Box, Chip } from "@mui/material";
-import { clinvarStarMap, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import {
+  clinvarStarMap,
+  initialResponse,
+  naLabel,
+  sectionsBaseSizeQuery,
+  table5HChunkSize,
+} from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { responseType } from "ui/src/types/response";
 
 type getColumnsType = {
   id: string;
@@ -202,12 +210,26 @@ type BodyProps = {
 function Body({ id, entity }: BodyProps): ReactNode {
   const variables = {
     variantId: id,
-    size: sectionsBaseSizeQuery,
   };
 
-  const request = useQuery(QTL_CREDIBLE_SETS_QUERY, {
-    variables,
+  const [request, setRequest] = useState<responseType>(initialResponse);
+
+  const getAllQtlData = useBatchQuery({
+    query: QTL_CREDIBLE_SETS_QUERY,
+    variables: {
+      variantId: id,
+      size: table5HChunkSize,
+      index: 0,
+    },
+    dataPath: "data.variant.qtlCredibleSets",
+    size: table5HChunkSize,
   });
+
+  useEffect(() => {
+    getAllQtlData().then(r => {
+      setRequest(r);
+    });
+  }, []);
 
   return (
     <SectionItem
