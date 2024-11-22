@@ -17,7 +17,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
   return [
     {
       id: "variant.id",
-      label: "Variant ID",
+      label: "Variant",
       comparator: variantComparator,
       sortable: true,
       filterValue: ({ variant: v }) =>
@@ -115,7 +115,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       id: "posteriorProbability",
       label: "Posterior Probability",
       filterValue: false,
-      tooltip: "Posterior inclusion probability from fine-mapping that this variant is causal",
+      tooltip: "Posterior inclusion probability that this variant is causal within the fine-mapped credible set",
       comparator: (rowA, rowB) => rowA?.posteriorProbability - rowB?.posteriorProbability,
       sortable: true,
       renderCell: ({ posteriorProbability }) => {
@@ -125,7 +125,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
     },
     {
       id: "logBF",
-      label: "LOG(BF)",
+      label: "log(Bayes Factor)",
       filterValue: false,
       renderCell: ({ logBF }) => {
         if (typeof logBF !== "number") return naLabel;
@@ -151,7 +151,8 @@ function Body({
   entity,
 }: BodyProps) {
   const variables = {
-    studyLocusIds: [studyLocusId],
+    studyLocusId: studyLocusId,
+    variantIds: [leadVariantId],
   };
 
   const request = useQuery(VARIANTS_QUERY, {
@@ -180,7 +181,7 @@ function Body({
             order="desc"
             columns={columns}
             loading={request.loading}
-            rows={request.data?.credibleSets[0].locus}
+            rows={request.data?.credibleSet.locus.rows}
             query={VARIANTS_QUERY.loc.source.body}
             variables={variables}
           />

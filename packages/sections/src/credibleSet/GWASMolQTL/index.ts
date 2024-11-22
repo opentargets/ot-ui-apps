@@ -3,6 +3,6 @@ export const definition = {
   name: "GWAS/MolQTL Colocalisation",
   shortName: "GC",
   hasData: data => {
-    return data?.[0]?.colocalisation?.length > 0;
+    return data?.colocalisation?.length > 0;
   },
 };

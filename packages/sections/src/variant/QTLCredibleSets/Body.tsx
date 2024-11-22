@@ -26,7 +26,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
   return [
     {
       id: "studyLocusId",
-      label: "More details",
+      label: "Navigate",
       renderCell: ({ studyLocusId }) => (
         <Link to={`../credible-set/${studyLocusId}`}>{studyLocusId}</Link>
       ),
@@ -63,7 +63,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     },
     {
       id: "study.studyId",
-      label: "Study ID",
+      label: "Study",
       renderCell: ({ study }) => {
         if (!study) return naLabel;
         return <Link to={`../study/${study.studyId}`}>{study.studyId}</Link>;
@@ -159,14 +159,14 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         </>
       ),
       comparator: (rowA, rowB) =>
-        rowA.locus[0].posteriorProbability - rowB.locus[0].posteriorProbability,
+        rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
       sortable: true,
-      renderCell: ({ locus }) => locus[0]?.posteriorProbability.toFixed(3) ?? naLabel,
-      exportValue: ({ locus }) => locus[0]?.posteriorProbability.toFixed(3),
+      renderCell: ({ locus }) => locus.rows[0]?.posteriorProbability.toFixed(3) ?? naLabel,
+      exportValue: ({ locus }) => locus.rows[0]?.posteriorProbability.toFixed(3),
     },
     {
       id: "confidence",
-      label: "Confidence",
+      label: "Fine-mapping confidence",
       sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;
@@ -180,16 +180,16 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     },
     {
       id: "finemappingMethod",
-      label: "Finemapping method",
+      label: "Fine-mapping method",
     },
     {
       id: "credibleSetSize",
       label: "Credible set size",
-      comparator: (a, b) => a.locus?.length - b.locus?.length,
+      comparator: (a, b) => a.locus?.count - b.locus?.count,
       sortable: true,
       filterValue: false,
-      renderCell: ({ locus }) => locus?.length ?? naLabel,
-      exportValue: ({ locus }) => locus?.length,
+      renderCell: ({ locus }) => locus?.count ?? naLabel,
+      exportValue: ({ locus }) => locus?.count,
     },
   ];
 }
@@ -232,7 +232,7 @@ function Body({ id, entity }: BodyProps): ReactNode {
               referenceAllele: request.data?.variant.referenceAllele,
               alternateAllele: request.data?.variant.alternateAllele,
             })}
-            rows={request.data?.variant.credibleSets}
+            rows={request.data?.variant.qtlCredibleSets.rows}
             loading={request.loading}
             query={QTL_CREDIBLE_SETS_QUERY.loc.source.body}
             variables={variables}

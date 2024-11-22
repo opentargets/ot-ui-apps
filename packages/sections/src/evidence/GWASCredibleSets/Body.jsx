@@ -47,7 +47,7 @@ function getColumns() {
     },
     {
       id: "trait",
-      label: "Trait",
+      label: "Reported trait",
       renderCell: ({ credibleSet }) => credibleSet?.study.traitFromSource,
     },
     {
@@ -58,7 +58,7 @@ function getColumns() {
     },
     {
       id: "study",
-      label: "Study Id",
+      label: "Study",
       renderCell: ({ credibleSet }) => {
         return (
           <Link to={`/study/${credibleSet?.study.studyId}`}>{credibleSet?.study.studyId}</Link>
@@ -111,7 +111,7 @@ function getColumns() {
     },
     {
       id: "confidence",
-      label: "Confidence",
+      label: "Fine-mapping confidence",
       sortable: true,
       renderCell: ({ credibleSet }) => {
         if (!credibleSet?.confidence) return naLabel;

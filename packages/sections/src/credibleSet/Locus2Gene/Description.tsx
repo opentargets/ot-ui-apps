@@ -4,7 +4,7 @@ import { Link } from "ui";
 function Description(): ReactElement {
   return (
     <>
-      Genes prioritised by the L2G pipelines within this credible set. Source:{" "}
+      Gene assignment based on machine-learning prioritisation of credible set features. Source:{" "}
       <Link to="../">Open Targets</Link>
     </>
   );
