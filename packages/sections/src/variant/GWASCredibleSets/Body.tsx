@@ -70,7 +70,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     },
     {
       id: "trait",
-      label: "Trait",
+      label: "Reported trait",
       filterValue: ({ study }) => study?.traitFromSource,
       renderCell: ({ study }) => {
         if (!study?.traitFromSource) return naLabel;
@@ -80,7 +80,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     },
     {
       id: "disease",
-      label: "Diseases",
+      label: "Disease/phenotype",
       filterValue: ({ study }) => study?.diseases.map(d => d.name).join(", "),
       renderCell: ({ study }) => {
         if (!study?.diseases?.length) return naLabel;
@@ -99,7 +99,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     },
     {
       id: "study.studyId",
-      label: "Study ID",
+      label: "Study",
       renderCell: ({ study }) => {
         if (!study) return naLabel;
         return <Link to={`../study/${study.studyId}`}>{study.studyId}</Link>;
@@ -161,7 +161,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     },
     {
       id: "confidence",
-      label: "Confidence",
+      label: "Fine-mapping confidence",
       sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;
@@ -175,7 +175,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     },
     {
       id: "finemappingMethod",
-      label: "Finemapping method",
+      label: "Fine-mapping method",
     },
     {
       id: "topL2G",

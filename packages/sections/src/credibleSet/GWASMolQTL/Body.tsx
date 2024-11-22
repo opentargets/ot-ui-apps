@@ -10,7 +10,7 @@ import { getStudyCategory } from "../../utils/getStudyCategory";
 const columns = [
   {
     id: "view",
-    label: "Details",
+    label: "Navigate",
     renderCell: ({ otherStudyLocus }) => {
       if (!otherStudyLocus) return naLabel;
       return <Link to={`./${otherStudyLocus.studyLocusId}`}>view</Link>;
@@ -29,7 +29,7 @@ const columns = [
   },
   {
     id: "otherStudyLocus.study.studyId",
-    label: "Study ID",
+    label: "Study",
     renderCell: ({ otherStudyLocus }) => {
       const studyId = otherStudyLocus?.study?.studyId;
       if (!studyId) return naLabel;
@@ -38,7 +38,7 @@ const columns = [
   },
   {
     id: "otherStudyLocus.study.traitFromSource",
-    label: "Trait",
+    label: "Reported trait",
     renderCell: ({ otherStudyLocus }) => {
       const trait = otherStudyLocus?.study?.traitFromSource;
       if (!trait) return naLabel;
@@ -47,7 +47,7 @@ const columns = [
   },
   {
     id: "otherStudyLocus.study.publicationFirstAuthor",
-    label: "Author",
+    label: "First author",
     renderCell: ({ otherStudyLocus }) => {
       const { projectId, publicationFirstAuthor } = otherStudyLocus?.study || {};
       return getStudyCategory(projectId) === "FINNGEN"

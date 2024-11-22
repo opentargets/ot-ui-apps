@@ -9,7 +9,7 @@ type DescriptionProps = {
 function Description({ variantId, referenceAllele, alternateAllele }: DescriptionProps) {
   return (
     <>
-      GWAS 99% credible sets containing{" "}
+      95% credible sets associated with complex traits containing{" "}
       <strong>
         <DisplayVariantId
           variantId={variantId}

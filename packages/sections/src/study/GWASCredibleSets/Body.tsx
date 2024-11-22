@@ -16,7 +16,7 @@ import ManhattanPlot from "./ManhattanPlot";
 const columns = [
   {
     id: "view",
-    label: "Details",
+    label: "Navigate",
     renderCell: ({ studyLocusId }) => <Link to={`../credible-set/${studyLocusId}`}>view</Link>,
     filterValue: false,
     exportValue: false,
@@ -78,7 +78,7 @@ const columns = [
 
   {
     id: "finemappingMethod",
-    label: "Finemapping method",
+    label: "Fine-mapping method",
   },
   {
     id: "TopL2G",
@@ -108,11 +108,11 @@ const columns = [
   {
     id: "credibleSetSize",
     label: "Credible set size",
-    comparator: (a, b) => a.locus?.length - b.locus?.length,
+    comparator: (a, b) => a.locus?.count - b.locus?.count,
     sortable: true,
     filterValue: false,
-    renderCell: ({ locus }) => locus?.length ?? naLabel,
-    exportValue: ({ locus }) => locus?.length,
+    renderCell: ({ locus }) => locus?.count ?? naLabel,
+    exportValue: ({ locus }) => locus?.count,
   },
 ];
 
@@ -140,7 +140,7 @@ function Body({ id, entity }: BodyProps) {
         <>
           <ManhattanPlot
             loading={request.loading}
-            data={request.data?.gwasStudy[0].credibleSets}
+            data={request.data?.gwasStudy[0].credibleSets.rows}
           />
           <OtTable
             dataDownloader
@@ -148,7 +148,7 @@ function Body({ id, entity }: BodyProps) {
             sortBy="pValue"
             loading={request.loading}
             columns={columns}
-            rows={request.data?.gwasStudy[0].credibleSets}
+            rows={request.data?.gwasStudy[0].credibleSets.rows}
             query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
             variables={variables}
           />

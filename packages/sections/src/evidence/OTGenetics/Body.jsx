@@ -78,7 +78,7 @@ function getColumns(label) {
     },
     {
       id: "variantId",
-      label: "Variant ID (RSID)",
+      label: "Variant (RSID)",
       renderCell: ({ variantId, variantRsId }) => (
         <>
           {variantId ? (

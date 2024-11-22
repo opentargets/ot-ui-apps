@@ -1,7 +1,7 @@
 const id = "variants";
 export const definition = {
   id,
-  name: "Variants in Credible Set",
+  name: "Credible Set Variants",
   shortName: "VA",
   hasData: data => data?.locus.count > 0,
 };

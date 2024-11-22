@@ -11,22 +11,22 @@ import { epmcUrl } from "ui/src/utils/urls";
 const columns = [
   {
     id: "studyId",
-    label: "Study ID",
+    label: "Study",
     renderCell: ({ studyId }) => <Link to={`/study/${studyId}`}>{studyId}</Link>,
   },
   {
     id: "traitFromSource",
-    label: "Trait from source",
+    label: "Reported trait",
   },
   {
     id: "publicationFirstAuthor",
-    label: "Author",
+    label: "First author",
     renderCell: ({ projectId, publicationFirstAuthor }) =>
       getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor || naLabel,
   },
   {
     id: "publicationDate",
-    label: "Date",
+    label: "Year",
     renderCell: ({ projectId, publicationDate }) =>
       getStudyCategory(projectId) === "FINNGEN"
         ? "2023"

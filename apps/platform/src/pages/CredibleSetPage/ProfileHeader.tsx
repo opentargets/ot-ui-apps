@@ -134,16 +134,16 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Field loading={loading} title="Finemapping method">
           {credibleSet?.finemappingMethod}
         </Field>
-        <Field loading={loading} title="Credible set index">
+        <Field loading={loading} title="Credible set index within locus">
           {credibleSet?.credibleSetIndex}
         </Field>
         <Field loading={loading} title="Purity min">
           {credibleSet?.purityMinR2?.toPrecision(3)}
         </Field>
-        <Field loading={loading} title="Start">
+        <Field loading={loading} title="Locus start">
           {credibleSet?.locusStart}
         </Field>
-        <Field loading={loading} title="End">
+        <Field loading={loading} title="Locus end">
           {credibleSet?.locusEnd}
         </Field>
       </Box>
@@ -155,12 +155,12 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Field loading={loading} title="Author">
           {study?.publicationFirstAuthor}
         </Field>
-        <Field loading={loading} title="Date">
+        <Field loading={loading} title="Publication year">
           {study?.publicationDate?.slice(0, 4)}
         </Field>
         {studyCategory !== "QTL" && (
           <>
-            <Field loading={loading} title="Trait">
+            <Field loading={loading} title="Reported trait">
               {study?.traitFromSource}
             </Field>
             {study?.diseases?.length > 0 && (

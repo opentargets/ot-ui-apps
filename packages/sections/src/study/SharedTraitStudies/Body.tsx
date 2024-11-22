@@ -14,12 +14,12 @@ function getColumns(diseaseIds: string[]) {
   return [
     {
       id: "studyId",
-      label: "Study ID",
+      label: "Study",
       renderCell: ({ studyId }) => <Link to={`./${studyId}`}>{studyId}</Link>,
     },
     {
       id: "sharedDiseases",
-      label: "Shared traits",
+      label: "Shared disease/phenotype",
       renderCell: ({ diseases }) => {
         const sharedTraits = diseases.filter(d => diseaseIdsSet.has(d.id));
         return (
@@ -41,11 +41,11 @@ function getColumns(diseaseIds: string[]) {
     },
     {
       id: "traitFromSource",
-      label: "Trait from source",
+      label: "Reported trait",
     },
     {
       id: "author",
-      label: "Author",
+      label: "First author",
       renderCell: ({ projectId, publicationFirstAuthor }) =>
         getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor || naLabel,
       exportValue: ({ projectId, publicationFirstAuthor }) =>
@@ -53,7 +53,7 @@ function getColumns(diseaseIds: string[]) {
     },
     {
       id: "publicationDate",
-      label: "Date",
+      label: "Year",
       renderCell: ({ projectId, publicationDate }) =>
         getStudyCategory(projectId) === "FINNGEN"
           ? "2023"
