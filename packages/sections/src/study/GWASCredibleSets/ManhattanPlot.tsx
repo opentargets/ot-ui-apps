@@ -210,10 +210,10 @@ function Tooltip({ data }) {
           <TooltipRow label="Finemapping">
             {data.finemappingMethod ?? naLabel}
           </TooltipRow>
-          {data.l2Gpredictions?.[0].target
+          {data.l2Gpredictions?.[0]?.target
             ? <TooltipRow label="Top L2G">
-              <Link to={`/target/${data.l2Gpredictions?.[0].target.id}`}>
-                {data.l2Gpredictions?.[0].target.approvedSymbol}
+              <Link to={`/target/${data.l2Gpredictions[0].target.id}`}>
+                {data.l2Gpredictions[0].target.approvedSymbol}
               </Link>
             </TooltipRow>
             : <TooltipRow label="Top L2G">
@@ -221,7 +221,10 @@ function Tooltip({ data }) {
             </TooltipRow>
           }
           <TooltipRow label="L2G score">
-            {data.l2Gpredictions?.[0].score.toFixed(3)}
+            {data.l2Gpredictions?.[0]?.score != null
+              ? data.l2Gpredictions[0].score.toFixed(3)
+              : naLabel
+            }
           </TooltipRow>
           <TooltipRow label="Credible set size">
             {data.locus?.count ?? naLabel}
