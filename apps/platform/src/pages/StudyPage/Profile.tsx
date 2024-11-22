@@ -73,8 +73,8 @@ function Profile({ studyId, studyType, diseases }: ProfileProps) {
       <SummaryContainer>
         {studyType === "gwas" && (
           <>
-            <SharedTraitStudiesSummary />
             <GWASCredidbleSetsSummary />
+            <SharedTraitStudiesSummary />
           </>
         )}
         {studyType !== "gwas" && <QTLCredibleSetsSummary />}
@@ -84,10 +84,10 @@ function Profile({ studyId, studyType, diseases }: ProfileProps) {
         {studyType === "gwas" && (
           <>
             <Suspense fallback={<SectionLoader />}>
-              <SharedTraitStudiesSection studyId={studyId} diseaseIds={diseaseIds} entity={STUDY} />
+              <GWASCredibleSetsSection id={studyId} entity={STUDY} />
             </Suspense>
             <Suspense fallback={<SectionLoader />}>
-              <GWASCredibleSetsSection id={studyId} entity={STUDY} />
+              <SharedTraitStudiesSection studyId={studyId} diseaseIds={diseaseIds} entity={STUDY} />
             </Suspense>
           </>
         )}
