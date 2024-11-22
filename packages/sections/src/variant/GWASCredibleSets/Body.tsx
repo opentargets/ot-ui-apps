@@ -248,7 +248,7 @@ function Body({ id, entity }: BodyProps) {
           <>
             <PheWasPlot
               loading={request.loading}
-              data={request.data?.variant.credibleSets.rows}
+              data={request.data?.variant.gwasCredibleSets.rows}
               id={id}
             />
             <OtTable

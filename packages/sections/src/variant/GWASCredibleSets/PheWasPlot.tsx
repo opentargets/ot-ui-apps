@@ -28,25 +28,25 @@ export default function PheWasPlot({ loading, data, id }) {
   const plotHeight = 440;
   const theme = useTheme();
   const background = theme.palette.background.paper;
-  const markColor = theme.palette.primary.main;
+  // const markColor = theme.palette.primary.main;
   const fontFamily = theme.typography.fontFamily;
   const pointArea = 64;
 
-  const palette = [
-    '#27B4AE',
-    '#4047C4',
-    '#F48730',
-    '#DB4281',
-    '#7E84F4',
-    '#78DF76',
-    '#1C7AED',
-    '#7129CD',
-    '#E7C73B',
-    '#C95F1E',
-    '#188E61',
-    '#BEE952',
-  ];
-  // const palette = schemeCategory10;
+  // const palette = [
+  //   '#27B4AE',
+  //   '#4047C4',
+  //   '#F48730',
+  //   '#DB4281',
+  //   '#7E84F4',
+  //   '#78DF76',
+  //   '#1C7AED',
+  //   '#7129CD',
+  //   '#E7C73B',
+  //   '#C95F1E',
+  //   '#188E61',
+  //   '#BEE952',
+  // ];
+  const palette = schemeCategory10;
   // const palette = schemeDark2;
   // const palette = schemeSet1;
 
@@ -57,8 +57,7 @@ export default function PheWasPlot({ loading, data, id }) {
   data = data.filter(d => {
     return d.pValueMantissa != null &&
       d.pValueExponent != null &&
-      d.variant != null &&
-      d?.study?.diseases?.map(d => d.therapeuticAreas).flat().length
+      d.variant != null;
   });
 
   if (data.length === 0) return null;
@@ -66,19 +65,24 @@ export default function PheWasPlot({ loading, data, id }) {
   const pValueMin = min(data, pValue);
   const pValueMax = 1;
 
+  const diseaseIdLookup = new Map();
   const diseaseGroups = new Map();
   for (const row of data) {
     const { id, name } = getTherapeuticArea(row);
+    diseaseIdLookup.set(row, id);
     diseaseGroups.has(id)
       ? diseaseGroups.get(id).data.push(row)
       : diseaseGroups.set(id, { name, data: [row] });
-    break;
   }
 
-  const sortedDiseaseIds =  // disease ids sorted by disease name
+  let sortedDiseaseIds =  // disease ids sorted by disease name
     [...diseaseGroups]
       .sort((a, b) => a[1].name.localeCompare(b[1].name))
       .map(a => a[0]);
+  if (diseaseGroups.has('__uncategorised__')) {
+    sortedDiseaseIds = sortedDiseaseIds.filter(id => id === '__uncategorised__');
+    sortedDiseaseIds.shift('__uncategorised__');
+  }
   const xTickValues = [0];
   const xMidpoints = [];
   const sortedData = [];
@@ -162,8 +166,8 @@ export default function PheWasPlot({ loading, data, id }) {
         <Point
           x={(d, i) => i + 0.5}
           y={pValue}
-          fill={d => d.variant.id === id ? d.study.diseases[0].therapeuticAreas[0].id : ''}
-          stroke={d => d.study.diseases[0].therapeuticAreas[0].id}
+          fill={d => d.variant.id === id ? diseaseIdLookup.get(d) : 'background'}
+          stroke={d => diseaseIdLookup.get(d)}
           strokeWidth={1.3}
           area={pointArea}
           hover="stay"
@@ -188,8 +192,8 @@ export default function PheWasPlot({ loading, data, id }) {
           dataFrom="hover"
           x={d => xLookup.get(d) + 0.5}
           y={pValue}
-          fill={d => d.variant.id === id ? d.study.diseases[0].therapeuticAreas[0].id : ''}
-          stroke={d => d.study.diseases[0].therapeuticAreas[0].id}
+          fill={d => d.variant.id === id ? diseaseIdLookup.get(d) : 'background'}
+          stroke={d => diseaseIdLookup.get(d)}
           strokeWidth={1.3}
           area={pointArea}
           hover="stay"
@@ -334,7 +338,10 @@ const therapeuticPriorities = {
 function getTherapeuticArea(row) {
   let bestId = null;
   let bestRank = Infinity;
-  for (const id of row.study.diseases.map(d => d.therapeuticAreas).flat()) {
+  const areaIds = row.study.diseases.map(d => {
+    return d.therapeuticAreas.map(area => area.id);
+  }).flat();
+  for (const id of areaIds) {
     const rank = therapeuticPriorities[id]?.rank;
     if (rank < bestRank) {
       bestId = id;
@@ -342,6 +349,6 @@ function getTherapeuticArea(row) {
     }
   }
   return bestId
-    ? { id: bestId, name: therapeuticPriorities[bestId] }
-    : { id: null, name: 'Uncategorised' };
+    ? { id: bestId, name: therapeuticPriorities[bestId].name }
+    : { id: '__uncategorised__', name: 'Uncategorised' };
 }   
