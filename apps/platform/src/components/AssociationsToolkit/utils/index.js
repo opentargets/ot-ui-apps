@@ -120,24 +120,44 @@ export const ASSOCIATION_COLORS = [
   rgb("#2C6EA0"),
   rgb("#245780"),
 ];
+// export const ASSOCIATION_COLORS = [
+//   rgb("#5e5e5e"),
+//   rgb("#707070"),
+//   rgb("#828282"),
+//   rgb("#959595"),
+//   rgb("#a8a8a8"),
+//   rgb("#bcbcbc"),
+//   rgb("#d0d0d0"),
+//   rgb("#e4e4e4"),
+//   // rgb("#f9f9f9"),
+// ].reverse();
 
 /* PRIORITIZATION */
-// Red to blue
 export const PRIORITISATION_COLORS = [
-  rgb("#D11807"),
-  rgb("#E94C1F"),
-  rgb("#F57634"),
-  rgb("#FD9A44"),
-  rgb("#FFB954"),
-  rgb("#F9D576"),
-  rgb("#ECEADA"),
-  rgb("#C6DBED"),
-  rgb("#9DCCEF"),
-  rgb("#60BCE9"),
-  rgb("#42A7C6"),
-  rgb("#238F9D"),
-  rgb("#00767B"),
+  // rgb("#da4324"),
+  rgb("#e46947"),
+  rgb("#eb8b6a"),
+  rgb("#f0ab8e"),
+  rgb("#f0cbb3"),
+  rgb("#eceada"),
+  rgb("#b6e2e4"),
+  rgb("#7cc4c8"),
+  rgb("#499296"),
+  rgb("#226468"),
+  // rgb("#00373b"),
 ];
+
+// export const PRIORITISATION_COLORS = [
+//   rgb("#2166AC"),
+//   rgb("#4393C3"),
+//   rgb("#92C5DE"),
+//   rgb("#D1E5F0"),
+//   rgb("#ECEADA"),
+//   rgb("#FDDBC7"),
+//   rgb("#F4A582"),
+//   rgb("#D6604D"),
+//   rgb("#B2182B"),
+// ].reverse();
 
 /* ASSOCIATION SCALE */
 export const asscScaleDomain = scaleQuantize().domain([0, 1]);
@@ -153,10 +173,6 @@ const PrioritisationLegend = Legend(prioritizationScale, {
   tickFormat: (d, i) =>
     [
       TARGE_PRIORITISATION_LEGEND_TICKS[0],
-      " ",
-      " ",
-      " ",
-      " ",
       " ",
       " ",
       " ",
