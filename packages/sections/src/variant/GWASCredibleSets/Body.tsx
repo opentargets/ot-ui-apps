@@ -178,7 +178,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       label: "Fine-mapping method",
     },
     {
-      id: "topL2G",
+      id: "l2Gpredictions",
       label: "Top L2G",
       filterValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
       tooltip: "Top gene prioritised by our locus-to-gene model",

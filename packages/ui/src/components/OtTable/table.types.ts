@@ -33,7 +33,7 @@ export type OtTableProps = {
 };
 
 export type loadingTableRows = {
-  id: string;
+  id: Record<string, unknown>;
 };
 
 /*************************
