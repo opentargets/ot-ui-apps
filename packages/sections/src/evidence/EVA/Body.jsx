@@ -41,7 +41,7 @@ const exportColumns = [
   },
   {
     label: "variantId",
-    exportValue: row => row.variantId,
+    exportValue: row => row.variant.id,
   },
   {
     label: "variantRsId",
@@ -110,7 +110,7 @@ function getColumns(label) {
     {
       id: "variantId",
       label: "Variant",
-      renderCell: ({ variantId }) =>
+      renderCell: ({ variant: { id: variantId } }) =>
         // trim long IDs and append '...'
         variantId ? (
           <>

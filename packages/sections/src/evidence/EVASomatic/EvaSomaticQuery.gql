@@ -21,7 +21,9 @@ query EvaSomaticQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor
         variantEffect
         directionOnTrait
         diseaseFromSource
-        variantId
+        variant {
+          id
+        }
         variantRsId
         studyId
         clinicalSignificances

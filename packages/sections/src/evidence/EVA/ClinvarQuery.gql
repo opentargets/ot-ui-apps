@@ -20,12 +20,12 @@ query ClinvarQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: S
           name
         }
         variant {
+          id
           hgvsId
         }
         variantEffect
         directionOnTrait
         diseaseFromSource
-        variantId
         variantRsId
         studyId
         variantFunctionalConsequence {

@@ -66,7 +66,7 @@ const getColumns = label => [
   {
     id: "variantId",
     label: "Variant",
-    renderCell: ({ variantId }) =>
+    renderCell: ({ variant: { id: variantId } }) =>
       variantId ? (
         <>
           {variantId.substring(0, 20)}
@@ -75,7 +75,7 @@ const getColumns = label => [
       ) : (
         naLabel
       ),
-    filterValue: ({ variantId }) => `${variantId}`,
+    filterValue: ({ variant: { id: variantId } }) => `${variantId}`,
   },
   {
     id: "variantRsId",
