@@ -14,15 +14,14 @@ const columns = [
   {
     id: "otherStudyLocus.studyLocusId",
     label: "Navigate",
-    renderCell: ({ otherStudyLocus }) => (
-      <Box sx={{ display: "flex" }}>
+    renderCell: ({ otherStudyLocus }) => {
+      if (!otherStudyLocus?.variant) return naLabel;
+      return (<Box sx={{ display: "flex" }}>
         <Link to={`./${otherStudyLocus.studyLocusId}`}>
           <FontAwesomeIcon icon={faArrowRightToBracket} />
         </Link>
-      </Box>
-    ),
-    filterValue: false,
-    exportValue: false,
+      </Box>)
+    },
   },
   {
     id: "otherStudyLocus.study.studyId",
