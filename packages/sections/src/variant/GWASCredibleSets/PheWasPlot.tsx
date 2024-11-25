@@ -1,28 +1,32 @@
-import { Skeleton, Typography, useTheme } from "@mui/material";
+import { Skeleton, useTheme } from "@mui/material";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  ClinvarStars,
+  Tooltip,
   Link,
   DisplayVariantId,
+  OtScoreLinearBar,
   Plot,
   Vis,
-  XAxis,
   YAxis,
   XTick,
   YTick,
   XLabel,
   YLabel,
   XTitle,
-  XGrid,
-  Circle,
   Point,
   Segment,
   Rect,
-  HTML,
+  HTMLTooltip,
+  HTMLTooltipTable,
+  HTMLTooltipRow,
 } from "ui";
-import { scaleLinear, scaleLog, min, scaleOrdinal, schemeCategory10, schemeDark2, schemeObser } from "d3";
+import { scaleLinear, scaleLog, min, scaleOrdinal, schemeCategory10, schemeDark2 } from "d3";
 import { ScientificNotation } from "ui";
-import { naLabel } from "../../constants";
-import { groupBy } from "lodash";
+import { naLabel, clinvarStarMap } from "../../constants";
 import { Fragment } from "react/jsx-runtime";
+import TooltipRow from "ui/src/components/Plot/components/htmlTooltip/HTMLTooltipRow";
 
 export default function PheWasPlot({ loading, data, id }) {
 
@@ -128,9 +132,19 @@ export default function PheWasPlot({ loading, data, id }) {
   }
   const colorScale = scaleOrdinal(colorDomain, colorRange);
 
-  console.log(diseaseGroups)
-  console.log(xIntervals)
-
+  const pointAttrs = {
+    x: d => rowLookup.get(d).x,
+    y: pValue,
+    fill: d => {
+      return d.variant.id === id ? rowLookup.get(d).therapeuticAreaId : 'background';
+    },
+    stroke: d => rowLookup.get(d).therapeuticAreaId,
+    strokeWidth: 1.3,
+    area: pointArea,
+    hover: 'stay',
+    shape: d => d.beta ? 'triangle' : 'circle',
+    rotation: d => d.beta < 0 ? 180 : 0,
+  }
 
   return (
     <Vis>
@@ -186,22 +200,6 @@ export default function PheWasPlot({ loading, data, id }) {
           stroke={d => d[0]}
           strokeWidth={1}
         />
-        {/* {sortedDiseaseIds.map((id, i) => (
-          <XLabel
-            key={i}
-            values={[xMidpoints[i]]}
-            format={() => sortedDiseaseNames[i]}
-            padding={3}
-            textAnchor="start"
-            style={{
-              transformOrigin: '0% 50%',
-              transformBox: 'fill-box',
-              transform: "rotate(45deg)",
-            }}
-            fill={colorScale(id)}
-          />
-        )
-        )} */}
         {/* <XGrid values={xTickValues} stroke="#e4e4e4" /> */}
         <XTitle fontSize={11} position="top" align="left" textAnchor="middle" padding={16} dx={-30}>
           <tspan fontStyle="italic">-log
@@ -211,23 +209,10 @@ export default function PheWasPlot({ loading, data, id }) {
         </XTitle>
         <YTick />
         <YLabel format={v => -Math.log10(v)} />
-
-        <Point
-          x={(d, i) => rowLookup.get(d).x}
-          y={pValue}
-          fill={d => {
-            return d.variant.id === id ? rowLookup.get(d).therapeuticAreaId : 'background';
-          }}
-          stroke={d => rowLookup.get(d).therapeuticAreaId}
-          strokeWidth={1.3}
-          area={pointArea}
-          hover="stay"
-          shape={d => d.beta ? 'triangle' : 'circle'}
-          rotation={d => d.beta < 0 ? 180 : 0}
-        />
+        <Point {...pointAttrs} />
 
         {/* on hover */}
-        {/* <Rect
+        <Rect
           dataFrom="hover"
           x={0}
           xx={sortedData.length}
@@ -239,30 +224,14 @@ export default function PheWasPlot({ loading, data, id }) {
           fill={background}
           fillOpacity={0.4}
         />
-        <Point
-          dataFrom="hover"
-          x={d => xLookup.get(d) + 0.5}
+        <Point dataFrom="hover" {...pointAttrs} />
+        <HTMLTooltip
+          x={(d, i) => rowLookup.get(d).x}
           y={pValue}
-          fill={d => d.variant.id === id ? diseaseIdLookup.get(d) : 'background'}
-          stroke={d => diseaseIdLookup.get(d)}
-          strokeWidth={1.3}
-          area={pointArea}
-          hover="stay"
-          shape={d => d.beta ? 'triangle' : 'circle'}
-          rotation={d => d.beta < 0 ? 180 : 0}
+          pxWidth={320}
+          pxHeight={240}
+          content={tooltipContent}
         />
-        <HTML
-          dataFrom="hover"
-          x={d => xLookup.get(d) + 0.5}
-          y={pValue}
-          pxWidth={290}
-          pxHeight={200}
-          content={d => <Tooltip data={d} />}
-          anchor={d => `${yAnchor(d)}-${xAnchor(d)}`}
-          pointerEvents="visiblePainted"
-          dx={d => xAnchor(d) === 'left' ? 10 : -10}
-          dy={d => yAnchor(d) === 'top' ? 10 : -10}
-        />  */}
 
         {/* axes at end so fade rectangle doesn't cover them */}
         {/* <XAxis /> */}
@@ -274,81 +243,90 @@ export default function PheWasPlot({ loading, data, id }) {
 
 }
 
-function Tooltip({ data }) {
+function tooltipContent(data) {
   return (
-    <div style={{
-      width: "100%",
-      height: "100%",
-      background: "#fffc",
-      borderColor: "#ddd",
-      borderWidth: "1px",
-      borderStyle: "solid",
-      borderRadius: "0.2rem",
-      padding: "0.25em 0.5rem",
-    }}>
-      {JSON.stringify(data)};
-      {/* <table>
-        <tbody>
-          <TooltipRow label="Details">
-            <Link to={`../credible-set/${data.studyLocusId}`}>view</Link>
-          </TooltipRow>
-          <TooltipRow label="Lead variant">
-            <Link to={`/variant/${data.variant.id}`}>
-              <DisplayVariantId
-                variantId={data.variant.id}
-                referenceAllele={data.variant.referenceAllele}
-                alternateAllele={data.variant.alternateAllele}
-                expand={false}
-              />
-            </Link>
-          </TooltipRow>
-          <TooltipRow label="P-value">
-            <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} />
-          </TooltipRow>
-          <TooltipRow label="Beta">
-            {data.beta?.toFixed(3) ?? naLabel}
-          </TooltipRow>
-          <TooltipRow label="Finemapping">
-            {data.finemappingMethod ?? naLabel}
-          </TooltipRow>
-          {data.l2Gpredictions?.[0].target
-            ? <TooltipRow label="Top L2G">
-              <Link to={`/target/${data.l2Gpredictions?.[0].target.id}`}>
-                {data.l2Gpredictions?.[0].target.approvedSymbol}
-              </Link>
-            </TooltipRow>
-            : <TooltipRow label="Top L2G">
-              {naLabel}
-            </TooltipRow>
-          }
-          <TooltipRow label="L2G score">
-            {data.l2Gpredictions?.[0].score.toFixed(3)}
-          </TooltipRow>
-          <TooltipRow label="Credible set size">
-            {data.locus?.length ?? naLabel}
-          </TooltipRow>
-        </tbody>
-      </table> */}
-    </div>
+    <HTMLTooltipTable>
+      <HTMLTooltipRow label="Navigate" data={data}>
+        <Link to={`/credible-set/${data.studyLocusId}`}>
+          <FontAwesomeIcon icon={faArrowRightToBracket} />
+        </Link>
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Lead variant" data={data}>
+        <Link to={`/variant/${data.variant.id}`}>
+          <DisplayVariantId
+            variantId={data.variant.id}
+            referenceAllele={data.variant.referenceAllele}
+            alternateAllele={data.variant.alternateAllele}
+            expand={false}
+          />
+        </Link>
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Reported trait" data={data}>
+        {data.study?.traitFromSource ?? naLabel}
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Disease/phenotype" data={data}>
+        {data.study?.diseases?.length > 0
+          ? <>
+            {data.study.diseases.map((d, i) => (
+              <Fragment key={d.id}>
+                {i > 0 && ", "}
+                <Link to={`../disease/${d.id}`}>{d.name}</Link>
+              </Fragment>
+            ))}
+          </>
+          : naLabel
+        }
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Study" data={data}>
+        {data.study
+          ? <Link to={`/study/${data.study.studyId}`}>
+            {data.study.studyId}
+          </Link>
+          : naLabel
+        }
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="P-value" data={data}>
+        <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} />
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Beta" data={data}>
+        {data.beta?.toFixed(3) ?? naLabel}
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Posterior probability" data={data}>
+        {data.locus?.rows?.[0].posteriorProbability.toFixed(3) ?? naLabel}
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Fine-mapping confidence" data={data}>
+        {data.confidence
+          ? <Tooltip title={data.confidence} style="">
+            <ClinvarStars num={clinvarStarMap[data.confidence]} />
+          </Tooltip>
+          : naLabel
+        }
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Fine-mapping method" data={data}>
+        {data.finemappingMethod ?? naLabel}
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Top L2G" data={data}>
+        {data.l2Gpredictions?.[0]?.target
+          ? <Link to={`/target/${data.l2Gpredictions[0].target.id}`}>
+            {data.l2Gpredictions[0].target.approvedSymbol}
+          </Link>
+          : naLabel
+        }
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="L2G score" data="data">
+        {data.l2Gpredictions?.[0]?.score != null
+          ? <Tooltip title={data.l2Gpredictions[0].score.toFixed(3)} style="">
+            <OtScoreLinearBar variant="determinate" value={data.l2Gpredictions[0].score * 100} />
+          </Tooltip>
+          : naLabel
+        }
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Credible set size" data={data}>
+        {data.locus?.count ?? naLabel}
+      </HTMLTooltipRow>
+    </HTMLTooltipTable>
   );
 }
-
-// function TooltipRow({ children, label }) {
-//   return (
-//     <tr>
-//       <td>
-//         <Typography variant="subtitle2" style={{ lineHeight: 1.35, paddingRight: "0.2rem" }}>
-//           {label}:
-//         </Typography>
-//       </td>
-//       <td>
-//         <Typography variant="body2" style={{ lineHeight: 1.35 }}>
-//           {children}
-//         </Typography>
-//       </td>
-//     </tr>
-//   );
-// }
 
 function pValue(row) {
   return Math.max(
