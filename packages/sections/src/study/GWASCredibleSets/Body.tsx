@@ -93,7 +93,7 @@ const columns = [
     tooltip: "Top gene prioritised by our locus-to-gene model",
     filterValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.target.approvedSymbol,
     renderCell: ({ l2Gpredictions }) => {
-      const { target } = l2Gpredictions?.[0];
+      const target = l2Gpredictions?.[0]?.target;
       if (!target) return naLabel;
       return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
     },
@@ -106,7 +106,7 @@ const columns = [
     sortable: true,
     filterValue: false,
     renderCell: ({ l2Gpredictions }) => {
-      const { score } = l2Gpredictions?.[0];
+      const score = l2Gpredictions?.[0]?.score;
       if (typeof score !== "number") return naLabel;
       return score.toFixed(3);
     },
