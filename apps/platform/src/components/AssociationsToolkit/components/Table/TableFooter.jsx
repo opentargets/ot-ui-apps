@@ -40,28 +40,6 @@ function TableFooter({ table }) {
     <TableFooterContainer>
       <div style={{ display: "flex", alignItems: " flex-start" }}>
         <div id="legend" />
-        {!isAssociations && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              marginLeft: "10px",
-            }}
-          >
-            <span
-              style={{
-                fontWeight: "bold",
-                fontSize: "10px",
-                marginBottom: "3px",
-              }}
-            >
-              Overall score
-            </span>
-            <TableCell shape="square" label />
-          </div>
-        )}
         <div
           style={{
             display: "flex",
