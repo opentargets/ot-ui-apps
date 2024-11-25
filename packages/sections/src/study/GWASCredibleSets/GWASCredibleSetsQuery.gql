@@ -19,9 +19,8 @@ query GWASCredibleSetsQuery($studyId: String!) {
           count
         }
         finemappingMethod
-        confidence
         l2Gpredictions(size: 1) {
-          target {
+          target{
             id
             approvedSymbol
           }

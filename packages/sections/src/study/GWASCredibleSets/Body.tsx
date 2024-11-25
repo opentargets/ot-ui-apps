@@ -4,13 +4,10 @@ import {
   SectionItem,
   ScientificNotation,
   DisplayVariantId,
-  Tooltip,
-  ClinvarStars,
-  OtScoreLinearBar,
   OtTable,
 } from "ui";
 import { Box } from "@mui/material";
-import { clinvarStarMap, naLabel } from "../../constants";
+import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
@@ -85,50 +82,35 @@ const columns = [
       return beta.toPrecision(3);
     },
   },
+
   {
     id: "finemappingMethod",
     label: "Fine-mapping method",
   },
   {
-    id: "confidence",
-    label: "Fine-mapping confidence",
-    tooltip: "Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method",
-    sortable: true,
-    renderCell: ({ confidence }) => {
-      if (!confidence) return naLabel;
-      return (
-        <Tooltip title={confidence} style="">
-          <ClinvarStars num={clinvarStarMap[confidence]} />
-        </Tooltip>
-      );
-    },
-    filterValue: ({ confidence }) => clinvarStarMap[confidence],
-  },
-  {
-    id: "topL2G",
+    id: "TopL2G",
     label: "Top L2G",
-    filterValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
     tooltip: "Top gene prioritised by our locus-to-gene model",
+    filterValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.target.approvedSymbol,
     renderCell: ({ l2Gpredictions }) => {
-      if (!l2Gpredictions[0]?.target) return naLabel;
-      const { target } = l2Gpredictions[0];
+      const { target } = l2Gpredictions?.[0];
+      if (!target) return naLabel;
       return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
     },
-    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
+    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.target.approvedSymbol,
   },
   {
     id: "l2gScore",
     label: "L2G score",
-    comparator: (rowA, rowB) => rowA?.l2Gpredictions[0]?.score - rowB?.l2Gpredictions[0]?.score,
+    comparator: (rowA, rowB) => rowA?.l2Gpredictions?.[0]?.score - rowB?.l2Gpredictions?.[0]?.score,
     sortable: true,
+    filterValue: false,
     renderCell: ({ l2Gpredictions }) => {
-      if (!l2Gpredictions[0]?.score) return naLabel;
-      return (
-        <Tooltip title={l2Gpredictions[0].score.toFixed(3)} style="">
-          <OtScoreLinearBar variant="determinate" value={l2Gpredictions[0].score * 100} />
-        </Tooltip>
-      );
+      const { score } = l2Gpredictions?.[0];
+      if (typeof score !== "number") return naLabel;
+      return score.toFixed(3);
     },
+    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.score,
   },
   {
     id: "credibleSetSize",
