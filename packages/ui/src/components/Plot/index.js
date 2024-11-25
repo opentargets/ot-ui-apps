@@ -20,4 +20,7 @@ export { default as Point } from "./components/marks/Point";
 export { default as Segment } from "./components/marks/Segment";
 export { default as Text } from "./components/marks/Text";
 export { default as Rect } from "./components/marks/Rect";
-export { default as HTML } from "./components/marks/HTML"; 
+export { default as HTML } from "./components/marks/HTML";
+export { default as HTMLTooltip } from "./components/htmlTooltip/HTMLTooltip.jsx";
+export { default as HTMLTooltipTable } from "./components/htmlTooltip/HTMLTooltipTable";
+export { default as HTMLTooltipRow } from "./components/htmlTooltip/HTMLTooltipRow";

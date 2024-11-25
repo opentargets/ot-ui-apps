@@ -1,4 +1,4 @@
-import { Box, Skeleton, Typography, useTheme } from "@mui/material";
+import { Skeleton, useTheme } from "@mui/material";
 import {
   Link,
   DisplayVariantId,
@@ -15,7 +15,9 @@ import {
   Circle,
   Segment,
   Rect,
-  HTML,
+  HTMLTooltip,
+  HTMLTooltipTable,
+  HTMLTooltipRow,
 } from "ui";
 import { scaleLinear, scaleLog, min } from "d3";
 import { ScientificNotation } from "ui";
@@ -48,16 +50,6 @@ export default function ManhattanPlot({ loading, data }) {
   data.forEach(({ variant }) => {
     genomePositions[variant.id] = cumulativePosition(variant);
   });
-
-  function xAnchor(row) {
-    const x = genomePositions[row.variant.id];
-    return x < genomeLength / 2 ? 'left' : 'right';
-  }
-
-  function yAnchor(row) {
-    const y = pValue(row);
-    return Math.log10(y) > Math.log10(pValueMin) / 2 ? 'bottom' : 'top';
-  }
 
   return (
     <Vis>
@@ -151,17 +143,12 @@ export default function ManhattanPlot({ loading, data }) {
           fill={markColor}
           area={circleArea}
         />
-        <HTML
-          dataFrom="hover"
+        <HTMLTooltip
           x={d => genomePositions[d.variant.id]}
           y={pValue}
           pxWidth={290}
           pxHeight={200}
-          content={d => <Tooltip data={d} />}
-          anchor={d => `${yAnchor(d)}-${xAnchor(d)}`}
-          pointerEvents="visiblePainted"
-          dx={d => xAnchor(d) === 'left' ? 10 : -10}
-          dy={d => yAnchor(d) === 'top' ? 10 : -10}
+          content={tooltipContent}
         />
 
         {/* axes at end so fade rectangle doesn't cover them */}
@@ -174,81 +161,51 @@ export default function ManhattanPlot({ loading, data }) {
 
 }
 
-function Tooltip({ data }) {
+function tooltipContent(data) {
   return (
-    <div style={{
-      width: "100%",
-      height: "100%",
-      background: "#fffc",
-      borderColor: "#ddd",
-      borderWidth: "1px",
-      borderStyle: "solid",
-      borderRadius: "0.2rem",
-      padding: "0.25em 0.5rem",
-    }}>
-      <table>
-        <tbody>
-          <TooltipRow label="Details">
-            <Link to={`../credible-set/${data.studyLocusId}`}>view</Link>
-          </TooltipRow>
-          <TooltipRow label="Lead variant">
-            <Link to={`/variant/${data.variant.id}`}>
-              <DisplayVariantId
-                variantId={data.variant.id}
-                referenceAllele={data.variant.referenceAllele}
-                alternateAllele={data.variant.alternateAllele}
-                expand={false}
-              />
-            </Link>
-          </TooltipRow>
-          <TooltipRow label="P-value">
-            <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} />
-          </TooltipRow>
-          <TooltipRow label="Beta">
-            {data.beta?.toFixed(3) ?? naLabel}
-          </TooltipRow>
-          <TooltipRow label="Fine-mapping">
-            {data.finemappingMethod ?? naLabel}
-          </TooltipRow>
-          {data.l2Gpredictions?.[0]?.target
-            ? <TooltipRow label="Top L2G">
-              <Link to={`/target/${data.l2Gpredictions[0].target.id}`}>
-                {data.l2Gpredictions[0].target.approvedSymbol}
-              </Link>
-            </TooltipRow>
-            : <TooltipRow label="Top L2G">
-              {naLabel}
-            </TooltipRow>
-          }
-          <TooltipRow label="L2G score">
-            {data.l2Gpredictions?.[0]?.score != null
-              ? data.l2Gpredictions[0].score.toFixed(3)
-              : naLabel
-            }
-          </TooltipRow>
-          <TooltipRow label="Credible set size">
-            {data.locus?.count ?? naLabel}
-          </TooltipRow>
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function TooltipRow({ children, label }) {
-  return (
-    <tr>
-      <td>
-        <Typography variant="subtitle2" style={{ lineHeight: 1.35, paddingRight: "0.2rem" }}>
-          {label}:
-        </Typography>
-      </td>
-      <td>
-        <Typography variant="body2" style={{ lineHeight: 1.35 }}>
-          {children}
-        </Typography>
-      </td>
-    </tr>
+    <HTMLTooltipTable>
+      <HTMLTooltipRow label="Details" data={data}>
+        <Link to={`../credible-set/${data.studyLocusId}`}>view</Link>
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Lead variant" data={data}>
+        <Link to={`/variant/${data.variant.id}`}>
+          <DisplayVariantId
+            variantId={data.variant.id}
+            referenceAllele={data.variant.referenceAllele}
+            alternateAllele={data.variant.alternateAllele}
+            expand={false}
+          />
+        </Link>
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="P-value" data={data}>
+        <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} />
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Beta" data={data}>
+        {data.beta?.toFixed(3) ?? naLabel}
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Fine-mapping" data={data}>
+        {data.finemappingMethod ?? naLabel}
+      </HTMLTooltipRow>
+      {data.l2Gpredictions?.[0]?.target
+        ? <HTMLTooltipRow label="Top L2G" data={data}>
+          <Link to={`/target/${data.l2Gpredictions[0].target.id}`}>
+            {data.l2Gpredictions[0].target.approvedSymbol}
+          </Link>
+        </HTMLTooltipRow>
+        : <HTMLTooltipRow label="Top L2G">
+          {naLabel}
+        </HTMLTooltipRow>
+      }
+      <HTMLTooltipRow label="L2G score" data={data}>
+        {data.l2Gpredictions?.[0]?.score != null
+          ? data.l2Gpredictions[0].score.toFixed(3)
+          : naLabel
+        }
+      </HTMLTooltipRow>
+      <HTMLTooltipRow label="Credible set size" data={data}>
+        {data.locus?.count ?? naLabel}
+      </HTMLTooltipRow>
+    </HTMLTooltipTable>
   );
 }
 
