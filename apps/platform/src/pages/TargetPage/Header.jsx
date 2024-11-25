@@ -1,5 +1,4 @@
 import { faDna } from "@fortawesome/free-solid-svg-icons";
-import config from "../../config";
 
 import { CrisprDepmapLink, ExternalLink, TepLink, XRefLinks, Header as HeaderBase } from "ui";
 
@@ -7,7 +6,6 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId }) {
   const ensemblUrl = `https://identifiers.org/ensembl:${ensgId}`;
   const genecardsUrl = `https://identifiers.org/genecards:${symbol}`;
   const hgncUrl = `https://identifiers.org/hgnc.symbol:${symbol}`;
-  const geneticsUrl = `${config.geneticsPortalUrl}/gene/${ensgId}`;
 
   return (
     <HeaderBase
