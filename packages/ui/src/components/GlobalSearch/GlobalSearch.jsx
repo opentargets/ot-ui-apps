@@ -10,10 +10,10 @@ const SearchButton = styled("button")(({ theme, isHomePage = false }) => ({
   cursor: "pointer",
   width: "100%",
   maxWidth: isHomePage ? "90%" : "400px",
-  background: isHomePage ? "#F0F0F0" : "#18405e",
+  background: isHomePage ? "#F0F0F0" : theme.palette.secondary.main,
   color: isHomePage ? "inherit" : "white",
   borderRadius: theme.spacing(0.6),
-  border: isHomePage ? `1px solid #F0F0F0` : `1px solid #18405e`,
+  border: isHomePage ? `1px solid #F0F0F0` : `1px solid ${theme.palette.secondary.main}`,
   padding: isHomePage ? theme.spacing(1) : theme.spacing(0.3),
 }));
 

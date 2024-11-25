@@ -3,7 +3,7 @@ import config from "./config";
 import { grey } from "@mui/material/colors";
 
 const PRIMARY = config.profile.primaryColor;
-const SECONDARY = "#ff6350";
+const SECONDARY = config.profile.secondaryColor;
 
 const theme = {
   shape: {

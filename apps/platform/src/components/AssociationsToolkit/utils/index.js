@@ -120,59 +120,23 @@ export const ASSOCIATION_COLORS = [
   rgb("#2C6EA0"),
   rgb("#245780"),
 ];
-// export const ASSOCIATION_COLORS = [
-//   // rgb("#5e5e5e"),
-//   rgb("#707070"),
-//   // rgb("#828282"),
-//   rgb("#959595"),
-//   rgb("#a8a8a8"),
-//   rgb("#bcbcbc"),
-//   rgb("#d0d0d0"),
-//   rgb("#e4e4e4"),
-//   // rgb("#f9f9f9"),
-// ].reverse();
 
 /* PRIORITIZATION */
-// export const PRIORITISATION_COLORS = [
-//   rgb("#2166AC"),
-//   rgb("#4393C3"),
-//   rgb("#92C5DE"),
-//   rgb("#D1E5F0"),
-//   rgb("#ECEADA"),
-//   rgb("#FDDBC7"),
-//   rgb("#F4A582"),
-//   rgb("#D6604D"),
-//   rgb("#B2182B"),
-// ].reverse();
 export const PRIORITISATION_COLORS = [
-  rgb("#b24431"),
-  rgb("#c26750"),
-  rgb("#d08770"),
-  rgb("#dca892"),
-  rgb("#e5c9b6"),
+  rgb("#a01813"),
+  rgb("#bc3a19"),
+  rgb("#d65a1f"),
+  rgb("#e08145"),
+  rgb("#e3a772"),
+  rgb("#e6ca9c"),
   rgb("#eceada"),
-  rgb("#c8d1c3"),
-  rgb("#a5b8ac"),
-  rgb("#83a095"),
-  rgb("#618880"),
-  rgb("#3e716a"),
+  rgb("#c5d2c1"),
+  rgb("#9ebaa8"),
+  rgb("#78a290"),
+  rgb("#528b78"),
+  rgb("#2f735f"),
+  rgb("#2e5943"),
 ];
-
-// export const PRIORITISATION_COLORS = [
-//   rgb("#D11807"),
-//   rgb("#E94C1F"),
-//   rgb("#F57634"),
-//   rgb("#FD9A44"),
-//   rgb("#FFB954"),
-//   rgb("#F9D576"),
-//   rgb("#ECEADA"),
-//   rgb("#C6DBED"),
-//   rgb("#9DCCEF"),
-//   rgb("#60BCE9"),
-//   rgb("#42A7C6"),
-//   rgb("#238F9D"),
-//   rgb("#00767B"),
-// ];
 
 /* ASSOCIATION SCALE */
 export const asscScaleDomain = scaleQuantize().domain([0, 1]);
