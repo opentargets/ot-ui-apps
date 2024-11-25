@@ -4,7 +4,8 @@ import { styled } from "@mui/material";
 const OtScoreLinearBar = styled(LinearProgress)(({ theme }) => ({
   height: 8,
   borderRadius: 5,
-  maxWidth: 70,
+  width: 70,
+  // maxWidth: 70,
   [`&.${linearProgressClasses.colorPrimary}`]: {
     backgroundColor: theme.palette.grey[200],
   },

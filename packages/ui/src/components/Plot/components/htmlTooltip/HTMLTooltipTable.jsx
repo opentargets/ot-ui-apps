@@ -10,7 +10,7 @@ export default function TooltipTable({ children }) {
       borderRadius: "0.2rem",
       padding: "0.25em 0.5rem",
     }}>
-      <table>
+      <table style={{ borderSpacing: "0 0.4rem", border: "1" }}>
         <tbody>
           {children}
         </tbody>

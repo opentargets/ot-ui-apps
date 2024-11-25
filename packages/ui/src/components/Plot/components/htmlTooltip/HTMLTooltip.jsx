@@ -12,7 +12,7 @@ export default function HTMLTooltip({
   pxHeight,
   content,
   pointerEvents = "visiblePainted",
-  // offsets should be >= 0, direction is based on computed anchor
+  // offsets > 0 increase space between anchor point and tooltip
   xOffset = 10,
   yOffset = 10,
 }) {

@@ -1,4 +1,4 @@
-import { Skeleton, useTheme } from "@mui/material";
+import { Box, Skeleton, useTheme } from "@mui/material";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,7 +26,6 @@ import { scaleLinear, scaleLog, min, scaleOrdinal, schemeCategory10, schemeDark2
 import { ScientificNotation } from "ui";
 import { naLabel, clinvarStarMap } from "../../constants";
 import { Fragment } from "react/jsx-runtime";
-import TooltipRow from "ui/src/components/Plot/components/htmlTooltip/HTMLTooltipRow";
 
 export default function PheWasPlot({ loading, data, id }) {
 
@@ -227,10 +226,13 @@ export default function PheWasPlot({ loading, data, id }) {
         <Point dataFrom="hover" {...pointAttrs} />
         <HTMLTooltip
           x={(d, i) => rowLookup.get(d).x}
-          y={pValue}
-          pxWidth={320}
-          pxHeight={240}
+          y={d => pValueMin}
+          // y={pValue}
+          pxWidth={380}
+          pxHeight={400}
           content={tooltipContent}
+          xOffset={40}
+          yOffset={-20}
         />
 
         {/* axes at end so fade rectangle doesn't cover them */}
@@ -264,7 +266,7 @@ function tooltipContent(data) {
       <HTMLTooltipRow label="Reported trait" data={data}>
         {data.study?.traitFromSource ?? naLabel}
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Disease/phenotype" data={data}>
+      <HTMLTooltipRow label={<>Disease/<br />phenotype</>} data={data}>
         {data.study?.diseases?.length > 0
           ? <>
             {data.study.diseases.map((d, i) => (
@@ -291,37 +293,50 @@ function tooltipContent(data) {
       <HTMLTooltipRow label="Beta" data={data}>
         {data.beta?.toFixed(3) ?? naLabel}
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Posterior probability" data={data}>
+      <HTMLTooltipRow label={<>Posterior<br />probability</>} data={data}>
         {data.locus?.rows?.[0].posteriorProbability.toFixed(3) ?? naLabel}
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Fine-mapping confidence" data={data}>
-        {data.confidence
-          ? <Tooltip title={data.confidence} style="">
-            <ClinvarStars num={clinvarStarMap[data.confidence]} />
-          </Tooltip>
-          : naLabel
-        }
+      <HTMLTooltipRow label="Fine-mapping" data={data}>
+        <Box display="flex" flexDirection="column" gap={0.25}>
+          <Box display="flex" gap={0.5}>
+            Confidence:
+            {data.confidence
+              ? <Tooltip title={data.confidence} style="">
+                <ClinvarStars num={clinvarStarMap[data.confidence]} />
+              </Tooltip>
+              : naLabel
+            }
+          </Box>
+          <Box display="flex" gap={0.5}>
+            Method:{" "}{data.finemappingMethod ?? naLabel}
+          </Box>
+        </Box>
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Fine-mapping method" data={data}>
-        {data.finemappingMethod ?? naLabel}
+      <HTMLTooltipRow label="L2G" data="data">
+        <Box display="flex" flexDirection="column" gap={0.25}>
+          <Box display="flex" gap={0.5}>
+            Top:
+            {data.l2Gpredictions?.[0]?.target
+              ? <Link to={`/target/${data.l2Gpredictions[0].target.id}`}>
+                {data.l2Gpredictions[0].target.approvedSymbol}
+              </Link>
+              : naLabel
+            }
+          </Box>
+          <Box display="flex" alignItems="center" gap={0.5}>
+            Score:
+            {(console.log(data.l2Gpredictions?.[0]?.score), data.l2Gpredictions?.[0]?.score)
+              ? <Tooltip title={data.l2Gpredictions[0].score.toFixed(3)} style="">
+                <div>
+                  <OtScoreLinearBar variant="determinate" value={data.l2Gpredictions[0].score * 100} />
+                </div>
+              </Tooltip>
+              : naLabel
+            }
+          </Box>
+        </Box>
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Top L2G" data={data}>
-        {data.l2Gpredictions?.[0]?.target
-          ? <Link to={`/target/${data.l2Gpredictions[0].target.id}`}>
-            {data.l2Gpredictions[0].target.approvedSymbol}
-          </Link>
-          : naLabel
-        }
-      </HTMLTooltipRow>
-      <HTMLTooltipRow label="L2G score" data="data">
-        {data.l2Gpredictions?.[0]?.score != null
-          ? <Tooltip title={data.l2Gpredictions[0].score.toFixed(3)} style="">
-            <OtScoreLinearBar variant="determinate" value={data.l2Gpredictions[0].score * 100} />
-          </Tooltip>
-          : naLabel
-        }
-      </HTMLTooltipRow>
-      <HTMLTooltipRow label="Credible set size" data={data}>
+      <HTMLTooltipRow label={<>Credible set<br />size</>} data={data}>
         {data.locus?.count ?? naLabel}
       </HTMLTooltipRow>
     </HTMLTooltipTable>
