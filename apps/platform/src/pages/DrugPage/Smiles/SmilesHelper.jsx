@@ -7,13 +7,13 @@ import SmilesDrawer from "smiles-drawer";
 
 const useStyles = makeStyles(theme => ({
   container: {
-    background: "none !important",
     cursor: "pointer",
     height: "240px",
     marginLeft: "auto",
     width: "fit-content",
     "& .seeDetailsIcon": {
       visibility: "hidden",
+      color: theme.palette.secondary.main,
     },
     "&:hover .seeDetailsIcon": {
       visibility: "visible",
