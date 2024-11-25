@@ -162,6 +162,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "confidence",
       label: "Fine-mapping confidence",
+      tooltip: "Fine-mapping confidence based on the suitability of the linkage-desequilibrium information and fine-mapping method",
       sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;

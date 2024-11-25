@@ -23,7 +23,9 @@ query OpenTargetsGeneticsQuery($ensemblId: String!, $efoId: String!, $size: Int!
         diseaseFromSource
         studyId
         studySampleSize
-        variantId
+        variant {
+          id
+        }
         variantRsId
         literature
         publicationYear
