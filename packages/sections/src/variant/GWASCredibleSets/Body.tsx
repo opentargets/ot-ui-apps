@@ -1,4 +1,3 @@
-import { useQuery } from "@apollo/client";
 import {
   Link,
   SectionItem,
@@ -8,9 +7,10 @@ import {
   Tooltip,
   ClinvarStars,
   OtScoreLinearBar,
+  useBatchQuery,
 } from "ui";
 import { Box, Chip } from "@mui/material";
-import { clinvarStarMap, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { clinvarStarMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
@@ -19,6 +19,8 @@ import { mantissaExponentComparator, variantComparator } from "../../utils/compa
 import PheWasPlot from "./PheWasPlot";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
+import { responseType } from "ui/src/types/response";
 
 type getColumnsType = {
   id: string;
@@ -225,12 +227,26 @@ type BodyProps = {
 function Body({ id, entity }: BodyProps) {
   const variables = {
     variantId: id,
-    size: sectionsBaseSizeQuery,
   };
 
-  const request = useQuery(GWAS_CREDIBLE_SETS_QUERY, {
-    variables,
+  const [request, setRequest] = useState<responseType>(initialResponse);
+
+  const getAllGwasData = useBatchQuery({
+    query: GWAS_CREDIBLE_SETS_QUERY,
+    variables: {
+      variantId: id,
+      size: table5HChunkSize,
+      index: 0,
+    },
+    dataPath: "data.variant.gwasCredibleSets",
+    size: table5HChunkSize,
   });
+
+  useEffect(() => {
+    getAllGwasData().then(r => {
+      setRequest(r);
+    });
+  }, []);
 
   return (
     <SectionItem
