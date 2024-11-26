@@ -3,7 +3,7 @@ import { Box, Divider } from "@mui/material";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
-  TargetPrioritisationSwitch,
+  DisplayModeSwitch,
   AssociationsProvider,
   DataDownloader,
   ControlsSection,
@@ -38,7 +38,7 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
               <AotfApiPlayground />
             </Box>
             <Box sx={{ flex: 1, display: "flex", justifyContent: "end" }}>
-              <TargetPrioritisationSwitch />
+              <DisplayModeSwitch />
             </Box>
           </ControlsSection>
           <TableAssociations />
