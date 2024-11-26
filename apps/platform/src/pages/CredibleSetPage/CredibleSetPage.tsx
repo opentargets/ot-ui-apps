@@ -13,18 +13,21 @@ function CredibleSetPage() {
   const { path } = useRouteMatch();
 
   const { loading, data } = useQuery(CREDIBLE_SET_PAGE_QUERY, {
-    variables: { studyLocusIds: [studyLocusId] },
+    variables: { studyLocusId: studyLocusId },
   });
 
-  if (data && !data?.credibleSets.length) {
+  if (data && !data?.credibleSet) {
     return <NotFoundPage />;
   }
 
-  const credibleSet = data?.credibleSets[0];
+  const credibleSet = data?.credibleSet;
   const variantId = credibleSet?.variant?.id;
   const referenceAllele = credibleSet?.variant?.referenceAllele;
   const alternateAllele = credibleSet?.variant?.alternateAllele;
   const studyId = credibleSet?.study?.studyId;
+  const studyType = credibleSet?.study?.studyType;
+
+  if (!studyType) return null;
 
   return (
     <BasePage
@@ -40,6 +43,7 @@ function CredibleSetPage() {
         variantId={variantId}
         referenceAllele={referenceAllele}
         alternateAllele={alternateAllele}
+        studyType={studyType}
       />
       <ScrollToTop />
       <Route
@@ -65,6 +69,7 @@ function CredibleSetPage() {
             variantId={variantId}
             referenceAllele={referenceAllele}
             alternateAllele={alternateAllele}
+            studyType={studyType}
           />
         </Route>
       </Switch>

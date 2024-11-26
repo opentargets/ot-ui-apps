@@ -1,0 +1,5 @@
+fragment GWASMolQTLSummaryFragment on credibleSet {
+  colocalisation(studyTypes: [tuqtl, pqtl, eqtl, sqtl], page: { size: 1, index: 0 }) {
+    colocalisationMethod
+  }
+}

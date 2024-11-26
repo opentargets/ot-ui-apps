@@ -51,14 +51,14 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
   return (
     <BaseProfileHeader>
       <>
-        <Field loading={loading} title="Author">
+        <Field loading={loading} title="First author">
           { 
             studyCategory === "GWAS" || studyCategory === "QTL"
               ? publicationFirstAuthor
               : "FINNGEN"
           }
         </Field>
-        <Field loading={loading} title="Publication date">
+        <Field loading={loading} title="Publication year">
           { 
             studyCategory === "GWAS" || studyCategory === "QTL"
               ? publicationDate
@@ -80,7 +80,7 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
               : null
           } 
         </Field>
-        <Field loading={loading} title="Trait from source">
+        <Field loading={loading} title="Reported trait">
           {traitFromSource}
         </Field>
         <Field loading={loading} title="Sample size">

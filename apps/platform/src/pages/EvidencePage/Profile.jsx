@@ -35,6 +35,7 @@ import SlapEnrichSummary from "sections/src/evidence/SlapEnrich/Summary";
 import SysBioSummary from "sections/src/evidence/SysBio/Summary";
 import UniProtLiteratureSummary from "sections/src/evidence/UniProtLiterature/Summary";
 import UniProtVariantsSummary from "sections/src/evidence/UniProtVariants/Summary";
+import GWASCredibleSetsSummary from "sections/src/evidence/GWASCredibleSets/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 
@@ -57,6 +58,7 @@ const OrphanetSection = lazy(() => import("sections/src/evidence/Orphanet/Body")
 const OTCRISPRSection = lazy(() => import("sections/src/evidence/OTCRISPR/Body"));
 const OTEncoreSection = lazy(() => import("sections/src/evidence/OTEncore/Body"));
 const OTGeneticsSection = lazy(() => import("sections/src/evidence/OTGenetics/Body"));
+const GWASCredibleSetsSection = lazy(() => import("sections/src/evidence/GWASCredibleSets/Body"));
 const OTValidationSection = lazy(() => import("sections/src/evidence/OTValidation/Body"));
 const ProgenySection = lazy(() => import("sections/src/evidence/Progeny/Body"));
 const ReactomeSection = lazy(() => import("sections/src/evidence/Reactome/Body"));
@@ -78,6 +80,7 @@ const summaries = [
   ExpressionAtlasSummary,
   Gene2PhenotypeSummary,
   GenomicsEnglandSummary,
+  GWASCredibleSetsSummary,
   ImpcSummary,
   IntOgenSummary,
   GeneBurdenSummary,
@@ -143,6 +146,7 @@ function Profile({ ensgId, efoId, symbol, name }) {
       <ProfileHeader />
 
       <SummaryContainer>
+        <GWASCredibleSetsSummary />
         <OTGeneticsSummary />
         <GeneBurdenSummary />
         <EVASummary />
@@ -174,6 +178,9 @@ function Profile({ ensgId, efoId, symbol, name }) {
       </SummaryContainer>
 
       <SectionContainer>
+        <Suspense fallback={<SectionLoader />}>
+          <GWASCredibleSetsSection id={id} label={label} entity={DISEASE} />
+        </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <OTGeneticsSection id={id} label={label} entity={DISEASE} />
         </Suspense>

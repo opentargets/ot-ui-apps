@@ -41,7 +41,7 @@ const exportColumns = [
   },
   {
     label: "variantId",
-    exportValue: row => row.variantId,
+    exportValue: row => row.variant.id,
   },
   {
     label: "variantRsId",
@@ -109,8 +109,8 @@ function getColumns(label) {
     },
     {
       id: "variantId",
-      label: "Variant ID",
-      renderCell: ({ variantId }) =>
+      label: "Variant",
+      renderCell: ({ variant: { id: variantId } }) =>
         // trim long IDs and append '...'
         variantId ? (
           <>
@@ -139,7 +139,8 @@ function getColumns(label) {
     {
       id: "variantHgvsId",
       label: "HGVS ID",
-      renderCell: ({ variantHgvsId }) => variantHgvsId || naLabel,
+      renderCell: ({ variant }) => variant.hgvsId || naLabel,
+      filterValue: ({ variant }) => `${variant.hgvsId}`,
     },
     {
       id: "studyId",

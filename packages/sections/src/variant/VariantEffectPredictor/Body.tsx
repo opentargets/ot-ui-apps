@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Box } from "@mui/material";
+import { Box, Chip } from "@mui/material";
 import { Link, SectionItem, Tooltip, OtTable } from "ui";
 import { Fragment } from "react";
 import { definition } from "../VariantEffectPredictor";
@@ -8,36 +8,72 @@ import { naLabel } from "../../constants";
 import { identifiersOrgLink } from "../../utils/global";
 import VARIANT_EFFECT_PREDICTOR_QUERY from "./VariantEffectPredictorQuery.gql";
 
+
 function formatVariantConsequenceLabel(label) {
   return label.replace(/_/g, " ");
+}
+
+function isNumber(value: any): boolean {
+  return typeof value === "number" && isFinite(value);
 }
 
 const columns = [
   {
     id: "target.approvedSymbol",
     label: "Gene",
-    comparator: (a, b) => a.transcriptIndex - b.transcriptIndex,
-    renderCell: ({ target, transcriptId }) => {
+    sortable: true,
+    renderCell: ({ target, transcriptId, uniprotAccessions }) => {
       if (!target) return naLabel;
       let displayElement = <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>;
+      let tooltipContent = <></>;
       if (transcriptId) {
-        displayElement = (
-          <Tooltip
-            title={
-              <Box>
-                Ensembl canonical transcript:{" "}
-                <Link
-                  external
-                  to={`https://www.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;g=${target.id};t=${transcriptId}`}
-                >
-                  {transcriptId}
+        tooltipContent = (
+          <Box>
+            <b>Ensembl canonical transcript: </b>
+            <br />
+            <Link
+              external
+              to={`https://www.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;g=${target.id};t=${transcriptId}`}
+            >
+              {transcriptId}
+            </Link>
+          </Box>
+        );
+      }
+      if (uniprotAccessions?.length) {
+        tooltipContent = (
+          <>
+            {tooltipContent}
+            <b>Protein:</b>
+            <br />
+            {uniprotAccessions.map((id, i, arr) => (
+              <Fragment key={id}>
+                <Link external to={`https://identifiers.org/uniprot:${id}`} footer={false}>
+                  {id}
                 </Link>
-              </Box>
-            }
-            showHelpIcon
-          >
-            {displayElement}
-          </Tooltip>
+                {i < arr.length - 1 && ", "}
+              </Fragment>
+            ))}
+          </>
+        );
+      }
+      displayElement = (
+        <Tooltip title={tooltipContent} showHelpIcon>
+          {displayElement}
+        </Tooltip>
+      );
+
+      if (target?.biotype === "protein_coding") {
+        displayElement = (
+          <>
+            {displayElement}{" "}
+            <Chip
+              variant="outlined"
+              size="small"
+              sx={{ typography: "caption" }}
+              label="protein coding"
+            />{" "}
+          </>
         );
       }
       return displayElement;
@@ -46,17 +82,46 @@ const columns = [
   {
     id: "variantConsequences.label",
     label: "Predicted consequence",
-    renderCell: ({ variantConsequences }) =>
-      variantConsequences.length
-        ? variantConsequences.map(({ id, label }, i, arr) => (
-            <Fragment key={id}>
-              <Link external to={identifiersOrgLink("SO", id.slice(3))}>
-                {formatVariantConsequenceLabel(label)}
-              </Link>
-              {i < arr.length - 1 && ", "}
-            </Fragment>
-          ))
-        : naLabel,
+    renderCell: ({ variantConsequences, aminoAcidChange, codons }) => {
+      if (!variantConsequences?.length) return naLabel;
+      let displayElement = variantConsequences.map(({ id, label }, i, arr) => (
+        <Fragment key={id}>
+          <Link external to={identifiersOrgLink("SO", id.slice(3))}>
+            {formatVariantConsequenceLabel(label)}
+          </Link>
+          {i < arr.length - 1 && ", "}
+        </Fragment>
+      ));
+      if (aminoAcidChange)
+        displayElement = (
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {displayElement}&nbsp;{" "}
+            <Chip
+              variant="outlined"
+              size="small"
+              sx={{ typography: "caption" }}
+              label={aminoAcidChange}
+            />
+          </Box>
+        );
+      if (codons) {
+        const tooltipContent = (
+          <>
+            <b>Trancript consequence:</b>
+            <br />
+            {codons}
+            <br />
+          </>
+        );
+
+        displayElement = (
+          <Tooltip title={tooltipContent} style="">
+            {displayElement}
+          </Tooltip>
+        );
+      }
+      return displayElement;
+    },
     exportValue: ({ variantConsequences }) => {
       return variantConsequences
         .map(({ label }) => {
@@ -71,38 +136,22 @@ const columns = [
     renderCell: ({ impact }) => impact?.toLowerCase?.() ?? naLabel,
   },
   {
-    id: "aminoAcidChange",
-    label: "Amino acid change",
-    renderCell: ({ aminoAcidChange }) => aminoAcidChange ?? naLabel,
-  },
-  {
-    id: "codons",
-    label: "Coding change",
-    renderCell: ({ codons }) => codons ?? naLabel,
-  },
-  {
     id: "distanceFromFootprint",
-    label: "Distance from footprint",
+    label: "Distance from footprint (bp)",
+    numeric: true,
+    sortable: true,
+    renderCell: ({ distanceFromFootprint }) =>
+      isNumber(distanceFromFootprint)
+        ? parseInt(distanceFromFootprint, 10).toLocaleString()
+        : naLabel,
   },
   {
     id: "distanceFromTss",
-    label: "Distance from start site",
-  },
-  {
-    id: "uniprotAccession",
-    label: "Uniprot accession",
-    renderCell: ({ uniprotAccessions }) =>
-      uniprotAccessions?.length
-        ? uniprotAccessions.map((id, i, arr) => (
-            <Fragment key={id}>
-              <Link external to={`https://identifiers.org/uniprot:${id}`}>
-                {id}
-              </Link>
-              {i < arr.length - 1 && ", "}
-            </Fragment>
-          ))
-        : naLabel,
-    exportValue: ({ uniprotAccessions }) => (uniprotAccessions ?? []).join(", "),
+    label: "Distance from start site (bp)",
+    numeric: true,
+    sortable: true,
+    renderCell: ({ distanceFromTss }) =>
+      isNumber(distanceFromTss) ? parseInt(distanceFromTss, 10).toLocaleString() : naLabel,
   },
 ];
 
@@ -133,14 +182,16 @@ export function Body({ id, entity }: BodyProps) {
         />
       )}
       renderBody={() => {
+        let sortedRows = [];
+        sortedRows = structuredClone(request.data?.variant.transcriptConsequences);
+        sortedRows?.sort((a, b) => a.transcriptIndex - b.transcriptIndex);
         return (
           <OtTable
             columns={columns}
-            rows={request.data?.variant.transcriptConsequences}
+            rows={sortedRows}
             dataDownloader
             query={VARIANT_EFFECT_PREDICTOR_QUERY.loc.source.body}
             variables={variables}
-            sortBy="target.approvedSymbol"
             loading={request.loading}
           />
         );

@@ -9,7 +9,7 @@ type DescriptionProps = {
 function Description({ variantId, referenceAllele, alternateAllele }: DescriptionProps) {
   return (
     <>
-      Variant consequence prediction for{" "}
+      Variant consequence prediction for transcripts in the genomic region of{" "}
       <strong>
         <DisplayVariantId
           variantId={variantId}
@@ -18,7 +18,7 @@ function Description({ variantId, referenceAllele, alternateAllele }: Descriptio
         />
       </strong>. {" "}Source:{" "}
       <Link to="https://www.ensembl.org/info/docs/tools/vep/index.html" external>
-        VEP
+        Ensembl VEP
       </Link>
     </>
   );

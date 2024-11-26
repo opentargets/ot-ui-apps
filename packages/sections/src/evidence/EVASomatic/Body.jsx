@@ -65,8 +65,8 @@ const getColumns = label => [
   },
   {
     id: "variantId",
-    label: "Variant ID",
-    renderCell: ({ variantId }) =>
+    label: "Variant",
+    renderCell: ({ variant: { id: variantId } }) =>
       variantId ? (
         <>
           {variantId.substring(0, 20)}
@@ -75,7 +75,7 @@ const getColumns = label => [
       ) : (
         naLabel
       ),
-    filterValue: ({ variantId }) => `${variantId}`,
+    filterValue: ({ variant: { id: variantId } }) => `${variantId}`,
   },
   {
     id: "variantRsId",
@@ -96,8 +96,8 @@ const getColumns = label => [
   {
     id: "variantHgvsId",
     label: "HGVS ID",
-    renderCell: ({ variantHgvsId }) => variantHgvsId || naLabel,
-    filterValue: ({ variantHgvsId }) => `${variantHgvsId}`,
+    renderCell: ({ variant }) => variant.hgvsId || naLabel,
+    filterValue: ({ variant }) => `${variant.hgvsId}`,
   },
   {
     id: "studyId",

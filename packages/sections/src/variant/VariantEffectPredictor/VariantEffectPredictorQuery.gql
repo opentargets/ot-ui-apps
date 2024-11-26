@@ -1,5 +1,5 @@
 query VariantEffectPredictorQuery($variantId: String!) {
-  variant(variantId: $variantId){
+  variant(variantId: $variantId) {
     id
     transcriptConsequences {
       variantConsequences {
@@ -14,6 +14,7 @@ query VariantEffectPredictorQuery($variantId: String!) {
       target {
         id
         approvedSymbol
+        biotype
       }
       impact
       consequenceScore

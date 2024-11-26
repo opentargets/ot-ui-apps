@@ -10,65 +10,75 @@ import {
 
 import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
 import GWASColocSummary from "sections/src/credibleSet/GWASColoc/Summary";
+import GWASMolQTLSummary from "sections/src/credibleSet/GWASMolQTL/Summary";
+import Locus2GeneSummary from "sections/src/credibleSet/Locus2Gene/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
-const VariantsSection = lazy(
-  () => import("sections/src/credibleSet/Variants/Body")
-);
-const GWASColocSection = lazy(
-  () => import("sections/src/credibleSet/GWASColoc/Body")
-);
 
-const summaries = [
-  VariantsSummary,
-  GWASColocSummary,
-];
+const GWASMolQTLSection = lazy(() => import("sections/src/credibleSet/GWASMolQTL/Body"));
+const VariantsSection = lazy(() => import("sections/src/credibleSet/Variants/Body"));
+const GWASColocSection = lazy(() => import("sections/src/credibleSet/GWASColoc/Body"));
 
-const CREDIBLE_SET = "credibleSets";
-const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
-  summaries,
-  "credibleSet",
-  "CredibleSetProfileSummaryFragment"
-);
-const CREDIBLE_SET_PROFILE_QUERY = gql`
-  query CredibleSetProfileQuery($studyLocusIds: [String!]!) {
-    credibleSets(studyLocusIds: $studyLocusIds) {
-      studyLocusId
-      ...CredibleSetProfileHeaderFragment
-      ...CredibleSetProfileSummaryFragment
-    }
+const Locus2GeneSection = lazy(() => import("sections/src/credibleSet/Locus2Gene/Body"));
+
+const CREDIBLE_SET = "credibleSet";
+
+const createProfileQuery = (studyType: string) => {
+  const summaries = [VariantsSummary, Locus2GeneSummary];
+  if (studyType === "gwas") {
+    summaries.push(GWASColocSummary);
   }
-  ${ProfileHeader.fragments.profileHeader}
-  ${CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT}
-`;
+  if (studyType !== "gwas") {
+    summaries.push(GWASMolQTLSummary);
+  }
 
-type ProfileProps = {
-  studyLocusId: string;
-  variantId: string;
-  referenceAllele: string;
-  alternateAllele: string;
+  const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
+    summaries,
+    "credibleSet",
+    "CredibleSetProfileSummaryFragment"
+  );
+
+  const CREDIBLE_SET_PROFILE_QUERY = gql`
+    query CredibleSetProfileQuery($studyLocusId: String!, $variantIds: [String!]!) {
+      credibleSet(studyLocusId: $studyLocusId) {
+        studyLocusId
+        ...CredibleSetProfileHeaderFragment
+        ...CredibleSetProfileSummaryFragment
+      }
+    }
+    ${ProfileHeader.fragments.profileHeader}
+    ${CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT}
+  `;
+  return CREDIBLE_SET_PROFILE_QUERY;
 };
 
 function Profile({
-      studyLocusId,
-      variantId,
-      referenceAllele,
-      alternateAllele,
-    }: ProfileProps) {
-
+  studyLocusId,
+  variantId,
+  referenceAllele,
+  alternateAllele,
+  studyType,
+}: ProfileProps) {
+  const CREDIBLE_SET_PROFILE_QUERY = createProfileQuery(studyType);
   return (
     <PlatformApiProvider
       entity={CREDIBLE_SET}
       query={CREDIBLE_SET_PROFILE_QUERY}
-      variables={{ studyLocusIds: [studyLocusId] }}
+      variables={{ studyLocusId: studyLocusId, variantIds: [variantId] }}
       client={client}
     >
       <ProfileHeader variantId={variantId} />
 
       <SummaryContainer>
-        <VariantsSummary /> 
-        <GWASColocSummary /> 
+        <VariantsSummary />
+        <Locus2GeneSummary />
+        {studyType === "gwas" && (
+          <>
+            <GWASColocSummary />
+          </>
+        )}
+        {studyType !== "gwas" && <GWASMolQTLSummary />}
       </SummaryContainer>
 
       <SectionContainer>
@@ -82,12 +92,22 @@ function Profile({
           />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
-          <GWASColocSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
+          <Locus2GeneSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
         </Suspense>
+
+        {studyType === "gwas" && (
+          <Suspense fallback={<SectionLoader />}>
+            <GWASColocSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
+          </Suspense>
+        )}
+        {studyType !== "gwas" && (
+          <Suspense fallback={<SectionLoader />}>
+            <GWASMolQTLSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
+          </Suspense>
+        )}
       </SectionContainer>
     </PlatformApiProvider>
   );
-
 }
 
 export default Profile;

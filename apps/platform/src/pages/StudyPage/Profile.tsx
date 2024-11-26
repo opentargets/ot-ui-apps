@@ -15,9 +15,7 @@ import QTLCredibleSetsSummary from "sections/src/study/QTLCredibleSets/Summary";
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
-const SharedTraitStudiesSection = lazy(
-  () => import("sections/src/study/SharedTraitStudies/Body")
-);
+const SharedTraitStudiesSection = lazy(() => import("sections/src/study/SharedTraitStudies/Body"));
 const GWASCredibleSetsSection = lazy(() => import("sections/src/study/GWASCredibleSets/Body"));
 const QTLCredibleSetsSection = lazy(() => import("sections/src/study/QTLCredibleSets/Body"));
 
@@ -38,7 +36,7 @@ const STUDY_PROFILE_QUERY = gql`
       ...StudyProfileHeaderFragment
       ...StudyProfileSummaryFragment
     }
-    sharedTraitStudies: gwasStudy(diseaseIds: $diseaseIds, page: { size: 2, index: 0}) {
+    sharedTraitStudies: gwasStudy(diseaseIds: $diseaseIds, page: { size: 2, index: 0 }) {
       studyId
     }
   }
@@ -55,8 +53,10 @@ type ProfileProps = {
   }[];
 };
 
-function Profile({ studyId, studyCategory, diseases }: ProfileProps) {
+function Profile({ studyId, studyType, diseases }: ProfileProps) {
   const diseaseIds = diseases?.map(d => d.id) || [];
+
+  console.log({ studyType });
 
   return (
     <PlatformApiProvider
@@ -68,36 +68,30 @@ function Profile({ studyId, studyCategory, diseases }: ProfileProps) {
       }}
       client={client}
     >
-      <ProfileHeader studyCategory={studyCategory} />
+      <ProfileHeader studyCategory={studyType} />
 
       <SummaryContainer>
-        {(studyCategory === "GWAS" || studyCategory === "FINNGEN") &&
+        {studyType === "gwas" && (
           <>
-            <SharedTraitStudiesSummary />
             <GWASCredidbleSetsSummary />
+            <SharedTraitStudiesSummary />
           </>
-        }
-        {studyCategory === "QTL" &&
-          <QTLCredibleSetsSummary />
-        }
+        )}
+        {studyType !== "gwas" && <QTLCredibleSetsSummary />}
       </SummaryContainer>
 
       <SectionContainer>
-        {(studyCategory === "GWAS" || studyCategory === "FINNGEN") &&
+        {studyType === "gwas" && (
           <>
-            <Suspense fallback={<SectionLoader />}>
-              <SharedTraitStudiesSection
-                studyId={studyId}
-                diseaseIds={diseaseIds}
-                entity={STUDY}
-              />
-            </Suspense>
             <Suspense fallback={<SectionLoader />}>
               <GWASCredibleSetsSection id={studyId} entity={STUDY} />
             </Suspense>
+            <Suspense fallback={<SectionLoader />}>
+              <SharedTraitStudiesSection studyId={studyId} diseaseIds={diseaseIds} entity={STUDY} />
+            </Suspense>
           </>
-        }
-        {studyCategory === "QTL" && (
+        )}
+        {studyType !== "gwas" && (
           <Suspense fallback={<SectionLoader />}>
             <QTLCredibleSetsSection id={studyId} entity={STUDY} />
           </Suspense>

@@ -6,21 +6,26 @@ import Description from "./Description";
 import GWAS_COLOC_QUERY from "./GWASColocQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { getStudyCategory } from "../../utils/getStudyCategory";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { Box } from "@mui/material";
 
 const columns = [
   {
-    id: "view",
-    label: "Details",
+    id: "otherStudyLocus.studyLocusId",
+    label: "Navigate",
     renderCell: ({ otherStudyLocus }) => {
-      if (!otherStudyLocus) return naLabel;
-      return <Link to={`./${otherStudyLocus.studyLocusId}`}>view</Link>;
+      if (!otherStudyLocus?.variant) return naLabel;
+      return (<Box sx={{ display: "flex" }}>
+        <Link to={`./${otherStudyLocus.studyLocusId}`}>
+          <FontAwesomeIcon icon={faArrowRightToBracket} />
+        </Link>
+      </Box>)
     },
-    filterValue: false,
-    exportValue: false,
   },
   {
     id: "otherStudyLocus.study.studyId",
-    label: "Study ID",
+    label: "Study",
     renderCell: ({ otherStudyLocus }) => {
       const studyId = otherStudyLocus?.study?.studyId;
       if (!studyId) return naLabel;
@@ -29,7 +34,7 @@ const columns = [
   },
   {
     id: "otherStudyLocus.study.traitFromSource",
-    label: "Trait",
+    label: "Reported trait",
     renderCell: ({ otherStudyLocus }) => {
       const trait = otherStudyLocus?.study?.traitFromSource;
       if (!trait) return naLabel;
@@ -38,7 +43,7 @@ const columns = [
   },
   {
     id: "otherStudyLocus.study.publicationFirstAuthor",
-    label: "Author",
+    label: "First author",
     renderCell: ({ otherStudyLocus }) => {
       const { projectId, publicationFirstAuthor } = otherStudyLocus?.study || {};
       return getStudyCategory(projectId) === "FINNGEN"
@@ -157,7 +162,7 @@ type BodyProps = {
 
 function Body({ studyLocusId, entity }: BodyProps) {
   const variables = {
-    studyLocusIds: [studyLocusId],
+    studyLocusId: studyLocusId,
   };
 
   const request = useQuery(GWAS_COLOC_QUERY, {
@@ -180,7 +185,7 @@ function Body({ studyLocusId, entity }: BodyProps) {
             order="asc"
             columns={columns}
             loading={request.loading}
-            rows={request.data?.credibleSets[0].colocalisation}
+            rows={request.data?.credibleSet.colocalisation}
             query={GWAS_COLOC_QUERY.loc.source.body}
             variables={variables}
           />

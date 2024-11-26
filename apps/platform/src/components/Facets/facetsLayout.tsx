@@ -6,6 +6,7 @@ export const FacetsSelect = styled(Select)(({ theme }) => ({
   background: `${theme.palette.grey[200]}`,
   display: "flex",
   boxShadow: "none",
+  fontSize: "0.875rem",
   ".MuiOutlinedInput-notchedOutline": {
     borderRight: 0,
     borderTopRightRadius: 0,

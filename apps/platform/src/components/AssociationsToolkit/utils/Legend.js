@@ -155,6 +155,7 @@ function Legend(
   svg
     .append("g")
     .attr("transform", `translate(0,${height - marginBottom})`)
+    .attr("class", "ticks")
     .call(
       axisBottom(x)
         .ticks(ticks, typeof tickFormat === "string" ? tickFormat : undefined)
@@ -175,6 +176,9 @@ function Legend(
         .attr("class", "title")
         .text(title)
     );
+
+  svg.selectAll(".ticks line").attr("stroke", "none");
+  svg.selectAll(".ticks text").attr("font-weight", "bold").attr("font-size", "10px");
 
   return svg.node();
 }

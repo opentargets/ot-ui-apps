@@ -29,17 +29,19 @@ function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): React
     setAnchorEl(null);
   }
 
-  function isLastColumnActive(column): boolean {
-    return table.getVisibleLeafColumns().length === 1 && column.getIsVisible();
+  function isColumnDisable(column): boolean {
+    return (
+      !column.getCanHide() || (table.getVisibleLeafColumns().length === 1 && column.getIsVisible())
+    );
   }
 
-  function isColumnVisibilityStateChanged(): boolean {
-    return table.getVisibleLeafColumns().length !== table.getAllColumns().length;
+  function getIsAllColumnsVisible(): boolean {
+    return table.getIsAllColumnsVisible();
   }
 
   return (
     <>
-      <Badge color="primary" variant="dot" invisible={!isColumnVisibilityStateChanged()}>
+      <Badge color="primary" variant="dot" invisible={getIsAllColumnsVisible()}>
         <Button aria-describedby={id} onClick={handleClick} sx={{ display: "flex", gap: 1 }}>
           <FontAwesomeIcon icon={faGear} /> Columns
         </Button>
@@ -60,7 +62,7 @@ function OtTableColumnVisibility({ table }: OtTableColumnVisibilityProps): React
                           checked={column.getIsVisible()}
                         />
                       }
-                      disabled={isLastColumnActive(column)}
+                      disabled={isColumnDisable(column)}
                       label={column.columnDef.header || column.id}
                     />
                   </ListItemButton>

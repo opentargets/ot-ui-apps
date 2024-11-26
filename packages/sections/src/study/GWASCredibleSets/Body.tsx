@@ -1,18 +1,35 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
-import { naLabel } from "../../constants";
+import {
+  Link,
+  SectionItem,
+  ScientificNotation,
+  DisplayVariantId,
+  Tooltip,
+  ClinvarStars,
+  OtScoreLinearBar,
+  OtTable,
+} from "ui";
+import { Box } from "@mui/material";
+import { clinvarStarMap, naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import ManhattanPlot from "./ManhattanPlot";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const columns = [
   {
-    id: "view",
-    label: "Details",
-    renderCell: ({ studyLocusId }) => <Link to={`../credible-set/${studyLocusId}`}>view</Link>,
-    filterValue: false,
-    exportValue: false,
+    id: "studyLocusId",
+    label: "Navigate",
+    renderCell: ({ studyLocusId }) => (
+      <Box sx={{ display: "flex" }}>
+        <Link to={`/credible-set/${studyLocusId}`}>
+          <FontAwesomeIcon icon={faArrowRightToBracket} />
+        </Link>
+      </Box>
+    ),
   },
   {
     id: "leadVariant",
@@ -68,43 +85,61 @@ const columns = [
       return beta.toPrecision(3);
     },
   },
-
   {
     id: "finemappingMethod",
-    label: "Finemapping method",
+    label: "Fine-mapping method",
+  },
+  {
+    id: "confidence",
+    label: "Fine-mapping confidence",
+    tooltip:
+      "Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method",
+    sortable: true,
+    renderCell: ({ confidence }) => {
+      if (!confidence) return naLabel;
+      return (
+        <Tooltip title={confidence} style="">
+          <ClinvarStars num={clinvarStarMap[confidence]} />
+        </Tooltip>
+      );
+    },
+    filterValue: ({ confidence }) => clinvarStarMap[confidence],
   },
   {
     id: "topL2G",
     label: "Top L2G",
+    filterValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
     tooltip: "Top gene prioritised by our locus-to-gene model",
-    filterValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
-    renderCell: ({ strongestLocus2gene }) => {
-      if (!strongestLocus2gene?.target) return naLabel;
-      const { target } = strongestLocus2gene;
+    renderCell: ({ l2Gpredictions }) => {
+      const target = l2Gpredictions?.[0]?.target;
+      if (!target) return naLabel;
       return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
     },
-    exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.target.approvedSymbol,
+    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
   },
   {
     id: "l2gScore",
     label: "L2G score",
-    comparator: (rowA, rowB) => rowA?.strongestLocus2gene?.score - rowB?.strongestLocus2gene?.score,
+    comparator: (rowA, rowB) => rowA?.l2Gpredictions[0]?.score - rowB?.l2Gpredictions[0]?.score,
     sortable: true,
-    filterValue: false,
-    renderCell: ({ strongestLocus2gene }) => {
-      if (typeof strongestLocus2gene?.score !== "number") return naLabel;
-      return strongestLocus2gene.score.toFixed(3);
+    renderCell: ({ l2Gpredictions }) => {
+      const score = l2Gpredictions?.[0]?.score;
+      if (typeof score !== "number") return naLabel;
+      return (
+        <Tooltip title={score.toFixed(3)} style="">
+          <OtScoreLinearBar variant="determinate" value={score * 100} />
+        </Tooltip>
+      );
     },
-    exportValue: ({ strongestLocus2gene }) => strongestLocus2gene?.score,
   },
   {
     id: "credibleSetSize",
     label: "Credible set size",
-    comparator: (a, b) => a.locus?.length - b.locus?.length,
+    comparator: (a, b) => a.locus?.count - b.locus?.count,
     sortable: true,
     filterValue: false,
-    renderCell: ({ locus }) => locus?.length ?? naLabel,
-    exportValue: ({ locus }) => locus?.length,
+    renderCell: ({ locus }) => locus?.count ?? naLabel,
+    exportValue: ({ locus }) => locus?.count,
   },
 ];
 
@@ -129,16 +164,22 @@ function Body({ id, entity }: BodyProps) {
       request={request}
       renderDescription={() => <Description studyId={request.data?.gwasStudy[0].studyId} />}
       renderBody={() => (
-        <OtTable
-          dataDownloader
-          showGlobalFilter
-          sortBy="pValue"
-          loading={request.loading}
-          columns={columns}
-          rows={request.data?.gwasStudy[0].credibleSets}
-          query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
-          variables={variables}
-        />
+        <>
+          <ManhattanPlot
+            loading={request.loading}
+            data={request.data?.gwasStudy[0].credibleSets.rows}
+          />
+          <OtTable
+            dataDownloader
+            showGlobalFilter
+            sortBy="pValue"
+            loading={request.loading}
+            columns={columns}
+            rows={request.data?.gwasStudy[0].credibleSets.rows}
+            query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
+            variables={variables}
+          />
+        </>
       )}
     />
   );
