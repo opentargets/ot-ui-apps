@@ -24,7 +24,7 @@ import {
 } from "ui";
 import { scaleLinear, scaleLog, min, scaleOrdinal, schemeCategory10, schemeDark2 } from "d3";
 import { ScientificNotation } from "ui";
-import { naLabel, clinvarStarMap } from "../../constants";
+import { naLabel, credsetConfidenceMap } from "../../constants";
 import { Fragment } from "react/jsx-runtime";
 
 export default function PheWasPlot({ loading, data, id }) {
@@ -305,7 +305,7 @@ function tooltipContent(data) {
             Confidence:
             {data.confidence
               ? <Tooltip title={data.confidence} style="">
-                <ClinvarStars num={clinvarStarMap[data.confidence]} />
+                <ClinvarStars num={credsetConfidenceMap[data.confidence]} />
               </Tooltip>
               : naLabel
             }

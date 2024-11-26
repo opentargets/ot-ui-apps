@@ -24,12 +24,17 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
   purityMinR2
   locusStart
   locusEnd
+  confidence
   study {
     projectId
     publicationFirstAuthor
     publicationDate
     traitFromSource
     diseases {
+      id
+      name
+    }
+    backgroundTraits {
       id
       name
     }

@@ -10,7 +10,7 @@ import {
   useBatchQuery,
 } from "ui";
 import { Box, Chip } from "@mui/material";
-import { clinvarStarMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
+import { credsetConfidenceMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
@@ -163,6 +163,10 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       exportValue: ({ locus }) => locus.rows[0]?.posteriorProbability.toFixed(3),
     },
     {
+      id: "finemappingMethod",
+      label: "Fine-mapping method",
+    },
+    {
       id: "confidence",
       label: "Fine-mapping confidence",
       tooltip:
@@ -172,15 +176,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         if (!confidence) return naLabel;
         return (
           <Tooltip title={confidence} style="">
-            <ClinvarStars num={clinvarStarMap[confidence]} />
+            <ClinvarStars num={credsetConfidenceMap[confidence]} />
           </Tooltip>
         );
       },
-      filterValue: ({ confidence }) => clinvarStarMap[confidence],
-    },
-    {
-      id: "finemappingMethod",
-      label: "Fine-mapping method",
+      filterValue: ({ confidence }) => credsetConfidenceMap[confidence],
     },
     {
       id: "topL2G",

@@ -10,7 +10,7 @@ import {
   OtTable,
 } from "ui";
 import { Box } from "@mui/material";
-import { clinvarStarMap, naLabel } from "../../constants";
+import { credsetConfidenceMap, naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
@@ -99,11 +99,11 @@ const columns = [
       if (!confidence) return naLabel;
       return (
         <Tooltip title={confidence} style="">
-          <ClinvarStars num={clinvarStarMap[confidence]} />
+          <ClinvarStars num={credsetConfidenceMap[confidence]} />
         </Tooltip>
       );
     },
-    filterValue: ({ confidence }) => clinvarStarMap[confidence],
+    filterValue: ({ confidence }) => credsetConfidenceMap[confidence],
   },
   {
     id: "topL2G",
