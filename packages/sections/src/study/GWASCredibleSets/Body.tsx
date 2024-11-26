@@ -8,9 +8,10 @@ import {
   ClinvarStars,
   OtScoreLinearBar,
   OtTable,
+  useBatchQuery,
 } from "ui";
 import { Box } from "@mui/material";
-import { clinvarStarMap, naLabel } from "../../constants";
+import { clinvarStarMap, naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
@@ -18,6 +19,8 @@ import { mantissaExponentComparator, variantComparator } from "../../utils/compa
 import ManhattanPlot from "./ManhattanPlot";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
+import { responseType } from "ui/src/types/response";
 
 const columns = [
   {
@@ -153,9 +156,28 @@ function Body({ id, entity }: BodyProps) {
     studyId: id,
   };
 
-  const request = useQuery(GWAS_CREDIBLE_SETS_QUERY, {
-    variables,
+  // const request = useQuery(GWAS_CREDIBLE_SETS_QUERY, {
+  //   variables,
+  // });
+
+  const [request, setRequest] = useState<responseType>(initialResponse);
+
+  const getData = useBatchQuery({
+    query: GWAS_CREDIBLE_SETS_QUERY,
+    variables: {
+      studyId: id,
+      size: table5HChunkSize,
+      index: 0,
+    },
+    dataPath: "data.gwasStudy[0].credibleSets",
+    size: table5HChunkSize,
   });
+
+  useEffect(() => {
+    getData().then(r => {
+      setRequest(r);
+    });
+  }, []);
 
   return (
     <SectionItem
