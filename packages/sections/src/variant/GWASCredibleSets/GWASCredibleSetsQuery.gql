@@ -25,6 +25,10 @@ query GWASCredibleSetsQuery($variantId: String!, $size: Int!) {
           diseases {
             name
             id
+            therapeuticAreas {
+              name
+              id
+            }
           }
         }
         locus(variantIds: [$variantId]) {

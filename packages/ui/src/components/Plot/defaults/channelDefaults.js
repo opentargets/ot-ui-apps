@@ -40,5 +40,6 @@ export const channelDefaults = {
   transformBox: 'fill-box',     // Text (CSS)
   transform: null,              // Text (CSS)
   content: null,                // HTML
-  anchor: 'top-left'            // HTML
+  anchor: 'top-left',           // HTML
+  rotation: 0,                  // Point - use number (degrees)
 };

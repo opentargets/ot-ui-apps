@@ -16,6 +16,7 @@ import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import PheWasPlot from "./PheWasPlot";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -245,21 +246,28 @@ function Body({ id, entity }: BodyProps) {
       )}
       renderBody={() => {
         return (
-          <OtTable
-            dataDownloader
-            showGlobalFilter
-            sortBy="l2gScore"
-            order="desc"
-            columns={getColumns({
-              id,
-              referenceAllele: request.data?.variant.referenceAllele,
-              alternateAllele: request.data?.variant.alternateAllele,
-            })}
-            rows={request.data?.variant.gwasCredibleSets.rows}
-            loading={request.loading}
-            query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
-            variables={variables}
-          />
+          <>
+            <PheWasPlot
+              loading={request.loading}
+              data={request.data?.variant.gwasCredibleSets.rows}
+              id={id}
+            />
+            <OtTable
+              dataDownloader
+              showGlobalFilter
+              sortBy="l2gScore"
+              order="desc"
+              columns={getColumns({
+                id,
+                referenceAllele: request.data?.variant.referenceAllele,
+                alternateAllele: request.data?.variant.alternateAllele,
+              })}
+              rows={request.data?.variant.gwasCredibleSets.rows}
+              loading={request.loading}
+              query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
+              variables={variables}
+            />
+          </>
         );
       }}
     />
