@@ -7,7 +7,7 @@ const summaryStyles = makeStyles(theme => ({
     fontSize: "40px",
   },
   avatarHasData: {
-    backgroundColor: `${theme.palette.primary.main} !important`,
+    backgroundColor: `${theme.palette.primary.dark} !important`,
   },
   avatarError: {
     backgroundColor: theme.palette.secondary.main,
@@ -33,7 +33,7 @@ const summaryStyles = makeStyles(theme => ({
       color: "white",
     },
     "&:hover $avatarHasData": {
-      color: theme.palette.primary.main,
+      color: theme.palette.primary.dark,
       backgroundColor: "white !important",
     },
   },

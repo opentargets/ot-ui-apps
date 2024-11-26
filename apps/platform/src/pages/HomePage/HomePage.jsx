@@ -258,7 +258,7 @@ function HomePage({ suggestions }) {
                 label={suggestions[7].name}
               />
             </Link>
-            <Link to={`/variant/${suggestions[0].id}`}>
+            <Link to={`/variant/${suggestions[8].id}`}>
               <StyledChip
                 sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
                 icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
