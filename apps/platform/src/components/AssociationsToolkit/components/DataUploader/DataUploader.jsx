@@ -408,6 +408,7 @@ function DataUploader() {
           variant="outlined"
           disableElevation
           sx={{ height: 1, maxHeight: "45px" }}
+          aria-label="Upload list of entities"
         >
           <FontAwesomeIcon icon={faFileImport} size="lg" />
         </Button>

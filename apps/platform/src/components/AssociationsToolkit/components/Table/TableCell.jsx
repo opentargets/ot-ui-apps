@@ -38,6 +38,9 @@ const ScoreElement = styled("div", {
   })
 );
 
+const bkgImg = "repeating-linear-gradient(-135deg, #e2e8f0, #e2e8f0 3px, white 2px, white 6px);";
+const plainBkg = `${bkgImg} `;
+
 const defaultCell = {
   getValue: () => false,
   table: {
@@ -45,13 +48,14 @@ const defaultCell = {
   },
 };
 
-function TableCell({ shape = "circular", cell = defaultCell, colorScale, displayedTable }) {
+function TableCell({ shape = "circular", cell = defaultCell, colorScale, displayedTable, label }) {
   const { prefix, loading, parentTable, parentRow } = cell.table.getState();
   const dispatch = useAssociationsFocusDispatch();
   const cellValue = cell.getValue();
   const hasValue = cellHasValue(cellValue);
   const borderColor = hasValue ? colorScale(cellValue) : grey[300];
-  const backgroundColor = hasValue ? colorScale(cellValue) : "#fafafa";
+  let backgroundColor = hasValue ? colorScale(cellValue) : "#fafafa";
+  if (label) backgroundColor = plainBkg;
 
   const focusState = useAssociationsFocus();
 

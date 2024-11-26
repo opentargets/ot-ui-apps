@@ -1,6 +1,6 @@
 export { default as AdvanceOptionsMenu } from "./components/AdvanceOptionsMenu";
 export { default as TableAssociations } from "./components/Table/TableAssociations";
-export { default as TargetPrioritisationSwitch } from "./components/TargetPrioritisationSwitch";
+export { default as DisplayModeSwitch } from "./components/DisplayModeSwitch";
 export { default as DataDownloader } from "./components/DataDownloader";
 export { default as DataUploader } from "./components/DataUploader/DataUploader";
 export { default as AotfApiPlayground } from "./components/AotfApiPlayground";
