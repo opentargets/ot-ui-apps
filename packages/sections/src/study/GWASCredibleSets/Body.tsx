@@ -6,20 +6,27 @@ import {
   DisplayVariantId,
   OtTable,
 } from "ui";
+import { Box } from "@mui/material";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import ManhattanPlot from "./ManhattanPlot";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const columns = [
   {
-    id: "view",
+    id: "studyLocusId",
     label: "Navigate",
-    renderCell: ({ studyLocusId }) => <Link to={`../credible-set/${studyLocusId}`}>view</Link>,
-    filterValue: false,
-    exportValue: false,
+    renderCell: ({ studyLocusId }) => (
+      <Box sx={{ display: "flex" }}>
+        <Link to={`/credible-set/${studyLocusId}`}>
+          <FontAwesomeIcon icon={faArrowRightToBracket} />
+        </Link>
+      </Box>
+    ),
   },
   {
     id: "leadVariant",
@@ -86,7 +93,7 @@ const columns = [
     tooltip: "Top gene prioritised by our locus-to-gene model",
     filterValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.target.approvedSymbol,
     renderCell: ({ l2Gpredictions }) => {
-      const { target } = l2Gpredictions?.[0];
+      const target = l2Gpredictions?.[0]?.target;
       if (!target) return naLabel;
       return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
     },
@@ -99,7 +106,7 @@ const columns = [
     sortable: true,
     filterValue: false,
     renderCell: ({ l2Gpredictions }) => {
-      const { score } = l2Gpredictions?.[0];
+      const score = l2Gpredictions?.[0]?.score;
       if (typeof score !== "number") return naLabel;
       return score.toFixed(3);
     },

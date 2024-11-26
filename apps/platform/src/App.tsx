@@ -3,10 +3,9 @@ import { ApolloProvider } from "@apollo/client";
 import { ThemeProvider, SearchProvider, PrivateRoute, ConfigurationProvider } from "ui";
 
 import SEARCH_QUERY from "./components/Search/SearchQuery.gql";
-import ShouldAccessPPP from "./components/ShouldAccessPPP";
 import client from "./client";
 import theme from "./theme";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/HomePage/HomePage";
 import SearchPage from "./pages/SearchPage";
 import DiseasePage from "./pages/DiseasePage/DiseasePage";
 import DownloadsPage from "./pages/DownloadsPage";
@@ -77,7 +76,6 @@ function App(): ReactElement {
                   <NotFoundPage />
                 </Route>
               </Switch>
-              {/* <ShouldAccessPPP /> */}
             </Router>
           </SearchProvider>
         </ThemeProvider>

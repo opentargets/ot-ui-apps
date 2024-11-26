@@ -26,7 +26,7 @@ const LogoBTN = styled(Button)`
 
 const useStyles = makeStyles(theme => ({
   navbar: {
-    backgroundColor: `${theme.palette.primary.main} !important`,
+    backgroundColor: `${theme.palette.primary.dark} !important`,
     margin: 0,
     width: "100%",
   },
