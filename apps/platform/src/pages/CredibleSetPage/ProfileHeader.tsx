@@ -156,7 +156,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
 
       <Box>
         <Typography variant="subtitle1" mt={0}>
-          Study
+          {study?.studyType.replace(/(qtl|gwas)/gi, (match) => match.toUpperCase())} Study 
         </Typography>
         {studyCategory !== "QTL" && (
           <>
@@ -196,9 +196,9 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
               <Field loading={loading} title="Affected cell/tissue">
                 <Link
                   external
-                  to={`https://www.ebi.ac.uk/ols4/search?q=${study.biosample.biosampleId}&ontology=uberon`}
+                  to={`https://www.ebi.ac.uk/ols4/search?q=${study.biosample.biosampleId}`}
                 >
-                  {study.biosample.biosampleId}
+                  {study.biosample.biosampleName}
                 </Link>
               </Field>
             )}

@@ -44,9 +44,11 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
     }
     biosample {
       biosampleId
+      biosampleName
     }
     publicationJournal
     pubmedId
     nSamples
+    studyType
   }
 }
