@@ -58,6 +58,9 @@ const usePanelStyles = makeStyles(theme => ({
 
 const StyledChip = styled(Chip)(({ theme }) => ({
   border: 1,
+  fontSize: "12px",
+  fontWeight: "bold",
+  boxShadow: 0,
   "&:hover": {
     color: theme.palette.primary.dark,
     background: grey[100],
@@ -204,63 +207,63 @@ function HomePage({ suggestions }) {
           >
             <Link to={`/target/${suggestions[0].id}/associations`}>
               <StyledChip
-                sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+                sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon size="md" icon={faDna} />}
                 label={suggestions[0].name}
               />
             </Link>
             <Link to={`/target/${suggestions[1].id}/associations`}>
               <StyledChip
-                sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+                sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon size="md" icon={faDna} />}
                 label={suggestions[1].name}
               />
             </Link>
             <Link to={`/disease/${suggestions[2].id}/associations`}>
               <StyledChip
-                sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+                sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon size="md" icon={faStethoscope} />}
                 label={suggestions[2].name}
               />
             </Link>
             <Link to={`/disease/${suggestions[3].id}/associations`}>
               <StyledChip
-                sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+                sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon size="md" icon={faStethoscope} />}
                 label={suggestions[3].name}
               />
             </Link>
             <Link to={`/drug/${suggestions[4].id}`}>
               <StyledChip
-                sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+                sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon size="md" icon={faPrescriptionBottleMedical} />}
                 label={suggestions[4].name}
               />
             </Link>
             <Link to={`/drug/${suggestions[5].id}`}>
               <StyledChip
-                sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+                sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon size="md" icon={faPrescriptionBottleMedical} />}
                 label={suggestions[5].name}
               />
             </Link>
             <Link to={`/variant/${suggestions[6].id}`}>
               <StyledChip
-                sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+                sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
                 label={suggestions[6].name}
               />
             </Link>
             <Link to={`/variant/${suggestions[7].id}`}>
               <StyledChip
-                sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+                sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
                 label={suggestions[7].name}
               />
             </Link>
-            <Link to={`/variant/${suggestions[0].id}`}>
+            <Link to={`/variant/${suggestions[8].id}`}>
               <StyledChip
-                sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
+                sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
                 label={suggestions[8].name}
               />
