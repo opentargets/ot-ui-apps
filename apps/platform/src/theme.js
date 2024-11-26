@@ -1,9 +1,9 @@
-import { lighten, darken } from "polished";
+import { lighten, darken, borderRadius } from "polished";
 import config from "./config";
 import { grey } from "@mui/material/colors";
 
 const PRIMARY = config.profile.primaryColor;
-const SECONDARY = "#ff6350";
+const SECONDARY = config.profile.secondaryColor;
 
 const theme = {
   shape: {
@@ -88,12 +88,39 @@ const theme = {
       },
       styleOverrides: {
         root: {
-          border: "1px solid",
-          borderColor: "rgb(196,196,196)",
+          border: "none",
           padding: "6px 12px",
+          minHeight: "32px",
           textTransform: "none",
-          height: "32px",
           color: "#5A5F5F",
+          "&:hover": {
+            backgroundColor: "rgba(80, 80, 80, 0.1)",
+          },
+          "&.Mui-selected": {
+            color: darken(0.2, PRIMARY),
+            border: "1px solid",
+            borderColor: "rgb(196,196,196)",
+            backgroundColor: grey[50],
+          },
+          "&.Mui-selected:hover": {
+            backgroundColor: grey[100],
+          },
+          "&.Mui-selected.MuiToggleButtonGroup-lastButton": {
+            borderLeft: "1px solid",
+            borderColor: "rgb(196,196,196)",
+            borderRadius: "2px",
+          },
+        },
+      },
+    },
+    MuiToggleButtonGroup: {
+      styleOverrides: {
+        root: {
+          paddingTop: 6,
+          paddingBottom: 6,
+          paddingLeft: 10,
+          paddingRight: 10,
+          backgroundColor: grey[200],
         },
       },
     },
@@ -141,6 +168,14 @@ const theme = {
           background: PRIMARY,
           color: "white",
           borderRadius: "4px",
+        },
+      },
+    },
+    MuiAvatar: {
+      styleOverrides: {
+        root: {
+          fontSize: "1.2rem",
+          fontWeight: 500,
         },
       },
     },

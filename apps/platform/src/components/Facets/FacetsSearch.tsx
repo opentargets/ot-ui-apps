@@ -53,6 +53,7 @@ function FacetsSearch(): ReactElement {
   return (
     <Box sx={{ display: "flex" }}>
       <FacetsSelect
+        aria-label="Facet filter"
         value={state.categoryFilterValue}
         size="small"
         onChange={(event: SelectChangeEvent) => {

@@ -281,6 +281,7 @@ function DataDownloader() {
           variant="outlined"
           disableElevation
           sx={{ height: 1, maxHeight: "45px" }}
+          aria-label="Share Export"
         >
           <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
         </Button>

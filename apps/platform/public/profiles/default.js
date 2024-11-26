@@ -5,16 +5,13 @@ var configProfile = {
   documentationUrl: "https://platform-docs.opentargets.org",
   communityUrl: 'https://community.opentargets.org',
   communityTicketUrl: 'https://community.opentargets.org/c/community-feedback/bug-reports/34',
-  // config navbar main menu (hamburger)
-  // mainMenuItems: [],
-  // homepage logo subtitle (tagline)
-  // otLogoTagline: '',
 
   /* colors */
-
   primaryColor: '#3489ca',
-  // custom colour scale: override value in constants.js
+  secondaryColor: '#18405e',
+  
   // colorRange: [],
+  // custom colour scale: override value in constants.js
 
   /* partner preview options */
 

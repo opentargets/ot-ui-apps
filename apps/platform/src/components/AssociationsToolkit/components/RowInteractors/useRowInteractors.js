@@ -62,7 +62,7 @@ function useRowInteractors({
           sourceDatabase: rowInteractorsSource,
           ensgId: rowInteractorsId,
           index: 0,
-          size: 5000,
+          size: 3000,
         },
       });
 

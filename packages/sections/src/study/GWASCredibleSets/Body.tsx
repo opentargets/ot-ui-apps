@@ -92,7 +92,8 @@ const columns = [
   {
     id: "confidence",
     label: "Fine-mapping confidence",
-    tooltip: "Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method",
+    tooltip:
+      "Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method",
     sortable: true,
     renderCell: ({ confidence }) => {
       if (!confidence) return naLabel;
@@ -110,8 +111,8 @@ const columns = [
     filterValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
     tooltip: "Top gene prioritised by our locus-to-gene model",
     renderCell: ({ l2Gpredictions }) => {
-      if (!l2Gpredictions[0]?.target) return naLabel;
-      const { target } = l2Gpredictions[0];
+      const target = l2Gpredictions?.[0]?.target;
+      if (!target) return naLabel;
       return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
     },
     exportValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
@@ -122,10 +123,11 @@ const columns = [
     comparator: (rowA, rowB) => rowA?.l2Gpredictions[0]?.score - rowB?.l2Gpredictions[0]?.score,
     sortable: true,
     renderCell: ({ l2Gpredictions }) => {
-      if (!l2Gpredictions[0]?.score) return naLabel;
+      const score = l2Gpredictions?.[0]?.score;
+      if (typeof score !== "number") return naLabel;
       return (
-        <Tooltip title={l2Gpredictions[0].score.toFixed(3)} style="">
-          <OtScoreLinearBar variant="determinate" value={l2Gpredictions[0].score * 100} />
+        <Tooltip title={score.toFixed(3)} style="">
+          <OtScoreLinearBar variant="determinate" value={score * 100} />
         </Tooltip>
       );
     },

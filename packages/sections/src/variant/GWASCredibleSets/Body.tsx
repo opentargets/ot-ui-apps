@@ -1,4 +1,3 @@
-import { useQuery } from "@apollo/client";
 import {
   Link,
   SectionItem,
@@ -8,16 +7,20 @@ import {
   Tooltip,
   ClinvarStars,
   OtScoreLinearBar,
+  useBatchQuery,
 } from "ui";
 import { Box, Chip } from "@mui/material";
-import { clinvarStarMap, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { clinvarStarMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import PheWasPlot from "./PheWasPlot";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
+import { responseType } from "ui/src/types/response";
 
 type getColumnsType = {
   id: string;
@@ -162,6 +165,8 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "confidence",
       label: "Fine-mapping confidence",
+      tooltip:
+        "Fine-mapping confidence based on the suitability of the linkage-desequilibrium information and fine-mapping method",
       sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;
@@ -223,12 +228,26 @@ type BodyProps = {
 function Body({ id, entity }: BodyProps) {
   const variables = {
     variantId: id,
-    size: sectionsBaseSizeQuery,
   };
 
-  const request = useQuery(GWAS_CREDIBLE_SETS_QUERY, {
-    variables,
+  const [request, setRequest] = useState<responseType>(initialResponse);
+
+  const getAllGwasData = useBatchQuery({
+    query: GWAS_CREDIBLE_SETS_QUERY,
+    variables: {
+      variantId: id,
+      size: table5HChunkSize,
+      index: 0,
+    },
+    dataPath: "data.variant.gwasCredibleSets",
+    size: table5HChunkSize,
   });
+
+  useEffect(() => {
+    getAllGwasData().then(r => {
+      setRequest(r);
+    });
+  }, []);
 
   return (
     <SectionItem
@@ -242,23 +261,34 @@ function Body({ id, entity }: BodyProps) {
           alternateAllele={request.data?.variant.alternateAllele}
         />
       )}
+      renderChart={() => {
+        return (
+          <PheWasPlot
+            loading={request.loading}
+            data={request.data?.variant.gwasCredibleSets.rows}
+            id={id}
+          />
+        );
+      }}
       renderBody={() => {
         return (
-          <OtTable
-            dataDownloader
-            showGlobalFilter
-            sortBy="l2gScore"
-            order="desc"
-            columns={getColumns({
-              id,
-              referenceAllele: request.data?.variant.referenceAllele,
-              alternateAllele: request.data?.variant.alternateAllele,
-            })}
-            rows={request.data?.variant.gwasCredibleSets.rows}
-            loading={request.loading}
-            query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
-            variables={variables}
-          />
+          <>
+            <OtTable
+              dataDownloader
+              showGlobalFilter
+              sortBy="l2gScore"
+              order="desc"
+              columns={getColumns({
+                id,
+                referenceAllele: request.data?.variant.referenceAllele,
+                alternateAllele: request.data?.variant.alternateAllele,
+              })}
+              rows={request.data?.variant.gwasCredibleSets.rows}
+              loading={request.loading}
+              query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
+              variables={variables}
+            />
+          </>
         );
       }}
     />
