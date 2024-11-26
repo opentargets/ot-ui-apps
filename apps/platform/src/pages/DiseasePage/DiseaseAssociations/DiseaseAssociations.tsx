@@ -29,7 +29,7 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
       <AssociationsFocusProvider>
         <>
           <ControlsSection>
-            <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: 2 }}>
+            <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: 1 }}>
               <FacetsSearch />
               <AdvanceOptionsMenu />
               <DataUploader />

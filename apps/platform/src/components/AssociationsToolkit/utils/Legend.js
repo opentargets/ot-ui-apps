@@ -178,6 +178,7 @@ function Legend(
     );
 
   svg.selectAll(".ticks line").attr("stroke", "none");
+  svg.selectAll(".ticks text").attr("font-weight", "bold").attr("font-size", "10px");
 
   return svg.node();
 }
