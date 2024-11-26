@@ -71,7 +71,7 @@ function SmilesHelper({ smiles, chemblId }) {
 
   return (
     <>
-      <Paper className={classes.container} elevation={0} onClick={toggleModal}>
+      <Paper variant="outlined" className={classes.container} elevation={0} onClick={toggleModal}>
         <canvas id={chemblId} />
         <FontAwesomeIcon icon={faSearchPlus} className="seeDetailsIcon" />
       </Paper>

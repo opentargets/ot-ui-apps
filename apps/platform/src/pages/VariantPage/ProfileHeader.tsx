@@ -1,6 +1,6 @@
 // import { useState, useEffect } from "react";
 import { usePlatformApi, Field, ProfileHeader as BaseProfileHeader, Link, LongText } from "ui";
-import { Box, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import { identifiersOrgLink } from "../../utils/global";
 
 import VARIANT_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
@@ -14,7 +14,7 @@ function ProfileHeader() {
   return (
     <BaseProfileHeader>
       <Box>
-        <Typography variant="subtitle1" mt={0}>
+        <Typography variant="subtitle2" mt={0}>
           Location
         </Typography>
         <Field loading={loading} title="GRCh38">
@@ -26,7 +26,7 @@ function ProfileHeader() {
           label="Alternative allele (effect allele)"
           value={data?.variant.alternateAllele}
         />
-        <Typography variant="subtitle1" mt={1}>
+        <Typography variant="subtitle2" mt={1}>
           Variant Effect Predictor (VEP)
         </Typography>
         <Field loading={loading} title="Most severe consequence">
@@ -40,12 +40,14 @@ function ProfileHeader() {
       </Box>
 
       {data?.variant.alleleFrequencies.length > 0 && (
-        <Box>
-          <Typography variant="subtitle1" mt={0}>
+        <Paper sx={{ py: 2, px: 5, maxWidth: "100%" }} elevation={0} variant="outlined">
+          <Typography variant="subtitle2" mb={1}>
             Population Allele Frequencies
           </Typography>
-          <AlleleFrequencyPlot data={data.variant.alleleFrequencies} />
-        </Box>
+          <Box sx={{ margin: "0 auto", maxWidth: "550px" }}>
+            <AlleleFrequencyPlot data={data.variant.alleleFrequencies} />
+          </Box>
+        </Paper>
       )}
     </BaseProfileHeader>
   );
@@ -140,7 +142,6 @@ function BarGroup({ dataRow: { label, alleleFrequency }, dps }) {
       <Box
         sx={{
           flexGrow: 2,
-          maxWidth: "200px",
           background: theme => theme.palette.grey[300],
           height: "9px",
         }}
