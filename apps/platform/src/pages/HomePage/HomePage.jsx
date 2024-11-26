@@ -1,6 +1,5 @@
-import { Grid, Typography, Hidden, Box, useMediaQuery, Chip } from "@mui/material";
-
-import { makeStyles, useTheme } from "@mui/styles";
+import { Grid, Typography, Box, useMediaQuery, Chip } from "@mui/material";
+import { makeStyles, styled, useTheme } from "@mui/styles";
 import { Helmet } from "react-helmet";
 import { Footer, GlobalSearch, Link, NavBar, usePermissions } from "ui";
 
@@ -30,6 +29,7 @@ import Splash from "./Splash";
 import Version from "./Version";
 
 import config from "../../config";
+import { grey } from "@mui/material/colors";
 
 const useStyles = makeStyles(() => ({
   links: {
@@ -53,6 +53,17 @@ const usePanelStyles = makeStyles(theme => ({
     [theme.breakpoints.down("xs")]: {
       textAlign: "left",
     },
+  },
+}));
+
+const StyledChip = styled(Chip)(({ theme }) => ({
+  border: 1,
+  "&:hover": {
+    color: theme.palette.primary.dark,
+    background: grey[100],
+  },
+  "&:hover .MuiChip-icon": {
+    color: theme.palette.primary.dark,
   },
 }));
 
@@ -192,63 +203,63 @@ function HomePage({ suggestions }) {
             sx={{ mt: 4 }}
           >
             <Link to={`/target/${suggestions[0].id}/associations`}>
-              <Chip
+              <StyledChip
                 sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
                 icon={<FontAwesomeIcon size="md" icon={faDna} />}
                 label={suggestions[0].name}
               />
             </Link>
             <Link to={`/target/${suggestions[1].id}/associations`}>
-              <Chip
+              <StyledChip
                 sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
                 icon={<FontAwesomeIcon size="md" icon={faDna} />}
                 label={suggestions[1].name}
               />
             </Link>
             <Link to={`/disease/${suggestions[2].id}/associations`}>
-              <Chip
+              <StyledChip
                 sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
                 icon={<FontAwesomeIcon size="md" icon={faStethoscope} />}
                 label={suggestions[2].name}
               />
             </Link>
             <Link to={`/disease/${suggestions[3].id}/associations`}>
-              <Chip
+              <StyledChip
                 sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
                 icon={<FontAwesomeIcon size="md" icon={faStethoscope} />}
                 label={suggestions[3].name}
               />
             </Link>
             <Link to={`/drug/${suggestions[4].id}`}>
-              <Chip
+              <StyledChip
                 sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
                 icon={<FontAwesomeIcon size="md" icon={faPrescriptionBottleMedical} />}
                 label={suggestions[4].name}
               />
             </Link>
             <Link to={`/drug/${suggestions[5].id}`}>
-              <Chip
+              <StyledChip
                 sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
                 icon={<FontAwesomeIcon size="md" icon={faPrescriptionBottleMedical} />}
                 label={suggestions[5].name}
               />
             </Link>
             <Link to={`/variant/${suggestions[6].id}`}>
-              <Chip
+              <StyledChip
                 sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
                 icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
                 label={suggestions[6].name}
               />
             </Link>
             <Link to={`/variant/${suggestions[7].id}`}>
-              <Chip
+              <StyledChip
                 sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
                 icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
                 label={suggestions[7].name}
               />
             </Link>
             <Link to={`/variant/${suggestions[0].id}`}>
-              <Chip
+              <StyledChip
                 sx={{ pl: 1, fontSize: "12px", fontWeight: "bold", borderRadius: 2, boxShadow: 0 }}
                 icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
                 label={suggestions[8].name}
