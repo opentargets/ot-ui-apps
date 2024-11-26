@@ -165,7 +165,8 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "confidence",
       label: "Fine-mapping confidence",
-      tooltip: "Fine-mapping confidence based on the suitability of the linkage-desequilibrium information and fine-mapping method",
+      tooltip:
+        "Fine-mapping confidence based on the suitability of the linkage-desequilibrium information and fine-mapping method",
       sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;
@@ -260,14 +261,18 @@ function Body({ id, entity }: BodyProps) {
           alternateAllele={request.data?.variant.alternateAllele}
         />
       )}
+      renderChart={() => {
+        return (
+          <PheWasPlot
+            loading={request.loading}
+            data={request.data?.variant.gwasCredibleSets.rows}
+            id={id}
+          />
+        );
+      }}
       renderBody={() => {
         return (
           <>
-            <PheWasPlot
-              loading={request.loading}
-              data={request.data?.variant.gwasCredibleSets.rows}
-              id={id}
-            />
             <OtTable
               dataDownloader
               showGlobalFilter
