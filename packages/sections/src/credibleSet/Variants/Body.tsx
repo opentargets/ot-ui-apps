@@ -6,12 +6,17 @@ import { definition } from ".";
 import Description from "./Description";
 import VARIANTS_QUERY from "./VariantsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { identifiersOrgLink } from "../../utils/global";
 
 type getColumnsType = {
   leadVariantId: string;
   leadReferenceAllele: string;
   leadAlternateAllele: string;
 };
+
+function formatVariantConsequenceLabel(label) {
+  return label.replace(/_/g, " ");
+}
 
 function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }: getColumnsType) {
   return [
@@ -132,6 +137,25 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
         return logBF.toPrecision(3);
       },
     },
+    {
+      id: "variant.mostSevereConsequence.label",
+      label: "Predicted consequence",
+      tooltip: "Most severe consequence of the variant. Source: Ensembl VEP",
+
+      renderCell: ({ variant }) => {
+        const mostSevereConsequence = variant?.mostSevereConsequence
+        if (!mostSevereConsequence) return naLabel;
+        const displayElement = (
+            <Link external to={identifiersOrgLink("SO", mostSevereConsequence.id.slice(3))}>
+              {formatVariantConsequenceLabel(mostSevereConsequence.label)}
+            </Link>
+        );
+        return displayElement;
+      },
+      exportValue: ({ variant }) => {
+        return variant?.mostSevereConsequence.label
+      },
+    },
   ];
 }
 
@@ -152,7 +176,6 @@ function Body({
 }: BodyProps) {
   const variables = {
     studyLocusId: studyLocusId,
-    variantIds: [leadVariantId],
   };
 
   const request = useQuery(VARIANTS_QUERY, {

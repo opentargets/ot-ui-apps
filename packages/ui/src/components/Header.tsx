@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: "center",
   },
   mainIcon: {
-    color: theme.palette.primary.main,
+    color: theme.palette.primary.dark,
   },
   subtitle: {
     display: "flex",
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: "center",
   },
   title: {
-    color: theme.palette.primary.main,
+    color: theme.palette.primary.dark,
     fontWeight: "500 !important",
   },
   titleContainer: {

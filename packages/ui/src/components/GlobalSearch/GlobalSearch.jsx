@@ -1,5 +1,5 @@
 import { useEffect, useContext } from "react";
-import { Box, styled } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
@@ -10,11 +10,11 @@ const SearchButton = styled("button")(({ theme, isHomePage = false }) => ({
   cursor: "pointer",
   width: "100%",
   maxWidth: isHomePage ? "90%" : "400px",
-  background: isHomePage ? "white" : theme.palette.primary.light,
-  color: isHomePage ? theme.palette.primary.dark : "white",
+  background: isHomePage ? "#F0F0F0" : theme.palette.secondary.main,
+  color: isHomePage ? "inherit" : "white",
   borderRadius: theme.spacing(0.6),
-  border: `1px solid ${theme.palette.primary.main}`,
-  padding: theme.spacing(0.4),
+  border: isHomePage ? `1px solid #F0F0F0` : `1px solid ${theme.palette.secondary.main}`,
+  padding: isHomePage ? theme.spacing(1) : theme.spacing(0.3),
 }));
 
 function GlobalSearch({ isHomePage }) {
@@ -25,7 +25,7 @@ function GlobalSearch({ isHomePage }) {
     display: "flex",
     justifyContent: "center",
     ...(isHomePage && {
-      margin: theme => `${theme.spacing(2)} 0 ${theme.spacing(3)}`,
+      margin: theme => `${theme.spacing(5)} 0 ${theme.spacing(5)}`,
     }),
   };
 
@@ -63,17 +63,19 @@ function GlobalSearch({ isHomePage }) {
             lineHeight: "normal",
           }}
         >
-          <Box sx={{ paddingLeft: theme => theme.spacing(1) }}>
+          <Box
+            sx={{ paddingLeft: theme => theme.spacing(1), display: "flex", alignItems: "center" }}
+          >
             <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
+            <Typography sx={{ ml: 2 }}>Search...</Typography>
           </Box>
-          Search...
           <Box
             sx={{
               typography: "caption",
               fontWeight: "bold",
-              color: "white",
-              backgroundColor: theme => theme.palette.primary.main,
-              padding: theme => `${theme.spacing(0.1)} ${theme.spacing(1)}`,
+              color: theme => (isHomePage ? theme.palette.text : "white"),
+              backgroundColor: theme => (isHomePage ? "#CECECE" : "#235d89"),
+              padding: theme => `${theme.spacing(0.2)} ${theme.spacing(1)}`,
               borderRadius: theme => theme.spacing(0.4),
             }}
           >

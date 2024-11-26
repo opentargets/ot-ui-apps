@@ -15,6 +15,8 @@ import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { ReactNode } from "react";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type getColumnsType = {
   id: string;
@@ -28,7 +30,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       id: "studyLocusId",
       label: "Navigate",
       renderCell: ({ studyLocusId }) => (
-        <Link to={`../credible-set/${studyLocusId}`}>{studyLocusId}</Link>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Link to={`/credible-set/${studyLocusId}`}>
+            <FontAwesomeIcon icon={faArrowRightToBracket} />
+          </Link>
+        </Box>
       ),
     },
     {
@@ -167,6 +173,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "confidence",
       label: "Fine-mapping confidence",
+      tooltip: "Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method",
       sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;
