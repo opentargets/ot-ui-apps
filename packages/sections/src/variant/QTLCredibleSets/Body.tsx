@@ -168,8 +168,10 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       comparator: (rowA, rowB) =>
         rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
       sortable: true,
-      renderCell: ({ locus }) => locus.rows[0]?.posteriorProbability.toFixed(3) ?? naLabel,
-      exportValue: ({ locus }) => locus.rows[0]?.posteriorProbability.toFixed(3),
+      renderCell: ({ locus }) =>
+        locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
+      exportValue: ({ locus }) =>
+        locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
     },
     {
       id: "confidence",
