@@ -24,6 +24,7 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
   purityMinR2
   locusStart
   locusEnd
+  confidence
   study {
     projectId
     publicationFirstAuthor
@@ -33,15 +34,21 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
       id
       name
     }
+    backgroundTraits {
+      id
+      name
+    }
     target {
       id
       approvedSymbol
     }
     biosample {
       biosampleId
+      biosampleName
     }
     publicationJournal
     pubmedId
     nSamples
+    studyType
   }
 }
