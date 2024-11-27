@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from "ui";
 
-import { naLabel, sectionsBaseSizeQuery, clinvarStarMap } from "../../constants";
+import { naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
@@ -118,11 +118,11 @@ function getColumns() {
         if (!credibleSet?.confidence) return naLabel;
         return (
           <Tooltip title={credibleSet?.confidence} style="">
-            <ClinvarStars num={clinvarStarMap[credibleSet?.confidence]} />
+            <ClinvarStars num={credsetConfidenceMap[credibleSet?.confidence]} />
           </Tooltip>
         );
       },
-      filterValue: ({ credibleSet }) => clinvarStarMap[credibleSet?.confidence],
+      filterValue: ({ credibleSet }) => credsetConfidenceMap[credibleSet?.confidence],
     },
     {
       id: "finemappingMethod",

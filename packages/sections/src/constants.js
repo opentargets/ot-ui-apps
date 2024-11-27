@@ -70,16 +70,19 @@ export const sourceMap = {
   USAN: "United States Adopted Name",
 };
 
+export const credsetConfidenceMap = {
+  "SuSiE fine-mapped credible set with in-sample LD": 4,
+  "SuSiE fine-mapped credible set with out-of-sample LD": 3,
+  "PICS fine-mapped credible set extracted from summary statistics": 2,
+  "PICS fine-mapped credible set based on reported top hit": 1,
+};
+
 export const clinvarStarMap = {
   "practice guideline": 4,
-  "SuSiE fine-mapped credible set with in-sample LD": 4,
   "reviewed by expert panel": 3,
-  "SuSiE fine-mapped credible set with out-of-sample LD": 3,
   "criteria provided, multiple submitters, no conflicts": 2,
-  "PICS fine-mapped credible set extracted from summary statistics": 2,
   "criteria provided, conflicting interpretations": 1,
   "criteria provided, single submitter": 1,
-  "PICS fine-mapped credible set based on reported top hit": 1,
   "no assertion for the individual variant": 0,
   "no assertion criteria provided": 0,
   "no assertion provided": 0,

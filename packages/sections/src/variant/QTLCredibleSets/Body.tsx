@@ -9,7 +9,7 @@ import {
   useBatchQuery,
 } from "ui";
 import { Box, Chip } from "@mui/material";
-import { clinvarStarMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
+import { credsetConfidenceMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
@@ -181,11 +181,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         if (!confidence) return naLabel;
         return (
           <Tooltip title={confidence} style="">
-            <ClinvarStars num={clinvarStarMap[confidence]} />
+            <ClinvarStars num={credsetConfidenceMap[confidence]} />
           </Tooltip>
         );
       },
-      filterValue: ({ confidence }) => clinvarStarMap[confidence],
+      filterValue: ({ confidence }) => credsetConfidenceMap[confidence],
     },
     {
       id: "finemappingMethod",

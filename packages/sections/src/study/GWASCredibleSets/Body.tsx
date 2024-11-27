@@ -10,7 +10,7 @@ import {
   useBatchQuery,
 } from "ui";
 import { Box } from "@mui/material";
-import { clinvarStarMap, naLabel, initialResponse, table5HChunkSize } from "../../constants";
+import { naLabel, credsetConfidenceMap, initialResponse, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
@@ -101,11 +101,11 @@ const columns = [
       if (!confidence) return naLabel;
       return (
         <Tooltip title={confidence} style="">
-          <ClinvarStars num={clinvarStarMap[confidence]} />
+          <ClinvarStars num={credsetConfidenceMap[confidence]} />
         </Tooltip>
       );
     },
-    filterValue: ({ confidence }) => clinvarStarMap[confidence],
+    filterValue: ({ confidence }) => credsetConfidenceMap[confidence],
   },
   {
     id: "topL2G",
