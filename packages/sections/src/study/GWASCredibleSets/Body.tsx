@@ -1,4 +1,3 @@
-import { useQuery } from "@apollo/client";
 import {
   Link,
   SectionItem,
@@ -155,10 +154,6 @@ function Body({ id, entity }: BodyProps) {
   const variables = {
     studyId: id,
   };
-
-  // const request = useQuery(GWAS_CREDIBLE_SETS_QUERY, {
-  //   variables,
-  // });
 
   const [request, setRequest] = useState<responseType>(initialResponse);
 

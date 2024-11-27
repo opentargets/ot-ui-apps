@@ -87,18 +87,11 @@ function setRows(
   if (!res || !rows) return null;
   const wholeRes = structuredClone(res);
   let obj = wholeRes;
-
-  // !!!!!!!!!need to split on '].' also ?
-  for (const property of dataPath.split(/[[\].]/)) {
+  for (const property of dataPath.split(/[[\].]+/)) {
     if (property) {  // could be empty from splitting on ']'
       obj = obj[property];
     }
   }
-
-  // const dataPathSplit: string[] = dataPath.split(".");
-  // for (let i = 0, len = dataPathSplit.length; i < len; i++) {
-  //   obj = obj[dataPathSplit[i]];
-  // }
   Object.assign(obj, rows);
   return wholeRes;
 }
