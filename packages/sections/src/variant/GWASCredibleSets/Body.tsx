@@ -8,6 +8,7 @@ import {
   ClinvarStars,
   OtScoreLinearBar,
   useBatchQuery,
+  SummaryLoader,
 } from "ui";
 import { Box, Chip } from "@mui/material";
 import { clinvarStarMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
@@ -271,6 +272,7 @@ function Body({ id, entity }: BodyProps) {
         );
       }}
       renderBody={() => {
+        if (request.loading) return <SummaryLoader />;
         return (
           <>
             <OtTable
