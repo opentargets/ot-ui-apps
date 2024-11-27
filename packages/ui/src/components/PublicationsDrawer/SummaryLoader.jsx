@@ -16,13 +16,13 @@ const LoadingContainer = styled("div")({
   textAlign: "center",
 });
 
-function SummaryLoader() {
+function SummaryLoader({ message = 'Summarising. This may take some time...' }) {
   return (
     <LoadingContainer>
       <StyledContainer>
         <CircularProgress color="inherit" />
       </StyledContainer>
-      Summarising. This may take some time...
+      {message}
     </LoadingContainer>
   );
 }

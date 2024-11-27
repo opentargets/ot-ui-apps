@@ -8,6 +8,7 @@ import {
   Tooltip,
   PublicationsDrawer,
   ClinvarStars,
+  LabelChip,
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
@@ -15,6 +16,7 @@ import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 import { epmcUrl } from "../../utils/urls";
 import {
   credsetConfidenceMap,
+  poulationMap,
 } from "../../constants";
 
 type ProfileHeaderProps = {
@@ -123,11 +125,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         )}
 
         <Typography variant="subtitle1" mt={1}>
-          Fine-mapping <Tooltip title={credibleSet?.confidence}>
-            <span>
-              <ClinvarStars num={credsetConfidenceMap[credibleSet?.confidence]} />
-            </span>
-          </Tooltip>
+          Fine-mapping
         </Typography>
         {
           credibleSet?.locusStart && (<Field loading={loading} title="Locus">
@@ -136,6 +134,21 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         }
         <Field loading={loading} title="Method">
           {credibleSet?.finemappingMethod}
+        </Field>
+        <Field loading={loading}
+          title={
+          <Tooltip title="Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method"
+          showHelpIcon
+          >
+            Confidence
+          </Tooltip>
+          }
+        >
+          <Tooltip title={credibleSet?.confidence}>
+            <span>
+              <ClinvarStars num={credsetConfidenceMap[credibleSet?.confidence]} />
+            </span>
+          </Tooltip>
         </Field>
         <Field
           loading={loading}
@@ -204,9 +217,6 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             )}
           </>
         )}
-        <Field loading={loading} title="Sample size">
-          {study?.nSamples.toLocaleString()}
-        </Field>
         {study?.publicationFirstAuthor && (<Field loading={loading} title="Publication">
           {study?.publicationFirstAuthor} <i>et al.</i> {study?.publicationJournal} ({study?.publicationDate?.slice(0, 4)}) 
         </Field>)}
@@ -217,6 +227,22 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             </PublicationsDrawer>
           </Field>
         )}
+        <Field loading={loading} title="Sample size">
+          {study?.nSamples.toLocaleString()}
+          {study?.ldPopulationStructure?.length > 0 && (
+            <Box display="flex" sx={{ gap: 1 }}>
+            {study.ldPopulationStructure.map(({ ldPopulation,  relativeSampleSize}, index) => (
+              <LabelChip
+                key={ldPopulation}
+                label={ldPopulation.toUpperCase()}
+                value={`${(relativeSampleSize * 100).toFixed(0)}%`}
+                tooltip={`LD reference population: ${ poulationMap[ldPopulation]}`}
+              />
+            ))}
+            </Box>
+        )}
+        </Field>
+
       </Box>
     </BaseProfileHeader>  
   );

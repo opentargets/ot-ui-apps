@@ -4,7 +4,7 @@ import { ReactElement } from "react";
 
 type LabelChipProps = {
   label?: string;
-  to: string;
+  to?: string;
   tooltip?: string | null;
   value?: string;
 };

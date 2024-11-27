@@ -5,7 +5,7 @@
   "types": "./src/index.tsx",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
+    "lint": "eslint --quiet \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "prettier:all": "prettier --write \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\""
   },
   "dependencies": {
