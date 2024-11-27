@@ -130,8 +130,10 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
     },
     {
       id: "logBF",
-      label: "log(Bayes Factor)",
+      label: "log(BF)",
+      tooltip: "Natural logarithm of the Bayes Factor indicating relative likelihood of the variant being causal",
       filterValue: false,
+      sortable: true,
       renderCell: ({ logBF }) => {
         if (typeof logBF !== "number") return naLabel;
         return logBF.toPrecision(3);
