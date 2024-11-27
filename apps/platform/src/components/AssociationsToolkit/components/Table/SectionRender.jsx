@@ -3,6 +3,7 @@ import { styled } from "@mui/material/styles";
 import { LoadingBackdrop } from "ui";
 import { ENTITIES } from "../../utils";
 
+import prioritisationColumns from "../../static_datasets/prioritisationColumns";
 import targetSections from "../../../../sections/targetSections";
 import evidenceSections from "../../../../sections/evidenceSections";
 
@@ -48,6 +49,7 @@ const getComponentConfig = (displayedTable, row, entity, id, section) => {
         componentId: entity === ENTITIES.DISEASE ? row.id : id,
         label: row.original.targetSymbol,
         entityOfSection: "target",
+        componentProps: prioritisationColumns.find(el => el.id === section[0])?.sectionProps,
       };
     case "associations":
       return {
@@ -61,6 +63,7 @@ const getComponentConfig = (displayedTable, row, entity, id, section) => {
           name: row.original.diseaseName,
         },
         entityOfSection: "disease",
+        componentProps: {},
       };
     default:
       return { Component: SectionNotFound };
@@ -87,13 +90,14 @@ export function SectionRender({
     componentId,
     label = row.original[entityToGet][nameProperty],
     entityOfSection = entity,
+    componentProps,
   } = getComponentConfig(displayedTable, row, entity, id, section);
 
   if (!Component) return <SectionNotFound />;
 
   return (
     <Container table={table}>
-      <Component id={componentId} label={label} entity={entityOfSection} />
+      <Component id={componentId} label={label} entity={entityOfSection} {...componentProps} />
     </Container>
   );
 }
