@@ -162,6 +162,8 @@ function Body({ id, entity }: BodyProps) {
       definition={definition}
       entity={entity}
       request={request}
+      showContentLoading
+      loadingMessage="Loading data. This may take some time..."
       renderDescription={() => <Description studyId={request.data?.gwasStudy[0].studyId} />}
       renderBody={() => (
         <>
