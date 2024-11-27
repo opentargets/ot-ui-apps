@@ -8,7 +8,6 @@ import {
   ClinvarStars,
   OtScoreLinearBar,
   useBatchQuery,
-  SummaryLoader,
 } from "ui";
 import { Box, Chip } from "@mui/material";
 import { credsetConfidenceMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
@@ -257,6 +256,8 @@ function Body({ id, entity }: BodyProps) {
       definition={definition}
       entity={entity}
       request={request}
+      showContentLoading
+      loadingMessage="Loading data. This may take some time..."
       renderDescription={() => (
         <Description
           variantId={request.data?.variant.id}
@@ -274,7 +275,6 @@ function Body({ id, entity }: BodyProps) {
         );
       }}
       renderBody={() => {
-        if (request.loading) return <SummaryLoader />;
         return (
           <>
             <OtTable

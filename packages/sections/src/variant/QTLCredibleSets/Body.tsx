@@ -239,6 +239,8 @@ function Body({ id, entity }: BodyProps): ReactNode {
       definition={definition}
       entity={entity}
       request={request}
+      showContentLoading
+      loadingMessage="Loading data. This may take some time..."
       renderDescription={() => (
         <Description
           variantId={request.data?.variant?.id}
