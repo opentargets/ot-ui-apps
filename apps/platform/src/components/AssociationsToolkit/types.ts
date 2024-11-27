@@ -22,6 +22,7 @@ export type Column = {
   docsLink: string;
   weight?: number | undefined;
   private?: boolean;
+  sectionProps?: any;
 };
 
 /***************

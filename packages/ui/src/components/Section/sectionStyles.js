@@ -6,7 +6,7 @@ const sectionStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.grey[300],
   },
   avatarHasData: {
-    backgroundColor: `${theme.palette.primary.main} !important`,
+    backgroundColor: `${theme.palette.primary.dark} !important`,
   },
   avatarError: {
     backgroundColor: theme.palette.secondary.main,

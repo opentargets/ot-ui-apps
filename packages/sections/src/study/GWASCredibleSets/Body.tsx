@@ -4,22 +4,32 @@ import {
   SectionItem,
   ScientificNotation,
   DisplayVariantId,
+  Tooltip,
+  ClinvarStars,
+  OtScoreLinearBar,
   OtTable,
 } from "ui";
-import { naLabel } from "../../constants";
+import { Box } from "@mui/material";
+import { credsetConfidenceMap, naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import ManhattanPlot from "./ManhattanPlot";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const columns = [
   {
-    id: "view",
+    id: "studyLocusId",
     label: "Navigate",
-    renderCell: ({ studyLocusId }) => <Link to={`../credible-set/${studyLocusId}`}>view</Link>,
-    filterValue: false,
-    exportValue: false,
+    renderCell: ({ studyLocusId }) => (
+      <Box sx={{ display: "flex" }}>
+        <Link to={`/credible-set/${studyLocusId}`}>
+          <FontAwesomeIcon icon={faArrowRightToBracket} />
+        </Link>
+      </Box>
+    ),
   },
   {
     id: "leadVariant",
@@ -75,35 +85,52 @@ const columns = [
       return beta.toPrecision(3);
     },
   },
-
   {
     id: "finemappingMethod",
     label: "Fine-mapping method",
   },
   {
-    id: "TopL2G",
+    id: "confidence",
+    label: "Fine-mapping confidence",
+    tooltip:
+      "Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method",
+    sortable: true,
+    renderCell: ({ confidence }) => {
+      if (!confidence) return naLabel;
+      return (
+        <Tooltip title={confidence} style="">
+          <ClinvarStars num={credsetConfidenceMap[confidence]} />
+        </Tooltip>
+      );
+    },
+    filterValue: ({ confidence }) => credsetConfidenceMap[confidence],
+  },
+  {
+    id: "topL2G",
     label: "Top L2G",
+    filterValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
     tooltip: "Top gene prioritised by our locus-to-gene model",
-    filterValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.target.approvedSymbol,
     renderCell: ({ l2Gpredictions }) => {
-      const { target } = l2Gpredictions?.[0];
+      const target = l2Gpredictions?.[0]?.target;
       if (!target) return naLabel;
       return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
     },
-    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.target.approvedSymbol,
+    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
   },
   {
     id: "l2gScore",
     label: "L2G score",
-    comparator: (rowA, rowB) => rowA?.l2Gpredictions?.[0]?.score - rowB?.l2Gpredictions?.[0]?.score,
+    comparator: (rowA, rowB) => rowA?.l2Gpredictions[0]?.score - rowB?.l2Gpredictions[0]?.score,
     sortable: true,
-    filterValue: false,
     renderCell: ({ l2Gpredictions }) => {
-      const { score } = l2Gpredictions?.[0];
+      const score = l2Gpredictions?.[0]?.score;
       if (typeof score !== "number") return naLabel;
-      return score.toFixed(3);
+      return (
+        <Tooltip title={score.toFixed(3)} style="">
+          <OtScoreLinearBar variant="determinate" value={score * 100} />
+        </Tooltip>
+      );
     },
-    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.[0]?.score,
   },
   {
     id: "credibleSetSize",

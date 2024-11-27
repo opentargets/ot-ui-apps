@@ -8,6 +8,7 @@ import { naLabel } from "../../constants";
 import { identifiersOrgLink } from "../../utils/global";
 import VARIANT_EFFECT_PREDICTOR_QUERY from "./VariantEffectPredictorQuery.gql";
 
+
 function formatVariantConsequenceLabel(label) {
   return label.replace(/_/g, " ");
 }
@@ -81,7 +82,7 @@ const columns = [
   {
     id: "variantConsequences.label",
     label: "Predicted consequence",
-    renderCell: ({ variantConsequences, aminoAcidChange, codons, uniprotAccessions }) => {
+    renderCell: ({ variantConsequences, aminoAcidChange, codons }) => {
       if (!variantConsequences?.length) return naLabel;
       let displayElement = variantConsequences.map(({ id, label }, i, arr) => (
         <Fragment key={id}>

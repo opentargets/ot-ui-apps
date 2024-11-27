@@ -9,6 +9,7 @@ import {
   DataUploader,
   AotfApiPlayground,
   AssociationsFocusProvider,
+  DisplayModeSwitch,
 } from "../../../components/AssociationsToolkit";
 import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
@@ -24,7 +25,7 @@ function TargetAssociations({ ensgId }: TargetAssociationsProps): ReactElement {
       <AssociationsFocusProvider>
         <>
           <ControlsSection>
-            <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: 2 }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
               <FacetsSearch />
               <AdvanceOptionsMenu />
               <DataUploader />
@@ -32,7 +33,9 @@ function TargetAssociations({ ensgId }: TargetAssociationsProps): ReactElement {
               <DataDownloader />
               <AotfApiPlayground />
             </Box>
-            <Box sx={{ flex: 1, display: "flex" }}></Box>
+            <Box sx={{ display: "flex", justifyContent: "end" }}>
+              <DisplayModeSwitch />
+            </Box>
           </ControlsSection>
           <TableAssociations />
         </>
