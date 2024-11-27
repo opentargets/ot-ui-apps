@@ -7,11 +7,15 @@ import {
   ScientificNotation,
   Tooltip,
   PublicationsDrawer,
+  ClinvarStars,
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 import { epmcUrl } from "../../utils/urls";
+import {
+  credsetConfidenceMap,
+} from "../../constants";
 
 type ProfileHeaderProps = {
   variantId: string;
@@ -85,7 +89,16 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
           </Field>
         )}
         {typeof credibleSet?.effectAlleleFrequencyFromSource === "number" && (
-          <Field loading={loading} title="EAF">
+          <Field loading={loading} title={<Tooltip
+            title={
+              <Typography variant="caption">
+              Frequency of the effect allele in studied population 
+              </Typography>
+            }
+            showHelpIcon
+          >
+            Effective allele frequency
+          </Tooltip>}>
             {credibleSet.effectAlleleFrequencyFromSource.toPrecision(3)}
           </Field>
         )}
@@ -108,64 +121,61 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             {leadVariant.posteriorProbability.toPrecision(3)}
           </Field>
         )}
-        <Field loading={loading} title="GRCh38">
-          {credibleSet?.variant &&
-            `${credibleSet.variant.chromosome}:${credibleSet.variant.position}`}
-        </Field>
-        {credibleSet?.variant?.rsIds.length > 0 && (
-          <Field loading={loading} title="Ensembl">
-            {credibleSet.variant.rsIds.map((rsid, index) => (
-              <Fragment key={rsid}>
-                {index > 0 && ", "}
-                <Link
-                  external
-                  to={`https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${rsid}`}
-                >
-                  {rsid}
-                </Link>
-              </Fragment>
-            ))}
-          </Field>
-        )}
 
         <Typography variant="subtitle1" mt={1}>
-          Credible Set
+          Fine-mapping <Tooltip title={credibleSet?.confidence}>
+            <span>
+              <ClinvarStars num={credsetConfidenceMap[credibleSet?.confidence]} />
+            </span>
+          </Tooltip>
         </Typography>
-        <Field loading={loading} title="Finemapping method">
+        {
+          credibleSet?.locusStart && (<Field loading={loading} title="Locus">
+          {credibleSet?.variant?.chromosome}:{credibleSet?.locusStart}-{credibleSet?.locusEnd}
+        </Field>)
+        }
+        <Field loading={loading} title="Method">
           {credibleSet?.finemappingMethod}
         </Field>
-        <Field loading={loading} title="Credible set index within locus">
-          {credibleSet?.credibleSetIndex}
-        </Field>
-        <Field loading={loading} title="Purity min">
+        <Field
+          loading={loading}
+          title={
+          <Tooltip
+            title={
+              <Typography variant="caption">Minimum pairwise correlation (R<sup>2</sup>) observed between all variants in the credible set</Typography>
+            }
+            showHelpIcon
+          >
+            Minimum R<sup>2</sup>
+          </Tooltip>
+        }
+        >
           {credibleSet?.purityMinR2?.toPrecision(3)}
-        </Field>
-        <Field loading={loading} title="Locus start">
-          {credibleSet?.locusStart}
-        </Field>
-        <Field loading={loading} title="Locus end">
-          {credibleSet?.locusEnd}
         </Field>
       </Box>
 
       <Box>
         <Typography variant="subtitle1" mt={0}>
-          Study
+          {study?.studyType.replace(/(qtl|gwas)/gi, (match) => match.toUpperCase())} Study 
         </Typography>
-        <Field loading={loading} title="Author">
-          {study?.publicationFirstAuthor}
-        </Field>
-        <Field loading={loading} title="Publication year">
-          {study?.publicationDate?.slice(0, 4)}
-        </Field>
         {studyCategory !== "QTL" && (
           <>
             <Field loading={loading} title="Reported trait">
               {study?.traitFromSource}
             </Field>
             {study?.diseases?.length > 0 && (
-              <Field loading={loading} title="Diseases">
+              <Field loading={loading} title="Disease or phenotype">
                 {study.diseases.map(({ id, name }, index) => (
+                  <Fragment key={id}>
+                    {index > 0 ? ", " : null}
+                    <Link to={`../disease/${id}`}>{name}</Link>
+                  </Fragment>
+                ))}
+              </Field>
+            )}
+            {study?.backgroundTraits?.length > 0 && (
+              <Field loading={loading} title="Background trait">
+                {study.backgroundTraits.map(({ id, name }, index) => (
                   <Fragment key={id}>
                     {index > 0 ? ", " : null}
                     <Link to={`../disease/${id}`}>{name}</Link>
@@ -186,17 +196,20 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
               <Field loading={loading} title="Affected cell/tissue">
                 <Link
                   external
-                  to={`https://www.ebi.ac.uk/ols4/search?q=${study.biosample.biosampleId}&ontology=uberon`}
+                  to={`https://www.ebi.ac.uk/ols4/search?q=${study.biosample.biosampleId}`}
                 >
-                  {study.biosample.biosampleId}
+                  {study.biosample.biosampleName}
                 </Link>
               </Field>
             )}
           </>
         )}
-        <Field loading={loading} title="Journal">
-          {study?.publicationJournal}
+        <Field loading={loading} title="Sample size">
+          {study?.nSamples.toLocaleString()}
         </Field>
+        {study?.publicationFirstAuthor && (<Field loading={loading} title="Publication">
+          {study?.publicationFirstAuthor} <i>et al.</i> {study?.publicationJournal} ({study?.publicationDate?.slice(0, 4)}) 
+        </Field>)}
         {study?.pubmedId && (
           <Field loading={loading} title="PubMed">
             <PublicationsDrawer entries={[{ name: study.pubmedId, url: epmcUrl(study.pubmedId) }]}>
@@ -204,11 +217,8 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             </PublicationsDrawer>
           </Field>
         )}
-        <Field loading={loading} title="Sample size">
-          {study?.nSamples}
-        </Field>
       </Box>
-    </BaseProfileHeader>
+    </BaseProfileHeader>  
   );
 }
 
