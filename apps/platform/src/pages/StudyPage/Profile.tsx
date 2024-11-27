@@ -68,7 +68,7 @@ function Profile({ studyId, studyType, diseases }: ProfileProps) {
       }}
       client={client}
     >
-      <ProfileHeader studyCategory={studyType} />
+      <ProfileHeader studyType={studyType} />
 
       <SummaryContainer>
         {studyType === "gwas" && (

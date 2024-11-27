@@ -1,10 +1,4 @@
-import {
-  usePlatformApi,
-  Link,
-  Field,
-  ProfileHeader as BaseProfileHeader,
-  Tooltip,
-} from "ui";
+import { usePlatformApi, Link, Field, ProfileHeader as BaseProfileHeader, Tooltip } from "ui";
 import { Typography, Box } from "@mui/material";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
@@ -15,9 +9,7 @@ type samplesType = {
 }[];
 
 function formatSamples(samples: samplesType) {
-  return samples
-    .map(({ ancestry, sampleSize }) => `${ancestry}: ${sampleSize}`)
-    .join(", ");
+  return samples.map(({ ancestry, sampleSize }) => `${ancestry}: ${sampleSize}`).join(", ");
 }
 
 type ProfileHeaderProps = {
@@ -52,33 +44,18 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
     <BaseProfileHeader>
       <>
         <Field loading={loading} title="First author">
-          { 
-            studyCategory === "GWAS" || studyCategory === "QTL"
-              ? publicationFirstAuthor
-              : "FINNGEN"
-          }
+          {publicationFirstAuthor}
         </Field>
         <Field loading={loading} title="Publication year">
-          { 
-            studyCategory === "GWAS" || studyCategory === "QTL"
-              ? publicationDate
-              : "2023"
-          }
+          {publicationDate}
         </Field>
         <Field loading={loading} title="Journal">
-          { 
-            (studyCategory === "GWAS" || studyCategory === "QTL") &&
-            publicationJournal
-          } 
+          {publicationJournal}
         </Field>
         <Field loading={loading} title="PubMed">
-          { 
-            (studyCategory === "GWAS" || studyCategory === "QTL") && pubmedId
-              ? <Link external to={`https://europepmc.org/article/med/${pubmedId}`}>
-                  {pubmedId}
-                </Link>
-              : null
-          } 
+          <Link external to={`https://europepmc.org/article/med/${pubmedId}`}>
+            {pubmedId}
+          </Link>
         </Field>
         <Field loading={loading} title="Reported trait">
           {traitFromSource}
@@ -87,93 +64,72 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
           {nSamples}
         </Field>
         <Field loading={loading} title="N discovery">
-          { 
-            studyCategory === "GWAS"
-              ? initialSampleSize
-              : studyCategory === "FINNGEN"
-                ? (discoverySamples?.length
-                    ? (initialSampleSize
-                        ? <Tooltip
-                            title={
-                              <Typography variant="caption">
-                                Initial sample size: {initialSampleSize}
-                              </Typography>
-                            }
-                            showHelpIcon
-                          >
-                            {formatSamples(discoverySamples)}
-                          </Tooltip>
-                        : formatSamples(discoverySamples)
-                      )
-                    : null
-                  )
-                : null
-          } 
+          {studyCategory === "GWAS" ? (
+            initialSampleSize
+          ) : studyCategory === "FINNGEN" ? (
+            discoverySamples?.length ? (
+              initialSampleSize ? (
+                <Tooltip
+                  title={
+                    <Typography variant="caption">
+                      Initial sample size: {initialSampleSize}
+                    </Typography>
+                  }
+                  showHelpIcon
+                >
+                  {formatSamples(discoverySamples)}
+                </Tooltip>
+              ) : (
+                formatSamples(discoverySamples)
+              )
+            ) : null
+          ) : null}
         </Field>
         <Field loading={loading} title="N replication">
-            { 
-              studyCategory === "GWAS" &&
-              replicationSamples?.length &&
-              formatSamples(replicationSamples)
-            }
-          </Field>
-          <Field loading={loading} title="N cases">
-            { 
-              (studyCategory === "GWAS" || studyCategory === "FINNGEN") &&
-              (typeof nCases === "number") &&
-              nCases
-            } 
-          </Field>
-          <Field loading={loading} title="N controls">
-            { 
-              (studyCategory === "GWAS" || studyCategory === "FINNGEN") && 
-              (typeof nControls === "number") &&
-              nControls
-            } 
-          </Field>
-          <Field loading={loading} title="Cohorts">
-            { 
-              (
-                (studyCategory === "GWAS" && cohorts?.length) ||
-                (studyCategory === "FINNGEN")
-              ) && (ldPopulationStructure?.length
-                ? <Tooltip
-                    title={
-                      <>
-                        <Typography variant="subtitle2" display="block" align="center">
-                          LD populations and relative sample sizes
+          {studyCategory === "GWAS" &&
+            replicationSamples?.length &&
+            formatSamples(replicationSamples)}
+        </Field>
+        <Field loading={loading} title="N cases">
+          {nCases}
+        </Field>
+        <Field loading={loading} title="N controls">
+          {nControls}
+        </Field>
+        <Field loading={loading} title="Cohorts">
+          {((studyCategory === "GWAS" && cohorts?.length) || studyCategory === "FINNGEN") &&
+            (ldPopulationStructure?.length ? (
+              <Tooltip
+                title={
+                  <>
+                    <Typography variant="subtitle2" display="block" align="center">
+                      LD populations and relative sample sizes
+                    </Typography>
+                    {ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
+                      <Box key={ldPopulation}>
+                        <Typography variant="caption">
+                          {ldPopulation}: {relativeSampleSize}
                         </Typography>
-                        {ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
-                          <Box key={ldPopulation}>
-                            <Typography variant="caption">
-                              {ldPopulation}: {relativeSampleSize}
-                            </Typography>
-                          </Box>
-                        ))}
-                      </>
-                    }
-                    showHelpIcon
-                  >
-                    {studyCategory === 'GWAS' ? cohorts.join(", ") : "FinnGen"}
-                  </Tooltip>
-                : (studyCategory === 'GWAS' ? cohorts.join(", ") : "FinnGen")
-              )
-            }
-          </Field>
-          <Field loading={loading} title="QC">
-            { 
-              studyCategory === "GWAS" &&
-              qualityControls?.length &&
-              qualityControls.join(", ")
-            } 
-          </Field>
-          <Field loading={loading} title="Study flags">
-            { 
-              studyCategory === "GWAS" &&
-              analysisFlags?.length &&
-              analysisFlags.join(", ")
-            } 
-          </Field>
+                      </Box>
+                    ))}
+                  </>
+                }
+                showHelpIcon
+              >
+                {studyCategory === "GWAS" ? cohorts.join(", ") : "FinnGen"}
+              </Tooltip>
+            ) : studyCategory === "GWAS" ? (
+              cohorts.join(", ")
+            ) : (
+              "FinnGen"
+            ))}
+        </Field>
+        <Field loading={loading} title="QC">
+          {studyCategory === "GWAS" && qualityControls?.length && qualityControls.join(", ")}
+        </Field>
+        <Field loading={loading} title="Study flags">
+          {studyCategory === "GWAS" && analysisFlags?.length && analysisFlags.join(", ")}
+        </Field>
       </>
     </BaseProfileHeader>
   );
