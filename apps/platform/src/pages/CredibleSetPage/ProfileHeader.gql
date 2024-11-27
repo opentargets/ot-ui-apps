@@ -20,7 +20,6 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
     rsIds
   }
   finemappingMethod
-  credibleSetIndex
   purityMinR2
   locusStart
   locusEnd
@@ -50,5 +49,9 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
     pubmedId
     nSamples
     studyType
+    ldPopulationStructure {
+      ldPopulation
+      relativeSampleSize
+    }
   }
 }
