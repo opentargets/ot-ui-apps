@@ -1,18 +1,26 @@
-import { useQuery } from "@apollo/client";
 import { Box, Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  PublicationsDrawer,
+  OtTable,
+  useBatchQuery,
+} from "ui";
 import Description from "./Description";
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import { getStudyCategory } from "../../utils/getStudyCategory";
 import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
 import { definition } from ".";
 import { epmcUrl } from "ui/src/utils/urls";
+import { useEffect, useState } from "react";
+import { responseType } from "ui/src/types/response";
 
 const columns = [
   {
-    id: "studyId",
+    id: "id",
     label: "Study",
-    renderCell: ({ studyId }) => <Link to={`/study/${studyId}`}>{studyId}</Link>,
+    renderCell: ({ id }) => <Link to={`/study/${id}`}>{id}</Link>,
   },
   {
     id: "traitFromSource",
@@ -31,8 +39,8 @@ const columns = [
       getStudyCategory(projectId) === "FINNGEN"
         ? "2023"
         : publicationDate
-        ? publicationDate.slice(0, 4)
-        : naLabel,
+          ? publicationDate.slice(0, 4)
+          : naLabel,
     exportValue: ({ projectId, publicationDate }) =>
       getStudyCategory(projectId) === "FINNGEN" ? "2023" : publicationDate?.slice(0, 4),
   },
@@ -86,8 +94,8 @@ const columns = [
       getStudyCategory(projectId) === "FINNGEN"
         ? "FinnGen"
         : cohorts?.length
-        ? cohorts.join(", ")
-        : null,
+          ? cohorts.join(", ")
+          : null,
   },
   {
     id: "pubmedId",
@@ -111,24 +119,38 @@ type BodyProps = {
 function Body({ id: efoId, label: diseaseName }: BodyProps) {
   const variables = {
     diseaseIds: [efoId],
-    size: sectionsBaseSizeQuery,
   };
 
-  const request = useQuery(GWAS_STUDIES_BODY_QUERY, {
-    variables,
+  const [request, setRequest] = useState<responseType>(initialResponse);
+
+  const getData = useBatchQuery({
+    query: GWAS_STUDIES_BODY_QUERY,
+    variables: {
+      diseaseIds: variables.diseaseIds,
+      size: table5HChunkSize,
+      index: 0,
+    },
+    dataPath: "data.studies",
+    size: table5HChunkSize,
   });
+
+  useEffect(() => {
+    getData().then(r => {
+      setRequest(r);
+    });
+  }, []);
 
   return (
     <SectionItem
       definition={definition}
-      entity="gwasStudy"
+      entity="studies"
       pageEntity="disease"
       request={request}
       renderDescription={() => <Description name={diseaseName} />}
       renderBody={() => (
         <OtTable
           columns={columns}
-          rows={request.data?.gwasStudy}
+          rows={request.data?.studies.rows}
           sortBy="nSamples"
           order="desc"
           dataDownloader
