@@ -1,7 +1,7 @@
-query GWASCredibleSetsQuery($studyId: String!) {
+query GWASCredibleSetsQuery($studyId: String!, $size: Int!, $index: Int!) {
   gwasStudy(studyId: $studyId) {
     studyId
-    credibleSets(page: { size: 2000, index: 0 }) {
+    credibleSets(page: { size: $size, index: $index }) {
       count
       rows {
         studyLocusId
