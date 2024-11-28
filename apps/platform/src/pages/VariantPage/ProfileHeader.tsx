@@ -89,7 +89,7 @@ function Allele({ loading, label, value }: AlleleProps) {
 // =====================
 
 const populationLabels = {
-  afr_adj: "African-American",
+  afr_adj: "African/African-American",
   amr_adj: "American Admixed/Latino",
   asj_adj: "Ashkenazi Jewish",
   eas_adj: "East Asian",

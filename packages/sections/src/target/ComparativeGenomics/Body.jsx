@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
 import { SectionItem, Link, Tooltip, OtTable } from "ui";
+import Visualisation from "./Visualisation";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -24,6 +25,13 @@ import MouseIcon from "./MouseIcon";
 
 import { identifiersOrgLink } from "../../utils/global";
 import { decimalPlaces } from "../../constants";
+import { VIEW } from "ui/src/constants";
+
+const VIEW_MODES = {
+  default: "default",
+  mouseOrthologMaxIdentityPercentage: "mouseOrthologMaxIdentityPercentage",
+  paralogMaxIdentityPercentage: "paralogMaxIdentityPercentage",
+};
 
 // map species ids to species icon component
 const speciesIcons = {
@@ -126,7 +134,7 @@ function getColumns(classes) {
   ];
 }
 
-function Body({ id: ensemblId, label: symbol, entity }) {
+function Body({ id: ensemblId, label: symbol, entity, viewMode = VIEW_MODES.default }) {
   const classes = useStyles();
   const variables = { ensemblId };
   const request = useQuery(COMP_GENOMICS_QUERY, { variables });
@@ -136,7 +144,11 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       entity={entity}
       definition={definition}
       request={request}
+      defaultView={VIEW.chart}
       renderDescription={() => <Description symbol={symbol} />}
+      renderChart={() => (
+        <Visualisation homologues={request.data?.target.homologues} viewMode={viewMode} />
+      )}
       renderBody={() => (
         <OtTable
           showGlobalFilter

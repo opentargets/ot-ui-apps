@@ -309,6 +309,13 @@ export const clinvarStarMap = {
   "no assertion provided": 0,
 };
 
+export const credsetConfidenceMap = {
+  "SuSiE fine-mapped credible set with in-sample LD": 4,
+  "SuSiE fine-mapped credible set with out-of-sample LD": 3,
+  "PICS fine-mapped credible set extracted from summary statistics": 2,
+  "PICS fine-mapped credible set based on reported top hit": 1,
+};
+
 export const formatMap = {
   json: "JSON",
   parquet: "Parquet",
@@ -332,4 +339,12 @@ export const variantConsequenceSource = {
     tooltip:
       "The direction is inferred from the strongest effect across all the co-localising QTLs",
   },
+};
+
+export const poulationMap = {
+  fin: "Finish",
+  afr: "African",
+  nfe: "non-Finnish Europeans",
+  eas: "East Asian",
+  amr: "Admixed American",
 };
