@@ -32,6 +32,8 @@ function StudyPage() {
   }
 
   const studyType = studyInfo?.studyType;
+  const projectId = studyInfo?.projectId;
+  console.log({ projectId });
 
   return (
     <BasePage
@@ -45,7 +47,7 @@ function StudyPage() {
         backgroundTraits={studyInfo?.backgroundTraits}
         targetId={studyInfo?.target?.id}
         diseases={studyInfo?.diseases}
-        studyType={studyType}
+        projectId={projectId}
       />
       <ScrollToTop />
 
