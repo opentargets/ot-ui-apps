@@ -145,6 +145,8 @@ function Body({ id: efoId, label: diseaseName }: BodyProps) {
       definition={definition}
       entity="studies"
       pageEntity="disease"
+      showContentLoading
+      loadingMessage="Loading data. This may take some time..."
       request={request}
       renderDescription={() => <Description name={diseaseName} />}
       renderBody={() => (
