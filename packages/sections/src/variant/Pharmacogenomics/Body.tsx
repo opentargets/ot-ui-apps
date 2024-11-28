@@ -111,8 +111,9 @@ function Body({ id, entity }: BodyProps) {
     {
       id: "genotypeAnnotationText",
       label: "Drug response phenotype",
-      renderCell: ({ phenotypeText = naLabel, phenotypeFromSourceId, genotypeAnnotationText }) => {
-        let phenotypeTextElement = <>phenotypeText</>;
+      renderCell: ({ phenotypeText, phenotypeFromSourceId, genotypeAnnotationText }) => {
+        if (!phenotypeText) return naLabel;
+        let phenotypeTextElement = phenotypeText;
         if (phenotypeFromSourceId)
           phenotypeTextElement = (
             <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeTextElement}</Link>

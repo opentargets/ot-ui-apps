@@ -40,7 +40,7 @@ function getColumns() {
       id: "variantId",
       label: "Lead Variant",
       renderCell: ({ credibleSet }) => {
-        const { variant } = credibleSet;
+        const variant = credibleSet.variant;
         if (variant?.id) return <Link to={`/variant/${variant?.id}`}>{variant?.id}</Link>;
         return naLabel;
       },
@@ -61,7 +61,7 @@ function getColumns() {
       label: "Study",
       renderCell: ({ credibleSet }) => {
         return (
-          <Link to={`/study/${credibleSet?.study.studyId}`}>{credibleSet?.study.studyId}</Link>
+          <Link to={`/study/${credibleSet?.study.id}`}>{credibleSet?.study.id}</Link>
         );
       },
     },
@@ -81,22 +81,22 @@ function getColumns() {
       label: "P-value",
       comparator: (a, b) => {
         return mantissaExponentComparator(
-          a?.credibleSet.pValueMantissa,
-          a?.credibleSet.pValueExponent,
-          b?.credibleSet.pValueMantissa,
-          b?.credibleSet.pValueExponent
+          a?.credibleSet?.pValueMantissa,
+          a?.credibleSet?.pValueExponent,
+          b?.credibleSet?.pValueMantissa,
+          b?.credibleSet?.pValueExponent
         );
       },
       sortable: true,
       filterValue: false,
       renderCell: ({ credibleSet }) => {
-        const { pValueMantissa, pValueExponent } = credibleSet;
+        const { pValueMantissa, pValueExponent } = credibleSet ?? {};
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number")
           return naLabel;
         return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
       },
       exportValue: ({ credibleSet }) => {
-        const { pValueMantissa, pValueExponent } = credibleSet;
+        const { pValueMantissa, pValueExponent } = credibleSet ?? {};
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return null;
         return `${pValueMantissa}x10${pValueExponent}`;
       },
@@ -158,7 +158,7 @@ function getColumns() {
       id: "publication",
       label: "Publication",
       renderCell: ({ credibleSet }) => {
-        const { publicationFirstAuthor, publicationDate, pubmedId } = credibleSet?.study;
+        const { publicationFirstAuthor, publicationDate, pubmedId } = credibleSet?.study ?? {};
         if (!publicationFirstAuthor) return naLabel;
         return (
           <PublicationsDrawer

@@ -24,7 +24,7 @@ function CredibleSetPage() {
   const variantId = credibleSet?.variant?.id;
   const referenceAllele = credibleSet?.variant?.referenceAllele;
   const alternateAllele = credibleSet?.variant?.alternateAllele;
-  const studyId = credibleSet?.study?.studyId;
+  const studyId = credibleSet?.study?.id;
   const studyType = credibleSet?.study?.studyType;
 
   if (!studyType) return null;

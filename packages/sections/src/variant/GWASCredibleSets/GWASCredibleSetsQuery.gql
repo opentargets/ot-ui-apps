@@ -21,7 +21,7 @@ query GWASCredibleSetsQuery($variantId: String!, $size: Int!, $index: Int!) {
         }
         study {
           traitFromSource
-          studyId
+          id
           diseases {
             name
             id
