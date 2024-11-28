@@ -31,10 +31,10 @@ const columns = [
     },
   },
   {
-    id: "otherStudyLocus.study.studyId",
+    id: "otherStudyLocus.study.id",
     label: "Study",
     renderCell: ({ otherStudyLocus }) => {
-      const studyId = otherStudyLocus?.study?.studyId;
+      const studyId = otherStudyLocus?.study?.id;
       if (!studyId) return naLabel;
       return <Link to={`../study/${studyId}`}>{studyId}</Link>;
     },
