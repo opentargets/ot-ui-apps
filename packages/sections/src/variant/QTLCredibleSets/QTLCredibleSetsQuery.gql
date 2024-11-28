@@ -24,7 +24,7 @@ query QTLCredibleSetsQuery($variantId: String!, $size: Int!, $index: Int!) {
           alternateAllele
         }
         study {
-          studyId
+          id
           studyType
           condition
           target {
