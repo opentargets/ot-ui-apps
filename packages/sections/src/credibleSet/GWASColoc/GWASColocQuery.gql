@@ -24,6 +24,7 @@ query GWASColocQuery($studyLocusId: String!) {
       h3
       h4
       clpp
+      betaRatioSignAverage
     }
   }
 }

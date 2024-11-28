@@ -1,5 +1,12 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, DisplayVariantId, ScientificNotation, OtTable } from "ui";
+import {
+  Link,
+  SectionItem,
+  DisplayVariantId,
+  ScientificNotation,
+  OtTable,
+  Tooltip,
+} from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
@@ -113,6 +120,36 @@ const columns = [
   {
     id: "colocalisationMethod",
     label: "Colocalisation Method",
+  },
+  {
+    id: "betaRatioSignAverage",
+    label: "Directionality",
+    tooltip: "Effect directionality based on the ratio of betas between the two credible sets",
+    renderCell: ({ betaRatioSignAverage }) => {
+      if (betaRatioSignAverage == null) return naLabel;
+      let category = "Inconclusive";
+      if (betaRatioSignAverage <= -0.99) category = "Opposite";
+      else if (betaRatioSignAverage >= 0.99) category = "Same";
+      const displayValue = Math.abs(betaRatioSignAverage) === 1
+        ? betaRatioSignAverage
+        : betaRatioSignAverage.toFixed(2)
+      return <Tooltip title={`Beta ratio sign average: ${displayValue}`}>
+        {category}
+      </Tooltip>
+    },
+    filterValue: ({ betaRatioSignAverage }) => {
+      if (betaRatioSignAverage == null) return null;
+      if (betaRatioSignAverage <= -0.99) return "Opposite";
+      else if (betaRatioSignAverage >= 0.99) return "Same";
+      return "Inconclusive";
+    },
+    sortable: false,
+    exportValue: ({ betaRatioSignAverage }) => {
+      if (betaRatioSignAverage == null) return null;
+      if (betaRatioSignAverage <= -0.99) return "Opposite";
+      else if (betaRatioSignAverage >= 0.99) return "Same";
+      return "Inconclusive";
+    },
   },
   {
     id: "h3",
