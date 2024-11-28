@@ -86,11 +86,7 @@ function setRows(
 ): Promise<Record<string, unknown>> | null {
   if (!res || !rows) return null;
   const wholeRes = structuredClone(res);
-  let obj = wholeRes;
-  const dataPathSplit: string[] = dataPath.split(".");
-  for (let i = 0, len = dataPathSplit.length; i < len; i++) {
-    obj = obj[dataPathSplit[i]];
-  }
+  const obj = _.get(wholeRes, dataPath);
   Object.assign(obj, rows);
   return wholeRes;
 }
