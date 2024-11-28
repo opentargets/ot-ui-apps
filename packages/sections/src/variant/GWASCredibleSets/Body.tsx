@@ -8,6 +8,7 @@ import {
   ClinvarStars,
   OtScoreLinearBar,
   useBatchQuery,
+  Navigate,
 } from "ui";
 import { Box, Chip } from "@mui/material";
 import { credsetConfidenceMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
@@ -17,8 +18,6 @@ import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import PheWasPlot from "./PheWasPlot";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
 
@@ -34,11 +33,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       id: "studyLocusId",
       label: "Navigate",
       renderCell: ({ studyLocusId }) => (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Link to={`/credible-set/${studyLocusId}`}>
-            <FontAwesomeIcon icon={faArrowRightToBracket} />
-          </Link>
-        </Box>
+        <Navigate to={`/credible-set/${studyLocusId}`} />
       ),
     },
     {

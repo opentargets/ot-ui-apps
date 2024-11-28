@@ -1,14 +1,18 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, DisplayVariantId, ScientificNotation, OtTable } from "ui";
+import {
+  Link,
+  SectionItem,
+  DisplayVariantId,
+  ScientificNotation,
+  OtTable,
+  Navigate,
+} from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_COLOC_QUERY from "./GWASMolQTLColocQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { getStudyCategory } from "../../utils/getStudyCategory";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { Box } from "@mui/material";
 
 const columns = [
   {
@@ -16,11 +20,7 @@ const columns = [
     label: "Navigate",
     renderCell: ({ otherStudyLocus }) => {
       if (!otherStudyLocus?.variant) return naLabel;
-      return(<Box sx={{ display: "flex" }}>
-        <Link to={`./${otherStudyLocus.studyLocusId}`}>
-          <FontAwesomeIcon icon={faArrowRightToBracket} />
-        </Link>
-      </Box>)
+      return <Navigate to={`./${otherStudyLocus.studyLocusId}`} />;
     },
   },
   {
