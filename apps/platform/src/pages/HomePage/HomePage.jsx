@@ -208,63 +208,63 @@ function HomePage({ suggestions }) {
             <Link to={`/target/${suggestions[0].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon size="md" icon={faDna} />}
+                icon={<FontAwesomeIcon icon={faDna} />}
                 label={suggestions[0].name}
               />
             </Link>
             <Link to={`/target/${suggestions[1].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon size="md" icon={faDna} />}
+                icon={<FontAwesomeIcon icon={faDna} />}
                 label={suggestions[1].name}
               />
             </Link>
             <Link to={`/disease/${suggestions[2].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon size="md" icon={faStethoscope} />}
+                icon={<FontAwesomeIcon icon={faStethoscope} />}
                 label={suggestions[2].name}
               />
             </Link>
             <Link to={`/disease/${suggestions[3].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon size="md" icon={faStethoscope} />}
+                icon={<FontAwesomeIcon icon={faStethoscope} />}
                 label={suggestions[3].name}
               />
             </Link>
             <Link to={`/drug/${suggestions[4].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon size="md" icon={faPrescriptionBottleMedical} />}
+                icon={<FontAwesomeIcon icon={faPrescriptionBottleMedical} />}
                 label={suggestions[4].name}
               />
             </Link>
             <Link to={`/drug/${suggestions[5].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon size="md" icon={faPrescriptionBottleMedical} />}
+                icon={<FontAwesomeIcon icon={faPrescriptionBottleMedical} />}
                 label={suggestions[5].name}
               />
             </Link>
             <Link to={`/variant/${suggestions[6].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
+                icon={<FontAwesomeIcon icon={faMapPin} />}
                 label={suggestions[6].name}
               />
             </Link>
             <Link to={`/variant/${suggestions[7].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
+                icon={<FontAwesomeIcon icon={faMapPin} />}
                 label={suggestions[7].name}
               />
             </Link>
             <Link to={`/variant/${suggestions[8].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon size="md" icon={faMapPin} />}
+                icon={<FontAwesomeIcon icon={faMapPin} />}
                 label={suggestions[8].name}
               />
             </Link>
