@@ -25,6 +25,7 @@ function VariantDetail({ data }) {
       <Typography color="primary">
         <FontAwesomeIcon icon={faMapPin} /> Variant
       </Typography>
+      <LongText lineLimit={4}>{data.variantDescription}</LongText>
       {data.rsIds.length > 0 &&
         <>
           <Typography variant="subtitle1">
