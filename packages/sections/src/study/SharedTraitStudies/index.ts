@@ -4,11 +4,6 @@ export const definition = {
   name: "Shared Trait Studies",
   shortName: "ST",
   hasData: data => {
-    if (data?.sharedTraitStudies) {  // summary
-      return data.sharedTraitStudies.some(study => (
-        study.studyId !== data.gwasStudy?.[0]?.studyId
-      ));
-    } 
-    return data?.length > 0;
+    return data?.sharedTraitStudies?.rows.length > 0 || data?.rows.length > 0;
   },
 };

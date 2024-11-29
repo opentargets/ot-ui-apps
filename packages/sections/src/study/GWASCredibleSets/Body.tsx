@@ -164,7 +164,7 @@ function Body({ id, entity }: BodyProps) {
       size: table5HChunkSize,
       index: 0,
     },
-    dataPath: "data.gwasStudy[0].credibleSets",
+    dataPath: "data.study.credibleSets",
     size: table5HChunkSize,
   });
 
@@ -179,20 +179,17 @@ function Body({ id, entity }: BodyProps) {
       definition={definition}
       entity={entity}
       request={request}
-      renderDescription={() => <Description studyId={request.data?.gwasStudy[0].studyId} />}
+      renderDescription={() => <Description studyId={request.data?.study.id} />}
       renderBody={() => (
         <>
-          <ManhattanPlot
-            loading={request.loading}
-            data={request.data?.gwasStudy[0].credibleSets.rows}
-          />
+          <ManhattanPlot loading={request.loading} data={request.data?.study.credibleSets.rows} />
           <OtTable
             dataDownloader
             showGlobalFilter
             sortBy="pValue"
             loading={request.loading}
             columns={columns}
-            rows={request.data?.gwasStudy[0].credibleSets.rows}
+            rows={request.data?.study.credibleSets.rows}
             query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
             variables={variables}
           />

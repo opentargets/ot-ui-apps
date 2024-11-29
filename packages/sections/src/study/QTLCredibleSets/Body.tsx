@@ -109,7 +109,7 @@ function Body({ id, entity }: BodyProps) {
       definition={definition}
       entity={entity}
       request={request}
-      renderDescription={() => <Description studyId={request.data?.gwasStudy[0].studyId} />}
+      renderDescription={() => <Description studyId={request.data?.study.id} />}
       renderBody={() => (
         <OtTable
           dataDownloader
@@ -117,7 +117,7 @@ function Body({ id, entity }: BodyProps) {
           sortBy="pValue"
           columns={columns}
           loading={request.loading}
-          rows={request.data?.gwasStudy[0].credibleSets.rows}
+          rows={request.data?.study.credibleSets.rows}
           query={QTL_CREDIBLE_SETS_QUERY.loc.source.body}
           variables={variables}
         />
