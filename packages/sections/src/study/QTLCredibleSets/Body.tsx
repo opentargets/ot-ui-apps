@@ -68,6 +68,7 @@ const columns = [
   {
     id: "beta",
     label: "Beta",
+    sortable: true,
     filterValue: false,
     tooltip: "Beta with respect to the ALT allele",
     renderCell: ({ beta }) => {

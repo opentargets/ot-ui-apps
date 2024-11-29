@@ -81,6 +81,7 @@ const columns = [
     id: "beta",
     label: "Beta",
     filterValue: false,
+    sortable: true,
     tooltip: "Beta with respect to the ALT allele",
     renderCell: ({ beta }) => {
       if (typeof beta !== "number") return naLabel;

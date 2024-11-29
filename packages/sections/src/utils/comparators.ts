@@ -11,6 +11,23 @@ export const generateComparatorFromAccessor = accessor => (a, b) => {
 };
 
 /*
+Return comparator that sorts nullish values to end
+*/
+export const nullishComparator = (comparator, accessor = x => x) => {
+  return (a, b) => {
+    const aVal = accessor(a);
+    const bVal = accessor(b);
+    console.log({ aVal, bVal });
+    if (aVal == null) {
+      if (bVal == null) return 0;
+      return 1;
+    }
+    if (bVal === null) return -1;
+    return comparator(aVal, bVal);
+  };
+}
+
+/*
   Compares a breakpoint against a breakpoint helper.
  */
 export const breakpointMatch = (breakpoint, breakpointHelper) => {
@@ -56,24 +73,24 @@ type VariantType = {
 };
 
 export function variantComparator(
-      { variant: v1 }: VariantType,
-      { variant: v2 }: VariantType
-    ) {
+  { variant: v1 }: VariantType,
+  { variant: v2 }: VariantType
+) {
 
   if (!v1 || !v2) return 0;
 
   const chromosomeDiff =
     chromosomeRank.get(v1.chromosome) - chromosomeRank.get(v2.chromosome);
   if (chromosomeDiff !== 0) return chromosomeDiff;
-  
+
   const positionDiff = v1.position - v2.position;
   if (positionDiff !== 0) return positionDiff
- 
+
   if (v1.referenceAllele < v2.referenceAllele) return -1;
   else if (v1.referenceAllele > v2.referenceAllele) return 1;
   else if (v1.alternateAllele < v2.alternateAllele) return -1;
   else if (v1.alternateAllele > v2.alternateAllele) return 1;
-  
+
   return 0;
 }
 

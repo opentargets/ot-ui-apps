@@ -102,11 +102,12 @@ function getColumns() {
       },
     },
     {
-      id: "betaConfidenceInterval",
+      id: "credibleSet.beta",
       label: "Beta (CI 95%)",
       numeric: true,
+      sortable: true,
       renderCell: ({ credibleSet }) => {
-        return credibleSet?.beta ? `${parseFloat(credibleSet?.beta.toFixed(3))}` : naLabel;
+        return credibleSet?.beta ? credibleSet.beta.toFixed(3) : naLabel;
       },
     },
     {

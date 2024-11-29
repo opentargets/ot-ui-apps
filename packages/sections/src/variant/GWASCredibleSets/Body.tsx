@@ -135,6 +135,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       label: "Beta",
       filterValue: false,
       tooltip: "Beta with respect to the ALT allele",
+      sortable: true,
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
         return beta.toPrecision(3);

@@ -13,7 +13,7 @@ import { credsetConfidenceMap, initialResponse, naLabel, table5HChunkSize } from
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { mantissaExponentComparator, nullishComparator, variantComparator } from "../../utils/comparators";
 import { ReactNode, useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
@@ -165,8 +165,14 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           ) is causal.
         </>
       ),
-      comparator: (rowA, rowB) =>
-        rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
+      // comparator: nullishComparator(
+      //   (rowA, rowB) => {
+      //     return rowA.locus.rows[0].posteriorProbability -
+      //       rowB.locus.rows[0].posteriorProbability;
+      //   },
+      // row =>
+      // comparator: (rowA, rowB) =>
+      //   rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
       sortable: true,
       renderCell: ({ locus }) =>
         locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
