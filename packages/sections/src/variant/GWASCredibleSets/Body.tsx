@@ -96,11 +96,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       exportValue: ({ study }) => study?.diseases?.map(d => d.name).join(", "),
     },
     {
-      id: "study.studyId",
+      id: "studyId",
       label: "Study",
       renderCell: ({ study }) => {
         if (!study) return naLabel;
-        return <Link to={`../study/${study.studyId}`}>{study.studyId}</Link>;
+        return <Link to={`../study/${study.id}`}>{study.id}</Link>;
       },
     },
     {

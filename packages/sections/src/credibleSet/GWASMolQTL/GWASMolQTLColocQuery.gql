@@ -4,7 +4,7 @@ query GWASMolQTLColocQuery($studyLocusId: String!) {
       otherStudyLocus {
         studyLocusId
         study {
-          studyId
+          id
           studyType
           projectId
           traitFromSource
@@ -34,6 +34,7 @@ query GWASMolQTLColocQuery($studyLocusId: String!) {
       h3
       h4
       clpp
+      betaRatioSignAverage
     }
   }
 }

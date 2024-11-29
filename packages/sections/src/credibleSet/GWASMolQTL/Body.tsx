@@ -5,6 +5,7 @@ import {
   DisplayVariantId,
   ScientificNotation,
   OtTable,
+  Tooltip,
   Navigate,
 } from "ui";
 import { naLabel } from "../../constants";
@@ -24,10 +25,10 @@ const columns = [
     },
   },
   {
-    id: "otherStudyLocus.study.studyId",
+    id: "otherStudyLocus.study.id",
     label: "Study",
     renderCell: ({ otherStudyLocus }) => {
-      const studyId = otherStudyLocus?.study?.studyId;
+      const studyId = otherStudyLocus?.study?.id;
       if (!studyId) return naLabel;
       return <Link to={`../study/${studyId}`}>{studyId}</Link>;
     },
@@ -131,6 +132,36 @@ const columns = [
   {
     id: "colocalisationMethod",
     label: "Colocalisation Method",
+  },
+  {
+    id: "betaRatioSignAverage",
+    label: "Directionality",
+    tooltip: "Effect directionality based on the ratio of betas between the two credible sets",
+    renderCell: ({ betaRatioSignAverage }) => {
+      if (betaRatioSignAverage == null) return naLabel;
+      let category = "Inconclusive";
+      if (betaRatioSignAverage <= -0.99) category = "Opposite";
+      else if (betaRatioSignAverage >= 0.99) category = "Same";
+      const displayValue = Math.abs(betaRatioSignAverage) === 1
+        ? betaRatioSignAverage
+        : betaRatioSignAverage.toFixed(2)
+      return <Tooltip title={`Beta ratio sign average: ${displayValue}`}>
+        {category}
+      </Tooltip>
+    },
+    filterValue: ({ betaRatioSignAverage }) => {
+      if (betaRatioSignAverage == null) return null;
+      if (betaRatioSignAverage <= -0.99) return "Opposite";
+      else if (betaRatioSignAverage >= 0.99) return "Same";
+      return "Inconclusive";
+    },
+    sortable: false,
+    exportValue: ({ betaRatioSignAverage }) => {
+      if (betaRatioSignAverage == null) return null;
+      if (betaRatioSignAverage <= -0.99) return "Opposite";
+      else if (betaRatioSignAverage >= 0.99) return "Same";
+      return "Inconclusive";
+    },
   },
   {
     id: "h3",
