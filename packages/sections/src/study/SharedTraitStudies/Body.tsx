@@ -15,7 +15,7 @@ function getColumns(diseaseIds: string[]) {
     {
       id: "studyId",
       label: "Study",
-      renderCell: ({ studyId }) => <Link to={`./${studyId}`}>{studyId}</Link>,
+      renderCell: ({ id }) => <Link to={`./${id}`}>{id}</Link>,
     },
     {
       id: "sharedDiseases",
@@ -137,16 +137,16 @@ type BodyProps = {
   entity: string;
 };
 
-const parseStudies = (studyId, gwasStudy) => {
-  const studies = [];
+const parseStudies = (studyId, studies) => {
+  const parsedStudies = [];
   const studyIds = new Set([studyId]);
-  for (const study of gwasStudy) {
+  for (const study of studies) {
     if (!studyIds.has(study.studyId)) {
-      studies.push(study);
+      parsedStudies.push(study);
       studyIds.add(study.studyId);
     }
   }
-  return studies;
+  return parsedStudies;
 };
 
 export function Body({ studyId, diseaseIds, entity }: BodyProps) {
@@ -164,10 +164,10 @@ export function Body({ studyId, diseaseIds, entity }: BodyProps) {
     <SectionItem
       definition={definition}
       request={request}
-      entity={entity}
+      entity={"studies"}
       renderDescription={() => <Description studyId={studyId} />}
       renderBody={() => {
-        const rows = request.data?.gwasStudy ? parseStudies(studyId, request.data.gwasStudy) : [];
+        const rows = request.data?.studies ? parseStudies(studyId, request.data.studies.rows) : [];
         return (
           <OtTable
             columns={columns}

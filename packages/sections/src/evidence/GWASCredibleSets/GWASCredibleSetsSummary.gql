@@ -1,4 +1,4 @@
-fragment GWASCredibleSetsSummaryFragment on Disease {
+fragment EvidenceGWASCredibleSetsSummaryFragment on Disease {
   gwasCredibleSets: evidences(
     ensemblIds: [$ensgId]
     enableIndirect: true

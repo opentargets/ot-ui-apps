@@ -1,7 +1,7 @@
 import { usePlatformApi, Link, Field, ProfileHeader as BaseProfileHeader, Tooltip } from "ui";
 import { Typography, Box } from "@mui/material";
 
-import STUDY_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
+import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
 
 type samplesType = {
   ancestry: string;
@@ -38,7 +38,7 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
     qualityControls,
     analysisFlags,
     discoverySamples,
-  } = data?.gwasStudy?.[0] || {};
+  } = data?.study || {};
 
   return (
     <BaseProfileHeader>
