@@ -4,6 +4,7 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
   beta
   standardError
   effectAlleleFrequencyFromSource
+  qualityControls
   locus(variantIds: $variantIds) {
     count
     rows {
@@ -49,6 +50,12 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
     pubmedId
     nSamples
     studyType
+    hasSumstats
+    analysisFlags
+    sumstatQCValues {
+      QCCheckName
+      QCCheckValue
+    }
     ldPopulationStructure {
       ldPopulation
       relativeSampleSize
