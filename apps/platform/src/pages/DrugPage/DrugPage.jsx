@@ -1,15 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { BasePage, ScrollToTop } from "ui";
 import { Box, Tabs, Tab } from "@mui/material";
-import {
-  useLocation,
-  useParams,
-  Switch,
-  Route,
-  useRouteMatch,
-  Link,
-  Redirect,
-} from "react-router-dom";
+import { useLocation, useParams, Routes, Route, useMatch, Link, Navigate } from "react-router-dom";
 
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
@@ -20,7 +12,7 @@ import Profile from "./Profile";
 function DrugPage() {
   const location = useLocation();
   const { chemblId } = useParams();
-  const { path } = useRouteMatch();
+  const { path } = useMatch();
 
   const { loading, data } = useQuery(DRUG_PAGE_QUERY, {
     variables: { chemblId },
@@ -56,14 +48,14 @@ function DrugPage() {
           </Box>
         )}
       />
-      <Switch>
+      <Routes>
         <Route exact path={path}>
           <Profile chemblId={chemblId} name={name} />
         </Route>
         <Route path="*">
-          <Redirect to={`/drug/${chemblId}`} />
+          <Navigate to={`/drug/${chemblId}`} />
         </Route>
-      </Switch>
+      </Routes>
     </BasePage>
   );
 }

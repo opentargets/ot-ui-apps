@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { useLocation, useParams, Switch, Route, useRouteMatch, Link } from "react-router-dom";
+import { useLocation, useParams, Routes, Route, useMatch, Link } from "react-router-dom";
 import { Box, Tabs, Tab } from "@mui/material";
 import { BasePage, ScrollToTop } from "ui";
 import Header from "./Header";
@@ -10,7 +10,7 @@ import Profile from "./Profile";
 function CredibleSetPage() {
   const location = useLocation();
   const { studyLocusId } = useParams() as { studyLocusId: string };
-  const { path } = useRouteMatch();
+  const { path } = useMatch();
 
   const { loading, data } = useQuery(CREDIBLE_SET_PAGE_QUERY, {
     variables: { studyLocusId: studyLocusId },
@@ -62,7 +62,7 @@ function CredibleSetPage() {
         )}
       />
 
-      <Switch>
+      <Routes>
         <Route exact path={path}>
           <Profile
             studyLocusId={studyLocusId}
@@ -72,7 +72,7 @@ function CredibleSetPage() {
             studyType={studyType}
           />
         </Route>
-      </Switch>
+      </Routes>
     </BasePage>
   );
 }

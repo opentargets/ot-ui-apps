@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs } from "@mui/material";
-import { Link, Redirect, Route, Switch, useLocation, useParams } from "react-router-dom";
+import { Link, Navigate, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { BasePage, ScrollToTop } from "ui";
 
 import Header from "./Header";
@@ -44,7 +44,7 @@ function DiseasePage(): ReactElement {
     >
       <Header loading={loading} efoId={efoId} name={name} dbXRefs={dbXRefs} />
       <ScrollToTop />
-      <Route
+      {/* <Route
         path="/"
         render={history => (
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -64,18 +64,14 @@ function DiseasePage(): ReactElement {
             </Tabs>
           </Box>
         )}
-      />
-      <Switch>
-        <Route exact path="/disease/:efoId">
-          <Profile efoId={efoId} name={name} />
-        </Route>
-        <Route path="/disease/:efoId/associations">
-          <Associations efoId={efoId} />
-        </Route>
-        <Route path="*">
-          <Redirect to={`/disease/${efoId}`} />
-        </Route>
-      </Switch>
+      /> */}
+      <Routes>
+        <Route path="/disease/:efoId" element={<Profile efoId={efoId} name={name} />} />
+        <Route path="/disease/:efoId/associations" element={<Associations efoId={efoId} />} />
+        {/* <Route path="*">
+          <Navigate to={`/disease/${efoId}`} />
+        </Route> */}
+      </Routes>
     </BasePage>
   );
 }

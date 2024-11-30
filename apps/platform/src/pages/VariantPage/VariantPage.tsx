@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { useLocation, useParams, Switch, Route, useRouteMatch, Link } from "react-router-dom";
+import { useLocation, useParams, Routes, Route, useMatch, Link } from "react-router-dom";
 import { Box, Tabs, Tab } from "@mui/material";
 import { BasePage, ScrollToTop } from "ui";
 import Header from "./Header";
@@ -10,7 +10,7 @@ import Profile from "./Profile";
 function VariantPage() {
   const location = useLocation();
   const { varId } = useParams() as { varId: string };
-  const { path } = useRouteMatch();
+  const { path } = useMatch();
 
   const { loading, data } = useQuery(VARIANT_PAGE_QUERY, {
     variables: { variantId: varId },
@@ -44,11 +44,11 @@ function VariantPage() {
         )}
       />
 
-      <Switch>
+      <Routes>
         <Route exact path={path}>
           <Profile varId={varId} />
         </Route>
-      </Switch>
+      </Routes>
     </BasePage>
   );
 }

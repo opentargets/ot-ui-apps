@@ -1,15 +1,7 @@
 import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs } from "@mui/material";
-import {
-  Link,
-  Route,
-  Switch,
-  useLocation,
-  useRouteMatch,
-  useParams,
-  Redirect,
-} from "react-router-dom";
+import { Link, Route, Routes, useLocation, useMatch, useParams, Navigate } from "react-router-dom";
 import { BasePage, ScrollToTop } from "ui";
 
 import Header from "./Header";
@@ -27,7 +19,7 @@ type TargetURLParams = {
 function TargetPage(): ReactElement {
   const location = useLocation();
   const { ensgId } = useParams<TargetURLParams>();
-  const { path } = useRouteMatch();
+  const { path } = useMatch();
 
   const { loading, data } = useQuery(TARGET_PAGE_QUERY, {
     variables: { ensgId },
@@ -90,7 +82,7 @@ function TargetPage(): ReactElement {
           </Box>
         )}
       />
-      <Switch>
+      <Routes>
         <Route exact path={path}>
           <Profile ensgId={ensgId} symbol={symbol} />
         </Route>
@@ -98,9 +90,9 @@ function TargetPage(): ReactElement {
           <Associations ensgId={ensgId} />
         </Route>
         <Route path="*">
-          <Redirect to={`/target/${ensgId}`} />
+          <Navigate to={`/target/${ensgId}`} />
         </Route>
-      </Switch>
+      </Routes>
     </BasePage>
   );
 }

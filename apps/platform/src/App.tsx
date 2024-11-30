@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ApolloProvider } from "@apollo/client";
 import { ThemeProvider, SearchProvider, PrivateRoute, ConfigurationProvider } from "ui";
 
@@ -33,49 +33,28 @@ function App(): ReactElement {
             searchPlaceholder="Search for a target, drug, disease, or phenotype..."
           >
             <Router>
-              <Switch>
-                <Route exact path="/">
-                  <HomePage suggestions={suggestions} />
-                </Route>
-                <Route path="/search">
-                  <SearchPage />
-                </Route>
-                <Route path="/downloads">
-                  <DownloadsPage />
-                </Route>
-                <Route path="/disease/:efoId">
-                  <DiseasePage />
-                </Route>
-                <Route path="/target/:ensgId">
-                  <TargetPage />
-                </Route>
-                <Route path="/drug/:chemblId">
-                  <DrugPage />
-                </Route>
-                <Route path="/evidence/:ensgId/:efoId">
-                  <EvidencePage />
-                </Route>
-                <Route path="/variant/:varId">
-                  <VariantPage />
-                </Route>
-                <Route path="/study/:studyId">
-                  <StudyPage />
-                </Route>
-                <Route path="/credible-set/:studyLocusId">
-                  <CredibleSetPage />
-                </Route>
-                <Route path="/api">
-                  <APIPage />
-                </Route>
-                <Route path="/projects">
-                  <PrivateRoute>
-                    <ProjectsPage />
-                  </PrivateRoute>
-                </Route>
-                <Route>
-                  <NotFoundPage />
-                </Route>
-              </Switch>
+              <Routes>
+                <Route path="/" element={<HomePage suggestions={suggestions} />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/downloads" element={<DownloadsPage />} />
+                <Route path="/disease/:efoId" element={<DiseasePage />} />
+                <Route path="/target/:ensgId" element={<TargetPage />} />
+                <Route path="/drug/:chemblId" element={<DrugPage />} />
+                <Route path="/evidence/:ensgId/:efoId" element={<EvidencePage />} />
+                <Route path="/variant/:varId" element={<VariantPage />} />
+                <Route path="/study/:studyId" element={<StudyPage />} />
+                <Route path="/credible-set/:studyLocusId" element={<CredibleSetPage />} />
+                <Route path="/api" element={<APIPage />} />
+                <Route
+                  path="/projects"
+                  element={
+                    <PrivateRoute>
+                      <ProjectsPage />
+                    </PrivateRoute>
+                  }
+                />
+                {/* <Route path="*" element={<NotFoundPage />} /> */}
+              </Routes>
             </Router>
           </SearchProvider>
         </ThemeProvider>
