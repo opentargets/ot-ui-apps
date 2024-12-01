@@ -67,6 +67,7 @@ function DepmapPlot({ data, width }) {
       marginLeft: 200,
       style: {
         background: "transparent",
+        fontSize: "12px",
       },
       x: {
         type: "symlog",
@@ -129,11 +130,9 @@ function DepmapPlot({ data, width }) {
           fillOpacity: 0.5,
         }),
         Plot.axisY({
-          fontSize: 12,
           label: "Tissue name",
         }),
         Plot.axisX({
-          fontSize: 12,
           label: "Gene Effect",
         }),
         Plot.crosshair(data, { x: "geneEffect", y: "tissueName" }),
