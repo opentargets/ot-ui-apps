@@ -1,4 +1,4 @@
-query GWASMolQTLColocQuery($studyLocusId: String!) {
+query MolQTLColocQuery($studyLocusId: String!) {
   credibleSet(studyLocusId: $studyLocusId) {
     colocalisation(studyTypes: [tuqtl, pqtl, eqtl, sqtl], page: { size: 250, index: 0 }) {
       otherStudyLocus {

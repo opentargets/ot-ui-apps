@@ -11,7 +11,7 @@ import {
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
-import GWAS_COLOC_QUERY from "./GWASMolQTLColocQuery.gql";
+import MOLQTL_COLOC_QUERY from "./MolQTLColocQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { getStudyCategory } from "../../utils/getStudyCategory";
 
@@ -142,12 +142,11 @@ const columns = [
       let category = "Inconclusive";
       if (betaRatioSignAverage <= -0.99) category = "Opposite";
       else if (betaRatioSignAverage >= 0.99) category = "Same";
-      const displayValue = Math.abs(betaRatioSignAverage) === 1
-        ? betaRatioSignAverage
-        : betaRatioSignAverage.toFixed(2)
-      return <Tooltip title={`Beta ratio sign average: ${displayValue}`}>
-        {category}
-      </Tooltip>
+      const displayValue =
+        Math.abs(betaRatioSignAverage) === 1
+          ? betaRatioSignAverage
+          : betaRatioSignAverage.toFixed(2);
+      return <Tooltip title={`Beta ratio sign average: ${displayValue}`}>{category}</Tooltip>;
     },
     filterValue: ({ betaRatioSignAverage }) => {
       if (betaRatioSignAverage == null) return null;
@@ -214,7 +213,7 @@ function Body({ studyLocusId, entity }: BodyProps) {
     studyLocusId: studyLocusId,
   };
 
-  const request = useQuery(GWAS_COLOC_QUERY, {
+  const request = useQuery(MOLQTL_COLOC_QUERY, {
     variables,
   });
 
@@ -235,7 +234,7 @@ function Body({ studyLocusId, entity }: BodyProps) {
             columns={columns}
             loading={request.loading}
             rows={request.data?.credibleSet.colocalisation}
-            query={GWAS_COLOC_QUERY.loc.source.body}
+            query={MOLQTL_COLOC_QUERY.loc.source.body}
             variables={variables}
           />
         );

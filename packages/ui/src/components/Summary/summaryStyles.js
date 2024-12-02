@@ -4,7 +4,6 @@ const summaryStyles = makeStyles(theme => ({
   avatar: {
     color: "white",
     backgroundColor: theme.palette.grey[300],
-    fontSize: "40px",
   },
   avatarHasData: {
     backgroundColor: `${theme.palette.primary.dark} !important`,
