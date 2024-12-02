@@ -8,10 +8,12 @@ import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
 import { identifiersOrgLink } from "../../utils/global";
+import { variantComparator } from "../../utils/comparators";
 import {
   defaultRowsPerPageOptions,
   variantConsequenceSource,
   sectionsBaseSizeQuery,
+  naLabel,
 } from "../../constants";
 import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
 
@@ -48,8 +50,20 @@ function getColumns(label) {
       ),
     },
     {
-      id: "variantRsId",
+      id: "variantId",
       label: "Variant",
+      comparator: variantComparator,
+      sortable: true,
+      filterValue: ({ variant: v }) =>
+        `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
+      renderCell: ({ variant }) => {
+        if (variant) return <Link to={`/variant/${variant.id}`}>{variant.id}</Link>;
+        return naLabel;
+      },
+    },
+    {
+      id: "variantRsId",
+      label: "rsID",
       renderCell: ({ variantRsId }) => (
         <Link
           external
@@ -59,6 +73,18 @@ function getColumns(label) {
         </Link>
       ),
     },
+    {
+      id: "aminoAcidConsequence",
+      label: "Amino acid",
+      renderCell: ({ variant }) => {
+        if (!variant) return naLabel;
+        const aaConsequences = variant.transcriptConsequences?.filter(d => d.aminoAcidChange != null).map(d => d.aminoAcidChange);
+        if (aaConsequences?.length) {
+          return aaConsequences.join(", ");
+        }
+        return naLabel;
+      }
+    },        
     {
       id: "variantConsequence",
       label: "Variant Consequence",
