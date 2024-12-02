@@ -195,7 +195,7 @@ const evidenceColsExport = [
 
 const id = "signor";
 const index = 0;
-const size = 5000;
+const size = 3000;
 
 function SignorTab({ ensgId, symbol }) {
   const [data, setData] = useState([]);
