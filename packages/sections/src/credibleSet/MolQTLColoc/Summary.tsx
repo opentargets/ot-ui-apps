@@ -1,16 +1,16 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
-import GWASMOLQTL_SUMMARY from "./GWASMolQTLSummaryFragment.gql";
+import MOLQTL_COLOC__SUMMARY from "./MolQTLColocSummaryFragment.gql";
 
 function Summary() {
-  const request = usePlatformApi(GWASMOLQTL_SUMMARY);
+  const request = usePlatformApi(MOLQTL_COLOC__SUMMARY);
 
   return <SummaryItem definition={definition} request={request} />;
 }
 
 Summary.fragments = {
-  GWASMolQTLSummaryFragment: GWASMOLQTL_SUMMARY,
+  MolQTLColocSummaryFragment: MOLQTL_COLOC__SUMMARY,
 };
 
 export default Summary;

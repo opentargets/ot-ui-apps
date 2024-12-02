@@ -118,6 +118,7 @@ const columns = [
     label: "L2G score",
     comparator: (rowA, rowB) => rowA?.l2Gpredictions[0]?.score - rowB?.l2Gpredictions[0]?.score,
     sortable: true,
+    tooltip: "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
     renderCell: ({ l2Gpredictions }) => {
       const score = l2Gpredictions?.[0]?.score;
       if (typeof score !== "number") return naLabel;

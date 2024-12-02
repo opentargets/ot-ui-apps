@@ -1,4 +1,3 @@
-
 import { Box } from "@mui/material";
 import Link from "./Link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
