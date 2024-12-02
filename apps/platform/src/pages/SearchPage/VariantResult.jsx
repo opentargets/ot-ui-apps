@@ -1,7 +1,7 @@
 import { makeStyles, useTheme } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
-import { Highlights, Link, DisplayVariantId } from "ui";
+import { Highlights, Link, DisplayVariantId, LongText } from "ui";
 import { Box, Typography } from "@mui/material";
 
 const useStyles = makeStyles(theme => ({
@@ -32,9 +32,13 @@ function VariantResult({ data, highlights }) {
           expand={false}
         />
       </Link>
+
+      <Typography variant="body2" component="div">
+        <LongText lineLimit={4}>{data.variantDescription}</LongText>
+      </Typography>
       {data.rsIds.length > 0 &&
         <Typography variant="body2">
-          {data.rsIds.join(", ")}
+          Ensembl: {data.rsIds.join(", ")}
         </Typography>
       }
       <Highlights highlights={highlights} />

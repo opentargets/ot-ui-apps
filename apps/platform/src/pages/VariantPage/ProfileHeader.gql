@@ -3,6 +3,7 @@ fragment VariantProfileHeaderFragment on Variant {
   position
   referenceAllele
   alternateAllele
+  variantDescription
   alleleFrequencies {
     populationName
     alleleFrequency

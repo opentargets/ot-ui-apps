@@ -87,11 +87,11 @@ function symbolNameOrId(item) {
   if (item.entity === "variant") {
     return item.referenceAllele
       ? <DisplayVariantId
-          variantId={item.id}
-          referenceAllele={item.referenceAllele}
-          alternateAllele={item.alternateAllele}
-          expand={false}
-        />
+        variantId={item.id}
+        referenceAllele={item.referenceAllele}
+        alternateAllele={item.alternateAllele}
+        expand={false}
+      />
       : item.id;
   }
   return item.symbol || item.name || item.id;
@@ -172,37 +172,45 @@ function TopHitListItem({ item, onItemClick }) {
           </Typography>
 
           <Typography variant="caption">
-            {!!item.id && 
+            {!!item.id &&
               <ItemId>
                 {item.entity === "variant"
                   ? <DisplayVariantId
-                      variantId={item.id}
-                      referenceAllele={item.referenceAllele}
-                      alternateAllele={item.alternateAllele}
-                      expand={false}
-                    />
+                    variantId={item.id}
+                    referenceAllele={item.referenceAllele}
+                    alternateAllele={item.alternateAllele}
+                    expand={false}
+                  />
                   : item.id
                 }
               </ItemId>
             }
           </Typography>
         </JustifyBetween>
-        
+
         {item.entity === "variant"
-          ? item.rsIds.length > 0 &&
-            <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
-              <Typography variant="subtitle1">{item.rsIds.join(', ')}</Typography>
-            </Box>
-          : <>
+          ? <>
+            {item.rsIds.length > 0 &&
               <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
-                <Typography variant="subtitle1">{item.symbol && item.name}</Typography>
+                <Typography variant="subtitle1">{item.rsIds.join(', ')}</Typography>
               </Box>
-              <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
-                <Typography variant="body2">
-                  {item.description && `${item.description.substring(0, 180)}...`}
-                </Typography>
-              </Box>
-            </>
+            }
+            <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
+              <Typography variant="body2">
+                {`${item.variantDescription.substring(0, 180)}${item.variantDescription.length > 180 ? "..." : ""}`}
+              </Typography>
+            </Box>
+          </>
+          : <>
+            <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
+              <Typography variant="subtitle1">{item.symbol && item.name}</Typography>
+            </Box>
+            <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
+              <Typography variant="body2">
+                {item.description && `${item.description.substring(0, 180)}...`}
+              </Typography>
+            </Box>
+          </>
         }
       </TopHitItemContainer>
     </TopHitItem>
@@ -255,16 +263,16 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
       <JustifyBetween>
         <ListItemDisplayName>{getSymbolHeader()}</ListItemDisplayName>
         <Typography variant="caption">
-          {!!item.id && 
+          {!!item.id &&
             <ItemId>
               {
                 item.entity === "variant"
                   ? <DisplayVariantId
-                      variantId={item.id}
-                      referenceAllele={item.referenceAllele}
-                      alternateAllele={item.alternateAllele}
-                      expand={false}
-                    />
+                    variantId={item.id}
+                    referenceAllele={item.referenceAllele}
+                    alternateAllele={item.alternateAllele}
+                    expand={false}
+                  />
                   : item.id
               }
             </ItemId>
