@@ -57,24 +57,22 @@ function getColumns(label) {
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
       renderCell: ({ variant }) => {
-        if (variant.id) return <Link to={`/variant/${variant.id}`}>{variant.id}</Link>;
+        if (variant) return <Link to={`/variant/${variant.id}`}>{variant.id}</Link>;
         return naLabel;
       },
-      exportValue: ({ variant }) => variant?.id,
     },
-
     {
       id: "aminoAcidConsequence",
       label: "Amino acid consequence",
-      renderCell: ({ variant: { transcriptConsequences } }) => {
-        if (!transcriptConsequences) return naLabel;
-        const aaConsequences = transcriptConsequences?.filter(d => d.aminoAcidChange != null).map(d => d.aminoAcidChange);
+      renderCell: ({ variant }) => {
+        if (!variant) return naLabel;
+        const aaConsequences = variant.transcriptConsequences?.filter(d => d.aminoAcidChange != null).map(d => d.aminoAcidChange);
         if (aaConsequences?.length) {
           return aaConsequences.join(", ");
         }
         return naLabel;
-      },
-    },
+      }
+    },        
     {
       id: "variantConsequence",
       label: "Variant Consequence",
