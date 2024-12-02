@@ -137,18 +137,6 @@ type BodyProps = {
   entity: string;
 };
 
-const parseStudies = (studyId, studies) => {
-  const parsedStudies = [];
-  const studyIds = new Set([studyId]);
-  for (const study of studies) {
-    if (!studyIds.has(study.studyId)) {
-      parsedStudies.push(study);
-      studyIds.add(study.studyId);
-    }
-  }
-  return parsedStudies;
-};
-
 export function Body({ studyId, diseaseIds, entity }: BodyProps) {
   const variables = {
     diseaseIds: diseaseIds,
@@ -167,11 +155,10 @@ export function Body({ studyId, diseaseIds, entity }: BodyProps) {
       entity={"studies"}
       renderDescription={() => <Description studyId={studyId} />}
       renderBody={() => {
-        const rows = request.data?.studies ? parseStudies(studyId, request.data.studies.rows) : [];
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.studies?.rows}
             loading={request.loading}
             sortBy="nSamples"
             order="desc"

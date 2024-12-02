@@ -8,16 +8,14 @@ import {
   OtScoreLinearBar,
   OtTable,
   useBatchQuery,
+  Navigate,
 } from "ui";
-import { Box } from "@mui/material";
 import { naLabel, credsetConfidenceMap, initialResponse, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import ManhattanPlot from "./ManhattanPlot";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
 
@@ -26,11 +24,7 @@ const columns = [
     id: "studyLocusId",
     label: "Navigate",
     renderCell: ({ studyLocusId }) => (
-      <Box sx={{ display: "flex" }}>
-        <Link to={`/credible-set/${studyLocusId}`}>
-          <FontAwesomeIcon icon={faArrowRightToBracket} />
-        </Link>
-      </Box>
+      <Navigate to={`/credible-set/${studyLocusId}`} />
     ),
   },
   {

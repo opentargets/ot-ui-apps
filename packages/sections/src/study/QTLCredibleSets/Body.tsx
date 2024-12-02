@@ -1,25 +1,25 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
-import { Box } from "@mui/material";
+import {
+  Link,
+  SectionItem,
+  ScientificNotation,
+  DisplayVariantId,
+  OtTable,
+  Navigate,
+} from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const columns = [
   {
     id: "studyLocusId",
     label: "Navigate",
     renderCell: ({ studyLocusId }) => (
-      <Box sx={{ display: "flex" }}>
-        <Link to={`/credible-set/${studyLocusId}`}>
-          <FontAwesomeIcon icon={faArrowRightToBracket} />
-        </Link>
-      </Box>
-    ),
+      <Navigate to={`/credible-set/${studyLocusId}`} />
+    )
   },
   {
     id: "leadVariant",

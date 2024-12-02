@@ -9,6 +9,7 @@ export { default as SummaryContainer } from "./components/Summary/SummaryContain
 export { default as SummaryItem } from "./components/Summary/SummaryItem";
 export { default as Tooltip } from "./components/Tooltip";
 export { default as Link } from "./components/Link";
+export { default as Navigate } from "./components/Navigate";
 export { default as Chip } from "./components/Chip";
 export { default as ChipList } from "./components/ChipList";
 export { default as TooltipStyledLabel } from "./components/TooltipStyledLabel";
