@@ -62,6 +62,18 @@ function getColumns(label) {
       },
     },
     {
+      id: "variantRsId",
+      label: "rsID",
+      renderCell: ({ variantRsId }) => (
+        <Link
+          external
+          to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
+        >
+          {variantRsId}
+        </Link>
+      ),
+    },
+    {
       id: "aminoAcidConsequence",
       label: "Amino acid",
       renderCell: ({ variant }) => {
