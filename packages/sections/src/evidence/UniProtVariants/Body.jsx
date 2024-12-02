@@ -63,7 +63,7 @@ function getColumns(label) {
     },
     {
       id: "aminoAcidConsequence",
-      label: "Amino acid consequence",
+      label: "Amino acid",
       renderCell: ({ variant }) => {
         if (!variant) return naLabel;
         const aaConsequences = variant.transcriptConsequences?.filter(d => d.aminoAcidChange != null).map(d => d.aminoAcidChange);
