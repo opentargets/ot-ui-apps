@@ -97,7 +97,7 @@ const useStyles = makeStyles({
 
 const id = "string";
 const index = 0;
-const size = 10000;
+const size = 3000;
 const color = scaleQuantize().domain([0, 1]).range(colorRange);
 
 const getScoreForColumn = (evidences, evidencesId) =>

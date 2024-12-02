@@ -195,7 +195,7 @@ const evidenceColsExport = [
 
 const id = "reactome";
 const index = 0;
-const size = 5000;
+const size = 3000;
 
 function ReactomeTab({ ensgId, symbol }) {
   const [data, setData] = useState([]);
