@@ -32,14 +32,15 @@ function VariantResult({ data, highlights }) {
           expand={false}
         />
       </Link>
-      {data.rsIds.length > 0 &&
-        <Typography variant="body2">
-          {data.rsIds.join(", ")}
-        </Typography>
-      }
+
       <Typography variant="body2" component="div">
         <LongText lineLimit={4}>{data.variantDescription}</LongText>
       </Typography>
+      {data.rsIds.length > 0 &&
+        <Typography variant="body2">
+          Ensembl: {data.rsIds.join(", ")}
+        </Typography>
+      }
       <Highlights highlights={highlights} />
     </div>
   );
