@@ -8,10 +8,12 @@ import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
 import { identifiersOrgLink } from "../../utils/global";
+import { variantComparator } from "../../utils/comparators";
 import {
   defaultRowsPerPageOptions,
   variantConsequenceSource,
   sectionsBaseSizeQuery,
+  naLabel,
 } from "../../constants";
 import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
 
@@ -48,16 +50,30 @@ function getColumns(label) {
       ),
     },
     {
-      id: "variantRsId",
+      id: "variantId",
       label: "Variant",
-      renderCell: ({ variantRsId }) => (
-        <Link
-          external
-          to={`http://www.ensembl.org/Homo_sapiens/Variation/Explore?v=${variantRsId}`}
-        >
-          {variantRsId}
-        </Link>
-      ),
+      comparator: variantComparator,
+      sortable: true,
+      filterValue: ({ variant: v }) =>
+        `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
+      renderCell: ({ variant }) => {
+        if (variant.id) return <Link to={`/variant/${variant.id}`}>{variant.id}</Link>;
+        return naLabel;
+      },
+      exportValue: ({ variant }) => variant?.id,
+    },
+
+    {
+      id: "aminoAcidConsequence",
+      label: "Amino acid consequence",
+      renderCell: ({ variant: { transcriptConsequences } }) => {
+        if (!transcriptConsequences) return naLabel;
+        const aaConsequences = transcriptConsequences?.filter(d => d.aminoAcidChange != null).map(d => d.aminoAcidChange);
+        if (aaConsequences?.length) {
+          return aaConsequences.join(", ");
+        }
+        return naLabel;
+      },
     },
     {
       id: "variantConsequence",
