@@ -27,6 +27,7 @@ export { default as PrivateRoute } from "./components/PrivateRoute";
 export { default as EllsWrapper } from "./components/EllsWrapper";
 export { default as ErrorBoundary } from "./components/ErrorBoundary";
 export { default as GlobalSearch } from "./components/GlobalSearch/GlobalSearch";
+export { default as DetailPopover } from "./components/DetailPopover";
 
 export { default as PrivateWrapper } from "./components/PrivateWrapper";
 export { default as NavBar } from "./components/NavBar";
