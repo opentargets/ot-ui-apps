@@ -32,9 +32,10 @@ export default function DetailPopover({
     <>
       <Typography
         variant="subtitle2"
+        component="span"
         sx={{
           display: "inline",
-          cursor: children ? "pointer" : null,
+          cursor: "pointer",
           mr: 0.5,
           fontWeight: 600,
           color: "secondary.main"
@@ -43,11 +44,8 @@ export default function DetailPopover({
         onClick={handleClick}
       >
         {title}
-        {children && <>
-          {" "}
-          <FontAwesomeIcon icon={open ? faCaretDown : faCaretRight} />
-        </>
-        }
+        {" "}
+        <FontAwesomeIcon icon={open ? faCaretDown : faCaretRight} />
       </Typography>
       <Popover
         id={id}
