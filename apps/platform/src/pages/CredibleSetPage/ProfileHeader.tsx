@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import {
   usePlatformApi,
   Field,
@@ -9,14 +9,13 @@ import {
   PublicationsDrawer,
   ClinvarStars,
   LabelChip,
+  DetailPopover,
 } from "ui";
-import { Box, Typography, Popover } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 import { epmcUrl } from "../../utils/urls";
 import { credsetConfidenceMap, poulationMap } from "../../constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { v1 } from "uuid";
 
 type ProfileHeaderProps = {
@@ -44,72 +43,34 @@ const dicSummary = [
   },
 ];
 
-function SummaryStatisticsField({ sumstatQCValues }: any) {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  if (!sumstatQCValues) return null;
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-
+function SummaryStatsTable({ sumstatQCValues }: any) {
   return (
-    <Fragment>
-      <Typography
-        sx={{ cursor: "pointer", mr: 0.5, fontWeight: 600, color: "secondary.main" }}
-        aria-describedby={id}
-        variant="contained"
-        onClick={handleClick}
-      >
-        Available <FontAwesomeIcon icon={faCaretDown} />
+    <>
+      <Typography sx={{ fontSize: 16, fontWeight: 600, my: 1 }} variant="subtitle2">
+        Harmonised summary statistics
       </Typography>
-
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        elevation={1}
-        disableScrollLock
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-      >
-        <Box sx={{ p: 2 }}>
-          <Typography sx={{ fontSize: 16, fontWeight: 600, my: 1 }} variant="subtitle2">
-            Harmonised summary statistics
-          </Typography>
-          <table>
-            <tbody>
-              {dicSummary.map((sumstat: any) => {
-                const summStatValue = sumstatQCValues.find(
-                  (v: any) => v.QCCheckName === sumstat.id
-                ).QCCheckValue;
-                return (
-                  <tr key={v1()}>
-                    <td>
-                      <Tooltip title={sumstat.tooltip} showHelpIcon>
-                        {sumstat.label}
-                      </Tooltip>
-                    </td>
-                    <Typography sx={{ textAlign: "right" }} component="td" variant="body2">
-                      {summStatValue}
-                    </Typography>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </Box>
-      </Popover>
-    </Fragment>
+      <table>
+        <tbody>
+          {dicSummary.map((sumstat: any) => {
+            const summStatValue = sumstatQCValues.find(
+              (v: any) => v.QCCheckName === sumstat.id
+            ).QCCheckValue;
+            return (
+              <tr key={v1()}>
+                <td>
+                  <Tooltip title={sumstat.tooltip} showHelpIcon>
+                    {sumstat.label}
+                  </Tooltip>
+                </td>
+                <Typography sx={{ textAlign: "right" }} component="td" variant="body2">
+                  {summStatValue}
+                </Typography>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </>
   );
 }
 
@@ -128,7 +89,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
   const standardError = leadVariant?.standardError ?? credibleSet?.standardError;
   const { pValueMantissa, pValueExponent } =
     typeof leadVariant?.pValueMantissa === "number" &&
-    typeof leadVariant?.pValueExponent === "number"
+      typeof leadVariant?.pValueExponent === "number"
       ? leadVariant
       : credibleSet ?? {};
 
@@ -265,7 +226,24 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         >
           {credibleSet?.purityMinR2?.toPrecision(3)}
         </Field>
-      </Box>
+        {credibleSet?.qualityControls?.length > 0 &&
+          <Box>
+            <DetailPopover title="QC warnings">
+              <ul style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.25rem",
+                padding: 0,
+                margin: "0 0 0 1rem"
+              }}>
+                {credibleSet.qualityControls.map(warning => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
+            </DetailPopover>
+          </Box>
+        }
+      </Box >
 
       <Box>
         <Typography variant="subtitle1" mt={0}>
@@ -342,14 +320,16 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             {study?.analysisFlags ? study.analysisFlags : "Not Available"}
           </Field>
         )}
-        {study?.hasSumstats && (
-          <Field loading={loading} title="Summary statistics">
-            <SummaryStatisticsField
-              hasSumstats={study?.hasSumstats}
-              sumstatQCValues={study?.sumstatQCValues}
-            />
-          </Field>
-        )}
+        <Field loading={loading} title="Summary statistics">
+          {!study?.hasSumstats
+            ? "Not Available"
+            : study?.sumstatQCValues
+              ? <DetailPopover title="Available">
+                <SummaryStatsTable sumstatQCValues={study.sumstatQCValues} />
+              </DetailPopover>
+              : "Available"
+          }
+        </Field>
         <Field loading={loading} title="Sample size">
           {study?.nSamples.toLocaleString()}
         </Field>
@@ -364,20 +344,9 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
                 tooltip={`LD reference population: ${poulationMap[ldPopulation]}`}
               />
             ))}
-          {/* Quality controls */}
-          {study?.qualityControls?.length > 0 && (
-            <Tooltip title={study?.qualityControls.join(", ")} arrow>
-              <LabelChip
-                label={<FontAwesomeIcon size="1x" icon={faTriangleExclamation} />}
-                value={study?.qualityControls.length + " issue"}
-                tooltip={study?.qualityControls.join("; ")}
-                color="orange"
-              />
-            </Tooltip>
-          )}
         </Box>
       </Box>
-    </BaseProfileHeader>
+    </BaseProfileHeader >
   );
 }
 
