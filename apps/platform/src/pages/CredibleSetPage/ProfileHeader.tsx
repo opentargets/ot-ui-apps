@@ -17,7 +17,6 @@ import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 import { epmcUrl } from "../../utils/urls";
 import { credsetConfidenceMap, poulationMap } from "../../constants";
 import { v1 } from "uuid";
-import { naLabel } from "ui/src/constants";
 
 type ProfileHeaderProps = {
   variantId: string;
@@ -323,7 +322,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         )}
         <Field loading={loading} title="Summary statistics">
           {!study?.hasSumstats
-            ? naLabel
+            ? "Not Available"
             : study?.sumstatQCValues
               ? <DetailPopover title="Available">
                 <SummaryStatsTable sumstatQCValues={study.sumstatQCValues} />
