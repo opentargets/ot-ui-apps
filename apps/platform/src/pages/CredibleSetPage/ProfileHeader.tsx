@@ -17,6 +17,7 @@ import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 import { epmcUrl } from "../../utils/urls";
 import { credsetConfidenceMap, poulationMap } from "../../constants";
 import { v1 } from "uuid";
+import { naLabel } from "ui/src/constants";
 
 type ProfileHeaderProps = {
   variantId: string;
@@ -229,11 +230,17 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         {credibleSet?.qualityControls?.length > 0 &&
           <Box>
             <DetailPopover title="QC warnings">
-              <Box display="flex" flexDirection="column" gap={1}>
+              <ul style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.25rem",
+                padding: 0,
+                margin: "0 0 0 1rem"
+              }}>
                 {credibleSet.qualityControls.map(warning => (
-                  <Box key={warning}>{warning}</Box>
+                  <li key={warning}>{warning}</li>
                 ))}
-              </Box>
+              </ul>
             </DetailPopover>
           </Box>
         }
@@ -314,18 +321,16 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             {study?.analysisFlags ? study.analysisFlags : "Not Available"}
           </Field>
         )}
-        {study?.hasSumstats && (
-          <Field loading={loading} title="Summary statistics">
-            {!study?.hasSumstats
-              ? 'Not available'
-              : study?.sumstatQCValues
-                ? <DetailPopover title="Available">
-                  <SummaryStatsTable sumstatQCValues={study?.sumstatQCValues} />
-                </DetailPopover>
-                : "Available"
-            }
-          </Field>
-        )}
+        <Field loading={loading} title="Summary statistics">
+          {!study?.hasSumstats
+            ? naLabel
+            : study?.sumstatQCValues
+              ? <DetailPopover title="Available">
+                <SummaryStatsTable sumstatQCValues={study.sumstatQCValues} />
+              </DetailPopover>
+              : "Available"
+          }
+        </Field>
         <Field loading={loading} title="Sample size">
           {study?.nSamples.toLocaleString()}
         </Field>
