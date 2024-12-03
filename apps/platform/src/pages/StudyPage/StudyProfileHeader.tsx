@@ -1,4 +1,13 @@
-import { usePlatformApi, Link, Field, ProfileHeader as BaseProfileHeader, Tooltip } from "ui";
+import { Fragment } from "react";
+import {
+  usePlatformApi,
+  Link,
+  Field,
+  ProfileHeader as BaseProfileHeader,
+  Tooltip,
+  DetailPopover,
+  SummaryStatsTable,
+} from "ui";
 import { Typography, Box } from "@mui/material";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
@@ -16,10 +25,13 @@ type ProfileHeaderProps = {
   studyCategory: string;
 };
 
+
 function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
   const { loading, error, data } = usePlatformApi();
 
-  // TODO: Errors!
+  console.log(studyCategory)
+
+  // TODO: Errors! 
   if (error) return null;
 
   const {
@@ -27,10 +39,14 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
     publicationDate,
     publicationJournal,
     pubmedId,
+    hasSumstats,
+    sumstatQCValues,
     nSamples,
     initialSampleSize,
     replicationSamples,
     traitFromSource,
+    backgroundTraits,
+    diseases,
     nCases,
     nControls,
     cohorts,
@@ -60,8 +76,38 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
         <Field loading={loading} title="Reported trait">
           {traitFromSource}
         </Field>
+        {backgroundTraits?.length > 0 && (
+          <Field loading={loading} title="Background trait">
+            {backgroundTraits.map(({ id, name }, index) => (
+              <Fragment key={id}>
+                {index > 0 ? ", " : null}
+                <Link to={`../disease/${id}`}>{name}</Link>
+              </Fragment>
+            ))}
+          </Field>
+        )}
+        {diseases?.length > 0 && (
+          <Field loading={loading} title="Disease or phenotype">
+            {diseases.map(({ id, name }, index) => (
+              <Fragment key={id}>
+                {index > 0 ? ", " : null}
+                <Link to={`../disease/${id}`}>{name}</Link>
+              </Fragment>
+            ))}
+          </Field>
+        )}
+        <Field loading={loading} title="Summary statistics">
+          {!hasSumstats
+            ? "Not Available"
+            : sumstatQCValues
+              ? <DetailPopover title="Available">
+                <SummaryStatsTable sumstatQCValues={sumstatQCValues} />
+              </DetailPopover>
+              : "Available"
+          }
+        </Field>
         <Field loading={loading} title="Sample size">
-          {nSamples}
+          {nSamples?.toLocaleString()}
         </Field>
         <Field loading={loading} title="N discovery">
           {studyCategory === "GWAS" ? (
@@ -91,10 +137,10 @@ function ProfileHeader({ studyCategory }: ProfileHeaderProps) {
             formatSamples(replicationSamples)}
         </Field>
         <Field loading={loading} title="N cases">
-          {nCases}
+          {nCases?.toLocaleString()}
         </Field>
         <Field loading={loading} title="N controls">
-          {nControls}
+          {nControls?.toLocaleString()}
         </Field>
         <Field loading={loading} title="Cohorts">
           {((studyCategory === "GWAS" && cohorts?.length) || studyCategory === "FINNGEN") &&

@@ -10,70 +10,17 @@ import {
   ClinvarStars,
   LabelChip,
   DetailPopover,
+  SummaryStatsTable,
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 import { epmcUrl } from "../../utils/urls";
 import { credsetConfidenceMap, poulationMap } from "../../constants";
-import { v1 } from "uuid";
 
 type ProfileHeaderProps = {
   variantId: string;
 };
-
-const dicSummary = [
-  { id: "n_variants", label: "Total variants", tooltip: "Number of harmonised variants" },
-  { id: "n_variants_sig", label: "Significant variants", tooltip: "P-value significant variants" },
-  { id: "mean_beta", label: "Mean beta", tooltip: "Mean effect size across all variants" },
-  {
-    id: "gc_lambda",
-    label: "GC lambda",
-    tooltip: "Additive Genomic Control (GC) lambda indicating GWAS inflation",
-  },
-  {
-    id: "mean_diff_pz",
-    label: "Mean diff P-Z",
-    tooltip: "Mean difference between reported and calculated log p-values",
-  },
-  {
-    id: "se_diff_pz",
-    label: "SD diff P-Z",
-    tooltip: "Standard deviation of the difference between reported and calculated log p-values",
-  },
-];
-
-function SummaryStatsTable({ sumstatQCValues }: any) {
-  return (
-    <>
-      <Typography sx={{ fontSize: 16, fontWeight: 600, my: 1 }} variant="subtitle2">
-        Harmonised summary statistics
-      </Typography>
-      <table>
-        <tbody>
-          {dicSummary.map((sumstat: any) => {
-            const summStatValue = sumstatQCValues.find(
-              (v: any) => v.QCCheckName === sumstat.id
-            ).QCCheckValue;
-            return (
-              <tr key={v1()}>
-                <td>
-                  <Tooltip title={sumstat.tooltip} showHelpIcon>
-                    {sumstat.label}
-                  </Tooltip>
-                </td>
-                <Typography sx={{ textAlign: "right" }} component="td" variant="body2">
-                  {summStatValue}
-                </Typography>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </>
-  );
-}
-
 function ProfileHeader({ variantId }: ProfileHeaderProps) {
   const { loading, error, data } = usePlatformApi();
 

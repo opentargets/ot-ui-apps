@@ -4,6 +4,14 @@ fragment StudyProfileHeaderFragment on Gwas {
   publicationJournal
   pubmedId
   traitFromSource
+  backgroundTraits {
+    id
+    name
+  }
+  diseases {
+    id
+    name
+  }
   nSamples
   initialSampleSize
   replicationSamples {
@@ -16,6 +24,11 @@ fragment StudyProfileHeaderFragment on Gwas {
   ldPopulationStructure {
     ldPopulation
     relativeSampleSize
+  }
+  hasSumstats
+  sumstatQCValues {
+    QCCheckName
+    QCCheckValue
   }
   qualityControls
   analysisFlags
