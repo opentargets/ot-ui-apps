@@ -267,7 +267,7 @@ function ProfileHeader() {
         {study?.nSamples &&
           <Field loading={loading} title="Sample size">
             <DisplaySampleSize
-              nSamples={study?.nSamples}
+              nSamples={study.nSamples}
               cohorts={study?.cohorts}
               initialSampleSize={study?.initialSampleSize}
             />
