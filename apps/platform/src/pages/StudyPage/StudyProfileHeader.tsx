@@ -151,15 +151,14 @@ function ProfileHeader() {
         </Field>
         {ldPopulationStructure?.length > 0 &&
           <Box display="flex" sx={{ gap: 1 }}>
-            {ldPopulationStructure?.length > 0 &&
-              ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
-                <LabelChip
-                  key={ldPopulation}
-                  label={ldPopulation.toUpperCase()}
-                  value={`${(relativeSampleSize * 100).toFixed(0)}%`}
-                  tooltip={`LD reference population: ${populationMap[ldPopulation]}`}
-                />
-              ))}
+            {ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
+              <LabelChip
+                key={ldPopulation}
+                label={ldPopulation.toUpperCase()}
+                value={`${(relativeSampleSize * 100).toFixed(0)}%`}
+                tooltip={`LD reference population: ${populationMap[ldPopulation]}`}
+              />
+            ))}
           </Box>
         }
       </>

@@ -17,10 +17,7 @@ import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 import { epmcUrl } from "../../utils/urls";
 import { credsetConfidenceMap, populationMap } from "../../constants";
 
-type ProfileHeaderProps = {
-  variantId: string;
-};
-function ProfileHeader({ variantId }: ProfileHeaderProps) {
+function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
 
   // TODO: Errors!
@@ -277,15 +274,14 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         </Field>
         {study?.ldPopulationStructure?.length > 0 &&
           <Box display="flex" sx={{ gap: 1 }}>
-            {study?.ldPopulationStructure?.length > 0 &&
-              study.ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
-                <LabelChip
-                  key={ldPopulation}
-                  label={ldPopulation.toUpperCase()}
-                  value={`${(relativeSampleSize * 100).toFixed(0)}%`}
-                  tooltip={`LD reference population: ${populationMap[ldPopulation]}`}
-                />
-              ))}
+            {study.ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
+              <LabelChip
+                key={ldPopulation}
+                label={ldPopulation.toUpperCase()}
+                value={`${(relativeSampleSize * 100).toFixed(0)}%`}
+                tooltip={`LD reference population: ${populationMap[ldPopulation]}`}
+              />
+            ))}
           </Box>
         }
       </Box>

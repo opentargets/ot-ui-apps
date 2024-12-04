@@ -53,7 +53,7 @@ function Profile({ studyLocusId, variantId, referenceAllele, alternateAllele }: 
       variables={{ studyLocusId: studyLocusId, variantIds: [variantId] }}
       client={client}
     >
-      <ProfileHeader variantId={variantId} />
+      <ProfileHeader />
 
       <SummaryContainer>
         <VariantsSummary />
