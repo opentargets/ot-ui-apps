@@ -119,6 +119,23 @@ function ProfileHeader() {
               : "Available"
           }
         </Field>
+        {qualityControls?.length > 0 &&
+          <Box>
+            <DetailPopover title="QC warnings">
+              <ul style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.25rem",
+                padding: 0,
+                margin: "0 0 0 1rem"
+              }}>
+                {qualityControls.map(warning => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
+            </DetailPopover>
+          </Box>
+        }
       </Box>
 
       <Box>
@@ -139,23 +156,6 @@ function ProfileHeader() {
           {/* do not show anything when value 0 */}
           {nCases ? nControls?.toLocaleString() : null}
         </Field>
-        {qualityControls?.length > 0 &&
-          <Box>
-            <DetailPopover title="QC warnings">
-              <ul style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.25rem",
-                padding: 0,
-                margin: "0 0 0 1rem"
-              }}>
-                {qualityControls.map(warning => (
-                  <li key={warning}>{warning}</li>
-                ))}
-              </ul>
-            </DetailPopover>
-          </Box>
-        }
         <Field loading={loading} title="Analysis">
           {analysisFlags?.join(", ")}
         </Field>
