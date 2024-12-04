@@ -14,9 +14,8 @@ import {
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
-import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 import { epmcUrl } from "../../utils/urls";
-import { credsetConfidenceMap, poulationMap } from "../../constants";
+import { credsetConfidenceMap, populationMap } from "../../constants";
 
 type ProfileHeaderProps = {
   variantId: string;
@@ -29,7 +28,6 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
 
   const credibleSet = data?.credibleSet;
   const study = credibleSet?.study;
-  const studyCategory = study ? getStudyCategory(study.projectId) : null;
   const target = study?.target;
   const leadVariant = credibleSet?.locus.rows[0];
   const beta = leadVariant?.beta ?? credibleSet?.beta;
@@ -196,7 +194,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Typography variant="subtitle1" mt={0}>
           {study?.studyType.replace(/(qtl|gwas)/gi, match => match.toUpperCase())} Study
         </Typography>
-        {studyCategory !== "QTL" && (
+        {study?.studyType === "gwas" && (
           <>
             <Field loading={loading} title="Reported trait">
               {study?.traitFromSource}
@@ -223,7 +221,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             )}
           </>
         )}
-        {studyCategory === "QTL" && (
+        {study?.studyType !== "gwas" && (
           <>
             {target?.id && (
               <Field loading={loading} title="Affected gene">
@@ -255,18 +253,9 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             </PublicationsDrawer>
           </Field>
         )}
-        {study?.analysisFlags && (
-          <Field
-            loading={loading}
-            title={
-              <Tooltip title="Type of analysis" showHelpIcon>
-                Analysis
-              </Tooltip>
-            }
-          >
-            {study?.analysisFlags ? study.analysisFlags : "Not Available"}
-          </Field>
-        )}
+        <Field loading={loading} title="Analysis">
+          {study?.analysisFlags?.join(", ")}
+        </Field>
         <Field loading={loading} title="Summary statistics">
           {!study?.hasSumstats
             ? "Not Available"
@@ -277,21 +266,28 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
               : "Available"
           }
         </Field>
-        <Field loading={loading} title="Sample size">
-          {study?.nSamples.toLocaleString()}
+        {study?.nSamples &&
+          <Field loading={loading} title="Sample size">
+            {study?.nSamples?.toLocaleString()}
+            {study?.cohorts?.length > 0 ? ` (cohorts: ${study?.cohorts.join(", ")})` : ""}
+          </Field>
+        }
+        <Field loading={loading} title="Initial sample size">
+          {study?.initialSampleSize}
         </Field>
-        <Box display="flex" sx={{ gap: 1 }}>
-          {/* LD Ancestries */}
-          {study?.ldPopulationStructure?.length > 0 &&
-            study.ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }, index) => (
-              <LabelChip
-                key={ldPopulation}
-                label={ldPopulation.toUpperCase()}
-                value={`${(relativeSampleSize * 100).toFixed(0)}%`}
-                tooltip={`LD reference population: ${poulationMap[ldPopulation]}`}
-              />
-            ))}
-        </Box>
+        {study?.ldPopulationStructure?.length > 0 &&
+          <Box display="flex" sx={{ gap: 1 }}>
+            {study?.ldPopulationStructure?.length > 0 &&
+              study.ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
+                <LabelChip
+                  key={ldPopulation}
+                  label={ldPopulation.toUpperCase()}
+                  value={`${(relativeSampleSize * 100).toFixed(0)}%`}
+                  tooltip={`LD reference population: ${populationMap[ldPopulation]}`}
+                />
+              ))}
+          </Box>
+        }
       </Box>
     </BaseProfileHeader >
   );

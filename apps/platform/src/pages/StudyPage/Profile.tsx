@@ -68,7 +68,7 @@ function Profile({ studyId, studyType, projectId, diseases }: ProfileProps) {
       }}
       client={client}
     >
-      <ProfileHeader projectId={projectId} />
+      <ProfileHeader />
 
       <SummaryContainer>
         {studyType === "gwas" && (

@@ -29,7 +29,7 @@ function Header({
     if (diseases?.length) {
       traitLinks = (
         <XRefLinks
-          label="Trait"
+          label="Disease or phenotype"
           urlStem="../disease/"
           ids={diseases.map(d => d.id)}
           names={diseases.map(d => d.name)}

@@ -12,12 +12,12 @@ fragment StudyProfileHeaderFragment on Gwas {
     id
     name
   }
+  target {
+    id
+    approvedSymbol
+  }
   nSamples
   initialSampleSize
-  replicationSamples {
-    sampleSize
-    ancestry
-  }
   nCases
   nControls
   cohorts
@@ -32,8 +32,8 @@ fragment StudyProfileHeaderFragment on Gwas {
   }
   qualityControls
   analysisFlags
-  discoverySamples {
-    sampleSize
-    ancestry
+  biosample {
+    biosampleId
+    biosampleName
   }
 }
