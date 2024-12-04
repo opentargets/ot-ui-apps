@@ -109,6 +109,9 @@ function ProfileHeader() {
             </Link>
           </Field>
         }
+      </Box>
+
+      <Box>
         <Field loading={loading} title="Summary statistics">
           {!hasSumstats
             ? "Not Available"
@@ -136,9 +139,6 @@ function ProfileHeader() {
             </DetailPopover>
           </Box>
         }
-      </Box>
-
-      <Box>
         {nSamples &&
           <Field loading={loading} title="Sample size">
             <DisplaySampleSize
