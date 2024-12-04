@@ -7,6 +7,7 @@ import {
   DetailPopover,
   SummaryStatsTable,
   LabelChip,
+  DisplaySampleSize,
 } from "ui";
 import { Box } from "@mui/material";
 import { populationMap } from "../../constants";
@@ -44,7 +45,11 @@ function ProfileHeader() {
 
   return (
     <BaseProfileHeader>
-      <>
+
+      <Box>
+        <Field loading={loading} title="Study type">
+          {studyType?.replace(/(qtl|gwas)/gi, match => match.toUpperCase())}
+        </Field>
         {studyType === "gwas" && (
           <>
             <Field loading={loading} title="Reported trait">
@@ -114,20 +119,25 @@ function ProfileHeader() {
               : "Available"
           }
         </Field>
+      </Box>
+
+      <Box>
         {nSamples &&
           <Field loading={loading} title="Sample size">
-            {nSamples?.toLocaleString()}
-            {cohorts ? ` (cohorts: ${cohorts.join(", ")})` : ""}
+            <DisplaySampleSize
+              nSamples={nSamples}
+              cohorts={cohorts}
+              initialSampleSize={initialSampleSize}
+            />
           </Field>
         }
-        <Field loading={loading} title="Initial sample size">
-          {initialSampleSize}
-        </Field>
         <Field loading={loading} title="N cases">
-          {nCases?.toLocaleString()}
+          {/* do not show anything when value 0 */}
+          {nCases ? nCases?.toLocaleString() : null}
         </Field>
         <Field loading={loading} title="N controls">
-          {nControls?.toLocaleString()}
+          {/* do not show anything when value 0 */}
+          {nCases ? nControls?.toLocaleString() : null}
         </Field>
         {qualityControls?.length > 0 &&
           <Box>
@@ -161,7 +171,8 @@ function ProfileHeader() {
             ))}
           </Box>
         }
-      </>
+      </Box>
+
     </BaseProfileHeader>
   );
 }

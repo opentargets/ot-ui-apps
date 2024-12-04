@@ -11,6 +11,7 @@ import {
   LabelChip,
   DetailPopover,
   SummaryStatsTable,
+  DisplaySampleSize,
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
@@ -265,13 +266,13 @@ function ProfileHeader() {
         </Field>
         {study?.nSamples &&
           <Field loading={loading} title="Sample size">
-            {study?.nSamples?.toLocaleString()}
-            {study?.cohorts?.length > 0 ? ` (cohorts: ${study?.cohorts.join(", ")})` : ""}
+            <DisplaySampleSize
+              nSamples={study?.nSamples}
+              cohorts={study?.cohorts}
+              initialSampleSize={study?.initialSampleSize}
+            />
           </Field>
         }
-        <Field loading={loading} title="Initial sample size">
-          {study?.initialSampleSize}
-        </Field>
         {study?.ldPopulationStructure?.length > 0 &&
           <Box display="flex" sx={{ gap: 1 }}>
             {study.ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (

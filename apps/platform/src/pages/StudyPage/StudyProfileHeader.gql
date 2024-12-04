@@ -1,4 +1,5 @@
 fragment StudyProfileHeaderFragment on Gwas {
+  studyType
   publicationFirstAuthor
   publicationDate
   publicationJournal
