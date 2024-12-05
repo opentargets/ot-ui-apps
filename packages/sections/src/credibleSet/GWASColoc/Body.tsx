@@ -1,4 +1,3 @@
-import { useQuery } from "@apollo/client";
 import {
   Link,
   SectionItem,
@@ -6,14 +5,16 @@ import {
   ScientificNotation,
   OtTable,
   Tooltip,
+  useBatchQuery,
   Navigate,
 } from "ui";
-import { naLabel } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_COLOC_QUERY from "./GWASColocQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { getStudyCategory } from "../../utils/getStudyCategory";
+import { useEffect, useState } from "react";
 
 const columns = [
   {
@@ -196,9 +197,24 @@ function Body({ studyLocusId, entity }: BodyProps) {
     studyLocusId: studyLocusId,
   };
 
-  const request = useQuery(GWAS_COLOC_QUERY, {
-    variables,
+  const [request, setRequest] = useState<responseType>(initialResponse);
+
+  const getData = useBatchQuery({
+    query: GWAS_COLOC_QUERY,
+    variables: {
+      studyLocusId,
+      size: table5HChunkSize,
+      index: 0,
+    },
+    dataPath: "data.credibleSet.colocalisation",
+    size: table5HChunkSize,
   });
+
+  useEffect(() => {
+    getData().then(r => {
+      setRequest(r);
+    });
+  }, []);
 
   return (
     <SectionItem
@@ -206,6 +222,8 @@ function Body({ studyLocusId, entity }: BodyProps) {
       entity={entity}
       request={request}
       renderDescription={() => <Description />}
+      showContentLoading
+      loadingMessage="Loading data. This may take some time..."
       renderBody={() => {
         return (
           <OtTable
@@ -216,7 +234,7 @@ function Body({ studyLocusId, entity }: BodyProps) {
             order="asc"
             columns={columns}
             loading={request.loading}
-            rows={request.data?.credibleSet.colocalisation}
+            rows={request.data?.credibleSet.colocalisation.rows}
             query={GWAS_COLOC_QUERY.loc.source.body}
             variables={variables}
           />
