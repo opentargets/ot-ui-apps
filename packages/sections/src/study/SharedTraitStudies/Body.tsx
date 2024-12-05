@@ -1,13 +1,20 @@
 import { Fragment } from "react";
-import { useQuery } from "@apollo/client";
 import { Box, Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  PublicationsDrawer,
+  OtTable,
+  useBatchQuery,
+} from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import { naLabel } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import SHARED_TRAIT_STUDIES_QUERY from "./SharedTraitStudiesQuery.gql";
 import { getStudyCategory } from "../../utils/getStudyCategory";
 import { epmcUrl } from "ui/src/utils/urls";
+import { useEffect, useState } from "react";
 
 function getColumns(diseaseIds: string[]) {
   const diseaseIdsSet = new Set(diseaseIds);
@@ -115,9 +122,24 @@ export function Body({ studyId, diseaseIds, entity }: BodyProps) {
     diseaseIds: diseaseIds,
   };
 
-  const request = useQuery(SHARED_TRAIT_STUDIES_QUERY, {
-    variables,
+  const [request, setRequest] = useState<responseType>(initialResponse);
+
+  const getData = useBatchQuery({
+    query: SHARED_TRAIT_STUDIES_QUERY,
+    variables: {
+      diseaseIds,
+      size: table5HChunkSize,
+      index: 0,
+    },
+    dataPath: "data.studies",
+    size: table5HChunkSize,
   });
+
+  useEffect(() => {
+    getData().then(r => {
+      setRequest(r);
+    });
+  }, []);
 
   const columns = getColumns(diseaseIds);
 
@@ -126,6 +148,8 @@ export function Body({ studyId, diseaseIds, entity }: BodyProps) {
       definition={definition}
       request={request}
       entity={"studies"}
+      showContentLoading
+      loadingMessage="Loading data. This may take some time..."
       renderDescription={() => <Description studyId={studyId} />}
       renderBody={() => {
         return (
