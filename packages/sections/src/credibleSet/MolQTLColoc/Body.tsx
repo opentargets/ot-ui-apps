@@ -78,7 +78,7 @@ const columns = [
   {
     id: "otherStudyLocus.variant.id",
     label: "Lead Variant",
-    comparator: variantComparator,
+    comparator: variantComparator(d => d.otherStudyLocus.variant),
     sortable: true,
     filterValue: ({ otherStudyLocus }) => {
       const v = otherStudyLocus?.variant;

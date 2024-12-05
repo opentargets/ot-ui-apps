@@ -37,7 +37,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "leadVariant",
       label: "Lead variant",
-      comparator: variantComparator,
+      comparator: variantComparator(d => d.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -150,8 +150,10 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           ) is causal.
         </>
       ),
-      comparator: (rowA, rowB) =>
-        rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
+      comparator: (a, b) => {
+        return a?.locus?.rows?.[0]?.posteriorProbability -
+          b?.locus?.rows?.[0]?.posteriorProbability;
+      },
       sortable: true,
       renderCell: ({ locus }) =>
         locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,

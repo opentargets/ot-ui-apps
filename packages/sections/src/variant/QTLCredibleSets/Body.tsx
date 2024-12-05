@@ -36,7 +36,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "leadVariant",
       label: "Lead variant",
-      comparator: variantComparator,
+      comparator: variantComparator(d => d.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -148,6 +148,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       id: "posteriorProbability",
       label: "Posterior probability",
       filterValue: false,
+      sortable: true,
+      comparator: (a, b) => {
+        return a?.locus?.rows?.[0]?.posteriorProbability -
+          b?.locus?.rows?.[0]?.posteriorProbability;
+      },
       tooltip: (
         <>
           Posterior inclusion probability that the fixed page variant (
@@ -168,7 +173,6 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       // row =>
       // comparator: (rowA, rowB) =>
       //   rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
-      sortable: true,
       renderCell: ({ locus }) =>
         locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
       exportValue: ({ locus }) =>

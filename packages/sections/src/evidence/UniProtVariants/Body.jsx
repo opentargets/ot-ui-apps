@@ -8,7 +8,7 @@ import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
 import { identifiersOrgLink } from "../../utils/global";
-import { variantComparator } from "../../utils/comparators";
+import { nullishComparator, variantComparator } from "../../utils/comparators";
 import {
   defaultRowsPerPageOptions,
   variantConsequenceSource,
@@ -52,7 +52,10 @@ function getColumns(label) {
     {
       id: "variantId",
       label: "Variant",
-      comparator: variantComparator,
+      comparator: nullishComparator(
+        variantComparator(d => d.variant),
+        d => d.variant,
+      ),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -84,7 +87,7 @@ function getColumns(label) {
         }
         return naLabel;
       }
-    },        
+    },
     {
       id: "variantConsequence",
       label: "Variant Consequence",

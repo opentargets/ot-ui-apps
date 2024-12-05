@@ -1,3 +1,4 @@
+
 /*
 Example usage:
 const comparatorDiseaseName = generateComparatorFromAccessor(d => d.disease.name);
@@ -17,7 +18,6 @@ export const nullishComparator = (comparator, accessor = x => x) => {
   return (a, b) => {
     const aVal = accessor(a);
     const bVal = accessor(b);
-    console.log({ aVal, bVal });
     if (aVal == null) {
       if (bVal == null) return 0;
       return 1;
@@ -64,34 +64,35 @@ chromosomeRank.set('X', 23);
 chromosomeRank.set('Y', 24);
 
 type VariantType = {
-  variant: {
-    chromosome: string;
-    position: number;
-    referenceAllele: string;
-    alternateAllele: string;
-  }
+  chromosome: string;
+  position: number;
+  referenceAllele: string;
+  alternateAllele: string;
 };
 
-export function variantComparator(
-  { variant: v1 }: VariantType,
-  { variant: v2 }: VariantType
-) {
+export function variantComparator(accessor: (arg: any) => VariantType) {
 
-  if (!v1 || !v2) return 0;
+  return function (obj1: any, obj2: any) {
+    const v1 = accessor(obj1);
+    const v2 = accessor(obj2);
 
-  const chromosomeDiff =
-    chromosomeRank.get(v1.chromosome) - chromosomeRank.get(v2.chromosome);
-  if (chromosomeDiff !== 0) return chromosomeDiff;
+    if (!v1 || !v2) return 0;
 
-  const positionDiff = v1.position - v2.position;
-  if (positionDiff !== 0) return positionDiff
+    const chromosomeDiff =
+      chromosomeRank.get(v1.chromosome) - chromosomeRank.get(v2.chromosome);
+    if (chromosomeDiff !== 0) return chromosomeDiff;
 
-  if (v1.referenceAllele < v2.referenceAllele) return -1;
-  else if (v1.referenceAllele > v2.referenceAllele) return 1;
-  else if (v1.alternateAllele < v2.alternateAllele) return -1;
-  else if (v1.alternateAllele > v2.alternateAllele) return 1;
+    const positionDiff = v1.position - v2.position;
+    if (positionDiff !== 0) return positionDiff
 
-  return 0;
+    if (v1.referenceAllele < v2.referenceAllele) return -1;
+    else if (v1.referenceAllele > v2.referenceAllele) return 1;
+    else if (v1.alternateAllele < v2.alternateAllele) return -1;
+    else if (v1.alternateAllele > v2.alternateAllele) return 1;
+
+    return 0;
+  }
+
 }
 
 export function mantissaExponentComparator(m1, e1, m2, e2) {
