@@ -1,5 +1,5 @@
 fragment Locus2GeneQueryFragment on credibleSet {
-  l2Gpredictions {
-    score
+  l2GPredictions {
+    count
   }
 }

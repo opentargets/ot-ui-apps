@@ -23,9 +23,7 @@ const columns = [
   {
     id: "studyLocusId",
     label: "Navigate",
-    renderCell: ({ studyLocusId }) => (
-      <Navigate to={`/credible-set/${studyLocusId}`} />
-    ),
+    renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
   },
   {
     id: "leadVariant",
@@ -104,23 +102,25 @@ const columns = [
   {
     id: "topL2G",
     label: "Top L2G",
-    filterValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
+    filterValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target.approvedSymbol,
     tooltip: "Top gene prioritised by our locus-to-gene model",
-    renderCell: ({ l2Gpredictions }) => {
-      const target = l2Gpredictions?.[0]?.target;
+    renderCell: ({ l2GPredictions }) => {
+      const target = l2GPredictions?.rows[0]?.target;
       if (!target) return naLabel;
       return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
     },
-    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
+    exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target.approvedSymbol,
   },
   {
     id: "l2gScore",
     label: "L2G score",
-    comparator: (rowA, rowB) => rowA?.l2Gpredictions[0]?.score - rowB?.l2Gpredictions[0]?.score,
+    comparator: (rowA, rowB) =>
+      rowA?.l2GPredictions?.rows[0]?.score - rowB?.l2GPredictions?.rows[0]?.score,
     sortable: true,
-    tooltip: "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
-    renderCell: ({ l2Gpredictions }) => {
-      const score = l2Gpredictions?.[0]?.score;
+    tooltip:
+      "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
+    renderCell: ({ l2GPredictions }) => {
+      const score = l2GPredictions?.rows[0]?.score;
       if (typeof score !== "number") return naLabel;
       return (
         <Tooltip title={score.toFixed(3)} style="">

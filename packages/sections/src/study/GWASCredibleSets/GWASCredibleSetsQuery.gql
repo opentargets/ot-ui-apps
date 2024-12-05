@@ -20,12 +20,14 @@ query GWASCredibleSetsQuery($studyId: String!, $size: Int!, $index: Int!) {
         }
         finemappingMethod
         confidence
-        l2Gpredictions(size: 1) {
-          target {
-            id
-            approvedSymbol
+        l2GPredictions(page: { size: 1, index: 0 }) {
+          rows {
+            target {
+              id
+              approvedSymbol
+            }
+            score
           }
-          score
         }
       }
     }

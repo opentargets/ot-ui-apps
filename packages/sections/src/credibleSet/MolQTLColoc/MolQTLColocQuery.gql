@@ -1,40 +1,43 @@
-query MolQTLColocQuery($studyLocusId: String!) {
+query MolQTLColocQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
   credibleSet(studyLocusId: $studyLocusId) {
-    colocalisation(studyTypes: [tuqtl, pqtl, eqtl, sqtl], page: { size: 250, index: 0 }) {
-      otherStudyLocus {
-        studyLocusId
-        study {
-          id
-          studyType
-          projectId
-          traitFromSource
-          publicationFirstAuthor
-          target {
-            approvedSymbol
+    colocalisation(studyTypes: [tuqtl, pqtl, eqtl, sqtl], page: { size: $size, index: $index }) {
+      count
+      rows {
+        otherStudyLocus {
+          studyLocusId
+          study {
             id
+            studyType
+            projectId
+            traitFromSource
+            publicationFirstAuthor
+            target {
+              approvedSymbol
+              id
+            }
+            biosample {
+              biosampleId
+              biosampleName
+              description
+            }
           }
-          biosample {
-            biosampleId
-            biosampleName
-            description
+          variant {
+            id
+            chromosome
+            position
+            referenceAllele
+            alternateAllele
           }
+          pValueMantissa
+          pValueExponent
         }
-        variant {
-          id
-          chromosome
-          position
-          referenceAllele
-          alternateAllele
-        }
-        pValueMantissa
-        pValueExponent
+        numberColocalisingVariants
+        colocalisationMethod
+        h3
+        h4
+        clpp
+        betaRatioSignAverage
       }
-      numberColocalisingVariants
-      colocalisationMethod
-      h3
-      h4
-      clpp
-      betaRatioSignAverage
     }
   }
 }
