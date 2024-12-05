@@ -341,7 +341,7 @@ export const variantConsequenceSource = {
   },
 };
 
-export const poulationMap = {
+export const populationMap = {
   fin: "Finish",
   afr: "African",
   nfe: "non-Finnish Europeans",

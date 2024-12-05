@@ -44,34 +44,6 @@ function getColumns(diseaseIds: string[]) {
       label: "Reported trait",
     },
     {
-      id: "author",
-      label: "First author",
-      renderCell: ({ projectId, publicationFirstAuthor }) =>
-        getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor || naLabel,
-      exportValue: ({ projectId, publicationFirstAuthor }) =>
-        getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor,
-    },
-    {
-      id: "publicationDate",
-      label: "Year",
-      renderCell: ({ projectId, publicationDate }) =>
-        getStudyCategory(projectId) === "FINNGEN"
-          ? "2023"
-          : publicationDate
-          ? publicationDate.slice(0, 4)
-          : naLabel,
-      exportValue: ({ projectId, publicationYear }) =>
-        getStudyCategory(projectId) === "FINNGEN" ? "2023" : publicationYear,
-    },
-    {
-      id: "publicationJournal",
-      label: "Journal",
-      renderCell: ({ projectId, publicationJournal }) =>
-        getStudyCategory(projectId) === "FINNGEN" ? naLabel : publicationJournal || naLabel,
-      exportValue: ({ projectId, publicationJournal }) =>
-        getStudyCategory(projectId) === "FINNGEN" ? naLabel : publicationJournal,
-    },
-    {
       id: "nSamples",
       label: "Sample size",
       comparator: (a, b) => a?.nSamples - b?.nSamples,
@@ -113,20 +85,21 @@ function getColumns(diseaseIds: string[]) {
         getStudyCategory(projectId) === "FINNGEN"
           ? "FinnGen"
           : cohorts?.length
-          ? cohorts.join(", ")
-          : null,
+            ? cohorts.join(", ")
+            : null,
     },
     {
-      id: "pubmedId",
-      label: "PubMed ID",
-      renderCell: ({ projectId, pubmedId }) =>
-        getStudyCategory(projectId) === "GWAS" && pubmedId ? (
-          <PublicationsDrawer entries={[{ name: pubmedId, url: epmcUrl(pubmedId) }]} />
-        ) : (
-          naLabel
-        ),
-      exportValue: ({ projectId, pubmedId }) =>
-        getStudyCategory(projectId) === "GWAS" && pubmedId ? pubmedId : null,
+      id: "publication",
+      label: "Publication",
+      renderCell: ({ publicationFirstAuthor, publicationDate, pubmedId }) => {
+        if (!publicationFirstAuthor) return naLabel;
+        return <PublicationsDrawer
+          entries={[{ name: pubmedId, url: epmcUrl(pubmedId) }]}
+          customLabel={`${publicationFirstAuthor} et al. (${new Date(publicationDate).getFullYear()})`}
+        />
+      },
+      filterValue: ({ publicationYear, publicationFirstAuthor }) =>
+        `${publicationYear} ${publicationFirstAuthor}`,
     },
   ];
 }
