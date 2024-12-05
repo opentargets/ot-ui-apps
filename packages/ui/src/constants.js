@@ -335,11 +335,6 @@ export const publicationSummaryQuery = ({ pmcId, symbol, name }) => {
 };
 
 export const VIEW = {
-  chart: "Chart",
+  chart: "Visualisation",
   table: "Table",
 };
-
-// export enum DISPLAY_TYPE {
-//   CHART = "chart",
-//   TABLE = "table",
-// }
