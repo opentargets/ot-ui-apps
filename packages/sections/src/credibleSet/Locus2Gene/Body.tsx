@@ -61,7 +61,7 @@ function Body({ studyLocusId, entity }: BodyProps): ReactNode {
             dataDownloaderFileStem={`${studyLocusId}-locus2gene`}
             columns={columns}
             loading={request.loading}
-            rows={request.data?.credibleSet.l2Gpredictions}
+            rows={request.data?.credibleSet.l2Gpredictions.rows}
             query={LOCUS2GENE_QUERY.loc.source.body}
             variables={variables}
           />
