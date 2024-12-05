@@ -4,6 +4,6 @@ export const definition = {
   name: "Shared Trait Studies",
   shortName: "ST",
   hasData: data => {
-    return data?.sharedTraitStudies?.count > 0 || data?.count > 0;
+    return data?.sharedTraitStudies?.count > 1 || data?.count > 1;
   },
 };

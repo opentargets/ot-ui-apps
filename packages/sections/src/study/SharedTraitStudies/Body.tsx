@@ -143,6 +143,10 @@ export function Body({ studyId, diseaseIds, entity }: BodyProps) {
 
   const columns = getColumns(diseaseIds);
 
+  const rows = request.data?.studies?.rows?.filter(row => {
+    return row.id !== studyId;
+  });
+
   return (
     <SectionItem
       definition={definition}
@@ -155,7 +159,7 @@ export function Body({ studyId, diseaseIds, entity }: BodyProps) {
         return (
           <OtTable
             columns={columns}
-            rows={request.data?.studies?.rows}
+            rows={rows}
             loading={request.loading}
             sortBy="nSamples"
             order="desc"
