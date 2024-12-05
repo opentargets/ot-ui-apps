@@ -8,16 +8,14 @@ import {
   OtScoreLinearBar,
   OtTable,
   useBatchQuery,
+  Navigate,
 } from "ui";
-import { Box } from "@mui/material";
 import { naLabel, credsetConfidenceMap, initialResponse, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import ManhattanPlot from "./ManhattanPlot";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
 
@@ -25,13 +23,7 @@ const columns = [
   {
     id: "studyLocusId",
     label: "Navigate",
-    renderCell: ({ studyLocusId }) => (
-      <Box sx={{ display: "flex" }}>
-        <Link to={`/credible-set/${studyLocusId}`}>
-          <FontAwesomeIcon icon={faArrowRightToBracket} />
-        </Link>
-      </Box>
-    ),
+    renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
   },
   {
     id: "leadVariant",
@@ -111,22 +103,25 @@ const columns = [
   {
     id: "topL2G",
     label: "Top L2G",
-    filterValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
+    filterValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target.approvedSymbol,
     tooltip: "Top gene prioritised by our locus-to-gene model",
-    renderCell: ({ l2Gpredictions }) => {
-      const target = l2Gpredictions?.[0]?.target;
+    renderCell: ({ l2GPredictions }) => {
+      const target = l2GPredictions?.rows[0]?.target;
       if (!target) return naLabel;
       return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
     },
-    exportValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
+    exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target.approvedSymbol,
   },
   {
     id: "l2gScore",
     label: "L2G score",
-    comparator: (rowA, rowB) => rowA?.l2Gpredictions[0]?.score - rowB?.l2Gpredictions[0]?.score,
+    comparator: (rowA, rowB) =>
+      rowA?.l2GPredictions?.rows[0]?.score - rowB?.l2GPredictions?.rows[0]?.score,
     sortable: true,
-    renderCell: ({ l2Gpredictions }) => {
-      const score = l2Gpredictions?.[0]?.score;
+    tooltip:
+      "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
+    renderCell: ({ l2GPredictions }) => {
+      const score = l2GPredictions?.rows[0]?.score;
       if (typeof score !== "number") return naLabel;
       return (
         <Tooltip title={score.toFixed(3)} style="">
@@ -165,7 +160,7 @@ function Body({ id, entity }: BodyProps) {
       size: table5HChunkSize,
       index: 0,
     },
-    dataPath: "data.gwasStudy[0].credibleSets",
+    dataPath: "data.study.credibleSets",
     size: table5HChunkSize,
   });
 
@@ -180,20 +175,17 @@ function Body({ id, entity }: BodyProps) {
       definition={definition}
       entity={entity}
       request={request}
-      renderDescription={() => <Description studyId={request.data?.gwasStudy[0].studyId} />}
+      renderDescription={() => <Description studyId={request.data?.study.id} />}
       renderBody={() => (
         <>
-          <ManhattanPlot
-            loading={request.loading}
-            data={request.data?.gwasStudy[0].credibleSets.rows}
-          />
+          <ManhattanPlot loading={request.loading} data={request.data?.study.credibleSets.rows} />
           <OtTable
             dataDownloader
             showGlobalFilter
             sortBy="pValue"
             loading={request.loading}
             columns={columns}
-            rows={request.data?.gwasStudy[0].credibleSets.rows}
+            rows={request.data?.study.credibleSets.rows}
             query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
             variables={variables}
           />

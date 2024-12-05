@@ -8,6 +8,7 @@ import {
   ClinvarStars,
   OtScoreLinearBar,
   useBatchQuery,
+  Navigate,
 } from "ui";
 import { Box, Chip } from "@mui/material";
 import { credsetConfidenceMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
@@ -17,8 +18,6 @@ import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import PheWasPlot from "./PheWasPlot";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
 
@@ -33,13 +32,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "studyLocusId",
       label: "Navigate",
-      renderCell: ({ studyLocusId }) => (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Link to={`/credible-set/${studyLocusId}`}>
-            <FontAwesomeIcon icon={faArrowRightToBracket} />
-          </Link>
-        </Box>
-      ),
+      renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
     },
     {
       id: "leadVariant",
@@ -188,25 +181,28 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "topL2G",
       label: "Top L2G",
-      filterValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
+      filterValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target?.approvedSymbol,
       tooltip: "Top gene prioritised by our locus-to-gene model",
-      renderCell: ({ l2Gpredictions }) => {
-        if (!l2Gpredictions[0]?.target) return naLabel;
-        const { target } = l2Gpredictions[0];
+      renderCell: ({ l2GPredictions }) => {
+        if (!l2GPredictions?.rows[0]?.target) return naLabel;
+        const { target } = l2GPredictions?.rows[0];
         return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
       },
-      exportValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
+      exportValue: ({ l2GPredictions }) => l2GPredictions?.target.approvedSymbol,
     },
     {
       id: "l2gScore",
       label: "L2G score",
-      comparator: (rowA, rowB) => rowA?.l2Gpredictions[0]?.score - rowB?.l2Gpredictions[0]?.score,
+      comparator: (rowA, rowB) =>
+        rowA?.l2GPredictions?.rows[0]?.score - rowB?.l2GPredictions?.rows[0]?.score,
       sortable: true,
-      renderCell: ({ l2Gpredictions }) => {
-        if (!l2Gpredictions[0]?.score) return naLabel;
+      tooltip:
+        "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
+      renderCell: ({ l2GPredictions }) => {
+        if (!l2GPredictions?.rows[0]?.score) return naLabel;
         return (
-          <Tooltip title={l2Gpredictions[0].score.toFixed(3)} style="">
-            <OtScoreLinearBar variant="determinate" value={l2Gpredictions[0].score * 100} />
+          <Tooltip title={l2GPredictions?.rows[0].score.toFixed(3)} style="">
+            <OtScoreLinearBar variant="determinate" value={l2GPredictions?.rows[0].score * 100} />
           </Tooltip>
         );
       },

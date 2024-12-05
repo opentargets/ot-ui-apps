@@ -1,25 +1,25 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
-import { Box } from "@mui/material";
+import {
+  Link,
+  SectionItem,
+  ScientificNotation,
+  DisplayVariantId,
+  OtTable,
+  Navigate,
+} from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const columns = [
   {
     id: "studyLocusId",
     label: "Navigate",
     renderCell: ({ studyLocusId }) => (
-      <Box sx={{ display: "flex" }}>
-        <Link to={`/credible-set/${studyLocusId}`}>
-          <FontAwesomeIcon icon={faArrowRightToBracket} />
-        </Link>
-      </Box>
-    ),
+      <Navigate to={`/credible-set/${studyLocusId}`} />
+    )
   },
   {
     id: "leadVariant",
@@ -110,7 +110,7 @@ function Body({ id, entity }: BodyProps) {
       definition={definition}
       entity={entity}
       request={request}
-      renderDescription={() => <Description studyId={request.data?.gwasStudy[0].studyId} />}
+      renderDescription={() => <Description studyId={request.data?.study.id} />}
       renderBody={() => (
         <OtTable
           dataDownloader
@@ -118,7 +118,7 @@ function Body({ id, entity }: BodyProps) {
           sortBy="pValue"
           columns={columns}
           loading={request.loading}
-          rows={request.data?.gwasStudy[0].credibleSets.rows}
+          rows={request.data?.study.credibleSets.rows}
           query={QTL_CREDIBLE_SETS_QUERY.loc.source.body}
           variables={variables}
         />

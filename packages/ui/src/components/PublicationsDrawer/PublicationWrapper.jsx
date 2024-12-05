@@ -161,7 +161,7 @@ function PublicationWrapper({
         </Box>
       )}
 
-      {fullTextOpen && isOpenAccess && urlAiApi && (
+      {symbol && name && fullTextOpen && isOpenAccess && urlAiApi && (
         <PublicationSummary name={name} symbol={symbol} pmcId={pmcId} />
       )}
     </Box>

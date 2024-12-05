@@ -9,21 +9,16 @@ import {
   PublicationsDrawer,
   ClinvarStars,
   LabelChip,
+  DetailPopover,
+  SummaryStatsTable,
+  DisplaySampleSize,
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
-import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 import { epmcUrl } from "../../utils/urls";
-import {
-  credsetConfidenceMap,
-  poulationMap,
-} from "../../constants";
+import { credsetConfidenceMap, populationMap } from "../../constants";
 
-type ProfileHeaderProps = {
-  variantId: string;
-};
-
-function ProfileHeader({ variantId }: ProfileHeaderProps) {
+function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
 
   // TODO: Errors!
@@ -31,14 +26,13 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
 
   const credibleSet = data?.credibleSet;
   const study = credibleSet?.study;
-  const studyCategory = study ? getStudyCategory(study.projectId) : null;
   const target = study?.target;
   const leadVariant = credibleSet?.locus.rows[0];
   const beta = leadVariant?.beta ?? credibleSet?.beta;
   const standardError = leadVariant?.standardError ?? credibleSet?.standardError;
   const { pValueMantissa, pValueExponent } =
     typeof leadVariant?.pValueMantissa === "number" &&
-    typeof leadVariant?.pValueExponent === "number"
+      typeof leadVariant?.pValueExponent === "number"
       ? leadVariant
       : credibleSet ?? {};
 
@@ -91,16 +85,21 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
           </Field>
         )}
         {typeof credibleSet?.effectAlleleFrequencyFromSource === "number" && (
-          <Field loading={loading} title={<Tooltip
+          <Field
+            loading={loading}
             title={
-              <Typography variant="caption">
-              Frequency of the effect allele in studied population 
-              </Typography>
+              <Tooltip
+                title={
+                  <Typography variant="caption">
+                    Frequency of the effect allele in studied population
+                  </Typography>
+                }
+                showHelpIcon
+              >
+                Effective allele frequency
+              </Tooltip>
             }
-            showHelpIcon
           >
-            Effective allele frequency
-          </Tooltip>}>
             {credibleSet.effectAlleleFrequencyFromSource.toPrecision(3)}
           </Field>
         )}
@@ -127,21 +126,23 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Typography variant="subtitle1" mt={1}>
           Fine-mapping
         </Typography>
-        {
-          credibleSet?.locusStart && (<Field loading={loading} title="Locus">
-          {credibleSet?.variant?.chromosome}:{credibleSet?.locusStart}-{credibleSet?.locusEnd}
-        </Field>)
-        }
+        {credibleSet?.locusStart && (
+          <Field loading={loading} title="Locus">
+            {credibleSet?.variant?.chromosome}:{credibleSet?.locusStart}-{credibleSet?.locusEnd}
+          </Field>
+        )}
         <Field loading={loading} title="Method">
           {credibleSet?.finemappingMethod}
         </Field>
-        <Field loading={loading}
+        <Field
+          loading={loading}
           title={
-          <Tooltip title="Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method"
-          showHelpIcon
-          >
-            Confidence
-          </Tooltip>
+            <Tooltip
+              title="Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method"
+              showHelpIcon
+            >
+              Confidence
+            </Tooltip>
           }
         >
           <Tooltip title={credibleSet?.confidence}>
@@ -153,25 +154,45 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         <Field
           loading={loading}
           title={
-          <Tooltip
-            title={
-              <Typography variant="caption">Minimum pairwise correlation (R<sup>2</sup>) observed between all variants in the credible set</Typography>
-            }
-            showHelpIcon
-          >
-            Minimum R<sup>2</sup>
-          </Tooltip>
-        }
+            <Tooltip
+              title={
+                <Typography variant="caption">
+                  Minimum pairwise correlation (R<sup>2</sup>) observed between all variants in the
+                  credible set
+                </Typography>
+              }
+              showHelpIcon
+            >
+              Minimum R<sup>2</sup>
+            </Tooltip>
+          }
         >
           {credibleSet?.purityMinR2?.toPrecision(3)}
         </Field>
-      </Box>
+        {credibleSet?.qualityControls?.length > 0 &&
+          <Box>
+            <DetailPopover title="QC warnings">
+              <ul style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.25rem",
+                padding: 0,
+                margin: "0 0 0 1rem"
+              }}>
+                {credibleSet.qualityControls.map(warning => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
+            </DetailPopover>
+          </Box>
+        }
+      </Box >
 
       <Box>
         <Typography variant="subtitle1" mt={0}>
-          {study?.studyType.replace(/(qtl|gwas)/gi, (match) => match.toUpperCase())} Study 
+          {study?.studyType.replace(/(qtl|gwas)/gi, match => match.toUpperCase())} Study
         </Typography>
-        {studyCategory !== "QTL" && (
+        {study?.studyType === "gwas" && (
           <>
             <Field loading={loading} title="Reported trait">
               {study?.traitFromSource}
@@ -198,7 +219,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             )}
           </>
         )}
-        {studyCategory === "QTL" && (
+        {study?.studyType !== "gwas" && (
           <>
             {target?.id && (
               <Field loading={loading} title="Affected gene">
@@ -217,9 +238,12 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             )}
           </>
         )}
-        {study?.publicationFirstAuthor && (<Field loading={loading} title="Publication">
-          {study?.publicationFirstAuthor} <i>et al.</i> {study?.publicationJournal} ({study?.publicationDate?.slice(0, 4)}) 
-        </Field>)}
+        {study?.publicationFirstAuthor && (
+          <Field loading={loading} title="Publication">
+            {study?.publicationFirstAuthor} <i>et al.</i> {study?.publicationJournal} (
+            {study?.publicationDate?.slice(0, 4)})
+          </Field>
+        )}
         {study?.pubmedId && (
           <Field loading={loading} title="PubMed">
             <PublicationsDrawer entries={[{ name: study.pubmedId, url: epmcUrl(study.pubmedId) }]}>
@@ -227,24 +251,42 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             </PublicationsDrawer>
           </Field>
         )}
-        <Field loading={loading} title="Sample size">
-          {study?.nSamples.toLocaleString()}
-          {study?.ldPopulationStructure?.length > 0 && (
-            <Box display="flex" sx={{ gap: 1 }}>
-            {study.ldPopulationStructure.map(({ ldPopulation,  relativeSampleSize}, index) => (
+        <Field loading={loading} title="Analysis">
+          {study?.analysisFlags?.join(", ")}
+        </Field>
+        <Field loading={loading} title="Summary statistics">
+          {!study?.hasSumstats
+            ? "Not Available"
+            : study?.sumstatQCValues
+              ? <DetailPopover title="Available">
+                <SummaryStatsTable sumstatQCValues={study.sumstatQCValues} />
+              </DetailPopover>
+              : "Available"
+          }
+        </Field>
+        {study?.nSamples &&
+          <Field loading={loading} title="Sample size">
+            <DisplaySampleSize
+              nSamples={study.nSamples}
+              cohorts={study?.cohorts}
+              initialSampleSize={study?.initialSampleSize}
+            />
+          </Field>
+        }
+        {study?.ldPopulationStructure?.length > 0 &&
+          <Box display="flex" sx={{ gap: 1 }}>
+            {study.ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
               <LabelChip
                 key={ldPopulation}
                 label={ldPopulation.toUpperCase()}
                 value={`${(relativeSampleSize * 100).toFixed(0)}%`}
-                tooltip={`LD reference population: ${ poulationMap[ldPopulation]}`}
+                tooltip={`LD reference population: ${populationMap[ldPopulation]}`}
               />
             ))}
-            </Box>
-        )}
-        </Field>
-
+          </Box>
+        }
       </Box>
-    </BaseProfileHeader>  
+    </BaseProfileHeader >
   );
 }
 

@@ -15,7 +15,7 @@ function getColumns(diseaseIds: string[]) {
     {
       id: "studyId",
       label: "Study",
-      renderCell: ({ studyId }) => <Link to={`./${studyId}`}>{studyId}</Link>,
+      renderCell: ({ id }) => <Link to={`./${id}`}>{id}</Link>,
     },
     {
       id: "sharedDiseases",
@@ -42,34 +42,6 @@ function getColumns(diseaseIds: string[]) {
     {
       id: "traitFromSource",
       label: "Reported trait",
-    },
-    {
-      id: "author",
-      label: "First author",
-      renderCell: ({ projectId, publicationFirstAuthor }) =>
-        getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor || naLabel,
-      exportValue: ({ projectId, publicationFirstAuthor }) =>
-        getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor,
-    },
-    {
-      id: "publicationDate",
-      label: "Year",
-      renderCell: ({ projectId, publicationDate }) =>
-        getStudyCategory(projectId) === "FINNGEN"
-          ? "2023"
-          : publicationDate
-          ? publicationDate.slice(0, 4)
-          : naLabel,
-      exportValue: ({ projectId, publicationYear }) =>
-        getStudyCategory(projectId) === "FINNGEN" ? "2023" : publicationYear,
-    },
-    {
-      id: "publicationJournal",
-      label: "Journal",
-      renderCell: ({ projectId, publicationJournal }) =>
-        getStudyCategory(projectId) === "FINNGEN" ? naLabel : publicationJournal || naLabel,
-      exportValue: ({ projectId, publicationJournal }) =>
-        getStudyCategory(projectId) === "FINNGEN" ? naLabel : publicationJournal,
     },
     {
       id: "nSamples",
@@ -113,20 +85,21 @@ function getColumns(diseaseIds: string[]) {
         getStudyCategory(projectId) === "FINNGEN"
           ? "FinnGen"
           : cohorts?.length
-          ? cohorts.join(", ")
-          : null,
+            ? cohorts.join(", ")
+            : null,
     },
     {
-      id: "pubmedId",
-      label: "PubMed ID",
-      renderCell: ({ projectId, pubmedId }) =>
-        getStudyCategory(projectId) === "GWAS" && pubmedId ? (
-          <PublicationsDrawer entries={[{ name: pubmedId, url: epmcUrl(pubmedId) }]} />
-        ) : (
-          naLabel
-        ),
-      exportValue: ({ projectId, pubmedId }) =>
-        getStudyCategory(projectId) === "GWAS" && pubmedId ? pubmedId : null,
+      id: "publication",
+      label: "Publication",
+      renderCell: ({ publicationFirstAuthor, publicationDate, pubmedId }) => {
+        if (!publicationFirstAuthor) return naLabel;
+        return <PublicationsDrawer
+          entries={[{ name: pubmedId, url: epmcUrl(pubmedId) }]}
+          customLabel={`${publicationFirstAuthor} et al. (${new Date(publicationDate).getFullYear()})`}
+        />
+      },
+      filterValue: ({ publicationYear, publicationFirstAuthor }) =>
+        `${publicationYear} ${publicationFirstAuthor}`,
     },
   ];
 }
@@ -135,18 +108,6 @@ type BodyProps = {
   studyId: string;
   diseaseIds: string[];
   entity: string;
-};
-
-const parseStudies = (studyId, gwasStudy) => {
-  const studies = [];
-  const studyIds = new Set([studyId]);
-  for (const study of gwasStudy) {
-    if (!studyIds.has(study.studyId)) {
-      studies.push(study);
-      studyIds.add(study.studyId);
-    }
-  }
-  return studies;
 };
 
 export function Body({ studyId, diseaseIds, entity }: BodyProps) {
@@ -164,14 +125,13 @@ export function Body({ studyId, diseaseIds, entity }: BodyProps) {
     <SectionItem
       definition={definition}
       request={request}
-      entity={entity}
+      entity={"studies"}
       renderDescription={() => <Description studyId={studyId} />}
       renderBody={() => {
-        const rows = request.data?.gwasStudy ? parseStudies(studyId, request.data.gwasStudy) : [];
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.studies?.rows}
             loading={request.loading}
             sortBy="nSamples"
             order="desc"

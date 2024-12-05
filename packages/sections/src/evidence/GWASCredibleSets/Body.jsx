@@ -1,5 +1,4 @@
 import { useQuery } from "@apollo/client";
-// import { Tooltip } from "@mui/material";
 import {
   SectionItem,
   Link,
@@ -9,6 +8,7 @@ import {
   ClinvarStars,
   OtScoreLinearBar,
   Tooltip,
+  Navigate,
 } from "ui";
 
 import { naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } from "../../constants";
@@ -17,31 +17,22 @@ import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";
 import { mantissaExponentComparator } from "../../utils/comparators";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { Box } from "@mui/material";
 
-function getColumns() {
+function getColumns(targetSymbol) {
   return [
     {
       id: "credibleSet",
       label: "Navigate",
       renderCell: ({ credibleSet }) => {
-        return (
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Link to={`/credible-set/${credibleSet?.studyLocusId}`}>
-              <FontAwesomeIcon icon={faArrowRightToBracket} />
-            </Link>
-          </Box>
-        );
+        return <Navigate to={`/credible-set/${credibleSet?.studyLocusId}`} />;
       },
     },
     {
       id: "variantId",
       label: "Lead Variant",
       renderCell: ({ credibleSet }) => {
-        const variant = credibleSet.variant;
-        if (variant?.id) return <Link to={`/variant/${variant?.id}`}>{variant?.id}</Link>;
+        const variantId = credibleSet?.variant?.id;
+        if (variantId) return <Link to={`/variant/${variantId}`}>{variantId}</Link>;
         return naLabel;
       },
     },
@@ -60,9 +51,7 @@ function getColumns() {
       id: "study",
       label: "Study",
       renderCell: ({ credibleSet }) => {
-        return (
-          <Link to={`/study/${credibleSet?.study.id}`}>{credibleSet?.study.id}</Link>
-        );
+        return <Link to={`/study/${credibleSet?.study.id}`}>{credibleSet?.study.id}</Link>;
       },
     },
     {
@@ -114,7 +103,8 @@ function getColumns() {
       id: "confidence",
       label: "Fine-mapping confidence",
       sortable: true,
-      tooltip: "Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method",
+      tooltip:
+        "Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method",
       renderCell: ({ credibleSet }) => {
         if (!credibleSet?.confidence) return naLabel;
         return (
@@ -158,11 +148,13 @@ function getColumns() {
     {
       id: "publication",
       label: "Publication",
-      renderCell: ({ credibleSet }) => {
+      renderCell: ({ credibleSet, disease }) => {
         const { publicationFirstAuthor, publicationDate, pubmedId } = credibleSet?.study ?? {};
         if (!publicationFirstAuthor) return naLabel;
         return (
           <PublicationsDrawer
+            name={disease.name}
+            symbol={targetSymbol}
             entries={[{ name: pubmedId }]}
             customLabel={`${publicationFirstAuthor} et al. (${new Date(
               publicationDate
@@ -180,7 +172,7 @@ function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: sectionsBaseSizeQuery };
 
-  const columns = getColumns();
+  const columns = getColumns(label.symbol);
 
   const request = useQuery(GWAS_CREDIBLE_SETS_QUERY, {
     variables,

@@ -21,6 +21,7 @@ query SearchPageQuery(
       object {
         ... on Variant {
           id
+          variantDescription
           referenceAllele
           alternateAllele
           rsIds
@@ -55,6 +56,7 @@ query SearchPageQuery(
       object {
         ... on Variant {
           id
+          variantDescription
           chromosome
           position
           referenceAllele

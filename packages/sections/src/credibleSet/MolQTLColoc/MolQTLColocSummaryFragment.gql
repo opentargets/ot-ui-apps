@@ -1,0 +1,8 @@
+fragment MolQTLColocSummaryFragment on credibleSet {
+  molqtlcolocalisation: colocalisation(
+    studyTypes: [tuqtl, pqtl, eqtl, sqtl]
+    page: { size: 1, index: 0 }
+  ) {
+    count
+  }
+}

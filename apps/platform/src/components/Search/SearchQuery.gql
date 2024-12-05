@@ -10,6 +10,7 @@ query SearchQuery($queryString: String!) {
       object {
         ... on Variant {
           id
+          variantDescription
           referenceAllele
           alternateAllele
           rsIds
@@ -53,6 +54,7 @@ query SearchQuery($queryString: String!) {
       object {
         ... on Variant {
           id
+          variantDescription
           referenceAllele
           alternateAllele
           rsIds
