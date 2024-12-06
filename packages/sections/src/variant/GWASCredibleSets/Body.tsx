@@ -218,16 +218,16 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "credibleSetSize",
       label: "Credible set size",
-      comparator: (a, b) => a.locus?.count - b.locus?.count,
+      comparator: (a, b) => a.locusSize?.count - b.locusSize?.count,
       sortable: true,
       numeric: true,
       filterValue: false,
-      renderCell: ({ locus }) => {
-        return typeof locus?.count === "number"
-          ? locus.count.toLocaleString()
+      renderCell: ({ locusSize }) => {
+        return typeof locusSize?.count === "number"
+          ? locusSize.count.toLocaleString()
           : naLabel;
       },
-      exportValue: ({ locus }) => locus?.count,
+      exportValue: ({ locusSize }) => locusSize?.count,
     },
   ];
 }
