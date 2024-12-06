@@ -169,9 +169,9 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         </>
       ),
       renderCell: ({ locus }) =>
-        locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
+        locus.rows.length > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
       exportValue: ({ locus }) =>
-        locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
+        locus.rows.length > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
     },
     {
       id: "confidence",
