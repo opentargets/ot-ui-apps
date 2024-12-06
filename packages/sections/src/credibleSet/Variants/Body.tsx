@@ -23,7 +23,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
     {
       id: "variant.id",
       label: "Variant",
-      comparator: variantComparator,
+      comparator: variantComparator(d => d?.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -78,6 +78,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       id: "beta",
       label: "Beta",
       filterValue: false,
+      sortable: true,
       tooltip: "Beta with respect to the ALT allele",
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
@@ -148,9 +149,9 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
         const mostSevereConsequence = variant?.mostSevereConsequence
         if (!mostSevereConsequence) return naLabel;
         const displayElement = (
-            <Link external to={identifiersOrgLink("SO", mostSevereConsequence.id.slice(3))}>
-              {formatVariantConsequenceLabel(mostSevereConsequence.label)}
-            </Link>
+          <Link external to={identifiersOrgLink("SO", mostSevereConsequence.id.slice(3))}>
+            {formatVariantConsequenceLabel(mostSevereConsequence.label)}
+          </Link>
         );
         return displayElement;
       },

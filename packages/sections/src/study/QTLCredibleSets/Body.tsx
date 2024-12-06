@@ -24,7 +24,7 @@ const columns = [
   {
     id: "leadVariant",
     label: "Lead variant",
-    comparator: variantComparator,
+    comparator: variantComparator(d => d?.variant),
     sortable: true,
     filterValue: ({ variant: v }) =>
       `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -68,6 +68,7 @@ const columns = [
   {
     id: "beta",
     label: "Beta",
+    sortable: true,
     filterValue: false,
     tooltip: "Beta with respect to the ALT allele",
     renderCell: ({ beta }) => {
