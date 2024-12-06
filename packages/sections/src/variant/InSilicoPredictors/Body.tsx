@@ -3,8 +3,10 @@ import { Typography } from "@mui/material";
 import { SectionItem, Tooltip, OtTable } from "ui";
 import { definition } from "../InSilicoPredictors";
 import Description from "../InSilicoPredictors/Description";
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { naLabel } from "../../constants";
 import IN_SILICO_PREDICTORS_QUERY from "./InSilicoPredictorsQuery.gql";
+import InSilicoPredictorsVisualisation from "./InSilicoPredictorsPlot";
+import { VIEW } from "ui/src/constants";
 
 const columns = [
   {
@@ -37,6 +39,11 @@ const columns = [
     label: "Score",
     renderCell: ({ score }) => score ?? naLabel,
   },
+  {
+    id: "normalisedScore",
+    label: "normalisedScore",
+    renderCell: ({ normalisedScore }) => normalisedScore ?? naLabel,
+  },
 ];
 
 type BodyProps = {
@@ -47,7 +54,6 @@ type BodyProps = {
 export function Body({ id, entity }: BodyProps) {
   const variables = {
     variantId: id,
-    // size: sectionsBaseSizeQuery,
   };
   const request = useQuery(IN_SILICO_PREDICTORS_QUERY, {
     variables,
@@ -58,11 +64,20 @@ export function Body({ id, entity }: BodyProps) {
       definition={definition}
       request={request}
       entity={entity}
+      defaultView={VIEW.chart}
       renderDescription={() => (
         <Description
           variantId={request.data?.variant.id}
           referenceAllele={request.data?.variant.referenceAllele}
           alternateAllele={request.data?.variant.alternateAllele}
+        />
+      )}
+      renderChart={() => (
+        <InSilicoPredictorsVisualisation
+          data={request.data.variant.inSilicoPredictors}
+          query={IN_SILICO_PREDICTORS_QUERY.loc.source.body}
+          variables={variables}
+          columns={columns}
         />
       )}
       renderBody={() => {

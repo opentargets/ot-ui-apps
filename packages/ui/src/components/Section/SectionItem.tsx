@@ -112,9 +112,10 @@ function SectionItem({
               <CardContent className={classes.cardContent}>
                 <>
                   {error && <SectionError error={error} />}
-                  {showContentLoading && loading && (
-                    loadingMessage
-                      ? <Box
+                  {showContentLoading &&
+                    loading &&
+                    (loadingMessage ? (
+                      <Box
                         width="100%"
                         height={390}
                         bgcolor={theme => theme.palette.grey[100]}
@@ -124,8 +125,9 @@ function SectionItem({
                       >
                         <SummaryLoader message={loadingMessage} />
                       </Box>
-                      : <Skeleton sx={{ height: 390 }} variant="rectangular" />
-                  )}
+                    ) : (
+                      <Skeleton sx={{ height: 390 }} variant="rectangular" />
+                    ))}
                   {hasData && selectedView === VIEW.table && renderBody()}
                   {hasData && selectedView === VIEW.chart && renderChart()}
                   {showEmptySection && (
