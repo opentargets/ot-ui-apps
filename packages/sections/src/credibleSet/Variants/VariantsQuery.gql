@@ -1,7 +1,7 @@
-query VariantsQuery($studyLocusId: String!) {
+query VariantsQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
   credibleSet(studyLocusId: $studyLocusId) {
     studyLocusId
-    locus {
+    locus(page: { size: $size, index: $index }) {
       count
       rows {
         logBF

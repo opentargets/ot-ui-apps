@@ -1,12 +1,19 @@
-import { useQuery } from "@apollo/client";
 import { Box, Chip } from "@mui/material";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
-import { naLabel } from "../../constants";
+import {
+  Link,
+  SectionItem,
+  ScientificNotation,
+  DisplayVariantId,
+  OtTable,
+  useBatchQuery,
+} from "ui";
+import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import VARIANTS_QUERY from "./VariantsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { identifiersOrgLink } from "../../utils/global";
+import { useEffect, useState } from "react";
 
 type getColumnsType = {
   leadVariantId: string;
@@ -181,9 +188,24 @@ function Body({
     studyLocusId: studyLocusId,
   };
 
-  const request = useQuery(VARIANTS_QUERY, {
-    variables,
+  const [request, setRequest] = useState<responseType>(initialResponse);
+
+  const getData = useBatchQuery({
+    query: VARIANTS_QUERY,
+    variables: {
+      studyLocusId,
+      size: table5HChunkSize,
+      index: 0,
+    },
+    dataPath: "data.credibleSet.locus",
+    size: table5HChunkSize,
   });
+
+  useEffect(() => {
+    getData().then(r => {
+      setRequest(r);
+    });
+  }, []);
 
   const columns = getColumns({
     leadVariantId,
@@ -196,6 +218,8 @@ function Body({
       definition={definition}
       entity={entity}
       request={request}
+      showContentLoading
+      loadingMessage="Loading data. This may take some time..."
       renderDescription={() => <Description />}
       renderBody={() => {
         return (
