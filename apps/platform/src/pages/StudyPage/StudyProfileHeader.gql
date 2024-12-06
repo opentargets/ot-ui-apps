@@ -37,4 +37,5 @@ fragment StudyProfileHeaderFragment on Gwas {
     biosampleId
     biosampleName
   }
+  condition
 }

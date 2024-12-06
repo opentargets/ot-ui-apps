@@ -78,7 +78,7 @@ const columns = [
   {
     id: "otherStudyLocus.variant.id",
     label: "Lead Variant",
-    comparator: variantComparator,
+    comparator: variantComparator(d => d?.otherStudyLocus?.variant),
     sortable: true,
     filterValue: ({ otherStudyLocus }) => {
       const v = otherStudyLocus?.variant;
@@ -103,6 +103,7 @@ const columns = [
   {
     id: "pValue",
     label: "P-Value",
+    numeric: true,
     comparator: ({ otherStudyLocus: a }, { otherStudyLocus: b }) =>
       mantissaExponentComparator(
         a?.pValueMantissa,
@@ -115,7 +116,7 @@ const columns = [
     renderCell: ({ otherStudyLocus }) => {
       const { pValueMantissa, pValueExponent } = otherStudyLocus ?? {};
       if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return naLabel;
-      return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
+      return <ScientificNotation number={[pValueMantissa, pValueExponent]} dp={2} />;
     },
     exportValue: ({ otherStudyLocus }) => {
       const { pValueMantissa, pValueExponent } = otherStudyLocus ?? {};
@@ -127,8 +128,14 @@ const columns = [
     id: "numberColocalisingVariants",
     label: "Colocalising Variants (n)",
     filterValue: false,
+    numeric: true,
     comparator: (a, b) => a?.numberColocalisingVariants - b?.numberColocalisingVariants,
     sortable: true,
+    renderCell: ({ numberColocalisingVariants }) => {
+      return typeof numberColocalisingVariants === "number"
+        ? numberColocalisingVariants.toLocaleString()
+        : naLabel;
+    },
   },
   {
     id: "colocalisationMethod",
@@ -172,11 +179,12 @@ const columns = [
       </>
     ),
     filterValue: false,
+    numeric: true,
     comparator: (a, b) => a?.h3 - b?.h3,
     sortable: true,
     renderCell: ({ h3 }) => {
       if (typeof h3 !== "number") return naLabel;
-      return h3.toPrecision(3);
+      return h3.toFixed(3);
     },
   },
   {
@@ -184,22 +192,24 @@ const columns = [
     label: "H4",
     tooltip: "Posterior probability that the signals colocalise",
     filterValue: false,
+    numeric: true,
     comparator: (a, b) => a?.h4 - b?.h4,
     sortable: true,
     renderCell: ({ h4 }) => {
       if (typeof h4 !== "number") return naLabel;
-      return h4.toPrecision(3);
+      return h4.toFixed(3);
     },
   },
   {
     id: "clpp",
     label: "CLPP",
     filterValue: false,
+    numeric: true,
     comparator: (a, b) => a?.clpp - b?.clpp,
     sortable: true,
     renderCell: ({ clpp }) => {
       if (typeof clpp !== "number") return naLabel;
-      return clpp.toPrecision(3);
+      return clpp.toFixed(3);
     },
   },
 ];

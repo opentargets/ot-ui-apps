@@ -14,7 +14,7 @@ import { credsetConfidenceMap, initialResponse, naLabel, table5HChunkSize } from
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { mantissaExponentComparator, nullishComparator, variantComparator } from "../../utils/comparators";
 import { ReactNode, useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
 
@@ -36,7 +36,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "leadVariant",
       label: "Lead variant",
-      comparator: variantComparator,
+      comparator: variantComparator(d => d.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -114,6 +114,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "pValue",
       label: "P-value",
+      numeric: true,
       comparator: (a, b) =>
         mantissaExponentComparator(
           a?.pValueMantissa,
@@ -126,7 +127,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       renderCell: ({ pValueMantissa, pValueExponent }) => {
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number")
           return naLabel;
-        return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
+        return <ScientificNotation number={[pValueMantissa, pValueExponent]} dp={2} />;
       },
       exportValue: ({ pValueMantissa, pValueExponent }) => {
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return null;
@@ -136,18 +137,25 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "beta",
       label: "Beta",
+      numeric: true,
       filterValue: false,
       tooltip: "Beta with respect to the ALT allele",
       sortable: true,
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
-        return beta.toPrecision(3);
+        return beta.toFixed(3);
       },
     },
     {
       id: "posteriorProbability",
       label: "Posterior probability",
+      numeric: true,
       filterValue: false,
+      sortable: true,
+      comparator: (a, b) => {
+        return a?.locus?.rows?.[0]?.posteriorProbability -
+          b?.locus?.rows?.[0]?.posteriorProbability;
+      },
       tooltip: (
         <>
           Posterior inclusion probability that the fixed page variant (
@@ -160,9 +168,6 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           ) is causal.
         </>
       ),
-      comparator: (rowA, rowB) =>
-        rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
-      sortable: true,
       renderCell: ({ locus }) =>
         locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
       exportValue: ({ locus }) =>
@@ -191,10 +196,15 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "credibleSetSize",
       label: "Credible set size",
+      numeric: true,
       comparator: (a, b) => a.locus?.count - b.locus?.count,
       sortable: true,
       filterValue: false,
-      renderCell: ({ locus }) => locus?.count ?? naLabel,
+      renderCell: ({ locus }) => {
+        return typeof locus?.count === "number"
+          ? locus.count.toLocaleString()
+          : naLabel;
+      },
       exportValue: ({ locus }) => locus?.count,
     },
   ];

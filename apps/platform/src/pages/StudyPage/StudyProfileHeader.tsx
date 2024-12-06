@@ -41,6 +41,7 @@ function ProfileHeader() {
     qualityControls,
     analysisFlags,
     biosample,
+    condition,
   } = data?.study || {};
 
   return (
@@ -77,7 +78,7 @@ function ProfileHeader() {
             )}
           </>
         )}
-        {studyType !== "gwas" && (
+        {studyType !== "gwas" && (  // QTL
           <>
             {target?.id && (
               <Field loading={loading} title="Affected gene">
@@ -94,6 +95,9 @@ function ProfileHeader() {
                 </Link>
               </Field>
             )}
+            <Field loading={loading} title="Condition">
+              {condition}
+            </Field>
           </>
         )}
         {publicationFirstAuthor && (
