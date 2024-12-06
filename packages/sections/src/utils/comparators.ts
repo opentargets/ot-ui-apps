@@ -14,18 +14,19 @@ export const generateComparatorFromAccessor = accessor => (a, b) => {
 /*
 Return comparator that sorts nullish values to end
 */
-export const nullishComparator = (comparator, accessor = x => x) => {
-  return (a, b) => {
-    const aVal = accessor(a);
-    const bVal = accessor(b);
-    if (aVal == null) {
-      if (bVal == null) return 0;
-      return 1;
-    }
-    if (bVal === null) return -1;
-    return comparator(aVal, bVal);
+export const nullishComparator =
+  (comparator, accessor = x => x, nullishIsMax = true) => {
+    return (a, b) => {
+      const aVal = accessor(a);
+      const bVal = accessor(b);
+      if (aVal == null) {
+        if (bVal == null) return 0;
+        return nullishIsMax ? 1 : -1;
+      }
+      if (bVal === null) return nullishIsMax ? -1 : 1;
+      return comparator(aVal, bVal);
+    };
   };
-}
 
 /*
   Compares a breakpoint against a breakpoint helper.
@@ -70,7 +71,7 @@ type VariantType = {
   alternateAllele: string;
 };
 
-export function variantComparator(accessor: (arg: any) => VariantType) {
+export function variantComparator(accessor: (arg: any) => VariantType = d => d) {
 
   return function (obj1: any, obj2: any) {
     const v1 = accessor(obj1);
@@ -95,7 +96,12 @@ export function variantComparator(accessor: (arg: any) => VariantType) {
 
 }
 
-export function mantissaExponentComparator(m1, e1, m2, e2) {
+export function mantissaExponentComparator(m1, e1, m2, e2, nullishIsMax = true) {
+  if (m1 == null || e1 == null) {
+    if (m2 == null || e2 == null) return 0;
+    return nullishIsMax ? 1 : -1;
+  }
+  if (m2 == null || e2 == null) return nullishIsMax ? -1 : 1;
   if (e1 === e2) return m1 - m2;
   return e1 - e2;
 }

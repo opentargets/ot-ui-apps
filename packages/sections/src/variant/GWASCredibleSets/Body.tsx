@@ -16,7 +16,7 @@ import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { mantissaExponentComparator, variantComparator, nullishComparator } from "../../utils/comparators";
 import PheWasPlot from "./PheWasPlot";
 import { useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
@@ -195,8 +195,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "l2gScore",
       label: "L2G score",
-      comparator: (rowA, rowB) =>
-        rowA?.l2GPredictions?.rows[0]?.score - rowB?.l2GPredictions?.rows[0]?.score,
+      comparator: nullishComparator(
+        (a, b) => a - b,
+        row => row?.l2GPredictions?.rows[0]?.score,
+        false,
+      ),
       sortable: true,
       tooltip:
         "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",

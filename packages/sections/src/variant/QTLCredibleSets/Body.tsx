@@ -165,14 +165,6 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           ) is causal.
         </>
       ),
-      // comparator: nullishComparator(
-      //   (rowA, rowB) => {
-      //     return rowA.locus.rows[0].posteriorProbability -
-      //       rowB.locus.rows[0].posteriorProbability;
-      //   },
-      // row =>
-      // comparator: (rowA, rowB) =>
-      //   rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
       renderCell: ({ locus }) =>
         locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
       exportValue: ({ locus }) =>

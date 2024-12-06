@@ -9,8 +9,9 @@ import {
   OtScoreLinearBar,
   Tooltip,
   Navigate,
+  DisplayVariantId,
 } from "ui";
-
+import { variantComparator } from "../../utils/comparators";
 import { naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
@@ -30,11 +31,22 @@ function getColumns(targetSymbol) {
     {
       id: "variantId",
       label: "Lead Variant",
+      sortable: true,
+      comparator: variantComparator(d => d?.credibleSet?.variant),
       renderCell: ({ credibleSet }) => {
-        const variantId = credibleSet?.variant?.id;
-        if (variantId) return <Link to={`/variant/${variantId}`}>{variantId}</Link>;
-        return naLabel;
+        const v = credibleSet?.variant;
+        if (!v) return naLabel;
+        return <Link to={`/variant/${v.id}`}>
+          <DisplayVariantId
+            variantId={v.id}
+            referenceAllele={v.referenceAllele}
+            alternateAllele={v.alternateAllele}
+            expand={false}
+          />
+        </Link>
       },
+      filterValue: ({ variant: v }) =>
+        `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
     },
     {
       id: "trait",
