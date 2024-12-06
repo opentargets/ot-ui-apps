@@ -33,6 +33,7 @@ function ProfileHeader() {
     traitFromSource,
     backgroundTraits,
     diseases,
+    projectId,
     target,
     nCases,
     nControls,
@@ -80,6 +81,11 @@ function ProfileHeader() {
         )}
         {studyType !== "gwas" && (  // QTL
           <>
+            {projectId && (
+              <Field loading={loading} title="Project">
+                {projectId?.replace(/_/gi, " ")}
+              </Field>
+            )}
             {target?.id && (
               <Field loading={loading} title="Affected gene">
                 <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>
