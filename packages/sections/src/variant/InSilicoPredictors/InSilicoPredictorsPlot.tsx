@@ -25,13 +25,12 @@ const PRIORITISATION_COLORS = [
 
 function InSilicoPredictorsPlot({ data, query, variables, columns }) {
   const [ref, { width }] = useMeasure();
-  // const parsedData = prepareData(data);
   return (
     <div>
       <Box>
         <ChartControls data={data} query={query} variables={variables} columns={columns} />
       </Box>
-      <Box sx={{ width: "95%", margin: "0 auto" }} ref={ref}>
+      <Box sx={{ width: "90%", margin: "0 auto", mb: 6 }} ref={ref}>
         <Fade in>
           <div>
             <Plot data={data} width={width} />
@@ -64,76 +63,52 @@ function ChartControls({ data, query, variables, columns }) {
   );
 }
 
+const colorScale = PRIORITISATION_COLORS.reverse();
+const getXLabel = (tick: number) => {
+  if (tick === -1) return "Likely benign";
+  if (tick === 0) return "Uncertain";
+  if (tick === 1) return "Likely deleterious";
+  return "";
+};
+
 function Plot({ data, width }) {
   const headerRef = useRef();
-  console.log(d3);
-  // return null;
+
   useEffect(() => {
     if (data === undefined || width === null) return;
     const chart = PlotLib.plot({
       width: width,
       height: 250,
       label: null,
-      marginLeft: 100,
+      marginLeft: 120,
       marginRight: 100,
       x: {
-        // axis: "bottom",
-        label: null,
-
-        // tickFormat: "+",
+        axis: "bottom",
+        ticks: 2,
+        labelAnchor: "center",
+        tickFormat: d => getXLabel(d),
+        tickSize: 0,
         domain: [-1, 1],
       },
 
       color: {
-        // label: "tr",
-        legend: true,
+        legend: false,
         type: "linear",
-        range: PRIORITISATION_COLORS,
+        range: colorScale,
         domain: [-1, 1],
         interpolate: "hsl",
       },
+      style: {
+        fontSize: "15px",
+      },
       marks: [
-        //   () => htl.svg`<defs>
-        //   <linearGradient id="gradient" gradientTransform="rotate(90)">
-        //     <stop offset="15%" stop-color="purple" />
-        //     <stop offset="75%" stop-color="red" />
-        //     <stop offset="100%" stop-color="gold" />
-        //   </linearGradient>
-        // </defs>`,
-        // PlotLib.barX(data, {
-        //   x: "normalisedScore",
-        //   y: "method",
-        //   // fontSize: "18px",
-        //   fill: "#3389ca",
-        //   // fill: d => d.normalisedScore,
-        //   // sort: { y: "x" },
-        //   inset: 0.5,
-        // }),
-
-        // BARS
-        // PlotLib.ruleY(data, {
-        //   x: "normalisedScore",
-        //   y: "method",
-        //   // fontSize: "18px",
-        //   // fill: "#3389ca",
-        //   stroke: "#3389ca",
-        //   strokeWidth: 8,
-        //   // fill: d => d.normalisedScore,
-        //   // sort: { y: "x" },
-        // }),
-
         PlotLib.ruleY(data, {
-          // x: [-1, 1],
           x1: -0.99,
           x2: 0.99,
           y: "method",
-          // fontSize: "18px",
-          // fill: "#3389ca",
           stroke: grey[400],
           strokeWidth: 1,
           strokeDasharray: 6,
-          // fill: d => d.normalisedScore,
-          // sort: { y: "x" },
         }),
         PlotLib.dot(data, {
           x: "normalisedScore",
@@ -146,47 +121,35 @@ function Plot({ data, width }) {
             fontSize: 14,
             textPadding: 20,
             format: {
-              // fill: false,
-              // score: true,
-              // assessment: true,
-              // assessmentFlag: true,
-              // diseaseFromSource: true,
-              // x: false,
-              // y: false,
+              x: false,
+              y: false,
+              fill: false,
+              normalisedScore: false,
             },
           },
-          // ticks: data.map(d => d.method),
-          // tickSize: 1,
-          // fontSize: "16px",
+          channels: {
+            method: {
+              value: "method",
+              label: "",
+            },
+            assessment: {
+              value: "assessment",
+              label: "Assessment:",
+            },
+            score: {
+              value: "score",
+              label: "Score:",
+            },
+            assessmentFlag: {
+              value: "assessmentFlag",
+              label: "Assessment Flag:",
+            },
+            normalisedScore: {
+              value: "normalisedScore",
+              label: "Normalised Score:",
+            },
+          },
         }),
-        // PlotLib.axisX({
-        // x: 0,
-        // ticks: data.map(d => d.method),
-        // tickSize: 1,
-        // fontSize: "16px",
-        // }),
-        // PlotLib.axisY({
-        //   x: 0,
-        //   ticks: data.map(d => d.method),
-        //   tickSize: 0,
-        //   fontSize: "16px",
-        //   fontWeight: "600",
-        // }),
-        // PlotLib.textX(data, {
-        //   x: "normalisedScore",
-        //   y: "method",
-        //   text: (
-        //     f => d =>
-        //       f(d.normalisedScore)
-        //   )(d3.format("+.1")),
-        //   textAnchor: "start",
-        //   dx: 4,
-        // }),
-        // d3
-        //   .groups(data, d => d.normalisedScore > 0)
-        //   .map(([growth, predictors]) => [
-        //   ]),
-        PlotLib.ruleX([0], { strokeDasharray: 6, stroke: grey[400] }),
       ],
     });
     headerRef.current.append(chart);
