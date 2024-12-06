@@ -1,3 +1,4 @@
+
 /*
 Example usage:
 const comparatorDiseaseName = generateComparatorFromAccessor(d => d.disease.name);
@@ -9,6 +10,23 @@ export const generateComparatorFromAccessor = accessor => (a, b) => {
   if (aValue === bValue) return 0;
   return -1;
 };
+
+/*
+Return comparator that sorts nullish values to end
+*/
+export const nullishComparator =
+  (comparator, accessor = x => x, nullishIsMax = true) => {
+    return (a, b) => {
+      const aVal = accessor(a);
+      const bVal = accessor(b);
+      if (aVal == null) {
+        if (bVal == null) return 0;
+        return nullishIsMax ? 1 : -1;
+      }
+      if (bVal === null) return nullishIsMax ? -1 : 1;
+      return comparator(aVal, bVal);
+    };
+  };
 
 /*
   Compares a breakpoint against a breakpoint helper.
@@ -47,37 +65,43 @@ chromosomeRank.set('X', 23);
 chromosomeRank.set('Y', 24);
 
 type VariantType = {
-  variant: {
-    chromosome: string;
-    position: number;
-    referenceAllele: string;
-    alternateAllele: string;
-  }
+  chromosome: string;
+  position: number;
+  referenceAllele: string;
+  alternateAllele: string;
 };
 
-export function variantComparator(
-      { variant: v1 }: VariantType,
-      { variant: v2 }: VariantType
-    ) {
+export function variantComparator(accessor: (arg: any) => VariantType = d => d) {
 
-  if (!v1 || !v2) return 0;
+  return function (obj1: any, obj2: any) {
+    const v1 = accessor(obj1);
+    const v2 = accessor(obj2);
 
-  const chromosomeDiff =
-    chromosomeRank.get(v1.chromosome) - chromosomeRank.get(v2.chromosome);
-  if (chromosomeDiff !== 0) return chromosomeDiff;
-  
-  const positionDiff = v1.position - v2.position;
-  if (positionDiff !== 0) return positionDiff
- 
-  if (v1.referenceAllele < v2.referenceAllele) return -1;
-  else if (v1.referenceAllele > v2.referenceAllele) return 1;
-  else if (v1.alternateAllele < v2.alternateAllele) return -1;
-  else if (v1.alternateAllele > v2.alternateAllele) return 1;
-  
-  return 0;
+    if (!v1 || !v2) return 0;
+
+    const chromosomeDiff =
+      chromosomeRank.get(v1.chromosome) - chromosomeRank.get(v2.chromosome);
+    if (chromosomeDiff !== 0) return chromosomeDiff;
+
+    const positionDiff = v1.position - v2.position;
+    if (positionDiff !== 0) return positionDiff
+
+    if (v1.referenceAllele < v2.referenceAllele) return -1;
+    else if (v1.referenceAllele > v2.referenceAllele) return 1;
+    else if (v1.alternateAllele < v2.alternateAllele) return -1;
+    else if (v1.alternateAllele > v2.alternateAllele) return 1;
+
+    return 0;
+  }
+
 }
 
-export function mantissaExponentComparator(m1, e1, m2, e2) {
+export function mantissaExponentComparator(m1, e1, m2, e2, nullishIsMax = true) {
+  if (m1 == null || e1 == null) {
+    if (m2 == null || e2 == null) return 0;
+    return nullishIsMax ? 1 : -1;
+  }
+  if (m2 == null || e2 == null) return nullishIsMax ? -1 : 1;
   if (e1 === e2) return m1 - m2;
   return e1 - e2;
 }

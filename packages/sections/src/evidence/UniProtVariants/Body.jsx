@@ -1,14 +1,20 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, LabelChip, OtTable } from "ui";
-
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  PublicationsDrawer,
+  LabelChip,
+  OtTable,
+  DisplayVariantId,
+} from "ui";
 import { definition } from ".";
-
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "../../dataTypes";
 import { identifiersOrgLink } from "../../utils/global";
-import { variantComparator } from "../../utils/comparators";
+import { nullishComparator, variantComparator } from "../../utils/comparators";
 import {
   defaultRowsPerPageOptions,
   variantConsequenceSource,
@@ -52,13 +58,20 @@ function getColumns(label) {
     {
       id: "variantId",
       label: "Variant",
-      comparator: variantComparator,
       sortable: true,
+      comparator: nullishComparator(variantComparator(), d => d?.variant),
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
-      renderCell: ({ variant }) => {
-        if (variant) return <Link to={`/variant/${variant.id}`}>{variant.id}</Link>;
-        return naLabel;
+      renderCell: ({ variant: v }) => {
+        if (!v) return naLabel;
+        return <Link to={`/variant/${v.id}`}>
+          <DisplayVariantId
+            variantId={v.id}
+            referenceAllele={v.referenceAllele}
+            alternateAllele={v.alternateAllele}
+            expand={false}
+          />
+        </Link>
       },
     },
     {
@@ -84,7 +97,7 @@ function getColumns(label) {
         }
         return naLabel;
       }
-    },        
+    },
     {
       id: "variantConsequence",
       label: "Variant Consequence",
