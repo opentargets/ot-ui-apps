@@ -62,6 +62,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
     {
       id: "pValue",
       label: "P-value",
+      numeric: true,
       comparator: (a, b) =>
         mantissaExponentComparator(
           a?.pValueMantissa,
@@ -74,7 +75,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       renderCell: ({ pValueMantissa, pValueExponent }) => {
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number")
           return naLabel;
-        return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
+        return <ScientificNotation number={[pValueMantissa, pValueExponent]} dp={2} />;
       },
       exportValue: ({ pValueMantissa, pValueExponent }) => {
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return null;
@@ -84,29 +85,32 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
     {
       id: "beta",
       label: "Beta",
+      numeric: true,
       filterValue: false,
       sortable: true,
       tooltip: "Beta with respect to the ALT allele",
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
-        return beta.toPrecision(3);
+        return beta.toFixed(3);
       },
     },
     {
       id: "standardError",
       label: "Standard error",
+      numeric: true,
       filterValue: false,
       tooltip:
         "Standard Error: Estimate of the standard deviation of the sampling distribution of the beta",
       renderCell: ({ standardError }) => {
         if (typeof standardError !== "number") return naLabel;
-        return standardError.toPrecision(3);
+        return standardError.toFixed(3);
       },
     },
     {
       id: "r2Overall",
       label: "LD (r²)",
       filterValue: false,
+      numeric: true,
       tooltip: (
         <>
           Linkage disequilibrium with the lead variant (
@@ -128,17 +132,19 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       id: "posteriorProbability",
       label: "Posterior Probability",
       filterValue: false,
+      numeric: true,
       tooltip: "Posterior inclusion probability that this variant is causal within the fine-mapped credible set",
       comparator: (rowA, rowB) => rowA?.posteriorProbability - rowB?.posteriorProbability,
       sortable: true,
       renderCell: ({ posteriorProbability }) => {
         if (typeof posteriorProbability !== "number") return naLabel;
-        return posteriorProbability.toPrecision(3);
+        return posteriorProbability.toFixed(3);
       },
     },
     {
       id: "logBF",
       label: "log(BF)",
+      numeric: true,
       tooltip: "Natural logarithm of the Bayes Factor indicating relative likelihood of the variant being causal",
       filterValue: false,
       sortable: true,

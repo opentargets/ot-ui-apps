@@ -51,6 +51,7 @@ const columns = [
   {
     id: "pValue",
     label: "P-value",
+    numeric: true,
     comparator: (a, b) =>
       mantissaExponentComparator(
         a?.pValueMantissa,
@@ -62,7 +63,7 @@ const columns = [
     filterValue: false,
     renderCell: ({ pValueMantissa, pValueExponent }) => {
       if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return naLabel;
-      return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
+      return <ScientificNotation number={[pValueMantissa, pValueExponent]} dp={2} />;
     },
     exportValue: ({ pValueMantissa, pValueExponent }) => {
       if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return null;
@@ -73,11 +74,12 @@ const columns = [
     id: "beta",
     label: "Beta",
     filterValue: false,
+    numeric: true,
     sortable: true,
     tooltip: "Beta with respect to the ALT allele",
     renderCell: ({ beta }) => {
       if (typeof beta !== "number") return naLabel;
-      return beta.toPrecision(3);
+      return beta.toFixed(3);
     },
   },
   {
@@ -138,8 +140,13 @@ const columns = [
     label: "Credible set size",
     comparator: (a, b) => a.locus?.count - b.locus?.count,
     sortable: true,
+    numeric: true,
     filterValue: false,
-    renderCell: ({ locus }) => locus?.count ?? naLabel,
+    renderCell: ({ locus }) => {
+      return typeof locus?.count === "number"
+        ? locus.count.toLocaleString()
+        : naLabel;
+    },
     exportValue: ({ locus }) => locus?.count,
   },
 ];
