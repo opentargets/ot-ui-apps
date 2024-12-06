@@ -37,7 +37,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "leadVariant",
       label: "Lead variant",
-      comparator: variantComparator(d => d.variant),
+      comparator: variantComparator(d => d?.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
