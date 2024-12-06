@@ -41,7 +41,7 @@ const columns = [
   },
   {
     id: "normalisedScore",
-    label: "normalisedScore",
+    label: "Normalised score",
     renderCell: ({ normalisedScore }) => normalisedScore ?? naLabel,
   },
 ];

@@ -1,13 +1,10 @@
 import { useRef, useEffect } from "react";
 import * as PlotLib from "@observablehq/plot";
-import * as d3 from "d3";
 import { rgb } from "d3";
-// import * as htl from "htl";
 import { useMeasure } from "@uidotdev/usehooks";
 import { Box, Fade } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { DataDownloader } from "ui";
-import { sentenceCase } from "ui/src/utils/global";
 
 const PRIORITISATION_COLORS = [
   rgb("#bc3a19"),
