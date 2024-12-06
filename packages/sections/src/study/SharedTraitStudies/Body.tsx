@@ -53,6 +53,10 @@ function getColumns(diseaseIds: string[]) {
     {
       id: "nSamples",
       label: "Sample size",
+      numeric: true,
+      renderCell: ({ nSamples }) => {
+        return typeof nSamples === "number" ? nSamples.toLocaleString() : naLabel
+      },
       comparator: (a, b) => a?.nSamples - b?.nSamples,
       sortable: true,
     },

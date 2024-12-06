@@ -85,6 +85,7 @@ const columns = [
   {
     id: "pValue",
     label: "P-Value",
+    numeric: true,
     comparator: ({ otherStudyLocus: a }, { otherStudyLocus: b }) =>
       mantissaExponentComparator(
         a?.pValueMantissa,
@@ -97,7 +98,7 @@ const columns = [
     renderCell: ({ otherStudyLocus }) => {
       const { pValueMantissa, pValueExponent } = otherStudyLocus ?? {};
       if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return naLabel;
-      return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
+      return <ScientificNotation number={[pValueMantissa, pValueExponent]} dp={2} />;
     },
     exportValue: ({ otherStudyLocus }) => {
       const { pValueMantissa, pValueExponent } = otherStudyLocus ?? {};
@@ -108,8 +109,14 @@ const columns = [
   {
     id: "numberColocalisingVariants",
     label: "Colocalising Variants (n)",
+    numeric: true,
     filterValue: false,
     comparator: (a, b) => a?.numberColocalisingVariants - b?.numberColocalisingVariants,
+    renderCell: ({ numberColocalisingVariants }) => {
+      return typeof numberColocalisingVariants === "number"
+        ? numberColocalisingVariants.toLocaleString()
+        : naLabel;
+    },
     sortable: true,
   },
   {
@@ -149,6 +156,7 @@ const columns = [
   {
     id: "h3",
     label: "H3",
+    numeric: true,
     tooltip: (
       <>
         Posterior probability that the signals <b>do not</b> colocalise
@@ -159,30 +167,32 @@ const columns = [
     sortable: true,
     renderCell: ({ h3 }) => {
       if (typeof h3 !== "number") return naLabel;
-      return h3.toPrecision(3);
+      return h3.toFixed(3);
     },
   },
   {
     id: "h4",
     label: "H4",
+    numeric: true,
     tooltip: "Posterior probability that the signals colocalise",
     filterValue: false,
     comparator: (a, b) => a?.h4 - b?.h4,
     sortable: true,
     renderCell: ({ h4 }) => {
       if (typeof h4 !== "number") return naLabel;
-      return h4.toPrecision(3);
+      return h4.toFixed(3);
     },
   },
   {
     id: "clpp",
     label: "CLPP",
+    numeric: true,
     filterValue: false,
     comparator: (a, b) => a?.clpp - b?.clpp,
     sortable: true,
     renderCell: ({ clpp }) => {
       if (typeof clpp !== "number") return naLabel;
-      return clpp.toPrecision(3);
+      return clpp.toFixed(3);
     },
   },
 ];
