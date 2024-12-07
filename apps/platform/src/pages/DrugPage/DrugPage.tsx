@@ -8,8 +8,9 @@ import NotFoundPage from "../NotFoundPage";
 import DRUG_PAGE_QUERY from "./DrugPage.gql";
 
 import Profile from "./Profile";
+import { ReactNode } from "react";
 
-function DrugPage() {
+function DrugPage(): ReactNode {
   const location = useLocation();
   const { chemblId } = useParams();
 
@@ -29,21 +30,28 @@ function DrugPage() {
       description={`Annotation information for ${name || chemblId}`}
       location={location}
     >
-      <Header loading={loading} chemblId={chemblId} name={name} crossReferences={crossReferences} />
-      <ScrollToTop />
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs value={location.pathname !== "/" ? location.pathname : false}>
-          <Tab
-            label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
-            value={`/drug/${chemblId}`}
-            component={Link}
-            to={`/drug/${chemblId}`}
-          />
-        </Tabs>
-      </Box>
-      <Routes>
-        <Route path="/" element={<Profile chemblId={chemblId} name={name} />} />
-      </Routes>
+      <>
+        <Header
+          loading={loading}
+          chemblId={chemblId}
+          name={name}
+          crossReferences={crossReferences}
+        />
+        <ScrollToTop />
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs value={location.pathname}>
+            <Tab
+              label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
+              value={`/drug/${chemblId}`}
+              component={Link}
+              to={`/drug/${chemblId}`}
+            />
+          </Tabs>
+        </Box>
+        <Routes>
+          <Route path="/" element={<Profile chemblId={chemblId} name={name} />} />
+        </Routes>
+      </>
     </BasePage>
   );
 }
