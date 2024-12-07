@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { BasePage, ScrollToTop } from "ui";
 import { Box, Tabs, Tab } from "@mui/material";
-import { useLocation, useParams, Routes, Route, useMatch, Link, Navigate } from "react-router-dom";
+import { useLocation, useParams, Routes, Route, Link } from "react-router-dom";
 
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
@@ -12,7 +12,6 @@ import Profile from "./Profile";
 function DrugPage() {
   const location = useLocation();
   const { chemblId } = useParams();
-  const { path } = useMatch();
 
   const { loading, data } = useQuery(DRUG_PAGE_QUERY, {
     variables: { chemblId },
@@ -32,29 +31,18 @@ function DrugPage() {
     >
       <Header loading={loading} chemblId={chemblId} name={name} crossReferences={crossReferences} />
       <ScrollToTop />
-
-      <Route
-        path="/"
-        render={history => (
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs value={history.location.pathname !== "/" ? history.location.pathname : false}>
-              <Tab
-                label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
-                value={`/drug/${chemblId}`}
-                component={Link}
-                to={`/drug/${chemblId}`}
-              />
-            </Tabs>
-          </Box>
-        )}
-      />
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs value={location.pathname !== "/" ? location.pathname : false}>
+          <Tab
+            label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
+            value={`/drug/${chemblId}`}
+            component={Link}
+            to={`/drug/${chemblId}`}
+          />
+        </Tabs>
+      </Box>
       <Routes>
-        <Route exact path={path}>
-          <Profile chemblId={chemblId} name={name} />
-        </Route>
-        <Route path="*">
-          <Navigate to={`/drug/${chemblId}`} />
-        </Route>
+        <Route path="/" element={<Profile chemblId={chemblId} name={name} />} />
       </Routes>
     </BasePage>
   );
