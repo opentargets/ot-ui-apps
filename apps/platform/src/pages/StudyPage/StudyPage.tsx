@@ -1,15 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { BasePage, ScrollToTop } from "ui";
 import { Box, Tabs, Tab } from "@mui/material";
-import {
-  useLocation,
-  useParams,
-  Switch,
-  Route,
-  useRouteMatch,
-  Link,
-  Redirect,
-} from "react-router-dom";
+import { useLocation, useParams, Routes, Route, useMatch, Link, Navigate } from "react-router-dom";
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import STUDY_PAGE_QUERY from "./StudyPage.gql";
@@ -18,7 +10,7 @@ import Profile from "./Profile";
 function StudyPage() {
   const location = useLocation();
   const { studyId } = useParams() as { studyId: string };
-  const { path } = useRouteMatch();
+  const { path } = useMatch();
 
   const { loading, data } = useQuery(STUDY_PAGE_QUERY, {
     variables: { studyId },
@@ -63,7 +55,7 @@ function StudyPage() {
         )}
       />
 
-      <Switch>
+      <Routes>
         <Route exact path={path}>
           <Profile
             studyId={studyId}
@@ -73,9 +65,9 @@ function StudyPage() {
           />
         </Route>
         <Route path="*">
-          <Redirect to={`/study/${study?.id}`} />
+          <Navigate to={`/study/${study?.id}`} />
         </Route>
-      </Switch>
+      </Routes>
     </BasePage>
   );
 }
