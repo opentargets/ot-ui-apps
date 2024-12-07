@@ -37,8 +37,8 @@ function App(): ReactElement {
                 <Route path="/" element={<HomePage suggestions={suggestions} />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/downloads" element={<DownloadsPage />} />
-                <Route path="/disease/:efoId" element={<DiseasePage />} />
-                <Route path="/target/:ensgId" element={<TargetPage />} />
+                <Route path="/disease/:efoId/*" element={<DiseasePage />} />
+                <Route path="/target/:ensgId/*" element={<TargetPage />} />
                 <Route path="/drug/:chemblId" element={<DrugPage />} />
                 <Route path="/evidence/:ensgId/:efoId" element={<EvidencePage />} />
                 <Route path="/variant/:varId" element={<VariantPage />} />
@@ -53,7 +53,7 @@ function App(): ReactElement {
                     </PrivateRoute>
                   }
                 />
-                {/* <Route path="*" element={<NotFoundPage />} /> */}
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Router>
           </SearchProvider>
