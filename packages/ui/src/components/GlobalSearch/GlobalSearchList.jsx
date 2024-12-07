@@ -25,7 +25,7 @@ function GlobalSearchList({ inputValue }) {
   const [loading, setLoading] = useState(false);
   const { searchQuery, setOpen, searchSuggestions } = useContext(SearchContext);
   const [getSearchData] = useLazyQuery(searchQuery);
-  const [openListItem] = useListOption();
+  const openListItem = useListOption();
   const [recentItems, setRecentItems] = useState(
     JSON.parse(localStorage.getItem("search-history")) || []
   );
@@ -128,25 +128,26 @@ function GlobalSearchList({ inputValue }) {
     setRecentItems(JSON.parse(localStorage.getItem("search-history")) || []);
   }
 
-  const SearchSuggestionEl = (
-    <Box
-      sx={{
-        pt: 1,
-      }}
-    >
-      <GlobalSearchListHeader listHeader="Search Suggestions" />
-      <List tabIndex={-1}>
-        {searchSuggestions.map(item => (
-          <GlobalSearchListItem
-            key={item.id || item.symbol}
-            item={item}
-            onItemClick={handleItemClick}
-            isTopHit={item.type === "topHit"}
-          />
-        ))}
-      </List>
-    </Box>
-  );
+  const SearchSuggestionEl =
+    searchSuggestions.length > 0 ? (
+      <Box
+        sx={{
+          pt: 1,
+        }}
+      >
+        <GlobalSearchListHeader listHeader="Search Suggestions" />
+        <List tabIndex={-1}>
+          {searchSuggestions.map(item => (
+            <GlobalSearchListItem
+              key={item.id || item.symbol}
+              item={item}
+              onItemClick={handleItemClick}
+              isTopHit={item.type === "topHit"}
+            />
+          ))}
+        </List>
+      </Box>
+    ) : null;
 
   useEffect(() => {
     focusOnItem();
