@@ -28,8 +28,6 @@ function DiseasePage(): ReactElement {
 
   const { name, dbXRefs } = data?.disease || {};
 
-  console.log(location);
-
   return (
     <BasePage
       title={
