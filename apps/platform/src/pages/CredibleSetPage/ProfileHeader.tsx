@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import {
   usePlatformApi,
   Field,
@@ -9,111 +9,16 @@ import {
   PublicationsDrawer,
   ClinvarStars,
   LabelChip,
+  DetailPopover,
+  SummaryStatsTable,
+  DisplaySampleSize,
 } from "ui";
-import { Box, Typography, Popover } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
-import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 import { epmcUrl } from "../../utils/urls";
-import { credsetConfidenceMap, poulationMap } from "../../constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
-import { v1 } from "uuid";
+import { credsetConfidenceMap, populationMap } from "../../constants";
 
-type ProfileHeaderProps = {
-  variantId: string;
-};
-
-const dicSummary = [
-  { id: "n_variants", label: "Total variants", tooltip: "Number of harmonised variants" },
-  { id: "n_variants_sig", label: "Significant variants", tooltip: "P-value significant variants" },
-  { id: "mean_beta", label: "Mean beta", tooltip: "Mean effect size across all variants" },
-  {
-    id: "gc_lambda",
-    label: "GC lambda",
-    tooltip: "Additive Genomic Control (GC) lambda indicating GWAS inflation",
-  },
-  {
-    id: "mean_diff_pz",
-    label: "Mean diff P-Z",
-    tooltip: "Mean difference between reported and calculated log p-values",
-  },
-  {
-    id: "se_diff_pz",
-    label: "SD diff P-Z",
-    tooltip: "Standard deviation of the difference between reported and calculated log p-values",
-  },
-];
-
-function SummaryStatisticsField({ sumstatQCValues }: any) {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  if (!sumstatQCValues) return null;
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-
-  return (
-    <Fragment>
-      <Typography
-        sx={{ cursor: "pointer", mr: 0.5, fontWeight: 600, color: "secondary.main" }}
-        aria-describedby={id}
-        variant="contained"
-        onClick={handleClick}
-      >
-        Available <FontAwesomeIcon icon={faCaretDown} />
-      </Typography>
-
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        elevation={1}
-        disableScrollLock
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-      >
-        <Box sx={{ p: 2 }}>
-          <Typography sx={{ fontSize: 16, fontWeight: 600, my: 1 }} variant="subtitle2">
-            Harmonised summary statistics
-          </Typography>
-          <table>
-            <tbody>
-              {dicSummary.map((sumstat: any) => {
-                const summStatValue = sumstatQCValues.find(
-                  (v: any) => v.QCCheckName === sumstat.id
-                ).QCCheckValue;
-                return (
-                  <tr key={v1()}>
-                    <td>
-                      <Tooltip title={sumstat.tooltip} showHelpIcon>
-                        {sumstat.label}
-                      </Tooltip>
-                    </td>
-                    <Typography sx={{ textAlign: "right" }} component="td" variant="body2">
-                      {summStatValue}
-                    </Typography>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </Box>
-      </Popover>
-    </Fragment>
-  );
-}
-
-function ProfileHeader({ variantId }: ProfileHeaderProps) {
+function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
 
   // TODO: Errors!
@@ -121,14 +26,13 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
 
   const credibleSet = data?.credibleSet;
   const study = credibleSet?.study;
-  const studyCategory = study ? getStudyCategory(study.projectId) : null;
   const target = study?.target;
   const leadVariant = credibleSet?.locus.rows[0];
   const beta = leadVariant?.beta ?? credibleSet?.beta;
   const standardError = leadVariant?.standardError ?? credibleSet?.standardError;
   const { pValueMantissa, pValueExponent } =
     typeof leadVariant?.pValueMantissa === "number" &&
-    typeof leadVariant?.pValueExponent === "number"
+      typeof leadVariant?.pValueExponent === "number"
       ? leadVariant
       : credibleSet ?? {};
 
@@ -265,13 +169,30 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
         >
           {credibleSet?.purityMinR2?.toPrecision(3)}
         </Field>
-      </Box>
+        {credibleSet?.qualityControls?.length > 0 &&
+          <Box>
+            <DetailPopover title="QC warnings">
+              <ul style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.25rem",
+                padding: 0,
+                margin: "0 0 0 1rem"
+              }}>
+                {credibleSet.qualityControls.map(warning => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
+            </DetailPopover>
+          </Box>
+        }
+      </Box >
 
       <Box>
         <Typography variant="subtitle1" mt={0}>
           {study?.studyType.replace(/(qtl|gwas)/gi, match => match.toUpperCase())} Study
         </Typography>
-        {studyCategory !== "QTL" && (
+        {study?.studyType === "gwas" && (
           <>
             <Field loading={loading} title="Reported trait">
               {study?.traitFromSource}
@@ -298,7 +219,7 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             )}
           </>
         )}
-        {studyCategory === "QTL" && (
+        {study?.studyType !== "gwas" && (
           <>
             {target?.id && (
               <Field loading={loading} title="Affected gene">
@@ -330,54 +251,42 @@ function ProfileHeader({ variantId }: ProfileHeaderProps) {
             </PublicationsDrawer>
           </Field>
         )}
-        {study?.analysisFlags && (
-          <Field
-            loading={loading}
-            title={
-              <Tooltip title="Type of analysis" showHelpIcon>
-                Analysis
-              </Tooltip>
-            }
-          >
-            {study?.analysisFlags ? study.analysisFlags : "Not Available"}
-          </Field>
-        )}
-        {study?.hasSumstats && (
-          <Field loading={loading} title="Summary statistics">
-            <SummaryStatisticsField
-              hasSumstats={study?.hasSumstats}
-              sumstatQCValues={study?.sumstatQCValues}
+        <Field loading={loading} title="Analysis">
+          {study?.analysisFlags?.join(", ")}
+        </Field>
+        <Field loading={loading} title="Summary statistics">
+          {!study?.hasSumstats
+            ? "Not Available"
+            : study?.sumstatQCValues
+              ? <DetailPopover title="Available">
+                <SummaryStatsTable sumstatQCValues={study.sumstatQCValues} />
+              </DetailPopover>
+              : "Available"
+          }
+        </Field>
+        {study?.nSamples &&
+          <Field loading={loading} title="Sample size">
+            <DisplaySampleSize
+              nSamples={study.nSamples}
+              cohorts={study?.cohorts}
+              initialSampleSize={study?.initialSampleSize}
             />
           </Field>
-        )}
-        <Field loading={loading} title="Sample size">
-          {study?.nSamples.toLocaleString()}
-        </Field>
-        <Box display="flex" sx={{ gap: 1 }}>
-          {/* LD Ancestries */}
-          {study?.ldPopulationStructure?.length > 0 &&
-            study.ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }, index) => (
+        }
+        {study?.ldPopulationStructure?.length > 0 &&
+          <Box display="flex" sx={{ gap: 1 }}>
+            {study.ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
               <LabelChip
                 key={ldPopulation}
                 label={ldPopulation.toUpperCase()}
                 value={`${(relativeSampleSize * 100).toFixed(0)}%`}
-                tooltip={`LD reference population: ${poulationMap[ldPopulation]}`}
+                tooltip={`LD reference population: ${populationMap[ldPopulation]}`}
               />
             ))}
-          {/* Quality controls */}
-          {study?.qualityControls?.length > 0 && (
-            <Tooltip title={study?.qualityControls.join(", ")} arrow>
-              <LabelChip
-                label={<FontAwesomeIcon size="1x" icon={faTriangleExclamation} />}
-                value={study?.qualityControls.length + " issue"}
-                tooltip={study?.qualityControls.join("; ")}
-                color="orange"
-              />
-            </Tooltip>
-          )}
-        </Box>
+          </Box>
+        }
       </Box>
-    </BaseProfileHeader>
+    </BaseProfileHeader >
   );
 }
 

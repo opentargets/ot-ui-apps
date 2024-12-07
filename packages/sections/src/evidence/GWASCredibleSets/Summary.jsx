@@ -20,7 +20,7 @@ function Summary() {
 }
 
 Summary.fragments = {
-  GWASCredibleSetsSummaryFragment: GWAS_CREDIBLE_SETS_SUMMARY_FRAGMENT,
+  EvidenceGWASCredibleSetsSummaryFragment: GWAS_CREDIBLE_SETS_SUMMARY_FRAGMENT,
 };
 
 export default Summary;

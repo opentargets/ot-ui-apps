@@ -37,9 +37,7 @@ const STUDY_PROFILE_QUERY = gql`
       ...StudyProfileSummaryFragment
     }
     sharedTraitStudies: studies(diseaseIds: $diseaseIds, page: { size: 2, index: 0 }) {
-      rows {
-        id
-      }
+      count
     }
   }
   ${ProfileHeader.fragments.profileHeader}
@@ -68,7 +66,7 @@ function Profile({ studyId, studyType, projectId, diseases }: ProfileProps) {
       }}
       client={client}
     >
-      <ProfileHeader projectId={projectId} />
+      <ProfileHeader />
 
       <SummaryContainer>
         {studyType === "gwas" && (

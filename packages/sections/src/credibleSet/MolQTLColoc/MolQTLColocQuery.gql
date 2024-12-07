@@ -1,15 +1,25 @@
-query GWASColocQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
+query MolQTLColocQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
   credibleSet(studyLocusId: $studyLocusId) {
-    colocalisation(studyTypes: [gwas], page: { size: $size, index: $index }) {
+    colocalisation(studyTypes: [tuqtl, pqtl, eqtl, sqtl], page: { size: $size, index: $index }) {
       count
       rows {
         otherStudyLocus {
           studyLocusId
           study {
             id
+            studyType
             projectId
             traitFromSource
             publicationFirstAuthor
+            target {
+              approvedSymbol
+              id
+            }
+            biosample {
+              biosampleId
+              biosampleName
+              description
+            }
           }
           variant {
             id

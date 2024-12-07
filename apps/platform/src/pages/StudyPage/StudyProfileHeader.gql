@@ -1,15 +1,24 @@
 fragment StudyProfileHeaderFragment on Gwas {
+  studyType
   publicationFirstAuthor
   publicationDate
   publicationJournal
   pubmedId
   traitFromSource
+  backgroundTraits {
+    id
+    name
+  }
+  diseases {
+    id
+    name
+  }
+  target {
+    id
+    approvedSymbol
+  }
   nSamples
   initialSampleSize
-  replicationSamples {
-    sampleSize
-    ancestry
-  }
   nCases
   nControls
   cohorts
@@ -17,10 +26,16 @@ fragment StudyProfileHeaderFragment on Gwas {
     ldPopulation
     relativeSampleSize
   }
+  hasSumstats
+  sumstatQCValues {
+    QCCheckName
+    QCCheckValue
+  }
   qualityControls
   analysisFlags
-  discoverySamples {
-    sampleSize
-    ancestry
+  biosample {
+    biosampleId
+    biosampleName
   }
+  condition
 }

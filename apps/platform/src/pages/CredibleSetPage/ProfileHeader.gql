@@ -49,6 +49,8 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
     publicationJournal
     pubmedId
     nSamples
+    cohorts
+    initialSampleSize
     studyType
     hasSumstats
     analysisFlags

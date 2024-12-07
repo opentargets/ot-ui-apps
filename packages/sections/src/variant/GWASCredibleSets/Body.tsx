@@ -16,7 +16,7 @@ import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { mantissaExponentComparator, variantComparator, nullishComparator } from "../../utils/comparators";
 import PheWasPlot from "./PheWasPlot";
 import { useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
@@ -32,14 +32,12 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "studyLocusId",
       label: "Navigate",
-      renderCell: ({ studyLocusId }) => (
-        <Navigate to={`/credible-set/${studyLocusId}`} />
-      ),
+      renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
     },
     {
       id: "leadVariant",
       label: "Lead variant",
-      comparator: variantComparator,
+      comparator: variantComparator(d => d?.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -106,6 +104,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "pValue",
       label: "P-value",
+      numeric: true,
       comparator: (a, b) =>
         mantissaExponentComparator(
           a?.pValueMantissa,
@@ -118,7 +117,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       renderCell: ({ pValueMantissa, pValueExponent }) => {
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number")
           return naLabel;
-        return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
+        return <ScientificNotation number={[pValueMantissa, pValueExponent]} dp={2} />;
       },
       exportValue: ({ pValueMantissa, pValueExponent }) => {
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return null;
@@ -128,16 +127,19 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "beta",
       label: "Beta",
+      numeric: true,
       filterValue: false,
       tooltip: "Beta with respect to the ALT allele",
+      sortable: true,
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
-        return beta.toPrecision(3);
+        return beta.toFixed(3);
       },
     },
     {
       id: "posteriorProbability",
       label: "Posterior probability",
+      numeric: true,
       filterValue: false,
       tooltip: (
         <>
@@ -151,8 +153,10 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           ) is causal.
         </>
       ),
-      comparator: (rowA, rowB) =>
-        rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
+      comparator: (a, b) => {
+        return a?.locus?.rows?.[0]?.posteriorProbability -
+          b?.locus?.rows?.[0]?.posteriorProbability;
+      },
       sortable: true,
       renderCell: ({ locus }) =>
         locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
@@ -182,25 +186,31 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "topL2G",
       label: "Top L2G",
-      filterValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
+      filterValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target?.approvedSymbol,
       tooltip: "Top gene prioritised by our locus-to-gene model",
-      renderCell: ({ l2Gpredictions }) => {
-        if (!l2Gpredictions[0]?.target) return naLabel;
-        const { target } = l2Gpredictions[0];
+      renderCell: ({ l2GPredictions }) => {
+        if (!l2GPredictions?.rows[0]?.target) return naLabel;
+        const { target } = l2GPredictions?.rows[0];
         return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
       },
-      exportValue: ({ l2Gpredictions }) => l2Gpredictions?.target.approvedSymbol,
+      exportValue: ({ l2GPredictions }) => l2GPredictions?.target.approvedSymbol,
     },
     {
       id: "l2gScore",
       label: "L2G score",
-      comparator: (rowA, rowB) => rowA?.l2Gpredictions[0]?.score - rowB?.l2Gpredictions[0]?.score,
+      comparator: nullishComparator(
+        (a, b) => a - b,
+        row => row?.l2GPredictions?.rows[0]?.score,
+        false,
+      ),
       sortable: true,
-      renderCell: ({ l2Gpredictions }) => {
-        if (!l2Gpredictions[0]?.score) return naLabel;
+      tooltip:
+        "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
+      renderCell: ({ l2GPredictions }) => {
+        if (!l2GPredictions?.rows[0]?.score) return naLabel;
         return (
-          <Tooltip title={l2Gpredictions[0].score.toFixed(3)} style="">
-            <OtScoreLinearBar variant="determinate" value={l2Gpredictions[0].score * 100} />
+          <Tooltip title={l2GPredictions?.rows[0].score.toFixed(3)} style="">
+            <OtScoreLinearBar variant="determinate" value={l2GPredictions?.rows[0].score * 100} />
           </Tooltip>
         );
       },
@@ -210,8 +220,13 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       label: "Credible set size",
       comparator: (a, b) => a.locus?.count - b.locus?.count,
       sortable: true,
+      numeric: true,
       filterValue: false,
-      renderCell: ({ locus }) => locus?.count ?? naLabel,
+      renderCell: ({ locus }) => {
+        return typeof locus?.count === "number"
+          ? locus.count.toLocaleString()
+          : naLabel;
+      },
       exportValue: ({ locus }) => locus?.count,
     },
   ];

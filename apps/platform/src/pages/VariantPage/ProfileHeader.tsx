@@ -1,5 +1,12 @@
 // import { useState, useEffect } from "react";
-import { usePlatformApi, Field, ProfileHeader as BaseProfileHeader, Link, LongText } from "ui";
+import {
+  usePlatformApi,
+  Field,
+  ProfileHeader as BaseProfileHeader,
+  Link,
+  LongText,
+  ProfileDescription
+} from "ui";
 import { Box, Paper, Typography } from "@mui/material";
 import { identifiersOrgLink } from "../../utils/global";
 
@@ -14,7 +21,8 @@ function ProfileHeader() {
   return (
     <BaseProfileHeader>
       <Box>
-        <Typography variant="subtitle2" mt={0}>
+        <ProfileDescription loading={loading}>{data?.variant.variantDescription}</ProfileDescription>
+        <Typography variant="subtitle2" mt={1}>
           Location
         </Typography>
         <Field loading={loading} title="GRCh38">

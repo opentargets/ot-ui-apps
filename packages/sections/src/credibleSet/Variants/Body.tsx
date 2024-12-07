@@ -1,12 +1,19 @@
-import { useQuery } from "@apollo/client";
 import { Box, Chip } from "@mui/material";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
-import { naLabel } from "../../constants";
+import {
+  Link,
+  SectionItem,
+  ScientificNotation,
+  DisplayVariantId,
+  OtTable,
+  useBatchQuery,
+} from "ui";
+import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import VARIANTS_QUERY from "./VariantsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { identifiersOrgLink } from "../../utils/global";
+import { useEffect, useState } from "react";
 
 type getColumnsType = {
   leadVariantId: string;
@@ -23,7 +30,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
     {
       id: "variant.id",
       label: "Variant",
-      comparator: variantComparator,
+      comparator: variantComparator(d => d?.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -55,6 +62,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
     {
       id: "pValue",
       label: "P-value",
+      numeric: true,
       comparator: (a, b) =>
         mantissaExponentComparator(
           a?.pValueMantissa,
@@ -67,7 +75,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       renderCell: ({ pValueMantissa, pValueExponent }) => {
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number")
           return naLabel;
-        return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
+        return <ScientificNotation number={[pValueMantissa, pValueExponent]} dp={2} />;
       },
       exportValue: ({ pValueMantissa, pValueExponent }) => {
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return null;
@@ -77,28 +85,32 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
     {
       id: "beta",
       label: "Beta",
+      numeric: true,
       filterValue: false,
+      sortable: true,
       tooltip: "Beta with respect to the ALT allele",
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
-        return beta.toPrecision(3);
+        return beta.toFixed(3);
       },
     },
     {
       id: "standardError",
       label: "Standard error",
+      numeric: true,
       filterValue: false,
       tooltip:
         "Standard Error: Estimate of the standard deviation of the sampling distribution of the beta",
       renderCell: ({ standardError }) => {
         if (typeof standardError !== "number") return naLabel;
-        return standardError.toPrecision(3);
+        return standardError.toFixed(3);
       },
     },
     {
       id: "r2Overall",
       label: "LD (r²)",
       filterValue: false,
+      numeric: true,
       tooltip: (
         <>
           Linkage disequilibrium with the lead variant (
@@ -120,17 +132,19 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       id: "posteriorProbability",
       label: "Posterior Probability",
       filterValue: false,
+      numeric: true,
       tooltip: "Posterior inclusion probability that this variant is causal within the fine-mapped credible set",
       comparator: (rowA, rowB) => rowA?.posteriorProbability - rowB?.posteriorProbability,
       sortable: true,
       renderCell: ({ posteriorProbability }) => {
         if (typeof posteriorProbability !== "number") return naLabel;
-        return posteriorProbability.toPrecision(3);
+        return posteriorProbability.toFixed(3);
       },
     },
     {
       id: "logBF",
       label: "log(BF)",
+      numeric: true,
       tooltip: "Natural logarithm of the Bayes Factor indicating relative likelihood of the variant being causal",
       filterValue: false,
       sortable: true,
@@ -148,9 +162,9 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
         const mostSevereConsequence = variant?.mostSevereConsequence
         if (!mostSevereConsequence) return naLabel;
         const displayElement = (
-            <Link external to={identifiersOrgLink("SO", mostSevereConsequence.id.slice(3))}>
-              {formatVariantConsequenceLabel(mostSevereConsequence.label)}
-            </Link>
+          <Link external to={identifiersOrgLink("SO", mostSevereConsequence.id.slice(3))}>
+            {formatVariantConsequenceLabel(mostSevereConsequence.label)}
+          </Link>
         );
         return displayElement;
       },
@@ -180,9 +194,24 @@ function Body({
     studyLocusId: studyLocusId,
   };
 
-  const request = useQuery(VARIANTS_QUERY, {
-    variables,
+  const [request, setRequest] = useState<responseType>(initialResponse);
+
+  const getData = useBatchQuery({
+    query: VARIANTS_QUERY,
+    variables: {
+      studyLocusId,
+      size: table5HChunkSize,
+      index: 0,
+    },
+    dataPath: "data.credibleSet.locus",
+    size: table5HChunkSize,
   });
+
+  useEffect(() => {
+    getData().then(r => {
+      setRequest(r);
+    });
+  }, []);
 
   const columns = getColumns({
     leadVariantId,
@@ -195,6 +224,8 @@ function Body({
       definition={definition}
       entity={entity}
       request={request}
+      showContentLoading
+      loadingMessage="Loading data. This may take some time..."
       renderDescription={() => <Description />}
       renderBody={() => {
         return (

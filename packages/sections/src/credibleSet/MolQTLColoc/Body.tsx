@@ -1,4 +1,3 @@
-import { useQuery } from "@apollo/client";
 import {
   Link,
   SectionItem,
@@ -6,14 +5,16 @@ import {
   ScientificNotation,
   OtTable,
   Tooltip,
+  useBatchQuery,
   Navigate,
 } from "ui";
-import { naLabel } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
-import GWAS_COLOC_QUERY from "./GWASMolQTLColocQuery.gql";
+import MOLQTL_COLOC_QUERY from "./MolQTLColocQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { getStudyCategory } from "../../utils/getStudyCategory";
+import { useEffect, useState } from "react";
 
 const columns = [
   {
@@ -77,7 +78,7 @@ const columns = [
   {
     id: "otherStudyLocus.variant.id",
     label: "Lead Variant",
-    comparator: variantComparator,
+    comparator: variantComparator(d => d?.otherStudyLocus?.variant),
     sortable: true,
     filterValue: ({ otherStudyLocus }) => {
       const v = otherStudyLocus?.variant;
@@ -102,6 +103,7 @@ const columns = [
   {
     id: "pValue",
     label: "P-Value",
+    numeric: true,
     comparator: ({ otherStudyLocus: a }, { otherStudyLocus: b }) =>
       mantissaExponentComparator(
         a?.pValueMantissa,
@@ -114,7 +116,7 @@ const columns = [
     renderCell: ({ otherStudyLocus }) => {
       const { pValueMantissa, pValueExponent } = otherStudyLocus ?? {};
       if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return naLabel;
-      return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
+      return <ScientificNotation number={[pValueMantissa, pValueExponent]} dp={2} />;
     },
     exportValue: ({ otherStudyLocus }) => {
       const { pValueMantissa, pValueExponent } = otherStudyLocus ?? {};
@@ -126,8 +128,14 @@ const columns = [
     id: "numberColocalisingVariants",
     label: "Colocalising Variants (n)",
     filterValue: false,
+    numeric: true,
     comparator: (a, b) => a?.numberColocalisingVariants - b?.numberColocalisingVariants,
     sortable: true,
+    renderCell: ({ numberColocalisingVariants }) => {
+      return typeof numberColocalisingVariants === "number"
+        ? numberColocalisingVariants.toLocaleString()
+        : naLabel;
+    },
   },
   {
     id: "colocalisationMethod",
@@ -142,12 +150,11 @@ const columns = [
       let category = "Inconclusive";
       if (betaRatioSignAverage <= -0.99) category = "Opposite";
       else if (betaRatioSignAverage >= 0.99) category = "Same";
-      const displayValue = Math.abs(betaRatioSignAverage) === 1
-        ? betaRatioSignAverage
-        : betaRatioSignAverage.toFixed(2)
-      return <Tooltip title={`Beta ratio sign average: ${displayValue}`}>
-        {category}
-      </Tooltip>
+      const displayValue =
+        Math.abs(betaRatioSignAverage) === 1
+          ? betaRatioSignAverage
+          : betaRatioSignAverage.toFixed(2);
+      return <Tooltip title={`Beta ratio sign average: ${displayValue}`}>{category}</Tooltip>;
     },
     filterValue: ({ betaRatioSignAverage }) => {
       if (betaRatioSignAverage == null) return null;
@@ -172,11 +179,12 @@ const columns = [
       </>
     ),
     filterValue: false,
+    numeric: true,
     comparator: (a, b) => a?.h3 - b?.h3,
     sortable: true,
     renderCell: ({ h3 }) => {
       if (typeof h3 !== "number") return naLabel;
-      return h3.toPrecision(3);
+      return h3.toFixed(3);
     },
   },
   {
@@ -184,22 +192,24 @@ const columns = [
     label: "H4",
     tooltip: "Posterior probability that the signals colocalise",
     filterValue: false,
+    numeric: true,
     comparator: (a, b) => a?.h4 - b?.h4,
     sortable: true,
     renderCell: ({ h4 }) => {
       if (typeof h4 !== "number") return naLabel;
-      return h4.toPrecision(3);
+      return h4.toFixed(3);
     },
   },
   {
     id: "clpp",
     label: "CLPP",
     filterValue: false,
+    numeric: true,
     comparator: (a, b) => a?.clpp - b?.clpp,
     sortable: true,
     renderCell: ({ clpp }) => {
       if (typeof clpp !== "number") return naLabel;
-      return clpp.toPrecision(3);
+      return clpp.toFixed(3);
     },
   },
 ];
@@ -214,15 +224,32 @@ function Body({ studyLocusId, entity }: BodyProps) {
     studyLocusId: studyLocusId,
   };
 
-  const request = useQuery(GWAS_COLOC_QUERY, {
-    variables,
+  const [request, setRequest] = useState<responseType>(initialResponse);
+
+  const getData = useBatchQuery({
+    query: MOLQTL_COLOC_QUERY,
+    variables: {
+      studyLocusId,
+      size: table5HChunkSize,
+      index: 0,
+    },
+    dataPath: "data.credibleSet.colocalisation",
+    size: table5HChunkSize,
   });
+
+  useEffect(() => {
+    getData().then(r => {
+      setRequest(r);
+    });
+  }, []);
 
   return (
     <SectionItem
       definition={definition}
       entity={entity}
       request={request}
+      showContentLoading
+      loadingMessage="Loading data. This may take some time..."
       renderDescription={() => <Description />}
       renderBody={() => {
         return (
@@ -234,8 +261,8 @@ function Body({ studyLocusId, entity }: BodyProps) {
             order="asc"
             columns={columns}
             loading={request.loading}
-            rows={request.data?.credibleSet.colocalisation}
-            query={GWAS_COLOC_QUERY.loc.source.body}
+            rows={request.data?.credibleSet.colocalisation.rows}
+            query={MOLQTL_COLOC_QUERY.loc.source.body}
             variables={variables}
           />
         );

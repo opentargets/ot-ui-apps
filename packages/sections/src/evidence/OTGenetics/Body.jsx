@@ -79,11 +79,11 @@ function getColumns(label) {
     {
       id: "variantId",
       label: "Variant (RSID)",
-      renderCell: ({ variantId, variantRsId }) => (
+      renderCell: ({ variant, variantRsId }) => (
         <>
-          {variantId ? (
-            <Link external to={otgVariantUrl(variantId)}>
-              {variantId}
+          {variant ? (
+            <Link external to={otgVariantUrl(variant.id)}>
+              {variant.id}
             </Link>
           ) : (
             naLabel

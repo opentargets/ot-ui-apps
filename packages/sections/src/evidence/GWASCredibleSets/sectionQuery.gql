@@ -30,6 +30,10 @@ query GwasCredibleSetsQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
           }
           variant {
             id
+            chromosome
+            position
+            referenceAllele
+            alternateAllele
           }
           pValueMantissa
           pValueExponent

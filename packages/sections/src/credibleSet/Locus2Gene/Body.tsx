@@ -26,8 +26,7 @@ const columns = [
     id: "score",
     label: "L2G score",
     sortable: true,
-    tooltip:
-      "Overall evidence linking a gene to this credible set using all features. Score range [0,1]",
+    tooltip: "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
     renderCell: ({ score }) => {
       if (!score) return naLabel;
       return (
@@ -62,7 +61,7 @@ function Body({ studyLocusId, entity }: BodyProps): ReactNode {
             dataDownloaderFileStem={`${studyLocusId}-locus2gene`}
             columns={columns}
             loading={request.loading}
-            rows={request.data?.credibleSet.l2Gpredictions}
+            rows={request.data?.credibleSet.l2GPredictions.rows}
             query={LOCUS2GENE_QUERY.loc.source.body}
             variables={variables}
           />
