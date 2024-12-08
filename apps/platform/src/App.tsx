@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ApolloProvider } from "@apollo/client";
 import { ThemeProvider, SearchProvider, PrivateRoute, ConfigurationProvider } from "ui";
@@ -19,7 +20,6 @@ import APIPage from "./pages/APIPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import { getSuggestedSearch } from "./utils/global";
-import { ReactElement } from "react";
 
 function App(): ReactElement {
   const suggestions = getSuggestedSearch();
@@ -35,16 +35,16 @@ function App(): ReactElement {
             <Router>
               <Routes>
                 <Route path="/" element={<HomePage suggestions={suggestions} />} />
+                <Route path="/api" element={<APIPage />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/downloads" element={<DownloadsPage />} />
-                <Route path="/disease/:efoId/*" element={<DiseasePage />} />
                 <Route path="/target/:ensgId/*" element={<TargetPage />} />
-                <Route path="/drug/:chemblId" element={<DrugPage />} />
-                <Route path="/evidence/:ensgId/:efoId" element={<EvidencePage />} />
-                <Route path="/variant/:varId" element={<VariantPage />} />
-                <Route path="/study/:studyId" element={<StudyPage />} />
-                <Route path="/credible-set/:studyLocusId" element={<CredibleSetPage />} />
-                <Route path="/api" element={<APIPage />} />
+                <Route path="/disease/:efoId/*" element={<DiseasePage />} />
+                <Route path="/evidence/:ensgId/:efoId/*" element={<EvidencePage />} />
+                <Route path="/drug/:chemblId/*" element={<DrugPage />} />
+                <Route path="/variant/:varId/*" element={<VariantPage />} />
+                <Route path="/study/:studyId/*" element={<StudyPage />} />
+                <Route path="/credible-set/:studyLocusId/*" element={<CredibleSetPage />} />
                 <Route
                   path="/projects"
                   element={
