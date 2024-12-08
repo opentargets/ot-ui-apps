@@ -1,4 +1,4 @@
-import { Box, Skeleton, useTheme } from "@mui/material";
+import { Box, Skeleton, Typography, useTheme } from "@mui/material";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,7 +10,6 @@ import {
   Plot,
   Vis,
   YAxis,
-  XTick,
   YTick,
   XLabel,
   YLabel,
@@ -22,17 +21,16 @@ import {
   HTMLTooltipTable,
   HTMLTooltipRow,
 } from "ui";
-import { scaleLinear, scaleLog, min, scaleOrdinal, schemeCategory10, schemeDark2 } from "d3";
+import { scaleLinear, min, scaleOrdinal } from "d3";
 import { ScientificNotation } from "ui";
 import { naLabel, credsetConfidenceMap } from "../../constants";
 import { Fragment } from "react/jsx-runtime";
 
-export default function PheWasPlot({ loading, data, id }) {
+export default function PheWasPlot({ loading, data, id, referenceAllele, alternateAllele }) {
 
   const plotHeight = 440;
   const theme = useTheme();
   const background = theme.palette.background.paper;
-  // const markColor = theme.palette.primary.main;
   const fontFamily = theme.typography.fontFamily;
   const pointArea = 64;
 
@@ -50,9 +48,6 @@ export default function PheWasPlot({ loading, data, id }) {
     '#188E61',
     '#BEE952',
   ];
-  // const palette = schemeCategory10;
-  // const palette = schemeDark2;
-  // const palette = schemeSet1;
 
   if (loading) return <Skeleton height={plotHeight} />;
   if (data == null) return null;
@@ -63,11 +58,15 @@ export default function PheWasPlot({ loading, data, id }) {
       d.pValueExponent != null &&
       d.variant != null;
   });
-
   if (data.length === 0) return null;
+  // eslint-disable-next-line
+  data = structuredClone(data);
+  data.forEach(d => {
+    d._y = Math.log10(d.pValueMantissa) + d.pValueExponent;
+  });
 
-  const pValueMin = min(data, pValue);
-  const pValueMax = 1;
+  const yMin = min(data, d => d._y);
+  const yMax = 0;
 
   const rowLookup = new Map();  // derived values for each row
   const diseaseGroups = new Map();
@@ -84,26 +83,20 @@ export default function PheWasPlot({ loading, data, id }) {
       .sort((a, b) => a[1].name.localeCompare(b[1].name))
       .map(a => a[0]);
   if (diseaseGroups.has('__uncategorised__')) {
-    sortedDiseaseIds = sortedDiseaseIds.filter(id => id === '__uncategorised__');
-    sortedDiseaseIds.shift('__uncategorised__');
+    sortedDiseaseIds = sortedDiseaseIds.filter(id => id !== '__uncategorised__');
+    sortedDiseaseIds.push('__uncategorised__');
   }
   const xIntervals = new Map();
-  // const xMidpoints = [];
   let xCumu = 0;
-  // const xGap = Math.ceil(data.length / 100);  // gap between groups
-  // const xPad = Math.ceil(data.length / 100);  // padding at ede of groups
   const xGap = data.length / 300;  // gap between groups
-  // const xGap = 0;
   const xPad = data.length / 500;  // padding at ede of groups
   const sortedData = [];
-  // const sortedDiseaseNames = [];
   for (const id of sortedDiseaseIds) {
-    const { name, data: newRows } = diseaseGroups.get(id);
-    // sortedDiseaseNames.push(name);
+    const { data: newRows } = diseaseGroups.get(id);
     xCumu += xGap;
     xIntervals.set(id, { start: xCumu });
     xCumu += xPad;
-    newRows.sort((row1, row2) => pValue(row1) - pValue(row2));
+    newRows.sort((row1, row2) => row1._y - row2._y);
     for (const row of newRows) {
       rowLookup.get(row).x = xCumu + 0.5;
       xCumu += 1;
@@ -118,10 +111,9 @@ export default function PheWasPlot({ loading, data, id }) {
     return x < xCumu / 2 ? 'left' : 'right';
   }
 
-  function yAnchor(row) {
-    const y = pValue(row);
-    return Math.log10(y) > Math.log10(pValueMin) / 2 ? 'bottom' : 'top';
-  }
+  const xScale = scaleLinear().domain([0, xCumu]);
+  const yScale = scaleLinear().domain([yMin, yMax]).nice();  // ensure min scale value <= yMin
+  yScale.domain([yScale.domain()[0], yMax]);  // ensure max scale value is yMax - in case nice changed it 
 
   const colorDomain = ['background'];
   const colorRange = [background];
@@ -133,7 +125,7 @@ export default function PheWasPlot({ loading, data, id }) {
 
   const pointAttrs = {
     x: d => rowLookup.get(d).x,
-    y: pValue,
+    y: d => d._y,
     fill: d => {
       return d.variant.id === id ? rowLookup.get(d).therapeuticAreaId : 'background';
     },
@@ -146,101 +138,115 @@ export default function PheWasPlot({ loading, data, id }) {
   }
 
   return (
-    <Vis>
+    <>
 
-      <Plot
-        responsive
-        clearOnClick
-        clearOnLeave
-        height={plotHeight}
-        padding={{ top: 50, right: 40, bottom: 100, left: 90 }}
-        fontFamily={fontFamily}
-        data={sortedData}
-        yReverse
-        scales={{
-          x: scaleLinear().domain([0, xCumu]),
-          y: scaleLog().domain([pValueMin, pValueMax]),
-          fill: colorScale,
-          stroke: colorScale,
-          shape: scaleOrdinal(['circle', 'triangle'], ['circle', 'triangle'])
-        }}
-      >
-        {/* <XTick values={xTickValues} tickLength={7} /> */}
-        {/* need to use different XLabel elements to use different colors */}
+      {/* legend */}
+      {/* <Typography variant="body2">Beta: △ positive, ▽ negative, ○ {naLabel}</Typography> */}
+      <Typography variant="body2" pt={1.5} pr={1.5} textAlign="right">
+        <small>▲</small> Beta &gt; 0&emsp;&emsp;
+        <small>▼</small> Beta &lt; 0&emsp;&emsp;
+        <small>●</small> Beta {naLabel}&emsp;&emsp;
+        Filled symbol:
+        <b>
+          <DisplayVariantId
+            id={id}
+            referenceAllele={referenceAllele}
+            alternateAllele={alternateAllele}
+            expand={false}
+          />
+        </b>
+      </Typography>
 
-        {[...xIntervals].map(([id, { start, end }]) => (
-          <Fragment key={id}>
-            {/* <XTick
-              values={[start, end]}
-              stroke={colorScale(id)}
-            /> */}
-            <XLabel
-              // key={id}
-              values={[(start + end) / 2]}
-              format={() => diseaseGroups.get(id).name}
-              padding={3}
-              textAnchor="start"
-              dx={-2}
-              style={{
-                transformOrigin: '0% 50%',
-                transformBox: 'fill-box',
-                transform: "rotate(45deg)",
-              }}
-              fill={colorScale(id)}
-            />
-          </Fragment>
-        ))}
-        <Segment
-          data={xIntervals}
-          x={d => d[1].start}
-          xx={d => d[1].end}
-          y={pValueMax}
-          yy={pValueMax}
-          stroke={d => d[0]}
-          strokeWidth={1}
-        />
-        {/* <XGrid values={xTickValues} stroke="#e4e4e4" /> */}
-        <XTitle fontSize={11} position="top" align="left" textAnchor="middle" padding={16} dx={-30}>
-          <tspan fontStyle="italic">-log
-            <tspan fontSize="9" dy="4">10</tspan>
-            <tspan dy="-4">(pValue)</tspan>
-          </tspan>
-        </XTitle>
-        <YTick />
-        <YLabel format={v => -Math.log10(v)} />
-        <Point {...pointAttrs} />
+      {/* plot */}
+      <Vis>
 
-        {/* on hover */}
-        <Rect
-          dataFrom="hover"
-          x={0}
-          xx={sortedData.length}
-          dxx={8}
-          y={pValueMin}
-          yy={pValueMax}
-          dy={-8}
-          dyy={0}
-          fill={background}
-          fillOpacity={0.4}
-        />
-        <Point dataFrom="hover" {...pointAttrs} />
-        <HTMLTooltip
-          x={(d, i) => rowLookup.get(d).x}
-          y={d => pValueMin}
-          // y={pValue}
-          pxWidth={360}
-          pxHeight={350}
-          content={tooltipContent}
-          xOffset={40}
-          yOffset={-20}
-        />
+        <Plot
+          responsive
+          clearOnClick
+          clearOnLeave
+          height={plotHeight}
+          padding={{ top: 30, right: 40, bottom: 100, left: 90 }}
+          fontFamily={fontFamily}
+          data={sortedData}
+          yReverse
+          scales={{
+            x: xScale,
+            y: yScale,
+            fill: colorScale,
+            stroke: colorScale,
+            shape: scaleOrdinal(['circle', 'triangle'], ['circle', 'triangle'])
+          }}
+        >
 
-        {/* axes at end so fade rectangle doesn't cover them */}
-        {/* <XAxis /> */}
-        <YAxis />
+          {[...xIntervals].map(([id, { start, end }]) => (
+            <Fragment key={id}>
+              <XLabel
+                values={[(start + end) / 2]}
+                format={() => diseaseGroups.get(id).name}
+                padding={3}
+                textAnchor="start"
+                dx={-2}
+                style={{
+                  transformOrigin: '0% 50%',
+                  transformBox: 'fill-box',
+                  transform: "rotate(45deg)",
+                }}
+                fill={colorScale(id)}
+              />
+            </Fragment>
+          ))}
+          <Segment
+            data={xIntervals}
+            x={d => d[1].start}
+            xx={d => d[1].end}
+            y={yMax}
+            yy={yMax}
+            stroke={d => d[0]}
+            strokeWidth={1}
+          />
+          <XTitle fontSize={11} position="top" align="left" textAnchor="middle" padding={16} dx={-30}>
+            <tspan fontStyle="italic">-log
+              <tspan fontSize="9" dy="4">10</tspan>
+              <tspan dy="-4">(pValue)</tspan>
+            </tspan>
+          </XTitle>
+          <YTick />
+          <YLabel format={v => Math.abs(v)} />
+          <Point {...pointAttrs} />
 
-      </Plot>
-    </Vis >
+          {/* on hover */}
+          <Rect
+            dataFrom="hover"
+            x={0}
+            xx={sortedData.length}
+            dxx={8}
+            y={yMin}
+            yy={yMax}
+            dy={-8}
+            dyy={0}
+            fill={background}
+            fillOpacity={0.4}
+          />
+          <Point dataFrom="hover" {...pointAttrs} />
+          <HTMLTooltip
+            x={(d, i) => rowLookup.get(d).x}
+            y={d => yMin}
+            // y={pValue}
+            pxWidth={360}
+            pxHeight={350}
+            content={tooltipContent}
+            xOffset={40}
+            yOffset={-20}
+          />
+
+          {/* axes at end so fade rectangle doesn't cover them */}
+          {/* <XAxis /> */}
+          <YAxis />
+
+        </Plot>
+      </Vis >
+
+    </>
   );
 
 }
@@ -343,13 +349,6 @@ function tooltipContent(data) {
         {data.locus?.count ?? naLabel}
       </HTMLTooltipRow>
     </HTMLTooltipTable>
-  );
-}
-
-function pValue(row) {
-  return Math.max(
-    row.pValueMantissa * 10 ** row.pValueExponent,
-    Number.MIN_VALUE
   );
 }
 
