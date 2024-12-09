@@ -78,6 +78,14 @@ const columns = [
       }
       return displayElement;
     },
+    exportValue: ({ target, transcriptId, uniprotAccessions, aminoAcidChange }) => {
+      const geneInfo = `Gene: ${target?.id};`;
+      const canonicalTranscript = transcriptId ? `Canonical transcript: ${transcriptId};` : "";
+      const biotype = `Biotype: ${target?.biotype};`;
+      const protein = uniprotAccessions?.length ? `Protein(s): ${uniprotAccessions.join(", ")}` : "";
+      const aaChange = aminoAcidChange ? `AA: ${aminoAcidChange};` : "";
+      return [geneInfo, canonicalTranscript, biotype, protein, aaChange].join("");
+    }      
   },
   {
     id: "variantConsequences.label",

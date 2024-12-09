@@ -53,8 +53,7 @@ const columns = [
         : publicationFirstAuthor || naLabel;
     },
     exportValue: ({ otherStudyLocus }) => {
-      const { projectId, publicationFirstAuthor } = otherStudyLocus.study || {};
-      getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor;
+      return otherStudyLocus?.study?.publicationFirstAuthor;
     },
   },
   {

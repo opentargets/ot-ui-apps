@@ -39,7 +39,7 @@ query GWASCredibleSetsQuery($variantId: String!, $size: Int!, $index: Int!) {
         locusSize: locus {
           count
         }
-        l2GPredictions(page: { size: 1, index: 1 }) {
+        l2GPredictions(page: { size: 1, index: 0 }) {
           rows {
             target {
               id

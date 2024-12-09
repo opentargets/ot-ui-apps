@@ -103,6 +103,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           </Link>
         );
       },
+      exportValue: ({ study }) => { return `[${study?.biosample?.biosampleId}]:${study?.biosample?.biosampleName}`},
     },
     {
       id: "study.condition",

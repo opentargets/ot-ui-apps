@@ -100,6 +100,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         if (!study) return naLabel;
         return <Link to={`../study/${study.id}`}>{study.id}</Link>;
       },
+      exportValue: ({ study }) => study?.id,
     },
     {
       id: "pValue",
@@ -193,7 +194,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         const { target } = l2GPredictions?.rows[0];
         return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
       },
-      exportValue: ({ l2GPredictions }) => l2GPredictions?.target.approvedSymbol,
+      exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target.approvedSymbol,
     },
     {
       id: "l2gScore",
@@ -214,6 +215,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           </Tooltip>
         );
       },
+      exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
     },
     {
       id: "credibleSetSize",
