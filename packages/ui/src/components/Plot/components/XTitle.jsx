@@ -1,15 +1,15 @@
 import { usePlot } from "../contexts/PlotContext";
 
 export default function XTitle({
-      children,
-      position = 'bottom',
-      align = 'center',  // 'left', 'center' or 'right'
-      padding,
-      dx = 0,
-      dy = 0,
-      ...textAttrs  // be very careful if change the transform-related CSS props
-                    // used in the <text> element
-    }) {
+  children,
+  position = 'bottom',
+  align = 'center',  // 'left', 'center' or 'right'
+  padding,
+  dx = 0,
+  dy = 0,
+  ...textAttrs  // be very careful if change the transform-related CSS props
+  // used in the <text> element
+}) {
 
   const plot = usePlot();
   if (!plot) {
@@ -34,13 +34,13 @@ export default function XTitle({
   }
   x += dx;
 
-  let y, alignmentBaseline;
+  let y, dominantBaseline;
   if (position === 'top') {
     y = plot.padding.top - padding;
-    alignmentBaseline = 'baseline';
+    dominantBaseline = 'baseline';
   } else {
     y = plot.height - plot.padding.bottom + padding;
-    alignmentBaseline = 'hanging';
+    dominantBaseline = 'hanging';
   }
   y += dy;
 
@@ -54,7 +54,7 @@ export default function XTitle({
       fontStyle={plot.fontStyle}
       fontWeight={plot.fontWeight}
       textAnchor={textAnchor}
-      alignmentBaseline={alignmentBaseline}
+      dominantBaseline={dominantBaseline}
       {...textAttrs}
     >
       {children}

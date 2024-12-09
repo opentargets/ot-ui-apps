@@ -4,14 +4,14 @@ import { fromFrameOrPlot } from "../util/fromFrameOrPlot";
 import { finalData } from "../util/finalData";
 
 export default function XLabel({
-      values,
-      position = 'bottom',
-      padding,
-      dx = 0,
-      dy = 0,
-      format,
-      ...textAttrs
-    }) {
+  values,
+  position = 'bottom',
+  padding,
+  dx = 0,
+  dy = 0,
+  format,
+  ...textAttrs
+}) {
 
   const plot = usePlot();
   if (!plot) {
@@ -31,15 +31,13 @@ export default function XLabel({
     ? v => plot.panelWidth - ops.scales.x(v)
     : ops.scales.x;
 
-  const leftOrigin = `translate(${
-    plot.padding.left + dx},${
-    position === 'top'
-      ? plot.padding.top - padding + dy
-      : plot.height - plot.padding.bottom + padding + dy
-  })`;
+  const leftOrigin = `translate(${plot.padding.left + dx},${position === 'top'
+    ? plot.padding.top - padding + dy
+    : plot.height - plot.padding.bottom + padding + dy
+    })`;
 
   return (
-    <g transform={leftOrigin}> 
+    <g transform={leftOrigin}>
       {tickValues.map((v, i) => {
         return (
           <text
@@ -52,7 +50,7 @@ export default function XLabel({
             fontStyle={plot.fontStyle}
             fontWeight={plot.fontWeight}
             textAnchor="middle"
-            alignmentBaseline={position === 'top' ? 'baseline' : 'hanging'}
+            dominantBaseline={position === 'top' ? 'baseline' : 'hanging'}
             {...textAttrs}
           >
             {format ? format(v, i, tickValues, ops.xTick) : v}

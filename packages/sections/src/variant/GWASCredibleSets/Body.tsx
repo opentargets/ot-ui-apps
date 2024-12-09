@@ -281,6 +281,8 @@ function Body({ id, entity }: BodyProps) {
             loading={request.loading}
             data={request.data?.variant.gwasCredibleSets.rows}
             id={id}
+            referenceAllele={request.data?.variant.referenceAllele}
+            alternateAllele={request.data?.variant.alternateAllele}
           />
         );
       }}

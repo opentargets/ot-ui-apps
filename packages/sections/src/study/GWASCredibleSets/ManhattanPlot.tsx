@@ -19,7 +19,7 @@ import {
   HTMLTooltipTable,
   HTMLTooltipRow,
 } from "ui";
-import { scaleLinear, scaleLog, min } from "d3";
+import { scaleLinear, min } from "d3";
 import { ScientificNotation } from "ui";
 import { naLabel } from "../../constants";
 
@@ -42,14 +42,23 @@ export default function ManhattanPlot({ loading, data }) {
       d.variant != null;
   });
   if (data.length === 0) return null;
+  // eslint-disable-next-line
+  data = structuredClone(data);
+  data.forEach(d => {
+    d._y = Math.log10(d.pValueMantissa) + d.pValueExponent;
+  });
 
-  const pValueMin = min(data, pValue);
-  const pValueMax = 1;
+  const yMin = min(data, d => d._y);
+  const yMax = 0;
 
   const genomePositions = {};
   data.forEach(({ variant }) => {
     genomePositions[variant.id] = cumulativePosition(variant);
   });
+
+  const xScale = scaleLinear().domain([0, genomeLength]);
+  const yScale = scaleLinear().domain([yMin, yMax]).nice();  // ensure min scale value <= yMin
+  yScale.domain([yScale.domain()[0], yMax]);  // ensure max scale value is yMax - in case nice changed it 
 
   return (
     <Vis>
@@ -63,13 +72,9 @@ export default function ManhattanPlot({ loading, data }) {
         fontFamily={fontFamily}
         data={data}
         yReverse
-        scales={{
-          x: scaleLinear().domain([0, genomeLength]),
-          y: scaleLog().domain([pValueMin, pValueMax]),
-        }}
+        scales={{ x: xScale, y: yScale }}
         xTick={chromosomeInfo}
       >
-
         <XTick
           values={tickData => [0, ...tickData.map(chromo => chromo.end)]}
           tickLength={15}
@@ -91,13 +96,13 @@ export default function ManhattanPlot({ loading, data }) {
           </tspan>
         </XTitle>
         <YTick />
-        <YLabel format={v => -Math.log10(v)} />
+        <YLabel format={v => Math.abs(v)} />
 
         <Segment
           x={d => genomePositions[d.variant.id]}
           xx={d => genomePositions[d.variant.id]}
-          y={pValue}
-          yy={pValueMax}
+          y={d => d._y}
+          yy={yMax}
           stroke={markColor}
           strokeWidth={1}
           strokeOpacity={0.7}
@@ -105,7 +110,7 @@ export default function ManhattanPlot({ loading, data }) {
         />
         <Circle
           x={d => genomePositions[d.variant.id]}
-          y={pValue}
+          y={d => d._y}
           fill={background}
           stroke={markColor}
           strokeWidth={1.2}
@@ -119,8 +124,8 @@ export default function ManhattanPlot({ loading, data }) {
           x={0}
           xx={genomeLength}
           dxx={8}
-          y={pValueMin}
-          yy={pValueMax}
+          y={yMin}
+          yy={yMax}
           dy={-8}
           dyy={0}
           fill={background}
@@ -130,8 +135,8 @@ export default function ManhattanPlot({ loading, data }) {
           dataFrom="hover"
           x={d => genomePositions[d.variant.id]}
           xx={d => genomePositions[d.variant.id]}
-          y={pValue}
-          yy={pValueMax}
+          y={d => d._y}
+          yy={yMax}
           stroke={markColor}
           strokeWidth={1.7}
           strokeOpacity={1}
@@ -139,13 +144,13 @@ export default function ManhattanPlot({ loading, data }) {
         <Circle
           dataFrom="hover"
           x={d => genomePositions[d.variant.id]}
-          y={pValue}
+          y={d => d._y}
           fill={markColor}
           area={circleArea}
         />
         <HTMLTooltip
           x={d => genomePositions[d.variant.id]}
-          y={pValue}
+          y={d => d._y}
           pxWidth={290}
           pxHeight={200}
           content={tooltipContent}
@@ -206,13 +211,6 @@ function tooltipContent(data) {
         {data.locus?.count ?? naLabel}
       </HTMLTooltipRow>
     </HTMLTooltipTable>
-  );
-}
-
-function pValue(row) {
-  return Math.max(
-    row.pValueMantissa * 10 ** row.pValueExponent,
-    Number.MIN_VALUE
   );
 }
 
