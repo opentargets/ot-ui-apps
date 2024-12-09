@@ -14,7 +14,7 @@ import Description from "./Description";
 import GWAS_COLOC_QUERY from "./GWASColocQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { getStudyCategory } from "../../utils/getStudyCategory";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 const columns = [
   {
@@ -131,12 +131,11 @@ const columns = [
       let category = "Inconclusive";
       if (betaRatioSignAverage <= -0.99) category = "Opposite";
       else if (betaRatioSignAverage >= 0.99) category = "Same";
-      const displayValue = Math.abs(betaRatioSignAverage) === 1
-        ? betaRatioSignAverage
-        : betaRatioSignAverage.toFixed(2)
-      return <Tooltip title={`Beta ratio sign average: ${displayValue}`}>
-        {category}
-      </Tooltip>
+      const displayValue =
+        Math.abs(betaRatioSignAverage) === 1
+          ? betaRatioSignAverage
+          : betaRatioSignAverage.toFixed(2);
+      return <Tooltip title={`Beta ratio sign average: ${displayValue}`}>{category}</Tooltip>;
     },
     filterValue: ({ betaRatioSignAverage }) => {
       if (betaRatioSignAverage == null) return null;
@@ -201,20 +200,18 @@ type BodyProps = {
   entity: string;
 };
 
-function Body({ studyLocusId, entity }: BodyProps) {
+function Body({ studyLocusId, entity }: BodyProps): ReactElement {
   const variables = {
     studyLocusId: studyLocusId,
+    size: table5HChunkSize,
+    index: 0,
   };
 
   const [request, setRequest] = useState<responseType>(initialResponse);
 
   const getData = useBatchQuery({
     query: GWAS_COLOC_QUERY,
-    variables: {
-      studyLocusId,
-      size: table5HChunkSize,
-      index: 0,
-    },
+    variables,
     dataPath: "data.credibleSet.colocalisation",
     size: table5HChunkSize,
   });
