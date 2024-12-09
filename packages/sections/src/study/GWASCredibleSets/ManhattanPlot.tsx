@@ -201,7 +201,7 @@ function tooltipContent(data) {
             Method:{" "}{data.finemappingMethod ?? naLabel}
           </Box>
           <Box display="flex" gap={0.5}>
-            Confidence:
+            Confidence:{" "}
             {data.confidence
               ? <Tooltip title={data.confidence} style="">
                 <ClinvarStars num={credsetConfidenceMap[data.confidence]} />
@@ -215,7 +215,7 @@ function tooltipContent(data) {
       <HTMLTooltipRow label="L2G" data="data">
         <Box display="flex" flexDirection="column" gap={0.25}>
           <Box display="flex" gap={0.5}>
-            Top:
+            Top:{" "}
             {data.l2GPredictions?.rows?.[0]?.target
               ? <Link to={`/target/${data.l2GPredictions.rows[0].target.id}`}>
                 {data.l2GPredictions.rows[0].target.approvedSymbol}
@@ -224,7 +224,7 @@ function tooltipContent(data) {
             }
           </Box>
           <Box display="flex" alignItems="center" gap={0.5}>
-            Score:
+            Score:{" "}
             {data.l2GPredictions?.rows?.[0]?.score
               ? <Tooltip title={data.l2GPredictions.rows[0].score.toFixed(3)} style="">
                 <div>

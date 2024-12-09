@@ -4,7 +4,8 @@ export default function TooltipRow({
   children,
   label,
   data,
-  labelMinWidth,
+  labelWidth,
+  valueWidth,
   truncateValue,
 }) {
 
@@ -18,13 +19,22 @@ export default function TooltipRow({
 
   return (
     <tr style={{ verticalAlign: 'top' }}>
-      <td width={labelMinWidth}>
-        <Typography variant="subtitle2" fontSize={13} style={{ lineHeight: 1.15, paddingRight: "0.2rem" }}>
+      <td width={labelWidth}>
+        <Typography
+          variant="subtitle2"
+          fontSize={13}
+          style={{ lineHeight: 1.15, paddingRight: "0.2rem" }}
+        >
           {label}:
         </Typography>
       </td>
       <td>
-        <Typography variant="body2" component="div" fontSize={13} style={{ lineHeight: 1.15, ...truncateLine }}>
+        <Typography
+          variant="body2"
+          component="div"
+          fontSize={13}
+          style={{ lineHeight: 1.15, ...truncateLine, width: valueWidth }}
+        >
           {children}
         </Typography>
       </td>
