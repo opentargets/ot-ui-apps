@@ -2,7 +2,7 @@ const dataSources = [
   {
     id: "gwas_credible_sets",
     sectionId: "gwasCredibleSets",
-    label: "GWAS credible sets",
+    label: "GWAS associations",
     aggregation: "Genetic association",
     aggregationId: "genetic_association",
     weight: 1,
