@@ -87,6 +87,9 @@ function Plot({ data, width }) {
         tickSize: 0,
         domain: [-1, 1],
       },
+      y: {
+        tickSize: 0,
+      },
 
       color: {
         legend: false,
@@ -114,20 +117,23 @@ function Plot({ data, width }) {
           fill: "normalisedScore",
           stroke: grey[100],
           strokeWidth: 4,
+          strokeOpacity: 0.8,
           tip: {
             fontSize: 14,
             textPadding: 20,
+            textOverflow: "clip",
             format: {
               x: false,
               y: false,
               fill: false,
+              stroke: false,
               normalisedScore: false,
             },
           },
           channels: {
             method: {
               value: "method",
-              label: "",
+              label: "Method:",
             },
             assessment: {
               value: "assessment",
@@ -135,7 +141,7 @@ function Plot({ data, width }) {
             },
             score: {
               value: "score",
-              label: "Score:",
+              label: "Method score:",
             },
             assessmentFlag: {
               value: "assessmentFlag",

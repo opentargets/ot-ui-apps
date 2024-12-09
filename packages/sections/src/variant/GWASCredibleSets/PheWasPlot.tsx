@@ -26,6 +26,10 @@ import { ScientificNotation, DataDownloader } from "ui";
 import { naLabel, credsetConfidenceMap } from "../../constants";
 import { Fragment } from "react";
 
+const plotHeight = 450;
+const tooltipHeight = 310;
+const tooltipWidth = 360;
+
 const palette = [
   "#27B4AE",
   "#4047C4",
@@ -73,7 +77,6 @@ export default function PheWasPlot({
   variables,
   columns,
 }) {
-  const plotHeight = 450;
   const theme = useTheme();
   const background = theme.palette.background.paper;
   const fontFamily = theme.typography.fontFamily;
@@ -259,8 +262,8 @@ export default function PheWasPlot({
           <HTMLTooltip
             x={(d, i) => rowLookup.get(d).x}
             y={d => yMin}
-            pxWidth={360}
-            pxHeight={350}
+            pxWidth={tooltipWidth}
+            pxHeight={tooltipHeight}
             content={tooltipContent}
             xOffset={40}
             yOffset={-20}
@@ -276,16 +279,15 @@ export default function PheWasPlot({
 }
 
 function tooltipContent(data) {
-  const labelWidth = 148;
-  // const valueWidth = 100;
+  const labelWidth = 160;
   return (
     <HTMLTooltipTable>
-      <HTMLTooltipRow label="Navigate" data={data} labelMinWidth={labelWidth}>
+      <HTMLTooltipRow label="Navigate" data={data} labelWidth={labelWidth}>
         <Link to={`/credible-set/${data.studyLocusId}`}>
           <FontAwesomeIcon icon={faArrowRightToBracket} />
         </Link>
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Lead variant" data={data} labelMinWidth={labelWidth}>
+      <HTMLTooltipRow label="Lead variant" data={data} labelWidth={labelWidth}>
         <Link to={`/variant/${data.variant.id}`}>
           <DisplayVariantId
             variantId={data.variant.id}
@@ -295,10 +297,22 @@ function tooltipContent(data) {
           />
         </Link>
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Reported trait" data={data} labelMinWidth={labelWidth}>
+      <HTMLTooltipRow
+        label="Reported trait"
+        data={data}
+        labelWidth={labelWidth}
+        valueWidth={`${tooltipWidth - labelWidth}px`}
+        truncateValue
+      >
         {data.study?.traitFromSource ?? naLabel}
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Disease/phenotype" data={data} labelMinWidth={labelWidth}>
+      <HTMLTooltipRow
+        label="Disease/phenotype"
+        data={data}
+        labelWidth={labelWidth}
+        valueWidth={`${tooltipWidth - labelWidth}px`}
+        truncateValue
+      >
         {data.study?.diseases?.length > 0 ? (
           <>
             {data.study.diseases.map((d, i) => (
@@ -312,26 +326,25 @@ function tooltipContent(data) {
           naLabel
         )}
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Study" data={data} labelMinWidth={labelWidth}>
-        {data.study ? (
-          <Link to={`/study/${data.study.studyId}`}>{data.study.studyId}</Link>
-        ) : (
-          naLabel
-        )}
+      <HTMLTooltipRow label="Study" data={data} labelWidth={labelWidth}>
+        {data.study ? <Link to={`/study/${data.study.id}`}>{data.study.id}</Link> : naLabel}
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="P-value" data={data} labelMinWidth={labelWidth}>
-        <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} />
+      <HTMLTooltipRow label="P-value" data={data} labelWidth={labelWidth}>
+        <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} dp={2} />
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Beta" data={data} labelMinWidth={labelWidth}>
-        {data.beta?.toFixed(3) ?? naLabel}
+      <HTMLTooltipRow label="Beta" data={data} labelWidth={labelWidth}>
+        {data.beta?.toPrecision(3) ?? naLabel}
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Posterior probability" data={data} labelMinWidth={labelWidth}>
-        {data.locus?.rows?.[0].posteriorProbability.toFixed(3) ?? naLabel}
+      <HTMLTooltipRow label="Posterior probability" data={data} labelWidth={labelWidth}>
+        {data.locus?.rows?.[0].posteriorProbability.toPrecision(3) ?? naLabel}
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Fine-mapping" data={data} labelMinWidth={labelWidth}>
+      <HTMLTooltipRow label="Fine-mapping" data={data} labelWidth={labelWidth}>
         <Box display="flex" flexDirection="column" gap={0.25}>
           <Box display="flex" gap={0.5}>
-            Confidence:
+            Method: {data.finemappingMethod ?? naLabel}
+          </Box>
+          <Box display="flex" gap={0.5}>
+            Confidence:{" "}
             {data.confidence ? (
               <Tooltip title={data.confidence} style="">
                 <ClinvarStars num={credsetConfidenceMap[data.confidence]} />
@@ -340,31 +353,28 @@ function tooltipContent(data) {
               naLabel
             )}
           </Box>
-          <Box display="flex" gap={0.5}>
-            Method: {data.finemappingMethod ?? naLabel}
-          </Box>
         </Box>
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="L2G" data="data" labelMinWidth={labelWidth}>
+      <HTMLTooltipRow label="L2G" data="data" labelWidth={labelWidth}>
         <Box display="flex" flexDirection="column" gap={0.25}>
           <Box display="flex" gap={0.5}>
-            Top:
-            {data.l2Gpredictions?.[0]?.target ? (
-              <Link to={`/target/${data.l2Gpredictions[0].target.id}`}>
-                {data.l2Gpredictions[0].target.approvedSymbol}
+            Top:{" "}
+            {data.l2GPredictions?.rows?.[0]?.target ? (
+              <Link to={`/target/${data.l2GPredictions.rows[0].target.id}`}>
+                {data.l2GPredictions.rows[0].target.approvedSymbol}
               </Link>
             ) : (
               naLabel
             )}
           </Box>
           <Box display="flex" alignItems="center" gap={0.5}>
-            Score:
-            {data.l2Gpredictions?.[0]?.score ? (
-              <Tooltip title={data.l2Gpredictions[0].score.toFixed(3)} style="">
+            Score:{" "}
+            {data.l2GPredictions?.rows?.[0]?.score ? (
+              <Tooltip title={data.l2GPredictions.rows[0].score.toFixed(3)} style="">
                 <div>
                   <OtScoreLinearBar
                     variant="determinate"
-                    value={data.l2Gpredictions[0].score * 100}
+                    value={data.l2GPredictions.rows[0].score * 100}
                   />
                 </div>
               </Tooltip>
@@ -374,7 +384,7 @@ function tooltipContent(data) {
           </Box>
         </Box>
       </HTMLTooltipRow>
-      <HTMLTooltipRow label="Credible set size" data={data} labelMinWidth={labelWidth}>
+      <HTMLTooltipRow label="Credible set size" data={data} labelWidth={labelWidth}>
         {data.locus?.count ?? naLabel}
       </HTMLTooltipRow>
     </HTMLTooltipTable>
