@@ -1,6 +1,9 @@
 query MolQTLColocQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
   credibleSet(studyLocusId: $studyLocusId) {
-    colocalisation(studyTypes: [tuqtl, pqtl, eqtl, sqtl], page: { size: $size, index: $index }) {
+    colocalisation(
+      studyTypes: [scsqtl, sceqtl, scpqtl, sctuqtl, sqtl, eqtl, pqtl, tuqtl]
+      page: { size: $size, index: $index }
+    ) {
       count
       rows {
         otherStudyLocus {

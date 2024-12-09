@@ -119,3 +119,14 @@ export const initialResponse = {
   error: null,
   loading: true,
 };
+
+export const QTLStudyType = [
+  "scsqtl",
+  "sceqtl",
+  "scpqtl",
+  "sctuqtl",
+  "sqtl",
+  "eqtl",
+  "pqtl",
+  "tuqtl",
+];
