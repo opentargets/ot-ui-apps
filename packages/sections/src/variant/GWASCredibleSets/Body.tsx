@@ -134,7 +134,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       sortable: true,
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
-        return beta.toFixed(3);
+        return beta.toPrecision(3);
       },
     },
     {

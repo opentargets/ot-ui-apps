@@ -103,7 +103,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           </Link>
         );
       },
-      exportValue: ({ study }) => { return `[${study?.biosample?.biosampleId}]:${study?.biosample?.biosampleName}`},
+      exportValue: ({ study }) => { return `[${study?.biosample?.biosampleId}]:${study?.biosample?.biosampleName}` },
     },
     {
       id: "study.condition",
@@ -142,7 +142,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       sortable: true,
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
-        return beta.toFixed(3);
+        return beta.toPrecision(3);
       },
     },
     {
