@@ -134,6 +134,7 @@ const columns = [
         </Tooltip>
       );
     },
+    exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
   },
   {
     id: "credibleSetSize",
