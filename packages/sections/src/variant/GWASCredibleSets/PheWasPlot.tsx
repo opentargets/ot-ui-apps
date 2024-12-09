@@ -28,7 +28,7 @@ import { Fragment } from "react/jsx-runtime";
 
 export default function PheWasPlot({ loading, data, id, referenceAllele, alternateAllele }) {
 
-  const plotHeight = 440;
+  const plotHeight = 450;
   const theme = useTheme();
   const background = theme.palette.background.paper;
   const fontFamily = theme.typography.fontFamily;
@@ -106,11 +106,6 @@ export default function PheWasPlot({ loading, data, id, referenceAllele, alterna
     xIntervals.get(id).end = xCumu;
   }
 
-  function xAnchor(row) {
-    const x = rowLookup.get(row).x;
-    return x < xCumu / 2 ? 'left' : 'right';
-  }
-
   const xScale = scaleLinear().domain([0, xCumu]);
   const yScale = scaleLinear().domain([yMin, yMax]).nice();  // ensure min scale value <= yMin
   yScale.domain([yScale.domain()[0], yMax]);  // ensure max scale value is yMax - in case nice changed it 
@@ -141,20 +136,20 @@ export default function PheWasPlot({ loading, data, id, referenceAllele, alterna
     <>
 
       {/* legend */}
-      {/* <Typography variant="body2">Beta: △ positive, ▽ negative, ○ {naLabel}</Typography> */}
-      <Typography variant="body2" pt={1.5} pr={1.5} textAlign="right">
-        <small>▲</small> Beta &gt; 0&emsp;&emsp;
-        <small>▼</small> Beta &lt; 0&emsp;&emsp;
-        <small>●</small> Beta {naLabel}&emsp;&emsp;
-        Filled symbol:
+      <Typography variant="body2" pt={1} pr={2} textAlign="right">
+        <span style={{ fontSize: 10 }}>▲</span> Beta &gt; 0&emsp;&emsp;
+        <span style={{ fontSize: 10 }}>▼</span> Beta &lt; 0&emsp;&emsp;
+        <span style={{ fontSize: 10 }}>●</span> Beta {naLabel}&emsp;&emsp;
+        Filled symbol:{" "}
         <b>
           <DisplayVariantId
-            id={id}
+            variantId={id}
             referenceAllele={referenceAllele}
             alternateAllele={alternateAllele}
             expand={false}
           />
         </b>
+        {" "}is lead variant
       </Typography>
 
       {/* plot */}
@@ -165,7 +160,7 @@ export default function PheWasPlot({ loading, data, id, referenceAllele, alterna
           clearOnClick
           clearOnLeave
           height={plotHeight}
-          padding={{ top: 30, right: 40, bottom: 100, left: 90 }}
+          padding={{ top: 30, right: 50, bottom: 120, left: 90 }}
           fontFamily={fontFamily}
           data={sortedData}
           yReverse
@@ -231,7 +226,6 @@ export default function PheWasPlot({ loading, data, id, referenceAllele, alterna
           <HTMLTooltip
             x={(d, i) => rowLookup.get(d).x}
             y={d => yMin}
-            // y={pValue}
             pxWidth={360}
             pxHeight={350}
             content={tooltipContent}
@@ -353,28 +347,28 @@ function tooltipContent(data) {
 }
 
 const therapeuticPriorities = {
-  MONDO_0045024: { name: "cell proliferation disorder", rank: 1 },
+  MONDO_0045024: { name: "cell proliferation", rank: 1 },
   EFO_0005741: { name: "infectious disease", rank: 2 },
-  OTAR_0000014: { name: "pregnancy or perinatal disease", rank: 3 },
+  OTAR_0000014: { name: "pregnancy or perinatal", rank: 3 },
   EFO_0005932: { name: "animal disease", rank: 4 },
-  MONDO_0024458: { name: "disease of visual system", rank: 5 },
-  EFO_0000319: { name: "cardiovascular disease", rank: 6 },
-  EFO_0009605: { name: "pancreas disease", rank: 7 },
-  EFO_0010282: { name: "gastrointestinal disease", rank: 8 },
-  OTAR_0000017: { name: "reproductive system or breast disease", rank: 9 },
-  EFO_0010285: { name: "integumentary system disease", rank: 10 },
-  EFO_0001379: { name: "endocrine system disease", rank: 11 },
-  OTAR_0000010: { name: "respiratory or thoracic disease", rank: 12 },
-  EFO_0009690: { name: "urinary system disease", rank: 13 },
-  OTAR_0000006: { name: "musculoskeletal or connective tissue disease", rank: 14 },
+  MONDO_0024458: { name: "visual system", rank: 5 },
+  EFO_0000319: { name: "cardiovascular", rank: 6 },
+  EFO_0009605: { name: "pancreas", rank: 7 },
+  EFO_0010282: { name: "gastrointestinal", rank: 8 },
+  OTAR_0000017: { name: "reproductive system or breast", rank: 9 },
+  EFO_0010285: { name: "integumentary system", rank: 10 },
+  EFO_0001379: { name: "endocrine system", rank: 11 },
+  OTAR_0000010: { name: "respiratory or thoracic", rank: 12 },
+  EFO_0009690: { name: "urinary system", rank: 13 },
+  OTAR_0000006: { name: "musculoskeletal or connective ...", rank: 14 },
   MONDO_0021205: { name: "disease of ear", rank: 15 },
-  EFO_0000540: { name: "immune system disease", rank: 16 },
-  EFO_0005803: { name: "hematologic disease", rank: 17 },
-  EFO_0000618: { name: "nervous system disease", rank: 18 },
-  MONDO_0002025: { name: "psychiatric disorder", rank: 19 },
-  OTAR_0000020: { name: "nutritional or metabolic disease", rank: 20 },
-  OTAR_0000018: { name: "genetic, familial or congenital disease", rank: 21 },
-  OTAR_0000009: { name: "injury, poisoning or other complication", rank: 22 },
+  EFO_0000540: { name: "immune system", rank: 16 },
+  EFO_0005803: { name: "hematologic", rank: 17 },
+  EFO_0000618: { name: "nervous system", rank: 18 },
+  MONDO_0002025: { name: "psychiatric", rank: 19 },
+  OTAR_0000020: { name: "nutritional or metabolic", rank: 20 },
+  OTAR_0000018: { name: "genetic, familial or congenital", rank: 21 },
+  OTAR_0000009: { name: "injury, poisoning or complication", rank: 22 },
   EFO_0000651: { name: "phenotype", rank: 23 },
   EFO_0001444: { name: "measurement", rank: 24 },
   GO_0008150: { name: "biological process", rank: 25 },
