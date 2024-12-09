@@ -16,7 +16,11 @@ import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
-import { mantissaExponentComparator, variantComparator, nullishComparator } from "../../utils/comparators";
+import {
+  mantissaExponentComparator,
+  variantComparator,
+  nullishComparator,
+} from "../../utils/comparators";
 import PheWasPlot from "./PheWasPlot";
 import { useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
@@ -155,8 +159,9 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         </>
       ),
       comparator: (a, b) => {
-        return a?.locus?.rows?.[0]?.posteriorProbability -
-          b?.locus?.rows?.[0]?.posteriorProbability;
+        return (
+          a?.locus?.rows?.[0]?.posteriorProbability - b?.locus?.rows?.[0]?.posteriorProbability
+        );
       },
       sortable: true,
       renderCell: ({ locus }) =>
@@ -202,7 +207,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       comparator: nullishComparator(
         (a, b) => a - b,
         row => row?.l2GPredictions?.rows[0]?.score,
-        false,
+        false
       ),
       sortable: true,
       tooltip:
@@ -225,9 +230,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       numeric: true,
       filterValue: false,
       renderCell: ({ locusSize }) => {
-        return typeof locusSize?.count === "number"
-          ? locusSize.count.toLocaleString()
-          : naLabel;
+        return typeof locusSize?.count === "number" ? locusSize.count.toLocaleString() : naLabel;
       },
       exportValue: ({ locusSize }) => locusSize?.count,
     },
@@ -242,17 +245,15 @@ type BodyProps = {
 function Body({ id, entity }: BodyProps) {
   const variables = {
     variantId: id,
+    size: table5HChunkSize,
+    index: 0,
   };
 
   const [request, setRequest] = useState<responseType>(initialResponse);
 
   const getAllGwasData = useBatchQuery({
     query: GWAS_CREDIBLE_SETS_QUERY,
-    variables: {
-      variantId: id,
-      size: table5HChunkSize,
-      index: 0,
-    },
+    variables,
     dataPath: "data.variant.gwasCredibleSets",
     size: table5HChunkSize,
   });
@@ -278,8 +279,16 @@ function Body({ id, entity }: BodyProps) {
         />
       )}
       renderChart={() => {
+        const columns = getColumns({
+          id,
+          referenceAllele: request.data?.variant.referenceAllele,
+          alternateAllele: request.data?.variant.alternateAllele,
+        });
         return (
           <PheWasPlot
+            columns={columns}
+            query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
+            variables={variables}
             loading={request.loading}
             data={request.data?.variant.gwasCredibleSets.rows}
             id={id}
@@ -289,6 +298,11 @@ function Body({ id, entity }: BodyProps) {
         );
       }}
       renderBody={() => {
+        const columns = getColumns({
+          id,
+          referenceAllele: request.data?.variant.referenceAllele,
+          alternateAllele: request.data?.variant.alternateAllele,
+        });
         return (
           <>
             <OtTable
@@ -296,11 +310,7 @@ function Body({ id, entity }: BodyProps) {
               showGlobalFilter
               sortBy="l2gScore"
               order="desc"
-              columns={getColumns({
-                id,
-                referenceAllele: request.data?.variant.referenceAllele,
-                alternateAllele: request.data?.variant.alternateAllele,
-              })}
+              columns={columns}
               rows={request.data?.variant.gwasCredibleSets.rows}
               loading={request.loading}
               query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
