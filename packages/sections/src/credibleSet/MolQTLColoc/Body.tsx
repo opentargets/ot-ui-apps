@@ -8,7 +8,7 @@ import {
   useBatchQuery,
   Navigate,
 } from "ui";
-import { naLabel, initialResponse, table5HChunkSize, QTLStudyType } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import MOLQTL_COLOC_QUERY from "./MolQTLColocQuery.gql";
@@ -222,7 +222,6 @@ type BodyProps = {
 function Body({ studyLocusId, entity }: BodyProps) {
   const variables = {
     studyLocusId: studyLocusId,
-    studyType: QTLStudyType,
     size: table5HChunkSize,
     index: 0,
   };
