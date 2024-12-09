@@ -8,6 +8,7 @@ import {
   SummaryStatsTable,
   LabelChip,
   DisplaySampleSize,
+  PublicationsDrawer,
 } from "ui";
 import { Box } from "@mui/material";
 import { populationMap } from "../../constants";
@@ -114,9 +115,10 @@ function ProfileHeader() {
         )}
         {pubmedId &&
           <Field loading={loading} title="PubMed">
-            <Link external to={`https://europepmc.org/article/med/${pubmedId}`}>
-              {pubmedId}
-            </Link>
+            <PublicationsDrawer
+              name={pubmedId}
+              entries={[{ name: pubmedId }]}
+            />
           </Field>
         }
       </Box>
