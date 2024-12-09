@@ -248,7 +248,6 @@ export default function PheWasPlot({ loading, data, id, referenceAllele, alterna
 function tooltipContent(data) {
 
   const labelWidth = 148;
-  // const valueWidth = 100;
   return (
     <HTMLTooltipTable>
       <HTMLTooltipRow label="Navigate" data={data} labelMinWidth={labelWidth}>
