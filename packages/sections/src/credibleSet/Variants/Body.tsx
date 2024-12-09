@@ -91,7 +91,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       tooltip: "Beta with respect to the ALT allele",
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
-        return beta.toFixed(3);
+        return beta.toPrecision(3);
       },
     },
     {
@@ -138,7 +138,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       sortable: true,
       renderCell: ({ posteriorProbability }) => {
         if (typeof posteriorProbability !== "number") return naLabel;
-        return posteriorProbability.toFixed(3);
+        return posteriorProbability.toPrecision(3);
       },
     },
     {

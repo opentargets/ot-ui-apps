@@ -38,12 +38,14 @@ const columns = [
   {
     id: "score",
     label: "Score",
-    renderCell: ({ score }) => score ?? naLabel,
+    numeric: true,
+    renderCell: ({ score }) => score?.toPrecision(3) ?? naLabel,
   },
   {
     id: "normalisedScore",
     label: "Normalised score",
-    renderCell: ({ normalisedScore }) => normalisedScore ?? naLabel,
+    numeric: true,
+    renderCell: ({ normalisedScore }) => normalisedScore?.toFixed(3) ?? naLabel,
   },
 ];
 
@@ -55,8 +57,8 @@ type BodyProps = {
 function getSortedRows(request) {
   return request.data?.variant?.inSilicoPredictors
     ? [...request.data.variant.inSilicoPredictors]
-        .filter(e => e.method !== null)
-        .sort((row1, row2) => row1.method.localeCompare(row2.method))
+      .filter(e => e.method !== null)
+      .sort((row1, row2) => row1.method.localeCompare(row2.method))
     : [];
 }
 
