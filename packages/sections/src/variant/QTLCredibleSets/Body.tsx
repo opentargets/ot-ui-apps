@@ -14,7 +14,7 @@ import { credsetConfidenceMap, initialResponse, naLabel, table5HChunkSize } from
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
-import { mantissaExponentComparator, nullishComparator, variantComparator } from "../../utils/comparators";
+import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { ReactNode, useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
 
@@ -29,9 +29,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "studyLocusId",
       label: "Navigate",
-      renderCell: ({ studyLocusId }) => (
-        <Navigate to={`/credible-set/${studyLocusId}`} />
-      ),
+      renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
     },
     {
       id: "leadVariant",
@@ -153,8 +151,9 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       filterValue: false,
       sortable: true,
       comparator: (a, b) => {
-        return a?.locus?.rows?.[0]?.posteriorProbability -
-          b?.locus?.rows?.[0]?.posteriorProbability;
+        return (
+          a?.locus?.rows?.[0]?.posteriorProbability - b?.locus?.rows?.[0]?.posteriorProbability
+        );
       },
       tooltip: (
         <>
@@ -169,9 +168,9 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         </>
       ),
       renderCell: ({ locus }) =>
-        locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
+        locus.rows.length > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
       exportValue: ({ locus }) =>
-        locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
+        locus.rows.length > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
     },
     {
       id: "confidence",
@@ -197,15 +196,13 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       id: "credibleSetSize",
       label: "Credible set size",
       numeric: true,
-      comparator: (a, b) => a.locus?.count - b.locus?.count,
+      comparator: (a, b) => a.locusSize?.count - b.locusSize?.count,
       sortable: true,
       filterValue: false,
-      renderCell: ({ locus }) => {
-        return typeof locus?.count === "number"
-          ? locus.count.toLocaleString()
-          : naLabel;
+      renderCell: ({ locusSize }) => {
+        return typeof locusSize?.count === "number" ? locusSize.count.toLocaleString() : naLabel;
       },
-      exportValue: ({ locus }) => locus?.count,
+      exportValue: ({ locusSize }) => locusSize?.count,
     },
   ];
 }
@@ -218,17 +215,15 @@ type BodyProps = {
 function Body({ id, entity }: BodyProps): ReactNode {
   const variables = {
     variantId: id,
+    size: table5HChunkSize,
+    index: 0,
   };
 
   const [request, setRequest] = useState<responseType>(initialResponse);
 
   const getAllQtlData = useBatchQuery({
     query: QTL_CREDIBLE_SETS_QUERY,
-    variables: {
-      variantId: id,
-      size: table5HChunkSize,
-      index: 0,
-    },
+    variables,
     dataPath: "data.variant.qtlCredibleSets",
     size: table5HChunkSize,
   });

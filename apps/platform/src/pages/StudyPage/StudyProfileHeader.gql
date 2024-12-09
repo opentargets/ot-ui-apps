@@ -5,6 +5,7 @@ fragment StudyProfileHeaderFragment on Gwas {
   publicationJournal
   pubmedId
   traitFromSource
+  projectId
   backgroundTraits {
     id
     name

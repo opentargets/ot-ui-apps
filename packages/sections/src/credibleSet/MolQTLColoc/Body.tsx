@@ -222,17 +222,15 @@ type BodyProps = {
 function Body({ studyLocusId, entity }: BodyProps) {
   const variables = {
     studyLocusId: studyLocusId,
+    size: table5HChunkSize,
+    index: 0,
   };
 
   const [request, setRequest] = useState<responseType>(initialResponse);
 
   const getData = useBatchQuery({
     query: MOLQTL_COLOC_QUERY,
-    variables: {
-      studyLocusId,
-      size: table5HChunkSize,
-      index: 0,
-    },
+    variables,
     dataPath: "data.credibleSet.colocalisation",
     size: table5HChunkSize,
   });

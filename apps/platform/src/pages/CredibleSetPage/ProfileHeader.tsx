@@ -221,6 +221,11 @@ function ProfileHeader() {
         )}
         {study?.studyType !== "gwas" && (
           <>
+            {study?.projectId && (
+              <Field loading={loading} title="Project">
+                {study?.projectId?.replace(/_/gi, " ")}
+              </Field>
+            )}
             {target?.id && (
               <Field loading={loading} title="Affected gene">
                 <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>
