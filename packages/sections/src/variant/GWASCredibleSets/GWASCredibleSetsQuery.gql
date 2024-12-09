@@ -32,10 +32,12 @@ query GWASCredibleSetsQuery($variantId: String!, $size: Int!, $index: Int!) {
           }
         }
         locus(variantIds: [$variantId]) {
-          count
           rows {
             posteriorProbability
           }
+        }
+        locusSize: locus {
+          count
         }
         l2GPredictions(page: { size: 1, index: 1 }) {
           rows {

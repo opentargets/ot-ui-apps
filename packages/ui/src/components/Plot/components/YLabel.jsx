@@ -4,14 +4,14 @@ import { fromFrameOrPlot } from "../util/fromFrameOrPlot";
 import { finalData } from "../util/finalData";
 
 export default function YLabel({
-      values,
-      position = 'left',
-      padding,
-      dx = 0,
-      dy = 0,
-      format,
-      ...textAttrs
-    }) {
+  values,
+  position = 'left',
+  padding,
+  dx = 0,
+  dy = 0,
+  format,
+  ...textAttrs
+}) {
 
   const plot = usePlot();
   if (!plot) {
@@ -31,15 +31,13 @@ export default function YLabel({
     ? ops.scales.y
     : v => plot.panelHeight - ops.scales.y(v);
 
-  const topOrigin = `translate(${
-    position === 'right'
-      ? plot.width - plot.padding.right + padding + dx
-      : plot.padding.left - padding + dx},${
-    plot.padding.top + dy
-  })`;
+  const topOrigin = `translate(${position === 'right'
+    ? plot.width - plot.padding.right + padding + dx
+    : plot.padding.left - padding + dx},${plot.padding.top + dy
+    })`;
 
   return (
-    <g transform={topOrigin}> 
+    <g transform={topOrigin}>
       {tickValues.map((v, i) => {
         return (
           <text
@@ -52,7 +50,7 @@ export default function YLabel({
             fontStyle={plot.fontStyle}
             fontWeight={plot.fontWeight}
             textAnchor={position === 'right' ? 'start' : 'end'}
-            alignmentBaseline='middle'
+            dominantBaseline='middle'
             {...textAttrs}
           >
             {format ? format(v, i, tickValues, ops.yTick) : v}
