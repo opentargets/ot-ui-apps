@@ -67,7 +67,7 @@ function Header({
       );
     }
     sourceLink = {
-      id: "UKB",
+      id: "UKB-PPP",
       url: "https://www.synapse.org/Synapse:syn51364943/wiki/622119",
     };
   } else {

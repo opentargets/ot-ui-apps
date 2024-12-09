@@ -385,7 +385,7 @@ function tooltipContent(data) {
         </Box>
       </HTMLTooltipRow>
       <HTMLTooltipRow label="Credible set size" data={data} labelWidth={labelWidth}>
-        {data.locus?.count ?? naLabel}
+        {data.locusSize?.count ?? naLabel}
       </HTMLTooltipRow>
     </HTMLTooltipTable>
   );
