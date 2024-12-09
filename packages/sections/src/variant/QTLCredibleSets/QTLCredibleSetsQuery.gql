@@ -37,10 +37,12 @@ query QTLCredibleSetsQuery($variantId: String!, $size: Int!, $index: Int!) {
           }
         }
         locus(variantIds: [$variantId]) {
-          count
           rows {
             posteriorProbability
           }
+        }
+        locusSize: locus {
+          count
         }
       }
     }
