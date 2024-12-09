@@ -23,6 +23,7 @@ function getColumns(diseaseIds: string[]) {
       id: "studyId",
       label: "Study",
       renderCell: ({ id }) => <Link to={`./${id}`}>{id}</Link>,
+      exportValue: ({ id }) => id,
     },
     {
       id: "sharedDiseases",
@@ -111,6 +112,8 @@ function getColumns(diseaseIds: string[]) {
       },
       filterValue: ({ publicationYear, publicationFirstAuthor }) =>
         `${publicationYear} ${publicationFirstAuthor}`,
+      exportValue: ({ pubmedId }) =>
+        `${pubmedId}`,
     },
   ];
 }
