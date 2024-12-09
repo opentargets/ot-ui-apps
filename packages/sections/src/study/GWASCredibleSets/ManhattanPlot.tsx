@@ -1,7 +1,11 @@
-import { Skeleton, useTheme } from "@mui/material";
+import { Box, Skeleton, useTheme } from "@mui/material";
 import {
+  ClinvarStars,
   Link,
+  Tooltip,
   DisplayVariantId,
+  Navigate,
+  OtScoreLinearBar,
   Plot,
   Vis,
   XAxis,
@@ -21,11 +25,11 @@ import {
 } from "ui";
 import { scaleLinear, min } from "d3";
 import { ScientificNotation } from "ui";
-import { naLabel } from "../../constants";
+import { naLabel, credsetConfidenceMap } from "../../constants";
 
 export default function ManhattanPlot({ loading, data }) {
 
-  const plotHeight = 390;
+  const plotHeight = 410;
   const theme = useTheme();
   const background = theme.palette.background.paper;
   const markColor = theme.palette.primary.main;
@@ -152,7 +156,7 @@ export default function ManhattanPlot({ loading, data }) {
           x={d => genomePositions[d.variant.id]}
           y={d => d._y}
           pxWidth={290}
-          pxHeight={200}
+          pxHeight={210}
           content={tooltipContent}
         />
 
@@ -169,8 +173,10 @@ export default function ManhattanPlot({ loading, data }) {
 function tooltipContent(data) {
   return (
     <HTMLTooltipTable>
-      <HTMLTooltipRow label="Details" data={data}>
-        <Link to={`../credible-set/${data.studyLocusId}`}>view</Link>
+      <HTMLTooltipRow label="Navigate" data={data}>
+        <Box display="flex">
+          <Navigate to={`../credible-set/${data.studyLocusId}`} />
+        </Box>
       </HTMLTooltipRow>
       <HTMLTooltipRow label="Lead variant" data={data}>
         <Link to={`/variant/${data.variant.id}`}>
@@ -183,32 +189,55 @@ function tooltipContent(data) {
         </Link>
       </HTMLTooltipRow>
       <HTMLTooltipRow label="P-value" data={data}>
-        <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} />
+        <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} dp={2} />
       </HTMLTooltipRow>
       <HTMLTooltipRow label="Beta" data={data}>
-        {data.beta?.toFixed(3) ?? naLabel}
+        {data.beta?.toPrecision(3) ?? naLabel}
       </HTMLTooltipRow>
+
       <HTMLTooltipRow label="Fine-mapping" data={data}>
-        {data.finemappingMethod ?? naLabel}
+        <Box display="flex" flexDirection="column" gap={0.25}>
+          <Box display="flex" gap={0.5}>
+            Method:{" "}{data.finemappingMethod ?? naLabel}
+          </Box>
+          <Box display="flex" gap={0.5}>
+            Confidence:{" "}
+            {data.confidence
+              ? <Tooltip title={data.confidence} style="">
+                <ClinvarStars num={credsetConfidenceMap[data.confidence]} />
+              </Tooltip>
+              : naLabel
+            }
+          </Box>
+
+        </Box>
       </HTMLTooltipRow>
-      {data.l2Gpredictions?.[0]?.target
-        ? <HTMLTooltipRow label="Top L2G" data={data}>
-          <Link to={`/target/${data.l2Gpredictions[0].target.id}`}>
-            {data.l2Gpredictions[0].target.approvedSymbol}
-          </Link>
-        </HTMLTooltipRow>
-        : <HTMLTooltipRow label="Top L2G">
-          {naLabel}
-        </HTMLTooltipRow>
-      }
-      <HTMLTooltipRow label="L2G score" data={data}>
-        {data.l2Gpredictions?.[0]?.score != null
-          ? data.l2Gpredictions[0].score.toFixed(3)
-          : naLabel
-        }
+      <HTMLTooltipRow label="L2G" data="data">
+        <Box display="flex" flexDirection="column" gap={0.25}>
+          <Box display="flex" gap={0.5}>
+            Top:{" "}
+            {data.l2GPredictions?.rows?.[0]?.target
+              ? <Link to={`/target/${data.l2GPredictions.rows[0].target.id}`}>
+                {data.l2GPredictions.rows[0].target.approvedSymbol}
+              </Link>
+              : naLabel
+            }
+          </Box>
+          <Box display="flex" alignItems="center" gap={0.5}>
+            Score:{" "}
+            {data.l2GPredictions?.rows?.[0]?.score
+              ? <Tooltip title={data.l2GPredictions.rows[0].score.toFixed(3)} style="">
+                <div>
+                  <OtScoreLinearBar variant="determinate" value={data.l2GPredictions.rows[0].score * 100} />
+                </div>
+              </Tooltip>
+              : naLabel
+            }
+          </Box>
+        </Box>
       </HTMLTooltipRow>
       <HTMLTooltipRow label="Credible set size" data={data}>
-        {data.locus?.count ?? naLabel}
+        {data.locus?.count ? data.locus.count.toLocaleString() : naLabel}
       </HTMLTooltipRow>
     </HTMLTooltipTable>
   );
