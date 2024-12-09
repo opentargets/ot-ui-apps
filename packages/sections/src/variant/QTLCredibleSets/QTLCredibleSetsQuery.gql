@@ -4,7 +4,7 @@ query QTLCredibleSetsQuery($variantId: String!, $size: Int!, $index: Int!) {
     referenceAllele
     alternateAllele
     qtlCredibleSets: credibleSets(
-      studyTypes: [sqtl, pqtl, eqtl, tuqtl]
+      studyTypes: [scsqtl, sceqtl, scpqtl, sctuqtl, sqtl, eqtl, pqtl, tuqtl]
       page: { size: $size, index: $index }
     ) {
       count
