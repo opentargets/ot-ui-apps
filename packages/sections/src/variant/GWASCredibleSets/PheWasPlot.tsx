@@ -1,4 +1,4 @@
-import { Box, Skeleton, Typography, useTheme } from "@mui/material";
+import { Box, Chip, Skeleton, Typography, useTheme } from "@mui/material";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -77,6 +77,7 @@ export default function PheWasPlot({
   variables,
   columns,
 }) {
+
   const theme = useTheme();
   const background = theme.palette.background.paper;
   const fontFamily = theme.typography.fontFamily;
@@ -264,7 +265,7 @@ export default function PheWasPlot({
             y={d => yMin}
             pxWidth={tooltipWidth}
             pxHeight={tooltipHeight}
-            content={tooltipContent}
+            content={d => tooltipContent(d, id)}
             xOffset={40}
             yOffset={-20}
           />
@@ -278,8 +279,16 @@ export default function PheWasPlot({
   );
 }
 
-function tooltipContent(data) {
+function tooltipContent(data, pageVariantId) {
   const labelWidth = 160;
+
+  const displayId = <DisplayVariantId
+    variantId={data.variant.id}
+    referenceAllele={data.variant.referenceAllele}
+    alternateAllele={data.variant.alternateAllele}
+    expand={false}
+  />;
+
   return (
     <HTMLTooltipTable>
       <HTMLTooltipRow label="Navigate" data={data} labelWidth={labelWidth}>
@@ -288,14 +297,13 @@ function tooltipContent(data) {
         </Link>
       </HTMLTooltipRow>
       <HTMLTooltipRow label="Lead variant" data={data} labelWidth={labelWidth}>
-        <Link to={`/variant/${data.variant.id}`}>
-          <DisplayVariantId
-            variantId={data.variant.id}
-            referenceAllele={data.variant.referenceAllele}
-            alternateAllele={data.variant.alternateAllele}
-            expand={false}
-          />
-        </Link>
+        {data.variant.id === pageVariantId
+          ? <Box display="flex" alignItems="center" gap={0.5}>
+            {displayId}
+            <Chip label="self" variant="outlined" size="small" />
+          </Box>
+          : <Link to={`/variant/${data.variant.id}`}>{displayId}</Link>
+        }
       </HTMLTooltipRow>
       <HTMLTooltipRow
         label="Reported trait"
