@@ -234,7 +234,7 @@ function Body({ studyLocusId, entity }: BodyProps) {
     getData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [studyLocusId]);
 
   return (
     <SectionItem

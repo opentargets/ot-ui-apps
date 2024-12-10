@@ -211,7 +211,7 @@ function Body({
     getData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [studyLocusId]);
 
   const columns = getColumns({
     leadVariantId,

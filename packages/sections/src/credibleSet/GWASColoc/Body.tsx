@@ -220,7 +220,7 @@ function Body({ studyLocusId, entity }: BodyProps): ReactElement {
     getData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [studyLocusId]);
 
   return (
     <SectionItem

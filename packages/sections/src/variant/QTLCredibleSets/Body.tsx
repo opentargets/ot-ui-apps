@@ -233,7 +233,7 @@ function Body({ id, entity }: BodyProps): ReactNode {
     getAllQtlData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [id]);
 
   return (
     <SectionItem

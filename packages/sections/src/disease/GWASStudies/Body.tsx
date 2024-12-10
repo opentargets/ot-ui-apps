@@ -136,7 +136,7 @@ function Body({ id: efoId, label: diseaseName }: BodyProps): ReactElement {
     getData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [efoId]);
 
   return (
     <SectionItem

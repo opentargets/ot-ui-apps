@@ -179,7 +179,7 @@ function Body({ id, entity }: BodyProps): ReactElement {
     getData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [id]);
 
   return (
     <SectionItem
