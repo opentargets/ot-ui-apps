@@ -53,14 +53,16 @@ export const formatSearchData = unformattedData => {
 
   Object.entries(unformattedData).forEach(([key, value]) => {
     const typesArray = [];
+    // OpenTargets Genetics search format
     if (isArray(value)) {
       value.map(i =>
         typesArray.push({
-          type: key === "topHit" ? "topHit" : key,
-          entity: key,
+          type: key === "topHit" ? "topHit" : i.__typename.toLowerCase(),
+          entity: i.__typename.toLowerCase(),
           ...flattenObj(i),
         })
       );
+      // OpenTargets Platform search format
     } else if (isArray(value.hits)) {
       value.hits.map(i =>
         typesArray.push({
@@ -72,7 +74,6 @@ export const formatSearchData = unformattedData => {
     }
     if (typesArray.length > 0) formattedData[key] = typesArray;
   });
-
   return formattedData;
 };
 
