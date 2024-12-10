@@ -43,12 +43,12 @@ export const pppSearchExamples: Examples = {
     { type: "suggestion", entity: "drug", name: "LYRICA", id: "CHEMBL1059" },
   ],
   variants: [
+    { type: "suggestion", entity: "variant", name: "rs7412", id: "19_44908822_C_T" },
     { type: "suggestion", entity: "variant", name: "rs4129267", id: "1_154453788_C_T" },
     { type: "suggestion", entity: "variant", name: "4_1804392_G_A", id: "4_1804392_G_A" },
     { type: "suggestion", entity: "variant", name: "11_64600382_G_A", id: "11_64600382_G_A" },
     { type: "suggestion", entity: "variant", name: "12_6333477_C_T", id: "12_6333477_C_T" },
-    { type: "suggestion", entity: "variant", name: "15_90088702_C_T", id: "15_90088702_C_T" },
-    { type: "suggestion", entity: "variant", name: "17_63945614_C_T", id: "17_63945614_C_T" },
+    { type: "suggestion", entity: "variant", name: "17_43093010_G_A", id: "17_43093010_G_A" },
   ],
 };
 
