@@ -49,9 +49,26 @@ function ProfileHeader() {
 
       {data?.variant.alleleFrequencies.length > 0 && (
         <Paper sx={{ py: 2, px: 5, maxWidth: "100%" }} elevation={0} variant="outlined">
-          <Typography variant="subtitle2" mb={1}>
-            Population Allele Frequencies
-          </Typography>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            flexWrap="wrap"
+            columnGap={2}
+            mb={1.5}
+            alignItems="center"
+          >
+            <Typography variant="subtitle2">
+              Population Allele Frequencies
+            </Typography>
+            <Typography variant="body2">
+              <em>
+                Source:{" "}
+                <Link to="https://gnomad.broadinstitute.org/" external>
+                  gnomAD
+                </Link>
+              </em>
+            </Typography>
+          </Box>
           <Box sx={{ margin: "0 auto", maxWidth: "550px" }}>
             <AlleleFrequencyPlot data={data.variant.alleleFrequencies} />
           </Box>
