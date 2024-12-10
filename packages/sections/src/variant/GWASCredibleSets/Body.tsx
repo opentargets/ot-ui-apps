@@ -100,6 +100,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         if (!study) return naLabel;
         return <Link to={`../study/${study.id}`}>{study.id}</Link>;
       },
+      exportValue: ({ study }) => study?.id,
     },
     {
       id: "pValue",
@@ -133,7 +134,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       sortable: true,
       renderCell: ({ beta }) => {
         if (typeof beta !== "number") return naLabel;
-        return beta.toFixed(3);
+        return beta.toPrecision(3);
       },
     },
     {
@@ -159,9 +160,9 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       },
       sortable: true,
       renderCell: ({ locus }) =>
-        locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
+        locus.rows.length > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
       exportValue: ({ locus }) =>
-        locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
+        locus.rows.length > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
     },
     {
       id: "finemappingMethod",
@@ -193,7 +194,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         const { target } = l2GPredictions?.rows[0];
         return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
       },
-      exportValue: ({ l2GPredictions }) => l2GPredictions?.target.approvedSymbol,
+      exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target.approvedSymbol,
     },
     {
       id: "l2gScore",
@@ -214,20 +215,21 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           </Tooltip>
         );
       },
+      exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
     },
     {
       id: "credibleSetSize",
       label: "Credible set size",
-      comparator: (a, b) => a.locus?.count - b.locus?.count,
+      comparator: (a, b) => a.locusSize?.count - b.locusSize?.count,
       sortable: true,
       numeric: true,
       filterValue: false,
-      renderCell: ({ locus }) => {
-        return typeof locus?.count === "number"
-          ? locus.count.toLocaleString()
+      renderCell: ({ locusSize }) => {
+        return typeof locusSize?.count === "number"
+          ? locusSize.count.toLocaleString()
           : naLabel;
       },
-      exportValue: ({ locus }) => locus?.count,
+      exportValue: ({ locusSize }) => locusSize?.count,
     },
   ];
 }
@@ -281,6 +283,8 @@ function Body({ id, entity }: BodyProps) {
             loading={request.loading}
             data={request.data?.variant.gwasCredibleSets.rows}
             id={id}
+            referenceAllele={request.data?.variant.referenceAllele}
+            alternateAllele={request.data?.variant.alternateAllele}
           />
         );
       }}

@@ -27,6 +27,7 @@ function getColumns(targetSymbol) {
       renderCell: ({ credibleSet }) => {
         return <Navigate to={`/credible-set/${credibleSet?.studyLocusId}`} />;
       },
+      exportValue: ({ credibleSet }) => credibleSet?.studyLocusId,
     },
     {
       id: "variantId",
@@ -45,19 +46,22 @@ function getColumns(targetSymbol) {
           />
         </Link>
       },
-      filterValue: ({ variant: v }) =>
+      filterValue: ({ credibleSet: { variant: v } }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
+      exportValue: ({ credibleSet: { variant: v } }) => `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
     },
     {
       id: "trait",
       label: "Reported trait",
       renderCell: ({ credibleSet }) => credibleSet?.study.traitFromSource,
+      exportValue: ({ credibleSet }) => credibleSet?.study.traitFromSource,
     },
     {
       id: "disease",
       label: "Disease/phenotype",
       renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
       filterValue: ({ disease }) => disease.name,
+      exportValue: ({ disease }) => `${disease.name} (${disease.id})`,
     },
     {
       id: "study",
@@ -65,6 +69,7 @@ function getColumns(targetSymbol) {
       renderCell: ({ credibleSet }) => {
         return <Link to={`/study/${credibleSet?.study.id}`}>{credibleSet?.study.id}</Link>;
       },
+      exportValue: ({ credibleSet }) => credibleSet?.study.id,
     },
     {
       id: "nSamples",
@@ -76,6 +81,7 @@ function getColumns(targetSymbol) {
           ? parseInt(credibleSet?.study.nSamples, 10).toLocaleString()
           : naLabel,
       filterValue: ({ credibleSet }) => parseInt(credibleSet?.study.nSamples, 10).toLocaleString(),
+      exportValue: ({ credibleSet }) => credibleSet?.study.nSamples,
     },
     {
       id: "pValue",
@@ -126,11 +132,13 @@ function getColumns(targetSymbol) {
         );
       },
       filterValue: ({ credibleSet }) => credsetConfidenceMap[credibleSet?.confidence],
+      exportValue: ({ credibleSet }) => credibleSet?.confidence,
     },
     {
       id: "finemappingMethod",
       label: "Fine-mapping method",
       renderCell: ({ credibleSet }) => credibleSet?.finemappingMethod || naLabel,
+      exportValue: ({ credibleSet }) => credibleSet?.finemappingMethod,
     },
     {
       id: "score",
@@ -176,6 +184,7 @@ function getColumns(targetSymbol) {
       },
       filterValue: ({ literature, publicationYear, publicationFirstAuthor }) =>
         `${literature} ${publicationYear} ${publicationFirstAuthor}`,
+      exportValue: ({ credibleSet }) => credibleSet?.study.pubmedId,
     },
   ];
 }

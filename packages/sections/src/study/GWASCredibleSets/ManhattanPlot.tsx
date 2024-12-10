@@ -1,7 +1,11 @@
-import { Skeleton, useTheme } from "@mui/material";
+import { Box, Skeleton, useTheme } from "@mui/material";
 import {
+  ClinvarStars,
   Link,
+  Tooltip,
   DisplayVariantId,
+  Navigate,
+  OtScoreLinearBar,
   Plot,
   Vis,
   XAxis,
@@ -19,13 +23,13 @@ import {
   HTMLTooltipTable,
   HTMLTooltipRow,
 } from "ui";
-import { scaleLinear, scaleLog, min } from "d3";
+import { scaleLinear, min } from "d3";
 import { ScientificNotation } from "ui";
-import { naLabel } from "../../constants";
+import { naLabel, credsetConfidenceMap } from "../../constants";
 
 export default function ManhattanPlot({ loading, data }) {
 
-  const plotHeight = 390;
+  const plotHeight = 410;
   const theme = useTheme();
   const background = theme.palette.background.paper;
   const markColor = theme.palette.primary.main;
@@ -42,14 +46,23 @@ export default function ManhattanPlot({ loading, data }) {
       d.variant != null;
   });
   if (data.length === 0) return null;
+  // eslint-disable-next-line
+  data = structuredClone(data);
+  data.forEach(d => {
+    d._y = Math.log10(d.pValueMantissa) + d.pValueExponent;
+  });
 
-  const pValueMin = min(data, pValue);
-  const pValueMax = 1;
+  const yMin = min(data, d => d._y);
+  const yMax = 0;
 
   const genomePositions = {};
   data.forEach(({ variant }) => {
     genomePositions[variant.id] = cumulativePosition(variant);
   });
+
+  const xScale = scaleLinear().domain([0, genomeLength]);
+  const yScale = scaleLinear().domain([yMin, yMax]).nice();  // ensure min scale value <= yMin
+  yScale.domain([yScale.domain()[0], yMax]);  // ensure max scale value is yMax - in case nice changed it 
 
   return (
     <Vis>
@@ -63,13 +76,9 @@ export default function ManhattanPlot({ loading, data }) {
         fontFamily={fontFamily}
         data={data}
         yReverse
-        scales={{
-          x: scaleLinear().domain([0, genomeLength]),
-          y: scaleLog().domain([pValueMin, pValueMax]),
-        }}
+        scales={{ x: xScale, y: yScale }}
         xTick={chromosomeInfo}
       >
-
         <XTick
           values={tickData => [0, ...tickData.map(chromo => chromo.end)]}
           tickLength={15}
@@ -91,13 +100,13 @@ export default function ManhattanPlot({ loading, data }) {
           </tspan>
         </XTitle>
         <YTick />
-        <YLabel format={v => -Math.log10(v)} />
+        <YLabel format={v => Math.abs(v)} />
 
         <Segment
           x={d => genomePositions[d.variant.id]}
           xx={d => genomePositions[d.variant.id]}
-          y={pValue}
-          yy={pValueMax}
+          y={d => d._y}
+          yy={yMax}
           stroke={markColor}
           strokeWidth={1}
           strokeOpacity={0.7}
@@ -105,7 +114,7 @@ export default function ManhattanPlot({ loading, data }) {
         />
         <Circle
           x={d => genomePositions[d.variant.id]}
-          y={pValue}
+          y={d => d._y}
           fill={background}
           stroke={markColor}
           strokeWidth={1.2}
@@ -119,8 +128,8 @@ export default function ManhattanPlot({ loading, data }) {
           x={0}
           xx={genomeLength}
           dxx={8}
-          y={pValueMin}
-          yy={pValueMax}
+          y={yMin}
+          yy={yMax}
           dy={-8}
           dyy={0}
           fill={background}
@@ -130,8 +139,8 @@ export default function ManhattanPlot({ loading, data }) {
           dataFrom="hover"
           x={d => genomePositions[d.variant.id]}
           xx={d => genomePositions[d.variant.id]}
-          y={pValue}
-          yy={pValueMax}
+          y={d => d._y}
+          yy={yMax}
           stroke={markColor}
           strokeWidth={1.7}
           strokeOpacity={1}
@@ -139,15 +148,15 @@ export default function ManhattanPlot({ loading, data }) {
         <Circle
           dataFrom="hover"
           x={d => genomePositions[d.variant.id]}
-          y={pValue}
+          y={d => d._y}
           fill={markColor}
           area={circleArea}
         />
         <HTMLTooltip
           x={d => genomePositions[d.variant.id]}
-          y={pValue}
+          y={d => d._y}
           pxWidth={290}
-          pxHeight={200}
+          pxHeight={210}
           content={tooltipContent}
         />
 
@@ -164,8 +173,10 @@ export default function ManhattanPlot({ loading, data }) {
 function tooltipContent(data) {
   return (
     <HTMLTooltipTable>
-      <HTMLTooltipRow label="Details" data={data}>
-        <Link to={`../credible-set/${data.studyLocusId}`}>view</Link>
+      <HTMLTooltipRow label="Navigate" data={data}>
+        <Box display="flex">
+          <Navigate to={`../credible-set/${data.studyLocusId}`} />
+        </Box>
       </HTMLTooltipRow>
       <HTMLTooltipRow label="Lead variant" data={data}>
         <Link to={`/variant/${data.variant.id}`}>
@@ -178,41 +189,57 @@ function tooltipContent(data) {
         </Link>
       </HTMLTooltipRow>
       <HTMLTooltipRow label="P-value" data={data}>
-        <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} />
+        <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} dp={2} />
       </HTMLTooltipRow>
       <HTMLTooltipRow label="Beta" data={data}>
-        {data.beta?.toFixed(3) ?? naLabel}
+        {data.beta?.toPrecision(3) ?? naLabel}
       </HTMLTooltipRow>
+
       <HTMLTooltipRow label="Fine-mapping" data={data}>
-        {data.finemappingMethod ?? naLabel}
+        <Box display="flex" flexDirection="column" gap={0.25}>
+          <Box display="flex" gap={0.5}>
+            Method:{" "}{data.finemappingMethod ?? naLabel}
+          </Box>
+          <Box display="flex" gap={0.5}>
+            Confidence:{" "}
+            {data.confidence
+              ? <Tooltip title={data.confidence} style="">
+                <ClinvarStars num={credsetConfidenceMap[data.confidence]} />
+              </Tooltip>
+              : naLabel
+            }
+          </Box>
+
+        </Box>
       </HTMLTooltipRow>
-      {data.l2Gpredictions?.[0]?.target
-        ? <HTMLTooltipRow label="Top L2G" data={data}>
-          <Link to={`/target/${data.l2Gpredictions[0].target.id}`}>
-            {data.l2Gpredictions[0].target.approvedSymbol}
-          </Link>
-        </HTMLTooltipRow>
-        : <HTMLTooltipRow label="Top L2G">
-          {naLabel}
-        </HTMLTooltipRow>
-      }
-      <HTMLTooltipRow label="L2G score" data={data}>
-        {data.l2Gpredictions?.[0]?.score != null
-          ? data.l2Gpredictions[0].score.toFixed(3)
-          : naLabel
-        }
+      <HTMLTooltipRow label="L2G" data="data">
+        <Box display="flex" flexDirection="column" gap={0.25}>
+          <Box display="flex" gap={0.5}>
+            Top:{" "}
+            {data.l2GPredictions?.rows?.[0]?.target
+              ? <Link to={`/target/${data.l2GPredictions.rows[0].target.id}`}>
+                {data.l2GPredictions.rows[0].target.approvedSymbol}
+              </Link>
+              : naLabel
+            }
+          </Box>
+          <Box display="flex" alignItems="center" gap={0.5}>
+            Score:{" "}
+            {data.l2GPredictions?.rows?.[0]?.score
+              ? <Tooltip title={data.l2GPredictions.rows[0].score.toFixed(3)} style="">
+                <div>
+                  <OtScoreLinearBar variant="determinate" value={data.l2GPredictions.rows[0].score * 100} />
+                </div>
+              </Tooltip>
+              : naLabel
+            }
+          </Box>
+        </Box>
       </HTMLTooltipRow>
       <HTMLTooltipRow label="Credible set size" data={data}>
-        {data.locus?.count ?? naLabel}
+        {data.locus?.count ? data.locus.count.toLocaleString() : naLabel}
       </HTMLTooltipRow>
     </HTMLTooltipTable>
-  );
-}
-
-function pValue(row) {
-  return Math.max(
-    row.pValueMantissa * 10 ** row.pValueExponent,
-    Number.MIN_VALUE
   );
 }
 

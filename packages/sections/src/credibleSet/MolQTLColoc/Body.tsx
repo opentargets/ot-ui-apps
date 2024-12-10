@@ -13,7 +13,6 @@ import { definition } from ".";
 import Description from "./Description";
 import MOLQTL_COLOC_QUERY from "./MolQTLColocQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
-import { getStudyCategory } from "../../utils/getStudyCategory";
 import { useEffect, useState } from "react";
 
 const columns = [
@@ -35,45 +34,41 @@ const columns = [
     },
   },
   {
-    id: "otherStudyLocus.study.traitFromSource",
-    label: "Reported trait",
-    renderCell: ({ otherStudyLocus }) => {
-      const trait = otherStudyLocus?.study?.traitFromSource;
-      if (!trait) return naLabel;
-      return trait;
-    },
-  },
-  {
-    id: "otherStudyLocus.study.publicationFirstAuthor",
-    label: "First author",
-    renderCell: ({ otherStudyLocus }) => {
-      const { projectId, publicationFirstAuthor } = otherStudyLocus?.study || {};
-      return getStudyCategory(projectId) === "FINNGEN"
-        ? "FinnGen"
-        : publicationFirstAuthor || naLabel;
-    },
-    exportValue: ({ otherStudyLocus }) => {
-      const { projectId, publicationFirstAuthor } = otherStudyLocus.study || {};
-      getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor;
-    },
-  },
-  {
     id: "otherStudyLocus.study.studyType",
-    label: "Affected tissue/cell",
-    renderCell: ({ otherStudyLocus }) => {
-      const biosample = otherStudyLocus?.study?.biosample;
-      if (!biosample) return naLabel;
-      return <Link to={`../study/${biosample.biosampleId}`}>{biosample.name}</Link>;
-    },
-  },
-  {
-    id: "otherStudyLocus.study.studyType",
-    label: "QTL type",
+    label: "Type",
     renderCell: ({ otherStudyLocus }) => {
       const studyType = otherStudyLocus?.study?.studyType;
       if (!studyType) return naLabel;
       return studyType;
     },
+  },
+  {
+    id: "otherStudyLocus.study.target.approvedSymbol",
+    label: "Affected gene",
+    renderCell: ({ otherStudyLocus }) => {
+      const target = otherStudyLocus?.study?.target;
+      if (!target) return naLabel;
+      return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
+    },
+  },
+
+  {
+    id: "otherStudyLocus.study.biosample.biosampleName",
+    label: "Affected tissue/cell",
+    renderCell: ({ otherStudyLocus }) => {
+      const biosample = otherStudyLocus?.study?.biosample;
+      if (!biosample) return naLabel;
+      return (
+        <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}&ontology=uberon`}>
+          {biosample.biosampleName}
+        </Link>
+      );
+    },
+  },
+  {
+    id: "otherStudyLocus.study.condition",
+    label: "Condition",
+    renderCell: ({ otherStudyLocus }) => otherStudyLocus?.study?.condition || naLabel,
   },
   {
     id: "otherStudyLocus.variant.id",
@@ -222,17 +217,15 @@ type BodyProps = {
 function Body({ studyLocusId, entity }: BodyProps) {
   const variables = {
     studyLocusId: studyLocusId,
+    size: table5HChunkSize,
+    index: 0,
   };
 
   const [request, setRequest] = useState<responseType>(initialResponse);
 
   const getData = useBatchQuery({
     query: MOLQTL_COLOC_QUERY,
-    variables: {
-      studyLocusId,
-      size: table5HChunkSize,
-      index: 0,
-    },
+    variables,
     dataPath: "data.credibleSet.colocalisation",
     size: table5HChunkSize,
   });

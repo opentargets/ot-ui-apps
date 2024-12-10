@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { SectionItem, Tooltip, OtTable } from "ui";
@@ -37,12 +38,14 @@ const columns = [
   {
     id: "score",
     label: "Score",
-    renderCell: ({ score }) => score ?? naLabel,
+    numeric: true,
+    renderCell: ({ score }) => score?.toPrecision(3) ?? naLabel,
   },
   {
     id: "normalisedScore",
     label: "Normalised score",
-    renderCell: ({ normalisedScore }) => normalisedScore ?? naLabel,
+    numeric: true,
+    renderCell: ({ normalisedScore }) => normalisedScore?.toFixed(3) ?? naLabel,
   },
 ];
 
@@ -51,7 +54,15 @@ type BodyProps = {
   entity: string;
 };
 
-export function Body({ id, entity }: BodyProps) {
+function getSortedRows(request) {
+  return request.data?.variant?.inSilicoPredictors
+    ? [...request.data.variant.inSilicoPredictors]
+      .filter(e => e.method !== null)
+      .sort((row1, row2) => row1.method.localeCompare(row2.method))
+    : [];
+}
+
+export function Body({ id, entity }: BodyProps): ReactElement {
   const variables = {
     variantId: id,
   };
@@ -72,20 +83,19 @@ export function Body({ id, entity }: BodyProps) {
           alternateAllele={request.data?.variant.alternateAllele}
         />
       )}
-      renderChart={() => (
-        <InSilicoPredictorsVisualisation
-          data={request.data.variant.inSilicoPredictors}
-          query={IN_SILICO_PREDICTORS_QUERY.loc.source.body}
-          variables={variables}
-          columns={columns}
-        />
-      )}
+      renderChart={() => {
+        const rows = getSortedRows(request);
+        return (
+          <InSilicoPredictorsVisualisation
+            data={rows}
+            query={IN_SILICO_PREDICTORS_QUERY.loc.source.body}
+            variables={variables}
+            columns={columns}
+          />
+        );
+      }}
       renderBody={() => {
-        let rows = [];
-        if (request.data)
-          rows = [...request.data.variant.inSilicoPredictors].sort((row1, row2) => {
-            return row1.method.localeCompare(row2.method);
-          });
+        const rows = getSortedRows(request);
         return (
           <OtTable
             columns={columns}

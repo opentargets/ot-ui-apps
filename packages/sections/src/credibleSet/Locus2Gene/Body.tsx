@@ -21,6 +21,7 @@ const columns = [
       if (!target) return naLabel;
       return <Link to={`../target/${target?.id}`}>{target?.approvedSymbol}</Link>;
     },
+    exportValue: ({ target }) => target?.id,
   },
   {
     id: "score",

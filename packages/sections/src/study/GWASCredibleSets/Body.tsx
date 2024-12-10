@@ -79,7 +79,7 @@ const columns = [
     tooltip: "Beta with respect to the ALT allele",
     renderCell: ({ beta }) => {
       if (typeof beta !== "number") return naLabel;
-      return beta.toFixed(3);
+      return beta.toPrecision(3);
     },
   },
   {
@@ -134,6 +134,7 @@ const columns = [
         </Tooltip>
       );
     },
+    exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
   },
   {
     id: "credibleSetSize",

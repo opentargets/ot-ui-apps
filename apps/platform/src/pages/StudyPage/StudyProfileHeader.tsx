@@ -8,6 +8,7 @@ import {
   SummaryStatsTable,
   LabelChip,
   DisplaySampleSize,
+  PublicationsDrawer,
 } from "ui";
 import { Box } from "@mui/material";
 import { populationMap } from "../../constants";
@@ -33,6 +34,7 @@ function ProfileHeader() {
     traitFromSource,
     backgroundTraits,
     diseases,
+    projectId,
     target,
     nCases,
     nControls,
@@ -80,6 +82,11 @@ function ProfileHeader() {
         )}
         {studyType !== "gwas" && (  // QTL
           <>
+            {projectId && (
+              <Field loading={loading} title="Project">
+                {projectId?.replace(/_/gi, " ")}
+              </Field>
+            )}
             {target?.id && (
               <Field loading={loading} title="Affected gene">
                 <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>
@@ -108,9 +115,10 @@ function ProfileHeader() {
         )}
         {pubmedId &&
           <Field loading={loading} title="PubMed">
-            <Link external to={`https://europepmc.org/article/med/${pubmedId}`}>
-              {pubmedId}
-            </Link>
+            <PublicationsDrawer
+              name={pubmedId}
+              entries={[{ name: pubmedId }]}
+            />
           </Field>
         }
       </Box>

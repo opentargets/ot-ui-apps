@@ -12,6 +12,10 @@ function Description({ studyId }: DescriptionProps) {
       <Link external to="https://www.ebi.ac.uk/eqtl/" >
         eQTL Catalog
       </Link>
+      ,{" "}
+      <Link external to="https://www.synapse.org/Synapse:syn51364943/wiki/622119" >
+        UKB-PPP
+      </Link>
     </>
   );
 }
