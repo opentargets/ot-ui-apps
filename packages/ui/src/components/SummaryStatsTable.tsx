@@ -24,6 +24,10 @@ const dicSummary = [
   },
 ];
 
+function formatValue(v: number) {
+  return Number.isInteger(v) ? v.toLocaleString() : v.toPrecision(3);
+}
+
 export default function SummaryStatsTable({ sumstatQCValues }: any) {
   return (
     <>
@@ -44,7 +48,7 @@ export default function SummaryStatsTable({ sumstatQCValues }: any) {
                   </Tooltip>
                 </td>
                 <Typography sx={{ textAlign: "right" }} component="td" variant="body2">
-                  {summStatValue}
+                  {formatValue(summStatValue)}
                 </Typography>
               </tr>
             );
