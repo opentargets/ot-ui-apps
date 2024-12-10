@@ -1,12 +1,12 @@
 import { Suspense, Children, cloneElement } from "react";
-import { generatePath, Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
+import { generatePath, Route, Routes, useNavigate, useMatch } from "react-router-dom";
 import { Tabs, Box } from "@mui/material";
 import { v1 } from "uuid";
 import LoadingBackdrop from "../LoadingBackdrop";
 
 function RoutingTabs({ children }) {
-  const match = useRouteMatch();
-  const history = useHistory();
+  const match = useMatch();
+  const history = useNavigate();
   const routes = [];
 
   const preparedChildren = Children.map(children, child => {
@@ -31,7 +31,7 @@ function RoutingTabs({ children }) {
         <Tabs value={history.location.pathname}>{preparedChildren}</Tabs>
       </Box>
       <Suspense fallback={<LoadingBackdrop />}>
-        <Switch>
+        <Routes>
           {routes.map((route, index) => (
             <Route
               // First tab will always be the root page.
@@ -41,7 +41,7 @@ function RoutingTabs({ children }) {
               component={route.component}
             />
           ))}
-        </Switch>
+        </Routes>
       </Suspense>
     </>
   );

@@ -1,8 +1,8 @@
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { addSearchToLocalStorage } from "../components/GlobalSearch/utils/searchUtils";
 
 function useListOption() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const openListItem = option => {
     if (!option) return;
@@ -11,16 +11,14 @@ function useListOption() {
     addSearchToLocalStorage(newOption);
 
     if (newOption.entity === "search") {
-      history.push(`/search?q=${newOption.name}&page=1`);
+      navigate(`/search?q=${newOption.name}&page=1`);
     } else if (newOption.entity === "study") {
-      history.push(`/${newOption.entity}/${newOption.studyId}`);
+      navigate(`/${newOption.entity}/${newOption.studyId}`);
     } else {
-      history.push(
+      navigate(
         `/${newOption.entity}/${newOption.id}${
-            newOption.entity !== "drug" && newOption.entity !== "variant"
-              ? "/associations"
-              : ""
-          }`
+          newOption.entity !== "drug" && newOption.entity !== "variant" ? "/associations" : ""
+        }`
       );
     }
   };
