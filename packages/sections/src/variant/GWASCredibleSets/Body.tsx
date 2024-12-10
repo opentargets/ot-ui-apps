@@ -262,7 +262,7 @@ function Body({ id, entity }: BodyProps) {
     getAllGwasData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [id]);
 
   return (
     <SectionItem

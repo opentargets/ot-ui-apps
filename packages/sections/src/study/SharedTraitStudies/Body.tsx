@@ -90,8 +90,8 @@ function getColumns(diseaseIds: string[]) {
         getStudyCategory(projectId) === "FINNGEN"
           ? "FinnGen"
           : cohorts?.length
-          ? cohorts.join(", ")
-          : null,
+            ? cohorts.join(", ")
+            : null,
     },
     {
       id: "publication",
@@ -139,7 +139,7 @@ export function Body({ studyId, diseaseIds }: BodyProps): ReactElement {
     getData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [studyId]);
 
   const columns = getColumns(diseaseIds);
 
