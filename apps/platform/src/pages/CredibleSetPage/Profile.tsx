@@ -35,7 +35,7 @@ function Profile({ studyLocusId, variantId, referenceAllele, alternateAllele }: 
   );
 
   const CREDIBLE_SET_PROFILE_QUERY = gql`
-    query CredibleSetProfileQuery($studyLocusId: String!) {
+    query CredibleSetProfileQuery($studyLocusId: String!, $variantIds: [String!]!) {
       credibleSet(studyLocusId: $studyLocusId) {
         studyLocusId
         ...CredibleSetProfileHeaderFragment
@@ -50,7 +50,7 @@ function Profile({ studyLocusId, variantId, referenceAllele, alternateAllele }: 
     <PlatformApiProvider
       entity={CREDIBLE_SET}
       query={CREDIBLE_SET_PROFILE_QUERY}
-      variables={{ studyLocusId: studyLocusId }}
+      variables={{ studyLocusId: studyLocusId, variantIds: [variantId] }}
       client={client}
     >
       <ProfileHeader />
