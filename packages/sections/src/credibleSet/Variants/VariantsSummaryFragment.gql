@@ -2,4 +2,7 @@ fragment VariantsSummaryFragment on credibleSet {
   locus(variantIds: $variantIds) {
     count
   }
+  locusSize: locus(page: { size: 1, index: 0 }) {
+    count
+  }
 }
