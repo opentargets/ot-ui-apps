@@ -1,7 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import queryString from "query-string";
 import { Typography } from "@mui/material";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LoadingBackdrop, EmptyPage, BasePage } from "ui";
 
 import client from "../../client";
@@ -28,7 +28,7 @@ const parseQueryString = qs => {
 
 function SearchPage() {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { q, page, entities } = parseQueryString(location.search);
   const [data, setData] = useState(null);
 
@@ -57,7 +57,7 @@ function SearchPage() {
   const handleChangePage = (event, pageChanged) => {
     const params = { q, page: pageChanged + 1, entities };
     const qs = queryString.stringify(params, QS_OPTIONS);
-    history.push(`/search?${qs}`);
+    navigate(`/search?${qs}`);
   };
 
   const handleSetEntity = entity => (event, checked) => {
@@ -67,7 +67,7 @@ function SearchPage() {
       entities: checked ? [...entities, entity] : entities.filter(e => e !== entity),
     };
     const qs = queryString.stringify(params, QS_OPTIONS);
-    history.push(`/search?${qs}`);
+    navigate(`/search?${qs}`);
   };
 
   let SEARCH_CONTAINER = null;
