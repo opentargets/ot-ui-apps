@@ -5,7 +5,7 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
   standardError
   effectAlleleFrequencyFromSource
   qualityControls
-  locus(variantIds: $variantIds) {
+  locus(page: { size: 1, index: 0 }) {
     count
     rows {
       posteriorProbability
