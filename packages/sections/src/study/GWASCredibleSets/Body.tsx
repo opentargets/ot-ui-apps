@@ -14,9 +14,13 @@ import { naLabel, credsetConfidenceMap, initialResponse, table5HChunkSize } from
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
-import { mantissaExponentComparator, nullishComparator, variantComparator } from "../../utils/comparators";
+import {
+  mantissaExponentComparator,
+  nullishComparator,
+  variantComparator,
+} from "../../utils/comparators";
 import ManhattanPlot from "./ManhattanPlot";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
 
 const columns = [
@@ -120,7 +124,7 @@ const columns = [
     comparator: nullishComparator(
       (a, b) => a - b,
       row => row?.l2GPredictions?.rows[0]?.score,
-      false,
+      false
     ),
     sortable: true,
     tooltip:
@@ -144,9 +148,7 @@ const columns = [
     numeric: true,
     filterValue: false,
     renderCell: ({ locus }) => {
-      return typeof locus?.count === "number"
-        ? locus.count.toLocaleString()
-        : naLabel;
+      return typeof locus?.count === "number" ? locus.count.toLocaleString() : naLabel;
     },
     exportValue: ({ locus }) => locus?.count,
   },
@@ -157,20 +159,18 @@ type BodyProps = {
   entity: string;
 };
 
-function Body({ id, entity }: BodyProps) {
+function Body({ id, entity }: BodyProps): ReactElement {
   const variables = {
     studyId: id,
+    size: table5HChunkSize,
+    index: 0,
   };
 
   const [request, setRequest] = useState<responseType>(initialResponse);
 
   const getData = useBatchQuery({
     query: GWAS_CREDIBLE_SETS_QUERY,
-    variables: {
-      studyId: id,
-      size: table5HChunkSize,
-      index: 0,
-    },
+    variables,
     dataPath: "data.study.credibleSets",
     size: table5HChunkSize,
   });
@@ -179,7 +179,7 @@ function Body({ id, entity }: BodyProps) {
     getData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [id]);
 
   return (
     <SectionItem

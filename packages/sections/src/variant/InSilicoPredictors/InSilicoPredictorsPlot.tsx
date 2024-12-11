@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import * as PlotLib from "@observablehq/plot";
 import { rgb } from "d3";
 import { useMeasure } from "@uidotdev/usehooks";
-import { Box, Fade } from "@mui/material";
+import { Box, Fade, linkClasses } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { DataDownloader } from "ui";
 
@@ -67,6 +67,10 @@ const getXLabel = (tick: number) => {
   if (tick === 1) return "Likely deleterious";
   return "";
 };
+
+const getLicense = (method: string) => {
+  if (method === "CADD" || method === "PolyPhen") return "Non-commercial (Deprecated)";
+}
 
 function Plot({ data, width }) {
   const headerRef = useRef();
@@ -151,6 +155,10 @@ function Plot({ data, width }) {
               value: "normalisedScore",
               label: "Normalised Score:",
             },
+            license: {
+              value: d => getLicense(d.method),
+              label: "License:",
+            }
           },
         }),
       ],

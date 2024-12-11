@@ -25,14 +25,15 @@ function ProfileHeader() {
   if (error) return null;
 
   const credibleSet = data?.credibleSet;
+  const leadVariant = credibleSet?.locus?.rows?.[0] || {};
+  const beta = leadVariant.beta ?? credibleSet?.beta;
+  const standardError = leadVariant.standardError ?? credibleSet?.standardError;
   const study = credibleSet?.study;
   const target = study?.target;
-  const leadVariant = credibleSet?.locus.rows[0];
-  const beta = leadVariant?.beta ?? credibleSet?.beta;
-  const standardError = leadVariant?.standardError ?? credibleSet?.standardError;
+
   const { pValueMantissa, pValueExponent } =
     typeof leadVariant?.pValueMantissa === "number" &&
-      typeof leadVariant?.pValueExponent === "number"
+    typeof leadVariant?.pValueExponent === "number"
       ? leadVariant
       : credibleSet ?? {};
 
@@ -169,24 +170,26 @@ function ProfileHeader() {
         >
           {credibleSet?.purityMinR2?.toPrecision(3)}
         </Field>
-        {credibleSet?.qualityControls?.length > 0 &&
+        {credibleSet?.qualityControls?.length > 0 && (
           <Box>
             <DetailPopover title="QC warnings">
-              <ul style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.25rem",
-                padding: 0,
-                margin: "0 0 0 1rem"
-              }}>
+              <ul
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.25rem",
+                  padding: 0,
+                  margin: "0 0 0 1rem",
+                }}
+              >
                 {credibleSet.qualityControls.map(warning => (
                   <li key={warning}>{warning}</li>
                 ))}
               </ul>
             </DetailPopover>
           </Box>
-        }
-      </Box >
+        )}
+      </Box>
 
       <Box>
         <Typography variant="subtitle1" mt={0}>
@@ -260,16 +263,17 @@ function ProfileHeader() {
           {study?.analysisFlags?.join(", ")}
         </Field>
         <Field loading={loading} title="Summary statistics">
-          {!study?.hasSumstats
-            ? "Not Available"
-            : study?.sumstatQCValues
-              ? <DetailPopover title="Available">
-                <SummaryStatsTable sumstatQCValues={study.sumstatQCValues} />
-              </DetailPopover>
-              : "Available"
-          }
+          {!study?.hasSumstats ? (
+            "Not Available"
+          ) : study?.sumstatQCValues ? (
+            <DetailPopover title="Available">
+              <SummaryStatsTable sumstatQCValues={study.sumstatQCValues} />
+            </DetailPopover>
+          ) : (
+            "Available"
+          )}
         </Field>
-        {study?.nSamples &&
+        {study?.nSamples && (
           <Field loading={loading} title="Sample size">
             <DisplaySampleSize
               nSamples={study.nSamples}
@@ -277,8 +281,8 @@ function ProfileHeader() {
               initialSampleSize={study?.initialSampleSize}
             />
           </Field>
-        }
-        {study?.ldPopulationStructure?.length > 0 &&
+        )}
+        {study?.ldPopulationStructure?.length > 0 && (
           <Box display="flex" sx={{ gap: 1 }}>
             {study.ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
               <LabelChip
@@ -289,9 +293,9 @@ function ProfileHeader() {
               />
             ))}
           </Box>
-        }
+        )}
       </Box>
-    </BaseProfileHeader >
+    </BaseProfileHeader>
   );
 }
 

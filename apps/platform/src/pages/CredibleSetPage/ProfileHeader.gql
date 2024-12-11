@@ -15,6 +15,9 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
       standardError
     }
   }
+  locusSize: locus(page: { size: 1, index: 0 }) {
+    count
+  }
   variant {
     chromosome
     position

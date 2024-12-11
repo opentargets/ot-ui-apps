@@ -133,7 +133,8 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       label: "Posterior Probability",
       filterValue: false,
       numeric: true,
-      tooltip: "Posterior inclusion probability that this variant is causal within the fine-mapped credible set",
+      tooltip:
+        "Posterior inclusion probability that this variant is causal within the fine-mapped credible set",
       comparator: (rowA, rowB) => rowA?.posteriorProbability - rowB?.posteriorProbability,
       sortable: true,
       renderCell: ({ posteriorProbability }) => {
@@ -145,7 +146,8 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       id: "logBF",
       label: "log(BF)",
       numeric: true,
-      tooltip: "Natural logarithm of the Bayes Factor indicating relative likelihood of the variant being causal",
+      tooltip:
+        "Natural logarithm of the Bayes Factor indicating relative likelihood of the variant being causal",
       filterValue: false,
       sortable: true,
       renderCell: ({ logBF }) => {
@@ -159,7 +161,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       tooltip: "Most severe consequence of the variant. Source: Ensembl VEP",
 
       renderCell: ({ variant }) => {
-        const mostSevereConsequence = variant?.mostSevereConsequence
+        const mostSevereConsequence = variant?.mostSevereConsequence;
         if (!mostSevereConsequence) return naLabel;
         const displayElement = (
           <Link external to={identifiersOrgLink("SO", mostSevereConsequence.id.slice(3))}>
@@ -169,7 +171,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
         return displayElement;
       },
       exportValue: ({ variant }) => {
-        return variant?.mostSevereConsequence.label
+        return variant?.mostSevereConsequence.label;
       },
     },
   ];
@@ -192,17 +194,15 @@ function Body({
 }: BodyProps) {
   const variables = {
     studyLocusId: studyLocusId,
+    size: table5HChunkSize,
+    index: 0,
   };
 
   const [request, setRequest] = useState<responseType>(initialResponse);
 
   const getData = useBatchQuery({
     query: VARIANTS_QUERY,
-    variables: {
-      studyLocusId,
-      size: table5HChunkSize,
-      index: 0,
-    },
+    variables,
     dataPath: "data.credibleSet.locus",
     size: table5HChunkSize,
   });
@@ -211,7 +211,7 @@ function Body({
     getData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [studyLocusId]);
 
   const columns = getColumns({
     leadVariantId,

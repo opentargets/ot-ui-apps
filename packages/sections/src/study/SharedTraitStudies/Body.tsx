@@ -1,13 +1,6 @@
-import { Fragment } from "react";
+import { Fragment, ReactElement } from "react";
 import { Box, Typography } from "@mui/material";
-import {
-  Link,
-  SectionItem,
-  Tooltip,
-  PublicationsDrawer,
-  OtTable,
-  useBatchQuery,
-} from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable, useBatchQuery } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
@@ -56,7 +49,7 @@ function getColumns(diseaseIds: string[]) {
       label: "Sample size",
       numeric: true,
       renderCell: ({ nSamples }) => {
-        return typeof nSamples === "number" ? nSamples.toLocaleString() : naLabel
+        return typeof nSamples === "number" ? nSamples.toLocaleString() : naLabel;
       },
       comparator: (a, b) => a?.nSamples - b?.nSamples,
       sortable: true,
@@ -105,15 +98,18 @@ function getColumns(diseaseIds: string[]) {
       label: "Publication",
       renderCell: ({ publicationFirstAuthor, publicationDate, pubmedId }) => {
         if (!publicationFirstAuthor) return naLabel;
-        return <PublicationsDrawer
-          entries={[{ name: pubmedId, url: epmcUrl(pubmedId) }]}
-          customLabel={`${publicationFirstAuthor} et al. (${new Date(publicationDate).getFullYear()})`}
-        />
+        return (
+          <PublicationsDrawer
+            entries={[{ name: pubmedId, url: epmcUrl(pubmedId) }]}
+            customLabel={`${publicationFirstAuthor} et al. (${new Date(
+              publicationDate
+            ).getFullYear()})`}
+          />
+        );
       },
       filterValue: ({ publicationYear, publicationFirstAuthor }) =>
         `${publicationYear} ${publicationFirstAuthor}`,
-      exportValue: ({ pubmedId }) =>
-        `${pubmedId}`,
+      exportValue: ({ pubmedId }) => `${pubmedId}`,
     },
   ];
 }
@@ -121,23 +117,20 @@ function getColumns(diseaseIds: string[]) {
 type BodyProps = {
   studyId: string;
   diseaseIds: string[];
-  entity: string;
 };
 
-export function Body({ studyId, diseaseIds, entity }: BodyProps) {
+export function Body({ studyId, diseaseIds }: BodyProps): ReactElement {
   const variables = {
     diseaseIds: diseaseIds,
+    size: table5HChunkSize,
+    index: 0,
   };
 
   const [request, setRequest] = useState<responseType>(initialResponse);
 
   const getData = useBatchQuery({
     query: SHARED_TRAIT_STUDIES_QUERY,
-    variables: {
-      diseaseIds,
-      size: table5HChunkSize,
-      index: 0,
-    },
+    variables,
     dataPath: "data.studies",
     size: table5HChunkSize,
   });
@@ -146,7 +139,7 @@ export function Body({ studyId, diseaseIds, entity }: BodyProps) {
     getData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [studyId]);
 
   const columns = getColumns(diseaseIds);
 
