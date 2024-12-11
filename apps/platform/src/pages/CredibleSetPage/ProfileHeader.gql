@@ -17,13 +17,6 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
   }
   locusSize: locus(page: { size: 1, index: 0 }) {
     count
-    rows {
-      posteriorProbability
-      pValueMantissa
-      pValueExponent
-      beta
-      standardError
-    }
   }
   variant {
     chromosome
