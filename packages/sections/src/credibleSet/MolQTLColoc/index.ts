@@ -1,5 +1,5 @@
 export const definition = {
-  id: "gwas_coloc",
+  id: "molqtl_coloc",
   name: "MolQTL Colocalisation",
   shortName: "GC",
   hasData: data => {
