@@ -1,7 +1,6 @@
 import { usePlot } from "../contexts/PlotContext";
 
-export default function XAxis({ position = 'bottom', padding, ...lineAttrs }) {
-
+export default function XAxis({ position = "bottom", padding, ...lineAttrs }) {
   const plot = usePlot();
   if (!plot) {
     throw Error("XAxis component must appear inside a Plot component");
@@ -10,9 +9,8 @@ export default function XAxis({ position = 'bottom', padding, ...lineAttrs }) {
   // eslint-disable-next-line
   padding ??= plot.axisPadding;
 
-  const y = position === 'top'
-    ? plot.padding.top - padding
-    : plot.height - plot.padding.bottom + padding;
+  const y =
+    position === "top" ? plot.padding.top - padding : plot.height - plot.padding.bottom + padding;
 
   return (
     <line

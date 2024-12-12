@@ -31,10 +31,7 @@ function XRefLinks({ label, urlBuilder, urlStem, ids, names, limit }: XRefLinksP
       {label}:{" "}
       {ids.map((id, i) => (
         <span key={id} style={i > limit - 1 && !showMore ? displayNone : {}}>
-          <Link
-            external
-            to={urlBuilder?.(id) ?? `${urlStem}${id}`}
-          >
+          <Link external to={urlBuilder?.(id) ?? `${urlStem}${id}`}>
             {names?.[i] ?? id}
           </Link>
           {i < ids.length - 1 ? ", " : ""}

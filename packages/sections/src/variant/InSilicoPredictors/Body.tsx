@@ -57,8 +57,8 @@ type BodyProps = {
 function getSortedRows(request) {
   return request.data?.variant?.inSilicoPredictors
     ? [...request.data.variant.inSilicoPredictors]
-      .filter(e => e.method !== null)
-      .sort((row1, row2) => row1.method.localeCompare(row2.method))
+        .filter(e => e.method !== null)
+        .sort((row1, row2) => row1.method.localeCompare(row2.method))
     : [];
 }
 

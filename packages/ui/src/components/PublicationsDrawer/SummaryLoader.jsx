@@ -16,7 +16,7 @@ const LoadingContainer = styled("div")({
   textAlign: "center",
 });
 
-function SummaryLoader({ message = 'Summarising. This may take some time...' }) {
+function SummaryLoader({ message = "Summarising. This may take some time..." }) {
   return (
     <LoadingContainer>
       <StyledContainer>

@@ -7,7 +7,7 @@ export default function Panel(rectAttrs) {
     throw Error("Panel component must appear inside a Plot component");
   }
 
-  const { panelWidth, panelHeight, padding} = plot;
+  const { panelWidth, panelHeight, padding } = plot;
 
   return (
     <rect

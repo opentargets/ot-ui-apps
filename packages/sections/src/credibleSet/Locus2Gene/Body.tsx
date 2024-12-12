@@ -27,7 +27,8 @@ const columns = [
     id: "score",
     label: "L2G score",
     sortable: true,
-    tooltip: "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
+    tooltip:
+      "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
     renderCell: ({ score }) => {
       if (!score) return naLabel;
       return (

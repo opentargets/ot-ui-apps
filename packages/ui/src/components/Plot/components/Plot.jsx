@@ -3,24 +3,14 @@ import { useMeasure } from "@uidotdev/usehooks";
 import { PlotProvider, usePlot, usePlotDispatch } from "../contexts/PlotContext";
 import { useVisClearSelection } from "../contexts/VisContext";
 
-export default function Plot({
-      children,
-      responsive,
-      clearOnClick,
-      clearOnLeave,
-      ...options
-    }) {
-  
+export default function Plot({ children, responsive, clearOnClick, clearOnLeave, ...options }) {
   return (
     <PlotProvider options={options}>
-      {responsive
-        ? <ResponsivePlot {...{clearOnClick, clearOnLeave}}>
-            {children}
-          </ResponsivePlot>
-        : <SVG {...{clearOnClick, clearOnLeave}}>
-            {children}
-          </SVG>
-      } 
+      {responsive ? (
+        <ResponsivePlot {...{ clearOnClick, clearOnLeave }}>{children}</ResponsivePlot>
+      ) : (
+        <SVG {...{ clearOnClick, clearOnLeave }}>{children}</SVG>
+      )}
     </PlotProvider>
   );
 }
@@ -30,7 +20,7 @@ function ResponsivePlot({ children, clearOnClick, clearOnLeave }) {
   const [ref, { width }] = useMeasure();
 
   useEffect(() => {
-    plotDispatch({ type: 'updateSize', width })
+    plotDispatch({ type: "updateSize", width });
   }, [width]);
 
   const plot = usePlot();
@@ -41,19 +31,16 @@ function ResponsivePlot({ children, clearOnClick, clearOnLeave }) {
   if (maxWidth != null) divStyle.maxWidth = `${maxWidth}px`;
 
   return (
-    <div ref={ref} style={divStyle} >
-      <SVG {...{clearOnClick, clearOnLeave}}>
-        {children}
-      </SVG>
+    <div ref={ref} style={divStyle}>
+      <SVG {...{ clearOnClick, clearOnLeave }}>{children}</SVG>
     </div>
   );
 }
 
 function SVG({ children, clearOnClick, clearOnLeave }) {
-
   const visClearSelection = useVisClearSelection();
 
-  const plot = usePlot();  
+  const plot = usePlot();
   const { width, height, background, cornerRadius } = plot;
 
   const attrs = {
@@ -62,11 +49,11 @@ function SVG({ children, clearOnClick, clearOnLeave }) {
     style: {
       width: `${width}px`,
       height: `${height}px`,
-      cursor: 'default',
-      'MozUserSelect': 'none',
-      'WebkitUserDelect': 'none',
-      'MsUserSelect': 'none',
-      'userSelect': 'none',
+      cursor: "default",
+      MozUserSelect: "none",
+      WebkitUserDelect: "none",
+      MsUserSelect: "none",
+      userSelect: "none",
     },
   };
   if (clearOnClick) {
@@ -84,14 +71,9 @@ function SVG({ children, clearOnClick, clearOnLeave }) {
 
   return (
     <svg {...attrs}>
-      {(background !== 'transparent' || cornerRadius > 0) &&
-        <rect
-          width={width}
-          height={height}
-          fill={background}
-          rx={cornerRadius}
-        />
-      }
+      {(background !== "transparent" || cornerRadius > 0) && (
+        <rect width={width} height={height} fill={background} rx={cornerRadius} />
+      )}
       {children}
     </svg>
   );

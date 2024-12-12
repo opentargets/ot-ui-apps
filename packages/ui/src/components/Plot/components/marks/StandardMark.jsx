@@ -1,8 +1,5 @@
 import { memo } from "react";
-import {
-  useVisUpdateSelection,
-  useVisClearSelection
-} from "../../contexts/VisContext";
+import { useVisUpdateSelection, useVisClearSelection } from "../../contexts/VisContext";
 import { usePlot } from "../../contexts/PlotContext";
 import { useFrame } from "../../contexts/FrameContext";
 import { fromFrameOrPlot } from "../../util/fromFrameOrPlot";
@@ -22,7 +19,6 @@ export default memo(function StandardMark({
   createAttrs,
   createContent,
 }) {
-
   const visUpdateSelection = useVisUpdateSelection();
   const visClearSelection = useVisClearSelection();
   if (hover && !visUpdateSelection) {
@@ -35,13 +31,13 @@ export default memo(function StandardMark({
   }
 
   const frame = useFrame();
-  const ops = fromFrameOrPlot(['data', 'scales', 'mapX', 'mapY'], frame, plot);
+  const ops = fromFrameOrPlot(["data", "scales", "mapX", "mapY"], frame, plot);
   const { scales, mapX, mapY } = ops;
 
   // eslint-disable-next-line
   data = finalData(ops.data, data);
   if (!isIterable(data)) {
-    throw Error('mark data must be an iterable');
+    throw Error("mark data must be an iterable");
   }
 
   const finalAccessors = processAccessors({
@@ -70,8 +66,8 @@ export default memo(function StandardMark({
       const attrs = createAttrs(row);
 
       if (hover) {
-        attrs.onMouseEnter = () => visUpdateSelection('hover', [d]);
-        if (hover !== 'stay') {
+        attrs.onMouseEnter = () => visUpdateSelection("hover", [d]);
+        if (hover !== "stay") {
           attrs.onMouseLeave = visClearSelection;
         }
       }
@@ -88,10 +84,5 @@ export default memo(function StandardMark({
 
   if (marks.length === 0) return null;
 
-  return (
-    <g transform={`translate(${plot.padding.left},${plot.padding.top})`}>
-      {marks}
-    </g>
-  );
-
+  return <g transform={`translate(${plot.padding.left},${plot.padding.top})`}>{marks}</g>;
 });

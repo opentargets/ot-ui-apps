@@ -4,7 +4,9 @@ export const definition = {
   name: "UniProt variants",
   shortName: "UV",
   hasData: data => {
-    return  data?.uniProtEvidences?.count > 0 ||  // summary
-            data?.evidences?.count > 0;           // section
+    return (
+      data?.uniProtEvidences?.count > 0 || // summary
+      data?.evidences?.count > 0
+    ); // section
   },
 };

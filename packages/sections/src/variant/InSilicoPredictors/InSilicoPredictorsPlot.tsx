@@ -70,7 +70,7 @@ const getXLabel = (tick: number) => {
 
 const getLicense = (method: string) => {
   if (method === "CADD" || method === "PolyPhen") return "Non-commercial (Deprecated)";
-}
+};
 
 function Plot({ data, width }) {
   const headerRef = useRef();
@@ -158,7 +158,7 @@ function Plot({ data, width }) {
             license: {
               value: d => getLicense(d.method),
               label: "License:",
-            }
+            },
           },
         }),
       ],

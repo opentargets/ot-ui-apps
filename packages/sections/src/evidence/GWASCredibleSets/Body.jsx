@@ -37,18 +37,21 @@ function getColumns(targetSymbol) {
       renderCell: ({ credibleSet }) => {
         const v = credibleSet?.variant;
         if (!v) return naLabel;
-        return <Link to={`/variant/${v.id}`}>
-          <DisplayVariantId
-            variantId={v.id}
-            referenceAllele={v.referenceAllele}
-            alternateAllele={v.alternateAllele}
-            expand={false}
-          />
-        </Link>
+        return (
+          <Link to={`/variant/${v.id}`}>
+            <DisplayVariantId
+              variantId={v.id}
+              referenceAllele={v.referenceAllele}
+              alternateAllele={v.alternateAllele}
+              expand={false}
+            />
+          </Link>
+        );
       },
       filterValue: ({ credibleSet: { variant: v } }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
-      exportValue: ({ credibleSet: { variant: v } }) => `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
+      exportValue: ({ credibleSet: { variant: v } }) =>
+        `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
     },
     {
       id: "trait",
