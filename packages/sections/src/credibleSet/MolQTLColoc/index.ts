@@ -1,7 +1,7 @@
 export const definition = {
-  id: "gwas_coloc",
+  id: "molqtl_coloc",
   name: "MolQTL Colocalisation",
-  shortName: "GC",
+  shortName: "QC",
   hasData: data => {
     return data?.colocalisation?.count > 0 || data?.molqtlcolocalisation?.count > 0;
   },
