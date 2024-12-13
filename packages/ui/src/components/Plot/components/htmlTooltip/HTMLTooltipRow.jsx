@@ -8,17 +8,16 @@ export default function TooltipRow({
   valueWidth,
   truncateValue,
 }) {
-
   const truncateLine = truncateValue
     ? {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    }
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }
     : {};
 
   return (
-    <tr style={{ verticalAlign: 'top' }}>
+    <tr style={{ verticalAlign: "top" }}>
       <td width={labelWidth}>
         <Typography
           variant="subtitle2"

@@ -13,12 +13,8 @@ const xrefsToDisplay = {
   },
   protvar: {
     label: "ProtVar",
-    urlBuilder: (id,  { chromosome, position, referenceAllele, alternateAllele }) => (
-      `https://www.ebi.ac.uk/ProtVar/query?chromosome=${chromosome
-        }&genomic_position=${position
-        }&reference_allele=${referenceAllele
-        }&alternative_allele=${alternateAllele}`
-    ),
+    urlBuilder: (id, { chromosome, position, referenceAllele, alternateAllele }) =>
+      `https://www.ebi.ac.uk/ProtVar/query?chromosome=${chromosome}&genomic_position=${position}&reference_allele=${referenceAllele}&alternative_allele=${alternateAllele}`,
   },
   clinvar: {
     label: "ClinVar",
@@ -33,9 +29,9 @@ const xrefsToDisplay = {
 function processXRefs(dbXRefs) {
   const xrefs = {};
   for (const { id, source } of dbXRefs) {
-    const { label, urlBuilder, urlStem } = xrefsToDisplay[source];   
+    const { label, urlBuilder, urlStem } = xrefsToDisplay[source];
     if (xrefs[source]) {
-        xrefs[source].ids.add(id);
+      xrefs[source].ids.add(id);
     } else {
       xrefs[source] = {
         label,
@@ -55,17 +51,18 @@ type HeaderProps = {
 };
 
 function Header({ loading, variantId, variantPageData }: HeaderProps) {
-
   const xrefs = processXRefs(variantPageData?.dbXrefs || []);
 
   return (
     <HeaderBase
       loading={loading}
-      title={<DisplayVariantId
-        variantId={variantId}
-        referenceAllele={variantPageData?.referenceAllele}
-        alternateAllele={variantPageData?.alternateAllele}
-      />}
+      title={
+        <DisplayVariantId
+          variantId={variantId}
+          referenceAllele={variantPageData?.referenceAllele}
+          alternateAllele={variantPageData?.alternateAllele}
+        />
+      }
       Icon={faMapPin}
       externalLinks={
         <>
@@ -76,7 +73,7 @@ function Header({ loading, variantId, variantPageData }: HeaderProps) {
                 key={xref}
                 label={label}
                 urlStem={urlStem}
-                urlBuilder={urlBuilder ? (id => urlBuilder(id, variantPageData)) : null}
+                urlBuilder={urlBuilder ? id => urlBuilder(id, variantPageData) : null}
                 ids={[...ids]}
                 limit="3"
               />

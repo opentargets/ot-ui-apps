@@ -1,30 +1,23 @@
 import Mark from "./Mark";
 
-export default function Circle({
-  data,
-  dataFrom,
-  missing = 'throw',
-  hover,
-  ...accessors
-}) {
-
+export default function Circle({ data, dataFrom, missing = "throw", hover, ...accessors }) {
   const markChannels = [
-    'x',
-    'y',
-    'dx',
-    'dy',
-    'fill',
-    'fillOpacity',
-    'stroke',
-    'strokeOpacity',
-    'strokeWidth',
-    'strokeCap',
-    'strokeDasharray',
-    'area',
-    'pointerEvents',
+    "x",
+    "y",
+    "dx",
+    "dy",
+    "fill",
+    "fillOpacity",
+    "stroke",
+    "strokeOpacity",
+    "strokeWidth",
+    "strokeCap",
+    "strokeDasharray",
+    "area",
+    "pointerEvents",
   ];
 
-  const tagName = 'circle';
+  const tagName = "circle";
 
   function createAttrs(row) {
     const attrs = {
@@ -43,15 +36,18 @@ export default function Circle({
     return attrs;
   }
 
-  return <Mark {...{
-    data,
-    dataFrom,
-    missing,
-    hover,
-    accessors,
-    tagName,
-    markChannels,
-    createAttrs,
-  }} />;
-
+  return (
+    <Mark
+      {...{
+        data,
+        dataFrom,
+        missing,
+        hover,
+        accessors,
+        tagName,
+        markChannels,
+        createAttrs,
+      }}
+    />
+  );
 }

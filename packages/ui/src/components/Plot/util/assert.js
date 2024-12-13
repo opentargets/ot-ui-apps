@@ -1,5 +1,5 @@
-import { validScales } from '../util/scaleChannels';
-import { isInfiniteOrNaN } from './helpers';
+import { validScales } from "../util/scaleChannels";
+import { isInfiniteOrNaN } from "./helpers";
 
 export function noInfiniteOrNaN(value, channel) {
   if (isInfiniteOrNaN(value)) {

@@ -16,8 +16,8 @@ function Description({ variantId, referenceAllele, alternateAllele }: Descriptio
           referenceAllele={referenceAllele}
           alternateAllele={alternateAllele}
         />
-      </strong>
-      {" "}to a disease/phenotype. Source:{" "}
+      </strong>{" "}
+      to a disease/phenotype. Source:{" "}
       <Link to="https://www.ebi.ac.uk/eva/" external>
         EVA
       </Link>

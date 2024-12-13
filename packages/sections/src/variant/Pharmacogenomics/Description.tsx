@@ -16,8 +16,8 @@ function Description({ variantId, referenceAllele, alternateAllele }: Descriptio
           referenceAllele={referenceAllele}
           alternateAllele={alternateAllele}
         />
-      </strong>
-      {" "}known to affect drug response. Source:{" "}
+      </strong>{" "}
+      known to affect drug response. Source:{" "}
       <Link external to="https://www.pharmgkb.org/">
         PharmGKB
       </Link>

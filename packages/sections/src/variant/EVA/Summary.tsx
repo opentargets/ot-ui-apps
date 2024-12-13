@@ -6,9 +6,7 @@ import EVA_SUMMARY from "./EVASummaryFragment.gql";
 function Summary() {
   const request = usePlatformApi(EVA_SUMMARY);
 
-  return (
-    <SummaryItem definition={definition} request={request} />
-  );
+  return <SummaryItem definition={definition} request={request} />;
 }
 
 Summary.fragments = {

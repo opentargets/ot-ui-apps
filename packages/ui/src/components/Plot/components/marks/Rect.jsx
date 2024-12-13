@@ -1,34 +1,27 @@
 import Mark from "./Mark";
 
-export default function Rect({
-      data,
-      dataFrom,
-      missing = 'throw',
-      hover,
-      ...accessors
-    }) {
-
+export default function Rect({ data, dataFrom, missing = "throw", hover, ...accessors }) {
   const markChannels = [
-    'x',
-    'y',
-    'dx',
-    'dy',
-    'xx',
-    'yy',
-    'dxx',
-    'dyy',
-    'fill',
-    'fillOpacity',
-    'stroke',
-    'strokeOpacity',
-    'strokeWidth',
-    'strokeCap',
-    'strokeDasharray',
-    'pointerEvents',
+    "x",
+    "y",
+    "dx",
+    "dy",
+    "xx",
+    "yy",
+    "dxx",
+    "dyy",
+    "fill",
+    "fillOpacity",
+    "stroke",
+    "strokeOpacity",
+    "strokeWidth",
+    "strokeCap",
+    "strokeDasharray",
+    "pointerEvents",
   ];
 
-  const tagName = 'path';
-  
+  const tagName = "path";
+
   function createAttrs(row) {
     const x = row.x + row.dx;
     const y = row.y + row.dy;
@@ -47,16 +40,19 @@ export default function Rect({
     if (row.pointerEvents) attrs.pointerEvents = row.pointerEvents;
     return attrs;
   }
-  
-  return <Mark {...{
-    data,
-    dataFrom,
-    missing,
-    hover,
-    accessors,
-    tagName,
-    markChannels,
-    createAttrs,
-  }} />;
 
+  return (
+    <Mark
+      {...{
+        data,
+        dataFrom,
+        missing,
+        hover,
+        accessors,
+        tagName,
+        markChannels,
+        createAttrs,
+      }}
+    />
+  );
 }

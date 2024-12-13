@@ -1,12 +1,5 @@
 import { useQuery } from "@apollo/client";
-import {
-  Link,
-  SectionItem,
-  ScientificNotation,
-  DisplayVariantId,
-  OtTable,
-  Navigate,
-} from "ui";
+import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable, Navigate } from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
@@ -17,9 +10,7 @@ const columns = [
   {
     id: "studyLocusId",
     label: "Navigate",
-    renderCell: ({ studyLocusId }) => (
-      <Navigate to={`/credible-set/${studyLocusId}`} />
-    )
+    renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
   },
   {
     id: "leadVariant",
@@ -90,9 +81,7 @@ const columns = [
     numeric: true,
     filterValue: false,
     renderCell: ({ locus }) => {
-      return typeof locus?.count === "number"
-        ? locus.count.toLocaleString()
-        : naLabel;
+      return typeof locus?.count === "number" ? locus.count.toLocaleString() : naLabel;
     },
     exportValue: ({ locus }) => locus?.count,
   },

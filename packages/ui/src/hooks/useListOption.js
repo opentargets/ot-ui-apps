@@ -17,10 +17,8 @@ function useListOption() {
     } else {
       history.push(
         `/${newOption.entity}/${newOption.id}${
-            newOption.entity !== "drug" && newOption.entity !== "variant"
-              ? "/associations"
-              : ""
-          }`
+          newOption.entity !== "drug" && newOption.entity !== "variant" ? "/associations" : ""
+        }`
       );
     }
   };

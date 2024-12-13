@@ -90,8 +90,8 @@ function getColumns(diseaseIds: string[]) {
         getStudyCategory(projectId) === "FINNGEN"
           ? "FinnGen"
           : cohorts?.length
-            ? cohorts.join(", ")
-            : null,
+          ? cohorts.join(", ")
+          : null,
     },
     {
       id: "publication",

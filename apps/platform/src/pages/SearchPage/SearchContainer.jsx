@@ -13,7 +13,7 @@ import {
   faDna,
   faMapPin,
   faPrescriptionBottleAlt,
-  faStethoscope
+  faStethoscope,
 } from "@fortawesome/free-solid-svg-icons";
 import { ErrorBoundary } from "ui";
 
@@ -71,7 +71,9 @@ const SearchFilters = ({ entities, entitiesCount, setEntity }) => {
       />
       <FormControlLabel
         className={classes.label}
-        control={<Checkbox checked={entities.includes("variant")} onChange={setEntity("variant")} />}
+        control={
+          <Checkbox checked={entities.includes("variant")} onChange={setEntity("variant")} />
+        }
         label={
           <>
             <FontAwesomeIcon icon={faMapPin} fixedWidth className={classes.labelIcon} />

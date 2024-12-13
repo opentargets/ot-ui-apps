@@ -64,14 +64,16 @@ function getColumns(label) {
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
       renderCell: ({ variant: v }) => {
         if (!v) return naLabel;
-        return <Link to={`/variant/${v.id}`}>
-          <DisplayVariantId
-            variantId={v.id}
-            referenceAllele={v.referenceAllele}
-            alternateAllele={v.alternateAllele}
-            expand={false}
-          />
-        </Link>
+        return (
+          <Link to={`/variant/${v.id}`}>
+            <DisplayVariantId
+              variantId={v.id}
+              referenceAllele={v.referenceAllele}
+              alternateAllele={v.alternateAllele}
+              expand={false}
+            />
+          </Link>
+        );
       },
     },
     {
@@ -91,12 +93,14 @@ function getColumns(label) {
       label: "Amino acid",
       renderCell: ({ variant }) => {
         if (!variant) return naLabel;
-        const aaConsequences = variant.transcriptConsequences?.filter(d => d.aminoAcidChange != null).map(d => d.aminoAcidChange);
+        const aaConsequences = variant.transcriptConsequences
+          ?.filter(d => d.aminoAcidChange != null)
+          .map(d => d.aminoAcidChange);
         if (aaConsequences?.length) {
           return aaConsequences.join(", ");
         }
         return naLabel;
-      }
+      },
     },
     {
       id: "variantConsequence",

@@ -10,17 +10,16 @@ import { rowValues } from "../../util/rowValues";
 import DynamicTag from "../util/DynamicTag";
 
 export default memo(function SelectionMark({
-      data,
-      dataFrom,  // SelectionMark is only used when the dataFrom prop is used
-      missing,
-      accessors,
-      markChannels,
-      tagName,
-      createAttrs,
-      createContent,
-    }) {
-
-  const visSelection = useVisSelection(); 
+  data,
+  dataFrom, // SelectionMark is only used when the dataFrom prop is used
+  missing,
+  accessors,
+  markChannels,
+  tagName,
+  createAttrs,
+  createContent,
+}) {
+  const visSelection = useVisSelection();
   if (!visSelection) {
     throw Error("the dataFrom prop can only be used inside a Vis component");
   }
@@ -29,18 +28,16 @@ export default memo(function SelectionMark({
   if (!plot) {
     throw Error("mark components must appear inside a Plot component");
   }
-  
+
   const frame = useFrame();
-  const ops = fromFrameOrPlot(['data', 'scales', 'mapX', 'mapY'], frame, plot);
+  const ops = fromFrameOrPlot(["data", "scales", "mapX", "mapY"], frame, plot);
   const { scales, mapX, mapY } = ops;
 
-  if (dataFrom !== 'hover') {
+  if (dataFrom !== "hover") {
     throw Error(`"${dataFrom}" is not a valid selection type`);
   }
-  if (data && typeof data !== 'function') {
-    throw Error(
-      'when the dataFrom prop is used, the data prop must be omitted or be a function'
-    );
+  if (data && typeof data !== "function") {
+    throw Error("when the dataFrom prop is used, the data prop must be omitted or be a function");
   }
   const selectedData = visSelection.hover;
   // eslint-disable-next-line
@@ -83,10 +80,5 @@ export default memo(function SelectionMark({
 
   if (marks.length === 0) return null;
 
-  return (
-    <g transform={`translate(${plot.padding.left},${plot.padding.top})`}>
-      {marks}
-    </g>
-  );
-
+  return <g transform={`translate(${plot.padding.left},${plot.padding.top})`}>{marks}</g>;
 });

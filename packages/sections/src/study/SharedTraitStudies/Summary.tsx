@@ -4,7 +4,7 @@ import { definition } from ".";
 
 function Summary() {
   const request = usePlatformApi();
-  
+
   return <SummaryItem definition={definition} request={request} />;
 }
 

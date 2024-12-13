@@ -1,11 +1,10 @@
-
 import { usePlot } from "../../contexts/PlotContext";
 import { useFrame } from "../../contexts/FrameContext";
 import { fromFrameOrPlot } from "../../util/fromFrameOrPlot";
 import HTML from "../marks/HTML";
 
 export default function HTMLTooltip({
-  // HTML mark channels 
+  // HTML mark channels
   x,
   y,
   pxWidth,
@@ -16,29 +15,28 @@ export default function HTMLTooltip({
   xOffset = 10,
   yOffset = 10,
 }) {
-
   const plot = usePlot();
   if (!plot) {
     throw Error("HTMLTooltip component must appear inside a Plot component");
   }
   const frame = useFrame();
 
-  const ops = fromFrameOrPlot(['scales', 'xReverse', 'yReverse'], frame, plot);
+  const ops = fromFrameOrPlot(["scales", "xReverse", "yReverse"], frame, plot);
 
-  if (typeof x !== 'function') {
-    throw Error('x channel must be an accessor function');
+  if (typeof x !== "function") {
+    throw Error("x channel must be an accessor function");
   }
-  if (typeof y !== 'function') {
-    throw Error('y channel must be an accessor function');
+  if (typeof y !== "function") {
+    throw Error("y channel must be an accessor function");
   }
 
   function xAnchor(d, x) {
     const [, rangeMax] = ops.scales.x.range();
     const output = ops.scales.x(x(d));
     if (ops.xReverse) {
-      return output > rangeMax / 2 ? 'left' : 'right';
+      return output > rangeMax / 2 ? "left" : "right";
     } else {
-      return output < rangeMax / 2 ? 'left' : 'right';
+      return output < rangeMax / 2 ? "left" : "right";
     }
   }
 
@@ -46,9 +44,9 @@ export default function HTMLTooltip({
     const [, rangeMax] = ops.scales.y.range();
     const output = ops.scales.y(y(d));
     if (ops.yReverse) {
-      return output > rangeMax / 2 ? 'bottom' : 'top';
+      return output > rangeMax / 2 ? "bottom" : "top";
     } else {
-      return output < rangeMax / 2 ? 'bottom' : 'top';
+      return output < rangeMax / 2 ? "bottom" : "top";
     }
   }
 
@@ -62,9 +60,8 @@ export default function HTMLTooltip({
       content={content}
       anchor={d => `${yAnchor(d, y)}-${xAnchor(d, x)}`}
       pointerEvents={pointerEvents}
-      dx={d => xAnchor(d, x) === 'left' ? xOffset : -xOffset}
-      dy={d => yAnchor(d, y) === 'top' ? yOffset : -yOffset}
+      dx={d => (xAnchor(d, x) === "left" ? xOffset : -xOffset)}
+      dy={d => (yAnchor(d, y) === "top" ? yOffset : -yOffset)}
     />
   );
-
 }

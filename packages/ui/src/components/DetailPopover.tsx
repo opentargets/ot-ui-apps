@@ -14,7 +14,6 @@ export default function DetailPopover({
   children,
   popoverId = "simple-popover",
 }: DetailPopoverProps) {
-
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -38,14 +37,12 @@ export default function DetailPopover({
           cursor: "pointer",
           mr: 0.5,
           fontWeight: 600,
-          color: "secondary.main"
+          color: "secondary.main",
         }}
         aria-describedby={id}
         onClick={handleClick}
       >
-        {title}
-        {" "}
-        <FontAwesomeIcon icon={open ? faCaretDown : faCaretRight} />
+        {title} <FontAwesomeIcon icon={open ? faCaretDown : faCaretRight} />
       </Typography>
       <Popover
         id={id}

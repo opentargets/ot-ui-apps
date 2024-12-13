@@ -5,7 +5,7 @@ import VARIANTS_SUMMARY from "./VariantsSummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(VARIANTS_SUMMARY);
-  
+
   return <SummaryItem definition={definition} request={request} />;
 }
 
