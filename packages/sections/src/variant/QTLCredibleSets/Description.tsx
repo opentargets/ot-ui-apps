@@ -14,7 +14,8 @@ function Description({
 }: DescriptionProps): ReactElement {
   return (
     <>
-      95% credible sets fine-mapped from quantitative trait loci associated with molecular traits containing{" "}
+      95% credible sets fine-mapped from quantitative trait loci associated with molecular traits
+      containing{" "}
       <strong>
         <DisplayVariantId
           variantId={variantId}
@@ -22,7 +23,10 @@ function Description({
           alternateAllele={alternateAllele}
         />
       </strong>
-      . Source <Link to="/">Open Targets</Link>
+      . Source{" "}
+      <Link to="https://home.opentargets.org/merged-product-documentation" external>
+        Open Targets
+      </Link>
     </>
   );
 }

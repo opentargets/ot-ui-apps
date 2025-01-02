@@ -6,9 +6,7 @@ import PHARMACOGENOMICS_SUMMARY from "./PharmacogenomicsSummaryFragment.gql";
 function Summary() {
   const request = usePlatformApi(PHARMACOGENOMICS_SUMMARY);
 
-  return (
-    <SummaryItem definition={definition} request={request} />
-  );
+  return <SummaryItem definition={definition} request={request} />;
 }
 
 Summary.fragments = {

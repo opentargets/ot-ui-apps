@@ -1,10 +1,13 @@
+import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { SectionItem, Tooltip, OtTable } from "ui";
 import { definition } from "../InSilicoPredictors";
 import Description from "../InSilicoPredictors/Description";
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { naLabel } from "../../constants";
 import IN_SILICO_PREDICTORS_QUERY from "./InSilicoPredictorsQuery.gql";
+import InSilicoPredictorsVisualisation from "./InSilicoPredictorsPlot";
+import { VIEW } from "ui/src/constants";
 
 const columns = [
   {
@@ -35,7 +38,14 @@ const columns = [
   {
     id: "score",
     label: "Score",
-    renderCell: ({ score }) => score ?? naLabel,
+    numeric: true,
+    renderCell: ({ score }) => score?.toPrecision(3) ?? naLabel,
+  },
+  {
+    id: "normalisedScore",
+    label: "Normalised score",
+    numeric: true,
+    renderCell: ({ normalisedScore }) => normalisedScore?.toFixed(3) ?? naLabel,
   },
 ];
 
@@ -44,10 +54,17 @@ type BodyProps = {
   entity: string;
 };
 
-export function Body({ id, entity }: BodyProps) {
+function getSortedRows(request) {
+  return request.data?.variant?.inSilicoPredictors
+    ? [...request.data.variant.inSilicoPredictors]
+        .filter(e => e.method !== null)
+        .sort((row1, row2) => row1.method.localeCompare(row2.method))
+    : [];
+}
+
+export function Body({ id, entity }: BodyProps): ReactElement {
   const variables = {
     variantId: id,
-    // size: sectionsBaseSizeQuery,
   };
   const request = useQuery(IN_SILICO_PREDICTORS_QUERY, {
     variables,
@@ -58,6 +75,7 @@ export function Body({ id, entity }: BodyProps) {
       definition={definition}
       request={request}
       entity={entity}
+      defaultView={VIEW.chart}
       renderDescription={() => (
         <Description
           variantId={request.data?.variant.id}
@@ -65,12 +83,19 @@ export function Body({ id, entity }: BodyProps) {
           alternateAllele={request.data?.variant.alternateAllele}
         />
       )}
+      renderChart={() => {
+        const rows = getSortedRows(request);
+        return (
+          <InSilicoPredictorsVisualisation
+            data={rows}
+            query={IN_SILICO_PREDICTORS_QUERY.loc.source.body}
+            variables={variables}
+            columns={columns}
+          />
+        );
+      }}
       renderBody={() => {
-        let rows = [];
-        if (request.data)
-          rows = [...request.data.variant.inSilicoPredictors].sort((row1, row2) => {
-            return row1.method.localeCompare(row2.method);
-          });
+        const rows = getSortedRows(request);
         return (
           <OtTable
             columns={columns}

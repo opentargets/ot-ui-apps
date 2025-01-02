@@ -1,21 +1,24 @@
-query SharedTraitStudiesQuery($diseaseIds: [String!]!) {
-  gwasStudy(diseaseIds: $diseaseIds, page: { size: 2000, index: 0 }) {
-    studyId
-    traitFromSource
-    projectId
-    diseases {
+query SharedTraitStudiesQuery($diseaseIds: [String!]!, $size: Int!, $index: Int!) {
+  studies(diseaseIds: $diseaseIds,  page: { size: $size, index: $index }) {
+    count
+    rows {
       id
-      name
+      traitFromSource
+      projectId
+      diseases {
+        id
+        name
+      }
+      publicationFirstAuthor
+      publicationDate
+      publicationJournal
+      nSamples
+      cohorts
+      ldPopulationStructure {
+        ldPopulation
+        relativeSampleSize
+      }
+      pubmedId
     }
-    publicationFirstAuthor
-    publicationDate
-    publicationJournal
-    nSamples
-    cohorts
-    ldPopulationStructure {
-      ldPopulation
-      relativeSampleSize
-    }
-    pubmedId
   }
 }

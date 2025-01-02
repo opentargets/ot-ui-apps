@@ -6,17 +6,18 @@ import {
   SummaryContainer,
   SectionLoader,
   summaryUtils,
+  PrivateWrapper,
 } from "ui";
 
 import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
 import GWASColocSummary from "sections/src/credibleSet/GWASColoc/Summary";
-import GWASMolQTLSummary from "sections/src/credibleSet/GWASMolQTL/Summary";
+import GWASMolQTLSummary from "sections/src/credibleSet/MolQTLColoc/Summary";
 import Locus2GeneSummary from "sections/src/credibleSet/Locus2Gene/Summary";
 
 import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
-const GWASMolQTLSection = lazy(() => import("sections/src/credibleSet/GWASMolQTL/Body"));
+const MolQTLColocSection = lazy(() => import("sections/src/credibleSet/MolQTLColoc/Body"));
 const VariantsSection = lazy(() => import("sections/src/credibleSet/Variants/Body"));
 const GWASColocSection = lazy(() => import("sections/src/credibleSet/GWASColoc/Body"));
 
@@ -24,14 +25,8 @@ const Locus2GeneSection = lazy(() => import("sections/src/credibleSet/Locus2Gene
 
 const CREDIBLE_SET = "credibleSet";
 
-const createProfileQuery = (studyType: string) => {
-  const summaries = [VariantsSummary, Locus2GeneSummary];
-  if (studyType === "gwas") {
-    summaries.push(GWASColocSummary);
-  }
-  if (studyType !== "gwas") {
-    summaries.push(GWASMolQTLSummary);
-  }
+function Profile({ studyLocusId, variantId, referenceAllele, alternateAllele }: ProfileProps) {
+  const summaries = [VariantsSummary, Locus2GeneSummary, GWASColocSummary, GWASMolQTLSummary];
 
   const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
     summaries,
@@ -50,17 +45,7 @@ const createProfileQuery = (studyType: string) => {
     ${ProfileHeader.fragments.profileHeader}
     ${CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT}
   `;
-  return CREDIBLE_SET_PROFILE_QUERY;
-};
 
-function Profile({
-  studyLocusId,
-  variantId,
-  referenceAllele,
-  alternateAllele,
-  studyType,
-}: ProfileProps) {
-  const CREDIBLE_SET_PROFILE_QUERY = createProfileQuery(studyType);
   return (
     <PlatformApiProvider
       entity={CREDIBLE_SET}
@@ -68,17 +53,15 @@ function Profile({
       variables={{ studyLocusId: studyLocusId, variantIds: [variantId] }}
       client={client}
     >
-      <ProfileHeader variantId={variantId} />
+      <ProfileHeader />
 
       <SummaryContainer>
         <VariantsSummary />
         <Locus2GeneSummary />
-        {studyType === "gwas" && (
-          <>
-            <GWASColocSummary />
-          </>
-        )}
-        {studyType !== "gwas" && <GWASMolQTLSummary />}
+        <PrivateWrapper>
+          <GWASColocSummary />
+          <GWASMolQTLSummary />
+        </PrivateWrapper>
       </SummaryContainer>
 
       <SectionContainer>
@@ -95,16 +78,13 @@ function Profile({
           <Locus2GeneSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
         </Suspense>
 
-        {studyType === "gwas" && (
-          <Suspense fallback={<SectionLoader />}>
-            <GWASColocSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
-          </Suspense>
-        )}
-        {studyType !== "gwas" && (
-          <Suspense fallback={<SectionLoader />}>
-            <GWASMolQTLSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
-          </Suspense>
-        )}
+        <Suspense fallback={<SectionLoader />}>
+          <GWASColocSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
+        </Suspense>
+
+        <Suspense fallback={<SectionLoader />}>
+          <MolQTLColocSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
+        </Suspense>
       </SectionContainer>
     </PlatformApiProvider>
   );

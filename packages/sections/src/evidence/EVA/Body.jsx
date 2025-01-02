@@ -13,6 +13,7 @@ import {
   ClinvarStars,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  DisplayVariantId,
 } from "ui";
 
 import {
@@ -110,16 +111,20 @@ function getColumns(label) {
     {
       id: "variantId",
       label: "Variant",
-      renderCell: ({ variant: { id: variantId } }) =>
-        // trim long IDs and append '...'
-        variantId ? (
-          <>
-            {variantId.substring(0, 20)}
-            {variantId.length > 20 ? "\u2026" : ""}
-          </>
-        ) : (
-          naLabel
-        ),
+      renderCell: ({ variant }) => {
+        if (!variant) return naLabel;
+        const { id: variantId, referenceAllele, alternateAllele } = variant;
+        return (
+          <Link to={`/variant/${variantId}`}>
+            <DisplayVariantId
+              variantId={variantId}
+              referenceAllele={referenceAllele}
+              alternateAllele={alternateAllele}
+              expand={false}
+            />
+          </Link>
+        );
+      },
     },
     {
       id: "variantRsId",
@@ -139,8 +144,8 @@ function getColumns(label) {
     {
       id: "variantHgvsId",
       label: "HGVS ID",
-      renderCell: ({ variant }) => variant.hgvsId || naLabel,
-      filterValue: ({ variant }) => `${variant.hgvsId}`,
+      renderCell: ({ variant }) => variant?.hgvsId || naLabel,
+      filterValue: ({ variant }) => `${variant?.hgvsId}`,
     },
     {
       id: "studyId",

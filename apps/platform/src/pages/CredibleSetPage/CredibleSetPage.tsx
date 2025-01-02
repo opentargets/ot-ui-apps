@@ -20,14 +20,8 @@ function CredibleSetPage() {
     return <NotFoundPage />;
   }
 
-  const credibleSet = data?.credibleSet;
-  const variantId = credibleSet?.variant?.id;
-  const referenceAllele = credibleSet?.variant?.referenceAllele;
-  const alternateAllele = credibleSet?.variant?.alternateAllele;
-  const studyId = credibleSet?.study?.studyId;
-  const studyType = credibleSet?.study?.studyType;
-
-  if (!studyType) return null;
+  const { id: studyId, studyType } = data?.credibleSet?.study || {};
+  const { id: variantId, referenceAllele, alternateAllele } = data?.credibleSet?.variant || {};
 
   return (
     <BasePage

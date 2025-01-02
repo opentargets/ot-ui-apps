@@ -1,16 +1,15 @@
 import { usePlot } from "../contexts/PlotContext";
 
 export default function XTitle({
-      children,
-      position = 'bottom',
-      align = 'center',  // 'left', 'center' or 'right'
-      padding,
-      dx = 0,
-      dy = 0,
-      ...textAttrs  // be very careful if change the transform-related CSS props
-                    // used in the <text> element
-    }) {
-
+  children,
+  position = "bottom",
+  align = "center", // 'left', 'center' or 'right'
+  padding,
+  dx = 0,
+  dy = 0,
+  ...textAttrs // be very careful if change the transform-related CSS props
+  // used in the <text> element
+}) {
   const plot = usePlot();
   if (!plot) {
     throw Error("XTitle component must appear inside a Plot component");
@@ -22,25 +21,25 @@ export default function XTitle({
   padding ??= plot.titlePadding;
 
   let x, textAnchor;
-  if (align === 'left') {
+  if (align === "left") {
     x = plot.padding.left;
-    textAnchor = 'start';
-  } else if (align === 'right') {
+    textAnchor = "start";
+  } else if (align === "right") {
     x = plot.width - plot.padding.right;
-    textAnchor = 'end';
+    textAnchor = "end";
   } else {
     x = plot.padding.left + plot.panelWidth / 2;
-    textAnchor = 'middle';
+    textAnchor = "middle";
   }
   x += dx;
 
-  let y, alignmentBaseline;
-  if (position === 'top') {
+  let y, dominantBaseline;
+  if (position === "top") {
     y = plot.padding.top - padding;
-    alignmentBaseline = 'baseline';
+    dominantBaseline = "baseline";
   } else {
     y = plot.height - plot.padding.bottom + padding;
-    alignmentBaseline = 'hanging';
+    dominantBaseline = "hanging";
   }
   y += dy;
 
@@ -54,7 +53,7 @@ export default function XTitle({
       fontStyle={plot.fontStyle}
       fontWeight={plot.fontWeight}
       textAnchor={textAnchor}
-      alignmentBaseline={alignmentBaseline}
+      dominantBaseline={dominantBaseline}
       {...textAttrs}
     >
       {children}

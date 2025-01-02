@@ -232,7 +232,7 @@ const evidenceColsExport = [
 ];
 const id = "intact";
 const index = 0;
-const size = 5000;
+const size = 3000;
 
 function IntactTab({ ensgId, symbol }) {
   const [data, setData] = useState([]);

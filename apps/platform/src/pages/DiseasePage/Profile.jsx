@@ -47,8 +47,8 @@ const DISEASE_PROFILE_QUERY = gql`
       ...DiseaseProfileHeaderFragment
       ...DiseaseProfileSummaryFragment
     }
-    gwasStudy(diseaseIds: [$efoId], page: { size: 1, index: 0}) {
-      studyId
+    studies(diseaseIds: [$efoId], page: { size: 1, index: 0 }) {
+      count
     }
   }
   ${ProfileHeader.fragments.profileHeader}

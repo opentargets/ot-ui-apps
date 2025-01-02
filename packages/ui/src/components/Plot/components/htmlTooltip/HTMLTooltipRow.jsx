@@ -4,27 +4,36 @@ export default function TooltipRow({
   children,
   label,
   data,
-  labelMinWidth,
+  labelWidth,
+  valueWidth,
   truncateValue,
 }) {
-
   const truncateLine = truncateValue
     ? {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    }
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }
     : {};
 
   return (
-    <tr style={{ verticalAlign: 'top' }}>
-      <td width={labelMinWidth}>
-        <Typography variant="subtitle2" fontSize={13} style={{ lineHeight: 1.3, paddingRight: "0.2rem" }}>
+    <tr style={{ verticalAlign: "top" }}>
+      <td width={labelWidth}>
+        <Typography
+          variant="subtitle2"
+          fontSize={13}
+          style={{ lineHeight: 1.15, paddingRight: "0.2rem" }}
+        >
           {label}:
         </Typography>
       </td>
       <td>
-        <Typography variant="body2" fontSize={13} style={{ lineHeight: 1.3, ...truncateLine }}>
+        <Typography
+          variant="body2"
+          component="div"
+          fontSize={13}
+          style={{ lineHeight: 1.15, ...truncateLine, width: valueWidth }}
+        >
           {children}
         </Typography>
       </td>

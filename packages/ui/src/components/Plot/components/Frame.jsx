@@ -8,12 +8,8 @@ export default function Frame({ children, options }) {
   }
   const outerFrame = useFrame();
   if (outerFrame) {
-    throw Error ('Frame components cannot be nested');
+    throw Error("Frame components cannot be nested");
   }
 
-  return (
-    <FrameProvider options={options}>
-      {children}
-    </FrameProvider>
-  );
+  return <FrameProvider options={options}>{children}</FrameProvider>;
 }

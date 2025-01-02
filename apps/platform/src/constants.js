@@ -340,3 +340,11 @@ export const variantConsequenceSource = {
       "The direction is inferred from the strongest effect across all the co-localising QTLs",
   },
 };
+
+export const populationMap = {
+  fin: "Finish",
+  afr: "African",
+  nfe: "non-Finnish Europeans",
+  eas: "East Asian",
+  amr: "Admixed American",
+};

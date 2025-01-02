@@ -1,18 +1,19 @@
-import { useQuery } from "@apollo/client";
 import { Box, Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable, useBatchQuery } from "ui";
 import Description from "./Description";
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import { getStudyCategory } from "../../utils/getStudyCategory";
 import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
 import { definition } from ".";
 import { epmcUrl } from "ui/src/utils/urls";
+import { ReactElement, useEffect, useState } from "react";
+import { responseType } from "ui/src/types/response";
 
 const columns = [
   {
-    id: "studyId",
+    id: "id",
     label: "Study",
-    renderCell: ({ studyId }) => <Link to={`/study/${studyId}`}>{studyId}</Link>,
+    renderCell: ({ id }) => <Link to={`/study/${id}`}>{id}</Link>,
   },
   {
     id: "traitFromSource",
@@ -108,27 +109,41 @@ type BodyProps = {
   label: string;
 };
 
-function Body({ id: efoId, label: diseaseName }: BodyProps) {
+function Body({ id: efoId, label: diseaseName }: BodyProps): ReactElement {
   const variables = {
     diseaseIds: [efoId],
-    size: sectionsBaseSizeQuery,
+    size: table5HChunkSize,
+    index: 0,
   };
 
-  const request = useQuery(GWAS_STUDIES_BODY_QUERY, {
+  const [request, setRequest] = useState<responseType>(initialResponse);
+
+  const getData = useBatchQuery({
+    query: GWAS_STUDIES_BODY_QUERY,
     variables,
+    dataPath: "data.studies",
+    size: table5HChunkSize,
   });
+
+  useEffect(() => {
+    getData().then(r => {
+      setRequest(r);
+    });
+  }, [efoId]);
 
   return (
     <SectionItem
       definition={definition}
-      entity="gwasStudy"
+      entity="studies"
       pageEntity="disease"
+      showContentLoading
+      loadingMessage="Loading data. This may take some time..."
       request={request}
       renderDescription={() => <Description name={diseaseName} />}
       renderBody={() => (
         <OtTable
           columns={columns}
-          rows={request.data?.gwasStudy}
+          rows={request.data?.studies.rows}
           sortBy="nSamples"
           order="desc"
           dataDownloader

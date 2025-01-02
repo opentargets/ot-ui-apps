@@ -1,30 +1,21 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable } from "ui";
-import { Box } from "@mui/material";
+import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable, Navigate } from "ui";
 import { naLabel } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const columns = [
   {
     id: "studyLocusId",
     label: "Navigate",
-    renderCell: ({ studyLocusId }) => (
-      <Box sx={{ display: "flex" }}>
-        <Link to={`/credible-set/${studyLocusId}`}>
-          <FontAwesomeIcon icon={faArrowRightToBracket} />
-        </Link>
-      </Box>
-    ),
+    renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
   },
   {
     id: "leadVariant",
     label: "Lead variant",
-    comparator: variantComparator,
+    comparator: variantComparator(d => d?.variant),
     sortable: true,
     filterValue: ({ variant: v }) =>
       `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -47,6 +38,7 @@ const columns = [
   {
     id: "pValue",
     label: "P-value",
+    numeric: true,
     comparator: (a, b) =>
       mantissaExponentComparator(
         a?.pValueMantissa,
@@ -58,7 +50,7 @@ const columns = [
     filterValue: false,
     renderCell: ({ pValueMantissa, pValueExponent }) => {
       if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return naLabel;
-      return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
+      return <ScientificNotation number={[pValueMantissa, pValueExponent]} dp={2} />;
     },
     exportValue: ({ pValueMantissa, pValueExponent }) => {
       if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return null;
@@ -68,6 +60,8 @@ const columns = [
   {
     id: "beta",
     label: "Beta",
+    numeric: true,
+    sortable: true,
     filterValue: false,
     tooltip: "Beta with respect to the ALT allele",
     renderCell: ({ beta }) => {
@@ -84,8 +78,11 @@ const columns = [
     label: "Credible set size",
     comparator: (a, b) => a.locus?.count - b.locus?.count,
     sortable: true,
+    numeric: true,
     filterValue: false,
-    renderCell: ({ locus }) => locus?.count ?? naLabel,
+    renderCell: ({ locus }) => {
+      return typeof locus?.count === "number" ? locus.count.toLocaleString() : naLabel;
+    },
     exportValue: ({ locus }) => locus?.count,
   },
 ];
@@ -109,7 +106,7 @@ function Body({ id, entity }: BodyProps) {
       definition={definition}
       entity={entity}
       request={request}
-      renderDescription={() => <Description studyId={request.data?.gwasStudy[0].studyId} />}
+      renderDescription={() => <Description studyId={request.data?.study.id} />}
       renderBody={() => (
         <OtTable
           dataDownloader
@@ -117,7 +114,7 @@ function Body({ id, entity }: BodyProps) {
           sortBy="pValue"
           columns={columns}
           loading={request.loading}
-          rows={request.data?.gwasStudy[0].credibleSets.rows}
+          rows={request.data?.study.credibleSets.rows}
           query={QTL_CREDIBLE_SETS_QUERY.loc.source.body}
           variables={variables}
         />

@@ -7,6 +7,7 @@ import {
   Tooltip,
   ClinvarStars,
   useBatchQuery,
+  Navigate,
 } from "ui";
 import { Box, Chip } from "@mui/material";
 import { credsetConfidenceMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
@@ -16,8 +17,6 @@ import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
 import { ReactNode, useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type getColumnsType = {
   id: string;
@@ -30,18 +29,12 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "studyLocusId",
       label: "Navigate",
-      renderCell: ({ studyLocusId }) => (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Link to={`/credible-set/${studyLocusId}`}>
-            <FontAwesomeIcon icon={faArrowRightToBracket} />
-          </Link>
-        </Box>
-      ),
+      renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
     },
     {
       id: "leadVariant",
       label: "Lead variant",
-      comparator: variantComparator,
+      comparator: variantComparator(d => d.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -69,11 +62,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       exportValue: ({ variant }) => variant?.id,
     },
     {
-      id: "study.studyId",
+      id: "studyId",
       label: "Study",
       renderCell: ({ study }) => {
         if (!study) return naLabel;
-        return <Link to={`../study/${study.studyId}`}>{study.studyId}</Link>;
+        return <Link to={`../study/${study.id}`}>{study.id}</Link>;
       },
     },
     {
@@ -110,6 +103,9 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           </Link>
         );
       },
+      exportValue: ({ study }) => {
+        return `[${study?.biosample?.biosampleId}]:${study?.biosample?.biosampleName}`;
+      },
     },
     {
       id: "study.condition",
@@ -119,6 +115,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "pValue",
       label: "P-value",
+      numeric: true,
       comparator: (a, b) =>
         mantissaExponentComparator(
           a?.pValueMantissa,
@@ -131,7 +128,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       renderCell: ({ pValueMantissa, pValueExponent }) => {
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number")
           return naLabel;
-        return <ScientificNotation number={[pValueMantissa, pValueExponent]} />;
+        return <ScientificNotation number={[pValueMantissa, pValueExponent]} dp={2} />;
       },
       exportValue: ({ pValueMantissa, pValueExponent }) => {
         if (typeof pValueMantissa !== "number" || typeof pValueExponent !== "number") return null;
@@ -141,6 +138,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "beta",
       label: "Beta",
+      numeric: true,
       filterValue: false,
       tooltip: "Beta with respect to the ALT allele",
       sortable: true,
@@ -152,7 +150,14 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "posteriorProbability",
       label: "Posterior probability",
+      numeric: true,
       filterValue: false,
+      sortable: true,
+      comparator: (a, b) => {
+        return (
+          a?.locus?.rows?.[0]?.posteriorProbability - b?.locus?.rows?.[0]?.posteriorProbability
+        );
+      },
       tooltip: (
         <>
           Posterior inclusion probability that the fixed page variant (
@@ -165,13 +170,10 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           ) is causal.
         </>
       ),
-      comparator: (rowA, rowB) =>
-        rowA.locus.rows[0].posteriorProbability - rowB.locus.rows[0].posteriorProbability,
-      sortable: true,
       renderCell: ({ locus }) =>
-        locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
+        locus.rows.length > 0 ? locus?.rows[0]?.posteriorProbability.toPrecision(3) : naLabel,
       exportValue: ({ locus }) =>
-        locus.count > 0 ? locus?.rows[0]?.posteriorProbability.toFixed(3) : naLabel,
+        locus.rows.length > 0 ? locus?.rows[0]?.posteriorProbability : naLabel,
     },
     {
       id: "confidence",
@@ -196,11 +198,14 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "credibleSetSize",
       label: "Credible set size",
-      comparator: (a, b) => a.locus?.count - b.locus?.count,
+      numeric: true,
+      comparator: (a, b) => a.locusSize?.count - b.locusSize?.count,
       sortable: true,
       filterValue: false,
-      renderCell: ({ locus }) => locus?.count ?? naLabel,
-      exportValue: ({ locus }) => locus?.count,
+      renderCell: ({ locusSize }) => {
+        return typeof locusSize?.count === "number" ? locusSize.count.toLocaleString() : naLabel;
+      },
+      exportValue: ({ locusSize }) => locusSize?.count,
     },
   ];
 }
@@ -213,17 +218,15 @@ type BodyProps = {
 function Body({ id, entity }: BodyProps): ReactNode {
   const variables = {
     variantId: id,
+    size: table5HChunkSize,
+    index: 0,
   };
 
   const [request, setRequest] = useState<responseType>(initialResponse);
 
   const getAllQtlData = useBatchQuery({
     query: QTL_CREDIBLE_SETS_QUERY,
-    variables: {
-      variantId: id,
-      size: table5HChunkSize,
-      index: 0,
-    },
+    variables,
     dataPath: "data.variant.qtlCredibleSets",
     size: table5HChunkSize,
   });
@@ -232,13 +235,15 @@ function Body({ id, entity }: BodyProps): ReactNode {
     getAllQtlData().then(r => {
       setRequest(r);
     });
-  }, []);
+  }, [id]);
 
   return (
     <SectionItem
       definition={definition}
       entity={entity}
       request={request}
+      showContentLoading
+      loadingMessage="Loading data. This may take some time..."
       renderDescription={() => (
         <Description
           variantId={request.data?.variant?.id}

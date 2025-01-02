@@ -4,6 +4,7 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
   beta
   standardError
   effectAlleleFrequencyFromSource
+  qualityControls
   locus(variantIds: $variantIds) {
     count
     rows {
@@ -14,13 +15,15 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
       standardError
     }
   }
+  locusSize: locus(page: { size: 1, index: 0 }) {
+    count
+  }
   variant {
     chromosome
     position
     rsIds
   }
   finemappingMethod
-  credibleSetIndex
   purityMinR2
   locusStart
   locusEnd
@@ -49,6 +52,18 @@ fragment CredibleSetProfileHeaderFragment on credibleSet {
     publicationJournal
     pubmedId
     nSamples
+    cohorts
+    initialSampleSize
     studyType
+    hasSumstats
+    analysisFlags
+    sumstatQCValues {
+      QCCheckName
+      QCCheckValue
+    }
+    ldPopulationStructure {
+      ldPopulation
+      relativeSampleSize
+    }
   }
 }

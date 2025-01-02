@@ -14,7 +14,6 @@ import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import STUDY_PAGE_QUERY from "./StudyPage.gql";
 import Profile from "./Profile";
-import { getStudyCategory } from "sections/src/utils/getStudyCategory";
 
 function StudyPage() {
   const location = useLocation();
@@ -25,27 +24,26 @@ function StudyPage() {
     variables: { studyId },
   });
 
-  const studyInfo = data?.gwasStudy?.[0];
-
-  if (data && !studyInfo) {
+  if (data && !data.study) {
     return <NotFoundPage />;
   }
-
-  const studyType = studyInfo?.studyType;
+  const study = data?.study;
+  const studyType = study?.studyType;
+  const projectId = study?.projectId;
 
   return (
     <BasePage
-      title={`${studyId} profile page`}
-      description={`Annotation information for ${studyId}`}
+      title={`${study?.id} profile page`}
+      description={`Annotation information for ${study?.id}`}
       location={location}
     >
       <Header
         loading={loading}
         studyId={studyId}
-        backgroundTraits={studyInfo?.backgroundTraits}
-        targetId={studyInfo?.target?.id}
-        diseases={studyInfo?.diseases}
-        studyType={studyType}
+        backgroundTraits={study?.backgroundTraits}
+        targetId={study?.target?.id}
+        diseases={study?.diseases}
+        projectId={projectId}
       />
       <ScrollToTop />
 
@@ -67,10 +65,15 @@ function StudyPage() {
 
       <Switch>
         <Route exact path={path}>
-          <Profile studyId={studyId} studyType={studyType} diseases={studyInfo?.diseases} />
+          <Profile
+            studyId={studyId}
+            studyType={studyType}
+            projectId={projectId}
+            diseases={study?.diseases}
+          />
         </Route>
         <Route path="*">
-          <Redirect to={`/study/${studyId}`} />
+          <Redirect to={`/study/${study?.id}`} />
         </Route>
       </Switch>
     </BasePage>

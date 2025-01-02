@@ -1,5 +1,12 @@
 // import { useState, useEffect } from "react";
-import { usePlatformApi, Field, ProfileHeader as BaseProfileHeader, Link, LongText } from "ui";
+import {
+  usePlatformApi,
+  Field,
+  ProfileHeader as BaseProfileHeader,
+  Link,
+  LongText,
+  ProfileDescription,
+} from "ui";
 import { Box, Paper, Typography } from "@mui/material";
 import { identifiersOrgLink } from "../../utils/global";
 
@@ -14,7 +21,10 @@ function ProfileHeader() {
   return (
     <BaseProfileHeader>
       <Box>
-        <Typography variant="subtitle2" mt={0}>
+        <ProfileDescription loading={loading}>
+          {data?.variant.variantDescription}
+        </ProfileDescription>
+        <Typography variant="subtitle2" mt={1}>
           Location
         </Typography>
         <Field loading={loading} title="GRCh38">
@@ -41,9 +51,24 @@ function ProfileHeader() {
 
       {data?.variant.alleleFrequencies.length > 0 && (
         <Paper sx={{ py: 2, px: 5, maxWidth: "100%" }} elevation={0} variant="outlined">
-          <Typography variant="subtitle2" mb={1}>
-            Population Allele Frequencies
-          </Typography>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            flexWrap="wrap"
+            columnGap={2}
+            mb={1.5}
+            alignItems="center"
+          >
+            <Typography variant="subtitle2">Population Allele Frequencies</Typography>
+            <Typography variant="body2">
+              <em>
+                Source:{" "}
+                <Link to="https://gnomad.broadinstitute.org/" external>
+                  gnomAD
+                </Link>
+              </em>
+            </Typography>
+          </Box>
           <Box sx={{ margin: "0 auto", maxWidth: "550px" }}>
             <AlleleFrequencyPlot data={data.variant.alleleFrequencies} />
           </Box>
@@ -89,7 +114,7 @@ function Allele({ loading, label, value }: AlleleProps) {
 // =====================
 
 const populationLabels = {
-  afr_adj: "African-American",
+  afr_adj: "African/African-American",
   amr_adj: "American Admixed/Latino",
   asj_adj: "Ashkenazi Jewish",
   eas_adj: "East Asian",
