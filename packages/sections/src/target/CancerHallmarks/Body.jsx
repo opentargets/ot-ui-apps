@@ -13,6 +13,7 @@ const columns = [
   {
     id: "label",
     label: "Hallmark",
+    enableHiding: false,
     renderCell: row => row.label,
     exportLabel: "Hallmark",
   },

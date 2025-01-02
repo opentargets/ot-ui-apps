@@ -15,6 +15,7 @@ function getColumns(symbol) {
     {
       id: "pathway",
       label: "Pathway",
+      enableHiding: false,
       renderCell: ({ pathwayId, pathway }) => (
         <Link external to={identifiersOrgLink("reactome", pathwayId)}>
           {pathway}

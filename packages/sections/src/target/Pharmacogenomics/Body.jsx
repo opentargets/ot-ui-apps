@@ -67,6 +67,7 @@ function getColumns(classes) {
     {
       id: "variantRsId",
       label: "rsID",
+      enableHiding: false,
       renderCell: ({ variantRsId }) =>
         variantRsId ? (
           <Link
