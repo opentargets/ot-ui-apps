@@ -34,6 +34,7 @@ const columns = [
   {
     id: "phenotypeHPO",
     label: "Phenotype",
+    enableHiding: false,
     renderCell: ({ phenotypeEFO, phenotypeHPO }) => {
       let content;
       if (phenotypeEFO && phenotypeEFO.id) {
@@ -56,6 +57,7 @@ const columns = [
   {
     id: "phenotypeHDOid",
     label: "Phenotype ID",
+    enableHiding: false,
     renderCell: ({ phenotypeHPO }) => {
       const id = phenotypeHPO?.id.replace("_", ":");
       return (
