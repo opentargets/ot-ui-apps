@@ -17,6 +17,7 @@ const columns = [
   {
     id: "gene",
     label: "Gene",
+    enableHiding: false,
     renderCell: ({ target }) => {
       if (!target) return naLabel;
       return <Link to={`../target/${target?.id}`}>{target?.approvedSymbol}</Link>;

@@ -20,6 +20,7 @@ const columns = [
   {
     id: "otherStudyLocus.studyLocusId",
     label: "Navigate",
+    enableHiding: false,
     renderCell: ({ otherStudyLocus }) => {
       if (!otherStudyLocus?.variant) return naLabel;
       return <Navigate to={`./${otherStudyLocus.studyLocusId}`} />;
