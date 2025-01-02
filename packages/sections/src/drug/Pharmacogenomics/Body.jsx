@@ -87,6 +87,7 @@ function Body({ id: chemblId, label: name, entity }) {
     {
       id: "variantRsId",
       label: "rsID",
+      enableHiding: false,
       renderCell: ({ variantRsId }) =>
         variantRsId ? (
           <Link

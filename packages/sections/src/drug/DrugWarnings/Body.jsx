@@ -29,6 +29,7 @@ const columns = [
   {
     id: "toxicityClass",
     label: "ChEMBL warning class",
+    enableHiding: false,
     renderCell: ({ toxicityClass, efoIdForWarningClass, description }) => {
       if (efoIdForWarningClass)
         return (
