@@ -13,6 +13,7 @@ const columns = [
   {
     id: "method",
     label: "Method",
+    enableHiding: false,
   },
   {
     id: "assessment",
