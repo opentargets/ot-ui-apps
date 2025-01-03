@@ -6,7 +6,7 @@ import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import SYSBIO_QUERY from "./sectionQuery.gql";
 import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 
 const getColumns = label => [
   {
@@ -18,6 +18,7 @@ const getColumns = label => [
   {
     id: "pathwayName",
     label: "Gene set",
+    enableHiding: false,
     renderCell: ({ pathways, studyOverview }) => {
       if (pathways && pathways.length >= 1 && studyOverview) {
         return (

@@ -37,6 +37,7 @@ const columns = [
   {
     id: "studyId",
     label: "Experiment ID",
+    enableHiding: false,
     renderCell: ({ studyId }) => (
       <Link external to={`http://www.ebi.ac.uk/gxa/experiments/${studyId}`}>
         {studyId}

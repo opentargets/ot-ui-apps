@@ -28,6 +28,7 @@ function getColumns(label) {
     {
       id: "disease.name",
       label: "Disease/phenotype",
+      enableHiding: false,
       renderCell: ({ disease, diseaseFromSource }) => (
         <Tooltip
           title={
@@ -58,6 +59,7 @@ function getColumns(label) {
     {
       id: "variantId",
       label: "Variant",
+      enableHiding: false,
       sortable: true,
       comparator: nullishComparator(variantComparator(), d => d?.variant),
       filterValue: ({ variant: v }) =>

@@ -10,7 +10,7 @@ import { v1 } from "uuid";
 import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 import VALIDATION_QUERY from "./OTValidationQuery.gql";
 
 const useStyles = makeStyles(theme => ({
@@ -70,6 +70,7 @@ const getColumns = classes => [
   {
     id: "biomarkerList",
     label: "Cell line biomarkers",
+    enableHiding: false,
     renderCell: row => (
       <ChipList
         small

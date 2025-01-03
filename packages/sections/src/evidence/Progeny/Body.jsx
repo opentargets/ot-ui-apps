@@ -7,7 +7,7 @@ import Description from "./Description";
 import PROGENY_QUERY from "./sectionQuery.gql";
 import { dataTypesMap } from "../../dataTypes";
 import { sentenceCase } from "../../utils/global";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 
 const reactomeUrl = id => `https://identifiers.org/reactome:${id}`;
 
@@ -15,6 +15,7 @@ const columns = [
   {
     id: "disease",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -37,6 +38,7 @@ const columns = [
   {
     id: "pathwayName",
     label: "Significant pathway",
+    enableHiding: false,
     renderCell: ({ pathways }) =>
       pathways?.length >= 1 ? (
         <Link external to={reactomeUrl(pathways[0].id)}>

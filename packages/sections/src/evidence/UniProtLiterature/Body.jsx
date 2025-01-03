@@ -14,6 +14,7 @@ const getcolumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -35,6 +36,7 @@ const getcolumns = label => [
   {
     id: "targetFromSourceId",
     label: "Reported protein",
+    enableHiding: false,
     renderCell: ({ targetFromSourceId }) => (
       <Link external to={identifiersOrgLink("uniprot", targetFromSourceId)}>
         {targetFromSourceId}

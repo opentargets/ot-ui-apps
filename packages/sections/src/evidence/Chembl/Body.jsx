@@ -79,6 +79,7 @@ function getColumns(classes) {
     {
       id: "disease.name",
       label: "Disease/phenotype",
+      enableHiding: false,
       renderCell: ({ disease, cohortPhenotypes }) => {
         let displayElement = naLabel;
         if (disease) displayElement = <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
@@ -153,6 +154,7 @@ function getColumns(classes) {
     {
       id: "drug.name",
       label: "Drug",
+      enableHiding: false,
       renderCell: ({ drug }) => <Link to={`/drug/${drug.id}`}>{drug.name}</Link>,
     },
     {

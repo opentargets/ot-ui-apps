@@ -11,7 +11,7 @@ import {
 } from "ui";
 
 import { definition } from ".";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 import { epmcUrl } from "../../utils/urls";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
@@ -23,6 +23,7 @@ const getColumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -55,6 +56,7 @@ const getColumns = label => [
   {
     id: "variantFunctionalConsequence",
     label: "Functional consequence",
+    enableHiding: false,
     renderCell: ({ variantFunctionalConsequence }) =>
       variantFunctionalConsequence ? (
         <Link

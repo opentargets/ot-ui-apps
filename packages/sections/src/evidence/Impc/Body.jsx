@@ -100,6 +100,7 @@ const columns = [
   {
     id: "literature",
     label: "Mouse model allelic composition",
+    enableHiding: false,
     renderCell: ({
       biologicalModelAllelicComposition,
       biologicalModelGeneticBackground,

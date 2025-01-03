@@ -16,7 +16,7 @@ import {
 import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
+import { sectionsBaseSizeQuery } from "../../constants";
 
 import ENCORE_QUERY from "./OTEncoreQuery.gql";
 
@@ -49,6 +49,7 @@ const getColumns = classes => [
   {
     id: "interactingTargetFromSourceId",
     label: "Anchor gene",
+    enableHiding: false,
     sortable: true,
   },
   {

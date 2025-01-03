@@ -69,6 +69,7 @@ const getColumns = label => [
   {
     id: "reactionId",
     label: "Reaction",
+    enableHiding: false,
     renderCell: ({ reactionName, reactionId }) => (
       <Link external to={`https://identifiers.org/reactome/${reactionId}`}>
         <EllsWrapper>{reactionName}</EllsWrapper>

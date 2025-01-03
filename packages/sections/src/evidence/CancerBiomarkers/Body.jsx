@@ -36,6 +36,7 @@ const getColumns = label => [
   {
     id: "biomarkerName",
     label: "Biomarker",
+    enableHiding: false,
     renderCell: ({ biomarkerName, biomarkers }) => (
       <BiomarkersDrawer biomarkerName={biomarkerName} biomarkers={biomarkers} />
     ),
