@@ -1,4 +1,4 @@
-fragment PharmacogenomicsSummaryFragment on Variant {
+fragment VariantPharmacogenomicsSummaryFragment on Variant {
   pharmacogenomics {
     isDirectTarget
   }

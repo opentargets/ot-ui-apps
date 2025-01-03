@@ -1,4 +1,4 @@
-fragment GWASCredibleSetsSummaryFragment on Gwas {
+fragment StudyGWASCredibleSetsSummaryFragment on Gwas {
   gwasCredibleSets: credibleSets(page: { size: 1, index: 0 }) {
     count
   }
