@@ -96,7 +96,7 @@ function OtTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
-  const loadingRows = getLoadingRows(mappedColumns, 10);
+  const loadingRows = getLoadingRows(10);
   const loadingCells = getLoadingCells(mappedColumns);
 
   const tableData = useMemo(() => (loading ? loadingRows : rows), [loading]);
@@ -308,7 +308,7 @@ function OtTable({
   );
 }
 
-function getLoadingCells(columms) {
+function getLoadingCells(columms: Array<Record<string, unknown>>) {
   return columms.map(column => ({
     ...column,
     cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" />,
