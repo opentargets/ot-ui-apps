@@ -1,5 +1,5 @@
-import { ReactElement, useEffect, useReducer, useState } from "react";
-import { Box, CircularProgress, Grid, IconButton, NativeSelect } from "@mui/material";
+import { ReactElement, ReactNode, useEffect, useReducer, useState } from "react";
+import { Box, CircularProgress, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
   getCoreRowModel,
@@ -13,15 +13,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import OtTableSearch from "./OtTableSearch";
 import { INIT_PAGE_SIZE, OtTableSSPProps } from "./types/tableTypes";
-import { OtTableContainer, OtTableHeader, OtTH, OtTableHeaderText, OtTD } from "./otTableLayout";
+import {
+  OtTableContainer,
+  OtTableHeader,
+  OtTH,
+  OtTableHeaderText,
+  OtTD,
+  OtTableCellContainer,
+} from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
 import { getCurrentPagePosition, mapTableColumnToTanstackColumns } from "./utils/tableUtils";
 import Tooltip from "../Tooltip";
+import OtTableColumnVisibility from "./OtTableColumnVisibility";
 
 import { getTableRows } from "./service/tableService";
 import { createInitialState, otTableReducer } from "./context/otTableReducer";
 import { addRows, setLoading, setNewData, textSearch } from "./context/otTableActions";
-import { naLabel } from "../../constants";
+
 import useCursorBatchDownloader from "../../hooks/useCursorBatchDownloader";
 
 function OtTableSSP({
@@ -35,6 +43,7 @@ function OtTableSSP({
   dataDownloaderFileStem,
   dataDownloaderColumns,
   dataDownloader,
+  showColumnVisibilityControl = true,
 }: OtTableSSPProps): ReactElement {
   const [state, dispatch] = useReducer(otTableReducer, "", createInitialState);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -190,21 +199,28 @@ function OtTableSSP({
     setTableData({ newPagination, freeTextQuery: state.freeTextQuery });
   }, [state.freeTextQuery]);
 
+  function getCellData(cell: Record<string, unknown>): ReactNode {
+    return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
+  }
+
   return (
     <div>
       {/* Global Search */}
-      <Grid container>
-        {showGlobalFilter && (
-          <Grid item sm={12} md={4}>
+      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Grid item sm={12} md={4}>
+          {showGlobalFilter && (
             <OtTableSearch
               setGlobalSearchTerm={freeTextQuery => {
                 dispatch(textSearch(freeTextQuery));
               }}
             />
-          </Grid>
-        )}
-        {dataDownloader && (
-          <Grid item sm={12} md={8} sx={{ ml: "auto" }}>
+          )}
+        </Grid>
+
+        <Grid item sm={12} md={8} sx={{ display: "flex", justifyContent: "end", gap: 1 }}>
+          {showColumnVisibilityControl && <OtTableColumnVisibility table={table} />}
+
+          {dataDownloader && (
             <DataDownloader
               columns={dataDownloaderColumns || columns}
               rows={getWholeDataset}
@@ -212,8 +228,8 @@ function OtTableSSP({
               query={query}
               variables={variables}
             />
-          </Grid>
-        )}
+          )}
+        </Grid>
       </Grid>
       {/* Table component container */}
       <Box sx={{ w: 1, overflowX: "auto", marginTop: theme => theme.spacing(3) }}>
@@ -230,25 +246,22 @@ function OtTableSSP({
                       stickyColumn={header.column.columnDef.sticky}
                     >
                       {header.isPlaceholder ? null : (
-                        <>
-                          <OtTableHeader>
-                            <OtTableHeaderText
-                              verticalHeader={
-                                header.column.columnDef.verticalHeader || verticalHeaders
-                              }
-                              onClick={header.column.getToggleSortingHandler()}
-                              sx={{ typography: "subtitle2" }}
+                        <OtTableHeader numeric={header.column.columnDef.numeric}>
+                          <OtTableHeaderText
+                            verticalHeader={
+                              header.column.columnDef.verticalHeader || verticalHeaders
+                            }
+                            sx={{ typography: "subtitle2" }}
+                          >
+                            <Tooltip
+                              style={""}
+                              title={header.column.columnDef.tooltip}
+                              showHelpIcon={!!header.column.columnDef.tooltip}
                             >
-                              <Tooltip
-                                style={""}
-                                title={header.column.columnDef.tooltip}
-                                showHelpIcon={!!header.column.columnDef.tooltip}
-                              >
-                                {flexRender(header.column.columnDef.header, header.getContext())}
-                              </Tooltip>
-                            </OtTableHeaderText>
-                          </OtTableHeader>
-                        </>
+                              {flexRender(header.column.columnDef.header, header.getContext())}
+                            </Tooltip>
+                          </OtTableHeaderText>
+                        </OtTableHeader>
                       )}
                     </OtTH>
                   );
@@ -263,12 +276,13 @@ function OtTableSSP({
                   {row.getVisibleCells().map(cell => {
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
-                        <Box sx={{ typography: "body2" }}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
+                          {getCellData(cell)}
+                          {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
                           {/* TODO: check NA value */}
                           {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
                             naLabel} */}
-                        </Box>
+                        </OtTableCellContainer>
                       </OtTD>
                     );
                   })}
@@ -350,6 +364,13 @@ function OtTableSSP({
       </Box>
     </div>
   );
+}
+
+function getLoadingCells(columms: Array<Record<string, unknown>>) {
+  return columms.map(column => ({
+    ...column,
+    cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" />,
+  }));
 }
 
 export default OtTableSSP;

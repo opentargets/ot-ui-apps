@@ -42,6 +42,7 @@ export { default as ApiPlaygroundDrawer } from "./components/ApiPlaygroundDrawer
 export { default as OtTable } from "./components/OtTable/OtTable";
 export { default as OtPopper } from "./components/OtPopper";
 export { default as OtScoreLinearBar } from "./components/OtScoreLinearBar";
+export { default as OtTableSSP } from "./components/OtTable/OtTableSSP";
 
 export { default as EmptyPage } from "./pages/EmptyPage";
 export { default as NotFoundPage } from "./pages/NotFoundPage";
