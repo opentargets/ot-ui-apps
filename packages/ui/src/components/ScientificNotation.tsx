@@ -3,10 +3,13 @@ import { decimalPlaces } from "../constants";
 
 type ScientificNotationProps = {
   number: number | number[];
-  dp?: number
+  dp?: number;
 };
 
-function ScientificNotation({ number, dp = decimalPlaces }: ScientificNotationProps): ReactElement | null {
+function ScientificNotation({
+  number,
+  dp = decimalPlaces,
+}: ScientificNotationProps): ReactElement | null {
   if (!number) return null;
 
   let mantissa: number | string;

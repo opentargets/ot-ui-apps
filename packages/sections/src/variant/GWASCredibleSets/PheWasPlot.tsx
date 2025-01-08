@@ -77,7 +77,6 @@ export default function PheWasPlot({
   variables,
   columns,
 }) {
-
   const theme = useTheme();
   const background = theme.palette.background.paper;
   const fontFamily = theme.typography.fontFamily;
@@ -282,12 +281,14 @@ export default function PheWasPlot({
 function tooltipContent(data, pageVariantId) {
   const labelWidth = 160;
 
-  const displayId = <DisplayVariantId
-    variantId={data.variant.id}
-    referenceAllele={data.variant.referenceAllele}
-    alternateAllele={data.variant.alternateAllele}
-    expand={false}
-  />;
+  const displayId = (
+    <DisplayVariantId
+      variantId={data.variant.id}
+      referenceAllele={data.variant.referenceAllele}
+      alternateAllele={data.variant.alternateAllele}
+      expand={false}
+    />
+  );
 
   return (
     <HTMLTooltipTable>
@@ -297,13 +298,14 @@ function tooltipContent(data, pageVariantId) {
         </Link>
       </HTMLTooltipRow>
       <HTMLTooltipRow label="Lead variant" data={data} labelWidth={labelWidth}>
-        {data.variant.id === pageVariantId
-          ? <Box display="flex" alignItems="center" gap={0.5}>
+        {data.variant.id === pageVariantId ? (
+          <Box display="flex" alignItems="center" gap={0.5}>
             {displayId}
             <Chip label="self" variant="outlined" size="small" />
           </Box>
-          : <Link to={`/variant/${data.variant.id}`}>{displayId}</Link>
-        }
+        ) : (
+          <Link to={`/variant/${data.variant.id}`}>{displayId}</Link>
+        )}
       </HTMLTooltipRow>
       <HTMLTooltipRow
         label="Reported trait"

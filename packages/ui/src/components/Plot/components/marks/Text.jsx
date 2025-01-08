@@ -1,40 +1,33 @@
 import Mark from "./Mark";
 
-export default function Text({
-      data,
-      dataFrom,
-      missing = 'throw',
-      hover,
-      ...accessors
-    }) {
-
+export default function Text({ data, dataFrom, missing = "throw", hover, ...accessors }) {
   const markChannels = [
-    'x',
-    'y',
-    'dx',
-    'dy',
-    'fill',
-    'fillOpacity',
-    'text',
-    'fontFamily',
-    'fontSize',
-    'fontStyle',
-    'fontWeight',
-    'textAnchor',
-    'dominantBaseline',
-    'transformOrigin',
-    'transformBox',
-    'transform',
-    'pointerEvents',
+    "x",
+    "y",
+    "dx",
+    "dy",
+    "fill",
+    "fillOpacity",
+    "text",
+    "fontFamily",
+    "fontSize",
+    "fontStyle",
+    "fontWeight",
+    "textAnchor",
+    "dominantBaseline",
+    "transformOrigin",
+    "transformBox",
+    "transform",
+    "pointerEvents",
   ];
 
-  const tagName = 'text';
+  const tagName = "text";
 
   function createAttrs(row) {
     const style = {
       transformOrigin: row.transformOrigin,
       transformBox: row.transformBox,
-    }
+    };
     if (row.transform) style.transform = row.transform;
 
     const attrs = {
@@ -57,17 +50,20 @@ export default function Text({
   function createContent(row) {
     return row.text;
   }
-  
-  return <Mark {...{
-    data,
-    dataFrom,
-    missing,
-    hover,
-    accessors,
-    tagName,
-    markChannels,
-    createAttrs,
-    createContent,
-  }} />;
 
+  return (
+    <Mark
+      {...{
+        data,
+        dataFrom,
+        missing,
+        hover,
+        accessors,
+        tagName,
+        markChannels,
+        createAttrs,
+        createContent,
+      }}
+    />
+  );
 }

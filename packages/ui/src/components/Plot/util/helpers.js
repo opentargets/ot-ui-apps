@@ -1,4 +1,3 @@
-
 // like Object.assign, but only copies to properties that original object
 // already has
 export function safeAssign(obj, newObj) {
@@ -11,7 +10,7 @@ export function safeAssign(obj, newObj) {
 }
 
 export function isIterable(value) {
-  return value != null && typeof value[Symbol.iterator] === 'function';
+  return value != null && typeof value[Symbol.iterator] === "function";
 }
 
 export function isInfiniteOrNaN(value) {

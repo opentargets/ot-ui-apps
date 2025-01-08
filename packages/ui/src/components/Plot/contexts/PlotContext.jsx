@@ -1,20 +1,18 @@
-
-import { createContext, useContext, useReducer } from 'react';
-import { safeAssign } from '../util/helpers';
-import { plotDefaults } from '../defaults/plotDefaults';
-import { addXYMaps } from '../util/addXYMaps';
-import { onlyValidScales } from '../util/assert';
+import { createContext, useContext, useReducer } from "react";
+import { safeAssign } from "../util/helpers";
+import { plotDefaults } from "../defaults/plotDefaults";
+import { addXYMaps } from "../util/addXYMaps";
+import { onlyValidScales } from "../util/assert";
 
 const PlotContext = createContext(null);
 const PlotDispatchContext = createContext(null);
 
 export function PlotProvider({ children, options }) {
-
   const initialState = safeAssign({ ...plotDefaults }, options);
 
   // compute values related to plot size and panel spacing
   let { padding } = initialState;
-  if (typeof padding === 'number') {
+  if (typeof padding === "number") {
     padding = { top: padding, right: padding, bottom: padding, left: padding };
     initialState.padding = padding;
   }
@@ -26,9 +24,7 @@ export function PlotProvider({ children, options }) {
 
   return (
     <PlotContext.Provider value={state}>
-      <PlotDispatchContext.Provider value={stateDispatch}>
-        {children}
-      </PlotDispatchContext.Provider>
+      <PlotDispatchContext.Provider value={stateDispatch}>{children}</PlotDispatchContext.Provider>
     </PlotContext.Provider>
   );
 }
@@ -43,17 +39,13 @@ export function usePlotDispatch() {
 }
 
 function reducer(state, action) {
-
-  switch(action.type) {
-    
-    case 'updateSize': {
+  switch (action.type) {
+    case "updateSize": {
       const newState = { ...state };
       updateSize(newState, action.width, action.height);
       return newState;
     }
-
   }
-
 }
 
 // update width and height of state and properties that depend on them

@@ -47,7 +47,7 @@ const DISEASE_PROFILE_QUERY = gql`
       ...DiseaseProfileHeaderFragment
       ...DiseaseProfileSummaryFragment
     }
-    studies(diseaseIds: [$efoId], page: { size: 1, index: 0}) {
+    studies(diseaseIds: [$efoId], page: { size: 1, index: 0 }) {
       count
     }
   }

@@ -18,7 +18,7 @@ function Summary() {
 }
 
 Summary.fragments = {
-  PharmacogenomicsSummaryFragment: PHARMACOGENOMICS_SUMMARY_FRAGMENT,
+  DrugPharmacogenomicsSummaryFragment: PHARMACOGENOMICS_SUMMARY_FRAGMENT,
 };
 
 export default Summary;

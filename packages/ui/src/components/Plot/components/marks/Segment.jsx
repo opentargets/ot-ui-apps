@@ -1,29 +1,22 @@
 import Mark from "./Mark";
 
-export default function Segment({
-      data,
-      dataFrom,
-      missing = 'throw',
-      hover,
-      ...accessors
-    }) {
-
+export default function Segment({ data, dataFrom, missing = "throw", hover, ...accessors }) {
   const markChannels = [
-    'x',
-    'xx',
-    'y',
-    'yy',
-    'dx',
-    'dy',
-    'stroke',
-    'strokeOpacity',
-    'strokeWidth',
-    'strokeCap',
-    'strokeDasharray',
-    'pointerEvents',
+    "x",
+    "xx",
+    "y",
+    "yy",
+    "dx",
+    "dy",
+    "stroke",
+    "strokeOpacity",
+    "strokeWidth",
+    "strokeCap",
+    "strokeDasharray",
+    "pointerEvents",
   ];
 
-  const tagName = 'line';
+  const tagName = "line";
 
   function createAttrs(row) {
     const attrs = {
@@ -40,16 +33,19 @@ export default function Segment({
     if (row.pointerEvents) attrs.pointerEvents = row.pointerEvents;
     return attrs;
   }
-  
-  return <Mark {...{
-    data,
-    dataFrom,
-    missing,
-    hover,
-    accessors,
-    tagName,
-    markChannels,
-    createAttrs,
-  }} />;
 
+  return (
+    <Mark
+      {...{
+        data,
+        dataFrom,
+        missing,
+        hover,
+        accessors,
+        tagName,
+        markChannels,
+        createAttrs,
+      }}
+    />
+  );
 }

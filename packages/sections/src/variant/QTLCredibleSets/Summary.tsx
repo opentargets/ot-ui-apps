@@ -5,12 +5,12 @@ import QTL_CREDIBLE_SETS_SUMMARY from "./QTLCredibleSetsSummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(QTL_CREDIBLE_SETS_SUMMARY);
-  
+
   return <SummaryItem definition={definition} request={request} />;
 }
 
 Summary.fragments = {
-  QTLCredibleSetsSummaryFragment: QTL_CREDIBLE_SETS_SUMMARY,
+  VariantQTLCredibleSetsSummaryFragment: QTL_CREDIBLE_SETS_SUMMARY,
 };
 
 export default Summary;

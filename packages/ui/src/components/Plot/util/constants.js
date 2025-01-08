@@ -1,1 +1,1 @@
-export const OTHER = '__other__';
+export const OTHER = "__other__";

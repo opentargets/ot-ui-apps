@@ -1,4 +1,4 @@
-fragment PharmacogenomicsSummaryFragment on Drug {
+fragment DrugPharmacogenomicsSummaryFragment on Drug {
   pharmacogenomics {
     targetFromSourceId
   }

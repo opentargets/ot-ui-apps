@@ -59,7 +59,10 @@ const columns = [
       const biosample = otherStudyLocus?.study?.biosample;
       if (!biosample) return naLabel;
       return (
-        <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}&ontology=uberon`}>
+        <Link
+          external
+          to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}&ontology=uberon`}
+        >
           {biosample.biosampleName}
         </Link>
       );

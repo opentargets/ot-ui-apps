@@ -5,12 +5,12 @@ import GWAS_CREDIBLE_SETS_SUMMARY from "./GWASCredibleSetsSummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(GWAS_CREDIBLE_SETS_SUMMARY);
-  
+
   return <SummaryItem definition={definition} request={request} />;
 }
 
 Summary.fragments = {
-  GWASCredibleSetsSummaryFragment: GWAS_CREDIBLE_SETS_SUMMARY,
+  VariantGWASCredibleSetsSummaryFragment: GWAS_CREDIBLE_SETS_SUMMARY,
 };
 
 export default Summary;

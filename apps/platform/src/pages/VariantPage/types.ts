@@ -6,8 +6,8 @@ export type VariantPageDataType = {
   variantId: string;
   dbXrefs?: [
     {
-      id: string,
-      source: number,
+      id: string;
+      source: number;
     }
   ];
   chromosome: string;
@@ -48,13 +48,13 @@ export type InSilicoPredictorsType = {
 };
 
 export type MetadataType = {
-  variantId: string,
-  chromosome: string,
+  variantId: string;
+  chromosome: string;
   position: number;
-  chromosomeB37?: string,
+  chromosomeB37?: string;
   positionB37?: number;
-  referenceAllele: string,
-  alternateAllele: string,
+  referenceAllele: string;
+  alternateAllele: string;
   rsIds: string[];
   alleleType: string;
   alleleFrequencies: AlleleFrequencyType[];
@@ -67,11 +67,11 @@ export type MetadataType = {
 
 export type InSilicoPredictorsType = {
   [index: number]: {
-    method: string,
-    assesessment?: string,
-    flag?: string,
-    score?: number,
-  }
+    method: string;
+    assesessment?: string;
+    flag?: string;
+    score?: number;
+  };
 };
 
 // =======
@@ -79,22 +79,22 @@ export type InSilicoPredictorsType = {
 // =======
 
 export type ClinVarType = {
-  alleleOrigins: string[],
-  alleleRequirements: string[],
-  approvedSymbol: string,
-  clinicalSignificances: string[],
-  cohortPhenotypes: string[],
-  confidence: string,
-  directionOnTrait: "risk",
-  "disease.id": string,
-  "disease.name": string,
-  diseaseFromSource: string,
-  diseaseId: string,
-  diseaseName: string,
-  literature: string[],
-  studyId: string,
-  targetId: string,
-  variantId: string,
+  alleleOrigins: string[];
+  alleleRequirements: string[];
+  approvedSymbol: string;
+  clinicalSignificances: string[];
+  cohortPhenotypes: string[];
+  confidence: string;
+  directionOnTrait: "risk";
+  "disease.id": string;
+  "disease.name": string;
+  diseaseFromSource: string;
+  diseaseId: string;
+  diseaseName: string;
+  literature: string[];
+  studyId: string;
+  targetId: string;
+  variantId: string;
 };
 
 // ===============
@@ -102,58 +102,58 @@ export type ClinVarType = {
 // ===============
 
 export type UniProtVariantsType = {
-  variantId: string,
-  confidence: string,
-  diseaseFromSource: string,
-  literature: string[],
-  targetFromSourceId: string,
-  "target.id": string,
-  "target.approvedSymbol": string,
-  "disease.id": string,
-  "disease.name": string,
-};  
+  variantId: string;
+  confidence: string;
+  diseaseFromSource: string;
+  literature: string[];
+  targetFromSourceId: string;
+  "target.id": string;
+  "target.approvedSymbol": string;
+  "disease.id": string;
+  "disease.name": string;
+};
 
 // ==================
 // GWAS Credible Sets
 // ==================
 
 export type GWASCredibleSets = {
-  variantId: string,
+  variantId: string;
   study: {
-    id: string,
-    traitFromSource: string,
+    id: string;
+    traitFromSource: string;
     disease: {
-      id: string,
-      name: string,
-    }
-  },
-  pValueMantissa: number,
-  pValueExponent: number,
-  beta: number,
+      id: string;
+      name: string;
+    };
+  };
+  pValueMantissa: number;
+  pValueExponent: number;
+  beta: number;
   ldPopulationStructure: [
     {
-      ldPopulation: string,
-      relativeSampleSize: number,
+      ldPopulation: string;
+      relativeSampleSize: number;
     }
-  ],
-  finemappingMethod: string,
+  ];
+  finemappingMethod: string;
   l2g: {
-    score: string,
+    score: string;
     target: {
-      id: string,
-      approvedSymbol: string,
-    }
-  },
+      id: string;
+      approvedSymbol: string;
+    };
+  };
   locus: [
     {
-      variantId: string,
-      r2Overall: number,
-      posteriorProbability: number,
-      standardError: number,
-      is95CredibleSet: boolean,
-      is99CredibleSet: boolean,
+      variantId: string;
+      r2Overall: number;
+      posteriorProbability: number;
+      standardError: number;
+      is95CredibleSet: boolean;
+      is99CredibleSet: boolean;
     }
-  ]
+  ];
 };
 
 // ================
@@ -161,16 +161,16 @@ export type GWASCredibleSets = {
 // ================
 
 export type PharmacogenomicsType = {
-  genotypeId: string,
-  isDirectTarget: boolean,
-  drugFromSource: string,
-  drugId: string,
-  phenotypeFromSourceId: string | null,
-  genotypeAnnotationText: string,
-  phenotypeText: string,
-  pgxCategory: string,
-  evidenceLevel: string,
-  datasourceId: string,
-  studyId: string,
-  literature: string[],
+  genotypeId: string;
+  isDirectTarget: boolean;
+  drugFromSource: string;
+  drugId: string;
+  phenotypeFromSourceId: string | null;
+  genotypeAnnotationText: string;
+  phenotypeText: string;
+  pgxCategory: string;
+  evidenceLevel: string;
+  datasourceId: string;
+  studyId: string;
+  literature: string[];
 };

@@ -1,12 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import {
-  Link,
-  SectionItem,
-  Tooltip,
-  PublicationsDrawer,
-  OtTable,
-  useBatchQuery,
-} from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable, useBatchQuery } from "ui";
 import Description from "./Description";
 import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import { getStudyCategory } from "../../utils/getStudyCategory";
@@ -39,8 +32,8 @@ const columns = [
       getStudyCategory(projectId) === "FINNGEN"
         ? "2023"
         : publicationDate
-          ? publicationDate.slice(0, 4)
-          : naLabel,
+        ? publicationDate.slice(0, 4)
+        : naLabel,
     exportValue: ({ projectId, publicationDate }) =>
       getStudyCategory(projectId) === "FINNGEN" ? "2023" : publicationDate?.slice(0, 4),
   },
@@ -94,8 +87,8 @@ const columns = [
       getStudyCategory(projectId) === "FINNGEN"
         ? "FinnGen"
         : cohorts?.length
-          ? cohorts.join(", ")
-          : null,
+        ? cohorts.join(", ")
+        : null,
   },
   {
     id: "pubmedId",

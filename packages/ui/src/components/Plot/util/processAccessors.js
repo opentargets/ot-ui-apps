@@ -3,20 +3,12 @@ import { noInfiniteOrNaN } from "./assert";
 import { scaleChannels } from "./scaleChannels";
 import { scaleValue } from "./scaleValue";
 
-const autoScaleChannels = new Set(['x', 'xx', 'width', 'y', 'yy', 'height']);
+const autoScaleChannels = new Set(["x", "xx", "width", "y", "yy", "height"]);
 
-export function processAccessors({
-  markChannels,
-  accessors,
-  scales,
-  mapX,
-  mapY,
-}) {
-
+export function processAccessors({ markChannels, accessors, scales, mapX, mapY }) {
   const newAccessors = new Map();
 
   for (const channel of markChannels) {
-
     const acc = accessors[channel];
 
     // channel omitted - use default value or ignore channel
@@ -26,12 +18,10 @@ export function processAccessors({
         newAccessors.set(channel, value);
       }
 
-      // constant channel  
-    } else if (typeof acc === 'object' ||
-      typeof acc === 'number' ||
-      typeof acc === 'string') {
+      // constant channel
+    } else if (typeof acc === "object" || typeof acc === "number" || typeof acc === "string") {
       let input, output;
-      if (typeof acc === 'object') {
+      if (typeof acc === "object") {
         ({ input, output } = acc);
       } else {
         autoScaleChannels.has(channel) ? (input = acc) : (output = acc);
@@ -52,16 +42,14 @@ export function processAccessors({
       }
 
       // dynamic channel`
-    } else if (typeof acc === 'function') {
+    } else if (typeof acc === "function") {
       newAccessors.set(channel, acc);
 
       // invalid accessor
     } else {
       throw Error(`invalid accessor (channel: ${channel})`);
     }
-
   }
 
   return newAccessors;
-
 }

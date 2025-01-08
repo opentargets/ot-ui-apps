@@ -18,7 +18,7 @@ import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
 
-  // TODO: Errors! 
+  // TODO: Errors!
   if (error) return null;
 
   const {
@@ -48,7 +48,6 @@ function ProfileHeader() {
 
   return (
     <BaseProfileHeader>
-
       <Box>
         <Field loading={loading} title="Study type">
           {studyType?.replace(/(qtl|gwas)/gi, match => match.toUpperCase())}
@@ -80,7 +79,7 @@ function ProfileHeader() {
             )}
           </>
         )}
-        {studyType !== "gwas" && (  // QTL
+        {studyType !== "gwas" && ( // QTL
           <>
             {projectId && (
               <Field loading={loading} title="Project">
@@ -94,10 +93,7 @@ function ProfileHeader() {
             )}
             {biosample?.biosampleId && (
               <Field loading={loading} title="Affected cell/tissue">
-                <Link
-                  external
-                  to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}`}
-                >
+                <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}`}>
                   {biosample.biosampleName}
                 </Link>
               </Field>
@@ -113,45 +109,45 @@ function ProfileHeader() {
             {publicationDate?.slice(0, 4)})
           </Field>
         )}
-        {pubmedId &&
+        {pubmedId && (
           <Field loading={loading} title="PubMed">
-            <PublicationsDrawer
-              name={pubmedId}
-              entries={[{ name: pubmedId }]}
-            />
+            <PublicationsDrawer name={pubmedId} entries={[{ name: pubmedId }]} />
           </Field>
-        }
+        )}
       </Box>
 
       <Box>
         <Field loading={loading} title="Summary statistics">
-          {!hasSumstats
-            ? "Not Available"
-            : sumstatQCValues
-              ? <DetailPopover title="Available">
-                <SummaryStatsTable sumstatQCValues={sumstatQCValues} />
-              </DetailPopover>
-              : "Available"
-          }
+          {!hasSumstats ? (
+            "Not Available"
+          ) : sumstatQCValues ? (
+            <DetailPopover title="Available">
+              <SummaryStatsTable sumstatQCValues={sumstatQCValues} />
+            </DetailPopover>
+          ) : (
+            "Available"
+          )}
         </Field>
-        {qualityControls?.length > 0 &&
+        {qualityControls?.length > 0 && (
           <Box>
             <DetailPopover title="QC warnings">
-              <ul style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.25rem",
-                padding: 0,
-                margin: "0 0 0 1rem"
-              }}>
+              <ul
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.25rem",
+                  padding: 0,
+                  margin: "0 0 0 1rem",
+                }}
+              >
                 {qualityControls.map(warning => (
                   <li key={warning}>{warning}</li>
                 ))}
               </ul>
             </DetailPopover>
           </Box>
-        }
-        {nSamples &&
+        )}
+        {nSamples && (
           <Field loading={loading} title="Sample size">
             <DisplaySampleSize
               nSamples={nSamples}
@@ -159,7 +155,7 @@ function ProfileHeader() {
               initialSampleSize={initialSampleSize}
             />
           </Field>
-        }
+        )}
         <Field loading={loading} title="N cases">
           {/* do not show anything when value 0 */}
           {nCases ? nCases?.toLocaleString() : null}
@@ -171,7 +167,7 @@ function ProfileHeader() {
         <Field loading={loading} title="Analysis">
           {analysisFlags?.join(", ")}
         </Field>
-        {ldPopulationStructure?.length > 0 &&
+        {ldPopulationStructure?.length > 0 && (
           <Box display="flex" sx={{ gap: 1 }}>
             {ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
               <LabelChip
@@ -182,9 +178,8 @@ function ProfileHeader() {
               />
             ))}
           </Box>
-        }
+        )}
       </Box>
-
     </BaseProfileHeader>
   );
 }

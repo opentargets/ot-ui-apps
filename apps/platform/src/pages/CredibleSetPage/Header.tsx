@@ -9,38 +9,29 @@ type HeaderProps = {
   studyId: string;
 };
 
-function Header({
-      loading,
-      variantId,
-      referenceAllele,
-      alternateAllele,
-      studyId 
-    }: HeaderProps) {
-
+function Header({ loading, variantId, referenceAllele, alternateAllele, studyId }: HeaderProps) {
   return (
     <HeaderBase
       loading={loading}
-      title="Credible set" 
+      title="Credible set"
       Icon={faDiagramProject}
       externalLinks={
         <>
           <ExternalLink
             title="Lead variant"
-            id={variantId &&
-              <DisplayVariantId
-                variantId={variantId}
-                referenceAllele={referenceAllele}
-                alternateAllele={alternateAllele}
-                expand={false}
-              />
+            id={
+              variantId && (
+                <DisplayVariantId
+                  variantId={variantId}
+                  referenceAllele={referenceAllele}
+                  alternateAllele={alternateAllele}
+                  expand={false}
+                />
+              )
             }
             url={`../variant/${variantId}`}
           />
-          <ExternalLink
-            title="Study ID"
-            id={studyId}
-            url={`../study/${studyId}`}
-          />
+          <ExternalLink title="Study ID" id={studyId} url={`../study/${studyId}`} />
         </>
       }
     />

@@ -1,7 +1,6 @@
 import { usePlot } from "../contexts/PlotContext";
 
-export default function YAxis({ position = 'left', padding, ...lineAttrs }) {
-
+export default function YAxis({ position = "left", padding, ...lineAttrs }) {
   const plot = usePlot();
   if (!plot) {
     throw Error("YAxis component must appear inside a Plot component");
@@ -10,9 +9,8 @@ export default function YAxis({ position = 'left', padding, ...lineAttrs }) {
   // eslint-disable-next-line
   padding ??= plot.axisPadding;
 
-  const x = position === 'right'
-    ? plot.width - plot.padding.right + padding
-    : plot.padding.left - padding;
+  const x =
+    position === "right" ? plot.width - plot.padding.right + padding : plot.padding.left - padding;
 
   return (
     <line

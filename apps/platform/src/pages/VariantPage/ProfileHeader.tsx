@@ -5,7 +5,7 @@ import {
   ProfileHeader as BaseProfileHeader,
   Link,
   LongText,
-  ProfileDescription
+  ProfileDescription,
 } from "ui";
 import { Box, Paper, Typography } from "@mui/material";
 import { identifiersOrgLink } from "../../utils/global";
@@ -21,7 +21,9 @@ function ProfileHeader() {
   return (
     <BaseProfileHeader>
       <Box>
-        <ProfileDescription loading={loading}>{data?.variant.variantDescription}</ProfileDescription>
+        <ProfileDescription loading={loading}>
+          {data?.variant.variantDescription}
+        </ProfileDescription>
         <Typography variant="subtitle2" mt={1}>
           Location
         </Typography>
@@ -57,9 +59,7 @@ function ProfileHeader() {
             mb={1.5}
             alignItems="center"
           >
-            <Typography variant="subtitle2">
-              Population Allele Frequencies
-            </Typography>
+            <Typography variant="subtitle2">Population Allele Frequencies</Typography>
             <Typography variant="body2">
               <em>
                 Source:{" "}
