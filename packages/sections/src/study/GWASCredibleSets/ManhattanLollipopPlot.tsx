@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Box, Skeleton, useTheme, Fade } from "@mui/material";
 import { ClinvarStars, Link, Tooltip, DisplayVariantId, Navigate, OtScoreLinearBar } from "ui";
 import { useMeasure } from "@uidotdev/usehooks";
@@ -6,14 +6,30 @@ import * as PlotLib from "@observablehq/plot";
 import { ScientificNotation } from "ui";
 import { naLabel, credsetConfidenceMap } from "../../constants";
 
-function ManhattanLollipopPlot({ data, query, variables, columns }) {
+function ManhattanLollipopPlot({ data, height = 380, query, variables, columns }) {
   const [ref, { width }] = useMeasure();
+  const [chart, setChart] = useState(null);
+  const [datum, setDatum] = useState(null);
   return (
     <div>
-      <Box sx={{ width: "100%", margin: "0 auto", mb: 6 }} ref={ref}>
+      <Box sx={{ position: "relative", width: "100%", margin: "0 auto", mb: 6 }} ref={ref}>
         <Fade in>
           <div>
-            <Plot data={data} width={width} />
+            <Plot
+              data={data}
+              width={width}
+              height={height}
+              setChart={setChart}
+              setDatum={setDatum}
+            />
+            <PlotTooltip
+              width={width}
+              height={height}
+              chart={chart}
+              datum={datum}
+              xAccessor={d => d._genomePosition}
+              yAccessor={d => d._y}
+            />
           </div>
         </Fade>
       </Box>
@@ -21,51 +37,66 @@ function ManhattanLollipopPlot({ data, query, variables, columns }) {
   );
 }
 
-function Plot({ loading, data: originalData, width }) {
-  // FIX THIS: TREATS USEEFFECT, ASEREF, ... AS CONDISTIONAL IF UNCOMMENT
+function Plot({ loading, data: originalData, width, height, setChart, setDatum }) {
+  // FIX OR REMOVE: TREATS USEEFFECT, USEREF, ... AS CONDITIONAL IF UNCOMMENT
   // if (loading) return <Skeleton height={plotHeight} />;
 
   const headerRef = useRef();
 
-  const plotHeight = 380;
   const theme = useTheme();
   const background = theme.palette.background.paper;
   const markColor = theme.palette.primary.main;
   const fontFamily = theme.typography.fontFamily;
 
-  // FIX THIS: TREATS USEEFFECT, ASEREF, ... AS CONDISTIONAL IF UNCOMMENT
+  // FIX OR REMOVE: TREATS USEEFFECT, USEREF, ... AS CONDITIONAL IF UNCOMMENT
   // if (originalData == null) return null;
 
-  const data = originalData.filter(d => {
-    return d.pValueMantissa != null && d.pValueExponent != null && d.variant != null;
-  });
-  // FIX THIS: TREATS USEEFFECT, ASEREF, ... AS CONDISTIONAL IF UNCOMMENT
+  const data = structuredClone(
+    originalData.filter(d => {
+      return d.pValueMantissa != null && d.pValueExponent != null && d.variant != null;
+    })
+  );
+  // FIX OR REMOVE: TREATS USEEFFECT, USEREF, ... AS CONDITIONAL IF UNCOMMENT
   // if (data.length === 0) return null;
 
-  const yValues = {};
-  const genomePositions = {};
   const yMax = 0;
   let yMin = Infinity;
   for (const d of data) {
-    const id = d.variant.id;
     const y = Math.log10(d.pValueMantissa) + d.pValueExponent;
     yMin = Math.min(yMin, y);
-    yValues[id] = y;
-    genomePositions[id] = cumulativePosition(d.variant);
+    d._y = y;
+    d._genomePosition = cumulativePosition(d.variant);
+  }
+
+  function highlightElement(elmt) {
+    elmt.parentNode.appendChild(elmt);
+    elmt.style.fill = markColor;
+    elmt.style.strokeOpacity = 1;
+    if (elmt.tagName === "line") elmt.style.strokeWidth = 1.7;
+  }
+
+  function fadeElement(elmt) {
+    elmt.style.fill = background;
+    elmt.style.strokeOpacity = 0.6;
+    elmt.style.strokeWidth = 1;
+  }
+
+  function resetElement(elmt) {
+    elmt.style.fill = background;
+    elmt.style.strokeOpacity = 1;
+    elmt.style.strokeWidth = 1;
   }
 
   useEffect(() => {
     if (data === undefined || width === null) return;
     const chart = PlotLib.plot({
-      width: width,
-      height: plotHeight,
+      width,
+      height,
       label: null,
       marginLeft: 90,
       marginRight: 40,
       x: {
-        // axis: "bottom",
         line: true,
-
         grid: true,
         domain: [0, genomeLength],
         ticks: [0, ...chromosomeInfo.map(chromo => chromo.end)],
@@ -94,48 +125,54 @@ function Plot({ loading, data: originalData, width }) {
 
         // standard marks
         PlotLib.ruleX(data, {
-          x: d => genomePositions[d.variant.id],
-          y: d => yValues[d.variant.id],
+          x: d => d._genomePosition,
+          y: d => d._y,
           y2: yMax,
           strokeWidth: 1,
           stroke: markColor,
+          className: "standard-mark",
         }),
         PlotLib.dot(data, {
-          x: d => genomePositions[d.variant.id],
-          y: d => yValues[d.variant.id],
+          x: d => d._genomePosition,
+          y: d => d._y,
           strokeWidth: 1,
           stroke: markColor,
           fill: background,
           r: 3,
+          className: "standard-mark",
         }),
-
-        // pointer marks
-        // PlotLib.ruleX(
-        //   data,
-        //   PlotLib.pointerX({
-        //     x: d => genomePositions[d.variant.id],
-        //     y: d => yValues[d.variant.id],
-        //     y2: yMax,
-        //     strokeWidth: 2,
-        //     stroke: markColor,
-        //   })
-        // ),
-        PlotLib.dot(
-          data,
-          PlotLib.pointer({
-            x: d => genomePositions[d.variant.id],
-            y: d => yValues[d.variant.id],
-            strokeWidth: 1,
-            stroke: markColor,
-            fill: markColor,
-            r: 3,
-          })
-        ),
       ],
+    });
+    setChart(chart);
+    let clickStick = false;
+    const markElements = [...chart.querySelectorAll(".standard-mark circle, .standard-mark line")];
+    for (const elmt of markElements) {
+      const dataIndex = elmt.__data__;
+      elmt.setAttribute("data-index", dataIndex);
+      elmt.addEventListener("mouseenter", event => {
+        if (!clickStick) {
+          setDatum(data[dataIndex]);
+          markElements.forEach(fadeElement);
+          chart.querySelectorAll(`[data-index="${dataIndex}"]`).forEach(highlightElement);
+        }
+      });
+      elmt.addEventListener("mouseleave", event => {
+        if (!clickStick) {
+          setDatum(null);
+          chart.querySelectorAll(`[data-index="${dataIndex}"]`).forEach(resetElement);
+        }
+      });
+    }
+    chart.addEventListener("click", event => {
+      clickStick = !clickStick;
+      if (!clickStick) {
+        setDatum(null);
+        markElements.forEach(resetElement);
+      }
     });
     headerRef.current.append(chart);
     return () => chart.remove();
-  }, [data, width]);
+  }, [originalData, width, height, setChart, setDatum]);
 
   return <Box ref={headerRef}></Box>;
 }
@@ -185,23 +222,71 @@ function cumulativePosition({ chromosome, position }) {
   return chromosomeInfoMap.get(chromosome).start + position;
 }
 
+function PlotTooltip({
+  chart,
+  datum,
+  width,
+  height,
+  xAccessor,
+  yAccessor,
+  anchor = "top-left",
+  dx = 10,
+  dy = 10,
+  children,
+}) {
+  // debugger;
+  if (!datum) return null;
+  const x = chart.scale("x").apply(xAccessor(datum));
+  const y = chart.scale("y").apply(yAccessor(datum));
+  return (
+    <Box
+      width={width}
+      height={height}
+      position="absolute"
+      top={0}
+      left={0}
+      sx={{ pointerEvents: "none" }}
+    >
+      {datum && (
+        <Box
+          sx={{
+            position: "absolute",
+            [anchor.includes("right") ? "right" : "left"]: x + dx,
+            [anchor.includes("bottom") ? "bottom" : "top"]: y + dy,
+            border: "1px solid #888",
+          }}
+        >
+          {/* WILL ADD CONTENT OF TOOLTIP FROM REACT CHART HERE */}
+          <h1>{datum.variant.id}</h1>
+          {/* {children} */}
+        </Box>
+      )}
+    </Box>
+  );
+}
+
 /* TODO
 
-check if need yScale correction, in REact plot used:
-// const yScale = scaleLinear().domain([yMin, yMax]).nice(); // ensure min scale value <= yMin
-// yScale.domain([yScale.domain()[0], yMax]); // ensure max scale value is yMax - in case nice changed it
+CHECKS:
+- not getting issue of nice changing the yMax (resulting in decimal ticks
+  values)? - check properly
 
 INTERACTION:
-- Decide if pointer transform is powerful enough to handle 2-element mark and fade other
-  points. If not look at adding event listener to chart (covered in pointer transform docs)
-- tooltip
+- highlighted line does not jump in front of circlees - possibly okay
+  since most users will hover on circles (not lines) so good to leave all circles
+  above lines?
+- if over a new mark and click to remove old sticky tooltip, the new tooltip is
+  not shown
+  - check clickStick and related logic to fix this and any other corner cases
 
 POLISH APPEARANCE
 - fonts: family, sizes, style, weight, alignment, offset  ...
 - axis and grid width, color, dashed, ...
 
-OTHER
+CLEAN UP
 - add types where appropriate
-- reusable container(s) for common plot stuff - responsive, plot controls, other?
+- reusable components and patterns for common plot stuff - responsive container,
+  plot controls, tooltip, other?
+- how com never get searchSuggestion rs7412 on this local branch?!
 
 */
