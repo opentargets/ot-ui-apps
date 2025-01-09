@@ -1,9 +1,10 @@
-import { Action, ActionType, INIT_PAGE_SIZE, OtTableSSPState } from "../types/tableTypes";
+import { Action, ActionType, OtTableSSPState } from "../types/tableTypes";
+import { getLoadingRows } from "../utils/tableUtils";
 
 export const initialState: OtTableSSPState = {
   count: 0,
   loading: true,
-  rows: [],
+  rows: getLoadingRows(10),
   cursor: null,
   freeTextQuery: "",
   initialLoading: true,

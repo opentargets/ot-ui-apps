@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useEffect, useReducer, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useMemo, useReducer, useState } from "react";
 import { Box, CircularProgress, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
@@ -22,7 +22,11 @@ import {
   OtTableCellContainer,
 } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
-import { getCurrentPagePosition, mapTableColumnToTanstackColumns } from "./utils/tableUtils";
+import {
+  getCurrentPagePosition,
+  isNestedColumns,
+  mapTableColumnToTanstackColumns,
+} from "./utils/tableUtils";
 import Tooltip from "../Tooltip";
 import OtTableColumnVisibility from "./OtTableColumnVisibility";
 
@@ -44,6 +48,7 @@ function OtTableSSP({
   dataDownloaderColumns,
   dataDownloader,
   showColumnVisibilityControl = true,
+  setInitialRequestData,
 }: OtTableSSPProps): ReactElement {
   const [state, dispatch] = useReducer(otTableReducer, "", createInitialState);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -51,10 +56,15 @@ function OtTableSSP({
     pageSize: INIT_PAGE_SIZE,
   });
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
+  const loadingCells = getLoadingCells(mappedColumns);
+  const tableColumns = useMemo(
+    () => (state.initialLoading ? loadingCells : mappedColumns),
+    [state.initialLoading]
+  );
 
   const table = useReactTable({
     data: state.rows,
-    columns: mappedColumns,
+    columns: tableColumns,
     rowCount: state.count,
     state: {
       pagination,
@@ -166,6 +176,7 @@ function OtTableSSP({
       freeTextQuery,
     }).then(d => {
       dispatch(setNewData(d.data[entity][sectionName]));
+      if (!state.freeTextQuery) setInitialRequestData(d);
     });
   }
 
@@ -366,11 +377,19 @@ function OtTableSSP({
   );
 }
 
+// TODO: FIND A WAY TO USE SAME FUNCTION FROM CLIENT TABLE
 function getLoadingCells(columms: Array<Record<string, unknown>>) {
-  return columms.map(column => ({
-    ...column,
-    cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" />,
-  }));
+  const arr: Record<string, unknown>[] = [];
+  columms.forEach(e => {
+    if (isNestedColumns(e)) {
+      const headerObj = {
+        header: e.header || e.label,
+        columns: getLoadingCells(e.columns),
+      };
+      arr.push(headerObj);
+    } else arr.push({ ...e, cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" /> });
+  });
+  return arr;
 }
 
 export default OtTableSSP;

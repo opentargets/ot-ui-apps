@@ -66,6 +66,16 @@ export type OtTableSSPProps = {
   dataDownloader: boolean;
   dataDownloaderColumns?: Array<ColumnDef<string, unknown>>;
   showColumnVisibilityControl: boolean;
+  setInitialRequestData: any;
+};
+
+export type OtTableSSPState = {
+  count: number;
+  loading: boolean;
+  rows: Array<unknown>;
+  cursor: null | string;
+  freeTextQuery: null | string;
+  initialLoading: boolean;
 };
 
 export type getTableRowsProps = {

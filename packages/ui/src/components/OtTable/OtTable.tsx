@@ -42,6 +42,7 @@ import {
   getDefaultSortObj,
   getFilterValueFromObject,
   getLoadingRows,
+  isNestedColumns,
   mapTableColumnToTanstackColumns,
 } from "./utils/tableUtils";
 import Tooltip from "../Tooltip";
@@ -309,10 +310,17 @@ function OtTable({
 }
 
 function getLoadingCells(columms: Array<Record<string, unknown>>) {
-  return columms.map(column => ({
-    ...column,
-    cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" />,
-  }));
+  const arr: Record<string, unknown>[] = [];
+  columms.forEach(e => {
+    if (isNestedColumns(e)) {
+      const headerObj = {
+        header: e.header || e.label,
+        columns: getLoadingCells(e.columns),
+      };
+      arr.push(headerObj);
+    } else arr.push({ ...e, cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" /> });
+  });
+  return arr;
 }
 
 export default OtTable;
