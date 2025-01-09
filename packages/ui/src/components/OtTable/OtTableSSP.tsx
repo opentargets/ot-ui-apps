@@ -318,6 +318,7 @@ function OtTableSSP({
           <span>Rows per page:</span>
           <NativeSelect
             disableUnderline
+            disabled={state.loading}
             sx={{ pl: theme => theme.spacing(2) }}
             value={pagination.pageSize}
             onChange={e => {
