@@ -62,6 +62,7 @@ const getColumns = label => [
   {
     id: "variantId",
     label: "Variant",
+    enableHiding: false,
     renderCell: ({ variant: { id: variantId } }) =>
       variantId ? (
         <>

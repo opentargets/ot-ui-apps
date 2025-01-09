@@ -101,6 +101,7 @@ function getColumns(label) {
     {
       id: "variantId",
       label: "Variant",
+      enableHiding: false,
       renderCell: ({ variant }) => {
         if (!variant) return naLabel;
         const { id: variantId, referenceAllele, alternateAllele } = variant;
