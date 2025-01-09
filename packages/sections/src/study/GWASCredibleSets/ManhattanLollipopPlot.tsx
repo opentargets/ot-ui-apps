@@ -159,7 +159,7 @@ function Plot({ loading, data: originalData, width, height, setChart, setDatum }
       elmt.addEventListener("mouseleave", event => {
         if (!clickStick) {
           setDatum(null);
-          chart.querySelectorAll(`[data-index="${dataIndex}"]`).forEach(resetElement);
+          markElements.forEach(resetElement);
         }
       });
     }
