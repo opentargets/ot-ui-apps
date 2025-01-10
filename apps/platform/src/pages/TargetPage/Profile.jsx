@@ -117,7 +117,7 @@ function Profile({ ensgId, symbol }) {
       </SummaryContainer>
 
       <SectionContainer>
-        <Suspense fallback={<SectionLoader />}>
+        {/* <Suspense fallback={<SectionLoader />}>
           <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
@@ -161,12 +161,12 @@ function Profile({ ensgId, symbol }) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <MousePhenotypesSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
+        </Suspense> */}
         <Suspense fallback={<SectionLoader />}>
           <ComparativeGenomicsSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
-          <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
+          {/* <BibliographySection id={ensgId} label={symbol} entity={TARGET} /> */}
         </Suspense>
       </SectionContainer>
     </PlatformApiProvider>

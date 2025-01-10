@@ -83,7 +83,7 @@ function SectionItem({
         </>
       );
     if (selectedView === VIEW.table) return renderBody();
-    if (selectedView === VIEW.chart) return renderChart();
+    if (selectedView === VIEW.chart && renderChart) return renderChart();
     // if (!loading && !hasData && showEmptySection)
     return <div className={classes.noData}> No data available for this {entity}. </div>;
   }

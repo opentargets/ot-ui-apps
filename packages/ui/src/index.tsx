@@ -30,6 +30,7 @@ export { default as ErrorBoundary } from "./components/ErrorBoundary";
 export { default as GlobalSearch } from "./components/GlobalSearch/GlobalSearch";
 export { default as DetailPopover } from "./components/DetailPopover";
 export { default as SummaryStatsTable } from "./components/SummaryStatsTable";
+export { default as KnownDrugsSourceDrawer } from "./components/KnownDrugsSourceDrawer";
 
 export { default as PrivateWrapper } from "./components/PrivateWrapper";
 export { default as NavBar } from "./components/NavBar";
