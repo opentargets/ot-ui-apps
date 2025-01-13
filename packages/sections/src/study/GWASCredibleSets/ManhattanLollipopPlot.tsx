@@ -3,7 +3,7 @@ import { Box, Skeleton, useTheme, Fade } from "@mui/material";
 import { ClinvarStars, Link, Tooltip, DisplayVariantId, Navigate, OtScoreLinearBar } from "ui";
 import { useMeasure } from "@uidotdev/usehooks";
 import * as PlotLib from "@observablehq/plot";
-import { ScientificNotation } from "ui";
+import { ScientificNotation, PlotTooltip } from "ui";
 import { naLabel, credsetConfidenceMap } from "../../constants";
 
 function ManhattanLollipopPlot({ data, height = 380, query, variables, columns }) {
@@ -29,6 +29,10 @@ function ManhattanLollipopPlot({ data, height = 380, query, variables, columns }
               datum={datum}
               xAccessor={d => d._genomePosition}
               yAccessor={d => d._y}
+              yReverse={true}
+              dx={10}
+              dy={10}
+              renderContent={renderTooltipContent}
             />
           </div>
         </Fade>
@@ -222,47 +226,8 @@ function cumulativePosition({ chromosome, position }) {
   return chromosomeInfoMap.get(chromosome).start + position;
 }
 
-function PlotTooltip({
-  chart,
-  datum,
-  width,
-  height,
-  xAccessor,
-  yAccessor,
-  anchor = "top-left",
-  dx = 10,
-  dy = 10,
-  children,
-}) {
-  // debugger;
-  if (!datum) return null;
-  const x = chart.scale("x").apply(xAccessor(datum));
-  const y = chart.scale("y").apply(yAccessor(datum));
-  return (
-    <Box
-      width={width}
-      height={height}
-      position="absolute"
-      top={0}
-      left={0}
-      sx={{ pointerEvents: "none" }}
-    >
-      {datum && (
-        <Box
-          sx={{
-            position: "absolute",
-            [anchor.includes("right") ? "right" : "left"]: x + dx,
-            [anchor.includes("bottom") ? "bottom" : "top"]: y + dy,
-            border: "1px solid #888",
-          }}
-        >
-          {/* WILL ADD CONTENT OF TOOLTIP FROM REACT CHART HERE */}
-          <h1>{datum.variant.id}</h1>
-          {/* {children} */}
-        </Box>
-      )}
-    </Box>
-  );
+function renderTooltipContent(datum) {
+  return <Box sx={{ border: "1px solid #888", p: 1 }}>{datum.variant.id}</Box>;
 }
 
 /* TODO
@@ -275,6 +240,7 @@ INTERACTION:
 - highlighted line does not jump in front of circlees - possibly okay
   since most users will hover on circles (not lines) so good to leave all circles
   above lines?
+- tooltip is next to circle mark even when hover on line - is this ok?
 - if over a new mark and click to remove old sticky tooltip, the new tooltip is
   not shown
   - check clickStick and related logic to fix this and any other corner cases
@@ -286,7 +252,7 @@ POLISH APPEARANCE
 CLEAN UP
 - add types where appropriate
 - reusable components and patterns for common plot stuff - responsive container,
-  plot controls, tooltip, other?
+  plot controls, other?
 - how com never get searchSuggestion rs7412 on this local branch?!
 
 */

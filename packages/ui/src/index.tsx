@@ -8,6 +8,7 @@ export { default as LongList } from "./components/LongList";
 export { default as SummaryContainer } from "./components/Summary/SummaryContainer";
 export { default as SummaryItem } from "./components/Summary/SummaryItem";
 export { default as Tooltip } from "./components/Tooltip";
+export { default as PlotTooltip } from "./components/PlotTooltip";
 export { default as Link } from "./components/Link";
 export { default as Navigate } from "./components/Navigate";
 export { default as Chip } from "./components/Chip";

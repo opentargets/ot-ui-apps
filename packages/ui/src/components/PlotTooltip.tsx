@@ -1,0 +1,81 @@
+import { ReactElement } from "react";
+import { Box } from "@mui/material";
+
+type PlotTooltipProps = {
+  width: number;
+  height: number;
+  xAnchor?: "left" | "right" | "center" | "adapt";
+  yAnchor?: "top" | "bottom" | "center" | "adapt";
+  dx?: number;
+  dy?: number;
+  xAccessor: (d: any, i?: number) => number | string;
+  yAccessor: (d: any, i?: number) => number | string;
+  xReverse?: boolean;
+  yReverse?: boolean;
+  chart: ReactElement;
+  datum: any;
+  renderContent: (datum: any) => ReactElement;
+};
+
+export default function PlotTooltip({
+  width,
+  height,
+  xAnchor = "adapt",
+  yAnchor = "adapt",
+  dx = 0, // +ve value distances tooltip from anchor point - ignored if centered
+  dy = 0,
+  xAccessor,
+  yAccessor,
+  xReverse = false,
+  yReverse = false,
+  chart,
+  datum,
+  renderContent,
+}: PlotTooltipProps) {
+  if (!datum) return null;
+
+  const x = chart.scale("x").apply(xAccessor(datum));
+  const y = chart.scale("y").apply(yAccessor(datum));
+
+  let left, right, top, bottom, transformX, transformY;
+  if (xAnchor === "center") {
+    left = x;
+    transformX = "-50%";
+  } else if (xAnchor === "left" || (xAnchor === "adapt" && x > width / 2 === xReverse)) {
+    left = x + dx;
+  } else {
+    right = width - x + dx;
+  }
+  if (yAnchor === "center") {
+    top = y;
+    transformY = "-50%";
+  } else if (yAnchor === "bottom" || (yAnchor === "adapt" && y > height / 2 === yReverse)) {
+    bottom = height - y + dy;
+  } else {
+    top = y + dy;
+  }
+
+  return (
+    <Box
+      width={width}
+      height={height}
+      position="absolute"
+      top={0}
+      left={0}
+      sx={{ pointerEvents: "none" }}
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          left,
+          right,
+          top,
+          bottom,
+          transform: `translate(${transformX ?? 0}, ${transformY ?? 0})`,
+        }}
+      >
+        {renderContent(datum)}
+      </Box>
+    </Box>
+  );
+}
