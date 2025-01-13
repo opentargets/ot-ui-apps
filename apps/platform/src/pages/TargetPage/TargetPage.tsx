@@ -1,15 +1,7 @@
 import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs } from "@mui/material";
-import {
-  Link,
-  Route,
-  Switch,
-  useLocation,
-  useRouteMatch,
-  useParams,
-  Redirect,
-} from "react-router-dom";
+import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { BasePage, ScrollToTop } from "ui";
 
 import Header from "./Header";
@@ -27,7 +19,6 @@ type TargetURLParams = {
 function TargetPage(): ReactElement {
   const location = useLocation();
   const { ensgId } = useParams<TargetURLParams>();
-  const { path } = useRouteMatch();
 
   const { loading, data } = useQuery(TARGET_PAGE_QUERY, {
     variables: { ensgId },
@@ -55,52 +46,43 @@ function TargetPage(): ReactElement {
       }
       location={location}
     >
-      <ScrollToTop />
-      <Header
-        loading={loading}
-        ensgId={ensgId}
-        uniprotIds={uniprotIds}
-        symbol={symbol}
-        name={approvedName}
-        crisprId={crisprId}
-      />
+      <>
+        <ScrollToTop />
+        <Header
+          loading={loading}
+          ensgId={ensgId}
+          uniprotIds={uniprotIds}
+          symbol={symbol}
+          name={approvedName}
+          crisprId={crisprId}
+        />
 
-      <Route
-        path="/"
-        render={history => (
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs value={history.location.pathname !== "/" ? history.location.pathname : false}>
-              <Tab
-                label={
-                  <Box sx={{ textTransform: "capitalize" }}>
-                    <div>Associated diseases</div>
-                  </Box>
-                }
-                value={`/target/${ensgId}/associations`}
-                component={Link}
-                to={`/target/${ensgId}/associations`}
-              />
-              <Tab
-                label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
-                value={`/target/${ensgId}`}
-                component={Link}
-                to={`/target/${ensgId}`}
-              />
-            </Tabs>
-          </Box>
-        )}
-      />
-      <Switch>
-        <Route exact path={path}>
-          <Profile ensgId={ensgId} symbol={symbol} />
-        </Route>
-        <Route path={`${path}/associations`}>
-          <Associations ensgId={ensgId} />
-        </Route>
-        <Route path="*">
-          <Redirect to={`/target/${ensgId}`} />
-        </Route>
-      </Switch>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs value={location.pathname}>
+            <Tab
+              label={
+                <Box sx={{ textTransform: "capitalize" }}>
+                  <div>Associated diseases</div>
+                </Box>
+              }
+              value={`/target/${ensgId}/associations`}
+              component={Link}
+              to={`/target/${ensgId}/associations`}
+            />
+            <Tab
+              label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
+              value={`/target/${ensgId}`}
+              component={Link}
+              to={`/target/${ensgId}`}
+            />
+          </Tabs>
+        </Box>
+
+        <Routes>
+          <Route path="/" element={<Profile ensgId={ensgId} symbol={symbol} />} />
+          <Route path="/associations" element={<Associations ensgId={ensgId} />} />
+        </Routes>
+      </>
     </BasePage>
   );
 }

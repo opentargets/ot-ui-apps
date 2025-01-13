@@ -21,7 +21,7 @@ import {
   faBezierCurve,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAotfContext from "../../hooks/useAotfContext";
 import { ENTITIES, isPartnerPreview, TABLE_PREFIX } from "../../utils";
 import { grey } from "@mui/material/colors";
@@ -85,7 +85,7 @@ const ContextMenuContainer = styled("div", {
 }));
 
 function CellName({ cell, colorScale }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const contextMenuRef = useRef();
   const { entityToGet, pinnedEntries, setPinnedEntries, id: currentEntityId } = useAotfContext();
   const { loading, prefix } = cell.table.getState();
@@ -180,15 +180,15 @@ function CellName({ cell, colorScale }) {
   };
 
   const handleNavigateToProfile = () => {
-    history.push(profileURL);
+    navigate(profileURL);
   };
 
   const handleNavigateToAssociations = () => {
-    history.push(associationsURL);
+    navigate(associationsURL);
   };
 
   const handleNavigateToEvidence = () => {
-    history.push(evidenceURL);
+    navigate(evidenceURL);
   };
 
   const loadingWidth = entityToGet === ENTITIES.TARGET ? 50 : 150;
