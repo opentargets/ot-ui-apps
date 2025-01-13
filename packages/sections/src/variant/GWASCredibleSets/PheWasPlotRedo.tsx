@@ -24,8 +24,8 @@ const palette = [
   "#BEE952",
 ];
 
-function PheWasPlotRedo({
-  height = 410,
+export default function PheWasPlotRedo({
+  height = 450,
   columns,
   query,
   variables,
@@ -40,26 +40,27 @@ function PheWasPlotRedo({
   const [datum, setDatum] = useState(null);
   return (
     <div>
+      <ChartControls data={data} query={query} columns={columns} variables={variables} />
+      <Typography variant="body2" pt={1} pr={2} textAlign="right">
+        <span style={{ fontSize: 10 }}>▲</span> Beta &gt; 0&emsp;&emsp;
+        <span style={{ fontSize: 10 }}>▼</span> Beta &lt; 0&emsp;&emsp;
+        <span style={{ fontSize: 10 }}>●</span> Beta {naLabel}&emsp;&emsp; Filled symbol:{" "}
+        <b>
+          <DisplayVariantId
+            variantId={id}
+            referenceAllele={referenceAllele}
+            alternateAllele={alternateAllele}
+            expand={false}
+          />
+        </b>{" "}
+        is lead variant
+      </Typography>
       <Box sx={{ position: "relative", width: "100%", margin: "0 auto", mb: 6 }} ref={ref}>
         <Fade in>
           <div>
-            <ChartControls data={data} query={query} columns={columns} variables={variables} />
-            <Typography variant="body2" pt={1} pr={2} textAlign="right">
-              <span style={{ fontSize: 10 }}>▲</span> Beta &gt; 0&emsp;&emsp;
-              <span style={{ fontSize: 10 }}>▼</span> Beta &lt; 0&emsp;&emsp;
-              <span style={{ fontSize: 10 }}>●</span> Beta {naLabel}&emsp;&emsp; Filled symbol:{" "}
-              <b>
-                <DisplayVariantId
-                  variantId={id}
-                  referenceAllele={referenceAllele}
-                  alternateAllele={alternateAllele}
-                  expand={false}
-                />
-              </b>{" "}
-              is lead variant
-            </Typography>
             <Plot
               data={data}
+              id={id}
               width={width}
               height={height}
               setChart={setChart}
@@ -94,7 +95,7 @@ function ChartControls({ data, query, variables, columns }) {
   );
 }
 
-export default function Plot({
+function Plot({
   width,
   height,
   loading,
@@ -152,10 +153,10 @@ export default function Plot({
   const xGap = data.length / 300; // gap between groups
   const xPad = data.length / 500; // padding at ede of groups
   const sortedData = [];
-  for (const id of sortedDiseaseIds) {
+  for (const [index, id] of sortedDiseaseIds.entries()) {
     const { data: newRows } = diseaseGroups.get(id);
     xCumu += xGap;
-    xIntervals.set(id, { start: xCumu });
+    xIntervals.set(id, { start: xCumu, index });
     xCumu += xPad;
     newRows.sort((row1, row2) => row1._y - row2._y);
     for (const row of newRows) {
@@ -167,37 +168,6 @@ export default function Plot({
     xIntervals.get(id).end = xCumu;
   }
 
-  // const xScale = scaleLinear().domain([0, xCumu]);
-  // const yScale = scaleLinear().domain([yMin, yMax]).nice(); // ensure min scale value <= yMin
-  // yScale.domain([yScale.domain()[0], yMax]); // ensure max scale value is yMax - in case nice changed it
-
-  // const colorDomain = ["background"];
-  // const colorRange = [background];
-  // for (const [i, id] of sortedDiseaseIds.entries()) {
-  //   colorDomain.push(id);
-  //   colorRange.push(palette[i % palette.length]);
-  // }
-  // const colorScale = scaleOrdinal(colorDomain, colorRange);
-
-  const pointAttrs = {
-    x: d => d._x,
-    y: d => d._y,
-    fill: d => {
-      return d.variant.id === id ? d._therapeuticAreaId : "background";
-    },
-    stroke: d => d._therapeuticAreaId,
-    strokeWidth: 1.3,
-    area: pointArea,
-    hover: "stay",
-    shape: d => (d.beta ? "triangle" : "circle"),
-    rotation: d => (d.beta < 0 ? 180 : 0),
-  };
-
-  // console.log(xIntervals);
-  // console.log(xCumu);
-
-  console.log({ yMin, yMax });
-
   useEffect(() => {
     if (data === undefined || width === null) return;
     const chart = PlotLib.plot({
@@ -208,8 +178,6 @@ export default function Plot({
       marginTop: 30,
       marginBottom: 120,
       x: {
-        // line: false,
-        // grid: false,
         domain: [0, xCumu],
         axis: false,
       },
@@ -226,16 +194,36 @@ export default function Plot({
       marks: [
         // ruleY mark for multi-segment x-axis
         PlotLib.ruleY(xIntervals, {
-          x1: d => (console.log(d), d[1].start),
+          x1: (d, i) => d[1].start,
           x2: d => d[1].end,
           y: yMax,
-          // strokeWidth: 2,
-          // stroke: "red",
+          stroke: (d, i) => palette[i],
         }),
 
         // text mark for x-ticks
+        PlotLib.text(xIntervals, {
+          x: d => (d[1].start + d[1].end) / 2,
+          y: yMax,
+          dy: 5,
+          text: d => diseaseGroups.get(d[0]).name,
+          textAnchor: "start",
+          lineAnchor: "top",
+          rotate: 45,
+          fill: (d, i) => palette[i],
+        }),
 
         // standard marks
+        PlotLib.dot(sortedData, {
+          x: d => d._x,
+          y: d => d._y,
+          r: 2.55,
+          symbol: d => (d.beta ? "triangle" : "circle"),
+          stroke: d => palette[xIntervals.get(d._therapeuticAreaId).index],
+          fill: d =>
+            d.variant.id === id ? palette[xIntervals.get(d._therapeuticAreaId).index] : background,
+          strokeWidth: 1.3,
+          rotate: d => (d.beta < 0 ? 180 : 0),
+        }),
       ],
     });
     headerRef.current.append(chart);
@@ -293,9 +281,3 @@ function getTherapeuticArea(row) {
     ? { id: bestId, name: therapeuticPriorities[bestId].name }
     : { id: "__uncategorised__", name: "Uncategorised" };
 }
-
-/* TODO
-
-- fix width of plot, then finish adding marks
-
-*/
