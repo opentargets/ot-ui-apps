@@ -3,7 +3,7 @@ import { Box, Skeleton, useTheme, Fade } from "@mui/material";
 import { ClinvarStars, Link, Tooltip, DisplayVariantId, Navigate, OtScoreLinearBar } from "ui";
 import { useMeasure } from "@uidotdev/usehooks";
 import * as PlotLib from "@observablehq/plot";
-import { ScientificNotation, PlotTooltip } from "ui";
+import { ScientificNotation, PlotTooltip, PlotTooltipTable, PlotTooltipRow } from "ui";
 import { naLabel, credsetConfidenceMap } from "../../constants";
 
 function ManhattanLollipopPlot({ data, height = 380, query, variables, columns }) {
@@ -183,6 +183,81 @@ function Plot({ loading, data: originalData, width, height, setChart, setDatum }
 
 export default ManhattanLollipopPlot;
 
+function renderTooltipContent(datum) {
+  return (
+    <PlotTooltipTable>
+      <PlotTooltipRow label="Navigate">
+        <Box display="flex">
+          <Navigate to={`../credible-set/${datum.studyLocusId}`} />
+        </Box>
+      </PlotTooltipRow>
+      <PlotTooltipRow label="Lead variant">
+        <Link to={`/variant/${datum.variant.id}`}>
+          <DisplayVariantId
+            variantId={datum.variant.id}
+            referenceAllele={datum.variant.referenceAllele}
+            alternateAllele={datum.variant.alternateAllele}
+            expand={false}
+          />
+        </Link>
+      </PlotTooltipRow>
+      <PlotTooltipRow label="P-value">
+        <ScientificNotation number={[datum.pValueMantissa, datum.pValueExponent]} dp={2} />
+      </PlotTooltipRow>
+      <PlotTooltipRow label="Beta">{datum.beta?.toPrecision(3) ?? naLabel}</PlotTooltipRow>
+      <PlotTooltipRow label="Fine-mapping">
+        <Box display="flex" flexDirection="column" gap={0.25}>
+          <Box display="flex" gap={0.5}>
+            Method: {datum.finemappingMethod ?? naLabel}
+          </Box>
+          <Box display="flex" gap={0.5}>
+            Confidence:{" "}
+            {datum.confidence ? (
+              <Tooltip title={datum.confidence} style="">
+                <ClinvarStars num={credsetConfidenceMap[datum.confidence]} />
+              </Tooltip>
+            ) : (
+              naLabel
+            )}
+          </Box>
+        </Box>
+      </PlotTooltipRow>
+      <PlotTooltipRow label="L2G">
+        <Box display="flex" flexDirection="column" gap={0.25}>
+          <Box display="flex" gap={0.5}>
+            Top:{" "}
+            {datum.l2GPredictions?.rows?.[0]?.target ? (
+              <Link to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
+                {datum.l2GPredictions.rows[0].target.approvedSymbol}
+              </Link>
+            ) : (
+              naLabel
+            )}
+          </Box>
+          <Box display="flex" alignItems="center" gap={0.5}>
+            Score:{" "}
+            {datum.l2GPredictions?.rows?.[0]?.score ? (
+              <Tooltip title={datum.l2GPredictions.rows[0].score.toFixed(3)} style="">
+                <div>
+                  <OtScoreLinearBar
+                    variant="determinate"
+                    value={datum.l2GPredictions.rows[0].score * 100}
+                  />
+                </div>
+              </Tooltip>
+            ) : (
+              naLabel
+            )}
+          </Box>
+        </Box>
+      </PlotTooltipRow>
+      <PlotTooltipRow label="Credible set size">
+        {datum.locus?.count ? datum.locus.count.toLocaleString() : naLabel}
+      </PlotTooltipRow>
+    </PlotTooltipTable>
+  );
+}
+
 // from: https://www.ncbi.nlm.nih.gov/grc/human/data
 // (first tab: "Chromosome lengths")
 const chromosomeInfo = [
@@ -226,10 +301,6 @@ function cumulativePosition({ chromosome, position }) {
   return chromosomeInfoMap.get(chromosome).start + position;
 }
 
-function renderTooltipContent(datum) {
-  return <Box sx={{ border: "1px solid #888", p: 1 }}>{datum.variant.id}</Box>;
-}
-
 /* TODO
 
 CHECKS:
@@ -244,6 +315,7 @@ INTERACTION:
 - if over a new mark and click to remove old sticky tooltip, the new tooltip is
   not shown
   - check clickStick and related logic to fix this and any other corner cases
+  - tell user it is click-to-stick?
 
 POLISH APPEARANCE
 - fonts: family, sizes, style, weight, alignment, offset  ...
@@ -254,5 +326,7 @@ CLEAN UP
 - reusable components and patterns for common plot stuff - responsive container,
   plot controls, other?
 - how com never get searchSuggestion rs7412 on this local branch?!
+- put return null if loading in right place
+- loading skeleton/msg
 
 */

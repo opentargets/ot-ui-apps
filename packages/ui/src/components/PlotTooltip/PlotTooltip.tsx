@@ -72,6 +72,7 @@ export default function PlotTooltip({
           top,
           bottom,
           transform: `translate(${transformX ?? 0}, ${transformY ?? 0})`,
+          pointerEvents: "auto",
         }}
       >
         {renderContent(datum)}
