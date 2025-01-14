@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import { ReactElement } from "react";
 
-type PlotTooltipTableProps = {
+type ObsTooltipRowProps = {
   children: ReactElement;
   label?: string;
   labelWidth?: number;
@@ -9,13 +9,13 @@ type PlotTooltipTableProps = {
   truncateValue?: boolean;
 };
 
-export default function PlotTooltipRow({
+function ObsTooltipRow({
   children,
   label,
   labelWidth,
   valueWidth,
   truncateValue = false,
-}: PlotTooltipTableProps) {
+}: ObsTooltipRowProps) {
   const truncateLine = truncateValue
     ? {
         whiteSpace: "nowrap",
@@ -48,3 +48,5 @@ export default function PlotTooltipRow({
     </tr>
   );
 }
+
+export default ObsTooltipRow;

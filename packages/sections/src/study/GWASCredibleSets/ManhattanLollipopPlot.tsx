@@ -1,67 +1,23 @@
-import { useRef, useEffect, useState } from "react";
-import { Box, Skeleton, useTheme, Fade } from "@mui/material";
+import { useTheme, Box } from "@mui/material";
 import { ClinvarStars, Link, Tooltip, DisplayVariantId, Navigate, OtScoreLinearBar } from "ui";
-import { useMeasure } from "@uidotdev/usehooks";
 import * as PlotLib from "@observablehq/plot";
-import { ScientificNotation, PlotTooltip, PlotTooltipTable, PlotTooltipRow } from "ui";
+import { ScientificNotation, ObsPlot, ObsTooltipTable, ObsTooltipRow } from "ui";
 import { naLabel, credsetConfidenceMap } from "../../constants";
 
-function ManhattanLollipopPlot({ data, height = 380, query, variables, columns }) {
-  const [ref, { width }] = useMeasure();
-  const [chart, setChart] = useState(null);
-  const [datum, setDatum] = useState(null);
-  return (
-    <div>
-      <Box sx={{ position: "relative", width: "100%", margin: "0 auto", mb: 6 }} ref={ref}>
-        <Fade in>
-          <div>
-            <Plot
-              data={data}
-              width={width}
-              height={height}
-              setChart={setChart}
-              setDatum={setDatum}
-            />
-            <PlotTooltip
-              width={width}
-              height={height}
-              chart={chart}
-              datum={datum}
-              xAccessor={d => d._genomePosition}
-              yAccessor={d => d._y}
-              yReverse={true}
-              dx={10}
-              dy={10}
-              renderContent={renderTooltipContent}
-            />
-          </div>
-        </Fade>
-      </Box>
-    </div>
-  );
-}
-
-function Plot({ loading, data: originalData, width, height, setChart, setDatum }) {
-  // FIX OR REMOVE: TREATS USEEFFECT, USEREF, ... AS CONDITIONAL IF UNCOMMENT
-  // if (loading) return <Skeleton height={plotHeight} />;
-
-  const headerRef = useRef();
-
+function ManhattanLollipopPlot({ data: originalData }) {
   const theme = useTheme();
   const background = theme.palette.background.paper;
   const markColor = theme.palette.primary.main;
-  const fontFamily = theme.typography.fontFamily;
+  // const fontFamily = theme.typography.fontFamily;
 
-  // FIX OR REMOVE: TREATS USEEFFECT, USEREF, ... AS CONDITIONAL IF UNCOMMENT
-  // if (originalData == null) return null;
+  if (originalData == null) return null;
 
   const data = structuredClone(
     originalData.filter(d => {
       return d.pValueMantissa != null && d.pValueExponent != null && d.variant != null;
     })
   );
-  // FIX OR REMOVE: TREATS USEEFFECT, USEREF, ... AS CONDITIONAL IF UNCOMMENT
-  // if (data.length === 0) return null;
+  if (data.length === 0) return null;
 
   const yMax = 0;
   let yMin = Infinity;
@@ -91,9 +47,10 @@ function Plot({ loading, data: originalData, width, height, setChart, setDatum }
     elmt.style.strokeWidth = 1;
   }
 
-  useEffect(() => {
-    if (data === undefined || width === null) return;
-    const chart = PlotLib.plot({
+  // should really pass in chromosomeLength etc as other data? - rather than
+  // relying on scoping
+  function renderChart({ data, width, height }) {
+    return PlotLib.plot({
       width,
       height,
       label: null,
@@ -108,8 +65,8 @@ function Plot({ loading, data: originalData, width, height, setChart, setDatum }
         tickFormat: v => "",
       },
       y: {
-        domain: [yMin, yMax],
-        reverse: true,
+        domain: [yMax, yMin],
+        // reverse: true,
         nice: true,
         line: true,
         label: "-log_10(pValue)",
@@ -134,7 +91,7 @@ function Plot({ loading, data: originalData, width, height, setChart, setDatum }
           y2: yMax,
           strokeWidth: 1,
           stroke: markColor,
-          className: "standard-mark",
+          className: "obs-tooltip",
         }),
         PlotLib.dot(data, {
           x: d => d._genomePosition,
@@ -143,55 +100,40 @@ function Plot({ loading, data: originalData, width, height, setChart, setDatum }
           stroke: markColor,
           fill: background,
           r: 3,
-          className: "standard-mark",
+          className: "obs-tooltip",
         }),
       ],
     });
-    setChart(chart);
-    let clickStick = false;
-    const markElements = [...chart.querySelectorAll(".standard-mark circle, .standard-mark line")];
-    for (const elmt of markElements) {
-      const dataIndex = elmt.__data__;
-      elmt.setAttribute("data-index", dataIndex);
-      elmt.addEventListener("mouseenter", event => {
-        if (!clickStick) {
-          setDatum(data[dataIndex]);
-          markElements.forEach(fadeElement);
-          chart.querySelectorAll(`[data-index="${dataIndex}"]`).forEach(highlightElement);
-        }
-      });
-      elmt.addEventListener("mouseleave", event => {
-        if (!clickStick) {
-          setDatum(null);
-          markElements.forEach(resetElement);
-        }
-      });
-    }
-    chart.addEventListener("click", event => {
-      clickStick = !clickStick;
-      if (!clickStick) {
-        setDatum(null);
-        markElements.forEach(resetElement);
-      }
-    });
-    headerRef.current.append(chart);
-    return () => chart.remove();
-  }, [originalData, width, height, setChart, setDatum]);
+  }
 
-  return <Box ref={headerRef}></Box>;
+  return (
+    <ObsPlot
+      data={data}
+      height={380}
+      renderChart={renderChart}
+      xTooltip={d => d._genomePosition}
+      yTooltip={d => d._y}
+      dxTooltip={10}
+      dyTooltip={10}
+      renderTooltip={renderTooltip}
+      fadeElement={fadeElement}
+      highlightElement={highlightElement}
+      resetElement={resetElement}
+    />
+  );
 }
 
 export default ManhattanLollipopPlot;
 
-function renderTooltipContent(datum) {
+function renderTooltip(datum) {
   return (
-    <PlotTooltipTable>
-      <PlotTooltipRow label="Navigate">
+    <ObsTooltipTable>
+      <ObsTooltipRow label="Navigate">
         <Box display="flex">
           <Navigate to={`../credible-set/${datum.studyLocusId}`} />
         </Box>
-      </PlotTooltipRow>
-      <PlotTooltipRow label="Lead variant">
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Lead variant">
         <Link to={`/variant/${datum.variant.id}`}>
           <DisplayVariantId
             variantId={datum.variant.id}
@@ -200,12 +142,12 @@ function renderTooltipContent(datum) {
             expand={false}
           />
         </Link>
-      </PlotTooltipRow>
-      <PlotTooltipRow label="P-value">
+      </ObsTooltipRow>
+      <ObsTooltipRow label="P-value">
         <ScientificNotation number={[datum.pValueMantissa, datum.pValueExponent]} dp={2} />
-      </PlotTooltipRow>
-      <PlotTooltipRow label="Beta">{datum.beta?.toPrecision(3) ?? naLabel}</PlotTooltipRow>
-      <PlotTooltipRow label="Fine-mapping">
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Beta">{datum.beta?.toPrecision(3) ?? naLabel}</ObsTooltipRow>
+      <ObsTooltipRow label="Fine-mapping">
         <Box display="flex" flexDirection="column" gap={0.25}>
           <Box display="flex" gap={0.5}>
             Method: {datum.finemappingMethod ?? naLabel}
@@ -221,8 +163,8 @@ function renderTooltipContent(datum) {
             )}
           </Box>
         </Box>
-      </PlotTooltipRow>
-      <PlotTooltipRow label="L2G">
+      </ObsTooltipRow>
+      <ObsTooltipRow label="L2G">
         <Box display="flex" flexDirection="column" gap={0.25}>
           <Box display="flex" gap={0.5}>
             Top:{" "}
@@ -250,11 +192,11 @@ function renderTooltipContent(datum) {
             )}
           </Box>
         </Box>
-      </PlotTooltipRow>
-      <PlotTooltipRow label="Credible set size">
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Credible set size">
         {datum.locus?.count ? datum.locus.count.toLocaleString() : naLabel}
-      </PlotTooltipRow>
-    </PlotTooltipTable>
+      </ObsTooltipRow>
+    </ObsTooltipTable>
   );
 }
 
@@ -300,33 +242,3 @@ const chromosomeInfoMap = new Map(chromosomeInfo.map(obj => [obj.chromosome, obj
 function cumulativePosition({ chromosome, position }) {
   return chromosomeInfoMap.get(chromosome).start + position;
 }
-
-/* TODO
-
-CHECKS:
-- not getting issue of nice changing the yMax (resulting in decimal ticks
-  values)? - check properly
-
-INTERACTION:
-- highlighted line does not jump in front of circlees - possibly okay
-  since most users will hover on circles (not lines) so good to leave all circles
-  above lines?
-- tooltip is next to circle mark even when hover on line - is this ok?
-- if over a new mark and click to remove old sticky tooltip, the new tooltip is
-  not shown
-  - check clickStick and related logic to fix this and any other corner cases
-  - tell user it is click-to-stick?
-
-POLISH APPEARANCE
-- fonts: family, sizes, style, weight, alignment, offset  ...
-- axis and grid width, color, dashed, ...
-
-CLEAN UP
-- add types where appropriate
-- reusable components and patterns for common plot stuff - responsive container,
-  plot controls, other?
-- how com never get searchSuggestion rs7412 on this local branch?!
-- put return null if loading in right place
-- loading skeleton/msg
-
-*/
