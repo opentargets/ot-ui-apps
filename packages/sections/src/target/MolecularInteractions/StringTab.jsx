@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
 import { Grid } from "@mui/material";
 import { scaleQuantize } from "d3";
-import { Link, DataTable, Legend } from "ui";
+import { Link, Legend, OtTable } from "ui";
 
 import client from "../../client";
 import { colorRange } from "../../constants";
@@ -282,7 +282,7 @@ function StringTab({ ensgId, symbol }) {
     <Grid container spacing={4}>
       <Grid item xs={12}>
         {/* table 1: this is the only table and will need to be a HEATMAP */}
-        <DataTable
+        <OtTable
           showGlobalFilter
           columns={columns}
           rows={data}
@@ -290,7 +290,6 @@ function StringTab({ ensgId, symbol }) {
           dataDownloaderFileStem={`${symbol}-molecular-interactions-string`}
           fixed
           classes={{ root: classes.root, table: classes.table }}
-          rowsPerPageOptions={[10, 25, 50, 100]}
           loading={loading}
         />
         <Legend url="https://string-db.org/cgi/info" />
