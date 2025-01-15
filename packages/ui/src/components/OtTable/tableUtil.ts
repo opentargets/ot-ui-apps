@@ -104,13 +104,10 @@ export function getCurrentPagePosition(
 /*****************************************************************
  * CREATES EMPTY ROWS WITH COLUMN OBJECT TO IMITATE LOADING ROWS *
  *****************************************************************/
-export function getLoadingRows(columns, size = 10): loadingTableRows[] {
-  const rowObject: Record<string, null> = {};
-  for (const e in columns) {
-    const item = columns[e].id;
-    rowObject[item] = null;
-  }
-  return new Array(size).fill(rowObject);
+export function getLoadingRows(size = 10): loadingTableRows[] {
+  const rows = new Array(size).fill({});
+  console.log(rows);
+  return rows;
 }
 
 /***********************************

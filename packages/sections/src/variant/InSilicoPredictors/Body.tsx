@@ -70,6 +70,8 @@ export function Body({ id, entity }: BodyProps): ReactElement {
     variables,
   });
 
+  const rows = getSortedRows(request);
+
   return (
     <SectionItem
       definition={definition}
@@ -84,7 +86,6 @@ export function Body({ id, entity }: BodyProps): ReactElement {
         />
       )}
       renderChart={() => {
-        const rows = getSortedRows(request);
         return (
           <InSilicoPredictorsVisualisation
             data={rows}
@@ -95,7 +96,6 @@ export function Body({ id, entity }: BodyProps): ReactElement {
         );
       }}
       renderBody={() => {
-        const rows = getSortedRows(request);
         return (
           <OtTable
             columns={columns}
