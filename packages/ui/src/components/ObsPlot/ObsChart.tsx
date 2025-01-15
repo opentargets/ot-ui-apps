@@ -1,13 +1,33 @@
-// !! DECIDE IF SHOULD ADD TYPES - ALL/MOST PROPS ARE TYPED IN ObsPlot
-
 import { useRef, useEffect } from "react";
 import { Box } from "@mui/material";
+
+type ObsChartProps = {
+  data: any;
+  otherData?: any;
+  width: number;
+  height: number;
+  renderChart?: (params: {
+    data: any;
+    otherData?: any;
+    width: number;
+    height: number;
+  }) => SVGSVGElement;
+  processChart?: (chart: SVGSVGElement) => void;
+  hasTooltip: boolean;
+  fadeElement?: (elmt: SVGElement) => void;
+  highlightElement?: (elmt: SVGElement) => void;
+  resetElement?: (elmt: SVGElement) => void;
+  setChart?: Dispatch<SetStateAction<SVGSVGElement>>;
+  setDatum?: Dispatch<SetStateAction<number>>;
+};
+
 function ObsChart({
   data,
   otherData,
   width,
   height,
   renderChart,
+  processChart,
   hasTooltip,
   fadeElement,
   highlightElement,
@@ -21,6 +41,7 @@ function ObsChart({
     if (data === undefined || width === null) return;
     const chart = renderChart({ data, otherData, width, height });
     setChart(chart);
+    processChart?.(chart);
     if (hasTooltip) {
       let clickStick = false;
       const tooltipMarks = chart.querySelectorAll(".obs-tooltip *");

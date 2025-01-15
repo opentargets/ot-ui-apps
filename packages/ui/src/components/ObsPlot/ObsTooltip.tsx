@@ -1,24 +1,20 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import { Box } from "@mui/material";
 
-// ALL/MOST PROPS TYPED IN OBSPLOT, SO DON'T BOTHER HERE?
-// type ObsTooltipProps = {
-//   width: number;
-//   height: number;
-//   xAnchor?: "left" | "right" | "center" | "adapt";
-//   yAnchor?: "top" | "bottom" | "center" | "adapt";
-//   dx?: number;
-//   dy?: number;
-//   xAccessor: (d: any, i?: number) => number | string;
-//   yAccessor: (d: any, i?: number) => number | string;
-//   xReverse?: boolean;
-//   yReverse?: boolean;
-//   chart: ReactElement;
-//   datum: any;
-//   renderContent: (datum: any) => ReactElement;
-// };
+type ObsTooltipProps = {
+  width: number;
+  height: number;
+  xAnchor?: "left" | "right" | "center" | "adapt";
+  yAnchor?: "top" | "bottom" | "center" | "adapt";
+  dx?: number;
+  dy?: number;
+  xAccessor: (d: any, i?: number) => number | string;
+  yAccessor: (d: any, i?: number) => number | string;
+  chart: ReactElement;
+  datum: any;
+  renderTooltip: (datum: any) => ReactElement;
+};
 
-// DO NOT REPEAT DEFAULTS HERE AND IN ObsPlot
 function ObsTooltip({
   width,
   height,
@@ -28,12 +24,10 @@ function ObsTooltip({
   dy = 0,
   xAccessor,
   yAccessor,
-  // xReverse = false,
-  // yReverse = false,
   chart,
   datum,
   renderTooltip,
-}) {
+}: ObsTooltipProps) {
   if (!datum) return null;
 
   const x = chart.scale("x").apply(xAccessor(datum));
@@ -43,7 +37,6 @@ function ObsTooltip({
   if (xAnchor === "center") {
     left = x;
     transformX = "-50%";
-    // } else if (xAnchor === "left" || (xAnchor === "adapt" && x > width / 2 === xReverse)) {
   } else if (xAnchor === "left" || (xAnchor === "adapt" && x < width / 2)) {
     left = x + dx;
   } else {
@@ -52,8 +45,7 @@ function ObsTooltip({
   if (yAnchor === "center") {
     top = y;
     transformY = "-50%";
-    // } else if (yAnchor === "bottom" || (yAnchor === "adapt" && y > height / 2 === yReverse)) {
-  } else if (yAnchor === "bottom" || (yAnchor === "adapt" && y < height / 2)) {
+  } else if (yAnchor === "bottom" || (yAnchor === "adapt" && y > height / 2)) {
     bottom = height - y + dy;
   } else {
     top = y + dy;

@@ -54,27 +54,45 @@ function ManhattanLollipopPlot({ data: originalData }) {
       width,
       height,
       label: null,
+      marginTop: 30,
       marginLeft: 90,
       marginRight: 40,
+      style: { fontSize: "11px", fontWeight: "500" },
       x: {
         line: true,
-        grid: true,
+        grid: false,
         domain: [0, genomeLength],
         ticks: [0, ...chromosomeInfo.map(chromo => chromo.end)],
         tickSize: 16,
         tickFormat: v => "",
       },
       y: {
-        domain: [yMax, yMin],
-        // reverse: true,
+        domain: [yMin, yMax],
+        reverse: true,
         nice: true,
         line: true,
-        label: "-log_10(pValue)",
+        label: "-log₁₀(pValue)",
         labelAnchor: "top",
         labelArrow: "none",
         tickFormat: v => Math.abs(v),
       },
       marks: [
+        // PlotLib.axisY({ strokeOpacity: 0.5, line: true }),
+        // PlotLib.ruleY([0]),
+
+        // grid lines
+        PlotLib.gridX(
+          chromosomeInfo.map(chromo => chromo.end),
+          {
+            x: d => d,
+            y1: yMax,
+            y2: yMin,
+            stroke: "#cecece",
+            strokeOpacity: 1,
+            strokeDasharray: "3, 4",
+          }
+        ),
+
         // text mark for the x-axis labels
         PlotLib.text(chromosomeInfo, {
           x: d => d.midpoint,
@@ -109,7 +127,7 @@ function ManhattanLollipopPlot({ data: originalData }) {
   return (
     <ObsPlot
       data={data}
-      height={380}
+      height={360}
       renderChart={renderChart}
       xTooltip={d => d._genomePosition}
       yTooltip={d => d._y}
