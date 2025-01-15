@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactElement, ReactNode, useMemo, useState } from "react";
 import { Box, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import OtTableColumnFilter from "./OtTableColumnFilter";
 // import { naLabel } from "../../constants";
 import OtTableSearch from "./OtTableSearch";
-import { OtTableProps } from "./table.types";
+import { OtTableProps } from "./types/tableTypes";
 import {
   FontAwesomeIconPadded,
   OtTableContainer,
@@ -42,8 +42,9 @@ import {
   getDefaultSortObj,
   getFilterValueFromObject,
   getLoadingRows,
+  isNestedColumns,
   mapTableColumnToTanstackColumns,
-} from "./tableUtil";
+} from "./utils/tableUtils";
 import Tooltip from "../Tooltip";
 import OtTableColumnVisibility from "./OtTableColumnVisibility";
 
@@ -51,6 +52,7 @@ declare module "@tanstack/table-core" {
   interface FilterFns {
     searchFilterFn: FilterFn<unknown>;
   }
+
   interface FilterMeta {
     itemRank: RankingInfo;
   }
@@ -309,10 +311,17 @@ function OtTable({
 }
 
 function getLoadingCells(columms: Array<Record<string, unknown>>) {
-  return columms.map(column => ({
-    ...column,
-    cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" />,
-  }));
+  const arr: Record<string, unknown>[] = [];
+  columms.forEach(e => {
+    if (isNestedColumns(e)) {
+      const headerObj = {
+        header: e.header || e.label,
+        columns: getLoadingCells(e.columns),
+      };
+      arr.push(headerObj);
+    } else arr.push({ ...e, cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" /> });
+  });
+  return arr;
 }
 
 export default OtTable;

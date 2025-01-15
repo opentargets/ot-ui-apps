@@ -11,7 +11,7 @@ export function mapTableColumnToTanstackColumns(
   allColumns.forEach(e => {
     if (isNestedColumns(e)) {
       const headerObj = {
-        header: e.header,
+        header: e.header || e.label,
         columns: mapTableColumnToTanstackColumns(e.columns),
       };
       arr.push(headerObj);
@@ -106,7 +106,6 @@ export function getCurrentPagePosition(
  *****************************************************************/
 export function getLoadingRows(size = 10): loadingTableRows[] {
   const rows = new Array(size).fill({});
-  console.log(rows);
   return rows;
 }
 
@@ -116,7 +115,7 @@ export function getLoadingRows(size = 10): loadingTableRows[] {
  * column: object
  * @return: boolean
  ***********************************/
-function isNestedColumns(column: Record<string, unknown>): boolean {
+export function isNestedColumns(column: Record<string, unknown>): boolean {
   return Object.hasOwn(column, "columns");
 }
 
