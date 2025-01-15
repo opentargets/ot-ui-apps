@@ -1,10 +1,110 @@
-import { Body as KnownDrugsBody } from "../../common/KnownDrugs";
 import Description from "./Description";
 import { sentenceCase } from "../../utils/global";
+import { definition } from "./index";
 
-import { definition } from ".";
 import KNOWN_DRUGS_BODY_QUERY from "./KnownDrugsQuery.gql";
-import client from "../../client";
+import { naLabel, phaseMap } from "../../constants";
+import { KnownDrugsSourceDrawer, Link, OtTableSSP, SectionItem } from "ui";
+import { useState } from "react";
+
+function getColumnPool(id, entity) {
+  return [
+    {
+      label: "Drug information",
+      columns: [
+        {
+          id: "drug",
+          label: "Drug",
+          enableHiding: false,
+          propertyPath: "drug.id",
+          sticky: true,
+          renderCell: d =>
+            d.drug ? <Link to={`/drug/${d.drug.id}`}>{d.drug.name}</Link> : naLabel,
+        },
+        {
+          id: "type",
+          label: "Type",
+          propertyPath: "drugType",
+          renderCell: d => d.drugType,
+        },
+        {
+          id: "mechanismOfAction",
+          label: "Mechanism Of Action",
+        },
+        {
+          id: "actionType",
+          label: "Action Type",
+          renderCell: ({ drug, target }) => {
+            if (!drug?.mechanismsOfAction) return naLabel;
+            const at = new Set();
+
+            const targetId = entity === "target" ? id : target.id;
+
+            drug.mechanismsOfAction.rows.forEach(row => {
+              row.targets.forEach(t => {
+                if (t.id === targetId) {
+                  at.add(row.actionType);
+                }
+              });
+            });
+
+            const actionTypes = Array.from(at);
+
+            return actionTypes.length > 0 ? (
+              <ul
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  listStyle: "none",
+                }}
+              >
+                {actionTypes.map(actionType => (
+                  <li key={actionType}>{sentenceCase(actionType)}</li>
+                ))}
+              </ul>
+            ) : (
+              naLabel
+            );
+          },
+        },
+      ],
+    },
+    {
+      label: "Disease information",
+      columns: [
+        {
+          id: "disease",
+          label: "Disease",
+          propertyPath: "disease.id",
+          renderCell: d => <Link to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>,
+        },
+      ],
+    },
+    {
+      label: "Clinical trials information",
+      columns: [
+        {
+          id: "phase",
+          label: "Phase",
+          sortable: true,
+          renderCell: ({ phase }) => phaseMap(phase),
+          filterValue: ({ phase }) => phaseMap(phase),
+        },
+        {
+          id: "status",
+          label: "Status",
+          renderCell: d => (d.status ? d.status : naLabel),
+        },
+        {
+          id: "sources",
+          label: "Source",
+          exportValue: d => d.urls.map(reference => reference.url),
+          renderCell: d => <KnownDrugsSourceDrawer references={d.urls} />,
+        },
+      ],
+    },
+  ];
+}
 
 const exportColumns = id => [
   {
@@ -61,20 +161,34 @@ const exportColumns = id => [
   },
 ];
 
-function Body({ id: ensgId, label: symbol, entity }) {
+function Body({ id: ensgId, label: name, entity }) {
+  const columnPool = getColumnPool(ensgId, entity);
+  const [request, setRequest] = useState({ loading: true, data: null, error: false });
+
   return (
-    <KnownDrugsBody
-      definition={definition}
-      entity={entity}
-      variables={{ ensgId }}
-      BODY_QUERY={KNOWN_DRUGS_BODY_QUERY}
-      // eslint-disable-next-line
-      Description={() => <Description symbol={symbol} />}
-      columnsToShow={["drug", "disease", "clinicalTrials"]}
-      stickyColumn="drug"
-      exportColumns={exportColumns(ensgId)}
-      client={client}
-    />
+    <>
+      <SectionItem
+        definition={definition}
+        entity={entity}
+        request={request}
+        renderDescription={() => <Description name={name} />}
+        renderBody={() => (
+          <OtTableSSP
+            query={KNOWN_DRUGS_BODY_QUERY}
+            columns={columnPool}
+            dataDownloader
+            dataDownloaderColumns={exportColumns(ensgId)}
+            dataDownloaderFileStem={`${ensgId}-known-drugs`}
+            entity={entity}
+            sectionName="knownDrugs"
+            setInitialRequestData={req => {
+              setRequest(req);
+            }}
+            variables={{ ensgId }}
+          />
+        )}
+      />
+    </>
   );
 }
 

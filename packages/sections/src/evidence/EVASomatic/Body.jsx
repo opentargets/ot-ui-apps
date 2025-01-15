@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
@@ -8,19 +8,15 @@ import {
   Link,
   PublicationsDrawer,
   ClinvarStars,
-  Table,
-  useCursorBatchDownloader,
-  getComparator,
-  getPage,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  OtTableSSP,
 } from "ui";
-import client from "../../client";
 
 import { sentenceCase } from "../../utils/global";
 
 import { epmcUrl } from "../../utils/urls";
-import { clinvarStarMap, naLabel, defaultRowsPerPageOptions } from "../../constants";
+import { clinvarStarMap, naLabel } from "../../constants";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
 import EVA_SOMATIC_QUERY from "./EvaSomaticQuery.gql";
@@ -66,6 +62,7 @@ const getColumns = label => [
   {
     id: "variantId",
     label: "Variant",
+    enableHiding: false,
     renderCell: ({ variant: { id: variantId } }) =>
       variantId ? (
         <>
@@ -249,19 +246,6 @@ const exportColumns = [
   },
 ];
 
-function fetchData({ ensemblId, efoId, cursor, size }) {
-  return client.query({
-    query: EVA_SOMATIC_QUERY,
-    fetchPolicy: "no-cache",
-    variables: {
-      ensemblId,
-      efoId,
-      cursor,
-      size,
-    },
-  });
-}
-
 const useStyles = makeStyles({
   roleInCancerBox: {
     display: "flex",
@@ -275,152 +259,64 @@ function Body({ id, label, entity }) {
   const classes = useStyles();
 
   const { ensgId: ensemblId, efoId } = id;
-
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [count, setCount] = useState(0);
-  const [cursor, setCursor] = useState("");
-  const [rows, setRows] = useState([]);
-  const [page, setPage] = useState(0);
-  const [size, setPageSize] = useState(10);
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [target, setTarget] = useState({});
+  const [request, setRequest] = useState({ loading: true, data: null, error: false });
 
   const columns = getColumns(label);
 
-  useEffect(() => {
-    let isCurrent = true;
+  function getRoleInCancer() {
+    if (!request.data) return null;
 
-    fetchData({ ensemblId, efoId, cursor: "", size }).then(res => {
-      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.eva_somatic;
-      if (isCurrent) {
-        setInitialLoading(false);
-        setCursor(newCursor);
-        setCount(newCount);
-        setRows(newRows);
-        setTarget(res.data.target);
-      }
-    });
-
-    return () => {
-      isCurrent = false;
-    };
-  }, []);
-
-  const getWholeDataset = useCursorBatchDownloader(
-    EVA_SOMATIC_QUERY,
-    {
-      ensemblId,
-      efoId,
-    },
-    `data.disease.eva_somatic`
-  );
-
-  const handlePageChange = newPage => {
-    const newPageInt = Number(newPage);
-    if (size * newPageInt + size > rows.length && cursor !== null) {
-      setLoading(true);
-      fetchData({ ensemblId, efoId, cursor, size }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.eva_somatic;
-        setRows([...rows, ...newRows]);
-        setLoading(false);
-        setCursor(newCursor);
-        setPage(newPageInt);
-      });
-    } else {
-      setPage(newPageInt);
+    const { hallmarks } = request.data?.target;
+    let roleInCancerItems = [{ label: "Unknown" }];
+    if (hallmarks && hallmarks.attributes.length > 0) {
+      roleInCancerItems = hallmarks.attributes
+        .filter(attribute => attribute.name === "role in cancer")
+        .map(attribute => ({
+          label: attribute.description,
+          url: epmcUrl(attribute.pmid),
+        }));
     }
-  };
 
-  const handleRowsPerPageChange = newPageSize => {
-    const newPageSizeInt = Number(newPageSize);
-    if (newPageSizeInt > rows.length && cursor !== null) {
-      setLoading(true);
-      fetchData({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.eva_somatic;
-        setRows([...rows, ...newRows]);
-        setLoading(false);
-        setCursor(newCursor);
-        setPage(0);
-        setPageSize(newPageSizeInt);
-      });
-    } else {
-      setPage(0);
-      setPageSize(newPageSizeInt);
-    }
-  };
-
-  const handleSortBy = sortBy => {
-    setSortColumn(sortBy);
-    setSortOrder(
-      // eslint-disable-next-line
-      sortColumn === sortBy ? (sortOrder === "asc" ? "desc" : "asc") : "asc"
+    return (
+      <>
+        <Typography className={classes.roleInCancerTitle}>
+          <b>{label.symbol}</b> role in cancer:
+        </Typography>
+        <ChipList items={roleInCancerItems} />
+      </>
     );
-  };
-
-  const processedRows = [...rows];
-
-  if (sortColumn) {
-    processedRows.sort(getComparator(columns, sortOrder, sortColumn));
   }
 
   return (
     <SectionItem
       definition={definition}
       chipText={dataTypesMap.somatic_mutation}
-      request={{
-        loading: initialLoading,
-        data: { [entity]: { eva_somatic: { rows, count: rows.length } } },
-      }}
-      showContentLoading={true}
+      request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={() => {
-        const { hallmarks } = target;
-        const roleInCancerItems =
-          hallmarks && hallmarks.attributes.length > 0
-            ? hallmarks.attributes
-                .filter(attribute => attribute.name === "role in cancer")
-                .map(attribute => ({
-                  label: attribute.description,
-                  url: epmcUrl(attribute.pmid),
-                }))
-            : [{ label: "Unknown" }];
-        return (
-          <>
-            <Box className={classes.roleInCancerBox}>
-              <Typography className={classes.roleInCancerTitle}>
-                <b>{label.symbol}</b> role in cancer:
-              </Typography>
-              <ChipList items={roleInCancerItems} />
-            </Box>
-            <Table
-              loading={loading}
-              columns={columns}
-              rows={getPage(processedRows, page, size)}
-              rowCount={count}
-              rowsPerPageOptions={defaultRowsPerPageOptions}
-              page={page}
-              pageSize={size}
-              onPageChange={handlePageChange}
-              onRowsPerPageChange={handleRowsPerPageChange}
-              onSortBy={handleSortBy}
-              query={EVA_SOMATIC_QUERY.loc.source.body}
-              dataDownloader
-              dataDownloaderColumns={exportColumns}
-              dataDownloaderRows={getWholeDataset}
-              dataDownloaderFileStem="impc-evidence"
-              variables={{
-                ensemblId,
-                efoId,
-                cursor,
-                size,
-              }}
-            />
-          </>
-        );
-      }}
+      renderBody={() => (
+        <>
+          <Box className={classes.roleInCancerBox}>{getRoleInCancer()}</Box>
+
+          <OtTableSSP
+            query={EVA_SOMATIC_QUERY}
+            columns={columns}
+            dataDownloader
+            dataDownloaderColumns={exportColumns}
+            dataDownloaderFileStem="eva_somatic-evidence"
+            entity={entity}
+            sectionName="eva_somatic"
+            showGlobalFilter={false}
+            setInitialRequestData={req => {
+              setRequest(req);
+            }}
+            variables={{
+              ensemblId,
+              efoId,
+            }}
+          />
+        </>
+      )}
     />
   );
 }
