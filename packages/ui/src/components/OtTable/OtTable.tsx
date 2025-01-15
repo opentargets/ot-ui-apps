@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactElement, ReactNode, useMemo, useState } from "react";
 import { Box, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
@@ -52,6 +52,7 @@ declare module "@tanstack/table-core" {
   interface FilterFns {
     searchFilterFn: FilterFn<unknown>;
   }
+
   interface FilterMeta {
     itemRank: RankingInfo;
   }
