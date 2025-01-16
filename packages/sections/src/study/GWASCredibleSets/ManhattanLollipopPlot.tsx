@@ -1,14 +1,17 @@
-import { useTheme, Box } from "@mui/material";
+import { useTheme, Box, Skeleton } from "@mui/material";
 import { ClinvarStars, Link, Tooltip, DisplayVariantId, Navigate, OtScoreLinearBar } from "ui";
 import * as PlotLib from "@observablehq/plot";
 import { ScientificNotation, ObsPlot, ObsTooltipTable, ObsTooltipRow } from "ui";
 import { naLabel, credsetConfidenceMap } from "../../constants";
 
-function ManhattanLollipopPlot({ data: originalData }) {
+function ManhattanLollipopPlot({ loading, data: originalData }) {
   const theme = useTheme();
-  const background = theme.palette.background.paper;
+
+  const height = 360;
   const markColor = theme.palette.primary.main;
-  // const fontFamily = theme.typography.fontFamily;
+  const background = theme.palette.background.paper;
+
+  if (loading) return <Skeleton height={height} />;
 
   if (originalData == null) return null;
 
@@ -47,46 +50,51 @@ function ManhattanLollipopPlot({ data: originalData }) {
     elmt.style.strokeWidth = 1;
   }
 
-  // should really pass in chromosomeLength etc as other data? - rather than
-  // relying on scoping
   function renderChart({ data, width, height }) {
     return PlotLib.plot({
       width,
       height,
-      label: null,
       marginTop: 30,
       marginLeft: 90,
       marginRight: 40,
       style: { fontSize: "11px", fontWeight: "500" },
       x: {
-        line: true,
-        grid: false,
         domain: [0, genomeLength],
-        ticks: [0, ...chromosomeInfo.map(chromo => chromo.end)],
-        tickSize: 16,
-        tickFormat: v => "",
       },
       y: {
         domain: [yMin, yMax],
         reverse: true,
         nice: true,
-        line: true,
-        label: "-log₁₀(pValue)",
-        labelAnchor: "top",
-        labelArrow: "none",
-        tickFormat: v => Math.abs(v),
       },
       marks: [
-        // PlotLib.axisY({ strokeOpacity: 0.5, line: true }),
-        // PlotLib.ruleY([0]),
+        // x-axis
+        PlotLib.axisX({
+          stroke: "#888",
+          ticks: [0, ...chromosomeInfo.map(chromo => chromo.end)],
+          tickSize: 16,
+          tickFormat: v => "",
+        }),
+        PlotLib.ruleY([0], {
+          stroke: "#888",
+        }),
+
+        // y-axis
+        PlotLib.axisY({
+          stroke: "#888",
+          label: "-log₁₀(pValue)",
+          labelAnchor: "top",
+          labelArrow: "none",
+          tickFormat: v => Math.abs(v),
+        }),
+        PlotLib.ruleX([0], {
+          stroke: "#888",
+        }),
 
         // grid lines
         PlotLib.gridX(
           chromosomeInfo.map(chromo => chromo.end),
           {
             x: d => d,
-            y1: yMax,
-            y2: yMin,
             stroke: "#cecece",
             strokeOpacity: 1,
             strokeDasharray: "3, 4",
@@ -127,7 +135,7 @@ function ManhattanLollipopPlot({ data: originalData }) {
   return (
     <ObsPlot
       data={data}
-      height={360}
+      height={height}
       renderChart={renderChart}
       xTooltip={d => d._genomePosition}
       yTooltip={d => d._y}

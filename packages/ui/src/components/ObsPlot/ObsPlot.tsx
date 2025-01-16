@@ -7,15 +7,14 @@ type ObsPlotProps = {
   data: any;
   otherData?: any;
   height: number;
-  renderChart?: (params: {
+  renderChart: (param: {
     data: any;
     otherData?: any;
     width: number;
     height: number;
   }) => SVGSVGElement;
-  processChart?: (chart: SVGSVGElement) => void;
-  xTooltip?: (d: any, i?: number) => number | string;
-  yTooltip?: (d: any, i?: number) => number | string;
+  xTooltip?: (d: any, i?: number) => number;
+  yTooltip?: (d: any, i?: number) => number;
   xAnchorTooltip?: "left" | "right" | "center" | "adapt";
   yAnchorTooltip?: "top" | "bottom" | "center" | "adapt";
   dxTooltip?: number;
@@ -27,27 +26,26 @@ type ObsPlotProps = {
 };
 
 function ObsPlot({
-  data, // main data used by plot and tooltip
-  otherData, // other data sets used by renderChart
+  data,
+  otherData,
   height,
   renderChart,
-  processChart,
-  xTooltip, // x accessor function for tooltip
-  yTooltip, // y accessor function for tooltip
-  xAnchorTooltip = "adapt",
-  yAnchorTooltip = "adapt",
-  dxTooltip = 0, // +ve value distances tooltip from anchor point - ignored if centered
-  dyTooltip = 0,
+  xTooltip,
+  yTooltip,
+  xAnchorTooltip,
+  yAnchorTooltip,
+  dxTooltip,
+  dyTooltip,
   renderTooltip,
-  fadeElement = () => {}, // passed an SVG element - a non-selected tooltip marks
-  highlightElement = () => {}, // passed an SVG element - a selected tooltip mark
-  resetElement = () => {}, // passed an SVG element - should undo fade/highlight
+  fadeElement,
+  highlightElement,
+  resetElement,
 }: ObsPlotProps) {
   const [ref, { width }] = useMeasure();
   const [chart, setChart] = useState(null);
   const [datum, setDatum] = useState(null);
 
-  const hasTooltip = xTooltip && yTooltip && renderTooltip;
+  const hasTooltip = Boolean(xTooltip && yTooltip && renderTooltip);
 
   return (
     <div>
@@ -60,7 +58,6 @@ function ObsPlot({
               width={width}
               height={height}
               renderChart={renderChart}
-              processChart={processChart}
               hasTooltip={hasTooltip}
               fadeElement={fadeElement}
               highlightElement={highlightElement}
@@ -74,10 +71,10 @@ function ObsPlot({
                 height={height}
                 xAnchor={xAnchorTooltip}
                 yAnchor={yAnchorTooltip}
-                xAccessor={xTooltip}
-                yAccessor={yTooltip}
                 dx={dxTooltip}
                 dy={dyTooltip}
+                xAccessor={xTooltip}
+                yAccessor={yTooltip}
                 renderTooltip={renderTooltip}
                 chart={chart}
                 datum={datum}

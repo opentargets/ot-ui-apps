@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement } from "react";
 import { Box } from "@mui/material";
 
 type ObsTooltipProps = {
@@ -8,11 +8,11 @@ type ObsTooltipProps = {
   yAnchor?: "top" | "bottom" | "center" | "adapt";
   dx?: number;
   dy?: number;
-  xAccessor: (d: any, i?: number) => number | string;
-  yAccessor: (d: any, i?: number) => number | string;
+  xAccessor: (d: any, i?: number) => number;
+  yAccessor: (d: any, i?: number) => number;
+  renderTooltip: (datum: any) => ReactElement;
   chart: ReactElement;
   datum: any;
-  renderTooltip: (datum: any) => ReactElement;
 };
 
 function ObsTooltip({
@@ -24,9 +24,9 @@ function ObsTooltip({
   dy = 0,
   xAccessor,
   yAccessor,
+  renderTooltip,
   chart,
   datum,
-  renderTooltip,
 }: ObsTooltipProps) {
   if (!datum) return null;
 

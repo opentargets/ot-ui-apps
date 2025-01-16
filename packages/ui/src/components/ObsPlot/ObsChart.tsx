@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, Dispatch, SetStateAction } from "react";
 import { Box } from "@mui/material";
 
 type ObsChartProps = {
@@ -6,19 +6,18 @@ type ObsChartProps = {
   otherData?: any;
   width: number;
   height: number;
-  renderChart?: (params: {
+  renderChart: (params: {
     data: any;
     otherData?: any;
     width: number;
     height: number;
   }) => SVGSVGElement;
-  processChart?: (chart: SVGSVGElement) => void;
   hasTooltip: boolean;
   fadeElement?: (elmt: SVGElement) => void;
   highlightElement?: (elmt: SVGElement) => void;
   resetElement?: (elmt: SVGElement) => void;
-  setChart?: Dispatch<SetStateAction<SVGSVGElement>>;
-  setDatum?: Dispatch<SetStateAction<number>>;
+  setChart: Dispatch<SetStateAction<SVGSVGElement>>;
+  setDatum: Dispatch<SetStateAction<any>>;
 };
 
 function ObsChart({
@@ -27,53 +26,84 @@ function ObsChart({
   width,
   height,
   renderChart,
-  processChart,
   hasTooltip,
-  fadeElement,
-  highlightElement,
-  resetElement,
+  fadeElement = () => {},
+  highlightElement = () => {},
+  resetElement = () => {},
   setChart,
   setDatum,
-}) {
+}: ObsChartProps) {
   const headerRef = useRef();
 
   useEffect(() => {
     if (data === undefined || width === null) return;
     const chart = renderChart({ data, otherData, width, height });
     setChart(chart);
-    processChart?.(chart);
     if (hasTooltip) {
-      let clickStick = false;
+      let clicked = false;
+      let selectedDatum;
       const tooltipMarks = chart.querySelectorAll(".obs-tooltip *");
       for (const elmt of tooltipMarks) {
         const dataIndex = elmt.__data__;
+        const elmtDatum = data[dataIndex];
+        const highlightSelected = () => {
+          tooltipMarks.forEach(fadeElement);
+          // possibly multiple mark elements for same datum
+          chart.querySelectorAll(`[data-index="${dataIndex}"]`).forEach(highlightElement);
+        };
         elmt.setAttribute("data-index", dataIndex);
-        elmt.addEventListener("mouseenter", event => {
-          if (!clickStick) {
-            setDatum(data[dataIndex]);
-            tooltipMarks.forEach(fadeElement);
-            // possibly multiple marks for same datum
-            chart.querySelectorAll(`[data-index="${dataIndex}"]`).forEach(highlightElement);
+        elmt.addEventListener("click", event => {
+          if (clicked && selectedDatum === elmtDatum) {
+            clicked = false;
+            selectedDatum = null;
+          } else {
+            clicked = true;
+            selectedDatum = elmtDatum;
+            highlightSelected();
+          }
+          setDatum(selectedDatum);
+          event.stopPropagation();
+        });
+        elmt.addEventListener("mouseenter", () => {
+          if (!clicked) {
+            selectedDatum = elmtDatum;
+            setDatum(selectedDatum);
+            highlightSelected();
           }
         });
-        elmt.addEventListener("mouseleave", event => {
-          if (!clickStick) {
-            setDatum(null);
+        elmt.addEventListener("mouseleave", () => {
+          if (!clicked) {
+            selectedDatum = null;
+            setDatum(selectedDatum);
             tooltipMarks.forEach(resetElement);
           }
         });
       }
-      chart.addEventListener("click", event => {
-        clickStick = !clickStick;
-        if (!clickStick) {
-          setDatum(null);
+      chart.addEventListener("click", () => {
+        if (clicked) {
+          clicked = false;
+          selectedDatum = null;
+          setDatum(selectedDatum);
           tooltipMarks.forEach(resetElement);
         }
       });
     }
+    window.chart = chart;
     headerRef.current.append(chart);
     return () => chart.remove();
-  }, [data, width, height, setChart, setDatum]);
+  }, [
+    data,
+    otherData,
+    width,
+    height,
+    renderChart,
+    hasTooltip,
+    fadeElement,
+    highlightElement,
+    resetElement,
+    setChart,
+    setDatum,
+  ]);
 
   return <Box ref={headerRef}></Box>;
 }
