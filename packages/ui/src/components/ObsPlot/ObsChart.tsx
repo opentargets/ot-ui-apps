@@ -88,9 +88,11 @@ function ObsChart({
         }
       });
     }
-    window.chart = chart;
     headerRef.current.append(chart);
-    return () => chart.remove();
+    return () => {
+      setDatum(null);
+      chart.remove();
+    };
   }, [
     data,
     otherData,
