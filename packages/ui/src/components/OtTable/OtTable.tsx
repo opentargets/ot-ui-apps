@@ -1,5 +1,5 @@
-import { ReactElement, ReactNode, useEffect, useState } from "react";
-import { Box, CircularProgress, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
+import { ReactElement, ReactNode, useMemo, useState } from "react";
+import { Box, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
   ColumnFiltersState,
@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import OtTableColumnFilter from "./OtTableColumnFilter";
 // import { naLabel } from "../../constants";
 import OtTableSearch from "./OtTableSearch";
-import { loadingTableRows, OtTableProps } from "./table.types";
+import { OtTableProps } from "./types/tableTypes";
 import {
   FontAwesomeIconPadded,
   OtTableContainer,
@@ -42,8 +42,9 @@ import {
   getDefaultSortObj,
   getFilterValueFromObject,
   getLoadingRows,
+  isNestedColumns,
   mapTableColumnToTanstackColumns,
-} from "./tableUtil";
+} from "./utils/tableUtils";
 import Tooltip from "../Tooltip";
 import OtTableColumnVisibility from "./OtTableColumnVisibility";
 
@@ -51,6 +52,7 @@ declare module "@tanstack/table-core" {
   interface FilterFns {
     searchFilterFn: FilterFn<unknown>;
   }
+
   interface FilterMeta {
     itemRank: RankingInfo;
   }
@@ -79,7 +81,6 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 function OtTable({
   showGlobalFilter = true,
-  tableDataLoading = false,
   columns = [],
   rows = [],
   verticalHeaders = false,
@@ -97,18 +98,25 @@ function OtTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
-  // const loadingRows = getLoadingRows(mappedColumns, 10);
+  const loadingRows = getLoadingRows(10);
+  const loadingCells = getLoadingCells(mappedColumns);
+
+  const tableData = useMemo(() => (loading ? loadingRows : rows), [loading]);
+  const tableColumns = useMemo(() => (loading ? loadingCells : mappedColumns), [loading]);
+
+  function getCellData(cell: Record<string, unknown>): ReactNode {
+    return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
+  }
 
   const table = useReactTable({
-    data: rows,
-    columns: mappedColumns,
+    data: tableData,
+    columns: tableColumns,
     filterFns: {
       searchFilterFn: searchFilter,
     },
     state: {
       columnFilters,
       globalFilter,
-      loading,
     },
     initialState: {
       sorting: getDefaultSortObj(sortBy, order),
@@ -208,11 +216,8 @@ function OtTable({
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
                         <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
-                          {table.getState().loading ? (
-                            <Skeleton sx={{ minWidth: "50px" }} variant="text" />
-                          ) : (
-                            <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>
-                          )}
+                          {getCellData(cell)}
+                          {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
                           {/* TODO: check NA value */}
                           {/* {Boolean(flexRender(cell.column.columnDef.cell, cell.getContext())) ||
                             naLabel} */}
@@ -241,11 +246,11 @@ function OtTable({
           padding: theme => `${theme.spacing(2)} 0 `,
         }}
       >
-        {tableDataLoading && <CircularProgress sx={{ mx: theme => theme.spacing(2) }} size={25} />}
         <div>
           <span>Rows per page:</span>
           <NativeSelect
             disableUnderline
+            disabled={loading}
             sx={{ pl: theme => theme.spacing(2) }}
             value={table.getState().pagination.pageSize}
             onChange={e => {
@@ -303,6 +308,20 @@ function OtTable({
       </Box>
     </div>
   );
+}
+
+function getLoadingCells(columms: Array<Record<string, unknown>>) {
+  const arr: Record<string, unknown>[] = [];
+  columms.forEach(e => {
+    if (isNestedColumns(e)) {
+      const headerObj = {
+        header: e.header || e.label,
+        columns: getLoadingCells(e.columns),
+      };
+      arr.push(headerObj);
+    } else arr.push({ ...e, cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" /> });
+  });
+  return arr;
 }
 
 export default OtTable;

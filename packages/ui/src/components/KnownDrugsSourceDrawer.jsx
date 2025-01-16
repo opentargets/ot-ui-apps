@@ -97,7 +97,7 @@ const drawerSourceLabel = (name, url) => {
   return `${name} entry`;
 };
 
-function SourceDrawer({ references }) {
+function KnownDrugsSourceDrawer({ references }) {
   const [open, setOpen] = useState(false);
   const classes = sourceDrawerStyles();
 
@@ -196,4 +196,4 @@ function SourceDrawer({ references }) {
   );
 }
 
-export default SourceDrawer;
+export default KnownDrugsSourceDrawer;

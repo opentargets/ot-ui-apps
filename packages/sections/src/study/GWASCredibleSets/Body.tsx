@@ -187,7 +187,6 @@ function Body({ id, entity }: BodyProps): ReactElement {
       definition={definition}
       entity={entity}
       request={request}
-      showContentLoading
       loadingMessage="Loading data. This may take some time..."
       renderDescription={() => <Description studyId={request.data?.study.id} />}
       renderBody={() => (

@@ -10,7 +10,7 @@ function Summary() {
 }
 
 Summary.fragments = {
-  QTLCredibleSetsSummaryFragment: QTL_CREDIBLE_SETS_SUMMARY,
+  StudyQTLCredibleSetsSummaryFragment: QTL_CREDIBLE_SETS_SUMMARY,
 };
 
 export default Summary;

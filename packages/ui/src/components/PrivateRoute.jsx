@@ -1,11 +1,11 @@
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import usePermissions from "../hooks/usePermissions";
 
 function PrivateRoute({ children }) {
   const { isPartnerPreview } = usePermissions();
 
   if (!isPartnerPreview) {
-    return <Redirect to="/404" />;
+    return <Navigate to="/404" />;
   }
 
   return children;

@@ -191,7 +191,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       filterValue: ({ confidence }) => credsetConfidenceMap[confidence],
     },
     {
-      id: "topL2G",
+      id: "l2Gpredictions",
       label: "Top L2G",
       filterValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target?.approvedSymbol,
       tooltip: "Top gene prioritised by our locus-to-gene model",

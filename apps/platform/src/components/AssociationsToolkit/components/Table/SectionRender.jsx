@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { styled } from "@mui/material/styles";
-import { LoadingBackdrop } from "ui";
+import { SectionLoader } from "ui";
 import { ENTITIES } from "../../utils";
 
 import prioritisationColumns from "../../static_datasets/prioritisationColumns";
@@ -8,15 +8,7 @@ import targetSections from "../../../../sections/targetSections";
 import evidenceSections from "../../../../sections/evidenceSections";
 
 import { grey } from "@mui/material/colors";
-
-const LoadingContainer = styled("div")({
-  margin: "25px 0",
-  height: "100px",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: "20px",
-});
+import { Box } from "@mui/material";
 
 const Container = styled("div", {
   shouldForwardProp: prop => prop !== "table",
@@ -30,10 +22,9 @@ const Container = styled("div", {
 
 function LoadingSection() {
   return (
-    <LoadingContainer>
-      <LoadingBackdrop />
-      Importing section assets
-    </LoadingContainer>
+    <Box sx={{ m: 3 }}>
+      <SectionLoader />
+    </Box>
   );
 }
 
