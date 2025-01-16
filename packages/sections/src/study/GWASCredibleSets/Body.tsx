@@ -10,6 +10,7 @@ import {
   useBatchQuery,
   Navigate,
 } from "ui";
+import { Box } from "@mui/material";
 import { naLabel, credsetConfidenceMap, initialResponse, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
@@ -19,7 +20,6 @@ import {
   nullishComparator,
   variantComparator,
 } from "../../utils/comparators";
-import ManhattanLollipopPlot from "./ManhattanLollipopPlot";
 import ManhattanPlot from "./ManhattanPlot";
 import { ReactElement, useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
@@ -191,11 +191,9 @@ function Body({ id, entity }: BodyProps): ReactElement {
       renderDescription={() => <Description studyId={request.data?.study.id} />}
       renderBody={() => (
         <>
-          <ManhattanLollipopPlot
-            loading={request.loading}
-            data={request.data?.study.credibleSets.rows}
-          />
-          <ManhattanPlot loading={request.loading} data={request.data?.study.credibleSets.rows} />
+          <Box my={3} ml={2}>
+            <ManhattanPlot loading={request.loading} data={request.data?.study.credibleSets.rows} />
+          </Box>
           <OtTable
             dataDownloader
             showGlobalFilter
