@@ -1,27 +1,23 @@
 import { Typography } from "@mui/material";
-import { useState, useEffect } from "react";
 
 import {
   Link,
   SectionItem,
   Tooltip,
-  Table,
   TableDrawer,
   MouseModelAllelicComposition,
-  useCursorBatchDownloader,
-  getComparator,
-  getPage,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  OtTableSSP,
 } from "ui";
 
-import client from "../../client";
 import { definition } from ".";
 import Description from "./Description";
 import INTOGEN_QUERY from "./sectionQuery.gql";
 import { dataTypesMap } from "../../dataTypes";
 import { sentenceCase } from "../../utils/global";
-import { defaultRowsPerPageOptions, naLabel } from "../../constants";
+import { naLabel } from "../../constants";
+import { useState } from "react";
 
 const columns = [
   {
@@ -100,6 +96,7 @@ const columns = [
   {
     id: "literature",
     label: "Mouse model allelic composition",
+    enableHiding: false,
     renderCell: ({
       biologicalModelAllelicComposition,
       biologicalModelGeneticBackground,
@@ -156,138 +153,33 @@ const exportColumns = [
   },
 ];
 
-function fetchData({ ensemblId, efoId, cursor, size }) {
-  return client.query({
-    query: INTOGEN_QUERY,
-    variables: {
-      ensemblId,
-      efoId,
-      cursor,
-      size,
-    },
-  });
-}
-
 function Body({ id, label, entity }) {
   const { ensgId: ensemblId, efoId } = id;
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [count, setCount] = useState(0);
-  const [cursor, setCursor] = useState("");
-  const [rows, setRows] = useState([]);
-  const [page, setPage] = useState(0);
-  const [size, setPageSize] = useState(10);
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortOrder, setSortOrder] = useState("asc");
-
-  useEffect(() => {
-    let isCurrent = true;
-
-    fetchData({ ensemblId, efoId, cursor: "", size }).then(res => {
-      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.impc;
-      if (isCurrent) {
-        setInitialLoading(false);
-        setCursor(newCursor);
-        setCount(newCount);
-        setRows(newRows);
-      }
-    });
-
-    return () => {
-      isCurrent = false;
-    };
-  }, []);
-
-  const getWholeDataset = useCursorBatchDownloader(
-    INTOGEN_QUERY,
-    {
-      ensemblId,
-      efoId,
-    },
-    `data.disease.impc`
-  );
-
-  const handlePageChange = newPage => {
-    const newPageInt = Number(newPage);
-    if (size * newPageInt + size > rows.length && cursor !== null) {
-      setLoading(true);
-      fetchData({ ensemblId, efoId, cursor, size }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.impc;
-        setRows([...rows, ...newRows]);
-        setLoading(false);
-        setCursor(newCursor);
-        setPage(newPageInt);
-      });
-    } else {
-      setPage(newPageInt);
-    }
-  };
-
-  const handleRowsPerPageChange = newPageSize => {
-    const newPageSizeInt = Number(newPageSize);
-    if (newPageSizeInt > rows.length && cursor !== null) {
-      setLoading(true);
-      fetchData({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.impc;
-        setRows([...rows, ...newRows]);
-        setLoading(false);
-        setCursor(newCursor);
-        setPage(0);
-        setPageSize(newPageSizeInt);
-      });
-    } else {
-      setPage(0);
-      setPageSize(newPageSizeInt);
-    }
-  };
-
-  const handleSortBy = sortBy => {
-    setSortColumn(sortBy);
-    setSortOrder(
-      // eslint-disable-next-line
-      sortColumn === sortBy ? (sortOrder === "asc" ? "desc" : "asc") : "asc"
-    );
-  };
-
-  const processedRows = [...rows];
-
-  if (sortColumn) {
-    processedRows.sort(getComparator(columns, sortOrder, sortColumn));
-  }
+  const [request, setRequest] = useState({ loading: true, data: null, error: false });
 
   return (
     <SectionItem
       definition={definition}
       chipText={dataTypesMap.animal_model}
-      request={{
-        loading: initialLoading,
-        data: { [entity]: { impc: { rows, count: rows.length } } },
-      }}
+      request={request}
       entity={entity}
-      showContentLoading={true}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={() => (
-        <Table
-          loading={loading}
+        <OtTableSSP
+          query={INTOGEN_QUERY}
           columns={columns}
-          rows={getPage(processedRows, page, size)}
-          rowCount={count}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
-          page={page}
-          pageSize={size}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          onSortBy={handleSortBy}
-          query={INTOGEN_QUERY.loc.source.body}
           dataDownloader
-          dataDownloaderRows={getWholeDataset}
           dataDownloaderColumns={exportColumns}
           dataDownloaderFileStem="impc-evidence"
+          entity={entity}
+          sectionName="impc"
+          showGlobalFilter={false}
+          setInitialRequestData={req => {
+            setRequest(req);
+          }}
           variables={{
             ensemblId,
             efoId,
-            cursor,
-            size,
           }}
         />
       )}

@@ -1,12 +1,12 @@
 import { Fragment, useState, useEffect } from "react";
 import { gql, useQuery } from "@apollo/client";
-import { Paper, Box, Chip, Typography, Alert, AlertTitle, CircularProgress } from "@mui/material";
+import { Paper, Box, Chip, Typography, Alert, AlertTitle } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link, OtTable } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAlignLeft } from "@fortawesome/free-solid-svg-icons";
 
-import { defaultRowsPerPageOptions, formatMap } from "../../constants";
+import { formatMap } from "../../constants";
 import DownloadsDrawer from "./DownloadsDrawer";
 import datasetMappings from "./dataset-mappings.json";
 import config from "../../config";
@@ -183,21 +183,14 @@ function DownloadsPage() {
         </Alert>
       ) : null}
 
-      {loadingDownloadsData && (
-        <Box display="flex" justifyContent="center">
-          <CircularProgress />
-        </Box>
-      )}
-
-      {loadingDownloadsData || loading || error ? null : (
+      {error ? null : (
         <Paper variant="outlined" elevation={0}>
           <Box m={2}>
             <OtTable
               showGlobalFilter
               columns={columns}
               rows={rows}
-              loading={loadingDownloadsData}
-              rowsPerPageOptions={defaultRowsPerPageOptions}
+              loading={loadingDownloadsData || loading}
             />
           </Box>
         </Paper>
