@@ -1,11 +1,18 @@
-import { Fragment, useRef, useEffect, useState } from "react";
-import { useMeasure } from "@uidotdev/usehooks";
+import { Fragment } from "react";
 import * as PlotLib from "@observablehq/plot";
-import { Box, Chip, Skeleton, Typography, useTheme, Fade } from "@mui/material";
+import { Box, Chip, Skeleton, Typography, useTheme } from "@mui/material";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ClinvarStars, Tooltip, Link, DisplayVariantId, OtScoreLinearBar } from "ui";
-import { scaleLinear, min, scaleOrdinal } from "d3";
+import {
+  ClinvarStars,
+  Tooltip,
+  Link,
+  DisplayVariantId,
+  OtScoreLinearBar,
+  ObsPlot,
+  ObsTooltipTable,
+  ObsTooltipRow,
+} from "ui";
 import { ScientificNotation, DataDownloader } from "ui";
 import { naLabel, credsetConfidenceMap } from "../../constants";
 
@@ -24,20 +31,23 @@ const palette = [
   "#BEE952",
 ];
 
-export default function PheWasPlotRedo({
-  height = 450,
+function PheWasPlotRedo({
   columns,
   query,
   variables,
   loading,
   data,
-  id,
-  referenceAllele,
-  alternateAllele,
+  pageId,
+  pageReferenceAllele,
+  pageAlternateAllele,
 }) {
-  const [ref, { width }] = useMeasure();
-  const [chart, setChart] = useState(null);
-  const [datum, setDatum] = useState(null);
+  const height = 450;
+
+  const theme = useTheme();
+  const background = theme.palette.background.paper;
+
+  if (loading) return <Skeleton height={height} />;
+
   return (
     <div>
       <ChartControls data={data} query={query} columns={columns} variables={variables} />
@@ -47,31 +57,33 @@ export default function PheWasPlotRedo({
         <span style={{ fontSize: 10 }}>●</span> Beta {naLabel}&emsp;&emsp; Filled symbol:{" "}
         <b>
           <DisplayVariantId
-            variantId={id}
-            referenceAllele={referenceAllele}
-            alternateAllele={alternateAllele}
+            variantId={pageId}
+            referenceAllele={pageReferenceAllele}
+            alternateAllele={pageAlternateAllele}
             expand={false}
           />
         </b>{" "}
         is lead variant
       </Typography>
-      <Box sx={{ position: "relative", width: "100%", margin: "0 auto", mb: 6 }} ref={ref}>
-        <Fade in>
-          <div>
-            <Plot
-              data={data}
-              id={id}
-              width={width}
-              height={height}
-              setChart={setChart}
-              setDatum={setDatum}
-            />
-          </div>
-        </Fade>
-      </Box>
+      <ObsPlot
+        data={data}
+        otherData={{ pageId, pageReferenceAllele, pageAlternateAllele, background }}
+        height={height}
+        renderChart={renderChart}
+        xTooltip={d => d._x}
+        yTooltip={d => d._y}
+        dxTooltip={10}
+        dyTooltip={10}
+        renderTooltip={renderTooltip}
+        fadeElement={fadeElement}
+        highlightElement={highlightElement}
+        resetElement={resetElement}
+      />
     </div>
   );
 }
+
+export default PheWasPlotRedo;
 
 function ChartControls({ data, query, variables, columns }) {
   return (
@@ -95,52 +107,102 @@ function ChartControls({ data, query, variables, columns }) {
   );
 }
 
-function Plot({
+function highlightElement(elmt) {
+  elmt.style.fillOpacity = 1;
+  elmt.style.strokeOpacity = 1;
+  elmt.style.strokeWidth = 1.7;
+}
+
+function fadeElement(elmt) {
+  elmt.style.fillOpacity = 0.4;
+  elmt.style.strokeOpacity = 0.4;
+  elmt.style.strokeWidth = 1;
+}
+
+function resetElement(elmt) {
+  elmt.style.fillOpacity = 1;
+  elmt.style.strokeOpacity = 1;
+  elmt.style.strokeWidth = 1;
+}
+
+function renderChart({
+  data: originalData,
+  otherData: { pageId, pageReferenceAllele, pageAlternateAllele, background },
   width,
   height,
-  loading,
-  data: originalData,
-  id,
-  //   referenceAllele,
-  //   alternateAllele,
-  //   query,
-  //   variables,
-  //   columns,
 }) {
-  const headerRef = useRef();
+  if (originalData == null) return null;
 
-  const theme = useTheme();
-  const background = theme.palette.background.paper;
-  const fontFamily = theme.typography.fontFamily;
-  const pointArea = 64;
-
-  // FIX OR REMOVE: TREATS USEEFFECT, USEREF, ... AS CONDITIONAL IF UNCOMMENT
-  // if (loading) return <Skeleton height={plotHeight} />;
-
-  // FIX OR REMOVE: TREATS USEEFFECT, USEREF, ... AS CONDITIONAL IF UNCOMMENT
-  // if (data == null) return null;
-
-  // copy data since add new properties
   const data = structuredClone(
     originalData.filter(d => {
       return d.pValueMantissa != null && d.pValueExponent != null && d.variant != null;
     })
   );
-  // FIX OR REMOVE: TREATS USEEFFECT, USEREF, ... AS CONDITIONAL IF UNCOMMENT
-  // if (data.length === 0) return null;
+  if (data.length === 0) return null;
 
+  const therapeuticPriorities = {
+    MONDO_0045024: { name: "cell proliferation", rank: 1 },
+    EFO_0005741: { name: "infectious disease", rank: 2 },
+    OTAR_0000014: { name: "pregnancy or perinatal", rank: 3 },
+    EFO_0005932: { name: "animal disease", rank: 4 },
+    MONDO_0024458: { name: "visual system", rank: 5 },
+    EFO_0000319: { name: "cardiovascular", rank: 6 },
+    EFO_0009605: { name: "pancreas", rank: 7 },
+    EFO_0010282: { name: "gastrointestinal", rank: 8 },
+    OTAR_0000017: { name: "reproductive system or breast", rank: 9 },
+    EFO_0010285: { name: "integumentary system", rank: 10 },
+    EFO_0001379: { name: "endocrine system", rank: 11 },
+    OTAR_0000010: { name: "respiratory or thoracic", rank: 12 },
+    EFO_0009690: { name: "urinary system", rank: 13 },
+    OTAR_0000006: { name: "musculoskeletal or connective ...", rank: 14 },
+    MONDO_0021205: { name: "disease of ear", rank: 15 },
+    EFO_0000540: { name: "immune system", rank: 16 },
+    EFO_0005803: { name: "hematologic", rank: 17 },
+    EFO_0000618: { name: "nervous system", rank: 18 },
+    MONDO_0002025: { name: "psychiatric", rank: 19 },
+    OTAR_0000020: { name: "nutritional or metabolic", rank: 20 },
+    OTAR_0000018: { name: "genetic, familial or congenital", rank: 21 },
+    OTAR_0000009: { name: "injury, poisoning or complication", rank: 22 },
+    EFO_0000651: { name: "phenotype", rank: 23 },
+    EFO_0001444: { name: "measurement", rank: 24 },
+    GO_0008150: { name: "biological process", rank: 25 },
+  };
+
+  function getTherapeuticArea(row) {
+    let bestId = null;
+    let bestRank = Infinity;
+    const areaIds = row.study.diseases
+      .map(d => {
+        return d.therapeuticAreas.map(area => area.id);
+      })
+      .flat();
+    for (const id of areaIds) {
+      const rank = therapeuticPriorities[id]?.rank;
+      if (rank < bestRank) {
+        bestId = id;
+        bestRank = rank;
+      }
+    }
+    return bestId
+      ? { id: bestId, name: therapeuticPriorities[bestId].name }
+      : { id: "__uncategorised__", name: "Uncategorised" };
+  }
+
+  let yMin = Infinity;
+  const yMax = 0;
   const diseaseGroups = new Map();
   for (const row of data) {
+    row._pageId = pageId;
+    row._pageReferenceAllele = pageReferenceAllele;
+    row._alternateAllele = pageAlternateAllele;
     row._y = Math.log10(row.pValueMantissa) + row.pValueExponent;
+    yMin = Math.min(yMin, row._y);
     const { id, name } = getTherapeuticArea(row);
     row._therapeuticAreaId = id;
     diseaseGroups.has(id)
       ? diseaseGroups.get(id).data.push(row)
       : diseaseGroups.set(id, { name, data: [row] });
   }
-
-  const yMin = min(data, d => d._y);
-  const yMax = 0;
 
   let sortedDiseaseIds = // disease ids sorted by disease name
     [...diseaseGroups].sort((a, b) => a[1].name.localeCompare(b[1].name)).map(a => a[0]);
@@ -168,116 +230,170 @@ function Plot({
     xIntervals.get(id).end = xCumu;
   }
 
-  useEffect(() => {
-    if (data === undefined || width === null) return;
-    const chart = PlotLib.plot({
-      width,
-      height,
-      marginLeft: 90,
-      marginRight: 50,
-      marginTop: 30,
-      marginBottom: 120,
-      x: {
-        domain: [0, xCumu],
-        axis: false,
-      },
-      y: {
-        domain: [yMin, yMax],
-        reverse: true,
-        nice: true,
-        line: true,
-        label: "-log_10(pValue)",
-        labelAnchor: "top",
-        labelArrow: "none",
-        tickFormat: v => Math.abs(v),
-      },
-      marks: [
-        // ruleY mark for multi-segment x-axis
-        PlotLib.ruleY(xIntervals, {
-          x1: (d, i) => d[1].start,
-          x2: d => d[1].end,
-          y: yMax,
-          stroke: (d, i) => palette[i],
-        }),
+  return PlotLib.plot({
+    width,
+    height,
+    marginLeft: 90,
+    marginRight: 50,
+    marginTop: 30,
+    marginBottom: 120,
+    x: {
+      domain: [0, xCumu],
+      axis: false,
+    },
+    y: {
+      domain: [yMin, yMax],
+      reverse: true,
+      nice: true,
+      line: true,
+      label: "-log_10(pValue)",
+      labelAnchor: "top",
+      labelArrow: "none",
+      tickFormat: v => Math.abs(v),
+    },
+    marks: [
+      // ruleY mark for multi-segment x-axis
+      PlotLib.ruleY(xIntervals, {
+        x1: (d, i) => d[1].start,
+        x2: d => d[1].end,
+        y: yMax,
+        stroke: (d, i) => palette[i],
+      }),
 
-        // text mark for x-ticks
-        PlotLib.text(xIntervals, {
-          x: d => (d[1].start + d[1].end) / 2,
-          y: yMax,
-          dy: 5,
-          text: d => diseaseGroups.get(d[0]).name,
-          textAnchor: "start",
-          lineAnchor: "top",
-          rotate: 45,
-          fill: (d, i) => palette[i],
-        }),
+      // text mark for x-ticks
+      PlotLib.text(xIntervals, {
+        x: d => (d[1].start + d[1].end) / 2,
+        y: yMax,
+        dy: 5,
+        text: d => diseaseGroups.get(d[0]).name,
+        textAnchor: "start",
+        lineAnchor: "top",
+        rotate: 45,
+        fill: (d, i) => palette[i],
+      }),
 
-        // standard marks
-        PlotLib.dot(sortedData, {
-          x: d => d._x,
-          y: d => d._y,
-          r: 2.55,
-          symbol: d => (d.beta ? "triangle" : "circle"),
-          stroke: d => palette[xIntervals.get(d._therapeuticAreaId).index],
-          fill: d =>
-            d.variant.id === id ? palette[xIntervals.get(d._therapeuticAreaId).index] : background,
-          strokeWidth: 1.3,
-          rotate: d => (d.beta < 0 ? 180 : 0),
-        }),
-      ],
-    });
-    headerRef.current.append(chart);
-    return () => chart.remove();
-  }, [originalData, width, height]);
-  // }, [originalData, width, height, setChart, setDatum]);
-
-  return <Box ref={headerRef}></Box>;
+      // standard marks
+      PlotLib.dot(sortedData, {
+        x: d => d._x,
+        y: d => d._y,
+        r: 2.55,
+        symbol: d => (d.beta ? "triangle" : "circle"),
+        stroke: d => palette[xIntervals.get(d._therapeuticAreaId).index],
+        fill: d =>
+          d.variant.id === pageId
+            ? palette[xIntervals.get(d._therapeuticAreaId).index]
+            : background,
+        strokeWidth: 1.3,
+        rotate: d => (d.beta < 0 ? 180 : 0),
+        className: "obs-tooltip",
+      }),
+    ],
+  });
 }
 
-const therapeuticPriorities = {
-  MONDO_0045024: { name: "cell proliferation", rank: 1 },
-  EFO_0005741: { name: "infectious disease", rank: 2 },
-  OTAR_0000014: { name: "pregnancy or perinatal", rank: 3 },
-  EFO_0005932: { name: "animal disease", rank: 4 },
-  MONDO_0024458: { name: "visual system", rank: 5 },
-  EFO_0000319: { name: "cardiovascular", rank: 6 },
-  EFO_0009605: { name: "pancreas", rank: 7 },
-  EFO_0010282: { name: "gastrointestinal", rank: 8 },
-  OTAR_0000017: { name: "reproductive system or breast", rank: 9 },
-  EFO_0010285: { name: "integumentary system", rank: 10 },
-  EFO_0001379: { name: "endocrine system", rank: 11 },
-  OTAR_0000010: { name: "respiratory or thoracic", rank: 12 },
-  EFO_0009690: { name: "urinary system", rank: 13 },
-  OTAR_0000006: { name: "musculoskeletal or connective ...", rank: 14 },
-  MONDO_0021205: { name: "disease of ear", rank: 15 },
-  EFO_0000540: { name: "immune system", rank: 16 },
-  EFO_0005803: { name: "hematologic", rank: 17 },
-  EFO_0000618: { name: "nervous system", rank: 18 },
-  MONDO_0002025: { name: "psychiatric", rank: 19 },
-  OTAR_0000020: { name: "nutritional or metabolic", rank: 20 },
-  OTAR_0000018: { name: "genetic, familial or congenital", rank: 21 },
-  OTAR_0000009: { name: "injury, poisoning or complication", rank: 22 },
-  EFO_0000651: { name: "phenotype", rank: 23 },
-  EFO_0001444: { name: "measurement", rank: 24 },
-  GO_0008150: { name: "biological process", rank: 25 },
-};
+function renderTooltip(datum) {
+  const valueMaxWidth = "200px";
 
-function getTherapeuticArea(row) {
-  let bestId = null;
-  let bestRank = Infinity;
-  const areaIds = row.study.diseases
-    .map(d => {
-      return d.therapeuticAreas.map(area => area.id);
-    })
-    .flat();
-  for (const id of areaIds) {
-    const rank = therapeuticPriorities[id]?.rank;
-    if (rank < bestRank) {
-      bestId = id;
-      bestRank = rank;
-    }
-  }
-  return bestId
-    ? { id: bestId, name: therapeuticPriorities[bestId].name }
-    : { id: "__uncategorised__", name: "Uncategorised" };
+  const displayId = (
+    <DisplayVariantId
+      variantId={datum.variant.id}
+      referenceAllele={datum.variant.referenceAllele}
+      alternateAllele={datum.variant.alternateAllele}
+      expand={false}
+    />
+  );
+
+  return (
+    <ObsTooltipTable>
+      <ObsTooltipRow label="Navigate">
+        <Link to={`/credible-set/${datum.studyLocusId}`}>
+          <FontAwesomeIcon icon={faArrowRightToBracket} />
+        </Link>
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Lead variant">
+        {datum.variant.id === datum._pageId ? (
+          <Box display="flex" alignItems="center" gap={0.5}>
+            {displayId}
+            <Chip label="self" variant="outlined" size="small" />
+          </Box>
+        ) : (
+          <Link to={`/variant/${datum.variant.id}`}>{displayId}</Link>
+        )}
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Reported trait" valueWidth={valueMaxWidth} truncateValue>
+        {datum.study?.traitFromSource ?? naLabel}
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Disease/phenotype" valueWidth={valueMaxWidth} truncateValue>
+        {datum.study?.diseases?.length > 0 ? (
+          <>
+            {datum.study.diseases.map((d, i) => (
+              <Fragment key={d.id}>
+                {i > 0 && ", "}
+                <Link to={`../disease/${d.id}`}>{d.name}</Link>
+              </Fragment>
+            ))}
+          </>
+        ) : (
+          naLabel
+        )}
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Study">
+        {datum.study ? <Link to={`/study/${datum.study.id}`}>{datum.study.id}</Link> : naLabel}
+      </ObsTooltipRow>
+      <ObsTooltipRow label="P-value">
+        <ScientificNotation number={[datum.pValueMantissa, datum.pValueExponent]} dp={2} />
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Beta">{datum.beta?.toPrecision(3) ?? naLabel}</ObsTooltipRow>
+      <ObsTooltipRow label="Posterior probability">
+        {datum.locus?.rows?.[0].posteriorProbability.toPrecision(3) ?? naLabel}
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Fine-mapping">
+        <Box display="flex" flexDirection="column" gap={0.25}>
+          <Box display="flex" gap={0.5}>
+            Method: {datum.finemappingMethod ?? naLabel}
+          </Box>
+          <Box display="flex" gap={0.5}>
+            Confidence:{" "}
+            {datum.confidence ? (
+              <Tooltip title={datum.confidence} style="">
+                <ClinvarStars num={credsetConfidenceMap[datum.confidence]} />
+              </Tooltip>
+            ) : (
+              naLabel
+            )}
+          </Box>
+        </Box>
+      </ObsTooltipRow>
+      <ObsTooltipRow label="L2G">
+        <Box display="flex" flexDirection="column" gap={0.25}>
+          <Box display="flex" gap={0.5}>
+            Top:{" "}
+            {datum.l2GPredictions?.rows?.[0]?.target ? (
+              <Link to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
+                {datum.l2GPredictions.rows[0].target.approvedSymbol}
+              </Link>
+            ) : (
+              naLabel
+            )}
+          </Box>
+          <Box display="flex" alignItems="center" gap={0.5}>
+            Score:{" "}
+            {datum.l2GPredictions?.rows?.[0]?.score ? (
+              <Tooltip title={datum.l2GPredictions.rows[0].score.toFixed(3)} style="">
+                <div>
+                  <OtScoreLinearBar
+                    variant="determinate"
+                    value={datum.l2GPredictions.rows[0].score * 100}
+                  />
+                </div>
+              </Tooltip>
+            ) : (
+              naLabel
+            )}
+          </Box>
+        </Box>
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Credible set size">{datum.locusSize?.count ?? naLabel}</ObsTooltipRow>
+    </ObsTooltipTable>
+  );
 }

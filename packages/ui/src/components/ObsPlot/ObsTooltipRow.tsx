@@ -4,8 +4,8 @@ import { ReactElement } from "react";
 type ObsTooltipRowProps = {
   children: ReactElement;
   label?: string;
-  labelWidth?: number;
-  valueWidth?: number;
+  labelWidth?: string;
+  valueWidth?: string;
   truncateValue?: boolean;
 };
 

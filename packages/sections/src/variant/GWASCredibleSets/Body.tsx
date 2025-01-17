@@ -295,9 +295,9 @@ function Body({ id, entity }: BodyProps) {
               variables={variables}
               loading={request.loading}
               data={request.data?.variant.gwasCredibleSets.rows}
-              id={id}
-              referenceAllele={request.data?.variant.referenceAllele}
-              alternateAllele={request.data?.variant.alternateAllele}
+              pageId={id}
+              pageReferenceAllele={request.data?.variant.referenceAllele}
+              pageAlternateAllele={request.data?.variant.alternateAllele}
             />
             <PheWasPlot
               key={v1()}

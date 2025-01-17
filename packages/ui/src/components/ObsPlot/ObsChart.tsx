@@ -27,9 +27,9 @@ function ObsChart({
   height,
   renderChart,
   hasTooltip,
-  fadeElement = () => {},
-  highlightElement = () => {},
-  resetElement = () => {},
+  fadeElement,
+  highlightElement,
+  resetElement,
   setChart,
   setDatum,
 }: ObsChartProps) {
@@ -47,9 +47,11 @@ function ObsChart({
         const dataIndex = elmt.__data__;
         const elmtDatum = data[dataIndex];
         const highlightSelected = () => {
-          tooltipMarks.forEach(fadeElement);
+          if (fadeElement) tooltipMarks.forEach(fadeElement);
           // possibly multiple mark elements for same datum
-          chart.querySelectorAll(`[data-index="${dataIndex}"]`).forEach(highlightElement);
+          if (highlightElement) {
+            chart.querySelectorAll(`[data-index="${dataIndex}"]`).forEach(highlightElement);
+          }
         };
         elmt.setAttribute("data-index", dataIndex);
         elmt.addEventListener("click", event => {
@@ -75,7 +77,7 @@ function ObsChart({
           if (!clicked) {
             selectedDatum = null;
             setDatum(selectedDatum);
-            tooltipMarks.forEach(resetElement);
+            if (resetElement) tooltipMarks.forEach(resetElement);
           }
         });
       }
@@ -84,7 +86,7 @@ function ObsChart({
           clicked = false;
           selectedDatum = null;
           setDatum(selectedDatum);
-          tooltipMarks.forEach(resetElement);
+          if (resetElement) tooltipMarks.forEach(resetElement);
         }
       });
     }
