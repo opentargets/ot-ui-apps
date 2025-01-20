@@ -109,8 +109,6 @@ function PheWasPlot({
   const diseaseGroups = new Map();
   for (const row of data) {
     row._pageId = pageId;
-    row._pageReferenceAllele = pageReferenceAllele;
-    row._alternateAllele = pageAlternateAllele;
     row._y = Math.log10(row.pValueMantissa) + row.pValueExponent;
     yMin = Math.min(yMin, row._y);
     const { id, name } = getTherapeuticArea(row);
@@ -129,7 +127,7 @@ function PheWasPlot({
   const xIntervals = new Map();
   let xCumu = 0;
   const xGap = data.length / 300; // gap between groups
-  const xPad = data.length / 500; // padding at ede of groups
+  const xPad = data.length / 500; // padding at end of groups
   const sortedData = [];
   for (const [index, id] of sortedDiseaseIds.entries()) {
     const { data: newRows } = diseaseGroups.get(id);
@@ -222,13 +220,13 @@ function highlightElement(elmt) {
 function fadeElement(elmt) {
   elmt.style.fillOpacity = 0.4;
   elmt.style.strokeOpacity = 0.4;
-  elmt.style.strokeWidth = 1;
+  elmt.style.strokeWidth = 1.3;
 }
 
 function resetElement(elmt) {
   elmt.style.fillOpacity = 1;
   elmt.style.strokeOpacity = 1;
-  elmt.style.strokeWidth = 1;
+  elmt.style.strokeWidth = 1.3;
 }
 
 function renderChart({
@@ -257,7 +255,7 @@ function renderChart({
     marks: [
       // ruleY mark for multi-segment x-axis
       PlotLib.ruleY(xIntervals, {
-        x1: (d, i) => d[1].start,
+        x1: d => d[1].start,
         x2: d => d[1].end,
         y: yMax,
         stroke: (d, i) => palette[i],
@@ -292,7 +290,7 @@ function renderChart({
         x: d => d._x,
         y: d => d._y,
         r: 2.55,
-        symbol: d => (d.beta ? "triangle" : "circle"),
+        symbol: d => (d.beta == null ? "circle" : "triangle"),
         stroke: d => palette[xIntervals.get(d._therapeuticAreaId).index],
         fill: d =>
           d.variant.id === pageId
@@ -344,7 +342,7 @@ function renderTooltip(datum) {
             {datum.study.diseases.map((d, i) => (
               <Fragment key={d.id}>
                 {i > 0 && ", "}
-                <Link to={`../disease/${d.id}`}>{d.name}</Link>
+                <Link to={`/disease/${d.id}`}>{d.name}</Link>
               </Fragment>
             ))}
           </>

@@ -24,7 +24,6 @@ import {
 import PheWasPlot from "./PheWasPlot";
 import { useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
-import { v1 } from "uuid";
 
 type getColumnsType = {
   id: string;
@@ -288,7 +287,6 @@ function Body({ id, entity }: BodyProps) {
         return (
           <Box mb={1} ml={2}>
             <PheWasPlot
-              key={v1()}
               columns={columns}
               query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
               variables={variables}
