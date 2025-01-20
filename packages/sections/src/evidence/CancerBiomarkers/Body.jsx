@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem, PublicationsDrawer, DataTable, TableDrawer } from "ui";
+import { Link, Tooltip, SectionItem, PublicationsDrawer, OtTable, TableDrawer } from "ui";
 import { naLabel } from "ui/src/constants";
 
 import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
@@ -13,7 +13,7 @@ import CANCER_BIOMARKERS_EVIDENCE_QUERY from "./CancerBiomarkersEvidence.gql";
 
 const getColumns = label => [
   {
-    id: "disease.name",
+    id: "disease",
     label: "Disease",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
@@ -48,7 +48,7 @@ const getColumns = label => [
     filterValue: ({ drug, drugFromSource }) => (drug ? drug.name : drugFromSource),
   },
   {
-    id: "drugResponse.name",
+    id: "drugResponse",
     label: "Drug response",
     renderCell: ({ drugResponse }) =>
       (drugResponse && <Link to={`/disease/${drugResponse.id}`}>{drugResponse.name}</Link>) ||
@@ -107,17 +107,17 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.cancerBiomarkersSummary;
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.cancerBiomarkersSummary.rows}
             dataDownloader
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={CANCER_BIOMARKERS_EVIDENCE_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

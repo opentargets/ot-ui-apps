@@ -164,7 +164,6 @@ function DataDownloader() {
     pinnedEntries,
     pinnedData,
     dataSourcesWeights,
-    dataSourcesRequired,
   } = useAotfContext();
   const fileStem = `OT-${id}-associated-${entityToGet}s`;
   const [onlyPinnedCheckBox, setOnlyPinnedCheckBox] = useState(false);
@@ -204,13 +203,12 @@ function DataDownloader() {
     filter: searhFilter,
     sortBy: sorting[0].id,
     enableIndirect,
-    datasources: dataSourcesWeights,
-    ...(weightControlCheckBox && {
-      aggregationFilters: dataSourcesRequired.map(el => ({
-        name: el.name,
-        path: el.path,
-      })),
-    }),
+    datasources: dataSourcesWeights.map(el => ({
+      id: el.id,
+      weight: el.weight,
+      propagate: el.propagate,
+      required: el.required,
+    })),
   };
 
   const pinnedAssociationsVariable = {
@@ -283,6 +281,7 @@ function DataDownloader() {
           variant="outlined"
           disableElevation
           sx={{ height: 1, maxHeight: "45px" }}
+          aria-label="Share Export"
         >
           <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
         </Button>

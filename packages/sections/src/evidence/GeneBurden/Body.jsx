@@ -5,10 +5,10 @@ import {
   Tooltip,
   SectionItem,
   PublicationsDrawer,
-  DataTable,
   ScientificNotation,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  OtTable,
 } from "ui";
 
 import { definition } from ".";
@@ -241,21 +241,22 @@ export function Body({ id, label, entity }) {
       chipText={dataTypesMap.genetic_association}
       entity={entity}
       request={request}
-      renderDescription={data => <Description symbol={label.symbol} diseaseName={label.name} data={data} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.geneBurdenSummary;
+      renderDescription={() => (
+        <Description symbol={label.symbol} diseaseName={label.name} data={request.data} />
+      )}
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.geneBurdenSummary.rows}
             order="asc"
             sortBy="pValue"
             dataDownloader
             dataDownloaderFileStem={`geneburden-${ensgId}-${efoId}`}
             showGlobalFilter
-            rowsPerPageOptions={defaultRowsPerPageOptions}
             query={GENE_BURDEN_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

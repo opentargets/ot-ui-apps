@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import _ from "lodash";
-import { Link, SectionItem, Tooltip, DataTable, TableDrawer } from "ui";
+import { Link, SectionItem, Tooltip, TableDrawer, OtTable } from "ui";
 
 import Description from "./Description";
 import { naLabel } from "../../constants";
@@ -213,10 +213,10 @@ function Body({ label: name, id: efoId, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description name={name} />}
-      renderBody={({ disease }) => {
+      renderBody={() => {
         // process the data
         const rows = [];
-        disease.phenotypes.rows.forEach(p =>
+        request.data?.disease.phenotypes.rows.forEach(p =>
           p.evidence.forEach(e => {
             const p1 = { ...p };
             p1.evidence = e;
@@ -225,15 +225,15 @@ function Body({ label: name, id: efoId, entity }) {
         );
 
         return (
-          <DataTable
+          <OtTable
             columns={columns}
             rows={rows}
             dataDownloader
             dataDownloaderFileStem={`${efoId}-phenotypes`}
             showGlobalFilter
-            rowsPerPageOptions={[10, 25, 50, 100]}
             query={PHENOTYPES_BODY_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

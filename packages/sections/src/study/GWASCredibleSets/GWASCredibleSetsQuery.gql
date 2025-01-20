@@ -1,0 +1,35 @@
+query GWASCredibleSetsQuery($studyId: String!, $size: Int!, $index: Int!) {
+  study(studyId: $studyId) {
+    id
+    credibleSets(page: { size: $size, index: $index }) {
+      count
+      rows {
+        studyLocusId
+        variant {
+          id
+          chromosome
+          position
+          referenceAllele
+          alternateAllele
+        }
+        pValueMantissa
+        pValueExponent
+        beta
+        locus {
+          count
+        }
+        finemappingMethod
+        confidence
+        l2GPredictions(page: { size: 1, index: 0 }) {
+          rows {
+            target {
+              id
+              approvedSymbol
+            }
+            score
+          }
+        }
+      }
+    }
+  }
+}

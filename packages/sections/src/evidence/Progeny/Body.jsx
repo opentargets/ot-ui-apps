@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, DataTable, ScientificNotation } from "ui";
+import { Link, SectionItem, Tooltip, OtTable, ScientificNotation } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -80,18 +80,17 @@ function Body({ id, label, entity }) {
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={data => (
-        <DataTable
+        <OtTable
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
           order="asc"
-          rows={data.disease.progeny.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.disease.progeny.rows}
           showGlobalFilter
           sortBy="resourceScore"
           query={PROGENY_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

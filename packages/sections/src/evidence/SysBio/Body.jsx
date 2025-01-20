@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, DataTable } from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -34,6 +34,7 @@ const getColumns = label => [
   },
   {
     id: "literature",
+    label: "Literature",
     renderCell: ({ literature }) => {
       const literatureList =
         literature?.reduce((acc, id) => {
@@ -75,17 +76,16 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={data => (
-        <DataTable
+      renderBody={() => (
+        <OtTable
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
-          rows={data.disease.sysBio.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.disease.sysBio.rows}
           showGlobalFilter
           query={SYSBIO_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

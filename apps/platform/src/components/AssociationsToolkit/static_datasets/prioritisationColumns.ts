@@ -61,6 +61,7 @@ const mouseOrthologMaxIdentityPercentage: Column = {
   sectionId: "compGenomics",
   description: "Mouse ortholog maximum identity percentage",
   docsLink: "https://platform-docs.opentargets.org/target-prioritisation#mouse-ortholog-identity",
+  sectionProps: { viewMode: "mouseOrthologMaxIdentityPercentage" },
 };
 
 const hasHighQualityChemicalProbes: Column = {
@@ -124,6 +125,7 @@ const paralogMaxIdentityPercentage: Column = {
   sectionId: "compGenomics",
   description: "Paralog maximum identity percentage",
   docsLink: "https://platform-docs.opentargets.org/target-prioritisation#paralogues",
+  sectionProps: { viewMode: "paralogMaxIdentityPercentage" },
 };
 
 const tissueSpecificity: Column = {

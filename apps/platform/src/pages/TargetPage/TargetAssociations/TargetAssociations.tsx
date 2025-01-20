@@ -1,6 +1,5 @@
 import { ReactElement } from "react";
 import { Box, Divider } from "@mui/material";
-import { usePermissions } from "ui";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
@@ -9,7 +8,8 @@ import {
   ControlsSection,
   DataUploader,
   AotfApiPlayground,
-  SearchInput,
+  AssociationsFocusProvider,
+  DisplayModeSwitch,
 } from "../../../components/AssociationsToolkit";
 import { ENTITY } from "../../../components/AssociationsToolkit/types";
 import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
@@ -20,21 +20,26 @@ type TargetAssociationsProps = {
 };
 
 function TargetAssociations({ ensgId }: TargetAssociationsProps): ReactElement {
-  const { isPartnerPreview } = usePermissions();
   return (
     <AssociationsProvider id={ensgId} entity={ENTITY.TARGET} query={TARGET_ASSOCIATIONS_QUERY}>
-      <ControlsSection>
-        <Box sx={{ flex: 2, display: "flex", flexWrap: "wrap", gap: theme => theme.spacing(2) }}>
-          {isPartnerPreview ? <FacetsSearch /> : <SearchInput />}
-          <AdvanceOptionsMenu />
-          <DataUploader />
-          <Divider orientation="vertical" />
-          <DataDownloader />
-          <AotfApiPlayground />
-        </Box>
-        <Box sx={{ flex: 1, display: "flex" }}></Box>
-      </ControlsSection>
-      <TableAssociations />
+      <AssociationsFocusProvider>
+        <>
+          <ControlsSection>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+              <FacetsSearch />
+              <AdvanceOptionsMenu />
+              <DataUploader />
+              <Divider orientation="vertical" flexItem />
+              <DataDownloader />
+              <AotfApiPlayground />
+            </Box>
+            <Box sx={{ display: "flex", justifyContent: "end" }}>
+              <DisplayModeSwitch />
+            </Box>
+          </ControlsSection>
+          <TableAssociations />
+        </>
+      </AssociationsFocusProvider>
     </AssociationsProvider>
   );
 }

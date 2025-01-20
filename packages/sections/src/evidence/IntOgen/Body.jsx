@@ -2,7 +2,7 @@ import { Box, List, ListItem, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useQuery } from "@apollo/client";
 import { v1 } from "uuid";
-import { ChipList, Link, SectionItem, Tooltip, DataTable, ScientificNotation } from "ui";
+import { ChipList, Link, SectionItem, Tooltip, ScientificNotation, OtTable } from "ui";
 
 import { definition } from ".";
 import methods from "./methods";
@@ -162,15 +162,10 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({
-        disease: {
-          intOgen: { rows },
-        },
-        target: { hallmarks },
-      }) => {
+      renderBody={() => {
         const roleInCancerItems =
-          hallmarks && hallmarks.attributes.length > 0
-            ? hallmarks.attributes
+          request.data?.target.hallmarks && request.data?.target.hallmarks.attributes.length > 0
+            ? request.data?.target.hallmarks.attributes
                 .filter(attribute => attribute.name === "role in cancer")
                 .map(attribute => ({
                   label: attribute.description,
@@ -186,18 +181,17 @@ function Body({ id, label, entity }) {
               </Typography>
               <ChipList items={roleInCancerItems} />
             </Box>
-            <DataTable
+            <OtTable
               columns={columns}
               dataDownloader
               dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
               order="asc"
-              rows={rows}
+              rows={request.data?.disease.intOgen.rows}
               sortBy="resourceScore"
-              pageSize={10}
-              rowsPerPageOptions={defaultRowsPerPageOptions}
               showGlobalFilter
               query={INTOGEN_QUERY.loc.source.body}
               variables={variables}
+              loading={request.loading}
             />
           </>
         );

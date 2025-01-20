@@ -6,9 +6,9 @@ import {
   Tooltip,
   Link,
   PublicationsDrawer,
-  DataTable,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  OtTable,
 } from "ui";
 
 import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
@@ -156,17 +156,16 @@ function Body({ id: { ensgId, efoId }, label: { symbol, name }, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={symbol} name={name} />}
-      renderBody={data => (
-        <DataTable
+      renderBody={() => (
+        <OtTable
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`${ensgId}-${efoId}-gene2phenotype`}
-          rows={data.disease.gene2Phenotype.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.disease.gene2Phenotype.rows}
           showGlobalFilter
           query={OPEN_TARGETS_GENETICS_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

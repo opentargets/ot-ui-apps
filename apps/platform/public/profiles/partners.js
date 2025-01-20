@@ -14,7 +14,9 @@ var configProfile = {
 
   /* colors */
 
+  // primaryColor: '#2f7bb5',
   primaryColor: '#3489ca',
+  secondaryColor: '#18405e',
   // custom colour scale: override value in constants.js
   colorRange: [
     '#e5edf4',

@@ -2,13 +2,13 @@ import { format } from "d3-format";
 import config from "../config";
 import { searchExamples, pppSearchExamples } from "../pages/HomePage/searchExamples";
 
-function pickTwo([...arr]) {
-  const i1 = Math.floor(Math.random() * arr.length);
-  const resultArray = arr.splice(i1, 1);
-  const i2 = Math.floor(Math.random() * arr.length);
-  resultArray.push(...arr.splice(i2, 1));
-
-  return resultArray;
+function pickN([...arr], n) {
+  const picks = [];
+  while (picks.length < n) {
+    const i = Math.floor(Math.random() * arr.length);
+    picks.push(arr.splice(i, 1)[0]);
+  }
+  return picks;
 }
 
 export const safeToString = x => {
@@ -74,9 +74,9 @@ export async function fetcher(graphQLParams) {
 
 export function getSuggestedSearch() {
   const suggestionArray = config.profile.isPartnerPreview ? pppSearchExamples : searchExamples;
-  const targets = pickTwo(suggestionArray.targets);
-  const diseases = pickTwo(suggestionArray.diseases);
-  const drugs = pickTwo(suggestionArray.drugs);
-
-  return [...targets, ...diseases, ...drugs];
+  const targets = pickN(suggestionArray.targets, 2);
+  const diseases = pickN(suggestionArray.diseases, 2);
+  const drugs = pickN(suggestionArray.drugs, 2);
+  const variants = pickN(suggestionArray.variants, 3);
+  return [...targets, ...diseases, ...drugs, ...variants];
 }

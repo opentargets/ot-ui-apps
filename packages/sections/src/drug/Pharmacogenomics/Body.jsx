@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { useQuery } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, Tooltip, DataTable, LabelChip, PublicationsDrawer } from "ui";
+import { Link, SectionItem, Tooltip, LabelChip, PublicationsDrawer, OtTable } from "ui";
 
 import { epmcUrl } from "../../utils/urls";
 import { definition } from ".";
@@ -202,7 +202,7 @@ function Body({ id: chemblId, label: name, entity }) {
       },
     },
     {
-      id: "confidenceLevel",
+      id: "evidenceLevel",
       label: "Confidence Level",
       sortable: true,
       tooltip: (
@@ -272,16 +272,16 @@ function Body({ id: chemblId, label: name, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description name={name} />}
-      renderBody={({ drug }) => (
-        <DataTable
+      renderBody={() => (
+        <OtTable
           sortBy="evidenceLevel"
           showGlobalFilter
           dataDownloader
           columns={columns}
-          rows={drug.pharmacogenomics}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.drug.pharmacogenomics}
           query={PHARMACOGENOMICS_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

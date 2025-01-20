@@ -1,5 +1,16 @@
 const dataSources = [
   {
+    id: "gwas_credible_sets",
+    sectionId: "gwasCredibleSets",
+    label: "GWAS associations",
+    aggregation: "Genetic association",
+    aggregationId: "genetic_association",
+    weight: 1,
+    isPrivate: false,
+    docsLink: "https://platform-docs.opentargets.org/evidence#open-targets-genetics",
+    required: false,
+  },
+  {
     id: "ot_genetics_portal",
     sectionId: "otGenetics",
     label: "OT Genetics",
@@ -8,6 +19,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#open-targets-genetics",
+    required: false,
   },
   {
     id: "gene_burden",
@@ -18,6 +30,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#gene-burden",
+    required: false,
   },
   {
     id: "eva",
@@ -28,6 +41,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#clinvar",
+    required: false,
   },
   {
     id: "genomics_england",
@@ -38,6 +52,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#genomics-england-panelapp",
+    required: false,
   },
   {
     id: "gene2phenotype",
@@ -48,6 +63,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#gene2phenotype",
+    required: false,
   },
   {
     id: "uniprot_literature",
@@ -58,6 +74,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#uniprot-literature",
+    required: false,
   },
   {
     id: "uniprot_variants",
@@ -68,6 +85,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#uniprot-variants",
+    required: false,
   },
   {
     id: "orphanet",
@@ -78,6 +96,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#orphanet",
+    required: false,
   },
   {
     id: "clingen",
@@ -88,6 +107,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#clingen",
+    required: false,
   },
   {
     id: "cancer_gene_census",
@@ -98,6 +118,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#cancer-gene-census",
+    required: false,
   },
   {
     id: "intogen",
@@ -108,6 +129,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#intogen",
+    required: false,
   },
   {
     id: "eva_somatic",
@@ -118,6 +140,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#clinvar-somatic",
+    required: false,
   },
   {
     id: "cancer_biomarkers",
@@ -128,6 +151,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#cancer-biomarkers",
+    required: false,
   },
   {
     id: "chembl",
@@ -138,6 +162,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#chembl",
+    required: false,
   },
   {
     id: "crispr_screen",
@@ -148,6 +173,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#crispr-screens",
+    required: false,
   },
   {
     id: "crispr",
@@ -158,6 +184,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#project-score",
+    required: false,
   },
   {
     id: "slapenrich",
@@ -168,6 +195,7 @@ const dataSources = [
     weight: 0.5,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#slapenrich",
+    required: false,
   },
   {
     id: "progeny",
@@ -178,6 +206,7 @@ const dataSources = [
     weight: 0.5,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#progeny",
+    required: false,
   },
   {
     id: "reactome",
@@ -188,6 +217,7 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#reactome",
+    required: false,
   },
   {
     id: "sysbio",
@@ -198,6 +228,7 @@ const dataSources = [
     weight: 0.5,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#gene-signatures",
+    required: false,
   },
   {
     id: "europepmc",
@@ -208,6 +239,7 @@ const dataSources = [
     weight: 0.2,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#europe-pmc",
+    required: false,
   },
   {
     id: "expression_atlas",
@@ -218,6 +250,7 @@ const dataSources = [
     weight: 0.2,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#expression-atlas",
+    required: false,
   },
   {
     id: "impc",
@@ -228,6 +261,7 @@ const dataSources = [
     weight: 0.2,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#impc",
+    required: false,
   },
   {
     id: "ot_crispr_validation",
@@ -238,6 +272,7 @@ const dataSources = [
     weight: 0.5,
     isPrivate: true,
     docsLink: "https://partner-platform.opentargets.org/projects",
+    required: false,
   },
   // Private
   {
@@ -249,6 +284,7 @@ const dataSources = [
     weight: 0.5,
     isPrivate: true,
     docsLink: "https://partner-platform.opentargets.org/projects",
+    required: false,
   },
   // Private
   {
@@ -260,6 +296,7 @@ const dataSources = [
     weight: 0.5,
     isPrivate: true,
     docsLink: "https://partner-platform.opentargets.org/projects",
+    required: false,
   },
   // Private
 ];

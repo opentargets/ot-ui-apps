@@ -1,0 +1,14 @@
+query Locus2GeneQuery($studyLocusId: String!) {
+  credibleSet(studyLocusId: $studyLocusId) {
+    l2GPredictions {
+      count
+      rows {
+        target {
+          id
+          approvedSymbol
+        }
+        score
+      }
+    }
+  }
+}

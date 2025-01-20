@@ -5,7 +5,7 @@ import {
   useLiteratureDispatch,
   defaultLiteratureState,
 } from "./LiteratureContext";
-import { fetchSimilarEntities } from "./requests"; 
+import { fetchSimilarEntities } from "./requests";
 import { Box } from "@mui/material";
 import { SectionItem } from "ui";
 import PublicationsList from "./PublicationsList";
@@ -23,9 +23,8 @@ import { DateFilter } from "./DateFilter";
 //   definition: any,  // ADD LATER
 // };
 
-function LiteratureList(
-    { id, name, entity, BODY_QUERY, definition }) {
-    // { id, name, entity, BODY_QUERY, definition }: LiteratureListParameter) {
+function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
+  // { id, name, entity, BODY_QUERY, definition }: LiteratureListParameter) {
 
   const [requestObj, setRequestObj] = useState({});
   const literature = useLiterature();
@@ -55,15 +54,15 @@ function LiteratureList(
         query: BODY_QUERY,
         globalEntity: entity,
       };
-      literatureDispatch({ type: 'stateUpdate', value: update });
+      literatureDispatch({ type: "stateUpdate", value: update });
     }
     startRequest();
-      // return function cleanUp() {
-      //   literatureDispatch({
-      //     type: 'stateUpdate',
-      //     value: defaultLiteratureState
-      //   });
-      // };
+    // return function cleanUp() {
+    //   literatureDispatch({
+    //     type: 'stateUpdate',
+    //     value: defaultLiteratureState
+    //   });
+    // };
   }, []);
 
   return (
@@ -72,6 +71,7 @@ function LiteratureList(
       request={requestObj}
       entity={entity}
       renderDescription={() => <Description name={name} />}
+      showContentLoading={true}
       renderBody={() => (
         <>
           <Box display="flex" sx={{ justifyContent: "space-between" }}>
@@ -98,7 +98,7 @@ function Body({ definition, name, id, entity, BODY_QUERY }) {
         entity={entity}
         BODY_QUERY={BODY_QUERY}
         definition={definition}
-      />  
+      />
     </LiteratureProvider>
   );
 }

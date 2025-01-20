@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, DataTable, ClinvarStars } from "ui";
+import { Link, SectionItem, Tooltip, ClinvarStars, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -94,10 +94,10 @@ function Body({ id, label: symbol, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => {
+      renderBody={() => {
         // sort probes manually as we need a custom sort based score, quality and origin
         const sortedProbes = _.orderBy(
-          data.target.chemicalProbes,
+          request.data?.target.chemicalProbes,
           [
             "probesDrugsScore",
             "isHighQuality",
@@ -106,21 +106,20 @@ function Body({ id, label: symbol, entity }) {
           ["desc", "desc", "desc"]
         );
 
-        return data.target.chemicalProbes?.length > 0 ? (
-          <DataTable
+        return request.data?.target.chemicalProbes?.length > 0 ? (
+          <OtTable
             columns={columns}
             rows={sortedProbes}
             showGlobalFilter
             dataDownloader
             dataDownloaderFileStem={`${symbol}-chemical-probes`}
             fixed
-            // sortBy="probesDrugsScore"
-            // order="desc"
             rowsPerPageOptions={defaultRowsPerPageOptions}
             noWrap={false}
             noWrapHeader={false}
             query={CHEMICAL_PROBES_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         ) : null;
       }}

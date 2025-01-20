@@ -90,6 +90,7 @@ function Body({ label: symbol, id, entity }) {
       definition={definition}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
+      showContentLoading={true}
       renderBody={() => (
         <>
           {/* Interaction Resource */}

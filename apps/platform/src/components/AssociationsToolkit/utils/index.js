@@ -5,6 +5,9 @@ import config from "../../../config";
 
 export const { isPartnerPreview } = config.profile;
 
+export * from "./associations";
+export * from "./interactors";
+
 const ASSOCIATION_LEGEND_LABEL = "Association score";
 const PRIORITISATION_LEGEND_LABEL = "Prioritisation indicator";
 const TARGE_PRIORITISATION_LEGEND_TICKS = ["Unfavourable", "Favourable"];
@@ -24,12 +27,21 @@ export const DISPLAY_MODE = {
   ASSOCIATIONS: "associations",
 };
 
+export const TABLE_PREFIX = {
+  CORE: "core",
+  PINNING: "pinning",
+  INTERACTORS: "interactors",
+  UPLOADED: "uploaded",
+};
+
 export const ENTITIES = {
   TARGET: "target",
   EVIDENCE: "evidence",
   DISEASE: "disease",
   DRUG: "drug",
 };
+
+export const rowNameProperty = { [ENTITIES.TARGET]: "approvedSymbol", [ENTITIES.DISEASE]: "name" };
 
 export const groupViewColumnsBy = (input, key) =>
   input.reduce((acc, currentValue) => {
@@ -56,17 +68,29 @@ export const getCellId = (cell, entityToGet, displayedTable, tablePrefix = null)
   const colId = cell.column.id;
   const rowId = cell.row.original[entityToGet].id;
   const sectionId =
-    displayedTable === "associations" ? cell.column.id : cell.column.columnDef.sectionId;
+    displayedTable === DISPLAY_MODE.ASSOCIATIONS ? cell.column.id : cell.column.columnDef.sectionId;
   return [rowId, colId, sectionId, tablePrefix];
+};
+
+export const getColumAndSection = (cell, displayedTable) => {
+  if (!cell.column) return [];
+  const colId = cell.column.id;
+  const sectionId =
+    displayedTable === DISPLAY_MODE.ASSOCIATIONS ? cell.column.id : cell.column.columnDef.sectionId;
+  return [colId, sectionId];
 };
 
 export const cellHasValue = score => typeof score === "number";
 
-export const defaulDatasourcesWeigths = dataSources.map(({ id, weight }) => ({
-  id,
-  weight,
-  propagate: true,
-}));
+export const defaulDatasourcesWeigths = dataSources.map(
+  ({ id, weight, required, aggregation }) => ({
+    id,
+    weight,
+    required,
+    aggregation,
+    propagate: true,
+  })
+);
 
 export const getWightSourceDefault = source => {
   const sourcesDetails = defaulDatasourcesWeigths.find(src => src.id === source);
@@ -86,25 +110,32 @@ const { primaryColor } = config.profile;
 
 /* Associations colors */
 export const ASSOCIATION_COLORS = [
-  rgb("#deebf7"),
-  rgb("#c6dbef"),
-  rgb("#9ecae1"),
-  rgb("#6baed6"),
-  rgb("#4292c6"),
-  rgb("#2171b5"),
-  rgb("#08519c"),
+  rgb("#dbeaf6"),
+  rgb("#BFDAEE"),
+  rgb("#A5CAE6"),
+  rgb("#8ABADE"),
+  rgb("#6EA9D7"),
+  rgb("#4F97CF"),
+  rgb("#3583C0"),
+  rgb("#2C6EA0"),
+  rgb("#245780"),
 ];
 
 /* PRIORITIZATION */
-// Red to blue
 export const PRIORITISATION_COLORS = [
-  rgb("#ec2746"),
-  rgb("#f16d47"),
-  rgb("#f19d5c"),
-  rgb("#f0c584"),
-  rgb("#c8b95f"),
-  rgb("#95ae43"),
-  rgb("#52a237"),
+  rgb("#a01813"),
+  rgb("#bc3a19"),
+  rgb("#d65a1f"),
+  rgb("#e08145"),
+  rgb("#e3a772"),
+  rgb("#e6ca9c"),
+  rgb("#eceada"),
+  rgb("#c5d2c1"),
+  rgb("#9ebaa8"),
+  rgb("#78a290"),
+  rgb("#528b78"),
+  rgb("#2f735f"),
+  rgb("#2e5943"),
 ];
 
 /* ASSOCIATION SCALE */
@@ -121,6 +152,12 @@ const PrioritisationLegend = Legend(prioritizationScale, {
   tickFormat: (d, i) =>
     [
       TARGE_PRIORITISATION_LEGEND_TICKS[0],
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
       " ",
       " ",
       " ",

@@ -1,0 +1,48 @@
+query GwasCredibleSetsQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
+  target(ensemblId: $ensemblId) {
+    approvedSymbol
+  }
+  disease(efoId: $efoId) {
+    id
+    name
+    gwasCredibleSets: evidences(
+      ensemblIds: [$ensemblId]
+      enableIndirect: true
+      datasourceIds: ["gwas_credible_sets"]
+      size: $size
+    ) {
+      count
+      rows {
+        disease {
+          id
+          name
+        }
+        credibleSet {
+          studyLocusId
+          study {
+            traitFromSource
+            id
+            projectId
+            publicationFirstAuthor
+            publicationDate
+            pubmedId
+            nSamples
+          }
+          variant {
+            id
+            chromosome
+            position
+            referenceAllele
+            alternateAllele
+          }
+          pValueMantissa
+          pValueExponent
+          beta
+          finemappingMethod
+          confidence
+        }
+        score
+      }
+    }
+  }
+}

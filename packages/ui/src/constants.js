@@ -333,3 +333,8 @@ export const publicationSummaryQuery = ({ pmcId, symbol, name }) => {
 
   return { baseUrl, body };
 };
+
+export const VIEW = {
+  chart: "Visualisation",
+  table: "Table",
+};

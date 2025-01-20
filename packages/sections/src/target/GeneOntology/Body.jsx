@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { sortBy, filter } from "lodash";
-import { Link, Tooltip, SectionItem, PublicationsDrawer, DataTable } from "ui";
+import { Link, Tooltip, SectionItem, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -147,10 +147,13 @@ function Section({ id, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={({ target }) => {
-        const rows = sortBy(target.geneOntology.map(extractCategory), "category.label");
+      renderBody={() => {
+        const rows = sortBy(
+          request.data?.target.geneOntology.map(extractCategory),
+          "category.label"
+        );
         return (
-          <DataTable
+          <OtTable
             showGlobalFilter
             dataDownloader
             columns={columns}
@@ -158,6 +161,7 @@ function Section({ id, label: symbol, entity }) {
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={GENE_ONTOLOGY_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

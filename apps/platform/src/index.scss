@@ -100,26 +100,6 @@ code {
 }
 
 // AotF
-/* ENTITIES GRID */
-.grid-container {
-  display: grid;
-  grid-template-rows: 1fr;
-  grid-column-gap: 2px;
-  grid-row-gap: 0px;
-}
-
-/* --- CONTROLS --- */
-.ControlsSection {
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.ControlsSection .global-controls-container input {
-  width: 200px;
-}
 
 /* --- HEADER ---  */
 .TAssociations .Theader {
@@ -184,17 +164,6 @@ code {
   align-items: center;
 }
 
-/* Table footer */
-.TAssociations .table-footer {
-  position: sticky;
-  border-top: 1px solid var(--table-footer-border-color);
-  bottom: 0;
-  background-color: #fafafa;
-  padding: 10px 0;
-  display: flex;
-  justify-content: space-between;
-}
-
 /* --- LEGEND --- */
 .TAssociations #legend {
   display: flex;
@@ -203,11 +172,6 @@ code {
 }
 
 /* ROW */
-.TAssociations .data-row-content {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
 
 .TAssociations .group-naiming-cols {
   display: flex;
@@ -223,47 +187,6 @@ code {
 .TAssociations .group-entity-cols {
   align-items: center;
   height: 32px;
-}
-
-/*  CELL  */
-.TAssociations .data-cell {
-  display: flex;
-  justify-content: center;
-}
-
-.TAssociations .name-cell {
-  width: 100%;
-  white-space: nowrap;
-  margin: 0 5px 0 0;
-  text-align: left;
-}
-
-.data-row-content:hover .pinnedIcon {
-  opacity: 1;
-}
-
-.TAssociations .data-cell .data-score.loading {
-  background: #eee;
-  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-  border-radius: 5px;
-  background-size: 200% 100%;
-  animation: 1.5s shine linear infinite;
-}
-
-.TAssociations .data-cell .data-score {
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
-.TAssociations .data-cell .data-score:hover,
-.TAssociations .data-cell .data-score:focus {
-  -webkit-box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
-  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
-}
-
-.TAssociations .data-cell.active .data-score {
-  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.35);
-  border: 2px solid rgb(0, 0, 0) !important;
 }
 
 /* Agregations indicators */
@@ -290,10 +213,6 @@ code {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
   cursor: pointer !important;
-}
-
-.TAssociations .category-container:hover .category-indicator div {
-  height: 15px;
 }
 
 /* Weights controlls */

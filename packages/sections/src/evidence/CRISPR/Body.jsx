@@ -1,7 +1,7 @@
 import { Link as RouterLink } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { Link } from "@mui/material";
-import { SectionItem, DataTable, TableDrawer } from "ui";
+import { SectionItem, TableDrawer, OtTable } from "ui";
 import { dataTypesMap } from "../../dataTypes";
 import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 import Description from "./Description";
@@ -66,16 +66,16 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.crisprSummary;
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.crisprSummary.rows}
             dataDownloader
             showGlobalFilter
             query={CRISPR_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

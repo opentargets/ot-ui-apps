@@ -504,6 +504,36 @@
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
   },
+    {
+    "otar_code": "OTAR3092",
+    "project_name": "Immuno-Oncology Target Identification in Rectal Cancer using Multi-Omics",
+    "project_lead": "Ana Cvejic / Peter Campbell",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "N",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Oncology",
+    "disease_mapping": []
+  },
+    {
+    "otar_code": "OTAR3093",
+    "project_name": "Open-IBD",
+    "project_lead": "Carl Anderson / Chris Lamb",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "N",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Immunology and Inflammation",
+    "disease_mapping": []
+  },
+    {
+    "otar_code": "OTAR3094",
+    "project_name": "NeuroPro",
+    "project_lead": "Gosia Trynka / Lewis Evans",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "N",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Neurodegenerative Disease",
+    "disease_mapping": []
+  },
   {
     "otar_code": "OTAR005",
     "project_name": "Rare and Common Diseases",

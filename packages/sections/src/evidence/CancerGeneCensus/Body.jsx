@@ -3,7 +3,7 @@ import { Box, List, ListItem, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { v1 } from "uuid";
 
-import { ChipList, Link, SectionItem, PublicationsDrawer, DataTable } from "ui";
+import { ChipList, Link, SectionItem, PublicationsDrawer, OtTable } from "ui";
 
 import { naLabel, defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
 import { dataTypesMap } from "../../dataTypes";
@@ -17,7 +17,10 @@ import CANCER_GENE_CENSUS_QUERY from "./sectionQuery.gql";
 
 const samplePercent = item => (item.numberSamplesWithMutationType / item.numberSamplesTested) * 100;
 
-const getMaxPercent = row => Math.max(...row.mutatedSamples.map(item => samplePercent(item)));
+const getMaxPercent = row => {
+  if (row.mutatedSamples) return Math.max(...row.mutatedSamples.map(item => samplePercent(item)));
+  return null;
+};
 
 const getColumns = label => [
   {
@@ -57,6 +60,7 @@ const getColumns = label => [
   {
     id: "mutatedSamples",
     propertyPath: "mutatedSamples.numberSamplesWithMutationType",
+    sortable: true,
     label: "Mutated / Total samples",
     renderCell: ({ mutatedSamples }) => {
       if (!mutatedSamples) return naLabel;
@@ -83,6 +87,7 @@ const getColumns = label => [
     comparator: (a, b) => getMaxPercent(a) - getMaxPercent(b),
   },
   {
+    id: "literature",
     label: "Literature",
     renderCell: ({ literature }) => {
       const literatureList =
@@ -138,15 +143,10 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({
-        disease: {
-          cancerGeneCensusSummary: { rows },
-        },
-        target: { hallmarks },
-      }) => {
+      renderBody={() => {
         const roleInCancerItems =
-          hallmarks && hallmarks.attributes.length > 0
-            ? hallmarks.attributes
+          request.data?.target.hallmarks && request.data?.target.hallmarks.attributes.length > 0
+            ? request.data?.target.hallmarks.attributes
                 .filter(attribute => attribute.name === "role in cancer")
                 .map(attribute => ({
                   label: attribute.description,
@@ -162,16 +162,16 @@ function Body({ id, label, entity }) {
               </Typography>
               <ChipList items={roleInCancerItems} />
             </Box>
-            <DataTable
+            <OtTable
               columns={columns}
               dataDownloader
-              order="desc"
-              rows={rows}
-              rowsPerPageOptions={defaultRowsPerPageOptions}
+              order="asc"
+              rows={request.data?.disease.cancerGeneCensusSummary.rows}
               showGlobalFilter
               sortBy="mutatedSamples"
               query={CANCER_GENE_CENSUS_QUERY.loc.source.body}
               variables={variables}
+              loading={request.loading}
             />
           </>
         );

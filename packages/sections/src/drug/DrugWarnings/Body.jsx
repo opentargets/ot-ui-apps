@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, Tooltip, DataTable, TableDrawer } from "ui";
+import { Link, SectionItem, Tooltip, TableDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -81,15 +81,15 @@ function Body({ id: chemblId, label: name, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description name={name} />}
-      renderBody={({ drug }) => (
-        <DataTable
+      renderBody={() => (
+        <OtTable
           showGlobalFilter
           dataDownloader
           columns={columns}
-          rows={drug.drugWarnings}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.drug.drugWarnings}
           query={DRUG_WARNINGS_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

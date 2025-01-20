@@ -9,11 +9,14 @@ export { default as SummaryContainer } from "./components/Summary/SummaryContain
 export { default as SummaryItem } from "./components/Summary/SummaryItem";
 export { default as Tooltip } from "./components/Tooltip";
 export { default as Link } from "./components/Link";
+export { default as Navigate } from "./components/Navigate";
 export { default as Chip } from "./components/Chip";
 export { default as ChipList } from "./components/ChipList";
 export { default as TooltipStyledLabel } from "./components/TooltipStyledLabel";
 export { default as DirectionOfEffectIcon } from "./components/DirectionOfEffectIcon";
 export { default as DirectionOfEffectTooltip } from "./components/DirectionOfEffectTooltip";
+export { default as DisplayVariantId } from "./components/DisplayVariantId";
+export { default as DisplaySampleSize } from "./components/DisplaySampleSize";
 export { default as LabelChip } from "./components/LabelChip";
 export { default as BasePage } from "./components/BasePage";
 export { default as NewChip } from "./components/NewChip";
@@ -25,6 +28,9 @@ export { default as PrivateRoute } from "./components/PrivateRoute";
 export { default as EllsWrapper } from "./components/EllsWrapper";
 export { default as ErrorBoundary } from "./components/ErrorBoundary";
 export { default as GlobalSearch } from "./components/GlobalSearch/GlobalSearch";
+export { default as DetailPopover } from "./components/DetailPopover";
+export { default as SummaryStatsTable } from "./components/SummaryStatsTable";
+export { default as KnownDrugsSourceDrawer } from "./components/KnownDrugsSourceDrawer";
 
 export { default as PrivateWrapper } from "./components/PrivateWrapper";
 export { default as NavBar } from "./components/NavBar";
@@ -34,6 +40,11 @@ export { default as MouseModelAllelicComposition } from "./components/MouseModel
 export { default as DataDownloader } from "./components/DataDownloader";
 export { default as Legend } from "./components/Legend";
 export { default as ApiPlaygroundDrawer } from "./components/ApiPlaygroundDrawer";
+export { default as OtTable } from "./components/OtTable/OtTable";
+export { default as OtPopper } from "./components/OtPopper";
+export { default as OtScoreLinearBar } from "./components/OtScoreLinearBar";
+export { default as OtTableSSP } from "./components/OtTable/OtTableSSP";
+export { default as EntityPanel } from "./components/EntityPanel/EntityPanel";
 
 export { default as EmptyPage } from "./pages/EmptyPage";
 export { default as NotFoundPage } from "./pages/NotFoundPage";
@@ -44,6 +55,7 @@ export * from "./contexts/ConfigurationProvider";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Section";
+export * from "./components/Plot";
 
 export * from "./components/ProfileHeader";
 export * from "./components/DownloadSvgPlot";
@@ -62,3 +74,7 @@ export { default as useBatchQuery } from "./hooks/useBatchQuery";
 export { default as useCursorBatchDownloader } from "./hooks/useCursorBatchDownloader";
 export { default as usePermissions } from "./hooks/usePermissions";
 export { default as useDebounce } from "./hooks/useDebounce";
+
+/* TYPES */
+
+// export { default as responseType } from "./types/response";

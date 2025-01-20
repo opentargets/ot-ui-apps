@@ -6,7 +6,7 @@ import {
   Tooltip,
   PublicationsDrawer,
   EllsWrapper,
-  DataTable,
+  OtTable,
   TableDrawer,
 } from "ui";
 
@@ -20,7 +20,7 @@ import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../..
 
 const getColumns = label => [
   {
-    id: "disease.name",
+    id: "disease",
     label: "Disease / phenotype",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
@@ -44,7 +44,7 @@ const getColumns = label => [
     width: "18%",
   },
   {
-    id: "pathwayName",
+    id: "pathways",
     label: "Pathway",
     renderCell: ({ pathways }) => {
       if (!pathways || pathways.length === 0) {
@@ -95,10 +95,7 @@ const getColumns = label => [
     width: "12%",
   },
   {
-    filterValue: ({ variantAminoacidDescriptions }) =>
-      variantAminoacidDescriptions
-        ?.map(variantAminoacidDescription => variantAminoacidDescription)
-        .join(),
+    id: "variantAminoacidDescriptions",
     label: "Amino acid variation",
     renderCell: ({ variantAminoacidDescriptions }) => {
       if (variantAminoacidDescriptions?.length === 1) {
@@ -162,12 +159,11 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.reactomeSummary;
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.reactomeSummary.rows}
             dataDownloader
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
@@ -175,6 +171,7 @@ function Body({ id, label, entity }) {
             noWrapHeader={false}
             query={REACTOME_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

@@ -1,120 +1,148 @@
-import Plotly from "plotly.js-cartesian-dist-min";
-import createPlotlyComponent from "react-plotly.js/factory";
-import _ from "lodash";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useRef, useEffect } from "react";
+import * as Plot from "@observablehq/plot";
+import { useMeasure } from "@uidotdev/usehooks";
+import { Box } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { DataDownloader } from "ui";
+import { sentenceCase } from "ui/src/utils/global";
 
-function DepmapPlot({ data }) {
-  const ref = useRef(null);
-  const [width, setWidth] = useState(0);
-  const Plot = createPlotlyComponent(Plotly);
-
-  useLayoutEffect(() => {
-    setWidth(ref.current.offsetWidth);
-  }, []);
-
-  const trackHeight = 40;
-
-  const onPointClick = evt => {
-    const { points } = evt;
-    const id = points[0]?.id;
-    if (id) {
-      const url = `https://depmap.org/portal/cell_line/${id}?tab=overview`;
-      window.open(url, "_blank");
-    }
-  };
-
-  // plot data
-  const depMapEssentiality = data
-    .map(d => ({
-      type: "box",
-      tissueName: d.tissueName,
-      name: `${_.capitalize(d.tissueName)} (${d.screens.length})`,
-
-      // points data:
-      x: d.screens.map(s => s.geneEffect),
-      ids: d.screens.map(s => s.depmapId),
-
-      // tooltip settings
-      hoveron: "points", // enable tooltip only for points, not boxes
-      hovertext: d.screens.map(
-        s =>
-          `<b>${s.cellLineName}</b><br />Disease: ${s.diseaseFromSource}<br />Gene Effect: ${s.geneEffect}<br />Expression: ${s.expression}`
-      ),
-      hoverinfo: "text",
-
-      // points appearance
-      jitter: 0.3,
-      pointpos: 0,
-      marker: {
-        color: "#3589CA",
-        size: 7,
-        opacity: 0.6,
-      },
-
-      // box settings:
-      boxpoints: "all",
-      line: {
-        color: "rgba(0,0,0,0.4)",
-        width: 1.5,
-      },
-      fillcolor: "rgba(0,0,0,0)", // transparent fill
-
-      // legend settings
-      showlegend: false,
-    }))
-    // sort in reverse alphabetical order so it displays from top to bottom
-    .sort((a, b) => {
-      if (a.tissueName.toUpperCase() < b.tissueName.toUpperCase()) {
-        return 1;
-      }
-      if (a.tissueName.toUpperCase() > b.tissueName.toUpperCase()) {
-        return -1;
-      }
-      return 0;
+const prepareData = (data = []) => {
+  const flatData = data.reduce((accumulator, currentValue) => {
+    currentValue.screens.forEach(dot => {
+      accumulator.push({ ...dot, tissueName: sentenceCase(currentValue.tissueName) });
     });
+    return accumulator;
+  }, []);
+  return flatData;
+};
 
-  // plot layout options
-  const layoutOptions = {
-    width: width,
-    height: data.length * trackHeight + trackHeight * 3, // plotly adds roghly this space at the bottom after tracks
-    title: "",
-    autosize: true,
-    xaxis: {
-      title: "Gene Effect",
-      zerolinecolor: "#DDD",
-    },
-    yaxis: {
-      automargin: "width",
-    },
-    shapes: [
-      {
-        // draw the reference line at -1
-        type: "line",
-        x0: -1,
-        y0: -0.5,
-        x1: -1,
-        y1: depMapEssentiality.length - 0.5,
-        line: {
-          color: "#rgba(255,0,0,.9)",
-          width: 1,
-          dash: "dot",
-        },
-      },
-    ],
-    margin: {
-      t: 30,
-    },
-    boxgap: 0.5,
-    font: {
-      family: "Inter",
-    },
-  };
-
+function Wrapper({ data, query, variables }) {
+  const [ref, { width }] = useMeasure();
+  const parsedData = prepareData(data);
   return (
-    <div ref={ref}>
-      <Plot data={depMapEssentiality} layout={layoutOptions} onClick={onPointClick} />
-    </div>
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box sx={{ width: "95%" }} ref={ref}>
+        <ChartControls data={parsedData} query={query} variables={variables} />
+        <DepmapPlot data={parsedData} width={width} />
+      </Box>
+    </Box>
   );
 }
 
-export default DepmapPlot;
+function ChartControls({ data, query, variables }) {
+  return (
+    <Box
+      sx={{
+        borderColor: grey[300],
+        borderRadius: 1,
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: 1,
+      }}
+    >
+      <DataDownloader
+        btnLabel="Export data"
+        rows={data}
+        query={query}
+        variables={variables}
+        columns={[
+          { exportValue: row => row.depmapId, id: "depmapId" },
+          { exportValue: row => row.cellLineName, id: "cellLineName" },
+          { exportValue: row => row.diseaseFromSource, id: "diseaseFromSource" },
+          { exportValue: row => row.geneEffect, id: "geneEffect" },
+          { exportValue: row => row.expression, id: "expression" },
+          { exportValue: row => row.tissueName, id: "tissueName" },
+        ]}
+      />
+    </Box>
+  );
+}
+
+function DepmapPlot({ data, width }) {
+  const headerRef = useRef();
+  useEffect(() => {
+    if (data === undefined || width === null) return;
+    const chart = Plot.plot({
+      width: width,
+      marginLeft: 200,
+      style: {
+        background: "transparent",
+        fontSize: "12px",
+      },
+      x: {
+        type: "symlog",
+        domain: [-6, -1, 6],
+        grid: true,
+        label: null,
+      },
+      color: {
+        domain: ["Dependency", "Neutral"],
+        range: ["#EC2846", "#08519C"],
+        type: "ordinal",
+        label: "Gene effect - log(x)",
+        legend: true,
+      },
+      marks: [
+        Plot.ruleX([-1], { strokeDasharray: 4, stroke: "#EC2846" }),
+        Plot.boxX(data, {
+          r: 0,
+          x: "geneEffect",
+          y: "tissueName",
+          opacity: 0.5,
+        }),
+        Plot.dot(data, {
+          x: "geneEffect",
+          y: "tissueName",
+          channels: {
+            cellLineName: {
+              value: "cellLineName",
+              label: "",
+            },
+            geneEffect: {
+              value: "geneEffect",
+              label: "Gene effect:",
+            },
+            tissueName: {
+              value: "tissueName",
+              label: "Tissue:",
+            },
+            expression: {
+              value: "expression",
+              label: "Expression:",
+            },
+            diseaseFromSource: {
+              value: "diseaseFromSource",
+              label: "Disease:",
+            },
+          },
+          tip: {
+            fontSize: 14,
+            textPadding: 10,
+            format: {
+              fill: false,
+              cellLineName: true,
+              diseaseFromSource: true,
+              x: false,
+              y: false,
+            },
+          },
+          fill: d => (d.geneEffect < -1 ? "#EC2846" : "#08519C"),
+          fillOpacity: 0.5,
+        }),
+        Plot.axisY({
+          label: "Tissue name",
+        }),
+        Plot.axisX({
+          label: "Gene Effect",
+        }),
+        Plot.crosshair(data, { x: "geneEffect", y: "tissueName" }),
+      ],
+    });
+    headerRef.current.append(chart);
+    return () => chart.remove();
+  }, [data, width]);
+
+  return <Box ref={headerRef}></Box>;
+}
+
+export default Wrapper;

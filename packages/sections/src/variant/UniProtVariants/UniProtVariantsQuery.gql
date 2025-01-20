@@ -1,0 +1,20 @@
+query UniProtVariantsQuery($variantId: String!) {
+  variant(variantId: $variantId) {
+    id
+    referenceAllele
+    alternateAllele
+    evidences(datasourceIds: ["uniprot_variants"]) {
+      count
+      rows {
+        targetFromSourceId
+        confidence
+        diseaseFromSource
+        disease {
+          id
+          name
+        }
+        literature
+      }
+    }
+  }
+}

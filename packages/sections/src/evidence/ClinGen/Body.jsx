@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem, DataTable } from "ui";
+import { Link, Tooltip, SectionItem, OtTable } from "ui";
 import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import { dataTypesMap } from "../../dataTypes";
 import Description from "./Description";
@@ -101,17 +101,17 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.genetic_association}
       request={request}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.clingenSummary;
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.clingenSummary.rows}
             dataDownloader
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={CLINGEN_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}
