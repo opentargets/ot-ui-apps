@@ -22,7 +22,6 @@ import {
   nullishComparator,
 } from "../../utils/comparators";
 import PheWasPlot from "./PheWasPlot";
-import PheWasPlotRedo from "./PheWasPlotRedo";
 import { useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
 import { v1 } from "uuid";
@@ -287,8 +286,8 @@ function Body({ id, entity }: BodyProps) {
           alternateAllele: request.data?.variant.alternateAllele,
         });
         return (
-          <>
-            <PheWasPlotRedo
+          <Box mb={1} ml={2}>
+            <PheWasPlot
               key={v1()}
               columns={columns}
               query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
@@ -299,18 +298,7 @@ function Body({ id, entity }: BodyProps) {
               pageReferenceAllele={request.data?.variant.referenceAllele}
               pageAlternateAllele={request.data?.variant.alternateAllele}
             />
-            <PheWasPlot
-              key={v1()}
-              columns={columns}
-              query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
-              variables={variables}
-              loading={request.loading}
-              data={request.data?.variant.gwasCredibleSets.rows}
-              id={id}
-              referenceAllele={request.data?.variant.referenceAllele}
-              alternateAllele={request.data?.variant.alternateAllele}
-            />
-          </>
+          </Box>
         );
       }}
       renderBody={() => {

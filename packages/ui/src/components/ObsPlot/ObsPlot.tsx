@@ -15,8 +15,8 @@ type ObsPlotProps = {
   }) => SVGSVGElement;
   xTooltip?: (d: any, i?: number) => number;
   yTooltip?: (d: any, i?: number) => number;
-  xAnchorTooltip?: "left" | "right" | "center" | "adapt";
-  yAnchorTooltip?: "top" | "bottom" | "center" | "adapt";
+  xAnchorTooltip?: "left" | "right" | "center" | "adapt" | "plotLeft" | "plotRight";
+  yAnchorTooltip?: "top" | "bottom" | "center" | "adapt" | "plotTop" | "plotBottom";
   dxTooltip?: number;
   dyTooltip?: number;
   renderTooltip?: (datum: any) => ReactElement;
