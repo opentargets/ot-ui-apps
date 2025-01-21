@@ -1,218 +1,202 @@
-import { Box, Skeleton, useTheme } from "@mui/material";
-import {
-  ClinvarStars,
-  Link,
-  Tooltip,
-  DisplayVariantId,
-  Navigate,
-  OtScoreLinearBar,
-  Plot,
-  Vis,
-  XAxis,
-  YAxis,
-  XTick,
-  YTick,
-  XLabel,
-  YLabel,
-  XTitle,
-  XGrid,
-  Circle,
-  Segment,
-  Rect,
-  HTMLTooltip,
-  HTMLTooltipTable,
-  HTMLTooltipRow,
-} from "ui";
-import { scaleLinear, min } from "d3";
-import { ScientificNotation } from "ui";
+import { useTheme, Box, Skeleton } from "@mui/material";
+import { ClinvarStars, Link, Tooltip, DisplayVariantId, Navigate, OtScoreLinearBar } from "ui";
+import * as PlotLib from "@observablehq/plot";
+import { ScientificNotation, ObsPlot, ObsTooltipTable, ObsTooltipRow } from "ui";
 import { naLabel, credsetConfidenceMap } from "../../constants";
 
-export default function ManhattanPlot({ loading, data }) {
-  const plotHeight = 410;
+function ManhattanPlot({ loading, data: originalData }) {
   const theme = useTheme();
-  const background = theme.palette.background.paper;
+
+  const height = 360;
   const markColor = theme.palette.primary.main;
-  const fontFamily = theme.typography.fontFamily;
-  const circleArea = 32;
+  const background = theme.palette.background.paper;
 
-  if (loading) return <Skeleton height={plotHeight} />;
-  if (data == null) return null;
+  if (loading) return <Skeleton height={height} />;
 
-  // eslint-disable-next-line
-  data = data.filter(d => {
-    return d.pValueMantissa != null && d.pValueExponent != null && d.variant != null;
-  });
+  if (originalData == null) return null;
+
+  const data = structuredClone(
+    originalData.filter(d => {
+      return d.pValueMantissa != null && d.pValueExponent != null && d.variant != null;
+    })
+  );
   if (data.length === 0) return null;
-  // eslint-disable-next-line
-  data = structuredClone(data);
-  data.forEach(d => {
-    d._y = Math.log10(d.pValueMantissa) + d.pValueExponent;
-  });
 
-  const yMin = min(data, d => d._y);
   const yMax = 0;
+  let yMin = Infinity;
+  for (const d of data) {
+    const y = Math.log10(d.pValueMantissa) + d.pValueExponent;
+    yMin = Math.min(yMin, y);
+    d._y = y;
+    d._genomePosition = cumulativePosition(d.variant);
+  }
 
-  const genomePositions = {};
-  data.forEach(({ variant }) => {
-    genomePositions[variant.id] = cumulativePosition(variant);
-  });
+  function highlightElement(elmt) {
+    elmt.parentNode.appendChild(elmt);
+    elmt.style.fill = markColor;
+    elmt.style.strokeOpacity = 1;
+    if (elmt.tagName === "line") elmt.style.strokeWidth = 1.7;
+  }
 
-  const xScale = scaleLinear().domain([0, genomeLength]);
-  const yScale = scaleLinear().domain([yMin, yMax]).nice(); // ensure min scale value <= yMin
-  yScale.domain([yScale.domain()[0], yMax]); // ensure max scale value is yMax - in case nice changed it
+  function fadeElement(elmt) {
+    elmt.style.fill = background;
+    elmt.style.strokeOpacity = 0.6;
+    elmt.style.strokeWidth = 1;
+  }
+
+  function resetElement(elmt) {
+    elmt.style.fill = background;
+    elmt.style.strokeOpacity = 1;
+    elmt.style.strokeWidth = 1;
+  }
+
+  function renderChart({ data, width, height }) {
+    return PlotLib.plot({
+      width,
+      height,
+      marginTop: 30,
+      marginLeft: 80,
+      marginRight: 40,
+      style: { fontSize: "11px", fontWeight: "500" },
+      x: {
+        domain: [0, genomeLength],
+      },
+      y: {
+        domain: [yMin, yMax],
+        reverse: true,
+        nice: true,
+      },
+      marks: [
+        // x-axis
+        PlotLib.axisX({
+          stroke: "#888",
+          ticks: [0, ...chromosomeInfo.map(chromo => chromo.end)],
+          tickSize: 16,
+          tickFormat: v => "",
+        }),
+        PlotLib.ruleY([0], {
+          stroke: "#888",
+        }),
+
+        // y-axis
+        PlotLib.axisY({
+          stroke: "#888",
+          label: "-log₁₀(pValue)",
+          labelAnchor: "top",
+          labelArrow: "none",
+          tickFormat: v => Math.abs(v),
+        }),
+        PlotLib.ruleX([0], {
+          stroke: "#888",
+        }),
+
+        // grid lines
+        PlotLib.gridX(
+          chromosomeInfo.map(chromo => chromo.end),
+          {
+            x: d => d,
+            stroke: "#cecece",
+            strokeOpacity: 1,
+            strokeDasharray: "3, 4",
+          }
+        ),
+
+        // text mark for the x-axis labels
+        PlotLib.text(chromosomeInfo, {
+          x: d => d.midpoint,
+          y: yMax,
+          text: d => d.chromosome,
+          lineAnchor: "top",
+          dy: 6,
+        }),
+
+        // standard marks
+        PlotLib.ruleX(data, {
+          x: d => d._genomePosition,
+          y: d => d._y,
+          y2: yMax,
+          strokeWidth: 1,
+          stroke: markColor,
+          className: "obs-tooltip",
+        }),
+        PlotLib.dot(data, {
+          x: d => d._genomePosition,
+          y: d => d._y,
+          strokeWidth: 1,
+          stroke: markColor,
+          fill: background,
+          r: 3,
+          className: "obs-tooltip",
+        }),
+      ],
+    });
+  }
 
   return (
-    <Vis>
-      <Plot
-        responsive
-        clearOnClick
-        clearOnLeave
-        height={plotHeight}
-        padding={{ top: 50, right: 40, bottom: 50, left: 90 }}
-        fontFamily={fontFamily}
-        data={data}
-        yReverse
-        scales={{ x: xScale, y: yScale }}
-        xTick={chromosomeInfo}
-      >
-        <XTick values={tickData => [0, ...tickData.map(chromo => chromo.end)]} tickLength={15} />
-        <XLabel
-          values={tickData => tickData.map(chromo => chromo.midpoint)}
-          format={(_, i, __, tickData) => tickData[i].chromosome}
-          padding={5}
-        />
-        <XGrid
-          values={tickData => tickData.map(chromo => chromo.end)}
-          stroke="#cecece"
-          strokeDasharray="3 4"
-        />
-        <XTitle fontSize={11} position="top" align="left" textAnchor="middle" padding={16} dx={-30}>
-          <tspan fontStyle="italic">
-            -log
-            <tspan fontSize="9" dy="4">
-              10
-            </tspan>
-            <tspan dy="-4">(pValue)</tspan>
-          </tspan>
-        </XTitle>
-        <YTick />
-        <YLabel format={v => Math.abs(v)} />
-
-        <Segment
-          x={d => genomePositions[d.variant.id]}
-          xx={d => genomePositions[d.variant.id]}
-          y={d => d._y}
-          yy={yMax}
-          stroke={markColor}
-          strokeWidth={1}
-          strokeOpacity={0.7}
-          hover="stay"
-        />
-        <Circle
-          x={d => genomePositions[d.variant.id]}
-          y={d => d._y}
-          fill={background}
-          stroke={markColor}
-          strokeWidth={1.2}
-          area={circleArea}
-          hover="stay"
-        />
-
-        {/* on hover */}
-        <Rect
-          dataFrom="hover"
-          x={0}
-          xx={genomeLength}
-          dxx={8}
-          y={yMin}
-          yy={yMax}
-          dy={-8}
-          dyy={0}
-          fill={background}
-          fillOpacity={0.4}
-        />
-        <Segment
-          dataFrom="hover"
-          x={d => genomePositions[d.variant.id]}
-          xx={d => genomePositions[d.variant.id]}
-          y={d => d._y}
-          yy={yMax}
-          stroke={markColor}
-          strokeWidth={1.7}
-          strokeOpacity={1}
-        />
-        <Circle
-          dataFrom="hover"
-          x={d => genomePositions[d.variant.id]}
-          y={d => d._y}
-          fill={markColor}
-          area={circleArea}
-        />
-        <HTMLTooltip
-          x={d => genomePositions[d.variant.id]}
-          y={d => d._y}
-          pxWidth={290}
-          pxHeight={210}
-          content={tooltipContent}
-        />
-
-        {/* axes at end so fade rectangle doesn't cover them */}
-        <XAxis />
-        <YAxis />
-      </Plot>
-    </Vis>
+    <ObsPlot
+      data={data}
+      height={height}
+      renderChart={renderChart}
+      xTooltip={d => d._genomePosition}
+      yTooltip={d => d._y}
+      dxTooltip={10}
+      dyTooltip={10}
+      renderTooltip={renderTooltip}
+      fadeElement={fadeElement}
+      highlightElement={highlightElement}
+      resetElement={resetElement}
+    />
   );
 }
 
-function tooltipContent(data) {
+export default ManhattanPlot;
+
+function renderTooltip(datum) {
   return (
-    <HTMLTooltipTable>
-      <HTMLTooltipRow label="Navigate" data={data}>
+    <ObsTooltipTable>
+      <ObsTooltipRow label="Navigate">
         <Box display="flex">
-          <Navigate to={`../credible-set/${data.studyLocusId}`} />
+          <Navigate to={`../credible-set/${datum.studyLocusId}`} />
         </Box>
-      </HTMLTooltipRow>
-      <HTMLTooltipRow label="Lead variant" data={data}>
-        <Link to={`/variant/${data.variant.id}`}>
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Lead variant">
+        <Link to={`/variant/${datum.variant.id}`}>
           <DisplayVariantId
-            variantId={data.variant.id}
-            referenceAllele={data.variant.referenceAllele}
-            alternateAllele={data.variant.alternateAllele}
+            variantId={datum.variant.id}
+            referenceAllele={datum.variant.referenceAllele}
+            alternateAllele={datum.variant.alternateAllele}
             expand={false}
           />
         </Link>
-      </HTMLTooltipRow>
-      <HTMLTooltipRow label="P-value" data={data}>
-        <ScientificNotation number={[data.pValueMantissa, data.pValueExponent]} dp={2} />
-      </HTMLTooltipRow>
-      <HTMLTooltipRow label="Beta" data={data}>
-        {data.beta?.toPrecision(3) ?? naLabel}
-      </HTMLTooltipRow>
-
-      <HTMLTooltipRow label="Fine-mapping" data={data}>
+      </ObsTooltipRow>
+      <ObsTooltipRow label="P-value">
+        <ScientificNotation number={[datum.pValueMantissa, datum.pValueExponent]} dp={2} />
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Beta">{datum.beta?.toPrecision(3) ?? naLabel}</ObsTooltipRow>
+      <ObsTooltipRow label="Fine-mapping">
         <Box display="flex" flexDirection="column" gap={0.25}>
           <Box display="flex" gap={0.5}>
-            Method: {data.finemappingMethod ?? naLabel}
+            Method: {datum.finemappingMethod ?? naLabel}
           </Box>
           <Box display="flex" gap={0.5}>
             Confidence:{" "}
-            {data.confidence ? (
-              <Tooltip title={data.confidence} style="">
-                <ClinvarStars num={credsetConfidenceMap[data.confidence]} />
+            {datum.confidence ? (
+              <Tooltip title={datum.confidence} style="">
+                <ClinvarStars num={credsetConfidenceMap[datum.confidence]} />
               </Tooltip>
             ) : (
               naLabel
             )}
           </Box>
         </Box>
-      </HTMLTooltipRow>
-      <HTMLTooltipRow label="L2G" data="data">
+      </ObsTooltipRow>
+      <ObsTooltipRow label="L2G">
         <Box display="flex" flexDirection="column" gap={0.25}>
           <Box display="flex" gap={0.5}>
             Top:{" "}
-            {data.l2GPredictions?.rows?.[0]?.target ? (
-              <Link to={`/target/${data.l2GPredictions.rows[0].target.id}`}>
-                {data.l2GPredictions.rows[0].target.approvedSymbol}
+            {datum.l2GPredictions?.rows?.[0]?.target ? (
+              <Link to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
+                {datum.l2GPredictions.rows[0].target.approvedSymbol}
               </Link>
             ) : (
               naLabel
@@ -220,12 +204,12 @@ function tooltipContent(data) {
           </Box>
           <Box display="flex" alignItems="center" gap={0.5}>
             Score:{" "}
-            {data.l2GPredictions?.rows?.[0]?.score ? (
-              <Tooltip title={data.l2GPredictions.rows[0].score.toFixed(3)} style="">
+            {datum.l2GPredictions?.rows?.[0]?.score ? (
+              <Tooltip title={datum.l2GPredictions.rows[0].score.toFixed(3)} style="">
                 <div>
                   <OtScoreLinearBar
                     variant="determinate"
-                    value={data.l2GPredictions.rows[0].score * 100}
+                    value={datum.l2GPredictions.rows[0].score * 100}
                   />
                 </div>
               </Tooltip>
@@ -234,11 +218,11 @@ function tooltipContent(data) {
             )}
           </Box>
         </Box>
-      </HTMLTooltipRow>
-      <HTMLTooltipRow label="Credible set size" data={data}>
-        {data.locus?.count ? data.locus.count.toLocaleString() : naLabel}
-      </HTMLTooltipRow>
-    </HTMLTooltipTable>
+      </ObsTooltipRow>
+      <ObsTooltipRow label="Credible set size">
+        {datum.locus?.count ? datum.locus.count.toLocaleString() : naLabel}
+      </ObsTooltipRow>
+    </ObsTooltipTable>
   );
 }
 
