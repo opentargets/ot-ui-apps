@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import Link from '../Link';
 import OpenTargetsTitle from './OpenTargetsTitle';
 import HeaderMenu from './HeaderMenu';
+import WarningBanner from './WarningBanner';
 
 const useStyles = makeStyles(theme => ({
   navbar: {
@@ -122,6 +123,7 @@ const NavBar = ({
       color="primary"
       elevation={0}
     >
+      {name === 'Genetics' && <WarningBanner />}
       <Toolbar variant="dense" className={classes.spaceBetween}>
         <div className={classes.navLogo}>
           {homepage ? null : (
