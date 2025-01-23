@@ -72,10 +72,10 @@ export const externalLinks = {
     { label: 'Blog', url: 'https://blog.opentargets.org' },
   ],
   partners: [
-    { label: 'Bristol Myers Squibb', url: 'https://www.bms.com' },
     { label: 'EMBL-EBI', url: 'http://www.ebi.ac.uk' },
     { label: 'Genentech', url: 'https://www.gene.com' },
     { label: 'GSK', url: 'http://www.gsk.com' },
+    { label: 'MSD', url: 'https://www.msd.com' },
     { label: 'Pfizer', url: 'https://pfizer.com/' },
     { label: 'Sanofi', url: 'https://www.sanofi.com' },
     { label: 'Wellcome Sanger Institute', url: 'http://www.sanger.ac.uk' },
@@ -91,7 +91,7 @@ export const externalLinks = {
       icon: faDiscourse,
       url: 'https://community.opentargets.org',
       external: true,
-    }
+    },
   ],
   social: [
     { icon: faTwitterSquare, url: 'https://twitter.com/opentargets' },
