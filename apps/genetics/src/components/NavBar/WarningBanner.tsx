@@ -9,7 +9,7 @@ function WarningBanner() {
       sx={{
         display: 'flex',
         justifyContent: 'center',
-        background: '#eded02',
+        background: '#FFC53D',
         color: 'black',
         alignItems: 'center',
         gap: 5,
