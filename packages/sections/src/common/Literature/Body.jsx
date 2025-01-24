@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  LiteratureProvider,
-  useLiterature,
-  useLiteratureDispatch,
-  defaultLiteratureState,
-} from "./LiteratureContext";
+import { LiteratureProvider, useLiterature, useLiteratureDispatch } from "./LiteratureContext";
 import { fetchSimilarEntities } from "./requests";
 import { Box } from "@mui/material";
 import { SectionItem } from "ui";
@@ -15,17 +10,7 @@ import Category from "./Category";
 import CountInfo from "./CountInfo";
 import { DateFilter } from "./DateFilter";
 
-// type LiteratureListParameter = {
-//   id: string,
-//   name: string,
-//   entity: any,  // ADD LATER
-//   BODY_QUERY: string,
-//   definition: any,  // ADD LATER
-// };
-
 function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
-  // { id, name, entity, BODY_QUERY, definition }: LiteratureListParameter) {
-
   const [requestObj, setRequestObj] = useState({});
   const literature = useLiterature();
   const { category, startYear, startMonth, endYear, endMonth } = literature;
@@ -57,12 +42,6 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
       literatureDispatch({ type: "stateUpdate", value: update });
     }
     startRequest();
-    // return function cleanUp() {
-    //   literatureDispatch({
-    //     type: 'stateUpdate',
-    //     value: defaultLiteratureState
-    //   });
-    // };
   }, []);
 
   return (

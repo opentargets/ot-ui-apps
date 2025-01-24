@@ -1,7 +1,5 @@
-import { InputLabel, FormGroup, Checkbox, FormControlLabel }
-  from "@mui/material";
-import { useLiterature, useSelectedCategories, useLiteratureDispatch }
-  from "./LiteratureContext";
+import { InputLabel, FormGroup, Checkbox, FormControlLabel } from "@mui/material";
+import { useLiterature, useSelectedCategories, useLiteratureDispatch } from "./LiteratureContext";
 import { fetchSimilarEntities } from "./requests";
 
 const toggleValue = (selected, categories) => {
@@ -17,7 +15,6 @@ const categories = [
 ];
 
 export default function Category() {
-
   const literature = useLiterature();
   const category = useSelectedCategories();
   const literatureDispatch = useLiteratureDispatch();
@@ -35,9 +32,11 @@ export default function Category() {
       startYear,
       startMonth,
     } = literature;
-    const { target: { name: clicked }  } = event;
+    const {
+      target: { name: clicked },
+    } = event;
     const newCategories = toggleValue(clicked, bibliographyCategory);
-    literatureDispatch({ type: 'loadingEntities', value: true });
+    literatureDispatch({ type: "loadingEntities", value: true });
     const request = await fetchSimilarEntities({
       query,
       id,
@@ -57,7 +56,7 @@ export default function Category() {
       loadingEntities: false,
       category: newCategories,
     };
-    literatureDispatch({ type: 'stateUpdate', value: update });
+    literatureDispatch({ type: "stateUpdate", value: update });
   };
 
   return (

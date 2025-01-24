@@ -18,13 +18,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function EntitiesToSelect({ id }) {
-
   const literature = useLiterature();
-  const {
-    entities,
-    selectedEntities: selectedChips,
-    loadingEntities,
-  } = literature;
+  const { entities, selectedEntities: selectedChips, loadingEntities } = literature;
   const literatureDispatch = useLiteratureDispatch();
 
   const handleSelectChip = async e => {
@@ -48,8 +43,8 @@ function EntitiesToSelect({ id }) {
         },
       },
     ];
-    literatureDispatch({ type: 'selectedEntities', value: newChips });
-    literatureDispatch({ type: 'loadingEntities', value: true });
+    literatureDispatch({ type: "selectedEntities", value: newChips });
+    literatureDispatch({ type: "loadingEntities", value: true });
     const request = await fetchSimilarEntities({
       query,
       id: bibliographyId,
@@ -70,7 +65,7 @@ function EntitiesToSelect({ id }) {
       loadingEntities: false,
       page: 0,
     };
-    literatureDispatch({ type: 'stateUpdate', value: update });
+    literatureDispatch({ type: "stateUpdate", value: update });
   };
 
   const validateEntity = entity => {
@@ -113,13 +108,9 @@ function EntitiesToSelect({ id }) {
 }
 
 export default function Entities({ name, id }) {
-  
   const classes = useStyles();
   const literature = useLiterature();
-  const {
-    selectedEntities: selectedChips,
-    loadingEntities,
-  } = literature;
+  const { selectedEntities: selectedChips, loadingEntities } = literature;
   const literatureDispatch = useLiteratureDispatch();
 
   const handleDeleteChip = async index => {
@@ -133,10 +124,9 @@ export default function Entities({ name, id }) {
       startYear,
       startMonth,
     } = literature;
-    const newChips =
-      [...selectedChips.slice(0, index), ...selectedChips.slice(index + 1)];
-    literatureDispatch({ type: 'selectedEntities', value: newChips });
-    literatureDispatch({ type: 'loadingEntities', value: true });
+    const newChips = [...selectedChips.slice(0, index), ...selectedChips.slice(index + 1)];
+    literatureDispatch({ type: "selectedEntities", value: newChips });
+    literatureDispatch({ type: "loadingEntities", value: true });
     const request = await fetchSimilarEntities({
       query,
       id: bibliographyId,
@@ -157,7 +147,7 @@ export default function Entities({ name, id }) {
       loadingEntities: false,
       page: 0,
     };
-    literatureDispatch({ type: 'stateUpdate', value: update });
+    literatureDispatch({ type: "stateUpdate", value: update });
   };
 
   return (

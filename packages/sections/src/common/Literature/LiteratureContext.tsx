@@ -1,71 +1,81 @@
 import isEmpty from "lodash/isEmpty";
-import { createContext, useContext, useReducer } from 'react';
-import type { LiteratureStateType, DetailsStateType } from './types';
+import { createContext, useContext, useReducer, Dispatch } from "react";
+import type {
+  LiteratureStateType,
+  DetailsStateType,
+  LiteratureActionType,
+  DetailsActionType,
+} from "./types";
 import { getPage } from "ui";
 
-export const defaultLiteratureState: LiteratureStateType = {
-  id: "",
-  cursor: "",
-  category: ["disease", "drug", "target"],
-  query: null,
-  globalEntity: null,
-  entities: [],
-  selectedEntities: [],
-  startYear: null,
-  startMonth: null,
-  endYear: null,
-  endMonth: null,
-  earliestPubYear: 0,
-  litsIds: [],
-  page: 0,
-  pageSize: 5,
-  litsCount: 0,
-  loadingEntities: false,
-};
+function getInitialLiteratureState(): LiteratureStateType {
+  return {
+    id: "",
+    cursor: "",
+    category: ["disease", "drug", "target"],
+    query: null,
+    globalEntity: null,
+    entities: [],
+    selectedEntities: [],
+    startYear: null,
+    startMonth: null,
+    endYear: null,
+    endMonth: null,
+    earliestPubYear: 0,
+    litsIds: [],
+    page: 0,
+    pageSize: 5,
+    litsCount: 0,
+    loadingEntities: false,
+  };
+}
 
-const LiteratureContext = createContext(null as any);
-const LiteratureDispatchContext = createContext(null as any);
+const initiaLiteratureDispatch: Dispatch<LiteratureActionType> = () => {};
+const LiteratureContext = createContext<LiteratureStateType>(getInitialLiteratureState());
+const LiteratureDispatchContext =
+  createContext<Dispatch<LiteratureActionType>>(initiaLiteratureDispatch);
 
-const DetailsContext = createContext(null as any);
-const DetailsDispatchContext = createContext(null as any);
+const initialDetailsDispatch: Dispatch<DetailsActionType> = () => {};
+const DetailsContext = createContext<DetailsStateType>({});
+const DetailsDispatchContext = createContext<Dispatch<DetailsActionType>>(initialDetailsDispatch);
 
-function literatureReducer(literatureState: LiteratureStateType, action: any) {
+function literatureReducer(literatureState: LiteratureStateType, action: LiteratureActionType) {
   console.log(`LITERATURE REDUCER: ${action.type}`);
   switch (action.type) {
-    case 'loadingEntities':
+    case "loadingEntities":
       return {
         ...literatureState,
         loadingEntities: action.value,
       };
-    case 'tablePageSize':
+    case "tablePageSize":
       return {
         ...literatureState,
         pageSize: action.value,
       };
-    case 'selectedEntities':
+    case "selectedEntities":
       return {
         ...literatureState,
         selectedEntities: action.value,
       };
-    case 'stateUpdate':
+    case "stateUpdate":
       return {
         ...literatureState,
         ...action.value,
       };
     default:
-      throw Error('invalid action type');
+      throw Error("invalid action type");
   }
 }
 
-function detailsReducer(detailsState: DetailsStateType, action: any) {
+function detailsReducer(detailsState: DetailsStateType, action: DetailsActionType) {
   console.log(`DETAILS REDUCER: ${action.type}`);
   switch (action.type) {
-    case 'addDetails':
+    case "addDetails":
       return { ...detailsState, ...action.value };
-    case 'setToLoading': {
+    case "setToLoading": {
       const newObj = { ...detailsState };
       for (const id of action.value) {
-        newObj[id] = 'loading';
+        newObj[id] = "loading";
       }
       return newObj;
     }
@@ -73,10 +83,10 @@ function detailsReducer(detailsState: DetailsStateType, action: any) {
 }
 
 export function LiteratureProvider({ children }) {
-  
-  const [literature, literatureDispatch] =
-    useReducer(literatureReducer, defaultLiteratureState);
-  
+  const [literature, literatureDispatch] = useReducer(
+    literatureReducer,
+    getInitialLiteratureState()
+  );
   const [details, detailsDispatch] = useReducer(detailsReducer, {});
 
   return (
@@ -90,7 +100,6 @@ export function LiteratureProvider({ children }) {
       </LiteratureDispatchContext.Provider>
     </LiteratureContext.Provider>
   );
-
 }
 
 export function useLiterature() {

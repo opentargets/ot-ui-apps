@@ -3,7 +3,7 @@ import { Box, Grid, Fade, Skeleton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { PublicationWrapper, Table } from "ui";
 import Loader from "./Loader";
-import type { PublicationType } from "./types";
+import { PublicationType, DetailsStateType } from "./types";
 import {
   useDisplayedPublications,
   useLiterature,
@@ -12,15 +12,12 @@ import {
   useDetailsDispatch,
 } from "./LiteratureContext";
 import { fetchSimilarEntities, literaturesEuropePMCQuery } from "./requests";
-import { DetailsStateType } from "./types";
 
 const useStyles = makeStyles(() => ({
   root: {
     marginTop: 0,
   },
 }));
-
-
 
 function parsePublications(publications: PublicationType[]): DetailsStateType {
   const obj: DetailsStateType = {};
@@ -49,9 +46,7 @@ function SkeletonRow() {
     <Fade in>
       <Box mb={2}>
         <Skeleton height={60} />
-        {/* <Box pt="1px"> */}
         <Skeleton width="60%" height={45} />
-        {/* </Box> */}
         <Grid container wrap="nowrap">
           <Box width={130} mr={1}>
             <Skeleton height={45} />
@@ -66,36 +61,28 @@ function SkeletonRow() {
 }
 
 function PublicationsList({ hideSearch = false }) {
-
   const classes = useStyles();
   const literature = useLiterature();
-  const {
-    loadingEntities,
-    litsCount: count,
-    cursor,
-    page,
-    pageSize,
-    litsIds,
-  } = literature;
+  const { loadingEntities, litsCount: count, cursor, page, pageSize, litsIds } = literature;
   const details = useDetails();
   const displayedPubs = useDisplayedPublications();
   const literatureDispatch = useLiteratureDispatch();
   const detailsDispatch = useDetailsDispatch();
 
-  // get publications details from Europe PMC 
+  // get publications details from Europe PMC
   useEffect(() => {
-    const fetchFunction = async() => {
+    const fetchFunction = async () => {
       const missingDetails = litsIds.filter((id: string) => !details[id]);
       if (missingDetails.length === 0) return;
       detailsDispatch({
-        type: 'setToLoading',
+        type: "setToLoading",
         value: missingDetails,
-      })
+      });
       const queryResult = await literaturesEuropePMCQuery({
-        literaturesIds: missingDetails
+        literaturesIds: missingDetails,
       });
       detailsDispatch({
-        type: 'addDetails',
+        type: "addDetails",
         value: parsePublications(queryResult),
       });
     };
@@ -118,7 +105,7 @@ function PublicationsList({ hideSearch = false }) {
         startYear,
         startMonth,
       } = literature;
-      literatureDispatch({ type: 'loadingEntities', value: true });
+      literatureDispatch({ type: "loadingEntities", value: true });
       const request = await fetchSimilarEntities({
         query,
         id,
@@ -130,21 +117,20 @@ function PublicationsList({ hideSearch = false }) {
         startYear,
         startMonth,
       });
-      literatureDispatch({ type: 'loadingEntities', value: false });
+      literatureDispatch({ type: "loadingEntities", value: false });
       const data = request.data[globalEntity];
-      const newLitsIds =
-        data.literatureOcurrences?.rows?.map(({ pmid }) => pmid) ?? [];
+      const newLitsIds = data.literatureOcurrences?.rows?.map(({ pmid }) => pmid) ?? [];
       const update = {
         litsIds: [...litsIds, ...newLitsIds],
         cursor: data.literatureOcurrences?.cursor,
         page: 0,
         pageSize: pageSizeInt,
       };
-      literatureDispatch({ type: 'stateUpdate', value: update });
+      literatureDispatch({ type: "stateUpdate", value: update });
     } else {
-      literatureDispatch({ 
-        type: 'stateUpdate',
-        value: { page: 0, pageSize: pageSizeInt }
+      literatureDispatch({
+        type: "stateUpdate",
+        value: { page: 0, pageSize: pageSizeInt },
       });
     }
   };
@@ -164,7 +150,7 @@ function PublicationsList({ hideSearch = false }) {
         startYear,
         startMonth,
       } = literature;
-      literatureDispatch({ type: 'loadingEntities', value: true });
+      literatureDispatch({ type: "loadingEntities", value: true });
       const request = await fetchSimilarEntities({
         query,
         id,
@@ -176,20 +162,19 @@ function PublicationsList({ hideSearch = false }) {
         startYear,
         startMonth,
       });
-      literatureDispatch({ type: 'loadingEntities', value: false });
+      literatureDispatch({ type: "loadingEntities", value: false });
       const data = request.data[globalEntity];
-      const newLitsIds =
-        data.literatureOcurrences?.rows?.map(({ pmid }) => pmid) ?? [];
+      const newLitsIds = data.literatureOcurrences?.rows?.map(({ pmid }) => pmid) ?? [];
       const update = {
         litsIds: [...litsIds, ...newLitsIds],
         cursor: data.literatureOcurrences?.cursor,
         page: newPageInt,
       };
-      literatureDispatch({ type: 'stateUpdate', value: update });
+      literatureDispatch({ type: "stateUpdate", value: update });
     } else {
       literatureDispatch({
-        type: 'stateUpdate',
-        value: ({ page: newPageInt })
+        type: "stateUpdate",
+        value: { page: newPageInt },
       });
     }
   };
@@ -200,7 +185,7 @@ function PublicationsList({ hideSearch = false }) {
       label: " ",
       renderCell(id) {
         const det = details[id];
-        if (det === 'loading') {
+        if (det === "loading") {
           return <SkeletonRow />;
         } else if (!det) {
           return null;
@@ -218,7 +203,7 @@ function PublicationsList({ hideSearch = false }) {
               source={det.source}
               patentDetails={det.patentDetails}
             />
-          )
+          );
         }
       },
       filterValue: ({ row: publication }) =>
@@ -245,8 +230,8 @@ function PublicationsList({ hideSearch = false }) {
       rowsPerPageOptions={[5, 10, 25]}
       page={page}
       pageSize={pageSize}
-      onPageChange={handlePageChange as any}                // !! HACK TO STOP TS COMPLAINING
-      onRowsPerPageChange={handleRowsPerPageChange as any}  // !! HACK TO STOP TS COMPLAINING
+      onPageChange={handlePageChange as any} // !! HACK TO STOP TS COMPLAINING
+      onRowsPerPageChange={handleRowsPerPageChange as any} // !! HACK TO STOP TS COMPLAINING
     />
   );
 }

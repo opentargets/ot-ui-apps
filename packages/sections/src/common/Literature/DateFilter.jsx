@@ -32,13 +32,12 @@ const monthsBtwnDates = (startDate, endDate) =>
   );
 
 export function DateFilter() {
-
   const [filterDate, setFilterDate] = useState([0, 0]);
   const [numberOfMonths, setNumberOfMonths] = useState(0);
   const [pubYear, setPubYear] = useState(0);
   const literature = useLiterature();
   const literatureDispatch = useLiteratureDispatch();
-  
+
   const {
     query,
     id,
@@ -86,9 +85,7 @@ export function DateFilter() {
     const oldHigherDate = oldSelectedDate(filterDate[1]);
     const newHighFilter = monthsBtwnDates(earliestDate, oldHigherDate);
     const higherLimit =
-      filterDate[1] > 0 && newHighFilter > 0 && newHighFilter < limit
-        ? newHighFilter
-        : limit;
+      filterDate[1] > 0 && newHighFilter > 0 && newHighFilter < limit ? newHighFilter : limit;
     return higherLimit;
   }
 
@@ -101,14 +98,14 @@ export function DateFilter() {
   }
 
   const handleChange = async values => {
-    literatureDispatch({ type: 'loadingEntities', value: true });
+    literatureDispatch({ type: "loadingEntities", value: true });
     const request = await fetchSimilarEntities({
       query,
       id,
       category,
-      entities: selectedEntities, //selectedEntities as any[],
+      entities: selectedEntities,
       cursor: null,
-      ...values,  // values has startYear, startMonth, endYear, endMonth
+      ...values, // values has startYear, startMonth, endYear, endMonth
     });
     const data = request.data[globalEntity];
     const update = {
@@ -125,12 +122,12 @@ export function DateFilter() {
       selectedEntities,
       page: 0,
       pageSize,
-      ...values,  // values has startYear, startMonth, endYear, endMonth
+      ...values, // values has startYear, startMonth, endYear, endMonth
     };
-    literatureDispatch({ type: 'stateUpdate', value: update });
+    literatureDispatch({ type: "stateUpdate", value: update });
   };
 
-  const valueLabelFormat = (value) => {
+  const valueLabelFormat = value => {
     if (earliestPubYear) {
       const labelDate = selectedDate(value);
       return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;
