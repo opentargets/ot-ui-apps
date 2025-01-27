@@ -9764,11 +9764,6 @@ h264-mp4-encoder@^1.0.12:
   resolved "https://registry.yarnpkg.com/h264-mp4-encoder/-/h264-mp4-encoder-1.0.12.tgz#9979ddde0faa1cdee75a8605bd39aa4ccc66cb12"
   integrity sha512-xih3J+Go0o1RqGjhOt6TwXLWWGqLONRPyS8yoMu/RoS/S8WyEv4HuHp1KBsDDl8srZQ3gw9f95JYkCSjCuZbHQ==
 
-hamt_plus@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/hamt_plus/-/hamt_plus-1.0.2.tgz#e21c252968c7e33b20f6a1b094cd85787a265601"
-  integrity sha512-t2JXKaehnMb9paaYA7J0BX8QQAY8lwfQ9Gjf4pg/mk4krt+cmwmU652HOoWonf+7+EQV97ARPMhhVgU1ra2GhA==
-
 handle-thing@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/handle-thing/-/handle-thing-2.0.1.tgz#857f79ce359580c340d43081cc648970d0bb234e"
@@ -16082,13 +16077,6 @@ readdirp@~3.6.0:
   integrity sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==
   dependencies:
     picomatch "^2.2.1"
-
-recoil@^0.3.0:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/recoil/-/recoil-0.3.1.tgz#40ef544160d19d76e25de8929d7e512eace13b90"
-  integrity sha512-KNA3DRqgxX4rRC8E7fc6uIw7BACmMPuraIYy+ejhE8tsw7w32CetMm8w7AMZa34wzanKKkev3vl3H7Z4s0QSiA==
-  dependencies:
-    hamt_plus "1.0.2"
 
 recompose@^0.30.0:
   version "0.30.0"

@@ -90,6 +90,8 @@ export type RowType = {
   openAccess: boolean;
   authors: AuthorListType;
   journal: JournalInfoType & { page: string };
+  titleHtml?: string;
+  variant?: string;
 };
 
 export type DetailsStateType = {

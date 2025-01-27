@@ -89,7 +89,7 @@ function PublicationsList({ hideSearch = false }) {
     fetchFunction().catch(console.error);
   }, [literature]);
 
-  const handleRowsPerPageChange = async (newPageSize: string) => {
+  const handleRowsPerPageChange = async (newPageSize: string): Promise<void> => {
     const pageSizeInt = Number(newPageSize);
     const expected = pageSizeInt * page + pageSizeInt;
     if (expected > litsIds.length && cursor !== null) {
@@ -135,7 +135,7 @@ function PublicationsList({ hideSearch = false }) {
     }
   };
 
-  const handlePageChange = async (newPage: string) => {
+  const handlePageChange = async (newPage: string): Promise<void> => {
     const newPageInt = Number(newPage);
     if (pageSize * newPageInt + pageSize > litsIds.length && cursor !== null) {
       const {
@@ -230,8 +230,8 @@ function PublicationsList({ hideSearch = false }) {
       rowsPerPageOptions={[5, 10, 25]}
       page={page}
       pageSize={pageSize}
-      onPageChange={handlePageChange as any} // !! HACK TO STOP TS COMPLAINING
-      onRowsPerPageChange={handleRowsPerPageChange as any} // !! HACK TO STOP TS COMPLAINING
+      onPageChange={handlePageChange}
+      onRowsPerPageChange={handleRowsPerPageChange}
     />
   );
 }
