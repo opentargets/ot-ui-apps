@@ -40,7 +40,6 @@ const DetailsContext = createContext<DetailsStateType>({});
 const DetailsDispatchContext = createContext<Dispatch<DetailsActionType>>(initialDetailsDispatch);
 
 function literatureReducer(literatureState: LiteratureStateType, action: LiteratureActionType) {
-  console.log(`LITERATURE REDUCER: ${action.type}`);
   switch (action.type) {
     case "loadingEntities":
       return {
@@ -68,7 +67,6 @@ function literatureReducer(literatureState: LiteratureStateType, action: Literat
 }
 
 function detailsReducer(detailsState: DetailsStateType, action: DetailsActionType) {
-  console.log(`DETAILS REDUCER: ${action.type}`);
   switch (action.type) {
     case "addDetails":
       return { ...detailsState, ...action.value };
