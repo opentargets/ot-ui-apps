@@ -5,7 +5,7 @@ import { SectionItem, Link, Tooltip, OtTable, TooltipStyledLabel } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 
 import CRISPR_QUERY from "./OTCrisprQuery.gql";
 
@@ -34,6 +34,7 @@ const getColumns = () => [
   {
     id: "contrast",
     label: "Contrast / Study overview",
+    enableHiding: false,
     renderCell: row => {
       if (row.contrast && row.studyOverview) {
         return (

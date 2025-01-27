@@ -23,6 +23,7 @@ const columns = [
   {
     id: "id",
     label: "Probe ID",
+    enableHiding: false,
     renderCell: row => {
       // link to drug page if drugid is available; also add tooltip with control if available
       const c = row.drugId ? (

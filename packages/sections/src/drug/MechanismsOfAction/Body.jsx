@@ -12,6 +12,7 @@ const columns = [
   {
     id: "mechanismOfAction",
     label: "Mechanism of Action",
+    enableHiding: false,
   },
   {
     id: "targetName",

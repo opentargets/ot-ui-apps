@@ -6,7 +6,7 @@ import { v1 } from "uuid";
 import { Tooltip, SectionItem, Link, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { sentenceCase } from "../../utils/global";
@@ -49,6 +49,7 @@ const getColumns = label => [
   {
     id: "disease",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => (
       <Tooltip
         title={
@@ -102,6 +103,7 @@ const getColumns = label => [
   {
     id: "studyOverview",
     label: "Genomics England Panel",
+    enableHiding: false,
     renderCell: ({ studyOverview, studyId, target: { approvedSymbol } }) =>
       studyOverview && studyId && approvedSymbol ? (
         <Link external to={geUrl(studyId, approvedSymbol)}>

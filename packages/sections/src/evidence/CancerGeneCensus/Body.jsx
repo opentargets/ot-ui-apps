@@ -26,12 +26,14 @@ const getColumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
   },
   {
     id: "mutationType",
     propertyPath: "mutatedSamples.functionalConsequence",
     label: "Mutation type",
+    enableHiding: false,
     renderCell: ({ mutatedSamples }) => {
       if (!mutatedSamples) return naLabel;
       const sortedMutatedSamples = mutatedSamples

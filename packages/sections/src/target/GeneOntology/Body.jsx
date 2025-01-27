@@ -88,6 +88,7 @@ const columns = [
   {
     id: "goTerm",
     label: "GO term",
+    enableHiding: false,
     renderCell: ({ term }) =>
       term ? (
         <Link external to={`https://identifiers.org/${term.id}`}>

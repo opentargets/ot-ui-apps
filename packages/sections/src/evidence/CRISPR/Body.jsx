@@ -13,6 +13,7 @@ const columns = [
   {
     id: "disease.name",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease }) => (
       <Link component={RouterLink} to={`/disease/${disease.id}`}>
         {disease.name}
@@ -21,6 +22,7 @@ const columns = [
   },
   {
     label: "Reported disease/phenotype",
+    enableHiding: false,
     renderCell: ({ diseaseCellLines, diseaseFromSource }) => {
       if (!diseaseCellLines) return naLabel;
 

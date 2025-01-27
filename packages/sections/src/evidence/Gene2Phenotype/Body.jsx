@@ -26,6 +26,7 @@ const getColumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -96,6 +97,7 @@ const getColumns = label => [
   {
     id: "studyId",
     label: "Panel",
+    enableHiding: false,
     renderCell: ({ studyId, target: { approvedSymbol } }) => (
       <Link external to={g2pUrl(studyId, approvedSymbol)}>
         {studyId}

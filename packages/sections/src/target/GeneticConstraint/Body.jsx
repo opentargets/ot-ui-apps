@@ -69,6 +69,7 @@ function getColumns(ensemblId, symbol) {
     {
       id: "constraintType",
       label: "Category",
+      enableHiding: false,
       renderCell: ({ constraintType }) => constraintTypeMap[constraintType],
     },
     {

@@ -71,6 +71,7 @@ function Body({ id, entity }: BodyProps) {
     {
       id: "genotypeId",
       label: "Genotype ID",
+      enableHiding: false,
       tooltip: (
         <>
           VCF-style(chr_pos_ref_allele1,allele2). See{" "}

@@ -35,6 +35,7 @@ const getColumns = label => [
   {
     id: "studyId",
     label: "Study Identifier",
+    enableHiding: false,
     renderCell: row => (
       <Link external to={`https://crisprbrain.org/simple-screen/?screen=${row.studyId}`}>
         {row.studyId}

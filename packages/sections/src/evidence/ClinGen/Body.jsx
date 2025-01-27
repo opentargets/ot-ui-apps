@@ -12,6 +12,7 @@ const columns = [
   {
     id: "disease.name",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={

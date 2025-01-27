@@ -29,11 +29,13 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "studyLocusId",
       label: "Navigate",
+      enableHiding: false,
       renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
     },
     {
       id: "leadVariant",
       label: "Lead variant",
+      enableHiding: false,
       comparator: variantComparator(d => d.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>

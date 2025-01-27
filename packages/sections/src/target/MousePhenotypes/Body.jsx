@@ -10,6 +10,7 @@ const columns = [
   {
     id: "targetInModel",
     label: "Mouse gene",
+    enableHiding: false,
     renderCell: ({ targetInModel, targetInModelMgiId }) => (
       <Link external to={`https://identifiers.org/${targetInModelMgiId}`}>
         {targetInModel}
@@ -54,6 +55,7 @@ const columns = [
   {
     id: "allelicComposition",
     label: "Allelic composition",
+    enableHiding: false,
     renderCell: ({ biologicalModels }) => (
       <AllelicCompositionDrawer biologicalModels={biologicalModels} />
     ),

@@ -24,6 +24,7 @@ const getColumns = classes => [
   {
     id: "otarCode",
     label: "Project Code",
+    enableHiding: false,
     renderCell: ({ otarCode }) => (
       <Link external to={`http://home.opentargets.org/${otarCode}`}>
         {otarCode}

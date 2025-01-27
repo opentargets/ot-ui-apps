@@ -21,6 +21,7 @@ const columns = [
     id: "target.approvedSymbol",
     label: "Gene",
     sortable: true,
+    enableHiding: false,
     renderCell: ({ target, transcriptId, uniprotAccessions }) => {
       if (!target) return naLabel;
       let displayElement = <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>;
@@ -91,6 +92,7 @@ const columns = [
   {
     id: "variantConsequences.label",
     label: "Predicted consequence",
+    enableHiding: false,
     renderCell: ({ variantConsequences, aminoAcidChange, codons }) => {
       if (!variantConsequences?.length) return naLabel;
       let displayElement = variantConsequences.map(({ id, label }, i, arr) => (

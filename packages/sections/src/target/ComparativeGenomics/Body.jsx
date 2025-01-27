@@ -71,6 +71,7 @@ function getColumns(classes) {
     {
       id: "speciesName",
       label: "Species",
+      enableHiding: false,
       renderCell: ({ speciesId, speciesName }) => {
         const SpeciesIcon = speciesIcons[speciesId];
         return (
@@ -113,6 +114,7 @@ function getColumns(classes) {
     {
       id: "targetGeneSymbol",
       label: "Homologue",
+      enableHiding: false,
       renderCell: ({ targetGeneId, targetGeneSymbol }) => (
         <Link external to={identifiersOrgLink("ensembl", targetGeneId)}>
           {targetGeneSymbol || targetGeneId}

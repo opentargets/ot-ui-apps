@@ -58,6 +58,7 @@ const columns = [
   {
     id: "studyId",
     label: "ClinVar ID",
+    enableHiding: false,
     renderCell: ({ studyId }) => {
       if (!studyId) return naLabel;
       return (

@@ -15,6 +15,7 @@ function getColumns(diseaseIds: string[]) {
     {
       id: "studyId",
       label: "Study",
+      enableHiding: false,
       renderCell: ({ id }) => <Link to={`./${id}`}>{id}</Link>,
       exportValue: ({ id }) => id,
     },

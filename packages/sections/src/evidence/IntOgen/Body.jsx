@@ -116,6 +116,7 @@ const columns = [
   {
     id: "cohortShortName",
     label: "Cohort Information",
+    enableHiding: false,
     renderCell: ({ cohortId, cohortShortName, cohortDescription, target: { approvedSymbol } }) =>
       cohortShortName && cohortDescription ? (
         <>

@@ -11,6 +11,7 @@ const columns = [
   {
     id: "diseases",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource }) => {
       if (!disease) return naLabel;
       const displayElement = <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
@@ -45,6 +46,7 @@ const columns = [
   {
     id: "literature",
     label: "Literature",
+    enableHiding: false,
     renderCell: ({ literature }) => {
       const literatureList =
         literature?.reduce((acc, id) => {
