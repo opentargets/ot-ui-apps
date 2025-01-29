@@ -21,6 +21,7 @@
     "build:platform": "turbo run build --filter=platform",
     "dev:platform:ppp": "turbo run dev-ppp --filter=platform",
     "build:platform:ppp": "turbo run build-ppp --filter=platform",
+    "dev:docs": "turbo run dev --filter=docs",
     "lint": "turbo run lint",
     "lint:platform": "turbo run lint --filter=platform",
     "format": "turbo run prettier:all",
