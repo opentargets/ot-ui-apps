@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import { Button, Typography, styled } from "@mui/material";
+import { Button, Chip, Typography, styled } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPrescriptionBottleAlt,
@@ -40,7 +40,19 @@ const ClearAllButton = styled(Button)`
 function GlobalSearchListHeader({ listHeader, children }) {
   const classes = useStyles();
 
-  if (listHeader === "") return { children };
+  const NewChip = (
+    <Chip
+      style={{
+        fontSize: "0.7rem",
+        margin: "0",
+      }}
+      size="small"
+      color="primary"
+      label="new"
+    />
+  );
+
+  if (!listHeader) return { children };
 
   const getIcon = () => {
     switch (listHeader) {
@@ -60,12 +72,8 @@ function GlobalSearchListHeader({ listHeader, children }) {
         return <FontAwesomeIcon icon={faDna} fixedWidth className={classes.labelIcon} />;
       case "variants":
         return <FontAwesomeIcon icon={faMapPin} fixedWidth className={classes.labelIcon} />;
-      case "Study":
+      case "studies":
         return <FontAwesomeIcon icon={faChartBar} fixedWidth className={classes.labelIcon} />;
-      case "Gene":
-        return <FontAwesomeIcon icon={faDna} fixedWidth className={classes.labelIcon} />;
-      case "Variant":
-        return <FontAwesomeIcon icon={faMapPin} fixedWidth className={classes.labelIcon} />;
       case "recent":
         return null;
       case "Search Suggestions":
@@ -75,6 +83,17 @@ function GlobalSearchListHeader({ listHeader, children }) {
     }
   };
 
+  function getIconTag() {
+    switch (listHeader) {
+      case "variants":
+        return NewChip;
+      case "studies":
+        return NewChip;
+      default:
+        return null;
+    }
+  }
+
   return (
     <div tabIndex="-1" className={classes.sectionHeader}>
       <div className={classes.label}>
@@ -82,6 +101,7 @@ function GlobalSearchListHeader({ listHeader, children }) {
         <Typography sx={{ fontWeight: "bold" }} variant="caption">
           {listHeader}
         </Typography>
+        <div>{getIconTag()}</div>
       </div>
       {listHeader === "recent" && (
         <ClearAllButton onClick={clearAllRecent}>

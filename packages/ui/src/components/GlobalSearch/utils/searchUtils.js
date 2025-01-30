@@ -1,10 +1,12 @@
 import { format } from "d3-format";
 
-const mapStandardKeys = origionalKey => {
-  switch (origionalKey) {
+const mapStandardKeys = originalKey => {
+  switch (originalKey) {
     case "studyId":
       return "id";
     case "traitReported":
+      return "name";
+    case "traitFromSource":
       return "name";
     case "approvedName":
       return "name";
@@ -13,11 +15,12 @@ const mapStandardKeys = origionalKey => {
     case "functionDescriptions":
       return "description";
     default:
-      return origionalKey;
+      return originalKey;
   }
 };
 
 const flattenObj = ob => {
+  if (!ob) return;
   const result = {};
 
   Object.entries(ob).forEach(([key, value]) => {
@@ -32,11 +35,8 @@ const flattenObj = ob => {
       result[mapStandardKeys(key)] = value;
     }
   });
-
   return result;
 };
-
-const isArray = value => Array.isArray(value) && value.length > 0;
 
 const exceedsArrayLengthLimit = array => {
   const limitLength = 4;
@@ -51,25 +51,19 @@ const exceedsArrayLengthLimit = array => {
 export const formatSearchData = unformattedData => {
   const formattedData = {};
 
+  // TODO: fix variant search bug
+
   Object.entries(unformattedData).forEach(([key, value]) => {
     const typesArray = [];
-    if (isArray(value)) {
-      value.map(i =>
-        typesArray.push({
-          type: key === "topHit" ? "topHit" : key,
-          entity: key,
-          ...flattenObj(i),
-        })
-      );
-    } else if (isArray(value.hits)) {
-      value.hits.map(i =>
-        typesArray.push({
-          type: key === "topHit" ? "topHit" : i.entity,
-          entity: i.entity,
-          ...flattenObj(i.object),
-        })
-      );
-    }
+
+    value.hits.map(i =>
+      typesArray.push({
+        type: key === "topHit" ? "topHit" : i.entity,
+        entity: i.entity,
+        ...flattenObj(i.object),
+      })
+    );
+
     if (typesArray.length > 0) formattedData[key] = typesArray;
   });
 
