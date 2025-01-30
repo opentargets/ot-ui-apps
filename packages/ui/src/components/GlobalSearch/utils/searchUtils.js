@@ -20,7 +20,6 @@ const mapStandardKeys = originalKey => {
 };
 
 const flattenObj = ob => {
-  if (!ob) return;
   const result = {};
 
   Object.entries(ob).forEach(([key, value]) => {
@@ -50,8 +49,6 @@ const exceedsArrayLengthLimit = array => {
 
 export const formatSearchData = unformattedData => {
   const formattedData = {};
-
-  // TODO: fix variant search bug
 
   Object.entries(unformattedData).forEach(([key, value]) => {
     const typesArray = [];
