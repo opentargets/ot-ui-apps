@@ -4,6 +4,8 @@ import { addSearchToLocalStorage } from "../components/GlobalSearch/utils/search
 function useListOption() {
   const navigate = useNavigate();
 
+  const entitiesWitAssociations = ["disease", "target"];
+
   const openListItem = option => {
     if (!option) return;
     const newOption = { ...option };
@@ -12,12 +14,10 @@ function useListOption() {
 
     if (newOption.entity === "search") {
       navigate(`/search?q=${newOption.name}&page=1`);
-    } else if (newOption.entity === "study") {
-      navigate(`/${newOption.entity}/${newOption.studyId}`);
     } else {
       navigate(
         `/${newOption.entity}/${newOption.id}${
-          newOption.entity !== "drug" && newOption.entity !== "variant" ? "/associations" : ""
+          entitiesWitAssociations.indexOf(newOption.entity) > -1 ? "/associations" : ""
         }`
       );
     }
