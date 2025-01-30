@@ -79,7 +79,7 @@ const TopHitItem = styled("li")(({ theme }) => ({
 const TopHitItemContainer = styled("div")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
-  padding: `${theme.spacing(1.5)}`,
+  padding: `${theme.spacing(1.5)} 0`,
   borderRadius: theme.spacing(1),
 }));
 
@@ -235,14 +235,13 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
     return (
       <>
         <Typography variant="subtitle1">{symbolNameOrId(item)}</Typography>
-        {item.entity === "variant" && item.rsIds.length > 0 && (
-          <Typography variant="subtitle2" textTransform="lowercase">
-            &nbsp;({item.rsIds.join(", ")})
-          </Typography>
-        )}
       </>
     );
   };
+
+  function getVariantRsIds() {
+    if (item.entity === "variant" && item.rsIds.length > 0) return item.rsIds.join(", ");
+  }
 
   if (item.type === "recent") {
     return <RecentListItem item={item} onItemClick={onItemClick} />;
@@ -312,6 +311,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
       <JustifyBetween>
         <Typography variant="caption">
           {item.credibleSetsCount > -1 && <>Credible sets count: {item.credibleSetsCount}</>}
+          {getVariantRsIds()}
         </Typography>
 
         {item.hasSumstats && (
