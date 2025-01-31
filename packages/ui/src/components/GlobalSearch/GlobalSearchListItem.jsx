@@ -79,7 +79,7 @@ const TopHitItem = styled("li")(({ theme }) => ({
 const TopHitItemContainer = styled("div")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
-  padding: `${theme.spacing(1.5)}`,
+  padding: `${theme.spacing(1.5)} 0`,
   borderRadius: theme.spacing(1),
 }));
 
@@ -235,14 +235,13 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
     return (
       <>
         <Typography variant="subtitle1">{symbolNameOrId(item)}</Typography>
-        {item.entity === "variant" && item.rsIds.length > 0 && (
-          <Typography variant="subtitle2" textTransform="lowercase">
-            &nbsp;({item.rsIds.join(", ")})
-          </Typography>
-        )}
       </>
     );
   };
+
+  function getVariantRsIds() {
+    if (item.entity === "variant" && item.rsIds.length > 0) return item.rsIds.join(", ");
+  }
 
   if (item.type === "recent") {
     return <RecentListItem item={item} onItemClick={onItemClick} />;
@@ -286,7 +285,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
         </Typography>
       </JustifyBetween>
 
-      <JustifyBetween>
+      {/* <JustifyBetween>
         <Typography variant="caption">
           <FlexSpan>
             {item.pubAuthor && item.pubAuthor}
@@ -299,19 +298,20 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
           </FlexSpan>
         </Typography>
         <Typography variant="caption">{item.pubJournal && item.pubJournal}</Typography>
-      </JustifyBetween>
+      </JustifyBetween> */}
 
-      {item.rsId && (
+      {/* {item.rsId && (
         <Typography variant="caption">
           <strong>
             <div className="loci"> Ensembl: {item.rsId}</div>
           </strong>
         </Typography>
-      )}
+      )} */}
 
       <JustifyBetween>
         <Typography variant="caption">
-          {item.numAssocLoci > -1 && <strong>{item.numAssocLoci} associated loci</strong>}
+          {item.credibleSetsCount > -1 && <>Credible sets count: {item.credibleSetsCount}</>}
+          {getVariantRsIds()}
         </Typography>
 
         {item.hasSumstats && (
@@ -321,19 +321,18 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
               fontSize: "0.8rem",
               margin: "0",
             }}
-            color="primary"
             label="summary statistics"
           />
         )}
       </JustifyBetween>
 
-      {item.nInitial && <Typography variant="caption">N Study: {item.nInitial}</Typography>}
+      {/* {item.nInitial && <Typography variant="caption">N Study: {item.nInitial}</Typography>} */}
 
-      <div className="numbers">
+      {/* <div className="numbers">
         <Typography variant="caption">
           {item.start} {item.start && item.end && `-`} {item.end}
         </Typography>
-      </div>
+      </div> */}
     </ListItem>
   );
 }

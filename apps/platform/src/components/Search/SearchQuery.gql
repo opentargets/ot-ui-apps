@@ -1,7 +1,7 @@
 query SearchQuery($queryString: String!) {
   topHit: search(
     queryString: $queryString
-    entityNames: ["target", "disease", "drug", "variant"]
+    entityNames: ["target", "disease", "drug", "variant", "study"]
     page: { index: 0, size: 1 }
   ) {
     hits {
@@ -14,9 +14,18 @@ query SearchQuery($queryString: String!) {
           referenceAllele
           alternateAllele
           rsIds
-          __typename
         }
-        
+
+        ... on Study {
+          # entity
+          id
+          hasSumstats
+          traitFromSource
+          credibleSets {
+            count
+          }
+        }
+
         ... on Target {
           id
           approvedSymbol
@@ -46,7 +55,7 @@ query SearchQuery($queryString: String!) {
   variants: search(
     queryString: $queryString
     entityNames: ["variant"]
-    page: {index: 0, size: 3}
+    page: { index: 0, size: 3 }
   ) {
     hits {
       id
@@ -62,11 +71,23 @@ query SearchQuery($queryString: String!) {
       }
     }
   }
-  targets: search(
-    queryString: $queryString
-    entityNames: ["target"]
-    page: { index: 0, size: 3 }
-  ) {
+  studies: search(queryString: $queryString, entityNames: ["study"], page: { index: 0, size: 3 }) {
+    hits {
+      id
+      entity
+      object {
+        ... on Study {
+          id
+          hasSumstats
+          traitFromSource
+          credibleSets {
+            credibleSetsCount: count
+          }
+        }
+      }
+    }
+  }
+  targets: search(queryString: $queryString, entityNames: ["target"], page: { index: 0, size: 3 }) {
     hits {
       id
       entity
@@ -95,11 +116,7 @@ query SearchQuery($queryString: String!) {
       }
     }
   }
-  drugs: search(
-    queryString: $queryString
-    entityNames: ["drug"]
-    page: { index: 0, size: 3 }
-  ) {
+  drugs: search(queryString: $queryString, entityNames: ["drug"], page: { index: 0, size: 3 }) {
     hits {
       id
       entity
