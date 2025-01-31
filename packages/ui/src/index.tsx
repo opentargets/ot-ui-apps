@@ -60,7 +60,6 @@ export * from "./contexts/ConfigurationProvider";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Section";
-export * from "./components/Plot";
 
 export * from "./components/ProfileHeader";
 export * from "./components/DownloadSvgPlot";
