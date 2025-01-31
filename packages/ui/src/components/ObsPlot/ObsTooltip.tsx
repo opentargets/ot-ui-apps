@@ -4,8 +4,8 @@ import { Box } from "@mui/material";
 type ObsTooltipProps = {
   width: number;
   height: number;
-  xAnchor?: "left" | "right" | "center" | "adapt";
-  yAnchor?: "top" | "bottom" | "center" | "adapt";
+  xAnchor?: "left" | "right" | "center" | "adapt" | "plotLeft" | "plotRight";
+  yAnchor?: "top" | "bottom" | "center" | "adapt" | "plotTop" | "plotBottom";
   dx?: number;
   dy?: number;
   xAccessor: (d: any, i?: number) => number;
@@ -20,7 +20,7 @@ function ObsTooltip({
   height,
   xAnchor = "adapt",
   yAnchor = "adapt",
-  dx = 0, // +ve value distances tooltip from anchor point - ignored if centered
+  dx = 0,
   dy = 0,
   xAccessor,
   yAccessor,
@@ -33,8 +33,12 @@ function ObsTooltip({
   const x = chart.scale("x").apply(xAccessor(datum));
   const y = chart.scale("y").apply(yAccessor(datum));
 
-  let left, right, top, bottom, transformX, transformY;
-  if (xAnchor === "center") {
+  let left, right, transformX;
+  if (xAnchor === "plotLeft") {
+    left = 0;
+  } else if (xAnchor === "plotRight") {
+    right = 0;
+  } else if (xAnchor === "center") {
     left = x;
     transformX = "-50%";
   } else if (xAnchor === "left" || (xAnchor === "adapt" && x < width / 2)) {
@@ -42,7 +46,13 @@ function ObsTooltip({
   } else {
     right = width - x + dx;
   }
-  if (yAnchor === "center") {
+
+  let top, bottom, transformY;
+  if (yAnchor === "plotTop") {
+    top = 0;
+  } else if (yAnchor === "plotBottom") {
+    bottom = 0;
+  } else if (yAnchor === "center") {
     top = y;
     transformY = "-50%";
   } else if (yAnchor === "bottom" || (yAnchor === "adapt" && y > height / 2)) {

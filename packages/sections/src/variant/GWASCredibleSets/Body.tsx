@@ -24,7 +24,6 @@ import {
 import PheWasPlot from "./PheWasPlot";
 import { useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
-import { v1 } from "uuid";
 
 type getColumnsType = {
   id: string;
@@ -288,17 +287,18 @@ function Body({ id, entity }: BodyProps) {
           alternateAllele: request.data?.variant.alternateAllele,
         });
         return (
-          <PheWasPlot
-            key={v1()}
-            columns={columns}
-            query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
-            variables={variables}
-            loading={request.loading}
-            data={request.data?.variant.gwasCredibleSets.rows}
-            id={id}
-            referenceAllele={request.data?.variant.referenceAllele}
-            alternateAllele={request.data?.variant.alternateAllele}
-          />
+          <Box mb={1} ml={2}>
+            <PheWasPlot
+              columns={columns}
+              query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
+              variables={variables}
+              loading={request.loading}
+              data={request.data?.variant.gwasCredibleSets.rows}
+              pageId={id}
+              pageReferenceAllele={request.data?.variant.referenceAllele}
+              pageAlternateAllele={request.data?.variant.alternateAllele}
+            />
+          </Box>
         );
       }}
       renderBody={() => {
