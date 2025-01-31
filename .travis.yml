@@ -10,18 +10,12 @@ install:
 before_script:
   - export NODE_OPTIONS=--max_old_space_size=4096
 script:
-  - yarn build:genetics
   - yarn build:platform
 after_success:
   - cd apps/platform/bundle-platform
   - tar czvf ../bundle-platform.tgz *
   - cd ..
   - mv bundle-platform.tgz ../../bundle-platform.tgz
-  - cd ../..
-  - cd apps/genetics/bundle-genetics
-  - tar czvf ../bundle-genetics.tgz *
-  - cd ..
-  - mv bundle-genetics.tgz ../../bundle-genetics.tgz
   - cd ../..
 before_deploy:
   - yes | gem update --system --force
@@ -34,7 +28,6 @@ deploy:
   api_key: $GITHUB_TOKEN
   file:
     - "bundle-platform.tgz"
-    - "bundle-genetics.tgz"
   skip_cleanup: true
   on:
     tags: true
