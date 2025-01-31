@@ -1,3 +1,4 @@
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faBook, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
   faDiscourse,
@@ -8,34 +9,160 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import config from "./config";
 
+// Interfaces for structured data
+interface ExternalLink {
+  label: string;
+  url: string;
+  icon?: IconDefinition;
+  external?: boolean;
+  showOnlyPartner?: boolean;
+}
+
+interface MenuItem {
+  name: string;
+  url: string;
+  external: boolean;
+  showOnlyPartner?: boolean;
+}
+
+interface ParticlesConfig {
+  particles: {
+    number: {
+      value: number;
+      density: {
+        enable: boolean;
+        value_area: number;
+      };
+    };
+    color: {
+      value: string;
+    };
+    shape: {
+      type: string;
+      stroke: {
+        width: number;
+        color: string;
+      };
+      polygon?: {
+        nb_sides: number;
+      };
+      image?: {
+        src: string;
+        width: number;
+        height: number;
+      };
+    };
+    opacity: {
+      value: number;
+      random: boolean;
+      anim: {
+        enable: boolean;
+        speed: number;
+        opacity_min: number;
+        sync: boolean;
+      };
+    };
+    size: {
+      value: number;
+      random: boolean;
+      anim: {
+        enable: boolean;
+        speed: number;
+        size_min: number;
+        sync: boolean;
+      };
+    };
+    line_linked: {
+      enable: boolean;
+      distance: number;
+      color: string;
+      opacity: number;
+      width: number;
+    };
+    move: {
+      enable: boolean;
+      speed: number;
+      direction: string;
+      random: boolean;
+      straight: boolean;
+      out_mode: string;
+      bounce: boolean;
+      attract: {
+        enable: boolean;
+        rotateX: number;
+        rotateY: number;
+      };
+    };
+  };
+  interactivity: {
+    detect_on: string;
+    events: {
+      onhover: {
+        enable: boolean;
+        mode: string;
+      };
+      onclick: {
+        enable: boolean;
+        mode: string;
+      };
+      resize: boolean;
+    };
+    modes: {
+      grab: {
+        distance: number;
+        line_linked: {
+          opacity: number;
+        };
+      };
+      bubble: {
+        distance: number;
+        size: number;
+        duration: number;
+        opacity: number;
+        speed: number;
+      };
+      repulse: {
+        distance: number;
+        duration: number;
+      };
+      push: {
+        particles_nb: number;
+      };
+      remove: {
+        particles_nb: number;
+      };
+    };
+  };
+  retina_detect: boolean;
+}
+
+// External Links Configuration
 export const externalLinks = {
   about: [
     {
       label: "Community forum",
       url: "https://community.opentargets.org",
     },
-
     {
       label: "Privacy notice",
       url: "https://www.ebi.ac.uk/data-protection/privacy-notice/open-targets",
     },
-
     {
       label: "Terms of use",
       url: "https://platform-docs.opentargets.org/terms-of-use",
     },
-  ],
+  ] as ExternalLink[],
   license: {
     label: "Open Targets Platform",
     url: "https://platform.opentargets.org/",
-  },
+  } as ExternalLink,
   network: [
     { label: "Science", url: "https://www.opentargets.org/science" },
     { label: "Publications", url: "https://www.opentargets.org/publications" },
     { label: "Open Targets Genetics", url: "https://genetics.opentargets.org" },
     { label: "Jobs", url: "https://www.opentargets.org/jobs" },
     { label: "Blog", url: "https://blog.opentargets.org" },
-  ],
+  ] as ExternalLink[],
   partners: [
     { label: "EMBL-EBI", url: "https://www.ebi.ac.uk" },
     { label: "Genentech", url: "https://www.gene.com" },
@@ -44,7 +171,7 @@ export const externalLinks = {
     { label: "Pfizer", url: "https://pfizer.com" },
     { label: "Sanofi", url: "https://www.sanofi.com" },
     { label: "Wellcome Sanger Institute", url: "https://www.sanger.ac.uk" },
-  ],
+  ] as ExternalLink[],
   help: [
     {
       label: "Documentation",
@@ -64,7 +191,7 @@ export const externalLinks = {
       external: true,
       showOnlyPartner: true,
     },
-  ],
+  ] as ExternalLink[],
   social: [
     {
       icon: faTwitterSquare,
@@ -86,43 +213,37 @@ export const externalLinks = {
       url: "https://github.com/opentargets",
       label: "Go to OpenTargets github",
     },
-  ],
+  ] as ExternalLink[],
 };
 
-// Configuration for the main hamburger menu
-export const mainMenuItems = config.profile.mainMenuItems ?? [
-  // Projects - ppp
+// Main Menu Items Configuration
+export const mainMenuItems: MenuItem[] = config.profile.mainMenuItems ?? [
   {
     name: "Projects",
     url: "/projects",
     external: false,
     showOnlyPartner: true,
   },
-  // Documentation
   {
     name: "Documentation",
     url: "https://platform-docs.opentargets.org/getting-started",
     external: true,
   },
-  // Downloads
   {
     name: "Data downloads",
     url: "/downloads",
     external: false,
   },
-  // API
   {
     name: "API",
     url: "/api",
     external: false,
   },
-  // Community
   {
     name: "Community",
     url: "https://community.opentargets.org/",
     external: true,
   },
-  // Contact - ppp
   {
     name: "Contact us",
     url: `mailto:${config.profile.helpdeskEmail}`,
@@ -131,7 +252,8 @@ export const mainMenuItems = config.profile.mainMenuItems ?? [
   },
 ];
 
-export const particlesConfig = {
+// Particles Configuration
+export const particlesConfig: ParticlesConfig = {
   particles: {
     number: {
       value: 80,
@@ -242,20 +364,21 @@ export const particlesConfig = {
   retina_detect: true,
 };
 
-// App title.
+// App Metadata
 export const appTitle = "Open Targets Platform";
 export const appDescription =
   "The Open Targets Platform is a data integration tool that supports systematic drug target identification and prioritisation";
 export const appCanonicalUrl = "https://platform.opentargets.org";
 
-// Chunk sizes for server side pagination/download.
+// Chunk Sizes
 export const tableChunkSize = 100;
 export const downloaderChunkSize = 2500;
 
-// NA label.
+// NA Label
 export const naLabel = "N/A";
 
-export const colorRange = config.profile.colorRange ?? [
+// Color Range
+export const colorRange: string[] = config.profile.colorRange ?? [
   "#e5edf4",
   "#ccdcea",
   "#b2cbe0",
@@ -268,26 +391,30 @@ export const colorRange = config.profile.colorRange ?? [
   "#005299",
 ];
 
+// Rows Per Page Options
 export const defaultRowsPerPageOptions = [10, 25, 100];
 
+// Decimal Places
 export const decimalPlaces = 3;
 
-const clinicalPhases = {
+// Clinical Phases Mapping
+const clinicalPhases: { [key: string]: string } = {
   "-1": "Unknown",
-  0: "Phase 0",
-  0.5: "Phase I (Early)",
-  1: "Phase I",
-  2: "Phase II",
-  3: "Phase III",
-  4: "Phase IV",
+  "0": "Phase 0",
+  "0.5": "Phase I (Early)",
+  "1": "Phase I",
+  "2": "Phase II",
+  "3": "Phase III",
+  "4": "Phase IV",
 };
 
-export const phaseMap = clinicalPhase => {
+export const phaseMap = (clinicalPhase: number | string): string => {
   const clinicalPhaseId = String(clinicalPhase);
-  return clinicalPhases[clinicalPhaseId];
+  return clinicalPhases[clinicalPhaseId] || "Unknown";
 };
 
-export const sourceMap = {
+// Source Mapping
+export const sourceMap: { [key: string]: string } = {
   "FDA Information": "FDA",
   FDA: "FDA",
   "Clinical Trials Information": "ClinicalTrials.gov",
@@ -298,7 +425,8 @@ export const sourceMap = {
   ATC: "ATC",
 };
 
-export const clinvarStarMap = {
+// ClinVar Star Mapping
+export const clinvarStarMap: { [key: string]: number } = {
   "practice guideline": 4,
   "reviewed by expert panel": 3,
   "criteria provided, multiple submitters, no conflicts": 2,
@@ -309,31 +437,38 @@ export const clinvarStarMap = {
   "no assertion provided": 0,
 };
 
-export const credsetConfidenceMap = {
+// Credset Confidence Mapping
+export const credsetConfidenceMap: { [key: string]: number } = {
   "SuSiE fine-mapped credible set with in-sample LD": 4,
   "SuSiE fine-mapped credible set with out-of-sample LD": 3,
   "PICS fine-mapped credible set extracted from summary statistics": 2,
   "PICS fine-mapped credible set based on reported top hit": 1,
 };
 
-export const formatMap = {
+// Format Mapping
+export const formatMap: { [key: string]: string } = {
   json: "JSON",
   parquet: "Parquet",
 };
 
-export const studySourceMap = {
+// Study Source Mapping
+export const studySourceMap: { [key: string]: string } = {
   FINNGEN: "FinnGen",
   GCST: "GWAS Catalog",
   SAIGE: "UK Biobank",
   NEALE: "UK Biobank",
 };
 
+// Variant Consequence Source
 export const variantConsequenceSource = {
   VEP: {
     label: "VEP",
     tooltip: "Ensembl variant effect predictor",
   },
-  ProtVar: { label: "ProtVar", tooltip: "Variant effect on protein function" },
+  ProtVar: {
+    label: "ProtVar",
+    tooltip: "Variant effect on protein function",
+  },
   QTL: {
     label: "QTL",
     tooltip:
@@ -341,7 +476,8 @@ export const variantConsequenceSource = {
   },
 };
 
-export const populationMap = {
+// Population Mapping
+export const populationMap: { [key: string]: string } = {
   fin: "Finish",
   afr: "African",
   nfe: "non-Finnish Europeans",

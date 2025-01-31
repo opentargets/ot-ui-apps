@@ -1,6 +1,12 @@
 import { isPrivateDataType } from "./utils/partnerPreviewUtils";
 
-const dataTypes = [
+interface DataType {
+  id: string;
+  label: string;
+  isPrivate: boolean;
+}
+
+const dataTypes: DataType[] = [
   {
     id: "genetic_association",
     label: "Genetic associations",
@@ -48,11 +54,13 @@ const dataTypes = [
   },
 ];
 
-const dataTypesMap = dataTypes.reduce((acc, dataType) => {
-  acc[dataType.id] = dataType.label;
-  return acc;
-}, {});
+const dataTypesMap: Record<string, string> = dataTypes.reduce(
+  (acc, { id, label }) => {
+    acc[id] = label;
+    return acc;
+  },
+  {} as Record<string, string>
+);
 
 export { dataTypesMap };
-
 export default dataTypes;

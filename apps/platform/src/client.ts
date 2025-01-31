@@ -1,8 +1,8 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
 import possibleTypes from "./possibleTypes.json";
 import config from "./config";
 
-const client = new ApolloClient({
+const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   uri: config.urlApi,
   cache: new InMemoryCache({
     possibleTypes,
@@ -27,7 +27,7 @@ const client = new ApolloClient({
       },
     },
   }),
-  headers: { "OT-Platform": true },
+  headers: { "OT-Platform": "true" },
 });
 
 export default client;

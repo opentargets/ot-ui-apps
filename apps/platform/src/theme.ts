@@ -1,11 +1,12 @@
-import { lighten, darken, borderRadius } from "polished";
+import { lighten, darken } from "polished";
 import config from "./config";
 import { grey } from "@mui/material/colors";
+import { ThemeOptions } from "@mui/material/styles";
 
-const PRIMARY = config.profile.primaryColor;
-const SECONDARY = config.profile.secondaryColor;
+const PRIMARY: string = config.profile.primaryColor;
+const SECONDARY: string = config.profile.secondaryColor;
 
-const theme = {
+const theme: ThemeOptions = {
   shape: {
     borderRadius: 2,
   },
@@ -44,11 +45,6 @@ const theme = {
       primary: "#5A5F5F",
     },
     footer: "#2e2d35",
-  },
-  props: {
-    MuiTab: {
-      disableRipple: true,
-    },
   },
   components: {
     MuiButton: {
