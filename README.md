@@ -1,5 +1,4 @@
 [![CI Platform](https://github.com/opentargets/ot-ui-apps/actions/workflows/ci-platform.yml/badge.svg)](https://github.com/opentargets/ot-ui-apps/actions/workflows/ci-platform.yml)
-[![CI Genetics](https://github.com/opentargets/ot-ui-apps/actions/workflows/ci-genetics.yml/badge.svg)](https://github.com/opentargets/ot-ui-apps/actions/workflows/ci-genetics.yml)
 
 # Open Targets Apps
 
@@ -12,17 +11,15 @@ This repository holds the Open Targets web applications.
 
 ## Running development
 
-This project contains the [Platform](https://platform.opentargets.org/) and [Genetics](https://genetics.opentargets.org/) web applications. To run both in development mode, you can run: `yarn dev` in the root directory.
+This project contains the [Platform](https://platform.opentargets.org/) web application. To run in development mode, you can run: `yarn dev` in the root directory.
 
 To run only Platform `yarn dev:platfrom`
 
-To run only Genetics `yarn dev:genetics`
-
 ## Building production-ready bundle
 
-From the root directory run: `yarn build`. This will generate on each application a production-ready bundle.
+From the root directory run: `yarn build`. This will generate a production-ready bundle.
 
-As same as development, you can run `yarn build:platform` or `yarn build:genetics` to scope the build only for one of the applications.
+As same as development, you can run `yarn build:platform` to scope the build only for specific applications.
 
 ## Copyright
 

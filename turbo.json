@@ -3,7 +3,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["bundle-genetics/**", "bundle-platform/**"]
+      "outputs": ["bundle-platform/**"]
     },
     "lint": {
       "outputs": []
