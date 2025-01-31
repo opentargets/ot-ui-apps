@@ -1,62 +1,49 @@
 import { useEffect, useState } from "react";
+import { LiteratureProvider, useLiterature, useLiteratureDispatch } from "./LiteratureContext";
+import { fetchSimilarEntities } from "./requests";
 import { Box } from "@mui/material";
-import { useSetRecoilState, useRecoilValue, useResetRecoilState, RecoilRoot } from "recoil";
 import { SectionItem } from "ui";
 import PublicationsList from "./PublicationsList";
 import Description from "./Description";
-import { literatureState, updateLiteratureState, fetchSimilarEntities } from "./atoms";
 import Entities from "./Entities";
 import Category from "./Category";
 import CountInfo from "./CountInfo";
 import { DateFilter } from "./DateFilter";
 
 function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
-  const [requestObj, setRequestObj] = useState({ data: null, loading: true, error: null });
+  const [requestObj, setRequestObj] = useState({});
+  const literature = useLiterature();
+  const { category, startYear, startMonth, endYear, endMonth } = literature;
+  const literatureDispatch = useLiteratureDispatch();
 
-  const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const resetLiteratureState = useResetRecoilState(literatureState);
-
-  const bibliographyState = useRecoilValue(literatureState);
-  const { category, startYear, startMonth, endYear, endMonth } = bibliographyState;
-
-  useEffect(
-    () => {
-      async function startRequest() {
-        const inintRequest = await fetchSimilarEntities({
-          id,
-          query: BODY_QUERY,
-          category,
-          startYear,
-          startMonth,
-          endYear,
-          endMonth,
-        });
-        setRequestObj(inintRequest);
-        const data = inintRequest.data[entity];
-        const update = {
-          entities: data.similarEntities,
-          litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => ({
-            id: pmid,
-            status: "ready",
-            publication: null,
-          })),
-          litsCount: data.literatureOcurrences?.filteredCount,
-          earliestPubYear: data.literatureOcurrences?.earliestPubYear,
-          cursor: data.literatureOcurrences?.cursor,
-          id,
-          query: BODY_QUERY,
-          globalEntity: entity,
-        };
-        setLiteratureUpdate(update);
-      }
-      startRequest();
-      return function cleanUp() {
-        resetLiteratureState();
+  useEffect(() => {
+    async function startRequest() {
+      const initRequest = await fetchSimilarEntities({
+        id,
+        query: BODY_QUERY,
+        category,
+        startYear,
+        startMonth,
+        endYear,
+        endMonth,
+      });
+      setRequestObj(initRequest);
+      const data = initRequest.data[entity];
+      const update = {
+        entities: data.similarEntities,
+        litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
+        litsCount: data.literatureOcurrences?.filteredCount,
+        earliestPubYear: data.literatureOcurrences?.earliestPubYear,
+        cursor: data.literatureOcurrences?.cursor,
+        id,
+        query: BODY_QUERY,
+        globalEntity: entity,
       };
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+      literatureDispatch({ type: "stateUpdate", value: update });
+    }
+    startRequest();
+  }, []);
+
   return (
     <SectionItem
       definition={definition}
@@ -83,7 +70,7 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
 
 function Body({ definition, name, id, entity, BODY_QUERY }) {
   return (
-    <RecoilRoot>
+    <LiteratureProvider>
       <LiteratureList
         id={id}
         name={name}
@@ -91,7 +78,7 @@ function Body({ definition, name, id, entity, BODY_QUERY }) {
         BODY_QUERY={BODY_QUERY}
         definition={definition}
       />
-    </RecoilRoot>
+    </LiteratureProvider>
   );
 }
 

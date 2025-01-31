@@ -1,12 +1,6 @@
 import { InputLabel, FormGroup, Checkbox, FormControlLabel } from "@mui/material";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  selectedCategoriesState,
-  loadingEntitiesState,
-  literatureState,
-  fetchSimilarEntities,
-  updateLiteratureState,
-} from "./atoms";
+import { useLiterature, useSelectedCategories, useLiteratureDispatch } from "./LiteratureContext";
+import { fetchSimilarEntities } from "./requests";
 
 const toggleValue = (selected, categories) => {
   const isChecked = categories.indexOf(selected) !== -1;
@@ -21,11 +15,9 @@ const categories = [
 ];
 
 export default function Category() {
-  const category = useRecoilValue(selectedCategoriesState);
-  const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const [loadingEntities, setLoadingEntities] = useRecoilState(loadingEntitiesState);
-
-  const bibliographyState = useRecoilValue(literatureState);
+  const literature = useLiterature();
+  const category = useSelectedCategories();
+  const literatureDispatch = useLiteratureDispatch();
 
   const handleChange = async event => {
     const {
@@ -39,12 +31,12 @@ export default function Category() {
       endMonth,
       startYear,
       startMonth,
-    } = bibliographyState;
+    } = literature;
     const {
       target: { name: clicked },
     } = event;
     const newCategories = toggleValue(clicked, bibliographyCategory);
-    setLoadingEntities(true);
+    literatureDispatch({ type: "loadingEntities", value: true });
     const request = await fetchSimilarEntities({
       query,
       id,
@@ -57,7 +49,6 @@ export default function Category() {
       startMonth,
     });
     const data = request.data[globalEntity];
-
     const update = {
       entities: data.similarEntities,
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,
@@ -65,7 +56,7 @@ export default function Category() {
       loadingEntities: false,
       category: newCategories,
     };
-    setLiteratureUpdate(update);
+    literatureDispatch({ type: "stateUpdate", value: update });
   };
 
   return (
@@ -88,7 +79,7 @@ export default function Category() {
                 onChange={handleChange}
                 name={name}
                 color="primary"
-                disabled={loadingEntities}
+                disabled={literature.loadingEntities}
               />
             }
             label={label}

@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 import { FormControl, FormGroup, InputLabel, Slider } from "@mui/material";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  fetchSimilarEntities,
-  literatureState,
-  loadingEntitiesState,
-  updateLiteratureState,
-} from "./atoms";
 import { styled } from "@mui/material/styles";
+import { useLiterature, useLiteratureDispatch } from "./LiteratureContext";
+import { fetchSimilarEntities } from "./requests";
 
 const OTSlider = styled(Slider)({
   root: {
@@ -29,7 +24,7 @@ const DateIndicator = styled("span")({
   maxWidth: 80,
 });
 
-const monthsBtwnDates = (startDate: Date, endDate: Date) =>
+const monthsBtwnDates = (startDate, endDate) =>
   Math.max(
     (endDate.getFullYear() - startDate.getFullYear()) * 12 +
       (endDate.getMonth() - startDate.getMonth()),
@@ -37,30 +32,30 @@ const monthsBtwnDates = (startDate: Date, endDate: Date) =>
   );
 
 export function DateFilter() {
-  const [filterDate, setFilterDate] = useState<number[]>([0, 0]);
+  const [filterDate, setFilterDate] = useState([0, 0]);
   const [numberOfMonths, setNumberOfMonths] = useState(0);
   const [pubYear, setPubYear] = useState(0);
-  const setLiteratureUpdate = useSetRecoilState(updateLiteratureState);
-  const [_, setLoadingEntities] = useRecoilState(loadingEntitiesState);
+  const literature = useLiterature();
+  const literatureDispatch = useLiteratureDispatch();
+
   const {
     query,
     id,
     category,
     earliestPubYear,
     selectedEntities,
-    cursor,
     globalEntity,
     litsIds,
     pageSize,
     litsCount,
     loadingEntities,
-  } = useRecoilValue(literatureState);
+  } = literature;
 
-  function getDateFromYear(year: number) {
+  function getDateFromYear(year) {
     return new Date(year, 0, 1, 1, 1, 1, 1);
   }
 
-  const sumMonthsSinceYear = (year: number) => (value: number) => {
+  const sumMonthsSinceYear = year => value => {
     const from = getDateFromYear(year);
     const date = new Date(from.setMonth(from.getMonth() + value));
     return date;
@@ -74,11 +69,8 @@ export function DateFilter() {
     if (earliestPubYear && earliestPubYear !== pubYear) {
       const earliestDate = getDateFromYear(earliestPubYear);
       const limit = monthsBtwnDates(earliestDate, new Date());
-
       const lowerLimit = getLowerLimit(earliestDate);
-
       const higherLimit = getHigherLimit(earliestDate, limit);
-
       setFilterDate([lowerLimit, higherLimit]);
       setNumberOfMonths(limit);
       setPubYear(earliestPubYear);
@@ -89,7 +81,7 @@ export function DateFilter() {
     }
   }, [earliestPubYear]);
 
-  function getHigherLimit(earliestDate: Date, limit: number) {
+  function getHigherLimit(earliestDate, limit) {
     const oldHigherDate = oldSelectedDate(filterDate[1]);
     const newHighFilter = monthsBtwnDates(earliestDate, oldHigherDate);
     const higherLimit =
@@ -97,7 +89,7 @@ export function DateFilter() {
     return higherLimit;
   }
 
-  function getLowerLimit(earliestDate: Date) {
+  function getLowerLimit(earliestDate) {
     if (filterDate[0] == 0) return 0;
     const oldLowerDate = oldSelectedDate(filterDate[0]);
     const newLowerFilter = monthsBtwnDates(earliestDate, oldLowerDate);
@@ -105,29 +97,15 @@ export function DateFilter() {
     return lowerLimit;
   }
 
-  const handleChange = async (values: {
-    startYear: number;
-    startMonth: number;
-    endYear: number;
-    endMonth: number;
-  }) => {
-    setLoadingEntities(true);
-    const entities = selectedEntities as any[];
+  const handleChange = async values => {
+    literatureDispatch({ type: "loadingEntities", value: true });
     const request = await fetchSimilarEntities({
       query,
       id,
       category,
-      entities,
+      entities: selectedEntities,
       cursor: null,
-      earliestPubYear,
-      globalEntity,
-      selectedEntities,
-      litsIds,
-      page: 0,
-      pageSize,
-      litsCount,
-      loadingEntities,
-      ...values,
+      ...values, // values has startYear, startMonth, endYear, endMonth
     });
     const data = request.data[globalEntity];
     const update = {
@@ -137,38 +115,31 @@ export function DateFilter() {
       entities: data.similarEntities,
       loadingEntities: false,
       category,
-      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }: { pmid: any }) => ({
-        id: pmid,
-        status: "ready",
-        publication: null,
-      })),
+      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
       litsCount: data.literatureOcurrences?.filteredCount,
       earliestPubYear: data.literatureOcurrences?.earliestPubYear,
       globalEntity,
       selectedEntities,
       page: 0,
       pageSize,
-      ...values,
+      ...values, // values has startYear, startMonth, endYear, endMonth
     };
-    setLiteratureUpdate(update);
+    literatureDispatch({ type: "stateUpdate", value: update });
   };
 
-  const valueLabelFormat = (value: number | number[]) => {
+  const valueLabelFormat = value => {
     if (earliestPubYear) {
-      const labelDate = selectedDate(value as number);
+      const labelDate = selectedDate(value);
       return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;
     }
     return "YYYY-MM";
   };
 
-  const handleDateRangeChange = (_event: Event, value: number[] | number, _activeThumb: number) => {
-    setFilterDate(value as number[]);
+  const handleDateRangeChange = (_event, value, _activeThumb) => {
+    setFilterDate(value);
   };
 
-  const handleDateRangeChangeCommitted = (
-    _event: Event | React.SyntheticEvent<Element, Event>,
-    value: number | number[]
-  ) => {
+  const handleDateRangeChangeCommitted = (_event, value) => {
     if (Array.isArray(value)) {
       const startDate = selectedDate(value[0]);
       const endDate = selectedDate(value[1]);

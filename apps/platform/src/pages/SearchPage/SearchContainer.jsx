@@ -10,6 +10,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faChartBar,
   faDna,
   faMapPin,
   faPrescriptionBottleAlt,
@@ -25,6 +26,7 @@ import TargetDetail from "./TargetDetail";
 import TargetResult from "./TargetResult";
 import VariantDetail from "./VariantDetail";
 import VariantResult from "./VariantResult";
+import StudyResult from "./StudyResult";
 
 const getCounts = entities => {
   const counts = {
@@ -85,6 +87,18 @@ const SearchFilters = ({ entities, entitiesCount, setEntity }) => {
       />
       <FormControlLabel
         className={classes.label}
+        control={<Checkbox checked={entities.includes("study")} onChange={setEntity("study")} />}
+        label={
+          <>
+            <FontAwesomeIcon icon={faChartBar} fixedWidth className={classes.labelIcon} />
+            <Typography variant="body2" display="inline">
+              Study ({counts.study})
+            </Typography>
+          </>
+        }
+      />
+      <FormControlLabel
+        className={classes.label}
         control={
           <Checkbox checked={entities.includes("disease")} onChange={setEntity("disease")} />
         }
@@ -136,6 +150,8 @@ function SearchResults({ results, page, onPageChange }) {
           return <DiseaseResult key={object.id} data={object} highlights={highlights} />;
         if (object[TYPE_NAME] === "Variant")
           return <VariantResult key={object.id} data={object} highlights={highlights} />;
+        if (object[TYPE_NAME] === "Study")
+          return <StudyResult key={object.id} data={object} highlights={highlights} />;
         return <DrugResult key={object.id} data={object} highlights={highlights} />;
       })}
 
