@@ -4,7 +4,7 @@ import { Typography, Chip, Box } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faClockRotateLeft, faArrowTrendUp } from "@fortawesome/free-solid-svg-icons";
 
-import { clearRecentItem, commaSeparate } from "./utils/searchUtils";
+import { clearRecentItem } from "./utils/searchUtils";
 import DisplayVariantId from "../DisplayVariantId";
 
 const ListItem = styled("li")(({ theme }) => ({
@@ -35,7 +35,6 @@ const ListItemDisplayName = styled("span")(({ theme }) => ({
 const ItemId = styled("span")({
   padding: "0.3rem 0 0 1rem ",
   fontStyle: "italic",
-  overflowWrap: "break-word",
 });
 
 const FlexSpan = styled("span")({
@@ -173,7 +172,14 @@ function TopHitListItem({ item, onItemClick }) {
             </ListItemDisplayName>
           </Typography>
 
-          <Typography variant="caption">
+          <Typography
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            variant="caption"
+            noWrap
+          >
             {!!item.id && (
               <ItemId>
                 {item.entity === "variant" ? (
@@ -214,6 +220,7 @@ function TopHitListItem({ item, onItemClick }) {
             <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
               <Typography variant="body2">
                 {item.description && `${item.description.substring(0, 180)}...`}
+                {item.credibleSetsCount > -1 && <>Credible sets count: {item.credibleSetsCount}</>}
               </Typography>
             </Box>
           </>
@@ -266,8 +273,17 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
       }}
     >
       <JustifyBetween>
-        <ListItemDisplayName>{getSymbolHeader()}</ListItemDisplayName>
-        <Typography variant="caption">
+        <Typography>
+          <ListItemDisplayName>{getSymbolHeader()}</ListItemDisplayName>
+        </Typography>
+        <Typography
+          sx={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+          variant="caption"
+          noWrap
+        >
           {!!item.id && (
             <ItemId>
               {item.entity === "variant" ? (

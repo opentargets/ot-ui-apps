@@ -22,7 +22,7 @@ query SearchQuery($queryString: String!) {
           hasSumstats
           traitFromSource
           credibleSets {
-            count
+            credibleSetsCount: count
           }
         }
 
