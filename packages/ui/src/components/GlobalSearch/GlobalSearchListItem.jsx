@@ -301,6 +301,8 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
           sx={{
             overflow: "hidden",
             textOverflow: "ellipsis",
+            minWidth: "20%",
+            textAlign: "end",
           }}
           variant="caption"
           noWrap
