@@ -23,6 +23,10 @@ query SearchPageQuery($queryString: String!, $index: Int!, $entityNames: [String
           id
           hasSumstats
           traitFromSource
+          nSamples
+          publicationDate
+          publicationFirstAuthor
+          studyType
           credibleSets {
             credibleSetsCount: count
           }

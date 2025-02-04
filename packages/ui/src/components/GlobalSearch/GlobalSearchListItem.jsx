@@ -217,12 +217,33 @@ function TopHitListItem({ item, onItemClick }) {
             <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
               <Typography variant="subtitle1">{item.symbol && item.name}</Typography>
             </Box>
-            <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
-              <Typography variant="body2">
-                {item.description && `${item.description.substring(0, 180)}...`}
-                {item.credibleSetsCount > -1 && <>Credible sets count: {item.credibleSetsCount}</>}
-              </Typography>
-            </Box>
+            <JustifyBetween>
+              <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
+                <Typography variant="body2">
+                  {item.description && `${item.description.substring(0, 180)}...`}
+                </Typography>
+                <Typography variant="body2">
+                  {item.credibleSetsCount > -1 && (
+                    <>Credible sets count: {item.credibleSetsCount}</>
+                  )}
+                  {item.nSamples && <> • N Study: {item.nSamples}</>}
+                </Typography>
+                <Typography variant="caption">
+                  {item.publicationFirstAuthor && <>{item.publicationFirstAuthor}</>}
+                  {item.publicationDate && <>({item.publicationDate})</>}
+                </Typography>
+              </Box>
+              {item.hasSumstats && (
+                <Chip
+                  style={{
+                    height: "16px",
+                    fontSize: "0.8rem",
+                    margin: "0",
+                  }}
+                  label="summary statistics"
+                />
+              )}
+            </JustifyBetween>
           </>
         )}
       </TopHitItemContainer>
@@ -327,10 +348,11 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
       <JustifyBetween>
         <Typography variant="caption">
           {item.credibleSetsCount > -1 && <>Credible sets count: {item.credibleSetsCount}</>}
+          {item.nSamples && <> • N Study: {item.nSamples}</>}
           {getVariantRsIds()}
         </Typography>
 
-        {item.hasSumstats && (
+        {/* {item.hasSumstats && (
           <Chip
             style={{
               height: "16px",
@@ -339,7 +361,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
             }}
             label="summary statistics"
           />
-        )}
+        )} */}
       </JustifyBetween>
 
       {/* {item.nInitial && <Typography variant="caption">N Study: {item.nInitial}</Typography>} */}

@@ -21,6 +21,10 @@ query SearchQuery($queryString: String!) {
           id
           hasSumstats
           traitFromSource
+          nSamples
+          publicationDate
+          publicationFirstAuthor
+          # studyType
           credibleSets {
             credibleSetsCount: count
           }
@@ -80,6 +84,7 @@ query SearchQuery($queryString: String!) {
           id
           hasSumstats
           traitFromSource
+          nSamples
           credibleSets {
             credibleSetsCount: count
           }

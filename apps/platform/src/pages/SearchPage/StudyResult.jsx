@@ -2,7 +2,7 @@ import { makeStyles, useTheme } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
 import { Highlights, Link } from "ui";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -24,11 +24,25 @@ function StudyResult({ data, highlights }) {
   return (
     <div className={classes.container}>
       <Link to={`/variant/${data.id}`} className={classes.subtitle}>
-        <FontAwesomeIcon icon={faChartBar} className={classes.icon} /> <>{data.id}</>
+        <FontAwesomeIcon icon={faChartBar} className={classes.icon} /> <>{data.traitFromSource}</>
       </Link>
       <Typography className={classes.subtitle} variant="subtitle1">
         {data.credibleSets.credibleSetsCount > -1 && (
-          <>Credible sets count: {data.credibleSets.credibleSetsCount}</>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+              <div>Credible sets count: {data.credibleSets.credibleSetsCount}</div>
+              <div> • N Study: {data.nSamples}</div>
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+              <div>
+                {" "}
+                {data.publicationFirstAuthor &&
+                  `Publication author: ${data.publicationFirstAuthor}`}
+              </div>
+              <div> {data.publicationDate && ` •  Publication date: ${data.publicationDate}`}</div>
+            </Box>
+            <div>Study Type: {data.studyType}</div>
+          </Box>
         )}
       </Typography>
       <Highlights highlights={highlights} />

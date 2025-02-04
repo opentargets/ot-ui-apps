@@ -1,4 +1,4 @@
-fragment StudyProfileHeaderFragment on Gwas {
+fragment StudyProfileHeaderFragment on Study {
   studyType
   publicationFirstAuthor
   publicationDate

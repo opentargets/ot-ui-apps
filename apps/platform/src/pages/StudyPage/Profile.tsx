@@ -26,7 +26,7 @@ const summaries = [GWASCredidbleSetsSummary, QTLCredibleSetsSummary];
 const STUDY = "study";
 const STUDY_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
   summaries,
-  "Gwas",
+  "Study",
   "StudyProfileSummaryFragment"
 );
 const STUDY_PROFILE_QUERY = gql`

@@ -94,12 +94,21 @@ function GlobalSearchListHeader({ listHeader, children }) {
     }
   }
 
+  function getListHeader() {
+    switch (listHeader) {
+      case "studies":
+        return "GWAS studies";
+      default:
+        return listHeader;
+    }
+  }
+
   return (
     <div tabIndex="-1" className={classes.sectionHeader}>
       <div className={classes.label}>
         {getIcon()}
         <Typography sx={{ fontWeight: "bold" }} variant="caption">
-          {listHeader}
+          {getListHeader()}
         </Typography>
         <div>{getIconTag()}</div>
       </div>
