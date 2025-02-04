@@ -2,16 +2,22 @@ import { format } from "d3-format";
 import config from "../config";
 import { searchExamples, pppSearchExamples } from "../pages/HomePage/searchExamples";
 
-function pickN([...arr], n) {
-  const picks = [];
+interface ProteinId {
+  source: string;
+  id: string;
+}
+
+function pickN<T>(arr: T[], n: number): T[] {
+  const items = [...arr];
+  const picks: T[] = [];
   while (picks.length < n) {
-    const i = Math.floor(Math.random() * arr.length);
-    picks.push(arr.splice(i, 1)[0]);
+    const i = Math.floor(Math.random() * items.length);
+    picks.push(items.splice(i, 1)[0]);
   }
   return picks;
 }
 
-export const safeToString = x => {
+export const safeToString = (x: unknown): string => {
   switch (typeof x) {
     case "object":
       return "object";
@@ -25,33 +31,35 @@ export const safeToString = x => {
   }
 };
 
-export const identifiersOrgLink = (prefix, accession, resource) =>
+export const identifiersOrgLink = (prefix: string, accession: string, resource?: string): string =>
   `https://identifiers.org/${resource ? `${resource}/` : ""}${prefix}:${accession}`;
 
-export const literatureUrl = id =>
+export const literatureUrl = (id: string): string =>
   id.startsWith("PMC") ? identifiersOrgLink("pmc", id) : identifiersOrgLink("pubmed", id);
 
-export const sentenceCase = str =>
+export const sentenceCase = (str: string | null | undefined): string | null | undefined =>
   str ? str.charAt(0).toUpperCase() + str.slice(1).replace(/_/g, " ").toLocaleLowerCase() : str;
 
 export const formatComma = format(",");
 
-export function getUniprotIds(proteinIds) {
+export function getUniprotIds(proteinIds: ProteinId[]): string[] {
   return proteinIds
     .filter(proteinId => proteinId.source === "uniprot_swissprot")
     .map(proteinId => proteinId.id);
 }
 
-// TODO: Replace this with PublicationsDrawer component
-const makePmidLink = themeColor => {
+const makePmidLink = (themeColor: string) => {
   const linkStyles = `color: ${themeColor}; font-size: inherit; text-decoration: none;`;
-  return match => {
+  return (match: string) => {
     const id = match.substring(7);
     return `PubMed:<a style="${linkStyles}" href="https://europepmc.org/abstract/med/${id}" target="_blank">${id}</a>`;
   };
 };
 
-export function clearDescriptionCodes(descriptions, themeColor) {
+export function clearDescriptionCodes(
+  descriptions: string[] | null | undefined,
+  themeColor: string
+): string[] {
   if (!descriptions) return [];
   return descriptions.map(desc => {
     const codeStart = desc.indexOf("{");
@@ -60,7 +68,12 @@ export function clearDescriptionCodes(descriptions, themeColor) {
   });
 }
 
-export async function fetcher(graphQLParams) {
+interface GraphQLParams {
+  query: string;
+  variables?: Record<string, unknown>;
+}
+
+export async function fetcher(graphQLParams: GraphQLParams): Promise<unknown> {
   const data = await fetch(config.urlApi, {
     method: "POST",
     headers: {
@@ -72,8 +85,17 @@ export async function fetcher(graphQLParams) {
   return data.json();
 }
 
-export function getSuggestedSearch() {
-  const suggestionArray = config.profile.isPartnerPreview ? pppSearchExamples : searchExamples;
+interface SuggestedSearchExample {
+  targets: string[];
+  diseases: string[];
+  drugs: string[];
+  variants: string[];
+}
+
+export function getSuggestedSearch(): string[] {
+  const suggestionArray: SuggestedSearchExample = config.profile.isPartnerPreview
+    ? pppSearchExamples
+    : searchExamples;
   const targets = pickN(suggestionArray.targets, 2);
   const diseases = pickN(suggestionArray.diseases, 2);
   const drugs = pickN(suggestionArray.drugs, 2);

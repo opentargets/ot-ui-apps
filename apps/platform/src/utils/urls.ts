@@ -1,35 +1,56 @@
 import config from "../config";
 
-export function epmcUrl(id) {
+interface RequestOptions {
+  method: string;
+  headers: Record<string, string>;
+  body: string;
+}
+
+interface SearchPostResult {
+  baseUrl: string;
+  formBody: string;
+  requestOptions?: RequestOptions;
+}
+
+interface Route {
+  private: boolean;
+  [key: string]: unknown;
+}
+
+interface PublicationSummaryParams {
+  pmcId: string;
+  symbol: string;
+  name: string;
+}
+
+export function epmcUrl(id: string): string {
   return `https://europepmc.org/article/MED/${id}`;
 }
 
-export function otgStudyUrl(id) {
+export function otgStudyUrl(id: string): string {
   return `${config.geneticsPortalUrl}/study/${id}`;
 }
 
-export function otgVariantUrl(id) {
+export function otgVariantUrl(id: string): string {
   return `${config.geneticsPortalUrl}/variant/${id}`;
 }
 
-export function europePmcLiteratureQuery(ids) {
+export function europePmcLiteratureQuery(ids: string[]): string {
   const baseUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?&format=json&resultType=core&pageSize=${ids.length}&query=ext_id:`;
-
   return encodeURI(baseUrl + ids.join(" OR ext_id:"));
 }
 
-export const encodeParams = params => {
-  const formBody = [];
+export const encodeParams = (params: Record<string, string>): string => {
+  const formBody: string[] = [];
   Object.keys(params).forEach(key => {
     const encodedKey = encodeURIComponent(key);
     const encodedValue = encodeURIComponent(params[key]);
     formBody.push(`${encodedKey}=${encodedValue}`);
   });
-  const encodedParams = formBody.join("&");
-  return encodedParams;
+  return formBody.join("&");
 };
 
-export function europePmcSearchPOSTQuery(ids) {
+export function europePmcSearchPOSTQuery(ids: string[]): SearchPostResult {
   const baseUrl = "https://www.ebi.ac.uk/europepmc/webservices/rest/searchPOST";
   const query = ids.join(" OR ext_id:");
   const bodyOptions = {
@@ -43,17 +64,17 @@ export function europePmcSearchPOSTQuery(ids) {
   return { baseUrl, formBody };
 }
 
-export function europePmcBiblioSearchPOSTQuery(ids, size = 25) {
+export function europePmcBiblioSearchPOSTQuery(ids: string[], size = 25): SearchPostResult {
   const baseUrl = "https://www.ebi.ac.uk/europepmc/webservices/rest/searchPOST";
   const query = ids.join(" OR ext_id:");
   const bodyOptions = {
     resultType: "core",
     format: "json",
-    pageSize: size,
+    pageSize: String(size),
     query: `ext_id:${query}`,
   };
   const formBody = encodeParams(bodyOptions);
-  const requestOptions = {
+  const requestOptions: RequestOptions = {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
@@ -63,50 +84,64 @@ export function europePmcBiblioSearchPOSTQuery(ids, size = 25) {
   return { baseUrl, formBody, requestOptions };
 }
 
-function clinicalTrialsUrl(id) {
+function clinicalTrialsUrl(id: string): string {
   return `https://www.clinicaltrials.gov/study/${id}`;
 }
 
-function fdaUrl(id) {
+function fdaUrl(id: string): string {
   return `https://api.fda.gov/drug/label.json?search=set_id:${id}`;
 }
 
-function atcUrl(id) {
+function atcUrl(id: string): string {
   return `http://www.whocc.no/atc_ddd_index/?code=${id}`;
 }
 
-function dailyMedUrl(id) {
+function dailyMedUrl(id: string): string {
   return `http://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=${id}`;
 }
 
-export const referenceUrls = {
+export const referenceUrls: Record<string, (id: string) => string> = {
   ClinicalTrials: clinicalTrialsUrl,
   FDA: fdaUrl,
   ATC: atcUrl,
   DailyMed: dailyMedUrl,
 };
 
-// Associations and URL PPP
-export const getClassicAssociationsURL = ({ baseURL }) => {
+export const getClassicAssociationsURL = ({
+  baseURL,
+}: {
+  baseURL: string;
+}): { fullURL: string; path: string } => {
   const path = "classic-associations";
   const fullURL = `${baseURL}/${path}`;
   return { fullURL, path };
 };
 
-export const getAbleRoutes = ({ routes = [], isPartnerPreview = false }) => {
-  const ableRouter = routes.reduce((accumulator, currentValue) => {
+export const getAbleRoutes = ({
+  routes = [],
+  isPartnerPreview = false,
+}: {
+  routes: Route[];
+  isPartnerPreview: boolean;
+}): Route[] => {
+  return routes.reduce((accumulator: Route[], currentValue: Route) => {
     if (currentValue.private) {
-      if (isPartnerPreview) {
-        return [...accumulator, currentValue];
-      }
-      return [...accumulator];
+      return isPartnerPreview ? [...accumulator, currentValue] : accumulator;
     }
     return [...accumulator, currentValue];
   }, []);
-  return ableRouter;
 };
 
-export const publicationSummaryQuery = ({ pmcId, symbol, name }) => {
+export const publicationSummaryQuery = ({
+  pmcId,
+  symbol,
+  name,
+}: PublicationSummaryParams): {
+  baseUrl: string;
+  body: {
+    payload: PublicationSummaryParams;
+  };
+} => {
   const baseUrl = `${config.urlAiApi}/literature/publication/summary`;
   const body = {
     payload: {
@@ -115,6 +150,5 @@ export const publicationSummaryQuery = ({ pmcId, symbol, name }) => {
       diseaseName: name,
     },
   };
-
   return { baseUrl, body };
 };
