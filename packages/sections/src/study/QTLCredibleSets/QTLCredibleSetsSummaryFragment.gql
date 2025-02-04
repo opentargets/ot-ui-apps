@@ -1,4 +1,4 @@
-fragment StudyQTLCredibleSetsSummaryFragment on Gwas {
+fragment StudyQTLCredibleSetsSummaryFragment on Study {
   qtlCredibleSets: credibleSets(page: { size: 1, index: 0 }) {
     count
   }
