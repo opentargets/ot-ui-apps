@@ -4,6 +4,7 @@ import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReactElement, ReactNode } from "react";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import OtAsyncTooltip from "./OtAsyncTooltip/OtAsyncTooltip";
 
 const useStyles = makeStyles((theme: Theme) => ({
   externalLinks: {
@@ -71,6 +72,7 @@ function Header({
               <Typography className={classes.subtitle} variant="h5">
                 {loading ? <Skeleton width="50vw" /> : subtitle}
               </Typography>
+              <OtAsyncTooltip entity={"drug"}>something</OtAsyncTooltip>
             </Grid>
             <Grid container>
               <Typography variant="body2" className={classes.externalLinks}>
