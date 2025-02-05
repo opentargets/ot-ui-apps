@@ -1,9 +1,11 @@
 import { SectionItem, usePlatformApi } from "ui";
+import { Box } from "@mui/material";
 
 import Description from "./Description";
 import { definition } from ".";
 import { getUniprotIds } from "../../utils/global";
 import ProtVista from "./ProtVista";
+import NightingaleVis from "./NightingaleVis";
 
 import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 
@@ -19,7 +21,13 @@ function Body({ label: symbol, entity }) {
       showContentLoading={true}
       renderBody={() => {
         const uniprotId = getUniprotIds(request.data?.proteinIds)[0];
-        return <ProtVista uniprotId={uniprotId} />;
+        return (
+          <Box display="flex" flexDirection="column" gap={6}>
+            <NightingaleVis uniprotId={uniprotId} />
+            {/* <Box height="1px" bgcolor="#000" /> */}
+            {/* <ProtVista uniprotId={uniprotId} /> */}
+          </Box>
+        );
       }}
     />
   );
