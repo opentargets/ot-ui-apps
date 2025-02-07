@@ -3,7 +3,7 @@ import { extent, interpolateRdBu } from "d3";
 import { ObsPlot } from "ui";
 
 function SummaryHeatmap() {
-  const height = 200;
+  const height = 170;
 
   return (
     <div>
@@ -14,6 +14,9 @@ function SummaryHeatmap() {
         minWidth={500}
         height={height}
         renderChart={renderChart}
+        gapInfo={20}
+        positionInfo="right"
+        renderInfo={(datum, chart) => <div>INFO!!!</div>}
       />
     </div>
   );
@@ -33,7 +36,7 @@ function renderChart({
     marginLeft: 100,
     marginRight: 0,
     marginTop: 40,
-    marginBottom: 30,
+    marginBottom: 0,
     style: {
       fontSize: 14,
     },
