@@ -1,0 +1,7 @@
+query TargetTooltipQuery($ensgId: String!) {
+  target(ensemblId: $ensgId) {
+    id
+    name: approvedName
+    description: functionDescriptions
+  }
+}
