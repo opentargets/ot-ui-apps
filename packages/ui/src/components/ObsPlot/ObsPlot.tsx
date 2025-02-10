@@ -22,7 +22,8 @@ type ObsPlotProps = {
   renderTooltip?: (datum: any) => ReactElement;
   positionInfo?: "top" | "bottom" | "left" | "right";
   gapInfo: number;
-  renderInfo: (datum: any, chart: ReactElement | null) => ReactElement;
+  renderInfo: (chart: ReactElement | null) => ReactElement;
+  renderSVGOverlay: (chart: SVGSVGElement) => SVGElement | null;
 };
 
 function ObsPlot({
@@ -45,6 +46,7 @@ function ObsPlot({
   positionInfo = "top",
   gapInfo,
   renderInfo,
+  renderSVGOverlay,
 }: ObsPlotProps) {
   const [ref, { width: measuredWidth }] = useMeasure();
   const [chart, setChart] = useState(null);
@@ -56,7 +58,7 @@ function ObsPlot({
   if (maxWidth != null) width = Math.min(width, maxWidth);
   if (minWidth != null) width = Math.max(width, minWidth);
 
-  const infoElement = renderInfo?.(datum, chart);
+  const infoElement = renderInfo?.(chart);
 
   const chartElement = (
     <Box sx={{ width }}>
@@ -74,6 +76,7 @@ function ObsPlot({
             resetElement={resetElement}
             setChart={setChart}
             setDatum={setDatum}
+            renderSVGOverlay={renderSVGOverlay}
           />
           {hasTooltip && (
             <ObsTooltip

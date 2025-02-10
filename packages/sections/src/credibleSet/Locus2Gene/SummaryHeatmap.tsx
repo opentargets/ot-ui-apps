@@ -4,7 +4,7 @@ import { extent, interpolateRdBu } from "d3";
 import { ObsPlot } from "ui";
 
 function SummaryHeatmap() {
-  const height = 170;
+  const height = 200;
 
   return (
     <div>
@@ -17,7 +17,8 @@ function SummaryHeatmap() {
         renderChart={renderChart}
         gapInfo={10}
         positionInfo="bottom"
-        renderInfo={(datum, chart) => <Legend chart={chart} />}
+        renderInfo={renderInfo}
+        renderSVGOverlay={renderSVGOverlay}
       />
     </div>
   );
@@ -36,7 +37,7 @@ function renderChart({
     height,
     marginLeft: 100,
     marginRight: 0,
-    marginTop: 40,
+    marginTop: 70,
     marginBottom: 0,
     style: {
       fontSize: 14,
@@ -47,6 +48,7 @@ function renderChart({
       axis: "top",
       label: "",
       tickSize: 0,
+      tickPadding: 4,
       padding: 0.05,
     },
     y: {
@@ -56,6 +58,7 @@ function renderChart({
       label: "",
       reverse: true,
       tickSize: 0,
+      tickPadding: 2,
       padding: 0.1,
     },
     color: getColorScale(),
@@ -78,6 +81,29 @@ function renderChart({
       }),
     ],
   });
+}
+
+function renderInfo(chart: SVGSVGElement) {
+  return <Legend chart={chart} />;
+}
+
+function renderSVGOverlay(chart: SVGSVGElement) {
+  const svgNamespace = "http://www.w3.org/2000/svg";
+  const xScale = chart.scale("x");
+  const x1 = xScale.apply("eQTL");
+  const x2 = xScale.apply("sQTL") + xScale.bandwidth;
+  const y1 = 44;
+  const y2 = 40;
+  const polyline = document.createElementNS(svgNamespace, "polyline");
+  polyline.setAttribute("points", `${x1},${y1} ${x1},${y2} ${x2},${y2} ${x2},${y1}`);
+  polyline.setAttribute("stroke", "#888");
+  polyline.setAttribute("stroke-width", "1");
+  polyline.setAttribute("fill", "transparent");
+  const label = document.createElementNS(svgNamespace, "text");
+  label.setAttribute("x", xScale.apply("pQTL") + xScale.bandwidth / 2);
+  label.setAttribute("y", String(y1 - 15));
+  label.textContent = "Colocalisation";
+  return [polyline, label];
 }
 
 // ========== legend component ==========
