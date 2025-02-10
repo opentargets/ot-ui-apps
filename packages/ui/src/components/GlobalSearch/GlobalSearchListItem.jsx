@@ -215,7 +215,16 @@ function TopHitListItem({ item, onItemClick }) {
         ) : (
           <>
             <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
-              <Typography variant="subtitle1">{item.symbol && item.name}</Typography>
+              <Typography variant="subtitle1">
+                {item.symbol && item.name}
+
+                {item.publicationFirstAuthor && (
+                  <>
+                    {item.publicationFirstAuthor} <i>et al.</i> {item.publicationJournal} (
+                    {item.publicationDate?.slice(0, 4)})
+                  </>
+                )}
+              </Typography>
             </Box>
             <JustifyBetween>
               <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
@@ -226,11 +235,11 @@ function TopHitListItem({ item, onItemClick }) {
                   {item.credibleSetsCount > -1 && (
                     <>Credible sets count: {item.credibleSetsCount}</>
                   )}
-                  {item.nSamples && <> • N Study: {item.nSamples}</>}
+                  {item.nSamples && <> • Sample size: {item.nSamples.toLocaleString()}</>}
                 </Typography>
                 <Typography variant="caption">
-                  {item.publicationFirstAuthor && <>{item.publicationFirstAuthor}</>}
-                  {item.publicationDate && <>({item.publicationDate})</>}
+                  {/* {item.publicationFirstAuthor && <>{item.publicationFirstAuthor}</>}
+                  {item.publicationDate && <>({item.publicationDate})</>} */}
                 </Typography>
               </Box>
               {item.hasSumstats && (
@@ -350,7 +359,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
       <JustifyBetween>
         <Typography variant="caption">
           {item.credibleSetsCount > -1 && <>Credible sets count: {item.credibleSetsCount}</>}
-          {item.nSamples && <> • N Study: {item.nSamples}</>}
+          {item.nSamples && <> • Sample size: {item.nSamples.toLocaleString()}</>}
           {getVariantRsIds()}
         </Typography>
 

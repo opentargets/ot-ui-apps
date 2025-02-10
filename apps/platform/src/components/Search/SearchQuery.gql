@@ -24,6 +24,7 @@ query SearchQuery($queryString: String!) {
           nSamples
           publicationDate
           publicationFirstAuthor
+          publicationJournal
           # studyType
           credibleSets {
             credibleSetsCount: count

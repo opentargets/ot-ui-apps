@@ -23,7 +23,7 @@ function StudyResult({ data, highlights }) {
 
   return (
     <div className={classes.container}>
-      <Link to={`/variant/${data.id}`} className={classes.subtitle}>
+      <Link to={`/study/${data.id}`} className={classes.subtitle}>
         <FontAwesomeIcon icon={faChartBar} className={classes.icon} /> <>{data.traitFromSource}</>
       </Link>
       <Typography className={classes.subtitle} variant="subtitle1">
@@ -31,16 +31,24 @@ function StudyResult({ data, highlights }) {
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
               <div>Credible sets count: {data.credibleSets.credibleSetsCount}</div>
-              <div> • N Study: {data.nSamples}</div>
+              <div> • Sample size: {data.nSamples.toLocaleString()}</div>
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
               <div>
                 {" "}
-                {data.publicationFirstAuthor &&
-                  `Publication author: ${data.publicationFirstAuthor}`}
+                {data.publicationFirstAuthor && (
+                  <>
+                    {data.publicationFirstAuthor} <i>et al.</i> {data.publicationJournal} (
+                    {data.publicationDate?.slice(0, 4)})
+                  </>
+                )}
               </div>
-              <div> {data.publicationDate && ` •  Publication date: ${data.publicationDate}`}</div>
             </Box>
+            <div>
+              {data.target?.approvedSymbol && `Affected gene: ${data.target.approvedSymbol}  • `}
+              {data.biosample?.biosampleName &&
+                `Affected cell/tissue: ${data.biosample.biosampleName}`}
+            </div>
             <div>Study Type: {data.studyType}</div>
           </Box>
         )}
