@@ -2,7 +2,6 @@ import { ReactElement, useState } from "react";
 import { useMeasure } from "@uidotdev/usehooks";
 import { Box, Fade } from "@mui/material";
 import { ObsChart, ObsTooltip } from "ui";
-import { position } from "polished";
 
 type ObsPlotProps = {
   data: any;

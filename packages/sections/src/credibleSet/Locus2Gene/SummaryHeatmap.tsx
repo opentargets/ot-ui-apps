@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import * as PlotLib from "@observablehq/plot";
 import { extent, interpolateRdBu } from "d3";
 import { ObsPlot } from "ui";
@@ -14,9 +15,9 @@ function SummaryHeatmap() {
         minWidth={500}
         height={height}
         renderChart={renderChart}
-        gapInfo={20}
-        positionInfo="right"
-        renderInfo={(datum, chart) => <div>INFO!!!</div>}
+        gapInfo={10}
+        positionInfo="bottom"
+        renderInfo={(datum, chart) => <Legend chart={chart} />}
       />
     </div>
   );
@@ -57,19 +58,7 @@ function renderChart({
       tickSize: 0,
       padding: 0.1,
     },
-    color: {
-      type: "diverging",
-      // legend: true,
-      // domain: [Math.min(...noColorValues), Math.max(...noColorValues)],
-      domain: extent(
-        groupedResults.filter(d => d.groupName !== "Base" && d.groupName !== "L2G"),
-        d => d.shapValue
-      ),
-      interpolate: interpolateRdBu, // required to use range
-      // rough approxn to platform: ~full blue and half from evidece, ~full red and color-picker half from target prioritisation
-      // interpolate: d3.interpolateRgbBasis(["rgb(160, 24, 19)", "rgb(235, 144, 141)", "#fff", "rgb(110, 169, 215)", "rgb(36, 87, 128)"]),
-      range: [0.2, 0.8], // avoid extreme colors in scale
-    },
+    color: getColorScale(),
     marks: [
       PlotLib.rect(groupedResults, {
         x: "groupName",
@@ -89,6 +78,21 @@ function renderChart({
       }),
     ],
   });
+}
+
+// ========== legend component ==========
+
+function Legend({ chart }) {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const legend = PlotLib.legend({ color: getColorScale() });
+      containerRef.current.appendChild(legend);
+    }
+  }, []); // !! CHECK NO DEPS APPROPRIATE ONCE REFACTOR FOR REAL DATA !!
+
+  return <div ref={containerRef} />;
 }
 
 // ========== constants ==========
@@ -130,21 +134,6 @@ for (const [groupName, group] of Object.entries(groupToFeature)) {
 
 // ========== helpers ==========
 
-// function getLongData(data) {
-//   const longData = [];
-//   for (const row of data) {
-//     for (const feature of row.features) {
-//       longData.push({
-//         geneId: row.geneId,
-//         featureName: feature.name,
-//         featureValue: feature.value,
-//         shapValue: feature.shapValue,
-//       });
-//     }
-//   }
-//   return longData;
-// }
-
 function getLongGroupedResults(data, { includeBase, includeTotal } = {}) {
   const initRowScores = () => {
     const rowScores = {};
@@ -172,6 +161,18 @@ function getLongGroupedResults(data, { includeBase, includeTotal } = {}) {
   }
 
   return longResults;
+}
+
+function getColorScale() {
+  return {
+    type: "diverging",
+    domain: extent(
+      groupedResults.filter(d => d.groupName !== "Base" && d.groupName !== "L2G"),
+      d => d.shapValue
+    ),
+    interpolate: interpolateRdBu, // required to use range
+    range: [0.2, 0.8], // avoid extreme colors in scale
+  };
 }
 
 ////////////////////////////////////////////////////////////////////////////////
