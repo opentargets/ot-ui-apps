@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import * as PlotLib from "@observablehq/plot";
 import { extent, interpolateRdBu } from "d3";
 import { ObsPlot } from "ui";
+import { Box } from "@mui/material";
 
 function SummaryHeatmap() {
   const height = 200;
@@ -19,6 +20,9 @@ function SummaryHeatmap() {
         positionInfo="bottom"
         renderInfo={renderInfo}
         renderSVGOverlay={renderSVGOverlay}
+        xTooltip={d => d.groupName}
+        yTooltip={d => d.geneId}
+        renderTooltip={renderTooltip}
       />
     </div>
   );
@@ -69,6 +73,7 @@ function renderChart({
         fill: "shapValue",
         fillOpacity: d => (d.groupName === "Base" || d.groupName === "L2G" ? 0 : 1),
         r: 3,
+        className: "obs-tooltip",
       }),
       PlotLib.text(groupedResults, {
         x: "groupName",
@@ -78,6 +83,7 @@ function renderChart({
         // fontWeight not a variable channel - use stroke for bold text for now
         stroke: "black",
         strokeWidth: d => (d.groupName === "L2G" ? 0.2 : 0),
+        pointerEvents: "none",
       }),
     ],
   });
@@ -104,6 +110,46 @@ function renderSVGOverlay(chart: SVGSVGElement) {
   label.setAttribute("y", String(y1 - 15));
   label.textContent = "Colocalisation";
   return [polyline, label];
+}
+
+function renderTooltip(datum, chart) {
+  const data = getTargetGroupFeatures(datum.geneId, datum.groupName);
+  // console.log({ datum, data });
+
+  function renderTooltipChart({
+    data: data,
+    // otherData: { rawData, groupToFeature },
+    width,
+    height,
+  }) {
+    return PlotLib.plot({
+      width,
+      height,
+      marginLeft: 20,
+      marginRight: 20,
+      marginTop: 20,
+      marginBottom: 20,
+      x: {
+        domain: [-1, 1],
+      },
+      y: {
+        type: "band",
+        domain: groupToFeature[datum.groupName],
+      },
+      marks: [
+        PlotLib.barX(data, {
+          x: "shapValue",
+          y: "name",
+        }),
+      ],
+    });
+  }
+
+  return (
+    <Box bgcolor="#f8f8f8">
+      <ObsPlot data={data} minWidth={200} maxWidth={300} renderChart={renderTooltipChart} />;
+    </Box>
+  );
 }
 
 // ========== legend component ==========
@@ -187,6 +233,11 @@ function getLongGroupedResults(data, { includeBase, includeTotal } = {}) {
   }
 
   return longResults;
+}
+
+function getTargetGroupFeatures(targetId, groupName) {
+  const row = fakeData.find(d => d.geneId === targetId);
+  return row.features.filter(feature => featureToGroup[feature.name] === groupName);
 }
 
 function getColorScale() {
