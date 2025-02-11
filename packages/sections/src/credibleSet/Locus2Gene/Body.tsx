@@ -7,6 +7,7 @@ import { naLabel } from "../../constants";
 import LOCUS2GENE_QUERY from "./Locus2GeneQuery.gql";
 import { Tooltip } from "@mui/material";
 import SummaryHeatmap from "./SummaryHeatmap";
+import HeatmapTable from "./HeatmapTable";
 
 type BodyProps = {
   studyLocusId: string;
@@ -56,21 +57,24 @@ function Body({ studyLocusId, entity }: BodyProps): ReactNode {
       entity={entity}
       request={request}
       renderDescription={() => <Description />}
-      renderBody={() => {
-        return <SummaryHeatmap />;
-        // return (
-        //   <OtTable
-        //     showGlobalFilter
-        //     dataDownloader
-        //     dataDownloaderFileStem={`${studyLocusId}-locus2gene`}
-        //     columns={columns}
-        //     loading={request.loading}
-        //     rows={request.data?.credibleSet.l2GPredictions.rows}
-        //     query={LOCUS2GENE_QUERY.loc.source.body}
-        //     variables={variables}
-        //   />
-        // );
-      }}
+      renderBody={() => (
+        <>
+          <HeatmapTable />
+          <SummaryHeatmap />
+        </>
+      )}
+      // return (
+      //   <OtTable
+      //     showGlobalFilter
+      //     dataDownloader
+      //     dataDownloaderFileStem={`${studyLocusId}-locus2gene`}
+      //     columns={columns}
+      //     loading={request.loading}
+      //     rows={request.data?.credibleSet.l2GPredictions.rows}
+      //     query={LOCUS2GENE_QUERY.loc.source.body}
+      //     variables={variables}
+      //   />
+      // );
     />
   );
 }
