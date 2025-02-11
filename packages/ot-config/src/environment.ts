@@ -1,26 +1,24 @@
-// packages/config/src/environment.ts
-export type Environment = "development" | "production";
+import { Environment, Config } from "./types";
 
-export interface ClientConfig {
-  apiUrl: string;
-  graphqlUrl: string;
-  platform: string;
-  version: string;
-}
-
-export const getClientConfig = (env: Environment): ClientConfig => {
-  const configs: Record<Environment, ClientConfig> = {
+export const getEnvironmentConfig = (env: Environment): Config => {
+  const configs: Record<Environment, Config> = {
     development: {
-      apiUrl: "http://localhost:8080",
-      graphqlUrl: "http://localhost:8080/graphql",
-      platform: "platform.dev.targetvalidation.org",
-      version: process.env.APP_VERSION || "dev",
+      urlApi: "http://localhost:8080",
+      urlAiApi: "http://localhost:8081",
+      profile: {},
+      googleTagManagerID: null,
+      efoURL: "/data/ontology/efo_json/diseases_efo.jsonl",
+      downloadsURL: "/data/downloads.json",
+      geneticsPortalUrl: "https://genetics.opentargets.org",
     },
     production: {
-      apiUrl: "https://api.platform.opentargets.org",
-      graphqlUrl: "https://api.platform.opentargets.org/graphql",
-      platform: "platform.opentargets.org",
-      version: process.env.APP_VERSION || "production",
+      urlApi: "https://api.platform.opentargets.org",
+      urlAiApi: "https://ai.platform.opentargets.org",
+      profile: {},
+      googleTagManagerID: "GTM-XXXXX",
+      efoURL: "/data/ontology/efo_json/diseases_efo.jsonl",
+      downloadsURL: "/data/downloads.json",
+      geneticsPortalUrl: "https://genetics.opentargets.org",
     },
   };
 
