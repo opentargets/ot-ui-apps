@@ -3,6 +3,7 @@ import * as PlotLib from "@observablehq/plot";
 import { extent, interpolateRdBu } from "d3";
 import { ObsPlot } from "ui";
 import { Box } from "@mui/material";
+import { schemeRdBu } from "d3";
 
 function SummaryHeatmap() {
   const height = 200;
@@ -122,24 +123,35 @@ function renderTooltip(datum, chart) {
     width,
     height,
   }) {
+    const negColor = schemeRdBu.at(-1)[2];
+    const posColor = schemeRdBu.at(-1).at(-3);
+
     return PlotLib.plot({
       width,
       height,
-      marginLeft: 20,
-      marginRight: 20,
-      marginTop: 20,
-      marginBottom: 20,
+      marginLeft: 220,
+      marginRight: 10,
+      marginTop: 10,
+      marginBottom: 0,
       x: {
         domain: [-1, 1],
+        label: null,
+        // ticks: [-1, -0.5, 0, 0.5, 1],
       },
       y: {
         type: "band",
         domain: groupToFeature[datum.groupName],
+        label: "",
+        tickSize: 0,
+        grid: true,
+        padding: 0.2,
+        inset: 0.1,
       },
       marks: [
         PlotLib.barX(data, {
           x: "shapValue",
           y: "name",
+          fill: d => (d.shapValue < 0 ? negColor : posColor),
         }),
       ],
     });
@@ -147,7 +159,13 @@ function renderTooltip(datum, chart) {
 
   return (
     <Box bgcolor="#f8f8f8">
-      <ObsPlot data={data} minWidth={200} maxWidth={300} renderChart={renderTooltipChart} />;
+      <ObsPlot
+        data={data}
+        height={100}
+        minWidth={400}
+        maxWidth={400}
+        renderChart={renderTooltipChart}
+      />
     </Box>
   );
 }
