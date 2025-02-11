@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useState } from "react";
 // import * as PlotLib from "@observablehq/plot";
-import { extent, interpolateRdBu, schemeRdBu, scaleDiverging } from "d3";
+import { interpolateRdBu, schemeRdBu, scaleDiverging } from "d3";
 // import { ObsPlot } from "ui";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Popover } from "@mui/material";
 
 const colorScheme = schemeRdBu;
 
@@ -29,8 +29,8 @@ function HeatmapTable() {
         <th></th>
       </tr>
       <tr>
-        {["Gene", ...Object.keys(groupToFeature), "Base", "L2G"].map(value => (
-          <HeaderCell value={value} />
+        {["Gene", ...Object.keys(groupToFeature), "Base", "L2G"].map((value, index) => (
+          <HeaderCell key={index} value={value} />
         ))}
       </tr>
     </thead>
@@ -96,19 +96,76 @@ function GeneCell({ value }) {
 }
 
 function HeatCell({ value, bgrd }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = event => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   return (
-    <Box component="td" bgcolor={bgrd} borderRadius={1.5} padding={1}>
-      <Typography fontSize={13} color="#000" textAlign="center" width="100%">
-        {value}
-      </Typography>
-    </Box>
+    <>
+      <Box
+        aria-describedby={id}
+        component="td"
+        bgcolor={bgrd}
+        borderRadius={1.5}
+        padding={1}
+        onClick={handleClick}
+        sx={{
+          outline: anchorEl ? "2px solid #000" : "none",
+          "&:hover": {
+            outline: `2px solid #888`,
+          },
+        }}
+      >
+        <Typography
+          fontSize={13}
+          color="#000"
+          textAlign="center"
+          width="100%"
+          sx={{ pointerEvents: "none" }}
+        >
+          {value}
+        </Typography>
+      </Box>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        elevation={1}
+        disableScrollLock
+        transitionDuration={0}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        sx={{
+          mt: 0.5,
+        }}
+      >
+        <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+      </Popover>
+    </>
   );
 }
 
 function BaseCell({ value }) {
   return (
-    <Box component="td" borderRadius={1.5} padding={1}>
-      <Typography fontSize={13} color="#888" textAlign="center" width="100%">
+    <Box component="td" borderRadius={1.5} padding={1} border="1px solid #bbb">
+      <Typography
+        fontSize={13}
+        color="#777"
+        textAlign="center"
+        width="100%"
+        sx={{ pointerEvents: "none" }}
+      >
         {value}
       </Typography>
     </Box>
@@ -118,7 +175,13 @@ function BaseCell({ value }) {
 function ScoreCell({ value }) {
   return (
     <Box component="td" borderRadius={1.5} padding={1}>
-      <Typography fontSize={13} fontWeight={700} textAlign="center" width="100%">
+      <Typography
+        fontSize={13}
+        fontWeight={700}
+        textAlign="center"
+        width="100%"
+        sx={{ pointerEvents: "none" }}
+      >
         {value}
       </Typography>
     </Box>
