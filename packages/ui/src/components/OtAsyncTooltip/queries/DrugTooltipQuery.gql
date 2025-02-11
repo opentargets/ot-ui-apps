@@ -1,0 +1,7 @@
+query DrugTooltipQuery($chemblId: String!) {
+  drug(chemblId: $chemblId) {
+    id
+    name
+    description
+  }
+}
