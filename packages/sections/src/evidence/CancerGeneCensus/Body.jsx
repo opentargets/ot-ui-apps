@@ -27,7 +27,11 @@ const getColumns = label => [
     id: "disease.name",
     label: "Disease/phenotype",
     enableHiding: false,
-    renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
+    renderCell: ({ disease }) => (
+      <Link asyncTooltip to={`/disease/${disease.id}`}>
+        {disease.name}
+      </Link>
+    ),
   },
   {
     id: "mutationType",
