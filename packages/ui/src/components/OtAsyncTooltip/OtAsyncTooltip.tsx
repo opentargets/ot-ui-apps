@@ -48,21 +48,21 @@ function OtAsyncTooltip({ children, entity, id }: OtAsyncTooltipProps): ReactEle
   const [aborterRef, setAbortRef] = useState(new AbortController());
   const [getTooltipData, { loading, error, data }] = useLazyQuery(query, {
     fetchPolicy: "network-only",
+    context: { fetchOptions: { signal: aborterRef.signal } },
   });
 
   function getTooltipContent() {
-    if (loading) return getAsyncTooltipLoadingView();
-    return getAsyncTooltipDataView(entity, data?.[entity]);
+    if (loading || !data) return <AsyncTooltipLoadingView />;
+    return <AsyncTooltipDataView entity={entity} data={data?.[entity]} />;
   }
 
   function abortApiCall() {
     aborterRef.abort();
-    setAbortRef(new AbortController());
   }
 
   function handleClose() {
-    abortApiCall();
     setOpen(false);
+    abortApiCall();
   }
 
   function handleOpen() {
@@ -96,7 +96,7 @@ function OtAsyncTooltip({ children, entity, id }: OtAsyncTooltipProps): ReactEle
   );
 }
 
-function getAsyncTooltipLoadingView(): ReactElement {
+function AsyncTooltipLoadingView(): ReactElement {
   return (
     <Box sx={{ width: 300 }}>
       <Box>
@@ -109,7 +109,13 @@ function getAsyncTooltipLoadingView(): ReactElement {
   );
 }
 
-function getAsyncTooltipDataView(entity: string, data: Record<string, unknown>): ReactElement {
+function AsyncTooltipDataView({
+  entity,
+  data,
+}: {
+  entity: string;
+  data: Record<string, unknown>;
+}): ReactElement {
   function getLabel() {
     return data?.name || data?.id;
   }
