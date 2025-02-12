@@ -338,3 +338,8 @@ export const VIEW = {
   chart: "Visualisation",
   table: "Table",
 };
+
+export const getStudyTypeDisplay = studyType => {
+  if (studyType) return studyType?.replace(/(qtl|gwas)/gi, match => match.toUpperCase());
+  return studyType;
+};
