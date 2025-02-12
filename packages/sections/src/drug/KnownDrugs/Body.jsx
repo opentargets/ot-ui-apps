@@ -17,7 +17,11 @@ function getColumnPool(id, entity) {
           enableHiding: false,
           label: "Disease",
           propertyPath: "disease.id",
-          renderCell: d => <Link to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>,
+          renderCell: d => (
+            <Link asyncTooltip to={`/disease/${d.disease.id}`}>
+              {d.disease.name}
+            </Link>
+          ),
         },
       ],
     },
@@ -29,7 +33,11 @@ function getColumnPool(id, entity) {
           id: "targetSymbol",
           label: "Symbol",
           propertyPath: "target.approvedSymbol",
-          renderCell: d => <Link to={`/target/${d.target.id}`}>{d.target.approvedSymbol}</Link>,
+          renderCell: d => (
+            <Link asyncTooltip to={`/target/${d.target.id}`}>
+              {d.target.approvedSymbol}
+            </Link>
+          ),
         },
         {
           id: "targetName",
