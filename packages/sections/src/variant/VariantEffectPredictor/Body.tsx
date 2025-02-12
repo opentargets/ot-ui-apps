@@ -24,7 +24,11 @@ const columns = [
     enableHiding: false,
     renderCell: ({ target, transcriptId, uniprotAccessions }) => {
       if (!target) return naLabel;
-      let displayElement = <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>;
+      let displayElement = (
+        <Link asyncTooltip to={`../target/${target.id}`}>
+          {target.approvedSymbol}
+        </Link>
+      );
       let tooltipContent = <></>;
       if (transcriptId) {
         tooltipContent = (
