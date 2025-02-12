@@ -1,7 +1,5 @@
-import { Link as RouterLink } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { Link } from "@mui/material";
-import { SectionItem, TableDrawer, OtTable } from "ui";
+import { SectionItem, TableDrawer, OtTable, Link } from "ui";
 import { dataTypesMap } from "../../dataTypes";
 import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 import Description from "./Description";
@@ -15,7 +13,7 @@ const columns = [
     label: "Disease/phenotype",
     enableHiding: false,
     renderCell: ({ disease }) => (
-      <Link component={RouterLink} to={`/disease/${disease.id}`}>
+      <Link asyncTooltip to={`/disease/${disease.id}`}>
         {disease.name}
       </Link>
     ),

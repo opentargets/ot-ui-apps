@@ -1,0 +1,11 @@
+query StudyTooltipQuery($studyId: String!) {
+  study(studyId: $studyId) {
+    id
+    studyType
+    nSamples
+    name: traitFromSource
+    credibleSets {
+      credibleSetsCount: count
+    }
+  }
+}

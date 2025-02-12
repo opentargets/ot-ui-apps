@@ -36,7 +36,7 @@ const getColumns = label => [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
           <EllsWrapper>{disease.name}</EllsWrapper>
         </Link>
       </Tooltip>
