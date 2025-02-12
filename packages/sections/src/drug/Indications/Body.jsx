@@ -16,7 +16,11 @@ const columns = [
     label: "Indication",
     enableHiding: false,
     propertyPath: "disease.name",
-    renderCell: d => <Link to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>,
+    renderCell: d => (
+      <Link asyncTooltip to={`/disease/${d.disease.id}`}>
+        {d.disease.name}
+      </Link>
+    ),
     width: "38%",
   },
   {
