@@ -43,7 +43,7 @@ const columns = [
       if (!variant) return naLabel;
       const { id: variantId, referenceAllele, alternateAllele } = variant;
       return (
-        <Link to={`/variant/${variantId}`}>
+        <Link asyncTooltip to={`/variant/${variantId}`}>
           <DisplayVariantId
             variantId={variantId}
             referenceAllele={referenceAllele}
@@ -117,7 +117,11 @@ const columns = [
     renderCell: ({ l2GPredictions }) => {
       const target = l2GPredictions?.rows[0]?.target;
       if (!target) return naLabel;
-      return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
+      return (
+        <Link asyncTooltip to={`/target/${target.id}`}>
+          {target.approvedSymbol}
+        </Link>
+      );
     },
     exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target.approvedSymbol,
   },
