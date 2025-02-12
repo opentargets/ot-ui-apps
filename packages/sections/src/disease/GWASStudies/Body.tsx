@@ -14,7 +14,11 @@ const columns = [
     id: "id",
     label: "Study",
     enableHiding: false,
-    renderCell: ({ id }) => <Link to={`/study/${id}`}>{id}</Link>,
+    renderCell: ({ id }) => (
+      <Link asyncTooltip to={`/study/${id}`}>
+        {id}
+      </Link>
+    ),
   },
   {
     id: "traitFromSource",
