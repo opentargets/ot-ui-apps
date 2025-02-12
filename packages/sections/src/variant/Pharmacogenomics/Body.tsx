@@ -99,7 +99,13 @@ function Body({ id, entity }: BodyProps) {
               return (
                 <Fragment key={drugText}>
                   {i > 0 && ", "}
-                  {drugId ? <Link to={`/drug/${drugId}`}>{drugText}</Link> : drugText}
+                  {drugId ? (
+                    <Link asyncTooltip to={`/drug/${drugId}`}>
+                      {drugText}
+                    </Link>
+                  ) : (
+                    drugText
+                  )}
                 </Fragment>
               );
             })}
@@ -117,7 +123,9 @@ function Body({ id, entity }: BodyProps) {
         let phenotypeTextElement = phenotypeText;
         if (phenotypeFromSourceId)
           phenotypeTextElement = (
-            <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeTextElement}</Link>
+            <Link asyncTooltip to={`/disease/${phenotypeFromSourceId}`}>
+              {phenotypeTextElement}
+            </Link>
           );
         if (genotypeAnnotationText)
           phenotypeTextElement = (

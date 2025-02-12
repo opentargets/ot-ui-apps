@@ -59,7 +59,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
             </Box>
           );
         }
-        return <Link to={`/variant/${variantId}`}>{displayElement}</Link>;
+        return (
+          <Link asyncTooltip to={`/variant/${variantId}`}>
+            {displayElement}
+          </Link>
+        );
       },
       exportValue: ({ variant }) => variant?.id,
     },
@@ -68,7 +72,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       label: "Study",
       renderCell: ({ study }) => {
         if (!study) return naLabel;
-        return <Link to={`../study/${study.id}`}>{study.id}</Link>;
+        return (
+          <Link asyncTooltip to={`../study/${study.id}`}>
+            {study.id}
+          </Link>
+        );
       },
     },
     {
@@ -90,7 +98,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       label: "Affected gene",
       renderCell: ({ study }) => {
         if (!study?.target) return naLabel;
-        return <Link to={`/target/${study.target.id}`}>{study.target.approvedSymbol}</Link>;
+        return (
+          <Link asyncTooltip to={`/target/${study.target.id}`}>
+            {study.target.approvedSymbol}
+          </Link>
+        );
       },
     },
     {
