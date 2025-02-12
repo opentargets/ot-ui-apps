@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
   Divider,
-  Fade,
   Skeleton,
   styled,
   Tooltip,
@@ -13,13 +12,15 @@ import {
 import { useLazyQuery } from "@apollo/client";
 import { getEntityIcon, getEntityQuery, getQueryVariables } from "./utils/asyncTooltipUtil";
 
+const DELAY_REQUEST = 1000;
+
 const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
     backgroundColor: theme.palette.common.white,
     maxWidth: 400,
-    boxShadow: theme.boxShadow.defaul,
+    boxShadow: theme.boxShadow.default,
     cursor: "pointer",
     border: `1px solid ${theme.palette.grey[300]}`,
     borderRadius: 4,
@@ -81,17 +82,14 @@ function OtAsyncTooltip({ children, entity, id }: OtAsyncTooltipProps): ReactEle
   return (
     <HtmlTooltip
       arrow
-      slots={{
-        transition: Fade,
-      }}
-      slotProps={{
-        transition: { timeout: 400 },
-      }}
+      placement="bottom-end"
+      enterDelay={DELAY_REQUEST}
+      enterNextDelay={DELAY_REQUEST}
+      enterTouchDelay={DELAY_REQUEST}
       open={open}
       onClose={handleClose}
       onOpen={handleOpen}
       title={tooltipContent}
-      placement="bottom-end"
     >
       {children}
     </HtmlTooltip>
