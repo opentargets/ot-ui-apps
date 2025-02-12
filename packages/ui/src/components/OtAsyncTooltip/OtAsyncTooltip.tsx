@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
   Divider,
-  Fade,
   Skeleton,
   styled,
   Tooltip,
@@ -13,13 +12,15 @@ import {
 import { useLazyQuery } from "@apollo/client";
 import { getEntityIcon, getEntityQuery, getQueryVariables } from "./utils/asyncTooltipUtil";
 
+const DELAY_REQUEST = 1000;
+
 const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
     backgroundColor: theme.palette.common.white,
     maxWidth: 400,
-    boxShadow: theme.shadows[1],
+    boxShadow: theme.boxShadow.default,
     cursor: "pointer",
     border: `1px solid ${theme.palette.grey[300]}`,
     borderRadius: 4,
@@ -30,7 +31,7 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   },
 
   [`& .${tooltipClasses.arrow}::before`]: {
-    border: `2px solid ${theme.palette.grey[300]}`,
+    border: `1px solid ${theme.palette.grey[300]}`,
   },
 }));
 
@@ -45,8 +46,8 @@ function OtAsyncTooltip({ children, entity, id }: OtAsyncTooltipProps): ReactEle
 
   const query = getEntityQuery(entity);
   const [open, setOpen] = useState(false);
-  const [aborterRef, setAbortRef] = useState(new AbortController());
-  const [getTooltipData, { loading, error, data }] = useLazyQuery(query, {
+  const [aborterRef] = useState(new AbortController());
+  const [getTooltipData, { loading, data }] = useLazyQuery(query, {
     fetchPolicy: "network-only",
     context: { fetchOptions: { signal: aborterRef.signal } },
   });
@@ -76,20 +77,19 @@ function OtAsyncTooltip({ children, entity, id }: OtAsyncTooltipProps): ReactEle
     };
   }, []);
 
+  const tooltipContent = getTooltipContent();
+
   return (
     <HtmlTooltip
       arrow
-      slots={{
-        transition: Fade,
-      }}
-      slotProps={{
-        transition: { timeout: 600 },
-      }}
+      placement="bottom-end"
+      enterDelay={DELAY_REQUEST}
+      enterNextDelay={DELAY_REQUEST}
+      enterTouchDelay={DELAY_REQUEST}
       open={open}
       onClose={handleClose}
       onOpen={handleOpen}
-      title={getTooltipContent()}
-      placement="bottom-end"
+      title={tooltipContent}
     >
       {children}
     </HtmlTooltip>
@@ -121,9 +121,7 @@ function AsyncTooltipDataView({
   }
 
   function getDescription() {
-    console.log(data);
     let descText = "";
-
     if (data?.description)
       if (Array.isArray(data?.description)) descText = data?.description[0].substring(0, 150);
       else descText = data?.description.substring(0, 150);
@@ -149,6 +147,8 @@ function AsyncTooltipDataView({
 
     return finalSubText;
   }
+
+  const showSubText = !!data?.mostSevereConsequence?.label;
 
   return (
     <Box sx={{ p: 1 }}>
@@ -183,7 +183,7 @@ function AsyncTooltipDataView({
           </Box>
         </Box>
       </Box>
-      {getSubtext() && (
+      {showSubText && (
         <>
           <Divider />
           <Box
