@@ -45,7 +45,13 @@ function getColumns(classes) {
       label: "Safety event",
       enableHiding: false,
       renderCell: ({ event, eventId }) =>
-        eventId ? <Link to={`/disease/${eventId}`}>{event ?? naLabel}</Link> : event ?? naLabel,
+        eventId ? (
+          <Link asyncTooltip to={`/disease/${eventId}`}>
+            {event ?? naLabel}
+          </Link>
+        ) : (
+          event ?? naLabel
+        ),
     },
     {
       id: "biosamples",

@@ -45,7 +45,7 @@ const columns = {
         <>
           <EllsWrapper title={row.targetB ? row.targetB.approvedSymbol : row.intB}>
             {row.targetB ? (
-              <Link to={`/target/${row.targetB.id}`} onClick={onLinkClick}>
+              <Link asyncTooltip to={`/target/${row.targetB.id}`} onClick={onLinkClick}>
                 {row.targetB.approvedSymbol}
               </Link>
             ) : (
