@@ -1,7 +1,7 @@
 import { useState } from "react";
-// import * as PlotLib from "@observablehq/plot";
+import * as PlotLib from "@observablehq/plot";
 import { interpolateRdBu, schemeRdBu, scaleDiverging } from "d3";
-// import { ObsPlot } from "ui";
+import { ObsPlot } from "ui";
 import { Box, Typography, Popover } from "@mui/material";
 
 const colorScheme = schemeRdBu;
@@ -46,6 +46,8 @@ function HeatmapTable() {
               <HeatCell
                 key={row[groupName]}
                 value={row[groupName]?.toFixed(3)}
+                geneId={row.geneId}
+                groupName={groupName}
                 bgrd={colorScale(row[groupName])}
               />
             );
@@ -95,7 +97,7 @@ function GeneCell({ value }) {
   );
 }
 
-function HeatCell({ value, bgrd }) {
+function HeatCell({ value, bgrd, geneId, groupName }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = event => setAnchorEl(event.currentTarget);
@@ -150,7 +152,15 @@ function HeatCell({ value, bgrd }) {
           mt: 0.5,
         }}
       >
-        <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+        <ObsPlot
+          data={getTargetGroupFeatures(geneId, groupName)}
+          otherData={{ groupName }}
+          // height={100}
+          minWidth={490}
+          maxWidth={490}
+          renderChart={renderPopoverChart}
+        />
+        {/* <Typography sx={{ p: 2 }}>The content of the Popover.</Typography> */}
       </Popover>
     </>
   );
@@ -186,6 +196,77 @@ function ScoreCell({ value }) {
       </Typography>
     </Box>
   );
+}
+
+function renderPopoverChart({ data, otherData: { groupName }, width, height }) {
+  const textInBarCutoff = 0.4; // hacky!
+
+  return PlotLib.plot({
+    width,
+    height,
+    marginLeft: 280,
+    marginRight: 20,
+    marginTop: 10,
+    marginBottom: 30,
+    style: {
+      fontSize: 11,
+      // background: "#fbfbfb",
+    },
+    x: {
+      domain: [-1, 1],
+      label: null,
+      // ticks: [-1, -0.5, 0, 0.5, 1],
+    },
+    y: {
+      type: "band",
+      domain: groupToFeature[groupName],
+      label: "",
+      tickSize: 0,
+      grid: true,
+      padding: 0.2,
+      inset: 0.1,
+      tickFormat: value => "",
+      // tickFormat: value => (console.log(value), value),
+    },
+    marks: [
+      PlotLib.ruleX([0], {
+        strokeOpacity: 0.1,
+      }),
+      // use text mark for y labels for flexibility
+      PlotLib.text(data, {
+        x: -1,
+        y: "name",
+        textAnchor: "end",
+        dx: -5,
+        text: d => `${Number.isInteger(d.value) ? d.value : d.value.toFixed(3)} = ${d.name}`,
+      }),
+      PlotLib.barX(data, {
+        x: "shapValue",
+        y: "name",
+        fill: d => (d.shapValue < 0 ? negColor : posColor),
+      }),
+      PlotLib.text(
+        data.filter(d => d.shapValue > textInBarCutoff),
+        { x: "shapValue", y: "name", text: "shapValue", textAnchor: "end", fill: "#fff", dx: -4 }
+      ),
+      PlotLib.text(
+        data.filter(d => d.shapValue < -textInBarCutoff),
+        { x: "shapValue", y: "name", text: "shapValue", textAnchor: "start", fill: "#fff", dx: 4 }
+      ),
+      PlotLib.text(
+        data.filter(d => d.shapValue > 0 && d.shapValue < textInBarCutoff),
+        { x: "shapValue", y: "name", text: "shapValue", textAnchor: "start", dx: 4 }
+      ),
+      PlotLib.text(
+        data.filter(d => d.shapValue < 0 && d.shapValue > -textInBarCutoff),
+        { x: "shapValue", y: "name", text: "shapValue", textAnchor: "end", dx: -4 }
+      ),
+      // PlotLib.text(
+      //   data.filter(d => d.shapValue === 0),
+      //   { x: "shapValue", y: "name", text: "shapValue" }
+      // ),
+    ],
+  });
 }
 
 // ========== constants ==========

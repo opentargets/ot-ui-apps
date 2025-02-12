@@ -60,7 +60,7 @@ function Body({ studyLocusId, entity }: BodyProps): ReactNode {
       renderBody={() => (
         <>
           <HeatmapTable />
-          <SummaryHeatmap />
+          {/* <SummaryHeatmap /> */}
         </>
       )}
       // return (
