@@ -17,7 +17,7 @@ function getColumns(diseaseIds: string[]) {
       label: "Study",
       enableHiding: false,
       renderCell: ({ id }) => (
-        <Link asyncTooltip to={`./${id}`}>
+        <Link asyncTooltip to={`/study/${id}`}>
           {id}
         </Link>
       ),
@@ -33,7 +33,7 @@ function getColumns(diseaseIds: string[]) {
             {sharedTraits.map(({ id, name }, index) => (
               <Fragment key={id}>
                 {index > 0 ? ", " : null}
-                <Link asyncTooltip to={`../disease/${id}`}>
+                <Link asyncTooltip to={`/disease/${id}`}>
                   {name}
                 </Link>
               </Fragment>
