@@ -1,15 +1,9 @@
 import * as d3 from "d3";
 import { useRef, useEffect } from "react";
 import { useMeasure } from "@uidotdev/usehooks";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Skeleton, Typography, useTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { Link } from "ui";
-
-const VIEW_MODES = {
-  default: "default",
-  mouseOrthologMaxIdentityPercentage: "mouseOrthologMaxIdentityPercentage",
-  paralogMaxIdentityPercentage: "paralogMaxIdentityPercentage",
-};
 
 const content = {
   mouseOrthologMaxIdentityPercentage:
@@ -40,8 +34,14 @@ const yAxisValues = [
   "9606",
 ];
 
-function Wrapper({ homologues, query, variables, viewMode }) {
+function Wrapper({ homologues, viewMode, loading }) {
   const [ref, { width }] = useMeasure();
+  if (loading)
+    return (
+      <Box>
+        <Skeleton height={400} />
+      </Box>
+    );
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       {viewMode !== "default" && (
@@ -91,6 +91,7 @@ function Visualisation({ homologues, width, viewMode }) {
     .range([height - marginBottom * 2, marginTop]);
 
   useEffect(() => {
+    if (!homologues) return;
     const chartWidth = (width - marginRight) * 0.4;
 
     // Declare the x (horizontal position) scale.
@@ -212,6 +213,7 @@ function Visualisation({ homologues, width, viewMode }) {
       .attr("stroke", theme.palette.primary.dark);
 
     if (viewMode === "mouseOrthologMaxIdentityPercentage") {
+      queryContainer.selectAll("circle").attr("fill", grey[300]).attr("stroke", grey[300]);
       targetContainer.selectAll("circle").attr("fill", grey[300]).attr("stroke", grey[300]);
 
       queryContainer
@@ -241,24 +243,25 @@ function Visualisation({ homologues, width, viewMode }) {
     }
     if (viewMode === "paralogMaxIdentityPercentage") {
       queryContainer.selectAll("circle").attr("fill", grey[300]).attr("stroke", grey[300]);
+      targetContainer.selectAll("circle").attr("fill", grey[300]).attr("stroke", grey[300]);
 
-      targetContainer
+      queryContainer
         .selectAll("circle")
         // .transition(300)
         .attr("fill", d =>
-          d.targetPercentageIdentity > 60 && d.speciesId == "9606"
+          d.queryPercentageIdentity > 60 && d.speciesId == "9606"
             ? theme.palette.primary.main
             : grey[300]
         )
         .attr("stroke", d =>
-          d.targetPercentageIdentity > 60 && d.speciesId == "9606"
+          d.queryPercentageIdentity > 60 && d.speciesId == "9606"
             ? theme.palette.primary.dark
             : grey[300]
         );
-      targetContainer
+      queryContainer
         .append("line")
-        .attr("x1", targetScale(60))
-        .attr("x2", targetScale(60))
+        .attr("x1", queryScale(60))
+        .attr("x2", queryScale(60))
         .attr("y1", marginTop)
         .attr("y2", height - marginBottom)
         .attr("stroke", "#e3a772");

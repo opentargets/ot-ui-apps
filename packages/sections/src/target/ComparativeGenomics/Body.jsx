@@ -149,7 +149,11 @@ function Body({ id: ensemblId, label: symbol, entity, viewMode = VIEW_MODES.defa
       defaultView={VIEW.chart}
       renderDescription={() => <Description symbol={symbol} />}
       renderChart={() => (
-        <Visualisation homologues={request.data?.target.homologues} viewMode={viewMode} />
+        <Visualisation
+          homologues={request.data?.target.homologues}
+          viewMode={viewMode}
+          loading={request.loading}
+        />
       )}
       renderBody={() => (
         <OtTable
