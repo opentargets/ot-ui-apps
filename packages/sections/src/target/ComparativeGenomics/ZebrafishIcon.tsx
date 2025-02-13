@@ -1,7 +1,8 @@
 import { useTheme } from "@mui/styles";
+import { Theme } from "@mui/material";
 
 function ZebrafishIcon() {
-  const theme = useTheme();
+  const theme: Theme = useTheme();
   return (
     <svg height="13" viewBox="0 0 1016 317">
       <path
