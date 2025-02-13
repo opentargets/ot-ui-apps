@@ -9,11 +9,9 @@ const colorScheme = schemeRdBu;
 function HeatmapTable() {
   const groupResults = getGroupResults(fakeData);
 
-  const colorScale = getColorScale(groupResults);
-
   const theadElement = (
     <thead>
-      <Box component="tr" sx={{}}>
+      <Box component="tr">
         <th></th>
         <th></th>
         <th></th>
@@ -35,22 +33,7 @@ function HeatmapTable() {
   const tbodyElement = (
     <tbody>
       {groupResults.map(row => (
-        <tr key={row.geneId}>
-          <GeneCell value={row.geneId} />
-          <ScoreCell value={row.totalL2GScore?.toFixed(3)} />
-          {Object.keys(groupToFeature).map(groupName => {
-            return (
-              <HeatCell
-                key={row[groupName]}
-                value={row[groupName]?.toFixed(3)}
-                geneId={row.geneId}
-                groupName={groupName}
-                bgrd={colorScale(row[groupName])}
-              />
-            );
-          })}
-          <BaseCell value={row.shapBaseValue?.toFixed(3)} />
-        </tr>
+        <BodyRow key={row.geneId} rowData={row} />
       ))}
     </tbody>
   );
@@ -63,8 +46,7 @@ function HeatmapTable() {
           tableLayout: "fixed",
           width: "90%",
           maxWidth: "1000px",
-          borderCollapse: "separate",
-          borderSpacing: "6px",
+          borderCollapse: "collapse",
           my: 4,
         }}
       >
@@ -77,6 +59,80 @@ function HeatmapTable() {
 
 export default HeatmapTable;
 
+function BodyRow({ rowData: row }) {
+  const [over, setOver] = useState(false);
+
+  function handleMouseEnter(event) {
+    setOver(true);
+  }
+
+  function handleMouseLeave(event) {
+    setOver(false);
+  }
+
+  // !! THIS SHOULD NOT BE DONE HERE!!
+  const colorScale = getColorScale(getGroupResults(fakeData));
+
+  return (
+    <tr key={row.geneId}>
+      <CellWrapper
+        handleMouseEnter={handleMouseEnter}
+        handleMouseLeave={handleMouseLeave}
+        over={over}
+      >
+        <GeneCell value={row.geneId} />
+      </CellWrapper>
+      <CellWrapper
+        handleMouseEnter={handleMouseEnter}
+        handleMouseLeave={handleMouseLeave}
+        over={over}
+      >
+        <ScoreCell value={row.totalL2GScore?.toFixed(3)} />
+      </CellWrapper>
+      {Object.keys(groupToFeature).map(groupName => {
+        return (
+          <CellWrapper
+            key={row[groupName]}
+            handleMouseEnter={handleMouseEnter}
+            handleMouseLeave={handleMouseLeave}
+            over={over}
+          >
+            <HeatCell
+              value={row[groupName]?.toFixed(3)}
+              geneId={row.geneId}
+              groupName={groupName}
+              bgrd={colorScale(row[groupName])}
+            />
+          </CellWrapper>
+        );
+      })}
+      <CellWrapper
+        handleMouseEnter={handleMouseEnter}
+        handleMouseLeave={handleMouseLeave}
+        over={over}
+      >
+        <BaseCell value={row.shapBaseValue?.toFixed(3)} />
+      </CellWrapper>
+    </tr>
+  );
+}
+
+function CellWrapper({ handleMouseEnter, handleMouseLeave, over, children }) {
+  return (
+    <Box
+      component="td"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      sx={{
+        p: "4px",
+        bgcolor: over ? "#e8e8e8" : "transparent",
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
 function HeaderCell({ value }) {
   return (
     <Box component="th" pt={1}>
@@ -87,8 +143,32 @@ function HeaderCell({ value }) {
 
 function GeneCell({ value }) {
   return (
-    <Box component="td">
-      <Typography variant="caption" fontSize={13} textAlign="right">
+    <Box py={1.7}>
+      <Typography
+        height="100%"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        fontSize={14}
+        textAlign="right"
+      >
+        {value}
+      </Typography>
+    </Box>
+  );
+}
+
+function ScoreCell({ value }) {
+  return (
+    <Box
+      height="100%"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      borderRadius={1.5}
+      py={1.7}
+    >
+      <Typography fontSize={14} sx={{ pointerEvents: "none" }}>
         {value}
       </Typography>
     </Box>
@@ -108,10 +188,13 @@ function HeatCell({ value, bgrd, geneId, groupName }) {
     <>
       <Box
         aria-describedby={id}
-        component="td"
         bgcolor={bgrd}
+        height="100%"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
         borderRadius={1.5}
-        padding={1.5}
+        py={1.7}
         onClick={handleClick}
         sx={{
           outline: anchorEl ? "2px solid #000" : "none",
@@ -121,13 +204,7 @@ function HeatCell({ value, bgrd, geneId, groupName }) {
           },
         }}
       >
-        <Typography
-          fontSize={13}
-          color="#000"
-          textAlign="center"
-          width="100%"
-          sx={{ pointerEvents: "none" }}
-        >
+        <Typography fontSize={13.5} color="#000" sx={{ pointerEvents: "none" }}>
           {value}
         </Typography>
       </Box>
@@ -167,30 +244,16 @@ function HeatCell({ value, bgrd, geneId, groupName }) {
 
 function BaseCell({ value }) {
   return (
-    <Box component="td" borderRadius={1.5} padding={1.5} border="1px solid #bbb">
-      <Typography
-        fontSize={13}
-        color="#777"
-        textAlign="center"
-        width="100%"
-        sx={{ pointerEvents: "none" }}
-      >
-        {value}
-      </Typography>
-    </Box>
-  );
-}
-
-function ScoreCell({ value }) {
-  return (
-    <Box component="td" borderRadius={1.5} padding={1.5}>
-      <Typography
-        fontSize={13}
-        fontWeight={700}
-        textAlign="center"
-        width="100%"
-        sx={{ pointerEvents: "none" }}
-      >
+    <Box
+      height="100%"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      borderRadius={1.5}
+      py={1.7}
+      outline="1px solid #bbb"
+    >
+      <Typography fontSize={13.5} color="#777" sx={{ pointerEvents: "none" }}>
         {value}
       </Typography>
     </Box>
