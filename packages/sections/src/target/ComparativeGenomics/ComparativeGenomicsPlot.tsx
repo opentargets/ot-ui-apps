@@ -3,7 +3,7 @@ import { useRef, useEffect } from "react";
 import { useMeasure } from "@uidotdev/usehooks";
 import { Box, Skeleton, Typography, useTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { Link } from "ui";
+import { Link, DataDownloader } from "ui";
 
 const content = {
   mouseOrthologMaxIdentityPercentage:
@@ -34,7 +34,7 @@ const yAxisValues = [
   "9606",
 ];
 
-function Wrapper({ homologues, viewMode, loading }) {
+function Wrapper({ homologues, viewMode, loading, query, variables, columns }) {
   const [ref, { width }] = useMeasure();
   if (loading)
     return (
@@ -44,6 +44,7 @@ function Wrapper({ homologues, viewMode, loading }) {
     );
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <ChartControls data={homologues} query={query} variables={variables} columns={columns} />
       {viewMode !== "default" && (
         <Typography sx={{ width: "85%", my: 2, ml: 4 }} variant="body2">
           {content[viewMode]}
@@ -55,6 +56,29 @@ function Wrapper({ homologues, viewMode, loading }) {
       <Box sx={{ width: "95%", margin: "0 auto" }} ref={ref}>
         <Visualisation homologues={homologues} width={width} viewMode={viewMode} />
       </Box>
+    </Box>
+  );
+}
+
+function ChartControls({ data, query, variables, columns }) {
+  return (
+    <Box
+      sx={{
+        borderColor: grey[300],
+        borderRadius: 1,
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: 1,
+        mb: 2,
+      }}
+    >
+      <DataDownloader
+        btnLabel="Export"
+        rows={data}
+        query={query}
+        variables={variables}
+        columns={columns}
+      />
     </Box>
   );
 }
