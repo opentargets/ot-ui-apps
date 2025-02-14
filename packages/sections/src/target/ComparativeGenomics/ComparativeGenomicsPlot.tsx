@@ -18,6 +18,21 @@ const contentURL = {
     "https://platform-docs.opentargets.org/target-prioritisation#paralogues",
 };
 
+function getTooltipContent(homolog) {
+  return `<div>
+    ${getPropText(homolog, "homologyType", "Type")}
+    ${getPropText(homolog, "targetGeneSymbol", "Homolog")}
+    ${getPropText(homolog, "queryPercentageIdentity", "Query Percentage")}
+    ${getPropText(homolog, "targetPercentageIdentity", "Target Percentage")}
+  </div>`;
+}
+
+function getPropText(homolog, prop, label) {
+  return `<div>
+  <b> ${label}:</b> ${homolog[prop]}
+</div>`;
+}
+
 const yAxisValues = [
   "6239",
   "7227",
@@ -33,6 +48,10 @@ const yAxisValues = [
   "9598",
   "9606",
 ];
+
+const TOOLTIP_ID = "tolltip-template-comp-genomic";
+const dotDefaultRadious = 6;
+const dotDefaultOpacity = 0.7;
 
 function Wrapper({ homologues, viewMode, loading, query, variables, columns }) {
   const [ref, { width }] = useMeasure();
@@ -53,7 +72,8 @@ function Wrapper({ homologues, viewMode, loading, query, variables, columns }) {
           </Link>
         </Typography>
       )}
-      <Box sx={{ width: "95%", margin: "0 auto" }} ref={ref}>
+      <Box sx={{ width: "95%", margin: "0 auto", position: "relative" }} ref={ref}>
+        <div style={{ height: 0 }} id={TOOLTIP_ID}></div>
         <Visualisation homologues={homologues} width={width} viewMode={viewMode} />
       </Box>
     </Box>
@@ -127,6 +147,64 @@ function Visualisation({ homologues, width, viewMode }) {
 
     // Create the SVG container.
     const svg = d3.create("svg").attr("width", width).attr("height", height);
+
+    const tooltip = d3
+      .select(`#${TOOLTIP_ID}`)
+      .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("position", "absolute")
+      .style("background-color", "white")
+      .style("border", `1px solid ${grey[400]}`)
+      .style("border-radius", "3px")
+      .style("padding", "5px")
+      .style("width", "175px")
+      .style("font-family", theme.typography.body2.fontFamily)
+      .style("font-size", theme.typography.body2.fontSize)
+      .style("box-shadow", theme.boxShadow.default);
+
+    const mouseover = function (d) {
+      tooltip.style("opacity", 1);
+      const classId = `.${d.targetGeneId}_${d.speciesId}`;
+      d3.select(this)
+        .transition()
+        .duration(300)
+        .attr("fill-opacity", 1)
+        .attr("r", dotDefaultRadious * 2);
+      d3.selectAll(classId)
+        .transition()
+        .duration(300)
+        .attr("fill-opacity", 1)
+        .attr("r", dotDefaultRadious * 2);
+    };
+    const mousemove = function (d) {
+      const mouseX = d3.mouse(this)[0];
+      const mouseY = d3.mouse(this)[1];
+      const bottom = mouseY > height / 2 ? `${height - mouseY + 8}px` : "initial";
+      const left = mouseX < width / 2 ? `${mouseX + 8}px` : "initial";
+      const right = mouseX > width / 2 ? `${width - mouseX + 8}px` : "initial";
+      const top = mouseY < height / 2 ? `${mouseY + 8}px` : "initial";
+      tooltip
+        .style("top", top)
+        .style("right", right)
+        .style("bottom", bottom)
+        .style("left", left)
+        .html(getTooltipContent(d));
+    };
+    const mouseleave = function (d) {
+      tooltip.style("opacity", 0);
+      const classId = `.${d.targetGeneId}_${d.speciesId}`;
+      d3.selectAll(classId)
+        .transition()
+        .duration(300)
+        .attr("fill-opacity", dotDefaultOpacity)
+        .attr("r", dotDefaultRadious);
+      d3.select(this)
+        .transition()
+        .duration(300)
+        .attr("fill-opacity", dotDefaultOpacity)
+        .attr("r", dotDefaultRadious);
+    };
 
     // Add the x-axis.
     svg
@@ -215,10 +293,19 @@ function Visualisation({ homologues, width, viewMode }) {
       .attr("cy", function (d) {
         return y(d.speciesId);
       })
-      .attr("r", 6)
-      .attr("fill-opacity", 0.7)
+      .attr("r", dotDefaultRadious)
+      .attr("class", function (d) {
+        return `${d.targetGeneId}_${d.speciesId}`;
+      })
+      .attr("id", function (d, i) {
+        return i;
+      })
+      .attr("fill-opacity", dotDefaultOpacity)
       .attr("fill", theme.palette.primary.main)
-      .attr("stroke", theme.palette.primary.dark);
+      .attr("stroke", theme.palette.primary.dark)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
 
     targetContainer
       .selectAll(".target")
@@ -231,10 +318,16 @@ function Visualisation({ homologues, width, viewMode }) {
       .attr("cy", function (d) {
         return y(d.speciesId);
       })
-      .attr("r", 6)
+      .attr("r", dotDefaultRadious)
+      .attr("class", function (d) {
+        return `${d.targetGeneId}_${d.speciesId}`;
+      })
       .attr("fill-opacity", 0.7)
       .attr("fill", theme.palette.primary.main)
-      .attr("stroke", theme.palette.primary.dark);
+      .attr("stroke", theme.palette.primary.dark)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
 
     if (viewMode === "mouseOrthologMaxIdentityPercentage") {
       queryContainer.selectAll("circle").attr("fill", grey[300]).attr("stroke", grey[300]);
@@ -242,7 +335,6 @@ function Visualisation({ homologues, width, viewMode }) {
 
       queryContainer
         .selectAll("circle")
-        // .transition(300)
         .attr("fill", d =>
           d.queryPercentageIdentity > 80 && d.speciesId == "10090"
             ? theme.palette.primary.main
@@ -297,9 +389,13 @@ function Visualisation({ homologues, width, viewMode }) {
 
     // Append the SVG element.
     containerReference.current.append(svg.node());
-    return () => svg.remove();
+    return () => {
+      tooltip.remove();
+      svg.remove();
+    };
   }, [homologues, width, viewMode]);
 
   return <div ref={containerReference}></div>;
 }
+
 export default Wrapper;
