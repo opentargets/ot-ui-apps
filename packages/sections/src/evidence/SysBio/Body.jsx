@@ -12,7 +12,11 @@ const getColumns = label => [
   {
     id: "disease",
     label: "Disease/phenotype",
-    renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
+    renderCell: ({ disease }) => (
+      <Link asyncTooltip to={`/disease/${disease.id}`}>
+        {disease.name}
+      </Link>
+    ),
     filterValue: ({ disease }) => disease.name,
   },
   {

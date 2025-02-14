@@ -8,6 +8,19 @@ query SearchQuery($queryString: String!) {
       id
       entity
       object {
+        ... on Target {
+          id
+          approvedSymbol
+          approvedName
+          functionDescriptions
+        }
+
+        ... on Disease {
+          id
+          name
+          description
+        }
+
         ... on Variant {
           id
           variantDescription
@@ -24,23 +37,11 @@ query SearchQuery($queryString: String!) {
           nSamples
           publicationDate
           publicationFirstAuthor
-          # studyType
+          publicationJournal
+          studyType
           credibleSets {
             credibleSetsCount: count
           }
-        }
-
-        ... on Target {
-          id
-          approvedSymbol
-          approvedName
-          functionDescriptions
-        }
-
-        ... on Disease {
-          id
-          name
-          description
         }
 
         ... on Drug {
@@ -52,6 +53,36 @@ query SearchQuery($queryString: String!) {
               mechanismOfAction
             }
           }
+        }
+      }
+    }
+  }
+
+  targets: search(queryString: $queryString, entityNames: ["target"], page: { index: 0, size: 3 }) {
+    hits {
+      id
+      entity
+      object {
+        ... on Target {
+          id
+          approvedSymbol
+          approvedName
+        }
+      }
+    }
+  }
+  diseases: search(
+    queryString: $queryString
+    entityNames: ["disease"]
+    page: { index: 0, size: 3 }
+  ) {
+    hits {
+      id
+      entity
+      object {
+        ... on Disease {
+          id
+          name
         }
       }
     }
@@ -85,38 +116,10 @@ query SearchQuery($queryString: String!) {
           hasSumstats
           traitFromSource
           nSamples
+          studyType
           credibleSets {
             credibleSetsCount: count
           }
-        }
-      }
-    }
-  }
-  targets: search(queryString: $queryString, entityNames: ["target"], page: { index: 0, size: 3 }) {
-    hits {
-      id
-      entity
-      object {
-        ... on Target {
-          id
-          approvedSymbol
-          approvedName
-        }
-      }
-    }
-  }
-  diseases: search(
-    queryString: $queryString
-    entityNames: ["disease"]
-    page: { index: 0, size: 3 }
-  ) {
-    hits {
-      id
-      entity
-      object {
-        ... on Disease {
-          id
-          name
         }
       }
     }

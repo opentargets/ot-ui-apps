@@ -14,6 +14,7 @@ import { Box } from "@mui/material";
 import { populationMap } from "../../constants";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
+import { getStudyTypeDisplay } from "sections/src/constants";
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
@@ -50,7 +51,7 @@ function ProfileHeader() {
     <BaseProfileHeader>
       <Box>
         <Field loading={loading} title="Study type">
-          {studyType?.replace(/(qtl|gwas)/gi, match => match.toUpperCase())}
+          {getStudyTypeDisplay(studyType)}
         </Field>
         {studyType === "gwas" && (
           <>

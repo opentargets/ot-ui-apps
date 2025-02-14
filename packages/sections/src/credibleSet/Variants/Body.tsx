@@ -39,7 +39,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
         if (!variant) return naLabel;
         const { id: variantId, referenceAllele, alternateAllele } = variant;
         const displayElement = (
-          <Link to={`/variant/${variantId}`}>
+          <Link asyncTooltip to={`/variant/${variantId}`}>
             <DisplayVariantId
               variantId={variantId}
               referenceAllele={referenceAllele}

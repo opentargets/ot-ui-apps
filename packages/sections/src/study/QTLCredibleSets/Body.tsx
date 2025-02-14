@@ -23,7 +23,7 @@ const columns = [
       if (!variant) return naLabel;
       const { id: variantId, referenceAllele, alternateAllele } = variant;
       return (
-        <Link to={`/variant/${variantId}`}>
+        <Link asyncTooltip to={`/variant/${variantId}`}>
           <DisplayVariantId
             variantId={variantId}
             referenceAllele={referenceAllele}

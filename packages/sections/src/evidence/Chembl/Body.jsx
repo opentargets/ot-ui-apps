@@ -78,7 +78,12 @@ function getColumns(classes) {
       enableHiding: false,
       renderCell: ({ disease, cohortPhenotypes }) => {
         let displayElement = naLabel;
-        if (disease) displayElement = <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
+        if (disease)
+          displayElement = (
+            <Link asyncTooltip to={`/disease/${disease.id}`}>
+              {disease.name}
+            </Link>
+          );
         if (cohortPhenotypes && cohortPhenotypes.length) {
           displayElement = (
             <Tooltip

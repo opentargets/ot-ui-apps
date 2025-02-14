@@ -1,7 +1,8 @@
 import { useTheme } from "@mui/styles";
+import { Theme } from "@mui/material";
 
 function GuineaPigIcon() {
-  const theme = useTheme();
+  const theme: Theme = useTheme();
   return (
     <svg height="13" viewBox="0 0 1028 591">
       <path

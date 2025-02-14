@@ -27,7 +27,9 @@ const columns = [
     renderCell: row => {
       // link to drug page if drugid is available; also add tooltip with control if available
       const c = row.drugId ? (
-        <Link to={`/drug/${row.drugId}`}>{row.id}</Link>
+        <Link asyncTooltip to={`/drug/${row.drugId}`}>
+          {row.id}
+        </Link>
       ) : (
         <span>{row.id}</span>
       );

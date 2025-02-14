@@ -153,7 +153,9 @@ function getColumns(classes) {
             return (
               <Box sx={{ display: "inline" }} key={index}>
                 {index > 0 && <Box sx={{ pr: 0.5, display: "inline " }}>,</Box>}
-                <Link to={`/drug/${el.drugId}`}>{el.drugFromSource || el.drugId}</Link>
+                <Link asyncTooltip to={`/drug/${el.drugId}`}>
+                  {el.drugFromSource || el.drugId}
+                </Link>
               </Box>
             );
           else return el.drugFromSource || el.drugId;

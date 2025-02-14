@@ -14,7 +14,11 @@ const columns = [
     id: "disease.name",
     label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => {
-      let displayElement = <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
+      let displayElement = (
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
+      );
       if (diseaseFromSource || cohortPhenotypes?.length > 0) {
         displayElement = (
           <Tooltip

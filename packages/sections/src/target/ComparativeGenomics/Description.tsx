@@ -1,6 +1,6 @@
 import { Link } from "ui";
 
-function Description({ symbol }) {
+function Description({ symbol }: { symbol: string }) {
   return (
     <>
       Homology for <strong>{symbol}</strong> across selected species. Source:{" "}

@@ -94,7 +94,9 @@ function getColumns(label) {
           }
           showHelpIcon
         >
-          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+          <Link asyncTooltip to={`/disease/${disease.id}`}>
+            {disease.name}
+          </Link>
         </Tooltip>
       ),
     },
@@ -106,7 +108,7 @@ function getColumns(label) {
         if (!variant) return naLabel;
         const { id: variantId, referenceAllele, alternateAllele } = variant;
         return (
-          <Link to={`/variant/${variantId}`}>
+          <Link asyncTooltip to={`/variant/${variantId}`}>
             <DisplayVariantId
               variantId={variantId}
               referenceAllele={referenceAllele}

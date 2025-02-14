@@ -14,7 +14,11 @@ const columns = [
     enableHiding: false,
     renderCell: ({ disease, diseaseFromSource }) => {
       if (!disease) return naLabel;
-      const displayElement = <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
+      const displayElement = (
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
+      );
       if (diseaseFromSource) {
         return (
           <Tooltip
