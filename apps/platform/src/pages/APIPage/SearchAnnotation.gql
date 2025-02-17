@@ -1,5 +1,5 @@
 query searchInsulin {
-  search(queryString:"insulin"){
+  search(queryString: "insulin") {
     total
     hits {
       id
