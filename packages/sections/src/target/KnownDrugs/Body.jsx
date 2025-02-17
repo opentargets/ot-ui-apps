@@ -19,7 +19,13 @@ function getColumnPool(id, entity) {
           propertyPath: "drug.id",
           sticky: true,
           renderCell: d =>
-            d.drug ? <Link to={`/drug/${d.drug.id}`}>{d.drug.name}</Link> : naLabel,
+            d.drug ? (
+              <Link asyncTooltip to={`/drug/${d.drug.id}`}>
+                {d.drug.name}
+              </Link>
+            ) : (
+              naLabel
+            ),
         },
         {
           id: "type",
@@ -76,7 +82,11 @@ function getColumnPool(id, entity) {
           id: "disease",
           label: "Disease",
           propertyPath: "disease.id",
-          renderCell: d => <Link to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>,
+          renderCell: d => (
+            <Link asyncTooltip to={`/disease/${d.disease.id}`}>
+              {d.disease.name}
+            </Link>
+          ),
         },
       ],
     },

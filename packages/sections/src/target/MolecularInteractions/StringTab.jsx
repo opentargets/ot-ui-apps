@@ -124,7 +124,9 @@ function getColumns(classes) {
       renderCell: row => (
         <span className={classes.nameContainer}>
           {row.targetB ? (
-            <Link to={`/target/${row.targetB.id}`}>{row.targetB.approvedSymbol}</Link>
+            <Link asyncTooltip to={`/target/${row.targetB.id}`}>
+              {row.targetB.approvedSymbol}
+            </Link>
           ) : (
             <Link to={`http://uniprot.org/uniprot/${row.intB}`} external>
               {row.intB}

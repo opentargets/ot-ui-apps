@@ -130,3 +130,7 @@ export const QTLStudyType = [
   "pqtl",
   "tuqtl",
 ];
+export const getStudyTypeDisplay = studyType => {
+  if (studyType) return studyType?.replace(/(qtl|gwas)/gi, match => match.toUpperCase());
+  return studyType;
+};

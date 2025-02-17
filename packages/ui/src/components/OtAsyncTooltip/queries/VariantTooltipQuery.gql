@@ -1,0 +1,10 @@
+query VariantTooltipQuery($variantId: String!) {
+  variant(variantId: $variantId) {
+    id
+    description: variantDescription
+    mostSevereConsequence {
+      id
+      label
+    }
+  }
+}

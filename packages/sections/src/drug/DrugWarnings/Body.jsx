@@ -4,7 +4,7 @@ import { Link, SectionItem, Tooltip, TableDrawer, OtTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import DRUG_WARNINGS_QUERY from "./DrugWarningsQuery.gql";
-import { naLabel, defaultRowsPerPageOptions } from "../../constants";
+import { naLabel } from "../../constants";
 
 const replaceSemicolonWithUnderscore = id => id.replace(":", "_");
 
@@ -20,7 +20,9 @@ const columns = [
       if (efoId)
         return (
           <Tooltip title={`Description: ${description}`} showHelpIcon>
-            <Link to={`/disease/${replaceSemicolonWithUnderscore(efoId)}`}>{efoTerm || efoId}</Link>
+            <Link asyncTooltip to={`/disease/${replaceSemicolonWithUnderscore(efoId)}`}>
+              {efoTerm || efoId}
+            </Link>
           </Tooltip>
         );
       return efoTerm || description || naLabel;

@@ -1,10 +1,9 @@
 import _ from "lodash";
 import { useQuery } from "@apollo/client";
-import { Tooltip, SectionItem, TooltipStyledLabel, Link, OtTable } from "ui";
+import { Tooltip, SectionItem, TooltipStyledLabel, OtTable, PublicationsDrawer, Link } from "ui";
 
 import { dataTypesMap } from "../../dataTypes";
 import Description from "./Description";
-import { PublicationsDrawer } from "ui";
 import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import { definition } from ".";
 
@@ -28,7 +27,11 @@ const getColumns = label => [
     label: "Reported disease",
     renderCell: row => {
       const disease = parseDiseaseName(row.diseaseFromSource);
-      return <Link to={`/disease/${row.diseaseFromSourceMappedId}`}>{_.capitalize(disease)}</Link>;
+      return (
+        <Link asyncTooltip to={`/disease/${row.diseaseFromSourceMappedId}`}>
+          {_.capitalize(disease)}
+        </Link>
+      );
     },
     filterValue: row => row.diseaseFromSource + ", " + row.diseaseFromSourceMappedId,
   },

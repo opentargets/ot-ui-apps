@@ -21,7 +21,11 @@ const columns = [
     enableHiding: false,
     renderCell: ({ target }) => {
       if (!target) return naLabel;
-      return <Link to={`../target/${target?.id}`}>{target?.approvedSymbol}</Link>;
+      return (
+        <Link asyncTooltip to={`../target/${target?.id}`}>
+          {target?.approvedSymbol}
+        </Link>
+      );
     },
     exportValue: ({ target }) => target?.id,
   },
