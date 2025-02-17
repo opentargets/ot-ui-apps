@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartGantt } from "@fortawesome/free-solid-svg-icons";
 import { renderBarChart } from "./renderBarChart";
 import { renderWaterfallPlot } from "./renderWaterfallPlot";
+import HeatmapLegend from "./HeatmapLegend";
 
 function HeatmapTable() {
   const groupResults = getGroupResults(fakeData);
@@ -58,6 +59,20 @@ function HeatmapTable() {
           my: 4,
         }}
       >
+        <Box component="caption" sx={{ pt: 2, captionSide: "bottom", textAlign: "left" }}>
+          <HeatmapLegend
+            legendOptions={{
+              // width: 700,
+              // height: 100,
+              color: {
+                type: "diverging",
+                interpolate: colorInterpolator,
+                domain: colorInterpolator.domain(),
+                range: [colorInterpolator.domain()[0], colorInterpolator.domain()[2]],
+              },
+            }}
+          />
+        </Box>
         {theadElement}
         {tbodyElement}
       </Box>
@@ -77,9 +92,6 @@ function BodyRow({ rowData: row }) {
   function handleMouseLeave(event) {
     setOver(false);
   }
-
-  // !! THIS SHOULD NOT BE DONE HERE!!
-  const colorScale = getColorScale(getGroupResults(fakeData));
 
   return (
     <tr key={row.geneId}>
@@ -109,7 +121,7 @@ function BodyRow({ rowData: row }) {
               value={row[groupName]?.toFixed(3)}
               geneId={row.geneId}
               groupName={groupName}
-              bgrd={colorScale(row[groupName])}
+              bgrd={colorInterpolator(row[groupName])}
               mouseLeaveRow={handleMouseLeave}
             />
           </CellWrapper>
@@ -294,12 +306,18 @@ function FeatureChartCell({ geneId, mouseLeaveRow }) {
           <FontAwesomeIcon icon={faChartGantt} />
         </Button>
       </Box>
-      <Dialog open={open} onClose={handleClose}>
-        <Box sx={{ px: 3, py: 2 }}>
+      <Dialog maxWidth="md" open={open} onClose={handleClose}>
+        <Box sx={{ px: 3, py: 3 }}>
+          <Typography variant="h6">
+            Gene,{" "}
+            <Box component="span" fontSize="0.85em">
+              L2G score: X.XXX
+            </Box>
+          </Typography>
           <ObsPlot
             data={fakeData.find(d => d.geneId === geneId)}
-            minWidth={530}
-            maxWidth={530}
+            minWidth={600}
+            maxWidth={600}
             renderChart={renderWaterfallPlot}
           />
         </Box>
@@ -388,7 +406,7 @@ function getTargetGroupFeatures(targetId, groupName) {
   return row.features.filter(feature => featureToGroup[feature.name] === groupName);
 }
 
-function getColorScale(groupResults) {
+function getColorInterpolator(groupResults) {
   let min = Infinity;
   let max = -Infinity;
   for (const row of groupResults) {
@@ -398,10 +416,9 @@ function getColorScale(groupResults) {
     }
   }
   Math.abs(min) > max ? (max = -min) : (min = -max);
-  // hacky - avoid extreme colors
-  min *= 1.3;
-  max *= 1.3;
-  return scaleDiverging(interpolateRdBu).domain([min, 0, max]);
+  return scaleDiverging()
+    .domain([min, 0, max])
+    .interpolator(t => interpolateRdBu(t * 0.7 + 0.15));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -842,3 +859,6 @@ const fakeData = JSON.parse(
     }
   ]`
 );
+
+// !! WILL NEED TO MOVE THIS ONCE HAVE REAL DATA !!
+const colorInterpolator = getColorInterpolator(getGroupResults(fakeData));

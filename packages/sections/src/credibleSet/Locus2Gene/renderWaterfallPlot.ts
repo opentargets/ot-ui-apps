@@ -1,5 +1,5 @@
 import * as PlotLib from "@observablehq/plot";
-import { schemeRdBu, sum } from "d3";
+import { schemeRdBu, sum, scaleLinear, extent, mean } from "d3";
 
 export function renderWaterfallPlot({ data, width, height }) {
   const { features: originalFeatures, shapBaseValue } = data;
@@ -13,42 +13,100 @@ export function renderWaterfallPlot({ data, width, height }) {
     feature._end = feature._start + feature.shapValue;
   }
 
+  const xDomain = scaleLinear()
+    .domain(extent(features.map(d => [d._start, d._end]).flat()))
+    .nice()
+    .domain();
+
+  const dxName = -100;
+  const dxValue = -45;
+  const dyHeader = -20;
+  const textFontSize = 12;
+
   return PlotLib.plot({
-    marginLeft: 250,
-    marginRight: 150,
-    marginTop: 20,
-    marginBottom: 50,
-    style: { fontSize: 12 },
+    width,
+    height,
+    marginLeft: 344,
+    marginRight: 40,
+    marginTop: 32,
+    marginBottom: 36,
+    style: { fontSize: 11.5 },
     x: {
       axis: "bottom",
       line: true,
       label: "",
       labelArrow: false,
+      domain: xDomain,
     },
     y: {
       type: "band",
-      // order features by group or by largest absolute shap value
       domain: features.map(d => d.name),
-      label: "",
       reverse: true,
-      tickSize: 0,
-      // padding: 0.4,
+      axis: null,
       grid: true,
-      tickPadding: 40,
     },
     marks: [
+      // column headers
+      PlotLib.text(features.slice(-1), {
+        x: xDomain[0],
+        y: "name",
+        dx: dxName,
+        dy: dyHeader,
+        text: d => "Feature",
+        fontWeight: 500,
+        textAnchor: "end",
+        fontSize: textFontSize,
+        lineAnchor: "bottom",
+      }),
+      PlotLib.text(features.slice(-1), {
+        x: xDomain[0],
+        y: "name",
+        dx: dxValue,
+        dy: dyHeader,
+        text: d => "Value",
+        fontWeight: 500,
+        fontSize: textFontSize,
+        textAnchor: "end",
+        lineAnchor: "bottom",
+      }),
+      PlotLib.text(features.slice(-1), {
+        x: "_end",
+        y: "name",
+        text: d => `Shapley\n(sum: ${d._end.toFixed(3)})`,
+        lineHeight: 1.2,
+        dy: dyHeader,
+        fontWeight: 500,
+        fontSize: textFontSize,
+        lineAnchor: "bottom",
+      }),
+
+      // feature names
+      PlotLib.text(features, {
+        x: xDomain[0],
+        y: "name",
+        text: "name",
+        dx: dxName,
+        textAnchor: "end",
+        fontSize: textFontSize,
+      }),
+
+      // feature values
+      PlotLib.text(features, {
+        x: xDomain[0],
+        y: "name",
+        text: d => d.value.toFixed(3),
+        dx: dxValue,
+        textAnchor: "end",
+        fontSize: 11.5,
+        fontVariant: "common-ligatures tabular-nums",
+      }),
+
       // vertical line at total score - and label at top
       PlotLib.ruleX(features.slice(-1), {
         x: "_end",
         stroke: "#000",
         strokeOpacity: 0.3,
         strokeDasharray: "4,3",
-      }),
-      PlotLib.text(features.slice(-1), {
-        x: "_end",
-        y: "name",
-        text: d => `L2G score: ${d._end.toFixed(3)}`,
-        dy: -24,
       }),
 
       // vertical line at base score - and label at bottom
@@ -62,8 +120,9 @@ export function renderWaterfallPlot({ data, width, height }) {
       PlotLib.text(features.slice(-1), {
         x: d => shapBaseValue,
         y: d => features[0].name,
-        text: d => `Base score: ${shapBaseValue}`,
+        text: d => `Base score: ${shapBaseValue.toFixed(3)}`,
         dy: 40,
+        fontSize: textFontSize,
       }),
 
       // bars
@@ -86,7 +145,15 @@ export function renderWaterfallPlot({ data, width, height }) {
         stroke: "#000",
         strokeOpacity: 0.2,
         dy: -10,
-        // fill: d => d.shapValue < 0 ? negColor : posColor,
+      }),
+
+      // extra vertical bar at bottom
+      PlotLib.tickX(features.slice(0, 1), {
+        x: "_start",
+        y: "name",
+        stroke: "#000",
+        strokeOpacity: 0.2,
+        dy: 10,
       }),
 
       // show shap values in or next to bars
@@ -98,16 +165,20 @@ export function renderWaterfallPlot({ data, width, height }) {
           text: d => `+${d.shapValue.toFixed(3)}`,
           textAnchor: "start",
           dx: 3,
+          fontSize: 11,
         }
       ),
       PlotLib.text(
         features.filter(d => d.shapValue < -0.0005),
-        { x: "_end", y: "name", text: d => d.shapValue.toFixed(3), textAnchor: "end", dx: -3 }
+        {
+          x: "_end",
+          y: "name",
+          text: d => d.shapValue.toFixed(3),
+          textAnchor: "end",
+          dx: -3,
+          fontSize: 11,
+        }
       ),
-      // PlotLib.text(
-      //   features.filter(d => d.shapValue === 0),
-      //   { x: "_end", y: "name", text: d => "0" }
-      // ),
     ],
   });
 }

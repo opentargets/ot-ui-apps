@@ -10,6 +10,7 @@ export function renderBarChart({ data, otherData: { featureNames }, width, heigh
   const dxName = -70;
   const dxValue = -18;
   const dyHeader = -25;
+  const textFontSize = 12;
 
   return PlotLib.plot({
     width,
@@ -18,7 +19,7 @@ export function renderBarChart({ data, otherData: { featureNames }, width, heigh
     marginRight: 10,
     marginTop: 30,
     marginBottom: 30,
-    style: { fontSize: 12 },
+    style: { fontSize: 11.5 },
     x: {
       domain: [-1, 1],
       label: null,
@@ -28,12 +29,13 @@ export function renderBarChart({ data, otherData: { featureNames }, width, heigh
     y: {
       type: "band",
       domain: featureNames,
-      label: "",
-      tickSize: 0,
       grid: true,
       padding: 0.2,
-      inset: 0.1,
-      tickPadding: -dxName,
+      // inset: 0.5,
+      axis: null,
+      paddingInner: 0.5,
+      paddingOuter: 0.5,
+      // reverse: true,
     },
     marks: [
       // x = 0 line
@@ -49,6 +51,7 @@ export function renderBarChart({ data, otherData: { featureNames }, width, heigh
         dy: dyHeader,
         text: d => "Feature",
         fontWeight: 500,
+        fontSize: textFontSize,
         textAnchor: "end",
       }),
       PlotLib.text(data.slice(0, 1), {
@@ -57,6 +60,7 @@ export function renderBarChart({ data, otherData: { featureNames }, width, heigh
         dx: dxValue,
         dy: dyHeader,
         text: d => "Value",
+        fontSize: textFontSize,
         fontWeight: 500,
         textAnchor: "end",
       }),
@@ -65,34 +69,38 @@ export function renderBarChart({ data, otherData: { featureNames }, width, heigh
         y: "name",
         dy: dyHeader,
         fontWeight: 500,
+        fontSize: textFontSize,
         text: d => `Shapley (sum: ${sum(data, d => +d.shapValue).toFixed(3)})`,
       }),
 
-      // // text mark for y labels for flexibility
-      // PlotLib.text(data, {
-      //   x: -1,
-      //   y: "name",
-      //   textAnchor: "end",
-      //   dx: dxName,
-      //   // text: d => `${Number.isInteger(d.value) ? d.value : d.value.toFixed(3)} = ${d.name}`,
-      //   text: d => d.name,
-      // }),
+      // feature names
+      PlotLib.text(data, {
+        x: -1,
+        y: "name",
+        text: "name",
+        dx: dxName,
+        textAnchor: "end",
+        fontSize: textFontSize,
+      }),
 
       // feature values
       PlotLib.text(data, {
         x: -1,
         y: "name",
-        text: "value",
+        text: d => d.value.toFixed(3),
         dx: dxValue,
         textAnchor: "end",
         fontSize: 11.5,
+        fontVariant: "common-ligatures tabular-nums",
       }),
 
       // bars
-      PlotLib.barX(data, {
-        x: "shapValue",
+      PlotLib.ruleY(data, {
+        x1: 0,
+        x2: "shapValue",
         y: "name",
-        fill: d => (d.shapValue < 0 ? negColor : posColor),
+        stroke: d => (d.shapValue < 0 ? negColor : posColor),
+        strokeWidth: 18,
       }),
 
       // show nunbers in or next to bars
@@ -101,7 +109,7 @@ export function renderBarChart({ data, otherData: { featureNames }, width, heigh
         {
           x: "shapValue",
           y: "name",
-          text: "shapValue",
+          text: d => d.shapValue.toFixed(3),
           textAnchor: "end",
           fill: "#fff",
           dx: -4,
@@ -113,7 +121,7 @@ export function renderBarChart({ data, otherData: { featureNames }, width, heigh
         {
           x: "shapValue",
           y: "name",
-          text: "shapValue",
+          text: d => d.shapValue.toFixed(3),
           textAnchor: "start",
           fill: "#fff",
           dx: 4,
@@ -121,17 +129,27 @@ export function renderBarChart({ data, otherData: { featureNames }, width, heigh
         }
       ),
       PlotLib.text(
-        data.filter(d => d.shapValue > 0 && d.shapValue < textInBarCutoff),
-        { x: "shapValue", y: "name", text: "shapValue", textAnchor: "start", dx: 4, fontSize: 11 }
+        data.filter(d => d.shapValue > 0.0005 && d.shapValue < textInBarCutoff),
+        {
+          x: "shapValue",
+          y: "name",
+          text: d => d.shapValue.toFixed(3),
+          textAnchor: "start",
+          dx: 4,
+          fontSize: 11,
+        }
       ),
       PlotLib.text(
-        data.filter(d => d.shapValue < 0 && d.shapValue > -textInBarCutoff),
-        { x: "shapValue", y: "name", text: "shapValue", textAnchor: "end", dx: -4, fontSize: 11 }
+        data.filter(d => d.shapValue < -0.0005 && d.shapValue > -textInBarCutoff),
+        {
+          x: "shapValue",
+          y: "name",
+          text: d => d.shapValue.toFixed(3),
+          textAnchor: "end",
+          dx: -4,
+          fontSize: 11,
+        }
       ),
-      // PlotLib.text(
-      //   data.filter(d => d.shapValue === 0),
-      //   { x: "shapValue", y: "name", text: "shapValue" }
-      // ),
     ],
   });
 }
