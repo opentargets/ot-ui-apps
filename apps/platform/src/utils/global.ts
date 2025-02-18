@@ -1,6 +1,6 @@
 import { format } from "d3-format";
 import config from "../config";
-import { searchExamples, pppSearchExamples } from "../pages/HomePage/searchExamples";
+import { Examples, searchExamples, Suggestion } from "../pages/HomePage/searchExamples";
 
 interface ProteinId {
   source: string;
@@ -85,20 +85,12 @@ export async function fetcher(graphQLParams: GraphQLParams): Promise<unknown> {
   return data.json();
 }
 
-interface SuggestedSearchExample {
-  targets: string[];
-  diseases: string[];
-  drugs: string[];
-  variants: string[];
-}
-
-export function getSuggestedSearch(): string[] {
-  const suggestionArray: SuggestedSearchExample = config.profile.isPartnerPreview
-    ? pppSearchExamples
-    : searchExamples;
+export function getSuggestedSearch(): Suggestion[] {
+  const suggestionArray: Examples = searchExamples;
   const targets = pickN(suggestionArray.targets, 2);
   const diseases = pickN(suggestionArray.diseases, 2);
   const drugs = pickN(suggestionArray.drugs, 2);
-  const variants = pickN(suggestionArray.variants, 3);
-  return [...targets, ...diseases, ...drugs, ...variants];
+  const variants = pickN(suggestionArray.variants, 2);
+  const studies = pickN(suggestionArray.studies, 2);
+  return [...targets, ...diseases, ...drugs, ...variants, ...studies];
 }
