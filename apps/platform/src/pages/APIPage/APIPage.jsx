@@ -285,7 +285,7 @@ function APIPage() {
             <AccordionDetails>
               <div>
                 <Typography variant="subtitle2" display="block" paragraph>
-                  Example query for insulin
+                  Example query for KRAS
                 </Typography>
                 <QueryButton
                   className={classes.buttonMargin}
@@ -296,8 +296,7 @@ function APIPage() {
                   Run sample query
                 </QueryButton>
                 <Typography variant="subtitle2" display="block" paragraph>
-                  Example query to get how many entries there are in each entity category for
-                  Insulin
+                  Example query to get how many entries there are in each entity category for KRAS
                 </Typography>
                 <QueryButton
                   className={classes.buttonMargin}
