@@ -1,15 +1,46 @@
 import { useState } from "react";
 import { interpolateRdBu, scaleDiverging, rgb } from "d3";
-import { ObsPlot } from "ui";
+import { ObsPlot, DataDownloader, Link } from "ui";
 import { Box, Typography, Popover, Button, Dialog } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartGantt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChartGantt,
+  faChevronRight,
+  faUpRightAndDownLeftFromCenter,
+} from "@fortawesome/free-solid-svg-icons";
+
 import { renderBarChart } from "./renderBarChart";
 import { renderWaterfallPlot } from "./renderWaterfallPlot";
 import HeatmapLegend from "./HeatmapLegend";
+import { grey } from "@mui/material/colors";
 
-function HeatmapTable() {
-  const groupResults = getGroupResults(fakeData);
+function ChartControls({ data, query, variables, columns }) {
+  return (
+    <Box
+      sx={{
+        borderColor: grey[300],
+        borderRadius: 1,
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: 1,
+        mb: 2,
+      }}
+    >
+      <DataDownloader
+        btnLabel="Export"
+        rows={data}
+        query={query}
+        variables={variables}
+        columns={columns}
+      />
+    </Box>
+  );
+}
+
+function HeatmapTable({ query, data, variables, columns, loading }) {
+  if (loading) return null;
+  const groupResults = getGroupResults(data.rows);
+  const colorInterpolator = getColorInterpolator(groupResults);
 
   const theadElement = (
     <thead>
@@ -26,15 +57,9 @@ function HeatmapTable() {
         <th></th>
       </Box>
       <tr>
-        {["Gene", "Score", ...Object.keys(groupToFeature), "Base", "Details"].map(
-          (value, index) => (
-            <HeaderCell
-              key={index}
-              value={value}
-              textAlign={value === "Gene" ? "right" : "center"}
-            />
-          )
-        )}
+        {["Gene", "Score", ...Object.keys(groupToFeature), "Base", ""].map((value, index) => (
+          <HeaderCell key={index} value={value} textAlign={value === "Gene" ? "right" : "center"} />
+        ))}
       </tr>
     </thead>
   );
@@ -42,47 +67,50 @@ function HeatmapTable() {
   const tbodyElement = (
     <tbody>
       {groupResults.map(row => (
-        <BodyRow key={row.geneId} rowData={row} />
+        <BodyRow data={data} key={row.geneId} rowData={row} colorInterpolator={colorInterpolator} />
       ))}
     </tbody>
   );
 
   return (
-    <Box display="flex" justifyContent="center">
-      <Box
-        component="table"
-        sx={{
-          tableLayout: "fixed",
-          width: "90%",
-          maxWidth: "1000px",
-          borderCollapse: "collapse",
-          my: 4,
-        }}
-      >
-        <Box component="caption" sx={{ pt: 2, captionSide: "bottom", textAlign: "left" }}>
-          <HeatmapLegend
-            legendOptions={{
-              // width: 700,
-              // height: 100,
-              color: {
-                type: "diverging",
-                interpolate: colorInterpolator,
-                domain: colorInterpolator.domain(),
-                range: [colorInterpolator.domain()[0], colorInterpolator.domain()[2]],
-              },
-            }}
-          />
+    <>
+      <ChartControls query={query} data={data} variables={variables} columns={columns} />
+      <Box display="flex" justifyContent="center">
+        <Box
+          component="table"
+          sx={{
+            tableLayout: "fixed",
+            width: "90%",
+            maxWidth: "1000px",
+            borderCollapse: "collapse",
+            my: 4,
+          }}
+        >
+          <Box component="caption" sx={{ pt: 2, captionSide: "bottom", textAlign: "left" }}>
+            <HeatmapLegend
+              legendOptions={{
+                // width: 700,
+                // height: 100,
+                color: {
+                  type: "diverging",
+                  interpolate: colorInterpolator,
+                  domain: colorInterpolator.domain(),
+                  range: [colorInterpolator.domain()[0], colorInterpolator.domain()[2]],
+                },
+              }}
+            />
+          </Box>
+          {theadElement}
+          {tbodyElement}
         </Box>
-        {theadElement}
-        {tbodyElement}
       </Box>
-    </Box>
+    </>
   );
 }
 
 export default HeatmapTable;
 
-function BodyRow({ rowData: row }) {
+function BodyRow({ rowData: row, colorInterpolator, data }) {
   const [over, setOver] = useState(false);
 
   function handleMouseEnter(event) {
@@ -94,13 +122,13 @@ function BodyRow({ rowData: row }) {
   }
 
   return (
-    <tr key={row.geneId}>
+    <tr key={row.targetId}>
       <CellWrapper
         handleMouseEnter={handleMouseEnter}
         handleMouseLeave={handleMouseLeave}
         over={over}
       >
-        <GeneCell value={row.geneId} />
+        <GeneCell value={row.targetSymbol} targetId={row.targetId} />
       </CellWrapper>
       <CellWrapper
         handleMouseEnter={handleMouseEnter}
@@ -118,8 +146,9 @@ function BodyRow({ rowData: row }) {
             over={over}
           >
             <HeatCell
+              data={data}
               value={row[groupName]?.toFixed(3)}
-              geneId={row.geneId}
+              geneId={row.targetId}
               groupName={groupName}
               bgrd={colorInterpolator(row[groupName])}
               mouseLeaveRow={handleMouseLeave}
@@ -139,7 +168,12 @@ function BodyRow({ rowData: row }) {
         handleMouseLeave={handleMouseLeave}
         over={over}
       >
-        <FeatureChartCell geneId={row.geneId} mouseLeaveRow={handleMouseLeave} />
+        <FeatureChartCell
+          geneId={row.targetId}
+          mouseLeaveRow={handleMouseLeave}
+          data={data}
+          over={over}
+        />
       </CellWrapper>
     </tr>
   );
@@ -153,7 +187,7 @@ function CellWrapper({ handleMouseEnter, handleMouseLeave, over, children }) {
       onMouseLeave={handleMouseLeave}
       sx={{
         p: "4px",
-        bgcolor: over ? "#e8e8e8" : "transparent",
+        bgcolor: over ? grey[100] : "transparent",
       }}
     >
       {children}
@@ -171,18 +205,20 @@ function HeaderCell({ value, textAlign }) {
   );
 }
 
-function GeneCell({ value }) {
+function GeneCell({ value, targetId }) {
   return (
     <Box display="flex" justifyContent="end">
-      <Typography
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        fontSize={14}
-        textAlign="right"
-      >
-        {value}
-      </Typography>
+      <Link asyncTooltip to={`/target/${targetId}`}>
+        <Typography
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          fontSize={14}
+          textAlign="right"
+        >
+          {value}
+        </Typography>
+      </Link>
     </Box>
   );
 }
@@ -197,7 +233,7 @@ function ScoreCell({ value }) {
   );
 }
 
-function HeatCell({ value, bgrd, geneId, groupName, mouseLeaveRow }) {
+function HeatCell({ value, bgrd, geneId, groupName, mouseLeaveRow, data }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   function handleClick(event) {
@@ -257,7 +293,7 @@ function HeatCell({ value, bgrd, geneId, groupName, mouseLeaveRow }) {
       >
         <Box sx={{ px: 3, py: 2 }}>
           <ObsPlot
-            data={getTargetGroupFeatures(geneId, groupName)}
+            data={getTargetGroupFeatures(data, geneId, groupName)}
             otherData={{ featureNames: groupToFeature[groupName] }}
             minWidth={530}
             maxWidth={530}
@@ -278,16 +314,16 @@ function BaseCell({ value }) {
       alignItems="center"
       borderRadius={1.5}
       py={1.4}
-      outline="1px solid #dbdbdb"
+      outline="1px solid #e3e3e3"
     >
-      <Typography fontSize={13.5} color="#777" sx={{ pointerEvents: "none" }}>
+      <Typography fontSize={13.5} color="#ccc" sx={{ pointerEvents: "none" }}>
         {value}
       </Typography>
     </Box>
   );
 }
 
-function FeatureChartCell({ geneId, mouseLeaveRow }) {
+function FeatureChartCell({ geneId, mouseLeaveRow, data, over }) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -301,10 +337,33 @@ function FeatureChartCell({ geneId, mouseLeaveRow }) {
 
   return (
     <>
-      <Box display="flex" justifyContent="center" alignItems="center" borderRadius={1.5}>
-        <Button variant="outlined" onClick={handleClickOpen}>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        borderRadius={1.5}
+        sx={{ opacity: over ? 1 : 0, transition: "all ease 100ms" }}
+      >
+        {/* <Button variant="outlined" onClick={handleClickOpen}>
           <FontAwesomeIcon icon={faChartGantt} />
-        </Button>
+        </Button> */}
+        <Box
+          sx={{
+            // width: "30px",
+            // height: "30px",
+            // border: 1,
+            cursor: "pointer",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 1,
+          }}
+          onClick={handleClickOpen}
+        >
+          <Typography variant="caption">Details</Typography>
+          {/* <FontAwesomeIcon size="sm" icon={faUpRightAndDownLeftFromCenter} /> */}
+          <FontAwesomeIcon size="sm" icon={faChevronRight} />
+        </Box>
       </Box>
       <Dialog maxWidth="md" open={open} onClose={handleClose}>
         <Box sx={{ px: 3, py: 3 }}>
@@ -315,7 +374,7 @@ function FeatureChartCell({ geneId, mouseLeaveRow }) {
             </Box>
           </Typography>
           <ObsPlot
-            data={fakeData.find(d => d.geneId === geneId)}
+            data={data.rows.find(d => d.target.id === geneId)}
             minWidth={600}
             maxWidth={600}
             renderChart={renderWaterfallPlot}
@@ -369,7 +428,8 @@ function getGroupResults(data) {
   const featureGroupNames = Object.keys(groupToFeature);
   const rows = data.map(d => {
     const row = {
-      geneId: d.geneId,
+      targetId: d.target.id,
+      targetSymbol: d.target.approvedSymbol,
       shapBaseValue: d.shapBaseValue,
       totalL2GScore: d.score,
     };
@@ -377,7 +437,7 @@ function getGroupResults(data) {
       row[groupName] = 0;
     }
     for (const feature of d.features) {
-      row[featureToGroup[feature.name]] += +feature.shapValue;
+      row[featureToGroup[feature.name]] += feature.shapValue;
     }
     return row;
   });
@@ -401,8 +461,8 @@ export const PRIORITISATION_COLORS = [
   rgb("#2e5943"),
 ];
 
-function getTargetGroupFeatures(targetId, groupName) {
-  const row = fakeData.find(d => d.geneId === targetId);
+function getTargetGroupFeatures(data, targetId, groupName) {
+  const row = data.rows.find(d => d.target.id === targetId);
   return row.features.filter(feature => featureToGroup[feature.name] === groupName);
 }
 
@@ -420,445 +480,3 @@ function getColorInterpolator(groupResults) {
     .domain([min, 0, max])
     .interpolator(t => interpolateRdBu(t * 0.7 + 0.15));
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// FAKE DATA
-////////////////////////////////////////////////////////////////////////////////
-
-// 3 genes worth of fake data
-const fakeData = JSON.parse(
-  `[
-    {
-      "features": [
-        {
-          "name": "eQtlColocClppMaximum",
-          "shapValue": 0,
-          "value": 0.6295404212443838
-        },
-        {
-          "name": "pQtlColocClppMaximum",
-          "shapValue": 0.5383037593488115,
-          "value": 0.06824977829590562
-        },
-        {
-          "name": "sQtlColocClppMaximum",
-          "shapValue": -0.14588385828659126,
-          "value": 0.6862369999687776
-        },
-        {
-          "name": "eQtlColocH4Maximum",
-          "shapValue": 0,
-          "value": 0.7550514665264757
-        },
-        {
-          "name": "pQtlColocH4Maximum",
-          "shapValue": 0.18665837187545167,
-          "value": 0.4032837167010963
-        },
-        {
-          "name": "sQtlColocH4Maximum",
-          "shapValue": -0.9186885298682592,
-          "value": 0.6323497242697477
-        },
-        {
-          "name": "eQtlColocClppMaximumNeighbourhood",
-          "shapValue": 0,
-          "value": 0.23407736659645206
-        },
-        {
-          "name": "pQtlColocClppMaximumNeighbourhood",
-          "shapValue": 0.7482374713788128,
-          "value": 0.4757271195576448
-        },
-        {
-          "name": "sQtlColocClppMaximumNeighbourhood",
-          "shapValue": 0.5292664833786639,
-          "value": 0.9941802522947017
-        },
-        {
-          "name": "eQtlColocH4MaximumNeighbourhood",
-          "shapValue": 0,
-          "value": 0.3222053051058792
-        },
-        {
-          "name": "pQtlColocH4MaximumNeighbourhood",
-          "shapValue": -0.01638497414786936,
-          "value": 0.657148766450519
-        },
-        {
-          "name": "sQtlColocH4MaximumNeighbourhood",
-          "shapValue": -0.3886781550929305,
-          "value": 0.3681475531362791
-        },
-        {
-          "name": "distanceSentinelFootprint",
-          "shapValue": 0,
-          "value": 0.7879373546005921
-        },
-        {
-          "name": "distanceSentinelFootprintNeighbourhood",
-          "shapValue": -0.1319990099033858,
-          "value": 0.7960550603947014
-        },
-        {
-          "name": "distanceFootprintMean",
-          "shapValue": 0.9843624087024754,
-          "value": 0.11415942079406916
-        },
-        {
-          "name": "distanceFootprintMeanNeighbourhood",
-          "shapValue": 0,
-          "value": 0.08743194886720485
-        },
-        {
-          "name": "distanceTssMean",
-          "shapValue": -0.0014657853999261016,
-          "value": 0.32745410644182615
-        },
-        {
-          "name": "distanceTssMeanNeighbourhood",
-          "shapValue": -0.042082831074290956,
-          "value": 0.3806518868596235
-        },
-        {
-          "name": "distanceSentinelTss",
-          "shapValue": 0,
-          "value": 0.23823693079767738
-        },
-        {
-          "name": "distanceSentinelTssNeighbourhood",
-          "shapValue": 0.805042173197982,
-          "value": 0.2736710066525825
-        },
-        {
-          "name": "vepMaximum",
-          "shapValue": -0.7345973008835576,
-          "value": 0.12781039048933385
-        },
-        {
-          "name": "vepMaximumNeighbourhood",
-          "shapValue": 0,
-          "value": 0.07580779079070166
-        },
-        {
-          "name": "vepMean",
-          "shapValue": -0.35813892464888236,
-          "value": 0.8804981563098447
-        },
-        {
-          "name": "vepMeanNeighbourhood",
-          "shapValue": -0.3368768722500788,
-          "value": 0.9760378125948922
-        },
-        {
-          "name": "geneCount500kb",
-          "shapValue": 0,
-          "value": 0.31545019834528676
-        },
-        {
-          "name": "proteinGeneCount500kb",
-          "shapValue": 0.8826684221170858,
-          "value": 0.5151024175517506
-        },
-        {
-          "name": "credibleSetConfidence",
-          "shapValue": -0.5048039376769136,
-          "value": 0.29153643412262986
-        }
-      ],
-      "geneId": "ENSG423557",
-      "score": 0.33658222722159603,
-      "shapBaseValue": 0.2,
-      "studyLocusId": "SL_8013"
-    },
-    {
-      "features": [
-        {
-          "name": "eQtlColocClppMaximum",
-          "shapValue": 0,
-          "value": 0.9557737452564872
-        },
-        {
-          "name": "pQtlColocClppMaximum",
-          "shapValue": -0.0443878798997026,
-          "value": 0.8054746156254109
-        },
-        {
-          "name": "sQtlColocClppMaximum",
-          "shapValue": -0.009729982201301867,
-          "value": 0.14790263905236367
-        },
-        {
-          "name": "eQtlColocH4Maximum",
-          "shapValue": 0,
-          "value": 0.06611453852961013
-        },
-        {
-          "name": "pQtlColocH4Maximum",
-          "shapValue": -0.7720016424907377,
-          "value": 0.46061708334786344
-        },
-        {
-          "name": "sQtlColocH4Maximum",
-          "shapValue": -0.8073762465732788,
-          "value": 0.6801734333678756
-        },
-        {
-          "name": "eQtlColocClppMaximumNeighbourhood",
-          "shapValue": 0,
-          "value": 0.8009294810822574
-        },
-        {
-          "name": "pQtlColocClppMaximumNeighbourhood",
-          "shapValue": -0.3157518099683416,
-          "value": 0.5618460866412255
-        },
-        {
-          "name": "sQtlColocClppMaximumNeighbourhood",
-          "shapValue": 0.7341375450682524,
-          "value": 0.7028894805885478
-        },
-        {
-          "name": "eQtlColocH4MaximumNeighbourhood",
-          "shapValue": 0,
-          "value": 0.4941689699641272
-        },
-        {
-          "name": "pQtlColocH4MaximumNeighbourhood",
-          "shapValue": 0.4901219236039473,
-          "value": 0.49239942089388533
-        },
-        {
-          "name": "sQtlColocH4MaximumNeighbourhood",
-          "shapValue": -0.5826853186033358,
-          "value": 0.8650151704686329
-        },
-        {
-          "name": "distanceSentinelFootprint",
-          "shapValue": 0,
-          "value": 0.9859141291124799
-        },
-        {
-          "name": "distanceSentinelFootprintNeighbourhood",
-          "shapValue": -0.0017698669580105126,
-          "value": 0.10763164346376919
-        },
-        {
-          "name": "distanceFootprintMean",
-          "shapValue": 0.558472457675674,
-          "value": 0.6127725354572723
-        },
-        {
-          "name": "distanceFootprintMeanNeighbourhood",
-          "shapValue": 0,
-          "value": 0.04372204668818258
-        },
-        {
-          "name": "distanceTssMean",
-          "shapValue": 0.9580228698648886,
-          "value": 0.1594536078683606
-        },
-        {
-          "name": "distanceTssMeanNeighbourhood",
-          "shapValue": 0.27010530987201914,
-          "value": 0.7787458153814875
-        },
-        {
-          "name": "distanceSentinelTss",
-          "shapValue": 0,
-          "value": 0.35983559368630036
-        },
-        {
-          "name": "distanceSentinelTssNeighbourhood",
-          "shapValue": 0.7054295835944236,
-          "value": 0.31238345150090685
-        },
-        {
-          "name": "vepMaximum",
-          "shapValue": -0.1212731485618914,
-          "value": 0.3267105210790824
-        },
-        {
-          "name": "vepMaximumNeighbourhood",
-          "shapValue": 0,
-          "value": 0.5883677622754421
-        },
-        {
-          "name": "vepMean",
-          "shapValue": -0.48282682017909734,
-          "value": 0.08848602716514953
-        },
-        {
-          "name": "vepMeanNeighbourhood",
-          "shapValue": -0.4721325795800218,
-          "value": 0.469026812902131
-        },
-        {
-          "name": "geneCount500kb",
-          "shapValue": 0,
-          "value": 0.3444298549079893
-        },
-        {
-          "name": "proteinGeneCount500kb",
-          "shapValue": -0.8019314497472464,
-          "value": 0.4872694196530608
-        },
-        {
-          "name": "credibleSetConfidence",
-          "shapValue": -0.20539601116599085,
-          "value": 0.4541778158004405
-        }
-      ],
-      "geneId": "ENSG700224",
-      "score": 0.3344897357434622,
-      "shapBaseValue": 0.2,
-      "studyLocusId": "SL_6408"
-    },
-    {
-      "features": [
-        {
-          "name": "eQtlColocClppMaximum",
-          "shapValue": 0,
-          "value": 0.8715758522840282
-        },
-        {
-          "name": "pQtlColocClppMaximum",
-          "shapValue": -0.04393963820052156,
-          "value": 0.40219204300610245
-        },
-        {
-          "name": "sQtlColocClppMaximum",
-          "shapValue": -0.0096163232912744,
-          "value": 0.1854960260143692
-        },
-        {
-          "name": "eQtlColocH4Maximum",
-          "shapValue": 0,
-          "value": 0.07691225220800779
-        },
-        {
-          "name": "pQtlColocH4Maximum",
-          "shapValue": 0.3812380750824416,
-          "value": 0.09914943991093028
-        },
-        {
-          "name": "sQtlColocH4Maximum",
-          "shapValue": -0.8685428549538229,
-          "value": 0.7649887739463108
-        },
-        {
-          "name": "eQtlColocClppMaximumNeighbourhood",
-          "shapValue": 0,
-          "value": 0.9956606733684645
-        },
-        {
-          "name": "pQtlColocClppMaximumNeighbourhood",
-          "shapValue": 0.13796574524295366,
-          "value": 0.19670280908153315
-        },
-        {
-          "name": "sQtlColocClppMaximumNeighbourhood",
-          "shapValue": 0.407768879111258,
-          "value": 0.4634210643890394
-        },
-        {
-          "name": "eQtlColocH4MaximumNeighbourhood",
-          "shapValue": 0,
-          "value": 0.7587875009118951
-        },
-        {
-          "name": "pQtlColocH4MaximumNeighbourhood",
-          "shapValue": 0.7771244392635253,
-          "value": 0.9009261276780663
-        },
-        {
-          "name": "sQtlColocH4MaximumNeighbourhood",
-          "shapValue": -0.09425636428190523,
-          "value": 0.9890082076749867
-        },
-        {
-          "name": "distanceSentinelFootprint",
-          "shapValue": 0,
-          "value": 0.029700141591273876
-        },
-        {
-          "name": "distanceSentinelFootprintNeighbourhood",
-          "shapValue": 0.9558756472069141,
-          "value": 0.31142839763394525
-        },
-        {
-          "name": "distanceFootprintMean",
-          "shapValue": -0.8590060268791719,
-          "value": 0.48394465779338613
-        },
-        {
-          "name": "distanceFootprintMeanNeighbourhood",
-          "shapValue": 0,
-          "value": 0.5358982288986963
-        },
-        {
-          "name": "distanceTssMean",
-          "shapValue": 0.9729902265020949,
-          "value": 0.8190262637175857
-        },
-        {
-          "name": "distanceTssMeanNeighbourhood",
-          "shapValue": -0.03384215904870354,
-          "value": 0.8631469475254717
-        },
-        {
-          "name": "distanceSentinelTss",
-          "shapValue": 0,
-          "value": 0.9224696046171688
-        },
-        {
-          "name": "distanceSentinelTssNeighbourhood",
-          "shapValue": -0.30049611546552357,
-          "value": 0.24575493404439197
-        },
-        {
-          "name": "vepMaximum",
-          "shapValue": -0.48131046194828486,
-          "value": 0.5766186371621438
-        },
-        {
-          "name": "vepMaximumNeighbourhood",
-          "shapValue": 0,
-          "value": 0.17677413726591618
-        },
-        {
-          "name": "vepMean",
-          "shapValue": 0.025125821286841585,
-          "value": 0.3875582685233402
-        },
-        {
-          "name": "vepMeanNeighbourhood",
-          "shapValue": -0.5115948843940025,
-          "value": 0.9443867930585176
-        },
-        {
-          "name": "geneCount500kb",
-          "shapValue": 0,
-          "value": 0.021314032018475926
-        },
-        {
-          "name": "proteinGeneCount500kb",
-          "shapValue": 0.6219417506063534,
-          "value": 0.3729764552132758
-        },
-        {
-          "name": "credibleSetConfidence",
-          "shapValue": 0.15954449400487714,
-          "value": 0.016409454114058697
-        }
-      ],
-      "geneId": "ENSG638684",
-      "score": 0.33137552744544185,
-      "shapBaseValue": 0.2,
-      "studyLocusId": "SL_2448"
-    }
-  ]`
-);
-
-// !! WILL NEED TO MOVE THIS ONCE HAVE REAL DATA !!
-const colorInterpolator = getColorInterpolator(getGroupResults(fakeData));
