@@ -1,23 +1,10 @@
 import * as PlotLib from "@observablehq/plot";
-import { schemeRdBu, sum, scaleLinear, extent, mean } from "d3";
+import { schemeRdBu, scaleLinear, extent } from "d3";
 
-export function renderWaterfallPlot({ data, width, height }) {
-  const { features: originalFeatures, shapBaseValue } = data;
+export function renderWaterfallPlot({ data, otherData: { margins, xDomain }, width, height }) {
+  const { features, shapBaseValue } = data;
   const negColor = schemeRdBu.at(-1)[2];
   const posColor = schemeRdBu.at(-1).at(-3);
-
-  const features = structuredClone(originalFeatures);
-  features.sort((a, b) => Math.abs(a.shapValue) - Math.abs(b.shapValue));
-  for (const [index, feature] of features.entries()) {
-    feature._start = features[index - 1]?._end ?? shapBaseValue;
-    feature._end = feature._start + feature.shapValue;
-  }
-
-  const xDomain = scaleLinear()
-    .domain(extent(features.map(d => [d._start, d._end]).flat()))
-    .nice()
-    .domain();
-
   const dxName = -100;
   const dxValue = -45;
   const dyHeader = -20;
@@ -26,10 +13,10 @@ export function renderWaterfallPlot({ data, width, height }) {
   return PlotLib.plot({
     width,
     height,
-    marginLeft: 344,
-    marginRight: 40,
-    marginTop: 32,
-    marginBottom: 36,
+    marginLeft: margins.left,
+    marginRight: margins.right,
+    marginTop: margins.top,
+    marginBottom: margins.bottom,
     style: { fontSize: 11.5 },
     x: {
       axis: "bottom",

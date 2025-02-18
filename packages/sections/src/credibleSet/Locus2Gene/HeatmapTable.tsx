@@ -1,18 +1,37 @@
 import { useState } from "react";
-import { interpolateRdBu, scaleDiverging, rgb } from "d3";
+import { interpolateRdBu, scaleLinear, scaleDiverging, rgb, extent } from "d3";
 import { ObsPlot, DataDownloader, Link } from "ui";
 import { Box, Typography, Popover, Button, Dialog } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChartGantt,
-  faChevronRight,
-  faUpRightAndDownLeftFromCenter,
-} from "@fortawesome/free-solid-svg-icons";
-
-import { renderBarChart } from "./renderBarChart";
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { renderWaterfallPlot } from "./renderWaterfallPlot";
 import HeatmapLegend from "./HeatmapLegend";
 import { grey } from "@mui/material/colors";
+
+// processing for waterfall plots
+const waterfallMaxWidth = 600;
+const waterfallMargins = {
+  left: 344,
+  right: 40,
+  top: 32,
+  bottom: 36,
+};
+const waterfallMaxCanvasWidth = waterfallMaxWidth - waterfallMargins.left - waterfallMargins.right;
+
+function computeWaterfall(originalRow) {
+  const row = structuredClone(originalRow);
+  const { features } = row;
+  features.sort((a, b) => Math.abs(a.shapValue) - Math.abs(b.shapValue));
+  for (const [index, feature] of features.entries()) {
+    feature._start = features[index - 1]?._end ?? row.shapBaseValue;
+    feature._end = feature._start + feature.shapValue;
+  }
+  const xDomain = scaleLinear()
+    .domain(extent(features.map(d => [d._start, d._end]).flat()))
+    .nice()
+    .domain();
+  return { row, xDomain };
+}
 
 function ChartControls({ data, query, variables, columns }) {
   return (
@@ -39,6 +58,7 @@ function ChartControls({ data, query, variables, columns }) {
 
 function HeatmapTable({ query, data, variables, columns, loading }) {
   if (loading) return null;
+
   const groupResults = getGroupResults(data.rows);
   const colorInterpolator = getColorInterpolator(groupResults);
 
@@ -67,7 +87,12 @@ function HeatmapTable({ query, data, variables, columns, loading }) {
   const tbodyElement = (
     <tbody>
       {groupResults.map(row => (
-        <BodyRow data={data} key={row.geneId} rowData={row} colorInterpolator={colorInterpolator} />
+        <BodyRow
+          data={data}
+          key={row.targetId}
+          rowData={row}
+          colorInterpolator={colorInterpolator}
+        />
       ))}
     </tbody>
   );
@@ -113,6 +138,10 @@ export default HeatmapTable;
 function BodyRow({ rowData: row, colorInterpolator, data }) {
   const [over, setOver] = useState(false);
 
+  const { row: waterfallRow, xDomain: waterfallXDomain } = computeWaterfall(
+    data.rows.find(d => d.target.id === row.targetId)
+  );
+
   function handleMouseEnter(event) {
     setOver(true);
   }
@@ -152,6 +181,8 @@ function BodyRow({ rowData: row, colorInterpolator, data }) {
               groupName={groupName}
               bgrd={colorInterpolator(row[groupName])}
               mouseLeaveRow={handleMouseLeave}
+              waterfallRow={waterfallRow}
+              waterfallXDomain={waterfallXDomain}
             />
           </CellWrapper>
         );
@@ -171,7 +202,8 @@ function BodyRow({ rowData: row, colorInterpolator, data }) {
         <FeatureChartCell
           geneId={row.targetId}
           mouseLeaveRow={handleMouseLeave}
-          data={data}
+          waterfallRow={waterfallRow}
+          waterfallXDomain={waterfallXDomain}
           over={over}
         />
       </CellWrapper>
@@ -233,8 +265,30 @@ function ScoreCell({ value }) {
   );
 }
 
-function HeatCell({ value, bgrd, geneId, groupName, mouseLeaveRow, data }) {
+function HeatCell({
+  value,
+  bgrd,
+  geneId,
+  groupName,
+  mouseLeaveRow,
+  data,
+  waterfallRow,
+  waterfallXDomain, // for row
+}) {
   const [anchorEl, setAnchorEl] = useState(null);
+
+  // WILL NEED THE ROW'S WATERFALL XDOMAIN TO COMPUTE LIMITS
+
+  const filteredWaterfallRow = structuredClone(waterfallRow);
+  filteredWaterfallRow.features = filteredWaterfallRow.features.filter(d => {
+    return featureToGroup[d.name] === groupName;
+  });
+  const { row, xDomain } = computeWaterfall(filteredWaterfallRow);
+  const plotWidth =
+    waterfallMargins.left +
+    waterfallMargins.right +
+    (waterfallMaxCanvasWidth * (xDomain[1] - xDomain[0])) /
+      (waterfallXDomain[1] - waterfallXDomain[0]);
 
   function handleClick(event) {
     setAnchorEl(event.currentTarget);
@@ -293,11 +347,11 @@ function HeatCell({ value, bgrd, geneId, groupName, mouseLeaveRow, data }) {
       >
         <Box sx={{ px: 3, py: 2 }}>
           <ObsPlot
-            data={getTargetGroupFeatures(data, geneId, groupName)}
-            otherData={{ featureNames: groupToFeature[groupName] }}
-            minWidth={530}
-            maxWidth={530}
-            renderChart={renderBarChart}
+            data={row}
+            otherData={{ margins: waterfallMargins, xDomain }}
+            minWidth={plotWidth}
+            maxWidth={plotWidth}
+            renderChart={renderWaterfallPlot}
           />
         </Box>
       </Popover>
@@ -323,7 +377,7 @@ function BaseCell({ value }) {
   );
 }
 
-function FeatureChartCell({ geneId, mouseLeaveRow, data, over }) {
+function FeatureChartCell({ mouseLeaveRow, waterfallRow, waterfallXDomain, over }) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -344,14 +398,8 @@ function FeatureChartCell({ geneId, mouseLeaveRow, data, over }) {
         borderRadius={1.5}
         sx={{ opacity: over ? 1 : 0, transition: "all ease 100ms" }}
       >
-        {/* <Button variant="outlined" onClick={handleClickOpen}>
-          <FontAwesomeIcon icon={faChartGantt} />
-        </Button> */}
         <Box
           sx={{
-            // width: "30px",
-            // height: "30px",
-            // border: 1,
             cursor: "pointer",
             display: "flex",
             justifyContent: "center",
@@ -361,7 +409,6 @@ function FeatureChartCell({ geneId, mouseLeaveRow, data, over }) {
           onClick={handleClickOpen}
         >
           <Typography variant="caption">Details</Typography>
-          {/* <FontAwesomeIcon size="sm" icon={faUpRightAndDownLeftFromCenter} /> */}
           <FontAwesomeIcon size="sm" icon={faChevronRight} />
         </Box>
       </Box>
@@ -374,9 +421,10 @@ function FeatureChartCell({ geneId, mouseLeaveRow, data, over }) {
             </Box>
           </Typography>
           <ObsPlot
-            data={data.rows.find(d => d.target.id === geneId)}
-            minWidth={600}
-            maxWidth={600}
+            data={waterfallRow}
+            otherData={{ margins: waterfallMargins, xDomain: waterfallXDomain }}
+            minWidth={waterfallMaxWidth}
+            maxWidth={waterfallMaxWidth}
             renderChart={renderWaterfallPlot}
           />
         </Box>
