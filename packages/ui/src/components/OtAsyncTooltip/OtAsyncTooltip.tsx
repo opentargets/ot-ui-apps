@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
 import { getEntityIcon, getEntityQuery, getQueryVariables } from "./utils/asyncTooltipUtil";
+import { getStudyItemMetaData } from "../../constants";
 
 const DELAY_REQUEST = 1000;
 
@@ -126,14 +127,12 @@ function AsyncTooltipDataView({
       if (Array.isArray(data?.description)) descText = data?.description[0].substring(0, 150);
       else descText = data?.description.substring(0, 150);
 
-    const studyType = data?.studyType;
-    const nSamples = data?.nSamples;
-    const credibleSetsCount = data?.credibleSets?.credibleSetsCount;
-
     // study subtext
-    if (studyType) descText += `Study type: ${studyType} • `;
-    if (nSamples) descText += `Sample size: ${nSamples} • `;
-    if (credibleSetsCount) descText += `Credible sets count: ${credibleSetsCount}`;
+    descText += getStudyItemMetaData({
+      studyType: data?.studyType,
+      nSamples: data?.nSamples,
+      credibleSetsCount: data?.credibleSets?.credibleSetsCount,
+    });
 
     return descText;
   }
