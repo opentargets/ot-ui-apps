@@ -6,7 +6,7 @@ import { faXmark, faClockRotateLeft, faArrowTrendUp } from "@fortawesome/free-so
 
 import { clearRecentItem } from "./utils/searchUtils";
 import DisplayVariantId from "../DisplayVariantId";
-import { getStudyTypeDisplay } from "../../constants";
+import { getStudyItemMetaData } from "../../constants";
 
 const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
@@ -233,11 +233,11 @@ function TopHitListItem({ item, onItemClick }) {
                   {item.description && `${item.description.substring(0, 180)}...`}
                 </Typography>
                 <Typography variant="body2">
-                  {item.studyType && `Study type: ${getStudyTypeDisplay(item.studyType)}`}
-                  {item.credibleSetsCount > -1 && (
-                    <> • Credible sets count: {item.credibleSetsCount.toLocaleString()}</>
-                  )}
-                  {item.nSamples && <> • Sample size: {item.nSamples.toLocaleString()}</>}
+                  {getStudyItemMetaData({
+                    studyType: item?.studyType,
+                    nSamples: item?.nSamples,
+                    credibleSetsCount: item?.credibleSetsCount,
+                  })}
                 </Typography>
                 <Typography variant="caption">
                   {/* {item.publicationFirstAuthor && <>{item.publicationFirstAuthor}</>}
@@ -360,11 +360,12 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
 
       <JustifyBetween>
         <Typography variant="caption">
-          {item.studyType && `Study type: ${getStudyTypeDisplay(item.studyType)}`}
-          {item.credibleSetsCount > -1 && (
-            <> • Credible sets count: {item.credibleSetsCount.toLocaleString()}</>
-          )}
-          {item.nSamples && <> • Sample size: {item.nSamples.toLocaleString()}</>}
+          {getStudyItemMetaData({
+            studyType: item?.studyType,
+            nSamples: item?.nSamples,
+            credibleSetsCount: item?.credibleSetsCount,
+          })}
+
           {getVariantRsIds()}
         </Typography>
 

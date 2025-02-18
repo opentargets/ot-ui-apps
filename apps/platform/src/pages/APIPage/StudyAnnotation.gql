@@ -1,0 +1,24 @@
+query SharedTraitStudiesQuery {
+  studies(diseaseIds: "EFO_0000685") {
+    count
+    rows {
+      id
+      traitFromSource
+      projectId
+      diseases {
+        id
+        name
+      }
+      publicationFirstAuthor
+      publicationDate
+      publicationJournal
+      nSamples
+      cohorts
+      ldPopulationStructure {
+        ldPopulation
+        relativeSampleSize
+      }
+      pubmedId
+    }
+  }
+}
