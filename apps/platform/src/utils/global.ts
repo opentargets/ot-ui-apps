@@ -90,6 +90,7 @@ interface SuggestedSearchExample {
   diseases: string[];
   drugs: string[];
   variants: string[];
+  studies: string[];
 }
 
 export function getSuggestedSearch(): string[] {
@@ -99,6 +100,7 @@ export function getSuggestedSearch(): string[] {
   const targets = pickN(suggestionArray.targets, 2);
   const diseases = pickN(suggestionArray.diseases, 2);
   const drugs = pickN(suggestionArray.drugs, 2);
-  const variants = pickN(suggestionArray.variants, 3);
-  return [...targets, ...diseases, ...drugs, ...variants];
+  const variants = pickN(suggestionArray.variants, 2);
+  const studies = pickN(suggestionArray.studies, 2);
+  return [...targets, ...diseases, ...drugs, ...variants, ...studies];
 }

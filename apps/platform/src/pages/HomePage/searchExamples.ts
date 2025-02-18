@@ -1,4 +1,4 @@
-type Entity = "disease" | "drug" | "target" | "variant";
+type Entity = "disease" | "drug" | "target" | "variant" | "study";
 
 type Suggestion = {
   type: string;
@@ -12,6 +12,7 @@ type Examples = {
   diseases: Suggestion[];
   drugs: Suggestion[];
   variants: Suggestion[];
+  studies: Suggestion[];
 };
 
 export const pppSearchExamples: Examples = {
@@ -49,6 +50,15 @@ export const pppSearchExamples: Examples = {
     { type: "suggestion", entity: "variant", name: "11_64600382_G_A", id: "11_64600382_G_A" },
     { type: "suggestion", entity: "variant", name: "12_6333477_C_T", id: "12_6333477_C_T" },
     { type: "suggestion", entity: "variant", name: "17_43093010_G_A", id: "17_43093010_G_A" },
+  ],
+  studies: [
+    { type: "suggestion", entity: "study", name: "GCST90012877", id: "GCST90012877" },
+    { type: "suggestion", entity: "study", name: "GCST90308590", id: "GCST90308590" },
+    { type: "suggestion", entity: "study", name: "GCST004131", id: "GCST004131" },
+    { type: "suggestion", entity: "study", name: "GCST90295916", id: "GCST90295916" },
+    { type: "suggestion", entity: "study", name: "GCST90018784", id: "GCST90018784" },
+    { type: "suggestion", entity: "study", name: "GCST90204201", id: "GCST90204201" },
+    { type: "suggestion", entity: "study", name: "GCST90239655", id: "GCST90239655" },
   ],
 };
 
