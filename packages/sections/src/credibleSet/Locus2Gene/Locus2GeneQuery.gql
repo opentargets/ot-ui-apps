@@ -3,11 +3,17 @@ query Locus2GeneQuery($studyLocusId: String!) {
     l2GPredictions {
       count
       rows {
+        shapBaseValue
+        features {
+          shapValue
+          value
+          name
+        }
+        score
         target {
           id
           approvedSymbol
         }
-        score
       }
     }
   }

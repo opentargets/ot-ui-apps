@@ -18,6 +18,7 @@ type ObsChartProps = {
   resetElement?: (elmt: SVGElement) => void;
   setChart: Dispatch<SetStateAction<SVGSVGElement>>;
   setDatum: Dispatch<SetStateAction<any>>;
+  renderSVGOverlay: (chart: SVGSVGElement) => SVGElement | null;
 };
 
 function ObsChart({
@@ -32,6 +33,7 @@ function ObsChart({
   resetElement,
   setChart,
   setDatum,
+  renderSVGOverlay,
 }: ObsChartProps) {
   const headerRef = useRef();
 
@@ -39,6 +41,14 @@ function ObsChart({
     if (data === undefined || width === null) return;
     const chart = renderChart({ data, otherData, width, height });
     setChart(chart);
+
+    if (renderSVGOverlay) {
+      const overlay = renderSVGOverlay(chart);
+      if (overlay == null) return;
+      if (Array.isArray(overlay)) chart.append(...overlay);
+      else chart.append(overlay);
+    }
+
     if (hasTooltip) {
       let clicked = false;
       let selectedDatum;
@@ -81,6 +91,7 @@ function ObsChart({
           }
         });
       }
+
       chart.addEventListener("click", () => {
         if (clicked) {
           clicked = false;
