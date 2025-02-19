@@ -8,8 +8,10 @@ export function renderWaterfallPlot({
   height,
 }) {
   const { features, shapBaseValue } = data;
-  const negColor = schemeRdBu.at(-1)[2];
-  const posColor = schemeRdBu.at(-1).at(-3);
+  // const negColor = schemeRdBu.at(-1)[2];
+  // const posColor = schemeRdBu.at(-1).at(-3);
+  const posColor = "#2f735f";
+  const negColor = "#bc3a19";
   const dxName = -100;
   const dxValue = -45;
   const dyHeader = -20;

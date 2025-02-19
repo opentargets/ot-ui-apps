@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { interpolateRdBu, scaleLinear, scaleDiverging, rgb, extent, mean } from "d3";
+import { scaleLinear, scaleDiverging, rgb, extent, mean, interpolateRgbBasis, hsl } from "d3";
 import { ObsPlot, DataDownloader, Link } from "ui";
-import { Box, Typography, Popover, Button, Dialog } from "@mui/material";
+import { Box, Typography, Popover, Dialog } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { renderWaterfallPlot } from "./renderWaterfallPlot";
@@ -76,10 +76,10 @@ function HeatmapTable({ query, data, variables, columns, loading }) {
         <th></th>
         <th></th>
         <th></th>
-        <th></th>
         <Box component="th" colSpan="3" sx={{ borderBottom: "1px solid #888", paddingBottom: 1 }}>
           <Typography variant="subtitle2">Colocalisation</Typography>
         </Box>
+        <th></th>
         <th></th>
         <th></th>
       </Box>
@@ -332,7 +332,13 @@ function HeatCell({
           },
         }}
       >
-        <Typography fontSize={13.5} color="#000" sx={{ pointerEvents: "none" }}>
+        <Typography
+          fontSize={13.5}
+          sx={{
+            color: hsl(bgrd).l < 0.6 ? "#fff" : "#000",
+            pointerEvents: "none",
+          }}
+        >
           {value}
         </Typography>
       </Box>
@@ -463,7 +469,7 @@ const featureToGroup = {
   eQtlColocH4Maximum: "eQTL",
   eQtlColocClppMaximumNeighbourhood: "eQTL",
   eQtlColocH4MaximumNeighbourhood: "eQTL",
-  pQtlColocH4MaximumNeighbourhood: "eQTL",
+  pQtlColocH4MaximumNeighbourhood: "pQTL",
   pQtlColocClppMaximum: "pQTL",
   pQtlColocH4Maximum: "pQTL",
   pQtlColocClppMaximumNeighbourhood: "pQTL",
@@ -505,7 +511,7 @@ function getGroupResults(data) {
 }
 
 export const PRIORITISATION_COLORS = [
-  rgb("#a01813"),
+  // rgb("#a01813"),
   rgb("#bc3a19"),
   rgb("#d65a1f"),
   rgb("#e08145"),
@@ -517,7 +523,7 @@ export const PRIORITISATION_COLORS = [
   rgb("#78a290"),
   rgb("#528b78"),
   rgb("#2f735f"),
-  rgb("#2e5943"),
+  // rgb("#2e5943"),
 ];
 
 function getTargetGroupFeatures(data, targetId, groupName) {
@@ -537,5 +543,8 @@ function getColorInterpolator(groupResults) {
   Math.abs(min) > max ? (max = -min) : (min = -max);
   return scaleDiverging()
     .domain([min, 0, max])
-    .interpolator(t => interpolateRdBu(t * 0.7 + 0.15));
+    .interpolator(interpolateRgbBasis(PRIORITISATION_COLORS));
+  // return scaleDiverging()
+  //   .domain([min, 0, max])
+  //   .interpolator(t => interpolateRdBu(t * 0.7 + 0.15));
 }
