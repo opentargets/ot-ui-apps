@@ -1,7 +1,12 @@
 import * as PlotLib from "@observablehq/plot";
-import { schemeRdBu, scaleLinear, extent } from "d3";
+import { schemeRdBu } from "d3";
 
-export function renderWaterfallPlot({ data, otherData: { margins, xDomain }, width, height }) {
+export function renderWaterfallPlot({
+  data,
+  otherData: { margins, xDomain, xTicks, labelBase },
+  width,
+  height,
+}) {
   const { features, shapBaseValue } = data;
   const negColor = schemeRdBu.at(-1)[2];
   const posColor = schemeRdBu.at(-1).at(-3);
@@ -24,6 +29,8 @@ export function renderWaterfallPlot({ data, otherData: { margins, xDomain }, wid
       label: "",
       labelArrow: false,
       domain: xDomain,
+      ticks: xTicks,
+      tickFormat: v => (Number.isInteger(v) ? String(v) : v),
     },
     y: {
       type: "band",
@@ -97,7 +104,7 @@ export function renderWaterfallPlot({ data, otherData: { margins, xDomain }, wid
       }),
 
       // vertical line at base score - and label at bottom
-      PlotLib.tickX([0], {
+      PlotLib.tickX(labelBase ? [0] : [], {
         x: d => shapBaseValue,
         y: d => features[0].name,
         dy: 24,
@@ -107,7 +114,7 @@ export function renderWaterfallPlot({ data, otherData: { margins, xDomain }, wid
       PlotLib.text(features.slice(-1), {
         x: d => shapBaseValue,
         y: d => features[0].name,
-        text: d => `Base score: ${shapBaseValue.toFixed(3)}`,
+        text: d => (labelBase ? `Base: ${shapBaseValue.toFixed(3)}` : ""),
         dy: 40,
         fontSize: textFontSize,
       }),
@@ -119,7 +126,6 @@ export function renderWaterfallPlot({ data, otherData: { margins, xDomain }, wid
           x1: "_start",
           x2: "_end",
           y: "name",
-          // dy: 10,
           stroke: d => (d.shapValue < 0 ? negColor : posColor),
           strokeWidth: 10,
         }
@@ -153,6 +159,7 @@ export function renderWaterfallPlot({ data, otherData: { margins, xDomain }, wid
           textAnchor: "start",
           dx: 3,
           fontSize: 11,
+          fontVariant: "common-ligatures tabular-nums",
         }
       ),
       PlotLib.text(
@@ -164,6 +171,7 @@ export function renderWaterfallPlot({ data, otherData: { margins, xDomain }, wid
           textAnchor: "end",
           dx: -3,
           fontSize: 11,
+          fontVariant: "common-ligatures tabular-nums",
         }
       ),
     ],

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { interpolateRdBu, scaleLinear, scaleDiverging, rgb, extent } from "d3";
+import { interpolateRdBu, scaleLinear, scaleDiverging, rgb, extent, mean } from "d3";
 import { ObsPlot, DataDownloader, Link } from "ui";
 import { Box, Typography, Popover, Button, Dialog } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,18 +18,25 @@ const waterfallMargins = {
 };
 const waterfallMaxCanvasWidth = waterfallMaxWidth - waterfallMargins.left - waterfallMargins.right;
 
-function computeWaterfall(originalRow) {
+function computeWaterfall(originalRow, fullXDomain, zeroBase) {
   const row = structuredClone(originalRow);
   const { features } = row;
   features.sort((a, b) => Math.abs(a.shapValue) - Math.abs(b.shapValue));
   for (const [index, feature] of features.entries()) {
-    feature._start = features[index - 1]?._end ?? row.shapBaseValue;
+    feature._start = features[index - 1]?._end ?? (zeroBase ? 0 : row.shapBaseValue);
     feature._end = feature._start + feature.shapValue;
   }
-  const xDomain = scaleLinear()
-    .domain(extent(features.map(d => [d._start, d._end]).flat()))
-    .nice()
-    .domain();
+  const xExtent = extent(features.map(d => [d._start, d._end]).flat());
+  if (fullXDomain) {
+    const relativeSize = (xExtent[1] - xExtent[0]) / (fullXDomain[1] - fullXDomain[0]);
+    if (relativeSize < 0.25) {
+      const middle = mean(xExtent);
+      const stretch = 0.25 / relativeSize;
+      xExtent[0] = middle + (xExtent[0] - middle) * stretch;
+      xExtent[1] = middle + (xExtent[1] - middle) * stretch;
+    }
+  }
+  const xDomain = scaleLinear().domain(xExtent).nice().domain();
   return { row, xDomain };
 }
 
@@ -277,18 +284,22 @@ function HeatCell({
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
-  // WILL NEED THE ROW'S WATERFALL XDOMAIN TO COMPUTE LIMITS
-
   const filteredWaterfallRow = structuredClone(waterfallRow);
   filteredWaterfallRow.features = filteredWaterfallRow.features.filter(d => {
     return featureToGroup[d.name] === groupName;
   });
-  const { row, xDomain } = computeWaterfall(filteredWaterfallRow);
+  const { row, xDomain } = computeWaterfall(filteredWaterfallRow, waterfallXDomain, true);
   const plotWidth =
     waterfallMargins.left +
     waterfallMargins.right +
     (waterfallMaxCanvasWidth * (xDomain[1] - xDomain[0])) /
       (waterfallXDomain[1] - waterfallXDomain[0]);
+  let xTicks;
+  const xRange = xDomain[1] - xDomain[0];
+  if (xDomain.includes(0)) xTicks = xDomain;
+  else if (Math.abs(xDomain[0]) < xRange / 4) xTicks = [0, xDomain[1]];
+  else if (Math.abs(xDomain[1]) < xRange / 4) xTicks = [xDomain[0], 0];
+  else xTicks = [...xDomain, 0];
 
   function handleClick(event) {
     setAnchorEl(event.currentTarget);
@@ -348,7 +359,7 @@ function HeatCell({
         <Box sx={{ px: 3, py: 2 }}>
           <ObsPlot
             data={row}
-            otherData={{ margins: waterfallMargins, xDomain }}
+            otherData={{ margins: waterfallMargins, xDomain, xTicks }}
             minWidth={plotWidth}
             maxWidth={plotWidth}
             renderChart={renderWaterfallPlot}
@@ -422,7 +433,7 @@ function FeatureChartCell({ mouseLeaveRow, waterfallRow, waterfallXDomain, over 
           </Typography>
           <ObsPlot
             data={waterfallRow}
-            otherData={{ margins: waterfallMargins, xDomain: waterfallXDomain }}
+            otherData={{ margins: waterfallMargins, xDomain: waterfallXDomain, labelBase: true }}
             minWidth={waterfallMaxWidth}
             maxWidth={waterfallMaxWidth}
             renderChart={renderWaterfallPlot}
