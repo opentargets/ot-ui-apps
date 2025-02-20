@@ -1,0 +1,20 @@
+query GWASStudiesQuery {
+  studies(diseaseIds: "EFO_0000685") {
+    count
+    rows {
+      id
+      projectId
+      traitFromSource
+      publicationFirstAuthor
+      publicationDate
+      publicationJournal
+      nSamples
+      cohorts
+      pubmedId
+      ldPopulationStructure {
+        ldPopulation
+        relativeSampleSize
+      }
+    }
+  }
+}
