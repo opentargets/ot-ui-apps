@@ -28,7 +28,7 @@ function TargetPage(): ReactElement {
     return <NotFoundPage />;
   }
 
-  const { approvedSymbol: symbol, approvedName } = data?.target || {};
+  const { approvedSymbol: symbol, approvedName, genomicLocation } = data?.target || {};
   const uniprotIds = loading ? null : getUniprotIds(data.target.proteinIds);
   const crisprId = data?.target.dbXrefs.find(p => p.source === "ProjectScore")?.id;
 
@@ -55,6 +55,7 @@ function TargetPage(): ReactElement {
           symbol={symbol}
           name={approvedName}
           crisprId={crisprId}
+          genomicLocation={genomicLocation}
         />
 
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

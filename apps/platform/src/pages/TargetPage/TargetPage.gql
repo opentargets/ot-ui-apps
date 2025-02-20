@@ -3,13 +3,19 @@ query TargetPageQuery($ensgId: String!) {
     id
     approvedSymbol
     approvedName
-    proteinIds{
+    proteinIds {
       id
       source
     }
-    dbXrefs{
+    dbXrefs {
       id
       source
+    }
+    genomicLocation {
+      chromosome
+      start
+      end
+      strand
     }
   }
 }
