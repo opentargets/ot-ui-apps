@@ -207,7 +207,8 @@ function BodyRow({ rowData: row, colorInterpolator, data }) {
         over={over}
       >
         <FeatureChartCell
-          geneId={row.targetId}
+          geneSymbol={row.targetSymbol}
+          score={row.totalL2GScore.toFixed(3)}
           mouseLeaveRow={handleMouseLeave}
           waterfallRow={waterfallRow}
           waterfallXDomain={waterfallXDomain}
@@ -327,7 +328,7 @@ function HeatCell({
         sx={{
           outline: anchorEl ? "2px solid #000" : "none",
           "&:hover": {
-            outline: `2px solid #888`,
+            outline: `2px solid ${grey[600]}`,
             cursor: "pointer",
           },
         }}
@@ -394,7 +395,14 @@ function BaseCell({ value }) {
   );
 }
 
-function FeatureChartCell({ mouseLeaveRow, waterfallRow, waterfallXDomain, over }) {
+function FeatureChartCell({
+  geneSymbol,
+  score,
+  mouseLeaveRow,
+  waterfallRow,
+  waterfallXDomain,
+  over,
+}) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -422,6 +430,11 @@ function FeatureChartCell({ mouseLeaveRow, waterfallRow, waterfallXDomain, over 
             justifyContent: "center",
             alignItems: "center",
             gap: 1,
+            padding: 1,
+            borderRadius: 0.5,
+            "&:hover": {
+              backgroundColor: "#fff",
+            },
           }}
           onClick={handleClickOpen}
         >
@@ -432,9 +445,9 @@ function FeatureChartCell({ mouseLeaveRow, waterfallRow, waterfallXDomain, over 
       <Dialog maxWidth="md" open={open} onClose={handleClose}>
         <Box sx={{ px: 3, py: 3 }}>
           <Typography variant="h6">
-            Gene,{" "}
-            <Box component="span" fontSize="0.85em">
-              L2G score: X.XXX
+            {geneSymbol},{" "}
+            <Box component="span" fontSize="0.9em">
+              score: {score}
             </Box>
           </Typography>
           <ObsPlot
@@ -510,20 +523,18 @@ function getGroupResults(data) {
   return rows;
 }
 
-export const PRIORITISATION_COLORS = [
-  // rgb("#a01813"),
+export const DIVERGING_COLORS = [
+  rgb("#a01813"),
   rgb("#bc3a19"),
-  rgb("#d65a1f"),
   rgb("#e08145"),
   rgb("#e3a772"),
   rgb("#e6ca9c"),
-  rgb("#eceada"),
+  rgb("#f2f2f2"),
   rgb("#c5d2c1"),
   rgb("#9ebaa8"),
   rgb("#78a290"),
-  rgb("#528b78"),
   rgb("#2f735f"),
-  // rgb("#2e5943"),
+  rgb("#2e5943"),
 ];
 
 function getTargetGroupFeatures(data, targetId, groupName) {
@@ -541,10 +552,5 @@ function getColorInterpolator(groupResults) {
     }
   }
   Math.abs(min) > max ? (max = -min) : (min = -max);
-  return scaleDiverging()
-    .domain([min, 0, max])
-    .interpolator(interpolateRgbBasis(PRIORITISATION_COLORS));
-  // return scaleDiverging()
-  //   .domain([min, 0, max])
-  //   .interpolator(t => interpolateRdBu(t * 0.7 + 0.15));
+  return scaleDiverging().domain([min, 0, max]).interpolator(interpolateRgbBasis(DIVERGING_COLORS));
 }

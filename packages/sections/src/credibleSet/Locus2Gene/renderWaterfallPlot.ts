@@ -1,5 +1,4 @@
 import * as PlotLib from "@observablehq/plot";
-import { schemeRdBu } from "d3";
 
 export function renderWaterfallPlot({
   data,
@@ -8,10 +7,8 @@ export function renderWaterfallPlot({
   height,
 }) {
   const { features, shapBaseValue } = data;
-  // const negColor = schemeRdBu.at(-1)[2];
-  // const posColor = schemeRdBu.at(-1).at(-3);
-  const posColor = "#2f735f";
-  const negColor = "#bc3a19";
+  const posColor = "#528b78";
+  const negColor = "#d65a1f";
   const dxName = -100;
   const dxValue = -45;
   const dyHeader = -20;
