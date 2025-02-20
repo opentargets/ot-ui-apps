@@ -24,6 +24,7 @@ const FreeSearchListItem = styled("li")(({ theme }) => ({
   },
   "&.search-list-item-active": {
     background: theme.palette.grey["300"],
+    border: 1,
   },
 }));
 
