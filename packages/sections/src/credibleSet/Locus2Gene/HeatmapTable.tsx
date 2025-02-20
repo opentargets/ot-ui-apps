@@ -180,9 +180,7 @@ function BodyRow({ rowData: row, colorInterpolator, data }) {
             over={over}
           >
             <HeatCell
-              data={data}
               value={row[groupName]?.toFixed(3)}
-              geneId={row.targetId}
               groupName={groupName}
               bgrd={colorInterpolator(row[groupName])}
               mouseLeaveRow={handleMouseLeave}
@@ -274,10 +272,8 @@ function ScoreCell({ value }) {
 function HeatCell({
   value,
   bgrd,
-  geneId,
   groupName,
   mouseLeaveRow,
-  data,
   waterfallRow,
   waterfallXDomain, // for row
 }) {
