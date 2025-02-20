@@ -3,7 +3,7 @@ import { scaleLinear, scaleDiverging, rgb, extent, mean, interpolateRgbBasis, hs
 import { ObsPlot, DataDownloader, Link } from "ui";
 import { Box, Typography, Popover, Dialog } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { renderWaterfallPlot } from "./renderWaterfallPlot";
 import HeatmapLegend from "./HeatmapLegend";
 import { grey } from "@mui/material/colors";
@@ -363,7 +363,8 @@ function HeatCell({
           mt: 0.5,
         }}
       >
-        <Box sx={{ px: 3, py: 2 }}>
+        <ClosePlot handleClose={handleClose} />
+        <Box sx={{ px: 3, pt: 3.5, pb: 2 }}>
           <ObsPlot
             data={row}
             otherData={{ margins: waterfallMargins, xDomain, xTicks }}
@@ -431,7 +432,7 @@ function FeatureChartCell({
             alignItems: "center",
             gap: 1,
             padding: 1,
-            borderRadius: 0.5,
+            borderRadius: "0.4em",
             "&:hover": {
               backgroundColor: "#fff",
             },
@@ -443,6 +444,7 @@ function FeatureChartCell({
         </Box>
       </Box>
       <Dialog maxWidth="md" open={open} onClose={handleClose}>
+        <ClosePlot handleClose={handleClose} />
         <Box sx={{ px: 3, py: 3 }}>
           <Typography variant="h6">
             {geneSymbol},{" "}
@@ -460,6 +462,29 @@ function FeatureChartCell({
         </Box>
       </Dialog>
     </>
+  );
+}
+
+function ClosePlot({ handleClose }) {
+  return (
+    <Box
+      onClick={handleClose}
+      width="36px"
+      height="36px"
+      position="absolute"
+      top={0}
+      right={0}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        "&:hover": {
+          bgcolor: grey[100],
+        },
+      }}
+    >
+      <FontAwesomeIcon icon={faXmark} />
+    </Box>
   );
 }
 
