@@ -1,0 +1,33 @@
+query GWASColocQuery {
+  credibleSet(studyLocusId: "7d68cc9c70351c9dbd2a2c0c145e555d") {
+    colocalisation(studyTypes: [gwas]) {
+      count
+      rows {
+        otherStudyLocus {
+          studyLocusId
+          study {
+            id
+            projectId
+            traitFromSource
+            publicationFirstAuthor
+          }
+          variant {
+            id
+            chromosome
+            position
+            referenceAllele
+            alternateAllele
+          }
+          pValueMantissa
+          pValueExponent
+        }
+        numberColocalisingVariants
+        colocalisationMethod
+        h3
+        h4
+        clpp
+        betaRatioSignAverage
+      }
+    }
+  }
+}

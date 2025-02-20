@@ -1,5 +1,5 @@
 query searchInsulinCatCounts {
-  search(queryString:"insulin"){
+  search(queryString: "KRAS") {
     aggregations {
       total
       entities {

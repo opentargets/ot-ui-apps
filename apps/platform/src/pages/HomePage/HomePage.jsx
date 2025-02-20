@@ -16,6 +16,7 @@ import {
   faDna,
   faPrescriptionBottleMedical,
   faMapPin,
+  faChartBar,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   appTitle,
@@ -205,67 +206,74 @@ function HomePage({ suggestions }) {
             gap={1.5}
             sx={{ mt: 4 }}
           >
-            <Link to={`/target/${suggestions[0].id}/associations`}>
+            <Link asyncTooltip to={`/target/${suggestions[0].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faDna} />}
                 label={suggestions[0].name}
               />
             </Link>
-            <Link to={`/target/${suggestions[1].id}/associations`}>
+            <Link asyncTooltip to={`/target/${suggestions[1].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faDna} />}
                 label={suggestions[1].name}
               />
             </Link>
-            <Link to={`/disease/${suggestions[2].id}/associations`}>
+            <Link asyncTooltip to={`/disease/${suggestions[2].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faStethoscope} />}
                 label={suggestions[2].name}
               />
             </Link>
-            <Link to={`/disease/${suggestions[3].id}/associations`}>
+            <Link asyncTooltip to={`/disease/${suggestions[3].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faStethoscope} />}
                 label={suggestions[3].name}
               />
             </Link>
-            <Link to={`/drug/${suggestions[4].id}`}>
+            <Link asyncTooltip to={`/drug/${suggestions[4].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faPrescriptionBottleMedical} />}
                 label={suggestions[4].name}
               />
             </Link>
-            <Link to={`/drug/${suggestions[5].id}`}>
+            <Link asyncTooltip to={`/drug/${suggestions[5].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faPrescriptionBottleMedical} />}
                 label={suggestions[5].name}
               />
             </Link>
-            <Link to={`/variant/${suggestions[6].id}`}>
+            <Link asyncTooltip to={`/variant/${suggestions[6].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faMapPin} />}
                 label={suggestions[6].name}
               />
             </Link>
-            <Link to={`/variant/${suggestions[7].id}`}>
+            <Link asyncTooltip to={`/variant/${suggestions[7].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faMapPin} />}
                 label={suggestions[7].name}
               />
             </Link>
-            <Link to={`/variant/${suggestions[8].id}`}>
+            <Link asyncTooltip to={`/study/${suggestions[8].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon icon={faMapPin} />}
+                icon={<FontAwesomeIcon icon={faChartBar} />}
                 label={suggestions[8].name}
+              />
+            </Link>
+            <Link asyncTooltip to={`/study/${suggestions[9].id}`}>
+              <StyledChip
+                sx={{ pl: 1, borderRadius: 2 }}
+                icon={<FontAwesomeIcon icon={faChartBar} />}
+                label={suggestions[9].name}
               />
             </Link>
           </Grid>
