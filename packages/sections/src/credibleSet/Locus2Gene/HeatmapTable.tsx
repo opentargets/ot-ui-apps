@@ -68,6 +68,7 @@ function HeatmapTable({ query, data, variables, columns, loading }) {
 
   const groupResults = getGroupResults(data.rows);
   const colorInterpolator = getColorInterpolator(groupResults);
+  const twoElementDomain = [colorInterpolator.domain()[0], colorInterpolator.domain()[2]];
 
   const theadElement = (
     <thead>
@@ -124,8 +125,8 @@ function HeatmapTable({ query, data, variables, columns, loading }) {
                 color: {
                   type: "diverging",
                   interpolate: colorInterpolator,
-                  domain: colorInterpolator.domain(),
-                  range: [colorInterpolator.domain()[0], colorInterpolator.domain()[2]],
+                  domain: twoElementDomain,
+                  range: twoElementDomain,
                 },
               }}
             />
