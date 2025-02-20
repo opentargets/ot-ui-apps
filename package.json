@@ -5,8 +5,7 @@
   "license": "Apache-2.0",
   "workspaces": [
     "apps/*",
-    "packages/*",
-    "scripts/*"
+    "packages/*"
   ],
   "bugs": {
     "url": "https://github.com/opentargets/ot-ui-apps/issues",
@@ -20,7 +19,6 @@
     "build:platform": "turbo run build --filter=platform",
     "dev:platform:ppp": "turbo run dev-ppp --filter=platform",
     "build:platform:ppp": "turbo run build-ppp --filter=platform",
-    "build:config": "turbo run build-config --filter=@ot/config",
     "lint": "turbo run lint",
     "lint:platform": "turbo run lint --filter=platform",
     "format": "turbo run prettier:all",
@@ -32,7 +30,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^2.5.1",
-    "turbo": "^1.10.13"
+    "turbo": "^2.4.2"
   },
   "packageManager": "yarn@1.22.18",
   "lint-staged": {

@@ -1,11 +1,8 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["bundle-platform/**"]
-    },
-    "build-config": {
       "outputs": ["bundle-platform/**"]
     },
     "lint": {
