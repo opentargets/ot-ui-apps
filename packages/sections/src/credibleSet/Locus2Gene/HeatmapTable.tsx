@@ -216,7 +216,7 @@ function BodyRow({ rowData: row, colorInterpolator, data }) {
         handleMouseLeave={handleMouseLeave}
         over={over}
       >
-        <FeatureChartCell
+        <DetailCell
           geneSymbol={row.targetSymbol}
           score={row.score.toFixed(3)}
           mouseLeaveRow={handleMouseLeave}
@@ -292,25 +292,32 @@ function HeatCell({
   waterfallXDomain, // for row
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const filteredWaterfallRow = structuredClone(waterfallRow);
-  filteredWaterfallRow.features = filteredWaterfallRow.features.filter(d => {
-    return featureToGroup[d.name] === groupName;
-  });
-  const { row, xDomain } = computeWaterfall(filteredWaterfallRow, waterfallXDomain, true);
-  const plotWidth =
-    waterfallMargins.left +
-    waterfallMargins.right +
-    (waterfallMaxCanvasWidth * (xDomain[1] - xDomain[0])) /
-      (waterfallXDomain[1] - waterfallXDomain[0]);
-  let xTicks;
-  const xRange = xDomain[1] - xDomain[0];
-  if (xDomain.includes(0)) xTicks = xDomain;
-  else if (Math.abs(xDomain[0]) < xRange / 4) xTicks = [0, xDomain[1]];
-  else if (Math.abs(xDomain[1]) < xRange / 4) xTicks = [xDomain[0], 0];
-  else xTicks = [...xDomain, 0];
+  const [plotProps, setPlotProps] = useState(null);
 
   function handleClick(event) {
+    const filteredWaterfallRow = structuredClone(waterfallRow);
+    filteredWaterfallRow.features = filteredWaterfallRow.features.filter(d => {
+      return featureToGroup[d.name] === groupName;
+    });
+    const { row, xDomain } = computeWaterfall(filteredWaterfallRow, waterfallXDomain, true);
+    const plotWidth =
+      waterfallMargins.left +
+      waterfallMargins.right +
+      (waterfallMaxCanvasWidth * (xDomain[1] - xDomain[0])) /
+        (waterfallXDomain[1] - waterfallXDomain[0]);
+    let xTicks;
+    const xRange = xDomain[1] - xDomain[0];
+    if (xDomain.includes(0)) xTicks = xDomain;
+    else if (Math.abs(xDomain[0]) < xRange / 4) xTicks = [0, xDomain[1]];
+    else if (Math.abs(xDomain[1]) < xRange / 4) xTicks = [xDomain[0], 0];
+    else xTicks = [...xDomain, 0];
+    setPlotProps({
+      data: row,
+      otherData: { margins: waterfallMargins, xDomain, xTicks },
+      minWidth: plotWidth,
+      maxWidth: plotWidth,
+      renderChart: renderWaterfallPlot,
+    });
     setAnchorEl(event.currentTarget);
   }
 
@@ -320,7 +327,7 @@ function HeatCell({
   }
 
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  const id = open ? "plot-popover" : undefined;
 
   return (
     <>
@@ -373,13 +380,7 @@ function HeatCell({
       >
         <ClosePlot handleClose={handleClose} />
         <Box sx={{ px: 3, pt: 3.5, pb: 2 }}>
-          <ObsPlot
-            data={row}
-            otherData={{ margins: waterfallMargins, xDomain, xTicks }}
-            minWidth={plotWidth}
-            maxWidth={plotWidth}
-            renderChart={renderWaterfallPlot}
-          />
+          <ObsPlot {...plotProps} />
         </Box>
       </Popover>
     </>
@@ -404,14 +405,7 @@ function BaseCell({ value }) {
   );
 }
 
-function FeatureChartCell({
-  geneSymbol,
-  score,
-  mouseLeaveRow,
-  waterfallRow,
-  waterfallXDomain,
-  over,
-}) {
+function DetailCell({ geneSymbol, score, mouseLeaveRow, waterfallRow, waterfallXDomain, over }) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
