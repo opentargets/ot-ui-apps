@@ -118,11 +118,9 @@ function HeatmapTable({ query, data, variables, columns, loading }) {
             my: 4,
           }}
         >
-          <Box component="caption" sx={{ pt: 2, captionSide: "bottom", textAlign: "left" }}>
+          <Box component="caption" sx={{ pt: 3, captionSide: "bottom", textAlign: "left" }}>
             <HeatmapLegend
               legendOptions={{
-                // width: 700,
-                // height: 100,
                 color: {
                   type: "diverging",
                   interpolate: colorInterpolator,

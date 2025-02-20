@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as PlotLib from "@observablehq/plot";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 function HeatmapLegend({ legendOptions }) {
   const containerRef = useRef(null);
@@ -13,7 +13,12 @@ function HeatmapLegend({ legendOptions }) {
     };
   }, []);
 
-  return <Box ref={containerRef} />;
+  return (
+    <Box>
+      <Typography variant="subtitle2">Shapley probability</Typography>
+      <Box position="relative" top="-12px" ref={containerRef} />
+    </Box>
+  );
 }
 
 export default HeatmapLegend;
