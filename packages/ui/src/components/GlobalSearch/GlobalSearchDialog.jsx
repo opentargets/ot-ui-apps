@@ -43,7 +43,7 @@ function GlobalSearchDialog() {
           "& .MuiPaper-root": {
             width: "80vw",
             maxWidth: "800px",
-            borderRadius: theme => theme.spacing(1),
+            borderRadius: theme => theme.spacing(0.5),
             margin: theme => theme.spacing(6),
           },
         },

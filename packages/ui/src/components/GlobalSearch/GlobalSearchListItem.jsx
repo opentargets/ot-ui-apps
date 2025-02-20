@@ -26,20 +26,16 @@ const JustifyBetween = styled("div")({
   width: "100%",
 });
 
-const ListItemDisplayName = styled("span")(({ theme }) => ({
+const ListItemDisplayName = styled("span")({
   textTransform: "capitalize",
   display: "flex",
   alignItems: "center",
   width: "100%",
-}));
+});
 
 const ItemId = styled("span")({
   padding: "0.3rem 0 0 1rem ",
   fontStyle: "italic",
-});
-
-const FlexSpan = styled("span")({
-  display: "flex",
 });
 
 const RecentItemContainer = styled("li")(({ theme }) => ({
@@ -49,7 +45,7 @@ const RecentItemContainer = styled("li")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   padding: `${theme.spacing(1.5)}`,
-  borderRadius: theme.spacing(1),
+  borderRadius: theme.spacing(0.5),
   color: theme.palette.grey["700"],
   "&:hover": {
     background: theme.palette.grey["200"],
@@ -69,7 +65,7 @@ const TopHitItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   padding: `${theme.spacing(1.5)}`,
-  borderRadius: theme.spacing(1),
+  borderRadius: theme.spacing(0.5),
   color: theme.palette.grey["900"],
   "&:hover": {
     background: theme.palette.grey["200"],
@@ -80,7 +76,7 @@ const TopHitItemContainer = styled("div")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   padding: `${theme.spacing(1.5)} 0`,
-  borderRadius: theme.spacing(1),
+  borderRadius: theme.spacing(0.5),
 }));
 
 function symbolNameOrId(item) {
@@ -160,7 +156,7 @@ function TopHitListItem({ item, onItemClick }) {
     >
       <TopHitItemContainer>
         <JustifyBetween>
-          <Typography variant="h6">
+          <Typography>
             <ListItemDisplayName>
               <Box
                 sx={{
