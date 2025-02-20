@@ -63,12 +63,24 @@ function ChartControls({ data, query, variables, columns }) {
   );
 }
 
-function HeatmapTable({ query, data, variables, columns, loading }) {
+function HeatmapTable({ query, data, variables, loading }) {
   if (loading) return null;
 
   const groupResults = getGroupResults(data.rows);
   const colorInterpolator = getColorInterpolator(groupResults);
   const twoElementDomain = [colorInterpolator.domain()[0], colorInterpolator.domain()[2]];
+
+  const columns = [
+    { id: "targetSymbol", label: "gene" },
+    { id: "score" },
+    { id: "Distance" },
+    { id: "VEP" },
+    { id: "eQTL" },
+    { id: "pQTL" },
+    { id: "sQTL" },
+    { id: "Other" },
+    { id: "shapBaseValue", label: "base" },
+  ];
 
   const theadElement = (
     <thead>
@@ -107,7 +119,8 @@ function HeatmapTable({ query, data, variables, columns, loading }) {
 
   return (
     <>
-      <ChartControls query={query} data={data} variables={variables} columns={columns} />
+      {/* <ChartControls query={query} data={data} variables={variables} columns={columns} /> */}
+      <ChartControls query={query} data={groupResults} variables={variables} columns={columns} />
       <Box display="flex" justifyContent="center">
         <Box
           component="table"
@@ -170,7 +183,7 @@ function BodyRow({ rowData: row, colorInterpolator, data }) {
         handleMouseLeave={handleMouseLeave}
         over={over}
       >
-        <ScoreCell value={row.totalL2GScore?.toFixed(3)} />
+        <ScoreCell value={row.score?.toFixed(3)} />
       </CellWrapper>
       {Object.keys(groupToFeature).map(groupName => {
         return (
@@ -205,7 +218,7 @@ function BodyRow({ rowData: row, colorInterpolator, data }) {
       >
         <FeatureChartCell
           geneSymbol={row.targetSymbol}
-          score={row.totalL2GScore.toFixed(3)}
+          score={row.score.toFixed(3)}
           mouseLeaveRow={handleMouseLeave}
           waterfallRow={waterfallRow}
           waterfallXDomain={waterfallXDomain}
@@ -529,7 +542,7 @@ function getGroupResults(data) {
       targetId: d.target.id,
       targetSymbol: d.target.approvedSymbol,
       shapBaseValue: d.shapBaseValue,
-      totalL2GScore: d.score,
+      score: d.score,
     };
     for (const groupName of featureGroupNames) {
       row[groupName] = 0;
@@ -539,7 +552,7 @@ function getGroupResults(data) {
     }
     return row;
   });
-  rows.sort((a, b) => b.totalL2GScore - a.totalL2GScore);
+  rows.sort((a, b) => b.score - a.score);
   return rows;
 }
 

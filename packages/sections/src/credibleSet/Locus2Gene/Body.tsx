@@ -11,8 +11,6 @@ type BodyProps = {
   entity: string;
 };
 
-const columns = [];
-
 function Body({ studyLocusId, entity }: BodyProps): ReactNode {
   const variables = {
     studyLocusId: studyLocusId,
@@ -34,7 +32,6 @@ function Body({ studyLocusId, entity }: BodyProps): ReactNode {
           data={request.data?.credibleSet.l2GPredictions}
           query={LOCUS2GENE_QUERY.loc.source.body}
           variables={variables}
-          columns={columns}
         />
       )}
     />
