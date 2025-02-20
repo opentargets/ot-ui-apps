@@ -3,7 +3,7 @@ import { Environment, Config } from "./types";
 export const getEnvironmentConfig = (env: Environment): Config => {
   const configs: Record<Environment, Config> = {
     development: {
-      urlApi: "http://localhost:8080",
+      urlApi: "http://localhost:8080fefwe",
       urlAiApi: "http://localhost:8081",
       profile: {},
       googleTagManagerID: null,
@@ -23,4 +23,20 @@ export const getEnvironmentConfig = (env: Environment): Config => {
   };
 
   return configs[env];
+};
+
+// Vite environment variables
+const ENV_API_URL: string | undefined = import.meta.env.VITE_API_URL;
+const ENV_AI_API_URL: string | undefined = import.meta.env.VITE_AI_API_URL;
+
+export const getConfig = (): Config => {
+  return {
+    urlApi: window.configUrlApi ?? ENV_API_URL ?? "",
+    urlAiApi: window.configOTAiApi ?? ENV_AI_API_URL ?? "",
+    profile: window.configProfile ?? {},
+    googleTagManagerID: window.configGoogleTagManagerID ?? null,
+    efoURL: window.configEFOURL ?? "/data/ontology/efo_json/diseases_efo.jsonl",
+    downloadsURL: window.configDownloadsURL ?? "/data/downloads.json",
+    geneticsPortalUrl: window.configGeneticsPortalUrl ?? "https://genetics.opentargets.org",
+  };
 };
