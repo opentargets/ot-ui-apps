@@ -8,60 +8,6 @@ import { renderWaterfallPlot } from "./renderWaterfallPlot";
 import HeatmapLegend from "./HeatmapLegend";
 import { grey } from "@mui/material/colors";
 
-const waterfallMaxWidth = 600;
-const waterfallMargins = {
-  left: 344,
-  right: 40,
-  top: 32,
-  bottom: 36,
-};
-const waterfallMaxCanvasWidth = waterfallMaxWidth - waterfallMargins.left - waterfallMargins.right;
-
-function computeWaterfall(originalRow, fullXDomain, zeroBase) {
-  const row = structuredClone(originalRow);
-  const { features } = row;
-  features.sort((a, b) => Math.abs(a.shapValue) - Math.abs(b.shapValue));
-  for (const [index, feature] of features.entries()) {
-    feature._start = features[index - 1]?._end ?? (zeroBase ? 0 : row.shapBaseValue);
-    feature._end = feature._start + feature.shapValue;
-  }
-  const xExtent = extent(features.map(d => [d._start, d._end]).flat());
-  if (fullXDomain) {
-    const relativeSize = (xExtent[1] - xExtent[0]) / (fullXDomain[1] - fullXDomain[0]);
-    if (relativeSize < 0.25) {
-      const middle = mean(xExtent);
-      const stretch = 0.25 / relativeSize;
-      xExtent[0] = middle + (xExtent[0] - middle) * stretch;
-      xExtent[1] = middle + (xExtent[1] - middle) * stretch;
-    }
-  }
-  const xDomain = scaleLinear().domain(xExtent).nice().domain();
-  return { row, xDomain };
-}
-
-function ChartControls({ rows, query, variables, columns }) {
-  return (
-    <Box
-      sx={{
-        borderColor: grey[300],
-        borderRadius: 1,
-        display: "flex",
-        justifyContent: "flex-end",
-        gap: 1,
-        mb: 2,
-      }}
-    >
-      <DataDownloader
-        btnLabel="Export"
-        rows={rows}
-        query={query}
-        variables={variables}
-        columns={columns}
-      />
-    </Box>
-  );
-}
-
 function HeatmapTable({ query, data, variables, loading }) {
   if (loading) return null;
 
@@ -150,6 +96,8 @@ function HeatmapTable({ query, data, variables, loading }) {
 }
 
 export default HeatmapTable;
+
+// ========== local components ==========
 
 function BodyRow({ row, colorInterpolator, data }) {
   const [over, setOver] = useState(false);
@@ -453,7 +401,39 @@ function ClosePlot({ handleClose }) {
   );
 }
 
+function ChartControls({ rows, query, variables, columns }) {
+  return (
+    <Box
+      sx={{
+        borderColor: grey[300],
+        borderRadius: 1,
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: 1,
+        mb: 2,
+      }}
+    >
+      <DataDownloader
+        btnLabel="Export"
+        rows={rows}
+        query={query}
+        variables={variables}
+        columns={columns}
+      />
+    </Box>
+  );
+}
+
 // ========== constants ==========
+
+const waterfallMaxWidth = 600;
+const waterfallMargins = {
+  left: 344,
+  right: 40,
+  top: 32,
+  bottom: 36,
+};
+const waterfallMaxCanvasWidth = waterfallMaxWidth - waterfallMargins.left - waterfallMargins.right;
 
 const featureToGroup = {
   distanceSentinelFootprint: "Distance",
@@ -531,6 +511,28 @@ function getGroupResults(data) {
   });
   rows.sort((a, b) => b.score - a.score);
   return rows;
+}
+
+function computeWaterfall(originalRow, fullXDomain, zeroBase) {
+  const row = structuredClone(originalRow);
+  const { features } = row;
+  features.sort((a, b) => Math.abs(a.shapValue) - Math.abs(b.shapValue));
+  for (const [index, feature] of features.entries()) {
+    feature._start = features[index - 1]?._end ?? (zeroBase ? 0 : row.shapBaseValue);
+    feature._end = feature._start + feature.shapValue;
+  }
+  const xExtent = extent(features.map(d => [d._start, d._end]).flat());
+  if (fullXDomain) {
+    const relativeSize = (xExtent[1] - xExtent[0]) / (fullXDomain[1] - fullXDomain[0]);
+    if (relativeSize < 0.25) {
+      const middle = mean(xExtent);
+      const stretch = 0.25 / relativeSize;
+      xExtent[0] = middle + (xExtent[0] - middle) * stretch;
+      xExtent[1] = middle + (xExtent[1] - middle) * stretch;
+    }
+  }
+  const xDomain = scaleLinear().domain(xExtent).nice().domain();
+  return { row, xDomain };
 }
 
 function getColorInterpolator(groupResults) {
