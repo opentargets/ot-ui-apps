@@ -35,7 +35,7 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId, genomicLo
           <CrisprDepmapLink id={crisprId} />
           <TepLink ensgId={ensgId} symbol={symbol} />
           <Box component="span">
-            <Tooltip title="chromosome: start - end, strand">
+            <Tooltip title="chromosome:start-end,strand">
               <Box
                 component="span"
                 sx={{
@@ -47,7 +47,7 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId, genomicLo
                   borderRadius: "5px 0 0 5px",
                 }}
               >
-                {genomicLocation?.chromosome} : {genomicLocation?.start}
+                GRCh38
               </Box>
               <Box
                 component="span"
@@ -59,7 +59,8 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId, genomicLo
                   borderRadius: "0 5px 5px 0",
                 }}
               >
-                {genomicLocation?.end},{genomicLocation?.strand}
+                {genomicLocation?.chromosome}:{genomicLocation?.start}-{genomicLocation?.end},
+                {genomicLocation?.strand}
               </Box>
             </Tooltip>
           </Box>
