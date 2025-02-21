@@ -8,7 +8,6 @@ import { renderWaterfallPlot } from "./renderWaterfallPlot";
 import HeatmapLegend from "./HeatmapLegend";
 import { grey } from "@mui/material/colors";
 
-// processing for waterfall plots
 const waterfallMaxWidth = 600;
 const waterfallMargins = {
   left: 344,
@@ -40,7 +39,7 @@ function computeWaterfall(originalRow, fullXDomain, zeroBase) {
   return { row, xDomain };
 }
 
-function ChartControls({ data, query, variables, columns }) {
+function ChartControls({ rows, query, variables, columns }) {
   return (
     <Box
       sx={{
@@ -54,7 +53,7 @@ function ChartControls({ data, query, variables, columns }) {
     >
       <DataDownloader
         btnLabel="Export"
-        rows={data}
+        rows={rows}
         query={query}
         variables={variables}
         columns={columns}
@@ -89,7 +88,11 @@ function HeatmapTable({ query, data, variables, loading }) {
         <th></th>
         <th></th>
         <th></th>
-        <Box component="th" colSpan="3" sx={{ borderBottom: "1px solid #888", paddingBottom: 1 }}>
+        <Box
+          component="th"
+          colSpan="3"
+          sx={{ borderBottom: `1px solid ${grey[600]}`, paddingBottom: 1 }}
+        >
           <Typography variant="subtitle2">Colocalisation</Typography>
         </Box>
         <th></th>
@@ -97,7 +100,7 @@ function HeatmapTable({ query, data, variables, loading }) {
         <th></th>
       </Box>
       <tr>
-        {["Gene", "Score", ...Object.keys(groupToFeature), "Base", ""].map((value, index) => (
+        {["Gene", "Score", ...groupNames, "Base", ""].map((value, index) => (
           <HeaderCell key={index} value={value} textAlign={value === "Gene" ? "right" : "center"} />
         ))}
       </tr>
@@ -107,20 +110,14 @@ function HeatmapTable({ query, data, variables, loading }) {
   const tbodyElement = (
     <tbody>
       {groupResults.map(row => (
-        <BodyRow
-          data={data}
-          key={row.targetId}
-          rowData={row}
-          colorInterpolator={colorInterpolator}
-        />
+        <BodyRow data={data} key={row.targetId} row={row} colorInterpolator={colorInterpolator} />
       ))}
     </tbody>
   );
 
   return (
     <>
-      {/* <ChartControls query={query} data={data} variables={variables} columns={columns} /> */}
-      <ChartControls query={query} data={groupResults} variables={variables} columns={columns} />
+      <ChartControls query={query} rows={groupResults} variables={variables} columns={columns} />
       <Box display="flex" justifyContent="center">
         <Box
           component="table"
@@ -132,7 +129,7 @@ function HeatmapTable({ query, data, variables, loading }) {
             my: 4,
           }}
         >
-          <Box component="caption" sx={{ pt: 3, captionSide: "bottom", textAlign: "left" }}>
+          <Box component="caption" sx={{ mt: 3, captionSide: "bottom", textAlign: "left" }}>
             <HeatmapLegend
               legendOptions={{
                 color: {
@@ -154,7 +151,7 @@ function HeatmapTable({ query, data, variables, loading }) {
 
 export default HeatmapTable;
 
-function BodyRow({ rowData: row, colorInterpolator, data }) {
+function BodyRow({ row, colorInterpolator, data }) {
   const [over, setOver] = useState(false);
 
   const { row: waterfallRow, xDomain: waterfallXDomain } = computeWaterfall(
@@ -169,53 +166,42 @@ function BodyRow({ rowData: row, colorInterpolator, data }) {
     setOver(false);
   }
 
+  const cellWrapperProps = {
+    handleMouseEnter: handleMouseEnter,
+    handleMouseLeave: handleMouseLeave,
+  };
+
   return (
-    <tr key={row.targetId}>
-      <CellWrapper
-        handleMouseEnter={handleMouseEnter}
-        handleMouseLeave={handleMouseLeave}
-        over={over}
-      >
+    <Box
+      component="tr"
+      sx={{
+        "& td": {
+          bgcolor: over ? grey[100] : "transparent",
+        },
+      }}
+    >
+      <CellWrapper {...cellWrapperProps}>
         <GeneCell value={row.targetSymbol} targetId={row.targetId} />
       </CellWrapper>
-      <CellWrapper
-        handleMouseEnter={handleMouseEnter}
-        handleMouseLeave={handleMouseLeave}
-        over={over}
-      >
-        <ScoreCell value={row.score?.toFixed(3)} />
+      <CellWrapper {...cellWrapperProps}>
+        <ScoreCell value={row.score.toFixed(3)} />
       </CellWrapper>
-      {Object.keys(groupToFeature).map(groupName => {
-        return (
-          <CellWrapper
-            key={row[groupName]}
-            handleMouseEnter={handleMouseEnter}
-            handleMouseLeave={handleMouseLeave}
-            over={over}
-          >
-            <HeatCell
-              value={row[groupName]?.toFixed(3)}
-              groupName={groupName}
-              bgrd={colorInterpolator(row[groupName])}
-              mouseLeaveRow={handleMouseLeave}
-              waterfallRow={waterfallRow}
-              waterfallXDomain={waterfallXDomain}
-            />
-          </CellWrapper>
-        );
-      })}
-      <CellWrapper
-        handleMouseEnter={handleMouseEnter}
-        handleMouseLeave={handleMouseLeave}
-        over={over}
-      >
-        <BaseCell value={row.shapBaseValue?.toFixed(3)} />
+      {groupNames.map(groupName => (
+        <CellWrapper key={groupName} {...cellWrapperProps}>
+          <HeatCell
+            value={row[groupName]?.toFixed(3)}
+            groupName={groupName}
+            bgrd={colorInterpolator(row[groupName])}
+            mouseLeaveRow={handleMouseLeave}
+            waterfallRow={waterfallRow}
+            waterfallXDomain={waterfallXDomain}
+          />
+        </CellWrapper>
+      ))}
+      <CellWrapper {...cellWrapperProps}>
+        <BaseCell value={row.shapBaseValue.toFixed(3)} />
       </CellWrapper>
-      <CellWrapper
-        handleMouseEnter={handleMouseEnter}
-        handleMouseLeave={handleMouseLeave}
-        over={over}
-      >
+      <CellWrapper {...cellWrapperProps}>
         <DetailCell
           geneSymbol={row.targetSymbol}
           score={row.score.toFixed(3)}
@@ -225,21 +211,13 @@ function BodyRow({ rowData: row, colorInterpolator, data }) {
           over={over}
         />
       </CellWrapper>
-    </tr>
+    </Box>
   );
 }
 
-function CellWrapper({ handleMouseEnter, handleMouseLeave, over, children }) {
+function CellWrapper({ handleMouseEnter, handleMouseLeave, children }) {
   return (
-    <Box
-      component="td"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      sx={{
-        p: "4px",
-        bgcolor: over ? grey[100] : "transparent",
-      }}
-    >
+    <Box component="td" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} p={0.5}>
       {children}
     </Box>
   );
@@ -259,15 +237,7 @@ function GeneCell({ value, targetId }) {
   return (
     <Box display="flex" justifyContent="end">
       <Link asyncTooltip to={`/target/${targetId}`}>
-        <Typography
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          fontSize={14}
-          textAlign="right"
-        >
-          {value}
-        </Typography>
+        <Typography variant="body2">{value}</Typography>
       </Link>
     </Box>
   );
@@ -275,24 +245,20 @@ function GeneCell({ value, targetId }) {
 
 function ScoreCell({ value }) {
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" borderRadius={1.5}>
-      <Typography fontSize={14} sx={{ pointerEvents: "none" }}>
+    <Box display="flex" justifyContent="center" borderRadius={1.5}>
+      <Typography variant="body2" sx={{ pointerEvents: "none" }}>
         {value}
       </Typography>
     </Box>
   );
 }
 
-function HeatCell({
-  value,
-  bgrd,
-  groupName,
-  mouseLeaveRow,
-  waterfallRow,
-  waterfallXDomain, // for row
-}) {
+function HeatCell({ value, bgrd, groupName, mouseLeaveRow, waterfallRow, waterfallXDomain }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [plotProps, setPlotProps] = useState(null);
+
+  const open = Boolean(anchorEl);
+  const id = open ? "plot-popover" : undefined;
 
   function handleClick(event) {
     const filteredWaterfallRow = structuredClone(waterfallRow);
@@ -323,11 +289,9 @@ function HeatCell({
 
   function handleClose(event) {
     setAnchorEl(null);
+    setPlotProps(null);
     mouseLeaveRow();
   }
-
-  const open = Boolean(anchorEl);
-  const id = open ? "plot-popover" : undefined;
 
   return (
     <>
@@ -390,15 +354,14 @@ function HeatCell({
 function BaseCell({ value }) {
   return (
     <Box
-      height="100%"
       display="flex"
       justifyContent="center"
       alignItems="center"
       borderRadius={1.5}
       py={1.4}
-      outline="1px solid #e3e3e3"
+      outline={`1px solid ${grey[400]}`}
     >
-      <Typography fontSize={13.5} color="#ccc" sx={{ pointerEvents: "none" }}>
+      <Typography fontSize={13.5} color={grey[500]}>
         {value}
       </Typography>
     </Box>
@@ -447,7 +410,7 @@ function DetailCell({ geneSymbol, score, mouseLeaveRow, waterfallRow, waterfallX
       </Box>
       <Dialog maxWidth="md" open={open} onClose={handleClose}>
         <ClosePlot handleClose={handleClose} />
-        <Box sx={{ px: 3, py: 3 }}>
+        <Box p={3}>
           <Typography variant="h6">
             {geneSymbol},{" "}
             <Box component="span" fontSize="0.9em">
@@ -527,28 +490,7 @@ for (const [groupName, group] of Object.entries(groupToFeature)) {
   groupToFeature[groupName] = group.map(arr => arr[0]);
 }
 
-// ========== helpers ==========
-
-function getGroupResults(data) {
-  const featureGroupNames = Object.keys(groupToFeature);
-  const rows = data.map(d => {
-    const row = {
-      targetId: d.target.id,
-      targetSymbol: d.target.approvedSymbol,
-      shapBaseValue: d.shapBaseValue,
-      score: d.score,
-    };
-    for (const groupName of featureGroupNames) {
-      row[groupName] = 0;
-    }
-    for (const feature of d.features) {
-      row[featureToGroup[feature.name]] += feature.shapValue;
-    }
-    return row;
-  });
-  rows.sort((a, b) => b.score - a.score);
-  return rows;
-}
+const groupNames = Object.keys(groupToFeature);
 
 export const DIVERGING_COLORS = [
   rgb("#a01813"),
@@ -564,16 +506,38 @@ export const DIVERGING_COLORS = [
   rgb("#2e5943"),
 ];
 
-function getTargetGroupFeatures(data, targetId, groupName) {
-  const row = data.rows.find(d => d.target.id === targetId);
-  return row.features.filter(feature => featureToGroup[feature.name] === groupName);
+// ========== helpers ==========
+
+function getGroupResults(data) {
+  const rows = data.map(d => {
+    const row = {
+      targetId: d.target.id,
+      targetSymbol: d.target.approvedSymbol,
+      shapBaseValue: d.shapBaseValue,
+      score: d.score,
+    };
+    for (const groupName of groupNames) {
+      row[groupName] = 0;
+    }
+    for (const feature of d.features) {
+      const groupName = featureToGroup[feature.name];
+      if (groupName) {
+        row[groupName] += feature.shapValue;
+      } else {
+        console.warn(`feature ${feature.name} does not belong to any group`);
+      }
+    }
+    return row;
+  });
+  rows.sort((a, b) => b.score - a.score);
+  return rows;
 }
 
 function getColorInterpolator(groupResults) {
   let min = Infinity;
   let max = -Infinity;
   for (const row of groupResults) {
-    for (const groupName of Object.keys(groupToFeature)) {
+    for (const groupName of groupNames) {
       min = Math.min(min, row[groupName]);
       max = Math.max(max, row[groupName]);
     }
