@@ -35,7 +35,7 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId, genomicLo
           <CrisprDepmapLink id={crisprId} />
           <TepLink ensgId={ensgId} symbol={symbol} />
           <Box component="span">
-            <Tooltip title="chromosome:start-end,strand">
+            <Tooltip title="build | chromosome:start-end,strand">
               <Box
                 component="span"
                 sx={{
