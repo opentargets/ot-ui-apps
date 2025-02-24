@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { scaleLinear, scaleDiverging, rgb, extent, mean, interpolateRgbBasis, hsl } from "d3";
+import { hsl } from "d3";
 import { ObsPlot, DataDownloader, Link } from "ui";
 import { Box, Typography, Popover, Dialog } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,27 +7,17 @@ import { faChevronRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { renderWaterfallPlot } from "./renderWaterfallPlot";
 import HeatmapLegend from "./HeatmapLegend";
 import { grey } from "@mui/material/colors";
+import {
+  waterfallMaxWidth,
+  waterfallMargins,
+  waterfallMaxCanvasWidth,
+  featureToGroup,
+  groupNames,
+} from "./constants";
+import { getGroupResults, computeWaterfall, getColorInterpolator } from "./helpers";
 
-function HeatmapTable({ query, data, variables, loading }) {
-  if (loading) return null;
-
-  const groupResults = getGroupResults(data.rows);
-  const colorInterpolator = getColorInterpolator(groupResults);
-  const twoElementDomain = [colorInterpolator.domain()[0], colorInterpolator.domain()[2]];
-
-  const columns = [
-    { id: "targetSymbol", label: "gene" },
-    { id: "score" },
-    { id: "Distance" },
-    { id: "VEP" },
-    { id: "eQTL" },
-    { id: "pQTL" },
-    { id: "sQTL" },
-    { id: "Other" },
-    { id: "shapBaseValue", label: "base" },
-  ];
-
-  const theadElement = (
+function THead({ children }) {
+  return (
     <thead>
       <Box component="tr">
         <th></th>
@@ -45,59 +35,14 @@ function HeatmapTable({ query, data, variables, loading }) {
         <th></th>
         <th></th>
       </Box>
-      <tr>
-        {["Gene", "Score", ...groupNames, "Base", ""].map((value, index) => (
-          <HeaderCell key={index} value={value} textAlign={value === "Gene" ? "right" : "center"} />
-        ))}
-      </tr>
+      <tr>{children}</tr>
     </thead>
-  );
-
-  const tbodyElement = (
-    <tbody>
-      {groupResults.map(row => (
-        <BodyRow data={data} key={row.targetId} row={row} colorInterpolator={colorInterpolator} />
-      ))}
-    </tbody>
-  );
-
-  return (
-    <>
-      <ChartControls query={query} rows={groupResults} variables={variables} columns={columns} />
-      <Box display="flex" justifyContent="center">
-        <Box
-          component="table"
-          sx={{
-            tableLayout: "fixed",
-            width: "90%",
-            maxWidth: "1000px",
-            borderCollapse: "collapse",
-            my: 4,
-          }}
-        >
-          <Box component="caption" sx={{ mt: 3, captionSide: "bottom", textAlign: "left" }}>
-            <HeatmapLegend
-              legendOptions={{
-                color: {
-                  type: "diverging",
-                  interpolate: colorInterpolator,
-                  domain: twoElementDomain,
-                  range: twoElementDomain,
-                },
-              }}
-            />
-          </Box>
-          {theadElement}
-          {tbodyElement}
-        </Box>
-      </Box>
-    </>
   );
 }
 
-export default HeatmapTable;
-
-// ========== local components ==========
+function TBody({ children }) {
+  return <tbody>{children}</tbody>;
+}
 
 function BodyRow({ row, colorInterpolator, data }) {
   const [over, setOver] = useState(false);
@@ -424,126 +369,74 @@ function ChartControls({ rows, query, variables, columns }) {
   );
 }
 
-// ========== constants ==========
+function HeatmapTable({ query, data, variables, loading }) {
+  if (loading) return null;
 
-const waterfallMaxWidth = 600;
-const waterfallMargins = {
-  left: 344,
-  right: 40,
-  top: 32,
-  bottom: 36,
-};
-const waterfallMaxCanvasWidth = waterfallMaxWidth - waterfallMargins.left - waterfallMargins.right;
+  const groupResults = getGroupResults(data.rows);
+  const colorInterpolator = getColorInterpolator(groupResults);
+  const twoElementDomain = [colorInterpolator.domain()[0], colorInterpolator.domain()[2]];
 
-const featureToGroup = {
-  distanceSentinelFootprint: "Distance",
-  distanceSentinelFootprintNeighbourhood: "Distance",
-  distanceFootprintMean: "Distance",
-  distanceFootprintMeanNeighbourhood: "Distance",
-  distanceTssMean: "Distance",
-  distanceTssMeanNeighbourhood: "Distance",
-  distanceSentinelTss: "Distance",
-  distanceSentinelTssNeighbourhood: "Distance",
-  vepMaximum: "VEP",
-  vepMaximumNeighbourhood: "VEP",
-  vepMean: "VEP",
-  vepMeanNeighbourhood: "VEP",
-  eQtlColocClppMaximum: "eQTL",
-  eQtlColocH4Maximum: "eQTL",
-  eQtlColocClppMaximumNeighbourhood: "eQTL",
-  eQtlColocH4MaximumNeighbourhood: "eQTL",
-  pQtlColocH4MaximumNeighbourhood: "pQTL",
-  pQtlColocClppMaximum: "pQTL",
-  pQtlColocH4Maximum: "pQTL",
-  pQtlColocClppMaximumNeighbourhood: "pQTL",
-  sQtlColocClppMaximum: "sQTL",
-  sQtlColocH4Maximum: "sQTL",
-  sQtlColocClppMaximumNeighbourhood: "sQTL",
-  sQtlColocH4MaximumNeighbourhood: "sQTL",
-  geneCount500kb: "Other",
-  proteinGeneCount500kb: "Other",
-  credibleSetConfidence: "Other",
-};
+  const columns = [
+    { id: "targetSymbol", label: "gene" },
+    { id: "score" },
+    { id: "Distance" },
+    { id: "VEP" },
+    { id: "eQTL" },
+    { id: "pQTL" },
+    { id: "sQTL" },
+    { id: "Other" },
+    { id: "shapBaseValue", label: "base" },
+  ];
 
-const groupToFeature = Object.groupBy(Object.entries(featureToGroup), ([feature, group]) => group);
-for (const [groupName, group] of Object.entries(groupToFeature)) {
-  groupToFeature[groupName] = group.map(arr => arr[0]);
+  return (
+    <>
+      <ChartControls query={query} rows={groupResults} variables={variables} columns={columns} />
+      <Box display="flex" justifyContent="center">
+        <Box
+          component="table"
+          sx={{
+            tableLayout: "fixed",
+            width: "90%",
+            maxWidth: "1000px",
+            borderCollapse: "collapse",
+            my: 4,
+          }}
+        >
+          <Box component="caption" sx={{ mt: 3, captionSide: "bottom", textAlign: "left" }}>
+            <HeatmapLegend
+              legendOptions={{
+                color: {
+                  type: "diverging",
+                  interpolate: colorInterpolator,
+                  domain: twoElementDomain,
+                  range: twoElementDomain,
+                },
+              }}
+            />
+          </Box>
+          <THead>
+            {["Gene", "Score", ...groupNames, "Base", ""].map((value, index) => (
+              <HeaderCell
+                key={index}
+                value={value}
+                textAlign={value === "Gene" ? "right" : "center"}
+              />
+            ))}
+          </THead>
+          <TBody>
+            {groupResults.map(row => (
+              <BodyRow
+                data={data}
+                key={row.targetId}
+                row={row}
+                colorInterpolator={colorInterpolator}
+              />
+            ))}
+          </TBody>
+        </Box>
+      </Box>
+    </>
+  );
 }
 
-const groupNames = Object.keys(groupToFeature);
-
-export const DIVERGING_COLORS = [
-  rgb("#a01813"),
-  rgb("#bc3a19"),
-  rgb("#e08145"),
-  rgb("#e3a772"),
-  rgb("#e6ca9c"),
-  rgb("#f2f2f2"),
-  rgb("#c5d2c1"),
-  rgb("#9ebaa8"),
-  rgb("#78a290"),
-  rgb("#2f735f"),
-  rgb("#2e5943"),
-];
-
-// ========== helpers ==========
-
-function getGroupResults(data) {
-  const rows = data.map(d => {
-    const row = {
-      targetId: d.target.id,
-      targetSymbol: d.target.approvedSymbol,
-      shapBaseValue: d.shapBaseValue,
-      score: d.score,
-    };
-    for (const groupName of groupNames) {
-      row[groupName] = 0;
-    }
-    for (const feature of d.features) {
-      const groupName = featureToGroup[feature.name];
-      if (groupName) {
-        row[groupName] += feature.shapValue;
-      } else {
-        console.warn(`feature ${feature.name} does not belong to any group`);
-      }
-    }
-    return row;
-  });
-  rows.sort((a, b) => b.score - a.score);
-  return rows;
-}
-
-function computeWaterfall(originalRow, fullXDomain, zeroBase) {
-  const row = structuredClone(originalRow);
-  const { features } = row;
-  features.sort((a, b) => Math.abs(a.shapValue) - Math.abs(b.shapValue));
-  for (const [index, feature] of features.entries()) {
-    feature._start = features[index - 1]?._end ?? (zeroBase ? 0 : row.shapBaseValue);
-    feature._end = feature._start + feature.shapValue;
-  }
-  const xExtent = extent(features.map(d => [d._start, d._end]).flat());
-  if (fullXDomain) {
-    const relativeSize = (xExtent[1] - xExtent[0]) / (fullXDomain[1] - fullXDomain[0]);
-    if (relativeSize < 0.25) {
-      const middle = mean(xExtent);
-      const stretch = 0.25 / relativeSize;
-      xExtent[0] = middle + (xExtent[0] - middle) * stretch;
-      xExtent[1] = middle + (xExtent[1] - middle) * stretch;
-    }
-  }
-  const xDomain = scaleLinear().domain(xExtent).nice().domain();
-  return { row, xDomain };
-}
-
-function getColorInterpolator(groupResults) {
-  let min = Infinity;
-  let max = -Infinity;
-  for (const row of groupResults) {
-    for (const groupName of groupNames) {
-      min = Math.min(min, row[groupName]);
-      max = Math.max(max, row[groupName]);
-    }
-  }
-  Math.abs(min) > max ? (max = -min) : (min = -max);
-  return scaleDiverging().domain([min, 0, max]).interpolator(interpolateRgbBasis(DIVERGING_COLORS));
-}
+export default HeatmapTable;
