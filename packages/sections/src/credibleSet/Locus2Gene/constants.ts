@@ -46,9 +46,6 @@ export const groupToFeature = Object.groupBy(
   Object.entries(featureToGroup),
   ([feature, group]) => group
 );
-for (const [groupName, group] of Object.entries(groupToFeature)) {
-  groupToFeature[groupName] = group.map(arr => arr[0]);
-}
 
 export const groupNames = Object.keys(groupToFeature);
 
