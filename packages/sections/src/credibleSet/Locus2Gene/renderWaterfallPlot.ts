@@ -94,7 +94,7 @@ export function renderWaterfallPlot({
         fontVariant: "common-ligatures tabular-nums",
       }),
 
-      // vertical line at total score - and label at top
+      // vertical line at total score
       PlotLib.ruleX(features.slice(-1), {
         x: "_end",
         stroke: "#000",
@@ -103,24 +103,24 @@ export function renderWaterfallPlot({
       }),
 
       // vertical line at base score - and label at bottom
-      PlotLib.tickX(labelBase ? [0] : [], {
-        x: d => shapBaseValue,
-        y: d => features[0].name,
+      PlotLib.tickX(labelBase ? features.slice(0, 1) : [], {
+        x: shapBaseValue,
+        y: "name",
         dy: 24,
         strokeOpacity: 0.3,
         strokeDasharray: "4,3",
       }),
-      PlotLib.text(features.slice(-1), {
-        x: d => shapBaseValue,
-        y: d => features[0].name,
-        text: d => (labelBase ? `Base: ${shapBaseValue.toFixed(3)}` : ""),
+      PlotLib.text(labelBase ? features.slice(0, 1) : [], {
+        x: shapBaseValue,
+        y: "name",
+        text: d => `Base: ${shapBaseValue.toFixed(3)}`,
         dy: 40,
         fontSize: textFontSize,
       }),
 
       // bars
       PlotLib.ruleY(
-        features.filter(d => d.shapValue !== 0),
+        features.filter(d => Math.abs(d.shapValue) > 0.0005),
         {
           x1: "_start",
           x2: "_end",
@@ -136,7 +136,7 @@ export function renderWaterfallPlot({
         y: "name",
         stroke: "#000",
         strokeOpacity: 0.2,
-        dy: -10,
+        dy: -10.5,
       }),
 
       // extra vertical bar at bottom
@@ -145,7 +145,7 @@ export function renderWaterfallPlot({
         y: "name",
         stroke: "#000",
         strokeOpacity: 0.2,
-        dy: 10,
+        dy: 10.5,
       }),
 
       // show shap values in or next to bars
