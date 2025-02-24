@@ -8,8 +8,8 @@ import OtAsyncTooltip from "./OtAsyncTooltip/OtAsyncTooltip";
 const useStyles = makeStyles(theme => ({
   base: {
     fontSize: "inherit",
-    "text-decoration-color": "white",
-    "-webkit-text-decoration-color": "white",
+    "text-decoration-color": "transparent",
+    "-webkit-text-decoration-color": "transparent",
   },
   baseDefault: {
     color: theme.palette.primary.main,
