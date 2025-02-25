@@ -353,3 +353,15 @@ export const getStudyItemMetaData = ({ studyType, credibleSetsCount, nSamples })
 
   return metaData;
 };
+
+export const getGenomicLocation = genomicLocation => {
+  /****
+   * TODO: add GRCh38 to this function
+   * check all the locations we are using this
+   * option 1:  getGenomicLocation() -> ["GRCh38", "chromosome-string"]
+   * option 2:  getGenomicLocation("GRCh38") -> "GRCh38|chromosome-string"
+   ****/
+  return `${genomicLocation?.chromosome}:${genomicLocation?.start}-${genomicLocation?.end},${
+    Math.sign(genomicLocation?.strand) === "1" ? "+" : "-"
+  }`;
+};

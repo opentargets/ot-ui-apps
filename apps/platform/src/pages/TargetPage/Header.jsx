@@ -9,6 +9,7 @@ import {
   Header as HeaderBase,
   Tooltip,
 } from "ui";
+import { getGenomicLocation } from "ui/src/constants";
 
 function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId, genomicLocation }) {
   const ensemblUrl = `https://identifiers.org/ensembl:${ensgId}`;
@@ -47,6 +48,7 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId, genomicLo
                   borderRadius: "5px 0 0 5px",
                 }}
               >
+                {/* TODO: check UI and add it to getGenomicLocation function */}
                 GRCh38
               </Box>
               <Box
@@ -59,8 +61,7 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId, genomicLo
                   borderRadius: "0 5px 5px 0",
                 }}
               >
-                {genomicLocation?.chromosome}:{genomicLocation?.start}-{genomicLocation?.end},
-                {genomicLocation?.strand}
+                {getGenomicLocation(genomicLocation)}
               </Box>
             </Tooltip>
           </Box>
