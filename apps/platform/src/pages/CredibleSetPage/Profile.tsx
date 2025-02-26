@@ -24,7 +24,13 @@ const Locus2GeneSection = lazy(() => import("sections/src/credibleSet/Locus2Gene
 
 const CREDIBLE_SET = "credibleSet";
 
-function Profile({ studyLocusId, variantId, referenceAllele, alternateAllele }: ProfileProps) {
+function Profile({
+  studyLocusId,
+  variantId,
+  referenceAllele,
+  alternateAllele,
+  loading,
+}: ProfileProps) {
   const summaries = [VariantsSummary, Locus2GeneSummary, GWASColocSummary, GWASMolQTLSummary];
 
   const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
@@ -44,6 +50,8 @@ function Profile({ studyLocusId, variantId, referenceAllele, alternateAllele }: 
     ${ProfileHeader.fragments.profileHeader}
     ${CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT}
   `;
+
+  if (loading) return <></>;
 
   return (
     <PlatformApiProvider
