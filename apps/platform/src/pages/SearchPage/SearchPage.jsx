@@ -72,18 +72,7 @@ function SearchPage() {
 
   let SEARCH_CONTAINER = null;
 
-  if (data && data.search.total === 0) {
-    SEARCH_CONTAINER = (
-      <EmptyPage
-        communityLink={config.profile.communityUrl}
-        documentationLink={config.profile.documentationUrl}
-      >
-        <Typography>
-          We could not find anything in the Platform database that matches &quot;{q}&quot;
-        </Typography>
-      </EmptyPage>
-    );
-  } else if (data) {
+  if (data) {
     SEARCH_CONTAINER = (
       <SearchContainer
         q={q}
