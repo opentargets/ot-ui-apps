@@ -8,23 +8,23 @@ import {
   SectionLoader,
 } from "ui";
 
-import KnownDrugsSummary from "sections/src/target/KnownDrugs/Summary";
-import TractabilitySummary from "sections/src/target/Tractability/Summary";
-import SafetySummary from "sections/src/target/Safety/Summary";
-import PharmacogenomicsSummary from "sections/src/target/Pharmacogenomics/Summary";
-import ChemicalProbesSummary from "sections/src/target/ChemicalProbes/Summary";
-import BaselineExpressionSummary from "sections/src/target/Expression/Summary";
-import DepMapSummary from "sections/src/target/DepMap/Summary";
-import GeneOntologySummary from "sections/src/target/GeneOntology/Summary";
-import GeneticConstraintSummary from "sections/src/target/GeneticConstraint/Summary";
+// import KnownDrugsSummary from "sections/src/target/KnownDrugs/Summary";
+// import TractabilitySummary from "sections/src/target/Tractability/Summary";
+// import SafetySummary from "sections/src/target/Safety/Summary";
+// import PharmacogenomicsSummary from "sections/src/target/Pharmacogenomics/Summary";
+// import ChemicalProbesSummary from "sections/src/target/ChemicalProbes/Summary";
+// import BaselineExpressionSummary from "sections/src/target/Expression/Summary";
+// import DepMapSummary from "sections/src/target/DepMap/Summary";
+// import GeneOntologySummary from "sections/src/target/GeneOntology/Summary";
+// import GeneticConstraintSummary from "sections/src/target/GeneticConstraint/Summary";
 import ProtVistaSummary from "sections/src/target/ProtVista/Summary";
-import MolecularInteractionsSummary from "sections/src/target/MolecularInteractions/Summary";
-import PathwaysSummary from "sections/src/target/Pathways/Summary";
-import CancerHallmarksSummary from "sections/src/target/CancerHallmarks/Summary";
-import MousePhenotypesSummary from "sections/src/target/MousePhenotypes/Summary";
-import ComparativeGenomicsSummary from "sections/src/target/ComparativeGenomics/Summary";
-import SubcellularLocationSummary from "sections/src/target/SubcellularLocation/Summary";
-import BibliographySummary from "sections/src/target/Bibliography/Summary";
+// import MolecularInteractionsSummary from "sections/src/target/MolecularInteractions/Summary";
+// import PathwaysSummary from "sections/src/target/Pathways/Summary";
+// import CancerHallmarksSummary from "sections/src/target/CancerHallmarks/Summary";
+// import MousePhenotypesSummary from "sections/src/target/MousePhenotypes/Summary";
+// import ComparativeGenomicsSummary from "sections/src/target/ComparativeGenomics/Summary";
+// import SubcellularLocationSummary from "sections/src/target/SubcellularLocation/Summary";
+// import BibliographySummary from "sections/src/target/Bibliography/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 import client from "../../client";

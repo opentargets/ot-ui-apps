@@ -11,6 +11,7 @@
     "prettier:all": "prettier --write \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\""
   },
   "dependencies": {
+    "3dmol": "^2.4.2",
     "@apollo/client": "3.10.8",
     "@ebi-gene-expression-group/expression-atlas-heatmap-highcharts": "^5.4.1-beta1",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
@@ -32,6 +33,7 @@
     "litemol": "^2.4.2",
     "local-storage": "^2.0.0",
     "lodash": "^4.17.21",
+    "molstar": "^4.11.0",
     "protvista-uniprot": "2.11.1",
     "react": "^18.2.0",
     "react-helmet": "^6.0.0",
