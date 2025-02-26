@@ -12,7 +12,6 @@ import SharedTraitStudiesSummary from "sections/src/study/SharedTraitStudies/Sum
 import GWASCredidbleSetsSummary from "sections/src/study/GWASCredibleSets/Summary";
 import QTLCredibleSetsSummary from "sections/src/study/QTLCredibleSets/Summary";
 
-import client from "../../client";
 import ProfileHeader from "./StudyProfileHeader";
 
 const SharedTraitStudiesSection = lazy(() => import("sections/src/study/SharedTraitStudies/Body"));
@@ -64,7 +63,6 @@ function Profile({ studyId, studyType, projectId, diseases }: ProfileProps) {
         studyId,
         diseaseIds,
       }}
-      client={client}
     >
       <ProfileHeader />
 

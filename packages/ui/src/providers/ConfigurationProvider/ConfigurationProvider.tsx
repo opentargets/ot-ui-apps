@@ -1,29 +1,29 @@
 import { PropsWithChildren, createContext, useContext } from "react";
-import { getConfig, Config } from "@ot/config";
-
-const config = getConfig();
+import { Config } from "@ot/config";
+import { OTApolloProvider } from "../OTApolloProvider/OTApolloProvider";
 
 type ContextType = {
-  config: Config;
+  config: Config | null;
 };
-
 interface ProviderProps extends PropsWithChildren {
-  // config: Config;
-  // client: ApolloClient<NormalizedCacheObject>;
+  config: Config | null;
 }
 
-const initialState: { config: Config } = { config };
+export const OTConfigurationContext = createContext<ContextType>({ config: null });
 
-export const ConfigurationContext = createContext<ContextType>(initialState);
-
-export const ConfigurationProvider = ({ children }: ProviderProps): JSX.Element => {
+export const OTConfigurationProvider = ({ children, config }: ProviderProps): JSX.Element => {
+  if (!config) {
+    throw new Error("ConfigurationProvider requires a config object");
+  }
   return (
-    <ConfigurationContext.Provider value={{ config }}>{children}</ConfigurationContext.Provider>
+    <OTConfigurationContext.Provider value={{ config }}>
+      <OTApolloProvider config={config}>{children}</OTApolloProvider>
+    </OTConfigurationContext.Provider>
   );
 };
 
-export const useConfigContext = (): ContextType => {
-  const context = useContext(ConfigurationContext);
+export const OTuseConfigContext = (): ContextType => {
+  const context = useContext(OTConfigurationContext);
 
   if (!context) {
     throw new Error("useConfigContext must be used inside the ConfigurationProvider");

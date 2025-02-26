@@ -1,7 +1,14 @@
 import { ReactElement } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { ApolloProvider } from "@apollo/client";
-import { ThemeProvider, SearchProvider, PrivateRoute, ConfigurationProvider } from "ui";
+
+import {
+  ThemeProvider,
+  SearchProvider,
+  PrivateRoute,
+  ConfigurationProvider,
+  OTConfigurationProvider,
+} from "ui";
+import { getConfig } from "@ot/config";
 
 import SEARCH_QUERY from "./components/Search/SearchQuery.gql";
 import client from "./client";
@@ -21,10 +28,12 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import { getSuggestedSearch } from "./utils/global";
 
+const config = getConfig();
+
 function App(): ReactElement {
   const suggestions = getSuggestedSearch();
   return (
-    <ApolloProvider client={client}>
+    <OTConfigurationProvider config={config}>
       <ConfigurationProvider client={client}>
         <ThemeProvider theme={theme}>
           <SearchProvider
@@ -59,7 +68,7 @@ function App(): ReactElement {
           </SearchProvider>
         </ThemeProvider>
       </ConfigurationProvider>
-    </ApolloProvider>
+    </OTConfigurationProvider>
   );
 }
 

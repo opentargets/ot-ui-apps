@@ -14,7 +14,6 @@ import GWASColocSummary from "sections/src/credibleSet/GWASColoc/Summary";
 import GWASMolQTLSummary from "sections/src/credibleSet/MolQTLColoc/Summary";
 import Locus2GeneSummary from "sections/src/credibleSet/Locus2Gene/Summary";
 
-import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
 const MolQTLColocSection = lazy(() => import("sections/src/credibleSet/MolQTLColoc/Body"));
@@ -51,7 +50,6 @@ function Profile({ studyLocusId, variantId, referenceAllele, alternateAllele }: 
       entity={CREDIBLE_SET}
       query={CREDIBLE_SET_PROFILE_QUERY}
       variables={{ studyLocusId: studyLocusId, variantIds: [variantId] }}
-      client={client}
     >
       <ProfileHeader />
 

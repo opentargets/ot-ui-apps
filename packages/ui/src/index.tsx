@@ -58,6 +58,7 @@ export { default as Page } from "./pages/Page";
 
 export { default as PlatformApiProvider } from "./contexts/PlatformApiProvider";
 export * from "./contexts/ConfigurationProvider";
+export * from "./providers/ConfigurationProvider/ConfigurationProvider";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Section";

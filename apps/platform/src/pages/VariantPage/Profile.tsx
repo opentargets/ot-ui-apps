@@ -16,7 +16,6 @@ import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary
 import GWASCredibleSetsSummary from "sections/src/variant/GWASCredibleSets/Summary";
 import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
 
-import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 const PharmacogenomicsSection = lazy(() => import("sections/src/variant/Pharmacogenomics/Body"));
 const InSilicoPredictorsSection = lazy(
@@ -64,7 +63,6 @@ function Profile({ varId }: ProfileProps) {
       entity={VARIANT}
       query={VARIANT_PROFILE_QUERY}
       variables={{ variantId: varId }}
-      client={client}
     >
       <ProfileHeader />
 
