@@ -5,7 +5,7 @@ import {
   ThemeProvider,
   SearchProvider,
   PrivateRoute,
-  ConfigurationProvider,
+  APIMetadataProvider,
   OTConfigurationProvider,
 } from "ui";
 import { getConfig } from "@ot/config";
@@ -34,7 +34,7 @@ function App(): ReactElement {
   const suggestions = getSuggestedSearch();
   return (
     <OTConfigurationProvider config={config}>
-      <ConfigurationProvider client={client}>
+      <APIMetadataProvider client={client}>
         <ThemeProvider theme={theme}>
           <SearchProvider
             searchSuggestions={suggestions}
@@ -67,7 +67,7 @@ function App(): ReactElement {
             </Router>
           </SearchProvider>
         </ThemeProvider>
-      </ConfigurationProvider>
+      </APIMetadataProvider>
     </OTConfigurationProvider>
   );
 }

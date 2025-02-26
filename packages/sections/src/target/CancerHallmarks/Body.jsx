@@ -69,6 +69,7 @@ function Section({ id, label: symbol, entity }) {
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={() => {
+        if (request.data?.target.hallmarks === null) return null;
         const roleInCancer = request.data?.target.hallmarks.attributes
           .filter(a => a.name === "role in cancer")
           .map(r => ({

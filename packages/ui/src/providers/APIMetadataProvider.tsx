@@ -38,9 +38,9 @@ const initialState: ContextType = {
   },
   client: null,
 };
-export const ConfigurationContext = createContext<ContextType | undefined>(undefined);
+export const APIMetadataContext = createContext<ContextType | undefined>(undefined);
 
-export const ConfigurationProvider = ({ children, client }: ProviderProps): JSX.Element => {
+export const APIMetadataProvider = ({ children, client }: ProviderProps): JSX.Element => {
   const [version, setVersion] = useState<ContextType["version"]>(initialState.version);
 
   const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
@@ -70,17 +70,17 @@ export const ConfigurationProvider = ({ children, client }: ProviderProps): JSX.
   }, [data, loading, error]);
 
   return (
-    <ConfigurationContext.Provider value={{ version, client }}>
+    <APIMetadataContext.Provider value={{ version, client }}>
       {children}
-    </ConfigurationContext.Provider>
+    </APIMetadataContext.Provider>
   );
 };
 
-export const useConfigContext = (): ContextType => {
-  const context = useContext(ConfigurationContext);
+export const useAPIMetadata = (): ContextType => {
+  const context = useContext(APIMetadataContext);
 
   if (!context) {
-    throw new Error("useConfigContext must be used inside the ConfigurationProvider");
+    throw new Error("useAPIMetadata must be used inside the APIMetadataProvider");
   }
 
   return context;

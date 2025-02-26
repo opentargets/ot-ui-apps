@@ -1,8 +1,5 @@
 export { default as Footer } from "./components/Footer";
-export * from "./components/Footer";
-export { default as ThemeProvider } from "./providers/ThemeProvider/ThemeProvider";
 export { default as LoadingBackdrop } from "./components/LoadingBackdrop";
-export * from "./components/GlobalSearch/SearchContext";
 export { default as LongText } from "./components/LongText";
 export { default as LongList } from "./components/LongList";
 export { default as SummaryContainer } from "./components/Summary/SummaryContainer";
@@ -37,7 +34,6 @@ export { default as OtAsyncTooltip } from "./components/OtAsyncTooltip/OtAsyncTo
 export { default as DetailPopover } from "./components/DetailPopover";
 export { default as SummaryStatsTable } from "./components/SummaryStatsTable";
 export { default as KnownDrugsSourceDrawer } from "./components/KnownDrugsSourceDrawer";
-
 export { default as PrivateWrapper } from "./components/PrivateWrapper";
 export { default as NavBar } from "./components/NavBar";
 export { default as ClinvarStars } from "./components/ClinvarStars";
@@ -51,18 +47,11 @@ export { default as OtPopper } from "./components/OtPopper";
 export { default as OtScoreLinearBar } from "./components/OtScoreLinearBar";
 export { default as OtTableSSP } from "./components/OtTable/OtTableSSP";
 export { default as EntityPanel } from "./components/EntityPanel/EntityPanel";
-
-export { default as EmptyPage } from "./pages/EmptyPage";
-export { default as NotFoundPage } from "./pages/NotFoundPage";
 export { default as Page } from "./pages/Page";
 
-export { default as PlatformApiProvider } from "./contexts/PlatformApiProvider";
-export * from "./contexts/ConfigurationProvider";
-export * from "./providers/ConfigurationProvider/ConfigurationProvider";
-
 export * as summaryUtils from "./components/Summary/utils";
+export * from "./components/Footer";
 export * from "./components/Section";
-
 export * from "./components/ProfileHeader";
 export * from "./components/DownloadSvgPlot";
 export * from "./components/Table";
@@ -70,17 +59,22 @@ export * from "./components/PublicationsDrawer";
 export * from "./components/ExternalLink";
 export * from "./components/RoutingTabs";
 
-/* HOOKS */
+/* SHARED PAGES  */
+export { default as EmptyPage } from "./pages/EmptyPage";
+export { default as NotFoundPage } from "./pages/NotFoundPage";
 
+/* PROVIDERS */
+export * from "./components/GlobalSearch/SearchContext";
+export * from "./providers/APIMetadataProvider";
+export * from "./providers/ConfigurationProvider";
+export { default as PlatformApiProvider } from "./providers/PlatformApiProvider";
+export { default as ThemeProvider } from "./providers/ThemeProvider/ThemeProvider";
+
+/* HOOKS */
 export { default as usePlatformApi } from "./hooks/usePlatformApi";
 export { default as useStateParams } from "./hooks/useStateParams";
-
 export { default as useBatchDownloader } from "./hooks/useBatchDownloader";
 export { default as useBatchQuery } from "./hooks/useBatchQuery";
 export { default as useCursorBatchDownloader } from "./hooks/useCursorBatchDownloader";
 export { default as usePermissions } from "./hooks/usePermissions";
 export { default as useDebounce } from "./hooks/useDebounce";
-
-/* TYPES */
-
-// export { default as responseType } from "./types/response";
