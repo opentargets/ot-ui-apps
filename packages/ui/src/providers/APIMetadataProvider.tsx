@@ -1,5 +1,5 @@
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
-import { gql, useQuery, ApolloError, NormalizedCacheObject, ApolloClient } from "@apollo/client";
+import { gql, useQuery, ApolloError } from "@apollo/client";
 
 // QUERY
 const DATA_VERSION_QUERY = gql`
@@ -22,12 +22,7 @@ type Version = {
 
 type ContextType = {
   version: Version;
-  client: ApolloClient<NormalizedCacheObject> | null;
 };
-
-interface ProviderProps extends PropsWithChildren {
-  client: ApolloClient<NormalizedCacheObject>;
-}
 
 const initialState: ContextType = {
   version: {
@@ -36,11 +31,10 @@ const initialState: ContextType = {
     month: "0",
     year: "0",
   },
-  client: null,
 };
-export const ConfigurationContext = createContext<ContextType | undefined>(undefined);
+export const APIMetadataContext = createContext<ContextType | undefined>(undefined);
 
-export const ConfigurationProvider = ({ children, client }: ProviderProps): JSX.Element => {
+export const APIMetadataProvider = ({ children }: PropsWithChildren): JSX.Element => {
   const [version, setVersion] = useState<ContextType["version"]>(initialState.version);
 
   const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
@@ -69,18 +63,14 @@ export const ConfigurationProvider = ({ children, client }: ProviderProps): JSX.
     });
   }, [data, loading, error]);
 
-  return (
-    <ConfigurationContext.Provider value={{ version, client }}>
-      {children}
-    </ConfigurationContext.Provider>
-  );
+  return <APIMetadataContext.Provider value={{ version }}>{children}</APIMetadataContext.Provider>;
 };
 
-export const useConfigContext = (): ContextType => {
-  const context = useContext(ConfigurationContext);
+export const useAPIMetadata = (): ContextType => {
+  const context = useContext(APIMetadataContext);
 
   if (!context) {
-    throw new Error("useConfigContext must be used inside the ConfigurationProvider");
+    throw new Error("useAPIMetadata must be used inside the APIMetadataProvider");
   }
 
   return context;

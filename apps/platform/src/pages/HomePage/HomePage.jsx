@@ -18,6 +18,8 @@ import {
   faMapPin,
   faChartBar,
 } from "@fortawesome/free-solid-svg-icons";
+import { grey } from "@mui/material/colors";
+import { getConfig } from "@ot/config";
 import {
   appTitle,
   appDescription,
@@ -29,8 +31,7 @@ import HomeBox from "./HomeBox";
 import Splash from "./Splash";
 import Version from "./Version";
 
-import config from "../../config";
-import { grey } from "@mui/material/colors";
+const config = getConfig();
 
 const useStyles = makeStyles(() => ({
   links: {

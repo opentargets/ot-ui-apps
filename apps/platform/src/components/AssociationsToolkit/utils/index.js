@@ -1,7 +1,9 @@
 import { scaleQuantize, rgb } from "d3";
 import Legend from "./Legend";
 import dataSources from "../static_datasets/dataSourcesAssoc";
-import config from "../../../config";
+import { getConfig } from "@ot/config";
+
+const config = getConfig();
 
 export const { isPartnerPreview } = config.profile;
 

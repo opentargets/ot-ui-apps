@@ -7,7 +7,9 @@ import {
   faGithubSquare,
   faYoutubeSquare,
 } from "@fortawesome/free-brands-svg-icons";
-import config from "./config";
+import { getConfig } from "@ot/config";
+
+const config = getConfig();
 
 // Interfaces for structured data
 interface ExternalLink {

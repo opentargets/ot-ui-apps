@@ -1,12 +1,14 @@
 import { lighten, darken } from "polished";
-import config from "./config";
 import { grey } from "@mui/material/colors";
-import { ThemeOptions } from "@mui/material/styles";
+import { ThemeOptions, createTheme } from "@mui/material/styles";
+import { getConfig } from "./environment";
+
+const config = getConfig();
 
 const PRIMARY: string = config.profile.primaryColor;
 const SECONDARY: string = config.profile.secondaryColor;
 
-const theme: ThemeOptions = {
+const themeOptions: ThemeOptions = {
   shape: {
     borderRadius: 2,
   },
@@ -185,4 +187,4 @@ const theme: ThemeOptions = {
   },
 };
 
-export default theme;
+export const theme = createTheme(themeOptions);

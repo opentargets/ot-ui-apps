@@ -29,7 +29,8 @@ import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { faCaretDown, faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tooltip, useConfigContext } from "ui";
+import { Tooltip, useAPIMetadata } from "ui";
+import { getConfig } from "@ot/config";
 import useBatchDownloader from "../hooks/useBatchDownloader";
 import useAotfContext from "../hooks/useAotfContext";
 import OriginalDataSources from "../static_datasets/dataSourcesAssoc";
@@ -41,8 +42,10 @@ import {
   createBlob,
   getFilteredColumnArray,
 } from "../utils/downloads";
-import config from "../../../config";
+
 import CopyUrlButton from "./CopyUrlButton";
+
+const config = getConfig();
 
 const { isPartnerPreview } = config.profile;
 
@@ -150,7 +153,7 @@ const actions = {
 
 function DataDownloader() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { version } = useConfigContext();
+  const { version } = useAPIMetadata();
   const classes = styles();
   const {
     id,

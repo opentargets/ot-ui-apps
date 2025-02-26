@@ -6,7 +6,9 @@ import { LoadingBackdrop, EmptyPage, BasePage } from "ui";
 
 import client from "../../client";
 import SEARCH_PAGE_QUERY from "./SearchPageQuery.gql";
-import config from "../../config";
+import { getConfig } from "@ot/config";
+
+const config = getConfig();
 
 const SearchContainer = lazy(() => import("./SearchContainer"));
 
