@@ -1,11 +1,11 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
-import possibleTypes from "./possibleTypes.json";
-import config from "./config";
+import { getConfig } from "@ot/config";
+
+const config = getConfig();
 
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   uri: config.urlApi,
   cache: new InMemoryCache({
-    possibleTypes,
     typePolicies: {
       ScoredComponent: {
         keyFields: ["componentId", "score"],

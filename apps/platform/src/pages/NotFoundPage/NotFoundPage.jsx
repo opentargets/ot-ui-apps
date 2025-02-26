@@ -1,7 +1,9 @@
 import { Typography } from "@mui/material";
 
 import { EmptyPage, BasePage } from "ui";
-import config from "../../config";
+import { getConfig } from "@ot/config";
+
+const config = getConfig();
 
 function NotFoundPage() {
   return (

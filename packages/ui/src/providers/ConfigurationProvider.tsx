@@ -1,6 +1,8 @@
 import { PropsWithChildren, createContext, useContext } from "react";
-import { Config } from "@ot/config";
+import { Config, theme } from "@ot/config";
 import { OTApolloProvider } from "./OTApolloProvider/OTApolloProvider";
+import ThemeProvider from "./ThemeProvider/ThemeProvider";
+import { APIMetadataProvider } from "./APIMetadataProvider";
 
 type ContextType = {
   config: Config | null;
@@ -17,12 +19,16 @@ export const OTConfigurationProvider = ({ children, config }: ProviderProps): JS
   }
   return (
     <OTConfigurationContext.Provider value={{ config }}>
-      <OTApolloProvider config={config}>{children}</OTApolloProvider>
+      <OTApolloProvider config={config}>
+        <ThemeProvider theme={theme}>
+          <APIMetadataProvider>{children}</APIMetadataProvider>
+        </ThemeProvider>
+      </OTApolloProvider>
     </OTConfigurationContext.Provider>
   );
 };
 
-export const OTuseConfigContext = (): ContextType => {
+export const useConfigContext = (): ContextType => {
   const context = useContext(OTConfigurationContext);
 
   if (!context) {

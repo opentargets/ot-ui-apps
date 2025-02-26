@@ -1,5 +1,5 @@
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
-import { gql, useQuery, ApolloError, NormalizedCacheObject, ApolloClient } from "@apollo/client";
+import { gql, useQuery, ApolloError } from "@apollo/client";
 
 // QUERY
 const DATA_VERSION_QUERY = gql`
@@ -22,12 +22,7 @@ type Version = {
 
 type ContextType = {
   version: Version;
-  client: ApolloClient<NormalizedCacheObject> | null;
 };
-
-interface ProviderProps extends PropsWithChildren {
-  client: ApolloClient<NormalizedCacheObject>;
-}
 
 const initialState: ContextType = {
   version: {
@@ -36,11 +31,10 @@ const initialState: ContextType = {
     month: "0",
     year: "0",
   },
-  client: null,
 };
 export const APIMetadataContext = createContext<ContextType | undefined>(undefined);
 
-export const APIMetadataProvider = ({ children, client }: ProviderProps): JSX.Element => {
+export const APIMetadataProvider = ({ children }: PropsWithChildren): JSX.Element => {
   const [version, setVersion] = useState<ContextType["version"]>(initialState.version);
 
   const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
@@ -69,11 +63,7 @@ export const APIMetadataProvider = ({ children, client }: ProviderProps): JSX.El
     });
   }, [data, loading, error]);
 
-  return (
-    <APIMetadataContext.Provider value={{ version, client }}>
-      {children}
-    </APIMetadataContext.Provider>
-  );
+  return <APIMetadataContext.Provider value={{ version }}>{children}</APIMetadataContext.Provider>;
 };
 
 export const useAPIMetadata = (): ContextType => {

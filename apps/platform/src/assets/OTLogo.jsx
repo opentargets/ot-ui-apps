@@ -1,7 +1,7 @@
 import { SvgIcon } from "@mui/material";
-// import { makeStyles } from '@mui/styles';
+import { getConfig } from "@ot/config";
 
-import config from "../config";
+const config = getConfig();
 
 const styles = {
   root: {

@@ -30,6 +30,7 @@ import { makeStyles } from "@mui/styles";
 import { faCaretDown, faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip, useAPIMetadata } from "ui";
+import { getConfig } from "@ot/config";
 import useBatchDownloader from "../hooks/useBatchDownloader";
 import useAotfContext from "../hooks/useAotfContext";
 import OriginalDataSources from "../static_datasets/dataSourcesAssoc";
@@ -41,8 +42,10 @@ import {
   createBlob,
   getFilteredColumnArray,
 } from "../utils/downloads";
-import config from "../../../config";
+
 import CopyUrlButton from "./CopyUrlButton";
+
+const config = getConfig();
 
 const { isPartnerPreview } = config.profile;
 

@@ -1,4 +1,6 @@
-import config from "../config";
+import { getConfig } from "@ot/config";
+
+const config = getConfig();
 
 interface PartnerConfig {
   profile: {
