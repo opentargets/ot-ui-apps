@@ -8,15 +8,18 @@ import ProtVista from "./ProtVista";
 // import * as mol3d from "3dmol";
 import { createViewer } from "3dmol";
 
-// debugger;
-
 // import * as molstar from "";
 // import NightingaleVis from "./NightingaleVis";
 
-// debugger;
-
 import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 import { useState, useEffect, useRef } from "react";
+
+const experimentalResultsStem = "https://www.ebi.ac.uk/proteins/api/proteins/";
+const experimentalStructureStem = "https://files.rcsb.org/download/"; // !! EBI BETTER BUT OK FOR NOW
+const experimentalStructureSuffix = ".pdb";
+const alphaFoldResultsStem = "https://alphafold.ebi.ac.uk/api/prediction/";
+const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
+const alphaFoldStructureSuffix = "-model_v4.pdb";
 
 function Body({ label: symbol, entity }) {
   const [experimentalResults, setExperimentalResults] = useState(null);
@@ -27,10 +30,13 @@ function Body({ label: symbol, entity }) {
   // console.log(experimentalResults);
 
   const request = usePlatformApi(PROTVISTA_SUMMARY_FRAGMENT);
-  if (!request.data) return null; // BETTER WAY? - HANDLED BY CC'S CHANGE TO SECTION ITEM IF LOADING?
-  const uniprotId = getUniprotIds(request.data?.proteinIds)?.[0];
+  const uniprotId = request?.data ? getUniprotIds(request?.data?.proteinIds)?.[0] : null;
 
   const columns = [
+    {
+      id: "type",
+      label: "Source",
+    },
     {
       id: "id",
       label: "ID",
@@ -86,16 +92,45 @@ function Body({ label: symbol, entity }) {
 
   // fetch experimental results
   useEffect(() => {
-    async function fetchExperimentalResults(uniProtId) {
-      const response = await fetch(`https://www.ebi.ac.uk/proteins/api/proteins/${uniProtId}`).then(
-        response => response.json()
-      );
-      if (response.error) throw response.error;
-      const results = response?.dbReferences?.filter(row => row.type === "PDB") ?? [];
-      setExperimentalResults(results);
-      setSelectedId(results[0]?.id);
+    const results = [];
+    async function fetchAlphaFoldResults() {
+      if (uniprotId) {
+        const response = await fetch(`${alphaFoldResultsStem}${uniprotId}`).then(response =>
+          response.json()
+        );
+        if (response.error) throw response.error;
+        if (response?.length > 0) {
+          console.log(response);
+          results.unshift({
+            id: response[0].entryId,
+            type: "AlphaFold",
+            properties: {
+              chains: `(all)=${response[0].uniprotStart}-${response[0].uniprotEnd}`,
+              method: "Prediction",
+              resolution: "(prediction)",
+            },
+          });
+        }
+      }
     }
-    fetchExperimentalResults(uniprotId);
+    async function fetchExperimentalResults() {
+      if (uniprotId) {
+        const response = await fetch(`${experimentalResultsStem}${uniprotId}`).then(response =>
+          response.json()
+        );
+        if (response.error) throw response.error;
+        const pdbResults = response?.dbReferences?.filter(row => row.type === "PDB") ?? [];
+        results.push(...pdbResults);
+      }
+    }
+    async function fetchAllResults() {
+      await Promise.all([fetchAlphaFoldResults(), fetchExperimentalResults()]);
+      if (results.length) {
+        setExperimentalResults(results);
+        setSelectedId(results[0].id);
+      }
+    }
+    fetchAllResults();
     // RETURN CLEANUP FUNCTION IF APPROP
   }, [uniprotId]);
 
@@ -112,7 +147,9 @@ function Body({ label: symbol, entity }) {
         // let pdbUri = "/path/to/your/pdb/files/1ycr.pdb";
 
         // const pdbUri = "https://files.rcsb.org/download/1CRN.pdb";
-        const pdbUri = `https://files.rcsb.org/download/${selectedId}.pdb`;
+        const pdbUri = selectedId.startsWith("AF")
+          ? `${alphaFoldStructureStem}${selectedId}${alphaFoldStructureSuffix}`
+          : `${experimentalStructureStem}${selectedId}${experimentalStructureSuffix}`;
         // const pdbUri = "https://files.rcsb.org/download/1n26.pdb";
         // const pdbUri = "https://files.rcsb.org/download/1CRN.pdb";
         // const pdbUri = "https://www.ebi.ac.uk/pdbe/entry-files/download/4k33.bcif";
@@ -157,6 +194,8 @@ function Body({ label: symbol, entity }) {
     // }, []); // SHOULD BE BELOW BUT HOOKS ERROR!
   }, [selectedId]);
 
+  if (!request.data) return null; // BETTER WAY? - HANDLED BY CC'S CHANGE TO SECTION ITEM IF LOADING?
+
   return (
     <SectionItem
       definition={definition}
@@ -169,7 +208,14 @@ function Body({ label: symbol, entity }) {
           <>
             <Box position="relative" display="flex" justifyContent="center" pb={2}>
               <Box ref={viewerRef} position="relative" width="100%" height="400px">
-                <Box position="absolute" p={1} zIndex={100}>
+                <Box
+                  position="absolute"
+                  m={1}
+                  p={0.5}
+                  zIndex={100}
+                  borderRadius={2}
+                  bgcolor="#f8f8f8"
+                >
                   {selectedId}
                 </Box>
               </Box>
@@ -189,7 +235,7 @@ function Body({ label: symbol, entity }) {
       }}
 
       // renderBody={() => {
-      //   const uniprotId = getUniprotIds(request.data?.proteinIds)[0];
+      //   const uniprotId = getuniprotIds(request.data?.proteinIds)[0];
       //   return (
       //     <Box display="flex" flexDirection="column" gap={6}>
       //       {/* <NightingaleVis uniprotId={uniprotId} /> */}
