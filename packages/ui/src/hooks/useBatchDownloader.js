@@ -26,7 +26,8 @@ function useBatchDownloader(
   dataPath,
   client = defaultClient,
   rowField = "rows",
-  countField = "count"
+  countField = "count",
+  chunkSize = downloaderChunkSize
 ) {
   const rowPath = `${dataPath}.${rowField}`;
   const countPath = `${dataPath}.${countField}`;
@@ -42,14 +43,14 @@ function useBatchDownloader(
     let data = [];
     let index = 0;
 
-    const firstChunk = await getDataChunk(index, downloaderChunkSize);
+    const firstChunk = await getDataChunk(index, chunkSize);
     data = [...getRows(firstChunk, rowPath)];
     index += 1;
 
-    const count = Math.ceil(_.get(firstChunk, countPath) / downloaderChunkSize);
+    const count = Math.ceil(_.get(firstChunk, countPath) / chunkSize);
 
     while (index < count) {
-      chunkPromises.push(getDataChunk(index, downloaderChunkSize));
+      chunkPromises.push(getDataChunk(index, chunkSize));
       index += 1;
     }
 

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import client from "../../../../client";
 import {
   getAssociationsData,
   getInteractorIds,
@@ -25,6 +24,7 @@ const INITIAL_USE_ASSOCIATION_STATE = {
  * HOOK *
  ********/
 function useRowInteractors({
+  client,
   query = InteractionsQuery,
   associationsQuery = DiseaseAssociationsQuery,
   options: {
