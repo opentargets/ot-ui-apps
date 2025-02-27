@@ -144,7 +144,6 @@ function Profile({ ensgId, efoId, symbol, name }) {
 
       <SummaryContainer>
         <GWASCredibleSetsSummary />
-        <OTGeneticsSummary />
         <GeneBurdenSummary />
         <EVASummary />
         <GenomicsEnglandSummary />
