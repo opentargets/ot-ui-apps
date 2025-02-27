@@ -32,7 +32,12 @@ import {
   useAssociationsFocus,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
-import { ENTITIES, INTERACTORS_SOURCES, TABLE_PREFIX, InteractorsSource } from "../../utils";
+import {
+  ENTITIES,
+  INTERACTORS_SOURCES,
+  TABLE_PREFIX,
+  InteractorsSource,
+} from "../../associationsUtils";
 import { Tooltip, useApolloClient } from "ui";
 
 type ThresholdState = number | null | undefined;

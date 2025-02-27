@@ -40,7 +40,7 @@ import {
   getExportedPrioritisationColumns,
   createBlob,
   getFilteredColumnArray,
-} from "../utils/downloads";
+} from "@ot/utils";
 
 import CopyUrlButton from "./CopyUrlButton";
 

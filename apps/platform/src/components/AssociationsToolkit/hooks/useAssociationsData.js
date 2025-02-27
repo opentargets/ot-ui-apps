@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../utils";
+import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../associationsUtils";
 
 const INITIAL_ROW_COUNT = 20;
 

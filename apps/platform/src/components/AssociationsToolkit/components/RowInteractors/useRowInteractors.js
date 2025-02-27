@@ -4,7 +4,7 @@ import {
   getInteractorIds,
   getInitialLoadingData,
   INTERACTORS_SOURCES,
-} from "../../utils";
+} from "../../associationsUtils";
 
 import InteractionsQuery from "./InteractorsQuery.gql";
 import DiseaseAssociationsQuery from "../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
