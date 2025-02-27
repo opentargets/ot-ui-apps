@@ -314,7 +314,7 @@
     "include_in_fe": false,
     "include_in_bq": false
   },
-   {
+  {
     "id": "epmcCooccurrences",
     "category": "Target",
     "nice_name": "n/a",
@@ -341,7 +341,7 @@
     "include_in_fe": false,
     "include_in_bq": false
   },
- 
+
   {
     "id": "significantAdverseTargetReactions",
     "category": "Drug",
