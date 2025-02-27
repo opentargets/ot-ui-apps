@@ -26,7 +26,7 @@ import {
   appCanonicalUrl,
   externalLinks,
   mainMenuItems,
-} from "../../constants";
+} from "@ot/constants";
 import HomeBox from "./HomeBox";
 import Splash from "./Splash";
 import Version from "./Version";

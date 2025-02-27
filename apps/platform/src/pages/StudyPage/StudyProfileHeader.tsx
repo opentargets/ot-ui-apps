@@ -11,7 +11,7 @@ import {
   PublicationsDrawer,
 } from "ui";
 import { Box } from "@mui/material";
-import { populationMap } from "../../constants";
+import { populationMap } from "@ot/constants";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
 import { getStudyTypeDisplay } from "sections/src/constants";

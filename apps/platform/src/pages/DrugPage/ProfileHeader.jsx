@@ -14,11 +14,11 @@ import {
   faExclamationCircle,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { phaseMap } from "@ot/constants";
 
 import Smiles from "./Smiles";
 
 import DRUG_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
-import { phaseMap } from "../../constants";
 
 function ProfileHeader({ chemblId }) {
   const { loading, error, data } = usePlatformApi();
