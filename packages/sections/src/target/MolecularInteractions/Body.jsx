@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { Tab, Tabs, Typography } from "@mui/material";
-import { SectionItem, usePlatformApi } from "ui";
+import { SectionItem, useApolloClient, usePlatformApi } from "ui";
 
-import client from "../../client";
 import { definition } from ".";
 import Description from "./Description";
 
@@ -13,7 +12,7 @@ import StringTab from "./StringTab";
 
 import INTERACTIONS_STATS_QUERY from "./InteractionsStats.gql";
 
-const getSummaryCounts = ensgId =>
+const getSummaryCounts = (ensgId, client) =>
   client.query({
     query: INTERACTIONS_STATS_QUERY,
     variables: {
@@ -49,6 +48,7 @@ function Body({ label: symbol, id, entity }) {
   const [source, setSource] = useState(sources[0].id); // must initialize to valid value for tabs to work
   const [counts, setCounts] = useState({});
   const [versions, setVersions] = useState({});
+  const client = useApolloClient();
 
   const onTabChange = (event, tabId) => {
     setSource(tabId);
@@ -56,7 +56,7 @@ function Body({ label: symbol, id, entity }) {
 
   // load tabs summary counts
   useEffect(() => {
-    getSummaryCounts(id).then(res => {
+    getSummaryCounts(id, client).then(res => {
       // when there is no data, interactions object is null, so there is no count
       setCounts(
         Object.assign(

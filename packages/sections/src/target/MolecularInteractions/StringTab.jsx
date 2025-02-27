@@ -2,14 +2,12 @@ import { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
 import { Grid } from "@mui/material";
 import { scaleQuantize } from "d3";
-import { Link, Legend, OtTable } from "ui";
-
-import client from "../../client";
+import { Link, Legend, OtTable, useApolloClient } from "ui";
 import { colorRange } from "../../constants";
 
 import INTERACTIONS_QUERY from "./InteractionsStringQuery.gql";
 
-const getData = (query, ensgId, sourceDatabase, index, size) =>
+const getData = (query, ensgId, sourceDatabase, index, size, client) =>
   client.query({
     query,
     variables: {
@@ -268,11 +266,11 @@ function StringTab({ ensgId, symbol }) {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const columns = getColumns(classes);
-
+  const client = useApolloClient()
   // load tab data when new tab selected (also on first load)
   useEffect(() => {
     setLoading(true);
-    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size, client).then(res => {
       if (res.data.target.interactions) {
         setLoading(false);
         setData(res.data.target.interactions.rows);
