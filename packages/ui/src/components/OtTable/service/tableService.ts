@@ -1,4 +1,3 @@
-import client from "../../../client";
 import { getTableRowsProps } from "../types/tableTypes";
 
 export async function getTableRows({
@@ -7,6 +6,7 @@ export async function getTableRows({
   cursor,
   size,
   freeTextQuery,
+  client,
 }: getTableRowsProps): Promise<[]> {
   const resData = await client.query({
     query,

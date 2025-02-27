@@ -1,7 +1,7 @@
 import _ from "lodash";
 
-import defaultClient from "../client";
 import { downloaderChunkSize } from "../constants";
+import { useApolloClient } from "../providers/OTApolloProvider/OTApolloProvider";
 
 const getRows = (data, dataPath) => _.get(data, dataPath, []);
 
@@ -24,11 +24,11 @@ function useBatchDownloader(
   query,
   variables,
   dataPath,
-  client = defaultClient,
   rowField = "rows",
   countField = "count",
   chunkSize = downloaderChunkSize
 ) {
+  const client = useApolloClient();
   const rowPath = `${dataPath}.${rowField}`;
   const countPath = `${dataPath}.${countField}`;
 
