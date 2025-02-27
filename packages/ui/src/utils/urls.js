@@ -1,4 +1,6 @@
-import config from "../config";
+import { getConfig } from "@ot/config";
+
+const config = getConfig();
 
 export function epmcUrl(id) {
   return `https://europepmc.org/article/MED/${id}`;
