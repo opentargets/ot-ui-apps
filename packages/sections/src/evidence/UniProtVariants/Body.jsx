@@ -14,7 +14,7 @@ import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { dataTypesMap } from "@ot/constants";
 import { identifiersOrgLink } from "../../utils/global";
-import { nullishComparator, variantComparator } from "../../utils/comparators";
+import { nullishComparator, variantComparator } from "@ot/utils";
 import {
   defaultRowsPerPageOptions,
   variantConsequenceSource,

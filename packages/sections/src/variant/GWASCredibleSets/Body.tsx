@@ -16,11 +16,7 @@ import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
-import {
-  mantissaExponentComparator,
-  variantComparator,
-  nullishComparator,
-} from "../../utils/comparators";
+import { mantissaExponentComparator, variantComparator, nullishComparator } from "@ot/utils";
 import PheWasPlot from "./PheWasPlot";
 import { useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";

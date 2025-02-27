@@ -14,7 +14,7 @@ import { credsetConfidenceMap, initialResponse, naLabel, table5HChunkSize } from
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { mantissaExponentComparator, variantComparator } from "@ot/utils";
 import { ReactNode, useEffect, useState } from "react";
 import { responseType } from "ui/src/types/response";
 
