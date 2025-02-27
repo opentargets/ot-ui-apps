@@ -6,7 +6,10 @@ import {
   faGithubSquare,
   faYoutubeSquare,
 } from "@fortawesome/free-brands-svg-icons";
-import config from "./config";
+
+import { getConfig } from "@ot/config";
+
+const config = getConfig();
 
 export const externalLinks = {
   about: [

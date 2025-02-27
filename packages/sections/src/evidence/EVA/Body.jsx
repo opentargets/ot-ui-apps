@@ -18,7 +18,7 @@ import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import CLINVAR_QUERY from "./ClinvarQuery.gql";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import { sentenceCase, identifiersOrgLink } from "../../utils/global";
 
 const exportColumns = [

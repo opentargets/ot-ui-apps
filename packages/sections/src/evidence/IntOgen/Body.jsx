@@ -8,7 +8,7 @@ import { definition } from ".";
 import methods from "./methods";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import INTOGEN_QUERY from "./sectionQuery.gql";
 import { sentenceCase } from "../../utils/global";
 import { naLabel, sectionsBaseSizeQuery } from "../../constants";

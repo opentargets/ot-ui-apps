@@ -6,8 +6,8 @@ import { Link, OtTable } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAlignLeft } from "@fortawesome/free-solid-svg-icons";
 import { getConfig } from "@ot/config";
+import { formatMap } from "@ot/constants";
 
-import { formatMap } from "../../constants";
 import DownloadsDrawer from "./DownloadsDrawer";
 import datasetMappings from "./dataset-mappings.json";
 

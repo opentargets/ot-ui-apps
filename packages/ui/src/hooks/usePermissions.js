@@ -1,4 +1,6 @@
-import config from "../config";
+import { getConfig } from "@ot/config";
+
+const config = getConfig();
 
 function usePermissions() {
   const { isPartnerPreview } = config.profile;

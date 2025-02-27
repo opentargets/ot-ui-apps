@@ -5,7 +5,7 @@ import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import { sectionsBaseSizeQuery } from "../../constants";
 import UNIPROT_LITERATURE_QUERY from "./UniprotLiteratureQuery.gql";
 import { identifiersOrgLink, sentenceCase } from "../../utils/global";

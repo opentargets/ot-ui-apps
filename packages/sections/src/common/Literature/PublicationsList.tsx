@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Box, Grid, Fade, Skeleton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { PublicationWrapper, Table } from "ui";
+import { PublicationWrapper, Table, useApolloClient } from "ui";
 import Loader from "./Loader";
 import { PublicationType, DetailsStateType } from "./types";
 import {
@@ -68,6 +68,7 @@ function PublicationsList({ hideSearch = false }) {
   const displayedPubs = useDisplayedPublications();
   const literatureDispatch = useLiteratureDispatch();
   const detailsDispatch = useDetailsDispatch();
+  const client = useApolloClient();
 
   // get publications details from Europe PMC
   useEffect(() => {
@@ -107,6 +108,7 @@ function PublicationsList({ hideSearch = false }) {
       } = literature;
       literatureDispatch({ type: "loadingEntities", value: true });
       const request = await fetchSimilarEntities({
+        client,
         query,
         id,
         category,
@@ -152,6 +154,7 @@ function PublicationsList({ hideSearch = false }) {
       } = literature;
       literatureDispatch({ type: "loadingEntities", value: true });
       const request = await fetchSimilarEntities({
+        client,
         query,
         id,
         category,

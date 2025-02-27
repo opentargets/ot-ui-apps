@@ -67,6 +67,7 @@ export { default as NotFoundPage } from "./pages/NotFoundPage";
 export * from "./components/GlobalSearch/SearchContext";
 export * from "./providers/APIMetadataProvider";
 export * from "./providers/ConfigurationProvider";
+export * from "./providers/OTApolloProvider/OTApolloProvider";
 export { default as PlatformApiProvider } from "./providers/PlatformApiProvider";
 export { default as ThemeProvider } from "./providers/ThemeProvider/ThemeProvider";
 

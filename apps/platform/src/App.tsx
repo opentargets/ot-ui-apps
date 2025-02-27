@@ -18,22 +18,19 @@ import CredibleSetPage from "./pages/CredibleSetPage";
 import APIPage from "./pages/APIPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
-import { getSuggestedSearch } from "./utils/global";
 
 const config = getConfig();
 
 function App(): ReactElement {
-  const suggestions = getSuggestedSearch();
   return (
     <OTConfigurationProvider config={config}>
       <SearchProvider
-        searchSuggestions={suggestions}
         searchQuery={SEARCH_QUERY}
         searchPlaceholder="Search for a target, drug, disease, or phenotype..."
       >
         <Router>
           <Routes>
-            <Route path="/" element={<HomePage suggestions={suggestions} />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/api" element={<APIPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/downloads" element={<DownloadsPage />} />

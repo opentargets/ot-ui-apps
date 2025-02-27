@@ -27,7 +27,6 @@ import GeneBurdenSummary from "sections/src/evidence/GeneBurden/Summary";
 import OrphanetSummary from "sections/src/evidence/Orphanet/Summary";
 import OTCRISPRSummary from "sections/src/evidence/OTCRISPR/Summary";
 import OTEncoreSummary from "sections/src/evidence/OTEncore/Summary";
-import OTGeneticsSummary from "sections/src/evidence/OTGenetics/Summary";
 import OTValidationSummary from "sections/src/evidence/OTValidation/Summary";
 import ProgenySummary from "sections/src/evidence/Progeny/Summary";
 import ReactomeSummary from "sections/src/evidence/Reactome/Summary";
@@ -57,7 +56,6 @@ const GeneBurdenSection = lazy(() => import("sections/src/evidence/GeneBurden/Bo
 const OrphanetSection = lazy(() => import("sections/src/evidence/Orphanet/Body"));
 const OTCRISPRSection = lazy(() => import("sections/src/evidence/OTCRISPR/Body"));
 const OTEncoreSection = lazy(() => import("sections/src/evidence/OTEncore/Body"));
-const OTGeneticsSection = lazy(() => import("sections/src/evidence/OTGenetics/Body"));
 const GWASCredibleSetsSection = lazy(() => import("sections/src/evidence/GWASCredibleSets/Body"));
 const OTValidationSection = lazy(() => import("sections/src/evidence/OTValidation/Body"));
 const ProgenySection = lazy(() => import("sections/src/evidence/Progeny/Body"));
@@ -87,7 +85,6 @@ const summaries = [
   OrphanetSummary,
   OTCRISPRSummary,
   OTEncoreSummary,
-  OTGeneticsSummary,
   OTValidationSummary,
   ProgenySummary,
   ReactomeSummary,
@@ -147,7 +144,6 @@ function Profile({ ensgId, efoId, symbol, name }) {
 
       <SummaryContainer>
         <GWASCredibleSetsSummary />
-        <OTGeneticsSummary />
         <GeneBurdenSummary />
         <EVASummary />
         <GenomicsEnglandSummary />
@@ -180,9 +176,6 @@ function Profile({ ensgId, efoId, symbol, name }) {
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
           <GWASCredibleSetsSection id={id} label={label} entity={DISEASE} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <OTGeneticsSection id={id} label={label} entity={DISEASE} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <GeneBurdenSection id={id} label={label} entity={DISEASE} />

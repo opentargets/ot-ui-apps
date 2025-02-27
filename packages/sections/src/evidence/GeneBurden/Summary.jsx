@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import GENE_BURDEN_SUMMARY from "./GeneBurdenSummary.gql";
 
 function Summary() {

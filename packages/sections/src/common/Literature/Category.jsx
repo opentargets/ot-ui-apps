@@ -1,6 +1,7 @@
 import { InputLabel, FormGroup, Checkbox, FormControlLabel } from "@mui/material";
 import { useLiterature, useSelectedCategories, useLiteratureDispatch } from "./LiteratureContext";
 import { fetchSimilarEntities } from "./requests";
+import { useApolloClient } from "ui";
 
 const toggleValue = (selected, categories) => {
   const isChecked = categories.indexOf(selected) !== -1;
@@ -18,6 +19,7 @@ export default function Category() {
   const literature = useLiterature();
   const category = useSelectedCategories();
   const literatureDispatch = useLiteratureDispatch();
+  const client = useApolloClient();
 
   const handleChange = async event => {
     const {
@@ -38,6 +40,7 @@ export default function Category() {
     const newCategories = toggleValue(clicked, bibliographyCategory);
     literatureDispatch({ type: "loadingEntities", value: true });
     const request = await fetchSimilarEntities({
+      client,
       query,
       id,
       category: newCategories,

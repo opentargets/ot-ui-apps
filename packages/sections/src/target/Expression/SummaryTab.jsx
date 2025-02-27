@@ -1,11 +1,10 @@
 import { Grid } from "@mui/material";
 import ExpressionDataDownloader from "./ExpressionDataDownloader";
 
-import client from "../../client";
 import SummaryTable from "./SummaryTable";
 import EXPRESSION_QUERY from "./ExpressionQuery.gql";
 
-export function getData(ensgId) {
+export function getData(ensgId, client) {
   return client.query({
     query: EXPRESSION_QUERY,
     variables: { ensemblId: ensgId },

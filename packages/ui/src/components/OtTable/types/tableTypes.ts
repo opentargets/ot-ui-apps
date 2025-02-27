@@ -1,4 +1,4 @@
-import { DocumentNode } from "@apollo/client";
+import { ApolloClient, DocumentNode, NormalizedCacheObject } from "@apollo/client";
 import { ColumnDef, Table } from "@tanstack/table-core";
 
 export const INIT_PAGE_SIZE = 10;
@@ -84,6 +84,7 @@ export type getTableRowsProps = {
   cursor: string | null;
   freeTextQuery: string | null;
   variables: Record<string, unknown>;
+  client: ApolloClient<NormalizedCacheObject>;
 };
 
 /*****************

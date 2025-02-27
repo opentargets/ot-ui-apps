@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import EUROPE_PMC_SUMMARY_FRAGMENT from "./EuropePmcSummaryFragment.gql";
 
 function Summary() {

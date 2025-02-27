@@ -1,5 +1,4 @@
 import { usePlatformApi, SummaryItem } from "ui";
-// import { dataTypesMap } from '../../../dataTypes';
 import { definition } from ".";
 import CANCER_BIOMARKERS_EVIDENCE_FRAGMENT from "./CancerBiomarkersEvidenceFragment.gql";
 

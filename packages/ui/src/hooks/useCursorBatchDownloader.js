@@ -1,7 +1,6 @@
 import _ from "lodash";
-
-import client from "../client";
 import { downloaderChunkSize } from "../constants";
+import { useApolloClient } from "../providers/OTApolloProvider/OTApolloProvider";
 
 const getRows = (chunk, dataPath) => _.get(chunk, dataPath, []);
 
@@ -30,6 +29,7 @@ function useCursorBatchDownloader(
   const rowPath = `${dataPath}.${rowField}`;
   const cursorPath = `${dataPath}.cursor`;
   const countPath = `${dataPath}.${countField}`;
+  const client = useApolloClient();
 
   const getDataChunk = async (cursor, size) =>
     client.query({

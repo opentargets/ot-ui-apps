@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { SectionItem, Tooltip, Link, ScientificNotation, OtTable } from "ui";
 
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 
 import Description from "./Description";
 

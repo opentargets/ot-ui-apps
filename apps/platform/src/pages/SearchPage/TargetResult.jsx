@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDna } from "@fortawesome/free-solid-svg-icons";
 import { Highlights, Link } from "ui";
 
-import { clearDescriptionCodes } from "../../utils/global";
+import { clearDescriptionCodes } from "@ot/utils";
 import TargetDescription from "../TargetPage/TargetDescription";
 
 const useStyles = makeStyles(theme => ({

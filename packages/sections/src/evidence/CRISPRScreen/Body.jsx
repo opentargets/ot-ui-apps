@@ -2,7 +2,7 @@ import _ from "lodash";
 import { useQuery } from "@apollo/client";
 import { Tooltip, SectionItem, TooltipStyledLabel, OtTable, PublicationsDrawer, Link } from "ui";
 
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import Description from "./Description";
 import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
 import { definition } from ".";

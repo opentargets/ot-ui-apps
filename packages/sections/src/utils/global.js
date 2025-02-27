@@ -1,5 +1,7 @@
 import { format } from "d3-format";
-import config from "../config";
+import { getConfig } from "@ot/config";
+
+const config = getConfig();
 
 export const safeToString = x => {
   switch (typeof x) {

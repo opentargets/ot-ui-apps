@@ -1,9 +1,9 @@
 /* eslint-disable */
 import { memo, useRef, useEffect } from "react";
 import { v1 } from "uuid";
+import { useConfigContext } from "ui";
 
 import "@swissprot/swissbiopics-visualizer";
-import config from "../../config";
 
 const shapes = ["path", "circle", "ellipse", "polygon", "rect", "polyline", "line"];
 const shapesSelector = shapes.join(", ");
@@ -34,6 +34,7 @@ const getUniProtTextSelectors = subcellularPresentSVG => [
  * This is taken from Uniprot code whic in turn is based on swissprot approach using custom elements.
  */
 const SwissbioViz = memo(({ locationIds, taxonId, sourceId, children }) => {
+  const { config } = useConfigContext();
   const instanceName = useRef(`${canonicalName}-${sourceId}-${v1()}`);
 
   useEffect(() => {

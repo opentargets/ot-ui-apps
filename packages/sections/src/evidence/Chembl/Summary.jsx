@@ -1,5 +1,5 @@
 import { usePlatformApi, SummaryItem } from "ui";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import { definition } from ".";
 
 import CHEMBL_SUMMARY_FRAGMENT from "./ChemblSummaryFragment.gql";

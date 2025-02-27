@@ -14,7 +14,7 @@ import {
 import { definition } from ".";
 import Description from "./Description";
 import INTOGEN_QUERY from "./sectionQuery.gql";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import { sentenceCase } from "../../utils/global";
 import { naLabel } from "../../constants";
 import { useState } from "react";

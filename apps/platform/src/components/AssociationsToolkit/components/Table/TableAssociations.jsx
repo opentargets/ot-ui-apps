@@ -16,7 +16,12 @@ import TableBody from "./TableBody";
 
 import useAotfContext from "../../hooks/useAotfContext";
 
-import { getScale, isPartnerPreview, tableCSSVariables, TABLE_PREFIX } from "../../utils";
+import {
+  getScale,
+  isPartnerPreview,
+  tableCSSVariables,
+  TABLE_PREFIX,
+} from "../../associationsUtils";
 
 const TableElement = styled("main")({
   maxWidth: "1800px",

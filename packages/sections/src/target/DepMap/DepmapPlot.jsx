@@ -4,7 +4,7 @@ import { useMeasure } from "@uidotdev/usehooks";
 import { Box } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { DataDownloader } from "ui";
-import { sentenceCase } from "ui/src/utils/global";
+import { sentenceCase } from "@ot/utils";
 
 const prepareData = (data = []) => {
   const flatData = data.reduce((accumulator, currentValue) => {

@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import { safeToString } from "../../utils/global";
+import { safeToString } from "@ot/utils";
 
 function ascendingComparator(a, b, sortBy) {
   if (a[sortBy] === undefined || a[sortBy] < b[sortBy]) return -1;

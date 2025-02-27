@@ -5,7 +5,7 @@ import { faDna } from "@fortawesome/free-solid-svg-icons";
 
 import { Link } from "ui";
 import TargetDescription from "../TargetPage/TargetDescription";
-import { getUniprotIds, clearDescriptionCodes } from "../../utils/global";
+import { getUniprotIds, clearDescriptionCodes } from "@ot/utils";
 
 const useStyles = makeStyles(() => ({
   subtitle: {

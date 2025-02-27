@@ -1,6 +1,9 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import useDebounce from "../../hooks/useDebounce";
 import { DocumentNode } from "@apollo/client";
+import { getSuggestedSearch } from "@ot/utils";
+
+const searchSuggestions = getSuggestedSearch();
 
 /**********************************
  * GLOBAL SEARCH CONTEXT/PROVIDER *
@@ -9,7 +12,6 @@ type GlobalSearchProviderProps = {
   children: React.ReactNode;
   searchQuery: DocumentNode;
   searchPlaceholder: string;
-  searchSuggestions: Array<unknown>;
 };
 
 export const SearchContext = createContext<{
@@ -30,7 +32,6 @@ export function SearchProvider({
   children,
   searchQuery,
   searchPlaceholder = "Search...",
-  searchSuggestions,
 }: GlobalSearchProviderProps) {
   const [open, setOpen] = useState(false);
 
@@ -47,6 +48,20 @@ export function SearchProvider({
       {children}
     </SearchContext.Provider>
   );
+}
+
+/**
+ * Hook to access and interact with the search state
+ * @returns Search context values and methods
+ */
+export function useSearchState() {
+  const context = useContext(SearchContext);
+
+  if (context === undefined) {
+    throw new Error("useSearch must be used within a SearchProvider");
+  }
+
+  return context;
 }
 
 /*********************************

@@ -11,7 +11,7 @@ import {
   OtTableSSP,
 } from "ui";
 import { phaseMap, sourceMap, naLabel } from "../../constants";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import Description from "./Description";
 import { definition } from ".";
 

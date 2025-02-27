@@ -3,6 +3,7 @@ import { FormControl, FormGroup, InputLabel, Slider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useLiterature, useLiteratureDispatch } from "./LiteratureContext";
 import { fetchSimilarEntities } from "./requests";
+import { useApolloClient } from "ui";
 
 const OTSlider = styled(Slider)({
   root: {
@@ -37,6 +38,7 @@ export function DateFilter() {
   const [pubYear, setPubYear] = useState(0);
   const literature = useLiterature();
   const literatureDispatch = useLiteratureDispatch();
+  const client = useApolloClient();
 
   const {
     query,
@@ -100,6 +102,7 @@ export function DateFilter() {
   const handleChange = async values => {
     literatureDispatch({ type: "loadingEntities", value: true });
     const request = await fetchSimilarEntities({
+      client,
       query,
       id,
       category,

@@ -23,7 +23,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import useAotfContext from "../../hooks/useAotfContext";
-import { ENTITIES, isPartnerPreview, TABLE_PREFIX } from "../../utils";
+import { ENTITIES, isPartnerPreview, TABLE_PREFIX } from "../../associationsUtils";
 import { grey } from "@mui/material/colors";
 import {
   FocusActionType,

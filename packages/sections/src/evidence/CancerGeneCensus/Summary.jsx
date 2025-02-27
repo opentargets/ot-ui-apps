@@ -1,5 +1,5 @@
 import { usePlatformApi, SummaryItem } from "ui";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import { definition } from ".";
 
 import CANCER_GENE_CENSUS_SUMMARY from "./CancerGeneCensusSummaryQuery.gql";

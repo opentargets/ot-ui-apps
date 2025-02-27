@@ -19,7 +19,6 @@ const evidenceSections = new Map([
   ["eva_somatic", lazy(() => import("sections/src/evidence/EVASomatic/Body"))],
   ["crispr_screen", lazy(() => import("sections/src/evidence/CRISPRScreen/Body"))],
   ["gene2phenotype", lazy(() => import("sections/src/evidence/Gene2Phenotype/Body"))],
-  ["ot_genetics_portal", lazy(() => import("sections/src/evidence/OTGenetics/Body"))],
   ["uniprot_variants", lazy(() => import("sections/src/evidence/UniProtVariants/Body"))],
   ["expression_atlas", lazy(() => import("sections/src/evidence/ExpressionAtlas/Body"))],
   ["genomics_england", lazy(() => import("sections/src/evidence/GenomicsEngland/Body"))],

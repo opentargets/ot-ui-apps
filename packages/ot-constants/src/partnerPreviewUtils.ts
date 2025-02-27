@@ -1,4 +1,6 @@
-import config from "../config";
+import { getConfig } from "@ot/config";
+
+const config = getConfig();
 
 // page sections
 export const isPrivateTargetSection = id => config.profile.partnerTargetSectionIds.includes(id);

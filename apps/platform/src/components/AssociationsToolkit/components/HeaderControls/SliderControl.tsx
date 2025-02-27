@@ -2,8 +2,6 @@ import { ReactElement, useEffect, useState } from "react";
 import { Slider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { getWightSourceDefault } from "../../utils";
-
 const OTSlider = styled(Slider)({
   root: {
     padding: "0 10px !important",

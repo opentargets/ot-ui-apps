@@ -4,7 +4,7 @@ import { SectionItem, Link, getPage, Table } from "ui";
 
 import Description from "./Description";
 import { europePmcLiteratureQuery } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import { naLabel } from "../../constants";
 import Publication from "./Publication";
 import EUROPE_PMC_QUERY from "./sectionQuery.gql";

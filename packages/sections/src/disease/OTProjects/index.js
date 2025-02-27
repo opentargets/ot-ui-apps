@@ -1,6 +1,7 @@
-import { isPrivateDiseaseSection } from "../../utils/partnerPreviewUtils";
+import { isPrivateDiseaseSection } from "@ot/constants";
 
 const id = "otProjects";
+
 export const definition = {
   id,
   name: "Open Targets Projects",

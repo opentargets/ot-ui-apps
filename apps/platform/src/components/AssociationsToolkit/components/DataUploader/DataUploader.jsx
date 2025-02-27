@@ -33,12 +33,11 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, Tooltip } from "ui";
+import { Link, Tooltip, useApolloClient } from "ui";
 import * as XLSX from "xlsx";
 
 import useAotfContext from "../../hooks/useAotfContext";
 import ValidationQuery from "./ValidationQuery.gql";
-import client from "../../../../client";
 import NestedItem from "./NestedItem";
 
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
@@ -103,7 +102,7 @@ const getEntityToUploadLabel = {
   disease: "diseases",
 };
 
-const getValidationResults = async (entity, queryTerms) =>
+const getValidationResults = async (entity, queryTerms, client) =>
   client.query({
     query: ValidationQuery,
     variables: { entity, queryTerms },
@@ -251,6 +250,7 @@ function DataUploader() {
   const { entityToGet, pinnedEntries, setPinnedEntries } = useAotfContext();
   const [anchorEl, setAnchorEl] = useState(null);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
+  const client = useApolloClient();
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "text/html": [".txt"],
@@ -277,7 +277,7 @@ function DataUploader() {
         else if (fileType === "json") contents = JSON.parse(e.target.result);
         else setOpenErrorSnackbar(true);
 
-        const result = await getValidationResults([entityToGet], contents);
+        const result = await getValidationResults([entityToGet], contents, client);
         setQueryTermsResults(formatQueryTermsResults(result));
         setActiveStep(1);
       };
@@ -330,7 +330,7 @@ function DataUploader() {
   }
 
   const handleRunExample = async terms => {
-    const result = await getValidationResults([entityToGet], terms);
+    const result = await getValidationResults([entityToGet], terms, client);
     setQueryTermsResults(formatQueryTermsResults(result));
     setActiveStep(1);
   };

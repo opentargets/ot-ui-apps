@@ -3,7 +3,7 @@ import { Drawer, IconButton, Paper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { formatMap } from "../../constants";
+import { formatMap } from "@ot/constants";
 
 const useStyles = makeStyles(theme => ({
   backdrop: {

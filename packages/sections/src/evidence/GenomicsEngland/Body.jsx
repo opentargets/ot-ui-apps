@@ -11,7 +11,7 @@ import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import { sentenceCase } from "../../utils/global";
 
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import GENOMICS_ENGLAND_QUERY from "./sectionQuery.gql";
 
 const geUrl = (id, approvedSymbol) =>

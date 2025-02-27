@@ -11,8 +11,6 @@ import { getConfig } from "@ot/config";
 
 const config = getConfig();
 
-console.log({ c: getConfig() });
-
 if (import.meta.env.MODE) {
   loadDevMessages();
   loadErrorMessages();

@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { Link, Tooltip, SectionItem, OtTable } from "ui";
 import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import Description from "./Description";
 import { definition } from ".";
 

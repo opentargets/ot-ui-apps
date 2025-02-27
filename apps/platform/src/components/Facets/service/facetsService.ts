@@ -1,11 +1,12 @@
 import FACETS_SEARCH_QUERY from "../FacetsQuery.gql";
-import client from "../../../client";
 import { Facet } from "../facetsTypes";
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
 export async function getFacetsData(
   inputValue: string,
   entityToGet: string,
-  category: string
+  category: string,
+  client: ApolloClient<NormalizedCacheObject>
 ): Promise<Facet[]> {
   const selectedCategory = category === "All" ? "" : category;
   const variables = {

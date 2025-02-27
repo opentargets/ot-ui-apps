@@ -7,8 +7,8 @@ import {
   useRef,
   useCallback,
 } from "react";
-import { useStateParams } from "ui";
-import { ENTITIES, DEFAULT_TABLE_SORTING_STATE, DISPLAY_MODE } from "../utils";
+import { useApolloClient, useStateParams } from "ui";
+import { ENTITIES, DEFAULT_TABLE_SORTING_STATE, DISPLAY_MODE } from "../associationsUtils";
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
@@ -39,6 +39,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const hasComponentBeenRender = useRef(false);
 
+  const client = useApolloClient();
+
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
   const [sorting, setSorting] = useState(DEFAULT_TABLE_SORTING_STATE);
@@ -64,6 +66,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   const entityToGet = rowEntity[entity];
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
+    client,
     query,
     options: {
       id,
@@ -83,6 +86,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     error: pinnedError,
     count: pinnedCount,
   } = useAssociationsData({
+    client,
     query,
     options: {
       id,

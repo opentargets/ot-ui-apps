@@ -1,5 +1,5 @@
 import { SummaryItem, usePlatformApi } from "ui";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import { definition } from ".";
 
 import CRISPR_SUMMARY from "./CrisprSummary.gql";

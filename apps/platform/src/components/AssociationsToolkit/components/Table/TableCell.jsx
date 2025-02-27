@@ -1,6 +1,6 @@
 import { Skeleton, styled } from "@mui/material";
 import Tooltip from "./AssocTooltip";
-import { cellHasValue, getColumAndSection, TABLE_PREFIX } from "../../utils";
+import { cellHasValue, getColumAndSection, TABLE_PREFIX } from "../../associationsUtils";
 import {
   FocusActionType,
   useAssociationsFocus,

@@ -4,7 +4,7 @@ import { Link, SectionItem, Tooltip, OtTable, ScientificNotation } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import SLAPENRICH_QUERY from "./sectionQuery.gql";
 import { sentenceCase } from "../../utils/global";
 import { naLabel, sectionsBaseSizeQuery } from "../../constants";
