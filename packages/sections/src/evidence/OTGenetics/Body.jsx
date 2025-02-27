@@ -20,7 +20,7 @@ import {
 } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
 import { otgStudyUrl, otgVariantUrl } from "../../utils/urls";
 import { identifiersOrgLink, sentenceCase } from "../../utils/global";

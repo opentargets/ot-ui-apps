@@ -18,7 +18,7 @@ import { sentenceCase } from "../../utils/global";
 import { epmcUrl } from "../../utils/urls";
 import { clinvarStarMap, naLabel } from "../../constants";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import EVA_SOMATIC_QUERY from "./EvaSomaticQuery.gql";
 import { definition } from ".";
 

@@ -5,7 +5,7 @@ import { Link, SectionItem, Tooltip, OtTable, ScientificNotation } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import PROGENY_QUERY from "./sectionQuery.gql";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import { sentenceCase } from "../../utils/global";
 import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 

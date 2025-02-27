@@ -1,5 +1,4 @@
 import { format } from "d3-format";
-import { Examples, searchExamples, Suggestion } from "../pages/HomePage/searchExamples";
 import { getConfig } from "@ot/config";
 
 const config = getConfig();
@@ -7,16 +6,6 @@ const config = getConfig();
 interface ProteinId {
   source: string;
   id: string;
-}
-
-function pickN<T>(arr: T[], n: number): T[] {
-  const items = [...arr];
-  const picks: T[] = [];
-  while (picks.length < n) {
-    const i = Math.floor(Math.random() * items.length);
-    picks.push(items.splice(i, 1)[0]);
-  }
-  return picks;
 }
 
 export const safeToString = (x: unknown): string => {
@@ -85,14 +74,4 @@ export async function fetcher(graphQLParams: GraphQLParams): Promise<unknown> {
     body: JSON.stringify(graphQLParams),
   });
   return data.json();
-}
-
-export function getSuggestedSearch(): Suggestion[] {
-  const suggestionArray: Examples = searchExamples;
-  const targets = pickN(suggestionArray.targets, 2);
-  const diseases = pickN(suggestionArray.diseases, 2);
-  const drugs = pickN(suggestionArray.drugs, 2);
-  const variants = pickN(suggestionArray.variants, 2);
-  const studies = pickN(suggestionArray.studies, 2);
-  return [...targets, ...diseases, ...drugs, ...variants, ...studies];
 }

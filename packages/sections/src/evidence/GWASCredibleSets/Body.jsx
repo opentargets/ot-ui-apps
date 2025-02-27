@@ -15,7 +15,7 @@ import { variantComparator } from "../../utils/comparators";
 import { naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";
 import { mantissaExponentComparator } from "../../utils/comparators";
 

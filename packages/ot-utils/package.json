@@ -1,5 +1,5 @@
 {
-  "name": "@ot/constants",
+  "name": "@ot/utils",
   "version": "0.0.1",
   "private": true,
   "main": "src/index.ts",
@@ -14,6 +14,7 @@
   "dependencies": {
     "@mui/material": "^5.14.1",
     "@ot/config": "*",
+    "@ot/constants": "*",
     "polished": "^4.3.1"
   }
 }

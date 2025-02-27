@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { SectionItem, TableDrawer, OtTable, Link } from "ui";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 import Description from "./Description";
 import { definition } from ".";

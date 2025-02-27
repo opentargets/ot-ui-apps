@@ -5,7 +5,7 @@ import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "../../utils/urls";
 import SYSBIO_QUERY from "./sectionQuery.gql";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 
 const getColumns = label => [
