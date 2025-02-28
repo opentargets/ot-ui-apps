@@ -11,16 +11,14 @@ import {
 } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
-import { identifiersOrgLink } from "../../utils/global";
-import { nullishComparator, variantComparator } from "../../utils/comparators";
+import { epmcUrl, identifiersOrgLink, nullishComparator, variantComparator } from "@ot/utils";
 import {
+  dataTypesMap,
   defaultRowsPerPageOptions,
   variantConsequenceSource,
   sectionsBaseSizeQuery,
   naLabel,
-} from "../../constants";
+} from "@ot/constants";
 import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
 
 function getColumns(label) {
@@ -43,7 +41,9 @@ function getColumns(label) {
           }
           showHelpIcon
         >
-          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+          <Link asyncTooltip to={`/disease/${disease.id}`}>
+            {disease.name}
+          </Link>
         </Tooltip>
       ),
     },

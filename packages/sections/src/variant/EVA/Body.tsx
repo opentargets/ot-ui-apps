@@ -1,12 +1,11 @@
 import { useQuery } from "@apollo/client";
 import { Link, Tooltip, SectionItem, PublicationsDrawer, ClinvarStars, OtTable } from "ui";
 import { Typography } from "@mui/material";
-import { clinvarStarMap, naLabel } from "../../constants";
+import { clinvarStarMap, naLabel } from "@ot/constants";
 import { definition } from ".";
 
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { sentenceCase } from "../../utils/global";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 import EVA_QUERY from "./EVAQuery.gql";
 
 const columns = [
@@ -14,7 +13,11 @@ const columns = [
     id: "disease.name",
     label: "Disease/phenotype",
     renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => {
-      let displayElement = <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
+      let displayElement = (
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
+      );
       if (diseaseFromSource || cohortPhenotypes?.length > 0) {
         displayElement = (
           <Tooltip

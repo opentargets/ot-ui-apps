@@ -11,13 +11,12 @@ import {
   Navigate,
   DisplayVariantId,
 } from "ui";
-import { variantComparator } from "../../utils/comparators";
-import { naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } from "../../constants";
+import { variantComparator, mantissaExponentComparator } from "@ot/utils";
+
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";
-import { mantissaExponentComparator } from "../../utils/comparators";
 
 function getColumns(targetSymbol) {
   return [
@@ -38,7 +37,7 @@ function getColumns(targetSymbol) {
         const v = credibleSet?.variant;
         if (!v) return naLabel;
         return (
-          <Link to={`/variant/${v.id}`}>
+          <Link asyncTooltip to={`/variant/${v.id}`}>
             <DisplayVariantId
               variantId={v.id}
               referenceAllele={v.referenceAllele}
@@ -62,7 +61,11 @@ function getColumns(targetSymbol) {
     {
       id: "disease",
       label: "Disease/phenotype",
-      renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
+      renderCell: ({ disease }) => (
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
+      ),
       filterValue: ({ disease }) => disease.name,
       exportValue: ({ disease }) => `${disease.name} (${disease.id})`,
     },
@@ -70,7 +73,11 @@ function getColumns(targetSymbol) {
       id: "study",
       label: "Study",
       renderCell: ({ credibleSet }) => {
-        return <Link to={`/study/${credibleSet?.study.id}`}>{credibleSet?.study.id}</Link>;
+        return (
+          <Link asyncTooltip to={`/study/${credibleSet?.study.id}`}>
+            {credibleSet?.study.id}
+          </Link>
+        );
       },
       exportValue: ({ credibleSet }) => credibleSet?.study.id,
     },

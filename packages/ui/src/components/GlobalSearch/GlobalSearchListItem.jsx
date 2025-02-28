@@ -6,6 +6,7 @@ import { faXmark, faClockRotateLeft, faArrowTrendUp } from "@fortawesome/free-so
 
 import { clearRecentItem } from "./utils/searchUtils";
 import DisplayVariantId from "../DisplayVariantId";
+import { getStudyItemMetaData } from "@ot/utils";
 
 const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
@@ -25,20 +26,16 @@ const JustifyBetween = styled("div")({
   width: "100%",
 });
 
-const ListItemDisplayName = styled("span")(({ theme }) => ({
+const ListItemDisplayName = styled("span")({
   textTransform: "capitalize",
   display: "flex",
   alignItems: "center",
   width: "100%",
-}));
+});
 
 const ItemId = styled("span")({
   padding: "0.3rem 0 0 1rem ",
   fontStyle: "italic",
-});
-
-const FlexSpan = styled("span")({
-  display: "flex",
 });
 
 const RecentItemContainer = styled("li")(({ theme }) => ({
@@ -48,7 +45,7 @@ const RecentItemContainer = styled("li")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   padding: `${theme.spacing(1.5)}`,
-  borderRadius: theme.spacing(1),
+  borderRadius: theme.spacing(0.5),
   color: theme.palette.grey["700"],
   "&:hover": {
     background: theme.palette.grey["200"],
@@ -68,7 +65,7 @@ const TopHitItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   padding: `${theme.spacing(1.5)}`,
-  borderRadius: theme.spacing(1),
+  borderRadius: theme.spacing(0.5),
   color: theme.palette.grey["900"],
   "&:hover": {
     background: theme.palette.grey["200"],
@@ -79,7 +76,7 @@ const TopHitItemContainer = styled("div")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   padding: `${theme.spacing(1.5)} 0`,
-  borderRadius: theme.spacing(1),
+  borderRadius: theme.spacing(0.5),
 }));
 
 function symbolNameOrId(item) {
@@ -159,7 +156,7 @@ function TopHitListItem({ item, onItemClick }) {
     >
       <TopHitItemContainer>
         <JustifyBetween>
-          <Typography variant="h6">
+          <Typography>
             <ListItemDisplayName>
               <Box
                 sx={{
@@ -215,7 +212,16 @@ function TopHitListItem({ item, onItemClick }) {
         ) : (
           <>
             <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
-              <Typography variant="subtitle1">{item.symbol && item.name}</Typography>
+              <Typography variant="subtitle1">
+                {item.symbol && item.name}
+
+                {item.publicationFirstAuthor && (
+                  <>
+                    {item.publicationFirstAuthor} <i>et al.</i> {item.publicationJournal} (
+                    {item.publicationDate?.slice(0, 4)})
+                  </>
+                )}
+              </Typography>
             </Box>
             <JustifyBetween>
               <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
@@ -223,14 +229,15 @@ function TopHitListItem({ item, onItemClick }) {
                   {item.description && `${item.description.substring(0, 180)}...`}
                 </Typography>
                 <Typography variant="body2">
-                  {item.credibleSetsCount > -1 && (
-                    <>Credible sets count: {item.credibleSetsCount}</>
-                  )}
-                  {item.nSamples && <> • N Study: {item.nSamples}</>}
+                  {getStudyItemMetaData({
+                    studyType: item?.studyType,
+                    nSamples: item?.nSamples,
+                    credibleSetsCount: item?.credibleSetsCount,
+                  })}
                 </Typography>
                 <Typography variant="caption">
-                  {item.publicationFirstAuthor && <>{item.publicationFirstAuthor}</>}
-                  {item.publicationDate && <>({item.publicationDate})</>}
+                  {/* {item.publicationFirstAuthor && <>{item.publicationFirstAuthor}</>}
+                  {item.publicationDate && <>({item.publicationDate})</>} */}
                 </Typography>
               </Box>
               {item.hasSumstats && (
@@ -349,8 +356,12 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
 
       <JustifyBetween>
         <Typography variant="caption">
-          {item.credibleSetsCount > -1 && <>Credible sets count: {item.credibleSetsCount}</>}
-          {item.nSamples && <> • N Study: {item.nSamples}</>}
+          {getStudyItemMetaData({
+            studyType: item?.studyType,
+            nSamples: item?.nSamples,
+            credibleSetsCount: item?.credibleSetsCount,
+          })}
+
           {getVariantRsIds()}
         </Typography>
 

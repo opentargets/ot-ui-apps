@@ -2,7 +2,7 @@ import { usePlatformApi, ProfileHeader as BaseProfileHeader, ProfileChipList } f
 import { useTheme } from "@mui/styles";
 import TargetDescription from "./TargetDescription";
 
-import { clearDescriptionCodes } from "../../utils/global";
+import { clearDescriptionCodes } from "@ot/utils";
 
 import TARGET_PROFILE_HEADER_FRAGMENT from "./TargetProfileHeader.gql";
 

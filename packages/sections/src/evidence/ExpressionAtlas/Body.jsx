@@ -2,15 +2,11 @@ import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { SectionItem, Tooltip, Link, ScientificNotation, OtTable } from "ui";
 
-import { dataTypesMap } from "../../dataTypes";
-
 import Description from "./Description";
-
-import { sentenceCase } from "../../utils/global";
-
+import { sentenceCase } from "@ot/utils";
 import EXPRESSION_ATLAS_QUERY from "./ExpressionAtlasQuery.gql";
 import { definition } from ".";
-import { sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
 
 const columns = [
   {
@@ -30,7 +26,9 @@ const columns = [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
   },

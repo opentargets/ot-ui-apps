@@ -1,5 +1,4 @@
 import { Link } from "ui";
-import config from "../../config";
 
 function Description({ symbol, name }) {
   return (

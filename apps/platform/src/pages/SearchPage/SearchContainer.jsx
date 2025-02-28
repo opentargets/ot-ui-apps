@@ -6,12 +6,14 @@ import {
   FormGroup,
   FormControlLabel,
   TablePagination,
+  Box,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartBar,
   faDna,
+  faMagnifyingGlassMinus,
   faMapPin,
   faPrescriptionBottleAlt,
   faStethoscope,
@@ -134,7 +136,7 @@ const SearchFilters = ({ entities, entitiesCount, setEntity }) => {
 function SearchResults({ results, page, onPageChange }) {
   const TYPE_NAME = "__typename";
   return (
-    <>
+    <Box>
       <TablePagination
         component="div"
         rowsPerPageOptions={[]}
@@ -163,7 +165,7 @@ function SearchResults({ results, page, onPageChange }) {
         page={page - 1}
         onPageChange={onPageChange}
       />
-    </>
+    </Box>
   );
 }
 
@@ -180,6 +182,27 @@ function TopHitDetail({ topHit }) {
     </Card>
   );
 }
+function NoResultsContainer({ q }) {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        mb: 10,
+      }}
+    >
+      <Box sx={{ fontSize: "10em", mb: 5 }}>
+        <FontAwesomeIcon icon={faMagnifyingGlassMinus} />
+      </Box>
+      <Box sx={{ typography: "h6", textAlign: "center" }}>
+        We could not find anything in the Platform database that matches{" "}
+        <strong> &quot;{q}&quot;</strong>.
+      </Box>
+    </Box>
+  );
+}
 
 function SearchContainer({ q, page, entities, data, onPageChange, onSetEntity }) {
   const { entities: entitiesCount } = data.search.aggregations;
@@ -190,8 +213,8 @@ function SearchContainer({ q, page, entities, data, onPageChange, onSetEntity })
       <Typography variant="h5" gutterBottom>
         {data.search.total} results for &quot;<strong>{q}</strong>&quot;
       </Typography>
-      <Grid container spacing={2}>
-        <Grid item md={2}>
+      <Grid container spacing={2} sx={{ display: "flex", height: "100%" }}>
+        <Grid item md={3}>
           <Typography variant="body2">Refine by:</Typography>
           <FormGroup>
             <SearchFilters
@@ -201,14 +224,28 @@ function SearchContainer({ q, page, entities, data, onPageChange, onSetEntity })
             />
           </FormGroup>
         </Grid>
-        <Grid item md={7}>
+        <Grid
+          item
+          md={6}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           {data.search.hits.length > 0 ? (
             <SearchResults page={page} results={data.search} onPageChange={onPageChange} />
-          ) : null}
+          ) : (
+            <NoResultsContainer q={q} />
+          )}
         </Grid>
-        <Grid item md={3}>
-          {topHit ? <TopHitDetail topHit={topHit} /> : null}
-        </Grid>
+
+        {topHit ? (
+          <Grid item md={3}>
+            {" "}
+            <TopHitDetail topHit={topHit} />{" "}
+          </Grid>
+        ) : null}
       </Grid>
     </>
   );

@@ -5,7 +5,7 @@ import { ChipList, SectionItem, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions } from "@ot/constants";
 
 import HALLMARKS_QUERY from "./Hallmarks.gql";
 
@@ -69,6 +69,7 @@ function Section({ id, label: symbol, entity }) {
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={() => {
+        if (request.data?.target.hallmarks === null) return null;
         const roleInCancer = request.data?.target.hallmarks.attributes
           .filter(a => a.name === "role in cancer")
           .map(r => ({

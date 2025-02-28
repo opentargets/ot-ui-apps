@@ -3,9 +3,8 @@ import { useQuery, useLazyQuery } from "@apollo/client";
 import { SectionItem, Link, getPage, Table } from "ui";
 
 import Description from "./Description";
-import { europePmcLiteratureQuery } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
-import { naLabel } from "../../constants";
+import { europePmcLiteratureQuery } from "@ot/utils";
+import { dataTypesMap, naLabel } from "@ot/constants";
 import Publication from "./Publication";
 import EUROPE_PMC_QUERY from "./sectionQuery.gql";
 import { definition } from ".";
@@ -14,7 +13,11 @@ const getColumns = label => [
   {
     id: "disease",
     label: "Disease/phenotype",
-    renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
+    renderCell: ({ disease }) => (
+      <Link asyncTooltip to={`/disease/${disease.id}`}>
+        {disease.name}
+      </Link>
+    ),
     filterValue: ({ disease }) => disease.name,
   },
   {

@@ -15,8 +15,8 @@ import {
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
-import { epmcUrl } from "../../utils/urls";
-import { credsetConfidenceMap, populationMap } from "../../constants";
+import { epmcUrl } from "@ot/utils";
+import { credsetConfidenceMap, populationMap } from "@ot/constants";
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();

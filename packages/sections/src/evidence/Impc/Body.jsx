@@ -14,9 +14,9 @@ import {
 import { definition } from ".";
 import Description from "./Description";
 import INTOGEN_QUERY from "./sectionQuery.gql";
-import { dataTypesMap } from "../../dataTypes";
-import { sentenceCase } from "../../utils/global";
-import { naLabel } from "../../constants";
+
+import { sentenceCase } from "@ot/utils";
+import { dataTypesMap, naLabel } from "@ot/constants";
 import { useState } from "react";
 
 const columns = [
@@ -37,7 +37,9 @@ const columns = [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
     filterValue: ({ disease, diseaseFromSource }) => [disease.name, diseaseFromSource].join(),

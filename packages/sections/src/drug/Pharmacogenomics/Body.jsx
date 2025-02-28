@@ -3,17 +3,11 @@ import { useQuery } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
 import { Link, SectionItem, Tooltip, LabelChip, PublicationsDrawer, OtTable } from "ui";
 
-import { epmcUrl } from "../../utils/urls";
+import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
 import { definition } from ".";
 import Description from "./Description";
 import PHARMACOGENOMICS_QUERY from "./Pharmacogenomics.gql";
-import {
-  naLabel,
-  defaultRowsPerPageOptions,
-  PHARM_GKB_COLOR,
-  variantConsequenceSource,
-} from "../../constants";
-import { identifiersOrgLink, sentenceCase } from "../../utils/global";
+import { naLabel, PHARM_GKB_COLOR, variantConsequenceSource } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
@@ -75,7 +69,7 @@ function Body({ id: chemblId, label: name, entity }) {
       renderCell: ({ target }) => {
         if (target) {
           return (
-            <Link to={`/target/${target.id}`}>
+            <Link asyncTooltip to={`/target/${target.id}`}>
               <span>{target.approvedSymbol}</span>
             </Link>
           );
@@ -174,7 +168,9 @@ function Body({ id: chemblId, label: name, entity }) {
 
         if (phenotypeFromSourceId)
           phenotypeTextElement = (
-            <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeTextElement}</Link>
+            <Link asyncTooltip to={`/disease/${phenotypeFromSourceId}`}>
+              {phenotypeTextElement}
+            </Link>
           );
 
         if (genotypeAnnotationText)

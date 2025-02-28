@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { Link, useConfigContext } from "ui";
+import { Link, useAPIMetadata } from "ui";
 
 // HELPERS
 function getVersion({ month, year }) {
@@ -31,7 +31,7 @@ function VersionLink({ month, year, version, link }) {
 
 // MAIN COMPONENT
 function Version({ releaseNotesURL = "https://platform-docs.opentargets.org/release-notes" }) {
-  const { version } = useConfigContext();
+  const { version } = useAPIMetadata();
   if (version.error) return null;
   if (version.loading)
     return (

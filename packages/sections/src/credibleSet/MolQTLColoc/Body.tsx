@@ -8,11 +8,11 @@ import {
   useBatchQuery,
   Navigate,
 } from "ui";
-import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import MOLQTL_COLOC_QUERY from "./MolQTLColocQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { mantissaExponentComparator, variantComparator } from "@ot/utils";
 import { useEffect, useState } from "react";
 
 const columns = [
@@ -21,7 +21,7 @@ const columns = [
     label: "Navigate",
     renderCell: ({ otherStudyLocus }) => {
       if (!otherStudyLocus?.variant) return naLabel;
-      return <Navigate to={`./${otherStudyLocus.studyLocusId}`} />;
+      return <Navigate to={`/credible-set/${otherStudyLocus.studyLocusId}`} />;
     },
   },
   {
@@ -30,7 +30,11 @@ const columns = [
     renderCell: ({ otherStudyLocus }) => {
       const studyId = otherStudyLocus?.study?.id;
       if (!studyId) return naLabel;
-      return <Link to={`../study/${studyId}`}>{studyId}</Link>;
+      return (
+        <Link asyncTooltip to={`../study/${studyId}`}>
+          {studyId}
+        </Link>
+      );
     },
   },
   {
@@ -48,7 +52,11 @@ const columns = [
     renderCell: ({ otherStudyLocus }) => {
       const target = otherStudyLocus?.study?.target;
       if (!target) return naLabel;
-      return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
+      return (
+        <Link asyncTooltip to={`/target/${target.id}`}>
+          {target.approvedSymbol}
+        </Link>
+      );
     },
   },
 
@@ -86,7 +94,7 @@ const columns = [
       if (!otherStudyLocus?.variant) return naLabel;
       const { id: variantId, referenceAllele, alternateAllele } = otherStudyLocus.variant;
       return (
-        <Link to={`/variant/${variantId}`}>
+        <Link asyncTooltip to={`/variant/${variantId}`}>
           <DisplayVariantId
             variantId={variantId}
             referenceAllele={referenceAllele}

@@ -1,11 +1,13 @@
 import _ from "lodash";
 import { useQuery } from "@apollo/client";
-import { Tooltip, SectionItem, TooltipStyledLabel, Link, OtTable } from "ui";
-
-import { dataTypesMap } from "../../dataTypes";
+import { Tooltip, SectionItem, TooltipStyledLabel, OtTable, PublicationsDrawer, Link } from "ui";
 import Description from "./Description";
-import { PublicationsDrawer } from "ui";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import {
+  dataTypesMap,
+  defaultRowsPerPageOptions,
+  naLabel,
+  sectionsBaseSizeQuery,
+} from "@ot/constants";
 import { definition } from ".";
 
 import CRISPR_QUERY from "./CrisprScreenQuery.gql";
@@ -28,7 +30,11 @@ const getColumns = label => [
     label: "Reported disease",
     renderCell: row => {
       const disease = parseDiseaseName(row.diseaseFromSource);
-      return <Link to={`/disease/${row.diseaseFromSourceMappedId}`}>{_.capitalize(disease)}</Link>;
+      return (
+        <Link asyncTooltip to={`/disease/${row.diseaseFromSourceMappedId}`}>
+          {_.capitalize(disease)}
+        </Link>
+      );
     },
     filterValue: row => row.diseaseFromSource + ", " + row.diseaseFromSourceMappedId,
   },

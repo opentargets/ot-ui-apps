@@ -4,8 +4,8 @@ import { Link, SectionItem, Tooltip, OtTable } from "ui";
 import { Fragment } from "react";
 import { definition } from "../VariantEffectPredictor";
 import Description from "../VariantEffectPredictor/Description";
-import { naLabel } from "../../constants";
-import { identifiersOrgLink } from "../../utils/global";
+import { naLabel } from "@ot/constants";
+import { identifiersOrgLink } from "@ot/utils";
 import VARIANT_EFFECT_PREDICTOR_QUERY from "./VariantEffectPredictorQuery.gql";
 
 function formatVariantConsequenceLabel(label) {
@@ -24,7 +24,11 @@ const columns = [
     enableHiding: false,
     renderCell: ({ target, transcriptId, uniprotAccessions }) => {
       if (!target) return naLabel;
-      let displayElement = <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>;
+      let displayElement = (
+        <Link asyncTooltip to={`../target/${target.id}`}>
+          {target.approvedSymbol}
+        </Link>
+      );
       let tooltipContent = <></>;
       if (transcriptId) {
         tooltipContent = (

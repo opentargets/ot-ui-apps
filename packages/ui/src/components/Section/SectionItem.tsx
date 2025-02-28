@@ -9,7 +9,7 @@ import { createShortName } from "../Summary/utils";
 import PartnerLockIcon from "../PartnerLockIcon";
 import SectionViewToggle from "./SectionViewToggle";
 import { ReactNode, useEffect, useState } from "react";
-import { VIEW } from "../../constants";
+import { VIEW } from "@ot/constants";
 import { SummaryLoader } from "../PublicationsDrawer";
 
 type definitionType = {

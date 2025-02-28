@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 import { LoadingBackdrop, Link } from "ui";
-import { identifiersOrgLink, getUniprotIds } from "../../utils/global";
+import { identifiersOrgLink, getUniprotIds } from "@ot/utils";
 
 const SwissbioViz =
   "customElements" in window ? lazy(() => import("./SwissbioViz")) : ({ children }) => children;

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
 import { SectionItem, Link, Tooltip, OtTable } from "ui";
-import Visualisation from "./Visualisation";
+import ComparativeGenomicsPlot from "./ComparativeGenomicsPlot";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -23,9 +23,8 @@ import ZebrafishIcon from "./ZebrafishIcon";
 import GuineaPigIcon from "./GuineaPigIcon";
 import MouseIcon from "./MouseIcon";
 
-import { identifiersOrgLink } from "../../utils/global";
-import { decimalPlaces } from "../../constants";
-import { VIEW } from "ui/src/constants";
+import { identifiersOrgLink } from "@ot/utils";
+import { decimalPlaces, VIEW } from "@ot/constants";
 
 const VIEW_MODES = {
   default: "default",
@@ -140,7 +139,7 @@ function Body({ id: ensemblId, label: symbol, entity, viewMode = VIEW_MODES.defa
   const classes = useStyles();
   const variables = { ensemblId };
   const request = useQuery(COMP_GENOMICS_QUERY, { variables });
-
+  const columns = getColumns(classes);
   return (
     <SectionItem
       entity={entity}
@@ -149,13 +148,20 @@ function Body({ id: ensemblId, label: symbol, entity, viewMode = VIEW_MODES.defa
       defaultView={VIEW.chart}
       renderDescription={() => <Description symbol={symbol} />}
       renderChart={() => (
-        <Visualisation homologues={request.data?.target.homologues} viewMode={viewMode} />
+        <ComparativeGenomicsPlot
+          homologues={request.data?.target.homologues}
+          viewMode={viewMode}
+          loading={request.loading}
+          query={COMP_GENOMICS_QUERY.loc.source.body}
+          variables={variables}
+          columns={columns}
+        />
       )}
       renderBody={() => (
         <OtTable
           showGlobalFilter
           dataDownloader
-          columns={getColumns(classes)}
+          columns={columns}
           rows={request.data?.target.homologues}
           query={COMP_GENOMICS_QUERY.loc.source.body}
           variables={variables}

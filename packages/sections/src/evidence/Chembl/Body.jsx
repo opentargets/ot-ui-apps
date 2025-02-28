@@ -10,8 +10,8 @@ import {
   DirectionOfEffectTooltip,
   OtTableSSP,
 } from "ui";
-import { phaseMap, sourceMap, naLabel } from "../../constants";
-import { dataTypesMap } from "../../dataTypes";
+
+import { phaseMap, sourceMap, naLabel, dataTypesMap } from "@ot/constants";
 import Description from "./Description";
 import { definition } from ".";
 
@@ -78,7 +78,12 @@ function getColumns(classes) {
       enableHiding: false,
       renderCell: ({ disease, cohortPhenotypes }) => {
         let displayElement = naLabel;
-        if (disease) displayElement = <Link to={`/disease/${disease.id}`}>{disease.name}</Link>;
+        if (disease)
+          displayElement = (
+            <Link asyncTooltip to={`/disease/${disease.id}`}>
+              {disease.name}
+            </Link>
+          );
         if (cohortPhenotypes && cohortPhenotypes.length) {
           displayElement = (
             <Tooltip

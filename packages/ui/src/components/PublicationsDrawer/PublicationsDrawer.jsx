@@ -3,7 +3,6 @@ import {
   Box,
   IconButton,
   Drawer,
-  Link as MUILink,
   Typography,
   Paper,
   CircularProgress,
@@ -12,8 +11,8 @@ import {
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { naLabel } from "../../constants";
-import { europePmcSearchPOSTQuery } from "../../utils/urls";
+import { naLabel } from "@ot/constants";
+import { europePmcSearchPOSTQuery } from "@ot/utils";
 import PublicationWrapper from "./PublicationWrapper";
 import OtTable from "../OtTable/OtTable";
 

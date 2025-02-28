@@ -3,7 +3,7 @@ import { Box, Button } from "@mui/material";
 import { naLabel } from "../../constants";
 import Description from "./Description";
 import { definition } from ".";
-import { getUniprotIds } from "../../utils/global";
+import { getUniprotIds } from "@ot/utils";
 import ProtVista from "./ProtVista";
 import { createViewer } from "3dmol";
 // import NightingaleVis from "./NightingaleVis";

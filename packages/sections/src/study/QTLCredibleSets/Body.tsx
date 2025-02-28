@@ -1,10 +1,10 @@
 import { useQuery } from "@apollo/client";
 import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable, Navigate } from "ui";
-import { naLabel } from "../../constants";
+import { naLabel } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { mantissaExponentComparator, variantComparator } from "@ot/utils";
 
 const columns = [
   {
@@ -23,7 +23,7 @@ const columns = [
       if (!variant) return naLabel;
       const { id: variantId, referenceAllele, alternateAllele } = variant;
       return (
-        <Link to={`/variant/${variantId}`}>
+        <Link asyncTooltip to={`/variant/${variantId}`}>
           <DisplayVariantId
             variantId={variantId}
             referenceAllele={referenceAllele}

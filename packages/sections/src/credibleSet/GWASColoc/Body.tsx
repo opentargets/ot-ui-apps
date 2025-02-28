@@ -8,12 +8,11 @@ import {
   useBatchQuery,
   Navigate,
 } from "ui";
-import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_COLOC_QUERY from "./GWASColocQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
-import { getStudyCategory } from "../../utils/getStudyCategory";
+import { mantissaExponentComparator, variantComparator, getStudyCategory } from "@ot/utils";
 import { ReactElement, useEffect, useState } from "react";
 
 const columns = [
@@ -23,7 +22,7 @@ const columns = [
     enableHiding: false,
     renderCell: ({ otherStudyLocus }) => {
       if (!otherStudyLocus?.variant) return naLabel;
-      return <Navigate to={`./${otherStudyLocus.studyLocusId}`} />;
+      return <Navigate to={`/credible-set/${otherStudyLocus.studyLocusId}`} />;
     },
   },
   {
@@ -32,7 +31,11 @@ const columns = [
     renderCell: ({ otherStudyLocus }) => {
       const studyId = otherStudyLocus?.study?.id;
       if (!studyId) return naLabel;
-      return <Link to={`../study/${studyId}`}>{studyId}</Link>;
+      return (
+        <Link asyncTooltip to={`../study/${studyId}`}>
+          {studyId}
+        </Link>
+      );
     },
   },
   {
@@ -70,7 +73,7 @@ const columns = [
       if (!otherStudyLocus?.variant) return naLabel;
       const { id: variantId, referenceAllele, alternateAllele } = otherStudyLocus.variant;
       return (
-        <Link to={`/variant/${variantId}`}>
+        <Link asyncTooltip to={`/variant/${variantId}`}>
           <DisplayVariantId
             variantId={variantId}
             referenceAllele={referenceAllele}

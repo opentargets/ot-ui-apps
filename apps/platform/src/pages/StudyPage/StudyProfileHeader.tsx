@@ -11,7 +11,8 @@ import {
   PublicationsDrawer,
 } from "ui";
 import { Box } from "@mui/material";
-import { populationMap } from "../../constants";
+import { populationMap } from "@ot/constants";
+import { getStudyTypeDisplay } from "@ot/utils";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
 
@@ -50,7 +51,7 @@ function ProfileHeader() {
     <BaseProfileHeader>
       <Box>
         <Field loading={loading} title="Study type">
-          {studyType?.replace(/(qtl|gwas)/gi, match => match.toUpperCase())}
+          {getStudyTypeDisplay(studyType)}
         </Field>
         {studyType === "gwas" && (
           <>

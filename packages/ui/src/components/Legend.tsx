@@ -1,7 +1,7 @@
 import { Link } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
-import { colorRange } from "../constants";
+import { colorRange } from "@ot/constants";
 
 type LegendProps = {
   url?: string;

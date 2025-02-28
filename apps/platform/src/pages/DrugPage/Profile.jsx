@@ -16,7 +16,6 @@ import PharmacogenomicsSection from "sections/src/drug/Pharmacogenomics/Body";
 import AdverseEventsSection from "sections/src/drug/AdverseEvents/Body";
 import BibliographySection from "sections/src/drug/Bibliography/Body";
 
-import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
 const summaries = [
@@ -45,12 +44,7 @@ const DRUG_PROFILE_QUERY = gql`
 
 function Profile({ chemblId, name }) {
   return (
-    <PlatformApiProvider
-      entity={DRUG}
-      query={DRUG_PROFILE_QUERY}
-      variables={{ chemblId }}
-      client={client}
-    >
+    <PlatformApiProvider entity={DRUG} query={DRUG_PROFILE_QUERY} variables={{ chemblId }}>
       <ProfileHeader chemblId={chemblId} />
 
       <SummaryContainer>

@@ -1,0 +1,43 @@
+query QTLCredibleSetsQuery {
+  variant(variantId: "19_44908822_C_T") {
+    id
+    qtlCredibleSets: credibleSets(
+      studyTypes: [scsqtl, sceqtl, scpqtl, sctuqtl, sqtl, eqtl, pqtl, tuqtl]
+    ) {
+      count
+      rows {
+        studyLocusId
+        pValueMantissa
+        pValueExponent
+        beta
+        finemappingMethod
+        confidence
+        variant {
+          id
+          chromosome
+        }
+        study {
+          id
+          studyType
+          condition
+          target {
+            id
+            approvedSymbol
+          }
+          biosample {
+            biosampleId
+            biosampleName
+          }
+        }
+        locus(variantIds: ["19_44908822_C_T"]) {
+          rows {
+            posteriorProbability
+          }
+        }
+        locusSize: locus {
+          count
+        }
+      }
+    }
+  }
+}

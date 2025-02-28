@@ -3,12 +3,13 @@ import classNames from "classnames";
 import { Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import Tooltip from "./Tooltip";
+import OtAsyncTooltip from "./OtAsyncTooltip/OtAsyncTooltip";
 
 const useStyles = makeStyles(theme => ({
   base: {
     fontSize: "inherit",
-    "text-decoration-color": "white",
-    "-webkit-text-decoration-color": "white",
+    "text-decoration-color": "transparent",
+    "-webkit-text-decoration-color": "transparent",
   },
   baseDefault: {
     color: theme.palette.primary.main,
@@ -49,6 +50,7 @@ type LinkProptypes = {
   tooltip?: unknown;
   children: ReactNode;
   ariaLabel?: string;
+  asyncTooltip?: boolean;
 };
 
 const defaultProps = {
@@ -57,6 +59,7 @@ const defaultProps = {
   tooltip: false,
   to: "/",
   children: <></>,
+  asyncTooltip: false,
 };
 
 function Link({
@@ -69,29 +72,57 @@ function Link({
   tooltip,
   className,
   ariaLabel,
+  asyncTooltip,
 }: LinkProptypes = defaultProps): ReactElement {
   const classes = useStyles();
   const ariaLabelProp = ariaLabel ? { "aria-label": ariaLabel } : {};
   const newTabProps = newTab ? { target: "_blank", rel: "noopener noreferrer" } : {};
-  return external ? (
-    <a
-      className={classNames(
-        classes.base,
-        {
-          [classes.baseDefault]: !footer && !tooltip,
-          [classes.baseFooter]: footer,
-          [classes.baseTooltip]: tooltip,
-        },
-        className
-      )}
-      href={to}
-      onClick={onClick}
-      {...newTabProps}
-      {...ariaLabelProp}
-    >
-      {children}
-    </a>
-  ) : (
+
+  if (external)
+    return (
+      <a
+        className={classNames(
+          classes.base,
+          {
+            [classes.baseDefault]: !footer && !tooltip,
+            [classes.baseFooter]: footer,
+            [classes.baseTooltip]: tooltip,
+          },
+          className
+        )}
+        href={to}
+        onClick={onClick}
+        {...newTabProps}
+        {...ariaLabelProp}
+      >
+        {children}
+      </a>
+    );
+
+  if (asyncTooltip && !external) {
+    const args = to.split("/");
+    return (
+      <RouterLink
+        className={classNames(
+          classes.base,
+          {
+            [classes.baseDefault]: !footer && !tooltip,
+            [classes.baseFooter]: footer,
+            [classes.baseTooltip]: tooltip,
+          },
+          className
+        )}
+        to={to}
+        onClick={onClick}
+      >
+        <OtAsyncTooltip entity={args[1]} id={args[2]}>
+          <span>{children}</span>
+        </OtAsyncTooltip>
+      </RouterLink>
+    );
+  }
+
+  return (
     <RouterLink
       className={classNames(
         classes.base,

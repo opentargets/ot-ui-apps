@@ -3,7 +3,7 @@ import {
   defaulDatasourcesWeigths,
   DEFAULT_TABLE_PAGINATION_STATE,
   DEFAULT_TABLE_SORTING_STATE,
-} from "../utils";
+} from "../associationsUtils";
 import { Action, ActionType, ENTITY, State, TABLE_VIEW } from "../types";
 import { isEqual } from "lodash";
 

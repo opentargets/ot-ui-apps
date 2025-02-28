@@ -4,10 +4,10 @@ import { Link, SectionItem, Tooltip, OtTable, ScientificNotation } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import SLAPENRICH_QUERY from "./sectionQuery.gql";
-import { sentenceCase } from "../../utils/global";
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { sentenceCase } from "@ot/utils";
+import { naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
 const reactomeUrl = id => `https://identifiers.org/reactome:${id}`;
 
@@ -29,7 +29,9 @@ const columns = [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
     filterValue: ({ disease, diseaseFromSource }) => [disease.name, diseaseFromSource].join(),

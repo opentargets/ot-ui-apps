@@ -11,18 +11,19 @@ import {
   Navigate,
 } from "ui";
 import { Box } from "@mui/material";
-import { naLabel, credsetConfidenceMap, initialResponse, table5HChunkSize } from "../../constants";
+import { mantissaExponentComparator, nullishComparator, variantComparator } from "@ot/utils";
+import {
+  responseType,
+  naLabel,
+  credsetConfidenceMap,
+  initialResponse,
+  table5HChunkSize,
+} from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
-import {
-  mantissaExponentComparator,
-  nullishComparator,
-  variantComparator,
-} from "../../utils/comparators";
 import ManhattanPlot from "./ManhattanPlot";
 import { ReactElement, useEffect, useState } from "react";
-import { responseType } from "ui/src/types/response";
 
 const columns = [
   {
@@ -43,7 +44,7 @@ const columns = [
       if (!variant) return naLabel;
       const { id: variantId, referenceAllele, alternateAllele } = variant;
       return (
-        <Link to={`/variant/${variantId}`}>
+        <Link asyncTooltip to={`/variant/${variantId}`}>
           <DisplayVariantId
             variantId={variantId}
             referenceAllele={referenceAllele}
@@ -117,7 +118,11 @@ const columns = [
     renderCell: ({ l2GPredictions }) => {
       const target = l2GPredictions?.rows[0]?.target;
       if (!target) return naLabel;
-      return <Link to={`/target/${target.id}`}>{target.approvedSymbol}</Link>;
+      return (
+        <Link asyncTooltip to={`/target/${target.id}`}>
+          {target.approvedSymbol}
+        </Link>
+      );
     },
     exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target.approvedSymbol,
   },

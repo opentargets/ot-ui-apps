@@ -15,8 +15,7 @@ import {
 
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
-import { sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
 
 import ENCORE_QUERY from "./OTEncoreQuery.gql";
 
@@ -37,7 +36,11 @@ const getColumns = classes => [
   {
     id: "disease",
     label: "Reported disease",
-    renderCell: row => <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>,
+    renderCell: row => (
+      <Link asyncTooltip to={`/disease/${row.disease.id}`}>
+        {row.disease.name}
+      </Link>
+    ),
     filterValue: row => `${row.disease.name}, ${row.disease.id}`,
   },
   {

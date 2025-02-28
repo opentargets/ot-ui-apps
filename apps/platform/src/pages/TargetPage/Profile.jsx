@@ -27,7 +27,6 @@ import ProtVistaSummary from "sections/src/target/ProtVista/Summary";
 // import BibliographySummary from "sections/src/target/Bibliography/Summary";
 
 import ProfileHeader from "./ProfileHeader";
-import client from "../../client";
 
 // const KnownDrugsSection = lazy(() => import("sections/src/target/KnownDrugs/Body"));
 // const TractabilitySection = lazy(() => import("sections/src/target/Tractability/Body"));
@@ -89,12 +88,7 @@ const TARGET_PROFILE_QUERY = gql`
 
 function Profile({ ensgId, symbol }) {
   return (
-    <PlatformApiProvider
-      entity={TARGET}
-      query={TARGET_PROFILE_QUERY}
-      variables={{ ensgId }}
-      client={client}
-    >
+    <PlatformApiProvider entity={TARGET} query={TARGET_PROFILE_QUERY} variables={{ ensgId }}>
       <ProfileHeader />
       <SummaryContainer>
         {/* <KnownDrugsSummary />

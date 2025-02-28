@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleDown, faArrowAltCircleUp } from "@fortawesome/free-solid-svg-icons";
 
 import SafetyStudiesDrawer from "./SafetyStudiesDrawer";
-import { naLabel, defaultRowsPerPageOptions } from "../../constants";
+import { naLabel, defaultRowsPerPageOptions } from "@ot/constants";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -45,7 +45,13 @@ function getColumns(classes) {
       label: "Safety event",
       enableHiding: false,
       renderCell: ({ event, eventId }) =>
-        eventId ? <Link to={`/disease/${eventId}`}>{event ?? naLabel}</Link> : event ?? naLabel,
+        eventId ? (
+          <Link asyncTooltip to={`/disease/${eventId}`}>
+            {event ?? naLabel}
+          </Link>
+        ) : (
+          event ?? naLabel
+        ),
     },
     {
       id: "biosamples",

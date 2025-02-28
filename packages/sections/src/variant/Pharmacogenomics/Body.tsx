@@ -6,8 +6,8 @@ import { Fragment } from "react";
 import classNames from "classnames";
 import { makeStyles } from "@mui/styles";
 import { Link, Tooltip, PublicationsDrawer, OtTable, SectionItem } from "ui";
-import { epmcUrl } from "../../utils/urls";
-import { naLabel, PHARM_GKB_COLOR } from "../../constants";
+import { epmcUrl } from "@ot/utils";
+import { naLabel, PHARM_GKB_COLOR } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
@@ -99,7 +99,13 @@ function Body({ id, entity }: BodyProps) {
               return (
                 <Fragment key={drugText}>
                   {i > 0 && ", "}
-                  {drugId ? <Link to={`/drug/${drugId}`}>{drugText}</Link> : drugText}
+                  {drugId ? (
+                    <Link asyncTooltip to={`/drug/${drugId}`}>
+                      {drugText}
+                    </Link>
+                  ) : (
+                    drugText
+                  )}
                 </Fragment>
               );
             })}
@@ -117,7 +123,9 @@ function Body({ id, entity }: BodyProps) {
         let phenotypeTextElement = phenotypeText;
         if (phenotypeFromSourceId)
           phenotypeTextElement = (
-            <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeTextElement}</Link>
+            <Link asyncTooltip to={`/disease/${phenotypeFromSourceId}`}>
+              {phenotypeTextElement}
+            </Link>
           );
         if (genotypeAnnotationText)
           phenotypeTextElement = (

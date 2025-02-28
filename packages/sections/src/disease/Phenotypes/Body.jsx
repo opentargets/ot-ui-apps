@@ -3,7 +3,7 @@ import _ from "lodash";
 import { Link, SectionItem, Tooltip, TableDrawer, OtTable } from "ui";
 
 import Description from "./Description";
-import { naLabel } from "../../constants";
+import { naLabel } from "@ot/constants";
 
 import PHENOTYPES_BODY_QUERY from "./PhenotypesQuery.gql";
 import { definition } from ".";
@@ -29,7 +29,6 @@ const columns = [
     renderCell: ({ evidence }) => (evidence.qualifierNot ? "NOT" : ""),
     filterValue: ({ evidence }) => (evidence.qualifierNot ? "NOT" : ""),
     exportValue: ({ evidence }) => (evidence.qualifierNot ? "NOT" : ""),
-    // width: '7%',
   },
   {
     id: "phenotypeHPO",
@@ -38,7 +37,11 @@ const columns = [
     renderCell: ({ phenotypeEFO, phenotypeHPO }) => {
       let content;
       if (phenotypeEFO && phenotypeEFO.id) {
-        content = <Link to={`/disease/${phenotypeEFO.id}`}>{phenotypeHPO.name}</Link>;
+        content = (
+          <Link asyncTooltip to={`/disease/${phenotypeEFO.id}`}>
+            {phenotypeHPO.name}
+          </Link>
+        );
       } else if (phenotypeHPO && phenotypeHPO.name) content = phenotypeHPO.name;
       else content = naLabel;
 
@@ -52,7 +55,6 @@ const columns = [
     },
     filterValue: row => row.phenotypeHPO.name,
     exportValue: row => row.phenotypeHPO.name,
-    // width: '9%',
   },
   {
     id: "phenotypeHDOid",
@@ -68,7 +70,6 @@ const columns = [
     },
     filterValue: row => row.phenotypeHPO.id.replace("_", ":"),
     exportValue: row => row.phenotypeHPO.id.replace("_", ":"),
-    // width: '9%',
   },
   {
     id: "aspect",
@@ -86,7 +87,6 @@ const columns = [
       ),
     filterValue: row => row.evidence.aspect,
     exportValue: row => row.evidence.aspect,
-    // width: '7%',
   },
   {
     id: "frequency",
@@ -106,7 +106,6 @@ const columns = [
     },
     filterValue: row => row.evidence.frequencyHPO?.name || naLabel,
     exportValue: row => row.evidence.frequencyHPO?.name || naLabel,
-    // width: '9%',
   },
   {
     id: "onset",
@@ -124,7 +123,6 @@ const columns = [
         : naLabel,
     filterValue: row => row.evidence.onset?.map(o => o.name).join() || naLabel,
     exportValue: row => row.evidence.onset?.map(o => o.name).join() || naLabel,
-    // width: '9%',
   },
   {
     id: "modifier",
@@ -142,14 +140,12 @@ const columns = [
         : naLabel,
     filterValue: row => row.evidence.modifiers?.map(m => m.name).join() || naLabel,
     exportValue: row => row.evidence.modifiers?.map(m => m.name).join() || naLabel,
-    // width: '9%',
   },
   {
     id: "sex",
     label: "Sex",
     renderCell: ({ evidence }) => _.capitalize(evidence.sex) || naLabel,
     filterValue: row => row.evidence.sex || naLabel,
-    // width: '9%',
   },
   {
     id: "evidenceType",
@@ -164,7 +160,6 @@ const columns = [
       ),
     filterValue: row => row.evidence.evidenceType || naLabel,
     exportValue: row => row.evidence.evidenceType || naLabel,
-    // width: '7%',
   },
   {
     id: "source",
@@ -172,7 +167,6 @@ const columns = [
     renderCell: ({ evidence }) => evidence.resource || naLabel,
     filterValue: row => row.evidence.resource || naLabel,
     exportValue: row => row.evidence.resource || naLabel,
-    // width: '9%',
   },
   {
     id: "references",

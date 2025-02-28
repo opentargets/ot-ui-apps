@@ -11,17 +11,6 @@ const dataSources = [
     required: false,
   },
   {
-    id: "ot_genetics_portal",
-    sectionId: "otGenetics",
-    label: "OT Genetics",
-    aggregation: "Genetic association",
-    aggregationId: "genetic_association",
-    weight: 1,
-    isPrivate: false,
-    docsLink: "https://platform-docs.opentargets.org/evidence#open-targets-genetics",
-    required: false,
-  },
-  {
     id: "gene_burden",
     sectionId: "geneBurden",
     label: "Gene Burden",

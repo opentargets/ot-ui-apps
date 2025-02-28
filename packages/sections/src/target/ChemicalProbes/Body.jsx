@@ -5,7 +5,7 @@ import { Link, SectionItem, Tooltip, ClinvarStars, OtTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import CHEMICAL_PROBES_QUERY from "./ChemicalProbes.gql";
-import { naLabel, defaultRowsPerPageOptions } from "../../constants";
+import { naLabel, defaultRowsPerPageOptions } from "@ot/constants";
 import _ from "lodash";
 
 /**
@@ -27,7 +27,9 @@ const columns = [
     renderCell: row => {
       // link to drug page if drugid is available; also add tooltip with control if available
       const c = row.drugId ? (
-        <Link to={`/drug/${row.drugId}`}>{row.id}</Link>
+        <Link asyncTooltip to={`/drug/${row.drugId}`}>
+          {row.id}
+        </Link>
       ) : (
         <span>{row.id}</span>
       );
