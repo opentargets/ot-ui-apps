@@ -12,8 +12,7 @@ import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_COLOC_QUERY from "./GWASColocQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "@ot/utils";
-import { getStudyCategory } from "../../utils/getStudyCategory";
+import { mantissaExponentComparator, variantComparator, getStudyCategory } from "@ot/utils";
 import { ReactElement, useEffect, useState } from "react";
 
 const columns = [

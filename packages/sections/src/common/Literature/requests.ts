@@ -1,4 +1,4 @@
-import { europePmcBiblioSearchPOSTQuery } from "../../utils/urls";
+import { europePmcBiblioSearchPOSTQuery } from "@ot/utils";
 import { SelectedEntityType } from "./types";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
 import { Highlights, Link } from "ui";
 import { Box, Typography } from "@mui/material";
-import { getStudyItemMetaData } from "ui/src/constants";
+import { getStudyItemMetaData } from "@ot/utils";
 
 const useStyles = makeStyles(theme => ({
   container: {

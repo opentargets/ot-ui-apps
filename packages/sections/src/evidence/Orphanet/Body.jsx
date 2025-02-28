@@ -12,10 +12,9 @@ import {
 
 import { definition } from ".";
 import { naLabel, sectionsBaseSizeQuery } from "../../constants";
-import { epmcUrl } from "../../utils/urls";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 import Description from "./Description";
 import { dataTypesMap } from "@ot/constants";
-import { sentenceCase } from "../../utils/global";
 
 import ORPHANET_QUERY from "./OrphanetQuery.gql";
 

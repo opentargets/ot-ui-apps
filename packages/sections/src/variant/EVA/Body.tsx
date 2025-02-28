@@ -5,8 +5,7 @@ import { clinvarStarMap, naLabel } from "../../constants";
 import { definition } from ".";
 
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { sentenceCase } from "../../utils/global";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 import EVA_QUERY from "./EVAQuery.gql";
 
 const columns = [

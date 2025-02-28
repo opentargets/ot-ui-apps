@@ -1,5 +1,5 @@
 import Description from "./Description";
-import { sentenceCase } from "../../utils/global";
+import { sentenceCase } from "@ot/utils";
 import { definition } from "./index";
 
 import KNOWN_DRUGS_BODY_QUERY from "./KnownDrugsQuery.gql";

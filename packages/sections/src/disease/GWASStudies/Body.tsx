@@ -1,13 +1,12 @@
+import { ReactElement, useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable, useBatchQuery } from "ui";
+import { responseType } from "@ot/constants";
+import { epmcUrl, getStudyCategory } from "@ot/utils";
 import Description from "./Description";
 import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
-import { getStudyCategory } from "../../utils/getStudyCategory";
 import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
 import { definition } from ".";
-import { epmcUrl } from "ui/src/utils/urls";
-import { ReactElement, useEffect, useState } from "react";
-import { responseType } from "ui/src/types/response";
 
 const columns = [
   {

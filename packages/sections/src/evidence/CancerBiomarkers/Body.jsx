@@ -4,7 +4,7 @@ import { Link, Tooltip, SectionItem, PublicationsDrawer, OtTable, TableDrawer } 
 import { naLabel } from "ui/src/constants";
 
 import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
-import { epmcUrl } from "../../utils/urls";
+import { epmcUrl } from "@ot/utils";
 import Description from "./Description";
 import BiomarkersDrawer from "./BiomarkersDrawer";
 import { definition } from ".";

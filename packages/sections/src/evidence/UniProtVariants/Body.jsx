@@ -11,10 +11,8 @@ import {
 } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
+import { epmcUrl, identifiersOrgLink, nullishComparator, variantComparator } from "@ot/utils";
 import { dataTypesMap } from "@ot/constants";
-import { identifiersOrgLink } from "../../utils/global";
-import { nullishComparator, variantComparator } from "@ot/utils";
 import {
   defaultRowsPerPageOptions,
   variantConsequenceSource,

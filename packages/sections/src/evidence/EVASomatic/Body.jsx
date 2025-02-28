@@ -12,10 +12,8 @@ import {
   DirectionOfEffectTooltip,
   OtTableSSP,
 } from "ui";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 
-import { sentenceCase } from "../../utils/global";
-
-import { epmcUrl } from "../../utils/urls";
 import { clinvarStarMap, naLabel } from "../../constants";
 import Description from "./Description";
 import { dataTypesMap } from "@ot/constants";

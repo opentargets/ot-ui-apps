@@ -12,14 +12,13 @@ import {
   DisplayVariantId,
   OtTableSSP,
 } from "ui";
+import { epmcUrl, sentenceCase, identifiersOrgLink } from "@ot/utils";
+import { dataTypesMap } from "@ot/constants";
 
 import { clinvarStarMap, naLabel, variantConsequenceSource } from "../../constants";
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
 import CLINVAR_QUERY from "./ClinvarQuery.gql";
-import { dataTypesMap } from "@ot/constants";
-import { sentenceCase, identifiersOrgLink } from "../../utils/global";
 
 const exportColumns = [
   {

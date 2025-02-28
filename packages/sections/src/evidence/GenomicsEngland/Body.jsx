@@ -8,8 +8,7 @@ import { Tooltip, SectionItem, Link, PublicationsDrawer, OtTable } from "ui";
 import { definition } from ".";
 import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { sentenceCase } from "../../utils/global";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 
 import { dataTypesMap } from "@ot/constants";
 import GENOMICS_ENGLAND_QUERY from "./sectionQuery.gql";

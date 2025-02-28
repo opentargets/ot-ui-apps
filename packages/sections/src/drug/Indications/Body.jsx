@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 
 import { Link, SectionItem, PaginationActionsComplete, TableDrawer, OtTable } from "ui";
 import { sourceMap, phaseMap } from "../../constants";
-import { referenceUrls } from "../../utils/urls";
+import { referenceUrls } from "@ot/utils";
 
 import Description from "./Description";
 import TherapeuticAreasDrawer from "./TherapeuticAreasDrawer";

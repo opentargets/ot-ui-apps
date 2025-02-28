@@ -6,7 +6,7 @@ import { faXmark, faClockRotateLeft, faArrowTrendUp } from "@fortawesome/free-so
 
 import { clearRecentItem } from "./utils/searchUtils";
 import DisplayVariantId from "../DisplayVariantId";
-import { getStudyItemMetaData } from "../../constants";
+import { getStudyItemMetaData } from "@ot/utils";
 
 const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",

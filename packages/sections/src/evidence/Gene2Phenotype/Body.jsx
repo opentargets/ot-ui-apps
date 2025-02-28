@@ -13,9 +13,8 @@ import {
 
 import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 import { dataTypesMap } from "@ot/constants";
-import { sentenceCase } from "../../utils/global";
 import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
 import { definition } from ".";
 

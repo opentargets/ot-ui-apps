@@ -19,7 +19,7 @@ import { Fragment } from "react/jsx-runtime";
 import { mantissaExponentComparator, variantComparator, nullishComparator } from "@ot/utils";
 import PheWasPlot from "./PheWasPlot";
 import { useEffect, useState } from "react";
-import { responseType } from "ui/src/types/response";
+import { responseType } from "@ot/constants";
 
 type getColumnsType = {
   id: string;

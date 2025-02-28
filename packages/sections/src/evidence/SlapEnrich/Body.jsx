@@ -6,7 +6,7 @@ import { definition } from ".";
 import Description from "./Description";
 import { dataTypesMap } from "@ot/constants";
 import SLAPENRICH_QUERY from "./sectionQuery.gql";
-import { sentenceCase } from "../../utils/global";
+import { sentenceCase } from "@ot/utils";
 import { naLabel, sectionsBaseSizeQuery } from "../../constants";
 
 const reactomeUrl = id => `https://identifiers.org/reactome:${id}`;

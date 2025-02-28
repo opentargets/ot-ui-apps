@@ -6,7 +6,7 @@ import { dataTypesMap } from "@ot/constants";
 
 import Description from "./Description";
 
-import { sentenceCase } from "../../utils/global";
+import { sentenceCase } from "@ot/utils";
 
 import EXPRESSION_ATLAS_QUERY from "./ExpressionAtlasQuery.gql";
 import { definition } from ".";

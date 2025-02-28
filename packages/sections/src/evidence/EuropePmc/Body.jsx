@@ -3,7 +3,7 @@ import { useQuery, useLazyQuery } from "@apollo/client";
 import { SectionItem, Link, getPage, Table } from "ui";
 
 import Description from "./Description";
-import { europePmcLiteratureQuery } from "../../utils/urls";
+import { europePmcLiteratureQuery } from "@ot/utils";
 import { dataTypesMap } from "@ot/constants";
 import { naLabel } from "../../constants";
 import Publication from "./Publication";

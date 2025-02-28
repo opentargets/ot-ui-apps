@@ -251,6 +251,7 @@ export const populationMap: { [key: string]: string } = {
 };
 
 export * from "./dataTypes";
+export * from "./types/response";
 export * from "./searchSuggestions";
 export * from "./partnerPreviewUtils";
 export * from "./particlesBackground";

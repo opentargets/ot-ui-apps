@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { makeStyles } from "@mui/styles";
 import { SectionItem, Link, Tooltip, LabelChip, PublicationsDrawer, OtTable } from "ui";
 
-import { epmcUrl } from "../../utils/urls";
+import { epmcUrl } from "@ot/utils";
 import { naLabel, PHARM_GKB_COLOR, variantConsequenceSource } from "../../constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
@@ -14,7 +14,7 @@ import { definition } from ".";
 import Description from "./Description";
 import PHARMACOGENOMICS_QUERY from "./Pharmacogenomics.gql";
 
-import { identifiersOrgLink, sentenceCase } from "../../utils/global";
+import { identifiersOrgLink, sentenceCase } from "@ot/utils";
 
 const useStyles = makeStyles(theme => ({
   level: {

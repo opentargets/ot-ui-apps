@@ -5,8 +5,7 @@ import { definition } from ".";
 import Description from "./Description";
 import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
 import SHARED_TRAIT_STUDIES_QUERY from "./SharedTraitStudiesQuery.gql";
-import { getStudyCategory } from "../../utils/getStudyCategory";
-import { epmcUrl } from "@ot/utils";
+import { epmcUrl, getStudyCategory } from "@ot/utils";
 import { useEffect, useState } from "react";
 
 function getColumns(diseaseIds: string[]) {

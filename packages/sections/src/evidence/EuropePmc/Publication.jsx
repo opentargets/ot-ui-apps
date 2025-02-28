@@ -6,7 +6,7 @@ import { PublicationSummaryLabel, SummaryLoader, useConfigContext } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNodes, faCircleMinus, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 
-import { publicationSummaryQuery } from "../../utils/urls";
+import { publicationSummaryQuery } from "@ot/utils";
 
 import { naLabel } from "../../constants";
 import SentenceMatch from "./SentenceMatch";
