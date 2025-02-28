@@ -11,10 +11,10 @@ import {
   PublicationsDrawer,
 } from "ui";
 import { Box } from "@mui/material";
-import { populationMap } from "../../constants";
+import { populationMap } from "@ot/constants";
+import { getStudyTypeDisplay } from "@ot/utils";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
-import { getStudyTypeDisplay } from "sections/src/constants";
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();

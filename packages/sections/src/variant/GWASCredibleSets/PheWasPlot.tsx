@@ -12,9 +12,11 @@ import {
   ObsPlot,
   ObsTooltipTable,
   ObsTooltipRow,
+  ScientificNotation,
+  DataDownloader,
 } from "ui";
-import { ScientificNotation, DataDownloader } from "ui";
-import { naLabel, credsetConfidenceMap } from "../../constants";
+
+import { naLabel, credsetConfidenceMap } from "@ot/constants";
 
 const palette = [
   "#27B4AE",

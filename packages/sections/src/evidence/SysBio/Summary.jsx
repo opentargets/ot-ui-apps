@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import SYSBIO_SUMMARY_FRAGMENT from "./SysBioSummaryFragment.gql";
 
 function Summary() {

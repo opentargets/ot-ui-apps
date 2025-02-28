@@ -2,7 +2,7 @@ import { SectionItem, usePlatformApi } from "ui";
 
 import Description from "./Description";
 import { definition } from ".";
-import { getUniprotIds } from "../../utils/global";
+import { getUniprotIds } from "@ot/utils";
 import ProtVista from "./ProtVista";
 
 import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";

@@ -1,4 +1,4 @@
-import { breakpointMatch } from "../utils/comparators";
+import { breakpointMatch } from "@ot/utils";
 
 function useDynamicColspan(groups, columns, width) {
   const colCopy = [...columns];

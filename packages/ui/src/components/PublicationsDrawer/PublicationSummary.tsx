@@ -4,7 +4,7 @@ import { Collapse, Box, Typography, Button, Theme } from "@mui/material";
 
 import { faCircleNodes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { publicationSummaryQuery } from "../../constants";
+import { publicationSummaryQuery } from "@ot/utils";
 import PublicationActionsTooltip from "./PublicationActionsTooltip";
 import SummaryLoader from "./SummaryLoader";
 import PublicationSummaryLabel from "./PublicationSummaryLabel";

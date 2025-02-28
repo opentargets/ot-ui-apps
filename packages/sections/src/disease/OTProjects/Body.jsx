@@ -6,7 +6,7 @@ import { makeStyles } from "@mui/styles";
 import { useQuery } from "@apollo/client";
 
 import Description from "./Description";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions } from "@ot/constants";
 import { definition } from ".";
 import OT_PROJECTS_QUERY from "./OTProjectsQuery.gql";
 

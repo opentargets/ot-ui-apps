@@ -3,10 +3,9 @@ import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
+import { epmcUrl } from "@ot/utils";
 import SYSBIO_QUERY from "./sectionQuery.gql";
-import { dataTypesMap } from "../../dataTypes";
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
 const getColumns = label => [
   {

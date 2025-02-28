@@ -23,9 +23,8 @@ import ZebrafishIcon from "./ZebrafishIcon";
 import GuineaPigIcon from "./GuineaPigIcon";
 import MouseIcon from "./MouseIcon";
 
-import { identifiersOrgLink } from "../../utils/global";
-import { decimalPlaces } from "../../constants";
-import { VIEW } from "ui/src/constants";
+import { identifiersOrgLink } from "@ot/utils";
+import { decimalPlaces, VIEW } from "@ot/constants";
 
 const VIEW_MODES = {
   default: "default",

@@ -7,12 +7,11 @@ import {
   OtTable,
   useBatchQuery,
 } from "ui";
-import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import VARIANTS_QUERY from "./VariantsQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
-import { identifiersOrgLink } from "../../utils/global";
+import { mantissaExponentComparator, variantComparator, identifiersOrgLink } from "@ot/utils";
 import { useEffect, useState } from "react";
 
 type getColumnsType = {

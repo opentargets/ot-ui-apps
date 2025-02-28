@@ -8,12 +8,11 @@ import {
   useBatchQuery,
   Navigate,
 } from "ui";
-import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_COLOC_QUERY from "./GWASColocQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
-import { getStudyCategory } from "../../utils/getStudyCategory";
+import { mantissaExponentComparator, variantComparator, getStudyCategory } from "@ot/utils";
 import { ReactElement, useEffect, useState } from "react";
 
 const columns = [

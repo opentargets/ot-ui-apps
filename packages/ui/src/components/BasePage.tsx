@@ -9,7 +9,7 @@ import {
   appCanonicalUrl,
   externalLinks,
   mainMenuItems,
-} from "../constants";
+} from "@ot/constants";
 import GlobalSearch from "./GlobalSearch/GlobalSearch";
 
 import { ReactElement } from "react";

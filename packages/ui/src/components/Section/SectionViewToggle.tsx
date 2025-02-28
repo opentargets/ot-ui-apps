@@ -2,7 +2,7 @@ import { faChartLine, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { ToggleButtonGroup, ToggleButton, styled } from "@mui/material";
 import { ReactElement, useState, MouseEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { VIEW } from "../../constants";
+import { VIEW } from "@ot/constants";
 
 type SectionViewToggleProps = {
   defaultValue: string;

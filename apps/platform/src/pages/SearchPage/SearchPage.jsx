@@ -1,12 +1,9 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import queryString from "query-string";
-import { Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LoadingBackdrop, EmptyPage, BasePage } from "ui";
+import { LoadingBackdrop, BasePage, useApolloClient } from "ui";
 
-import client from "../../client";
 import SEARCH_PAGE_QUERY from "./SearchPageQuery.gql";
-import config from "../../config";
 
 const SearchContainer = lazy(() => import("./SearchContainer"));
 
@@ -31,6 +28,7 @@ function SearchPage() {
   const navigate = useNavigate();
   const { q, page, entities } = parseQueryString(location.search);
   const [data, setData] = useState(null);
+  const client = useApolloClient();
 
   useEffect(() => {
     let isCurrent = true;
@@ -72,18 +70,7 @@ function SearchPage() {
 
   let SEARCH_CONTAINER = null;
 
-  if (data && data.search.total === 0) {
-    SEARCH_CONTAINER = (
-      <EmptyPage
-        communityLink={config.profile.communityUrl}
-        documentationLink={config.profile.documentationUrl}
-      >
-        <Typography>
-          We could not find anything in the Platform database that matches &quot;{q}&quot;
-        </Typography>
-      </EmptyPage>
-    );
-  } else if (data) {
+  if (data) {
     SEARCH_CONTAINER = (
       <SearchContainer
         q={q}

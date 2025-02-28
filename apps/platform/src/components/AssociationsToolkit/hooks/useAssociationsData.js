@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import client from "../../../client";
-import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../utils";
+import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../associationsUtils";
 
 const INITIAL_ROW_COUNT = 20;
 
@@ -16,6 +15,7 @@ const INITIAL_USE_ASSOCIATION_STATE = {
  * HOOK *
  ********/
 function useAssociationsData({
+  client,
   query,
   options: {
     id = "",
@@ -31,7 +31,6 @@ function useAssociationsData({
   },
 }) {
   const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
-
   useEffect(() => {
     let isCurrent = true;
     const fetchData = async () => {

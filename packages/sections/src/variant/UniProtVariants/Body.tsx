@@ -3,8 +3,8 @@ import { Typography } from "@mui/material";
 import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { naLabel } from "../../constants";
+import { epmcUrl } from "@ot/utils";
+import { naLabel } from "@ot/constants";
 import UNIPROT_VARIANTS_QUERY from "./UniProtVariantsQuery.gql";
 
 const columns = [

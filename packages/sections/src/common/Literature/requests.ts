@@ -1,6 +1,6 @@
-import client from "../../client";
-import { europePmcBiblioSearchPOSTQuery } from "../../utils/urls";
+import { europePmcBiblioSearchPOSTQuery } from "@ot/utils";
 import { SelectedEntityType } from "./types";
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
 export async function literaturesEuropePMCQuery({ literaturesIds }) {
   if (literaturesIds.length === 0) return [];
@@ -22,6 +22,7 @@ type fetchSimilarEntitiesParam = {
   startMonth?: number | null;
   endYear?: number | null;
   endMonth?: number | null;
+  client: ApolloClient<NormalizedCacheObject>;
 };
 
 export const fetchSimilarEntities = ({
@@ -36,6 +37,7 @@ export const fetchSimilarEntities = ({
   startMonth = null,
   endYear = null,
   endMonth = null,
+  client,
 }: fetchSimilarEntitiesParam) => {
   const entityNames = category.length === 0 ? null : category;
   const ids = entities.map(c => c.object.id);

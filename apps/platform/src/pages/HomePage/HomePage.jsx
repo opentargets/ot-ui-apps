@@ -1,7 +1,7 @@
 import { Grid, Typography, Box, useMediaQuery, Chip } from "@mui/material";
 import { makeStyles, styled, useTheme } from "@mui/styles";
 import { Helmet } from "react-helmet";
-import { Footer, GlobalSearch, Link, NavBar, usePermissions } from "ui";
+import { Footer, GlobalSearch, Link, NavBar, usePermissions, useSearchState } from "ui";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -18,19 +18,20 @@ import {
   faMapPin,
   faChartBar,
 } from "@fortawesome/free-solid-svg-icons";
+import { grey } from "@mui/material/colors";
+import { getConfig } from "@ot/config";
 import {
   appTitle,
   appDescription,
   appCanonicalUrl,
   externalLinks,
   mainMenuItems,
-} from "../../constants";
+} from "@ot/constants";
 import HomeBox from "./HomeBox";
 import Splash from "./Splash";
 import Version from "./Version";
 
-import config from "../../config";
-import { grey } from "@mui/material/colors";
+const config = getConfig();
 
 const useStyles = makeStyles(() => ({
   links: {
@@ -176,7 +177,8 @@ function HelpBoxPanel({ fai, url, label, external }) {
   );
 }
 
-function HomePage({ suggestions }) {
+function HomePage() {
+  const { searchSuggestions } = useSearchState();
   const { isPartnerPreview } = usePermissions();
   const releaseNotesURL = isPartnerPreview
     ? "http://home.opentargets.org/ppp-release-notes"
@@ -206,74 +208,74 @@ function HomePage({ suggestions }) {
             gap={1.5}
             sx={{ mt: 4 }}
           >
-            <Link asyncTooltip to={`/target/${suggestions[0].id}/associations`}>
+            <Link asyncTooltip to={`/target/${searchSuggestions[0].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faDna} />}
-                label={suggestions[0].name}
+                label={searchSuggestions[0].name}
               />
             </Link>
-            <Link asyncTooltip to={`/target/${suggestions[1].id}/associations`}>
+            <Link asyncTooltip to={`/target/${searchSuggestions[1].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faDna} />}
-                label={suggestions[1].name}
+                label={searchSuggestions[1].name}
               />
             </Link>
-            <Link asyncTooltip to={`/disease/${suggestions[2].id}/associations`}>
+            <Link asyncTooltip to={`/disease/${searchSuggestions[2].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faStethoscope} />}
-                label={suggestions[2].name}
+                label={searchSuggestions[2].name}
               />
             </Link>
-            <Link asyncTooltip to={`/disease/${suggestions[3].id}/associations`}>
+            <Link asyncTooltip to={`/disease/${searchSuggestions[3].id}/associations`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faStethoscope} />}
-                label={suggestions[3].name}
+                label={searchSuggestions[3].name}
               />
             </Link>
-            <Link asyncTooltip to={`/drug/${suggestions[4].id}`}>
+            <Link asyncTooltip to={`/drug/${searchSuggestions[4].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faPrescriptionBottleMedical} />}
-                label={suggestions[4].name}
+                label={searchSuggestions[4].name}
               />
             </Link>
-            <Link asyncTooltip to={`/drug/${suggestions[5].id}`}>
+            <Link asyncTooltip to={`/drug/${searchSuggestions[5].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faPrescriptionBottleMedical} />}
-                label={suggestions[5].name}
+                label={searchSuggestions[5].name}
               />
             </Link>
-            <Link asyncTooltip to={`/variant/${suggestions[6].id}`}>
+            <Link asyncTooltip to={`/variant/${searchSuggestions[6].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faMapPin} />}
-                label={suggestions[6].name}
+                label={searchSuggestions[6].name}
               />
             </Link>
-            <Link asyncTooltip to={`/variant/${suggestions[7].id}`}>
+            <Link asyncTooltip to={`/variant/${searchSuggestions[7].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faMapPin} />}
-                label={suggestions[7].name}
+                label={searchSuggestions[7].name}
               />
             </Link>
-            <Link asyncTooltip to={`/study/${suggestions[8].id}`}>
+            <Link asyncTooltip to={`/study/${searchSuggestions[8].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faChartBar} />}
-                label={suggestions[8].name}
+                label={searchSuggestions[8].name}
               />
             </Link>
-            <Link asyncTooltip to={`/study/${suggestions[9].id}`}>
+            <Link asyncTooltip to={`/study/${searchSuggestions[9].id}`}>
               <StyledChip
                 sx={{ pl: 1, borderRadius: 2 }}
                 icon={<FontAwesomeIcon icon={faChartBar} />}
-                label={suggestions[9].name}
+                label={searchSuggestions[9].name}
               />
             </Link>
           </Grid>

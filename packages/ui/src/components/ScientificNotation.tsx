@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { decimalPlaces } from "../constants";
+import { decimalPlaces } from "@ot/constants";
 
 type ScientificNotationProps = {
   number: number | number[];

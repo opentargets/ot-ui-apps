@@ -2,6 +2,7 @@ import { Chip, Grow } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useLiterature, useLiteratureDispatch } from "./LiteratureContext";
 import { fetchSimilarEntities } from "./requests";
+import { useApolloClient } from "ui";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,6 +22,7 @@ function EntitiesToSelect({ id }) {
   const literature = useLiterature();
   const { entities, selectedEntities: selectedChips, loadingEntities } = literature;
   const literatureDispatch = useLiteratureDispatch();
+  const client = useApolloClient();
 
   const handleSelectChip = async e => {
     const {
@@ -46,6 +48,7 @@ function EntitiesToSelect({ id }) {
     literatureDispatch({ type: "selectedEntities", value: newChips });
     literatureDispatch({ type: "loadingEntities", value: true });
     const request = await fetchSimilarEntities({
+      client,
       query,
       id: bibliographyId,
       category,
@@ -112,6 +115,7 @@ export default function Entities({ name, id }) {
   const literature = useLiterature();
   const { selectedEntities: selectedChips, loadingEntities } = literature;
   const literatureDispatch = useLiteratureDispatch();
+  const client = useApolloClient();
 
   const handleDeleteChip = async index => {
     const {
@@ -128,6 +132,7 @@ export default function Entities({ name, id }) {
     literatureDispatch({ type: "selectedEntities", value: newChips });
     literatureDispatch({ type: "loadingEntities", value: true });
     const request = await fetchSimilarEntities({
+      client,
       query,
       id: bibliographyId,
       category,

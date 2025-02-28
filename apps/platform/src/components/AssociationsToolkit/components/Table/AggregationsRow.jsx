@@ -4,7 +4,7 @@ import { styled, Grid } from "@mui/material";
 import AggregationsTooltip from "./AssocTooltip";
 import associationsColumns from "../../static_datasets/dataSourcesAssoc";
 import prioritizationColumns from "../../static_datasets/prioritisationColumns";
-import { groupViewColumnsBy } from "../../utils";
+import { groupViewColumnsBy } from "../../associationsUtils";
 import { GridContainer } from "../layout";
 
 const AggregationsContainer = styled(GridContainer)({

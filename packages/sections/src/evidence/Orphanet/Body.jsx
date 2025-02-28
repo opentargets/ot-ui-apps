@@ -11,11 +11,9 @@ import {
 } from "ui";
 
 import { definition } from ".";
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
-import { epmcUrl } from "../../utils/urls";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
-import { sentenceCase } from "../../utils/global";
 
 import ORPHANET_QUERY from "./OrphanetQuery.gql";
 
