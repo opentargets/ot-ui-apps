@@ -18,7 +18,7 @@ import { faXmark, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import _ from "lodash";
 import { v1 } from "uuid";
-import { naLabel } from "../../constants";
+import { naLabel } from "@ot/constants";
 
 import Link from "../Link";
 

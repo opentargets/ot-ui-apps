@@ -1,5 +1,5 @@
 import { Link, DisplayVariantId } from "ui";
-import { identifiersOrgLink } from "../../utils/global";
+import { identifiersOrgLink } from "@ot/utils";
 
 type DescriptionProps = {
   variantId: string;

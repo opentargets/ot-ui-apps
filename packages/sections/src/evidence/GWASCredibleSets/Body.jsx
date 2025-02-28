@@ -11,13 +11,12 @@ import {
   Navigate,
   DisplayVariantId,
 } from "ui";
-import { variantComparator } from "../../utils/comparators";
-import { naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } from "../../constants";
+import { variantComparator, mantissaExponentComparator } from "@ot/utils";
+
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";
-import { mantissaExponentComparator } from "../../utils/comparators";
 
 function getColumns(targetSymbol) {
   return [

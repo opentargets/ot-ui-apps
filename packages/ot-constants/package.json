@@ -1,16 +1,19 @@
 {
   "name": "@ot/constants",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "build-config": "tsc",
-    "dev": "tsc --watch"
+    "lint": "eslint \"**/*.ts\""
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "@types/node": "^18.0.0"
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@mui/material": "^5.14.1",
+    "@ot/config": "*",
+    "polished": "^4.3.1"
   }
 }

@@ -1,10 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { Link, Tooltip, SectionItem, PublicationsDrawer, OtTable, TableDrawer } from "ui";
-import { naLabel } from "ui/src/constants";
 
-import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
-import { epmcUrl } from "../../utils/urls";
+import { defaultRowsPerPageOptions, sectionsBaseSizeQuery, naLabel } from "@ot/constants";
+import { epmcUrl } from "@ot/utils";
 import Description from "./Description";
 import BiomarkersDrawer from "./BiomarkersDrawer";
 import { definition } from ".";

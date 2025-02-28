@@ -12,11 +12,15 @@ import {
 
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
+import { epmcUrl, sentenceCase } from "@ot/utils";
+
 import REACTOME_QUERY from "./sectionQuery.gql";
-import { sentenceCase } from "../../utils/global";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import {
+  dataTypesMap,
+  defaultRowsPerPageOptions,
+  naLabel,
+  sectionsBaseSizeQuery,
+} from "@ot/constants";
 
 const getColumns = label => [
   {

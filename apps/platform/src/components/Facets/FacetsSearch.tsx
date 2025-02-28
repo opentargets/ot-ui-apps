@@ -1,6 +1,6 @@
 import { Box, Chip, MenuItem, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import { ReactElement, useEffect, useReducer, useState } from "react";
-import { Tooltip, useDebounce } from "ui";
+import { Tooltip, useApolloClient, useDebounce } from "ui";
 
 import useAotfContext from "../AssociationsToolkit/hooks/useAotfContext";
 import FacetsSuggestion from "./FacetsSuggestion";
@@ -21,13 +21,14 @@ function FacetsSearch(): ReactElement {
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 200);
   const [state, dispatch] = useReducer(facetsReducer, entityToGet, createInitialState);
+  const client = useApolloClient();
 
   function setFacetsCategory(category: string) {
     dispatch(setLoading(true));
     if (category === "All") {
       return dispatch(setCategory(category, []));
     }
-    const facetData = getFacetsData("*", entityToGet, category);
+    const facetData = getFacetsData("*", entityToGet, category, client);
     facetData.then(data => {
       dispatch(setCategory(category, data));
     });
@@ -35,7 +36,7 @@ function FacetsSearch(): ReactElement {
 
   function getFacetsQueryData() {
     dispatch(setLoading(true));
-    const facetData = getFacetsData(inputValue, entityToGet, state.categoryFilterValue);
+    const facetData = getFacetsData(inputValue, entityToGet, state.categoryFilterValue, client);
     facetData.then(data => {
       dispatch(setFacetsData(data));
     });

@@ -35,6 +35,7 @@ import { createInitialState, otTableReducer } from "./context/otTableReducer";
 import { addRows, setLoading, setNewData, textSearch } from "./context/otTableActions";
 
 import useCursorBatchDownloader from "../../hooks/useCursorBatchDownloader";
+import { useApolloClient } from "../../providers/OTApolloProvider/OTApolloProvider";
 
 function OtTableSSP({
   showGlobalFilter = true,
@@ -50,6 +51,7 @@ function OtTableSSP({
   showColumnVisibilityControl = true,
   setInitialRequestData,
 }: OtTableSSPProps): ReactElement {
+  const client = useApolloClient();
   const [state, dispatch] = useReducer(otTableReducer, "", createInitialState);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -153,6 +155,7 @@ function OtTableSSP({
       cursor: state.cursor,
       size: pagination.pageSize,
       freeTextQuery: state.freeTextQuery,
+      client,
     }).then(d => {
       dispatch(addRows(d.data[entity][sectionName]));
       setPagination(newPagination);
@@ -174,6 +177,7 @@ function OtTableSSP({
       cursor: null,
       size: newPagination.pageSize,
       freeTextQuery,
+      client,
     }).then(d => {
       dispatch(setNewData(d.data[entity][sectionName]));
       if (!state.freeTextQuery) setInitialRequestData(d);

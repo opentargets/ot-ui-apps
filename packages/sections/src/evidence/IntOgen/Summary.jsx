@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import INTOGEN_SUMMARY_FRAGMENT from "./IntOgenSummaryQuery.gql";
 
 function Summary() {

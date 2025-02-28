@@ -14,11 +14,6 @@ interface SearchPostResult {
   requestOptions?: RequestOptions;
 }
 
-interface Route {
-  private: boolean;
-  [key: string]: unknown;
-}
-
 interface PublicationSummaryParams {
   pmcId: string;
   symbol: string;
@@ -86,6 +81,18 @@ export function europePmcBiblioSearchPOSTQuery(ids: string[], size = 25): Search
   return { baseUrl, formBody, requestOptions };
 }
 
+function innUrl() {
+  return "https://www.who.int/publications/m/item/inn-pl-126";
+}
+
+function emaUrl() {
+  return "https://www.ema.europa.eu/en/medicines";
+}
+
+function usanUrl(id) {
+  return `https://searchusan.ama-assn.org/finder/usan/search/${id}/relevant/1`;
+}
+
 function clinicalTrialsUrl(id: string): string {
   return `https://www.clinicaltrials.gov/study/${id}`;
 }
@@ -107,50 +114,7 @@ export const referenceUrls: Record<string, (id: string) => string> = {
   FDA: fdaUrl,
   ATC: atcUrl,
   DailyMed: dailyMedUrl,
-};
-
-export const getClassicAssociationsURL = ({
-  baseURL,
-}: {
-  baseURL: string;
-}): { fullURL: string; path: string } => {
-  const path = "classic-associations";
-  const fullURL = `${baseURL}/${path}`;
-  return { fullURL, path };
-};
-
-export const getAbleRoutes = ({
-  routes = [],
-  isPartnerPreview = false,
-}: {
-  routes: Route[];
-  isPartnerPreview: boolean;
-}): Route[] => {
-  return routes.reduce((accumulator: Route[], currentValue: Route) => {
-    if (currentValue.private) {
-      return isPartnerPreview ? [...accumulator, currentValue] : accumulator;
-    }
-    return [...accumulator, currentValue];
-  }, []);
-};
-
-export const publicationSummaryQuery = ({
-  pmcId,
-  symbol,
-  name,
-}: PublicationSummaryParams): {
-  baseUrl: string;
-  body: {
-    payload: PublicationSummaryParams;
-  };
-} => {
-  const baseUrl = `${config.urlAiApi}/literature/publication/summary`;
-  const body = {
-    payload: {
-      pmcId,
-      targetSymbol: symbol,
-      diseaseName: name,
-    },
-  };
-  return { baseUrl, body };
+  INN: innUrl,
+  EMA: emaUrl,
+  USAN: usanUrl,
 };

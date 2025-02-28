@@ -2,9 +2,10 @@ import { faPlay, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Drawer, Grid, IconButton, Paper } from "@mui/material";
 
-import Link from "./Link";
 import { KeyboardEvent, ReactElement, Suspense, lazy, useState } from "react";
-import { fetcher } from "../utils/global";
+import { fetcher } from "@ot/utils";
+
+import Link from "./Link";
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>

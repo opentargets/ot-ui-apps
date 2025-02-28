@@ -5,7 +5,7 @@ import {
   INTERACTORS_SOURCES,
   INTERACTORS_SOURCE_THRESHOLD,
   InteractorsSource,
-} from "../utils";
+} from "../associationsUtils";
 
 export type FocusElementTable = "core" | "pinned" | "upload";
 

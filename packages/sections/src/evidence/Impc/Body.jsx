@@ -14,9 +14,9 @@ import {
 import { definition } from ".";
 import Description from "./Description";
 import INTOGEN_QUERY from "./sectionQuery.gql";
-import { dataTypesMap } from "../../dataTypes";
-import { sentenceCase } from "../../utils/global";
-import { naLabel } from "../../constants";
+
+import { sentenceCase } from "@ot/utils";
+import { dataTypesMap, naLabel } from "@ot/constants";
 import { useState } from "react";
 
 const columns = [

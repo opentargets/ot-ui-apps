@@ -1,14 +1,9 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import queryString from "query-string";
-import { Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LoadingBackdrop, EmptyPage, BasePage } from "ui";
+import { LoadingBackdrop, BasePage, useApolloClient } from "ui";
 
-import client from "../../client";
 import SEARCH_PAGE_QUERY from "./SearchPageQuery.gql";
-import { getConfig } from "@ot/config";
-
-const config = getConfig();
 
 const SearchContainer = lazy(() => import("./SearchContainer"));
 
@@ -33,6 +28,7 @@ function SearchPage() {
   const navigate = useNavigate();
   const { q, page, entities } = parseQueryString(location.search);
   const [data, setData] = useState(null);
+  const client = useApolloClient();
 
   useEffect(() => {
     let isCurrent = true;

@@ -10,13 +10,19 @@ import {
   Navigate,
 } from "ui";
 import { Box, Chip } from "@mui/material";
-import { credsetConfidenceMap, initialResponse, naLabel, table5HChunkSize } from "../../constants";
+
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { mantissaExponentComparator, variantComparator } from "@ot/utils";
+import {
+  responseType,
+  credsetConfidenceMap,
+  initialResponse,
+  naLabel,
+  table5HChunkSize,
+} from "@ot/constants";
 import { ReactNode, useEffect, useState } from "react";
-import { responseType } from "ui/src/types/response";
 
 type getColumnsType = {
   id: string;

@@ -15,8 +15,7 @@ import {
 
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
-import { sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
 
 import ENCORE_QUERY from "./OTEncoreQuery.gql";
 

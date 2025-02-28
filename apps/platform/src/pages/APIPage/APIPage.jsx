@@ -12,14 +12,9 @@ import {
 import { makeStyles } from "@mui/styles";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { fetcher } from "@ot/utils";
+
 import "graphiql/graphiql.min.css";
-
-import { fetcher } from "../../utils/global";
-
-const QueryButton = styled(Button)`
-  color: #fff;
-  border: none;
-`;
 
 import TARGET_ASSOCS from "./TargetAssocs.gql";
 import DISEASE_ASSOCS from "./DiseaseAssocs.gql";
@@ -34,6 +29,10 @@ import DISEASE_ANNOTATION_GWAS from "./DiseaseAnnotationGWAS.gql";
 import STUDY_ANNOTATION from "./StudyAnnotation.gql";
 import VARIANT_ANNOTATION from "./VariantAnnotation.gql";
 
+const QueryButton = styled(Button)`
+  color: #fff;
+  border: none;
+`;
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
   import("graphiql").then(module => {

@@ -3,10 +3,9 @@ import { Box, Typography } from "@mui/material";
 import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable, useBatchQuery } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
 import SHARED_TRAIT_STUDIES_QUERY from "./SharedTraitStudiesQuery.gql";
-import { getStudyCategory } from "../../utils/getStudyCategory";
-import { epmcUrl } from "ui/src/utils/urls";
+import { epmcUrl, getStudyCategory } from "@ot/utils";
 import { useEffect, useState } from "react";
 
 function getColumns(diseaseIds: string[]) {

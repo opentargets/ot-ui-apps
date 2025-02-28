@@ -7,7 +7,7 @@ export type Suggestion = {
   id: string;
 };
 
-export type Examples = {
+export type SearchSuggestions = {
   targets: Suggestion[];
   diseases: Suggestion[];
   drugs: Suggestion[];
@@ -15,7 +15,7 @@ export type Examples = {
   studies: Suggestion[];
 };
 
-export const searchExamples: Examples = {
+export const searchSuggestions: SearchSuggestions = {
   targets: [
     { type: "suggestion", entity: "target", name: "PCSK9", id: "ENSG00000169174" },
     { type: "suggestion", entity: "target", name: "WRN", id: "ENSG00000165392" },
