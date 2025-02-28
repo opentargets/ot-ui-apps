@@ -6,7 +6,6 @@ import { definition } from ".";
 import { getUniprotIds } from "@ot/utils";
 import ProtVista from "./ProtVista";
 import { createViewer } from "3dmol";
-// import NightingaleVis from "./NightingaleVis";
 
 import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 import { useState, useEffect, useRef } from "react";
@@ -17,6 +16,17 @@ const experimentalStructureSuffix = ".cif";
 const alphaFoldResultsStem = "https://alphafold.ebi.ac.uk/api/prediction/";
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
+
+function getChainsAndPositions(str) {
+  const chains = new Set();
+  const positions = [];
+  for (const substr of str.split(/,\s*/)) {
+    const eqIndex = substr.indexOf("=");
+    chains.add(substr.slice(0, eqIndex));
+    positions.push(substr.slice(eqIndex + 1));
+  }
+  return { chains: Array.from(chains), positions };
+}
 
 function Body({ label: symbol, entity }) {
   const [experimentalResults, setExperimentalResults] = useState(null);
@@ -67,14 +77,15 @@ function Body({ label: symbol, entity }) {
       id: "properties.chains",
       label: "Chain",
       renderCell: ({ properties: { chains } }) => {
-        return chains.slice(0, chains.indexOf("="));
+        return [...getChainsAndPositions(chains).chains].join(", ");
       },
     },
     {
       id: "positions",
       label: "Positions",
-      renderCell: ({ properties: { chains } }) => {
-        return chains.slice(chains.indexOf("=") + 1);
+      renderCell: ({ properties: { chains: chainsAndPositions } }) => {
+        const { chains, positions } = getChainsAndPositions(chainsAndPositions);
+        return chains.length === 1 ? positions.join(", ") : chainsAndPositions;
       },
       exportValue: false,
     },
@@ -234,12 +245,6 @@ function Body({ label: symbol, entity }) {
 
 export default Body;
 
-// ========== helpers ==========
-
-// function processExperimentalResults(results) {
-//   results.
-// }
-
 /*
 
 NOTES:
@@ -252,5 +257,12 @@ NOTES:
 - how indicate currently selected row - usint selectedId === id in a recderCell callback does not work
 
 - if use paginated table. what if selected row not shown - what does the viewer show?
+
+- GRIN1 is a target where have multiple positions on same row
+
+- how come alphafold only has one start and end even when multiple chains? - or is this index
+  global? (i.e. covers all chains?) 
+
+- how should we color experimental structures?
 
 */
