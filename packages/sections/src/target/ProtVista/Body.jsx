@@ -1,6 +1,6 @@
 import { SectionItem, usePlatformApi, OtTable } from "ui";
 import { Box, Button } from "@mui/material";
-import { naLabel } from "../../constants";
+import { naLabel } from "@ot/constants";
 import Description from "./Description";
 import { definition } from ".";
 import { getUniprotIds } from "@ot/utils";
