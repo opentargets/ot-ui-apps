@@ -1,10 +1,13 @@
 import _ from "lodash";
 import { useQuery } from "@apollo/client";
 import { Tooltip, SectionItem, TooltipStyledLabel, OtTable, PublicationsDrawer, Link } from "ui";
-
-import { dataTypesMap } from "@ot/constants";
 import Description from "./Description";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import {
+  dataTypesMap,
+  defaultRowsPerPageOptions,
+  naLabel,
+  sectionsBaseSizeQuery,
+} from "@ot/constants";
 import { definition } from ".";
 
 import CRISPR_QUERY from "./CrisprScreenQuery.gql";

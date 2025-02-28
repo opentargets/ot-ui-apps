@@ -2,7 +2,7 @@ import { useTheme, Box, Skeleton } from "@mui/material";
 import { ClinvarStars, Link, Tooltip, DisplayVariantId, Navigate, OtScoreLinearBar } from "ui";
 import * as PlotLib from "@observablehq/plot";
 import { ScientificNotation, ObsPlot, ObsTooltipTable, ObsTooltipRow } from "ui";
-import { naLabel, credsetConfidenceMap } from "../../constants";
+import { naLabel, credsetConfidenceMap } from "@ot/constants";
 
 function ManhattanPlot({ loading, data: originalData }) {
   const theme = useTheme();

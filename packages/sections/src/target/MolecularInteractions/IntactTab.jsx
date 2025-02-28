@@ -4,7 +4,7 @@ import { Grid, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { MethodIconText, MethodIconArrow } from "./custom/MethodIcons";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions } from "@ot/constants";
 
 import INTERACTIONS_QUERY from "./InteractionsQuery.gql";
 

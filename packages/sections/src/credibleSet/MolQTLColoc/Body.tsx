@@ -8,7 +8,7 @@ import {
   useBatchQuery,
   Navigate,
 } from "ui";
-import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import MOLQTL_COLOC_QUERY from "./MolQTLColocQuery.gql";

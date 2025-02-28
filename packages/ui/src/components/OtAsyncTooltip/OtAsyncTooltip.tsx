@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
 import { getEntityIcon, getEntityQuery, getQueryVariables } from "./utils/asyncTooltipUtil";
-import { naLabel } from "../../constants";
+import { naLabel } from "@ot/constants";
 
 import { getStudyItemMetaData } from "@ot/utils";
 

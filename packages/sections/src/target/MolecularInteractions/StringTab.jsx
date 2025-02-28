@@ -3,7 +3,7 @@ import { makeStyles } from "@mui/styles";
 import { Grid } from "@mui/material";
 import { scaleQuantize } from "d3";
 import { Link, Legend, OtTable, useApolloClient } from "ui";
-import { colorRange } from "../../constants";
+import { colorRange } from "@ot/constants";
 
 import INTERACTIONS_QUERY from "./InteractionsStringQuery.gql";
 
@@ -266,7 +266,7 @@ function StringTab({ ensgId, symbol }) {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const columns = getColumns(classes);
-  const client = useApolloClient()
+  const client = useApolloClient();
   // load tab data when new tab selected (also on first load)
   useEffect(() => {
     setLoading(true);

@@ -8,7 +8,7 @@ import { faCircleNodes, faCircleMinus, faCirclePlus } from "@fortawesome/free-so
 
 import { publicationSummaryQuery } from "@ot/utils";
 
-import { naLabel } from "../../constants";
+import { naLabel } from "@ot/constants";
 import SentenceMatch from "./SentenceMatch";
 import SimplePublication from "../../common/Bibliography/SimplePublication";
 

@@ -5,7 +5,7 @@ import { Link, Tooltip, SectionItem, PublicationsDrawer, OtTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl } from "@ot/utils";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions } from "@ot/constants";
 import GeneOntologyEvidenceCodeMap from "./GeneOntologyEvidenceCodeMappings.json";
 import GENE_ONTOLOGY_QUERY from "./GeneOntology.gql";
 

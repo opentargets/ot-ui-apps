@@ -2,7 +2,7 @@ import { makeStyles } from "@mui/styles";
 import { Box, Chip, Theme, Tooltip } from "@mui/material";
 import classNames from "classnames";
 import { v1 } from "uuid";
-import { naLabel } from "../constants";
+import { naLabel } from "@ot/constants";
 import { ElementType, ReactElement } from "react";
 
 const useContainerStyles = makeStyles((theme: Theme) => ({

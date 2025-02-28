@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 
 import { MethodIconText, MethodIconArrow, MethodIconExpandArrow } from "./custom/MethodIcons";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions } from "@ot/constants";
 
 import INTERACTIONS_QUERY from "./InteractionsQuery.gql";
 

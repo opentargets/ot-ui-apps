@@ -1,10 +1,10 @@
 import { ReactElement, useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable, useBatchQuery } from "ui";
-import { responseType } from "@ot/constants";
+import { responseType, naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
 import { epmcUrl, getStudyCategory } from "@ot/utils";
 import Description from "./Description";
-import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
+
 import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
 import { definition } from ".";
 

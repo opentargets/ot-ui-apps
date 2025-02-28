@@ -3,7 +3,7 @@ import { sentenceCase } from "@ot/utils";
 import { definition } from "./index";
 
 import KNOWN_DRUGS_BODY_QUERY from "./KnownDrugsQuery.gql";
-import { naLabel, phaseMap } from "../../constants";
+import { naLabel, phaseMap } from "@ot/constants";
 import { KnownDrugsSourceDrawer, Link, OtTableSSP, SectionItem } from "ui";
 import { useState } from "react";
 

@@ -24,7 +24,7 @@ import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import OtTableColumnFilter from "./OtTableColumnFilter";
-// import { naLabel } from "../../constants";
+// import { naLabel } from "@ot/constants";
 import OtTableSearch from "./OtTableSearch";
 import { OtTableProps } from "./types/tableTypes";
 import {

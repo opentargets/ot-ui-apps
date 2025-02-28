@@ -8,9 +8,8 @@ import { definition } from ".";
 import methods from "./methods";
 import Description from "./Description";
 import { epmcUrl, sentenceCase } from "@ot/utils";
-import { dataTypesMap } from "@ot/constants";
 import INTOGEN_QUERY from "./sectionQuery.gql";
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
 const intOgenUrl = (id, approvedSymbol) =>
   `https://www.intogen.org/search?gene=${approvedSymbol}&cohort=${id}`;

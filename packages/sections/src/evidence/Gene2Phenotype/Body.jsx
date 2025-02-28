@@ -11,10 +11,9 @@ import {
   OtTable,
 } from "ui";
 
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import Description from "./Description";
 import { epmcUrl, sentenceCase } from "@ot/utils";
-import { dataTypesMap } from "@ot/constants";
 import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
 import { definition } from ".";
 

@@ -12,13 +12,13 @@ import {
 import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl, identifiersOrgLink, nullishComparator, variantComparator } from "@ot/utils";
-import { dataTypesMap } from "@ot/constants";
 import {
+  dataTypesMap,
   defaultRowsPerPageOptions,
   variantConsequenceSource,
   sectionsBaseSizeQuery,
   naLabel,
-} from "../../constants";
+} from "@ot/constants";
 import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
 
 function getColumns(label) {

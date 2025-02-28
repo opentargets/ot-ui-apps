@@ -5,8 +5,7 @@ import { v1 } from "uuid";
 
 import { ChipList, Link, SectionItem, PublicationsDrawer, OtTable } from "ui";
 
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
-import { dataTypesMap } from "@ot/constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import Description from "./Description";
 import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
 

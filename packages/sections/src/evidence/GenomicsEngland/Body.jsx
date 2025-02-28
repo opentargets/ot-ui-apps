@@ -6,11 +6,10 @@ import { v1 } from "uuid";
 import { Tooltip, SectionItem, Link, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import Description from "./Description";
 import { epmcUrl, sentenceCase } from "@ot/utils";
 
-import { dataTypesMap } from "@ot/constants";
 import GENOMICS_ENGLAND_QUERY from "./sectionQuery.gql";
 
 const geUrl = (id, approvedSymbol) =>

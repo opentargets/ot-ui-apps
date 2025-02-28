@@ -4,10 +4,9 @@ import { Typography } from "@mui/material";
 import { SectionItem, Tooltip, OtTable } from "ui";
 import { definition } from "../InSilicoPredictors";
 import Description from "../InSilicoPredictors/Description";
-import { naLabel } from "../../constants";
+import { naLabel, VIEW } from "@ot/constants";
 import IN_SILICO_PREDICTORS_QUERY from "./InSilicoPredictorsQuery.gql";
 import InSilicoPredictorsVisualisation from "./InSilicoPredictorsPlot";
-import { VIEW } from "ui/src/constants";
 
 const columns = [
   {

@@ -12,8 +12,13 @@ import {
 } from "ui";
 import { Box } from "@mui/material";
 import { mantissaExponentComparator, nullishComparator, variantComparator } from "@ot/utils";
-import { responseType } from "@ot/constants";
-import { naLabel, credsetConfidenceMap, initialResponse, table5HChunkSize } from "../../constants";
+import {
+  responseType,
+  naLabel,
+  credsetConfidenceMap,
+  initialResponse,
+  table5HChunkSize,
+} from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";

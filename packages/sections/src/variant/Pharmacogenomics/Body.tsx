@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { makeStyles } from "@mui/styles";
 import { Link, Tooltip, PublicationsDrawer, OtTable, SectionItem } from "ui";
 import { epmcUrl } from "@ot/utils";
-import { naLabel, PHARM_GKB_COLOR } from "../../constants";
+import { naLabel, PHARM_GKB_COLOR } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";

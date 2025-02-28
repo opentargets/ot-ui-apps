@@ -118,24 +118,3 @@ export const referenceUrls: Record<string, (id: string) => string> = {
   EMA: emaUrl,
   USAN: usanUrl,
 };
-
-export const publicationSummaryQuery = ({
-  pmcId,
-  symbol,
-  name,
-}: PublicationSummaryParams): {
-  baseUrl: string;
-  body: {
-    payload: PublicationSummaryParams;
-  };
-} => {
-  const baseUrl = `${config.urlAiApi}/literature/publication/summary`;
-  const body = {
-    payload: {
-      pmcId,
-      targetSymbol: symbol,
-      diseaseName: name,
-    },
-  };
-  return { baseUrl, body };
-};

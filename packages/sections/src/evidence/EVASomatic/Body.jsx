@@ -14,9 +14,8 @@ import {
 } from "ui";
 import { epmcUrl, sentenceCase } from "@ot/utils";
 
-import { clinvarStarMap, naLabel } from "../../constants";
+import { dataTypesMap, clinvarStarMap, naLabel } from "@ot/constants";
 import Description from "./Description";
-import { dataTypesMap } from "@ot/constants";
 import EVA_SOMATIC_QUERY from "./EvaSomaticQuery.gql";
 import { definition } from ".";
 

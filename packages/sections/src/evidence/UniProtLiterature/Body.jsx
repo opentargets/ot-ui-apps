@@ -5,8 +5,7 @@ import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
-import { dataTypesMap } from "@ot/constants";
-import { sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
 import UNIPROT_LITERATURE_QUERY from "./UniprotLiteratureQuery.gql";
 
 const getcolumns = label => [

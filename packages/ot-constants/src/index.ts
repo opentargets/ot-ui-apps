@@ -27,6 +27,25 @@ interface MenuItem {
   showOnlyPartner?: boolean;
 }
 
+export const PHARM_GKB_COLOR = {
+  green: "#52a237",
+  yellow: "#f0c584",
+  red: "#ec2746",
+};
+
+export const colorRange = [
+  "#e5edf4",
+  "#ccdcea",
+  "#b2cbe0",
+  "#99b9d6",
+  "#7fa8cc",
+  "#6697c1",
+  "#4c85b7",
+  "#3274ad",
+  "#1963a3",
+  "#005299",
+];
+
 // External Links Configuration
 export const externalLinks = {
   about: [
@@ -143,6 +162,23 @@ export const mainMenuItems: MenuItem[] = config.profile.mainMenuItems ?? [
   },
 ];
 
+export const QTLStudyType = [
+  "scsqtl",
+  "sceqtl",
+  "scpqtl",
+  "sctuqtl",
+  "sqtl",
+  "eqtl",
+  "pqtl",
+  "tuqtl",
+];
+
+export const initialResponse = {
+  data: null,
+  error: null,
+  loading: true,
+};
+
 // App Metadata
 export const appTitle = "Open Targets Platform";
 export const appDescription =
@@ -151,7 +187,14 @@ export const appCanonicalUrl = "https://platform.opentargets.org";
 
 // Chunk Sizes
 export const tableChunkSize = 100;
+export const table2HChunkSize = 200;
+export const table3HChunkSize = 300;
+export const table5HChunkSize = 500;
 export const downloaderChunkSize = 2500;
+export const sectionsBaseSizeQuery = 3500;
+export const sections5kSizeQuery = 5000;
+export const sections7kSizeQuery = 7000;
+export const sections10kSizeQuery = 10000;
 
 // NA Label
 export const naLabel = "N/A";
@@ -248,6 +291,11 @@ export const populationMap: { [key: string]: string } = {
   nfe: "non-Finnish Europeans",
   eas: "East Asian",
   amr: "Admixed American",
+};
+
+export const VIEW = {
+  chart: "Visualisation",
+  table: "Table",
 };
 
 export * from "./dataTypes";

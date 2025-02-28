@@ -12,8 +12,8 @@ import {
   DisplayVariantId,
 } from "ui";
 import { variantComparator, mantissaExponentComparator } from "@ot/utils";
-import { dataTypesMap } from "@ot/constants";
-import { naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } from "../../constants";
+
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";

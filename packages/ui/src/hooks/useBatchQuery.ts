@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { DocumentNode } from "@apollo/client";
-import { tableChunkSize } from "../constants";
+import { tableChunkSize } from "@ot/constants";
 import { useApolloClient } from "../providers/OTApolloProvider/OTApolloProvider";
 
 type useBatchQueryProps = {

@@ -13,9 +13,7 @@ import {
   OtTableSSP,
 } from "ui";
 import { epmcUrl, sentenceCase, identifiersOrgLink } from "@ot/utils";
-import { dataTypesMap } from "@ot/constants";
-
-import { clinvarStarMap, naLabel, variantConsequenceSource } from "../../constants";
+import { dataTypesMap, clinvarStarMap, naLabel, variantConsequenceSource } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import CLINVAR_QUERY from "./ClinvarQuery.gql";

@@ -13,9 +13,14 @@ import {
 import { definition } from ".";
 import Description from "./Description";
 import { epmcUrl, sentenceCase } from "@ot/utils";
-import { dataTypesMap } from "@ot/constants";
+
 import REACTOME_QUERY from "./sectionQuery.gql";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import {
+  dataTypesMap,
+  defaultRowsPerPageOptions,
+  naLabel,
+  sectionsBaseSizeQuery,
+} from "@ot/constants";
 
 const getColumns = label => [
   {

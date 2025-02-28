@@ -10,8 +10,8 @@ import {
   DirectionOfEffectTooltip,
   OtTableSSP,
 } from "ui";
-import { phaseMap, sourceMap, naLabel } from "../../constants";
-import { dataTypesMap } from "@ot/constants";
+
+import { phaseMap, sourceMap, naLabel, dataTypesMap } from "@ot/constants";
 import Description from "./Description";
 import { definition } from ".";
 

@@ -9,8 +9,7 @@ import { v1 } from "uuid";
 
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "@ot/constants";
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import VALIDATION_QUERY from "./OTValidationQuery.gql";
 
 const useStyles = makeStyles(theme => ({
