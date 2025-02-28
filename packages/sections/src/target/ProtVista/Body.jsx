@@ -1,6 +1,6 @@
 import { SectionItem, usePlatformApi, OtTable } from "ui";
-import { Box, Button } from "@mui/material";
 import { naLabel } from "@ot/constants";
+import { Box, Grid } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
 import { getUniprotIds } from "@ot/utils";
@@ -28,6 +28,21 @@ function Body({ label: symbol, entity }) {
   const uniprotId = request?.data ? getUniprotIds(request?.data?.proteinIds)?.[0] : null;
 
   const columns = [
+    {
+      id: "select",
+      label: "Structure",
+      renderCell: ({ id }) => {
+        return (
+          <Box
+            sx={{ color: "steelblue", "&:hover": { cursor: "pointer" } }}
+            onClick={() => setSelectedId(id)}
+          >
+            view
+          </Box>
+        );
+      },
+      exportValue: false,
+    },
     {
       id: "type",
       label: "Source",
@@ -60,21 +75,6 @@ function Body({ label: symbol, entity }) {
       label: "Positions",
       renderCell: ({ properties: { chains } }) => {
         return chains.slice(chains.indexOf("=") + 1);
-      },
-      exportValue: false,
-    },
-    {
-      id: "select",
-      label: "Structure",
-      renderCell: ({ id }) => {
-        return (
-          <Box
-            sx={{ color: "steelblue", "&:hover": { cursor: "pointer" } }}
-            onClick={() => setSelectedId(id)}
-          >
-            view
-          </Box>
-        );
       },
       exportValue: false,
     },
@@ -185,32 +185,36 @@ function Body({ label: symbol, entity }) {
       // showContentLoading={true}
       renderBody={() => {
         return (
-          <>
-            <Box position="relative" display="flex" justifyContent="center" pb={2}>
-              <Box ref={viewerRef} position="relative" width="100%" height="400px">
-                <Box
-                  position="absolute"
-                  m={1}
-                  p={0.5}
-                  zIndex={100}
-                  borderRadius={2}
-                  bgcolor="#f8f8f8"
-                >
-                  {selectedId}
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <OtTable
+                // dataDownloader
+                showGlobalFilter={false}
+                // dataDownloaderFileStem={`${studyLocusId}-credibleSets`}
+                // sortBy="pValue"
+                // order="asc"
+                columns={columns}
+                loading={!experimentalResults}
+                rows={experimentalResults}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box position="relative" display="flex" justifyContent="center" pb={2}>
+                <Box ref={viewerRef} position="relative" width="100%" height="400px">
+                  <Box
+                    position="absolute"
+                    m={1}
+                    p={0.5}
+                    zIndex={100}
+                    borderRadius={2}
+                    bgcolor="#f8f8f8"
+                  >
+                    {selectedId}
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-            <OtTable
-              // dataDownloader
-              showGlobalFilter={false}
-              // dataDownloaderFileStem={`${studyLocusId}-credibleSets`}
-              // sortBy="pValue"
-              // order="asc"
-              columns={columns}
-              loading={!experimentalResults}
-              rows={experimentalResults}
-            />
-          </>
+            </Grid>
+          </Grid>
         );
       }}
 
