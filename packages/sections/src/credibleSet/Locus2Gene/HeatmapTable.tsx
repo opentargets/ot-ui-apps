@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { hsl } from "d3";
-import { ObsPlot, DataDownloader, Link } from "ui";
+import { ObsPlot, DataDownloader, Link, Tooltip } from "ui";
 import { Box, Typography, Popover, Dialog } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -117,6 +117,16 @@ function CellWrapper({ handleMouseEnter, handleMouseLeave, children }) {
 }
 
 function HeaderCell({ value, textAlign }) {
+  if (value === "Score")
+    return (
+      <Box component="th" pt={1}>
+        <Typography variant="subtitle2" textAlign={textAlign}>
+          <Tooltip showHelpIcon title="Only scores above 0.5 are shown">
+            {value}
+          </Tooltip>
+        </Typography>
+      </Box>
+    );
   return (
     <Box component="th" pt={1}>
       <Typography variant="subtitle2" textAlign={textAlign}>
