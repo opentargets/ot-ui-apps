@@ -65,7 +65,7 @@ export const RowContainer = styled("div", {
   alignItems: "center",
   boxSizing: "border-box",
   transition: "background 75ms ease-out",
-  boxShadow: rowExpanded ? boxShadow : "none",
+  // boxShadow: rowExpanded ? boxShadow : "none",
   position: rowExpanded ? "sticky" : "initial",
   padding: rowExpanded ? "0.1em 0 0.1em 0" : "0.1em 0 0.1em 0",
   zIndex: rowExpanded ? "99 !important" : "initial",
