@@ -1,6 +1,6 @@
 import { SectionItem, usePlatformApi, OtTable } from "ui";
 import { naLabel } from "@ot/constants";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
 import { getUniprotIds } from "@ot/utils";
@@ -28,9 +28,61 @@ function getChainsAndPositions(str) {
   return { chains: Array.from(chains), positions };
 }
 
+const alphaFoldConfidenceBands = [
+  { lowerLimit: 90, label: "Very high", sublabel: "(pLDDT > 90)", color: "rgb(0, 83, 214)" },
+  {
+    lowerLimit: 70,
+    label: "Confident",
+    sublabel: "(90 > pLDDT > 70)",
+    color: "rgb(101, 203, 243)",
+  },
+  { lowerLimit: 50, label: "Low", sublabel: "(70 > pLDDT > 50)", color: "rgb(255, 219, 19)" },
+  { lowerLimit: 0, label: "Very low ", sublabel: "(pLDDT < 50)", color: "rgb(255, 125, 69)" },
+];
+
+const colorOnConfidence = function (atom) {
+  for (const { lowerLimit, color } of alphaFoldConfidenceBands) {
+    if (atom.b > lowerLimit) return color;
+  }
+  return alphaFoldConfidenceBands[0].color;
+};
+
+function AlphaFoldLegend() {
+  return (
+    <Box display="flex" justifyContent="end">
+      <Box display="flex" flexDirection="column" ml={2} gap={0.75}>
+        <Typography variant="subtitle2">Model Confidence</Typography>
+        <Box display="flex" gap={3}>
+          {alphaFoldConfidenceBands.map(({ label, sublabel, color }) => (
+            <Box key={label}>
+              <Box display="flex" gap={1} alignItems="center">
+                <Box width="12px" height="12px" bgcolor={color} />
+                <Box display="flex" flexDirection="column">
+                  <Typography variant="caption" fontWeight={500} lineHeight={1}>
+                    {label}
+                  </Typography>
+                </Box>
+              </Box>
+              <Typography variant="caption" fontSize={11.5} lineHeight={0}>
+                {sublabel}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+
+        <Typography variant="caption" mt={1}>
+          AlphaFold produces a per-residue model confidence score (pLDDT) between 0 and 100. Some
+          regions below 50 pLDDT may be unstructured in isolation.
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
 function Body({ label: symbol, entity }) {
   const [experimentalResults, setExperimentalResults] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
+  const [viewer, setViewer] = useState(null);
 
   const viewerRef = useRef(null);
 
@@ -138,37 +190,24 @@ function Body({ label: symbol, entity }) {
     // RETURN CLEANUP FUNCTION IF APPROP
   }, [uniprotId]);
 
+  // create viewer
+  useEffect(() => {
+    if (viewerRef.current && experimentalResults) {
+      setViewer(createViewer(viewerRef.current, { backgroundColor: "#f8f8f8", antialias: true }));
+    }
+  }, [experimentalResults]);
+
   // fetch selected structure
   useEffect(() => {
     async function fetchStructure(structureId) {
-      if (selectedId && viewerRef?.current) {
-        let config = { backgroundColor: "#f8f8f8", antialias: true };
-        let viewer = createViewer(viewerRef.current, config);
-
+      if (selectedId && viewer) {
         const pdbUri = selectedId.startsWith("AF")
           ? `${alphaFoldStructureStem}${selectedId}${alphaFoldStructureSuffix}`
           : `${experimentalStructureStem}${selectedId.toLowerCase()}${experimentalStructureSuffix}`;
-
-        const data = await (await fetch(pdbUri)).text();
-
-        // Define confidence color mapping (pLDDT stored in B-factor field)
-        var colorScheme = {
-          prop: "bfactor", // Use B-factor (pLDDT confidence score)
-          // gradient: "rwb", // Red (low) → White (medium) → Blue (high)
-          // min: 50, // pLDDT below 50 (low confidence)
-          // max: 100, // pLDDT above 90 (high confidence)
-        };
-
-        const colorOnConfidence = function (atom) {
-          if (atom.b > 90) return "royalblue";
-          if (atom.b > 70) return "skyblue";
-          if (atom.b > 50) return "yellow";
-          return "orange";
-        };
-
-        const v = viewer;
-        v.addModel(data, "cif"); /* load data */
-        v.setStyle(
+        const data = await (await fetch(pdbUri)).text(); // !! ADD OMSE ERROR HANDLING !!
+        viewer.clear();
+        viewer.addModel(data, "cif"); /* load data */
+        viewer.setStyle(
           {},
           {
             cartoon: selectedId.startsWith("AF")
@@ -176,14 +215,14 @@ function Body({ label: symbol, entity }) {
               : { color: "spectrum" },
           }
         );
-        v.zoomTo(); /* set camera */
-        v.render(); /* render scene */
-        v.zoom(1.2, 1000); /* slight zoom */
+        viewer.zoomTo(); /* set camera */
+        viewer.render(); /* render scene */
+        // viewer.zoom(1.2, 1000); /* slight zoom */
       }
     }
     fetchStructure();
     // RETURN CLEANUP FUNCTION IF APPROP
-  }, [selectedId]);
+  }, [selectedId, viewer]);
 
   if (!request.data) return null; // BETTER WAY? - HANDLED BY CC'S CHANGE TO SECTION ITEM IF LOADING?
 
@@ -197,7 +236,7 @@ function Body({ label: symbol, entity }) {
       renderBody={() => {
         return (
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} lg={6}>
               <OtTable
                 // dataDownloader
                 showGlobalFilter={false}
@@ -209,36 +248,26 @@ function Body({ label: symbol, entity }) {
                 rows={experimentalResults}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} lg={6}>
               <Box position="relative" display="flex" justifyContent="center" pb={2}>
                 <Box ref={viewerRef} position="relative" width="100%" height="400px">
                   <Box
                     position="absolute"
-                    m={1}
-                    p={0.5}
+                    p="0.6rem 0.8rem"
                     zIndex={100}
-                    borderRadius={2}
-                    bgcolor="#f8f8f8"
+                    bgcolor="#f8f8f8c8"
+                    sx={{ borderBottomRightRadius: "0.2rem" }}
+                    fontSize={14}
                   >
                     {selectedId}
                   </Box>
                 </Box>
               </Box>
+              {selectedId?.startsWith("AF") && <AlphaFoldLegend />}
             </Grid>
           </Grid>
         );
       }}
-
-      // renderBody={() => {
-      //   const uniprotId = getuniprotIds(request.data?.proteinIds)[0];
-      //   return (
-      //     <Box display="flex" flexDirection="column" gap={6}>
-      //       {/* <NightingaleVis uniprotId={uniprotId} /> */}
-      //       {/* <Box height="1px" bgcolor="#000" />  */}
-      // <ProtVista uniprotId={uniprotId} />
-      //     </Box>
-      //   );
-      // }}
     />
   );
 }
@@ -249,20 +278,16 @@ export default Body;
 
 NOTES:
 
+- vheight of widget jumps depending on whether show legend or not - but wait to see if use legend on non-AF
+  which will help
+
 - currently will stick with the uniprot_swissprot test for whether to include widget
   - this will always have an alphaFold prediction - and poss no experimental
 
-- should include some visual controls - e.g. cartoon, ball-stick
+- should include some visual controls - e.g. cartoon, ball-stick, different color-by optoins, ...?
 
-- how indicate currently selected row - usint selectedId === id in a recderCell callback does not work
+- use click on row and show active row once added to table component
 
-- if use paginated table. what if selected row not shown - what does the viewer show?
-
-- GRIN1 is a target where have multiple positions on same row
-
-- how come alphafold only has one start and end even when multiple chains? - or is this index
-  global? (i.e. covers all chains?) 
-
-- how should we color experimental structures?
+- if use paginated table, what if selected row not shown - what does the viewer show?
 
 */
