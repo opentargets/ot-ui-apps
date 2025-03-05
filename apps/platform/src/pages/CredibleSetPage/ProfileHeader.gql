@@ -1,4 +1,4 @@
-fragment CredibleSetProfileHeaderFragment on credibleSet {
+fragment CredibleSetProfileHeaderFragment on CredibleSet {
   pValueMantissa
   pValueExponent
   beta

@@ -35,7 +35,7 @@ function Profile({
 
   const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
     summaries,
-    "credibleSet",
+    "CredibleSet",
     "CredibleSetProfileSummaryFragment"
   );
 
