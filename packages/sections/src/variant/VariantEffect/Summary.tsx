@@ -1,16 +1,16 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
-import IN_SILICO_PREDICTORS_SUMMARY from "./InSilicoPredictorsSummaryFragment.gql";
+import VARIANT_EFFECT_SUMMARY from "./VariantEffectSummaryFragment.gql";
 
 function Summary() {
-  const request = usePlatformApi(IN_SILICO_PREDICTORS_SUMMARY);
+  const request = usePlatformApi(VARIANT_EFFECT_SUMMARY);
 
   return <SummaryItem definition={definition} request={request} />;
 }
 
 Summary.fragments = {
-  InSilicoPredictorsSummaryFragment: IN_SILICO_PREDICTORS_SUMMARY,
+  VariantEffectSummaryFragment: VARIANT_EFFECT_SUMMARY,
 };
 
 export default Summary;

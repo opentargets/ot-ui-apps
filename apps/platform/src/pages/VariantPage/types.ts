@@ -61,19 +61,6 @@ export type MetadataType = {
   vep: VepType;
 };
 
-// ==================
-// InSilicoPredictors
-// ==================
-
-export type InSilicoPredictorsType = {
-  [index: number]: {
-    method: string;
-    assesessment?: string;
-    flag?: string;
-    score?: number;
-  };
-};
-
 // =======
 // ClinVar
 // =======
