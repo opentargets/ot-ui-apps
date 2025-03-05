@@ -60,3 +60,10 @@ export function resetToInitialState(): Action {
     type: ActionType.SET_INITIAL_STATE,
   };
 }
+
+export function setEntitySearch(entitySearch: string): Action {
+  return {
+    type: ActionType.ENTITY_SEARCH,
+    entitySearch,
+  };
+}

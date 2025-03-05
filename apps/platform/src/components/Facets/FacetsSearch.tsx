@@ -104,7 +104,7 @@ function FacetsSearch(): ReactElement {
         onClick={handleClick}
         sx={{ height: 1 }}
       >
-        {getEntityLabel(entityToGet)} filters
+        Advance filters
         <Box component="span" sx={{ ml: 1 }}>
           {open ? (
             <FontAwesomeIcon icon={faCaretUp} size="lg" />

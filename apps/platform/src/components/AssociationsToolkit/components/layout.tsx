@@ -27,8 +27,6 @@ const baseGridContainerStyles = {
   width: "100%",
 };
 
-const boxShadow = "0px 3px 15px -3px rgba(0,0,0,0.1)";
-
 type GridContainerProps = {
   columnsCount: number;
 };
@@ -76,15 +74,6 @@ export const RowContainer = styled("div", {
     backgroundColor: grey[300],
   },
 }));
-
-export const ControlsSection = styled("section")`
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-`;
 
 export const OptionsControlls = styled("div")`
   display: flex;

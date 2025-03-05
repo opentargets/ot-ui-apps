@@ -77,6 +77,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       datasources: state.dataSourceControls,
       entity,
       facetFilters: state.facetFilters,
+      entitySearch: state.entitySearch,
     },
   });
 
@@ -97,6 +98,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       datasources: state.dataSourceControls,
       rowsFilter: pinnedEntries.toSorted(),
       facetFilters: state.facetFilters,
+      entitySearch: state.entitySearch,
     },
   });
 

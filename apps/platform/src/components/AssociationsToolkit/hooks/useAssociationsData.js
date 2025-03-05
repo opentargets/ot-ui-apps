@@ -28,6 +28,7 @@ function useAssociationsData({
     rowsFilter = [],
     entity,
     facetFilters = [],
+    entitySearch = "",
   },
 }) {
   const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
@@ -55,6 +56,7 @@ function useAssociationsData({
           })),
           rowsFilter,
           facetFilters,
+          entitySearch,
         },
       });
       const parsedData = getAssociationsData(entity, resData.data);
@@ -69,7 +71,18 @@ function useAssociationsData({
     };
     if (isCurrent) fetchData();
     return () => (isCurrent = false);
-  }, [id, index, size, sortBy, enableIndirect, datasources, query, entity, facetFilters]);
+  }, [
+    id,
+    index,
+    size,
+    sortBy,
+    enableIndirect,
+    datasources,
+    query,
+    entity,
+    facetFilters,
+    entitySearch,
+  ]);
 
   return state;
 }
