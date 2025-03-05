@@ -23,7 +23,7 @@ function VariantMessage({ inputValue }: { inputValue: string }) {
         <FontAwesomeIcon icon={faInfoCircle} />
       </Box>
       <Typography variant="body2" fontStyle="italic">
-        No exact match found. We only include variants with known phenotypic associations{" "}
+        No exact variant match found. Only variants with known phenotypic associations are included{" "}
         <Link to={docsLink}>(documentation)</Link>
       </Typography>
     </Box>
