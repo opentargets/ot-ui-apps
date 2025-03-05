@@ -6,23 +6,34 @@ export const FacetsSelect = styled(Select)(({ theme }) => ({
   background: `${theme.palette.grey[200]}`,
   display: "flex",
   boxShadow: "none",
-  fontSize: "0.875rem",
+  fontSize: "0.8rem",
   ".MuiOutlinedInput-notchedOutline": {
-    borderRight: 0,
+    // borderRight: 0,
+    borderLeft: 0,
     borderTopRightRadius: 0,
     borderBottomRightRadius: 0,
+    borderTopLeftRadius: 0,
+
+    borderBottomLeftRadius: 0,
   },
 }));
 
 export const FacetsAutocomplete = styled(Autocomplete)(({ theme }) => ({
-  minWidth: "320px",
+  minWidth: "240px",
   width: 1,
   maxWidth: 1,
   flexWrap: "nowrap",
   "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-    borderLeft: 0,
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
+    // borderLeft: 0,
+    borderRight: 0,
+    // borderTopLeftRadius: 0,
+    // borderBottomLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  "& .MuiFormLabel-root": {
+    fontSize: "0.8rem",
+    lineHeight: "1.7em",
   },
 }));
 

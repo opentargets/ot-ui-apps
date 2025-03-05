@@ -15,7 +15,7 @@ const PRIORITISATION_LEGEND_LABEL = "Prioritisation indicator";
 const TARGE_PRIORITISATION_LEGEND_TICKS = ["Unfavourable", "Favourable"];
 
 export const DEFAULT_TABLE_PAGE_INDEX = 0;
-export const DEFAULT_TABLE_PAGE_SIZE = 50;
+export const DEFAULT_TABLE_PAGE_SIZE = 25;
 
 export const DEFAULT_TABLE_PAGINATION_STATE = {
   pageIndex: DEFAULT_TABLE_PAGE_INDEX,

@@ -40,6 +40,15 @@ const TableDivider = styled("div")({
 
 const columnHelper = createColumnHelper();
 
+const evidenceViewColumns = getDatasources({
+  displayedTable: "associations",
+  colorScale: getScale(true),
+});
+const prioritisationViewColumns = getDatasources({
+  displayedTable: "prioritisations",
+  colorScale: getScale(false),
+});
+
 /* Build table columns bases on displayed table */
 function getDatasources({ displayedTable, colorScale }) {
   const isAssociations = displayedTable === "associations";
@@ -92,7 +101,6 @@ function TableAssociations() {
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const isAssociations = displayedTable === "associations";
-  const colorScale = getScale(isAssociations);
   const associationsColorScale = getScale(true);
 
   const columns = useMemo(
@@ -132,7 +140,8 @@ function TableAssociations() {
       columnHelper.group({
         header: "entities",
         id: "entity-cols",
-        columns: [...getDatasources({ displayedTable, colorScale })],
+        columns: isAssociations ? evidenceViewColumns : prioritisationViewColumns,
+        // columns: [...evidenceViewColumns, ...prioritisationViewColumns],
       }),
     ],
     [displayedTable, entityToGet, rowNameEntity]
