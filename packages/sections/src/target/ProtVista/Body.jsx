@@ -1,14 +1,16 @@
 import { SectionItem, usePlatformApi, OtTable } from "ui";
 import { naLabel } from "@ot/constants";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, colors, Grid, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
 import { getUniprotIds } from "@ot/utils";
 import ProtVista from "./ProtVista";
 import { createViewer } from "3dmol";
+import { color, schemeSet2 as secondaryStructureScheme } from "d3";
 
 import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 import { useState, useEffect, useRef } from "react";
+import { property } from "lodash";
 
 const experimentalResultsStem = "https://www.ebi.ac.uk/proteins/api/proteins/";
 const experimentalStructureStem = "https://www.ebi.ac.uk/pdbe/entry-files/download/";
@@ -29,33 +31,43 @@ function getChainsAndPositions(str) {
 }
 
 const alphaFoldConfidenceBands = [
-  { lowerLimit: 90, label: "Very high", sublabel: "(pLDDT > 90)", color: "rgb(0, 83, 214)" },
+  { lowerLimit: 90, label: "Very high", sublabel: "pLDDT > 90", color: "rgb(0, 83, 214)" },
   {
     lowerLimit: 70,
     label: "Confident",
-    sublabel: "(90 > pLDDT > 70)",
+    sublabel: "90 > pLDDT > 70",
     color: "rgb(101, 203, 243)",
   },
-  { lowerLimit: 50, label: "Low", sublabel: "(70 > pLDDT > 50)", color: "rgb(255, 219, 19)" },
-  { lowerLimit: 0, label: "Very low ", sublabel: "(pLDDT < 50)", color: "rgb(255, 125, 69)" },
+  { lowerLimit: 50, label: "Low", sublabel: "70 > pLDDT > 50", color: "rgb(255, 219, 19)" },
+  { lowerLimit: 0, label: "Very low ", sublabel: "pLDDT < 50", color: "rgb(255, 125, 69)" },
 ];
 
-const colorOnConfidence = function (atom) {
-  for (const { lowerLimit, color } of alphaFoldConfidenceBands) {
-    if (atom.b > lowerLimit) return color;
+// const secondaryStructureColors = {
+//   h: secondaryStructureScheme[0], // helix
+//   s: secondaryStructureScheme[1], // sheet
+//   c: secondaryStructureScheme[2], // coil
+// };
+
+function getConfidence(atom, propertyName = "label") {
+  for (const obj of alphaFoldConfidenceBands) {
+    if (atom.b > obj.lowerLimit) return obj[propertyName];
   }
-  return alphaFoldConfidenceBands[0].color;
-};
+  return alphaFoldConfidenceBands[0][propertyName];
+}
+
+function isAlphaFold(id) {
+  return id?.startsWith("AF");
+}
 
 function AlphaFoldLegend() {
   return (
-    <Box display="flex" justifyContent="end">
+    <Box display="flex">
       <Box display="flex" flexDirection="column" ml={2} gap={0.75}>
         <Typography variant="subtitle2">Model Confidence</Typography>
-        <Box display="flex" gap={3}>
+        <Box display="flex" gap={3.5}>
           {alphaFoldConfidenceBands.map(({ label, sublabel, color }) => (
             <Box key={label}>
-              <Box display="flex" gap={1} alignItems="center">
+              <Box display="flex" gap={0.75} alignItems="center">
                 <Box width="12px" height="12px" bgcolor={color} />
                 <Box display="flex" flexDirection="column">
                   <Typography variant="caption" fontWeight={500} lineHeight={1}>
@@ -63,7 +75,7 @@ function AlphaFoldLegend() {
                   </Typography>
                 </Box>
               </Box>
-              <Typography variant="caption" fontSize={11.5} lineHeight={0}>
+              <Typography variant="caption" fontSize={11.5} lineHeight={1}>
                 {sublabel}
               </Typography>
             </Box>
@@ -79,10 +91,53 @@ function AlphaFoldLegend() {
   );
 }
 
+function StructureIdPanel({ selectedId }) {
+  return (
+    <Box
+      position="absolute"
+      p="0.6rem 0.8rem"
+      zIndex={100}
+      bgcolor="#f8f8f8c8"
+      sx={{ borderBottomRightRadius: "0.2rem" }}
+      fontSize={14}
+    >
+      {selectedId}
+    </Box>
+  );
+}
+
+function AtomInfoPanel({ atom, selectedId }) {
+  console.log(atom);
+  return (
+    <Box
+      position="absolute"
+      bottom={0}
+      right={0}
+      p="0.6rem 0.8rem"
+      zIndex={100}
+      bgcolor="#f8f8f8c8"
+      sx={{ borderBottomRightRadius: "0.2rem" }}
+      fontSize={14}
+    >
+      <Box display="flex" flexDirection="column">
+        <Typography variant="caption">
+          {atom.resn} {atom.resi}, chain {atom.chain}
+        </Typography>
+        {isAlphaFold(selectedId) && (
+          <Typography variant="caption">
+            Confidence: {atom.b} ({getConfidence(atom)})
+          </Typography>
+        )}
+      </Box>
+    </Box>
+  );
+}
+
 function Body({ label: symbol, entity }) {
   const [experimentalResults, setExperimentalResults] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [viewer, setViewer] = useState(null);
+  const [selectedAtom, setSelectedAtom] = useState(null);
 
   const viewerRef = useRef(null);
 
@@ -122,7 +177,7 @@ function Body({ label: symbol, entity }) {
       id: "properties.resolution",
       label: "Resolution",
       renderCell: ({ properties: { resolution } }) => {
-        return resolution ? resolution.replace("A", "Å") : naLabel;
+        return resolution != null ? resolution.replace("A", "Å") : naLabel;
       },
     },
     {
@@ -141,10 +196,6 @@ function Body({ label: symbol, entity }) {
       },
       exportValue: false,
     },
-    // TO ADD:
-    //  - PDBe LINK
-    //    - if only 1 link per row, could make the ID the link
-    //    - use identifiers.org
   ];
 
   // fetch experimental results
@@ -161,9 +212,11 @@ function Body({ label: symbol, entity }) {
             id: response[0].entryId,
             type: "AlphaFold",
             properties: {
-              chains: `(all)=${response[0].uniprotStart}-${response[0].uniprotEnd}`,
+              chains: `=${response[0].uniprotStart}-${response[0].uniprotEnd}`,
+              // chains: `(all)=${response[0].uniprotStart}-${response[0].uniprotEnd}`,
               method: "Prediction",
-              resolution: "(prediction)",
+              resolution: "",
+              // resolution: "(prediction)",
             },
           });
         }
@@ -201,23 +254,59 @@ function Body({ label: symbol, entity }) {
   useEffect(() => {
     async function fetchStructure(structureId) {
       if (selectedId && viewer) {
-        const pdbUri = selectedId.startsWith("AF")
+        const pdbUri = isAlphaFold(selectedId)
           ? `${alphaFoldStructureStem}${selectedId}${alphaFoldStructureSuffix}`
           : `${experimentalStructureStem}${selectedId.toLowerCase()}${experimentalStructureSuffix}`;
         const data = await (await fetch(pdbUri)).text(); // !! ADD OMSE ERROR HANDLING !!
+        setSelectedAtom(null);
         viewer.clear();
         viewer.addModel(data, "cif"); /* load data */
+        // viewer.setClickable({}, true, atom => console.log(atom));
+        // viewer.setHoverable(
+        //   {},
+        //   true,
+        //   function (atom) {
+        //     setSelectedAtom(atom);
+        //     if (atom && atom.resi) {
+        //       let resi = atom.resi;
+        //       let chain = atom.chain;
+        //       let resn = atom.resn;
+        //       viewer.setStyle(
+        //         { resi: resi, chain: chain },
+        //         { cartoon: { color: "red" } }
+        //         // { cartoon: { color: "red" }, stick: { radius: 0.3 } }
+        //       );
+        //       viewer.render();
+        //     }
+        //   },
+        //   function (atom) {
+        //     setSelectedAtom(null);
+        //     if (atom && atom.resi) {
+        //       viewer.setStyle({}, { cartoon: { color: "spectrum" } }); // Reset colors
+        //       viewer.render();
+        //     }
+        //   }
+        // );
+
         viewer.setStyle(
           {},
           {
-            cartoon: selectedId.startsWith("AF")
-              ? { colorfunc: colorOnConfidence }
-              : { color: "spectrum" },
+            cartoon: {
+              ...(isAlphaFold(selectedId)
+                ? { colorfunc: atom => getConfidence(atom, "color") }
+                : { colorscheme: "ssJmol" }),
+              // : { colorfunc: atom => secondaryStructureColors[atom.ss] }),
+              // : { color: "spectrum" }),
+              arrows: true,
+              // style: "parabola",
+            },
+            // line: { color: "#000", lineWidth: 5 },
           }
         );
         viewer.zoomTo(); /* set camera */
         viewer.render(); /* render scene */
-        // viewer.zoom(1.2, 1000); /* slight zoom */
+        viewer.zoom(1.5, 1000); /* slight zoom */
+        // window.viewer = viewer; // !! REMOVE !!
       }
     }
     fetchStructure();
@@ -251,19 +340,11 @@ function Body({ label: symbol, entity }) {
             <Grid item xs={12} lg={6}>
               <Box position="relative" display="flex" justifyContent="center" pb={2}>
                 <Box ref={viewerRef} position="relative" width="100%" height="400px">
-                  <Box
-                    position="absolute"
-                    p="0.6rem 0.8rem"
-                    zIndex={100}
-                    bgcolor="#f8f8f8c8"
-                    sx={{ borderBottomRightRadius: "0.2rem" }}
-                    fontSize={14}
-                  >
-                    {selectedId}
-                  </Box>
+                  <StructureIdPanel selectedId={selectedId} />
+                  {selectedAtom && <AtomInfoPanel atom={selectedAtom} selectedId={selectedId} />}
                 </Box>
               </Box>
-              {selectedId?.startsWith("AF") && <AlphaFoldLegend />}
+              {isAlphaFold(selectedId) && <AlphaFoldLegend />}
             </Grid>
           </Grid>
         );
@@ -289,5 +370,18 @@ NOTES:
 - use click on row and show active row once added to table component
 
 - if use paginated table, what if selected row not shown - what does the viewer show?
+
+- look over other API options such as quality
+
+- use theme colors (or grey[600] etc)
+
+- change widget description - and name?
+
+- add PDBe link only?
+    - if only 1 link per row, could make the ID the link
+    - use identifiers.org
+
+- no easy way to get enetiy name that a residu belongs to in 3d mol - look at parsing the
+  .cif file or using a separate API call
 
 */
