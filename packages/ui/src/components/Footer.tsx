@@ -201,7 +201,7 @@ const UIVersion = () => {
   const { config } = useConfigContext();
   return (
     <Typography color="inherit" variant="caption">
-      <b>UI {config?.gitVersion}</b>
+      <b>{config?.gitVersion}</b>
     </Typography>
   );
 };
