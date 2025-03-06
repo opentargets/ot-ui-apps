@@ -209,6 +209,7 @@ const columns = [
   {
     id: "clpp",
     label: "CLPP",
+    tooltip: "The sum of the products of the fine-mapping posterior probabilities for overlapping variants between two study loci",
     filterValue: false,
     numeric: true,
     comparator: (a, b) => a?.clpp - b?.clpp,
