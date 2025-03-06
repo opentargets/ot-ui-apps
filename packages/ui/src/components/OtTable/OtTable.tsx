@@ -142,7 +142,6 @@ function OtTable({
   });
 
   function onRowSelection(e: any, row: Row<any>) {
-    console.log(e);
     enableRowSelection && row.toggleSelected();
   }
 
