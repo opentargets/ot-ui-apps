@@ -1,4 +1,4 @@
-fragment VariantsSummaryFragment on credibleSet {
+fragment VariantsSummaryFragment on CredibleSet {
   locus(variantIds: $variantIds) {
     count
   }

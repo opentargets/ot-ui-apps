@@ -1,4 +1,4 @@
-fragment GWASColocSummaryFragment on credibleSet {
+fragment GWASColocSummaryFragment on CredibleSet {
   colocalisation(studyTypes: [gwas], page: { size: 1, index: 0 }) {
     count
   }

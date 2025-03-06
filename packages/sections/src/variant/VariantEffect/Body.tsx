@@ -2,11 +2,11 @@ import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { SectionItem, Tooltip, OtTable } from "ui";
-import { definition } from "../InSilicoPredictors";
-import Description from "../InSilicoPredictors/Description";
+import { definition } from ".";
+import Description from "./Description";
 import { naLabel, VIEW } from "@ot/constants";
-import IN_SILICO_PREDICTORS_QUERY from "./InSilicoPredictorsQuery.gql";
-import InSilicoPredictorsVisualisation from "./InSilicoPredictorsPlot";
+import VARIANT_EFFECT_QUERY from "./VariantEffectQuery.gql";
+import VariantEffectPlot from "./VariantEffectPlot";
 
 const columns = [
   {
@@ -55,8 +55,8 @@ type BodyProps = {
 };
 
 function getSortedRows(request) {
-  return request.data?.variant?.inSilicoPredictors
-    ? [...request.data.variant.inSilicoPredictors]
+  return request.data?.variant?.variantEffect
+    ? [...request.data.variant.variantEffect]
         .filter(e => e.method !== null)
         .sort((row1, row2) => row1.method.localeCompare(row2.method))
     : [];
@@ -66,7 +66,7 @@ export function Body({ id, entity }: BodyProps): ReactElement {
   const variables = {
     variantId: id,
   };
-  const request = useQuery(IN_SILICO_PREDICTORS_QUERY, {
+  const request = useQuery(VARIANT_EFFECT_QUERY, {
     variables,
   });
 
@@ -87,9 +87,9 @@ export function Body({ id, entity }: BodyProps): ReactElement {
       )}
       renderChart={() => {
         return (
-          <InSilicoPredictorsVisualisation
+          <VariantEffectPlot
             data={rows}
-            query={IN_SILICO_PREDICTORS_QUERY.loc.source.body}
+            query={VARIANT_EFFECT_QUERY.loc.source.body}
             variables={variables}
             columns={columns}
           />
@@ -101,7 +101,7 @@ export function Body({ id, entity }: BodyProps): ReactElement {
             columns={columns}
             rows={rows}
             dataDownloader
-            query={IN_SILICO_PREDICTORS_QUERY.loc.source.body}
+            query={VARIANT_EFFECT_QUERY.loc.source.body}
             variables={variables}
             loading={request.loading}
           />
