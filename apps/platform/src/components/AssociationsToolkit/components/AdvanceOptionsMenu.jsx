@@ -1,11 +1,18 @@
 import { useState } from "react";
-import { Popover, FormGroup, Button, FormControlLabel, Checkbox, Switch } from "@mui/material";
-import { faGear } from "@fortawesome/free-solid-svg-icons";
+import { Popover, FormGroup, Button, FormControlLabel, Box, Switch } from "@mui/material";
+import { faCaretUp, faCaretDown, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from "@mui/material/styles";
 import { Tooltip } from "ui";
 
 import useAotfContext from "../hooks/useAotfContext";
+
+const StyledBotton = styled(Button)({
+  border: "none",
+  "& .MuiButton-startIcon": {
+    fontSize: "14px !important",
+  },
+});
 
 const PopoverContent = styled("div")({
   padding: "15px",
@@ -20,6 +27,7 @@ function DataMenu() {
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
+    setActiveHeadersControlls(!activeHeadersControlls);
   };
 
   const handleClose = () => {
@@ -31,24 +39,34 @@ function DataMenu() {
 
   return (
     <>
-      <Tooltip placement="bottom" title="Advanced options">
-        <Button
-          aria-describedby={id}
-          onClick={handleClick}
-          variant="outlined"
-          disableElevation
-          disabled={isPrioritisation}
-          sx={{ height: 1, maxHeight: "45px" }}
-          aria-label="Advanced options"
-        >
+      <StyledBotton
+        aria-describedby={id}
+        onClick={handleClick}
+        variant="text"
+        disableElevation
+        disabled={isPrioritisation}
+        sx={{ height: 1, maxHeight: "45px" }}
+        aria-label="Advanced options"
+      >
+        <Box component="span" sx={{ mr: 1 }}>
           <FontAwesomeIcon icon={faGear} size="lg" />
-        </Button>
-      </Tooltip>
-      <Popover
+        </Box>
+        Column options
+        <Box component="span" sx={{ ml: 1 }}>
+          {activeHeadersControlls ? (
+            <FontAwesomeIcon icon={faCaretUp} />
+          ) : (
+            <FontAwesomeIcon icon={faCaretDown} />
+          )}
+        </Box>
+      </StyledBotton>
+
+      {/* <Popover
         id={id}
         anchorEl={anchorEl}
         onClose={handleClose}
         open={open}
+        elevation={1}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "left",
@@ -71,7 +89,7 @@ function DataMenu() {
             />
           </FormGroup>
         </PopoverContent>
-      </Popover>
+      </Popover> */}
     </>
   );
 }

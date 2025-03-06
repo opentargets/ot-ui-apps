@@ -26,24 +26,15 @@ import {
 } from "./facetsLayout";
 import { getFacetsData } from "./service/facetsService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCaretDown,
-  faCaretUp,
-  faChevronDown,
-  faFilter,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
-import { ENTITY, Facet } from "./facetsTypes";
+import { faCaretDown, faCaretUp, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { Facet } from "./facetsTypes";
 
-const FilterButton = styled(Button)(({ theme }) => ({
+const FilterButton = styled(Button)({
   border: "none",
   "& .MuiButton-startIcon": {
     fontSize: "14px !important",
   },
-}));
-
-const getEntityLabel = (entityToGet: ENTITY) =>
-  ENTITY.DISEASE === entityToGet ? "Disease" : "Target";
+});
 
 function FacetsSearch(): ReactElement {
   const { entityToGet, facetFilterSelect, id } = useAotfContext();
@@ -95,22 +86,19 @@ function FacetsSearch(): ReactElement {
   }, [id]);
 
   return (
-    <Box sx={{ mr: 2 }}>
+    <Box>
       <FilterButton
-        // startIcon={<FontAwesomeIcon icon={faFilter} />}
-        // endIcon={<FontAwesomeIcon icon={faCaretDown} />}
         aria-describedby={popoverId}
         variant="text"
         onClick={handleClick}
         sx={{ height: 1 }}
       >
+        <Box component="span" sx={{ mr: 1 }}>
+          <FontAwesomeIcon icon={faFilter} />
+        </Box>
         Advance filters
         <Box component="span" sx={{ ml: 1 }}>
-          {open ? (
-            <FontAwesomeIcon icon={faCaretUp} size="lg" />
-          ) : (
-            <FontAwesomeIcon icon={faCaretDown} size="lg" />
-          )}
+          {open ? <FontAwesomeIcon icon={faCaretUp} /> : <FontAwesomeIcon icon={faCaretDown} />}
         </Box>
       </FilterButton>
       <Popover
@@ -131,13 +119,11 @@ function FacetsSearch(): ReactElement {
             <FacetsAutocomplete
               id="facets-search-input"
               multiple
-              // autoComplete
               freeSolo
               includeInputInList
               filterSelectedOptions
               options={state.dataOptions}
               value={inputSelectedOptions}
-              // noOptionsText={<FacetsSuggestion />}
               loading={state.loading}
               size="small"
               limitTags={2}

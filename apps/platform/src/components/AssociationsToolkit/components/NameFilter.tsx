@@ -34,7 +34,7 @@ const NameFilter = () => {
   }, [debouncedInputValue]);
 
   return (
-    <Box mr={1}>
+    <Box>
       <NameFilterInput
         onChange={event => {
           setInputValue(event.target.value);

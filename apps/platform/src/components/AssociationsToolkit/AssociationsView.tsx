@@ -22,11 +22,11 @@ const AssociationsView = ({ id, entity, query }) => (
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
-            mt: 6,
-            mb: 4,
+            my: 4,
           }}
         >
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box></Box>
             <NameFilter />
             <FacetsSearch />
             <AdvanceOptionsMenu />

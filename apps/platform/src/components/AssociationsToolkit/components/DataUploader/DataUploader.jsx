@@ -405,7 +405,7 @@ function DataUploader() {
         <Button
           aria-describedby={popoverId}
           onClick={handleClickBTN}
-          variant="outlined"
+          variant="text"
           disableElevation
           sx={{ height: 1, maxHeight: "45px" }}
           aria-label="Upload list of entities"
