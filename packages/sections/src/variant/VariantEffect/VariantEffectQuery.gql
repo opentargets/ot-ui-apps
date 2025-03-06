@@ -1,7 +1,7 @@
-query InSilicoPredictorsQuery($variantId: String!) {
+query VariantEffectQuery($variantId: String!) {
   variant(variantId: $variantId) {
     id
-    inSilicoPredictors {
+    variantEffect {
       method
       assessment
       score
