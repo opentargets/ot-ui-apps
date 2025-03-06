@@ -6,6 +6,7 @@ import {
   getPaginationRowModel,
   flexRender,
   PaginationState,
+  Row,
 } from "@tanstack/react-table";
 import { faAngleLeft, faAngleRight, faBackwardStep } from "@fortawesome/free-solid-svg-icons";
 
@@ -20,6 +21,7 @@ import {
   OtTableHeaderText,
   OtTD,
   OtTableCellContainer,
+  OtTR,
 } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
 import {
@@ -50,13 +52,18 @@ function OtTableSSP({
   dataDownloader,
   showColumnVisibilityControl = true,
   setInitialRequestData,
+  enableMultipleRowSelection = false,
+  getSelectedRows,
 }: OtTableSSPProps): ReactElement {
   const client = useApolloClient();
   const [state, dispatch] = useReducer(otTableReducer, "", createInitialState);
+  const [rowSelection, setRowSelection] = useState({});
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: INIT_PAGE_SIZE,
   });
+
+  const enableRowSelection = !!getSelectedRows || enableMultipleRowSelection;
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
   const loadingCells = getLoadingCells(mappedColumns);
   const tableColumns = useMemo(
@@ -70,13 +77,24 @@ function OtTableSSP({
     rowCount: state.count,
     state: {
       pagination,
+      rowSelection,
     },
     autoResetPageIndex: false,
     // manualPagination: true,
     onPaginationChange: onPaginationChange,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    enableRowSelection: enableRowSelection,
+    enableMultiRowSelection: enableMultipleRowSelection,
+    onRowSelectionChange: setRowSelection,
   });
+
+  /****
+   * call the higher order function if row selection is enabled
+   ****/
+  function onRowSelection(row: Row<any>) {
+    enableRowSelection && row.toggleSelected();
+  }
 
   /**********************************************
    * DEFAULT FUNCTION CALLBACK TRIGGERED BY
@@ -212,7 +230,12 @@ function OtTableSSP({
       pageSize: pagination.pageSize,
     };
     setTableData({ newPagination, freeTextQuery: state.freeTextQuery });
+    enableRowSelection && setRowSelection({ 0: true });
   }, [state.freeTextQuery]);
+
+  useEffect(() => {
+    enableRowSelection && getSelectedRows(table.getSelectedRowModel().rows);
+  }, [table.getSelectedRowModel()]);
 
   function getCellData(cell: Record<string, unknown>): ReactNode {
     return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
@@ -287,7 +310,12 @@ function OtTableSSP({
           <tbody>
             {table.getRowModel().rows.map(row => {
               return (
-                <tr key={row.id}>
+                <OtTR
+                  key={row.id}
+                  onClick={() => onRowSelection(row)}
+                  enableRowSelection={enableRowSelection}
+                  isSelected={row.getIsSelected()}
+                >
                   {row.getVisibleCells().map(cell => {
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
@@ -301,7 +329,7 @@ function OtTableSSP({
                       </OtTD>
                     );
                   })}
-                </tr>
+                </OtTR>
               );
             })}
           </tbody>
