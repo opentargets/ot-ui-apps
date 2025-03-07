@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Chip,
+  Divider,
   MenuItem,
   Popover,
   SelectChangeEvent,
@@ -28,6 +29,7 @@ import { getFacetsData } from "./service/facetsService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { Facet } from "./facetsTypes";
+import { DataUploader } from "../AssociationsToolkit";
 
 const FilterButton = styled(Button)({
   border: "none",
@@ -114,6 +116,8 @@ function FacetsSearch(): ReactElement {
         elevation={1}
       >
         <Box sx={{ maxWidth: "500px", display: "flex", p: 3, flexDirection: "column", gap: 2 }}>
+          <DataUploader />
+          <Divider flexItem sx={{ my: 1 }} />
           <FacetsSuggestion />
           <Box sx={{ display: "flex" }}>
             <FacetsAutocomplete

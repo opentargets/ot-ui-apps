@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../associationsUtils";
 
-const INITIAL_ROW_COUNT = 20;
+const INITIAL_ROW_COUNT = 25;
 
 const INITIAL_USE_ASSOCIATION_STATE = {
   loading: true,

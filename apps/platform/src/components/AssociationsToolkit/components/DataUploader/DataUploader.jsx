@@ -95,6 +95,18 @@ const SuggestionContainer = styled("div")`
   border-top: none;
 `;
 
+const UploadButton = styled(Button)(({ theme }) => ({
+  border: theme.palette.primary.dark,
+  backgroundColor: theme.palette.primary.dark,
+  color: "#fff",
+  "&:hover": {
+    backgroundColor: theme.palette.secondary.main,
+  },
+  "& .MuiButton-startIcon": {
+    fontSize: "14px !important",
+  },
+}));
+
 const steps = ["Add a file", "Entity validation"];
 
 const getEntityToUploadLabel = {
@@ -401,18 +413,18 @@ function DataUploader() {
 
   return (
     <div>
-      <Tooltip placement="bottom" title={`Upload list of ${entityToUploadLabel}`}>
-        <Button
-          aria-describedby={popoverId}
-          onClick={handleClickBTN}
-          variant="text"
-          disableElevation
-          sx={{ height: 1, maxHeight: "45px" }}
-          aria-label="Upload list of entities"
-        >
+      <UploadButton
+        aria-describedby={popoverId}
+        onClick={handleClickBTN}
+        disableElevation
+        sx={{ height: 1, maxHeight: "45px" }}
+        aria-label="Upload list of entities"
+      >
+        <Box component="span" sx={{ mr: 1 }}>
           <FontAwesomeIcon icon={faFileImport} size="lg" />
-        </Button>
-      </Tooltip>
+        </Box>
+        {`Upload list of ${entityToUploadLabel}`}
+      </UploadButton>
       <Dialog
         onClose={handleClosePopover}
         open={open}

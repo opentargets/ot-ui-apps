@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useReactTable, getCoreRowModel, createColumnHelper } from "@tanstack/react-table";
 
-import { styled, Typography, Box } from "@mui/material";
+import { styled, Typography, Box, Collapse } from "@mui/material";
 
 import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
@@ -211,6 +211,8 @@ function TableAssociations() {
         {pinnedEntries.length > 0 && <TableDivider />}
 
         <TableBody core={coreAssociationsTable} prefix={TABLE_PREFIX.CORE} cols={entitesHeaders} />
+        {/* <Collapse in={pinnedEntries.length === 0}>
+        </Collapse> */}
 
         {/* FOOTER */}
         <TableFooter table={coreAssociationsTable} />

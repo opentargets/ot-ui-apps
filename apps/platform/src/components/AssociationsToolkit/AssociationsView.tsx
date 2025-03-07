@@ -1,10 +1,10 @@
 import FacetsSearch from "../Facets/FacetsSearch";
+import ExportMenu from "./components/ExportMenu";
 import {
   TableAssociations,
   AdvanceOptionsMenu,
   AssociationsProvider,
   DataDownloader,
-  DataUploader,
   AotfApiPlayground,
   AssociationsFocusProvider,
   DisplayModeSwitch,
@@ -22,23 +22,27 @@ const AssociationsView = ({ id, entity, query }) => (
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
-            my: 4,
+            mt: 4,
+            mb: 2,
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Box></Box>
             <NameFilter />
-            <FacetsSearch />
-            <AdvanceOptionsMenu />
-            <DataUploader />
-            <Divider orientation="vertical" flexItem />
-            <DataDownloader />
-            <AotfApiPlayground />
+            <Box sx={{ display: "flex" }}>
+              <FacetsSearch />
+              <AdvanceOptionsMenu />
+              <ExportMenu />
+            </Box>
+            {/* <DataUploader /> */}
+            {/* <DataDownloader /> */}
+            {/* <AotfApiPlayground /> */}
           </Box>
           <Box sx={{ display: "flex", justifyContent: "end" }}>
             <DisplayModeSwitch />
+            {/* <Divider orientation="vertical" flexItem /> */}
           </Box>
         </Box>
+
         <TableAssociations />
       </>
     </AssociationsFocusProvider>
