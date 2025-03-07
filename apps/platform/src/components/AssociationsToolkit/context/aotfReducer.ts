@@ -115,7 +115,10 @@ export function aotfReducer(state: State = initialState, action: Action): State 
 
       const isAllActive = state.dataSourceControls
         .filter(el => el.aggregation === aggregation)
-        .every(el => el.required === true);
+        .every(el => el.required);
+      const isAnyOtherActive = state.dataSourceControls
+        .filter(el => el.aggregation !== aggregation)
+        .some(el => el.required);
       const dataSourceControls = state.dataSourceControls.map(col => {
         if (col.aggregation === aggregation) {
           return {
@@ -128,7 +131,7 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       return {
         ...state,
         dataSourceControls,
-        modifiedSourcesDataControls: !isAllActive,
+        modifiedSourcesDataControls: !isAllActive || isAnyOtherActive,
         pagination: DEFAULT_TABLE_PAGINATION_STATE,
       };
     }

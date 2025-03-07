@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  workflow_call:
+
+jobs:
+  bundle:
+    name: Bundle 📦
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 23
+
+      # prepare environment
+      - name: Prepare environment
+        run: |
+          DATA_RELEASE=$(node -p "require('./package.json').dataRelease")
+          echo "DATA_RELEASE=$DATA_RELEASE" >> $GITHUB_ENV
+          echo "building for data release $DATA_RELEASE"
+
+      - uses: mskelton/setup-yarn@v3
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # authenticate in google cloud
+      - uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          project_id: 'open-targets-eu-dev'
+          workload_identity_provider: projects/426265110888/locations/global/workloadIdentityPools/github-actions/providers/opentargets
+          service_account: github-actions@open-targets-eu-dev.iam.gserviceaccount.com
+          access_token_lifetime: 300s
+      - uses: google-github-actions/setup-gcloud@v2
+
+      # copy disease ontology from release google bucket
+      - name: copy disease ontology
+        run: gsutil cp gs://open-targets-pre-data-releases/${{ env.DATA_RELEASE }}/webapp/disease.jsonl apps/platform/public/data/ontology/efo_json/diseases_efo.jsonl
+
+      # copy croissant metadata from release google bucket
+      - name: copy croissant metadata
+        run: gsutil cp gs://open-targets-pre-data-releases/${{ env.DATA_RELEASE }}/webapp/downloads.json apps/platform/public/data/downloads.json
+
+      - name: Build
+        run: yarn build:platform
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle
+          path: apps/platform/bundle-platform

@@ -7,6 +7,7 @@ import Description from "./Description";
 
 import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
 import { definition } from ".";
+import { renderMatches } from "react-router-dom";
 
 const columns = [
   {
@@ -52,6 +53,9 @@ const columns = [
   {
     id: "nSamples",
     label: "Sample size",
+    renderCell: ({ nSamples }) => {
+      return typeof nSamples === "number" ? nSamples.toLocaleString() : naLabel;
+    },
     comparator: (a, b) => a?.nSamples - b?.nSamples,
     sortable: true,
   },
