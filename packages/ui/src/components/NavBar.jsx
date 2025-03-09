@@ -1,14 +1,5 @@
 import { Link as ReactRouterLink } from "react-router-dom";
-import {
-  AppBar,
-  Toolbar,
-  Button,
-  Typography,
-  MenuItem,
-  MenuList,
-  useMediaQuery,
-  Box,
-} from "@mui/material";
+import { AppBar, Toolbar, Button, Typography, useMediaQuery, Box } from "@mui/material";
 import { makeStyles, useTheme } from "@mui/styles";
 import { styled } from "@mui/material/styles";
 import classNames from "classnames";

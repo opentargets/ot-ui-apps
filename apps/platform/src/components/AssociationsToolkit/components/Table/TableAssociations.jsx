@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useReactTable, getCoreRowModel, createColumnHelper } from "@tanstack/react-table";
 
-import { styled, Typography, Box } from "@mui/material";
+import { styled, Typography, Box, Collapse } from "@mui/material";
 
 import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
@@ -39,6 +39,15 @@ const TableDivider = styled("div")({
 });
 
 const columnHelper = createColumnHelper();
+
+const evidenceViewColumns = getDatasources({
+  displayedTable: "associations",
+  colorScale: getScale(true),
+});
+const prioritisationViewColumns = getDatasources({
+  displayedTable: "prioritisations",
+  colorScale: getScale(false),
+});
 
 /* Build table columns bases on displayed table */
 function getDatasources({ displayedTable, colorScale }) {
@@ -92,7 +101,6 @@ function TableAssociations() {
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const isAssociations = displayedTable === "associations";
-  const colorScale = getScale(isAssociations);
   const associationsColorScale = getScale(true);
 
   const columns = useMemo(
@@ -132,7 +140,8 @@ function TableAssociations() {
       columnHelper.group({
         header: "entities",
         id: "entity-cols",
-        columns: [...getDatasources({ displayedTable, colorScale })],
+        columns: isAssociations ? evidenceViewColumns : prioritisationViewColumns,
+        // columns: [...evidenceViewColumns, ...prioritisationViewColumns],
       }),
     ],
     [displayedTable, entityToGet, rowNameEntity]
@@ -202,6 +211,8 @@ function TableAssociations() {
         {pinnedEntries.length > 0 && <TableDivider />}
 
         <TableBody core={coreAssociationsTable} prefix={TABLE_PREFIX.CORE} cols={entitesHeaders} />
+        {/* <Collapse in={pinnedEntries.length === 0}>
+        </Collapse> */}
 
         {/* FOOTER */}
         <TableFooter table={coreAssociationsTable} />
