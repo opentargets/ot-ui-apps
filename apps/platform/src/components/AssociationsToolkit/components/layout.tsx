@@ -42,6 +42,7 @@ export const TableBodyContent = styled("div")({
   display: "flex",
   flexDirection: "column",
   margin: "0",
+  minHeight: "300px",
 });
 
 export const RowsContainer = styled("div")({

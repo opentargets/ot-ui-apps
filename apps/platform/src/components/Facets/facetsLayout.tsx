@@ -1,4 +1,4 @@
-import { Autocomplete, Select, styled } from "@mui/material";
+import { Autocomplete, Popper, Select, styled } from "@mui/material";
 
 export const FacetsSelect = styled(Select)(({ theme }) => ({
   minWidth: "150px",
@@ -18,16 +18,18 @@ export const FacetsSelect = styled(Select)(({ theme }) => ({
   },
 }));
 
+export const FacetsPopper = props => {
+  return <Popper {...props} style={{ width: "360px" }} placement="bottom-start" />;
+};
+
 export const FacetsAutocomplete = styled(Autocomplete)(({ theme }) => ({
   minWidth: "240px",
-  width: 1,
-  maxWidth: 1,
   flexWrap: "nowrap",
+  ".MuiAutocomplete-popper": {
+    width: "2400px",
+  },
   "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-    // borderLeft: 0,
     borderRight: 0,
-    // borderTopLeftRadius: 0,
-    // borderBottomLeftRadius: 0,
     borderTopRightRadius: 0,
     borderBottomRightRadius: 0,
   },
@@ -38,10 +40,10 @@ export const FacetsAutocomplete = styled(Autocomplete)(({ theme }) => ({
 }));
 
 export const FacetListItemContainer = styled("div")({
-  p: 0,
+  p: 10,
   m: 0,
-  display: "flex",
   width: "100%",
+  display: "flex",
   flexDirection: "column",
 });
 

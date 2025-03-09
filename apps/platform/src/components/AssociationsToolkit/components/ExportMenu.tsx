@@ -58,6 +58,7 @@ function ExportMenu() {
       </StyledBotton>
 
       <Popover
+        disableScrollLock
         id={id}
         anchorEl={anchorEl}
         onClose={handleClose}
@@ -74,9 +75,9 @@ function ExportMenu() {
       >
         <PopoverContent>
           <DataDownloader />
-          <Box onClick={() => handleClose()}>
-            <AotfApiPlayground />
-          </Box>
+          {/* <Box onClick={() => handleClose()}> */}
+          <AotfApiPlayground />
+          {/* </Box> */}
         </PopoverContent>
       </Popover>
     </>

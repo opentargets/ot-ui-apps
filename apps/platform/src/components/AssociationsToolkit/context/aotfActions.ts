@@ -51,7 +51,8 @@ export function facetFilterSelectAction(facets: Facet[]): Action {
   if (facets && facets.length) facetFiltersIds = facets.map(v => v.id);
   return {
     type: ActionType.FACETS_SEARCH,
-    facetFilters: facetFiltersIds,
+    facetFilters: facets,
+    facetFiltersIds,
   };
 }
 

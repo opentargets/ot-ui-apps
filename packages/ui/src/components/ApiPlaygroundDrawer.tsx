@@ -60,7 +60,7 @@ function ApiPlaygroundDrawer({
         </Grid>
       ) : null}
       <Drawer
-        sx={{ width: "80%", overflowY: "hidden" }}
+        sx={{ width: "80%", overflowY: "hidden", zIndex: "10000" }}
         PaperProps={{
           sx: { width: "80%", overflowY: "hidden" },
         }}

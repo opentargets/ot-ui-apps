@@ -4,15 +4,22 @@ import {
   TableAssociations,
   AdvanceOptionsMenu,
   AssociationsProvider,
-  DataDownloader,
-  AotfApiPlayground,
   AssociationsFocusProvider,
   DisplayModeSwitch,
   NameFilter,
 } from "./index";
-import { Box, Divider } from "@mui/material";
+import { Box } from "@mui/material";
+import { ENTITY } from "./types";
+import { DocumentNode } from "graphql";
+import ActiveFiltersPanel from "./components/ActiveFiltersPanel";
 
-const AssociationsView = ({ id, entity, query }) => (
+interface AssociationsView {
+  id: string;
+  entity: ENTITY;
+  query: DocumentNode;
+}
+
+const AssociationsView = ({ id, entity, query }: AssociationsView) => (
   <AssociationsProvider id={id} entity={entity} query={query}>
     <AssociationsFocusProvider>
       <>
@@ -22,27 +29,30 @@ const AssociationsView = ({ id, entity, query }) => (
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
+            gap: { xs: 2, lg: 2 },
             mt: 4,
             mb: 2,
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              flexDirection: { xs: "column", lg: "row" },
+            }}
+          >
             <NameFilter />
-            <Box sx={{ display: "flex" }}>
+            <Box display="flex">
               <FacetsSearch />
               <AdvanceOptionsMenu />
               <ExportMenu />
             </Box>
-            {/* <DataUploader /> */}
-            {/* <DataDownloader /> */}
-            {/* <AotfApiPlayground /> */}
           </Box>
           <Box sx={{ display: "flex", justifyContent: "end" }}>
             <DisplayModeSwitch />
-            {/* <Divider orientation="vertical" flexItem /> */}
           </Box>
         </Box>
-
+        <ActiveFiltersPanel />
         <TableAssociations />
       </>
     </AssociationsFocusProvider>

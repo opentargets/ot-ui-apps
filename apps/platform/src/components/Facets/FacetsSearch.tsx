@@ -23,11 +23,12 @@ import {
   FacetListItemContainer,
   FacetListItemLabel,
   FacetsAutocomplete,
+  FacetsPopper,
   FacetsSelect,
 } from "./facetsLayout";
 import { getFacetsData } from "./service/facetsService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCaretUp, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCaretUp, faCircleXmark, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { Facet } from "./facetsTypes";
 import { DataUploader } from "../AssociationsToolkit";
 
@@ -38,11 +39,21 @@ const FilterButton = styled(Button)({
   },
 });
 
+function removeFacet(items: Facet[], idToRemove: string): Facet[] {
+  return items.filter(item => item.id !== idToRemove);
+}
+
 function FacetsSearch(): ReactElement {
-  const { entityToGet, facetFilterSelect, id } = useAotfContext();
+  const {
+    entityToGet,
+    facetFilterSelect,
+    id,
+    state: { facetFilters },
+  } = useAotfContext();
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 200);
   const [state, dispatch] = useReducer(facetsReducer, entityToGet, createInitialState);
+
   const client = useApolloClient();
   const inputSelectedOptions = [];
 
@@ -75,6 +86,11 @@ function FacetsSearch(): ReactElement {
     setAnchorEl(null);
   };
 
+  const onDelete = (id: string) => {
+    const newState = removeFacet(facetFilters, id);
+    facetFilterSelect(newState);
+  };
+
   const open = Boolean(anchorEl);
   const popoverId = open ? "simple-popover" : undefined;
 
@@ -98,7 +114,7 @@ function FacetsSearch(): ReactElement {
         <Box component="span" sx={{ mr: 1 }}>
           <FontAwesomeIcon icon={faFilter} />
         </Box>
-        Advance filters
+        Advanced filters
         <Box component="span" sx={{ ml: 1 }}>
           {open ? <FontAwesomeIcon icon={faCaretUp} /> : <FontAwesomeIcon icon={faCaretDown} />}
         </Box>
@@ -115,12 +131,12 @@ function FacetsSearch(): ReactElement {
         disableScrollLock
         elevation={1}
       >
-        <Box sx={{ maxWidth: "500px", display: "flex", p: 3, flexDirection: "column", gap: 2 }}>
+        <Box sx={{ width: "450px", display: "flex", p: 3, flexDirection: "column", gap: 2 }}>
           <DataUploader />
           <Divider flexItem sx={{ my: 1 }} />
-          <FacetsSuggestion />
           <Box sx={{ display: "flex" }}>
             <FacetsAutocomplete
+              PopperComponent={FacetsPopper}
               id="facets-search-input"
               multiple
               freeSolo
@@ -132,8 +148,8 @@ function FacetsSearch(): ReactElement {
               size="small"
               limitTags={2}
               onChange={(event, newValue) => {
-                dispatch(selectFacet([...state.selectedFacets, ...newValue]));
-                facetFilterSelect(newValue);
+                dispatch(selectFacet([...facetFilters, ...newValue]));
+                facetFilterSelect([...facetFilters, ...newValue]);
                 setInputValue("");
               }}
               filterOptions={x => x}
@@ -144,25 +160,12 @@ function FacetsSearch(): ReactElement {
               renderInput={params => (
                 <TextField {...params} label={`Search ${entityToGet} filter`} fullWidth />
               )}
-              // renderTags={(value, getTagProps) =>
-              //   value.map((option: any, index: number) => (
-              //     <Tooltip title={option.label} key={option.id} style="">
-              //       <Box sx={{ maxWidth: "150px" }} key={option.id}>
-              //         <Chip
-              //           size="small"
-              //           label={option.label}
-              //           {...getTagProps({ index })}
-              //           key={option.id}
-              //         />
-              //       </Box>
-              //     </Tooltip>
-              //   ))
-              // }
               renderOption={(props, option) => (
                 <li {...props} key={v1()}>
                   <FacetListItemContainer>
                     <FacetListItemLabel>
                       <Typography
+                        variant="body2"
                         dangerouslySetInnerHTML={{ __html: option.highlights[0] || option.label }}
                       ></Typography>
                     </FacetListItemLabel>
@@ -188,13 +191,26 @@ function FacetsSearch(): ReactElement {
               ))}
             </FacetsSelect>
           </Box>
+          <FacetsSuggestion />
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-            {state.selectedFacets.map((facet: Facet) => (
-              <Tooltip title={facet.label} key={facet.id} style="">
+            {facetFilters.map((facet: Facet) => (
+              <Tooltip title={facet.label} key={facet.id} style="" placement="bottom">
                 <Box sx={{ maxWidth: "150px" }} key={facet.id}>
                   <Chip
+                    sx={{
+                      borderRadius: 2,
+                      "& .MuiChip-label": {
+                        mr: 1,
+                      },
+                      "& .MuiChip-deleteIcon": {
+                        fontSize: "14px",
+                      },
+                    }}
                     clickable
-                    onDelete={() => ({})}
+                    deleteIcon={<FontAwesomeIcon icon={faCircleXmark} size="xs" />}
+                    onDelete={() => {
+                      onDelete(facet.id);
+                    }}
                     size="small"
                     label={facet.label}
                     key={facet.id}

@@ -31,6 +31,7 @@ export const initialState: State = {
   dataSourceControls: defaulDatasourcesWeigths,
   modifiedSourcesDataControls: false,
   facetFilters: [],
+  facetFiltersIds: [],
   entitySearch: "",
 };
 
@@ -139,6 +140,7 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       return {
         ...state,
         facetFilters: action.facetFilters,
+        facetFiltersIds: action.facetFiltersIds,
         pagination: DEFAULT_TABLE_PAGINATION_STATE,
       };
     }
