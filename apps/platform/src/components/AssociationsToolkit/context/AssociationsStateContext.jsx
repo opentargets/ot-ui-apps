@@ -76,7 +76,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       enableIndirect,
       datasources: state.dataSourceControls,
       entity,
-      facetFilters: state.facetFilters,
+      facetFilters: state.facetFiltersIds,
+      entitySearch: state.entitySearch,
     },
   });
 
@@ -96,7 +97,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       sortBy: sorting[0].id,
       datasources: state.dataSourceControls,
       rowsFilter: pinnedEntries.toSorted(),
-      facetFilters: state.facetFilters,
+      facetFilters: state.facetFiltersIds,
+      entitySearch: state.entitySearch,
     },
   });
 

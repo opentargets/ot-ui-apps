@@ -1,5 +1,5 @@
 import { MouseEvent } from "react";
-import { ToggleButtonGroup, ToggleButton } from "@mui/material";
+import { ToggleButtonGroup, ToggleButton, styled } from "@mui/material";
 import useAotfContext from "../hooks/useAotfContext";
 import { DISPLAY_MODE } from "../associationsUtils"; // Ensure DISPLAY_MODE is properly typed
 
@@ -9,6 +9,10 @@ function getAssocLabel(entity: string): string {
   if (entity === "disease") return "Target-disease association";
   return "Target-disease association";
 }
+
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
+  // padding: 0;
+`;
 
 function DisplayModeSwitch() {
   // Type context return values
@@ -28,7 +32,7 @@ function DisplayModeSwitch() {
   const associationsLabel = getAssocLabel(entity);
 
   return (
-    <ToggleButtonGroup
+    <StyledToggleButtonGroup
       value={displayedTable}
       exclusive
       onChange={handleChange}
@@ -45,7 +49,7 @@ function DisplayModeSwitch() {
           Target prioritisation factors
         </ToggleButton>
       )}
-    </ToggleButtonGroup>
+    </StyledToggleButtonGroup>
   );
 }
 

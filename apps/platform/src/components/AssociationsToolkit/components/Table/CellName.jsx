@@ -197,7 +197,7 @@ function CellName({ cell, colorScale }) {
   const interactorsLabel = isPartnerPreview ? "Target interactors (beta)" : "Target interactors";
 
   if (loading)
-    return <Skeleton width={loadingWidth} height={35} sx={{ marginLeft: loadingMargin }} />;
+    return <Skeleton width={loadingWidth} height={20} sx={{ marginLeft: loadingMargin }} />;
 
   return (
     <NameContainer>

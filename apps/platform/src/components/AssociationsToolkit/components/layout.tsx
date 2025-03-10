@@ -27,8 +27,6 @@ const baseGridContainerStyles = {
   width: "100%",
 };
 
-const boxShadow = "0px 3px 15px -3px rgba(0,0,0,0.1)";
-
 type GridContainerProps = {
   columnsCount: number;
 };
@@ -44,6 +42,7 @@ export const TableBodyContent = styled("div")({
   display: "flex",
   flexDirection: "column",
   margin: "0",
+  minHeight: "300px",
 });
 
 export const RowsContainer = styled("div")({
@@ -65,7 +64,7 @@ export const RowContainer = styled("div", {
   alignItems: "center",
   boxSizing: "border-box",
   transition: "background 75ms ease-out",
-  boxShadow: rowExpanded ? boxShadow : "none",
+  // boxShadow: rowExpanded ? boxShadow : "none",
   position: rowExpanded ? "sticky" : "initial",
   padding: rowExpanded ? "0.1em 0 0.1em 0" : "0.1em 0 0.1em 0",
   zIndex: rowExpanded ? "99 !important" : "initial",
@@ -76,15 +75,6 @@ export const RowContainer = styled("div", {
     backgroundColor: grey[300],
   },
 }));
-
-export const ControlsSection = styled("section")`
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-`;
 
 export const OptionsControlls = styled("div")`
   display: flex;

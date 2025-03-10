@@ -4,6 +4,8 @@ export { default as DisplayModeSwitch } from "./components/DisplayModeSwitch";
 export { default as DataDownloader } from "./components/DataDownloader";
 export { default as DataUploader } from "./components/DataUploader/DataUploader";
 export { default as AotfApiPlayground } from "./components/AotfApiPlayground";
+export { default as NameFilter } from "./components/NameFilter";
+export { default as AssociationsView } from "./AssociationsView";
 export {
   default as AssociationsContext,
   AssociationsStateProvider as AssociationsProvider,
