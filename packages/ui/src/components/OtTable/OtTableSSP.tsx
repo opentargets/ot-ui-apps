@@ -241,6 +241,8 @@ function OtTableSSP({
     return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
   }
 
+  const playgroundVariables = { ...variables, cursor: null, size: 10 };
+
   return (
     <div>
       {/* Global Search */}
@@ -263,8 +265,8 @@ function OtTableSSP({
               columns={dataDownloaderColumns || columns}
               rows={getWholeDataset}
               fileStem={dataDownloaderFileStem}
-              query={query}
-              variables={variables}
+              query={query.loc.source.body}
+              variables={playgroundVariables}
             />
           )}
         </Grid>
