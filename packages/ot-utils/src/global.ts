@@ -75,3 +75,9 @@ export async function fetcher(graphQLParams: GraphQLParams): Promise<unknown> {
   });
   return data.json();
 }
+
+export function getSortedAncestries({ arr }) {
+  if (!arr || arr.length < 1) return [];
+  const ldPopulationStructure = [...arr];
+  return ldPopulationStructure.sort((a, b) => b.relativeSampleSize - a.relativeSampleSize);
+}
