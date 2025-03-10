@@ -65,6 +65,14 @@ for (const [index, letter] of "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").entries()) 
   chainColorLookup[letter] = chainColorScheme[index % chainColorScheme.length];
 }
 
+function zipToObject(arr1, arr2) {
+  const obj = {};
+  if (!Array.isArray(arr1)) arr1 = [arr1];
+  if (!Array.isArray(arr2)) arr2 = [arr2];
+  arr1.forEach((value, index) => (obj[value] = arr2[index]));
+  return obj;
+}
+
 function isAlphaFold(id) {
   return id?.startsWith("AF");
 }
@@ -116,7 +124,7 @@ function StructureIdPanel({ selectedStructure }) {
   );
 }
 
-function AtomInfoPanel({ atom, selectedStructure }) {
+function AtomInfoPanel({ atom, selectedStructure, entity }) {
   return (
     <Box
       position="absolute"
@@ -129,6 +137,7 @@ function AtomInfoPanel({ atom, selectedStructure }) {
       fontSize={14}
     >
       <Box display="flex" flexDirection="column">
+        <Typography variant="caption">{entity}</Typography>
         <Typography variant="caption">
           {atom.resn} {atom.resi}, chain {atom.chain}
         </Typography>
@@ -147,6 +156,7 @@ function Body({ label: symbol, entity }) {
   const [selectedStructure, setSelectedStructure] = useState(null);
   const [viewer, setViewer] = useState(null);
   const [selectedAtom, setSelectedAtom] = useState(null);
+  const [chainToEntityDesc, setChainToEntityDesc] = useState(null);
 
   const viewerRef = useRef(null);
 
@@ -281,9 +291,11 @@ function Body({ label: symbol, entity }) {
           : `${experimentalStructureStem}${selectedStructure.id.toLowerCase()}${experimentalStructureSuffix}`;
         let data = await (await fetch(pdbUri)).text(); // !! ADD SOME ERROR HANDLING !!
 
-        const parsedCif = parseCif(data);
-        const structureChains =
-          parsedCif[selectedStructure.id]["_pdbx_struct_assembly_gen.asym_id_list"];
+        const parsedCif = parseCif(data)[selectedStructure.id];
+        console.log(parsedCif);
+
+        // structure chains
+        const structureChains = parsedCif["_pdbx_struct_assembly_gen.asym_id_list"];
         let firstStructureChains;
         let otherStructureChains;
         if (!isAF) {
@@ -296,6 +308,21 @@ function Body({ label: symbol, entity }) {
           }
         }
 
+        // entities
+        const entityIdToDesc = zipToObject(
+          parsedCif["_entity.id"],
+          parsedCif["_entity.pdbx_description"]
+        );
+        const chainToEntityId = zipToObject(
+          parsedCif["_struct_asym.id"],
+          parsedCif["_struct_asym.entity_id"]
+        );
+        const _chainToEntityDesc = {};
+        for (const chain of parsedCif["_struct_asym.id"]) {
+          _chainToEntityDesc[chain] = entityIdToDesc[chainToEntityId[chain]];
+        }
+        setChainToEntityDesc(_chainToEntityDesc);
+
         // invalidate auth fields for residue and chain forcing 3dmol to use the label (ie PDB) fields
         data = data.replace(/auth_(?:asym|seq)_id/g, match => `${match}X`);
 
@@ -304,12 +331,6 @@ function Body({ label: symbol, entity }) {
         viewer.addModel(data, "cif"); /* load data */
         viewer.setClickable({}, true, atom => console.log(atom));
         viewer.setHoverDuration(100);
-
-        // const chains = getChainsAndPositions(selectedStructure.properties.chains)
-        //   .chains.join()
-        //   .replace(/\//g, ",")
-        //   .split(",");
-
         viewer.setHoverable(
           {},
           true,
@@ -352,7 +373,7 @@ function Body({ label: symbol, entity }) {
     }
     fetchStructure();
     // RETURN CLEANUP FUNCTION IF APPROP
-  }, [selectedStructure, viewer]);
+  }, [selectedStructure, viewer, setChainToEntityDesc]);
 
   if (!request.data) return null; // BETTER WAY? - HANDLED BY CC'S CHANGE TO SECTION ITEM IF LOADING?
 
@@ -383,7 +404,11 @@ function Body({ label: symbol, entity }) {
                 <Box ref={viewerRef} position="relative" width="100%" height="400px">
                   <StructureIdPanel selectedStructure={selectedStructure} />
                   {selectedAtom && (
-                    <AtomInfoPanel atom={selectedAtom} selectedStructure={selectedStructure} />
+                    <AtomInfoPanel
+                      atom={selectedAtom}
+                      selectedStructure={selectedStructure}
+                      entity={chainToEntityDesc[selectedAtom.chain]}
+                    />
                   )}
                 </Box>
               </Box>
@@ -435,5 +460,13 @@ NOTES:
   - there are addStyle and updateStyle methods that may help
 
 - improve highlighting so just a light/darker of current color - d3 lghter/darker not giving nice results
+
+- add error handline for fetch and anywhere else approp
+
+- highlight chains of experiment - or faint the other shown chanins
+
+- legend for chains?
+
+- allow coloring by entity?
 
 */
