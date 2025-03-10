@@ -379,12 +379,22 @@ function ChartControls({ rows, query, variables, columns }) {
   );
 }
 
-function HeatmapTable({ query, data, variables, loading }) {
+function HeatmapTable({
+  query,
+  data,
+  variables,
+  loading,
+  fixedGene,
+  disabledExport = false,
+  disabledLegend = false,
+}) {
   if (loading) return null;
 
   const groupResults = getGroupResults(data.rows);
   const colorInterpolator = getColorInterpolator(groupResults);
   const twoElementDomain = [colorInterpolator.domain()[0], colorInterpolator.domain()[2]];
+
+  const rows = fixedGene ? groupResults.filter(r => r.targetId === fixedGene) : groupResults;
 
   const columns = [
     { id: "targetSymbol", label: "gene" },
@@ -400,7 +410,9 @@ function HeatmapTable({ query, data, variables, loading }) {
 
   return (
     <>
-      <ChartControls query={query} rows={groupResults} variables={variables} columns={columns} />
+      {!disabledExport && (
+        <ChartControls query={query} rows={rows} variables={variables} columns={columns} />
+      )}
       <Box display="flex" justifyContent="center">
         <Box
           component="table"
@@ -412,18 +424,20 @@ function HeatmapTable({ query, data, variables, loading }) {
             my: 4,
           }}
         >
-          <Box component="caption" sx={{ mt: 3, captionSide: "bottom", textAlign: "left" }}>
-            <HeatmapLegend
-              legendOptions={{
-                color: {
-                  type: "diverging",
-                  interpolate: colorInterpolator,
-                  domain: twoElementDomain,
-                  range: twoElementDomain,
-                },
-              }}
-            />
-          </Box>
+          {!disabledLegend && (
+            <Box component="caption" sx={{ mt: 3, captionSide: "bottom", textAlign: "left" }}>
+              <HeatmapLegend
+                legendOptions={{
+                  color: {
+                    type: "diverging",
+                    interpolate: colorInterpolator,
+                    domain: twoElementDomain,
+                    range: twoElementDomain,
+                  },
+                }}
+              />
+            </Box>
+          )}
           <THead>
             {["Gene", "Score", ...groupNames, "Base", ""].map((value, index) => (
               <HeaderCell
@@ -434,7 +448,7 @@ function HeatmapTable({ query, data, variables, loading }) {
             ))}
           </THead>
           <TBody>
-            {groupResults.map(row => (
+            {rows.map(row => (
               <BodyRow
                 data={data}
                 key={row.targetId}
