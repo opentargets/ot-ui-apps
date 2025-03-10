@@ -137,9 +137,11 @@ function AtomInfoPanel({ atom, selectedStructure, entity }) {
       fontSize={14}
     >
       <Box display="flex" flexDirection="column">
-        <Typography variant="caption">{entity}</Typography>
-        <Typography variant="caption">
-          {atom.resn} {atom.resi}, chain {atom.chain}
+        <Typography variant="caption" textAlign="right">
+          {entity}
+        </Typography>
+        <Typography variant="caption" textAlign="right">
+          {atom.chain} | {atom.resn} {atom.resi}
         </Typography>
         {isAlphaFold(selectedStructure.id) && (
           <Typography variant="caption">
@@ -435,8 +437,7 @@ NOTES:
 - vheight of widget jumps depending on whether show legend or not - but wait to see if use legend on non-AF
   which will help
 
-- currently will stick with the uniprot_swissprot test for whether to include widget
-  - this will always have an alphaFold prediction - and poss no experimental
+- zoom slightly by default but dosable animation
 
 - should include some visual controls - e.g. cartoon, ball-stick, different color-by optoins, ...?
 
@@ -448,30 +449,26 @@ NOTES:
 
 - use theme colors (or grey[600] etc)
 
-- change widget description - and name?
-
 - add PDBe link only?
     - if only 1 link per row, could make the ID the link
     - use identifiers.org
-
-- no easy way to get enetiy name that a residu belongs to in 3d mol - look at parsing the
-  .cif file or using a separate API call
-
-- color of arrows id dodgy?
-
-- should arrow end be colored like next atom? - but nontrivial to get it?
 
 - any way to avoid full rendering on hover (which includes calling colorfunc for every atom)
   - there are addStyle and updateStyle methods that may help
 
 - improve highlighting so just a light/darker of current color - d3 lghter/darker not giving nice results
 
-- add error handline for fetch and anywhere else approp
+- add error handling for fetch and anywhere else approp
 
 - highlight chains of experiment - or faint the other shown chanins
 
 - legend for chains?
 
 - allow coloring by entity?
+
+- KRAS NMR results such as 2MSC are giving error but i think due to invalid CIF file - 
+    - the _pdbx_struct_assembly_gen.asym_id_list  field has final t missing
+
+- order table by experiment type, chain, ...
 
 */
