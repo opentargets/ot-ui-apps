@@ -84,6 +84,7 @@ jobs:
           var configOTAiApi = '${{ inputs.ai_api_url }}'
           var configGoogleTagManagerID = '${{ secrets.google_tag_manager_id }}'
           EOF
+          cat apps/platform/public/profiles/${{ inputs.flavor }}.js >> apps/platform/bundle-platform/config.js
 
       - id: push
         name: Build and push Docker image
