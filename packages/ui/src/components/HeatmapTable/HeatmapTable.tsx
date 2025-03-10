@@ -117,16 +117,6 @@ function CellWrapper({ handleMouseEnter, handleMouseLeave, children }) {
 }
 
 function HeaderCell({ value, textAlign }) {
-  if (value === "Score")
-    return (
-      <Box component="th" pt={1}>
-        <Typography variant="subtitle2" textAlign={textAlign}>
-          <Tooltip showHelpIcon title="Only scores above 0.5 are shown">
-            {value}
-          </Tooltip>
-        </Typography>
-      </Box>
-    );
   return (
     <Box component="th" pt={1}>
       <Typography variant="subtitle2" textAlign={textAlign}>

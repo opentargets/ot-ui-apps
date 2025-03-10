@@ -15,7 +15,7 @@ function HeatmapLegend({ legendOptions }) {
 
   return (
     <Box>
-      <Typography variant="subtitle2">Features contribution values (Sharpley)</Typography>
+      <Typography variant="subtitle2">Features contribution values (Shapley)</Typography>
       <Box position="relative" top="-12px" ref={containerRef} />
     </Box>
   );
