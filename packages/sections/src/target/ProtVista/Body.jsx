@@ -292,7 +292,6 @@ function Body({ label: symbol, entity }) {
         let data = await (await fetch(pdbUri)).text(); // !! ADD SOME ERROR HANDLING !!
 
         const parsedCif = parseCif(data)[selectedStructure.id];
-        console.log(parsedCif);
 
         // structure chains
         const structureChains = parsedCif["_pdbx_struct_assembly_gen.asym_id_list"];
@@ -302,6 +301,10 @@ function Body({ label: symbol, entity }) {
           if (Array.isArray(structureChains)) {
             firstStructureChains = structureChains[0].split(",");
             otherStructureChains = structureChains.slice(1).join(",").split(",");
+            const firstStructureChainsSet = new Set(firstStructureChains);
+            otherStructureChains = otherStructureChains.filter(
+              chain => !firstStructureChainsSet.has(chain)
+            );
           } else {
             firstStructureChains = structureChains.split(",");
             otherStructureChains = [];
@@ -369,6 +372,8 @@ function Body({ label: symbol, entity }) {
         viewer.zoomTo(isAF ? undefined : { chain: firstStructureChains }); /* set camera */
         viewer.render(); /* render scene */
         // viewer.zoom(1.5, 1000); /* slight zoom */
+
+        window.viewer = viewer; // !! REMOVE !!
       }
     }
     fetchStructure();
