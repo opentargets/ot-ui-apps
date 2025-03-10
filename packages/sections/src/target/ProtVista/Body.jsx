@@ -4,7 +4,6 @@ import { Box, colors, Grid, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
 import { getUniprotIds } from "@ot/utils";
-import ProtVista from "./ProtVista";
 import { createViewer } from "3dmol";
 import { parseCif } from "./parseCif";
 import { schemeSet2, schemePaired, color as d3Color } from "d3";
