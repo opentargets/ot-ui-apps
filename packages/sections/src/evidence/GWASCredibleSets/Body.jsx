@@ -17,12 +17,14 @@ import { dataTypesMap, naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } fr
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";
+import { Box } from "@mui/material";
 
 function getColumns(targetSymbol) {
   return [
     {
       id: "credibleSet",
-      label: "Navigate",
+      label: "Credible set",
+      sticky: true,
       renderCell: ({ credibleSet }) => {
         return <Navigate to={`/credible-set/${credibleSet?.studyLocusId}`} />;
       },
@@ -170,7 +172,11 @@ function getColumns(targetSymbol) {
         if (!score) return naLabel;
         return (
           <Tooltip title={score.toFixed(3)} style="">
-            <OtScoreLinearBar variant="determinate" value={score * 100} />
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 1, alignItems: "center" }}>
+              {score.toFixed(3)}
+              cee
+              <OtScoreLinearBar variant="determinate" value={score * 100} />
+            </Box>
           </Tooltip>
         );
       },

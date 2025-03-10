@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { hsl } from "d3";
-import { ObsPlot, DataDownloader, Link, Tooltip } from "ui";
+import { ObsPlot, DataDownloader, Link, Tooltip } from "../../index";
 import { Box, Typography, Popover, Dialog } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faXmark } from "@fortawesome/free-solid-svg-icons";

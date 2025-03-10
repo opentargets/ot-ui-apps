@@ -1,9 +1,8 @@
 import { ReactNode } from "react";
-import { SectionItem } from "ui";
+import { SectionItem, HeatmapTable } from "ui";
 import { useQuery } from "@apollo/client";
 import { definition } from ".";
 import LOCUS2GENE_QUERY from "./Locus2GeneQuery.gql";
-import HeatmapTable from "./HeatmapTable";
 import Description from "./Description";
 
 type BodyProps = {
