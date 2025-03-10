@@ -6,7 +6,8 @@ import { definition } from ".";
 import { getUniprotIds } from "@ot/utils";
 import ProtVista from "./ProtVista";
 import { createViewer } from "3dmol";
-import { color, schemeSet2 as secondaryStructureScheme } from "d3";
+import { parseCif } from "./parseCif";
+import { schemeSet2, schemePaired, color as d3Color } from "d3";
 
 import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 import { useState, useEffect, useRef } from "react";
@@ -42,17 +43,27 @@ const alphaFoldConfidenceBands = [
   { lowerLimit: 0, label: "Very low ", sublabel: "pLDDT < 50", color: "rgb(255, 125, 69)" },
 ];
 
-// const secondaryStructureColors = {
-//   h: secondaryStructureScheme[0], // helix
-//   s: secondaryStructureScheme[1], // sheet
-//   c: secondaryStructureScheme[2], // coil
-// };
+// ssJmol color scheme - use explicitly here so easy to brighten
+const secondaryStructureColors = {
+  h: { basic: "#ff0080", bright: "#ff00d3" }, // helix
+  s: { basic: "#ffc800", bright: "#ffff00" }, // sheet
+  c: { basic: "#cccccc", bright: "#ffffff" }, // coil
+  "arrow start": { basic: "#ffc800", bright: "#ffff00" },
+  "arrow end": { basic: "#ffc800", bright: "#ffff00" },
+};
 
 function getConfidence(atom, propertyName = "label") {
   for (const obj of alphaFoldConfidenceBands) {
     if (atom.b > obj.lowerLimit) return obj[propertyName];
   }
   return alphaFoldConfidenceBands[0][propertyName];
+}
+
+const chainColorScheme = [...schemeSet2, ...schemePaired.filter((v, i) => i % 2)];
+const chainDefaultColor = "#9999aa";
+const chainColorLookup = {};
+for (const [index, letter] of "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").entries()) {
+  chainColorLookup[letter] = chainColorScheme[index % chainColorScheme.length];
 }
 
 function isAlphaFold(id) {
@@ -91,7 +102,7 @@ function AlphaFoldLegend() {
   );
 }
 
-function StructureIdPanel({ selectedId }) {
+function StructureIdPanel({ selectedStructure }) {
   return (
     <Box
       position="absolute"
@@ -101,13 +112,12 @@ function StructureIdPanel({ selectedId }) {
       sx={{ borderBottomRightRadius: "0.2rem" }}
       fontSize={14}
     >
-      {selectedId}
+      {selectedStructure?.id}
     </Box>
   );
 }
 
-function AtomInfoPanel({ atom, selectedId }) {
-  console.log(atom);
+function AtomInfoPanel({ atom, selectedStructure }) {
   return (
     <Box
       position="absolute"
@@ -123,7 +133,7 @@ function AtomInfoPanel({ atom, selectedId }) {
         <Typography variant="caption">
           {atom.resn} {atom.resi}, chain {atom.chain}
         </Typography>
-        {isAlphaFold(selectedId) && (
+        {isAlphaFold(selectedStructure.id) && (
           <Typography variant="caption">
             Confidence: {atom.b} ({getConfidence(atom)})
           </Typography>
@@ -135,7 +145,7 @@ function AtomInfoPanel({ atom, selectedId }) {
 
 function Body({ label: symbol, entity }) {
   const [experimentalResults, setExperimentalResults] = useState(null);
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedStructure, setSelectedStructure] = useState(null);
   const [viewer, setViewer] = useState(null);
   const [selectedAtom, setSelectedAtom] = useState(null);
 
@@ -148,11 +158,11 @@ function Body({ label: symbol, entity }) {
     {
       id: "select",
       label: "Structure",
-      renderCell: ({ id }) => {
+      renderCell: row => {
         return (
           <Box
             sx={{ color: "steelblue", "&:hover": { cursor: "pointer" } }}
-            onClick={() => setSelectedId(id)}
+            onClick={() => setSelectedStructure(row)}
           >
             view
           </Box>
@@ -198,6 +208,12 @@ function Body({ label: symbol, entity }) {
     },
   ];
 
+  function getAtomColor(atom) {
+    return isAlphaFold(selectedStructure.id)
+      ? getConfidence(atom, "color")
+      : chainColorLookup[atom.chain] ?? chainDefaultColor;
+  }
+
   // fetch experimental results
   useEffect(() => {
     const results = [];
@@ -236,7 +252,7 @@ function Body({ label: symbol, entity }) {
       await Promise.all([fetchAlphaFoldResults(), fetchExperimentalResults()]);
       if (results.length) {
         setExperimentalResults(results);
-        setSelectedId(results[0].id);
+        setSelectedStructure(results.at(-1));
       }
     }
     fetchAllResults();
@@ -246,72 +262,98 @@ function Body({ label: symbol, entity }) {
   // create viewer
   useEffect(() => {
     if (viewerRef.current && experimentalResults) {
-      setViewer(createViewer(viewerRef.current, { backgroundColor: "#f8f8f8", antialias: true }));
+      setViewer(
+        createViewer(viewerRef.current, {
+          backgroundColor: "#f8f8f8",
+          antialias: true,
+          cartoonQuality: 10,
+        })
+      );
     }
   }, [experimentalResults]);
 
   // fetch selected structure
   useEffect(() => {
-    async function fetchStructure(structureId) {
-      if (selectedId && viewer) {
-        const pdbUri = isAlphaFold(selectedId)
-          ? `${alphaFoldStructureStem}${selectedId}${alphaFoldStructureSuffix}`
-          : `${experimentalStructureStem}${selectedId.toLowerCase()}${experimentalStructureSuffix}`;
-        const data = await (await fetch(pdbUri)).text(); // !! ADD OMSE ERROR HANDLING !!
+    async function fetchStructure() {
+      if (selectedStructure && viewer) {
+        const isAF = isAlphaFold(selectedStructure.id);
+        const pdbUri = isAF
+          ? `${alphaFoldStructureStem}${selectedStructure.id}${alphaFoldStructureSuffix}`
+          : `${experimentalStructureStem}${selectedStructure.id.toLowerCase()}${experimentalStructureSuffix}`;
+        let data = await (await fetch(pdbUri)).text(); // !! ADD SOME ERROR HANDLING !!
+
+        const parsedCif = parseCif(data);
+        const structureChains =
+          parsedCif[selectedStructure.id]["_pdbx_struct_assembly_gen.asym_id_list"];
+        let firstStructureChains;
+        let otherStructureChains;
+        if (!isAF) {
+          if (Array.isArray(structureChains)) {
+            firstStructureChains = structureChains[0].split(",");
+            otherStructureChains = structureChains.slice(1).join(",").split(",");
+          } else {
+            firstStructureChains = structureChains.split(",");
+            otherStructureChains = [];
+          }
+        }
+
+        // invalidate auth fields for residue and chain forcing 3dmol to use the label (ie PDB) fields
+        data = data.replace(/auth_(?:asym|seq)_id/g, match => `${match}X`);
+
         setSelectedAtom(null);
         viewer.clear();
         viewer.addModel(data, "cif"); /* load data */
-        // viewer.setClickable({}, true, atom => console.log(atom));
-        // viewer.setHoverable(
-        //   {},
-        //   true,
-        //   function (atom) {
-        //     setSelectedAtom(atom);
-        //     if (atom && atom.resi) {
-        //       let resi = atom.resi;
-        //       let chain = atom.chain;
-        //       let resn = atom.resn;
-        //       viewer.setStyle(
-        //         { resi: resi, chain: chain },
-        //         { cartoon: { color: "red" } }
-        //         // { cartoon: { color: "red" }, stick: { radius: 0.3 } }
-        //       );
-        //       viewer.render();
-        //     }
-        //   },
-        //   function (atom) {
-        //     setSelectedAtom(null);
-        //     if (atom && atom.resi) {
-        //       viewer.setStyle({}, { cartoon: { color: "spectrum" } }); // Reset colors
-        //       viewer.render();
-        //     }
-        //   }
-        // );
+        viewer.setClickable({}, true, atom => console.log(atom));
+        viewer.setHoverDuration(100);
 
-        viewer.setStyle(
+        // const chains = getChainsAndPositions(selectedStructure.properties.chains)
+        //   .chains.join()
+        //   .replace(/\//g, ",")
+        //   .split(",");
+
+        viewer.setHoverable(
           {},
-          {
-            cartoon: {
-              ...(isAlphaFold(selectedId)
-                ? { colorfunc: atom => getConfidence(atom, "color") }
-                : { colorscheme: "ssJmol" }),
-              // : { colorfunc: atom => secondaryStructureColors[atom.ss] }),
-              // : { color: "spectrum" }),
-              arrows: true,
-              // style: "parabola",
-            },
-            // line: { color: "#000", lineWidth: 5 },
+          true,
+          function (atom) {
+            setSelectedAtom(atom);
+            if (atom && atom.resi) {
+              const { resi, resn, chain } = atom;
+              viewer.setStyle(
+                { resi: resi, chain: chain },
+                { cartoon: { color: "#555555", arrows: true } }
+              );
+              viewer.render();
+            }
+          },
+          function (atom) {
+            setSelectedAtom(null);
+            const { resi, resn, chain } = atom;
+            viewer.setStyle(
+              { resi: resi, chain: chain },
+              { cartoon: { colorfunc: getAtomColor, arrows: true } }
+            );
+            viewer.render();
           }
         );
-        viewer.zoomTo(); /* set camera */
+
+        if (isAF) {
+          viewer.setStyle({}, { cartoon: { colorfunc: getAtomColor, arrows: true } });
+        } else {
+          viewer.setStyle(
+            { chain: firstStructureChains },
+            { cartoon: { colorfunc: getAtomColor, arrows: true } }
+          );
+          viewer.getModel().setStyle({ chain: otherStructureChains }, { hidden: true });
+        }
+
+        viewer.zoomTo(isAF ? undefined : { chain: firstStructureChains }); /* set camera */
         viewer.render(); /* render scene */
-        viewer.zoom(1.5, 1000); /* slight zoom */
-        // window.viewer = viewer; // !! REMOVE !!
+        // viewer.zoom(1.5, 1000); /* slight zoom */
       }
     }
     fetchStructure();
     // RETURN CLEANUP FUNCTION IF APPROP
-  }, [selectedId, viewer]);
+  }, [selectedStructure, viewer]);
 
   if (!request.data) return null; // BETTER WAY? - HANDLED BY CC'S CHANGE TO SECTION ITEM IF LOADING?
 
@@ -340,11 +382,13 @@ function Body({ label: symbol, entity }) {
             <Grid item xs={12} lg={6}>
               <Box position="relative" display="flex" justifyContent="center" pb={2}>
                 <Box ref={viewerRef} position="relative" width="100%" height="400px">
-                  <StructureIdPanel selectedId={selectedId} />
-                  {selectedAtom && <AtomInfoPanel atom={selectedAtom} selectedId={selectedId} />}
+                  <StructureIdPanel selectedStructure={selectedStructure} />
+                  {selectedAtom && (
+                    <AtomInfoPanel atom={selectedAtom} selectedStructure={selectedStructure} />
+                  )}
                 </Box>
               </Box>
-              {isAlphaFold(selectedId) && <AlphaFoldLegend />}
+              {isAlphaFold(selectedStructure?.id) && <AlphaFoldLegend />}
             </Grid>
           </Grid>
         );
@@ -383,5 +427,14 @@ NOTES:
 
 - no easy way to get enetiy name that a residu belongs to in 3d mol - look at parsing the
   .cif file or using a separate API call
+
+- color of arrows id dodgy?
+
+- should arrow end be colored like next atom? - but nontrivial to get it?
+
+- any way to avoid full rendering on hover (which includes calling colorfunc for every atom)
+  - there are addStyle and updateStyle methods that may help
+
+- improve highlighting so just a light/darker of current color - d3 lghter/darker not giving nice results
 
 */
