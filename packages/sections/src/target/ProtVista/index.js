@@ -1,6 +1,6 @@
 export const definition = {
-  id: "protVista",
-  name: "ProtVista",
-  shortName: "PV",
+  id: "molecularStructure",
+  name: "Molecular Structure",
+  shortName: "MS",
   hasData: ({ proteinIds }) => proteinIds.some(e => e.source === "uniprot_swissprot"),
 };
