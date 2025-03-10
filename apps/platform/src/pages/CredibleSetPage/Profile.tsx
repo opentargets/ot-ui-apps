@@ -6,7 +6,6 @@ import {
   SummaryContainer,
   SectionLoader,
   summaryUtils,
-  PrivateWrapper,
 } from "ui";
 
 import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
@@ -19,7 +18,6 @@ import ProfileHeader from "./ProfileHeader";
 const MolQTLColocSection = lazy(() => import("sections/src/credibleSet/MolQTLColoc/Body"));
 const VariantsSection = lazy(() => import("sections/src/credibleSet/Variants/Body"));
 const GWASColocSection = lazy(() => import("sections/src/credibleSet/GWASColoc/Body"));
-
 const Locus2GeneSection = lazy(() => import("sections/src/credibleSet/Locus2Gene/Body"));
 
 const CREDIBLE_SET = "credibleSet";
@@ -64,10 +62,8 @@ function Profile({
       <SummaryContainer>
         <VariantsSummary />
         <Locus2GeneSummary />
-        <PrivateWrapper>
-          <GWASColocSummary />
-          <GWASMolQTLSummary />
-        </PrivateWrapper>
+        <GWASColocSummary />
+        <GWASMolQTLSummary />
       </SummaryContainer>
 
       <SectionContainer>
