@@ -10,6 +10,7 @@ import {
   Tooltip,
   Navigate,
   DisplayVariantId,
+  L2GScoreIndicator,
 } from "ui";
 import { variantComparator, mantissaExponentComparator } from "@ot/utils";
 
@@ -17,12 +18,14 @@ import { dataTypesMap, naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } fr
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";
+import { Box } from "@mui/material";
 
-function getColumns(targetSymbol) {
+function getColumns(targetSymbol, targetId) {
   return [
     {
       id: "credibleSet",
-      label: "Navigate",
+      label: "Credible set",
+      sticky: true,
       renderCell: ({ credibleSet }) => {
         return <Navigate to={`/credible-set/${credibleSet?.studyLocusId}`} />;
       },
@@ -166,11 +169,22 @@ function getColumns(targetSymbol) {
         </>
       ),
       sortable: true,
-      renderCell: ({ score }) => {
+      renderCell: ({ score, credibleSet }) => {
         if (!score) return naLabel;
         return (
+          <L2GScoreIndicator
+            score={score}
+            targetId={targetId}
+            studyLocusId={credibleSet?.studyLocusId}
+          />
+        );
+        return (
           <Tooltip title={score.toFixed(3)} style="">
-            <OtScoreLinearBar variant="determinate" value={score * 100} />
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 1, alignItems: "center" }}>
+              {score.toFixed(3)}
+              cee
+              <OtScoreLinearBar variant="determinate" value={score * 100} />
+            </Box>
           </Tooltip>
         );
       },
@@ -203,7 +217,7 @@ function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: sectionsBaseSizeQuery };
 
-  const columns = getColumns(label.symbol);
+  const columns = getColumns(label.symbol, ensgId);
 
   const request = useQuery(GWAS_CREDIBLE_SETS_QUERY, {
     variables,
