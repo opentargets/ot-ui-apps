@@ -132,7 +132,7 @@ function getColumns(targetSymbol) {
       label: "Fine-mapping confidence",
       sortable: true,
       tooltip:
-        "Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method",
+        "Fine-mapping confidence based on the quality of the linkage-disequilibrium information available and fine-mapping method",
       renderCell: ({ credibleSet }) => {
         if (!credibleSet?.confidence) return naLabel;
         return (
