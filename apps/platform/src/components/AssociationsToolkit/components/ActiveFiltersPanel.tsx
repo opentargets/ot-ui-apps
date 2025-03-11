@@ -129,7 +129,7 @@ function ActiveFiltersPanel() {
       )}
       {modifiedSourcesDataControls && (
         <FilterChip
-          tootltipContent="Name entity"
+          tootltipContent="Reset Datasource controls"
           onDelete={() => {
             resetDatasourceControls();
           }}
