@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { Popover, FormGroup, Button, FormControlLabel, Box, Switch } from "@mui/material";
-import { faCaretUp, faCaretDown, faGear, faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { Popover, Button, Box } from "@mui/material";
+import { faCaretUp, faCaretDown, faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from "@mui/material/styles";
-import { Tooltip } from "ui";
 
-import useAotfContext from "../hooks/useAotfContext";
 import DataDownloader from "./DataDownloader";
 import AotfApiPlayground from "./AotfApiPlayground";
 
@@ -22,10 +20,6 @@ const PopoverContent = styled("div")({
 
 function ExportMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const { activeHeadersControlls, setActiveHeadersControlls, displayedTable } = useAotfContext();
-
-  const isPrioritisation = displayedTable === "prioritisations";
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -75,9 +69,7 @@ function ExportMenu() {
       >
         <PopoverContent>
           <DataDownloader />
-          {/* <Box onClick={() => handleClose()}> */}
           <AotfApiPlayground />
-          {/* </Box> */}
         </PopoverContent>
       </Popover>
     </>
