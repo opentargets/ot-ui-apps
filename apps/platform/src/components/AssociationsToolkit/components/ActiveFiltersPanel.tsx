@@ -57,13 +57,10 @@ function ActiveFiltersPanel() {
 
   const somePinned = pinnedEntries.length > 0;
   const someUploaded = uploadedEntries.length > 0;
+  const someFacetFilters = facetFilters.length > 0;
 
   const showActiveFilter =
-    facetFilters.length > 0 ||
-    pinnedEntries.length > 0 ||
-    uploadedEntries.length > 0 ||
-    modifiedSourcesDataControls ||
-    entitySearch;
+    someFacetFilters || somePinned || someUploaded || modifiedSourcesDataControls || entitySearch;
 
   const onDelete = (id: string) => {
     const newState = removeFacet(facetFilters, id);
@@ -75,6 +72,7 @@ function ActiveFiltersPanel() {
     if (someUploaded) setUploadedEntries([]);
     if (entitySearch) dispatch(setEntitySearch(""));
     if (modifiedSourcesDataControls) resetDatasourceControls();
+    if (facetFilters.length > 0) facetFilterSelect([]);
   };
 
   return (
