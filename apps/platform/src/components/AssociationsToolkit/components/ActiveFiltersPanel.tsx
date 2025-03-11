@@ -3,17 +3,22 @@ import { Tooltip } from "ui";
 import useAotfContext from "../hooks/useAotfContext";
 import { Facet } from "../../Facets/facetsTypes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark, faFileImport, faThumbtack } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleXmark,
+  faFileImport,
+  faGear,
+  faThumbtack,
+} from "@fortawesome/free-solid-svg-icons";
 import { setEntitySearch } from "../context/aotfActions";
 
 function removeFacet(items: Facet[], idToRemove: string): Facet[] {
   return items.filter(item => item.id !== idToRemove);
 }
 
-function FilterChip({ onDelete, label, tootltipContent }) {
+function FilterChip({ onDelete, label, tootltipContent, maxWidth = 150 }) {
   return (
     <Tooltip title={tootltipContent} placement="bottom">
-      <Box sx={{ maxWidth: "150px" }}>
+      <Box sx={{ maxWidth: `${maxWidth}px` }}>
         <Chip
           sx={{
             borderRadius: 2,
@@ -46,6 +51,8 @@ function ActiveFiltersPanel() {
     setUploadedEntries,
     entitySearch,
     dispatch,
+    modifiedSourcesDataControls,
+    resetDatasourceControls,
   } = useAotfContext();
 
   const somePinned = pinnedEntries.length > 0;
@@ -55,6 +62,7 @@ function ActiveFiltersPanel() {
     facetFilters.length > 0 ||
     pinnedEntries.length > 0 ||
     uploadedEntries.length > 0 ||
+    modifiedSourcesDataControls ||
     entitySearch;
 
   const onDelete = (id: string) => {
@@ -117,6 +125,20 @@ function ActiveFiltersPanel() {
           onDelete={() => {
             dispatch(setEntitySearch(""));
           }}
+        />
+      )}
+      {modifiedSourcesDataControls && (
+        <FilterChip
+          tootltipContent="Name entity"
+          onDelete={() => {
+            resetDatasourceControls();
+          }}
+          maxWidth={300}
+          label={
+            <Box sx={{ gap: 1 }}>
+              <FontAwesomeIcon icon={faGear} /> Datasource controls
+            </Box>
+          }
         />
       )}
       {facetFilters.map((facet: Facet) => (

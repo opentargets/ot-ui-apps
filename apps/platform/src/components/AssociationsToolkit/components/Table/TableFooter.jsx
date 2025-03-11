@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Alert, TablePagination, Typography } from "@mui/material";
+import { TablePagination } from "@mui/material";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableCell from "./TableCell";
 import { getLegend } from "../../associationsUtils";
@@ -18,15 +18,7 @@ const TableFooterContainer = styled("div")({
 });
 
 function TableFooter({ table, coreOpen }) {
-  const {
-    count,
-    loading,
-    pagination,
-    modifiedSourcesDataControls,
-    displayedTable,
-    resetDatasourceControls,
-  } = useAotfContext();
-  const isAssociations = displayedTable === "associations";
+  const { count, loading, pagination, displayedTable } = useAotfContext();
 
   /**
    * LEGEND EFECT
@@ -63,18 +55,6 @@ function TableFooter({ table, coreOpen }) {
         </div>
       </div>
       <div style={{ display: "flex" }}>
-        {modifiedSourcesDataControls && isAssociations && (
-          <Alert severity="info">
-            <Typography variant="caption">Datasource controls modified</Typography>{" "}
-            <button
-              onClick={() => resetDatasourceControls()}
-              style={{ fontSize: "0.75rem" }}
-              type="button"
-            >
-              Reset to default
-            </button>
-          </Alert>
-        )}
         {coreOpen && (
           <TablePagination
             rowsPerPageOptions={[10, 25, 50, 200, 500]}
