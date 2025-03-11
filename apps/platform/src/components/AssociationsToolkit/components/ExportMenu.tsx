@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Popover, Button, Box } from "@mui/material";
+import { Popover, Button, Box, MenuList } from "@mui/material";
 import { faCaretUp, faCaretDown, faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from "@mui/material/styles";
@@ -12,10 +12,6 @@ const StyledBotton = styled(Button)({
   "& .MuiButton-startIcon": {
     fontSize: "14px !important",
   },
-});
-
-const PopoverContent = styled("div")({
-  padding: "15px",
 });
 
 function ExportMenu() {
@@ -67,10 +63,10 @@ function ExportMenu() {
           horizontal: "left",
         }}
       >
-        <PopoverContent>
+        <MenuList dense>
           <DataDownloader />
           <AotfApiPlayground />
-        </PopoverContent>
+        </MenuList>
       </Popover>
     </>
   );

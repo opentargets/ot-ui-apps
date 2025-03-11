@@ -31,7 +31,7 @@ const AssociationsView = ({ id, entity, query }: AssociationsView) => (
             flexWrap: "wrap",
             gap: { xs: 2, lg: 2 },
             mt: 4,
-            mb: 2,
+            mb: 1,
           }}
         >
           <Box

@@ -74,6 +74,7 @@ function ActiveFiltersPanel() {
     if (somePinned) setPinnedEntries([]);
     if (someUploaded) setUploadedEntries([]);
     if (entitySearch) dispatch(setEntitySearch(""));
+    if (modifiedSourcesDataControls) resetDatasourceControls();
   };
 
   return (
@@ -130,13 +131,13 @@ function ActiveFiltersPanel() {
       {modifiedSourcesDataControls && (
         <FilterChip
           tootltipContent="Reset Datasource controls"
+          maxWidth={300}
           onDelete={() => {
             resetDatasourceControls();
           }}
-          maxWidth={300}
           label={
             <Box sx={{ gap: 1 }}>
-              <FontAwesomeIcon icon={faGear} /> Datasource controls
+              <FontAwesomeIcon icon={faGear} /> Column options
             </Box>
           }
         />
