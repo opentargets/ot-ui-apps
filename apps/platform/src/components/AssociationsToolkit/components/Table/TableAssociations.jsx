@@ -210,7 +210,6 @@ function TableAssociations() {
         header: "entities",
         id: "entity-cols",
         columns: isAssociations ? evidenceViewColumns : prioritisationViewColumns,
-        // columns: [...evidenceViewColumns, ...prioritisationViewColumns],
       }),
     ],
     [displayedTable, entityToGet, rowNameEntity]

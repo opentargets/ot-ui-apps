@@ -39,13 +39,6 @@ export const GridContainer = styled("div", {
   gridTemplateColumns: `repeat(${columnsCount}, 1fr)`,
 }));
 
-// export const TableBodyContent = styled("div")({
-//   display: "flex",
-//   flexDirection: "column",
-//   margin: "0",
-//   minHeight: "300px",
-// });
-
 export const TableBodyContent = ({ children, prefix }) => (
   <Box
     sx={{
