@@ -199,6 +199,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       pinnedData,
       sorting,
       modifiedSourcesDataControls: state.modifiedSourcesDataControls,
+      entitySearch: state.entitySearch,
       pinnedLoading,
       pinnedError,
       pinnedCount,

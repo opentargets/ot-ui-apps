@@ -35,6 +35,28 @@ const TableSpacer = styled("div")({
   marginBottom: 5,
 });
 
+const getIndicatorLabel = prefix => {
+  switch (prefix) {
+    case TABLE_PREFIX.CORE:
+      return "All";
+    case TABLE_PREFIX.PINNING:
+      return "Pinned";
+    case TABLE_PREFIX.UPLOADED:
+      return "Uploaded";
+    default:
+      return "";
+  }
+};
+
+const getIndicatorCount = (prefix, count, filteredCount) => {
+  switch (prefix) {
+    case TABLE_PREFIX.CORE:
+      return count;
+    default:
+      return `${filteredCount} of ${count}`;
+  }
+};
+
 const TableIndicatorControl = ({
   prefix = "",
   open = true,
@@ -43,7 +65,8 @@ const TableIndicatorControl = ({
   onClickToggle,
   onClickDelete,
 }) => {
-  const label = prefix === TABLE_PREFIX.CORE ? "All" : `${prefix}`;
+  const label = getIndicatorLabel(prefix);
+  const countLabel = getIndicatorCount(prefix, count, filteredCount);
   return (
     <Box sx={{ display: "flex", my: 1, gap: 1, alignItems: "center" }}>
       {prefix !== TABLE_PREFIX.CORE && (
@@ -66,7 +89,7 @@ const TableIndicatorControl = ({
         }}
       >
         <Typography variant="caption" sx={{ fontWeight: 600 }}>
-          {`${label} (${filteredCount} of ${count})`}
+          {`${label} (${countLabel})`}
         </Typography>
         <Box ml={1}>
           {open ? <FontAwesomeIcon icon={faCaretDown} /> : <FontAwesomeIcon icon={faCaretRight} />}
@@ -300,7 +323,8 @@ function TableAssociations() {
         {pinnedEntries.length > 0 && (
           <TableIndicatorControl
             prefix={TABLE_PREFIX.PINNING}
-            count={corePinnedTable.getRowCount()}
+            count={pinnedEntries.length}
+            filteredCount={corePinnedTable.getRowCount()}
             open={pinningOpen}
             onClickToggle={onClickPinnedIndicator}
             onClickDelete={onClickPinnedDeleteAll}

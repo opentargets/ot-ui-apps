@@ -528,7 +528,7 @@ function DataUploader() {
                 startIcon={<FontAwesomeIcon icon={faCheck} size="lg" />}
                 onClick={handlePinElements}
               >
-                Pin hits
+                Upload hits
               </Button>
             )}
           </Box>

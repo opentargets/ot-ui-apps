@@ -18,8 +18,7 @@ const NameFilterInput = styled(TextField)(() => ({
 }));
 
 const NameFilter = () => {
-  const { entityToGet, dispatch } = useAotfContext();
-  // const theme = useTheme();
+  const { entityToGet, dispatch, entitySearch } = useAotfContext();
   const placeHolderEntity = entityToGet === "target" ? "target" : "disease";
 
   const [inputValue, setInputValue] = useState("");
@@ -29,9 +28,14 @@ const NameFilter = () => {
     dispatch(setEntitySearch(debouncedInputValue));
   }, [debouncedInputValue]);
 
+  useEffect(() => {
+    if (entitySearch !== inputValue) setInputValue(entitySearch);
+  }, [entitySearch]);
+
   return (
     <Box sx={{ width: { md: 220 } }}>
       <NameFilterInput
+        value={inputValue}
         onChange={event => {
           setInputValue(event.target.value);
         }}
@@ -44,13 +48,7 @@ const NameFilter = () => {
             </InputAdornment>
           ),
         }}
-        // sx={{ fontSize: "14px" }}
         placeholder={`Search ${placeHolderEntity}...`}
-        // startAdornment={
-        //   <InputAdornment position="start">
-        //     <FontAwesomeIcon style={{ color: theme.palette.primary.dark }} icon={faSearch} />
-        //   </InputAdornment>
-        // }
       />
     </Box>
   );
