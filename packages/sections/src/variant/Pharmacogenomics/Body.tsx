@@ -144,6 +144,19 @@ function Body({ id, entity }: BodyProps) {
       filterValue: ({ pgxCategory }) => pgxCategory,
     },
     {
+      id: "target.approvedSymbol",
+      label: "Gene",
+      renderCell: ({ target }) => {
+        if (!target) return naLabel;
+        return (
+          <Link asyncTooltip to={`/target/${target.id}`}>
+            {target.approvedSymbol}
+          </Link>
+        );
+      },
+      filterValue: ({ target }) => target.approvedSymbol,
+    },
+    {
       id: "isDirectTarget",
       label: "Direct drug target",
       renderCell: ({ isDirectTarget }) => {
