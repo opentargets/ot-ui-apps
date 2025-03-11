@@ -1,17 +1,8 @@
 import { faDna } from "@fortawesome/free-solid-svg-icons";
-import { Box } from "@mui/material";
 
-import {
-  CrisprDepmapLink,
-  ExternalLink,
-  TepLink,
-  XRefLinks,
-  Header as HeaderBase,
-  Tooltip,
-} from "ui";
-import { getGenomicLocation } from "ui/src/constants";
+import { CrisprDepmapLink, ExternalLink, TepLink, XRefLinks, Header as HeaderBase } from "ui";
 
-function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId, genomicLocation }) {
+function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId }) {
   const ensemblUrl = `https://identifiers.org/ensembl:${ensgId}`;
   const genecardsUrl = `https://identifiers.org/genecards:${symbol}`;
   const hgncUrl = `https://identifiers.org/hgnc.symbol:${symbol}`;
@@ -35,36 +26,6 @@ function Header({ loading, ensgId, uniprotIds, symbol, name, crisprId, genomicLo
           <ExternalLink title="HGNC" id={symbol} url={hgncUrl} />
           <CrisprDepmapLink id={crisprId} />
           <TepLink ensgId={ensgId} symbol={symbol} />
-          <Box component="span">
-            <Tooltip title="build | chromosome:start-end,strand">
-              <Box
-                component="span"
-                sx={{
-                  whiteSpace: "nowrap",
-                  background: theme => theme.palette.grey[600],
-                  border: theme => `1px solid ${theme.palette.grey[600]}`,
-                  p: "1px 5px",
-                  color: "white",
-                  borderRadius: "5px 0 0 5px",
-                }}
-              >
-                {/* TODO: check UI and add it to getGenomicLocation function */}
-                GRCh38
-              </Box>
-              <Box
-                component="span"
-                sx={{
-                  whiteSpace: "nowrap",
-                  p: "1px 5px",
-                  color: theme => theme.palette.grey[600],
-                  border: theme => `1px solid ${theme.palette.grey[600]}`,
-                  borderRadius: "0 5px 5px 0",
-                }}
-              >
-                {getGenomicLocation(genomicLocation)}
-              </Box>
-            </Tooltip>
-          </Box>
         </>
       }
     />
