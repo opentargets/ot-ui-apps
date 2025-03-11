@@ -24,12 +24,13 @@ import {
   ListItemText,
   Box,
   FormHelperText,
+  ListItemIcon,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
-import { faCaretDown, faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tooltip, useAPIMetadata, useApolloClient, useBatchDownloader } from "ui";
+import { useAPIMetadata, useApolloClient, useBatchDownloader } from "ui";
 import { getConfig } from "@ot/config";
 import useAotfContext from "../hooks/useAotfContext";
 import OriginalDataSources from "../static_datasets/dataSourcesAssoc";
@@ -53,6 +54,12 @@ const dataSources = OriginalDataSources.filter(e => {
     return e;
   } else if (!e.isPrivate) return e;
   return;
+});
+
+const StyledMenuItem = styled(MenuItem)({
+  "&>.MuiListItemIcon-root>svg": {
+    fontSize: "1rem",
+  },
 });
 
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
@@ -168,6 +175,7 @@ function DataDownloader() {
     pinnedEntries,
     pinnedData,
     dataSourcesWeights,
+    entitySearch,
   } = useAotfContext();
   const fileStem = `OT-${id}-associated-${entityToGet}s`;
   const [onlyPinnedCheckBox, setOnlyPinnedCheckBox] = useState(false);
@@ -208,6 +216,7 @@ function DataDownloader() {
     filter: searhFilter,
     sortBy: sorting[0].id,
     enableIndirect,
+    entitySearch,
     datasources: dataSourcesWeights.map(el => ({
       id: el.id,
       weight: el.weight,
@@ -286,19 +295,13 @@ function DataDownloader() {
   }, [modifiedSourcesDataControls]);
 
   return (
-    <div>
-      <Tooltip placement="bottom" title="Share / Export">
-        <Button
-          aria-describedby={popoverId}
-          onClick={handleClickBTN}
-          variant="outlined"
-          disableElevation
-          sx={{ height: 1, maxHeight: "45px" }}
-          aria-label="Share Export"
-        >
-          <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
-        </Button>
-      </Tooltip>
+    <>
+      <StyledMenuItem onClick={handleClickBTN}>
+        <ListItemIcon>
+          <FontAwesomeIcon icon={faFileDownload} />
+        </ListItemIcon>
+        <ListItemText>Download data</ListItemText>
+      </StyledMenuItem>
       <Dialog
         onClose={handleClosePopover}
         open={open}
@@ -488,7 +491,7 @@ function DataDownloader() {
           </>
         }
       />
-    </div>
+    </>
   );
 }
 

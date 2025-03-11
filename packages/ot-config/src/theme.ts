@@ -94,7 +94,10 @@ const themeOptions: ThemeOptions = {
       styleOverrides: {
         root: {
           border: "none",
-          padding: "6px 12px",
+          paddingTop: 6,
+          paddingBottom: 6,
+          paddingLeft: 8,
+          paddingRight: 8,
           minHeight: "32px",
           textTransform: "none",
           color: "#5A5F5F",

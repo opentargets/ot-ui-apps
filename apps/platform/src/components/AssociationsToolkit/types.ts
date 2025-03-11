@@ -1,4 +1,5 @@
 import { DocumentNode } from "graphql";
+import { Facet } from "../Facets/facetsTypes";
 
 export enum ENTITY {
   TARGET = "target",
@@ -70,7 +71,9 @@ export interface State {
   interactors: Interactors;
   dataSourceControls: Array<columnAdvanceControl>;
   modifiedSourcesDataControls: boolean;
-  facetFilters: Array<string>;
+  facetFilters: Array<Facet>;
+  facetFiltersIds: Array<string>;
+  entitySearch: string;
 }
 
 /*****************
@@ -87,6 +90,7 @@ export enum ActionType {
   HANDLE_AGGREGATION_CLICK = "HANDLE_AGGREGATION_CLICK",
   FACETS_SEARCH = "FACETS_SEARCH",
   SET_INITIAL_STATE = "SET_INITIAL_STATE",
+  ENTITY_SEARCH = "ENTITY_SEARCH",
 }
 
 export type SetRowInteractorsPayload = {
@@ -103,5 +107,6 @@ export type Action =
   | { type: ActionType.DATA_SOURCE_CONTROL; payload: columnAdvanceControl }
   | { type: ActionType.RESET_DATA_SOURCE_CONTROL }
   | { type: ActionType.HANDLE_AGGREGATION_CLICK; aggregation: string }
-  | { type: ActionType.FACETS_SEARCH; facetFilters: string[] }
-  | { type: ActionType.SET_INITIAL_STATE };
+  | { type: ActionType.FACETS_SEARCH; facetFilters: Facet[]; facetFiltersIds: string[] }
+  | { type: ActionType.SET_INITIAL_STATE }
+  | { type: ActionType.ENTITY_SEARCH; entitySearch: string };

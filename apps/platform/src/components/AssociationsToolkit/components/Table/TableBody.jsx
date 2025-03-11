@@ -112,79 +112,81 @@ function TableBody({ core, cols, noInteractors }) {
 
   return (
     <Fade in>
-      <TableBodyContent>
-        <RowsContainer>
-          {rows.map(row => (
-            <Fragment key={row.id}>
-              <RowContainer
-                interactors={prefix === TABLE_PREFIX.INTERACTORS}
-                rowExpanded={
-                  focusState.filter(e => e.row === row.id && e.table === prefix).length > 0
-                }
-              >
-                {highLevelHeaders.map(columnGroup => (
-                  <GridContainer
-                    columnsCount={cols.length}
-                    className={getColContainerClassName(columnGroup)}
-                    key={columnGroup.id}
-                  >
-                    {columnGroup.subHeaders.map(column => {
-                      const cell = row.getVisibleCells().find(el => el.column.id === column.id);
-                      return (
-                        <div key={cell.id}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </div>
-                      );
-                    })}
-                  </GridContainer>
-                ))}
-              </RowContainer>
-
-              <Box
-                sx={{
-                  position: "relative",
-                  overflow: "hidden",
-                  borderBottom: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
-                  borderLeft: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
-                  borderRight: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
-                  marginBottom: 1,
-                  display: getIsRowActive(prefix, row, focusState, parentRow, parentTable)
-                    ? "block"
-                    : "none",
-                }}
-              >
-                <SectionRendererWrapper
-                  section={getFocusSection(prefix, row, focusState, parentRow, parentTable)}
+      <div>
+        <TableBodyContent prefix={prefix}>
+          <RowsContainer>
+            {rows.map(row => (
+              <Fragment key={row.id}>
+                <RowContainer
+                  interactors={prefix === TABLE_PREFIX.INTERACTORS}
+                  rowExpanded={
+                    focusState.filter(e => e.row === row.id && e.table === prefix).length > 0
+                  }
                 >
-                  <section>
-                    <SectionRender
-                      id={id}
-                      entity={entity}
-                      table={prefix}
-                      row={row}
-                      entityToGet={entityToGet}
-                      nameProperty={nameProperty}
-                      displayedTable={displayedTable}
-                      cols={cols}
-                      section={getFocusSection(prefix, row, focusState, parentRow, parentTable)}
-                    />
-                  </section>
-                </SectionRendererWrapper>
-                {!noInteractors && (
-                  <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>
-                    <RowInteractorsTable
-                      row={row}
-                      columns={core._getColumnDefs()}
-                      nameProperty={nameProperty}
-                      parentTable={prefix}
-                    />
-                  </RowInteractorsWrapper>
-                )}
-              </Box>
-            </Fragment>
-          ))}
-        </RowsContainer>
-      </TableBodyContent>
+                  {highLevelHeaders.map(columnGroup => (
+                    <GridContainer
+                      columnsCount={cols.length}
+                      className={getColContainerClassName(columnGroup)}
+                      key={columnGroup.id}
+                    >
+                      {columnGroup.subHeaders.map(column => {
+                        const cell = row.getVisibleCells().find(el => el.column.id === column.id);
+                        return (
+                          <div key={cell.id}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </div>
+                        );
+                      })}
+                    </GridContainer>
+                  ))}
+                </RowContainer>
+
+                <Box
+                  sx={{
+                    position: "relative",
+                    overflow: "hidden",
+                    borderBottom: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
+                    borderLeft: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
+                    borderRight: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
+                    marginBottom: 1,
+                    display: getIsRowActive(prefix, row, focusState, parentRow, parentTable)
+                      ? "block"
+                      : "none",
+                  }}
+                >
+                  <SectionRendererWrapper
+                    section={getFocusSection(prefix, row, focusState, parentRow, parentTable)}
+                  >
+                    <section>
+                      <SectionRender
+                        id={id}
+                        entity={entity}
+                        table={prefix}
+                        row={row}
+                        entityToGet={entityToGet}
+                        nameProperty={nameProperty}
+                        displayedTable={displayedTable}
+                        cols={cols}
+                        section={getFocusSection(prefix, row, focusState, parentRow, parentTable)}
+                      />
+                    </section>
+                  </SectionRendererWrapper>
+                  {!noInteractors && (
+                    <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>
+                      <RowInteractorsTable
+                        row={row}
+                        columns={core._getColumnDefs()}
+                        nameProperty={nameProperty}
+                        parentTable={prefix}
+                      />
+                    </RowInteractorsWrapper>
+                  )}
+                </Box>
+              </Fragment>
+            ))}
+          </RowsContainer>
+        </TableBodyContent>
+      </div>
     </Fade>
   );
 }
