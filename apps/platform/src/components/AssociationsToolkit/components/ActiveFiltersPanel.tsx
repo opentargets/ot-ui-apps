@@ -10,6 +10,32 @@ function removeFacet(items: Facet[], idToRemove: string): Facet[] {
   return items.filter(item => item.id !== idToRemove);
 }
 
+function FilterChip({ onDelete, label, tootltipContent }) {
+  return (
+    <Tooltip title={tootltipContent} placement="bottom">
+      <Box sx={{ maxWidth: "150px" }}>
+        <Chip
+          sx={{
+            borderRadius: 2,
+            "& .MuiChip-label": {
+              mr: 1,
+            },
+            "& .MuiChip-deleteIcon": {
+              fontSize: "14px",
+            },
+          }}
+          deleteIcon={<FontAwesomeIcon icon={faCircleXmark} size="xs" />}
+          onDelete={() => {
+            onDelete();
+          }}
+          size="small"
+          label={label}
+        />
+      </Box>
+    </Tooltip>
+  );
+}
+
 function ActiveFiltersPanel() {
   const {
     state: { facetFilters },
@@ -59,105 +85,49 @@ function ActiveFiltersPanel() {
         </Typography>
       )}
       {somePinned && (
-        <Tooltip title="Pinned entries" placement="bottom">
-          <Box sx={{ maxWidth: "150px" }}>
-            <Chip
-              sx={{
-                borderRadius: 2,
-                "& .MuiChip-label": {
-                  mr: 1,
-                },
-                "& .MuiChip-deleteIcon": {
-                  fontSize: "14px",
-                },
-              }}
-              deleteIcon={<FontAwesomeIcon icon={faCircleXmark} size="xs" />}
-              onDelete={() => {
-                setPinnedEntries([]);
-              }}
-              size="small"
-              label={
-                <Box>
-                  <FontAwesomeIcon icon={faThumbtack} size="sm" /> Pinned
-                </Box>
-              }
-            />
-          </Box>
-        </Tooltip>
+        <FilterChip
+          tootltipContent="Pinned entries"
+          onDelete={() => {
+            setPinnedEntries([]);
+          }}
+          label={
+            <Box>
+              <FontAwesomeIcon icon={faThumbtack} size="sm" /> Pinned
+            </Box>
+          }
+        />
       )}
       {someUploaded && (
-        <Tooltip title="Uploaded entries" placement="bottom">
-          <Box sx={{ maxWidth: "150px" }}>
-            <Chip
-              sx={{
-                borderRadius: 2,
-                "& .MuiChip-label": {
-                  mr: 1,
-                },
-                "& .MuiChip-deleteIcon": {
-                  fontSize: "14px",
-                },
-              }}
-              deleteIcon={<FontAwesomeIcon icon={faCircleXmark} size="xs" />}
-              onDelete={() => {
-                setUploadedEntries([]);
-              }}
-              size="small"
-              label={
-                <Box sx={{ gap: 1 }}>
-                  <FontAwesomeIcon icon={faFileImport} /> Uploaded
-                </Box>
-              }
-            />
-          </Box>
-        </Tooltip>
+        <FilterChip
+          tootltipContent="Uploaded entries"
+          onDelete={() => {
+            setUploadedEntries([]);
+          }}
+          label={
+            <Box sx={{ gap: 1 }}>
+              <FontAwesomeIcon icon={faFileImport} /> Uploaded
+            </Box>
+          }
+        />
       )}
       {entitySearch && (
-        <Tooltip title="Name entity" placement="bottom">
-          <Box sx={{ maxWidth: "150px" }}>
-            <Chip
-              sx={{
-                borderRadius: 2,
-                "& .MuiChip-label": {
-                  mr: 1,
-                },
-                "& .MuiChip-deleteIcon": {
-                  fontSize: "14px",
-                },
-              }}
-              deleteIcon={<FontAwesomeIcon icon={faCircleXmark} size="xs" />}
-              onDelete={() => {
-                dispatch(setEntitySearch(""));
-              }}
-              size="small"
-              label={`"${entitySearch}"`}
-            />
-          </Box>
-        </Tooltip>
+        <FilterChip
+          tootltipContent="Name entity"
+          label={`"${entitySearch}"`}
+          onDelete={() => {
+            dispatch(setEntitySearch(""));
+          }}
+        />
       )}
       {facetFilters.map((facet: Facet) => (
-        <Tooltip title={facet.label} key={facet.id} placement="bottom">
-          <Box sx={{ maxWidth: "150px" }} key={facet.id}>
-            <Chip
-              sx={{
-                borderRadius: 2,
-                "& .MuiChip-label": {
-                  mr: 1,
-                },
-                "& .MuiChip-deleteIcon": {
-                  fontSize: "14px",
-                },
-              }}
-              deleteIcon={<FontAwesomeIcon icon={faCircleXmark} size="xs" />}
-              onDelete={() => {
-                onDelete(facet.id);
-              }}
-              size="small"
-              label={facet.label}
-              key={facet.id}
-            />
-          </Box>
-        </Tooltip>
+        <FilterChip
+          key={facet.id}
+          tootltipContent={facet.label}
+          label={facet.label}
+          onDelete={() => {
+            onDelete(facet.id);
+          }}
+        />
       ))}
       {showActiveFilter && (
         <Tooltip title="Reset all filters" placement="bottom">
@@ -175,8 +145,6 @@ function ActiveFiltersPanel() {
                 gap: 1,
                 ":hover": {
                   boxShadow: theme.boxShadow.default,
-                  // borderColor: theme.palette.primary.dark,
-                  // background: theme.palette.grey[700],
                   color: theme.palette.primary.dark,
                 },
               })}
@@ -185,8 +153,6 @@ function ActiveFiltersPanel() {
               <Typography sx={{ fontSize: "0.8125rem" }} variant="body2">
                 Reset
               </Typography>
-              {/* <FontAwesomeIcon icon={faTrash} size="xs" /> */}
-              {/* <FontAwesomeIcon icon={faCircleXmark} size="xs" /> */}
             </Box>
           </Box>
         </Tooltip>

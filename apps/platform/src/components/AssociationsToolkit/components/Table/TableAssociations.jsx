@@ -291,30 +291,25 @@ function TableAssociations() {
   }, [uploadedEntries]);
 
   useEffect(() => {
-    // if (uploadedEntries.length > 0) {
-    //   setCoreOpen(false);
-    //   setUploadedOpen(true);
-    // }
-    if (pinnedEntries.length === 0 && uploadedEntries.length === 0) {
+    if (pinnedData.length === 0 && uploadedData.length === 0) {
       setCoreOpen(true);
     }
-  }, [pinnedEntries]);
+  }, [pinnedEntries, uploadedEntries]);
 
-  const onClickPinnedIndicator = event => {
+  const onClickPinnedIndicator = () => {
     setPinningOpen(!pinningOpen);
   };
-  const onClickUploadedIndicator = event => {
+  const onClickUploadedIndicator = () => {
     setUploadedOpen(!uploadedOpen);
   };
-  const onClickCoreIndicator = event => {
+  const onClickCoreIndicator = () => {
     setCoreOpen(!coreOpen);
   };
 
-  const onClickPinnedDeleteAll = event => {
+  const onClickPinnedDeleteAll = () => {
     setPinnedEntries([]);
-    // if (!coreOpen) setCoreOpen(true);
   };
-  const onClickUploadedDeleteAll = event => {
+  const onClickUploadedDeleteAll = () => {
     setUploadedEntries([]);
   };
 
