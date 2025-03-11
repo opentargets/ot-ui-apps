@@ -115,7 +115,15 @@ const columns = [
     id: "topL2G",
     label: "Top L2G",
     filterValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target.approvedSymbol,
-    tooltip: "Top gene prioritised by our locus-to-gene model",
+    tooltip: (
+      <>
+        Top gene prioritised by our locus-to-gene model. See{" "}
+        <Link external to="https://platform-docs.opentargets.org/gentropy/locus-to-gene-l2g">
+          our documentation
+        </Link>{" "}
+        for more information.
+      </>
+    ),
     renderCell: ({ l2GPredictions }) => {
       const target = l2GPredictions?.rows[0]?.target;
       if (!target) return naLabel;
