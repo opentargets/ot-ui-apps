@@ -12,7 +12,7 @@ import { clearDescriptionCodes } from "@ot/utils";
 
 import TARGET_PROFILE_HEADER_FRAGMENT from "./TargetProfileHeader.gql";
 import { Box } from "@mui/material";
-import { getGenomicLocation } from "ui/src/constants";
+import { getGenomicLocation } from "@ot/constants";
 
 /*
  * Target synonyms from the API have a "label" and a "source"
@@ -59,7 +59,7 @@ const parseSynonyms = synonyms => {
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
-  console.log(data);
+
   const theme = useTheme();
 
   // TODO: Errors!
