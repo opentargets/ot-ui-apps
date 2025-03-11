@@ -1,4 +1,4 @@
-export { default as AdvanceOptionsMenu } from "./components/AdvanceOptionsMenu";
+export { default as ColumnOptionsMenu } from "./components/ColumnOptionsMenu";
 export { default as TableAssociations } from "./components/Table/TableAssociations";
 export { default as DisplayModeSwitch } from "./components/DisplayModeSwitch";
 export { default as DataDownloader } from "./components/DataDownloader";

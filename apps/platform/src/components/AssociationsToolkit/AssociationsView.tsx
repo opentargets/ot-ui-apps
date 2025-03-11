@@ -2,7 +2,7 @@ import FacetsSearch from "../Facets/FacetsSearch";
 import ExportMenu from "./components/ExportMenu";
 import {
   TableAssociations,
-  AdvanceOptionsMenu,
+  ColumnOptionsMenu,
   AssociationsProvider,
   AssociationsFocusProvider,
   DisplayModeSwitch,
@@ -44,7 +44,7 @@ const AssociationsView = ({ id, entity, query }: AssociationsView) => (
             <NameFilter />
             <Box display="flex">
               <FacetsSearch />
-              <AdvanceOptionsMenu />
+              <ColumnOptionsMenu />
               <ExportMenu />
             </Box>
           </Box>

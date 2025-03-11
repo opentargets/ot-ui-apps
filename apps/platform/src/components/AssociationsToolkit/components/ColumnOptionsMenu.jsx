@@ -30,10 +30,6 @@ function DataMenu() {
     setActiveHeadersControlls(!activeHeadersControlls);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
@@ -60,36 +56,6 @@ function DataMenu() {
           )}
         </Box>
       </StyledBotton>
-
-      {/* <Popover
-        id={id}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        open={open}
-        elevation={1}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-      >
-        <PopoverContent>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={activeHeadersControlls}
-                  onChange={() => setActiveHeadersControlls(!activeHeadersControlls)}
-                />
-              }
-              label="Show data sources controls"
-            />
-          </FormGroup>
-        </PopoverContent>
-      </Popover> */}
     </>
   );
 }

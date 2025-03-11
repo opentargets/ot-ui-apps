@@ -256,7 +256,7 @@ const FileExample = ({ entity = "target", runAction }) => {
   );
 };
 
-function DataUploader() {
+function DataUploader({ parentAction }) {
   const [activeStep, setActiveStep] = useState(0);
   const [queryTermsResults, setQueryTermsResults] = useState(null);
   const { entityToGet, setUploadedEntries, uploadedEntries } = useAotfContext();
@@ -376,6 +376,7 @@ function DataUploader() {
   const popoverId = open ? "downloader-popover" : undefined;
 
   const handleClickBTN = event => {
+    // parentAction();
     setAnchorEl(event.currentTarget);
   };
 

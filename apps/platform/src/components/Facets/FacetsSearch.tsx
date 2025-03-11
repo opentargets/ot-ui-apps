@@ -132,7 +132,8 @@ function FacetsSearch(): ReactElement {
         elevation={1}
       >
         <Box sx={{ width: "450px", display: "flex", p: 3, flexDirection: "column", gap: 2 }}>
-          <DataUploader />
+          <DataUploader parentAction={handleClose} />
+
           <Divider flexItem sx={{ my: 1 }} />
           <Box sx={{ display: "flex" }}>
             <FacetsAutocomplete
