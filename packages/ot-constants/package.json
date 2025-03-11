@@ -1,0 +1,19 @@
+{
+  "name": "@ot/constants",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint \"**/*.ts\""
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@mui/material": "^5.14.1",
+    "@ot/config": "*",
+    "polished": "^4.3.1"
+  }
+}

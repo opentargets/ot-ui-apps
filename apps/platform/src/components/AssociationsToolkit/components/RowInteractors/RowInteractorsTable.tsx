@@ -32,8 +32,13 @@ import {
   useAssociationsFocus,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
-import { ENTITIES, INTERACTORS_SOURCES, TABLE_PREFIX, InteractorsSource } from "../../utils";
-import { Tooltip } from "ui";
+import {
+  ENTITIES,
+  INTERACTORS_SOURCES,
+  TABLE_PREFIX,
+  InteractorsSource,
+} from "../../associationsUtils";
+import { Tooltip, useApolloClient } from "ui";
 
 type ThresholdState = number | null | undefined;
 
@@ -110,6 +115,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     dataSourcesWeights,
     entityToGet,
   } = useAotfContext();
+  const client = useApolloClient();
 
   const label = row.original.targetSymbol;
 
@@ -153,6 +159,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
   };
 
   const { data, loading, interactorsMetadata } = useRowInteractors({
+    client,
     options: {
       id: row.id,
       index: 0,

@@ -8,7 +8,7 @@ import {
 import { useTheme } from "@mui/styles";
 import TargetDescription from "./TargetDescription";
 
-import { clearDescriptionCodes } from "../../utils/global";
+import { clearDescriptionCodes } from "@ot/utils";
 
 import TARGET_PROFILE_HEADER_FRAGMENT from "./TargetProfileHeader.gql";
 import { Box } from "@mui/material";

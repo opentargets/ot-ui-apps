@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { LiteratureProvider, useLiterature, useLiteratureDispatch } from "./LiteratureContext";
 import { fetchSimilarEntities } from "./requests";
 import { Box } from "@mui/material";
-import { SectionItem } from "ui";
+import { SectionItem, useApolloClient } from "ui";
 import PublicationsList from "./PublicationsList";
 import Description from "./Description";
 import Entities from "./Entities";
@@ -15,10 +15,12 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
   const literature = useLiterature();
   const { category, startYear, startMonth, endYear, endMonth } = literature;
   const literatureDispatch = useLiteratureDispatch();
+  const client = useApolloClient();
 
   useEffect(() => {
     async function startRequest() {
       const initRequest = await fetchSimilarEntities({
+        client,
         id,
         query: BODY_QUERY,
         category,

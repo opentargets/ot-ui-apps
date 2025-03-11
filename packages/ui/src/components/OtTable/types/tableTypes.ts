@@ -1,5 +1,5 @@
-import { DocumentNode } from "@apollo/client";
-import { ColumnDef, Table } from "@tanstack/table-core";
+import { ApolloClient, DocumentNode, NormalizedCacheObject } from "@apollo/client";
+import { ColumnDef, Row, Table } from "@tanstack/table-core";
 
 export const INIT_PAGE_SIZE = 10;
 
@@ -32,6 +32,8 @@ export type OtTableProps = {
   variables: Record<string, unknown>;
   showColumnVisibilityControl: boolean;
   loading: boolean;
+  enableMultipleRowSelection: boolean;
+  getSelectedRows: (r: Row<any>[]) => void;
 };
 
 export type loadingTableRows = {
@@ -67,6 +69,8 @@ export type OtTableSSPProps = {
   dataDownloaderColumns?: Array<ColumnDef<string, unknown>>;
   showColumnVisibilityControl: boolean;
   setInitialRequestData: any;
+  enableMultipleRowSelection: boolean;
+  getSelectedRows: (r: Row<any>[]) => void;
 };
 
 export type OtTableSSPState = {
@@ -84,6 +88,7 @@ export type getTableRowsProps = {
   cursor: string | null;
   freeTextQuery: string | null;
   variables: Record<string, unknown>;
+  client: ApolloClient<NormalizedCacheObject>;
 };
 
 /*****************

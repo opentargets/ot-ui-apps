@@ -1,6 +1,7 @@
 {
   "name": "ot-ui-apps",
   "version": "0.0.1",
+  "dataRelease": "2503-testrun-2",
   "private": true,
   "license": "Apache-2.0",
   "workspaces": [
@@ -22,6 +23,7 @@
     "lint": "turbo run lint",
     "lint:platform": "turbo run lint --filter=platform",
     "format": "turbo run prettier:all",
+    "format:check": "turbo run prettier:check",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -30,7 +32,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^2.5.1",
-    "turbo": "^1.10.13"
+    "turbo": "^2.4.2"
   },
   "packageManager": "yarn@1.22.18",
   "lint-staged": {

@@ -7,6 +7,42 @@ import { SearchContext } from "./SearchContext";
 import { formatSearchData } from "./utils/searchUtils";
 import useListOption from "../../hooks/useListOption";
 import GlobalSearchLoadingState from "./GlobalSearchLoadingState";
+import VariantMessage from "./VariantMessage";
+
+const VARIANT_COMPONENTS = {
+  CHROMOSOME: "(?:chr)?(?:[1-9]|1[0-9]|2[0-2]|X|Y|MT)",
+  FIRST_SEPARATOR: "[_:]",
+  POSITION: "\\d+",
+  SECOND_SEPARATOR: "[_:]",
+  REF_ALLELE: "[A-Za-z]+",
+  THIRD_SEPARATOR: "[_-]",
+  ALT_ALLELE: "[A-Za-z]+",
+};
+
+const VARIANT_PATTERNS = {
+  LOCATION_ID: new RegExp(
+    `^${VARIANT_COMPONENTS.CHROMOSOME}` +
+      `${VARIANT_COMPONENTS.FIRST_SEPARATOR}` +
+      `${VARIANT_COMPONENTS.POSITION}` +
+      `${VARIANT_COMPONENTS.SECOND_SEPARATOR}` +
+      `${VARIANT_COMPONENTS.REF_ALLELE}` +
+      `${VARIANT_COMPONENTS.THIRD_SEPARATOR}` +
+      `${VARIANT_COMPONENTS.ALT_ALLELE}$`
+  ),
+  RS_ID: /^rs\d+$/i,
+};
+
+function isValidVariantFormat(input) {
+  return VARIANT_PATTERNS.LOCATION_ID.test(input) || VARIANT_PATTERNS.RS_ID.test(input);
+}
+
+function validateVariantIdInput(input, searchResult, isResultEmpty) {
+  if (!input) return false;
+  if (isResultEmpty) return isValidVariantFormat(input);
+  const isVariantTopHit = searchResult?.topHit?.[0]?.entity === "variant";
+  if (isVariantTopHit) return false;
+  return isValidVariantFormat(input);
+}
 
 const List = styled("ul")(({ theme }) => ({
   margin: "0",
@@ -163,9 +199,13 @@ function GlobalSearchList({ inputValue }) {
     };
   }, []);
 
+  const inputMatchVariant = validateVariantIdInput(inputValue, searchResult, isResultEmpty());
+
   return (
     <>
       {inputValue && loading && <GlobalSearchLoadingState />}
+
+      {inputMatchVariant && !loading && <VariantMessage inputValue={inputValue} />}
 
       {/* input value is present and there are results available */}
       {inputValue &&
@@ -198,7 +238,9 @@ function GlobalSearchList({ inputValue }) {
       {/* no search result state  */}
       {inputValue && !loading && isResultEmpty() && (
         <>
-          <Box sx={{ display: "flex", justifyContent: "center" }}>No search result found</Box>
+          <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+            No search result found
+          </Box>
           {SearchSuggestionEl}
         </>
       )}

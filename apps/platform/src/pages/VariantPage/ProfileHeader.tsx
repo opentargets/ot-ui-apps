@@ -8,7 +8,7 @@ import {
   ProfileDescription,
 } from "ui";
 import { Box, Paper, Typography } from "@mui/material";
-import { identifiersOrgLink } from "../../utils/global";
+import { identifiersOrgLink } from "@ot/utils";
 
 import VARIANT_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 

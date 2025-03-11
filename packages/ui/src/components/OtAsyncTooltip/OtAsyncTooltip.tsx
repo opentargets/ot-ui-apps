@@ -11,7 +11,9 @@ import {
 } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
 import { getEntityIcon, getEntityQuery, getQueryVariables } from "./utils/asyncTooltipUtil";
-import { getStudyItemMetaData } from "../../constants";
+import { naLabel } from "@ot/constants";
+
+import { getStudyItemMetaData } from "@ot/utils";
 
 const DELAY_REQUEST = 1000;
 
@@ -118,14 +120,16 @@ function AsyncTooltipDataView({
   data: Record<string, unknown>;
 }): ReactElement {
   function getLabel() {
-    return data?.name || data?.id;
+    return data?.name || data?.id || naLabel;
   }
 
   function getDescription() {
     let descText = "";
-    if (data?.description)
-      if (Array.isArray(data?.description)) descText = data?.description[0].substring(0, 150);
-      else descText = data?.description.substring(0, 150);
+
+    if (Array.isArray(data.description) && data.description.length)
+      descText = data?.description[0].substring(0, 150);
+    else if (Array.isArray(data.description) && !data.description.length) descText = "";
+    else if (data.description) descText = data?.description.substring(0, 150);
 
     // study subtext
     descText += getStudyItemMetaData({
@@ -133,6 +137,8 @@ function AsyncTooltipDataView({
       nSamples: data?.nSamples,
       credibleSetsCount: data?.credibleSets?.credibleSetsCount,
     });
+
+    if (!descText) return "No description available.";
 
     return descText;
   }

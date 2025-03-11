@@ -11,10 +11,10 @@ import {
   PublicationsDrawer,
 } from "ui";
 import { Box } from "@mui/material";
-import { populationMap } from "../../constants";
+import { populationMap } from "@ot/constants";
+import { getSortedAncestries, getStudyTypeDisplay } from "@ot/utils";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
-import { getStudyTypeDisplay } from "sections/src/constants";
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
@@ -168,18 +168,19 @@ function ProfileHeader() {
         <Field loading={loading} title="Analysis">
           {analysisFlags?.join(", ")}
         </Field>
-        {ldPopulationStructure?.length > 0 && (
-          <Box display="flex" sx={{ gap: 1 }}>
-            {ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
+
+        <Box display="flex" sx={{ gap: 1 }}>
+          {getSortedAncestries({ arr: ldPopulationStructure }).map(
+            ({ ldPopulation, relativeSampleSize }) => (
               <LabelChip
                 key={ldPopulation}
                 label={ldPopulation.toUpperCase()}
                 value={`${(relativeSampleSize * 100).toFixed(0)}%`}
                 tooltip={`LD reference population: ${populationMap[ldPopulation]}`}
               />
-            ))}
-          </Box>
-        )}
+            )
+          )}
+        </Box>
       </Box>
     </BaseProfileHeader>
   );

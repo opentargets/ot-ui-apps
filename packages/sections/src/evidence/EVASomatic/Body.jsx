@@ -12,13 +12,10 @@ import {
   DirectionOfEffectTooltip,
   OtTableSSP,
 } from "ui";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 
-import { sentenceCase } from "../../utils/global";
-
-import { epmcUrl } from "../../utils/urls";
-import { clinvarStarMap, naLabel } from "../../constants";
+import { dataTypesMap, clinvarStarMap, naLabel } from "@ot/constants";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
 import EVA_SOMATIC_QUERY from "./EvaSomaticQuery.gql";
 import { definition } from ".";
 

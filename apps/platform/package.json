@@ -18,6 +18,9 @@
     "@mui/lab": "^5.0.0-alpha.137",
     "@mui/material": "^5.14.1",
     "@mui/styles": "^5.14.1",
+    "@ot/config": "*",
+    "@ot/constants": "*",
+    "@ot/utils": "*",
     "@tanstack/react-table": "^8.5.11",
     "classnames": "^2.2.6",
     "d3": "^5.9.2",
@@ -46,17 +49,17 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "dev-ppp": "vite --host 0.0.0.0 --port 3000 --clearScreen false --mode ppp",
+    "dev-ppp": "vite --host 0.0.0.0 --port 3000 --mode ppp",
     "build-ppp": "vite build --mode ppp",
-    "dev": "vite --host 0.0.0.0 --port 3000 --clearScreen false",
+    "dev": "vite --host 0.0.0.0 --port 3000",
     "build": "vite build",
-    "preview": "vite preview",
     "serve": "vite preview",
     "prettier": "prettier --write",
     "lint": "eslint --quiet  \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\" --fix",
     "lint:quiet": "eslint --quiet \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "prettier:all": "prettier --write \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
+    "prettier:check": "prettier --check \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "browserslist": [
@@ -76,11 +79,13 @@
     "cross-fetch": "^3.1.4",
     "eslint": "7.32.0",
     "eslint-config-custom": "*",
+    "rollup-plugin-visualizer": "^5.14.0",
     "sass": "^1.49.10",
     "source-map-explorer": "^2.0.0",
     "tsconfig": "*",
     "typescript": "^5.2.2",
-    "vite": "^4.1.4",
+    "vite": "^6.1.1",
+    "vite-plugin-compression": "^0.5.1",
     "vite-plugin-simple-gql": "^0.5.0",
     "vite-plugin-svgr": "^2.4.0"
   }

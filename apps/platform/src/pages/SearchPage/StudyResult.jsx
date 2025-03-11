@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
 import { Highlights, Link } from "ui";
 import { Box, Typography } from "@mui/material";
+import { getStudyItemMetaData } from "@ot/utils";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -30,8 +31,13 @@ function StudyResult({ data, highlights }) {
         {data.credibleSets.credibleSetsCount > -1 && (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-              <div>Credible sets count: {data.credibleSets.credibleSetsCount}</div>
-              <div> • Sample size: {data.nSamples.toLocaleString()}</div>
+              <div>
+                {getStudyItemMetaData({
+                  studyType: data.studyType,
+                  credibleSetsCount: data.credibleSets.credibleSetsCount,
+                  nSamples: data.nSamples,
+                })}
+              </div>
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
               <div>
@@ -49,7 +55,6 @@ function StudyResult({ data, highlights }) {
               {data.biosample?.biosampleName &&
                 `Affected cell/tissue: ${data.biosample.biosampleName}`}
             </div>
-            <div>Study Type: {data.studyType}</div>
           </Box>
         )}
       </Typography>

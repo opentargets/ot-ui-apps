@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { styled } from "@mui/material/styles";
 import { SectionLoader } from "ui";
-import { ENTITIES } from "../../utils";
+import { ENTITIES } from "../../associationsUtils";
 
 import prioritisationColumns from "../../static_datasets/prioritisationColumns";
 import targetSections from "../../../../sections/targetSections";

@@ -29,8 +29,8 @@ import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { faCaretDown, faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tooltip, useConfigContext } from "ui";
-import useBatchDownloader from "../hooks/useBatchDownloader";
+import { Tooltip, useAPIMetadata, useApolloClient, useBatchDownloader } from "ui";
+import { getConfig } from "@ot/config";
 import useAotfContext from "../hooks/useAotfContext";
 import OriginalDataSources from "../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../static_datasets/prioritisationColumns";
@@ -40,9 +40,11 @@ import {
   getExportedPrioritisationColumns,
   createBlob,
   getFilteredColumnArray,
-} from "../utils/downloads";
-import config from "../../../config";
+} from "@ot/utils";
+
 import CopyUrlButton from "./CopyUrlButton";
+
+const config = getConfig();
 
 const { isPartnerPreview } = config.profile;
 
@@ -148,9 +150,11 @@ const actions = {
   }),
 };
 
+const DOWNLOAD_CHUNCK_SIZE = 300;
+
 function DataDownloader() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { version } = useConfigContext();
+  const { version } = useAPIMetadata();
   const classes = styles();
   const {
     id,
@@ -169,6 +173,7 @@ function DataDownloader() {
   const [onlyPinnedCheckBox, setOnlyPinnedCheckBox] = useState(false);
   const [weightControlCheckBox, setWeightControlCheckBox] = useState(modifiedSourcesDataControls);
   const [onlyTargetData, setOnlyTargetData] = useState(false);
+  const client = useApolloClient();
 
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -219,13 +224,21 @@ function DataDownloader() {
   const getOnlyPinnedData = useBatchDownloader(
     query,
     pinnedAssociationsVariable,
-    queryResponseSelector
+    queryResponseSelector,
+    client,
+    "rows",
+    "count",
+    DOWNLOAD_CHUNCK_SIZE
   );
 
   const getAllAssociations = useBatchDownloader(
     query,
     allAssociationsVariable,
-    queryResponseSelector
+    queryResponseSelector,
+    client,
+    "rows",
+    "count",
+    DOWNLOAD_CHUNCK_SIZE
   );
 
   const open = Boolean(anchorEl);

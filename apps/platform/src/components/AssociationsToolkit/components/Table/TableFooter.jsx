@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Alert, TablePagination, Typography } from "@mui/material";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableCell from "./TableCell";
-import { getLegend } from "../../utils";
+import { getLegend } from "../../associationsUtils";
 import { styled } from "@mui/styles";
 
 const TableFooterContainer = styled("div")({

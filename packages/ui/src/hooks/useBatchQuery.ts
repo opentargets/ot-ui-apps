@@ -1,15 +1,13 @@
 import _ from "lodash";
-
-import defaultClient from "../client";
-import { tableChunkSize } from "../constants";
 import { DocumentNode } from "@apollo/client";
+import { tableChunkSize } from "@ot/constants";
+import { useApolloClient } from "../providers/OTApolloProvider/OTApolloProvider";
 
 type useBatchQueryProps = {
   query: DocumentNode;
   variables: Record<string, unknown>;
   dataPath: string;
   size?: number;
-  client?: any;
   rowField?: string;
   countField?: string;
 };
@@ -32,11 +30,11 @@ function useBatchQuery({
   query,
   variables,
   dataPath,
-  client = defaultClient,
   size = tableChunkSize,
   rowField = "rows",
   countField = "count",
 }: useBatchQueryProps): () => Promise<Record<string, unknown>[]> {
+  const client = useApolloClient();
   const rowPath = `${dataPath}.${rowField}`;
   const countPath = `${dataPath}.${countField}`;
 

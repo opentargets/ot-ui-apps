@@ -57,6 +57,7 @@ function CredibleSetPage(): ReactElement {
           referenceAllele={referenceAllele}
           alternateAllele={alternateAllele}
           studyType={studyType}
+          loading={loading}
         />
       </>
     </BasePage>

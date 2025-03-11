@@ -7,8 +7,8 @@ import { definition } from ".";
 import Description from "./Description";
 import PATHWAYS_QUERY from "./Pathways.gql";
 
-import { identifiersOrgLink } from "../../utils/global";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { identifiersOrgLink } from "@ot/utils";
+import { defaultRowsPerPageOptions } from "@ot/constants";
 
 function getColumns(symbol) {
   return [

@@ -9,19 +9,16 @@ import {
 } from "ui";
 
 import PharmacogenomicsSummary from "sections/src/variant/Pharmacogenomics/Summary";
-import InSilicoPredictorsSummary from "sections/src/variant/InSilicoPredictors/Summary";
+import VariantEffectSummary from "sections/src/variant/VariantEffect/Summary";
 import VariantEffectPredictorSummary from "sections/src/variant/VariantEffectPredictor/Summary";
 import EVASummary from "sections/src/variant/EVA/Summary";
 import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
 import GWASCredibleSetsSummary from "sections/src/variant/GWASCredibleSets/Summary";
 import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
 
-import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 const PharmacogenomicsSection = lazy(() => import("sections/src/variant/Pharmacogenomics/Body"));
-const InSilicoPredictorsSection = lazy(
-  () => import("sections/src/variant/InSilicoPredictors/Body")
-);
+const VariantEffectSection = lazy(() => import("sections/src/variant/VariantEffect/Body"));
 const VariantEffectPredictorSection = lazy(
   () => import("sections/src/variant/VariantEffectPredictor/Body")
 );
@@ -32,7 +29,7 @@ const QTLCredibleSetsSection = lazy(() => import("sections/src/variant/QTLCredib
 
 const summaries = [
   PharmacogenomicsSummary,
-  InSilicoPredictorsSummary,
+  VariantEffectSummary,
   VariantEffectPredictorSummary,
   EVASummary,
   UniProtVariantsSummary,
@@ -64,12 +61,11 @@ function Profile({ varId }: ProfileProps) {
       entity={VARIANT}
       query={VARIANT_PROFILE_QUERY}
       variables={{ variantId: varId }}
-      client={client}
     >
       <ProfileHeader />
 
       <SummaryContainer>
-        <InSilicoPredictorsSummary />
+        <VariantEffectSummary />
         <VariantEffectPredictorSummary />
         <EVASummary />
         <UniProtVariantsSummary />
@@ -80,7 +76,7 @@ function Profile({ varId }: ProfileProps) {
 
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
-          <InSilicoPredictorsSection id={varId} entity={VARIANT} />
+          <VariantEffectSection id={varId} entity={VARIANT} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <VariantEffectPredictorSection id={varId} entity={VARIANT} />

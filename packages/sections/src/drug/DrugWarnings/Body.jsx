@@ -4,7 +4,7 @@ import { Link, SectionItem, Tooltip, TableDrawer, OtTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import DRUG_WARNINGS_QUERY from "./DrugWarningsQuery.gql";
-import { naLabel } from "../../constants";
+import { naLabel } from "@ot/constants";
 
 const replaceSemicolonWithUnderscore = id => id.replace(":", "_");
 

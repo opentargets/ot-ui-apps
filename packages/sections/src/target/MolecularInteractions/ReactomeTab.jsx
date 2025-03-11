@@ -1,16 +1,15 @@
-import { Link, Tooltip, DataTable, EllsWrapper } from "ui";
+import { Link, Tooltip, DataTable, EllsWrapper, useApolloClient } from "ui";
 import { useState, useEffect } from "react";
 import { Grid, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
-import client from "../../client";
 
 import { MethodIconText, MethodIconArrow, MethodIconExpandArrow } from "./custom/MethodIcons";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions } from "@ot/constants";
 
 import INTERACTIONS_QUERY from "./InteractionsQuery.gql";
 
-const getData = (query, ensgId, sourceDatabase, index, size) =>
+const getData = (query, ensgId, sourceDatabase, index, size, client) =>
   client.query({
     query,
     variables: {
@@ -203,10 +202,11 @@ function ReactomeTab({ ensgId, symbol }) {
   const [selectedIntB, setSelectedIntB] = useState("");
   const [loading, setLoading] = useState(false);
   const variables = { ensgId, sourceDatabase: id };
+  const client = useApolloClient();
   // load tab data when new tab selected (also on first load)
   useEffect(() => {
     setLoading(true);
-    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size, client).then(res => {
       if (res.data.target.interactions) {
         setLoading(false);
         setData(res.data.target.interactions.rows);

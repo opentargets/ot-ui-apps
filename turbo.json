@@ -1,6 +1,6 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["bundle-platform/**"]
@@ -9,6 +9,9 @@
       "outputs": []
     },
     "prettier:all": {
+      "outputs": []
+    },
+    "prettier:check": {
       "outputs": []
     },
     "dev": {

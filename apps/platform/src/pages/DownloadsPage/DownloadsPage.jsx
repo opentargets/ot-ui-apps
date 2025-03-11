@@ -5,13 +5,16 @@ import { makeStyles } from "@mui/styles";
 import { Link, OtTable } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAlignLeft } from "@fortawesome/free-solid-svg-icons";
+import { getConfig } from "@ot/config";
+import { formatMap } from "@ot/constants";
 
-import { formatMap } from "../../constants";
 import DownloadsDrawer from "./DownloadsDrawer";
 import datasetMappings from "./dataset-mappings.json";
-import config from "../../config";
+
 import DownloadsSchemaDrawer from "./DownloadsSchemaDrawer";
 import { v1 } from "uuid";
+
+const config = getConfig();
 
 const useStyles = makeStyles(theme => ({
   alert: {

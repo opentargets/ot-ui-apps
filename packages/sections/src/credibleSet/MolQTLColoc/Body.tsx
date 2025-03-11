@@ -8,11 +8,11 @@ import {
   useBatchQuery,
   Navigate,
 } from "ui";
-import { naLabel, initialResponse, table5HChunkSize } from "../../constants";
+import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import MOLQTL_COLOC_QUERY from "./MolQTLColocQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "../../utils/comparators";
+import { mantissaExponentComparator, variantComparator } from "@ot/utils";
 import { useEffect, useState } from "react";
 
 const columns = [
@@ -21,7 +21,7 @@ const columns = [
     label: "Navigate",
     renderCell: ({ otherStudyLocus }) => {
       if (!otherStudyLocus?.variant) return naLabel;
-      return <Navigate to={`./${otherStudyLocus.studyLocusId}`} />;
+      return <Navigate to={`/credible-set/${otherStudyLocus.studyLocusId}`} />;
     },
   },
   {
@@ -209,6 +209,7 @@ const columns = [
   {
     id: "clpp",
     label: "CLPP",
+    tooltip: "The sum of the products of the fine-mapping posterior probabilities for overlapping variants between two study loci",
     filterValue: false,
     numeric: true,
     comparator: (a, b) => a?.clpp - b?.clpp,

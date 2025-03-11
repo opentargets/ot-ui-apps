@@ -17,7 +17,6 @@ import PhenotypesSummary from "sections/src/disease/Phenotypes/Summary";
 import OTProjectsSummary from "sections/src/disease/OTProjects/Summary";
 import GWASStudiesSummary from "sections/src/disease/GWASStudies/Summary";
 
-import client from "../../client";
 import ProfileHeader from "./ProfileHeader";
 
 const OntologySection = lazy(() => import("sections/src/disease/Ontology/Body"));
@@ -63,7 +62,6 @@ function Profile({ efoId, name }) {
       variables={{
         efoId,
       }}
-      client={client}
     >
       <ProfileHeader />
       <SummaryContainer>
