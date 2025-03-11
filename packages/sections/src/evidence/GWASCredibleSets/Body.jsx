@@ -158,11 +158,9 @@ function getColumns(targetSymbol, targetId) {
       label: "L2G score",
       tooltip: (
         <>
-          Causal inference score - see{" "}
-          <Link
-            external
-            to="https://platform-docs.opentargets.org/evidence#open-targets-genetics-portal"
-          >
+          Machine learning prediction linking a gene to a credible set using all features. Score
+          range [0,1]. See{" "}
+          <Link external to="https://platform-docs.opentargets.org/gentropy/locus-to-gene-l2g">
             our documentation
           </Link>{" "}
           for more information.
@@ -177,15 +175,6 @@ function getColumns(targetSymbol, targetId) {
             targetId={targetId}
             studyLocusId={credibleSet?.studyLocusId}
           />
-        );
-        return (
-          <Tooltip title={score.toFixed(3)} style="">
-            <Box sx={{ display: "flex", flexDirection: "row", gap: 1, alignItems: "center" }}>
-              {score.toFixed(3)}
-              cee
-              <OtScoreLinearBar variant="determinate" value={score * 100} />
-            </Box>
-          </Tooltip>
         );
       },
     },

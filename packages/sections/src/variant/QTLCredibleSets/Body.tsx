@@ -34,8 +34,9 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
   return [
     {
       id: "studyLocusId",
-      label: "Navigate",
+      label: "Credible set",
       enableHiding: false,
+      sticky: true,
       renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
     },
     {

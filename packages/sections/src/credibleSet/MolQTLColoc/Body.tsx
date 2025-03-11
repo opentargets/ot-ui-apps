@@ -18,7 +18,8 @@ import { useEffect, useState } from "react";
 const columns = [
   {
     id: "otherStudyLocus.studyLocusId",
-    label: "Navigate",
+    label: "Credible set",
+    sticky: true,
     renderCell: ({ otherStudyLocus }) => {
       if (!otherStudyLocus?.variant) return naLabel;
       return <Navigate to={`/credible-set/${otherStudyLocus.studyLocusId}`} />;
@@ -209,7 +210,8 @@ const columns = [
   {
     id: "clpp",
     label: "CLPP",
-    tooltip: "The sum of the products of the fine-mapping posterior probabilities for overlapping variants between two study loci",
+    tooltip:
+      "The sum of the products of the fine-mapping posterior probabilities for overlapping variants between two study loci",
     filterValue: false,
     numeric: true,
     comparator: (a, b) => a?.clpp - b?.clpp,

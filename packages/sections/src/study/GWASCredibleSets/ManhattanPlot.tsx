@@ -203,19 +203,7 @@ function renderTooltip(datum) {
             )}
           </Box>
           <Box display="flex" alignItems="center" gap={0.5}>
-            Score:{" "}
-            {datum.l2GPredictions?.rows?.[0]?.score ? (
-              <Tooltip title={datum.l2GPredictions.rows[0].score.toFixed(3)} style="">
-                <div>
-                  <OtScoreLinearBar
-                    variant="determinate"
-                    value={datum.l2GPredictions.rows[0].score * 100}
-                  />
-                </div>
-              </Tooltip>
-            ) : (
-              naLabel
-            )}
+            Score: {datum.l2GPredictions?.rows?.[0]?.score?.toFixed(3) ?? naLabel}
           </Box>
         </Box>
       </ObsTooltipRow>

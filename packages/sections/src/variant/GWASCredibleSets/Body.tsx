@@ -6,7 +6,7 @@ import {
   OtTable,
   Tooltip,
   ClinvarStars,
-  OtScoreLinearBar,
+  L2GScoreIndicator,
   useBatchQuery,
   Navigate,
 } from "ui";
@@ -36,7 +36,8 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
   return [
     {
       id: "studyLocusId",
-      label: "Navigate",
+      label: "Credible set",
+      sticky: true,
       enableHiding: false,
       renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
     },
@@ -206,7 +207,15 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       id: "l2Gpredictions",
       label: "Top L2G",
       filterValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target?.approvedSymbol,
-      tooltip: "Top gene prioritised by our locus-to-gene model",
+      tooltip: (
+        <>
+          Top gene prioritised by our locus-to-gene model. See{" "}
+          <Link external to="https://platform-docs.opentargets.org/gentropy/locus-to-gene-l2g">
+            our documentation
+          </Link>{" "}
+          for more information.
+        </>
+      ),
       renderCell: ({ l2GPredictions }) => {
         if (!l2GPredictions?.rows[0]?.target) return naLabel;
         const { target } = l2GPredictions?.rows[0];
@@ -227,15 +236,20 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         false
       ),
       sortable: true,
-      tooltip:
-        "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
-      renderCell: ({ l2GPredictions }) => {
-        if (!l2GPredictions?.rows[0]?.score) return naLabel;
-        return (
-          <Tooltip title={l2GPredictions?.rows[0].score.toFixed(3)} style="">
-            <OtScoreLinearBar variant="determinate" value={l2GPredictions?.rows[0].score * 100} />
-          </Tooltip>
-        );
+      tooltip: (
+        <>
+          Machine learning prediction linking a gene to a credible set using all features. Score
+          range [0,1]. See{" "}
+          <Link external to="https://platform-docs.opentargets.org/gentropy/locus-to-gene-l2g">
+            our documentation
+          </Link>{" "}
+          for more information.
+        </>
+      ),
+      renderCell: ({ studyLocusId, l2GPredictions }) => {
+        const score = l2GPredictions?.rows[0]?.score;
+        if (!score) return naLabel;
+        return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} />;
       },
       exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
     },
