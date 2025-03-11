@@ -259,7 +259,7 @@ const FileExample = ({ entity = "target", runAction }) => {
 function DataUploader() {
   const [activeStep, setActiveStep] = useState(0);
   const [queryTermsResults, setQueryTermsResults] = useState(null);
-  const { entityToGet, pinnedEntries, setPinnedEntries } = useAotfContext();
+  const { entityToGet, setUploadedEntries, uploadedEntries } = useAotfContext();
   const [anchorEl, setAnchorEl] = useState(null);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const client = useApolloClient();
@@ -359,7 +359,7 @@ function DataUploader() {
         if (hit.checked) allHits.push(hit.id);
       }
     }
-    setPinnedEntries([...pinnedEntries, ...allHits]);
+    setUploadedEntries([...uploadedEntries, ...allHits]);
     handleClosePopover();
   };
 

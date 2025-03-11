@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useReactTable, getCoreRowModel, createColumnHelper } from "@tanstack/react-table";
 
 import { styled, Typography, Box, Collapse } from "@mui/material";
@@ -22,6 +22,9 @@ import {
   tableCSSVariables,
   TABLE_PREFIX,
 } from "../../associationsUtils";
+import { grey } from "@mui/material/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown, faCaretRight, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const TableElement = styled("main")({
   maxWidth: "1800px",
@@ -32,11 +35,46 @@ const TableSpacer = styled("div")({
   marginBottom: 5,
 });
 
-const TableDivider = styled("div")({
-  borderBottom: "1px solid #cecece",
-  marginBottom: 10,
-  marginTop: 5,
-});
+const TableIndicatorControl = ({
+  prefix = "",
+  open = true,
+  count = 0,
+  filteredCount = 0,
+  onClickToggle,
+  onClickDelete,
+}) => {
+  const label = prefix === TABLE_PREFIX.CORE ? "All" : `${prefix}`;
+  return (
+    <Box sx={{ display: "flex", my: 1, gap: 1, alignItems: "center" }}>
+      {prefix !== TABLE_PREFIX.CORE && (
+        <Box onClick={onClickDelete} sx={{ color: grey[600], cursor: "pointer" }}>
+          <FontAwesomeIcon size="sm" icon={faTrash} />
+        </Box>
+      )}
+      <Box
+        onClick={onClickToggle}
+        sx={{
+          ml: prefix === TABLE_PREFIX.CORE ? "20px" : 0,
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: grey[300],
+          width: "150px",
+          px: "6px",
+          borderRadius: "2px",
+        }}
+      >
+        <Typography variant="caption" sx={{ fontWeight: 600 }}>
+          {`${label} (${filteredCount} of ${count})`}
+        </Typography>
+        <Box ml={1}>
+          {open ? <FontAwesomeIcon icon={faCaretDown} /> : <FontAwesomeIcon icon={faCaretRight} />}
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 
 const columnHelper = createColumnHelper();
 
@@ -96,12 +134,20 @@ function TableAssociations() {
     handleSortingChange,
     pinnedData,
     pinnedLoading,
+    uploadedData,
+    uploadedLoading,
     pinnedEntries,
+    uploadedEntries,
+    setUploadedEntries,
+    setPinnedEntries,
   } = useAotfContext();
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const isAssociations = displayedTable === "associations";
   const associationsColorScale = getScale(true);
+  const [coreOpen, setCoreOpen] = useState(uploadedEntries.length > 0);
+  const [pinningOpen, setPinningOpen] = useState(true);
+  const [uploadedOpen, setUploadedOpen] = useState(true);
 
   const columns = useMemo(
     () => [
@@ -190,8 +236,55 @@ function TableAssociations() {
     manualSorting: true,
   });
 
-  const entitesHeaders = coreAssociationsTable.getHeaderGroups()[0].headers[1].subHeaders;
+  const coreUploadedTable = useReactTable({
+    data: uploadedData,
+    columns,
+    state: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 150,
+      },
+      sorting,
+      prefix: TABLE_PREFIX.UPLOADED,
+      loading: uploadedLoading,
+    },
+    pageCount: count,
+    onPaginationChange: handlePaginationChange,
+    onSortingChange: handleSortingChange,
+    getCoreRowModel: getCoreRowModel(),
+    getRowId: row => row[entityToGet].id,
+    manualPagination: true,
+    manualSorting: true,
+  });
 
+  useEffect(() => {
+    if (uploadedEntries.length > 0) {
+      setCoreOpen(false);
+      setUploadedOpen(true);
+    }
+    if (uploadedEntries.length === 0) {
+      setCoreOpen(true);
+    }
+  }, [uploadedEntries]);
+
+  const onClickPinnedIndicator = event => {
+    setPinningOpen(!pinningOpen);
+  };
+  const onClickUploadedIndicator = event => {
+    setUploadedOpen(!uploadedOpen);
+  };
+  const onClickCoreIndicator = event => {
+    setCoreOpen(!coreOpen);
+  };
+
+  const onClickPinnedDeleteAll = event => {
+    setPinnedEntries([]);
+  };
+  const onClickUploadedDeleteAll = event => {
+    setUploadedEntries([]);
+  };
+
+  const entitesHeaders = coreAssociationsTable.getHeaderGroups()[0].headers[1].subHeaders;
   return (
     <div className="TAssociations" style={tableCSSVariables}>
       <TableElement>
@@ -203,19 +296,63 @@ function TableAssociations() {
 
         <TableSpacer />
 
-        {/* BODY CONTENT */}
+        {/* Pinning */}
         {pinnedEntries.length > 0 && (
-          <TableBody core={corePinnedTable} prefix={TABLE_PREFIX.PINNING} cols={entitesHeaders} />
+          <TableIndicatorControl
+            prefix={TABLE_PREFIX.PINNING}
+            count={corePinnedTable.getRowCount()}
+            open={pinningOpen}
+            onClickToggle={onClickPinnedIndicator}
+            onClickDelete={onClickPinnedDeleteAll}
+          />
+        )}
+        {pinnedData.length > 0 && pinnedEntries.length > 0 && (
+          <Collapse in={pinningOpen}>
+            <TableBody core={corePinnedTable} prefix={TABLE_PREFIX.PINNING} cols={entitesHeaders} />
+          </Collapse>
+        )}
+        {/* Upload */}
+        {uploadedEntries.length > 0 && (
+          <TableIndicatorControl
+            prefix={TABLE_PREFIX.UPLOADED}
+            count={uploadedEntries.length}
+            filteredCount={coreUploadedTable.getRowCount()}
+            open={uploadedOpen}
+            onClickToggle={onClickUploadedIndicator}
+            onClickDelete={onClickUploadedDeleteAll}
+          />
+        )}
+        {coreUploadedTable.getRowCount() > 0 && uploadedEntries.length > 0 && (
+          <Collapse in={uploadedOpen}>
+            <TableBody
+              core={coreUploadedTable}
+              prefix={TABLE_PREFIX.UPLOADED}
+              cols={entitesHeaders}
+            />
+          </Collapse>
+        )}
+        {/* Core */}
+        {(coreUploadedTable.getRowCount() > 0 || corePinnedTable.getRowCount() > 0) && (
+          <TableIndicatorControl
+            prefix={TABLE_PREFIX.CORE}
+            count={count}
+            open={coreOpen}
+            onClickToggle={onClickCoreIndicator}
+          />
         )}
 
-        {pinnedEntries.length > 0 && <TableDivider />}
-
-        <TableBody core={coreAssociationsTable} prefix={TABLE_PREFIX.CORE} cols={entitesHeaders} />
-        {/* <Collapse in={pinnedEntries.length === 0}>
-        </Collapse> */}
+        <Collapse in={coreOpen} appear>
+          {coreOpen && (
+            <TableBody
+              core={coreAssociationsTable}
+              prefix={TABLE_PREFIX.CORE}
+              cols={entitesHeaders}
+            />
+          )}
+        </Collapse>
 
         {/* FOOTER */}
-        <TableFooter table={coreAssociationsTable} />
+        <TableFooter table={coreAssociationsTable} coreOpen={coreOpen} />
       </TableElement>
     </div>
   );

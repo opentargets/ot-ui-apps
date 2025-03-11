@@ -14,9 +14,10 @@ const TableFooterContainer = styled("div")({
   display: "flex",
   justifyContent: "space-between",
   zIndex: 100,
+  marginTop: 12,
 });
 
-function TableFooter({ table }) {
+function TableFooter({ table, coreOpen }) {
   const {
     count,
     loading,
@@ -74,30 +75,32 @@ function TableFooter({ table }) {
             </button>
           </Alert>
         )}
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50, 200, 500]}
-          component="div"
-          count={count}
-          rowsPerPage={table.getState().pagination.pageSize}
-          page={pagination.pageIndex}
-          labelRowsPerPage="Associations per page"
-          backIconButtonProps={{
-            disableFocusRipple: true,
-          }}
-          nextIconButtonProps={{
-            disableFocusRipple: true,
-          }}
-          onPageChange={(e, index) => {
-            if (!loading) {
-              table.setPageIndex(index);
-            }
-          }}
-          onRowsPerPageChange={e => {
-            if (!loading) {
-              table.setPageSize(Number(e.target.value));
-            }
-          }}
-        />
+        {coreOpen && (
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50, 200, 500]}
+            component="div"
+            count={count}
+            rowsPerPage={table.getState().pagination.pageSize}
+            page={pagination.pageIndex}
+            labelRowsPerPage="Associations per page"
+            backIconButtonProps={{
+              disableFocusRipple: true,
+            }}
+            nextIconButtonProps={{
+              disableFocusRipple: true,
+            }}
+            onPageChange={(e, index) => {
+              if (!loading) {
+                table.setPageIndex(index);
+              }
+            }}
+            onRowsPerPageChange={e => {
+              if (!loading) {
+                table.setPageSize(Number(e.target.value));
+              }
+            }}
+          />
+        )}
       </div>
     </TableFooterContainer>
   );

@@ -63,6 +63,13 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     str => str.split(",")
   );
 
+  const [uploadedEntries, setUploadedEntries] = useStateParams(
+    [],
+    "uploaded",
+    arr => arr.join(","),
+    str => str.split(",")
+  );
+
   const entityToGet = rowEntity[entity];
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
@@ -99,6 +106,29 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       rowsFilter: pinnedEntries.toSorted(),
       facetFilters: state.facetFiltersIds,
       entitySearch: state.entitySearch,
+      laodingCount: pinnedEntries.length,
+    },
+  });
+
+  const {
+    data: uploadedData,
+    loading: uploadedLoading,
+    error: uploadedError,
+    count: uploadedCount,
+  } = useAssociationsData({
+    client,
+    query,
+    options: {
+      id,
+      enableIndirect,
+      entity,
+      size: uploadedEntries.length,
+      sortBy: sorting[0].id,
+      datasources: state.dataSourceControls,
+      rowsFilter: uploadedEntries.toSorted(),
+      facetFilters: state.facetFiltersIds,
+      entitySearch: state.entitySearch,
+      laodingCount: uploadedEntries.length,
     },
   });
 
@@ -185,8 +215,15 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       updateDataSourceControls,
       facetFilterSelect,
       state,
+      setUploadedEntries,
+      uploadedData,
+      uploadedLoading,
+      uploadedError,
+      uploadedCount,
+      uploadedEntries,
     }),
     [
+      setUploadedEntries,
       dispatch,
       activeHeadersControlls,
       count,
@@ -211,6 +248,11 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       setPinnedEntries,
       sorting,
       handlePaginationChange,
+      uploadedData,
+      uploadedLoading,
+      uploadedError,
+      uploadedCount,
+      uploadedEntries,
     ]
   );
 

@@ -1,6 +1,7 @@
-import { styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { LoadingBackdrop } from "ui";
+import { TABLE_PREFIX } from "../associationsUtils";
 
 const LoadingContainer = styled("div")({
   height: "1100px",
@@ -38,12 +39,25 @@ export const GridContainer = styled("div", {
   gridTemplateColumns: `repeat(${columnsCount}, 1fr)`,
 }));
 
-export const TableBodyContent = styled("div")({
-  display: "flex",
-  flexDirection: "column",
-  margin: "0",
-  minHeight: "300px",
-});
+// export const TableBodyContent = styled("div")({
+//   display: "flex",
+//   flexDirection: "column",
+//   margin: "0",
+//   minHeight: "300px",
+// });
+
+export const TableBodyContent = ({ children, prefix }) => (
+  <Box
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+      margin: 0,
+      minHeight: TABLE_PREFIX.CORE === prefix ? "300px" : "0",
+    }}
+  >
+    {children}
+  </Box>
+);
 
 export const RowsContainer = styled("div")({
   display: "flex",
