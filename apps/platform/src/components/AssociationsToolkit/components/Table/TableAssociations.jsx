@@ -293,7 +293,7 @@ function TableAssociations() {
     if (pinnedData.length === 0 && uploadedData.length === 0) {
       setCoreOpen(true);
     }
-  }, [pinnedEntries, uploadedEntries]);
+  }, [pinnedData, uploadedData]);
 
   const onClickPinnedIndicator = () => {
     setPinningOpen(!pinningOpen);
