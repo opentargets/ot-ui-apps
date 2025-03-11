@@ -40,7 +40,7 @@ function Header({
       id: "GWAS Catalog",
       url: `https://www.ebi.ac.uk/gwas/studies/${studyId}`,
     };
-  } else if (projectId === "FINNGEN_R11") {
+  } else if (projectId?.startsWith("FINNGEN")) {
     if (diseases?.length) {
       traitLinks = (
         <XRefLinks
@@ -53,7 +53,7 @@ function Header({
     }
     sourceLink = {
       id: "FinnGen",
-      url: `https://r10.finngen.fi/pheno/${studyId}`,
+      url: `https://r12.finngen.fi/pheno/${studyId.slice(12)}`, // remove FINNGEN_R12_ from start
     };
   } else if (projectId === "UKB_PPP_EUR") {
     if (diseases?.length) {
