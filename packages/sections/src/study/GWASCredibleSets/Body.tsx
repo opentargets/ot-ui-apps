@@ -5,7 +5,7 @@ import {
   DisplayVariantId,
   Tooltip,
   ClinvarStars,
-  OtScoreLinearBar,
+  L2GScoreIndicator,
   OtTable,
   useBatchQuery,
   Navigate,
@@ -28,8 +28,9 @@ import { ReactElement, useEffect, useState } from "react";
 const columns = [
   {
     id: "studyLocusId",
-    label: "Navigate",
+    label: "Credible set",
     enableHiding: false,
+    sticky: true,
     renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
   },
   {
@@ -135,16 +136,20 @@ const columns = [
       false
     ),
     sortable: true,
-    tooltip:
-      "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
-    renderCell: ({ l2GPredictions }) => {
+    tooltip: (
+      <>
+        Machine learning prediction linking a gene to a credible set using all features. Score range
+        [0,1]. See{" "}
+        <Link external to="https://platform-docs.opentargets.org/gentropy/locus-to-gene-l2g">
+          our documentation
+        </Link>{" "}
+        for more information.
+      </>
+    ),
+    renderCell: ({ studyLocusId, l2GPredictions }) => {
       const score = l2GPredictions?.rows[0]?.score;
-      if (typeof score !== "number") return naLabel;
-      return (
-        <Tooltip title={score.toFixed(3)} style="">
-          <OtScoreLinearBar variant="determinate" value={score * 100} />
-        </Tooltip>
-      );
+      if (!score) return naLabel;
+      return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} />;
     },
     exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
   },
