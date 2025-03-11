@@ -290,6 +290,16 @@ function TableAssociations() {
     }
   }, [uploadedEntries]);
 
+  useEffect(() => {
+    // if (uploadedEntries.length > 0) {
+    //   setCoreOpen(false);
+    //   setUploadedOpen(true);
+    // }
+    if (pinnedEntries.length === 0 && uploadedEntries.length === 0) {
+      setCoreOpen(true);
+    }
+  }, [pinnedEntries]);
+
   const onClickPinnedIndicator = event => {
     setPinningOpen(!pinningOpen);
   };
@@ -302,6 +312,7 @@ function TableAssociations() {
 
   const onClickPinnedDeleteAll = event => {
     setPinnedEntries([]);
+    // if (!coreOpen) setCoreOpen(true);
   };
   const onClickUploadedDeleteAll = event => {
     setUploadedEntries([]);
@@ -365,15 +376,15 @@ function TableAssociations() {
           />
         )}
 
-        <Collapse in={coreOpen} appear>
-          {coreOpen && (
-            <TableBody
-              core={coreAssociationsTable}
-              prefix={TABLE_PREFIX.CORE}
-              cols={entitesHeaders}
-            />
-          )}
-        </Collapse>
+        {/* <Collapse in={coreOpen} appear> */}
+        {coreOpen && (
+          <TableBody
+            core={coreAssociationsTable}
+            prefix={TABLE_PREFIX.CORE}
+            cols={entitesHeaders}
+          />
+        )}
+        {/* </Collapse> */}
 
         {/* FOOTER */}
         <TableFooter table={coreAssociationsTable} coreOpen={coreOpen} />
