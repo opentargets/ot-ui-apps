@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { hsl } from "d3";
-import { ObsPlot, DataDownloader, Link, Tooltip } from "../../index";
+import { hsl, scaleLinear } from "d3";
+import { ObsPlot, DataDownloader, Link } from "../../index";
 import { Box, Typography, Popover, Dialog } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -158,7 +158,15 @@ function HeatCell({ value, bgrd, groupName, mouseLeaveRow, waterfallRow, waterfa
     filteredWaterfallRow.features = filteredWaterfallRow.features.filter(d => {
       return featureToGroup[d.name] === groupName;
     });
-    const { row, xDomain } = computeWaterfall(filteredWaterfallRow, waterfallXDomain, true);
+    let { row, xDomain } = computeWaterfall(filteredWaterfallRow, waterfallXDomain, true);
+    if (xDomain.some(Number.isNaN)) {
+      // all Shapley values are zero
+      const fullExtent = waterfallXDomain[1] - waterfallXDomain[0];
+      xDomain = scaleLinear()
+        .domain([-fullExtent / 8, fullExtent / 8])
+        .nice()
+        .domain();
+    }
     const plotWidth =
       waterfallMargins.left +
       waterfallMargins.right +
