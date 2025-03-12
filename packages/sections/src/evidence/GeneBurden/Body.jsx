@@ -40,6 +40,9 @@ const getSourceLink = (project, targetId, urls) => {
   if (project === "Genebass")
     return `https://app.genebass.org/gene/${targetId}?burdenSet=pLoF&phewasOpts=1&resultLayout=full`;
   if (project === "AstraZeneca PheWAS Portal") return urls[0].url;
+  if (project === "Autism Sequencing Consortium") return `https://asc.broadinstitute.org/gene/${targetId}`;
+  if (project === "AMP-PD") return `https://amp-pd.org/`;
+  if (project === "FinnGen") return `https://r12.finngen.fi/gene/{targetFromSourceId}`;
   return "";
 };
 
