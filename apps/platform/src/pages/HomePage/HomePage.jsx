@@ -197,10 +197,10 @@ function HomePage() {
       </Helmet>
       <Grid container justifyContent="center" alignItems="center" className={classes.hpSection}>
         <Splash />
-        <NavBar name="platform" homepage items={mainMenuItems} placement="bottom-end" />
-        <HomeBox>
+        {/* <NavBar name="platform" homepage items={mainMenuItems} placement="bottom-end" /> */}
+        {/* <HomeBox>
           <GlobalSearch isHomePage />
-          {/* Search examples */}
+          {/* Search examples 
           <Grid
             className={classes.links}
             container
@@ -282,10 +282,10 @@ function HomePage() {
           <div>
             <Version releaseNotesURL={releaseNotesURL} />
           </div>
-        </HomeBox>
+        </HomeBox> */}
 
         {/* scroll down button */}
-        <Grid container justifyContent="center">
+        {/* <Grid container justifyContent="center">
           <div
             className="fa-layers fa-fw fa-3x"
             style={{
@@ -299,7 +299,7 @@ function HomePage() {
             <FontAwesomeIcon icon={faCircle} inverse />
             <FontAwesomeIcon icon={faChevronDown} transform="shrink-4" />
           </div>
-        </Grid>
+        </Grid> */}
       </Grid>
 
       {/* About */}
