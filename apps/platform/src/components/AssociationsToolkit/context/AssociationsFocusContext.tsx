@@ -320,7 +320,7 @@ function handleSetFocusSection(focusState: FocusState, action: FocusAction): Foc
     }
 
     // Keep elements from different tables unchanged
-    return [element];
+    return [];
   });
 }
 

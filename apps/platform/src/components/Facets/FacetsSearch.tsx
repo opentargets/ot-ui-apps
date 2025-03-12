@@ -99,9 +99,15 @@ function FacetsSearch(): ReactElement {
     else dispatch(setFacetsData([]));
   }, [debouncedInputValue]);
 
+  // useEffect(() => {
+  //   getFacetsQueryData();
+  // }, []);
+
   useEffect(() => {
     dispatch(resetFacets(entityToGet));
   }, [id]);
+
+  // console.log({ d: state.dataOptions });
 
   return (
     <Box>
@@ -140,13 +146,14 @@ function FacetsSearch(): ReactElement {
               PopperComponent={FacetsPopper}
               id="facets-search-input"
               multiple
-              // freeSolo
+              freeSolo
               includeInputInList
               filterSelectedOptions
               options={state.dataOptions}
-              // value={inputSelectedOptions}
+              value={inputSelectedOptions}
               loading={state.loading}
               size="small"
+              isOptionEqualToValue={() => false}
               limitTags={2}
               filterOptions={x => x}
               getOptionLabel={option => option?.label}
@@ -155,9 +162,9 @@ function FacetsSearch(): ReactElement {
                 facetFilterSelect([...facetFilters, ...newValue]);
                 setInputValue("");
               }}
-              // onInputChange={(event, newInputValue) => {
-              //   setInputValue(newInputValue);
-              // }}
+              onInputChange={(event, newInputValue) => {
+                setInputValue(newInputValue);
+              }}
               renderInput={params => (
                 <TextField {...params} label={`Search ${entityToGet} filter`} fullWidth />
               )}
