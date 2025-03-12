@@ -140,24 +140,24 @@ function FacetsSearch(): ReactElement {
               PopperComponent={FacetsPopper}
               id="facets-search-input"
               multiple
-              freeSolo
+              // freeSolo
               includeInputInList
               filterSelectedOptions
               options={state.dataOptions}
-              value={inputSelectedOptions}
+              // value={inputSelectedOptions}
               loading={state.loading}
               size="small"
               limitTags={2}
+              filterOptions={x => x}
+              getOptionLabel={option => option?.label}
               onChange={(event, newValue) => {
                 dispatch(selectFacet([...facetFilters, ...newValue]));
                 facetFilterSelect([...facetFilters, ...newValue]);
                 setInputValue("");
               }}
-              filterOptions={x => x}
-              getOptionLabel={option => option?.label}
-              onInputChange={(event, newInputValue) => {
-                setInputValue(newInputValue);
-              }}
+              // onInputChange={(event, newInputValue) => {
+              //   setInputValue(newInputValue);
+              // }}
               renderInput={params => (
                 <TextField {...params} label={`Search ${entityToGet} filter`} fullWidth />
               )}
