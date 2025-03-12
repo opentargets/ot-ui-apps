@@ -57,13 +57,15 @@ function SectionItem({
   const [selectedView, setSelectedView] = useState(defaultView);
   const [showDelayLoadingMessage, setShowDelayLoadingMessage] = useState(false);
 
-  useEffect(() => {
-    const delayLoaderTimer = setTimeout(() => setShowDelayLoadingMessage(true), 5000);
+  // TODO: refactor to avoid re-renders
 
-    return () => {
-      clearTimeout(delayLoaderTimer);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const delayLoaderTimer = setTimeout(() => setShowDelayLoadingMessage(true), 5000);
+
+  //   return () => {
+  //     clearTimeout(delayLoaderTimer);
+  //   };
+  // }, []);
 
   if (data && entity && data[entity]) {
     hasData = definition.hasData(data[entity]);
