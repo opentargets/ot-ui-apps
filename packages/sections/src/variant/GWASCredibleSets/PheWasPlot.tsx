@@ -1,17 +1,16 @@
 import { Fragment } from "react";
 import * as PlotLib from "@observablehq/plot";
 import { Box, Chip, Skeleton, Typography, useTheme } from "@mui/material";
-import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import {
   ClinvarStars,
   Tooltip,
   Link,
   DisplayVariantId,
-  OtScoreLinearBar,
   ObsPlot,
   ObsTooltipTable,
   ObsTooltipRow,
+  Navigate,
   ScientificNotation,
   DataDownloader,
 } from "ui";
@@ -320,10 +319,10 @@ function renderTooltip(datum) {
 
   return (
     <ObsTooltipTable>
-      <ObsTooltipRow label="Navigate">
-        <Link to={`/credible-set/${datum.studyLocusId}`}>
-          <FontAwesomeIcon icon={faArrowRightToBracket} />
-        </Link>
+      <ObsTooltipRow label="Credible set">
+        <Box display="flex">
+          <Navigate to={`/credible-set/${datum.studyLocusId}`} />
+        </Box>
       </ObsTooltipRow>
       <ObsTooltipRow label="Lead variant">
         {datum.variant.id === datum._pageId ? (
