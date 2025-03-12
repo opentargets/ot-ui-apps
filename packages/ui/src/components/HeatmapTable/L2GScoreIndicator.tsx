@@ -9,7 +9,7 @@ import { v1 } from "uuid";
 import HeatmapTable from "./HeatmapTable";
 
 const PopoverContent = styled("div")({
-  width: "750px",
+  minWidth: "750px",
 });
 
 function L2GScoreIndicator({ score, targetId, studyLocusId }) {
@@ -40,12 +40,13 @@ function L2GScoreIndicator({ score, targetId, studyLocusId }) {
   return (
     <>
       <Box
-        sx={{ display: "flex", gap: 1, cursor: "pointer" }}
+        sx={{ display: "flex", justifyContent: "end", gap: 1, cursor: "pointer" }}
         aria-describedby={id}
         onClick={handleClick}
       >
-        <Typography variant="body2">{score.toFixed(3)}</Typography>
-
+        <Typography variant="body2" sx={{ fontVariantNumeric: "tabular-nums" }}>
+          {score.toFixed(3)}
+        </Typography>
         <Box sx={{ height: 1, maxHeight: "45px" }} aria-label="Advanced options">
           {open ? <FontAwesomeIcon icon={faCaretUp} /> : <FontAwesomeIcon icon={faCaretDown} />}
         </Box>
@@ -59,10 +60,14 @@ function L2GScoreIndicator({ score, targetId, studyLocusId }) {
         elevation={1}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "rigth",
+          horizontal: "right",
         }}
         transformOrigin={{
-          horizontal: "left",
+          vertical: "top",
+          horizontal: "right",
+        }}
+        sx={{
+          mt: 0.4,
         }}
       >
         {loading && (
@@ -79,7 +84,6 @@ function L2GScoreIndicator({ score, targetId, studyLocusId }) {
               query={L2G_QUERY.loc.source.body}
               variables={variables}
               disabledExport
-              disabledLegend
             />
           </PopoverContent>
         )}
