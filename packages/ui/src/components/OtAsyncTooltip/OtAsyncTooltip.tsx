@@ -10,10 +10,15 @@ import {
   TooltipProps,
 } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
-import { getEntityIcon, getEntityQuery, getQueryVariables } from "./utils/asyncTooltipUtil";
+import {
+  getEntityDescription,
+  getEntityIcon,
+  getEntityQuery,
+  getQueryVariables,
+} from "./utils/asyncTooltipUtil";
 import { naLabel } from "@ot/constants";
 
-import { getStudyItemMetaData } from "@ot/utils";
+import StudyPublication from "../StudyPublication";
 
 const DELAY_REQUEST = 1000;
 
@@ -56,8 +61,10 @@ function OtAsyncTooltip({ children, entity, id }: OtAsyncTooltipProps): ReactEle
   });
 
   function getTooltipContent() {
+    let entityAccessor = entity;
     if (loading || !data) return <AsyncTooltipLoadingView />;
-    return <AsyncTooltipDataView entity={entity} data={data?.[entity]} />;
+    if (entity === "credible-set") entityAccessor = "credibleSet";
+    return <AsyncTooltipDataView entity={entity} data={data?.[entityAccessor]} />;
   }
 
   function abortApiCall() {
@@ -119,41 +126,33 @@ function AsyncTooltipDataView({
   entity: string;
   data: Record<string, unknown>;
 }): ReactElement {
-  function getLabel() {
-    return data?.name || data?.id || naLabel;
-  }
-
-  function getDescription() {
-    let descText = "";
-
-    if (Array.isArray(data.description) && data.description.length)
-      descText = data?.description[0].substring(0, 150);
-    else if (Array.isArray(data.description) && !data.description.length) descText = "";
-    else if (data.description) descText = data?.description.substring(0, 150);
-
-    // study subtext
-    descText += getStudyItemMetaData({
-      studyType: data?.studyType,
-      nSamples: data?.nSamples,
-      credibleSetsCount: data?.credibleSets?.credibleSetsCount,
-    });
-
-    if (!descText) return "No description available.";
-
-    return descText;
-  }
+  const showSubText = !!data?.mostSevereConsequence?.label || data?.publicationFirstAuthor;
 
   function getSubtext() {
-    let finalSubText = "";
+    let finalSubText;
 
+    // variant subtext
     const mostSevereConsequence = data?.mostSevereConsequence?.label;
+    if (mostSevereConsequence) finalSubText = `Most severe consequence: ${mostSevereConsequence}`;
 
-    if (mostSevereConsequence) finalSubText += `Most severe consequence: ${mostSevereConsequence}`;
+    // study subtext
+    const publicationData = data?.publicationFirstAuthor;
+    if (publicationData)
+      finalSubText = (
+        <StudyPublication
+          publicationDate={data?.publicationDate}
+          publicationFirstAuthor={data?.publicationFirstAuthor}
+          publicationJournal={data?.publicationJournal}
+        />
+      );
 
     return finalSubText;
   }
 
-  const showSubText = !!data?.mostSevereConsequence?.label;
+  function getLabel() {
+    if (entity === "credible-set") return "Credible set";
+    return data?.name || data?.id || naLabel;
+  }
 
   return (
     <Box sx={{ p: 1 }}>
@@ -184,7 +183,7 @@ function AsyncTooltipDataView({
             {getLabel()}
           </Box>{" "}
           <Box sx={{ typography: "body2", color: theme => theme.palette.grey[800] }}>
-            {getDescription()}
+            {getEntityDescription(entity, data)}
           </Box>
         </Box>
       </Box>

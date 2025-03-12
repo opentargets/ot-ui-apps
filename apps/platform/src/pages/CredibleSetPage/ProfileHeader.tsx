@@ -17,6 +17,7 @@ import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 import { epmcUrl, getSortedAncestries } from "@ot/utils";
 import { credsetConfidenceMap, populationMap } from "@ot/constants";
+import StudyPublication from "ui/src/components/StudyPublication";
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
@@ -248,8 +249,11 @@ function ProfileHeader() {
         )}
         {study?.publicationFirstAuthor && (
           <Field loading={loading} title="Publication">
-            {study?.publicationFirstAuthor} <i>et al.</i> {study?.publicationJournal} (
-            {study?.publicationDate?.slice(0, 4)})
+            <StudyPublication
+              publicationFirstAuthor={study.publicationFirstAuthor}
+              publicationDate={study.publicationDate}
+              publicationJournal={study.publicationJournal}
+            />
           </Field>
         )}
         {study?.pubmedId && (

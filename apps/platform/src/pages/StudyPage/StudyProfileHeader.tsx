@@ -15,6 +15,7 @@ import { populationMap } from "@ot/constants";
 import { getSortedAncestries, getStudyTypeDisplay } from "@ot/utils";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
+import StudyPublication from "ui/src/components/StudyPublication";
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
@@ -106,8 +107,11 @@ function ProfileHeader() {
         )}
         {publicationFirstAuthor && (
           <Field loading={loading} title="Publication">
-            {publicationFirstAuthor} <i>et al.</i> {publicationJournal} (
-            {publicationDate?.slice(0, 4)})
+            <StudyPublication
+              publicationFirstAuthor={publicationFirstAuthor}
+              publicationDate={publicationDate}
+              publicationJournal={publicationJournal}
+            />
           </Field>
         )}
         {pubmedId && (
