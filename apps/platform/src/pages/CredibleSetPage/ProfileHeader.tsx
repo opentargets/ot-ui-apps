@@ -12,12 +12,12 @@ import {
   DetailPopover,
   SummaryStatsTable,
   DisplaySampleSize,
+  StudyPublication,
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 import { epmcUrl, getSortedAncestries } from "@ot/utils";
 import { credsetConfidenceMap, populationMap } from "@ot/constants";
-import StudyPublication from "ui/src/components/StudyPublication";
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();

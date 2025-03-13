@@ -1,10 +1,9 @@
-import { makeStyles, useTheme } from "@mui/styles";
+import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
-import { Highlights, Link } from "ui";
+import { Highlights, Link, StudyPublication } from "ui";
 import { Box, Typography } from "@mui/material";
 import { getStudyItemMetaData } from "@ot/utils";
-import StudyPublication from "ui/src/components/StudyPublication";
 
 const useStyles = makeStyles(theme => ({
   container: {

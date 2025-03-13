@@ -9,13 +9,13 @@ import {
   LabelChip,
   DisplaySampleSize,
   PublicationsDrawer,
+  StudyPublication,
 } from "ui";
 import { Box } from "@mui/material";
 import { populationMap } from "@ot/constants";
 import { getSortedAncestries, getStudyTypeDisplay } from "@ot/utils";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
-import StudyPublication from "ui/src/components/StudyPublication";
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
