@@ -48,6 +48,7 @@ export { default as OtScoreLinearBar } from "./components/OtScoreLinearBar";
 export { default as OtTableSSP } from "./components/OtTable/OtTableSSP";
 export { default as EntityPanel } from "./components/EntityPanel/EntityPanel";
 export { default as Page } from "./pages/Page";
+export { default as StudyPublication } from "./components/StudyPublication";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Footer";

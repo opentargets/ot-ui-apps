@@ -1,0 +1,12 @@
+query CredibleSetsTooltipQuery($studyLocusId: String!) {
+  credibleSet(studyLocusId: $studyLocusId) {
+    id: studyLocusId
+    variant {
+      id
+    }
+    study {
+      id
+      studyType
+    }
+  }
+}

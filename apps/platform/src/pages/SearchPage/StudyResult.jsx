@@ -1,7 +1,7 @@
-import { makeStyles, useTheme } from "@mui/styles";
+import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
-import { Highlights, Link } from "ui";
+import { Highlights, Link, StudyPublication } from "ui";
 import { Box, Typography } from "@mui/material";
 import { getStudyItemMetaData } from "@ot/utils";
 
@@ -20,7 +20,6 @@ const useStyles = makeStyles(theme => ({
 
 function StudyResult({ data, highlights }) {
   const classes = useStyles();
-  const theme = useTheme();
 
   return (
     <div className={classes.container}>
@@ -42,12 +41,11 @@ function StudyResult({ data, highlights }) {
             <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
               <div>
                 {" "}
-                {data.publicationFirstAuthor && (
-                  <>
-                    {data.publicationFirstAuthor} <i>et al.</i> {data.publicationJournal} (
-                    {data.publicationDate?.slice(0, 4)})
-                  </>
-                )}
+                <StudyPublication
+                  publicationFirstAuthor={data.publicationFirstAuthor}
+                  publicationDate={data.publicationDate}
+                  publicationJournal={data.publicationJournal}
+                />
               </div>
             </Box>
             <div>

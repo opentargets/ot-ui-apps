@@ -229,7 +229,6 @@ function SearchContainer({ q, page, entities, data, onPageChange, onSetEntity })
           md={6}
           sx={{
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
           }}
         >
