@@ -168,7 +168,7 @@ function TableAssociations() {
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const isAssociations = displayedTable === "associations";
   const associationsColorScale = getScale(true);
-  const [coreOpen, setCoreOpen] = useState(uploadedEntries.length > 0);
+  const [coreOpen, setCoreOpen] = useState(true);
   const [pinningOpen, setPinningOpen] = useState(true);
   const [uploadedOpen, setUploadedOpen] = useState(true);
 
@@ -361,7 +361,7 @@ function TableAssociations() {
           </Collapse>
         )}
         {/* Core */}
-        {(coreUploadedTable.getRowCount() > 0 || corePinnedTable.getRowCount() > 0) && (
+        {(uploadedEntries.length > 0 || pinnedEntries.length > 0) && (
           <TableIndicatorControl
             prefix={TABLE_PREFIX.CORE}
             count={count}
@@ -370,7 +370,6 @@ function TableAssociations() {
           />
         )}
 
-        {/* <Collapse in={coreOpen} appear> */}
         {coreOpen && (
           <TableBody
             core={coreAssociationsTable}
@@ -378,7 +377,6 @@ function TableAssociations() {
             cols={entitesHeaders}
           />
         )}
-        {/* </Collapse> */}
 
         {/* FOOTER */}
         <TableFooter table={coreAssociationsTable} coreOpen={coreOpen} />
