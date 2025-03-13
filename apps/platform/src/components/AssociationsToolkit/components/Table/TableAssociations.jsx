@@ -361,7 +361,7 @@ function TableAssociations() {
           </Collapse>
         )}
         {/* Core */}
-        {(coreUploadedTable.getRowCount() > 0 || corePinnedTable.getRowCount() > 0) && (
+        {(uploadedEntries.length > 0 || pinnedEntries.length > 0) && (
           <TableIndicatorControl
             prefix={TABLE_PREFIX.CORE}
             count={count}
