@@ -14,6 +14,7 @@ function Description({
   alternateAllele,
   targetFromSourceId,
 }: DescriptionProps) {
+  if (!targetFromSourceId) return;
   return (
     <>
       Literature-based curation associating{" "}
