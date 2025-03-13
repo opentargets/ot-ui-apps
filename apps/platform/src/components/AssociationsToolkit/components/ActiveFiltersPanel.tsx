@@ -4,12 +4,15 @@ import useAotfContext from "../hooks/useAotfContext";
 import { Facet } from "../../Facets/facetsTypes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowDownWideShort,
   faCircleXmark,
   faFileImport,
   faGear,
   faThumbtack,
 } from "@fortawesome/free-solid-svg-icons";
+
 import { setEntitySearch } from "../context/aotfActions";
+import dataSources from "../static_datasets/dataSourcesAssoc";
 
 function removeFacet(items: Facet[], idToRemove: string): Facet[] {
   return items.filter(item => item.id !== idToRemove);
@@ -53,14 +56,27 @@ function ActiveFiltersPanel() {
     dispatch,
     modifiedSourcesDataControls,
     resetDatasourceControls,
+    sorting,
+    resetSorting,
   } = useAotfContext();
 
   const somePinned = pinnedEntries.length > 0;
   const someUploaded = uploadedEntries.length > 0;
   const someFacetFilters = facetFilters.length > 0;
+  const tableSorted = sorting[0].id !== "score";
+  const modifiedEntitySearch = entitySearch !== "";
 
-  const showActiveFilter =
-    someFacetFilters || somePinned || someUploaded || modifiedSourcesDataControls || entitySearch;
+  const filterCategories = [
+    someFacetFilters,
+    somePinned,
+    someUploaded,
+    tableSorted,
+    modifiedSourcesDataControls,
+    modifiedEntitySearch,
+  ];
+
+  const showActiveFilter = filterCategories.some(x => x === true);
+  const multipleFiltersOn = filterCategories.filter(x => x === true).length > 1;
 
   const onDelete = (id: string) => {
     const newState = removeFacet(facetFilters, id);
@@ -73,6 +89,7 @@ function ActiveFiltersPanel() {
     if (entitySearch) dispatch(setEntitySearch(""));
     if (modifiedSourcesDataControls) resetDatasourceControls();
     if (facetFilters.length > 0) facetFilterSelect([]);
+    if (tableSorted) resetSorting();
   };
 
   return (
@@ -86,10 +103,53 @@ function ActiveFiltersPanel() {
         mb: 2,
       }}
     >
-      {showActiveFilter && (
-        <Typography sx={{ fontWeight: "500" }} variant="body2">
-          Active filters:
-        </Typography>
+      {entitySearch && (
+        <FilterChip
+          tootltipContent="Name entity"
+          label={`"${entitySearch}"`}
+          onDelete={() => {
+            dispatch(setEntitySearch(""));
+          }}
+        />
+      )}
+      {facetFilters.map((facet: Facet) => (
+        <FilterChip
+          key={facet.id}
+          tootltipContent={facet.label}
+          label={facet.label}
+          onDelete={() => {
+            onDelete(facet.id);
+          }}
+        />
+      ))}
+      {modifiedSourcesDataControls && (
+        <FilterChip
+          tootltipContent="Reset Datasource controls"
+          maxWidth={300}
+          onDelete={() => {
+            resetDatasourceControls();
+          }}
+          label={
+            <Box sx={{ gap: 1 }}>
+              <FontAwesomeIcon icon={faGear} /> Column options
+            </Box>
+          }
+        />
+      )}
+      {tableSorted && (
+        <FilterChip
+          maxWidth={300}
+          tootltipContent="Reset sorting"
+          onDelete={() => {
+            resetSorting();
+          }}
+          label={
+            <Box sx={{ gap: 1 }}>
+              <FontAwesomeIcon icon={faArrowDownWideShort} />{" "}
+              {dataSources.find(d => d.id === sorting[0].id)?.label}
+            </Box>
+          }
+        />
       )}
       {somePinned && (
         <FilterChip
@@ -117,39 +177,7 @@ function ActiveFiltersPanel() {
           }
         />
       )}
-      {entitySearch && (
-        <FilterChip
-          tootltipContent="Name entity"
-          label={`"${entitySearch}"`}
-          onDelete={() => {
-            dispatch(setEntitySearch(""));
-          }}
-        />
-      )}
-      {modifiedSourcesDataControls && (
-        <FilterChip
-          tootltipContent="Reset Datasource controls"
-          maxWidth={300}
-          onDelete={() => {
-            resetDatasourceControls();
-          }}
-          label={
-            <Box sx={{ gap: 1 }}>
-              <FontAwesomeIcon icon={faGear} /> Column options
-            </Box>
-          }
-        />
-      )}
-      {facetFilters.map((facet: Facet) => (
-        <FilterChip
-          key={facet.id}
-          tootltipContent={facet.label}
-          label={facet.label}
-          onDelete={() => {
-            onDelete(facet.id);
-          }}
-        />
-      ))}
+
       {showActiveFilter && (
         <Tooltip title="Reset all filters" placement="bottom">
           <Box>
@@ -172,7 +200,7 @@ function ActiveFiltersPanel() {
               onClick={setAllFilters}
             >
               <Typography sx={{ fontSize: "0.8125rem" }} variant="body2">
-                Reset
+                Clear {multipleFiltersOn ? "all" : ""}
               </Typography>
             </Box>
           </Box>

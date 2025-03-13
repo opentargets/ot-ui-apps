@@ -151,6 +151,10 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     [state]
   );
 
+  const resetSorting = useCallback(() => {
+    setSorting(DEFAULT_TABLE_SORTING_STATE);
+  }, [setSorting]);
+
   const handleSortingChange = useCallback(
     newSortingFunc => {
       const newSorting = newSortingFunc();
@@ -222,6 +226,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       uploadedError,
       uploadedCount,
       uploadedEntries,
+      resetSorting,
     }),
     [
       setUploadedEntries,
@@ -254,6 +259,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       uploadedError,
       uploadedCount,
       uploadedEntries,
+      resetSorting,
     ]
   );
 

@@ -57,7 +57,6 @@ function FacetsSearch(): ReactElement {
   const [state, dispatch] = useReducer(facetsReducer, entityToGet, createInitialState);
 
   const client = useApolloClient();
-  const inputSelectedOptions = [];
 
   function setFacetsCategory(category: string) {
     dispatch(setLoading(true));
@@ -101,34 +100,22 @@ function FacetsSearch(): ReactElement {
     else dispatch(setFacetsData([]));
   }, [debouncedInputValue]);
 
-  // useEffect(() => {
-  //   getFacetsQueryData();
-  // }, []);
-
   useEffect(() => {
     dispatch(resetFacets(entityToGet));
   }, [id]);
-
-  // console.log({ d: state.dataOptions });
 
   const handleOptionSelect = (event, newValue) => {
     if (newValue) {
       // Check if the option is already selected to prevent duplicates
       if (!facetFilters.some(option => option.id === newValue.id)) {
-        // setSelectedOptions([...selectedOptions, newValue]);
-        dispatch(selectFacet([...facetFilters, newValue]));
-        facetFilterSelect([...facetFilters, newValue]);
+        dispatch(selectFacet([newValue, ...facetFilters]));
+        facetFilterSelect([newValue, ...facetFilters]);
       }
-
-      // Clear both the value and inputValue
+      // Clear both the value and
       setValue(null);
       setInputValue("");
-
       // Force-close the dropdown after selection
       setOptionsOpen(false);
-
-      // facetFilterSelect(newValue);
-      // setInputValue("");
     }
   };
 
