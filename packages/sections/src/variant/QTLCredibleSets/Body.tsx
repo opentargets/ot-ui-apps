@@ -103,12 +103,15 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "study.target.approvedSymbol",
       label: "Affected gene",
-      renderCell: ({ study }) => {
+      renderCell: ({ study, isTransQtl }) => {
         if (!study?.target) return naLabel;
         return (
-          <Link asyncTooltip to={`/target/${study.target.id}`}>
-            {study.target.approvedSymbol}
-          </Link>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Link asyncTooltip to={`/target/${study.target.id}`}>
+              {study.target.approvedSymbol}
+            </Link>
+            {isTransQtl && <Chip label="isTrans" variant="outlined" size="small" />}
+          </Box>
         );
       },
     },
