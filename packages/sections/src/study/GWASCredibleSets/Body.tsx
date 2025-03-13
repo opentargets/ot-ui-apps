@@ -156,8 +156,9 @@ const columns = [
     ),
     renderCell: ({ studyLocusId, l2GPredictions }) => {
       const score = l2GPredictions?.rows[0]?.score;
+      const target = l2GPredictions?.rows[0]?.target;
       if (!score) return naLabel;
-      return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} />;
+      return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} targetId={target.id} />;
     },
     exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
   },
