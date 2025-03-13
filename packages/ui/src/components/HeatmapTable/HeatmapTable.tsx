@@ -424,8 +424,6 @@ function HeatmapTable({
     { id: "shapBaseValue", label: "base" },
   ];
 
-  console.log({ groupResults });
-
   return (
     <>
       {filterProvied && (
