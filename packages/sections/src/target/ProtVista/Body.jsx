@@ -144,7 +144,7 @@ function AtomInfoPanel({ atom, selectedStructure, entity }) {
           {atom.chain} | {atom.resn} {atom.resi}
         </Typography>
         {isAlphaFold(selectedStructure.id) && (
-          <Typography variant="caption">
+          <Typography variant="caption" textAlign="right">
             Confidence: {atom.b} ({getConfidence(atom)})
           </Typography>
         )}
