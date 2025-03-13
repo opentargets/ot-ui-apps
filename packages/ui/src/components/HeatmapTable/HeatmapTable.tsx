@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { hsl, scaleLinear } from "d3";
 import { ObsPlot, DataDownloader, Link } from "../../index";
 import { Box, Typography, Popover, Dialog, Checkbox, FormControlLabel } from "@mui/material";
@@ -122,7 +122,7 @@ function HeaderCell({ value, textAlign }) {
       <Typography variant="subtitle2" textAlign={textAlign}>
         {value}{" "}
         {value == "Score" && (
-          <span style={{ color: grey[800] }}>
+          <span style={{ color: grey[500] }}>
             <FontAwesomeIcon size="sm" icon={faArrowDownWideShort} />
           </span>
         )}
@@ -441,7 +441,8 @@ function HeatmapTable({
             }
             label={
               <Typography variant="body2">
-                {groupResults.length === 1 ? "Showing" : "Show"} prioritised targets in credible set
+                {groupResults.length === 1 ? "Showing" : "Show"} all prioritised targets in credible
+                set
               </Typography>
             }
           />
