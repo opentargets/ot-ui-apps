@@ -25,9 +25,11 @@ function Description({
         />
       </strong>{" "}
       to a disease/phenotype. Source:{" "}
-      <Link external to={identifiersOrgLink("uniprot", targetFromSourceId)}>
-        UniProt ({targetFromSourceId})
-      </Link>
+      {targetFromSourceId && (
+        <Link external to={identifiersOrgLink("uniprot", targetFromSourceId)}>
+          UniProt ({targetFromSourceId})
+        </Link>
+      )}
     </>
   );
 }

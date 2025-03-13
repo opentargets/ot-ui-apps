@@ -51,6 +51,8 @@ function FacetsSearch(): ReactElement {
     state: { facetFilters },
   } = useAotfContext();
   const [inputValue, setInputValue] = useState("");
+  const [value, setValue] = useState(null);
+  const [optionsOpen, setOptionsOpen] = useState(false);
   const debouncedInputValue = useDebounce(inputValue, 200);
   const [state, dispatch] = useReducer(facetsReducer, entityToGet, createInitialState);
 
@@ -109,6 +111,27 @@ function FacetsSearch(): ReactElement {
 
   // console.log({ d: state.dataOptions });
 
+  const handleOptionSelect = (event, newValue) => {
+    if (newValue) {
+      // Check if the option is already selected to prevent duplicates
+      if (!facetFilters.some(option => option.id === newValue.id)) {
+        // setSelectedOptions([...selectedOptions, newValue]);
+        dispatch(selectFacet([...facetFilters, newValue]));
+        facetFilterSelect([...facetFilters, newValue]);
+      }
+
+      // Clear both the value and inputValue
+      setValue(null);
+      setInputValue("");
+
+      // Force-close the dropdown after selection
+      setOptionsOpen(false);
+
+      // facetFilterSelect(newValue);
+      // setInputValue("");
+    }
+  };
+
   return (
     <Box>
       <FilterButton
@@ -143,28 +166,24 @@ function FacetsSearch(): ReactElement {
           <Divider flexItem sx={{ my: 1 }} />
           <Box sx={{ display: "flex" }}>
             <FacetsAutocomplete
-              PopperComponent={FacetsPopper}
               id="facets-search-input"
-              multiple
-              freeSolo
-              includeInputInList
-              filterSelectedOptions
-              options={state.dataOptions}
-              value={inputSelectedOptions}
-              loading={state.loading}
               size="small"
-              isOptionEqualToValue={() => false}
-              limitTags={2}
+              noOptionsText="Type to search..."
+              value={value}
+              open={optionsOpen}
+              inputValue={inputValue}
+              loading={state.loading}
+              options={state.dataOptions}
               filterOptions={x => x}
               getOptionLabel={option => option?.label}
-              onChange={(event, newValue) => {
-                dispatch(selectFacet([...facetFilters, ...newValue]));
-                facetFilterSelect([...facetFilters, ...newValue]);
-                setInputValue("");
-              }}
+              isOptionEqualToValue={(option, value) => option.id === value?.id}
+              onOpen={() => setOptionsOpen(true)}
+              onClose={() => setOptionsOpen(false)}
+              onChange={handleOptionSelect}
               onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
               }}
+              PopperComponent={FacetsPopper}
               renderInput={params => (
                 <TextField {...params} label={`Search ${entityToGet} filter`} fullWidth />
               )}
