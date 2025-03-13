@@ -6,6 +6,10 @@ query PharmacogenomicsQuery($variantId: String!) {
     pharmacogenomics {
       genotypeId
       isDirectTarget
+      target {
+        id
+        approvedSymbol
+      }
       drugs {
         drugFromSource
         drugId

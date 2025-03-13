@@ -1,10 +1,18 @@
-import { usePlatformApi, ProfileHeader as BaseProfileHeader, ProfileChipList } from "ui";
+import {
+  usePlatformApi,
+  ProfileHeader as BaseProfileHeader,
+  ProfileChipList,
+  Field,
+  Tooltip,
+} from "ui";
 import { useTheme } from "@mui/styles";
 import TargetDescription from "./TargetDescription";
 
 import { clearDescriptionCodes } from "@ot/utils";
 
 import TARGET_PROFILE_HEADER_FRAGMENT from "./TargetProfileHeader.gql";
+import { Box } from "@mui/material";
+import { getGenomicLocation } from "@ot/constants";
 
 /*
  * Target synonyms from the API have a "label" and a "source"
@@ -51,6 +59,7 @@ const parseSynonyms = synonyms => {
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
+
   const theme = useTheme();
 
   // TODO: Errors!
@@ -80,7 +89,57 @@ function ProfileHeader() {
           descriptions={targetDescription}
           targetId={data?.target.id}
         />
-        <ProfileChipList>{geneInfo.filter(gi => gi.isVisible)}</ProfileChipList>
+        {data?.target.genomicLocation && (
+          <Box sx={{ mt: 1, typography: "body2" }} component="span">
+            <Tooltip title="build | chromosome:start-end,strand">
+              <Box
+                component="span"
+                sx={{
+                  whiteSpace: "nowrap",
+                  background: theme => theme.palette.grey[600],
+                  border: theme => `1px solid ${theme.palette.grey[600]}`,
+                  p: "1px 5px",
+                  color: "white",
+                  borderRadius: "5px 0 0 5px",
+                }}
+              >
+                {/* TODO: check UI and add it to getGenomicLocation function */}
+                GRCh38
+              </Box>
+              <Box
+                component="span"
+                sx={{
+                  whiteSpace: "nowrap",
+                  p: "1px 5px",
+                  color: theme => theme.palette.grey[600],
+                  border: theme => `1px solid ${theme.palette.grey[600]}`,
+                  borderRadius: "0 5px 5px 0",
+                }}
+              >
+                {getGenomicLocation(data?.target.genomicLocation)}
+              </Box>
+            </Tooltip>
+          </Box>
+        )}
+        {geneInfo
+          .filter(gi => gi.isVisible)
+          .map(e => (
+            <Box
+              key={e.label}
+              sx={{
+                whiteSpace: "nowrap",
+                p: "1px 5px",
+                color: theme => theme.palette.grey[600],
+                border: theme => `1px solid ${theme.palette.grey[600]}`,
+                borderRadius: "5px",
+                width: "min-content",
+                mt: 1,
+                typography: "body2",
+              }}
+            >
+              <Tooltip title={e.tooltip}>{e.label}</Tooltip>
+            </Box>
+          ))}
       </>
       <ProfileChipList title="Synonyms" loading={loading}>
         {synonyms}

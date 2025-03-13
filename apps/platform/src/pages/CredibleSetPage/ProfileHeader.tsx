@@ -12,10 +12,11 @@ import {
   DetailPopover,
   SummaryStatsTable,
   DisplaySampleSize,
+  StudyPublication,
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
-import { epmcUrl } from "@ot/utils";
+import { epmcUrl, getSortedAncestries } from "@ot/utils";
 import { credsetConfidenceMap, populationMap } from "@ot/constants";
 
 function ProfileHeader() {
@@ -139,7 +140,7 @@ function ProfileHeader() {
           loading={loading}
           title={
             <Tooltip
-              title="Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method"
+              title="Fine-mapping confidence based on the quality of the linkage-disequilibrium information available and fine-mapping method"
               showHelpIcon
             >
               Confidence
@@ -248,8 +249,11 @@ function ProfileHeader() {
         )}
         {study?.publicationFirstAuthor && (
           <Field loading={loading} title="Publication">
-            {study?.publicationFirstAuthor} <i>et al.</i> {study?.publicationJournal} (
-            {study?.publicationDate?.slice(0, 4)})
+            <StudyPublication
+              publicationFirstAuthor={study.publicationFirstAuthor}
+              publicationDate={study.publicationDate}
+              publicationJournal={study.publicationJournal}
+            />
           </Field>
         )}
         {study?.pubmedId && (
@@ -284,14 +288,16 @@ function ProfileHeader() {
         )}
         {study?.ldPopulationStructure?.length > 0 && (
           <Box display="flex" sx={{ gap: 1 }}>
-            {study.ldPopulationStructure.map(({ ldPopulation, relativeSampleSize }) => (
-              <LabelChip
-                key={ldPopulation}
-                label={ldPopulation.toUpperCase()}
-                value={`${(relativeSampleSize * 100).toFixed(0)}%`}
-                tooltip={`LD reference population: ${populationMap[ldPopulation]}`}
-              />
-            ))}
+            {getSortedAncestries({ arr: study.ldPopulationStructure }).map(
+              ({ ldPopulation, relativeSampleSize }) => (
+                <LabelChip
+                  key={ldPopulation}
+                  label={ldPopulation.toUpperCase()}
+                  value={`${(relativeSampleSize * 100).toFixed(0)}%`}
+                  tooltip={`LD reference population: ${populationMap[ldPopulation]}`}
+                />
+              )
+            )}
           </Box>
         )}
       </Box>

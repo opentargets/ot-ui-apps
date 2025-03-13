@@ -10,6 +10,7 @@ export const getEnvironmentConfig = (env: Environment): Config => {
       efoURL: "/data/ontology/efo_json/diseases_efo.jsonl",
       downloadsURL: "/data/downloads.json",
       geneticsPortalUrl: "https://genetics.opentargets.org",
+      gitVersion: "",
     },
     production: {
       urlApi: "https://api.platform.opentargets.org",
@@ -19,6 +20,7 @@ export const getEnvironmentConfig = (env: Environment): Config => {
       efoURL: "/data/ontology/efo_json/diseases_efo.jsonl",
       downloadsURL: "/data/downloads.json",
       geneticsPortalUrl: "https://genetics.opentargets.org",
+      gitVersion: "",
     },
   };
 
@@ -28,11 +30,13 @@ export const getEnvironmentConfig = (env: Environment): Config => {
 // Vite environment variables
 const ENV_API_URL: string | undefined = import.meta.env.VITE_API_URL;
 const ENV_AI_API_URL: string | undefined = import.meta.env.VITE_AI_API_URL;
+const ENV_GIT_VERSION: string | undefined = import.meta.env.VITE_GIT_VERSION;
 
 export const getConfig = (): Config => {
   return {
     urlApi: window.configUrlApi ?? ENV_API_URL ?? "",
     urlAiApi: window.configOTAiApi ?? ENV_AI_API_URL ?? "",
+    gitVersion: window.gitVersion ?? ENV_GIT_VERSION ?? "",
     profile: window.configProfile ?? {},
     googleTagManagerID: window.configGoogleTagManagerID ?? null,
     efoURL: window.configEFOURL ?? "/data/ontology/efo_json/diseases_efo.jsonl",

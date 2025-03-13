@@ -12,7 +12,7 @@ function Description({ studyId }: DescriptionProps) {
         GWAS Catalog
       </Link>
       ,{" "}
-      <Link external to="https://r10.finngen.fi">
+      <Link external to="https://r12.finngen.fi">
         FinnGen
       </Link>
       .

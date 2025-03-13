@@ -9,7 +9,8 @@ import { mantissaExponentComparator, variantComparator } from "@ot/utils";
 const columns = [
   {
     id: "studyLocusId",
-    label: "Navigate",
+    label: "Credible set",
+    sticky: true,
     renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
   },
   {

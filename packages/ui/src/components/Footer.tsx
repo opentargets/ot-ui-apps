@@ -7,6 +7,7 @@ import Link from "./Link";
 import { EmailLink } from "./EmailLink";
 
 import PrivateWrapper from "./PrivateWrapper";
+import { useConfigContext } from "../providers/ConfigurationProvider";
 
 const FOOTER_BACKGROUND_COLOR = "#2e2d35";
 
@@ -196,6 +197,15 @@ const LicenseCC0 = ({ link }: LicenseCC0Props) => {
   );
 };
 
+const UIVersion = () => {
+  const { config } = useConfigContext();
+  return (
+    <Typography color="inherit" variant="caption">
+      <b>{config?.gitVersion}</b>
+    </Typography>
+  );
+};
+
 export type FooterExternalLinks = {
   about: FooterExternalLink[];
   help: FooterExternalLink[];
@@ -214,6 +224,7 @@ const Footer = ({ externalLinks }: FooterProps) => {
       <Grid item container xs={12} md={10} spacing={2}>
         <FooterSection heading="About" links={externalLinks.about}>
           <LicenseCC0 link={externalLinks.license} />
+          <UIVersion />
         </FooterSection>
         <FooterSection heading="Help" links={externalLinks.help} social={externalLinks.social} />
         <FooterSection heading="Partners" links={externalLinks.partners} />

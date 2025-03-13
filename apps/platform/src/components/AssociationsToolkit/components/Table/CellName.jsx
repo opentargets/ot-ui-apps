@@ -29,6 +29,7 @@ import {
   FocusActionType,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
+import { PrivateWrapper } from "ui";
 
 const StyledMenuItem = styled(MenuItem)({
   "&>.MuiListItemIcon-root>svg": {
@@ -197,7 +198,7 @@ function CellName({ cell, colorScale }) {
   const interactorsLabel = isPartnerPreview ? "Target interactors (beta)" : "Target interactors";
 
   if (loading)
-    return <Skeleton width={loadingWidth} height={35} sx={{ marginLeft: loadingMargin }} />;
+    return <Skeleton width={loadingWidth} height={20} sx={{ marginLeft: loadingMargin }} />;
 
   return (
     <NameContainer>
@@ -267,20 +268,27 @@ function CellName({ cell, colorScale }) {
               <ListItemText>Unpin {entityToGet}</ListItemText>
             </StyledMenuItem>
           )}
-          {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && <Divider />}
-          {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && (
-            <StyledMenuItem
-              disabled={!isPartnerPreview}
-              onClick={() => {
-                handleClickInteractors();
-              }}
-            >
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faBezierCurve} />
-              </ListItemIcon>
-              <ListItemText>{interactorsLabel}</ListItemText>
-            </StyledMenuItem>
-          )}
+          <PrivateWrapper>
+            <>
+              {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && (
+                <Divider />
+              )}
+
+              {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && (
+                <StyledMenuItem
+                  disabled={!isPartnerPreview}
+                  onClick={() => {
+                    handleClickInteractors();
+                  }}
+                >
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faBezierCurve} />
+                  </ListItemIcon>
+                  <ListItemText>{interactorsLabel}</ListItemText>
+                </StyledMenuItem>
+              )}
+            </>
+          </PrivateWrapper>
 
           <Divider />
           <StyledMenuItem onClick={handleNavigateToEvidence}>

@@ -10,6 +10,7 @@ import {
   Tooltip,
   Navigate,
   DisplayVariantId,
+  L2GScoreIndicator,
 } from "ui";
 import { variantComparator, mantissaExponentComparator } from "@ot/utils";
 
@@ -17,12 +18,14 @@ import { dataTypesMap, naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } fr
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";
+import { Box } from "@mui/material";
 
-function getColumns(targetSymbol) {
+function getColumns(targetSymbol, targetId) {
   return [
     {
       id: "credibleSet",
-      label: "Navigate",
+      label: "Credible set",
+      sticky: true,
       renderCell: ({ credibleSet }) => {
         return <Navigate to={`/credible-set/${credibleSet?.studyLocusId}`} />;
       },
@@ -132,7 +135,7 @@ function getColumns(targetSymbol) {
       label: "Fine-mapping confidence",
       sortable: true,
       tooltip:
-        "Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method",
+        "Fine-mapping confidence based on the quality of the linkage-disequilibrium information available and fine-mapping method",
       renderCell: ({ credibleSet }) => {
         if (!credibleSet?.confidence) return naLabel;
         return (
@@ -155,23 +158,23 @@ function getColumns(targetSymbol) {
       label: "L2G score",
       tooltip: (
         <>
-          Causal inference score - see{" "}
-          <Link
-            external
-            to="https://platform-docs.opentargets.org/evidence#open-targets-genetics-portal"
-          >
+          Machine learning prediction linking a gene to a credible set using all features. Score
+          range [0,1]. See{" "}
+          <Link external to="https://platform-docs.opentargets.org/gentropy/locus-to-gene-l2g">
             our documentation
           </Link>{" "}
           for more information.
         </>
       ),
       sortable: true,
-      renderCell: ({ score }) => {
+      renderCell: ({ score, credibleSet }) => {
         if (!score) return naLabel;
         return (
-          <Tooltip title={score.toFixed(3)} style="">
-            <OtScoreLinearBar variant="determinate" value={score * 100} />
-          </Tooltip>
+          <L2GScoreIndicator
+            score={score}
+            targetId={targetId}
+            studyLocusId={credibleSet?.studyLocusId}
+          />
         );
       },
     },
@@ -203,7 +206,7 @@ function Body({ id, label, entity }) {
   const { ensgId, efoId } = id;
   const variables = { ensemblId: ensgId, efoId, size: sectionsBaseSizeQuery };
 
-  const columns = getColumns(label.symbol);
+  const columns = getColumns(label.symbol, ensgId);
 
   const request = useQuery(GWAS_CREDIBLE_SETS_QUERY, {
     variables,

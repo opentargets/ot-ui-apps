@@ -30,7 +30,7 @@ const getColumns = (critVal, maxLlr, classes) => [
     renderCell: d =>
       d.meddraCode ? (
         <Link to={`https://identifiers.org/meddra:${d.meddraCode}`} external>
-          <Typography variant="caption" noWrap display="block" title={_.upperFirst(d.name)}>
+          <Typography variant="body2" noWrap display="block" title={_.upperFirst(d.name)}>
             {_.upperFirst(d.name)}
           </Typography>
         </Link>

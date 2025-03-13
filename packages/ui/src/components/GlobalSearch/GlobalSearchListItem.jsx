@@ -7,6 +7,7 @@ import { faXmark, faClockRotateLeft, faArrowTrendUp } from "@fortawesome/free-so
 import { clearRecentItem } from "./utils/searchUtils";
 import DisplayVariantId from "../DisplayVariantId";
 import { getStudyItemMetaData } from "@ot/utils";
+import StudyPublication from "../StudyPublication";
 
 const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
@@ -215,12 +216,11 @@ function TopHitListItem({ item, onItemClick }) {
               <Typography variant="subtitle1">
                 {item.symbol && item.name}
 
-                {item.publicationFirstAuthor && (
-                  <>
-                    {item.publicationFirstAuthor} <i>et al.</i> {item.publicationJournal} (
-                    {item.publicationDate?.slice(0, 4)})
-                  </>
-                )}
+                <StudyPublication
+                  publicationFirstAuthor={item.publicationFirstAuthor}
+                  publicationDate={item.publicationDate}
+                  publicationJournal={item.publicationJournal}
+                />
               </Typography>
             </Box>
             <JustifyBetween>

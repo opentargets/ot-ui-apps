@@ -1,4 +1,5 @@
-[![CI Platform](https://github.com/opentargets/ot-ui-apps/actions/workflows/ci-platform.yml/badge.svg)](https://github.com/opentargets/ot-ui-apps/actions/workflows/ci-platform.yml)
+[![CI](https://github.com/opentargets/ot-ui-apps/actions/workflows/ci.yaml/badge.svg)](https://github.com/opentargets/ot-ui-apps/actions/workflows/ci.yaml)
+[![Development build](https://github.com/opentargets/ot-ui-apps/actions/workflows/publish.yaml/badge.svg)](https://github.com/opentargets/ot-ui-apps/actions/workflows/publish.yaml)
 
 # Open Targets Apps
 

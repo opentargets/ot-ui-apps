@@ -41,6 +41,7 @@ function useRowInteractors({
     entity,
     diseaseId,
     sortBy,
+    entitySearch = "",
   },
 }) {
   const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
@@ -89,6 +90,7 @@ function useRowInteractors({
           sortBy,
           enableIndirect,
           rowsFilter: interactorsIds,
+          entitySearch: entitySearch,
           datasources: datasources.map(el => ({
             id: el.id,
             weight: el.weight,
