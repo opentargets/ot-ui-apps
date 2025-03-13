@@ -89,15 +89,20 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "study.studyType",
       label: "Type",
-      renderCell: ({ study }) => {
+      renderCell: ({ study, isTransQtl }) => {
         const type = study?.studyType;
         if (!type) return naLabel;
-        return `${type.slice(0, -3)}${type.slice(-3).toUpperCase()}`;
+        return (
+          <>
+            {`${type.slice(0, -3)}${type.slice(-3).toUpperCase()}`}{" "}
+            {isTransQtl && <Chip label="trans" variant="outlined" size="small" />}
+          </>
+        );
       },
-      exportValue: ({ study }) => {
+      exportValue: ({ study, isTrans }) => {
         const type = study?.studyType;
         if (!type) return null;
-        return `${type.slice(0, -3)}${type.slice(-3).toUpperCase()}`;
+        return `${type.slice(0, -3)}${type.slice(-3).toUpperCase()}, isTrans:${isTrans}`;
       },
     },
     {
@@ -106,9 +111,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       renderCell: ({ study }) => {
         if (!study?.target) return naLabel;
         return (
-          <Link asyncTooltip to={`/target/${study.target.id}`}>
-            {study.target.approvedSymbol}
-          </Link>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Link asyncTooltip to={`/target/${study.target.id}`}>
+              {study.target.approvedSymbol}
+            </Link>
+          </Box>
         );
       },
     },

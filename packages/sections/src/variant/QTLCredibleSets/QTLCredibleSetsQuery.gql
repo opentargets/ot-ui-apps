@@ -15,7 +15,7 @@ query QTLCredibleSetsQuery($variantId: String!, $size: Int!, $index: Int!) {
         beta
         finemappingMethod
         confidence
-
+        isTransQtl
         variant {
           id
           chromosome
