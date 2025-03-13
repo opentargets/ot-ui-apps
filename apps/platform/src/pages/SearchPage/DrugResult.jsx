@@ -22,7 +22,7 @@ function DrugResult({ data, highlights }) {
   const classes = useStyles();
   return (
     <div className={classes.container}>
-      <Link to={`drug/${data.id}`} className={classes.subtitle}>
+      <Link to={`/drug/${data.id}`} className={classes.subtitle}>
         <FontAwesomeIcon icon={faPrescriptionBottleAlt} className={classes.icon} /> {data.name}
       </Link>
       {data.description && (
