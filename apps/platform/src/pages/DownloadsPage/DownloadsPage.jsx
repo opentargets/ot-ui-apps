@@ -1,19 +1,8 @@
-import { Fragment, useState, useEffect } from "react";
-// import { gql, useQuery } from "@apollo/client";
 import { Paper, Box, Chip, Typography, Alert, AlertTitle } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link, OtTable } from "ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAlignLeft } from "@fortawesome/free-solid-svg-icons";
 import { getConfig } from "@ot/config";
-import { formatMap } from "@ot/constants";
-
-import DownloadsDrawer from "./DownloadsDrawer";
 import datasetMappings from "./dataset-mappings.json";
-import newDownloadsData from "./new-downloads-data.json";
-// import config from "../../config";
-
-import DownloadsSchemaDrawer from "./DownloadsSchemaDrawer";
 import { v1 } from "uuid";
 
 const config = getConfig();
@@ -24,96 +13,27 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-// function getFormats(id, downloadData) {
-//   const formats = [];
-
-//   downloadData.forEach(data => {
-//     if (id === data.id) {
-//       formats.push({
-//         format: data.resource.format,
-//         path: data.resource.path,
-//       });
-//     }
-//   });
-
-//   return formats;
-// }
-
-// function getSerialisedSchema(id, downloadData) {
-//   let schemaObject;
-//   downloadData.forEach(data => {
-//     if (id === data.id) schemaObject = JSON.parse(data.serialisedSchema);
-//   });
-//   return schemaObject;
-// }
-
-// function getRows(downloadData, allDatasetMappings) {
-//   const rows = [];
-
-//   allDatasetMappings.forEach(mapping => {
-//     if (mapping.include_in_fe) {
-//       rows.push({
-//         niceName: mapping.nice_name,
-//         description: mapping.description,
-//         formats: getFormats(mapping.id, downloadData),
-//         serialisedSchema: getSerialisedSchema(mapping.id, downloadData),
-//       });
-//     }
-//   });
-
-//   return rows;
-// }
-
-// function getColumns(date) {
-//   const columns = [
-//     { id: "niceName", label: "Dataset" },
-//     { id: "description", label: "Description" },
-//     {
-//       id: "formats",
-//       label: "Format(s)",
-//       renderCell: ({ niceName, formats }) =>
-//         formats
-//           .sort((a, b) => {
-//             if (a.format > b.format) return 1;
-//             return -1;
-//           })
-//           .map(format => (
-//             <Fragment key={format.format + format.path + date.month + date.year + v1()}>
-//               <DownloadsDrawer
-//                 title={niceName}
-//                 format={format.format}
-//                 path={format.path}
-//                 month={date.month}
-//                 year={date.year}
-//               >
-//                 <Chip label={formatMap[format.format]} clickable size="small" />
-//               </DownloadsDrawer>{" "}
-//             </Fragment>
-//           )),
-//     },
-//     {
-//       id: "schemas",
-//       label: "Schema",
-//       renderCell: ({ niceName, serialisedSchema }) => (
-//         <DownloadsSchemaDrawer title={niceName} serialisedSchema={serialisedSchema}>
-//           <Chip clickable size="small" label={<FontAwesomeIcon icon={faAlignLeft} />} />
-//         </DownloadsSchemaDrawer>
-//       ),
-//     },
-//   ];
-//   return columns;
-// }
-
-function getNewColumns() {
+function getColumn(locationUrl) {
   const columns = [
     { id: "name", label: "Name" },
     {
       id: "containedIn",
       label: "Contained In",
-      renderCell: ({ containedIn }) =>
-        containedIn.map(e => (
-          <Chip sx={{ mr: 1 }} key={v1()} label={e["@id"]} clickable size="small" />
-        )),
+      renderCell: ({ containedIn, includes }) => {
+        const columnId = includes.split("/")[0];
+
+        return containedIn.map(e => (
+          <Chip
+            sx={{ mr: 1 }}
+            key={v1()}
+            component="a"
+            label={e["@id"]}
+            clickable
+            size="small"
+            href={`${locationUrl[e["@id"]]}${columnId}`}
+          />
+        ));
+      },
     },
     { id: "encodingFormat", label: "Format" },
     { id: "description", label: "Description" },
@@ -121,73 +41,39 @@ function getNewColumns() {
   return columns;
 }
 
-// const DATA_VERSION_QUERY = gql`
-//   query DataVersion {
-//     meta {
-//       dataVersion {
-//         month
-//         year
-//       }
-//     }
-//   }
-// `;
+function getRows() {
+  return datasetMappings.distribution.filter(e => e["@type"] === "cr:FileSet");
+}
 
-// function getVersion(data) {
-//   if (!data) return null;
-//   const { month, year } = data.meta.dataVersion;
-//   return `${year}.${month}`;
-// }
+function getAllLocationUrl() {
+  const locationArray = datasetMappings.distribution.filter(e => e["@type"] === "cr:FileObject");
+  const locationObj = {};
+  locationArray.map(e => {
+    locationObj[e["@id"]] = e.contentUrl;
+  });
+  return locationObj;
+}
 
 function DownloadsPage() {
-  // const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
-  // const [downloadsData, setDownloadsData] = useState(null);
-  // const [loadingDownloadsData, setLoadingDownloadsData] = useState(false);
-  // const rows = downloadsData ? getRows(downloadsData, datasetMappings) : [];
-  const newRows = newDownloadsData.distribution;
-  // const columns = loading || error ? [] : getColumns(data.meta.dataVersion);
-  const newColumns = getNewColumns();
+  const rows = getRows();
+  const locationUrl = getAllLocationUrl();
+  const columns = getColumn(locationUrl);
+
   const classes = useStyles();
-
-  // useEffect(() => {
-  //   let isCurrent = true;
-  //   setLoadingDownloadsData(true);
-  //   fetch(config.downloadsURL)
-  //     .then(res => res.text())
-  //     .then(lines => {
-  //       if (isCurrent) {
-  //         const nodes = lines.trim().split("\n").map(JSON.parse);
-  //         setDownloadsData(nodes);
-  //       }
-  //       setLoadingDownloadsData(false);
-  //     });
-
-  //   return () => {
-  //     isCurrent = false;
-  //   };
-  // }, []);
 
   return (
     <>
       <Typography variant="h4" component="h1" paragraph>
-        {newDownloadsData.name}
+        {datasetMappings.name}
       </Typography>
-      <Typography paragraph>{newDownloadsData.description}</Typography>
+      <Typography paragraph>{datasetMappings.description}</Typography>
       <Typography paragraph>
         Our scripts and schema conforms to{" "}
-        <Link external to={newDownloadsData.conformsTo}>
+        <Link external to={datasetMappings.conformsTo}>
           Ml Commons
         </Link>
       </Typography>
-      <Typography paragraph>
-        {/* Current data version: {error ? null : newDownloadsData.version} */}
-        Current data version: {newDownloadsData.version}
-      </Typography>
-      {/* <Typography paragraph>
-        Access archived datasets via{" "}
-        <Link external to="http://ftp.ebi.ac.uk/pub/databases/opentargets/platform">
-          FTP
-        </Link>
-      </Typography> */}
+      <Typography paragraph>Current data version: {datasetMappings.version}</Typography>
 
       {config.isPartnerPreview ? (
         <Alert severity="warning" className={classes.alert}>
@@ -204,7 +90,7 @@ function DownloadsPage() {
 
       <Paper variant="outlined" elevation={0}>
         <Box m={2}>
-          <OtTable showGlobalFilter rows={newRows} columns={newColumns} />
+          <OtTable showGlobalFilter rows={rows} columns={columns} loading={!rows.length} />
         </Box>
       </Paper>
     </>
