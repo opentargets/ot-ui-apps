@@ -19,15 +19,29 @@ const alphaFoldResultsStem = "https://alphafold.ebi.ac.uk/api/prediction/";
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
 
-function getChainsAndPositions(str) {
-  const chains = new Set();
-  const positions = [];
-  for (const substr of str.split(/,\s*/)) {
+function getSegments(id, chainsAndPositions) {
+  const printChains = [];
+  const printSegments = [];
+  const details = [];
+  const substrings = chainsAndPositions.split(/,\s*/);
+  for (const substr of substrings) {
     const eqIndex = substr.indexOf("=");
-    chains.add(substr.slice(0, eqIndex));
-    positions.push(substr.slice(eqIndex + 1));
+    const chains = substr.slice(0, eqIndex);
+    printChains.push(chains);
+    const sepChains = chains.split("/");
+    const interval = substr.slice(eqIndex + 1);
+    printSegments.push(substrings.length === 1 ? interval : `${chains}=${interval}`);
+    const [from, to] = interval.split("-");
+    for (const chain of sepChains) {
+      details.push({ chain, from, to, length: to - from });
+    }
   }
-  return { chains: Array.from(chains), positions };
+  return {
+    rawString: chainsAndPositions, // !! REMOVE !!
+    chainsString: printChains.join(", "),
+    segmentsString: printSegments.join(", "),
+    details,
+  };
 }
 
 const alphaFoldConfidenceBands = [
@@ -155,6 +169,7 @@ function AtomInfoPanel({ atom, selectedStructure, entity }) {
 
 function Body({ label: symbol, entity }) {
   const [experimentalResults, setExperimentalResults] = useState(null);
+  const [segments, setSegments] = useState(null);
   const [selectedStructure, setSelectedStructure] = useState(null);
   const [viewer, setViewer] = useState(null);
   const [selectedAtom, setSelectedAtom] = useState(null);
@@ -204,17 +219,12 @@ function Body({ label: symbol, entity }) {
     {
       id: "properties.chains",
       label: "Chain",
-      renderCell: ({ properties: { chains } }) => {
-        return [...getChainsAndPositions(chains).chains].join(", ");
-      },
+      renderCell: ({ id }) => (isAlphaFold(id) ? "" : segments[id].chainsString),
     },
     {
       id: "positions",
       label: "Positions",
-      renderCell: ({ properties: { chains: chainsAndPositions } }) => {
-        const { chains, positions } = getChainsAndPositions(chainsAndPositions);
-        return chains.length === 1 ? positions.join(", ") : chainsAndPositions;
-      },
+      renderCell: ({ id }) => segments[id].segmentsString,
       exportValue: false,
     },
   ];
@@ -240,10 +250,8 @@ function Body({ label: symbol, entity }) {
             type: "AlphaFold",
             properties: {
               chains: `=${response[0].uniprotStart}-${response[0].uniprotEnd}`,
-              // chains: `(all)=${response[0].uniprotStart}-${response[0].uniprotEnd}`,
               method: "Prediction",
               resolution: "",
-              // resolution: "(prediction)",
             },
           });
         }
@@ -263,12 +271,17 @@ function Body({ label: symbol, entity }) {
       await Promise.all([fetchAlphaFoldResults(), fetchExperimentalResults()]);
       if (results.length) {
         setExperimentalResults(results);
-        setSelectedStructure(results.at(-1));
+        const _segments = {};
+        for (const row of results) {
+          _segments[row.id] = getSegments(row.id, row.properties.chains);
+        }
+        setSegments(_segments);
+        setSelectedStructure(results[0]);
       }
     }
     fetchAllResults();
     // RETURN CLEANUP FUNCTION IF APPROP
-  }, [uniprotId]);
+  }, [uniprotId, setExperimentalResults, setSegments]);
 
   // create viewer
   useEffect(() => {
@@ -283,7 +296,7 @@ function Body({ label: symbol, entity }) {
     }
   }, [experimentalResults]);
 
-  // fetch selected structure
+  // fetch selected structure and view it
   useEffect(() => {
     async function fetchStructure() {
       if (selectedStructure && viewer) {
