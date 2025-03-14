@@ -6,7 +6,7 @@ import { definition } from ".";
 import { getUniprotIds } from "@ot/utils";
 import { createViewer } from "3dmol";
 import { parseCif } from "./parseCif";
-import { schemeSet2, schemePaired, color as d3Color } from "d3";
+import { schemeSet1, schemePaired, color as d3Color } from "d3";
 
 import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 import { useState, useEffect, useRef } from "react";
@@ -22,7 +22,7 @@ const alphaFoldStructureSuffix = "-model_v4.cif";
 function getSegments(id, chainsAndPositions) {
   const printChains = [];
   const printSegments = [];
-  const details = [];
+  const details = {};
   const substrings = chainsAndPositions.split(/,\s*/);
   for (const substr of substrings) {
     const eqIndex = substr.indexOf("=");
@@ -33,7 +33,8 @@ function getSegments(id, chainsAndPositions) {
     printSegments.push(substrings.length === 1 ? interval : `${chains}=${interval}`);
     const [from, to] = interval.split("-");
     for (const chain of sepChains) {
-      details.push({ chain, from, to, length: to - from });
+      details[chain] ??= [];
+      details[chain].push({ from, to, length: to - from });
     }
   }
   return {
@@ -41,6 +42,7 @@ function getSegments(id, chainsAndPositions) {
     chainsString: printChains.join(", "),
     segmentsString: printSegments.join(", "),
     details,
+    uniqueChains: new Set(Object.keys(details)),
   };
 }
 
@@ -56,15 +58,6 @@ const alphaFoldConfidenceBands = [
   { lowerLimit: 0, label: "Very low ", sublabel: "pLDDT < 50", color: "rgb(255, 125, 69)" },
 ];
 
-// ssJmol color scheme - use explicitly here so easy to brighten
-const secondaryStructureColors = {
-  h: { basic: "#ff0080", bright: "#ff00d3" }, // helix
-  s: { basic: "#ffc800", bright: "#ffff00" }, // sheet
-  c: { basic: "#cccccc", bright: "#ffffff" }, // coil
-  "arrow start": { basic: "#ffc800", bright: "#ffff00" },
-  "arrow end": { basic: "#ffc800", bright: "#ffff00" },
-};
-
 function getConfidence(atom, propertyName = "label") {
   for (const obj of alphaFoldConfidenceBands) {
     if (atom.b > obj.lowerLimit) return obj[propertyName];
@@ -72,11 +65,15 @@ function getConfidence(atom, propertyName = "label") {
   return alphaFoldConfidenceBands[0][propertyName];
 }
 
-const chainColorScheme = [...schemeSet2, ...schemePaired.filter((v, i) => i % 2)];
+// const chainColorScheme = [...schemeSet1, ...schemePaired.filter((v, i) => i % 2)];
+const chainColorScheme = [
+  ...[1, 2, 3, 4, 0, 6, 7].map(i => schemeSet1[i]),
+  ...schemePaired.filter((v, i) => i % 2 === 1),
+];
 const chainDefaultColor = "#9999aa";
-const chainColorLookup = {};
+const chainColorIndex = {};
 for (const [index, letter] of "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").entries()) {
-  chainColorLookup[letter] = chainColorScheme[index % chainColorScheme.length];
+  chainColorIndex[letter] = index % chainColorScheme.length;
 }
 
 function zipToObject(arr1, arr2) {
@@ -232,7 +229,9 @@ function Body({ label: symbol, entity }) {
   function getAtomColor(atom) {
     return isAlphaFold(selectedStructure.id)
       ? getConfidence(atom, "color")
-      : chainColorLookup[atom.chain] ?? chainDefaultColor;
+      : segments[selectedStructure.id].details[atom.chain]
+      ? chainColorScheme[chainColorIndex[atom.chain]]
+      : "#888";
   }
 
   // fetch experimental results
@@ -276,7 +275,7 @@ function Body({ label: symbol, entity }) {
           _segments[row.id] = getSegments(row.id, row.properties.chains);
         }
         setSegments(_segments);
-        setSelectedStructure(results[0]);
+        setSelectedStructure(results[1]);
       }
     }
     fetchAllResults();
@@ -311,6 +310,9 @@ function Body({ label: symbol, entity }) {
         // structure chains
         const structureChains = parsedCif["_pdbx_struct_assembly_gen.asym_id_list"];
         let firstStructureChains;
+        let firstStructureTargetChains = [];
+        let firstStructureNonTargetChains = [];
+        let nonTargetChains;
         let otherStructureChains;
         if (!isAF) {
           if (Array.isArray(structureChains)) {
@@ -323,6 +325,14 @@ function Body({ label: symbol, entity }) {
           } else {
             firstStructureChains = structureChains.split(",");
             otherStructureChains = [];
+          }
+          const targetChains = segments[selectedStructure.id].uniqueChains;
+          console.log(targetChains);
+          for (const chain of firstStructureChains) {
+            (targetChains.has(chain)
+              ? firstStructureTargetChains
+              : firstStructureNonTargetChains
+            ).push(chain);
           }
         }
 
@@ -348,39 +358,60 @@ function Body({ label: symbol, entity }) {
         viewer.clear();
         viewer.addModel(data, "cif"); /* load data */
         viewer.setClickable({}, true, atom => console.log(atom));
-        viewer.setHoverDuration(100);
-        viewer.setHoverable(
-          {},
-          true,
-          function (atom) {
-            setSelectedAtom(atom);
-            if (atom && atom.resi) {
-              const { resi, resn, chain } = atom;
-              viewer.setStyle(
-                { resi: resi, chain: chain },
-                { cartoon: { color: "#555555", arrows: true } }
-              );
-              viewer.render();
-            }
-          },
-          function (atom) {
-            setSelectedAtom(null);
-            const { resi, resn, chain } = atom;
-            viewer.setStyle(
-              { resi: resi, chain: chain },
-              { cartoon: { colorfunc: getAtomColor, arrows: true } }
-            );
-            viewer.render();
-          }
-        );
+        // viewer.setHoverDuration(100);
+        // viewer.setHoverable(
+        //   {},
+        //   true,
+        //   function (atom) {
+        //     setSelectedAtom(atom);
+        //     if (atom && atom.resi) {
+        //       const { resi, resn, chain } = atom;
+        //       viewer.setStyle(
+        //         { resi: resi, chain: chain },
+        //         { cartoon: { color: "#555555", arrows: true } }
+        //       );
+        //       viewer.render();
+        //     }
+        //   },
+        //   function (atom) {
+        //     setSelectedAtom(null);
+        //     const { resi, resn, chain } = atom;
+        //     viewer.setStyle(
+        //       { resi: resi, chain: chain },
+        //       { cartoon: { colorfunc: getAtomColor, arrows: true } }
+        //     );
+        //     viewer.render();
+        //   }
+        // );
 
         if (isAF) {
           viewer.setStyle({}, { cartoon: { colorfunc: getAtomColor, arrows: true } });
         } else {
           viewer.setStyle(
-            { chain: firstStructureChains },
+            { chain: firstStructureTargetChains },
             { cartoon: { colorfunc: getAtomColor, arrows: true } }
           );
+          viewer.setStyle(
+            { chain: firstStructureNonTargetChains },
+            {
+              cartoon: {
+                color: "#eee",
+                arrows: true,
+                opacity: 0.8,
+              },
+            }
+          );
+
+          // viewer.setStyle(
+          //   { chain: firstStructureChains },
+          //   {
+          //     cartoon: {
+          //       colorfunc: getAtomColor,
+          //       arrows: true,
+          //       opacity: 0.4,
+          //     },
+          //   }
+          // );
           viewer.getModel().setStyle({ chain: otherStructureChains }, { hidden: true });
         }
 
@@ -393,7 +424,7 @@ function Body({ label: symbol, entity }) {
     }
     fetchStructure();
     // RETURN CLEANUP FUNCTION IF APPROP
-  }, [selectedStructure, viewer, setChainToEntityDesc]);
+  }, [selectedStructure, viewer, setChainToEntityDesc, segments]);
 
   if (!request.data) return null; // BETTER WAY? - HANDLED BY CC'S CHANGE TO SECTION ITEM IF LOADING?
 
