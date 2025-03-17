@@ -76,15 +76,7 @@ function ContainedInDrawer({
 
   function getCommands() {
     if (location === "ftp-location")
-      return (
-        <FtpLocation
-          location={location}
-          link={link}
-          format={format}
-          version={version}
-          path={path}
-        />
-      );
+      return <FtpLocation link={link} format={format} version={version} path={path} />;
     else if (location === "gcp-location")
       return <GcpLocation format={format} version={version} path={path} />;
     return <>Invalid path</>;
@@ -117,13 +109,13 @@ function ContainedInDrawer({
   );
 }
 
-function FtpLocation({ location, link, format, version, path }) {
+function FtpLocation({ link, format, version, path }) {
   const classes = useStyles();
 
   return (
     <>
       <Typography variant="subtitle2" gutterBottom>
-        {location} format (link)
+        FTP location (link)
       </Typography>
       <div className={classes.resourceURL}>
         <a className={classes.ftpURL} href={link}>
@@ -160,8 +152,7 @@ function GcpLocation({ version, path, format }) {
       </Typography>
       <div className={classes.resourceURL}>
         gsutil -m cp -r gs://open-targets-data-releases/{version}
-        /output/etl/{FORMAT_MAPPING[format]}
-        {path} .
+        /output/etl/{FORMAT_MAPPING[format]}/{path}
       </div>
     </>
   );
