@@ -40,7 +40,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function ContainedInDrawer({ title, link, children, location }) {
+const FORMAT_MAPPING = {
+  "application/x-parquet": "parquet",
+};
+
+function ContainedInDrawer({ title, link, children, location, format, version, path }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
@@ -80,6 +84,30 @@ function ContainedInDrawer({ title, link, children, location }) {
             <a className={classes.ftpURL} href={link}>
               {link}
             </a>
+          </div>
+
+          <Typography>rsync</Typography>
+          <div className={classes.resourceURL}>
+            rsync -rpltvz --delete rsync.ebi.ac.uk::pub/databases/opentargets/platform/{version}
+            /output/etl/{FORMAT_MAPPING[format]}
+            {path} .
+          </div>
+          <Typography variant="subtitle2" gutterBottom>
+            Wget
+          </Typography>
+          <div className={classes.resourceURL}>
+            wget --recursive --no-parent --no-host-directories --cut-dirs 8
+            ftp://ftp.ebi.ac.uk/pub/databases/opentargets/platform/{version}
+            /output/etl/{FORMAT_MAPPING[format]}
+            {path} .
+          </div>
+          <Typography variant="subtitle2" gutterBottom>
+            Google Cloud
+          </Typography>
+          <div className={classes.resourceURL}>
+            gsutil -m cp -r gs://open-targets-data-releases/{version}
+            /output/etl/{FORMAT_MAPPING[format]}
+            {path} .
           </div>
         </Paper>
       </Drawer>

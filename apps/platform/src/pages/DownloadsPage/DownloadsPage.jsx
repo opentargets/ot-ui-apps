@@ -5,7 +5,6 @@ import { getConfig } from "@ot/config";
 import datasetMappings from "./dataset-mappings.json";
 import { v1 } from "uuid";
 import { Fragment } from "react/jsx-runtime";
-import DownloadsDrawer from "./DownloadsDrawer";
 import ContainedInDrawer from "./ContainedInDrawer";
 
 const config = getConfig();
@@ -16,13 +15,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function getColumn(locationUrl) {
+const LOCATION_MAPPING = {
+  "ftp-location": {
+    displayName: "ftp",
+    format: "parquet",
+  },
+  "gcp-location": {
+    displayName: "gcp",
+    format: "parquet",
+  },
+};
+
+function getColumn(locationUrl, version) {
   const columns = [
     { id: "name", label: "Name" },
     {
       id: "containedIn",
       label: "Contained In",
-      renderCell: ({ containedIn, includes, name }) => {
+      renderCell: ({ containedIn, includes, name, encodingFormat }) => {
         const columnId = includes.split("/")[0];
 
         return containedIn.map(e => (
@@ -31,8 +41,16 @@ function getColumn(locationUrl) {
               link={`${locationUrl[e["@id"]]}${columnId}`}
               title={name}
               location={e["@id"]}
+              version={version}
+              path={columnId}
+              format={encodingFormat}
             >
-              <Chip sx={{ mr: 1 }} label={e["@id"]} clickable size="small" />
+              <Chip
+                sx={{ mr: 1 }}
+                label={LOCATION_MAPPING[e["@id"]].displayName}
+                clickable
+                size="small"
+              />
             </ContainedInDrawer>
           </Fragment>
         ));
@@ -60,7 +78,7 @@ function getAllLocationUrl() {
 function DownloadsPage() {
   const rows = getRows();
   const locationUrl = getAllLocationUrl();
-  const columns = getColumn(locationUrl);
+  const columns = getColumn(locationUrl, datasetMappings.version);
 
   const classes = useStyles();
 
