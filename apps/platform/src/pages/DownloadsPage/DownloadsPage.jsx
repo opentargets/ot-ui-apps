@@ -17,11 +17,11 @@ const useStyles = makeStyles(theme => ({
 
 const LOCATION_MAPPING = {
   "ftp-location": {
-    displayName: "ftp",
+    displayName: "FTP",
     format: "parquet",
   },
   "gcp-location": {
-    displayName: "gcp",
+    displayName: "Google Cloud",
     format: "parquet",
   },
 };
