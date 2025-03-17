@@ -28,7 +28,7 @@ const LOCATION_MAPPING = {
 
 function getColumn(locationUrl, version) {
   const columns = [
-    { id: "name", label: "Name" },
+    { id: "name", label: "Name", enableHiding: false },
     {
       id: "containedIn",
       label: "Contained In",
