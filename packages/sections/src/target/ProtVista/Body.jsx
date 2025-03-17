@@ -3,10 +3,18 @@ import { naLabel } from "@ot/constants";
 import { Box, colors, Grid, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
-import { getUniprotIds } from "@ot/utils";
-import { createViewer } from "3dmol";
+import { getUniprotIds, nanComparator } from "@ot/utils";
+import { createViewer, isNumeric } from "3dmol";
 import { parseCif } from "./parseCif";
-import { schemeSet1, schemePaired, color as d3Color } from "d3";
+import {
+  schemeSet1,
+  schemePaired,
+  color as d3Color,
+  max,
+  schemeSet2,
+  schemeTableau10,
+  schemeCategory10,
+} from "d3";
 
 import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 import { useState, useEffect, useRef } from "react";
@@ -24,6 +32,7 @@ function getSegments(id, chainsAndPositions) {
   const printSegments = [];
   const details = {};
   const substrings = chainsAndPositions.split(/,\s*/);
+  let maxLengthSegment = -Infinity;
   for (const substr of substrings) {
     const eqIndex = substr.indexOf("=");
     const chains = substr.slice(0, eqIndex);
@@ -32,9 +41,10 @@ function getSegments(id, chainsAndPositions) {
     const interval = substr.slice(eqIndex + 1);
     printSegments.push(substrings.length === 1 ? interval : `${chains}=${interval}`);
     const [from, to] = interval.split("-");
+    maxLengthSegment = Math.max(maxLengthSegment, to - from);
     for (const chain of sepChains) {
       details[chain] ??= [];
-      details[chain].push({ from, to, length: to - from });
+      details[chain].push({ from, to });
     }
   }
   return {
@@ -43,6 +53,7 @@ function getSegments(id, chainsAndPositions) {
     segmentsString: printSegments.join(", "),
     details,
     uniqueChains: new Set(Object.keys(details)),
+    maxLengthSegment,
   };
 }
 
@@ -65,14 +76,18 @@ function getConfidence(atom, propertyName = "label") {
   return alphaFoldConfidenceBands[0][propertyName];
 }
 
-// const chainColorScheme = [...schemeSet1, ...schemePaired.filter((v, i) => i % 2)];
 const chainColorScheme = [
   ...[1, 2, 3, 4, 0, 6, 7].map(i => schemeSet1[i]),
+  ...schemeSet2.slice(0, -1),
+  ...schemeTableau10.slice(0, -1),
   ...schemePaired.filter((v, i) => i % 2 === 1),
+  ...schemeCategory10.slice(0, -1),
 ];
 const chainDefaultColor = "#9999aa";
 const chainColorIndex = {};
-for (const [index, letter] of "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").entries()) {
+for (const [index, letter] of "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+  .split("")
+  .entries()) {
   chainColorIndex[letter] = index % chainColorScheme.length;
 }
 
@@ -164,6 +179,39 @@ function AtomInfoPanel({ atom, selectedStructure, entity }) {
   );
 }
 
+// hover does not impact rotate-pan-zoom if use different model to add/remove highlighted atoms
+// - highlighting still sluggish when many atoms?
+// - cartoon not working so currently just draw sphere at atom for now!
+function hoverManagerFactory(viewer, setSelectedAtom) {
+  let model = viewer.getModel(); // NEED TO NAME BASE MODEL - AND GET THIS?
+  let atoms = model.selectedAtoms();
+  // let hoverModel = viewer.addModel();
+  let hoverSphere = null; // !! REMOVE WHEN USE HOVER MODEL !!
+  if (atoms.length === 0) return; // Exit if no atom found
+  return [
+    {},
+    true,
+    atom => {
+      // const newAtoms = model.selectedAtoms({ resi: atom.resi, chain: atom.chain });
+      // hoverModel.addAtoms(newAtoms);
+      // viewer.setStyle({ model: hoverModel }, { sphere: { color: "red", radius: 0.5 } });
+      // FOR NOW JUST SHOW SPHERE AT
+      hoverSphere = viewer.addSphere({
+        center: { x: atom.x, y: atom.y, z: atom.z }, // Coordinates of the sphere
+        radius: 1, // Radius of the sphere
+        color: "lime", // Color of the sphere (e.g., "red", "#ff0000")
+      });
+      setSelectedAtom(atom);
+      viewer.render();
+    },
+    () => {
+      // hoverModel.removeAtoms(hoverModel.selectedAtoms());
+      viewer.removeShape(hoverSphere);
+      setSelectedAtom(null);
+    },
+  ];
+}
+
 function Body({ label: symbol, entity }) {
   const [experimentalResults, setExperimentalResults] = useState(null);
   const [segments, setSegments] = useState(null);
@@ -181,6 +229,7 @@ function Body({ label: symbol, entity }) {
     {
       id: "select",
       label: "Structure",
+      filterValue: false,
       renderCell: row => {
         return (
           <Box
@@ -196,34 +245,59 @@ function Body({ label: symbol, entity }) {
     {
       id: "type",
       label: "Source",
+      sortable: true,
     },
     {
       id: "id",
       label: "ID",
+      sortable: true,
     },
     {
       id: "properties.method",
       label: "Method",
+      sortable: true,
     },
     {
       // NUMERIC/RIGHT ALIGN?
       id: "properties.resolution",
       label: "Resolution",
+      sortable: true,
+      numeric: true,
+      filterValue: false,
+      comparator: nanComparator(
+        (a, b) => a - b,
+        row => +row?.properties?.resolution?.replace(/\s*A/, ""),
+        false
+      ),
       renderCell: ({ properties: { resolution } }) => {
         return resolution != null ? resolution.replace("A", "Å") : naLabel;
+      },
+      exportValue: ({ properties: { resolution } }) => {
+        return resolution?.replace("A", "Å");
       },
     },
     {
       id: "properties.chains",
       label: "Chain",
-      renderCell: ({ id }) => (isAlphaFold(id) ? "" : segments[id].chainsString),
+      filterValue: false,
+      renderCell: ({ id }) => segments[id].chainsString,
+      exportValue: ({ id }) => segments[id].chainsString,
     },
     {
       id: "positions",
       label: "Positions",
+      sortable: true,
+      comparator: (a, b) => {
+        return segments?.[a?.id]?.maxLengthSegment - segments?.[b?.id]?.maxLengthSegment;
+      },
       renderCell: ({ id }) => segments[id].segmentsString,
-      exportValue: false,
+      exportValue: ({ id }) => segments[id].segmentsString,
     },
+    // {
+    //   id: "longestSegment",
+    //   label: "Longest segment",
+    //   renderCell: ({ id }) => segments[id].maxLengthSegment,
+    // },
   ];
 
   function getAtomColor(atom) {
@@ -231,7 +305,7 @@ function Body({ label: symbol, entity }) {
       ? getConfidence(atom, "color")
       : segments[selectedStructure.id].details[atom.chain]
       ? chainColorScheme[chainColorIndex[atom.chain]]
-      : "#888";
+      : chainColorScheme[[chainColorIndex[atom.chain[0]]]] ?? "#888";
   }
 
   // fetch experimental results
@@ -248,9 +322,9 @@ function Body({ label: symbol, entity }) {
             id: response[0].entryId,
             type: "AlphaFold",
             properties: {
-              chains: `=${response[0].uniprotStart}-${response[0].uniprotEnd}`,
+              chains: `A=${response[0].uniprotStart}-${response[0].uniprotEnd}`,
               method: "Prediction",
-              resolution: "",
+              resolution: undefined,
             },
           });
         }
@@ -275,7 +349,7 @@ function Body({ label: symbol, entity }) {
           _segments[row.id] = getSegments(row.id, row.properties.chains);
         }
         setSegments(_segments);
-        setSelectedStructure(results[1]);
+        setSelectedStructure(results[0]);
       }
     }
     fetchAllResults();
@@ -312,9 +386,9 @@ function Body({ label: symbol, entity }) {
         let firstStructureChains;
         let firstStructureTargetChains = [];
         let firstStructureNonTargetChains = [];
-        let nonTargetChains;
         let otherStructureChains;
-        if (!isAF) {
+        const targetChains = segments[selectedStructure.id].uniqueChains;
+        if (structureChains) {
           if (Array.isArray(structureChains)) {
             firstStructureChains = structureChains[0].split(",");
             otherStructureChains = structureChains.slice(1).join(",").split(",");
@@ -326,15 +400,29 @@ function Body({ label: symbol, entity }) {
             firstStructureChains = structureChains.split(",");
             otherStructureChains = [];
           }
-          const targetChains = segments[selectedStructure.id].uniqueChains;
-          console.log(targetChains);
           for (const chain of firstStructureChains) {
             (targetChains.has(chain)
               ? firstStructureTargetChains
               : firstStructureNonTargetChains
             ).push(chain);
           }
+        } else {
+          // data missing/invalid _pdbx_struct_assembly_gen.asym_id_list (includes AlphaFold)
+          const allChains = new Set(parsedCif["_atom_site.auth_asym_id"]);
+          const targetChainsSet = new Set(targetChains);
+          firstStructureChains = [...allChains];
+          firstStructureTargetChains.push(...targetChains);
+          firstStructureNonTargetChains = firstStructureChains.filter(
+            chain => !targetChainsSet.has(chain)
+          );
+          otherStructureChains = [];
         }
+        console.log({
+          targetChains,
+          firstStructureChains,
+          firstStructureTargetChains,
+          firstStructureNonTargetChains,
+        });
 
         // entities
         const entityIdToDesc = zipToObject(
@@ -351,19 +439,21 @@ function Body({ label: symbol, entity }) {
         }
         setChainToEntityDesc(_chainToEntityDesc);
 
-        // invalidate auth fields for residue and chain forcing 3dmol to use the label (ie PDB) fields
+        // invalidate auth fields for residue and chain forcing 3Dmol to use the label (ie PDB) fields
         data = data.replace(/auth_(?:asym|seq)_id/g, match => `${match}X`);
 
         setSelectedAtom(null);
         viewer.clear();
         viewer.addModel(data, "cif"); /* load data */
         viewer.setClickable({}, true, atom => console.log(atom));
-        // viewer.setHoverDuration(100);
+        viewer.setHoverDuration(100);
+        viewer.setHoverable(...hoverManagerFactory(viewer, setSelectedAtom));
         // viewer.setHoverable(
         //   {},
         //   true,
         //   function (atom) {
-        //     setSelectedAtom(atom);
+        //     // setSelectedAtom(atom);
+        //     // console.log(atom);
         //     if (atom && atom.resi) {
         //       const { resi, resn, chain } = atom;
         //       viewer.setStyle(
@@ -374,7 +464,7 @@ function Body({ label: symbol, entity }) {
         //     }
         //   },
         //   function (atom) {
-        //     setSelectedAtom(null);
+        //     // setSelectedAtom(null);
         //     const { resi, resn, chain } = atom;
         //     viewer.setStyle(
         //       { resi: resi, chain: chain },
@@ -401,23 +491,15 @@ function Body({ label: symbol, entity }) {
               },
             }
           );
-
-          // viewer.setStyle(
-          //   { chain: firstStructureChains },
-          //   {
-          //     cartoon: {
-          //       colorfunc: getAtomColor,
-          //       arrows: true,
-          //       opacity: 0.4,
-          //     },
-          //   }
-          // );
           viewer.getModel().setStyle({ chain: otherStructureChains }, { hidden: true });
         }
-
-        viewer.zoomTo(isAF ? undefined : { chain: firstStructureChains }); /* set camera */
-        viewer.render(); /* render scene */
-        // viewer.zoom(1.5, 1000); /* slight zoom */
+        viewer.zoomTo({
+          chain: firstStructureTargetChains.length
+            ? firstStructureTargetChains
+            : firstStructureChains,
+        });
+        viewer.zoom(isAF ? 1.4 : 1);
+        viewer.render();
 
         window.viewer = viewer; // !! REMOVE !!
       }
@@ -440,11 +522,11 @@ function Body({ label: symbol, entity }) {
           <Grid container spacing={2}>
             <Grid item xs={12} lg={6}>
               <OtTable
-                // dataDownloader
-                showGlobalFilter={false}
+                dataDownloader
+                showGlobalFilter
                 // dataDownloaderFileStem={`${studyLocusId}-credibleSets`}
-                // sortBy="pValue"
-                // order="asc"
+                sortBy="positions"
+                order="desc"
                 columns={columns}
                 loading={!experimentalResults}
                 rows={experimentalResults}
@@ -473,46 +555,3 @@ function Body({ label: symbol, entity }) {
 }
 
 export default Body;
-
-/*
-
-NOTES:
-
-- vheight of widget jumps depending on whether show legend or not - but wait to see if use legend on non-AF
-  which will help
-
-- zoom slightly by default but dosable animation
-
-- should include some visual controls - e.g. cartoon, ball-stick, different color-by optoins, ...?
-
-- use click on row and show active row once added to table component
-
-- if use paginated table, what if selected row not shown - what does the viewer show?
-
-- look over other API options such as quality
-
-- use theme colors (or grey[600] etc)
-
-- add PDBe link only?
-    - if only 1 link per row, could make the ID the link
-    - use identifiers.org
-
-- any way to avoid full rendering on hover (which includes calling colorfunc for every atom)
-  - there are addStyle and updateStyle methods that may help
-
-- improve highlighting so just a light/darker of current color - d3 lghter/darker not giving nice results
-
-- add error handling for fetch and anywhere else approp
-
-- highlight chains of experiment - or faint the other shown chanins
-
-- legend for chains?
-
-- allow coloring by entity?
-
-- KRAS NMR results such as 2MSC are giving error but i think due to invalid CIF file - 
-    - the _pdbx_struct_assembly_gen.asym_id_list  field has final t missing
-
-- order table by experiment type, chain, ...
-
-*/
