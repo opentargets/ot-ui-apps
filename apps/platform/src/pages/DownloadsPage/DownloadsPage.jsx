@@ -4,6 +4,9 @@ import { Link, OtTable } from "ui";
 import { getConfig } from "@ot/config";
 import datasetMappings from "./dataset-mappings.json";
 import { v1 } from "uuid";
+import { Fragment } from "react/jsx-runtime";
+import DownloadsDrawer from "./DownloadsDrawer";
+import ContainedInDrawer from "./ContainedInDrawer";
 
 const config = getConfig();
 
@@ -19,23 +22,23 @@ function getColumn(locationUrl) {
     {
       id: "containedIn",
       label: "Contained In",
-      renderCell: ({ containedIn, includes }) => {
+      renderCell: ({ containedIn, includes, name }) => {
         const columnId = includes.split("/")[0];
 
         return containedIn.map(e => (
-          <Chip
-            sx={{ mr: 1 }}
-            key={v1()}
-            component="a"
-            label={e["@id"]}
-            clickable
-            size="small"
-            href={`${locationUrl[e["@id"]]}${columnId}`}
-          />
+          <Fragment key={v1()}>
+            <ContainedInDrawer
+              link={`${locationUrl[e["@id"]]}${columnId}`}
+              title={name}
+              location={e["@id"]}
+            >
+              <Chip sx={{ mr: 1 }} label={e["@id"]} clickable size="small" />
+            </ContainedInDrawer>
+          </Fragment>
         ));
       },
     },
-    { id: "encodingFormat", label: "Format" },
+    // { id: "encodingFormat", label: "Format" },
     { id: "description", label: "Description" },
   ];
   return columns;
