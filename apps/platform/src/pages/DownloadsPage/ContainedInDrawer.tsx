@@ -73,10 +73,9 @@ function ContainedInDrawer({ title, link, children, location, format, version, p
         </Typography>
 
         <Paper className={classes.paper} variant="outlined">
-          {/* <Typography variant="h6" gutterBottom>
-            {formatMap[format]} Data Format
-             Data Format
-          </Typography> */}
+          <Typography sx={{ textTransform: "capitalize" }} variant="h6" gutterBottom>
+            {FORMAT_MAPPING[format]} Data Format
+          </Typography>
           <Typography variant="subtitle2" gutterBottom>
             {location} format (link)
           </Typography>
