@@ -2,7 +2,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Drawer, IconButton, Paper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
@@ -44,7 +44,25 @@ const FORMAT_MAPPING = {
   "application/x-parquet": "parquet",
 };
 
-function ContainedInDrawer({ title, link, children, location, format, version, path }) {
+type ContainedInDrawerProps = {
+  title: string;
+  link: string;
+  location: "gcp-location" | "ftp-location";
+  format: string;
+  version: "string";
+  path: "string";
+  children: ReactNode;
+};
+
+function ContainedInDrawer({
+  title,
+  link,
+  children,
+  location,
+  format,
+  version,
+  path,
+}: ContainedInDrawerProps) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
@@ -54,6 +72,22 @@ function ContainedInDrawer({ title, link, children, location, format, version, p
 
   function close() {
     setOpen(false);
+  }
+
+  function getCommands() {
+    if (location === "ftp-location")
+      return (
+        <FtpLocation
+          location={location}
+          link={link}
+          format={format}
+          version={version}
+          path={path}
+        />
+      );
+    else if (location === "gcp-location")
+      return <GcpLocation format={format} version={version} path={path} />;
+    return <>Invalid path</>;
   }
 
   return (
@@ -76,41 +110,61 @@ function ContainedInDrawer({ title, link, children, location, format, version, p
           <Typography sx={{ textTransform: "capitalize" }} variant="h6" gutterBottom>
             {FORMAT_MAPPING[format]} Data Format
           </Typography>
-          <Typography variant="subtitle2" gutterBottom>
-            {location} format (link)
-          </Typography>
-          <div className={classes.resourceURL}>
-            <a className={classes.ftpURL} href={link}>
-              {link}
-            </a>
-          </div>
-
-          <Typography>rsync</Typography>
-          <div className={classes.resourceURL}>
-            rsync -rpltvz --delete rsync.ebi.ac.uk::pub/databases/opentargets/platform/{version}
-            /output/etl/{FORMAT_MAPPING[format]}
-            {path} .
-          </div>
-          <Typography variant="subtitle2" gutterBottom>
-            Wget
-          </Typography>
-          <div className={classes.resourceURL}>
-            wget --recursive --no-parent --no-host-directories --cut-dirs 8
-            ftp://ftp.ebi.ac.uk/pub/databases/opentargets/platform/{version}
-            /output/etl/{FORMAT_MAPPING[format]}
-            {path} .
-          </div>
-          <Typography variant="subtitle2" gutterBottom>
-            Google Cloud
-          </Typography>
-          <div className={classes.resourceURL}>
-            gsutil -m cp -r gs://open-targets-data-releases/{version}
-            /output/etl/{FORMAT_MAPPING[format]}
-            {path} .
-          </div>
+          {getCommands()}
         </Paper>
       </Drawer>
     </span>
   );
 }
+
+function FtpLocation({ location, link, format, version, path }) {
+  const classes = useStyles();
+
+  return (
+    <>
+      <Typography variant="subtitle2" gutterBottom>
+        {location} format (link)
+      </Typography>
+      <div className={classes.resourceURL}>
+        <a className={classes.ftpURL} href={link}>
+          {link}
+        </a>
+      </div>
+
+      <Typography>rsync</Typography>
+      <div className={classes.resourceURL}>
+        rsync -rpltvz --delete rsync.ebi.ac.uk::pub/databases/opentargets/platform/{version}
+        /output/etl/{FORMAT_MAPPING[format]}
+        {path} .
+      </div>
+      <Typography variant="subtitle2" gutterBottom>
+        Wget
+      </Typography>
+      <div className={classes.resourceURL}>
+        wget --recursive --no-parent --no-host-directories --cut-dirs 8
+        ftp://ftp.ebi.ac.uk/pub/databases/opentargets/platform/{version}
+        /output/etl/{FORMAT_MAPPING[format]}
+        {path} .
+      </div>
+    </>
+  );
+}
+
+function GcpLocation({ version, path, format }) {
+  const classes = useStyles();
+
+  return (
+    <>
+      <Typography variant="subtitle2" gutterBottom>
+        Google Cloud
+      </Typography>
+      <div className={classes.resourceURL}>
+        gsutil -m cp -r gs://open-targets-data-releases/{version}
+        /output/etl/{FORMAT_MAPPING[format]}
+        {path} .
+      </div>
+    </>
+  );
+}
+
 export default ContainedInDrawer;
