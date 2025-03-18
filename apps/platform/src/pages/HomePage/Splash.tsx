@@ -2,10 +2,12 @@ import { makeStyles } from "@mui/styles";
 
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
+import { Engine } from "tsparticles-engine";
+import { Theme } from "@mui/material";
 
 import { particlesConfig } from "@ot/constants";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   splashContainer: {
     height: "100vh",
   },
@@ -20,9 +22,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Splash() {
+function Splash(): JSX.Element {
   const classes = useStyles();
-  const particlesInit = async main => {
+
+  const particlesInit = async (main: Engine): Promise<void> => {
     await loadFull(main);
   };
 

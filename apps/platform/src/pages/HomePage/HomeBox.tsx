@@ -1,18 +1,39 @@
+import { ReactNode } from "react";
 import { Grid, Paper, Box, Typography } from "@mui/material";
-
+import { SxProps } from "@mui/system";
 import { usePermissions, Link } from "ui";
 
 import OTLogo from "../../assets/OTLogo";
 import PPOTLogo from "../../assets/PPPOTLogo";
 import { grey } from "@mui/material/colors";
 
-const styles = {
+type StylesType = {
+  homeboxContainer: SxProps;
+  homeboxHeader: SxProps;
+  logo: SxProps;
+  dataPolicy: SxProps;
+};
+
+const styles: StylesType = {
   homeboxContainer: {
     overflow: "visible",
-    padding: "48px 96px 48px",
+    mx: {
+      xs: 2,
+      sm: 4,
+      md: "auto",
+    },
+    px: {
+      xs: 4,
+      sm: 4,
+      md: 10,
+    },
+    py: {
+      xs: 12,
+      sm: 10,
+    },
     maxWidth: "900px",
     margin: "auto",
-    backround: grey[50],
+    background: grey[50], // Fixed typo in 'background'
   },
   homeboxHeader: {
     textAlign: "center",
@@ -32,10 +53,15 @@ const styles = {
   },
 };
 
-function HomeBox({ children }) {
+interface HomeBoxProps {
+  children: ReactNode;
+}
+
+function HomeBox({ children }: HomeBoxProps): JSX.Element {
   const { isPartnerPreview } = usePermissions();
+
   return (
-    <Grid item xs={12} sm={8} md={8} lg={8}>
+    <Grid item xs={12} sm={12} md={8} lg={8}>
       <Paper elevation={1} sx={styles.homeboxContainer}>
         <Box sx={styles.homeboxHeader}>
           {isPartnerPreview ? <PPOTLogo sx={styles.logo} /> : <OTLogo sx={styles.logo} />}
