@@ -1,4 +1,4 @@
-query searchInsulin {
+query searchEntity {
   search(queryString: "KRAS") {
     total
     hits {

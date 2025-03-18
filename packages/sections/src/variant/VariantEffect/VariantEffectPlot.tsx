@@ -94,6 +94,7 @@ function Plot({ data, width }) {
       },
       y: {
         tickSize: 0,
+        tickPadding: 18,
       },
 
       color: {
@@ -116,6 +117,7 @@ function Plot({ data, width }) {
           strokeDasharray: 6,
         }),
         PlotLib.dot(data, {
+          marginRight: 100,
           x: "normalisedScore",
           y: "method",
           r: 12,
