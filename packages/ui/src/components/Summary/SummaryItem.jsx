@@ -14,7 +14,7 @@ import summaryStyles from "./summaryStyles";
 import { createShortName } from "./utils";
 import PartnerLockIcon from "../PartnerLockIcon";
 
-function SummaryItem({ definition, request, renderSummary, subText }) {
+function SummaryItem({ definition, request, subText }) {
   const classes = summaryStyles();
   const { loading, error, data } = request;
   const shortName = createShortName(definition);
@@ -77,12 +77,14 @@ function SummaryItem({ definition, request, renderSummary, subText }) {
               <Typography
                 className={classNames(classes.subheader, {
                   [classes.subheaderHasData]: hasData,
-                  [classes.subheaderError]: error,
+                  [classes.subheaderError]: true,
                 })}
               >
-                {error && "An error occurred while loading this section"}
-                {/* {!loading && data && !hasData && "no data"}
-                {!loading && data && hasData && renderSummary(data)} */}
+                {error && (
+                  <Typography variant="body2">
+                    An error occurred while loading this section
+                  </Typography>
+                )}
               </Typography>
             </>
           }

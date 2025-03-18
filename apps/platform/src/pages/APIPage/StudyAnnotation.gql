@@ -1,8 +1,9 @@
 query SharedTraitStudiesQuery {
-  studies(diseaseIds: "EFO_0000685") {
+  studies(studyId: "GCST90204201") {
     count
     rows {
       id
+      studyType
       traitFromSource
       projectId
       diseases {
@@ -12,13 +13,13 @@ query SharedTraitStudiesQuery {
       publicationFirstAuthor
       publicationDate
       publicationJournal
+      pubmedId
       nSamples
       cohorts
       ldPopulationStructure {
         ldPopulation
         relativeSampleSize
       }
-      pubmedId
     }
   }
 }
