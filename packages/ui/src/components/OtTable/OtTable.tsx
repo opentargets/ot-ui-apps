@@ -289,8 +289,9 @@ function OtTable({
         }}
       >
         <div>
-          <span>Rows per page:</span>
+          <label for="paginationSelect">Rows per page:</label>
           <NativeSelect
+            id="paginationSelect"
             disableUnderline
             disabled={loading}
             sx={{ pl: theme => theme.spacing(2) }}
@@ -329,19 +330,29 @@ function OtTable({
             <IconButton
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
+              aria-label="First Page"
             >
               <FontAwesomeIcon size="2xs" icon={faBackwardStep} />
             </IconButton>
-            <IconButton onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+            <IconButton
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+              aria-label="Previous Page"
+            >
               <FontAwesomeIcon size="2xs" icon={faAngleLeft} />
             </IconButton>
 
-            <IconButton onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+            <IconButton
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+              aria-label="Next Page"
+            >
               <FontAwesomeIcon size="2xs" icon={faAngleRight} />
             </IconButton>
             <IconButton
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
+              aria-label="last page"
             >
               <FontAwesomeIcon size="2xs" icon={faForwardStep} />
             </IconButton>

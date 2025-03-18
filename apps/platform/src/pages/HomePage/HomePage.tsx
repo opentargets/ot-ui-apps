@@ -141,7 +141,7 @@ function HelpBoxPanel({ fai, url, label, external = false }: HelpBoxPanelProps):
             <FontAwesomeIcon icon={faSquare} color={theme.palette.primary.dark} />
             <FontAwesomeIcon icon={fai} transform="shrink-8" inverse />
           </div>
-          <Typography align="center" variant="subtitle1">
+          <Typography align="center" variant="subtitle1" component="div">
             {label}
           </Typography>
         </Box>
