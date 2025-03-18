@@ -117,7 +117,6 @@ function Plot({ data, width }) {
           strokeDasharray: 6,
         }),
         PlotLib.dot(data, {
-          marginRight: 100,
           x: "normalisedScore",
           y: "method",
           r: 12,
