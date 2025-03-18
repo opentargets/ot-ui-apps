@@ -101,6 +101,11 @@ const columns = [
     tooltip:
       "Fine-mapping confidence based on the quality of the linkage-disequilibrium information available and fine-mapping method",
     sortable: true,
+    comparator: nullishComparator(
+      (a, b) => a - b,
+      row => credsetConfidenceMap?.[row.confidence],
+      false
+    ),
     renderCell: ({ confidence }) => {
       if (!confidence) return naLabel;
       return (
