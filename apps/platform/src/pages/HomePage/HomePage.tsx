@@ -319,7 +319,7 @@ function HomePage(): JSX.Element {
             <HelpBoxPanel
               fai={faLaptopCode}
               url="/api"
-              label="Access our partner-specific GraphQL API"
+              label="Access data with our GraphQL API"
               external
             />
 

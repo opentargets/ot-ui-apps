@@ -59,7 +59,7 @@ export const externalLinks = {
     },
     {
       label: "Terms of use",
-      url: "https://platform-docs.opentargets.org/terms-of-use",
+      url: "https://platform-docs.opentargets.org/licence/terms-of-use",
     },
   ] as ExternalLink[],
   license: {
