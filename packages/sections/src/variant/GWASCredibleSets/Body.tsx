@@ -190,8 +190,19 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "confidence",
       label: "Fine-mapping confidence",
-      tooltip:
-        "Fine-mapping confidence based on the suitability of the linkage-disequilibrium information and fine-mapping method",
+      tooltip: (
+        <>
+          Fine-mapping confidence based on the suitability of the linkage-disequilibrium information
+          and fine-mapping method. See{" "}
+          <Link
+            external
+            to="https://platform-docs.opentargets.org/credible-set#credible-set-confidence"
+          >
+            here
+          </Link>{" "}
+          for more details.
+        </>
+      ),
       sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;
