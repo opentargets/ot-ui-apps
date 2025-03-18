@@ -150,64 +150,41 @@ function StructureIdPanel({ selectedStructure }) {
   );
 }
 
-function AtomInfoPanel({ atom, selectedStructure, entity }) {
-  return (
-    <Box
-      position="absolute"
-      bottom={0}
-      right={0}
-      p="0.6rem 0.8rem"
-      zIndex={100}
-      bgcolor="#f8f8f8c8"
-      sx={{ borderBottomRightRadius: "0.2rem" }}
-      fontSize={14}
-    >
-      <Box display="flex" flexDirection="column">
-        <Typography variant="caption" textAlign="right">
-          {entity}
-        </Typography>
-        <Typography variant="caption" textAlign="right">
-          {atom.chain} | {atom.resn} {atom.resi}
-        </Typography>
-        {isAlphaFold(selectedStructure.id) && (
-          <Typography variant="caption" textAlign="right">
-            Confidence: {atom.b} ({getConfidence(atom)})
-          </Typography>
-        )}
-      </Box>
-    </Box>
-  );
-}
-
-// hover does not impact rotate-pan-zoom if use different model to add/remove highlighted atoms
-// - highlighting still sluggish when many atoms?
-// - cartoon not working so currently just draw sphere at atom for now!
-function hoverManagerFactory(viewer, setSelectedAtom) {
-  let model = viewer.getModel(); // NEED TO NAME BASE MODEL - AND GET THIS?
-  let atoms = model.selectedAtoms();
-  // let hoverModel = viewer.addModel();
-  let hoverSphere = null; // !! REMOVE WHEN USE HOVER MODEL !!
-  if (atoms.length === 0) return; // Exit if no atom found
+function hoverManagerFactory({ viewer, atomInfoRef, chainToEntityDesc, isAF }) {
   return [
     {},
     true,
+    // 3Dmol's builtin labels
+    // atom => {
+    //   if (!atom.label) {
+    //     atom.label = viewer.addLabel(atom.resn + ":" + atom.atom, {
+    //       position: atom,
+    //       backgroundColor: "mintcream",
+    //       fontColor: "black",
+    //     });
+    //   }
+    // },
+    // atom => {
+    //   if (atom.label) {
+    //     viewer.removeLabel(atom.label);
+    //     delete atom.label;
+    //   }
+    // },
+
     atom => {
-      // const newAtoms = model.selectedAtoms({ resi: atom.resi, chain: atom.chain });
-      // hoverModel.addAtoms(newAtoms);
-      // viewer.setStyle({ model: hoverModel }, { sphere: { color: "red", radius: 0.5 } });
-      // FOR NOW JUST SHOW SPHERE AT
-      hoverSphere = viewer.addSphere({
-        center: { x: atom.x, y: atom.y, z: atom.z }, // Coordinates of the sphere
-        radius: 1, // Radius of the sphere
-        color: "lime", // Color of the sphere (e.g., "red", "#ff0000")
-      });
-      setSelectedAtom(atom);
-      viewer.render();
+      const infoElmt = atomInfoRef.current;
+      if (infoElmt) {
+        infoElmt.style.display = "block";
+        const fieldElmts = [...infoElmt.querySelectorAll("p")];
+        fieldElmts[0].textContent = chainToEntityDesc[atom.chain];
+        fieldElmts[1].textContent = `${atom.chain} | ${atom.resn} ${atom.resi}`;
+        fieldElmts[2].textContent = isAF ? `Confidence: ${atom.b} (${getConfidence(atom)})` : "";
+      }
     },
     () => {
-      // hoverModel.removeAtoms(hoverModel.selectedAtoms());
-      viewer.removeShape(hoverSphere);
-      setSelectedAtom(null);
+      if (atomInfoRef.current) {
+        atomInfoRef.current.style.display = "none";
+      }
     },
   ];
 }
@@ -217,10 +194,10 @@ function Body({ label: symbol, entity }) {
   const [segments, setSegments] = useState(null);
   const [selectedStructure, setSelectedStructure] = useState(null);
   const [viewer, setViewer] = useState(null);
-  const [selectedAtom, setSelectedAtom] = useState(null);
   const [chainToEntityDesc, setChainToEntityDesc] = useState(null);
 
   const viewerRef = useRef(null);
+  const atomInfoRef = useRef(null);
 
   const request = usePlatformApi(PROTVISTA_SUMMARY_FRAGMENT);
   const uniprotId = request?.data ? getUniprotIds(request?.data?.proteinIds)?.[0] : null;
@@ -417,12 +394,12 @@ function Body({ label: symbol, entity }) {
           );
           otherStructureChains = [];
         }
-        console.log({
-          targetChains,
-          firstStructureChains,
-          firstStructureTargetChains,
-          firstStructureNonTargetChains,
-        });
+        // console.log({
+        //   targetChains,
+        //   firstStructureChains,
+        //   firstStructureTargetChains,
+        //   firstStructureNonTargetChains,
+        // });
 
         // entities
         const entityIdToDesc = zipToObject(
@@ -442,37 +419,18 @@ function Body({ label: symbol, entity }) {
         // invalidate auth fields for residue and chain forcing 3Dmol to use the label (ie PDB) fields
         data = data.replace(/auth_(?:asym|seq)_id/g, match => `${match}X`);
 
-        setSelectedAtom(null);
         viewer.clear();
         viewer.addModel(data, "cif"); /* load data */
         viewer.setClickable({}, true, atom => console.log(atom));
-        viewer.setHoverDuration(100);
-        viewer.setHoverable(...hoverManagerFactory(viewer, setSelectedAtom));
-        // viewer.setHoverable(
-        //   {},
-        //   true,
-        //   function (atom) {
-        //     // setSelectedAtom(atom);
-        //     // console.log(atom);
-        //     if (atom && atom.resi) {
-        //       const { resi, resn, chain } = atom;
-        //       viewer.setStyle(
-        //         { resi: resi, chain: chain },
-        //         { cartoon: { color: "#555555", arrows: true } }
-        //       );
-        //       viewer.render();
-        //     }
-        //   },
-        //   function (atom) {
-        //     // setSelectedAtom(null);
-        //     const { resi, resn, chain } = atom;
-        //     viewer.setStyle(
-        //       { resi: resi, chain: chain },
-        //       { cartoon: { colorfunc: getAtomColor, arrows: true } }
-        //     );
-        //     viewer.render();
-        //   }
-        // );
+        viewer.setHoverDuration(0);
+        viewer.setHoverable(
+          ...hoverManagerFactory({
+            viewer,
+            atomInfoRef,
+            chainToEntityDesc: _chainToEntityDesc,
+            isAF,
+          })
+        );
 
         if (isAF) {
           viewer.setStyle({}, { cartoon: { colorfunc: getAtomColor, arrows: true } });
@@ -536,13 +494,23 @@ function Body({ label: symbol, entity }) {
               <Box position="relative" display="flex" justifyContent="center" pb={2}>
                 <Box ref={viewerRef} position="relative" width="100%" height="400px">
                   <StructureIdPanel selectedStructure={selectedStructure} />
-                  {selectedAtom && (
-                    <AtomInfoPanel
-                      atom={selectedAtom}
-                      selectedStructure={selectedStructure}
-                      entity={chainToEntityDesc[selectedAtom.chain]}
-                    />
-                  )}
+                  <Box
+                    ref={atomInfoRef}
+                    position="absolute"
+                    bottom={0}
+                    right={0}
+                    p="0.6rem 0.8rem"
+                    zIndex={100}
+                    bgcolor="#f8f8f8c8"
+                    sx={{ borderBottomRightRadius: "0.2rem" }}
+                    fontSize={14}
+                  >
+                    <Box display="flex" flexDirection="column">
+                      <Typography variant="caption" component="p" textAlign="right" />
+                      <Typography variant="caption" component="p" textAlign="right" />
+                      <Typography variant="caption" component="p" textAlign="right" />
+                    </Box>
+                  </Box>
                 </Box>
               </Box>
               {isAlphaFold(selectedStructure?.id) && <AlphaFoldLegend />}
