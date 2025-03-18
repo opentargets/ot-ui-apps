@@ -13,9 +13,9 @@ const content = {
 };
 const contentURL = {
   mouseOrthologMaxIdentityPercentage:
-    "https://platform-docs.opentargets.org/target-prioritisation#mouse-ortholog-identity",
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#mouse-ortholog-identity",
   paralogMaxIdentityPercentage:
-    "https://platform-docs.opentargets.org/target-prioritisation#paralogues",
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#paralogues",
 };
 
 function getTooltipContent(homolog) {
