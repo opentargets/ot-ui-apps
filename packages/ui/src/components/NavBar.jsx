@@ -62,6 +62,7 @@ const useStyles = makeStyles(theme => ({
   },
   navLogo: {
     flex: 1,
+    display: "none",
   },
   navSearch: {
     flex: 1,
@@ -100,15 +101,47 @@ function NavBar({ name, search, api, downloads, docs, contact, homepage, items, 
       elevation={0}
     >
       <Toolbar variant="dense" className={classNames(classes.spaceBetween)}>
-        <div className={classes.navLogo}>
+        {homepage ? null : (
+          <Box
+            component={ReactRouterLink}
+            to="/"
+            sx={{
+              display: { xs: "flex", md: "none" },
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img width="30px" height="100%" alt="logo" src="/assets/img/ot-logo-small.png" />
+          </Box>
+        )}
+        <Box
+          sx={{
+            flex: 1,
+            display: { xs: "none", md: "flex" },
+          }}
+        >
           {homepage ? null : (
             <LogoBTN component={ReactRouterLink} to="/" color="inherit">
               <OpenTargetsTitle name={name} />
             </LogoBTN>
           )}
-        </div>
+        </Box>
 
-        <div className={classes.navSearch}>{search || null}</div>
+        <Box
+          sx={{
+            flex: {
+              xs: 2,
+              sm: 1,
+            },
+            ml: {
+              xs: 1,
+              sm: 2,
+              md: 0,
+            },
+          }}
+        >
+          {search || null}
+        </Box>
 
         <div className={classes.navMenu}>
           {docs ? (

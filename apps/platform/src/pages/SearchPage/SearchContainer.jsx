@@ -13,12 +13,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartBar,
   faDna,
-  faMagnifyingGlassMinus,
   faMapPin,
   faPrescriptionBottleAlt,
   faStethoscope,
 } from "@fortawesome/free-solid-svg-icons";
-import { ErrorBoundary } from "ui";
+import { ErrorBoundary, BrokenSearchIcon } from "ui";
 
 import DiseaseDetail from "./DiseaseDetail";
 import DiseaseResult from "./DiseaseResult";
@@ -29,6 +28,7 @@ import TargetResult from "./TargetResult";
 import VariantDetail from "./VariantDetail";
 import VariantResult from "./VariantResult";
 import StudyResult from "./StudyResult";
+import { grey } from "@mui/material/colors";
 
 const getCounts = entities => {
   const counts = {
@@ -194,7 +194,7 @@ function NoResultsContainer({ q }) {
       }}
     >
       <Box sx={{ fontSize: "10em", mb: 5 }}>
-        <FontAwesomeIcon icon={faMagnifyingGlassMinus} />
+        <BrokenSearchIcon color={grey[400]} />
       </Box>
       <Box sx={{ typography: "h6", textAlign: "center" }}>
         We could not find anything in the Platform database that matches{" "}

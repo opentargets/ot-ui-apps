@@ -246,7 +246,10 @@ function OtTableSSP({
   return (
     <div>
       {/* Global Search */}
-      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Grid
+        container
+        sx={{ display: "flex", justifyContent: "space-between", gap: { xs: 2, md: 0 } }}
+      >
         <Grid item sm={12} md={4}>
           {showGlobalFilter && (
             <OtTableSearch
