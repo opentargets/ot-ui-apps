@@ -13,25 +13,9 @@ jobs:
     uses: ./.github/workflows/build.yaml
     needs: ci
 
-  image_platform:
+  image:
     uses: ./.github/workflows/image.yaml
     needs: build
-    with:
-      flavor: 'platform'
-      api_url: https://api.platform.opentargets.org/api/v4/graphql
-      ai_api_url: https://ai.platform.opentargets.org
-    secrets:
-      google_tag_manager_id: ${{ secrets.PLATFORM_GOOGLE_TAG_MANAGER_ID }}
-
-  image_ppp:
-    uses: ./.github/workflows/image.yaml
-    needs: build
-    with:
-      flavor: 'ppp'
-      api_url: https://api.partner-platform.opentargets.org/api/v4/graphql
-      ai_api_url: https://ai.partner-platform.opentargets.org
-    secrets:
-      google_tag_manager_id: ${{ secrets.PPP_GOOGLE_TAG_MANAGER_ID }}
 
   release:
     name: Release 🚀
