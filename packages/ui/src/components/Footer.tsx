@@ -59,7 +59,7 @@ type FooterSectionHeadingProps = {
 };
 const FooterSectionHeading = ({ children }: FooterSectionHeadingProps) => (
   <Grid item xs={12}>
-    <Typography variant="h6" color="inherit">
+    <Typography variant="h6" component="div" color="inherit">
       {children}
     </Typography>
   </Grid>
