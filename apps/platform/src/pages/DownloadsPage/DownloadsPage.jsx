@@ -1,8 +1,8 @@
+import { useEffect, useState } from "react";
 import { Paper, Box, Chip, Typography, Alert, AlertTitle } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link, OtTable } from "ui";
 import { getConfig } from "@ot/config";
-import datasetMappings from "./dataset-mappings.json";
 import { v1 } from "uuid";
 import { Fragment } from "react/jsx-runtime";
 import ContainedInDrawer from "./ContainedInDrawer";
@@ -62,13 +62,15 @@ function getColumn(locationUrl, version) {
   return columns;
 }
 
-function getRows() {
-  return datasetMappings.distribution.filter(e => e["@type"] === "cr:FileSet");
+function getRows(data) {
+  if (!data) return [];
+  return data.distribution.filter(e => e["@type"] === "cr:FileSet");
 }
 
-function getAllLocationUrl() {
-  const locationArray = datasetMappings.distribution.filter(e => e["@type"] === "cr:FileObject");
+function getAllLocationUrl(data) {
+  if (!data) return "";
   const locationObj = {};
+  const locationArray = data.distribution.filter(e => e["@type"] === "cr:FileObject");
   locationArray.map(e => {
     locationObj[e["@id"]] = e.contentUrl;
   });
@@ -76,25 +78,42 @@ function getAllLocationUrl() {
 }
 
 function DownloadsPage() {
-  const rows = getRows();
-  const locationUrl = getAllLocationUrl();
-  const columns = getColumn(locationUrl, datasetMappings.version);
+  const [loading, setLoading] = useState(true);
+  const [downloadsData, setDownloadsData] = useState(null);
+  const rows = getRows(downloadsData);
+  const locationUrl = getAllLocationUrl(downloadsData);
+  const columns = getColumn(locationUrl, downloadsData?.version);
+
+  useEffect(() => {
+    let isCurrent = true;
+    setLoading(true);
+    fetch(config.downloadsURL)
+      .then(res => res.json())
+      .then(data => {
+        if (isCurrent) setDownloadsData(data);
+        setLoading(false);
+      });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, []);
 
   const classes = useStyles();
 
   return (
     <>
       <Typography variant="h4" component="h1" paragraph>
-        {datasetMappings.name}
+        {downloadsData?.name}
       </Typography>
-      <Typography paragraph>{datasetMappings.description}</Typography>
+      <Typography paragraph>{downloadsData?.description}</Typography>
       <Typography paragraph>
         Our scripts and schema conforms to{" "}
-        <Link external to={datasetMappings.conformsTo}>
+        <Link external to={downloadsData?.conformsTo}>
           Ml Commons
         </Link>
       </Typography>
-      <Typography paragraph>Current data version: {datasetMappings.version}</Typography>
+      <Typography paragraph>Current data version: {downloadsData?.version}</Typography>
 
       {config.isPartnerPreview ? (
         <Alert severity="warning" className={classes.alert}>
@@ -111,7 +130,7 @@ function DownloadsPage() {
 
       <Paper variant="outlined" elevation={0}>
         <Box m={2}>
-          <OtTable showGlobalFilter rows={rows} columns={columns} loading={!rows.length} />
+          <OtTable showGlobalFilter rows={rows} columns={columns} loading={loading} />
         </Box>
       </Paper>
     </>
