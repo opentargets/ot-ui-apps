@@ -1,2 +1,3 @@
-User-agent: * 
-Disallow: /
+User-agent: *
+Disallow: /search?q=* # block search results pages
+Disallow: /evidence/* # block evidence pages
