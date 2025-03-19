@@ -17,13 +17,9 @@ function Description({ variantId, referenceAllele, alternateAllele }: Descriptio
           alternateAllele={alternateAllele}
         />
       </strong>
-      . Source:{" "}
-      <Link to="https://www.ensembl.org/info/docs/tools/vep/index.html" external>
-        VEP
-      </Link>
-      ,{" "}
-      <Link to="https://gnomad.broadinstitute.org/" external>
-        gnomAD
+      . Source{" "}
+      <Link to="https://platform-docs.opentargets.org/variant#variant-effect" external>
+        Open Targets
       </Link>
     </>
   );

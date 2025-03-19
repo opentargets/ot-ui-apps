@@ -5,7 +5,7 @@ function Description({ symbol, name }) {
     <>
       95% GWAS credible sets prioritising <strong>{symbol}</strong> as likely causal gene for{" "}
       <strong>{name}</strong>. Source:{" "}
-      <Link to="https://home.opentargets.org/merged-product-documentation" external>
+      <Link to="https://platform-docs.opentargets.org/evidence#gwas-associations" external>
         Open Targets
       </Link>
     </>
