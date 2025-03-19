@@ -150,7 +150,7 @@ function StructureIdPanel({ selectedStructure }) {
   );
 }
 
-function hoverManagerFactory({ viewer, atomInfoRef, chainToEntityDesc, isAF }) {
+function hoverManagerFactory({ viewer, atomInfoRef, parsedCif, chainToEntityDesc, isAF }) {
   return [
     {},
     true,
@@ -176,8 +176,16 @@ function hoverManagerFactory({ viewer, atomInfoRef, chainToEntityDesc, isAF }) {
       if (infoElmt) {
         infoElmt.style.display = "block";
         const fieldElmts = [...infoElmt.querySelectorAll("p")];
-        fieldElmts[0].textContent = chainToEntityDesc[atom.chain];
-        fieldElmts[1].textContent = `${atom.chain} | ${atom.resn} ${atom.resi}`;
+        const authChain = parsedCif["_atom_site.auth_asym_id"][atom.index];
+        const pdbChain = parsedCif["_atom_site.label_asym_id"][atom.index];
+        const authAtom = parsedCif["_atom_site.auth_seq_id"][atom.index];
+        const pdbAtom = parsedCif["_atom_site.label_seq_id"][atom.index];
+        fieldElmts[0].textContent = chainToEntityDesc[pdbChain];
+        fieldElmts[1].textContent = `${pdbChain}${
+          authChain && authChain !== pdbChain ? ` (auth: ${authChain})` : ""
+        } | ${atom.resn} ${pdbAtom}${
+          authAtom && authAtom !== pdbAtom ? ` (auth: ${authAtom})` : ""
+        }`;
         fieldElmts[2].textContent = isAF ? `Confidence: ${atom.b} (${getConfidence(atom)})` : "";
       }
     },
@@ -235,7 +243,6 @@ function Body({ label: symbol, entity }) {
       sortable: true,
     },
     {
-      // NUMERIC/RIGHT ALIGN?
       id: "properties.resolution",
       label: "Resolution",
       sortable: true,
@@ -270,11 +277,6 @@ function Body({ label: symbol, entity }) {
       renderCell: ({ id }) => segments[id].segmentsString,
       exportValue: ({ id }) => segments[id].segmentsString,
     },
-    // {
-    //   id: "longestSegment",
-    //   label: "Longest segment",
-    //   renderCell: ({ id }) => segments[id].maxLengthSegment,
-    // },
   ];
 
   function getAtomColor(atom) {
@@ -358,14 +360,42 @@ function Body({ label: symbol, entity }) {
 
         const parsedCif = parseCif(data)[selectedStructure.id];
 
-        // structure chains
+        // pdb <-> auth chains
+        // - may only need pdb -> auth, but is 1-to-many so get auth->pdb first
+        let authToPdbChain = null;
+        let pdbToAuthChain = null;
+        {
+          const authChains = parsedCif["_atom_site.auth_asym_id"];
+          if (authChains) {
+            const pdbChains = parsedCif["_atom_site.label_asym_id"];
+            const authChainsToMap = new Set(authChains);
+            authToPdbChain = {};
+            for (const [index, pdbChain] of pdbChains.entries()) {
+              const authChain = authChains[index];
+              if (authChainsToMap.has(authChain)) {
+                authToPdbChain[authChain] = pdbChain;
+                authChainsToMap.delete(authChain);
+                if (authChainsToMap.size === 0) break;
+              }
+            }
+            pdbToAuthChain = {};
+            for (const [authChain, pdbChain] of Object.entries(authToPdbChain)) {
+              pdbToAuthChain[pdbChain] ??= [];
+              pdbToAuthChain[pdbChain].push(authChain);
+            }
+          }
+        }
+
+        // structure chains - pdb chain names
         const structureChains = parsedCif["_pdbx_struct_assembly_gen.asym_id_list"];
         let firstStructureChains;
         let firstStructureTargetChains = [];
         let firstStructureNonTargetChains = [];
         let otherStructureChains;
-        const targetChains = segments[selectedStructure.id].uniqueChains;
+        const targetChains = segments[selectedStructure.id].uniqueChains; // auth names
+        const targetChainsPdb = new Set([...targetChains].map(chain => authToPdbChain[chain]));
         if (structureChains) {
+          console.log(structureChains);
           if (Array.isArray(structureChains)) {
             firstStructureChains = structureChains[0].split(",");
             otherStructureChains = structureChains.slice(1).join(",").split(",");
@@ -378,28 +408,31 @@ function Body({ label: symbol, entity }) {
             otherStructureChains = [];
           }
           for (const chain of firstStructureChains) {
-            (targetChains.has(chain)
+            (targetChainsPdb.has(chain)
               ? firstStructureTargetChains
               : firstStructureNonTargetChains
             ).push(chain);
           }
         } else {
-          // data missing/invalid _pdbx_struct_assembly_gen.asym_id_list (includes AlphaFold)
-          const allChains = new Set(parsedCif["_atom_site.auth_asym_id"]);
-          const targetChainsSet = new Set(targetChains);
+          const allChains = new Set(parsedCif["_atom_site.label_asym_id"]);
           firstStructureChains = [...allChains];
-          firstStructureTargetChains.push(...targetChains);
+          firstStructureTargetChains.push(...targetChainsPdb);
           firstStructureNonTargetChains = firstStructureChains.filter(
-            chain => !targetChainsSet.has(chain)
+            chain => !targetChainsPdb.has(chain)
           );
           otherStructureChains = [];
         }
-        // console.log({
-        //   targetChains,
-        //   firstStructureChains,
-        //   firstStructureTargetChains,
-        //   firstStructureNonTargetChains,
-        // });
+        if (pdbToAuthChain) {
+          // debugger;
+          firstStructureChains = firstStructureChains.map(chain => pdbToAuthChain[chain]).flat();
+          firstStructureTargetChains = firstStructureTargetChains
+            .map(chain => pdbToAuthChain[chain])
+            .flat();
+          firstStructureNonTargetChains = firstStructureNonTargetChains
+            .map(chain => pdbToAuthChain[chain])
+            .flat();
+          otherStructureChains = otherStructureChains.map(chain => pdbToAuthChain[chain]).flat();
+        }
 
         // entities
         const entityIdToDesc = zipToObject(
@@ -416,24 +449,25 @@ function Body({ label: symbol, entity }) {
         }
         setChainToEntityDesc(_chainToEntityDesc);
 
-        // invalidate auth fields for residue and chain forcing 3Dmol to use the label (ie PDB) fields
-        data = data.replace(/auth_(?:asym|seq)_id/g, match => `${match}X`);
-
         viewer.clear();
         viewer.addModel(data, "cif"); /* load data */
         viewer.setClickable({}, true, atom => console.log(atom));
-        viewer.setHoverDuration(0);
+        viewer.setHoverDuration(50);
         viewer.setHoverable(
           ...hoverManagerFactory({
             viewer,
             atomInfoRef,
+            parsedCif,
             chainToEntityDesc: _chainToEntityDesc,
             isAF,
           })
         );
 
         if (isAF) {
-          viewer.setStyle({}, { cartoon: { colorfunc: getAtomColor, arrows: true } });
+          viewer.setStyle(
+            {},
+            { cartoon: { colorfunc: getAtomColor, arrows: true, smooth: 5, style: "parabola" } }
+          );
         } else {
           viewer.setStyle(
             { chain: firstStructureTargetChains },
