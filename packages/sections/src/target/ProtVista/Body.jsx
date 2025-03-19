@@ -83,7 +83,7 @@ const chainColorScheme = [
   ...schemePaired.filter((v, i) => i % 2 === 1),
   ...schemeCategory10.slice(0, -1),
 ];
-const chainDefaultColor = "#9999aa";
+const defaultChainColor = "steelblue";
 const chainColorIndex = {};
 for (const [index, letter] of "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
   .split("")
@@ -150,6 +150,8 @@ function StructureIdPanel({ selectedStructure }) {
   );
 }
 
+// keep as closure since may need local state in future - such as hovered on atom
+// for highlighting
 function hoverManagerFactory({ viewer, atomInfoRef, parsedCif, chainToEntityDesc, isAF }) {
   return [
     {},
@@ -212,22 +214,6 @@ function Body({ label: symbol, entity }) {
 
   const columns = [
     {
-      id: "select",
-      label: "Structure",
-      filterValue: false,
-      renderCell: row => {
-        return (
-          <Box
-            sx={{ color: "steelblue", "&:hover": { cursor: "pointer" } }}
-            onClick={() => setSelectedStructure(row)}
-          >
-            view
-          </Box>
-        );
-      },
-      exportValue: false,
-    },
-    {
       id: "type",
       label: "Source",
       sortable: true,
@@ -282,9 +268,11 @@ function Body({ label: symbol, entity }) {
   function getAtomColor(atom) {
     return isAlphaFold(selectedStructure.id)
       ? getConfidence(atom, "color")
-      : segments[selectedStructure.id].details[atom.chain]
-      ? chainColorScheme[chainColorIndex[atom.chain]]
-      : chainColorScheme[[chainColorIndex[atom.chain[0]]]] ?? "#888";
+      : chainColorScheme[chainColorIndex[atom.chain[0]]] ?? defaultChainColor;
+  }
+
+  function getSelectedRows(selectedRows) {
+    selectedRows.length > 0 && setSelectedStructure(selectedRows[0]?.original);
   }
 
   // fetch experimental results
@@ -395,7 +383,6 @@ function Body({ label: symbol, entity }) {
         const targetChains = segments[selectedStructure.id].uniqueChains; // auth names
         const targetChainsPdb = new Set([...targetChains].map(chain => authToPdbChain[chain]));
         if (structureChains) {
-          console.log(structureChains);
           if (Array.isArray(structureChains)) {
             firstStructureChains = structureChains[0].split(",");
             otherStructureChains = structureChains.slice(1).join(",").split(",");
@@ -522,6 +509,7 @@ function Body({ label: symbol, entity }) {
                 columns={columns}
                 loading={!experimentalResults}
                 rows={experimentalResults}
+                getSelectedRows={getSelectedRows}
               />
             </Grid>
             <Grid item xs={12} lg={6}>
