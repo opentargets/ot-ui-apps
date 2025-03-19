@@ -76,9 +76,8 @@ function ContainedInDrawer({
 
   function getCommands() {
     if (location === "ftp-location")
-      return <FtpLocation link={link} format={format} version={version} path={path} />;
-    else if (location === "gcp-location")
-      return <GcpLocation format={format} version={version} path={path} />;
+      return <FtpLocation link={link} version={version} path={path} />;
+    else if (location === "gcp-location") return <GcpLocation link={link} />;
     return <>Invalid path</>;
   }
 
@@ -109,7 +108,7 @@ function ContainedInDrawer({
   );
 }
 
-function FtpLocation({ link, format, version, path }) {
+function FtpLocation({ link, version, path }) {
   const classes = useStyles();
 
   return (
@@ -125,8 +124,7 @@ function FtpLocation({ link, format, version, path }) {
 
       <Typography>rsync</Typography>
       <div className={classes.resourceURL}>
-        rsync -rpltvz --delete rsync.ebi.ac.uk::pub/databases/opentargets/platform/{version}
-        /output/etl/{FORMAT_MAPPING[format]}
+        rsync -rpltvz --delete rsync.ebi.ac.uk::pub/databases/opentargets/platform/{version}/output/
         {path} .
       </div>
       <Typography variant="subtitle2" gutterBottom>
@@ -134,15 +132,13 @@ function FtpLocation({ link, format, version, path }) {
       </Typography>
       <div className={classes.resourceURL}>
         wget --recursive --no-parent --no-host-directories --cut-dirs 8
-        ftp://ftp.ebi.ac.uk/pub/databases/opentargets/platform/{version}
-        /output/etl/{FORMAT_MAPPING[format]}
-        {path} .
+        ftp://ftp.ebi.ac.uk/pub/databases/opentargets/platform/{version}/output/{path} .
       </div>
     </>
   );
 }
 
-function GcpLocation({ version, path, format }) {
+function GcpLocation({ link }) {
   const classes = useStyles();
 
   return (
@@ -150,10 +146,7 @@ function GcpLocation({ version, path, format }) {
       <Typography variant="subtitle2" gutterBottom>
         Google Cloud
       </Typography>
-      <div className={classes.resourceURL}>
-        gsutil -m cp -r gs://open-targets-data-releases/{version}
-        /output/etl/{FORMAT_MAPPING[format]}/{path}
-      </div>
+      <div className={classes.resourceURL}>gsutil -m cp -r {link}/</div>
     </>
   );
 }
