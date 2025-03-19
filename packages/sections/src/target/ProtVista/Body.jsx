@@ -340,6 +340,11 @@ function Body({ label: symbol, entity }) {
   useEffect(() => {
     async function fetchStructure() {
       if (selectedStructure && viewer) {
+        viewer.clear();
+        if (viewerRef.current) {
+          viewerRef.current.querySelector("._LoadingMessage").style.display = "flex";
+        }
+
         const isAF = isAlphaFold(selectedStructure.id);
         const pdbUri = isAF
           ? `${alphaFoldStructureStem}${selectedStructure.id}${alphaFoldStructureSuffix}`
@@ -436,7 +441,6 @@ function Body({ label: symbol, entity }) {
         }
         setChainToEntityDesc(_chainToEntityDesc);
 
-        viewer.clear();
         viewer.addModel(data, "cif"); /* load data */
         viewer.setClickable({}, true, atom => console.log(atom));
         viewer.setHoverDuration(50);
@@ -480,6 +484,10 @@ function Body({ label: symbol, entity }) {
         viewer.zoom(isAF ? 1.4 : 1);
         viewer.render();
 
+        if (viewerRef.current) {
+          viewerRef.current.querySelector("._LoadingMessage").style.display = "none";
+        }
+
         window.viewer = viewer; // !! REMOVE !!
       }
     }
@@ -515,6 +523,22 @@ function Body({ label: symbol, entity }) {
             <Grid item xs={12} lg={6}>
               <Box position="relative" display="flex" justifyContent="center" pb={2}>
                 <Box ref={viewerRef} position="relative" width="100%" height="400px">
+                  <Box
+                    className="_LoadingMessage"
+                    sx={{
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      position: "absolute",
+                      zIndex: 1,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography variant="body2">Loading structure ...</Typography>
+                  </Box>
                   <StructureIdPanel selectedStructure={selectedStructure} />
                   <Box
                     ref={atomInfoRef}
