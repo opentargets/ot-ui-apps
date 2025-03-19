@@ -59,7 +59,7 @@ export const externalLinks = {
     },
     {
       label: "Terms of use",
-      url: "https://platform-docs.opentargets.org/terms-of-use",
+      url: "https://platform-docs.opentargets.org/licence/terms-of-use",
     },
   ] as ExternalLink[],
   license: {
@@ -298,6 +298,32 @@ export const VIEW = {
   table: "Table",
 };
 
+export const getStudyTypeDisplay = studyType => {
+  if (studyType) return studyType?.replace(/(qtl|gwas)/gi, match => match.toUpperCase());
+  return studyType;
+};
+
+export const getStudyItemMetaData = ({ studyType, credibleSetsCount, nSamples }) => {
+  let metaData = "";
+  if (studyType) metaData += `Study type: ${getStudyTypeDisplay(studyType)}`;
+  if (credibleSetsCount > -1)
+    metaData += ` • Credible sets count: ${credibleSetsCount.toLocaleString()}`;
+  if (studyType) metaData += ` • Sample size: ${nSamples.toLocaleString()}`;
+
+  return metaData;
+};
+
+export const getGenomicLocation = genomicLocation => {
+  /****
+   * TODO: add GRCh38 to this function
+   * check all the locations we are using this
+   * option 1:  getGenomicLocation() -> ["GRCh38", "chromosome-string"]
+   * option 2:  getGenomicLocation("GRCh38") -> "GRCh38|chromosome-string"
+   ****/
+  return `${genomicLocation?.chromosome}:${genomicLocation?.start}-${genomicLocation?.end},${
+    Math.sign(genomicLocation?.strand) === 1 ? "+" : "-"
+  }`;
+};
 export * from "./dataTypes";
 export * from "./types/response";
 export * from "./searchSuggestions";

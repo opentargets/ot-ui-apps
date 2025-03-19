@@ -6,6 +6,7 @@ import {
   getPaginationRowModel,
   flexRender,
   PaginationState,
+  Row,
 } from "@tanstack/react-table";
 import { faAngleLeft, faAngleRight, faBackwardStep } from "@fortawesome/free-solid-svg-icons";
 
@@ -20,6 +21,7 @@ import {
   OtTableHeaderText,
   OtTD,
   OtTableCellContainer,
+  OtTR,
 } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
 import {
@@ -50,13 +52,18 @@ function OtTableSSP({
   dataDownloader,
   showColumnVisibilityControl = true,
   setInitialRequestData,
+  enableMultipleRowSelection = false,
+  getSelectedRows,
 }: OtTableSSPProps): ReactElement {
   const client = useApolloClient();
   const [state, dispatch] = useReducer(otTableReducer, "", createInitialState);
+  const [rowSelection, setRowSelection] = useState({});
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: INIT_PAGE_SIZE,
   });
+
+  const enableRowSelection = !!getSelectedRows || enableMultipleRowSelection;
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
   const loadingCells = getLoadingCells(mappedColumns);
   const tableColumns = useMemo(
@@ -70,13 +77,24 @@ function OtTableSSP({
     rowCount: state.count,
     state: {
       pagination,
+      rowSelection,
     },
     autoResetPageIndex: false,
     // manualPagination: true,
     onPaginationChange: onPaginationChange,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    enableRowSelection: enableRowSelection,
+    enableMultiRowSelection: enableMultipleRowSelection,
+    onRowSelectionChange: setRowSelection,
   });
+
+  /****
+   * call the higher order function if row selection is enabled
+   ****/
+  function onRowSelection(row: Row<any>) {
+    enableRowSelection && row.toggleSelected();
+  }
 
   /**********************************************
    * DEFAULT FUNCTION CALLBACK TRIGGERED BY
@@ -212,16 +230,26 @@ function OtTableSSP({
       pageSize: pagination.pageSize,
     };
     setTableData({ newPagination, freeTextQuery: state.freeTextQuery });
+    enableRowSelection && setRowSelection({ 0: true });
   }, [state.freeTextQuery]);
+
+  useEffect(() => {
+    enableRowSelection && getSelectedRows(table.getSelectedRowModel().rows);
+  }, [table.getSelectedRowModel()]);
 
   function getCellData(cell: Record<string, unknown>): ReactNode {
     return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
   }
 
+  const playgroundVariables = { ...variables, cursor: null, size: 10 };
+
   return (
     <div>
       {/* Global Search */}
-      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Grid
+        container
+        sx={{ display: "flex", justifyContent: "space-between", gap: { xs: 2, md: 0 } }}
+      >
         <Grid item sm={12} md={4}>
           {showGlobalFilter && (
             <OtTableSearch
@@ -240,8 +268,8 @@ function OtTableSSP({
               columns={dataDownloaderColumns || columns}
               rows={getWholeDataset}
               fileStem={dataDownloaderFileStem}
-              query={query}
-              variables={variables}
+              query={query.loc.source.body}
+              variables={playgroundVariables}
             />
           )}
         </Grid>
@@ -287,7 +315,12 @@ function OtTableSSP({
           <tbody>
             {table.getRowModel().rows.map(row => {
               return (
-                <tr key={row.id}>
+                <OtTR
+                  key={row.id}
+                  onClick={() => onRowSelection(row)}
+                  enableRowSelection={enableRowSelection}
+                  isSelected={row.getIsSelected()}
+                >
                   {row.getVisibleCells().map(cell => {
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
@@ -301,7 +334,7 @@ function OtTableSSP({
                       </OtTD>
                     );
                   })}
-                </tr>
+                </OtTR>
               );
             })}
           </tbody>
@@ -319,8 +352,9 @@ function OtTableSSP({
       >
         {state.loading && <CircularProgress sx={{ mx: theme => theme.spacing(2) }} size={25} />}
         <div>
-          <span>Rows per page:</span>
+          <label for="paginationSelect">Rows per page:</label>
           <NativeSelect
+            id="paginationSelect"
             disableUnderline
             disabled={state.loading}
             sx={{ pl: theme => theme.spacing(2) }}
@@ -359,12 +393,14 @@ function OtTableSSP({
             <IconButton
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage() || state.loading}
+              aria-label="first page"
             >
               <FontAwesomeIcon size="2xs" icon={faBackwardStep} />
             </IconButton>
             <IconButton
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage() || state.loading}
+              aria-label="previous page"
             >
               <FontAwesomeIcon size="2xs" icon={faAngleLeft} />
             </IconButton>
@@ -372,6 +408,7 @@ function OtTableSSP({
             <IconButton
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage() || state.loading}
+              aria-label="next page"
             >
               <FontAwesomeIcon size="2xs" icon={faAngleRight} />
             </IconButton>

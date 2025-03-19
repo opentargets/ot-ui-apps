@@ -82,6 +82,19 @@ export const OtTD = styled("td", {
   }),
 }));
 
+export const OtTR = styled("tr", {
+  shouldForwardProp: prop => prop !== "enableRowSelection" && prop !== "isSelected",
+})(({ theme, enableRowSelection, isSelected }) =>
+  theme.unstable_sx({
+    ...(enableRowSelection && {
+      cursor: "pointer",
+    }),
+    ...(isSelected && {
+      backgroundColor: theme.palette.grey[100],
+    }),
+  })
+);
+
 export const OtTableHeaderText = styled(Box, {
   shouldForwardProp: prop => prop !== "verticalHeader",
 })(({ theme, verticalHeader }) =>

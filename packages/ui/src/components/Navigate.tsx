@@ -9,10 +9,11 @@ type NavigateProps = {
 
 export default function Navigate({ to }: NavigateProps) {
   return (
-    <Box display="flex" justifyContent="center">
-      <Link to={to}>
-        <FontAwesomeIcon icon={faArrowRightToBracket} />
-      </Link>
-    </Box>
+    <Link asyncTooltip to={to}>
+      <Box display="flex" justifyContent="center" alignItems="center" gap={1}>
+        View
+        <FontAwesomeIcon size="sm" icon={faArrowRightToBracket} />
+      </Box>
+    </Link>
   );
 }

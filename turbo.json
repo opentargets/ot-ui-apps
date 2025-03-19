@@ -11,6 +11,9 @@
     "prettier:all": {
       "outputs": []
     },
+    "prettier:check": {
+      "outputs": []
+    },
     "dev": {
       "cache": false,
       "persistent": true

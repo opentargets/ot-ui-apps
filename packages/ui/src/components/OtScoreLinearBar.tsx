@@ -5,7 +5,6 @@ const OtScoreLinearBar = styled(LinearProgress)(({ theme }) => ({
   height: 8,
   borderRadius: 5,
   width: 70,
-  // maxWidth: 70,
   [`&.${linearProgressClasses.colorPrimary}`]: {
     backgroundColor: theme.palette.grey[200],
   },

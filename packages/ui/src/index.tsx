@@ -48,6 +48,7 @@ export { default as OtScoreLinearBar } from "./components/OtScoreLinearBar";
 export { default as OtTableSSP } from "./components/OtTable/OtTableSSP";
 export { default as EntityPanel } from "./components/EntityPanel/EntityPanel";
 export { default as Page } from "./pages/Page";
+export { default as StudyPublication } from "./components/StudyPublication";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Footer";
@@ -58,6 +59,7 @@ export * from "./components/Table";
 export * from "./components/PublicationsDrawer";
 export * from "./components/ExternalLink";
 export * from "./components/RoutingTabs";
+export * from "./components/HeatmapTable";
 
 /* SHARED PAGES  */
 export { default as EmptyPage } from "./pages/EmptyPage";
@@ -79,3 +81,5 @@ export { default as useBatchQuery } from "./hooks/useBatchQuery";
 export { default as useCursorBatchDownloader } from "./hooks/useCursorBatchDownloader";
 export { default as usePermissions } from "./hooks/usePermissions";
 export { default as useDebounce } from "./hooks/useDebounce";
+
+export { default as BrokenSearchIcon } from "./components/icons/BrokenSearchIcon";

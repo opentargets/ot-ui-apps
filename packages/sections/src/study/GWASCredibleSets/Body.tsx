@@ -5,7 +5,7 @@ import {
   DisplayVariantId,
   Tooltip,
   ClinvarStars,
-  OtScoreLinearBar,
+  L2GScoreIndicator,
   OtTable,
   useBatchQuery,
   Navigate,
@@ -28,8 +28,9 @@ import { ReactElement, useEffect, useState } from "react";
 const columns = [
   {
     id: "studyLocusId",
-    label: "Navigate",
+    label: "Credible set",
     enableHiding: false,
+    sticky: true,
     renderCell: ({ studyLocusId }) => <Navigate to={`/credible-set/${studyLocusId}`} />,
   },
   {
@@ -97,9 +98,25 @@ const columns = [
   {
     id: "confidence",
     label: "Fine-mapping confidence",
-    tooltip:
-      "Fine-mapping confidence based on the quality of the linkage-desequilibrium information available and fine-mapping method",
+    tooltip: (
+      <>
+        Fine-mapping confidence based on the suitability of the linkage-disequilibrium information
+        and fine-mapping method. See{" "}
+        <Link
+          external
+          to="https://platform-docs.opentargets.org/credible-set#credible-set-confidence"
+        >
+          here
+        </Link>{" "}
+        for more details.
+      </>
+    ),
     sortable: true,
+    comparator: nullishComparator(
+      (a, b) => a - b,
+      row => credsetConfidenceMap?.[row.confidence],
+      false
+    ),
     renderCell: ({ confidence }) => {
       if (!confidence) return naLabel;
       return (
@@ -114,7 +131,15 @@ const columns = [
     id: "topL2G",
     label: "Top L2G",
     filterValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target.approvedSymbol,
-    tooltip: "Top gene prioritised by our locus-to-gene model",
+    tooltip: (
+      <>
+        Top gene prioritised by our locus-to-gene model. See{" "}
+        <Link external to="https://platform-docs.opentargets.org/gentropy/locus-to-gene-l2g">
+          our documentation
+        </Link>{" "}
+        for more information.
+      </>
+    ),
     renderCell: ({ l2GPredictions }) => {
       const target = l2GPredictions?.rows[0]?.target;
       if (!target) return naLabel;
@@ -135,16 +160,21 @@ const columns = [
       false
     ),
     sortable: true,
-    tooltip:
-      "Machine learning prediction linking a gene to a credible set using all features. Score range [0,1].",
-    renderCell: ({ l2GPredictions }) => {
+    tooltip: (
+      <>
+        Machine learning prediction linking a gene to a credible set using all features. Score range
+        [0,1]. See{" "}
+        <Link external to="https://platform-docs.opentargets.org/gentropy/locus-to-gene-l2g">
+          our documentation
+        </Link>{" "}
+        for more information.
+      </>
+    ),
+    renderCell: ({ studyLocusId, l2GPredictions }) => {
       const score = l2GPredictions?.rows[0]?.score;
-      if (typeof score !== "number") return naLabel;
-      return (
-        <Tooltip title={score.toFixed(3)} style="">
-          <OtScoreLinearBar variant="determinate" value={score * 100} />
-        </Tooltip>
-      );
+      const target = l2GPredictions?.rows[0]?.target;
+      if (!score) return naLabel;
+      return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} targetId={target.id} />;
     },
     exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
   },

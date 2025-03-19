@@ -244,7 +244,7 @@ function APIPage() {
             <AccordionDetails>
               <div>
                 <Typography variant="subtitle2" display="block" paragraph>
-                  Other GWAS studies that share traits with a specified study
+                  Information about a specified study
                 </Typography>
                 <QueryButton
                   className={classes.buttonMargin}
@@ -295,7 +295,7 @@ function APIPage() {
                   Run sample query
                 </QueryButton>
                 <Typography variant="subtitle2" display="block" paragraph>
-                  Example query to get how many entries there are in each entity category for KRAS
+                  Example query to get how many entries there are in each entity category for PCSK9
                 </Typography>
                 <QueryButton
                   className={classes.buttonMargin}

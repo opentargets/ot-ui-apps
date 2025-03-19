@@ -51,12 +51,20 @@ export function facetFilterSelectAction(facets: Facet[]): Action {
   if (facets && facets.length) facetFiltersIds = facets.map(v => v.id);
   return {
     type: ActionType.FACETS_SEARCH,
-    facetFilters: facetFiltersIds,
+    facetFilters: facets,
+    facetFiltersIds,
   };
 }
 
 export function resetToInitialState(): Action {
   return {
     type: ActionType.SET_INITIAL_STATE,
+  };
+}
+
+export function setEntitySearch(entitySearch: string): Action {
+  return {
+    type: ActionType.ENTITY_SEARCH,
+    entitySearch,
   };
 }

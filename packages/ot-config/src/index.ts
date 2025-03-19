@@ -12,5 +12,6 @@ declare global {
     configEFOURL?: string;
     configDownloadsURL?: string;
     configGeneticsPortalUrl?: string;
+    gitVersion?: string;
   }
 }

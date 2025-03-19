@@ -1,7 +1,7 @@
 const id = "in_silico_predictors";
 export const definition = {
   id,
-  name: "In silico predictors",
+  name: "Variant effect",
   shortName: "VP",
-  hasData: data => data?.inSilicoPredictors?.length > 0,
+  hasData: data => data?.variantEffect?.length > 0,
 };

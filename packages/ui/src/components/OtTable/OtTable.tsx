@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useMemo, useState } from "react";
+import { ReactElement, ReactNode, useMemo, useState, useEffect } from "react";
 import { Box, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import {
   useReactTable,
@@ -10,6 +10,7 @@ import {
   FilterFn,
   flexRender,
   getFacetedUniqueValues,
+  Row,
 } from "@tanstack/react-table";
 import {
   faAngleLeft,
@@ -35,6 +36,7 @@ import {
   OtTableHeaderText,
   OtTD,
   OtTableCellContainer,
+  OtTR,
 } from "./otTableLayout";
 import DataDownloader from "../DataDownloader";
 import {
@@ -93,13 +95,17 @@ function OtTable({
   variables,
   showColumnVisibilityControl = true,
   loading,
+  enableMultipleRowSelection = false,
+  getSelectedRows,
 }: OtTableProps): ReactElement {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = useState({});
 
   const mappedColumns = mapTableColumnToTanstackColumns(columns);
   const loadingRows = getLoadingRows(10);
   const loadingCells = getLoadingCells(mappedColumns);
+  const enableRowSelection = !!getSelectedRows || enableMultipleRowSelection;
 
   const tableData = useMemo(() => (loading ? loadingRows : rows), [loading]);
   const tableColumns = useMemo(() => (loading ? loadingCells : mappedColumns), [loading]);
@@ -117,6 +123,7 @@ function OtTable({
     state: {
       columnFilters,
       globalFilter,
+      rowSelection,
     },
     initialState: {
       sorting: getDefaultSortObj(sortBy, order),
@@ -129,12 +136,42 @@ function OtTable({
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    enableRowSelection: enableRowSelection,
+    enableMultiRowSelection: enableMultipleRowSelection,
+    onRowSelectionChange: setRowSelection,
   });
+
+  function onRowSelection(e: any, row: Row<any>) {
+    enableRowSelection && row.toggleSelected();
+  }
+
+  // TODO:
+  // question: do we want to reset selected item to first if sorting is changed
+  // issue: useEffect is getting called 3 times
+
+  // useEffect(() => {
+  //   const firstRowIdInSortedRow = table.getSortedRowModel().rows[0].id;
+  //   enableRowSelection &&
+  //     setRowSelection({
+  //       [firstRowIdInSortedRow]: true,
+  //     });
+  // }, [table.getSortedRowModel()]);
+
+  useEffect(() => {
+    enableRowSelection && setRowSelection({ 0: true });
+  }, []);
+
+  useEffect(() => {
+    enableRowSelection && getSelectedRows(table.getSelectedRowModel().rows);
+  }, [table.getSelectedRowModel()]);
 
   return (
     <div>
       {/* Global Search */}
-      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Grid
+        container
+        sx={{ display: "flex", justifyContent: "space-between", gap: { xs: 2, md: 0 } }}
+      >
         <Grid item sm={12} md={4}>
           {showGlobalFilter && <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />}
         </Grid>
@@ -211,7 +248,12 @@ function OtTable({
           <tbody>
             {table.getRowModel().rows.map(row => {
               return (
-                <tr key={row.id}>
+                <OtTR
+                  key={row.id}
+                  onClick={e => onRowSelection(e, row)}
+                  enableRowSelection={enableRowSelection}
+                  isSelected={row.getIsSelected()}
+                >
                   {row.getVisibleCells().map(cell => {
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
@@ -225,7 +267,7 @@ function OtTable({
                       </OtTD>
                     );
                   })}
-                </tr>
+                </OtTR>
               );
             })}
           </tbody>
@@ -247,8 +289,9 @@ function OtTable({
         }}
       >
         <div>
-          <span>Rows per page:</span>
+          <label for="paginationSelect">Rows per page:</label>
           <NativeSelect
+            id="paginationSelect"
             disableUnderline
             disabled={loading}
             sx={{ pl: theme => theme.spacing(2) }}
@@ -287,19 +330,29 @@ function OtTable({
             <IconButton
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
+              aria-label="First Page"
             >
               <FontAwesomeIcon size="2xs" icon={faBackwardStep} />
             </IconButton>
-            <IconButton onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+            <IconButton
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+              aria-label="Previous Page"
+            >
               <FontAwesomeIcon size="2xs" icon={faAngleLeft} />
             </IconButton>
 
-            <IconButton onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+            <IconButton
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+              aria-label="Next Page"
+            >
               <FontAwesomeIcon size="2xs" icon={faAngleRight} />
             </IconButton>
             <IconButton
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
+              aria-label="last page"
             >
               <FontAwesomeIcon size="2xs" icon={faForwardStep} />
             </IconButton>

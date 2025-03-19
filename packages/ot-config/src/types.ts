@@ -6,6 +6,7 @@ export interface Config {
   efoURL: string;
   downloadsURL: string;
   geneticsPortalUrl: string;
+  gitVersion: string;
 }
 
 export type Environment = "development" | "production";

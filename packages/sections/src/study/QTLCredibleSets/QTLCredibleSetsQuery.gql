@@ -19,6 +19,7 @@ query QTLCredibleSetsQuery($studyId: String!) {
           count
         }
         finemappingMethod
+        confidence
       }
     }
   }

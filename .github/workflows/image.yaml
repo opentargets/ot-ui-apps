@@ -1,0 +1,80 @@
+name: Image
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    name: Build and push 🚢
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    env:
+      TAG: ${{ github.ref_name }}
+      REPO: ${{ github.event.repository.name }}
+    steps:
+      # prepare environment
+      - uses: actions/checkout@v4
+      - name: Prepare environment
+        run: |
+          DATA_RELEASE=$(node -p "require('./package.json').dataRelease")
+          echo "DATA_RELEASE=$DATA_RELEASE" >> $GITHUB_ENV
+          TAG=$(echo $TAG | sed 's/^v//')
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "building for data release $DATA_RELEASE"
+          echo "The tag for this build is $TAG"
+          echo "The repo name is: $REPO"
+          echo "Github context:\n$GITHUB_CONTEXT"
+
+      # authenticate in google cloud
+      - id: auth-google
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          project_id: 'open-targets-eu-dev'
+          workload_identity_provider: projects/426265110888/locations/global/workloadIdentityPools/github-actions/providers/opentargets
+          service_account: github-actions@open-targets-eu-dev.iam.gserviceaccount.com
+          access_token_lifetime: 300s
+      - id: auth-gar
+        name: Login to Google Artifact Registry
+        uses: docker/login-action@v3
+        with:
+          registry: europe-west1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth-google.outputs.access_token }}
+
+      - id: auth-ghcr
+        name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: bundle
+          path: apps/platform/bundle-platform
+
+      - id: push
+        name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./apps/platform
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/${{ env.REPO }}:latest
+            ghcr.io/${{ github.repository }}/${{ env.REPO }}:${{ env.TAG }}
+            europe-west1-docker.pkg.dev/open-targets-eu-dev/${{ env.REPO }}/${{ env.REPO }}:latest
+            europe-west1-docker.pkg.dev/open-targets-eu-dev/${{ env.REPO }}/${{ env.REPO }}:${{ env.TAG }}
+
+      - id: generate-attestations
+        name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: europe-west1-docker.pkg.dev/open-targets-eu-dev/${{ env.REPO }}/${{ env.REPO }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true

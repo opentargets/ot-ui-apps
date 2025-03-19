@@ -4,7 +4,7 @@ function Description() {
   return (
     <>
       Colocalisation metrics for overlapping credible sets from molecular QTL studies. Source:{" "}
-      <Link to="https://home.opentargets.org/merged-product-documentation" external>
+      <Link to="https://platform-docs.opentargets.org/credible-set#colocalisation" external>
         Open Targets
       </Link>
     </>

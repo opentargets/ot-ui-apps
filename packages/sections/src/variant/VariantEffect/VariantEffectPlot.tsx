@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import * as PlotLib from "@observablehq/plot";
 import { rgb } from "d3";
 import { useMeasure } from "@uidotdev/usehooks";
-import { Box, Fade, linkClasses, Skeleton } from "@mui/material";
+import { Box, Fade, Skeleton } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { DataDownloader } from "ui";
 
@@ -20,7 +20,7 @@ const PRIORITISATION_COLORS = [
   rgb("#2f735f"),
 ];
 
-function InSilicoPredictorsPlot({ data, query, variables, columns, loading }) {
+function VariantEffectPlot({ data, query, variables, columns, loading }) {
   const [ref, { width }] = useMeasure();
   if (loading) return <Skeleton sx={{ height: 325 }} variant="rectangular" />;
   return (
@@ -94,6 +94,7 @@ function Plot({ data, width }) {
       },
       y: {
         tickSize: 0,
+        tickPadding: 18,
       },
 
       color: {
@@ -171,4 +172,4 @@ function Plot({ data, width }) {
   return <Box ref={headerRef}></Box>;
 }
 
-export default InSilicoPredictorsPlot;
+export default VariantEffectPlot;
