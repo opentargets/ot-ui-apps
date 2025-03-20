@@ -6,15 +6,7 @@ import { definition } from ".";
 import { getUniprotIds, nanComparator } from "@ot/utils";
 import { createViewer, isNumeric } from "3dmol";
 import { parseCif } from "./parseCif";
-import {
-  schemeSet1,
-  schemePaired,
-  color as d3Color,
-  max,
-  schemeSet2,
-  schemeTableau10,
-  schemeCategory10,
-} from "d3";
+import { schemeSet1, schemeDark2, color as d3Color, max } from "d3";
 
 import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";
 import { useState, useEffect, useRef } from "react";
@@ -78,18 +70,8 @@ function getConfidence(atom, propertyName = "label") {
 
 const chainColorScheme = [
   ...[1, 2, 3, 4, 0, 6, 7].map(i => schemeSet1[i]),
-  ...schemeSet2.slice(0, -1),
-  ...schemeTableau10.slice(0, -1),
-  ...schemePaired.filter((v, i) => i % 2 === 1),
-  ...schemeCategory10.slice(0, -1),
+  ...schemeDark2.slice(0, -1),
 ];
-const defaultChainColor = "steelblue";
-const chainColorIndex = {};
-for (const [index, letter] of "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-  .split("")
-  .entries()) {
-  chainColorIndex[letter] = index % chainColorScheme.length;
-}
 
 function zipToObject(arr1, arr2) {
   const obj = {};
@@ -273,12 +255,6 @@ function Body({ label: symbol, entity }) {
     },
   ];
 
-  function getAtomColor(atom) {
-    return isAlphaFold(selectedStructure.id)
-      ? getConfidence(atom, "color")
-      : chainColorScheme[chainColorIndex[atom.chain[0]]] ?? defaultChainColor;
-  }
-
   function getSelectedRows(selectedRows) {
     selectedRows.length > 0 && setSelectedStructure(selectedRows[0]?.original);
   }
@@ -360,7 +336,6 @@ function Body({ label: symbol, entity }) {
         let data = await (await fetch(pdbUri)).text(); // !! ADD SOME ERROR HANDLING !!
 
         const parsedCif = parseCif(data)[selectedStructure.id];
-        console.log(parsedCif);
 
         // pdb <-> auth chains
         // - may only need pdb -> auth, but is 1-to-many so get auth->pdb first
@@ -424,7 +399,6 @@ function Body({ label: symbol, entity }) {
           otherStructureChains = [];
         }
         if (pdbToAuthChain) {
-          // debugger;
           firstStructureChains = firstStructureChains.map(chain => pdbToAuthChain[chain]).flat();
           firstStructureTargetChains = firstStructureTargetChains
             .map(chain => pdbToAuthChain[chain])
@@ -450,6 +424,13 @@ function Body({ label: symbol, entity }) {
         }
         setChainToEntityDesc(_chainToEntityDesc);
 
+        const scheme = {};
+        if (!isAF) {
+          firstStructureTargetChains.forEach((chain, index) => {
+            scheme[chain] = chainColorScheme[index % chainColorScheme.length];
+          });
+        }
+
         viewer.addModel(data, "cif"); /* load data */
         viewer.setClickable({}, true, atom => console.log(atom));
         viewer.setHoverDuration(50);
@@ -467,12 +448,19 @@ function Body({ label: symbol, entity }) {
         if (isAF) {
           viewer.setStyle(
             {},
-            { cartoon: { colorfunc: getAtomColor, arrows: true, smooth: 5, style: "parabola" } }
+            {
+              cartoon: {
+                colorfunc: atom => getConfidence(atom, "color"),
+                arrows: true,
+                smooth: 5,
+                style: "parabola",
+              },
+            }
           );
         } else {
           viewer.setStyle(
             { chain: firstStructureTargetChains },
-            { cartoon: { colorfunc: getAtomColor, arrows: true } }
+            { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
           );
           viewer.setStyle(
             { chain: firstStructureNonTargetChains },
