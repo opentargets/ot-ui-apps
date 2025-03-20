@@ -258,6 +258,10 @@ function Body({ label: symbol, entity }) {
     selectedRows.length > 0 && setSelectedStructure(selectedRows[0]?.original);
   }
 
+  function hideAtomInfo() {
+    if (atomInfoRef.current) atomInfoRef.current.style.display = "none";
+  }
+
   // fetch experimental results
   useEffect(() => {
     const results = [];
@@ -323,6 +327,7 @@ function Body({ label: symbol, entity }) {
   useEffect(() => {
     async function fetchStructure() {
       if (selectedStructure && viewer) {
+        hideAtomInfo();
         viewer.clear();
         if (viewerRef.current) {
           viewerRef.current.querySelector("._LoadingMessage").style.display = "flex";
@@ -440,11 +445,15 @@ function Body({ label: symbol, entity }) {
           );
           viewer.zoom(isAlphaFold(selectedStructure) ? 1.4 : 1, duration);
         }
-        viewer.getCanvas().ondblclick = () => resetViewer(200); // use ondblclick so replaces existing
 
+        const hoverDuration = 50;
+        viewer.getCanvas().onmouseleave = () => {
+          setTimeout(hideAtomInfo, hoverDuration + 50);
+        };
+        viewer.getCanvas().ondblclick = () => resetViewer(200); // use ondblclick so replaces existing
         viewer.addModel(data, "cif"); /* load data */
         // viewer.setClickable({}, true, atom => console.log(atom));
-        viewer.setHoverDuration(50);
+        viewer.setHoverDuration(hoverDuration);
         viewer.setHoverable(
           ...hoverManagerFactory({
             viewer,
