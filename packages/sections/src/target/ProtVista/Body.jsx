@@ -81,8 +81,8 @@ function zipToObject(arr1, arr2) {
   return obj;
 }
 
-function isAlphaFold(id) {
-  return id?.startsWith("AF");
+function isAlphaFold(selectedStructure) {
+  return selectedStructure?.type?.toLowerCase() === "alphafold";
 }
 
 function AlphaFoldLegend() {
@@ -329,7 +329,7 @@ function Body({ label: symbol, entity }) {
           viewerRef.current.querySelector("._LoadingMessage").style.display = "flex";
         }
 
-        const isAF = isAlphaFold(selectedStructure.id);
+        const isAF = isAlphaFold(selectedStructure);
         const pdbUri = isAF
           ? `${alphaFoldStructureStem}${selectedStructure.id}${alphaFoldStructureSuffix}`
           : `${experimentalStructureStem}${selectedStructure.id.toLowerCase()}${experimentalStructureSuffix}`;
@@ -557,7 +557,7 @@ function Body({ label: symbol, entity }) {
                   </Box>
                 </Box>
               </Box>
-              {isAlphaFold(selectedStructure?.id) && <AlphaFoldLegend />}
+              {isAlphaFold(selectedStructure) && <AlphaFoldLegend />}
             </Grid>
           </Grid>
         );
