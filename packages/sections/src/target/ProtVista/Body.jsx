@@ -429,15 +429,18 @@ function Body({ label: symbol, entity }) {
           });
         }
 
-        function resetViewer() {
-          viewer.zoomTo({
-            chain: firstStructureTargetChains.length
-              ? firstStructureTargetChains
-              : firstStructureChains,
-          });
-          viewer.zoom(isAlphaFold(selectedStructure) ? 1.4 : 1);
+        function resetViewer(duration = 0) {
+          viewer.zoomTo(
+            {
+              chain: firstStructureTargetChains.length
+                ? firstStructureTargetChains
+                : firstStructureChains,
+            },
+            duration
+          );
+          viewer.zoom(isAlphaFold(selectedStructure) ? 1.4 : 1, duration);
         }
-        // viewer.getCanvas().onclick = resetViewer; // use onclick so replaces existing
+        viewer.getCanvas().ondblclick = () => resetViewer(200); // use ondblclick so replaces existing
 
         viewer.addModel(data, "cif"); /* load data */
         // viewer.setClickable({}, true, atom => console.log(atom));
