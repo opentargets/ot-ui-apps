@@ -194,7 +194,6 @@ function Body({ label: symbol, entity }) {
   const [segments, setSegments] = useState(null);
   const [selectedStructure, setSelectedStructure] = useState(null);
   const [viewer, setViewer] = useState(null);
-  const [chainToEntityDesc, setChainToEntityDesc] = useState(null);
 
   const viewerRef = useRef(null);
   const atomInfoRef = useRef(null);
@@ -418,11 +417,10 @@ function Body({ label: symbol, entity }) {
           parsedCif["_struct_asym.id"],
           parsedCif["_struct_asym.entity_id"]
         );
-        const _chainToEntityDesc = {};
+        const chainToEntityDesc = {};
         for (const chain of parsedCif["_struct_asym.id"]) {
-          _chainToEntityDesc[chain] = entityIdToDesc[chainToEntityId[chain]];
+          chainToEntityDesc[chain] = entityIdToDesc[chainToEntityId[chain]];
         }
-        setChainToEntityDesc(_chainToEntityDesc);
 
         const scheme = {};
         if (!isAF) {
@@ -431,8 +429,18 @@ function Body({ label: symbol, entity }) {
           });
         }
 
+        function resetViewer() {
+          viewer.zoomTo({
+            chain: firstStructureTargetChains.length
+              ? firstStructureTargetChains
+              : firstStructureChains,
+          });
+          viewer.zoom(isAlphaFold(selectedStructure) ? 1.4 : 1);
+        }
+        // viewer.getCanvas().onclick = resetViewer; // use onclick so replaces existing
+
         viewer.addModel(data, "cif"); /* load data */
-        viewer.setClickable({}, true, atom => console.log(atom));
+        // viewer.setClickable({}, true, atom => console.log(atom));
         viewer.setHoverDuration(50);
         viewer.setHoverable(
           ...hoverManagerFactory({
@@ -440,7 +448,7 @@ function Body({ label: symbol, entity }) {
             atomInfoRef,
             parsedCif,
             showModel: new Set(parsedCif["_atom_site.pdbx_PDB_model_num"]).size > 1,
-            chainToEntityDesc: _chainToEntityDesc,
+            chainToEntityDesc,
             isAF,
           })
         );
@@ -474,12 +482,7 @@ function Body({ label: symbol, entity }) {
           );
           viewer.getModel().setStyle({ chain: otherStructureChains }, { hidden: true });
         }
-        viewer.zoomTo({
-          chain: firstStructureTargetChains.length
-            ? firstStructureTargetChains
-            : firstStructureChains,
-        });
-        viewer.zoom(isAF ? 1.4 : 1);
+        resetViewer();
         viewer.render();
 
         if (viewerRef.current) {
@@ -491,7 +494,7 @@ function Body({ label: symbol, entity }) {
     }
     fetchStructure();
     // RETURN CLEANUP FUNCTION IF APPROP
-  }, [selectedStructure, viewer, setChainToEntityDesc, segments]);
+  }, [selectedStructure, viewer, segments]);
 
   if (!request.data) return null; // BETTER WAY? - HANDLED BY CC'S CHANGE TO SECTION ITEM IF LOADING?
 
