@@ -152,7 +152,14 @@ function StructureIdPanel({ selectedStructure }) {
 
 // keep as closure since may need local state in future - such as hovered on atom
 // for highlighting
-function hoverManagerFactory({ viewer, atomInfoRef, parsedCif, chainToEntityDesc, isAF }) {
+function hoverManagerFactory({
+  viewer,
+  atomInfoRef,
+  parsedCif,
+  showModel,
+  chainToEntityDesc,
+  isAF,
+}) {
   return [
     {},
     true,
@@ -178,12 +185,13 @@ function hoverManagerFactory({ viewer, atomInfoRef, parsedCif, chainToEntityDesc
       if (infoElmt) {
         infoElmt.style.display = "block";
         const fieldElmts = [...infoElmt.querySelectorAll("p")];
+        const pdbModel = parsedCif["_atom_site.pdbx_PDB_model_num"][atom.index];
         const authChain = parsedCif["_atom_site.auth_asym_id"][atom.index];
         const pdbChain = parsedCif["_atom_site.label_asym_id"][atom.index];
         const authAtom = parsedCif["_atom_site.auth_seq_id"][atom.index];
         const pdbAtom = parsedCif["_atom_site.label_seq_id"][atom.index];
         fieldElmts[0].textContent = chainToEntityDesc[pdbChain];
-        fieldElmts[1].textContent = `${pdbChain}${
+        fieldElmts[1].textContent = `${showModel ? `Model: ${pdbModel} | ` : ""}${pdbChain}${
           authChain && authChain !== pdbChain ? ` (auth: ${authChain})` : ""
         } | ${atom.resn} ${pdbAtom}${
           authAtom && authAtom !== pdbAtom ? ` (auth: ${authAtom})` : ""
@@ -352,6 +360,7 @@ function Body({ label: symbol, entity }) {
         let data = await (await fetch(pdbUri)).text(); // !! ADD SOME ERROR HANDLING !!
 
         const parsedCif = parseCif(data)[selectedStructure.id];
+        console.log(parsedCif);
 
         // pdb <-> auth chains
         // - may only need pdb -> auth, but is 1-to-many so get auth->pdb first
@@ -449,6 +458,7 @@ function Body({ label: symbol, entity }) {
             viewer,
             atomInfoRef,
             parsedCif,
+            showModel: new Set(parsedCif["_atom_site.pdbx_PDB_model_num"]).size > 1,
             chainToEntityDesc: _chainToEntityDesc,
             isAF,
           })
@@ -548,7 +558,7 @@ function Body({ label: symbol, entity }) {
                     p="0.6rem 0.8rem"
                     zIndex={100}
                     bgcolor="#f8f8f8c8"
-                    sx={{ borderBottomRightRadius: "0.2rem" }}
+                    sx={{ borderTopLeftRadius: "0.2rem" }}
                     fontSize={14}
                   >
                     <Box display="flex" flexDirection="column">
