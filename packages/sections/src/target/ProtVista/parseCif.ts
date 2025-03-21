@@ -63,8 +63,6 @@ export function parseCif(cifString: string) {
   const lines = cifString.split(/\r?\n/);
 
   for (let line of lines) {
-    // console.log(line);
-
     // inside multiline value
     if (multilineMode) {
       if (line.startsWith(";")) {
