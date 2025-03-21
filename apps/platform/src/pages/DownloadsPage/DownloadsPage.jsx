@@ -34,8 +34,9 @@ function getColumn(locationUrl, version) {
       label: "Contained In",
       renderCell: ({ containedIn, includes, name, encodingFormat }) => {
         const columnId = includes.split("/")[0];
+        const containedInArray = Array.isArray(containedIn) ? containedIn : [containedIn];
 
-        return containedIn.map(e => (
+        return containedInArray.map(e => (
           <Fragment key={v1()}>
             <ContainedInDrawer
               link={`${locationUrl[e["@id"]]}${columnId}`}
