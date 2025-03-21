@@ -9,7 +9,7 @@ type DescriptionProps = {
 function Description({ variantId, referenceAllele, alternateAllele }: DescriptionProps) {
   return (
     <>
-      Predicted functional effect of{" "}
+      Predicted and curated functional effect of{" "}
       <strong>
         <DisplayVariantId
           variantId={variantId}
@@ -18,8 +18,14 @@ function Description({ variantId, referenceAllele, alternateAllele }: Descriptio
         />
       </strong>
       . Source{" "}
-      <Link to="https://platform-docs.opentargets.org/variant#variant-effect" external>
-        Open Targets
+      <Link to="https://www.ensembl.org/info/docs/tools/vep/index.html" external>
+        VEP,{" "}
+      </Link>
+      <Link to="https://gnomad.broadinstitute.org/" external>
+        gnomAD,{" "}
+      </Link>
+      <Link to="https://home.opentargets.org/node/1967" external>
+        OTAR2075.
       </Link>
     </>
   );
