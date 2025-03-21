@@ -244,7 +244,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       renderCell: ({ id, type }) => {
         const url = isAlphaFold({ type })
           ? `https://www.alphafold.ebi.ac.uk/entry/${uniprotId}`
-          : `https://identifiers.org/pdb:${id}`;
+          : `https://www.ebi.ac.uk/pdbe/entry/pdb/${id}`;
         return (
           <Link external to={url}>
             {type}
