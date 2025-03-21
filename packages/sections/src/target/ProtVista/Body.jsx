@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem, OtTable } from "ui";
+import { SectionItem, OtTable, Link } from "ui";
 import { naLabel } from "@ot/constants";
 import { Box, colors, Grid, Typography } from "@mui/material";
 import Description from "./Description";
@@ -187,12 +187,11 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     variables,
   });
 
+  const uniprotId = request?.data?.target
+    ? getUniprotIds(request?.data?.target?.proteinIds)?.[0]
+    : null;
+
   const columns = [
-    {
-      id: "type",
-      label: "Source",
-      sortable: true,
-    },
     {
       id: "id",
       label: "ID",
@@ -238,6 +237,21 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       renderCell: ({ id }) => segments[id].segmentsString,
       exportValue: ({ id }) => segments[id].segmentsString,
     },
+    {
+      id: "type",
+      label: "Source",
+      sortable: true,
+      renderCell: ({ id, type }) => {
+        const url = isAlphaFold({ type })
+          ? `https://www.alphafold.ebi.ac.uk/entry/${uniprotId}`
+          : `https://identifiers.org/pdb:${id}`;
+        return (
+          <Link external to={url}>
+            {type}
+          </Link>
+        );
+      },
+    },
   ];
 
   function getSelectedRows(selectedRows) {
@@ -264,9 +278,6 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   // fetch experimental results
   useEffect(() => {
     const results = [];
-    const uniprotId = request?.data?.target
-      ? getUniprotIds(request?.data?.target?.proteinIds)?.[0]
-      : null;
     async function fetchAlphaFoldResults() {
       if (uniprotId) {
         try {
@@ -326,7 +337,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       setSegments(null);
       setSelectedStructure(null);
     };
-  }, [request, setExperimentalResults, setSegments, setSelectedStructure]);
+  }, [uniprotId, setExperimentalResults, setSegments, setSelectedStructure]);
 
   // create viewer
   useEffect(() => {
