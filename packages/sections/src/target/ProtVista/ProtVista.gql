@@ -1,0 +1,8 @@
+query ProtVistaQuery($ensemblId: String!) {
+  target(ensemblId: $ensemblId) {
+    proteinIds {
+      id
+      source
+    }
+  }
+}

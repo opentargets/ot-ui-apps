@@ -21,14 +21,30 @@ export const nullishComparator = (comparator, accessor = x => x, nullishIsMax = 
       if (bVal == null) return 0;
       return nullishIsMax ? 1 : -1;
     }
-    if (bVal === null) return nullishIsMax ? -1 : 1;
+    if (bVal == null) return nullishIsMax ? -1 : 1;
     return comparator(aVal, bVal);
   };
 };
 
 /*
-  Compares a breakpoint against a breakpoint helper.
- */
+Return comparator that sorts NaNs to end
+*/
+export const nanComparator = (comparator, accessor = x => x, nanIsMax = true) => {
+  return (a, b) => {
+    const aVal = accessor(a);
+    const bVal = accessor(b);
+    if (Number.isNaN(aVal)) {
+      if (Number.isNaN(bVal)) return 0;
+      return nanIsMax ? 1 : -1;
+    }
+    if (Number.isNaN(bVal)) return nanIsMax ? -1 : 1;
+    return comparator(aVal, bVal);
+  };
+};
+
+/*
+Compares a breakpoint against a breakpoint helper.
+*/
 export const breakpointMatch = (breakpoint, breakpointHelper) => {
   const breakpointMap = { xs: 0, sm: 1, md: 2, lg: 3, xl: 4 };
   const isDownComparator = breakpointHelper.includes("Down");
