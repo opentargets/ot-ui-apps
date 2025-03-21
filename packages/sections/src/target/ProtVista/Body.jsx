@@ -1,4 +1,5 @@
-import { SectionItem, usePlatformApi, OtTable } from "ui";
+import { useQuery } from "@apollo/client";
+import { SectionItem, OtTable } from "ui";
 import { naLabel } from "@ot/constants";
 import { Box, colors, Grid, Typography } from "@mui/material";
 import Description from "./Description";
@@ -7,8 +8,7 @@ import { getUniprotIds, nanComparator } from "@ot/utils";
 import { createViewer, isNumeric } from "3dmol";
 import { parseCif } from "./parseCif";
 import { schemeSet1, schemeDark2, color as d3Color, max } from "d3";
-
-import PROTVISTA_SUMMARY_FRAGMENT from "./summaryQuery.gql";
+import PROTVISTA_QUERY from "./ProtVista.gql";
 import { useState, useEffect, useRef } from "react";
 import { property } from "lodash";
 
@@ -82,7 +82,7 @@ function zipToObject(arr1, arr2) {
 }
 
 function isAlphaFold(selectedStructure) {
-  return selectedStructure?.type?.toLowerCase() === "alphafold";
+  return selectedStructure?.type?.toLowerCase?.() === "alphafold";
 }
 
 function AlphaFoldLegend() {
@@ -145,23 +145,6 @@ function hoverManagerFactory({
   return [
     {},
     true,
-    // 3Dmol's builtin labels
-    // atom => {
-    //   if (!atom.label) {
-    //     atom.label = viewer.addLabel(atom.resn + ":" + atom.atom, {
-    //       position: atom,
-    //       backgroundColor: "mintcream",
-    //       fontColor: "black",
-    //     });
-    //   }
-    // },
-    // atom => {
-    //   if (atom.label) {
-    //     viewer.removeLabel(atom.label);
-    //     delete atom.label;
-    //   }
-    // },
-
     atom => {
       const infoElmt = atomInfoRef.current;
       if (infoElmt) {
@@ -189,7 +172,7 @@ function hoverManagerFactory({
   ];
 }
 
-function Body({ label: symbol, entity }) {
+function Body({ id: ensemblId, label: symbol, entity }) {
   const [experimentalResults, setExperimentalResults] = useState(null);
   const [segments, setSegments] = useState(null);
   const [selectedStructure, setSelectedStructure] = useState(null);
@@ -199,8 +182,10 @@ function Body({ label: symbol, entity }) {
   const atomInfoRef = useRef(null);
   const messageRef = useRef(null);
 
-  const request = usePlatformApi(PROTVISTA_SUMMARY_FRAGMENT);
-  const uniprotId = request?.data ? getUniprotIds(request?.data?.proteinIds)?.[0] : null;
+  const variables = { ensemblId };
+  const request = useQuery(PROTVISTA_QUERY, {
+    variables,
+  });
 
   const columns = [
     {
@@ -279,6 +264,9 @@ function Body({ label: symbol, entity }) {
   // fetch experimental results
   useEffect(() => {
     const results = [];
+    const uniprotId = request?.data?.target
+      ? getUniprotIds(request?.data?.target?.proteinIds)?.[0]
+      : null;
     async function fetchAlphaFoldResults() {
       if (uniprotId) {
         try {
@@ -333,8 +321,12 @@ function Body({ label: symbol, entity }) {
       }
     }
     fetchAllResults();
-    // RETURN CLEANUP FUNCTION IF APPROP
-  }, [uniprotId, setExperimentalResults, setSegments]);
+    return () => {
+      setExperimentalResults(null);
+      setSegments(null);
+      setSelectedStructure(null);
+    };
+  }, [request, setExperimentalResults, setSegments, setSelectedStructure]);
 
   // create viewer
   useEffect(() => {
@@ -347,14 +339,16 @@ function Body({ label: symbol, entity }) {
         })
       );
     }
-  }, [experimentalResults]);
+    return () => {
+      viewer?.clear();
+      setViewer(null);
+    };
+  }, [experimentalResults, setViewer]);
 
   // fetch selected structure and view it
   useEffect(() => {
     async function fetchStructure() {
       if (selectedStructure && viewer) {
-        hideAtomInfo();
-        viewer.clear();
         showLoadingMessage();
 
         const isAF = isAlphaFold(selectedStructure);
@@ -494,7 +488,6 @@ function Body({ label: symbol, entity }) {
               };
               viewer.getCanvas().ondblclick = () => resetViewer(200); // use ondblclick so replaces existing
               viewer.addModel(data, "cif"); /* load data */
-              // viewer.setClickable({}, true, atom => console.log(atom));
               viewer.setHoverDuration(hoverDuration);
               viewer.setHoverable(
                 ...hoverManagerFactory({
@@ -546,18 +539,20 @@ function Body({ label: symbol, entity }) {
       }
     }
     fetchStructure();
-    // RETURN CLEANUP FUNCTION IF APPROP
+    return () => {
+      hideAtomInfo();
+      viewer?.clear();
+    };
   }, [selectedStructure, viewer, segments]);
 
-  if (!request.data) return null; // BETTER WAY? - HANDLED BY CC'S CHANGE TO SECTION ITEM IF LOADING?
+  if (!experimentalResults) return null;
 
   return (
     <SectionItem
       definition={definition}
       entity={entity}
-      request={{ ...request, data: { [entity]: request.data } }}
+      request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      // showContentLoading={true}
       renderBody={() => {
         return (
           <Grid container spacing={2}>
@@ -565,13 +560,14 @@ function Body({ label: symbol, entity }) {
               <OtTable
                 dataDownloader
                 showGlobalFilter
-                // dataDownloaderFileStem={`${studyLocusId}-credibleSets`}
                 sortBy="positions"
                 order="desc"
                 columns={columns}
-                loading={!experimentalResults}
+                loading={request.loading}
                 rows={experimentalResults}
                 getSelectedRows={getSelectedRows}
+                query={PROTVISTA_QUERY.loc.source.body}
+                variables={variables}
               />
             </Grid>
             <Grid item xs={12} lg={6}>
