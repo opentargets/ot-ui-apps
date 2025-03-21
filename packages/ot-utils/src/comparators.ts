@@ -17,11 +17,11 @@ export const nullishComparator = (comparator, accessor = x => x, nullishIsMax = 
   return (a, b) => {
     const aVal = accessor(a);
     const bVal = accessor(b);
-    if (aVal == null) {
-      if (bVal == null) return 0;
+    if (!aVal && aVal !== 0) {
+      if (!bVal && bVal !== 0) return 0;
       return nullishIsMax ? 1 : -1;
     }
-    if (bVal === null) return nullishIsMax ? -1 : 1;
+    if (!bVal && bVal !== 0) return nullishIsMax ? -1 : 1;
     return comparator(aVal, bVal);
   };
 };
