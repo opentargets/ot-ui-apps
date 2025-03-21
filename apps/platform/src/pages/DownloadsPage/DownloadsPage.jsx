@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Paper, Box, Chip, Typography, Alert, AlertTitle } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link, OtTable } from "ui";
@@ -56,8 +56,18 @@ function getColumn(locationUrl, version) {
         ));
       },
     },
-    // { id: "encodingFormat", label: "Format" },
-    { id: "description", label: "Description" },
+    {
+      id: "description",
+      label: "Description",
+      filterValue: () => "",
+      renderCell: ({ description }) => (
+        <Box sx={{ width: "600px" }}>
+          <Typography variant="body2" whiteSpace="wrap">
+            {description}
+          </Typography>
+        </Box>
+      ),
+    },
   ];
   return columns;
 }
@@ -80,9 +90,12 @@ function getAllLocationUrl(data) {
 function DownloadsPage() {
   const [loading, setLoading] = useState(true);
   const [downloadsData, setDownloadsData] = useState(null);
-  const rows = getRows(downloadsData);
-  const locationUrl = getAllLocationUrl(downloadsData);
-  const columns = getColumn(locationUrl, downloadsData?.version);
+  const locationUrl = useMemo(() => getAllLocationUrl(downloadsData), [downloadsData]);
+  const rows = useMemo(() => getRows(downloadsData), [downloadsData]);
+  const columns = useMemo(
+    () => getColumn(locationUrl, downloadsData?.version),
+    [downloadsData, locationUrl]
+  );
 
   useEffect(() => {
     let isCurrent = true;
