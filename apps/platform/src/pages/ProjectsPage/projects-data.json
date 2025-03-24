@@ -22,7 +22,7 @@
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
       { "label": "amyotrophic lateral sclerosis", "disease_id": "MONDO_0004976" },
-      { "label": "", "disease_id": "MONDO_0004975" }
+      { "label": "Alzheimer disease", "disease_id": "MONDO_0004975" }
     ]
   },
   {
@@ -349,7 +349,7 @@
     "project_name": "Integration of Loss-of-Function variants into Open Targets Genetics",
     "project_lead": "Maya Ghoussaini/ Gosia Trynka",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "currently_integrates_in_PPP": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -504,7 +504,7 @@
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
   },
-    {
+  {
     "otar_code": "OTAR3092",
     "project_name": "Immuno-Oncology Target Identification in Rectal Cancer using Multi-Omics",
     "project_lead": "Ana Cvejic / Peter Campbell",
@@ -514,7 +514,7 @@
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
   },
-    {
+  {
     "otar_code": "OTAR3093",
     "project_name": "Open-IBD",
     "project_lead": "Carl Anderson / Chris Lamb",
@@ -524,7 +524,7 @@
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
   },
-    {
+  {
     "otar_code": "OTAR3094",
     "project_name": "NeuroPro",
     "project_lead": "Gosia Trynka / Lewis Evans",
