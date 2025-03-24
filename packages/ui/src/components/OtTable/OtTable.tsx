@@ -289,7 +289,7 @@ function OtTable({
         }}
       >
         <div>
-          <label for="paginationSelect">Rows per page:</label>
+          <label htmlFor="paginationSelect">Rows per page:</label>
           <NativeSelect
             id="paginationSelect"
             disableUnderline

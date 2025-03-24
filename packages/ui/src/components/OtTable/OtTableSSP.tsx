@@ -352,7 +352,7 @@ function OtTableSSP({
       >
         {state.loading && <CircularProgress sx={{ mx: theme => theme.spacing(2) }} size={25} />}
         <div>
-          <label for="paginationSelect">Rows per page:</label>
+          <label htmlFor="paginationSelect">Rows per page:</label>
           <NativeSelect
             id="paginationSelect"
             disableUnderline
