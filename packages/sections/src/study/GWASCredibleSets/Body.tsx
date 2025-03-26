@@ -98,9 +98,25 @@ const columns = [
   {
     id: "confidence",
     label: "Fine-mapping confidence",
-    tooltip:
-      "Fine-mapping confidence based on the quality of the linkage-disequilibrium information available and fine-mapping method",
+    tooltip: (
+      <>
+        Fine-mapping confidence based on the suitability of the linkage-disequilibrium information
+        and fine-mapping method. See{" "}
+        <Link
+          external
+          to="https://platform-docs.opentargets.org/credible-set#credible-set-confidence"
+        >
+          here
+        </Link>{" "}
+        for more details.
+      </>
+    ),
     sortable: true,
+    comparator: nullishComparator(
+      (a, b) => a - b,
+      row => credsetConfidenceMap?.[row.confidence],
+      false
+    ),
     renderCell: ({ confidence }) => {
       if (!confidence) return naLabel;
       return (
@@ -156,8 +172,9 @@ const columns = [
     ),
     renderCell: ({ studyLocusId, l2GPredictions }) => {
       const score = l2GPredictions?.rows[0]?.score;
+      const target = l2GPredictions?.rows[0]?.target;
       if (!score) return naLabel;
-      return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} />;
+      return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} targetId={target.id} />;
     },
     exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
   },

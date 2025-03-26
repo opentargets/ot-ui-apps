@@ -1,18 +1,11 @@
-import { Fragment, useState, useEffect } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { useEffect, useMemo, useState } from "react";
 import { Paper, Box, Chip, Typography, Alert, AlertTitle } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link, OtTable } from "ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAlignLeft } from "@fortawesome/free-solid-svg-icons";
 import { getConfig } from "@ot/config";
-import { formatMap } from "@ot/constants";
-
-import DownloadsDrawer from "./DownloadsDrawer";
-import datasetMappings from "./dataset-mappings.json";
-
-import DownloadsSchemaDrawer from "./DownloadsSchemaDrawer";
 import { v1 } from "uuid";
+import { Fragment } from "react/jsx-runtime";
+import ContainedInDrawer from "./ContainedInDrawer";
 
 const config = getConfig();
 
@@ -22,122 +15,97 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function getFormats(id, downloadData) {
-  const formats = [];
+const LOCATION_MAPPING = {
+  "ftp-location": {
+    displayName: "FTP",
+    format: "parquet",
+  },
+  "gcp-location": {
+    displayName: "Google Cloud",
+    format: "parquet",
+  },
+};
 
-  downloadData.forEach(data => {
-    if (id === data.id) {
-      formats.push({
-        format: data.resource.format,
-        path: data.resource.path,
-      });
-    }
-  });
-
-  return formats;
-}
-
-function getSerialisedSchema(id, downloadData) {
-  let schemaObject;
-  downloadData.forEach(data => {
-    if (id === data.id) schemaObject = JSON.parse(data.serialisedSchema);
-  });
-  return schemaObject;
-}
-
-function getRows(downloadData, allDatasetMappings) {
-  const rows = [];
-
-  allDatasetMappings.forEach(mapping => {
-    if (mapping.include_in_fe) {
-      rows.push({
-        niceName: mapping.nice_name,
-        description: mapping.description,
-        formats: getFormats(mapping.id, downloadData),
-        serialisedSchema: getSerialisedSchema(mapping.id, downloadData),
-      });
-    }
-  });
-
-  return rows;
-}
-
-function getColumns(date) {
+function getColumn(locationUrl, version) {
   const columns = [
-    { id: "niceName", label: "Dataset" },
-    { id: "description", label: "Description" },
+    { id: "name", label: "Name", enableHiding: false },
     {
-      id: "formats",
-      label: "Format(s)",
-      renderCell: ({ niceName, formats }) =>
-        formats
-          .sort((a, b) => {
-            if (a.format > b.format) return 1;
-            return -1;
-          })
-          .map(format => (
-            <Fragment key={format.format + format.path + date.month + date.year + v1()}>
-              <DownloadsDrawer
-                title={niceName}
-                format={format.format}
-                path={format.path}
-                month={date.month}
-                year={date.year}
-              >
-                <Chip label={formatMap[format.format]} clickable size="small" />
-              </DownloadsDrawer>{" "}
-            </Fragment>
-          )),
+      id: "containedIn",
+      label: "Contained In",
+      renderCell: ({ containedIn, includes, name, encodingFormat }) => {
+        const columnId = includes.split("/")[0];
+        const containedInArray = Array.isArray(containedIn) ? containedIn : [containedIn];
+
+        return containedInArray.map(e => (
+          <Fragment key={v1()}>
+            <ContainedInDrawer
+              link={`${locationUrl[e["@id"]]}${columnId}`}
+              title={name}
+              location={e["@id"]}
+              version={version}
+              path={columnId}
+              format={encodingFormat}
+            >
+              <Chip
+                sx={{ mr: 1 }}
+                label={LOCATION_MAPPING[e["@id"]].displayName}
+                clickable
+                size="small"
+              />
+            </ContainedInDrawer>
+          </Fragment>
+        ));
+      },
     },
     {
-      id: "schemas",
-      label: "Schema",
-      renderCell: ({ niceName, serialisedSchema }) => (
-        <DownloadsSchemaDrawer title={niceName} serialisedSchema={serialisedSchema}>
-          <Chip clickable size="small" label={<FontAwesomeIcon icon={faAlignLeft} />} />
-        </DownloadsSchemaDrawer>
+      id: "description",
+      label: "Description",
+      filterValue: () => "",
+      renderCell: ({ description }) => (
+        <Box sx={{ width: "600px" }}>
+          <Typography variant="body2" whiteSpace="wrap">
+            {description}
+          </Typography>
+        </Box>
       ),
     },
   ];
   return columns;
 }
 
-const DATA_VERSION_QUERY = gql`
-  query DataVersion {
-    meta {
-      dataVersion {
-        month
-        year
-      }
-    }
-  }
-`;
+function getRows(data) {
+  if (!data) return [];
+  return data.distribution.filter(e => e["@type"] === "cr:FileSet");
+}
 
-function getVersion(data) {
-  if (!data) return null;
-  const { month, year } = data.meta.dataVersion;
-  return `${year}.${month}`;
+function getAllLocationUrl(data) {
+  if (!data) return "";
+  const locationObj = {};
+  const locationArray = data.distribution.filter(e => e["@type"] === "cr:FileObject");
+  locationArray.map(e => {
+    locationObj[e["@id"]] = e.contentUrl;
+  });
+  return locationObj;
 }
 
 function DownloadsPage() {
-  const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
+  const [loading, setLoading] = useState(true);
   const [downloadsData, setDownloadsData] = useState(null);
-  const [loadingDownloadsData, setLoadingDownloadsData] = useState(false);
-  const rows = downloadsData ? getRows(downloadsData, datasetMappings) : [];
-  const columns = loading || error ? [] : getColumns(data.meta.dataVersion);
-  const classes = useStyles();
+  const locationUrl = useMemo(() => getAllLocationUrl(downloadsData), [downloadsData]);
+  const rows = useMemo(() => getRows(downloadsData), [downloadsData]);
+  const columns = useMemo(
+    () => getColumn(locationUrl, downloadsData?.version),
+    [downloadsData, locationUrl]
+  );
 
   useEffect(() => {
     let isCurrent = true;
-    setLoadingDownloadsData(true);
+    setLoading(true);
     fetch(config.downloadsURL)
-      .then(res => res.text())
-      .then(lines => {
-        if (isCurrent) {
-          const nodes = lines.trim().split("\n").map(JSON.parse);
-          setDownloadsData(nodes);
-        }
-        setLoadingDownloadsData(false);
+      .then(res => res.json())
+      .then(data => {
+        if (isCurrent) setDownloadsData(data);
+        setLoading(false);
       });
 
     return () => {
@@ -145,33 +113,21 @@ function DownloadsPage() {
     };
   }, []);
 
+  const classes = useStyles();
+
   return (
     <>
       <Typography variant="h4" component="h1" paragraph>
-        Data downloads
+        {downloadsData?.name}
       </Typography>
+      <Typography paragraph>{downloadsData?.description}</Typography>
       <Typography paragraph>
-        The Open Targets Platform is committed to open data and open access research and all of our
-        data is publicly available for download and can be used for academic or commercial purposes.
-        Please see our{" "}
-        <Link external to="http://platform-docs.opentargets.org/licence">
-          License documentation
-        </Link>{" "}
-        for more information.
-      </Typography>
-      <Typography paragraph>
-        For sample scripts to download and parse datasets using Python or R, please visit our{" "}
-        <Link external to="http://platform-docs.opentargets.org/data-access/datasets">
-          Data Downloads documentation
+        Our scripts and schema conforms to{" "}
+        <Link external to={downloadsData?.conformsTo}>
+          Ml Commons
         </Link>
       </Typography>
-      <Typography paragraph>Current data version: {error ? null : getVersion(data)}</Typography>
-      <Typography paragraph>
-        Access archived datasets via{" "}
-        <Link external to="http://ftp.ebi.ac.uk/pub/databases/opentargets/platform">
-          FTP
-        </Link>
-      </Typography>
+      <Typography paragraph>Current data version: {downloadsData?.version}</Typography>
 
       {config.isPartnerPreview ? (
         <Alert severity="warning" className={classes.alert}>
@@ -186,18 +142,11 @@ function DownloadsPage() {
         </Alert>
       ) : null}
 
-      {error ? null : (
-        <Paper variant="outlined" elevation={0}>
-          <Box m={2}>
-            <OtTable
-              showGlobalFilter
-              columns={columns}
-              rows={rows}
-              loading={loadingDownloadsData || loading}
-            />
-          </Box>
-        </Paper>
-      )}
+      <Paper variant="outlined" elevation={0}>
+        <Box m={2}>
+          <OtTable showGlobalFilter rows={rows} columns={columns} loading={loading} />
+        </Box>
+      </Paper>
     </>
   );
 }

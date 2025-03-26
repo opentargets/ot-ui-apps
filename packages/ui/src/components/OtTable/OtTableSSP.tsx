@@ -246,7 +246,10 @@ function OtTableSSP({
   return (
     <div>
       {/* Global Search */}
-      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Grid
+        container
+        sx={{ display: "flex", justifyContent: "space-between", gap: { xs: 2, md: 0 } }}
+      >
         <Grid item sm={12} md={4}>
           {showGlobalFilter && (
             <OtTableSearch
@@ -349,8 +352,9 @@ function OtTableSSP({
       >
         {state.loading && <CircularProgress sx={{ mx: theme => theme.spacing(2) }} size={25} />}
         <div>
-          <span>Rows per page:</span>
+          <label htmlFor="paginationSelect">Rows per page:</label>
           <NativeSelect
+            id="paginationSelect"
             disableUnderline
             disabled={state.loading}
             sx={{ pl: theme => theme.spacing(2) }}
@@ -389,12 +393,14 @@ function OtTableSSP({
             <IconButton
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage() || state.loading}
+              aria-label="first page"
             >
               <FontAwesomeIcon size="2xs" icon={faBackwardStep} />
             </IconButton>
             <IconButton
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage() || state.loading}
+              aria-label="previous page"
             >
               <FontAwesomeIcon size="2xs" icon={faAngleLeft} />
             </IconButton>
@@ -402,6 +408,7 @@ function OtTableSSP({
             <IconButton
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage() || state.loading}
+              aria-label="next page"
             >
               <FontAwesomeIcon size="2xs" icon={faAngleRight} />
             </IconButton>

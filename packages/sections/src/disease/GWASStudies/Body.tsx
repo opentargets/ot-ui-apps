@@ -25,32 +25,6 @@ const columns = [
     label: "Reported trait",
   },
   {
-    id: "publicationFirstAuthor",
-    label: "First author",
-    renderCell: ({ projectId, publicationFirstAuthor }) =>
-      getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor || naLabel,
-  },
-  {
-    id: "publicationDate",
-    label: "Year",
-    renderCell: ({ projectId, publicationDate }) =>
-      getStudyCategory(projectId) === "FINNGEN"
-        ? "2023"
-        : publicationDate
-        ? publicationDate.slice(0, 4)
-        : naLabel,
-    exportValue: ({ projectId, publicationDate }) =>
-      getStudyCategory(projectId) === "FINNGEN" ? "2023" : publicationDate?.slice(0, 4),
-  },
-  {
-    id: "publicationJournal",
-    label: "Journal",
-    renderCell: ({ projectId, publicationJournal }) =>
-      getStudyCategory(projectId) === "FINNGEN" ? naLabel : publicationJournal || naLabel,
-    exportValue: ({ projectId, publicationJournal }) =>
-      getStudyCategory(projectId) === "FINNGEN" ? null : publicationJournal,
-  },
-  {
     id: "nSamples",
     label: "Sample size",
     renderCell: ({ nSamples }) => {
@@ -99,16 +73,24 @@ const columns = [
         : null,
   },
   {
-    id: "pubmedId",
-    label: "PubMed ID",
-    renderCell: ({ projectId, pubmedId }) =>
-      getStudyCategory(projectId) === "GWAS" && pubmedId ? (
-        <PublicationsDrawer entries={[{ name: pubmedId, url: epmcUrl(pubmedId) }]} />
-      ) : (
-        naLabel
-      ),
-    exportValue: ({ projectId, pubmedId }) =>
-      getStudyCategory(projectId) === "GWAS" && pubmedId ? pubmedId : null,
+    id: "publication",
+    label: "Publication",
+    renderCell: ({ publicationFirstAuthor, publicationDate, pubmedId, projectId }) => {
+      if (!publicationFirstAuthor) return naLabel;
+      return (
+        <PublicationsDrawer
+          entries={[{ name: pubmedId, url: epmcUrl(pubmedId) }]}
+          customLabel={`${
+            getStudyCategory(projectId) === "FINNGEN"
+              ? "FinnGen"
+              : publicationFirstAuthor || naLabel
+          } et al. (${new Date(publicationDate).getFullYear()})`}
+        />
+      );
+    },
+    filterValue: ({ publicationYear, publicationFirstAuthor }) =>
+      `${publicationYear} ${publicationFirstAuthor}`,
+    exportValue: ({ pubmedId }) => `${pubmedId}`,
   },
 ];
 

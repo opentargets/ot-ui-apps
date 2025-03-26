@@ -2,13 +2,15 @@ import { makeStyles } from "@mui/styles";
 
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
+import { Engine } from "tsparticles-engine";
+import { Theme } from "@mui/material";
 
 import { particlesConfig } from "@ot/constants";
 import { useRef, useState } from "react";
 
 import html2canvas from "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.esm.js";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   splashContainer: {
     height: "100vh",
   },
@@ -23,9 +25,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Splash() {
+function Splash(): JSX.Element {
   const classes = useStyles();
-  const particlesInit = async main => {
+
+  const particlesInit = async (main: Engine): Promise<void> => {
     await loadFull(main);
   };
 

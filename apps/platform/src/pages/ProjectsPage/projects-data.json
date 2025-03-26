@@ -13,19 +13,6 @@
     ]
   },
   {
-    "otar_code": "OTAR2072",
-    "project_name": "DNA Damage",
-    "project_lead": "Gabriel Balmus",
-    "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
-    "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "disease_mapping": [
-      { "label": "amyotrophic lateral sclerosis", "disease_id": "MONDO_0004976" },
-      { "label": "", "disease_id": "MONDO_0004975" }
-    ]
-  },
-  {
     "otar_code": "OTAR036",
     "project_name": "iPSC neuron CRISPR",
     "project_lead": "Rick Livesey",
@@ -62,6 +49,19 @@
     ]
   },
   {
+    "otar_code": "OTAR2061",
+    "project_name": "iFuncOnc",
+    "project_lead": "Mathew Garnett",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "Y",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Oncology",
+    "disease_mapping": [
+      { "label": "Colorectal cancer", "disease_id": "MONDO_0005575" },
+      { "label": "Cutaneous melanoma", "disease_id": "EFO_0000389" }
+    ]
+  },
+  {
     "otar_code": "OTAR2062",
     "project_name": "ENCORE",
     "project_lead": "Mathew Garnett",
@@ -70,6 +70,29 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": [{ "label": "colorectal carcinoma", "disease_id": "EFO_1001951" }]
+  },
+  {
+    "otar_code": "OTAR2072",
+    "project_name": "DNA Damage",
+    "project_lead": "Gabriel Balmus",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "Y",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Neurodegenerative Disease",
+    "disease_mapping": [
+      { "label": "amyotrophic lateral sclerosis", "disease_id": "MONDO_0004976" },
+      { "label": "Alzheimer disease", "disease_id": "MONDO_0004975" }
+    ]
+  },
+  {
+    "otar_code": "OTAR2075",
+    "project_name": "Integration of Loss-of-Function variants into Open Targets Genetics",
+    "project_lead": "Maya Ghoussaini/ Gosia Trynka",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "Y",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Informatics",
+    "disease_mapping": []
   },
   {
     "otar_code": "OTAR035",
@@ -90,29 +113,6 @@
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [{ "label": "Pain", "disease_id": "EFO_0003843" }]
-  },
-  {
-    "otar_code": "OTAR2061",
-    "project_name": "iFuncOnc",
-    "project_lead": "Mathew Garnett",
-    "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
-    "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "disease_mapping": [
-      { "label": "Colorectal cancer", "disease_id": "MONDO_0005575" },
-      { "label": "Cutaneous melanoma", "disease_id": "EFO_0000389" }
-    ]
-  },
-  {
-    "otar_code": "OTAR031",
-    "project_name": "NK Cell Receptors",
-    "project_lead": "Dave Adams",
-    "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
-    "project_status": "Active",
-    "open_targets_therapeutic_area": "Oncology",
-    "disease_mapping": []
   },
   {
     "otar_code": "OTAR034",
@@ -345,16 +345,6 @@
     "disease_mapping": []
   },
   {
-    "otar_code": "OTAR2075",
-    "project_name": "Integration of Loss-of-Function variants into Open Targets Genetics",
-    "project_lead": "Maya Ghoussaini/ Gosia Trynka",
-    "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
-    "project_status": "Active",
-    "open_targets_therapeutic_area": "Informatics",
-    "disease_mapping": []
-  },
-  {
     "otar_code": "OTAR2076",
     "project_name": "Phenotypic mapping of gene functions in immune cells",
     "project_lead": "Gosia Trynka",
@@ -504,7 +494,7 @@
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
   },
-    {
+  {
     "otar_code": "OTAR3092",
     "project_name": "Immuno-Oncology Target Identification in Rectal Cancer using Multi-Omics",
     "project_lead": "Ana Cvejic / Peter Campbell",
@@ -514,7 +504,7 @@
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
   },
-    {
+  {
     "otar_code": "OTAR3093",
     "project_name": "Open-IBD",
     "project_lead": "Carl Anderson / Chris Lamb",
@@ -524,7 +514,7 @@
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
   },
-    {
+  {
     "otar_code": "OTAR3094",
     "project_name": "NeuroPro",
     "project_lead": "Gosia Trynka / Lewis Evans",
@@ -532,6 +522,16 @@
     "currently_integrates_in_PPP": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
+    "disease_mapping": []
+  },
+  {
+    "otar_code": "OTAR3095",
+    "project_name": "NeuroImmune",
+    "project_lead": "Andrew Bassett",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "N",
+    "project_status": "Active",
+    "open_targets_therapeutic_area": "Neurodegenerative Disease, Immunology and Inflammation",
     "disease_mapping": []
   },
   {
@@ -752,6 +752,16 @@
     "currently_integrates_in_PPP": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Other Therapy Area",
+    "disease_mapping": []
+  },
+  {
+    "otar_code": "OTAR031",
+    "project_name": "NK Cell Receptors",
+    "project_lead": "Dave Adams",
+    "generates_data": "Yes",
+    "currently_integrates_in_PPP": "N",
+    "project_status": "Closed",
+    "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
   },
   {

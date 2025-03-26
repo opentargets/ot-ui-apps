@@ -18,7 +18,7 @@ function Description({ variantId, referenceAllele, alternateAllele }: Descriptio
         />
       </strong>
       . Source{" "}
-      <Link to="https://home.opentargets.org/merged-product-documentation" external>
+      <Link to="https://platform-docs.opentargets.org/variant#variant-to-phenotype" external>
         Open Targets
       </Link>
     </>

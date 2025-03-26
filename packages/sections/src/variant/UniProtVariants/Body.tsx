@@ -6,6 +6,7 @@ import Description from "./Description";
 import { epmcUrl } from "@ot/utils";
 import { naLabel } from "@ot/constants";
 import UNIPROT_VARIANTS_QUERY from "./UniProtVariantsQuery.gql";
+import { useCallback } from "react";
 
 const columns = [
   {
@@ -83,6 +84,12 @@ export function Body({ id, entity }: BodyProps) {
     variables,
   });
 
+  const getTargetFromSourceId = useCallback(() => {
+    if (request.data?.variant.evidences.rows.length > 0)
+      return request.data?.variant.evidences.rows[0].targetFromSourceId;
+    return null;
+  }, [request]);
+
   return (
     <SectionItem
       definition={definition}
@@ -93,7 +100,7 @@ export function Body({ id, entity }: BodyProps) {
           variantId={request.data?.variant.id}
           referenceAllele={request.data?.variant.referenceAllele}
           alternateAllele={request.data?.variant.alternateAllele}
-          targetFromSourceId={request.data?.variant.evidences.rows[0].targetFromSourceId}
+          targetFromSourceId={getTargetFromSourceId()}
         />
       )}
       renderBody={() => {

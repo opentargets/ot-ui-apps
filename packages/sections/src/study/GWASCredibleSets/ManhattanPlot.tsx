@@ -154,9 +154,9 @@ export default ManhattanPlot;
 function renderTooltip(datum) {
   return (
     <ObsTooltipTable>
-      <ObsTooltipRow label="Navigate">
+      <ObsTooltipRow label="Credible set">
         <Box display="flex">
-          <Navigate to={`../credible-set/${datum.studyLocusId}`} />
+          <Navigate to={`/credible-set/${datum.studyLocusId}`} />
         </Box>
       </ObsTooltipRow>
       <ObsTooltipRow label="Lead variant">

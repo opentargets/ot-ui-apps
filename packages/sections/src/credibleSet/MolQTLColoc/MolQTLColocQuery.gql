@@ -8,6 +8,7 @@ query MolQTLColocQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
       rows {
         otherStudyLocus {
           studyLocusId
+          isTransQtl
           study {
             id
             studyType

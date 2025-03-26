@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { hsl } from "d3";
-import { ObsPlot, DataDownloader, Link, Tooltip } from "../../index";
-import { Box, Typography, Popover, Dialog } from "@mui/material";
+import { useCallback, useState } from "react";
+import { hsl, scaleLinear } from "d3";
+import { ObsPlot, DataDownloader, Link } from "../../index";
+import { Box, Typography, Popover, Dialog, Checkbox, FormControlLabel } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faArrowDownWideShort, faChevronRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { renderWaterfallPlot } from "./renderWaterfallPlot";
 import HeatmapLegend from "./HeatmapLegend";
 import { grey } from "@mui/material/colors";
@@ -120,7 +120,12 @@ function HeaderCell({ value, textAlign }) {
   return (
     <Box component="th" pt={1}>
       <Typography variant="subtitle2" textAlign={textAlign}>
-        {value}
+        {value}{" "}
+        {value == "Score" && (
+          <span style={{ color: grey[500] }}>
+            <FontAwesomeIcon size="sm" icon={faArrowDownWideShort} />
+          </span>
+        )}
       </Typography>
     </Box>
   );
@@ -158,7 +163,15 @@ function HeatCell({ value, bgrd, groupName, mouseLeaveRow, waterfallRow, waterfa
     filteredWaterfallRow.features = filteredWaterfallRow.features.filter(d => {
       return featureToGroup[d.name] === groupName;
     });
-    const { row, xDomain } = computeWaterfall(filteredWaterfallRow, waterfallXDomain, true);
+    let { row, xDomain } = computeWaterfall(filteredWaterfallRow, waterfallXDomain, true);
+    if (xDomain.some(Number.isNaN)) {
+      // all Shapley values are zero
+      const fullExtent = waterfallXDomain[1] - waterfallXDomain[0];
+      xDomain = scaleLinear()
+        .domain([-fullExtent / 8, fullExtent / 8])
+        .nice()
+        .domain();
+    }
     const plotWidth =
       waterfallMargins.left +
       waterfallMargins.right +
@@ -378,13 +391,26 @@ function HeatmapTable({
   disabledExport = false,
   disabledLegend = false,
 }) {
-  if (loading) return null;
+  const filterProvied = !!fixedGene;
+  const [showAll, setShowAll] = useState(!filterProvied);
+  const [defaultChecked] = useState(true);
+
+  const getVisData = useCallback(
+    ({ all }) => {
+      if (!filterProvied) return all;
+      if (filterProvied && showAll) return all;
+      return all.filter(row => row.targetId === fixedGene);
+    },
+    [showAll]
+  );
+
+  if (loading) return <></>;
 
   const groupResults = getGroupResults(data.rows);
   const colorInterpolator = getColorInterpolator(groupResults);
   const twoElementDomain = [colorInterpolator.domain()[0], colorInterpolator.domain()[2]];
 
-  const rows = fixedGene ? groupResults.filter(r => r.targetId === fixedGene) : groupResults;
+  const rows = getVisData({ all: groupResults });
 
   const columns = [
     { id: "targetSymbol", label: "gene" },
@@ -400,6 +426,28 @@ function HeatmapTable({
 
   return (
     <>
+      {filterProvied && (
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1, mr: 1 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                title="All"
+                checked={groupResults.length === 1 ? defaultChecked : showAll}
+                disabled={groupResults.length === 1 ? defaultChecked : false}
+                onChange={() => {
+                  setShowAll(!showAll);
+                }}
+              ></Checkbox>
+            }
+            label={
+              <Typography variant="body2">
+                {groupResults.length === 1 ? "Showing" : "Show"} all prioritised targets in credible
+                set
+              </Typography>
+            }
+          />
+        </Box>
+      )}
       {!disabledExport && (
         <ChartControls query={query} rows={rows} variables={variables} columns={columns} />
       )}

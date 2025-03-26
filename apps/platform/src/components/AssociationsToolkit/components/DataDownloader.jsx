@@ -234,7 +234,6 @@ function DataDownloader() {
     query,
     pinnedAssociationsVariable,
     queryResponseSelector,
-    client,
     "rows",
     "count",
     DOWNLOAD_CHUNCK_SIZE
@@ -244,7 +243,6 @@ function DataDownloader() {
     query,
     allAssociationsVariable,
     queryResponseSelector,
-    client,
     "rows",
     "count",
     DOWNLOAD_CHUNCK_SIZE

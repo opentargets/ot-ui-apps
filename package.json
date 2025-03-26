@@ -1,7 +1,7 @@
 {
   "name": "ot-ui-apps",
   "version": "0.0.1",
-  "dataRelease": "2503-testrun-2",
+  "dataRelease": "partners/25.03",
   "private": true,
   "license": "Apache-2.0",
   "workspaces": [

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Typography } from "@mui/material";
 import Link from "../Link";
 
-const docsLink = "";
+const docsLink = "https://platform-docs.opentargets.org/variant";
 
 function VariantMessage({ inputValue }: { inputValue: string }) {
   return (
@@ -23,8 +23,10 @@ function VariantMessage({ inputValue }: { inputValue: string }) {
         <FontAwesomeIcon icon={faInfoCircle} />
       </Box>
       <Typography variant="body2" fontStyle="italic">
-        No exact variant match found. Only variants with known phenotypic associations are included{" "}
-        <Link to={docsLink}>(documentation)</Link>
+        No exact variant match found. Only variants with known phenotypic associations are included.{" "}
+        <Link external newTab to={docsLink}>
+          Documentation
+        </Link>
       </Typography>
     </Box>
   );

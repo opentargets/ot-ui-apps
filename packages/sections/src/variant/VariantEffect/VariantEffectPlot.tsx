@@ -94,6 +94,7 @@ function Plot({ data, width }) {
       },
       y: {
         tickSize: 0,
+        tickPadding: 18,
       },
 
       color: {

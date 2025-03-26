@@ -190,8 +190,19 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "confidence",
       label: "Fine-mapping confidence",
-      tooltip:
-        "Fine-mapping confidence based on the suitability of the linkage-disequilibrium information and fine-mapping method",
+      tooltip: (
+        <>
+          Fine-mapping confidence based on the suitability of the linkage-disequilibrium information
+          and fine-mapping method. See{" "}
+          <Link
+            external
+            to="https://platform-docs.opentargets.org/credible-set#credible-set-confidence"
+          >
+            here
+          </Link>{" "}
+          for more details.
+        </>
+      ),
       sortable: true,
       renderCell: ({ confidence }) => {
         if (!confidence) return naLabel;
@@ -248,8 +259,9 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       ),
       renderCell: ({ studyLocusId, l2GPredictions }) => {
         const score = l2GPredictions?.rows[0]?.score;
+        const { target } = l2GPredictions?.rows[0];
         if (!score) return naLabel;
-        return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} />;
+        return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} targetId={target.id} />;
       },
       exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
     },

@@ -1,10 +1,19 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, ScientificNotation, DisplayVariantId, OtTable, Navigate } from "ui";
-import { naLabel } from "@ot/constants";
+import {
+  Link,
+  SectionItem,
+  ScientificNotation,
+  DisplayVariantId,
+  OtTable,
+  Navigate,
+  Tooltip,
+  ClinvarStars,
+} from "ui";
+import { naLabel, credsetConfidenceMap } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "@ot/utils";
+import { mantissaExponentComparator, nullishComparator, variantComparator } from "@ot/utils";
 
 const columns = [
   {
@@ -73,6 +82,38 @@ const columns = [
   {
     id: "finemappingMethod",
     label: "Fine-mapping method",
+  },
+  {
+    id: "confidence",
+    label: "Fine-mapping confidence",
+    tooltip: (
+      <>
+        Fine-mapping confidence based on the suitability of the linkage-disequilibrium information
+        and fine-mapping method. See{" "}
+        <Link
+          external
+          to="https://platform-docs.opentargets.org/credible-set#credible-set-confidence"
+        >
+          here
+        </Link>{" "}
+        for more details.
+      </>
+    ),
+    sortable: true,
+    comparator: nullishComparator(
+      (a, b) => a - b,
+      row => credsetConfidenceMap?.[row.confidence],
+      false
+    ),
+    renderCell: ({ confidence }) => {
+      if (!confidence) return naLabel;
+      return (
+        <Tooltip title={confidence} style="">
+          <ClinvarStars num={credsetConfidenceMap[confidence]} />
+        </Tooltip>
+      );
+    },
+    filterValue: ({ confidence }) => credsetConfidenceMap[confidence],
   },
   {
     id: "credibleSetSize",

@@ -59,7 +59,7 @@ export const externalLinks = {
     },
     {
       label: "Terms of use",
-      url: "https://platform-docs.opentargets.org/terms-of-use",
+      url: "https://platform-docs.opentargets.org/licence/terms-of-use",
     },
   ] as ExternalLink[],
   license: {
@@ -138,6 +138,12 @@ export const mainMenuItems: MenuItem[] = config.profile.mainMenuItems ?? [
     name: "Documentation",
     url: "https://platform-docs.opentargets.org/getting-started",
     external: true,
+  },
+  {
+    name: "PPP Documentation",
+    url: "https://home.opentargets.org/ppp-documentation",
+    external: true,
+    showOnlyPartner: true,
   },
   {
     name: "Data downloads",

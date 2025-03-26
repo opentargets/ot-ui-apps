@@ -135,7 +135,16 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       numeric: true,
       tooltip:
         "Posterior inclusion probability that this variant is causal within the fine-mapped credible set",
-      comparator: (rowA, rowB) => rowA?.posteriorProbability - rowB?.posteriorProbability,
+      comparator: (rowA, rowB) => {
+        const aPosterior = rowA?.posteriorProbability;
+        const bPosterior = rowB?.posteriorProbability;
+        if (aPosterior === bPosterior) {
+          if (rowA?.variant.id === leadVariantId) return 1;
+          else if (rowB?.variant.id === leadVariantId) return -1;
+          return 0;
+        }
+        return aPosterior - bPosterior;
+      },
       sortable: true,
       renderCell: ({ posteriorProbability }) => {
         if (typeof posteriorProbability !== "number") return naLabel;

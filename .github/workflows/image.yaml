@@ -2,24 +2,6 @@ name: Image
 
 on:
   workflow_call:
-    inputs:
-      flavor:
-        description: 'Either platform or ppp. Will be appended after the repo name, e.g. ot-ui-apps/ot-ui-apps-platform:1.0.0'
-        type: string
-        default: 'platform'
-        required: true
-      api_url:
-        description: 'The API URL'
-        type: string
-        required: true
-      ai_api_url:
-        description: 'The AI API URL'
-        type: string
-        required: true
-    secrets:
-      google_tag_manager_id:
-        description: 'The Google Tag Manager ID'
-        required: true
 
 jobs:
   build:
@@ -77,15 +59,6 @@ jobs:
           name: bundle
           path: apps/platform/bundle-platform
 
-      - name: write config
-        run: |
-          cat << EOF > apps/platform/bundle-platform/config.js
-          var configUrlApi = '${{ inputs.api_url }}'
-          var configOTAiApi = '${{ inputs.ai_api_url }}'
-          var configGoogleTagManagerID = '${{ secrets.google_tag_manager_id }}'
-          EOF
-          cat apps/platform/public/profiles/${{ inputs.flavor }}.js >> apps/platform/bundle-platform/config.js
-
       - id: push
         name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -93,15 +66,15 @@ jobs:
           context: ./apps/platform
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/${{ env.REPO }}-${{ inputs.flavor }}:latest
-            ghcr.io/${{ github.repository }}/${{ env.REPO }}-${{ inputs.flavor }}:${{ env.TAG }}
-            europe-west1-docker.pkg.dev/open-targets-eu-dev/${{ env.REPO }}/${{ env.REPO }}-${{ inputs.flavor }}:latest
-            europe-west1-docker.pkg.dev/open-targets-eu-dev/${{ env.REPO }}/${{ env.REPO }}-${{ inputs.flavor }}:${{ env.TAG }}
+            ghcr.io/${{ github.repository }}/${{ env.REPO }}:latest
+            ghcr.io/${{ github.repository }}/${{ env.REPO }}:${{ env.TAG }}
+            europe-west1-docker.pkg.dev/open-targets-eu-dev/${{ env.REPO }}/${{ env.REPO }}:latest
+            europe-west1-docker.pkg.dev/open-targets-eu-dev/${{ env.REPO }}/${{ env.REPO }}:${{ env.TAG }}
 
       - id: generate-attestations
         name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: europe-west1-docker.pkg.dev/open-targets-eu-dev/${{ env.REPO }}/${{ env.REPO }}-${{ inputs.flavor }}
+          subject-name: europe-west1-docker.pkg.dev/open-targets-eu-dev/${{ env.REPO }}/${{ env.REPO }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true

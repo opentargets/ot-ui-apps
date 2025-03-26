@@ -1,4 +1,4 @@
-import { Grid, Skeleton, Theme, Typography } from "@mui/material";
+import { Box, Grid, Skeleton, SxProps, Theme, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -46,6 +46,25 @@ type HeaderProps = {
   title: string;
 };
 
+const iconHeaderStyles: SxProps = {
+  width: "56px",
+  marginRight: "4px !important",
+  justifyContent: "center",
+  alignItems: "center",
+  display: {
+    xs: "none",
+    md: "flex",
+  },
+};
+
+const iconTextStyles: SxProps = {
+  marginRight: "4px !important",
+  display: {
+    xs: "inline-block",
+    md: "none",
+  },
+};
+
 function Header({
   loading,
   Icon,
@@ -60,19 +79,22 @@ function Header({
     <Grid className={classes.titleContainer} container id="profile-page-header-block">
       <Grid item zeroMinWidth>
         <Grid container wrap="nowrap">
-          <Grid item className={classes.mainIconContainer}>
+          <Box sx={iconHeaderStyles}>
             <FontAwesomeIcon icon={Icon} size="3x" className={classes.mainIcon} />
-          </Grid>
+          </Box>
           <Grid item zeroMinWidth>
-            <Grid container>
+            <Grid container sx={{ mb: { xs: 2, md: 0 } }}>
               <Typography className={classes.title} variant="h4" noWrap title={title}>
+                <Box component="span" sx={iconTextStyles}>
+                  <FontAwesomeIcon icon={Icon} size="sm" className={classes.mainIcon} />
+                </Box>
                 {loading ? <Skeleton width="10vw" /> : title}
               </Typography>
               <Typography className={classes.subtitle} variant="h5">
                 {loading ? <Skeleton width="50vw" /> : subtitle}
               </Typography>
             </Grid>
-            <Grid container>
+            <Grid container sx={{ mb: { xs: 2, md: 0 } }}>
               <Typography variant="body2" className={classes.externalLinks}>
                 {loading ? <Skeleton width="50vw" /> : externalLinks}
               </Typography>

@@ -9,6 +9,7 @@ import {
   LabelChip,
   DisplaySampleSize,
   PublicationsDrawer,
+  StudyPublication,
 } from "ui";
 import { Box } from "@mui/material";
 import { populationMap } from "@ot/constants";
@@ -106,8 +107,11 @@ function ProfileHeader() {
         )}
         {publicationFirstAuthor && (
           <Field loading={loading} title="Publication">
-            {publicationFirstAuthor} <i>et al.</i> {publicationJournal} (
-            {publicationDate?.slice(0, 4)})
+            <StudyPublication
+              publicationFirstAuthor={publicationFirstAuthor}
+              publicationDate={publicationDate}
+              publicationJournal={publicationJournal}
+            />
           </Field>
         )}
         {pubmedId && (
