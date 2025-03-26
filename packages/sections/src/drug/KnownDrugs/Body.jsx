@@ -27,28 +27,6 @@ function getColumnPool(id, entity) {
     },
 
     {
-      label: "Target information",
-      columns: [
-        {
-          id: "targetSymbol",
-          label: "Symbol",
-          propertyPath: "target.approvedSymbol",
-          renderCell: d => (
-            <Link asyncTooltip to={`/target/${d.target.id}`}>
-              {d.target.approvedSymbol}
-            </Link>
-          ),
-        },
-        {
-          id: "targetName",
-          label: "Name",
-          propertyPath: "target.approvedName",
-          hidden: ["lgDown"],
-          renderCell: d => d.target.approvedName,
-        },
-      ],
-    },
-    {
       label: "Clinical trials information",
       columns: [
         {
@@ -58,11 +36,7 @@ function getColumnPool(id, entity) {
           renderCell: ({ phase }) => phaseMap(phase),
           filterValue: ({ phase }) => phaseMap(phase),
         },
-        {
-          id: "status",
-          label: "Status",
-          renderCell: d => (d.status ? d.status : naLabel),
-        },
+
         {
           id: "sources",
           label: "Source",

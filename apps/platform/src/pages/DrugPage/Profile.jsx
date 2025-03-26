@@ -48,23 +48,23 @@ function Profile({ chemblId, name }) {
       <ProfileHeader chemblId={chemblId} />
 
       <SummaryContainer>
-        <MechanismsOfActionSummary />
-        <IndicationsSummary />
+        {/* <MechanismsOfActionSummary /> */}
+        {/* <IndicationsSummary /> */}
         <KnownDrugsSummary />
-        <DrugWarningsSummary />
-        <PharmacogenomicsSummary />
-        <AdverseEventsSummary />
-        <BibliographySummary />
+        {/* <DrugWarningsSummary /> */}
+        {/* <PharmacogenomicsSummary /> */}
+        {/* <AdverseEventsSummary /> */}
+        {/* <BibliographySummary /> */}
       </SummaryContainer>
 
       <SectionContainer>
-        <MechanismsOfActionSection id={chemblId} label={name} entity={DRUG} />
-        <IndicationsSection id={chemblId} label={name} entity={DRUG} />
+        {/* <MechanismsOfActionSection id={chemblId} label={name} entity={DRUG} /> */}
+        {/* <IndicationsSection id={chemblId} label={name} entity={DRUG} /> */}
         <KnownDrugsSection id={chemblId} label={name} entity={DRUG} />
-        <DrugWarningsSection id={chemblId} label={name} entity={DRUG} />
-        <PharmacogenomicsSection id={chemblId} label={name} entity={DRUG} />
-        <AdverseEventsSection id={chemblId} label={name} entity={DRUG} />
-        <BibliographySection id={chemblId} label={name} entity={DRUG} />
+        {/* <DrugWarningsSection id={chemblId} label={name} entity={DRUG} /> */}
+        {/* <PharmacogenomicsSection id={chemblId} label={name} entity={DRUG} /> */}
+        {/* <AdverseEventsSection id={chemblId} label={name} entity={DRUG} /> */}
+        {/* <BibliographySection id={chemblId} label={name} entity={DRUG} /> */}
       </SectionContainer>
     </PlatformApiProvider>
   );
