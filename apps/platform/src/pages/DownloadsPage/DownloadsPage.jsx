@@ -129,16 +129,14 @@ function DownloadsPage() {
       </Typography>
       <Typography paragraph>Current data version: {downloadsData?.version}</Typography>
 
-      {config.isPartnerPreview ? (
-        <Alert severity="warning" className={classes.alert}>
-          <AlertTitle>Important Note</AlertTitle>
-          These data files do not contain any of the custom data found in this version of the
-          Platform. They are the same files that are available from the public Platform. To download
-          the data for a specific project, please visit the{" "}
-          <Link external to="http://home.opentargets.org/">
-            Open Targets Intranet
+      {config.profile.isPartnerPreview ? (
+        <Alert severity="info" className={classes.alert}>
+          These data files path are accessible to consortium members only. If you face any issue
+          accessing the path please contact us on{" "}
+          <Link to={`mailto: ${config.profile.helpdeskEmail}`} external>
+            {config.profile.helpdeskEmail}
           </Link>{" "}
-          and submit a data request.
+          and submit a request.
         </Alert>
       ) : null}
 
