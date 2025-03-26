@@ -1,16 +1,15 @@
 import { useQuery } from "@apollo/client";
 import { SectionItem, OtTable, Link } from "ui";
 import { naLabel } from "@ot/constants";
-import { Box, Button, colors, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
 import { getUniprotIds, nanComparator } from "@ot/utils";
-import { createViewer, isNumeric } from "3dmol";
+import { createViewer } from "3dmol";
 import { parseCif } from "./parseCif";
-import { schemeSet1, schemeDark2, color as d3Color, max } from "d3";
+import { schemeSet1, schemeDark2 } from "d3";
 import PROTVISTA_QUERY from "./ProtVista.gql";
 import { useState, useEffect, useRef } from "react";
-import { property } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
@@ -663,7 +662,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                       disabled={structureLoading}
                       onClick={onClickCapture}
                     >
-                      <FontAwesomeIcon icon={faCamera} /> Capture
+                      <FontAwesomeIcon icon={faCamera} /> Screenshot
                     </Button>
                   </Box>
                   <StructureIdPanel selectedStructure={selectedStructure} />
