@@ -38,6 +38,13 @@ function getColumnPool(id, entity) {
         },
 
         {
+          id: "empty",
+          label: "Approved",
+          sortable: true,
+          renderCell: () => "",
+        },
+
+        {
           id: "sources",
           label: "Source",
           exportValue: d => d.urls.map(reference => reference.url),
