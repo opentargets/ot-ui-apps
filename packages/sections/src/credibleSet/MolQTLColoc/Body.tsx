@@ -14,6 +14,7 @@ import Description from "./Description";
 import MOLQTL_COLOC_QUERY from "./MolQTLColocQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "@ot/utils";
 import { useEffect, useState } from "react";
+import { Chip } from "@mui/material";
 
 const columns = [
   {
@@ -44,7 +45,17 @@ const columns = [
     renderCell: ({ otherStudyLocus }) => {
       const studyType = otherStudyLocus?.study?.studyType;
       if (!studyType) return naLabel;
-      return studyType;
+      return (
+        <>
+          {studyType}{" "}
+          {otherStudyLocus.isTransQtl && <Chip label="trans" variant="outlined" size="small" />}
+        </>
+      );
+    },
+    exportValue: ({ otherStudyLocus }) => {
+      const studyType = otherStudyLocus?.study?.studyType;
+      if (!studyType) return naLabel;
+      return `${studyType}, isTrans:${otherStudyLocus.isTrans}`;
     },
   },
   {

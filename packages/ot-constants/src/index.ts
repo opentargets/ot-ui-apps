@@ -140,6 +140,12 @@ export const mainMenuItems: MenuItem[] = config.profile.mainMenuItems ?? [
     external: true,
   },
   {
+    name: "PPP Documentation",
+    url: "https://home.opentargets.org/ppp-documentation",
+    external: true,
+    showOnlyPartner: true,
+  },
+  {
     name: "Data downloads",
     url: "/downloads",
     external: false,
@@ -329,3 +335,4 @@ export * from "./types/response";
 export * from "./searchSuggestions";
 export * from "./partnerPreviewUtils";
 export * from "./particlesBackground";
+export * from "./variant";

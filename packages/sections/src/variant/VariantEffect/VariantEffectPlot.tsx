@@ -5,6 +5,7 @@ import { useMeasure } from "@uidotdev/usehooks";
 import { Box, Fade, Skeleton } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { DataDownloader } from "ui";
+import { VARIANT_EFFECT_METHODS } from "@ot/constants";
 
 const PRIORITISATION_COLORS = [
   rgb("#bc3a19"),
@@ -69,6 +70,11 @@ const getXLabel = (tick: number) => {
   return "";
 };
 
+const getYLabel = (d: string) => {
+  if (VARIANT_EFFECT_METHODS[d]) return VARIANT_EFFECT_METHODS[d].prettyName;
+  return "Not defined";
+};
+
 const getLicense = (method: string) => {
   if (method === "CADD" || method === "PolyPhen") return "Non-commercial (Deprecated)";
 };
@@ -95,6 +101,7 @@ function Plot({ data, width }) {
       y: {
         tickSize: 0,
         tickPadding: 18,
+        tickFormat: d => getYLabel(d),
       },
 
       color: {
