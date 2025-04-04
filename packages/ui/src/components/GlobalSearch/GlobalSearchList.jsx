@@ -4,7 +4,11 @@ import { useLazyQuery } from "@apollo/client";
 import GlobalSearchListHeader from "./GlobalSearchListHeader";
 import GlobalSearchListItem from "./GlobalSearchListItem";
 import { SearchContext } from "./SearchContext";
-import { formatSearchData } from "./utils/searchUtils";
+import {
+  formatSearchData,
+  getSelectedEntityFilterLength,
+  TOTAL_SEARCH_RESULTS,
+} from "./utils/searchUtils";
 import useListOption from "../../hooks/useListOption";
 import GlobalSearchLoadingState from "./GlobalSearchLoadingState";
 import VariantMessage from "./VariantMessage";
@@ -59,7 +63,10 @@ function GlobalSearchList({ inputValue }) {
   let selected = 0;
   const [searchResult, setSearchResult] = useState({});
   const [loading, setLoading] = useState(false);
-  const { searchQuery, setOpen, searchSuggestions } = useContext(SearchContext);
+  const { searchQuery, setOpen, searchSuggestions, filterState } = useContext(SearchContext);
+  const [selectedEntityFilterLength, setSelectedEntityFilterLength] = useState(
+    getSelectedEntityFilterLength(filterState)
+  );
   const [getSearchData] = useLazyQuery(searchQuery);
   const [openListItem] = useListOption();
   const [recentItems, setRecentItems] = useState(
@@ -111,9 +118,14 @@ function GlobalSearchList({ inputValue }) {
 
   function fetchSearchResults() {
     setLoading(true);
-    getSearchData({ variables: { queryString: inputValue } })
+    getSearchData({
+      variables: {
+        queryString: inputValue,
+        size: Math.ceil(TOTAL_SEARCH_RESULTS / selectedEntityFilterLength),
+      },
+    })
       .then(res => {
-        const formattedData = formatSearchData(res.data.search || res.data);
+        const formattedData = formatSearchData(res.data);
         setSearchResult({ ...formattedData });
         setLoading(false);
       })
@@ -171,7 +183,7 @@ function GlobalSearchList({ inputValue }) {
       }}
     >
       <GlobalSearchListHeader listHeader="Search Suggestions" />
-      <List tabIndex={-1}>
+      <List tabIndex={-1} sx={{ display: "flex" }}>
         {searchSuggestions.map(item => (
           <GlobalSearchListItem
             key={item.id || item.symbol}
@@ -183,6 +195,10 @@ function GlobalSearchList({ inputValue }) {
       </List>
     </Box>
   );
+
+  useEffect(() => {
+    setSelectedEntityFilterLength(getSelectedEntityFilterLength(filterState));
+  }, [filterState]);
 
   useEffect(() => {
     focusOnItem();
@@ -212,27 +228,31 @@ function GlobalSearchList({ inputValue }) {
         !loading &&
         !isResultEmpty() &&
         Object.entries(searchResult).map(([key, value]) => (
-          <Box
-            key={key}
-            sx={{
-              pt: 1,
-              borderBottomWidth: "1px",
-              borderStyle: "solid",
-              borderImage: "linear-gradient(to right, white, #00000037, white)0 0 90",
-            }}
-          >
-            <GlobalSearchListHeader listHeader={key} />
-            <List tabIndex={-1}>
-              {value.map(item => (
-                <GlobalSearchListItem
-                  key={item.id || item.symbol}
-                  item={item}
-                  onItemClick={handleItemClick}
-                  isTopHit={item.type === "topHit"}
-                />
-              ))}
-            </List>
-          </Box>
+          <>
+            {filterState[value[0].entity] && (
+              <Box
+                key={key}
+                sx={{
+                  pt: 1,
+                  borderBottomWidth: "1px",
+                  borderStyle: "solid",
+                  borderImage: "linear-gradient(to right, white, #00000037, white)0 0 90",
+                }}
+              >
+                <GlobalSearchListHeader listHeader={key} />
+                <List tabIndex={-1}>
+                  {value.map(item => (
+                    <GlobalSearchListItem
+                      key={item.id || item.symbol}
+                      item={item}
+                      onItemClick={handleItemClick}
+                      isTopHit={item.type === "topHit"}
+                    />
+                  ))}
+                </List>
+              </Box>
+            )}
+          </>
         ))}
 
       {/* no search result state  */}

@@ -98,20 +98,23 @@ function symbolNameOrId(item) {
 
 function SuggestionListItem({ item, onItemClick }) {
   return (
-    <RecentItemContainer
-      className="search-list-item"
-      role="menuitem"
-      tabIndex="0"
-      data-item-details={JSON.stringify(item)}
-      onClick={() => {
-        onItemClick(item);
-      }}
-    >
-      <RecentIconContainer>
-        <FontAwesomeIcon icon={faArrowTrendUp} />
+    // <RecentItemContainer
+    //   className="search-list-item"
+    //   role="menuitem"
+    //   tabIndex="0"
+    //   data-item-details={JSON.stringify(item)}
+    //   onClick={() => {
+    //     onItemClick(item);
+    //   }}
+    // >
+    <RecentIconContainer className="search-list-item">
+      {/* <FontAwesomeIcon icon={faArrowTrendUp} />
+        <Typography variant="subtitle2">{symbolNameOrId(item)}</Typography> */}
+      <Chip>
         <Typography variant="subtitle2">{symbolNameOrId(item)}</Typography>
-      </RecentIconContainer>
-    </RecentItemContainer>
+      </Chip>
+    </RecentIconContainer>
+    // </RecentItemContainer>
   );
 }
 

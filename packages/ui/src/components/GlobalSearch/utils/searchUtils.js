@@ -109,4 +109,11 @@ export const clearRecentItem = item => {
   return removedItems;
 };
 
+export const getSelectedEntityFilterLength = obj => {
+  if (!obj) return 5;
+  return Object.values(obj).filter(Boolean).length;
+};
+
 export const commaSeparate = format(",");
+
+export const TOTAL_SEARCH_RESULTS = 15;
