@@ -7,6 +7,7 @@ import { SearchContext } from "./SearchContext";
 import {
   formatSearchData,
   getSelectedEntityFilterLength,
+  TOTAL_ENTITIES,
   TOTAL_SEARCH_RESULTS,
 } from "./utils/searchUtils";
 import useListOption from "../../hooks/useListOption";
@@ -183,7 +184,7 @@ function GlobalSearchList({ inputValue }) {
       }}
     >
       <GlobalSearchListHeader listHeader="Search Suggestions" />
-      <List tabIndex={-1} sx={{ display: "flex" }}>
+      <List tabIndex={-1} sx={{ display: "flex", flexWrap: "wrap" }}>
         {searchSuggestions.map(item => (
           <GlobalSearchListItem
             key={item.id || item.symbol}
@@ -217,6 +218,13 @@ function GlobalSearchList({ inputValue }) {
 
   const inputMatchVariant = validateVariantIdInput(inputValue, searchResult, isResultEmpty());
 
+  function shouldShowEntityResult(value) {
+    if (selectedEntityFilterLength === TOTAL_ENTITIES || selectedEntityFilterLength === 0)
+      return true;
+    if (filterState[value[0].entity]) return true;
+    return false;
+  }
+
   return (
     <>
       {inputValue && loading && <GlobalSearchLoadingState />}
@@ -229,7 +237,7 @@ function GlobalSearchList({ inputValue }) {
         !isResultEmpty() &&
         Object.entries(searchResult).map(([key, value]) => (
           <>
-            {filterState[value[0].entity] && (
+            {shouldShowEntityResult(value) && (
               <Box
                 key={key}
                 sx={{

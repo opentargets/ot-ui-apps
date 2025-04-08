@@ -110,10 +110,22 @@ export const clearRecentItem = item => {
 };
 
 export const getSelectedEntityFilterLength = obj => {
-  if (!obj) return 5;
-  return Object.values(obj).filter(Boolean).length;
+  if (!obj) return TOTAL_ENTITIES;
+  return Object.values(obj).filter(Boolean).length || TOTAL_ENTITIES;
+};
+
+export const getSelectedEntityFilter = obj => {
+  if (!obj) return [];
+  return (
+    Object.entries(obj)
+      .map(([key, value]) => {
+        if (value) return key;
+      })
+      .filter(Boolean) || []
+  );
 };
 
 export const commaSeparate = format(",");
 
 export const TOTAL_SEARCH_RESULTS = 15;
+export const TOTAL_ENTITIES = 5;
