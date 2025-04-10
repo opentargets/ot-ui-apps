@@ -11,7 +11,7 @@ import { schemeSet1, schemeDark2 } from "d3";
 import PROTVISTA_QUERY from "./ProtVista.gql";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import { faCamera, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 const experimentalResultsStem = "https://www.ebi.ac.uk/proteins/api/proteins/";
 const experimentalStructureStem = "https://www.ebi.ac.uk/pdbe/entry-files/download/";
@@ -120,14 +120,7 @@ function AlphaFoldLegend() {
 
 // keep as closure since may need local state in future - such as hovered on atom
 // for highlighting
-function hoverManagerFactory({
-  viewer,
-  atomInfoRef,
-  parsedCif,
-  showModel,
-  chainToEntityDesc,
-  isAF,
-}) {
+function hoverManagerFactory({ viewer, atomInfoRef, parsedCif, chainToEntityDesc, isAF }) {
   return [
     {},
     true,
@@ -142,7 +135,7 @@ function hoverManagerFactory({
         const authAtom = parsedCif["_atom_site.auth_seq_id"][atom.index];
         const pdbAtom = parsedCif["_atom_site.label_seq_id"][atom.index];
         fieldElmts[0].textContent = chainToEntityDesc[pdbChain];
-        fieldElmts[1].textContent = `${showModel ? `Model: ${pdbModel} | ` : ""}${pdbChain}${
+        fieldElmts[1].textContent = `${pdbChain}${
           authChain && authChain !== pdbChain ? ` (auth: ${authChain})` : ""
         } | ${atom.resn} ${pdbAtom}${
           authAtom && authAtom !== pdbAtom ? ` (auth: ${authAtom})` : ""
@@ -164,6 +157,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   const [selectedStructure, setSelectedStructure] = useState(null);
   const [viewer, setViewer] = useState(null);
   const [structureLoading, setStructureLoading] = useState(true);
+  const [modelNumbers, setModelNumbers] = useState(null);
+  const [modelNumber, setModelNumber] = useState(null);
 
   const viewerRef = useRef(null);
   const structureInfoRef = useRef(null);
@@ -395,6 +390,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     async function fetchStructure() {
       if (selectedStructure && viewer) {
         clearStructureInfo();
+        setModelNumbers([]);
+        setModelNumber(null);
         showLoadingMessage();
 
         const isAF = isAlphaFold(selectedStructure);
@@ -423,6 +420,14 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 idElmt.textContent = `${selectedStructure.id}${title ? ":" : ""}`;
                 titleElmt.textContent = title;
               }
+
+              const _modelNumbers = [...new Set(parsedCif["_atom_site.pdbx_PDB_model_num"])]
+                .map(Number)
+                .sort((a, b) => a - b);
+              console.log(_modelNumbers);
+              setModelNumbers(_modelNumbers);
+              const _modelNumber = modelNumbers[0];
+              setModelNumber(_modelNumber);
 
               // pdb <-> auth chains
               // - may only need pdb -> auth, but is 1-to-many so get auth->pdb first
@@ -547,7 +552,6 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                   viewer,
                   atomInfoRef,
                   parsedCif,
-                  showModel: new Set(parsedCif["_atom_site.pdbx_PDB_model_num"]).size > 1,
                   chainToEntityDesc,
                   isAF,
                 })
@@ -596,7 +600,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       hideAtomInfo();
       viewer?.clear();
     };
-  }, [selectedStructure, viewer, segments]);
+  }, [selectedStructure, viewer, segments, setModelNumbers, setModelNumber]);
 
   if (!experimentalResults) return null;
 
@@ -655,6 +659,29 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                       alignItems: "center",
                     }}
                   />
+                  {modelNumbers?.length > 1 && (
+                    <Box
+                      position="absolute"
+                      top={0}
+                      left={0}
+                      bgcolor="#f8f8f8d8"
+                      sx={{ borderBottomRightRadius: "0.2rem", zIndex: 1 }}
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      m={1}
+                    >
+                      <Button sx={{ bgcolor: "white" }}>
+                        <FontAwesomeIcon icon={faChevronLeft} size="xs" />
+                      </Button>
+                      <Button sx={{ bgcolor: "white" }}>
+                        <FontAwesomeIcon icon={faChevronRight} size="xs" />
+                      </Button>
+                      <Typography variant="caption" fontSize={13}>
+                        Model {modelNumber}/{modelNumbers.length}
+                      </Typography>
+                    </Box>
+                  )}
                   <Box
                     sx={{
                       top: 0,
@@ -683,7 +710,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                     right={0}
                     p="0.6rem 0.8rem"
                     zIndex={100}
-                    bgcolor="#f8f8f8c8"
+                    bgcolor="#f8f8f8d8"
                     sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
                     fontSize={14}
                   >
