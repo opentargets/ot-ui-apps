@@ -1,16 +1,17 @@
 import { useQuery } from "@apollo/client";
 import { SectionItem, OtTable, Link } from "ui";
 import { naLabel } from "@ot/constants";
-import { Box, colors, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
 import { getUniprotIds, nanComparator } from "@ot/utils";
-import { createViewer, isNumeric } from "3dmol";
+import { createViewer } from "3dmol";
 import { parseCif } from "./parseCif";
-import { schemeSet1, schemeDark2, color as d3Color, max } from "d3";
+import { schemeSet1, schemeDark2 } from "d3";
 import PROTVISTA_QUERY from "./ProtVista.gql";
 import { useState, useEffect, useRef } from "react";
-import { property } from "lodash";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
 const experimentalResultsStem = "https://www.ebi.ac.uk/proteins/api/proteins/";
 const experimentalStructureStem = "https://www.ebi.ac.uk/pdbe/entry-files/download/";
@@ -177,6 +178,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   const [segments, setSegments] = useState(null);
   const [selectedStructure, setSelectedStructure] = useState(null);
   const [viewer, setViewer] = useState(null);
+  const [structureLoading, setStructureLoading] = useState(true);
 
   const viewerRef = useRef(null);
   const atomInfoRef = useRef(null);
@@ -264,6 +266,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
 
   function showLoadingMessage(message = "Loading structure ...") {
     if (messageRef.current) {
+      setStructureLoading(true);
       messageRef.current.style.display = "flex";
       messageRef.current.textContent = message;
     }
@@ -272,6 +275,47 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   function hideLoadingMessage() {
     if (messageRef.current) {
       messageRef.current.style.display = "none";
+      setStructureLoading(false);
+    }
+  }
+
+  function onClickCapture() {
+    if (!viewerRef.current) return;
+
+    try {
+      // Get the canvas element from the container
+      const canvas = viewerRef.current.querySelector("canvas");
+
+      if (!canvas) {
+        console.error("Canvas element not found");
+        return;
+      }
+
+      // Create a new canvas with proper background
+      const newCanvas = document.createElement("canvas");
+      newCanvas.width = canvas.width;
+      newCanvas.height = canvas.height;
+
+      const ctx = newCanvas.getContext("2d");
+
+      // Draw background
+      ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+
+      // Draw original canvas content on top
+      ctx.drawImage(canvas, 0, 0);
+
+      // Convert the new canvas to data URL
+      const dataUrl = newCanvas.toDataURL("image/png");
+
+      // Create a temporary link and trigger download
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = `${ensemblId}-molecular-structure.png`;
+      link.click();
+    } catch (error) {
+      console.error("Error taking screenshot:", error);
+    } finally {
+      // setLoading(false);
     }
   }
 
@@ -600,6 +644,27 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                       alignItems: "center",
                     }}
                   />
+                  <Box
+                    sx={{
+                      top: 0,
+                      right: 0,
+                      position: "absolute",
+                      zIndex: 1,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      background: "white",
+                      m: 1,
+                    }}
+                  >
+                    <Button
+                      sx={{ display: "flex", gap: 1 }}
+                      disabled={structureLoading}
+                      onClick={onClickCapture}
+                    >
+                      <FontAwesomeIcon icon={faCamera} /> Screenshot
+                    </Button>
+                  </Box>
                   <StructureIdPanel selectedStructure={selectedStructure} />
                   <Box
                     ref={atomInfoRef}
