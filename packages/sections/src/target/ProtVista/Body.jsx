@@ -118,21 +118,6 @@ function AlphaFoldLegend() {
   );
 }
 
-// function StructureIdPanel({ selectedStructure }) {
-//   return (
-//     <Box
-//       position="absolute"
-//       p="0.6rem 0.8rem"
-//       zIndex={100}
-//       bgcolor="#f8f8f8c8"
-//       sx={{ borderBottomRightRadius: "0.2rem", pointerEvents: "none" }}
-//       fontSize={14}
-//     >
-//       {selectedStructure?.id}
-//     </Box>
-//   );
-// }
-
 // keep as closure since may need local state in future - such as hovered on atom
 // for highlighting
 function hoverManagerFactory({
