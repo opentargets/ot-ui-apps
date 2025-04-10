@@ -111,7 +111,7 @@ export const clearRecentItem = item => {
 
 export const getSelectedEntityFilterLength = obj => {
   if (!obj) return TOTAL_ENTITIES;
-  return Object.values(obj).filter(Boolean).length || TOTAL_ENTITIES;
+  return Object.values(obj).filter(Boolean).length;
 };
 
 export const getSelectedEntityFilter = obj => {

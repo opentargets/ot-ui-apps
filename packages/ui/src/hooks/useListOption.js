@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import {
   addSearchToLocalStorage,
+  getSelectedEntityFilter,
   TOTAL_ENTITIES,
 } from "../components/GlobalSearch/utils/searchUtils";
 
@@ -9,8 +10,11 @@ function useListOption() {
 
   const entitiesWitAssociations = ["disease", "target"];
 
-  const openListItem = (option, activeSearchEntities = []) => {
+  const openListItem = (option, filterState) => {
     if (!option) return;
+
+    const activeSearchEntities = getSelectedEntityFilter(filterState);
+
     const newOption = { ...option };
     newOption.type = "recent";
     addSearchToLocalStorage(newOption);
@@ -30,9 +34,7 @@ function useListOption() {
 }
 
 function navigateToSearchResultsPage({ navigate, newOption, activeSearchEntities = [] }) {
-  if (activeSearchEntities.length === TOTAL_ENTITIES || activeSearchEntities.length === 0)
-    navigate(`/search?q=${newOption.name}&page=1`);
-  else navigate(`/search?q=${newOption.name}&page=1&entities=${activeSearchEntities.join()}`);
+  navigate(`/search?q=${newOption.name}&page=1`);
 }
 
 export default useListOption;

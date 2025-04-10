@@ -1,9 +1,9 @@
-import { Grid, Grow, Skeleton } from "@mui/material";
+import { Collapse, Grid, Grow, Skeleton } from "@mui/material";
 
 function GlobalSearchLoadingState() {
   const listItemsToShow = new Array<number>(4).fill(0);
   return (
-    <Grow appear in>
+    <Collapse appear in>
       <div>
         <Grid container justifyContent="flex-start" alignItems="center" style={{ padding: 20 }}>
           <Grid
@@ -39,7 +39,7 @@ function GlobalSearchLoadingState() {
           ))}
         </Grid>
       </div>
-    </Grow>
+    </Collapse>
   );
 }
 

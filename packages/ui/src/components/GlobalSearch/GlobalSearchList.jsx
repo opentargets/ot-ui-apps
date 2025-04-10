@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, memo, useCallback } from "react";
+import { useContext, useEffect, useState, memo, useCallback, Fragment } from "react";
 import { Box, styled } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
 import GlobalSearchListHeader from "./GlobalSearchListHeader";
@@ -66,7 +66,7 @@ function GlobalSearchList({ inputValue }) {
   const [loading, setLoading] = useState(false);
   const { searchQuery, setOpen, searchSuggestions, filterState } = useContext(SearchContext);
   const [selectedEntityFilterLength, setSelectedEntityFilterLength] = useState(
-    getSelectedEntityFilterLength(filterState)
+    getSelectedEntityFilterLength(filterState) || TOTAL_ENTITIES
   );
   const [getSearchData] = useLazyQuery(searchQuery);
   const [openListItem] = useListOption();
@@ -112,10 +112,13 @@ function GlobalSearchList({ inputValue }) {
     }
   }, []);
 
-  const handleItemClick = useCallback(item => {
-    setOpen(false);
-    openListItem(item);
-  }, []);
+  const handleItemClick = useCallback(
+    item => {
+      setOpen(false);
+      openListItem(item, filterState);
+    },
+    [filterState]
+  );
 
   function fetchSearchResults() {
     setLoading(true);
@@ -198,14 +201,14 @@ function GlobalSearchList({ inputValue }) {
   );
 
   useEffect(() => {
-    setSelectedEntityFilterLength(getSelectedEntityFilterLength(filterState));
+    setSelectedEntityFilterLength(getSelectedEntityFilterLength(filterState) || TOTAL_ENTITIES);
   }, [filterState]);
 
   useEffect(() => {
     focusOnItem();
     if (inputValue) fetchSearchResults();
     else setSearchResult({});
-  }, [inputValue]);
+  }, [inputValue, selectedEntityFilterLength]);
 
   useEffect(() => {
     document.addEventListener("keydown", onKeyDownHandler);
@@ -236,7 +239,7 @@ function GlobalSearchList({ inputValue }) {
         !loading &&
         !isResultEmpty() &&
         Object.entries(searchResult).map(([key, value]) => (
-          <>
+          <Fragment key={key}>
             {shouldShowEntityResult(value) && (
               <Box
                 key={key}
@@ -260,7 +263,7 @@ function GlobalSearchList({ inputValue }) {
                 </List>
               </Box>
             )}
-          </>
+          </Fragment>
         ))}
 
       {/* no search result state  */}

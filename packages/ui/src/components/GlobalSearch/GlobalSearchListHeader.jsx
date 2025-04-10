@@ -78,6 +78,8 @@ function GlobalSearchListHeader({ listHeader, children }) {
         return null;
       case "Search Suggestions":
         return null;
+      case "filter":
+        return null;
       default:
         return <FontAwesomeIcon icon={faTag} />;
     }

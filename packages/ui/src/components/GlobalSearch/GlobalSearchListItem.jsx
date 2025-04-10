@@ -133,7 +133,6 @@ function SuggestionListItem({ item, onItemClick }) {
               fontSize: "12px",
             },
           }}
-          clickable
           size="small"
           label={symbolNameOrId(item)}
           icon={<FontAwesomeIcon icon={faArrowTrendUp} />}

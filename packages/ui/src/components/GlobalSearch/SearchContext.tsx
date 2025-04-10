@@ -23,11 +23,11 @@ type EntityFilterState = {
 };
 
 export const defaultEntityFilterState = {
-  drug: false,
-  disease: false,
   target: false,
-  study: false,
   variant: false,
+  study: false,
+  disease: false,
+  drug: false,
 };
 
 export const SearchContext = createContext<{
