@@ -118,20 +118,20 @@ function AlphaFoldLegend() {
   );
 }
 
-function StructureIdPanel({ selectedStructure }) {
-  return (
-    <Box
-      position="absolute"
-      p="0.6rem 0.8rem"
-      zIndex={100}
-      bgcolor="#f8f8f8c8"
-      sx={{ borderBottomRightRadius: "0.2rem", pointerEvents: "none" }}
-      fontSize={14}
-    >
-      {selectedStructure?.id}
-    </Box>
-  );
-}
+// function StructureIdPanel({ selectedStructure }) {
+//   return (
+//     <Box
+//       position="absolute"
+//       p="0.6rem 0.8rem"
+//       zIndex={100}
+//       bgcolor="#f8f8f8c8"
+//       sx={{ borderBottomRightRadius: "0.2rem", pointerEvents: "none" }}
+//       fontSize={14}
+//     >
+//       {selectedStructure?.id}
+//     </Box>
+//   );
+// }
 
 // keep as closure since may need local state in future - such as hovered on atom
 // for highlighting
@@ -181,6 +181,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   const [structureLoading, setStructureLoading] = useState(true);
 
   const viewerRef = useRef(null);
+  const structureInfoRef = useRef(null);
   const atomInfoRef = useRef(null);
   const messageRef = useRef(null);
 
@@ -319,6 +320,10 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     }
   }
 
+  function clearStructureInfo() {
+    structureInfoRef.current?.querySelectorAll("span")?.forEach(span => (span.textContent = ""));
+  }
+
   // fetch experimental results
   useEffect(() => {
     const results = [];
@@ -404,6 +409,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   useEffect(() => {
     async function fetchStructure() {
       if (selectedStructure && viewer) {
+        clearStructureInfo();
         showLoadingMessage();
 
         const isAF = isAlphaFold(selectedStructure);
@@ -426,6 +432,13 @@ function Body({ id: ensemblId, label: symbol, entity }) {
               showLoadingMessage("Failed to parse structure data");
             }
             if (data && parsedCif) {
+              if (structureInfoRef.current) {
+                const [idElmt, titleElmt] = structureInfoRef.current.querySelectorAll("span");
+                const title = isAF ? "AlphaFold prediction" : parsedCif["_struct.title"] ?? "";
+                idElmt.textContent = `${selectedStructure.id}${title ? ":" : ""}`;
+                titleElmt.textContent = title;
+              }
+
               // pdb <-> auth chains
               // - may only need pdb -> auth, but is 1-to-many so get auth->pdb first
               let authToPdbChain = null;
@@ -610,7 +623,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={() => {
         return (
-          <Grid container spacing={2}>
+          <Grid container columnSpacing={2}>
             <Grid item xs={12} lg={6}>
               <OtTable
                 dataDownloader
@@ -626,6 +639,19 @@ function Body({ id: ensemblId, label: symbol, entity }) {
               />
             </Grid>
             <Grid item xs={12} lg={6}>
+              <Box
+                ref={structureInfoRef}
+                display="flex"
+                alignItems="baseline"
+                minHeight={22}
+                gap={0.5}
+                ml={2}
+                mt={0.75}
+                mb={1}
+              >
+                <Typography variant="subtitle2" component="span"></Typography>
+                <Typography variant="body2" component="span"></Typography>
+              </Box>
               <Box position="relative" display="flex" justifyContent="center" pb={2}>
                 <Box ref={viewerRef} position="relative" width="100%" height="400px">
                   <Typography
@@ -665,7 +691,6 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                       <FontAwesomeIcon icon={faCamera} /> Screenshot
                     </Button>
                   </Box>
-                  <StructureIdPanel selectedStructure={selectedStructure} />
                   <Box
                     ref={atomInfoRef}
                     position="absolute"
