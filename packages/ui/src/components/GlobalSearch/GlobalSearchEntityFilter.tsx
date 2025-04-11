@@ -53,6 +53,35 @@ function GlobalSearchEntityFilter() {
                       size="small"
                       // sx={{ display: "none" }}
                     />
+                    {/* <Checkbox
+                      checked={value}
+                      onChange={e => handleChangeFilter(key, e)}
+                      inputProps={{ "aria-label": "controlled" }}
+                      size="small"
+                      icon={
+                        <Chip
+                          variant="outlined"
+                          color="default"
+                          label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
+                          clickable
+                          onChange={e => handleChangeFilter(key, e)}
+                          size="small"
+                          tabIndex={0}
+                        />
+                      }
+                      checkedIcon={
+                        <Chip
+                          variant="filled"
+                          color="primary"
+                          label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
+                          clickable
+                          onChange={e => handleChangeFilter(key, e)}
+                          size="small"
+                          tabIndex={0}
+                        />
+                      }
+                      // sx={{ display: "none" }}
+                    /> */}
                     {/* <Chip
                       variant={value ? "filled" : "outlined"}
                       color={value ? "primary" : "default"}
@@ -64,6 +93,7 @@ function GlobalSearchEntityFilter() {
                     /> */}
                   </>
                 }
+                // label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
                 label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
               />
             );

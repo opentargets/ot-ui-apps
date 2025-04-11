@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, memo, useCallback, Fragment } from "react";
+import { useContext, useEffect, useState, memo, useCallback, Fragment, useMemo } from "react";
 import { Box, styled } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
 import GlobalSearchListHeader from "./GlobalSearchListHeader";
@@ -63,15 +63,23 @@ const List = styled("ul")(({ theme }) => ({
 function GlobalSearchList({ inputValue }) {
   let selected = 0;
   const [searchResult, setSearchResult] = useState({});
-  const [loading, setLoading] = useState(false);
   const { searchQuery, setOpen, searchSuggestions, filterState } = useContext(SearchContext);
-  const [selectedEntityFilterLength, setSelectedEntityFilterLength] = useState(
-    getSelectedEntityFilterLength(filterState) || TOTAL_ENTITIES
-  );
-  const [getSearchData] = useLazyQuery(searchQuery);
+  const [aborterRef, setAbortRef] = useState(new AbortController());
+  const [getSearchData, { loading }] = useLazyQuery(searchQuery, {
+    context: {
+      fetchOptions: {
+        signal: aborterRef.signal,
+      },
+    },
+    notifyOnNetworkStatusChange: true,
+  });
   const [openListItem] = useListOption();
   const [recentItems, setRecentItems] = useState(
     JSON.parse(localStorage.getItem("search-history")) || []
+  );
+  const selectedEntityFilterLength = useMemo(
+    () => getSelectedEntityFilterLength(filterState) || TOTAL_ENTITIES,
+    [filterState]
   );
 
   const focusOnItem = useCallback((index = 0) => {
@@ -120,8 +128,12 @@ function GlobalSearchList({ inputValue }) {
     [filterState]
   );
 
+  function abortExistingRequest() {
+    aborterRef.abort();
+    setAbortRef(new AbortController());
+  }
+
   function fetchSearchResults() {
-    setLoading(true);
     getSearchData({
       variables: {
         queryString: inputValue,
@@ -131,10 +143,9 @@ function GlobalSearchList({ inputValue }) {
       .then(res => {
         const formattedData = formatSearchData(res.data);
         setSearchResult({ ...formattedData });
-        setLoading(false);
       })
       .catch(err => {
-        setLoading(false);
+        console.log(err);
       });
   }
 
@@ -201,10 +212,7 @@ function GlobalSearchList({ inputValue }) {
   );
 
   useEffect(() => {
-    setSelectedEntityFilterLength(getSelectedEntityFilterLength(filterState) || TOTAL_ENTITIES);
-  }, [filterState]);
-
-  useEffect(() => {
+    if (loading) abortExistingRequest();
     focusOnItem();
     if (inputValue) fetchSearchResults();
     else setSearchResult({});
@@ -215,7 +223,7 @@ function GlobalSearchList({ inputValue }) {
     window.addEventListener("storage", handleChangeInRecentItems);
     return () => {
       document.removeEventListener("keydown", onKeyDownHandler);
-      window.addEventListener("storage", handleChangeInRecentItems);
+      window.removeEventListener("storage", handleChangeInRecentItems);
     };
   }, []);
 

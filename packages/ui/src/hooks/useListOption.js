@@ -34,7 +34,9 @@ function useListOption() {
 }
 
 function navigateToSearchResultsPage({ navigate, newOption, activeSearchEntities = [] }) {
-  navigate(`/search?q=${newOption.name}&page=1`);
+  if (activeSearchEntities.length === TOTAL_ENTITIES || activeSearchEntities.length === 0)
+    navigate(`/search?q=${newOption.name}&page=1`);
+  else navigate(`/search?q=${newOption.name}&page=1&entities=${activeSearchEntities.join()}`);
 }
 
 export default useListOption;
