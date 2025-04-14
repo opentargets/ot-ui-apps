@@ -213,10 +213,18 @@ function GlobalSearchList({ inputValue }) {
 
   useEffect(() => {
     if (loading) abortExistingRequest();
+    else {
+      focusOnItem();
+      if (inputValue) fetchSearchResults();
+      else setSearchResult({});
+    }
+  }, [inputValue, selectedEntityFilterLength]);
+
+  useEffect(() => {
     focusOnItem();
     if (inputValue) fetchSearchResults();
     else setSearchResult({});
-  }, [inputValue, selectedEntityFilterLength]);
+  }, [aborterRef]);
 
   useEffect(() => {
     document.addEventListener("keydown", onKeyDownHandler);
