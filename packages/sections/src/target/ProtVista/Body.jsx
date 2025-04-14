@@ -424,9 +424,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
               const _modelNumbers = [...new Set(parsedCif["_atom_site.pdbx_PDB_model_num"])]
                 .map(Number)
                 .sort((a, b) => a - b);
-              console.log(_modelNumbers);
               setModelNumbers(_modelNumbers);
-              const _modelNumber = modelNumbers[0];
+              const _modelNumber = _modelNumbers[0];
               setModelNumber(_modelNumber);
 
               // pdb <-> auth chains
@@ -546,6 +545,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
               };
               viewer.getCanvas().ondblclick = () => resetViewer(200); // use ondblclick so replaces existing
               viewer.addModel(data, "cif"); /* load data */
+              // viewer.addModels(data, "cif", { multimodel: true }); /* load data */
               viewer.setHoverDuration(hoverDuration);
               viewer.setHoverable(
                 ...hoverManagerFactory({
@@ -568,20 +568,27 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                   }
                 );
               } else {
+                console.log(modelNumbers);
                 viewer.setStyle(
-                  { chain: firstStructureTargetChains },
+                  _modelNumbers.length > 1
+                    ? { chain: firstStructureTargetChains }
+                    : { chain: firstStructureTargetChains },
+                  // ? { chain: firstStructureTargetChains }
+                  // : { chain: firstStructureTargetChains, model: [_modelNumber] }
                   { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
                 );
-                viewer.setStyle(
-                  { chain: firstStructureNonTargetChains },
-                  {
-                    cartoon: {
-                      color: "#eee",
-                      arrows: true,
-                      opacity: 0.8,
-                    },
-                  }
-                );
+                // viewer.setStyle(
+                //   _modelNumbers.length > 1
+                //     ? { chain: firstStructureNonTargetChains, model: _modelNumber }
+                //     : { chain: firstStructureNonTargetChains },
+                //   {
+                //     cartoon: {
+                //       color: "#eee",
+                //       arrows: true,
+                //       opacity: 0.8,
+                //     },
+                //   }
+                // );
                 viewer.getModel().setStyle({ chain: otherStructureChains }, { hidden: true });
               }
               resetViewer();
