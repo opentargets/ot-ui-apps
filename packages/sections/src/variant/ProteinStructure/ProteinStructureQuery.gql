@@ -1,0 +1,6 @@
+# !! TO DO !!
+query ProteinStructureQuery($variantId: String!) {
+  variant(variantId: $variantId) {
+    id
+  }
+}
