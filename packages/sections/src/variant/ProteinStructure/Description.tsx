@@ -6,18 +6,24 @@ type DescriptionProps = {
   alternateAllele: string;
 };
 
+// !! HARD CODE SOME OF DESCRIPTIPN FOR NOW !!
 function Description({ variantId, referenceAllele, alternateAllele }: DescriptionProps) {
   return (
     <>
-      Location of variant{" "}
+      Variant{" "}
       <strong>
         <DisplayVariantId
           variantId={variantId}
           referenceAllele={referenceAllele}
           alternateAllele={alternateAllele}
         />
-      </strong>
-      on protein XXXXX and associated traits. Source: ?????
+      </strong>{" "}
+      overlaps <strong>KRAS</strong> at positions 51-53. Source: <Link to="/">Open Targets</Link>{" "}
+      and{" "}
+      <Link external to="https://www.uniprot.org/">
+        UniProt
+      </Link>
+      .
     </>
   );
 }

@@ -14,64 +14,12 @@ import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
-// const alphaFoldResultsStem = "https://alphafold.ebi.ac.uk/api/prediction/";
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
 
-// function zipToObject(arr1, arr2) {
-//   const obj = {};
-//   if (!Array.isArray(arr1)) arr1 = [arr1];
-//   if (!Array.isArray(arr2)) arr2 = [arr2];
-//   arr1.forEach((value, index) => (obj[value] = arr2[index]));
-//   return obj;
-// }
-
-// keep as closure since may need local state in future - such as hovered on atom
-// for highlighting
-// function hoverManagerFactory({
-//   viewer,
-//   atomInfoRef,
-//   parsedCif,
-//   showModel,
-//   chainToEntityDesc,
-//   isAF,
-// }) {
-//   return [
-//     {},
-//     true,
-//     atom => {
-//       const infoElmt = atomInfoRef.current;
-//       if (infoElmt) {
-//         infoElmt.style.display = "block";
-//         const fieldElmts = [...infoElmt.querySelectorAll("p")];
-//         const pdbModel = parsedCif["_atom_site.pdbx_PDB_model_num"][atom.index];
-//         const authChain = parsedCif["_atom_site.auth_asym_id"][atom.index];
-//         const pdbChain = parsedCif["_atom_site.label_asym_id"][atom.index];
-//         const authAtom = parsedCif["_atom_site.auth_seq_id"][atom.index];
-//         const pdbAtom = parsedCif["_atom_site.label_seq_id"][atom.index];
-//         fieldElmts[0].textContent = chainToEntityDesc[pdbChain];
-//         fieldElmts[1].textContent = `${showModel ? `Model: ${pdbModel} | ` : ""}${pdbChain}${
-//           authChain && authChain !== pdbChain ? ` (auth: ${authChain})` : ""
-//         } | ${atom.resn} ${pdbAtom}${
-//           authAtom && authAtom !== pdbAtom ? ` (auth: ${authAtom})` : ""
-//         }`;
-//         fieldElmts[2].textContent = isAF ? `Confidence: ${atom.b} (${getConfidence(atom)})` : "";
-//       }
-//     },
-//     () => {
-//       if (atomInfoRef.current) {
-//         atomInfoRef.current.style.display = "none";
-//       }
-//     },
-//   ];
-// }
-
 function Body({ id: variantId, entity }) {
-  // const [viewer, setViewer] = useState(null);
   const [structureLoading, setStructureLoading] = useState(true);
-  // const [structure, setStructure] = useState(null);
   const viewerRef = useRef(null);
-  // const atomInfoRef = useRef(null);
   const messageRef = useRef(null);
 
   const variables = { variantId };
@@ -84,16 +32,11 @@ function Body({ id: variantId, entity }) {
   const ensemblId = "ENSG00000133703";
   const uniprotId = "P01116";
 
-  // const uniprotId = request?.data?.target
-  //   ? getUniprotIds(request?.data?.target?.proteinIds)?.[0]
-  //   : null;
+  // !! HARD CODE RESDIDUE(S) OF VARIANT FOR NOW !!
+  const variantResidues = new Set([21, 22, 23]);
 
-  //   function getSelectedRows(selectedRows) {
-  //     selectedRows.length > 0 && setSelectedStructure(selectedRows[0]?.original);
-  //   }
-
-  // function hideAtomInfo() {
-  //   if (atomInfoRef.current) atomInfoRef.current.style.display = "none";
+  // function colorAtom(atom) {
+  //   return variantResidues.has(atom.resi) ? "#f00" : "#888";
   // }
 
   function showLoadingMessage(message = "Loading structure ...") {
@@ -109,6 +52,89 @@ function Body({ id: variantId, entity }) {
       messageRef.current.style.display = "none";
       setStructureLoading(false);
     }
+  }
+
+  function resetViewer(viewer, duration = 0) {
+    // let cx = 0,
+    //   cy = 0,
+    //   cz = 0;
+    // const residueAtoms = viewer.getModel().selectedAtoms({ resi: [...variantResidues] });
+    // for (let atom of residueAtoms) {
+    //   cx += atom.x;
+    //   cy += atom.y;
+    //   cz += atom.z;
+    // }
+    // cx /= residueAtoms.length;
+    // cy /= residueAtoms.length;
+    // cz /= residueAtoms.length;
+
+    // const variantResiduesCentroid = { x: cx, y: cy, z: cz };
+    // const zUnit = { x: 0, y: 0, z: 1 };
+    // const rotation = computeRotationToAlignVectors(variantResiduesCentroid, zUnit);
+
+    // console.log(viewer.getView());
+    // console.log({ variantResiduesCentroid, zUnit, rotation });
+
+    // const view = viewer.jmolMoveTo(200, rotation);
+    // SHOULD translate after roatated - assuming rotation
+    // viewer.setView(view);
+
+    // viewer.jmolMoveTo(1000, rotation);
+
+    let cx = 0,
+      cy = 0,
+      cz = 0;
+    const residueAtoms = viewer.getModel().selectedAtoms({ resi: [...variantResidues] });
+    for (let atom of residueAtoms) {
+      cx += atom.x;
+      cy += atom.y;
+      cz += atom.z;
+    }
+    cx /= residueAtoms.length;
+    cy /= residueAtoms.length;
+    cz /= residueAtoms.length;
+    viewer.zoomTo({ resi: [...variantResidues] }, duration);
+    // viewer.translate(-cx, -cy, -cz); // Re-center
+    // !! FIXED ZOOM BELOW PROBABLY NOT APPROPRIATE !!
+    // viewer.zoom(0.3, duration);
+  }
+
+  function computeRotationToAlignVectors(v1, v2) {
+    function normalize(v) {
+      const len = Math.sqrt(v.x ** 2 + v.y ** 2 + v.z ** 2);
+      return len === 0 ? { x: 0, y: 0, z: 0 } : { x: v.x / len, y: v.y / len, z: v.z / len };
+    }
+
+    function cross(a, b) {
+      return {
+        x: a.y * b.z - a.z * b.y,
+        y: a.z * b.x - a.x * b.z,
+        z: a.x * b.y - a.y * b.x,
+      };
+    }
+
+    function dot(a, b) {
+      return a.x * b.x + a.y * b.y + a.z * b.z;
+    }
+
+    const v1n = normalize(v1);
+    const v2n = normalize(v2);
+    const axis = normalize(cross(v1n, v2n));
+    const cosTheta = dot(v1n, v2n);
+    const angleRad = Math.acos(Math.min(Math.max(cosTheta, -1), 1)); // clamp to avoid NaN
+    const angleDeg = angleRad * (180 / Math.PI);
+
+    // Handle edge case: vectors are already aligned or opposite
+    if (angleDeg === 0 || isNaN(angleDeg)) {
+      return { x: 0, y: 0, z: 1, angle: 0 };
+    }
+
+    return {
+      x: axis.x,
+      y: axis.y,
+      z: axis.z,
+      angle: angleDeg,
+    };
   }
 
   function onClickCapture() {
@@ -151,21 +177,17 @@ function Body({ id: variantId, entity }) {
     }
   }
 
-  // function clearStructureInfo() {
-  //   structureInfoRef.current?.querySelectorAll("span")?.forEach(span => (span.textContent = ""));
-  // }
-
   // fetch AlphaFold structure and view it
   useEffect(() => {
     async function fetchStructure() {
       showLoadingMessage();
-      const pdbUri = `${alphaFoldStructureStem}${uniprotId}${alphaFoldStructureSuffix}`;
+      const pdbUri = `${alphaFoldStructureStem}AF-${uniprotId}-F1${alphaFoldStructureSuffix}`;
       let data /*, parsedCif */, viewer;
 
       // fetch structure data
+      let response;
       try {
-        const response = await fetch(pdbUri);
-        console.log(response);
+        response = await fetch(pdbUri);
         if (!response.ok) {
           console.error(`Response status (CIF request): ${response.status}`);
           showLoadingMessage("Failed to download structure data");
@@ -176,12 +198,14 @@ function Body({ id: variantId, entity }) {
       }
 
       // parse data
-      try {
-        data = await response.text();
-        // parsedCif = parseCif(data)[selectedStructure.id];
-      } catch (error) {
-        console.error(error.message);
-        showLoadingMessage("Failed to parse structure data");
+      if (response?.ok) {
+        try {
+          data = await response.text();
+          // parsedCif = parseCif(data)[selectedStructure.id];
+        } catch (error) {
+          console.error(error.message);
+          showLoadingMessage("Failed to parse structure data");
+        }
       }
 
       // view data
@@ -191,24 +215,34 @@ function Body({ id: variantId, entity }) {
           antialias: true,
           cartoonQuality: 10,
         });
-        // function resetViewer(duration = 0) {
-        //   viewer.zoomTo(
-        //     {
-        //       chain: firstStructureTargetChains.length
-        //         ? firstStructureTargetChains
-        //         : firstStructureChains,
-        //     },
-        //     duration
-        //   );
-        //   viewer.zoom(isAlphaFold(selectedStructure) ? 1.4 : 1, duration);
-        // }
+        window.viewer = viewer; // !! REMOVE !!
 
         // const hoverDuration = 50;
         // viewer.getCanvas().onmouseleave = () => {
         //   setTimeout(hideAtomInfo, hoverDuration + 50);
         // };
         // viewer.getCanvas().ondblclick = () => resetViewer(200); // use ondblclick so replaces existing
+        viewer.getCanvas().ondblclick = () => resetViewer(viewer, 200); // use ondblclick so replaces existing
         viewer.addModel(data, "cif"); /* load data */
+        viewer.setStyle(
+          {},
+          {
+            cartoon: {
+              color: "#ddd",
+              arrows: true,
+              opacity: 0.9,
+            },
+          }
+        );
+        viewer.setStyle(
+          { resi: [...variantResidues] },
+          {
+            cartoon: {
+              color: "red",
+              arrows: true,
+            },
+          }
+        );
         // viewer.setHoverDuration(hoverDuration);
         // viewer.setHoverable(
         //   ...hoverManagerFactory({
@@ -249,6 +283,7 @@ function Body({ id: variantId, entity }) {
         // viewer.getModel().setStyle({ chain: otherStructureChains }, { hidden: true });
         // }
         // resetViewer();
+        resetViewer(viewer);
         viewer.render();
         hideLoadingMessage();
       }
@@ -264,22 +299,15 @@ function Body({ id: variantId, entity }) {
       definition={definition}
       entity={entity}
       request={request}
-      renderDescription={() => <Description variantId={variantId} />}
+      renderDescription={() => (
+        <Description
+          variantId={request.data?.variant.id}
+          referenceAllele={request.data?.variant.referenceAllele}
+          alternateAllele={request.data?.variant.alternateAllele}
+        />
+      )}
       renderBody={() => (
         <Box>
-          {/* <Box
-            ref={structureInfoRef}
-            display="flex"
-            alignItems="baseline"
-            minHeight={22}
-            gap={0.5}
-            ml={2}
-            mt={0.75}
-            mb={1}
-          >
-            <Typography variant="subtitle2" component="span"></Typography>
-            <Typography variant="body2" component="span"></Typography>
-          </Box> */}
           <Box position="relative" display="flex" justifyContent="center" pb={2}>
             <Box ref={viewerRef} position="relative" width="100%" height="400px">
               <Typography

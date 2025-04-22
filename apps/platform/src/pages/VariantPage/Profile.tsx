@@ -82,7 +82,7 @@ function Profile({ varId }: ProfileProps) {
         <Suspense fallback={<SectionLoader />}>
           <ProteinStructureSection id={varId} entity={VARIANT} />
         </Suspense>
-        <Suspense fallback={<SectionLoader />}>
+        {/* <Suspense fallback={<SectionLoader />}>
           <VariantEffectSection id={varId} entity={VARIANT} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
@@ -102,7 +102,7 @@ function Profile({ varId }: ProfileProps) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <PharmacogenomicsSection id={varId} entity={VARIANT} />
-        </Suspense>
+        </Suspense> */}
       </SectionContainer>
     </PlatformApiProvider>
   );
