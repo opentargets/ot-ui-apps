@@ -1,13 +1,10 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem } from "ui";
-// import { naLabel } from "@ot/constants";
+import { SectionItem, AlphaFoldLegend } from "ui";
 import { Box, Button, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
-import { getUniprotIds, nanComparator } from "@ot/utils";
+import { getAlphaFoldConfidence } from "@ot/constants";
 import { createViewer } from "3dmol";
-import { parseCif } from "./parseCif";
-import { schemeSet1, schemeDark2 } from "d3";
 
 import PROTEIN_STRUCTURE_QUERY from "./ProteinStructureQuery.gql";
 import { useState, useEffect, useRef } from "react";
@@ -153,7 +150,8 @@ function Body({ id: variantId, entity }) {
           {
             cartoon: {
               // color: "#ddd",
-              color: "spectrum",
+              // color: "spectrum",
+              colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
               arrows: true,
               // opacity: 0.9,
             },
@@ -268,6 +266,7 @@ function Body({ id: variantId, entity }) {
               </Box> */}
             </Box>
           </Box>
+          <AlphaFoldLegend />
         </Box>
       )}
     />
