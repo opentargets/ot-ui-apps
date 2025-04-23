@@ -16,13 +16,9 @@ function GlobalSearchEntityFilter() {
     return getSelectedEntityFilterLength(filterState);
   }
 
-  function onKeyDown(e) {
-    if (e.code === "Space") console.log("space", e);
-  }
-
   return (
     <Box>
-      {/* <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex" }}>
         <GlobalSearchListHeader listHeader="filter" />
         <Box
           sx={theme => ({
@@ -37,36 +33,37 @@ function GlobalSearchEntityFilter() {
         >
           {getFilterCount()}
         </Box>
-      </Box> */}
+      </Box>
       <FormGroup>
-        <Box sx={{ display: "flex", px: 2, py: 1 }}>
+        <Box sx={{ display: "flex", pr: 2, py: 1 }}>
           {Object.entries(filterState).map(([key, value]) => {
             return (
               <FormControlLabel
                 key={key}
                 control={
                   <>
-                    <Checkbox
-                      checked={value}
-                      onChange={e => handleChangeFilter(key, e)}
-                      inputProps={{ "aria-label": "controlled" }}
-                      size="small"
-                      // sx={{ display: "none" }}
-                    />
                     {/* <Checkbox
                       checked={value}
                       onChange={e => handleChangeFilter(key, e)}
                       inputProps={{ "aria-label": "controlled" }}
                       size="small"
+                      // sx={{ display: "none" }}
+                    /> */}
+                    <Checkbox
+                      checked={value}
+                      onChange={e => handleChangeFilter(key, e)}
+                      inputProps={{ "aria-label": "controlled" }}
+                      size="small"
+                      // sx={{ p: 1 }}
                       icon={
                         <Chip
-                          variant="outlined"
+                          // variant="outlined"
                           color="default"
                           label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
                           clickable
                           onChange={e => handleChangeFilter(key, e)}
-                          size="small"
-                          tabIndex={0}
+                          // size="small"
+                          tabIndex={-1}
                         />
                       }
                       checkedIcon={
@@ -76,12 +73,12 @@ function GlobalSearchEntityFilter() {
                           label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
                           clickable
                           onChange={e => handleChangeFilter(key, e)}
-                          size="small"
-                          tabIndex={0}
+                          // size="small"
+                          tabIndex={-1}
                         />
                       }
                       // sx={{ display: "none" }}
-                    /> */}
+                    />
                     {/* <Chip
                       variant={value ? "filled" : "outlined"}
                       color={value ? "primary" : "default"}
@@ -94,7 +91,7 @@ function GlobalSearchEntityFilter() {
                   </>
                 }
                 // label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
-                label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
+                // label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
               />
             );
           })}
