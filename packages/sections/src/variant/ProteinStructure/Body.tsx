@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem, OtTable, Link } from "ui";
+import { SectionItem } from "ui";
 // import { naLabel } from "@ot/constants";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
 import { getUniprotIds, nanComparator } from "@ot/utils";
@@ -33,11 +33,7 @@ function Body({ id: variantId, entity }) {
   const uniprotId = "P01116";
 
   // !! HARD CODE RESDIDUE(S) OF VARIANT FOR NOW !!
-  const variantResidues = new Set([21, 22, 23]);
-
-  // function colorAtom(atom) {
-  //   return variantResidues.has(atom.resi) ? "#f00" : "#888";
-  // }
+  const variantResidues = new Set([21]);
 
   function showLoadingMessage(message = "Loading structure ...") {
     if (messageRef.current) {
@@ -55,32 +51,6 @@ function Body({ id: variantId, entity }) {
   }
 
   function resetViewer(viewer, duration = 0) {
-    // let cx = 0,
-    //   cy = 0,
-    //   cz = 0;
-    // const residueAtoms = viewer.getModel().selectedAtoms({ resi: [...variantResidues] });
-    // for (let atom of residueAtoms) {
-    //   cx += atom.x;
-    //   cy += atom.y;
-    //   cz += atom.z;
-    // }
-    // cx /= residueAtoms.length;
-    // cy /= residueAtoms.length;
-    // cz /= residueAtoms.length;
-
-    // const variantResiduesCentroid = { x: cx, y: cy, z: cz };
-    // const zUnit = { x: 0, y: 0, z: 1 };
-    // const rotation = computeRotationToAlignVectors(variantResiduesCentroid, zUnit);
-
-    // console.log(viewer.getView());
-    // console.log({ variantResiduesCentroid, zUnit, rotation });
-
-    // const view = viewer.jmolMoveTo(200, rotation);
-    // SHOULD translate after roatated - assuming rotation
-    // viewer.setView(view);
-
-    // viewer.jmolMoveTo(1000, rotation);
-
     let cx = 0,
       cy = 0,
       cz = 0;
@@ -94,47 +64,6 @@ function Body({ id: variantId, entity }) {
     cy /= residueAtoms.length;
     cz /= residueAtoms.length;
     viewer.zoomTo({ resi: [...variantResidues] }, duration);
-    // viewer.translate(-cx, -cy, -cz); // Re-center
-    // !! FIXED ZOOM BELOW PROBABLY NOT APPROPRIATE !!
-    // viewer.zoom(0.3, duration);
-  }
-
-  function computeRotationToAlignVectors(v1, v2) {
-    function normalize(v) {
-      const len = Math.sqrt(v.x ** 2 + v.y ** 2 + v.z ** 2);
-      return len === 0 ? { x: 0, y: 0, z: 0 } : { x: v.x / len, y: v.y / len, z: v.z / len };
-    }
-
-    function cross(a, b) {
-      return {
-        x: a.y * b.z - a.z * b.y,
-        y: a.z * b.x - a.x * b.z,
-        z: a.x * b.y - a.y * b.x,
-      };
-    }
-
-    function dot(a, b) {
-      return a.x * b.x + a.y * b.y + a.z * b.z;
-    }
-
-    const v1n = normalize(v1);
-    const v2n = normalize(v2);
-    const axis = normalize(cross(v1n, v2n));
-    const cosTheta = dot(v1n, v2n);
-    const angleRad = Math.acos(Math.min(Math.max(cosTheta, -1), 1)); // clamp to avoid NaN
-    const angleDeg = angleRad * (180 / Math.PI);
-
-    // Handle edge case: vectors are already aligned or opposite
-    if (angleDeg === 0 || isNaN(angleDeg)) {
-      return { x: 0, y: 0, z: 1, angle: 0 };
-    }
-
-    return {
-      x: axis.x,
-      y: axis.y,
-      z: axis.z,
-      angle: angleDeg,
-    };
   }
 
   function onClickCapture() {
@@ -217,73 +146,46 @@ function Body({ id: variantId, entity }) {
         });
         window.viewer = viewer; // !! REMOVE !!
 
-        // const hoverDuration = 50;
-        // viewer.getCanvas().onmouseleave = () => {
-        //   setTimeout(hideAtomInfo, hoverDuration + 50);
-        // };
-        // viewer.getCanvas().ondblclick = () => resetViewer(200); // use ondblclick so replaces existing
         viewer.getCanvas().ondblclick = () => resetViewer(viewer, 200); // use ondblclick so replaces existing
         viewer.addModel(data, "cif"); /* load data */
         viewer.setStyle(
           {},
           {
             cartoon: {
-              color: "#ddd",
+              // color: "#ddd",
+              color: "spectrum",
               arrows: true,
-              opacity: 0.9,
+              // opacity: 0.9,
             },
           }
         );
-        viewer.setStyle(
-          { resi: [...variantResidues] },
-          {
-            cartoon: {
-              color: "red",
-              arrows: true,
-            },
-          }
-        );
-        // viewer.setHoverDuration(hoverDuration);
-        // viewer.setHoverable(
-        //   ...hoverManagerFactory({
-        //     viewer,
-        //     atomInfoRef,
-        //     parsedCif,
-        //     showModel: new Set(parsedCif["_atom_site.pdbx_PDB_model_num"]).size > 1,
-        //     chainToEntityDesc,
-        //     isAF,
-        //   })
-        // );
+        viewer.addSurface("VDW", { opacity: 0.65, color: "#fff" }, {});
+        // viewer.addSurface("VDW", { opacity: 1, color: "red" }, { resi: [...variantResidues] });
 
-        // if (isAF) {
-        //   viewer.setStyle(
-        //     {},
-        //     {
-        //       cartoon: {
-        //         colorfunc: atom => getConfidence(atom, "color"),
-        //         arrows: true,
-        //       },
-        //     }
-        //   );
-        // } else {
-        //   viewer.setStyle(
-        //     { chain: firstStructureTargetChains },
-        //     { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
-        //   );
-        //   viewer.setStyle(
-        //     { chain: firstStructureNonTargetChains },
-        //     {
-        //       cartoon: {
-        //         color: "#eee",
-        //         arrows: true,
-        //         opacity: 0.8,
-        //       },
-        //     }
-        //   );
-        // viewer.getModel().setStyle({ chain: otherStructureChains }, { hidden: true });
-        // }
-        // resetViewer();
+        // viewer.setStyle(
+        //   { resi: [...variantResidues] },
+        //   {
+        //     stick: { radius: 0.2 },
+        //     sphere: { radius: 0.4 },
+        //     cartoon: {
+        //       color: "#ddd",
+        //       arrows: true,
+        //     },
+        //   }
+        // );
+        const residueAtoms = viewer.getModel().selectedAtoms({ resi: [...variantResidues] });
+        // window.residueAtoms = residueAtoms;
+        const carbonAtoms = residueAtoms.filter(atom => atom.elem === "C");
+        console.log(carbonAtoms);
+        const sphereAtom = carbonAtoms[2];
+        viewer.addSphere({
+          center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
+          radius: 2,
+          color: "red",
+          opacity: 1,
+        });
         resetViewer(viewer);
+        viewer.zoom(0.2);
         viewer.render();
         hideLoadingMessage();
       }
