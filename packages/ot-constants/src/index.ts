@@ -336,3 +336,4 @@ export * from "./searchSuggestions";
 export * from "./partnerPreviewUtils";
 export * from "./particlesBackground";
 export * from "./variant";
+export * from "./alphaFold";
