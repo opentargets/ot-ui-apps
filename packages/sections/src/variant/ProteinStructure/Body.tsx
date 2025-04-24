@@ -10,6 +10,7 @@ import PROTEIN_STRUCTURE_QUERY from "./ProteinStructureQuery.gql";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import { hsl } from "d3";
 
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
@@ -18,6 +19,7 @@ function Body({ id: variantId, entity }) {
   const [structureLoading, setStructureLoading] = useState(true);
   const viewerRef = useRef(null);
   const messageRef = useRef(null);
+  const atomInfoRef = useRef(null);
 
   const variables = { variantId };
   // const variables = { ensemblId };
@@ -103,6 +105,74 @@ function Body({ id: variantId, entity }) {
     }
   }
 
+  // keep as closure since may need local state in future - such as hovered on atom
+  // for highlighting
+  function hoverManagerFactory({ viewer, atomInfoRef }) {
+    let currentResi = null;
+
+    function handleHover(atom) {
+      if (!atom || currentResi === atom.resi) return;
+      viewer.setStyle(
+        // only need setStyle since doing cartoon - owise can use addStyle
+        {},
+        {
+          cartoon: {
+            colorfunc: atom => {
+              let col = getAlphaFoldConfidence(atom, "color");
+              if (atom.resi === currentResi) {
+                // col = "#888";
+                const d3Col = hsl(col);
+                d3Col.l += 0.2;
+                col = d3Col.toString();
+              }
+              return col;
+            },
+            // atom.resi === currentResi ? getAlphaFoldConfidence(atom, "color") : "#ddd",
+            // atom.resi === currentResi ? "#888" : getAlphaFoldConfidence(atom, "color"),
+            arrows: true,
+          },
+        }
+      );
+      viewer.addStyle(
+        { resi: atom.resi },
+        {
+          stick: {},
+          sphere: { radius: 0.4 },
+        }
+      );
+      currentResi = atom.resi;
+      viewer.render();
+      const infoElmt = atomInfoRef.current;
+      if (infoElmt) {
+        infoElmt.style.display = "block";
+        const fieldElmts = [...infoElmt.querySelectorAll("p")];
+        fieldElmts[0].textContent = `${atom.resn} ${atom.resi}`;
+        fieldElmts[1].textContent = `Confidence: ${atom.b} (${getAlphaFoldConfidence(atom)})`;
+      }
+    }
+
+    function handleUnhover(atom) {
+      if (currentResi !== null) {
+        viewer.setStyle(
+          {},
+          {
+            cartoon: {
+              colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
+              arrows: true,
+              opacity: 1,
+            },
+          }
+        );
+        // if (currentSurface) viewer.removeSurface(currentSurface);
+        currentResi = null;
+        if (atomInfoRef.current) atomInfoRef.current.style.display = "none";
+        viewer.render();
+      }
+    }
+
+    return [{}, true, handleHover, handleUnhover];
+  }
+
   // fetch AlphaFold structure and view it
   useEffect(() => {
     async function fetchStructure() {
@@ -142,9 +212,16 @@ function Body({ id: variantId, entity }) {
           cartoonQuality: 10,
         });
         window.viewer = viewer; // !! REMOVE !!
-
+        const hoverDuration = 10;
         viewer.getCanvas().ondblclick = () => resetViewer(viewer, 200); // use ondblclick so replaces existing
         viewer.addModel(data, "cif"); /* load data */
+        viewer.setHoverDuration(hoverDuration);
+        const hoverArgs = hoverManagerFactory({ viewer, atomInfoRef });
+        const hideAtomInfo = hoverArgs[3];
+        viewer.getCanvas().onmouseleave = () => {
+          setTimeout(hideAtomInfo, hoverDuration + 50);
+        };
+        viewer.setHoverable(...hoverArgs);
         viewer.setStyle(
           {},
           {
@@ -157,24 +234,45 @@ function Body({ id: variantId, entity }) {
             },
           }
         );
-        viewer.addSurface("VDW", { opacity: 0.65, color: "#fff" }, {});
-        // viewer.addSurface("VDW", { opacity: 1, color: "red" }, { resi: [...variantResidues] });
+
+        // for (const atom of viewer.getModel().selectedAtoms()) {
+        //   atom.alphaFoldColor = getAlphaFoldConfidence(atom, "color");
+        // }
+        // const surfaceColorscheme = {};
+        // for (const { color } of alphaFoldConfidenceBands) {
+        //   surfaceColorscheme[color] = color;
+        // }
+
+        viewer.addSurface(
+          "VDW",
+          {
+            opacity: 1,
+            opacity: 0.65,
+            color: "#fff",
+            // color: {'prop': 'b', map:elementColors.greenCarbon}
+          },
+          {}
+        );
+        // viewer.addSurface("VDW", { opacity: 0.65, color: "#fff" }, { resi: [...variantResidues] });
 
         // viewer.setStyle(
         //   { resi: [...variantResidues] },
         //   {
         //     stick: { radius: 0.2 },
         //     sphere: { radius: 0.4 },
-        //     cartoon: {
-        //       color: "#ddd",
-        //       arrows: true,
-        //     },
+        //     // cartoon: {
+        //     //   color: "#ddd",
+        //     //   arrows: true,
+        //     // },
         //   }
         // );
+
+        // viewer.setStyle();
+
+        // !! SHOULD USE MIDDLE CARBON !!
         const residueAtoms = viewer.getModel().selectedAtoms({ resi: [...variantResidues] });
         // window.residueAtoms = residueAtoms;
         const carbonAtoms = residueAtoms.filter(atom => atom.elem === "C");
-        console.log(carbonAtoms);
         const sphereAtom = carbonAtoms[2];
         viewer.addSphere({
           center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
@@ -189,7 +287,10 @@ function Body({ id: variantId, entity }) {
       }
     }
     if (uniprotId) fetchStructure();
-    return () => viewer?.clear();
+    return () => {
+      hideAtomInfo();
+      viewer?.clear();
+    };
   }, []);
 
   // if (!experimentalResults) return null;
@@ -247,7 +348,7 @@ function Body({ id: variantId, entity }) {
                   <FontAwesomeIcon icon={faCamera} /> Screenshot
                 </Button>
               </Box>
-              {/* <Box
+              <Box
                 ref={atomInfoRef}
                 position="absolute"
                 bottom={0}
@@ -261,9 +362,8 @@ function Body({ id: variantId, entity }) {
                 <Box display="flex" flexDirection="column">
                   <Typography variant="caption" component="p" textAlign="right" />
                   <Typography variant="caption" component="p" textAlign="right" />
-                  <Typography variant="caption" component="p" textAlign="right" />
                 </Box>
-              </Box> */}
+              </Box>
             </Box>
           </Box>
           <AlphaFoldLegend />
