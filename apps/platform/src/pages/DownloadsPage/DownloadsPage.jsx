@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Paper, Box, Chip, Typography, Alert, AlertTitle } from "@mui/material";
+import { Paper, Box, Chip, Typography, Alert, AlertTitle, Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link, OtTable } from "ui";
 import { getConfig } from "@ot/config";
 import { v1 } from "uuid";
 import { Fragment } from "react/jsx-runtime";
 import ContainedInDrawer from "./ContainedInDrawer";
+import DownloadsCard from "./DownloadsCard";
 
 const config = getConfig();
 
@@ -73,9 +74,13 @@ function getColumn(locationUrl, version) {
   return columns;
 }
 
-function getRows(data) {
+function getRowsSource(data) {
   if (!data) return [];
   return data.distribution.filter(e => e["@type"] === "cr:FileSet");
+}
+function getRows(data) {
+  if (!data) return [];
+  return data.recordSet;
 }
 
 function getAllLocationUrl(data) {
@@ -92,7 +97,9 @@ function DownloadsPage() {
   const [loading, setLoading] = useState(true);
   const [downloadsData, setDownloadsData] = useState(null);
   const locationUrl = useMemo(() => getAllLocationUrl(downloadsData), [downloadsData]);
-  const rows = useMemo(() => getRows(downloadsData), [downloadsData]);
+  const rows = useMemo(() => getRowsSource(downloadsData), [downloadsData]);
+  const newRows = useMemo(() => getRows(downloadsData), [downloadsData]);
+  console.log(" DownloadsPage -> newRows", newRows);
   const columns = useMemo(
     () => getColumn(locationUrl, downloadsData?.version),
     [downloadsData, locationUrl]
@@ -149,11 +156,20 @@ function DownloadsPage() {
         </Alert>
       ) : null}
 
-      <Paper variant="outlined" elevation={0}>
+      {/* <Paper variant="outlined" elevation={0}>
         <Box m={2}>
           <OtTable showGlobalFilter rows={rows} columns={columns} loading={loading} />
         </Box>
-      </Paper>
+
+      </Paper> */}
+
+      <Grid className={classes.links} container justifyContent="center" gap={1.5} sx={{ mt: 4 }}>
+        {/* <Box m={2} sx={{ display: "flex", flexWrap: "wrap" }}> */}
+        {newRows.map(e => (
+          <DownloadsCard key={v1()} data={e} />
+        ))}
+        {/* </Box> */}
+      </Grid>
     </>
   );
 }
