@@ -27,12 +27,15 @@ function Body({ id: variantId, entity }) {
     variables,
   });
 
-  // !! HARD CODE KRAS FOR NOW !!
-  const ensemblId = "ENSG00000133703";
+  // !! HARD CODE PROTEIN AND MAKE UP OTHER VALUES FOR NOW !!
+  const ensemblId = "ENSG00000133703"; // KRAS, ~200 residues
   const uniprotId = "P01116";
+  // const ensemblId = "ENSG00000108557";  // ~2000 residues
+  // const uniprotId = "Q7Z5J4";
+  const maxVariantEffect = 0.7;
 
   // !! HARD CODE RESDIDUE(S) OF VARIANT FOR NOW !!
-  const variantResidues = new Set([21]);
+  const variantResidues = new Set([21, 22, 23]);
 
   function showLoadingMessage(message = "Loading structure ...") {
     if (messageRef.current) {
@@ -105,6 +108,33 @@ function Body({ id: variantId, entity }) {
     }
   }
 
+  function addVariantStyle(viewer, omitResi) {
+    let resis = [...variantResidues];
+    if (variantResidues.has(omitResi)) {
+      resis = resis.filter(atom => atom !== omitResi);
+    }
+    viewer.addStyle(
+      { resi: resis },
+      {
+        stick: { radius: 0.2, colorfunc: a => getAlphaFoldConfidence(a, "color") },
+        sphere: { radius: 0.4, colorfunc: a => getAlphaFoldConfidence(a, "color") },
+      }
+    );
+  }
+
+  function setNoHoverStyle(viewer) {
+    viewer.setStyle(
+      {},
+      {
+        cartoon: {
+          colorfunc: a => getAlphaFoldConfidence(a, "color"),
+          arrows: true,
+        },
+      }
+    );
+    addVariantStyle(viewer);
+  }
+
   // keep as closure since may need local state in future - such as hovered on atom
   // for highlighting
   function hoverManagerFactory({ viewer, atomInfoRef }) {
@@ -112,32 +142,27 @@ function Body({ id: variantId, entity }) {
 
     function handleHover(atom) {
       if (!atom || currentResi === atom.resi) return;
+      // const atomInVariant = variantResidues.has(atom.resi);
+      const hslColor = hsl(getAlphaFoldConfidence(atom, "color"));
+      hslColor.l += hslColor.l > 0.6 ? 0.1 : 0.2;
+      const afColorLight = hslColor.toString();
       viewer.setStyle(
         // only need setStyle since doing cartoon - owise can use addStyle
         {},
         {
           cartoon: {
-            colorfunc: atom => {
-              let col = getAlphaFoldConfidence(atom, "color");
-              if (atom.resi === currentResi) {
-                // col = "#888";
-                const d3Col = hsl(col);
-                d3Col.l += 0.2;
-                col = d3Col.toString();
-              }
-              return col;
-            },
-            // atom.resi === currentResi ? getAlphaFoldConfidence(atom, "color") : "#ddd",
-            // atom.resi === currentResi ? "#888" : getAlphaFoldConfidence(atom, "color"),
+            colorfunc: a =>
+              a.resi === currentResi ? afColorLight : getAlphaFoldConfidence(a, "color"),
             arrows: true,
           },
         }
       );
+      addVariantStyle(viewer, atom.resi);
       viewer.addStyle(
         { resi: atom.resi },
         {
-          stick: {},
-          sphere: { radius: 0.4 },
+          stick: { color: afColorLight },
+          sphere: { radius: 0.4, color: afColorLight },
         }
       );
       currentResi = atom.resi;
@@ -153,16 +178,7 @@ function Body({ id: variantId, entity }) {
 
     function handleUnhover(atom) {
       if (currentResi !== null) {
-        viewer.setStyle(
-          {},
-          {
-            cartoon: {
-              colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
-              arrows: true,
-              opacity: 1,
-            },
-          }
-        );
+        setNoHoverStyle(viewer);
         // if (currentSurface) viewer.removeSurface(currentSurface);
         currentResi = null;
         if (atomInfoRef.current) atomInfoRef.current.style.display = "none";
@@ -222,64 +238,18 @@ function Body({ id: variantId, entity }) {
           setTimeout(hideAtomInfo, hoverDuration + 50);
         };
         viewer.setHoverable(...hoverArgs);
-        viewer.setStyle(
-          {},
-          {
-            cartoon: {
-              // color: "#ddd",
-              // color: "spectrum",
-              colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
-              arrows: true,
-              // opacity: 0.9,
-            },
-          }
-        );
-
-        // for (const atom of viewer.getModel().selectedAtoms()) {
-        //   atom.alphaFoldColor = getAlphaFoldConfidence(atom, "color");
-        // }
-        // const surfaceColorscheme = {};
-        // for (const { color } of alphaFoldConfidenceBands) {
-        //   surfaceColorscheme[color] = color;
-        // }
-
-        viewer.addSurface(
-          "VDW",
-          {
-            opacity: 1,
-            opacity: 0.65,
-            color: "#fff",
-            // color: {'prop': 'b', map:elementColors.greenCarbon}
-          },
-          {}
-        );
-        // viewer.addSurface("VDW", { opacity: 0.65, color: "#fff" }, { resi: [...variantResidues] });
-
-        // viewer.setStyle(
-        //   { resi: [...variantResidues] },
+        setNoHoverStyle(viewer);
+        // viewer.addSurface(
+        //   "VDW",
         //   {
-        //     stick: { radius: 0.2 },
-        //     sphere: { radius: 0.4 },
-        //     // cartoon: {
-        //     //   color: "#ddd",
-        //     //   arrows: true,
-        //     // },
-        //   }
+        //     opacity: 1,
+        //     opacity: 0.65,
+        //     color: "#fff",
+        //     // color: {'prop': 'b', map:elementColors.greenCarbon}
+        //   },
+        //   {}
         // );
-
-        // viewer.setStyle();
-
-        // !! SHOULD USE MIDDLE CARBON !!
-        const residueAtoms = viewer.getModel().selectedAtoms({ resi: [...variantResidues] });
-        // window.residueAtoms = residueAtoms;
-        const carbonAtoms = residueAtoms.filter(atom => atom.elem === "C");
-        const sphereAtom = carbonAtoms[2];
-        viewer.addSphere({
-          center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
-          radius: 2,
-          color: "red",
-          opacity: 1,
-        });
+        viewer.addSurface("VDW", { opacity: 0.65, color: "#fff" }, { resi: [...variantResidues] });
         resetViewer(viewer);
         viewer.zoom(0.2);
         viewer.render();
@@ -309,7 +279,11 @@ function Body({ id: variantId, entity }) {
       )}
       renderBody={() => (
         <Box>
-          <Box position="relative" display="flex" justifyContent="center" pb={2}>
+          <Box position="relative" pb={2}>
+            <Typography variant="body2" sx={{ pb: 1 }}>
+              AlphaFold prediction XXXX with variant (reference allele) highlighted. Maximum variant
+              effect for position: {maxVariantEffect}.
+            </Typography>
             <Box ref={viewerRef} position="relative" width="100%" height="400px">
               <Typography
                 ref={messageRef}
