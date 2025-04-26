@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { Paper, Box, Chip, Typography, Alert, AlertTitle } from "@mui/material";
+import { Paper, Box, Chip, Typography, Alert, AlertTitle, Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link, OtTable } from "ui";
 import { getConfig } from "@ot/config";
 import { v1 } from "uuid";
 import { Fragment } from "react/jsx-runtime";
 import ContainedInDrawer from "./ContainedInDrawer";
+import DownloadsCard from "./DownloadsCard";
+import DownloadsFilter from "./DownloadsFilter";
 
 const config = getConfig();
 
@@ -73,9 +75,13 @@ function getColumn(locationUrl, version) {
   return columns;
 }
 
-function getRows(data) {
+function getRowsSource(data) {
   if (!data) return [];
   return data.distribution.filter(e => e["@type"] === "cr:FileSet");
+}
+function getRows(data) {
+  if (!data) return [];
+  return data.recordSet;
 }
 
 function getAllLocationUrl(data) {
@@ -92,7 +98,9 @@ function DownloadsPage() {
   const [loading, setLoading] = useState(true);
   const [downloadsData, setDownloadsData] = useState(null);
   const locationUrl = useMemo(() => getAllLocationUrl(downloadsData), [downloadsData]);
-  const rows = useMemo(() => getRows(downloadsData), [downloadsData]);
+  const rows = useMemo(() => getRowsSource(downloadsData), [downloadsData]);
+  const newRows = useMemo(() => getRows(downloadsData), [downloadsData]);
+  console.log(" DownloadsPage -> newRows", newRows);
   const columns = useMemo(
     () => getColumn(locationUrl, downloadsData?.version),
     [downloadsData, locationUrl]
@@ -149,11 +157,34 @@ function DownloadsPage() {
         </Alert>
       ) : null}
 
-      <Paper variant="outlined" elevation={0}>
+      {/* <Paper variant="outlined" elevation={0}>
         <Box m={2}>
           <OtTable showGlobalFilter rows={rows} columns={columns} loading={loading} />
         </Box>
-      </Paper>
+
+      </Paper> */}
+
+      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Grid item xs={12} md={3} lg={2}>
+          <DownloadsFilter />
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          md={9}
+          lg={10}
+          sx={{ display: "flex", flexDirection: "column", gap: 1, pl: 3 }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            All Datasets ({rows.length})
+          </Typography>
+          <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between" }}>
+            {rows.map(e => (
+              <DownloadsCard key={v1()} data={e} />
+            ))}
+          </Box>
+        </Grid>
+      </Grid>
     </>
   );
 }
