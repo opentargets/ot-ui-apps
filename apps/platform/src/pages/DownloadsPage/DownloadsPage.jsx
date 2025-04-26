@@ -7,6 +7,7 @@ import { v1 } from "uuid";
 import { Fragment } from "react/jsx-runtime";
 import ContainedInDrawer from "./ContainedInDrawer";
 import DownloadsCard from "./DownloadsCard";
+import DownloadsFilter from "./DownloadsFilter";
 
 const config = getConfig();
 
@@ -163,13 +164,21 @@ function DownloadsPage() {
 
       </Paper> */}
 
-      <Grid className={classes.links} container justifyContent="center" gap={1.5} sx={{ mt: 4 }}>
-        {/* <Box m={2} sx={{ display: "flex", flexWrap: "wrap" }}> */}
-        {newRows.map(e => (
-          <DownloadsCard key={v1()} data={e} />
-        ))}
-        {/* </Box> */}
-      </Grid>
+      <Box sx={{ display: "flex", gap: 3 }}>
+        <Box>
+          <DownloadsFilter />
+        </Box>
+        <Box>
+          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            All Datasets ({rows.length})
+          </Typography>
+          <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between" }}>
+            {rows.map(e => (
+              <DownloadsCard key={v1()} data={e} />
+            ))}
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 }

@@ -3,6 +3,7 @@ import { buildSchema } from "./utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faDatabase } from "@fortawesome/free-solid-svg-icons";
 import DownloadsSchemaDrawer from "./DownloadsSchemaDrawer";
+import { LongText } from "ui";
 
 function DownloadsCard({ data }) {
   const columnId = data["@id"];
@@ -15,11 +16,14 @@ function DownloadsCard({ data }) {
   return (
     <Card
       sx={{
-        width: "400px",
+        width: "350px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "space-between",
+        boxShadow: "none",
+        border: theme => `1px solid ${theme.palette.grey[300]}`,
+        mb: 2,
       }}
     >
       <CardContent
@@ -40,15 +44,20 @@ function DownloadsCard({ data }) {
               gap: 1,
             }}
           >
-            <Typography variant="h5" component="div" sx={{ wordBreak: "break-all" }}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ wordBreak: "break-all", fontWeight: "bold" }}
+            >
               {data.name}
             </Typography>
-            <Chip variant="outlined" label="category" size="medium" />
+            <Chip variant="outlined" label="category" size="small" />
           </Box>
-          <Typography variant="body1">
+
+          <LongText variant="body1" lineLimit={2}>
             {data.description}
-            <br />
-          </Typography>
+          </LongText>
+          <br />
           <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
             <Chip size="small" color="primary" label="dataType" />
           </Typography>
@@ -70,17 +79,17 @@ function DownloadsCard({ data }) {
       </CardContent>
       <CardActions sx={{ display: "flex", width: 1 }}>
         <Box sx={{ width: "50%" }}>
-          <DownloadsSchemaDrawer data={data}>
-            <Button
-              variant="outlined"
-              color="primary"
-              sx={{ width: "100%" }}
-              startIcon={<FontAwesomeIcon icon={faCode} size="sm" />}
-            >
-              {" "}
-              Schema
-            </Button>
-          </DownloadsSchemaDrawer>
+          {/* <DownloadsSchemaDrawer data={data}> */}
+          <Button
+            variant="outlined"
+            color="primary"
+            sx={{ width: "100%" }}
+            startIcon={<FontAwesomeIcon icon={faCode} size="sm" />}
+          >
+            {" "}
+            Schema
+          </Button>
+          {/* </DownloadsSchemaDrawer> */}
         </Box>
         <Box sx={{ width: "50%" }}>
           <Button
