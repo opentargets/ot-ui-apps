@@ -164,11 +164,17 @@ function DownloadsPage() {
 
       </Paper> */}
 
-      <Box sx={{ display: "flex", gap: 3 }}>
-        <Box>
+      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Grid item xs={12} md={3} lg={2}>
           <DownloadsFilter />
-        </Box>
-        <Box>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          md={9}
+          lg={10}
+          sx={{ display: "flex", flexDirection: "column", gap: 1, pl: 3 }}
+        >
           <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
             All Datasets ({rows.length})
           </Typography>
@@ -177,8 +183,8 @@ function DownloadsPage() {
               <DownloadsCard key={v1()} data={e} />
             ))}
           </Box>
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
     </>
   );
 }

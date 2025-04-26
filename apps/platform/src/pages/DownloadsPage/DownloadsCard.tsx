@@ -23,7 +23,7 @@ function DownloadsCard({ data }) {
         justifyContent: "space-between",
         boxShadow: "none",
         border: theme => `1px solid ${theme.palette.grey[300]}`,
-        mb: 2,
+        mb: 3,
       }}
     >
       <CardContent
@@ -44,11 +44,7 @@ function DownloadsCard({ data }) {
               gap: 1,
             }}
           >
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ wordBreak: "break-all", fontWeight: "bold" }}
-            >
+            <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
               {data.name}
             </Typography>
             <Chip variant="outlined" label="category" size="small" />
