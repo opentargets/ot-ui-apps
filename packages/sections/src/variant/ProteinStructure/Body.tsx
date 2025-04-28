@@ -22,20 +22,20 @@ function Body({ id: variantId, entity }) {
   const atomInfoRef = useRef(null);
 
   const variables = { variantId };
-  // const variables = { ensemblId };
   const request = useQuery(PROTEIN_STRUCTURE_QUERY, {
     variables,
   });
-
-  // !! HARD CODE PROTEIN AND MAKE UP OTHER VALUES FOR NOW !!
-  const ensemblId = "ENSG00000133703"; // KRAS, ~200 residues
-  const uniprotId = "P01116";
-  // const ensemblId = "ENSG00000108557";  // ~2000 residues
-  // const uniprotId = "Q7Z5J4";
-  const maxVariantEffect = 0.7;
-
-  // !! HARD CODE RESDIDUE(S) OF VARIANT FOR NOW !!
-  const variantResidues = new Set([21, 22, 23]);
+  let proteinCodingCoordinates, maxVariantEffect, variantResidues;
+  const gqlData = request?.data?.variant;
+  if (gqlData) {
+    proteinCodingCoordinates = gqlData.proteinCodingCoordinates?.rows?.[0];
+    maxVariantEffect = proteinCodingCoordinates?.maxVariantEffectForPosition;
+    variantResidues = new Set(
+      gqlData.referenceAllele.split("").map((v, i) => {
+        return i + proteinCodingCoordinates.aminoAcidPosition;
+      })
+    );
+  }
 
   function showLoadingMessage(message = "Loading structure ...") {
     if (messageRef.current) {
@@ -135,8 +135,6 @@ function Body({ id: variantId, entity }) {
     addVariantStyle(viewer);
   }
 
-  // keep as closure since may need local state in future - such as hovered on atom
-  // for highlighting
   function hoverManagerFactory({ viewer, atomInfoRef }) {
     let currentResi = null;
 
@@ -191,29 +189,30 @@ function Body({ id: variantId, entity }) {
 
   // fetch AlphaFold structure and view it
   useEffect(() => {
+    let viewer;
     async function fetchStructure() {
       showLoadingMessage();
-      const pdbUri = `${alphaFoldStructureStem}AF-${uniprotId}-F1${alphaFoldStructureSuffix}`;
-      let data /*, parsedCif */, viewer;
+      let data, response;
+
+      async function fetchStructureFile(uniprotId) {
+        const pdbUri = `${alphaFoldStructureStem}AF-${uniprotId}-F1${alphaFoldStructureSuffix}`;
+        let newResponse;
+        try {
+          newResponse = await fetch(pdbUri);
+          if (newResponse?.ok) response = newResponse;
+        } catch (error) {}
+      }
 
       // fetch structure data
-      let response;
-      try {
-        response = await fetch(pdbUri);
-        if (!response.ok) {
-          console.error(`Response status (CIF request): ${response.status}`);
-          showLoadingMessage("Failed to download structure data");
-        }
-      } catch (error) {
-        console.error(error.message);
-        showLoadingMessage("Failed to download structure data");
+      const uniprotIds = [...(proteinCodingCoordinates?.uniprotAccessions ?? [])];
+      while (!response && uniprotIds.length) {
+        await fetchStructureFile(uniprotIds.shift());
       }
 
       // parse data
-      if (response?.ok) {
+      if (response) {
         try {
           data = await response.text();
-          // parsedCif = parseCif(data)[selectedStructure.id];
         } catch (error) {
           console.error(error.message);
           showLoadingMessage("Failed to parse structure data");
@@ -221,7 +220,7 @@ function Body({ id: variantId, entity }) {
       }
 
       // view data
-      if (data /* && parsedCif */ && viewerRef.current) {
+      if (data && viewerRef.current) {
         viewer = createViewer(viewerRef.current, {
           backgroundColor: "#f8f8f8",
           antialias: true,
@@ -256,14 +255,15 @@ function Body({ id: variantId, entity }) {
         hideLoadingMessage();
       }
     }
-    if (uniprotId) fetchStructure();
+    fetchStructure();
     return () => {
-      hideAtomInfo();
+      // hideAtomInfo();
       viewer?.clear();
     };
-  }, []);
+    // !! DODGY TO LOCAL VARIABLE AS DE. HOW SHOLD KNOW WHEN REQUEST FULFILLED?
+  }, [proteinCodingCoordinates]);
 
-  // if (!experimentalResults) return null;
+  // if (!response) return null;
 
   return (
     <SectionItem
@@ -282,7 +282,8 @@ function Body({ id: variantId, entity }) {
           <Box position="relative" pb={2}>
             <Typography variant="body2" sx={{ pb: 1 }}>
               AlphaFold prediction XXXX with variant (reference allele) highlighted. Maximum variant
-              effect for position: {maxVariantEffect}.
+              effect for position {maxVariantEffect?.value?.toFixed(2)} ({maxVariantEffect?.method}
+              ).
             </Typography>
             <Box ref={viewerRef} position="relative" width="100%" height="400px">
               <Typography
@@ -345,10 +346,6 @@ function Body({ id: variantId, entity }) {
       )}
     />
   );
-}
-
-{
-  /* {isAlphaFold(selectedStructure) && <AlphaFoldLegend />} */
 }
 
 export default Body;
