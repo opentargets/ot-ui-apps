@@ -4,10 +4,11 @@ type DescriptionProps = {
   variantId: string;
   referenceAllele: string;
   alternateAllele: string;
+  targetId: string;
 };
 
 // !! HARD CODE SOME OF DESCRIPTIPN FOR NOW !!
-function Description({ variantId, referenceAllele, alternateAllele }: DescriptionProps) {
+function Description({ variantId, referenceAllele, alternateAllele, targetId }: DescriptionProps) {
   return (
     <>
       Variant{" "}
@@ -18,8 +19,8 @@ function Description({ variantId, referenceAllele, alternateAllele }: Descriptio
           alternateAllele={alternateAllele}
         />
       </strong>{" "}
-      overlaps <strong>KRAS</strong> at positions 51-53. Source: <Link to="/">Open Targets</Link>{" "}
-      and{" "}
+      overlaps <Link to={`/target/${targetId}`}>{targetId}</Link> at positions XXXX. Source:{" "}
+      <Link to="/">Open Targets</Link> and{" "}
       <Link external to="https://www.uniprot.org/">
         UniProt
       </Link>

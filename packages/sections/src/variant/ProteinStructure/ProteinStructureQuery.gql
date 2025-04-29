@@ -21,9 +21,6 @@ query ProteinStructureQuery($variantId: String!) {
           method
         }
         referenceAmionAcid
-        # diseases {
-        #   id
-        # }
       }
     }
   }

@@ -272,17 +272,18 @@ function Body({ id: variantId, entity }) {
       request={request}
       renderDescription={() => (
         <Description
-          variantId={request.data?.variant.id}
-          referenceAllele={request.data?.variant.referenceAllele}
-          alternateAllele={request.data?.variant.alternateAllele}
+          variantId={gqlData?.id}
+          referenceAllele={gqlData?.referenceAllele}
+          alternateAllele={gqlData?.alternateAllele}
+          targetId={proteinCodingCoordinates?.targetId}
         />
       )}
       renderBody={() => (
         <Box>
           <Box position="relative" pb={2}>
             <Typography variant="body2" sx={{ pb: 1 }}>
-              AlphaFold prediction XXXX with variant (reference allele) highlighted. Maximum variant
-              effect for position {maxVariantEffect?.value?.toFixed(2)} ({maxVariantEffect?.method}
+              AlphaFold prediction with reference allele of variant highlighted. Maximum variant
+              effect for position: {maxVariantEffect?.value?.toFixed(2)} ({maxVariantEffect?.method}
               ).
             </Typography>
             <Box ref={viewerRef} position="relative" width="100%" height="400px">
