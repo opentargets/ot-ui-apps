@@ -1,18 +1,20 @@
-import { Box, Button, Card, CardActions, CardContent, Chip, Grid, Typography } from "@mui/material";
+import { Box, Button, Card, CardActions, CardContent, Chip, Typography } from "@mui/material";
 import { buildSchema } from "./utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faDatabase } from "@fortawesome/free-solid-svg-icons";
 import DownloadsSchemaDrawer from "./DownloadsSchemaDrawer";
 import { LongText } from "ui";
+import DownloadsSchemaDialog from "./DownloadsSchemaDialog";
+import DownloadsAccessOptionsDialog from "./DownloadsAccessOptionsDialog";
 
-function DownloadsCard({ data }) {
+const FORMAT_MAPPING = {
+  "application/x-parquet": "Parquet",
+};
+
+function DownloadsCard({ data, schemaRow, version, locationUrl }) {
   const columnId = data["@id"];
   // const containedInArray = Array.isArray(containedIn) ? containedIn : [containedIn];
 
-  function showSchema() {
-    console.log(columnId);
-    console.log(buildSchema(data));
-  }
   return (
     <Card
       sx={{
@@ -47,15 +49,15 @@ function DownloadsCard({ data }) {
             <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
               {data.name}
             </Typography>
-            <Chip variant="outlined" label="category" size="small" />
+            <Chip variant="outlined" label={data.categories.join(",")} size="small" />
           </Box>
 
           <LongText variant="body1" lineLimit={2}>
             {data.description}
           </LongText>
           <br />
-          <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
-            <Chip size="small" color="primary" label="dataType" />
+          <Typography component="span" sx={{ color: "text.secondary", mb: 1.5 }}>
+            <Chip size="small" color="primary" label={FORMAT_MAPPING[data.encodingFormat]} />
           </Typography>
         </Box>
         <Box>
@@ -73,33 +75,32 @@ function DownloadsCard({ data }) {
           </Typography>
         </Box>
       </CardContent>
-      <CardActions sx={{ display: "flex", width: 1 }}>
+      <CardActions sx={{ display: "flex", width: 1, pb: 2, px: 2 }}>
         <Box sx={{ width: "50%" }}>
-          {/* <DownloadsSchemaDrawer data={data}> */}
-          <Button
-            variant="outlined"
-            color="primary"
-            sx={{ width: "100%" }}
-            startIcon={<FontAwesomeIcon icon={faCode} size="sm" />}
-          >
-            {" "}
-            Schema
-          </Button>
-          {/* </DownloadsSchemaDrawer> */}
+          <DownloadsSchemaDialog schemaRow={schemaRow}>
+            <Button
+              variant="outlined"
+              color="primary"
+              sx={{ width: "100%" }}
+              startIcon={<FontAwesomeIcon icon={faCode} size="sm" />}
+            >
+              {" "}
+              Schema
+            </Button>
+          </DownloadsSchemaDialog>
         </Box>
         <Box sx={{ width: "50%" }}>
-          <Button
-            variant="contained"
-            sx={{
-              width: "100%",
-              color: "white",
-              background: theme => theme.palette.primary.dark,
-              border: "none",
-            }}
-            startIcon={<FontAwesomeIcon icon={faDatabase} color="primary" />}
-          >
-            Access Option
-          </Button>
+          <DownloadsAccessOptionsDialog data={data} version={version} locationUrl={locationUrl}>
+            <Button
+              variant="outlined"
+              color="primary"
+              sx={{ width: "100%" }}
+              startIcon={<FontAwesomeIcon icon={faDatabase} size="sm" />}
+            >
+              {" "}
+              Access Data
+            </Button>
+          </DownloadsAccessOptionsDialog>
         </Box>
       </CardActions>
     </Card>

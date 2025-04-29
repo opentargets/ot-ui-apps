@@ -1,6 +1,7 @@
 import { Box, Checkbox, FormControlLabel, FormGroup, Paper, Typography } from "@mui/material";
+import { v1 } from "uuid";
 
-function DownloadsFilter() {
+function DownloadsFilter({ categories }) {
   return (
     <Paper variant="outlined" elevation={0}>
       <Box sx={{ p: 3 }}>
@@ -15,11 +16,14 @@ function DownloadsFilter() {
           Data Categories
         </Typography>
         <FormGroup>
-          <FormControlLabel control={<Checkbox />} label="Genomic Data" />
+          {categories.map(e => (
+            <FormControlLabel key={v1()} control={<Checkbox />} label={e} />
+          ))}
+          {/* <FormControlLabel control={<Checkbox />} label="Genomic Data" />
           <FormControlLabel control={<Checkbox />} label="Pharmacological Data" />
           <FormControlLabel control={<Checkbox />} label="Clinical Data" />
           <FormControlLabel control={<Checkbox />} label="Evidence Data" />
-          <FormControlLabel control={<Checkbox />} label="Ontology Data" />
+          <FormControlLabel control={<Checkbox />} label="Ontology Data" /> */}
         </FormGroup>
       </Box>
     </Paper>

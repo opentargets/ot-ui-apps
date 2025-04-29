@@ -102,3 +102,34 @@ export const getFieldProperty = column => {
   }
   return;
 };
+
+export const addCategoriesToData = data => {
+  const results = new Set();
+
+  data.map(item => {
+    const categories = item.description.match(/\[(.*?)\]/);
+    if (categories) {
+      item.categories = [...categories[1].split(",")];
+      return results.add(...categories[1].split(","));
+    }
+    return;
+  });
+
+  return { allDisplayRows: data, allUniqueCategories: [...results] };
+};
+
+export function getAllRows(data) {
+  if (!data) return [];
+  return data.distribution.filter(e => e["@type"] === "cr:FileSet");
+}
+
+export function getSchemaRows(data) {
+  if (!data) return [];
+  return data.recordSet;
+}
+
+// export const getCategoryFromRow = desc => {
+//   const categories = desc.match(/\[(.*?)\]/);
+//   if (categories) return categories[1].split(",");
+//   return;
+// };

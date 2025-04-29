@@ -1,13 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
-import { Paper, Box, Chip, Typography, Alert, AlertTitle, Grid } from "@mui/material";
+import { useEffect, useMemo, useReducer } from "react";
+import { Box, Typography, Alert, Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Link, OtTable } from "ui";
+import { Link } from "ui";
 import { getConfig } from "@ot/config";
 import { v1 } from "uuid";
 import { Fragment } from "react/jsx-runtime";
-import ContainedInDrawer from "./ContainedInDrawer";
 import DownloadsCard from "./DownloadsCard";
 import DownloadsFilter from "./DownloadsFilter";
+import DownloadsLoading from "./DownloadsLoading";
+import DownloadsSearchInput from "./DownloadsSearchInput";
+import { createInitialState, downloadsReducer } from "./context/DownloadsReducer";
+import { setDownloadsData } from "./context/DownloadsActions";
 
 const config = getConfig();
 
@@ -16,73 +19,6 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(2),
   },
 }));
-
-const LOCATION_MAPPING = {
-  "ftp-location": {
-    displayName: "FTP",
-    format: "parquet",
-  },
-  "gcp-location": {
-    displayName: "Google Cloud",
-    format: "parquet",
-  },
-};
-
-function getColumn(locationUrl, version) {
-  const columns = [
-    { id: "name", label: "Name", enableHiding: false },
-    {
-      id: "containedIn",
-      label: "Contained In",
-      renderCell: ({ containedIn, includes, name, encodingFormat }) => {
-        const columnId = includes.split("/")[0];
-        const containedInArray = Array.isArray(containedIn) ? containedIn : [containedIn];
-
-        return containedInArray.map(e => (
-          <Fragment key={v1()}>
-            <ContainedInDrawer
-              link={`${locationUrl[e["@id"]]}${columnId}`}
-              title={name}
-              location={e["@id"]}
-              version={version}
-              path={columnId}
-              format={encodingFormat}
-            >
-              <Chip
-                sx={{ mr: 1 }}
-                label={LOCATION_MAPPING[e["@id"]].displayName}
-                clickable
-                size="small"
-              />
-            </ContainedInDrawer>
-          </Fragment>
-        ));
-      },
-    },
-    {
-      id: "description",
-      label: "Description",
-      filterValue: () => "",
-      renderCell: ({ description }) => (
-        <Box sx={{ width: "600px" }}>
-          <Typography variant="body2" whiteSpace="wrap">
-            {description}
-          </Typography>
-        </Box>
-      ),
-    },
-  ];
-  return columns;
-}
-
-function getRowsSource(data) {
-  if (!data) return [];
-  return data.distribution.filter(e => e["@type"] === "cr:FileSet");
-}
-function getRows(data) {
-  if (!data) return [];
-  return data.recordSet;
-}
 
 function getAllLocationUrl(data) {
   if (!data) return "";
@@ -95,25 +31,16 @@ function getAllLocationUrl(data) {
 }
 
 function DownloadsPage() {
-  const [loading, setLoading] = useState(true);
-  const [downloadsData, setDownloadsData] = useState(null);
-  const locationUrl = useMemo(() => getAllLocationUrl(downloadsData), [downloadsData]);
-  const rows = useMemo(() => getRowsSource(downloadsData), [downloadsData]);
-  const newRows = useMemo(() => getRows(downloadsData), [downloadsData]);
-  console.log(" DownloadsPage -> newRows", newRows);
-  const columns = useMemo(
-    () => getColumn(locationUrl, downloadsData?.version),
-    [downloadsData, locationUrl]
-  );
+  const [state, dispatch] = useReducer(downloadsReducer, "", createInitialState);
+
+  const locationUrl = useMemo(() => getAllLocationUrl(state.downloadsData), [state.downloadsData]);
 
   useEffect(() => {
     let isCurrent = true;
-    setLoading(true);
     fetch(config.downloadsURL)
       .then(res => res.json())
       .then(data => {
-        if (isCurrent) setDownloadsData(data);
-        setLoading(false);
+        if (isCurrent) dispatch(setDownloadsData(data));
       });
 
     return () => {
@@ -123,19 +50,23 @@ function DownloadsPage() {
 
   const classes = useStyles();
 
+  function getSchemaRow(currentRowId) {
+    return state.schemaRows.filter(e => e["@id"] === currentRowId.replace("-fileset", ""));
+  }
+
   return (
     <>
       <Typography variant="h4" component="h1" paragraph>
-        {downloadsData?.name}
+        {state.downloadsData?.name}
       </Typography>
-      <Typography paragraph>{downloadsData?.description}</Typography>
+      <Typography paragraph>{state.downloadsData?.description}</Typography>
       <Typography paragraph>
         Our scripts and schema conforms to{" "}
-        <Link external to={downloadsData?.conformsTo}>
+        <Link external to={state.downloadsData?.conformsTo}>
           Ml Commons
         </Link>
       </Typography>
-      <Typography paragraph>Current data version: {downloadsData?.version}</Typography>
+      <Typography paragraph>Current data version: {state.downloadsData?.version}</Typography>
 
       {config.profile.isPartnerPreview ? (
         <Alert severity="info" className={classes.alert}>
@@ -157,16 +88,11 @@ function DownloadsPage() {
         </Alert>
       ) : null}
 
-      {/* <Paper variant="outlined" elevation={0}>
-        <Box m={2}>
-          <OtTable showGlobalFilter rows={rows} columns={columns} loading={loading} />
-        </Box>
-
-      </Paper> */}
+      <DownloadsSearchInput />
 
       <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
         <Grid item xs={12} md={3} lg={2}>
-          <DownloadsFilter />
+          <DownloadsFilter categories={state.allUniqueCategories} />
         </Grid>
         <Grid
           item
@@ -176,11 +102,17 @@ function DownloadsPage() {
           sx={{ display: "flex", flexDirection: "column", gap: 1, pl: 3 }}
         >
           <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-            All Datasets ({rows.length})
+            All Datasets ({state.count})
           </Typography>
           <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between" }}>
-            {rows.map(e => (
-              <DownloadsCard key={v1()} data={e} />
+            {state.filteredRows.map(e => (
+              <DownloadsCard
+                key={v1()}
+                data={e}
+                schemaRow={getSchemaRow(e["@id"])}
+                version={state.downloadsData?.version}
+                locationUrl={locationUrl}
+              />
             ))}
           </Box>
         </Grid>
