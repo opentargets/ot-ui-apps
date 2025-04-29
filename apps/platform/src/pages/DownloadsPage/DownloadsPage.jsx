@@ -9,8 +9,8 @@ import DownloadsCard from "./DownloadsCard";
 import DownloadsFilter from "./DownloadsFilter";
 import DownloadsLoading from "./DownloadsLoading";
 import DownloadsSearchInput from "./DownloadsSearchInput";
-import { createInitialState, downloadsReducer } from "./context/DownloadsReducer";
-import { setDownloadsData } from "./context/DownloadsActions";
+import { createInitialState, downloadsReducer } from "./context/downloadsReducer";
+import { setDownloadsData } from "./context/downloadsActions";
 
 const config = getConfig();
 
