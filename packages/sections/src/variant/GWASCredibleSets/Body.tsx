@@ -258,9 +258,10 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         </>
       ),
       renderCell: ({ studyLocusId, l2GPredictions }) => {
+        if (!l2GPredictions || !l2GPredictions.rows.length) return naLabel;
         const score = l2GPredictions?.rows[0]?.score;
-        const { target } = l2GPredictions?.rows[0];
         if (!score) return naLabel;
+        const { target } = l2GPredictions?.rows[0];
         return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} targetId={target.id} />;
       },
       exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
