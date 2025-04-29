@@ -131,7 +131,7 @@ function FtpLocation({ link, version, path }) {
         Wget
       </Typography>
       <div className={classes.resourceURL}>
-        wget --recursive --no-parent --no-host-directories --cut-dirs 8
+        wget --recursive --no-parent --no-host-directories --cut-dirs 6
         ftp://ftp.ebi.ac.uk/pub/databases/opentargets/platform/{version}/output/{path} .
       </div>
     </>
