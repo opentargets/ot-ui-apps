@@ -292,7 +292,7 @@ export const variantConsequenceSource = {
 
 // Population Mapping
 export const populationMap: { [key: string]: string } = {
-  fin: "Finish",
+  fin: "Finnish",
   afr: "African",
   nfe: "non-Finnish Europeans",
   eas: "East Asian",
