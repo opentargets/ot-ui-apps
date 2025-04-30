@@ -248,7 +248,7 @@ function Body({ id: variantId, entity }) {
         //   },
         //   {}
         // );
-        viewer.addSurface("VDW", { opacity: 0.65, color: "#fff" }, { resi: [...variantResidues] });
+        viewer.addSurface("VDW", { opacity: 0.75, color: "#0f0" }, { resi: [...variantResidues] });
         resetViewer(viewer);
         viewer.zoom(0.2);
         viewer.render();
