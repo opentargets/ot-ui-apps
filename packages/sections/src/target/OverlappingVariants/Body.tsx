@@ -17,6 +17,56 @@ const alphaFoldResultsStem = "https://alphafold.ebi.ac.uk/api/prediction/";
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
 
+// !! IMPORT ALPHAFOLD CONFIDENCE STUFF AND LEGEND  FROM UI MERGED FROM OTHER BRANCH !!
+const alphaFoldConfidenceBands = [
+  { lowerLimit: 90, label: "Very high", sublabel: "pLDDT > 90", color: "rgb(0, 83, 214)" },
+  {
+    lowerLimit: 70,
+    label: "Confident",
+    sublabel: "90 > pLDDT > 70",
+    color: "rgb(101, 203, 243)",
+  },
+  { lowerLimit: 50, label: "Low", sublabel: "70 > pLDDT > 50", color: "rgb(255, 219, 19)" },
+  { lowerLimit: 0, label: "Very low ", sublabel: "pLDDT < 50", color: "rgb(255, 125, 69)" },
+];
+function getAlphaFoldConfidence(atom, propertyName = "label") {
+  for (const obj of alphaFoldConfidenceBands) {
+    if (atom.b > obj.lowerLimit) return obj[propertyName];
+  }
+  return alphaFoldConfidenceBands[0][propertyName];
+}
+function AlphaFoldLegend() {
+  return (
+    <Box mt={2} display="flex">
+      <Box display="flex" flexDirection="column" ml={2} gap={0.75}>
+        <Typography variant="subtitle2">Model Confidence</Typography>
+        <Box display="flex" gap={3.5}>
+          {alphaFoldConfidenceBands.map(({ label, sublabel, color }) => (
+            <Box key={label}>
+              <Box display="flex" gap={0.75} alignItems="center">
+                <Box width="12px" height="12px" bgcolor={color} />
+                <Box display="flex" flexDirection="column">
+                  <Typography variant="caption" fontWeight={500} lineHeight={1}>
+                    {label}
+                  </Typography>
+                </Box>
+              </Box>
+              <Typography variant="caption" fontSize={11.5} lineHeight={1}>
+                {sublabel}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+
+        <Typography variant="caption" mt={1}>
+          AlphaFold produces a per-residue model confidence score (pLDDT) between 0 and 100. Some
+          regions below 50 pLDDT may be unstructured in isolation.
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
 function Body({ id: ensemblId, label: symbol, entity }) {
   const [viewer, setViewer] = useState(null);
   const [structureLoading, setStructureLoading] = useState(true);
@@ -30,6 +80,20 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   const request = useQuery(OVERLAPPING_VARIANTS_QUERY, {
     variables,
   });
+
+  let proteinCodingCoordinates, variantResidues, variantAtoms;
+  const gqlData = request?.data?.target;
+  if (gqlData) {
+    proteinCodingCoordinates = gqlData.proteinCodingCoordinates;
+    variantResidues = (proteinCodingCoordinates?.rows ?? []).map(obj => {
+      // debugger;
+      return new Set(
+        obj.referenceAmionAcid.split("").map((v, i) => {
+          return i + obj.aminoAcidPosition;
+        })
+      );
+    });
+  }
 
   const columns = [
     {
@@ -124,6 +188,123 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     structureInfoRef.current?.querySelectorAll("span")?.forEach(span => (span.textContent = ""));
   }
 
+  function resetViewer(viewer, duration = 0) {
+    viewer.zoomTo({}, duration);
+    viewer.zoom(10);
+  }
+
+  function addVariantStyle(viewer) {
+    for (const resis of variantResidues) {
+      viewer.addStyle(
+        { resi: [...resis] },
+        {
+          stick: { radius: 0.2, colorfunc: a => getAlphaFoldConfidence(a, "color") },
+          sphere: { radius: 0.4, colorfunc: a => getAlphaFoldConfidence(a, "color") },
+        }
+      );
+    }
+  }
+
+  function setNoHoverStyle(viewer) {
+    viewer.setStyle(
+      {},
+      {
+        cartoon: {
+          colorfunc: a => getAlphaFoldConfidence(a, "color"),
+          arrows: true,
+        },
+      }
+    );
+    // addVariantStyle(viewer);
+  }
+
+  // fetch AlphaFold structure and view it
+  useEffect(() => {
+    let viewer;
+    async function fetchStructure() {
+      showLoadingMessage();
+      let data, response;
+
+      async function fetchStructureFile(uniprotId) {
+        const pdbUri = `${alphaFoldStructureStem}AF-${uniprotId}-F1${alphaFoldStructureSuffix}`;
+        let newResponse;
+        try {
+          newResponse = await fetch(pdbUri);
+          if (newResponse?.ok) response = newResponse;
+        } catch (error) {}
+      }
+
+      // fetch structure data
+      const uniprotIds = [...(proteinCodingCoordinates?.rows?.[0]?.uniprotAccessions ?? [])];
+      while (!response && uniprotIds.length) {
+        await fetchStructureFile(uniprotIds.shift());
+      }
+
+      // parse data
+      if (response) {
+        try {
+          data = await response.text();
+        } catch (error) {
+          console.error(error.message);
+          showLoadingMessage("Failed to parse structure data");
+        }
+      }
+
+      // view data
+      if (data && viewerRef.current) {
+        viewer = createViewer(viewerRef.current, {
+          backgroundColor: "#f8f8f8",
+          antialias: true,
+          cartoonQuality: 10,
+        });
+        window.viewer = viewer; // !! REMOVE !!
+        const hoverDuration = 10;
+        // viewer.getCanvas().ondblclick = () => resetViewer(viewer, 200); // use ondblclick so replaces existing
+        viewer.addModel(data, "cif"); /* load data */
+        viewer.setHoverDuration(hoverDuration);
+        // const hoverArgs = hoverManagerFactory({ viewer, atomInfoRef });
+        // const hideAtomInfo = hoverArgs[3];
+        // viewer.getCanvas().onmouseleave = () => {
+        //   setTimeout(hideAtomInfo, hoverDuration + 50);
+        // };
+        // viewer.setHoverable(...hoverArgs);
+        setNoHoverStyle(viewer);
+        // viewer.addSurface(
+        //   "VDW",
+        //   {
+        //     opacity: 1,
+        //     opacity: 0.65,
+        //     color: "#fff",
+        //     // color: {'prop': 'b', map:elementColors.greenCarbon}
+        //   },
+        //   {}
+        // );
+        const viewerAtoms = viewer.getModel().selectedAtoms();
+        for (const resis of variantResidues) {
+          // debugger;
+          // viewer.addSurface("VDW", { opacity: 0.65, color: "#f00" }, { resi: [...resis] });
+          const sphereAtom = viewerAtoms.find(atom => atom.index === [...resis][0]);
+          viewer.addSphere({
+            center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
+            radius: 2,
+            color: "#f00",
+            opacity: 0.6,
+          });
+        }
+        resetViewer(viewer);
+        viewer.zoom(0.2);
+        viewer.render();
+        hideLoadingMessage();
+      }
+    }
+    fetchStructure();
+    return () => {
+      // hideAtomInfo();
+      viewer?.clear();
+    };
+    // !! DODGY TO LOCAL VARIABLE AS DE. HOW SHOLD KNOW WHEN REQUEST FULFILLED?
+  }, [proteinCodingCoordinates]);
+
   // if (!experimentalResults) return null;
 
   return (
@@ -151,80 +332,65 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 variables={variables}
               />
             </Grid>
-            {/* <Grid item xs={12} lg={6}>
-              <Box
-                ref={structureInfoRef}
-                display="flex"
-                alignItems="baseline"
-                minHeight={22}
-                gap={0.5}
-                ml={2}
-                mt={0.75}
-                mb={1}
-              >
-                <Typography variant="subtitle2" component="span"></Typography>
-                <Typography variant="body2" component="span"></Typography>
-              </Box>
-              <Box position="relative" display="flex" justifyContent="center" pb={2}>
-                <Box ref={viewerRef} position="relative" width="100%" height="400px">
-                  <Typography
-                    ref={messageRef}
-                    variant="body2"
-                    component="div"
-                    sx={{
-                      top: 0,
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      position: "absolute",
-                      zIndex: 1,
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      top: 0,
-                      right: 0,
-                      position: "absolute",
-                      zIndex: 1,
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      background: "white",
-                      m: 1,
-                    }}
+            <Grid item xs={12}>
+              {/* <Grid item xs={12} lg={6}> */}
+              <Box ref={viewerRef} position="relative" width="100%" height="400px">
+                <Typography
+                  ref={messageRef}
+                  variant="body2"
+                  component="div"
+                  sx={{
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    position: "absolute",
+                    zIndex: 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                />
+                <Box
+                  sx={{
+                    top: 0,
+                    right: 0,
+                    position: "absolute",
+                    zIndex: 1,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    background: "white",
+                    m: 1,
+                  }}
+                >
+                  <Button
+                    sx={{ display: "flex", gap: 1 }}
+                    disabled={structureLoading}
+                    onClick={onClickCapture}
                   >
-                    <Button
-                      sx={{ display: "flex", gap: 1 }}
-                      disabled={structureLoading}
-                      onClick={onClickCapture}
-                    >
-                      <FontAwesomeIcon icon={faCamera} /> Screenshot
-                    </Button>
-                  </Box>
-                  <Box
-                    ref={atomInfoRef}
-                    position="absolute"
-                    bottom={0}
-                    right={0}
-                    p="0.6rem 0.8rem"
-                    zIndex={100}
-                    bgcolor="#f8f8f8c8"
-                    sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
-                    fontSize={14}
-                  >
-                    <Box display="flex" flexDirection="column">
-                      <Typography variant="caption" component="p" textAlign="right" />
-                      <Typography variant="caption" component="p" textAlign="right" />
-                      <Typography variant="caption" component="p" textAlign="right" />
-                    </Box>
+                    <FontAwesomeIcon icon={faCamera} /> Screenshot
+                  </Button>
+                </Box>
+                <Box
+                  ref={atomInfoRef}
+                  position="absolute"
+                  bottom={0}
+                  right={0}
+                  p="0.6rem 0.8rem"
+                  zIndex={100}
+                  bgcolor="#f8f8f8c8"
+                  sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
+                  fontSize={14}
+                >
+                  <Box display="flex" flexDirection="column">
+                    <Typography variant="caption" component="p" textAlign="right" />
+                    <Typography variant="caption" component="p" textAlign="right" />
                   </Box>
                 </Box>
               </Box>
-              {isAlphaFold(selectedStructure) && <AlphaFoldLegend />}
-            </Grid> */}
+              <AlphaFoldLegend />
+            </Grid>
           </Grid>
         );
       }}
