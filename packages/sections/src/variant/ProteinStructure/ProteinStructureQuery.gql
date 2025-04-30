@@ -1,0 +1,27 @@
+# !! REMOVE UNUSED !!
+query ProteinStructureQuery($variantId: String!) {
+  variant(variantId: $variantId) {
+    id
+    referenceAllele
+    alternateAllele
+    proteinCodingCoordinates {
+      count
+      rows {
+        evidenceSources {
+          evidenceCount
+          datasourceId
+        }
+        uniprotAccessions
+        alternateAmionAcid
+        variantId
+        targetId
+        aminoAcidPosition
+        maxVariantEffectForPosition {
+          value
+          method
+        }
+        referenceAmionAcid
+      }
+    }
+  }
+}
