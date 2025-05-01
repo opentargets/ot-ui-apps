@@ -132,20 +132,12 @@ export function Body({ studyId, diseaseIds }: BodyProps): ReactElement {
     index: 0,
   };
 
-  const [request, setRequest] = useState<responseType>(initialResponse);
-
-  const getData = useBatchQuery({
+  const request = useBatchQuery({
     query: SHARED_TRAIT_STUDIES_QUERY,
     variables,
-    dataPath: "data.studies",
+    dataPath: "studies",
     size: table5HChunkSize,
   });
-
-  useEffect(() => {
-    getData().then(r => {
-      setRequest(r);
-    });
-  }, [studyId]);
 
   const columns = getColumns(diseaseIds);
 
