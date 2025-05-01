@@ -2,7 +2,7 @@
 query OverlappingVariantsQuery($ensemblId: String!) {
   target(ensemblId: $ensemblId) {
     id
-    proteinCodingCoordinates(page: { size: 1000, index: 0 }) {
+    proteinCodingCoordinates(page: { size: 3000, index: 0 }) {
       count
       rows {
         evidenceSources {

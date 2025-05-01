@@ -1,19 +1,16 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem, OtTable, Link } from "ui";
+import { SectionItem, OtTable, Link, Tooltip } from "ui";
 import { naLabel } from "@ot/constants";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
-import { getUniprotIds, nanComparator } from "@ot/utils";
 import { createViewer } from "3dmol";
-// import { parseCif } from "./parseCif";
 // import { schemeSet1, schemeDark2 } from "d3";
 import OVERLAPPING_VARIANTS_QUERY from "./OverlappingVariantsQuery.gql";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
-const alphaFoldResultsStem = "https://alphafold.ebi.ac.uk/api/prediction/";
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
 
@@ -102,22 +99,68 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       label: "Variant",
     },
     {
-      // !! MAKE NUMERIC, CHECK SORTING !!
       id: "aminoAcidPosition", // UPDATE TYPO ONCE API UPDATED
-      label: "Amino acid position",
+      label: "Amino acid change",
       sortable: true,
+      filterValue: o => `${o.referenceAmionAcid}${o.aminoAcidPosition}${o.alternateAmionAcid}`,
+      renderCell: o => `${o.referenceAmionAcid}${o.aminoAcidPosition}${o.alternateAmionAcid}`,
+      comparator: (a, b) => a.aminoAcidPosition - b.aminoAcidPosition,
     },
     {
-      // !! WHAT IF VARIANT GREATER THAN LENGTH 1 - SHOULD BE SHOWING REF AND ALT ALLELES !!
-      id: "referenceAmionAcid",
-      label: "Reference amino acids",
-      sortable: true,
+      id: "evidenceSources",
+      label: "Evidence counts",
+      renderCell: ({ evidenceSources }) => {
+        if (evidenceSources?.length > 0) {
+          return evidenceSources
+            .map(({ evidenceCount, datasourceId }) => `${datasourceId}: ${evidenceCount}`)
+            .join(", ");
+        }
+        return naLabel;
+      },
     },
     {
-      id: "alternateAmionAcid", // UPDATE TYPO ONCE API UPDATED
-      label: "Alternate amino acids",
-      sortable: true,
+      // MAKE NUMERIC
+      id: "maxVariantEffectForPosition",
+      label: "Max variant effect for position",
+      renderCell: ({ maxVariantEffectForPosition: { method, value } }) =>
+        `${method}: ${value.toFixed(2)}`,
+      comparator: (a, b) =>
+        a.maxVariantEffectForPosition.value - b.maxVariantEffectForPosition.value,
     },
+    {
+      id: "diseases",
+      label: "Disease/phenotype",
+      filterValue: ({ diseases }) =>
+        // console.log(diseases.map(({ name }) => name).join(", ")),
+        diseases.map(({ name }) => name).join(", "),
+      renderCell: ({ diseases }) => {
+        if (diseases.length === 0) return naLabel;
+        const elements = [<Link to={`/disease/${diseases[0].id}`}>{diseases[0].name}</Link>];
+        if (diseases.length > 1) {
+          elements.push(", ", <Link to={`/disease/${diseases[1].id}`}>{diseases[1].name}</Link>);
+          if (diseases.length > 2) {
+            elements.push(
+              <Tooltip
+                title={diseases
+                  .slice(2)
+                  .map(({ id, name }) => <Link to={`/disease/${id}`}>{name}</Link>)
+                  .reduce((accum, current) => {
+                    accum.push(current, ", ");
+                    return accum;
+                  }, [])}
+                showHelpIcon
+              >
+                <Typography variant="caption" ml={1}>
+                  +{diseases.length - 2} more
+                </Typography>
+              </Tooltip>
+            );
+          }
+        }
+        return elements;
+      },
+    },
+
     // !! MORE ROWS !!
   ];
 
@@ -212,6 +255,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         cartoon: {
           colorfunc: a => getAlphaFoldConfidence(a, "color"),
           arrows: true,
+          opacity: 0.6,
         },
       }
     );
@@ -283,16 +327,17 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         for (const resis of variantResidues) {
           // debugger;
           // viewer.addSurface("VDW", { opacity: 0.65, color: "#f00" }, { resi: [...resis] });
-          const sphereAtom = viewerAtoms.find(atom => atom.index === [...resis][0]);
+          const sphereAtom = viewerAtoms.find(atom => atom.resi === [...resis][0]);
           viewer.addSphere({
+            // !! CAN USE ATOM START POSITION HERE - AND ONLY PUT ONE SPHERE ON ANY RESIDUE /9SO SKIP REPEATS
             center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
-            radius: 2,
+            radius: 1,
             color: "#f00",
-            opacity: 0.6,
+            opacity: 0.7,
           });
         }
         resetViewer(viewer);
-        viewer.zoom(0.2);
+        // viewer.zoom(0.2);
         viewer.render();
         hideLoadingMessage();
       }
