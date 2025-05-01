@@ -97,7 +97,7 @@ function DownloadsPage() {
               xs={12}
               md={9}
               lg={10}
-              sx={{ display: "flex", flexDirection: "column", gap: 1, pl: { md: 3 } }}
+              sx={{ display: "flex", flexDirection: "column", gap: 1, pl: { md: 2 } }}
             >
               <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
                 All Datasets ({state.count})
