@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import {
   Link,
   SectionItem,
@@ -15,14 +16,7 @@ import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "@ot/utils";
-import {
-  responseType,
-  credsetConfidenceMap,
-  initialResponse,
-  naLabel,
-  table5HChunkSize,
-} from "@ot/constants";
-import { ReactNode, useEffect, useState } from "react";
+import { credsetConfidenceMap, naLabel, table5HChunkSize } from "@ot/constants";
 
 type getColumnsType = {
   id: string;
@@ -261,20 +255,12 @@ function Body({ id, entity }: BodyProps): ReactNode {
     index: 0,
   };
 
-  const [request, setRequest] = useState<responseType>(initialResponse);
-
-  const getAllQtlData = useBatchQuery({
+  const request = useBatchQuery({
     query: QTL_CREDIBLE_SETS_QUERY,
     variables,
-    dataPath: "data.variant.qtlCredibleSets",
+    dataPath: "variant.qtlCredibleSets",
     size: table5HChunkSize,
   });
-
-  useEffect(() => {
-    getAllQtlData().then(r => {
-      setRequest(r);
-    });
-  }, [id]);
 
   return (
     <SectionItem

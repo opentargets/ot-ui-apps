@@ -8,12 +8,11 @@ import {
   useBatchQuery,
   Navigate,
 } from "ui";
-import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
+import { naLabel, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import MOLQTL_COLOC_QUERY from "./MolQTLColocQuery.gql";
 import { mantissaExponentComparator, variantComparator } from "@ot/utils";
-import { useEffect, useState } from "react";
 import { Chip } from "@mui/material";
 
 const columns = [
@@ -246,20 +245,12 @@ function Body({ studyLocusId, entity }: BodyProps) {
     index: 0,
   };
 
-  const [request, setRequest] = useState<responseType>(initialResponse);
-
-  const getData = useBatchQuery({
+  const request = useBatchQuery({
     query: MOLQTL_COLOC_QUERY,
     variables,
-    dataPath: "data.credibleSet.colocalisation",
+    dataPath: "credibleSet.colocalisation",
     size: table5HChunkSize,
   });
-
-  useEffect(() => {
-    getData().then(r => {
-      setRequest(r);
-    });
-  }, [studyLocusId]);
 
   return (
     <SectionItem

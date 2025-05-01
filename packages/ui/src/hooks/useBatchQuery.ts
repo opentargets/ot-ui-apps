@@ -2,91 +2,152 @@ import _ from "lodash";
 import { DocumentNode } from "@apollo/client";
 import { tableChunkSize } from "@ot/constants";
 import { useApolloClient } from "../providers/OTApolloProvider/OTApolloProvider";
+import { useCallback, useEffect, useState, useMemo } from "react";
 
-type useBatchQueryProps = {
+type BatchQueryState<T = unknown> = {
+  loading: boolean;
+  error: Error | null;
+  data: T | null;
+};
+
+type UseBatchQueryProps = {
   query: DocumentNode;
   variables: Record<string, unknown>;
   dataPath: string;
   size?: number;
   rowField?: string;
   countField?: string;
+  id?: string;
+  enabled?: boolean;
 };
+
 /**
- * Provides a function to asynchronously batch-download a whole dataset from
- * the backend.
+ * Provides functionality to asynchronously batch-download a complete dataset
+ * from the backend, handling pagination automatically.
  *
- * The function uses the parameter downloaderChunkSize from the configuration.js
- * file to determine the size of the chunks to fetch.
+ * @param {DocumentNode} query - GraphQL query to run
+ * @param {Record<string, unknown>} variables - Variables for the query
+ * @param {string} dataPath - Path where data is located in the response
+ * @param {number} [size=tableChunkSize] - Size of each chunk to fetch
+ * @param {string} [rowField=rows] - Field containing the rows in dataPath
+ * @param {string} [countField=count] - Field containing the row count in dataPath
+ * @param {string} [id] - Unique identifier to trigger refetches
+ * @param {boolean} [enabled=true] - Whether to enable the query
  *
- * @param {import('graphql').DocumentNode} query Query to run to fetch the data.
- * @param {import('apollo-client').QueryOptions} variables Variables object for the query.
- * @param {string} dataPath Path where the data array, row count and cursor are inside the query's result.
- * @param {string} [rowField=rows] field in dataPath containing the rows. Default: 'rows'.
- * @param {string} [countField=count] field in dataPath containing the row count. Default: 'count'.
- *
- * @returns {Function} Function that will fetch the whole dataset.
+ * @returns {BatchQueryState<T>} Current state of the batch query
  */
-function useBatchQuery({
+function useBatchQuery<T = any>({
   query,
   variables,
   dataPath,
   size = tableChunkSize,
   rowField = "rows",
   countField = "count",
-}: useBatchQueryProps): () => Promise<Record<string, unknown>[]> {
+  id,
+  enabled = true,
+}: UseBatchQueryProps): BatchQueryState<T> {
   const client = useApolloClient();
   const rowPath = `${dataPath}.${rowField}`;
   const countPath = `${dataPath}.${countField}`;
 
-  const getDataChunk = async (index: number) =>
-    client.query({
-      query,
-      variables: { ...variables, index, size },
-    });
+  const [state, setState] = useState<BatchQueryState<T>>({
+    loading: true,
+    error: null,
+    data: null,
+  });
 
-  return async function getWholeDataset() {
-    const chunkPromises = [];
-    let data: Array<Record<string, unknown>> = [];
-    let index = 0;
+  // Memoize variables to prevent unnecessary re-renders
+  const memoizedVariables = useMemo(() => ({ ...variables }), [JSON.stringify(variables)]);
 
-    const firstChunk = await getDataChunk(index);
+  // Function to get a single data chunk
+  const getDataChunk = useCallback(
+    (index: number) => {
+      return client.query({
+        query,
+        variables: { ...memoizedVariables, index, size },
+      });
+    },
+    [client, query, memoizedVariables, size]
+  );
 
-    data = [...getRows(firstChunk, rowPath)];
-    index += 1;
+  // Function to retrieve the entire dataset
+  const fetchWholeDataset = useCallback(async () => {
+    setState(prev => ({ ...prev, loading: true }));
 
-    const count = Math.ceil(_.get(firstChunk, countPath) / size);
+    try {
+      // Fetch first chunk to get total count
+      const firstChunk = await getDataChunk(0);
 
-    while (index < count) {
-      chunkPromises.push(getDataChunk(index));
-      index += 1;
+      if (!firstChunk.data) {
+        throw new Error("No data returned from first chunk");
+      }
+
+      // Get data from first chunk
+      let allRows = [...getRows<T>(firstChunk.data, rowPath)];
+
+      // Calculate how many chunks we need based on count
+      const totalCount = _.get(firstChunk.data, countPath, 0);
+      const totalChunks = Math.ceil(totalCount / size);
+
+      if (totalChunks > 1) {
+        // Prepare promises for remaining chunks
+        const chunkPromises = Array.from({ length: totalChunks - 1 }, (_, i) =>
+          getDataChunk(i + 1)
+        );
+
+        // Fetch all remaining chunks in parallel
+        const remainingChunks = await Promise.all(chunkPromises);
+
+        // Combine all data
+        remainingChunks.forEach(chunk => {
+          if (chunk.data) {
+            allRows = [...allRows, ...getRows<T>(chunk.data, rowPath)];
+          }
+        });
+      }
+
+      // Create a deep clone of the first chunk's complete response
+      const completeResponse = _.cloneDeep(firstChunk.data);
+
+      // Update the row data at the specified path
+      _.set(completeResponse, rowPath, allRows);
+
+      // Update state with the complete response
+      setState({
+        loading: false,
+        error: null,
+        data: completeResponse,
+      });
+
+      return completeResponse;
+    } catch (error) {
+      setState({
+        loading: false,
+        error: error instanceof Error ? error : new Error(String(error)),
+        data: null,
+      });
+      throw error;
+    }
+  }, [getDataChunk, rowPath, countPath, size]);
+
+  // Fetch data when dependencies change
+  useEffect(() => {
+    if (!enabled || variables === null) {
+      setState(prev => ({ ...prev, loading: false }));
+      return;
     }
 
-    const remainingChunks = await Promise.all(chunkPromises);
-
-    remainingChunks.forEach(chunk => {
-      data = [...data, ...getRows(chunk, rowPath)];
+    fetchWholeDataset().catch(error => {
+      console.error("Error fetching batch data:", error);
     });
+  }, [fetchWholeDataset, id, enabled, variables.variantId]);
 
-    const wholeData = setRows(firstChunk, rowPath, data);
-
-    return wholeData;
-  };
+  return state;
 }
 
-function getRows(data: Record<string, unknown>, dataPath: string) {
+// Helper function to get rows from data
+function getRows<T>(data: any, dataPath: string): T[] {
   return _.get(data, dataPath, []);
-}
-
-function setRows(
-  res: Promise<Record<string, unknown>>,
-  dataPath: string,
-  rows: Record<string, unknown>[]
-): Promise<Record<string, unknown>> | null {
-  if (!res || !rows) return null;
-  const wholeRes = structuredClone(res);
-  const obj = _.get(wholeRes, dataPath);
-  Object.assign(obj, rows);
-  return wholeRes;
 }
 
 export default useBatchQuery;

@@ -12,18 +12,12 @@ import {
 } from "ui";
 import { Box } from "@mui/material";
 import { mantissaExponentComparator, nullishComparator, variantComparator } from "@ot/utils";
-import {
-  responseType,
-  naLabel,
-  credsetConfidenceMap,
-  initialResponse,
-  table5HChunkSize,
-} from "@ot/constants";
+import { naLabel, credsetConfidenceMap, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import ManhattanPlot from "./ManhattanPlot";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement } from "react";
 
 const columns = [
   {
@@ -204,20 +198,12 @@ function Body({ id, entity }: BodyProps): ReactElement {
     index: 0,
   };
 
-  const [request, setRequest] = useState<responseType>(initialResponse);
-
-  const getData = useBatchQuery({
+  const request = useBatchQuery({
     query: GWAS_CREDIBLE_SETS_QUERY,
     variables,
-    dataPath: "data.study.credibleSets",
+    dataPath: "study.credibleSets",
     size: table5HChunkSize,
   });
-
-  useEffect(() => {
-    getData().then(r => {
-      setRequest(r);
-    });
-  }, [id]);
 
   return (
     <SectionItem

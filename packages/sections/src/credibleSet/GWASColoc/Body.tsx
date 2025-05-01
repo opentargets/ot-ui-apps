@@ -8,12 +8,12 @@ import {
   useBatchQuery,
   Navigate,
 } from "ui";
-import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
+import { naLabel, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_COLOC_QUERY from "./GWASColocQuery.gql";
 import { mantissaExponentComparator, variantComparator, getStudyCategory } from "@ot/utils";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement } from "react";
 
 const columns = [
   {
@@ -214,20 +214,12 @@ function Body({ studyLocusId, entity }: BodyProps): ReactElement {
     index: 0,
   };
 
-  const [request, setRequest] = useState<responseType>(initialResponse);
-
-  const getData = useBatchQuery({
+  const request = useBatchQuery({
     query: GWAS_COLOC_QUERY,
     variables,
-    dataPath: "data.credibleSet.colocalisation",
+    dataPath: "credibleSet.colocalisation",
     size: table5HChunkSize,
   });
-
-  useEffect(() => {
-    getData().then(r => {
-      setRequest(r);
-    });
-  }, [studyLocusId]);
 
   return (
     <SectionItem
