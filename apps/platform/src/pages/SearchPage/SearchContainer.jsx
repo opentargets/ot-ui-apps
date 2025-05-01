@@ -36,6 +36,7 @@ const getCounts = entities => {
     disease: 0,
     variant: 0,
     drug: 0,
+    study: 0,
   };
 
   entities.forEach(entity => {

@@ -14,18 +14,42 @@ type GlobalSearchProviderProps = {
   searchPlaceholder: string;
 };
 
+type EntityFilterState = {
+  drug: boolean;
+  disease: boolean;
+  target: boolean;
+  study: boolean;
+  variant: boolean;
+};
+
+export const defaultEntityFilterState = {
+  target: false,
+  variant: false,
+  study: false,
+  disease: false,
+  drug: false,
+};
+
 export const SearchContext = createContext<{
   searchQuery: any;
   searchPlaceholder: string;
   open: boolean;
   setOpen: (arg: boolean) => void;
   searchSuggestions: Array<any>;
+  filterState: EntityFilterState;
+  setFilterState: (arg) => void;
+  allSearchResults: Array<any>;
+  setAllSearchResults: (arg) => void;
 }>({
   searchQuery: "",
   searchPlaceholder: "Search...",
   open: false,
   setOpen: () => undefined,
   searchSuggestions: [],
+  filterState: defaultEntityFilterState,
+  setFilterState: () => undefined,
+  allSearchResults: [],
+  setAllSearchResults: () => undefined,
 });
 
 export function SearchProvider({
@@ -34,6 +58,8 @@ export function SearchProvider({
   searchPlaceholder = "Search...",
 }: GlobalSearchProviderProps) {
   const [open, setOpen] = useState(false);
+  const [filterState, setFilterState] = useState(defaultEntityFilterState);
+  const [allSearchResults, setAllSearchResults] = useState([]);
 
   return (
     <SearchContext.Provider
@@ -43,6 +69,10 @@ export function SearchProvider({
         open,
         setOpen,
         searchSuggestions,
+        filterState,
+        setFilterState,
+        allSearchResults,
+        setAllSearchResults,
       }}
     >
       {children}

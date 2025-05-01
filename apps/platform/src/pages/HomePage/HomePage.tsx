@@ -1,7 +1,7 @@
-import { Grid, Typography, Box, Chip, Theme } from "@mui/material";
-import { makeStyles, styled, useTheme } from "@mui/styles";
+import { Grid, Typography, Box, Theme } from "@mui/material";
+import { makeStyles, useTheme } from "@mui/styles";
 import { Helmet } from "react-helmet";
-import { Footer, GlobalSearch, Link, NavBar, usePermissions, useSearchState } from "ui";
+import { Footer, GlobalSearch, Link, NavBar, usePermissions } from "ui";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,15 +12,9 @@ import {
   faQuestionCircle,
   faFileAlt,
   faCommentDots,
-  faStethoscope,
-  faDna,
-  faPrescriptionBottleMedical,
-  faMapPin,
-  faChartBar,
   faSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { grey } from "@mui/material/colors";
 import { getConfig } from "@ot/config";
 import {
   appTitle,
@@ -32,6 +26,7 @@ import {
 import HomeBox from "./HomeBox";
 import Splash from "./Splash";
 import Version from "./Version";
+import HomePageSuggestions from "./HomePageSuggestions";
 
 const config = getConfig();
 
@@ -47,20 +42,6 @@ const useStyles = makeStyles<Theme>(() => ({
     marginTop: "30px",
     border: "2px solid",
     borderColor: config.profile.primaryColor as string,
-  },
-}));
-
-const StyledChip = styled(Chip)(({ theme }) => ({
-  border: 1,
-  fontSize: "12px",
-  fontWeight: "bold",
-  boxShadow: 0,
-  "&:hover": {
-    color: theme.palette.primary.dark,
-    background: grey[100],
-  },
-  "&:hover .MuiChip-icon": {
-    color: theme.palette.primary.dark,
   },
 }));
 
@@ -150,13 +131,7 @@ function HelpBoxPanel({ fai, url, label, external = false }: HelpBoxPanelProps):
   );
 }
 
-interface SearchSuggestion {
-  id: string;
-  name: string;
-}
-
 function HomePage(): JSX.Element {
-  const { searchSuggestions } = useSearchState() as { searchSuggestions: SearchSuggestion[] };
   const { isPartnerPreview } = usePermissions();
   const releaseNotesURL = isPartnerPreview
     ? "http://home.opentargets.org/ppp-release-notes"
@@ -179,87 +154,8 @@ function HomePage(): JSX.Element {
         <HomeBox>
           <GlobalSearch isHomePage />
           {/* Search examples */}
-          <Grid
-            className={classes.links}
-            container
-            justifyContent="center"
-            gap={1.5}
-            sx={{ mt: 4 }}
-          >
-            <Link asyncTooltip to={`/target/${searchSuggestions[0].id}/associations`}>
-              <StyledChip
-                sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon icon={faDna} />}
-                label={searchSuggestions[0].name}
-              />
-            </Link>
-            <Link asyncTooltip to={`/target/${searchSuggestions[1].id}/associations`}>
-              <StyledChip
-                sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon icon={faDna} />}
-                label={searchSuggestions[1].name}
-              />
-            </Link>
-            <Link asyncTooltip to={`/disease/${searchSuggestions[2].id}/associations`}>
-              <StyledChip
-                sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon icon={faStethoscope} />}
-                label={searchSuggestions[2].name}
-              />
-            </Link>
-            <Link asyncTooltip to={`/disease/${searchSuggestions[3].id}/associations`}>
-              <StyledChip
-                sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon icon={faStethoscope} />}
-                label={searchSuggestions[3].name}
-              />
-            </Link>
-            <Link asyncTooltip to={`/drug/${searchSuggestions[4].id}`}>
-              <StyledChip
-                sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon icon={faPrescriptionBottleMedical} />}
-                label={searchSuggestions[4].name}
-              />
-            </Link>
-            <Link asyncTooltip to={`/drug/${searchSuggestions[5].id}`}>
-              <StyledChip
-                sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon icon={faPrescriptionBottleMedical} />}
-                label={searchSuggestions[5].name}
-              />
-            </Link>
-            <Link asyncTooltip to={`/variant/${searchSuggestions[6].id}`}>
-              <StyledChip
-                sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon icon={faMapPin} />}
-                label={searchSuggestions[6].name}
-              />
-            </Link>
-            <Link asyncTooltip to={`/variant/${searchSuggestions[7].id}`}>
-              <StyledChip
-                sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon icon={faMapPin} />}
-                label={searchSuggestions[7].name}
-              />
-            </Link>
-            <Link asyncTooltip to={`/study/${searchSuggestions[8].id}`}>
-              <StyledChip
-                sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon icon={faChartBar} />}
-                label={searchSuggestions[8].name}
-              />
-            </Link>
-            <Link asyncTooltip to={`/study/${searchSuggestions[9].id}`}>
-              <StyledChip
-                sx={{ pl: 1, borderRadius: 2 }}
-                icon={<FontAwesomeIcon icon={faChartBar} />}
-                label={searchSuggestions[9].name}
-              />
-            </Link>
-          </Grid>
-          <div>
-            <Version releaseNotesURL={releaseNotesURL} />
-          </div>
+          <HomePageSuggestions />
+          <Version releaseNotesURL={releaseNotesURL} />
         </HomeBox>
 
         {/* scroll down button */}

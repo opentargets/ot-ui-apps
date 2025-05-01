@@ -8,6 +8,7 @@ import { SearchContext, SearchInputProvider } from "./SearchContext";
 import GlobalSearchInput from "./GlobalSearchInput";
 import GlobalSearchFreeListItem from "./GlobalSearchFreeListItem";
 import ErrorBoundary from "../ErrorBoundary";
+import GlobalSearchEntityFilter from "./GlobalSearchEntityFilter";
 
 const EscButton = styled("button")(({ theme }) => ({
   display: "block",
@@ -79,6 +80,7 @@ function GlobalSearchDialog() {
             </Box>
           </DialogTitle>
           <DialogContent dividers>
+            <GlobalSearchEntityFilter />
             <GlobalSearchFreeListItem />
             <GlobalSearchList inputValue={inputValue} />
           </DialogContent>
