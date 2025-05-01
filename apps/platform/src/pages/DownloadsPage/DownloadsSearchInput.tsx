@@ -2,8 +2,10 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, InputAdornment, TextField } from "@mui/material";
 import { styled } from "@mui/styles";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDebounce } from "ui";
+import { DownloadsContext } from "./context/DownloadsContext";
+import { textSearch } from "./context/downloadsActions";
 
 const NameFilterInput = styled(TextField)(() => ({
   borderRadius: "2px",
@@ -19,9 +21,14 @@ const NameFilterInput = styled(TextField)(() => ({
 function DownloadsSearchInput() {
   const [inputValue, setInputValue] = useState("");
   const debouncedInputValue = useDebounce(inputValue, 300);
+  const { dispatch } = useContext(DownloadsContext);
+
+  useEffect(() => {
+    dispatch(textSearch(debouncedInputValue));
+  }, [debouncedInputValue]);
 
   return (
-    <Box sx={{ width: { md: 320 }, mb: 3 }}>
+    <Box sx={{ mb: 3 }}>
       <NameFilterInput
         value={inputValue}
         onChange={event => {

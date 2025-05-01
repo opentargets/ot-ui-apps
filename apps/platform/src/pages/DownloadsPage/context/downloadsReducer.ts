@@ -1,5 +1,11 @@
 import { Action, ActionType, DownloadsState } from "../types/downloadTypes";
-import { addCategoriesToData, getAllRows, getSchemaRows } from "../utils";
+import {
+  addCategoriesToData,
+  filterDownloadCardsForFilter,
+  filterDownloadCardsForTextSearch,
+  getAllRows,
+  getSchemaRows,
+} from "../utils";
 
 export const initialState: DownloadsState = {
   count: 0,
@@ -32,9 +38,13 @@ export function downloadsReducer(
       };
     }
     case ActionType.TEXT_SEARCH: {
+      const filteredRows =
+        filterDownloadCardsForTextSearch(action.freeQueryText, state.rows) || state.rows;
       return {
         ...state,
         freeTextQuery: action.freeQueryText,
+        filteredRows: filteredRows,
+        count: filteredRows.length,
       };
     }
     case ActionType.SET_DATA: {
@@ -59,9 +69,14 @@ export function downloadsReducer(
       };
     }
     case ActionType.SET_ACTIVE_FILTER: {
+      const filteredRows = action.selectedFilters.length
+        ? filterDownloadCardsForFilter(action.selectedFilters, state.rows)
+        : state.rows;
       return {
         ...state,
         selectedFilters: action.selectedFilters,
+        filteredRows,
+        count: filteredRows.length,
       };
     }
     case ActionType.SET_CATEGORIES: {

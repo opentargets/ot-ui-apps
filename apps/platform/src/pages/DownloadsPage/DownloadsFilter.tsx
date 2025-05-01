@@ -1,29 +1,62 @@
-import { Box, Checkbox, FormControlLabel, FormGroup, Paper, Typography } from "@mui/material";
+import { Box, Checkbox, Chip, FormControlLabel, FormGroup, Paper, Typography } from "@mui/material";
 import { v1 } from "uuid";
+import DownloadsSearchInput from "./DownloadsSearchInput";
+import { DownloadsContext } from "./context/DownloadsContext";
+import { useContext } from "react";
+import { setActiveFilter } from "./context/downloadsActions";
 
-function DownloadsFilter({ categories }) {
+function DownloadsFilter() {
+  const { state, dispatch } = useContext(DownloadsContext);
+
+  function handleChangeFilter(item, e) {
+    const currentFilters = [...state.selectedFilters];
+    if (currentFilters.includes(item)) {
+      currentFilters.splice(currentFilters.indexOf(item), 1);
+    } else currentFilters.push(item);
+    dispatch(setActiveFilter(currentFilters));
+  }
+
   return (
-    <Paper variant="outlined" elevation={0}>
+    <Paper
+      variant="outlined"
+      elevation={0}
+      sx={{ mb: 2, maxWidth: "350px", width: "100%", height: "fit-content" }}
+    >
       <Box sx={{ p: 3 }}>
         <Typography
           variant="h6"
           component="div"
-          sx={{ wordBreak: "break-all", fontWeight: "bold", mb: 2 }}
+          sx={{
+            wordBreak: "break-all",
+            fontWeight: "bold",
+            mb: 2,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
           Filters
         </Typography>
+        <Box>
+          <DownloadsSearchInput />
+        </Box>
+
         <Typography variant="subtitle1" component="div" sx={{ fontWeight: "bold" }}>
           Data Categories
         </Typography>
         <FormGroup>
-          {categories.map(e => (
-            <FormControlLabel key={v1()} control={<Checkbox />} label={e} />
+          {state.allUniqueCategories.map(item => (
+            <FormControlLabel
+              key={v1()}
+              control={
+                <Checkbox
+                  checked={state.selectedFilters.includes(item)}
+                  onChange={changeEvent => handleChangeFilter(item, changeEvent)}
+                />
+              }
+              label={item}
+            />
           ))}
-          {/* <FormControlLabel control={<Checkbox />} label="Genomic Data" />
-          <FormControlLabel control={<Checkbox />} label="Pharmacological Data" />
-          <FormControlLabel control={<Checkbox />} label="Clinical Data" />
-          <FormControlLabel control={<Checkbox />} label="Evidence Data" />
-          <FormControlLabel control={<Checkbox />} label="Ontology Data" /> */}
         </FormGroup>
       </Box>
     </Paper>

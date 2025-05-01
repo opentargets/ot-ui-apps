@@ -1,19 +1,15 @@
 import { Box, Button, Card, CardActions, CardContent, Chip, Typography } from "@mui/material";
-import { buildSchema } from "./utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faDatabase } from "@fortawesome/free-solid-svg-icons";
-import DownloadsSchemaDrawer from "./DownloadsSchemaDrawer";
-import { LongText } from "ui";
+import { OtLongText } from "ui";
 import DownloadsSchemaDialog from "./DownloadsSchemaDialog";
 import DownloadsAccessOptionsDialog from "./DownloadsAccessOptionsDialog";
+import { v1 } from "uuid";
+import { DownloadsContext } from "./context/DownloadsContext";
+import { useContext } from "react";
 
-const FORMAT_MAPPING = {
-  "application/x-parquet": "Parquet",
-};
-
-function DownloadsCard({ data, schemaRow, version, locationUrl }) {
-  const columnId = data["@id"];
-  // const containedInArray = Array.isArray(containedIn) ? containedIn : [containedIn];
+function DownloadsCard({ data, locationUrl }) {
+  const { state } = useContext(DownloadsContext);
 
   return (
     <Card
@@ -21,11 +17,14 @@ function DownloadsCard({ data, schemaRow, version, locationUrl }) {
         width: "350px",
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
+        // alignItems: "center",
         justifyContent: "space-between",
         boxShadow: "none",
         border: theme => `1px solid ${theme.palette.grey[300]}`,
         mb: 3,
+        "&:hover": {
+          boxShadow: theme => theme.boxShadow.lg,
+        },
       }}
     >
       <CardContent
@@ -49,25 +48,29 @@ function DownloadsCard({ data, schemaRow, version, locationUrl }) {
             <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
               {data.name}
             </Typography>
-            <Chip variant="outlined" label={data.categories.join(",")} size="small" />
           </Box>
 
-          <LongText variant="body1" lineLimit={2}>
+          <OtLongText variant="body2" lineLimit={2} displayText="...">
             {data.description}
-          </LongText>
-          <br />
-          <Typography component="span" sx={{ color: "text.secondary", mb: 1.5 }}>
-            <Chip size="small" color="primary" label={FORMAT_MAPPING[data.encodingFormat]} />
-          </Typography>
+          </OtLongText>
         </Box>
+
         <Box>
+          <Box sx={{ display: "flex", gap: 1, my: 1 }}>
+            {data.categories.map(c => (
+              <Chip
+                key={v1()}
+                size="small"
+                label={c}
+                sx={{ background: theme => theme.palette.primary.dark, color: "white" }}
+              />
+            ))}
+          </Box>
           <Typography
             variant="body2"
             sx={{
               color: "text.secondary",
-              mb: 1.5,
               display: "flex",
-              justifyContent: "space-between",
             }}
           >
             <span> Last Updated on: </span>
@@ -75,29 +78,33 @@ function DownloadsCard({ data, schemaRow, version, locationUrl }) {
           </Typography>
         </Box>
       </CardContent>
-      <CardActions sx={{ display: "flex", width: 1, pb: 2, px: 2 }}>
-        <Box sx={{ width: "50%" }}>
-          <DownloadsSchemaDialog schemaRow={schemaRow}>
-            <Button
-              variant="outlined"
-              color="primary"
-              sx={{ width: "100%" }}
-              startIcon={<FontAwesomeIcon icon={faCode} size="sm" />}
-            >
-              {" "}
+      <CardActions
+        sx={{
+          display: "flex",
+          width: 1,
+          pb: 3,
+          px: 2,
+          justifyContent: "center",
+          gap: 2,
+          flexWrap: "wrap",
+        }}
+      >
+        <Box sx={{ width: { xs: "100%", sm: "45%" }, m: { xs: "0 !important" } }}>
+          <DownloadsSchemaDialog currentRowId={data["@id"]}>
+            <Button variant="outlined" color="primary" sx={{ width: "100%", gap: 2 }}>
+              <FontAwesomeIcon icon={faCode} />
               Schema
             </Button>
           </DownloadsSchemaDialog>
         </Box>
-        <Box sx={{ width: "50%" }}>
-          <DownloadsAccessOptionsDialog data={data} version={version} locationUrl={locationUrl}>
-            <Button
-              variant="outlined"
-              color="primary"
-              sx={{ width: "100%" }}
-              startIcon={<FontAwesomeIcon icon={faDatabase} size="sm" />}
-            >
-              {" "}
+        <Box sx={{ width: { xs: "100%", sm: "45%" }, m: { xs: "0 !important" } }}>
+          <DownloadsAccessOptionsDialog
+            data={data}
+            version={state.downloadsData?.version}
+            locationUrl={locationUrl}
+          >
+            <Button variant="outlined" color="primary" sx={{ width: "100%", gap: 2 }}>
+              <FontAwesomeIcon icon={faDatabase} />
               Access Data
             </Button>
           </DownloadsAccessOptionsDialog>

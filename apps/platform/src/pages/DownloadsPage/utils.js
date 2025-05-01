@@ -45,10 +45,35 @@ export const buildSchema = (obj, delimiter = "") => {
   return { schema, descriptionArray };
 };
 
+/**************************************************
+ *       CHECK IF COLUMN ID IS PRIMARY KEY        *
+ *       CHECKING IF ID EXIST IN THE OBJECT       *
+ * @param                                         *
+ *  columns: Record<string,unknown>               *
+ *  primaryKeyObj: Array<Record<string,unknown>   *
+ * @return:                                       *
+ *  boolean                                       *
+ **************************************************/
+
 export const isPrimaryColumn = (column, primaryKeyObj = []) => {
   if (!primaryKeyObj.length) return false;
   return primaryKeyObj.some(e => e["@id"] === column["@id"]);
 };
+
+/**************************************************
+ *       CHECK IF COLUMN ID IS FOREIGN KEY        *
+ * CHECK "references" KEY EXIST IN COLUMN OBJECT  *
+ * "references" is field inside a single column-  *
+ * -object, if key exist, it most likely means    *
+ * it contains reference to the original location *
+ * @param                                         *
+ *  columns: Record<string,unknown>               *
+ * @return:                                       *
+ *  boolean | string                              *
+ * @example                                       *
+ *  "drug_molecule/id" -> foreign key             *
+ *  false              -> no foreign key          *
+ **************************************************/
 
 export const isForeignColumn = column => {
   if (Object.hasOwn(column, "references")) {
@@ -56,6 +81,21 @@ export const isForeignColumn = column => {
   }
   return false;
 };
+
+/********************************************************************
+ *             RETURNS THE TYPE OF DATA COLUMN CONTAINS             *
+ *             A COLUMN CAN BE A LIST OF THE GIVEN TYPE             *
+ *           LIST IS DECIDED BY BOOLEAN FIELD "REPEATED"            *
+ * IF COLUMN HAS FIELD "SUBFIELD", THEN IT IS STRUCT(CUSTOM OBJECT) *
+ *   IF COLUMN HAS FIELD "DATATYPE", THEN DATATYPE IS A PRIMITIVE
+ * @params                                                          *
+ *  column: Record<string, unknown>                                 *
+ * @returns                                                         *
+ *  string
+ * @example:
+ *    []<Struct>  -> Array of object                                *
+ *    <Text>  -> String                                             *
+ ********************************************************************/
 
 export const getDataType = column => {
   let dataType = "";
@@ -74,9 +114,30 @@ export const getDataType = column => {
   return dataType;
 };
 
+/***********************************
+ * CHECK IF COLUMN IS A LIST/ARRAY  *
+ * @params                          *
+ *  column: Record<string, unknown> *
+ * @returns                         *
+ *  boolean                         *
+ * @example                         *
+ *  true -> is array                *
+ *  false -> not an array           *
+ ***********************************/
+
 export const isTypeArray = column => {
   return Object.hasOwn(column, "repeated") && column.repeated;
 };
+
+/******************************************
+ * CHECK IF COLUMN DATA TYPE IS PRIMITIVE *
+ * @params                                *
+ *  column: Record<string, unknown>       *
+ * @returns                               *
+ *  string                                *
+ * @example                               *
+ *  Text, Float, Boolean, Integer         *
+ ******************************************/
 
 export const isPrimitive = column => {
   if (Object.hasOwn(column, "dataType")) {
@@ -86,12 +147,33 @@ export const isPrimitive = column => {
   return false;
 };
 
+/******************************************
+ * CHECK IF COLUMN DATA TYPE IS STRUCT    *
+ * IF COLUMN CONTAINS KEY "subField"      *
+ * @params                                *
+ *  column: Record<string, unknown>       *
+ * @returns                               *
+ *  string | boolean                      *
+ * @example                               *
+ *  Struct -> column.subField exist       *
+ *  false -> column.subField don't exist  *
+ ******************************************/
+
 export const isStruct = column => {
   if (Object.hasOwn(column, "subField")) {
     return "Struct";
   }
   return false;
 };
+
+/*************************************************************
+ *  CHECK IF COLUMN IS FIRST LEVEL COLUMN OR NESTED OBJECT   *
+ * IF COLUMN HAS KEY CALLED "SUBFIELD" IT IS A NESTED OBJECT *
+ * @params                                                   *
+ *  column: Record<string, unknown>                          *
+ * @return                                                   *
+ *  string <field | subfield>                                *
+ *************************************************************/
 
 export const getFieldProperty = column => {
   if (Object.hasOwn(column, "subField")) {
@@ -103,6 +185,21 @@ export const getFieldProperty = column => {
   return;
 };
 
+/**********************************************
+ * REMOVE CATEGORIES FROM DESCRIPTION         *
+ *    AND ADD IT TO COLUMN OBJECT             *
+ * @param                                     *
+ *  column: Record<string, unknown>           *
+ *  column: {...otherKeys,
+ *            description:"desc [Target]" }   *
+ * @return                                    *
+ *  column: Record<string, unknown>           *
+ * @example                                   *
+ *  column: {...otherKeys,                    *
+ *            description:"desc",             *
+ *            category: [Target] }            *
+ *********************************************/
+
 export const addCategoriesToData = data => {
   const results = new Set();
 
@@ -110,6 +207,7 @@ export const addCategoriesToData = data => {
     const categories = item.description.match(/\[(.*?)\]/);
     if (categories) {
       item.categories = [...categories[1].split(",")];
+      item.description = item.description.replace(categories[0], "");
       return results.add(...categories[1].split(","));
     }
     return;
@@ -118,14 +216,56 @@ export const addCategoriesToData = data => {
   return { allDisplayRows: data, allUniqueCategories: [...results] };
 };
 
+/************************************
+ * RETURN ALL ROWS TO DISPLAY ON UI *
+ *     SORT THEM ALPHABETICALLY     *
+ ************************************/
+
 export function getAllRows(data) {
   if (!data) return [];
-  return data.distribution.filter(e => e["@type"] === "cr:FileSet");
+  return data.distribution
+    .filter(e => e["@type"] === "cr:FileSet")
+    .sort((a, b) => {
+      if (a.name > b.name) return 1;
+      else if (a.name < b.name) return -1;
+      return 0;
+    });
 }
+
+/***************************************************
+ * RETURN ROWS FROM DATA THAT CONTAINS INFORMATION *
+ *         ABOUT SCHEMA AND DATA SET INFO          *
+ ***************************************************/
 
 export function getSchemaRows(data) {
   if (!data) return [];
   return data.recordSet;
+}
+
+/********************************************
+ * FILTER AND RETURN LIST ITEM THAT MATCHES *
+ *              THE TEXT QUERY              *
+ *     KEYS TO FILTER ARE NAME AND DSEC     *
+ ********************************************/
+
+export function filterDownloadCardsForTextSearch(freeQueryText, data) {
+  if (!freeQueryText || !data || !data.length) return;
+  return data.filter(
+    e =>
+      e.description.toLowerCase().includes(freeQueryText.toLowerCase()) ||
+      e.name.toLowerCase().includes(freeQueryText.toLowerCase())
+  );
+}
+
+/**********************************************
+ * FILTER AND RETURN LIST ITEM WHOSE CATEGORY *
+ *          MATCHES THE SELECTED FILTERS      *
+ ********************************************/
+
+export function filterDownloadCardsForFilter(values, data) {
+  if (!values || !values.length || !data || !data.length) return;
+  const filteredValues = data.filter(item => item.categories.some(e => values.includes(e)));
+  return filteredValues;
 }
 
 // export const getCategoryFromRow = desc => {

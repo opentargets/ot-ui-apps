@@ -6,7 +6,7 @@ import { getDataType, getFieldProperty, isForeignColumn, isPrimaryColumn } from 
 
 function DownloadsSchemaBuilder({ data }) {
   const { schema } = buildSchema(data);
-  return <div>{schema}</div>;
+  return <Box sx={{ whiteSpace: "nowrap" }}>{schema}</Box>;
 }
 
 function buildSchema(obj, delimiter = "") {

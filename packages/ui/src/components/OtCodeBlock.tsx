@@ -10,6 +10,7 @@ function OtCodeBlock({ children }) {
         color: theme => theme.palette.grey[800],
         px: 3,
         py: 1,
+        overflowX: "auto",
       }}
     >
       <code>{children}</code>

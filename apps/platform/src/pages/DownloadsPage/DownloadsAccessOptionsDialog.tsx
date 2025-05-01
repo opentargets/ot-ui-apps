@@ -77,12 +77,12 @@ function FtpLocation({ link, version, path }) {
         </Link>
       </OtCodeBlock>
 
-      <Typography>rsync</Typography>
+      <Typography sx={{ mt: 1 }}>rsync</Typography>
       <OtCodeBlock>
         rsync -rpltvz --delete rsync.ebi.ac.uk::pub/databases/opentargets/platform/{version}/output/
         {path} .
       </OtCodeBlock>
-      <Typography variant="subtitle2" gutterBottom>
+      <Typography variant="subtitle2" gutterBottom sx={{ mt: 1 }}>
         Wget
       </Typography>
       <OtCodeBlock>
@@ -96,7 +96,7 @@ function FtpLocation({ link, version, path }) {
 function GcpLocation({ link }) {
   return (
     <>
-      <Typography variant="subtitle2" gutterBottom>
+      <Typography variant="subtitle2" gutterBottom sx={{ mt: 1 }}>
         Google Cloud
       </Typography>
       <OtCodeBlock> gsutil -m cp -r {link}/</OtCodeBlock>

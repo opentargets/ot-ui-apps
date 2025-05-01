@@ -9,14 +9,21 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import React from "react";
+import { useContext, useMemo, useState } from "react";
 import { OtCodeBlock } from "ui";
 import DownloadsSchemaBuilder from "./DownloadsSchemaBuilder";
+import { DownloadsContext } from "./context/DownloadsContext";
 
-function DownloadsSchemaDialog({ children, schemaRow }) {
-  const [open, setOpen] = React.useState(false);
+function DownloadsSchemaDialog({ children, currentRowId }) {
+  const [open, setOpen] = useState(false);
+  const { state } = useContext(DownloadsContext);
 
-  if (!schemaRow) return children;
+  const schemaRow = useMemo(
+    () => state.schemaRows.filter(e => e["@id"] === currentRowId.replace("-fileset", "")),
+    [currentRowId]
+  );
+
+  if (!currentRowId || !schemaRow) return children;
 
   const handleClickOpen = () => () => {
     setOpen(true);
@@ -27,7 +34,7 @@ function DownloadsSchemaDialog({ children, schemaRow }) {
   };
 
   return (
-    <React.Fragment>
+    <>
       <span onClick={handleClickOpen()}>{children}</span>
       <Dialog
         open={open}
@@ -61,7 +68,7 @@ function DownloadsSchemaDialog({ children, schemaRow }) {
           {/* <Button onClick={handleClose}>also close</Button> */}
         </DialogActions>
       </Dialog>
-    </React.Fragment>
+    </>
   );
 }
 export default DownloadsSchemaDialog;
