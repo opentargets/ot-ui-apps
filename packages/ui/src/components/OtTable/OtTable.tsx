@@ -97,6 +97,9 @@ function OtTable({
   loading,
   enableMultipleRowSelection = false,
   getSelectedRows,
+  getFilteredRows, // !! ADD NEW PROPS TO PROPS TYPES
+  getEnteredRow,
+  getExitedRow,
 }: OtTableProps): ReactElement {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -164,6 +167,10 @@ function OtTable({
   useEffect(() => {
     enableRowSelection && getSelectedRows(table.getSelectedRowModel().rows);
   }, [table.getSelectedRowModel()]);
+
+  useEffect(() => {
+    getFilteredRows?.(table.getFilteredRowModel().rows);
+  }, [table.getFilteredRowModel().rows]);
 
   return (
     <div>
@@ -253,6 +260,8 @@ function OtTable({
                   onClick={e => onRowSelection(e, row)}
                   enableRowSelection={enableRowSelection}
                   isSelected={row.getIsSelected()}
+                  onMouseEnter={getEnteredRow ? () => getEnteredRow(row) : null}
+                  onMouseLeave={getExitedRow ? () => getExitedRow(row) : null}
                 >
                   {row.getVisibleCells().map(cell => {
                     return (

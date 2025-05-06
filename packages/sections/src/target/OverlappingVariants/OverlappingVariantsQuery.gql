@@ -10,15 +10,19 @@ query OverlappingVariantsQuery($ensemblId: String!) {
           datasourceId
         }
         uniprotAccessions
-        alternateAmionAcid
-        variantId
-        targetId
+        alternateAminoAcid
+        variant {
+          id
+        }
+        target {
+          id
+        }
         aminoAcidPosition
         maxVariantEffectForPosition {
           value
           method
         }
-        referenceAmionAcid
+        referenceAminoAcid
         diseases {
           id
           name

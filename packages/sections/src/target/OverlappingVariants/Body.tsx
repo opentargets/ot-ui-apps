@@ -64,8 +64,12 @@ function AlphaFoldLegend() {
   );
 }
 
+function middleElement(arr) {
+  return arr[Math.floor(arr.length / 2)];
+}
+
 function Body({ id: ensemblId, label: symbol, entity }) {
-  const [viewer, setViewer] = useState(null);
+  const [molViewer, setMolViewer] = useState(null);
   const [structureLoading, setStructureLoading] = useState(true);
 
   const viewerRef = useRef(null);
@@ -78,32 +82,25 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     variables,
   });
 
-  let proteinCodingCoordinates, variantResidues, variantAtoms;
   const gqlData = request?.data?.target;
-  if (gqlData) {
-    proteinCodingCoordinates = gqlData.proteinCodingCoordinates;
-    variantResidues = (proteinCodingCoordinates?.rows ?? []).map(obj => {
-      // debugger;
-      return new Set(
-        obj.referenceAmionAcid.split("").map((v, i) => {
-          return i + obj.aminoAcidPosition;
-        })
-      );
-    });
-  }
+  const proteinCodingCoordinates = gqlData?.proteinCodingCoordinates;
+  const variantsByStartingPosition = Map.groupBy(
+    proteinCodingCoordinates?.rows ?? [],
+    row => row.aminoAcidPosition
+  );
 
   const columns = [
     {
       // !! NEED TO DISPLAY, SORT, ... PROPERLY, AND LINK TO VARIANT !!
-      id: "variantId",
+      id: "variant.id",
       label: "Variant",
     },
     {
       id: "aminoAcidPosition", // UPDATE TYPO ONCE API UPDATED
       label: "Amino acid change",
       sortable: true,
-      filterValue: o => `${o.referenceAmionAcid}${o.aminoAcidPosition}${o.alternateAmionAcid}`,
-      renderCell: o => `${o.referenceAmionAcid}${o.aminoAcidPosition}${o.alternateAmionAcid}`,
+      filterValue: o => `${o.referenceAminoAcid}${o.aminoAcidPosition}${o.alternateAminoAcid}`,
+      renderCell: o => `${o.referenceAminoAcid}${o.aminoAcidPosition}${o.alternateAminoAcid}`,
       comparator: (a, b) => a.aminoAcidPosition - b.aminoAcidPosition,
     },
     {
@@ -130,9 +127,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     {
       id: "diseases",
       label: "Disease/phenotype",
-      filterValue: ({ diseases }) =>
-        // console.log(diseases.map(({ name }) => name).join(", ")),
-        diseases.map(({ name }) => name).join(", "),
+      filterValue: ({ diseases }) => diseases.map(({ name }) => name).join(", "),
       renderCell: ({ diseases }) => {
         if (diseases.length === 0) return naLabel;
         const elements = [<Link to={`/disease/${diseases[0].id}`}>{diseases[0].name}</Link>];
@@ -171,6 +166,27 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   // function hideAtomInfo() {
   //   if (atomInfoRef.current) atomInfoRef.current.style.display = "none";
   // }
+
+  function getFilteredRows(filteredRows) {
+    if (molViewer) {
+      highlightVariants(
+        molViewer,
+        filteredRows.map(row => row.original)
+      );
+    }
+  }
+
+  function getEnteredRow(enteredRow) {
+    if (molViewer) {
+      extraHighlightVariant(molViewer, enteredRow.original);
+    }
+  }
+
+  function getExitedRow(exitedRow) {
+    if (molViewer) {
+      removeExtraHighlightVariant(molViewer, exitedRow.original);
+    }
+  }
 
   function showLoadingMessage(message = "Loading structure ...") {
     if (messageRef.current) {
@@ -236,17 +252,17 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     viewer.zoom(10);
   }
 
-  function addVariantStyle(viewer) {
-    for (const resis of variantResidues) {
-      viewer.addStyle(
-        { resi: [...resis] },
-        {
-          stick: { radius: 0.2, colorfunc: a => getAlphaFoldConfidence(a, "color") },
-          sphere: { radius: 0.4, colorfunc: a => getAlphaFoldConfidence(a, "color") },
-        }
-      );
-    }
-  }
+  // function addVariantStyle(viewer, variantResidues) {
+  //   for (const resis of variantResidues) {
+  //     viewer.addStyle(
+  //       { resi: [...resis] },
+  //       {
+  //         stick: { radius: 0.2, colorfunc: a => getAlphaFoldConfidence(a, "color") },
+  //         sphere: { radius: 0.4, colorfunc: a => getAlphaFoldConfidence(a, "color") },
+  //       }
+  //     );
+  //   }
+  // }
 
   function setNoHoverStyle(viewer) {
     viewer.setStyle(
@@ -255,11 +271,71 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         cartoon: {
           colorfunc: a => getAlphaFoldConfidence(a, "color"),
           arrows: true,
-          opacity: 0.6,
+          // opacity: 0.6,
         },
       }
     );
     // addVariantStyle(viewer);
+  }
+
+  function highlightVariants(viewer, filteredRows) {
+    for (const [resi, shape] of viewer.__highlightedResis__) {
+      viewer.removeShape(shape);
+      viewer.__highlightedResis__.delete(resi);
+    }
+    // viewer.removeAllShapes();
+    // !! CAN PROBABLY AVOID DOING THIS EVERY TIME
+    const variantsByStartingPosition = Map.groupBy(filteredRows, row => row.aminoAcidPosition);
+    for (const [startPosition, rows] of variantsByStartingPosition) {
+      // viewer.addSurface("VDW", { opacity: 0.65, color: "#f00" }, { resi: [...resis] });
+      const carbonAtoms = viewer.__atomsByResi__
+        .get(startPosition)
+        .filter(atom => atom.elem === "C");
+      // const sphereAtom = middleElement(carbonAtoms);
+      const sphereAtom = carbonAtoms[0]; // !! WHY IS FIRST CARBON NEARER CARTOON THAN MIDDLE CARBON?
+      viewer.__highlightedResis__.set(
+        startPosition,
+        viewer.addSphere({
+          center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
+          radius: 1.5,
+          color: "#f00",
+          opacity: 0.85,
+        })
+      );
+    }
+    viewer.render();
+  }
+
+  function extraHighlightVariant(viewer, row) {
+    // console.log(row);
+    const startPosition = row.aminoAcidPosition;
+
+    if (!viewer.__extraHighlightedResis__.has(startPosition)) {
+      const carbonAtoms = viewer.__atomsByResi__
+        .get(startPosition)
+        .filter(atom => atom.elem === "C");
+      // const sphereAtom = middleElement(carbonAtoms);
+      const sphereAtom = carbonAtoms[0]; // !! WHY IS FIRST CARBON NEARER CARTOON THAN MIDDLE CARBON?
+      viewer.__extraHighlightedResis__.set(
+        startPosition,
+        viewer.addSphere({
+          center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
+          radius: 3,
+          color: "#0f0",
+          opacity: 1,
+        })
+      );
+      viewer.render();
+    }
+  }
+
+  function removeExtraHighlightVariant(viewer, row) {
+    const startPosition = row.aminoAcidPosition;
+    if (viewer.__extraHighlightedResis__.has(startPosition)) {
+      viewer.removeShape(viewer.__extraHighlightedResis__.get(startPosition));
+      viewer.__extraHighlightedResis__.delete(startPosition);
+      viewer.render();
+    }
   }
 
   // fetch AlphaFold structure and view it
@@ -302,6 +378,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
           cartoonQuality: 10,
         });
         window.viewer = viewer; // !! REMOVE !!
+        setMolViewer(viewer);
+        // viewerRef.current.__viewer__ = viewer;
         const hoverDuration = 10;
         // viewer.getCanvas().ondblclick = () => resetViewer(viewer, 200); // use ondblclick so replaces existing
         viewer.addModel(data, "cif"); /* load data */
@@ -324,18 +402,10 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         //   {}
         // );
         const viewerAtoms = viewer.getModel().selectedAtoms();
-        for (const resis of variantResidues) {
-          // debugger;
-          // viewer.addSurface("VDW", { opacity: 0.65, color: "#f00" }, { resi: [...resis] });
-          const sphereAtom = viewerAtoms.find(atom => atom.resi === [...resis][0]);
-          viewer.addSphere({
-            // !! CAN USE ATOM START POSITION HERE - AND ONLY PUT ONE SPHERE ON ANY RESIDUE /9SO SKIP REPEATS
-            center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
-            radius: 1,
-            color: "#f00",
-            opacity: 0.7,
-          });
-        }
+        viewer.__atomsByResi__ = Map.groupBy(viewerAtoms, atom => atom.resi);
+        viewer.__highlightedResis__ = new Map();
+        viewer.__extraHighlightedResis__ = new Map();
+        highlightVariants(viewer, proteinCodingCoordinates?.rows ?? []);
         resetViewer(viewer);
         // viewer.zoom(0.2);
         viewer.render();
@@ -348,7 +418,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       viewer?.clear();
     };
     // !! DODGY TO LOCAL VARIABLE AS DE. HOW SHOLD KNOW WHEN REQUEST FULFILLED?
-  }, [proteinCodingCoordinates]);
+  }, [proteinCodingCoordinates, setMolViewer]);
 
   // if (!experimentalResults) return null;
 
@@ -363,20 +433,6 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         return (
           <Grid container columnSpacing={2}>
             {/* <Grid item xs={12} lg={6}> */}
-            <Grid item xs={12}>
-              <OtTable
-                dataDownloader
-                showGlobalFilter
-                sortBy="aminoAcidPosition"
-                order="desc"
-                columns={columns}
-                loading={request.loading}
-                rows={request.data?.target.proteinCodingCoordinates.rows}
-                // getSelectedRows={getSelectedRows}
-                query={OVERLAPPING_VARIANTS_QUERY.loc.source.body}
-                variables={variables}
-              />
-            </Grid>
             <Grid item xs={12}>
               {/* <Grid item xs={12} lg={6}> */}
               <Box ref={viewerRef} position="relative" width="100%" height="400px">
@@ -435,6 +491,23 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 </Box>
               </Box>
               <AlphaFoldLegend />
+            </Grid>
+            <Grid item xs={12}>
+              <OtTable
+                dataDownloader
+                showGlobalFilter
+                sortBy="aminoAcidPosition"
+                order="desc"
+                columns={columns}
+                loading={request.loading}
+                rows={request.data?.target.proteinCodingCoordinates.rows}
+                // getSelectedRows={getSelectedRows}
+                query={OVERLAPPING_VARIANTS_QUERY.loc.source.body}
+                variables={variables}
+                getFilteredRows={getFilteredRows}
+                getEnteredRow={getEnteredRow}
+                getExitedRow={getExitedRow}
+              />
             </Grid>
           </Grid>
         );
