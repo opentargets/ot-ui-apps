@@ -178,7 +178,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
 
   function getEnteredRow(enteredRow) {
     if (molViewer) {
-      extraHighlightVariant(molViewer, enteredRow.original);
+      highlightVariantFromTable(molViewer, enteredRow.original);
     }
   }
 
@@ -293,6 +293,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         .filter(atom => atom.elem === "C");
       // const sphereAtom = middleElement(carbonAtoms);
       const sphereAtom = carbonAtoms[0]; // !! WHY IS FIRST CARBON NEARER CARTOON THAN MIDDLE CARBON?
+      let hoverSphere;
       viewer.__highlightedResis__.set(
         startPosition,
         viewer.addSphere({
@@ -300,13 +301,30 @@ function Body({ id: ensemblId, label: symbol, entity }) {
           radius: 1.5,
           color: "#f00",
           opacity: 0.85,
+          clickable: true,
+          callback: () => console.log("clicked"),
+          hoverable: true,
+          hover_callback: sphere => {
+            console.log("HOVER");
+            !! WHY IS ADDING SPHERE NOT WORKING ??
+            hoverSphere = viewer.addSphere({
+              center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
+              radius: 3,
+              color: "#00f",
+              opacity: 1,
+              // !! ADD CLICKABLE AND CALLBACK TO THIS SPHERE !!
+            });
+          },
+          unhover_callback: () => {
+            viewer.removeShape(hoverSphere);
+          },
         })
       );
     }
     viewer.render();
   }
 
-  function extraHighlightVariant(viewer, row) {
+  function highlightVariantFromTable(viewer, row) {
     // console.log(row);
     const startPosition = row.aminoAcidPosition;
 
@@ -329,7 +347,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     }
   }
 
-  function removeExtraHighlightVariant(viewer, row) {
+  function unhighlightVariantFromTable(viewer, row) {
     const startPosition = row.aminoAcidPosition;
     if (viewer.__extraHighlightedResis__.has(startPosition)) {
       viewer.removeShape(viewer.__extraHighlightedResis__.get(startPosition));
@@ -337,6 +355,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       viewer.render();
     }
   }
+
+  // function highlightVariantonHover(viewer, )
 
   // fetch AlphaFold structure and view it
   useEffect(() => {
