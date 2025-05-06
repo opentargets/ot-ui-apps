@@ -102,7 +102,14 @@ function DownloadsPage() {
               <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
                 All Datasets ({state.count})
               </Typography>
-              <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  justifyContent: { xs: "center", md: "left" },
+                  gap: 2,
+                }}
+              >
                 {state.filteredRows.map(e => (
                   <DownloadsCard key={v1()} data={e} locationUrl={locationUrl} />
                 ))}

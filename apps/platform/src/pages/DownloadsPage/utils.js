@@ -101,14 +101,14 @@ export const getDataType = column => {
   let dataType = "";
   const primitiveType = isPrimitive(column);
   const structType = isStruct(column);
-  if (isTypeArray(column)) {
-    dataType += " []";
-  }
   if (primitiveType) {
     dataType += ` <${primitiveType}>`;
   }
   if (structType) {
     dataType += ` <${structType}>`;
+  }
+  if (isTypeArray(column)) {
+    dataType += " []";
   }
   if (!dataType) return "<Unknown>";
   return dataType;

@@ -21,7 +21,6 @@ function DownloadsCard({ data, locationUrl }) {
         justifyContent: "space-between",
         boxShadow: "none",
         border: theme => `1px solid ${theme.palette.grey[300]}`,
-        mb: 3,
         "&:hover": {
           boxShadow: theme => theme.boxShadow.lg,
         },

@@ -47,15 +47,6 @@ function DownloadsSchemaDialog({ children, currentRowId }) {
             Schema: {schemaRow[0]["@id"]}
           </Typography>
         </DialogTitle>
-        <ToggleButtonGroup size="small" aria-label="Small sizes">
-          <ToggleButton value="schema" key="schema">
-            schema
-          </ToggleButton>
-          <ToggleButton value="table" key="table">
-            table
-          </ToggleButton>
-          ,
-        </ToggleButtonGroup>
         <DialogContent dividers>
           <Box tabIndex={-1}>
             <OtCodeBlock>

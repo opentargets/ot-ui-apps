@@ -6,7 +6,11 @@ import { getDataType, getFieldProperty, isForeignColumn, isPrimaryColumn } from 
 
 function DownloadsSchemaBuilder({ data }) {
   const { schema } = buildSchema(data);
-  return <Box sx={{ whiteSpace: "nowrap" }}>{schema}</Box>;
+  return (
+    <table>
+      <tbody>{schema}</tbody>
+    </table>
+  );
 }
 
 function buildSchema(obj, delimiter = "") {
@@ -29,12 +33,25 @@ function buildSchema(obj, delimiter = "") {
     };
     descriptionArray.push(descObj);
     currentElement = (
-      <Box sx={{ color: "black" }}>
-        {DIVIDER}
-        {column.name}
-        {dataType} <PrimaryKeyIcon isPrimaryKey={isPrimaryKey} />{" "}
-        <ForeignKeyIcon isForeignKey={isForeignKey} />
-      </Box>
+      <tr>
+        <td>
+          {DIVIDER}
+          {column.name}{" "}
+        </td>
+        <Box component="td" sx={{ whiteSpace: "nowrap" }}>
+          {/* <Box sx={{ textAlign: "right", whiteSpace: "nowrap" }}>{dataType}</Box>{" "} */}
+          {dataType}
+        </Box>
+        <td>
+          <PrimaryKeyIcon isPrimaryKey={isPrimaryKey} />
+        </td>
+        <td>
+          <ForeignKeyIcon isForeignKey={isForeignKey} />
+        </td>
+        <td>
+          <Box sx={{ whiteSpace: "nowrap" }}>{column.description}</Box>
+        </td>
+      </tr>
     );
     if (dataType.includes("Struct")) {
       const { schema: nestedSchema, descriptionArray: nestedDescriptionArray } = buildSchema(
@@ -43,10 +60,10 @@ function buildSchema(obj, delimiter = "") {
       );
       descriptionArray = [...descriptionArray, ...nestedDescriptionArray];
       currentElement = (
-        <div>
+        <>
           {currentElement}
-          <div>{nestedSchema}</div>
-        </div>
+          {nestedSchema}
+        </>
       );
     }
     schema = (
