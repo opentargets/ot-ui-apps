@@ -19,7 +19,7 @@ export enum ActionType {
   SET_LOADING = "SET_LOADING",
   SET_DATA = "SET_DATA",
   SET_CATEGORIES = "SET_CATEGORIES",
-  SET_FILTER_DATA = "SET_FILTERED_DATA",
+  CLEAR_FILTER_DATA = "CLEAR_FILTER_DATA",
   SET_SCHEMA_DATA = "SET_SCHEMA_DATA",
   SET_ACTIVE_FILTER = "SET_ACTIVE_FILTER",
   SET_DOWNLOADS_DATA = "SET_DOWNLOADS_DATA",
@@ -27,7 +27,7 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_DOWNLOADS_DATA; downloadsData: Record<string, unknown> }
-  | { type: ActionType.SET_FILTER_DATA; filteredRows: Array<Record<string, unknown>> }
+  | { type: ActionType.CLEAR_FILTER_DATA }
   | { type: ActionType.SET_SCHEMA_DATA; schemaRows: Array<Record<string, unknown>> }
   | { type: ActionType.SET_ACTIVE_FILTER; selectedFilters: Array<string> }
   | { type: ActionType.SET_CATEGORIES; allUniqueCategories: Array<string> }

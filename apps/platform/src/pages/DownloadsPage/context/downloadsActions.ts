@@ -7,10 +7,9 @@ export function setDownloadsData(downloadsData: Record<string, unknown>): Action
   };
 }
 
-export function setFilterData(filteredRows: Array<Record<string, unknown>>): Action {
+export function clearFilterData(): Action {
   return {
-    type: ActionType.SET_FILTER_DATA,
-    filteredRows,
+    type: ActionType.CLEAR_FILTER_DATA,
   };
 }
 

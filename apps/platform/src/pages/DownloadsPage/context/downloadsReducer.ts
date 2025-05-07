@@ -38,8 +38,11 @@ export function downloadsReducer(
       };
     }
     case ActionType.TEXT_SEARCH: {
+      const preFilteredRows = state.selectedFilters.length
+        ? filterDownloadCardsForFilter(state.selectedFilters, state.rows)
+        : state.rows;
       const filteredRows =
-        filterDownloadCardsForTextSearch(action.freeQueryText, state.rows) || state.rows;
+        filterDownloadCardsForTextSearch(action.freeQueryText, preFilteredRows) || preFilteredRows;
       return {
         ...state,
         freeTextQuery: action.freeQueryText,
@@ -55,11 +58,13 @@ export function downloadsReducer(
         count: action.rows.length,
       };
     }
-    case ActionType.SET_FILTER_DATA: {
+    case ActionType.CLEAR_FILTER_DATA: {
       return {
         ...state,
-        filteredRows: action.filteredRows,
-        count: action.filteredRows.length,
+        filteredRows: state.rows,
+        count: state.rows.length,
+        selectedFilters: [],
+        freeTextQuery: "",
       };
     }
     case ActionType.SET_SCHEMA_DATA: {
@@ -69,9 +74,12 @@ export function downloadsReducer(
       };
     }
     case ActionType.SET_ACTIVE_FILTER: {
+      const preFilteredRows = state.freeTextQuery ? state.filteredRows : state.rows;
       const filteredRows = action.selectedFilters.length
-        ? filterDownloadCardsForFilter(action.selectedFilters, state.rows)
-        : state.rows;
+        ? filterDownloadCardsForFilter(action.selectedFilters, preFilteredRows)
+        : preFilteredRows;
+      console.log(" preFilteredRows", preFilteredRows);
+      console.log(" filteredRows", filteredRows);
       return {
         ...state,
         selectedFilters: action.selectedFilters,

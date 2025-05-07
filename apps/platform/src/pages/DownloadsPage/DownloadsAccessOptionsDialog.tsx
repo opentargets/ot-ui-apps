@@ -26,7 +26,7 @@ function DownloadsAccessOptionsDialog({ children, data, locationUrl, version }) 
   };
 
   const getLink = loc => {
-    return `${locationUrl[loc]}${columnId}`;
+    return `${locationUrl[loc]}/${columnId}`;
   };
 
   const LOCATION_MAP = {

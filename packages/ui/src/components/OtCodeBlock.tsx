@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-function OtCodeBlock({ children }) {
+function OtCodeBlock({ children, removePadding = false }) {
   return (
     <Box
       sx={{
@@ -8,9 +8,9 @@ function OtCodeBlock({ children }) {
         borderRadius: 3,
         background: theme => theme.palette.grey[100],
         color: theme => theme.palette.grey[800],
-        px: 3,
-        py: 1,
-        overflowX: "auto",
+        ...(!removePadding && { px: 3 }),
+        ...(!removePadding && { py: 1 }),
+        width: "fit-content",
       }}
     >
       <code>{children}</code>

@@ -3,7 +3,7 @@ import { v1 } from "uuid";
 import DownloadsSearchInput from "./DownloadsSearchInput";
 import { DownloadsContext } from "./context/DownloadsContext";
 import { useContext } from "react";
-import { setActiveFilter } from "./context/downloadsActions";
+import { clearFilterData, setActiveFilter } from "./context/downloadsActions";
 
 function DownloadsFilter() {
   const { state, dispatch } = useContext(DownloadsContext);
@@ -14,6 +14,10 @@ function DownloadsFilter() {
       currentFilters.splice(currentFilters.indexOf(item), 1);
     } else currentFilters.push(item);
     dispatch(setActiveFilter(currentFilters));
+  }
+
+  function handleClearAll() {
+    dispatch(clearFilterData());
   }
 
   return (
@@ -36,6 +40,13 @@ function DownloadsFilter() {
           }}
         >
           Filters
+          {/* <Chip
+            label="clear all"
+            size="small"
+            clickable
+            sx={{ fontWeight: "normal", typography: "caption" }}
+            onClick={handleClearAll}
+          /> */}
         </Typography>
         <Box>
           <DownloadsSearchInput />

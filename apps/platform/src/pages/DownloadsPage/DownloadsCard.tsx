@@ -49,7 +49,7 @@ function DownloadsCard({ data, locationUrl }) {
             </Typography>
           </Box>
 
-          <OtLongText variant="body2" lineLimit={2} displayText="...">
+          <OtLongText variant="body2" lineLimit={2} displayText="... more">
             {data.description}
           </OtLongText>
         </Box>

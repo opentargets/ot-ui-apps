@@ -55,9 +55,10 @@ export const buildSchema = (obj, delimiter = "") => {
  *  boolean                                       *
  **************************************************/
 
-export const isPrimaryColumn = (column, primaryKeyObj = []) => {
-  if (!primaryKeyObj.length) return false;
-  return primaryKeyObj.some(e => e["@id"] === column["@id"]);
+export const isPrimaryColumn = (column, primaryKey = {}) => {
+  const primaryKeyArray = Array.isArray(primaryKey) ? primaryKey : [primaryKey];
+  if (!primaryKeyArray.length) return false;
+  return primaryKeyArray.some(e => e["@id"] === column["@id"]);
 };
 
 /**************************************************
@@ -101,14 +102,17 @@ export const getDataType = column => {
   let dataType = "";
   const primitiveType = isPrimitive(column);
   const structType = isStruct(column);
+  if (isTypeArray(column)) {
+    dataType += "Array[";
+  }
   if (primitiveType) {
-    dataType += ` <${primitiveType}>`;
+    dataType += `${primitiveType}`;
   }
   if (structType) {
-    dataType += ` <${structType}>`;
+    dataType += `${structType}`;
   }
   if (isTypeArray(column)) {
-    dataType += " []";
+    dataType += "]";
   }
   if (!dataType) return "<Unknown>";
   return dataType;
@@ -206,7 +210,7 @@ export const addCategoriesToData = data => {
   data.map(item => {
     const categories = item.description.match(/\[(.*?)\]/);
     if (categories) {
-      item.categories = [...categories[1].split(",")];
+      item.categories = [...categories[1].split(", ")];
       item.description = item.description.replace(categories[0], "");
       return results.add(...categories[1].split(","));
     }

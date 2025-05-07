@@ -3,19 +3,65 @@ import { Box } from "@mui/material";
 import { Tooltip } from "ui";
 import { FontAwesomeIconPadded } from "ui/src/components/OtTable/otTableLayout";
 import { getDataType, getFieldProperty, isForeignColumn, isPrimaryColumn } from "./utils";
+import { styled } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const StickyLeftTh = styled("th")(({ theme }) => ({
+  left: "0",
+  position: "sticky",
+  backgroundColor: theme.palette.grey[200],
+  zIndex: 1,
+  textAlign: "left",
+  whiteSpace: "nowrap",
+  mr: 2,
+  borderRight: `1px solid ${theme.palette.grey[300]}`,
+}));
+
+const StickyTd = styled("td")(({ theme }) => ({
+  left: "0",
+  position: "sticky",
+  backgroundColor: theme.palette.grey[200],
+  zIndex: 1,
+  borderRight: `1px solid ${theme.palette.grey[300]}`,
+}));
+
+const NoBorderTable = styled("table")(({ theme }) => ({
+  border: "none",
+  padding: 10,
+  margin: 0,
+  borderSpacing: 0,
+  "& thead, & tbody": {
+    "& tr": {
+      "& td, & th": {
+        padding: "3px 5px",
+        textAlign: "left",
+        whiteSpace: "nowrap",
+        mr: 2,
+      },
+    },
+  },
+}));
 
 function DownloadsSchemaBuilder({ data }) {
-  const { schema } = buildSchema(data);
+  const schema = buildSchema(data);
   return (
-    <table>
+    <NoBorderTable>
+      <thead>
+        <tr>
+          <StickyLeftTh>Column</StickyLeftTh>
+          <th>Data Type</th>
+          <th></th>
+          <th></th>
+          <th>Description</th>
+        </tr>
+      </thead>
       <tbody>{schema}</tbody>
-    </table>
+    </NoBorderTable>
   );
 }
 
 function buildSchema(obj, delimiter = "") {
   let schema = <></>;
-  let descriptionArray = [];
 
   const DIVIDER = `${delimiter}│⎯`;
   const FIELD = getFieldProperty(obj);
@@ -24,20 +70,13 @@ function buildSchema(obj, delimiter = "") {
     const dataType = getDataType(column);
     const isPrimaryKey = isPrimaryColumn(column, obj.key);
     const isForeignKey = isForeignColumn(column);
-    const descObj = {
-      id: column["@id"],
-      name: column.name,
-      description: column.description,
-      isPrimaryKey: isPrimaryKey,
-      isForeignKey: isForeignKey,
-    };
-    descriptionArray.push(descObj);
+
     currentElement = (
       <tr>
-        <td>
+        <StickyTd>
           {DIVIDER}
           {column.name}{" "}
-        </td>
+        </StickyTd>
         <Box component="td" sx={{ whiteSpace: "nowrap" }}>
           {/* <Box sx={{ textAlign: "right", whiteSpace: "nowrap" }}>{dataType}</Box>{" "} */}
           {dataType}
@@ -54,11 +93,7 @@ function buildSchema(obj, delimiter = "") {
       </tr>
     );
     if (dataType.includes("Struct")) {
-      const { schema: nestedSchema, descriptionArray: nestedDescriptionArray } = buildSchema(
-        column,
-        `${delimiter}│⎯`
-      );
-      descriptionArray = [...descriptionArray, ...nestedDescriptionArray];
+      const nestedSchema = buildSchema(column, `${delimiter}│⎯`);
       currentElement = (
         <>
           {currentElement}
@@ -73,14 +108,16 @@ function buildSchema(obj, delimiter = "") {
       </>
     );
   }
-  return { schema, descriptionArray };
+  return schema;
 }
 
 function PrimaryKeyIcon({ isPrimaryKey }) {
   if (!isPrimaryKey) return;
   return (
     <Tooltip title="Primary Key">
-      <FontAwesomeIconPadded sx={{ color: theme => theme.palette.primary.main }} icon={faKey} />
+      <Box sx={{ color: theme => theme.palette.primary.main }}>
+        <FontAwesomeIcon icon={faKey} />
+      </Box>
     </Tooltip>
   );
 }
@@ -89,10 +126,9 @@ function ForeignKeyIcon({ isForeignKey }) {
   if (!isForeignKey) return;
   return (
     <Tooltip title={`Foreign Key: ${isForeignKey}`}>
-      <FontAwesomeIconPadded
-        sx={{ color: theme => theme.palette.primary.light }}
-        icon={faNetworkWired}
-      />
+      <Box sx={{ color: theme => theme.palette.primary.light }}>
+        <FontAwesomeIcon icon={faNetworkWired} />
+      </Box>
     </Tooltip>
   );
 }
