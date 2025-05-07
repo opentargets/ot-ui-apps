@@ -184,7 +184,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
 
   function getExitedRow(exitedRow) {
     if (molViewer) {
-      removeExtraHighlightVariant(molViewer, exitedRow.original);
+      unhighlightVariantFromTable(molViewer, exitedRow.original);
     }
   }
 
@@ -271,7 +271,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         cartoon: {
           colorfunc: a => getAlphaFoldConfidence(a, "color"),
           arrows: true,
-          // opacity: 0.6,
+          // opacity: 0.7,
         },
       }
     );
@@ -302,21 +302,22 @@ function Body({ id: ensemblId, label: symbol, entity }) {
           color: "#f00",
           opacity: 0.85,
           clickable: true,
-          callback: () => console.log("clicked"),
+          // callback: () => console.log("clicked"),
           hoverable: true,
           hover_callback: sphere => {
-            console.log("HOVER");
-            !! WHY IS ADDING SPHERE NOT WORKING ??
             hoverSphere = viewer.addSphere({
               center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
-              radius: 3,
-              color: "#00f",
+              radius: 1.55,
+              color: "#f00",
               opacity: 1,
-              // !! ADD CLICKABLE AND CALLBACK TO THIS SPHERE !!
+              clickable: true,
+              callback: () => console.log("clicked the added hover sphere"),
             });
+            viewer.render();
           },
           unhover_callback: () => {
             viewer.removeShape(hoverSphere);
+            viewer.render();
           },
         })
       );
@@ -338,7 +339,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         startPosition,
         viewer.addSphere({
           center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
-          radius: 3,
+          radius: 1.6,
           color: "#0f0",
           opacity: 1,
         })
