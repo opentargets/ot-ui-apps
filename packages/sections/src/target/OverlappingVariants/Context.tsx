@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer, ReactNode } from "react";
-import { reducer, initialState, actions } from "./Reducer";
+import { reducer, getInitialState, actions } from "./Reducer";
+import { useQuery } from "@apollo/client";
 
 interface StateContextType {
   state: State;
@@ -11,13 +12,16 @@ interface DispatchContextType {
 
 interface ProviderProps {
   children: ReactNode;
+  data: [];
 }
 
 const StateContext = createContext<StateContextType | undefined>(undefined);
 const DispatchContext = createContext<DispatchContextType | undefined>(undefined);
 
-export function StateProvider({ children }: ProviderProps) {
+export function StateProvider({ children, data }: ProviderProps) {
+  const initialState = getInitialState(data);
   const [state, dispatch] = useReducer(reducer, initialState);
+  // const { data, loading, error } = useQuery(query, { variables: { freeSearch: state.searchText } });
 
   return (
     <StateContext.Provider value={state}>

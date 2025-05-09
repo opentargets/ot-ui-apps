@@ -40,6 +40,8 @@ export const initialState: State = {
   startPosition: null,
 };
 
+export const getInitialState = data => ({ ...initialState, data });
+
 // Reducer function
 export function reducer(state: State = initialState, action: Action): State {
   if (typeof state === undefined) {
@@ -50,8 +52,8 @@ export function reducer(state: State = initialState, action: Action): State {
     case ActionType.SET_VIEWER:
       return { ...state, viewer: action.viewer };
 
-    case ActionType.SET_DATA:
-      return { ...state, data: action.data };
+    // case ActionType.SET_DATA:
+    //   return { ...state, data: action.data };
 
     case ActionType.SET_SEARCH_TEXT:
       return { ...state, searchText: action.searchText };
