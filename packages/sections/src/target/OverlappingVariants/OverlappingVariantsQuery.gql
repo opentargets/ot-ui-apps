@@ -1,0 +1,33 @@
+# !! REMOVE UNUSED !!
+query OverlappingVariantsQuery($ensemblId: String!) {
+  target(ensemblId: $ensemblId) {
+    id
+    proteinCodingCoordinates(page: { size: 3000, index: 0 }) {
+      count
+      rows {
+        evidenceSources {
+          evidenceCount
+          datasourceId
+        }
+        uniprotAccessions
+        alternateAminoAcid
+        variant {
+          id
+        }
+        target {
+          id
+        }
+        aminoAcidPosition
+        maxVariantEffectForPosition {
+          value
+          method
+        }
+        referenceAminoAcid
+        diseases {
+          id
+          name
+        }
+      }
+    }
+  }
+}
