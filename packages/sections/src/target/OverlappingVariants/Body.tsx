@@ -4,15 +4,13 @@ import { naLabel } from "@ot/constants";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
-import { createViewer } from "3dmol";
+
 // import { schemeSet1, schemeDark2 } from "d3";
 import OVERLAPPING_VARIANTS_QUERY from "./OverlappingVariantsQuery.gql";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
-
-const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
-const alphaFoldStructureSuffix = "-model_v4.cif";
+import { StateProvider, useStateValue, useActions } from "./Context";
 
 // !! IMPORT ALPHAFOLD CONFIDENCE STUFF AND LEGEND  FROM UI MERGED FROM OTHER BRANCH !!
 const alphaFoldConfidenceBands = [
@@ -69,7 +67,7 @@ function middleElement(arr) {
 }
 
 function Body({ id: ensemblId, label: symbol, entity }) {
-  const [molViewer, setMolViewer] = useState(null);
+  // const [molViewer, setMolViewer] = useState(null);
   const [structureLoading, setStructureLoading] = useState(true);
 
   const viewerRef = useRef(null);
@@ -367,7 +365,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       let data, response;
 
       async function fetchStructureFile(uniprotId) {
-        const pdbUri = `${alphaFoldStructureStem}AF-${uniprotId}-F1${alphaFoldStructureSuffix}`;
+        const pdbUri = `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v4.cif`;
         let newResponse;
         try {
           newResponse = await fetch(pdbUri);
@@ -456,61 +454,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
             {/* <Grid item xs={12} lg={6}> */}
             <Grid item xs={12}>
               {/* <Grid item xs={12} lg={6}> */}
-              <Box ref={viewerRef} position="relative" width="100%" height="400px">
-                <Typography
-                  ref={messageRef}
-                  variant="body2"
-                  component="div"
-                  sx={{
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    position: "absolute",
-                    zIndex: 1,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                />
-                <Box
-                  sx={{
-                    top: 0,
-                    right: 0,
-                    position: "absolute",
-                    zIndex: 1,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    background: "white",
-                    m: 1,
-                  }}
-                >
-                  <Button
-                    sx={{ display: "flex", gap: 1 }}
-                    disabled={structureLoading}
-                    onClick={onClickCapture}
-                  >
-                    <FontAwesomeIcon icon={faCamera} /> Screenshot
-                  </Button>
-                </Box>
-                <Box
-                  ref={atomInfoRef}
-                  position="absolute"
-                  bottom={0}
-                  right={0}
-                  p="0.6rem 0.8rem"
-                  zIndex={100}
-                  bgcolor="#f8f8f8c8"
-                  sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
-                  fontSize={14}
-                >
-                  <Box display="flex" flexDirection="column">
-                    <Typography variant="caption" component="p" textAlign="right" />
-                    <Typography variant="caption" component="p" textAlign="right" />
-                  </Box>
-                </Box>
-              </Box>
+              <Box ref={viewerRef} position="relative" width="100%" height="400px"></Box>
               <AlphaFoldLegend />
             </Grid>
             <Grid item xs={12}>
