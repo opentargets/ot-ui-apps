@@ -134,7 +134,7 @@ function DownloadsFilterLoading() {
 function DownloadsTagsLoading() {
   const chipsArray = new Array(5).fill(0);
   return (
-    <Box sx={{ display: "flex", gap: 3, my: 1 }}>
+    <Box sx={{ display: "flex", gap: 3, my: 1, flexWrap: "wrap" }}>
       {chipsArray.map(e => (
         <Box key={v1()} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Skeleton height={35} width={80} />

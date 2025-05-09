@@ -14,7 +14,7 @@ function DownloadsCard({ data, locationUrl }) {
 
   function handleChangeFilter(e) {
     const currentFilters = [...state.selectedFilters];
-    if (!currentFilters.includes(e.target.innerText)) {
+    if (currentFilters.includes(e.target.innerText)) {
       return;
     } else {
       currentFilters.push(e.target.innerText);

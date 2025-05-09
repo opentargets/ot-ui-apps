@@ -14,7 +14,7 @@ import { Link, OtCodeBlock } from "ui";
 
 function DownloadsTags() {
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3, p: 1 }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3, p: 1, flexWrap: "wrap" }}>
       <VersionTag />
       <DOITag />
       <LibrariesTag />
