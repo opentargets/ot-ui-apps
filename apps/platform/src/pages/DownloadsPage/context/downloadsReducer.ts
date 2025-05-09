@@ -78,8 +78,6 @@ export function downloadsReducer(
       const filteredRows = action.selectedFilters.length
         ? filterDownloadCardsForFilter(action.selectedFilters, preFilteredRows)
         : preFilteredRows;
-      console.log(" preFilteredRows", preFilteredRows);
-      console.log(" filteredRows", filteredRows);
       return {
         ...state,
         selectedFilters: action.selectedFilters,

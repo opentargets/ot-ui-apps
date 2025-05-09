@@ -11,6 +11,7 @@ import DownloadsLoading from "./DownloadsLoading";
 import { createInitialState, downloadsReducer } from "./context/downloadsReducer";
 import { setDownloadsData } from "./context/downloadsActions";
 import { DownloadsContext } from "./context/DownloadsContext";
+import DownloadsTags from "./DownloadsTags";
 
 const config = getConfig();
 
@@ -59,13 +60,13 @@ function DownloadsPage() {
           {state.downloadsData?.name}
         </Typography>
         <Typography paragraph>{state.downloadsData?.description}</Typography>
-        <Typography paragraph>
+        {/* <Typography paragraph>
           Our scripts and schema conforms to{" "}
           <Link external to={state.downloadsData?.conformsTo}>
             Ml Commons
           </Link>
         </Typography>
-        <Typography paragraph>Current data version: {state.downloadsData?.version}</Typography>
+        <Typography paragraph>Current data version: {state.downloadsData?.version}</Typography> */}
 
         {config.profile.isPartnerPreview ? (
           <Alert severity="info" className={classes.alert}>
@@ -86,6 +87,8 @@ function DownloadsPage() {
             to access the following datasets.
           </Alert>
         ) : null}
+
+        <DownloadsTags />
 
         <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
           <Grid item xs={12} md={3} lg={2} sx={{ display: "flex", justifyContent: "center" }}>

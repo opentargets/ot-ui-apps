@@ -14,34 +14,38 @@ function DownloadsLoading() {
   const emptyDownloadsArray = new Array(36).fill("");
 
   return (
-    <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
-      <Grid item xs={12} md={3} lg={2}>
-        <DownloadsFilterLoading />
-      </Grid>
-      <Grid
-        item
-        xs={12}
-        md={9}
-        lg={10}
-        sx={{ display: "flex", flexDirection: "column", gap: 1, pl: 3 }}
-      >
-        <Typography variant="h6" sx={{ display: "flex", fontWeight: "bold", mb: 2 }}>
-          All Datasets <Skeleton width={20} sx={{ mx: 1, px: 1 }} />
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: { xs: "center", md: "left" },
-            gap: 2,
-          }}
+    <Box>
+      <DownloadsHeaderLoading />
+      <DownloadsTagsLoading />
+      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Grid item xs={12} md={3} lg={2}>
+          <DownloadsFilterLoading />
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          md={9}
+          lg={10}
+          sx={{ display: "flex", flexDirection: "column", gap: 1, pl: { md: 2 } }}
         >
-          {emptyDownloadsArray.map(e => (
-            <DownloadsCardLoading key={v1()} />
-          ))}
-        </Box>
+          <Typography variant="h6" sx={{ display: "flex", fontWeight: "bold", mb: 2 }}>
+            All Datasets <Skeleton width={20} sx={{ mx: 1, px: 1 }} />
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              gap: 2,
+            }}
+          >
+            {emptyDownloadsArray.map(e => (
+              <DownloadsCardLoading key={v1()} />
+            ))}
+          </Box>
+        </Grid>
       </Grid>
-    </Grid>
+    </Box>
   );
 }
 
@@ -124,6 +128,34 @@ function DownloadsFilterLoading() {
         <Skeleton height={300} />
       </Box>
     </Paper>
+  );
+}
+
+function DownloadsTagsLoading() {
+  const chipsArray = new Array(5).fill(0);
+  return (
+    <Box sx={{ display: "flex", gap: 3, my: 1 }}>
+      {chipsArray.map(e => (
+        <Box key={v1()} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Skeleton height={35} width={80} />
+          <Skeleton width={70} height={50} sx={{ borderRadius: 10 }} />
+        </Box>
+      ))}
+    </Box>
+  );
+}
+
+function DownloadsHeaderLoading() {
+  return (
+    <Box>
+      <Typography variant="h2">
+        <Skeleton width="500px" />
+      </Typography>
+      <Typography variant="body1">
+        <Skeleton />
+        <Skeleton />
+      </Typography>
+    </Box>
   );
 }
 

@@ -18,6 +18,8 @@ const StickyLeftTh = styled("th")(({ theme }) => ({
 }));
 
 const StickyTd = styled("td")(({ theme }) => ({
+  display: "flex",
+  gap: 10,
   left: "0",
   position: "sticky",
   backgroundColor: theme.palette.grey[200],
@@ -50,8 +52,8 @@ function DownloadsSchemaBuilder({ data }) {
         <tr>
           <StickyLeftTh>Column</StickyLeftTh>
           <th>Data Type</th>
-          <th></th>
-          <th></th>
+          {/* <td></td>
+          <td></td> */}
           <th>Description</th>
         </tr>
       </thead>
@@ -75,18 +77,19 @@ function buildSchema(obj, delimiter = "") {
       <tr>
         <StickyTd>
           {DIVIDER}
-          {column.name}{" "}
+          {column.name} <PrimaryKeyIcon isPrimaryKey={isPrimaryKey} />{" "}
+          <ForeignKeyIcon isForeignKey={isForeignKey} />
         </StickyTd>
         <Box component="td" sx={{ whiteSpace: "nowrap" }}>
           {/* <Box sx={{ textAlign: "right", whiteSpace: "nowrap" }}>{dataType}</Box>{" "} */}
           {dataType}
         </Box>
-        <td>
+        {/* <td>
           <PrimaryKeyIcon isPrimaryKey={isPrimaryKey} />
         </td>
         <td>
           <ForeignKeyIcon isForeignKey={isForeignKey} />
-        </td>
+        </td> */}
         <td>
           <Box sx={{ whiteSpace: "nowrap" }}>{column.description}</Box>
         </td>

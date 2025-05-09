@@ -7,9 +7,20 @@ import DownloadsAccessOptionsDialog from "./DownloadsAccessOptionsDialog";
 import { v1 } from "uuid";
 import { DownloadsContext } from "./context/DownloadsContext";
 import { useContext } from "react";
+import { setActiveFilter } from "./context/downloadsActions";
 
 function DownloadsCard({ data, locationUrl }) {
-  const { state } = useContext(DownloadsContext);
+  const { state, dispatch } = useContext(DownloadsContext);
+
+  function handleChangeFilter(e) {
+    const currentFilters = [...state.selectedFilters];
+    if (!currentFilters.includes(e.target.innerText)) {
+      return;
+    } else {
+      currentFilters.push(e.target.innerText);
+      dispatch(setActiveFilter(currentFilters));
+    }
+  }
 
   return (
     <Card
@@ -17,7 +28,6 @@ function DownloadsCard({ data, locationUrl }) {
         width: "350px",
         display: "flex",
         flexDirection: "column",
-        // alignItems: "center",
         justifyContent: "space-between",
         boxShadow: "none",
         border: theme => `1px solid ${theme.palette.grey[300]}`,
@@ -61,20 +71,12 @@ function DownloadsCard({ data, locationUrl }) {
                 key={v1()}
                 size="small"
                 label={c}
+                clickable
+                onClick={handleChangeFilter}
                 sx={{ background: theme => theme.palette.primary.dark, color: "white" }}
               />
             ))}
           </Box>
-          <Typography
-            variant="body2"
-            sx={{
-              color: "text.secondary",
-              display: "flex",
-            }}
-          >
-            <span> Last Updated on: </span>
-            <span> date </span>
-          </Typography>
         </Box>
       </CardContent>
       <CardActions
