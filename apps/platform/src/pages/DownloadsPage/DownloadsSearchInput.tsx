@@ -19,9 +19,9 @@ const NameFilterInput = styled(TextField)(() => ({
 }));
 
 function DownloadsSearchInput() {
-  const [inputValue, setInputValue] = useState("");
+  const { state, dispatch } = useContext(DownloadsContext);
+  const [inputValue, setInputValue] = useState(state.freeTextQuery);
   const debouncedInputValue = useDebounce(inputValue, 300);
-  const { dispatch } = useContext(DownloadsContext);
 
   useEffect(() => {
     dispatch(textSearch(debouncedInputValue));

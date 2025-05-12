@@ -40,13 +40,13 @@ function DownloadsFilter() {
           }}
         >
           Filters
-          {/* <Chip
+          <Chip
             label="clear all"
             size="small"
             clickable
             sx={{ fontWeight: "normal", typography: "caption" }}
             onClick={handleClearAll}
-          /> */}
+          />
         </Typography>
         <Box>
           <DownloadsSearchInput />
