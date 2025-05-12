@@ -110,7 +110,7 @@ function OtTable({
   const loadingCells = getLoadingCells(mappedColumns);
   const enableRowSelection = !!getSelectedRows || enableMultipleRowSelection;
 
-  const tableData = useMemo(() => (loading ? loadingRows : rows), [loading]);
+  const tableData = useMemo(() => (loading ? loadingRows : rows), [loading, rows]);
   const tableColumns = useMemo(() => (loading ? loadingCells : mappedColumns), [loading]);
 
   function getCellData(cell: Record<string, unknown>): ReactNode {

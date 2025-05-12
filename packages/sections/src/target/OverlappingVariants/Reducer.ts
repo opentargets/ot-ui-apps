@@ -1,7 +1,7 @@
 // action types
 export enum ActionType {
   SET_VIEWER = "SET_VIEWER",
-  SET_DATA = "SET_DATA",
+  // SET_DATA = "SET_DATA",
   SET_SEARCH_TEXT = "SET_SEARCH_TEXT",
   SET_THERAPEUTIC_AREAS = "SET_THERAPEUTIC_AREAS",
   SET_VARIANT_TYPES = "SET_VARIANT_TYPES",
@@ -40,7 +40,12 @@ export const initialState: State = {
   startPosition: null,
 };
 
-export const getInitialState = data => ({ ...initialState, data });
+export const getInitialState = ({ data, query, variables }) => ({
+  ...initialState,
+  data,
+  query,
+  variables,
+});
 
 // Reducer function
 export function reducer(state: State = initialState, action: Action): State {
@@ -85,10 +90,10 @@ export const actions = {
     viewer,
   }),
 
-  setData: (data: any): Action => ({
-    type: ActionType.SET_DATA,
-    data,
-  }),
+  // setData: (data: any): Action => ({
+  //   type: ActionType.SET_DATA,
+  //   data,
+  // }),
 
   setSearchText: (searchText: string): Action => ({
     type: ActionType.SET_SEARCH_TEXT,
