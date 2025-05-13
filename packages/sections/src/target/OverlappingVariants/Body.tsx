@@ -4,8 +4,9 @@ import Description from "./Description";
 import { definition } from ".";
 import OVERLAPPING_VARIANTS_QUERY from "./OverlappingVariantsQuery.gql";
 import { StateProvider } from "./Context";
+import Viewer from "./Viewer";
 import Filters from "./Filters";
-import OverlappingVariantsTable from "./OverlappingVariantsTable";
+import Table from "./Table";
 
 function Body({ id: ensemblId, label: symbol, entity }) {
   // const [molViewer, setMolViewer] = useState(null);
@@ -29,9 +30,9 @@ function Body({ id: ensemblId, label: symbol, entity }) {
             query={OVERLAPPING_VARIANTS_QUERY.loc.source.body}
             variables={variables}
           >
-            {/* <div id="Viewer"></div> */}
+            <Viewer />
             <Filters />
-            <OverlappingVariantsTable />
+            <Table />
           </StateProvider>
         );
       }}

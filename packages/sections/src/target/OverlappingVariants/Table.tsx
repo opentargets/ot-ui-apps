@@ -76,8 +76,6 @@ export default function OverlappingVariantsTable() {
     // !! MORE ROWS !!
   ];
 
-  console.log('rendering table')
-
   return (
     <OtTable
       dataDownloader
