@@ -34,4 +34,4 @@ jobs:
           node-version: 23
       - uses: mskelton/setup-yarn@v3
       - name: Lint code
-        run: yarn format
+        run: yarn lint
