@@ -24,7 +24,7 @@ function StudyResult({ data, highlights }) {
   return (
     <div className={classes.container}>
       <Link to={`/study/${data.id}`} className={classes.subtitle}>
-        <FontAwesomeIcon icon={faChartBar} className={classes.icon} /> <>{data.traitFromSource}</>
+        <FontAwesomeIcon icon={faChartBar} className={classes.icon} /> {data.traitFromSource}
       </Link>
       <Typography className={classes.subtitle} variant="subtitle1">
         {data.credibleSets.credibleSetsCount > -1 && (

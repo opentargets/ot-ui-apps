@@ -50,7 +50,7 @@ function Body({ label: symbol, id, entity }) {
   const [versions, setVersions] = useState({});
   const client = useApolloClient();
 
-  const onTabChange = (event, tabId) => {
+  const onTabChange = (_event, tabId) => {
     setSource(tabId);
   };
 

@@ -97,7 +97,7 @@ const createBlob = (format) =>
       }),
   })[format];
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles((_theme) => ({
   messageProgress: {
     marginRight: "1rem",
     color: "white !important",

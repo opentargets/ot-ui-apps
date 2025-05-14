@@ -20,7 +20,7 @@ const ScoreElement = styled("div", {
     theme,
   }) => ({
     background: backgroundColor.toString(),
-    border: active ? `2px solid #2a2c30` : `1px solid ${borderColor}`,
+    border: active ? "2px solid #2a2c30" : `1px solid ${borderColor}`,
     borderRadius: shape === "circular" ? "50%" : 0,
     height: "24px",
     width: "24px",

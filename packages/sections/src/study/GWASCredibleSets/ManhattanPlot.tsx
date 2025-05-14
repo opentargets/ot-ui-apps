@@ -72,7 +72,7 @@ function ManhattanPlot({ loading, data: originalData }) {
           stroke: "#888",
           ticks: [0, ...chromosomeInfo.map((chromo) => chromo.end)],
           tickSize: 16,
-          tickFormat: (v) => "",
+          tickFormat: (_v) => "",
         }),
         PlotLib.ruleY([0], {
           stroke: "#888",

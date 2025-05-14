@@ -20,7 +20,7 @@ const alphaFoldResultsStem = "https://alphafold.ebi.ac.uk/api/prediction/";
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
 
-function getSegments(id, chainsAndPositions) {
+function getSegments(_id, chainsAndPositions) {
   const printChains = [];
   const printSegments = [];
   const details = {};
@@ -408,7 +408,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
             console.error(`Response status (CIF request): ${response.status}`);
             showLoadingMessage("Failed to download structure data");
           } else {
-            let data, parsedCif;
+            let data;
+            let parsedCif;
             try {
               data = await response.text();
               parsedCif = parseCif(data)[selectedStructure.id];
@@ -637,8 +638,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 mt={0.75}
                 mb={1}
               >
-                <Typography variant="subtitle2" component="span"></Typography>
-                <Typography variant="body2" component="span"></Typography>
+                <Typography variant="subtitle2" component="span" />
+                <Typography variant="body2" component="span" />
               </Box>
               <Box position="relative" display="flex" justifyContent="center" pb={2}>
                 <Box ref={viewerRef} position="relative" width="100%" height="400px">

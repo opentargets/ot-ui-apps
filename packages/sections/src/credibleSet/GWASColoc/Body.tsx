@@ -145,14 +145,14 @@ const columns = [
     filterValue: ({ betaRatioSignAverage }) => {
       if (betaRatioSignAverage == null) return null;
       if (betaRatioSignAverage <= -0.99) return "Opposite";
-      else if (betaRatioSignAverage >= 0.99) return "Same";
+      if (betaRatioSignAverage >= 0.99) return "Same";
       return "Inconclusive";
     },
     sortable: false,
     exportValue: ({ betaRatioSignAverage }) => {
       if (betaRatioSignAverage == null) return null;
       if (betaRatioSignAverage <= -0.99) return "Opposite";
-      else if (betaRatioSignAverage >= 0.99) return "Same";
+      if (betaRatioSignAverage >= 0.99) return "Same";
       return "Inconclusive";
     },
   },

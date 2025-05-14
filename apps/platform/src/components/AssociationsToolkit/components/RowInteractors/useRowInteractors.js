@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   INTERACTORS_SOURCES,
   getAssociationsData,
@@ -6,11 +5,12 @@ import {
   getInteractorIds,
 } from "../../associationsUtils";
 
-import DiseaseAssociationsQuery from "../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
+import { useEffect, useState } from "react";
 import InteractionsQuery from "./InteractorsQuery.gql";
 
 const INITIAL_ROW_COUNT = 8;
 
+import DiseaseAssociationsQuery from "../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
 const INITIAL_USE_ASSOCIATION_STATE = {
   loading: true,
   error: false,

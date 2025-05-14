@@ -55,7 +55,7 @@ function SectionItem({
   const shortName = createShortName(definition);
   let hasData = false;
   const [selectedView, setSelectedView] = useState(defaultView);
-  const [showDelayLoadingMessage, setShowDelayLoadingMessage] = useState(false);
+  const [showDelayLoadingMessage, _setShowDelayLoadingMessage] = useState(false);
 
   // TODO: refactor to avoid re-renders
 

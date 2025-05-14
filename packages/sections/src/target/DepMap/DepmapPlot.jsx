@@ -142,7 +142,7 @@ function DepmapPlot({ data, width }) {
     return () => chart.remove();
   }, [data, width]);
 
-  return <Box ref={headerRef}></Box>;
+  return <Box ref={headerRef} />;
 }
 
 export default Wrapper;

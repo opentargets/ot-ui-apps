@@ -24,7 +24,8 @@ function Header({
   diseases,
   projectId,
 }: HeaderProps) {
-  let traitLinks, sourceLink;
+  let traitLinks;
+  let sourceLink;
   if (projectId === "GCST") {
     if (diseases?.length) {
       traitLinks = (

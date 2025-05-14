@@ -43,7 +43,7 @@ function AggregationItem({
   const colsCont = dataset[aggregation].length;
   const style = {
     gridColumn: `span ${colsCont}`,
-    gridRow: `row1-start / 2`,
+    gridRow: "row1-start / 2",
   };
   const isActive = active === aggregation || open;
   const className = `aggregation-indicator ${isActive && "active"} clickAble`;

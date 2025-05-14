@@ -146,12 +146,12 @@ const FileExample = ({ entity = "target", runAction }) => {
   const [open, setExpanded] = useState(false);
   const [fileType, setFileType] = useState("text");
 
-  const handleFileTypeChange = (event, newFileType) => {
+  const handleFileTypeChange = (_event, newFileType) => {
     setFileType(newFileType);
   };
 
   const handleChange = () => {
-    setExpanded(open ? false : true);
+    setExpanded(!open);
   };
 
   function handleClickRun() {
@@ -311,7 +311,7 @@ function DataUploader({ parentAction }) {
       );
     }
 
-    const terms = data.map((item) => item["id"]);
+    const terms = data.map((item) => item.id);
     return terms;
   }
 
@@ -470,14 +470,12 @@ function DataUploader({ parentAction }) {
           </Box>
 
           {activeStep === 0 && (
-            <>
-              <StyledContainer>
-                <div {...getRootProps({ className: "dropzone" })}>
-                  <input {...getInputProps()} />
-                  <p>Drag and drop a file here, or click to select file (see example format).</p>
-                </div>
-              </StyledContainer>
-            </>
+            <StyledContainer>
+              <div {...getRootProps({ className: "dropzone" })}>
+                <input {...getInputProps()} />
+                <p>Drag and drop a file here, or click to select file (see example format).</p>
+              </div>
+            </StyledContainer>
           )}
           {activeStep === 1 && (
             <Box>

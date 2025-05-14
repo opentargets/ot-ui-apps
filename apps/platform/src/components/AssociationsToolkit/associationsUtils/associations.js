@@ -72,7 +72,9 @@ export const getDataSourcesData = (data) => {
  * @returns {Object} Metadata object containing target symbol, disease name, and ID.
  */
 export const getDataRowMetadata = (parentEntity, row, fixedEntity) => {
-  let targetSymbol, diseaseName, id;
+  let targetSymbol;
+  let diseaseName;
+  let id;
   switch (fixedEntity) {
     case ENTITIES.DISEASE:
       id = row.target.id;

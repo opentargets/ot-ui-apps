@@ -36,13 +36,13 @@ const columns = [
     enableHiding: false,
     renderCell: ({ phenotypeEFO, phenotypeHPO }) => {
       let content;
-      if (phenotypeEFO && phenotypeEFO.id) {
+      if (phenotypeEFO?.id) {
         content = (
           <Link asyncTooltip to={`/disease/${phenotypeEFO.id}`}>
             {phenotypeHPO.name}
           </Link>
         );
-      } else if (phenotypeHPO && phenotypeHPO.name) content = phenotypeHPO.name;
+      } else if (phenotypeHPO?.name) content = phenotypeHPO.name;
       else content = naLabel;
 
       return phenotypeHPO?.description ? (
@@ -92,7 +92,7 @@ const columns = [
     id: "frequency",
     label: "Frequency",
     renderCell: ({ evidence }) => {
-      if (evidence.frequencyHPO && evidence.frequencyHPO.id && evidence.frequencyHPO.name)
+      if (evidence.frequencyHPO?.id && evidence.frequencyHPO.name)
         return (
           <Link
             external
@@ -101,7 +101,7 @@ const columns = [
             {evidence.frequencyHPO.name}
           </Link>
         );
-      if (evidence.frequencyHPO && evidence.frequencyHPO.name) return evidence.frequencyHPO.name;
+      if (evidence.frequencyHPO?.name) return evidence.frequencyHPO.name;
       return naLabel;
     },
     filterValue: (row) => row.evidence.frequencyHPO?.name || naLabel,

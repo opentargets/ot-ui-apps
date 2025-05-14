@@ -83,7 +83,7 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={(data) => (
+      renderBody={(_data) => (
         <OtTable
           columns={columns}
           dataDownloader

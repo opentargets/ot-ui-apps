@@ -13,7 +13,7 @@ function formatVariantConsequenceLabel(label) {
 }
 
 function isNumber(value: any): boolean {
-  return typeof value === "number" && isFinite(value);
+  return typeof value === "number" && Number.isFinite(value);
 }
 
 const columns = [

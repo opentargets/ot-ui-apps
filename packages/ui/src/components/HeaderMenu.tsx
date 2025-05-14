@@ -81,7 +81,6 @@ function HeaderMenu({ items, placement }: HeaderMenuProps): ReactElement {
       <Popper
         open={isMenuOpen}
         anchorEl={anchorEl}
-        role={undefined}
         transition
         // disablePortal
         placement={placement || "bottom-start"}

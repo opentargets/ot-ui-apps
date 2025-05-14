@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 type LinkProptypes = {
   className?: string;
   to: string;
-  onClick?: () => void | null;
+  onClick?: () => undefined | null;
   external?: boolean;
   newTab?: boolean;
   footer?: boolean;

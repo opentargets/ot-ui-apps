@@ -75,7 +75,7 @@ function OtTableColumnFilter({ column }: { column: Column<any, unknown> }): Reac
                 variant="standard"
                 value={columnFilterInputValue}
                 onChange={(e) => setColumnFilterInputValue(e.target.value)}
-                placeholder={`Search..`}
+                placeholder={"Search.."}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">

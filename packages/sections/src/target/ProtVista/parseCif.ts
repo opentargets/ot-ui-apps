@@ -141,7 +141,6 @@ export function parseCif(cifString: string) {
       // must be values since know line does not start with "_" or "loop_"
       loopRow.push(...splitLoopValues(line));
       addLoopRowIfComplete();
-      continue;
     }
   }
 

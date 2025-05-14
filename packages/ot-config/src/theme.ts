@@ -155,7 +155,7 @@ const themeOptions: ThemeOptions = {
           props: { variant: "aotf" },
           style: {
             root: {
-              backgroundColor: `red`,
+              backgroundColor: "red",
               color: "#fff",
             },
           },

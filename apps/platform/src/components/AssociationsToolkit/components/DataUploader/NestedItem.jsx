@@ -10,31 +10,28 @@ function LABEL_ELEMENT(children) {
 }
 
 const NestedItem = ({ children, hits, term, handleParentChange, handleChangeChildCheckbox }) => {
-  const [childrenCheckbox, setChildrenCheckbox] = useState(hits);
+  const [childrenCheckbox, _setChildrenCheckbox] = useState(hits);
   return (
     <List sx={{ mx: 1.5 }}>
-      {childrenCheckbox.length === 1 && (
-        <>
-          {childrenCheckbox.map((hit) => (
-            <Box key={hit.id}>
-              <FormControlLabel
-                label={
-                  <>
-                    {" "}
-                    {LABEL_ELEMENT(children)} - {hit.name || hit.id}{" "}
-                  </>
-                }
-                control={
-                  <Checkbox
-                    checked={hit.checked}
-                    onChange={() => handleChangeChildCheckbox(hit.id)}
-                  />
-                }
-              />
-            </Box>
-          ))}
-        </>
-      )}
+      {childrenCheckbox.length === 1 &&
+        childrenCheckbox.map((hit) => (
+          <Box key={hit.id}>
+            <FormControlLabel
+              label={
+                <>
+                  {" "}
+                  {LABEL_ELEMENT(children)} - {hit.name || hit.id}{" "}
+                </>
+              }
+              control={
+                <Checkbox
+                  checked={hit.checked}
+                  onChange={() => handleChangeChildCheckbox(hit.id)}
+                />
+              }
+            />
+          </Box>
+        ))}
 
       {childrenCheckbox.length > 1 && (
         <>
@@ -67,12 +64,10 @@ const NestedItem = ({ children, hits, term, handleParentChange, handleChangeChil
         </>
       )}
       {childrenCheckbox.length <= 0 && (
-        <>
-          <FormControlLabel
-            label={LABEL_ELEMENT(children)}
-            control={<Checkbox checked={false} disabled />}
-          />
-        </>
+        <FormControlLabel
+          label={LABEL_ELEMENT(children)}
+          control={<Checkbox checked={false} disabled />}
+        />
       )}
     </List>
   );

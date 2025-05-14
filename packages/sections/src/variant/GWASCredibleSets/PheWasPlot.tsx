@@ -257,7 +257,7 @@ function renderChart({
         x1: (d) => d[1].start,
         x2: (d) => d[1].end,
         y: yMax,
-        stroke: (d, i) => palette[i],
+        stroke: (_d, i) => palette[i],
       }),
 
       // y-axis
@@ -281,7 +281,7 @@ function renderChart({
         textAnchor: "start",
         lineAnchor: "top",
         rotate: 45,
-        fill: (d, i) => palette[i],
+        fill: (_d, i) => palette[i],
       }),
 
       // standard marks

@@ -74,7 +74,7 @@ const getColumns = (label) => [
   {
     id: "directionOfVariantEffect",
     label: (
-      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#orphanet"></DirectionOfEffectTooltip>
+      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#orphanet" />
     ),
     renderCell: ({ variantEffect, directionOnTrait }) => {
       return (

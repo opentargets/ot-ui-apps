@@ -236,7 +236,7 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
     }
 
     default: {
-      throw Error("Unknown action: " + action.type);
+      throw Error(`Unknown action: ${action.type}`);
     }
   }
 }
@@ -347,7 +347,8 @@ function handleSetInteractorsOn(focusState: FocusState, action: FocusAction): Fo
         ...element,
         interactors: true,
       };
-    } else if (element.table === table && element.section) {
+    }
+    if (element.table === table && element.section) {
       // Update other elements in same table with sections
       return {
         ...element,

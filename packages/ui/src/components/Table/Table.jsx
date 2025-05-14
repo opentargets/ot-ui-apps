@@ -75,7 +75,7 @@ const Table = ({
     setSelectedRow(0);
     onPageChange(page);
   };
-  const handleClick = (event, row, i) => {
+  const handleClick = (_event, row, i) => {
     setSelectedRow(i);
     onRowClick(row, i);
   };

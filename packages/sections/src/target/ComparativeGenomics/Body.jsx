@@ -122,13 +122,13 @@ function getColumns(classes) {
     },
     {
       id: "queryPercentageIdentity",
-      label: `Query %id`,
+      label: "Query %id",
       renderCell: ({ queryPercentageIdentity }) =>
         queryPercentageIdentity ? queryPercentageIdentity.toFixed(decimalPlaces) : "N/A",
     },
     {
       id: "targetPercentageIdentity",
-      label: `Target %id`,
+      label: "Target %id",
       renderCell: ({ targetPercentageIdentity }) =>
         targetPercentageIdentity ? targetPercentageIdentity.toFixed(decimalPlaces) : "N/A",
     },

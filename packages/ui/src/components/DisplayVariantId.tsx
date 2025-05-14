@@ -57,7 +57,8 @@ function DisplayVariantId({
   if (idParts[0] === "OTVAR") {
     idParts.shift();
   }
-  let isHashed, stem;
+  let isHashed;
+  let stem;
   if (idParts.at(-2) === referenceAllele && idParts.at(-1) === alternateAllele) {
     isHashed = false;
     stem = idParts.slice(0, -2).join("_");

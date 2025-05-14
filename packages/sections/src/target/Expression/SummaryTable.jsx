@@ -114,7 +114,7 @@ function SummaryTable({ data }) {
   const parents = sort(groupTissues(data, groupBy), sortBy);
 
   // handlers
-  const handleChange = (e, group) => {
+  const handleChange = (_e, group) => {
     if (group) {
       setGroupBy(group);
     }

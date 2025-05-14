@@ -20,13 +20,9 @@ const columns = [
     renderCell: ({ assessment, assessmentFlag }) =>
       assessmentFlag ? (
         <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2" display="block" align="center">
-                Flag: {assessmentFlag}
-              </Typography>
-            </>
-          }
+          title=<Typography variant="subtitle2" display="block" align="center">
+            Flag: {assessmentFlag}
+          </Typography>
           showHelpIcon
         >
           {assessment ?? naLabel}

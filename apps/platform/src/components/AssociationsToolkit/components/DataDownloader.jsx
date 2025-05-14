@@ -52,7 +52,8 @@ const { isPartnerPreview } = config.profile;
 const dataSources = OriginalDataSources.filter((e) => {
   if (isPartnerPreview && e.isPrivate) {
     return e;
-  } else if (!e.isPrivate) return e;
+  }
+  if (!e.isPrivate) return e;
   return;
 });
 
@@ -121,7 +122,7 @@ const initialState = {
   selectedPrioritisationAggregationColumnObjectValue: [...prioritizationCols],
 };
 
-const reducer = (state = initialState, action) => {
+const reducer = (state, action) => {
   switch (action.type) {
     case "UPDATE_ASSOCIATION_COLUMNS":
       return {
@@ -181,7 +182,7 @@ function DataDownloader() {
   const [onlyPinnedCheckBox, setOnlyPinnedCheckBox] = useState(false);
   const [weightControlCheckBox, setWeightControlCheckBox] = useState(modifiedSourcesDataControls);
   const [onlyTargetData, setOnlyTargetData] = useState(false);
-  const client = useApolloClient();
+  const _client = useApolloClient();
 
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -249,7 +250,7 @@ function DataDownloader() {
   );
 
   const open = Boolean(anchorEl);
-  const popoverId = open ? "downloader-popover" : undefined;
+  const _popoverId = open ? "downloader-popover" : undefined;
 
   const downloadData = async (format, dataColumns, rows, dataFileStem) => {
     let allRows = rows;

@@ -140,7 +140,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
         const bPosterior = rowB?.posteriorProbability;
         if (aPosterior === bPosterior) {
           if (rowA?.variant.id === leadVariantId) return 1;
-          else if (rowB?.variant.id === leadVariantId) return -1;
+          if (rowB?.variant.id === leadVariantId) return -1;
           return 0;
         }
         return aPosterior - bPosterior;

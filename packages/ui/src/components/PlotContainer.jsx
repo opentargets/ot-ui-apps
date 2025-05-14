@@ -38,7 +38,7 @@ function PlotContainer({ loading, error, left, center, right, children }) {
         <PlotContainerSection>
           <div>
             <Typography variant="subtitle1" color="error">
-              {error.graphQLErrors.map(({ message }, i) => (
+              {error.graphQLErrors.map(({ message }, _i) => (
                 <span key={v1()}>{message}</span>
               ))}
             </Typography>

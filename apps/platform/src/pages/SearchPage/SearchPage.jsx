@@ -52,13 +52,13 @@ function SearchPage() {
     };
   }, [q, page, entities]);
 
-  const handleChangePage = (event, pageChanged) => {
+  const handleChangePage = (_event, pageChanged) => {
     const params = { q, page: pageChanged + 1, entities };
     const qs = queryString.stringify(params, QS_OPTIONS);
     navigate(`/search?${qs}`);
   };
 
-  const handleSetEntity = (entity) => (event, checked) => {
+  const handleSetEntity = (entity) => (_event, checked) => {
     const params = {
       q,
       page: 1, // reset to page 1

@@ -205,7 +205,7 @@ function Body({ id: chemblId, label: name, entity }) {
       tooltip: (
         <>
           As defined by
-          <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
+          <Link external to={"https://www.pharmgkb.org/page/clinAnnLevels"}>
             {" "}
             PharmGKB ClinAnn Levels
           </Link>

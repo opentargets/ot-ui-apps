@@ -80,7 +80,7 @@ export const containsObject = (obj, list) => {
 export const addSearchToLocalStorage = (item) => {
   const recentItems = JSON.parse(localStorage.getItem("search-history")) || [];
   const newItem = { ...item };
-  delete newItem.description;
+  newItem.description = undefined;
   const existingIndex = containsObject(newItem, recentItems);
 
   if (existingIndex >= 0) {

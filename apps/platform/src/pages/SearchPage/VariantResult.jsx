@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 function VariantResult({ data, highlights }) {
   const classes = useStyles();
-  const theme = useTheme();
+  const _theme = useTheme();
 
   return (
     <div className={classes.container}>

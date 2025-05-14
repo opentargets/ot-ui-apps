@@ -141,7 +141,7 @@ function OtTable({
     onRowSelectionChange: setRowSelection,
   });
 
-  function onRowSelection(e: any, row: Row<any>) {
+  function onRowSelection(_e: any, row: Row<any>) {
     enableRowSelection && row.toggleSelected();
   }
 

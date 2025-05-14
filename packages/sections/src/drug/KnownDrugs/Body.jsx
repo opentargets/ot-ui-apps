@@ -6,7 +6,7 @@ import { useState } from "react";
 import { KnownDrugsSourceDrawer, Link, OtTableSSP, SectionItem } from "ui";
 import KNOWN_DRUGS_BODY_QUERY from "./KnownDrugsQuery.gql";
 
-function getColumnPool(id, entity) {
+function getColumnPool(_id, _entity) {
   return [
     {
       label: "Disease information",

@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync } from "node:child_process";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import viteCompression from "vite-plugin-compression";
@@ -8,7 +8,7 @@ import svgrPlugin from "vite-plugin-svgr";
 const getGitVersion = () => {
   try {
     return execSync("git describe --tags --always").toString().trim();
-  } catch (error) {
+  } catch (_error) {
     return "unknown";
   }
 };

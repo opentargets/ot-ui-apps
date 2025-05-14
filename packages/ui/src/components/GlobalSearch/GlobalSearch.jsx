@@ -13,7 +13,7 @@ const SearchButton = styled("button")(({ theme, isHomePage = false }) => ({
   background: isHomePage ? "#F0F0F0" : theme.palette.secondary.main,
   color: isHomePage ? "inherit" : "white",
   borderRadius: theme.spacing(0.6),
-  border: isHomePage ? `1px solid #F0F0F0` : `1px solid ${theme.palette.secondary.main}`,
+  border: isHomePage ? "1px solid #F0F0F0" : `1px solid ${theme.palette.secondary.main}`,
   padding: isHomePage ? theme.spacing(1) : theme.spacing(0.3),
 }));
 
@@ -74,7 +74,7 @@ function GlobalSearch({ isHomePage }) {
               typography: "caption",
               fontWeight: "bold",
               color: (theme) => (isHomePage ? theme.palette.text : "white"),
-              backgroundColor: (theme) => (isHomePage ? "#CECECE" : "#235d89"),
+              backgroundColor: (_theme) => (isHomePage ? "#CECECE" : "#235d89"),
               padding: (theme) => `${theme.spacing(0.2)} ${theme.spacing(1)}`,
               borderRadius: (theme) => theme.spacing(0.4),
             }}

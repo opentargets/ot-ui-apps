@@ -77,7 +77,7 @@ function ContainedInDrawer({
   function getCommands() {
     if (location === "ftp-location")
       return <FtpLocation link={link} version={version} path={path} />;
-    else if (location === "gcp-location") return <GcpLocation link={link} />;
+    if (location === "gcp-location") return <GcpLocation link={link} />;
     return <>Invalid path</>;
   }
 

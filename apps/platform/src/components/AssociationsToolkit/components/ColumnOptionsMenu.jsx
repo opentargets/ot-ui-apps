@@ -14,7 +14,7 @@ const StyledBotton = styled(Button)({
   },
 });
 
-const PopoverContent = styled("div")({
+const _PopoverContent = styled("div")({
   padding: "15px",
 });
 

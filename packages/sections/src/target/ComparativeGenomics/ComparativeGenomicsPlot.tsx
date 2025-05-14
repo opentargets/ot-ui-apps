@@ -73,7 +73,7 @@ function Wrapper({ homologues, viewMode, loading, query, variables, columns }) {
         </Typography>
       )}
       <Box sx={{ width: "95%", margin: "0 auto", position: "relative" }} ref={ref}>
-        <div style={{ height: 0 }} id={TOOLTIP_ID}></div>
+        <div style={{ height: 0 }} id={TOOLTIP_ID} />
         <Visualisation homologues={homologues} width={width} viewMode={viewMode} />
       </Box>
     </Box>
@@ -291,7 +291,7 @@ function Visualisation({ homologues, width, viewMode }) {
       .attr("cy", (d) => y(d.speciesId))
       .attr("r", dotDefaultRadious)
       .attr("class", (d) => `${d.targetGeneId}_${d.speciesId}`)
-      .attr("id", (d, i) => i)
+      .attr("id", (_d, i) => i)
       .attr("fill-opacity", dotDefaultOpacity)
       .attr("fill", theme.palette.primary.main)
       .attr("stroke", theme.palette.primary.dark)
@@ -322,12 +322,12 @@ function Visualisation({ homologues, width, viewMode }) {
       queryContainer
         .selectAll("circle")
         .attr("fill", (d) =>
-          d.queryPercentageIdentity > 80 && d.speciesId == "10090"
+          d.queryPercentageIdentity > 80 && d.speciesId === "10090"
             ? theme.palette.primary.main
             : grey[300]
         )
         .attr("stroke", (d) =>
-          d.queryPercentageIdentity > 80 && d.speciesId == "10090"
+          d.queryPercentageIdentity > 80 && d.speciesId === "10090"
             ? theme.palette.primary.dark
             : grey[300]
         );
@@ -351,12 +351,12 @@ function Visualisation({ homologues, width, viewMode }) {
         .selectAll("circle")
         // .transition(300)
         .attr("fill", (d) =>
-          d.queryPercentageIdentity > 60 && d.speciesId == "9606"
+          d.queryPercentageIdentity > 60 && d.speciesId === "9606"
             ? theme.palette.primary.main
             : grey[300]
         )
         .attr("stroke", (d) =>
-          d.queryPercentageIdentity > 60 && d.speciesId == "9606"
+          d.queryPercentageIdentity > 60 && d.speciesId === "9606"
             ? theme.palette.primary.dark
             : grey[300]
         );
@@ -381,7 +381,7 @@ function Visualisation({ homologues, width, viewMode }) {
     };
   }, [homologues, width, viewMode]);
 
-  return <div ref={containerReference}></div>;
+  return <div ref={containerReference} />;
 }
 
 export default Wrapper;

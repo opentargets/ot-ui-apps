@@ -13,7 +13,7 @@ const xrefsToDisplay = {
   },
   protvar: {
     label: "ProtVar",
-    urlBuilder: (id, { chromosome, position, referenceAllele, alternateAllele }) =>
+    urlBuilder: (_id, { chromosome, position, referenceAllele, alternateAllele }) =>
       `https://www.ebi.ac.uk/ProtVar/query?chromosome=${chromosome}&genomic_position=${position}&reference_allele=${referenceAllele}&alternative_allele=${alternateAllele}`,
   },
   clinvar: {
@@ -64,23 +64,19 @@ function Header({ loading, variantId, variantPageData }: HeaderProps) {
         />
       }
       Icon={faMapPin}
-      externalLinks={
-        <>
-          {Object.keys(xrefs).map((xref) => {
-            const { label, urlBuilder, urlStem, ids } = xrefs[xref];
-            return (
-              <XRefLinks
-                key={xref}
-                label={label}
-                urlStem={urlStem}
-                urlBuilder={urlBuilder ? (id) => urlBuilder(id, variantPageData) : null}
-                ids={[...ids]}
-                limit="3"
-              />
-            );
-          })}
-        </>
-      }
+      externalLinks={Object.keys(xrefs).map((xref) => {
+        const { label, urlBuilder, urlStem, ids } = xrefs[xref];
+        return (
+          <XRefLinks
+            key={xref}
+            label={label}
+            urlStem={urlStem}
+            urlBuilder={urlBuilder ? (id) => urlBuilder(id, variantPageData) : null}
+            ids={[...ids]}
+            limit="3"
+          />
+        );
+      })}
     />
   );
 }

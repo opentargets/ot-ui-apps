@@ -151,7 +151,7 @@ export const prioritizationScale = prioritizationScaleDomain.range(PRIORITISATIO
 /* LEGENDS */
 const PrioritisationLegend = Legend(prioritizationScale, {
   title: PRIORITISATION_LEGEND_LABEL,
-  tickFormat: (d, i) =>
+  tickFormat: (_d, i) =>
     [
       TARGE_PRIORITISATION_LEGEND_TICKS[0],
       " ",

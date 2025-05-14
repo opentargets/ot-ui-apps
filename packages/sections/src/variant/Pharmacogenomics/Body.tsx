@@ -172,7 +172,7 @@ function Body({ id, entity }: BodyProps) {
       tooltip: (
         <>
           As defined by
-          <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
+          <Link external to={"https://www.pharmgkb.org/page/clinAnnLevels"}>
             {" "}
             PharmGKB ClinAnn Levels
           </Link>

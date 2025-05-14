@@ -74,7 +74,7 @@ class Section extends Component {
     this.getData();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_prevProps, prevState) {
     // If a chip has been added or removed, fetch new data
     const { selected } = this.state;
     if (selected.length !== prevState.selected.length) {
@@ -87,7 +87,7 @@ class Section extends Component {
   }
 
   // Handler for drop down menu
-  aggtypeFilterHandler = (e, selection) => {
+  aggtypeFilterHandler = (_e, selection) => {
     this.setState({ selectedAggregation: selection });
   };
 
@@ -170,7 +170,7 @@ class Section extends Component {
   deselectChip = (index) => {
     const { selected } = this.state;
     if (index < selected.length) {
-      this.setState({ selected: selected.filter((sel, i) => i !== index) });
+      this.setState({ selected: selected.filter((_sel, i) => i !== index) });
     }
   };
 
@@ -257,7 +257,7 @@ class Section extends Component {
               </Box>
               <Box>
                 {aggregations[selectedAggregation.value]
-                  ? aggregations[selectedAggregation.value].buckets.map((agg, i) => (
+                  ? aggregations[selectedAggregation.value].buckets.map((agg, _i) => (
                       <Chip
                         key={v1()}
                         variant="outlined"
@@ -284,7 +284,7 @@ class Section extends Component {
                 alignItems="stretch"
                 spacing={2}
               >
-                {hits.map((hitItem, i) => (
+                {hits.map((hitItem, _i) => (
                   <Grid item xs={12} key={hitItem._source.pub_id}>
                     <Publication
                       pmId={hitItem._source.pub_id}

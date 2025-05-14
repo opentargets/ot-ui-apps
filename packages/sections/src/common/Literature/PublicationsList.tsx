@@ -190,24 +190,24 @@ function PublicationsList({ hideSearch = false }) {
         const det = details[id];
         if (det === "loading") {
           return <SkeletonRow />;
-        } else if (!det) {
-          return null;
-        } else {
-          return (
-            <PublicationWrapper
-              europePmcId={det.europePmcId}
-              title={det.title}
-              titleHtml={det.titleHtml}
-              authors={det.authors}
-              journal={det.journal}
-              variant={det.variant}
-              abstract={det.abstract}
-              fullTextOpen={det.fullTextOpen}
-              source={det.source}
-              patentDetails={det.patentDetails}
-            />
-          );
         }
+        if (!det) {
+          return null;
+        }
+        return (
+          <PublicationWrapper
+            europePmcId={det.europePmcId}
+            title={det.title}
+            titleHtml={det.titleHtml}
+            authors={det.authors}
+            journal={det.journal}
+            variant={det.variant}
+            abstract={det.abstract}
+            fullTextOpen={det.fullTextOpen}
+            source={det.source}
+            patentDetails={det.patentDetails}
+          />
+        );
       },
       filterValue: ({ row: publication }) =>
         `${publication.journal.journal?.title} ${publication?.title} ${publication?.year}

@@ -89,7 +89,7 @@ function LocationsList({ sls }) {
  */
 function SubcellularVizTabs({ sources: activeSources, children }) {
   const [activeTab, setActiveTab] = useState(0);
-  const onTabChange = (event, tabId) => {
+  const onTabChange = (_event, tabId) => {
     setActiveTab(tabId);
   };
   useEffect(() => {

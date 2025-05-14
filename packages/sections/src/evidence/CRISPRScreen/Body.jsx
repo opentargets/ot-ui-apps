@@ -36,7 +36,7 @@ const getColumns = (label) => [
         </Link>
       );
     },
-    filterValue: (row) => row.diseaseFromSource + ", " + row.diseaseFromSourceMappedId,
+    filterValue: (row) => `${row.diseaseFromSource}, ${row.diseaseFromSourceMappedId}`,
   },
   {
     id: "studyId",
@@ -69,13 +69,15 @@ const getColumns = (label) => [
             </span>
           </Tooltip>
         );
-      } else if (row.contrast) {
+      }
+      if (row.contrast) {
         return <span>{row.contrast}</span>;
-      } else if (overview) {
+      }
+      if (overview) {
         return <span>{overview}</span>;
       }
     },
-    filterValue: (row) => row.contrast + "; " + row.studyOverview,
+    filterValue: (row) => `${row.contrast}; ${row.studyOverview}`,
   },
   {
     id: "cellType",
@@ -110,9 +112,8 @@ const getColumns = (label) => [
             <span>{Number.parseFloat(row.resourceScore.toFixed(6))}</span>
           </Tooltip>
         );
-      } else {
-        return row.resourceScore ? Number.parseFloat(row.resourceScore.toFixed(6)) : naLabel;
       }
+      return row.resourceScore ? Number.parseFloat(row.resourceScore.toFixed(6)) : naLabel;
     },
     filterValue: (row) =>
       `${Number.parseFloat(row.resourceScore?.toFixed(6))} ${row.statisticalTestTail}`,

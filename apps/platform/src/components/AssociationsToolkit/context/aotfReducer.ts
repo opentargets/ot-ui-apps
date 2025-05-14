@@ -47,8 +47,8 @@ export function createInitialState({ parentEntity, parentId, query }: InitialSta
   return state;
 }
 
-export function aotfReducer(state: State = initialState, action: Action): State {
-  if (typeof state === undefined) {
+export function aotfReducer(state: State, action: Action): State {
+  if (typeof state === "undefined") {
     throw Error("State provied to aotfReducer is undefined");
   }
   switch (action.type) {
@@ -158,7 +158,7 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       };
     }
     default: {
-      throw Error("Unknown action: " + action);
+      throw Error(`Unknown action: ${action}`);
       return state;
     }
   }

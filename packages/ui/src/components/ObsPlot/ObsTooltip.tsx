@@ -33,7 +33,9 @@ function ObsTooltip({
   const x = chart.scale("x").apply(xAccessor(datum));
   const y = chart.scale("y").apply(yAccessor(datum));
 
-  let left, right, transformX;
+  let left;
+  let right;
+  let transformX;
   if (xAnchor === "plotLeft") {
     left = 0;
   } else if (xAnchor === "plotRight") {
@@ -47,7 +49,9 @@ function ObsTooltip({
     right = width - x + dx;
   }
 
-  let top, bottom, transformY;
+  let top;
+  let bottom;
+  let transformY;
   if (yAnchor === "plotTop") {
     top = 0;
   } else if (yAnchor === "plotBottom") {

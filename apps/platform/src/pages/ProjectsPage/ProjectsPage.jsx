@@ -57,7 +57,7 @@ function ProjectPage() {
       renderCell: ({ disease_mapping: diseaseMapping }) => {
         const ALL_AVATARS = [];
         diseaseMapping.forEach((disease) => {
-          if (disease && disease.disease_id) {
+          if (disease?.disease_id) {
             ALL_AVATARS.push(
               <Link to={`disease/${disease.disease_id}`} key={disease.disease_id}>
                 <Chip

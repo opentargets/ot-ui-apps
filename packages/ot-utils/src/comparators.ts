@@ -99,9 +99,9 @@ export function variantComparator(accessor: (arg: any) => VariantType = (d) => d
     if (positionDiff !== 0) return positionDiff;
 
     if (v1.referenceAllele < v2.referenceAllele) return -1;
-    else if (v1.referenceAllele > v2.referenceAllele) return 1;
-    else if (v1.alternateAllele < v2.alternateAllele) return -1;
-    else if (v1.alternateAllele > v2.alternateAllele) return 1;
+    if (v1.referenceAllele > v2.referenceAllele) return 1;
+    if (v1.alternateAllele < v2.alternateAllele) return -1;
+    if (v1.alternateAllele > v2.alternateAllele) return 1;
 
     return 0;
   };

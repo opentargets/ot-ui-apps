@@ -156,7 +156,7 @@ function getColumns(classes) {
                 </Link>
               </Box>
             );
-          else return el.drugFromSource || el.drugId;
+          return el.drugFromSource || el.drugId;
         });
       },
       filterValue: ({ drugId, drugFromSource }) => `${drugFromSource} ${drugId}`,
@@ -209,7 +209,7 @@ function getColumns(classes) {
       tooltip: (
         <>
           As defined by
-          <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
+          <Link external to={"https://www.pharmgkb.org/page/clinAnnLevels"}>
             {" "}
             PharmGKB ClinAnn Levels
           </Link>

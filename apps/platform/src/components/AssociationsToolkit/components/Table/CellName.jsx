@@ -145,7 +145,7 @@ function CellName({ cell, colorScale }) {
     setOpenContext(false);
   };
 
-  const handleClickInteractorsOff = () => {
+  const _handleClickInteractorsOff = () => {
     dispatch({
       type: FocusActionType.SET_INTERACTORS_OFF,
       focus: {

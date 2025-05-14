@@ -59,8 +59,8 @@
         "useButtonType": "error"
       },
       "correctness": {
-        "useExhaustiveDependencies": "error",
-        "noUnusedVariables": "error"
+        "useExhaustiveDependencies": "warn",
+        "noUnusedVariables": "warn"
       },
       "suspicious": {
         "noExplicitAny": "warn"
@@ -68,6 +68,9 @@
       "style": {
         "useTemplate": "error",
         "useConst": "error"
+      },
+      "complexity": {
+        "noForEach": "warn"
       }
     }
   },

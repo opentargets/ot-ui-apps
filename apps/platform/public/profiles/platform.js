@@ -1,5 +1,5 @@
 // Configuration Object
-var configProfile = {
+const _configProfile = {
   /* general items */
 
   documentationUrl: "https://platform-docs.opentargets.org",

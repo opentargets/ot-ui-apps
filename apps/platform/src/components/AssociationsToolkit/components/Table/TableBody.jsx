@@ -20,7 +20,7 @@ const getColContainerClassName = ({ id }) => {
   return "group-entity-cols";
 };
 
-function getIsRowActive(prefix, row, focusState = [], parentRow, parentTable) {
+function getIsRowActive(prefix, row, focusState, parentRow, parentTable) {
   if (prefix === TABLE_PREFIX.INTERACTORS) {
     return focusState.some(
       (entry) =>

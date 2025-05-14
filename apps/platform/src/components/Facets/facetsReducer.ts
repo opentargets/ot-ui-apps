@@ -25,8 +25,8 @@ export function createInitialState(entityToGet: string): FacetState {
   return state;
 }
 
-export function facetsReducer(state: FacetState = initialFacetState, action: Action): FacetState {
-  if (typeof state === undefined) {
+export function facetsReducer(state: FacetState, action: Action): FacetState {
+  if (typeof state === "undefined") {
     throw Error("State provided to facetsReducer is undefined");
   }
   switch (action.type) {
@@ -75,7 +75,7 @@ export function facetsReducer(state: FacetState = initialFacetState, action: Act
       };
     }
     default: {
-      throw Error("Unknown action: " + action);
+      throw Error(`Unknown action: ${action}`);
       return state;
     }
   }

@@ -122,9 +122,9 @@ function Legend(
       .selectAll("rect")
       .data(color.range())
       .join("rect")
-      .attr("x", (d, i) => x(i - 1))
+      .attr("x", (_d, i) => x(i - 1))
       .attr("y", marginTop)
-      .attr("width", (d, i) => x(i) - x(i - 1))
+      .attr("width", (_d, i) => x(i) - x(i - 1))
       .attr("height", height - marginTop - marginBottom)
       .attr("fill", (d) => d);
 

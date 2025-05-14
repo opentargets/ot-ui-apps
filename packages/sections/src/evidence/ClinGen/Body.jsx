@@ -77,7 +77,7 @@ const columns = [
         }
         showHelpIcon
       >
-        {urls && urls[0]?.url ? (
+        {urls?.[0]?.url ? (
           <Link external to={urls[0].url}>
             {confidence}
           </Link>

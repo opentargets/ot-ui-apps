@@ -92,7 +92,7 @@ export function DateFilter() {
   }
 
   function getLowerLimit(earliestDate) {
-    if (filterDate[0] == 0) return 0;
+    if (filterDate[0] === 0) return 0;
     const oldLowerDate = oldSelectedDate(filterDate[0]);
     const newLowerFilter = monthsBtwnDates(earliestDate, oldLowerDate);
     const lowerLimit = newLowerFilter > 0 ? newLowerFilter : 0;

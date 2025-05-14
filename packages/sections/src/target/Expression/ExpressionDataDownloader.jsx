@@ -88,7 +88,7 @@ const downloadTable = async ({ rows: getRows, headerMap, format, filenameStem })
   FileSaver.saveAs(blob, `${filenameStem}.${format}`, { autoBOM: false });
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((_theme) => ({
   container: {
     marginBottom: "2px",
   },

@@ -108,7 +108,7 @@ const columns = [
         <ChipList
           items={significantDriverMethods.map((am) => ({
             label: am,
-            tooltip: (methods[am] || {}).description,
+            tooltip: methods[am]?.description,
           }))}
         />
       ) : (

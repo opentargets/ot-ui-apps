@@ -62,7 +62,7 @@ function EmptyPage({
       >
         <BrokenSearchIcon />
       </div>
-      <div className={`${classes.divider} ${classes.hiddenMobile}`}></div>
+      <div className={`${classes.divider} ${classes.hiddenMobile}`} />
       <div className="message-body-container">
         <Typography variant="h2" className={classes.messageBodyHeader}>
           404: Page not found

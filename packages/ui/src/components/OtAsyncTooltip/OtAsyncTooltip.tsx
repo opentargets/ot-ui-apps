@@ -169,7 +169,7 @@ function AsyncTooltipDataView({
       </Box>
       <Box sx={{ display: "flex", gap: 1, py: 1 }}>
         <Box sx={{ p: 1, color: (theme) => theme.palette.primary.main }}>
-          <FontAwesomeIcon size="2x" icon={getEntityIcon(entity)}></FontAwesomeIcon>
+          <FontAwesomeIcon size="2x" icon={getEntityIcon(entity)} />
         </Box>
         <Box sx={{ pt: 0.4 }}>
           <Box

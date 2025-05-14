@@ -117,7 +117,7 @@ function GlobalSearchList({ inputValue }) {
         setSearchResult({ ...formattedData });
         setLoading(false);
       })
-      .catch((err) => {
+      .catch((_err) => {
         setLoading(false);
       });
   }

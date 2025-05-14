@@ -16,7 +16,7 @@ const PPP_API_URL = "https://api.partner-platform.opentargets.org/api/v4/graphql
 const PPP_WEB_URL = "https://partner-platform.opentargets.org";
 const FOURTEEN = 14;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((_theme) => ({
   paper: {
     padding: "1em 1em 2em",
     borderRadius: "12px",

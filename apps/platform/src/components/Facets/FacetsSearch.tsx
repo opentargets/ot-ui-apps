@@ -104,7 +104,7 @@ function FacetsSearch(): ReactElement {
     dispatch(resetFacets(entityToGet));
   }, [id]);
 
-  const handleOptionSelect = (event, newValue) => {
+  const handleOptionSelect = (_event, newValue) => {
     if (newValue) {
       // Check if the option is already selected to prevent duplicates
       if (!facetFilters.some((option) => option.id === newValue.id)) {
@@ -167,7 +167,7 @@ function FacetsSearch(): ReactElement {
               onOpen={() => setOptionsOpen(true)}
               onClose={() => setOptionsOpen(false)}
               onChange={handleOptionSelect}
-              onInputChange={(event, newInputValue) => {
+              onInputChange={(_event, newInputValue) => {
                 setInputValue(newInputValue);
               }}
               PopperComponent={FacetsPopper}
@@ -181,7 +181,7 @@ function FacetsSearch(): ReactElement {
                       <Typography
                         variant="body2"
                         dangerouslySetInnerHTML={{ __html: option.highlights[0] || option.label }}
-                      ></Typography>
+                      />
                     </FacetListItemLabel>
                     <FacetListItemCategory>
                       <Typography variant="caption">in {option.category}</Typography>

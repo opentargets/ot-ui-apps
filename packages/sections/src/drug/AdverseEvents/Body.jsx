@@ -84,7 +84,7 @@ function Body({ id: chemblId, label: name, entity }) {
         index: newPage,
         size,
       },
-      updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult,
+      updateQuery: (_prev, { fetchMoreResult }) => fetchMoreResult,
     });
   }
 

@@ -20,10 +20,10 @@ function THead({ children }) {
   return (
     <thead>
       <Box component="tr">
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
+        <th />
+        <th />
+        <th />
+        <th />
         <Box
           component="th"
           colSpan="3"
@@ -31,9 +31,9 @@ function THead({ children }) {
         >
           <Typography variant="subtitle2">Colocalisation</Typography>
         </Box>
-        <th></th>
-        <th></th>
-        <th></th>
+        <th />
+        <th />
+        <th />
       </Box>
       <tr>{children}</tr>
     </thead>
@@ -51,11 +51,11 @@ function BodyRow({ row, colorInterpolator, data }) {
     data.rows.find((d) => d.target.id === row.targetId)
   );
 
-  function handleMouseEnter(event) {
+  function handleMouseEnter(_event) {
     setOver(true);
   }
 
-  function handleMouseLeave(event) {
+  function handleMouseLeave(_event) {
     setOver(false);
   }
 
@@ -121,7 +121,7 @@ function HeaderCell({ value, textAlign }) {
     <Box component="th" pt={1}>
       <Typography variant="subtitle2" textAlign={textAlign}>
         {value}{" "}
-        {value == "Score" && (
+        {value === "Score" && (
           <span style={{ color: grey[500] }}>
             <FontAwesomeIcon size="sm" icon={faArrowDownWideShort} />
           </span>
@@ -193,7 +193,7 @@ function HeatCell({ value, bgrd, groupName, mouseLeaveRow, waterfallRow, waterfa
     setAnchorEl(event.currentTarget);
   }
 
-  function handleClose(event) {
+  function handleClose(_event) {
     setAnchorEl(null);
     setPlotProps(null);
     mouseLeaveRow();
@@ -437,7 +437,7 @@ function HeatmapTable({
                 onChange={() => {
                   setShowAll(!showAll);
                 }}
-              ></Checkbox>
+              />
             }
             label={
               <Typography variant="body2">

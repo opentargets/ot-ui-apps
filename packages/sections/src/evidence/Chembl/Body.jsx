@@ -84,7 +84,7 @@ function getColumns(classes) {
               {disease.name}
             </Link>
           );
-        if (cohortPhenotypes && cohortPhenotypes.length) {
+        if (cohortPhenotypes?.length) {
           displayElement = (
             <Tooltip
               showHelpIcon
@@ -197,7 +197,7 @@ function getColumns(classes) {
     {
       id: "directionOfVariantEffect",
       label: (
-        <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#chembl"></DirectionOfEffectTooltip>
+        <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#chembl" />
       ),
       renderCell: ({ variantEffect, directionOnTrait }) => {
         return (

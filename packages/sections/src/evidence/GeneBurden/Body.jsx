@@ -42,8 +42,8 @@ const getSourceLink = (project, targetId, urls) => {
   if (project === "AstraZeneca PheWAS Portal") return urls[0].url;
   if (project === "Autism Sequencing Consortium")
     return `https://asc.broadinstitute.org/gene/${targetId}`;
-  if (project === "AMP-PD") return `https://amp-pd.org/`;
-  if (project === "FinnGen") return `https://r12.finngen.fi/gene/{targetFromSourceId}`;
+  if (project === "AMP-PD") return "https://amp-pd.org/";
+  if (project === "FinnGen") return "https://r12.finngen.fi/gene/{targetFromSourceId}";
   return "";
 };
 
@@ -186,7 +186,7 @@ const getColumns = (label) => [
   {
     id: "directionOfVariantEffect",
     label: (
-      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#gene-burden"></DirectionOfEffectTooltip>
+      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#gene-burden" />
     ),
     renderCell: ({ variantEffect, directionOnTrait }) => {
       return (

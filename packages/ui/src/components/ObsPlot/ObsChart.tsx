@@ -120,7 +120,7 @@ function ObsChart({
     setDatum,
   ]);
 
-  return <Box ref={headerRef}></Box>;
+  return <Box ref={headerRef} />;
 }
 
 export default ObsChart;

@@ -69,7 +69,7 @@ function TableFooter({ table, coreOpen }) {
             nextIconButtonProps={{
               disableFocusRipple: true,
             }}
-            onPageChange={(e, index) => {
+            onPageChange={(_e, index) => {
               if (!loading) {
                 table.setPageIndex(index);
               }

@@ -122,9 +122,8 @@ const FooterSection = ({ heading, links, social, children }: FooterSectionProps)
                 <FooterLink label={link.label} url={link.url} icon={link.icon} />
               </PrivateWrapper>
             );
-          } else {
-            return <FooterLink key={i} label={link.label} url={link.url} icon={link.icon} />;
           }
+          return <FooterLink key={i} label={link.label} url={link.url} icon={link.icon} />;
         })}
       </Grid>
 
@@ -172,7 +171,7 @@ const LicenseCC0 = ({ link }: LicenseCC0Props) => {
           external
           footer
           className={classes.link}
-          ariaLabel={`Read more about creative commons license on this link`}
+          ariaLabel={"Read more about creative commons license on this link"}
         >
           CC0 1.0
           <img
