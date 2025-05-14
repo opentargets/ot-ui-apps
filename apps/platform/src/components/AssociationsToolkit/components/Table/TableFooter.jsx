@@ -1,9 +1,9 @@
-import { useEffect } from "react";
 import { TablePagination } from "@mui/material";
+import { styled } from "@mui/styles";
+import { useEffect } from "react";
+import { getLegend } from "../../associationsUtils";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableCell from "./TableCell";
-import { getLegend } from "../../associationsUtils";
-import { styled } from "@mui/styles";
 
 const TableFooterContainer = styled("div")({
   position: "sticky",
@@ -69,12 +69,12 @@ function TableFooter({ table, coreOpen }) {
             nextIconButtonProps={{
               disableFocusRipple: true,
             }}
-            onPageChange={(e, index) => {
+            onPageChange={(_e, index) => {
               if (!loading) {
                 table.setPageIndex(index);
               }
             }}
-            onRowsPerPageChange={e => {
+            onRowsPerPageChange={(e) => {
               if (!loading) {
                 table.setPageSize(Number(e.target.value));
               }

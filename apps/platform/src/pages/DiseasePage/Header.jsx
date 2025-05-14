@@ -1,6 +1,6 @@
 import { faStethoscope } from "@fortawesome/free-solid-svg-icons";
 
-import { Header as HeaderBase, ExternalLink, XRefLinks } from "ui";
+import { ExternalLink, Header as HeaderBase, XRefLinks } from "ui";
 
 const xrefsToDisplay = {
   mondo: { label: "MONDO", urlStem: "http://purl.obolibrary.org/obo/MONDO_" },
@@ -52,7 +52,7 @@ function Header({ loading, efoId, name, dbXRefs = [] }) {
           ) : (
             <ExternalLink title="EFO" id={efoId} url={efoUrl} />
           )}
-          {Object.keys(xrefs).map(xref => {
+          {Object.keys(xrefs).map((xref) => {
             const { label, urlStem, ids } = xrefs[xref];
             return (
               <XRefLinks

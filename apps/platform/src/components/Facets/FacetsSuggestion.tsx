@@ -1,10 +1,10 @@
-import { ReactElement, useState } from "react";
+import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Collapse } from "@mui/material";
+import { type ReactElement, useState } from "react";
+import { Link } from "ui";
 import { useAotfContext } from "../AssociationsToolkit";
 import { ENTITY } from "./facetsTypes";
-import { Link } from "ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 
 const EXAMPLE = {
   [ENTITY.DISEASE]: "Eczema",

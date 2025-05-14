@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem, OtTable } from "ui";
+import { Link, OtTable, SectionItem, Tooltip } from "ui";
 
 import {
   dataTypesMap,
@@ -8,8 +8,8 @@ import {
   naLabel,
   sectionsBaseSizeQuery,
 } from "@ot/constants";
-import Description from "./Description";
 import { definition } from ".";
+import Description from "./Description";
 
 import CLINGEN_QUERY from "./ClingenQuery.gql";
 
@@ -53,7 +53,7 @@ const columns = [
             listStyle: "none",
           }}
         >
-          {allelicRequirements.map(allelicRequirement => (
+          {allelicRequirements.map((allelicRequirement) => (
             <li key={allelicRequirement}>{allelicRequirement}</li>
           ))}
         </ul>
@@ -77,7 +77,7 @@ const columns = [
         }
         showHelpIcon
       >
-        {urls && urls[0]?.url ? (
+        {urls?.[0]?.url ? (
           <Link external to={urls[0].url}>
             {confidence}
           </Link>

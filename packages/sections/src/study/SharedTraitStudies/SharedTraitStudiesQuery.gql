@@ -1,5 +1,5 @@
 query SharedTraitStudiesQuery($diseaseIds: [String!]!, $size: Int!, $index: Int!) {
-  studies(diseaseIds: $diseaseIds,  page: { size: $size, index: $index }) {
+  studies(diseaseIds: $diseaseIds, page: { size: $size, index: $index }) {
     count
     rows {
       id

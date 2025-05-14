@@ -5,6 +5,6 @@ export const definition = {
   id,
   name: "ClinVar (somatic)",
   shortName: "CS",
-  hasData: data => data.eva_somatic.count > 0,
+  hasData: (data) => data.eva_somatic.count > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };

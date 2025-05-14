@@ -1,11 +1,11 @@
-import { ReactNode } from "react";
-import { Grid, Paper, Box, Typography } from "@mui/material";
-import { SxProps } from "@mui/system";
-import { usePermissions, Link } from "ui";
+import { Box, Grid, Paper, Typography } from "@mui/material";
+import type { SxProps } from "@mui/system";
+import type { ReactNode } from "react";
+import { Link, usePermissions } from "ui";
 
+import { grey } from "@mui/material/colors";
 import OTLogo from "../../assets/OTLogo";
 import PPOTLogo from "../../assets/PPPOTLogo";
-import { grey } from "@mui/material/colors";
 
 type StylesType = {
   homeboxContainer: SxProps;

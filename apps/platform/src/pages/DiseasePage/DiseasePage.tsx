@@ -1,14 +1,14 @@
-import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs } from "@mui/material";
+import type { ReactElement } from "react";
 import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { BasePage, ScrollToTop } from "ui";
 
-import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
+import Header from "./Header";
 
-import DISEASE_PAGE_QUERY from "./DiseasePage.gql";
 import Associations from "./DiseaseAssociations";
+import DISEASE_PAGE_QUERY from "./DiseasePage.gql";
 import Profile from "./Profile";
 
 type DiseaseURLParams = {

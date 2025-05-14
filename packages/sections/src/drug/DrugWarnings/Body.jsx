@@ -1,12 +1,12 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, Tooltip, TableDrawer, OtTable } from "ui";
+import { Link, OtTable, SectionItem, TableDrawer, Tooltip } from "ui";
 
+import { naLabel } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import DRUG_WARNINGS_QUERY from "./DrugWarningsQuery.gql";
-import { naLabel } from "@ot/constants";
 
-const replaceSemicolonWithUnderscore = id => id.replace(":", "_");
+const replaceSemicolonWithUnderscore = (id) => id.replace(":", "_");
 
 const columns = [
   {
@@ -55,7 +55,7 @@ const columns = [
       const sources = new Set(); // used to collect unique sources
       const refs = [];
 
-      references.forEach(ref => {
+      references.forEach((ref) => {
         sources.add(ref.source); // add source to set
         refs.push({
           // create new entry object

@@ -10,7 +10,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => (
+      renderSummary={(data) => (
         <>
           {(data.knownDrugs.uniqueDrugs || 0).toLocaleString()} drugs with{" "}
           {(data.knownDrugs.uniqueDiseases || 0).toLocaleString()} indications

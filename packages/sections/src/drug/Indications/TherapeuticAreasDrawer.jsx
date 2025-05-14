@@ -1,21 +1,21 @@
-import { useState } from "react";
-import { Link } from "ui";
-import {
-  Box,
-  Drawer,
-  IconButton,
-  Link as MUILink,
-  List,
-  ListItem,
-  Paper,
-  Typography,
-  ButtonBase,
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  Box,
+  ButtonBase,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  Link as MUILink,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { useState } from "react";
+import { Link } from "ui";
 
-const therapeuticAreasDrawerStyles = makeStyles(theme => ({
+const therapeuticAreasDrawerStyles = makeStyles((theme) => ({
   drawerBody: {
     overflowY: "overlay",
   },
@@ -66,7 +66,7 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
     return <Link to={`/disease/${therapeuticAreas[0].id}`}>{therapeuticAreas[0].name}</Link>;
   }
 
-  const toggleDrawer = event => {
+  const toggleDrawer = (event) => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
     }
@@ -102,7 +102,7 @@ function TherapeuticAreasDrawer({ therapeuticAreas }) {
           }}
         >
           <List>
-            {therapeuticAreas.map(item => (
+            {therapeuticAreas.map((item) => (
               <ListItem key={item.id}>
                 <Link to={`/disease/${item.id}`}>{item.name}</Link>
               </ListItem>

@@ -1,20 +1,20 @@
 import {
-  usePlatformApi,
-  Link,
-  ProfileChipList,
-  ProfileDescription,
-  Field,
-  ProfileHeader as BaseProfileHeader,
-} from "ui";
-import { Fragment } from "react";
-import { Box } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
   faCheckCircle,
   faExclamationCircle,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box } from "@mui/material";
 import { phaseMap } from "@ot/constants";
+import { Fragment } from "react";
+import {
+  ProfileHeader as BaseProfileHeader,
+  Field,
+  Link,
+  ProfileChipList,
+  ProfileDescription,
+  usePlatformApi,
+} from "ui";
 
 import Smiles from "./Smiles";
 

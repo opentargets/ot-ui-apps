@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from ".";
 import { dataTypesMap } from "@ot/constants";
+import { definition } from ".";
 import GENE_2_PHENOTYPE_SUMMARY_FRAGMENT from "./Gene2PhenotypeSummaryFragment.gql";
 
 function Summary() {
@@ -11,7 +11,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         `${data.gene2Phenotype.count} entr${data.gene2Phenotype.count === 1 ? "y" : "ies"}`
       }
       subText={dataTypesMap.genetic_association}

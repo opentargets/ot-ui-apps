@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
 import { Box, Typography } from "@mui/material";
+import type { ReactNode } from "react";
 import { Link, useAPIMetadata } from "ui";
 
 interface VersionData {

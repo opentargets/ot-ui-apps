@@ -1,5 +1,5 @@
-import { useMemo, createContext, ReactNode } from "react";
-import { useQuery, DocumentNode, QueryResult } from "@apollo/client";
+import { type DocumentNode, type QueryResult, useQuery } from "@apollo/client";
+import { type ReactNode, createContext, useMemo } from "react";
 
 interface PlatformApiContextValue {
   entity: string;

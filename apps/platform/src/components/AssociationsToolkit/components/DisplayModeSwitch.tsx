@@ -1,7 +1,7 @@
-import { MouseEvent } from "react";
-import { ToggleButtonGroup, ToggleButton, styled } from "@mui/material";
-import useAotfContext from "../hooks/useAotfContext";
+import { ToggleButton, ToggleButtonGroup, styled } from "@mui/material";
+import type { MouseEvent } from "react";
 import { DISPLAY_MODE } from "../associationsUtils"; // Ensure DISPLAY_MODE is properly typed
+import useAotfContext from "../hooks/useAotfContext";
 
 type DisplayMode = (typeof DISPLAY_MODE)[keyof typeof DISPLAY_MODE];
 

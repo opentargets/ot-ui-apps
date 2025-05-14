@@ -1,24 +1,24 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import {
+  dataTypesMap,
+  defaultRowsPerPageOptions,
+  naLabel,
+  sectionsBaseSizeQuery,
+  variantConsequenceSource,
+} from "@ot/constants";
+import { epmcUrl, identifiersOrgLink, nullishComparator, variantComparator } from "@ot/utils";
+import {
+  DisplayVariantId,
+  LabelChip,
   Link,
+  OtTable,
+  PublicationsDrawer,
   SectionItem,
   Tooltip,
-  PublicationsDrawer,
-  LabelChip,
-  OtTable,
-  DisplayVariantId,
 } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl, identifiersOrgLink, nullishComparator, variantComparator } from "@ot/utils";
-import {
-  dataTypesMap,
-  defaultRowsPerPageOptions,
-  variantConsequenceSource,
-  sectionsBaseSizeQuery,
-  naLabel,
-} from "@ot/constants";
 import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
 
 function getColumns(label) {
@@ -61,7 +61,7 @@ function getColumns(label) {
       label: "Variant",
       enableHiding: false,
       sortable: true,
-      comparator: nullishComparator(variantComparator(), d => d?.variant),
+      comparator: nullishComparator(variantComparator(), (d) => d?.variant),
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
       renderCell: ({ variant: v }) => {
@@ -96,8 +96,8 @@ function getColumns(label) {
       renderCell: ({ variant }) => {
         if (!variant) return naLabel;
         const aaConsequences = variant.transcriptConsequences
-          ?.filter(d => d.aminoAcidChange != null)
-          .map(d => d.aminoAcidChange);
+          ?.filter((d) => d.aminoAcidChange != null)
+          .map((d) => d.aminoAcidChange);
         if (aaConsequences?.length) {
           return aaConsequences.join(", ");
         }

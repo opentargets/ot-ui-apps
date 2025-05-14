@@ -1,17 +1,17 @@
+import { Box } from "@mui/material";
+import type { DocumentNode } from "graphql";
 import FacetsSearch from "../Facets/FacetsSearch";
+import ActiveFiltersPanel from "./components/ActiveFiltersPanel";
 import ExportMenu from "./components/ExportMenu";
 import {
-  TableAssociations,
-  ColumnOptionsMenu,
-  AssociationsProvider,
   AssociationsFocusProvider,
+  AssociationsProvider,
+  ColumnOptionsMenu,
   DisplayModeSwitch,
   NameFilter,
+  TableAssociations,
 } from "./index";
-import { Box } from "@mui/material";
-import { ENTITY } from "./types";
-import { DocumentNode } from "graphql";
-import ActiveFiltersPanel from "./components/ActiveFiltersPanel";
+import type { ENTITY } from "./types";
 
 interface AssociationsView {
   id: string;

@@ -1,7 +1,7 @@
 /* eslint-disable */
-import { memo, useRef, useEffect } from "react";
-import { v1 } from "uuid";
+import { memo, useEffect, useRef } from "react";
 import { useConfigContext } from "ui";
+import { v1 } from "uuid";
 
 import "@swissprot/swissbiopics-visualizer";
 
@@ -14,19 +14,19 @@ const CanonicalDefinition = customElements.get(canonicalName);
 
 // Note that these are without leading zeros eg: GO1 (and not GO0000001) so make sure
 // the correct classnames are supplied in SubcellularLocationGOView
-const getGoTermClassNames = locationGroup =>
+const getGoTermClassNames = (locationGroup) =>
   Array.from(locationGroup.classList.values())
-    .filter(className => className.startsWith("GO"))
-    .map(goId => `.${goId}`);
+    .filter((className) => className.startsWith("GO"))
+    .map((goId) => `.${goId}`);
 
-const getUniProtTextSelectors = subcellularPresentSVG => [
+const getUniProtTextSelectors = (subcellularPresentSVG) => [
   `#${subcellularPresentSVG.id}term`,
   ...Array.from(subcellularPresentSVG.classList)
-    .map(className => {
+    .map((className) => {
       const id = className.match(reMpPart)?.groups?.id;
       return id && `#${id}term`;
     })
-    .filter(sel => Boolean(sel)),
+    .filter((sel) => Boolean(sel)),
 ];
 
 /**
@@ -142,7 +142,7 @@ const SwissbioViz = memo(({ locationIds, taxonId, sourceId, children }) => {
           'svg .subcell_present, svg [class*="mp_"], svg [class*="part_"]'
         ) || [];
 
-      subcellularPresentSVGs.forEach(subcellularPresentSVG => {
+      subcellularPresentSVGs.forEach((subcellularPresentSVG) => {
         const textSelectors = getUniProtTextSelectors(subcellularPresentSVG);
         for (const textSelector of textSelectors) {
           const locationText = instance?.querySelector(textSelector);

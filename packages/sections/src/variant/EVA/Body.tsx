@@ -1,11 +1,11 @@
 import { useQuery } from "@apollo/client";
-import { Link, Tooltip, SectionItem, PublicationsDrawer, ClinvarStars, OtTable } from "ui";
 import { Typography } from "@mui/material";
 import { clinvarStarMap, naLabel } from "@ot/constants";
+import { ClinvarStars, Link, OtTable, PublicationsDrawer, SectionItem, Tooltip } from "ui";
 import { definition } from ".";
 
-import Description from "./Description";
 import { epmcUrl, sentenceCase } from "@ot/utils";
+import Description from "./Description";
 import EVA_QUERY from "./EVAQuery.gql";
 
 const columns = [
@@ -39,7 +39,7 @@ const columns = [
                       All reported phenotypes:
                     </Typography>
                     <Typography variant="caption" display="block">
-                      {cohortPhenotypes.map(cp => (
+                      {cohortPhenotypes.map((cp) => (
                         <div key={cp}>{cp}</div>
                       ))}
                     </Typography>
@@ -81,7 +81,7 @@ const columns = [
       if (clinicalSignificances.length === 1) {
         return sentenceCase(clinicalSignificances[0]);
       }
-      return clinicalSignificances.map(clinicalSignificance => (
+      return clinicalSignificances.map((clinicalSignificance) => (
         <div key={clinicalSignificance}>{sentenceCase(clinicalSignificance)}</div>
       ));
     },
@@ -94,7 +94,7 @@ const columns = [
     label: "Allele origin",
     renderCell: ({ alleleOrigins, allelicRequirements }) => {
       if (!alleleOrigins || alleleOrigins.length === 0) return naLabel;
-      let displayElement = alleleOrigins.map(a => sentenceCase(a)).join("; ");
+      let displayElement = alleleOrigins.map((a) => sentenceCase(a)).join("; ");
       if (allelicRequirements) {
         displayElement = (
           <Tooltip
@@ -103,7 +103,7 @@ const columns = [
                 <Typography variant="subtitle2" display="block" align="center">
                   Allelic requirements:
                 </Typography>
-                {allelicRequirements.map(r => (
+                {allelicRequirements.map((r) => (
                   <Typography key={r} variant="caption" display="block">
                     {r}
                   </Typography>

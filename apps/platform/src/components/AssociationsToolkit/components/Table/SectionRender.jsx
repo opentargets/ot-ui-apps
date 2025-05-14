@@ -1,17 +1,17 @@
-import { Suspense } from "react";
 import { styled } from "@mui/material/styles";
+import { Suspense } from "react";
 import { SectionLoader } from "ui";
 import { ENTITIES } from "../../associationsUtils";
 
-import prioritisationColumns from "../../static_datasets/prioritisationColumns";
-import targetSections from "../../../../sections/targetSections";
 import evidenceSections from "../../../../sections/evidenceSections";
+import targetSections from "../../../../sections/targetSections";
+import prioritisationColumns from "../../static_datasets/prioritisationColumns";
 
-import { grey } from "@mui/material/colors";
 import { Box } from "@mui/material";
+import { grey } from "@mui/material/colors";
 
 const Container = styled("div", {
-  shouldForwardProp: prop => prop !== "table",
+  shouldForwardProp: (prop) => prop !== "table",
 })(({ table, theme }) => ({
   paddingTop: theme.spacing(2),
   paddingBottom: theme.spacing(2),
@@ -40,7 +40,7 @@ const getComponentConfig = (displayedTable, row, entity, id, section) => {
         componentId: entity === ENTITIES.DISEASE ? row.id : id,
         label: row.original.targetSymbol,
         entityOfSection: "target",
-        componentProps: prioritisationColumns.find(el => el.id === section[0])?.sectionProps,
+        componentProps: prioritisationColumns.find((el) => el.id === section[0])?.sectionProps,
       };
     case "associations":
       return {
@@ -72,7 +72,7 @@ export function SectionRender({
   cols = [],
   section,
 }) {
-  if (!section || !cols.some(c => c.id === section[0])) {
+  if (!section || !cols.some((c) => c.id === section[0])) {
     return null;
   }
 

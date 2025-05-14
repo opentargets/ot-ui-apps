@@ -1,8 +1,8 @@
-import { makeStyles } from "@mui/styles";
 import { Grid } from "@mui/material";
-import { ReactNode } from "react";
+import { makeStyles } from "@mui/styles";
+import type { ReactNode } from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   page: {
     background: theme.palette.grey["50"],
     minHeight: "100vh",

@@ -1,6 +1,6 @@
-import { lighten, darken } from "polished";
 import { grey } from "@mui/material/colors";
-import { ThemeOptions, createTheme } from "@mui/material/styles";
+import { type ThemeOptions, createTheme } from "@mui/material/styles";
+import { darken, lighten } from "polished";
 import { getConfig } from "./environment";
 
 const config = getConfig();
@@ -155,7 +155,7 @@ const themeOptions: ThemeOptions = {
           props: { variant: "aotf" },
           style: {
             root: {
-              backgroundColor: `red`,
+              backgroundColor: "red",
               color: "#fff",
             },
           },

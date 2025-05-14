@@ -1,7 +1,7 @@
-import { useState, useEffect, lazy, Suspense } from "react";
 import queryString from "query-string";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LoadingBackdrop, BasePage, useApolloClient } from "ui";
+import { BasePage, LoadingBackdrop, useApolloClient } from "ui";
 
 import SEARCH_PAGE_QUERY from "./SearchPageQuery.gql";
 
@@ -13,7 +13,7 @@ const QS_OPTIONS = {
   skipNull: true,
 };
 
-const parseQueryString = qs => {
+const parseQueryString = (qs) => {
   const params = queryString.parse(qs, QS_OPTIONS);
   if (!params.entities) {
     params.entities = [];
@@ -41,7 +41,7 @@ function SearchPage() {
           entityNames: entities,
         },
       })
-      .then(res => {
+      .then((res) => {
         if (isCurrent) {
           setData(res.data);
         }
@@ -52,17 +52,17 @@ function SearchPage() {
     };
   }, [q, page, entities]);
 
-  const handleChangePage = (event, pageChanged) => {
+  const handleChangePage = (_event, pageChanged) => {
     const params = { q, page: pageChanged + 1, entities };
     const qs = queryString.stringify(params, QS_OPTIONS);
     navigate(`/search?${qs}`);
   };
 
-  const handleSetEntity = entity => (event, checked) => {
+  const handleSetEntity = (entity) => (_event, checked) => {
     const params = {
       q,
       page: 1, // reset to page 1
-      entities: checked ? [...entities, entity] : entities.filter(e => e !== entity),
+      entities: checked ? [...entities, entity] : entities.filter((e) => e !== entity),
     };
     const qs = queryString.stringify(params, QS_OPTIONS);
     navigate(`/search?${qs}`);

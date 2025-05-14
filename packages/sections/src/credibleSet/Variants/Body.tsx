@@ -1,18 +1,18 @@
 import { Box, Chip } from "@mui/material";
+import { initialResponse, naLabel, table5HChunkSize } from "@ot/constants";
+import { identifiersOrgLink, mantissaExponentComparator, variantComparator } from "@ot/utils";
+import { useEffect, useState } from "react";
 import {
-  Link,
-  SectionItem,
-  ScientificNotation,
   DisplayVariantId,
+  Link,
   OtTable,
+  ScientificNotation,
+  SectionItem,
   useBatchQuery,
 } from "ui";
-import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import VARIANTS_QUERY from "./VariantsQuery.gql";
-import { mantissaExponentComparator, variantComparator, identifiersOrgLink } from "@ot/utils";
-import { useEffect, useState } from "react";
 
 type getColumnsType = {
   leadVariantId: string;
@@ -30,7 +30,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       id: "variant.id",
       label: "Variant",
       enableHiding: false,
-      comparator: variantComparator(d => d?.variant),
+      comparator: variantComparator((d) => d?.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -140,7 +140,7 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
         const bPosterior = rowB?.posteriorProbability;
         if (aPosterior === bPosterior) {
           if (rowA?.variant.id === leadVariantId) return 1;
-          else if (rowB?.variant.id === leadVariantId) return -1;
+          if (rowB?.variant.id === leadVariantId) return -1;
           return 0;
         }
         return aPosterior - bPosterior;

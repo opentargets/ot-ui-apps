@@ -1,11 +1,11 @@
+import type { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { europePmcBiblioSearchPOSTQuery } from "@ot/utils";
-import { SelectedEntityType } from "./types";
-import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
+import type { SelectedEntityType } from "./types";
 
 export async function literaturesEuropePMCQuery({ literaturesIds }) {
   if (literaturesIds.length === 0) return [];
   const { baseUrl, requestOptions } = europePmcBiblioSearchPOSTQuery(literaturesIds);
-  const response = await fetch(baseUrl, requestOptions).then(response => response.json());
+  const response = await fetch(baseUrl, requestOptions).then((response) => response.json());
   if (response.error) throw response.error;
   return response.resultList?.result;
 }
@@ -40,7 +40,7 @@ export const fetchSimilarEntities = ({
   client,
 }: fetchSimilarEntitiesParam) => {
   const entityNames = category.length === 0 ? null : category;
-  const ids = entities.map(c => c.object.id);
+  const ids = entities.map((c) => c.object.id);
   return client.query({
     query,
     variables: {

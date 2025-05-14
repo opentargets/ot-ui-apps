@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { makeStyles } from "@mui/styles";
 import { Grid } from "@mui/material";
-import { scaleQuantize } from "d3";
-import { Link, Legend, OtTable, useApolloClient } from "ui";
+import { makeStyles } from "@mui/styles";
 import { colorRange } from "@ot/constants";
+import { scaleQuantize } from "d3";
+import { useEffect, useState } from "react";
+import { Legend, Link, OtTable, useApolloClient } from "ui";
 
 import INTERACTIONS_QUERY from "./InteractionsStringQuery.gql";
 
@@ -100,8 +100,8 @@ const color = scaleQuantize().domain([0, 1]).range(colorRange);
 
 const getScoreForColumn = (evidences, evidencesId) =>
   evidences
-    .filter(e => e.interactionDetectionMethodShortName === evidencesId)
-    .map(e => e.evidenceScore)[0]; // TODO: the [0] is to catch a data error: remove when fixed.
+    .filter((e) => e.interactionDetectionMethodShortName === evidencesId)
+    .map((e) => e.evidenceScore)[0]; // TODO: the [0] is to catch a data error: remove when fixed.
 const getHeatmapCell = (score, classes) => (
   <span
     className={classes.colorSpan}
@@ -119,7 +119,7 @@ function getColumns(classes) {
         headerCell: classes.nameHeaderCell,
         cell: classes.nameCell,
       },
-      renderCell: row => (
+      renderCell: (row) => (
         <span className={classes.nameContainer}>
           {row.targetB ? (
             <Link asyncTooltip to={`/target/${row.targetB.id}`}>
@@ -132,8 +132,8 @@ function getColumns(classes) {
           )}
         </span>
       ),
-      exportValue: row => row.targetB?.approvedSymbol || row.intB,
-      filterValue: row => `${row.targetB?.approvedSymbol} ${row.intB}`,
+      exportValue: (row) => row.targetB?.approvedSymbol || row.intB,
+      filterValue: (row) => `${row.targetB?.approvedSymbol} ${row.intB}`,
     },
     {
       id: "overallScore",
@@ -150,9 +150,9 @@ function getColumns(classes) {
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row => row.score.toFixed(3),
-      exportValue: row => row.score.toFixed(3),
-      filterValue: row => row.score.toFixed(3),
+      renderCell: (row) => row.score.toFixed(3),
+      exportValue: (row) => row.score.toFixed(3),
+      filterValue: (row) => row.score.toFixed(3),
     },
     {
       id: "neighbourhood",
@@ -163,9 +163,10 @@ function getColumns(classes) {
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row => getHeatmapCell(getScoreForColumn(row.evidences, "neighborhood"), classes),
-      exportValue: row => getScoreForColumn(row.evidences, "neighborhood")?.toFixed(3),
-      filterValue: row => getScoreForColumn(row.evidences, "neighborhood")?.toFixed(3),
+      renderCell: (row) =>
+        getHeatmapCell(getScoreForColumn(row.evidences, "neighborhood"), classes),
+      exportValue: (row) => getScoreForColumn(row.evidences, "neighborhood")?.toFixed(3),
+      filterValue: (row) => getScoreForColumn(row.evidences, "neighborhood")?.toFixed(3),
     },
     {
       id: "geneFusion",
@@ -176,9 +177,9 @@ function getColumns(classes) {
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row => getHeatmapCell(getScoreForColumn(row.evidences, "fusion"), classes),
-      exportValue: row => getScoreForColumn(row.evidences, "fusion")?.toFixed(3),
-      filterValue: row => getScoreForColumn(row.evidences, "fusion")?.toFixed(3),
+      renderCell: (row) => getHeatmapCell(getScoreForColumn(row.evidences, "fusion"), classes),
+      exportValue: (row) => getScoreForColumn(row.evidences, "fusion")?.toFixed(3),
+      filterValue: (row) => getScoreForColumn(row.evidences, "fusion")?.toFixed(3),
     },
     {
       id: "occurance",
@@ -189,9 +190,9 @@ function getColumns(classes) {
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row => getHeatmapCell(getScoreForColumn(row.evidences, "cooccurence"), classes),
-      exportValue: row => getScoreForColumn(row.evidences, "cooccurence")?.toFixed(3),
-      filterValue: row => getScoreForColumn(row.evidences, "cooccurence")?.toFixed(3),
+      renderCell: (row) => getHeatmapCell(getScoreForColumn(row.evidences, "cooccurence"), classes),
+      exportValue: (row) => getScoreForColumn(row.evidences, "cooccurence")?.toFixed(3),
+      filterValue: (row) => getScoreForColumn(row.evidences, "cooccurence")?.toFixed(3),
     },
     {
       id: "expression",
@@ -202,9 +203,10 @@ function getColumns(classes) {
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row => getHeatmapCell(getScoreForColumn(row.evidences, "coexpression"), classes),
-      exportValue: row => getScoreForColumn(row.evidences, "coexpression")?.toFixed(3),
-      filterValue: row => getScoreForColumn(row.evidences, "coexpression")?.toFixed(3),
+      renderCell: (row) =>
+        getHeatmapCell(getScoreForColumn(row.evidences, "coexpression"), classes),
+      exportValue: (row) => getScoreForColumn(row.evidences, "coexpression")?.toFixed(3),
+      filterValue: (row) => getScoreForColumn(row.evidences, "coexpression")?.toFixed(3),
     },
     {
       id: "experiments",
@@ -215,9 +217,10 @@ function getColumns(classes) {
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row => getHeatmapCell(getScoreForColumn(row.evidences, "experimental"), classes),
-      exportValue: row => getScoreForColumn(row.evidences, "experimental")?.toFixed(3),
-      filterValue: row => getScoreForColumn(row.evidences, "experimental")?.toFixed(3),
+      renderCell: (row) =>
+        getHeatmapCell(getScoreForColumn(row.evidences, "experimental"), classes),
+      exportValue: (row) => getScoreForColumn(row.evidences, "experimental")?.toFixed(3),
+      filterValue: (row) => getScoreForColumn(row.evidences, "experimental")?.toFixed(3),
     },
     {
       id: "databases",
@@ -228,9 +231,9 @@ function getColumns(classes) {
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row => getHeatmapCell(getScoreForColumn(row.evidences, "database"), classes),
-      exportValue: row => getScoreForColumn(row.evidences, "database")?.toFixed(3),
-      filterValue: row => getScoreForColumn(row.evidences, "database")?.toFixed(3),
+      renderCell: (row) => getHeatmapCell(getScoreForColumn(row.evidences, "database"), classes),
+      exportValue: (row) => getScoreForColumn(row.evidences, "database")?.toFixed(3),
+      filterValue: (row) => getScoreForColumn(row.evidences, "database")?.toFixed(3),
     },
     {
       id: "textMining",
@@ -241,9 +244,9 @@ function getColumns(classes) {
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row => getHeatmapCell(getScoreForColumn(row.evidences, "textmining"), classes),
-      exportValue: row => getScoreForColumn(row.evidences, "textmining")?.toFixed(3),
-      filterValue: row => getScoreForColumn(row.evidences, "textmining")?.toFixed(3),
+      renderCell: (row) => getHeatmapCell(getScoreForColumn(row.evidences, "textmining"), classes),
+      exportValue: (row) => getScoreForColumn(row.evidences, "textmining")?.toFixed(3),
+      filterValue: (row) => getScoreForColumn(row.evidences, "textmining")?.toFixed(3),
     },
     {
       id: "homology",
@@ -254,9 +257,9 @@ function getColumns(classes) {
         sortLabel: classes.sortLabel,
         innerLabel: classes.innerLabel,
       },
-      renderCell: row => getHeatmapCell(getScoreForColumn(row.evidences, "homology"), classes),
-      exportValue: row => getScoreForColumn(row.evidences, "homology")?.toFixed(3),
-      filterValue: row => getScoreForColumn(row.evidences, "homology")?.toFixed(3),
+      renderCell: (row) => getHeatmapCell(getScoreForColumn(row.evidences, "homology"), classes),
+      exportValue: (row) => getScoreForColumn(row.evidences, "homology")?.toFixed(3),
+      filterValue: (row) => getScoreForColumn(row.evidences, "homology")?.toFixed(3),
     },
   ];
 }
@@ -270,7 +273,7 @@ function StringTab({ ensgId, symbol }) {
   // load tab data when new tab selected (also on first load)
   useEffect(() => {
     setLoading(true);
-    getData(INTERACTIONS_QUERY, ensgId, id, index, size, client).then(res => {
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size, client).then((res) => {
       if (res.data.target.interactions) {
         setLoading(false);
         setData(res.data.target.interactions.rows);

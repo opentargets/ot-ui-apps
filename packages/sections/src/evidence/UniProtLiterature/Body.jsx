@@ -1,14 +1,14 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
+import { Link, OtTable, PublicationsDrawer, SectionItem, Tooltip } from "ui";
 
+import { dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
+import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
-import { dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
 import UNIPROT_LITERATURE_QUERY from "./UniprotLiteratureQuery.gql";
 
-const getcolumns = label => [
+const getcolumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",

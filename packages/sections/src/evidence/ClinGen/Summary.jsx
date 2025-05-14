@@ -1,8 +1,8 @@
-import { usePlatformApi, SummaryItem } from "ui";
 import { dataTypesMap } from "@ot/constants";
+import { SummaryItem, usePlatformApi } from "ui";
 
-import CLINGEN_SUMMARY_FRAGMENT from "./ClinGenSummaryFragment.gql";
 import { definition } from ".";
+import CLINGEN_SUMMARY_FRAGMENT from "./ClinGenSummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(CLINGEN_SUMMARY_FRAGMENT);

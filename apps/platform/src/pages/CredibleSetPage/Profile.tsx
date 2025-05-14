@@ -1,17 +1,17 @@
-import { Suspense, lazy } from "react";
 import { gql } from "@apollo/client";
+import { Suspense, lazy } from "react";
 import {
   PlatformApiProvider,
   SectionContainer,
-  SummaryContainer,
   SectionLoader,
+  SummaryContainer,
   summaryUtils,
 } from "ui";
 
-import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
 import GWASColocSummary from "sections/src/credibleSet/GWASColoc/Summary";
-import GWASMolQTLSummary from "sections/src/credibleSet/MolQTLColoc/Summary";
 import Locus2GeneSummary from "sections/src/credibleSet/Locus2Gene/Summary";
+import GWASMolQTLSummary from "sections/src/credibleSet/MolQTLColoc/Summary";
+import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 

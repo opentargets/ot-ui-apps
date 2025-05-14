@@ -1,7 +1,7 @@
-import { CardContent, Typography } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
-import { Link, DisplayVariantId, LongText } from "ui";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CardContent, Typography } from "@mui/material";
+import { DisplayVariantId, Link, LongText } from "ui";
 
 function VariantDetail({ data }) {
   return (

@@ -1,14 +1,14 @@
+import { faArrowsAltH, faCircle, faExpandArrowsAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle, faArrowsAltH, faExpandArrowsAlt } from "@fortawesome/free-solid-svg-icons";
-import { v1 } from "uuid";
 import { Tooltip } from "ui";
+import { v1 } from "uuid";
 
 function MethodIcon({ tooltip, enabled = true, children, notooltip, small = false }) {
   let title;
 
   if (!enabled || !tooltip) title = "no data";
   else if (Array.isArray(tooltip)) {
-    title = tooltip.map(m => (
+    title = tooltip.map((m) => (
       <span key={v1()}>
         {m}
         <br />

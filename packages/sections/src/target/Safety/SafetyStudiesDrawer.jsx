@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { Drawer, IconButton, Paper, Typography, Link as MUILink, ButtonBase } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ButtonBase, Drawer, IconButton, Link as MUILink, Paper, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { useState } from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   drawerLink: {
     color: `${theme.palette.primary.main} !important`,
   },
@@ -66,7 +66,7 @@ function SafetyStudiesDrawer({ studies }) {
             <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
-        {studies.map(study => (
+        {studies.map((study) => (
           <Paper key={study.name} className={classes.paper} variant="outlined">
             <Typography variant="h6" gutterBottom>
               Study:

@@ -1,5 +1,5 @@
-import LinearProgress, { linearProgressClasses } from "@mui/material/LinearProgress";
 import { styled } from "@mui/material";
+import LinearProgress, { linearProgressClasses } from "@mui/material/LinearProgress";
 
 const OtScoreLinearBar = styled(LinearProgress)(({ theme }) => ({
   height: 8,

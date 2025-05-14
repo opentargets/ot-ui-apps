@@ -1,22 +1,22 @@
-import { ReactNode } from "react";
-import {
-  Link,
-  SectionItem,
-  ScientificNotation,
-  DisplayVariantId,
-  OtTable,
-  Tooltip,
-  ClinvarStars,
-  useBatchQuery,
-  Navigate,
-} from "ui";
 import { Box, Chip } from "@mui/material";
+import type { ReactNode } from "react";
+import {
+  ClinvarStars,
+  DisplayVariantId,
+  Link,
+  Navigate,
+  OtTable,
+  ScientificNotation,
+  SectionItem,
+  Tooltip,
+  useBatchQuery,
+} from "ui";
 
+import { credsetConfidenceMap, naLabel, table5HChunkSize } from "@ot/constants";
+import { mantissaExponentComparator, variantComparator } from "@ot/utils";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "@ot/utils";
-import { credsetConfidenceMap, naLabel, table5HChunkSize } from "@ot/constants";
 
 type getColumnsType = {
   id: string;
@@ -37,7 +37,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       id: "leadVariant",
       label: "Lead variant",
       enableHiding: false,
-      comparator: variantComparator(d => d.variant),
+      comparator: variantComparator((d) => d.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,

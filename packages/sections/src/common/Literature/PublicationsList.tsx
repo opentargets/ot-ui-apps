@@ -1,17 +1,17 @@
-import { useEffect } from "react";
-import { Box, Grid, Fade, Skeleton } from "@mui/material";
+import { Box, Fade, Grid, Skeleton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useEffect } from "react";
 import { PublicationWrapper, Table, useApolloClient } from "ui";
-import Loader from "./Loader";
-import { PublicationType, DetailsStateType } from "./types";
 import {
+  useDetails,
+  useDetailsDispatch,
   useDisplayedPublications,
   useLiterature,
   useLiteratureDispatch,
-  useDetails,
-  useDetailsDispatch,
 } from "./LiteratureContext";
+import Loader from "./Loader";
 import { fetchSimilarEntities, literaturesEuropePMCQuery } from "./requests";
+import type { DetailsStateType, PublicationType } from "./types";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -190,24 +190,24 @@ function PublicationsList({ hideSearch = false }) {
         const det = details[id];
         if (det === "loading") {
           return <SkeletonRow />;
-        } else if (!det) {
-          return null;
-        } else {
-          return (
-            <PublicationWrapper
-              europePmcId={det.europePmcId}
-              title={det.title}
-              titleHtml={det.titleHtml}
-              authors={det.authors}
-              journal={det.journal}
-              variant={det.variant}
-              abstract={det.abstract}
-              fullTextOpen={det.fullTextOpen}
-              source={det.source}
-              patentDetails={det.patentDetails}
-            />
-          );
         }
+        if (!det) {
+          return null;
+        }
+        return (
+          <PublicationWrapper
+            europePmcId={det.europePmcId}
+            title={det.title}
+            titleHtml={det.titleHtml}
+            authors={det.authors}
+            journal={det.journal}
+            variant={det.variant}
+            abstract={det.abstract}
+            fullTextOpen={det.fullTextOpen}
+            source={det.source}
+            patentDetails={det.patentDetails}
+          />
+        );
       },
       filterValue: ({ row: publication }) =>
         `${publication.journal.journal?.title} ${publication?.title} ${publication?.year}

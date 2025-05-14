@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from ".";
 import { dataTypesMap } from "@ot/constants";
+import { definition } from ".";
 import GWAS_CREDIBLE_SETS_SUMMARY_FRAGMENT from "./GWASCredibleSetsSummary.gql";
 
 function Summary() {
@@ -11,7 +11,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         `${data.gwasCredibleSets.count} entr${data.gwasCredibleSets.count === 1 ? "y" : "ies"}`
       }
       subText={dataTypesMap.genetic_association}

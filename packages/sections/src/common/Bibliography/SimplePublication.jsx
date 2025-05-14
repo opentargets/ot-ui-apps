@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-import { LongText, Link } from "ui";
+import { Link, LongText } from "ui";
 
 const pmUrl = "https://europepmc.org/";
 // const pmTitleUrl = 'abstract/med/';
@@ -57,7 +57,7 @@ function SimplePublication({
       <Box style={{ whiteSpace: "normal" }}>
         <LongText lineLimit={1} variant={variant === "small" ? "caption" : "body2"}>
           {authors
-            .map(author => author.lastName + (author.initials ? ` ${author.initials}` : ""))
+            .map((author) => author.lastName + (author.initials ? ` ${author.initials}` : ""))
             .join(", ")}
         </LongText>
       </Box>

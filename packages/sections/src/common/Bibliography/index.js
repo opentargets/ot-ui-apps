@@ -2,7 +2,7 @@ export const definition = {
   id: "bibliography",
   name: "Bibliography",
   shortName: "B",
-  hasData: data => data.count > 0,
+  hasData: (data) => data.count > 0,
   external: true,
 };
 

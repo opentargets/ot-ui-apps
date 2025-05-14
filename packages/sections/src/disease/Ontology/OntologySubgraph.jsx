@@ -1,7 +1,7 @@
-import { withContentRect } from "react-measure";
-import { line as d3Line, max, curveMonotoneX } from "d3";
-import { layeringLongestPath, decrossTwoLayer, coordCenter, sugiyama, dagStratify } from "d3-dag";
 import { makeStyles } from "@mui/styles";
+import { curveMonotoneX, line as d3Line, max } from "d3";
+import { coordCenter, dagStratify, decrossTwoLayer, layeringLongestPath, sugiyama } from "d3-dag";
+import { withContentRect } from "react-measure";
 import { Link } from "react-router-dom";
 import OntologyTooltip from "./OntologyTooltip";
 
@@ -20,7 +20,7 @@ function getAncestors(efoId, idToDisease) {
     const id = queue.shift();
     const node = idToDisease[id];
 
-    node.parentIds.forEach(parentId => {
+    node.parentIds.forEach((parentId) => {
       if (!visited.has(parentId)) {
         ancestors.push({ ...idToDisease[parentId], nodeType: "ancestor" });
         queue.push(parentId);
@@ -38,7 +38,7 @@ function buildDagData(efoId, efo, idToDisease) {
   if (!efo) return dag;
 
   // find direct children of efoId
-  efo.forEach(disease => {
+  efo.forEach((disease) => {
     if (disease.parentIds.includes(efoId)) {
       dag.push({
         id: disease.id,
@@ -51,7 +51,7 @@ function buildDagData(efoId, efo, idToDisease) {
 
   const ancestors = getAncestors(efoId, idToDisease); // find ancestors
 
-  ancestors.forEach(ancestor => {
+  ancestors.forEach((ancestor) => {
     dag.push(ancestor);
   });
 
@@ -74,7 +74,7 @@ function getMaxLayerCount(dag) {
   const counts = {};
   let maxCount = Number.NEGATIVE_INFINITY;
 
-  dag.descendants().forEach(node => {
+  dag.descendants().forEach((node) => {
     const { layer } = node;
 
     if (counts[layer]) {
@@ -88,7 +88,7 @@ function getMaxLayerCount(dag) {
     }
   });
 
-  dag.links().forEach(link => {
+  dag.links().forEach((link) => {
     link.points.forEach((_, i) => {
       const index = link.source.layer + i;
       counts[index] += 1;
@@ -132,11 +132,11 @@ function OntologySubgraph({ efoId, efo, name, idToDisease, measureRef, contentRe
   layout(dag);
   const nodes = dag.descendants();
   const links = dag.links();
-  const separation = width / (max(nodes, d => d.layer) + 1);
+  const separation = width / (max(nodes, (d) => d.layer) + 1);
   const xOffset = separation / 2 - radius;
   const textLimit = separation / 8;
 
-  line.x(d => d.y - xOffset).y(d => d.x);
+  line.x((d) => d.y - xOffset).y((d) => d.x);
 
   return (
     <div ref={measureRef}>
@@ -216,7 +216,7 @@ function OntologySubgraph({ efoId, efo, name, idToDisease, measureRef, contentRe
             ))}
           </g>
           <g transform={`translate(0, ${yOffset})`}>
-            {nodes.map(node => (
+            {nodes.map((node) => (
               <Link to={`/disease/${node.data.id}`} className={classes.labelText} key={node.id}>
                 <OntologyTooltip title={`${node.data.name || "No name"} | ID: ${node.id}`}>
                   <g>

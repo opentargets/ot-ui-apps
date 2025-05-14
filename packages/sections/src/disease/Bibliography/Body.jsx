@@ -1,5 +1,5 @@
-import { Body as Bibliography } from "../../common/Literature";
 import { definition } from ".";
+import { Body as Bibliography } from "../../common/Literature";
 
 import DISEASE_LITERATURE_OCURRENCES from "./BibliographyQuery.gql";
 

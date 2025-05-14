@@ -1,5 +1,5 @@
+import type { Theme } from "@mui/material";
 import { useTheme } from "@mui/styles";
-import { Theme } from "@mui/material";
 
 function FlyIcon() {
   const theme: Theme = useTheme();

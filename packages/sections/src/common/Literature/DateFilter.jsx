@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
 import { FormControl, FormGroup, InputLabel, Slider } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useEffect, useState } from "react";
+import { useApolloClient } from "ui";
 import { useLiterature, useLiteratureDispatch } from "./LiteratureContext";
 import { fetchSimilarEntities } from "./requests";
-import { useApolloClient } from "ui";
 
 const OTSlider = styled(Slider)({
   root: {
@@ -57,7 +57,7 @@ export function DateFilter() {
     return new Date(year, 0, 1, 1, 1, 1, 1);
   }
 
-  const sumMonthsSinceYear = year => value => {
+  const sumMonthsSinceYear = (year) => (value) => {
     const from = getDateFromYear(year);
     const date = new Date(from.setMonth(from.getMonth() + value));
     return date;
@@ -92,14 +92,14 @@ export function DateFilter() {
   }
 
   function getLowerLimit(earliestDate) {
-    if (filterDate[0] == 0) return 0;
+    if (filterDate[0] === 0) return 0;
     const oldLowerDate = oldSelectedDate(filterDate[0]);
     const newLowerFilter = monthsBtwnDates(earliestDate, oldLowerDate);
     const lowerLimit = newLowerFilter > 0 ? newLowerFilter : 0;
     return lowerLimit;
   }
 
-  const handleChange = async values => {
+  const handleChange = async (values) => {
     literatureDispatch({ type: "loadingEntities", value: true });
     const request = await fetchSimilarEntities({
       client,
@@ -130,7 +130,7 @@ export function DateFilter() {
     literatureDispatch({ type: "stateUpdate", value: update });
   };
 
-  const valueLabelFormat = value => {
+  const valueLabelFormat = (value) => {
     if (earliestPubYear) {
       const labelDate = selectedDate(value);
       return `${labelDate.getFullYear()}-${labelDate.getMonth() + 1}`;

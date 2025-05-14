@@ -3,5 +3,5 @@ export const definition = {
   id,
   name: "molQTL Credible Sets",
   shortName: "QT",
-  hasData: data => data?.qtlCredibleSets?.count > 0 || data?.credibleSets?.count > 0,
+  hasData: (data) => data?.qtlCredibleSets?.count > 0 || data?.credibleSets?.count > 0,
 };

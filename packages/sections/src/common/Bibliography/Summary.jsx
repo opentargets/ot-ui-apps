@@ -10,12 +10,12 @@ function Summary({ definition, id }) {
     let isCurrent = true;
 
     getStats([{ key: id }]).then(
-      res => {
+      (res) => {
         if (isCurrent) {
           setRequest({ loading: false, data: { count: res.hits.total } });
         }
       },
-      err => {
+      (err) => {
         if (isCurrent) {
           setRequest({ loading: false, error: err });
         }
@@ -31,7 +31,7 @@ function Summary({ definition, id }) {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => (
+      renderSummary={(data) => (
         <>
           {data.count.toLocaleString()} publication
           {data.count === 1 ? "" : "s"}

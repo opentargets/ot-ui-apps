@@ -2,9 +2,9 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Drawer, IconButton, Paper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { ReactNode, useState } from "react";
+import { type ReactNode, useState } from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   backdrop: {
     "& .MuiBackdrop-root": {
       opacity: "0 !important",
@@ -77,7 +77,7 @@ function ContainedInDrawer({
   function getCommands() {
     if (location === "ftp-location")
       return <FtpLocation link={link} version={version} path={path} />;
-    else if (location === "gcp-location") return <GcpLocation link={link} />;
+    if (location === "gcp-location") return <GcpLocation link={link} />;
     return <>Invalid path</>;
   }
 

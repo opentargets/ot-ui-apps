@@ -1,9 +1,9 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem, TableDrawer, OtTable, Link } from "ui";
+import { Link, OtTable, SectionItem, TableDrawer } from "ui";
 
 import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
-import Description from "./Description";
 import { definition } from ".";
+import Description from "./Description";
 
 import CRISPR_QUERY from "./CrisprQuery.gql";
 
@@ -24,7 +24,7 @@ const columns = [
     renderCell: ({ diseaseCellLines, diseaseFromSource }) => {
       if (!diseaseCellLines) return naLabel;
 
-      const cellLines = diseaseCellLines.map(line => ({
+      const cellLines = diseaseCellLines.map((line) => ({
         name: line.name,
         url: `https://cellmodelpassports.sanger.ac.uk/passports/${line.id}`,
         group: "Cancer Cell Lines",

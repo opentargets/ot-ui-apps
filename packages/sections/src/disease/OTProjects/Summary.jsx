@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
-import OT_PROJECTS_SUMMARY_FRAGMENT from "./OTProjectsSummaryFragment.gql";
 import { definition } from ".";
+import OT_PROJECTS_SUMMARY_FRAGMENT from "./OTProjectsSummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(OT_PROJECTS_SUMMARY_FRAGMENT);

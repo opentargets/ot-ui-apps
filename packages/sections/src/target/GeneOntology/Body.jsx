@@ -1,13 +1,13 @@
 import { useQuery } from "@apollo/client";
-import { sortBy, filter } from "lodash";
-import { Link, Tooltip, SectionItem, PublicationsDrawer, OtTable } from "ui";
+import { filter, sortBy } from "lodash";
+import { Link, OtTable, PublicationsDrawer, SectionItem, Tooltip } from "ui";
 
+import { defaultRowsPerPageOptions } from "@ot/constants";
+import { epmcUrl } from "@ot/utils";
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "@ot/utils";
-import { defaultRowsPerPageOptions } from "@ot/constants";
-import GeneOntologyEvidenceCodeMap from "./GeneOntologyEvidenceCodeMappings.json";
 import GENE_ONTOLOGY_QUERY from "./GeneOntology.gql";
+import GeneOntologyEvidenceCodeMap from "./GeneOntologyEvidenceCodeMappings.json";
 
 const CATEGORY_BY_PREFIX = {
   F: { code: "MOLECULAR_FUNCTION", label: "Molecular Function" },
@@ -15,18 +15,18 @@ const CATEGORY_BY_PREFIX = {
   C: { code: "CELLULAR_COMPONENT", label: "Cellular Component" },
 };
 
-const extractCategory = row => ({
+const extractCategory = (row) => ({
   ...row,
   category: CATEGORY_BY_PREFIX[row.aspect],
 });
 
 const sourceURLS = {
-  Reactome: id => `https://identifiers.org/reactome:${id}`,
-  DOI: id => `https://doi.org/${id}}`,
-  GO_REF: id => `https://identifiers.org/GO_REF:${id}`,
+  Reactome: (id) => `https://identifiers.org/reactome:${id}`,
+  DOI: (id) => `https://doi.org/${id}}`,
+  GO_REF: (id) => `https://identifiers.org/GO_REF:${id}`,
 };
 
-const sourceMapContent = source => {
+const sourceMapContent = (source) => {
   const sourceName = source.slice(0, source.indexOf(":"));
   const sourceId = source.slice(source.indexOf(":") + 1);
   if (sourceName !== "PMID")
@@ -122,7 +122,7 @@ const columns = [
     id: "evidence",
     label: "Evidence code",
     exportLabel: "Evidence code",
-    exportValue: row => row.evidence,
+    exportValue: (row) => row.evidence,
     renderCell: ({ evidence }) => (
       <Tooltip title={<EvidenceTooltip evidence={evidence} />} showHelpIcon>
         {evidence}
@@ -133,7 +133,7 @@ const columns = [
     id: "source",
     label: "Source",
     exportLabel: "Source",
-    exportValue: row => row.source,
+    exportValue: (row) => row.source,
     renderCell: ({ source }) => sourceMapContent(source),
   },
 ];

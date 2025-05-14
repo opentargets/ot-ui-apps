@@ -1,12 +1,12 @@
-import { makeStyles, useTheme } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDna } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { makeStyles, useTheme } from "@mui/styles";
 import { Highlights, Link } from "ui";
 
 import { clearDescriptionCodes } from "@ot/utils";
 import TargetDescription from "../TargetPage/TargetDescription";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     marginBottom: "30px",
   },

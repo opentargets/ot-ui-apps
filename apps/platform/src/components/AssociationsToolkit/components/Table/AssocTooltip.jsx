@@ -1,7 +1,7 @@
-import { withStyles } from "@mui/styles";
 import Tooltip from "@mui/material/Tooltip";
+import { withStyles } from "@mui/styles";
 
-const HtmlTooltip = withStyles(theme => ({
+const HtmlTooltip = withStyles((theme) => ({
   tooltip: {
     backgroundColor: `${theme.palette.background.paper} !important`,
     border: `1px solid ${theme.palette.grey[300]}`,

@@ -1,12 +1,12 @@
-import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Box, Tab, Tabs } from "@mui/material";
+import { getUniprotIds } from "@ot/utils";
+import type { ReactElement } from "react";
 import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { BasePage, ScrollToTop } from "ui";
-import { getUniprotIds } from "@ot/utils";
 
-import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
+import Header from "./Header";
 import TARGET_PAGE_QUERY from "./TargetPage.gql";
 
 import Profile from "./Profile";
@@ -30,7 +30,7 @@ function TargetPage(): ReactElement {
 
   const { approvedSymbol: symbol, approvedName } = data?.target || {};
   const uniprotIds = loading ? null : getUniprotIds(data.target.proteinIds);
-  const crisprId = data?.target.dbXrefs.find(p => p.source === "ProjectScore")?.id;
+  const crisprId = data?.target.dbXrefs.find((p) => p.source === "ProjectScore")?.id;
 
   return (
     <BasePage

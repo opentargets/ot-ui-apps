@@ -1,5 +1,5 @@
-import { useRef, useEffect, Dispatch, SetStateAction } from "react";
 import { Box } from "@mui/material";
+import { type Dispatch, type SetStateAction, useEffect, useRef } from "react";
 
 type ObsChartProps = {
   data: any;
@@ -64,7 +64,7 @@ function ObsChart({
           }
         };
         elmt.setAttribute("data-index", dataIndex);
-        elmt.addEventListener("click", event => {
+        elmt.addEventListener("click", (event) => {
           if (clicked && selectedDatum === elmtDatum) {
             clicked = false;
             selectedDatum = null;
@@ -120,7 +120,7 @@ function ObsChart({
     setDatum,
   ]);
 
-  return <Box ref={headerRef}></Box>;
+  return <Box ref={headerRef} />;
 }
 
 export default ObsChart;

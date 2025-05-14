@@ -5,7 +5,7 @@ export const definition = {
   id,
   name: "ClinGen",
   shortName: "CG",
-  hasData: data => data.clingenSummary.count > 0,
+  hasData: (data) => data.clingenSummary.count > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };
 

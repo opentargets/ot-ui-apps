@@ -18,7 +18,7 @@ export const FacetsSelect = styled(Select)(({ theme }) => ({
   },
 }));
 
-export const FacetsPopper = props => {
+export const FacetsPopper = (props) => {
   return <Popper {...props} style={{ width: "360px" }} placement="bottom-start" />;
 };
 

@@ -8,7 +8,7 @@ export type VariantPageDataType = {
     {
       id: string;
       source: number;
-    }
+    },
   ];
   chromosome: string;
   position: number;
@@ -121,7 +121,7 @@ export type GWASCredibleSets = {
     {
       ldPopulation: string;
       relativeSampleSize: number;
-    }
+    },
   ];
   finemappingMethod: string;
   l2g: {
@@ -139,7 +139,7 @@ export type GWASCredibleSets = {
       standardError: number;
       is95CredibleSet: boolean;
       is99CredibleSet: boolean;
-    }
+    },
   ];
 };
 

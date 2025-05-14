@@ -1,4 +1,4 @@
-import { Column, TargetPrioritisationAggregation } from "../types";
+import { type Column, TargetPrioritisationAggregation } from "../types";
 
 const maxClinicalTrialPhase: Column = {
   id: "maxClinicalTrialPhase",

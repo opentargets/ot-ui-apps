@@ -6,7 +6,7 @@ function useListOption() {
 
   const entitiesWitAssociations = ["disease", "target"];
 
-  const openListItem = option => {
+  const openListItem = (option) => {
     if (!option) return;
     const newOption = { ...option };
     newOption.type = "recent";

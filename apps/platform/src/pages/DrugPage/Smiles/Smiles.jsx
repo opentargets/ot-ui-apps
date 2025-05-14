@@ -1,5 +1,5 @@
-import { Component } from "react";
 import { Skeleton } from "@mui/material";
+import { Component } from "react";
 import SmilesHelper from "./SmilesHelper";
 
 class Smiles extends Component {
@@ -15,8 +15,8 @@ class Smiles extends Component {
 
     const { chemblId } = this.props;
     fetch(`https://www.ebi.ac.uk/chembl/api/data/molecule/${chemblId}?format=json`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (this.mounted) {
           this.setState({
             smiles:

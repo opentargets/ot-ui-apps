@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { styled, Box, InputAdornment, useTheme, TextField } from "@mui/material";
-import useAotfContext from "../hooks/useAotfContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, InputAdornment, TextField, styled, useTheme } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useDebounce } from "ui";
 import { setEntitySearch } from "../context/aotfActions";
+import useAotfContext from "../hooks/useAotfContext";
 
 const NameFilterInput = styled(TextField)(() => ({
   borderRadius: "2px",
@@ -36,7 +36,7 @@ const NameFilter = () => {
     <Box sx={{ width: { md: 220 } }}>
       <NameFilterInput
         value={inputValue}
-        onChange={event => {
+        onChange={(event) => {
           setInputValue(event.target.value);
         }}
         size="small"

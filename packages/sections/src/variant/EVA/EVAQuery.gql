@@ -6,7 +6,7 @@ query EVAQuery($variantId: String!) {
     evidences(datasourceIds: ["eva"]) {
       count
       rows {
-      	alleleOrigins
+        alleleOrigins
         allelicRequirements
         clinicalSignificances
         cohortPhenotypes

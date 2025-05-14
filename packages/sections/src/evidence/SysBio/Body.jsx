@@ -1,13 +1,13 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
+import { Link, OtTable, PublicationsDrawer, SectionItem, Tooltip } from "ui";
 
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
+import { epmcUrl } from "@ot/utils";
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "@ot/utils";
 import SYSBIO_QUERY from "./sectionQuery.gql";
-import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
-const getColumns = label => [
+const getColumns = (label) => [
   {
     id: "disease",
     label: "Disease/phenotype",

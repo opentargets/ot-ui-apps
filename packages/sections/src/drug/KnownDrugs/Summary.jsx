@@ -10,7 +10,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => (
+      renderSummary={(data) => (
         <>
           {(data.knownDrugs.uniqueTargets || 0).toLocaleString()} target
           {data.knownDrugs.uniqueTargets === 1 ? "" : "s"} and{" "}

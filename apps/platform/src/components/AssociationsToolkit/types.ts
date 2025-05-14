@@ -1,5 +1,5 @@
-import { DocumentNode } from "graphql";
-import { Facet } from "../Facets/facetsTypes";
+import type { DocumentNode } from "graphql";
+import type { Facet } from "../Facets/facetsTypes";
 
 export enum ENTITY {
   TARGET = "target",

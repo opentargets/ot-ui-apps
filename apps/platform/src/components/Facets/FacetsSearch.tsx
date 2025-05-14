@@ -5,19 +5,21 @@ import {
   Divider,
   MenuItem,
   Popover,
-  SelectChangeEvent,
-  styled,
+  type SelectChangeEvent,
   TextField,
   Typography,
+  styled,
 } from "@mui/material";
-import { ReactElement, useEffect, useReducer, useState, MouseEvent } from "react";
+import { type MouseEvent, type ReactElement, useEffect, useReducer, useState } from "react";
 import { Tooltip, useApolloClient, useDebounce } from "ui";
 
+import { faCaretDown, faCaretUp, faCircleXmark, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { v1 } from "uuid";
+import { DataUploader } from "../AssociationsToolkit";
 import useAotfContext from "../AssociationsToolkit/hooks/useAotfContext";
 import FacetsSuggestion from "./FacetsSuggestion";
 import { resetFacets, selectFacet, setCategory, setFacetsData, setLoading } from "./facetsActions";
-import { createInitialState, facetsReducer } from "./facetsReducer";
-import { v1 } from "uuid";
 import {
   FacetListItemCategory,
   FacetListItemContainer,
@@ -26,11 +28,9 @@ import {
   FacetsPopper,
   FacetsSelect,
 } from "./facetsLayout";
+import { createInitialState, facetsReducer } from "./facetsReducer";
+import type { Facet } from "./facetsTypes";
 import { getFacetsData } from "./service/facetsService";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCaretUp, faCircleXmark, faFilter } from "@fortawesome/free-solid-svg-icons";
-import { Facet } from "./facetsTypes";
-import { DataUploader } from "../AssociationsToolkit";
 
 const FilterButton = styled(Button)({
   border: "none",
@@ -40,7 +40,7 @@ const FilterButton = styled(Button)({
 });
 
 function removeFacet(items: Facet[], idToRemove: string): Facet[] {
-  return items.filter(item => item.id !== idToRemove);
+  return items.filter((item) => item.id !== idToRemove);
 }
 
 function FacetsSearch(): ReactElement {
@@ -64,7 +64,7 @@ function FacetsSearch(): ReactElement {
       return dispatch(setCategory(category, []));
     }
     const facetData = getFacetsData("*", entityToGet, category, client);
-    facetData.then(data => {
+    facetData.then((data) => {
       dispatch(setCategory(category, data));
     });
   }
@@ -72,7 +72,7 @@ function FacetsSearch(): ReactElement {
   function getFacetsQueryData() {
     dispatch(setLoading(true));
     const facetData = getFacetsData(inputValue, entityToGet, state.categoryFilterValue, client);
-    facetData.then(data => {
+    facetData.then((data) => {
       dispatch(setFacetsData(data));
     });
   }
@@ -104,10 +104,10 @@ function FacetsSearch(): ReactElement {
     dispatch(resetFacets(entityToGet));
   }, [id]);
 
-  const handleOptionSelect = (event, newValue) => {
+  const handleOptionSelect = (_event, newValue) => {
     if (newValue) {
       // Check if the option is already selected to prevent duplicates
-      if (!facetFilters.some(option => option.id === newValue.id)) {
+      if (!facetFilters.some((option) => option.id === newValue.id)) {
         dispatch(selectFacet([newValue, ...facetFilters]));
         facetFilterSelect([newValue, ...facetFilters]);
       }
@@ -161,17 +161,17 @@ function FacetsSearch(): ReactElement {
               inputValue={inputValue}
               loading={state.loading}
               options={state.dataOptions}
-              filterOptions={x => x}
-              getOptionLabel={option => option?.label}
+              filterOptions={(x) => x}
+              getOptionLabel={(option) => option?.label}
               isOptionEqualToValue={(option, value) => option.id === value?.id}
               onOpen={() => setOptionsOpen(true)}
               onClose={() => setOptionsOpen(false)}
               onChange={handleOptionSelect}
-              onInputChange={(event, newInputValue) => {
+              onInputChange={(_event, newInputValue) => {
                 setInputValue(newInputValue);
               }}
               PopperComponent={FacetsPopper}
-              renderInput={params => (
+              renderInput={(params) => (
                 <TextField {...params} label={`Search ${entityToGet} filter`} fullWidth />
               )}
               renderOption={(props, option) => (
@@ -181,7 +181,7 @@ function FacetsSearch(): ReactElement {
                       <Typography
                         variant="body2"
                         dangerouslySetInnerHTML={{ __html: option.highlights[0] || option.label }}
-                      ></Typography>
+                      />
                     </FacetListItemLabel>
                     <FacetListItemCategory>
                       <Typography variant="caption">in {option.category}</Typography>

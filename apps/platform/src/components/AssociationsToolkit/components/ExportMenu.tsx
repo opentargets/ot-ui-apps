@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { Popover, Button, Box, MenuList } from "@mui/material";
-import { faCaretUp, faCaretDown, faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCaretUp, faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Button, MenuList, Popover } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useState } from "react";
 
-import DataDownloader from "./DataDownloader";
 import AotfApiPlayground from "./AotfApiPlayground";
+import DataDownloader from "./DataDownloader";
 
 const StyledBotton = styled(Button)({
   border: "none",
@@ -17,7 +17,7 @@ const StyledBotton = styled(Button)({
 function ExportMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleClick = event => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 

@@ -1,21 +1,21 @@
 import { gql } from "@apollo/client";
-import { lazy, Suspense } from "react";
+import { Suspense, lazy } from "react";
 
 import {
   PlatformApiProvider,
+  PrivateWrapper,
   SectionContainer,
+  SectionLoader,
   SummaryContainer,
   summaryUtils,
-  PrivateWrapper,
-  SectionLoader,
 } from "ui";
 
-import OntologySummary from "sections/src/disease/Ontology/Summary";
-import KnownDrugsSummary from "sections/src/disease/KnownDrugs/Summary";
 import BibliographySummary from "sections/src/disease/Bibliography/Summary";
-import PhenotypesSummary from "sections/src/disease/Phenotypes/Summary";
-import OTProjectsSummary from "sections/src/disease/OTProjects/Summary";
 import GWASStudiesSummary from "sections/src/disease/GWASStudies/Summary";
+import KnownDrugsSummary from "sections/src/disease/KnownDrugs/Summary";
+import OTProjectsSummary from "sections/src/disease/OTProjects/Summary";
+import OntologySummary from "sections/src/disease/Ontology/Summary";
+import PhenotypesSummary from "sections/src/disease/Phenotypes/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 

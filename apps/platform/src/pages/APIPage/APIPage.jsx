@@ -1,32 +1,32 @@
-import { Suspense, useState, lazy } from "react";
-import { LoadingBackdrop, Link } from "ui";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Accordion,
-  AccordionSummary,
   AccordionDetails,
+  AccordionSummary,
   Button,
   Grid,
   Typography,
   styled,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { fetcher } from "@ot/utils";
+import { Suspense, lazy, useState } from "react";
+import { Link, LoadingBackdrop } from "ui";
 
 import "graphiql/graphiql.min.css";
 
-import TARGET_ASSOCS from "./TargetAssocs.gql";
-import DISEASE_ASSOCS from "./DiseaseAssocs.gql";
-import TARGET_DISEASE_EVIDENCE from "./TargetDiseaseEvidence.gql";
-import TARGET_ANNOTATION from "./TargetAnnotation.gql";
+import CREDIBLE_SET_ANNOTATION from "./CredibleSetAnnotation.gql";
 import DISEASE_ANNOTATION from "./DiseaseAnnotation.gql";
+import DISEASE_ANNOTATION_GWAS from "./DiseaseAnnotationGWAS.gql";
+import DISEASE_ASSOCS from "./DiseaseAssocs.gql";
 import DRUG_ANNOTATION from "./DrugAnnotation.gql";
 import SEARCH_ANNOTATION from "./SearchAnnotation.gql";
 import SEARCH_ASSOCS from "./SearchAssocs.gql";
-import CREDIBLE_SET_ANNOTATION from "./CredibleSetAnnotation.gql";
-import DISEASE_ANNOTATION_GWAS from "./DiseaseAnnotationGWAS.gql";
 import STUDY_ANNOTATION from "./StudyAnnotation.gql";
+import TARGET_ANNOTATION from "./TargetAnnotation.gql";
+import TARGET_ASSOCS from "./TargetAssocs.gql";
+import TARGET_DISEASE_EVIDENCE from "./TargetDiseaseEvidence.gql";
 import VARIANT_ANNOTATION from "./VariantAnnotation.gql";
 
 const QueryButton = styled(Button)`
@@ -35,15 +35,11 @@ const QueryButton = styled(Button)`
 `;
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
-  import("graphiql").then(module => {
+  import("graphiql").then((module) => {
     // eslint-disable-next-line
-    module.default.Logo = function () {
-      return null;
-    };
+    module.default.Logo = () => null;
     // eslint-disable-next-line
-    module.default.Toolbar = function () {
-      return null;
-    };
+    module.default.Toolbar = () => null;
     return module;
   })
 );

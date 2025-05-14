@@ -2,8 +2,8 @@ import { Suspense, lazy } from "react";
 import { Helmet } from "react-helmet";
 import { ErrorBoundary } from "ui";
 
-const ExpressionAtlasHeatmap = lazy(() =>
-  import("@ebi-gene-expression-group/expression-atlas-heatmap-highcharts")
+const ExpressionAtlasHeatmap = lazy(
+  () => import("@ebi-gene-expression-group/expression-atlas-heatmap-highcharts")
 );
 
 function AtlasTab({ ensgId, symbol }) {

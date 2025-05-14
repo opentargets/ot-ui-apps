@@ -3,24 +3,25 @@ import { Box, List, ListItem, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { v1 } from "uuid";
 
-import { ChipList, Link, SectionItem, PublicationsDrawer, OtTable } from "ui";
+import { ChipList, Link, OtTable, PublicationsDrawer, SectionItem } from "ui";
 
 import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
-import Description from "./Description";
 import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
+import Description from "./Description";
 
 import { definition } from ".";
 
 import CANCER_GENE_CENSUS_QUERY from "./sectionQuery.gql";
 
-const samplePercent = item => (item.numberSamplesWithMutationType / item.numberSamplesTested) * 100;
+const samplePercent = (item) =>
+  (item.numberSamplesWithMutationType / item.numberSamplesTested) * 100;
 
-const getMaxPercent = row => {
-  if (row.mutatedSamples) return Math.max(...row.mutatedSamples.map(item => samplePercent(item)));
+const getMaxPercent = (row) => {
+  if (row.mutatedSamples) return Math.max(...row.mutatedSamples.map((item) => samplePercent(item)));
   return null;
 };
 
-const getColumns = label => [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -43,7 +44,7 @@ const getColumns = label => [
         .sort((a, b) => samplePercent(b) - samplePercent(a));
       return (
         <List style={{ padding: 0 }}>
-          {sortedMutatedSamples.map(mutatedSample => (
+          {sortedMutatedSamples.map((mutatedSample) => (
             <ListItem key={mutatedSample.functionalConsequence.id} style={{ padding: ".25rem 0" }}>
               <Link
                 external
@@ -58,7 +59,7 @@ const getColumns = label => [
     },
     filterValue: ({ mutatedSamples }) =>
       (mutatedSamples || [])
-        .map(mutatedSample => sentenceCase(mutatedSample.functionalConsequence.label))
+        .map((mutatedSample) => sentenceCase(mutatedSample.functionalConsequence.label))
         .join(),
   },
   {
@@ -73,12 +74,15 @@ const getColumns = label => [
         .sort((a, b) => samplePercent(b) - samplePercent(a));
       return (
         <List style={{ padding: 0 }}>
-          {sortedMutatedSamples.map(item => {
+          {sortedMutatedSamples.map((item) => {
             const percent = samplePercent(item);
 
             return (
               <ListItem key={v1()} style={{ padding: ".25rem 0" }}>
-                {percent < 5 ? parseFloat(percent.toFixed(2)).toString() : Math.round(percent)}%
+                {percent < 5
+                  ? Number.parseFloat(percent.toFixed(2)).toString()
+                  : Math.round(percent)}
+                %
                 <Typography variant="caption" style={{ marginLeft: ".33rem" }}>
                   ({item.numberSamplesWithMutationType}/{item.numberSamplesTested})
                 </Typography>
@@ -151,8 +155,8 @@ function Body({ id, label, entity }) {
         const roleInCancerItems =
           request.data?.target.hallmarks && request.data?.target.hallmarks.attributes.length > 0
             ? request.data?.target.hallmarks.attributes
-                .filter(attribute => attribute.name === "role in cancer")
-                .map(attribute => ({
+                .filter((attribute) => attribute.name === "role in cancer")
+                .map((attribute) => ({
                   label: attribute.description,
                   url: epmcUrl(attribute.pmid),
                 }))

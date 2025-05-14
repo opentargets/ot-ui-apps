@@ -3,7 +3,7 @@ export const definition = {
   id,
   name: "Shared Trait Studies",
   shortName: "ST",
-  hasData: data => {
+  hasData: (data) => {
     return data?.sharedTraitStudies?.count > 1 || data?.count > 1;
   },
 };

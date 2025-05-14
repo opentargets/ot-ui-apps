@@ -1,8 +1,8 @@
 import { Grid } from "@mui/material";
 import ExpressionDataDownloader from "./ExpressionDataDownloader";
 
-import SummaryTable from "./SummaryTable";
 import EXPRESSION_QUERY from "./ExpressionQuery.gql";
+import SummaryTable from "./SummaryTable";
 
 export function getData(ensgId, client) {
   return client.query({
@@ -19,8 +19,8 @@ const headers = [
   { id: "protein", label: "Protein" },
 ];
 
-const getDownloadRows = expressions =>
-  expressions.map(expression => ({
+const getDownloadRows = (expressions) =>
+  expressions.map((expression) => ({
     label: expression.tissue.label,
     organs: expression.tissue.organs.join(","),
     anatomicalSystems: expression.tissue.anatomicalSystems.join(","),

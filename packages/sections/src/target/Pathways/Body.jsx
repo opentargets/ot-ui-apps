@@ -1,14 +1,14 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem, Link, OtTable } from "ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarker } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link, OtTable, SectionItem } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
 import PATHWAYS_QUERY from "./Pathways.gql";
 
-import { identifiersOrgLink } from "@ot/utils";
 import { defaultRowsPerPageOptions } from "@ot/constants";
+import { identifiersOrgLink } from "@ot/utils";
 
 function getColumns(symbol) {
   return [

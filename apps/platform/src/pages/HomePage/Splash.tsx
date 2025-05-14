@@ -1,9 +1,9 @@
 import { makeStyles } from "@mui/styles";
 
+import type { Theme } from "@mui/material";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
-import { Engine } from "tsparticles-engine";
-import { Theme } from "@mui/material";
+import type { Engine } from "tsparticles-engine";
 
 import { particlesConfig } from "@ot/constants";
 

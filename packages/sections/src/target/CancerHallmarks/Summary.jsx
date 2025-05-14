@@ -11,14 +11,14 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => {
+      renderSummary={(data) => {
         const hallmarks = _.uniqBy(data.hallmarks.cancerHallmarks, "label");
         const promote = _.uniqBy(
-          data.hallmarks.cancerHallmarks.filter(d => d.impact === "promotes"),
+          data.hallmarks.cancerHallmarks.filter((d) => d.impact === "promotes"),
           "label"
         );
         const suppress = _.uniqBy(
-          data.hallmarks.cancerHallmarks.filter(d => d.impact === "suppresses"),
+          data.hallmarks.cancerHallmarks.filter((d) => d.impact === "suppresses"),
           "label"
         );
 

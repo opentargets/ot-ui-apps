@@ -1,11 +1,11 @@
-import { makeStyles } from "@mui/styles";
 import { Box, CircularProgress } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 type LoadingBackdropProps = {
   height?: number;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     color: theme.palette.primary.main,
     background: theme.palette.grey["50"],

@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from ".";
 import { dataTypesMap } from "@ot/constants";
+import { definition } from ".";
 import IMCP_SUMMARY_FRAGMENT from "./IMCPSummaryFragment.gql";
 
 function Summary() {
@@ -11,7 +11,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => `${data.impc.count} entr${data.impc.count === 1 ? "y" : "ies"}`}
+      renderSummary={(data) => `${data.impc.count} entr${data.impc.count === 1 ? "y" : "ies"}`}
       subText={dataTypesMap.animal_model}
     />
   );

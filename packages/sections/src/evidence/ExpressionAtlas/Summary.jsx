@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from ".";
 import { dataTypesMap } from "@ot/constants";
+import { definition } from ".";
 import EXPRESSION_ATLAS_SUMMARY from "./ExpressionAtlasSummary.gql";
 
 function Summary() {

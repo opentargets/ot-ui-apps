@@ -1,19 +1,19 @@
 import { useQuery } from "@apollo/client";
+import { credsetConfidenceMap, naLabel } from "@ot/constants";
+import { mantissaExponentComparator, nullishComparator, variantComparator } from "@ot/utils";
 import {
-  Link,
-  SectionItem,
-  ScientificNotation,
-  DisplayVariantId,
-  OtTable,
-  Navigate,
-  Tooltip,
   ClinvarStars,
+  DisplayVariantId,
+  Link,
+  Navigate,
+  OtTable,
+  ScientificNotation,
+  SectionItem,
+  Tooltip,
 } from "ui";
-import { naLabel, credsetConfidenceMap } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import QTL_CREDIBLE_SETS_QUERY from "./QTLCredibleSetsQuery.gql";
-import { mantissaExponentComparator, nullishComparator, variantComparator } from "@ot/utils";
 
 const columns = [
   {
@@ -25,7 +25,7 @@ const columns = [
   {
     id: "leadVariant",
     label: "Lead variant",
-    comparator: variantComparator(d => d?.variant),
+    comparator: variantComparator((d) => d?.variant),
     sortable: true,
     filterValue: ({ variant: v }) =>
       `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -102,7 +102,7 @@ const columns = [
     sortable: true,
     comparator: nullishComparator(
       (a, b) => a - b,
-      row => credsetConfidenceMap?.[row.confidence],
+      (row) => credsetConfidenceMap?.[row.confidence],
       false
     ),
     renderCell: ({ confidence }) => {

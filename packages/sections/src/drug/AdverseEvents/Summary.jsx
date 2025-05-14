@@ -10,7 +10,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         `${data.adverseEvents.count} adverse event${data.adverseEvents.count !== 1 ? "s" : ""}`
       }
     />

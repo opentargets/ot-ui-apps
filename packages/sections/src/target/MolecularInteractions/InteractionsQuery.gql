@@ -9,10 +9,7 @@ query InteractionsSectionQuery(
     approvedName
     approvedSymbol
 
-    interactions(
-      sourceDatabase: $sourceDatabase
-      page: { index: $index, size: $size }
-    ) {
+    interactions(sourceDatabase: $sourceDatabase, page: { index: $index, size: $size }) {
       count
       rows {
         intA

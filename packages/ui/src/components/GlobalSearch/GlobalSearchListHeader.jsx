@@ -1,18 +1,18 @@
-import { makeStyles } from "@mui/styles";
-import { Button, Chip, Typography, styled } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faPrescriptionBottleAlt,
-  faStethoscope,
-  faDna,
   faChartBar,
+  faDna,
   faMapPin,
+  faPrescriptionBottleAlt,
   faStar,
+  faStethoscope,
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button, Chip, Typography, styled } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { clearAllRecent } from "./utils/searchUtils";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   sectionHeader: {
     textTransform: "capitalize",
     color: theme.palette.grey[600],

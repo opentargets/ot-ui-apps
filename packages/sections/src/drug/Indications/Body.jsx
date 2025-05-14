@@ -1,14 +1,14 @@
 import { useQuery } from "@apollo/client";
 
-import { Link, SectionItem, PaginationActionsComplete, TableDrawer, OtTable } from "ui";
-import { sourceMap, phaseMap } from "@ot/constants";
+import { phaseMap, sourceMap } from "@ot/constants";
 import { referenceUrls } from "@ot/utils";
+import { Link, OtTable, PaginationActionsComplete, SectionItem, TableDrawer } from "ui";
 
 import Description from "./Description";
 import TherapeuticAreasDrawer from "./TherapeuticAreasDrawer";
 
-import INDICATIONS_QUERY from "./IndicationsQuery.gql";
 import { definition } from ".";
+import INDICATIONS_QUERY from "./IndicationsQuery.gql";
 
 const columns = [
   {
@@ -16,7 +16,7 @@ const columns = [
     label: "Indication",
     enableHiding: false,
     propertyPath: "disease.name",
-    renderCell: d => (
+    renderCell: (d) => (
       <Link asyncTooltip to={`/disease/${d.disease.id}`}>
         {d.disease.name}
       </Link>
@@ -26,8 +26,8 @@ const columns = [
   {
     id: "therapeuticAreas",
     label: "Therapeutic Areas",
-    renderCell: d => <TherapeuticAreasDrawer therapeuticAreas={d.disease.therapeuticAreas} />,
-    exportValue: d => d.disease.therapeuticAreas.map(therapeuticArea => therapeuticArea.id),
+    renderCell: (d) => <TherapeuticAreasDrawer therapeuticAreas={d.disease.therapeuticAreas} />,
+    exportValue: (d) => d.disease.therapeuticAreas.map((therapeuticArea) => therapeuticArea.id),
     width: "38%",
   },
   {
@@ -46,8 +46,8 @@ const columns = [
 
       const referenceList = [];
 
-      references.forEach(reference => {
-        reference.ids.forEach(id => {
+      references.forEach((reference) => {
+        reference.ids.forEach((id) => {
           referenceList.push({
             name: id,
             url: referenceUrls[reference.source](id),

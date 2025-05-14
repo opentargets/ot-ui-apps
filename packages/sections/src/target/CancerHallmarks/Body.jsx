@@ -1,11 +1,11 @@
+import { useQuery } from "@apollo/client";
 import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { useQuery } from "@apollo/client";
-import { ChipList, SectionItem, PublicationsDrawer, OtTable } from "ui";
+import { ChipList, OtTable, PublicationsDrawer, SectionItem } from "ui";
 
+import { defaultRowsPerPageOptions } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
-import { defaultRowsPerPageOptions } from "@ot/constants";
 
 import HALLMARKS_QUERY from "./Hallmarks.gql";
 
@@ -14,19 +14,19 @@ const columns = [
     id: "label",
     label: "Hallmark",
     enableHiding: false,
-    renderCell: row => row.label,
+    renderCell: (row) => row.label,
     exportLabel: "Hallmark",
   },
   {
     id: "activity",
     label: "Effect",
-    renderCell: row => row.activity,
+    renderCell: (row) => row.activity,
     exportLabel: "Effect",
   },
   {
     id: "description",
     label: "Description",
-    renderCell: row => row.description,
+    renderCell: (row) => row.description,
     exportLabel: "Description",
   },
   {
@@ -44,7 +44,7 @@ const columns = [
       />
     ),
     exportLabel: "Literature (PubMed id)",
-    exportValue: row => row.pmid,
+    exportValue: (row) => row.pmid,
   },
 ];
 
@@ -71,12 +71,12 @@ function Section({ id, label: symbol, entity }) {
       renderBody={() => {
         if (request.data?.target.hallmarks === null) return null;
         const roleInCancer = request.data?.target.hallmarks.attributes
-          .filter(a => a.name === "role in cancer")
-          .map(r => ({
+          .filter((a) => a.name === "role in cancer")
+          .map((r) => ({
             label: r.description,
             url: `http://europepmc.org/search?query=EXT_ID:${r.pmid}`,
           }));
-        const rows = request.data?.target.hallmarks.cancerHallmarks.map(r => ({
+        const rows = request.data?.target.hallmarks.cancerHallmarks.map((r) => ({
           label: r.label,
           activity: r.impact === "promotes" ? "promotes" : "suppresses",
           description: r.description,

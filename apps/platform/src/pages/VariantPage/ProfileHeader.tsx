@@ -1,14 +1,14 @@
+import { Box, Paper, Typography } from "@mui/material";
+import { identifiersOrgLink } from "@ot/utils";
 // import { useState, useEffect } from "react";
 import {
-  usePlatformApi,
-  Field,
   ProfileHeader as BaseProfileHeader,
+  Field,
   Link,
   LongText,
   ProfileDescription,
+  usePlatformApi,
 } from "ui";
-import { Box, Paper, Typography } from "@mui/material";
-import { identifiersOrgLink } from "@ot/utils";
 
 import VARIANT_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 
@@ -144,14 +144,14 @@ function AlleleFrequencyPlot({ data }) {
     .sort((a, b) => (a.label < b.label ? -1 : 1));
   rows.push(
     rows.splice(
-      rows.findIndex(r => r.label === "Other"),
+      rows.findIndex((r) => r.label === "Other"),
       1
     )[0]
   );
 
   return (
     <Box display="flex" flexDirection="column" gap={0.25}>
-      {rows.map(row => (
+      {rows.map((row) => (
         <BarGroup dataRow={row} key={row.label} dps={dps} />
       ))}
     </Box>
@@ -167,7 +167,7 @@ function BarGroup({ dataRow: { label, alleleFrequency }, dps }) {
       <Box
         sx={{
           flexGrow: 2,
-          background: theme => theme.palette.grey[300],
+          background: (theme) => theme.palette.grey[300],
           height: "9px",
         }}
       >

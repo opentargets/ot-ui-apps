@@ -1,15 +1,15 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, OtTable, ScientificNotation } from "ui";
+import { Link, OtTable, ScientificNotation, SectionItem, Tooltip } from "ui";
 
+import { dataTypesMap } from "@ot/constants";
+import { naLabel, sectionsBaseSizeQuery } from "@ot/constants";
+import { sentenceCase } from "@ot/utils";
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "@ot/constants";
 import SLAPENRICH_QUERY from "./sectionQuery.gql";
-import { sentenceCase } from "@ot/utils";
-import { naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
-const reactomeUrl = id => `https://identifiers.org/reactome:${id}`;
+const reactomeUrl = (id) => `https://identifiers.org/reactome:${id}`;
 
 const columns = [
   {

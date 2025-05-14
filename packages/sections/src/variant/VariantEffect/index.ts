@@ -3,5 +3,5 @@ export const definition = {
   id,
   name: "Variant effect",
   shortName: "VP",
-  hasData: data => data?.variantEffect?.length > 0,
+  hasData: (data) => data?.variantEffect?.length > 0,
 };

@@ -2,20 +2,20 @@ import { useQuery } from "@apollo/client";
 import { faCheckSquare, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Typography } from "@mui/material";
+import { Link, OtTable, PublicationsDrawer, SectionItem, Tooltip } from "ui";
 import { v1 } from "uuid";
-import { Tooltip, SectionItem, Link, PublicationsDrawer, OtTable } from "ui";
 
-import { definition } from ".";
 import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
-import Description from "./Description";
 import { epmcUrl, sentenceCase } from "@ot/utils";
+import { definition } from ".";
+import Description from "./Description";
 
 import GENOMICS_ENGLAND_QUERY from "./sectionQuery.gql";
 
 const geUrl = (id, approvedSymbol) =>
   `https://panelapp.genomicsengland.co.uk/panels/${id}/gene/${approvedSymbol}`;
 
-const confidenceCaption = confidence =>
+const confidenceCaption = (confidence) =>
   ({
     green: (
       <span style={{ color: "#3fad46" }}>
@@ -27,15 +27,15 @@ const confidenceCaption = confidence =>
         <FontAwesomeIcon icon={faExclamationTriangle} size="sm" /> {sentenceCase(confidence)}
       </span>
     ),
-  }[confidence]);
+  })[confidence];
 
-const confidenceMap = confidence =>
+const confidenceMap = (confidence) =>
   ({
     green: 20,
     amber: 10,
-  }[confidence?.toLowerCase()] || 0);
+  })[confidence?.toLowerCase()] || 0;
 
-const allelicRequirementsCaption = allelicRequirements => {
+const allelicRequirementsCaption = (allelicRequirements) => {
   const caption = sentenceCase(allelicRequirements.split(" ", 1)[0].replace(/[;:,]*/g, ""));
   const description =
     allelicRequirements.split(" ").slice(1).join(" ") || "No more information available";
@@ -43,7 +43,7 @@ const allelicRequirementsCaption = allelicRequirements => {
   return [caption, description];
 };
 
-const getColumns = label => [
+const getColumns = (label) => [
   {
     id: "disease",
     label: "Disease/phenotype",
@@ -65,7 +65,7 @@ const getColumns = label => [
                   All reported phenotypes:
                 </Typography>
                 <Typography variant="caption" display="block">
-                  {cohortPhenotypes.map(cp => (
+                  {cohortPhenotypes.map((cp) => (
                     <div key={cp}>{cp}</div>
                   ))}
                 </Typography>
@@ -89,7 +89,7 @@ const getColumns = label => [
     label: "Allelic Requirement",
     renderCell: ({ allelicRequirements }) =>
       allelicRequirements
-        ? allelicRequirements.map(item => {
+        ? allelicRequirements.map((item) => {
             const [caption, description] = allelicRequirementsCaption(item);
 
             return (

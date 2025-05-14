@@ -1,9 +1,4 @@
-query KnownDrugsQuery(
-  $ensgId: String!
-  $cursor: String
-  $freeTextQuery: String
-  $size: Int = 10
-) {
+query KnownDrugsQuery($ensgId: String!, $cursor: String, $freeTextQuery: String, $size: Int = 10) {
   target(ensemblId: $ensgId) {
     id
     knownDrugs(cursor: $cursor, freeTextQuery: $freeTextQuery, size: $size) {

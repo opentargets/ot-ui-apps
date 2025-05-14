@@ -1,11 +1,11 @@
-import { Fragment, ReactElement } from "react";
 import { Box, Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable, useBatchQuery } from "ui";
+import { naLabel, table5HChunkSize } from "@ot/constants";
+import { epmcUrl, getStudyCategory } from "@ot/utils";
+import { Fragment, type ReactElement } from "react";
+import { Link, OtTable, PublicationsDrawer, SectionItem, Tooltip, useBatchQuery } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import { naLabel, table5HChunkSize } from "@ot/constants";
 import SHARED_TRAIT_STUDIES_QUERY from "./SharedTraitStudiesQuery.gql";
-import { epmcUrl, getStudyCategory } from "@ot/utils";
 
 function getColumns(diseaseIds: string[]) {
   const diseaseIdsSet = new Set(diseaseIds);
@@ -25,7 +25,7 @@ function getColumns(diseaseIds: string[]) {
       id: "sharedDiseases",
       label: "Shared disease/phenotype",
       renderCell: ({ diseases }) => {
-        const sharedTraits = diseases.filter(d => diseaseIdsSet.has(d.id));
+        const sharedTraits = diseases.filter((d) => diseaseIdsSet.has(d.id));
         return (
           <>
             {sharedTraits.map(({ id, name }, index) => (
@@ -41,7 +41,7 @@ function getColumns(diseaseIds: string[]) {
       },
       exportValue: ({ diseases }) =>
         diseases
-          .filter(d => diseaseIdsSet.has(d.id))
+          .filter((d) => diseaseIdsSet.has(d.id))
           .map(({ name }) => name)
           .join(", "),
     },
@@ -95,8 +95,8 @@ function getColumns(diseaseIds: string[]) {
         getStudyCategory(projectId) === "FINNGEN"
           ? "FinnGen"
           : cohorts?.length
-          ? cohorts.join(", ")
-          : null,
+            ? cohorts.join(", ")
+            : null,
     },
     {
       id: "publication",
@@ -140,7 +140,7 @@ export function Body({ studyId, diseaseIds }: BodyProps): ReactElement {
 
   const columns = getColumns(diseaseIds);
 
-  const rows = request.data?.studies?.rows?.filter(row => {
+  const rows = request.data?.studies?.rows?.filter((row) => {
     return row.id !== studyId;
   });
 

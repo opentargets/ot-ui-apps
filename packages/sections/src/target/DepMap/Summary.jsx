@@ -11,7 +11,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => {
+      renderSummary={(data) => {
         return <>{data.depMapEssentiality?.length} tissues</>;
       }}
     />

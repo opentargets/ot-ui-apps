@@ -1,10 +1,10 @@
 import { useQuery } from "@apollo/client";
-import { Link, TableDrawer, OtTable, SectionItem } from "ui";
+import { Link, OtTable, SectionItem, TableDrawer } from "ui";
 
 import { definition } from ".";
+import AllelicCompositionDrawer from "./AllelicCompositionDrawer";
 import Description from "./Description";
 import MOUSE_PHENOTYPES_QUERY from "./MousePhenotypes.gql";
-import AllelicCompositionDrawer from "./AllelicCompositionDrawer";
 
 const columns = [
   {
@@ -36,7 +36,7 @@ const columns = [
       return "categories";
     },
     renderCell: ({ modelPhenotypeClasses }) => {
-      const entries = modelPhenotypeClasses.map(phenotypeClass => ({
+      const entries = modelPhenotypeClasses.map((phenotypeClass) => ({
         name: phenotypeClass.label,
         url: `https://identifiers.org/${phenotypeClass.id}`,
         group: "Categories",
@@ -50,7 +50,7 @@ const columns = [
       );
     },
     exportValue: ({ modelPhenotypeClasses }) =>
-      modelPhenotypeClasses.map(phenotypeClass => phenotypeClass.label),
+      modelPhenotypeClasses.map((phenotypeClass) => phenotypeClass.label),
   },
   {
     id: "allelicComposition",
@@ -59,7 +59,7 @@ const columns = [
     renderCell: ({ biologicalModels }) => (
       <AllelicCompositionDrawer biologicalModels={biologicalModels} />
     ),
-    exportValue: ({ biologicalModels }) => biologicalModels.map(bm => bm.allelicComposition),
+    exportValue: ({ biologicalModels }) => biologicalModels.map((bm) => bm.allelicComposition),
   },
 ];
 

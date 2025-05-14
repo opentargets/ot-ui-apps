@@ -1,9 +1,9 @@
+import { faPrescriptionBottleAlt, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CardContent, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPrescriptionBottleAlt, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
-import { LongText, Chip, Link, LongList } from "ui";
+import { Chip, Link, LongList, LongText } from "ui";
 
 const useStyles = makeStyles({
   link: {
@@ -67,7 +67,7 @@ function DrugDetail({ data }) {
           <LongList
             terms={data.linkedTargets.rows}
             maxTerms={5}
-            render={target => (
+            render={(target) => (
               <Link className={classes.link} key={target.id} to={`/target/${target.id}`}>
                 {target.approvedSymbol}
               </Link>
@@ -83,7 +83,7 @@ function DrugDetail({ data }) {
           <LongList
             terms={data.synonyms}
             maxTerms={5}
-            render={synonym => <Chip key={synonym} title={synonym} label={synonym} />}
+            render={(synonym) => <Chip key={synonym} title={synonym} label={synonym} />}
           />
         </>
       )}
@@ -95,7 +95,7 @@ function DrugDetail({ data }) {
           <LongList
             terms={data.tradeNames}
             maxTerms={5}
-            render={tradeName => <Chip key={tradeName} title={tradeName} label={tradeName} />}
+            render={(tradeName) => <Chip key={tradeName} title={tradeName} label={tradeName} />}
           />
         </>
       )}

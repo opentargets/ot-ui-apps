@@ -1,20 +1,20 @@
-import { Suspense, lazy } from "react";
 import { gql } from "@apollo/client";
+import { Suspense, lazy } from "react";
 import {
   PlatformApiProvider,
   SectionContainer,
-  SummaryContainer,
   SectionLoader,
+  SummaryContainer,
   summaryUtils,
 } from "ui";
 
+import EVASummary from "sections/src/variant/EVA/Summary";
+import GWASCredibleSetsSummary from "sections/src/variant/GWASCredibleSets/Summary";
 import PharmacogenomicsSummary from "sections/src/variant/Pharmacogenomics/Summary";
+import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
+import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
 import VariantEffectSummary from "sections/src/variant/VariantEffect/Summary";
 import VariantEffectPredictorSummary from "sections/src/variant/VariantEffectPredictor/Summary";
-import EVASummary from "sections/src/variant/EVA/Summary";
-import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
-import GWASCredibleSetsSummary from "sections/src/variant/GWASCredibleSets/Summary";
-import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 const PharmacogenomicsSection = lazy(() => import("sections/src/variant/Pharmacogenomics/Body"));

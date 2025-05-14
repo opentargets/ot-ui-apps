@@ -1,23 +1,23 @@
-import {
-  Link,
-  SectionItem,
-  ScientificNotation,
-  DisplayVariantId,
-  Tooltip,
-  ClinvarStars,
-  L2GScoreIndicator,
-  OtTable,
-  useBatchQuery,
-  Navigate,
-} from "ui";
 import { Box } from "@mui/material";
+import { credsetConfidenceMap, naLabel, table5HChunkSize } from "@ot/constants";
 import { mantissaExponentComparator, nullishComparator, variantComparator } from "@ot/utils";
-import { naLabel, credsetConfidenceMap, table5HChunkSize } from "@ot/constants";
+import type { ReactElement } from "react";
+import {
+  ClinvarStars,
+  DisplayVariantId,
+  L2GScoreIndicator,
+  Link,
+  Navigate,
+  OtTable,
+  ScientificNotation,
+  SectionItem,
+  Tooltip,
+  useBatchQuery,
+} from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import ManhattanPlot from "./ManhattanPlot";
-import { ReactElement } from "react";
 
 const columns = [
   {
@@ -31,7 +31,7 @@ const columns = [
     id: "leadVariant",
     label: "Lead variant",
     enableHiding: false,
-    comparator: variantComparator(d => d?.variant),
+    comparator: variantComparator((d) => d?.variant),
     sortable: true,
     filterValue: ({ variant: v }) =>
       `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -108,7 +108,7 @@ const columns = [
     sortable: true,
     comparator: nullishComparator(
       (a, b) => a - b,
-      row => credsetConfidenceMap?.[row.confidence],
+      (row) => credsetConfidenceMap?.[row.confidence],
       false
     ),
     renderCell: ({ confidence }) => {
@@ -150,7 +150,7 @@ const columns = [
     label: "L2G score",
     comparator: nullishComparator(
       (a, b) => a - b,
-      row => row?.l2GPredictions?.rows[0]?.score,
+      (row) => row?.l2GPredictions?.rows[0]?.score,
       false
     ),
     sortable: true,

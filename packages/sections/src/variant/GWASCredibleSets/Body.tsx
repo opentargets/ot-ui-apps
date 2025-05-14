@@ -1,23 +1,23 @@
-import {
-  Link,
-  SectionItem,
-  ScientificNotation,
-  DisplayVariantId,
-  OtTable,
-  Tooltip,
-  ClinvarStars,
-  L2GScoreIndicator,
-  useBatchQuery,
-  Navigate,
-} from "ui";
 import { Box, Chip } from "@mui/material";
+import { credsetConfidenceMap, naLabel, table5HChunkSize } from "@ot/constants";
+import { mantissaExponentComparator, nullishComparator, variantComparator } from "@ot/utils";
+import { Fragment } from "react/jsx-runtime";
+import {
+  ClinvarStars,
+  DisplayVariantId,
+  L2GScoreIndicator,
+  Link,
+  Navigate,
+  OtTable,
+  ScientificNotation,
+  SectionItem,
+  Tooltip,
+  useBatchQuery,
+} from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
-import { Fragment } from "react/jsx-runtime";
-import { mantissaExponentComparator, variantComparator, nullishComparator } from "@ot/utils";
 import PheWasPlot from "./PheWasPlot";
-import { credsetConfidenceMap, naLabel, table5HChunkSize } from "@ot/constants";
 
 type getColumnsType = {
   id: string;
@@ -38,7 +38,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       id: "leadVariant",
       label: "Lead variant",
       enableHiding: false,
-      comparator: variantComparator(d => d?.variant),
+      comparator: variantComparator((d) => d?.variant),
       sortable: true,
       filterValue: ({ variant: v }) =>
         `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
@@ -82,7 +82,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
     {
       id: "disease",
       label: "Disease/phenotype",
-      filterValue: ({ study }) => study?.diseases.map(d => d.name).join(", "),
+      filterValue: ({ study }) => study?.diseases.map((d) => d.name).join(", "),
       renderCell: ({ study }) => {
         if (!study?.diseases?.length) return naLabel;
         return (
@@ -98,7 +98,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           </>
         );
       },
-      exportValue: ({ study }) => study?.diseases?.map(d => d.name).join(", "),
+      exportValue: ({ study }) => study?.diseases?.map((d) => d.name).join(", "),
     },
     {
       id: "studyId",
@@ -236,7 +236,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       label: "L2G score",
       comparator: nullishComparator(
         (a, b) => a - b,
-        row => row?.l2GPredictions?.rows[0]?.score,
+        (row) => row?.l2GPredictions?.rows[0]?.score,
         false
       ),
       sortable: true,

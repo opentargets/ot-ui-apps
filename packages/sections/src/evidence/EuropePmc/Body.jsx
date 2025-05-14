@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
-import { useQuery, useLazyQuery } from "@apollo/client";
-import { SectionItem, Link, getPage, Table } from "ui";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { useEffect, useState } from "react";
+import { Link, SectionItem, Table, getPage } from "ui";
 
-import Description from "./Description";
-import { europePmcLiteratureQuery } from "@ot/utils";
 import { dataTypesMap, naLabel } from "@ot/constants";
+import { europePmcLiteratureQuery } from "@ot/utils";
+import { definition } from ".";
+import Description from "./Description";
 import Publication from "./Publication";
 import EUROPE_PMC_QUERY from "./sectionQuery.gql";
-import { definition } from ".";
 
-const getColumns = label => [
+const getColumns = (label) => [
   {
     id: "disease",
     label: "Disease/phenotype",
@@ -68,8 +68,8 @@ const getColumns = label => [
 
 // Merges data from platform-API and EuropePMC API.
 function mergeData(rows, literatureData) {
-  const mergedRows = rows.map(row => {
-    const relevantEntry = literatureData.find(entry => entry.id === row.literature[0]);
+  const mergedRows = rows.map((row) => {
+    const relevantEntry = literatureData.find((entry) => entry.id === row.literature[0]);
 
     if (relevantEntry) {
       return {
@@ -115,8 +115,8 @@ function Body({ id, label, entity }) {
     refetch,
   } = useQuery(EUROPE_PMC_QUERY, {
     variables,
-    onCompleted: res => {
-      setNewIds(res.disease.europePmc.rows.map(entry => entry.literature[0]));
+    onCompleted: (res) => {
+      setNewIds(res.disease.europePmc.rows.map((entry) => entry.literature[0]));
     },
   });
   const [fetchDownloadData] = useLazyQuery(EUROPE_PMC_QUERY, {
@@ -126,12 +126,12 @@ function Body({ id, label, entity }) {
   async function getDownloadData() {
     // Get Elasticsearch europPmc data
     const res = await fetchDownloadData();
-    const litIds = res.data.disease.europePmc.rows.map(entry => entry.literature[0]);
+    const litIds = res.data.disease.europePmc.rows.map((entry) => entry.literature[0]);
 
     // Get literature data from europePmc
     // in chucnks of 200 to prevent query to europepmc from getting too large
     let downloadLiteratureData = [];
-    let chunkSize = 200;
+    const chunkSize = 200;
     for (let i = 0; i < litIds.length; i += chunkSize) {
       const litIdsChunk = litIds.slice(i, i + chunkSize);
       const queryUrl = europePmcLiteratureQuery(litIdsChunk);
@@ -144,7 +144,7 @@ function Body({ id, label, entity }) {
     // Merge data
     const rows = mergeData(res.data.disease.europePmc.rows, downloadLiteratureData);
 
-    return rows.map(row => {
+    return rows.map((row) => {
       return {
         ...row,
         disease: row.disease.name,
@@ -154,7 +154,7 @@ function Body({ id, label, entity }) {
 
   const [loading, setLoading] = useState(isLoading);
 
-  const handlePageChange = pageChange => {
+  const handlePageChange = (pageChange) => {
     if (
       pageChange * pageSize >= data.disease.europePmc.rows.length - pageSize &&
       (pageChange + 1) * pageSize < data.disease.europePmc.count
@@ -168,7 +168,7 @@ function Body({ id, label, entity }) {
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev;
 
-          setNewIds(fetchMoreResult.disease.europePmc.rows.map(entry => entry.literature[0]));
+          setNewIds(fetchMoreResult.disease.europePmc.rows.map((entry) => entry.literature[0]));
 
           return {
             ...prev,
@@ -188,7 +188,7 @@ function Body({ id, label, entity }) {
     setPage(pageChange);
   };
 
-  const handleRowsPerPageChange = newPageSize => {
+  const handleRowsPerPageChange = (newPageSize) => {
     setLoading(true);
     if (page * newPageSize >= data.disease.europePmc.rows.length - newPageSize) {
       refetch(variables);
@@ -210,7 +210,7 @@ function Body({ id, label, entity }) {
         const resJson = await res.json();
         const newLiteratureData = resJson.resultList.result;
 
-        setLiteratureData(litData => [...litData, ...newLiteratureData]);
+        setLiteratureData((litData) => [...litData, ...newLiteratureData]);
       }
       setLoading(false);
     }

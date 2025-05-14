@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
-import ONTOLOGY_SUMMARY_FRAGMENT from "./OntologySummaryFragment.gql";
 import { definition } from ".";
+import ONTOLOGY_SUMMARY_FRAGMENT from "./OntologySummaryFragment.gql";
 
 function Summary() {
   const request = usePlatformApi(ONTOLOGY_SUMMARY_FRAGMENT);
@@ -10,7 +10,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         data.isTherapeuticArea
           ? "Therapeutic area"
           : `Belongs to ${data.therapeuticAreas.length} therapeutic areas`

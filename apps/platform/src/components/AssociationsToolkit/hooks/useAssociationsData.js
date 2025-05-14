@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../associationsUtils";
+import { getAllDataCount, getAssociationsData, getInitialLoadingData } from "../associationsUtils";
 
 const INITIAL_ROW_COUNT = 25;
 
-const getInitialState = rowCount => ({
+const getInitialState = (rowCount) => ({
   loading: true,
   error: false,
   data: getInitialLoadingData(rowCount),
@@ -49,7 +49,7 @@ function useAssociationsData({
           filter,
           sortBy,
           enableIndirect,
-          datasources: datasources.map(el => ({
+          datasources: datasources.map((el) => ({
             id: el.id,
             weight: el.weight,
             propagate: el.propagate,

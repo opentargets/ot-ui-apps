@@ -1,9 +1,9 @@
-import { useState, useLayoutEffect, useRef } from "react";
-import { v1 } from "uuid";
-import { Typography, Skeleton } from "@mui/material";
+import { Skeleton, Typography } from "@mui/material";
 import { withStyles } from "@mui/styles";
+import { useLayoutEffect, useRef, useState } from "react";
+import { v1 } from "uuid";
 
-const styles = theme => ({
+const styles = (theme) => ({
   textContainer: {
     display: "flex",
     flexDirection: "column",
@@ -62,7 +62,7 @@ function LongText({
   return (
     <Typography variant={variant} gutterBottom={hasGutterBottom}>
       <span ref={containerRef} className={classes.textContainer}>
-        {descriptions.map((desc, i) => (
+        {descriptions.map((desc, _i) => (
           <span
             key={`${targetId}-${v1()}`}
             dangerouslySetInnerHTML={createDescriptionMarkup(desc)}

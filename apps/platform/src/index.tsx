@@ -1,6 +1,6 @@
+import { loadDevMessages, loadErrorMessages } from "@apollo/client/dev";
 import * as ReactDOMClient from "react-dom/client";
 import TagManager from "react-gtm-module";
-import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 
 import App from "./App";
 

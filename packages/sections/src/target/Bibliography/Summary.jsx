@@ -10,7 +10,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         data.literatureOcurrences?.filteredCount > 0 ? (
           <>
             {data.literatureOcurrences.filteredCount.toLocaleString()} publication
