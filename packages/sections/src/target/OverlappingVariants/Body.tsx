@@ -7,6 +7,7 @@ import { StateProvider } from "./Context";
 import Viewer from "./Viewer";
 import Filters from "./Filters";
 import Table from "./Table";
+import { Box } from "@mui/material";
 
 function Body({ id: ensemblId, label: symbol, entity }) {
   // const [molViewer, setMolViewer] = useState(null);
@@ -30,9 +31,15 @@ function Body({ id: ensemblId, label: symbol, entity }) {
             query={OVERLAPPING_VARIANTS_QUERY.loc.source.body}
             variables={variables}
           >
-            <Viewer />
             <Filters />
-            <Table />
+            <Box display="flex" gap={2} my={3}>
+              <Box width="60%">
+                <Table />
+              </Box>
+              <Box width="40%">
+                <Viewer />
+              </Box>
+            </Box>
           </StateProvider>
         );
       }}

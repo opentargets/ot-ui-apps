@@ -2,24 +2,16 @@ import { Box, Button, Typography } from "@mui/material";
 import { createViewer } from "3dmol";
 import { useStateValue, useActions } from "./Context";
 import { useState, useEffect, useRef } from "react";
-import { getAlphaFoldConfidence } from "@ot/constants";
 import { AlphaFoldLegend } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
-
-function setNoHoverStyle(viewer) {
-  viewer.setStyle(
-    {},
-    {
-      cartoon: {
-        colorfunc: a => getAlphaFoldConfidence(a, "color"),
-        arrows: true,
-        // opacity: 0.7,
-      },
-    }
-  );
-  // addVariantStyle(viewer);
-}
+import {
+  setNoHoverStyle,
+  highlightVariants,
+  highlightVariantFromTable,
+  unhighlightVariantFromTable,
+  onClickCapture,
+} from "./viewerHandlers";
 
 export default function Viewer() {
   const viewerHeight = "400px";
@@ -32,46 +24,6 @@ export default function Viewer() {
 
   const { state, filteredRows } = useStateValue();
   const { setViewer } = useActions();
-
-  function onClickCapture() {
-    if (!viewerRef.current) return;
-
-    try {
-      // Get the canvas element from the container
-      const canvas = viewerRef.current.querySelector("canvas");
-
-      if (!canvas) {
-        console.error("Canvas element not found");
-        return;
-      }
-
-      // Create a new canvas with proper background
-      const newCanvas = document.createElement("canvas");
-      newCanvas.width = canvas.width;
-      newCanvas.height = canvas.height;
-
-      const ctx = newCanvas.getContext("2d");
-
-      // Draw background
-      ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-
-      // Draw original canvas content on top
-      ctx.drawImage(canvas, 0, 0);
-
-      // Convert the new canvas to data URL
-      const dataUrl = newCanvas.toDataURL("image/png");
-
-      // Create a temporary link and trigger download
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = `${state.data.id}-molecular-structure.png`;
-      link.click();
-    } catch (error) {
-      console.error("Error taking screenshot:", error);
-    } finally {
-      // setLoading(false);
-    }
-  }
 
   // fetch structure data
   useEffect(() => {
@@ -142,11 +94,11 @@ export default function Viewer() {
         //   },
         //   {}
         // );
-        // const viewerAtoms = viewer.getModel().selectedAtoms();
-        // viewer.__atomsByResi__ = Map.groupBy(viewerAtoms, atom => atom.resi);
-        // viewer.__highlightedResis__ = new Map();
-        // viewer.__extraHighlightedResis__ = new Map();
-        // highlightVariants(viewer, proteinCodingCoordinates?.rows ?? []);
+        const viewerAtoms = viewer.getModel().selectedAtoms();
+        viewer.__atomsByResi__ = Map.groupBy(viewerAtoms, atom => atom.resi);
+        viewer.__highlightedResis__ = new Map();
+        viewer.__extraHighlightedResis__ = new Map();
+        highlightVariants(viewer, filteredRows);
         // resetViewer(viewer);
         // viewer.zoom(0.2);
         viewer.render();
@@ -160,6 +112,24 @@ export default function Viewer() {
     }
     // !! DODGY TO LOCAL VARIABLE AS DE. HOW SHOLD KNOW WHEN REQUEST FULFILLED?
   }, [structureData]);
+
+  // highlight variants
+  useEffect(() => {
+    if (state.viewer) {
+      highlightVariants(state.viewer, filteredRows);
+    }
+  }, [state.viewer, filteredRows]);
+
+  // // highlight/unhighlight variant correpsonding to hovered/unhovered row
+  useEffect(() => {
+    highlightVariantFromTable(state.hoveredRow);
+  }, [state.viewer, state.hoveredRow]);
+
+  useEffect(() => {
+    unhighlightVariantFromTable(state.unhoveredRow);
+  }, [state.viewer, state.unhoveredRow]);
+
+  // !!!! ALSO NEED TO DRAW VARIANTS INITIALLY WHEN CREATE THE VIEWER??
 
   return (
     <Box ref={viewerRef} position="relative" width="100%">
@@ -179,14 +149,19 @@ export default function Viewer() {
         >
           <Button
             sx={{ display: "flex", gap: 1 }}
-            // disabled={structureLoading}
-            onClick={onClickCapture}
+            onClick={() => onClickCapture(viewerRef, state.data.id)}
           >
             <FontAwesomeIcon icon={faCamera} /> Screenshot
           </Button>
         </Box>
       )}
-      <Box className="viewerContainer" position="relative" width="100%" height={viewerHeight} />
+      <Box
+        className="viewerContainer"
+        position="relative"
+        width="100%"
+        height={viewerHeight}
+        mb={2}
+      />
       <AlphaFoldLegend />
       {atomInfo && (
         <Box

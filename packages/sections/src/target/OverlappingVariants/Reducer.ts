@@ -1,13 +1,14 @@
 // action types
 export enum ActionType {
   SET_VIEWER = "SET_VIEWER",
-  // SET_DATA = "SET_DATA",
   SET_SEARCH_TEXT = "SET_SEARCH_TEXT",
   SET_THERAPEUTIC_AREAS = "SET_THERAPEUTIC_AREAS",
   SET_VARIANT_TYPES = "SET_VARIANT_TYPES",
   SET_VARIANT_CONSEQUENCES = "SET_VARIANT_CONSEQUENCES",
   SET_EVA = "SET_EVA",
   SET_START_POSITION = "SET_START_POSITION",
+  SET_HOVERED_ROW = "SET_HOVERED_ROW",
+  SET_UNHOVERED_ROW = "SET_UNHOVERED_ROW",
 }
 
 // state types
@@ -20,10 +21,9 @@ export interface State {
   variantConsequences: string[]; // SHOULD HAVE A VARIANT CONSEQUENCES ENUM ??
   eva: string[]; // SHOULD HAVE A EVA ENUM ??
   startPosition: number | null;
+  hoveredRow: any;
+  unhoveredRow: any;
 }
-
-// !! NEED TO ADD HOVERED ROW - OTHERS?
-
 export interface Action {
   type: ActionType;
   [key: string]: any;
@@ -38,6 +38,8 @@ export const initialState: State = {
   variantConsequences: [],
   eva: [],
   startPosition: null,
+  hoveredRow: null,
+  unhoveredRow: null,
 };
 
 export const getInitialState = ({ data, query, variables }) => ({
@@ -57,9 +59,6 @@ export function reducer(state: State = initialState, action: Action): State {
     case ActionType.SET_VIEWER:
       return { ...state, viewer: action.viewer };
 
-    // case ActionType.SET_DATA:
-    //   return { ...state, data: action.data };
-
     case ActionType.SET_SEARCH_TEXT:
       return { ...state, searchText: action.searchText };
 
@@ -78,6 +77,12 @@ export function reducer(state: State = initialState, action: Action): State {
     case ActionType.SET_START_POSITION:
       return { ...state, startPosition: action.startPosition };
 
+    case ActionType.SET_HOVERED_ROW:
+      return { ...state, hoveredRow: action.hoveredRow };
+
+    case ActionType.SET_UNHOVERED_ROW:
+      return { ...state, unhoveredRow: action.unhoveredRow };
+
     default:
       throw Error("Unknown action: " + action.type);
   }
@@ -89,11 +94,6 @@ export const actions = {
     type: ActionType.SET_VIEWER,
     viewer,
   }),
-
-  // setData: (data: any): Action => ({
-  //   type: ActionType.SET_DATA,
-  //   data,
-  // }),
 
   setSearchText: (searchText: string): Action => ({
     type: ActionType.SET_SEARCH_TEXT,
@@ -123,5 +123,15 @@ export const actions = {
   setStartPosition: (startPosition: number | null): Action => ({
     type: ActionType.SET_START_POSITION,
     startPosition,
+  }),
+
+  setHoveredRow: (hoveredRow: number | null): Action => ({
+    type: ActionType.SET_HOVERED_ROW,
+    hoveredRow,
+  }),
+
+  setUnhoveredRow: (unhoveredRow: number | null): Action => ({
+    type: ActionType.SET_UNHOVERED_ROW,
+    unhoveredRow,
   }),
 };

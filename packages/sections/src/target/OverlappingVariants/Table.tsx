@@ -1,10 +1,15 @@
 import { OtTable, Link, Tooltip } from "ui";
 import { Typography } from "@mui/material";
-import { useStateValue } from "./Context";
+import { useStateValue, useActions } from "./Context";
+import { naLabel } from "@ot/constants";
 
 export default function OverlappingVariantsTable() {
-  const { state: { query, variables }, filteredRows } = useStateValue();
+  const {
+    state: { query, variables },
+    filteredRows,
+  } = useStateValue();
 
+  const { setHoveredRow } = useActions();
 
   const columns = [
     {
@@ -16,35 +21,42 @@ export default function OverlappingVariantsTable() {
       id: "aminoAcidPosition", // UPDATE TYPO ONCE API UPDATED
       label: "Amino acid change",
       sortable: true,
-      filterValue: o => `${o.referenceAminoAcid}${o.aminoAcidPosition}${o.alternateAminoAcid}`,
+      // filterValue: o => `${o.referenceAminoAcid}${o.aminoAcidPosition}${o.alternateAminoAcid}`,
       renderCell: o => `${o.referenceAminoAcid}${o.aminoAcidPosition}${o.alternateAminoAcid}`,
       comparator: (a, b) => a.aminoAcidPosition - b.aminoAcidPosition,
     },
     {
-      id: "evidenceSources",
+      id: "datasources",
       label: "Evidence counts",
-      renderCell: ({ evidenceSources }) => {
-        if (evidenceSources?.length > 0) {
-          return evidenceSources
-            .map(({ evidenceCount, datasourceId }) => `${datasourceId}: ${evidenceCount}`)
+      renderCell: ({ datasources }) => {
+        if (datasources?.length > 0) {
+          return datasources
+            .map(
+              ({ datasourceCount, datasourceNiceName }) =>
+                `${datasourceNiceName}: ${datasourceCount}`
+            )
             .join(", ");
         }
         return naLabel;
       },
     },
-    {
-      // MAKE NUMERIC
-      id: "maxVariantEffectForPosition",
-      label: "Max variant effect for position",
-      renderCell: ({ maxVariantEffectForPosition: { method, value } }) =>
-        `${method}: ${value.toFixed(2)}`,
-      comparator: (a, b) =>
-        a.maxVariantEffectForPosition.value - b.maxVariantEffectForPosition.value,
-    },
+    // {
+    //   id: "variantEffect",
+    //   label: "Alpha Missense",
+    //   renderCell: ({ variantEffect }) => variantEffect?.toFixed(2) ?? naLabel,
+    // },
+    // {
+    //   id: "variantConsequences",
+    //   label: "Most severe consequence",
+    //   sortable: true,
+    //   comparator: (a, b) =>
+    //     a.variantConsequences[0].label.localeCompare(b.variantConsequences[0].label),
+    //   renderCell: ({ variantConsequences }) => variantConsequences[0].label,
+    // },
     {
       id: "diseases",
       label: "Disease/phenotype",
-      filterValue: ({ diseases }) => diseases.map(({ name }) => name).join(", "),
+      // filterValue: ({ diseases }) => diseases.map(({ name }) => name).join(", "),
       renderCell: ({ diseases }) => {
         if (diseases.length === 0) return naLabel;
         const elements = [<Link to={`/disease/${diseases[0].id}`}>{diseases[0].name}</Link>];
@@ -76,12 +88,20 @@ export default function OverlappingVariantsTable() {
     // !! MORE ROWS !!
   ];
 
+  function getEnteredRow(enteredRow) {
+    setHoveredRow(enteredRow.original);
+  }
+
+  function getExitedRow(exitedRow) {
+    setHoveredRow(null);
+  }
+
   return (
     <OtTable
       dataDownloader
       showGlobalFilter={false}
       sortBy="aminoAcidPosition"
-      order="desc"
+      order="asc"
       columns={columns}
       // loading={data.loading}
       rows={filteredRows}

@@ -1,40 +1,51 @@
-function getFilteredRows(filteredRows) {
-  if (molViewer) {
-    highlightVariants(
-      molViewer,
-      filteredRows.map(row => row.original)
-    );
-  }
-}
+import { getAlphaFoldConfidence } from "@ot/constants";
 
-function getEnteredRow(enteredRow) {
-  if (molViewer) {
-    highlightVariantFromTable(molViewer, enteredRow.original);
-  }
-}
+// function getFilteredRows(filteredRows) {
+//   if (molViewer) {
+//     highlightVariants(
+//       molViewer,
+//       filteredRows.map(row => row.original)
+//     );
+//   }
+// }
 
-function getExitedRow(exitedRow) {
-  if (molViewer) {
-    unhighlightVariantFromTable(molViewer, exitedRow.original);
-  }
-}
+// function getEnteredRow(enteredRow) {
+//   if (molViewer) {
+//     highlightVariantFromTable(molViewer, enteredRow.original);
+//   }
+// }
 
-function showLoadingMessage(message = "Loading structure ...") {
-  if (messageRef.current) {
-    setStructureLoading(true);
-    messageRef.current.style.display = "flex";
-    messageRef.current.textContent = message;
-  }
-}
+// function getExitedRow(exitedRow) {
+//   if (molViewer) {
+//     unhighlightVariantFromTable(molViewer, exitedRow.original);
+//   }
+// }
 
-function hideLoadingMessage() {
-  if (messageRef.current) {
-    messageRef.current.style.display = "none";
-    setStructureLoading(false);
-  }
-}
+// function showLoadingMessage(message = "Loading structure ...") {
+//   if (messageRef.current) {
+//     setStructureLoading(true);
+//     messageRef.current.style.display = "flex";
+//     messageRef.current.textContent = message;
+//   }
+// }
 
-function onClickCapture() {
+// function hideLoadingMessage() {
+//   if (messageRef.current) {
+//     messageRef.current.style.display = "none";
+//     setStructureLoading(false);
+//   }
+// }
+
+// function clearStructureInfo() {
+//   structureInfoRef.current?.querySelectorAll("span")?.forEach(span => (span.textContent = ""));
+// }
+
+// function resetViewer(viewer, duration = 0) {
+//   viewer.zoomTo({}, duration);
+//   viewer.zoom(10);
+// }
+
+export function onClickCapture(viewerRef, ensemblId) {
   if (!viewerRef.current) return;
 
   try {
@@ -74,15 +85,6 @@ function onClickCapture() {
   }
 }
 
-function clearStructureInfo() {
-  structureInfoRef.current?.querySelectorAll("span")?.forEach(span => (span.textContent = ""));
-}
-
-function resetViewer(viewer, duration = 0) {
-  viewer.zoomTo({}, duration);
-  viewer.zoom(10);
-}
-
 // function addVariantStyle(viewer, variantResidues) {
 //   for (const resis of variantResidues) {
 //     viewer.addStyle(
@@ -95,7 +97,66 @@ function resetViewer(viewer, duration = 0) {
 //   }
 // }
 
-function setNoHoverStyle(viewer) {
+// function setNoHoverStyle(viewer) {
+//   viewer.setStyle(
+//     {},
+//     {
+//       cartoon: {
+//         colorfunc: a => getAlphaFoldConfidence(a, "color"),
+//         arrows: true,
+//         // opacity: 0.7,
+//       },
+//     }
+//   );
+//   // addVariantStyle(viewer);
+// }
+
+// function highlightVariants(viewer, filteredRows) {
+//   for (const [resi, shape] of viewer.__highlightedResis__) {
+//     viewer.removeShape(shape);
+//     viewer.__highlightedResis__.delete(resi);
+//   }
+//   // viewer.removeAllShapes();
+//   // !! CAN PROBABLY AVOID DOING THIS EVERY TIME
+//   const variantsByStartingPosition = Map.groupBy(filteredRows, row => row.aminoAcidPosition);
+//   for (const [startPosition, rows] of variantsByStartingPosition) {
+//     // viewer.addSurface("VDW", { opacity: 0.65, color: "#f00" }, { resi: [...resis] });
+//     const carbonAtoms = viewer.__atomsByResi__.get(startPosition).filter(atom => atom.elem === "C");
+//     // const sphereAtom = middleElement(carbonAtoms);
+//     const sphereAtom = carbonAtoms[0]; // !! WHY IS FIRST CARBON NEARER CARTOON THAN MIDDLE CARBON?
+//     let hoverSphere;
+//     viewer.__highlightedResis__.set(
+//       startPosition,
+//       viewer.addSphere({
+//         center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
+//         radius: 1.5,
+//         color: "#f00",
+//         opacity: 0.85,
+//         clickable: true,
+//         // callback: () => console.log("clicked"),
+//         hoverable: true,
+//         hover_callback: sphere => {
+//           hoverSphere = viewer.addSphere({
+//             center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
+//             radius: 1.55,
+//             color: "#f00",
+//             opacity: 1,
+//             clickable: true,
+//             callback: () => console.log("clicked the added hover sphere"),
+//           });
+//           viewer.render();
+//         },
+//         unhover_callback: () => {
+//           viewer.removeShape(hoverSphere);
+//           viewer.render();
+//         },
+//       })
+//     );
+//   }
+//   viewer.render();
+// }
+
+export function setNoHoverStyle(viewer) {
   viewer.setStyle(
     {},
     {
@@ -109,7 +170,7 @@ function setNoHoverStyle(viewer) {
   // addVariantStyle(viewer);
 }
 
-function highlightVariants(viewer, filteredRows) {
+export function highlightVariants(viewer, filteredRows) {
   for (const [resi, shape] of viewer.__highlightedResis__) {
     viewer.removeShape(shape);
     viewer.__highlightedResis__.delete(resi);
@@ -154,9 +215,10 @@ function highlightVariants(viewer, filteredRows) {
   viewer.render();
 }
 
-function highlightVariantFromTable(viewer, row) {
-  // console.log(row);
+export function highlightVariantFromTable(viewer, row) {
+  if (!row) return;
   const startPosition = row.aminoAcidPosition;
+  debugger;
 
   if (!viewer.__extraHighlightedResis__.has(startPosition)) {
     const carbonAtoms = viewer.__atomsByResi__.get(startPosition).filter(atom => atom.elem === "C");
@@ -175,7 +237,8 @@ function highlightVariantFromTable(viewer, row) {
   }
 }
 
-function unhighlightVariantFromTable(viewer, row) {
+export function unhighlightVariantFromTable(viewer, row) {
+  if (!row) return;
   const startPosition = row.aminoAcidPosition;
   if (viewer.__extraHighlightedResis__.has(startPosition)) {
     viewer.removeShape(viewer.__extraHighlightedResis__.get(startPosition));
