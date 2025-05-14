@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from ".";
 import { dataTypesMap } from "@ot/constants";
+import { definition } from ".";
 import GENOMICS_ENGLAND_SUMMARY_FRAGMENT from "./GenomicsEnglandSummaryFragment.gql";
 
 function Summary() {
@@ -11,7 +11,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         `${data.genomicsEngland.count} entr${data.genomicsEngland.count === 1 ? "y" : "ies"}`
       }
       subText={dataTypesMap.genetic_association}

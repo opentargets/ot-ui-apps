@@ -1,15 +1,15 @@
 /* eslint-disable */
 import {
+  axisBottom,
+  create,
+  format,
   interpolate,
-  quantize,
   interpolateRound,
   quantile,
-  format,
+  quantize,
   range,
-  create,
-  scaleLinear,
   scaleBand,
-  axisBottom,
+  scaleLinear,
 } from "d3";
 
 function ramp(color, n = 256) {
@@ -47,7 +47,7 @@ function Legend(
     .style("overflow", "visible")
     .style("display", "block");
 
-  let tickAdjust = g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
+  let tickAdjust = (g) => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
   let x;
 
   // Continuous
@@ -90,7 +90,7 @@ function Legend(
     if (!x.ticks) {
       if (tickValues === undefined) {
         const n = Math.round(ticks + 1);
-        tickValues = range(n).map(i => quantile(color.domain(), i / (n - 1)));
+        tickValues = range(n).map((i) => quantile(color.domain(), i / (n - 1)));
       }
       if (typeof tickFormat !== "function") {
         tickFormat = format(tickFormat === undefined ? ",f" : tickFormat);
@@ -103,15 +103,15 @@ function Legend(
     const thresholds = color.thresholds
       ? color.thresholds() // scaleQuantize
       : color.quantiles
-      ? color.quantiles() // scaleQuantile
-      : color.domain(); // scaleThreshold
+        ? color.quantiles() // scaleQuantile
+        : color.domain(); // scaleThreshold
 
     const thresholdFormat =
       tickFormat === undefined
-        ? d => d
+        ? (d) => d
         : typeof tickFormat === "string"
-        ? format(tickFormat)
-        : tickFormat;
+          ? format(tickFormat)
+          : tickFormat;
 
     x = scaleLinear()
       .domain([-1, color.range().length - 1])
@@ -126,10 +126,10 @@ function Legend(
       .attr("y", marginTop)
       .attr("width", (d, i) => x(i) - x(i - 1))
       .attr("height", height - marginTop - marginBottom)
-      .attr("fill", d => d);
+      .attr("fill", (d) => d);
 
     tickValues = range(thresholds.length);
-    tickFormat = i => thresholdFormat(thresholds[i], i);
+    tickFormat = (i) => thresholdFormat(thresholds[i], i);
   }
 
   // Ordinal
@@ -164,8 +164,8 @@ function Legend(
         .tickValues(tickValues)
     )
     .call(tickAdjust)
-    .call(g => g.select(".domain").remove())
-    .call(g =>
+    .call((g) => g.select(".domain").remove())
+    .call((g) =>
       g
         .append("text")
         .attr("x", marginLeft)

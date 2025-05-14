@@ -1,16 +1,16 @@
-import classNames from "classnames";
 import { Avatar, Box, Card, CardContent, Divider, Grid, Skeleton, Typography } from "@mui/material";
+import classNames from "classnames";
 import { Element } from "react-scroll";
 
-import ErrorBoundary from "../ErrorBoundary";
-import SectionError from "./SectionError";
-import sectionStyles from "./sectionStyles";
-import { createShortName } from "../Summary/utils";
-import PartnerLockIcon from "../PartnerLockIcon";
-import SectionViewToggle from "./SectionViewToggle";
-import { ReactNode, useEffect, useState } from "react";
 import { VIEW } from "@ot/constants";
+import { type ReactNode, useEffect, useState } from "react";
+import ErrorBoundary from "../ErrorBoundary";
+import PartnerLockIcon from "../PartnerLockIcon";
 import { SummaryLoader } from "../PublicationsDrawer";
+import { createShortName } from "../Summary/utils";
+import SectionError from "./SectionError";
+import SectionViewToggle from "./SectionViewToggle";
+import sectionStyles from "./sectionStyles";
 
 type definitionType = {
   id: string;

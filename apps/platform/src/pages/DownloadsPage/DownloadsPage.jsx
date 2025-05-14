@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
-import { Paper, Box, Chip, Typography, Alert, AlertTitle } from "@mui/material";
+import { Alert, AlertTitle, Box, Chip, Paper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Link, OtTable } from "ui";
 import { getConfig } from "@ot/config";
-import { v1 } from "uuid";
+import { useEffect, useMemo, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
+import { Link, OtTable } from "ui";
+import { v1 } from "uuid";
 import ContainedInDrawer from "./ContainedInDrawer";
 
 const config = getConfig();
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   alert: {
     marginBottom: theme.spacing(2),
   },
@@ -36,7 +36,7 @@ function getColumn(locationUrl, version) {
         const columnId = includes.split("/")[0];
         const containedInArray = Array.isArray(containedIn) ? containedIn : [containedIn];
 
-        return containedInArray.map(e => (
+        return containedInArray.map((e) => (
           <Fragment key={v1()}>
             <ContainedInDrawer
               link={`${locationUrl[e["@id"]]}${columnId}`}
@@ -75,14 +75,14 @@ function getColumn(locationUrl, version) {
 
 function getRows(data) {
   if (!data) return [];
-  return data.distribution.filter(e => e["@type"] === "cr:FileSet");
+  return data.distribution.filter((e) => e["@type"] === "cr:FileSet");
 }
 
 function getAllLocationUrl(data) {
   if (!data) return "";
   const locationObj = {};
-  const locationArray = data.distribution.filter(e => e["@type"] === "cr:FileObject");
-  locationArray.map(e => {
+  const locationArray = data.distribution.filter((e) => e["@type"] === "cr:FileObject");
+  locationArray.map((e) => {
     locationObj[e["@id"]] = e.contentUrl;
   });
   return locationObj;
@@ -102,8 +102,8 @@ function DownloadsPage() {
     let isCurrent = true;
     setLoading(true);
     fetch(config.downloadsURL)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (isCurrent) setDownloadsData(data);
         setLoading(false);
       });

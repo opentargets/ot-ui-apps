@@ -1,9 +1,9 @@
+import { Box, Chip, type Theme, Tooltip } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Box, Chip, Theme, Tooltip } from "@mui/material";
-import classNames from "classnames";
-import { v1 } from "uuid";
 import { naLabel } from "@ot/constants";
-import { ElementType, ReactElement } from "react";
+import classNames from "classnames";
+import type { ElementType, ReactElement } from "react";
+import { v1 } from "uuid";
 
 const useContainerStyles = makeStyles((theme: Theme) => ({
   tooltip: {
@@ -57,7 +57,7 @@ function ChipList({ items, small }: ChipListProps): ReactElement[] | string {
 
   if (!items || items.length === 0) return naLabel;
 
-  return items.map(item => {
+  return items.map((item) => {
     const component: ElementType = item.url ? "a" : Box;
     return (
       <ChipContainer key={v1()} item={item}>

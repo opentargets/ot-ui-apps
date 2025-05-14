@@ -1,7 +1,7 @@
 import { faArchive, faDna, faStethoscope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export const mapFile = url => {
+export const mapFile = (url) => {
   let format = "";
   const fileNameParts = url.split(".");
 
@@ -13,7 +13,7 @@ export const mapFile = url => {
   return [format, fileNameParts.pop().toUpperCase()].join(" ");
 };
 
-export const mapIcon = name => (
+export const mapIcon = (name) => (
   <FontAwesomeIcon
     icon={
       {

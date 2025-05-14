@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { LiteratureProvider, useLiterature, useLiteratureDispatch } from "./LiteratureContext";
-import { fetchSimilarEntities } from "./requests";
 import { Box } from "@mui/material";
+import { useEffect, useState } from "react";
 import { SectionItem, useApolloClient } from "ui";
-import PublicationsList from "./PublicationsList";
-import Description from "./Description";
-import Entities from "./Entities";
 import Category from "./Category";
 import CountInfo from "./CountInfo";
 import { DateFilter } from "./DateFilter";
+import Description from "./Description";
+import Entities from "./Entities";
+import { LiteratureProvider, useLiterature, useLiteratureDispatch } from "./LiteratureContext";
+import PublicationsList from "./PublicationsList";
+import { fetchSimilarEntities } from "./requests";
 
 function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
   const [requestObj, setRequestObj] = useState({});

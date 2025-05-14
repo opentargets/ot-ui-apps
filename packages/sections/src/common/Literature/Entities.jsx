@@ -1,10 +1,10 @@
 import { Chip, Grow } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useApolloClient } from "ui";
 import { useLiterature, useLiteratureDispatch } from "./LiteratureContext";
 import { fetchSimilarEntities } from "./requests";
-import { useApolloClient } from "ui";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexWrap: "wrap",
@@ -24,7 +24,7 @@ function EntitiesToSelect({ id }) {
   const literatureDispatch = useLiteratureDispatch();
   const client = useApolloClient();
 
-  const handleSelectChip = async e => {
+  const handleSelectChip = async (e) => {
     const {
       query,
       id: bibliographyId,
@@ -71,13 +71,13 @@ function EntitiesToSelect({ id }) {
     literatureDispatch({ type: "stateUpdate", value: update });
   };
 
-  const validateEntity = entity => {
+  const validateEntity = (entity) => {
     if (id === entity.object?.id) return null;
-    if (selectedChips.find(s => s.object.id === entity.object.id)) return null;
+    if (selectedChips.find((s) => s.object.id === entity.object.id)) return null;
     return entity;
   };
 
-  return entities.map(e => {
+  return entities.map((e) => {
     if (!e.object)
       return (
         <Grow in key={`empty-entity-${e.id}`}>
@@ -117,7 +117,7 @@ export default function Entities({ name, id }) {
   const literatureDispatch = useLiteratureDispatch();
   const client = useApolloClient();
 
-  const handleDeleteChip = async index => {
+  const handleDeleteChip = async (index) => {
     const {
       query,
       id: bibliographyId,

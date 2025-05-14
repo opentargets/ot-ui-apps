@@ -10,7 +10,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => `${data.interactions.count} physical or functional interactors`}
+      renderSummary={(data) => `${data.interactions.count} physical or functional interactors`}
     />
   );
 }

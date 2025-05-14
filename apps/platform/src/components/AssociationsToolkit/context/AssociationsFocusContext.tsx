@@ -1,11 +1,18 @@
-import { createContext, useContext, useReducer, Dispatch, ReactElement, useEffect } from "react";
-import useAotfContext from "../hooks/useAotfContext";
 import {
-  TABLE_PREFIX,
+  type Dispatch,
+  type ReactElement,
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+} from "react";
+import {
   INTERACTORS_SOURCES,
   INTERACTORS_SOURCE_THRESHOLD,
-  InteractorsSource,
+  type InteractorsSource,
+  TABLE_PREFIX,
 } from "../associationsUtils";
+import useAotfContext from "../hooks/useAotfContext";
 
 export type FocusElementTable = "core" | "pinned" | "upload";
 
@@ -86,7 +93,7 @@ const defaultFocusElement: FocusElement = {
 
 const AssociationsFocusContext = createContext<FocusState>([]);
 
-const AssociationsFocusDispatchContext = createContext<Dispatch<FocusAction>>(_ => _);
+const AssociationsFocusDispatchContext = createContext<Dispatch<FocusAction>>((_) => _);
 
 type FocusElementParams = Partial<FocusElement>;
 
@@ -163,7 +170,7 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
         return focusState;
       }
       return focusState.filter(
-        focusElement =>
+        (focusElement) =>
           focusElement.row !== action.focus.row || focusElement.table !== action.focus.table
       );
     }
@@ -174,7 +181,7 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
 
     case FocusActionType.SET_INTERACTORS_OFF: {
       const relevantElements = focusState.filter(
-        element =>
+        (element) =>
           !(
             element.table === action.focus.table &&
             element.row === action.focus.row &&
@@ -182,7 +189,7 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
           )
       );
 
-      return relevantElements.map(element => {
+      return relevantElements.map((element) => {
         if (element.table === action.focus.table && element.row === action.focus.row) {
           return {
             ...element,
@@ -199,7 +206,7 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
     }
 
     case FocusActionType.SET_INTERACTORS_SOURCE: {
-      return focusState.map(element => {
+      return focusState.map((element) => {
         if (element.table === action.focus.table && element.row === action.focus.row) {
           return {
             ...element,
@@ -213,7 +220,7 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
     }
 
     case FocusActionType.SET_INTERACTORS_THRESHOLD: {
-      return focusState.map(element => {
+      return focusState.map((element) => {
         if (element.table === action.focus.table && element.row === action.focus.row) {
           return {
             ...element,
@@ -239,7 +246,7 @@ function handleSetFocusSection(focusState: FocusState, action: FocusAction): Foc
   const { table, row, section } = action.focus;
 
   const matchingIndex = focusState.findIndex(
-    element => element.table === table && element.row === row
+    (element) => element.table === table && element.row === row
   );
 
   const elementExists = matchingIndex !== -1;
@@ -296,7 +303,7 @@ function handleSetFocusSection(focusState: FocusState, action: FocusAction): Foc
   }
 
   // Process other elements in the same table
-  return updatedElements.flatMap(element => {
+  return updatedElements.flatMap((element) => {
     // Skip the element we just processed
     if (element.table === table && element.row === row) {
       return [element];
@@ -328,10 +335,12 @@ function handleSetInteractorsOn(focusState: FocusState, action: FocusAction): Fo
   const { table, row } = action.focus;
 
   // Check if element exists
-  const elementExists = focusState.some(element => element.table === table && element.row === row);
+  const elementExists = focusState.some(
+    (element) => element.table === table && element.row === row
+  );
 
   // Process existing elements
-  const updatedElements = focusState.map(element => {
+  const updatedElements = focusState.map((element) => {
     if (element.table === table && element.row === row) {
       // Update existing element
       return {
@@ -365,7 +374,7 @@ function handleSetInteractorsOn(focusState: FocusState, action: FocusAction): Fo
 function handleSetInteractorsSection(focusState: FocusState, action: FocusAction): FocusState {
   const { table, row, interactorsRow, section } = action.focus;
 
-  return focusState.flatMap(element => {
+  return focusState.flatMap((element) => {
     // Active row
     if (element.table === table && element.row === row) {
       // Toggle off if section already active

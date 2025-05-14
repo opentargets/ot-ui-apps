@@ -1,18 +1,18 @@
-import {
-  usePlatformApi,
-  ProfileHeader as BaseProfileHeader,
-  ProfileChipList,
-  Field,
-  Tooltip,
-} from "ui";
 import { useTheme } from "@mui/styles";
+import {
+  ProfileHeader as BaseProfileHeader,
+  Field,
+  ProfileChipList,
+  Tooltip,
+  usePlatformApi,
+} from "ui";
 import TargetDescription from "./TargetDescription";
 
 import { clearDescriptionCodes } from "@ot/utils";
 
-import TARGET_PROFILE_HEADER_FRAGMENT from "./TargetProfileHeader.gql";
 import { Box } from "@mui/material";
 import { getGenomicLocation } from "@ot/constants";
+import TARGET_PROFILE_HEADER_FRAGMENT from "./TargetProfileHeader.gql";
 
 /*
  * Target synonyms from the API have a "label" and a "source"
@@ -20,7 +20,7 @@ import { getGenomicLocation } from "@ot/constants";
  * Parse synonyms to a unique list (label) where terms can have
  * multiple sources in a tooltip
  */
-const parseSynonyms = synonyms => {
+const parseSynonyms = (synonyms) => {
   const sources = {
     HGNC: "HGNC",
     uniprot: "UniProt",
@@ -38,9 +38,9 @@ const parseSynonyms = synonyms => {
 
   const parsedSynonyms = [];
 
-  sortedSynonyms.forEach(s => {
+  sortedSynonyms.forEach((s) => {
     const thisSyn = parsedSynonyms.find(
-      parsedSynonym => parsedSynonym.label.toLowerCase() === s.label.toLowerCase()
+      (parsedSynonym) => parsedSynonym.label.toLowerCase() === s.label.toLowerCase()
     );
     if (!thisSyn) {
       parsedSynonyms.push({ label: s.label, tooltip: [s.source] });
@@ -50,8 +50,8 @@ const parseSynonyms = synonyms => {
     }
   });
 
-  parsedSynonyms.forEach(syn => {
-    syn.tooltip = `Source: ${syn.tooltip.map(s => sources[s]).join(", ")}`;
+  parsedSynonyms.forEach((syn) => {
+    syn.tooltip = `Source: ${syn.tooltip.map((s) => sources[s]).join(", ")}`;
   });
 
   return parsedSynonyms;
@@ -96,8 +96,8 @@ function ProfileHeader() {
                 component="span"
                 sx={{
                   whiteSpace: "nowrap",
-                  background: theme => theme.palette.grey[600],
-                  border: theme => `1px solid ${theme.palette.grey[600]}`,
+                  background: (theme) => theme.palette.grey[600],
+                  border: (theme) => `1px solid ${theme.palette.grey[600]}`,
                   p: "1px 5px",
                   color: "white",
                   borderRadius: "5px 0 0 5px",
@@ -111,8 +111,8 @@ function ProfileHeader() {
                 sx={{
                   whiteSpace: "nowrap",
                   p: "1px 5px",
-                  color: theme => theme.palette.grey[600],
-                  border: theme => `1px solid ${theme.palette.grey[600]}`,
+                  color: (theme) => theme.palette.grey[600],
+                  border: (theme) => `1px solid ${theme.palette.grey[600]}`,
                   borderRadius: "0 5px 5px 0",
                 }}
               >
@@ -122,15 +122,15 @@ function ProfileHeader() {
           </Box>
         )}
         {geneInfo
-          .filter(gi => gi.isVisible)
-          .map(e => (
+          .filter((gi) => gi.isVisible)
+          .map((e) => (
             <Box
               key={e.label}
               sx={{
                 whiteSpace: "nowrap",
                 p: "1px 5px",
-                color: theme => theme.palette.grey[600],
-                border: theme => `1px solid ${theme.palette.grey[600]}`,
+                color: (theme) => theme.palette.grey[600],
+                border: (theme) => `1px solid ${theme.palette.grey[600]}`,
                 borderRadius: "5px",
                 width: "min-content",
                 mt: 1,

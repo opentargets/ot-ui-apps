@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from ".";
 import { dataTypesMap } from "@ot/constants";
+import { definition } from ".";
 import EUROPE_PMC_SUMMARY_FRAGMENT from "./EuropePmcSummaryFragment.gql";
 
 function Summary() {
@@ -11,7 +11,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         `${data.europePmc.count} entr${data.europePmc.count === 1 ? "y" : "ies"}`
       }
       subText={dataTypesMap.literature}

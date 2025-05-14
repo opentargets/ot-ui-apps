@@ -1,9 +1,9 @@
-query Depmap ($ensemblId: String!) {
+query Depmap($ensemblId: String!) {
   target(ensemblId: $ensemblId) {
     id
     depMapEssentiality {
       tissueName
-      screens{
+      screens {
         depmapId
         cellLineName
         diseaseFromSource

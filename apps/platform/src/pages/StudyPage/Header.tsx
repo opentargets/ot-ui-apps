@@ -1,5 +1,5 @@
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
-import { Header as HeaderBase, ExternalLink, XRefLinks } from "ui";
+import { ExternalLink, Header as HeaderBase, XRefLinks } from "ui";
 
 type HeaderProps = {
   loading: boolean;
@@ -31,8 +31,8 @@ function Header({
         <XRefLinks
           label="Disease or phenotype"
           urlStem="../disease/"
-          ids={diseases.map(d => d.id)}
-          names={diseases.map(d => d.name)}
+          ids={diseases.map((d) => d.id)}
+          names={diseases.map((d) => d.name)}
         />
       );
     }
@@ -46,8 +46,8 @@ function Header({
         <XRefLinks
           label="Trait"
           urlStem="../disease/"
-          ids={diseases.map(d => d.id)}
-          names={diseases.map(d => d.name)}
+          ids={diseases.map((d) => d.id)}
+          names={diseases.map((d) => d.name)}
         />
       );
     }
@@ -61,8 +61,8 @@ function Header({
         <XRefLinks
           label="Trait"
           urlStem="../disease/"
-          ids={diseases.map(d => d.id)}
-          names={diseases.map(d => d.name)}
+          ids={diseases.map((d) => d.id)}
+          names={diseases.map((d) => d.name)}
         />
       );
     }
@@ -96,8 +96,8 @@ function Header({
             <XRefLinks
               label="Background traits"
               urlStem="../disease/"
-              ids={backgroundTraits.map(t => t.id)}
-              names={backgroundTraits.map(t => t.name)}
+              ids={backgroundTraits.map((t) => t.id)}
+              names={backgroundTraits.map((t) => t.name)}
             />
           )}
           <ExternalLink title="Source" id={sourceLink.id} url={sourceLink.url} />

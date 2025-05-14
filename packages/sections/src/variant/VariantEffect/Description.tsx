@@ -1,4 +1,4 @@
-import { Link, DisplayVariantId } from "ui";
+import { DisplayVariantId, Link } from "ui";
 
 type DescriptionProps = {
   variantId: string;

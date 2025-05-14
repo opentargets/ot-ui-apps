@@ -2,9 +2,9 @@ import { useQuery } from "@apollo/client";
 import { SectionItem } from "ui";
 
 import { definition } from ".";
-import Description from "./Description";
-import DepmapPlot from "./DepmapPlot";
 import DEPMAP_QUERY from "./Depmap.gql";
+import DepmapPlot from "./DepmapPlot";
+import Description from "./Description";
 
 function Section({ id, label: symbol, entity }) {
   const variables = { ensemblId: id };

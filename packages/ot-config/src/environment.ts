@@ -1,4 +1,4 @@
-import { Environment, Config } from "./types";
+import type { Config, Environment } from "./types";
 
 export const getEnvironmentConfig = (env: Environment): Config => {
   const configs: Record<Environment, Config> = {

@@ -1,11 +1,11 @@
-import Description from "./Description";
 import { sentenceCase } from "@ot/utils";
+import Description from "./Description";
 import { definition } from "./index";
 
-import KNOWN_DRUGS_BODY_QUERY from "./KnownDrugsQuery.gql";
 import { naLabel, phaseMap } from "@ot/constants";
-import { KnownDrugsSourceDrawer, Link, OtTableSSP, SectionItem } from "ui";
 import { useState } from "react";
+import { KnownDrugsSourceDrawer, Link, OtTableSSP, SectionItem } from "ui";
+import KNOWN_DRUGS_BODY_QUERY from "./KnownDrugsQuery.gql";
 
 function getColumnPool(id, entity) {
   return [
@@ -16,7 +16,7 @@ function getColumnPool(id, entity) {
           id: "disease",
           label: "Disease",
           propertyPath: "disease.id",
-          renderCell: d => (
+          renderCell: (d) => (
             <Link asyncTooltip to={`/disease/${d.disease.id}`}>
               {d.disease.name}
             </Link>
@@ -33,7 +33,7 @@ function getColumnPool(id, entity) {
           enableHiding: false,
           propertyPath: "drug.id",
           sticky: true,
-          renderCell: d =>
+          renderCell: (d) =>
             d.drug ? (
               <Link asyncTooltip to={`/drug/${d.drug.id}`}>
                 {d.drug.name}
@@ -46,7 +46,7 @@ function getColumnPool(id, entity) {
           id: "type",
           label: "Type",
           propertyPath: "drugType",
-          renderCell: d => d.drugType,
+          renderCell: (d) => d.drugType,
         },
         {
           id: "mechanismOfAction",
@@ -61,8 +61,8 @@ function getColumnPool(id, entity) {
 
             const targetId = entity === "target" ? id : target.id;
 
-            drug.mechanismsOfAction.rows.forEach(row => {
-              row.targets.forEach(t => {
+            drug.mechanismsOfAction.rows.forEach((row) => {
+              row.targets.forEach((t) => {
                 if (t.id === targetId) {
                   at.add(row.actionType);
                 }
@@ -79,7 +79,7 @@ function getColumnPool(id, entity) {
                   listStyle: "none",
                 }}
               >
-                {actionTypes.map(actionType => (
+                {actionTypes.map((actionType) => (
                   <li key={actionType}>{sentenceCase(actionType)}</li>
                 ))}
               </ul>
@@ -97,7 +97,7 @@ function getColumnPool(id, entity) {
           id: "targetSymbol",
           label: "Symbol",
           propertyPath: "target.approvedSymbol",
-          renderCell: d => (
+          renderCell: (d) => (
             <Link asyncTooltip to={`/target/${d.target.id}`}>
               {d.target.approvedSymbol}
             </Link>
@@ -108,7 +108,7 @@ function getColumnPool(id, entity) {
           label: "Name",
           propertyPath: "target.approvedName",
           hidden: ["lgDown"],
-          renderCell: d => d.target.approvedName,
+          renderCell: (d) => d.target.approvedName,
         },
       ],
     },
@@ -125,13 +125,13 @@ function getColumnPool(id, entity) {
         {
           id: "status",
           label: "Status",
-          renderCell: d => (d.status ? d.status : naLabel),
+          renderCell: (d) => (d.status ? d.status : naLabel),
         },
         {
           id: "sources",
           label: "Source",
-          exportValue: d => d.urls.map(reference => reference.url),
-          renderCell: d => <KnownDrugsSourceDrawer references={d.urls} />,
+          exportValue: (d) => d.urls.map((reference) => reference.url),
+          renderCell: (d) => <KnownDrugsSourceDrawer references={d.urls} />,
         },
       ],
     },
@@ -141,63 +141,63 @@ function getColumnPool(id, entity) {
 const exportColumns = [
   {
     label: "diseaseId",
-    exportValue: row => row.disease.id,
+    exportValue: (row) => row.disease.id,
   },
   {
     label: "diseaseName",
-    exportValue: row => row.disease.name,
+    exportValue: (row) => row.disease.name,
   },
   {
     label: "drugId",
-    exportValue: row => row.drug.id,
+    exportValue: (row) => row.drug.id,
   },
   {
     label: "drugName",
-    exportValue: row => row.drug.name,
+    exportValue: (row) => row.drug.name,
   },
   {
     label: "type",
-    exportValue: row => row.drugType,
+    exportValue: (row) => row.drugType,
   },
   {
     label: "mechanismOfAction",
-    exportValue: row => row.mechanismOfAction,
+    exportValue: (row) => row.mechanismOfAction,
   },
   {
     label: "actionType",
     exportValue: ({ drug: { mechanismsOfAction }, target }) => {
       if (!mechanismsOfAction) return "";
       const at = new Set();
-      mechanismsOfAction.rows.forEach(row => {
-        row.targets.forEach(t => {
+      mechanismsOfAction.rows.forEach((row) => {
+        row.targets.forEach((t) => {
           if (t.id === target.id) {
             at.add(row.actionType);
           }
         });
       });
       const actionTypes = Array.from(at);
-      return actionTypes.map(actionType => sentenceCase(actionType));
+      return actionTypes.map((actionType) => sentenceCase(actionType));
     },
   },
   {
     label: "symbol",
-    exportValue: row => row.target.approvedSymbol,
+    exportValue: (row) => row.target.approvedSymbol,
   },
   {
     label: "name",
-    exportValue: row => row.target.approvedName,
+    exportValue: (row) => row.target.approvedName,
   },
   {
     label: "phase",
-    exportValue: row => row.phase,
+    exportValue: (row) => row.phase,
   },
   {
     label: "status",
-    exportValue: row => row.status,
+    exportValue: (row) => row.status,
   },
   {
     label: "source",
-    exportValue: row => row.urls.map(reference => reference.url),
+    exportValue: (row) => row.urls.map((reference) => reference.url),
   },
 ];
 
@@ -221,7 +221,7 @@ function Body({ id: efoId, label: name, entity }) {
             dataDownloaderFileStem={`${efoId}-known-drugs`}
             entity={entity}
             sectionName="knownDrugs"
-            setInitialRequestData={dd => {
+            setInitialRequestData={(dd) => {
               setRequest(dd);
             }}
             variables={{ efoId }}

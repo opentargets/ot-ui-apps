@@ -1,18 +1,18 @@
 import { useQuery } from "@apollo/client";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Chip } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, ChipList, OtTable, Tooltip } from "ui";
+import { ChipList, Link, OtTable, SectionItem, Tooltip } from "ui";
 import { v1 } from "uuid";
 
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import VALIDATION_QUERY from "./OTValidationQuery.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   primaryColor: {
     color: theme.palette.primary.main,
   },
@@ -39,24 +39,24 @@ const ASSAYS_DISPLAY_NAME_MAPPING = {
   Confluence: "Cell Confluence",
 };
 
-const getColumns = classes => [
+const getColumns = (classes) => [
   {
     id: "disease",
     label: "Reported disease",
-    renderCell: row => (
+    renderCell: (row) => (
       <Link asyncTooltip to={`/disease/${row.disease.id}`}>
         {row.disease.name}
       </Link>
     ),
     sortable: true,
-    filterValue: row => `${row.diseaseLabel}, ${row.disease.id}`,
+    filterValue: (row) => `${row.diseaseLabel}, ${row.disease.id}`,
   },
   {
     id: "diseaseCellLines",
     label: "Cell line",
-    renderCell: row => (
+    renderCell: (row) => (
       <>
-        {row.diseaseCellLines.map(line => (
+        {row.diseaseCellLines.map((line) => (
           <Link
             to={`https://cellmodelpassports.sanger.ac.uk/passports/${line.id}`}
             external
@@ -67,24 +67,24 @@ const getColumns = classes => [
         ))}
       </>
     ),
-    filterValue: row => row.diseaseCellLines.map(line => `${line.name}, ${line.id}`).join(", "),
+    filterValue: (row) => row.diseaseCellLines.map((line) => `${line.name}, ${line.id}`).join(", "),
     width: "8%",
   },
   {
     id: "biomarkerList",
     label: "Cell line biomarkers",
     enableHiding: false,
-    renderCell: row => (
+    renderCell: (row) => (
       <ChipList
         small
-        items={row.biomarkerList.map(bm => ({
+        items={row.biomarkerList.map((bm) => ({
           label: bm.name,
           tooltip: bm.description,
           customClass: classes.hsWhite,
         }))}
       />
     ),
-    filterValue: row => row.biomarkerList.map(bm => `${bm.name}, ${bm.description}`).join(", "),
+    filterValue: (row) => row.biomarkerList.map((bm) => `${bm.name}, ${bm.description}`).join(", "),
     width: "16%",
   },
   {
@@ -95,7 +95,7 @@ const getColumns = classes => [
         {primaryProjectId}
       </Link>
     ),
-    filterValue: row => `${row.primaryProjectId}`,
+    filterValue: (row) => `${row.primaryProjectId}`,
   },
   {
     id: "primaryProjectHit",
@@ -115,9 +115,9 @@ const getColumns = classes => [
     id: "assays",
     label: "OTVL hit",
     renderCell: ({ assays }) => {
-      let sortedAssays = [...assays];
+      const sortedAssays = [...assays];
       if (sortedAssays.length >= 2) {
-        sortedAssays.sort(function (a, b) {
+        sortedAssays.sort((a, b) => {
           if (a.shortName < b.shortName) {
             return -1;
           }
@@ -129,8 +129,8 @@ const getColumns = classes => [
       }
       return (
         <>
-          {sortedAssays.map(e => (
-            <Box sx={{ my: theme => theme.spacing(0.3) }} key={v1()}>
+          {sortedAssays.map((e) => (
+            <Box sx={{ my: (theme) => theme.spacing(0.3) }} key={v1()}>
               <Tooltip title={e.description}>
                 <Chip
                   label={ASSAYS_DISPLAY_NAME_MAPPING[e.shortName]}
@@ -151,8 +151,8 @@ const getColumns = classes => [
       if (!assessments || !assessments.length) return naLabel;
       return (
         <>
-          {assessments.map(e => (
-            <Box sx={{ my: theme => theme.spacing(1) }} key={e}>
+          {assessments.map((e) => (
+            <Box sx={{ my: (theme) => theme.spacing(1) }} key={e}>
               {e}
             </Box>
           ))}
@@ -170,43 +170,43 @@ const getColumns = classes => [
 const exportColumns = [
   {
     label: "disease",
-    exportValue: row => row.disease.name,
+    exportValue: (row) => row.disease.name,
   },
   {
     label: "disease id",
-    exportValue: row => row.disease.id,
+    exportValue: (row) => row.disease.id,
   },
   {
     label: "project id",
-    exportValue: row => row.primaryProjectId,
+    exportValue: (row) => row.primaryProjectId,
   },
   {
     label: "study overview",
-    exportValue: row => row.studyOverview,
+    exportValue: (row) => row.studyOverview,
   },
   {
     label: "disease cell line",
-    exportValue: row => row.diseaseCellLines.map(line => `${line.name} (${line.id})`),
+    exportValue: (row) => row.diseaseCellLines.map((line) => `${line.name} (${line.id})`),
   },
   {
     label: "biomarkers",
-    exportValue: row => row.biomarkerList.map(bm => bm.name),
+    exportValue: (row) => row.biomarkerList.map((bm) => bm.name),
   },
   {
     label: "VL hit",
-    exportValue: row => row.assays,
+    exportValue: (row) => row.assays,
   },
   {
     label: "primaryProjectHit",
-    exportValue: row => row.primaryProjectHit,
+    exportValue: (row) => row.primaryProjectHit,
   },
   {
     label: "assessment",
-    exportValue: row => row.assessment,
+    exportValue: (row) => row.assessment,
   },
   {
     label: "effect size",
-    exportValue: row => row.resourceScore,
+    exportValue: (row) => row.resourceScore,
   },
 ];
 

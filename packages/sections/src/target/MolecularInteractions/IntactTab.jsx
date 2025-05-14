@@ -1,10 +1,10 @@
-import { Link, Tooltip, DataTable, EllsWrapper, useApolloClient } from "ui";
-import { useState, useEffect } from "react";
-import { Grid, Typography } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
-import { MethodIconText, MethodIconArrow } from "./custom/MethodIcons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Grid, Typography } from "@mui/material";
 import { defaultRowsPerPageOptions } from "@ot/constants";
+import { useEffect, useState } from "react";
+import { DataTable, EllsWrapper, Link, Tooltip, useApolloClient } from "ui";
+import { MethodIconArrow, MethodIconText } from "./custom/MethodIcons";
 
 import INTERACTIONS_QUERY from "./InteractionsQuery.gql";
 
@@ -19,7 +19,7 @@ const getData = (query, ensgId, sourceDatabase, index, size, client) =>
     },
   });
 
-const onLinkClick = e => {
+const onLinkClick = (e) => {
   // handler to stop propagation of clicks on links in table rows
   // to avoid selection of a different row
   e.stopPropagation();
@@ -40,7 +40,7 @@ const columns = {
         </>
       ),
       exportLabel: "interactorB-AltId",
-      renderCell: row => (
+      renderCell: (row) => (
         <>
           <EllsWrapper title={row.targetB ? row.targetB.approvedSymbol : row.intB}>
             {row.targetB ? (
@@ -67,21 +67,21 @@ const columns = {
           </EllsWrapper>
         </>
       ),
-      exportValue: row => row.targetB?.approvedSymbol || row.intB,
-      filterValue: row => `${row.targetB?.approvedSymbol} ${row.intB}`,
+      exportValue: (row) => row.targetB?.approvedSymbol || row.intB,
+      filterValue: (row) => `${row.targetB?.approvedSymbol} ${row.intB}`,
       width: "40%",
     },
     {
       id: "score",
       label: "Score",
-      renderCell: row => row.score.toFixed(2),
-      exportValue: row => row.score.toFixed(2),
+      renderCell: (row) => row.score.toFixed(2),
+      exportValue: (row) => row.score.toFixed(2),
       width: "14%",
     },
     {
       id: "biologicalRole",
       label: "Biological role",
-      renderCell: row => (
+      renderCell: (row) => (
         <>
           <MethodIconText tooltip={row.intABiologicalRole} enabled>
             A
@@ -91,14 +91,14 @@ const columns = {
           </MethodIconText>
         </>
       ),
-      exportValue: row => `A: ${row.intABiologicalRole}, B: ${row.intBBiologicalRole}`,
-      filterValue: row => `${row.intABiologicalRole} ${row.intBBiologicalRole}`,
+      exportValue: (row) => `A: ${row.intABiologicalRole}, B: ${row.intBBiologicalRole}`,
+      filterValue: (row) => `${row.intABiologicalRole} ${row.intBBiologicalRole}`,
       width: "23%",
     },
     {
       id: "evidences",
       label: "Interaction evidence entries",
-      renderCell: row => (
+      renderCell: (row) => (
         <>
           {row.count}
           <span className="selected-evidence">
@@ -106,7 +106,7 @@ const columns = {
           </span>
         </>
       ),
-      exportValue: row => row.count,
+      exportValue: (row) => row.count,
       width: "23%",
     },
   ],
@@ -115,7 +115,7 @@ const columns = {
     {
       id: "interactionIdentifier",
       label: "Identifier",
-      renderCell: row => (
+      renderCell: (row) => (
         <Link
           to={`http://www.ebi.ac.uk/intact/interaction/${row.interactionIdentifier}`}
           onClick={onLinkClick}
@@ -135,7 +135,7 @@ const columns = {
           <Typography variant="caption">Host organism</Typography>
         </>
       ),
-      renderCell: row => (
+      renderCell: (row) => (
         <>
           <EllsWrapper>{row.interactionTypeShortName}</EllsWrapper>
           {row.hostOrganismScientificName ? (
@@ -148,16 +148,16 @@ const columns = {
           ) : null}
         </>
       ),
-      filterValue: row => `${row.interactionTypeShortName} ${row.hostOrganismScientificName}`,
+      filterValue: (row) => `${row.interactionTypeShortName} ${row.hostOrganismScientificName}`,
       width: "30%",
     },
     {
       id: "methods",
       label: "Detection methods",
-      renderCell: row => (
+      renderCell: (row) => (
         <>
           <MethodIconText
-            tooltip={row.participantDetectionMethodA.map(m => m.shortName).join()}
+            tooltip={row.participantDetectionMethodA.map((m) => m.shortName).join()}
             enabled
           >
             A
@@ -173,8 +173,8 @@ const columns = {
           </MethodIconText>
         </>
       ),
-      filterValue: row =>
-        `${row.participantDetectionMethodA.map(m => m.shortName).join(" ")} ${
+      filterValue: (row) =>
+        `${row.participantDetectionMethodA.map((m) => m.shortName).join(" ")} ${
           row.interactionDetectionMethodShortName
         } ${row.participantDetectionMethodB ? row.participantDetectionMethodB[0].shortName : ""}`,
       width: "25%",
@@ -182,7 +182,7 @@ const columns = {
     {
       id: "pubmedId",
       label: "Publication",
-      renderCell: d => (
+      renderCell: (d) => (
         <EllsWrapper title={d.pubmedId}>
           {d.pubmedId && d.pubmedId.indexOf("unassigned") === -1 ? (
             <Link external to={`http://europepmc.org/abstract/MED/${d.pubmedId}`}>
@@ -193,7 +193,7 @@ const columns = {
           )}
         </EllsWrapper>
       ),
-      filterValue: row => row.pubmedId,
+      filterValue: (row) => row.pubmedId,
       width: "20%",
     },
   ],
@@ -202,31 +202,31 @@ const columns = {
 const evidenceColsExport = [
   {
     label: "Identifier",
-    exportValue: row => row.interactionIdentifier,
+    exportValue: (row) => row.interactionIdentifier,
   },
   {
     label: "interaction",
-    exportValue: row => row.interactionTypeShortName,
+    exportValue: (row) => row.interactionTypeShortName,
   },
   {
     label: "interaction host organism",
-    exportValue: row => row.hostOrganismScientificName,
+    exportValue: (row) => row.hostOrganismScientificName,
   },
   {
     label: "detection method A",
-    exportValue: row => row.participantDetectionMethodA.map(m => m.shortName),
+    exportValue: (row) => row.participantDetectionMethodA.map((m) => m.shortName),
   },
   {
     label: "detection method short name",
-    exportValue: row => row.interactionDetectionMethodShortName,
+    exportValue: (row) => row.interactionDetectionMethodShortName,
   },
   {
     label: "detection method B",
-    exportValue: row => row.participantDetectionMethodB[0].shortName,
+    exportValue: (row) => row.participantDetectionMethodB[0].shortName,
   },
   {
     label: "publication id",
-    exportValue: row => row.pubmedId,
+    exportValue: (row) => row.pubmedId,
   },
 ];
 const id = "intact";
@@ -244,7 +244,7 @@ function IntactTab({ ensgId, symbol }) {
   // load tab data when new tab selected (also on first load)
   useEffect(() => {
     setLoading(true);
-    getData(INTERACTIONS_QUERY, ensgId, id, index, size, client).then(res => {
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size, client).then((res) => {
       if (res.data.target.interactions) {
         setLoading(false);
         setData(res.data.target.interactions.rows);
@@ -277,7 +277,7 @@ function IntactTab({ ensgId, symbol }) {
           dataDownloaderFileStem={`${symbol}-molecular-interactions-interactors`}
           hover
           selected
-          onRowClick={r => {
+          onRowClick={(r) => {
             setEvidence(r.evidences);
             setSelectedIntB(r.targetB?.approvedSymbol || r.intB);
           }}

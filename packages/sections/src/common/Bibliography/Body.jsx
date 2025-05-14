@@ -1,14 +1,14 @@
-import { Component } from "react";
-import { v1 } from "uuid";
 import { Autocomplete, Box, Button, Chip, Grid, TextField, Typography } from "@mui/material";
 import { withStyles } from "@mui/styles";
+import { Component } from "react";
+import { v1 } from "uuid";
 // TODO: note this component is not actually used.
 // Only SimplePublication is used in evidence bibliography
 
-import Publication from "./Publication";
-import { getAggregationsData, getPublicationsData } from "./Api";
 import { SectionItem } from "ui";
+import { getAggregationsData, getPublicationsData } from "./Api";
 import Description from "./Description";
+import Publication from "./Publication";
 
 const aggtype = [
   { value: "top_chunks_significant_terms", label: "Concepts" },
@@ -22,7 +22,7 @@ const aggtype = [
   // {value: 'pub_date_histogram', label: 'publication date'}
 ];
 
-const styles = theme => ({
+const styles = (theme) => ({
   aggtypeAutocomplete: {
     width: "15rem",
     "& .MuiFormControl-root": { marginTop: 0 },
@@ -93,14 +93,14 @@ class Section extends Component {
 
   // Parse the aggregation data based on defined aggtypes
   // and filter out all entries that are already selected
-  filterAggregations = aggs => {
+  filterAggregations = (aggs) => {
     const { selected } = this.state;
     return aggtype.reduce((newaggs, agg) => {
       const newAggregationObject = { ...newaggs };
       newAggregationObject[agg.value] = {
         buckets: aggs[agg.value].buckets.filter(
-          b =>
-            selected.filter(a => {
+          (b) =>
+            selected.filter((a) => {
               const selectedNewAggregationObject = a;
               selectedNewAggregationObject.label = a.label || a.key;
               return (
@@ -120,7 +120,7 @@ class Section extends Component {
   getAggregations = () => {
     const { selected } = this.state;
     getAggregationsData(selected).then(
-      resp => {
+      (resp) => {
         if (this.mounted) {
           this.setState({
             bibliographyCount: resp.hits.total,
@@ -141,7 +141,7 @@ class Section extends Component {
   };
 
   // Get the data for the publications
-  getPublications = append => {
+  getPublications = (append) => {
     this.setState({ isLoading: true });
     const { hits } = this.state;
     const last = hits[hits.length - 1];
@@ -150,7 +150,7 @@ class Section extends Component {
     const { selected } = this.state;
 
     getPublicationsData(selected, after, afterId).then(
-      resp => {
+      (resp) => {
         const { state: stateHits } = this.state;
         // if loading more data (after & afterId) append that, if not just reset hits
         const newHits = after && afterId ? stateHits.concat(resp.hits.hits) : resp.hits.hits;
@@ -167,7 +167,7 @@ class Section extends Component {
   };
 
   // Handler for when a chip is deselected
-  deselectChip = index => {
+  deselectChip = (index) => {
     const { selected } = this.state;
     if (index < selected.length) {
       this.setState({ selected: selected.filter((sel, i) => i !== index) });
@@ -175,7 +175,7 @@ class Section extends Component {
   };
 
   // Handler for when a chip is selected
-  selectChip = chip => {
+  selectChip = (chip) => {
     const { selected } = this.state;
     const newSelected = selected.concat([chip]);
     this.setState({ selected: newSelected });
@@ -224,11 +224,11 @@ class Section extends Component {
                 <Autocomplete
                   classes={{ root: classes.aggtypeAutocomplete }}
                   disableClearable
-                  getOptionLabel={option => option.label}
-                  getOptionSelected={option => option.value}
+                  getOptionLabel={(option) => option.label}
+                  getOptionSelected={(option) => option.value}
                   onChange={this.aggtypeFilterHandler}
                   options={aggtype}
-                  renderInput={params => (
+                  renderInput={(params) => (
                     // eslint-disable-next-line
                     <TextField {...params} margin="normal" />
                   )}
@@ -290,7 +290,7 @@ class Section extends Component {
                       pmId={hitItem._source.pub_id}
                       title={hitItem._source.title}
                       authors={
-                        (hitItem._source.authors || []).map(a => ({
+                        (hitItem._source.authors || []).map((a) => ({
                           lastName: a.LastName,
                           initials: a.Initials,
                         })) || []

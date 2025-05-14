@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from ".";
 import { dataTypesMap } from "@ot/constants";
+import { definition } from ".";
 import SLAPENRICH_SUMMARY_FRAGMENT from "./SlapEnrichSummaryFragment.gql";
 
 function Summary() {
@@ -11,7 +11,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
+      renderSummary={(data) =>
         `${data.slapEnrich.count} entr${data.slapEnrich.count === 1 ? "y" : "ies"}`
       }
       subText={dataTypesMap.affected_pathway}

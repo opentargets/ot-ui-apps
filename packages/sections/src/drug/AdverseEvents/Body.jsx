@@ -1,16 +1,16 @@
-import { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import _ from "lodash";
-import { Link, SectionItem, PaginationActionsComplete, Table, useBatchDownloader } from "ui";
+import { useState } from "react";
+import { Link, PaginationActionsComplete, SectionItem, Table, useBatchDownloader } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
 
 import ADVERSE_EVENTS_QUERY from "./AdverseEventsQuery.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   levelBarContainer: {
     display: "flex",
     alignItems: "center",
@@ -27,7 +27,7 @@ const getColumns = (critVal, maxLlr, classes) => [
   {
     id: "name",
     label: "Adverse event (MedDRA)",
-    renderCell: d =>
+    renderCell: (d) =>
       d.meddraCode ? (
         <Link to={`https://identifiers.org/meddra:${d.meddraCode}`} external>
           <Typography variant="body2" noWrap display="block" title={_.upperFirst(d.name)}>
@@ -48,7 +48,7 @@ const getColumns = (critVal, maxLlr, classes) => [
   {
     id: "llr",
     label: `Log likelihood ratio (CV = ${critVal.toFixed(2)})`,
-    renderCell: d => {
+    renderCell: (d) => {
       const w = ((d.logLR / maxLlr) * 85).toFixed(2); // scale to max 85% of the width to allows space for label
       return (
         <div className={classes.levelBarContainer}>
@@ -62,7 +62,7 @@ const getColumns = (critVal, maxLlr, classes) => [
         </div>
       );
     },
-    exportValue: d => d.logLR.toFixed(2),
+    exportValue: (d) => d.logLR.toFixed(2),
     width: "45%",
   },
 ];
@@ -88,7 +88,7 @@ function Body({ id: chemblId, label: name, entity }) {
     });
   }
 
-  const handlePageChange = newPage => {
+  const handlePageChange = (newPage) => {
     setPage(newPage);
     getData(newPage, pageSize);
   };
@@ -134,7 +134,7 @@ function Body({ id: chemblId, label: name, entity }) {
             fixed
             pageSize={pageSize}
             rowsPerPageOptions={[10, 25, 50, 100]}
-            onRowsPerPageChange={newSize => handleRowsPerPageChange(newSize)}
+            onRowsPerPageChange={(newSize) => handleRowsPerPageChange(newSize)}
             query={ADVERSE_EVENTS_QUERY.loc.source.body}
             variables={variables}
           />

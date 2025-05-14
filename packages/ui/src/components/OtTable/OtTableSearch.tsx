@@ -1,9 +1,9 @@
-import { ReactElement, useEffect, useState } from "react";
-import { Input, InputAdornment } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Input, InputAdornment } from "@mui/material";
+import { type ReactElement, useEffect, useState } from "react";
 import useDebounce from "../../hooks/useDebounce";
-import { OtTableSearchProps } from "./table.types";
+import type { OtTableSearchProps } from "./table.types";
 
 /****************************************
  *      OT TABLE SEARCH COMPONENT       *
@@ -24,7 +24,7 @@ function OtTableSearch({ setGlobalSearchTerm }: OtTableSearchProps): ReactElemen
     <Input
       sx={{ width: 1 }}
       value={globalFilter ?? ""}
-      onChange={e => setGlobalFilter(e.target.value)}
+      onChange={(e) => setGlobalFilter(e.target.value)}
       placeholder="Search all columns..."
       startAdornment={
         <InputAdornment position="start">

@@ -1,8 +1,3 @@
-import { Box, Chip, Typography } from "@mui/material";
-import { Tooltip } from "ui";
-import useAotfContext from "../hooks/useAotfContext";
-import { Facet } from "../../Facets/facetsTypes";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowDownWideShort,
   faCircleXmark,
@@ -10,12 +5,17 @@ import {
   faGear,
   faThumbtack,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Chip, Typography } from "@mui/material";
+import { Tooltip } from "ui";
+import type { Facet } from "../../Facets/facetsTypes";
+import useAotfContext from "../hooks/useAotfContext";
 
 import { setEntitySearch } from "../context/aotfActions";
 import dataSources from "../static_datasets/dataSourcesAssoc";
 
 function removeFacet(items: Facet[], idToRemove: string): Facet[] {
-  return items.filter(item => item.id !== idToRemove);
+  return items.filter((item) => item.id !== idToRemove);
 }
 
 function FilterChip({ onDelete, label, tootltipContent, maxWidth = 150 }) {
@@ -75,8 +75,8 @@ function ActiveFiltersPanel() {
     modifiedEntitySearch,
   ];
 
-  const showActiveFilter = filterCategories.some(x => x === true);
-  const multipleFiltersOn = filterCategories.filter(x => x === true).length > 1;
+  const showActiveFilter = filterCategories.some((x) => x === true);
+  const multipleFiltersOn = filterCategories.filter((x) => x === true).length > 1;
 
   const onDelete = (id: string) => {
     const newState = removeFacet(facetFilters, id);
@@ -146,7 +146,7 @@ function ActiveFiltersPanel() {
           label={
             <Box sx={{ gap: 1 }}>
               <FontAwesomeIcon icon={faArrowDownWideShort} />{" "}
-              {dataSources.find(d => d.id === sorting[0].id)?.label}
+              {dataSources.find((d) => d.id === sorting[0].id)?.label}
             </Box>
           }
         />
@@ -182,7 +182,7 @@ function ActiveFiltersPanel() {
         <Tooltip title="Reset all filters" placement="bottom">
           <Box>
             <Box
-              sx={theme => ({
+              sx={(theme) => ({
                 display: "flex",
                 alignItems: "center",
                 py: 0.3,

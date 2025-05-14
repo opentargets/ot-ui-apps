@@ -1,4 +1,4 @@
-import { usePlatformApi, SummaryItem } from "ui";
+import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
 import PHENOTYPES_SUMMARY_FRAGMENT from "./PhenotypesSummaryFragment.gql";
@@ -10,7 +10,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => <>{data.phenotypes?.count || 0} phenotypes</>}
+      renderSummary={(data) => <>{data.phenotypes?.count || 0} phenotypes</>}
     />
   );
 }

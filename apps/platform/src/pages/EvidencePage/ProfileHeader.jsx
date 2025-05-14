@@ -2,16 +2,16 @@ import { faDna, faStethoscope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Card, CardContent, CardHeader, Skeleton, Typography } from "@mui/material";
 import {
-  Link,
-  usePlatformApi,
-  ProfileDescription,
   ProfileHeader as BaseProfileHeader,
+  Link,
   ProfileChipList,
+  ProfileDescription,
+  usePlatformApi,
 } from "ui";
 
 import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   card: { height: "100%" },
   cardContent: {
     borderTop: `1px solid ${theme.palette.grey[300]}`,
@@ -22,11 +22,11 @@ const useStyles = makeStyles(theme => ({
  * Disease synonyms are organized by "relation", each with a list of "terms".
  * The same term can appear under different relations.
  */
-const parseSynonyms = diseaseSynonyms => {
+const parseSynonyms = (diseaseSynonyms) => {
   const t = [];
-  diseaseSynonyms.forEach(s => {
-    s.terms.forEach(syn => {
-      const thisSyn = t.find(tItem => tItem.label === syn);
+  diseaseSynonyms.forEach((s) => {
+    s.terms.forEach((syn) => {
+      const thisSyn = t.find((tItem) => tItem.label === syn);
       if (!thisSyn) {
         // if the synonyms is not already in the list, we add it
         t.push({ label: syn, tooltip: [s.relation] });
@@ -38,7 +38,7 @@ const parseSynonyms = diseaseSynonyms => {
     });
   });
   // convert the tooltip array to a string for display in the Tooltip component
-  t.map(tItem => {
+  t.map((tItem) => {
     const syn = tItem;
     syn.tooltip = tItem.tooltip.join(", ");
     return syn;
@@ -61,7 +61,7 @@ function ProfileHeader() {
   const { id: ensgId, approvedSymbol } = data?.target || {};
 
   const targetSynonyms = data?.target?.synonyms?.reduce((accumulator, synonymous) => {
-    if (accumulator.find(x => x.label === synonymous.label)) {
+    if (accumulator.find((x) => x.label === synonymous.label)) {
       return accumulator;
     }
     accumulator.push({

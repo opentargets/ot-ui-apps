@@ -1,14 +1,14 @@
 import { useQuery } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
-import { SectionItem, Link, Tooltip, OtTable, TooltipStyledLabel } from "ui";
+import { Link, OtTable, SectionItem, Tooltip, TooltipStyledLabel } from "ui";
 
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
 import CRISPR_QUERY from "./OTCrisprQuery.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   significanceIcon: {
     color: theme.palette.primary.main,
   },
@@ -18,17 +18,17 @@ const getColumns = () => [
   {
     id: "disease",
     label: "Reported disease",
-    renderCell: row => (
+    renderCell: (row) => (
       <Link asyncTooltip to={`/disease/${row.disease.id}`}>
         {row.disease.name}
       </Link>
     ),
-    filterValue: row => `${row.disease.name}, ${row.disease.id}`,
+    filterValue: (row) => `${row.disease.name}, ${row.disease.id}`,
   },
   {
     id: "projectId",
     label: "OTAR project code",
-    renderCell: row => (
+    renderCell: (row) => (
       <Link external to={`http://home.opentargets.org/${row.projectId}`}>
         {row.projectId}
       </Link>
@@ -38,7 +38,7 @@ const getColumns = () => [
     id: "contrast",
     label: "Contrast / Study overview",
     enableHiding: false,
-    renderCell: row => {
+    renderCell: (row) => {
       if (row.contrast && row.studyOverview) {
         return (
           <Tooltip
@@ -58,12 +58,12 @@ const getColumns = () => [
       return null;
     },
     width: "25%",
-    filterValue: row => `${row.contrast}; ${row.studyOverview}`,
+    filterValue: (row) => `${row.contrast}; ${row.studyOverview}`,
   },
   {
     id: "cellType",
     label: "Cell type",
-    renderCell: row =>
+    renderCell: (row) =>
       row.cellLineBackground ? (
         <Tooltip
           showHelpIcon
@@ -76,18 +76,19 @@ const getColumns = () => [
       ) : (
         row.cellType
       ),
-    filterValue: row => `${row.cellType}; ${row.cellLineBackground}`,
+    filterValue: (row) => `${row.cellType}; ${row.cellLineBackground}`,
   },
   {
     id: "log2FoldChangeValue",
     label: "log2 fold change",
-    renderCell: row => (row.log2FoldChangeValue ? row.log2FoldChangeValue : "N/A"),
+    renderCell: (row) => (row.log2FoldChangeValue ? row.log2FoldChangeValue : "N/A"),
   },
   {
     id: "resourceScore",
     label: "Significance",
-    filterValue: row => `${row.resourceScore}; ${row.statisticalTestTail}`,
-    renderCell: row => (row.resourceScore ? parseFloat(row.resourceScore?.toFixed(6)) : naLabel),
+    filterValue: (row) => `${row.resourceScore}; ${row.statisticalTestTail}`,
+    renderCell: (row) =>
+      row.resourceScore ? Number.parseFloat(row.resourceScore?.toFixed(6)) : naLabel,
   },
   {
     id: "releaseVersion",
@@ -98,43 +99,43 @@ const getColumns = () => [
 const exportColumns = [
   {
     label: "disease",
-    exportValue: row => row.disease.name,
+    exportValue: (row) => row.disease.name,
   },
   {
     label: "disease id",
-    exportValue: row => row.disease.id,
+    exportValue: (row) => row.disease.id,
   },
   {
     label: "OTAR project code",
-    exportValue: row => row.projectId,
+    exportValue: (row) => row.projectId,
   },
   {
     label: "contrast",
-    exportValue: row => row.contrast,
+    exportValue: (row) => row.contrast,
   },
   {
     label: "study overview",
-    exportValue: row => row.studyOverview,
+    exportValue: (row) => row.studyOverview,
   },
   {
     label: "cell type",
-    exportValue: row => row.cellType,
+    exportValue: (row) => row.cellType,
   },
   {
     label: "cell line background",
-    exportValue: row => row.cellLineBackground,
+    exportValue: (row) => row.cellLineBackground,
   },
   {
     label: "CRISPR screen library",
-    exportValue: row => row.crisprScreenLibrary,
+    exportValue: (row) => row.crisprScreenLibrary,
   },
   {
     label: "resource score",
-    exportValue: row => row.resourceScore,
+    exportValue: (row) => row.resourceScore,
   },
   {
     label: "statistical test tail",
-    exportValue: row => row.statisticalTestTail,
+    exportValue: (row) => row.statisticalTestTail,
   },
 ];
 

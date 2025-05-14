@@ -5,6 +5,6 @@ export const definition = {
   id,
   name: "Orphanet",
   shortName: "ON",
-  hasData: data => data.orphanetSummary.count > 0,
+  hasData: (data) => data.orphanetSummary.count > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };

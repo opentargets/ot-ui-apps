@@ -1,28 +1,28 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import {
-  Link,
-  SectionItem,
-  Tooltip,
-  PublicationsDrawer,
   EllsWrapper,
+  Link,
   OtTable,
+  PublicationsDrawer,
+  SectionItem,
   TableDrawer,
+  Tooltip,
 } from "ui";
 
+import { epmcUrl, sentenceCase } from "@ot/utils";
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl, sentenceCase } from "@ot/utils";
 
-import REACTOME_QUERY from "./sectionQuery.gql";
 import {
   dataTypesMap,
   defaultRowsPerPageOptions,
   naLabel,
   sectionsBaseSizeQuery,
 } from "@ot/constants";
+import REACTOME_QUERY from "./sectionQuery.gql";
 
-const getColumns = label => [
+const getColumns = (label) => [
   {
     id: "disease",
     label: "Disease / phenotype",
@@ -61,7 +61,7 @@ const getColumns = label => [
           </Link>
         );
       }
-      const refs = pathways.map(p => ({
+      const refs = pathways.map((p) => ({
         url: `http://www.reactome.org/PathwayBrowser/#${p.id}`,
         name: p.name,
         group: "Pathways",
@@ -109,7 +109,7 @@ const getColumns = label => [
       if (variantAminoacidDescriptions?.length > 1) {
         return (
           <TableDrawer
-            entries={variantAminoacidDescriptions.map(d => ({
+            entries={variantAminoacidDescriptions.map((d) => ({
               name: d,
               group: "Amino acid variation",
             }))}
@@ -125,7 +125,7 @@ const getColumns = label => [
     label: "Literature",
     renderCell: ({ literature = [] }) => {
       const literatureList = [];
-      literature?.forEach(id => {
+      literature?.forEach((id) => {
         if (id !== "NA") {
           literatureList.push({
             name: id,

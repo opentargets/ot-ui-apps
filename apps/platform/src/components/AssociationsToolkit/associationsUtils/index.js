@@ -1,7 +1,7 @@
-import { scaleQuantize, rgb } from "d3";
-import Legend from "./Legend";
-import dataSources from "../static_datasets/dataSourcesAssoc";
 import { getConfig } from "@ot/config";
+import { rgb, scaleQuantize } from "d3";
+import dataSources from "../static_datasets/dataSourcesAssoc";
+import Legend from "./Legend";
 
 const config = getConfig();
 
@@ -64,7 +64,7 @@ export const groupViewColumnsBy = (input, key) =>
   }, {});
 
 /* --- TABLE SHARED HELPERS --- */
-export const getPriorisationSectionId = columnDef => columnDef.sectionId;
+export const getPriorisationSectionId = (columnDef) => columnDef.sectionId;
 
 export const getCellId = (cell, entityToGet, displayedTable, tablePrefix = null) => {
   const colId = cell.column.id;
@@ -82,7 +82,7 @@ export const getColumAndSection = (cell, displayedTable) => {
   return [colId, sectionId];
 };
 
-export const cellHasValue = score => typeof score === "number";
+export const cellHasValue = (score) => typeof score === "number";
 
 export const defaulDatasourcesWeigths = dataSources.map(
   ({ id, weight, required, aggregation }) => ({
@@ -94,8 +94,8 @@ export const defaulDatasourcesWeigths = dataSources.map(
   })
 );
 
-export const getWightSourceDefault = source => {
-  const sourcesDetails = defaulDatasourcesWeigths.find(src => src.id === source);
+export const getWightSourceDefault = (source) => {
+  const sourcesDetails = defaulDatasourcesWeigths.find((src) => src.id === source);
   return sourcesDetails.weight;
 };
 
@@ -105,7 +105,7 @@ export const checkBoxPayload = (id, aggregationId) => ({
   name: "dataTypes",
 });
 
-export const getControlChecked = (values, id) => values.filter(val => val.id === id).length > 0;
+export const getControlChecked = (values, id) => values.filter((val) => val.id === id).length > 0;
 
 /* --- CONSTANTS --- */
 const { primaryColor } = config.profile;
@@ -173,13 +173,13 @@ const AssociationsLegend = Legend(assocScale, {
   tickFormat: ".1f",
 });
 
-export const getLegend = isAssoc => {
+export const getLegend = (isAssoc) => {
   if (isAssoc) return AssociationsLegend;
   return PrioritisationLegend;
 };
 
 /* --- GLOBAL HELPERS --- */
-export const getScale = isAssoc => (isAssoc ? assocScale : prioritizationScale);
+export const getScale = (isAssoc) => (isAssoc ? assocScale : prioritizationScale);
 
 /* --- CSS VARIABLES --- */
 export const tableCSSVariables = {

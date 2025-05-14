@@ -1,16 +1,16 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, Tooltip, SectionItem, PublicationsDrawer, OtTable, TableDrawer } from "ui";
+import { Link, OtTable, PublicationsDrawer, SectionItem, TableDrawer, Tooltip } from "ui";
 
-import { defaultRowsPerPageOptions, sectionsBaseSizeQuery, naLabel } from "@ot/constants";
+import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import { epmcUrl } from "@ot/utils";
-import Description from "./Description";
-import BiomarkersDrawer from "./BiomarkersDrawer";
 import { definition } from ".";
+import BiomarkersDrawer from "./BiomarkersDrawer";
+import Description from "./Description";
 
 import CANCER_BIOMARKERS_EVIDENCE_QUERY from "./CancerBiomarkersEvidence.gql";
 
-const getColumns = label => [
+const getColumns = (label) => [
   {
     id: "disease",
     label: "Disease",
@@ -61,7 +61,7 @@ const getColumns = label => [
     label: "Source",
     renderCell: ({ confidence, urls }) => {
       const entries = urls
-        ? urls.map(url => ({
+        ? urls.map((url) => ({
             url: url.url,
             name: url.niceName,
             group: "Sources",
@@ -75,7 +75,7 @@ const getColumns = label => [
     label: "Literature",
     renderCell: ({ literature }) => {
       const entries = literature
-        ? literature.map(id => ({
+        ? literature.map((id) => ({
             name: id,
             url: epmcUrl(id),
             group: "literature",

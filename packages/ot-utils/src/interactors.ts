@@ -28,8 +28,8 @@ export function getInteractorIds(targetRowInteractorsRequest: any) {
   const interactorsIds = [
     ...new Set(
       targetRowInteractorsRequest.data.target.interactions.rows
-        .map(int => int.targetB?.id)
-        .filter(id => id !== null && id !== undefined)
+        .map((int) => int.targetB?.id)
+        .filter((id) => id !== null && id !== undefined)
     ),
   ];
 

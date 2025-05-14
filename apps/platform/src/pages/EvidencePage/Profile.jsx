@@ -2,39 +2,39 @@ import { gql } from "@apollo/client";
 import { Suspense, lazy } from "react";
 import {
   PlatformApiProvider,
+  PrivateWrapper,
   SectionContainer,
+  SectionLoader,
   SummaryContainer,
   summaryUtils,
-  PrivateWrapper,
-  SectionLoader,
 } from "ui";
 
+import CRISPRSummary from "sections/src/evidence/CRISPR/Summary";
+import CrisprScreenSummary from "sections/src/evidence/CRISPRScreen/Summary";
 import CancerBiomarkersSummary from "sections/src/evidence/CancerBiomarkers/Summary";
 import CancerGeneCensusSummary from "sections/src/evidence/CancerGeneCensus/Summary";
 import ChemblSummary from "sections/src/evidence/Chembl/Summary";
 import ClinGenSummary from "sections/src/evidence/ClinGen/Summary";
-import CRISPRSummary from "sections/src/evidence/CRISPR/Summary";
-import CrisprScreenSummary from "sections/src/evidence/CRISPRScreen/Summary";
-import EuropePmcSummary from "sections/src/evidence/EuropePmc/Summary";
 import EVASummary from "sections/src/evidence/EVA/Summary";
 import EVASomaticSummary from "sections/src/evidence/EVASomatic/Summary";
+import EuropePmcSummary from "sections/src/evidence/EuropePmc/Summary";
 import ExpressionAtlasSummary from "sections/src/evidence/ExpressionAtlas/Summary";
+import GWASCredibleSetsSummary from "sections/src/evidence/GWASCredibleSets/Summary";
 import Gene2PhenotypeSummary from "sections/src/evidence/Gene2Phenotype/Summary";
+import GeneBurdenSummary from "sections/src/evidence/GeneBurden/Summary";
 import GenomicsEnglandSummary from "sections/src/evidence/GenomicsEngland/Summary";
 import ImpcSummary from "sections/src/evidence/Impc/Summary";
 import IntOgenSummary from "sections/src/evidence/IntOgen/Summary";
-import GeneBurdenSummary from "sections/src/evidence/GeneBurden/Summary";
-import OrphanetSummary from "sections/src/evidence/Orphanet/Summary";
 import OTCRISPRSummary from "sections/src/evidence/OTCRISPR/Summary";
 import OTEncoreSummary from "sections/src/evidence/OTEncore/Summary";
 import OTValidationSummary from "sections/src/evidence/OTValidation/Summary";
+import OrphanetSummary from "sections/src/evidence/Orphanet/Summary";
 import ProgenySummary from "sections/src/evidence/Progeny/Summary";
 import ReactomeSummary from "sections/src/evidence/Reactome/Summary";
 import SlapEnrichSummary from "sections/src/evidence/SlapEnrich/Summary";
 import SysBioSummary from "sections/src/evidence/SysBio/Summary";
 import UniProtLiteratureSummary from "sections/src/evidence/UniProtLiterature/Summary";
 import UniProtVariantsSummary from "sections/src/evidence/UniProtVariants/Summary";
-import GWASCredibleSetsSummary from "sections/src/evidence/GWASCredibleSets/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 

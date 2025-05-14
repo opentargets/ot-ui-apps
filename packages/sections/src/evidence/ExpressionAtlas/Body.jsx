@@ -1,12 +1,12 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { SectionItem, Tooltip, Link, ScientificNotation, OtTable } from "ui";
+import { Link, OtTable, ScientificNotation, SectionItem, Tooltip } from "ui";
 
-import Description from "./Description";
-import { sentenceCase } from "@ot/utils";
-import EXPRESSION_ATLAS_QUERY from "./ExpressionAtlasQuery.gql";
-import { definition } from ".";
 import { dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
+import { sentenceCase } from "@ot/utils";
+import { definition } from ".";
+import Description from "./Description";
+import EXPRESSION_ATLAS_QUERY from "./ExpressionAtlasQuery.gql";
 
 const columns = [
   {

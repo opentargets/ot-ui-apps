@@ -1,11 +1,11 @@
+import { Grid, styled } from "@mui/material";
 import { useState } from "react";
-import { styled, Grid } from "@mui/material";
 
-import AggregationsTooltip from "./AssocTooltip";
+import { groupViewColumnsBy } from "../../associationsUtils";
 import associationsColumns from "../../static_datasets/dataSourcesAssoc";
 import prioritizationColumns from "../../static_datasets/prioritisationColumns";
-import { groupViewColumnsBy } from "../../associationsUtils";
 import { GridContainer } from "../layout";
+import AggregationsTooltip from "./AssocTooltip";
 
 const AggregationsContainer = styled(GridContainer)({
   gridColumnGap: "4px",
@@ -78,7 +78,7 @@ function AggregationsRow({
     <Grid container direction="row" wrap="nowrap">
       <HiddenCol />
       <AggregationsContainer columnsCount={columnsCount}>
-        {aggregations.map(aggregation => (
+        {aggregations.map((aggregation) => (
           <AggregationItem
             key={aggregation}
             aggregation={aggregation}

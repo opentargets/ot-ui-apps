@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from ".";
 import { dataTypesMap } from "@ot/constants";
+import { definition } from ".";
 import REACTOME_SUMMARY from "./ReactomeSummary.gql";
 
 function Summary() {

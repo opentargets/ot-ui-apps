@@ -1,11 +1,11 @@
-import { useRef, useEffect } from "react";
-import * as PlotLib from "@observablehq/plot";
-import { rgb } from "d3";
-import { useMeasure } from "@uidotdev/usehooks";
 import { Box, Fade, Skeleton } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { DataDownloader } from "ui";
+import * as PlotLib from "@observablehq/plot";
 import { VARIANT_EFFECT_METHODS } from "@ot/constants";
+import { useMeasure } from "@uidotdev/usehooks";
+import { rgb } from "d3";
+import { useEffect, useRef } from "react";
+import { DataDownloader } from "ui";
 
 const PRIORITISATION_COLORS = [
   rgb("#bc3a19"),
@@ -94,14 +94,14 @@ function Plot({ data, width }) {
         axis: "bottom",
         ticks: 2,
         labelAnchor: "center",
-        tickFormat: d => getXLabel(d),
+        tickFormat: (d) => getXLabel(d),
         tickSize: 0,
         domain: [-1, 1],
       },
       y: {
         tickSize: 0,
         tickPadding: 18,
-        tickFormat: d => getYLabel(d),
+        tickFormat: (d) => getYLabel(d),
       },
 
       color: {
@@ -165,7 +165,7 @@ function Plot({ data, width }) {
               label: "Normalised Score:",
             },
             license: {
-              value: d => getLicense(d.method),
+              value: (d) => getLicense(d.method),
               label: "License:",
             },
           },

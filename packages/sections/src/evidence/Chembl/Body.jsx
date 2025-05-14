@@ -1,22 +1,22 @@
-import { useState } from "react";
 import { makeStyles } from "@mui/styles";
+import { useState } from "react";
 import {
-  Link,
-  SectionItem,
-  Tooltip,
   ChipList,
-  TableDrawer,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  Link,
   OtTableSSP,
+  SectionItem,
+  TableDrawer,
+  Tooltip,
 } from "ui";
 
-import { phaseMap, sourceMap, naLabel, dataTypesMap } from "@ot/constants";
-import Description from "./Description";
+import { dataTypesMap, naLabel, phaseMap, sourceMap } from "@ot/constants";
 import { definition } from ".";
+import Description from "./Description";
 
-import CHEMBL_QUERY from "./ChemblQuery.gql";
 import { Box, Typography } from "@mui/material";
+import CHEMBL_QUERY from "./ChemblQuery.gql";
 
 const useStyles = makeStyles(() => ({
   tooltipContainer: {
@@ -34,39 +34,39 @@ const useStyles = makeStyles(() => ({
 const exportColumns = [
   {
     label: "diseaseId",
-    exportValue: row => row.disease.id,
+    exportValue: (row) => row.disease.id,
   },
   {
     label: "diseaseName",
-    exportValue: row => row.disease.name,
+    exportValue: (row) => row.disease.name,
   },
   {
     label: "targets",
-    exportValue: row => row.target,
+    exportValue: (row) => row.target,
   },
   {
     label: "drug",
-    exportValue: row => row.drug,
+    exportValue: (row) => row.drug,
   },
   {
     label: "mechanismofAction",
-    exportValue: row => row.drug.mechanismsOfAction,
+    exportValue: (row) => row.drug.mechanismsOfAction,
   },
   {
     label: "clinicalPhase",
-    exportValue: row => row.clinicalPhase,
+    exportValue: (row) => row.clinicalPhase,
   },
   {
     label: "clinicalStatus",
-    exportValue: row => row.clinicalStatus,
+    exportValue: (row) => row.clinicalStatus,
   },
   {
     label: "studyStartDate",
-    exportValue: row => row.studyStartDate,
+    exportValue: (row) => row.studyStartDate,
   },
   {
     label: "source",
-    exportValue: row => row.urls,
+    exportValue: (row) => row.urls,
   },
 ];
 
@@ -93,7 +93,7 @@ function getColumns(classes) {
                   <Typography variant="subtitle2" display="block" align="center">
                     All reported phenotypes:
                   </Typography>
-                  {cohortPhenotypes.map(e => (
+                  {cohortPhenotypes.map((e) => (
                     <div key={e}>{e}</div>
                   ))}
                 </Box>
@@ -231,7 +231,7 @@ function getColumns(classes) {
                   <div className={classes.chipContainer}>
                     {studyStopReasonCategories ? (
                       <ChipList
-                        items={studyStopReasonCategories.map(reason => ({
+                        items={studyStopReasonCategories.map((reason) => ({
                           label: reason,
                           customClass: classes.chipStyle,
                         }))}
@@ -299,7 +299,7 @@ function Body({ id, label, entity }) {
           entity={entity}
           sectionName="chembl"
           showGlobalFilter={false}
-          setInitialRequestData={req => {
+          setInitialRequestData={(req) => {
             setRequest(req);
           }}
           variables={{

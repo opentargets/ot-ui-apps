@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
-import { v1 } from "uuid";
+import { faCircleMinus, faCircleNodes, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useEffect, useState } from "react";
 import { PublicationSummaryLabel, SummaryLoader, useConfigContext } from "ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNodes, faCircleMinus, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { v1 } from "uuid";
 
 import { publicationSummaryQuery } from "@ot/utils";
 
 import { naLabel } from "@ot/constants";
-import SentenceMatch from "./SentenceMatch";
 import SimplePublication from "../../common/Bibliography/SimplePublication";
+import SentenceMatch from "./SentenceMatch";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   abstractSpan: {
     whiteSpace: "normal",
   },
@@ -67,31 +67,31 @@ function Publication({
   } = useConfigContext();
 
   const handleShowAbstractClick = () => {
-    setShowAbstract(current => !current);
+    setShowAbstract((current) => !current);
   };
 
   const handleShowMatchesClick = () => {
-    setShowMatches(current => !current);
+    setShowMatches((current) => !current);
   };
 
   const handleShowSummaryClick = () => {
-    setShowSummary(current => !current);
+    setShowSummary((current) => !current);
   };
 
   function requestSummary({ baseUrl, requestOptions }) {
     fetch(baseUrl, requestOptions)
-      .then(response => {
+      .then((response) => {
         if (response.ok) return response.json();
-        return response.json().then(err => {
+        return response.json().then((err) => {
           throw new Error(err.error);
         });
       })
-      .then(data => {
+      .then((data) => {
         setSummaryText(data.text);
         setError(null);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
@@ -251,7 +251,7 @@ function Publication({
             <Typography variant="subtitle2">Matches</Typography>
             <table className={classes.matchTable}>
               <tbody>
-                {textMiningSentences.map(match => (
+                {textMiningSentences.map((match) => (
                   <SentenceMatch key={v1()} match={match} />
                 ))}
               </tbody>

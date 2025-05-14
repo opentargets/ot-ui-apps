@@ -1,30 +1,30 @@
 import { gql } from "@apollo/client";
-import { lazy, Suspense } from "react";
+import { Suspense, lazy } from "react";
 import {
   PlatformApiProvider,
   SectionContainer,
+  SectionLoader,
   SummaryContainer,
   summaryUtils,
-  SectionLoader,
 } from "ui";
 
-import KnownDrugsSummary from "sections/src/target/KnownDrugs/Summary";
-import TractabilitySummary from "sections/src/target/Tractability/Summary";
-import SafetySummary from "sections/src/target/Safety/Summary";
-import PharmacogenomicsSummary from "sections/src/target/Pharmacogenomics/Summary";
+import BibliographySummary from "sections/src/target/Bibliography/Summary";
+import CancerHallmarksSummary from "sections/src/target/CancerHallmarks/Summary";
 import ChemicalProbesSummary from "sections/src/target/ChemicalProbes/Summary";
-import BaselineExpressionSummary from "sections/src/target/Expression/Summary";
+import ComparativeGenomicsSummary from "sections/src/target/ComparativeGenomics/Summary";
 import DepMapSummary from "sections/src/target/DepMap/Summary";
+import BaselineExpressionSummary from "sections/src/target/Expression/Summary";
 import GeneOntologySummary from "sections/src/target/GeneOntology/Summary";
 import GeneticConstraintSummary from "sections/src/target/GeneticConstraint/Summary";
-import ProtVistaSummary from "sections/src/target/ProtVista/Summary";
+import KnownDrugsSummary from "sections/src/target/KnownDrugs/Summary";
 import MolecularInteractionsSummary from "sections/src/target/MolecularInteractions/Summary";
-import PathwaysSummary from "sections/src/target/Pathways/Summary";
-import CancerHallmarksSummary from "sections/src/target/CancerHallmarks/Summary";
 import MousePhenotypesSummary from "sections/src/target/MousePhenotypes/Summary";
-import ComparativeGenomicsSummary from "sections/src/target/ComparativeGenomics/Summary";
+import PathwaysSummary from "sections/src/target/Pathways/Summary";
+import PharmacogenomicsSummary from "sections/src/target/Pharmacogenomics/Summary";
+import ProtVistaSummary from "sections/src/target/ProtVista/Summary";
+import SafetySummary from "sections/src/target/Safety/Summary";
 import SubcellularLocationSummary from "sections/src/target/SubcellularLocation/Summary";
-import BibliographySummary from "sections/src/target/Bibliography/Summary";
+import TractabilitySummary from "sections/src/target/Tractability/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 
@@ -38,17 +38,17 @@ const DepMapSection = lazy(() => import("sections/src/target/DepMap/Body"));
 const GeneOntologySection = lazy(() => import("sections/src/target/GeneOntology/Body"));
 const GeneticConstraintSection = lazy(() => import("sections/src/target/GeneticConstraint/Body"));
 const ProtVistaSection = lazy(() => import("sections/src/target/ProtVista/Body"));
-const MolecularInteractionsSection = lazy(() =>
-  import("sections/src/target/MolecularInteractions/Body")
+const MolecularInteractionsSection = lazy(
+  () => import("sections/src/target/MolecularInteractions/Body")
 );
 const PathwaysSection = lazy(() => import("sections/src/target/Pathways/Body"));
 const CancerHallmarksSection = lazy(() => import("sections/src/target/CancerHallmarks/Body"));
 const MousePhenotypesSection = lazy(() => import("sections/src/target/MousePhenotypes/Body"));
-const ComparativeGenomicsSection = lazy(() =>
-  import("sections/src/target/ComparativeGenomics/Body")
+const ComparativeGenomicsSection = lazy(
+  () => import("sections/src/target/ComparativeGenomics/Body")
 );
-const SubcellularLocationSection = lazy(() =>
-  import("sections/src/target/SubcellularLocation/Body")
+const SubcellularLocationSection = lazy(
+  () => import("sections/src/target/SubcellularLocation/Body")
 );
 const BibliographySection = lazy(() => import("sections/src/target/Bibliography/Body"));
 

@@ -1,26 +1,26 @@
-import { List, ListItem, Typography } from "@mui/material";
 import { useQuery } from "@apollo/client";
-import { v1 } from "uuid";
+import { List, ListItem, Typography } from "@mui/material";
 import {
-  SectionItem,
-  Tooltip,
-  Link,
-  PublicationsDrawer,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  Link,
   OtTable,
+  PublicationsDrawer,
+  SectionItem,
+  Tooltip,
 } from "ui";
+import { v1 } from "uuid";
 
 import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
-import Description from "./Description";
 import { epmcUrl, sentenceCase } from "@ot/utils";
-import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
 import { definition } from ".";
+import Description from "./Description";
+import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
 
 const g2pUrl = (studyId, symbol) =>
   `https://www.ebi.ac.uk/gene2phenotype/search?query=${symbol}&panel=${studyId}`;
 
-const getColumns = label => [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -80,7 +80,7 @@ const getColumns = label => [
       if (allelicRequirements && allelicRequirements.length > 1) {
         return (
           <List>
-            {allelicRequirements.map(item => (
+            {allelicRequirements.map((item) => (
               <ListItem key={v1()}>{item}</ListItem>
             ))}
           </List>
@@ -131,7 +131,7 @@ const getColumns = label => [
     label: "Literature",
     renderCell: ({ literature }) => {
       const entries = literature
-        ? literature.map(id => ({
+        ? literature.map((id) => ({
             name: id,
             url: epmcUrl(id),
             group: "literature",

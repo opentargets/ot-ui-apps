@@ -1,22 +1,22 @@
 import { Typography } from "@mui/material";
 
 import {
-  Link,
-  SectionItem,
-  Tooltip,
-  TableDrawer,
-  MouseModelAllelicComposition,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  Link,
+  MouseModelAllelicComposition,
   OtTableSSP,
+  SectionItem,
+  TableDrawer,
+  Tooltip,
 } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
 import INTOGEN_QUERY from "./sectionQuery.gql";
 
-import { sentenceCase } from "@ot/utils";
 import { dataTypesMap, naLabel } from "@ot/constants";
+import { sentenceCase } from "@ot/utils";
 import { useState } from "react";
 
 const columns = [
@@ -49,7 +49,7 @@ const columns = [
     label: "Human phenotypes",
     renderCell: ({ diseaseModelAssociatedHumanPhenotypes: humanPhenotypes }) => {
       const entries = humanPhenotypes
-        ? humanPhenotypes.map(entry => ({
+        ? humanPhenotypes.map((entry) => ({
             name: entry.label,
             group: "Human phenotypes",
           }))
@@ -65,7 +65,7 @@ const columns = [
       );
     },
     filterValue: ({ diseaseModelAssociatedHumanPhenotypes = [] }) =>
-      diseaseModelAssociatedHumanPhenotypes?.map(dmahp => dmahp.label).join(),
+      diseaseModelAssociatedHumanPhenotypes?.map((dmahp) => dmahp.label).join(),
   },
   {
     id: "diseaseModelAssociatedModelPhenotypes",
@@ -73,7 +73,7 @@ const columns = [
 
     renderCell: ({ diseaseModelAssociatedModelPhenotypes: mousePhenotypes }) => (
       <TableDrawer
-        entries={mousePhenotypes.map(entry => ({
+        entries={mousePhenotypes.map((entry) => ({
           name: entry.label,
           group: "Mouse phenotypes",
         }))}
@@ -82,7 +82,7 @@ const columns = [
       />
     ),
     filterValue: ({ diseaseModelAssociatedModelPhenotypes = [] }) =>
-      diseaseModelAssociatedModelPhenotypes.map(dmamp => dmamp.label).join(),
+      diseaseModelAssociatedModelPhenotypes.map((dmamp) => dmamp.label).join(),
   },
   {
     id: "directionOfVariantEffect",
@@ -135,23 +135,23 @@ const columns = [
 const exportColumns = [
   {
     label: "diseaseId",
-    exportValue: row => row.disease.id,
+    exportValue: (row) => row.disease.id,
   },
   {
     label: "diseaseName",
-    exportValue: row => row.disease.name,
+    exportValue: (row) => row.disease.name,
   },
   {
     label: "diseaseModelAssociatedHumanPhenotypes",
-    exportValue: row => row.diseaseModelAssociatedHumanPhenotypes,
+    exportValue: (row) => row.diseaseModelAssociatedHumanPhenotypes,
   },
   {
     label: "diseaseModelAssociatedModelPhenotypes",
-    exportValue: row => row.diseaseModelAssociatedModelPhenotypes,
+    exportValue: (row) => row.diseaseModelAssociatedModelPhenotypes,
   },
   {
     label: "literature",
-    exportValue: row => row.biologicalModelId,
+    exportValue: (row) => row.biologicalModelId,
   },
 ];
 
@@ -176,7 +176,7 @@ function Body({ id, label, entity }) {
           entity={entity}
           sectionName="impc"
           showGlobalFilter={false}
-          setInitialRequestData={req => {
+          setInitialRequestData={(req) => {
             setRequest(req);
           }}
           variables={{

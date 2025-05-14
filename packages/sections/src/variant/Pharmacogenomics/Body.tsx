@@ -1,18 +1,18 @@
 import { useQuery } from "@apollo/client";
+import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { makeStyles } from "@mui/styles";
+import { PHARM_GKB_COLOR, naLabel } from "@ot/constants";
+import { epmcUrl } from "@ot/utils";
+import classNames from "classnames";
+import { Fragment } from "react";
+import { Link, OtTable, PublicationsDrawer, SectionItem, Tooltip } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import PHARMACOGENOMICS_QUERY from "./PharmacogenomicsQuery.gql";
-import { Fragment } from "react";
-import classNames from "classnames";
-import { makeStyles } from "@mui/styles";
-import { Link, Tooltip, PublicationsDrawer, OtTable, SectionItem } from "ui";
-import { epmcUrl } from "@ot/utils";
-import { naLabel, PHARM_GKB_COLOR } from "@ot/constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
-import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   level: {
     color: "white",
     padding: theme.spacing(0.5),
@@ -90,7 +90,7 @@ function Body({ id, entity }: BodyProps) {
       id: "drugs",
       label: "Drug(s)",
       renderCell: ({ drugs }) => {
-        const drugsInfo = drugs.filter(d => d.drugId || d.drugFromSource);
+        const drugsInfo = drugs.filter((d) => d.drugId || d.drugFromSource);
         if (!drugsInfo.length) return naLabel;
         return (
           <>
@@ -113,7 +113,7 @@ function Body({ id, entity }: BodyProps) {
         );
       },
       filterValue: ({ drugs }) =>
-        drugs.map(d => `${d.drugFromSource ?? ""} ${d.drugId ?? ""}`).join(" "),
+        drugs.map((d) => `${d.drugFromSource ?? ""} ${d.drugId ?? ""}`).join(" "),
     },
     {
       id: "genotypeAnnotationText",

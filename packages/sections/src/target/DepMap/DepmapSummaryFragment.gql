@@ -1,5 +1,5 @@
 fragment DepmapSummaryFragment on Target {
-  depMapEssentiality{
+  depMapEssentiality {
     tissueName
   }
 }

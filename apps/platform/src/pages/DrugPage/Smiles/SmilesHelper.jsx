@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { faXmark, faSearchPlus } from "@fortawesome/free-solid-svg-icons";
+import { faSearchPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Modal, Paper } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useEffect, useState } from "react";
 import SmilesDrawer from "smiles-drawer";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     cursor: "pointer",
     height: "240px",
@@ -38,7 +38,7 @@ const drawSmiles = (smiles, chemblId, config) => {
   const smilesDrawer = new SmilesDrawer.Drawer(config);
   SmilesDrawer.parse(
     smiles,
-    tree => {
+    (tree) => {
       smilesDrawer.draw(tree, chemblId);
     },
     () => {

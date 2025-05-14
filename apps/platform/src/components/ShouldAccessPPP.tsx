@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
 import {
+  Button,
   Dialog,
-  DialogTitle,
   DialogActions,
   DialogContent,
   DialogContentText,
-  Button,
+  DialogTitle,
   Snackbar,
   styled,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const PPP_API_URL = "https://api.partner-platform.opentargets.org/api/v4/graphql";
 const PPP_WEB_URL = "https://partner-platform.opentargets.org";
 const FOURTEEN = 14;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     padding: "1em 1em 2em",
     borderRadius: "12px",
@@ -104,7 +104,7 @@ function ShouldAccessPPP() {
     }`,
       }),
     })
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) handleOpenDialog();
       })
       .catch(() => {

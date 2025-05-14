@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { Drawer, IconButton, Paper, Typography, ButtonBase } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tooltip, Link } from "ui";
+import { ButtonBase, Drawer, IconButton, Paper, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { sentenceCase } from "@ot/utils";
+import { useState } from "react";
+import { Link, Tooltip } from "ui";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   drawerLink: {
     color: `${theme.palette.primary.main} !important`,
     maxWidth: "420px",
@@ -79,7 +79,7 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
             <Typography variant="subtitle2" paragraph>
               Variant:
             </Typography>
-            {biomarkers.geneticVariation.map(variant => (
+            {biomarkers.geneticVariation.map((variant) => (
               <div key={variant.name} className={classes.biomarkerItem}>
                 <div>
                   {variant.name}{" "}
@@ -102,7 +102,7 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
             <Typography variant="subtitle2" paragraph>
               Gene expression:
             </Typography>
-            {biomarkers.geneExpression.map(expression => (
+            {biomarkers.geneExpression.map((expression) => (
               <div key={expression.name} className={classes.biomarkerItem}>
                 <div>{expression.name}</div>
                 <Link external to={`https://identifiers.org/${expression.id.id}`}>

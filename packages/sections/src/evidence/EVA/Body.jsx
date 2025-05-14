@@ -1,59 +1,59 @@
-import { useState } from "react";
 import { Typography } from "@mui/material";
+import { clinvarStarMap, dataTypesMap, naLabel, variantConsequenceSource } from "@ot/constants";
+import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
+import { useState } from "react";
 import {
-  Link,
-  SectionItem,
-  Tooltip,
-  LabelChip,
-  PublicationsDrawer,
   ClinvarStars,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
   DisplayVariantId,
+  LabelChip,
+  Link,
   OtTableSSP,
+  PublicationsDrawer,
+  SectionItem,
+  Tooltip,
 } from "ui";
-import { epmcUrl, sentenceCase, identifiersOrgLink } from "@ot/utils";
-import { dataTypesMap, clinvarStarMap, naLabel, variantConsequenceSource } from "@ot/constants";
 import { definition } from ".";
-import Description from "./Description";
 import CLINVAR_QUERY from "./ClinvarQuery.gql";
+import Description from "./Description";
 
 const exportColumns = [
   {
     label: "diseaseId",
-    exportValue: row => row.disease.id,
+    exportValue: (row) => row.disease.id,
   },
   {
     label: "diseaseName",
-    exportValue: row => row.disease.name,
+    exportValue: (row) => row.disease.name,
   },
   {
     label: "variantId",
-    exportValue: row => row.variant.id,
+    exportValue: (row) => row.variant.id,
   },
   {
     label: "variantRsId",
-    exportValue: row => row.variantRsId,
+    exportValue: (row) => row.variantRsId,
   },
   {
     label: "variantHgvsId",
-    exportValue: row => row.variantHgvsId,
+    exportValue: (row) => row.variantHgvsId,
   },
   {
     label: "variantConsequence",
-    exportValue: row => row.variantFunctionalConsequence,
+    exportValue: (row) => row.variantFunctionalConsequence,
   },
   {
     label: "clinicalSignificances",
-    exportValue: row => row.clinicalSignificances,
+    exportValue: (row) => row.clinicalSignificances,
   },
   {
     label: "allelicRequirements",
-    exportValue: row => row.alleleOrigins,
+    exportValue: (row) => row.alleleOrigins,
   },
   {
     label: "reviewStatus",
-    exportValue: row => row.confidence,
+    exportValue: (row) => row.confidence,
   },
 ];
 
@@ -79,7 +79,7 @@ function getColumns(label) {
                     All reported phenotypes:
                   </Typography>
                   <Typography variant="caption" display="block">
-                    {cohortPhenotypes.map(cp => (
+                    {cohortPhenotypes.map((cp) => (
                       <div key={cp}>{cp}</div>
                     ))}
                   </Typography>
@@ -221,7 +221,7 @@ function getColumns(label) {
               listStyle: "none",
             }}
           >
-            {clinicalSignificances.map(clinicalSignificance => (
+            {clinicalSignificances.map((clinicalSignificance) => (
               <li key={clinicalSignificance}>{sentenceCase(clinicalSignificance)}</li>
             ))}
           </ul>
@@ -242,7 +242,7 @@ function getColumns(label) {
                   <Typography variant="subtitle2" display="block" align="center">
                     Allelic requirements:
                   </Typography>
-                  {allelicRequirements.map(r => (
+                  {allelicRequirements.map((r) => (
                     <Typography variant="caption" key={r}>
                       {r}
                     </Typography>
@@ -251,11 +251,11 @@ function getColumns(label) {
               }
               showHelpIcon
             >
-              {alleleOrigins.map(a => sentenceCase(a)).join("; ")}
+              {alleleOrigins.map((a) => sentenceCase(a)).join("; ")}
             </Tooltip>
           );
 
-        return alleleOrigins.map(a => sentenceCase(a)).join("; ");
+        return alleleOrigins.map((a) => sentenceCase(a)).join("; ");
       },
       filterValue: ({ alleleOrigins }) => (alleleOrigins ? alleleOrigins.join() : ""),
     },
@@ -315,7 +315,7 @@ function Body({ id, label, entity }) {
           entity={entity}
           sectionName="eva"
           showGlobalFilter={false}
-          setInitialRequestData={req => {
+          setInitialRequestData={(req) => {
             setRequest(req);
           }}
           variables={{

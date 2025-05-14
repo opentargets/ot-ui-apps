@@ -1,12 +1,12 @@
 import { useState } from "react";
 
-import { Drawer, Link as MuiLink, IconButton, Paper, Typography, ButtonBase } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, PublicationsDrawer, MouseModelAllelicComposition } from "ui";
+import { ButtonBase, Drawer, IconButton, Link as MuiLink, Paper, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { Link, MouseModelAllelicComposition, PublicationsDrawer } from "ui";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   drawerLink: {
     color: `${theme.palette.primary.main} !important`,
   },
@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
 
 function Model({ model }) {
   const { id, allelicComposition, geneticBackground, literature } = model;
-  const entries = literature ? literature.map(lit => ({ name: lit })) : [];
+  const entries = literature ? literature.map((lit) => ({ name: lit })) : [];
   return (
     <>
       <Link external to={`https://identifiers.org/${id}`}>
@@ -88,7 +88,7 @@ function AllelicCompositionDrawer({ biologicalModels }) {
             <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
-        {biologicalModels.map(model => (
+        {biologicalModels.map((model) => (
           <Paper key={model.id} className={classes.paper} variant="outlined">
             <Model model={model} />
           </Paper>

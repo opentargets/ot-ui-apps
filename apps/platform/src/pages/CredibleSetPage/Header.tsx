@@ -1,5 +1,5 @@
 import { faDiagramProject } from "@fortawesome/free-solid-svg-icons";
-import { Header as HeaderBase, DisplayVariantId, ExternalLink } from "ui";
+import { DisplayVariantId, ExternalLink, Header as HeaderBase } from "ui";
 
 type HeaderProps = {
   loading: boolean;

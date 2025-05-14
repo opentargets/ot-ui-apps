@@ -1,11 +1,11 @@
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
+import { isEqual } from "lodash";
 import {
-  defaulDatasourcesWeigths,
   DEFAULT_TABLE_PAGINATION_STATE,
   DEFAULT_TABLE_SORTING_STATE,
+  defaulDatasourcesWeigths,
 } from "../associationsUtils";
-import { Action, ActionType, ENTITY, State, TABLE_VIEW } from "../types";
-import { isEqual } from "lodash";
+import { type Action, ActionType, ENTITY, type State, TABLE_VIEW } from "../types";
 
 /*****************
  * INITIAL STATE *
@@ -91,7 +91,7 @@ export function aotfReducer(state: State = initialState, action: Action): State 
     }
     case ActionType.DATA_SOURCE_CONTROL: {
       const colUpdatedControls = { ...action.payload };
-      const dataSourceControls = state.dataSourceControls.map(col => {
+      const dataSourceControls = state.dataSourceControls.map((col) => {
         if (col.id === colUpdatedControls.id) return colUpdatedControls;
         return col;
       });
@@ -115,12 +115,12 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       const aggregation = action.aggregation;
 
       const isAllActive = state.dataSourceControls
-        .filter(el => el.aggregation === aggregation)
-        .every(el => el.required);
+        .filter((el) => el.aggregation === aggregation)
+        .every((el) => el.required);
       const isAnyOtherActive = state.dataSourceControls
-        .filter(el => el.aggregation !== aggregation)
-        .some(el => el.required);
-      const dataSourceControls = state.dataSourceControls.map(col => {
+        .filter((el) => el.aggregation !== aggregation)
+        .some((el) => el.required);
+      const dataSourceControls = state.dataSourceControls.map((col) => {
         if (col.aggregation === aggregation) {
           return {
             ...col,

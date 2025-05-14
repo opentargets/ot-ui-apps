@@ -1,12 +1,12 @@
-import { ReactElement } from "react";
 import { Box, Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable, useBatchQuery } from "ui";
 import { naLabel, table5HChunkSize } from "@ot/constants";
 import { epmcUrl, getStudyCategory } from "@ot/utils";
+import type { ReactElement } from "react";
+import { Link, OtTable, PublicationsDrawer, SectionItem, Tooltip, useBatchQuery } from "ui";
 import Description from "./Description";
 
-import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
 import { definition } from ".";
+import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
 
 const columns = [
   {
@@ -68,8 +68,8 @@ const columns = [
       getStudyCategory(projectId) === "FINNGEN"
         ? "FinnGen"
         : cohorts?.length
-        ? cohorts.join(", ")
-        : null,
+          ? cohorts.join(", ")
+          : null,
   },
   {
     id: "publication",

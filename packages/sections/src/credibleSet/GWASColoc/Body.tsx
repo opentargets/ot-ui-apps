@@ -1,19 +1,19 @@
+import { naLabel, table5HChunkSize } from "@ot/constants";
+import { getStudyCategory, mantissaExponentComparator, variantComparator } from "@ot/utils";
+import type { ReactElement } from "react";
 import {
-  Link,
-  SectionItem,
   DisplayVariantId,
-  ScientificNotation,
+  Link,
+  Navigate,
   OtTable,
+  ScientificNotation,
+  SectionItem,
   Tooltip,
   useBatchQuery,
-  Navigate,
 } from "ui";
-import { naLabel, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_COLOC_QUERY from "./GWASColocQuery.gql";
-import { mantissaExponentComparator, variantComparator, getStudyCategory } from "@ot/utils";
-import { ReactElement } from "react";
 
 const columns = [
   {
@@ -64,7 +64,7 @@ const columns = [
   {
     id: "otherStudyLocus.variant.id",
     label: "Lead Variant",
-    comparator: variantComparator(d => d?.otherStudyLocus?.variant),
+    comparator: variantComparator((d) => d?.otherStudyLocus?.variant),
     sortable: true,
     filterValue: ({ otherStudyLocus }) => {
       const v = otherStudyLocus?.variant;

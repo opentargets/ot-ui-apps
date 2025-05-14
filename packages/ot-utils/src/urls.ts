@@ -39,7 +39,7 @@ export function europePmcLiteratureQuery(ids: string[]): string {
 
 export const encodeParams = (params: Record<string, string>): string => {
   const formBody: string[] = [];
-  Object.keys(params).forEach(key => {
+  Object.keys(params).forEach((key) => {
     const encodedKey = encodeURIComponent(key);
     const encodedValue = encodeURIComponent(params[key]);
     formBody.push(`${encodedKey}=${encodedValue}`);

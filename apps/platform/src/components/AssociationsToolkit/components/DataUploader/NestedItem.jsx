@@ -1,5 +1,5 @@
+import { Box, Checkbox, FormControlLabel, List } from "@mui/material";
 import React, { useState } from "react";
-import { List, FormControlLabel, Checkbox, Box } from "@mui/material";
 
 function LABEL_ELEMENT(children) {
   return (
@@ -15,7 +15,7 @@ const NestedItem = ({ children, hits, term, handleParentChange, handleChangeChil
     <List sx={{ mx: 1.5 }}>
       {childrenCheckbox.length === 1 && (
         <>
-          {childrenCheckbox.map(hit => (
+          {childrenCheckbox.map((hit) => (
             <Box key={hit.id}>
               <FormControlLabel
                 label={
@@ -43,16 +43,16 @@ const NestedItem = ({ children, hits, term, handleParentChange, handleChangeChil
             control={
               <Checkbox
                 indeterminate={
-                  childrenCheckbox.some(el => el.checked) &&
-                  !childrenCheckbox.every(el => el.checked)
+                  childrenCheckbox.some((el) => el.checked) &&
+                  !childrenCheckbox.every((el) => el.checked)
                 }
-                checked={childrenCheckbox.every(el => el.checked)}
+                checked={childrenCheckbox.every((el) => el.checked)}
                 onChange={() => handleParentChange(term)}
               />
             }
           />
-          {childrenCheckbox.map(hit => (
-            <Box sx={{ ml: theme => theme.spacing(4) }} key={hit.id}>
+          {childrenCheckbox.map((hit) => (
+            <Box sx={{ ml: (theme) => theme.spacing(4) }} key={hit.id}>
               <FormControlLabel
                 label={hit.name || hit.id}
                 control={

@@ -1,15 +1,15 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, OtTable, ScientificNotation } from "ui";
+import { Link, OtTable, ScientificNotation, SectionItem, Tooltip } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
 import PROGENY_QUERY from "./sectionQuery.gql";
 
-import { sentenceCase } from "@ot/utils";
 import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
+import { sentenceCase } from "@ot/utils";
 
-const reactomeUrl = id => `https://identifiers.org/reactome:${id}`;
+const reactomeUrl = (id) => `https://identifiers.org/reactome:${id}`;
 
 const columns = [
   {
@@ -83,7 +83,7 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={data => (
+      renderBody={(data) => (
         <OtTable
           columns={columns}
           dataDownloader

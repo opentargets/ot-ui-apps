@@ -1,44 +1,44 @@
-import { useState } from "react";
 import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Typography,
-  Stepper,
-  Step,
-  StepLabel,
-  Box,
-  List,
-  ListSubheader,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  DialogActions,
-  ToggleButtonGroup,
-  ToggleButton,
-  Snackbar,
-  IconButton,
-} from "@mui/material";
-import { useDropzone } from "react-dropzone";
-import { styled } from "@mui/material/styles";
-import { v1 } from "uuid";
-import {
-  faFileImport,
-  faChevronLeft,
   faCheck,
   faChevronDown,
+  faChevronLeft,
   faClipboard,
+  faFileImport,
   faPlay,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  List,
+  ListSubheader,
+  Snackbar,
+  Step,
+  StepLabel,
+  Stepper,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { useState } from "react";
+import { useDropzone } from "react-dropzone";
 import { Link, Tooltip, useApolloClient } from "ui";
+import { v1 } from "uuid";
 import * as XLSX from "xlsx";
 
 import useAotfContext from "../../hooks/useAotfContext";
-import ValidationQuery from "./ValidationQuery.gql";
 import NestedItem from "./NestedItem";
+import ValidationQuery from "./ValidationQuery.gql";
 
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: "none",
@@ -121,13 +121,13 @@ const getValidationResults = async (entity, queryTerms, client) =>
   });
 
 function formatQueryTermsResults(queryResult) {
-  const sortedResult = [...queryResult.data.mapIds.mappings].sort(function (a, b) {
-    return a.hits.length < b.hits.length ? 1 : -1;
-  });
-  const parsedResult = sortedResult.map(qT => {
+  const sortedResult = [...queryResult.data.mapIds.mappings].sort((a, b) =>
+    a.hits.length < b.hits.length ? 1 : -1
+  );
+  const parsedResult = sortedResult.map((qT) => {
     const parsedQueryTerm = {
       ...qT,
-      hits: [...qT.hits.map(e => ({ ...e, checked: true }))],
+      hits: [...qT.hits.map((e) => ({ ...e, checked: true }))],
     };
     return parsedQueryTerm;
   });
@@ -209,7 +209,7 @@ const FileExample = ({ entity = "target", runAction }) => {
                   {fileType === "json" && (
                     <>
                       [
-                      {examples.map(ex => (
+                      {examples.map((ex) => (
                         <Typography key={v1()} variant="monoText" display="block" gutterBottom>
                           {`"${ex}",`}
                         </Typography>
@@ -218,7 +218,7 @@ const FileExample = ({ entity = "target", runAction }) => {
                     </>
                   )}
                   {fileType === "text" &&
-                    examples.map(ex => (
+                    examples.map((ex) => (
                       <Typography key={v1()} variant="monoText" display="block" gutterBottom>
                         {ex}
                       </Typography>
@@ -231,7 +231,7 @@ const FileExample = ({ entity = "target", runAction }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {examples.map(ex => (
+                        {examples.map((ex) => (
                           <tr
                             key={v1()}
                             style={{ border: "1px solid black", borderCollapse: "collapse" }}
@@ -274,7 +274,7 @@ function DataUploader({ parentAction }) {
       "application/JSON": [".json"],
     },
     onDrop: async ([file]) => {
-      let reader = new FileReader();
+      const reader = new FileReader();
       const fileType = getFileType(file.name);
 
       if (fileType === "spreadsheet") reader.readAsBinaryString(file);
@@ -282,7 +282,7 @@ function DataUploader({ parentAction }) {
       else if (fileType === "json") reader.readAsText(file);
       else setOpenErrorSnackbar(true);
 
-      reader.onload = async function (e) {
+      reader.onload = async (e) => {
         let contents;
         if (fileType === "spreadsheet") contents = getDataFromSpreadsheet(e);
         else if (fileType === "text") contents = getDataFromTextFile(e);
@@ -311,9 +311,7 @@ function DataUploader({ parentAction }) {
       );
     }
 
-    const terms = data.map(function (item) {
-      return item["id"];
-    });
+    const terms = data.map((item) => item["id"]);
     return terms;
   }
 
@@ -341,7 +339,7 @@ function DataUploader({ parentAction }) {
     }
   }
 
-  const handleRunExample = async terms => {
+  const handleRunExample = async (terms) => {
     const result = await getValidationResults([entityToGet], terms, client);
     setQueryTermsResults(formatQueryTermsResults(result));
     setActiveStep(1);
@@ -350,7 +348,7 @@ function DataUploader({ parentAction }) {
   const entityToUploadLabel = getEntityToUploadLabel[entityToGet];
 
   const handlePinElements = () => {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
     const allHits = [];
     for (let index = 0; index < queryTermsResults.length; index++) {
       const term = queryTermsResults[index];
@@ -365,7 +363,7 @@ function DataUploader({ parentAction }) {
 
   const handleBack = () => {
     if (activeStep < 1) handleClosePopover();
-    else setActiveStep(prevActiveStep => prevActiveStep - 1);
+    else setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleReset = () => {
@@ -375,7 +373,7 @@ function DataUploader({ parentAction }) {
   const open = Boolean(anchorEl);
   const popoverId = open ? "downloader-popover" : undefined;
 
-  const handleClickBTN = event => {
+  const handleClickBTN = (event) => {
     // parentAction();
     setAnchorEl(event.currentTarget);
   };
@@ -388,11 +386,11 @@ function DataUploader({ parentAction }) {
 
   function handleParentChange(term) {
     const checkboxUpdateState = [...queryTermsResults];
-    checkboxUpdateState.find(hitItem => {
+    checkboxUpdateState.find((hitItem) => {
       if (hitItem.term === term) {
-        hitItem.hits.every(el => !el.checked)
-          ? hitItem.hits.map(el => (el.checked = true))
-          : hitItem.hits.map(el => (el.checked = false));
+        hitItem.hits.every((el) => !el.checked)
+          ? hitItem.hits.map((el) => (el.checked = true))
+          : hitItem.hits.map((el) => (el.checked = false));
       }
     });
     setQueryTermsResults(checkboxUpdateState);
@@ -400,8 +398,8 @@ function DataUploader({ parentAction }) {
 
   function handleChangeChildCheckbox(hitId) {
     const checkboxUpdateState = [...queryTermsResults];
-    checkboxUpdateState.find(hitItem => {
-      hitItem.hits.find(el => {
+    checkboxUpdateState.find((hitItem) => {
+      hitItem.hits.find((el) => {
         if (el.id === hitId) return (el.checked = !el.checked);
       });
     });
@@ -433,14 +431,14 @@ function DataUploader({ parentAction }) {
           ".MuiDialog-paper": {
             width: "70%",
             maxWidth: "800px !important",
-            borderRadius: theme => theme.spacing(1),
+            borderRadius: (theme) => theme.spacing(1),
           },
         }}
       >
         <DialogTitle>{`Upload list of ${entityToUploadLabel}`}</DialogTitle>
         <DialogContent sx={{ pb: 0, overflowY: "scroll" }} dividers>
           <Typography
-            sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
+            sx={{ m: (theme) => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
             variant="subtitle2"
             gutterBottom
           >
@@ -457,9 +455,9 @@ function DataUploader({ parentAction }) {
             </Link>
           </Typography>
           {activeStep === 0 && <FileExample entity={entityToGet} runAction={handleRunExample} />}
-          <Box sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}>
+          <Box sx={{ m: (theme) => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}>
             <Stepper activeStep={activeStep}>
-              {steps.map(label => {
+              {steps.map((label) => {
                 const stepProps = {};
                 const labelProps = {};
                 return (

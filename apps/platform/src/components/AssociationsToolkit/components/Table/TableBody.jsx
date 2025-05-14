@@ -1,18 +1,18 @@
-import { Fragment } from "react";
-import { flexRender } from "@tanstack/react-table";
-import { Fade, Box, Typography } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilterCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Fade, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { flexRender } from "@tanstack/react-table";
+import { Fragment } from "react";
 
-import useAotfContext from "../../hooks/useAotfContext";
 import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
+import useAotfContext from "../../hooks/useAotfContext";
 
-import { SectionRender, SectionRendererWrapper } from "./SectionRender";
-import RowInteractorsWrapper from "../RowInteractors/RowInteractorsWrapper";
+import { TABLE_PREFIX, rowNameProperty } from "../../associationsUtils";
 import RowInteractorsTable from "../RowInteractors/RowInteractorsTable";
-import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
-import { rowNameProperty, TABLE_PREFIX } from "../../associationsUtils";
+import RowInteractorsWrapper from "../RowInteractors/RowInteractorsWrapper";
+import { GridContainer, RowContainer, RowsContainer, TableBodyContent } from "../layout";
+import { SectionRender, SectionRendererWrapper } from "./SectionRender";
 
 /* HELPERS */
 const getColContainerClassName = ({ id }) => {
@@ -23,7 +23,7 @@ const getColContainerClassName = ({ id }) => {
 function getIsRowActive(prefix, row, focusState = [], parentRow, parentTable) {
   if (prefix === TABLE_PREFIX.INTERACTORS) {
     return focusState.some(
-      entry =>
+      (entry) =>
         entry.row === parentRow &&
         entry.table === parentTable &&
         entry.interactorsRow === row.id &&
@@ -32,7 +32,7 @@ function getIsRowActive(prefix, row, focusState = [], parentRow, parentTable) {
   }
 
   return focusState.some(
-    entry =>
+    (entry) =>
       entry.row === row.id &&
       entry.table === prefix &&
       (entry.section !== null || entry.interactors)
@@ -42,7 +42,7 @@ function getIsRowActive(prefix, row, focusState = [], parentRow, parentTable) {
 function getFocusSection(prefix, row, focusState, parentRow, parentTable) {
   if (prefix === TABLE_PREFIX.INTERACTORS) {
     return focusState.find(
-      entry =>
+      (entry) =>
         entry.row === parentRow &&
         entry.table === parentTable &&
         entry.interactorsRow === row.id &&
@@ -51,7 +51,7 @@ function getFocusSection(prefix, row, focusState, parentRow, parentTable) {
   }
 
   return focusState.find(
-    entry => entry.row === row.id && entry.table === prefix && entry.section !== null
+    (entry) => entry.row === row.id && entry.table === prefix && entry.section !== null
   )?.section;
 }
 
@@ -115,22 +115,22 @@ function TableBody({ core, cols, noInteractors }) {
       <div>
         <TableBodyContent prefix={prefix}>
           <RowsContainer>
-            {rows.map(row => (
+            {rows.map((row) => (
               <Fragment key={row.id}>
                 <RowContainer
                   interactors={prefix === TABLE_PREFIX.INTERACTORS}
                   rowExpanded={
-                    focusState.filter(e => e.row === row.id && e.table === prefix).length > 0
+                    focusState.filter((e) => e.row === row.id && e.table === prefix).length > 0
                   }
                 >
-                  {highLevelHeaders.map(columnGroup => (
+                  {highLevelHeaders.map((columnGroup) => (
                     <GridContainer
                       columnsCount={cols.length}
                       className={getColContainerClassName(columnGroup)}
                       key={columnGroup.id}
                     >
-                      {columnGroup.subHeaders.map(column => {
-                        const cell = row.getVisibleCells().find(el => el.column.id === column.id);
+                      {columnGroup.subHeaders.map((column) => {
+                        const cell = row.getVisibleCells().find((el) => el.column.id === column.id);
                         return (
                           <div key={cell.id}>
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}

@@ -1,16 +1,16 @@
-import { Suspense, lazy } from "react";
 import { gql } from "@apollo/client";
+import { Suspense, lazy } from "react";
 import {
   PlatformApiProvider,
   SectionContainer,
-  SummaryContainer,
   SectionLoader,
+  SummaryContainer,
   summaryUtils,
 } from "ui";
 
-import SharedTraitStudiesSummary from "sections/src/study/SharedTraitStudies/Summary";
 import GWASCredidbleSetsSummary from "sections/src/study/GWASCredibleSets/Summary";
 import QTLCredibleSetsSummary from "sections/src/study/QTLCredibleSets/Summary";
+import SharedTraitStudiesSummary from "sections/src/study/SharedTraitStudies/Summary";
 
 import ProfileHeader from "./StudyProfileHeader";
 
@@ -53,7 +53,7 @@ type ProfileProps = {
 };
 
 function Profile({ studyId, studyType, projectId, diseases }: ProfileProps) {
-  const diseaseIds = diseases?.map(d => d.id) || [];
+  const diseaseIds = diseases?.map((d) => d.id) || [];
 
   return (
     <PlatformApiProvider

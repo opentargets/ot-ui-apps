@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { flexRender } from "@tanstack/react-table";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDownWideShort, faBook, faLock } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Grid } from "@mui/material";
+import { flexRender } from "@tanstack/react-table";
+import { useState } from "react";
 
-import AggregationsRow from "./AggregationsRow";
 import useAotfContext from "../../hooks/useAotfContext";
 import { GridContainer } from "../layout";
+import AggregationsRow from "./AggregationsRow";
 
 const getHeaderContainerClassName = ({ id }) => {
   if (id === "1_naiming-cols_name") return "naiming-cols";
@@ -44,13 +44,13 @@ function TableHeader({ table, cols }) {
   return (
     <div className="Theader">
       <Grid container direction="row" wrap="nowrap">
-        {highLevelHeaders.map(highLevelHeader => (
+        {highLevelHeaders.map((highLevelHeader) => (
           <GridContainer
             columnsCount={cols.length}
             className={getHeaderContainerClassName(highLevelHeader)}
             key={highLevelHeader.id}
           >
-            {highLevelHeader.subHeaders.map(header => (
+            {highLevelHeader.subHeaders.map((header) => (
               <div className={getHeaderClassName(header)} key={header.id}>
                 {header.isPlaceholder ? null : (
                   <div

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import {
-  getAssociationsData,
-  getInteractorIds,
-  getInitialLoadingData,
   INTERACTORS_SOURCES,
+  getAssociationsData,
+  getInitialLoadingData,
+  getInteractorIds,
 } from "../../associationsUtils";
 
-import InteractionsQuery from "./InteractorsQuery.gql";
 import DiseaseAssociationsQuery from "../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
+import InteractionsQuery from "./InteractorsQuery.gql";
 
 const INITIAL_ROW_COUNT = 8;
 
@@ -91,7 +91,7 @@ function useRowInteractors({
           enableIndirect,
           rowsFilter: interactorsIds,
           entitySearch: entitySearch,
-          datasources: datasources.map(el => ({
+          datasources: datasources.map((el) => ({
             id: el.id,
             weight: el.weight,
             propagate: el.propagate,
@@ -126,8 +126,8 @@ function useRowInteractors({
 }
 
 function addInteractorScore(associationsData, interactorsMetaData) {
-  return associationsData.map(element => {
-    const foundInteractor = interactorsMetaData.find(x => x.targetB?.id === element.id);
+  return associationsData.map((element) => {
+    const foundInteractor = interactorsMetaData.find((x) => x.targetB?.id === element.id);
     if (!foundInteractor) return { ...element, interactorScore: 0 };
     return { ...element, interactorScore: foundInteractor.score };
   });

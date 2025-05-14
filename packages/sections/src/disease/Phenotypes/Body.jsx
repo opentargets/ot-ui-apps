@@ -1,12 +1,12 @@
 import { useQuery } from "@apollo/client";
 import _ from "lodash";
-import { Link, SectionItem, Tooltip, TableDrawer, OtTable } from "ui";
+import { Link, OtTable, SectionItem, TableDrawer, Tooltip } from "ui";
 
-import Description from "./Description";
 import { naLabel } from "@ot/constants";
+import Description from "./Description";
 
-import PHENOTYPES_BODY_QUERY from "./PhenotypesQuery.gql";
 import { definition } from ".";
+import PHENOTYPES_BODY_QUERY from "./PhenotypesQuery.gql";
 
 const evidenceTypeDescription = {
   IEA: "Inferred from Electronic Annotations (IEA) are extracted by parsing the Clinical Features sections of the Online Mendelian Inheritance in Man resource",
@@ -53,8 +53,8 @@ const columns = [
         content
       );
     },
-    filterValue: row => row.phenotypeHPO.name,
-    exportValue: row => row.phenotypeHPO.name,
+    filterValue: (row) => row.phenotypeHPO.name,
+    exportValue: (row) => row.phenotypeHPO.name,
   },
   {
     id: "phenotypeHDOid",
@@ -68,8 +68,8 @@ const columns = [
         </Link>
       );
     },
-    filterValue: row => row.phenotypeHPO.id.replace("_", ":"),
-    exportValue: row => row.phenotypeHPO.id.replace("_", ":"),
+    filterValue: (row) => row.phenotypeHPO.id.replace("_", ":"),
+    exportValue: (row) => row.phenotypeHPO.id.replace("_", ":"),
   },
   {
     id: "aspect",
@@ -85,8 +85,8 @@ const columns = [
       ) : (
         naLabel
       ),
-    filterValue: row => row.evidence.aspect,
-    exportValue: row => row.evidence.aspect,
+    filterValue: (row) => row.evidence.aspect,
+    exportValue: (row) => row.evidence.aspect,
   },
   {
     id: "frequency",
@@ -104,15 +104,15 @@ const columns = [
       if (evidence.frequencyHPO && evidence.frequencyHPO.name) return evidence.frequencyHPO.name;
       return naLabel;
     },
-    filterValue: row => row.evidence.frequencyHPO?.name || naLabel,
-    exportValue: row => row.evidence.frequencyHPO?.name || naLabel,
+    filterValue: (row) => row.evidence.frequencyHPO?.name || naLabel,
+    exportValue: (row) => row.evidence.frequencyHPO?.name || naLabel,
   },
   {
     id: "onset",
     label: "Onset",
     renderCell: ({ evidence }) =>
       evidence.onset?.length > 0
-        ? evidence.onset.map(o => (
+        ? evidence.onset.map((o) => (
             <span key={o.id}>
               <Link external to={`https://identifiers.org/ols/${o.id.replace("_", ":")}`}>
                 {o.name}
@@ -121,15 +121,15 @@ const columns = [
             </span>
           ))
         : naLabel,
-    filterValue: row => row.evidence.onset?.map(o => o.name).join() || naLabel,
-    exportValue: row => row.evidence.onset?.map(o => o.name).join() || naLabel,
+    filterValue: (row) => row.evidence.onset?.map((o) => o.name).join() || naLabel,
+    exportValue: (row) => row.evidence.onset?.map((o) => o.name).join() || naLabel,
   },
   {
     id: "modifier",
     label: "Modifier",
     renderCell: ({ evidence }) =>
       evidence.modifiers?.length > 0
-        ? evidence.modifiers.map(m => (
+        ? evidence.modifiers.map((m) => (
             <span key={m.id}>
               <Link external to={`https://identifiers.org/ols/${m.id.replace("_", ":")}`}>
                 {m.name}
@@ -138,14 +138,14 @@ const columns = [
             </span>
           ))
         : naLabel,
-    filterValue: row => row.evidence.modifiers?.map(m => m.name).join() || naLabel,
-    exportValue: row => row.evidence.modifiers?.map(m => m.name).join() || naLabel,
+    filterValue: (row) => row.evidence.modifiers?.map((m) => m.name).join() || naLabel,
+    exportValue: (row) => row.evidence.modifiers?.map((m) => m.name).join() || naLabel,
   },
   {
     id: "sex",
     label: "Sex",
     renderCell: ({ evidence }) => _.capitalize(evidence.sex) || naLabel,
-    filterValue: row => row.evidence.sex || naLabel,
+    filterValue: (row) => row.evidence.sex || naLabel,
   },
   {
     id: "evidenceType",
@@ -158,15 +158,15 @@ const columns = [
       ) : (
         naLabel
       ),
-    filterValue: row => row.evidence.evidenceType || naLabel,
-    exportValue: row => row.evidence.evidenceType || naLabel,
+    filterValue: (row) => row.evidence.evidenceType || naLabel,
+    exportValue: (row) => row.evidence.evidenceType || naLabel,
   },
   {
     id: "source",
     label: "Source",
     renderCell: ({ evidence }) => evidence.resource || naLabel,
-    filterValue: row => row.evidence.resource || naLabel,
-    exportValue: row => row.evidence.resource || naLabel,
+    filterValue: (row) => row.evidence.resource || naLabel,
+    exportValue: (row) => row.evidence.resource || naLabel,
   },
   {
     id: "references",
@@ -177,7 +177,7 @@ const columns = [
         return naLabel;
       }
       // parse references
-      const refs = evidence.references.map(r => ({
+      const refs = evidence.references.map((r) => ({
         url: r.toUpperCase().startsWith("PMID:")
           ? `https://europepmc.org/search?query=EXT_ID:${r.split(":").pop()}`
           : `https://hpo.jax.org/app/browse/disease/${r}`,
@@ -186,8 +186,8 @@ const columns = [
       }));
       return <TableDrawer entries={refs} />;
     },
-    filterValue: row => row.evidence.references?.map(r => r).join() || naLabel,
-    exportValue: row => row.evidence.references?.map(r => r).join() || naLabel,
+    filterValue: (row) => row.evidence.references?.map((r) => r).join() || naLabel,
+    exportValue: (row) => row.evidence.references?.map((r) => r).join() || naLabel,
     // width: '9%',
   },
 ];
@@ -212,8 +212,8 @@ function Body({ label: name, id: efoId, entity }) {
       renderBody={() => {
         // process the data
         const rows = [];
-        request.data?.disease.phenotypes.rows.forEach(p =>
-          p.evidence.forEach(e => {
+        request.data?.disease.phenotypes.rows.forEach((p) =>
+          p.evidence.forEach((e) => {
             const p1 = { ...p };
             p1.evidence = e;
             rows.push(p1);

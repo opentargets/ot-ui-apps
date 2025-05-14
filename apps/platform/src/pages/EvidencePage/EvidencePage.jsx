@@ -3,8 +3,8 @@ import { useLocation, useParams } from "react-router-dom";
 
 import { BasePage, ScrollToTop } from "ui";
 
-import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
+import Header from "./Header";
 
 import EVIDENCE_PAGE_QUERY from "./EvidencePageQuery.gql";
 

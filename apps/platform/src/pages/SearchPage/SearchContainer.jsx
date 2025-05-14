@@ -1,36 +1,36 @@
 import {
-  Grid,
-  Card,
-  Typography,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
-  TablePagination,
-  Box,
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
   faChartBar,
   faDna,
   faMapPin,
   faPrescriptionBottleAlt,
   faStethoscope,
 } from "@fortawesome/free-solid-svg-icons";
-import { ErrorBoundary, BrokenSearchIcon } from "ui";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  Box,
+  Card,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  TablePagination,
+  Typography,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { BrokenSearchIcon, ErrorBoundary } from "ui";
 
+import { grey } from "@mui/material/colors";
 import DiseaseDetail from "./DiseaseDetail";
 import DiseaseResult from "./DiseaseResult";
 import DrugDetail from "./DrugDetail";
 import DrugResult from "./DrugResult";
+import StudyResult from "./StudyResult";
 import TargetDetail from "./TargetDetail";
 import TargetResult from "./TargetResult";
 import VariantDetail from "./VariantDetail";
 import VariantResult from "./VariantResult";
-import StudyResult from "./StudyResult";
-import { grey } from "@mui/material/colors";
 
-const getCounts = entities => {
+const getCounts = (entities) => {
   const counts = {
     target: 0,
     disease: 0,
@@ -38,14 +38,14 @@ const getCounts = entities => {
     drug: 0,
   };
 
-  entities.forEach(entity => {
+  entities.forEach((entity) => {
     counts[entity.name] = entity.total;
   });
 
   return counts;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   label: {
     marginLeft: "-6px",
   },

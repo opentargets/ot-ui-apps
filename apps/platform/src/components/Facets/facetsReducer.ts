@@ -1,10 +1,10 @@
 import {
-  Action,
-  ActionType,
   ALL_CATEGORY,
+  type Action,
+  ActionType,
   DISEASE_CATEGORIES,
   ENTITY,
-  FacetState,
+  type FacetState,
   TARGET_CATEGORIES,
 } from "./facetsTypes";
 

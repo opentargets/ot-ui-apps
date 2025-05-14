@@ -1,11 +1,11 @@
-import { makeStyles } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
-import { Highlights, Link, StudyPublication } from "ui";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { getStudyItemMetaData } from "@ot/utils";
+import { Highlights, Link, StudyPublication } from "ui";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     marginBottom: "30px",
   },

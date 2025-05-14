@@ -1,21 +1,21 @@
-import { Fragment } from "react";
-import * as PlotLib from "@observablehq/plot";
 import { Box, Chip, Skeleton, Typography, useTheme } from "@mui/material";
+import * as PlotLib from "@observablehq/plot";
+import { Fragment } from "react";
 
 import {
   ClinvarStars,
-  Tooltip,
-  Link,
-  DisplayVariantId,
-  ObsPlot,
-  ObsTooltipTable,
-  ObsTooltipRow,
-  Navigate,
-  ScientificNotation,
   DataDownloader,
+  DisplayVariantId,
+  Link,
+  Navigate,
+  ObsPlot,
+  ObsTooltipRow,
+  ObsTooltipTable,
+  ScientificNotation,
+  Tooltip,
 } from "ui";
 
-import { naLabel, credsetConfidenceMap } from "@ot/constants";
+import { credsetConfidenceMap, naLabel } from "@ot/constants";
 
 const palette = [
   "#27B4AE",
@@ -51,7 +51,7 @@ function PheWasPlot({
   if (originalData == null) return null;
 
   const data = structuredClone(
-    originalData.filter(d => {
+    originalData.filter((d) => {
       return d.pValueMantissa != null && d.pValueExponent != null && d.variant != null;
     })
   );
@@ -87,12 +87,10 @@ function PheWasPlot({
 
   function getTherapeuticArea(row) {
     let bestId = null;
-    let bestRank = Infinity;
-    const areaIds = row.study.diseases
-      .map(d => {
-        return d.therapeuticAreas.map(area => area.id);
-      })
-      .flat();
+    let bestRank = Number.POSITIVE_INFINITY;
+    const areaIds = row.study.diseases.flatMap((d) => {
+      return d.therapeuticAreas.map((area) => area.id);
+    });
     for (const id of areaIds) {
       const rank = therapeuticPriorities[id]?.rank;
       if (rank < bestRank) {
@@ -105,7 +103,7 @@ function PheWasPlot({
       : { id: "__uncategorised__", name: "Uncategorised" };
   }
 
-  let yMin = Infinity;
+  let yMin = Number.POSITIVE_INFINITY;
   const yMax = 0;
   const diseaseGroups = new Map();
   for (const row of data) {
@@ -120,9 +118,9 @@ function PheWasPlot({
   }
 
   let sortedDiseaseIds = // disease ids sorted by disease name
-    [...diseaseGroups].sort((a, b) => a[1].name.localeCompare(b[1].name)).map(a => a[0]);
+    [...diseaseGroups].sort((a, b) => a[1].name.localeCompare(b[1].name)).map((a) => a[0]);
   if (diseaseGroups.has("__uncategorised__")) {
-    sortedDiseaseIds = sortedDiseaseIds.filter(id => id !== "__uncategorised__");
+    sortedDiseaseIds = sortedDiseaseIds.filter((id) => id !== "__uncategorised__");
     sortedDiseaseIds.push("__uncategorised__");
   }
   const xIntervals = new Map();
@@ -175,8 +173,8 @@ function PheWasPlot({
         }}
         height={height}
         renderChart={renderChart}
-        xTooltip={d => d._x}
-        yTooltip={d => d._y}
+        xTooltip={(d) => d._x}
+        yTooltip={(d) => d._y}
         yAnchorTooltip="plotTop"
         dxTooltip={20}
         renderTooltip={renderTooltip}
@@ -256,8 +254,8 @@ function renderChart({
     marks: [
       // ruleY mark for multi-segment x-axis
       PlotLib.ruleY(xIntervals, {
-        x1: d => d[1].start,
-        x2: d => d[1].end,
+        x1: (d) => d[1].start,
+        x2: (d) => d[1].end,
         y: yMax,
         stroke: (d, i) => palette[i],
       }),
@@ -268,7 +266,7 @@ function renderChart({
         label: "-log₁₀(pValue)",
         labelAnchor: "top",
         labelArrow: "none",
-        tickFormat: v => Math.abs(v),
+        tickFormat: (v) => Math.abs(v),
       }),
       PlotLib.ruleX([0], {
         stroke: "#888",
@@ -276,10 +274,10 @@ function renderChart({
 
       // text mark for x-ticks
       PlotLib.text(xIntervals, {
-        x: d => (d[1].start + d[1].end) / 2,
+        x: (d) => (d[1].start + d[1].end) / 2,
         y: yMax,
         dy: 5,
-        text: d => diseaseGroups.get(d[0]).name,
+        text: (d) => diseaseGroups.get(d[0]).name,
         textAnchor: "start",
         lineAnchor: "top",
         rotate: 45,
@@ -288,17 +286,17 @@ function renderChart({
 
       // standard marks
       PlotLib.dot(data, {
-        x: d => d._x,
-        y: d => d._y,
+        x: (d) => d._x,
+        y: (d) => d._y,
         r: 2.55,
-        symbol: d => (d.beta == null ? "circle" : "triangle"),
-        stroke: d => palette[xIntervals.get(d._therapeuticAreaId).index],
-        fill: d =>
+        symbol: (d) => (d.beta == null ? "circle" : "triangle"),
+        stroke: (d) => palette[xIntervals.get(d._therapeuticAreaId).index],
+        fill: (d) =>
           d.variant.id === pageId
             ? palette[xIntervals.get(d._therapeuticAreaId).index]
             : background,
         strokeWidth: 1.3,
-        rotate: d => (d.beta < 0 ? 180 : 0),
+        rotate: (d) => (d.beta < 0 ? 180 : 0),
         className: "obs-tooltip",
       }),
     ],

@@ -1,10 +1,10 @@
-import { makeStyles, useTheme } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
-import { Highlights, Link, DisplayVariantId, LongText } from "ui";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Typography } from "@mui/material";
+import { makeStyles, useTheme } from "@mui/styles";
+import { DisplayVariantId, Highlights, Link, LongText } from "ui";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     marginBottom: "30px",
   },

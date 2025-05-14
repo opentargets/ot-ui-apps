@@ -1,19 +1,19 @@
-import { Fragment } from "react";
-import {
-  usePlatformApi,
-  Link,
-  Field,
-  ProfileHeader as BaseProfileHeader,
-  DetailPopover,
-  SummaryStatsTable,
-  LabelChip,
-  DisplaySampleSize,
-  PublicationsDrawer,
-  StudyPublication,
-} from "ui";
 import { Box } from "@mui/material";
 import { populationMap } from "@ot/constants";
 import { getSortedAncestries, getStudyTypeDisplay } from "@ot/utils";
+import { Fragment } from "react";
+import {
+  ProfileHeader as BaseProfileHeader,
+  DetailPopover,
+  DisplaySampleSize,
+  Field,
+  LabelChip,
+  Link,
+  PublicationsDrawer,
+  StudyPublication,
+  SummaryStatsTable,
+  usePlatformApi,
+} from "ui";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
 
@@ -145,7 +145,7 @@ function ProfileHeader() {
                   margin: "0 0 0 1rem",
                 }}
               >
-                {qualityControls.map(warning => (
+                {qualityControls.map((warning) => (
                   <li key={warning}>{warning}</li>
                 ))}
               </ul>

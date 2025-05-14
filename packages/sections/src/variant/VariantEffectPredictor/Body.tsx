@@ -1,11 +1,11 @@
 import { useQuery } from "@apollo/client";
 import { Box, Chip } from "@mui/material";
-import { Link, SectionItem, Tooltip, OtTable } from "ui";
-import { Fragment } from "react";
-import { definition } from "../VariantEffectPredictor";
-import Description from "../VariantEffectPredictor/Description";
 import { naLabel } from "@ot/constants";
 import { identifiersOrgLink } from "@ot/utils";
+import { Fragment } from "react";
+import { Link, OtTable, SectionItem, Tooltip } from "ui";
+import { definition } from "../VariantEffectPredictor";
+import Description from "../VariantEffectPredictor/Description";
 import VARIANT_EFFECT_PREDICTOR_QUERY from "./VariantEffectPredictorQuery.gql";
 
 function formatVariantConsequenceLabel(label) {
@@ -157,7 +157,7 @@ const columns = [
     sortable: true,
     renderCell: ({ distanceFromFootprint }) =>
       isNumber(distanceFromFootprint)
-        ? parseInt(distanceFromFootprint, 10).toLocaleString()
+        ? Number.parseInt(distanceFromFootprint, 10).toLocaleString()
         : naLabel,
   },
   {
@@ -166,7 +166,7 @@ const columns = [
     numeric: true,
     sortable: true,
     renderCell: ({ distanceFromTss }) =>
-      isNumber(distanceFromTss) ? parseInt(distanceFromTss, 10).toLocaleString() : naLabel,
+      isNumber(distanceFromTss) ? Number.parseInt(distanceFromTss, 10).toLocaleString() : naLabel,
   },
 ];
 

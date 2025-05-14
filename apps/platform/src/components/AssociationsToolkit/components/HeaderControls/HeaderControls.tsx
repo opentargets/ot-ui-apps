@@ -1,16 +1,16 @@
-import { Box, Collapse, Grid, Typography } from "@mui/material";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Collapse, Grid, Typography } from "@mui/material";
 
 import { styled } from "@mui/material/styles";
 
-import Slider from "./SliderControl";
-import Required from "./RequiredControl";
 import { GridContainer } from "../layout";
+import Required from "./RequiredControl";
+import Slider from "./SliderControl";
 
-import useAotfContext from "../../hooks/useAotfContext";
+import type { ReactNode } from "react";
 import { Tooltip } from "ui";
-import { ReactNode } from "react";
+import useAotfContext from "../../hooks/useAotfContext";
 
 const CloseContainer = styled("div")({
   position: "absolute",
@@ -32,7 +32,7 @@ type HeaderControlsProps = {
 };
 
 function getColumnObject(values: Record<string, unknown>[], id: string) {
-  return values.find(val => val.id === id);
+  return values.find((val) => val.id === id);
 }
 
 function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {

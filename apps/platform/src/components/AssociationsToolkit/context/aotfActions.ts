@@ -1,5 +1,5 @@
-import { Facet } from "../../Facets/facetsTypes";
-import { Action, ActionType, Pagination, RowInteractorsKey } from "../types";
+import type { Facet } from "../../Facets/facetsTypes";
+import { type Action, ActionType, type Pagination, type RowInteractorsKey } from "../types";
 
 export function onPaginationChange(pagination: Pagination): Action {
   return {
@@ -48,7 +48,7 @@ export function aggregationClick(aggregation: string): Action {
 
 export function facetFilterSelectAction(facets: Facet[]): Action {
   let facetFiltersIds: string[] = [];
-  if (facets && facets.length) facetFiltersIds = facets.map(v => v.id);
+  if (facets && facets.length) facetFiltersIds = facets.map((v) => v.id);
   return {
     type: ActionType.FACETS_SEARCH,
     facetFilters: facets,

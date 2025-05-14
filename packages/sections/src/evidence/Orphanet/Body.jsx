@@ -1,23 +1,23 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import {
-  Link,
-  Tooltip,
-  SectionItem,
-  PublicationsDrawer,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  Link,
   OtTable,
+  PublicationsDrawer,
+  SectionItem,
+  Tooltip,
 } from "ui";
 
-import { definition } from ".";
 import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import { epmcUrl, sentenceCase } from "@ot/utils";
+import { definition } from ".";
 import Description from "./Description";
 
 import ORPHANET_QUERY from "./OrphanetQuery.gql";
 
-const getColumns = label => [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -119,43 +119,43 @@ const getColumns = label => [
 const exportColumns = [
   {
     label: "Disease",
-    exportValue: row => row.disease.name,
+    exportValue: (row) => row.disease.name,
   },
   {
     label: "Disease ID",
-    exportValue: row => row.disease.id,
+    exportValue: (row) => row.disease.id,
   },
   {
     label: "Disease from source",
-    exportValue: row => row.diseaseFromSource,
+    exportValue: (row) => row.diseaseFromSource,
   },
   {
     label: "Target from source",
-    exportValue: row => row.targetFromSource,
+    exportValue: (row) => row.targetFromSource,
   },
   {
     label: "Target from source ID",
-    exportValue: row => row.targetFromSourceId,
+    exportValue: (row) => row.targetFromSourceId,
   },
   {
     label: "Allele origins",
-    exportValue: row => row.alleleOrigins.join("; "),
+    exportValue: (row) => row.alleleOrigins.join("; "),
   },
   {
     label: "Functional consequence",
-    exportValue: row => sentenceCase(row.variantFunctionalConsequence.label),
+    exportValue: (row) => sentenceCase(row.variantFunctionalConsequence.label),
   },
   {
     label: "Functional consequence ID",
-    exportValue: row => row.variantFunctionalConsequence.id,
+    exportValue: (row) => row.variantFunctionalConsequence.id,
   },
   {
     label: "Confidence",
-    exportValue: row => row.confidence,
+    exportValue: (row) => row.confidence,
   },
   {
     label: "Publication IDs",
-    exportValue: row => row.literature.join(", "),
+    exportValue: (row) => row.literature.join(", "),
   },
 ];
 

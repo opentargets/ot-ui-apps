@@ -1,20 +1,20 @@
 import { gql } from "@apollo/client";
-import { PlatformApiProvider, SectionContainer, SummaryContainer, summaryUtils } from "ui";
-import MechanismsOfActionSummary from "sections/src/drug/MechanismsOfAction/Summary";
-import IndicationsSummary from "sections/src/drug/Indications/Summary";
-import KnownDrugsSummary from "sections/src/drug/KnownDrugs/Summary";
-import DrugWarningsSummary from "sections/src/drug/DrugWarnings/Summary";
-import PharmacogenomicsSummary from "sections/src/drug/Pharmacogenomics/Summary";
 import AdverseEventsSummary from "sections/src/drug/AdverseEvents/Summary";
 import BibliographySummary from "sections/src/drug/Bibliography/Summary";
+import DrugWarningsSummary from "sections/src/drug/DrugWarnings/Summary";
+import IndicationsSummary from "sections/src/drug/Indications/Summary";
+import KnownDrugsSummary from "sections/src/drug/KnownDrugs/Summary";
+import MechanismsOfActionSummary from "sections/src/drug/MechanismsOfAction/Summary";
+import PharmacogenomicsSummary from "sections/src/drug/Pharmacogenomics/Summary";
+import { PlatformApiProvider, SectionContainer, SummaryContainer, summaryUtils } from "ui";
 
-import MechanismsOfActionSection from "sections/src/drug/MechanismsOfAction/Body";
-import IndicationsSection from "sections/src/drug/Indications/Body";
-import KnownDrugsSection from "sections/src/drug/KnownDrugs/Body";
-import DrugWarningsSection from "sections/src/drug/DrugWarnings/Body";
-import PharmacogenomicsSection from "sections/src/drug/Pharmacogenomics/Body";
 import AdverseEventsSection from "sections/src/drug/AdverseEvents/Body";
 import BibliographySection from "sections/src/drug/Bibliography/Body";
+import DrugWarningsSection from "sections/src/drug/DrugWarnings/Body";
+import IndicationsSection from "sections/src/drug/Indications/Body";
+import KnownDrugsSection from "sections/src/drug/KnownDrugs/Body";
+import MechanismsOfActionSection from "sections/src/drug/MechanismsOfAction/Body";
+import PharmacogenomicsSection from "sections/src/drug/Pharmacogenomics/Body";
 
 import ProfileHeader from "./ProfileHeader";
 

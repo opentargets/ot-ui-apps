@@ -1,12 +1,12 @@
-import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { SectionItem, Tooltip, OtTable } from "ui";
+import { VIEW, naLabel } from "@ot/constants";
+import type { ReactElement } from "react";
+import { OtTable, SectionItem, Tooltip } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import { naLabel, VIEW } from "@ot/constants";
-import VARIANT_EFFECT_QUERY from "./VariantEffectQuery.gql";
 import VariantEffectPlot from "./VariantEffectPlot";
+import VARIANT_EFFECT_QUERY from "./VariantEffectQuery.gql";
 
 const columns = [
   {
@@ -32,7 +32,7 @@ const columns = [
           {assessment ?? naLabel}
         </Tooltip>
       ) : (
-        assessment ?? naLabel
+        (assessment ?? naLabel)
       ),
   },
   {
@@ -57,7 +57,7 @@ type BodyProps = {
 function getSortedRows(request) {
   return request.data?.variant?.variantEffect
     ? [...request.data.variant.variantEffect]
-        .filter(e => e.method !== null)
+        .filter((e) => e.method !== null)
         .sort((row1, row2) => row1.method.localeCompare(row2.method))
     : [];
 }

@@ -1,19 +1,19 @@
+import { Chip } from "@mui/material";
+import { naLabel, table5HChunkSize } from "@ot/constants";
+import { mantissaExponentComparator, variantComparator } from "@ot/utils";
 import {
-  Link,
-  SectionItem,
   DisplayVariantId,
-  ScientificNotation,
+  Link,
+  Navigate,
   OtTable,
+  ScientificNotation,
+  SectionItem,
   Tooltip,
   useBatchQuery,
-  Navigate,
 } from "ui";
-import { naLabel, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import MOLQTL_COLOC_QUERY from "./MolQTLColocQuery.gql";
-import { mantissaExponentComparator, variantComparator } from "@ot/utils";
-import { Chip } from "@mui/material";
 
 const columns = [
   {
@@ -95,7 +95,7 @@ const columns = [
   {
     id: "otherStudyLocus.variant.id",
     label: "Lead Variant",
-    comparator: variantComparator(d => d?.otherStudyLocus?.variant),
+    comparator: variantComparator((d) => d?.otherStudyLocus?.variant),
     sortable: true,
     filterValue: ({ otherStudyLocus }) => {
       const v = otherStudyLocus?.variant;

@@ -1,47 +1,47 @@
-import FileSaver from "file-saver";
-import { useState, useMemo, useEffect, useReducer } from "react";
+import { faCaretDown, faFileDownload } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
   Button,
-  Grid,
-  Typography,
-  Snackbar,
-  Slide,
+  Checkbox,
   CircularProgress,
   Dialog,
-  DialogTitle,
   DialogContent,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
+  DialogTitle,
   Divider,
   FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  ListItemText,
-  Box,
+  FormControlLabel,
+  FormGroup,
   FormHelperText,
+  Grid,
+  InputLabel,
   ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Select,
+  Slide,
+  Snackbar,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
-import { faCaretDown, faFileDownload } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAPIMetadata, useApolloClient, useBatchDownloader } from "ui";
 import { getConfig } from "@ot/config";
+import {
+  createBlob,
+  getExportedColumns,
+  getExportedPrioritisationColumns,
+  getFilteredColumnArray,
+  getRowsQuerySelector,
+} from "@ot/utils";
+import FileSaver from "file-saver";
+import { useEffect, useMemo, useReducer, useState } from "react";
+import { useAPIMetadata, useApolloClient, useBatchDownloader } from "ui";
 import useAotfContext from "../hooks/useAotfContext";
 import OriginalDataSources from "../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../static_datasets/prioritisationColumns";
-import {
-  getRowsQuerySelector,
-  getExportedColumns,
-  getExportedPrioritisationColumns,
-  createBlob,
-  getFilteredColumnArray,
-} from "@ot/utils";
 
 import CopyUrlButton from "./CopyUrlButton";
 
@@ -49,7 +49,7 @@ const config = getConfig();
 
 const { isPartnerPreview } = config.profile;
 
-const dataSources = OriginalDataSources.filter(e => {
+const dataSources = OriginalDataSources.filter((e) => {
   if (isPartnerPreview && e.isPrivate) {
     return e;
   } else if (!e.isPrivate) return e;
@@ -68,7 +68,7 @@ const BorderAccordion = styled(Accordion)(({ theme }) => ({
   borderRadius: `${theme.spacing(1)} !important`,
 }));
 
-const styles = makeStyles(theme => ({
+const styles = makeStyles((theme) => ({
   messageProgress: {
     marginRight: "1rem",
     color: "white !important",
@@ -111,8 +111,8 @@ const styles = makeStyles(theme => ({
   },
 }));
 
-const allAssociationsAggregation = [...new Set(dataSources.map(e => e.aggregation))];
-const allPrioritizationAggregation = [...new Set(prioritizationCols.map(e => e.aggregation))];
+const allAssociationsAggregation = [...new Set(dataSources.map((e) => e.aggregation))];
+const allPrioritizationAggregation = [...new Set(prioritizationCols.map((e) => e.aggregation))];
 
 const initialState = {
   associationAggregationSelectValue: allAssociationsAggregation,
@@ -147,11 +147,11 @@ const reducer = (state = initialState, action) => {
 };
 
 const actions = {
-  UPDATE_ASSOCIATION_COLUMNS: payload => ({
+  UPDATE_ASSOCIATION_COLUMNS: (payload) => ({
     type: "UPDATE_ASSOCIATION_COLUMNS",
     payload,
   }),
-  UPDATE_PRIORITISATION_COLUMNS: payload => ({
+  UPDATE_PRIORITISATION_COLUMNS: (payload) => ({
     type: "UPDATE_PRIORITISATION_COLUMNS",
     payload,
   }),
@@ -217,7 +217,7 @@ function DataDownloader() {
     sortBy: sorting[0].id,
     enableIndirect,
     entitySearch,
-    datasources: dataSourcesWeights.map(el => ({
+    datasources: dataSourcesWeights.map((el) => ({
       id: el.id,
       weight: el.weight,
       propagate: el.propagate,
@@ -268,7 +268,7 @@ function DataDownloader() {
     });
   };
 
-  const handleClickBTN = event => {
+  const handleClickBTN = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -307,7 +307,7 @@ function DataDownloader() {
           ".MuiDialog-paper": {
             width: "70%",
             maxWidth: "800px !important",
-            borderRadius: theme => theme.spacing(1),
+            borderRadius: (theme) => theme.spacing(1),
           },
         }}
       >
@@ -316,7 +316,7 @@ function DataDownloader() {
         </DialogTitle>
         <DialogContent>
           <Typography
-            sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
+            sx={{ m: (theme) => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
             variant="subtitle2"
             gutterBottom
           >
@@ -341,8 +341,8 @@ function DataDownloader() {
                     labelId="select-association-small-label"
                     value={state.associationAggregationSelectValue}
                     label="Select associations data type"
-                    renderValue={selected => selected.join(", ")}
-                    onChange={e => {
+                    renderValue={(selected) => selected.join(", ")}
+                    onChange={(e) => {
                       dispatch(
                         actions.UPDATE_ASSOCIATION_COLUMNS(
                           e.target.value.length ? String(e.target.value).split(",") : []
@@ -350,7 +350,7 @@ function DataDownloader() {
                       );
                     }}
                   >
-                    {allAssociationsAggregation.map(ds => (
+                    {allAssociationsAggregation.map((ds) => (
                       <MenuItem key={ds} value={ds}>
                         <Checkbox
                           checked={state.associationAggregationSelectValue.indexOf(ds) > -1}
@@ -376,8 +376,8 @@ function DataDownloader() {
                       labelId="select-prioritization-small-label"
                       value={state.prioritisationAggregationSelectValue}
                       label="Select prioritisation data type"
-                      renderValue={selected => selected.join(", ")}
-                      onChange={e => {
+                      renderValue={(selected) => selected.join(", ")}
+                      onChange={(e) => {
                         dispatch(
                           actions.UPDATE_PRIORITISATION_COLUMNS(
                             e.target.value.length ? String(e.target.value).split(",") : []
@@ -385,7 +385,7 @@ function DataDownloader() {
                         );
                       }}
                     >
-                      {allPrioritizationAggregation.map(ds => (
+                      {allPrioritizationAggregation.map((ds) => (
                         <MenuItem key={ds} value={ds}>
                           <Checkbox
                             checked={state.prioritisationAggregationSelectValue.indexOf(ds) > -1}
@@ -407,7 +407,7 @@ function DataDownloader() {
                     <Checkbox
                       checked={weightControlCheckBox}
                       disabled={!modifiedSourcesDataControls || downloading}
-                      onChange={e => setWeightControlCheckBox(e.target.checked)}
+                      onChange={(e) => setWeightControlCheckBox(e.target.checked)}
                     />
                   }
                   label="Include custom controls"
@@ -418,7 +418,7 @@ function DataDownloader() {
                     <Checkbox
                       disabled={pinnedEntries.length <= 0 || downloading}
                       checked={onlyPinnedCheckBox}
-                      onChange={e => setOnlyPinnedCheckBox(e.target.checked)}
+                      onChange={(e) => setOnlyPinnedCheckBox(e.target.checked)}
                     />
                   }
                   label={`Only pinned ${isPartnerPreview ? " / uploaded " : ""} rows`}
@@ -433,7 +433,7 @@ function DataDownloader() {
                           downloading || state.prioritisationAggregationSelectValue.length <= 0
                         }
                         checked={onlyTargetData}
-                        onChange={e => setOnlyTargetData(e.target.checked)}
+                        onChange={(e) => setOnlyTargetData(e.target.checked)}
                       />
                     }
                     label="Only prioritisation data"

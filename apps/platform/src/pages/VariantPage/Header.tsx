@@ -1,6 +1,6 @@
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
-import { Header as HeaderBase, XRefLinks, DisplayVariantId } from "ui";
-import { VariantPageDataType } from "./types";
+import { DisplayVariantId, Header as HeaderBase, XRefLinks } from "ui";
+import type { VariantPageDataType } from "./types";
 
 const xrefsToDisplay = {
   ensembl_variation: {
@@ -9,7 +9,7 @@ const xrefsToDisplay = {
   },
   gnomad: {
     label: "gnomAD",
-    urlBuilder: id => `https://gnomad.broadinstitute.org/variant/${id}?dataset=gnomad_r4`,
+    urlBuilder: (id) => `https://gnomad.broadinstitute.org/variant/${id}?dataset=gnomad_r4`,
   },
   protvar: {
     label: "ProtVar",
@@ -66,14 +66,14 @@ function Header({ loading, variantId, variantPageData }: HeaderProps) {
       Icon={faMapPin}
       externalLinks={
         <>
-          {Object.keys(xrefs).map(xref => {
+          {Object.keys(xrefs).map((xref) => {
             const { label, urlBuilder, urlStem, ids } = xrefs[xref];
             return (
               <XRefLinks
                 key={xref}
                 label={label}
                 urlStem={urlStem}
-                urlBuilder={urlBuilder ? id => urlBuilder(id, variantPageData) : null}
+                urlBuilder={urlBuilder ? (id) => urlBuilder(id, variantPageData) : null}
                 ids={[...ids]}
                 limit="3"
               />

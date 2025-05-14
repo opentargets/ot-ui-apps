@@ -2,9 +2,7 @@
   "name": "sections",
   "version": "0.0.0",
   "main": "./src/index.tsx",
-  "files": [
-    "./src/*"
-  ],
+  "files": ["./src/*"],
   "license": "MIT",
   "scripts": {
     "lint": "eslint --quiet \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",

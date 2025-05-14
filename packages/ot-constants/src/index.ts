@@ -1,12 +1,12 @@
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faBook, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   faDiscourse,
-  faTwitterSquare,
-  faLinkedin,
   faGithubSquare,
+  faLinkedin,
+  faTwitterSquare,
   faYoutubeSquare,
 } from "@fortawesome/free-brands-svg-icons";
+import { faBook, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { getConfig } from "@ot/config";
 
 const config = getConfig();
@@ -304,8 +304,8 @@ export const VIEW = {
   table: "Table",
 };
 
-export const getStudyTypeDisplay = studyType => {
-  if (studyType) return studyType?.replace(/(qtl|gwas)/gi, match => match.toUpperCase());
+export const getStudyTypeDisplay = (studyType) => {
+  if (studyType) return studyType?.replace(/(qtl|gwas)/gi, (match) => match.toUpperCase());
   return studyType;
 };
 
@@ -319,7 +319,7 @@ export const getStudyItemMetaData = ({ studyType, credibleSetsCount, nSamples })
   return metaData;
 };
 
-export const getGenomicLocation = genomicLocation => {
+export const getGenomicLocation = (genomicLocation) => {
   /****
    * TODO: add GRCh38 to this function
    * check all the locations we are using this

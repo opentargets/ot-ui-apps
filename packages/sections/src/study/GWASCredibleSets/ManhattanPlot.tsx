@@ -1,8 +1,8 @@
-import { useTheme, Box, Skeleton } from "@mui/material";
-import { ClinvarStars, Link, Tooltip, DisplayVariantId, Navigate, OtScoreLinearBar } from "ui";
+import { Box, Skeleton, useTheme } from "@mui/material";
 import * as PlotLib from "@observablehq/plot";
-import { ScientificNotation, ObsPlot, ObsTooltipTable, ObsTooltipRow } from "ui";
-import { naLabel, credsetConfidenceMap } from "@ot/constants";
+import { credsetConfidenceMap, naLabel } from "@ot/constants";
+import { ClinvarStars, DisplayVariantId, Link, Navigate, OtScoreLinearBar, Tooltip } from "ui";
+import { ObsPlot, ObsTooltipRow, ObsTooltipTable, ScientificNotation } from "ui";
 
 function ManhattanPlot({ loading, data: originalData }) {
   const theme = useTheme();
@@ -16,14 +16,14 @@ function ManhattanPlot({ loading, data: originalData }) {
   if (originalData == null) return null;
 
   const data = structuredClone(
-    originalData.filter(d => {
+    originalData.filter((d) => {
       return d.pValueMantissa != null && d.pValueExponent != null && d.variant != null;
     })
   );
   if (data.length === 0) return null;
 
   const yMax = 0;
-  let yMin = Infinity;
+  let yMin = Number.POSITIVE_INFINITY;
   for (const d of data) {
     const y = Math.log10(d.pValueMantissa) + d.pValueExponent;
     yMin = Math.min(yMin, y);
@@ -70,9 +70,9 @@ function ManhattanPlot({ loading, data: originalData }) {
         // x-axis
         PlotLib.axisX({
           stroke: "#888",
-          ticks: [0, ...chromosomeInfo.map(chromo => chromo.end)],
+          ticks: [0, ...chromosomeInfo.map((chromo) => chromo.end)],
           tickSize: 16,
-          tickFormat: v => "",
+          tickFormat: (v) => "",
         }),
         PlotLib.ruleY([0], {
           stroke: "#888",
@@ -84,7 +84,7 @@ function ManhattanPlot({ loading, data: originalData }) {
           label: "-log₁₀(pValue)",
           labelAnchor: "top",
           labelArrow: "none",
-          tickFormat: v => Math.abs(v),
+          tickFormat: (v) => Math.abs(v),
         }),
         PlotLib.ruleX([0], {
           stroke: "#888",
@@ -92,9 +92,9 @@ function ManhattanPlot({ loading, data: originalData }) {
 
         // grid lines
         PlotLib.gridX(
-          chromosomeInfo.map(chromo => chromo.end),
+          chromosomeInfo.map((chromo) => chromo.end),
           {
-            x: d => d,
+            x: (d) => d,
             stroke: "#cecece",
             strokeOpacity: 1,
             strokeDasharray: "3, 4",
@@ -103,25 +103,25 @@ function ManhattanPlot({ loading, data: originalData }) {
 
         // text mark for the x-axis labels
         PlotLib.text(chromosomeInfo, {
-          x: d => d.midpoint,
+          x: (d) => d.midpoint,
           y: yMax,
-          text: d => d.chromosome,
+          text: (d) => d.chromosome,
           lineAnchor: "top",
           dy: 6,
         }),
 
         // standard marks
         PlotLib.ruleX(data, {
-          x: d => d._genomePosition,
-          y: d => d._y,
+          x: (d) => d._genomePosition,
+          y: (d) => d._y,
           y2: yMax,
           strokeWidth: 1,
           stroke: markColor,
           className: "obs-tooltip",
         }),
         PlotLib.dot(data, {
-          x: d => d._genomePosition,
-          y: d => d._y,
+          x: (d) => d._genomePosition,
+          y: (d) => d._y,
           strokeWidth: 1,
           stroke: markColor,
           fill: background,
@@ -137,8 +137,8 @@ function ManhattanPlot({ loading, data: originalData }) {
       data={data}
       height={height}
       renderChart={renderChart}
-      xTooltip={d => d._genomePosition}
-      yTooltip={d => d._y}
+      xTooltip={(d) => d._genomePosition}
+      yTooltip={(d) => d._y}
       dxTooltip={10}
       dyTooltip={10}
       renderTooltip={renderTooltip}
@@ -251,7 +251,7 @@ chromosomeInfo.forEach((chromo, i) => {
 
 const genomeLength = chromosomeInfo.at(-1).end;
 
-const chromosomeInfoMap = new Map(chromosomeInfo.map(obj => [obj.chromosome, obj]));
+const chromosomeInfoMap = new Map(chromosomeInfo.map((obj) => [obj.chromosome, obj]));
 
 function cumulativePosition({ chromosome, position }) {
   return chromosomeInfoMap.get(chromosome).start + position;

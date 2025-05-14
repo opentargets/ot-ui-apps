@@ -1,17 +1,16 @@
 import {
   createContext,
-  useState,
-  useMemo,
+  useCallback,
   useEffect,
+  useMemo,
   useReducer,
   useRef,
-  useCallback,
+  useState,
 } from "react";
 import { useApolloClient, useStateParams } from "ui";
-import { ENTITIES, DEFAULT_TABLE_SORTING_STATE, DISPLAY_MODE } from "../associationsUtils";
+import { DEFAULT_TABLE_SORTING_STATE, DISPLAY_MODE, ENTITIES } from "../associationsUtils";
 
 import useAssociationsData from "../hooks/useAssociationsData";
-import { aotfReducer, createInitialState } from "./aotfReducer";
 import {
   aggregationClick,
   facetFilterSelectAction,
@@ -21,10 +20,11 @@ import {
   resetToInitialState,
   setDataSourceControl,
 } from "./aotfActions";
+import { aotfReducer, createInitialState } from "./aotfReducer";
 
 const AssociationsStateContext = createContext();
 
-const initialIndirect = entity => entity !== ENTITIES.TARGET;
+const initialIndirect = (entity) => entity !== ENTITIES.TARGET;
 const rowEntity = { [ENTITIES.TARGET]: ENTITIES.DISEASE, [ENTITIES.DISEASE]: ENTITIES.TARGET };
 
 /**
@@ -52,22 +52,22 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   const [displayedTable, setDisplayedTable] = useStateParams(
     DISPLAY_MODE.ASSOCIATIONS,
     "table",
-    arr => arr,
-    str => str
+    (arr) => arr,
+    (str) => str
   );
 
   const [pinnedEntries, setPinnedEntries] = useStateParams(
     [],
     "pinned",
-    arr => arr.join(","),
-    str => str.split(",")
+    (arr) => arr.join(","),
+    (str) => str.split(",")
   );
 
   const [uploadedEntries, setUploadedEntries] = useStateParams(
     [],
     "uploaded",
-    arr => arr.join(","),
-    str => str.split(",")
+    (arr) => arr.join(","),
+    (str) => str.split(",")
   );
 
   const entityToGet = rowEntity[entity];
@@ -139,12 +139,12 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     hasComponentBeenRender.current = true;
   }, [id]);
 
-  const handleAggregationClick = aggregation => {
+  const handleAggregationClick = (aggregation) => {
     dispatch(aggregationClick(aggregation));
   };
 
   const handlePaginationChange = useCallback(
-    updater => {
+    (updater) => {
       const newPagination = updater(state.pagination);
       dispatch(onPaginationChange(newPagination));
     },
@@ -156,7 +156,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
   }, [setSorting]);
 
   const handleSortingChange = useCallback(
-    newSortingFunc => {
+    (newSortingFunc) => {
       const newSorting = newSortingFunc();
       if (newSorting[0].id === sorting[0].id) {
         setSorting(DEFAULT_TABLE_SORTING_STATE);
@@ -179,7 +179,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     dispatch(setDataSourceControl(id, weight, required, aggregation));
   };
 
-  const facetFilterSelect = facetFilters => {
+  const facetFilterSelect = (facetFilters) => {
     dispatch(facetFilterSelectAction(facetFilters));
   };
 

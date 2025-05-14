@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { LoadingBackdrop, BasePage } from "ui";
+import { BasePage, LoadingBackdrop } from "ui";
 
 const APIPage = lazy(() => import("./APIPage"));
 

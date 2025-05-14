@@ -1,12 +1,12 @@
-import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
+import { Box, Tab, Tabs } from "@mui/material";
+import type { ReactElement } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { BasePage, ScrollToTop } from "ui";
-import { Box, Tabs, Tab } from "@mui/material";
-import { useLocation, useParams, Link } from "react-router-dom";
-import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
-import STUDY_PAGE_QUERY from "./StudyPage.gql";
+import Header from "./Header";
 import Profile from "./Profile";
+import STUDY_PAGE_QUERY from "./StudyPage.gql";
 
 function StudyPage(): ReactElement {
   const location = useLocation();

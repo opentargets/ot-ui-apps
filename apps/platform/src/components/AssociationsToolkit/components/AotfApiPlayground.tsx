@@ -21,7 +21,7 @@ function AotfApiPlayground() {
     filter: searhFilter,
     sortBy: sorting[0].id,
     enableIndirect,
-    datasources: dataSourcesWeights.map(el => ({
+    datasources: dataSourcesWeights.map((el) => ({
       id: el.id,
       weight: el.weight,
       propagate: el.propagate,

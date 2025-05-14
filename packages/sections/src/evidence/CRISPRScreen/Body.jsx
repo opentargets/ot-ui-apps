@@ -1,14 +1,14 @@
-import _ from "lodash";
 import { useQuery } from "@apollo/client";
-import { Tooltip, SectionItem, TooltipStyledLabel, OtTable, PublicationsDrawer, Link } from "ui";
-import Description from "./Description";
 import {
   dataTypesMap,
   defaultRowsPerPageOptions,
   naLabel,
   sectionsBaseSizeQuery,
 } from "@ot/constants";
+import _ from "lodash";
+import { Link, OtTable, PublicationsDrawer, SectionItem, Tooltip, TooltipStyledLabel } from "ui";
 import { definition } from ".";
+import Description from "./Description";
 
 import CRISPR_QUERY from "./CrisprScreenQuery.gql";
 
@@ -22,13 +22,13 @@ const sources = {
 
 // format the diseaseFromSource field: remove the "essential genes" info
 // this might be sorted at data level at some point
-const parseDiseaseName = d => d.toLowerCase().replace("essential genes / ", "");
+const parseDiseaseName = (d) => d.toLowerCase().replace("essential genes / ", "");
 
-const getColumns = label => [
+const getColumns = (label) => [
   {
     id: "diseaseFromSourceMappedId",
     label: "Reported disease",
-    renderCell: row => {
+    renderCell: (row) => {
       const disease = parseDiseaseName(row.diseaseFromSource);
       return (
         <Link asyncTooltip to={`/disease/${row.diseaseFromSourceMappedId}`}>
@@ -36,13 +36,13 @@ const getColumns = label => [
         </Link>
       );
     },
-    filterValue: row => row.diseaseFromSource + ", " + row.diseaseFromSourceMappedId,
+    filterValue: (row) => row.diseaseFromSource + ", " + row.diseaseFromSourceMappedId,
   },
   {
     id: "studyId",
     label: "Study Identifier",
     enableHiding: false,
-    renderCell: row => (
+    renderCell: (row) => (
       <Link external to={`https://crisprbrain.org/simple-screen/?screen=${row.studyId}`}>
         {row.studyId}
       </Link>
@@ -51,7 +51,7 @@ const getColumns = label => [
   {
     id: "contrast",
     label: "Contrast / Study overview",
-    renderCell: row => {
+    renderCell: (row) => {
       // trim the last '.' - this could also be addressed at data level perhaps?
       const overview = row.studyOverview?.endsWith(".")
         ? row.studyOverview.slice(0, -1)
@@ -75,27 +75,27 @@ const getColumns = label => [
         return <span>{overview}</span>;
       }
     },
-    filterValue: row => row.contrast + "; " + row.studyOverview,
+    filterValue: (row) => row.contrast + "; " + row.studyOverview,
   },
   {
     id: "cellType",
     label: "Cell type",
-    renderCell: row => row.cellType,
-    filterValue: row => row.cellType,
+    renderCell: (row) => row.cellType,
+    filterValue: (row) => row.cellType,
     width: "12%",
   },
   {
     id: "log2FoldChangeValue",
     label: "log2 fold change",
-    renderCell: row =>
-      row.log2FoldChangeValue ? parseFloat(row.log2FoldChangeValue.toFixed(6)) : naLabel,
+    renderCell: (row) =>
+      row.log2FoldChangeValue ? Number.parseFloat(row.log2FoldChangeValue.toFixed(6)) : naLabel,
     width: "9%",
   },
   {
     id: "resourceScore",
     label: "Significance",
     sortable: true,
-    renderCell: row => {
+    renderCell: (row) => {
       if (row.resourceScore && row.statisticalTestTail) {
         return (
           <Tooltip
@@ -107,25 +107,26 @@ const getColumns = label => [
               />
             }
           >
-            <span>{parseFloat(row.resourceScore.toFixed(6))}</span>
+            <span>{Number.parseFloat(row.resourceScore.toFixed(6))}</span>
           </Tooltip>
         );
       } else {
-        return row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : naLabel;
+        return row.resourceScore ? Number.parseFloat(row.resourceScore.toFixed(6)) : naLabel;
       }
     },
-    filterValue: row => `${parseFloat(row.resourceScore?.toFixed(6))} ${row.statisticalTestTail}`,
+    filterValue: (row) =>
+      `${Number.parseFloat(row.resourceScore?.toFixed(6))} ${row.statisticalTestTail}`,
     width: "9%",
   },
   {
     id: "projectId",
     label: "Source",
-    renderCell: row => (
+    renderCell: (row) => (
       <Link external to={sources[row.projectId]?.url}>
         {sources[row.projectId].name}
       </Link>
     ),
-    filterValue: row => row.projectId,
+    filterValue: (row) => row.projectId,
     width: "9%",
   },
   {
@@ -149,47 +150,47 @@ const getColumns = label => [
 const exportColumns = [
   {
     label: "disease",
-    exportValue: row => parseDiseaseName(row.diseaseFromSource),
+    exportValue: (row) => parseDiseaseName(row.diseaseFromSource),
   },
   {
     label: "disease id",
-    exportValue: row => row.diseaseFromSourceMappedId,
+    exportValue: (row) => row.diseaseFromSourceMappedId,
   },
   {
     label: "study identifier",
-    exportValue: row => row.studyId,
+    exportValue: (row) => row.studyId,
   },
   {
     label: "contrast",
-    exportValue: row => row.contrast,
+    exportValue: (row) => row.contrast,
   },
   {
     label: "study overview",
-    exportValue: row => row.studyOverview,
+    exportValue: (row) => row.studyOverview,
   },
   {
     label: "cell type",
-    exportValue: row => row.cellType,
+    exportValue: (row) => row.cellType,
   },
   {
     label: "log2 fold change",
-    exportValue: row => row.log2FoldChangeValue,
+    exportValue: (row) => row.log2FoldChangeValue,
   },
   {
     label: "significance",
-    exportValue: row => row.resourceScore,
+    exportValue: (row) => row.resourceScore,
   },
   {
     label: "statistical test tail",
-    exportValue: row => row.statisticalTestTail,
+    exportValue: (row) => row.statisticalTestTail,
   },
   {
     label: "source",
-    exportValue: row => row.projectId,
+    exportValue: (row) => row.projectId,
   },
   {
     label: "publication",
-    exportValue: row => row.literature.join(", "),
+    exportValue: (row) => row.literature.join(", "),
   },
 ];
 

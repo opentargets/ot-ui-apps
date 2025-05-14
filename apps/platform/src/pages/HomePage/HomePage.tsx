@@ -1,31 +1,31 @@
-import { Grid, Typography, Box, Chip, Theme } from "@mui/material";
+import { Box, Chip, Grid, type Theme, Typography } from "@mui/material";
 import { makeStyles, styled, useTheme } from "@mui/styles";
 import { Helmet } from "react-helmet";
 import { Footer, GlobalSearch, Link, NavBar, usePermissions, useSearchState } from "ui";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
-  faCircle,
-  faChevronDown,
-  faDownload,
-  faLaptopCode,
-  faQuestionCircle,
-  faFileAlt,
-  faCommentDots,
-  faStethoscope,
-  faDna,
-  faPrescriptionBottleMedical,
-  faMapPin,
   faChartBar,
+  faChevronDown,
+  faCircle,
+  faCommentDots,
+  faDna,
+  faDownload,
+  faFileAlt,
+  faLaptopCode,
+  faMapPin,
+  faPrescriptionBottleMedical,
+  faQuestionCircle,
   faSquare,
+  faStethoscope,
 } from "@fortawesome/free-solid-svg-icons";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { grey } from "@mui/material/colors";
 import { getConfig } from "@ot/config";
 import {
-  appTitle,
-  appDescription,
   appCanonicalUrl,
+  appDescription,
+  appTitle,
   externalLinks,
   mainMenuItems,
 } from "@ot/constants";

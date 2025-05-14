@@ -1,15 +1,15 @@
 import { Skeleton, styled } from "@mui/material";
-import Tooltip from "./AssocTooltip";
-import { cellHasValue, getColumAndSection, TABLE_PREFIX } from "../../associationsUtils";
+import { grey } from "@mui/material/colors";
+import { TABLE_PREFIX, cellHasValue, getColumAndSection } from "../../associationsUtils";
 import {
   FocusActionType,
   useAssociationsFocus,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
-import { grey } from "@mui/material/colors";
+import Tooltip from "./AssocTooltip";
 
 const ScoreElement = styled("div", {
-  shouldForwardProp: prop =>
+  shouldForwardProp: (prop) =>
     prop !== "borderColor" && prop !== "backgroundColor" && prop !== "shape" && prop !== "active",
 })(
   ({
@@ -62,14 +62,14 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
   const active =
     prefix !== TABLE_PREFIX.INTERACTORS
       ? !!focusState.find(
-          e =>
+          (e) =>
             e.table === prefix &&
             e.row === cell?.row?.id &&
             e.section &&
             e.section[0] === cell?.column?.id
         )
       : !!focusState.find(
-          e =>
+          (e) =>
             e.table === parentTable &&
             e.row === parentRow &&
             e.interactorsRow === cell?.row?.id &&

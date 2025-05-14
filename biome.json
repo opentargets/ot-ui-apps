@@ -73,8 +73,8 @@
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "single",
-      "trailingComma": "es5",
+      "quoteStyle": "double",
+      "trailingCommas": "es5",
       "semicolons": "always"
     }
   }

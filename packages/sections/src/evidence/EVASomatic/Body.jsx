@@ -1,25 +1,25 @@
-import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { epmcUrl, sentenceCase } from "@ot/utils";
+import { useState } from "react";
 import {
-  SectionItem,
   ChipList,
-  Tooltip,
-  Link,
-  PublicationsDrawer,
   ClinvarStars,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  Link,
   OtTableSSP,
+  PublicationsDrawer,
+  SectionItem,
+  Tooltip,
 } from "ui";
-import { epmcUrl, sentenceCase } from "@ot/utils";
 
-import { dataTypesMap, clinvarStarMap, naLabel } from "@ot/constants";
+import { clinvarStarMap, dataTypesMap, naLabel } from "@ot/constants";
+import { definition } from ".";
 import Description from "./Description";
 import EVA_SOMATIC_QUERY from "./EvaSomaticQuery.gql";
-import { definition } from ".";
 
-const getColumns = label => [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -40,7 +40,7 @@ const getColumns = label => [
                   All reported phenotypes:
                 </Typography>
                 <Typography variant="caption" display="block">
-                  {cohortPhenotypes.map(cp => (
+                  {cohortPhenotypes.map((cp) => (
                     <div key={cp}>{cp}</div>
                   ))}
                 </Typography>
@@ -121,7 +121,7 @@ const getColumns = label => [
               listStyle: "none",
             }}
           >
-            {clinicalSignificances.map(clinicalSignificance => (
+            {clinicalSignificances.map((clinicalSignificance) => (
               <li key={clinicalSignificance}>{sentenceCase(clinicalSignificance)}</li>
             ))}
           </ul>
@@ -156,7 +156,7 @@ const getColumns = label => [
                 <Typography variant="subtitle2" display="block" align="center">
                   Allelic requirements:
                 </Typography>
-                {allelicRequirements.map(r => (
+                {allelicRequirements.map((r) => (
                   <Typography variant="caption" key={r}>
                     {r}
                   </Typography>
@@ -165,11 +165,11 @@ const getColumns = label => [
             }
             showHelpIcon
           >
-            {alleleOrigins.map(a => sentenceCase(a)).join("; ")}
+            {alleleOrigins.map((a) => sentenceCase(a)).join("; ")}
           </Tooltip>
         );
 
-      return alleleOrigins.map(a => sentenceCase(a)).join("; ");
+      return alleleOrigins.map((a) => sentenceCase(a)).join("; ");
     },
     filterValue: ({ alleleOrigins }) => (alleleOrigins ? alleleOrigins.join() : ""),
   },
@@ -208,40 +208,40 @@ const getColumns = label => [
 const exportColumns = [
   {
     label: "diseaseId",
-    exportValue: row => row.disease.id,
+    exportValue: (row) => row.disease.id,
   },
   {
     label: "diseaseName",
-    exportValue: row => row.disease.name,
+    exportValue: (row) => row.disease.name,
   },
   {
     label: "variantId",
-    exportValue: row => row.variantId,
+    exportValue: (row) => row.variantId,
   },
   {
     label: "variantRsId",
-    exportValue: row => row.variantRsId,
+    exportValue: (row) => row.variantRsId,
   },
   {
     label: "variantHgvsId",
-    exportValue: row => row.variantHgvsId,
+    exportValue: (row) => row.variantHgvsId,
   },
   {
     label: "clinicalSignificances",
-    exportValue: row => row.clinicalSignificances,
+    exportValue: (row) => row.clinicalSignificances,
   },
   {
     label: "allelicRequirements",
-    exportValue: row => row.allelicRequirements,
+    exportValue: (row) => row.allelicRequirements,
   },
   {
     label: "reviewStatus",
-    exportValue: row => row.confidence,
+    exportValue: (row) => row.confidence,
   },
 
   {
     label: "literature",
-    exportValue: row => row.literature,
+    exportValue: (row) => row.literature,
   },
 ];
 
@@ -269,8 +269,8 @@ function Body({ id, label, entity }) {
     let roleInCancerItems = [{ label: "Unknown" }];
     if (hallmarks && hallmarks.attributes.length > 0) {
       roleInCancerItems = hallmarks.attributes
-        .filter(attribute => attribute.name === "role in cancer")
-        .map(attribute => ({
+        .filter((attribute) => attribute.name === "role in cancer")
+        .map((attribute) => ({
           label: attribute.description,
           url: epmcUrl(attribute.pmid),
         }));
@@ -306,7 +306,7 @@ function Body({ id, label, entity }) {
             entity={entity}
             sectionName="eva_somatic"
             showGlobalFilter={false}
-            setInitialRequestData={req => {
+            setInitialRequestData={(req) => {
               setRequest(req);
             }}
             variables={{

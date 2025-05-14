@@ -1,44 +1,44 @@
 import {
-  getCoreRowModel,
-  getExpandedRowModel,
-  useReactTable,
-  PaginationState,
-  getPaginationRowModel,
-} from "@tanstack/react-table";
-import useRowInteractors from "./useRowInteractors";
-import useAotfContext from "../../hooks/useAotfContext";
-import TableBody from "../Table/TableBody";
+  faBezierCurve,
+  faChevronLeft,
+  faChevronRight,
+  faClose,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
+  IconButton,
   InputLabel,
   NativeSelect,
   Skeleton,
-  Typography,
   Slider,
-  IconButton,
+  Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClose,
-  faChevronLeft,
-  faChevronRight,
-  faBezierCurve,
-} from "@fortawesome/free-solid-svg-icons";
 import { styled } from "@mui/material/styles";
-import { useState, useEffect, ReactElement } from "react";
+import {
+  type PaginationState,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { type ReactElement, useEffect, useState } from "react";
+import { Tooltip, useApolloClient } from "ui";
+import {
+  ENTITIES,
+  INTERACTORS_SOURCES,
+  type InteractorsSource,
+  TABLE_PREFIX,
+} from "../../associationsUtils";
 import {
   FocusActionType,
   useAssociationsFocus,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
-import {
-  ENTITIES,
-  INTERACTORS_SOURCES,
-  TABLE_PREFIX,
-  InteractorsSource,
-} from "../../associationsUtils";
-import { Tooltip, useApolloClient } from "ui";
+import useAotfContext from "../../hooks/useAotfContext";
+import TableBody from "../Table/TableBody";
+import useRowInteractors from "./useRowInteractors";
 
 type ThresholdState = number | null | undefined;
 
@@ -123,7 +123,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
   const dispatch = useAssociationsFocusDispatch();
 
   const focusElement = focusState.find(
-    e => e.row === row.id && e.table === parentTable && e.interactors
+    (e) => e.row === row.id && e.table === parentTable && e.interactors
   );
 
   const [pagination, setPagination] = useState<PaginationState>({
@@ -197,7 +197,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     getExpandedRowModel: getExpandedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
-    getRowId: row => row[entityToGet].id,
+    getRowId: (row) => row[entityToGet].id,
   });
 
   const cols = interactorsTable.getHeaderGroups()[0].headers[1].subHeaders;
@@ -231,7 +231,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                   </InputLabel>
                   <NativeSelect
                     id="intaractor_data_source"
-                    onChange={e => {
+                    onChange={(e) => {
                       onInteractorsSourceChange(e.target.value);
                     }}
                     variant="standard"

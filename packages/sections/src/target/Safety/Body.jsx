@@ -1,18 +1,18 @@
 import { useQuery } from "@apollo/client";
 
-import { SectionItem, Link, Tooltip, PublicationsDrawer, TableDrawer, OtTable } from "ui";
-import { makeStyles } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleDown, faArrowAltCircleUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { makeStyles } from "@mui/styles";
+import { Link, OtTable, PublicationsDrawer, SectionItem, TableDrawer, Tooltip } from "ui";
 
+import { defaultRowsPerPageOptions, naLabel } from "@ot/constants";
 import SafetyStudiesDrawer from "./SafetyStudiesDrawer";
-import { naLabel, defaultRowsPerPageOptions } from "@ot/constants";
 
 import { definition } from ".";
 import Description from "./Description";
 import SAFETY_QUERY from "./Safety.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   blue: {
     color: theme.palette.primary.main,
   },
@@ -50,7 +50,7 @@ function getColumns(classes) {
             {event ?? naLabel}
           </Link>
         ) : (
-          event ?? naLabel
+          (event ?? naLabel)
         ),
     },
     {
@@ -89,10 +89,10 @@ function getColumns(classes) {
       label: "Dosing effects",
       renderCell: ({ effects }) => {
         const circleUpData = effects
-          ? effects.find(effect => effect.direction === "Activation/Increase/Upregulation")
+          ? effects.find((effect) => effect.direction === "Activation/Increase/Upregulation")
           : null;
         const circleDownData = effects
-          ? effects.find(effect => effect.direction === "Inhibition/Decrease/Downregulation")
+          ? effects.find((effect) => effect.direction === "Inhibition/Decrease/Downregulation")
           : null;
         return (
           <>

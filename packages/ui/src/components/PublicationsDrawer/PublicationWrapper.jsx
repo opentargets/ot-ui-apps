@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
-import { faPlusCircle, faMinusCircle, faFileAlt } from "@fortawesome/free-solid-svg-icons";
+import { faFileAlt, faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useEffect, useState } from "react";
 
-import LongText from "../LongText";
 import Link from "../Link";
+import LongText from "../LongText";
 
-import PublicationSummary from "./PublicationSummary";
 import { useConfigContext } from "../../providers/ConfigurationProvider";
+import PublicationSummary from "./PublicationSummary";
 
 const pmUrl = "https://europepmc.org/";
 const pmTitleUrlMED = "abstract/med/";
 const pmTitleUrlPAT = "abstract/pat/";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   abstractSpan: {
     whiteSpace: "normal",
   },

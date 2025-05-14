@@ -1,14 +1,14 @@
-import { useRef, useEffect } from "react";
-import * as Plot from "@observablehq/plot";
-import { useMeasure } from "@uidotdev/usehooks";
 import { Box } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { DataDownloader } from "ui";
+import * as Plot from "@observablehq/plot";
 import { sentenceCase } from "@ot/utils";
+import { useMeasure } from "@uidotdev/usehooks";
+import { useEffect, useRef } from "react";
+import { DataDownloader } from "ui";
 
 const prepareData = (data = []) => {
   const flatData = data.reduce((accumulator, currentValue) => {
-    currentValue.screens.forEach(dot => {
+    currentValue.screens.forEach((dot) => {
       accumulator.push({ ...dot, tissueName: sentenceCase(currentValue.tissueName) });
     });
     return accumulator;
@@ -46,12 +46,12 @@ function ChartControls({ data, query, variables }) {
         query={query}
         variables={variables}
         columns={[
-          { exportValue: row => row.depmapId, id: "depmapId" },
-          { exportValue: row => row.cellLineName, id: "cellLineName" },
-          { exportValue: row => row.diseaseFromSource, id: "diseaseFromSource" },
-          { exportValue: row => row.geneEffect, id: "geneEffect" },
-          { exportValue: row => row.expression, id: "expression" },
-          { exportValue: row => row.tissueName, id: "tissueName" },
+          { exportValue: (row) => row.depmapId, id: "depmapId" },
+          { exportValue: (row) => row.cellLineName, id: "cellLineName" },
+          { exportValue: (row) => row.diseaseFromSource, id: "diseaseFromSource" },
+          { exportValue: (row) => row.geneEffect, id: "geneEffect" },
+          { exportValue: (row) => row.expression, id: "expression" },
+          { exportValue: (row) => row.tissueName, id: "tissueName" },
         ]}
       />
     </Box>
@@ -126,7 +126,7 @@ function DepmapPlot({ data, width }) {
               y: false,
             },
           },
-          fill: d => (d.geneEffect < -1 ? "#EC2846" : "#08519C"),
+          fill: (d) => (d.geneEffect < -1 ? "#EC2846" : "#08519C"),
           fillOpacity: 0.5,
         }),
         Plot.axisY({

@@ -33,7 +33,7 @@ type GridContainerProps = {
 };
 
 export const GridContainer = styled("div", {
-  shouldForwardProp: prop => prop !== "columnsCount",
+  shouldForwardProp: (prop) => prop !== "columnsCount",
 })<GridContainerProps>(({ columnsCount }) => ({
   ...baseGridContainerStyles,
   gridTemplateColumns: `repeat(${columnsCount}, 1fr)`,
@@ -63,7 +63,7 @@ type RowContainerProps = {
 };
 
 export const RowContainer = styled("div", {
-  shouldForwardProp: prop => prop !== "rowExpanded" && prop !== "interactors",
+  shouldForwardProp: (prop) => prop !== "rowExpanded" && prop !== "interactors",
 })<RowContainerProps>(({ rowExpanded, interactors }) => ({
   top: interactors ? 0 : "148px",
   width: "100%",

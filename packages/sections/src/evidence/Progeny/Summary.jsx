@@ -1,7 +1,7 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
-import { definition } from ".";
 import { dataTypesMap } from "@ot/constants";
+import { definition } from ".";
 import PROGENY_SUMMARY_FRAGMENT from "./ProgenySummaryFragment.gql";
 
 function Summary() {
@@ -11,7 +11,9 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => `${data.progeny.count} entr${data.progeny.count === 1 ? "y" : "ies"}`}
+      renderSummary={(data) =>
+        `${data.progeny.count} entr${data.progeny.count === 1 ? "y" : "ies"}`
+      }
       subText={dataTypesMap.affected_pathway}
     />
   );

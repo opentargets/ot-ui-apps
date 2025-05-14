@@ -62,12 +62,7 @@
     "prettier:check": "prettier --check \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie > 0",
-    "not op_mini all"
-  ],
+  "browserslist": [">0.2%", "not dead", "not ie > 0", "not op_mini all"],
   "devDependencies": {
     "@types/d3": "^7.4.0",
     "@types/react": "^18.0.28",

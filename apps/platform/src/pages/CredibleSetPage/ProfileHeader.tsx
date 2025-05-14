@@ -1,23 +1,23 @@
+import { Box, Typography } from "@mui/material";
+import { credsetConfidenceMap, populationMap } from "@ot/constants";
+import { epmcUrl, getSortedAncestries } from "@ot/utils";
 import { Fragment } from "react";
 import {
-  usePlatformApi,
-  Field,
   ProfileHeader as BaseProfileHeader,
-  Link,
-  ScientificNotation,
-  Tooltip,
-  PublicationsDrawer,
   ClinvarStars,
-  LabelChip,
   DetailPopover,
-  SummaryStatsTable,
   DisplaySampleSize,
+  Field,
+  LabelChip,
+  Link,
+  PublicationsDrawer,
+  ScientificNotation,
   StudyPublication,
+  SummaryStatsTable,
+  Tooltip,
+  usePlatformApi,
 } from "ui";
-import { Box, Typography } from "@mui/material";
 import CREDIBLE_SET_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
-import { epmcUrl, getSortedAncestries } from "@ot/utils";
-import { credsetConfidenceMap, populationMap } from "@ot/constants";
 
 function ProfileHeader() {
   const { loading, error, data } = usePlatformApi();
@@ -36,7 +36,7 @@ function ProfileHeader() {
     typeof leadVariant?.pValueMantissa === "number" &&
     typeof leadVariant?.pValueExponent === "number"
       ? leadVariant
-      : credibleSet ?? {};
+      : (credibleSet ?? {});
 
   return (
     <BaseProfileHeader>
@@ -183,7 +183,7 @@ function ProfileHeader() {
                   margin: "0 0 0 1rem",
                 }}
               >
-                {credibleSet.qualityControls.map(warning => (
+                {credibleSet.qualityControls.map((warning) => (
                   <li key={warning}>{warning}</li>
                 ))}
               </ul>
@@ -194,7 +194,7 @@ function ProfileHeader() {
 
       <Box>
         <Typography variant="subtitle1" mt={0}>
-          {study?.studyType.replace(/(qtl|gwas)/gi, match => match.toUpperCase())} Study
+          {study?.studyType.replace(/(qtl|gwas)/gi, (match) => match.toUpperCase())} Study
         </Typography>
         {study?.studyType === "gwas" && (
           <>

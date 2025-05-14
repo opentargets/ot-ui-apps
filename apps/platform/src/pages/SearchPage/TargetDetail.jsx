@@ -1,11 +1,11 @@
+import { faDna } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CardContent, Typography } from "@mui/material";
 import { makeStyles, useTheme } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDna } from "@fortawesome/free-solid-svg-icons";
 
+import { clearDescriptionCodes, getUniprotIds } from "@ot/utils";
 import { Link } from "ui";
 import TargetDescription from "../TargetPage/TargetDescription";
-import { getUniprotIds, clearDescriptionCodes } from "@ot/utils";
 
 const useStyles = makeStyles(() => ({
   subtitle: {
@@ -48,7 +48,7 @@ function TargetDetail({ data }) {
         UniProt accession{uniprotIds.length > 1 ? "s" : ""}
       </Typography>
       <Typography component="div" variant="body2">
-        {uniprotIds.map(uniprotId => (
+        {uniprotIds.map((uniprotId) => (
           <div key={uniprotId}>{uniprotId}</div>
         ))}
       </Typography>

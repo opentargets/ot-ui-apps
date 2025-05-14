@@ -1,13 +1,13 @@
-import { makeStyles } from "@mui/styles";
 import { useQuery } from "@apollo/client";
-import { SectionItem, Link, Tooltip, OtTable } from "ui";
+import { makeStyles } from "@mui/styles";
+import { Link, OtTable, SectionItem, Tooltip } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import upperBin6Map from "./upperBin6Map";
 import GENETIC_CONSTRAINT from "./GeneticConstraint.gql";
+import upperBin6Map from "./upperBin6Map";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   filled: {
     display: "inline-block",
     border: "1px solid black",

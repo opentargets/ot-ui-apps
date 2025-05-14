@@ -1,20 +1,20 @@
+import { useQuery } from "@apollo/client";
 import { Box, List, ListItem, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { useQuery } from "@apollo/client";
+import { ChipList, Link, OtTable, ScientificNotation, SectionItem, Tooltip } from "ui";
 import { v1 } from "uuid";
-import { ChipList, Link, SectionItem, Tooltip, ScientificNotation, OtTable } from "ui";
 
-import { definition } from ".";
-import methods from "./methods";
-import Description from "./Description";
-import { epmcUrl, sentenceCase } from "@ot/utils";
-import INTOGEN_QUERY from "./sectionQuery.gql";
 import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
+import { epmcUrl, sentenceCase } from "@ot/utils";
+import { definition } from ".";
+import Description from "./Description";
+import methods from "./methods";
+import INTOGEN_QUERY from "./sectionQuery.gql";
 
 const intOgenUrl = (id, approvedSymbol) =>
   `https://www.intogen.org/search?gene=${approvedSymbol}&cohort=${id}`;
 
-const samplePercent = item => (item.numberMutatedSamples / item.numberSamplesTested) * 100;
+const samplePercent = (item) => (item.numberMutatedSamples / item.numberSamplesTested) * 100;
 
 const columns = [
   {
@@ -49,12 +49,15 @@ const columns = [
       <List style={{ padding: 0 }}>
         {mutatedSamples
           .sort((a, b) => samplePercent(b) - samplePercent(a))
-          .map(item => {
+          .map((item) => {
             const percent = samplePercent(item);
 
             return (
               <ListItem key={v1()} style={{ padding: ".25rem 0" }}>
-                {percent < 5 ? parseFloat(percent.toFixed(2)).toString() : Math.round(percent)}%
+                {percent < 5
+                  ? Number.parseFloat(percent.toFixed(2)).toString()
+                  : Math.round(percent)}
+                %
                 <Typography variant="caption" style={{ marginLeft: ".33rem" }}>
                   ({item.numberMutatedSamples}/{item.numberSamplesTested})
                 </Typography>
@@ -103,7 +106,7 @@ const columns = [
     renderCell: ({ significantDriverMethods }) =>
       significantDriverMethods ? (
         <ChipList
-          items={significantDriverMethods.map(am => ({
+          items={significantDriverMethods.map((am) => ({
             label: am,
             tooltip: (methods[am] || {}).description,
           }))}
@@ -111,7 +114,7 @@ const columns = [
       ) : (
         naLabel
       ),
-    filterValue: ({ significantDriverMethods }) => significantDriverMethods.map(am => am).join(),
+    filterValue: ({ significantDriverMethods }) => significantDriverMethods.map((am) => am).join(),
   },
   {
     id: "cohortShortName",
@@ -167,8 +170,8 @@ function Body({ id, label, entity }) {
         const roleInCancerItems =
           request.data?.target.hallmarks && request.data?.target.hallmarks.attributes.length > 0
             ? request.data?.target.hallmarks.attributes
-                .filter(attribute => attribute.name === "role in cancer")
-                .map(attribute => ({
+                .filter((attribute) => attribute.name === "role in cancer")
+                .map((attribute) => ({
                   label: attribute.description,
                   url: epmcUrl(attribute.pmid),
                 }))

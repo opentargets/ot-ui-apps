@@ -1,7 +1,7 @@
-import { v1 } from "uuid";
-import { Fragment } from "react";
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, TableDrawer, OtTable } from "ui";
+import { Fragment } from "react";
+import { Link, OtTable, SectionItem, TableDrawer } from "ui";
+import { v1 } from "uuid";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -21,12 +21,12 @@ const columns = [
   {
     id: "targets",
     label: "Human targets",
-    filterValue: row => row.targets.map(target => target.approvedSymbol).join(" "),
-    exportValue: row => row.targets.map(target => target.approvedSymbol).join(),
+    filterValue: (row) => row.targets.map((target) => target.approvedSymbol).join(" "),
+    exportValue: (row) => row.targets.map((target) => target.approvedSymbol).join(),
     renderCell: ({ targets }) => {
       if (!targets) return "non-human";
 
-      const targetList = targets.map(target => ({
+      const targetList = targets.map((target) => ({
         name: target.approvedSymbol,
         url: `/target/${target.id}`,
         group: "Human targets",
@@ -38,9 +38,9 @@ const columns = [
   {
     id: "references",
     label: "References",
-    filterValue: row => row.references.map(reference => reference.source).join(" "),
-    exportValue: row => row.references.map(reference => reference.source).join(),
-    renderCell: row =>
+    filterValue: (row) => row.references.map((reference) => reference.source).join(" "),
+    exportValue: (row) => row.references.map((reference) => reference.source).join(),
+    renderCell: (row) =>
       !row.references
         ? "n/a"
         : row.references.map((r, i) => (

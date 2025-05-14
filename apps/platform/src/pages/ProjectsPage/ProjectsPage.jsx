@@ -1,11 +1,11 @@
-import { Paper, Box, Typography, Chip } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { OtTable, Link } from "ui";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Chip, Paper, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { Link, OtTable } from "ui";
 import projectsData from "./projects-data.json";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   icon: {
     color: theme.palette.primary.main,
   },
@@ -56,7 +56,7 @@ function ProjectPage() {
       label: "Disease Mapped in the PPP",
       renderCell: ({ disease_mapping: diseaseMapping }) => {
         const ALL_AVATARS = [];
-        diseaseMapping.forEach(disease => {
+        diseaseMapping.forEach((disease) => {
           if (disease && disease.disease_id) {
             ALL_AVATARS.push(
               <Link to={`disease/${disease.disease_id}`} key={disease.disease_id}>

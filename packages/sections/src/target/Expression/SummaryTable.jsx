@@ -1,25 +1,25 @@
-import { useState } from "react";
-import maxBy from "lodash/maxBy";
-import classNames from "classnames";
 import {
-  Typography,
-  Table,
-  TableHead,
-  TableSortLabel,
-  TableBody,
-  TableRow,
-  TableCell,
   Grid,
-  ToggleButtonGroup,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
   ToggleButton,
+  ToggleButtonGroup,
+  Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import classNames from "classnames";
+import maxBy from "lodash/maxBy";
+import { useState } from "react";
 
 import SummaryRow from "./SummaryRow";
 
-const getMaxRnaValue = expressions => {
+const getMaxRnaValue = (expressions) => {
   if (expressions.length <= 0) return 0;
-  return maxBy(expressions, expression => (expression?.rna ? expression.rna.value : 0)).rna.value;
+  return maxBy(expressions, (expression) => (expression?.rna ? expression.rna.value : 0)).rna.value;
 };
 
 // function that transforms tissue data into an array of objects
@@ -35,9 +35,9 @@ const getMaxRnaValue = expressions => {
 const groupTissues = (expressions, groupBy) => {
   const groupedTissues = {};
 
-  expressions.forEach(expression => {
+  expressions.forEach((expression) => {
     const parentLabels = expression.tissue[groupBy];
-    parentLabels.forEach(label => {
+    parentLabels.forEach((label) => {
       if (!groupedTissues[label]) {
         groupedTissues[label] = {
           parentLabel: label,
@@ -60,7 +60,7 @@ const groupTissues = (expressions, groupBy) => {
   return Object.values(groupedTissues);
 };
 
-const tissueComparator = sortBy => {
+const tissueComparator = (sortBy) => {
   if (sortBy === "rna") {
     return (a, b) => b.rna.value - a.rna.value;
   }
@@ -68,7 +68,7 @@ const tissueComparator = sortBy => {
   return (a, b) => b.protein.level - a.protein.level;
 };
 
-const parentComparator = sortBy => {
+const parentComparator = (sortBy) => {
   if (sortBy === "rna") {
     return (a, b) => b.maxRnaValue - a.maxRnaValue;
   }
@@ -77,7 +77,7 @@ const parentComparator = sortBy => {
 };
 
 const sort = (parents, sortBy) => {
-  parents.forEach(parent => {
+  parents.forEach((parent) => {
     parent.tissues.sort(tissueComparator(sortBy));
   });
   return parents.sort(parentComparator(sortBy));
@@ -120,7 +120,7 @@ function SummaryTable({ data }) {
     }
   };
 
-  const handleSort = sort => {
+  const handleSort = (sort) => {
     setSortBy(sort);
   };
 
@@ -168,7 +168,7 @@ function SummaryTable({ data }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {parents.map(parent => (
+            {parents.map((parent) => (
               <SummaryRow key={parent.parentLabel} maxRnaValue={maxRnaValue} parent={parent} />
             ))}
           </TableBody>

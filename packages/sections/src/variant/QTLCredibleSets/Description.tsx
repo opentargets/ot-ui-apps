@@ -1,5 +1,5 @@
-import { ReactElement } from "react";
-import { Link, DisplayVariantId } from "ui";
+import type { ReactElement } from "react";
+import { DisplayVariantId, Link } from "ui";
 
 type DescriptionProps = {
   variantId: string;

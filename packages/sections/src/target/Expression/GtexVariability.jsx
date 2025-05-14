@@ -1,15 +1,15 @@
-import { useRef, useEffect, forwardRef } from "react";
+import { useTheme } from "@mui/styles";
 import {
-  scaleLinear,
-  scalePoint,
-  scaleOrdinal,
+  axisLeft,
+  axisTop,
   max,
+  scaleLinear,
+  scaleOrdinal,
+  scalePoint,
   schemeCategory10,
   select,
-  axisTop,
-  axisLeft,
 } from "d3";
-import { useTheme } from "@mui/styles";
+import { forwardRef, useEffect, useRef } from "react";
 
 const width = 900;
 const boxHeight = 20;
@@ -26,7 +26,7 @@ function getTextWidth(text, fontSize, fontFace) {
 
 function getLongestId(data) {
   let longestId = "";
-  data.forEach(d => {
+  data.forEach((d) => {
     if (d.tissueSiteDetailId.length > longestId.length) {
       longestId = d.tissueSiteDetailId;
     }
@@ -36,7 +36,7 @@ function getLongestId(data) {
 
 function buildTooltip(X, tooltipObject, data) {
   return Object.keys(tooltipObject)
-    .map(field => {
+    .map((field) => {
       const value =
         data[field] === null ? "N/A" : data[field].toFixed(tooltipObject[field].roundDigits);
       return (
@@ -71,15 +71,15 @@ const GtexVariability = forwardRef(function GtexVariability({ data }, ref) {
     const data = propsData.slice().sort((a, b) => b.median - a.median);
     const height = data.length * boxHeight + margin.top + margin.bottom;
     const rectHeight = boxHeight - 2 * boxPadding;
-    const xMax = max(data, d => max(d.outliers));
+    const xMax = max(data, (d) => max(d.outliers));
 
     x.domain([0, xMax]).range([0, width - margin.left - margin.right]);
-    y.domain(data.map(d => d.tissueSiteDetailId.replace(/_/g, " "))).range([
+    y.domain(data.map((d) => d.tissueSiteDetailId.replace(/_/g, " "))).range([
       0,
       height - margin.top - margin.bottom,
     ]);
 
-    colour.domain(data.map(d => d.tissueSiteDetailId)).range(schemeCategory10);
+    colour.domain(data.map((d) => d.tissueSiteDetailId)).range(schemeCategory10);
 
     const tooltipTextFields = {
       lowerLimit: {
@@ -131,25 +131,25 @@ const GtexVariability = forwardRef(function GtexVariability({ data }, ref) {
 
     boxContainer
       .append("line")
-      .attr("x1", d => x(d.lowerLimit))
-      .attr("x2", d => x(d.upperLimit))
-      .attr("y1", d => y(d.tissueSiteDetailId.replace(/_/g, " ")))
-      .attr("y2", d => y(d.tissueSiteDetailId.replace(/_/g, " ")))
+      .attr("x1", (d) => x(d.lowerLimit))
+      .attr("x2", (d) => x(d.upperLimit))
+      .attr("y1", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")))
+      .attr("y2", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")))
       .attr("stroke", theme.palette.grey[700]);
 
     boxContainer
       .append("rect")
-      .attr("x", d => x(d.q1))
-      .attr("y", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
-      .attr("width", d => x(d.q3) - x(d.q1))
+      .attr("x", (d) => x(d.q1))
+      .attr("y", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
+      .attr("width", (d) => x(d.q3) - x(d.q1))
       .attr("height", rectHeight)
-      .attr("fill", d => colour(d.tissueSiteDetailId))
+      .attr("fill", (d) => colour(d.tissueSiteDetailId))
       .on("mouseover", (d, i, nodes) => {
         let X =
-          parseFloat(select(nodes[i]).attr("x")) +
-          parseFloat(select(nodes[i]).attr("width")) +
+          Number.parseFloat(select(nodes[i]).attr("x")) +
+          Number.parseFloat(select(nodes[i]).attr("width")) +
           tooltipSettings.offsetX;
-        let Y = parseFloat(select(nodes[i]).attr("y")) + tooltipSettings.offsetY;
+        let Y = Number.parseFloat(select(nodes[i]).attr("y")) + tooltipSettings.offsetY;
 
         tooltipText
           .attr("y", Y)
@@ -186,41 +186,41 @@ const GtexVariability = forwardRef(function GtexVariability({ data }, ref) {
 
     boxContainer
       .append("line")
-      .attr("x1", d => x(d.median))
-      .attr("x2", d => x(d.median))
-      .attr("y1", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
-      .attr("y2", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2)
+      .attr("x1", (d) => x(d.median))
+      .attr("x2", (d) => x(d.median))
+      .attr("y1", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
+      .attr("y2", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2)
       .attr("stroke", theme.palette.grey[700])
       .attr("stroke-width", 2);
 
     boxContainer
       .append("line")
-      .attr("x1", d => x(d.lowerLimit))
-      .attr("x2", d => x(d.lowerLimit))
-      .attr("y1", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
-      .attr("y2", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2)
+      .attr("x1", (d) => x(d.lowerLimit))
+      .attr("x2", (d) => x(d.lowerLimit))
+      .attr("y1", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
+      .attr("y2", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2)
       .attr("stroke", theme.palette.grey[700]);
 
     boxContainer
       .append("line")
-      .attr("x1", d => x(d.upperLimit))
-      .attr("x2", d => x(d.upperLimit))
-      .attr("y1", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
-      .attr("y2", d => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2)
+      .attr("x1", (d) => x(d.upperLimit))
+      .attr("x2", (d) => x(d.upperLimit))
+      .attr("y1", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) - rectHeight / 2)
+      .attr("y2", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")) + rectHeight / 2)
       .attr("stroke", theme.palette.grey[700]);
 
     boxContainer
       .selectAll("circle")
-      .data(d =>
-        d.outliers.map(outlier => ({
+      .data((d) =>
+        d.outliers.map((outlier) => ({
           tissueSiteDetailId: d.tissueSiteDetailId,
           outlier,
         }))
       )
       .join("circle")
       .attr("r", outlierRadius)
-      .attr("cx", d => x(d.outlier))
-      .attr("cy", d => y(d.tissueSiteDetailId.replace(/_/g, " ")))
+      .attr("cx", (d) => x(d.outlier))
+      .attr("cy", (d) => y(d.tissueSiteDetailId.replace(/_/g, " ")))
       .attr("fill", "none")
       .attr("stroke", theme.palette.grey[700]);
 

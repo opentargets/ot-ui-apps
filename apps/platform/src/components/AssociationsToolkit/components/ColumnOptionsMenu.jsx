@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Popover, FormGroup, Button, FormControlLabel, Box, Switch } from "@mui/material";
-import { faCaretUp, faCaretDown, faGear } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCaretUp, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Button, FormControlLabel, FormGroup, Popover, Switch } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useState } from "react";
 import { Tooltip } from "ui";
 
 import useAotfContext from "../hooks/useAotfContext";
@@ -25,7 +25,7 @@ function DataMenu() {
 
   const isPrioritisation = displayedTable === "prioritisations";
 
-  const handleClick = event => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     setActiveHeadersControlls(!activeHeadersControlls);
   };

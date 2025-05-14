@@ -1,9 +1,4 @@
-query EuropePMCQuery(
-  $ensemblId: String!
-  $efoId: String!
-  $size: Int!
-  $cursor: String
-) {
+query EuropePMCQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: String) {
   disease(efoId: $efoId) {
     id
     europePmc: evidences(

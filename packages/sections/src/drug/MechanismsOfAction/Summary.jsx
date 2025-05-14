@@ -10,7 +10,7 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data => (
+      renderSummary={(data) => (
         <>
           {data.mechanismsOfAction.uniqueActionTypes.length > 0
             ? data.mechanismsOfAction.uniqueActionTypes.join(" • ")

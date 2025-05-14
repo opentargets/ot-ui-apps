@@ -2,7 +2,7 @@
 Example usage:
 const comparatorDiseaseName = generateComparatorFromAccessor(d => d.disease.name);
  */
-export const generateComparatorFromAccessor = accessor => (a, b) => {
+export const generateComparatorFromAccessor = (accessor) => (a, b) => {
   const aValue = accessor(a);
   const bValue = accessor(b);
   if (aValue > bValue) return 1;
@@ -13,7 +13,7 @@ export const generateComparatorFromAccessor = accessor => (a, b) => {
 /*
 Return comparator that sorts nullish values to end
 */
-export const nullishComparator = (comparator, accessor = x => x, nullishIsMax = true) => {
+export const nullishComparator = (comparator, accessor = (x) => x, nullishIsMax = true) => {
   return (a, b) => {
     const aVal = accessor(a);
     const bVal = accessor(b);
@@ -29,7 +29,7 @@ export const nullishComparator = (comparator, accessor = x => x, nullishIsMax = 
 /*
 Return comparator that sorts NaNs to end
 */
-export const nanComparator = (comparator, accessor = x => x, nanIsMax = true) => {
+export const nanComparator = (comparator, accessor = (x) => x, nanIsMax = true) => {
   return (a, b) => {
     const aVal = accessor(a);
     const bVal = accessor(b);
@@ -85,8 +85,8 @@ type VariantType = {
   alternateAllele: string;
 };
 
-export function variantComparator(accessor: (arg: any) => VariantType = d => d) {
-  return function (obj1: any, obj2: any) {
+export function variantComparator(accessor: (arg: any) => VariantType = (d) => d) {
+  return (obj1: any, obj2: any) => {
     const v1 = accessor(obj1);
     const v2 = accessor(obj2);
 

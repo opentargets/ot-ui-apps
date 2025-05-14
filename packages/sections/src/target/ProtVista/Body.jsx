@@ -1,17 +1,17 @@
-import { useQuery } from "@apollo/client";
-import { SectionItem, OtTable, Link } from "ui";
-import { naLabel } from "@ot/constants";
-import { Box, Button, Grid, Typography } from "@mui/material";
-import Description from "./Description";
-import { definition } from ".";
-import { getUniprotIds, nanComparator } from "@ot/utils";
 import { createViewer } from "3dmol";
-import { parseCif } from "./parseCif";
-import { schemeSet1, schemeDark2 } from "d3";
-import PROTVISTA_QUERY from "./ProtVista.gql";
-import { useState, useEffect, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useQuery } from "@apollo/client";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Button, Grid, Typography } from "@mui/material";
+import { naLabel } from "@ot/constants";
+import { getUniprotIds, nanComparator } from "@ot/utils";
+import { schemeDark2, schemeSet1 } from "d3";
+import { useEffect, useRef, useState } from "react";
+import { Link, OtTable, SectionItem } from "ui";
+import { definition } from ".";
+import Description from "./Description";
+import PROTVISTA_QUERY from "./ProtVista.gql";
+import { parseCif } from "./parseCif";
 
 const experimentalResultsStem = "https://www.ebi.ac.uk/proteins/api/proteins/";
 const experimentalStructureStem = "https://www.ebi.ac.uk/pdbe/entry-files/download/";
@@ -25,7 +25,7 @@ function getSegments(id, chainsAndPositions) {
   const printSegments = [];
   const details = {};
   const substrings = chainsAndPositions.split(/,\s*/);
-  let maxLengthSegment = -Infinity;
+  let maxLengthSegment = Number.NEGATIVE_INFINITY;
   for (const substr of substrings) {
     const eqIndex = substr.indexOf("=");
     const chains = substr.slice(0, eqIndex);
@@ -71,7 +71,7 @@ function getConfidence(atom, propertyName = "label") {
 
 const chainColorScheme = [
   ...schemeDark2.slice(0, -1),
-  ...[1, 2, 3, 4, 0, 6, 7].map(i => schemeSet1[i]),
+  ...[1, 2, 3, 4, 0, 6, 7].map((i) => schemeSet1[i]),
 ];
 
 function zipToObject(arr1, arr2) {
@@ -131,7 +131,7 @@ function hoverManagerFactory({
   return [
     {},
     true,
-    atom => {
+    (atom) => {
       const infoElmt = atomInfoRef.current;
       if (infoElmt) {
         infoElmt.style.display = "block";
@@ -198,7 +198,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       filterValue: false,
       comparator: nanComparator(
         (a, b) => a - b,
-        row => +row?.properties?.resolution?.replace(/\s*A/, ""),
+        (row) => +row?.properties?.resolution?.replace(/\s*A/, ""),
         false
       ),
       renderCell: ({ properties: { resolution } }) => {
@@ -306,7 +306,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   }
 
   function clearStructureInfo() {
-    structureInfoRef.current?.querySelectorAll("span")?.forEach(span => (span.textContent = ""));
+    structureInfoRef.current?.querySelectorAll("span")?.forEach((span) => (span.textContent = ""));
   }
 
   // fetch experimental results
@@ -345,7 +345,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
             console.error(`Response status (PDB request): ${response.status}`);
           } else {
             const json = await response.json();
-            const pdbResults = json?.dbReferences?.filter(row => row.type === "PDB") ?? [];
+            const pdbResults = json?.dbReferences?.filter((row) => row.type === "PDB") ?? [];
             results.push(...pdbResults);
           }
         } catch (error) {
@@ -419,7 +419,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
             if (data && parsedCif) {
               if (structureInfoRef.current) {
                 const [idElmt, titleElmt] = structureInfoRef.current.querySelectorAll("span");
-                const title = isAF ? "AlphaFold prediction" : parsedCif["_struct.title"] ?? "";
+                const title = isAF ? "AlphaFold prediction" : (parsedCif["_struct.title"] ?? "");
                 idElmt.textContent = `${selectedStructure.id}${title ? ":" : ""}`;
                 titleElmt.textContent = title;
               }
@@ -458,7 +458,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
               let otherStructureChains;
               const targetChains = segments[selectedStructure.id].uniqueChains; // auth names
               const targetChainsPdb = new Set(
-                [...targetChains].map(chain => authToPdbChain[chain])
+                [...targetChains].map((chain) => authToPdbChain[chain])
               );
               if (structureChains) {
                 if (Array.isArray(structureChains)) {
@@ -466,7 +466,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                   otherStructureChains = structureChains.slice(1).join(",").split(",");
                   const firstStructureChainsSet = new Set(firstStructureChains);
                   otherStructureChains = otherStructureChains.filter(
-                    chain => !firstStructureChainsSet.has(chain)
+                    (chain) => !firstStructureChainsSet.has(chain)
                   );
                 } else {
                   firstStructureChains = structureChains.split(",");
@@ -483,23 +483,23 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 firstStructureChains = [...allChains];
                 firstStructureTargetChains.push(...targetChainsPdb);
                 firstStructureNonTargetChains = firstStructureChains.filter(
-                  chain => !targetChainsPdb.has(chain)
+                  (chain) => !targetChainsPdb.has(chain)
                 );
                 otherStructureChains = [];
               }
               if (pdbToAuthChain) {
-                firstStructureChains = firstStructureChains
-                  .map(chain => pdbToAuthChain[chain])
-                  .flat();
-                firstStructureTargetChains = firstStructureTargetChains
-                  .map(chain => pdbToAuthChain[chain])
-                  .flat();
-                firstStructureNonTargetChains = firstStructureNonTargetChains
-                  .map(chain => pdbToAuthChain[chain])
-                  .flat();
-                otherStructureChains = otherStructureChains
-                  .map(chain => pdbToAuthChain[chain])
-                  .flat();
+                firstStructureChains = firstStructureChains.flatMap(
+                  (chain) => pdbToAuthChain[chain]
+                );
+                firstStructureTargetChains = firstStructureTargetChains.flatMap(
+                  (chain) => pdbToAuthChain[chain]
+                );
+                firstStructureNonTargetChains = firstStructureNonTargetChains.flatMap(
+                  (chain) => pdbToAuthChain[chain]
+                );
+                otherStructureChains = otherStructureChains.flatMap(
+                  (chain) => pdbToAuthChain[chain]
+                );
               }
 
               // entities
@@ -558,7 +558,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                   {},
                   {
                     cartoon: {
-                      colorfunc: atom => getConfidence(atom, "color"),
+                      colorfunc: (atom) => getConfidence(atom, "color"),
                       arrows: true,
                     },
                   }
@@ -566,7 +566,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
               } else {
                 viewer.setStyle(
                   { chain: firstStructureTargetChains },
-                  { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
+                  { cartoon: { colorfunc: (atom) => scheme[atom.chain], arrows: true } }
                 );
                 viewer.setStyle(
                   { chain: firstStructureNonTargetChains },

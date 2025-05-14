@@ -1,30 +1,30 @@
 import { useQuery } from "@apollo/client";
-import { makeStyles } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
-import { SectionItem, Link, Tooltip, OtTable } from "ui";
+import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { makeStyles } from "@mui/styles";
+import { Link, OtTable, SectionItem, Tooltip } from "ui";
 import ComparativeGenomicsPlot from "./ComparativeGenomicsPlot";
 
 import { definition } from ".";
-import Description from "./Description";
-import COMP_GENOMICS_QUERY from "./CompGenomics.gql";
 import ChimpanzeeIcon from "./ChimpanzeeIcon";
-import HumanIcon from "./HumanIcon";
-import RatIcon from "./RatIcon";
-import FrogIcon from "./FrogIcon";
+import COMP_GENOMICS_QUERY from "./CompGenomics.gql";
+import Description from "./Description";
 import DogIcon from "./DogIcon";
 import FlyIcon from "./FlyIcon";
-import RabbitIcon from "./RabbitIcon";
+import FrogIcon from "./FrogIcon";
+import GuineaPigIcon from "./GuineaPigIcon";
+import HumanIcon from "./HumanIcon";
 import MacaqueIcon from "./MacaqueIcon";
+import MouseIcon from "./MouseIcon";
 import PigIcon from "./PigIcon";
+import RabbitIcon from "./RabbitIcon";
+import RatIcon from "./RatIcon";
 import WormIcon from "./WormIcon";
 import ZebrafishIcon from "./ZebrafishIcon";
-import GuineaPigIcon from "./GuineaPigIcon";
-import MouseIcon from "./MouseIcon";
 
+import { VIEW, decimalPlaces } from "@ot/constants";
 import { identifiersOrgLink } from "@ot/utils";
-import { decimalPlaces, VIEW } from "@ot/constants";
 
 const VIEW_MODES = {
   default: "default",
@@ -49,7 +49,7 @@ const speciesIcons = {
   10090: MouseIcon,
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   star: {
     color: theme.palette.primary.main,
   },

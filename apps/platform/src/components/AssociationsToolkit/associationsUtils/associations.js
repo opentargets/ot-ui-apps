@@ -1,7 +1,7 @@
-import { ENTITIES } from "./index";
 import { v1 } from "uuid";
+import { ENTITIES } from "./index";
 
-const getEmptyRow = id => ({
+const getEmptyRow = (id) => ({
   dataSources: {},
   prioritisations: {},
   score: 0,
@@ -18,7 +18,7 @@ const getEmptyRow = id => ({
  * @param {Object} data - The data object containing disease associations.
  * @returns {Array} Associated target rows.
  */
-export const diseaseAssociationsTargetSelector = data =>
+export const diseaseAssociationsTargetSelector = (data) =>
   data[ENTITIES.DISEASE].associatedTargets.rows;
 
 /**
@@ -26,7 +26,7 @@ export const diseaseAssociationsTargetSelector = data =>
  * @param {Object} data - The data object containing target associations.
  * @returns {Array} Associated disease rows.
  */
-export const targetAssociationsDiseaseSelector = data =>
+export const targetAssociationsDiseaseSelector = (data) =>
   data[ENTITIES.TARGET].associatedDiseases.rows;
 
 /**
@@ -34,7 +34,7 @@ export const targetAssociationsDiseaseSelector = data =>
  * @param {Object} data - The data object containing prioritisation items.
  * @returns {Array} Prioritisation items.
  */
-export const diseasePrioritisationTargetsSelector = data =>
+export const diseasePrioritisationTargetsSelector = (data) =>
   data[ENTITIES.TARGET].prioritisation.items;
 
 /**
@@ -42,10 +42,10 @@ export const diseasePrioritisationTargetsSelector = data =>
  * @param {Object} data - The data object containing prioritisation items.
  * @returns {Object} Key-value pair object with prioritisation keys and their respective scores.
  */
-export const getPrioritisationData = data => {
+export const getPrioritisationData = (data) => {
   const dataRows = diseasePrioritisationTargetsSelector(data);
   const prioritisations = dataRows.reduce(
-    (acc, curr) => ((acc[curr.key] = parseFloat(curr.value)), acc),
+    (acc, curr) => ((acc[curr.key] = Number.parseFloat(curr.value)), acc),
     {}
   );
   return { prioritisations };
@@ -56,7 +56,7 @@ export const getPrioritisationData = data => {
  * @param {Object} data - The data object containing data source scores.
  * @returns {Object} Key-value pair object with component IDs and their respective scores.
  */
-export const getDataSourcesData = data => {
+export const getDataSourcesData = (data) => {
   const sources = data.datasourceScores.reduce(
     (acc, curr) => ((acc[curr.componentId] = curr.score), acc),
     {}
@@ -121,7 +121,7 @@ export const getAssociationsData = (fixedEntity, data) => {
       ? diseaseAssociationsTargetSelector(data)
       : targetAssociationsDiseaseSelector(data);
 
-  return dataRows.map(row => {
+  return dataRows.map((row) => {
     const dataSources = getDataSourcesData(row);
     const { targetSymbol, diseaseName, id } = getDataRowMetadata(data, row, fixedEntity);
     return {

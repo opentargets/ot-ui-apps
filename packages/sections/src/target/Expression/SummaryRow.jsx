@@ -1,9 +1,9 @@
-import { useState } from "react";
-import classNames from "classnames";
 import { TableCell, TableRow } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import classNames from "classnames";
+import { useState } from "react";
 
-const proteinLevel = level => {
+const proteinLevel = (level) => {
   if (level === 0) {
     return "Under expressed";
   }
@@ -18,9 +18,9 @@ const proteinLevel = level => {
 
 const rnaValueToPercent = (maxRnaValue, value) => (value * 100) / maxRnaValue;
 
-const proteinLevelToPercent = level => (level * 100) / 3;
+const proteinLevelToPercent = (level) => (level * 100) / 3;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   parentRow: {
     height: "20px",
     cursor: "pointer",

@@ -1,9 +1,9 @@
-import * as d3 from "d3";
-import { useRef, useEffect } from "react";
-import { useMeasure } from "@uidotdev/usehooks";
 import { Box, Skeleton, Typography, useTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { Link, DataDownloader } from "ui";
+import { useMeasure } from "@uidotdev/usehooks";
+import * as d3 from "d3";
+import { useEffect, useRef } from "react";
+import { DataDownloader, Link } from "ui";
 
 const content = {
   mouseOrthologMaxIdentityPercentage:
@@ -211,7 +211,7 @@ function Visualisation({ homologues, width, viewMode }) {
       .append("g")
       .attr("transform", `translate(0,${height - marginBottom})`)
       .call(d3.axisBottom(queryScale))
-      .call(g =>
+      .call((g) =>
         g
           .append("text")
           .attr("x", marginLeft)
@@ -226,7 +226,7 @@ function Visualisation({ homologues, width, viewMode }) {
       .append("g")
       .attr("transform", `translate(0,${height - marginBottom})`)
       .call(d3.axisBottom(targetScale))
-      .call(g =>
+      .call((g) =>
         g
           .append("text")
           .attr("x", width - marginRight)
@@ -238,7 +238,7 @@ function Visualisation({ homologues, width, viewMode }) {
 
     const yAxis = d3
       .axisLeft(y)
-      .tickFormat(d => labels[d])
+      .tickFormat((d) => labels[d])
       .tickSize(0);
     // Add the y-axis.
     svg
@@ -249,31 +249,31 @@ function Visualisation({ homologues, width, viewMode }) {
       .style("font-size", "0.85rem")
       .style("font-weight", 400)
       .call(yAxis)
-      .call(g => g.select(".domain").remove());
+      .call((g) => g.select(".domain").remove());
 
     svg
       .append("g")
       .attr("stroke", "currentColor")
       .attr("stroke-opacity", 0.1)
-      .call(g =>
+      .call((g) =>
         g
           .append("g")
           .selectAll("line")
           .data(queryScale.ticks())
           .join("line")
-          .attr("x1", d => queryScale(d))
-          .attr("x2", d => queryScale(d))
+          .attr("x1", (d) => queryScale(d))
+          .attr("x2", (d) => queryScale(d))
           .attr("y1", marginTop)
           .attr("y2", height - marginBottom)
       )
-      .call(g =>
+      .call((g) =>
         g
           .append("g")
           .selectAll("line")
           .data(targetScale.ticks())
           .join("line")
-          .attr("x1", d => targetScale(d))
-          .attr("x2", d => targetScale(d))
+          .attr("x1", (d) => targetScale(d))
+          .attr("x2", (d) => targetScale(d))
           .attr("y1", marginTop)
           .attr("y2", height - marginBottom)
       );
@@ -287,19 +287,11 @@ function Visualisation({ homologues, width, viewMode }) {
       .data(homologues)
       .enter()
       .append("circle")
-      .attr("cx", function (d) {
-        return queryScale(d.queryPercentageIdentity);
-      })
-      .attr("cy", function (d) {
-        return y(d.speciesId);
-      })
+      .attr("cx", (d) => queryScale(d.queryPercentageIdentity))
+      .attr("cy", (d) => y(d.speciesId))
       .attr("r", dotDefaultRadious)
-      .attr("class", function (d) {
-        return `${d.targetGeneId}_${d.speciesId}`;
-      })
-      .attr("id", function (d, i) {
-        return i;
-      })
+      .attr("class", (d) => `${d.targetGeneId}_${d.speciesId}`)
+      .attr("id", (d, i) => i)
       .attr("fill-opacity", dotDefaultOpacity)
       .attr("fill", theme.palette.primary.main)
       .attr("stroke", theme.palette.primary.dark)
@@ -312,16 +304,10 @@ function Visualisation({ homologues, width, viewMode }) {
       .data(homologues)
       .enter()
       .append("circle")
-      .attr("cx", function (d) {
-        return targetScale(d.targetPercentageIdentity);
-      })
-      .attr("cy", function (d) {
-        return y(d.speciesId);
-      })
+      .attr("cx", (d) => targetScale(d.targetPercentageIdentity))
+      .attr("cy", (d) => y(d.speciesId))
       .attr("r", dotDefaultRadious)
-      .attr("class", function (d) {
-        return `${d.targetGeneId}_${d.speciesId}`;
-      })
+      .attr("class", (d) => `${d.targetGeneId}_${d.speciesId}`)
       .attr("fill-opacity", 0.7)
       .attr("fill", theme.palette.primary.main)
       .attr("stroke", theme.palette.primary.dark)
@@ -335,12 +321,12 @@ function Visualisation({ homologues, width, viewMode }) {
 
       queryContainer
         .selectAll("circle")
-        .attr("fill", d =>
+        .attr("fill", (d) =>
           d.queryPercentageIdentity > 80 && d.speciesId == "10090"
             ? theme.palette.primary.main
             : grey[300]
         )
-        .attr("stroke", d =>
+        .attr("stroke", (d) =>
           d.queryPercentageIdentity > 80 && d.speciesId == "10090"
             ? theme.palette.primary.dark
             : grey[300]
@@ -355,7 +341,7 @@ function Visualisation({ homologues, width, viewMode }) {
 
       svg
         .selectAll(".queryContainer text")
-        .attr("color", d => (d === "10090" ? theme.palette.text.primary : grey[400]));
+        .attr("color", (d) => (d === "10090" ? theme.palette.text.primary : grey[400]));
     }
     if (viewMode === "paralogMaxIdentityPercentage") {
       queryContainer.selectAll("circle").attr("fill", grey[300]).attr("stroke", grey[300]);
@@ -364,12 +350,12 @@ function Visualisation({ homologues, width, viewMode }) {
       queryContainer
         .selectAll("circle")
         // .transition(300)
-        .attr("fill", d =>
+        .attr("fill", (d) =>
           d.queryPercentageIdentity > 60 && d.speciesId == "9606"
             ? theme.palette.primary.main
             : grey[300]
         )
-        .attr("stroke", d =>
+        .attr("stroke", (d) =>
           d.queryPercentageIdentity > 60 && d.speciesId == "9606"
             ? theme.palette.primary.dark
             : grey[300]
@@ -384,7 +370,7 @@ function Visualisation({ homologues, width, viewMode }) {
 
       svg
         .selectAll(".queryContainer text")
-        .attr("color", d => (d === "9606" ? theme.palette.text.primary : grey[400]));
+        .attr("color", (d) => (d === "9606" ? theme.palette.text.primary : grey[400]));
     }
 
     // Append the SVG element.

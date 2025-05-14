@@ -1,17 +1,17 @@
-import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { v1 } from "uuid";
-import { SectionItem, EllsWrapper } from "ui";
-import classNames from "classnames";
 import { useQuery } from "@apollo/client";
+import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Grid, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
+import { EllsWrapper, SectionItem } from "ui";
+import { v1 } from "uuid";
 
 import { definition } from ".";
 import Description from "./Description";
 import TRACTABILITY_QUERY from "./TractabilityQuery.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   modality: {
     marginBottom: "0.35em",
   },
@@ -60,8 +60,8 @@ function ModalityList({ modality, data }) {
   return (
     <>
       {data
-        .filter(d => d.modality === modality)
-        .map(d => (
+        .filter((d) => d.modality === modality)
+        .map((d) => (
           <div
             key={v1()}
             className={classNames(
@@ -101,7 +101,7 @@ function Body({ label: symbol, id: ensemblId, entity }) {
       showContentLoading={true}
       renderBody={() => (
         <Grid container spacing={3}>
-          {modalities.map(m => (
+          {modalities.map((m) => (
             <Grid item xs={6} sm={3} key={v1()}>
               <Typography variant="subtitle1" gutterBottom>
                 {m.label}

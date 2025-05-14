@@ -3,13 +3,13 @@ var configProfile = {
   /* general items */
 
   documentationUrl: "https://platform-docs.opentargets.org",
-  communityUrl: 'https://community.opentargets.org',
-  communityTicketUrl: 'https://community.opentargets.org/c/community-feedback/bug-reports/34',
+  communityUrl: "https://community.opentargets.org",
+  communityTicketUrl: "https://community.opentargets.org/c/community-feedback/bug-reports/34",
 
   /* colors */
-  primaryColor: '#3489ca',
-  secondaryColor: '#18405e',
-  
+  primaryColor: "#3489ca",
+  secondaryColor: "#18405e",
+
   // colorRange: [],
   // custom colour scale: override value in constants.js
 
@@ -25,26 +25,26 @@ var configProfile = {
   // partner[Page]SectionIds: specify the private widget on this page
 
   // disease page
-  hideDiseaseSectionIds: [''],
-  partnerDiseaseSectionIds: ['otProjects'],
+  hideDiseaseSectionIds: [""],
+  partnerDiseaseSectionIds: ["otProjects"],
 
   // target page
-  hideTargetSectionIds: [''],
-  partnerTargetSectionIds: [''],
+  hideTargetSectionIds: [""],
+  partnerTargetSectionIds: [""],
 
   // drug page
-  hideDrugSectionIds: [''],
-  partnerDrugSectionIds: [''],
+  hideDrugSectionIds: [""],
+  partnerDrugSectionIds: [""],
 
   // evidence page
-  hideEvidenceSectionIds: [''],
-  partnerEvidenceSectionIds: ['encore', 'ot_crispr', 'ot_crispr_validation'],
+  hideEvidenceSectionIds: [""],
+  partnerEvidenceSectionIds: ["encore", "ot_crispr", "ot_crispr_validation"],
 
   // datatypes
-  hideDataTypes: [''],
-  partnerDataTypes: ['ot_partner', 'ot_validation_lab'],
+  hideDataTypes: [""],
+  partnerDataTypes: ["ot_partner", "ot_validation_lab"],
 
   // for datasources we only set those that are private (partner)
   // partnerDataSources: list any private datasource (shown with lock in facets)
-  partnerDataSources: ['encore', 'ot_crispr'],
+  partnerDataSources: ["encore", "ot_crispr"],
 };

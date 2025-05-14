@@ -1,22 +1,22 @@
-import { Link, SectionItem, OtTable } from "ui";
+import { Link, OtTable, SectionItem } from "ui";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { makeStyles } from "@mui/styles";
 import { useQuery } from "@apollo/client";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { makeStyles } from "@mui/styles";
 
-import Description from "./Description";
 import { defaultRowsPerPageOptions } from "@ot/constants";
 import { definition } from ".";
+import Description from "./Description";
 import OT_PROJECTS_QUERY from "./OTProjectsQuery.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   primaryColor: {
     color: theme.palette.primary.main,
   },
 }));
 
-const getColumns = classes => [
+const getColumns = (classes) => [
   {
     id: "projectName",
     label: "Project name",

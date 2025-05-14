@@ -1,6 +1,6 @@
 import { Suspense, lazy } from "react";
 import { useLocation } from "react-router-dom";
-import { LoadingBackdrop, BasePage } from "ui";
+import { BasePage, LoadingBackdrop } from "ui";
 
 const ProjectPage = lazy(() => import("./ProjectsPage"));
 

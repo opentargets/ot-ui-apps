@@ -1,11 +1,11 @@
-import { ReactElement, ReactNode } from "react";
-import classNames from "classnames";
-import { Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
-import Tooltip from "./Tooltip";
+import classNames from "classnames";
+import type { ReactElement, ReactNode } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import OtAsyncTooltip from "./OtAsyncTooltip/OtAsyncTooltip";
+import Tooltip from "./Tooltip";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   base: {
     fontSize: "inherit",
     "text-decoration-color": "transparent",

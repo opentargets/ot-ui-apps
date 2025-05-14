@@ -1,12 +1,12 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
+import { naLabel } from "@ot/constants";
+import { epmcUrl } from "@ot/utils";
+import { useCallback } from "react";
+import { Link, OtTable, PublicationsDrawer, SectionItem, Tooltip } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "@ot/utils";
-import { naLabel } from "@ot/constants";
 import UNIPROT_VARIANTS_QUERY from "./UniProtVariantsQuery.gql";
-import { useCallback } from "react";
 
 const columns = [
   {

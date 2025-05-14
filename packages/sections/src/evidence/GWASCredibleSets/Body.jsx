@@ -1,24 +1,24 @@
 import { useQuery } from "@apollo/client";
+import { mantissaExponentComparator, variantComparator } from "@ot/utils";
 import {
-  SectionItem,
-  Link,
-  PublicationsDrawer,
-  OtTable,
-  ScientificNotation,
   ClinvarStars,
-  OtScoreLinearBar,
-  Tooltip,
-  Navigate,
   DisplayVariantId,
   L2GScoreIndicator,
+  Link,
+  Navigate,
+  OtScoreLinearBar,
+  OtTable,
+  PublicationsDrawer,
+  ScientificNotation,
+  SectionItem,
+  Tooltip,
 } from "ui";
-import { variantComparator, mantissaExponentComparator } from "@ot/utils";
 
-import { dataTypesMap, naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } from "@ot/constants";
+import { Box } from "@mui/material";
+import { credsetConfidenceMap, dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";
-import { Box } from "@mui/material";
 
 function getColumns(targetSymbol, targetId) {
   return [
@@ -35,7 +35,7 @@ function getColumns(targetSymbol, targetId) {
       id: "variantId",
       label: "Lead Variant",
       sortable: true,
-      comparator: variantComparator(d => d?.credibleSet?.variant),
+      comparator: variantComparator((d) => d?.credibleSet?.variant),
       renderCell: ({ credibleSet }) => {
         const v = credibleSet?.variant;
         if (!v) return naLabel;
@@ -91,9 +91,10 @@ function getColumns(targetSymbol, targetId) {
       sortable: true,
       renderCell: ({ credibleSet }) =>
         credibleSet?.study.nSamples
-          ? parseInt(credibleSet?.study.nSamples, 10).toLocaleString()
+          ? Number.parseInt(credibleSet?.study.nSamples, 10).toLocaleString()
           : naLabel,
-      filterValue: ({ credibleSet }) => parseInt(credibleSet?.study.nSamples, 10).toLocaleString(),
+      filterValue: ({ credibleSet }) =>
+        Number.parseInt(credibleSet?.study.nSamples, 10).toLocaleString(),
       exportValue: ({ credibleSet }) => credibleSet?.study.nSamples,
     },
     {

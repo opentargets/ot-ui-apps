@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SectionItem, useConfigContext } from "ui";
 
 import Description from "./Description";
@@ -16,8 +16,8 @@ function Body({ id: efoId, label: name, entity }) {
 
   function requestEfoNodes() {
     fetch(config.efoURL)
-      .then(res => res.text())
-      .then(lines => {
+      .then((res) => res.text())
+      .then((lines) => {
         const nodes = lines.trim().split("\n").map(JSON.parse);
         const idToDisease = nodes.reduce((acc, disease) => {
           acc[disease.id] = disease;

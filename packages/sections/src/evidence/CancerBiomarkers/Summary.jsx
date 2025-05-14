@@ -1,4 +1,4 @@
-import { usePlatformApi, SummaryItem } from "ui";
+import { SummaryItem, usePlatformApi } from "ui";
 import { definition } from ".";
 import CANCER_BIOMARKERS_EVIDENCE_FRAGMENT from "./CancerBiomarkersEvidenceFragment.gql";
 

@@ -1,17 +1,17 @@
-import { useEffect } from "react";
-import { Box, Grid, Fade, Skeleton } from "@mui/material";
+import { Box, Fade, Grid, Skeleton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useEffect } from "react";
 import { PublicationWrapper, Table, useApolloClient } from "ui";
-import Loader from "./Loader";
-import { PublicationType, DetailsStateType } from "./types";
 import {
+  useDetails,
+  useDetailsDispatch,
   useDisplayedPublications,
   useLiterature,
   useLiteratureDispatch,
-  useDetails,
-  useDetailsDispatch,
 } from "./LiteratureContext";
+import Loader from "./Loader";
 import { fetchSimilarEntities, literaturesEuropePMCQuery } from "./requests";
+import type { DetailsStateType, PublicationType } from "./types";
 
 const useStyles = makeStyles(() => ({
   root: {

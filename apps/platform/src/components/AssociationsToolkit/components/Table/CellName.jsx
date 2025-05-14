@@ -1,35 +1,35 @@
-import { useState, useRef } from "react";
 import {
-  styled,
-  Typography,
-  MenuList,
-  MenuItem,
-  ListItemText,
-  ListItemIcon,
-  Divider,
-  Popover,
-  Box,
-  Fade,
-  Skeleton,
-  useMediaQuery,
-} from "@mui/material";
-import {
-  faThumbTack,
-  faEllipsisVertical,
   faArrowUpRightFromSquare,
-  faTrashCan,
   faBezierCurve,
+  faEllipsisVertical,
+  faThumbTack,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from "react-router-dom";
-import useAotfContext from "../../hooks/useAotfContext";
-import { ENTITIES, isPartnerPreview, TABLE_PREFIX } from "../../associationsUtils";
+import {
+  Box,
+  Divider,
+  Fade,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Popover,
+  Skeleton,
+  Typography,
+  styled,
+  useMediaQuery,
+} from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { PrivateWrapper } from "ui";
+import { ENTITIES, TABLE_PREFIX, isPartnerPreview } from "../../associationsUtils";
 import {
   FocusActionType,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
-import { PrivateWrapper } from "ui";
+import useAotfContext from "../../hooks/useAotfContext";
 
 const StyledMenuItem = styled(MenuItem)({
   "&>.MuiListItemIcon-root>svg": {
@@ -67,7 +67,7 @@ const TextContainer = styled("div")({
 });
 
 const ContextMenuContainer = styled("div", {
-  shouldForwardProp: prop => prop !== "active",
+  shouldForwardProp: (prop) => prop !== "active",
 })(({ active, theme }) => ({
   opacity: active ? "1" : "0",
   cursor: "pointer",
@@ -98,7 +98,7 @@ function CellName({ cell, colorScale }) {
   const dispatch = useAssociationsFocusDispatch();
   const isSmallScreen = useMediaQuery("(max-width:1080px)");
 
-  const isPinned = pinnedEntries.find(e => e === id);
+  const isPinned = pinnedEntries.find((e) => e === id);
   const profileURL = `/${entityToGet}/${id}`;
   const associationsURL = `/${entityToGet}/${id}/associations`;
   // Using entity to get for condition instead of entity because we are already fetching entityToGet from aotfContext
@@ -118,7 +118,7 @@ function CellName({ cell, colorScale }) {
     });
   };
 
-  const handleContextMenu = e => {
+  const handleContextMenu = (e) => {
     e.preventDefault();
     handleToggle();
   };
@@ -158,7 +158,7 @@ function CellName({ cell, colorScale }) {
 
   const handleClickPin = () => {
     if (isPinned) {
-      const newPinnedData = pinnedEntries.filter(e => e !== id);
+      const newPinnedData = pinnedEntries.filter((e) => e !== id);
       setPinnedEntries(newPinnedData);
       dispatch({
         type: FocusActionType.CLEAR_FOCUS_CONTEXT_MENU,

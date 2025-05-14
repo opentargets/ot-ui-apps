@@ -1,14 +1,14 @@
 import { useQuery } from "@apollo/client";
+import { Box, Tab, Tabs } from "@mui/material";
+import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { BasePage, ScrollToTop } from "ui";
-import { Box, Tabs, Tab } from "@mui/material";
-import { useLocation, useParams, Routes, Route, Link } from "react-router-dom";
 
-import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import DRUG_PAGE_QUERY from "./DrugPage.gql";
+import Header from "./Header";
 
+import type { ReactNode } from "react";
 import Profile from "./Profile";
-import { ReactNode } from "react";
 
 function DrugPage(): ReactNode {
   const location = useLocation();

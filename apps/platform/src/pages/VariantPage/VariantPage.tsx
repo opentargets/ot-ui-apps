@@ -1,12 +1,12 @@
 import { useQuery } from "@apollo/client";
-import { ReactElement } from "react";
-import { useLocation, useParams, Link } from "react-router-dom";
-import { Box, Tabs, Tab } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
+import type { ReactElement } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { BasePage, ScrollToTop } from "ui";
-import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
-import VARIANT_PAGE_QUERY from "./VariantPage.gql";
+import Header from "./Header";
 import Profile from "./Profile";
+import VARIANT_PAGE_QUERY from "./VariantPage.gql";
 
 function VariantPage(): ReactElement {
   const location = useLocation();

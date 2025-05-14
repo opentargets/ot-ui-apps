@@ -1,12 +1,12 @@
-import { InputLabel, FormGroup, Checkbox, FormControlLabel } from "@mui/material";
-import { useLiterature, useSelectedCategories, useLiteratureDispatch } from "./LiteratureContext";
-import { fetchSimilarEntities } from "./requests";
+import { Checkbox, FormControlLabel, FormGroup, InputLabel } from "@mui/material";
 import { useApolloClient } from "ui";
+import { useLiterature, useLiteratureDispatch, useSelectedCategories } from "./LiteratureContext";
+import { fetchSimilarEntities } from "./requests";
 
 const toggleValue = (selected, categories) => {
   const isChecked = categories.indexOf(selected) !== -1;
   if (!isChecked) return [...categories, selected];
-  return [...categories.filter(value => value !== selected).sort()];
+  return [...categories.filter((value) => value !== selected).sort()];
 };
 
 const categories = [
@@ -21,7 +21,7 @@ export default function Category() {
   const literatureDispatch = useLiteratureDispatch();
   const client = useApolloClient();
 
-  const handleChange = async event => {
+  const handleChange = async (event) => {
     const {
       query,
       id,

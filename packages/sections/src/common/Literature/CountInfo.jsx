@@ -1,4 +1,4 @@
-import { InputLabel, Box } from "@mui/material";
+import { Box, InputLabel } from "@mui/material";
 import { useLiterature } from "./LiteratureContext";
 
 function CountInfo() {

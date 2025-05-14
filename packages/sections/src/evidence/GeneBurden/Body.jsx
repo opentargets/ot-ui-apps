@@ -1,20 +1,20 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import {
-  Link,
-  Tooltip,
-  SectionItem,
-  PublicationsDrawer,
-  ScientificNotation,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  Link,
   OtTable,
+  PublicationsDrawer,
+  ScientificNotation,
+  SectionItem,
+  Tooltip,
 } from "ui";
 
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
+import { epmcUrl } from "@ot/utils";
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "@ot/utils";
-import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
 import GENE_BURDEN_QUERY from "./GeneBurdenQuery.gql";
 
@@ -40,13 +40,14 @@ const getSourceLink = (project, targetId, urls) => {
   if (project === "Genebass")
     return `https://app.genebass.org/gene/${targetId}?burdenSet=pLoF&phewasOpts=1&resultLayout=full`;
   if (project === "AstraZeneca PheWAS Portal") return urls[0].url;
-  if (project === "Autism Sequencing Consortium") return `https://asc.broadinstitute.org/gene/${targetId}`;
+  if (project === "Autism Sequencing Consortium")
+    return `https://asc.broadinstitute.org/gene/${targetId}`;
   if (project === "AMP-PD") return `https://amp-pd.org/`;
   if (project === "FinnGen") return `https://r12.finngen.fi/gene/{targetFromSourceId}`;
   return "";
 };
 
-const getColumns = label => [
+const getColumns = (label) => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
@@ -119,7 +120,7 @@ const getColumns = label => [
     sortable: true,
     renderCell: ({ studyCasesWithQualifyingVariants }) =>
       studyCasesWithQualifyingVariants
-        ? parseInt(studyCasesWithQualifyingVariants, 10).toLocaleString()
+        ? Number.parseInt(studyCasesWithQualifyingVariants, 10).toLocaleString()
         : naLabel,
     filterValue: ({ studyCasesWithQualifyingVariants }) =>
       `${studyCasesWithQualifyingVariants} ${naLabel}`,
@@ -130,7 +131,7 @@ const getColumns = label => [
     numeric: true,
     sortable: true,
     renderCell: ({ studyCases }) =>
-      studyCases ? parseInt(studyCases, 10).toLocaleString() : naLabel,
+      studyCases ? Number.parseInt(studyCases, 10).toLocaleString() : naLabel,
   },
   {
     id: "studySampleSize",
@@ -138,7 +139,7 @@ const getColumns = label => [
     numeric: true,
     sortable: true,
     renderCell: ({ studySampleSize }) =>
-      studySampleSize ? parseInt(studySampleSize, 10).toLocaleString() : naLabel,
+      studySampleSize ? Number.parseInt(studySampleSize, 10).toLocaleString() : naLabel,
   },
   {
     id: "oddsRatio",
@@ -152,11 +153,11 @@ const getColumns = label => [
     }) => {
       const ci =
         oddsRatioConfidenceIntervalLower && oddsRatioConfidenceIntervalUpper
-          ? `(${parseFloat(oddsRatioConfidenceIntervalLower.toFixed(3))}, ${parseFloat(
+          ? `(${Number.parseFloat(oddsRatioConfidenceIntervalLower.toFixed(3))}, ${Number.parseFloat(
               oddsRatioConfidenceIntervalUpper.toFixed(3)
             )})`
           : "";
-      return oddsRatio ? `${parseFloat(oddsRatio.toFixed(3))} ${ci}` : naLabel;
+      return oddsRatio ? `${Number.parseFloat(oddsRatio.toFixed(3))} ${ci}` : naLabel;
     },
     filterValue: ({
       oddsRatio,
@@ -173,11 +174,11 @@ const getColumns = label => [
     renderCell: ({ beta, betaConfidenceIntervalLower, betaConfidenceIntervalUpper }) => {
       const ci =
         betaConfidenceIntervalLower && betaConfidenceIntervalUpper
-          ? `(${parseFloat(betaConfidenceIntervalLower.toFixed(3))}, ${parseFloat(
+          ? `(${Number.parseFloat(betaConfidenceIntervalLower.toFixed(3))}, ${Number.parseFloat(
               betaConfidenceIntervalUpper.toFixed(3)
             )})`
           : "";
-      return beta ? `${parseFloat(beta.toFixed(3))} ${ci}` : naLabel;
+      return beta ? `${Number.parseFloat(beta.toFixed(3))} ${ci}` : naLabel;
     },
     filterValue: ({ beta, betaConfidenceIntervalLower, betaConfidenceIntervalUpper }) =>
       `${beta} ${betaConfidenceIntervalLower} ${betaConfidenceIntervalUpper} ${naLabel}`,
@@ -215,7 +216,7 @@ const getColumns = label => [
     label: "Literature",
     renderCell: ({ literature }) => {
       const entries = literature
-        ? literature.map(id => ({
+        ? literature.map((id) => ({
             name: id,
             url: epmcUrl(id),
             group: "literature",
