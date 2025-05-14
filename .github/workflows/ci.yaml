@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ['main']
+    branches: ["main"]
   pull_request:
     types: [opened, synchronize]
   workflow_call:
@@ -20,7 +20,7 @@ jobs:
           node-version: 23
       - uses: mskelton/setup-yarn@v3
       - name: Check format
-        run: yarn format:check
+        run: yarn format
 
   lint:
     name: Lint code 🧹
@@ -34,5 +34,4 @@ jobs:
           node-version: 23
       - uses: mskelton/setup-yarn@v3
       - name: Lint code
-        # TODO: run: yarn lint
-        run: echo "Lint code here"
+        run: yarn format
