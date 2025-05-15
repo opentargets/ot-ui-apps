@@ -25,28 +25,41 @@ interface ProviderProps {
 const StateContext = createContext<StateContextType | undefined>(undefined);
 const DispatchContext = createContext<DispatchContextType | undefined>(undefined);
 
+function getFilteredRows(data, state) {
+  const rows = [];
+  const { startPosition, searchText } = state.filters;
+  for (const row of data.proteinCodingCoordinates.rows) {
+    if (startPosition != null && row.aminoAcidPosition !== startPosition) {
+      continue;
+    }
+    if (searchText) {
+      // !! RANDOM FOR TESTING !!!!!
+      if (Math.random() < 0.8) continue;
+    }
+    // !! OTHER FILTERS HERE !!!!!!!!
+    rows.push(row);
+  }
+  return rows;
+}
+
+// if (state.therapeuticAreas.length > 0) {
+//   const selectedAreas = new Set(state.therapeuticAreas);
+//   rows = rows.filter(row => {
+//     // !! UPDATE BELOW TO USE CORRECT FIELD AND SHAPE WHEN API UPDATED
+//     for (const area of row.therapeuticAreas ?? []) {
+//       if (selectedAreas.has(area)) return true;
+//     }
+//     return false;
+//   });
+// }
+
 export function StateProvider({ children, data, query, variables }: ProviderProps) {
   const initialState = getInitialState({ data, query, variables });
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const filteredRows = useMemo(() => {
-    let rows = data.proteinCodingCoordinates.rows;
-    if (state.searchText) {
-      const fuse = new Fuse(rows, { keys: ["diseases.name"] });
-      rows = fuse.search(state.searchText).map(row => row.item);
-    }
-    if (state.therapeuticAreas.length > 0) {
-      const selectedAreas = new Set(state.therapeuticAreas);
-      rows = rows.filter(row => {
-        // !! UPDATE BELOW TO USE CORRECT FIELD AND SHAPE WHEN API UPDATED
-        for (const area of row.therapeuticAreas ?? []) {
-          if (selectedAreas.has(area)) return true;
-        }
-        return false;
-      });
-    }
-    return rows;
-  }, [state]);
+    return getFilteredRows(data, state);
+  }, [state.filters]);
 
   return (
     <StateContext.Provider value={{ state, filteredRows }}>

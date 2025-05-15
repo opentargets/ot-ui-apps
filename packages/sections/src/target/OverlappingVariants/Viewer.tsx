@@ -9,7 +9,6 @@ import {
   setNoHoverStyle,
   highlightVariants,
   highlightVariantFromTable,
-  unhighlightVariantFromTable,
   onClickCapture,
 } from "./viewerHandlers";
 
@@ -23,6 +22,7 @@ export default function Viewer() {
   const [atomInfo, setAtomInfo] = useState(null);
 
   const { state, filteredRows } = useStateValue();
+  const { setStartPosition } = useActions();
   const { setViewer } = useActions();
 
   // fetch structure data
@@ -64,7 +64,6 @@ export default function Viewer() {
     let viewer;
     if (structureData && viewerRef.current) {
       function setupViewer() {
-        console.log("MAKE VIEWER");
         viewer = createViewer(viewerRef.current.querySelector(".viewerContainer"), {
           backgroundColor: "#f8f8f8",
           antialias: true,
@@ -97,7 +96,7 @@ export default function Viewer() {
         const viewerAtoms = viewer.getModel().selectedAtoms();
         viewer.__atomsByResi__ = Map.groupBy(viewerAtoms, atom => atom.resi);
         viewer.__highlightedResis__ = new Map();
-        viewer.__extraHighlightedResis__ = new Map();
+        viewer.__extraHighlightedResi__ = null;
         highlightVariants(viewer, filteredRows);
         // resetViewer(viewer);
         // viewer.zoom(0.2);
@@ -116,20 +115,14 @@ export default function Viewer() {
   // highlight variants
   useEffect(() => {
     if (state.viewer) {
-      highlightVariants(state.viewer, filteredRows);
+      highlightVariants(state.viewer, filteredRows, setStartPosition);
     }
   }, [state.viewer, filteredRows]);
 
-  // // highlight/unhighlight variant correpsonding to hovered/unhovered row
+  // (un)highlight variant corresponding to (un)hovered
   useEffect(() => {
-    highlightVariantFromTable(state.hoveredRow);
+    highlightVariantFromTable(state.viewer, state.hoveredRow.at(-1));
   }, [state.viewer, state.hoveredRow]);
-
-  useEffect(() => {
-    unhighlightVariantFromTable(state.unhoveredRow);
-  }, [state.viewer, state.unhoveredRow]);
-
-  // !!!! ALSO NEED TO DRAW VARIANTS INITIALLY WHEN CREATE THE VIEWER??
 
   return (
     <Box ref={viewerRef} position="relative" width="100%">

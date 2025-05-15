@@ -1,15 +1,11 @@
 import { OtTable, Link, Tooltip } from "ui";
-import { Typography } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { useStateValue, useActions } from "./Context";
 import { naLabel } from "@ot/constants";
 
 export default function OverlappingVariantsTable() {
-  const {
-    state: { query, variables },
-    filteredRows,
-  } = useStateValue();
-
-  const { setHoveredRow } = useActions();
+  const { state, filteredRows } = useStateValue();
+  const { setHoveredRow, setUnhoveredRow } = useActions();
 
   const columns = [
     {
@@ -93,23 +89,27 @@ export default function OverlappingVariantsTable() {
   }
 
   function getExitedRow(exitedRow) {
-    setHoveredRow(null);
+    setUnhoveredRow();
   }
 
   return (
-    <OtTable
-      dataDownloader
-      showGlobalFilter={false}
-      sortBy="aminoAcidPosition"
-      order="asc"
-      columns={columns}
-      // loading={data.loading}
-      rows={filteredRows}
-      query={query}
-      variables={variables}
-      // getFilteredRows={getFilteredRows}
-      // getEnteredRow={getEnteredRow}
-      // getExitedRow={getExitedRow}
-    />
+    <Box
+      onMouseLeave={() => {
+        setUnhoveredRow();
+      }}
+    >
+      <OtTable
+        dataDownloader
+        showGlobalFilter={false}
+        sortBy="aminoAcidPosition"
+        order="asc"
+        columns={columns}
+        rows={filteredRows}
+        query={state.query}
+        variables={state.variables}
+        getEnteredRow={getEnteredRow}
+        getExitedRow={getExitedRow}
+      />
+    </Box>
   );
 }
