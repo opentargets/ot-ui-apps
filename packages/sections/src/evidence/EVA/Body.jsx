@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Typography } from "@mui/material";
 import {
   Link,
@@ -6,29 +6,17 @@ import {
   Tooltip,
   LabelChip,
   PublicationsDrawer,
-  getPage,
-  Table,
-  getComparator,
-  useCursorBatchDownloader,
   ClinvarStars,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  DisplayVariantId,
+  OtTableSSP,
 } from "ui";
-
-import {
-  clinvarStarMap,
-  naLabel,
-  defaultRowsPerPageOptions,
-  variantConsequenceSource,
-} from "../../constants";
+import { epmcUrl, sentenceCase, identifiersOrgLink } from "@ot/utils";
+import { dataTypesMap, clinvarStarMap, naLabel, variantConsequenceSource } from "@ot/constants";
 import { definition } from ".";
-
-import client from "../../client";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
 import CLINVAR_QUERY from "./ClinvarQuery.gql";
-import { dataTypesMap } from "../../dataTypes";
-import { sentenceCase, identifiersOrgLink } from "../../utils/global";
 
 const exportColumns = [
   {
@@ -41,7 +29,7 @@ const exportColumns = [
   },
   {
     label: "variantId",
-    exportValue: row => row.variantId,
+    exportValue: row => row.variant.id,
   },
   {
     label: "variantRsId",
@@ -103,23 +91,30 @@ function getColumns(label) {
           }
           showHelpIcon
         >
-          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+          <Link asyncTooltip to={`/disease/${disease.id}`}>
+            {disease.name}
+          </Link>
         </Tooltip>
       ),
     },
     {
       id: "variantId",
-      label: "Variant ID",
-      renderCell: ({ variantId }) =>
-        // trim long IDs and append '...'
-        variantId ? (
-          <>
-            {variantId.substring(0, 20)}
-            {variantId.length > 20 ? "\u2026" : ""}
-          </>
-        ) : (
-          naLabel
-        ),
+      label: "Variant",
+      enableHiding: false,
+      renderCell: ({ variant }) => {
+        if (!variant) return naLabel;
+        const { id: variantId, referenceAllele, alternateAllele } = variant;
+        return (
+          <Link asyncTooltip to={`/variant/${variantId}`}>
+            <DisplayVariantId
+              variantId={variantId}
+              referenceAllele={referenceAllele}
+              alternateAllele={alternateAllele}
+              expand={false}
+            />
+          </Link>
+        );
+      },
     },
     {
       id: "variantRsId",
@@ -139,7 +134,8 @@ function getColumns(label) {
     {
       id: "variantHgvsId",
       label: "HGVS ID",
-      renderCell: ({ variantHgvsId }) => variantHgvsId || naLabel,
+      renderCell: ({ variant }) => variant?.hgvsId || naLabel,
+      filterValue: ({ variant }) => `${variant?.hgvsId}`,
     },
     {
       id: "studyId",
@@ -297,143 +293,34 @@ function getColumns(label) {
   ];
 }
 
-function fetchClinvar({ ensemblId, efoId, cursor, size, freeTextQuery }) {
-  return client.query({
-    query: CLINVAR_QUERY,
-    variables: {
-      ensemblId,
-      efoId,
-      cursor,
-      size,
-      freeTextQuery,
-    },
-  });
-}
-
 function Body({ id, label, entity }) {
   const { ensgId: ensemblId, efoId } = id;
-  const [initialLoading, setInitialLoading] = useState(true); // state variable to keep track of initial loading of rows
-  const [loading, setLoading] = useState(false); // state variable to keep track of loading state on page chage
-  const [count, setCount] = useState(0);
-  const [cursor, setCursor] = useState("");
-  const [rows, setRows] = useState([]);
-  const [page, setPage] = useState(0);
-  const [size, setPageSize] = useState(10);
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortOrder, setSortOrder] = useState("asc");
-
+  const [request, setRequest] = useState({ loading: true, data: null, error: false });
   const columns = getColumns(label);
-
-  useEffect(() => {
-    let isCurrent = true;
-
-    fetchClinvar({ ensemblId, efoId, cursor: "", size }).then(res => {
-      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.eva;
-      if (isCurrent) {
-        setInitialLoading(false);
-        setCursor(newCursor);
-        setCount(newCount);
-        setRows(newRows);
-      }
-    });
-
-    return () => {
-      isCurrent = false;
-    };
-  }, []);
-
-  const getWholeDataset = useCursorBatchDownloader(
-    CLINVAR_QUERY,
-    {
-      ensemblId,
-      efoId,
-    },
-    `data.disease.eva`
-  );
-
-  const handlePageChange = newPage => {
-    const newPageInt = Number(newPage);
-    if (size * newPageInt + size > rows.length && cursor !== null) {
-      setLoading(true);
-      fetchClinvar({ ensemblId, efoId, cursor, size }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.eva;
-        setRows([...rows, ...newRows]);
-        setLoading(false);
-        setCursor(newCursor);
-        setPage(newPageInt);
-      });
-    } else {
-      setPage(newPageInt);
-    }
-  };
-
-  const handleRowsPerPageChange = newPageSize => {
-    const newPageSizeInt = Number(newPageSize);
-    if (newPageSizeInt > rows.length && cursor !== null) {
-      setLoading(true);
-      fetchClinvar({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.eva;
-        setRows([...rows, ...newRows]);
-        setLoading(false);
-        setCursor(newCursor);
-        setPage(0);
-        setPageSize(newPageSizeInt);
-      });
-    } else {
-      setPage(0);
-      setPageSize(newPageSizeInt);
-    }
-  };
-
-  const handleSortBy = sortBy => {
-    setSortColumn(sortBy);
-    setSortOrder(
-      // eslint-disable-next-line
-      sortColumn === sortBy ? (sortOrder === "asc" ? "desc" : "asc") : "asc"
-    );
-  };
-
-  const processedRows = [...rows];
-
-  if (sortColumn) {
-    processedRows.sort(getComparator(columns, sortOrder, sortColumn));
-  }
 
   return (
     <SectionItem
       definition={definition}
       chipText={dataTypesMap.genetic_association}
       entity={entity}
-      request={{
-        loading: initialLoading,
-        data: { [entity]: { eva: { rows, count: rows.length } } },
-      }}
+      request={request}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={() => (
-        <Table
-          // showGlobalFilter
-          // globalFilter={globalFilter}
-          // onGlobalFilterChange={handleGlobalFilterChange}
-          loading={loading}
+        <OtTableSSP
+          query={CLINVAR_QUERY}
           columns={columns}
-          rows={getPage(processedRows, page, size)}
-          rowCount={count}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
-          page={page}
-          pageSize={size}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          onSortBy={handleSortBy}
-          query={CLINVAR_QUERY.loc.source.body}
           dataDownloader
-          dataDownloaderRows={getWholeDataset}
           dataDownloaderColumns={exportColumns}
-          dataDownloaderFileStem="clinvar-evidence"
+          dataDownloaderFileStem="eva-evidence"
+          entity={entity}
+          sectionName="eva"
+          showGlobalFilter={false}
+          setInitialRequestData={req => {
+            setRequest(req);
+          }}
           variables={{
             ensemblId,
             efoId,
-            cursor,
-            size,
           }}
         />
       )}

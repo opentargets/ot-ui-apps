@@ -6,7 +6,8 @@ const maxClinicalTrialPhase: Column = {
   aggregation: TargetPrioritisationAggregation.PRECEDENCE,
   sectionId: "knownDrugs",
   description: "Target is in clinical trials for any indication",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#target-in-clinic",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#target-in-clinic",
 };
 
 const isInMembrane: Column = {
@@ -15,7 +16,8 @@ const isInMembrane: Column = {
   aggregation: TargetPrioritisationAggregation.TRACTABILITY,
   sectionId: "subcellularLocation",
   description: "Target is annotated to be located in the cell membrane",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#membrane-protein",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#membrane-protein",
 };
 
 const isSecreted: Column = {
@@ -24,7 +26,8 @@ const isSecreted: Column = {
   aggregation: TargetPrioritisationAggregation.TRACTABILITY,
   sectionId: "subcellularLocation",
   description: "Target is annotated to be secreted",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#secreted-protein",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#secreted-protein",
 };
 
 const hasLigand: Column = {
@@ -33,7 +36,8 @@ const hasLigand: Column = {
   aggregation: TargetPrioritisationAggregation.TRACTABILITY,
   sectionId: "tractability",
   description: "Target binds a specific ligand",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#ligand-binder",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#ligand-binder",
 };
 
 const hasSmallMoleculeBinder: Column = {
@@ -42,7 +46,8 @@ const hasSmallMoleculeBinder: Column = {
   aggregation: TargetPrioritisationAggregation.TRACTABILITY,
   sectionId: "tractability",
   description: "Target binds a small molecule",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#small-molecule-binder",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#small-molecule-binder",
 };
 
 const hasPocket: Column = {
@@ -51,7 +56,8 @@ const hasPocket: Column = {
   aggregation: TargetPrioritisationAggregation.TRACTABILITY,
   sectionId: "tractability",
   description: "Target has predicted pockets",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#predicted-pockets",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#predicted-pockets",
 };
 
 const mouseOrthologMaxIdentityPercentage: Column = {
@@ -60,7 +66,9 @@ const mouseOrthologMaxIdentityPercentage: Column = {
   aggregation: TargetPrioritisationAggregation.DOABILITY,
   sectionId: "compGenomics",
   description: "Mouse ortholog maximum identity percentage",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#mouse-ortholog-identity",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#mouse-ortholog-identity",
+  sectionProps: { viewMode: "mouseOrthologMaxIdentityPercentage" },
 };
 
 const hasHighQualityChemicalProbes: Column = {
@@ -69,7 +77,8 @@ const hasHighQualityChemicalProbes: Column = {
   aggregation: TargetPrioritisationAggregation.DOABILITY,
   sectionId: "chemicalProbes",
   description: "Availability of high quality chemical probes for the target",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#chemical-probes",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#chemical-probes",
 };
 
 const mouseKOScore: Column = {
@@ -78,7 +87,8 @@ const mouseKOScore: Column = {
   aggregation: TargetPrioritisationAggregation.SAFETY,
   sectionId: "mousePhenotypes",
   description: "Availability of mouse knockout models for the target",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#mouse-models",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#mouse-models",
 };
 
 const geneticConstraint: Column = {
@@ -87,7 +97,8 @@ const geneticConstraint: Column = {
   aggregation: TargetPrioritisationAggregation.SAFETY,
   sectionId: "geneticConstraint",
   description: "Relative genetic constraint in natural populations derived from GnomAD",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#genetic-constraint",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#genetic-constraint",
 };
 
 const geneEssentiality: Column = {
@@ -96,7 +107,8 @@ const geneEssentiality: Column = {
   aggregation: TargetPrioritisationAggregation.SAFETY,
   sectionId: "depMapEssentiality",
   description: "Gene is defined as core essential by the DepMap portal",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#gene-essentiality",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#gene-essentiality",
 };
 
 const hasSafetyEvent: Column = {
@@ -105,7 +117,8 @@ const hasSafetyEvent: Column = {
   aggregation: TargetPrioritisationAggregation.SAFETY,
   sectionId: "safety",
   description: "Target associated with a curated adverse event",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#known-adverse-events",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#known-adverse-events",
 };
 
 const isCancerDriverGene: Column = {
@@ -114,7 +127,8 @@ const isCancerDriverGene: Column = {
   aggregation: TargetPrioritisationAggregation.SAFETY,
   sectionId: "cancerHallmarks",
   description: "Target is classified as an Oncogene and/or Tumor Suppressor Gene",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#cancer-driver-gene",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#cancer-driver-gene",
 };
 
 const paralogMaxIdentityPercentage: Column = {
@@ -123,7 +137,8 @@ const paralogMaxIdentityPercentage: Column = {
   aggregation: TargetPrioritisationAggregation.SAFETY,
   sectionId: "compGenomics",
   description: "Paralog maximum identity percentage",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#paralogues",
+  docsLink: "https://platform-docs.opentargets.org/web-interface/target-prioritisation#paralogues",
+  sectionProps: { viewMode: "paralogMaxIdentityPercentage" },
 };
 
 const tissueSpecificity: Column = {
@@ -132,7 +147,8 @@ const tissueSpecificity: Column = {
   aggregation: TargetPrioritisationAggregation.SAFETY,
   sectionId: "expressions",
   description: "HPA category types of elevated expression across tissues for the target",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#tissue-specificity",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-specificity",
 };
 
 const tissueDistribution: Column = {
@@ -141,7 +157,8 @@ const tissueDistribution: Column = {
   aggregation: TargetPrioritisationAggregation.SAFETY,
   sectionId: "expressions",
   description: "HPA category types of detectable expression across tissues for the target",
-  docsLink: "https://platform-docs.opentargets.org/target-prioritisation#tissue-distribution",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-distribution",
 };
 
 const cols: Column[] = [

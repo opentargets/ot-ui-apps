@@ -4,8 +4,8 @@ import { Link, Tooltip, SectionItem, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { epmcUrl } from "@ot/utils";
+import { defaultRowsPerPageOptions } from "@ot/constants";
 import GeneOntologyEvidenceCodeMap from "./GeneOntologyEvidenceCodeMappings.json";
 import GENE_ONTOLOGY_QUERY from "./GeneOntology.gql";
 
@@ -88,6 +88,7 @@ const columns = [
   {
     id: "goTerm",
     label: "GO term",
+    enableHiding: false,
     renderCell: ({ term }) =>
       term ? (
         <Link external to={`https://identifiers.org/${term.id}`}>
@@ -147,8 +148,11 @@ function Section({ id, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={({ target }) => {
-        const rows = sortBy(target.geneOntology.map(extractCategory), "category.label");
+      renderBody={() => {
+        const rows = sortBy(
+          request.data?.target.geneOntology.map(extractCategory),
+          "category.label"
+        );
         return (
           <OtTable
             showGlobalFilter
@@ -158,6 +162,7 @@ function Section({ id, label: symbol, entity }) {
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={GENE_ONTOLOGY_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

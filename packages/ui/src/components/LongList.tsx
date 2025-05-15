@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Typography } from "@mui/material";
+import { ReactNode, useState } from "react";
+import { Typography, Theme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   showMore: {
     whiteSpace: "nowrap",
   },
@@ -13,12 +13,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 type LongListProps = {
-  terms: string[];
-  render: () => JSX.Element;
   maxTerms?: number;
+  render: (item?: any, index?: number) => ReactNode;
+  terms: any[];
 };
 
-function LongList({ terms, render, maxTerms = 10 }: LongListProps) {
+function LongList({ terms, render, maxTerms = 10 }: LongListProps): ReactNode {
   const [showMore, setShowMore] = useState(false);
   const classes = useStyles();
 

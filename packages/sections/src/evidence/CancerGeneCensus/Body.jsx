@@ -5,11 +5,9 @@ import { v1 } from "uuid";
 
 import { ChipList, Link, SectionItem, PublicationsDrawer, OtTable } from "ui";
 
-import { naLabel, defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { identifiersOrgLink, sentenceCase } from "../../utils/global";
+import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
 
 import { definition } from ".";
 
@@ -17,18 +15,27 @@ import CANCER_GENE_CENSUS_QUERY from "./sectionQuery.gql";
 
 const samplePercent = item => (item.numberSamplesWithMutationType / item.numberSamplesTested) * 100;
 
-const getMaxPercent = row => Math.max(...row.mutatedSamples.map(item => samplePercent(item)));
+const getMaxPercent = row => {
+  if (row.mutatedSamples) return Math.max(...row.mutatedSamples.map(item => samplePercent(item)));
+  return null;
+};
 
 const getColumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
-    renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
+    enableHiding: false,
+    renderCell: ({ disease }) => (
+      <Link asyncTooltip to={`/disease/${disease.id}`}>
+        {disease.name}
+      </Link>
+    ),
   },
   {
     id: "mutationType",
     propertyPath: "mutatedSamples.functionalConsequence",
     label: "Mutation type",
+    enableHiding: false,
     renderCell: ({ mutatedSamples }) => {
       if (!mutatedSamples) return naLabel;
       const sortedMutatedSamples = mutatedSamples
@@ -57,7 +64,7 @@ const getColumns = label => [
   {
     id: "mutatedSamples",
     propertyPath: "mutatedSamples.numberSamplesWithMutationType",
-    sortable: "true",
+    sortable: true,
     label: "Mutated / Total samples",
     renderCell: ({ mutatedSamples }) => {
       if (!mutatedSamples) return naLabel;
@@ -140,15 +147,10 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({
-        disease: {
-          cancerGeneCensusSummary: { rows },
-        },
-        target: { hallmarks },
-      }) => {
+      renderBody={() => {
         const roleInCancerItems =
-          hallmarks && hallmarks.attributes.length > 0
-            ? hallmarks.attributes
+          request.data?.target.hallmarks && request.data?.target.hallmarks.attributes.length > 0
+            ? request.data?.target.hallmarks.attributes
                 .filter(attribute => attribute.name === "role in cancer")
                 .map(attribute => ({
                   label: attribute.description,
@@ -168,12 +170,12 @@ function Body({ id, label, entity }) {
               columns={columns}
               dataDownloader
               order="asc"
-              rows={rows}
-              rowsPerPageOptions={defaultRowsPerPageOptions}
+              rows={request.data?.disease.cancerGeneCensusSummary.rows}
               showGlobalFilter
               sortBy="mutatedSamples"
               query={CANCER_GENE_CENSUS_QUERY.loc.source.body}
               variables={variables}
+              loading={request.loading}
             />
           </>
         );

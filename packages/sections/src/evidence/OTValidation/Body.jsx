@@ -9,8 +9,7 @@ import { v1 } from "uuid";
 
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import VALIDATION_QUERY from "./OTValidationQuery.gql";
 
 const useStyles = makeStyles(theme => ({
@@ -44,7 +43,11 @@ const getColumns = classes => [
   {
     id: "disease",
     label: "Reported disease",
-    renderCell: row => <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>,
+    renderCell: row => (
+      <Link asyncTooltip to={`/disease/${row.disease.id}`}>
+        {row.disease.name}
+      </Link>
+    ),
     sortable: true,
     filterValue: row => `${row.diseaseLabel}, ${row.disease.id}`,
   },
@@ -70,6 +73,7 @@ const getColumns = classes => [
   {
     id: "biomarkerList",
     label: "Cell line biomarkers",
+    enableHiding: false,
     renderCell: row => (
       <ChipList
         small
@@ -221,25 +225,22 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.otValidationSummary;
+      renderBody={() => {
         return (
           <>
             <OtTable
               columns={getColumns(classes)}
-              rows={rows}
+              rows={request.data?.disease.otValidationSummary.rows}
               dataDownloader
               dataDownloaderColumns={exportColumns}
               dataDownloaderFileStem={`${ensgId}-${efoId}-otvalidation`}
               showGlobalFilter
-              sortBy="resourceScore"
-              order="des"
               fixed
               noWrap={false}
               noWrapHeader={false}
-              rowsPerPageOptions={defaultRowsPerPageOptions}
               query={VALIDATION_QUERY.loc.source.body}
               variables={variables}
+              loading={request.loading}
             />
           </>
         );

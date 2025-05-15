@@ -1,8 +1,10 @@
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { addSearchToLocalStorage } from "../components/GlobalSearch/utils/searchUtils";
 
 function useListOption() {
-  const history = useHistory();
+  const navigate = useNavigate();
+
+  const entitiesWitAssociations = ["disease", "target"];
 
   const openListItem = option => {
     if (!option) return;
@@ -11,12 +13,12 @@ function useListOption() {
     addSearchToLocalStorage(newOption);
 
     if (newOption.entity === "search") {
-      history.push(`/search?q=${newOption.name}&page=1`);
-    } else if (newOption.entity === "study") {
-      history.push(`/${newOption.entity}/${newOption.studyId}`);
+      navigate(`/search?q=${newOption.name}&page=1`);
     } else {
-      history.push(
-        `/${newOption.entity}/${newOption.id}${newOption.entity !== "drug" ? "/associations" : ""}`
+      navigate(
+        `/${newOption.entity}/${newOption.id}${
+          entitiesWitAssociations.indexOf(newOption.entity) > -1 ? "/associations" : ""
+        }`
       );
     }
   };

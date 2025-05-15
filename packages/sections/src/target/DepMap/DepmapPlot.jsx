@@ -4,7 +4,7 @@ import { useMeasure } from "@uidotdev/usehooks";
 import { Box } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { DataDownloader } from "ui";
-import { sentenceCase } from "ui/src/utils/global";
+import { sentenceCase } from "@ot/utils";
 
 const prepareData = (data = []) => {
   const flatData = data.reduce((accumulator, currentValue) => {
@@ -36,28 +36,24 @@ function ChartControls({ data, query, variables }) {
         borderColor: grey[300],
         borderRadius: 1,
         display: "flex",
-        justifyContent: "space-between",
-        py: 1,
-        px: 2,
+        justifyContent: "flex-end",
+        gap: 1,
       }}
     >
-      <Box></Box>
-      <Box>
-        <DataDownloader
-          btnLabel="Export data"
-          rows={data}
-          query={query}
-          variables={variables}
-          columns={[
-            { exportValue: row => row.depmapId, id: "depmapId" },
-            { exportValue: row => row.cellLineName, id: "cellLineName" },
-            { exportValue: row => row.diseaseFromSource, id: "diseaseFromSource" },
-            { exportValue: row => row.geneEffect, id: "geneEffect" },
-            { exportValue: row => row.expression, id: "expression" },
-            { exportValue: row => row.tissueName, id: "tissueName" },
-          ]}
-        />
-      </Box>
+      <DataDownloader
+        btnLabel="Export data"
+        rows={data}
+        query={query}
+        variables={variables}
+        columns={[
+          { exportValue: row => row.depmapId, id: "depmapId" },
+          { exportValue: row => row.cellLineName, id: "cellLineName" },
+          { exportValue: row => row.diseaseFromSource, id: "diseaseFromSource" },
+          { exportValue: row => row.geneEffect, id: "geneEffect" },
+          { exportValue: row => row.expression, id: "expression" },
+          { exportValue: row => row.tissueName, id: "tissueName" },
+        ]}
+      />
     </Box>
   );
 }
@@ -71,6 +67,7 @@ function DepmapPlot({ data, width }) {
       marginLeft: 200,
       style: {
         background: "transparent",
+        fontSize: "12px",
       },
       x: {
         type: "symlog",
@@ -123,7 +120,7 @@ function DepmapPlot({ data, width }) {
             textPadding: 10,
             format: {
               fill: false,
-              cellLineName: d => d + "\n\n",
+              cellLineName: true,
               diseaseFromSource: true,
               x: false,
               y: false,
@@ -133,11 +130,9 @@ function DepmapPlot({ data, width }) {
           fillOpacity: 0.5,
         }),
         Plot.axisY({
-          fontSize: 12,
           label: "Tissue name",
         }),
         Plot.axisX({
-          fontSize: 12,
           label: "Gene Effect",
         }),
         Plot.crosshair(data, { x: "geneEffect", y: "tissueName" }),

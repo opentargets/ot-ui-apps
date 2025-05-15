@@ -4,7 +4,10 @@ import { Typography, Chip, Box } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faClockRotateLeft, faArrowTrendUp } from "@fortawesome/free-solid-svg-icons";
 
-import { clearRecentItem, commaSeparate } from "./utils/searchUtils";
+import { clearRecentItem } from "./utils/searchUtils";
+import DisplayVariantId from "../DisplayVariantId";
+import { getStudyItemMetaData } from "@ot/utils";
+import StudyPublication from "../StudyPublication";
 
 const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
@@ -24,21 +27,16 @@ const JustifyBetween = styled("div")({
   width: "100%",
 });
 
-const ListItemDisplayName = styled("span")(({ theme }) => ({
+const ListItemDisplayName = styled("span")({
   textTransform: "capitalize",
   display: "flex",
   alignItems: "center",
   width: "100%",
-}));
+});
 
 const ItemId = styled("span")({
   padding: "0.3rem 0 0 1rem ",
   fontStyle: "italic",
-  overflowWrap: "break-word",
-});
-
-const FlexSpan = styled("span")({
-  display: "flex",
 });
 
 const RecentItemContainer = styled("li")(({ theme }) => ({
@@ -48,7 +46,7 @@ const RecentItemContainer = styled("li")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   padding: `${theme.spacing(1.5)}`,
-  borderRadius: theme.spacing(1),
+  borderRadius: theme.spacing(0.5),
   color: theme.palette.grey["700"],
   "&:hover": {
     background: theme.palette.grey["200"],
@@ -68,7 +66,7 @@ const TopHitItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   padding: `${theme.spacing(1.5)}`,
-  borderRadius: theme.spacing(1),
+  borderRadius: theme.spacing(0.5),
   color: theme.palette.grey["900"],
   "&:hover": {
     background: theme.palette.grey["200"],
@@ -78,9 +76,25 @@ const TopHitItem = styled("li")(({ theme }) => ({
 const TopHitItemContainer = styled("div")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
-  padding: `${theme.spacing(1.5)}`,
-  borderRadius: theme.spacing(1),
+  padding: `${theme.spacing(1.5)} 0`,
+  borderRadius: theme.spacing(0.5),
 }));
+
+function symbolNameOrId(item) {
+  if (item.entity === "variant") {
+    return item.referenceAllele ? (
+      <DisplayVariantId
+        variantId={item.id}
+        referenceAllele={item.referenceAllele}
+        alternateAllele={item.alternateAllele}
+        expand={false}
+      />
+    ) : (
+      item.id
+    );
+  }
+  return item.symbol || item.name || item.id;
+}
 
 function SuggestionListItem({ item, onItemClick }) {
   return (
@@ -95,7 +109,7 @@ function SuggestionListItem({ item, onItemClick }) {
     >
       <RecentIconContainer>
         <FontAwesomeIcon icon={faArrowTrendUp} />
-        <Typography variant="subtitle2">{item.symbol || item.name || item.id}</Typography>
+        <Typography variant="subtitle2">{symbolNameOrId(item)}</Typography>
       </RecentIconContainer>
     </RecentItemContainer>
   );
@@ -114,7 +128,7 @@ function RecentListItem({ item, onItemClick }) {
     >
       <RecentIconContainer>
         <FontAwesomeIcon icon={faClockRotateLeft} />
-        <Typography variant="subtitle2">{item.symbol || item.name || item.id}</Typography>
+        <Typography variant="subtitle2">{symbolNameOrId(item)}</Typography>
       </RecentIconContainer>
 
       <FontAwesomeIcon
@@ -143,7 +157,7 @@ function TopHitListItem({ item, onItemClick }) {
     >
       <TopHitItemContainer>
         <JustifyBetween>
-          <Typography variant="h6">
+          <Typography>
             <ListItemDisplayName>
               <Box
                 sx={{
@@ -151,21 +165,94 @@ function TopHitListItem({ item, onItemClick }) {
                   color: theme => theme.palette.primary.main,
                 }}
               >
-                {item.symbol || item.name}
+                {symbolNameOrId(item)}
               </Box>
             </ListItemDisplayName>
           </Typography>
 
-          <Typography variant="caption">{item.id && <ItemId>{item.id}</ItemId>}</Typography>
-        </JustifyBetween>
-        <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
-          <Typography variant="subtitle1">{item.symbol && item.name}</Typography>
-        </Box>
-        <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
-          <Typography variant="body2">
-            {item.description && `${item.description.substring(0, 180)}...`}
+          <Typography
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            variant="caption"
+            noWrap
+          >
+            {!!item.id && (
+              <ItemId>
+                {item.entity === "variant" ? (
+                  <DisplayVariantId
+                    variantId={item.id}
+                    referenceAllele={item.referenceAllele}
+                    alternateAllele={item.alternateAllele}
+                    expand={false}
+                  />
+                ) : (
+                  item.id
+                )}
+              </ItemId>
+            )}
           </Typography>
-        </Box>
+        </JustifyBetween>
+
+        {item.entity === "variant" ? (
+          <>
+            {item.rsIds.length > 0 && (
+              <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
+                <Typography variant="subtitle1">{item.rsIds.join(", ")}</Typography>
+              </Box>
+            )}
+            <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
+              <Typography variant="body2">
+                {`${item.variantDescription.substring(0, 180)}${
+                  item.variantDescription.length > 180 ? "..." : ""
+                }`}
+              </Typography>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Box sx={{ fontWeight: "500", letterSpacing: 1 }}>
+              <Typography variant="subtitle1">
+                {item.symbol && item.name}
+
+                <StudyPublication
+                  publicationFirstAuthor={item.publicationFirstAuthor}
+                  publicationDate={item.publicationDate}
+                  publicationJournal={item.publicationJournal}
+                />
+              </Typography>
+            </Box>
+            <JustifyBetween>
+              <Box sx={{ fontWeight: "light", fontStyle: "oblique" }}>
+                <Typography variant="body2">
+                  {item.description && `${item.description.substring(0, 180)}...`}
+                </Typography>
+                <Typography variant="body2">
+                  {getStudyItemMetaData({
+                    studyType: item?.studyType,
+                    nSamples: item?.nSamples,
+                    credibleSetsCount: item?.credibleSetsCount,
+                  })}
+                </Typography>
+                <Typography variant="caption">
+                  {/* {item.publicationFirstAuthor && <>{item.publicationFirstAuthor}</>}
+                  {item.publicationDate && <>({item.publicationDate})</>} */}
+                </Typography>
+              </Box>
+              {item.hasSumstats && (
+                <Chip
+                  style={{
+                    height: "16px",
+                    fontSize: "0.8rem",
+                    margin: "0",
+                  }}
+                  label="summary statistics"
+                />
+              )}
+            </JustifyBetween>
+          </>
+        )}
       </TopHitItemContainer>
     </TopHitItem>
   );
@@ -180,9 +267,16 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
           <Typography variant="subtitle2">{item.name}</Typography>
         </>
       );
-
-    return <Typography variant="subtitle1">{item.symbol || item.name || item.id}</Typography>;
+    return (
+      <>
+        <Typography variant="subtitle1">{symbolNameOrId(item)}</Typography>
+      </>
+    );
   };
+
+  function getVariantRsIds() {
+    if (item.entity === "variant" && item.rsIds.length > 0) return item.rsIds.join(", ");
+  }
 
   if (item.type === "recent") {
     return <RecentListItem item={item} onItemClick={onItemClick} />;
@@ -207,11 +301,37 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
       }}
     >
       <JustifyBetween>
-        <ListItemDisplayName>{getSymbolHeader()}</ListItemDisplayName>
-        <Typography variant="caption">{item.id && <ItemId>{item.id}</ItemId>}</Typography>
+        <Typography>
+          <ListItemDisplayName>{getSymbolHeader()}</ListItemDisplayName>
+        </Typography>
+        <Typography
+          sx={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            minWidth: "20%",
+            textAlign: "end",
+          }}
+          variant="caption"
+          noWrap
+        >
+          {!!item.id && (
+            <ItemId>
+              {item.entity === "variant" ? (
+                <DisplayVariantId
+                  variantId={item.id}
+                  referenceAllele={item.referenceAllele}
+                  alternateAllele={item.alternateAllele}
+                  expand={false}
+                />
+              ) : (
+                item.id
+              )}
+            </ItemId>
+          )}
+        </Typography>
       </JustifyBetween>
 
-      <JustifyBetween>
+      {/* <JustifyBetween>
         <Typography variant="caption">
           <FlexSpan>
             {item.pubAuthor && item.pubAuthor}
@@ -224,41 +344,46 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
           </FlexSpan>
         </Typography>
         <Typography variant="caption">{item.pubJournal && item.pubJournal}</Typography>
-      </JustifyBetween>
+      </JustifyBetween> */}
 
-      {item.rsId && (
+      {/* {item.rsId && (
         <Typography variant="caption">
           <strong>
             <div className="loci"> Ensembl: {item.rsId}</div>
           </strong>
         </Typography>
-      )}
+      )} */}
 
       <JustifyBetween>
         <Typography variant="caption">
-          {item.numAssocLoci > -1 && <strong>{item.numAssocLoci} associated loci</strong>}
+          {getStudyItemMetaData({
+            studyType: item?.studyType,
+            nSamples: item?.nSamples,
+            credibleSetsCount: item?.credibleSetsCount,
+          })}
+
+          {getVariantRsIds()}
         </Typography>
 
-        {item.hasSumstats && (
+        {/* {item.hasSumstats && (
           <Chip
             style={{
               height: "16px",
               fontSize: "0.8rem",
               margin: "0",
             }}
-            color="primary"
             label="summary statistics"
           />
-        )}
+        )} */}
       </JustifyBetween>
 
-      {item.nInitial && <Typography variant="caption">N Study: {item.nInitial}</Typography>}
+      {/* {item.nInitial && <Typography variant="caption">N Study: {item.nInitial}</Typography>} */}
 
-      <div className="numbers">
+      {/* <div className="numbers">
         <Typography variant="caption">
           {item.start} {item.start && item.end && `-`} {item.end}
         </Typography>
-      </div>
+      </div> */}
     </ListItem>
   );
 }

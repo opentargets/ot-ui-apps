@@ -1,13 +1,13 @@
 const dataSources = [
   {
-    id: "ot_genetics_portal",
-    sectionId: "otGenetics",
-    label: "OT Genetics",
+    id: "gwas_credible_sets",
+    sectionId: "gwasCredibleSets",
+    label: "GWAS associations",
     aggregation: "Genetic association",
     aggregationId: "genetic_association",
     weight: 1,
     isPrivate: false,
-    docsLink: "https://platform-docs.opentargets.org/evidence#open-targets-genetics",
+    docsLink: "https://platform-docs.opentargets.org/evidence#gwas-associations",
     required: false,
   },
   {

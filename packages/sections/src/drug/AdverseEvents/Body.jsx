@@ -30,7 +30,7 @@ const getColumns = (critVal, maxLlr, classes) => [
     renderCell: d =>
       d.meddraCode ? (
         <Link to={`https://identifiers.org/meddra:${d.meddraCode}`} external>
-          <Typography variant="caption" noWrap display="block" title={_.upperFirst(d.name)}>
+          <Typography variant="body2" noWrap display="block" title={_.upperFirst(d.name)}>
             {_.upperFirst(d.name)}
           </Typography>
         </Link>
@@ -110,13 +110,14 @@ function Body({ id: chemblId, label: name, entity }) {
       definition={definition}
       request={{ loading, error, data }}
       entity={entity}
+      showContentLoading={true}
       renderDescription={() => <Description name={name} />}
-      renderBody={res => {
+      renderBody={() => {
         // TODO: Change GraphQL schema to have a maxLlr field instead of having
         // to get the first item of adverse events to get the largest llr since
         // items are sorted in decreasing llr order.
-        const maxLlr = res.drug.maxLlr.rows[0].logLR;
-        const { criticalValue, rows, count } = res.drug.adverseEvents;
+        const maxLlr = data?.drug.maxLlr.rows[0].logLR;
+        const { criticalValue, rows, count } = data?.drug.adverseEvents;
 
         return (
           <Table

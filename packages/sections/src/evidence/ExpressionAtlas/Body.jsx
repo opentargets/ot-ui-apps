@@ -2,15 +2,11 @@ import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { SectionItem, Tooltip, Link, ScientificNotation, OtTable } from "ui";
 
-import { dataTypesMap } from "../../dataTypes";
-
 import Description from "./Description";
-
-import { sentenceCase } from "../../utils/global";
-
+import { sentenceCase } from "@ot/utils";
 import EXPRESSION_ATLAS_QUERY from "./ExpressionAtlasQuery.gql";
 import { definition } from ".";
-import { sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
 
 const columns = [
   {
@@ -30,13 +26,16 @@ const columns = [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
   },
   {
     id: "studyId",
     label: "Experiment ID",
+    enableHiding: false,
     renderCell: ({ studyId }) => (
       <Link external to={`http://www.ebi.ac.uk/gxa/experiments/${studyId}`}>
         {studyId}
@@ -119,18 +118,18 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.expressionAtlasSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.expressionAtlasSummary.rows}
             dataDownloader
             showGlobalFilter
             sortBy="resourceScore"
             order="asc"
             query={EXPRESSION_ATLAS_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

@@ -7,11 +7,9 @@ import { ChipList, Link, SectionItem, Tooltip, ScientificNotation, OtTable } fro
 import { definition } from ".";
 import methods from "./methods";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 import INTOGEN_QUERY from "./sectionQuery.gql";
-import { sentenceCase } from "../../utils/global";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
 const intOgenUrl = (id, approvedSymbol) =>
   `https://www.intogen.org/search?gene=${approvedSymbol}&cohort=${id}`;
@@ -36,7 +34,9 @@ const columns = [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
     filterValue: ({ disease, diseaseFromSource }) => [disease.name, diseaseFromSource].join(),
@@ -116,6 +116,7 @@ const columns = [
   {
     id: "cohortShortName",
     label: "Cohort Information",
+    enableHiding: false,
     renderCell: ({ cohortId, cohortShortName, cohortDescription, target: { approvedSymbol } }) =>
       cohortShortName && cohortDescription ? (
         <>
@@ -162,15 +163,10 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({
-        disease: {
-          intOgen: { rows },
-        },
-        target: { hallmarks },
-      }) => {
+      renderBody={() => {
         const roleInCancerItems =
-          hallmarks && hallmarks.attributes.length > 0
-            ? hallmarks.attributes
+          request.data?.target.hallmarks && request.data?.target.hallmarks.attributes.length > 0
+            ? request.data?.target.hallmarks.attributes
                 .filter(attribute => attribute.name === "role in cancer")
                 .map(attribute => ({
                   label: attribute.description,
@@ -191,13 +187,12 @@ function Body({ id, label, entity }) {
               dataDownloader
               dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
               order="asc"
-              rows={rows}
+              rows={request.data?.disease.intOgen.rows}
               sortBy="resourceScore"
-              pageSize={10}
-              rowsPerPageOptions={defaultRowsPerPageOptions}
               showGlobalFilter
               query={INTOGEN_QUERY.loc.source.body}
               variables={variables}
+              loading={request.loading}
             />
           </>
         );

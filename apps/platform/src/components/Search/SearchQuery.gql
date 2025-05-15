@@ -1,7 +1,7 @@
 query SearchQuery($queryString: String!) {
   topHit: search(
     queryString: $queryString
-    entityNames: ["target", "disease", "drug"]
+    entityNames: ["target", "disease", "drug", "variant", "study"]
     page: { index: 0, size: 1 }
   ) {
     hits {
@@ -21,6 +21,29 @@ query SearchQuery($queryString: String!) {
           description
         }
 
+        ... on Variant {
+          id
+          variantDescription
+          referenceAllele
+          alternateAllele
+          rsIds
+        }
+
+        ... on Study {
+          # entity
+          id
+          hasSumstats
+          traitFromSource
+          nSamples
+          publicationDate
+          publicationFirstAuthor
+          publicationJournal
+          studyType
+          credibleSets {
+            credibleSetsCount: count
+          }
+        }
+
         ... on Drug {
           id
           name
@@ -34,11 +57,8 @@ query SearchQuery($queryString: String!) {
       }
     }
   }
-  targets: search(
-    queryString: $queryString
-    entityNames: ["target"]
-    page: { index: 0, size: 3 }
-  ) {
+
+  targets: search(queryString: $queryString, entityNames: ["target"], page: { index: 0, size: 3 }) {
     hits {
       id
       entity
@@ -67,11 +87,44 @@ query SearchQuery($queryString: String!) {
       }
     }
   }
-  drugs: search(
+  variants: search(
     queryString: $queryString
-    entityNames: ["drug"]
+    entityNames: ["variant"]
     page: { index: 0, size: 3 }
   ) {
+    hits {
+      id
+      entity
+      object {
+        ... on Variant {
+          id
+          variantDescription
+          referenceAllele
+          alternateAllele
+          rsIds
+        }
+      }
+    }
+  }
+  studies: search(queryString: $queryString, entityNames: ["study"], page: { index: 0, size: 3 }) {
+    hits {
+      id
+      entity
+      object {
+        ... on Study {
+          id
+          hasSumstats
+          traitFromSource
+          nSamples
+          studyType
+          credibleSets {
+            credibleSetsCount: count
+          }
+        }
+      }
+    }
+  }
+  drugs: search(queryString: $queryString, entityNames: ["drug"], page: { index: 0, size: 3 }) {
     hits {
       id
       entity

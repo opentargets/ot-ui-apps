@@ -4,16 +4,15 @@ import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
+import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
+import { dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
 import UNIPROT_LITERATURE_QUERY from "./UniprotLiteratureQuery.gql";
-import { identifiersOrgLink, sentenceCase } from "../../utils/global";
 
 const getcolumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -28,13 +27,16 @@ const getcolumns = label => [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
   },
   {
     id: "targetFromSourceId",
     label: "Reported protein",
+    enableHiding: false,
     renderCell: ({ targetFromSourceId }) => (
       <Link external to={identifiersOrgLink("uniprot", targetFromSourceId)}>
         {targetFromSourceId}
@@ -91,17 +93,16 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.uniprotLiteratureSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.uniprotLiteratureSummary.rows}
             dataDownloader
             showGlobalFilter
-            rowsPerPageOptions={defaultRowsPerPageOptions}
             query={UNIPROT_LITERATURE_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

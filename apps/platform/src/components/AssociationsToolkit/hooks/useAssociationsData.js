@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import client from "../../../client";
-import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../utils";
+import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../associationsUtils";
 
-const INITIAL_ROW_COUNT = 20;
+const INITIAL_ROW_COUNT = 25;
 
-const INITIAL_USE_ASSOCIATION_STATE = {
+const getInitialState = rowCount => ({
   loading: true,
   error: false,
-  data: getInitialLoadingData(INITIAL_ROW_COUNT),
+  data: getInitialLoadingData(rowCount),
   initialLoading: true,
   count: 0,
-};
+});
 
 /********
  * HOOK *
  ********/
 function useAssociationsData({
+  client,
   query,
   options: {
     id = "",
@@ -28,10 +28,11 @@ function useAssociationsData({
     rowsFilter = [],
     entity,
     facetFilters = [],
+    entitySearch = "",
+    laodingCount = INITIAL_ROW_COUNT,
   },
 }) {
-  const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
-
+  const [state, setState] = useState(getInitialState(laodingCount));
   useEffect(() => {
     let isCurrent = true;
     const fetchData = async () => {
@@ -56,6 +57,7 @@ function useAssociationsData({
           })),
           rowsFilter,
           facetFilters,
+          entitySearch,
         },
       });
       const parsedData = getAssociationsData(entity, resData.data);
@@ -68,9 +70,20 @@ function useAssociationsData({
         initialLoading: false,
       });
     };
-    if (isCurrent) fetchData();
+    if (true) fetchData();
     return () => (isCurrent = false);
-  }, [id, index, size, sortBy, enableIndirect, datasources, query, entity, facetFilters]);
+  }, [
+    id,
+    index,
+    size,
+    sortBy,
+    enableIndirect,
+    datasources,
+    query,
+    entity,
+    facetFilters,
+    entitySearch,
+  ]);
 
   return state;
 }

@@ -7,13 +7,13 @@ import SmilesDrawer from "smiles-drawer";
 
 const useStyles = makeStyles(theme => ({
   container: {
-    background: "none !important",
     cursor: "pointer",
     height: "240px",
     marginLeft: "auto",
     width: "fit-content",
     "& .seeDetailsIcon": {
       visibility: "hidden",
+      color: theme.palette.secondary.main,
     },
     "&:hover .seeDetailsIcon": {
       visibility: "visible",
@@ -71,7 +71,7 @@ function SmilesHelper({ smiles, chemblId }) {
 
   return (
     <>
-      <Paper className={classes.container} elevation={0} onClick={toggleModal}>
+      <Paper variant="outlined" className={classes.container} elevation={0} onClick={toggleModal}>
         <canvas id={chemblId} />
         <FontAwesomeIcon icon={faSearchPlus} className="seeDetailsIcon" />
       </Paper>

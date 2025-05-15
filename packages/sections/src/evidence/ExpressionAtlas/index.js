@@ -1,4 +1,4 @@
-import { isPrivateEvidenceSection } from "../../utils/partnerPreviewUtils";
+import { isPrivateEvidenceSection } from "@ot/constants";
 
 const id = "expression_atlas";
 export const definition = {

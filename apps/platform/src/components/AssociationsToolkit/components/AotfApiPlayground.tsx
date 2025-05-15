@@ -11,6 +11,7 @@ function AotfApiPlayground() {
     dataSourcesWeights,
     entity,
     query,
+    entitySearch,
   } = useAotfContext();
 
   const variables = {
@@ -27,10 +28,16 @@ function AotfApiPlayground() {
       required: el.required,
     })),
     entity,
+    entitySearch,
   };
 
   return (
-    <ApiPlaygroundDrawer fullHeight={true} query={query.loc.source.body} variables={variables} />
+    <ApiPlaygroundDrawer
+      fullHeight={true}
+      query={query.loc.source.body}
+      variables={variables}
+      inMenu
+    />
   );
 }
 export default AotfApiPlayground;

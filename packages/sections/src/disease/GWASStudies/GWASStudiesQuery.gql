@@ -1,0 +1,20 @@
+query GWASStudiesQuery($diseaseIds: [String!]!, $size: Int!, $index: Int!) {
+  studies(diseaseIds: $diseaseIds, page: { size: $size, index: $index }) {
+    count
+    rows {
+      id
+      projectId
+      traitFromSource
+      publicationFirstAuthor
+      publicationDate
+      publicationJournal
+      nSamples
+      cohorts
+      pubmedId
+      ldPopulationStructure {
+        ldPopulation
+        relativeSampleSize
+      }
+    }
+  }
+}

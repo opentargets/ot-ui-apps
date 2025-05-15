@@ -4,8 +4,7 @@ import { SectionItem, Link, Tooltip, OtTable, TooltipStyledLabel } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
 import CRISPR_QUERY from "./OTCrisprQuery.gql";
 
@@ -19,7 +18,11 @@ const getColumns = () => [
   {
     id: "disease",
     label: "Reported disease",
-    renderCell: row => <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>,
+    renderCell: row => (
+      <Link asyncTooltip to={`/disease/${row.disease.id}`}>
+        {row.disease.name}
+      </Link>
+    ),
     filterValue: row => `${row.disease.name}, ${row.disease.id}`,
   },
   {
@@ -34,6 +37,7 @@ const getColumns = () => [
   {
     id: "contrast",
     label: "Contrast / Study overview",
+    enableHiding: false,
     renderCell: row => {
       if (row.contrast && row.studyOverview) {
         return (
@@ -83,7 +87,7 @@ const getColumns = () => [
     id: "resourceScore",
     label: "Significance",
     filterValue: row => `${row.resourceScore}; ${row.statisticalTestTail}`,
-    renderCell: row => (row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : "N/A"),
+    renderCell: row => (row.resourceScore ? parseFloat(row.resourceScore?.toFixed(6)) : naLabel),
   },
   {
     id: "releaseVersion",
@@ -152,15 +156,14 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.ot_partner}
       request={request}
       entity={entity}
-      renderDescription={data => (
-        <Description symbol={label.symbol} name={label.name} data={data} />
+      renderDescription={() => (
+        <Description symbol={label.symbol} name={label.name} data={request.data} />
       )}
-      renderBody={({ disease }) => {
-        const { rows } = disease.OtCrisprSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={getColumns(classes)}
-            rows={rows}
+            rows={request.data?.disease.OtCrisprSummary.rows}
             dataDownloader
             dataDownloaderColumns={exportColumns}
             dataDownloaderFileStem={`${ensgId}-${efoId}-otcrispr`}
@@ -169,9 +172,9 @@ function Body({ id, label, entity }) {
             fixed
             noWrap={false}
             noWrapHeader={false}
-            rowsPerPageOptions={defaultRowsPerPageOptions}
             query={CRISPR_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

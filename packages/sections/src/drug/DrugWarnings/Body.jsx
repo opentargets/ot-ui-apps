@@ -4,7 +4,7 @@ import { Link, SectionItem, Tooltip, TableDrawer, OtTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import DRUG_WARNINGS_QUERY from "./DrugWarningsQuery.gql";
-import { naLabel, defaultRowsPerPageOptions } from "../../constants";
+import { naLabel } from "@ot/constants";
 
 const replaceSemicolonWithUnderscore = id => id.replace(":", "_");
 
@@ -20,7 +20,9 @@ const columns = [
       if (efoId)
         return (
           <Tooltip title={`Description: ${description}`} showHelpIcon>
-            <Link to={`/disease/${replaceSemicolonWithUnderscore(efoId)}`}>{efoTerm || efoId}</Link>
+            <Link asyncTooltip to={`/disease/${replaceSemicolonWithUnderscore(efoId)}`}>
+              {efoTerm || efoId}
+            </Link>
           </Tooltip>
         );
       return efoTerm || description || naLabel;
@@ -29,6 +31,7 @@ const columns = [
   {
     id: "toxicityClass",
     label: "ChEMBL warning class",
+    enableHiding: false,
     renderCell: ({ toxicityClass, efoIdForWarningClass, description }) => {
       if (efoIdForWarningClass)
         return (
@@ -81,15 +84,15 @@ function Body({ id: chemblId, label: name, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description name={name} />}
-      renderBody={({ drug }) => (
+      renderBody={() => (
         <OtTable
           showGlobalFilter
           dataDownloader
           columns={columns}
-          rows={drug.drugWarnings}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.drug.drugWarnings}
           query={DRUG_WARNINGS_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

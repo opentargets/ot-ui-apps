@@ -1,15 +1,14 @@
-import { Suspense, lazy } from "react";
 import { useQuery } from "@apollo/client";
 import { useLocation, useParams } from "react-router-dom";
 
-import { LoadingBackdrop, BasePage, ScrollToTop } from "ui";
+import { BasePage, ScrollToTop } from "ui";
 
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 
 import EVIDENCE_PAGE_QUERY from "./EvidencePageQuery.gql";
 
-const Profile = lazy(() => import("./Profile"));
+import Profile from "./Profile";
 
 function EvidencePage() {
   const location = useLocation();
@@ -33,9 +32,7 @@ function EvidencePage() {
     >
       <Header loading={loading} efoId={efoId} ensgId={ensgId} symbol={symbol} name={name} />
       <ScrollToTop />
-      <Suspense fallback={<LoadingBackdrop />}>
-        <Profile ensgId={ensgId} efoId={efoId} symbol={symbol} name={name} />
-      </Suspense>
+      <Profile ensgId={ensgId} efoId={efoId} symbol={symbol} name={name} />
     </BasePage>
   );
 }

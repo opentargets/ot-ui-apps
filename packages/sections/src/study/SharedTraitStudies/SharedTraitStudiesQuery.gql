@@ -1,0 +1,24 @@
+query SharedTraitStudiesQuery($diseaseIds: [String!]!, $size: Int!, $index: Int!) {
+  studies(diseaseIds: $diseaseIds,  page: { size: $size, index: $index }) {
+    count
+    rows {
+      id
+      traitFromSource
+      projectId
+      diseases {
+        id
+        name
+      }
+      publicationFirstAuthor
+      publicationDate
+      publicationJournal
+      nSamples
+      cohorts
+      ldPopulationStructure {
+        ldPopulation
+        relativeSampleSize
+      }
+      pubmedId
+    }
+  }
+}

@@ -14,6 +14,11 @@ export function createSummaryFragment(sections, entity, fragmentName) {
     sectionFragments.push(Summary.fragments[sectionFragmentName]);
   });
 
+  // const idLookup = {
+  //   Gwas: "studyId",
+  //   credibleSet: "studyLocusId",
+  // };
+
   return gql`
     fragment ${fragmentNameStr} on ${entity} {
       ${
@@ -28,6 +33,23 @@ export function createSummaryFragment(sections, entity, fragmentName) {
       ""
     )}
   `;
+
+  // return gql`
+  //   fragment ${fragmentNameStr} on ${entity} {
+  //     ${
+  //       sectionFragmentNames.length
+  //         ? sectionFragmentNames.map(sfn => `...${sfn}`).join("\n")
+  //         : idLookup[entity] || "id"
+  //     }
+  //   }
+  //   ${sectionFragments.reduce(
+  //     (acc, fragment) => gql`
+  //       ${acc}
+  //       ${fragment}
+  //     `,
+  //     ""
+  //   )}
+  // `;
 }
 
 export function createShortName(definition) {

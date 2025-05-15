@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import client from "../../../../client";
 import {
   getAssociationsData,
   getInteractorIds,
   getInitialLoadingData,
   INTERACTORS_SOURCES,
-} from "../../utils";
+} from "../../associationsUtils";
 
 import InteractionsQuery from "./InteractorsQuery.gql";
 import DiseaseAssociationsQuery from "../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
@@ -25,6 +24,7 @@ const INITIAL_USE_ASSOCIATION_STATE = {
  * HOOK *
  ********/
 function useRowInteractors({
+  client,
   query = InteractionsQuery,
   associationsQuery = DiseaseAssociationsQuery,
   options: {
@@ -41,6 +41,7 @@ function useRowInteractors({
     entity,
     diseaseId,
     sortBy,
+    entitySearch = "",
   },
 }) {
   const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
@@ -62,11 +63,18 @@ function useRowInteractors({
           sourceDatabase: rowInteractorsSource,
           ensgId: rowInteractorsId,
           index: 0,
-          size: 5000,
+          size: 3000,
         },
       });
 
-      if (!targetRowInteractorsRequest.data) {
+      if (!targetRowInteractorsRequest?.data?.target?.interactions?.rows) {
+        setState({
+          interactorsMetadata: { count: 0 },
+          loading: false,
+          initialLoading: false,
+          count: 0,
+          data: [],
+        });
         return;
       }
 
@@ -82,6 +90,7 @@ function useRowInteractors({
           sortBy,
           enableIndirect,
           rowsFilter: interactorsIds,
+          entitySearch: entitySearch,
           datasources: datasources.map(el => ({
             id: el.id,
             weight: el.weight,
@@ -96,12 +105,17 @@ function useRowInteractors({
         interactorsAssociationsRequest.data
       );
 
+      const interactorsAssociationsWithScore = addInteractorScore(
+        interactorsAssociations,
+        targetRowInteractorsRequest.data.target.interactions.rows
+      );
+
       setState({
         interactorsMetadata: targetRowInteractorsRequest.data.target.interactions,
         loading: false,
         initialLoading: false,
-        count: interactorsAssociations.length,
-        data: interactorsAssociations,
+        count: interactorsAssociationsWithScore.length,
+        data: interactorsAssociationsWithScore,
       });
     }
     if (isCurrent) getInteractors();
@@ -109,6 +123,14 @@ function useRowInteractors({
   }, [source, sortBy, scoreThreshold]);
 
   return state;
+}
+
+function addInteractorScore(associationsData, interactorsMetaData) {
+  return associationsData.map(element => {
+    const foundInteractor = interactorsMetaData.find(x => x.targetB?.id === element.id);
+    if (!foundInteractor) return { ...element, interactorScore: 0 };
+    return { ...element, interactorScore: foundInteractor.score };
+  });
 }
 
 export default useRowInteractors;

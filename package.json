@@ -1,6 +1,7 @@
 {
   "name": "ot-ui-apps",
   "version": "0.0.1",
+  "dataRelease": "partners/25.03",
   "private": true,
   "license": "Apache-2.0",
   "workspaces": [
@@ -15,8 +16,6 @@
     "build": "turbo run build",
     "build:no-cache": "turbo run build --parallel --no-cache",
     "dev": "turbo run dev --parallel",
-    "dev:genetics": "turbo run dev --no-cache --continue --filter=genetics",
-    "build:genetics": "turbo run build --filter=genetics",
     "dev:platform": "turbo run dev --filter=platform",
     "build:platform": "turbo run build --filter=platform",
     "dev:platform:ppp": "turbo run dev-ppp --filter=platform",
@@ -24,6 +23,7 @@
     "lint": "turbo run lint",
     "lint:platform": "turbo run lint --filter=platform",
     "format": "turbo run prettier:all",
+    "format:check": "turbo run prettier:check",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -32,7 +32,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^2.5.1",
-    "turbo": "^1.10.13"
+    "turbo": "^2.4.2"
   },
   "packageManager": "yarn@1.22.18",
   "lint-staged": {

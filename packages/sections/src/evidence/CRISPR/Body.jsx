@@ -1,9 +1,7 @@
-import { Link as RouterLink } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { Link } from "@mui/material";
-import { SectionItem, TableDrawer, OtTable } from "ui";
-import { dataTypesMap } from "../../dataTypes";
-import { naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { SectionItem, TableDrawer, OtTable, Link } from "ui";
+
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import Description from "./Description";
 import { definition } from ".";
 
@@ -13,14 +11,16 @@ const columns = [
   {
     id: "disease.name",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease }) => (
-      <Link component={RouterLink} to={`/disease/${disease.id}`}>
+      <Link asyncTooltip to={`/disease/${disease.id}`}>
         {disease.name}
       </Link>
     ),
   },
   {
     label: "Reported disease/phenotype",
+    enableHiding: false,
     renderCell: ({ diseaseCellLines, diseaseFromSource }) => {
       if (!diseaseCellLines) return naLabel;
 
@@ -66,16 +66,16 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.crisprSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.crisprSummary.rows}
             dataDownloader
             showGlobalFilter
             query={CRISPR_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

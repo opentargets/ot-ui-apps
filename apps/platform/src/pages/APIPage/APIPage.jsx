@@ -12,14 +12,9 @@ import {
 import { makeStyles } from "@mui/styles";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { fetcher } from "@ot/utils";
+
 import "graphiql/graphiql.min.css";
-
-import { fetcher } from "../../utils/global";
-
-const QueryButton = styled(Button)`
-  color: #fff;
-  border: none;
-`;
 
 import TARGET_ASSOCS from "./TargetAssocs.gql";
 import DISEASE_ASSOCS from "./DiseaseAssocs.gql";
@@ -29,7 +24,15 @@ import DISEASE_ANNOTATION from "./DiseaseAnnotation.gql";
 import DRUG_ANNOTATION from "./DrugAnnotation.gql";
 import SEARCH_ANNOTATION from "./SearchAnnotation.gql";
 import SEARCH_ASSOCS from "./SearchAssocs.gql";
+import CREDIBLE_SET_ANNOTATION from "./CredibleSetAnnotation.gql";
+import DISEASE_ANNOTATION_GWAS from "./DiseaseAnnotationGWAS.gql";
+import STUDY_ANNOTATION from "./StudyAnnotation.gql";
+import VARIANT_ANNOTATION from "./VariantAnnotation.gql";
 
+const QueryButton = styled(Button)`
+  color: #fff;
+  border: none;
+`;
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
   import("graphiql").then(module => {
@@ -179,6 +182,17 @@ function APIPage() {
                 >
                   Run sample query
                 </QueryButton>
+                <Typography variant="subtitle2" display="block" paragraph>
+                  GWAS studies associated with a specified disease
+                </Typography>
+                <QueryButton
+                  className={classes.buttonMargin}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setQuery(DISEASE_ANNOTATION_GWAS.loc.source.body)}
+                >
+                  Run sample query
+                </QueryButton>
               </div>
             </AccordionDetails>
           </Accordion>
@@ -204,12 +218,73 @@ function APIPage() {
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<FontAwesomeIcon icon={faChevronDown} />}>
+              <Typography variant="subtitle2">Variant annotation</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div>
+                <Typography variant="subtitle2" display="block" paragraph>
+                  Credible sets from quantitative trait loci associated with molecular traits
+                  containing a specified variant
+                </Typography>
+                <QueryButton
+                  className={classes.buttonMargin}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setQuery(VARIANT_ANNOTATION.loc.source.body)}
+                >
+                  Run sample query
+                </QueryButton>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<FontAwesomeIcon icon={faChevronDown} />}>
+              <Typography variant="subtitle2">Study annotation</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div>
+                <Typography variant="subtitle2" display="block" paragraph>
+                  Information about a specified study
+                </Typography>
+                <QueryButton
+                  className={classes.buttonMargin}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setQuery(STUDY_ANNOTATION.loc.source.body)}
+                >
+                  Run sample query
+                </QueryButton>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<FontAwesomeIcon icon={faChevronDown} />}>
+              <Typography variant="subtitle2">Credible set Annotation</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div>
+                <Typography variant="subtitle2" display="block" paragraph>
+                  Colocalisation metrics for overlapping credible sets from GWAS studies
+                </Typography>
+                <QueryButton
+                  className={classes.buttonMargin}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setQuery(CREDIBLE_SET_ANNOTATION.loc.source.body)}
+                >
+                  Run sample query
+                </QueryButton>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<FontAwesomeIcon icon={faChevronDown} />}>
               <Typography variant="subtitle2">Search page</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <div>
                 <Typography variant="subtitle2" display="block" paragraph>
-                  Example query for insulin
+                  Example query for KRAS
                 </Typography>
                 <QueryButton
                   className={classes.buttonMargin}
@@ -220,8 +295,7 @@ function APIPage() {
                   Run sample query
                 </QueryButton>
                 <Typography variant="subtitle2" display="block" paragraph>
-                  Example query to get how many entries there are in each entity category for
-                  Insulin
+                  Example query to get how many entries there are in each entity category for PCSK9
                 </Typography>
                 <QueryButton
                   className={classes.buttonMargin}

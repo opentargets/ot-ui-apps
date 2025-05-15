@@ -5,7 +5,7 @@ import { Link, SectionItem, Tooltip, ClinvarStars, OtTable } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import CHEMICAL_PROBES_QUERY from "./ChemicalProbes.gql";
-import { naLabel, defaultRowsPerPageOptions } from "../../constants";
+import { naLabel, defaultRowsPerPageOptions } from "@ot/constants";
 import _ from "lodash";
 
 /**
@@ -23,10 +23,13 @@ const columns = [
   {
     id: "id",
     label: "Probe ID",
+    enableHiding: false,
     renderCell: row => {
       // link to drug page if drugid is available; also add tooltip with control if available
       const c = row.drugId ? (
-        <Link to={`/drug/${row.drugId}`}>{row.id}</Link>
+        <Link asyncTooltip to={`/drug/${row.drugId}`}>
+          {row.id}
+        </Link>
       ) : (
         <span>{row.id}</span>
       );
@@ -94,10 +97,10 @@ function Body({ id, label: symbol, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => {
+      renderBody={() => {
         // sort probes manually as we need a custom sort based score, quality and origin
         const sortedProbes = _.orderBy(
-          data.target.chemicalProbes,
+          request.data?.target.chemicalProbes,
           [
             "probesDrugsScore",
             "isHighQuality",
@@ -106,7 +109,7 @@ function Body({ id, label: symbol, entity }) {
           ["desc", "desc", "desc"]
         );
 
-        return data.target.chemicalProbes?.length > 0 ? (
+        return request.data?.target.chemicalProbes?.length > 0 ? (
           <OtTable
             columns={columns}
             rows={sortedProbes}
@@ -114,13 +117,12 @@ function Body({ id, label: symbol, entity }) {
             dataDownloader
             dataDownloaderFileStem={`${symbol}-chemical-probes`}
             fixed
-            // sortBy="probesDrugsScore"
-            // order="desc"
             rowsPerPageOptions={defaultRowsPerPageOptions}
             noWrap={false}
             noWrapHeader={false}
             query={CHEMICAL_PROBES_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         ) : null;
       }}

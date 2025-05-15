@@ -1,13 +1,5 @@
-query SearchPageQuery(
-  $queryString: String!
-  $index: Int!
-  $entityNames: [String!]!
-) {
-  search(
-    queryString: $queryString
-    entityNames: $entityNames
-    page: { index: $index, size: 10 }
-  ) {
+query SearchPageQuery($queryString: String!, $index: Int!, $entityNames: [String!]!) {
+  search(queryString: $queryString, entityNames: $entityNames, page: { index: $index, size: 10 }) {
     total
     aggregations {
       entities {
@@ -19,6 +11,34 @@ query SearchPageQuery(
       id
       highlights
       object {
+        ... on Variant {
+          id
+          variantDescription
+          referenceAllele
+          alternateAllele
+          rsIds
+        }
+
+        ... on Study {
+          id
+          hasSumstats
+          traitFromSource
+          nSamples
+          publicationDate
+          publicationFirstAuthor
+          publicationJournal
+          studyType
+          biosample {
+            biosampleName
+          }
+          target {
+            approvedSymbol
+          }
+          credibleSets {
+            credibleSetsCount: count
+          }
+        }
+
         ... on Target {
           id
           approvedSymbol
@@ -46,6 +66,26 @@ query SearchPageQuery(
   ) {
     hits {
       object {
+        ... on Variant {
+          id
+          variantDescription
+          chromosome
+          position
+          referenceAllele
+          alternateAllele
+          rsIds
+          mostSevereConsequence {
+            label
+          }
+        }
+        ... on Study {
+          id
+          hasSumstats
+          traitFromSource
+          credibleSets {
+            count
+          }
+        }
         ... on Target {
           id
           approvedSymbol

@@ -6,7 +6,7 @@ import { makeStyles } from "@mui/styles";
 import { useQuery } from "@apollo/client";
 
 import Description from "./Description";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions } from "@ot/constants";
 import { definition } from ".";
 import OT_PROJECTS_QUERY from "./OTProjectsQuery.gql";
 
@@ -24,6 +24,7 @@ const getColumns = classes => [
   {
     id: "otarCode",
     label: "Project Code",
+    enableHiding: false,
     renderCell: ({ otarCode }) => (
       <Link external to={`http://home.opentargets.org/${otarCode}`}>
         {otarCode}
@@ -54,15 +55,15 @@ function Body({ label, id: efoId, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description name={label} />}
-      renderBody={({ disease }) => (
+      renderBody={() => (
         <OtTable
           showGlobalFilter
           dataDownloader
           dataDownloaderFileStem={`${efoId}-otprojects`}
           columns={getColumns(classes)}
-          rows={disease.otarProjects}
+          rows={request.data?.disease.otarProjects}
           rowsPerPageOptions={defaultRowsPerPageOptions}
-          sortBy="status"
+          loading={request.loading}
         />
       )}
     />

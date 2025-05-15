@@ -2,14 +2,13 @@ import { useState, useEffect } from "react";
 import { v1 } from "uuid";
 import { Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { PublicationSummaryLabel, SummaryLoader } from "ui";
+import { PublicationSummaryLabel, SummaryLoader, useConfigContext } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNodes, faCircleMinus, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 
-import { publicationSummaryQuery } from "../../utils/urls";
-import config from "../../config";
+import { publicationSummaryQuery } from "@ot/utils";
 
-import { naLabel } from "../../constants";
+import { naLabel } from "@ot/constants";
 import SentenceMatch from "./SentenceMatch";
 import SimplePublication from "../../common/Bibliography/SimplePublication";
 
@@ -63,7 +62,9 @@ function Publication({
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const { urlAiApi } = config;
+  const {
+    config: { urlAiApi },
+  } = useConfigContext();
 
   const handleShowAbstractClick = () => {
     setShowAbstract(current => !current);

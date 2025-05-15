@@ -1,6 +1,7 @@
-import { styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { LoadingBackdrop } from "ui";
+import { TABLE_PREFIX } from "../associationsUtils";
 
 const LoadingContainer = styled("div")({
   height: "1100px",
@@ -27,8 +28,6 @@ const baseGridContainerStyles = {
   width: "100%",
 };
 
-const boxShadow = "0px 3px 15px -3px rgba(0,0,0,0.1)";
-
 type GridContainerProps = {
   columnsCount: number;
 };
@@ -40,11 +39,18 @@ export const GridContainer = styled("div", {
   gridTemplateColumns: `repeat(${columnsCount}, 1fr)`,
 }));
 
-export const TableBodyContent = styled("div")({
-  display: "flex",
-  flexDirection: "column",
-  margin: "0",
-});
+export const TableBodyContent = ({ children, prefix }) => (
+  <Box
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+      margin: 0,
+      minHeight: TABLE_PREFIX.CORE === prefix ? "300px" : "0",
+    }}
+  >
+    {children}
+  </Box>
+);
 
 export const RowsContainer = styled("div")({
   display: "flex",
@@ -65,25 +71,17 @@ export const RowContainer = styled("div", {
   alignItems: "center",
   boxSizing: "border-box",
   transition: "background 75ms ease-out",
-  boxShadow: rowExpanded ? boxShadow : "none",
+  // boxShadow: rowExpanded ? boxShadow : "none",
   position: rowExpanded ? "sticky" : "initial",
   padding: rowExpanded ? "0.1em 0 0.1em 0" : "0.1em 0 0.1em 0",
   zIndex: rowExpanded ? "99 !important" : "initial",
   backgroundColor: rowExpanded ? grey[300] : "initial",
   border: rowExpanded ? `1px solid ${grey[400]}` : "none",
+  borderBottom: rowExpanded ? `none` : "none",
   "&:hover": {
     backgroundColor: grey[300],
   },
 }));
-
-export const ControlsSection = styled("section")`
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  flex-wrap: wrap;
-`;
 
 export const OptionsControlls = styled("div")`
   display: flex;

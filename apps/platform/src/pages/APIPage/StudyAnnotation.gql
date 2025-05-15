@@ -1,0 +1,25 @@
+query SharedTraitStudiesQuery {
+  studies(studyId: "GCST90204201") {
+    count
+    rows {
+      id
+      studyType
+      traitFromSource
+      projectId
+      diseases {
+        id
+        name
+      }
+      publicationFirstAuthor
+      publicationDate
+      publicationJournal
+      pubmedId
+      nSamples
+      cohorts
+      ldPopulationStructure {
+        ldPopulation
+        relativeSampleSize
+      }
+    }
+  }
+}

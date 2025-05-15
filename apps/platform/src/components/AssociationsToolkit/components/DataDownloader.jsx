@@ -24,13 +24,14 @@ import {
   ListItemText,
   Box,
   FormHelperText,
+  ListItemIcon,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
-import { faCaretDown, faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tooltip, useConfigContext } from "ui";
-import useBatchDownloader from "../hooks/useBatchDownloader";
+import { useAPIMetadata, useApolloClient, useBatchDownloader } from "ui";
+import { getConfig } from "@ot/config";
 import useAotfContext from "../hooks/useAotfContext";
 import OriginalDataSources from "../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../static_datasets/prioritisationColumns";
@@ -40,9 +41,11 @@ import {
   getExportedPrioritisationColumns,
   createBlob,
   getFilteredColumnArray,
-} from "../utils/downloads";
-import config from "../../../config";
+} from "@ot/utils";
+
 import CopyUrlButton from "./CopyUrlButton";
+
+const config = getConfig();
 
 const { isPartnerPreview } = config.profile;
 
@@ -51,6 +54,12 @@ const dataSources = OriginalDataSources.filter(e => {
     return e;
   } else if (!e.isPrivate) return e;
   return;
+});
+
+const StyledMenuItem = styled(MenuItem)({
+  "&>.MuiListItemIcon-root>svg": {
+    fontSize: "1rem",
+  },
 });
 
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
@@ -148,9 +157,11 @@ const actions = {
   }),
 };
 
+const DOWNLOAD_CHUNCK_SIZE = 300;
+
 function DataDownloader() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { version } = useConfigContext();
+  const { version } = useAPIMetadata();
   const classes = styles();
   const {
     id,
@@ -164,11 +175,13 @@ function DataDownloader() {
     pinnedEntries,
     pinnedData,
     dataSourcesWeights,
+    entitySearch,
   } = useAotfContext();
   const fileStem = `OT-${id}-associated-${entityToGet}s`;
   const [onlyPinnedCheckBox, setOnlyPinnedCheckBox] = useState(false);
   const [weightControlCheckBox, setWeightControlCheckBox] = useState(modifiedSourcesDataControls);
   const [onlyTargetData, setOnlyTargetData] = useState(false);
+  const client = useApolloClient();
 
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -203,6 +216,7 @@ function DataDownloader() {
     filter: searhFilter,
     sortBy: sorting[0].id,
     enableIndirect,
+    entitySearch,
     datasources: dataSourcesWeights.map(el => ({
       id: el.id,
       weight: el.weight,
@@ -219,13 +233,19 @@ function DataDownloader() {
   const getOnlyPinnedData = useBatchDownloader(
     query,
     pinnedAssociationsVariable,
-    queryResponseSelector
+    queryResponseSelector,
+    "rows",
+    "count",
+    DOWNLOAD_CHUNCK_SIZE
   );
 
   const getAllAssociations = useBatchDownloader(
     query,
     allAssociationsVariable,
-    queryResponseSelector
+    queryResponseSelector,
+    "rows",
+    "count",
+    DOWNLOAD_CHUNCK_SIZE
   );
 
   const open = Boolean(anchorEl);
@@ -273,18 +293,13 @@ function DataDownloader() {
   }, [modifiedSourcesDataControls]);
 
   return (
-    <div>
-      <Tooltip placement="bottom" title="Share / Export">
-        <Button
-          aria-describedby={popoverId}
-          onClick={handleClickBTN}
-          variant="outlined"
-          disableElevation
-          sx={{ height: 1, maxHeight: "45px" }}
-        >
-          <FontAwesomeIcon icon={faCloudArrowDown} size="lg" />
-        </Button>
-      </Tooltip>
+    <>
+      <StyledMenuItem onClick={handleClickBTN}>
+        <ListItemIcon>
+          <FontAwesomeIcon icon={faFileDownload} />
+        </ListItemIcon>
+        <ListItemText>Download data</ListItemText>
+      </StyledMenuItem>
       <Dialog
         onClose={handleClosePopover}
         open={open}
@@ -474,7 +489,7 @@ function DataDownloader() {
           </>
         }
       />
-    </div>
+    </>
   );
 }
 

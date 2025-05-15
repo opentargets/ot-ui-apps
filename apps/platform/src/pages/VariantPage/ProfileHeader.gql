@@ -1,0 +1,15 @@
+fragment VariantProfileHeaderFragment on Variant {
+  chromosome
+  position
+  referenceAllele
+  alternateAllele
+  variantDescription
+  alleleFrequencies {
+    populationName
+    alleleFrequency
+  }
+  mostSevereConsequence {
+    id
+    label
+  }
+}

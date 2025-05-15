@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { Alert, TablePagination, Typography } from "@mui/material";
+import { TablePagination } from "@mui/material";
 import useAotfContext from "../../hooks/useAotfContext";
 import TableCell from "./TableCell";
-import { getLegend } from "../../utils";
+import { getLegend } from "../../associationsUtils";
 import { styled } from "@mui/styles";
 
 const TableFooterContainer = styled("div")({
@@ -14,18 +14,11 @@ const TableFooterContainer = styled("div")({
   display: "flex",
   justifyContent: "space-between",
   zIndex: 100,
+  marginTop: 12,
 });
 
-function TableFooter({ table }) {
-  const {
-    count,
-    loading,
-    pagination,
-    modifiedSourcesDataControls,
-    displayedTable,
-    resetDatasourceControls,
-  } = useAotfContext();
-  const isAssociations = displayedTable === "associations";
+function TableFooter({ table, coreOpen }) {
+  const { count, loading, pagination, displayedTable } = useAotfContext();
 
   /**
    * LEGEND EFECT
@@ -62,42 +55,32 @@ function TableFooter({ table }) {
         </div>
       </div>
       <div style={{ display: "flex" }}>
-        {modifiedSourcesDataControls && isAssociations && (
-          <Alert severity="info">
-            <Typography variant="caption">Datasource controls modified</Typography>{" "}
-            <button
-              onClick={() => resetDatasourceControls()}
-              style={{ fontSize: "0.75rem" }}
-              type="button"
-            >
-              Reset to default
-            </button>
-          </Alert>
+        {coreOpen && (
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50, 200, 500]}
+            component="div"
+            count={count}
+            rowsPerPage={table.getState().pagination.pageSize}
+            page={pagination.pageIndex}
+            labelRowsPerPage="Associations per page"
+            backIconButtonProps={{
+              disableFocusRipple: true,
+            }}
+            nextIconButtonProps={{
+              disableFocusRipple: true,
+            }}
+            onPageChange={(e, index) => {
+              if (!loading) {
+                table.setPageIndex(index);
+              }
+            }}
+            onRowsPerPageChange={e => {
+              if (!loading) {
+                table.setPageSize(Number(e.target.value));
+              }
+            }}
+          />
         )}
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50, 200, 500]}
-          component="div"
-          count={count}
-          rowsPerPage={table.getState().pagination.pageSize}
-          page={pagination.pageIndex}
-          labelRowsPerPage="Associations per page"
-          backIconButtonProps={{
-            disableFocusRipple: true,
-          }}
-          nextIconButtonProps={{
-            disableFocusRipple: true,
-          }}
-          onPageChange={(e, index) => {
-            if (!loading) {
-              table.setPageIndex(index);
-            }
-          }}
-          onRowsPerPageChange={e => {
-            if (!loading) {
-              table.setPageSize(Number(e.target.value));
-            }
-          }}
-        />
       </div>
     </TableFooterContainer>
   );

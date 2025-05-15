@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    types: [opened, synchronize]
+  workflow_call:
+
+jobs:
+  format:
+    name: Check format ✨
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 23
+      - uses: mskelton/setup-yarn@v3
+      - name: Check format
+        run: yarn format:check
+
+  lint:
+    name: Lint code 🧹
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 23
+      - uses: mskelton/setup-yarn@v3
+      - name: Lint code
+        # TODO: run: yarn lint
+        run: echo "Lint code here"

@@ -8,7 +8,7 @@ import LongText from "../LongText";
 import Link from "../Link";
 
 import PublicationSummary from "./PublicationSummary";
-import config from "../../config";
+import { useConfigContext } from "../../providers/ConfigurationProvider";
 
 const pmUrl = "https://europepmc.org/";
 const pmTitleUrlMED = "abstract/med/";
@@ -58,7 +58,10 @@ function PublicationWrapper({
   inPMC = false,
 }) {
   const [showAbstract, setShowAbstract] = useState(false);
-  const { urlAiApi } = config;
+
+  const {
+    config: { urlAiApi },
+  } = useConfigContext();
 
   const handleShowAbstractClick = () => {
     setShowAbstract(!showAbstract);
@@ -161,7 +164,7 @@ function PublicationWrapper({
         </Box>
       )}
 
-      {fullTextOpen && isOpenAccess && urlAiApi && (
+      {symbol && name && fullTextOpen && isOpenAccess && urlAiApi && (
         <PublicationSummary name={name} symbol={symbol} pmcId={pmcId} />
       )}
     </Box>

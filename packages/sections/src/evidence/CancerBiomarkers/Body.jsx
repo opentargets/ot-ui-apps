@@ -1,10 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
 import { Link, Tooltip, SectionItem, PublicationsDrawer, OtTable, TableDrawer } from "ui";
-import { naLabel } from "ui/src/constants";
 
-import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
-import { epmcUrl } from "../../utils/urls";
+import { defaultRowsPerPageOptions, sectionsBaseSizeQuery, naLabel } from "@ot/constants";
+import { epmcUrl } from "@ot/utils";
 import Description from "./Description";
 import BiomarkersDrawer from "./BiomarkersDrawer";
 import { definition } from ".";
@@ -29,13 +28,16 @@ const getColumns = label => [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
   },
   {
     id: "biomarkerName",
     label: "Biomarker",
+    enableHiding: false,
     renderCell: ({ biomarkerName, biomarkers }) => (
       <BiomarkersDrawer biomarkerName={biomarkerName} biomarkers={biomarkers} />
     ),
@@ -107,17 +109,17 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.cancerBiomarkersSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.cancerBiomarkersSummary.rows}
             dataDownloader
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={CANCER_BIOMARKERS_EVIDENCE_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

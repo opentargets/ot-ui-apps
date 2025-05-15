@@ -7,8 +7,8 @@ import {
   useRef,
   useCallback,
 } from "react";
-import { useStateParams } from "ui";
-import { ENTITIES, DEFAULT_TABLE_SORTING_STATE, DISPLAY_MODE } from "../utils";
+import { useApolloClient, useStateParams } from "ui";
+import { ENTITIES, DEFAULT_TABLE_SORTING_STATE, DISPLAY_MODE } from "../associationsUtils";
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
@@ -39,6 +39,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const hasComponentBeenRender = useRef(false);
 
+  const client = useApolloClient();
+
   // Data controls
   const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
   const [sorting, setSorting] = useState(DEFAULT_TABLE_SORTING_STATE);
@@ -61,9 +63,17 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     str => str.split(",")
   );
 
+  const [uploadedEntries, setUploadedEntries] = useStateParams(
+    [],
+    "uploaded",
+    arr => arr.join(","),
+    str => str.split(",")
+  );
+
   const entityToGet = rowEntity[entity];
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
+    client,
     query,
     options: {
       id,
@@ -73,7 +83,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       enableIndirect,
       datasources: state.dataSourceControls,
       entity,
-      facetFilters: state.facetFilters,
+      facetFilters: state.facetFiltersIds,
+      entitySearch: state.entitySearch,
     },
   });
 
@@ -83,6 +94,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     error: pinnedError,
     count: pinnedCount,
   } = useAssociationsData({
+    client,
     query,
     options: {
       id,
@@ -92,7 +104,31 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       sortBy: sorting[0].id,
       datasources: state.dataSourceControls,
       rowsFilter: pinnedEntries.toSorted(),
-      facetFilters: state.facetFilters,
+      facetFilters: state.facetFiltersIds,
+      entitySearch: state.entitySearch,
+      laodingCount: pinnedEntries.length,
+    },
+  });
+
+  const {
+    data: uploadedData,
+    loading: uploadedLoading,
+    error: uploadedError,
+    count: uploadedCount,
+  } = useAssociationsData({
+    client,
+    query,
+    options: {
+      id,
+      enableIndirect,
+      entity,
+      size: uploadedEntries.length,
+      sortBy: sorting[0].id,
+      datasources: state.dataSourceControls,
+      rowsFilter: uploadedEntries.toSorted(),
+      facetFilters: state.facetFiltersIds,
+      entitySearch: state.entitySearch,
+      laodingCount: uploadedEntries.length,
     },
   });
 
@@ -114,6 +150,10 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     },
     [state]
   );
+
+  const resetSorting = useCallback(() => {
+    setSorting(DEFAULT_TABLE_SORTING_STATE);
+  }, [setSorting]);
 
   const handleSortingChange = useCallback(
     newSortingFunc => {
@@ -163,6 +203,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       pinnedData,
       sorting,
       modifiedSourcesDataControls: state.modifiedSourcesDataControls,
+      entitySearch: state.entitySearch,
       pinnedLoading,
       pinnedError,
       pinnedCount,
@@ -179,8 +220,16 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       updateDataSourceControls,
       facetFilterSelect,
       state,
+      setUploadedEntries,
+      uploadedData,
+      uploadedLoading,
+      uploadedError,
+      uploadedCount,
+      uploadedEntries,
+      resetSorting,
     }),
     [
+      setUploadedEntries,
       dispatch,
       activeHeadersControlls,
       count,
@@ -205,6 +254,12 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       setPinnedEntries,
       sorting,
       handlePaginationChange,
+      uploadedData,
+      uploadedLoading,
+      uploadedError,
+      uploadedCount,
+      uploadedEntries,
+      resetSorting,
     ]
   );
 

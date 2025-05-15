@@ -1,4 +1,4 @@
-import { isPrivateEvidenceSection } from "../../utils/partnerPreviewUtils";
+import { isPrivateEvidenceSection } from "@ot/constants";
 
 const id = "uniprot_literature";
 export const definition = {

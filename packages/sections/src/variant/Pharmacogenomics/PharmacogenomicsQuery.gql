@@ -1,0 +1,26 @@
+query PharmacogenomicsQuery($variantId: String!) {
+  variant(variantId: $variantId) {
+    id
+    referenceAllele
+    alternateAllele
+    pharmacogenomics {
+      genotypeId
+      isDirectTarget
+      target {
+        id
+        approvedSymbol
+      }
+      drugs {
+        drugFromSource
+        drugId
+      }
+      phenotypeFromSourceId
+      genotypeAnnotationText
+      phenotypeText
+      pgxCategory
+      evidenceLevel
+      studyId
+      literature
+    }
+  }
+}

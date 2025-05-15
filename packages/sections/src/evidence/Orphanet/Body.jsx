@@ -11,11 +11,9 @@ import {
 } from "ui";
 
 import { definition } from ".";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
-import { epmcUrl } from "../../utils/urls";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
-import { sentenceCase } from "../../utils/global";
 
 import ORPHANET_QUERY from "./OrphanetQuery.gql";
 
@@ -23,6 +21,7 @@ const getColumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -37,7 +36,9 @@ const getColumns = label => [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
     filterValue: ({ disease, diseaseFromSource }) =>
@@ -55,6 +56,7 @@ const getColumns = label => [
   {
     id: "variantFunctionalConsequence",
     label: "Functional consequence",
+    enableHiding: false,
     renderCell: ({ variantFunctionalConsequence }) =>
       variantFunctionalConsequence ? (
         <Link
@@ -179,19 +181,18 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.orphanetSummary;
+      renderBody={() => {
         return (
           <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.orphanetSummary.rows}
             dataDownloader
             dataDownloaderFileStem={`orphanet-${ensgId}-${efoId}`}
             dataDownloaderColumns={exportColumns}
             showGlobalFilter
-            rowsPerPageOptions={defaultRowsPerPageOptions}
             query={ORPHANET_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

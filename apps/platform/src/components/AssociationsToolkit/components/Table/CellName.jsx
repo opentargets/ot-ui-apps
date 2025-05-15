@@ -21,14 +21,15 @@ import {
   faBezierCurve,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAotfContext from "../../hooks/useAotfContext";
-import { ENTITIES, isPartnerPreview, TABLE_PREFIX } from "../../utils";
+import { ENTITIES, isPartnerPreview, TABLE_PREFIX } from "../../associationsUtils";
 import { grey } from "@mui/material/colors";
 import {
   FocusActionType,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
+import { PrivateWrapper } from "ui";
 
 const StyledMenuItem = styled(MenuItem)({
   "&>.MuiListItemIcon-root>svg": {
@@ -85,7 +86,7 @@ const ContextMenuContainer = styled("div", {
 }));
 
 function CellName({ cell, colorScale }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const contextMenuRef = useRef();
   const { entityToGet, pinnedEntries, setPinnedEntries, id: currentEntityId } = useAotfContext();
   const { loading, prefix } = cell.table.getState();
@@ -115,6 +116,11 @@ function CellName({ cell, colorScale }) {
         row: cell.row.id,
       },
     });
+  };
+
+  const handleContextMenu = e => {
+    e.preventDefault();
+    handleToggle();
   };
 
   const handleToggle = () => {
@@ -175,15 +181,15 @@ function CellName({ cell, colorScale }) {
   };
 
   const handleNavigateToProfile = () => {
-    history.push(profileURL);
+    navigate(profileURL);
   };
 
   const handleNavigateToAssociations = () => {
-    history.push(associationsURL);
+    navigate(associationsURL);
   };
 
   const handleNavigateToEvidence = () => {
-    history.push(evidenceURL);
+    navigate(evidenceURL);
   };
 
   const loadingWidth = entityToGet === ENTITIES.TARGET ? 50 : 150;
@@ -192,19 +198,34 @@ function CellName({ cell, colorScale }) {
   const interactorsLabel = isPartnerPreview ? "Target interactors (beta)" : "Target interactors";
 
   if (loading)
-    return <Skeleton width={loadingWidth} height={35} sx={{ marginLeft: loadingMargin }} />;
+    return <Skeleton width={loadingWidth} height={20} sx={{ marginLeft: loadingMargin }} />;
 
   return (
     <NameContainer>
-      <TextContainer onClick={handleToggle}>
+      <TextContainer onClick={handleToggle} onContextMenu={handleContextMenu}>
         <Typography sx={{ width: isSmallScreen ? "90px" : "150px" }} noWrap variant="body2">
           {name}
+          {prefix === TABLE_PREFIX.INTERACTORS && cell.row.original.interactorScore ? (
+            <>
+              {" "}
+              -
+              <Box
+                component="span"
+                sx={{ fontSize: "0.8rem", width: "35px", display: "inline-block", fontWeight: 800 }}
+              >
+                {cell.row.original.interactorScore.toFixed(2)}
+              </Box>
+            </>
+          ) : (
+            ""
+          )}
         </Typography>
       </TextContainer>
       <ContextMenuContainer
         ref={contextMenuRef}
         className="ContextMenuContainer"
         onClick={handleToggle}
+        onContextMenu={handleContextMenu}
         active={openContext}
       >
         <FontAwesomeIcon icon={faEllipsisVertical} size="lg" />
@@ -247,20 +268,27 @@ function CellName({ cell, colorScale }) {
               <ListItemText>Unpin {entityToGet}</ListItemText>
             </StyledMenuItem>
           )}
-          {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && <Divider />}
-          {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && (
-            <StyledMenuItem
-              disabled={!isPartnerPreview}
-              onClick={() => {
-                handleClickInteractors();
-              }}
-            >
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faBezierCurve} />
-              </ListItemIcon>
-              <ListItemText>{interactorsLabel}</ListItemText>
-            </StyledMenuItem>
-          )}
+          <PrivateWrapper>
+            <>
+              {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && (
+                <Divider />
+              )}
+
+              {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && (
+                <StyledMenuItem
+                  disabled={!isPartnerPreview}
+                  onClick={() => {
+                    handleClickInteractors();
+                  }}
+                >
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faBezierCurve} />
+                  </ListItemIcon>
+                  <ListItemText>{interactorsLabel}</ListItemText>
+                </StyledMenuItem>
+              )}
+            </>
+          </PrivateWrapper>
 
           <Divider />
           <StyledMenuItem onClick={handleNavigateToEvidence}>

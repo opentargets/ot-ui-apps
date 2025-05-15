@@ -35,6 +35,8 @@ function getAncestors(efoId, idToDisease) {
 function buildDagData(efoId, efo, idToDisease) {
   const dag = [];
 
+  if (!efo) return dag;
+
   // find direct children of efoId
   efo.forEach(disease => {
     if (disease.parentIds.includes(efoId)) {
@@ -112,6 +114,7 @@ const line = d3Line().curve(curveMonotoneX);
 function OntologySubgraph({ efoId, efo, name, idToDisease, measureRef, contentRect }) {
   const classes = useStyles();
   const { width } = contentRect.bounds;
+  if (!efo) return null;
   const dagData = buildDagData(efoId, efo, idToDisease);
   const dag = dagStratify()(dagData);
   const maxLayerCount = getMaxLayerCount(dag);

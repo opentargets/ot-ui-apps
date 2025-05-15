@@ -1,0 +1,5 @@
+fragment UniProtVariantsSummaryFragment on Variant {
+  uniProtEvidences: evidences(datasourceIds: ["uniprot_variants"]){
+    count
+  }
+}

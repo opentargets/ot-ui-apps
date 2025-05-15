@@ -1,0 +1,48 @@
+name: Development build
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yaml
+
+  build:
+    uses: ./.github/workflows/build.yaml
+    needs: ci
+
+  image:
+    uses: ./.github/workflows/image.yaml
+    needs: build
+
+  release:
+    name: Release 🚀
+    runs-on: ubuntu-22.04
+    needs: build
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - name: Prepare tag
+        run: |
+          TAG=$(echo $TAG | sed 's/^v//')
+          echo "TAG=$TAG" >> $GITHUB_ENV
+      - uses: actions/download-artifact@v4
+        with:
+          name: bundle
+          path: bundle
+      - name: Tar bundle
+        run: tar -czf bundle.tar.gz bundle
+      - name: Create draft release 🐙
+        run: >-
+          gh release create
+          --draft
+          --repo ${{ github.repository }}
+          --title ${{ github.ref_name }}
+          ${{ github.ref_name }}
+          bundle.tar.gz
+        env:
+          GH_TOKEN: ${{ github.token }}

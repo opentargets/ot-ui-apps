@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Box, Dialog, DialogContent, DialogTitle, styled } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
@@ -43,7 +43,7 @@ function GlobalSearchDialog() {
           "& .MuiPaper-root": {
             width: "80vw",
             maxWidth: "800px",
-            borderRadius: theme => theme.spacing(1),
+            borderRadius: theme => theme.spacing(0.5),
             margin: theme => theme.spacing(6),
           },
         },

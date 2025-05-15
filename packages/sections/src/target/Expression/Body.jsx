@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Tab, Tabs } from "@mui/material";
-import { SectionItem } from "ui";
+import { SectionItem, useApolloClient } from "ui";
 
 import { definition } from ".";
 import AtlasTab from "./AtlasTab";
@@ -13,6 +13,7 @@ function Section({ id: ensgId, label: symbol, entity }) {
   const [tab, setTab] = useState(defaultTab);
   const [requestSummary, setRequestSummary] = useState({ loading: true });
   const [requestGtex, setRequestGtex] = useState({ loading: true });
+  const client = useApolloClient();
   // TODO:
   // the part about requests (see below) will need rethinking / refactoring
   // SectionItem checks for data based on these requests, but only works for data coming from the target object
@@ -25,6 +26,7 @@ function Section({ id: ensgId, label: symbol, entity }) {
     atlas: [requestSummary, setRequestSummary], // [{ loading: false, data: true }, undefined],
     gtex: [requestGtex, setRequestGtex],
   }[tab];
+
   const getData = {
     summary: getSummaryData,
     gtex: getGtexData,
@@ -38,7 +40,7 @@ function Section({ id: ensgId, label: symbol, entity }) {
     let isCurrent = true;
 
     async function updateData() {
-      const newRequest = await getData(ensgId);
+      const newRequest = await getData(ensgId, client);
       if (isCurrent) setRequest(newRequest);
     }
 
@@ -57,17 +59,18 @@ function Section({ id: ensgId, label: symbol, entity }) {
       definition={definition}
       entity={entity}
       request={request}
+      showContentLoading={true}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => (
+      renderBody={() => (
         <>
           <Tabs value={tab} onChange={handleChangeTab} style={{ marginBottom: "1rem" }}>
             <Tab value="summary" label="Summary" />
             <Tab value="atlas" label="Experiments (Expression Atlas)" />
             <Tab value="gtex" label="Variation (GTEx)" />
           </Tabs>
-          {tab === "summary" && <SummaryTab symbol={symbol} data={data} />}
+          {tab === "summary" && <SummaryTab symbol={symbol} data={request.data} />}
           {tab === "atlas" && <AtlasTab ensgId={ensgId} symbol={symbol} />}
-          {tab === "gtex" && <GtexTab symbol={symbol} data={data} />}
+          {tab === "gtex" && <GtexTab symbol={symbol} data={request.data} />}
         </>
       )}
     />
