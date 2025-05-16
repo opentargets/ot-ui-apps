@@ -1,9 +1,9 @@
 export enum ActionType {
   SET_VIEWER = "SET_VIEWER",
-  SET_SEARCH_TEXT = "SET_SEARCH_TEXT",
-  SET_THERAPEUTIC_AREAS = "SET_THERAPEUTIC_AREAS",
-  SET_VARIANT_CONSEQUENCES = "SET_VARIANT_CONSEQUENCES",
-  SET_EVA = "SET_EVA",
+  SET_DISEASE_THERAPEUTIC = "SET_DISEASE_THERAPEUTIC",
+  SET_VARIANT = "SET_VARIANT",
+  SET_CONSEQUENCE = "SET_CONSEQUENCE",
+  SET_EVIDENCE = "SET_EVIDENCE",
   SET_START_POSITION = "SET_START_POSITION",
   SET_HOVERED_ROW = "SET_HOVERED_ROW",
   SET_UNHOVERED_ROW = "SET_UNHOVERED_ROW",
@@ -14,7 +14,7 @@ export interface State {
   query: any;
   variables: any;
   filters: any;
-  hoveredRow: number[];
+  hoveredRow: any;
 }
 export interface Action {
   type: ActionType;
@@ -27,10 +27,10 @@ export const initialState: State = {
   query: null,
   variables: null,
   filters: {
-    searchText: "",
-    therapeuticAreas: [],
-    variantConsequences: [],
-    eva: [],
+    diseaseTherapeutic: [],
+    variant: "",
+    consequence: [],
+    evidence: [],
     startPosition: null,
   },
   hoveredRow: [],
@@ -53,30 +53,31 @@ export function reducer(state: State = initialState, action: Action): State {
     case ActionType.SET_VIEWER:
       return { ...state, viewer: action.viewer };
 
-    case ActionType.SET_SEARCH_TEXT:
-      return { ...state, filters: { ...state.filters, searchText: action.searchText } };
-
-    case ActionType.SET_THERAPEUTIC_AREAS:
-      return { ...state, filters: { ...state.filters, therapeuticAreas: action.therapeuticAreas } };
-
-    case ActionType.SET_VARIANT_CONSEQUENCES:
+    case ActionType.SET_DISEASE_THERAPEUTIC:
       return {
         ...state,
-        filters: { ...state.filters, variantConsequences: action.variantConsequences },
+        filters: { ...state.filters, diseaseTherapeutic: action.diseaseTherapeutic },
       };
 
-    case ActionType.SET_EVA:
-      return { ...state, filters: { ...state.filters, eva: action.eva } };
+    case ActionType.SET_VARIANT:
+      return { ...state, filters: { ...state.filters, variant: action.variant } };
+
+    case ActionType.SET_CONSEQUENCE:
+      return {
+        ...state,
+        filters: { ...state.filters, consequence: action.consequence },
+      };
+
+    case ActionType.SET_EVIDENCE:
+      return { ...state, filters: { ...state.filters, evidence: action.evidence } };
 
     case ActionType.SET_START_POSITION:
       return { ...state, filters: { ...state.filters, startPosition: action.startPosition } };
 
     case ActionType.SET_HOVERED_ROW:
-      // console.log("SET_HOVERED_ROW", state.hoveredRow.concat(action.hoveredRow));
       return { ...state, hoveredRow: state.hoveredRow.concat(action.hoveredRow) };
 
     case ActionType.SET_UNHOVERED_ROW:
-      // console.log("SET_UNHOVERED_ROW", state.hoveredRow.slice(1));
       return { ...state, hoveredRow: state.hoveredRow.slice(1) };
 
     default:
@@ -91,24 +92,24 @@ export const actions = {
     viewer,
   }),
 
-  setSearchText: (searchText: string): Action => ({
-    type: ActionType.SET_SEARCH_TEXT,
-    searchText,
+  setDiseaseTherapeutic: (diseaseTherapeutic: string[]): Action => ({
+    type: ActionType.SET_DISEASE_THERAPEUTIC,
+    diseaseTherapeutic,
   }),
 
-  setTherapeuticAreas: (therapeuticAreas: string[]): Action => ({
-    type: ActionType.SET_THERAPEUTIC_AREAS,
-    therapeuticAreas,
+  setVariant: (variant: string): Action => ({
+    type: ActionType.SET_VARIANT,
+    variant,
   }),
 
-  setVariantConsequences: (variantConsequences: string[]): Action => ({
-    type: ActionType.SET_VARIANT_CONSEQUENCES,
-    variantConsequences,
+  setConsequence: (consequence: string[]): Action => ({
+    type: ActionType.SET_CONSEQUENCE,
+    consequence,
   }),
 
-  setEVA: (eva: string[]): Action => ({
-    type: ActionType.SET_EVA,
-    eva,
+  setEvidence: (evidence: string[]): Action => ({
+    type: ActionType.SET_EVIDENCE,
+    evidence,
   }),
 
   setStartPosition: (startPosition: number | null): Action => ({
@@ -121,7 +122,7 @@ export const actions = {
     hoveredRow,
   }),
 
-  setUnhoveredRow: (unhoveredRow: any | null): Action => ({
+  setUnhoveredRow: (): Action => ({
     type: ActionType.SET_UNHOVERED_ROW,
   }),
 };

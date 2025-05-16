@@ -1,8 +1,7 @@
 // !! IMPORT SEARCH LIBRARTY HERE UNTIL DECIDE IF USING IT !!
-import Fuse from "https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.mjs";
+// import Fuse from "https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.mjs";
 
 import { useMemo } from "react";
-
 import { createContext, useContext, useReducer, ReactNode } from "react";
 import { reducer, getInitialState, actions } from "./Reducer";
 // import { useQuery } from "@apollo/client";
@@ -27,31 +26,45 @@ const DispatchContext = createContext<DispatchContextType | undefined>(undefined
 
 function getFilteredRows(data, state) {
   const rows = [];
-  const { startPosition, searchText } = state.filters;
+  const { startPosition, variant: variantText, consequence, evidence } = state.filters;
+  const variantTextRegexp = new RegExp(variantText, "i");
+  const consequenceIds = new Set(consequence.map(c => c.id));
+  const evidenceIds = new Set(evidence.map(e => e.datasourceId));
   for (const row of data.proteinCodingCoordinates.rows) {
-    if (startPosition != null && row.aminoAcidPosition !== startPosition) {
+    // !! START POSITION CURRENTLY ONLY FILTERING FROM VIEWER, NOT FILTER BOX
+    if (startPosition != null && row.aminoAcidPosition !== startPosition) continue;
+    if (
+      variantText &&
+      !variantTextRegexp.test(
+        `${row.variant.chromosome}_${row.variant.position}_${row.variant.referenceAllele}_${row.variant.alternateAllele}`
+      )
+    ) {
       continue;
     }
-    if (searchText) {
-      // !! RANDOM FOR TESTING !!!!!
-      if (Math.random() < 0.8) continue;
+    if (consequenceIds.size > 0) {
+      let hit = false;
+      for (const { id } of row.variantConsequences) {
+        if (consequenceIds.has(id)) {
+          hit = true;
+          break;
+        }
+      }
+      if (!hit) continue;
     }
-    // !! OTHER FILTERS HERE !!!!!!!!
+    if (evidenceIds.size > 0) {
+      let hit = false;
+      for (const { datasourceId } of row.datasources) {
+        if (evidenceIds.has(datasourceId)) {
+          hit = true;
+          break;
+        }
+      }
+      if (!hit) continue;
+    }
     rows.push(row);
   }
   return rows;
 }
-
-// if (state.therapeuticAreas.length > 0) {
-//   const selectedAreas = new Set(state.therapeuticAreas);
-//   rows = rows.filter(row => {
-//     // !! UPDATE BELOW TO USE CORRECT FIELD AND SHAPE WHEN API UPDATED
-//     for (const area of row.therapeuticAreas ?? []) {
-//       if (selectedAreas.has(area)) return true;
-//     }
-//     return false;
-//   });
-// }
 
 export function StateProvider({ children, data, query, variables }: ProviderProps) {
   const initialState = getInitialState({ data, query, variables });

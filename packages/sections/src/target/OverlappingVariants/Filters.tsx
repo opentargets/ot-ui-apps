@@ -1,52 +1,65 @@
 import { useStateValue, useActions } from "./Context";
 import { Autocomplete, Box, TextField, Chip } from "@mui/material";
+import { VARIANT_CONSEQUENCES, DATASOURCES } from "@ot/constants";
 
-function FreeTextFilter() {
+function VariantFilter() {
   const { state } = useStateValue();
-  const { setSearchText } = useActions();
-
-  // const actions = useActions();
-  // console.log(actions);
-
-  // console.log(state);
+  const { setVariant } = useActions();
 
   function handleChange(event) {
-    setSearchText(event.target.value);
+    setVariant(event.target.value);
   }
 
   return (
     <TextField
-      label="Search diseases"
+      label="Variant ID"
       variant="outlined"
-      value={state.searchText}
+      value={state.variant}
       onChange={handleChange}
+      size="small"
     />
   );
 }
 
-function TherapeuticAreasFilter() {
-  const { state } = useStateValue();
-  const { setTherapeuticAreas } = useActions();
+function ConsequenceFilter() {
+  const { setConsequence } = useActions();
 
   function handleChange(event, value) {
-    setTherapeuticAreas(value);
-    console.log(value);
+    setConsequence(value);
   }
 
   return (
     <Autocomplete
-      freeSolo
       multiple
       onChange={handleChange}
-      options={[
-        // !! PUT CORRECT VALUES IN HERE
-        "disease",
-        "observation",
-        "measurement",
-        "condition",
-      ]}
+      options={VARIANT_CONSEQUENCES.filter(c => c.proteinCoding)}
+      getOptionLabel={option => option.label}
       sx={{ width: 200 }}
-      renderInput={params => <TextField {...params} label="Therapeutic areas" />}
+      renderInput={params => <TextField {...params} label="Variant consequences" />}
+      size="small"
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      // renderValue={(value, getItemProps) => <Chip label={value} {...getItemProps()} />}
+    />
+  );
+}
+
+function EvidenceFilter() {
+  const { setEvidence } = useActions();
+
+  function handleChange(event, value) {
+    setEvidence(value);
+  }
+
+  return (
+    <Autocomplete
+      multiple
+      onChange={handleChange}
+      options={DATASOURCES}
+      getOptionLabel={option => option.datasourceNiceName}
+      sx={{ width: 200 }}
+      renderInput={params => <TextField {...params} label="Evidence" />}
+      size="small"
+      isOptionEqualToValue={(option, value) => option.datasourceId === value.datasourceId}
       // renderValue={(value, getItemProps) => <Chip label={value} {...getItemProps()} />}
     />
   );
@@ -55,8 +68,9 @@ function TherapeuticAreasFilter() {
 function Filters() {
   return (
     <Box display="flex" gap={2}>
-      <FreeTextFilter />
-      <TherapeuticAreasFilter />
+      <VariantFilter />
+      <ConsequenceFilter />
+      <EvidenceFilter />
     </Box>
   );
 }

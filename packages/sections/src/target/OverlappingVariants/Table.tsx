@@ -41,14 +41,14 @@ export default function OverlappingVariantsTable() {
     //   label: "Alpha Missense",
     //   renderCell: ({ variantEffect }) => variantEffect?.toFixed(2) ?? naLabel,
     // },
-    // {
-    //   id: "variantConsequences",
-    //   label: "Most severe consequence",
-    //   sortable: true,
-    //   comparator: (a, b) =>
-    //     a.variantConsequences[0].label.localeCompare(b.variantConsequences[0].label),
-    //   renderCell: ({ variantConsequences }) => variantConsequences[0].label,
-    // },
+    {
+      id: "variantConsequences",
+      label: "Most severe consequence",
+      sortable: true,
+      comparator: (a, b) =>
+        a.variantConsequences[0].label.localeCompare(b.variantConsequences[0].label),
+      renderCell: ({ variantConsequences }) => variantConsequences[0].label,
+    },
     {
       id: "diseases",
       label: "Disease/phenotype",

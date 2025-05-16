@@ -13,6 +13,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faClipboard } from "@fortawesome/free-regular-svg-icons";
 import { Tooltip } from "ui";
 import { lighten } from "polished";
+import { processVariantId } from "@ot/utils";
 
 const highlightBackground = theme => lighten(0.4, theme.palette.primary.main);
 
@@ -53,18 +54,7 @@ function DisplayVariantId({
     navigator.clipboard.writeText(text);
   }
 
-  const idParts = otVariantId.split("_");
-  if (idParts[0] === "OTVAR") {
-    idParts.shift();
-  }
-  let isHashed, stem;
-  if (idParts.at(-2) === referenceAllele && idParts.at(-1) === alternateAllele) {
-    isHashed = false;
-    stem = idParts.slice(0, -2).join("_");
-  } else {
-    isHashed = true;
-    stem = idParts.slice(0, -1).join("_");
-  }
+  const { isHashed, stem } = processVariantId(otVariantId, referenceAllele, alternateAllele);
 
   const longReferenceAllele = referenceAllele.length > maxChars;
   const longAlternateAllele = alternateAllele.length > maxChars;

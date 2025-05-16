@@ -5,6 +5,7 @@ query OverlappingVariantsQuery($ensemblId: String!) {
       count
       rows {
         datasources {
+          datasourceId
           datasourceNiceName
           datasourceCount
         }
@@ -12,6 +13,10 @@ query OverlappingVariantsQuery($ensemblId: String!) {
         alternateAminoAcid
         variant {
           id
+          chromosome
+          position
+          referenceAllele
+          alternateAllele
         }
         target {
           id
