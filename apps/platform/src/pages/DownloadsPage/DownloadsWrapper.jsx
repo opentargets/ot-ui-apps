@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { useLocation } from "react-router-dom";
-import { LoadingBackdrop, BasePage } from "ui";
+import { BasePage } from "ui";
+import DownloadsLoading from "./DownloadsLoading";
 
 const DownloadsPage = lazy(() => import("./DownloadsPage"));
 
@@ -12,7 +13,7 @@ function DownloadsWrapper() {
       description="Data downloads | Open Targets Platform"
       location={location}
     >
-      <Suspense fallback={<LoadingBackdrop />}>
+      <Suspense fallback={<DownloadsLoading />}>
         <DownloadsPage />
       </Suspense>
     </BasePage>
