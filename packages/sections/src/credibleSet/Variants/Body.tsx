@@ -207,20 +207,12 @@ function Body({
     index: 0,
   };
 
-  const [request, setRequest] = useState<responseType>(initialResponse);
-
-  const getData = useBatchQuery({
+  const request = useBatchQuery({
     query: VARIANTS_QUERY,
     variables,
-    dataPath: "data.credibleSet.locus",
+    dataPath: "credibleSet.locus",
     size: table5HChunkSize,
   });
-
-  useEffect(() => {
-    getData().then(r => {
-      setRequest(r);
-    });
-  }, [studyLocusId]);
 
   const columns = getColumns({
     leadVariantId,
