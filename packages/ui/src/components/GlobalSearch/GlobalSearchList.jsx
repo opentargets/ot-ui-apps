@@ -3,7 +3,7 @@ import { Box, styled } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
 import GlobalSearchListHeader from "./GlobalSearchListHeader";
 import GlobalSearchListItem from "./GlobalSearchListItem";
-import { SearchContext } from "./SearchContext";
+import { defaultEntityFilterState, SearchContext } from "./SearchContext";
 import {
   formatSearchData,
   getSelectedEntityFilterLength,
@@ -63,7 +63,8 @@ const List = styled("ul")(({ theme }) => ({
 function GlobalSearchList({ inputValue }) {
   let selected = 0;
   const [searchResult, setSearchResult] = useState({});
-  const { searchQuery, setOpen, searchSuggestions, filterState } = useContext(SearchContext);
+  const { searchQuery, setOpen, searchSuggestions, filterState, setFilterState } =
+    useContext(SearchContext);
   const [aborterRef, setAbortRef] = useState(new AbortController());
   const [getSearchData, { loading }] = useLazyQuery(searchQuery, {
     context: {
@@ -124,6 +125,7 @@ function GlobalSearchList({ inputValue }) {
     item => {
       setOpen(false);
       openListItem(item, filterState);
+      setFilterState(defaultEntityFilterState);
     },
     [filterState]
   );

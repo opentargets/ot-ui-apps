@@ -11,6 +11,7 @@ import {
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import { clearAllRecent } from "./utils/searchUtils";
+import GlobalSearchIcon from "./GlobalSearchIcon";
 
 const useStyles = makeStyles(theme => ({
   sectionHeader: {
@@ -26,10 +27,6 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     gap: theme.spacing(1),
     textTransform: "uppercase",
-  },
-  labelIcon: {
-    color: theme.palette.grey[600],
-    fontSize: "0.8rem",
   },
 }));
 
@@ -54,37 +51,6 @@ function GlobalSearchListHeader({ listHeader, children }) {
 
   if (!listHeader) return { children };
 
-  const getIcon = () => {
-    switch (listHeader) {
-      case "topHit":
-        return <FontAwesomeIcon icon={faStar} className={classes.labelIcon} />;
-      case "drugs":
-        return (
-          <FontAwesomeIcon
-            icon={faPrescriptionBottleAlt}
-            fixedWidth
-            className={classes.labelIcon}
-          />
-        );
-      case "diseases":
-        return <FontAwesomeIcon icon={faStethoscope} fixedWidth className={classes.labelIcon} />;
-      case "targets":
-        return <FontAwesomeIcon icon={faDna} fixedWidth className={classes.labelIcon} />;
-      case "variants":
-        return <FontAwesomeIcon icon={faMapPin} fixedWidth className={classes.labelIcon} />;
-      case "studies":
-        return <FontAwesomeIcon icon={faChartBar} fixedWidth className={classes.labelIcon} />;
-      case "recent":
-        return null;
-      case "Search Suggestions":
-        return null;
-      case "filter":
-        return null;
-      default:
-        return <FontAwesomeIcon icon={faTag} />;
-    }
-  };
-
   function getIconTag() {
     switch (listHeader) {
       case "variants":
@@ -108,7 +74,7 @@ function GlobalSearchListHeader({ listHeader, children }) {
   return (
     <div tabIndex="-1" className={classes.sectionHeader}>
       <div className={classes.label}>
-        {getIcon()}
+        <GlobalSearchIcon entity={listHeader} />
         <Typography sx={{ fontWeight: "bold" }} variant="caption">
           {getListHeader()}
         </Typography>

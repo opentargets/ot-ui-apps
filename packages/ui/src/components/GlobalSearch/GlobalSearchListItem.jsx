@@ -8,6 +8,7 @@ import { clearRecentItem } from "./utils/searchUtils";
 import DisplayVariantId from "../DisplayVariantId";
 import { getStudyItemMetaData } from "@ot/utils";
 import StudyPublication from "../StudyPublication";
+import GlobalSearchIcon from "./GlobalSearchIcon";
 
 const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
@@ -135,7 +136,7 @@ function SuggestionListItem({ item, onItemClick }) {
           }}
           size="small"
           label={symbolNameOrId(item)}
-          icon={<FontAwesomeIcon icon={faArrowTrendUp} />}
+          icon={<GlobalSearchIcon entity={item.entity} />}
         />
       </SuggestionItemContainer>
     </Box>

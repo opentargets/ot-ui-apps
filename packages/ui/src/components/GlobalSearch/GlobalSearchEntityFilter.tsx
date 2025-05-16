@@ -3,6 +3,9 @@ import { useContext } from "react";
 import { SearchContext } from "./SearchContext";
 import GlobalSearchListHeader from "./GlobalSearchListHeader";
 import { getSelectedEntityFilterLength } from "./utils/searchUtils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import GlobalSearchIcon from "./GlobalSearchIcon";
 
 function GlobalSearchEntityFilter() {
   const { filterState, setFilterState } = useContext(SearchContext);
@@ -13,6 +16,7 @@ function GlobalSearchEntityFilter() {
   }
 
   function getFilterCount() {
+    console.log(getSelectedEntityFilterLength(filterState));
     return getSelectedEntityFilterLength(filterState);
   }
 
@@ -20,26 +24,60 @@ function GlobalSearchEntityFilter() {
     <Box>
       <Box sx={{ display: "flex" }}>
         <GlobalSearchListHeader listHeader="filter" />
-        <Box
-          sx={theme => ({
-            background: theme.palette.primary.dark,
-            px: 1,
-            py: 0.2,
-            borderRadius: 10,
-            typography: "caption",
-            color: "white",
-            visibility: !getFilterCount() ? "hidden" : "visible",
-          })}
-        >
-          {getFilterCount()}
-        </Box>
       </Box>
       <FormGroup>
         <Box sx={{ display: "flex", pr: 2, py: 1 }}>
+          {/* <Checkbox
+            checked={!(getFilterCount() > 0)}
+            inputProps={{ "aria-label": "controlled" }}
+            size="small"
+            disableRipple
+            // sx={{ p: 1 }}
+            icon={
+              <Chip
+                sx={{
+                  border: "1px solid  transparent",
+                  fontWeight: "bold",
+                  display: "flex",
+                  padding: "12px 6px",
+                  color: theme => theme.palette.grey[500],
+                  ".MuiChip-icon": {
+                    fontSize: "12px",
+                  },
+                }}
+                size="small"
+                label={<Box sx={{ textTransform: "capitalize" }}> All</Box>}
+                variant="outlined"
+                clickable
+                icon={<GlobalSearchIcon entity={"recent"} />}
+              />
+            }
+            checkedIcon={
+              <Chip
+                sx={{
+                  borderRadius: 2,
+                  fontWeight: "bold",
+                  display: "flex",
+                  padding: "12px 6px",
+                  backgroundColor: theme => `${theme.palette.primary.light}30`,
+                  ".MuiChip-icon": {
+                    fontSize: "12px",
+                  },
+                }}
+                color="primary"
+                size="small"
+                label={<Box sx={{ textTransform: "capitalize" }}> All</Box>}
+                variant="outlined"
+                clickable
+                icon={<GlobalSearchIcon entity={"recent"} />}
+              />
+            }
+          /> */}
           {Object.entries(filterState).map(([key, value]) => {
             return (
               <FormControlLabel
                 key={key}
+                sx={{ mr: 0 }}
                 control={
                   <>
                     {/* <Checkbox
@@ -49,6 +87,7 @@ function GlobalSearchEntityFilter() {
                       size="small"
                       // sx={{ display: "none" }}
                     /> */}
+                    {/* /option 2 */}
                     <Checkbox
                       checked={value}
                       onChange={e => handleChangeFilter(key, e)}
@@ -57,36 +96,97 @@ function GlobalSearchEntityFilter() {
                       // sx={{ p: 1 }}
                       icon={
                         <Chip
-                          // variant="outlined"
-                          color="default"
+                          sx={{
+                            borderRadius: 2,
+                            fontWeight: "bold",
+                            display: "flex",
+                            padding: "15px 6px",
+                            color: theme => theme.palette.grey[500],
+                            ".MuiChip-icon": {
+                              fontSize: "12px",
+                            },
+                          }}
+                          size="small"
                           label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
-                          clickable
+                          variant="outlined"
                           onChange={e => handleChangeFilter(key, e)}
-                          // size="small"
+                          clickable
                           tabIndex={-1}
+                          icon={<GlobalSearchIcon entity={key} />}
                         />
                       }
                       checkedIcon={
                         <Chip
-                          variant="filled"
+                          sx={{
+                            borderRadius: 2,
+                            fontWeight: "bold",
+                            display: "flex",
+                            padding: "15px 6px",
+                            backgroundColor: theme => `${theme.palette.primary.light}30`,
+                            ".MuiChip-icon": {
+                              fontSize: "12px",
+                            },
+                          }}
                           color="primary"
+                          size="small"
                           label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
-                          clickable
+                          variant="outlined"
                           onChange={e => handleChangeFilter(key, e)}
-                          // size="small"
+                          clickable
                           tabIndex={-1}
+                          icon={<GlobalSearchIcon entity={key} />}
                         />
                       }
-                      // sx={{ display: "none" }}
                     />
-                    {/* <Chip
-                      variant={value ? "filled" : "outlined"}
-                      color={value ? "primary" : "default"}
-                      label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
-                      clickable
+                    {/* option 3 */}
+                    {/* <Checkbox
+                      checked={value}
                       onChange={e => handleChangeFilter(key, e)}
-                      // onKeyDown={onKeyDown}
+                      inputProps={{ "aria-label": "controlled" }}
                       size="small"
+                      disableRipple
+                      // sx={{ p: 1 }}
+                      icon={
+                        <Chip
+                          sx={{
+                            border: "1px solid  transparent",
+                            fontWeight: "bold",
+                            display: "flex",
+                            padding: "12px 6px",
+                            color: theme => theme.palette.grey[500],
+                            ".MuiChip-icon": {
+                              fontSize: "12px",
+                            },
+                          }}
+                          size="small"
+                          label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
+                          variant="outlined"
+                          onChange={e => handleChangeFilter(key, e)}
+                          clickable
+                          icon={<GlobalSearchIcon entity={key} />}
+                        />
+                      }
+                      checkedIcon={
+                        <Chip
+                          sx={{
+                            borderRadius: 2,
+                            fontWeight: "bold",
+                            display: "flex",
+                            padding: "12px 6px",
+                            backgroundColor: theme => `${theme.palette.primary.light}30`,
+                            ".MuiChip-icon": {
+                              fontSize: "12px",
+                            },
+                          }}
+                          color="primary"
+                          size="small"
+                          label={<Box sx={{ textTransform: "capitalize" }}> {key}</Box>}
+                          variant="outlined"
+                          onChange={e => handleChangeFilter(key, e)}
+                          clickable
+                          icon={<GlobalSearchIcon entity={key} />}
+                        />
+                      }
                     /> */}
                   </>
                 }
@@ -95,19 +195,6 @@ function GlobalSearchEntityFilter() {
               />
             );
           })}
-          {/* {arr.map(e => (
-          <FormControlLabel
-            key={e}
-            control={
-              <Checkbox
-                checked={filterState[e]}
-                onChange={handleChange}
-                inputProps={{ "aria-label": "controlled" }}
-              />
-            }
-            label={e}
-          />
-        ))} */}
         </Box>
       </FormGroup>
     </Box>

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 import GlobalSearchList from "./GlobalSearchList";
-import { SearchContext, SearchInputProvider } from "./SearchContext";
+import { defaultEntityFilterState, SearchContext, SearchInputProvider } from "./SearchContext";
 import GlobalSearchInput from "./GlobalSearchInput";
 import GlobalSearchFreeListItem from "./GlobalSearchFreeListItem";
 import ErrorBoundary from "../ErrorBoundary";
@@ -26,7 +26,7 @@ const EscButton = styled("button")(({ theme }) => ({
 }));
 
 function GlobalSearchDialog() {
-  const { open, setOpen } = useContext(SearchContext);
+  const { open, setOpen, setFilterState } = useContext(SearchContext);
   const [inputValue, setInputValue] = useState("");
 
   return (
@@ -37,6 +37,7 @@ function GlobalSearchDialog() {
       tabIndex={0}
       onClose={() => {
         setOpen(false);
+        setFilterState(defaultEntityFilterState);
       }}
       sx={{
         "& .MuiDialog-container": {
@@ -72,6 +73,7 @@ function GlobalSearchDialog() {
                   type="button"
                   onClick={() => {
                     setOpen(false);
+                    setFilterState(defaultEntityFilterState);
                   }}
                 >
                   esc
