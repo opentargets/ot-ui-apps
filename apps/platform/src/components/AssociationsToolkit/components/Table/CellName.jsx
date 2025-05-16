@@ -145,17 +145,6 @@ function CellName({ cell, colorScale }) {
     setOpenContext(false);
   };
 
-  const handleClickInteractorsOff = () => {
-    dispatch({
-      type: FocusActionType.SET_INTERACTORS_OFF,
-      focus: {
-        table: prefix,
-        row: cell.row.id,
-      },
-    });
-    setOpenContext(false);
-  };
-
   const handleClickPin = () => {
     if (isPinned) {
       const newPinnedData = pinnedEntries.filter(e => e !== id);
@@ -268,27 +257,19 @@ function CellName({ cell, colorScale }) {
               <ListItemText>Unpin {entityToGet}</ListItemText>
             </StyledMenuItem>
           )}
-          <PrivateWrapper>
-            <>
-              {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && (
-                <Divider />
-              )}
 
-              {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && (
-                <StyledMenuItem
-                  disabled={!isPartnerPreview}
-                  onClick={() => {
-                    handleClickInteractors();
-                  }}
-                >
-                  <ListItemIcon>
-                    <FontAwesomeIcon icon={faBezierCurve} />
-                  </ListItemIcon>
-                  <ListItemText>{interactorsLabel}</ListItemText>
-                </StyledMenuItem>
-              )}
-            </>
-          </PrivateWrapper>
+          {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && (
+            <StyledMenuItem
+              onClick={() => {
+                handleClickInteractors();
+              }}
+            >
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faBezierCurve} />
+              </ListItemIcon>
+              <ListItemText>{interactorsLabel}</ListItemText>
+            </StyledMenuItem>
+          )}
 
           <Divider />
           <StyledMenuItem onClick={handleNavigateToEvidence}>

@@ -18,7 +18,7 @@ import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
 import { definition } from ".";
 
 const g2pUrl = (studyId, symbol) =>
-  `https://www.ebi.ac.uk/gene2phenotype/search?panel=${studyId}&search_term=${symbol}`;
+  `https://www.ebi.ac.uk/gene2phenotype/search?query=${symbol}&panel=${studyId}`;
 
 const getColumns = label => [
   {
