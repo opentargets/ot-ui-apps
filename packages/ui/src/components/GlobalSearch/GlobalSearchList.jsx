@@ -1,10 +1,15 @@
-import { useContext, useEffect, useState, memo, useCallback } from "react";
+import { useContext, useEffect, useState, memo, useCallback, Fragment, useMemo } from "react";
 import { Box, styled } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
 import GlobalSearchListHeader from "./GlobalSearchListHeader";
 import GlobalSearchListItem from "./GlobalSearchListItem";
-import { SearchContext } from "./SearchContext";
-import { formatSearchData } from "./utils/searchUtils";
+import { defaultEntityFilterState, SearchContext } from "./SearchContext";
+import {
+  formatSearchData,
+  getSelectedEntityFilterLength,
+  TOTAL_ENTITIES,
+  TOTAL_SEARCH_RESULTS,
+} from "./utils/searchUtils";
 import useListOption from "../../hooks/useListOption";
 import GlobalSearchLoadingState from "./GlobalSearchLoadingState";
 import VariantMessage from "./VariantMessage";
@@ -58,12 +63,24 @@ const List = styled("ul")(({ theme }) => ({
 function GlobalSearchList({ inputValue }) {
   let selected = 0;
   const [searchResult, setSearchResult] = useState({});
-  const [loading, setLoading] = useState(false);
-  const { searchQuery, setOpen, searchSuggestions } = useContext(SearchContext);
-  const [getSearchData] = useLazyQuery(searchQuery);
+  const { searchQuery, setOpen, searchSuggestions, filterState, setFilterState } =
+    useContext(SearchContext);
+  const [aborterRef, setAbortRef] = useState(new AbortController());
+  const [getSearchData, { loading }] = useLazyQuery(searchQuery, {
+    context: {
+      fetchOptions: {
+        signal: aborterRef.signal,
+      },
+    },
+    notifyOnNetworkStatusChange: true,
+  });
   const [openListItem] = useListOption();
   const [recentItems, setRecentItems] = useState(
     JSON.parse(localStorage.getItem("search-history")) || []
+  );
+  const selectedEntityFilterLength = useMemo(
+    () => getSelectedEntityFilterLength(filterState) || TOTAL_ENTITIES,
+    [filterState]
   );
 
   const focusOnItem = useCallback((index = 0) => {
@@ -104,21 +121,33 @@ function GlobalSearchList({ inputValue }) {
     }
   }, []);
 
-  const handleItemClick = useCallback(item => {
-    setOpen(false);
-    openListItem(item);
-  }, []);
+  const handleItemClick = useCallback(
+    item => {
+      setOpen(false);
+      openListItem(item, filterState);
+      setFilterState(defaultEntityFilterState);
+    },
+    [filterState]
+  );
+
+  function abortExistingRequest() {
+    aborterRef.abort();
+    setAbortRef(new AbortController());
+  }
 
   function fetchSearchResults() {
-    setLoading(true);
-    getSearchData({ variables: { queryString: inputValue } })
+    getSearchData({
+      variables: {
+        queryString: inputValue,
+        size: Math.ceil(TOTAL_SEARCH_RESULTS / selectedEntityFilterLength),
+      },
+    })
       .then(res => {
-        const formattedData = formatSearchData(res.data.search || res.data);
+        const formattedData = formatSearchData(res.data);
         setSearchResult({ ...formattedData });
-        setLoading(false);
       })
       .catch(err => {
-        setLoading(false);
+        console.log(err);
       });
   }
 
@@ -171,7 +200,7 @@ function GlobalSearchList({ inputValue }) {
       }}
     >
       <GlobalSearchListHeader listHeader="Search Suggestions" />
-      <List tabIndex={-1}>
+      <List tabIndex={-1} sx={{ display: "flex", flexWrap: "wrap" }}>
         {searchSuggestions.map(item => (
           <GlobalSearchListItem
             key={item.id || item.symbol}
@@ -185,21 +214,37 @@ function GlobalSearchList({ inputValue }) {
   );
 
   useEffect(() => {
+    if (loading) abortExistingRequest();
+    else {
+      focusOnItem();
+      if (inputValue) fetchSearchResults();
+      else setSearchResult({});
+    }
+  }, [inputValue, selectedEntityFilterLength]);
+
+  useEffect(() => {
     focusOnItem();
     if (inputValue) fetchSearchResults();
     else setSearchResult({});
-  }, [inputValue]);
+  }, [aborterRef]);
 
   useEffect(() => {
     document.addEventListener("keydown", onKeyDownHandler);
     window.addEventListener("storage", handleChangeInRecentItems);
     return () => {
       document.removeEventListener("keydown", onKeyDownHandler);
-      window.addEventListener("storage", handleChangeInRecentItems);
+      window.removeEventListener("storage", handleChangeInRecentItems);
     };
   }, []);
 
   const inputMatchVariant = validateVariantIdInput(inputValue, searchResult, isResultEmpty());
+
+  function shouldShowEntityResult(value) {
+    if (selectedEntityFilterLength === TOTAL_ENTITIES || selectedEntityFilterLength === 0)
+      return true;
+    if (filterState[value[0].entity]) return true;
+    return false;
+  }
 
   return (
     <>
@@ -212,27 +257,31 @@ function GlobalSearchList({ inputValue }) {
         !loading &&
         !isResultEmpty() &&
         Object.entries(searchResult).map(([key, value]) => (
-          <Box
-            key={key}
-            sx={{
-              pt: 1,
-              borderBottomWidth: "1px",
-              borderStyle: "solid",
-              borderImage: "linear-gradient(to right, white, #00000037, white)0 0 90",
-            }}
-          >
-            <GlobalSearchListHeader listHeader={key} />
-            <List tabIndex={-1}>
-              {value.map(item => (
-                <GlobalSearchListItem
-                  key={item.id || item.symbol}
-                  item={item}
-                  onItemClick={handleItemClick}
-                  isTopHit={item.type === "topHit"}
-                />
-              ))}
-            </List>
-          </Box>
+          <Fragment key={key}>
+            {shouldShowEntityResult(value) && (
+              <Box
+                key={key}
+                sx={{
+                  pt: 1,
+                  borderBottomWidth: "1px",
+                  borderStyle: "solid",
+                  borderImage: "linear-gradient(to right, white, #00000037, white)0 0 90",
+                }}
+              >
+                <GlobalSearchListHeader listHeader={key} />
+                <List tabIndex={-1}>
+                  {value.map(item => (
+                    <GlobalSearchListItem
+                      key={item.id || item.symbol}
+                      item={item}
+                      onItemClick={handleItemClick}
+                      isTopHit={item.type === "topHit"}
+                    />
+                  ))}
+                </List>
+              </Box>
+            )}
+          </Fragment>
         ))}
 
       {/* no search result state  */}
