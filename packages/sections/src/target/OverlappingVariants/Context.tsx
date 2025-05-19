@@ -31,8 +31,8 @@ function getFilteredRows(data, state) {
   const consequenceIds = new Set(consequence.map(c => c.id));
   const evidenceIds = new Set(evidence.map(e => e.datasourceId));
   for (const row of data.proteinCodingCoordinates.rows) {
-    // !! START POSITION CURRENTLY ONLY FILTERING FROM VIEWER, NOT FILTER BOX
-    if (startPosition != null && row.aminoAcidPosition !== startPosition) continue;
+    if (row.aminoAcidPosition < startPosition.min || row.aminoAcidPosition > startPosition.max)
+      continue;
     if (
       variantText &&
       !variantTextRegexp.test(

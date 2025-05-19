@@ -106,7 +106,7 @@ export function highlightVariants(viewer, filteredRows, setStartPosition) {
             opacity: 1,
             clickable: true,
             callback: () => {
-              setStartPosition(startPosition);
+              setStartPosition({ min: startPosition, max: startPosition });
             },
           });
           viewer.render();

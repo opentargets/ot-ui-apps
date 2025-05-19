@@ -1,5 +1,5 @@
 import { useStateValue, useActions } from "./Context";
-import { Autocomplete, Box, TextField, Chip } from "@mui/material";
+import { Autocomplete, Box, TextField, Slider, Chip, Typography } from "@mui/material";
 import { VARIANT_CONSEQUENCES, DATASOURCES } from "@ot/constants";
 
 function VariantFilter() {
@@ -65,12 +65,63 @@ function EvidenceFilter() {
   );
 }
 
+function StartPositionFilter() {
+  const { setStartPosition } = useActions();
+  const {
+    state: { data, filters },
+  } = useStateValue();
+
+  function handleChange(event, value) {
+    setStartPosition({ min: value[0], max: value[1] });
+  }
+
+  const min = 0;
+  const max = 200; // !! NEED TO GET THIS FROM DATA !!
+
+  const marks = data.proteinCodingCoordinates.rows.map(row => ({
+    value: row.aminoAcidPosition,
+  }));
+
+  return (
+    <Box sx={{ width: 340 }}>
+      <Typography variant="body1">Start position</Typography>
+      <Box display="flex" alignItems="center" gap={1} mt={-0.3}>
+        <Typography variant="body2" lineHeight={0}>
+          {min}
+        </Typography>
+        <Slider
+          min={min}
+          max={max}
+          step={1}
+          value={[filters.startPosition.min, filters.startPosition.max]}
+          onChange={handleChange}
+          size="small"
+          sx={{
+            "& .MuiSlider-mark": {
+              backgroundColor: "red",
+              opacity: 0.5,
+              height: 10,
+              width: 1.1,
+            },
+          }}
+          marks={marks}
+          valueLabelDisplay="auto"
+        />
+        <Typography variant="body2" lineHeight={0}>
+          {max}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
 function Filters() {
   return (
     <Box display="flex" gap={2}>
       <VariantFilter />
       <ConsequenceFilter />
       <EvidenceFilter />
+      <StartPositionFilter />
     </Box>
   );
 }

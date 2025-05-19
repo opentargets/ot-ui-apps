@@ -1,3 +1,5 @@
+// import { min, max } from "d3";
+
 export enum ActionType {
   SET_VIEWER = "SET_VIEWER",
   SET_DISEASE_THERAPEUTIC = "SET_DISEASE_THERAPEUTIC",
@@ -31,7 +33,7 @@ export const initialState: State = {
     variant: "",
     consequence: [],
     evidence: [],
-    startPosition: null,
+    startPosition: { min: 0, max: Infinity },
   },
   hoveredRow: [],
 };
