@@ -1,13 +1,12 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement } from "react";
 import { Box, Typography } from "@mui/material";
 import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable, useBatchQuery } from "ui";
-import { responseType, naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
+import { naLabel, table5HChunkSize } from "@ot/constants";
 import { epmcUrl, getStudyCategory } from "@ot/utils";
 import Description from "./Description";
 
 import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
 import { definition } from ".";
-import { renderMatches } from "react-router-dom";
 
 const columns = [
   {
@@ -106,20 +105,12 @@ function Body({ id: efoId, label: diseaseName }: BodyProps): ReactElement {
     index: 0,
   };
 
-  const [request, setRequest] = useState<responseType>(initialResponse);
-
-  const getData = useBatchQuery({
+  const request = useBatchQuery({
     query: GWAS_STUDIES_BODY_QUERY,
     variables,
-    dataPath: "data.studies",
+    dataPath: "studies",
     size: table5HChunkSize,
   });
-
-  useEffect(() => {
-    getData().then(r => {
-      setRequest(r);
-    });
-  }, [efoId]);
 
   return (
     <SectionItem
