@@ -22,6 +22,12 @@ function DownloadsCard({ data, locationUrl }) {
     }
   }
 
+  function hasCategories() {
+    // check if object has categories
+    if (data.hasOwnProperty("categories") && data.categories.length) return true;
+    return false;
+  }
+
   return (
     <Card
       sx={{
@@ -66,16 +72,17 @@ function DownloadsCard({ data, locationUrl }) {
 
         <Box>
           <Box sx={{ display: "flex", gap: 1, my: 1 }}>
-            {data.categories.map(c => (
-              <Chip
-                key={v1()}
-                size="small"
-                label={c}
-                clickable
-                onClick={handleChangeFilter}
-                sx={{ background: theme => theme.palette.primary.dark, color: "white" }}
-              />
-            ))}
+            {hasCategories() &&
+              data.categories.map(c => (
+                <Chip
+                  key={v1()}
+                  size="small"
+                  label={c}
+                  clickable
+                  onClick={handleChangeFilter}
+                  sx={{ background: theme => theme.palette.primary.dark, color: "white" }}
+                />
+              ))}
           </Box>
         </Box>
       </CardContent>
