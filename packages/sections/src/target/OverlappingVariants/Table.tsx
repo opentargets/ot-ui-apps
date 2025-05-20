@@ -1,7 +1,8 @@
-import { OtTable, Link, Tooltip } from "ui";
+import { OtTable, Link, Tooltip, DisplayVariantId, LabelChip } from "ui";
 import { Typography, Box } from "@mui/material";
 import { useStateValue, useActions } from "./Context";
 import { naLabel } from "@ot/constants";
+import { variantComparator } from "@ot/utils";
 
 export default function OverlappingVariantsTable() {
   const { state, filteredRows } = useStateValue();
@@ -9,29 +10,64 @@ export default function OverlappingVariantsTable() {
 
   const columns = [
     {
-      // !! NEED TO DISPLAY, SORT, ... PROPERLY, AND LINK TO VARIANT !!
       id: "variant.id",
       label: "Variant",
+      enableHiding: false,
+      comparator: variantComparator(d => d?.variant),
+      sortable: true,
+      renderCell: ({ variant }) => {
+        if (!variant) return naLabel;
+        const { id: variantId, referenceAllele, alternateAllele } = variant;
+        return (
+          <Link asyncTooltip to={`/variant/${variantId}`}>
+            <DisplayVariantId
+              variantId={variantId}
+              referenceAllele={referenceAllele}
+              alternateAllele={alternateAllele}
+              expand={false}
+            />
+          </Link>
+        );
+      },
+      exportValue: ({ variant }) => variant?.id,
     },
     {
-      id: "aminoAcidPosition", // UPDATE TYPO ONCE API UPDATED
-      label: "Amino acid change",
+      id: "aminoAcidPosition",
+      label: "Change",
       sortable: true,
-      // filterValue: o => `${o.referenceAminoAcid}${o.aminoAcidPosition}${o.alternateAminoAcid}`,
-      renderCell: o => `${o.referenceAminoAcid}${o.aminoAcidPosition}${o.alternateAminoAcid}`,
+      tooltip: (
+        <>
+          Amino acid change:
+          <Box sx={{ mt: 0.5 }}>reference | start position | alternate</Box>
+        </>
+      ),
       comparator: (a, b) => a.aminoAcidPosition - b.aminoAcidPosition,
+      renderCell: o => (
+        <>
+          {o.referenceAminoAcid}
+          <Box component="span" sx={{ px: 0.15 }}>
+            {o.aminoAcidPosition}
+          </Box>
+          {o.alternateAminoAcid}
+        </>
+      ),
     },
     {
       id: "datasources",
-      label: "Evidence counts",
+      label: "Evidence",
       renderCell: ({ datasources }) => {
-        if (datasources?.length > 0) {
-          return datasources
-            .map(
-              ({ datasourceCount, datasourceNiceName }) =>
-                `${datasourceNiceName}: ${datasourceCount}`
-            )
-            .join(", ");
+        if (datasources.length > 0) {
+          return (
+            <Box sx={{ display: "flex", gap: "5px" }}>
+              {datasources.map(({ datasourceCount, datasourceNiceName }) => (
+                <LabelChip
+                  key={datasourceNiceName}
+                  label={datasourceNiceName}
+                  value={datasourceCount}
+                />
+              ))}
+            </Box>
+          );
         }
         return naLabel;
       },
@@ -41,14 +77,14 @@ export default function OverlappingVariantsTable() {
     //   label: "Alpha Missense",
     //   renderCell: ({ variantEffect }) => variantEffect?.toFixed(2) ?? naLabel,
     // },
-    {
-      id: "variantConsequences",
-      label: "Most severe consequence",
-      sortable: true,
-      comparator: (a, b) =>
-        a.variantConsequences[0].label.localeCompare(b.variantConsequences[0].label),
-      renderCell: ({ variantConsequences }) => variantConsequences[0].label,
-    },
+    // {
+    //   id: "variantConsequences",
+    //   label: "Most severe consequence",
+    //   sortable: true,
+    //   comparator: (a, b) =>
+    //     a.variantConsequences[0].label.localeCompare(b.variantConsequences[0].label),
+    //   renderCell: ({ variantConsequences }) => variantConsequences[0].label,
+    // },
     {
       id: "diseases",
       label: "Disease/phenotype",
@@ -80,8 +116,6 @@ export default function OverlappingVariantsTable() {
         return elements;
       },
     },
-
-    // !! MORE ROWS !!
   ];
 
   function getEnteredRow(enteredRow) {
