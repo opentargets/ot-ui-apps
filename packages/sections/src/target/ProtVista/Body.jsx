@@ -550,7 +550,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     };
   }, [selectedStructure, viewer, segments]);
 
-  if (!experimentalResults) return null;
+  if (!uniprotId) return null;
 
   return (
     <SectionItem
@@ -559,6 +559,9 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={() => {
+        if (!experimentalResults && !request.loading && uniprotId)
+          return <NoStructureAvailable uniprotId={uniprotId} />;
+
         return (
           <Grid container columnSpacing={2}>
             <Grid item xs={12} lg={6}>
@@ -653,6 +656,14 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         );
       }}
     />
+  );
+}
+
+function NoStructureAvailable({ uniprotId }) {
+  return (
+    <Box sx={{ display: "flex", justifyContent: "center", fontStyle: "italic" }}>
+      No Structure Available for {uniprotId}
+    </Box>
   );
 }
 

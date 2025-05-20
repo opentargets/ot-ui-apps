@@ -17,14 +17,7 @@ import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
 import { Fragment } from "react/jsx-runtime";
 import { mantissaExponentComparator, variantComparator, nullishComparator } from "@ot/utils";
 import PheWasPlot from "./PheWasPlot";
-import { useEffect, useState } from "react";
-import {
-  responseType,
-  credsetConfidenceMap,
-  initialResponse,
-  naLabel,
-  table5HChunkSize,
-} from "@ot/constants";
+import { credsetConfidenceMap, naLabel, table5HChunkSize } from "@ot/constants";
 
 type getColumnsType = {
   id: string;
@@ -258,9 +251,10 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         </>
       ),
       renderCell: ({ studyLocusId, l2GPredictions }) => {
+        if (!l2GPredictions || !l2GPredictions.rows.length) return naLabel;
         const score = l2GPredictions?.rows[0]?.score;
-        const { target } = l2GPredictions?.rows[0];
         if (!score) return naLabel;
+        const { target } = l2GPredictions?.rows[0];
         return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} targetId={target.id} />;
       },
       exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
@@ -292,20 +286,13 @@ function Body({ id, entity }: BodyProps) {
     index: 0,
   };
 
-  const [request, setRequest] = useState<responseType>(initialResponse);
-
-  const getAllGwasData = useBatchQuery({
+  const request = useBatchQuery({
+    id,
     query: GWAS_CREDIBLE_SETS_QUERY,
     variables,
-    dataPath: "data.variant.gwasCredibleSets",
+    dataPath: "variant.gwasCredibleSets",
     size: table5HChunkSize,
   });
-
-  useEffect(() => {
-    getAllGwasData().then(r => {
-      setRequest(r);
-    });
-  }, [id]);
 
   return (
     <SectionItem
