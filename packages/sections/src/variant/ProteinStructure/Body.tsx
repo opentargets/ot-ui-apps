@@ -275,16 +275,16 @@ function Body({ id: variantId, entity }) {
           variantId={gqlData?.id}
           referenceAllele={gqlData?.referenceAllele}
           alternateAllele={gqlData?.alternateAllele}
-          targetId={proteinCodingCoordinates?.targetId}
+          targetId={proteinCodingCoordinates?.target?.approvedSymbol}
+          targetApprovedSymbol={proteinCodingCoordinates?.target?.approvedSymbol}
         />
       )}
       renderBody={() => (
         <Box>
           <Box position="relative" pb={2}>
             <Typography variant="body2" sx={{ pb: 1 }}>
-              AlphaFold prediction with reference allele of variant highlighted. Maximum variant
-              effect for position: {maxVariantEffect?.value?.toFixed(2)} ({maxVariantEffect?.method}
-              ).
+              AlphaFold prediction with reference allele of variant highlighted. What else from API
+              do we want here or in subheader above?
             </Typography>
             <Box ref={viewerRef} position="relative" width="100%" height="400px">
               <Typography

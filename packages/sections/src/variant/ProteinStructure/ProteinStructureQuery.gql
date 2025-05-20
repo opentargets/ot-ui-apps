@@ -7,20 +7,15 @@ query ProteinStructureQuery($variantId: String!) {
     proteinCodingCoordinates {
       count
       rows {
-        evidenceSources {
-          evidenceCount
-          datasourceId
-        }
         uniprotAccessions
-        alternateAmionAcid
-        variantId
-        targetId
-        aminoAcidPosition
-        maxVariantEffectForPosition {
-          value
-          method
+        variant {
+          id
         }
-        referenceAmionAcid
+        target {
+          id
+          approvedSymbol
+        }
+        referenceAminoAcid
       }
     }
   }

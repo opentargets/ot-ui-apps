@@ -8,7 +8,13 @@ type DescriptionProps = {
 };
 
 // !! HARD CODE SOME OF DESCRIPTIPN FOR NOW !!
-function Description({ variantId, referenceAllele, alternateAllele, targetId }: DescriptionProps) {
+function Description({
+  variantId,
+  referenceAllele,
+  alternateAllele,
+  targetId,
+  targetApprovedSymbol,
+}: DescriptionProps) {
   return (
     <>
       Variant{" "}
@@ -19,7 +25,7 @@ function Description({ variantId, referenceAllele, alternateAllele, targetId }: 
           alternateAllele={alternateAllele}
         />
       </strong>{" "}
-      overlaps <Link to={`/target/${targetId}`}>{targetId}</Link> at positions XXXX. Source:{" "}
+      overlaps <Link to={`/target/${targetId}`}>{targetApprovedSymbol}</Link>. Source:{" "}
       <Link to="/">Open Targets</Link> and{" "}
       <Link external to="https://www.uniprot.org/">
         UniProt
