@@ -70,16 +70,16 @@ function GlobalSearchList({ inputValue }) {
     selected = index;
     const items = document.querySelectorAll(".search-list-item");
     if (items.length) {
-      items.forEach((el) => {
+      for (const el of items) {
         el.classList.remove("search-list-item-active");
-      });
+      }
       items[index].classList.add("search-list-item-active");
       items[index].scrollIntoView({
         behavior: "smooth",
         block: index ? "center" : "end",
       });
     }
-  }, []);
+  });
 
   const onKeyDownHandler = useCallback((e) => {
     if (e.key === "Escape") {
@@ -102,12 +102,12 @@ function GlobalSearchList({ inputValue }) {
       e.preventDefault();
       e.stopPropagation();
     }
-  }, []);
+  });
 
   const handleItemClick = useCallback((item) => {
     setOpen(false);
     openListItem(item);
-  }, []);
+  });
 
   function fetchSearchResults() {
     setLoading(true);
@@ -197,7 +197,7 @@ function GlobalSearchList({ inputValue }) {
       document.removeEventListener("keydown", onKeyDownHandler);
       window.addEventListener("storage", handleChangeInRecentItems);
     };
-  }, []);
+  });
 
   const inputMatchVariant = validateVariantIdInput(inputValue, searchResult, isResultEmpty());
 

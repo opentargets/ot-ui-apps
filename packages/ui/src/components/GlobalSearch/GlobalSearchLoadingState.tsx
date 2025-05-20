@@ -1,4 +1,5 @@
 import { Grid, Grow, Skeleton } from "@mui/material";
+import { v1 } from "uuid";
 
 function GlobalSearchLoadingState() {
   const listItemsToShow = new Array<number>(4).fill(0);
@@ -17,9 +18,9 @@ function GlobalSearchLoadingState() {
             <Skeleton animation="wave" variant="circular" width="2rem" height="2rem" />
             <Skeleton variant="text" animation="wave" width="10vw" height="3vh" />
           </Grid>
-          {listItemsToShow.map((_item, index) => (
+          {listItemsToShow.map((_item) => (
             <Grid
-              key={index}
+              key={v1()}
               container
               justifyContent="flex-start"
               alignItems="center"

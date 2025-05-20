@@ -29,16 +29,15 @@ function GlobalSearch({ isHomePage }) {
     }),
   };
 
-  function monitorCmdK(event) {
-    // open on cmd + k
-    if (event.metaKey === true && event.code === "KeyK") {
-      event.stopPropagation();
-      event.preventDefault();
-      setOpen(true);
-    }
-  }
-
   useEffect(() => {
+    function monitorCmdK(event) {
+      // open on cmd + k
+      if (event.metaKey === true && event.code === "KeyK") {
+        event.stopPropagation();
+        event.preventDefault();
+        setOpen(true);
+      }
+    }
     document.addEventListener("keydown", monitorCmdK);
     return () => {
       document.removeEventListener("keydown", monitorCmdK);

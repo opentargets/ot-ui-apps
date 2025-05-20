@@ -6,6 +6,7 @@ import { makeStyles } from "@mui/styles";
 import { EmailLink } from "./EmailLink";
 import Link from "./Link";
 
+import { v1 } from "uuid";
 import { useConfigContext } from "../providers/ConfigurationProvider";
 import PrivateWrapper from "./PrivateWrapper";
 
@@ -85,10 +86,10 @@ const FooterSocial = ({ social }: FooterSocialProps) => {
     <>
       <FooterSectionHeading>Follow us</FooterSectionHeading>
       <Grid className={classes.iconsContainer} container justifyContent="space-between">
-        {socialsWithIcons.map(({ icon, url, label }, i) => (
-          <Grid item key={i}>
+        {socialsWithIcons.map(({ icon, url, label }) => (
+          <Grid item key={v1()}>
             <Link external footer to={url} ariaLabel={label}>
-              <FontAwesomeIcon className={classes.socialIcon} icon={icon!} />
+              <FontAwesomeIcon className={classes.socialIcon} icon={icon} />
             </Link>
           </Grid>
         ))}
@@ -115,15 +116,15 @@ const FooterSection = ({ heading, links, social, children }: FooterSectionProps)
     <Grid item xs={12} sm={6} md={3} container direction="column" justifyContent="space-between">
       <Grid item className={classes.section}>
         <FooterSectionHeading>{heading}</FooterSectionHeading>
-        {links.map((link, i) => {
+        {links.map((link) => {
           if (link.showOnlyPartner) {
             return (
-              <PrivateWrapper key={i}>
+              <PrivateWrapper key={v1()}>
                 <FooterLink label={link.label} url={link.url} icon={link.icon} />
               </PrivateWrapper>
             );
           }
-          return <FooterLink key={i} label={link.label} url={link.url} icon={link.icon} />;
+          return <FooterLink key={v1()} label={link.label} url={link.url} icon={link.icon} />;
         })}
       </Grid>
 
@@ -175,16 +176,16 @@ const LicenseCC0 = ({ link }: LicenseCC0Props) => {
         >
           CC0 1.0
           <img
-            alt="cc0 license image 1"
-            aria-label="cc0 license image 1"
+            alt="cc0 license icon 1"
+            aria-label="cc0 license icon 1"
             className={classes.icon}
             src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
             height="22px"
             width="22px"
           />
           <img
-            alt="cc0 license image 2"
-            aria-label="cc0 license image 2"
+            alt="cc0 license icon 2"
+            aria-label="cc0 license icon 2"
             className={classes.icon}
             src="https://mirrors.creativecommons.org/presskit/icons/zero.svg?ref=chooser-v1"
             height="22px"

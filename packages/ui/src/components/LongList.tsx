@@ -14,8 +14,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 type LongListProps = {
   maxTerms?: number;
-  render: (item?: any, index?: number) => ReactNode;
-  terms: any[];
+  render: (item?: string | Record<string, unknown>, index?: number) => ReactNode;
+  terms: Array<Record<string, unknown> | string>;
 };
 
 function LongList({ terms, render, maxTerms = 10 }: LongListProps): ReactNode {

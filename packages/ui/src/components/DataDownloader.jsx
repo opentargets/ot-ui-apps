@@ -26,12 +26,18 @@ const asJSON = (columns, rows) => {
 
       const newLabel = _.camelCase(newKey.exportLabel || newKey.label || newKey.id);
 
-      return {
-        ...accumulator,
-        [newLabel]: newKey.exportValue
-          ? newKey.exportValue(row)
-          : _.get(row, newKey.propertyPath || newKey.id, ""),
-      };
+      // return {
+      //   ...accumulator,
+      //   [newLabel]: newKey.exportValue
+      //     ? newKey.exportValue(row)
+      //     : _.get(row, newKey.propertyPath || newKey.id, ""),
+      // };
+
+      accumulator[newLabel] = newKey.exportValue
+        ? newKey.exportValue(row)
+        : _.get(row, newKey.propertyPath || newKey.id, "");
+
+      return accumulator;
     }, {})
   );
 
@@ -56,7 +62,10 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
 
       const newLabel = quoteString(_.camelCase(column.exportLabel || column.label || column.id));
 
-      return [...accHeaderString, newLabel];
+      // return [...accHeaderString, newLabel];
+
+      accHeaderString.push(newLabel);
+      return accHeaderString;
     }, [])
     .join(separator);
 
@@ -72,7 +81,10 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
               : _.get(row, column.propertyPath || column.id, "")
           );
 
-          return [...rowString, newValue];
+          // return [...rowString, newValue];
+
+          rowString.push(newValue);
+          return rowString;
         }, [])
         .join(separator)
     )

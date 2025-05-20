@@ -22,18 +22,32 @@ const mapStandardKeys = (originalKey) => {
 const flattenObj = (ob) => {
   const result = {};
 
-  Object.entries(ob).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(ob)) {
     if (value && typeof value === "object" && !Array.isArray(value)) {
       const temp = flattenObj(value);
-      Object.entries(temp).forEach(([nestedKey, nestedValue]) => {
+
+      for (const [nestedKey, nestedValue] of Object.entries(temp)) {
         result[nestedKey] = nestedValue;
-      });
+      }
     } else if (key === "functionDescriptions") {
       result[mapStandardKeys(key)] = value[0];
     } else {
       result[mapStandardKeys(key)] = value;
     }
-  });
+  }
+
+  // Object.entries(ob).forEach(([key, value]) => {
+  //   if (value && typeof value === "object" && !Array.isArray(value)) {
+  //     const temp = flattenObj(value);
+  //     Object.entries(temp).forEach(([nestedKey, nestedValue]) => {
+  //       result[nestedKey] = nestedValue;
+  //     });
+  //   } else if (key === "functionDescriptions") {
+  //     result[mapStandardKeys(key)] = value[0];
+  //   } else {
+  //     result[mapStandardKeys(key)] = value;
+  //   }
+  // });
   return result;
 };
 
@@ -50,7 +64,7 @@ const exceedsArrayLengthLimit = (array) => {
 export const formatSearchData = (unformattedData) => {
   const formattedData = {};
 
-  Object.entries(unformattedData).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(unformattedData)) {
     const typesArray = [];
 
     value.hits.map((i) =>
@@ -62,7 +76,21 @@ export const formatSearchData = (unformattedData) => {
     );
 
     if (typesArray.length > 0) formattedData[key] = typesArray;
-  });
+  }
+
+  // Object.entries(unformattedData).forEach(([key, value]) => {
+  //   const typesArray = [];
+
+  //   value.hits.map((i) =>
+  //     typesArray.push({
+  //       type: key === "topHit" ? "topHit" : i.entity,
+  //       entity: i.entity,
+  //       ...flattenObj(i.object),
+  //     })
+  //   );
+
+  //   if (typesArray.length > 0) formattedData[key] = typesArray;
+  // });
 
   return formattedData;
 };
