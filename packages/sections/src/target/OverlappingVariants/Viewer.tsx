@@ -2,7 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { createViewer } from "3dmol";
 import { useStateValue, useActions } from "./Context";
 import { useState, useEffect, useRef } from "react";
-import { AlphaFoldLegend } from "ui";
+import { CompactAlphaFoldLegend } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -13,7 +13,7 @@ import {
 } from "./viewerHandlers";
 
 export default function Viewer() {
-  const viewerHeight = "400px";
+  const viewerHeight = "480px";
 
   const viewerRef = useRef(null);
 
@@ -153,9 +153,9 @@ export default function Viewer() {
         position="relative"
         width="100%"
         height={viewerHeight}
-        mb={2}
+        mb={1}
       />
-      <AlphaFoldLegend />
+      <CompactAlphaFoldLegend />
       {atomInfo && (
         <Box
           position="absolute"
