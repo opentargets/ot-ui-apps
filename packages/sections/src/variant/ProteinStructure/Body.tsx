@@ -16,39 +16,24 @@ const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
 
 function Body({ id: variantId, entity }) {
-  const [structureLoading, setStructureLoading] = useState(true);
+  const [messageText, setMessageText] = useState("Loading structure ...");
+  const [hoveredAtom, setHoveredAtom] = useState(null);
   const viewerRef = useRef(null);
-  const messageRef = useRef(null);
-  const atomInfoRef = useRef(null);
 
   const variables = { variantId };
   const request = useQuery(PROTEIN_STRUCTURE_QUERY, {
     variables,
   });
-  let proteinCodingCoordinates, maxVariantEffect, variantResidues;
+  let proteinCodingCoordinates, variantResidues;
   const gqlData = request?.data?.variant;
   if (gqlData) {
     proteinCodingCoordinates = gqlData.proteinCodingCoordinates?.rows?.[0];
-    maxVariantEffect = proteinCodingCoordinates?.maxVariantEffectForPosition;
-    variantResidues = new Set(
-      gqlData.referenceAllele.split("").map((v, i) => {
-        return i + proteinCodingCoordinates.aminoAcidPosition;
-      })
-    );
-  }
-
-  function showLoadingMessage(message = "Loading structure ...") {
-    if (messageRef.current) {
-      setStructureLoading(true);
-      messageRef.current.style.display = "flex";
-      messageRef.current.textContent = message;
-    }
-  }
-
-  function hideLoadingMessage() {
-    if (messageRef.current) {
-      messageRef.current.style.display = "none";
-      setStructureLoading(false);
+    if (proteinCodingCoordinates) {
+      variantResidues = new Set(
+        gqlData.referenceAllele.split("").map((v, i) => {
+          return i + proteinCodingCoordinates.aminoAcidPosition;
+        })
+      );
     }
   }
 
@@ -122,7 +107,7 @@ function Body({ id: variantId, entity }) {
     );
   }
 
-  function setNoHoverStyle(viewer) {
+  function noHoverStyle(viewer) {
     viewer.setStyle(
       {},
       {
@@ -135,12 +120,14 @@ function Body({ id: variantId, entity }) {
     addVariantStyle(viewer);
   }
 
-  function hoverManagerFactory({ viewer, atomInfoRef }) {
+  // function hoverManagerFactory({ viewer, atomInfoRef }) {
+  function hoverManagerFactory({ viewer }) {
     let currentResi = null;
 
     function handleHover(atom) {
       if (!atom || currentResi === atom.resi) return;
       // const atomInVariant = variantResidues.has(atom.resi);
+      setHoveredAtom(atom);
       const hslColor = hsl(getAlphaFoldConfidence(atom, "color"));
       hslColor.l += hslColor.l > 0.6 ? 0.1 : 0.2;
       const afColorLight = hslColor.toString();
@@ -165,22 +152,16 @@ function Body({ id: variantId, entity }) {
       );
       currentResi = atom.resi;
       viewer.render();
-      const infoElmt = atomInfoRef.current;
-      if (infoElmt) {
-        infoElmt.style.display = "block";
-        const fieldElmts = [...infoElmt.querySelectorAll("p")];
-        fieldElmts[0].textContent = `${atom.resn} ${atom.resi}`;
-        fieldElmts[1].textContent = `Confidence: ${atom.b} (${getAlphaFoldConfidence(atom)})`;
-      }
     }
 
     function handleUnhover(atom) {
       if (currentResi !== null) {
-        setNoHoverStyle(viewer);
+        noHoverStyle(viewer);
         // if (currentSurface) viewer.removeSurface(currentSurface);
         currentResi = null;
-        if (atomInfoRef.current) atomInfoRef.current.style.display = "none";
+        // if (atomInfoRef.current) atomInfoRef.current.style.display = "none";
         viewer.render();
+        setHoveredAtom(null);
       }
     }
 
@@ -190,80 +171,87 @@ function Body({ id: variantId, entity }) {
   // fetch AlphaFold structure and view it
   useEffect(() => {
     let viewer;
-    async function fetchStructure() {
-      showLoadingMessage();
-      let data, response;
+    if (proteinCodingCoordinates) {
+      async function fetchStructure() {
+        let structureData, response;
 
-      async function fetchStructureFile(uniprotId) {
-        const pdbUri = `${alphaFoldStructureStem}AF-${uniprotId}-F1${alphaFoldStructureSuffix}`;
-        let newResponse;
-        try {
-          newResponse = await fetch(pdbUri);
-          if (newResponse?.ok) response = newResponse;
-        } catch (error) {}
-      }
+        async function fetchStructureFile(uniprotId) {
+          const pdbUri = `${alphaFoldStructureStem}AF-${uniprotId}-F1${alphaFoldStructureSuffix}`;
+          let newResponse;
+          try {
+            newResponse = await fetch(pdbUri);
+            if (newResponse?.ok) response = newResponse;
+          } catch (error) {}
+        }
 
-      // fetch structure data
-      const uniprotIds = [...(proteinCodingCoordinates?.uniprotAccessions ?? [])];
-      while (!response && uniprotIds.length) {
-        await fetchStructureFile(uniprotIds.shift());
-      }
+        // fetch structure data
+        const uniprotIds = [...(proteinCodingCoordinates?.uniprotAccessions ?? [])];
+        while (!response && uniprotIds.length) {
+          await fetchStructureFile(uniprotIds.shift());
+        }
 
-      // parse data
-      if (response) {
-        try {
-          data = await response.text();
-        } catch (error) {
-          console.error(error.message);
-          showLoadingMessage("Failed to parse structure data");
+        // parse structure data
+        if (response) {
+          try {
+            structureData = await response.text();
+          } catch (error) {
+            console.error(error.message);
+            setMessageText("Failed to parse structure data");
+          }
+        } else {
+          setMessageText("AlphaFold structure not available");
+        }
+
+        // view data
+        if (structureData && viewerRef.current) {
+          viewer = createViewer(viewerRef.current.querySelector(".viewerContainer"), {
+            backgroundColor: "#f8f8f8",
+            antialias: true,
+            cartoonQuality: 10,
+          });
+          window.viewer = viewer; // !! REMOVE !!
+          const hoverDuration = 10;
+          viewer.getCanvas().ondblclick = () => resetViewer(viewer, 200); // use ondblclick so replaces existing
+          viewer.addModel(structureData, "cif");
+          viewer.setHoverDuration(hoverDuration);
+          const hoverArgs = hoverManagerFactory({ viewer });
+          // const hoverArgs = hoverManagerFactory({ viewer, atomInfoRef });
+          const handleUnhover = hoverArgs[3];
+          viewer.getCanvas().onmouseleave = () => {
+            setTimeout(handleUnhover, hoverDuration + 50);
+          };
+          viewer.setHoverable(...hoverArgs);
+          noHoverStyle(viewer);
+          // viewer.addSurface(
+          //   "VDW",
+          //   {
+          //     opacity: 1,
+          //     opacity: 0.65,
+          //     color: "#fff",
+          //     // color: {'prop': 'b', map:elementColors.greenCarbon}
+          //   },
+          //   {}
+          // );
+          viewer.addSurface(
+            "VDW",
+            { opacity: 0.75, color: "#0f0" },
+            { resi: [...variantResidues] }
+          );
+          resetViewer(viewer);
+          viewer.zoom(0.2);
+          viewer.render();
+          // hideLoadingMessage();
+          setMessageText("");
         }
       }
-
-      // view data
-      if (data && viewerRef.current) {
-        viewer = createViewer(viewerRef.current, {
-          backgroundColor: "#f8f8f8",
-          antialias: true,
-          cartoonQuality: 10,
-        });
-        window.viewer = viewer; // !! REMOVE !!
-        const hoverDuration = 10;
-        viewer.getCanvas().ondblclick = () => resetViewer(viewer, 200); // use ondblclick so replaces existing
-        viewer.addModel(data, "cif"); /* load data */
-        viewer.setHoverDuration(hoverDuration);
-        const hoverArgs = hoverManagerFactory({ viewer, atomInfoRef });
-        const hideAtomInfo = hoverArgs[3];
-        viewer.getCanvas().onmouseleave = () => {
-          setTimeout(hideAtomInfo, hoverDuration + 50);
-        };
-        viewer.setHoverable(...hoverArgs);
-        setNoHoverStyle(viewer);
-        // viewer.addSurface(
-        //   "VDW",
-        //   {
-        //     opacity: 1,
-        //     opacity: 0.65,
-        //     color: "#fff",
-        //     // color: {'prop': 'b', map:elementColors.greenCarbon}
-        //   },
-        //   {}
-        // );
-        viewer.addSurface("VDW", { opacity: 0.75, color: "#0f0" }, { resi: [...variantResidues] });
-        resetViewer(viewer);
-        viewer.zoom(0.2);
-        viewer.render();
-        hideLoadingMessage();
-      }
+      fetchStructure();
+      return () => {
+        // hideAtomInfo();
+        setHoveredAtom("");
+        viewer?.clear();
+      };
     }
-    fetchStructure();
-    return () => {
-      // hideAtomInfo();
-      viewer?.clear();
-    };
-    // !! DODGY TO LOCAL VARIABLE AS DE. HOW SHOLD KNOW WHEN REQUEST FULFILLED?
   }, [proteinCodingCoordinates]);
-
-  // if (!response) return null;
 
   return (
     <SectionItem
@@ -280,29 +268,17 @@ function Body({ id: variantId, entity }) {
         />
       )}
       renderBody={() => (
-        <Box>
-          <Box position="relative" pb={1}>
-            <Typography variant="body2" sx={{ pb: 1 }}>
-              AlphaFold prediction with reference allele of variant highlighted. What else from API
-              do we want here or in subheader above?
-            </Typography>
-            <Box ref={viewerRef} position="relative" width="100%" height="400px">
-              <Typography
-                ref={messageRef}
-                variant="body2"
-                component="div"
-                sx={{
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  position: "absolute",
-                  zIndex: 1,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              />
+        <Box ref={viewerRef} position="relative" width="100%">
+          {/* info text */}
+          <Typography variant="body2" sx={{ pb: 1 }}>
+            AlphaFold prediction with reference allele of variant highlighted. What else from API do
+            we want here or in subheader above?
+          </Typography>
+
+          {/* container to insert viewer into */}
+          <Box className="viewerContainer" position="relative" width="100%" height={380} mb={1}>
+            {/* screenshot button */}
+            {!messageText && (
               <Box
                 sx={{
                   top: 0,
@@ -318,14 +294,17 @@ function Body({ id: variantId, entity }) {
               >
                 <Button
                   sx={{ display: "flex", gap: 1 }}
-                  disabled={structureLoading}
-                  onClick={onClickCapture}
+                  onClick={() => onClickCapture(viewerRef, state.data.id)}
                 >
                   <FontAwesomeIcon icon={faCamera} /> Screenshot
                 </Button>
               </Box>
+            )}
+
+            {/* atom info */}
+            {hoveredAtom && (
               <Box
-                ref={atomInfoRef}
+                // ref={atomInfoRef}
                 position="absolute"
                 bottom={0}
                 right={0}
@@ -336,13 +315,41 @@ function Body({ id: variantId, entity }) {
                 fontSize={14}
               >
                 <Box display="flex" flexDirection="column">
-                  <Typography variant="caption" component="p" textAlign="right" />
-                  <Typography variant="caption" component="p" textAlign="right" />
+                  <Typography variant="caption" component="p" textAlign="right">
+                    {hoveredAtom.resn} {hoveredAtom.resi}
+                  </Typography>
+                  <Typography variant="caption" component="p" textAlign="right">
+                    Confidence: {hoveredAtom.b} ({getAlphaFoldConfidence(hoveredAtom)})
+                  </Typography>
                 </Box>
               </Box>
-            </Box>
+            )}
           </Box>
+
+          {/* AlphaFold legend */}
           <CompactAlphaFoldLegend />
+
+          {/* message text */}
+          {messageText && (
+            <Typography
+              variant="body2"
+              component="div"
+              sx={{
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                position: "absolute",
+                zIndex: 1,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#f8f8f8",
+              }}
+            >
+              {messageText}
+            </Typography>
+          )}
         </Box>
       )}
     />
