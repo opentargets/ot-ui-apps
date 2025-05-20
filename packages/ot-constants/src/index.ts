@@ -55,7 +55,7 @@ export const externalLinks = {
     },
     {
       label: "Privacy notice",
-      url: "https://www.ebi.ac.uk/data-protection/privacy-notice/open-targets",
+      url: "https://www.ebi.ac.uk/data-protection/privacy-notice/embl-ebi-public-website/",
     },
     {
       label: "Terms of use",
