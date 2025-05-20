@@ -1,11 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import { alphaFoldConfidenceBands } from "@ot/constants";
 
-export default function AlphaFoldLegend() {
+export default function AlphaFoldLegend({ showTitle = true }) {
   return (
     <Box display="flex">
       <Box display="flex" flexDirection="column" ml={2} gap={0.75}>
-        <Typography variant="subtitle2">Model Confidence</Typography>
+        {showTitle && <Typography variant="subtitle2">Model Confidence</Typography>}
         <Box display="flex" gap={3.5}>
           {alphaFoldConfidenceBands.map(({ label, sublabel, color }) => (
             <Box key={label}>

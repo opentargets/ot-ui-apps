@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem, AlphaFoldLegend } from "ui";
+import { SectionItem, CompactAlphaFoldLegend } from "ui";
 import { Box, Button, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
@@ -281,7 +281,7 @@ function Body({ id: variantId, entity }) {
       )}
       renderBody={() => (
         <Box>
-          <Box position="relative" pb={2}>
+          <Box position="relative" pb={1}>
             <Typography variant="body2" sx={{ pb: 1 }}>
               AlphaFold prediction with reference allele of variant highlighted. What else from API
               do we want here or in subheader above?
@@ -342,7 +342,7 @@ function Body({ id: variantId, entity }) {
               </Box>
             </Box>
           </Box>
-          <AlphaFoldLegend />
+          <CompactAlphaFoldLegend />
         </Box>
       )}
     />
