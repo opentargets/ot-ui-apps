@@ -50,6 +50,8 @@ export { default as OtTableSSP } from "./components/OtTable/OtTableSSP";
 export { default as EntityPanel } from "./components/EntityPanel/EntityPanel";
 export { default as Page } from "./pages/Page";
 export { default as StudyPublication } from "./components/StudyPublication";
+export { default as AlphaFoldLegend } from "./components/AlphaFoldLegend";
+export { default as CompactAlphaFoldLegend } from "./components/CompactAlphaFoldLegend";
 export { default as OtCodeBlock } from "./components/OtCodeBlock";
 export { default as OtInvalidResultFilters } from "./components/OtInvalidResultFilters";
 
