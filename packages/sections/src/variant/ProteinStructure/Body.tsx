@@ -326,7 +326,6 @@ function Body({ id: variantId, entity }) {
             )}
           </Box>
 
-          {/* AlphaFold legend */}
           <CompactAlphaFoldLegend />
 
           {/* message text */}
