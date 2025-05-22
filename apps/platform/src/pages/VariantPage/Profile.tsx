@@ -18,6 +18,7 @@ import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary
 import ProteinSummary from "sections/src/variant/Protein/Summary";
 
 import ProfileHeader from "./ProfileHeader";
+import { Box, Grid } from "@mui/material";
 const ProteinSection = lazy(() => import("sections/src/variant/Protein/Body"));
 const PharmacogenomicsSection = lazy(() => import("sections/src/variant/Pharmacogenomics/Body"));
 const VariantEffectSection = lazy(() => import("sections/src/variant/VariantEffect/Body"));
@@ -79,12 +80,16 @@ function Profile({ varId }: ProfileProps) {
       </SummaryContainer>
 
       <SectionContainer>
-        <Suspense fallback={<SectionLoader />}>
-          <VariantEffectSection id={varId} entity={VARIANT} />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <ProteinSection id={varId} entity={VARIANT} />
-        </Suspense>
+        <Grid item>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Suspense fallback={<SectionLoader />}>
+              <VariantEffectSection id={varId} entity={VARIANT} />
+            </Suspense>
+            <Suspense fallback={<SectionLoader />}>
+              <ProteinSection id={varId} entity={VARIANT} />
+            </Suspense>
+          </Box>
+        </Grid>
         <Suspense fallback={<SectionLoader />}>
           <VariantEffectPredictorSection id={varId} entity={VARIANT} />
         </Suspense>

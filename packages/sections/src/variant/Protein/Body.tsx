@@ -112,11 +112,8 @@ export function Body({ id, entity }: BodyProps): ReactElement {
                 columns={columns}
               />
             </Box>
-            <Grid container columnSpacing={2}>
-              <Grid item xs={12} lg={12} xl={6}>
-                <Viewer row={proteinCodingCoordinatesRow} />
-              </Grid>
-            </Grid>
+
+            <Viewer row={proteinCodingCoordinatesRow} />
           </>
         );
       }}
