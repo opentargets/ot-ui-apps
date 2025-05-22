@@ -80,7 +80,7 @@ export function Body({ id, entity }: BodyProps): ReactElement {
       definition={definition}
       request={request}
       entity={entity}
-      defaultView={VIEW.chart}
+      // defaultView={VIEW.chart}
       renderDescription={() => (
         <Description
           variantId={request.data?.variant.id}
@@ -90,7 +90,7 @@ export function Body({ id, entity }: BodyProps): ReactElement {
       )}
       // !! SHOULD CONDITIONALLY RENDER THE VIEWER ONLY IF ROW IS TRUTHY ?? !!
       // - AND RENDER CHART AT FULL WIDTH IF IS NOT
-      renderChart={() => {
+      renderBody={() => {
         return (
           <>
             <Box
@@ -100,6 +100,8 @@ export function Body({ id, entity }: BodyProps): ReactElement {
                 display: "flex",
                 justifyContent: "flex-end",
                 gap: 1,
+                mb: 2,
+                mt: 1,
               }}
             >
               <DataDownloader
@@ -112,32 +114,24 @@ export function Body({ id, entity }: BodyProps): ReactElement {
             </Box>
             <Grid container columnSpacing={2}>
               <Grid item xs={12} lg={12} xl={6}>
-                <VariantEffectPlot
-                  data={rows}
-                  query={VARIANT_EFFECT_QUERY.loc.source.body}
-                  variables={variables}
-                  columns={columns}
-                />
-              </Grid>
-              {/* <Grid item xs={12} lg={12} xl={6}>
                 <Viewer row={proteinCodingCoordinatesRow} />
-              </Grid> */}
+              </Grid>
             </Grid>
           </>
         );
       }}
-      renderBody={() => {
-        return (
-          <OtTable
-            columns={columns}
-            rows={rows}
-            dataDownloader
-            query={VARIANT_EFFECT_QUERY.loc.source.body}
-            variables={variables}
-            loading={request.loading}
-          />
-        );
-      }}
+      // renderBody={() => {
+      //   return (
+      //     <OtTable
+      //       columns={columns}
+      //       rows={rows}
+      //       dataDownloader
+      //       query={VARIANT_EFFECT_QUERY.loc.source.body}
+      //       variables={variables}
+      //       loading={request.loading}
+      //     />
+      //   );
+      // }}
     />
   );
 }

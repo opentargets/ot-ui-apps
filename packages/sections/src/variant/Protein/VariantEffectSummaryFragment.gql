@@ -1,0 +1,5 @@
+fragment VariantEffectSummaryFragment on Variant {
+  variantEffect {
+    method
+  }
+}

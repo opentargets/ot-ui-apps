@@ -1,0 +1,29 @@
+query VariantEffectQuery($variantId: String!) {
+  variant(variantId: $variantId) {
+    id
+    variantEffect {
+      method
+      assessment
+      score
+      assessmentFlag
+      normalisedScore
+    }
+    referenceAllele
+    alternateAllele
+    proteinCodingCoordinates {
+      count
+      rows {
+        uniprotAccessions
+        variant {
+          id
+        }
+        target {
+          id
+          approvedSymbol
+        }
+        referenceAminoAcid
+        aminoAcidPosition
+      }
+    }
+  }
+}

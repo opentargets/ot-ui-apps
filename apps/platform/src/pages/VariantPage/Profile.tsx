@@ -15,8 +15,10 @@ import EVASummary from "sections/src/variant/EVA/Summary";
 import UniProtVariantsSummary from "sections/src/variant/UniProtVariants/Summary";
 import GWASCredibleSetsSummary from "sections/src/variant/GWASCredibleSets/Summary";
 import QTLCredibleSetsSummary from "sections/src/variant/QTLCredibleSets/Summary";
+import ProteinSummary from "sections/src/variant/Protein/Summary";
 
 import ProfileHeader from "./ProfileHeader";
+const ProteinSection = lazy(() => import("sections/src/variant/Protein/Body"));
 const PharmacogenomicsSection = lazy(() => import("sections/src/variant/Pharmacogenomics/Body"));
 const VariantEffectSection = lazy(() => import("sections/src/variant/VariantEffect/Body"));
 const VariantEffectPredictorSection = lazy(
@@ -35,6 +37,7 @@ const summaries = [
   UniProtVariantsSummary,
   GWASCredibleSetsSummary,
   QTLCredibleSetsSummary,
+  ProteinSummary,
 ];
 
 const VARIANT = "variant";
@@ -66,6 +69,7 @@ function Profile({ varId }: ProfileProps) {
 
       <SummaryContainer>
         <VariantEffectSummary />
+        <ProteinSummary />
         <VariantEffectPredictorSummary />
         <EVASummary />
         <UniProtVariantsSummary />
@@ -77,6 +81,9 @@ function Profile({ varId }: ProfileProps) {
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
           <VariantEffectSection id={varId} entity={VARIANT} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <ProteinSection id={varId} entity={VARIANT} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <VariantEffectPredictorSection id={varId} entity={VARIANT} />
