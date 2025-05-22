@@ -18,8 +18,6 @@ const StickyLeftTh = styled("th")(({ theme }) => ({
 }));
 
 const StickyTd = styled("td")(({ theme }) => ({
-  display: "flex",
-  gap: 10,
   left: "0",
   position: "sticky",
   backgroundColor: theme.palette.grey[200],
@@ -76,20 +74,15 @@ function buildSchema(obj, delimiter = "") {
     currentElement = (
       <tr>
         <StickyTd>
-          {DIVIDER}
-          {column.name} <PrimaryKeyIcon isPrimaryKey={isPrimaryKey} />{" "}
-          <ForeignKeyIcon isForeignKey={isForeignKey} />
+          <Box sx={{ display: "flex", gap: 2 }}>
+            {DIVIDER}
+            {column.name} <PrimaryKeyIcon isPrimaryKey={isPrimaryKey} />{" "}
+            <ForeignKeyIcon isForeignKey={isForeignKey} />
+          </Box>
         </StickyTd>
         <Box component="td" sx={{ whiteSpace: "nowrap" }}>
-          {/* <Box sx={{ textAlign: "right", whiteSpace: "nowrap" }}>{dataType}</Box>{" "} */}
           {dataType}
         </Box>
-        {/* <td>
-          <PrimaryKeyIcon isPrimaryKey={isPrimaryKey} />
-        </td>
-        <td>
-          <ForeignKeyIcon isForeignKey={isForeignKey} />
-        </td> */}
         <td>
           <Box sx={{ whiteSpace: "nowrap" }}>{column.description}</Box>
         </td>
