@@ -10,5 +10,20 @@ query VariantEffectQuery($variantId: String!) {
     }
     referenceAllele
     alternateAllele
+    proteinCodingCoordinates {
+      count
+      rows {
+        uniprotAccessions
+        variant {
+          id
+        }
+        target {
+          id
+          approvedSymbol
+        }
+        referenceAminoAcid
+        aminoAcidPosition
+      }
+    }
   }
 }

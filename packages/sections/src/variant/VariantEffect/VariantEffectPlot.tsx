@@ -26,9 +26,9 @@ function VariantEffectPlot({ data, query, variables, columns, loading }) {
   if (loading) return <Skeleton sx={{ height: 325 }} variant="rectangular" />;
   return (
     <div>
-      <Box>
+      {/* <Box>
         <ChartControls data={data} query={query} variables={variables} columns={columns} />
-      </Box>
+      </Box> */}
       <Box sx={{ width: "90%", margin: "0 auto", mb: 6 }} ref={ref}>
         <Fade in>
           <div>
@@ -40,27 +40,27 @@ function VariantEffectPlot({ data, query, variables, columns, loading }) {
   );
 }
 
-function ChartControls({ data, query, variables, columns }) {
-  return (
-    <Box
-      sx={{
-        borderColor: grey[300],
-        borderRadius: 1,
-        display: "flex",
-        justifyContent: "flex-end",
-        gap: 1,
-      }}
-    >
-      <DataDownloader
-        btnLabel="Export"
-        rows={data}
-        query={query}
-        variables={variables}
-        columns={columns}
-      />
-    </Box>
-  );
-}
+// function ChartControls({ data, query, variables, columns }) {
+//   return (
+//     <Box
+//       sx={{
+//         borderColor: grey[300],
+//         borderRadius: 1,
+//         display: "flex",
+//         justifyContent: "flex-end",
+//         gap: 1,
+//       }}
+//     >
+//       <DataDownloader
+//         btnLabel="Export"
+//         rows={data}
+//         query={query}
+//         variables={variables}
+//         columns={columns}
+//       />
+//     </Box>
+//   );
+// }
 
 const colorScale = PRIORITISATION_COLORS.reverse();
 const getXLabel = (tick: number) => {
