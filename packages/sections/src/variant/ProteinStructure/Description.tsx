@@ -5,6 +5,7 @@ type DescriptionProps = {
   referenceAllele: string;
   alternateAllele: string;
   targetId: string;
+  targetApprovedSymbol: string;
 };
 
 // !! HARD CODE SOME OF DESCRIPTIPN FOR NOW !!

@@ -68,8 +68,8 @@ function Profile({ varId }: ProfileProps) {
       <ProfileHeader />
 
       <SummaryContainer>
-        <ProteinStructureSummary />
         <VariantEffectSummary />
+        <ProteinStructureSummary />
         <VariantEffectPredictorSummary />
         <EVASummary />
         <UniProtVariantsSummary />
@@ -80,10 +80,10 @@ function Profile({ varId }: ProfileProps) {
 
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
-          <ProteinStructureSection id={varId} entity={VARIANT} />
+          <VariantEffectSection id={varId} entity={VARIANT} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
-          <VariantEffectSection id={varId} entity={VARIANT} />
+          <ProteinStructureSection id={varId} entity={VARIANT} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <VariantEffectPredictorSection id={varId} entity={VARIANT} />
