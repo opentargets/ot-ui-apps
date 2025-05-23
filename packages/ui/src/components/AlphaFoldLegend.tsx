@@ -10,7 +10,7 @@ export default function AlphaFoldLegend({ showTitle = true }) {
           {alphaFoldConfidenceBands.map(({ label, sublabel, color }) => (
             <Box key={label}>
               <Box display="flex" gap={0.75} alignItems="center">
-                <Box width="12px" height="12px" bgcolor={color} />
+                <Box width="11px" height="11px" bgcolor={color} borderRadius="2px" />
                 <Box display="flex" flexDirection="column">
                   <Typography variant="caption" fontWeight={500} lineHeight={1}>
                     {label}

@@ -75,27 +75,17 @@ function Viewer({ row }) {
         };
         viewer.setHoverable(...hoverArgs);
         noHoverStyle(viewer, variantResidues);
-        // viewer.addSurface(
-        //   "VDW",
-        //   {
-        //     opacity: 1,
-        //     opacity: 0.65,
-        //     color: "#fff",
-        //     // color: {'prop': 'b', map:elementColors.greenCarbon}
-        //   },
-        //   {}
-        // );
-        viewer.addSurface("VDW", { opacity: 0.75, color: "#0f0" }, { resi: [...variantResidues] });
+        viewer.addSurface("VDW", { opacity: 0.2, opacity: 0.55, color: "#fff" }, {});
+        viewer.addSurface("VDW", { opacity: 1, color: "#0d0" }, { resi: [...variantResidues] });
         resetViewer(viewer, variantResidues);
-        viewer.zoom(0.2);
+        viewer.zoom(0.25);
+        viewer.setZoomLimits(20, 500);
         viewer.render();
-        // hideLoadingMessage();
         setMessageText("");
       }
     }
     fetchStructure();
     return () => {
-      // hideAtomInfo();
       setHoveredAtom("");
       viewer?.clear();
     };
@@ -104,7 +94,7 @@ function Viewer({ row }) {
   return (
     <Box ref={viewerRef} position="relative" width="100%">
       {/* container to insert viewer into */}
-      <Box className="viewerContainer" position="relative" width="100%" height={340} mb={1}>
+      <Box className="viewerContainer" position="relative" width="100%" height={320} mb={1}>
         {/* screenshot button */}
         {!messageText && (
           <Box
@@ -154,7 +144,24 @@ function Viewer({ row }) {
         )}
       </Box>
 
-      <CompactAlphaFoldLegend />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "end",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: 0.75 }}>
+          <Typography variant="caption" lineHeight={1}>
+            Reference amino acid
+          </Typography>
+          <Box sx={{ width: "11px", height: "11px", borderRadius: "5.5px", bgcolor: "#0d0" }} />
+        </Box>
+        <Box ml={3}>
+          <CompactAlphaFoldLegend />
+        </Box>
+      </Box>
 
       {/* message text */}
       {messageText && (
