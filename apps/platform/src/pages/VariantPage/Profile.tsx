@@ -80,16 +80,12 @@ function Profile({ varId }: ProfileProps) {
       </SummaryContainer>
 
       <SectionContainer>
-        <Grid item>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <Suspense fallback={<SectionLoader />}>
-              <VariantEffectSection id={varId} entity={VARIANT} />
-            </Suspense>
-            <Suspense fallback={<SectionLoader />}>
-              <ProteinSection id={varId} entity={VARIANT} />
-            </Suspense>
-          </Box>
-        </Grid>
+        <Suspense fallback={<SectionLoader />}>
+          <VariantEffectSection id={varId} entity={VARIANT} />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <ProteinSection id={varId} entity={VARIANT} />
+        </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <VariantEffectPredictorSection id={varId} entity={VARIANT} />
         </Suspense>

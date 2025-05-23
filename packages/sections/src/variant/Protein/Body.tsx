@@ -80,6 +80,7 @@ export function Body({ id, entity }: BodyProps): ReactElement {
       definition={definition}
       request={request}
       entity={entity}
+      narrow
       // defaultView={VIEW.chart}
       renderDescription={() => (
         <Description
@@ -93,7 +94,7 @@ export function Body({ id, entity }: BodyProps): ReactElement {
       renderBody={() => {
         return (
           <>
-            <Box
+            {/* <Box
               sx={{
                 borderColor: grey[300],
                 borderRadius: 1,
@@ -111,7 +112,7 @@ export function Body({ id, entity }: BodyProps): ReactElement {
                 variables={variables}
                 columns={columns}
               />
-            </Box>
+            </Box> */}
 
             <Viewer row={proteinCodingCoordinatesRow} />
           </>

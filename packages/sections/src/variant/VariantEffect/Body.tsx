@@ -78,6 +78,7 @@ export function Body({ id, entity }: BodyProps): ReactElement {
   return (
     <SectionItem
       definition={definition}
+      narrow
       request={request}
       entity={entity}
       defaultView={VIEW.chart}

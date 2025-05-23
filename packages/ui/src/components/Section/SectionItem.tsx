@@ -26,6 +26,7 @@ type SectionItemProps = {
   renderDescription: () => ReactNode;
   renderChart?: () => ReactNode;
   renderBody: () => ReactNode;
+  narrow: boolean;
   // check tags
   tags: string[];
   chipText: string;
@@ -42,6 +43,7 @@ function SectionItem({
   request,
   renderDescription,
   renderBody,
+  narrow = false,
   chipText,
   entity,
   showEmptySection = false,
@@ -91,10 +93,10 @@ function SectionItem({
   }
 
   return (
-    <Grid item xs={12}>
-      <section>
-        <Element name={definition.id}>
-          <Card elevation={0} variant="outlined">
+    <Grid item xs={12} lg={narrow ? 6 : 12} sx={{ minWidth: 0 }}>
+      <section style={{ height: "100%" }}>
+        <Element name={definition.id} style={{ height: "100%" }}>
+          <Card elevation={0} variant="outlined" sx={{ height: "100%" }}>
             <ErrorBoundary>
               <Box className={classes.cardHeaderContainer}>
                 {/* AVATAR */}
