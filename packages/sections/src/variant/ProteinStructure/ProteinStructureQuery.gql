@@ -1,0 +1,23 @@
+# !! REMOVE UNUSED !!
+query ProteinStructureQuery($variantId: String!) {
+  variant(variantId: $variantId) {
+    id
+    referenceAllele
+    alternateAllele
+    proteinCodingCoordinates {
+      count
+      rows {
+        uniprotAccessions
+        variant {
+          id
+        }
+        target {
+          id
+          approvedSymbol
+        }
+        referenceAminoAcid
+        aminoAcidPosition
+      }
+    }
+  }
+}
