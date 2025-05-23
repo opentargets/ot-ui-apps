@@ -55,7 +55,7 @@ function DownloadsSchemaDialog({ children, currentRowId }) {
         </DialogTitle>
         <DialogContent dividers sx={{ p: 0, pt: 2, mx: 3, mb: 3 }}>
           <Box tabIndex={-1} sx={{ typography: "subtitle2" }}>
-            <OtCodeBlock removePadding>
+            <OtCodeBlock>
               <DownloadsSchemaBuilder data={schemaRow[0]} />
             </OtCodeBlock>
           </Box>
