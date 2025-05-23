@@ -103,14 +103,8 @@ function Viewer({ row }) {
 
   return (
     <Box ref={viewerRef} position="relative" width="100%">
-      {/* info text */}
-      {/* <Typography variant="body2" sx={{ py: 3 }}>
-        AlphaFold prediction with reference allele of variant highlighted. What else from API do we
-        want here or in subheader above?
-      </Typography> */}
-
       {/* container to insert viewer into */}
-      <Box className="viewerContainer" position="relative" width="100%" height={300} mb={1}>
+      <Box className="viewerContainer" position="relative" width="100%" height={340} mb={1}>
         {/* screenshot button */}
         {!messageText && (
           <Box
@@ -163,7 +157,7 @@ function Viewer({ row }) {
       <CompactAlphaFoldLegend />
 
       {/* message text */}
-      {/* {messageText && (
+      {messageText && (
         <Typography
           variant="body2"
           component="div"
@@ -182,7 +176,7 @@ function Viewer({ row }) {
         >
           {messageText}
         </Typography>
-      )} */}
+      )}
     </Box>
   );
 }

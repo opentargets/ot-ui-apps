@@ -32,8 +32,9 @@ export function Body({ id, entity }: BodyProps): ReactElement {
           variantId={variant?.id}
           referenceAllele={variant?.referenceAllele}
           alternateAllele={variant?.alternateAllele}
-          targetId={proteinCodingCoordinatesRow?.target?.approvedSymbol}
+          targetId={proteinCodingCoordinatesRow?.target?.id}
           targetApprovedSymbol={proteinCodingCoordinatesRow?.target?.approvedSymbol}
+          uniprotAccession={proteinCodingCoordinatesRow?.uniprotAccessions?.[0]}
         />
       )}
       renderBody={() => {

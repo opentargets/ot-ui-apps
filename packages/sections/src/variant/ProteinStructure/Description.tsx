@@ -6,6 +6,7 @@ type DescriptionProps = {
   alternateAllele: string;
   targetId: string;
   targetApprovedSymbol: string;
+  uniprotAccession: string;
 };
 
 // !! HARD CODE SOME OF DESCRIPTIPN FOR NOW !!
@@ -15,10 +16,10 @@ function Description({
   alternateAllele,
   targetId,
   targetApprovedSymbol,
+  uniprotAccession,
 }: DescriptionProps) {
   return (
     <>
-      Variant{" "}
       <strong>
         <DisplayVariantId
           variantId={variantId}
@@ -26,12 +27,12 @@ function Description({
           alternateAllele={alternateAllele}
         />
       </strong>{" "}
-      overlaps <Link to={`/target/${targetId}`}>{targetApprovedSymbol}</Link>. Source:{" "}
-      <Link to="/">Open Targets</Link> and{" "}
-      <Link external to="https://www.uniprot.org/">
-        UniProt
-      </Link>
-      .
+      reference amino acid highlighted in predicted structural model of{" "}
+      <Link to={`/target/${targetId}`}>{targetApprovedSymbol}</Link>. Source:{" "}
+      <Link external to={`https://alphafold.ebi.ac.uk/entry/${uniprotAccession}`}>
+        AlphafoldDB
+      </Link>{" "}
+      and <Link to="/">Open Targets</Link>.
     </>
   );
 }
