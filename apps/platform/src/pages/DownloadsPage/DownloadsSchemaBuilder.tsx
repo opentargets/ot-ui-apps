@@ -27,7 +27,7 @@ const StickyTd = styled("td")(({ theme }) => ({
 
 const NoBorderTable = styled("table")(({ theme }) => ({
   border: "none",
-  padding: 10,
+  padding: 0,
   margin: 0,
   borderSpacing: 0,
   "& thead, & tbody": {
