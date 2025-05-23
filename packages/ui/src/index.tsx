@@ -52,6 +52,8 @@ export { default as Page } from "./pages/Page";
 export { default as StudyPublication } from "./components/StudyPublication";
 export { default as OtCodeBlock } from "./components/OtCodeBlock";
 export { default as OtInvalidResultFilters } from "./components/OtInvalidResultFilters";
+export { default as OtCopyToClipboard } from "./components/OtCopyToClipboard";
+export { default as OtBtnGroup } from "./components/OtBtnGroup";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Footer";

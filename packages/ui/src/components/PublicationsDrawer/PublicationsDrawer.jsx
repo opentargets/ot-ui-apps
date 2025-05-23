@@ -30,6 +30,7 @@ const sourceDrawerStyles = makeStyles(theme => ({
   },
   drawerPaper: {
     backgroundColor: theme.palette.grey[300],
+    maxWidth: "100%",
   },
   drawerTitle: {
     borderBottom: "1px solid #ccc",
@@ -227,7 +228,7 @@ function PublicationsDrawer({
 
   return (
     <>
-      <ButtonBase onClick={toggleDrawer} className={classes.drawerLink}>
+      <ButtonBase disableRipple onClick={toggleDrawer} className={classes.drawerLink}>
         <Typography variant="body2">
           {" "}
           {customLabel ||
@@ -252,7 +253,7 @@ function PublicationsDrawer({
           </Box>
         </Paper>
 
-        <Box width={600} className={classes.drawerBody}>
+        <Box width={600} maxWidth="100%" className={classes.drawerBody}>
           {open && (
             <Box my={3} mx={3} p={3} pb={6} bgcolor="white">
               <PublicationsList entriesIds={entriesIds} symbol={symbol} name={name} />

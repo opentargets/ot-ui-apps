@@ -1,35 +1,44 @@
-import {
-  Box,
-  Button,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from "@mui/material";
+import { Box, Chip, Divider, Popover } from "@mui/material";
 import { DownloadsContext } from "./context/DownloadsContext";
 import { useContext, useState } from "react";
-import { Link, OtCodeBlock } from "ui";
+import { Link, PublicationsDrawer } from "ui";
+import { getConfig } from "@ot/config";
+import { styled } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAlignLeft, faFileLines, faTableList } from "@fortawesome/free-solid-svg-icons";
+import { faCalendar } from "@fortawesome/free-regular-svg-icons";
+import { epmcUrl } from "@ot/utils";
+
+const DownloadsLink = styled("a")(({ theme }) => ({
+  color: theme.palette.primary.main,
+  fontSize: "inherit",
+  "text-decoration-color": "transparent",
+  "-webkit-text-decoration-color": "transparent",
+  marginTop: `10px !important`,
+  "&:hover": {
+    color: theme.palette.primary.dark,
+    "text-decoration-color": theme.palette.primary.dark,
+    "-webkit-text-decoration-color": theme.palette.primary.dark,
+  },
+}));
 
 function DownloadsTags() {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3, p: 1, flexWrap: "wrap" }}>
-      <VersionTag />
       <DOITag />
       <LibrariesTag />
       <FormatsTag />
-      <LanguagesTag />
+      <VersionTag />
     </Box>
   );
 }
 
 function LibrariesTag() {
   const { state } = useContext(DownloadsContext);
+  const config = getConfig();
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Typography>Libraries:</Typography>
       <TagsDialog
         title={"About this format"}
         body={
@@ -40,11 +49,26 @@ function LibrariesTag() {
               {" "}
               Read more
             </Link>
-            <Box>Add download raw file option here</Box>
+            {/* <Divider /> */}
+            <Box sx={{ pt: 1 }}>
+              <DownloadsLink href={config.downloadsURL} target="_blank" download>
+                {" "}
+                Download Croissant metadata
+              </DownloadsLink>
+            </Box>
           </Box>
         }
       >
-        <Chip clickable label={"Croissant"} size="small" />
+        <Chip
+          clickable
+          label={
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {" "}
+              <FontAwesomeIcon icon={faAlignLeft} /> Croissant
+            </Box>
+          }
+          size="small"
+        />
       </TagsDialog>
     </Box>
   );
@@ -55,41 +79,55 @@ function VersionTag() {
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Typography>Version:</Typography>
-      <Link to={"https://platform-docs.opentargets.org/release-notes"} external>
-        <Chip clickable label={state.downloadsData?.version} size="small" />
-      </Link>
-    </Box>
-  );
-}
-
-function LanguagesTag() {
-  return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Typography>Languages:</Typography>
-      <Chip label="English" size="small" variant="outlined" />
+      <TagsDialog
+        title={`Current version: ${state.downloadsData?.version}`}
+        body={
+          <Box>
+            <Link to={"https://platform-docs.opentargets.org/release-notes"} external>
+              Read more
+            </Link>{" "}
+            on release highlights for the Open Targets Platform{" "}
+          </Box>
+        }
+      >
+        <Chip
+          clickable
+          label={
+            <>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                {" "}
+                <FontAwesomeIcon icon={faCalendar} /> {state.downloadsData?.version}
+              </Box>
+            </>
+          }
+          size="small"
+        />
+      </TagsDialog>
     </Box>
   );
 }
 
 function DOITag() {
   const { state } = useContext(DownloadsContext);
+  const PMID = /(?<=PMID:).*?(?=,\s)/gm.exec(state.downloadsData?.citeAs);
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Typography>DOI:</Typography>
-      <TagsDialog
-        title={"Cite As"}
-        body={
-          <>
-            <Box sx={{ display: "flex" }}>
-              <OtCodeBlock>{state.downloadsData?.citeAs}</OtCodeBlock>
-            </Box>
-          </>
+      <PublicationsDrawer
+        entries={[{ name: PMID, url: epmcUrl(PMID) }]}
+        customLabel={
+          <Chip
+            label={
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                {" "}
+                <FontAwesomeIcon icon={faFileLines} /> Cite Us
+              </Box>
+            }
+            size="small"
+            clickable
+          />
         }
-      >
-        <Chip label="add pmid?" size="small" clickable />
-      </TagsDialog>
+      />
     </Box>
   );
 }
@@ -97,58 +135,74 @@ function DOITag() {
 function FormatsTag() {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Typography>Formats:</Typography>
       <TagsDialog
         title={"File Format"}
         body={
-          <>
-            <Box sx={{ display: "flex" }}>
-              <Typography>Read about this format </Typography>
-              <Link to={"https://parquet.apache.org/docs/overview/"} external>
-                {" "}
-                here.
-              </Link>
-            </Box>
-          </>
+          <Box>
+            Read about this format{" "}
+            <Link to={"https://parquet.apache.org/docs/overview/"} external>
+              here.
+            </Link>
+          </Box>
         }
       >
-        <Chip label="Parquet" size="small" clickable />
+        <Chip
+          label={
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {" "}
+              <FontAwesomeIcon icon={faTableList} /> Parquet
+            </Box>
+          }
+          size="small"
+          clickable
+        />
       </TagsDialog>
     </Box>
   );
 }
 
-function TagsDialog({ title, body, children }) {
-  const [open, setOpen] = useState(false);
+function TagsDialog({ title = "", body = "", children = <></> }) {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popper" : undefined;
 
-  const handleClickOpen = () => () => {
-    setOpen(true);
-  };
+  function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+    if (!anchorEl) setAnchorEl(event.currentTarget);
+    else handleClose();
+  }
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  function handleClose() {
+    setAnchorEl(null);
+  }
 
   return (
-    <>
-      <span onClick={handleClickOpen()}>{children}</span>
-      <Dialog
+    <div>
+      <span aria-describedby={id} onMouseUp={handleClick}>
+        {children}
+      </span>
+      <Popover
+        id={id}
         open={open}
+        anchorEl={anchorEl}
         onClose={handleClose}
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        sx={{ minWidth: "50vw", maxWidth: "100%" }}
       >
-        <DialogTitle id="scroll-dialog-title">
-          <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Box sx={{ m: 2, typography: "subtitle2" }}>
+          <Box sx={{ color: theme => theme.palette.grey[600] }}>
+            {" "}
             {title}
-          </Typography>
-        </DialogTitle>
-        <DialogContent dividers>{body}</DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
-        </DialogActions>
-      </Dialog>
-    </>
+            <Divider />
+          </Box>
+
+          <Box sx={{ mt: 1 }}>{body}</Box>
+        </Box>
+      </Popover>
+    </div>
   );
 }
 export default DownloadsTags;
