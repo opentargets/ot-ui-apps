@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -8,12 +7,13 @@ import {
   Typography,
 } from "@mui/material";
 import { useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import DownloadsSchemaDialog from "./DownloadsSchema";
+import { Route, Routes, useNavigate, useParams } from "react-router-dom";
+
+import DownloadsSchema from "./DownloadsSchema";
 
 function DownloadsDialog({ currentRowId }) {
   const navigate = useNavigate();
-  const { downloadsRow, downloadsView } = useParams();
+  const { downloadsRow } = useParams();
 
   const open = useMemo(() => downloadsRow === currentRowId.replace("-fileset", ""), [currentRowId]);
 
@@ -42,7 +42,9 @@ function DownloadsDialog({ currentRowId }) {
         </Typography>
       </DialogTitle>
       <DialogContent dividers sx={{ p: 0, pt: 2, mx: 3, mb: 3 }}>
-        {downloadsView === "schema" && <DownloadsSchemaDialog currentRowId={currentRowId} />}
+        <Routes>
+          <Route path="schema" element={<DownloadsSchema currentRowId={currentRowId} />} />
+        </Routes>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Close</Button>
