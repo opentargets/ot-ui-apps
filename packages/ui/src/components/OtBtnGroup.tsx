@@ -29,13 +29,13 @@ function OtBtnGroup({ btnGroup, defaultActiveId }: OtBtnGroupPropType) {
             sx={{
               background: "none",
               border: "none",
-              borderBottom: `2px solid transparent`,
+              borderBottom: "2px solid transparent",
               cursor: "pointer",
               paddingTop: 1,
               paddingBottom: 1,
               marginX: 1,
               typography: "subtitle2",
-              fontWeight: "bold",
+              transition: "all ease 200ms",
               color: theme => `${theme.palette.grey[700]}`,
               "&:hover": {
                 borderBottom: theme => `2px solid ${theme.palette.grey[500]}`,

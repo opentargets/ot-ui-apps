@@ -1,12 +1,6 @@
-import { Snackbar } from "@mui/material";
-import { styled } from "@mui/styles";
+import { Box, Snackbar } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import { ReactNode, useState } from "react";
-
-const UnstyledButton = styled("button")({
-  border: "none",
-  cursor: "pointer",
-  background: "none",
-});
 
 type OtCopyToClipboardProps = {
   displayElement: ReactNode | null;
@@ -27,7 +21,21 @@ function OtCopyToClipboard({ displayElement, textToCopy }: OtCopyToClipboardProp
 
   return (
     <>
-      <UnstyledButton onClick={copyToClipboard}>{displayElement || `copy`}</UnstyledButton>
+      <Box
+        component="button"
+        onClick={copyToClipboard}
+        sx={{
+          cursor: "pointer",
+          py: "5px",
+          px: "8px",
+          border: "none",
+          // borderColor: grey[400],
+          borderRadius: 1,
+          backgroundColor: grey[300],
+        }}
+      >
+        {displayElement || `copy`}
+      </Box>
       <Snackbar
         open={snackbarOpen}
         onClose={handleCloseSnackbar}
