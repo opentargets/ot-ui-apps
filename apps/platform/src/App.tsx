@@ -33,7 +33,7 @@ function App(): ReactElement {
             <Route path="/" element={<HomePage />} />
             <Route path="/api" element={<APIPage />} />
             <Route path="/search" element={<SearchPage />} />
-            <Route path="/downloads" element={<DownloadsPage />} />
+            <Route path="/downloads/:downloadsRow?/:downloadsView?" element={<DownloadsPage />} />
             <Route path="/target/:ensgId/*" element={<TargetPage />} />
             <Route path="/disease/:efoId/*" element={<DiseasePage />} />
             <Route path="/evidence/:ensgId/:efoId/*" element={<EvidencePage />} />
