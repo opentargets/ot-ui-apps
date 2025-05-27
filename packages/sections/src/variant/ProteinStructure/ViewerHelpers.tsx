@@ -90,7 +90,6 @@ export function hoverManagerFactory({ viewer, variantResidues, setHoveredAtom })
 
   function handleHover(atom) {
     if (!atom || currentResi === atom.resi) return;
-    // const atomInVariant = variantResidues.has(atom.resi);
     setHoveredAtom(atom);
     const hslColor = hsl(getAlphaFoldConfidence(atom, "color"));
     hslColor.l += hslColor.l > 0.6 ? 0.1 : 0.2;
@@ -121,9 +120,7 @@ export function hoverManagerFactory({ viewer, variantResidues, setHoveredAtom })
   function handleUnhover(atom) {
     if (currentResi !== null) {
       noHoverStyle(viewer, variantResidues);
-      // if (currentSurface) viewer.removeSurface(currentSurface);
       currentResi = null;
-      // if (atomInfoRef.current) atomInfoRef.current.style.display = "none";
       viewer.render();
       setHoveredAtom(null);
     }

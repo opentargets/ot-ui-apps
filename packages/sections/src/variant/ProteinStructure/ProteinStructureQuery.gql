@@ -1,4 +1,3 @@
-# !! REMOVE UNUSED !!
 query ProteinStructureQuery($variantId: String!) {
   variant(variantId: $variantId) {
     id
