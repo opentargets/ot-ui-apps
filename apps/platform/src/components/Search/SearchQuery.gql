@@ -1,4 +1,4 @@
-query SearchQuery($queryString: String!) {
+query SearchQuery($queryString: String!, $size: Int!) {
   topHit: search(
     queryString: $queryString
     entityNames: ["target", "disease", "drug", "variant", "study"]
@@ -58,7 +58,11 @@ query SearchQuery($queryString: String!) {
     }
   }
 
-  targets: search(queryString: $queryString, entityNames: ["target"], page: { index: 0, size: 3 }) {
+  targets: search(
+    queryString: $queryString
+    entityNames: ["target"]
+    page: { index: 0, size: $size }
+  ) {
     hits {
       id
       entity
@@ -74,7 +78,7 @@ query SearchQuery($queryString: String!) {
   diseases: search(
     queryString: $queryString
     entityNames: ["disease"]
-    page: { index: 0, size: 3 }
+    page: { index: 0, size: $size }
   ) {
     hits {
       id
@@ -90,7 +94,7 @@ query SearchQuery($queryString: String!) {
   variants: search(
     queryString: $queryString
     entityNames: ["variant"]
-    page: { index: 0, size: 3 }
+    page: { index: 0, size: $size }
   ) {
     hits {
       id
@@ -106,7 +110,11 @@ query SearchQuery($queryString: String!) {
       }
     }
   }
-  studies: search(queryString: $queryString, entityNames: ["study"], page: { index: 0, size: 3 }) {
+  studies: search(
+    queryString: $queryString
+    entityNames: ["study"]
+    page: { index: 0, size: $size }
+  ) {
     hits {
       id
       entity
@@ -124,7 +132,7 @@ query SearchQuery($queryString: String!) {
       }
     }
   }
-  drugs: search(queryString: $queryString, entityNames: ["drug"], page: { index: 0, size: 3 }) {
+  drugs: search(queryString: $queryString, entityNames: ["drug"], page: { index: 0, size: $size }) {
     hits {
       id
       entity

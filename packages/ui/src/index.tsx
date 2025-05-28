@@ -1,6 +1,7 @@
 export { default as Footer } from "./components/Footer";
 export { default as LoadingBackdrop } from "./components/LoadingBackdrop";
 export { default as LongText } from "./components/LongText";
+export { default as OtLongText } from "./components/OtLongText";
 export { default as LongList } from "./components/LongList";
 export { default as SummaryContainer } from "./components/Summary/SummaryContainer";
 export { default as SummaryItem } from "./components/Summary/SummaryItem";
@@ -49,6 +50,10 @@ export { default as OtTableSSP } from "./components/OtTable/OtTableSSP";
 export { default as EntityPanel } from "./components/EntityPanel/EntityPanel";
 export { default as Page } from "./pages/Page";
 export { default as StudyPublication } from "./components/StudyPublication";
+export { default as AlphaFoldLegend } from "./components/AlphaFoldLegend";
+export { default as CompactAlphaFoldLegend } from "./components/CompactAlphaFoldLegend";
+export { default as OtCodeBlock } from "./components/OtCodeBlock";
+export { default as OtInvalidResultFilters } from "./components/OtInvalidResultFilters";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Footer";

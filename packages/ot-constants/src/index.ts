@@ -55,7 +55,7 @@ export const externalLinks = {
     },
     {
       label: "Privacy notice",
-      url: "https://www.ebi.ac.uk/data-protection/privacy-notice/open-targets",
+      url: "https://www.ebi.ac.uk/data-protection/privacy-notice/embl-ebi-public-website/",
     },
     {
       label: "Terms of use",
@@ -292,7 +292,7 @@ export const variantConsequenceSource = {
 
 // Population Mapping
 export const populationMap: { [key: string]: string } = {
-  fin: "Finish",
+  fin: "Finnish",
   afr: "African",
   nfe: "non-Finnish Europeans",
   eas: "East Asian",
@@ -336,3 +336,4 @@ export * from "./searchSuggestions";
 export * from "./partnerPreviewUtils";
 export * from "./particlesBackground";
 export * from "./variant";
+export * from "./alphaFold";

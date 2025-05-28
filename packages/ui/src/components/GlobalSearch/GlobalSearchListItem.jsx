@@ -8,6 +8,7 @@ import { clearRecentItem } from "./utils/searchUtils";
 import DisplayVariantId from "../DisplayVariantId";
 import { getStudyItemMetaData } from "@ot/utils";
 import StudyPublication from "../StudyPublication";
+import GlobalSearchIcon from "./GlobalSearchIcon";
 
 const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
@@ -46,6 +47,20 @@ const RecentItemContainer = styled("li")(({ theme }) => ({
   cursor: "pointer",
   width: "100%",
   padding: `${theme.spacing(1.5)}`,
+  borderRadius: theme.spacing(0.5),
+  color: theme.palette.grey["700"],
+  "&:hover": {
+    background: theme.palette.grey["200"],
+  },
+}));
+
+const SuggestionItemContainer = styled("li")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  cursor: "pointer",
+  width: "100%",
+  padding: `${theme.spacing(1)}`,
   borderRadius: theme.spacing(0.5),
   color: theme.palette.grey["700"],
   "&:hover": {
@@ -98,20 +113,33 @@ function symbolNameOrId(item) {
 
 function SuggestionListItem({ item, onItemClick }) {
   return (
-    <RecentItemContainer
-      className="search-list-item"
-      role="menuitem"
-      tabIndex="0"
-      data-item-details={JSON.stringify(item)}
-      onClick={() => {
-        onItemClick(item);
-      }}
-    >
-      <RecentIconContainer>
-        <FontAwesomeIcon icon={faArrowTrendUp} />
-        <Typography variant="subtitle2">{symbolNameOrId(item)}</Typography>
-      </RecentIconContainer>
-    </RecentItemContainer>
+    <Box>
+      <SuggestionItemContainer
+        className="search-list-item"
+        role="menuitem"
+        tabIndex="0"
+        data-item-details={JSON.stringify(item)}
+        onClick={() => {
+          onItemClick(item);
+        }}
+      >
+        <Chip
+          sx={{
+            borderRadius: 2,
+            fontWeight: "bold",
+            display: "flex",
+            gap: 0.5,
+            padding: "16px 8px",
+            ".MuiChip-icon": {
+              fontSize: "12px",
+            },
+          }}
+          size="small"
+          label={symbolNameOrId(item)}
+          icon={<GlobalSearchIcon entity={item.entity} />}
+        />
+      </SuggestionItemContainer>
+    </Box>
   );
 }
 

@@ -3,10 +3,9 @@ import { Box, Typography } from "@mui/material";
 import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable, useBatchQuery } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
+import { naLabel, table5HChunkSize } from "@ot/constants";
 import SHARED_TRAIT_STUDIES_QUERY from "./SharedTraitStudiesQuery.gql";
 import { epmcUrl, getStudyCategory } from "@ot/utils";
-import { useEffect, useState } from "react";
 
 function getColumns(diseaseIds: string[]) {
   const diseaseIdsSet = new Set(diseaseIds);
@@ -132,20 +131,12 @@ export function Body({ studyId, diseaseIds }: BodyProps): ReactElement {
     index: 0,
   };
 
-  const [request, setRequest] = useState<responseType>(initialResponse);
-
-  const getData = useBatchQuery({
+  const request = useBatchQuery({
     query: SHARED_TRAIT_STUDIES_QUERY,
     variables,
-    dataPath: "data.studies",
+    dataPath: "studies",
     size: table5HChunkSize,
   });
-
-  useEffect(() => {
-    getData().then(r => {
-      setRequest(r);
-    });
-  }, [studyId]);
 
   const columns = getColumns(diseaseIds);
 

@@ -1,10 +1,11 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem, OtTable, Link } from "ui";
+import { SectionItem, OtTable, Link, AlphaFoldLegend } from "ui";
 import { naLabel } from "@ot/constants";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
 import { getUniprotIds, nanComparator } from "@ot/utils";
+import { getAlphaFoldConfidence } from "@ot/constants";
 import { createViewer } from "3dmol";
 import { parseCif } from "./parseCif";
 import { schemeSet1, schemeDark2 } from "d3";
@@ -50,25 +51,6 @@ function getSegments(id, chainsAndPositions) {
   };
 }
 
-const alphaFoldConfidenceBands = [
-  { lowerLimit: 90, label: "Very high", sublabel: "pLDDT > 90", color: "rgb(0, 83, 214)" },
-  {
-    lowerLimit: 70,
-    label: "Confident",
-    sublabel: "90 > pLDDT > 70",
-    color: "rgb(101, 203, 243)",
-  },
-  { lowerLimit: 50, label: "Low", sublabel: "70 > pLDDT > 50", color: "rgb(255, 219, 19)" },
-  { lowerLimit: 0, label: "Very low ", sublabel: "pLDDT < 50", color: "rgb(255, 125, 69)" },
-];
-
-function getConfidence(atom, propertyName = "label") {
-  for (const obj of alphaFoldConfidenceBands) {
-    if (atom.b > obj.lowerLimit) return obj[propertyName];
-  }
-  return alphaFoldConfidenceBands[0][propertyName];
-}
-
 const chainColorScheme = [
   ...schemeDark2.slice(0, -1),
   ...[1, 2, 3, 4, 0, 6, 7].map(i => schemeSet1[i]),
@@ -84,38 +66,6 @@ function zipToObject(arr1, arr2) {
 
 function isAlphaFold(selectedStructure) {
   return selectedStructure?.type?.toLowerCase?.() === "alphafold";
-}
-
-function AlphaFoldLegend() {
-  return (
-    <Box display="flex">
-      <Box display="flex" flexDirection="column" ml={2} gap={0.75}>
-        <Typography variant="subtitle2">Model Confidence</Typography>
-        <Box display="flex" gap={3.5}>
-          {alphaFoldConfidenceBands.map(({ label, sublabel, color }) => (
-            <Box key={label}>
-              <Box display="flex" gap={0.75} alignItems="center">
-                <Box width="12px" height="12px" bgcolor={color} />
-                <Box display="flex" flexDirection="column">
-                  <Typography variant="caption" fontWeight={500} lineHeight={1}>
-                    {label}
-                  </Typography>
-                </Box>
-              </Box>
-              <Typography variant="caption" fontSize={11.5} lineHeight={1}>
-                {sublabel}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-
-        <Typography variant="caption" mt={1}>
-          AlphaFold produces a per-residue model confidence score (pLDDT) between 0 and 100. Some
-          regions below 50 pLDDT may be unstructured in isolation.
-        </Typography>
-      </Box>
-    </Box>
-  );
 }
 
 // keep as closure since may need local state in future - such as hovered on atom
@@ -140,7 +90,9 @@ function hoverManagerFactory({ viewer, atomInfoRef, parsedCif, chainToEntityDesc
         } | ${atom.resn} ${pdbAtom}${
           authAtom && authAtom !== pdbAtom ? ` (auth: ${authAtom})` : ""
         }`;
-        fieldElmts[2].textContent = isAF ? `Confidence: ${atom.b} (${getConfidence(atom)})` : "";
+        fieldElmts[2].textContent = isAF
+          ? `Confidence: ${atom.b} (${getAlphaFoldConfidence(atom)})`
+          : "";
       }
     },
     () => {
@@ -562,7 +514,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                   {},
                   {
                     cartoon: {
-                      colorfunc: atom => getConfidence(atom, "color"),
+                      colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
                       arrows: true,
                     },
                   }
@@ -609,7 +561,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     };
   }, [selectedStructure, viewer, segments, setModelNumbers, setModelNumber]);
 
-  if (!experimentalResults) return null;
+  if (!uniprotId) return null;
 
   return (
     <SectionItem
@@ -618,6 +570,9 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={() => {
+        if (!experimentalResults && !request.loading && uniprotId)
+          return <NoStructureAvailable uniprotId={uniprotId} />;
+
         return (
           <Grid container columnSpacing={2}>
             <Grid item xs={12} lg={6}>
@@ -735,6 +690,14 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         );
       }}
     />
+  );
+}
+
+function NoStructureAvailable({ uniprotId }) {
+  return (
+    <Box sx={{ display: "flex", justifyContent: "center", fontStyle: "italic" }}>
+      No Structure Available for {uniprotId}
+    </Box>
   );
 }
 
