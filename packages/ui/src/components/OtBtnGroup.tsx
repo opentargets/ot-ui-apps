@@ -2,13 +2,13 @@ import { Box, Divider } from "@mui/material";
 import { ReactNode, useState } from "react";
 import { v1 } from "uuid";
 
-type singleBtnObj = {
+export type singleBtnGroupObj = {
   title: string;
   component: ReactNode;
 };
 
 type OtBtnGroupPropType = {
-  btnGroup: Record<string, singleBtnObj>;
+  btnGroup: Record<string, singleBtnGroupObj>;
   defaultActiveId?: string;
 };
 

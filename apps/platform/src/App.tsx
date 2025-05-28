@@ -18,6 +18,8 @@ import CredibleSetPage from "./pages/CredibleSetPage";
 import APIPage from "./pages/APIPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
+import DownloadsSchema from "./pages/DownloadsPage/DownloadsSchema";
+import DownloadsDialog from "./pages/DownloadsPage/DownloadsDialog";
 
 const config = getConfig();
 
@@ -33,7 +35,9 @@ function App(): ReactElement {
             <Route path="/" element={<HomePage />} />
             <Route path="/api" element={<APIPage />} />
             <Route path="/search" element={<SearchPage />} />
-            <Route path="/downloads/:downloadsRow?/*" element={<DownloadsPage />} />
+
+            <Route path="/downloads/*" element={<DownloadsPage />} />
+
             <Route path="/target/:ensgId/*" element={<TargetPage />} />
             <Route path="/disease/:efoId/*" element={<DiseasePage />} />
             <Route path="/evidence/:ensgId/:efoId/*" element={<EvidencePage />} />

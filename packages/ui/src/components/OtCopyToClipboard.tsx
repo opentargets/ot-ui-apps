@@ -1,9 +1,11 @@
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Snackbar } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { ReactNode, useState } from "react";
 
 type OtCopyToClipboardProps = {
-  displayElement: ReactNode | null;
+  displayElement?: ReactNode | null;
   textToCopy: string;
 };
 
@@ -34,7 +36,12 @@ function OtCopyToClipboard({ displayElement, textToCopy }: OtCopyToClipboardProp
           backgroundColor: grey[300],
         }}
       >
-        {displayElement || `copy`}
+        {displayElement || (
+          <Box component="span" sx={{ color: theme => theme.palette.grey[700] }}>
+            {" "}
+            <FontAwesomeIcon icon={faCopy} />
+          </Box>
+        )}
       </Box>
       <Snackbar
         open={snackbarOpen}

@@ -1,7 +1,5 @@
 import { Box } from "@mui/material";
 import OtCopyToClipboard from "./OtCopyToClipboard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import type { ReactNode } from "react";
 
 type OtCodeBlockPropTypes = {
@@ -19,31 +17,25 @@ function OtCodeBlock({ children, textToCopy }: OtCodeBlockPropTypes) {
         px: 3,
         pt: 1,
         display: "flex",
+        minWidth: "100%",
         width: "fit-content",
       }}
     >
-      <code>
+      <Box component="code" sx={{ width: 1 }}>
         {textToCopy && (
           <Box
             sx={{
               display: "flex",
               justifyContent: "end",
               pb: 1,
+              w: 1,
             }}
           >
-            <OtCopyToClipboard
-              textToCopy={textToCopy}
-              displayElement={
-                <Box component="span" sx={{ color: theme => theme.palette.grey[700] }}>
-                  {" "}
-                  <FontAwesomeIcon icon={faCopy} />
-                </Box>
-              }
-            />{" "}
+            <OtCopyToClipboard textToCopy={textToCopy} />{" "}
           </Box>
         )}
         {children}
-      </code>
+      </Box>
     </Box>
   );
 }

@@ -2,16 +2,15 @@ import { Box, Button, Card, CardActions, CardContent, Chip, Typography } from "@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faDatabase } from "@fortawesome/free-solid-svg-icons";
 import { OtLongText } from "ui";
-import DownloadsAccessOptionsDialog from "./DownloadsAccessOptionsDialog";
 import { v1 } from "uuid";
 import { DownloadsContext } from "./context/DownloadsContext";
 import { useContext } from "react";
 import { setActiveFilter } from "./context/downloadsActions";
-import DownloadsDialog from "./DownloadsDialog";
 import { Link } from "react-router-dom";
 
-function DownloadsCard({ data, locationUrl }) {
+function DownloadsCard({ data }: { data: Record<string, unknown> }) {
   const { state, dispatch } = useContext(DownloadsContext);
+  const columnId = data["@id"].replace("-fileset", "");
 
   function handleChangeFilter(e) {
     const currentFilters = [...state.selectedFilters];
@@ -24,8 +23,7 @@ function DownloadsCard({ data, locationUrl }) {
   }
 
   function hasCategories() {
-    // check if object has categories
-    if (data.hasOwnProperty("categories") && data.categories.length) return true;
+    if (Object.hasOwnProperty.call(data, "categories") && data.categories.length) return true;
     return false;
   }
 
@@ -99,8 +97,7 @@ function DownloadsCard({ data, locationUrl }) {
         }}
       >
         <Box sx={{ width: { xs: "100%", sm: "45%" }, m: { xs: "0 !important" } }}>
-          <DownloadsDialog currentRowId={data["@id"]} />
-          <Link to={`/downloads/${data["@id"].replace("-fileset", "")}/schema`}>
+          <Link to={`/downloads/${columnId}/schema`}>
             <Button variant="outlined" color="primary" sx={{ width: "100%", gap: 2 }}>
               <FontAwesomeIcon icon={faCode} />
               Schema
@@ -108,16 +105,12 @@ function DownloadsCard({ data, locationUrl }) {
           </Link>
         </Box>
         <Box sx={{ width: { xs: "100%", sm: "45%" }, m: { xs: "0 !important" } }}>
-          <DownloadsAccessOptionsDialog
-            data={data}
-            version={state.downloadsData?.version}
-            locationUrl={locationUrl}
-          >
+          <Link to={`/downloads/${columnId}/access`}>
             <Button variant="outlined" color="primary" sx={{ width: "100%", gap: 2 }}>
               <FontAwesomeIcon icon={faDatabase} />
               Access Data
             </Button>
-          </DownloadsAccessOptionsDialog>
+          </Link>
         </Box>
       </CardActions>
     </Card>
