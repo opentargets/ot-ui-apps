@@ -88,7 +88,7 @@ function DownloadsDialog() {
       <DialogContent dividers sx={{ p: 0, pt: 2, mx: 3, mb: 3 }}>
         {VEIW_MAP[downloadsView]}
       </DialogContent>
-      <DialogActions sx={{ mb: 2, mr: 2 }}>
+      <DialogActions sx={{ mb: 2, mx: 2, display: "flex", justifyContent: "space-between" }}>
         <Button onClick={switchDisplayMode}>{getDisplayText()}</Button>
         <Button onClick={handleClose}>Close</Button>
       </DialogActions>

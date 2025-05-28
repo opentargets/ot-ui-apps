@@ -59,13 +59,17 @@ function DownloadsAccessOptions({ data, locationUrl, version }: DownloadsAccessO
 
   return (
     <>
-      <Box tabIndex={-1} sx={{ wordBreak: "break-all", typography: "subtitle2" }}>
-        <Typography variant="body1">File Location: </Typography>
+      <Box tabIndex={-1} sx={{ wordBreak: "break-all", typography: "subtitle2", mt: 1, mb: 4 }}>
+        <Typography mb={1} variant="body1">
+          File Location:{" "}
+        </Typography>
         <OtBtnGroup btnGroup={getFilteredData({ allDataObj: LOCATION_MAP, containedInArray })} />
       </Box>
 
-      <Box tabIndex={-1} sx={{ wordBreak: "break-all", typography: "subtitle2", py: 2 }}>
-        <Typography variant="body1">Access Script: </Typography>
+      <Box tabIndex={-1} sx={{ wordBreak: "break-all", typography: "subtitle2", mb: 4 }}>
+        <Typography mb={1} variant="body1">
+          Access Script:{" "}
+        </Typography>
         <OtBtnGroup btnGroup={getFilteredData({ allDataObj: SCRIPT_MAP, containedInArray })} />
       </Box>
     </>
