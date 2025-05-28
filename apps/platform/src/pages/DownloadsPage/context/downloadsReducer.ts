@@ -3,6 +3,7 @@ import {
   addCategoriesToData,
   filterDownloadCardsForFilter,
   filterDownloadCardsForTextSearch,
+  getAllLocationUrl,
   getAllRows,
   getSchemaRows,
 } from "../utils";
@@ -17,9 +18,10 @@ export const initialState: DownloadsState = {
   allUniqueCategories: [],
   selectedFilters: [],
   downloadsData: null,
+  locationURLs: {},
 };
 
-export function createInitialState(str: string): DownloadsState {
+export function createInitialState(initialState: DownloadsState): DownloadsState {
   return initialState;
 }
 
@@ -94,6 +96,7 @@ export function downloadsReducer(
     case ActionType.SET_DOWNLOADS_DATA: {
       const ALL_ROWS = [...getAllRows(action.downloadsData)];
       const { allDisplayRows, allUniqueCategories } = addCategoriesToData(ALL_ROWS);
+      const locationURLs: Record<string, string> = getAllLocationUrl(action.downloadsData);
       return {
         ...state,
         loading: false,
@@ -103,6 +106,7 @@ export function downloadsReducer(
         count: allDisplayRows.length,
         schemaRows: getSchemaRows(action.downloadsData),
         allUniqueCategories,
+        locationURLs,
       };
     }
 

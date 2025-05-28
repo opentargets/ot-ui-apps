@@ -8,6 +8,7 @@ export type DownloadsState = {
   allUniqueCategories: Array<string>;
   selectedFilters: Array<string>;
   downloadsData: Record<string, unknown> | null;
+  locationURLs: Record<string, string>;
 };
 
 /*****************
