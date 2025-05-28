@@ -1,19 +1,41 @@
 import { Box } from "@mui/material";
+import OtCopyToClipboard from "./OtCopyToClipboard";
+import type { ReactNode } from "react";
 
-function OtCodeBlock({ children, removePadding = false }) {
+type OtCodeBlockPropTypes = {
+  children: ReactNode;
+  textToCopy?: string | null;
+};
+
+function OtCodeBlock({ children, textToCopy }: OtCodeBlockPropTypes) {
   return (
     <Box
       sx={{
-        display: "flex",
-        borderRadius: 3,
         background: theme => theme.palette.grey[100],
-        color: theme => theme.palette.grey[800],
-        ...(!removePadding && { px: 3 }),
-        ...(!removePadding && { py: 1 }),
+        pb: textToCopy ? 3 : 1,
+        borderRadius: 3,
+        px: 3,
+        pt: 1,
+        display: "flex",
+        minWidth: "100%",
         width: "fit-content",
       }}
     >
-      <code>{children}</code>
+      <Box component="code" sx={{ width: 1 }}>
+        {textToCopy && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+              pb: 1,
+              w: 1,
+            }}
+          >
+            <OtCopyToClipboard textToCopy={textToCopy} />{" "}
+          </Box>
+        )}
+        {children}
+      </Box>
     </Box>
   );
 }
