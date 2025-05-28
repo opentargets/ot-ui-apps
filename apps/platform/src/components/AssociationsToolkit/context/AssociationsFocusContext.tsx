@@ -1,20 +1,12 @@
-import {
-  createContext,
-  useContext,
-  useReducer,
-  Dispatch,
-  ReactElement,
-  useEffect,
-  useMemo,
-  useCallback,
-} from "react";
-import useAotfContext from "../hooks/useAotfContext";
-import {
+import type { ReactElement, Dispatch } from "react";
+import { createContext, useContext, useReducer, useEffect, useMemo } from "react";
+import type {
   TABLE_PREFIX,
   INTERACTORS_SOURCES,
   INTERACTORS_SOURCE_THRESHOLD,
   InteractorsSource,
 } from "../associationsUtils";
+import useAotfContext from "../hooks/useAotfContext";
 
 // Types
 export type FocusElementTable = "core" | "pinned" | "upload";
