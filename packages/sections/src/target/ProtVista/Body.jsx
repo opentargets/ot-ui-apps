@@ -547,68 +547,70 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     };
   }, [selectedStructure, viewer, segments]);
 
-  // draw model - only once per structure unless multiple models in CIF data
+  // draw structure/model
   useEffect(() => {
-    if (!viewer || !structureDetails) return;
-    const {
-      isAF,
-      modelNumbers,
-      firstStructureChains,
-      firstStructureTargetChains,
-      firstStructureNonTargetChains,
-      otherStructureChains,
-      scheme,
-    } = structureDetails;
-    viewer.setStyle([], { hidden: true });
-    if (isAF) {
-      viewer.setStyle(
-        {},
-        {
-          cartoon: {
-            colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
-            arrows: true,
+    if (viewer && structureDetails) {
+      const {
+        isAF,
+        modelNumbers,
+        firstStructureChains,
+        firstStructureTargetChains,
+        firstStructureNonTargetChains,
+        otherStructureChains,
+        scheme,
+      } = structureDetails;
+      if (isAF) {
+        viewer.setStyle(
+          {},
+          {
+            cartoon: {
+              colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
+              arrows: true,
+            },
+          }
+        );
+      } else if (modelNumbers.length > 1) {
+        viewer.setStyle(
+          {
+            chain: firstStructureTargetChains,
+            predicate: atom => atom._model === modelNumbers[modelIndex],
           },
-        }
-      );
-    } else if (modelNumbers.length > 1) {
-      viewer.setStyle(
-        {
-          chain: firstStructureTargetChains,
-          predicate: atom => atom._model === modelNumbers[modelIndex],
-        },
-        { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
-      );
-      viewer.setStyle(
-        {
-          chain: firstStructureNonTargetChains,
-          predicate: atom => atom._model === modelNumbers[modelIndex],
-        },
-        {
-          cartoon: {
-            color: "#eee",
-            arrows: true,
-            opacity: 0.8,
+          { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
+        );
+        viewer.setStyle(
+          {
+            chain: firstStructureNonTargetChains,
+            predicate: atom => atom._model === modelNumbers[modelIndex],
           },
-        }
-      );
-    } else {
-      viewer.setStyle(
-        { chain: firstStructureTargetChains },
-        { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
-      );
-      viewer.setStyle(
-        { chain: firstStructureNonTargetChains },
-        {
-          cartoon: {
-            color: "#eee",
-            arrows: true,
-            opacity: 0.8,
-          },
-        }
-      );
+          {
+            cartoon: {
+              color: "#eee",
+              arrows: true,
+              opacity: 0.8,
+            },
+          }
+        );
+      } else {
+        viewer.setStyle(
+          { chain: firstStructureTargetChains },
+          { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
+        );
+        viewer.setStyle(
+          { chain: firstStructureNonTargetChains },
+          {
+            cartoon: {
+              color: "#eee",
+              arrows: true,
+              opacity: 0.8,
+            },
+          }
+        );
+      }
+      viewer.render();
     }
-    viewer.render();
-    // !!!!! ANYCLEANUP RETURN FUNCTION REQUIRED?
+    return () => {
+      viewer?.setStyle({}, { hidden: true });
+    };
   }, [viewer, modelIndex, structureDetails]);
 
   if (!uniprotId) return null;
