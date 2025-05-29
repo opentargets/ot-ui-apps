@@ -1,7 +1,12 @@
-name: Image
+name: Build images
 
 on:
   workflow_call:
+    inputs:
+      tag:
+        type: string
+        description: 'Tag to build against'
+        required: true
 
 jobs:
   build:
@@ -13,21 +18,19 @@ jobs:
       attestations: write
       id-token: write
     env:
-      TAG: ${{ github.ref_name }}
+      TAG: ${{ inputs.tag }}
       REPO: ${{ github.event.repository.name }}
     steps:
       # prepare environment
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
       - name: Prepare environment
         run: |
-          DATA_RELEASE=$(node -p "require('./package.json').dataRelease")
-          echo "DATA_RELEASE=$DATA_RELEASE" >> $GITHUB_ENV
           TAG=$(echo $TAG | sed 's/^v//')
           echo "TAG=$TAG" >> $GITHUB_ENV
-          echo "building for data release $DATA_RELEASE"
           echo "The tag for this build is $TAG"
           echo "The repo name is: $REPO"
-          echo "Github context:\n$GITHUB_CONTEXT"
 
       # authenticate in google cloud
       - id: auth-google
@@ -61,7 +64,7 @@ jobs:
 
       - id: push
         name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./apps/platform
           push: true
