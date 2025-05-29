@@ -698,16 +698,22 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                       top={0}
                       left={0}
                       bgcolor="#f8f8f8d8"
-                      sx={{ borderBottomRightRadius: "0.2rem", zIndex: 1 }}
+                      sx={{ borderBottomRightRadius: "0.2rem", zIndex: 1, pointerEvents: "none" }}
                       display="flex"
                       alignItems="center"
                       gap={1}
-                      m={1}
+                      p="0.6rem 0.6rem"
                     >
-                      <Button onClick={handleDecrementModel} sx={{ bgcolor: "white" }}>
+                      <Button
+                        onClick={handleDecrementModel}
+                        sx={{ bgcolor: "white", pointerEvents: "auto" }}
+                      >
                         <FontAwesomeIcon icon={faChevronLeft} size="xs" />
                       </Button>
-                      <Button onClick={handleIncrementModel} sx={{ bgcolor: "white" }}>
+                      <Button
+                        onClick={handleIncrementModel}
+                        sx={{ bgcolor: "white", pointerEvents: "auto" }}
+                      >
                         <FontAwesomeIcon icon={faChevronRight} size="xs" />
                       </Button>
                       <Typography variant="caption" fontSize={13}>
