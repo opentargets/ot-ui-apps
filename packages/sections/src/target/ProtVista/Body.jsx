@@ -104,6 +104,82 @@ function hoverManagerFactory({ viewer, atomInfoRef, parsedCif, chainToEntityDesc
   ];
 }
 
+function showStructure({ viewer, structureDetails, modelIndex, reset = true }) {
+  if (viewer && structureDetails) {
+    viewer?.setStyle({}, { hidden: true });
+    const {
+      isAF,
+      modelNumbers,
+      firstStructureChains,
+      firstStructureTargetChains,
+      firstStructureNonTargetChains,
+      otherStructureChains,
+      scheme,
+    } = structureDetails;
+    if (isAF) {
+      viewer.setStyle(
+        {},
+        {
+          cartoon: {
+            colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
+            arrows: true,
+          },
+        }
+      );
+    } else if (modelNumbers.length > 1) {
+      viewer.setStyle(
+        {
+          chain: firstStructureTargetChains,
+          predicate: atom => atom._model === modelNumbers[modelIndex],
+        },
+        { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
+      );
+      viewer.setStyle(
+        {
+          chain: firstStructureNonTargetChains,
+          predicate: atom => atom._model === modelNumbers[modelIndex],
+        },
+        {
+          cartoon: {
+            color: "#eee",
+            arrows: true,
+            opacity: 0.8,
+          },
+        }
+      );
+    } else {
+      viewer.setStyle(
+        { chain: firstStructureTargetChains },
+        { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
+      );
+      viewer.setStyle(
+        { chain: firstStructureNonTargetChains },
+        {
+          cartoon: {
+            color: "#eee",
+            arrows: true,
+            opacity: 0.8,
+          },
+        }
+      );
+    }
+    function resetViewer(duration = 0) {
+      viewer.zoomTo(
+        {
+          chain: firstStructureTargetChains.length
+            ? firstStructureTargetChains
+            : firstStructureChains,
+        },
+        duration
+      );
+      viewer.zoom(isAF ? 1.4 : 1, duration);
+    }
+    if (reset) resetViewer();
+    viewer.getCanvas().ondblclick = () => resetViewer(200);
+    viewer.render();
+  }
+}
+
 function Body({ id: ensemblId, label: symbol, entity }) {
   const [experimentalResults, setExperimentalResults] = useState(null);
   const [segments, setSegments] = useState(null);
@@ -341,7 +417,6 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       _viewer.getCanvas().onmouseleave = () => {
         setTimeout(hideAtomInfo, hoverDuration + 50);
       };
-      _viewer.getCanvas().ondblclick = () => resetViewer(200); // use ondblclick so replaces existing
     }
     return () => {
       viewer?.clear();
@@ -349,7 +424,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     };
   }, [experimentalResults]);
 
-  // fetch selected structure
+  // fetch selected structure and show it
   useEffect(() => {
     async function fetchStructure() {
       if (selectedStructure && viewer) {
@@ -387,6 +462,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
               const modelNumbers = [...new Set(parsedCif["_atom_site.pdbx_PDB_model_num"])]
                 .map(Number)
                 .sort((a, b) => a - b);
+              const _modelIndex = 0;
               setModelIndex(0);
 
               // pdb <-> auth chains
@@ -488,7 +564,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 });
               }
 
-              setStructureDetails({
+              const _structureDetails = {
                 isAF,
                 modelNumbers,
                 firstStructureChains,
@@ -496,19 +572,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 firstStructureNonTargetChains,
                 otherStructureChains,
                 scheme,
-              });
-
-              function resetViewer(duration = 0) {
-                viewer.zoomTo(
-                  {
-                    chain: firstStructureTargetChains.length
-                      ? firstStructureTargetChains
-                      : firstStructureChains,
-                  },
-                  duration
-                );
-                viewer.zoom(isAlphaFold(selectedStructure) ? 1.4 : 1, duration);
-              }
+              };
+              setStructureDetails(_structureDetails);
               viewer.removeAllModels();
               viewer.addModel(data, "cif");
               viewer.setStyle({}, { hidden: true });
@@ -532,8 +597,11 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 })
               );
 
-              resetViewer();
-              viewer.render();
+              showStructure({
+                viewer,
+                structureDetails: _structureDetails,
+                modelIndex: _modelIndex,
+              });
               hideLoadingMessage();
             }
           }
@@ -550,82 +618,20 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     };
   }, [selectedStructure, viewer, segments]);
 
-  // draw structure/model
-  useEffect(() => {
-    if (viewer && structureDetails) {
-      const {
-        isAF,
-        modelNumbers,
-        firstStructureChains,
-        firstStructureTargetChains,
-        firstStructureNonTargetChains,
-        otherStructureChains,
-        scheme,
-      } = structureDetails;
-      if (isAF) {
-        viewer.setStyle(
-          {},
-          {
-            cartoon: {
-              colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
-              arrows: true,
-            },
-          }
-        );
-      } else if (modelNumbers.length > 1) {
-        viewer.setStyle(
-          {
-            chain: firstStructureTargetChains,
-            predicate: atom => atom._model === modelNumbers[modelIndex],
-          },
-          { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
-        );
-        viewer.setStyle(
-          {
-            chain: firstStructureNonTargetChains,
-            predicate: atom => atom._model === modelNumbers[modelIndex],
-          },
-          {
-            cartoon: {
-              color: "#eee",
-              arrows: true,
-              opacity: 0.8,
-            },
-          }
-        );
-      } else {
-        viewer.setStyle(
-          { chain: firstStructureTargetChains },
-          { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
-        );
-        viewer.setStyle(
-          { chain: firstStructureNonTargetChains },
-          {
-            cartoon: {
-              color: "#eee",
-              arrows: true,
-              opacity: 0.8,
-            },
-          }
-        );
-      }
-      viewer.render();
-    }
-    return () => {
-      viewer?.setStyle({}, { hidden: true });
-    };
-  }, [viewer, modelIndex, structureDetails]);
-
   if (!uniprotId) return null;
 
   function handleDecrementModel() {
     if (modelIndex === 0) return;
-    setModelIndex(current => current - 1);
+    const newIndex = modelIndex - 1;
+    showStructure({ viewer, structureDetails, modelIndex: newIndex, reset: false });
+    setModelIndex(newIndex);
   }
 
   function handleIncrementModel() {
     if (modelIndex === structureDetails.modelNumbers.length - 1) return;
-    setModelIndex(current => current + 1);
+    const newIndex = modelIndex + 1;
+    showStructure({ viewer, structureDetails, modelIndex: newIndex, reset: false });
+    setModelIndex(newIndex);
   }
 
   return (
