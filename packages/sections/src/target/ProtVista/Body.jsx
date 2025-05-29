@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem, OtTable, Link, AlphaFoldLegend } from "ui";
+import { SectionItem, OtTable, Link, AlphaFoldLegend, CompactAlphaFoldLegend } from "ui";
 import { naLabel } from "@ot/constants";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import Description from "./Description";
@@ -13,6 +13,7 @@ import PROTVISTA_QUERY from "./ProtVista.gql";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import _ from "lodash";
 
 const experimentalResultsStem = "https://www.ebi.ac.uk/proteins/api/proteins/";
 const experimentalStructureStem = "https://www.ebi.ac.uk/pdbe/entry-files/download/";
@@ -109,8 +110,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   const [selectedStructure, setSelectedStructure] = useState(null);
   const [viewer, setViewer] = useState(null);
   const [structureLoading, setStructureLoading] = useState(true);
-  const [modelNumbers, setModelNumbers] = useState(null);
-  const [modelNumber, setModelNumber] = useState(null);
+  const [structureDetails, setStructureDetails] = useState(null);
+  const [modelIndex, setModelIndex] = useState(null);
 
   const viewerRef = useRef(null);
   const structureInfoRef = useRef(null);
@@ -323,27 +324,33 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   // create viewer
   useEffect(() => {
     if (viewerRef.current && experimentalResults) {
-      setViewer(
-        createViewer(viewerRef.current, {
-          backgroundColor: "#f8f8f8",
-          antialias: true,
-          cartoonQuality: 10,
-        })
-      );
+      const _viewer = createViewer(viewerRef.current, {
+        // REMOVE GLOBAL !!!!!!
+        backgroundColor: "#f8f8f8",
+        antialias: true,
+        cartoonQuality: 10,
+      });
+      window.viewer = _viewer;
+      setViewer(_viewer);
+      const hoverDuration = 50;
+      _viewer.setHoverDuration(hoverDuration);
+      _viewer.getCanvas().onmouseleave = () => {
+        setTimeout(hideAtomInfo, hoverDuration + 50);
+      };
+      _viewer.getCanvas().ondblclick = () => resetViewer(200); // use ondblclick so replaces existing
     }
     return () => {
       viewer?.clear();
       setViewer(null);
     };
-  }, [experimentalResults, setViewer]);
+  }, [experimentalResults]);
 
-  // fetch selected structure and view it
+  // fetch selected structure
   useEffect(() => {
     async function fetchStructure() {
       if (selectedStructure && viewer) {
         clearStructureInfo();
-        setModelNumbers([]);
-        setModelNumber(null);
+        setModelIndex(null);
         showLoadingMessage();
 
         const isAF = isAlphaFold(selectedStructure);
@@ -373,12 +380,10 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 titleElmt.textContent = title;
               }
 
-              const _modelNumbers = [...new Set(parsedCif["_atom_site.pdbx_PDB_model_num"])]
+              const modelNumbers = [...new Set(parsedCif["_atom_site.pdbx_PDB_model_num"])]
                 .map(Number)
                 .sort((a, b) => a - b);
-              setModelNumbers(_modelNumbers);
-              const _modelNumber = _modelNumbers[0];
-              setModelNumber(_modelNumber);
+              setModelIndex(0);
 
               // pdb <-> auth chains
               // - may only need pdb -> auth, but is 1-to-many so get auth->pdb first
@@ -479,6 +484,16 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 });
               }
 
+              setStructureDetails({
+                isAF,
+                modelNumbers,
+                firstStructureChains,
+                firstStructureTargetChains,
+                firstStructureNonTargetChains,
+                otherStructureChains,
+                scheme,
+              });
+
               function resetViewer(duration = 0) {
                 viewer.zoomTo(
                   {
@@ -490,15 +505,20 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 );
                 viewer.zoom(isAlphaFold(selectedStructure) ? 1.4 : 1, duration);
               }
+              viewer.removeAllModels();
+              viewer.addModel(data, "cif");
+              viewer.setStyle({}, { hidden: true });
 
-              const hoverDuration = 50;
-              viewer.getCanvas().onmouseleave = () => {
-                setTimeout(hideAtomInfo, hoverDuration + 50);
-              };
-              viewer.getCanvas().ondblclick = () => resetViewer(200); // use ondblclick so replaces existing
-              viewer.addModel(data, "cif"); /* load data */
+              // add model numbers to _model property of viewer's atom objects
+              // - since viewer not picking up model values automatically
+              window.parsedCif = parsedCif;
+              if (modelNumbers.length > 1) {
+                for (const [index, atom] of viewer.getModel().selectedAtoms().entries()) {
+                  atom._model = Number(parsedCif["_atom_site.pdbx_PDB_model_num"][index]);
+                }
+              }
+
               // viewer.addModels(data, "cif", { multimodel: true }); /* load data */
-              viewer.setHoverDuration(hoverDuration);
               viewer.setHoverable(
                 ...hoverManagerFactory({
                   viewer,
@@ -509,40 +529,6 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 })
               );
 
-              if (isAF) {
-                viewer.setStyle(
-                  {},
-                  {
-                    cartoon: {
-                      colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
-                      arrows: true,
-                    },
-                  }
-                );
-              } else {
-                console.log(modelNumbers);
-                viewer.setStyle(
-                  _modelNumbers.length > 1
-                    ? { chain: firstStructureTargetChains }
-                    : { chain: firstStructureTargetChains },
-                  // ? { chain: firstStructureTargetChains }
-                  // : { chain: firstStructureTargetChains, model: [_modelNumber] }
-                  { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
-                );
-                // viewer.setStyle(
-                //   _modelNumbers.length > 1
-                //     ? { chain: firstStructureNonTargetChains, model: _modelNumber }
-                //     : { chain: firstStructureNonTargetChains },
-                //   {
-                //     cartoon: {
-                //       color: "#eee",
-                //       arrows: true,
-                //       opacity: 0.8,
-                //     },
-                //   }
-                // );
-                viewer.getModel().setStyle({ chain: otherStructureChains }, { hidden: true });
-              }
               resetViewer();
               viewer.render();
               hideLoadingMessage();
@@ -559,9 +545,83 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       hideAtomInfo();
       viewer?.clear();
     };
-  }, [selectedStructure, viewer, segments, setModelNumbers, setModelNumber]);
+  }, [selectedStructure, viewer, segments]);
+
+  // draw model - only once per structure unless multiple models in CIF data
+  useEffect(() => {
+    if (!viewer || !structureDetails) return;
+    const {
+      isAF,
+      modelNumbers,
+      firstStructureChains,
+      firstStructureTargetChains,
+      firstStructureNonTargetChains,
+      otherStructureChains,
+      scheme,
+    } = structureDetails;
+    viewer.setStyle([], { hidden: true });
+    if (isAF) {
+      viewer.setStyle(
+        {},
+        {
+          cartoon: {
+            colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
+            arrows: true,
+          },
+        }
+      );
+    } else if (modelNumbers.length > 1) {
+      viewer.setStyle(
+        {
+          chain: firstStructureTargetChains,
+          predicate: atom => atom._model === modelNumbers[modelIndex],
+        },
+        { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
+      );
+      viewer.setStyle(
+        {
+          chain: firstStructureNonTargetChains,
+          predicate: atom => atom._model === modelNumbers[modelIndex],
+        },
+        {
+          cartoon: {
+            color: "#eee",
+            arrows: true,
+            opacity: 0.8,
+          },
+        }
+      );
+    } else {
+      viewer.setStyle(
+        { chain: firstStructureTargetChains },
+        { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
+      );
+      viewer.setStyle(
+        { chain: firstStructureNonTargetChains },
+        {
+          cartoon: {
+            color: "#eee",
+            arrows: true,
+            opacity: 0.8,
+          },
+        }
+      );
+    }
+    viewer.render();
+    // !!!!! ANYCLEANUP RETURN FUNCTION REQUIRED?
+  }, [viewer, modelIndex, structureDetails]);
 
   if (!uniprotId) return null;
+
+  function handleDecrementModel() {
+    if (modelIndex === 0) return;
+    setModelIndex(current => current - 1);
+  }
+
+  function handleIncrementModel() {
+    if (modelIndex === structureDetails.modelNumbers.length - 1) return;
+    setModelIndex(current => current + 1);
+  }
 
   return (
     <SectionItem
@@ -603,7 +663,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 <Typography variant="subtitle2" component="span"></Typography>
                 <Typography variant="body2" component="span"></Typography>
               </Box>
-              <Box position="relative" display="flex" justifyContent="center" pb={2}>
+              <Box position="relative" display="flex" justifyContent="center" pb={1}>
                 <Box ref={viewerRef} position="relative" width="100%" height="400px">
                   <Typography
                     ref={messageRef}
@@ -621,7 +681,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                       alignItems: "center",
                     }}
                   />
-                  {modelNumbers?.length > 1 && (
+                  {structureDetails?.modelNumbers?.length > 1 && (
                     <Box
                       position="absolute"
                       top={0}
@@ -633,14 +693,15 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                       gap={1}
                       m={1}
                     >
-                      <Button sx={{ bgcolor: "white" }}>
+                      <Button onClick={handleDecrementModel} sx={{ bgcolor: "white" }}>
                         <FontAwesomeIcon icon={faChevronLeft} size="xs" />
                       </Button>
-                      <Button sx={{ bgcolor: "white" }}>
+                      <Button onClick={handleIncrementModel} sx={{ bgcolor: "white" }}>
                         <FontAwesomeIcon icon={faChevronRight} size="xs" />
                       </Button>
                       <Typography variant="caption" fontSize={13}>
-                        Model {modelNumber}/{modelNumbers.length}
+                        Model {structureDetails.modelNumbers[modelIndex]}/
+                        {structureDetails.modelNumbers.at(-1)}
                       </Typography>
                     </Box>
                   )}
@@ -684,7 +745,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                   </Box>
                 </Box>
               </Box>
-              {isAlphaFold(selectedStructure) && <AlphaFoldLegend />}
+              {isAlphaFold(selectedStructure) && <CompactAlphaFoldLegend />}
             </Grid>
           </Grid>
         );
