@@ -304,14 +304,18 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     async function fetchAllResults() {
       await Promise.allSettled([fetchAlphaFoldResults(), fetchExperimentalResults()]);
       if (results.length) {
-        setExperimentalResults(results);
         const _segments = {};
         for (const row of results) {
           _segments[row.id] = getSegments(row.id, row.properties.chains);
         }
         setSegments(_segments);
-        setSelectedStructure(results[0]);
+        results.sort((a, b) => {
+          // sort to match initial sort of table
+          return _segments?.[b?.id]?.maxLengthSegment - _segments?.[a?.id]?.maxLengthSegment;
+        });
+        setExperimentalResults(results);
       }
+      setSelectedStructure(results[0]);
     }
     fetchAllResults();
     return () => {
@@ -518,7 +522,6 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 }
               }
 
-              // viewer.addModels(data, "cif", { multimodel: true }); /* load data */
               viewer.setHoverable(
                 ...hoverManagerFactory({
                   viewer,
