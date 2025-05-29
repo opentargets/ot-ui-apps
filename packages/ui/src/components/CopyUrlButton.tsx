@@ -18,13 +18,17 @@ const styles = makeStyles(theme => ({
   },
 }));
 
-function CopyUrlButton() {
+type CopyUrlButtonProps = {
+  tooltipTitle?: string;
+};
+
+function CopyUrlButton({ tooltipTitle = "Copy URL" }: CopyUrlButtonProps) {
   const classes = styles();
   const [urlSnackbar, setUrlSnackbar] = useState(false);
 
   return (
     <>
-      <Tooltip placement="bottom" title="Copy URL. Data sources controls not included">
+      <Tooltip placement="bottom" title={tooltipTitle}>
         <IconButton
           onClick={() => {
             setUrlSnackbar(true);

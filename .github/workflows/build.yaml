@@ -1,33 +1,49 @@
-name: Build
+name: Build bundle
 
 on:
   workflow_call:
+    inputs:
+      tag:
+        type: string
+        description: 'Tag to build against'
+        required: true
+      data_release_location:
+        type: string
+        description: 'Location of the data release'
+        required: false
 
 jobs:
   bundle:
     name: Bundle 📦
     runs-on: ubuntu-22.04
+    env:
+      TAG: ${{ inputs.tag }}
+      DATA_RELEASE_LOCATION: ${{ inputs.data_release_location || '' }}
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+
       - uses: actions/setup-node@v4
         with:
           node-version: 23
 
-      # prepare environment
       - name: Prepare environment
         run: |
-          DATA_RELEASE=$(node -p "require('./package.json').dataRelease")
-          echo "DATA_RELEASE=$DATA_RELEASE" >> $GITHUB_ENV
-          echo "building for data release $DATA_RELEASE"
+          if [ -z "$DATA_RELEASE_LOCATION" ]; then
+            echo "Building $TAG with default data"
+          else
+            echo "Building $TAG with data from $DATA_RELEASE_LOCATION"
+          fi
 
       - uses: mskelton/setup-yarn@v3
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # authenticate in google cloud
       - uses: google-github-actions/auth@v2
         with:
           token_format: access_token
@@ -37,13 +53,13 @@ jobs:
           access_token_lifetime: 300s
       - uses: google-github-actions/setup-gcloud@v2
 
-      # copy disease ontology from release google bucket
       - name: copy disease ontology
-        run: gsutil cp gs://open-targets-pre-data-releases/${{ env.DATA_RELEASE }}/webapp/disease.jsonl apps/platform/public/data/ontology/efo_json/diseases_efo.jsonl
+        if: ${{ env.DATA_RELEASE_LOCATION != '' }}
+        run: gsutil cp ${{ env.DATA_RELEASE_LOCATION }}/webapp/disease.jsonl apps/platform/public/data/ontology/efo_json/diseases_efo.jsonl
 
-      # copy croissant metadata from release google bucket
       - name: copy croissant metadata
-        run: gsutil cp gs://open-targets-pre-data-releases/${{ env.DATA_RELEASE }}/webapp/downloads.json apps/platform/public/data/downloads.json
+        if: ${{ env.DATA_RELEASE_LOCATION != '' }}
+        run: gsutil cp ${{ env.DATA_RELEASE_LOCATION }}/webapp/downloads.json apps/platform/public/data/downloads.json
 
       - name: Build
         run: yarn build:platform

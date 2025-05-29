@@ -8,10 +8,12 @@ import { Fragment } from "react/jsx-runtime";
 import DownloadsCard from "./DownloadsCard";
 import DownloadsFilter from "./DownloadsFilter";
 import DownloadsLoading from "./DownloadsLoading";
-import { createInitialState, downloadsReducer } from "./context/downloadsReducer";
+import { createInitialState, downloadsReducer, initialState } from "./context/downloadsReducer";
 import { setDownloadsData } from "./context/downloadsActions";
 import { DownloadsContext } from "./context/DownloadsContext";
 import DownloadsTags from "./DownloadsTags";
+import { Route, Routes } from "react-router-dom";
+import DownloadsDialog from "./DownloadsDialog";
 
 const config = getConfig();
 
@@ -21,20 +23,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function getAllLocationUrl(data) {
-  if (!data) return "";
-  const locationObj = {};
-  const locationArray = data.distribution.filter(e => e["@type"] === "cr:FileObject");
-  locationArray.map(e => {
-    locationObj[e["@id"]] = e.contentUrl;
-  });
-  return locationObj;
-}
-
 function DownloadsPage() {
-  const [state, dispatch] = useReducer(downloadsReducer, "", createInitialState);
-
-  const locationUrl = useMemo(() => getAllLocationUrl(state.downloadsData), [state.downloadsData]);
+  const [state, dispatch] = useReducer(downloadsReducer, initialState, createInitialState);
 
   useEffect(() => {
     let isCurrent = true;
@@ -60,13 +50,6 @@ function DownloadsPage() {
           {state.downloadsData?.name}
         </Typography>
         <Typography paragraph>{state.downloadsData?.description}</Typography>
-        {/* <Typography paragraph>
-          Our scripts and schema conforms to{" "}
-          <Link external to={state.downloadsData?.conformsTo}>
-            Ml Commons
-          </Link>
-        </Typography>
-        <Typography paragraph>Current data version: {state.downloadsData?.version}</Typography> */}
 
         {config.profile.isPartnerPreview ? (
           <Alert severity="info" className={classes.alert}>
@@ -115,7 +98,7 @@ function DownloadsPage() {
               {state.count > 0 ? (
                 <>
                   {state.filteredRows.map(e => (
-                    <DownloadsCard key={v1()} data={e} locationUrl={locationUrl} />
+                    <DownloadsCard key={v1()} data={e} />
                   ))}
                 </>
               ) : (
@@ -125,6 +108,9 @@ function DownloadsPage() {
           </Grid>
         </Grid>
       </>
+      <Routes>
+        <Route path="/:downloadsRow/:downloadsView" element={<DownloadsDialog />} />
+      </Routes>
     </DownloadsContext.Provider>
   );
 }

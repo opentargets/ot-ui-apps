@@ -54,6 +54,9 @@ export { default as AlphaFoldLegend } from "./components/AlphaFoldLegend";
 export { default as CompactAlphaFoldLegend } from "./components/CompactAlphaFoldLegend";
 export { default as OtCodeBlock } from "./components/OtCodeBlock";
 export { default as OtInvalidResultFilters } from "./components/OtInvalidResultFilters";
+export { default as OtCopyToClipboard } from "./components/OtCopyToClipboard";
+export { default as OtBtnGroup } from "./components/OtBtnGroup";
+export { default as CopyUrlButton } from "./components/CopyUrlButton";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Footer";
