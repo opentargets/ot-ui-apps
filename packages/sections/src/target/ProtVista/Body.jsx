@@ -626,16 +626,18 @@ function Body({ id: ensemblId, label: symbol, entity }) {
 
   if (!uniprotId) return null;
 
+  function modulo(n, d) {
+    return ((n % d) + d) % d;
+  }
+
   function handleDecrementModel() {
-    if (modelIndex === 0) return;
-    const newIndex = modelIndex - 1;
+    const newIndex = modulo(modelIndex - 1, structureDetails.modelNumbers.length);
     showStructure({ viewer, structureDetails, modelIndex: newIndex, reset: false });
     setModelIndex(newIndex);
   }
 
   function handleIncrementModel() {
-    if (modelIndex === structureDetails.modelNumbers.length - 1) return;
-    const newIndex = modelIndex + 1;
+    const newIndex = modulo(modelIndex + 1, structureDetails.modelNumbers.length);
     showStructure({ viewer, structureDetails, modelIndex: newIndex, reset: false });
     setModelIndex(newIndex);
   }
@@ -748,7 +750,6 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                         sx={{ display: "flex", gap: 1 }}
                         disabled={structureLoading}
                         onClick={onClickCapture}
-                        title="Screenshot"
                       >
                         <FontAwesomeIcon icon={faCamera} />
                       </Button>
@@ -795,6 +796,7 @@ function InfoPopper() {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
+    setIsHovered(false);
     setIsClicked(prev => !prev);
   };
 
@@ -812,7 +814,47 @@ function InfoPopper() {
     <div>
       <Tooltip
         open={tooltipOpen}
-        title={<ControlsTable />}
+        slotProps={isClicked ? { tooltip: { sx: { borderColor: "#bbb" } } } : {}}
+        title={
+          <Box onClick={handleClick} sx={{ cursor: "pointer" }}>
+            <table style={{ borderSpacing: "0.3rem 0" }}>
+              <tbody>
+                <tr>
+                  <Typography component="td" variant="caption">
+                    <strong>Rotate:</strong>
+                  </Typography>
+                  <Typography component="td" variant="caption">
+                    Drag
+                  </Typography>
+                </tr>
+                <tr>
+                  <Typography component="td" variant="caption">
+                    <strong>Move:</strong>
+                  </Typography>
+                  <Typography component="td" variant="caption">
+                    Ctrl + Drag
+                  </Typography>
+                </tr>
+                <tr>
+                  <Typography component="td" variant="caption">
+                    <strong>Zoom:</strong>
+                  </Typography>
+                  <Typography component="td" variant="caption">
+                    Ctrl + Scroll
+                  </Typography>
+                </tr>
+                <tr>
+                  <Typography component="td" variant="caption">
+                    <strong>Reset:</strong>
+                  </Typography>
+                  <Typography component="td" variant="caption">
+                    Double click
+                  </Typography>
+                </tr>
+              </tbody>
+            </table>
+          </Box>
+        }
         disableFocusListener
         disableTouchListener
         placement="top-end"
@@ -826,47 +868,6 @@ function InfoPopper() {
         </Button>
       </Tooltip>
     </div>
-  );
-}
-
-function ControlsTable() {
-  return (
-    <table style={{ borderSpacing: "0.5rem 0" }}>
-      <tbody>
-        <tr>
-          <Typography component="td" variant="subtitle2">
-            Rotate:
-          </Typography>
-          <Typography component="td" variant="body2">
-            Drag
-          </Typography>
-        </tr>
-        <tr>
-          <Typography component="td" variant="subtitle2">
-            Move:
-          </Typography>
-          <Typography component="td" variant="body2">
-            Ctrl + Drag
-          </Typography>
-        </tr>
-        <tr>
-          <Typography component="td" variant="subtitle2">
-            Zoom:
-          </Typography>
-          <Typography component="td" variant="body2">
-            Ctrl + Scroll
-          </Typography>
-        </tr>
-        <tr>
-          <Typography component="td" variant="subtitle2">
-            Reset:
-          </Typography>
-          <Typography component="td" variant="body2">
-            Double click
-          </Typography>
-        </tr>
-      </tbody>
-    </table>
   );
 }
 
