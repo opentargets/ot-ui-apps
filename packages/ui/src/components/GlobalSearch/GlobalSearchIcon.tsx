@@ -17,7 +17,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function GlobalSearchIcon({ entity }: { entity: string }) {
-  console.log(" GlobalSearchIcon -> entity", entity);
   const classes = useStyles();
 
   function getIcon() {
@@ -48,6 +47,7 @@ function GlobalSearchIcon({ entity }: { entity: string }) {
       case "recent":
       case "Search Suggestions":
       case "filter":
+      case "All":
         return null;
       default:
         return <FontAwesomeIcon icon={faTag} />;
