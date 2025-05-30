@@ -405,18 +405,24 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   useEffect(() => {
     if (viewerRef.current && experimentalResults) {
       const _viewer = createViewer(viewerRef.current, {
-        // REMOVE GLOBAL !!!!!!
         backgroundColor: "#f8f8f8",
         antialias: true,
         cartoonQuality: 10,
       });
-      window.viewer = _viewer;
+      window.viewer = _viewer; // !! REMOVE GLOBAL !!
       setViewer(_viewer);
       const hoverDuration = 50;
       _viewer.setHoverDuration(hoverDuration);
       _viewer.getCanvas().onmouseleave = () => {
         setTimeout(hideAtomInfo, hoverDuration + 50);
       };
+      _viewer.getCanvas().addEventListener(
+        "wheel",
+        event => {
+          if (!event.ctrlKey) event.stopImmediatePropagation();
+        },
+        true // use capture phase so fires before library handler
+      );
     }
     return () => {
       viewer?.clear();
