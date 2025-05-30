@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { SectionItem, OtTable, Link, AlphaFoldLegend, CompactAlphaFoldLegend } from "ui";
+import { SectionItem, OtTable, Link, AlphaFoldLegend, CompactAlphaFoldLegend, Tooltip } from "ui";
 import { naLabel } from "@ot/constants";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import Description from "./Description";
@@ -12,7 +12,7 @@ import { schemeSet1, schemeDark2 } from "d3";
 import PROTVISTA_QUERY from "./ProtVista.gql";
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faCamera, faChevronLeft, faChevronRight, faInfo } from "@fortawesome/free-solid-svg-icons";
 import _ from "lodash";
 
 const experimentalResultsStem = "https://www.ebi.ac.uk/proteins/api/proteins/";
@@ -739,15 +739,20 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                       alignItems: "center",
                       background: "white",
                       m: 1,
+                      gap: 1,
                     }}
                   >
-                    <Button
-                      sx={{ display: "flex", gap: 1 }}
-                      disabled={structureLoading}
-                      onClick={onClickCapture}
-                    >
-                      <FontAwesomeIcon icon={faCamera} /> Screenshot
-                    </Button>
+                    <InfoPopper />
+                    <Tooltip title="Screenshot" placement="top-start">
+                      <Button
+                        sx={{ display: "flex", gap: 1 }}
+                        disabled={structureLoading}
+                        onClick={onClickCapture}
+                        title="Screenshot"
+                      >
+                        <FontAwesomeIcon icon={faCamera} />
+                      </Button>
+                    </Tooltip>
                   </Box>
                   <Box
                     ref={atomInfoRef}
@@ -782,6 +787,86 @@ function NoStructureAvailable({ uniprotId }) {
     <Box sx={{ display: "flex", justifyContent: "center", fontStyle: "italic" }}>
       No Structure Available for {uniprotId}
     </Box>
+  );
+}
+
+function InfoPopper() {
+  const [isClicked, setIsClicked] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleClick = () => {
+    setIsClicked(prev => !prev);
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const tooltipOpen = isClicked || isHovered;
+
+  return (
+    <div>
+      <Tooltip
+        open={tooltipOpen}
+        title={<ControlsTable />}
+        disableFocusListener
+        disableTouchListener
+        placement="top-end"
+      >
+        <Button
+          onClick={handleClick}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <FontAwesomeIcon icon={faInfo} />
+        </Button>
+      </Tooltip>
+    </div>
+  );
+}
+
+function ControlsTable() {
+  return (
+    <table style={{ borderSpacing: "0.5rem 0" }}>
+      <tbody>
+        <tr>
+          <Typography component="td" variant="subtitle2">
+            Rotate:
+          </Typography>
+          <Typography component="td" variant="body2">
+            Drag
+          </Typography>
+        </tr>
+        <tr>
+          <Typography component="td" variant="subtitle2">
+            Move:
+          </Typography>
+          <Typography component="td" variant="body2">
+            Ctrl + Drag
+          </Typography>
+        </tr>
+        <tr>
+          <Typography component="td" variant="subtitle2">
+            Zoom:
+          </Typography>
+          <Typography component="td" variant="body2">
+            Ctrl + Scroll
+          </Typography>
+        </tr>
+        <tr>
+          <Typography component="td" variant="subtitle2">
+            Reset:
+          </Typography>
+          <Typography component="td" variant="body2">
+            Double click
+          </Typography>
+        </tr>
+      </tbody>
+    </table>
   );
 }
 
