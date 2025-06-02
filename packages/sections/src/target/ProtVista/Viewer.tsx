@@ -7,7 +7,7 @@ import { parseCif } from "./parseCif";
 import { schemeSet1, schemeDark2 } from "d3";
 import { CompactAlphaFoldLegend, Tooltip } from "ui";
 import { getAlphaFoldConfidence } from "@ot/constants";
-import { isAlphaFold, zipToObject, modulo } from "./helpers";
+import { isAlphaFold, zipToObject, modulo, hoverManagerFactory, onClickCapture } from "./helpers";
 import InfoPopper from "./InfoPopper";
 
 const experimentalStructureStem = "https://www.ebi.ac.uk/pdbe/entry-files/download/";
@@ -19,40 +19,6 @@ const chainColorScheme = [
   ...schemeDark2.slice(0, -1),
   ...[1, 2, 3, 4, 0, 6, 7].map(i => schemeSet1[i]),
 ];
-
-// keep as closure since may need local state in future - such as hovered on atom
-// for highlighting
-function hoverManagerFactory({ atomInfoRef, parsedCif, chainToEntityDesc, isAF }) {
-  return [
-    {},
-    true,
-    atom => {
-      const infoElmt = atomInfoRef.current;
-      if (infoElmt) {
-        infoElmt.style.display = "block";
-        const fieldElmts = [...infoElmt.querySelectorAll("p")];
-        const authChain = parsedCif["_atom_site.auth_asym_id"][atom.index];
-        const pdbChain = parsedCif["_atom_site.label_asym_id"][atom.index];
-        const authAtom = parsedCif["_atom_site.auth_seq_id"][atom.index];
-        const pdbAtom = parsedCif["_atom_site.label_seq_id"][atom.index];
-        fieldElmts[0].textContent = chainToEntityDesc[pdbChain];
-        fieldElmts[1].textContent = `${pdbChain}${
-          authChain && authChain !== pdbChain ? ` (auth: ${authChain})` : ""
-        } | ${atom.resn} ${pdbAtom}${
-          authAtom && authAtom !== pdbAtom ? ` (auth: ${authAtom})` : ""
-        }`;
-        fieldElmts[2].textContent = isAF
-          ? `Confidence: ${atom.b} (${getAlphaFoldConfidence(atom)})`
-          : "";
-      }
-    },
-    () => {
-      if (atomInfoRef.current) {
-        atomInfoRef.current.style.display = "none";
-      }
-    },
-  ];
-}
 
 function showStructure({ viewer, structureDetails, modelIndex, reset = true }) {
   if (viewer && structureDetails) {
@@ -132,72 +98,17 @@ function showStructure({ viewer, structureDetails, modelIndex, reset = true }) {
 
 function Viewer({ ensemblId, selectedRow, segments }) {
   const [viewer, setViewer] = useState(null);
-  const [structureLoading, setStructureLoading] = useState(true);
+  const [messageText, setMessageText] = useState("");
+  const [hoverInfo, setHoverInfo] = useState(null);
   const [structureDetails, setStructureDetails] = useState(null);
   const [modelIndex, setModelIndex] = useState(null);
 
   const viewerRef = useRef(null);
   const structureInfoRef = useRef(null);
   const atomInfoRef = useRef(null);
-  const messageRef = useRef(null);
 
   function hideAtomInfo() {
     if (atomInfoRef.current) atomInfoRef.current.style.display = "none";
-  }
-
-  function showLoadingMessage(message = "Loading structure ...") {
-    if (messageRef.current) {
-      setStructureLoading(true);
-      messageRef.current.style.display = "flex";
-      messageRef.current.textContent = message;
-    }
-  }
-
-  function hideLoadingMessage() {
-    if (messageRef.current) {
-      messageRef.current.style.display = "none";
-      setStructureLoading(false);
-    }
-  }
-
-  function onClickCapture() {
-    if (!viewerRef.current) return;
-
-    try {
-      // Get the canvas element from the container
-      const canvas = viewerRef.current.querySelector("canvas");
-
-      if (!canvas) {
-        console.error("Canvas element not found");
-        return;
-      }
-
-      // Create a new canvas with proper background
-      const newCanvas = document.createElement("canvas");
-      newCanvas.width = canvas.width;
-      newCanvas.height = canvas.height;
-
-      const ctx = newCanvas.getContext("2d");
-
-      // Draw background
-      ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-
-      // Draw original canvas content on top
-      ctx.drawImage(canvas, 0, 0);
-
-      // Convert the new canvas to data URL
-      const dataUrl = newCanvas.toDataURL("image/png");
-
-      // Create a temporary link and trigger download
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = `${ensemblId}-molecular-structure.png`;
-      link.click();
-    } catch (error) {
-      console.error("Error taking screenshot:", error);
-    } finally {
-      // setLoading(false);
-    }
   }
 
   function clearStructureInfo() {
@@ -239,7 +150,7 @@ function Viewer({ ensemblId, selectedRow, segments }) {
       if (viewer && selectedRow) {
         clearStructureInfo();
         setModelIndex(null);
-        showLoadingMessage();
+        setMessageText("Loading structure ...");
 
         const isAF = isAlphaFold(selectedRow);
         const pdbUri = isAF
@@ -250,7 +161,7 @@ function Viewer({ ensemblId, selectedRow, segments }) {
           const response = await fetch(pdbUri);
           if (!response.ok) {
             console.error(`Response status (CIF request): ${response.status}`);
-            showLoadingMessage("Failed to download structure data");
+            setMessageText("Failed to download structure data");
           } else {
             let data, parsedCif;
             try {
@@ -258,7 +169,7 @@ function Viewer({ ensemblId, selectedRow, segments }) {
               parsedCif = parseCif(data)[selectedRow.id];
             } catch (error) {
               console.error(error.message);
-              showLoadingMessage("Failed to parse structure data");
+              setMessageText("Failed to parse structure data");
             }
             if (data && parsedCif) {
               if (structureInfoRef.current) {
@@ -397,12 +308,7 @@ function Viewer({ ensemblId, selectedRow, segments }) {
               }
 
               viewer.setHoverable(
-                ...hoverManagerFactory({
-                  atomInfoRef,
-                  parsedCif,
-                  chainToEntityDesc,
-                  isAF,
-                })
+                ...hoverManagerFactory({ parsedCif, chainToEntityDesc, setHoverInfo })
               );
 
               showStructure({
@@ -410,18 +316,18 @@ function Viewer({ ensemblId, selectedRow, segments }) {
                 structureDetails: _structureDetails,
                 modelIndex: _modelIndex,
               });
-              hideLoadingMessage();
+              setMessageText("");
             }
           }
         } catch (error) {
           console.error(error.message);
-          showLoadingMessage("Failed to download structure data");
+          setMessageText("Failed to download structure data");
         }
       }
     }
     fetchStructure();
     return () => {
-      hideAtomInfo();
+      setHoverInfo(null);
       viewer?.clear();
     };
   }, [viewer, selectedRow, segments]);
@@ -454,95 +360,125 @@ function Viewer({ ensemblId, selectedRow, segments }) {
         <Typography variant="body2" component="span"></Typography>
       </Box>
       <Box position="relative" display="flex" justifyContent="center" pb={1}>
-        <Box ref={viewerRef} position="relative" width="100%" height="380px">
-          <Typography
-            ref={messageRef}
-            variant="body2"
-            component="div"
-            sx={{
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              position: "absolute",
-              zIndex: 1,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          />
-          {structureDetails?.modelNumbers?.length > 1 && (
-            <Box
-              position="absolute"
-              top={0}
-              left={0}
-              bgcolor="#f8f8f8d8"
-              sx={{ borderBottomRightRadius: "0.2rem", zIndex: 1, pointerEvents: "none" }}
-              display="flex"
-              alignItems="center"
-              gap={1}
-              p="0.6rem 0.6rem"
+        <Box ref={viewerRef} position="relative" width="100%">
+          <Box className="viewerContainer" position="relative" width="100%" height="380px">
+            {/* info and screenshot buttons */}
+            {!messageText && (
+              <Box
+                sx={{
+                  top: 0,
+                  right: 0,
+                  position: "absolute",
+                  zIndex: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  background: "white",
+                  m: 1,
+                  gap: 1,
+                }}
+              >
+                <InfoPopper />
+                <Tooltip title="Screenshot" placement="top-start">
+                  <Button
+                    sx={{ display: "flex", gap: 1 }}
+                    onClick={() => onClickCapture(viewerRef, ensemblId)}
+                  >
+                    <FontAwesomeIcon icon={faCamera} />
+                  </Button>
+                </Tooltip>
+              </Box>
+            )}
+
+            {/* atom info */}
+            {hoverInfo && (
+              <Box
+                position="absolute"
+                bottom={0}
+                right={0}
+                p="0.6rem 0.8rem"
+                zIndex={100}
+                bgcolor="#f8f8f8c8"
+                sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
+                fontSize={14}
+              >
+                <Box display="flex" flexDirection="column">
+                  <Typography variant="caption" component="p" textAlign="right">
+                    {hoverInfo.chainName}
+                  </Typography>
+                  <Typography variant="caption" component="p" textAlign="right">
+                    {hoverInfo.pdbChain}
+                    {hoverInfo.authChain && hoverInfo.authChain !== hoverInfo.pdbChain
+                      ? ` (auth: ${hoverInfo.authChain})`
+                      : ""}{" "}
+                    | {hoverInfo.atom.resn} {hoverInfo.pdbAtom}
+                    {hoverInfo.authAtom && hoverInfo.authAtom !== hoverInfo.pdbAtom
+                      ? ` (auth: ${hoverInfo.authAtom})`
+                      : ""}
+                  </Typography>
+                  {isAlphaFold(selectedRow) && (
+                    <Typography variant="caption" component="p" textAlign="right">
+                      Confidence: {hoverInfo.atom.b} ({getAlphaFoldConfidence(hoverInfo.atom)})
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+            )}
+
+            {/* model picker */}
+            {structureDetails?.modelNumbers?.length > 1 && (
+              <Box
+                position="absolute"
+                top={0}
+                left={0}
+                bgcolor="#f8f8f8d8"
+                sx={{ borderBottomRightRadius: "0.2rem", zIndex: 1, pointerEvents: "none" }}
+                display="flex"
+                alignItems="center"
+                gap={1}
+                p="0.6rem 0.6rem"
+              >
+                <Button
+                  onClick={handleDecrementModel}
+                  sx={{ bgcolor: "white", pointerEvents: "auto" }}
+                >
+                  <FontAwesomeIcon icon={faChevronLeft} size="xs" />
+                </Button>
+                <Button
+                  onClick={handleIncrementModel}
+                  sx={{ bgcolor: "white", pointerEvents: "auto" }}
+                >
+                  <FontAwesomeIcon icon={faChevronRight} size="xs" />
+                </Button>
+                <Typography variant="caption" fontSize={13}>
+                  Model {structureDetails.modelNumbers[modelIndex]}/
+                  {structureDetails.modelNumbers.at(-1)}
+                </Typography>
+              </Box>
+            )}
+          </Box>
+
+          {/* message */}
+          {messageText && (
+            <Typography
+              variant="body2"
+              component="div"
+              sx={{
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                position: "absolute",
+                zIndex: 1,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#f8f8f8",
+              }}
             >
-              <Button
-                onClick={handleDecrementModel}
-                sx={{ bgcolor: "white", pointerEvents: "auto" }}
-              >
-                <FontAwesomeIcon icon={faChevronLeft} size="xs" />
-              </Button>
-              <Button
-                onClick={handleIncrementModel}
-                sx={{ bgcolor: "white", pointerEvents: "auto" }}
-              >
-                <FontAwesomeIcon icon={faChevronRight} size="xs" />
-              </Button>
-              <Typography variant="caption" fontSize={13}>
-                Model {structureDetails.modelNumbers[modelIndex]}/
-                {structureDetails.modelNumbers.at(-1)}
-              </Typography>
-            </Box>
+              {messageText}
+            </Typography>
           )}
-          <Box
-            sx={{
-              top: 0,
-              right: 0,
-              position: "absolute",
-              zIndex: 1,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              background: "white",
-              m: 1,
-              gap: 1,
-            }}
-          >
-            <InfoPopper />
-            <Tooltip title="Screenshot" placement="top-start">
-              <Button
-                sx={{ display: "flex", gap: 1 }}
-                disabled={structureLoading}
-                onClick={onClickCapture}
-              >
-                <FontAwesomeIcon icon={faCamera} />
-              </Button>
-            </Tooltip>
-          </Box>
-          <Box
-            ref={atomInfoRef}
-            position="absolute"
-            bottom={0}
-            right={0}
-            p="0.6rem 0.8rem"
-            zIndex={100}
-            bgcolor="#f8f8f8d8"
-            sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
-            fontSize={14}
-          >
-            <Box display="flex" flexDirection="column">
-              <Typography variant="caption" component="p" textAlign="right" />
-              <Typography variant="caption" component="p" textAlign="right" />
-              <Typography variant="caption" component="p" textAlign="right" />
-            </Box>
-          </Box>
         </Box>
       </Box>
       {isAlphaFold(selectedRow) && <CompactAlphaFoldLegend />}
