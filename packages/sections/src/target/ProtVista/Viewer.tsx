@@ -1,0 +1,553 @@
+import { useState, useEffect, useRef } from "react";
+import { Box, Button, Typography } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCamera, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { createViewer } from "3dmol";
+import { parseCif } from "./parseCif";
+import { schemeSet1, schemeDark2 } from "d3";
+import { CompactAlphaFoldLegend, Tooltip } from "ui";
+import { getAlphaFoldConfidence } from "@ot/constants";
+import { isAlphaFold, zipToObject, modulo } from "./helpers";
+import InfoPopper from "./InfoPopper";
+
+const experimentalStructureStem = "https://www.ebi.ac.uk/pdbe/entry-files/download/";
+const experimentalStructureSuffix = ".cif";
+const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
+const alphaFoldStructureSuffix = "-model_v4.cif";
+
+const chainColorScheme = [
+  ...schemeDark2.slice(0, -1),
+  ...[1, 2, 3, 4, 0, 6, 7].map(i => schemeSet1[i]),
+];
+
+// keep as closure since may need local state in future - such as hovered on atom
+// for highlighting
+function hoverManagerFactory({ atomInfoRef, parsedCif, chainToEntityDesc, isAF }) {
+  return [
+    {},
+    true,
+    atom => {
+      const infoElmt = atomInfoRef.current;
+      if (infoElmt) {
+        infoElmt.style.display = "block";
+        const fieldElmts = [...infoElmt.querySelectorAll("p")];
+        const authChain = parsedCif["_atom_site.auth_asym_id"][atom.index];
+        const pdbChain = parsedCif["_atom_site.label_asym_id"][atom.index];
+        const authAtom = parsedCif["_atom_site.auth_seq_id"][atom.index];
+        const pdbAtom = parsedCif["_atom_site.label_seq_id"][atom.index];
+        fieldElmts[0].textContent = chainToEntityDesc[pdbChain];
+        fieldElmts[1].textContent = `${pdbChain}${
+          authChain && authChain !== pdbChain ? ` (auth: ${authChain})` : ""
+        } | ${atom.resn} ${pdbAtom}${
+          authAtom && authAtom !== pdbAtom ? ` (auth: ${authAtom})` : ""
+        }`;
+        fieldElmts[2].textContent = isAF
+          ? `Confidence: ${atom.b} (${getAlphaFoldConfidence(atom)})`
+          : "";
+      }
+    },
+    () => {
+      if (atomInfoRef.current) {
+        atomInfoRef.current.style.display = "none";
+      }
+    },
+  ];
+}
+
+function showStructure({ viewer, structureDetails, modelIndex, reset = true }) {
+  if (viewer && structureDetails) {
+    viewer?.setStyle({}, { hidden: true });
+    const {
+      isAF,
+      modelNumbers,
+      firstStructureChains,
+      firstStructureTargetChains,
+      firstStructureNonTargetChains,
+      otherStructureChains,
+      scheme,
+    } = structureDetails;
+    if (isAF) {
+      viewer.setStyle(
+        {},
+        {
+          cartoon: {
+            colorfunc: atom => getAlphaFoldConfidence(atom, "color"),
+            arrows: true,
+          },
+        }
+      );
+    } else if (modelNumbers.length > 1) {
+      viewer.setStyle(
+        {
+          chain: firstStructureTargetChains,
+          predicate: atom => atom._model === modelNumbers[modelIndex],
+        },
+        { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
+      );
+      viewer.setStyle(
+        {
+          chain: firstStructureNonTargetChains,
+          predicate: atom => atom._model === modelNumbers[modelIndex],
+        },
+        {
+          cartoon: {
+            color: "#eee",
+            arrows: true,
+            opacity: 0.8,
+          },
+        }
+      );
+    } else {
+      viewer.setStyle(
+        { chain: firstStructureTargetChains },
+        { cartoon: { colorfunc: atom => scheme[atom.chain], arrows: true } }
+      );
+      viewer.setStyle(
+        { chain: firstStructureNonTargetChains },
+        {
+          cartoon: {
+            color: "#eee",
+            arrows: true,
+            opacity: 0.8,
+          },
+        }
+      );
+    }
+    function resetViewer(duration = 0) {
+      viewer.zoomTo(
+        {
+          chain: firstStructureTargetChains.length
+            ? firstStructureTargetChains
+            : firstStructureChains,
+        },
+        duration
+      );
+      viewer.zoom(isAF ? 1.4 : 1, duration);
+    }
+    if (reset) resetViewer();
+    viewer.getCanvas().ondblclick = () => resetViewer(200);
+    viewer.render();
+  }
+}
+
+function Viewer({ ensemblId, selectedRow, segments }) {
+  const [viewer, setViewer] = useState(null);
+  const [structureLoading, setStructureLoading] = useState(true);
+  const [structureDetails, setStructureDetails] = useState(null);
+  const [modelIndex, setModelIndex] = useState(null);
+
+  const viewerRef = useRef(null);
+  const structureInfoRef = useRef(null);
+  const atomInfoRef = useRef(null);
+  const messageRef = useRef(null);
+
+  function hideAtomInfo() {
+    if (atomInfoRef.current) atomInfoRef.current.style.display = "none";
+  }
+
+  function showLoadingMessage(message = "Loading structure ...") {
+    if (messageRef.current) {
+      setStructureLoading(true);
+      messageRef.current.style.display = "flex";
+      messageRef.current.textContent = message;
+    }
+  }
+
+  function hideLoadingMessage() {
+    if (messageRef.current) {
+      messageRef.current.style.display = "none";
+      setStructureLoading(false);
+    }
+  }
+
+  function onClickCapture() {
+    if (!viewerRef.current) return;
+
+    try {
+      // Get the canvas element from the container
+      const canvas = viewerRef.current.querySelector("canvas");
+
+      if (!canvas) {
+        console.error("Canvas element not found");
+        return;
+      }
+
+      // Create a new canvas with proper background
+      const newCanvas = document.createElement("canvas");
+      newCanvas.width = canvas.width;
+      newCanvas.height = canvas.height;
+
+      const ctx = newCanvas.getContext("2d");
+
+      // Draw background
+      ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+
+      // Draw original canvas content on top
+      ctx.drawImage(canvas, 0, 0);
+
+      // Convert the new canvas to data URL
+      const dataUrl = newCanvas.toDataURL("image/png");
+
+      // Create a temporary link and trigger download
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = `${ensemblId}-molecular-structure.png`;
+      link.click();
+    } catch (error) {
+      console.error("Error taking screenshot:", error);
+    } finally {
+      // setLoading(false);
+    }
+  }
+
+  function clearStructureInfo() {
+    structureInfoRef.current?.querySelectorAll("span")?.forEach(span => (span.textContent = ""));
+  }
+
+  // create viewer
+  useEffect(() => {
+    if (viewerRef.current) {
+      const _viewer = createViewer(viewerRef.current, {
+        backgroundColor: "#f8f8f8",
+        antialias: true,
+        cartoonQuality: 10,
+      });
+      window.viewer = _viewer; // !! REMOVE GLOBAL !!
+      setViewer(_viewer);
+      const hoverDuration = 50;
+      _viewer.setHoverDuration(hoverDuration);
+      _viewer.getCanvas().onmouseleave = () => {
+        setTimeout(hideAtomInfo, hoverDuration + 50);
+      };
+      _viewer.getCanvas().addEventListener(
+        "wheel",
+        event => {
+          if (!event.ctrlKey) event.stopImmediatePropagation();
+        },
+        true // use capture phase so fires before library handler
+      );
+    }
+    return () => {
+      viewer?.clear();
+      setViewer(null);
+    };
+  }, []);
+
+  // fetch selected structure and show it
+  useEffect(() => {
+    async function fetchStructure() {
+      if (viewer && selectedRow) {
+        clearStructureInfo();
+        setModelIndex(null);
+        showLoadingMessage();
+
+        const isAF = isAlphaFold(selectedRow);
+        const pdbUri = isAF
+          ? `${alphaFoldStructureStem}${selectedRow.id}${alphaFoldStructureSuffix}`
+          : `${experimentalStructureStem}${selectedRow.id.toLowerCase()}${experimentalStructureSuffix}`;
+
+        try {
+          const response = await fetch(pdbUri);
+          if (!response.ok) {
+            console.error(`Response status (CIF request): ${response.status}`);
+            showLoadingMessage("Failed to download structure data");
+          } else {
+            let data, parsedCif;
+            try {
+              data = await response.text();
+              parsedCif = parseCif(data)[selectedRow.id];
+            } catch (error) {
+              console.error(error.message);
+              showLoadingMessage("Failed to parse structure data");
+            }
+            if (data && parsedCif) {
+              if (structureInfoRef.current) {
+                const [idElmt, titleElmt] = structureInfoRef.current.querySelectorAll("span");
+                const title = isAF ? "AlphaFold prediction" : parsedCif["_struct.title"] ?? "";
+                idElmt.textContent = `${selectedRow.id}${title ? ":" : ""}`;
+                titleElmt.textContent = title;
+              }
+
+              const modelNumbers = [...new Set(parsedCif["_atom_site.pdbx_PDB_model_num"])]
+                .map(Number)
+                .sort((a, b) => a - b);
+              const _modelIndex = 0;
+              setModelIndex(0);
+
+              // pdb <-> auth chains
+              // - may only need pdb -> auth, but is 1-to-many so get auth->pdb first
+              let authToPdbChain = null;
+              let pdbToAuthChain = null;
+              {
+                const authChains = parsedCif["_atom_site.auth_asym_id"];
+                if (authChains) {
+                  const pdbChains = parsedCif["_atom_site.label_asym_id"];
+                  const authChainsToMap = new Set(authChains);
+                  authToPdbChain = {};
+                  for (const [index, pdbChain] of pdbChains.entries()) {
+                    const authChain = authChains[index];
+                    if (authChainsToMap.has(authChain)) {
+                      authToPdbChain[authChain] = pdbChain;
+                      authChainsToMap.delete(authChain);
+                      if (authChainsToMap.size === 0) break;
+                    }
+                  }
+                  pdbToAuthChain = {};
+                  for (const [authChain, pdbChain] of Object.entries(authToPdbChain)) {
+                    pdbToAuthChain[pdbChain] ??= [];
+                    pdbToAuthChain[pdbChain].push(authChain);
+                  }
+                }
+              }
+
+              // structure chains - pdb chain names
+              const structureChains = parsedCif["_pdbx_struct_assembly_gen.asym_id_list"];
+              let firstStructureChains;
+              let firstStructureTargetChains = [];
+              let firstStructureNonTargetChains = [];
+              let otherStructureChains;
+              const targetChains = segments[selectedRow.id].uniqueChains; // auth names
+              const targetChainsPdb = new Set(
+                [...targetChains].map(chain => authToPdbChain[chain])
+              );
+              if (structureChains) {
+                if (Array.isArray(structureChains)) {
+                  firstStructureChains = structureChains[0].split(",");
+                  otherStructureChains = structureChains.slice(1).join(",").split(",");
+                  const firstStructureChainsSet = new Set(firstStructureChains);
+                  otherStructureChains = otherStructureChains.filter(
+                    chain => !firstStructureChainsSet.has(chain)
+                  );
+                } else {
+                  firstStructureChains = structureChains.split(",");
+                  otherStructureChains = [];
+                }
+                for (const chain of firstStructureChains) {
+                  (targetChainsPdb.has(chain)
+                    ? firstStructureTargetChains
+                    : firstStructureNonTargetChains
+                  ).push(chain);
+                }
+              } else {
+                const allChains = new Set(parsedCif["_atom_site.label_asym_id"]);
+                firstStructureChains = [...allChains];
+                firstStructureTargetChains.push(...targetChainsPdb);
+                firstStructureNonTargetChains = firstStructureChains.filter(
+                  chain => !targetChainsPdb.has(chain)
+                );
+                otherStructureChains = [];
+              }
+              if (pdbToAuthChain) {
+                firstStructureChains = firstStructureChains
+                  .map(chain => pdbToAuthChain[chain])
+                  .flat();
+                firstStructureTargetChains = firstStructureTargetChains
+                  .map(chain => pdbToAuthChain[chain])
+                  .flat();
+                firstStructureNonTargetChains = firstStructureNonTargetChains
+                  .map(chain => pdbToAuthChain[chain])
+                  .flat();
+                otherStructureChains = otherStructureChains
+                  .map(chain => pdbToAuthChain[chain])
+                  .flat();
+              }
+
+              // entities
+              const entityIdToDesc = zipToObject(
+                parsedCif["_entity.id"],
+                parsedCif["_entity.pdbx_description"]
+              );
+              const chainToEntityId = zipToObject(
+                parsedCif["_struct_asym.id"],
+                parsedCif["_struct_asym.entity_id"]
+              );
+              const chainToEntityDesc = {};
+              for (const chain of parsedCif["_struct_asym.id"]) {
+                chainToEntityDesc[chain] = entityIdToDesc[chainToEntityId[chain]];
+              }
+
+              const scheme = {};
+              if (!isAF) {
+                firstStructureTargetChains.forEach((chain, index) => {
+                  scheme[chain] = chainColorScheme[index % chainColorScheme.length];
+                });
+              }
+
+              const _structureDetails = {
+                isAF,
+                modelNumbers,
+                firstStructureChains,
+                firstStructureTargetChains,
+                firstStructureNonTargetChains,
+                otherStructureChains,
+                scheme,
+              };
+              setStructureDetails(_structureDetails);
+              viewer.removeAllModels();
+              viewer.addModel(data, "cif");
+              viewer.setStyle({}, { hidden: true });
+
+              // add model numbers to _model property of viewer's atom objects
+              // - since viewer not picking up model values automatically
+              window.parsedCif = parsedCif; // !! REOVE GLOBAL !!
+              if (modelNumbers.length > 1) {
+                for (const [index, atom] of viewer.getModel().selectedAtoms().entries()) {
+                  atom._model = Number(parsedCif["_atom_site.pdbx_PDB_model_num"][index]);
+                }
+              }
+
+              viewer.setHoverable(
+                ...hoverManagerFactory({
+                  atomInfoRef,
+                  parsedCif,
+                  chainToEntityDesc,
+                  isAF,
+                })
+              );
+
+              showStructure({
+                viewer,
+                structureDetails: _structureDetails,
+                modelIndex: _modelIndex,
+              });
+              hideLoadingMessage();
+            }
+          }
+        } catch (error) {
+          console.error(error.message);
+          showLoadingMessage("Failed to download structure data");
+        }
+      }
+    }
+    fetchStructure();
+    return () => {
+      hideAtomInfo();
+      viewer?.clear();
+    };
+  }, [viewer, selectedRow, segments]);
+
+  function handleDecrementModel() {
+    const newIndex = modulo(modelIndex - 1, structureDetails.modelNumbers.length);
+    showStructure({ viewer, structureDetails, modelIndex: newIndex, reset: false });
+    setModelIndex(newIndex);
+  }
+
+  function handleIncrementModel() {
+    const newIndex = modulo(modelIndex + 1, structureDetails.modelNumbers.length);
+    showStructure({ viewer, structureDetails, modelIndex: newIndex, reset: false });
+    setModelIndex(newIndex);
+  }
+
+  return (
+    <>
+      <Box
+        ref={structureInfoRef}
+        display="flex"
+        alignItems="baseline"
+        minHeight={22}
+        gap={0.5}
+        ml={2}
+        mt={0.75}
+        mb={1}
+      >
+        <Typography variant="subtitle2" component="span"></Typography>
+        <Typography variant="body2" component="span"></Typography>
+      </Box>
+      <Box position="relative" display="flex" justifyContent="center" pb={1}>
+        <Box ref={viewerRef} position="relative" width="100%" height="380px">
+          <Typography
+            ref={messageRef}
+            variant="body2"
+            component="div"
+            sx={{
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              position: "absolute",
+              zIndex: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          />
+          {structureDetails?.modelNumbers?.length > 1 && (
+            <Box
+              position="absolute"
+              top={0}
+              left={0}
+              bgcolor="#f8f8f8d8"
+              sx={{ borderBottomRightRadius: "0.2rem", zIndex: 1, pointerEvents: "none" }}
+              display="flex"
+              alignItems="center"
+              gap={1}
+              p="0.6rem 0.6rem"
+            >
+              <Button
+                onClick={handleDecrementModel}
+                sx={{ bgcolor: "white", pointerEvents: "auto" }}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} size="xs" />
+              </Button>
+              <Button
+                onClick={handleIncrementModel}
+                sx={{ bgcolor: "white", pointerEvents: "auto" }}
+              >
+                <FontAwesomeIcon icon={faChevronRight} size="xs" />
+              </Button>
+              <Typography variant="caption" fontSize={13}>
+                Model {structureDetails.modelNumbers[modelIndex]}/
+                {structureDetails.modelNumbers.at(-1)}
+              </Typography>
+            </Box>
+          )}
+          <Box
+            sx={{
+              top: 0,
+              right: 0,
+              position: "absolute",
+              zIndex: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              background: "white",
+              m: 1,
+              gap: 1,
+            }}
+          >
+            <InfoPopper />
+            <Tooltip title="Screenshot" placement="top-start">
+              <Button
+                sx={{ display: "flex", gap: 1 }}
+                disabled={structureLoading}
+                onClick={onClickCapture}
+              >
+                <FontAwesomeIcon icon={faCamera} />
+              </Button>
+            </Tooltip>
+          </Box>
+          <Box
+            ref={atomInfoRef}
+            position="absolute"
+            bottom={0}
+            right={0}
+            p="0.6rem 0.8rem"
+            zIndex={100}
+            bgcolor="#f8f8f8d8"
+            sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
+            fontSize={14}
+          >
+            <Box display="flex" flexDirection="column">
+              <Typography variant="caption" component="p" textAlign="right" />
+              <Typography variant="caption" component="p" textAlign="right" />
+              <Typography variant="caption" component="p" textAlign="right" />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+      {isAlphaFold(selectedRow) && <CompactAlphaFoldLegend />}
+    </>
+  );
+}
+
+export default Viewer;
