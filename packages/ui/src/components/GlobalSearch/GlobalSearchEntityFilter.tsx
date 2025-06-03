@@ -25,7 +25,7 @@ function GlobalSearchEntityFilter() {
 
   return (
     <Box>
-      <FormGroup sx={{ overflowX: "scroll", p: 1 }}>
+      <FormGroup sx={{ overflowX: "auto", p: 1 }}>
         <Box sx={{ display: "flex", pr: 2 }}>
           <FormControlLabel
             label={""}
