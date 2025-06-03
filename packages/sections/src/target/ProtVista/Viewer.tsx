@@ -346,7 +346,6 @@ function Viewer({ ensemblId, selectedRow, segments }) {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  background: "white",
                   m: 1,
                   gap: 1,
                 }}
@@ -354,7 +353,14 @@ function Viewer({ ensemblId, selectedRow, segments }) {
                 <InfoPopper />
                 <Tooltip title="Screenshot" placement="top-start">
                   <Button
-                    sx={{ display: "flex", gap: 1 }}
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      bgcolor: "white",
+                      "&:hover": {
+                        bgcolor: "#f8f8f8d8",
+                      },
+                    }}
                     onClick={() => onClickCapture(viewerRef, ensemblId)}
                   >
                     <FontAwesomeIcon icon={faCamera} />

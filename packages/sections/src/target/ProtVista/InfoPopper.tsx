@@ -76,6 +76,12 @@ function InfoPopper() {
           onClick={handleClick}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          sx={{
+            bgcolor: "white",
+            "&:hover": {
+              bgcolor: "#f8f8f8d8",
+            },
+          }}
         >
           <FontAwesomeIcon icon={faInfo} />
         </Button>
