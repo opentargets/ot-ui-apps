@@ -157,7 +157,7 @@ function Viewer({ ensemblId, selectedRow, segments }) {
 
         const data = await response.text();
         if (data.length > 4e7) {
-          setMessageText("Structure data too large to show in viewer");
+          setMessageText("Structure data too large to visualise");
           return;
         }
 

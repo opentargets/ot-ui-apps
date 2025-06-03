@@ -59,9 +59,11 @@ function Table({ uniprotId, rows, segments, setSelectedRow, request, query, vari
           ? `https://www.alphafold.ebi.ac.uk/entry/${uniprotId}`
           : `https://www.ebi.ac.uk/pdbe/entry/pdb/${id}`;
         return (
-          <Link external to={url}>
-            {type}
-          </Link>
+          <div onClick={event => event.stopPropagation()}>
+            <Link external to={url}>
+              {type}
+            </Link>
+          </div>
         );
       },
     },
