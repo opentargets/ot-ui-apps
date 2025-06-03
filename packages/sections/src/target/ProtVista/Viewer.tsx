@@ -29,7 +29,6 @@ function showStructure({ viewer, structureDetails, modelIndex, reset = true }) {
       firstStructureChains,
       firstStructureTargetChains,
       firstStructureNonTargetChains,
-      otherStructureChains,
       scheme,
     } = structureDetails;
     if (isAF) {
@@ -104,16 +103,6 @@ function Viewer({ ensemblId, selectedRow, segments }) {
   const [modelIndex, setModelIndex] = useState(null);
 
   const viewerRef = useRef(null);
-  const structureInfoRef = useRef(null);
-  const atomInfoRef = useRef(null);
-
-  function hideAtomInfo() {
-    if (atomInfoRef.current) atomInfoRef.current.style.display = "none";
-  }
-
-  function clearStructureInfo() {
-    structureInfoRef.current?.querySelectorAll("span")?.forEach(span => (span.textContent = ""));
-  }
 
   // create viewer
   useEffect(() => {
@@ -125,11 +114,6 @@ function Viewer({ ensemblId, selectedRow, segments }) {
       });
       window.viewer = _viewer; // !! REMOVE GLOBAL !!
       setViewer(_viewer);
-      const hoverDuration = 50;
-      _viewer.setHoverDuration(hoverDuration);
-      _viewer.getCanvas().onmouseleave = () => {
-        setTimeout(hideAtomInfo, hoverDuration + 50);
-      };
       _viewer.getCanvas().addEventListener(
         "wheel",
         event => {
@@ -148,7 +132,7 @@ function Viewer({ ensemblId, selectedRow, segments }) {
   useEffect(() => {
     async function fetchStructure() {
       if (viewer && selectedRow) {
-        clearStructureInfo();
+        setStructureDetails(null);
         setModelIndex(null);
         setMessageText("Loading structure ...");
 
@@ -172,13 +156,6 @@ function Viewer({ ensemblId, selectedRow, segments }) {
               setMessageText("Failed to parse structure data");
             }
             if (data && parsedCif) {
-              if (structureInfoRef.current) {
-                const [idElmt, titleElmt] = structureInfoRef.current.querySelectorAll("span");
-                const title = isAF ? "AlphaFold prediction" : parsedCif["_struct.title"] ?? "";
-                idElmt.textContent = `${selectedRow.id}${title ? ":" : ""}`;
-                titleElmt.textContent = title;
-              }
-
               const modelNumbers = [...new Set(parsedCif["_atom_site.pdbx_PDB_model_num"])]
                 .map(Number)
                 .sort((a, b) => a - b);
@@ -291,6 +268,7 @@ function Viewer({ ensemblId, selectedRow, segments }) {
                 firstStructureTargetChains,
                 firstStructureNonTargetChains,
                 otherStructureChains,
+                title: parsedCif["_struct.title"],
                 scheme,
               };
               setStructureDetails(_structureDetails);
@@ -307,9 +285,14 @@ function Viewer({ ensemblId, selectedRow, segments }) {
                 }
               }
 
-              viewer.setHoverable(
-                ...hoverManagerFactory({ parsedCif, chainToEntityDesc, setHoverInfo })
-              );
+              const hoverDuration = 50;
+              viewer.setHoverDuration(hoverDuration);
+              const hoverArgs = hoverManagerFactory({ parsedCif, chainToEntityDesc, setHoverInfo });
+              const handleUnhover = hoverArgs[3];
+              viewer.getCanvas().onmouseleave = () => {
+                setTimeout(handleUnhover, hoverDuration + 50);
+              };
+              viewer.setHoverable(...hoverArgs);
 
               showStructure({
                 viewer,
@@ -346,19 +329,7 @@ function Viewer({ ensemblId, selectedRow, segments }) {
 
   return (
     <>
-      <Box
-        ref={structureInfoRef}
-        display="flex"
-        alignItems="baseline"
-        minHeight={22}
-        gap={0.5}
-        ml={2}
-        mt={0.75}
-        mb={1}
-      >
-        <Typography variant="subtitle2" component="span"></Typography>
-        <Typography variant="body2" component="span"></Typography>
-      </Box>
+      <StructureTitle selectedRow={selectedRow} structureDetails={structureDetails} />
       <Box position="relative" display="flex" justifyContent="center" pb={1}>
         <Box ref={viewerRef} position="relative" width="100%">
           <Box className="viewerContainer" position="relative" width="100%" height="380px">
@@ -483,6 +454,25 @@ function Viewer({ ensemblId, selectedRow, segments }) {
       </Box>
       {isAlphaFold(selectedRow) && <CompactAlphaFoldLegend />}
     </>
+  );
+}
+
+function StructureTitle({ selectedRow, structureDetails }) {
+  const title = isAlphaFold(selectedRow) ? "AlphaFold prediction" : structureDetails?.title ?? "";
+
+  return (
+    <Box display="flex" alignItems="baseline" minHeight={22} gap={0.5} ml={2} mt={0.75} mb={1}>
+      {selectedRow && (isAlphaFold(selectedRow) || structureDetails) && (
+        <>
+          <Typography variant="subtitle2" component="span">
+            {`${selectedRow.id}${title ? ":" : ""}`}
+          </Typography>
+          <Typography variant="body2" component="span">
+            {title}
+          </Typography>
+        </>
+      )}
+    </Box>
   );
 }
 
