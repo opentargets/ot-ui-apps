@@ -75,7 +75,6 @@ function Table({ uniprotId, rows, segments, setSelectedRow, request, query, vari
 
   return (
     <OtTable
-      dataDownloader
       showGlobalFilter
       sortBy="positions"
       order="desc"
