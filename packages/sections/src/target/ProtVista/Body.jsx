@@ -83,8 +83,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
           // sort to match initial sort of table
           return _segments?.[b?.id]?.maxLengthSegment - _segments?.[a?.id]?.maxLengthSegment;
         });
-        setRowResults(results);
       }
+      setRowResults(results);
       setSelectedRow(results[0]);
     }
     fetchAllResults();
@@ -104,7 +104,9 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={() => {
-        if (!rowResults && !request.loading) return <NoStructureAvailable uniprotId={uniprotId} />;
+        if (!rowResults) return <NoRows>Fetching structure data for {uniprotId}</NoRows>;
+
+        if (rowResults.length === 0) return <NoRows>No structure available for {uniprotId}</NoRows>;
 
         return (
           <Grid container columnSpacing={2}>
@@ -131,11 +133,9 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   );
 }
 
-function NoStructureAvailable({ uniprotId }) {
+function NoRows({ children }) {
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", fontStyle: "italic" }}>
-      No Structure Available for {uniprotId}
-    </Box>
+    <Box sx={{ display: "flex", justifyContent: "center", fontStyle: "italic" }}>{children}</Box>
   );
 }
 
