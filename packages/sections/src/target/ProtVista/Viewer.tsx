@@ -141,171 +141,168 @@ function Viewer({ ensemblId, selectedRow, segments }) {
           ? `${alphaFoldStructureStem}${selectedRow.id}${alphaFoldStructureSuffix}`
           : `${experimentalStructureStem}${selectedRow.id.toLowerCase()}${experimentalStructureSuffix}`;
 
+        let response;
         try {
-          const response = await fetch(pdbUri);
+          response = await fetch(pdbUri);
           if (!response.ok) {
             console.error(`Response status (CIF request): ${response.status}`);
             setMessageText("Failed to download structure data");
-          } else {
-            let data, parsedCif;
-            try {
-              data = await response.text();
-              parsedCif = parseCif(data)[selectedRow.id];
-            } catch (error) {
-              console.error(error.message);
-              setMessageText("Failed to parse structure data");
-            }
-            if (data && parsedCif) {
-              const modelNumbers = [...new Set(parsedCif["_atom_site.pdbx_PDB_model_num"])]
-                .map(Number)
-                .sort((a, b) => a - b);
-              const _modelIndex = 0;
-              setModelIndex(0);
-
-              // pdb <-> auth chains
-              // - may only need pdb -> auth, but is 1-to-many so get auth->pdb first
-              let authToPdbChain = null;
-              let pdbToAuthChain = null;
-              {
-                const authChains = parsedCif["_atom_site.auth_asym_id"];
-                if (authChains) {
-                  const pdbChains = parsedCif["_atom_site.label_asym_id"];
-                  const authChainsToMap = new Set(authChains);
-                  authToPdbChain = {};
-                  for (const [index, pdbChain] of pdbChains.entries()) {
-                    const authChain = authChains[index];
-                    if (authChainsToMap.has(authChain)) {
-                      authToPdbChain[authChain] = pdbChain;
-                      authChainsToMap.delete(authChain);
-                      if (authChainsToMap.size === 0) break;
-                    }
-                  }
-                  pdbToAuthChain = {};
-                  for (const [authChain, pdbChain] of Object.entries(authToPdbChain)) {
-                    pdbToAuthChain[pdbChain] ??= [];
-                    pdbToAuthChain[pdbChain].push(authChain);
-                  }
-                }
-              }
-
-              // structure chains - pdb chain names
-              const structureChains = parsedCif["_pdbx_struct_assembly_gen.asym_id_list"];
-              let firstStructureChains;
-              let firstStructureTargetChains = [];
-              let firstStructureNonTargetChains = [];
-              let otherStructureChains;
-              const targetChains = segments[selectedRow.id].uniqueChains; // auth names
-              const targetChainsPdb = new Set(
-                [...targetChains].map(chain => authToPdbChain[chain])
-              );
-              if (structureChains) {
-                if (Array.isArray(structureChains)) {
-                  firstStructureChains = structureChains[0].split(",");
-                  otherStructureChains = structureChains.slice(1).join(",").split(",");
-                  const firstStructureChainsSet = new Set(firstStructureChains);
-                  otherStructureChains = otherStructureChains.filter(
-                    chain => !firstStructureChainsSet.has(chain)
-                  );
-                } else {
-                  firstStructureChains = structureChains.split(",");
-                  otherStructureChains = [];
-                }
-                for (const chain of firstStructureChains) {
-                  (targetChainsPdb.has(chain)
-                    ? firstStructureTargetChains
-                    : firstStructureNonTargetChains
-                  ).push(chain);
-                }
-              } else {
-                const allChains = new Set(parsedCif["_atom_site.label_asym_id"]);
-                firstStructureChains = [...allChains];
-                firstStructureTargetChains.push(...targetChainsPdb);
-                firstStructureNonTargetChains = firstStructureChains.filter(
-                  chain => !targetChainsPdb.has(chain)
-                );
-                otherStructureChains = [];
-              }
-              if (pdbToAuthChain) {
-                firstStructureChains = firstStructureChains
-                  .map(chain => pdbToAuthChain[chain])
-                  .flat();
-                firstStructureTargetChains = firstStructureTargetChains
-                  .map(chain => pdbToAuthChain[chain])
-                  .flat();
-                firstStructureNonTargetChains = firstStructureNonTargetChains
-                  .map(chain => pdbToAuthChain[chain])
-                  .flat();
-                otherStructureChains = otherStructureChains
-                  .map(chain => pdbToAuthChain[chain])
-                  .flat();
-              }
-
-              // entities
-              const entityIdToDesc = zipToObject(
-                parsedCif["_entity.id"],
-                parsedCif["_entity.pdbx_description"]
-              );
-              const chainToEntityId = zipToObject(
-                parsedCif["_struct_asym.id"],
-                parsedCif["_struct_asym.entity_id"]
-              );
-              const chainToEntityDesc = {};
-              for (const chain of parsedCif["_struct_asym.id"]) {
-                chainToEntityDesc[chain] = entityIdToDesc[chainToEntityId[chain]];
-              }
-
-              const scheme = {};
-              if (!isAF) {
-                firstStructureTargetChains.forEach((chain, index) => {
-                  scheme[chain] = chainColorScheme[index % chainColorScheme.length];
-                });
-              }
-
-              const _structureDetails = {
-                isAF,
-                modelNumbers,
-                firstStructureChains,
-                firstStructureTargetChains,
-                firstStructureNonTargetChains,
-                otherStructureChains,
-                title: parsedCif["_struct.title"],
-                scheme,
-              };
-              setStructureDetails(_structureDetails);
-              viewer.removeAllModels();
-              viewer.addModel(data, "cif");
-              viewer.setStyle({}, { hidden: true });
-
-              // add model numbers to _model property of viewer's atom objects
-              // - since viewer not picking up model values automatically
-              window.parsedCif = parsedCif; // !! REOVE GLOBAL !!
-              if (modelNumbers.length > 1) {
-                for (const [index, atom] of viewer.getModel().selectedAtoms().entries()) {
-                  atom._model = Number(parsedCif["_atom_site.pdbx_PDB_model_num"][index]);
-                }
-              }
-
-              const hoverDuration = 50;
-              viewer.setHoverDuration(hoverDuration);
-              const hoverArgs = hoverManagerFactory({ parsedCif, chainToEntityDesc, setHoverInfo });
-              const handleUnhover = hoverArgs[3];
-              viewer.getCanvas().onmouseleave = () => {
-                setTimeout(handleUnhover, hoverDuration + 50);
-              };
-              viewer.setHoverable(...hoverArgs);
-
-              showStructure({
-                viewer,
-                structureDetails: _structureDetails,
-                modelIndex: _modelIndex,
-              });
-              setMessageText("");
-            }
+            return;
           }
         } catch (error) {
           console.error(error.message);
           setMessageText("Failed to download structure data");
+          return;
         }
+
+        let data, parsedCif;
+        try {
+          data = await response.text();
+          parsedCif = parseCif(data)[selectedRow.id];
+        } catch (error) {
+          console.error(error.message);
+          setMessageText("Failed to parse structure data");
+          return;
+        }
+
+        const modelNumbers = [...new Set(parsedCif["_atom_site.pdbx_PDB_model_num"])]
+          .map(Number)
+          .sort((a, b) => a - b);
+        const _modelIndex = 0;
+        setModelIndex(0);
+
+        // pdb <-> auth chains
+        // - may only need pdb -> auth, but is 1-to-many so get auth->pdb first
+        let authToPdbChain = null;
+        let pdbToAuthChain = null;
+        {
+          const authChains = parsedCif["_atom_site.auth_asym_id"];
+          if (authChains) {
+            const pdbChains = parsedCif["_atom_site.label_asym_id"];
+            const authChainsToMap = new Set(authChains);
+            authToPdbChain = {};
+            for (const [index, pdbChain] of pdbChains.entries()) {
+              const authChain = authChains[index];
+              if (authChainsToMap.has(authChain)) {
+                authToPdbChain[authChain] = pdbChain;
+                authChainsToMap.delete(authChain);
+                if (authChainsToMap.size === 0) break;
+              }
+            }
+            pdbToAuthChain = {};
+            for (const [authChain, pdbChain] of Object.entries(authToPdbChain)) {
+              pdbToAuthChain[pdbChain] ??= [];
+              pdbToAuthChain[pdbChain].push(authChain);
+            }
+          }
+        }
+
+        // structure chains - pdb chain names
+        const structureChains = parsedCif["_pdbx_struct_assembly_gen.asym_id_list"];
+        let firstStructureChains;
+        let firstStructureTargetChains = [];
+        let firstStructureNonTargetChains = [];
+        let otherStructureChains;
+        const targetChains = segments[selectedRow.id].uniqueChains; // auth names
+        const targetChainsPdb = new Set([...targetChains].map(chain => authToPdbChain[chain]));
+        if (structureChains) {
+          if (Array.isArray(structureChains)) {
+            firstStructureChains = structureChains[0].split(",");
+            otherStructureChains = structureChains.slice(1).join(",").split(",");
+            const firstStructureChainsSet = new Set(firstStructureChains);
+            otherStructureChains = otherStructureChains.filter(
+              chain => !firstStructureChainsSet.has(chain)
+            );
+          } else {
+            firstStructureChains = structureChains.split(",");
+            otherStructureChains = [];
+          }
+          for (const chain of firstStructureChains) {
+            (targetChainsPdb.has(chain)
+              ? firstStructureTargetChains
+              : firstStructureNonTargetChains
+            ).push(chain);
+          }
+        } else {
+          const allChains = new Set(parsedCif["_atom_site.label_asym_id"]);
+          firstStructureChains = [...allChains];
+          firstStructureTargetChains.push(...targetChainsPdb);
+          firstStructureNonTargetChains = firstStructureChains.filter(
+            chain => !targetChainsPdb.has(chain)
+          );
+          otherStructureChains = [];
+        }
+        if (pdbToAuthChain) {
+          firstStructureChains = firstStructureChains.map(chain => pdbToAuthChain[chain]).flat();
+          firstStructureTargetChains = firstStructureTargetChains
+            .map(chain => pdbToAuthChain[chain])
+            .flat();
+          firstStructureNonTargetChains = firstStructureNonTargetChains
+            .map(chain => pdbToAuthChain[chain])
+            .flat();
+          otherStructureChains = otherStructureChains.map(chain => pdbToAuthChain[chain]).flat();
+        }
+
+        // entities
+        const entityIdToDesc = zipToObject(
+          parsedCif["_entity.id"],
+          parsedCif["_entity.pdbx_description"]
+        );
+        const chainToEntityId = zipToObject(
+          parsedCif["_struct_asym.id"],
+          parsedCif["_struct_asym.entity_id"]
+        );
+        const chainToEntityDesc = {};
+        for (const chain of parsedCif["_struct_asym.id"]) {
+          chainToEntityDesc[chain] = entityIdToDesc[chainToEntityId[chain]];
+        }
+
+        const scheme = {};
+        if (!isAF) {
+          firstStructureTargetChains.forEach((chain, index) => {
+            scheme[chain] = chainColorScheme[index % chainColorScheme.length];
+          });
+        }
+
+        const _structureDetails = {
+          isAF,
+          modelNumbers,
+          firstStructureChains,
+          firstStructureTargetChains,
+          firstStructureNonTargetChains,
+          otherStructureChains,
+          title: parsedCif["_struct.title"],
+          scheme,
+        };
+        setStructureDetails(_structureDetails);
+        viewer.removeAllModels();
+        viewer.addModel(data, "cif");
+        viewer.setStyle({}, { hidden: true });
+
+        // add model numbers to _model property of viewer's atom objects
+        // - since viewer not picking up model values automatically
+        window.parsedCif = parsedCif; // !! REOVE GLOBAL !!
+        if (modelNumbers.length > 1) {
+          for (const [index, atom] of viewer.getModel().selectedAtoms().entries()) {
+            atom._model = Number(parsedCif["_atom_site.pdbx_PDB_model_num"][index]);
+          }
+        }
+
+        const hoverDuration = 50;
+        viewer.setHoverDuration(hoverDuration);
+        const hoverArgs = hoverManagerFactory({ parsedCif, chainToEntityDesc, setHoverInfo });
+        const handleUnhover = hoverArgs[3];
+        viewer.getCanvas().onmouseleave = () => {
+          setTimeout(handleUnhover, hoverDuration + 50);
+        };
+        viewer.setHoverable(...hoverArgs);
+
+        showStructure({
+          viewer,
+          structureDetails: _structureDetails,
+          modelIndex: _modelIndex,
+        });
+        setMessageText("");
       }
     }
     fetchStructure();
