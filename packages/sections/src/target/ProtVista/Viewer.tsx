@@ -155,9 +155,14 @@ function Viewer({ ensemblId, selectedRow, segments }) {
           return;
         }
 
-        let data, parsedCif;
+        const data = await response.text();
+        if (data.length > 4e7) {
+          setMessageText("Structure data too large to show in viewer");
+          return;
+        }
+
+        let parsedCif;
         try {
-          data = await response.text();
           parsedCif = parseCif(data)[selectedRow.id];
         } catch (error) {
           console.error(error.message);
