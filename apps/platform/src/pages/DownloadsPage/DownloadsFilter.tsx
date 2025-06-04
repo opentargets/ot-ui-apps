@@ -4,6 +4,8 @@ import DownloadsSearchInput from "./DownloadsSearchInput";
 import { DownloadsContext } from "./context/DownloadsContext";
 import { useContext } from "react";
 import { clearFilterData, setActiveFilter } from "./context/downloadsActions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 function DownloadsFilter() {
   const { state, dispatch } = useContext(DownloadsContext);
@@ -41,7 +43,12 @@ function DownloadsFilter() {
         >
           Filters
           <Chip
-            label="clear all"
+            label={
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <FontAwesomeIcon icon={faTrash} />
+                clear
+              </Box>
+            }
             size="small"
             clickable
             sx={{ fontWeight: "normal", typography: "caption" }}
