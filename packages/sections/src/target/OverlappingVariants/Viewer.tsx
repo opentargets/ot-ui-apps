@@ -22,17 +22,12 @@ export default function Viewer() {
   const [atomInfo, setAtomInfo] = useState(null);
 
   const { state, filteredRows } = useStateValue();
-  const { setStartPosition } = useActions();
+  const { setStartPosition, setUniprotId } = useActions();
   const { setViewer } = useActions();
 
   // fetch structure data
   useEffect(() => {
     async function fetchStructure() {
-      let response;
-      const uniprotIds = [
-        ...(state.data.proteinCodingCoordinates?.rows?.[0]?.uniprotAccessions ?? []),
-      ];
-
       async function fetchStructureFile(uniprotId) {
         const pdbUri = `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v4.cif`;
         try {
@@ -40,24 +35,24 @@ export default function Viewer() {
           if (response?.ok) return response;
         } catch (error) {}
       }
-
-      while (!response && uniprotIds.length) {
-        response = await fetchStructureFile(uniprotIds.shift());
+      const uniprotIds = [
+        ...(state.data.proteinCodingCoordinates?.rows?.[0]?.uniprotAccessions ?? []),
+      ];
+      let currentUniprotId = null;
+      let alphaFoldResponse = null;
+      while (!alphaFoldResponse && uniprotIds.length) {
+        currentUniprotId = uniprotIds.shift();
+        alphaFoldResponse = await fetchStructureFile(currentUniprotId);
       }
-      if (response) {
-        try {
-          const _structureData = await response.text();
-          setStructureData(_structureData);
-        } catch (error) {
-          console.error(error.message);
-          setMessageText("Failed to parse structure data");
-        }
+      if (alphaFoldResponse) {
+        setStructureData(await alphaFoldResponse.text());
+        setUniprotId(currentUniprotId);
       } else {
         setMessageText("Structure data not available");
       }
     }
     fetchStructure();
-  }, [state.data.proteinCodingCoordinates, setMessageText]);
+  }, [state.data.proteinCodingCoordinates]);
 
   // view structure
   useEffect(() => {

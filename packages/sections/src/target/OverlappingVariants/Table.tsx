@@ -54,7 +54,7 @@ export default function OverlappingVariantsTable() {
     },
     {
       id: "datasources",
-      label: "Evidence",
+      label: "Evidence count",
       renderCell: ({ datasources }) => {
         if (datasources.length > 0) {
           return (

@@ -2,6 +2,7 @@
 
 export enum ActionType {
   SET_VIEWER = "SET_VIEWER",
+  SET_UNIPROT_ID = "SET_UNIPROT_ID",
   SET_DISEASE_THERAPEUTIC = "SET_DISEASE_THERAPEUTIC",
   SET_VARIANT = "SET_VARIANT",
   SET_CONSEQUENCE = "SET_CONSEQUENCE",
@@ -13,6 +14,7 @@ export enum ActionType {
 export interface State {
   viewer: any;
   data: any;
+  uniprotId: null | string;
   query: any;
   variables: any;
   filters: any;
@@ -26,6 +28,7 @@ export interface Action {
 export const initialState: State = {
   viewer: null,
   data: null,
+  uniprotId: null,
   query: null,
   variables: null,
   filters: {
@@ -41,6 +44,7 @@ export const initialState: State = {
 export const getInitialState = ({ data, query, variables }) => ({
   ...initialState,
   data,
+  uniprotId: data?.proteinCodingCoordinates?.rows?.[0]?.uniprotAccessions?.[0] ?? null,
   query,
   variables,
 });
@@ -54,6 +58,9 @@ export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case ActionType.SET_VIEWER:
       return { ...state, viewer: action.viewer };
+
+    case ActionType.SET_UNIPROT_ID:
+      return { ...state, uniprotId: action.uniprotId };
 
     case ActionType.SET_DISEASE_THERAPEUTIC:
       return {
@@ -92,6 +99,11 @@ export const actions = {
   setViewer: (viewer: any): Action => ({
     type: ActionType.SET_VIEWER,
     viewer,
+  }),
+
+  setUniprotId: (uniprotId: null | string): Action => ({
+    type: ActionType.SET_UNIPROT_ID,
+    uniprotId,
   }),
 
   setDiseaseTherapeutic: (diseaseTherapeutic: string[]): Action => ({
