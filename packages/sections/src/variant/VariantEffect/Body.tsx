@@ -1,10 +1,10 @@
 import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { SectionItem, Tooltip, OtTable } from "ui";
+import { SectionItem, Tooltip, OtTable, Link } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import { naLabel, VIEW } from "@ot/constants";
+import { naLabel, VARIANT_EFFECT_METHODS, VIEW } from "@ot/constants";
 import VARIANT_EFFECT_QUERY from "./VariantEffectQuery.gql";
 import VariantEffectPlot from "./VariantEffectPlot";
 
@@ -13,6 +13,19 @@ const columns = [
     id: "method",
     label: "Method",
     enableHiding: false,
+    renderCell: ({ method }) => (
+      <Tooltip
+        title={
+          <>
+            {VARIANT_EFFECT_METHODS[method].description} See{" "}
+            <Link to={VARIANT_EFFECT_METHODS[method].docsUrl}>here </Link> for more info.
+          </>
+        }
+        showHelpIcon
+      >
+        {method}
+      </Tooltip>
+    ),
   },
   {
     id: "assessment",
