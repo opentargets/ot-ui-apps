@@ -4,7 +4,7 @@ import { Box, Grid } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
 import { getUniprotIds } from "@ot/utils";
-import PROTVISTA_QUERY from "./ProtVista.gql";
+import MOLECULAR_STRUCTURE_QUERY from "./MolecularStructure.gql";
 import { useState, useEffect } from "react";
 import Table from "./Table";
 import Viewer from "./Viewer";
@@ -19,7 +19,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   const [selectedRow, setSelectedRow] = useState(null);
 
   const variables = { ensemblId };
-  const request = useQuery(PROTVISTA_QUERY, {
+  const request = useQuery(MOLECULAR_STRUCTURE_QUERY, {
     variables,
   });
 
@@ -117,7 +117,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 uniprotId={uniprotId}
                 setSelectedRow={setSelectedRow}
                 request={request}
-                query={PROTVISTA_QUERY.loc.source.body}
+                query={MOLECULAR_STRUCTURE_QUERY.loc.source.body}
                 variables={variables}
               />
             </Grid>
