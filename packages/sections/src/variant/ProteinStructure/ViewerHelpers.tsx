@@ -1,4 +1,4 @@
-import { getAlphaFoldConfidence } from "@ot/constants";
+import { getAlphaFoldConfidence, getAlphaFoldPathogenicityColor } from "@ot/constants";
 import { hsl } from "d3";
 
 export function resetViewer(viewer, variantResidues, duration = 0) {
@@ -71,17 +71,13 @@ function addVariantStyle(viewer, variantResidues, omitResi) {
   );
 }
 
-export function noHoverStyle(viewer, variantResidues) {
-  viewer.setStyle(
-    {},
-    {
-      cartoon: {
-        colorfunc: a => getAlphaFoldConfidence(a, "color"),
-        arrows: true,
-      },
-    }
-  );
-  addVariantStyle(viewer, variantResidues);
+export function noHoverStyle({ viewer, variantResidues, colorBy, scores }) {
+  const colorfunc =
+    colorBy === "confidence"
+      ? a => getAlphaFoldConfidence(a, "color")
+      : a => getAlphaFoldPathogenicityColor(a, scores);
+  viewer.addStyle({}, { cartoon: { colorfunc, arrows: true } });
+  // addVariantStyle(viewer, variantResidues);
 }
 
 // function hoverManagerFactory({ viewer, atomInfoRef }) {

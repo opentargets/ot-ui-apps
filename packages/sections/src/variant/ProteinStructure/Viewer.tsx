@@ -1,12 +1,22 @@
 import { CompactAlphaFoldLegend } from "ui";
 import { getAlphaFoldConfidence } from "@ot/constants";
 import { createViewer } from "3dmol";
-import { Box, Typography, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  FormLabel,
+  FormControl,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+} from "@mui/material";
 
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import { resetViewer, onClickCapture, noHoverStyle, hoverManagerFactory } from "./ViewerHelpers";
+import { csvParse, mean } from "d3";
 
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
@@ -15,7 +25,12 @@ function Viewer({ row }) {
   if (!row) return null;
 
   const [messageText, setMessageText] = useState("Loading structure ...");
+  const [uniprotId, setUniprotId] = useState(null);
+  const [viewer, setViewer] = useState(null);
   const [hoveredAtom, setHoveredAtom] = useState(null);
+  const [colorBy, setColorBy] = useState("confidence");
+  const [pathogenicityScores, setPathogenicityScores] = useState(null);
+  const [needPathogenicityScores, setNeedPathogenicityScores] = useState(false);
   const viewerRef = useRef(null);
 
   const variantResidues = new Set(
@@ -24,7 +39,7 @@ function Viewer({ row }) {
 
   // fetch AlphaFold structure and view it
   useEffect(() => {
-    let viewer;
+    let _viewer;
 
     async function fetchStructure() {
       let structureData, response;
@@ -40,61 +55,102 @@ function Viewer({ row }) {
 
       // fetch structure data
       const uniprotIds = [...row.uniprotAccessions];
+      let currentUniprotId;
       while (!response && uniprotIds.length) {
-        await fetchStructureFile(uniprotIds.shift());
+        currentUniprotId = uniprotIds.shift();
+        await fetchStructureFile(currentUniprotId);
       }
-
-      // parse structure data
       if (response) {
-        try {
-          structureData = await response.text();
-        } catch (error) {
-          console.error(error.message);
-          setMessageText("Failed to parse structure data");
-        }
+        structureData = await response.text();
+        setUniprotId(currentUniprotId);
       } else {
         setMessageText("AlphaFold structure not available");
       }
 
       // view data
       if (structureData && viewerRef.current) {
-        viewer = createViewer(viewerRef.current.querySelector(".viewerContainer"), {
+        _viewer = createViewer(viewerRef.current.querySelector(".viewerContainer"), {
           backgroundColor: "#f8f8f8",
           antialias: true,
           cartoonQuality: 10,
         });
-        window.viewer = viewer; // !! REMOVE !!
+        window.viewer = _viewer; // !! REMOVE !!
         const hoverDuration = 10;
-        viewer.getCanvas().ondblclick = () => resetViewer(viewer, variantResidues, 200); // use ondblclick so replaces existing
-        viewer.addModel(structureData, "cif");
-        viewer.setHoverDuration(hoverDuration);
-        const hoverArgs = hoverManagerFactory({ viewer, variantResidues, setHoveredAtom });
-        const handleUnhover = hoverArgs[3];
-        viewer.getCanvas().onmouseleave = () => {
-          setTimeout(handleUnhover, hoverDuration + 50);
-        };
-        viewer.setHoverable(...hoverArgs);
-        noHoverStyle(viewer, variantResidues);
-        viewer.addSurface("VDW", { opacity: 0.2, opacity: 0.55, color: "#fff" }, {});
-        viewer.addSurface("VDW", { opacity: 1, color: "#0d0" }, { resi: [...variantResidues] });
-        resetViewer(viewer, variantResidues);
-        viewer.zoom(0.25);
-        viewer.setZoomLimits(20, 500);
-        viewer.render();
+        _viewer.getCanvas().ondblclick = () => resetViewer(_viewer, variantResidues, 200); // use ondblclick so replaces existing
+        _viewer.addModel(structureData, "cif");
+        _viewer.setHoverDuration(hoverDuration);
+        // const hoverArgs = hoverManagerFactory({ _viewer, variantResidues, setHoveredAtom });
+        // const handleUnhover = hoverArgs[3];
+        // _viewer.getCanvas().onmouseleave = () => {
+        //   setTimeout(handleUnhover, hoverDuration + 50);
+        // };
+        // _viewer.setHoverable(...hoverArgs);
+        _viewer?.setStyle({}, { hidden: true });
+        noHoverStyle({ viewer: _viewer, variantResidues, colorBy });
+        _viewer.addSurface("VDW", { opacity: 0.2, opacity: 0.55, color: "#fff" }, {});
+        _viewer.addSurface("VDW", { opacity: 1, color: "#0d0" }, { resi: [...variantResidues] });
+        resetViewer(_viewer, variantResidues);
+        _viewer.zoom(0.25);
+        _viewer.setZoomLimits(20, 500);
+        _viewer.render();
         setMessageText("");
+        setViewer(_viewer);
       }
     }
     fetchStructure();
     return () => {
       setHoveredAtom("");
-      viewer?.clear();
+      _viewer?.clear();
     };
   }, []);
+
+  // fetch pathogenicity data
+  useEffect(() => {
+    if (pathogenicityScores || !uniprotId || !needPathogenicityScores) return;
+    async function fetchPathogenicityScores() {
+      let response;
+      try {
+        // https://alphafold.ebi.ac.uk/files/AF-Q96S37-F1-aa-substitutions.csv
+        response = await fetch(
+          `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-aa-substitutions.csv`
+        );
+        if (!response.ok) {
+          console.error(`Failed to fetch pathogenicity data`);
+          return;
+        }
+      } catch (error) {
+        console.error(`Failed to fetch pathogenicity data`);
+        return;
+      }
+      const csv = csvParse(await response.text());
+      const scores = [];
+      for (const [resi, group] of [
+        ...Map.groupBy(csv, row => row.protein_variant.match(/\d+/)[0]),
+      ]) {
+        scores[resi] = mean(group, d => d.am_pathogenicity);
+      }
+      window.scores = scores; // !! REMOVE GLOBAL !!
+      setPathogenicityScores(scores);
+    }
+    fetchPathogenicityScores();
+  }, [uniprotId, needPathogenicityScores]);
+
+  // change cartoon cartoon
+  useEffect(() => {
+    if (!viewer || (colorBy === "pathogenicity" && !pathogenicityScores)) return;
+    noHoverStyle({ viewer, variantResidues, colorBy, scores: pathogenicityScores });
+    viewer.render();
+  }, [colorBy, pathogenicityScores]); // do not depend on viewer - avoids double render at start
+
+  function handleToggleColor(event) {
+    setNeedPathogenicityScores(true); // only fetch once so can always set to true
+    setColorBy(event.target.value);
+  }
 
   return (
     <Box ref={viewerRef} position="relative" width="100%">
       {/* container to insert viewer into */}
-      <Box className="viewerContainer" position="relative" width="100%" height={320} mb={1}>
+      <Box className="viewerContainer" position="relative" width="100%" height={350} mb={1}>
         {/* screenshot button */}
         {!messageText && (
           <Box
@@ -104,6 +160,7 @@ function Viewer({ row }) {
               position: "absolute",
               zIndex: 1,
               display: "flex",
+              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
               background: "white",
@@ -122,7 +179,6 @@ function Viewer({ row }) {
         {/* atom info */}
         {hoveredAtom && (
           <Box
-            // ref={atomInfoRef}
             position="absolute"
             bottom={0}
             right={0}
@@ -152,6 +208,38 @@ function Viewer({ row }) {
           flexWrap: "wrap",
         }}
       >
+        <FormControl>
+          <FormLabel id="">Color by</FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="confidence"
+            name="color-by-group"
+            value={colorBy}
+            onChange={handleToggleColor}
+          >
+            <FormControlLabel
+              value="confidence"
+              control={<Radio size="small" />}
+              label="Confidence"
+            />
+            <FormControlLabel
+              value="pathogenicity"
+              control={<Radio size="small" />}
+              label="Pathogenicity"
+            />
+          </RadioGroup>
+        </FormControl>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "end",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
         <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: 0.75 }}>
           <Typography variant="caption" lineHeight={1}>
             Reference amino acid
@@ -159,7 +247,7 @@ function Viewer({ row }) {
           <Box sx={{ width: "11px", height: "11px", borderRadius: "5.5px", bgcolor: "#0d0" }} />
         </Box>
         <Box ml={3}>
-          <CompactAlphaFoldLegend />
+          {/* {colorBy === "confidence" ? <CompactAlphaFoldLegend /> : <CompactPathogenicityLegend /> */}
         </Box>
       </Box>
 
