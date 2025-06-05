@@ -26,36 +26,36 @@ function DrugHeader({ loading, chemblId, name, crossReferences }) {
               {drugBank && (
                 <ExternalLink
                   title="DrugBank"
-                  id={drugBank.reference[0]}
-                  url={`https://identifiers.org/drugbank:${drugBank.reference[0]}`}
+                  id={drugBank.ids[0]}
+                  url={`https://identifiers.org/drugbank:${drugBank.ids[0]}`}
                 />
               )}
               {chEBI && (
                 <ExternalLink
                   title="ChEBI"
-                  id={chEBI.reference[0]}
-                  url={`https://identifiers.org/CHEBI:${chEBI.reference[0]}`}
+                  id={chEBI.ids[0]}
+                  url={`https://identifiers.org/CHEBI:${chEBI.ids[0]}`}
                 />
               )}
               {dailyMed && (
                 <ExternalLink
                   title="DailyMed"
-                  id={decodeURI(dailyMed.reference[0])}
-                  url={`https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=${dailyMed.reference[0]}`}
+                  id={decodeURI(dailyMed.ids[0])}
+                  url={`https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=${dailyMed.ids[0]}`}
                 />
               )}
               {drugCentral && (
                 <ExternalLink
                   title="DrugCentral"
-                  id={drugCentral.reference[0]}
-                  url={`https://drugcentral.org/drugcard/${drugCentral.reference[0]}`}
+                  id={drugCentral.ids[0]}
+                  url={`https://drugcentral.org/drugcard/${drugCentral.ids[0]}`}
                 />
               )}
               {wikipedia && (
                 <ExternalLink
                   title="Wikipedia"
-                  id={wikipedia.reference[0]}
-                  url={`https://en.wikipedia.org/wiki/${wikipedia.reference[0]}`}
+                  id={wikipedia.ids[0]}
+                  url={`https://en.wikipedia.org/wiki/${wikipedia.ids[0]}`}
                 />
               )}
             </>
