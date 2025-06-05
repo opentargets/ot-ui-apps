@@ -38,7 +38,7 @@ const flattenObj = ob => {
 };
 
 const exceedsArrayLengthLimit = array => {
-  const limitLength = 4;
+  const limitLength = 7;
   let exceedsLimit = false;
 
   if (array.length > limitLength) {

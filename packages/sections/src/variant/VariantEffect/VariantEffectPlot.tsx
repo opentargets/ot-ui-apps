@@ -145,7 +145,10 @@ function Plot({ data, width }) {
           },
           channels: {
             method: {
-              value: "method",
+              value: ({ method }) => {
+                if (!method) return null;
+                return VARIANT_EFFECT_METHODS[method]?.methodName;
+              },
               label: "Method:",
             },
             assessment: {
