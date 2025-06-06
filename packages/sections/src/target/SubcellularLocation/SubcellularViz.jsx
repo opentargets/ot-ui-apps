@@ -1,10 +1,10 @@
 import { lazy, useEffect, useRef, Suspense, useState } from "react";
-import { Typography, List, ListItem, Box, Tabs, Tab } from "@mui/material";
+import { Typography, List, ListItem, Box, Tabs, Tab, Skeleton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
-import { LoadingBackdrop, Link } from "ui";
+import { Link } from "ui";
 import { identifiersOrgLink, getUniprotIds } from "@ot/utils";
 
 const SwissbioViz =
@@ -39,18 +39,20 @@ const parseTermToTextId = term => (term ? `${term.replace("-", "")}term` : "");
 // { HPA_main: [], uniprot: [], }
 const parseLocationData = subcellularLocations => {
   const sourcesLocations = {};
-  subcellularLocations.forEach(sl => {
-    if (sourcesLocations[sl.source] === undefined) {
-      sourcesLocations[sl.source] = [];
-    }
-    sourcesLocations[sl.source].push(sl);
-  });
+  subcellularLocations
+    .filter(sl => sl.termSL)
+    .forEach(sl => {
+      if (!sourcesLocations[sl.source]) {
+        sourcesLocations[sl.source] = [];
+      }
+      sourcesLocations[sl.source].push(sl);
+    });
   return sourcesLocations;
 };
 
 // Filter the sources array to only those with data
 const filterSourcesWithData = (sources, sourcesLocations) =>
-  sources.filter(s => sourcesLocations[s.id] !== undefined);
+  sources.filter(s => sourcesLocations[s.id]);
 
 const getTabId = id => `${id}-tab`;
 
@@ -157,7 +159,7 @@ function SubcellularViz({ data: target }) {
             key={s.id}
             className={classes.tabPanel}
           >
-            <Suspense fallback={<LoadingBackdrop />}>
+            <Suspense fallback={<Skeleton height={400} />}>
               <SwissbioViz
                 taxonId="9606"
                 locationIds={sourcesLocations[s.id].map(l => parseLocationTerm(l.termSL)).join()}
