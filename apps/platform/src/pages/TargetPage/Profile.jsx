@@ -8,6 +8,7 @@ import {
   SectionLoader,
 } from "ui";
 
+import OverlappingVariantsSummary from "sections/src/target/OverlappingVariants/Summary";
 import KnownDrugsSummary from "sections/src/target/KnownDrugs/Summary";
 import TractabilitySummary from "sections/src/target/Tractability/Summary";
 import SafetySummary from "sections/src/target/Safety/Summary";
@@ -28,6 +29,9 @@ import BibliographySummary from "sections/src/target/Bibliography/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 
+const OverlappingVariantsSection = lazy(() =>
+  import("sections/src/target/OverlappingVariants/Body")
+);
 const KnownDrugsSection = lazy(() => import("sections/src/target/KnownDrugs/Body"));
 const TractabilitySection = lazy(() => import("sections/src/target/Tractability/Body"));
 const SafetySection = lazy(() => import("sections/src/target/Safety/Body"));
@@ -53,6 +57,7 @@ const SubcellularLocationSection = lazy(() =>
 const BibliographySection = lazy(() => import("sections/src/target/Bibliography/Body"));
 
 const summaries = [
+  OverlappingVariantsSummary,
   KnownDrugsSummary,
   TractabilitySummary,
   SafetySummary,
@@ -91,7 +96,8 @@ function Profile({ ensgId, symbol }) {
     <PlatformApiProvider entity={TARGET} query={TARGET_PROFILE_QUERY} variables={{ ensgId }}>
       <ProfileHeader />
       <SummaryContainer>
-        <KnownDrugsSummary />
+        <OverlappingVariantsSummary />
+        {/* <KnownDrugsSummary />
         <TractabilitySummary />
         <SafetySummary />
         <PharmacogenomicsSummary />
@@ -107,11 +113,14 @@ function Profile({ ensgId, symbol }) {
         <CancerHallmarksSummary />
         <MousePhenotypesSummary />
         <ComparativeGenomicsSummary />
-        <BibliographySummary />
+        <BibliographySummary /> */}
       </SummaryContainer>
 
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
+          <OverlappingVariantsSection id={ensgId} label={symbol} entity={TARGET} />
+        </Suspense>
+        {/* <Suspense fallback={<SectionLoader />}>
           <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
@@ -161,7 +170,7 @@ function Profile({ ensgId, symbol }) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
+        </Suspense> */}
       </SectionContainer>
     </PlatformApiProvider>
   );
